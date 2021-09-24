@@ -4,6 +4,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -34,7 +35,7 @@ public class BiologicalAjaxController {
     Map<String, Object> queryBiologicalBySchedule(HttpServletRequest request) {
         Map<String, Object> jsonMap = IaisCommonUtils.genNewHashMap();
          String schedule = ParamUtil.getString(request,"schedule");
-         if(StringUtil.isEmpty(schedule)){schedule="null";}
+         if(StringUtils.isEmpty(schedule)){schedule="null";}
          log.info(StringUtil.changeForLog("ajax query schedule"+schedule));
          List<BiologicalDto> biologicalDtoList = biosafetyEnquiryClient.queryBiologicalBySchedule(schedule).getEntity();
         if(biologicalDtoList != null && biologicalDtoList.size()>0) {

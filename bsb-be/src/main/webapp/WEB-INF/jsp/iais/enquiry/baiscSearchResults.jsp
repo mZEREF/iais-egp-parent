@@ -171,18 +171,7 @@
                                                         </td>
                                                         <td><c:out  value="${items.facilitySchedule.facility.operatorName}"/></td>
 
-                                                        <td>
-                                                            <c:forEach var="admins" items="${items.facilitySchedule.facility.admins}" varStatus="status">
-                                                                <c:choose>
-                                                                    <c:when test="${status.last}">
-                                                                        <c:out value="${admins.name}"></c:out>
-                                                                    </c:when>
-                                                                    <c:otherwise>
-                                                                        <c:out value="${admins.name}"></c:out>,
-                                                                    </c:otherwise>
-                                                                </c:choose>
-                                                            </c:forEach>
-                                                        </td>
+                                                        <td><c:out value="${items.admin}"/></td>
                                                         <td><iais:code code="${items.facilitySchedule.facility.facilityStatus}"></iais:code></td>
                                                         <td><c:out  value="${items.facilitySchedule.facility.approval}"/></td>
                                                         <td>  <iais:select name="action" id="action" options="action" firstOption="Please Select"></iais:select></td>
@@ -238,18 +227,7 @@
                                                         <td><iais:code code="${items.organization.name}"></iais:code></td>
                                                         <td><c:out value="${items.organization.blkNo}"/> <c:out value="${items.organization.streetName}"/> <c:out value="${items.organization.buildingName}"/> <c:out value="${items.organization.floorNo}"/>-<c:out value="${items.organization.unitNo}"/> </td>
                                                         <td><iais:code code="${items.facilityStatus}"></iais:code></td>
-                                                        <td>
-                                                            <c:forEach var="admins" items="${items.admins}" varStatus="status">
-                                                                <c:choose>
-                                                                    <c:when test="${status.last}">
-                                                                        <c:out value="${admins.name}"></c:out>
-                                                                    </c:when>
-                                                                    <c:otherwise>
-                                                                        <c:out value="${admins.name}"></c:out>,
-                                                                    </c:otherwise>
-                                                                </c:choose>
-                                                            </c:forEach>
-                                                        </td>
+                                                        <td><c:out value = "${items.admin}"/></td>
                                                         <td><fmt:formatDate value='${items.approvalDate}' pattern='dd/MM/yyyy'/></td>
                                                         <td><fmt:formatDate value='${items.expiryDt}' pattern='dd/MM/yyyy'/></td>
                                                         <td>  <iais:select name="action" id="action" options="action" firstOption="Please Select"></iais:select></td>

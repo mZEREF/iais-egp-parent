@@ -22,4 +22,6 @@ public class FacilityBiologicalAgent implements Serializable {
 
 	private String bioName;
 
+	private String admin;
+
 }

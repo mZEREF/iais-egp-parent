@@ -166,45 +166,32 @@
                                     <c:forEach var="items" items="${facInfoSearchResult}" varStatus="status">
                                         <tr name="basicData">
                                             <td><c:out value="${status.index + 1}"/></td>
-                                            <td><c:out value="${items.facilitySchedule.facility.facilityName}"/></td>
-                                            <td><c:out value="${items.facilitySchedule.facility.blkNo}"/> <c:out
-                                                    value="${items.facilitySchedule.facility.streetName}"/> <c:out
-                                                    value="${items.facilitySchedule.facility.floorNo}"/>-<c:out
-                                                    value="${items.facilitySchedule.facility.unitNo}"/> <c:out
-                                                    value="${items.facilitySchedule.facility.postalCode}"/></td>
+                                            <td><c:out value="${items.facilitySchedule.facilityActivity.facility.facilityName}"/></td>
+                                            <td><c:out value="${items.facilitySchedule.facilityActivity.facility.blkNo}"/> <c:out
+                                                    value="${items.facilitySchedule.facilityActivity.facility.streetName}"/> <c:out
+                                                    value="${items.facilitySchedule.facilityActivity.facility.floorNo}"/>-<c:out
+                                                    value="${items.facilitySchedule.facilityActivity.facility.unitNo}"/> <c:out
+                                                    value="${items.facilitySchedule.facilityActivity.facility.postalCode}"/></td>
                                             <td><iais:code
-                                                    code="${items.facilitySchedule.facility.facilityClassification}"></iais:code></td>
+                                                    code="${items.facilitySchedule.facilityActivity.facility.facilityClassification}"></iais:code></td>
                                             <td><iais:code
-                                                    code="${items.facilitySchedule.facility.facilityType}"></iais:code></td>
+                                                    code="${items.facilitySchedule.facilityActivity.activityType}"></iais:code></td>
                                             <td><c:out value="${items.bioName}"/></td>
                                             <td><iais:code code="${items.riskLevel}"></iais:code></td>
-                                            <td><fmt:formatDate value='${items.facilitySchedule.facility.expiryDt}'
+                                            <td><fmt:formatDate value='${items.facilitySchedule.facilityActivity.facility.expiryDt}'
                                                                 pattern='dd/MM/yyyy'/></td>
                                             <td>
-                                                <c:if test="${items.facilitySchedule.facility.isProtected == 'Y'}">
+                                                <c:if test="${items.facilitySchedule.facilityActivity.facility.isProtected == 'Y'}">
                                                     <c:out value="yes"/></c:if>
-                                                <c:if test="${items.facilitySchedule.facility.isProtected =='N'}">
+                                                <c:if test="${items.facilitySchedule.facilityActivity.facility.isProtected =='N'}">
                                                     <c:out value="No"/></c:if>
                                             </td>
-                                            <td><c:out value="${items.facilitySchedule.facility.operatorName}"/></td>
-
+                                            <td><c:out value="${items.facilitySchedule.facilityActivity.facility.operator.facOperator}"/></td>
                                             <td>
-                                                <c:forEach var="admins"
-                                                           items="${items.facilitySchedule.facility.admins}"
-                                                           varStatus="status">
-                                                    <c:choose>
-                                                        <c:when test="${status.last}">
-                                                            <c:out value="${admins.name}"></c:out>
-                                                        </c:when>
-                                                        <c:otherwise>
-                                                            <c:out value="${admins.name}"></c:out>,
-                                                        </c:otherwise>
-                                                    </c:choose>
-                                                </c:forEach>
-                                            </td>
+                                            <td><c:out value="${items.admin}"/></td></td>
                                             <td><iais:code
-                                                    code="${items.facilitySchedule.facility.facilityStatus}"></iais:code></td>
-                                            <td><c:out value="${items.facilitySchedule.facility.approval}"/></td>
+                                                    code="${items.facilitySchedule.facilityActivity.facility.facilityStatus}"></iais:code></td>
+                                            <td><c:out value="${items.facilitySchedule.facilityActivity.facility.approval}"/></td>
                                             <td><iais:select name="action" id="action" options="action"
                                                              firstOption="Please Select"></iais:select></td>
                                         </tr>

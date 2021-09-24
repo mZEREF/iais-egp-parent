@@ -11,7 +11,6 @@ import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.service.client.EmailSmsClient;
 import com.ecquaria.sz.commons.util.MsgUtil;
-import freemarker.template.TemplateException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -270,11 +269,13 @@ public class BsbNotificationHelper {
         adminRoles.add(UserRoleConstants.USER_ROLE_AO1);
         adminRoles.add(UserRoleConstants.USER_ROLE_AO2);
         adminRoles.add(UserRoleConstants.USER_ROLE_AO3);
+        adminRoles.add(UserRoleConstants.USER_ROLE_DO);
         adminRoles.add(UserRoleConstants.USER_ROLE_INSPECTIOR);
         adminRoles.add(UserRoleConstants.USER_ROLE_INSPECTION_LEAD);
         adminRoles.add(UserRoleConstants.USER_ROLE_AUDIT_PLAN);
-        if (roles.contains(UserRoleConstants.RECEIPT_ROLE_MOH_OFFICER)) {
-            passRoles.addAll(adminRoles);
+        if (roles.contains(RECEIPT_ROLE_APPROVAL_OFFICER)) {
+            passRoles.add(UserRoleConstants.USER_ROLE_AO1);
+            passRoles.add(UserRoleConstants.USER_ROLE_AO2);
         } else {
             roles.forEach(r -> {
                 String role = r.substring(3, r.length());
@@ -301,27 +302,7 @@ public class BsbNotificationHelper {
         for (String role : roles) {
             if(RECEIPT_ROLE_APPLICANT.equals(role)){
               List<FacilityAdmin> admins = bsbEmailClient.queryEmailByFacId(facId).getEntity();
-                Map<String, String> adminTypesMap = emailTemplateDto.getAdminTypes();
-                Map<String, String> emailAddressMap = emailTemplateDto.getEmailAddress();
-
-                if (adminTypesMap == null) {
-                    adminTypesMap = IaisCommonUtils.genNewHashMap();
-                }
-
-                if (emailAddressMap == null) {
-                    emailAddressMap = IaisCommonUtils.genNewHashMap();
-                }
-
-                int index = admins.size();
-                for (FacilityAdmin u : admins) {
-                    if (!StringUtils.isEmpty(u.getEmail())) {
-                        adminTypesMap.put(String.valueOf(index), u.getType());
-                        emailAddressMap.put(String.valueOf(index), u.getEmail());
-                        index++;
-                    }
-                }
-                emailTemplateDto.setAdminTypes(adminTypesMap);
-                emailTemplateDto.setEmailAddress(emailAddressMap);
+               setAdminParam(emailTemplateDto,admins);
             }
         }
     }
@@ -330,29 +311,33 @@ public class BsbNotificationHelper {
         for (String role : roles) {
             if(RECEIPT_ROLE_APPLICANT.equals(role)){
                 List<FacilityAdmin> admins = bsbEmailClient.queryFacilityAdminByAppNo(appNo).getEntity();
-                Map<String, String> adminTypesMap = emailTemplateDto.getAdminTypes();
-                Map<String, String> emailAddressMap = emailTemplateDto.getEmailAddress();
-
-                if (adminTypesMap == null) {
-                    adminTypesMap = IaisCommonUtils.genNewHashMap();
-                }
-
-                if (emailAddressMap == null) {
-                    emailAddressMap = IaisCommonUtils.genNewHashMap();
-                }
-
-                int index = admins.size();
-                for (FacilityAdmin u : admins) {
-                    if (!StringUtils.isEmpty(u.getEmail())) {
-                        adminTypesMap.put(String.valueOf(index), u.getName()+":"+u.getType());
-                        emailAddressMap.put(String.valueOf(index), u.getEmail());
-                        index++;
-                    }
-                }
-                emailTemplateDto.setAdminTypes(adminTypesMap);
-                emailTemplateDto.setEmailAddress(emailAddressMap);
+                setAdminParam(emailTemplateDto,admins);
             }
         }
+    }
+
+    public void setAdminParam(EmailTemplateDto emailTemplateDto,List<FacilityAdmin> admins){
+        Map<String, String> adminTypesMap = emailTemplateDto.getAdminTypes();
+        Map<String, String> emailAddressMap = emailTemplateDto.getEmailAddress();
+
+        if (adminTypesMap == null) {
+            adminTypesMap = IaisCommonUtils.genNewHashMap();
+        }
+
+        if (emailAddressMap == null) {
+            emailAddressMap = IaisCommonUtils.genNewHashMap();
+        }
+
+        int index = admins.size();
+        for (FacilityAdmin u : admins) {
+            if (!StringUtils.isEmpty(u.getEmail())) {
+                adminTypesMap.put(String.valueOf(index), u.getName()+":"+u.getType());
+                emailAddressMap.put(String.valueOf(index), u.getEmail());
+                index++;
+            }
+        }
+        emailTemplateDto.setAdminTypes(adminTypesMap);
+        emailTemplateDto.setEmailAddress(emailAddressMap);
     }
 
     private void getRecriptAppNo(List<String> roles, String appNo, EmailTemplateDto emailTemplateDto) {

@@ -52,9 +52,7 @@ public class Facility implements Serializable {
 
     private String isProtected;
 
-    private String operatorType;
-
-    private String operatorName;
+    private FacilityOperator operator;
 
     private String idType;
 
@@ -111,4 +109,6 @@ public class Facility implements Serializable {
     private Date validityEndDt;
 
     private String activeType;
+
+    private String admin;
 }
