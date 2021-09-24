@@ -435,7 +435,7 @@ function clearFields(targetSelector) {
     });
 }
 
-function fillValue(targetSelector, data){
+function fillValue(targetSelector, data, includeHidden){
     if (isEmpty(targetSelector)) {
         return;
     }
@@ -478,6 +478,19 @@ function fillValue(targetSelector, data){
         } else {
             $selector.val(data);
         }
+    } else if ($.isArray(data)) {
+        if (includeHidden) {
+            $selector = $(targetSelector).find(':input');
+        } else {
+            $selector = $(targetSelector).find(':input[type!="hidden"]');
+        }
+        if ($selector.length <= 0) {
+            console.log("Can't find the related tag - " + targetSelector);
+            return;
+        }
+        $selector.each(function(i, ele) {
+            fillValue(ele, data[i]);
+        });
     } else {
         $.each(data, function(i, val) {
             var $input = $selector.find('[name="'+ i +'"]:input');
