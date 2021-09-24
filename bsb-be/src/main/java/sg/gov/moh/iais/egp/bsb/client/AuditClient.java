@@ -5,6 +5,7 @@ import com.ecquaria.cloudfeign.FeignResponseEntity;
 import com.fasterxml.jackson.annotation.JsonView;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.cloud.openfeign.SpringQueryMap;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -27,6 +28,9 @@ public interface AuditClient {
 
     @GetMapping(value = "/bsb-audit/getAllAudit", consumes = MediaType.APPLICATION_JSON_VALUE, produces =MediaType.APPLICATION_JSON_VALUE)
     ResponseDto<AuditQueryResultDto> getAllAudit(@SpringQueryMap AuditQueryDto queryDto);
+
+    @GetMapping(value = "/bsb-audit/getCancelAuditList", consumes = MediaType.APPLICATION_JSON_VALUE, produces =MediaType.APPLICATION_JSON_VALUE)
+    ResponseDto<AuditQueryResultDto> getCancelAuditList(@SpringQueryMap AuditQueryDto queryDto);
 
     @GetMapping(path = "/bsb-audit/getFacilityById")
     FeignResponseEntity<Facility> getFacilityById(@RequestParam("id") String id);

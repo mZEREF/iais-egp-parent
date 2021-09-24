@@ -11,6 +11,7 @@
 %>
 <webui:setLayout name="iais-intranet"/>
 <script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-common.js"></script>
+<script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-audit.js"></script>
 <div class="main-content" style="min-height: 73vh;">
     <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
         <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
@@ -36,8 +37,8 @@
                                     <iais:field value="Facility Name"/>
                                     <iais:value width="18">
                                         <iais:select name="facilityName" id="facilityName"
-                                                     value=""
-                                                     codeCategory=""
+                                                     value="${auditSearch.facilityName}"
+                                                     options="facilityName"
                                                      firstOption="Please Select"/>
                                     </iais:value>
                                 </iais:row>
@@ -46,18 +47,18 @@
                                     <iais:field value="Facility classification"/>
                                     <iais:value width="18">
                                         <iais:select name="facilityClassification" id="facilityClassification"
-                                                     value="${facilityClassification}"
+                                                     value="${auditSearch.facilityClassification}"
                                                      codeCategory="CATE_ID_BSB_FAC_CLASSIFICATION"
                                                      firstOption="Please Select"/>
                                     </iais:value>
                                 </iais:row>
 
                                 <iais:row>
-                                    <iais:field value="Facility Type"/>
+                                    <iais:field value="Active Type"/>
                                     <iais:value width="18">
                                         <iais:select name="facilityType" id="facilityType"
-                                                     value="${facilityType}"
-                                                     codeCategory="CATE_ID_BSB_FAC_TYPE" firstOption="Please Select"/>
+                                                     value="${auditSearch.activeType}"
+                                                     codeCategory="CATE_ID_BSB_ACTIVE_TYPE" firstOption="Please Select"/>
                                     </iais:value>
                                 </iais:row>
 
@@ -65,7 +66,7 @@
                                     <iais:field value="Audit Type" required="true"/>
                                     <iais:value width="18">
                                         <iais:select name="auditType" id="auditType"
-                                                     value="${auditType}"
+                                                     value="${auditSearch.auditType}"
                                                      codeCategory="CATE_ID_BSB_AUDIT_TYPE" firstOption="Please Select"/>
                                         <span id="error_auditType"
                                               name="iaisErrorMsg"
@@ -94,57 +95,50 @@
                             <table class="table application-group" style="border-collapse:collapse;">
                                 <thead>
                                 <tr>
-                                    <iais:sortableHeader needSort="false" field="" value="" isFE="false"/>
-                                    <iais:sortableHeader needSort="false" field="facility.facilityName" value="Facility Name" isFE="false"/>
-                                    <iais:sortableHeader needSort="false" field="" value="Facility Classification" isFE="false"/>
-                                    <iais:sortableHeader needSort="false" field="facility.facilityType" value="Facility type" isFE="false"/>
-                                    <iais:sortableHeader needSort="false" field="" value="Date of Last Audit" isFE="false"/>
-                                    <iais:sortableHeader needSort="false" field="" value="Audit Type" isFE="false"/>
-                                    <iais:sortableHeader needSort="false" field="" value="Scenario Category" isFE="false"/>
-                                    <iais:sortableHeader needSort="false" field="" value="Audit Outcome" isFE="false"/>
+                                    <iais:sortableHeader needSort="false" field="" value=" " isFE="false"/>
+                                    <iais:sortableHeader needSort="true" field="facility.facilityName" value="Facility Name" isFE="false"/>
+                                    <iais:sortableHeader needSort="true" field="facility.facilityClassification" value="Facility Classification" isFE="false"/>
+                                    <iais:sortableHeader needSort="false" field="facility.facilityType" value="Activity type" isFE="false"/>
+                                    <iais:sortableHeader needSort="true" field="auditDt" value="Audit Date" isFE="false"/>
+                                    <iais:sortableHeader needSort="true" field="auditType" value="Audit Type" isFE="false"/>
+                                    <iais:sortableHeader needSort="true" field="cancelReason" value="Cancellation Reasons" isFE="false"/>
                                 </tr>
                                 </thead>
                                     <%--@elvariable id="dataList" type="java.util.List<sg.gov.moh.iais.egp.bsb.entity.Application>"--%>
-<%--                                <c:forEach var="item" items="" varStatus="status">--%>
+                                <c:forEach var="item" items="${dataList}" varStatus="status">
+                                    <c:set var="auditIndex" value="${(status.index + 1) + (pageInfo.pageNo) * pageInfo.size}"></c:set>
                                     <tr style="display: table-row;">
-                                        <td><input type="checkbox"></td>
-                                        <td>facilityName</td>
-                                        <td><iais:code code="Facility Classification"></iais:code></td>
-                                        <td><iais:code code="facility.facilityType"></iais:code></td>
-                                        <td>07/09/2021
-<%--                                            <fmt:formatDate value='' pattern='dd/MM/yyyy'/>--%>
+                                        <td><input name="auditId" type="checkbox" id="auditId${auditIndex}" value="<iais:mask name='auditId' value='${item.id}'/>"></td>
+                                        <td width="10%">${item.facility.facilityName}</td>
+                                        <td width="20%"><iais:code code="${item.facility.facilityClassification}"></iais:code></td>
+                                        <td width="30%">
+                                            <c:forEach var="activity" items="${item.facility.facilityActivities}" varStatus="status">
+                                                <c:choose>
+                                                    <c:when test="${status.last}">
+                                                        <iais:code code="${activity.activityType}"></iais:code>
+                                                    </c:when>
+                                                    <c:otherwise>
+                                                        <iais:code code="${activity.activityType}"></iais:code>,
+                                                    </c:otherwise>
+                                                </c:choose>
+                                            </c:forEach>
                                         </td>
-                                        <td><iais:code code="Audit Type"></iais:code></td>
-                                        <td><c:out value="Scenario Category"/></td>
-                                        <td><c:out value="Audit Outcome"/></td>
+                                        <td><fmt:formatDate value='${item.auditDt}' pattern='dd/MM/yyyy'/></td>
+                                        <td><iais:code code="${item.auditType}"></iais:code></td>
+                                        <td><iais:code code="${item.cancelReason}"></iais:code></td>
                                     </tr>
-<%--                                </c:forEach>--%>
+                                </c:forEach>
                             </table>
-
-                            <div class="row">
-                                <div class="col-xs-12 col-sm-6">
-                                    <a class="back" id="backToAuditCreation" href="#"><em class="fa fa-angle-left"></em> Back</a>
-                                </div>
-                                <div align="right">
-                                    <button name="submitBtn3" id="submitBtn" type="button" class="btn btn-primary">
-                                        Submit
-                                    </button>
-                                </div>
+<%--                            <a style="float:left;padding-top: 1.1%;" class="back" id="back" href="#"><em class="fa fa-angle-left"></em> Back</a>--%>
+                            <div align="right">
+                                <button name="submitBtn" id="doCancel" type="button" class="btn btn-primary">
+                                    Submit
+                                </button>
                             </div>
                         </div>
                     </iais:body>
                 </div>
             </div>
         </div>
-        <input name="appId" id="appId" value="" hidden>
-<%--        <iais:confirm msg="GENERAL_ERR0023" needCancel="false" callBack="cancel()" popupOrder="support"></iais:confirm>--%>
-<%--        <iais:confirm msg="" needCancel="false" callBack="aocancel()" popupOrder="approveAo"></iais:confirm>--%>
     </form>
 </div>
-<script>
-    $("#submitBtn").click(function (){
-        showWaiting();
-        $("[name='action_type']").val("doCancel");
-        $("#mainForm").submit();
-    });
-</script>

@@ -62,7 +62,7 @@ public class AuditCreationDelegator {
      */
     public void prepareAuditListData(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
-        ParamUtil.setSessionAttr(request,"year",null);
+        ParamUtil.setSessionAttr(request,AuditConstants.PARAM_YEAR,null);
         selectOption(request);
         // get search DTO
         AuditQueryDto searchDto=getSearchDto(request);
@@ -82,14 +82,14 @@ public class AuditCreationDelegator {
 
             ParamUtil.setRequestAttr(request, AuditConstants.KEY_AUDIT_DATA_LIST, audits);
         } else {
-            log.warn("get revocation application API doesn't return ok, the response is {}", searchResult);
+            log.warn("get audit API doesn't return ok, the response is {}", searchResult);
             ParamUtil.setRequestAttr(request, AuditConstants.KEY_AUDIT_PAGE_INFO, PageInfo.emptyPageInfo(searchDto));
             ParamUtil.setRequestAttr(request, AuditConstants.KEY_AUDIT_DATA_LIST, new ArrayList<>());
         }
 
         Calendar cd = Calendar.getInstance();
         int year = cd.get(Calendar.YEAR);
-        ParamUtil.setSessionAttr(request,"year",year);
+        ParamUtil.setSessionAttr(request,AuditConstants.PARAM_YEAR,year);
 
     }
 
@@ -98,7 +98,7 @@ public class AuditCreationDelegator {
      *
      * @param bpc
      */
-    public void doSearch(BaseProcessClass bpc) throws ParseException {
+    public void doSearch(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         ParamUtil.setSessionAttr(request, AuditConstants.PARAM_AUDIT_SEARCH, null);
         AuditQueryDto searchDto = getSearchDto(request);
@@ -124,7 +124,7 @@ public class AuditCreationDelegator {
     public void prepareData(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         ParamUtil.setSessionAttr(request, AuditConstants.FACILITY_LIST, null);
-        String[] facIds =  ParamUtil.getMaskedStrings(request, AuditConstants.FACILITY_ID);
+        String[] facIds = ParamUtil.getMaskedStrings(request, AuditConstants.FACILITY_ID);
         List<String> facList=new ArrayList<>();
         for (String facId : facIds) {
             if (StringUtil.isNotEmpty(facId)){
@@ -208,7 +208,7 @@ public class AuditCreationDelegator {
     }
 
     private AuditQueryDto getSearchDto(HttpServletRequest request) {
-        AuditQueryDto searchDto = (AuditQueryDto) ParamUtil.getSessionAttr(request, RevocationConstants.PARAM_AUDIT_SEARCH);
+        AuditQueryDto searchDto = (AuditQueryDto) ParamUtil.getSessionAttr(request, AuditConstants.PARAM_AUDIT_SEARCH);
         return searchDto == null ? getDefaultSearchDto() : searchDto;
     }
 

@@ -36,12 +36,14 @@ public final class AuditConstants {
 
     public static final String FACILITY_ID = "facId";
     public static final String FACILITY_LIST = "facilityList";
+    public static final String AUDIT_LIST = "auditList";
 
     public static final String FACILITY = "facility";
     public static final String FACILITY_AUDIT = "facilityAudit";
     public static final String FACILITY_AUDIT_APP = "facilityAuditAPP";
     public static final String AUDIT_ID = "auditId";
     public static final String LAST_AUDIT_DATE = "lastAuditDt";
+    public static final String PARAM_SCENARIO_CATEGORY = "scenarioCategory";
 
     public static final String AUDIT_APP_ID = "auditAppId";
     public static final String AUDIT_DOC_DTO = "auditDocDto";
@@ -49,4 +51,13 @@ public final class AuditConstants {
     public static final String FINAL_REMARK = "finalRemark";
     public static final String AO_REMARKS = "aoRemark";
     public static final String PARAM_HISTORY = "history";
+
+    public static final String PARAM_YEAR = "year";
+    public static final String PARAM_AUDIT_STATUS_PENDING_TASK_ASSIGNMENT = "AUDITST001";
+    public static final String PARAM_AUDIT_STATUS_PENDING_APPLICANT_INPUT = "AUDITST002";
+    public static final String PARAM_AUDIT_STATUS_COMPLETED = "AUDITST003";
+    public static final String PARAM_AUDIT_STATUS_PENDING_DO = "AUDITST004";
+    public static final String PARAM_AUDIT_STATUS_PENDING_AO = "AUDITST005";
+    public static final String PARAM_AUDIT_STATUS_SUSPENDED = "AUDITST006";
+    public static final String PARAM_AUDIT_STATUS_CANCELLED = "AUDITST007";
 }

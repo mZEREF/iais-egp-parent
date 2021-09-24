@@ -1,1 +1,1 @@
-<%@include file="/WEB-INF/jsp/iais/cancelAudit/ongoingAuditList.jsp"%>
+<%@include file="/WEB-INF/jsp/iais/cancelAudit/cancelAuditList.jsp"%>

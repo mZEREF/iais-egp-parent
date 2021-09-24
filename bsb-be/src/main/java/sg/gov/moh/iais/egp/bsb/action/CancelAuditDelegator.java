@@ -2,10 +2,8 @@ package sg.gov.moh.iais.egp.bsb.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
-import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
-import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import lombok.extern.slf4j.Slf4j;
@@ -13,25 +11,25 @@ import org.springframework.beans.factory.annotation.Autowired;
 import sg.gov.moh.iais.egp.bsb.client.AuditClient;
 import sg.gov.moh.iais.egp.bsb.client.BiosafetyEnquiryClient;
 import sg.gov.moh.iais.egp.bsb.constant.AuditConstants;
-import sg.gov.moh.iais.egp.bsb.constant.RevocationConstants;
 import sg.gov.moh.iais.egp.bsb.dto.PageInfo;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
 import sg.gov.moh.iais.egp.bsb.dto.audit.AuditQueryDto;
 import sg.gov.moh.iais.egp.bsb.dto.audit.AuditQueryResultDto;
 import sg.gov.moh.iais.egp.bsb.entity.*;
-import sg.gov.moh.iais.egp.bsb.util.JoinAddress;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.Serializable;
 import java.text.ParseException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Zhu Tangtang
  */
 @Slf4j
-@Delegator(value = "auditDateDelegator")
-public class AuditDateDelegator {
+@Delegator(value = "cancelAuditDelegator")
+public class CancelAuditDelegator {
 
     @Autowired
     private AuditClient auditClient;
@@ -58,35 +56,28 @@ public class AuditDateDelegator {
      *
      * @param bpc
      */
-    public void prepareAuditListData(BaseProcessClass bpc) {
+    public void prepareCancelAuditListData(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
-        ParamUtil.setSessionAttr(request,AuditConstants.PARAM_YEAR,null);
         selectOption(request);
         // get search DTO
         AuditQueryDto searchDto = getSearchDto(request);
         ParamUtil.setSessionAttr(request, AuditConstants.PARAM_AUDIT_SEARCH, searchDto);
         // call API to get searched data
-        ResponseDto<AuditQueryResultDto> searchResult = auditClient.getAllAudit(searchDto);
+        ResponseDto<AuditQueryResultDto> searchResult = auditClient.getCancelAuditList(searchDto);
 
         if (searchResult.ok()) {
             ParamUtil.setRequestAttr(request, AuditConstants.KEY_AUDIT_PAGE_INFO, searchResult.getEntity().getPageInfo());
             List<FacilityAudit> audits = searchResult.getEntity().getTasks();
-            List<FacilityActivity> activityList = new ArrayList<>();
             for (FacilityAudit audit : audits) {
-                activityList = auditClient.getFacilityActivityByFacilityId(audit.getFacility().getId()).getEntity();
+                List<FacilityActivity> activityList = auditClient.getFacilityActivityByFacilityId(audit.getFacility().getId()).getEntity();
                 audit.getFacility().setFacilityActivities(activityList);
             }
-
             ParamUtil.setRequestAttr(request, AuditConstants.KEY_AUDIT_DATA_LIST, audits);
         } else {
             log.warn("get audit API doesn't return ok, the response is {}", searchResult);
             ParamUtil.setRequestAttr(request, AuditConstants.KEY_AUDIT_PAGE_INFO, PageInfo.emptyPageInfo(searchDto));
             ParamUtil.setRequestAttr(request, AuditConstants.KEY_AUDIT_DATA_LIST, new ArrayList<>());
         }
-
-        Calendar cd = Calendar.getInstance();
-        int year = cd.get(Calendar.YEAR);
-        ParamUtil.setSessionAttr(request,AuditConstants.PARAM_YEAR,year);
     }
 
     /**
@@ -116,137 +107,61 @@ public class AuditDateDelegator {
      *
      * @param bpc
      */
-    public void prepareSpecifyDtData(BaseProcessClass bpc) throws ParseException {
+    public void prepareDOCancelAuditData(BaseProcessClass bpc) throws ParseException {
         HttpServletRequest request = bpc.request;
-        ParamUtil.setSessionAttr(request, AuditConstants.FACILITY_AUDIT, null);
-        String auditId = ParamUtil.getMaskedString(request, AuditConstants.AUDIT_ID);
-        String auditDt = ParamUtil.getString(request,AuditConstants.LAST_AUDIT_DATE);
-        FacilityAudit audit = new FacilityAudit();
-        audit.setId(auditId);
-
-        Date auditDate = null;
-        if (StringUtil.isNotEmpty(auditDt)) {
-            auditDate = Formatter.parseDate(auditDt);
-            audit.setAuditDt(auditDate);
+        ParamUtil.setSessionAttr(request, AuditConstants.AUDIT_LIST, null);
+        String[] auditIds = ParamUtil.getMaskedStrings(request, AuditConstants.AUDIT_ID);
+        List<FacilityAudit> auditList = new ArrayList<>();
+        for (String auditId : auditIds) {
+            FacilityAudit facilityAudit = auditClient.getFacilityAuditById(auditId).getEntity();
+            List<FacilityActivity> activityList = auditClient.getFacilityActivityByFacilityId(facilityAudit.getFacility().getId()).getEntity();
+            facilityAudit.getFacility().setFacilityActivities(activityList);
+            auditList.add(facilityAudit);
         }
-        ParamUtil.setSessionAttr(request, AuditConstants.FACILITY_AUDIT, audit);
+        ParamUtil.setSessionAttr(request, AuditConstants.AUDIT_LIST, (Serializable) auditList);
     }
 
     /**
-     * AutoStep: submit
-     * specifyDt
-     * changeDt
      *
      * @param bpc
      */
-    public void specifyAndChangeDt(BaseProcessClass bpc) throws ParseException {
+    public void DOSubmitCancelAudit(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
-
-        FacilityAudit facilityAudit = (FacilityAudit) ParamUtil.getSessionAttr(request, AuditConstants.FACILITY_AUDIT);
-        String remarks = ParamUtil.getRequestString(request, AuditConstants.PARAM_REMARKS);
-        String reason = ParamUtil.getString(request,AuditConstants.PARAM_REASON_FOR_CHANGE);
-        String auditDate = ParamUtil.getRequestString(request, AuditConstants.PARAM_AUDIT_DATE);
-
-        FacilityAudit audit = new FacilityAudit();
-        audit.setId(facilityAudit.getId());
-        audit.setRemarks(remarks);
-        audit.setChangeReason(reason);
-        Date requestAuditDt = null;
-        if (StringUtil.isNotEmpty(auditDate)) {
-            requestAuditDt = Formatter.parseDate(auditDate);
-            audit.setAuditDt(requestAuditDt);
+        List<FacilityAudit> auditList = (List<FacilityAudit>)ParamUtil.getSessionAttr(request, AuditConstants.AUDIT_LIST);
+        String cancelReason = ParamUtil.getRequestString(request, AuditConstants.PARAM_REASON);
+        for (FacilityAudit audit : auditList) {
+            audit.setCancelReason(cancelReason);
+            audit.setStatus(AuditConstants.PARAM_AUDIT_STATUS_PENDING_AO);
+            auditClient.saveSelfAuditReport(audit);
         }
-        auditClient.specifyAndChangeAuditDt(audit);
     }
 
     /**
      * AutoStep: prepareData
-     * MohDOCheckAuditDt
-     * MohAOCheckAuditDt
+     *
      * @param bpc
      */
-    public void prepareDOAndAOReviewData(BaseProcessClass bpc) {
+    public void prepareAOCancelAuditData(BaseProcessClass bpc) throws ParseException {
         HttpServletRequest request = bpc.request;
-        ParamUtil.setSessionAttr(request, AuditConstants.FACILITY_AUDIT_APP, null);
 
-        String auditAppId = "50229C6F-A50F-EC11-BE6E-000C298D317C";
-        FacilityAuditApp facilityAuditApp = auditClient.getFacilityAuditAppById(auditAppId).getEntity();
-
-        Facility facility = facilityAuditApp.getFacilityAudit().getFacility();
-        Application application = new Application();
-        application.setFacility(facility);
-        String facilityAddress = JoinAddress.joinAddress(application);
-        facility.setFacilityAddress(facilityAddress);
-        ParamUtil.setRequestAttr(request,AuditConstants.FACILITY,facility);
-
-        ParamUtil.setSessionAttr(request, AuditConstants.FACILITY_AUDIT_APP, facilityAuditApp);
     }
 
     /**
-     * MohDOCheckAuditDt
-     * @param bpc
-     */
-    public void DOVerifiedAuditDate(BaseProcessClass bpc) {
-        HttpServletRequest request = bpc.request;
-        FacilityAuditApp facilityAuditApp = (FacilityAuditApp)ParamUtil.getSessionAttr(request,AuditConstants.FACILITY_AUDIT_APP);
-        String remark = ParamUtil.getRequestString(request,AuditConstants.PARAM_REMARKS);
-        String decision = ParamUtil.getRequestString(request,AuditConstants.PARAM_DECISION);
-        //
-        facilityAuditApp.setDoRemarks(remark);
-        facilityAuditApp.setDoDecision(decision);
-        facilityAuditApp.setStatus("AUDITST005");
-        auditClient.processAuditDate(facilityAuditApp);
-    }
-
-    /**
-     * MohDOCheckAuditDt
-     * @param bpc
-     */
-    public void DORejectAuditDate(BaseProcessClass bpc) {
-        HttpServletRequest request = bpc.request;
-        FacilityAuditApp facilityAuditApp = (FacilityAuditApp)ParamUtil.getSessionAttr(request,AuditConstants.FACILITY_AUDIT_APP);
-        String remark = ParamUtil.getRequestString(request,AuditConstants.PARAM_REMARKS);
-        String reason = ParamUtil.getRequestString(request,AuditConstants.PARAM_REASON);
-        String decision = ParamUtil.getRequestString(request,AuditConstants.PARAM_DECISION);
-        //
-        facilityAuditApp.setDoRemarks(remark);
-        facilityAuditApp.setDoDecision(decision);
-        facilityAuditApp.setDoReason(reason);
-        facilityAuditApp.setStatus("AUDITST005");
-        auditClient.processAuditDate(facilityAuditApp);
-    }
-
-    /**
-     * MohAOCheckAuditDt
+     *
      * @param bpc
      */
     public void AOApprovalAuditDate(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
-        FacilityAuditApp facilityAuditApp = (FacilityAuditApp)ParamUtil.getSessionAttr(request,AuditConstants.FACILITY_AUDIT_APP);
-        String remark = ParamUtil.getRequestString(request,AuditConstants.PARAM_REMARKS);
-        //
-        facilityAuditApp.setAoRemarks(remark);
-        facilityAuditApp.setStatus("AUDITST003");
-        //
-        facilityAuditApp.getFacilityAudit().setStatus("AUDITST002");
-        facilityAuditApp.getFacilityAudit().setAuditDt(facilityAuditApp.getRequestAuditDt());
-        auditClient.processAuditDate(facilityAuditApp);
+
     }
 
     /**
-     * MohAOCheckAuditDt
+     *
      * @param bpc
      */
     public void AORejectAuditDate(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
-        FacilityAuditApp facilityAuditApp = (FacilityAuditApp)ParamUtil.getSessionAttr(request,AuditConstants.FACILITY_AUDIT_APP);
-        String remark = ParamUtil.getRequestString(request,AuditConstants.PARAM_REMARKS);
-        String reason = ParamUtil.getRequestString(request,AuditConstants.PARAM_REASON);
-        //
-        facilityAuditApp.setAoRemarks(remark);
-        facilityAuditApp.setAoReason(reason);
-        facilityAuditApp.setStatus("AUDITST007");
-        auditClient.processAuditDate(facilityAuditApp);
+
     }
 
     /**

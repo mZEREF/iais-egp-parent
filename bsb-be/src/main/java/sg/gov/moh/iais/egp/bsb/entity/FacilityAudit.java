@@ -30,4 +30,6 @@ public class FacilityAudit extends BaseEntity {
     private String auditOutcome;
 
     private String finalRemarks;
+
+    private String cancelReason;
 }

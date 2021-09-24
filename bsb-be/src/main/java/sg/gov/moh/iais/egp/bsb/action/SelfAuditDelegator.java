@@ -161,11 +161,11 @@ public class SelfAuditDelegator {
     public void submitSelfAuditReport(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         String auditId = ParamUtil.getMaskedString(request, AuditConstants.AUDIT_ID);
-        String scenarioCategory = ParamUtil.getRequestString(request,"scenarioCategory");
+        String scenarioCategory = ParamUtil.getRequestString(request,AuditConstants.PARAM_SCENARIO_CATEGORY);
         FacilityAudit audit = new FacilityAudit();
         audit.setScenarioCategory(scenarioCategory);
         audit.setId(auditId);
-        audit.setStatus("AUDITST004");
+        audit.setStatus(AuditConstants.PARAM_AUDIT_STATUS_PENDING_DO);
         FacilityAuditApp facilityAuditApp = auditClient.saveSelfAuditReport(audit).getEntity();
     }
 
@@ -216,7 +216,7 @@ public class SelfAuditDelegator {
     public void DOVerified(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         FacilityAuditApp auditApp = before(request);
-        auditApp.setStatus("AUDITST005");
+        auditApp.setStatus(AuditConstants.PARAM_AUDIT_STATUS_PENDING_AO);
         auditClient.processAuditDate(auditApp).getEntity();
         FacilityAuditAppHistory auditAppHistory = abHistory(request);
         auditAppHistory.setAppStatus(auditApp.getStatus());
@@ -230,7 +230,7 @@ public class SelfAuditDelegator {
     public void DORequestForInformation(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         FacilityAuditApp auditApp = before(request);
-        auditApp.setStatus("AUDITST002");
+        auditApp.setStatus(AuditConstants.PARAM_AUDIT_STATUS_PENDING_APPLICANT_INPUT);
         auditClient.processAuditDate(auditApp);
         FacilityAuditAppHistory auditAppHistory = abHistory(request);
         auditAppHistory.setAppStatus(auditApp.getStatus());
@@ -244,7 +244,7 @@ public class SelfAuditDelegator {
     public void DOReject(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         FacilityAuditApp auditApp = before(request);
-        auditApp.setStatus("AUDITST005");
+        auditApp.setStatus(AuditConstants.PARAM_AUDIT_STATUS_PENDING_AO);
         auditClient.processAuditDate(auditApp);
         FacilityAuditAppHistory auditAppHistory = abHistory(request);
         auditAppHistory.setAppStatus(auditApp.getStatus());
@@ -298,8 +298,8 @@ public class SelfAuditDelegator {
     public void AOInternalClarifications(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         FacilityAuditApp auditApp = before(request);
-        auditApp.setStatus("AUDITST004");
-        auditApp.getFacilityAudit().setStatus("AUDITST004");
+        auditApp.setStatus(AuditConstants.PARAM_AUDIT_STATUS_PENDING_DO);
+        auditApp.getFacilityAudit().setStatus(AuditConstants.PARAM_AUDIT_STATUS_PENDING_DO);
         auditClient.processAuditDate(auditApp);
         FacilityAuditAppHistory auditAppHistory = abHistory(request);
         auditAppHistory.setAppStatus(auditApp.getStatus());
@@ -313,8 +313,8 @@ public class SelfAuditDelegator {
     public void AOApproved(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         FacilityAuditApp auditApp = before(request);
-        auditApp.setStatus("AUDITST003");
-        auditApp.getFacilityAudit().setStatus("AUDITST003");
+        auditApp.setStatus(AuditConstants.PARAM_AUDIT_STATUS_COMPLETED);
+        auditApp.getFacilityAudit().setStatus(AuditConstants.PARAM_AUDIT_STATUS_COMPLETED);
         auditClient.processAuditDate(auditApp);
         FacilityAuditAppHistory auditAppHistory = abHistory(request);
         auditAppHistory.setAppStatus(auditApp.getStatus());

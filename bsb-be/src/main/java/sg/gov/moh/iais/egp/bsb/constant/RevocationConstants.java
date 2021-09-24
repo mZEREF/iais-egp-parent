@@ -16,9 +16,6 @@ public final class RevocationConstants {
     public static final String PARAM_APPLICATION_SEARCH = "applicationSearch";
     public static final String PARAM_PROCESSING_HISTORY = "processingHistory";
 
-    public static final String PARAM_AUDIT_SEARCH = "auditSearch";
-    public static final String PARAM_AUDIT_TYPE = "auditType";
-
     public static final String PARAM_APPROVAL_NO = "approvalNo";
     public static final String PARAM_FACILITY_NAME = "facilityName";
     public static final String PARAM_FACILITY_ADDRESS = "facilityAddress";

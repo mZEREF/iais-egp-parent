@@ -147,7 +147,7 @@
                                     </tr>
                                 </c:forEach>
                             </table>
-                            <a style="float:left;padding-top: 1.1%;" class="back" id="back" href="#"><em class="fa fa-angle-left"></em> Back</a>
+<%--                            <a style="float:left;padding-top: 1.1%;" class="back" id="back" href="#"><em class="fa fa-angle-left"></em> Back</a>--%>
                         </div>
                     </iais:body>
                 </div>

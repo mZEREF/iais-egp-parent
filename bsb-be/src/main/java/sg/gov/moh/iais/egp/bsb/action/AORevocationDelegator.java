@@ -84,10 +84,9 @@ public class AORevocationDelegator {
             ParamUtil.setRequestAttr(request, RevocationConstants.KEY_APPLICATION_PAGE_INFO, searchResult.getEntity().getPageInfo());
             List<Application> applications = searchResult.getEntity().getTasks();
             //get facilityId
-            FacilityActivity activity = new FacilityActivity();
             for (Application application : applications) {
                 application.getFacility().setFacilityAddress(JoinAddress.joinAddress(application));
-                activity = revocationClient.getFacilityActivityByApplicationId(application.getId()).getEntity();
+                FacilityActivity activity = revocationClient.getFacilityActivityByApplicationId(application.getId()).getEntity();
                 application.getFacility().setActiveType(activity.getActivityType());
                 List<FacilitySchedule> facilityScheduleList = activity.getFacilitySchedules();
                 String bioNames = JoinBiologicalName.joinBiologicalName(facilityScheduleList,processClient);
@@ -212,8 +211,8 @@ public class AORevocationDelegator {
         List<FacilityDoc> docList = new ArrayList<>();
         for (FacilityDoc facilityDoc : facilityDocList) {
             //这里拿不到，只能拿到当前用户名
-//            String submitByName = IaisEGPHelper.getCurrentAuditTrailDto().getMohUserId();
-//            facilityDoc.setSubmitByName(submitByName);
+            String submitByName = IaisEGPHelper.getCurrentAuditTrailDto().getMohUserId();
+            facilityDoc.setSubmitByName(submitByName);
             docList.add(facilityDoc);
         }
         AuditDocDto auditDocDto = new AuditDocDto();

@@ -139,7 +139,7 @@
                                     </tr>
                                 </c:forEach>
                             </table>
-                            <a style="float:left;padding-top: 1.1%;" class="back" id="back" href="#"><em class="fa fa-angle-left"></em> Back</a>
+<%--                            <a style="float:left;padding-top: 1.1%;" class="back" id="back" href="#"><em class="fa fa-angle-left"></em> Back</a>--%>
                             <div align="right">
                                 <button name="submitBtn" id="createList" type="button" class="btn btn-primary">
                                     Create List

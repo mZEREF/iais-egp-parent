@@ -28,7 +28,7 @@ $(function () {
             showWaiting();
             $("#mainForm").submit();
         }else{
-            alert("please select one");
+            alert("Select at least one audit task for confirmation");
         }
     });
 
@@ -178,6 +178,28 @@ $(function () {
             $("#error_decision").html("Please select valid options!");
         }
     })
+
+    //cancel audit
+    $("#doCancel").click(function (){
+        $("[name='action_type']").val("doCancel");
+        if ($("input:checkbox:checked").length > 0) {
+            showWaiting();
+            $("#mainForm").submit();
+        }else{
+            alert("Select at least one audit task for confirmation");
+        }
+    });
+
+    $("#submitCancelAudit").click(function (){
+        var cancellationReasons = $("#reasons").val();
+        if (cancellationReasons == null || cancellationReasons == ""){
+            $("#error_reasons").html("This is Mandatory");
+        }else{
+            showWaiting();
+            $("[name='action_type']").val("doSubmit");
+            $("#mainForm").submit();
+        }
+    });
 
     //back
     $("#back").click(function (){

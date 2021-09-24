@@ -11,15 +11,19 @@
  */
 package sop.webflow.rt.java.code;
 import sop.webflow.rt.api.BaseProcessClass;
+import com.ecquaria.cloud.helper.EngineHelper;
 
 public class INTRANET___ReviewCancelAudit___1 extends BaseProcessClass {
+	private static final String DELEGATOR = "cancelAuditDelegator";
 
 	public void start_OnStepProcess_0() throws Exception {
 	// 		start->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "start", this);
 	}
 
 	public void prepareData_OnStepProcess_0() throws Exception {
 	// 		prepareData->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "prepareDOCancelAuditData", this);
 	}
 
 	public void prepareSwitch_OnStepProcess_0() throws Exception {
@@ -28,6 +32,7 @@ public class INTRANET___ReviewCancelAudit___1 extends BaseProcessClass {
 
 	public void doSubmit_OnStepProcess_0() throws Exception {
 	// 		doSubmit->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "DOSubmitCancelAudit", this);
 	}
 
 }
