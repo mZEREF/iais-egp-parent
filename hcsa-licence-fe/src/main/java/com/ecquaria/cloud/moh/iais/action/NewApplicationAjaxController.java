@@ -160,7 +160,11 @@ public class NewApplicationAjaxController {
             String width = "";
             if (ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(type)) {
                 className = "onSite";
-                width = "col-md-2";
+                if (premType.size() > 2) {
+                    width = "col-md-2";
+                } else {
+                    width = "col-md-3";
+                }
             } else if (ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(type)) {
                 className = "conveyance";
                 width = "col-md-3";

@@ -3147,20 +3147,22 @@ public class NewApplicationHelper {
 
     public static String genMutilSelectOpHtml(Map<String,String> attrMap, List<SelectOption> selectOptionList, String firestOption, List<String> checkedVals, boolean multiSelect){
         StringBuilder sBuffer = new StringBuilder(100);
-        sBuffer.append("<select ");
+        sBuffer.append("<div class=\"col-md-12 col-xs-12 multi-select\">").append("<select ");
         if(multiSelect){
             sBuffer.append("multiple=\"multiple\" ");
         }
+        String name = "";
         for(Map.Entry<String, String> entry : attrMap.entrySet()){
-//            sBuffer.append(entry.getKey()+"=\""+entry.getValue()+"\" ");
             sBuffer.append(entry.getKey())
                     .append("=\"")
                     .append(entry.getValue())
                     .append('\"');
+            if ("name".equals(entry.getKey())) {
+                name = entry.getValue();
+            }
         }
         sBuffer.append(" >");
         if(!StringUtil.isEmpty(firestOption)){
-//            sBuffer.append("<option value=\"\">"+ firestOption +"</option>");
             sBuffer.append("<option value=\"\">")
                     .append(firestOption)
                     .append("</option>");
@@ -3168,7 +3170,6 @@ public class NewApplicationHelper {
         for(SelectOption sp:selectOptionList){
             if(!IaisCommonUtils.isEmpty(checkedVals)){
                 if(checkedVals.contains(sp.getValue())){
-//                    sBuffer.append("<option selected=\"selected\" value=\""+sp.getValue()+"\">"+ sp.getText() +"</option>");
                     sBuffer.append("<option selected=\"selected\" value=\"")
                             .append(sp.getValue())
                             .append("\">")
@@ -3181,7 +3182,11 @@ public class NewApplicationHelper {
                 sBuffer.append("<option value=\"").append(sp.getValue()).append("\">").append(sp.getText()).append("</option>");
             }
         }
-        sBuffer.append("</select>");
+        sBuffer.append("</select>").append("</div>");
+        // error span
+        sBuffer.append("<div class=\"col-md-12 col-xs-12\">")
+                .append("<span class=\"error-msg \" name=\"iaisErrorMsg\" id=\"error_").append(name).append("\"></span>")
+                .append("</div>");
         return sBuffer.toString();
     }
 
