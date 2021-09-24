@@ -35,20 +35,14 @@
 
     .label-padding {
         padding-left: 0px;
-        padding-top: 14px
+        padding-top: 14px;
+        margin-left: -3px;
     }
 
     .multi-sel-padding {
         padding-bottom: 15px;
     }
 
-    @media only screen and (max-width : 414px) {
-        div.blockUI.blockMsg.blockPage{
-            width:	50% !important;
-            top:	50% !important;
-            left:	25% !important;
-        }
-    }
 </style>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <c:forEach var="appGrpPremisesDto" items="${AppSubmissionDto.appGrpPremisesDtoList}" varStatus="status">
@@ -2350,6 +2344,22 @@
             $("input[name='easMtsUseOnlyVal']").closest('div.form-group').next().next().children('label').children().remove();
         }
     });
+
+    function showWaiting() {
+        var cssOpts = {border: '1px solid #aaa'};
+        var scrnWidth = window.screen.width;
+        if (isEmpty(scrnWidth) || scrnWidth > 414) {
+            cssOpts.width = '25%';
+            cssOpts.left = '37%';
+        } else {
+            cssOpts.width = '50%';
+            cssOpts.top = '50%';
+            cssOpts.left = '25%';
+        }
+        console.log(JSON.stringify(cssOpts, null, 2));
+        $.blockUI({message: '<div style="padding:3px;">We are processing your request now; please do not click the Back or Refresh button in the browser.</div>',
+            css: cssOpts, overlayCSS: {opacity: 0.2}});
+    }
 
 </script>
 

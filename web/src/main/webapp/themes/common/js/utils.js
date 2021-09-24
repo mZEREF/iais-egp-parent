@@ -1,7 +1,18 @@
 function showWaiting() {
-    $.blockUI({message: '<div style="padding:3px;">We are processing your request now; please do not click the Back or Refresh button in the browser.</div>',
-        css: {width: '25%', border: '1px solid #aaa'},
-        overlayCSS: {opacity: 0.2}});
+    var msg = '<div style="padding:3px;">' +
+        'We are processing your request now; please do not click the Back or Refresh button in the browser.' +
+        '</div>';
+    var cssOpts = {border: '1px solid #aaa'};
+    var scrnWidth = window.screen.width;
+    if (isEmpty(scrnWidth) || scrnWidth > 414) {
+        cssOpts.width = '25%';
+        cssOpts.left = '37%';
+    } else {
+        cssOpts.width = '50%';
+        cssOpts.top = '45%';
+        cssOpts.left = '25%';
+    }
+    $.blockUI({message: msg, css: cssOpts, overlayCSS: {opacity: 0.2}});
 }
 
 function dismissWaiting() {
