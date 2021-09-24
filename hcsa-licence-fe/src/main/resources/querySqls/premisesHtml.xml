@@ -234,7 +234,7 @@
                     <div class="form-group weeklyDiv">
                         <div>
                             <div class="col-md-4 col-xs-4 multi-sel-padding">
-                                <div class="row">
+                                <div class="row d-flex">
                                     <div class="col-xs-12 visible-xs visible-sm">
                                         <label class="control-label">Weekly <span class="mandatory">*</span></label>
                                     </div>
@@ -242,7 +242,7 @@
                                 </div>
                             </div>
                             <div class="col-md-3 col-xs-3 start-div">
-                                <div class="row">
+                                <div class="row d-flex">
                                     <div class="col-xs-12 visible-xs visible-sm">
                                         <label class="control-label">Start</label>
                                     </div>
@@ -264,7 +264,7 @@
                                 </div>
                             </div>
                             <div class="col-md-3 col-xs-3 end-div">
-                                <div class="row">
+                                <div class="row d-flex">
                                     <div class="col-xs-12 visible-xs visible-sm">
                                         <label class="control-label">End</label>
                                     </div>
@@ -286,14 +286,14 @@
                                 </div>
                             </div>
                             <div class="col-md-2 col-xs-2 all-day-div">
-                                <div class="row">
+                                <div class="row d-flex">
                                     <div class="col-xs-12 visible-xs visible-sm">
                                         <label class="control-label">24 Hours</label>
                                     </div>
-                                    <div class="col-md-6 text-center col-xs-6" style="padding: 14px 25px 14px 0;">
+                                    <div class="col-md-5 col-xs-5 text-center all-day-position">
                                         <input class="form-check-input allDay" name="0onSiteWeeklyAllDay0" type="checkbox" aria-invalid="false" value="true">
                                     </div>
-                                    <div class="col-md-6 col-xs-6">
+                                    <div class="col-md-5 col-xs-5">
                                     </div>
                                 </div>
                             </div>
@@ -317,12 +317,15 @@
                         </div>
                         <div>
                             <div class="col-md-4 col-xs-4 multi-sel-padding">
-                                <div class="row">
+                                <div class="row d-flex">
                                     ${onSitePhSelect}
                                 </div>
                             </div>
                             <div class="col-md-3 col-xs-3 start-div">
-                                <div class="row">
+                                <div class="row d-flex">
+                                    <div class="col-sm-12 visible-xs visible-sm">
+                                        <label class="control-label">Start</label>
+                                    </div>
                                     <div class="col-md-10 col-lg-5 col-9 input-padding">
                                         ${onSitePhStartHH}
                                     </div>
@@ -338,7 +341,10 @@
                                 </div>
                             </div>
                             <div class="col-md-3 col-xs-3 end-div">
-                                <div class="row">
+                                <div class="row d-flex">
+                                    <div class="col-sm-12 visible-xs visible-sm">
+                                        <label class="control-label">End</label>
+                                    </div>
                                     <div class="col-md-10 col-lg-5 col-9 input-padding">
                                         ${onSitePhEndHH}
                                     </div>
@@ -354,11 +360,14 @@
                                 </div>
                             </div>
                             <div class="col-md-2 col-xs-2 all-day-div">
-                                <div class="row">
-                                    <div class="col-md-6 text-center col-xs-6" style="padding: 14px 25px 14px 0;">
+                                <div class="row d-flex">
+                                    <div class="col-sm-12 visible-xs visible-sm">
+                                        <label class="control-label">24 Hours</label>
+                                    </div>
+                                    <div class="col-md-5 col-xs-5 text-center all-day-position">
                                         <input class="form-check-input allDay" name="0onSitePhAllDay0" type="checkbox" aria-invalid="false" value="true">
                                     </div>
-                                    <div class="col-md-6 col-xs-6">
+                                    <div class="col-md-5 col-xs-5">
                                     </div>
                                 </div>
                             </div>
@@ -547,7 +556,7 @@
                     <div class="form-group weeklyDiv">
                         <div>
                             <div class="col-md-4 col-xs-4 multi-sel-padding">
-                                <div class="row">
+                                <div class="row d-flex">
                                     <div class="col-xs-12 visible-xs visible-sm">
                                         <label class="control-label">Weekly <span class="mandatory">*</span></label>
                                     </div>
@@ -555,7 +564,7 @@
                                 </div>
                             </div>
                             <div class="col-md-3 col-xs-3 start-div">
-                                <div class="row">
+                                <div class="row d-flex">
                                     <div class="col-xs-12 visible-xs visible-sm">
                                         <label class="control-label">Start</label>
                                     </div>
@@ -574,7 +583,7 @@
                                 </div>
                             </div>
                             <div class="col-md-3 col-xs-3 end-div">
-                                <div class="row">
+                                <div class="row d-flex">
                                     <div class="col-xs-12 visible-xs visible-sm">
                                         <label class="control-label">End</label>
                                     </div>
@@ -593,14 +602,14 @@
                                 </div>
                             </div>
                             <div class="col-md-2 col-xs-2 all-day-div">
-                                <div class="row">
+                                <div class="row d-flex">
                                     <div class="col-xs-12 visible-xs visible-sm">
                                         <label class="control-label">24 Hours</label>
                                     </div>
-                                    <div class="col-md-6 text-center col-xs-6" style="padding: 14px 25px 14px 0;">
+                                    <div class="col-md-5 col-xs-5 text-center all-day-position">
                                         <input class="form-check-input allDay" name="0conveyanceWeeklyAllDay0" type="checkbox" aria-invalid="false" value="true">
                                     </div>
-                                    <div class="col-md-6 col-xs-6">
+                                    <div class="col-md-5 col-xs-5">
                                     </div>
                                 </div>
                             </div>
@@ -624,10 +633,15 @@
                         </div>
                         <div>
                             <div class="col-md-4 col-xs-4 multi-sel-padding">
-                                ${conveyancePhSelect}
+                                <div class="row d-flex">
+                                    ${conveyancePhSelect}
+                                </div>
                             </div>
                             <div class="col-md-3 col-xs-3 start-div">
-                                <div class="row">
+                                <div class="row d-flex">
+                                    <div class="col-sm-12 visible-xs visible-sm">
+                                        <label class="control-label">Start</label>
+                                    </div>
                                     <div class="col-md-10 col-lg-5 col-9 input-padding">
                                         ${conveyancePhStartHH}
                                     </div>
@@ -643,7 +657,10 @@
                                 </div>
                             </div>
                             <div class="col-md-3 col-xs-3 end-div">
-                                <div class="row">
+                                <div class="row d-flex">
+                                    <div class="col-sm-12 visible-xs visible-sm">
+                                        <label class="control-label">End</label>
+                                    </div>
                                     <div class="col-md-10 col-lg-5 col-9 input-padding">
                                         ${conveyancePhEndHH}
                                     </div>
@@ -659,19 +676,20 @@
                                 </div>
                             </div>
                             <div class="col-md-2 col-xs-2 all-day-div">
-                                <div class="row">
-                                    <div class="col-md-6 text-center col-xs-6" style="padding: 14px 25px 14px 0;">
+                                <div class="row d-flex">
+                                    <div class="col-sm-12 visible-xs visible-sm">
+                                        <label class="control-label">24 Hours</label>
+                                    </div>
+                                    <div class="col-md-5 col-xs-5 text-center all-day-position">
                                         <input class="form-check-input allDay" name="0conveyancePhAllDay0" type="checkbox" aria-invalid="false" value="true">
                                     </div>
-                                    <div class="col-md-6 col-xs-6">
+                                    <div class="col-md-5 col-xs-5">
                                     </div>
                                 </div>
                             </div>
                         </div>
                         <div class="clear"></div>
                     </div>
-
-
 
                     <div class="form-group addPhDiv">
                         <div class=" col-xs-4 col-sm-4 col-md-4">
@@ -846,7 +864,7 @@
                     <div class="form-group weeklyDiv">
                         <div>
                             <div class="col-md-4 col-xs-4 multi-sel-padding">
-                                <div class="row">
+                                <div class="row d-flex">
                                     <div class="col-xs-12 visible-xs visible-sm">
                                         <label class="control-label">Weekly <span class="mandatory">*</span></label>
                                     </div>
@@ -854,7 +872,7 @@
                                 </div>
                             </div>
                             <div class="col-md-3 col-xs-3 start-div">
-                                <div class="row">
+                                <div class="row d-flex">
                                     <div class="col-xs-12 visible-xs visible-sm">
                                         <label class="control-label">Start</label>
                                     </div>
@@ -873,7 +891,7 @@
                                 </div>
                             </div>
                             <div class="col-md-3 col-xs-3 end-div">
-                                <div class="row">
+                                <div class="row d-flex">
                                     <div class="col-xs-12 visible-xs visible-sm">
                                         <label class="control-label">End</label>
                                     </div>
@@ -892,14 +910,14 @@
                                 </div>
                             </div>
                             <div class="col-md-2 col-xs-2 all-day-div">
-                                <div class="row">
+                                <div class="row d-flex">
                                     <div class="col-xs-12 visible-xs visible-sm">
                                         <label class="control-label">24 Hours</label>
                                     </div>
-                                    <div class="col-md-6 text-center col-xs-6" style="padding: 14px 25px 14px 0;">
+                                    <div class="col-md-5 col-xs-5 text-center all-day-position">
                                         <input class="form-check-input allDay" name="0offSiteWeeklyAllDay0" type="checkbox" aria-invalid="false" value="true">
                                     </div>
-                                    <div class="col-md-6 col-xs-6">
+                                    <div class="col-md-5 col-xs-5">
                                     </div>
                                 </div>
                             </div>
@@ -923,10 +941,15 @@
                         </div>
                         <div>
                             <div class="col-md-4 col-xs-4 multi-sel-padding">
-                                ${offSitePhSelect}
+                                <div class="row d-flex">
+                                    ${offSitePhSelect}
+                                </div>
                             </div>
                             <div class="col-md-3 col-xs-3 start-div">
-                                <div class="row">
+                                <div class="row d-flex">
+                                    <div class="col-sm-12 visible-xs visible-sm">
+                                        <label class="control-label">Start</label>
+                                    </div>
                                     <div class="col-md-10 col-lg-5 col-9 input-padding">
                                         ${offSitePhStartHH}
                                     </div>
@@ -942,7 +965,10 @@
                                 </div>
                             </div>
                             <div class="col-md-3 col-xs-3 end-div">
-                                <div class="row">
+                                <div class="row d-flex">
+                                    <div class="col-sm-12 visible-xs visible-sm">
+                                        <label class="control-label">End</label>
+                                    </div>
                                     <div class="col-md-10 col-lg-5 col-9 input-padding">
                                         ${offSitePhEndHH}
                                     </div>
@@ -958,11 +984,14 @@
                                 </div>
                             </div>
                             <div class="col-md-2 col-xs-2 all-day-div">
-                                <div class="row">
-                                    <div class="col-md-6 text-center col-xs-6" style="padding: 14px 25px 14px 0;">
+                                <div class="row d-flex">
+                                    <div class="col-sm-12 visible-xs visible-sm">
+                                        <label class="control-label">24 Hours</label>
+                                    </div>
+                                    <div class="col-md-5 col-xs-5 text-center all-day-position">
                                         <input class="form-check-input allDay" name="0offSitePhAllDay0" type="checkbox" aria-invalid="false" value="true">
                                     </div>
-                                    <div class="col-md-6 col-xs-6">
+                                    <div class="col-md-5 col-xs-5">
                                     </div>
                                 </div>
                             </div>
@@ -1113,10 +1142,15 @@
                         <label class="control-label">${fieldName}</label>
                     </div>
                     <div class="col-md-4 col-xs-4 multi-sel-padding">
-                        ${multipleDropDown}
+                        <div class="row d-flex">
+                            ${multipleDropDown}
+                        </div>
                     </div>
                     <div class="col-md-3 col-xs-3 start-div">
-                        <div class="row">
+                        <div class="row d-flex">
+                            <div class="col-sm-12 visible-xs visible-sm">
+                                <label class="control-label">Start</label>
+                            </div>
                             <div class="col-md-10 col-lg-5 col-9 input-padding">
                                 ${startHH}
                             </div>
@@ -1132,7 +1166,10 @@
                         </div>
                     </div>
                     <div class="col-md-3 col-xs-3 end-div">
-                        <div class="row">
+                        <div class="row d-flex">
+                            <div class="col-sm-12 visible-xs visible-sm">
+                                <label class="control-label">End</label>
+                            </div>
                             <div class="col-md-10 col-lg-5 col-9 input-padding">
                                 ${endHH}
                             </div>
@@ -1148,11 +1185,14 @@
                         </div>
                     </div>
                     <div class="col-md-2 col-xs-2 all-day-div">
-                        <div class="row">
-                            <div class="col-md-6 text-center col-xs-6" style="padding: 14px 25px 14px 0;">
+                        <div class="row d-flex">
+                            <div class="col-sm-12 visible-xs visible-sm">
+                                <label class="control-label">24 Hours</label>
+                            </div>
+                            <div class="col-md-5 col-xs-5 text-center all-day-position">
                                 <input class="form-check-input allDay" name="${allDayName}" type="checkbox" aria-invalid="false" value="true">
                             </div>
-                            <div class="col-md-6 col-xs-6">
+                            <div class="col-md-5 col-xs-5">
                                 <div class="fa fa-times-circle del-size-36 text-danger ${delClass}"></div>
                             </div>
                         </div>
