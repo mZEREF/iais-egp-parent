@@ -162,6 +162,8 @@ public class AppealWdAppBatchjobHandler extends IJobHandler {
                         log.error("Withdraw application return is failed");
                         log.error(e.getMessage(), e);
                     }
+                    h.setStatus(ApplicationConsts.APPLICATION_STATUS_WITHDRAWN);
+                    applicationService.updateBEApplicaiton(h);
                     try {
                         List<ApplicationDto> applicationDtoAllList = applicationService.getApplicaitonsByAppGroupId(oldApplication.getAppGrpId());
 

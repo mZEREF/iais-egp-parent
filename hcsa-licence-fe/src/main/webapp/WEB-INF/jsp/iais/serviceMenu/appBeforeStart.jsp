@@ -90,7 +90,7 @@
             <p>Payment may be made by credit card, debit card, PayNow, GIRO or eNETS.</p>
           </li>
           <li>
-            <p>*denotes mandatory field.</p>
+            <p>* denotes mandatory field.</p>
           </li>
         </ul>
         <div class="application-tab-footer">

@@ -34,8 +34,9 @@ public class GatewayNetsConfig {
 	
 	//"http://192.168.6.80:8088/egp/process/EGOV/PaymentGatewayService?";
 	public static final String common_gateway_service_url = ConfigHelper.getString("eNets.payment.gateway.service.url");
-	
-	
+
+	public static final String radioSwitch = ConfigHelper.getString("eNets.radio.switch");
+
 	//"D:\\alipay_log_" + System.currentTimeMillis() + ".txt";
 	public static final String log_path = ConfigHelper.getString("eNets.payment.log.path");
 

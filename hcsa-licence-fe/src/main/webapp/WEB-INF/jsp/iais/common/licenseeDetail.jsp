@@ -111,7 +111,7 @@
             $('.licensee-com').show();
             $('.licensee-detail').hide();
             // init data
-            clearFields('.assignSelectRow');
+            fillValue('#assignSelect', 'newOfficer');
             var tagName = this.tagName;
             if (!isEmpty(tagName) && tagName.toLowerCase() == 'select') {
                 clearFields('.licensee-detail');
@@ -293,4 +293,5 @@
         $('#licenseeType').val('${individualType}');
         $('#licenseeType').niceSelect('update');
     }
+
 </script>

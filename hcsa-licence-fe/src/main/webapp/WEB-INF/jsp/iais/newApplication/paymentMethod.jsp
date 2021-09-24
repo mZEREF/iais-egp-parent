@@ -1,5 +1,6 @@
 <%@ page import="com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant" %>
 <%@ page import="com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts" %>
+<%@page import="com.ecquaria.cloud.moh.iais.api.config.GatewayNetsConfig" %>
 <h2>Payment Method</h2>
 <input type="hidden" name="reloadPayMethod" value="${reloadPaymentMethod}"/>
 <div class="col-xs-12">
@@ -15,12 +16,14 @@
         </label>
 
     </div>
-    <div class="col-md-4 col-xs-12" style="margin-bottom: 20px;">
-        <input id="paymentNets" class=" premTypeRadio paymentInput"  type="radio" name="payMethod" value="PMDE003">
-        <label class="form-check-label" for="paymentNets" ><span class="check-circle"></span><iais:code code="PMDE003"/></label>
-        <br>
-        <label class="form-check-label" for="paymentNets" ><img src="<%=webroot1%>img/paymentNets.png" width="66" height="30" alt="NETS"></label>
-    </div>
+    <c:if test="${GatewayNetsConfig.radioSwitch.equals('on')}">
+        <div class="col-md-4 col-xs-12" style="margin-bottom: 20px;">
+            <input id="paymentNets" class=" premTypeRadio paymentInput"  type="radio" name="payMethod" value="PMDE003">
+            <label class="form-check-label" for="paymentNets" ><span class="check-circle"></span><iais:code code="PMDE003"/></label>
+            <br>
+            <label class="form-check-label" for="paymentNets" ><img src="<%=webroot1%>img/paymentNets.png" width="66" height="30" alt="NETS"></label>
+        </div>
+    </c:if>
     <div class="col-md-4 col-xs-12" style="margin-bottom: 20px;">
         <input id="paymentPayNow" class=" premTypeRadio paymentInput"  type="radio" name="payMethod" value="${ApplicationConsts.PAYMENT_METHOD_NAME_PAYNOW}">
         <label class="form-check-label" for="paymentPayNow" ><span class="check-circle"></span><iais:code code="${ApplicationConsts.PAYMENT_METHOD_NAME_PAYNOW}"/></label>

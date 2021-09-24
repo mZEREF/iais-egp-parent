@@ -1246,6 +1246,14 @@ public class NewApplicationDelegator {
                         genPrimaryDoc(fileMap,docKey,hcsaSvcDocConfigDto,saveFileMap,appGrpPrimaryDocDtos,newAppGrpPrimaryDocDtoList,appGrpPremisesDto.getPremisesIndexNo(),appGrpPremisesDto.getPremisesType(),isRfi,oldPrimaryDocDtoList,oldSubmissionDto.getAppGrpId(),oldSubmissionDto.getRfiAppNo(),appSubmissionDto.getAppType(),dupForPrem);
                         ParamUtil.setSessionAttr(bpc.request,HcsaFileAjaxController.SEESION_FILES_MAP_AJAX+docKey, (Serializable) fileMap);
                     }
+                    //68878
+                    if (isRfi){
+                        for (AppGrpPrimaryDocDto appGrpPrimaryDocDto : oldPrimaryDocDtoList){
+                            if (StringUtil.isNotEmpty(appGrpPrimaryDocDto.getAppGrpPremId()) && !appGrpPrimaryDocDto.getAppGrpPremId().equals(appGrpPremisesList.get(0).getPremisesIndexNo())){
+                                newAppGrpPrimaryDocDtoList.add(appGrpPrimaryDocDto);
+                            }
+                        }
+                    }
                 }
             }
             //set value into AppSubmissionDto

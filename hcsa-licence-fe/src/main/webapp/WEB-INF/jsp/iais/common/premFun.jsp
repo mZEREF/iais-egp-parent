@@ -1770,46 +1770,22 @@
     var clickAllDay = function () {
         $('.allDay').unbind('click');
         $('.allDay').click(function () {
-            var $allDayDiv = $(this).closest('div.col-md-2');
+            var $allDayDiv = $(this).closest('div.all-day-div');
             if($(this).is(':checked')){
                 disabeleForAllDay($allDayDiv);
             }else{
-                unreadonlyPartPage($allDayDiv.prev().prev().find('div.col-md-5'))
-                unreadonlyPartPage($allDayDiv.prev().find('div.col-md-5'))
-                unreadonlyPartPage($allDayDiv.prev().prev().find('div.col-md-4'))
-                unreadonlyPartPage($allDayDiv.prev().find('div.col-md-4'))
+                unDisableContent($allDayDiv.siblings('.start-div'));
+                unDisableContent($allDayDiv.siblings('.end-div'));
             }
-
-
-
         });
     }
 
     var disabeleForAllDay = function ($allDayDiv) {
-        $allDayDiv.prev().prev().find('div.col-md-5').each(function () {
-            $(this).find('select').val('');
-            var defaultVal =$(this).find('select option[value=""]').html();
-            $(this).find('select').next().children('.current').html(defaultVal);
-        });
-        $allDayDiv.prev().find('div.col-md-5').each(function () {
-            $(this).find('select').val('');
-            var defaultVal =$(this).find('select option[value=""]').html();
-            $(this).find('select').next().children('.current').html(defaultVal);
-        });
-        $allDayDiv.prev().prev().find('div.col-md-4').each(function () {
-            $(this).find('select').val('');
-            var defaultVal =$(this).find('select option[value=""]').html();
-            $(this).find('select').next().children('.current').html(defaultVal);
-        });
-        $allDayDiv.prev().find('div.col-md-4').each(function () {
-            $(this).find('select').val('');
-            var defaultVal =$(this).find('select option[value=""]').html();
-            $(this).find('select').next().children('.current').html(defaultVal);
-        });
-        readonlyPartPage($allDayDiv.prev().prev().find('div.col-md-5'));
-        readonlyPartPage($allDayDiv.prev().find('div.col-md-5'));
-        readonlyPartPage($allDayDiv.prev().prev().find('div.col-md-4'));
-        readonlyPartPage($allDayDiv.prev().find('div.col-md-4'));
+        clearFields($allDayDiv.siblings('.start-div'));
+        disableContent($allDayDiv.siblings('.start-div'));
+
+        clearFields($allDayDiv.siblings('.end-div'));
+        disableContent($allDayDiv.siblings('.end-div'));
     }
 
     var genMulti = function(){
