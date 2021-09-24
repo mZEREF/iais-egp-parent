@@ -159,7 +159,7 @@ public class BsbNotificationHelper {
                emailDto.setClientQueryCode("no clientQueryCode");
            }
            //send email
-           if(attachments != null && !attachments.isEmpty()){
+           if(attachments != null && !attachments.isEmpty() && emailTemplateDto.getAdminTypes() == null){
                try {
                    emailSmsClient.sendEmail(emailDto,attachments);
                } catch (IOException e) {

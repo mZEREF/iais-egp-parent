@@ -27,7 +27,7 @@
                     <iais:row>
                         <iais:field value="Facility Type "/>
                         <div class="col-sm-7 col-md-4 col-xs-10">
-                            <iais:select name="facilityType" codeCategory="CATE_ID_BSB_FAC_TYPE" firstOption="Please Select" multiSelect="true" multiValues="${facInfoSearchParam.facilityType}"></iais:select>
+                            <iais:select name="facilityType" codeCategory="CATE_ID_BSB_ACTIVE_TYPE" firstOption="Please Select" multiSelect="true" multiValues="${facInfoSearchParam.facilityType}"></iais:select>
                         </div >
                     </iais:row>
                     <iais:row>
@@ -137,7 +137,7 @@
                     <iais:row>
                         <iais:field value="Facility Type "/>
                         <div class="col-sm-7 col-md-4 col-xs-10">
-                            <iais:select name="facilityType" codeCategory="CATE_ID_BSB_FAC_TYPE"  firstOption="Please Select" multiSelect="true" multiValues="${approvalSearchParam.facilityType}"></iais:select>
+                            <iais:select name="facilityType" codeCategory="CATE_ID_BSB_ACTIVE_TYPE"  firstOption="Please Select" multiSelect="true" multiValues="${approvalSearchParam.facilityType}"></iais:select>
                         </div >
                     </iais:row>
                     <iais:row>
@@ -274,7 +274,7 @@
                     <iais:row>
                         <iais:field value="Facility Type"/>
                         <div class="col-sm-7 col-md-4 col-xs-10">
-                           <iais:select name="facilityType" id="facilityType" codeCategory="CATE_ID_BSB_FAC_TYPE" firstOption="Please Select" multiSelect="true" multiValues="${appInfoSearchParam.facilityType}"></iais:select>
+                           <iais:select name="facilityType" id="facilityType" codeCategory="CATE_ID_BSB_ACTIVE_TYPE" firstOption="Please Select" multiSelect="true" multiValues="${appInfoSearchParam.facilityType}"></iais:select>
                         </div >
                     </iais:row>
                     <iais:row>

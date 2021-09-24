@@ -64,7 +64,7 @@ public interface BiosafetyEnquiryClient {
     @GetMapping(path = "/bio_info/info/{biologicalId}")
     ResponseDto<Biological> getBiologicalById(@PathVariable(name = "biologicalId") String biologicalId);
 
-    @GetMapping(value = "/bsb-application/queryActivity")
+    @GetMapping(value = "/bsb-facilityActivity/queryActivityByAppId")
     FeignResponseEntity<FacilityActivity> getFacilityActivityByApplicationId(@RequestParam("appId") String applicationId);
 
 }

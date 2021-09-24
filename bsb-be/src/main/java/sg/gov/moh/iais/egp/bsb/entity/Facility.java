@@ -66,8 +66,6 @@ public class Facility implements Serializable {
 
     private Date employmentStartDt;
 
-    private Organization organization;
-
     private String scheduleType;
 
     private String approval;
