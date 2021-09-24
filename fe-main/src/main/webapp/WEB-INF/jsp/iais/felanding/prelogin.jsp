@@ -59,13 +59,6 @@
     font-weight: 600;
   }
 
-  .row {
-      display: -ms-flexbox;
-      display: inherit !important;
-      -ms-flex-wrap: inherit;
-      margin-right: -15px;
-      margin-left: -15px;
-  }
 </style>
 <div class="main-content">
 <c:if test="${not empty bAnner_AlERt_Msg__atTR || not empty schEdule_AlERt_Msg__atTR}">
