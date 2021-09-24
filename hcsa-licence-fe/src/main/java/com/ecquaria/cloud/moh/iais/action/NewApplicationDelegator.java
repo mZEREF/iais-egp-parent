@@ -2249,7 +2249,7 @@ public class NewApplicationDelegator {
             }
         }
         appSubmissionDto.setAppGrpPremisesDtoList(appGrpPremisesDtos);
-        resetRelatedInfoRFI(appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0), appNo, appSubmissionDto.getAppGrpPremisesDtoList());
+        resetRelatedInfoRFI(appSubmissionDto.getAppSvcRelatedInfoDtoList(), appNo, appSubmissionDto.getAppGrpPremisesDtoList());
         Integer maxFileIndex = (Integer) ParamUtil.getSessionAttr(bpc.request,HcsaFileAjaxController.GLOBAL_MAX_INDEX_SESSION_ATTR);
         if(maxFileIndex == null){
             maxFileIndex = 0;
@@ -2350,7 +2350,9 @@ public class NewApplicationDelegator {
         log.info(StringUtil.changeForLog("the do doRequestInformationSubmit end ...."));
     }
 
-    private void resetRelatedInfoRFI(AppSvcRelatedInfoDto appSvcRelatedInfoDto, String appNo, List<AppGrpPremisesDto> appGrpPremisesDtoList) {
+    private void resetRelatedInfoRFI(List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList, String appNo, List<AppGrpPremisesDto> appGrpPremisesDtoList) {
+        AppSvcRelatedInfoDto appSvcRelatedInfoDto = getAppSvcRelatedInfoDtoByServiceId(appSvcRelatedInfoDtoList,
+                null, appNo);
         AppSubmissionDto appSubmissionDto = appSubmissionService.getAppSubmissionDtoByAppNo(appNo);
         if (!ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appSubmissionDto.getAppType())) {
             return;
