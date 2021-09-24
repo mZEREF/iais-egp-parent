@@ -16,7 +16,13 @@
                 <iais:row>
                     <iais:field width="5" value="Who is the licensee"/>
                     <iais:value width="7" display="true">
-                        <iais:code code="${licensee.licenseeType}" />
+                        <c:set var="entityType" value="${licensee.licenseeEntityDto.entityType}"/>
+                        <c:if test="${empty entityType || '-' == entityType}" var="invalidType">
+                            <iais:code code="${licensee.licenseeType}" />
+                        </c:if>
+                        <c:if test="${not invalidType}">
+                            <iais:code code="${entityType}" />
+                        </c:if>
                     </iais:value>
                 </iais:row>
                 <iais:row>
