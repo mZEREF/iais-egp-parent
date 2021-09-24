@@ -9,7 +9,6 @@ function showWaiting() {
         cssOpts.left = '37%';
     } else {
         cssOpts.width = '50%';
-        cssOpts.top = '45%';
         cssOpts.left = '25%';
     }
     $.blockUI({message: msg, css: cssOpts, overlayCSS: {opacity: 0.2}});
