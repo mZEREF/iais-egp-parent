@@ -7,10 +7,7 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
 import sg.gov.moh.iais.egp.bsb.dto.process.DoScreeningDto;
-import sg.gov.moh.iais.egp.bsb.entity.Application;
-import sg.gov.moh.iais.egp.bsb.entity.ApplicationMisc;
-import sg.gov.moh.iais.egp.bsb.entity.Biological;
-import sg.gov.moh.iais.egp.bsb.entity.RoutingHistory;
+import sg.gov.moh.iais.egp.bsb.entity.*;
 
 import java.util.List;
 
@@ -38,4 +35,7 @@ public interface ProcessClient {
 
     @GetMapping(path = "/bsb_MohOfficer/applicationMisc")
     FeignResponseEntity<ApplicationMisc> getApplicationMiscByApplicationIdAndAndReason(@RequestParam(value = "applicationId") String applicationId,@RequestParam(value = "reason") String reason);
+
+    @GetMapping(value = "/bsb-facilityActivity/queryActivityByAppId")
+    FeignResponseEntity<FacilityActivity> getFacilityActivityByApplicationId(@RequestParam("appId") String applicationId);
 }

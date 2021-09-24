@@ -12,11 +12,14 @@ import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import sg.gov.moh.iais.egp.bsb.client.DocClient;
 import sg.gov.moh.iais.egp.bsb.client.ProcessClient;
 import sg.gov.moh.iais.egp.bsb.constant.EmailConstants;
 import sg.gov.moh.iais.egp.bsb.constant.ProcessContants;
+import sg.gov.moh.iais.egp.bsb.constant.RevocationConstants;
 import sg.gov.moh.iais.egp.bsb.dto.BsbEmailParam;
 import sg.gov.moh.iais.egp.bsb.dto.Notification;
+import sg.gov.moh.iais.egp.bsb.dto.audit.AuditDocDto;
 import sg.gov.moh.iais.egp.bsb.dto.process.DoScreeningDto;
 import sg.gov.moh.iais.egp.bsb.entity.*;
 import sg.gov.moh.iais.egp.bsb.helper.BsbNotificationHelper;
@@ -27,10 +30,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author : LiRan
@@ -44,6 +44,9 @@ public class MohProcessingDelegator {
 
     @Autowired
     private BsbNotificationHelper bsbNotificationHelper;
+
+    @Autowired
+    private DocClient docClient;
 
     public void start(BaseProcessClass bpc) throws IllegalAccessException {
         AuditTrailHelper.auditFunction(ProcessContants.MODULE_SYSTEM_CONFIG,
@@ -62,18 +65,28 @@ public class MohProcessingDelegator {
             appId = ParamUtil.getMaskedString(request, ProcessContants.PARAM_APP_ID);
         }
         Application application = processClient.getApplicationById(appId).getEntity();
-        Facility facility = application.getFacility();
-        ParamUtil.setSessionAttr(request,"facility",facility);
         ApplicationMisc applicationMisc = new ApplicationMisc();
         if (application.getStatus().equals(ProcessContants.APPLICATION_STATUS_2)){
             applicationMisc = processClient.getApplicationMiscByApplicationIdAndAndReason(application.getId(), ProcessContants.APPLICATION_STATUS_1).getEntity();
         }else if (application.getStatus().equals(ProcessContants.APPLICATION_STATUS_3)){
             applicationMisc = processClient.getApplicationMiscByApplicationIdAndAndReason(application.getId(), ProcessContants.APPLICATION_STATUS_2).getEntity();
         }
-        List<FacilitySchedule> facilityScheduleList = application.getFacility().getFacilitySchedules();
+        FacilityActivity facilityActivity = processClient.getFacilityActivityByApplicationId(appId).getEntity();
+        application.getFacility().setActiveType(facilityActivity.getActivityType());
+        List<FacilitySchedule> facilityScheduleList = facilityActivity.getFacilitySchedules();
         List<Biological> biologicalList = JoinBiologicalName.getBioListByFacilityScheduleList(facilityScheduleList,processClient);
         application.setBiologicalList(biologicalList);
         List<RoutingHistory> historyDtoList = processClient.getRoutingHistoriesByApplicationNo(application.getApplicationNo()).getEntity();
+        List<FacilityDoc> facilityDocList = docClient.getFacilityDocByFacId(application.getFacility().getId()).getEntity();
+        List<FacilityDoc> docList = new ArrayList<>();
+        for (FacilityDoc facilityDoc : facilityDocList) {
+//            String submitByName = IaisEGPHelper.getCurrentAuditTrailDto().getMohUserId();
+//            facilityDoc.setSubmitByName(submitByName);
+            docList.add(facilityDoc);
+        }
+        AuditDocDto auditDocDto = new AuditDocDto();
+        auditDocDto.setFacilityDocs(docList);
+        ParamUtil.setSessionAttr(request, RevocationConstants.AUDIT_DOC_DTO, auditDocDto);
         ParamUtil.setRequestAttr(request, ProcessContants.PARAM_APP_ID,appId);
         ParamUtil.setRequestAttr(request, ProcessContants.APPLICATION_MISC,applicationMisc);
         ParamUtil.setRequestAttr(request, ProcessContants.PARAM_PROCESSING_HISTORY,historyDtoList);

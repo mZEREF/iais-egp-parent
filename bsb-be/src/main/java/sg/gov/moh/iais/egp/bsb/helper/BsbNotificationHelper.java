@@ -159,7 +159,7 @@ public class BsbNotificationHelper {
                emailDto.setClientQueryCode("no clientQueryCode");
            }
            //send email
-           if(attachments != null && !attachments.isEmpty() && emailTemplateDto.getAdminTypes() == null){
+           if(attachments != null && !attachments.isEmpty()){
                try {
                    emailSmsClient.sendEmail(emailDto,attachments);
                } catch (IOException e) {
@@ -180,7 +180,9 @@ public class BsbNotificationHelper {
                                signature2.date(), signature2.authorization(), String.class);
                    } else {
                        try {
-                           emailSmsClient.sendEmail(emailDto, null);
+                           if(emailTemplateDto.getAdminTypes() == null){
+                               emailSmsClient.sendEmail(emailDto, null);
+                           }
                        } catch (IOException e) {
                            e.printStackTrace();
                        }

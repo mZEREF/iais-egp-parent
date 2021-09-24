@@ -2,12 +2,14 @@ package sg.gov.moh.iais.egp.bsb.dto.approval;
 
 import lombok.Data;
 
+import java.io.Serializable;
+
 /**
  * @author : LiRan
  * @date : 2021/9/18
  */
 @Data
-public class DocConfigDto {
+public class DocConfigDto implements Serializable {
     private String docType;
     private Boolean isMandatory;
     private String approvalType;

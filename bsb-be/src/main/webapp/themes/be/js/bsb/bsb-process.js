@@ -8,18 +8,14 @@ $(function () {
         $("[name='crud_action_type']").val("back");
         $('#mainForm').submit();
     })
-    $("#documentBack").click(function (){
+    $("#backFromDoc").click(function (){
         $('#doInfo').click();
     })
     $("#contentBack").click(function (){
-        $('#info').removeClass("active");
         $('#doDocument').click();
-        $('#documents').addClass("active");
     })
     $("#processBack").click(function (){
-        $('#info').removeClass("active");
         $('#doContent').click();
-        $('#dynamicContent').addClass("active");
     })
     $("#clearButton").click(function (){
         $("div,textarea").val("");

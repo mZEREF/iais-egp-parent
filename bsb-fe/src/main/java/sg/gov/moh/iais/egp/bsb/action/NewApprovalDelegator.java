@@ -20,11 +20,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import sg.gov.moh.iais.egp.bsb.client.ApprovalApplicationClient;
+import sg.gov.moh.iais.egp.bsb.client.DocClient;
 import sg.gov.moh.iais.egp.bsb.constant.ApprovalApplicationConstants;
 import sg.gov.moh.iais.egp.bsb.dto.approval.ApprovalApplicationDto;
 import sg.gov.moh.iais.egp.bsb.dto.approval.DocConfigDto;
 import sg.gov.moh.iais.egp.bsb.entity.Biological;
 import sg.gov.moh.iais.egp.bsb.entity.Facility;
+import sg.gov.moh.iais.egp.bsb.entity.FacilityDoc;
 import sop.servlet.webflow.HttpHandler;
 import sop.webflow.rt.api.BaseProcessClass;
 
@@ -63,6 +65,9 @@ public class NewApprovalDelegator {
 
     @Autowired
     private ComFileRepoClient comFileRepoClient;
+
+    @Autowired
+    private DocClient docClient;
 
     public void doStart(BaseProcessClass bpc) throws IllegalAccessException {
         AuditTrailHelper.auditFunction(ApprovalApplicationConstants.MODULE_SYSTEM_CONFIG,
@@ -121,7 +126,7 @@ public class NewApprovalDelegator {
             docConfigDtoList.add(new DocConfigDto(DOC_TYPE_7,true,task,"7"));
         }
         docConfigDtoList.add(new DocConfigDto(DOC_TYPE_8,true,task,"8"));
-        ParamUtil.setRequestAttr(request, ApprovalApplicationConstants.DOC_CONFIG_ATTR, docConfigDtoList);
+        ParamUtil.setSessionAttr(request, PRIMARY_DOC_CONFIG, (Serializable) docConfigDtoList);
 
         //set sysFileSize and sysFileType
         int sysFileSize = systemParamConfig.getUploadFileLimit();
@@ -181,23 +186,19 @@ public class NewApprovalDelegator {
         ParamUtil.setRequestAttr(request,ApprovalApplicationConstants.CRUD_ACTION_TYPE_FROM_PAGE,crudActionTypeFormPage);
         ParamUtil.setRequestAttr(request,ApprovalApplicationConstants.CRUD_ACTION_TYPE,crudActionType);
 
-
+        List<DocConfigDto> docConfigDtoList = (List<DocConfigDto>) request.getSession().getAttribute(PRIMARY_DOC_CONFIG);
         MultipartHttpServletRequest mulReq = (MultipartHttpServletRequest) bpc.request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
-        Map<String, File> fileMap0 = (Map<String, File>) ParamUtil.getSessionAttr(mulReq,HcsaFileAjaxController.SEESION_FILES_MAP_AJAX+0+"primaryDoc");
-        Map<String, File> fileMap1 = (Map<String, File>) ParamUtil.getSessionAttr(mulReq,HcsaFileAjaxController.SEESION_FILES_MAP_AJAX+1+"primaryDoc");
-        Map<String, File> fileMap2 = (Map<String, File>) ParamUtil.getSessionAttr(mulReq,HcsaFileAjaxController.SEESION_FILES_MAP_AJAX+2+"primaryDoc");
-        Map<String, File> fileMap3 = (Map<String, File>) ParamUtil.getSessionAttr(mulReq,HcsaFileAjaxController.SEESION_FILES_MAP_AJAX+3+"primaryDoc");
-        Map<String, File> fileMap4 = (Map<String, File>) ParamUtil.getSessionAttr(mulReq,HcsaFileAjaxController.SEESION_FILES_MAP_AJAX+4+"primaryDoc");
-        Map<String, File> fileMap5 = (Map<String, File>) ParamUtil.getSessionAttr(mulReq,HcsaFileAjaxController.SEESION_FILES_MAP_AJAX+5+"primaryDoc");
-        Object sessionAttr = ParamUtil.getSessionAttr(bpc.request, PRIMARY_DOC_CONFIG);
+        for(int i =0;i<docConfigDtoList.size();i++){
+            String docKey = i+"primaryDoc";
+            Map<String, File> fileMap = (Map<String, File>) ParamUtil.getSessionAttr(mulReq,HcsaFileAjaxController.SEESION_FILES_MAP_AJAX+docKey);
+        }
+
+        /*FacilityDoc facilityDoc = new FacilityDoc();
+        docClient.saveFacilityDoc(facilityDoc);*/
     }
 
-    /*private void saveFileAndSetFileId(Map<String,File> saveFileMap){
-        File file = saveFileMap.get("10");
-        List<File> fileList = new ArrayList<>();
-        fileList.add(file);
-        List<String> list = comFileRepoClient.saveFileRepo(fileList);
-    }*/
+
+    //facilityId,docName,docSize,fileRepoId,submitDt,submitBy,docType
 
     public void doPreview(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
