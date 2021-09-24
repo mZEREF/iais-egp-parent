@@ -39,7 +39,7 @@ function parseAndShowErrorMsg(data) {
 }
 
 function showOneErrorMsg(field, errorMsg) {
-    $("span[data-err-ind=field]").text(errorMsg);
+    $("span[data-err-ind=" + field + "]").text(errorMsg);
 }
 
 function clearAllErrMsg() {

@@ -2,6 +2,6 @@
     $(function () {
         clearAllErrMsg();
         <%String errorMsg = (String) request.getAttribute("errorMsg");%>
-        parseAndShowErrorMsg(<%=errorMsg%>);
+        parseAndShowErrorMsg('<%=errorMsg%>');
     });
 </script>
