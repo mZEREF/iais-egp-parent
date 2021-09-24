@@ -14,6 +14,7 @@
 package com.ecquaria.cloud.moh.iais.helper;
 
 import com.ecquaria.cloud.helper.SpringContextHelper;
+import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.RedisNameSpaceConstant;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
@@ -24,12 +25,12 @@ import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.service.client.MasterCodeClient;
-import lombok.extern.slf4j.Slf4j;
-
 import java.lang.reflect.Field;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import lombok.extern.slf4j.Slf4j;
 
 
 /**
@@ -240,9 +241,20 @@ public final class MasterCodeUtil {
             MasterCodeClient client = SpringContextHelper.getContext().getBean(MasterCodeClient.class);
             SearchResult<MasterCodeView> sr = client.retrieveMasterCodes(param).getEntity();
             if (sr.getRowCount() > 0) {
-                MasterCodeView mc = sr.getRows().get(0);
-                desc = mc.getCodeValue();
-                addMcToCache(mc);
+                Date now = new Date();
+                int version = -1;
+                for (MasterCodeView mc : sr.getRows()) {
+                    if (AppConsts.COMMON_STATUS_ACTIVE.equals(mc.getStatus())
+                            && now.after(mc.getEffectFrom())
+                            && (mc.getEffectTo() == null || now.before(mc.getEffectTo()))) {
+                        addMcToCache(mc);
+                        return mc.getCodeValue();
+                    } else if (mc.getVersion() > version) {
+                        desc = mc.getCodeValue();
+                        addMcToCache(mc);
+                        version = mc.getVersion();
+                    }
+                }
             } else {
                 return "";
             }
@@ -318,12 +330,17 @@ public final class MasterCodeUtil {
             MasterCodeClient client = SpringContextHelper.getContext().getBean(MasterCodeClient.class);
             SearchResult<MasterCodeView> sr = client.retrieveMasterCodes(param).getEntity();
             if (sr.getRowCount() > 0) {
+                Date now = new Date();
                 list = sr.getRows();
-                list.forEach(m ->
+                list.forEach(m -> {
+                    if (AppConsts.COMMON_STATUS_ACTIVE.equals(m.getStatus())
+                            && now.after(m.getEffectFrom())
+                            && (m.getEffectTo() == null || now.before(m.getEffectTo()))) {
                         SpringContextHelper.getContext().getBean(RedisCacheHelper.class)
                                 .set(RedisNameSpaceConstant.CACHE_NAME_CODE, m.getCode(), m.getCodeValue(),
-                                RedisCacheHelper.NOT_EXPIRE)
-                );
+                                        RedisCacheHelper.NOT_EXPIRE);
+                    }
+                });
                 SpringContextHelper.getContext().getBean(RedisCacheHelper.class)
                         .set(RedisNameSpaceConstant.CACHE_NAME_CATE_MAP, cateId, list,
                         RedisCacheHelper.NOT_EXPIRE);
@@ -347,12 +364,17 @@ public final class MasterCodeUtil {
             SearchResult<MasterCodeView> sr = client.retrieveMasterCodes(param).getEntity();
             if (sr.getRowCount() > 0) {
                 list = sr.getRows();
-                list.forEach(m ->
+                Date now = new Date();
+                list.forEach(m -> {
+                    if (AppConsts.COMMON_STATUS_ACTIVE.equals(m.getStatus())
+                            && now.after(m.getEffectFrom())
+                            && (m.getEffectTo() == null || now.before(m.getEffectTo()))) {
                         SpringContextHelper.getContext().getBean(RedisCacheHelper.class)
                                 .set(RedisNameSpaceConstant.CACHE_NAME_CODE,
-                                m.getCode(), m.getCodeValue(),
-                                RedisCacheHelper.NOT_EXPIRE)
-                );
+                                        m.getCode(), m.getCodeValue(),
+                                        RedisCacheHelper.NOT_EXPIRE);
+                    }
+                });
                 SpringContextHelper.getContext().getBean(RedisCacheHelper.class).set(CACHE_NAME_FILTER,
                         filter, list, RedisCacheHelper.NOT_EXPIRE);
             } else {
