@@ -111,7 +111,6 @@ public class AppealWdAppBatchjobHandler extends IJobHandler {
         HcsaApplicationDelegator newApplicationDelegator = SpringContextHelper.getContext().getBean(HcsaApplicationDelegator.class);
         if (!IaisCommonUtils.isEmpty(withdrawApplicationDtoList)){
             withdrawApplicationDtoList.forEach(h -> {
-                applicationService.updateFEApplicaiton(h);
                 boolean isCharity = false;
                 String applicantName = "";
                 String oldAppId = h.getId();
@@ -164,6 +163,7 @@ public class AppealWdAppBatchjobHandler extends IJobHandler {
                     }
                     h.setStatus(ApplicationConsts.APPLICATION_STATUS_WITHDRAWN);
                     applicationService.updateBEApplicaiton(h);
+                    applicationService.updateFEApplicaiton(h);
                     try {
                         List<ApplicationDto> applicationDtoAllList = applicationService.getApplicaitonsByAppGroupId(oldApplication.getAppGrpId());
 
