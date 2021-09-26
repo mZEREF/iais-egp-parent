@@ -111,7 +111,6 @@ public class AppealWdAppBatchjobHandler extends IJobHandler {
         HcsaApplicationDelegator newApplicationDelegator = SpringContextHelper.getContext().getBean(HcsaApplicationDelegator.class);
         if (!IaisCommonUtils.isEmpty(withdrawApplicationDtoList)){
             withdrawApplicationDtoList.forEach(h -> {
-                applicationService.updateFEApplicaiton(h);
                 boolean isCharity = false;
                 String applicantName = "";
                 String oldAppId = h.getId();
@@ -164,6 +163,7 @@ public class AppealWdAppBatchjobHandler extends IJobHandler {
                     }
                     h.setStatus(ApplicationConsts.APPLICATION_STATUS_WITHDRAWN);
                     applicationService.updateBEApplicaiton(h);
+                    applicationService.updateFEApplicaiton(h);
                     try {
                         List<ApplicationDto> applicationDtoAllList = applicationService.getApplicaitonsByAppGroupId(oldApplication.getAppGrpId());
 
@@ -240,7 +240,7 @@ public class AppealWdAppBatchjobHandler extends IJobHandler {
                 List<AppEditSelectDto> appEditSelectDtos = applicationService.getAppEditSelectDtos(oldApplicationDto.getId(), ApplicationConsts.APPLICATION_EDIT_TYPE_RFC);
                 boolean changePrem=false;
                 for (AppEditSelectDto edit:appEditSelectDtos
-                     ) {
+                ) {
                     if(edit.isPremisesEdit()||edit.isPremisesListEdit()){
                         changePrem=true;
                     }
@@ -255,7 +255,7 @@ public class AppealWdAppBatchjobHandler extends IJobHandler {
             List<ApplicationDto> applicationDtoList = applicationService.getApplicaitonsByAppGroupId(oldAppGrpId);
             List<AppPremisesCorrelationDto> appPremisesCorrelationDtos=applicationService.getAppPremisesCorrelationByAppGroupId(oldAppGrpId);
             for (AppPremisesCorrelationDto apc:appPremisesCorrelationDtos
-                 ) {
+            ) {
                 if(apc.getApplicationId().equals(oldApplicationDto.getId())){
                     AppInspectionStatusDto appInspectionStatusDto = appInspectionStatusClient.getAppInspectionStatusByPremId(apc.getId()).getEntity();
                     if(appInspectionStatusDto!=null){
