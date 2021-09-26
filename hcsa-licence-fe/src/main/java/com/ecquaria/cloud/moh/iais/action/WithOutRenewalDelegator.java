@@ -1095,20 +1095,7 @@ public class WithOutRenewalDelegator {
     }
 
 
-    private void setNewSubLic(AppEditSelectDto rfcAppEditSelectDto,AppSubmissionDto appSubmissionDtoByLicenceId,AppSubmissionDto appSubmissionDto){
-        if(rfcAppEditSelectDto.isLicenseeEdit()){
-            if(appSubmissionDto.getSubLicenseeDto() != null){
-                SubLicenseeDto subLicenseeDto = MiscUtil.transferEntityDto(appSubmissionDto.getSubLicenseeDto(),SubLicenseeDto.class);
-                SubLicenseeDto affectedSubLicensee = appSubmissionDtoByLicenceId.getSubLicenseeDto();
-                if(affectedSubLicensee != null){
-                    subLicenseeDto.setId(affectedSubLicensee.getId());
-                    subLicenseeDto.setOrgId(affectedSubLicensee.getOrgId());
-                    subLicenseeDto.setAppGrpId(affectedSubLicensee.getAppGrpId());
-                }
-                appSubmissionDtoByLicenceId.setSubLicenseeDto(subLicenseeDto);
-            }
-        }
-    }
+
     private void setPremisesEditAndReSetAppGrpPremisesDto(AppSubmissionDto appSubmissionDtoByLicenceId,AppGrpPremisesDto appGrpPremisesDto,boolean flag,boolean premisesEdit) throws CloneNotSupportedException {
         if(premisesEdit){
             List<AppGrpPremisesDto> appGrpPremisesDtos = new ArrayList<>(1);
@@ -1278,6 +1265,7 @@ public class WithOutRenewalDelegator {
         InterInboxUserDto interInboxUserDto = (InterInboxUserDto) ParamUtil.getSessionAttr(bpc.request, "INTER_INBOX_USER_INFO");
         RenewDto renewDto = (RenewDto) ParamUtil.getSessionAttr(bpc.request, RenewalConstants.WITHOUT_RENEWAL_APPSUBMISSION_ATTR);
         List<AppSubmissionDto> appSubmissionDtos = renewDto.getAppSubmissionDtos();
+        doDeleteMoreRenewDeclarations(appSubmissionDtos);
         for(AppSubmissionDto appSubmissionDto : appSubmissionDtos){
             updateDraftStatus(appSubmissionDto);
         }
@@ -1324,6 +1312,26 @@ public class WithOutRenewalDelegator {
         ParamUtil.setRequestAttr(bpc.request, "hasDetail", "N");
     }
 
+    private void doDeleteMoreRenewDeclarations(List<AppSubmissionDto> appSubmissionDtos){
+        if(appSubmissionDtos .size() <=1 ){
+            return;
+        }
+        appSubmissionDtos.forEach(app -> {
+            if(!ApplicationConsts.APPLICATION_TYPE_RENEWAL.equalsIgnoreCase(app.getAppType())){
+                return;
+            }
+        });
+        AppSubmissionDto appSubmissionDto = appSubmissionDtos.get(0);
+        String groupId = appSubmissionDto.getAppGrpId();
+        if(StringUtil.isEmpty(groupId)){
+            List<AppDeclarationMessageDto> appDeclarationMessageDtos = applicationFeClient.getAppDeclarationMessageDto(groupId).getEntity();
+            if(IaisCommonUtils.isEmpty(appDeclarationMessageDtos)){
+                appSubmissionDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+                applicationFeClient.inActiveDeclaration(appSubmissionDto);
+            }
+        }
+
+    }
     //doInstructions
     public void doInstructions(BaseProcessClass bpc) throws Exception {
         //go page2
