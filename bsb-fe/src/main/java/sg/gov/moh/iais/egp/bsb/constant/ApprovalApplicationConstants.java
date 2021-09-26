@@ -112,11 +112,6 @@ public class ApprovalApplicationConstants {
     public static final String ACTIONTYPE_6 = "saveDraft";
     public static final String ACTIONTYPE_7 = "submit";
 
-    public static final String PAGE_ID = "page_id";
-    public static final String PAGE_ID_1 = "form_page";
-    public static final String PAGE_ID_2 = "document_page";
-    public static final String PAGE_ID_3 = "preview_page";
-
     public static final String DOC_CONFIG_ATTR = "docConfigDtoList";
 
 }

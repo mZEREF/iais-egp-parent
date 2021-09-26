@@ -40,7 +40,7 @@
                                         <div class="col-xs-12 col-sm-6">
                                             <div class="button-group">
                                                 <a class="btn btn-secondary" id="SaveDraft">Save as Draft</a>
-                                                <a class="next btn btn-primary" id="Submit" href="/bsb-fe/eservice/INTERNET/MohBSBInboxMsg">Submit</a>
+                                                <a class="next btn btn-primary" id="Submit" href="#">Submit</a>
                                             </div>
                                         </div>
                                     </div>

@@ -99,6 +99,20 @@ public class NewApprovalDelegator {
         log.info(StringUtil.changeForLog("prepare(action):"+action));
     }
 
+    public void prepareForms(BaseProcessClass bpc) {
+        HttpServletRequest request = bpc.request;
+        Object errorMap = ParamUtil.getRequestAttr(request,ApprovalApplicationConstants.ERRORMSG);
+        ParamUtil.setRequestAttr(request, ApprovalApplicationConstants.ERRORMSG, errorMap);
+        List<Facility> facilityList = approvalApplicationClient.getAllFacility().getEntity();
+        List<SelectOption> facilityNameList =  new ArrayList<>();
+        if (facilityList != null){
+            for (Facility dto : facilityList) {
+                facilityNameList.add(new SelectOption(dto.getId(),dto.getFacilityName()));
+            }
+        }
+        ParamUtil.setRequestAttr(request, ApprovalApplicationConstants.FACILITY_NAME_SELECT, facilityNameList);
+    }
+
     public void prepareDocuments(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         log.info(StringUtil.changeForLog("the do prepareDocuments start ...."));
@@ -219,19 +233,6 @@ public class NewApprovalDelegator {
         ParamUtil.setRequestAttr(request,ApprovalApplicationConstants.CRUD_ACTION_TYPE,crudActionType);
     }
 
-    public void prepareForms(BaseProcessClass bpc) {
-        HttpServletRequest request = bpc.request;
-        Object errorMap = ParamUtil.getRequestAttr(request,ApprovalApplicationConstants.ERRORMSG);
-        ParamUtil.setRequestAttr(request, ApprovalApplicationConstants.ERRORMSG, errorMap);
-        String task = (String)ParamUtil.getSessionAttr(request,TASK_LIST);
-        List<Facility> facilityByApprovalStatus = approvalApplicationClient.getFacilityByApprovalType(task).getEntity();
-        List<SelectOption> facilityNameList =  new ArrayList<>();
-        for (Facility dto : facilityByApprovalStatus) {
-            facilityNameList.add(new SelectOption(dto.getId(),dto.getFacilityName()));
-        }
-        ParamUtil.setRequestAttr(request, ApprovalApplicationConstants.FACILITY_NAME_SELECT, facilityNameList);
-    }
-
     public void doForms(BaseProcessClass bpc) throws ParseException {
         HttpServletRequest request = bpc.request;
         ApprovalApplicationDto approvalApplicationDto = getDtoByForm(bpc);
@@ -322,25 +323,21 @@ public class NewApprovalDelegator {
     public void controlSwitch(BaseProcessClass bpc) throws ParseException {
         HttpServletRequest request = bpc.request;
         String crudActionTypeFormPage = (String) ParamUtil.getRequestAttr(request,ApprovalApplicationConstants.CRUD_ACTION_TYPE_FROM_PAGE);
-        String crudActionType = (String) ParamUtil.getRequestAttr(request,ApprovalApplicationConstants.CRUD_ACTION_TYPE);
         ParamUtil.setRequestAttr(request,ApprovalApplicationConstants.CRUD_ACTION_TYPE_FROM_PAGE,crudActionTypeFormPage);
-        ParamUtil.setRequestAttr(request,ApprovalApplicationConstants.CRUD_ACTION_TYPE,crudActionType);
     }
 
     public void doSaveDraft(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         ApprovalApplicationDto approvalApplicationDto = (ApprovalApplicationDto)ParamUtil.getSessionAttr(request, ApprovalApplicationConstants.APPROVAL_APPLICATION_DTO_ATTR);
-        String status = ApprovalApplicationConstants.APP_STATUS_11;
-        approvalApplicationDto.setStatus(status);
         approvalApplicationClient.saveApproval(approvalApplicationDto);
     }
 
     public void doSubmit(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         ApprovalApplicationDto approvalApplicationDto = (ApprovalApplicationDto)ParamUtil.getSessionAttr(request, ApprovalApplicationConstants.APPROVAL_APPLICATION_DTO_ATTR);
-        String status = ApprovalApplicationConstants.APP_STATUS_1;
-        approvalApplicationDto.setStatus(status);
         approvalApplicationClient.saveApproval(approvalApplicationDto);
+        String crudActionTypeFormPage = (String) ParamUtil.getRequestAttr(request,ApprovalApplicationConstants.CRUD_ACTION_TYPE_FROM_PAGE);
+        ParamUtil.setRequestAttr(request,ApprovalApplicationConstants.CRUD_ACTION_TYPE_FROM_PAGE,crudActionTypeFormPage);
     }
 
     private ApprovalApplicationDto getDtoByForm(BaseProcessClass bpc) throws ParseException {
@@ -400,6 +397,7 @@ public class NewApprovalDelegator {
             processType = ApprovalApplicationConstants.PROCESS_TYPE_4;
         }
         ApprovalApplicationDto approvalApplicationDto = new ApprovalApplicationDto();
+        approvalApplicationDto.setApprovalType(task);
         approvalApplicationDto.setFacilityId(facilityId);
         approvalApplicationDto.setFacilityName(facilityName);
         approvalApplicationDto.setNatureOfTheSampleList(natureOfTheSampleList);

@@ -23,8 +23,8 @@ public interface ApprovalApplicationClient {
     @PostMapping(path = "/bsb-approval", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<ApprovalApplicationDto> saveApproval(@RequestBody ApprovalApplicationDto approvalApplicationDto);
 
-    @GetMapping(path = "/bsb-approval/{approvalType}")
-    FeignResponseEntity<List<Facility>> getFacilityByApprovalType(@PathVariable("approvalType") String approvalType);
+    @GetMapping(path = "/bsb-approval/getAllFacility")
+    FeignResponseEntity<List<Facility>> getAllFacility();
 
     @GetMapping(path = "/bsb-approval/schedule/{schedule}")
     FeignResponseEntity<List<Biological>> getBiologicalBySchedule(@PathVariable("schedule") String schedule);

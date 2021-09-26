@@ -138,6 +138,8 @@ public class ApprovalApplicationDto implements Serializable {
 
     private Date applicationDt;
 
+    private String approvalType;
+
     @NotNull(message = "Please Check \"Declaration on the accuracy of submission\" to proceed.", profiles = {"possessLocal","possessImport","possessOthersLocal","possessOthersImport","possessOthersImport","possessNull","possessOthersNull","largeLocal","largeImport","largeNull"})
     @NotBlank(message = "Please Check \"Declaration on the accuracy of submission\" to proceed.", profiles = {"possessLocal","possessImport","possessOthersLocal","possessOthersImport","possessOthersImport","possessNull","possessOthersNull","largeLocal","largeImport","largeNull"})
     private String checkbox1;
