@@ -1323,9 +1323,9 @@ public class WithOutRenewalDelegator {
         });
         AppSubmissionDto appSubmissionDto = appSubmissionDtos.get(0);
         String groupId = appSubmissionDto.getAppGrpId();
-        if(StringUtil.isEmpty(groupId)){
+        if(StringUtil.isNotEmpty(groupId)){
             List<AppDeclarationMessageDto> appDeclarationMessageDtos = applicationFeClient.getAppDeclarationMessageDto(groupId).getEntity();
-            if(IaisCommonUtils.isEmpty(appDeclarationMessageDtos)){
+            if(IaisCommonUtils.isNotEmpty(appDeclarationMessageDtos)){
                 appSubmissionDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
                 applicationFeClient.inActiveDeclaration(appSubmissionDto);
             }
