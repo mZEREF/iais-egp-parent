@@ -35,7 +35,7 @@ $(function () {
     $("#searchBtn").click(function (){
         var optionValue = $("#auditType option:selected").val();
         if (optionValue == "Please Select" || optionValue == "") {
-            $("#error_auditType").html("Please select valid options!");
+            $("#error_auditType").html("This is Mandatory");
         }else {
             showWaiting();
             $("#error_auditType").html("");
@@ -55,7 +55,7 @@ $(function () {
     $("#submitAudit").click(function () {
         var optionValue = $("#auditType option:selected").val();
         if (optionValue == "Please Select" || optionValue == "") {
-            $("#error_auditType").html("Please select valid options!");
+            $("#error_auditType").html("This is Mandatory");
         }else {
             showWaiting();
             $("#error_auditType").html("");
@@ -70,10 +70,10 @@ $(function () {
         var auditDate = $("#auditDate").val();
         var reason = $("#reasonForChange").val();
         if (auditDate==null || auditDate == ""){
-            $("#auditDateError").html("Please Select Date");
+            $("#auditDateError").html("This is Mandatory");
         }else if (reason==null||reason==""){
             $("#auditDateError").html("");
-            $("#reasonError").html("Please enter change reason");
+            $("#reasonError").html("This is Mandatory");
         }else{
             showWaiting();
             $("#mainForm").submit();
@@ -84,7 +84,7 @@ $(function () {
         $("[name='action_type']").val("doSubmit");
         var auditDate = $("#auditDate").val();
         if (auditDate==null || auditDate == ""){
-            $("#auditDateError").html("Please Select Date");
+            $("#auditDateError").html("This is Mandatory");
         }else{
             showWaiting();
             $("#mainForm").submit();
@@ -112,7 +112,7 @@ $(function () {
             var reasonValue = $("#reason").val();
             if (reasonValue == "" || reasonValue == null) {
                 $("#error_decision").html("");
-                $("#error_reason").html("Please enter the reason");
+                $("#error_reason").html("This is Mandatory");
             } else {
                 $("#error_decision").html("");
                 $("#error_reason").html("");
@@ -122,7 +122,7 @@ $(function () {
             }
         }
         if (optionValue == "Please Select" || optionValue == "") {
-            $("#error_decision").html("Please select valid options");
+            $("#error_decision").html("This is Mandatory");
         }
     })
 
@@ -131,7 +131,7 @@ $(function () {
         $("[name='action_type']").val("doSubmit");
         var optionValue = $("#scenarioCategory option:selected").val();
         if (optionValue == "Please Select" || optionValue == "") {
-            $("#error_scenarioCategory").html("Please select valid options!");
+            $("#error_scenarioCategory").html("This is Mandatory");
         }else {
             showWaiting();
             $("#mainForm").submit();
@@ -157,7 +157,7 @@ $(function () {
             $("#mainForm").submit();
         }
         if (optionValue == "Please Select" || optionValue == "") {
-            $("#error_decision").html("Please select valid options!");
+            $("#error_decision").html("This is Mandatory");
         }
     })
 
@@ -175,7 +175,7 @@ $(function () {
             $("#mainForm").submit();
         }
         if (optionValue == "Please Select" || optionValue == "") {
-            $("#error_decision").html("Please select valid options!");
+            $("#error_decision").html("This is Mandatory");
         }
     })
 
@@ -200,6 +200,25 @@ $(function () {
             $("#mainForm").submit();
         }
     });
+
+    $("#AOProcessCancelAudit").click(function () {
+        var optionValue = $("#decision option:selected").val();
+        if (optionValue == "AUDTAO001") {
+            $("#error_decision").html("");
+            showWaiting();
+            $("[name='action_type']").val("doApprove");
+            $("#mainForm").submit();
+        }
+        if (optionValue == "AUDTAO002") {
+                $("#error_decision").html("");
+                showWaiting();
+                $("[name='action_type']").val("doReject");
+                $("#mainForm").submit();
+        }
+        if (optionValue == "Please Select" || optionValue == "") {
+            $("#error_decision").html("This is Mandatory");
+        }
+    })
 
     //back
     $("#back").click(function (){

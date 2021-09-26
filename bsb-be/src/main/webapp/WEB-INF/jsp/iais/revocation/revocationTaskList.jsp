@@ -82,22 +82,14 @@
                                                value="${applicationSearch.applicationNo}"/>
                                     </iais:value>
                                 </iais:row>
-                                <iais:row>
-                                    <iais:field value="Application Type"/>
-                                    <iais:value width="18">
-                                        <iais:select name="applicationType" id="applicationType"
-                                                     value="${applicationSearch.applicationType}"
-                                                     codeCategory="CATE_ID_BSB_APP_TYPE" firstOption="Please Select"/>
-                                    </iais:value>
-                                </iais:row>
-                                <iais:row>
-                                    <iais:field value="Application Status"/>
-                                    <iais:value width="18">
-                                        <iais:select name="applicationStatus" id="applicationStatus"
-                                                     value="${applicationSearch.applicationStatus}"
-                                                     codeCategory="CATE_ID_BSB_APP_STATUS" firstOption="Please Select"/>
-                                    </iais:value>
-                                </iais:row>
+<%--                                <iais:row>--%>
+<%--                                    <iais:field value="Application Status"/>--%>
+<%--                                    <iais:value width="18">--%>
+<%--                                        <iais:select name="applicationStatus" id="applicationStatus"--%>
+<%--                                                     value="${applicationSearch.applicationStatus}"--%>
+<%--                                                     codeCategory="CATE_ID_BSB_APP_STATUS" firstOption="Please Select"/>--%>
+<%--                                    </iais:value>--%>
+<%--                                </iais:row>--%>
                                 <iais:row>
                                     <iais:field value="Application Date"/>
                                     <iais:value width="18">
@@ -146,14 +138,7 @@
                                     <tr style="display: table-row;">
                                         <td><c:out value="${(status.index + 1) + (pageInfo.pageNo) * pageInfo.size}"/></td>
                                         <td>
-                                            <c:choose>
-                                                <c:when test="${item.appType eq 'BSBAPTY006'}">
-                                                    <c:out value="${item.applicationNo}"/>
-                                                </c:when>
-                                                <c:otherwise>
-                                                    <a onclick="doProcess('<iais:mask name="appId" value="${item.id}"/>')"><c:out value="${item.applicationNo}"/></a>
-                                                </c:otherwise>
-                                            </c:choose>
+                                            <a onclick="doProcess('<iais:mask name="appId" value="${item.id}"/>','app')"><c:out value="${item.applicationNo}"/></a>
                                         </td>
                                         <td><iais:code code="${item.appType}"></iais:code></td>
                                         <td><c:out value="${item.facility.facilityName}/${item.facility.facilityAddress}"/></td>
@@ -172,6 +157,7 @@
             </div>
         </div>
         <input name="appId" id="appId" value="" hidden>
+        <input name="from" id="from" value="" hidden>
         <iais:confirm msg="GENERAL_ERR0023" needCancel="false" callBack="cancel()" popupOrder="support"></iais:confirm>
         <iais:confirm msg="" needCancel="false" callBack="aocancel()" popupOrder="approveAo"></iais:confirm>
     </form>

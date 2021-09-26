@@ -20,7 +20,6 @@ import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -107,7 +106,7 @@ public class CancelAuditDelegator {
      *
      * @param bpc
      */
-    public void prepareDOCancelAuditData(BaseProcessClass bpc) throws ParseException {
+    public void prepareDOCancelAuditData(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         ParamUtil.setSessionAttr(request, AuditConstants.AUDIT_LIST, null);
         String[] auditIds = ParamUtil.getMaskedStrings(request, AuditConstants.AUDIT_ID);
@@ -122,12 +121,11 @@ public class CancelAuditDelegator {
     }
 
     /**
-     *
      * @param bpc
      */
     public void DOSubmitCancelAudit(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
-        List<FacilityAudit> auditList = (List<FacilityAudit>)ParamUtil.getSessionAttr(request, AuditConstants.AUDIT_LIST);
+        List<FacilityAudit> auditList = (List<FacilityAudit>) ParamUtil.getSessionAttr(request, AuditConstants.AUDIT_LIST);
         String cancelReason = ParamUtil.getRequestString(request, AuditConstants.PARAM_REASON);
         for (FacilityAudit audit : auditList) {
             audit.setCancelReason(cancelReason);
@@ -141,27 +139,44 @@ public class CancelAuditDelegator {
      *
      * @param bpc
      */
-    public void prepareAOCancelAuditData(BaseProcessClass bpc) throws ParseException {
+    public void prepareAOCancelAuditData(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
+        ParamUtil.setSessionAttr(request, AuditConstants.FACILITY_AUDIT_APP, null);
+//        String auditId = ParamUtil.getMaskedString(request, AuditConstants.AUDIT_ID);
+        String auditAppId = "D57B8FFB-151D-EC11-BE6E-000C298D317C";
 
+        FacilityAuditApp facilityAuditApp = auditClient.getFacilityAuditAppById(auditAppId).getEntity();
+        FacilityAudit facilityAudit = auditClient.getFacilityAuditById(facilityAuditApp.getFacilityAudit().getId()).getEntity();
+
+        List<FacilityActivity> activityList = auditClient.getFacilityActivityByFacilityId(facilityAudit.getFacility().getId()).getEntity();
+        facilityAudit.getFacility().setFacilityActivities(activityList);
+
+        facilityAuditApp.setFacilityAudit(facilityAudit);
+
+        ParamUtil.setSessionAttr(request, AuditConstants.FACILITY_AUDIT_APP, facilityAuditApp);
     }
 
     /**
-     *
      * @param bpc
      */
     public void AOApprovalAuditDate(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
-
+        FacilityAuditApp auditApp = (FacilityAuditApp)ParamUtil.getSessionAttr(request, AuditConstants.FACILITY_AUDIT_APP);
+        FacilityAudit audit = new FacilityAudit();
+        auditApp.setStatus(AuditConstants.PARAM_AUDIT_STATUS_CANCELLED);
+        audit.setStatus(AuditConstants.PARAM_AUDIT_STATUS_CANCELLED);
+        auditApp.setFacilityAudit(audit);
+        auditClient.processAuditDate(auditApp);
     }
 
     /**
-     *
      * @param bpc
      */
     public void AORejectAuditDate(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
-
+        FacilityAuditApp auditApp = (FacilityAuditApp)ParamUtil.getSessionAttr(request, AuditConstants.FACILITY_AUDIT_APP);
+        auditApp.setStatus(AuditConstants.PARAM_AUDIT_STATUS_PENDING_DO);
+        auditClient.processAuditDate(auditApp);
     }
 
     /**

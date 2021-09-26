@@ -17,8 +17,7 @@
                         <div class="intranet-content">
                             <div class="bg-title">
                                 <%--                        <h2>${submit_message_success}</h2>--%>
-                                <h2>Audit list has been successfully created and an e-mail notification has been sent to
-                                    the assigned inspector.</h2>
+                                <h2>You have successfully submited self-audit report.</h2>
                             </div>
                         </div>
                         <div align="left">

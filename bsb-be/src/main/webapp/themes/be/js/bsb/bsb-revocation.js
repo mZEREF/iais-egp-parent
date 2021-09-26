@@ -1,16 +1,21 @@
 //DO submit revocation process entrance
-function doProcess(id){
+function doProcess(id,fac){
     showWaiting();
     $("#appId").val(id);
+    $("#from").val(fac);
     $("[name='action_type']").val("doProcess");
     $("#mainForm").submit();
 }
 
+function doRevoke(id,fac){
+    showWaiting();
+    $("#facilityId").val(id);
+    $("#from").val(fac);
+    $("[name='action_type']").val("doRevoke");
+    $("#mainForm").submit();
+}
+
 function checkEndTime(startTime,endTime){
-
-    // var start=new Date(startTime.replace("-", "/").replace("-", "/"));
-
-    // var end=new Date(endTime.replace("-", "/").replace("-", "/"));
     if(endTime<startTime){
         return false;
     }
@@ -25,11 +30,12 @@ $(function () {
     });
 
     $("#submitButton1").click(function () {
-        showWaiting();
-        var reasonValue = $("#ReasonId").val();
+        var reasonValue = $("#reason").val();
         if (reasonValue == "" || reasonValue == null) {
             $("#error_reason").html("Please enter the reason");
         }else{
+            $("#error_reason").html("");
+            showWaiting();
             $("[name='action_type']").val("doSubmit");
             $("#mainForm").submit();
         }
@@ -117,7 +123,7 @@ $(function () {
     //back from ackPage
     $("#backFromAckPage").click(function (){
         showWaiting();
-        SOP.Crud.cfxSubmit("mainForm");
+        $("#mainForm").submit();
     });
 
     $("#back").click(function (){

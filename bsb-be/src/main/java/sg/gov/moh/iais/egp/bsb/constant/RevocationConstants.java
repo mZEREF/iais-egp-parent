@@ -14,6 +14,7 @@ public final class RevocationConstants {
     public static final String PARAM_APPLICATION_MISC_LIST = "applicationMiscList";
     public static final String PARAM_APPLICATION_SEARCH_RESULT = "applicationSearchResult";
     public static final String PARAM_APPLICATION_SEARCH = "applicationSearch";
+    public static final String PARAM_FACILITY_SEARCH = "facilitySearch";
     public static final String PARAM_PROCESSING_HISTORY = "processingHistory";
 
     public static final String PARAM_APPROVAL_NO = "approvalNo";
@@ -74,4 +75,8 @@ public final class RevocationConstants {
     public static final String AUDIT_DOC_DTO = "auditDocDto";
 
     public static final String FACILITY = "facility";
+    public static final String FLAG = "flag";
+    public static final String FROM = "from";
+    public static final String FAC = "fac";
+    public static final String APP = "app";
 }

@@ -13,8 +13,8 @@ package sop.webflow.rt.java.code;
 import sop.webflow.rt.api.BaseProcessClass;
 import com.ecquaria.cloud.helper.EngineHelper;
 
-public class INTRANET___AOProcessCancelAudit___1 extends BaseProcessClass {
-	private static final String DELEGATOR = "cancelAuditDelegator";
+public class INTRANET___FacilityList___1 extends BaseProcessClass {
+	private static final String DELEGATOR = "DORevocationDelegator";
 
 	public void start_OnStepProcess_0() throws Exception {
 	// 		start->OnStepProcess
@@ -23,21 +23,26 @@ public class INTRANET___AOProcessCancelAudit___1 extends BaseProcessClass {
 
 	public void prepareData_OnStepProcess_0() throws Exception {
 	// 		prepareData->OnStepProcess
-		EngineHelper.delegate(DELEGATOR, "prepareAOCancelAuditData", this);
+		EngineHelper.delegate(DELEGATOR, "prepareFacilityListData", this);
 	}
 
 	public void prepareSwitch_OnStepProcess_0() throws Exception {
 	// 		prepareSwitch->OnStepProcess
 	}
 
-	public void doApprove_OnStepProcess_0() throws Exception {
-	// 		doApprove->OnStepProcess
-		EngineHelper.delegate(DELEGATOR, "AOApprovalAuditDate", this);
+	public void doSorting_OnStepProcess_0() throws Exception {
+	// 		doSorting->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "sort", this);
 	}
 
-	public void doReject_OnStepProcess_0() throws Exception {
-	// 		doReject->OnStepProcess
-		EngineHelper.delegate(DELEGATOR, "AORejectAuditDate", this);
+	public void doPaging_OnStepProcess_0() throws Exception {
+	// 		doPaging->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "page", this);
+	}
+
+	public void doSearch_OnStepProcess_0() throws Exception {
+	// 		doSearch->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "doSearch", this);
 	}
 
 }
