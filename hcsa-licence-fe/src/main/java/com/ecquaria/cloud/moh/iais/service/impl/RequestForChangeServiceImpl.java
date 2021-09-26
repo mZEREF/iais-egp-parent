@@ -2482,6 +2482,12 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
         }
         appSubmissionDto.setAmount(total);
         // check app edit select dto
+        if (appEditSelectDto == null) {
+            appEditSelectDto = appSubmissionDto.getChangeSelectDto();
+        }
+        if (appEditSelectDto == null) {
+            appEditSelectDto = new AppEditSelectDto();
+        }
         AppEditSelectDto editDto = MiscUtil.transferEntityDto(appEditSelectDto, AppEditSelectDto.class);
         appSubmissionDto.setChangeSelectDto(editDto);
         appSubmissionDto.setAppType(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
