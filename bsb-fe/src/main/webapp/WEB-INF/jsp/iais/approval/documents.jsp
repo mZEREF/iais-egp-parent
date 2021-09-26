@@ -35,7 +35,7 @@
                                 </div>
                                 <div class="document-upload-gp">
                                     <h2>PRIMARY DOCUMENTS</h2>
-                                    <c:forEach var="config" items="${docConfigDtoList}" varStatus="configStat">
+                                    <c:forEach var="config" items="${primaryDocConfig}" varStatus="configStat">
                                         <c:choose>
                                             <c:when test="${'1' == config.index}">
                                                 <c:set var="fileList" value="${docReloadMap[config.id]}"/>
