@@ -775,6 +775,7 @@ public class RequestForChangeDelegator {
 
                         requestForChangeService.checkAffectedAppSubmissions(appSubmissionDto, null, amount, draftNo, grpNo,
                                 null, null,null);
+                        appSubmissionDto.setGetAppInfoFromDto(false);
                         AppSubmissionDto tranferSub = requestForChangeService.submitChange(appSubmissionDto);
                         ParamUtil.setSessionAttr(bpc.request, "app-rfc-tranfer", tranferSub);
                         if (amount == null || MiscUtil.doubleEquals(amount, 0.0)) {
