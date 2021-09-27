@@ -48,23 +48,41 @@ public class ApprovalApplicationDto implements Serializable {
     @NotBlank(message = "This is mandatory.", profiles = {"possessNull","possessOthersNull","largeNull","special"})
     private String procurementMode;
 
-    @NotNull(message = "This is mandatory.", profiles = {"possessLocal","possessImport","possessOthersLocal","possessOthersImport","largeLocal","largeImport"})
-    @NotBlank(message = "This is mandatory.", profiles = {"possessLocal","possessImport","possessOthersLocal","possessOthersImport","largeLocal","largeImport"})
-    private String facTransferForm;
+    @NotNull(message = "This is mandatory.", profiles = {"possessImport","possessOthersImport","largeImport"})
+    @NotBlank(message = "This is mandatory.", profiles = {"possessImport","possessOthersImport","largeImport"})
+    private String facilityNameOfImport;
 
-    @NotNull(message = "This is mandatory.", profiles = {"possessLocal","possessImport","possessOthersLocal","possessOthersImport","largeLocal","largeImport"})
-    @NotBlank(message = "This is mandatory.", profiles = {"possessLocal","possessImport","possessOthersLocal","possessOthersImport","largeLocal","largeImport"})
-    @ValidateWithMethod(message = "Date is not expect date.", methodName = "checkToExpecteddate", parameterType = Date.class, profiles = {"possessLocal","possessImport","possessOthersLocal","possessOthersImport","largeLocal","largeImport"})
-    private Date transferExpectedDate;
+    @NotNull(message = "This is mandatory.", profiles = {"possessLocal","possessOthersLocal","largeLocal"})
+    @NotBlank(message = "This is mandatory.", profiles = {"possessLocal","possessOthersLocal","largeLocal"})
+    private String facilityNameOfTransfer;
 
-    @NotNull(message = "This is mandatory.", profiles = {"possessLocal","possessImport","possessOthersLocal","possessOthersImport","largeLocal","largeImport"})
-    @NotBlank(message = "This is mandatory.", profiles = {"possessLocal","possessImport","possessOthersLocal","possessOthersImport","largeLocal","largeImport"})
-    private String impCtcPersonName;
+    @NotNull(message = "This is mandatory.", profiles = {"possessImport","possessOthersImport","largeImport"})
+    @NotBlank(message = "This is mandatory.", profiles = {"possessImport","possessOthersImport","largeImport"})
+    @ValidateWithMethod(message = "Date is not expect date.", methodName = "checkToExpecteddate", parameterType = Date.class, profiles = {"possessImport","possessOthersImport","largeImport"})
+    private Date expectedDateOfImport;
 
-    @NotNull(message = "This is mandatory.", profiles = {"possessLocal","possessImport","possessOthersLocal","possessOthersImport","largeLocal","largeImport"})
-    @NotBlank(message = "This is mandatory.", profiles = {"possessLocal","possessImport","possessOthersLocal","possessOthersImport","largeLocal","largeImport"})
-    @Email(message = "The email is incorrect", profiles = {"possessLocal","possessImport","possessOthersLocal","possessOthersImport","largeLocal","largeImport"})
-    private String impCtcPersonEmail;
+    @NotNull(message = "This is mandatory.", profiles = {"possessLocal","possessOthersLocal","largeLocal"})
+    @NotBlank(message = "This is mandatory.", profiles = {"possessLocal","possessOthersLocal","largeLocal"})
+    @ValidateWithMethod(message = "Date is not expect date.", methodName = "checkToExpecteddate", parameterType = Date.class, profiles = {"possessLocal","possessOthersLocal","largeLocal"})
+    private Date expectedDateOfTransfer;
+
+    @NotNull(message = "This is mandatory.", profiles = {"possessImport","possessOthersImport","largeImport"})
+    @NotBlank(message = "This is mandatory.", profiles = {"possessImport","possessOthersImport","largeImport"})
+    private String contactPersonNameOfImport;
+
+    @NotNull(message = "This is mandatory.", profiles = {"possessLocal","possessOthersLocal","largeLocal"})
+    @NotBlank(message = "This is mandatory.", profiles = {"possessLocal","possessOthersLocal","largeLocal"})
+    private String contactPersonNameOfTransfer;
+
+    @NotNull(message = "This is mandatory.", profiles = {"possessImport","possessOthersImport","largeImport"})
+    @NotBlank(message = "This is mandatory.", profiles = {"possessImport","possessOthersImport","largeImport"})
+    @Email(message = "The email is incorrect", profiles = {"possessImport","possessOthersImport","largeImport"})
+    private String contactPersonEmailOfImport;
+
+    @NotNull(message = "This is mandatory.", profiles = {"possessLocal","possessOthersLocal","largeLocal"})
+    @NotBlank(message = "This is mandatory.", profiles = {"possessLocal","possessOthersLocal","largeLocal"})
+    @Email(message = "The email is incorrect", profiles = {"possessLocal","possessOthersLocal","largeLocal"})
+    private String contactPersonEmailOfTransfer;
 
     @NotNull(message = "This is mandatory.", profiles = {"possessLocal","possessOthersLocal","largeLocal"})
     @NotBlank(message = "This is mandatory.", profiles = {"possessLocal","possessOthersLocal","largeLocal"})
@@ -147,8 +165,6 @@ public class ApprovalApplicationDto implements Serializable {
     @NotNull(message = "Please Check \"Declaration of Compliance with BATA Transport Regulations\" to proceed.", profiles = {"possessLocal","possessImport","possessOthersLocal","possessOthersImport","possessOthersImport","possessNull","possessOthersNull","largeLocal","largeImport","largeNull","special"})
     @NotBlank(message = "Please Check \"Declaration of Compliance with BATA Transport Regulations\" to proceed.", profiles = {"possessLocal","possessImport","possessOthersLocal","possessOthersImport","possessOthersImport","possessNull","possessOthersNull","largeLocal","largeImport","largeNull","special"})
     private String checkbox2;
-
-    private List<FacilityDocDto> facilityDocDtoList;
 
     private boolean checkToAfterFrom(Date endDate) {
         if (endDate == null || startDate == null){

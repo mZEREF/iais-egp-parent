@@ -79,19 +79,19 @@
                             <iais:row>
                                 <iais:field value="Transfer From Facility Name" width="5"/>
                                 <iais:value width="7" display="true">
-                                    <c:out value="${approvalApplicationDto.facTransferForm}" />
+                                    <c:out value="${approvalApplicationDto.facilityNameOfTransfer}" />
                                 </iais:value>
                             </iais:row>
                             <iais:row>
                                 <iais:field value="Expected Date of Transfer" width="5"/>
                                 <iais:value width="7" display="true">
-                                    <fmt:formatDate value='${approvalApplicationDto.transferExpectedDate}' pattern='dd/MM/yyyy'/>
+                                    <fmt:formatDate value='${approvalApplicationDto.expectedDateOfTransfer}' pattern='dd/MM/yyyy'/>
                                 </iais:value>
                             </iais:row>
                             <iais:row>
                                 <iais:field value="Contact Person from Transferring Facility" width="5"/>
                                 <iais:value width="7" display="true">
-                                    <c:out value="${approvalApplicationDto.impCtcPersonName}" />
+                                    <c:out value="${approvalApplicationDto.contactPersonNameOfTransfer}" />
                                 </iais:value>
                             </iais:row>
                             <iais:row>
@@ -103,7 +103,7 @@
                             <iais:row>
                                 <iais:field value="Email Address of Contact Person from Transferring Facility" width="5"/>
                                 <iais:value width="7" display="true">
-                                    <c:out value="${approvalApplicationDto.impCtcPersonEmail}" />
+                                    <c:out value="${approvalApplicationDto.contactPersonEmailOfTransfer}" />
                                 </iais:value>
                             </iais:row>
                         </c:if>
@@ -111,25 +111,25 @@
                             <iais:row>
                                 <iais:field value="Overseas Facility Name" width="5"/>
                                 <iais:value width="7" display="true">
-                                    <c:out value="${approvalApplicationDto.facTransferForm}" />
+                                    <c:out value="${approvalApplicationDto.facilityNameOfImport}" />
                                 </iais:value>
                             </iais:row>
                             <iais:row>
                                 <iais:field value="Expected Date of Import" width="5"/>
                                 <iais:value width="7" display="true">
-                                    <fmt:formatDate value='${approvalApplicationDto.transferExpectedDate}' pattern='dd/MM/yyyy'/>
+                                    <fmt:formatDate value='${approvalApplicationDto.expectedDateOfImport}' pattern='dd/MM/yyyy'/>
                                 </iais:value>
                             </iais:row>
                             <iais:row>
                                 <iais:field value="Contact person from Source Facility" width="5"/>
                                 <iais:value width="7" display="true">
-                                    <c:out value="${approvalApplicationDto.impCtcPersonName}" />
+                                    <c:out value="${approvalApplicationDto.contactPersonNameOfImport}" />
                                 </iais:value>
                             </iais:row>
                             <iais:row>
                                 <iais:field value="Email address of Contact person from Source Facility" width="5"/>
                                 <iais:value width="7" display="true">
-                                    <c:out value="${approvalApplicationDto.impCtcPersonEmail}" />
+                                    <c:out value="${approvalApplicationDto.contactPersonEmailOfImport}" />
                                 </iais:value>
                             </iais:row>
                         </c:if>

@@ -2,11 +2,14 @@ package sg.gov.moh.iais.egp.bsb.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
+import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPrimaryDocDto;
 import com.ecquaria.cloud.moh.iais.common.utils.*;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
+import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.*;
 import com.ecquaria.cloud.moh.iais.service.client.ComFileRepoClient;
 import lombok.extern.slf4j.Slf4j;
@@ -19,6 +22,7 @@ import sg.gov.moh.iais.egp.bsb.dto.approval.ApprovalApplicationDto;
 import sg.gov.moh.iais.egp.bsb.dto.approval.DocConfigDto;
 import sg.gov.moh.iais.egp.bsb.entity.Biological;
 import sg.gov.moh.iais.egp.bsb.entity.Facility;
+import sg.gov.moh.iais.egp.bsb.entity.FacilityDoc;
 import sop.servlet.webflow.HttpHandler;
 import sop.webflow.rt.api.BaseProcessClass;
 
@@ -167,6 +171,7 @@ public class NewApprovalDelegator {
 
     public void doDocuments(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
+        ApprovalApplicationDto approvalApplicationDto = (ApprovalApplicationDto)ParamUtil.getSessionAttr(request, ApprovalApplicationConstants.APPROVAL_APPLICATION_DTO_ATTR);
         //set crudActionType and crudActionTypeFormPage on different actionType
         String crudActionType = "";
         String crudActionTypeFormPage = "";
@@ -193,11 +198,48 @@ public class NewApprovalDelegator {
         ParamUtil.setRequestAttr(request,ApprovalApplicationConstants.CRUD_ACTION_TYPE_FROM_PAGE,crudActionTypeFormPage);
         ParamUtil.setRequestAttr(request,ApprovalApplicationConstants.CRUD_ACTION_TYPE,crudActionType);
 
+        LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
+        Facility facility = new Facility();
+        facility.setId(approvalApplicationDto.getFacilityId());
         List<DocConfigDto> docConfigDtoList = (List<DocConfigDto>) request.getSession().getAttribute(PRIMARY_DOC_CONFIG);
         MultipartHttpServletRequest mulReq = (MultipartHttpServletRequest) bpc.request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
+        Map<String, File> fileMap = new HashMap<>();
         for(int i =0;i<docConfigDtoList.size();i++){
             String docKey = i+"primaryDoc";
-            Map<String, File> fileMap = (Map<String, File>) ParamUtil.getSessionAttr(mulReq,HcsaFileAjaxController.SEESION_FILES_MAP_AJAX+docKey);
+            String configKey = "primaryDoc"+i;
+            /*List<AppGrpPrimaryDocDto> dtoAppGrpPrimaryDocDtos = oldAppSubmissionDto.getAppGrpPrimaryDocDtos();
+            if (dtoAppGrpPrimaryDocDtos != null) {
+                for (AppGrpPrimaryDocDto appGrpPrimaryDocDto : dtoAppGrpPrimaryDocDtos) {
+                    appGrpPrimaryDocDto.setPassValidate(true);
+                }
+            }*/
+            fileMap = (Map<String, File>) ParamUtil.getSessionAttr(mulReq,HcsaFileAjaxController.SEESION_FILES_MAP_AJAX+docKey);
+            if (fileMap != null){
+                fileMap.forEach((k,v)->{
+                    int index = k.indexOf(docKey);
+                    String seqNumStr = k.substring(index+docKey.length());
+                    int seqNum = -1;
+                    try{
+                        seqNum = Integer.parseInt(seqNumStr);
+                    }catch (Exception e){
+                        log.error(StringUtil.changeForLog("doc seq num can not parse to int"));
+                    }
+                    FacilityDoc facilityDoc = new FacilityDoc();
+                    if(v != null){
+                        long size = v.length() / 1024;
+                        facilityDoc.setFacility(facility);
+                        facilityDoc.setName(v.getName());
+                        facilityDoc.setSize(size);
+                        /*facilityDoc.setFileRepoId();*/
+                        facilityDoc.setSubmitAt(new Date());
+                        facilityDoc.setSubmitBy(loginContext.getUserName());
+                        facilityDoc.setSeqNum(seqNum);
+                    }
+                });
+                List<File> fileList = new ArrayList<>(fileMap.values());
+                ParamUtil.setSessionAttr(request,configKey,(Serializable) fileList);
+            }
+//            List<String> fileRepoIdList = comFileRepoClient.saveFileRepo(fileList);
         }
     }
 
@@ -329,12 +371,14 @@ public class NewApprovalDelegator {
     public void doSaveDraft(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         ApprovalApplicationDto approvalApplicationDto = (ApprovalApplicationDto)ParamUtil.getSessionAttr(request, ApprovalApplicationConstants.APPROVAL_APPLICATION_DTO_ATTR);
+        approvalApplicationDto.setStatus(ApprovalApplicationConstants.APP_STATUS_11);
         approvalApplicationClient.saveApproval(approvalApplicationDto);
     }
 
     public void doSubmit(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         ApprovalApplicationDto approvalApplicationDto = (ApprovalApplicationDto)ParamUtil.getSessionAttr(request, ApprovalApplicationConstants.APPROVAL_APPLICATION_DTO_ATTR);
+        approvalApplicationDto.setStatus(ApprovalApplicationConstants.APP_STATUS_1);
         approvalApplicationClient.saveApproval(approvalApplicationDto);
         String crudActionTypeFormPage = (String) ParamUtil.getRequestAttr(request,ApprovalApplicationConstants.CRUD_ACTION_TYPE_FROM_PAGE);
         ParamUtil.setRequestAttr(request,ApprovalApplicationConstants.CRUD_ACTION_TYPE_FROM_PAGE,crudActionTypeFormPage);
@@ -412,22 +456,17 @@ public class NewApprovalDelegator {
         approvalApplicationDto.setEndDate(Formatter.parseDate(endDate));
         approvalApplicationDto.setSchedule(schedule);
         approvalApplicationDto.setBiologicalIdList(listOfAgentsOrToxinsList);
-        approvalApplicationDto.setProcurementMode(modeOfProcurement);
         approvalApplicationDto.setBiologicalName(biologicalName);
-        if (modeOfProcurement != null){
-            if (modeOfProcurement.equals(ApprovalApplicationConstants.MODE_OF_PROCUREMENT_1)){
-                approvalApplicationDto.setFacTransferForm(transferFromFacilityName);
-                approvalApplicationDto.setTransferExpectedDate(Formatter.parseDate(expectedDateOfTransfer));
-                approvalApplicationDto.setImpCtcPersonName(contactPersonFromTransferringFacility);
-                approvalApplicationDto.setImpCtcPersonNo(contactNoOfContactPersonFromTransferringFacility);
-                approvalApplicationDto.setImpCtcPersonEmail(emailAddressOfContactPersonFromTransferringFacility);
-            }else if(modeOfProcurement.equals(ApprovalApplicationConstants.MODE_OF_PROCUREMENT_2)){
-                approvalApplicationDto.setFacTransferForm(overseasFacilityName);
-                approvalApplicationDto.setTransferExpectedDate(Formatter.parseDate(expectedDateOfImport));
-                approvalApplicationDto.setImpCtcPersonName(contactPersonFromSourceFacility);
-                approvalApplicationDto.setImpCtcPersonEmail(emailAddressOfContactPersonFromSourceFacility);
-            }
-        }
+        approvalApplicationDto.setProcurementMode(modeOfProcurement);
+        approvalApplicationDto.setFacilityNameOfTransfer(transferFromFacilityName);
+        approvalApplicationDto.setExpectedDateOfTransfer(Formatter.parseDate(expectedDateOfTransfer));
+        approvalApplicationDto.setContactPersonNameOfTransfer(contactPersonFromTransferringFacility);
+        approvalApplicationDto.setImpCtcPersonNo(contactNoOfContactPersonFromTransferringFacility);
+        approvalApplicationDto.setContactPersonEmailOfTransfer(emailAddressOfContactPersonFromTransferringFacility);
+        approvalApplicationDto.setFacilityNameOfImport(overseasFacilityName);
+        approvalApplicationDto.setExpectedDateOfImport(Formatter.parseDate(expectedDateOfImport));
+        approvalApplicationDto.setContactPersonNameOfImport(contactPersonFromSourceFacility);
+        approvalApplicationDto.setContactPersonEmailOfImport(emailAddressOfContactPersonFromSourceFacility);
         approvalApplicationDto.setTransferFacAddr1(facilityAddress1);
         approvalApplicationDto.setTransferFacAddr2(facilityAddress2);
         approvalApplicationDto.setTransferFacAddr3(facilityAddress3);

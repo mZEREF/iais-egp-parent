@@ -26,4 +26,6 @@ public class FacilityDoc extends BaseEntity {
     private Date submitAt;
 
     private String submitBy;
+
+    private Integer seqNum = -1;
 }

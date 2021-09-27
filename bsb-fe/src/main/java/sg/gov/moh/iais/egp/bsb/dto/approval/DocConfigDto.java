@@ -15,6 +15,9 @@ public class DocConfigDto implements Serializable {
     private String approvalType;
     private String index;
 
+    public DocConfigDto() {
+    }
+
     public DocConfigDto(String docType, Boolean isMandatory, String approvalType, String index) {
         this.docType = docType;
         this.isMandatory = isMandatory;

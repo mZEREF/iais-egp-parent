@@ -2,7 +2,8 @@
     <h3>${config.docType}<c:if test="${config.isMandatory}"><span class="mandatory"> *</span></c:if></h3>
     <div class="file-upload-gp">
         <input type="hidden" name="configIndex" value="${configIndex}"/>
-        <span name="${configIndex}ShowId" id="${configIndex}ShowId">
+
+        <%--<span name="${configIndex}ShowId" id="${configIndex}ShowId">
             <c:forEach var="file" items="${fileList}" varStatus="fileStat">
             <div id="${configIndex}Div${file.seqNum}">
                 <c:choose>
@@ -21,6 +22,20 @@
                 </button>
             </div>
             </c:forEach>
+        </span>--%>
+
+        <span name="${configIndex}ShowId" id="${configIndex}ShowId">
+            <%--<c:forEach var="file" items="${primaryDoc0}" varStatus="fileStat">
+            <div>
+                <c:out value="${file.name}"/>
+                <button type="button" class="btn btn-secondary btn-sm delFileBtn">
+                    Delete
+                </button>
+                <button type="button" class="btn btn-secondary btn-sm reUploadFileBtn">
+                    ReUpload
+                </button>
+            </div>
+            </c:forEach>--%>
         </span>
         <span name="iaisErrorMsg" class="error-msg" id="error_${configIndex}Error"></span>
         <br/>
