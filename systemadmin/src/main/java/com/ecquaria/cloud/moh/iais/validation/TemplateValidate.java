@@ -43,10 +43,10 @@ public class TemplateValidate implements CustomizeValidator {
             repMap.put("fieldNo","Account Name");
             errMap.put("templateName", MessageUtil.getMessageDesc("GENERAL_ERR0036",repMap));
         }
-        if(msgTemplateDto.getMessageContent().length()>4000){
-            repMap.put("number","4000");
+        if(msgTemplateDto.getMessageContent().length()>8000){
+            repMap.put("number","8000");
             repMap.put("fieldNo","Content");
-            errMap.put("content", MessageUtil.getMessageDesc("GENERAL_ERR0036",repMap));
+            errMap.put("messageContent", MessageUtil.getMessageDesc("GENERAL_ERR0036",repMap));
         }
         return errMap;
     }
