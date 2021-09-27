@@ -15,7 +15,7 @@
                     <div class="intranet-content">
                         <div class="bg-title">
                             <h2>
-                                <span>You have successfully completed your task</span>
+                                <span>You have successfully completed your application</span>
                             </h2>
                         </div>
                         <div class="row">

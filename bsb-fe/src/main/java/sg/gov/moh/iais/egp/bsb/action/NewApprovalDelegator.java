@@ -132,7 +132,7 @@ public class NewApprovalDelegator {
             docConfigDtoList.add(new DocConfigDto(DOC_TYPE_5,true,task,"5"));
             docConfigDtoList.add(new DocConfigDto(DOC_TYPE_7,true,task,"7"));
         }
-        docConfigDtoList.add(new DocConfigDto(DOC_TYPE_8,true,task,"8"));
+        docConfigDtoList.add(new DocConfigDto(DOC_TYPE_8,false,task,"8"));
         ParamUtil.setSessionAttr(request, PRIMARY_DOC_CONFIG, (Serializable) docConfigDtoList);
 
         //set sysFileSize and sysFileType
