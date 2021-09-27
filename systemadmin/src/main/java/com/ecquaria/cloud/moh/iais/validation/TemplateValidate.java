@@ -38,9 +38,9 @@ public class TemplateValidate implements CustomizeValidator {
         }
         Map<String, String> repMap=IaisCommonUtils.genNewHashMap();
 
-        if(msgTemplateDto.getTemplateName().length()>255){
-            repMap.put("number","255");
-            repMap.put("fieldNo","Account Name");
+        if(msgTemplateDto.getTemplateName().length()>500){
+            repMap.put("number","500");
+            repMap.put("fieldNo","Template Name");
             errMap.put("templateName", MessageUtil.getMessageDesc("GENERAL_ERR0036",repMap));
         }
 
