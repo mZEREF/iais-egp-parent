@@ -114,7 +114,7 @@ public interface RequestForChangeService {
             AppGrpPremisesDto oldAppGrpPremisesDto, double amount, String draftNo, String appGroupNo,
             AppEditSelectDto appEditSelectDto, List<AppSubmissionDto> appSubmissionDtos, HttpServletRequest request) throws Exception;
 
-    boolean checkAffectedAppSubmissions(AppSubmissionDto appSubmissionDto,LicenceDto licence, double amount,
+    boolean checkAffectedAppSubmissions(AppSubmissionDto appSubmissionDto,LicenceDto licence, Double amount,
             String draftNo, String appGroupNo, AppEditSelectDto appEditSelectDto,List<AppSubmissionDto> appSubmissionDtos,
             HttpServletRequest request);
 }

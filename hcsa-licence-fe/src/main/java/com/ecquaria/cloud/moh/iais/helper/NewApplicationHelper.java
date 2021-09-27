@@ -3157,7 +3157,7 @@ public class NewApplicationHelper {
                     .append("=\"")
                     .append(entry.getValue())
                     .append('\"');
-            if ("name".equals(entry.getKey())) {
+            if (StringUtil.isEmpty(name) && "name".equals(entry.getKey())) {
                 name = entry.getValue();
             }
         }
@@ -4303,7 +4303,7 @@ public class NewApplicationHelper {
             blacklist = MasterCodeUtil.getCodeDesc("MS001");
         }
         Map<Integer, String> map = new LinkedHashMap<>();
-        if (StringUtil.isEmpty(blacklist) || StringUtil.isEmpty(name)) {
+        if (blacklist == null || StringUtil.isEmpty(blacklist) || StringUtil.isEmpty(name)) {
             return map;
         }
         String[] s = blacklist.split(" ");
