@@ -347,7 +347,7 @@
       /*  }*/
     });
 
-    aaa();
+    // aaa();
     if($('#PRS_SERVICE_DOWN_INPUT').val()=='PRS_SERVICE_DOWN'){
       $('#PRS_SERVICE_DOWN').modal('show');
     }
@@ -613,10 +613,12 @@
 
   function aaa(obj) {
     console.log('loading prs info ...');
+    showWaiting();
     var $loadingContent =$(obj).closest('table.personnel-content');
     var prgNo =  $(obj).val();
     if(prgNo == "" || prgNo == null || prgNo == undefined){
       clearPrsInfo($loadingContent);
+      dismissWaiting();
       return;
     }
     var no = $(obj).val();
@@ -629,22 +631,40 @@
       'data': jsonData,
       'type': 'GET',
       'success': function (data) {
+        if (isEmpty(data)) {
+          console.log("The return data is null for PRS");
+          clearPrsInfo($loadingContent);
+          dismissWaiting();
+          return;
+        }
+        if (data.hasException) {
+          console.log("An exception for PRS");
+          $('#PRS_SERVICE_DOWN').modal('show');
+          clearPrsInfo($loadingContent);
+          inputCancelReadonly($loadingContent.find('input[name="name"]'));
+          dismissWaiting();
+          return;
+        }
         if(data.regno==null){
           clearPrsInfo($loadingContent);
-          $('#PRS_SERVICE_DOWN').modal('show');
+          // $('#PRS_SERVICE_DOWN').modal('show');
           //able to edit name
           inputCancelReadonly($loadingContent.find('input[name="name"]'));
           console.log('return regno is empty ...');
+          dismissWaiting();
           return;
         }
         if (data.name == null) {
           clearPrsInfo($loadingContent);
+          dismissWaiting();
           return;
         }
         loadingSp(data,obj);
+        dismissWaiting();
       },
       'error': function () {
         clearPrsInfo($loadingContent);
+        dismissWaiting();
       }
     });
 
