@@ -1115,10 +1115,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                     String port = ConfigHelper.getString("server.port", "8080");
                     StringBuilder apiUrl = new StringBuilder("http://");
                     apiUrl.append(ip).append(':').append(port).append("/hcsa-licence-web/moveFile");
-
-                    StringBuilder logStringBuilder = new StringBuilder("Request URL ==> ");
-                    logStringBuilder.append(apiUrl.toString());
-                    log.info(StringUtil.changeForLog(logStringBuilder.toString()));
+                    log.info("Request URL ==> {}", apiUrl);
 
                     RestTemplate restTemplate = new RestTemplate();
                     try {
