@@ -62,7 +62,7 @@
                      value="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcLaboratoryDisciplinesDtoList[status.index].appSvcChckListDtoList}" />
               <c:forEach var="checkList" items="${appSvcLaboratoryDisciplinesDto.appSvcChckListDtoList}" varStatus="statuss">
                 <div class="form-check ">
-                  <div class="form-check-label " aria-label="premise-1-cytology" style="padding-left:0px;">
+                  <div class="form-check-label col-xs-12 col-md-12" aria-label="premise-1-cytology" style="padding-left:0px;">
                     <div class="col-xs-6 col-md-6">
                         <span class="newVal " attr="${checkList.chkName}${checkList.check}">
                           <c:if test="${checkList.check}">
@@ -534,13 +534,13 @@
         <div class="row">
           <div class="col-xs-12">
             <c:if test="${reloadDisciplineAllocationMap_size>0}">
-            <table aria-describedby="" class="table discipline-table" border="1px">
+            <table aria-describedby="" class="table discipline-table">
               <thead>
               <tr>
-                <th scope="col" style="text-align: center">Mode of Service Delivery</th>
-                <th scope="col" style="text-align: center">${stepNameMap['SVST001']}</th>
-                <th scope="col" style="text-align: center">Clinical Governance Officers</th>
-                <th scope="col" style="text-align: center">Section Leader</th>
+                <th scope="col">Mode of Service Delivery</th>
+                <th scope="col">${stepNameMap['SVST001']}</th>
+                <th scope="col">Clinical Governance Officers</th>
+                <th scope="col">Section Leader</th>
               </tr>
               </thead>
               <c:forEach var="appGrpPrem" items="${appSubmissionDto.appGrpPremisesDtoList}" varStatus="status">
@@ -560,7 +560,7 @@
                 <c:set value="${reloadOld[reloadMapValue]}" var="reloaded" />
               <tr>
                 <c:if test="${stat.first}">
-                <td style="text-align: center" rowspan="${reloadDisciplineAllocationMap[reloadMapValue].size()}">
+                <td rowspan="${reloadDisciplineAllocationMap[reloadMapValue].size()}">
                     <div class="">
                       <span class="newVal " attr="${appGrpPrem.address}"><c:out value="${appGrpPrem.address}"/>
                       <br>
@@ -572,7 +572,7 @@
                     </div>
                 </td>
               </c:if>
-              <td style="text-align: center">
+              <td>
                 <div class="">
                   <span class="newVal " attr="${disciplineAllocation.chkLstName}${disciplineAllocation.check}">
                       <c:out value="${disciplineAllocation.chkLstName}"/>
@@ -585,7 +585,7 @@
                   </span>
                 </div>
               </td>
-              <td style="text-align: center">
+              <td>
                 <div class="">
                     <span class="newVal "
                           attr="${disciplineAllocation.cgoSelName}${disciplineAllocation.check}">
@@ -599,7 +599,7 @@
                     </span>
                 </div>
               </td>
-              <td style="text-align: center">
+              <td>
                 <div class="">
                   <span class="newVal" attr="${disciplineAllocation.sectionLeaderName}${disciplineAllocation.check}">
                     <c:out value="${disciplineAllocation.sectionLeaderName}"/>

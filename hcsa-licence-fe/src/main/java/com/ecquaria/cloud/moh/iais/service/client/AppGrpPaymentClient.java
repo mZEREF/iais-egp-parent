@@ -18,10 +18,10 @@ import java.util.List;
 @FeignClient(name = "iais-payment", configuration = {FeignConfiguration.class},
         fallback = AppGrpPaymentClientFallBack.class)
 public interface AppGrpPaymentClient {
-    @PostMapping(value = "/iais-payment/payment-reqRefNo",produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/iais-payment/payment-reqRefNo",consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<PaymentDto> getPaymentDtoByReqRefNo(@RequestBody String reqRefNo);
 
-    @PostMapping(value = "/iais-payment/payment-request-reqRefNo",produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/iais-payment/payment-request-reqRefNo",consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<PaymentRequestDto> getPaymentRequestDtoByReqRefNo(@RequestBody String reqRefNo);
 
     @PostMapping(value = "/iais-payment/payment-request-reqRefNoLike",consumes = MediaType.APPLICATION_JSON_VALUE)

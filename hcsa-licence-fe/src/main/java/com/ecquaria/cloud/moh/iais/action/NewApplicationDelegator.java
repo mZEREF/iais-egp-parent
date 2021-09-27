@@ -2235,21 +2235,6 @@ public class NewApplicationDelegator {
                     break;
             }
         }
-        AppSubmissionDto oldAppSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.OLDAPPSUBMISSIONDTO);
-        //add group other premise
-        List<AppGrpPremisesDto> appGrpPremisesDtos =  oldAppSubmissionDto.getAppGrpPremisesDtoList();
-        AppGrpPremisesDto currentAppGrpPremisesDto = appSubmissionDto.getAppGrpPremisesDtoList().get(0);
-        for (int i = appGrpPremisesDtos.size()-1;i>=0;i--){
-            if (StringUtil.isNotEmpty(currentAppGrpPremisesDto.getPremisesIndexNo()) &&
-                    currentAppGrpPremisesDto.getPremisesIndexNo().equals(appGrpPremisesDtos.get(i).getPremisesIndexNo())){
-                currentAppGrpPremisesDto.setId(currentAppGrpPremisesDto.getPremisesIndexNo());
-                appGrpPremisesDtos.set(i, currentAppGrpPremisesDto);
-            }else {
-                NewApplicationHelper.setWrkTime(appGrpPremisesDtos.get(i));
-            }
-        }
-        appSubmissionDto.setAppGrpPremisesDtoList(appGrpPremisesDtos);
-        resetRelatedInfoRFI(appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0), appNo, appSubmissionDto.getAppGrpPremisesDtoList());
         Integer maxFileIndex = (Integer) ParamUtil.getSessionAttr(bpc.request,HcsaFileAjaxController.GLOBAL_MAX_INDEX_SESSION_ATTR);
         if(maxFileIndex == null){
             maxFileIndex = 0;
@@ -2280,6 +2265,7 @@ public class NewApplicationDelegator {
         }
         //oldAppSubmissionDtos
 //        List<AppSubmissionDto> appSubmissionDtoByGroupNo = appSubmissionService.getAppSubmissionDtoByGroupNo(appGrpNo);
+        AppSubmissionDto oldAppSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.OLDAPPSUBMISSIONDTO);
         StringBuilder stringBuilder = new StringBuilder(10);
         stringBuilder.append(appSubmissionDto);
         String str=stringBuilder.toString();
@@ -2311,6 +2297,27 @@ public class NewApplicationDelegator {
 //        Map<String,AppSvcPersonAndExtDto> personMap = (Map<String, AppSvcPersonAndExtDto>) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.PERSONSELECTMAP);
 //        NewApplicationHelper.syncPsnData(appSubmissionDto,personMap);
 
+        //add group other premise
+        AppSubmissionDto beforeRemoveAppSubmissionDto = appSubmissionService.getAppSubmissionDtoByAppNo(appNo);
+        List<AppGrpPremisesDto> appGrpPremisesDtos = (List<AppGrpPremisesDto>) CopyUtil.copyMutableObjectList(beforeRemoveAppSubmissionDto.getAppGrpPremisesDtoList());
+        oldAppSubmissionDto.setAppGrpPremisesDtoList((List<AppGrpPremisesDto>) CopyUtil.copyMutableObjectList(appGrpPremisesDtos));
+        AppGrpPremisesDto currentAppGrpPremisesDto = appSubmissionDto.getAppGrpPremisesDtoList().get(0);
+        for (int i = appGrpPremisesDtos.size()-1;i>=0;i--){
+            if (StringUtil.isNotEmpty(currentAppGrpPremisesDto.getPremisesIndexNo()) &&
+                    currentAppGrpPremisesDto.getPremisesIndexNo().equals(appGrpPremisesDtos.get(i).getPremisesIndexNo())){
+                currentAppGrpPremisesDto.setId(currentAppGrpPremisesDto.getPremisesIndexNo());
+                appGrpPremisesDtos.set(i, currentAppGrpPremisesDto);
+            }else {
+                NewApplicationHelper.setWrkTime(appGrpPremisesDtos.get(i));
+            }
+        }
+        appSubmissionDto.setAppGrpPremisesDtoList(appGrpPremisesDtos);
+        for (AppSvcRelatedInfoDto appSvcRelatedInfoDto : appSubmissionDto.getAppSvcRelatedInfoDtoList()){
+            resetRelatedInfoRFI(appSvcRelatedInfoDto, beforeRemoveAppSubmissionDto, appSubmissionDto.getAppGrpPremisesDtoList());
+        }
+        for (AppSvcRelatedInfoDto appSvcRelatedInfoDto : oldAppSubmissionDto.getAppSvcRelatedInfoDtoList()){
+            resetRelatedInfoRFI(appSvcRelatedInfoDto, beforeRemoveAppSubmissionDto, oldAppSubmissionDto.getAppGrpPremisesDtoList());
+        }
         appSubmissionDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         oldAppSubmissionDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         if(ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appSubmissionDto.getAppType()) || ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())){
@@ -2350,17 +2357,15 @@ public class NewApplicationDelegator {
         log.info(StringUtil.changeForLog("the do doRequestInformationSubmit end ...."));
     }
 
-    private void resetRelatedInfoRFI(AppSvcRelatedInfoDto appSvcRelatedInfoDto, String appNo, List<AppGrpPremisesDto> appGrpPremisesDtoList) {
-        AppSubmissionDto appSubmissionDto = appSubmissionService.getAppSubmissionDtoByAppNo(appNo);
+    private void resetRelatedInfoRFI(AppSvcRelatedInfoDto appSvcRelatedInfoDto, AppSubmissionDto appSubmissionDto, List<AppGrpPremisesDto> appGrpPremisesDtoList) {
         if (!ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appSubmissionDto.getAppType())) {
             return;
         }
         if (appSvcRelatedInfoDto == null) {
             return;
         }
-        String serviceId = appSvcRelatedInfoDto.getServiceId();
         List<AppSvcRelatedInfoDto> otherList = getOtherAppSvcRelatedInfoDtos(appSubmissionDto.getAppSvcRelatedInfoDtoList(),
-                serviceId, appNo);
+                appSvcRelatedInfoDto.getServiceId(), appSvcRelatedInfoDto.getAppNo());
         List<HcsaServiceStepSchemeDto> hcsaServiceStepSchemesByServiceId = serviceConfigService.getHcsaServiceStepSchemesByServiceId(appSvcRelatedInfoDto.getServiceId());
         appSvcRelatedInfoDto.setHcsaServiceStepSchemeDtos(hcsaServiceStepSchemesByServiceId);
         if (otherList != null && !otherList.isEmpty()) {
@@ -4381,7 +4386,19 @@ public class NewApplicationDelegator {
         if (otherList != null && !otherList.isEmpty()) {
             List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = appSubmissionDto.getAppSvcRelatedInfoDtoList();
             appSvcRelatedInfoDtos.removeAll(otherList);
+            clearOtherServiceSvcRelate(appSvcRelatedInfoDtos);
             appSubmissionDto.setAppSvcRelatedInfoDtoList(appSvcRelatedInfoDtos);
+        }
+    }
+
+    private void clearOtherServiceSvcRelate(List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos) {
+        List<String> serviceIdList = IaisCommonUtils.genNewArrayList();
+        for (int i = appSvcRelatedInfoDtos.size() - 1; i>=0; i--){
+            if (serviceIdList.contains(appSvcRelatedInfoDtos.get(i).getServiceId())){
+                appSvcRelatedInfoDtos.remove(i);
+            }else {
+                serviceIdList.add(appSvcRelatedInfoDtos.get(i).getServiceId());
+            }
         }
     }
 

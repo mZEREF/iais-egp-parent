@@ -1166,10 +1166,12 @@ public class ClinicalLaboratoryDelegator {
                     String specialtyStr = "";
                     String subSpecialtyStr = "";
                     String qualificationStr = "";
-                    if(professionalResponseDto != null){
-                        if(StringUtil.isEmpty(professionalResponseDto.getRegno())){
+                    if (professionalResponseDto != null) {
+                        if (professionalResponseDto.isHasException() || StringUtil.isEmpty(professionalResponseDto.getRegno())) {
                             log.debug(StringUtil.changeForLog("prs svc down ..."));
-                            bpc.request.setAttribute("PRS_SERVICE_DOWN","PRS_SERVICE_DOWN");
+                            if (professionalResponseDto.isHasException()) {
+                                bpc.request.setAttribute("PRS_SERVICE_DOWN", "PRS_SERVICE_DOWN");
+                            }
                             appSvcCgoDto.setSpeciality(specialtyStr);
                             appSvcCgoDto.setSubSpeciality(subSpecialtyStr);
                             appSvcCgoDto.setQualification(qualificationStr);
@@ -2221,11 +2223,14 @@ public class ClinicalLaboratoryDelegator {
                     String currRegiDateStr = "";
                     String praCerEndDateStr = "";
                     String typeOfRegister = "";
-                    if(professionalResponseDto != null){
-                        if(StringUtil.isEmpty(professionalResponseDto.getRegno())){
+                    if (professionalResponseDto != null) {
+                        if (professionalResponseDto.isHasException() || StringUtil.isEmpty(professionalResponseDto.getRegno())) {
                             log.debug(StringUtil.changeForLog("prs svc down ..."));
-                            bpc.request.setAttribute("PRS_SERVICE_DOWN","PRS_SERVICE_DOWN");
-                            setClinicalDirectorPrsInfo(appSvcPsnDto, specialtyStr, specialtyGetDateStr, typeOfCurrRegi, currRegiDateStr, praCerEndDateStr, typeOfRegister);
+                            if (professionalResponseDto.isHasException()) {
+                                bpc.request.setAttribute("PRS_SERVICE_DOWN", "PRS_SERVICE_DOWN");
+                            }
+                            setClinicalDirectorPrsInfo(appSvcPsnDto, specialtyStr, specialtyGetDateStr, typeOfCurrRegi,
+                                    currRegiDateStr, praCerEndDateStr, typeOfRegister);
                             continue;
                         }
                         boolean needLoadName =

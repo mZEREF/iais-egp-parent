@@ -262,26 +262,25 @@ public class LicenceServiceImpl implements LicenceService {
     public EventBusLicenceGroupDtos createFESuperLicDto(String eventRefNum,String submissionId) {
         EventBusLicenceGroupDtos eventBusLicenceGroupDtos =  getEventBusLicenceGroupDtosByRefNo(eventRefNum);
         if(eventBusLicenceGroupDtos!=null){
-            Date now = new Date();
-            EicRequestTrackingDto trackDto = licEicClient.getPendingRecordByReferenceNumber(eventRefNum).getEntity();
-            trackDto.setProcessNum(trackDto.getProcessNum() + 1);
-            trackDto.setFirstActionAt(now);
-            trackDto.setLastActionAt(now);
-            try {
-                eicCallFeSuperLic(eventBusLicenceGroupDtos);
-                trackDto.setStatus(AppConsts.EIC_STATUS_PROCESSING_COMPLETE);
-            } catch (Exception e) {
-                log.error(e.getMessage(), e);
-            }
-            hcsaLicenceClient.updateEicTrackStatus(trackDto);
+//            Date now = new Date();
+//            EicRequestTrackingDto trackDto = licEicClient.getPendingRecordByReferenceNumber(eventRefNum).getEntity();
+//            trackDto.setProcessNum(trackDto.getProcessNum() + 1);
+//            trackDto.setFirstActionAt(now);
+//            trackDto.setLastActionAt(now);
+//            try {
+//                eicCallFeSuperLic(eventBusLicenceGroupDtos);
+//                trackDto.setStatus(AppConsts.EIC_STATUS_PROCESSING_COMPLETE);
+//            } catch (Exception e) {
+//                log.error(e.getMessage(), e);
+//            }
+//            hcsaLicenceClient.updateEicTrackStatus(trackDto);
             //send approve notification
             try{
                 //save new acra info
 //                saveNewAcra(eventBusLicenceGroupDtos);
                 //send issue uen email
                 log.info(StringUtil.changeForLog("send uen email"));
-                generateUEN(eventBusLicenceGroupDtos);
-                sendUenEmail(eventBusLicenceGroupDtos);
+//                generateUEN(eventBusLicenceGroupDtos);
                 for (LicenceGroupDto item:eventBusLicenceGroupDtos.getLicenceGroupDtos()
                 ) {
                     for (SuperLicDto superLicDto : item.getSuperLicDtos()
@@ -319,7 +318,7 @@ public class LicenceServiceImpl implements LicenceService {
         log.info("----- create save-lic-app-risk-by-licdtos end ");
     }
 
-    private void generateUEN(EventBusLicenceGroupDtos eventBusLicenceGroupDtos) {
+    public void generateUEN(EventBusLicenceGroupDtos eventBusLicenceGroupDtos) {
         log.info(StringUtil.changeForLog("The generateUen start ..."));
         try{
             IaisUENDto iaisUENDto = new IaisUENDto();
@@ -348,6 +347,7 @@ public class LicenceServiceImpl implements LicenceService {
                 log.info(StringUtil.changeForLog("The generateUen licenceGroupDtos is null "));
             }
             acraUenBeClient.generateUen(iaisUENDto);
+            sendUenEmail(eventBusLicenceGroupDtos);
         }catch (Throwable t){
             log.error(StringUtil.changeForLog( t.getMessage()),t);
         }
