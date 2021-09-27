@@ -2299,8 +2299,8 @@ public class NewApplicationDelegator {
 
         //add group other premise
         AppSubmissionDto beforeRemoveAppSubmissionDto = appSubmissionService.getAppSubmissionDtoByAppNo(appNo);
-        List<AppGrpPremisesDto> appGrpPremisesDtos =  (List<AppGrpPremisesDto>) CopyUtil.copyMutableObject(beforeRemoveAppSubmissionDto.getAppGrpPremisesDtoList());
-        oldAppSubmissionDto.setAppGrpPremisesDtoList((List<AppGrpPremisesDto>) CopyUtil.copyMutableObject(appGrpPremisesDtos));
+        List<AppGrpPremisesDto> appGrpPremisesDtos = (List<AppGrpPremisesDto>) CopyUtil.copyMutableObjectList(beforeRemoveAppSubmissionDto.getAppGrpPremisesDtoList());
+        oldAppSubmissionDto.setAppGrpPremisesDtoList((List<AppGrpPremisesDto>) CopyUtil.copyMutableObjectList(appGrpPremisesDtos));
         AppGrpPremisesDto currentAppGrpPremisesDto = appSubmissionDto.getAppGrpPremisesDtoList().get(0);
         for (int i = appGrpPremisesDtos.size()-1;i>=0;i--){
             if (StringUtil.isNotEmpty(currentAppGrpPremisesDto.getPremisesIndexNo()) &&
