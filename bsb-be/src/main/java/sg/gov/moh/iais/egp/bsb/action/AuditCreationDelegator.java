@@ -77,7 +77,9 @@ public class AuditCreationDelegator {
             List<FacilityActivity> activityList = new ArrayList<>();
             for (FacilityAudit audit : audits) {
                 activityList = auditClient.getFacilityActivityByFacilityId(audit.getFacility().getId()).getEntity();
-                audit.getFacility().setFacilityActivities(activityList);
+                if (activityList!=null&&activityList.size()!=0) {
+                    audit.getFacility().setFacilityActivities(activityList);
+                }
             }
 
             ParamUtil.setRequestAttr(request, AuditConstants.KEY_AUDIT_DATA_LIST, audits);
@@ -136,7 +138,9 @@ public class AuditCreationDelegator {
         for (String fId : list) {
             Facility facility = auditClient.getFacilityById(fId).getEntity();
             List<FacilityActivity> activityList = auditClient.getFacilityActivityByFacilityId(fId).getEntity();
-            facility.setFacilityActivities(activityList);
+            if (activityList!=null&&activityList.size()!=0) {
+                facility.setFacilityActivities(activityList);
+            }
             facilityList.add(facility);
         }
         ParamUtil.setSessionAttr(request, AuditConstants.FACILITY_LIST, (Serializable) facilityList);

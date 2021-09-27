@@ -87,10 +87,12 @@ public class AORevocationDelegator {
             for (Application application : applications) {
                 application.getFacility().setFacilityAddress(JoinAddress.joinAddress(application));
                 FacilityActivity activity = revocationClient.getFacilityActivityByApplicationId(application.getId()).getEntity();
-                application.getFacility().setActiveType(activity.getActivityType());
-                List<FacilitySchedule> facilityScheduleList = activity.getFacilitySchedules();
-                String bioNames = JoinBiologicalName.joinBiologicalName(facilityScheduleList,processClient);
-                application.setBiologicalName(bioNames);
+                if (activity!=null) {
+                    application.getFacility().setActiveType(activity.getActivityType());
+                    List<FacilitySchedule> facilityScheduleList = activity.getFacilitySchedules();
+                    String bioNames = JoinBiologicalName.joinBiologicalName(facilityScheduleList, processClient);
+                    application.setBiologicalName(bioNames);
+                }
             }
             ParamUtil.setRequestAttr(request, RevocationConstants.KEY_APPLICATION_DATA_LIST, applications);
         } else {

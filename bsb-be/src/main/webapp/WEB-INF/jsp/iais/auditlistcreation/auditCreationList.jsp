@@ -118,9 +118,9 @@
                                     <tr style="display: table-row;">
 <%--                                        <input type="hidden" name="auditId" value="<iais:mask name='auditId' value='${item.id}'/>">--%>
                                         <td><input name="facId" type="checkbox" id="auditId${auditIndex}" value="<iais:mask name='facId' value='${item.facility.id}'/>"></td>
-                                        <td>${item.facility.facilityName}</td>
-                                        <td><iais:code code="${item.facility.facilityClassification}"></iais:code></td>
-                                        <td>
+                                        <td width="12%">${item.facility.facilityName}</td>
+                                        <td width="15%"><iais:code code="${item.facility.facilityClassification}"></iais:code></td>
+                                        <td width="30%">
                                             <c:forEach var="activity" items="${item.facility.facilityActivities}" varStatus="status">
                                                 <c:choose>
                                                     <c:when test="${status.last}">
@@ -132,7 +132,7 @@
                                                 </c:choose>
                                             </c:forEach>
                                         </td>
-                                        <td><fmt:formatDate value='${item.auditDt}' pattern='dd/MM/yyyy'/></td>
+                                        <td><fmt:formatDate value='${item.modifiedAt}' pattern='dd/MM/yyyy'/></td>
                                         <td><iais:code code="${item.auditType}"></iais:code></td>
                                         <td><iais:code code="${item.scenarioCategory}"></iais:code></td>
                                         <td><c:out value="${item.auditOutcome}"/></td>

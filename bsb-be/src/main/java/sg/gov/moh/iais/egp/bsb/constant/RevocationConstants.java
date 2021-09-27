@@ -14,6 +14,7 @@ public final class RevocationConstants {
     public static final String PARAM_APPLICATION_MISC_LIST = "applicationMiscList";
     public static final String PARAM_APPLICATION_SEARCH_RESULT = "applicationSearchResult";
     public static final String PARAM_APPLICATION_SEARCH = "applicationSearch";
+    public static final String PARAM_APPLICATION = "application";
     public static final String PARAM_FACILITY_SEARCH = "facilitySearch";
     public static final String PARAM_PROCESSING_HISTORY = "processingHistory";
 
@@ -61,6 +62,10 @@ public final class RevocationConstants {
     public static final String PARAM_PROCESS_TYPE_SPECIAL_APPROVAL_TO_HANDLE = "PROTYPE004";
     public static final String PARAM_PROCESS_TYPE_FACILITY_REGISTRATION = "PROTYPE001";
     public static final String PARAM_PROCESS_TYPE_AFC_REGISTRATION = "PROTYPE005";
+
+    public static final String PARAM_APPROVAL_TYPE_APPROVAL_TO_POSSESS = "APPRTY001";
+    public static final String PARAM_APPROVAL_TYPE_APPROVAL_TO_LSP = "APPRTY002";
+    public static final String PARAM_APPROVAL_TYPE_SPECIAL_APPROVAL_TO_HANDLE = "APPRTY003";
 
     public static final String MODULE_REVOCATION = "Revocation";
     public static final String FUNCTION_REVOCATION = "Revocation";

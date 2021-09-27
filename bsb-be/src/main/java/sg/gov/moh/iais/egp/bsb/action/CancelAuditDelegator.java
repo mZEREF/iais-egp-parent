@@ -69,7 +69,9 @@ public class CancelAuditDelegator {
             List<FacilityAudit> audits = searchResult.getEntity().getTasks();
             for (FacilityAudit audit : audits) {
                 List<FacilityActivity> activityList = auditClient.getFacilityActivityByFacilityId(audit.getFacility().getId()).getEntity();
-                audit.getFacility().setFacilityActivities(activityList);
+                if (activityList!=null&&activityList.size()!=0) {
+                    audit.getFacility().setFacilityActivities(activityList);
+                }
             }
             ParamUtil.setRequestAttr(request, AuditConstants.KEY_AUDIT_DATA_LIST, audits);
         } else {
@@ -114,7 +116,9 @@ public class CancelAuditDelegator {
         for (String auditId : auditIds) {
             FacilityAudit facilityAudit = auditClient.getFacilityAuditById(auditId).getEntity();
             List<FacilityActivity> activityList = auditClient.getFacilityActivityByFacilityId(facilityAudit.getFacility().getId()).getEntity();
-            facilityAudit.getFacility().setFacilityActivities(activityList);
+            if (activityList!=null&&activityList.size()!=0) {
+                facilityAudit.getFacility().setFacilityActivities(activityList);
+            }
             auditList.add(facilityAudit);
         }
         ParamUtil.setSessionAttr(request, AuditConstants.AUDIT_LIST, (Serializable) auditList);
@@ -149,7 +153,9 @@ public class CancelAuditDelegator {
         FacilityAudit facilityAudit = auditClient.getFacilityAuditById(facilityAuditApp.getFacilityAudit().getId()).getEntity();
 
         List<FacilityActivity> activityList = auditClient.getFacilityActivityByFacilityId(facilityAudit.getFacility().getId()).getEntity();
-        facilityAudit.getFacility().setFacilityActivities(activityList);
+        if (activityList!=null&&activityList.size()!=0) {
+            facilityAudit.getFacility().setFacilityActivities(activityList);
+        }
 
         facilityAuditApp.setFacilityAudit(facilityAudit);
 

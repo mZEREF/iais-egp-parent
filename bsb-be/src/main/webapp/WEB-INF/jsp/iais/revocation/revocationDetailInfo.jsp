@@ -6,7 +6,7 @@
             <div class="table-gp">
                 <table class="table table-bordered" style="margin-bottom: 0">
                     <tbody>
-<%--                    <c:forEach var="item" items="${revocationDetail}">--%>
+                        <input type="text" value="${facility.id}" name="facilityId" hidden/>
                         <input type="text" value="${facility.id}" name="facilityId" hidden/>
                         <tr>
                             <td align="right">Active Approval No. to be revoked</td>
@@ -52,7 +52,6 @@
                             <td align="right">Approval Status</td>
                             <td style="padding-left : 20px"><iais:code code="${facility.approvalStatus}"></iais:code></td>
                         </tr>
-<%--                    </c:forEach>--%>
                     </tbody>
                 </table>
             </div>

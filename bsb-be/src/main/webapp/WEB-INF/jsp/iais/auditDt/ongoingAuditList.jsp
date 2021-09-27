@@ -77,7 +77,7 @@
                                 <iais:row>
                                     <iais:field value="Audit Window Period" required="false"/>
                                     <iais:value width="18">
-                                        <p><c:out value="1/1/${year} - 31/12/${year}"></c:out></p>
+                                        <p style="font-size: large"><c:out value="1/1/${year} - 31/12/${year}"></c:out></p>
                                     </iais:value>
                                 </iais:row>
 
@@ -107,6 +107,7 @@
                                     <iais:sortableHeader needSort="true" field="facility.facilityClassification" value="Facility Classification" isFE="false"/>
                                     <iais:sortableHeader needSort="false" field="facility.facilityType" value="Activity type" isFE="false"/>
                                     <iais:sortableHeader needSort="true" field="auditType" value="Audit Type" isFE="false"/>
+                                    <iais:sortableHeader needSort="true" field="auditDt" value="Audit Date" isFE="false"/>
                                     <iais:sortableHeader needSort="false" field="" value="Action" isFE="false"/>
                                 </tr>
                                 </thead>
@@ -116,9 +117,9 @@
                                     <tr style="display: table-row;">
                                         <input type="text" value="<fmt:formatDate value='${item.auditDt}' pattern='dd/MM/yyyy'/>" name="lastAuditDt" hidden>
                                         <td>${(status.index + 1) + (pageInfo.pageNo) * pageInfo.size}</td>
-                                        <td width="10%">${item.facility.facilityName}</td>
+                                        <td width="12%">${item.facility.facilityName}</td>
                                         <td width="20%"><iais:code code="${item.facility.facilityClassification}"></iais:code></td>
-                                        <td width="40%">
+                                        <td width="30%">
                                             <c:forEach var="activity" items="${item.facility.facilityActivities}" varStatus="status">
                                                 <c:choose>
                                                     <c:when test="${status.last}">
@@ -131,8 +132,9 @@
                                             </c:forEach>
                                         </td>
                                         <td><iais:code code="${item.auditType}"></iais:code></td>
+                                        <td><fmt:formatDate value='${item.auditDt}' pattern='dd/MM/yyyy'/></td>
                                         <c:choose>
-                                            <c:when test="${item.status eq 'AUDITST003' or item.status eq 'AUDITST007'}">
+                                            <c:when test="${item.status eq 'AUDITST003' or item.status eq 'AUDITST007' or item.auditType eq 'AUDITTY002' or item.auditType eq 'AUDITTY003'}">
                                                 <td width="13%">
                                                 </td>
                                             </c:when>

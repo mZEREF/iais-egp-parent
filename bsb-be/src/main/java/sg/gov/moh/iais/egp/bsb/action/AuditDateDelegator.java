@@ -13,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import sg.gov.moh.iais.egp.bsb.client.AuditClient;
 import sg.gov.moh.iais.egp.bsb.client.BiosafetyEnquiryClient;
 import sg.gov.moh.iais.egp.bsb.constant.AuditConstants;
-import sg.gov.moh.iais.egp.bsb.constant.RevocationConstants;
 import sg.gov.moh.iais.egp.bsb.dto.PageInfo;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
 import sg.gov.moh.iais.egp.bsb.dto.audit.AuditQueryDto;
@@ -74,9 +73,10 @@ public class AuditDateDelegator {
             List<FacilityActivity> activityList = new ArrayList<>();
             for (FacilityAudit audit : audits) {
                 activityList = auditClient.getFacilityActivityByFacilityId(audit.getFacility().getId()).getEntity();
-                audit.getFacility().setFacilityActivities(activityList);
+                if (activityList!=null&&activityList.size()!=0) {
+                    audit.getFacility().setFacilityActivities(activityList);
+                }
             }
-
             ParamUtil.setRequestAttr(request, AuditConstants.KEY_AUDIT_DATA_LIST, audits);
         } else {
             log.warn("get audit API doesn't return ok, the response is {}", searchResult);

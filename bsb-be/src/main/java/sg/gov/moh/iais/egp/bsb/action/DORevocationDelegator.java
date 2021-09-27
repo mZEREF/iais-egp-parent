@@ -4,6 +4,7 @@ import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
+import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
@@ -25,6 +26,7 @@ import sg.gov.moh.iais.egp.bsb.dto.revocation.FacilityQueryDto;
 import sg.gov.moh.iais.egp.bsb.dto.revocation.FacilityQueryResultDto;
 import sg.gov.moh.iais.egp.bsb.entity.*;
 import sg.gov.moh.iais.egp.bsb.helper.BsbNotificationHelper;
+import sg.gov.moh.iais.egp.bsb.util.JoinActivityType;
 import sg.gov.moh.iais.egp.bsb.util.JoinAddress;
 import sop.webflow.rt.api.BaseProcessClass;
 
@@ -74,7 +76,7 @@ public class DORevocationDelegator {
      */
     public void prepareFacilityListData(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
-        FacilityQueryDto searchDto=getSearchDto(request);
+        FacilityQueryDto searchDto = getSearchDto(request);
         ParamUtil.setSessionAttr(request, RevocationConstants.PARAM_FACILITY_SEARCH, searchDto);
         // call API to get searched data
         ResponseDto<FacilityQueryResultDto> searchResult = revocationClient.queryActiveFacility(searchDto);
@@ -172,16 +174,15 @@ public class DORevocationDelegator {
      */
     public void prepareData(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
-        ParamUtil.setSessionAttr(request,RevocationConstants.FACILITY,null);
+        ParamUtil.setSessionAttr(request, RevocationConstants.FACILITY, null);
         ParamUtil.setSessionAttr(request, RevocationConstants.PARAM_REVOCATION_DETAIL, null);
-        ParamUtil.setSessionAttr(request,RevocationConstants.AUDIT_DOC_DTO, null);
-        ParamUtil.setSessionAttr(request,RevocationConstants.FLAG,null);
+        ParamUtil.setSessionAttr(request, RevocationConstants.AUDIT_DOC_DTO, null);
+        ParamUtil.setSessionAttr(request, RevocationConstants.FLAG, null);
 
-        String from = ParamUtil.getRequestString(request,RevocationConstants.FROM);
+        String from = ParamUtil.getRequestString(request, RevocationConstants.FROM);
 
         if (StringUtil.isNotEmpty(from)) {
             if (from.equals(RevocationConstants.APP)) {
-                List<Application> list = new ArrayList<>();
                 String appId = ParamUtil.getMaskedString(request, RevocationConstants.PARAM_APP_ID);
                 Application application = revocationClient.getApplicationById(appId).getEntity();
                 //Do address processing
@@ -189,26 +190,28 @@ public class DORevocationDelegator {
                 application.getFacility().setFacilityAddress(address);
 
                 FacilityActivity activity = revocationClient.getFacilityActivityByApplicationId(application.getId()).getEntity();
-                application.getFacility().setActiveType(activity.getActivityType());
+                if (activity != null) {
+                    application.getFacility().setActiveType(activity.getActivityType());
+                }
 
-                list.add(application);
-                ParamUtil.setSessionAttr(request, RevocationConstants.PARAM_REVOCATION_DETAIL, (Serializable) list);
+                ParamUtil.setSessionAttr(request, RevocationConstants.PARAM_APPLICATION, application);
                 ParamUtil.setSessionAttr(request, RevocationConstants.FACILITY, application.getFacility());
-                ParamUtil.setSessionAttr(request,RevocationConstants.FLAG,RevocationConstants.APP);
+                ParamUtil.setSessionAttr(request, RevocationConstants.FLAG, RevocationConstants.APP);
             }
-            if(from.equals(RevocationConstants.FAC)){
+            if (from.equals(RevocationConstants.FAC)) {
                 String facId = ParamUtil.getMaskedString(request, RevocationConstants.PARAM_FACILITY_ID);
                 Facility facility = auditClient.getFacilityById(facId).getEntity();
-
-                Application application=new Application();
+                Application application = new Application();
                 application.setFacility(facility);
                 String address = JoinAddress.joinAddress(application);
                 facility.setFacilityAddress(address);
 
                 List<FacilityActivity> activities = facility.getFacilityActivities();
-                facility.setFacilityActivities(activities);
+                if (activities != null && activities.size() != 0) {
+                    facility.setFacilityActivities(activities);
+                }
                 ParamUtil.setSessionAttr(request, RevocationConstants.FACILITY, facility);
-                ParamUtil.setSessionAttr(request,RevocationConstants.FLAG,RevocationConstants.FAC);
+                ParamUtil.setSessionAttr(request, RevocationConstants.FLAG, RevocationConstants.FAC);
             }
         }
     }
@@ -223,80 +226,98 @@ public class DORevocationDelegator {
 
         String facilityId = ParamUtil.getString(request, RevocationConstants.PARAM_FACILITY_ID);
 
-        Application resultDto = new Application();
-        Facility facility = new Facility();
-        facility.setId(facilityId);
-        resultDto.setFacility(facility);
-        resultDto.setAppType(RevocationConstants.PARAM_APPLICATION_TYPE_REVOCATION);
-        //
-        resultDto.setProcessType(RevocationConstants.PARAM_PROCESS_TYPE_FACILITY_REGISTRATION);
-        //
-        resultDto.setStatus(RevocationConstants.PARAM_APPLICATION_STATUS_PENDING_AO);
-        resultDto.setApplicationDt(new Date());
+        String flag = (String) ParamUtil.getSessionAttr(request, RevocationConstants.FLAG);
+        Facility facility1 = (Facility) ParamUtil.getSessionAttr(request, RevocationConstants.FACILITY);
+        FeignResponseEntity<Application> result = null;
+        if (flag.equals(RevocationConstants.FAC)) {
+            Application resultDto = new Application();
+            Facility facility = new Facility();
+            facility.setId(facilityId);
+            resultDto.setFacility(facility);
+            resultDto.setAppType(RevocationConstants.PARAM_APPLICATION_TYPE_REVOCATION);
 
-        FeignResponseEntity<Application> result = revocationClient.saveApplication(resultDto);
+            String approvalType = facility1.getApprovalType();
+            if (approvalType != null) {
+                if (approvalType.equals(RevocationConstants.PARAM_APPROVAL_TYPE_APPROVAL_TO_POSSESS)) {
+                    resultDto.setProcessType(RevocationConstants.PARAM_PROCESS_TYPE_APPROVAL_TO_POSSESS);
+                }
+                if (approvalType.equals(RevocationConstants.PARAM_APPROVAL_TYPE_APPROVAL_TO_LSP)) {
+                    resultDto.setProcessType(RevocationConstants.PARAM_PROCESS_TYPE_APPROVAL_TO_LSP);
+                }
+                if (approvalType.equals(RevocationConstants.PARAM_APPROVAL_TYPE_SPECIAL_APPROVAL_TO_HANDLE)) {
+                    resultDto.setProcessType(RevocationConstants.PARAM_PROCESS_TYPE_SPECIAL_APPROVAL_TO_HANDLE);
+                }
+            }
+            resultDto.setStatus(RevocationConstants.PARAM_APPLICATION_STATUS_PENDING_AO);
+            resultDto.setApplicationDt(new Date());
+            result = revocationClient.saveApplication(resultDto);
+        }
+        if (flag.equals(RevocationConstants.APP)) {
+            Application resultDto = (Application)ParamUtil.getSessionAttr(request, RevocationConstants.PARAM_APPLICATION);
+            Facility facility = new Facility();
+            facility.setId(facilityId);
+            resultDto.setFacility(facility);
+            resultDto.setStatus(RevocationConstants.PARAM_APPLICATION_STATUS_PENDING_AO);
+            resultDto.setApplicationDt(new Date());
+            result = revocationClient.updateApplication(resultDto);
+        }
 
         String reason = ParamUtil.getString(request, RevocationConstants.PARAM_REASON);
         String remarks = ParamUtil.getString(request, RevocationConstants.PARAM_DOREMARKS);
 
         ApplicationMisc miscDto = new ApplicationMisc();
-        Application app=new Application();
+        Application app = new Application();
         app.setId(result.getEntity().getId());
         miscDto.setRemarks(remarks);
         miscDto.setReasonContent(reason);
         miscDto.setApplication(app);
         miscDto.setReason(RevocationConstants.PARAM_REASON_TYPE_DO);
-
-        ResponseDto<ApplicationMisc> miscResponseDto= revocationClient.saveApplicationMisc(miscDto).getEntity();
-        if("INVALID_ARGS".equals(miscResponseDto.getErrorCode())) {
+        ResponseDto<ApplicationMisc> miscResponseDto = revocationClient.saveApplicationMisc(miscDto);
+        if ("INVALID_ARGS".equals(miscResponseDto.getErrorCode())) {
             ParamUtil.setRequestAttr(request, ERROR_INFO_ERROR_MSG, miscResponseDto.getErrorInfos().get(ERROR_INFO_ERROR_MSG));
         }
 
         //get user name
-        LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
-
-        RoutingHistory historyDto=new RoutingHistory();
-        historyDto.setAppStatus(result.getEntity().getStatus());
+        LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
+        Application application = result.getEntity();
+        RoutingHistory historyDto = new RoutingHistory();
+        historyDto.setAppStatus(RevocationConstants.PARAM_APPLICATION_STATUS_PENDING_AO);
         historyDto.setActionBy(loginContext.getUserName());
         historyDto.setInternalRemarks(miscDto.getRemarks());
-        historyDto.setApplicationNo(result.getEntity().getApplicationNo());
+        historyDto.setApplicationNo(application.getApplicationNo());
         revocationClient.saveHistory(historyDto);
 
-        List<Application> list = (List<Application>) ParamUtil.getSessionAttr(request, RevocationConstants.PARAM_REVOCATION_DETAIL);
-        String flag = (String) ParamUtil.getSessionAttr(request,RevocationConstants.FLAG);
         BsbEmailParam bsbEmailParam = new BsbEmailParam();
-        if (flag.equals(RevocationConstants.APP)) {
-            for (Application application : list) {
-                bsbEmailParam.setMsgTemplateId(MSG_TEMPLATE_REVOCATION_AO_APPROVED);
-                bsbEmailParam.setRefId(application.getFacility().getId());
-                bsbEmailParam.setRefIdType("facId");
-                bsbEmailParam.setQueryCode("1");
-                bsbEmailParam.setReqRefNum("1");
-                Map map = new HashMap();
-                map.put("applicationNo", application.getApplicationNo());
-                map.put("ApprovalNo", "Approval001");
-                if (application.getProcessType().equals(RevocationConstants.PARAM_PROCESS_TYPE_APPROVAL_TO_POSSESS)
-                        || application.getProcessType().equals(RevocationConstants.PARAM_PROCESS_TYPE_APPROVAL_TO_LSP)
-                        || application.getProcessType().equals(RevocationConstants.PARAM_PROCESS_TYPE_SPECIAL_APPROVAL_TO_HANDLE)) {
-                    map.put("Type", application.getFacility().getApprovalType());
-                }
-                if (application.getProcessType().equals(RevocationConstants.PARAM_PROCESS_TYPE_FACILITY_REGISTRATION)) {
-                    map.put("Type", application.getFacility().getFacilityType());
-                }
-                if (application.getProcessType().equals(RevocationConstants.PARAM_PROCESS_TYPE_AFC_REGISTRATION)) {
-                    map.put("Type", MasterCodeUtil.getCodeDesc(RevocationConstants.PARAM_PROCESS_TYPE_AFC_REGISTRATION));
-                }
-                map.put("officer", loginContext.getUserName());
-                Map subMap = new HashMap();
-                subMap.put("applicationNo", application.getApplicationNo());
-                bsbEmailParam.setMsgSubject(subMap);
-                bsbEmailParam.setMsgContent(map);
+        bsbEmailParam.setMsgTemplateId(MSG_TEMPLATE_REVOCATION_AO_APPROVED);
+        bsbEmailParam.setRefId(application.getFacility().getId());
+        bsbEmailParam.setRefIdType("facId");
+        bsbEmailParam.setQueryCode("1");
+        bsbEmailParam.setReqRefNum("1");
+        Map map = new HashMap();
+        map.put("applicationNo", application.getApplicationNo());
+        map.put("ApprovalNo", "Approval001");
+        if (application.getProcessType().equals(RevocationConstants.PARAM_PROCESS_TYPE_APPROVAL_TO_POSSESS)
+                || application.getProcessType().equals(RevocationConstants.PARAM_PROCESS_TYPE_APPROVAL_TO_LSP)
+                || application.getProcessType().equals(RevocationConstants.PARAM_PROCESS_TYPE_SPECIAL_APPROVAL_TO_HANDLE)) {
+            map.put("Type", facility1.getApprovalType());
+        }
+        if (application.getProcessType().equals(RevocationConstants.PARAM_PROCESS_TYPE_FACILITY_REGISTRATION)) {
+            List<FacilityActivity> activityList = auditClient.getFacilityActivityByFacilityId(facility1.getId()).getEntity();
+            String activityType = "";
+            if (activityList!=null&&activityList.size()!=0) {
+                activityType = JoinActivityType.joinActivityType(activityList);
             }
-            bsbNotificationHelper.sendNotification(bsbEmailParam);
+            map.put("Type", activityType);
         }
-        if (flag.equals(RevocationConstants.FAC)) {
-
+        if (application.getProcessType().equals(RevocationConstants.PARAM_PROCESS_TYPE_AFC_REGISTRATION)) {
+            map.put("Type", MasterCodeUtil.getCodeDesc(RevocationConstants.PARAM_PROCESS_TYPE_AFC_REGISTRATION));
         }
+        map.put("officer", loginContext.getUserName());
+        Map subMap = new HashMap();
+        subMap.put("applicationNo", application.getApplicationNo());
+        bsbEmailParam.setMsgSubject(subMap);
+        bsbEmailParam.setMsgContent(map);
+        bsbNotificationHelper.sendNotification(bsbEmailParam);
     }
 
     /**
@@ -306,13 +327,6 @@ public class DORevocationDelegator {
      */
     public void updateNum(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
-//        List<Application> list=new LinkedList<>();
-//        Application application = revocationClient.getApplicationById("ED1354B8-57FA-EB11-BE6E-000C298D317C").getEntity();
-        //Do address processing
-//        String address = JoinAddress.joinAddress(application);
-//        application.getFacility().setFacilityAddress(address);
-//        list.add(application);
-//        ParamUtil.setRequestAttr(request, RevocationConstants.PARAM_REVOCATION_DETAIL, list);
         //TODO update inventory method
     }
 
@@ -328,11 +342,11 @@ public class DORevocationDelegator {
         return dto;
     }
 
-    public void selectOption(HttpServletRequest request){
+    public void selectOption(HttpServletRequest request) {
         List<String> facNames = biosafetyEnquiryClient.queryDistinctFN().getEntity();
         List<SelectOption> selectModel = IaisCommonUtils.genNewArrayList();
         for (String facName : facNames) {
-            selectModel.add(new SelectOption(facName,facName));
+            selectModel.add(new SelectOption(facName, facName));
         }
         ParamUtil.setRequestAttr(request, AuditConstants.PARAM_FACILITY_NAME, selectModel);
     }

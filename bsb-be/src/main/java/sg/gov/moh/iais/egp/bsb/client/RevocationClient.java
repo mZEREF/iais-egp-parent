@@ -5,6 +5,7 @@ import com.ecquaria.cloudfeign.FeignResponseEntity;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.cloud.openfeign.SpringQueryMap;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
 import sg.gov.moh.iais.egp.bsb.dto.revocation.*;
@@ -15,7 +16,7 @@ import sg.gov.moh.iais.egp.bsb.entity.RoutingHistory;
 
 import java.util.List;
 
-/*
+/**
  *author: Zhu Tangtang
  */
 
@@ -29,7 +30,7 @@ public interface RevocationClient {
     FeignResponseEntity<Application> saveApplication(@RequestBody Application application);
 
     @PostMapping(path = "/bsb-application/savemisc", consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<ResponseDto<ApplicationMisc>> saveApplicationMisc(@RequestBody ApplicationMisc misc);
+    ResponseDto<ApplicationMisc> saveApplicationMisc(@RequestBody ApplicationMisc misc);
 
     @GetMapping(value = "/bsb-application/app/query", consumes = MediaType.APPLICATION_JSON_VALUE, produces =MediaType.APPLICATION_JSON_VALUE)
     ResponseDto<AOQueryResultDto> doQuery(@SpringQueryMap ApprovalOfficerQueryDto queryDto);
@@ -54,5 +55,8 @@ public interface RevocationClient {
 
     @GetMapping(value = "/bsb-facilityActivity/queryActivityByAppId")
     FeignResponseEntity<FacilityActivity> getFacilityActivityByApplicationId(@RequestParam("appId") String applicationId);
+
+    @PostMapping(value = "/bsb-application/updateApplication", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<Application> updateApplication(@RequestBody Application application);
 
 }
