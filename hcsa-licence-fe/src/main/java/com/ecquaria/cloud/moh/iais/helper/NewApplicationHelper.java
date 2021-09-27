@@ -54,6 +54,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.ReflectionUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.CommonValidator;
 import com.ecquaria.cloud.moh.iais.common.validation.SgNoValidator;
@@ -85,7 +86,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.util.ReflectionUtils;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import sop.util.DateUtil;
 
@@ -2236,10 +2236,9 @@ public class NewApplicationHelper {
             }
             Class psnClsa = personFieldDto.getClass();
             Field[] fs = psnClsa.getDeclaredFields();
-            for(Field f:fs){
-                ReflectionUtils.makeAccessible(f);
-                Object value = IaisCommonUtils.getFieldValue(personFieldDto, f);
-                if(!StringUtil.isEmpty(value)){
+            for (Field f : fs) {
+                Object value = ReflectionUtil.getPropertyObj(f, personFieldDto);
+                if (!StringUtil.isEmpty(value)) {
                     result = false;
                     break;
                 }
@@ -2261,20 +2260,9 @@ public class NewApplicationHelper {
                 if( Modifier.isStatic(f.getModifiers())) {
                     continue;
                 }
-                ReflectionUtils.makeAccessible(f);
-                Object value = IaisCommonUtils.getFieldValue(personFieldDto, f);
+                Object value = ReflectionUtil.getPropertyObj(f, personFieldDto);
                 if(StringUtil.isEmpty(value)){
-                    String fieldName = f.getName();
-                    Field field = null;
-                    try {
-                        field = appPsnEditDto.getClass().getDeclaredField(fieldName);
-                        ReflectionUtils.makeAccessible(field);
-                        field.setBoolean(appPsnEditDto,true);
-                    } catch (NoSuchFieldException e) {
-                        log.debug(StringUtil.changeForLog("not found this field:"+fieldName));
-                    } catch (IllegalAccessException e) {
-                        log.error(e.getMessage(), e);
-                    }
+                    ReflectionUtil.setPropertyObj(f.getName(), true, appPsnEditDto);
                 }
             }
             //confirm with mingde , person_ext field can edit anytime
@@ -2309,26 +2297,12 @@ public class NewApplicationHelper {
         return appPsnEditDto;
     }
 
-    public static String[] setPsnValue(String[] arr, int i, AppSvcPrincipalOfficersDto person,String fieldName){
-        if(arr == null){
+    public static String[] setPsnValue(String[] arr, int i, AppSvcPrincipalOfficersDto person, String fieldName) {
+        if (arr == null || arr.length <= i) {
             return new String[0];
         }
-        String value = arr[i];
-        Field field = null;
-        try {
-            field = person.getClass().getDeclaredField(fieldName);
-        } catch (NoSuchFieldException e) {
-            log.error(StringUtil.changeForLog("not found this field:"+fieldName));
-        }
-        if(field != null){
-            ReflectionUtils.makeAccessible(field);
-            try {
-                field.set(person,value);
-            } catch (IllegalAccessException e) {
-                log.error(StringUtil.changeForLog(e.getMessage()),e);
-            }
-        }
-        return removeArrIndex(arr,i);
+        ReflectionUtil.setPropertyObj(fieldName, arr[i], person);
+        return removeArrIndex(arr, i);
     }
 
     public static AppSvcPrincipalOfficersDto genAppSvcPrincipalOfficersDto(AppSvcPersonAndExtDto appSvcPersonAndExtDto, String svcCode,  boolean removeCurrExt){
@@ -3157,7 +3131,7 @@ public class NewApplicationHelper {
                     .append("=\"")
                     .append(entry.getValue())
                     .append('\"');
-            if ("name".equals(entry.getKey())) {
+            if (StringUtil.isEmpty(name) && "name".equals(entry.getKey())) {
                 name = entry.getValue();
             }
         }
@@ -4303,7 +4277,7 @@ public class NewApplicationHelper {
             blacklist = MasterCodeUtil.getCodeDesc("MS001");
         }
         Map<Integer, String> map = new LinkedHashMap<>();
-        if (StringUtil.isEmpty(blacklist) || StringUtil.isEmpty(name)) {
+        if (blacklist == null || StringUtil.isEmpty(blacklist) || StringUtil.isEmpty(name)) {
             return map;
         }
         String[] s = blacklist.split(" ");

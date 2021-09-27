@@ -5,7 +5,7 @@
 <div class="dashboard" style="background-image:url('<%=webroot1%>img/Masthead-banner.jpg')">
   <div class="container">
     <div class="navigation-gp">
-      <div class="row">
+      <div class="row d-flex">
         <%@ include file="./dashboardDropDown.jsp" %>
         <div class="col-xs-12">
           <div class="dashboard-page-title">

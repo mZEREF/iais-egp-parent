@@ -1,11 +1,10 @@
-<%@page import="com.ecquaria.cloud.moh.iais.helper.MessageUtil" %>
 <input type="text" style="display: none" name="errorMapIs" id="errorMapIs" value="${errormapIs}">
 <div class="modal fade" id="PRS_SERVICE_DOWN" role="dialog" aria-labelledby="myModalLabel">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-body" >
                 <div class="row">
-                    <div class="col-md-12"><span style="font-size: 2rem;"><%=MessageUtil.getMessageDesc("GENERAL_ERR0048")%></span></div>
+                    <div class="col-md-12"><span style="font-size: 2rem;"><iais:message key="GENERAL_ERR0048"/></span></div>
                 </div>
             </div>
             <div class="row " style="margin-top: 5%;margin-bottom: 5%">
@@ -18,6 +17,7 @@
 <script>
     var prdLoading = function ($loadingContent, prgNo, action, callBackFuns) {
         console.log('loading prs info ...');
+        showWaiting();
         var assignSelectVal = $loadingContent.find('select.assignSel').val();
         var appType = $('input[name="applicationType"]').val();
         var licPerson = $loadingContent.find('input.licPerson').val();
@@ -29,6 +29,7 @@
             if(needControlName){
                 inputCancelReadonly($loadingContent.find('.field-name'));
             }
+            dismissWaiting();
             return;
         }
 
@@ -43,46 +44,58 @@
             'success': function (data) {
                 if (isEmpty(data)) {
                     console.log("The return data is null for PRS");
+                    dismissWaiting();
                     return;
                 }
-                if(data.regno == null){
+                if (data.hasException) {
                     $('#PRS_SERVICE_DOWN').modal('show');
                     clearPrsInfo($loadingContent, callBackFuns, emptyData, needControlName, action);
                     inputCancelReadonly($loadingContent.find('.field-name'));
+                    dismissWaiting();
                     return;
                 }
-                if(data.name == null){
+                if (data.regno == null) {
+                    //$('#PRS_SERVICE_DOWN').modal('show');
+                    clearPrsInfo($loadingContent, callBackFuns, emptyData, needControlName, action);
+                    inputCancelReadonly($loadingContent.find('.field-name'));
+                    dismissWaiting();
+                    return;
+                }
+                if (data.name == null) {
                     //prgNo is incorrect
                     clearPrsInfo($loadingContent, callBackFuns, emptyData, needControlName, action);
                     if(needControlName){
                         inputReadonly($loadingContent.find('.field-name'));
                     }
-                    if(typeof callBackFuns.setEdit == 'function'){
+                    if (!isEmpty(callBackFuns) && typeof callBackFuns.setEdit == 'function') {
                         callBackFuns.setEdit($loadingContent, 'disabled', false, needControlName);
                     }
+                    dismissWaiting();
                     return;
                 }
-                if(!isEmpty(callBackFuns)){
+                if (!isEmpty(callBackFuns)) {
                     if(typeof callBackFuns.fillData == 'function'){
                         callBackFuns.fillData($loadingContent, data, needControlName);
                     }
                     if(typeof callBackFuns.setEdit == 'function'){
                         callBackFuns.setEdit($loadingContent, 'disabled', false, needControlName);
                     }
-                }else{
+                } else {
                     loadingData(data,$loadingContent);
                     if(needControlName){
                         $loadingContent.find('input[name="name"]').val(data.name);
                     }
                 }
-                if(needControlName){
+                if (needControlName) {
                     inputReadonly($loadingContent.find('.field-name'));
                 }
+                dismissWaiting();
             },
             'error': function () {
                 //
                 clearPrsInfo($loadingContent, callBackFuns, emptyData, needControlName, action);
                 inputCancelReadonly($loadingContent.find('.field-name'));
+                dismissWaiting();
             }
         });
     };

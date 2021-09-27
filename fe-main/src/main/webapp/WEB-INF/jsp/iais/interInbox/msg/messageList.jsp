@@ -8,7 +8,7 @@
         <input type="hidden" name="crud_action_value" value="">
         <input type="hidden" name="msg_page_action" value="">
         <input type="hidden" name="crud_action_additional" value="">
-        <div class="row">
+        <div class="row d-flex">
             <div class="col-md-4">
                 <label class="col-md-3 control-label" for="inboxType" style="margin-top:5%;">Type</label>
                 <div class="col-md-8">

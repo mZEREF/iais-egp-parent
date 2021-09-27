@@ -62,9 +62,9 @@
 
         <tr>
             <th scope="col" rowspan="9" width="20%" style="text-align:center;vertical-align:middle;" >Processing Time for different stages</th>
-            <th scope="col" style="text-align:center;vertical-align:middle;">Reminder Threshold</th>
-            <th scope="col" style="vertical-align:middle;">
-                <input name="reminderThreshold" style="margin-left: 20%;width: 50%" type="text" value="${reminderThreshold}" placeholder="Enter required man-days" maxlength="5" style="width: 50% ;height: 10%"/>
+            <th scope="col" style="text-align:center;vertical-align:middle;font-weight:normal;">Reminder Threshold</th>
+            <th scope="col" style="vertical-align:middle;font-weight:normal;">
+                <input name="reminderThreshold" style="margin-left: 20%;width: 50%;" type="text" value="${reminderThreshold}" placeholder="Enter required man-days" maxlength="5" style="width: 50% ;height: 10%;"/>
                 man-days<br>
                 <span style="margin-left: 20%;width: 50%" name="iaisErrorMsg" id="error_reminderThreshold" class="error-msg"></span>
             </th>

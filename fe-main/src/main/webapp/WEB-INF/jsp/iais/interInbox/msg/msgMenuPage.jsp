@@ -1,4 +1,4 @@
-<div class="row">
+<div class="row d-flex">
     <div class="col-xs-12 col-md-10">
         <div class="navigation">
             <ul class="nav nav-tabs nav-menu">
