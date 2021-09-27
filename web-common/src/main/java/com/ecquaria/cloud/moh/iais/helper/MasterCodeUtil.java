@@ -325,6 +325,7 @@ public final class MasterCodeUtil {
         if (list == null) {
             SearchParam param = new SearchParam(MasterCodeView.class.getName());
             param.setSort(SEQUENCE, SearchParam.ASCENDING);
+            param.addParam("activeFilter", "Yes");
             param.addFilter("cateFilter", cateId, true);
             QueryHelp.setMainSql(WEBCOMMON, RETRIEVE_MASTER_CODES, param);
             MasterCodeClient client = SpringContextHelper.getContext().getBean(MasterCodeClient.class);
@@ -333,13 +334,9 @@ public final class MasterCodeUtil {
                 Date now = new Date();
                 list = sr.getRows();
                 list.forEach(m -> {
-                    if (AppConsts.COMMON_STATUS_ACTIVE.equals(m.getStatus())
-                            && now.after(m.getEffectFrom())
-                            && (m.getEffectTo() == null || now.before(m.getEffectTo()))) {
-                        SpringContextHelper.getContext().getBean(RedisCacheHelper.class)
-                                .set(RedisNameSpaceConstant.CACHE_NAME_CODE, m.getCode(), m.getCodeValue(),
-                                        RedisCacheHelper.NOT_EXPIRE);
-                    }
+                    SpringContextHelper.getContext().getBean(RedisCacheHelper.class)
+                            .set(RedisNameSpaceConstant.CACHE_NAME_CODE, m.getCode(), m.getCodeValue(),
+                                    RedisCacheHelper.NOT_EXPIRE);
                 });
                 SpringContextHelper.getContext().getBean(RedisCacheHelper.class)
                         .set(RedisNameSpaceConstant.CACHE_NAME_CATE_MAP, cateId, list,
@@ -358,6 +355,7 @@ public final class MasterCodeUtil {
         if (list == null) {
             SearchParam param = new SearchParam(MasterCodeView.class.getName());
             param.setSort(SEQUENCE, SearchParam.ASCENDING);
+            param.addParam("activeFilter", "Yes");
             param.addFilter("filterAttr", filter, true);
             QueryHelp.setMainSql(WEBCOMMON, RETRIEVE_MASTER_CODES, param);
             MasterCodeClient client = SpringContextHelper.getContext().getBean(MasterCodeClient.class);
@@ -366,14 +364,10 @@ public final class MasterCodeUtil {
                 list = sr.getRows();
                 Date now = new Date();
                 list.forEach(m -> {
-                    if (AppConsts.COMMON_STATUS_ACTIVE.equals(m.getStatus())
-                            && now.after(m.getEffectFrom())
-                            && (m.getEffectTo() == null || now.before(m.getEffectTo()))) {
-                        SpringContextHelper.getContext().getBean(RedisCacheHelper.class)
-                                .set(RedisNameSpaceConstant.CACHE_NAME_CODE,
-                                        m.getCode(), m.getCodeValue(),
-                                        RedisCacheHelper.NOT_EXPIRE);
-                    }
+                    SpringContextHelper.getContext().getBean(RedisCacheHelper.class)
+                            .set(RedisNameSpaceConstant.CACHE_NAME_CODE,
+                                    m.getCode(), m.getCodeValue(),
+                                    RedisCacheHelper.NOT_EXPIRE);
                 });
                 SpringContextHelper.getContext().getBean(RedisCacheHelper.class).set(CACHE_NAME_FILTER,
                         filter, list, RedisCacheHelper.NOT_EXPIRE);
@@ -394,8 +388,14 @@ public final class MasterCodeUtil {
     }
 
     private static void addMcToCache(MasterCodeView mc) {
+        Date now = new Date();
         RedisCacheHelper rch = SpringContextHelper.getContext().getBean(RedisCacheHelper.class);
         rch.set(RedisNameSpaceConstant.CACHE_NAME_CODE, mc.getCode(), mc.getCodeValue());
+        if (!(AppConsts.COMMON_STATUS_ACTIVE.equals(mc.getStatus())
+                && now.after(mc.getEffectFrom())
+                && (mc.getEffectTo() == null || now.before(mc.getEffectTo())))) {
+            return;
+        }
         String cate = String.valueOf(mc.getCategory());
         List<MasterCodeView> list = rch.get(RedisNameSpaceConstant.CACHE_NAME_CATE_MAP, cate);
         if (list == null) {

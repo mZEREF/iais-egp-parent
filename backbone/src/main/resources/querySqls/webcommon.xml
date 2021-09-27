@@ -18,6 +18,7 @@
           sequence, status, effective_from, effective_to, version
           FROM CM_MASTER_CODE
           WHERE 1 = 1
+          <#if activeFilter??>AND status = 'CMSTAT001' AND effective_from < getdate() AND (effective_to >= getdate() or effective_to is null)</#if>
           <#if cateFilter??>AND code_category = :cateFilter</#if>
           <#if codeFilter??>AND master_code_key = :codeFilter</#if>
           <#if codeValFilter??>AND code_value = :codeValFilter</#if>
