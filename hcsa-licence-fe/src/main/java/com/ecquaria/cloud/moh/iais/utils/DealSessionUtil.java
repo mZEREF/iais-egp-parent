@@ -287,8 +287,6 @@ public class DealSessionUtil {
                 //set oldAppSubmission when rfi,rfc,rene
                 if(isRfi){
                     groupLicencePremiseRelationDis(appSubmissionDto);
-                    AppSubmissionDto oldAppSubmissionDto = (AppSubmissionDto) CopyUtil.copyMutableObject(appSubmissionDto);
-                    ParamUtil.setSessionAttr(bpc.request, NewApplicationDelegator.OLDAPPSUBMISSIONDTO, oldAppSubmissionDto);
                     //remove other premise
                     for (int i = appGrpPremisesDtos.size()-1;i>=0;i--){
                         if(!appGrpPremisesDtos.get(i).isRfiCanEdit()){
@@ -300,9 +298,9 @@ public class DealSessionUtil {
                     List<AppDeclarationDocDto> declarationFiles = appSubmissionService.getDeclarationFiles(ApplicationConsts.APPLICATION_TYPE_RENEWAL, bpc.request);
                     appSubmissionDto.setAppDeclarationMessageDto(appDeclarationMessageDto);
                     appSubmissionDto.setAppDeclarationDocDtos(declarationFiles);
-                    AppSubmissionDto oldAppSubmissionDto = (AppSubmissionDto) CopyUtil.copyMutableObject(appSubmissionDto);
-                    ParamUtil.setSessionAttr(bpc.request, NewApplicationDelegator.OLDAPPSUBMISSIONDTO, oldAppSubmissionDto);
                 }
+                AppSubmissionDto oldAppSubmissionDto = (AppSubmissionDto) CopyUtil.copyMutableObject(appSubmissionDto);
+                ParamUtil.setSessionAttr(bpc.request, NewApplicationDelegator.OLDAPPSUBMISSIONDTO, oldAppSubmissionDto);
             } else if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())) {
 
                 AppSubmissionDto oldAppSubmissionDto = appSubmissionDto.getOldAppSubmissionDto();
