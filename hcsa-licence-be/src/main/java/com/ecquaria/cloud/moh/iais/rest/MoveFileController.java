@@ -10,8 +10,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import static java.nio.file.Files.newInputStream;
@@ -30,8 +30,8 @@ public class MoveFileController {
     @Value("${iais.syncFileTracking.shared.path}")
     private String sharedPath;
 
-    @DeleteMapping(path="/{filePathName}")
-    public ResponseEntity<String> moveFile(@PathVariable("filePathName") String filePathName) {
+    @DeleteMapping
+    public ResponseEntity<String> moveFile(@RequestParam("filePathName") String filePathName) {
         File moveFile = MiscUtil.generateFile(filePathName);
         if (moveFile != null && moveFile.exists()) {
             String name = moveFile.getName();

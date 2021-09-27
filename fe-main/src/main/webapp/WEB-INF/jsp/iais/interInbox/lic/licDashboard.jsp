@@ -25,7 +25,7 @@
                     <div class="dashboard-tile-item">
                         <div class="dashboard-tile"><a data-tab="#tabApp" href="#" onclick="licToAppPage()">
                             <p class="dashboard-txt">Application Drafts</p>
-                            <h1 class="dashboard-count">${appDraftNum}</h1>
+                            <h1 class="dashboard-count">&nbsp;${appDraftNum}</h1>
                         </a></div>
                     </div>
                     <div class="dashboard-tile-item">

@@ -294,11 +294,11 @@ public class InspectionMergeSendNcEmailDelegator {
                             stringBuilder1.append("<tr><td>").append(++i);
                             //EAS or MTS
                             if(vehicleOpenFlag.equals(InspectionConstants.SWITCH_ACTION_YES)
-                                    &&applicationViewDto.getAppSvcVehicleDtos()!=null
-                                    &&(applicationViewDto.getSvcCode().equals(AppServicesConsts.SERVICE_CODE_EMERGENCY_AMBULANCE_SERVICE)
-                                    ||applicationViewDto.getSvcCode().equals(AppServicesConsts.SERVICE_CODE_MEDICAL_TRANSPORT_SERVICE))){
+                                    &&appViewDto.getAppSvcVehicleDtos()!=null
+                                    &&(appViewDto.getSvcCode().equals(AppServicesConsts.SERVICE_CODE_EMERGENCY_AMBULANCE_SERVICE)
+                                    ||appViewDto.getSvcCode().equals(AppServicesConsts.SERVICE_CODE_MEDICAL_TRANSPORT_SERVICE))){
                                 boolean isDisplayName=false;
-                                for (AppSvcVehicleDto asvd:applicationViewDto.getAppSvcVehicleDtos()
+                                for (AppSvcVehicleDto asvd:appViewDto.getAppSvcVehicleDtos()
                                 ) {
                                     if(asvd.getVehicleName().equals(ncAnswerDto.getVehicleName())){
                                         stringBuilder1.append(TD).append(StringUtil.viewHtml(asvd.getDisplayName()));

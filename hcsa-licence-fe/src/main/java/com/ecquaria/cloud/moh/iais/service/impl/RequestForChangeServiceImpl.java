@@ -2425,7 +2425,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
     }
 
     @Override
-    public boolean checkAffectedAppSubmissions(AppSubmissionDto appSubmissionDto,LicenceDto licence, double amount,
+    public boolean checkAffectedAppSubmissions(AppSubmissionDto appSubmissionDto,LicenceDto licence, Double amount,
             String draftNo, String appGroupNo, AppEditSelectDto appEditSelectDto,List<AppSubmissionDto> appSubmissionDtos,
             HttpServletRequest request) {
         if (appSubmissionDto == null) {
@@ -2475,13 +2475,22 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
             appSubmissionDto.setPreInspection(preOrPostInspectionResultDto.isPreInspection());
             appSubmissionDto.setRequirement(preOrPostInspectionResultDto.isRequirement());
         }
-        double total = amount;
+        double total = 0.0;
+        if (amount != null) {
+            total = amount.doubleValue();
+        }
         if (licence.getStatus().equals(ApplicationConsts.LICENCE_STATUS_APPROVED) && licence.getMigrated() == 1
                 && IaisEGPHelper.isActiveMigrated()) {
             total = 0.0;
         }
         appSubmissionDto.setAmount(total);
         // check app edit select dto
+        if (appEditSelectDto == null) {
+            appEditSelectDto = appSubmissionDto.getChangeSelectDto();
+        }
+        if (appEditSelectDto == null) {
+            appEditSelectDto = new AppEditSelectDto();
+        }
         AppEditSelectDto editDto = MiscUtil.transferEntityDto(appEditSelectDto, AppEditSelectDto.class);
         appSubmissionDto.setChangeSelectDto(editDto);
         appSubmissionDto.setAppType(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);

@@ -81,12 +81,6 @@ import com.ecquaria.kafka.model.Submission;
 import com.ecquaria.sz.commons.util.FileUtil;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
-
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
@@ -108,6 +102,12 @@ import java.util.zip.CRC32;
 import java.util.zip.CheckedInputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpMethod;
+import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import static java.nio.file.Files.newInputStream;
 import static java.nio.file.Files.newOutputStream;
@@ -1115,14 +1115,14 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                     String port = ConfigHelper.getString("server.port", "8080");
                     StringBuilder apiUrl = new StringBuilder("http://");
                     apiUrl.append(ip).append(':').append(port).append("/hcsa-licence-web/moveFile");
-
-                    StringBuilder logStringBuilder = new StringBuilder("Request URL ==> ");
-                    logStringBuilder.append(apiUrl.toString());
-                    log.info(StringUtil.changeForLog(logStringBuilder.toString()));
+                    log.info("Request URL ==> {}", apiUrl);
 
                     RestTemplate restTemplate = new RestTemplate();
                     try {
-                        restTemplate.delete(apiUrl.toString(), file.getCanonicalPath());
+//                        restTemplate.delete(apiUrl.toString(), file.getCanonicalPath());
+                        Map<String, String> params = IaisCommonUtils.genNewHashMap(1);
+                        params.put("filePathName", file.getCanonicalPath());
+                        restTemplate.execute(apiUrl.toString(), HttpMethod.DELETE, null, null, params);
                     } catch (Throwable e) {
                         log.error(e.getMessage(), e);
                     }
