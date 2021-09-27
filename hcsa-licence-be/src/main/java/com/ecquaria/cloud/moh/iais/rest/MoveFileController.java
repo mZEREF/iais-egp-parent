@@ -30,7 +30,7 @@ public class MoveFileController {
     @Value("${iais.syncFileTracking.shared.path}")
     private String sharedPath;
 
-    @DeleteMapping()
+    @DeleteMapping
     public ResponseEntity<String> moveFile(@RequestParam("filePathName") String filePathName) {
         log.info("File Path Name ==> {}", filePathName);
         File moveFile = MiscUtil.generateFile(filePathName);
