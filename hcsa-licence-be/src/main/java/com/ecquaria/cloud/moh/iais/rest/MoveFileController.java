@@ -32,6 +32,7 @@ public class MoveFileController {
 
     @DeleteMapping()
     public ResponseEntity<String> moveFile(@RequestParam("filePathName") String filePathName) {
+        log.info("File Path Name ==> {}", filePathName);
         File moveFile = MiscUtil.generateFile(filePathName);
         if (moveFile != null && moveFile.exists()) {
             String name = moveFile.getName();
