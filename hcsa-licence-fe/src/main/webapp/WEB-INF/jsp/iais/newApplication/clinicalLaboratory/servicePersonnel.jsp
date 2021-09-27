@@ -641,6 +641,7 @@
           console.log("An exception for PRS");
           $('#PRS_SERVICE_DOWN').modal('show');
           clearPrsInfo($loadingContent);
+          //able to edit name
           inputCancelReadonly($loadingContent.find('input[name="name"]'));
           dismissWaiting();
           return;
@@ -649,7 +650,7 @@
           clearPrsInfo($loadingContent);
           // $('#PRS_SERVICE_DOWN').modal('show');
           //able to edit name
-          inputCancelReadonly($loadingContent.find('input[name="name"]'));
+          // inputCancelReadonly($loadingContent.find('input[name="name"]'));
           console.log('return regno is empty ...');
           dismissWaiting();
           return;
