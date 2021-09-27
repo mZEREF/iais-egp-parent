@@ -186,6 +186,7 @@ public final class MasterCodeUtil {
     public static List<String> getCodeKeyByCodeValue(String codeVal){
         List<String> codeKey = IaisCommonUtils.genNewArrayList();
         SearchParam param = new SearchParam(MasterCodeView.class.getName());
+        param.addParam("activeFilter", "Yes");
         param.addFilter("codeValFilter", codeVal, true);
         QueryHelp.setMainSql(WEBCOMMON, RETRIEVE_MASTER_CODES, param);
         MasterCodeClient client = SpringContextHelper.getContext().getBean(MasterCodeClient.class);
