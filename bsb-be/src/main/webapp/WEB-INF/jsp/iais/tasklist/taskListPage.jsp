@@ -137,7 +137,19 @@
                                         </td>
                                         <td>
                                             <p class="visible-xs visible-sm table-row-title">Application No.</p>
-                                            <p><c:out value="${entity.applicationNo}"/></p>
+                                            <p>
+                                                <c:choose>
+                                                    <c:when test="${entity.appType eq 'BSBAPTY006' and entity.status eq 'BSBAPST002'}">
+                                                        <a href="/bsb-be/eservicecontinue/INTRANET/MohAOProcessingRevocation?appId=<iais:mask name='id' value='${entity.id}'/>&OWASP_CSRFTOKEN=null"><c:out value="${entity.applicationNo}"/></a>
+                                                    </c:when>
+                                                    <c:when test="${entity.appType eq 'BSBAPTY001'}">
+                                                        <a href="/bsb-be/eservicecontinue/INTRANET/MohOfficersProcess?appId=<iais:mask name='id' value='${entity.id}'/>&OWASP_CSRFTOKEN=null"><c:out value="${entity.applicationNo}"/></a>
+                                                    </c:when>
+                                                    <c:otherwise>
+                                                        <c:out value="${entity.applicationNo}"/>
+                                                    </c:otherwise>
+                                                </c:choose>
+                                            </p>
                                         </td>
                                         <td>
                                             <p class="visible-xs visible-sm table-row-title">Application Type</p>
@@ -180,6 +192,16 @@
                 <iais-bsb:Pagination size="${pageInfo.size}" pageNo="${pageInfo.pageNo + 1}" pageAmt="${pageInfo.totalPages}" totalElements="${pageInfo.totalElements}"/>
             </div>
         </div>
+        <input name="appId" id="appId" value="" hidden>
     </form>
 </div>
 
+<script>
+    $(function (){
+        $("a").click(function (event){
+            var id = $(this).attr('href').split('?')[1].split('&')[0].split('=')[1];
+            // $("#appId").val(id);
+            // alert($("#appId").val());
+        })
+    })
+</script>
