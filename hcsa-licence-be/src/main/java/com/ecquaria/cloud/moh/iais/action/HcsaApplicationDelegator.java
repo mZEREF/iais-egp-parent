@@ -3333,7 +3333,7 @@ public class HcsaApplicationDelegator {
             if (StringUtil.isEmpty(appSupDocDto.getFileRepoId())){
                 continue;
             }
-            if (!appSupDocDto.getDocType().equals("primary_doc")){
+            if (!"primary_doc".equals(appSupDocDto.getDocType())){
                 newAppSupDocDtoList.add(appSupDocDto);
                 continue;
             }
