@@ -11,7 +11,6 @@
 <script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-process.js"></script>
 <div class="dashboard">
     <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
-        <input type="hidden" name="appId" value="${application.id}">
         <input type="hidden" name="ifProcess" id="ifProcess" value="${doProcess}">
         <div class="main-content">
             <div class="row">
@@ -167,7 +166,7 @@
                                                                             <iais:row>
                                                                                 <iais:field value="Final Remarks" required="true"></iais:field>
                                                                                 <iais:value width="10">
-                                                                                    <iais:select name="finalRemarks" disabled="false" codeCategory="CATE_ID_BSB_FINAL_REMARKS" firstOption="Please Select" value="${doScreeningDto.finalRemarks}"></iais:select>
+                                                                                    <iais:select id="finalRemarks" name="finalRemarks" disabled="false" codeCategory="CATE_ID_BSB_FINAL_REMARKS" firstOption="Please Select" value="${doScreeningDto.finalRemarks}"></iais:select>
                                                                                     <span class="error-msg" name="iaisErrorMsg" id="error_finalRemarks"></span>
                                                                                 </iais:value>
                                                                             </iais:row>

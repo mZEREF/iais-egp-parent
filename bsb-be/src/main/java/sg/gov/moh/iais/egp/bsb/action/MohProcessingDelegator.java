@@ -3,6 +3,7 @@ package sg.gov.moh.iais.egp.bsb.action;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
+import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
@@ -28,6 +29,7 @@ import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.io.Serializable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -57,40 +59,37 @@ public class MohProcessingDelegator {
 
     public void prepareData(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
-        String crudActionType = ParamUtil.getString(request,ProcessContants.CRUD_ACTION_TYPE);
-        String appId = "";
-        if (crudActionType == null || crudActionType == ""){
-            appId = ParamUtil.getString(request,ProcessContants.PARAM_APP_ID);
-        }else if (crudActionType.equals(ProcessContants.CRUD_ACTION_TYPE_1)){
-            appId = ParamUtil.getMaskedString(request, ProcessContants.PARAM_APP_ID);
-        }
-        Application application = processClient.getApplicationById(appId).getEntity();
-        ApplicationMisc applicationMisc = new ApplicationMisc();
-        if (application.getStatus().equals(ProcessContants.APPLICATION_STATUS_2)){
-            applicationMisc = processClient.getApplicationMiscByApplicationIdAndAndReason(application.getId(), ProcessContants.APPLICATION_STATUS_1).getEntity();
-        }else if (application.getStatus().equals(ProcessContants.APPLICATION_STATUS_3)){
-            applicationMisc = processClient.getApplicationMiscByApplicationIdAndAndReason(application.getId(), ProcessContants.APPLICATION_STATUS_2).getEntity();
-        }
-        FacilityActivity facilityActivity = processClient.getFacilityActivityByApplicationId(appId).getEntity();
-        application.getFacility().setActiveType(facilityActivity.getActivityType());
-        List<FacilitySchedule> facilityScheduleList = facilityActivity.getFacilitySchedules();
-        List<Biological> biologicalList = JoinBiologicalName.getBioListByFacilityScheduleList(facilityScheduleList,processClient);
-        application.setBiologicalList(biologicalList);
-        List<RoutingHistory> historyDtoList = processClient.getRoutingHistoriesByApplicationNo(application.getApplicationNo()).getEntity();
-        List<FacilityDoc> facilityDocList = docClient.getFacilityDocByFacId(application.getFacility().getId()).getEntity();
-        List<FacilityDoc> docList = new ArrayList<>();
-        for (FacilityDoc facilityDoc : facilityDocList) {
+        Application application = (Application)ParamUtil.getSessionAttr(request, ProcessContants.APPLICATION_ATTR);
+        if (application == null){
+            String appId = MaskUtil.unMaskValue("id", ParamUtil.getString(request,ProcessContants.PARAM_APP_ID));
+            application = processClient.getApplicationById(appId).getEntity();
+            ApplicationMisc applicationMisc = new ApplicationMisc();
+            if (application.getStatus().equals(ProcessContants.APPLICATION_STATUS_2)){
+                applicationMisc = processClient.getApplicationMiscByApplicationIdAndAndReason(application.getId(), ProcessContants.APPLICATION_STATUS_1).getEntity();
+            }else if (application.getStatus().equals(ProcessContants.APPLICATION_STATUS_3)){
+                applicationMisc = processClient.getApplicationMiscByApplicationIdAndAndReason(application.getId(), ProcessContants.APPLICATION_STATUS_2).getEntity();
+            }
+            FacilityActivity facilityActivity = processClient.getFacilityActivityByApplicationId(appId).getEntity();
+            application.getFacility().setActiveType(facilityActivity.getActivityType());
+            List<FacilitySchedule> facilityScheduleList = facilityActivity.getFacilitySchedules();
+            List<Biological> biologicalList = JoinBiologicalName.getBioListByFacilityScheduleList(facilityScheduleList,processClient);
+            application.setBiologicalList(biologicalList);
+            List<RoutingHistory> historyDtoList = processClient.getRoutingHistoriesByApplicationNo(application.getApplicationNo()).getEntity();
+            List<FacilityDoc> facilityDocList = docClient.getFacilityDocByFacId(application.getFacility().getId()).getEntity();
+            List<FacilityDoc> docList = new ArrayList<>();
+            for (FacilityDoc facilityDoc : facilityDocList) {
 //            String submitByName = IaisEGPHelper.getCurrentAuditTrailDto().getMohUserId();
 //            facilityDoc.setSubmitByName(submitByName);
-            docList.add(facilityDoc);
+                docList.add(facilityDoc);
+            }
+            AuditDocDto auditDocDto = new AuditDocDto();
+            auditDocDto.setFacilityDocs(docList);
+            ParamUtil.setSessionAttr(request, RevocationConstants.AUDIT_DOC_DTO, auditDocDto);
+            ParamUtil.setSessionAttr(request, ProcessContants.APPLICATION_MISC,applicationMisc);
+            ParamUtil.setSessionAttr(request, ProcessContants.PARAM_PROCESSING_HISTORY,(Serializable) historyDtoList);
+            ParamUtil.setSessionAttr(request, ProcessContants.APPLICATION_ATTR, application);
         }
-        AuditDocDto auditDocDto = new AuditDocDto();
-        auditDocDto.setFacilityDocs(docList);
-        ParamUtil.setSessionAttr(request, RevocationConstants.AUDIT_DOC_DTO, auditDocDto);
-        ParamUtil.setRequestAttr(request, ProcessContants.PARAM_APP_ID,appId);
-        ParamUtil.setRequestAttr(request, ProcessContants.APPLICATION_MISC,applicationMisc);
-        ParamUtil.setRequestAttr(request, ProcessContants.PARAM_PROCESSING_HISTORY,historyDtoList);
-        ParamUtil.setSessionAttr(request, ProcessContants.APPLICATION_ATTR, application);
+
     }
 
     public void prepareSwitch(BaseProcessClass bpc) throws ParseException{

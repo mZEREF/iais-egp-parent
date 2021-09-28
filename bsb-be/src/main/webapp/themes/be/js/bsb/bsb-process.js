@@ -23,6 +23,7 @@ $(function () {
         $("#riskLevel option:first").prop("selected",'selected');
         $("#processingDecision option:first").prop("selected",'selected');
         $("#selectedApprovedFacilityCertifier option:first").prop("selected",'selected');
+        $("#finalRemarks option:first").prop("selected",'selected');
         $("#beInboxFilter .current").text("Please Select");
     })
 })

@@ -142,7 +142,7 @@
                                                     <c:when test="${entity.appType eq 'BSBAPTY006' and entity.status eq 'BSBAPST002'}">
                                                         <a href="/bsb-be/eservicecontinue/INTRANET/MohAOProcessingRevocation?appId=<iais:mask name='id' value='${entity.id}'/>&OWASP_CSRFTOKEN=null"><c:out value="${entity.applicationNo}"/></a>
                                                     </c:when>
-                                                    <c:when test="${entity.appType eq 'BSBAPTY001'}">
+                                                    <c:when test="${entity.appType eq 'BSBAPTY001' and (entity.status eq 'BSBAPST001' or entity.status eq 'BSBAPST002' or entity.status eq 'BSBAPST003')}">
                                                         <a href="/bsb-be/eservicecontinue/INTRANET/MohOfficersProcess?appId=<iais:mask name='id' value='${entity.id}'/>&OWASP_CSRFTOKEN=null"><c:out value="${entity.applicationNo}"/></a>
                                                     </c:when>
                                                     <c:otherwise>
