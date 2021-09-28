@@ -210,6 +210,9 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
     @Autowired
     private LicenseeService licenseeService;
 
+    @Value("${moh.halp.prs.enable}")
+    private String prsFlag;
+
     @Override
     public AppSubmissionDto submit(AppSubmissionDto appSubmissionDto, Process process) {
         appSubmissionDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
@@ -417,9 +420,9 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
     @Override
     public ProfessionalResponseDto retrievePrsInfo(String profRegNo){
         log.debug(StringUtil.changeForLog("retrieve prs info start ..."));
-        log.debug("prof Reg No is {}",profRegNo);
+        log.info(StringUtil.changeForLog("prof Reg No is " + profRegNo + " - PRS flag is " + prsFlag));
         ProfessionalResponseDto professionalResponseDto = null;
-        if(!StringUtil.isEmpty(profRegNo)){
+        if ("Y".equals(prsFlag) && !StringUtil.isEmpty(profRegNo)) {
             List<String> prgNos = IaisCommonUtils.genNewArrayList();
             prgNos.add(profRegNo);
             ProfessionalParameterDto professionalParameterDto =new ProfessionalParameterDto();
@@ -437,6 +440,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                 if(professionalResponseDtos != null && professionalResponseDtos.size() > 0){
                     professionalResponseDto = professionalResponseDtos.get(0);
                 }
+                log.info(StringUtil.changeForLog("ProfessionalResponseDto: " + professionalResponseDto));
             } catch (Exception e) {
                 professionalResponseDto = new ProfessionalResponseDto();
                 professionalResponseDto.setHasException(true);
@@ -2465,7 +2469,18 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                     HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceById(serviceId);
                     currSvcCode = Optional.of(hcsaServiceDto).map(HcsaServiceDto::getSvcCode).orElseGet(() -> "");
                 }
+                List<AppSvcPrincipalOfficersDto> appSvcClinicalDirectorDtos = dto.getAppSvcClinicalDirectorDtoList();
                 validateClincalDirector.doValidateClincalDirector(errorMap, dto.getAppSvcClinicalDirectorDtoList(), currSvcCode);
+                if ("Y".equals(prsFlag) && appSvcClinicalDirectorDtos != null) {
+                    int i = 0;
+                    for (AppSvcPrincipalOfficersDto person : appSvcClinicalDirectorDtos) {
+                        if (NewApplicationHelper.checkProfRegNo(person.getProfRegNo())) {
+                            errorMap.put("profRegNo" + i, "GENERAL_ERR0042");
+                            break;
+                        }
+                        i++;
+                    }
+                }
             } else if (HcsaConsts.STEP_LABORATORY_DISCIPLINES.equals(currentStep)) {
                 List<AppSvcLaboratoryDisciplinesDto> appSvcLaboratoryDisciplinesDtoList = dto.getAppSvcLaboratoryDisciplinesDtoList();
                 List<AppSvcDisciplineAllocationDto> appSvcDisciplineAllocationDtoList = dto.getAppSvcDisciplineAllocationDtoList();
@@ -2477,6 +2492,16 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                         bpc.request, NewApplicationDelegator.LICPERSONSELECTMAP);
                 Map<String, String> govenMap = NewApplicationHelper.doValidateGovernanceOfficers(appSvcCgoDtoList, licPersonMap,
                         dto.getServiceCode());
+                if ("Y".equals(prsFlag) && appSvcCgoDtoList != null) {
+                    int i = 0;
+                    for (AppSvcPrincipalOfficersDto person : appSvcCgoDtoList) {
+                        if (!NewApplicationHelper.checkProfRegNo(person.getProfRegNo())) {
+                            govenMap.put("profRegNo" + i, "GENERAL_ERR0042");
+                            break;
+                        }
+                        i++;
+                    }
+                }
                 if (!govenMap.isEmpty()) {
                     errorMap.putAll(govenMap);
                     errorMap.put("CGO", "error");
@@ -2501,6 +2526,16 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                 List<AppSvcPersonnelDto> appSvcPersonnelDtoList = dto.getAppSvcPersonnelDtoList();
                 doAppSvcPersonnelDtoList(currentSvcAllPsnConfig, errorMap, appSvcPersonnelDtoList, serviceId, sB,
                         dto.getServiceCode());
+                if ("Y".equals(prsFlag) && appSvcPersonnelDtoList != null) {
+                    int i = 0;
+                    for (AppSvcPersonnelDto person : appSvcPersonnelDtoList) {
+                        if (!NewApplicationHelper.checkProfRegNo(person.getProfRegNo())) {
+                            errorMap.put("regnNo" + i, "GENERAL_ERR0042");
+                            break;
+                        }
+                        i++;
+                    }
+                }
             } else if (HcsaConsts.STEP_PRINCIPAL_OFFICERS.equals(currentStep)) {
                 List<AppSvcPrincipalOfficersDto> appSvcPrincipalOfficersDtoList = dto.getAppSvcPrincipalOfficersDtoList();
                 AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
