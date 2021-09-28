@@ -62,6 +62,14 @@
             <artifactId>spring-cloud-bus</artifactId>
         </dependency>
         <dependency>
+            <groupId>com.ncs.secureconnect</groupId>
+            <artifactId>sim-lite</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.ncs.secureconnect</groupId>
+            <artifactId>sim-entities</artifactId>
+        </dependency>
+        <dependency>
             <groupId>com.stripe</groupId>
             <artifactId>stripe-java</artifactId>
         </dependency>
