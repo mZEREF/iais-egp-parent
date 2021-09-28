@@ -1,1 +1,1 @@
-<%@include file="/WEB-INF/jsp/iais/inbox/inboxMsg/InboxMsgInnerLayout.jsp"%>
+<%@include file="/WEB-INF/jsp/iais/inbox/inboxMsg/InboxMsgListPage.jsp"%>

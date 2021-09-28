@@ -29,4 +29,11 @@ $(function () {
         $("[name='action_value']").val("subject");
         $("#mainForm").submit();
     })
+
+
+    $("#searchBtn").click(function () {
+        showWaiting();
+        $("[name='action_type']").val("search");
+        $("#mainForm").submit();
+    });
 });
