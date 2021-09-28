@@ -198,17 +198,17 @@ public class NewApprovalDelegator {
         }
         ParamUtil.setRequestAttr(request,ApprovalApplicationConstants.CRUD_ACTION_TYPE_FROM_PAGE,crudActionTypeFormPage);
         ParamUtil.setRequestAttr(request,ApprovalApplicationConstants.CRUD_ACTION_TYPE,crudActionType);
-
+        //uploadDocument
         List<DocConfigDto> docConfigDtoList = (List<DocConfigDto>) request.getSession().getAttribute(PRIMARY_DOC_CONFIG);
         MultipartHttpServletRequest mulReq = (MultipartHttpServletRequest) bpc.request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
         Map<String, File> fileMap = new HashMap<>();
         for(int i =0;i<docConfigDtoList.size();i++){
             String docKey = i+"primaryDoc";
-            String configKey = "primaryDoc"+i;
             fileMap = (Map<String, File>) ParamUtil.getSessionAttr(mulReq,HcsaFileAjaxController.SEESION_FILES_MAP_AJAX+docKey);
             if (fileMap != null){
                 List<File> fileList = new ArrayList<>(fileMap.values());
                 docConfigDtoList.get(i).setIsValid(true);
+                String configKey = "primaryDoc"+docConfigDtoList.get(i).getIndex();
                 ParamUtil.setSessionAttr(request,configKey,(Serializable) fileList);
             }
         }

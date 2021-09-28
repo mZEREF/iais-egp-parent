@@ -1,33 +1,32 @@
 <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c" %>
 <%@ taglib uri="http://www.ecq.com/iais" prefix="iais" %>
-<webui:setLayout name="iais-intranet"/>
+<webui:setLayout name="iais-internet"/>
 <%
     sop.webflow.rt.api.BaseProcessClass process =
             (sop.webflow.rt.api.BaseProcessClass) request.getAttribute("process");
 %>
-<div class="main-content">
-    <form id="mainForm" method="post" action=<%=process.runtime.continueURL()%>>
-        <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
-        <div class="col-xs-12">
-            <div class="col-lg-12 col-xs-12">
-                <div class="center-content">
-                    <div class="intranet-content">
-                        <div class="bg-title">
-                            <h2>
-                                <span>You have successfully completed your application</span>
-                            </h2>
-                        </div>
-                        <div class="row">
-                            <div class="col-xs-12">
-                                <div align="left">
-                                    <a class="back" id="back" href="/bsb-fe/eservice/INTERNET/MohBSBInboxMsg"><em class="fa fa-angle-left"></em>Back</a>
-                                </div>
-                            </div>
-                        </div>
+<form id="mainForm" method="post" action=<%=process.runtime.continueURL()%>>
+    <div class="container">
+        <div class="row col-xs-12 col-sm-12">
+            <div class="dashboard-page-title" style="border-bottom: 1px solid black;">
+                <h1>New Application</h1>
+            </div>
+        </div>
+        <div class="component-gp col-xs-12 col-sm-11 col-md-10 col-lg-8">
+            <br/>
+            <p><strong>Submission successful</strong></p>
+            <br/>
+            <p>We will notify you if any changes are required.</p>
+            <br/>
+            <div class="row">
+                <div class="col-xs-12 col-md-10">
+                    <div class="text-right">
+                        <a class="btn btn-secondary" href="/bsb-fe/eservice/INTERNET/MohBSBInboxMsg">HOME</a>
                     </div>
                 </div>
             </div>
+
         </div>
-    </form>
-</div>
+    </div>
+</form>

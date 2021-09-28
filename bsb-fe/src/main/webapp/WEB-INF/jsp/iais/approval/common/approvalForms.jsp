@@ -437,7 +437,7 @@
                                                                             <label class="control-label control-set-font control-font-label">Name of Courier Service Provider</label>
                                                                             <span class="mandatory">*</span>
                                                                         </div>
-                                                                        <div class="col-sm-5 col-md-7" id="postalCode">
+                                                                        <div class="col-sm-5 col-md-7 control-font-label" id="postalCode">
                                                                             <iais:input maxLength="100" type="text" name="nameOfCourierServiceProvider" value="${approvalApplicationDto.courierServiceProviderName}"></iais:input>
                                                                             <span id="error_courierServiceProviderName" name="iaisErrorMsg" class="error-msg"></span>
                                                                         </div>
