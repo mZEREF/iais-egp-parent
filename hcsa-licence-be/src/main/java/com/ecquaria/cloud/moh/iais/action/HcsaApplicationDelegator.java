@@ -110,9 +110,6 @@ public class HcsaApplicationDelegator {
     private BroadcastService broadcastService;
 
     @Autowired
-    private LicenceViewService licenceViewService;
-
-    @Autowired
     private HcsaConfigClient hcsaConfigClient;
 
     @Autowired
@@ -3229,8 +3226,6 @@ public class HcsaApplicationDelegator {
         appPremisesCorrelationDto.setOldCorrelationId(correlationId);
         String newCorrelationId = appPremisesCorrelationDto.getId();
         ApplicationViewDto applicationViewDto = applicationViewService.getApplicationViewDtoByCorrId(newCorrelationId,taskDto.getRoleId());
-        //filter primary doc
-        clearOtherPremiseDoc(appPremisesCorrelationDto.getApplicationId(), applicationViewDto);
         applicationViewDto.setNewAppPremisesCorrelationDto(appPremisesCorrelationDto);
         //set can tcu date
         setShowAndEditTcuDate(bpc.request,applicationViewDto,taskDto);
@@ -3324,27 +3319,6 @@ public class HcsaApplicationDelegator {
         setCessation(bpc.request, applicationViewDto, correlationId);
         //set choose inspection
         setChooseInspectionValue(bpc.request, applicationViewDto);
-    }
-
-    private void clearOtherPremiseDoc(String appid, ApplicationViewDto applicationViewDto) {
-        AppSubmissionDto appSubmissionDto = licenceViewService.getAppSubmissionByAppId(appid);
-        List<AppSupDocDto> newAppSupDocDtoList = IaisCommonUtils.genNewArrayList();
-        for (AppSupDocDto appSupDocDto : applicationViewDto.getAppSupDocDtoList()){
-            if (StringUtil.isEmpty(appSupDocDto.getFileRepoId())){
-                continue;
-            }
-            if (!"primary_doc".equals(appSupDocDto.getDocType())){
-                newAppSupDocDtoList.add(appSupDocDto);
-                continue;
-            }
-            for (AppGrpPrimaryDocDto appGrpPrimaryDocDto : appSubmissionDto.getAppGrpPrimaryDocDtos()){
-                if (appSupDocDto.getFileRepoId().equals(appGrpPrimaryDocDto.getFileRepoId())){
-                    newAppSupDocDtoList.add(appSupDocDto);
-                    break;
-                }
-            }
-        }
-        applicationViewDto.setAppSupDocDtoList(newAppSupDocDtoList);
     }
 
     private void setShowAndEditTcuDate(HttpServletRequest request,ApplicationViewDto applicationViewDto,TaskDto taskDto){
