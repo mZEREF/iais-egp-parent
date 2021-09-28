@@ -1,5 +1,11 @@
-// List of email recipients.
-EMAILS_TO_NOTIFY = 'zamri@toppanecquaria.com,phangkangcheng@toppanecquaria.com,weiyang@toppanecquaria.com,josiahee@toppanecquaria.com'
+EMAILS_TO_NOTIFY = [
+    'josiahee@toppanecquaria.com',
+    'mingde@toppanecquaria.com',
+    'phangkangcheng@toppanecquaria.com',
+    'weiyang@toppanecquaria.com',
+    'zamri@toppanecquaria.com'
+].join(",");
+
 // Specify the connection URL to the Docker daemon.
 DOCKER_URL = 'tcp://hub.ecquaria.com:2375'
 // Destination directory when we do `git clone`.
@@ -341,6 +347,15 @@ def sendEmailNotification(){
 
     // send email
     mail to: EMAILS_TO_NOTIFY, subject: subjectHeader, body: emailBody
+}
+
+def sendStageNotificationViaEmail(String stageName){
+    def subjectHeader = "Build has reached \"${stageName}\" stage: ${currentBuild.fullDisplayName}"
+    def emailBody = "For build details, see ${env.BUILD_URL}"
+
+    mail to: EMAILS_TO_NOTIFY,
+            subject: subjectHeader,
+            body: emailBody
 }
 
 // setup parameters to use when calling docker
@@ -877,6 +892,9 @@ def uploadVerificationPackage(){
  */
 def waitForVerifier(){
     def stageName = 'Release Gate'
+
+    sendStageNotificationViaEmail(stageName)
+
     stage(stageName){
         def CHOICES_NONE = '- Please Select -'
         def CHOICES_YES = 'Approve this build'
@@ -1336,6 +1354,8 @@ def doQAGate(){
     def commentDescription = '''\
                             Comments submitted here would be recorded (unless "Abort" was used).
                         '''.stripIndent()
+
+    sendStageNotificationViaEmail(stageName)
 
     doGate(stageName, inputId, message,
         yesText, noText,
