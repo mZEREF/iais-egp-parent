@@ -1,5 +1,5 @@
 EMAILS_TO_NOTIFY = [
-    'josiahee@toppanecquaria.com'
+    'josiahee@toppanecquaria.com',
     'mingde@toppanecquaria.com',
     'phangkangcheng@toppanecquaria.com',
     'weiyang@toppanecquaria.com',
