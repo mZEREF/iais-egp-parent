@@ -14,14 +14,16 @@ public class DocConfigDto implements Serializable {
     private Boolean isMandatory;
     private String approvalType;
     private String index;
+    private Boolean isValid;
 
     public DocConfigDto() {
     }
 
-    public DocConfigDto(String docType, Boolean isMandatory, String approvalType, String index) {
+    public DocConfigDto(String docType, Boolean isMandatory, String approvalType, String index, Boolean isValid) {
         this.docType = docType;
         this.isMandatory = isMandatory;
         this.approvalType = approvalType;
         this.index = index;
+        this.isValid = isValid;
     }
 }

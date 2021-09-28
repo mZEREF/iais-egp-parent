@@ -28,4 +28,6 @@ public class FacilityDoc extends BaseEntity {
     private String submitBy;
 
     private Integer seqNum = -1;
+
+    private String docType;
 }

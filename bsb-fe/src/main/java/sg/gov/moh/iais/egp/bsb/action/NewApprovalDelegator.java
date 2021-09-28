@@ -69,7 +69,8 @@ public class NewApprovalDelegator {
         AuditTrailHelper.auditFunction(ApprovalApplicationConstants.MODULE_SYSTEM_CONFIG,
                 ApprovalApplicationConstants.FUNCTION_ERROR_MESSAGES_MANAGEMENT);
         HttpServletRequest request = bpc.request;
-        ParamUtil.setSessionAttr(request, TASK_LIST, ApprovalApplicationConstants.APPROVAL_TYPE_1);
+        String taskList = ParamUtil.getString(request, TASK_LIST);
+        ParamUtil.setSessionAttr(request, TASK_LIST, taskList);
 //        ParamUtil.setSessionAttr(request, TASK_LIST, ApprovalApplicationConstants.APPROVAL_TYPE_2);
 //        ParamUtil.setSessionAttr(request, TASK_LIST, ApprovalApplicationConstants.APPROVAL_TYPE_3);
         IaisEGPHelper.clearSessionAttr(request, ApprovalApplicationConstants.class);
@@ -123,20 +124,20 @@ public class NewApprovalDelegator {
         //set docConfig on different processType,The data here is simulated
         String task = (String)ParamUtil.getSessionAttr(request,TASK_LIST);
         List<DocConfigDto> docConfigDtoList = new ArrayList<>();
-        docConfigDtoList.add(new DocConfigDto(DOC_TYPE_1,true,task,"1"));
-        docConfigDtoList.add(new DocConfigDto(DOC_TYPE_2,true,task,"2"));
+        docConfigDtoList.add(new DocConfigDto(DOC_TYPE_1,true,task,"1",false));
+        docConfigDtoList.add(new DocConfigDto(DOC_TYPE_2,true,task,"2",false));
         if (task.equals(ApprovalApplicationConstants.APPROVAL_TYPE_1)){
-            docConfigDtoList.add(new DocConfigDto(DOC_TYPE_3,true,task,"3"));
-            docConfigDtoList.add(new DocConfigDto(DOC_TYPE_4,true,task,"4"));
+            docConfigDtoList.add(new DocConfigDto(DOC_TYPE_3,true,task,"3",false));
+            docConfigDtoList.add(new DocConfigDto(DOC_TYPE_4,true,task,"4",false));
         }else if (task.equals(ApprovalApplicationConstants.APPROVAL_TYPE_2)){
-            docConfigDtoList.add(new DocConfigDto(DOC_TYPE_3,true,task,"3"));
-            docConfigDtoList.add(new DocConfigDto(DOC_TYPE_5,true,task,"5"));
+            docConfigDtoList.add(new DocConfigDto(DOC_TYPE_3,true,task,"3",false));
+            docConfigDtoList.add(new DocConfigDto(DOC_TYPE_5,true,task,"5",false));
         }else if (task.equals(ApprovalApplicationConstants.APPROVAL_TYPE_3)){
-            docConfigDtoList.add(new DocConfigDto(DOC_TYPE_6,true,task,"6"));
-            docConfigDtoList.add(new DocConfigDto(DOC_TYPE_5,true,task,"5"));
-            docConfigDtoList.add(new DocConfigDto(DOC_TYPE_7,true,task,"7"));
+            docConfigDtoList.add(new DocConfigDto(DOC_TYPE_6,true,task,"6",false));
+            docConfigDtoList.add(new DocConfigDto(DOC_TYPE_5,true,task,"5",false));
+            docConfigDtoList.add(new DocConfigDto(DOC_TYPE_7,true,task,"7",false));
         }
-        docConfigDtoList.add(new DocConfigDto(DOC_TYPE_8,false,task,"8"));
+        docConfigDtoList.add(new DocConfigDto(DOC_TYPE_8,false,task,"8",true));
         ParamUtil.setSessionAttr(request, PRIMARY_DOC_CONFIG, (Serializable) docConfigDtoList);
 
         //set sysFileSize and sysFileType
@@ -198,48 +199,18 @@ public class NewApprovalDelegator {
         ParamUtil.setRequestAttr(request,ApprovalApplicationConstants.CRUD_ACTION_TYPE_FROM_PAGE,crudActionTypeFormPage);
         ParamUtil.setRequestAttr(request,ApprovalApplicationConstants.CRUD_ACTION_TYPE,crudActionType);
 
-        LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
-        Facility facility = new Facility();
-        facility.setId(approvalApplicationDto.getFacilityId());
         List<DocConfigDto> docConfigDtoList = (List<DocConfigDto>) request.getSession().getAttribute(PRIMARY_DOC_CONFIG);
         MultipartHttpServletRequest mulReq = (MultipartHttpServletRequest) bpc.request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
         Map<String, File> fileMap = new HashMap<>();
         for(int i =0;i<docConfigDtoList.size();i++){
             String docKey = i+"primaryDoc";
             String configKey = "primaryDoc"+i;
-            /*List<AppGrpPrimaryDocDto> dtoAppGrpPrimaryDocDtos = oldAppSubmissionDto.getAppGrpPrimaryDocDtos();
-            if (dtoAppGrpPrimaryDocDtos != null) {
-                for (AppGrpPrimaryDocDto appGrpPrimaryDocDto : dtoAppGrpPrimaryDocDtos) {
-                    appGrpPrimaryDocDto.setPassValidate(true);
-                }
-            }*/
             fileMap = (Map<String, File>) ParamUtil.getSessionAttr(mulReq,HcsaFileAjaxController.SEESION_FILES_MAP_AJAX+docKey);
             if (fileMap != null){
-                fileMap.forEach((k,v)->{
-                    int index = k.indexOf(docKey);
-                    String seqNumStr = k.substring(index+docKey.length());
-                    int seqNum = -1;
-                    try{
-                        seqNum = Integer.parseInt(seqNumStr);
-                    }catch (Exception e){
-                        log.error(StringUtil.changeForLog("doc seq num can not parse to int"));
-                    }
-                    FacilityDoc facilityDoc = new FacilityDoc();
-                    if(v != null){
-                        long size = v.length() / 1024;
-                        facilityDoc.setFacility(facility);
-                        facilityDoc.setName(v.getName());
-                        facilityDoc.setSize(size);
-                        /*facilityDoc.setFileRepoId();*/
-                        facilityDoc.setSubmitAt(new Date());
-                        facilityDoc.setSubmitBy(loginContext.getUserName());
-                        facilityDoc.setSeqNum(seqNum);
-                    }
-                });
                 List<File> fileList = new ArrayList<>(fileMap.values());
+                docConfigDtoList.get(i).setIsValid(true);
                 ParamUtil.setSessionAttr(request,configKey,(Serializable) fileList);
             }
-//            List<String> fileRepoIdList = comFileRepoClient.saveFileRepo(fileList);
         }
     }
 
@@ -382,6 +353,45 @@ public class NewApprovalDelegator {
         approvalApplicationClient.saveApproval(approvalApplicationDto);
         String crudActionTypeFormPage = (String) ParamUtil.getRequestAttr(request,ApprovalApplicationConstants.CRUD_ACTION_TYPE_FROM_PAGE);
         ParamUtil.setRequestAttr(request,ApprovalApplicationConstants.CRUD_ACTION_TYPE_FROM_PAGE,crudActionTypeFormPage);
+        /*//upload documents
+        LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
+        Facility facility = new Facility();
+        facility.setId(approvalApplicationDto.getFacilityId());
+        List<DocConfigDto> docConfigDtoList = (List<DocConfigDto>) request.getSession().getAttribute(PRIMARY_DOC_CONFIG);
+        MultipartHttpServletRequest mulReq = (MultipartHttpServletRequest) bpc.request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
+        Map<String, File> fileMap = new HashMap<>();
+        for(int i =0;i<docConfigDtoList.size();i++){
+            String docKey = i+"primaryDoc";
+            fileMap = (Map<String, File>) ParamUtil.getSessionAttr(mulReq,HcsaFileAjaxController.SEESION_FILES_MAP_AJAX+docKey);
+            List<File> fileList = new ArrayList<>(fileMap.values());
+            List<String> fileRepoIdList = comFileRepoClient.saveFileRepo(fileList);
+            if (fileMap != null){
+                int finalI = i;
+                fileMap.forEach((k, v)->{
+                    int index = k.indexOf(docKey);
+                    String seqNumStr = k.substring(index+docKey.length());
+                    int seqNum = -1;
+                    try{
+                        seqNum = Integer.parseInt(seqNumStr);
+                    }catch (Exception e){
+                        log.error(StringUtil.changeForLog("doc seq num can not parse to int"));
+                    }
+                    FacilityDoc facilityDoc = new FacilityDoc();
+                    if(v != null){
+                        long size = v.length() / 1024;
+                        facilityDoc.setFacility(facility);
+                        facilityDoc.setName(v.getName());
+                        facilityDoc.setSize(size);
+                        *//*facilityDoc.setFileRepoId();*//*
+                        facilityDoc.setSubmitAt(new Date());
+                        facilityDoc.setSubmitBy(loginContext.getUserName());
+                        facilityDoc.setSeqNum(seqNum);
+                        facilityDoc.setDocType(docConfigDtoList.get(finalI).getDocType());
+                    }
+                });
+            }
+
+        }*/
     }
 
     private ApprovalApplicationDto getDtoByForm(BaseProcessClass bpc) throws ParseException {
