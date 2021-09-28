@@ -265,11 +265,11 @@ public class LicenceViewServiceDelegator {
         ParamUtil.setRequestAttr(bpc.request,"canEidtPremise",canEidtPremise);
         log.debug(StringUtil.changeForLog("the do LicenceViewServiceDelegator prepareData end ..."));
         String appType = appSubmissionDto.getAppType();
-        if(ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appType)||ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType)){
-             svcDocToPresmise(appSubmissionDto);
-             oldAppSubmission(appSubmissionDto,appSubmissionDto.getOldAppSubmissionDto());
+        if(ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appType)||ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType)) {
+            svcDocToPresmise(appSubmissionDto);
+            oldAppSubmission(appSubmissionDto, appSubmissionDto.getOldAppSubmissionDto());
             AppSubmissionDto oldAppSubmissionDto = appSubmissionDto.getOldAppSubmissionDto();
-            if(oldAppSubmissionDto!=null){
+            if (oldAppSubmissionDto != null) {
                 svcDocToPresmise(oldAppSubmissionDto);
             }
         }
@@ -789,8 +789,8 @@ public class LicenceViewServiceDelegator {
                 HcsaSvcDocConfigDto entity = hcsaConfigClient.getHcsaSvcDocConfigDtoById(svcDocId).getEntity();
                 if(entity!=null){
                     String serviceId = entity.getServiceId();
-                    if(StringUtil.isEmpty(serviceId)){
-                        AppGrpPrimaryDocDto appGrpPrimaryDocDto= new  AppGrpPrimaryDocDto();
+                    if (StringUtil.isEmpty(serviceId)) {
+                        AppGrpPrimaryDocDto appGrpPrimaryDocDto = new AppGrpPrimaryDocDto();
                         appGrpPrimaryDocDto.setSvcDocId(svcDocId);
                         appGrpPrimaryDocDto.setSvcComDocId(svcDocId);
                         appGrpPrimaryDocDto.setSvcComDocName(entity.getDocTitle());

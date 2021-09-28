@@ -449,7 +449,8 @@
                                 <p>Recommendation</p>
                             </td>
                             <td class="col-xs-4">
-                                <p><iais:code code="${appPremisesRecommendationDto.period}"/></p>
+                                <p>
+                                    <iais:code code="${empty appPremisesRecommendation_Show_Desc ? appPremisesRecommendationDto.period : appPremisesRecommendation_Show_Desc}"/></p>
                             </td>
                             <td class="col-xs-4"></td>
                         </tr>

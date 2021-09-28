@@ -61,7 +61,7 @@
     <table aria-describedby="" class="table"  border="1px" style="border-collapse: collapse;">
 
         <tr>
-            <th scope="col" rowspan="9" width="20%" style="text-align:center;vertical-align:middle;" >Processing Time for different stages</th>
+            <th scope="col" rowspan="9" width="20%" style="text-align:center;vertical-align:middle;font-weight:normal;" >Processing Time for different stages</th>
             <th scope="col" style="text-align:center;vertical-align:middle;font-weight:normal;">Reminder Threshold</th>
             <th scope="col" style="vertical-align:middle;font-weight:normal;">
                 <input name="reminderThreshold" style="margin-left: 20%;width: 50%;" type="text" value="${reminderThreshold}" placeholder="Enter required man-days" maxlength="5" style="width: 50% ;height: 10%;"/>

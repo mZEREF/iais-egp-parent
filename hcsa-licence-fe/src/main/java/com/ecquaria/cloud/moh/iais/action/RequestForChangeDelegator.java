@@ -772,9 +772,10 @@ public class RequestForChangeDelegator {
                             appGroupMiscDtoList.add(appGroupMiscDto);
                         }
                         appSubmissionDto.setAppGroupMiscDtos(appGroupMiscDtoList);
-
+                         AppEditSelectDto appEditSelectDto = new AppEditSelectDto();
+                        appEditSelectDto.setNeedNewLicNo(true);
                         requestForChangeService.checkAffectedAppSubmissions(appSubmissionDto, null, amount, draftNo, grpNo,
-                                null, null,null);
+                                appEditSelectDto, null,null);
                         appSubmissionDto.setGetAppInfoFromDto(false);
                         AppSubmissionDto tranferSub = requestForChangeService.submitChange(appSubmissionDto);
                         ParamUtil.setSessionAttr(bpc.request, "app-rfc-tranfer", tranferSub);

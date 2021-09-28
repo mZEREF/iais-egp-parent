@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.helper;
 
+import com.ecquaria.cloud.helper.ConfigHelper;
 import com.ecquaria.cloud.helper.SpringContextHelper;
 import com.ecquaria.cloud.moh.iais.action.ClinicalLaboratoryDelegator;
 import com.ecquaria.cloud.moh.iais.action.HcsaFileAjaxController;
@@ -49,6 +50,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfi
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSubtypeOrSubsumedDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.FeUserDto;
+import com.ecquaria.cloud.moh.iais.common.dto.prs.ProfessionalResponseDto;
 import com.ecquaria.cloud.moh.iais.common.utils.CopyUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
@@ -64,6 +66,7 @@ import com.ecquaria.cloud.moh.iais.constant.NewApplicationConstant;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.dto.PersonFieldDto;
 import com.ecquaria.cloud.moh.iais.dto.PmtReturnUrlDto;
+import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceClient;
 import java.io.Serializable;
 import java.lang.reflect.Field;
@@ -86,6 +89,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import sop.util.DateUtil;
 
@@ -4326,6 +4330,29 @@ public class NewApplicationHelper {
         }
         log.info(StringUtil.changeForLog("Check Name Changed: " + checked));
         return checked;
+    }
+
+    public static boolean checkProfRegNo(String profRegNo) {
+        return checkProfRegNo(profRegNo, MiscUtil.getCurrentRequest());
+    }
+
+    public static boolean checkProfRegNo(String profRegNo, HttpServletRequest request) {
+        String prsFlag = ConfigHelper.getString("moh.halp.prs.enable");
+        if (!"Y".equals(prsFlag) || StringUtil.isEmpty(profRegNo)) {
+            log.info(StringUtil.changeForLog("prof Reg No is " + profRegNo + " - PRS flag is " + prsFlag));
+            return true;
+        }
+        boolean isValid = true;
+        AppSubmissionService appSubmissionService = SpringContextHelper.getContext().getBean(AppSubmissionService.class);
+        ProfessionalResponseDto dto = appSubmissionService.retrievePrsInfo(profRegNo);
+        if (dto == null || StringUtil.isEmpty(dto.getRegno()) || StringUtil.isEmpty(dto.getName())) {
+            isValid = false;
+        }
+        if (dto != null && dto.isHasException() && request != null) {
+            isValid = false;
+            request.setAttribute(ClinicalLaboratoryDelegator.PRS_SERVICE_DOWN, ClinicalLaboratoryDelegator.PRS_SERVICE_DOWN);
+        }
+        return isValid;
     }
 
 }
