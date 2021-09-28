@@ -13,7 +13,8 @@
             FROM hcsal.dbo.licence lic
             JOIN hcsal.dbo.giro_account_info gai on lic.ID =gai.LICENCE_ID
             JOIN hcsal.dbo.sub_licensee_info sli on lic.SUB_LICENSEE_ID =sli.ID
-            where lic.STATUS = 'LICEST001'
+            where  (lic.STATUS ='LICEST001' or lic.STATUS ='LICEST007')
+             and lic.ID not in (select l.ORIGIN_LICENCE_ID from hcsal.dbo.licence l  where l.ORIGIN_LICENCE_ID is not null)
             <#if org_id??>and gai.ORGANIZATION_ID = :org_id</#if>
             ) gaiView
             where gaiView.STATUS = 'CMSTAT001'
