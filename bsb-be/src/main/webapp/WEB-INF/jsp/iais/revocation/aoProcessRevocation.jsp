@@ -75,20 +75,14 @@
                                                         <div class="col-xs-12">
                                                             <div class="table-gp">
                                                                 <iais:section title="">
-                                                                    <c:forEach var="item" items="${revocationDetail}">
-                                                                        <input name="applicationId" id="applicationId"
-                                                                               value="${item.id}" hidden>
-                                                                        <div>
-                                                                            <iais:row>
-                                                                                <iais:field value="Current Status"
-                                                                                            required="false"/>
-                                                                                <iais:value width="10">
-                                                                                    <p><iais:code
-                                                                                            code="${item.facility.facilityStatus}"/></p>
-                                                                                </iais:value>
-                                                                            </iais:row>
-                                                                        </div>
-                                                                    </c:forEach>
+                                                                    <div>
+                                                                        <iais:row>
+                                                                            <iais:field value="Current Status" required="false"/>
+                                                                            <iais:value width="10">
+                                                                                <p><iais:code code="${facility.facilityStatus}"/></p>
+                                                                            </iais:value>
+                                                                        </iais:row>
+                                                                    </div>
                                                                     <div>
                                                                         <iais:row>
                                                                             <div id="ReasonFalse"><iais:field

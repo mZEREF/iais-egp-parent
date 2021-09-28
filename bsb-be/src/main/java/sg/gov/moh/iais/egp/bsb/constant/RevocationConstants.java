@@ -50,7 +50,6 @@ public final class RevocationConstants {
 
     //application status
     public static final String PARAM_DECISION = "decision";
-    public static final String PARAM_APPLICATION_STATUS_PENDING_AO = "BSBAPST002";
     //facility status and approval status
     public static final String PARAM_FACILITY_STATUS_REVOKED = "FACSTA007";
     public static final String PARAM_APPROVAL_STATUS_REVOKED = "APPRSTA003";
@@ -62,6 +61,12 @@ public final class RevocationConstants {
     public static final String PARAM_PROCESS_TYPE_SPECIAL_APPROVAL_TO_HANDLE = "PROTYPE004";
     public static final String PARAM_PROCESS_TYPE_FACILITY_REGISTRATION = "PROTYPE001";
     public static final String PARAM_PROCESS_TYPE_AFC_REGISTRATION = "PROTYPE005";
+
+    public static final String PARAM_APPLICATION_STATUS_PENDING_DO = "BSBAPST001";
+    public static final String PARAM_APPLICATION_STATUS_PENDING_AO = "BSBAPST002";
+    public static final String PARAM_APPLICATION_STATUS_PENDING_HM = "BSBAPST003";
+    public static final String PARAM_APPLICATION_STATUS_REJECTED = "BSBAPST008";
+    public static final String PARAM_APPLICATION_STATUS_APPROVED = "BSBAPST009";
 
     public static final String PARAM_APPROVAL_TYPE_APPROVAL_TO_POSSESS = "APPRTY001";
     public static final String PARAM_APPROVAL_TYPE_APPROVAL_TO_LSP = "APPRTY002";

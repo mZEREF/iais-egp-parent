@@ -10,7 +10,6 @@
                 <thead>
                 <tr>
                     <th>Username</th>
-                    <th>Working Group</th>
                     <th>Status Update</th>
                     <th>Remarks</th>
                     <th>Last Updated</th>
@@ -21,9 +20,6 @@
                     <tr>
                         <td>
                             <p><iais:code code="${history.actionBy}"></iais:code></p>
-                        </td>
-                        <td>
-                            <p><c:out value="null"></c:out></p>
                         </td>
                         <td>
                             <p><iais:code code="${history.appStatus}"></iais:code></p>

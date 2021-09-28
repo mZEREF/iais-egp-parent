@@ -8,33 +8,25 @@
             (sop.webflow.rt.api.BaseProcessClass) request.getAttribute("process");
 %>
 <webui:setLayout name="iais-intranet"/>
-<script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-revocation.js"></script>
-<div>
-    <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
-        <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
-        <div class="main-content">
-            <div class="row">
-                <div class="col-lg-12 col-xs-12">
-                    <div class="center-content">
-                        <div class="intranet-content">
-                            <div class="bg-title">
-                                <c:if test="${'Y' == rfiSuccessInfo}">
-                                    <h2><span><c:out value="${successInfo}"></c:out></span></h2>
-                                </c:if>
-
-                                <c:if test="${'Y' != rfiSuccessInfo}">
-                                    <h2><iais:message key="${successInfo}" escape="true"></iais:message></h2>
-                                </c:if>
-                                <h2><span><c:out value="You have successfully dealt with it"></c:out></span></h2>
-                            </div>
-                        </div>
-                        <div align="left">
-                            <span><a id="backFromAckPage" href="#"><em class="fa fa-angle-left"></em> Back To Process</a></span>
-                        </div>
+<div class="main-content">
+    <div class="row">
+        <div class="col-lg-12 col-xs-12">
+            <div class="center-content">
+                <div class="intranet-content">
+                    <div class="bg-title">
+                        <c:if test="${'Y' == rfiSuccessInfo}">
+                            <h2><span><c:out value="${successInfo}"></c:out></span></h2>
+                        </c:if>
+                        <c:if test="${'Y' != rfiSuccessInfo}">
+                            <h2><iais:message key="${successInfo}" escape="true"></iais:message></h2>
+                        </c:if>
+                        <h2><span><c:out value="You have successfully dealt with it"></c:out></span></h2>
                     </div>
+                </div>
+                <div align="left">
+                    <span><a id="backFromAckPage" href="/bsb-be/eservicecontinue/INTRANET/MohBsbTaskList"><em class="fa fa-angle-left"></em> Back To Process</a></span>
                 </div>
             </div>
         </div>
-    </form>
+    </div>
 </div>
-<%@include file="/WEB-INF/jsp/include/utils.jsp" %>
