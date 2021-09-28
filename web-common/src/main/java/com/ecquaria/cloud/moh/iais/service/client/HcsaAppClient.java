@@ -11,6 +11,8 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -46,4 +48,7 @@ public interface HcsaAppClient {
 
     @GetMapping(path = "/iais-inspecstatus/status-three/{appPremCorreId}", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<AppInspectionStatusDto> getAppInspectionStatusByPremId(@PathVariable("appPremCorreId") String appPremCorreId);
+
+    @PostMapping(value = "/hcsa-app-common/bundled-apps-by-app",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<ApplicationDto> getBundledAppDtosByAppDto(@RequestBody ApplicationDto appDto);
 }
