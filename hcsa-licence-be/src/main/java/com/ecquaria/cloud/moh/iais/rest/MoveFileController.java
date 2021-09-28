@@ -9,9 +9,9 @@ import java.io.OutputStream;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import static java.nio.file.Files.newInputStream;
@@ -32,9 +32,9 @@ public class MoveFileController {
     @Value("${iais.sharedfolder.application.in}")
     private String inSharedPath;
 
-    @DeleteMapping
-    public ResponseEntity<String> moveFile(@RequestParam("filePathName") String filePathName) {
-        File moveFile = MiscUtil.generateFile(inSharedPath, filePathName);
+    @PostMapping
+    public ResponseEntity<String> moveFile(@RequestBody String fileName) {
+        File moveFile = MiscUtil.generateFile(inSharedPath, fileName);
         if (moveFile != null && moveFile.exists()) {
             String name = moveFile.getName();
             log.info(StringUtil.changeForLog("file name is  {}"+name));
