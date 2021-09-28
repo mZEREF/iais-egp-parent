@@ -1119,6 +1119,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                     try {
                         Map<String, String> params = IaisCommonUtils.genNewHashMap(1);
                         params.put("filePathName", file.getCanonicalPath());
+                        log.info(StringUtil.changeForLog("file path name ==> " + file.getCanonicalPath()));
                         restTemplate.delete(apiUrl.toString(), params);
                     } catch (Throwable e) {
                         log.error(e.getMessage(), e);
