@@ -192,16 +192,5 @@
                 <iais-bsb:Pagination size="${pageInfo.size}" pageNo="${pageInfo.pageNo + 1}" pageAmt="${pageInfo.totalPages}" totalElements="${pageInfo.totalElements}"/>
             </div>
         </div>
-        <input name="appId" id="appId" value="" hidden>
     </form>
 </div>
-
-<script>
-    $(function (){
-        $("a").click(function (event){
-            var id = $(this).attr('href').split('?')[1].split('&')[0].split('=')[1];
-            // $("#appId").val(id);
-            // alert($("#appId").val());
-        })
-    })
-</script>
