@@ -11,8 +11,11 @@ $(function () {
     $("#backFromDoc").click(function (){
         $('#doInfo').click();
     })
-    $("#contentBack").click(function (){
+    $("#inspectionOrCertificationBack").click(function (){
         $('#doDocument').click();
+    })
+    $("#contentBack").click(function (){
+        $('#doInspectionOrCertification').click();
     })
     $("#processBack").click(function (){
         $('#doContent').click();

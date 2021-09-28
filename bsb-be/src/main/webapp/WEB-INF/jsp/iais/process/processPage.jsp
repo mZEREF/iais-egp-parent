@@ -27,6 +27,9 @@
                                             <li id="documents" role="presentation">
                                                 <a href="#tabDocuments" id="doDocument" aria-controls="tabDocuments" role="tab" data-toggle="tab">Documents</a>
                                             </li>
+                                            <li id="inspectionOrCertification" role="presentation">
+                                                <a href="#tabInspectionOrCertification" id="doInspectionOrCertification" aria-controls="tabInspectionOrCertification" role="tab" data-toggle="tab">Inspection Or Certification</a>
+                                            </li>
                                             <li id="dynamicContent" role="presentation">
                                                 <a href="#tabDynamicContent" id="doContent" aria-controls="tabDynamicContent" role="tab" data-toggle="tab">Dynamic Content</a>
                                             </li>
@@ -43,6 +46,9 @@
                                                     <a href="#tabDocuments" aria-controls="tabDocuments" role="tab" data-toggle="tab">Documents</a>
                                                 </div>
                                                 <div class="swiper-slide">
+                                                    <a href="#tabInspectionOrCertification" aria-controls="tabInspectionOrCertification" role="tab" data-toggle="tab">Inspection Or Certification</a>
+                                                </div>
+                                                <div class="swiper-slide">
                                                     <a href="#tabDynamicContent" aria-controls="tabDynamicContent" role="tab" data-toggle="tab">Dynamic Content</a>
                                                 </div>
                                                 <div class="swiper-slide">
@@ -56,6 +62,9 @@
                                             </div>
                                             <div class="tab-pane" id="tabDocuments" role="tabpanel">
                                                 <%@include file="/WEB-INF/jsp/iais/doDocument/tabDocuments.jsp"%>
+                                            </div>
+                                            <div class="tab-pane" id="tabInspectionOrCertification" role="tabpanel">
+                                                <%@include file="/WEB-INF/jsp/iais/process/inspectionOrCertification.jsp" %>
                                             </div>
                                             <div class="tab-pane" id="tabDynamicContent" role="tabpanel">
                                                 <%@include file="/WEB-INF/jsp/iais/process/dynamicContent.jsp" %>

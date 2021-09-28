@@ -98,16 +98,16 @@
                         <th style="text-align:center;">Biological Agent / Toxin</th>
                     </tr>
                     </thead>
-                    <tbody>
+                    <tbody style="text-align:center;">
                     <c:forEach var="item" items="${application.biologicalList}" varStatus="status">
                         <tr>
-                            <td align="center">
+                            <td>
                                 <p><c:out value="${status.index + 1}"/></p>
                             </td>
-                            <td align="center">
+                            <td>
                                 <p><iais:code code="${item.schedule}"></iais:code></p>
                             </td>
-                            <td align="center">
+                            <td>
                                 <p><c:out value="${item.name}"/></p>
                             </td>
                         </tr>
