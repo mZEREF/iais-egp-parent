@@ -105,7 +105,6 @@ import java.util.zip.ZipFile;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -1116,13 +1115,11 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                     StringBuilder apiUrl = new StringBuilder("http://");
                     apiUrl.append(ip).append(':').append(port).append("/hcsa-licence-web/moveFile");
                     log.info("Request URL ==> {}", apiUrl);
-
                     RestTemplate restTemplate = new RestTemplate();
                     try {
-//                        restTemplate.delete(apiUrl.toString(), file.getCanonicalPath());
                         Map<String, String> params = IaisCommonUtils.genNewHashMap(1);
                         params.put("filePathName", file.getCanonicalPath());
-                        restTemplate.execute(apiUrl.toString(), HttpMethod.DELETE, null, null, params);
+                        restTemplate.delete(apiUrl.toString(), params);
                     } catch (Throwable e) {
                         log.error(e.getMessage(), e);
                     }
