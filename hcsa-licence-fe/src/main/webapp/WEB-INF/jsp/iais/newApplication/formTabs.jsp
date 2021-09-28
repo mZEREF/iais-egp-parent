@@ -7,6 +7,7 @@
 %>
 <input type="hidden" id = "controlFormLi" value="<%=actionForm%>">
 <input type="hidden" name="crud_action_type_tab" value="">
+<!-- for desktop -->
 <ul id = "tabUl" class="nav nav-pills nav-stacked hidden-xs hidden-sm" role="tablist">
     <c:if test="${hcsaServiceDtoList.size()>1}">
         <c:forEach items="${hcsaServiceDtoList}" var="list">
@@ -14,34 +15,33 @@
         </c:forEach>
     </c:if>
 </ul>
-<%--<div class="mobile-side-nav-tab hidden-xs hidden-sm">--%>
-<%--    <select id="serviceSelect">--%>
-<%--        <option value="clinicalLab">Clinical Laboratory</option>--%>
-<%--        <option value="bloodBanking">Blood Banking</option>--%>
-<%--    </select>--%>
-<%--</div>--%>
-
+<!-- for Mobile -->
+<div class="mobile-side-nav-tab visible-xs visible-sm">
+<c:if test="${hcsaServiceDtoList.size()>1}">
+    <select id="mobile-tab-ui" aria-label="serviceSelectMobile">
+    <c:forEach items="${hcsaServiceDtoList}" var="list">
+        <option value="${list.svcCode}">${list.svcName}</option>
+    </c:forEach>
+    </select>
+</c:if>
+</div>
 
 <script type="text/javascript">
-
     $(document).ready(function() {
         var controlFormLi = $('#controlFormLi').val();
         $('#'+controlFormLi+'li').addClass('active');
+        fillValue('#mobile-tab-ui', controlFormLi);
 
         $('#tabUl > li >a').click(function () {
             showWaiting();
             submitFormTabs(this.id,null,null);
         });
+        $('#mobile-tab-ui').change(function () {
+            console.log($(this).val());
+            showWaiting();
+            submitFormTabs($(this).val(),null,null);
+        });
 
-        // $('#clinical').click(function(){
-        //     submitFormTabs('clinical');
-        // });
-        // $('#blood').click(function(){
-        //     submitFormTabs('blood');
-        // });
-        // if($('#isServiceEdit').val() == 'true'){
-        //     disabledPage();
-        // }
         <c:if test="${AppSubmissionDto.appEditSelectDto!=null && !AppSubmissionDto.appEditSelectDto.serviceEdit}">
         disabledPage();
         </c:if>
