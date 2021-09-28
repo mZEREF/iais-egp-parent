@@ -196,6 +196,7 @@ public class AORevocationDelegator {
         ParamUtil.setSessionAttr(request, RevocationConstants.PARAM_APPLICATION, null);
         ParamUtil.setSessionAttr(request,RevocationConstants.AUDIT_DOC_DTO, null);
         ParamUtil.setSessionAttr(request, RevocationConstants.FLAG, null);
+        ParamUtil.setSessionAttr(request, RevocationConstants.BACK, null);
         String appId = ParamUtil.getRequestString(request,RevocationConstants.PARAM_APP_ID);
         appId = MaskUtil.unMaskValue("id",appId);
 
@@ -230,6 +231,7 @@ public class AORevocationDelegator {
 
         ParamUtil.setSessionAttr(request,RevocationConstants.AUDIT_DOC_DTO, auditDocDto);
         ParamUtil.setSessionAttr(request, RevocationConstants.FLAG, RevocationConstants.APP);
+        ParamUtil.setSessionAttr(request, RevocationConstants.BACK, RevocationConstants.REVOCATION_TASK_LIST);
     }
 
     /**

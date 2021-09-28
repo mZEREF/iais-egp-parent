@@ -178,6 +178,7 @@ public class DORevocationDelegator {
         ParamUtil.setSessionAttr(request, RevocationConstants.PARAM_REVOCATION_DETAIL, null);
         ParamUtil.setSessionAttr(request, RevocationConstants.AUDIT_DOC_DTO, null);
         ParamUtil.setSessionAttr(request, RevocationConstants.FLAG, null);
+        ParamUtil.setSessionAttr(request, RevocationConstants.BACK, null);
 
         String from = ParamUtil.getRequestString(request, RevocationConstants.FROM);
 
@@ -197,6 +198,7 @@ public class DORevocationDelegator {
                 ParamUtil.setSessionAttr(request, RevocationConstants.PARAM_APPLICATION, application);
                 ParamUtil.setSessionAttr(request, RevocationConstants.FACILITY, application.getFacility());
                 ParamUtil.setSessionAttr(request, RevocationConstants.FLAG, RevocationConstants.APP);
+                ParamUtil.setSessionAttr(request, RevocationConstants.BACK, RevocationConstants.REVOCATION_APPLICATION);
             }
             if (from.equals(RevocationConstants.FAC)) {
                 String facId = ParamUtil.getMaskedString(request, RevocationConstants.PARAM_FACILITY_ID);
@@ -212,6 +214,7 @@ public class DORevocationDelegator {
                 }
                 ParamUtil.setSessionAttr(request, RevocationConstants.FACILITY, facility);
                 ParamUtil.setSessionAttr(request, RevocationConstants.FLAG, RevocationConstants.FAC);
+                ParamUtil.setSessionAttr(request, RevocationConstants.BACK, RevocationConstants.REVOCATION_FACILITY);
             }
         }
     }

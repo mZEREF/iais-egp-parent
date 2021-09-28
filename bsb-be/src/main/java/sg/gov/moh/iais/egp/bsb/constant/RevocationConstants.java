@@ -86,7 +86,11 @@ public final class RevocationConstants {
 
     public static final String FACILITY = "facility";
     public static final String FLAG = "flag";
+    public static final String BACK = "back";
     public static final String FROM = "from";
     public static final String FAC = "fac";
     public static final String APP = "app";
+    public static final String REVOCATION_APPLICATION = "revocationApplication";
+    public static final String REVOCATION_FACILITY = "revocationFacility";
+    public static final String REVOCATION_TASK_LIST = "revocationTaskList";
 }

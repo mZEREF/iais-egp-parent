@@ -59,7 +59,13 @@
     </div>
 </div>
 <div align="left">
-<%--    <a class="back" href="#"><em class="fa fa-angle-left"></em>Back</a>--%>
+    <c:if test="${back eq 'revocationApplication'}">
+        <a class="back" href="/bsb-be/eservice/INTRANET/RevocationTaskList"><em class="fa fa-angle-left"></em>Back</a>
+    </c:if>
+    <c:if test="${back eq 'revocationFacility'}">
+        <a class="back" href="/bsb-be/eservice/INTRANET/FacilityList"><em class="fa fa-angle-left"></em>Back</a>
+    </c:if>
+    <c:if test="${back eq 'revocationTaskList'}">
+        <a class="back" href="/bsb-be/eservice/INTRANET/MohBsbTaskList"><em class="fa fa-angle-left"></em>Back</a>
+    </c:if>
 </div>
-
-

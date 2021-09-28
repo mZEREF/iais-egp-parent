@@ -26,22 +26,23 @@
                                 <div class="col-xs-12">
                                     <div class="tab-gp dashboard-tab">
                                         <ul class="nav nav-tabs hidden-xs hidden-sm" role="tablist">
-                                            <li class="active" id="info" role="presentation"><a
-                                                    href="#tabInfo"
-                                                    id="infoa"
-                                                    aria-controls="tabInfo"
-                                                    role="tab"
-                                                    data-toggle="tab">Info</a></li>
-                                            <li class="complete" id="document" role="presentation"><a
-                                                    href="#tabDocuments"
-                                                    id="documenta"
-                                                    aria-controls="tabDocuments" role="tab"
-                                                    data-toggle="tab">Documents</a></li>
-                                            <li class="incomplete" id="process" role="presentation"><a
-                                                    href="#tabProcessing"
-                                                    id="processa"
-                                                    aria-controls="tabProcessing" role="tab"
-                                                    data-toggle="tab">Processing</a></li>
+                                            <li class="active" id="info" role="presentation">
+                                                <a href="#tabInfo"
+                                                   id="infoa"
+                                                   aria-controls="tabInfo"
+                                                   role="tab"
+                                                   data-toggle="tab">Info</a>
+                                            </li>
+                                            <li class="complete" id="document" role="presentation">
+                                                <a href="#tabDocuments"
+                                                   id="documenta"
+                                                   aria-controls="tabDocuments" role="tab"
+                                                   data-toggle="tab">Documents</a></li>
+                                            <li class="incomplete" id="process" role="presentation">
+                                                <a href="#tabProcessing"
+                                                   id="processa"
+                                                   aria-controls="tabProcessing" role="tab"
+                                                   data-toggle="tab">Processing</a></li>
                                         </ul>
                                         <div class="tab-nav-mobile visible-xs visible-sm">
                                             <div class="swiper-wrapper" role="tablist">
