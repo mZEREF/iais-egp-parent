@@ -29,10 +29,12 @@ import static java.nio.file.Files.newOutputStream;
 public class MoveFileController {
     @Value("${iais.syncFileTracking.shared.path}")
     private String sharedPath;
+    @Value("${iais.sharedfolder.application.in}")
+    private String inSharedPath;
 
     @DeleteMapping
     public ResponseEntity<String> moveFile(@RequestParam("filePathName") String filePathName) {
-        File moveFile = MiscUtil.generateFile(filePathName);
+        File moveFile = MiscUtil.generateFile(inSharedPath, filePathName);
         if (moveFile != null && moveFile.exists()) {
             String name = moveFile.getName();
             log.info(StringUtil.changeForLog("file name is  {}"+name));
