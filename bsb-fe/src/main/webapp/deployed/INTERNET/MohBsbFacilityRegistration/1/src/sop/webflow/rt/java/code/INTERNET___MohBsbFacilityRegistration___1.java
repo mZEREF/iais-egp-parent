@@ -50,7 +50,7 @@ public class INTERNET___MohBsbFacilityRegistration___1 extends BaseProcessClass 
 	}
 
 	public void handleFacOperator_OnStepProcess_0() throws Exception {
-		EngineHelper.delegate(DELEGATOR, "PreAcknowledge", this);
+		EngineHelper.delegate(DELEGATOR, "handleFacOperator", this);
 	}
 
 	public void preFacInfoAuthoriser_OnStepProcess_0() throws Exception {
