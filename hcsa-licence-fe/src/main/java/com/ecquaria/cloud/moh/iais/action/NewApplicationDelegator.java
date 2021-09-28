@@ -1246,14 +1246,6 @@ public class NewApplicationDelegator {
                         genPrimaryDoc(fileMap,docKey,hcsaSvcDocConfigDto,saveFileMap,appGrpPrimaryDocDtos,newAppGrpPrimaryDocDtoList,appGrpPremisesDto.getPremisesIndexNo(),appGrpPremisesDto.getPremisesType(),isRfi,oldPrimaryDocDtoList,oldSubmissionDto.getAppGrpId(),oldSubmissionDto.getRfiAppNo(),appSubmissionDto.getAppType(),dupForPrem);
                         ParamUtil.setSessionAttr(bpc.request,HcsaFileAjaxController.SEESION_FILES_MAP_AJAX+docKey, (Serializable) fileMap);
                     }
-                    //68878
-                    if (isRfi){
-                        for (AppGrpPrimaryDocDto appGrpPrimaryDocDto : oldPrimaryDocDtoList){
-                            if (StringUtil.isNotEmpty(appGrpPrimaryDocDto.getAppGrpPremId()) && !appGrpPrimaryDocDto.getAppGrpPremId().equals(appGrpPremisesList.get(0).getPremisesIndexNo())){
-                                newAppGrpPrimaryDocDtoList.add(appGrpPrimaryDocDto);
-                            }
-                        }
-                    }
                 }
             }
             //set value into AppSubmissionDto
@@ -2297,7 +2289,7 @@ public class NewApplicationDelegator {
 //        Map<String,AppSvcPersonAndExtDto> personMap = (Map<String, AppSvcPersonAndExtDto>) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.PERSONSELECTMAP);
 //        NewApplicationHelper.syncPsnData(appSubmissionDto,personMap);
 
-        //add group other premise
+        //add other premise
         AppSubmissionDto beforeRemoveAppSubmissionDto = appSubmissionService.getAppSubmissionDtoByAppNo(appNo);
         List<AppGrpPremisesDto> appGrpPremisesDtos = (List<AppGrpPremisesDto>) CopyUtil.copyMutableObjectList(beforeRemoveAppSubmissionDto.getAppGrpPremisesDtoList());
         oldAppSubmissionDto.setAppGrpPremisesDtoList((List<AppGrpPremisesDto>) CopyUtil.copyMutableObjectList(appGrpPremisesDtos));
@@ -2312,6 +2304,16 @@ public class NewApplicationDelegator {
             }
         }
         appSubmissionDto.setAppGrpPremisesDtoList(appGrpPremisesDtos);
+        //add other premise doc
+        List<AppGrpPrimaryDocDto> oldPrimaryDocDtoList = oldAppSubmissionDto.getAppGrpPrimaryDocDtos();
+        if (isRfi){
+            for (AppGrpPrimaryDocDto appGrpPrimaryDocDto : oldPrimaryDocDtoList){
+                if (StringUtil.isNotEmpty(appGrpPrimaryDocDto.getAppGrpPremId()) && !appGrpPrimaryDocDto.getAppGrpPremId().equals(currentAppGrpPremisesDto.getPremisesIndexNo())){
+                    appSubmissionDto.getAppGrpPrimaryDocDtos().add(appGrpPrimaryDocDto);
+                }
+            }
+        }
+        //add other svcInfo person,doc,disciplines
         for (AppSvcRelatedInfoDto appSvcRelatedInfoDto : appSubmissionDto.getAppSvcRelatedInfoDtoList()){
             resetRelatedInfoRFI(appSvcRelatedInfoDto, beforeRemoveAppSubmissionDto, appSubmissionDto.getAppGrpPremisesDtoList());
         }

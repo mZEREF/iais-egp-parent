@@ -38,6 +38,7 @@ import com.ecquaria.cloud.moh.iais.constant.HmacConstants;
 import com.ecquaria.cloud.moh.iais.dto.EmailParam;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.EventBusHelper;
+import com.ecquaria.cloud.moh.iais.helper.FileUtils;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
@@ -57,6 +58,11 @@ import com.ecquaria.cloud.moh.iais.service.client.SystemBeLicClient;
 import com.ecquaria.sz.commons.util.FileUtil;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
@@ -79,10 +85,6 @@ import java.util.zip.CRC32;
 import java.util.zip.CheckedInputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
 
 import static java.nio.file.Files.newInputStream;
 import static java.nio.file.Files.newOutputStream;
@@ -362,8 +364,11 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
 
                         try {
                             String submissionId = generateIdClient.getSeqId().getEntity();
-                            this.download(v,name,refId,submissionId);
+                            boolean save=this.download(v,name,refId,submissionId);
                             //save success
+                            if(save){
+                                FileUtils.deleteTempFile(fil);
+                            }
                         }catch (Exception e){
                             //save bad
 

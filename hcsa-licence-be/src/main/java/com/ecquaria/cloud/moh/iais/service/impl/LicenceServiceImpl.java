@@ -262,34 +262,42 @@ public class LicenceServiceImpl implements LicenceService {
     public EventBusLicenceGroupDtos createFESuperLicDto(String eventRefNum,String submissionId) {
         EventBusLicenceGroupDtos eventBusLicenceGroupDtos =  getEventBusLicenceGroupDtosByRefNo(eventRefNum);
         if(eventBusLicenceGroupDtos!=null){
-//            Date now = new Date();
-//            EicRequestTrackingDto trackDto = licEicClient.getPendingRecordByReferenceNumber(eventRefNum).getEntity();
-//            trackDto.setProcessNum(trackDto.getProcessNum() + 1);
-//            trackDto.setFirstActionAt(now);
-//            trackDto.setLastActionAt(now);
-//            try {
-//                eicCallFeSuperLic(eventBusLicenceGroupDtos);
-//                trackDto.setStatus(AppConsts.EIC_STATUS_PROCESSING_COMPLETE);
-//            } catch (Exception e) {
-//                log.error(e.getMessage(), e);
-//            }
-//            hcsaLicenceClient.updateEicTrackStatus(trackDto);
+            Date now = new Date();
+            EicRequestTrackingDto trackDto = licEicClient.getPendingRecordByReferenceNumber(eventRefNum).getEntity();
+            trackDto.setProcessNum(trackDto.getProcessNum() + 1);
+            trackDto.setFirstActionAt(now);
+            trackDto.setLastActionAt(now);
+            try {
+                eicCallFeSuperLic(eventBusLicenceGroupDtos);
+                trackDto.setStatus(AppConsts.EIC_STATUS_PROCESSING_COMPLETE);
+            } catch (Exception e) {
+                log.error(e.getMessage(), e);
+            }
+            hcsaLicenceClient.updateEicTrackStatus(trackDto);
             //send approve notification
+            trackDto = licEicClient.getPendingRecordByReferenceNumber(eventRefNum + "uen").getEntity();
+            trackDto.setProcessNum(trackDto.getProcessNum() + 1);
+            trackDto.setFirstActionAt(now);
+            trackDto.setLastActionAt(now);
             try{
                 //save new acra info
 //                saveNewAcra(eventBusLicenceGroupDtos);
                 //send issue uen email
                 log.info(StringUtil.changeForLog("send uen email"));
-//                generateUEN(eventBusLicenceGroupDtos);
-                for (LicenceGroupDto item:eventBusLicenceGroupDtos.getLicenceGroupDtos()
-                ) {
-                    for (SuperLicDto superLicDto : item.getSuperLicDtos()
-                    ) {
+                generateUEN(eventBusLicenceGroupDtos);
+                trackDto.setStatus(AppConsts.EIC_STATUS_PROCESSING_COMPLETE);
+            }catch (Exception e){
+                log.error(e.getMessage(),e);
+            }
+            hcsaLicenceClient.updateEicTrackStatus(trackDto);
+            try {
+                for (LicenceGroupDto item:eventBusLicenceGroupDtos.getLicenceGroupDtos()) {
+                    for (SuperLicDto superLicDto : item.getSuperLicDtos()) {
                         sendNotification(superLicDto);
                     }
                 }
-            }catch (Exception e){
-                log.error(e.getMessage(),e);
+            } catch (Exception e) {
+                log.error(e.getMessage(), e);
             }
             saveLicenceAppRiskInfoDtos(eventBusLicenceGroupDtos.getLicenceGroupDtos(),eventBusLicenceGroupDtos.getAuditTrailDto());
         }else{

@@ -224,26 +224,7 @@ public class InsRepServiceImpl implements InsRepService {
             inspectionReportDto.setInspectOffices(nameList);
         }
         //get application type (pre/post)
-        String reasonForVisit = null;
-        if(ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK.equals(appTypeCode)){
-            reasonForVisit = "Audit Inspection";
-        }else if(ApplicationConsts.APPLICATION_TYPE_POST_INSPECTION.equals(appTypeCode)){
-            String appType = MasterCodeUtil.getCodeDesc(appTypeCode);
-            if(!StringUtil.isEmpty(licId)){
-                List<LicAppCorrelationDto> licAppCorrelationDtos = hcsaLicenceClient.getLicCorrBylicId(licId).getEntity();
-                if (!IaisCommonUtils.isEmpty(licAppCorrelationDtos)) {
-                    String applicationId = licAppCorrelationDtos.get(0).getApplicationId();
-                    ApplicationDto applicationDtoOld = applicationClient.getApplicationById(applicationId).getEntity();
-                    String applicationTypeOld = applicationDtoOld.getApplicationType();
-                    appType = MasterCodeUtil.getCodeDesc(applicationTypeOld);
-                }
-            }
-            reasonForVisit = "Post-licensing inspection for " + appType;
-        }else {
-            String appType = MasterCodeUtil.getCodeDesc(appTypeCode);
-            reasonForVisit = "Pre-licensing inspection for " + appType;
-        }
-
+        String reasonForVisit = getReasonForVisit(applicationType,licId,applicationViewDto.getApplicationGroupDto().getIsPreInspection());
         //serviceId transform serviceCode
         List<String> list = IaisCommonUtils.genNewArrayList();
         String serviceId = appInsRepDto.getServiceId();
@@ -464,6 +445,22 @@ public class InsRepServiceImpl implements InsRepService {
         }
         return inspectionReportDto;
     }
+    private String getReasonForVisit(String applicationType,String licenceId,Integer isPre){
+        String applicationTypeOldDesc = "";
+        if(ApplicationConsts.APPLICATION_TYPE_POST_INSPECTION.equals(applicationType)){
+            if(!StringUtil.isEmpty(licenceId)){
+                List<LicAppCorrelationDto> licAppCorrelationDtos = hcsaLicenceClient.getLicCorrBylicId(licenceId).getEntity();
+                if (!IaisCommonUtils.isEmpty(licAppCorrelationDtos)) {
+                    String applicationId = licAppCorrelationDtos.get(0).getApplicationId();
+                    ApplicationDto applicationDtoOld = applicationClient.getApplicationById(applicationId).getEntity();
+                    String applicationTypeOld = applicationDtoOld.getApplicationType();
+                    applicationTypeOldDesc = MasterCodeUtil.getCodeDesc(applicationTypeOld);
+                }
+            }
+        }
+        return IaisCommonUtils.getReasonForVisitInspectionReport(applicationType,MasterCodeUtil.getCodeDesc(applicationType),isPre,applicationTypeOldDesc);
+    }
+
 
     private List<String> getServiceSubTypeName(String correlationId) {
         List<String> serviceSubtypeName = IaisCommonUtils.genNewArrayList();

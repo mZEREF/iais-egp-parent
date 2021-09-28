@@ -41,15 +41,23 @@
                                 <br/>
                                 <br/>
                                 <div class="multiservice">
+                                    <!-- for desktop -->
                                     <div class="tab-gp side-tab clearfix">
-                                        <ul class="nav nav-pills nav-stacked hidden-xs hidden-sm"  ${isSingle == 'Y' ? 'hidden' : ''} role="tablist">
+                                     <c:if test="${isSingle != 'Y'}">
+                                        <ul class="nav nav-pills nav-stacked hidden-xs hidden-sm" role="tablist">
                                             <c:forEach var="serviceName" items="${serviceNames}" varStatus="status">
-                                                <li class="complete ${status.index == '0' ? 'active' : ''} tableMain" id="dtoList${status.index}" role="presentation"><a href="#serviceName${status.index}" aria-controls="lorem1" role="tab" data-toggle="tab">${serviceName}</a></li>
+                                                <li class="complete ${status.index == '0' ? 'active' : ''} tableMain" id="dtoList${status.index}" onclick="javascirpt:changeTabForMoreRenew('${status.index}')" role="presentation"><a href="#serviceName${status.index}" aria-controls="lorem1" role="tab" data-toggle="tab">${serviceName}</a></li>
                                             </c:forEach>
                                         </ul>
-
-                                        <%--main content--%>
-
+                                        <!-- for Mobile -->
+                                        <div class="mobile-side-nav-tab visible-xs visible-sm">
+                                            <select  aria-label="serviceSelectMobile" id="moblieSelectRenew" onchange="javascirpt:changeTabForMoreRenewMobile(this.value)">
+                                                <c:forEach var="serviceName" items="${serviceNames}" varStatus="status">
+                                                    <option value="${status.index}" ${status.index == '0' ? 'selected' : ''}>${serviceName}</option>
+                                                </c:forEach>
+                                            </select>
+                                        </div>
+                                        </c:if>
                                         <div class="tab-gp steps-tab">
                                             <div class="tab-content" style="padding-top: 0px;">
                                                 <c:if test="${isSingle == 'Y'}">
@@ -301,5 +309,11 @@
         $('#mainForm').submit();
     });
 
+    function changeTabForMoreRenew(value){
+        fillValue('#moblieSelectRenew',value);
+    }
+    function  changeTabForMoreRenewMobile(value){
+        $("#dtoList"+value).find("a").click();
+    }
 
 </script>

@@ -7,6 +7,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionReportCo
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.HcsaLicenceBeConstant;
@@ -39,6 +40,7 @@ public class VehicleCommonController {
     private FillUpCheckListGetAppClient fillUpCheckListGetAppClient;
     private final static String RECOMMENDATION_DTO= "appPremisesRecommendationDto";
 
+    private final static String RECOMMENDATION_SHOW = "appPremisesRecommendation_Show_Desc";
     public void setVehicleInformation(HttpServletRequest request, TaskDto taskDto, ApplicationViewDto applicationViewDto){
         //get vehicle flag
         String vehicleFlag = applicationService.getVehicleFlagToShowOrEdit(taskDto, vehicleOpenFlag, applicationViewDto);
@@ -58,6 +60,7 @@ public class VehicleCommonController {
 
     public void clearReportSession(HttpServletRequest request){
         ParamUtil.setSessionAttr(request, RECOMMENDATION_DTO, null);
+        ParamUtil.setSessionAttr(request, RECOMMENDATION_SHOW, null);
     }
 
     public AppPremisesRecommendationDto initAoRecommendation(String correlationId, BaseProcessClass bpc, String appType){
@@ -72,8 +75,9 @@ public class VehicleCommonController {
             if(InspectionReportConstants.APPROVED.equals(recomDecision)||InspectionReportConstants.APPROVEDLTC.equals(recomDecision)){
                 initRecommendationDto.setRemarks(reportRemarks);
                 Integer recomInNumber = appPremisesRecommendationDto.getRecomInNumber();
-                String recommendationOnlyShowStr = getRecommendationOnlyShowStr(recomInNumber);
+                String recommendationOnlyShowStr =  IaisCommonUtils.getRecommendationYears(recomInNumber);
                 initRecommendationDto.setPeriod(recommendationOnlyShowStr);
+                ParamUtil.setSessionAttr(bpc.request, RECOMMENDATION_SHOW, IaisCommonUtils.getRecommendationOnlyShowStr(recomInNumber));
             }
             if(InspectionReportConstants.REJECTED.equals(recomDecision)){
                 initRecommendationDto.setPeriod(InspectionReportConstants.REJECTED);
@@ -105,22 +109,6 @@ public class VehicleCommonController {
         }
         ParamUtil.setSessionAttr(bpc.request, RECOMMENDATION_DTO, initRecommendationDto);
         return initRecommendationDto;
-    }
-
-    private String getRecommendationOnlyShowStr (Integer recomInNumber){
-        if(recomInNumber >= 12){
-            if( recomInNumber % 12 == 0){
-                return  recomInNumber / 12 == 1 ? "1 Year":  (recomInNumber / 12 + " Year(s)");
-            }else {
-                if(recomInNumber / 12 == 1) {
-                    return  recomInNumber % 12 == 1 ? (1 + " Year " + 1 + " Month"):  (1 + " Year " + recomInNumber % 12 + " Month(s)");
-                }else {
-                    return  recomInNumber % 12 == 1 ? (recomInNumber / 12 + " Year(s) " + 1 + " Month"):  (recomInNumber / 12 + " Year(s) " + recomInNumber % 12 + " Month(s)");
-                }
-            }
-        }else {
-            return  recomInNumber == 1 ? (recomInNumber + " Month") : (recomInNumber + " Month(s)");
-        }
     }
 
 }
