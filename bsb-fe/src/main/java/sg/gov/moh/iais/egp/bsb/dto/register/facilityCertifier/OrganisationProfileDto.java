@@ -28,6 +28,9 @@ public class OrganisationProfileDto extends Node {
     private String address2;
     private String address3;
     private String postalCode;
+    private String city;
+    private String state;
+    private String country;
     private String yearEstablished;
     private String email;
     private String contactNo;
@@ -175,6 +178,30 @@ public class OrganisationProfileDto extends Node {
         this.contactPerson = contactPerson;
     }
 
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
+    public String getState() {
+        return state;
+    }
+
+    public void setState(String state) {
+        this.state = state;
+    }
+
+    public String getCountry() {
+        return country;
+    }
+
+    public void setCountry(String country) {
+        this.country = country;
+    }
+
     //    ---------------------------- request -> object ----------------------------------------------
     private static final String KEY_ORG_NAME = "orgName";
     private static final String KEY_ADDRESS_TYPE = "addressType";
@@ -186,6 +213,9 @@ public class OrganisationProfileDto extends Node {
     private static final String KEY_ADDRESS1 = "address1";
     private static final String KEY_ADDRESS2 = "address2";
     private static final String KEY_ADDRESS3= "address3";
+    private static final String KEY_CITY = "city";
+    private static final String KEY_STATE = "state";
+    private static final String KEY_COUNTRY= "country";
     private static final String KEY_YEAR_ESTABLISHED = "yearEstablished";
     private static final String KEY_EMAIL = "email";
     private static final String KEY_CONTACT_NO = "contactNo";
@@ -203,6 +233,9 @@ public class OrganisationProfileDto extends Node {
         this.setAddress1(ParamUtil.getString(request,KEY_ADDRESS1));
         this.setAddress2(ParamUtil.getString(request,KEY_ADDRESS2));
         this.setAddress3(ParamUtil.getString(request,KEY_ADDRESS3));
+        this.setCity(ParamUtil.getString(request,KEY_CITY));
+        this.setState(ParamUtil.getString(request,KEY_STATE));
+        this.setCountry(ParamUtil.getString(request,KEY_COUNTRY));
         this.setYearEstablished(ParamUtil.getString(request,KEY_YEAR_ESTABLISHED));
         this.setEmail(ParamUtil.getString(request,KEY_EMAIL));
         this.setContactNo(ParamUtil.getString(request,KEY_CONTACT_NO));

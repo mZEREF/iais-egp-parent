@@ -13,7 +13,7 @@
 <webui:setLayout name="iais-internet"/>
 
 <script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-common.js"></script>
-<script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-facility-register.js"></script>
+<script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-facility-certifier-register.js"></script>
 
 <%@include file="/WEB-INF/jsp/iais/include/showErrorMsg.jsp"%>
 
@@ -146,7 +146,7 @@
                                             </div>
                                             <div class="form-group ">
                                                 <div class="col-sm-5 control-label">
-                                                    <label for="idNumberA">NRIC/FIN</label>
+                                                    <label for="idNoA">NRIC/FIN</label>
                                                     <span class="mandatory otherQualificationSpan">*</span>
                                                 </div>
                                                 <div class="col-sm-3">

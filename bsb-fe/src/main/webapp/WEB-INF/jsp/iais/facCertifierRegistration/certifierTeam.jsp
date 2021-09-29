@@ -13,7 +13,7 @@
 <webui:setLayout name="iais-internet"/>
 
 <script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-common.js"></script>
-<script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-facility-register.js"></script>
+<script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-facility-certifier-register.js"></script>
 
 <%@include file="/WEB-INF/jsp/iais/include/showErrorMsg.jsp"%>
 
@@ -28,8 +28,8 @@
     <input type="hidden" name="sectionAmt" value="${orgCerTeam.certifierTeamMemberList.size()}">
 
     <input type="hidden" id="section_repeat_amt_input_name" value="sectionAmt" readonly disabled>
-    <input type="hidden" id="section_repeat_section_id_prefix" value="authSection" readonly disabled>
-    <input type="hidden" id="section_repeat_header_title_prefix" value="Authorised Personnel " readonly disabled>
+    <input type="hidden" id="section_repeat_section_id_prefix" value="cerTeamSection" readonly disabled>
+    <input type="hidden" id="section_repeat_header_title_prefix" value="Certifying Team Member " readonly disabled>
     <input type="hidden" id="section_repeat_section_group_id" value="sectionGroup" readonly disabled>
     <input type="hidden" id="section_repeat_separator" value="--v--" readonly disabled>
 
@@ -50,7 +50,7 @@
                                         </h3>
 
                                         <div id="sectionGroup">
-                                        <c:forEach var="auth" items="${orgCerTeam.certifierTeamMemberList}" varStatus="status">
+                                        <c:forEach var="cer" items="${orgCerTeam.certifierTeamMemberList}" varStatus="status">
                                             <section id="cerTeamSection--v--${status.index}">
                                                 <c:if test="${orgCerTeam.certifierTeamMemberList.size() > 1}">
                                                     <div class="form-group">
@@ -124,7 +124,6 @@
                                                     </div>
                                                     <div class="col-sm-6 col-md-7">
                                                         <select name="nationality--v--${status.index}" id="nationality--v--${status.index}">
-
                                                         </select>
                                                         <span data-err-ind="nationality--v--${status.index}" class="error-msg"></span>
                                                     </div>
@@ -159,14 +158,28 @@
                                                     </div>
                                                     <div class="col-sm-6 col-md-7">
                                                         <div class="col-sm-5" style="margin-top: 8px">
-                                                            <label for="lead">Yes</label>
-                                                            <input type="radio" name="leadCertifier--v--${status.index}" id="lead" value="yes" />
+                                                            <label for="lead--v--${status.index}">Yes</label>
+                                                            <input type="radio" name="leadCertifier--v--${status.index}" id="lead--v--${status.index}" onchange="showLeader(this)" value="yes" />
                                                         </div>
                                                         <div class="col-sm-5" style="margin-top: 8px">
-                                                            <label for="common">No</label>
-                                                            <input type="radio" name="leadCertifier--v--${status.index}" id="common" value="no" />
+                                                            <label for="common--v--${status.index}">No</label>
+                                                            <input type="radio" name="leadCertifier--v--${status.index}" id="common--v--${status.index}" onchange="hideLeader(this)" value="no" />
                                                         </div>
                                                     </div>
+                                                </div>
+
+                                                <div id="leader--v--${status.index}" style="display: none">
+                                                <div class="form-group">
+                                                    <div class="col-sm-5 control-label">
+                                                        <label for="expertiseArea--v--${status.index}">Area of Expertise (Position)</label>
+                                                        <span class="mandatory otherQualificationSpan">*</span>
+                                                    </div>
+                                                    <div class="col-sm-6 col-md-7">
+                                                        <select name="expertiseArea--v--${status.index}" id="expertiseArea--v--${status.index}">
+                                                        </select>
+                                                        <span data-err-ind="expertiseArea--v--${status.index}" class="error-msg"></span>
+                                                    </div>
+                                                </div>
                                                 </div>
 
                                                 <div class="form-group ">
@@ -245,7 +258,6 @@
                                                         <span data-err-ind="jobDesignation--v--${status.index}" class="error-msg"></span>
                                                     </div>
                                                 </div>
-
                                             </section>
                                         </c:forEach>
                                         </div>

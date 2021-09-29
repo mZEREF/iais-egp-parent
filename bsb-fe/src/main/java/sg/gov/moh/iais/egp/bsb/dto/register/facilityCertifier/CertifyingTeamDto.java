@@ -38,6 +38,7 @@ public class CertifyingTeamDto extends Node {
         private String telNo;
         private String jobDesignation;
         private String leadCertifier;
+        private String expertiseArea;
         private String certBSL3Exp;
         private String commBSL34Exp;
         private String otherBSL34Exp;
@@ -96,7 +97,6 @@ public class CertifyingTeamDto extends Node {
 
     //    ---------------------------- request -> object ----------------------------------------------
     private static final String SEPARATOR = "--v--";
-    private static final String KEY_INPUT_METHOD = "inputMethod";
     private static final String KEY_SECTION_AMT = "sectionAmt";
     private static final String KEY_TEAM_MEMBER_NAME = "memberName";
     private static final String KEY_ID_TYPE = "idType";
@@ -107,6 +107,7 @@ public class CertifyingTeamDto extends Node {
     private static final String KEY_TEL_NO = "telNo";
     private static final String KEY_JOB_DESIGNATION = "jobDesignation";
     private static final String KEY_LEADER_CERTIFIER = "leadCertifier";
+    private static final String KEY_AREA_OF_EXPERTISE = "expertiseArea";
     private static final String KEY_CERTIFIER_BSL_3_EXPERIENCE = "certBSL3Exp";
     private static final String KEY_COMMON_BSL_3_4_EXPERIENCE= "commBSL34Exp";
     private static final String KEY_OTHER_BSL_3_4_EXPERIENCE = "otherBSL34Exp";
@@ -130,6 +131,7 @@ public class CertifyingTeamDto extends Node {
             cerTeamMember.setTelNo(ParamUtil.getString(request, KEY_TEL_NO+ SEPARATOR + i));
             cerTeamMember.setJobDesignation(ParamUtil.getString(request, KEY_JOB_DESIGNATION+ SEPARATOR + i));
             cerTeamMember.setLeadCertifier(ParamUtil.getString(request, KEY_LEADER_CERTIFIER+ SEPARATOR + i));
+            cerTeamMember.setExpertiseArea(ParamUtil.getString(request, KEY_AREA_OF_EXPERTISE + i));
             cerTeamMember.setCertBSL3Exp(ParamUtil.getString(request, KEY_CERTIFIER_BSL_3_EXPERIENCE+ SEPARATOR + i));
             cerTeamMember.setCommBSL34Exp(ParamUtil.getString(request, KEY_COMMON_BSL_3_4_EXPERIENCE+ SEPARATOR + i));
             cerTeamMember.setOtherBSL34Exp(ParamUtil.getString(request, KEY_OTHER_BSL_3_4_EXPERIENCE+ SEPARATOR + i));

@@ -13,7 +13,7 @@
 <webui:setLayout name="iais-internet"/>
 
 <script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-common.js"></script>
-<script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-facility-register.js"></script>
+<script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-facility-certifier-register.js"></script>
 
 <%@include file="/WEB-INF/jsp/iais/include/showErrorMsg.jsp"%>
 
@@ -62,7 +62,7 @@
                                                 </div>
                                                 <div class="col-sm-4" style="margin-top: 8px">
                                                     <input type="radio" name="addressType" id="typeOverseas" value="overseas" />
-                                                    <label for="typeLocal">Overseas</label>
+                                                    <label for="typeOverseas">Overseas</label>
                                                 </div>
                                             </div>
                                         </div>
@@ -145,6 +145,42 @@
                                             <div class="col-sm-6 col-md-7">
                                                 <input type="text" autocomplete="off" name="postalCode" id="postalCode" value=''/>
                                                 <span data-err-ind="postalCode" class="error-msg"></span>
+                                            </div>
+                                        </div>
+
+                                        <div id="overseasCon" style="display: none">
+                                            <div class="form-group ">
+                                            <div class="col-sm-5 control-label">
+                                                <label for="city">City</label>
+                                                <span class="mandatory otherQualificationSpan">*</span>
+                                            </div>
+                                            <div class="col-sm-6 col-md-7">
+                                                <input type="text" autocomplete="off" name="city" id="city" value=''/>
+                                                <span data-err-ind="city" class="error-msg"></span>
+                                            </div>
+                                            </div>
+
+                                            <div class="form-group ">
+                                                <div class="col-sm-5 control-label">
+                                                    <label for="state">State</label>
+                                                    <span class="mandatory otherQualificationSpan">*</span>
+                                                </div>
+                                                <div class="col-sm-6 col-md-7">
+                                                    <input type="text" autocomplete="off" name="state" id="state" value=''/>
+                                                    <span data-err-ind="state" class="error-msg"></span>
+                                                </div>
+                                            </div>
+
+                                            <div class="form-group ">
+                                                <div class="col-sm-5 control-label">
+                                                    <label for="country">Country</label>
+                                                    <span class="mandatory otherQualificationSpan">*</span>
+                                                </div>
+                                                <div class="col-sm-6 col-md-7">
+                                                    <select name="country" id="country">
+                                                    </select>
+                                                    <span data-err-ind="country" class="error-msg"></span>
+                                                </div>
                                             </div>
                                         </div>
 
