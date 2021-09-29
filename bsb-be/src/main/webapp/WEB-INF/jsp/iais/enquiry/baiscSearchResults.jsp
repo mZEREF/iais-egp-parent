@@ -56,9 +56,6 @@
                                             <iais:sortableHeader needSort="false"
                                                                  field="Verified By HM"
                                                                  value="Verified By HM"/>
-                                            <iais:sortableHeader needSort="false"
-                                                                 field="Action"
-                                                                 value="Action"/>
                                         </tr>
                                         </thead>
                                         <tbody class="form-horizontal">
@@ -96,8 +93,6 @@
                                                                             pattern='dd/MM/yyyy'/></td>
                                                         <td><fmt:formatDate value='${items.hmVerifiedDt}'
                                                                             pattern='dd/MM/yyyy'/></td>
-                                                        <td><iais:select name="action" id="action" options="action"
-                                                                         firstOption="Please Select"></iais:select></td>
                                                     </tr>
                                                 </c:forEach>
                                             </c:otherwise>
@@ -147,9 +142,6 @@
                                             <iais:sortableHeader needSort="false"
                                                                  field="Approved Facility Certifier"
                                                                  value="Approved Facility Certifier"/>
-                                            <iais:sortableHeader needSort="false"
-                                                                 field="Action"
-                                                                 value="Action"/>
                                         </tr>
                                         </thead>
                                         <tbody class="form-horizontal">
@@ -191,8 +183,6 @@
                                                         <td><iais:code
                                                                 code="${items.facilitySchedule.facilityActivity.facility.facilityStatus}"></iais:code></td>
                                                         <td><c:out value="${items.facilitySchedule.facilityActivity.facility.approval}"/></td>
-                                                        <td><iais:select name="action" id="action" options="action"
-                                                                         firstOption="Please Select"></iais:select></td>
                                                     </tr>
                                                 </c:forEach>
                                             </c:otherwise>
@@ -224,9 +214,6 @@
                                             <iais:sortableHeader needSort="false"
                                                                  field="Expiry Date"
                                                                  value="Expiry Date"/>
-                                            <iais:sortableHeader needSort="false"
-                                                                 field="Action"
-                                                                 value="Action"/>
                                         </tr>
                                         </thead>
                                         <tbody class="form-horizontal">
@@ -249,8 +236,6 @@
                                                         <td><fmt:formatDate value='${items.approvalDate}'
                                                                             pattern='dd/MM/yyyy'/></td>
                                                         <td><fmt:formatDate value='${items.expiryDt}' pattern='dd/MM/yyyy'/></td>
-                                                        <td><iais:select name="action" id="action" options="action"
-                                                                         firstOption="Please Select"></iais:select></td>
                                                     </tr>
                                                 </c:forEach>
                                             </c:otherwise>
@@ -297,9 +282,6 @@
                                             <iais:sortableHeader needSort="false"
                                                                  field="Physical Possession of BA/T"
                                                                  value="Physical Possession of BA/T"/>
-                                            <iais:sortableHeader needSort="false"
-                                                                 field="Action"
-                                                                 value="Action"/>
                                         </tr>
                                         </thead>
                                         <tbody class="form-horizontal">
@@ -322,8 +304,6 @@
                                                         <td><fmt:formatDate value='${items.approvalDate}'
                                                                             pattern='dd/MM/yyyy'/></td>
                                                         <td><fmt:formatDate value='${items.expiryDt}' pattern='dd/MM/yyyy'/></td>
-                                                        <td><iais:select name="action" id="action" options="action"
-                                                                         firstOption="Please Select"></iais:select></td>
                                                     </tr>
                                                 </c:forEach>
                                             </c:otherwise>
