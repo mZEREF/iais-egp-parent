@@ -3665,6 +3665,11 @@ public class NewApplicationDelegator {
                     //get value for jsp page
                     appGrpPremisesDto.setPremisesIndexNo(premIndexNo);
                     appGrpPremisesDtoList.add(appGrpPremisesDto);
+                    if(AppConsts.TRUE.equals(rfiCanEdit[i])){
+                        appGrpPremisesDto.setRfiCanEdit(true);
+                    }else{
+                        appGrpPremisesDto.setRfiCanEdit(false);
+                    }
                     continue;
                 }
                 //set hciCode
