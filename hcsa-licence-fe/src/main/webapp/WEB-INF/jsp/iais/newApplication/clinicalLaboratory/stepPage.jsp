@@ -25,7 +25,8 @@
                                 <div class="multiservice">
                                     <div class="tab-gp side-tab clearfix">
                                         <%@ include file="../formTabs.jsp" %>
-                                        <div class="tab-content">
+                                        <div class="tab-content" ${(empty hcsaServiceDtoList || hcsaServiceDtoList.size() <= 1) ?
+                                        'style="width:100%;"' : ''}>
                                             <div class="tab-pane active" id="clinicalLab" role="tabpanel">
                                                 <%@ include file="step.jsp" %>
                                                 <div class="application-service-steps">
