@@ -920,8 +920,7 @@ public class RoundRobinCommPoolBatchJob {
                 msgInfoMap.put("MOH_AGENCY_NAME", AppConsts.MOH_AGENCY_NAME);
                 try {
                     newApplicationDelegator.sendEmail(MsgTemplateConstants.MSG_TEMPLATE_WITHDRAWAL_APP_ASO_EMAIL, msgInfoMap, applicationDto);
-                    newApplicationDelegator.sendInboxMessage(applicationDto,serviceId,msgInfoMap,MsgTemplateConstants.MSG_TEMPLATE_WITHDRAWAL_APP_ASO_EMAIL);
-                    newApplicationDelegator.sendSMS(applicationDto,MsgTemplateConstants.MSG_TEMPLATE_WITHDRAWAL_APP_ASO_EMAIL, msgInfoMap);
+                    newApplicationDelegator.sendSMS(applicationDto,MsgTemplateConstants.MSG_TEMPLATE_WITHDRAWAL_APP_ASO_SMS, msgInfoMap);
                 } catch (Exception e) {
                     log.info("------------->  Send Withdraw 003 Email  Failed");
                     log.error(e.getMessage(), e);

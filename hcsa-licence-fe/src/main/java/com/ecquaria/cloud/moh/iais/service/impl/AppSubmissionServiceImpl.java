@@ -440,7 +440,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                 if(professionalResponseDtos != null && professionalResponseDtos.size() > 0){
                     professionalResponseDto = professionalResponseDtos.get(0);
                 }
-                log.info(StringUtil.changeForLog("ProfessionalResponseDto: " + professionalResponseDto));
+                log.info(StringUtil.changeForLog("ProfessionalResponseDto: " + JsonUtil.parseToJson(professionalResponseDto)));
             } catch (Exception e) {
                 professionalResponseDto = new ProfessionalResponseDto();
                 professionalResponseDto.setHasException(true);
@@ -806,7 +806,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
 
         // add log
         if (!map.isEmpty()) {
-            log.info(StringUtil.changeForLog("Error Message : " + map + " For the Sub Licensee - " +
+            log.info(StringUtil.changeForLog("Error Message For the Sub Licensee : " + map + " - " +
                     JsonUtil.parseToJson(subLicenseeDto)));
         }
         if (OrganizationConstants.LICENSEE_SUB_TYPE_COMPANY.equals(subLicenseeDto.getLicenseeType())) {
@@ -2391,7 +2391,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
             sB.append(errIcon);
         }
         bpc.request.getSession().setAttribute("serviceConfig",sB.toString());
-        log.info(StringUtil.changeForLog("Error Message: " + previewAndSubmitMap));
+        log.info(StringUtil.changeForLog("Error Message for Preview Submit Validation: " + previewAndSubmitMap));
         return previewAndSubmitMap;
     }
 
@@ -2431,6 +2431,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
             int mandatoryCount = hcsaSvcPersonnelDto.getMandatoryCount();
             valiatePersonnelCount(dto, psnType, mandatoryCount, sB, errorMap);
         }
+        String prsError = MessageUtil.getMessageDesc("GENERAL_ERR0042");
         for (HcsaServiceStepSchemeDto step : hcsaServiceStepSchemeDtos) {
             String currentStep = Optional.ofNullable(step)
                     .map(HcsaServiceStepSchemeDto::getStepCode)
@@ -2474,8 +2475,8 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                 if ("Y".equals(prsFlag) && appSvcClinicalDirectorDtos != null) {
                     int i = 0;
                     for (AppSvcPrincipalOfficersDto person : appSvcClinicalDirectorDtos) {
-                        if (NewApplicationHelper.checkProfRegNo(person.getProfRegNo())) {
-                            errorMap.put("profRegNo" + i, "GENERAL_ERR0042");
+                        if (!NewApplicationHelper.checkProfRegNo(person.getProfRegNo())) {
+                            errorMap.put("profRegNo" + i, prsError);
                             break;
                         }
                         i++;
@@ -2496,7 +2497,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                     int i = 0;
                     for (AppSvcPrincipalOfficersDto person : appSvcCgoDtoList) {
                         if (!NewApplicationHelper.checkProfRegNo(person.getProfRegNo())) {
-                            govenMap.put("profRegNo" + i, "GENERAL_ERR0042");
+                            govenMap.put("profRegNo" + i, prsError);
                             break;
                         }
                         i++;
@@ -2530,7 +2531,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                     int i = 0;
                     for (AppSvcPersonnelDto person : appSvcPersonnelDtoList) {
                         if (!NewApplicationHelper.checkProfRegNo(person.getProfRegNo())) {
-                            errorMap.put("regnNo" + i, "GENERAL_ERR0042");
+                            errorMap.put("regnNo" + i, prsError);
                             break;
                         }
                         i++;
