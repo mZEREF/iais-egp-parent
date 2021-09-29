@@ -220,35 +220,37 @@
         readonlyPartPage($('div.premises-content'));
         $('div.premises-content').each(function () {
             handlePage($(this));
-
         });
         </c:if>
-
-
 
         var mainContent =$('.main-content');
         mainContent.find('input.allDay:checked').each(function (k) {
             console.log(k);
-            var $allDayDiv = $(this).closest('div.col-md-2');
+            var $allDayDiv = $(this).closest('div.all-day-div');
             disabeleForAllDay($allDayDiv);
         });
 
         init = 1;
         //68859
-        if($('#rfc_eqHciNameChange').val()=='false'){
+        if ($('#rfc_eqHciNameChange').val()=='false') {
             $("input[name='isPartEdit']").val('1');
             $("input[name='chooseExistData']").val('1');
             $('.premSelect').removeClass('disabled');
             $('.premisesEdit').addClass('hidden');
-        }else if($('#rfc_eqHciNameChange').val()=='true'){
+        } else if ($('#rfc_eqHciNameChange').val()=='true') {
             $("input[name='isPartEdit']").val('0');
             $("input[name='chooseExistData']").val('0');
             $('.premisesEdit').removeClass('hidden');
         }
         <c:if test="${'APTY002' !=AppSubmissionDto.appType || requestInformationConfig != null}">
-        if($("#errorMapIs").val()=='error'){
-            $('.premisesEdit').trigger('click');
-            $('.premisesEdit').addClass('hidden');
+        if ($("#errorMapIs").val()=='error') {
+            $('div.premContent').each(function () {
+                var $premisesEdit = $(this).find('.premisesEdit');
+                if ($(this).find("input[name='chooseExistData']").val() != '1' && $premisesEdit.length > 0) {
+                    $premisesEdit.trigger('click');
+                    $premisesEdit.addClass('hidden');
+                }
+            });
         }
         </c:if>
     });

@@ -711,42 +711,26 @@
         });
     }
 
-
-    var setAddress = function(premisesType,data,$Ele){
+    var setAddress = function (premisesType, data, $Ele) {
         var $AddrEle = $Ele;
-
-        if('onSite' == premisesType){
-            var addrVal = data.addrType;
-            if(addrVal == undefined){
-                addrVal = '';
-            }
-            $AddrEle.find('select[name="onSiteAddressType"]').val(addrVal);
-            var addressVal = $AddrEle.find('option[value="' + addrVal + '"]').html();
-            $AddrEle.find('select[name="onSiteAddressType"]').next().find('.current').html(addressVal);
-        }else if('conveyance' == premisesType){
-            var addrVal = data.conveyanceAddressType;
-            if(addrVal == undefined){
-                addrVal = '';
-            }
-            $AddrEle.find('select[name="conveyanceAddressType"]').val(addrVal);
-            var addressVal = $AddrEle.find('option[value="' + addrVal + '"]').html();
-            $AddrEle.find('select[name="conveyanceAddrType"]').next().find('.current').html(addressVal);
-        }else if('offSite' == premisesType){
-            var addrVal = data.conveyanceAddressType;
-            if(addrVal == undefined){
-                addrVal = '';
-            }
-            $AddrEle.find('select[name="offSiteAddressType"]').val(addrVal);
-            var addressVal = $AddrEle.find('option[value="' + addrVal + '"]').html();
-            $AddrEle.find('select[name="offSiteAddrType"]').next().find('.current').html(addressVal);
-        }else if('easMts' == premisesType){
-            var addrVal = data.easMtsAddressType;
-            if(addrVal == undefined){
-                addrVal = '';
-            }
-            $AddrEle.find('select[name="easMtsAddrType"]').val(addrVal);
-            var addressVal = $AddrEle.find('option[value="' + addrVal + '"]').html();
-            $AddrEle.find('select[name="easMtsAddrType"]').next().find('.current').html(addressVal);
+        var $addrType;
+        var addrVal = '';
+        if ('onSite' == premisesType) {
+            addrVal = data.addrType;
+            $addrType = $AddrEle.find('select[name="onSiteAddressType"]');
+        } else if ('conveyance' == premisesType) {
+            addrVal = data.conveyanceAddressType;
+            $addrType = $AddrEle.find('select[name="conveyanceAddressType"]');
+        } else if ('offSite' == premisesType) {
+            addrVal = data.conveyanceAddressType;
+            $addrType = $AddrEle.find('select[name="offSiteAddressType"]');
+        } else if ('easMts' == premisesType) {
+            addrVal = data.easMtsAddressType;
+            $addrType = $AddrEle.find('select[name="easMtsAddrType"]');
+        }
+        if (!isEmpty($addrType) && $addrType.length > 0) {
+            fillValue($addrType, addrVal);
+            $addrType.trigger('change');
         }
     }
 
