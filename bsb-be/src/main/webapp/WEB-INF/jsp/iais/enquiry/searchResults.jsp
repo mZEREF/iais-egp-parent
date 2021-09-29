@@ -187,8 +187,7 @@
                                                     <c:out value="No"/></c:if>
                                             </td>
                                             <td><c:out value="${items.facilitySchedule.facilityActivity.facility.operator.facOperator}"/></td>
-                                            <td>
-                                            <td><c:out value="${items.admin}"/></td></td>
+                                            <td><c:out value="${items.admin}"/></td>
                                             <td><iais:code
                                                     code="${items.facilitySchedule.facilityActivity.facility.facilityStatus}"></iais:code></td>
                                             <td><c:out value="${items.facilitySchedule.facilityActivity.facility.approval}"/></td>
