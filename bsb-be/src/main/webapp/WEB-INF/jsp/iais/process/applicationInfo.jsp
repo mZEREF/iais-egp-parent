@@ -77,13 +77,13 @@
         </div>
     </div>
 </div>
-<div align="center">
+/*<div align="center">
     <a href="javascript:void(0);" onclick="javascript:doOpenApp()">
         <button type="button" class="btn btn-primary">
             View Application
         </button>
     </a>
-</div>
+</div>*/
 <div>&nbsp</div>
 <div class="panel panel-default">
     <div class="panel-heading"><strong>List of Agent / Toxin</strong></div>
