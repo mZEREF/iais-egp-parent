@@ -41,16 +41,16 @@ public interface BiosafetyEnquiryClient {
     FeignResponseEntity<List<BiologicalDto>> queryBiologicalBySchedule(@PathVariable(name = "schedule") String schedule);
 
     @GetMapping(value = "/app_info/app", consumes = MediaType.APPLICATION_JSON_VALUE, produces =MediaType.APPLICATION_JSON_VALUE)
-    ResponseDto<ApplicationResultDto> getApp(@SpringQueryMap EnquiryDto dto);
+    ResponseDto<ApplicationResultDto> getApp(@RequestBody  EnquiryDto dto);
 
     @GetMapping(value = "/fac_info/query/fac", consumes = MediaType.APPLICATION_JSON_VALUE, produces =MediaType.APPLICATION_JSON_VALUE)
-    ResponseDto<FacilityResultDto> getFac(@SpringQueryMap EnquiryDto dto);
+    ResponseDto<FacilityResultDto> getFac(@RequestBody  EnquiryDto dto);
 
     @GetMapping(value = "/approval_info/app", consumes = MediaType.APPLICATION_JSON_VALUE, produces =MediaType.APPLICATION_JSON_VALUE)
-    ResponseDto<ApprovalResultDto> getApproval(@SpringQueryMap EnquiryDto dto);
+    ResponseDto<ApprovalResultDto> getApproval(@RequestBody  EnquiryDto dto);
 
     @GetMapping(value = "/fac_info/afc", consumes = MediaType.APPLICATION_JSON_VALUE, produces =MediaType.APPLICATION_JSON_VALUE)
-    ResponseDto<ApprovedFacilityCerResultDto> getAFC(@SpringQueryMap EnquiryDto dto);
+    ResponseDto<ApprovedFacilityCerResultDto> getAFC(@RequestBody  EnquiryDto dto);
 
     @GetMapping(path ="/afc_info/{orgName}")
     ResponseDto<ApprovedFacilityCerResultDto> getAfcByOrgName(@PathVariable(name = "orgName") String orgName);
