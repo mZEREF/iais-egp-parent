@@ -76,6 +76,7 @@ public class DORevocationDelegator {
      */
     public void prepareFacilityListData(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
+        selectOption(request);
         FacilityQueryDto searchDto = getSearchDto(request);
         ParamUtil.setSessionAttr(request, RevocationConstants.PARAM_FACILITY_SEARCH, searchDto);
         // call API to get searched data

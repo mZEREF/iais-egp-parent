@@ -37,7 +37,7 @@
                                     <iais:field value="Facility Name"/>
                                     <iais:value width="18">
                                         <iais:select name="facilityName" id="facilityName"
-                                                     value="${auditSearch.facilityName}"
+                                                     value="${facilitySearch.facilityName}"
                                                      options="facilityName"
                                                      firstOption="Please Select"/>
                                     </iais:value>
@@ -47,7 +47,7 @@
                                     <iais:field value="Facility classification"/>
                                     <iais:value width="18">
                                         <iais:select name="facilityClassification" id="facilityClassification"
-                                                     value="${auditSearch.facilityClassification}"
+                                                     value="${facilitySearch.facilityClassification}"
                                                      codeCategory="CATE_ID_BSB_FAC_CLASSIFICATION"
                                                      firstOption="Please Select"/>
                                     </iais:value>
@@ -57,7 +57,7 @@
                                     <iais:field value="Active Type"/>
                                     <iais:value width="18">
                                         <iais:select name="facilityType" id="facilityType"
-                                                     value="${auditSearch.activeType}"
+                                                     value="${facilitySearch.activeType}"
                                                      codeCategory="CATE_ID_BSB_ACTIVE_TYPE" firstOption="Please Select"/>
                                     </iais:value>
                                 </iais:row>
@@ -84,10 +84,10 @@
                                 <thead>
                                 <tr>
                                     <iais:sortableHeader needSort="false" field="" value="S/N" isFE="false"/>
-                                    <iais:sortableHeader needSort="true" field="facility.facilityName" value="Facility Name" isFE="false"/>
-                                    <iais:sortableHeader needSort="true" field="facility.facilityClassification" value="Facility Classification" isFE="false"/>
+                                    <iais:sortableHeader needSort="true" field="facilityName" value="Facility Name" isFE="false"/>
+                                    <iais:sortableHeader needSort="true" field="facilityClassification" value="Facility Classification" isFE="false"/>
                                     <iais:sortableHeader needSort="false" field="" value="Activity type" isFE="false"/>
-                                    <iais:sortableHeader needSort="true" field="" value="Facility Status" isFE="false"/>
+                                    <iais:sortableHeader needSort="true" field="facilityStatus" value="Facility Status" isFE="false"/>
                                     <iais:sortableHeader needSort="false" field="" value="Action" isFE="false"/>
                                 </tr>
                                 </thead>

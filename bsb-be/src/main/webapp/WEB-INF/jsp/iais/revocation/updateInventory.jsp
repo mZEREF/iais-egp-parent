@@ -75,9 +75,6 @@
                                 <a class="back" id="back" href="#"><em class="fa fa-angle-left"></em> Back</a>
                             </div>
                             <div align="right">
-                                <button name="clearBtn3" id="clearButton3" type="button" class="btn btn-secondary">
-                                    Clear
-                                </button>
                                 <button name="submitBtn3" id="submitButton3" type="button" class="btn btn-primary">
                                     Submit
                                 </button>

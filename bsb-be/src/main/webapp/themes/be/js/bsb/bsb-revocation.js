@@ -23,6 +23,25 @@ function checkEndTime(startTime,endTime){
 }
 
 $(function () {
+    //Facility list
+    $("#searchBtn").click(function (){
+        var optionValue = $("#auditType option:selected").val();
+        if (optionValue == "Please Select" || optionValue == "") {
+            $("#error_auditType").html("This is Mandatory");
+        }else {
+            showWaiting();
+            $("#error_auditType").html("");
+            $("[name='action_type']").val("doSearch");
+            $("#mainForm").submit();
+        }
+    });
+
+    $("#clearBtn").click(function () {
+        $("#facilityClassification option:first").prop("selected",'selected');
+        $("#facilityType option:first").prop("selected",'selected');
+        $("#facilityName option:first").prop("selected",'selected');
+        $("#beInboxFilter .current").text("Please Select");
+    });
     // DO submit revocation
     $("#clearButton1").click(function () {
         $('#reason').val("");
