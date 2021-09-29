@@ -4354,9 +4354,11 @@ public class NewApplicationHelper {
         if (dto == null || StringUtil.isEmpty(dto.getRegno()) || StringUtil.isEmpty(dto.getName())) {
             isValid = false;
         }
-        if (dto != null && dto.isHasException() && request != null) {
+        if (dto != null && dto.isHasException()) {
             isValid = false;
-            request.setAttribute(ClinicalLaboratoryDelegator.PRS_SERVICE_DOWN, ClinicalLaboratoryDelegator.PRS_SERVICE_DOWN);
+            if (request != null) {
+                request.setAttribute(ClinicalLaboratoryDelegator.PRS_SERVICE_DOWN, ClinicalLaboratoryDelegator.PRS_SERVICE_DOWN);
+            }
         }
         return isValid;
     }

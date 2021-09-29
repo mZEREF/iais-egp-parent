@@ -3626,6 +3626,10 @@ public class NewApplicationDelegator {
             } catch (Exception e) {
                 log.error(e.getMessage(), e);
             }
+            if (StringUtil.isEmpty(premIndexNo)) {
+                log.info(StringUtil.changeForLog("New premise index"));
+                premIndexNo = UUID.randomUUID().toString();
+            }
             String appType = appSubmissionDto.getAppType();
             boolean newApp = requestInformationConfig == null && ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType);
             if (newApp) {
@@ -3639,11 +3643,7 @@ public class NewApplicationDelegator {
 //                    appGrpPremisesDto = licAppGrpPremisesDtoMap.get(premisesSel);
                     if (appGrpPremisesDto != null) {
                         //get value for jsp page
-                        if (StringUtil.isEmpty(premisesIndexNo[i])) {
-                            appGrpPremisesDto.setPremisesIndexNo(UUID.randomUUID().toString());
-                        } else {
-                            appGrpPremisesDto.setPremisesIndexNo(premisesIndexNo[i]);
-                        }
+                        appGrpPremisesDto.setPremisesIndexNo(premIndexNo);
                         appGrpPremisesDtoList.add(appGrpPremisesDto);
                     }
                     continue;
@@ -3652,7 +3652,7 @@ public class NewApplicationDelegator {
                 if (!AppConsts.YES.equals(isParyEdit[i])) {
                     List<AppGrpPremisesDto> appGrpPremisesDtos = appSubmissionDto.getAppGrpPremisesDtoList();
                     for (AppGrpPremisesDto prem : appGrpPremisesDtos) {
-                        if (prem.getPremisesIndexNo().equals(premIndexNo)) {
+                        if (premIndexNo.equals(prem.getPremisesIndexNo())) {
                             appGrpPremisesDto = prem;
                             break;
                         }
@@ -3663,45 +3663,26 @@ public class NewApplicationDelegator {
                 if (AppConsts.YES.equals(chooseExistData[i])) {
                     appGrpPremisesDto = licAppGrpPremisesDtoMap.get(premisesSel);
                     //get value for jsp page
-                    if (StringUtil.isEmpty(premisesIndexNo[i])) {
-                        appGrpPremisesDto.setPremisesIndexNo(UUID.randomUUID().toString());
-                    } else {
-                        appGrpPremisesDto.setPremisesIndexNo(premisesIndexNo[i]);
-                    }
+                    appGrpPremisesDto.setPremisesIndexNo(premIndexNo);
                     appGrpPremisesDtoList.add(appGrpPremisesDto);
+                    if(AppConsts.TRUE.equals(rfiCanEdit[i])){
+                        appGrpPremisesDto.setRfiCanEdit(true);
+                    }else{
+                        appGrpPremisesDto.setRfiCanEdit(false);
+                    }
                     continue;
                 }
                 //set hciCode
                 List<AppGrpPremisesDto> appGrpPremisesDtos = appSubmissionDto.getAppGrpPremisesDtoList();
-                AppSubmissionDto oldAppSubmissionDto = (AppSubmissionDto) request.getSession().getAttribute("oldAppSubmissionDto");
-                Object attribute = request.getSession().getAttribute(REQUESTINFORMATIONCONFIG);
                 for (AppGrpPremisesDto premDto : appGrpPremisesDtos) {
-                    if (!StringUtil.isEmpty(premisesIndexNo[i]) && premisesIndexNo[i].equals(premDto.getPremisesIndexNo())) {
-                        String hciCode="";
-                        if(attribute!=null){
-                            String hciCode1 = premDto.getHciCode();
-                            String oldHciCode = premDto.getOldHciCode();
-                            if(hciCode1!=null&&oldHciCode!=null){
-                                if(hciCode1.equals(oldHciCode)){
-                                    hciCode=hciCode1;
-                                }
-                            }else if(hciCode1==null) {
-
-                            }
-
-                        }else {
-                            if(oldAppSubmissionDto!=null){
-                                boolean eqHciCode = EqRequestForChangeSubmitResultChange.eqHciCode(appGrpPremisesDto, oldAppSubmissionDto.getAppGrpPremisesDtoList().get(0));
-                                if(eqHciCode){
-                                    hciCode=  oldAppSubmissionDto.getAppGrpPremisesDtoList().get(0).getHciCode();
-                                }
-                            }
-                        }
-                        appGrpPremisesDto.setHciCode(premDto.getHciCode());
-                        if(!StringUtil.isEmpty(hciCode)){
+                    if (premIndexNo.equals(premDto.getPremisesIndexNo())) {
+                        AppGrpPremisesDto dtoFromMap = licAppGrpPremisesDtoMap.get(premisesSel);
+                        String hciCode = dtoFromMap != null ? dtoFromMap.getHciCode() : "";
+                        if (!StringUtil.isEmpty(hciCode)) {
                             appGrpPremisesDto.setHciCode(hciCode);
+                        } else {
+                            appGrpPremisesDto.setHciCode(premDto.getHciCode());
                         }
-                        appGrpPremisesDto.setHciNameChanged(premDto.getHciNameChanged());
                         appGrpPremisesDto.setLicenceDtos(premDto.getLicenceDtos());
                         break;
                     }
@@ -3709,12 +3690,8 @@ public class NewApplicationDelegator {
             }
 
             //get value for session , this is the subtype's checkbox
-            if (StringUtil.isEmpty(premisesIndexNo[i])) {
-                appGrpPremisesDto.setPremisesIndexNo(UUID.randomUUID().toString());
-            } else {
-                appGrpPremisesDto.setPremisesIndexNo(premisesIndexNo[i]);
-            }
-
+            appGrpPremisesDto.setPremisesIndexNo(premIndexNo);
+            // set premise type
             appGrpPremisesDto.setPremisesType(premisesType[i]);
             //List<AppPremPhOpenPeriodDto> appPremPhOpenPeriods = IaisCommonUtils.genNewArrayList();
             List<OperationHoursReloadDto> weeklyDtoList = IaisCommonUtils.genNewArrayList();
@@ -4243,7 +4220,7 @@ public class NewApplicationDelegator {
         log.info(StringUtil.changeForLog("the do requestForChangeLoading end ...."));
     }
 
-    private void requestForInformationLoading(BaseProcessClass bpc, String appNo) throws CloneNotSupportedException {
+    private void requestForInformationLoading(BaseProcessClass bpc, String appNo) {
         log.info(StringUtil.changeForLog("the do requestForInformationLoading start ...."));
         String msgId = (String) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_INTER_INBOX_MESSAGE_ID);
         //msgId = "415199C2-4AAA-42BF-B068-9B019BF1ED1C";
