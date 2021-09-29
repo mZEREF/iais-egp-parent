@@ -106,6 +106,7 @@
                 <c:forEach items="${auditDocDto.facilityDocs}" var="appSupDocDto" varStatus="status">
                     <%--                                                <c:if test="${applicationViewDto.applicationDto.applicationType != ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK || (applicationViewDto.applicationDto.applicationType == ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK && interalFile.appDocType != ApplicationConsts.APP_DOC_TYPE_SELF_DEC_FORM)}">--%>
                     <tr>
+                        <input name="have" id="have" value="haveFile" hidden>
                         <td width="20%">
                             <p><c:out value="${appSupDocDto.name}"></c:out></p>
                         </td>

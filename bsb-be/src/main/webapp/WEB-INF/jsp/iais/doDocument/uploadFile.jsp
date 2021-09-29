@@ -109,7 +109,7 @@
                     if(data.fileSn == 0){
                         removeNoData();
                     }
-                    var tr = "<tr>"+"<td width=\"20%\"><p>" +data.name+"</p></td>" +"<td  width=\"20%\"><p>"+ data.url +data.name +"</p></td>"+
+                    var tr = "<tr>"+"<td width=\"20%\"><p>" +data.name+"<input name=\"have\" id=\"have\" value=\"haveFile\" hidden>"+"</p></td>" +"<td  width=\"20%\"><p>"+ data.url +data.name +"</p></td>"+
                         "<td width=\"15%\"><p>" +data.size+"KB"+"</p></td>"+ "<td width=\"20%\"><p>" +data.submitByName+"</p></td>"+ "<td width=\"25%\"><p>" +data.submitAtStr+"</p></td>"
                         + "<td width=\"10%\">" + "  <button type=\"button\" class=\"btn btn-secondary-del btn-sm\" onclick=\"javascript:deleteFile(this,'"+data.maskId+"');\">Delete</button>" +"</td>"+"</tr>";
                     doAddTr(tr);

@@ -99,7 +99,7 @@
                                                                                                   name="reason"
                                                                                                   cols="70"
                                                                                                   rows="7"
-                                                                                                  maxlength="500"><c:forEach var="miscList" items="${applicationMiscList}" varStatus="status"><c:choose><c:when test="${status.last}"><iais:code code="${miscList.reason}"/>:${miscList.reasonContent}</c:when><c:otherwise><iais:code code="${miscList.reason}"/>:${miscList.reasonContent};</c:otherwise></c:choose></c:forEach></textarea>
+                                                                                                  maxlength="500"><c:forEach var="miscList" items="${applicationMiscList}" varStatus="status"><iais:code code="${miscList.reason}"/>:${miscList.reasonContent};</c:forEach></textarea>
                                                                                         <span id="error_reason"
                                                                                               name="iaisErrorMsg"
                                                                                               class="error-msg"></span>
@@ -115,14 +115,17 @@
                                                                             <iais:value width="10">
                                                                                 <p>
                                                                                     <c:forEach var="miscs" items="${applicationMiscList}" varStatus="status">
-                                                                                        <c:choose>
-                                                                                            <c:when test="${status.last}">
-                                                                                                ${miscs.remarks}
-                                                                                            </c:when>
-                                                                                            <c:otherwise>
-                                                                                                ${miscs.remarks};
-                                                                                            </c:otherwise>
-                                                                                        </c:choose>
+                                                                                        <c:if test="${miscs.remarks eq null or miscs.remarks eq ''}"></c:if>
+                                                                                        <c:if test="${miscs.remarks != null and miscs.remarks != ''}">
+                                                                                            <c:choose>
+                                                                                                <c:when test="${status.last}">
+                                                                                                    ${miscs.remarks}
+                                                                                                </c:when>
+                                                                                                <c:otherwise>
+                                                                                                    ${miscs.remarks};
+                                                                                                </c:otherwise>
+                                                                                            </c:choose>
+                                                                                        </c:if>
                                                                                     </c:forEach>
                                                                                 </p>
                                                                             </iais:value>

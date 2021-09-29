@@ -50,13 +50,18 @@ $(function () {
 
     $("#submitButton1").click(function () {
         var reasonValue = $("#reason").val();
+        var isUpload = $("#have").val();
         if (reasonValue == "" || reasonValue == null) {
             $("#error_reason").html("Please enter the reason");
         }else{
-            $("#error_reason").html("");
-            showWaiting();
-            $("[name='action_type']").val("doSubmit");
-            $("#mainForm").submit();
+            if (isUpload!=null) {
+                $("#error_reason").html("");
+                showWaiting();
+                $("[name='action_type']").val("doSubmit");
+                $("#mainForm").submit();
+            }else {
+                alert("Please upload file");
+            }
         }
     });
 

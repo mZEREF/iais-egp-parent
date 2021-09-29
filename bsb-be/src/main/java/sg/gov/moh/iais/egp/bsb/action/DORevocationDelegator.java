@@ -16,12 +16,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sg.gov.moh.iais.egp.bsb.client.AuditClient;
 import sg.gov.moh.iais.egp.bsb.client.BiosafetyEnquiryClient;
+import sg.gov.moh.iais.egp.bsb.client.DocClient;
 import sg.gov.moh.iais.egp.bsb.client.RevocationClient;
 import sg.gov.moh.iais.egp.bsb.constant.AuditConstants;
 import sg.gov.moh.iais.egp.bsb.constant.RevocationConstants;
 import sg.gov.moh.iais.egp.bsb.dto.BsbEmailParam;
 import sg.gov.moh.iais.egp.bsb.dto.PageInfo;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
+import sg.gov.moh.iais.egp.bsb.dto.audit.AuditDocDto;
 import sg.gov.moh.iais.egp.bsb.dto.revocation.FacilityQueryDto;
 import sg.gov.moh.iais.egp.bsb.dto.revocation.FacilityQueryResultDto;
 import sg.gov.moh.iais.egp.bsb.entity.*;
@@ -55,6 +57,9 @@ public class DORevocationDelegator {
 
     @Autowired
     private AuditClient auditClient;
+
+    @Autowired
+    private DocClient docClient;
 
     /**
      * StartStep: startStep
@@ -180,6 +185,7 @@ public class DORevocationDelegator {
         ParamUtil.setSessionAttr(request, RevocationConstants.AUDIT_DOC_DTO, null);
         ParamUtil.setSessionAttr(request, RevocationConstants.FLAG, null);
         ParamUtil.setSessionAttr(request, RevocationConstants.BACK, null);
+        ParamUtil.setSessionAttr(request,RevocationConstants.AUDIT_DOC_DTO, null);
 
         String from = ParamUtil.getRequestString(request, RevocationConstants.FROM);
 
@@ -196,6 +202,18 @@ public class DORevocationDelegator {
                     application.getFacility().setActiveType(activity.getActivityType());
                 }
 
+                List<FacilityDoc> facilityDocList = docClient.getFacilityDocByFacId(application.getFacility().getId()).getEntity();
+                List<FacilityDoc> docList = new ArrayList<>();
+                for (FacilityDoc facilityDoc : facilityDocList) {
+                    //这里拿不到，只能拿到当前用户名
+                    String submitByName = IaisEGPHelper.getCurrentAuditTrailDto().getMohUserId();
+                    facilityDoc.setSubmitByName(submitByName);
+                    docList.add(facilityDoc);
+                }
+                AuditDocDto auditDocDto = new AuditDocDto();
+                auditDocDto.setFacilityDocs(docList);
+
+                ParamUtil.setSessionAttr(request,RevocationConstants.AUDIT_DOC_DTO, auditDocDto);
                 ParamUtil.setSessionAttr(request, RevocationConstants.PARAM_APPLICATION, application);
                 ParamUtil.setSessionAttr(request, RevocationConstants.FACILITY, application.getFacility());
                 ParamUtil.setSessionAttr(request, RevocationConstants.FLAG, RevocationConstants.APP);
@@ -229,6 +247,7 @@ public class DORevocationDelegator {
         HttpServletRequest request = bpc.request;
 
         String facilityId = ParamUtil.getString(request, RevocationConstants.PARAM_FACILITY_ID);
+        String haveFile = ParamUtil.getString(request,"from");
 
         String flag = (String) ParamUtil.getSessionAttr(request, RevocationConstants.FLAG);
         Facility facility1 = (Facility) ParamUtil.getSessionAttr(request, RevocationConstants.FACILITY);

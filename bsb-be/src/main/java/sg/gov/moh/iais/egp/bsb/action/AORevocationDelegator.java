@@ -5,6 +5,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.*;
@@ -51,6 +52,7 @@ public class AORevocationDelegator {
 
     @Autowired
     private BsbNotificationHelper bsbNotificationHelper;
+
     @Autowired
     private DocClient docClient;
 
@@ -337,12 +339,23 @@ public class AORevocationDelegator {
         String reason = ParamUtil.getString(request, RevocationConstants.PARAM_REASON);
         String remarks = ParamUtil.getString(request, RevocationConstants.PARAM_AOREMARKS);
 
+        String[] strArr = reason.split(";");
+        String a = strArr[strArr.length-1];
+        char[] charStr = a.toCharArray();
+        StringBuilder sb = new StringBuilder();
+        for (char c : charStr) {
+            sb.append(c);
+        }
+        boolean contains = reason.contains(sb.toString());
+
         ApplicationMisc misc = new ApplicationMisc();
         Application newApp = new Application();
         newApp.setId(application.getId());
         misc.setRemarks(remarks);
-        misc.setReason(RevocationConstants.PARAM_REASON_TYPE_AO);
-        misc.setReasonContent(reason);
+        if (!contains){
+            misc.setReason(RevocationConstants.PARAM_REASON_TYPE_AO);
+            misc.setReasonContent(reason);
+        }
         misc.setApplication(newApp);
 
         //get user name
