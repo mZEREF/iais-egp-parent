@@ -68,7 +68,9 @@
             </div>
             <br/>
             <div class="row">
-                <div class="col-xs-12 col-md-3"></div>
+                <div class="col-xs-12 col-md-3">
+                    <a class="back" href="/bsb-fe/eservice/INTERNET/MohBSBInboxMsg"><em class="fa fa-angle-left"></em> Back</a>
+                </div>
                 <div class="col-xs-12 col-md-9">
                     <div class="text-right text-center-mobile">
                         <a class="btn btn-primary next" id="next" href="javascript:void(0);">START APPLICATION</a>

@@ -201,8 +201,8 @@
                                         <div class="row" style="margin-top: 1.5%">
                                             <div class="col-md-12">
                                                 <div class="col-md-6 pull-right">
-                                                    <button type="button" class="btn btn-primary" id="doArchive" style="margin-right: 10px;">Archive</button>
-                                                    <button type="button" class="btn btn-primary pull-right" onclick="toArchiveView()">Access Archive</button>
+                                                    <button type="button" class="btn btn-primary" id="doArchive" style="margin-right: 10px; display:none; ">Archive</button>
+                                                    <button type="button" class="btn btn-primary pull-right" onclick="toArchiveView()" style="display: none">Access Archive</button>
                                                 </div>
                                             </div>
                                         </div>
