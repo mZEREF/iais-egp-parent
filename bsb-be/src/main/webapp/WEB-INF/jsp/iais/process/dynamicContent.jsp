@@ -20,7 +20,7 @@
     </div>
     <div align="right">
         <a style="float:left;padding-top: 1.1%;" class="back" href="#" id="contentBack"><em class="fa fa-angle-left"></em> Back</a>
-        <button name="preview" id="preview" type="button" class="btn btn-primary" data-toggle="modal" data-target="#preview">Preview</button>
-        <button name="reload" id="reload" type="button" class="btn btn-primary" data-toggle="modal" data-target="#reload">Reload</button>
+<%--        <button name="preview" id="preview" type="button" class="btn btn-primary" data-toggle="modal" data-target="#preview">Preview</button>--%>
+<%--        <button name="reload" id="reload" type="button" class="btn btn-primary" data-toggle="modal" data-target="#reload">Reload</button>--%>
     </div>
 </div>
