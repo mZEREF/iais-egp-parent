@@ -63,7 +63,7 @@
                                             </div>
                                             <div class="col-sm-6 col-md-7">
                                                 <input type="text" autocomplete="off" name="operatorName" id="operatorName" value='<c:out value="${facOperator.designeeName}"/>'/>
-                                                <span data-err-ind="facName" class="error-msg"></span>
+                                                <span data-err-ind="designeeName" class="error-msg"></span>
                                             </div>
                                         </div>
                                         <div class="form-group ">

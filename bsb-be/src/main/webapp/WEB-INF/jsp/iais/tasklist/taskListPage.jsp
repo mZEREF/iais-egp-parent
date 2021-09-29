@@ -83,12 +83,20 @@
                             </div>
                         </div>
                         <div class="col-xs-12 col-sm-12"><%-- div for app date from and to --%>
-                            <label class="col-xs-2 col-sm-2 control-label">Application Date</label>
-                            <span data-err-ind="searchAppDateFrom" class="error-msg"></span>
-                            <iais:datePicker id="searchAppDateFrom" name="searchAppDateFrom" value="${taskListSearchDto.searchAppDateFrom}"/>
-                            To
-                            <span data-err-ind="searchAppDateTo" class="error-msg"></span>
-                            <iais:datePicker id="searchAppDateTo" name="searchAppDateTo" value="${taskListSearchDto.searchAppDateTo}"/>
+                            <div  class="col-xs-12 col-sm-12 col-md-5" style="padding-left: 0; padding-right: 0;">
+                                <label class="col-xs-12 col-sm-5 col-md-5 control-label">Application Date</label>
+                                <div class="col-xs-12 col-sm-7 col-md-6">
+                                    <span data-err-ind="searchAppDateFrom" class="error-msg"></span>
+                                    <iais:datePicker id="searchAppDateFrom" name="searchAppDateFrom" value="${taskListSearchDto.searchAppDateFrom}"/>
+                                </div>
+                            </div>
+                            <div class="col-xs-12 col-sm-12 col-md-5" style="padding-left: 0; padding-right: 0;">
+                                <label class="col-xs-12 col-sm-5 col-md-2 control-label">To</label>
+                                <div class="col-xs-12 col-sm-7 col-md-6">
+                                    <span data-err-ind="searchAppDateTo" class="error-msg"></span>
+                                    <iais:datePicker id="searchAppDateTo" name="searchAppDateTo" value="${taskListSearchDto.searchAppDateTo}"/>
+                                </div>
+                            </div>
                         </div>
                         <div class="col-xs-12 col-sm-12" style="text-align:right;"><%-- div for btn --%>
                             <button class="btn btn-secondary" type="reset" id="clearBtn" name="clearBtn">Clear</button>
