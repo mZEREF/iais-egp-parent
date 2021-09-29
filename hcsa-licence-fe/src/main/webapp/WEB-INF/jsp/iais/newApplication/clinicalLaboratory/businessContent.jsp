@@ -31,7 +31,7 @@
             <c:set var="businessDto" value="${premBusinessItem.value}"/>
         </c:if>
     </c:forEach>
-    <div class="panel-group <c:if test="${isRfi && !appGrpPremisesDto.rfiCanEdit}">hidden</c:if>" id="accordion" role="tablist" aria-multiselectable="true">
+    <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
         <div class="panel panel-default">
             <div class="panel-heading " id="business-heading"  role="tab">
                 <h4 class="panel-title">
