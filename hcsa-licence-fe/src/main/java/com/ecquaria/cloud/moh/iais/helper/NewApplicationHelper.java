@@ -4333,18 +4333,24 @@ public class NewApplicationHelper {
     }
 
     public static boolean checkProfRegNo(String profRegNo) {
-        return checkProfRegNo(profRegNo, MiscUtil.getCurrentRequest());
+        return checkProfRegNo(profRegNo, null, MiscUtil.getCurrentRequest());
     }
 
     public static boolean checkProfRegNo(String profRegNo, HttpServletRequest request) {
+        return checkProfRegNo(profRegNo, null, request);
+    }
+
+    public static boolean checkProfRegNo(String profRegNo, ProfessionalResponseDto dto, HttpServletRequest request) {
         String prsFlag = ConfigHelper.getString("moh.halp.prs.enable");
         if (!"Y".equals(prsFlag) || StringUtil.isEmpty(profRegNo)) {
-            log.info(StringUtil.changeForLog("prof Reg No is " + profRegNo + " - PRS flag is " + prsFlag));
             return true;
         }
+        log.info(StringUtil.changeForLog("Prof Reg No is " + profRegNo));
         boolean isValid = true;
-        AppSubmissionService appSubmissionService = SpringContextHelper.getContext().getBean(AppSubmissionService.class);
-        ProfessionalResponseDto dto = appSubmissionService.retrievePrsInfo(profRegNo);
+        if (dto == null) {
+            AppSubmissionService appSubmissionService = SpringContextHelper.getContext().getBean(AppSubmissionService.class);
+            dto = appSubmissionService.retrievePrsInfo(profRegNo);
+        }
         if (dto == null || StringUtil.isEmpty(dto.getRegno()) || StringUtil.isEmpty(dto.getName())) {
             isValid = false;
         }

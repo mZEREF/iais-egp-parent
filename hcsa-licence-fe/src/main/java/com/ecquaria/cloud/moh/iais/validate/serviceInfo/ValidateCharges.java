@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.validate.serviceInfo;
 
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcChargesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcChargesPageDto;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
@@ -20,18 +21,24 @@ import java.util.Map;
 @Component
 @Slf4j
 public class ValidateCharges implements ValidateFlow {
+
     @Override
     public void doValidateCharges(Map<String, String> map, AppSvcChargesPageDto appSvcClinicalDirectorDto) {
-        if(appSvcClinicalDirectorDto==null){
+        if (appSvcClinicalDirectorDto == null) {
             return;
         }
+        Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
         List<AppSvcChargesDto> generalChargesDtos = appSvcClinicalDirectorDto.getGeneralChargesDtos();
-        doValidateGeneralCharges(map,generalChargesDtos);
+        doValidateGeneralCharges(errorMap, generalChargesDtos);
         List<AppSvcChargesDto> otherChargesDtos = appSvcClinicalDirectorDto.getOtherChargesDtos();
-        doValidateOtherCharges(map,otherChargesDtos);
+        doValidateOtherCharges(errorMap, otherChargesDtos);
 
-        log.info(StringUtil.changeForLog("====> ValidateCharges->"+ JsonUtil.parseToJson(map)));
+        if (map != null) {
+            map.putAll(errorMap);
+        }
+        log.info(StringUtil.changeForLog("====> ValidateCharges->" + JsonUtil.parseToJson(errorMap)));
     }
+
     protected void doValidateGeneralCharges(Map<String, String> map,List<AppSvcChargesDto> generalChargesDtos){
         if(generalChargesDtos==null || generalChargesDtos.isEmpty()){
             return;
