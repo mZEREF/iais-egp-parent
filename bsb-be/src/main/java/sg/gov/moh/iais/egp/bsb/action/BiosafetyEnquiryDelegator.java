@@ -448,10 +448,12 @@ public class BiosafetyEnquiryDelegator {
                 ApplicationResultDto applicationResultDto = biosafetyEnquiryClient.getApp(enquiryDto).getEntity();
                 for (Application application : applicationResultDto.getBsbApp()) {
                     FacilityActivity facilityActivity = biosafetyEnquiryClient.getFacilityActivityByApplicationId(application.getId()).getEntity();
-                    List<FacilitySchedule> facilitySchedules = facilityActivity.getFacilitySchedules();
-                    application.getFacility().setActiveType(facilityActivity.getActivityType());
-                    application.setBioName(JoinBiologicalName.joinBiologicalName(facilitySchedules, processClient));
-                    application.setRiskLevel(JoinBiologicalName.joinRiskLevel(facilitySchedules, processClient));
+                    if(facilityActivity != null){
+                        List<FacilitySchedule> facilitySchedules = facilityActivity.getFacilitySchedules();
+                        application.getFacility().setActiveType(facilityActivity.getActivityType());
+                        application.setBioName(JoinBiologicalName.joinBiologicalName(facilitySchedules, processClient));
+                        application.setRiskLevel(JoinBiologicalName.joinRiskLevel(facilitySchedules, processClient));
+                    }
                 }
                 ParamUtil.setRequestAttr(request, BioSafetyEnquiryConstants.PARAM_APPLICATION_INFO_RESULT, applicationResultDto.getBsbApp());
                 ParamUtil.setRequestAttr(request, BioSafetyEnquiryConstants.PARAM_APPLICATION_INFO_SEARCH, enquiryDto);
