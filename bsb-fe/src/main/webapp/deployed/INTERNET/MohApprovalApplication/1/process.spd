@@ -2,28 +2,28 @@
 <Application defaultStart="/Steps/StartStep/Start" dtdVersion="6.0" executable="true" majorVersion="1" minorVersion="0" name="MohApprovalApplication" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" transaction="enable">
  <WebServices />
  <Steps>
-  <StartStep defClass="" executor="" icon="" name="Start" x="80" y="40">
+  <StartStep defClass="" executor="" icon="" name="Start" x="70" y="160">
    <Description />
    <probepoint type="none" />
    <OnStepProcess>
     <JavaCode defClass="" executor="" methodName="start_OnStepProcess_0" name="start_OnStepProcess_0" />
    </OnStepProcess>
   </StartStep>
-  <AutomaticStep defClass="" executor="" icon="" name="PrepareForms" x="320" y="340">
+  <AutomaticStep defClass="" executor="" icon="" name="PrepareForms" x="300" y="430">
    <Description />
    <probepoint type="none" />
    <OnStepProcess>
     <JavaCode defClass="" executor="" methodName="prepareForms_OnStepProcess_0" name="prepareForms_OnStepProcess_0" />
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="PrepareDocuments" x="310" y="100">
+  <AutomaticStep defClass="" executor="" icon="" name="PrepareDocuments" x="310" y="160">
    <Description />
    <probepoint type="none" />
    <OnStepProcess>
     <JavaCode defClass="" executor="" methodName="prepareDocuments_OnStepProcess_0" name="prepareDocuments_OnStepProcess_0" />
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="PreparePreview" x="340" y="200">
+  <AutomaticStep defClass="" executor="" icon="" name="PreparePreview" x="350" y="290">
    <Description />
    <probepoint type="none" />
    <OnStepProcess>
@@ -37,21 +37,21 @@
     <JavaCode defClass="" executor="" methodName="prepare_OnStepProcess_0" name="prepare_OnStepProcess_0" />
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="doDocuments" x="640" y="110">
+  <AutomaticStep defClass="" executor="" icon="" name="doDocuments" x="640" y="160">
    <Description />
    <probepoint type="none" />
    <OnStepProcess>
     <JavaCode defClass="" executor="" methodName="doDocuments_OnStepProcess_0" name="doDocuments_OnStepProcess_0" />
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="doPreview" x="650" y="220">
+  <AutomaticStep defClass="" executor="" icon="" name="doPreview" x="660" y="290">
    <Description />
    <probepoint type="none" />
    <OnStepProcess>
     <JavaCode defClass="" executor="" methodName="doPreview_OnStepProcess_0" name="doPreview_OnStepProcess_0" />
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="doForms" x="620" y="340">
+  <AutomaticStep defClass="" executor="" icon="" name="doForms" x="620" y="430">
    <Description />
    <probepoint type="none" />
    <OnStepProcess>
@@ -79,40 +79,47 @@
     <JavaCode defClass="" executor="" methodName="doSaveDraft_OnStepProcess_0" name="doSaveDraft_OnStepProcess_0" />
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="PrepareCompanyInfo" x="40" y="120">
+  <AutomaticStep defClass="" executor="" icon="" name="PrepareCompanyInfo" x="300" y="50">
    <Description />
    <probepoint type="none" />
    <OnStepProcess>
     <JavaCode defClass="" executor="" methodName="prepareCompanyInfo_OnStepProcess_0" name="prepareCompanyInfo_OnStepProcess_0" />
    </OnStepProcess>
   </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="doCompanyInfo" x="670" y="50">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="doCompanyInfo_OnStepProcess_0" name="doCompanyInfo_OnStepProcess_0" />
+   </OnStepProcess>
+  </AutomaticStep>
  </Steps>
  <Pages>
-  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="Forms" stageIndicator="" x="500" y="340">
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="Forms" stageIndicator="" x="500" y="430">
    <OnPageLoad />
    <OnPageSubmit />
    <Description />
    <probepoint type="none" />
   </WebPage>
-  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="Documents" stageIndicator="" x="500" y="90">
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="Documents" stageIndicator="" x="490" y="160">
    <OnPageLoad />
    <OnPageSubmit />
    <Description />
    <probepoint type="none" />
   </WebPage>
-  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="Preview" stageIndicator="" x="510" y="210">
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="Preview" stageIndicator="" x="520" y="290">
    <OnPageLoad />
    <OnPageSubmit />
    <Description />
    <probepoint type="none" />
   </WebPage>
-  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="CompanyInfoPage" stageIndicator="" x="50" y="190">
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="CompanyInfoPage" stageIndicator="" x="480" y="40">
    <OnPageLoad />
    <OnPageSubmit />
    <Description />
    <probepoint type="none" />
   </WebPage>
-  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="SuccessPage" stageIndicator="" x="450" y="450">
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="SuccessPage" stageIndicator="" x="160" y="480">
    <OnPageLoad />
    <OnPageSubmit />
    <Description />
@@ -122,40 +129,40 @@
  <Forms />
  <Links>
   <SynchronousLink destinationName="/Pages/WebPage/Forms" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/PrepareForms" style="oblique">
-   <position>{(340,360)(520,360)}</position>
+   <position>{(320,450)(520,450)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Pages/WebPage/Documents" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/PrepareDocuments" style="oblique">
-   <position>{(330,120)(520,110)}</position>
+   <position>{(330,180)(510,180)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Pages/WebPage/Preview" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/PreparePreview" style="oblique">
-   <position>{(360,220)(530,230)}</position>
+   <position>{(370,310)(540,310)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Switches/Switch/Switch1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/Prepare" style="oblique">
    <position>{(100,310)(180,310)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/PrepareDocuments" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
-   <position>{(180,310)(330,120)}</position>
+   <position>{(180,310)(330,180)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/PreparePreview" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
-   <position>{(180,310)(360,220)}</position>
+   <position>{(180,310)(370,310)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/PrepareForms" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
-   <position>{(180,310)(340,360)}</position>
+   <position>{(180,310)(320,450)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/doDocuments" linkstyle="Direct" name="" sourceName="/Pages/WebPage/Documents" style="oblique">
-   <position>{(520,110)(660,130)}</position>
+   <position>{(510,180)(660,180)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/doPreview" linkstyle="Direct" name="" sourceName="/Pages/WebPage/Preview" style="oblique">
-   <position>{(530,230)(670,240)}</position>
+   <position>{(540,310)(680,310)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/doForms" linkstyle="Direct" name="" sourceName="/Pages/WebPage/Forms" style="oblique">
-   <position>{(520,360)(640,360)}</position>
+   <position>{(520,450)(640,450)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/ControlSwitch" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/doDocuments" style="oblique">
-   <position>{(660,130)(840,360)}</position>
+   <position>{(660,180)(840,360)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/ControlSwitch" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/doPreview" style="oblique">
-   <position>{(670,240)(840,360)}</position>
+   <position>{(680,310)(840,360)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Switches/Switch/Switch2" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/ControlSwitch" style="oblique">
    <position>{(840,360)(1000,280)}</position>
@@ -178,20 +185,26 @@
   <SynchronousLink destinationName="/Steps/AutomaticStep/Prepare" linkstyle="Direct" name="" sourceName="/Merges/Merge/Merge1" style="oblique">
    <position>{(1060,600)(106,594)(100,310)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/PrepareCompanyInfo" linkstyle="Direct" name="" sourceName="/Steps/StartStep/Start" style="oblique">
-   <position>{(100,60)(60,140)}</position>
-  </SynchronousLink>
   <SynchronousLink destinationName="/Pages/WebPage/CompanyInfoPage" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/PrepareCompanyInfo" style="oblique">
-   <position>{(60,140)(70,210)}</position>
-  </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/Prepare" linkstyle="Direct" name="" sourceName="/Pages/WebPage/CompanyInfoPage" style="oblique">
-   <position>{(70,210)(100,310)}</position>
+   <position>{(320,70)(500,60)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/ControlSwitch" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/doForms" style="oblique">
-   <position>{(640,360)(840,360)}</position>
+   <position>{(640,450)(840,360)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Pages/WebPage/SuccessPage" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch1" style="rectanular">
-   <position>{(180,310)(470,470)}</position>
+  <SynchronousLink destinationName="/Pages/WebPage/SuccessPage" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
+   <position>{(180,310)(180,500)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/Prepare" linkstyle="Direct" name="" sourceName="/Steps/StartStep/Start" style="oblique">
+   <position>{(90,180)(100,310)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PrepareCompanyInfo" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
+   <position>{(180,310)(320,70)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/doCompanyInfo" linkstyle="Direct" name="" sourceName="/Pages/WebPage/CompanyInfoPage" style="oblique">
+   <position>{(500,60)(690,70)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/ControlSwitch" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/doCompanyInfo" style="oblique">
+   <position>{(690,70)(840,360)}</position>
   </SynchronousLink>
  </Links>
  <Conditions />
@@ -202,6 +215,7 @@
    <SwitchCase component="/Steps/AutomaticStep/PreparePreview" value="&quot;PreparePreview&quot;" />
    <SwitchCase component="/Steps/AutomaticStep/PrepareForms" value="&quot;PrepareForms&quot;" />
    <SwitchCase component="/Pages/WebPage/SuccessPage" value="&quot;doJump&quot;" />
+   <SwitchCase component="/Steps/AutomaticStep/PrepareCompanyInfo" value="&quot;PrepareCompanyInfo&quot;" />
   </Switch>
   <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="crud_action_type" name="Switch2" x="980" y="260">
    <Description />

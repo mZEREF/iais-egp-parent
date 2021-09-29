@@ -20,15 +20,6 @@ $(function () {
     $("#processBack").click(function (){
         $('#doContent').click();
     })
-    $("#clearButton").click(function (){
-        $("div,textarea").val("");
-        $(".date_picker").val("");
-        $("#riskLevel option:first").prop("selected",'selected');
-        $("#processingDecision option:first").prop("selected",'selected');
-        $("#selectedApprovedFacilityCertifier option:first").prop("selected",'selected');
-        $("#finalRemarks option:first").prop("selected",'selected');
-        $("#beInboxFilter .current").text("Please Select");
-    })
 })
 function validate(){
     var ifProcess = $("#ifProcess").val();

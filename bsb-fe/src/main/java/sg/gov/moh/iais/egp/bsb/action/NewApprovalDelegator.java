@@ -86,7 +86,7 @@ public class NewApprovalDelegator {
         Object errorMap = ParamUtil.getRequestAttr(request,ApprovalApplicationConstants.ERRORMSG);
         ParamUtil.setRequestAttr(request, ApprovalApplicationConstants.ERRORMSG, errorMap);
         if (StringUtil.isEmpty(action)) {
-            action = ApprovalApplicationConstants.CRUD_ACTION_TYPE_FROM_PAGE_1;
+            action = ApprovalApplicationConstants.CRUD_ACTION_TYPE_FROM_PAGE_0;
         }
         List<SelectOption> biologicalSchedule1 = getSelectOptionList(ApprovalApplicationConstants.SCHEDULE_1);
         List<SelectOption> biologicalSchedule2 = getSelectOptionList(ApprovalApplicationConstants.SCHEDULE_2);
@@ -246,6 +246,14 @@ public class NewApprovalDelegator {
         ParamUtil.setRequestAttr(request,ApprovalApplicationConstants.CRUD_ACTION_TYPE,crudActionType);
     }
 
+    public void doCompanyInfo(BaseProcessClass bpc){
+        HttpServletRequest request = bpc.request;
+        String crudActionType = ApprovalApplicationConstants.CRUD_ACTION_TYPE_1;
+        String crudActionTypeFormPage = ApprovalApplicationConstants.CRUD_ACTION_TYPE_FROM_PAGE_1;
+        ParamUtil.setRequestAttr(request,ApprovalApplicationConstants.CRUD_ACTION_TYPE_FROM_PAGE,crudActionTypeFormPage);
+        ParamUtil.setRequestAttr(request,ApprovalApplicationConstants.CRUD_ACTION_TYPE,crudActionType);
+    }
+
     public void doForms(BaseProcessClass bpc) throws ParseException {
         HttpServletRequest request = bpc.request;
         ApprovalApplicationDto approvalApplicationDto = getDtoByForm(bpc);
@@ -303,7 +311,7 @@ public class NewApprovalDelegator {
         //back
         if (actionType.equals(ApprovalApplicationConstants.ACTIONTYPE_1)) {
             crudActionType = ApprovalApplicationConstants.CRUD_ACTION_TYPE_1;
-            crudActionTypeFormPage = ApprovalApplicationConstants.CRUD_ACTION_TYPE_FROM_PAGE_4;
+            crudActionTypeFormPage = ApprovalApplicationConstants.CRUD_ACTION_TYPE_FROM_PAGE_0;
         }else{
             //validate
             if(vResult != null && vResult.isHasErrors()){

@@ -70,6 +70,7 @@ public class ApprovalApplicationConstants {
     public static final String CRUD_ACTION_TYPE_2 = "doSaveDraft";
     public static final String CRUD_ACTION_TYPE_3 = "doSubmit";
 
+    public static final String CRUD_ACTION_TYPE_FROM_PAGE_0 = "PrepareCompanyInfo";
     public static final String CRUD_ACTION_TYPE_FROM_PAGE_1 = "PrepareForms";
     public static final String CRUD_ACTION_TYPE_FROM_PAGE_2 = "PrepareDocuments";
     public static final String CRUD_ACTION_TYPE_FROM_PAGE_3 = "PreparePreview";

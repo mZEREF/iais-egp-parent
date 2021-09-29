@@ -583,7 +583,6 @@
                                                                 </iais:section>
                                                                 <div align="right">
                                                                     <a style="float:left;padding-top: 1.1%;" class="back" href="#" id="processBack"><em class="fa fa-angle-left"></em> Back</a>
-                                                                    <button name="clearBtn" id="clearButton" type="button" class="btn btn-secondary">Clear</button>
                                                                     <c:if test="${(application.processType=='PROTYPE002' || application.processType=='PROTYPE003' || application.processType=='PROTYPE004' || application.processType=='PROTYPE005') && application.status=='BSBAPST003'}">
                                                                         <button name="finalAssessmentBtn" id="finalAssessmentButton" type="button" class="btn btn-primary">Final Assessment</button>
                                                                     </c:if>

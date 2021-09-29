@@ -38,42 +38,42 @@
                                     <c:forEach var="config" items="${primaryDocConfig}" varStatus="configStat">
                                         <c:choose>
                                             <c:when test="${'1' == config.index}">
-                                                <c:set var="fileList" value="${docReloadMap[config.id]}"/>
+                                                <c:set var="docIndex" value="${config.index}"/>
                                                 <c:set var="configIndex" value="${configStat.index}primaryDoc"/>
                                                 <%@include file="common/docContent.jsp"%>
                                             </c:when>
                                             <c:when test="${'2' == config.index}">
-                                                <c:set var="fileList" value="${docReloadMap[config.id]}"/>
+                                                <c:set var="docIndex" value="${config.index}"/>
                                                 <c:set var="configIndex" value="${configStat.index}primaryDoc"/>
                                                 <%@include file="common/docContent.jsp"%>
                                             </c:when>
                                             <c:when test="${'3' == config.index}">
-                                                <c:set var="fileList" value="${docReloadMap[config.id]}"/>
+                                                <c:set var="docIndex" value="${config.index}"/>
                                                 <c:set var="configIndex" value="${configStat.index}primaryDoc"/>
                                                 <%@include file="common/docContent.jsp"%>
                                             </c:when>
                                             <c:when test="${'4' == config.index}">
-                                                <c:set var="fileList" value="${docReloadMap[config.id]}"/>
+                                                <c:set var="docIndex" value="${config.index}"/>
                                                 <c:set var="configIndex" value="${configStat.index}primaryDoc"/>
                                                 <%@include file="common/docContent.jsp"%>
                                             </c:when>
                                             <c:when test="${'5' == config.index}">
-                                                <c:set var="fileList" value="${docReloadMap[config.id]}"/>
+                                                <c:set var="docIndex" value="${config.index}"/>
                                                 <c:set var="configIndex" value="${configStat.index}primaryDoc"/>
                                                 <%@include file="common/docContent.jsp"%>
                                             </c:when>
                                             <c:when test="${'6' == config.index}">
-                                                <c:set var="fileList" value="${docReloadMap[config.id]}"/>
+                                                <c:set var="docIndex" value="${config.index}"/>
                                                 <c:set var="configIndex" value="${configStat.index}primaryDoc"/>
                                                 <%@include file="common/docContent.jsp"%>
                                             </c:when>
                                             <c:when test="${'7' == config.index}">
-                                                <c:set var="fileList" value="${docReloadMap[config.id]}"/>
+                                                <c:set var="docIndex" value="${config.index}"/>
                                                 <c:set var="configIndex" value="${configStat.index}primaryDoc"/>
                                                 <%@include file="common/docContent.jsp"%>
                                             </c:when>
                                             <c:when test="${'8' == config.index}">
-                                                <c:set var="fileList" value="${docReloadMap[config.id]}"/>
+                                                <c:set var="docIndex" value="${config.index}"/>
                                                 <c:set var="configIndex" value="${configStat.index}primaryDoc"/>
                                                 <%@include file="common/docContent.jsp"%>
                                             </c:when>

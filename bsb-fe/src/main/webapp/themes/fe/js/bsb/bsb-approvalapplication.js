@@ -100,21 +100,6 @@ $(function() {
             $("#select0").show();
         }
     })
-    $("#Clear").click(function (){
-        $("div,textarea").val("");
-        $(".date_picker").val("");
-        $("input[type='text']").val("");
-        $("input[type='number']").val("");
-        $("#facilityId option:first").prop("selected",'selected');
-        $("#schedule option:first").prop("selected",'selected');
-        $("#modeOfProcurement option:first").prop("selected",'selected');
-        $("#country option:first").prop("selected",'selected');
-        $("input[type='checkbox']").prop('checked', false);
-        $(".multi-select-button").html("-- Select --");
-        $("#natureOfTheSample option").prop('selected',false);
-        clearBiologicalList();
-        $("#beInboxFilter .current").text("Please Select");
-    })
     $("#nextBtn").click(function (){
         showWaiting();
         $('#mainForm').submit();

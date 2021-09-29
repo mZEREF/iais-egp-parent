@@ -2,40 +2,64 @@
     <h3>${config.docType}<c:if test="${config.isMandatory}"><span class="mandatory"> *</span></c:if></h3>
     <div class="file-upload-gp">
         <input type="hidden" name="configIndex" value="${configIndex}"/>
-
-        <%--<span name="${configIndex}ShowId" id="${configIndex}ShowId">
-            <c:forEach var="file" items="${fileList}" varStatus="fileStat">
-            <div id="${configIndex}Div${file.seqNum}">
-                <c:choose>
-                    <c:when test="${!file.passValidate}">
-                        <c:out value="${file.docName}"/>
-                    </c:when>
-                    <c:otherwise>
-                        <a class="<c:if test="${!isClickEdit}">disabled</c:if>" href="${pageContext.request.contextPath}/file-repo?filerepo=fileRo${v.index}&fileRo${v.index}=<iais:mask name="fileRo${v.index}" value="${file.fileRepoId}"/>&fileRepoName=${file.docName}">${file.docName}</a>
-                    </c:otherwise>
-                </c:choose>
-                <button type="button" class="btn btn-secondary btn-sm delFileBtn" onclick="javascript:deleteFileFeAjax('${configIndex}',${file.seqNum});">
-                    Delete
-                </button>
-                <button type="button" class="btn btn-secondary btn-sm reUploadFileBtn" onclick="javascript:reUploadFileFeAjax('${configIndex}',${file.seqNum},'mainForm');">
-                    ReUpload
-                </button>
-            </div>
-            </c:forEach>
-        </span>--%>
-
+        <input type="hidden" name="docIndex" value="${docIndex}"/>
         <span name="${configIndex}ShowId" id="${configIndex}ShowId">
-            <%--<c:forEach var="file" items="${primaryDoc0}" varStatus="fileStat">
-            <div>
-                <c:out value="${file.name}"/>
-                <button type="button" class="btn btn-secondary btn-sm delFileBtn">
-                    Delete
-                </button>
-                <button type="button" class="btn btn-secondary btn-sm reUploadFileBtn">
-                    ReUpload
-                </button>
-            </div>
-            </c:forEach>--%>
+            <c:if test="${docIndex == 1}">
+                <c:forEach var="file" items="${primaryDoc1}" varStatus="fileStat">
+                    <div>
+                        <c:out value="${file.name}"/>
+                    </div>
+                </c:forEach>
+            </c:if>
+            <c:if test="${docIndex == 2}">
+                <c:forEach var="file" items="${primaryDoc2}" varStatus="fileStat">
+                    <div>
+                        <c:out value="${file.name}"/>
+                    </div>
+                </c:forEach>
+            </c:if>
+            <c:if test="${docIndex == 3}">
+                <c:forEach var="file" items="${primaryDoc3}" varStatus="fileStat">
+                    <div>
+                        <c:out value="${file.name}"/>
+                    </div>
+                </c:forEach>
+            </c:if>
+            <c:if test="${docIndex == 4}">
+                <c:forEach var="file" items="${primaryDoc4}" varStatus="fileStat">
+                    <div>
+                        <c:out value="${file.name}"/>
+                    </div>
+                </c:forEach>
+            </c:if>
+            <c:if test="${docIndex == 5}">
+                <c:forEach var="file" items="${primaryDoc5}" varStatus="fileStat">
+                    <div>
+                        <c:out value="${file.name}"/>
+                    </div>
+                </c:forEach>
+            </c:if>
+            <c:if test="${docIndex == 6}">
+                <c:forEach var="file" items="${primaryDoc6}" varStatus="fileStat">
+                    <div>
+                        <c:out value="${file.name}"/>
+                    </div>
+                </c:forEach>
+            </c:if>
+            <c:if test="${docIndex == 7}">
+                <c:forEach var="file" items="${primaryDoc7}" varStatus="fileStat">
+                    <div>
+                        <c:out value="${file.name}"/>
+                    </div>
+                </c:forEach>
+            </c:if>
+            <c:if test="${docIndex == 8}">
+                <c:forEach var="file" items="${primaryDoc8}" varStatus="fileStat">
+                    <div>
+                        <c:out value="${file.name}"/>
+                    </div>
+                </c:forEach>
+            </c:if>
         </span>
         <span name="iaisErrorMsg" class="error-msg" id="error_${configIndex}Error"></span>
         <br/>
