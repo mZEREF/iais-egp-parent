@@ -295,13 +295,9 @@ public class BiosafetyEnquiryDelegator {
         }
         if (approvedDateFrom != null) {
             enquiryDto.setApprovedDateFrom(approvedDateFrom);
-        } else if ("on".equals(count) || "an".equals(count)) {
-            enquiryDto.setApprovedDateFrom(DateUtil.yearAgoDt());
         }
         if (approvedDateTo != null) {
             enquiryDto.setApprovedDateTo(approvedDateTo);
-        } else if ("on".equals(count) || "an".equals(count)) {
-            enquiryDto.setApprovedDateTo(new Date());
         }
     }
 
@@ -330,18 +326,12 @@ public class BiosafetyEnquiryDelegator {
         }
         if (applicationSubmissionDateTo != null) {
             enquiryDto.setApplicationSubmissionDateTo(applicationSubmissionDateTo);
-        } else {
-            enquiryDto.setApplicationSubmissionDateTo(new Date());
         }
         if (approvalDateFrom != null) {
             enquiryDto.setApprovalDateFrom(approvalDateFrom);
-        } else {
-            enquiryDto.setApprovalDateFrom(DateUtil.yearAgoDt());
         }
         if (approvalDateTo != null) {
             enquiryDto.setApprovalDateTo(approvalDateTo);
-        } else {
-            enquiryDto.setApprovalDateTo(new Date());
         }
         if (StringUtil.isNotEmpty(processType)) {
             enquiryDto.setProcessType(processType);
@@ -360,13 +350,9 @@ public class BiosafetyEnquiryDelegator {
         String approvedFacilityCertifier = ParamUtil.getString(request, BioSafetyEnquiryConstants.PARAM_APPROVED_FACILITY_CERTIFIER);
         if (facilityExpiryDateFrom != null) {
             enquiryDto.setFacilityExpiryDateFrom(facilityExpiryDateFrom);
-        } else {
-            enquiryDto.setFacilityExpiryDateFrom(DateUtil.yearAgoDt());
         }
         if (facilityExpiryDateTo != null) {
             enquiryDto.setFacilityExpiryDateTo(facilityExpiryDateTo);
-        } else {
-            enquiryDto.setFacilityExpiryDateTo(new Date());
         }
         if (StringUtil.isNotEmpty(gazettedArea)) {
             enquiryDto.setGazettedArea(gazettedArea);
@@ -409,13 +395,9 @@ public class BiosafetyEnquiryDelegator {
         }
         if (approvalSubmissionDateFrom != null) {
             enquiryDto.setApprovalSubmissionDateFrom(approvalSubmissionDateFrom);
-        } else {
-            enquiryDto.setApprovalSubmissionDateFrom(DateUtil.yearAgoDt());
         }
         if (approvalSubmissionDateTo != null) {
             enquiryDto.setApprovalSubmissionDateTo(approvalSubmissionDateTo);
-        } else {
-            enquiryDto.setApprovalSubmissionDateTo(new Date());
         }
     }
 
