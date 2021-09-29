@@ -4,11 +4,9 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
-import net.sf.oval.constraint.ValidateWithMethod;
 import sg.gov.moh.iais.egp.bsb.dto.PagingAndSortingDto;
 
 import java.io.Serializable;
-import java.util.Date;
 
 /**
  * @author Zhu Tangtang
@@ -28,10 +26,8 @@ public class ApprovalOfficerQueryDto extends PagingAndSortingDto implements Seri
     private String facilityClassification;
     private String activityType;
     private String processType;
-    private Date searchAppDateFrom;
-
-    @ValidateWithMethod(message = MESSAGE_END_DATE_EARLIER_THAN_START_DATE, methodName = "checkApprovedDtToAfterFrom", parameterType = Date.class, profiles = {"appDate"})
-    private Date searchAppDateTo;
+    private String searchAppDateFrom;
+    private String searchAppDateTo;
 
     private String applicationNo;
     private String applicationType;
@@ -52,12 +48,5 @@ public class ApprovalOfficerQueryDto extends PagingAndSortingDto implements Seri
         applicationNo = "";
         applicationType = "";
         applicationStatus = "";
-    }
-
-    private boolean checkApprovedDtToAfterFrom(Date searchAppDateTo) {
-        if (searchAppDateTo == null || searchAppDateFrom == null){
-            return true;
-        }
-        return searchAppDateTo.after(searchAppDateFrom);
     }
 }

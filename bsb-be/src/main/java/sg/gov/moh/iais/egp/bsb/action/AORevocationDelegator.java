@@ -122,8 +122,8 @@ public class AORevocationDelegator {
         String applicationNo = ParamUtil.getString(request, RevocationConstants.PARAM_APPLICATION_NO);
         String applicationType = ParamUtil.getString(request, RevocationConstants.PARAM_APPLICATION_TYPE);
         String applicationStatus = ParamUtil.getString(request, RevocationConstants.PARAM_APPLICATION_STATUS);
-        Date searchAppDateFrom = Formatter.parseDate(ParamUtil.getString(request, RevocationConstants.PARAM_SEARCH_APP_DATE_FROM));
-        Date searchAppDateTo = Formatter.parseDate(ParamUtil.getString(request, RevocationConstants.PARAM_SEARCH_APP_DATE_TO));
+        String searchAppDateFrom = ParamUtil.getString(request, RevocationConstants.PARAM_SEARCH_APP_DATE_FROM);
+        String searchAppDateTo = ParamUtil.getString(request, RevocationConstants.PARAM_SEARCH_APP_DATE_TO);
 
         searchDto.setFacilityName(facilityName);
         searchDto.setFacilityClassification(facilityClassification);
