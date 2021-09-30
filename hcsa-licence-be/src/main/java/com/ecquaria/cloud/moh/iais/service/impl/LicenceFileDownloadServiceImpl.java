@@ -81,16 +81,6 @@ import com.ecquaria.kafka.model.Submission;
 import com.ecquaria.sz.commons.util.FileUtil;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
-import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
-
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
@@ -112,6 +102,15 @@ import java.util.zip.CRC32;
 import java.util.zip.CheckedInputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
+import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import static java.nio.file.Files.newInputStream;
 import static java.nio.file.Files.newOutputStream;
@@ -1059,8 +1058,14 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
             }
             broadcastOrganizationDto.setOneSubmitTaskList(onSubmitTaskList);
             broadcastApplicationDto.setOneSubmitTaskHistoryList(appPremisesRoutingHistoryDtos);
-            broadcastOrganizationDto = broadcastService.svaeBroadcastOrganization(broadcastOrganizationDto,null,submissionId);
-            broadcastApplicationDto  = broadcastService.svaeBroadcastApplicationDto(broadcastApplicationDto,null,submissionId);
+            eventBusHelper.submitAsyncRequest(broadcastOrganizationDto, submissionId,
+                    EventBusConsts.SERVICE_NAME_ROUNTINGTASK,
+                    EventBusConsts.OPERATION_ROUNTINGTASK_ROUNTING,
+                    broadcastOrganizationDto.getEventRefNo(), null);
+            eventBusHelper.submitAsyncRequest(broadcastApplicationDto, submissionId,
+                    EventBusConsts.SERVICE_NAME_APPSUBMIT,
+                    EventBusConsts.OPERATION_ROUNTINGTASK_ROUNTING,
+                    broadcastApplicationDto.getEventRefNo(), null);
             //update fe application stauts
             log.info("update application stauts");
             for(ApplicationDto applicationDto :requestForInfList){
