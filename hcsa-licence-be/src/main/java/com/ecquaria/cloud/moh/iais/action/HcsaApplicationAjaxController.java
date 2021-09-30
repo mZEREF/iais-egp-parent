@@ -125,7 +125,7 @@ public class HcsaApplicationAjaxController{
             try{
                 String docName = selectedFile.getOriginalFilename() == null ? "" : URLEncoder.encode(selectedFile.getOriginalFilename(), StandardCharsets.UTF_8.toString());
                 url= url.replaceAll("pageContext.request.contextPath","/hcsa-licence-web").replaceAll("status.index",String.valueOf(index)).
-                       replaceAll("interalFile.docName", docName).replaceAll("maskDec",mask).replaceAll("csrf",CSRF);
+                       replaceAll("interalFile.docName", docName).replaceAll("maskDec",mask).replaceAll("csrf",StringUtil.getNonNull(CSRF));
             }catch (Exception e){
                log.error(e.getMessage(),e);
             }
