@@ -59,6 +59,7 @@ import com.ecquaria.cloud.moh.iais.service.client.OrganizationLienceseeClient;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import com.ecquaria.sz.commons.util.Calculator;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -234,6 +235,9 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
 
     @Override
     public List<HcsaServiceStepSchemeDto> getHcsaServiceStepSchemesByServiceId(String serviceId) {
+        if (StringUtil.isEmpty(serviceId)) {
+            return new ArrayList<>();
+        }
         List<HcsaServiceStepSchemeDto> stepDtos = appConfigClient.getServiceStepsByServiceId(serviceId).getEntity();
         if (stepDtos != null && !stepDtos.isEmpty()) {
             stepDtos.stream()
@@ -242,6 +246,23 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
         }
         return stepDtos;
     }
+
+    @Override
+    public HcsaServiceStepSchemeDto getHcsaServiceStepSchemeByConds(String serviceId, String stepCode) {
+        if (StringUtil.isEmpty(serviceId) || StringUtil.isEmpty(stepCode)) {
+            return null;
+        }
+        List<HcsaServiceStepSchemeDto> stepDtos = appConfigClient.getServiceStepsByServiceId(serviceId).getEntity();
+        if (stepDtos == null || stepDtos.isEmpty()) {
+            return null;
+        }
+        return stepDtos.stream()
+                .filter(dto -> stepCode.equals(dto.getStepCode()))
+                .findAny()
+                .orElse(null);
+    }
+
+
     @Override
     public List<HcsaServiceCorrelationDto> getCorrelation(){
         return appConfigClient.serviceCorrelation().getEntity();

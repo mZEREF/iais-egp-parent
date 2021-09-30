@@ -1058,8 +1058,14 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
             }
             broadcastOrganizationDto.setOneSubmitTaskList(onSubmitTaskList);
             broadcastApplicationDto.setOneSubmitTaskHistoryList(appPremisesRoutingHistoryDtos);
-            broadcastOrganizationDto = broadcastService.svaeBroadcastOrganization(broadcastOrganizationDto,null,submissionId);
-            broadcastApplicationDto  = broadcastService.svaeBroadcastApplicationDto(broadcastApplicationDto,null,submissionId);
+            eventBusHelper.submitAsyncRequest(broadcastOrganizationDto, submissionId,
+                    EventBusConsts.SERVICE_NAME_ROUNTINGTASK,
+                    EventBusConsts.OPERATION_ROUNTINGTASK_ROUNTING,
+                    broadcastOrganizationDto.getEventRefNo(), null);
+            eventBusHelper.submitAsyncRequest(broadcastApplicationDto, submissionId,
+                    EventBusConsts.SERVICE_NAME_APPSUBMIT,
+                    EventBusConsts.OPERATION_ROUNTINGTASK_ROUNTING,
+                    broadcastApplicationDto.getEventRefNo(), null);
             //update fe application stauts
             log.info("update application stauts");
             for(ApplicationDto applicationDto :requestForInfList){
@@ -1081,12 +1087,12 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
         log.info(StringUtil.changeForLog(submissionList .size() +"remove file submissionList .size()"));
         BroadcastOrganizationDto broadcastOrganizationDto =null;
         for(Submission submission : submissionList){
-            if(EventBusConsts.SERVICE_NAME_ROUNTINGTASK.equals(submission.getSubmissionIdentity().getService())){
+            if(EventBusConsts.SERVICE_NAME_ROUNTINGTASK.equals(submission.getSubmissionIdentity().getService())&& "Batchjob".equals(submission.getProcess())){
                 broadcastOrganizationDto = JsonUtil.parseToObject(submission.getData(), BroadcastOrganizationDto.class);
                 break;
             }
         }
-        if(broadcastOrganizationDto!=null){
+        if(broadcastOrganizationDto!=null&&broadcastOrganizationDto.getApplicationNewAndRequstDto()!=null){
             ApplicationNewAndRequstDto applicationNewAndRequstDto = broadcastOrganizationDto.getApplicationNewAndRequstDto();
             String zipFileName = applicationNewAndRequstDto.getZipFileName();
             log.info(StringUtil.changeForLog(JsonUtil.parseToJson(applicationNewAndRequstDto)+"---applicationNewAndRequstDto-----"));
