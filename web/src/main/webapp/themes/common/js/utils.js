@@ -4,7 +4,7 @@ function showWaiting() {
         '</div>';
     var cssOpts = {border: '1px solid #aaa'};
     var scrnWidth = window.screen.width;
-    if (isEmpty(scrnWidth) || scrnWidth > 414) {
+    if (isEmpty(scrnWidth) || scrnWidth > 480) {
         cssOpts.width = '25%';
         cssOpts.left = '37%';
     } else {

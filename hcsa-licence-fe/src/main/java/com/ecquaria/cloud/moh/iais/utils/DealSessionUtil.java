@@ -282,17 +282,10 @@ public class DealSessionUtil {
                     }
                 }
             }
-
             if (ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appSubmissionDto.getAppType()) || isRfi) {
                 //set oldAppSubmission when rfi,rfc,rene
                 if(isRfi){
                     groupLicencePremiseRelationDis(appSubmissionDto);
-                    //remove other premise
-                    for (int i = appGrpPremisesDtos.size()-1;i>=0;i--){
-                        if(!appGrpPremisesDtos.get(i).isRfiCanEdit()){
-                            appGrpPremisesDtos.remove(i);
-                        }
-                    }
                 }else {
                     AppDeclarationMessageDto appDeclarationMessageDto = appSubmissionService.getAppDeclarationMessageDto(bpc.request, ApplicationConsts.APPLICATION_TYPE_RENEWAL);
                     List<AppDeclarationDocDto> declarationFiles = appSubmissionService.getDeclarationFiles(ApplicationConsts.APPLICATION_TYPE_RENEWAL, bpc.request);
