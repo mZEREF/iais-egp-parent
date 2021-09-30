@@ -1,7 +1,8 @@
 package sg.gov.moh.iais.egp.bsb.dto.register.facilityCertifier;
 
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
-import lombok.Data;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import sg.gov.moh.iais.egp.bsb.common.node.Node;
 import sg.gov.moh.iais.egp.bsb.dto.ValidationResultDto;
 import sg.gov.moh.iais.egp.bsb.util.SpringReflectionUtils;
@@ -17,6 +18,8 @@ import static sg.gov.moh.iais.egp.bsb.constant.FacCertifierRegisterConstants.*;
  * DESCRIPTION: TODO
  **/
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
+@JsonIgnoreProperties({"name", "available", "validated", "dependNodes", "validationResultDto"})
 public class OrganisationProfileDto extends Node {
     private String orgName;
     private String addressType;
@@ -47,7 +50,7 @@ public class OrganisationProfileDto extends Node {
 
     @Override
     public boolean doValidation() {
-//        this.validationResultDto = (ValidationResultDto) SpringReflectionUtils.invokeBeanMethod("facRegFeignClient", "validateFacilityProfile", new Object[]{this});
+//        this.validationResultDto = (ValidationResultDto) SpringReflectionUtils.invokeBeanMethod("cerRegFeignClient", "validateOrganisationProfile", new Object[]{this});
 //        return validationResultDto.isPass();
         return true;
     }

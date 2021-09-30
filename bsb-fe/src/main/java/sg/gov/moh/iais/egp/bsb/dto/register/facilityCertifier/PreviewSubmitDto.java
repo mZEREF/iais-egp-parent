@@ -4,21 +4,22 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import sg.gov.moh.iais.egp.bsb.common.node.Node;
+import sg.gov.moh.iais.egp.bsb.constant.FacCertifierRegisterConstants;
 import sg.gov.moh.iais.egp.bsb.dto.ValidationResultDto;
 import sg.gov.moh.iais.egp.bsb.util.SpringReflectionUtils;
 
+
 import javax.servlet.http.HttpServletRequest;
 
-import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.NODE_NAME_PREVIEW_SUBMIT;
+
 
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties({"name", "available", "validated", "dependNodes", "validationResultDto"})
 public class PreviewSubmitDto extends Node {
     private String remarks;
-    private String approvedFacCertifier;
-    private String reason;
-    private String declare;
+    private String require;
+    private String accuracy;
 
     private ValidationResultDto validationResultDto;
 
@@ -27,7 +28,7 @@ public class PreviewSubmitDto extends Node {
     }
 
     public static PreviewSubmitDto getInstance(Node[] dependNodes) {
-        return new PreviewSubmitDto(NODE_NAME_PREVIEW_SUBMIT, dependNodes);
+        return new PreviewSubmitDto(FacCertifierRegisterConstants.NODE_NAME_CER_PREVIEW_SUBMIT, dependNodes);
     }
 
     @Override
@@ -52,7 +53,6 @@ public class PreviewSubmitDto extends Node {
     }
 
 
-
     public String getRemarks() {
         return remarks;
     }
@@ -61,48 +61,30 @@ public class PreviewSubmitDto extends Node {
         this.remarks = remarks;
     }
 
-    public String getApprovedFacCertifier() {
-        return approvedFacCertifier;
+    public String getRequire() {
+        return require;
     }
 
-    public void setApprovedFacCertifier(String approvedFacCertifier) {
-        this.approvedFacCertifier = approvedFacCertifier;
+    public void setRequire(String require) {
+        this.require = require;
     }
 
-    public String getReason() {
-        return reason;
+    public String getAccuracy() {
+        return accuracy;
     }
 
-    public void setReason(String reason) {
-        this.reason = reason;
+    public void setAccuracy(String accuracy) {
+        this.accuracy = accuracy;
     }
-
-    public String getDeclare() {
-        return declare;
-    }
-
-    public void setDeclare(String declare) {
-        this.declare = declare;
-    }
-
-
-
-//    ---------------------------- request -> object ----------------------------------------------
+    //    ---------------------------- request -> object ----------------------------------------------
 
     private static final String KEY_REMARKS = "remarks";
-    private static final String KEY_APROOVED_CERTIFIER = "approvedFacCertifier";
-    private static final String KEY_REASON = "reason";
-    private static final String KEY_DECLARE = "declare";
+    private static final String KEY_REQUIRE= "require";
+    private static final String KEY_ACCURACY = "accuracy";
 
     public void reqObjMapping(HttpServletRequest request) {
         setRemarks(ParamUtil.getString(request, KEY_REMARKS));
-        setApprovedFacCertifier(ParamUtil.getString(request, KEY_APROOVED_CERTIFIER));
-        setReason(ParamUtil.getString(request, KEY_REASON));
-        String[] declareCheckBoxValues = ParamUtil.getStrings(request, KEY_DECLARE);
-        if (declareCheckBoxValues != null && declareCheckBoxValues.length > 0) {
-            setDeclare("Y");
-        } else {
-            setDeclare("");
-        }
+        setRequire(ParamUtil.getString(request, KEY_REQUIRE));
+        setAccuracy(ParamUtil.getString(request, KEY_ACCURACY));
     }
 }

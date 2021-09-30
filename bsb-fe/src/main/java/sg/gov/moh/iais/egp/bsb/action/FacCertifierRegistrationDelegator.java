@@ -4,11 +4,15 @@ import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
+import sg.gov.moh.iais.egp.bsb.client.FacCertifierRegisterClient;
 import sg.gov.moh.iais.egp.bsb.common.node.Node;
 import sg.gov.moh.iais.egp.bsb.common.node.NodeGroup;
 import sg.gov.moh.iais.egp.bsb.common.node.Nodes;
+import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
+import sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityRegisterDto;
 import sg.gov.moh.iais.egp.bsb.dto.register.facilityCertifier.*;
 import sop.webflow.rt.api.BaseProcessClass;
 
@@ -46,6 +50,9 @@ public class FacCertifierRegistrationDelegator {
     private static final String ERR_MSG_NULL_NAME = "Name must not be null!";
     private static final String ERR_MSG_INVALID_ACTION = "Invalid action";
 
+    @Autowired
+    private FacCertifierRegisterClient facCertifierRegisterClient;
+
 
     public void init(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
@@ -72,6 +79,11 @@ public class FacCertifierRegistrationDelegator {
         NodeGroup facRegRoot = getFacCertifierRegisterRoot(request);
         String currentNodePath = NODE_NAME_ORGANISATION_INFO + facRegRoot.getPathSeparator() + NODE_NAME_ORG_PROFILE;
         OrganisationProfileDto orgProfileDto = (OrganisationProfileDto) facRegRoot.at(currentNodePath);
+        Boolean needShowError = (Boolean) ParamUtil.getRequestAttr(request, KEY_SHOW_ERROR_SWITCH);
+        if (needShowError == Boolean.TRUE) {
+            ParamUtil.setRequestAttr(request, KEY_VALIDATION_ERRORS, orgProfileDto.retrieveValidationResult());
+        }
+        orgProfileDto.needValidation();
         ParamUtil.setRequestAttr(request, NODE_NAME_ORG_PROFILE, orgProfileDto);
     }
 
@@ -80,6 +92,11 @@ public class FacCertifierRegistrationDelegator {
         NodeGroup facRegRoot = getFacCertifierRegisterRoot(request);
         String currentNodePath = NODE_NAME_ORGANISATION_INFO + facRegRoot.getPathSeparator() + NODE_NAME_ORG_FAC_ADMINISTRATOR;
         AdministratorDto administratorDto = (AdministratorDto) facRegRoot.at(currentNodePath);
+        Boolean needShowError = (Boolean) ParamUtil.getRequestAttr(request, KEY_SHOW_ERROR_SWITCH);
+        if (needShowError == Boolean.TRUE) {
+            ParamUtil.setRequestAttr(request, KEY_VALIDATION_ERRORS, administratorDto.retrieveValidationResult());
+        }
+        administratorDto.needValidation();
         ParamUtil.setRequestAttr(request, NODE_NAME_ORG_PROFILE, administratorDto);
     }
 
@@ -87,7 +104,11 @@ public class FacCertifierRegistrationDelegator {
         HttpServletRequest request = bpc.request;
         NodeGroup facRegRoot = getFacCertifierRegisterRoot(request);
         String currentNodePath = NODE_NAME_ORGANISATION_INFO + facRegRoot.getPathSeparator() + NODE_NAME_ORG_CERTIFYING_TEAM;
-        CertifyingTeamDto certifyingTeamDto = (CertifyingTeamDto) facRegRoot.at(currentNodePath);
+        CertifyingTeamDto certifyingTeamDto = (CertifyingTeamDto) facRegRoot.at(currentNodePath);Boolean needShowError = (Boolean) ParamUtil.getRequestAttr(request, KEY_SHOW_ERROR_SWITCH);
+        if (needShowError == Boolean.TRUE) {
+            ParamUtil.setRequestAttr(request, KEY_VALIDATION_ERRORS, certifyingTeamDto.retrieveValidationResult());
+        }
+        certifyingTeamDto.needValidation();
         ParamUtil.setRequestAttr(request, NODE_NAME_ORG_CERTIFYING_TEAM, certifyingTeamDto);
     }
 
@@ -96,7 +117,19 @@ public class FacCertifierRegistrationDelegator {
     }
 
     public void preparePreview(BaseProcessClass bpc){
+        HttpServletRequest request = bpc.request;
+        NodeGroup facRegRoot = getFacCertifierRegisterRoot(request);
+        PreviewSubmitDto previewSubmitDto = (PreviewSubmitDto) facRegRoot.at(NODE_NAME_CER_PREVIEW_SUBMIT);
+        Boolean needShowError = (Boolean) ParamUtil.getRequestAttr(request, KEY_SHOW_ERROR_SWITCH);
+        if (needShowError == Boolean.TRUE) {
+            ParamUtil.setRequestAttr(request, KEY_VALIDATION_ERRORS, previewSubmitDto.retrieveValidationResult());
+        }
+        previewSubmitDto.needValidation();
+        ParamUtil.setRequestAttr(request, NODE_NAME_CER_PREVIEW_SUBMIT, previewSubmitDto);
 
+        ParamUtil.setRequestAttr(request, NODE_NAME_ORG_PROFILE, facRegRoot.at(NODE_NAME_ORGANISATION_INFO + facRegRoot.getPathSeparator() + NODE_NAME_ORG_PROFILE));
+        ParamUtil.setRequestAttr(request, NODE_NAME_ORG_CERTIFYING_TEAM, facRegRoot.at(NODE_NAME_ORGANISATION_INFO + facRegRoot.getPathSeparator() + NODE_NAME_ORG_CERTIFYING_TEAM));
+        ParamUtil.setRequestAttr(request, NODE_NAME_ORG_FAC_ADMINISTRATOR, facRegRoot.at(NODE_NAME_ORGANISATION_INFO + facRegRoot.getPathSeparator() + NODE_NAME_ORG_FAC_ADMINISTRATOR));
     }
 
     public void doCompInfo(BaseProcessClass bpc){
@@ -117,6 +150,7 @@ public class FacCertifierRegistrationDelegator {
         NodeGroup facCertifierRegRoot = getFacCertifierRegisterRoot(request);
         String currentNodePath = NODE_NAME_ORGANISATION_INFO + facCertifierRegRoot.getPathSeparator() + NODE_NAME_ORG_FAC_ADMINISTRATOR;
         AdministratorDto administratorDto = (AdministratorDto) facCertifierRegRoot.at(currentNodePath);
+        administratorDto.reqObjMapping(request);
         String actionType = ParamUtil.getString(request, KEY_ACTION_TYPE);
         if (KEY_ACTION_JUMP.equals(actionType)) {
             jumpHandler(request, facCertifierRegRoot, currentNodePath, administratorDto);
@@ -183,7 +217,19 @@ public class FacCertifierRegistrationDelegator {
         String actionValue = ParamUtil.getString(request, KEY_ACTION_VALUE);
         if (KEY_ACTION_JUMP.equals(actionType)) {
             if (KEY_NAV_NEXT.equals(actionValue)) {
+                if (previewSubmitDto.doValidation()) {
+                    previewSubmitDto.passValidation();
 
+                    // save data
+                    FacilityCertifierRegisterDto finalAllDataDto = FacilityCertifierRegisterDto.from(facRegRoot);
+                    ResponseDto<String> responseDto = facCertifierRegisterClient.saveNewRegisteredFacCertifier(finalAllDataDto);
+                    log.info("save new facility response: {}", responseDto);
+
+                    ParamUtil.setRequestAttr(request, KEY_ACTION_TYPE, KEY_ACTION_SUBMIT);
+                } else {
+                    ParamUtil.setRequestAttr(request, KEY_SHOW_ERROR_SWITCH, Boolean.TRUE);
+                    ParamUtil.setSessionAttr(request, KEY_JUMP_DEST_NODE, NODE_NAME_CER_PREVIEW_SUBMIT);
+                }
             } else {
                 jumpHandler(request, facRegRoot, currentNodePath, previewSubmitDto);
             }

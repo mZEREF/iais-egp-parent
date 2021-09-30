@@ -5,21 +5,21 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import sg.gov.moh.iais.egp.bsb.client.FacCertifierRegisterClient;
+import sg.gov.moh.iais.egp.bsb.client.FacilityRegisterClient;
 import sg.gov.moh.iais.egp.bsb.common.node.Node;
 import sg.gov.moh.iais.egp.bsb.dto.ValidationResultDto;
-import sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityAdministratorDto;
 import sg.gov.moh.iais.egp.bsb.util.SpringReflectionUtils;
 
 import javax.servlet.http.HttpServletRequest;
 
 import java.io.Serializable;
 
-import static sg.gov.moh.iais.egp.bsb.constant.FacCertifierRegisterConstants.NODE_NAME_ORG_CERTIFYING_TEAM;
 import static sg.gov.moh.iais.egp.bsb.constant.FacCertifierRegisterConstants.NODE_NAME_ORG_FAC_ADMINISTRATOR;
 
 /**
- * AUTHOR: YiMing
- * DATE:2021/9/26 15:13
+ * @author : YiMing
+ * @date :2021/9/26 15:13
  * DESCRIPTION: TODO
  **/
 
@@ -39,8 +39,8 @@ public class AdministratorDto extends Node {
         private String employmentStartDate;
     }
 
-    private FacilityAdministratorDto.FacilityAdministratorInfo mainAdmin;
-    private FacilityAdministratorDto.FacilityAdministratorInfo alternativeAdmin;
+    private FacilityAdministratorInfo mainAdmin;
+    private FacilityAdministratorInfo alternativeAdmin;
 
 
     private ValidationResultDto validationResultDto;
@@ -74,19 +74,19 @@ public class AdministratorDto extends Node {
         this.validationResultDto = null;
     }
 
-    public FacilityAdministratorDto.FacilityAdministratorInfo getMainAdmin() {
+    public FacilityAdministratorInfo getMainAdmin() {
         return mainAdmin;
     }
 
-    public void setMainAdmin(FacilityAdministratorDto.FacilityAdministratorInfo mainAdmin) {
+    public void setMainAdmin(FacilityAdministratorInfo mainAdmin) {
         this.mainAdmin = mainAdmin;
     }
 
-    public FacilityAdministratorDto.FacilityAdministratorInfo getAlternativeAdmin() {
+    public FacilityAdministratorInfo getAlternativeAdmin() {
         return alternativeAdmin;
     }
 
-    public void setAlternativeAdmin(FacilityAdministratorDto.FacilityAdministratorInfo alternativeAdmin) {
+    public void setAlternativeAdmin(FacilityAdministratorInfo alternativeAdmin) {
         this.alternativeAdmin = alternativeAdmin;
     }
     //    ---------------------------- request -> object ----------------------------------------------
@@ -104,18 +104,18 @@ public class AdministratorDto extends Node {
     private static final String KEY_SUFFIX_ALTERNATIVE_ADMIN = "A";
 
     public void reqObjMapping(HttpServletRequest request) {
-        FacilityAdministratorDto.FacilityAdministratorInfo mainAdminInfo = getAdminInfo(request, KEY_SUFFIX_MAIN_ADMIN);
-        FacilityAdministratorDto.FacilityAdministratorInfo alternativeAdminInfo = getAdminInfo(request, KEY_SUFFIX_ALTERNATIVE_ADMIN);
+        FacilityAdministratorInfo mainAdminInfo = getAdminInfo(request, KEY_SUFFIX_MAIN_ADMIN);
+        FacilityAdministratorInfo alternativeAdminInfo = getAdminInfo(request, KEY_SUFFIX_ALTERNATIVE_ADMIN);
         setMainAdmin(mainAdminInfo);
         setAlternativeAdmin(alternativeAdminInfo);
     }
 
-    private FacilityAdministratorDto.FacilityAdministratorInfo getAdminInfo(HttpServletRequest request, String suffix) {
-        FacilityAdministratorDto.FacilityAdministratorInfo adminInfo = new FacilityAdministratorDto.FacilityAdministratorInfo();
+    private FacilityAdministratorInfo getAdminInfo(HttpServletRequest request, String suffix) {
+        FacilityAdministratorInfo adminInfo = new FacilityAdministratorInfo();
         adminInfo.setAdminName(ParamUtil.getString(request, KEY_PREFIX_ADMIN_NAME + suffix));
         adminInfo.setNationality(ParamUtil.getString(request, KEY_PREFIX_NATIONALITY + suffix));
         adminInfo.setIdType(ParamUtil.getString(request, KEY_PREFIX_ID_TYPE + suffix));
-        adminInfo.setIdNumber(ParamUtil.getString(request, KEY_PREFIX_ID_NUMBER + suffix));
+        adminInfo.setIdNo(ParamUtil.getString(request, KEY_PREFIX_ID_NUMBER + suffix));
         adminInfo.setDesignation(ParamUtil.getString(request, KEY_PREFIX_DESIGNATION + suffix));
         adminInfo.setContactNo(ParamUtil.getString(request, KEY_PREFIX_CONTACT_NO + suffix));
         adminInfo.setEmail(ParamUtil.getString(request, KEY_PREFIX_EMAIL + suffix));

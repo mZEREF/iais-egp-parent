@@ -55,12 +55,12 @@
                                                                     <div>
                                                                         <div class="form-group">
                                                                             <label class="col-xs-5 col-md-4 control-label">Facility Name</label>
-                                                                            <div class="col-sm-7 col-md-5 col-xs-7"><p></p></div>
+                                                                            <div class="col-sm-7 col-md-5 col-xs-7"><p>${orgProfile.orgName}</p></div>
                                                                             <div class="clear"></div>
                                                                         </div>
                                                                         <div class="form-group">
                                                                             <label class="col-xs-5 col-md-4 control-label">Facility Address</label>
-                                                                            <div class="col-sm-7 col-md-5 col-xs-7"><p></p></div>
+                                                                            <div class="col-sm-7 col-md-5 col-xs-7"><p>${orgProfile.streetName} ${orgProfile.building} ${orgProfile.floor} - ${orgProfile.unitNo} ${orgProfile.postalCode}</p></div>
                                                                             <div class="clear"></div>
                                                                         </div>
                                                                         <div class="form-group">
@@ -72,113 +72,50 @@
                                                                 </div>
                                                                 <div class="panel-main-content form-horizontal min-row">
                                                                     <div class="form-group">
-                                                                        <div class="col-10"><strong>Facility Operator</strong></div>
+                                                                        <div class="col-10"><strong>Facility Certifier Team Member</strong></div>
                                                                         <div class="clear"></div>
                                                                     </div>
-                                                                    <div>
-                                                                        <div class="form-group">
-                                                                            <label class="col-xs-5 col-md-4 control-label">Facility Operator</label>
-                                                                            <div class="col-sm-7 col-md-5 col-xs-7"><p></p></div>
-                                                                            <div class="clear"></div>
-                                                                        </div>
-                                                                        <div class="form-group">
-                                                                            <label class="col-xs-5 col-md-4 control-label">Facility Operator Designee Name</label>
-                                                                            <div class="col-sm-7 col-md-5 col-xs-7"><p></p></div>
-                                                                            <div class="clear"></div>
-                                                                        </div>
-                                                                        <div class="form-group">
-                                                                            <label class="col-xs-5 col-md-4 control-label">NRIC/FIN</label>
-                                                                            <div class="col-sm-7 col-md-5 col-xs-7"><p></p></div>
-                                                                            <div class="clear"></div>
-                                                                        </div>
-                                                                        <div class="form-group">
-                                                                            <label class="col-xs-5 col-md-4 control-label">Nationality</label>
-                                                                            <div class="col-sm-7 col-md-5 col-xs-7"><p></p></div>
-                                                                            <div class="clear"></div>
-                                                                        </div>
-                                                                        <div class="form-group">
-                                                                            <label class="col-xs-5 col-md-4 control-label">Designation</label>
-                                                                            <div class="col-sm-7 col-md-5 col-xs-7"><p></p></div>
-                                                                            <div class="clear"></div>
-                                                                        </div>
-                                                                        <div class="form-group">
-                                                                            <label class="col-xs-5 col-md-4 control-label">Contect No.</label>
-                                                                            <div class="col-sm-7 col-md-5 col-xs-7"><p></p></div>
-                                                                            <div class="clear"></div>
-                                                                        </div>
-                                                                        <div class="form-group">
-                                                                            <label class="col-xs-5 col-md-4 control-label">Email</label>
-                                                                            <div class="col-sm-7 col-md-5 col-xs-7"><p></p></div>
-                                                                            <div class="clear"></div>
-                                                                        </div>
-                                                                        <div class="form-group">
-                                                                            <label class="col-xs-5 col-md-4 control-label">Employment Start Date</label>
-                                                                            <div class="col-sm-7 col-md-5 col-xs-7"><p></p></div>
-                                                                            <div class="clear"></div>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="panel-main-content form-horizontal min-row">
-                                                                    <div class="form-group">
-                                                                        <div class="col-10"><strong>Personnel Authorised to Access the Facility</strong></div>
-                                                                        <div class="clear"></div>
-                                                                    </div>
-                                                                    <c:forEach var="personnel" items="${facAuth.facAuthPersonnelList}" varStatus="status">
+                                                                    <c:forEach var="tMember" items="${orgCerTeam.certifierTeamMemberList}" varStatus="status">
                                                                         <div>
-                                                                            <c:if test="${facAuth.facAuthPersonnelList.size() > 1}">
+                                                                            <c:if test="${orgCerTeam.certifierTeamMemberList.size() > 1}">
                                                                             <div class="form-group">
-                                                                                <label class="col-xs-5 col-md-4 control-label">Personnel ${status.index + 1}</label>
+                                                                                <label class="col-xs-5 col-md-4 control-label">Team Member ${status.index + 1}</label>
                                                                                 <div class="clear"></div>
                                                                             </div>
                                                                             </c:if>
                                                                             <div class="form-group">
                                                                                 <label class="col-xs-5 col-md-4 control-label">Name</label>
-                                                                                <div class="col-sm-7 col-md-5 col-xs-7"><p></p></div>
+                                                                                <div class="col-sm-7 col-md-5 col-xs-7"><p>${tMember.memberName}</p></div>
                                                                                 <div class="clear"></div>
                                                                             </div>
                                                                             <div class="form-group">
                                                                                 <label class="col-xs-5 col-md-4 control-label">NRIC/FIN</label>
-                                                                                <div class="col-sm-7 col-md-5 col-xs-7"><p></p></div>
+                                                                                <div class="col-sm-7 col-md-5 col-xs-7"><p>${tMember.idType}</p></div>
+                                                                                <div class="clear"></div>
+                                                                            </div>
+                                                                            <div class="form-group">
+                                                                                <label class="col-xs-5 col-md-4 control-label">Date of Birth</label>
+                                                                                <div class="col-sm-7 col-md-5 col-xs-7"><p>${tMember.birthDate}</p></div>
+                                                                                <div class="clear"></div>
+                                                                            </div>
+                                                                            <div class="form-group">
+                                                                                <label class="col-xs-5 col-md-4 control-label">Sex</label>
+                                                                                <div class="col-sm-7 col-md-5 col-xs-7"><p>${tMember.sex}</p></div>
                                                                                 <div class="clear"></div>
                                                                             </div>
                                                                             <div class="form-group">
                                                                                 <label class="col-xs-5 col-md-4 control-label">Nationality</label>
-                                                                                <div class="col-sm-7 col-md-5 col-xs-7"><p></p></div>
+                                                                                <div class="col-sm-7 col-md-5 col-xs-7"><p>${tMember.nationality}</p></div>
                                                                                 <div class="clear"></div>
                                                                             </div>
                                                                             <div class="form-group">
-                                                                                <label class="col-xs-5 col-md-4 control-label">Designation</label>
-                                                                                <div class="col-sm-7 col-md-5 col-xs-7"><p></p></div>
+                                                                                <label class="col-xs-5 col-md-4 control-label">Job Designation</label>
+                                                                                <div class="col-sm-7 col-md-5 col-xs-7"><p>${tMember.jobDesignation}</p></div>
                                                                                 <div class="clear"></div>
                                                                             </div>
                                                                             <div class="form-group">
                                                                                 <label class="col-xs-5 col-md-4 control-label">Contect No.</label>
-                                                                                <div class="col-sm-7 col-md-5 col-xs-7"><p></p></div>
-                                                                                <div class="clear"></div>
-                                                                            </div>
-                                                                            <div class="form-group">
-                                                                                <label class="col-xs-5 col-md-4 control-label">Email Address</label>
-                                                                                <div class="col-sm-7 col-md-5 col-xs-7"><p></p></div>
-                                                                                <div class="clear"></div>
-                                                                            </div>
-                                                                            <div class="form-group">
-                                                                                <label class="col-xs-5 col-md-4 control-label">Employment Start Date</label>
-                                                                                <div class="col-sm-7 col-md-5 col-xs-7"><p></p></div>
-                                                                                <div class="clear"></div>
-                                                                            </div>
-                                                                            <div class="form-group">
-                                                                                <label class="col-xs-5 col-md-4 control-label">Employment Period</label>
-                                                                                <div class="col-sm-7 col-md-5 col-xs-7"><p>${personnel.employmentPeriod}</p></div>
-                                                                                <div class="clear"></div>
-                                                                            </div>
-                                                                            <div class="form-group">
-                                                                                <label class="col-xs-5 col-md-4 control-label">Security Clearance Date</label>
-                                                                                <div class="col-sm-7 col-md-5 col-xs-7"><p></p></div>
-                                                                                <div class="clear"></div>
-                                                                            </div>
-                                                                            <div class="form-group">
-                                                                                <label class="col-xs-5 col-md-4 control-label">Area of Work</label>
-                                                                                <div class="col-sm-7 col-md-5 col-xs-7"><p></p></div>
+                                                                                <div class="col-sm-7 col-md-5 col-xs-7"><p>${tMember.telNo}</p></div>
                                                                                 <div class="clear"></div>
                                                                             </div>
                                                                         </div>
@@ -196,37 +133,37 @@
                                                                         </div>
                                                                         <div class="form-group">
                                                                             <label class="col-xs-5 col-md-4 control-label">Name</label>
-                                                                            <div class="col-sm-7 col-md-5 col-xs-7"><p></p></div>
+                                                                            <div class="col-sm-7 col-md-5 col-xs-7"><p>${orgAdmin.mainAdmin.adminName}</p></div>
                                                                             <div class="clear"></div>
                                                                         </div>
                                                                         <div class="form-group">
                                                                             <label class="col-xs-5 col-md-4 control-label">NRIC/FIN</label>
-                                                                            <div class="col-sm-7 col-md-5 col-xs-7"><p></p></div>
+                                                                            <div class="col-sm-7 col-md-5 col-xs-7"><p>${orgAdmin.mainAdmin.idNo}</p></div>
                                                                             <div class="clear"></div>
                                                                         </div>
                                                                         <div class="form-group">
                                                                             <label class="col-xs-5 col-md-4 control-label">Nationality</label>
-                                                                            <div class="col-sm-7 col-md-5 col-xs-7"><p></p></div>
+                                                                            <div class="col-sm-7 col-md-5 col-xs-7"><p>${orgAdmin.mainAdmin.nationality}</p></div>
                                                                             <div class="clear"></div>
                                                                         </div>
                                                                         <div class="form-group">
                                                                             <label class="col-xs-5 col-md-4 control-label">Designation</label>
-                                                                            <div class="col-sm-7 col-md-5 col-xs-7"><p></p></div>
+                                                                            <div class="col-sm-7 col-md-5 col-xs-7"><p>${orgAdmin.mainAdmin.designation}</p></div>
                                                                             <div class="clear"></div>
                                                                         </div>
                                                                         <div class="form-group">
                                                                             <label class="col-xs-5 col-md-4 control-label">Contect No.</label>
-                                                                            <div class="col-sm-7 col-md-5 col-xs-7"><p></p></div>
+                                                                            <div class="col-sm-7 col-md-5 col-xs-7"><p>${orgAdmin.mainAdmin.contactNo}</p></div>
                                                                             <div class="clear"></div>
                                                                         </div>
                                                                         <div class="form-group">
                                                                             <label class="col-xs-5 col-md-4 control-label">Email Address</label>
-                                                                            <div class="col-sm-7 col-md-5 col-xs-7"><p></p></div>
+                                                                            <div class="col-sm-7 col-md-5 col-xs-7"><p>${orgAdmin.mainAdmin.email}</p></div>
                                                                             <div class="clear"></div>
                                                                         </div>
                                                                         <div class="form-group">
                                                                             <label class="col-xs-5 col-md-4 control-label">Employment Start Date</label>
-                                                                            <div class="col-sm-7 col-md-5 col-xs-7"><p></p></div>
+                                                                            <div class="col-sm-7 col-md-5 col-xs-7"><p>${orgAdmin.mainAdmin.employmentStartDate}</p></div>
                                                                             <div class="clear"></div>
                                                                         </div>
                                                                     </div>
@@ -237,149 +174,40 @@
                                                                         </div>
                                                                         <div class="form-group">
                                                                             <label class="col-xs-5 col-md-4 control-label">Name</label>
-                                                                            <div class="col-sm-7 col-md-5 col-xs-7"><p></p></div>
+                                                                            <div class="col-sm-7 col-md-5 col-xs-7"><p>${orgAdmin.alternativeAdmin.adminName}</p></div>
                                                                             <div class="clear"></div>
                                                                         </div>
                                                                         <div class="form-group">
                                                                             <label class="col-xs-5 col-md-4 control-label">NRIC/FIN</label>
-                                                                            <div class="col-sm-7 col-md-5 col-xs-7"><p></p></div>
+                                                                            <div class="col-sm-7 col-md-5 col-xs-7"><p>${orgAdmin.alternativeAdmin.idNo}</p></div>
                                                                             <div class="clear"></div>
                                                                         </div>
                                                                         <div class="form-group">
                                                                             <label class="col-xs-5 col-md-4 control-label">Nationality</label>
-                                                                            <div class="col-sm-7 col-md-5 col-xs-7"><p></p></div>
+                                                                            <div class="col-sm-7 col-md-5 col-xs-7"><p>${orgAdmin.alternativeAdmin.nationality}</p></div>
                                                                             <div class="clear"></div>
                                                                         </div>
                                                                         <div class="form-group">
                                                                             <label class="col-xs-5 col-md-4 control-label">Designation</label>
-                                                                            <div class="col-sm-7 col-md-5 col-xs-7"><p></p></div>
+                                                                            <div class="col-sm-7 col-md-5 col-xs-7"><p>${orgAdmin.alternativeAdmin.designation}</p></div>
                                                                             <div class="clear"></div>
                                                                         </div>
                                                                         <div class="form-group">
                                                                             <label class="col-xs-5 col-md-4 control-label">Contect No.</label>
-                                                                            <div class="col-sm-7 col-md-5 col-xs-7"><p></p></div>
+                                                                            <div class="col-sm-7 col-md-5 col-xs-7"><p>${orgAdmin.alternativeAdmin.contactNo}</p></div>
                                                                             <div class="clear"></div>
                                                                         </div>
                                                                         <div class="form-group">
                                                                             <label class="col-xs-5 col-md-4 control-label">Email Address</label>
-                                                                            <div class="col-sm-7 col-md-5 col-xs-7"><p></p></div>
+                                                                            <div class="col-sm-7 col-md-5 col-xs-7"><p>${orgAdmin.alternativeAdmin.email}</p></div>
                                                                             <div class="clear"></div>
                                                                         </div>
                                                                         <div class="form-group">
                                                                             <label class="col-xs-5 col-md-4 control-label">Employment Start Date</label>
-                                                                            <div class="col-sm-7 col-md-5 col-xs-7"><p></p></div>
+                                                                            <div class="col-sm-7 col-md-5 col-xs-7"><p>${orgAdmin.alternativeAdmin.employmentStartDate}</p></div>
                                                                             <div class="clear"></div>
                                                                         </div>
                                                                     </div>
-                                                                </div>
-                                                                <div class="panel-main-content form-horizontal min-row">
-                                                                    <div class="form-group">
-                                                                        <div class="col-10"><strong>Facility Officer</strong></div>
-                                                                        <div class="clear"></div>
-                                                                    </div>
-                                                                    <div>
-                                                                        <div class="form-group">
-                                                                            <label class="col-xs-5 col-md-4 control-label">Name</label>
-                                                                            <div class="col-sm-7 col-md-5 col-xs-7"><p></p></div>
-                                                                            <div class="clear"></div>
-                                                                        </div>
-                                                                        <div class="form-group">
-                                                                            <label class="col-xs-5 col-md-4 control-label">NRIC/FIN</label>
-                                                                            <div class="col-sm-7 col-md-5 col-xs-7"><p></p></div>
-                                                                            <div class="clear"></div>
-                                                                        </div>
-                                                                        <div class="form-group">
-                                                                            <label class="col-xs-5 col-md-4 control-label">Nationality</label>
-                                                                            <div class="col-sm-7 col-md-5 col-xs-7"><p></p></div>
-                                                                            <div class="clear"></div>
-                                                                        </div>
-                                                                        <div class="form-group">
-                                                                            <label class="col-xs-5 col-md-4 control-label">Designation</label>
-                                                                            <div class="col-sm-7 col-md-5 col-xs-7"><p></p></div>
-                                                                            <div class="clear"></div>
-                                                                        </div>
-                                                                        <div class="form-group">
-                                                                            <label class="col-xs-5 col-md-4 control-label">Contect No.</label>
-                                                                            <div class="col-sm-7 col-md-5 col-xs-7"><p></p></div>
-                                                                            <div class="clear"></div>
-                                                                        </div>
-                                                                        <div class="form-group">
-                                                                            <label class="col-xs-5 col-md-4 control-label">Email Address</label>
-                                                                            <div class="col-sm-7 col-md-5 col-xs-7"><p></p></div>
-                                                                            <div class="clear"></div>
-                                                                        </div>
-                                                                        <div class="form-group">
-                                                                            <label class="col-xs-5 col-md-4 control-label">Employment Start Date</label>
-                                                                            <div class="col-sm-7 col-md-5 col-xs-7"><p></p></div>
-                                                                            <div class="clear"></div>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="panel-main-content form-horizontal min-row">
-                                                                    <div class="form-group">
-                                                                        <div class="col-10"><strong>Biosafety Committee</strong></div>
-                                                                        <div class="clear"></div>
-                                                                    </div>
-                                                                    <c:forEach var="personnel" items="${facCommittee.facCommitteePersonnelList}" varStatus="status">
-                                                                        <div>
-                                                                            <c:if test="${facCommittee.facCommitteePersonnelList.size() > 1}">
-                                                                                <div class="form-group">
-                                                                                    <label class="col-xs-5 col-md-4 control-label">Committee ${status.index + 1}</label>
-                                                                                    <div class="clear"></div>
-                                                                                </div>
-                                                                            </c:if>
-                                                                            <div class="form-group">
-                                                                                <label class="col-xs-5 col-md-4 control-label">Name</label>
-                                                                                <div class="col-sm-7 col-md-5 col-xs-7"><p></p></div>
-                                                                                <div class="clear"></div>
-                                                                            </div>
-                                                                            <div class="form-group">
-                                                                                <label class="col-xs-5 col-md-4 control-label">NRIC/FIN</label>
-                                                                                <div class="col-sm-7 col-md-5 col-xs-7"><p></p></div>
-                                                                                <div class="clear"></div>
-                                                                            </div>
-                                                                            <div class="form-group">
-                                                                                <label class="col-xs-5 col-md-4 control-label">Nationality</label>
-                                                                                <div class="col-sm-7 col-md-5 col-xs-7"><p></p></div>
-                                                                                <div class="clear"></div>
-                                                                            </div>
-                                                                            <div class="form-group">
-                                                                                <label class="col-xs-5 col-md-4 control-label">Designation</label>
-                                                                                <div class="col-sm-7 col-md-5 col-xs-7"><p></p></div>
-                                                                                <div class="clear"></div>
-                                                                            </div>
-                                                                            <div class="form-group">
-                                                                                <label class="col-xs-5 col-md-4 control-label">Contect No.</label>
-                                                                                <div class="col-sm-7 col-md-5 col-xs-7"><p>}</p></div>
-                                                                                <div class="clear"></div>
-                                                                            </div>
-                                                                            <div class="form-group">
-                                                                                <label class="col-xs-5 col-md-4 control-label">Email Address</label>
-                                                                                <div class="col-sm-7 col-md-5 col-xs-7"><p></p></div>
-                                                                                <div class="clear"></div>
-                                                                            </div>
-                                                                            <div class="form-group">
-                                                                                <label class="col-xs-5 col-md-4 control-label">Employment Start Date</label>
-                                                                                <div class="col-sm-7 col-md-5 col-xs-7"><p></p></div>
-                                                                                <div class="clear"></div>
-                                                                            </div>
-                                                                            <div class="form-group">
-                                                                                <label class="col-xs-5 col-md-4 control-label">Area of Expertise</label>
-                                                                                <div class="col-sm-7 col-md-5 col-xs-7"><p></p></div>
-                                                                                <div class="clear"></div>
-                                                                            </div>
-                                                                            <div class="form-group">
-                                                                                <label class="col-xs-5 col-md-4 control-label">Role</label>
-                                                                                <div class="col-sm-7 col-md-5 col-xs-7"><p></p></div>
-                                                                                <div class="clear"></div>
-                                                                            </div>
-                                                                            <div class="form-group">
-                                                                                <label class="col-xs-5 col-md-4 control-label">Is this person is Employee of the Company?</label>
-                                                                                <div class="col-sm-7 col-md-5 col-xs-7"><p></p></div>
-                                                                                <div class="clear"></div>
-                                                                            </div>
-                                                                        </div>
-                                                                    </c:forEach>
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -418,21 +246,21 @@
                                         </div>
                                         <div class="form-group ">
                                             <div class="col-xs-1" style="padding: 30px 0 20px 30px;">
-                                                <input type="checkbox" name="declare" id="chkDeclare"/>
+                                                <input type="checkbox" name="require" id="require" value="Y"/>
                                             </div>
-                                            <div class="col-xs-10 control-label">
-                                                <label for="chkDeclare">Declaration of compliance with MOH requirements including those stipulatedin the checklist</label>
-                                                <span data-err-ind="chkDeclare" class="error-msg"></span>
+                                            <div class="col-xs-10 control-label" style="padding: 30px 0">
+                                                <label for="require" >Declaration of compliance with MOH requirements including those stipulatedin the checklist</label>
+                                                <span data-err-ind="require" class="error-msg"></span>
                                             </div>
                                         </div>
 
                                         <div class="form-group ">
-                                            <div class="col-xs-1" style="padding: 30px 0 20px 30px;">
-                                                <input type="checkbox" name="declare" id="accDeclare"/>
+                                            <div class="col-xs-1" style="padding: 30px 0 0 30px;">
+                                                <input type="checkbox" name="accuracy" id="accuracy" value="Y"/>
                                             </div>
-                                            <div class="col-xs-10 control-label">
-                                                <label for="accDeclare">Declaration on the accuracy of submission</label>
-                                                <span data-err-ind="accDeclare" class="error-msg"></span>
+                                            <div class="col-xs-10 control-label" style="padding: 30px 0">
+                                                <label for="accuracy">Declaration on the accuracy of submission</label>
+                                                <span data-err-ind="accuracy" class="error-msg"></span>
                                             </div>
                                         </div>
 

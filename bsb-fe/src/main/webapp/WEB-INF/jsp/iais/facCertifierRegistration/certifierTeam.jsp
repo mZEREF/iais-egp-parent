@@ -159,11 +159,11 @@
                                                     <div class="col-sm-6 col-md-7">
                                                         <div class="col-sm-5" style="margin-top: 8px">
                                                             <label for="lead--v--${status.index}">Yes</label>
-                                                            <input type="radio" name="leadCertifier--v--${status.index}" id="lead--v--${status.index}" onchange="showLeader(this)" value="yes" />
+                                                            <input type="radio" name="leadCertifier--v--${status.index}" id="lead--v--${status.index}" onchange="showLeader(this)" value="leader" />
                                                         </div>
                                                         <div class="col-sm-5" style="margin-top: 8px">
                                                             <label for="common--v--${status.index}">No</label>
-                                                            <input type="radio" name="leadCertifier--v--${status.index}" id="common--v--${status.index}" onchange="hideLeader(this)" value="no" />
+                                                            <input type="radio" name="leadCertifier--v--${status.index}" id="common--v--${status.index}" onchange="hideLeader(this)" value="common" />
                                                         </div>
                                                     </div>
                                                 </div>
