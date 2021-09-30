@@ -1578,6 +1578,7 @@ public class InterInboxDelegator {
         ParamUtil.setSessionAttr(request,InboxConst.LIC_PARAM, null);
         ParamUtil.setSessionAttr(request,InboxConst.INTER_INBOX_USER_INFO, null);
         ParamUtil.setSessionAttr(request,AppConsts.SESSION_INTER_INBOX_MESSAGE_ID,null);
+        ParamUtil.setSessionAttr(request,"DraftNumber",null);
 
     }
 

@@ -155,10 +155,10 @@
                         </div>
                         <div class="application-tab-footer">
                             <div class="row">
-                                <div class="col-xs-12 col-sm-8">
+                                <div class="col-xs-12 col-sm-7">
                                     <a id="BACK" class="back"><em class="fa fa-angle-left"></em> Back</a>
                                 </div>
-                                <div class="col-xs-12 col-sm-1">
+                                <div class="col-xs-12 col-sm-2">
                                     <p class="print text-right"><a href="#" id="print-review"> <em class="fa fa-print"></em>Print</a></p>
                                 </div>
                                 <div class="col-xs-12 col-sm-3">
@@ -310,10 +310,13 @@
     });
 
     function changeTabForMoreRenew(value){
+        if($('#moblieSelectRenew').val() != value)
         fillValue('#moblieSelectRenew',value);
     }
-    function  changeTabForMoreRenewMobile(value){
-        $("#dtoList"+value).find("a").click();
+    function changeTabForMoreRenewMobile(value){
+        setTimeout(function(){
+            $("#dtoList"+value).find("a").click();
+        }, 100);
     }
 
 </script>
