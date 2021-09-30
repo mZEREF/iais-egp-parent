@@ -134,7 +134,7 @@
   <input type="text" style="display:none;" name="continueStep" id="continueStep" value="${continueStep}">
   <input type="text" style="display: none" name="crudActionTypeContinue" id="crudActionTypeContinue" value="${crudActionTypeContinue}">
   <input type="text" style="display: none" name="errorMapIs" id="errorMapIs" value="${errormapIs}">
-  <input type="hidden" id="rfc_eqHciNameChange" value="${rfc_eqHciCode}">
+  <%--<input type="hidden" id="rfc_eqHciNameChange" value="${rfc_eqHciCode}">--%>
 </form>
 <script type="text/javascript">
     var init;
@@ -232,7 +232,7 @@
 
         init = 1;
         //68859
-        if ($('#rfc_eqHciNameChange').val()=='false') {
+        /*if ($('#rfc_eqHciNameChange').val()=='false') {
             $("input[name='isPartEdit']").val('1');
             $("input[name='chooseExistData']").val('1');
             $('.premSelect').removeClass('disabled');
@@ -241,12 +241,12 @@
             $("input[name='isPartEdit']").val('0');
             $("input[name='chooseExistData']").val('0');
             $('.premisesEdit').removeClass('hidden');
-        }
+        }*/
         <c:if test="${'APTY002' !=AppSubmissionDto.appType || requestInformationConfig != null}">
         if ($("#errorMapIs").val()=='error') {
             $('div.premContent').each(function () {
                 var $premisesEdit = $(this).find('.premisesEdit');
-                if ($(this).find("input[name='chooseExistData']").val() != '1' && $premisesEdit.length > 0) {
+                if ($premisesEdit.length > 0) {
                     $premisesEdit.trigger('click');
                     $premisesEdit.addClass('hidden');
                 }

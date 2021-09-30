@@ -673,7 +673,7 @@ public class NewApplicationDelegator {
         List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
         if (!IaisCommonUtils.isEmpty(appGrpPremisesDtoList)) {
             for (AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtoList) {
-                appGrpPremisesDto = NewApplicationHelper.setWrkTime(appGrpPremisesDto);
+                NewApplicationHelper.setWrkTime(appGrpPremisesDto);
             }
         }
         appSubmissionDto.setAppGrpPremisesDtoList(appGrpPremisesDtoList);
@@ -756,20 +756,18 @@ public class NewApplicationDelegator {
                             String oldHciCode = v.getOldHciCode();
                             if(hciCode!=null&&oldHciCode!=null){
                                 boolean equals = hciCode.equals(oldHciCode);
-                                v.setExistingData(AppConsts.NO);
-                                bpc.request.getSession().setAttribute("rfc_eqHciCode",String.valueOf(equals));
+                                v.setExistingData(equals ? AppConsts.NO : AppConsts.YES);
+                                //bpc.request.getSession().setAttribute("rfc_eqHciCode",String.valueOf(equals));
                             }else if(hciCode==null){
                                 v.setExistingData(AppConsts.NO);
-                                bpc.request.getSession().setAttribute("rfc_eqHciCode","true");
+                                //bpc.request.getSession().setAttribute("rfc_eqHciCode","true");
                             }
                         }
                     }else {
                         boolean eqHciCode = EqRequestForChangeSubmitResultChange.eqHciCode(appGrpPremisesDtoList.get(0), oldAppGrpPremisesDtoList.get(0));
-
                         appGrpPremisesDtoList.get(0).setExistingData(AppConsts.NO);
-                        bpc.request.getSession().setAttribute("rfc_eqHciCode",String.valueOf(eqHciCode));
+                        //bpc.request.getSession().setAttribute("rfc_eqHciCode",String.valueOf(eqHciCode));
                     }
-
                 }
             }
         }
@@ -3699,12 +3697,13 @@ public class NewApplicationDelegator {
                     appGrpPremisesDto = licAppGrpPremisesDtoMap.get(premisesSel);
                     //get value for jsp page
                     appGrpPremisesDto.setPremisesIndexNo(premIndexNo);
-                    appGrpPremisesDtoList.add(appGrpPremisesDto);
+                    //appGrpPremisesDto.setRfiCanEdit(true);
                     if(AppConsts.TRUE.equals(rfiCanEdit[i])){
                         appGrpPremisesDto.setRfiCanEdit(true);
                     }else{
                         appGrpPremisesDto.setRfiCanEdit(false);
                     }
+                    appGrpPremisesDtoList.add(appGrpPremisesDto);
                     continue;
                 }
                 //set hciCode
