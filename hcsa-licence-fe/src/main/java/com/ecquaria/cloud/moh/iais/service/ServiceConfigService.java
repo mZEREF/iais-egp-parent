@@ -40,7 +40,11 @@ public interface ServiceConfigService {
     AppSubmissionDto getAppSubmissionDtoDraft(String draftNo);
     List<HcsaServiceDto> getAllService();
     List<HcsaServiceDto> getServicesInActive();
-    public List<HcsaServiceStepSchemeDto> getHcsaServiceStepSchemesByServiceId(String serviceId);
+
+    List<HcsaServiceStepSchemeDto> getHcsaServiceStepSchemesByServiceId(String serviceId);
+
+    HcsaServiceStepSchemeDto getHcsaServiceStepSchemeByConds(String serviceId, String stepCode);
+
     List<HcsaServiceCorrelationDto> getCorrelation();
     List<HcsaSvcPersonnelDto> getSvcAllPsnConfig(List<HcsaServiceStepSchemeDto> svcStep, String svcId);
     Map<String,List<HcsaSvcPersonnelDto>> getAllSvcAllPsnConfig(List<HcsaServiceStepSchemeDto> svcStep, List<String> svcIds);

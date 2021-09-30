@@ -155,4 +155,6 @@ public interface AppSubmissionService {
 
     Map<String, String> validateSectionLeaders(List<AppSvcPersonnelDto> appSvcSectionLeaderList);
 
+    void doValidateDisciplineAllocation(Map<String, String> map, List<AppSvcDisciplineAllocationDto> daList,
+            AppSvcRelatedInfoDto currentSvcDto);
 }

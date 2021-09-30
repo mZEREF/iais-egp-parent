@@ -1119,6 +1119,7 @@ public class NewApplicationDelegator {
         if (!"saveDraft".equals(crud_action_value)) {
             String keywords = MasterCodeUtil.getCodeDesc("MS001");
             boolean isNeedShowValidation = !"back".equals(crud_action_value);
+            /*
             StringBuilder sB = new StringBuilder(10);
             if (isNeedShowValidation) {
                 List<AppSvcRelatedInfoDto> dto = appSubmissionDto.getAppSvcRelatedInfoDtoList();
@@ -1132,6 +1133,7 @@ public class NewApplicationDelegator {
                 }
                 bpc.request.getSession().setAttribute("serviceConfig", sB.toString());
             }
+             */
             List<HcsaServiceDto> hcsaServiceDtos = (List<HcsaServiceDto>) ParamUtil.getSessionAttr(bpc.request, AppServicesConsts.HCSASERVICEDTOLIST);
             List<String> premisesHciList = appSubmissionService.getHciFromPendAppAndLic(appSubmissionDto.getLicenseeId(), hcsaServiceDtos);
             ParamUtil.setSessionAttr(bpc.request, NewApplicationConstant.PREMISES_HCI_LIST, (Serializable) premisesHciList);
@@ -1175,7 +1177,7 @@ public class NewApplicationDelegator {
                     }
                 }
             }
-            coMap.put("serviceConfig", sB.toString());
+            // coMap.put("serviceConfig", sB.toString());
             bpc.request.getSession().setAttribute(NewApplicationConstant.CO_MAP, coMap);
         }
         log.info(StringUtil.changeForLog("the do doPremises end ...."));
