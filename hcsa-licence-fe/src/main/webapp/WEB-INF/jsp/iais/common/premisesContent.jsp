@@ -58,7 +58,7 @@
         <c:set var="conv" value="CONVEYANCE" ></c:set>
         <c:set var="offSite" value="OFFSITE" ></c:set>
         <c:set var="easMts" value="EASMTS" ></c:set>
-        <input type="hidden" name="chooseExistData" value="0"/>
+        <input type="hidden" name="chooseExistData" value="${appGrpPremisesDto.existingData}"/>
         <input type="hidden" name="isPartEdit" value="0"/>
         <input type="hidden" name="rfiCanEdit" value="${appGrpPremisesDto.rfiCanEdit}"/>
         <!--for ph -->
@@ -144,7 +144,7 @@
                                 <h4 class="text-danger"><em class="fa fa-times-circle del-size-36 removeBtn"></em></h4>
                                 <c:set var="canEdit" value="false"/>
                             </c:when>
-                            <c:when test="${((requestInformationConfig != null && appGrpPremisesDto.rfiCanEdit) || 'APTY004' ==AppSubmissionDto.appType || 'APTY005' ==AppSubmissionDto.appType) && '1' != appGrpPremisesDto.existingData }">
+                            <c:when test="${((requestInformationConfig != null && appGrpPremisesDto.rfiCanEdit) || 'APTY004' ==AppSubmissionDto.appType || 'APTY005' ==AppSubmissionDto.appType)}"><%--&& '1' != appGrpPremisesDto.existingData--%>
                                 <c:set var="canEdit" value="false"/>
                                 <c:if test="${AppSubmissionDto.appEditSelectDto.premisesEdit}">
                                     <a class="premises-summary-preview premisesEdit app-font-size-16"><em class="fa fa-pencil-square-o"></em><span style="display: inline-block;">&nbsp;</span>Edit</a>

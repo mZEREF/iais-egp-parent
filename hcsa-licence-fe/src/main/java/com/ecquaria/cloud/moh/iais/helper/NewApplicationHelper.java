@@ -286,8 +286,7 @@ public class NewApplicationHelper {
     }
 
     public static Map<String,String> doValidateGovernanceOfficers(List<AppSvcPrincipalOfficersDto> appSvcCgoList, Map<String,AppSvcPersonAndExtDto> licPersonMap, String svcCode){
-
-        if(appSvcCgoList == null){
+        if (appSvcCgoList == null) {
             return new HashMap<>(1);
         }
 
@@ -4361,6 +4360,33 @@ public class NewApplicationHelper {
             }
         }
         return isValid;
+    }
+
+    public static boolean isIn(String chkLstConfId, String premiseIndex, List<AppSvcLaboratoryDisciplinesDto> list) {
+        if (list == null || list.isEmpty()) {
+            return false;
+        }
+        for (AppSvcLaboratoryDisciplinesDto dto : list) {
+            if (Objects.equals(premiseIndex, dto.getPremiseVal()) && isIn(chkLstConfId, dto.getAppSvcChckListDtoList())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static boolean isIn(String chkLstConfId, List<AppSvcChckListDto> appSvcChckListDtoList) {
+        if (StringUtil.isEmpty(chkLstConfId)) {
+            return true;
+        }
+        if (appSvcChckListDtoList == null || appSvcChckListDtoList.isEmpty()) {
+            return false;
+        }
+        for (AppSvcChckListDto dto : appSvcChckListDtoList) {
+            if (chkLstConfId.equals(dto.getChkLstConfId())) {
+                return true;
+            }
+        }
+        return false;
     }
 
 }

@@ -180,7 +180,7 @@
         var mainContent =$('.main-content');
         mainContent.find('input.allDay:checked').each(function (k) {
             console.log(k);
-            var $allDayDiv = $(this).closest('div.col-md-2');
+            var $allDayDiv = $(this).closest('div.all-day-div');
             disabeleForAllDay($allDayDiv);
         });
         init = 1;

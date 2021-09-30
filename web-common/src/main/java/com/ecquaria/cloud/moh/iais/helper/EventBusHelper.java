@@ -31,18 +31,23 @@ public class EventBusHelper {
     public SubmitResp submitAsyncRequest(Object dto, String submissionId, String service, String operation,
                                          String eventRefNo, Process process) {
         return submitRequest(dto, submissionId, service, operation, eventRefNo, false, 0,
-                process);
+                process, true);
     }
 
+    public SubmitResp submitAsyncRequestWithoutCallback(Object dto, String submissionId, String service, String operation,
+                                         String eventRefNo, Process process) {
+        return submitRequest(dto, submissionId, service, operation, eventRefNo, false, 0,
+                process, false);
+    }
 
     public SubmitResp submitSyncRequest(Object dto, String submissionId, String service, String operation,
                         String eventRefNo, int waitTime, Process process){
         return submitRequest(dto, submissionId, service, operation, eventRefNo, true
-                , waitTime, process);
+                , waitTime, process, true);
     }
 
     private SubmitResp submitRequest(Object dto, String submissionId, String service, String operation,
-                                     String eventRefNo, boolean wait, int waitTime, Process process) {
+                                 String eventRefNo, boolean wait, int waitTime, Process process, boolean needCallback) {
         log.info("<=== Start to call Event bus ===>");
         log.info(StringUtil.changeForLog("Call Submission Id ==>" + submissionId));
         log.info(StringUtil.changeForLog("Call Service ==>" + service));
@@ -59,7 +64,9 @@ public class EventBusHelper {
             req.setSopUrl(callBackUrl);
         }
         req.setStep("eventBusSubmit");
-        req.setCallbackUrl(callBackUrl);
+        if (needCallback) {
+            req.setCallbackUrl(callBackUrl);
+        }
         req.setService(service);
         req.setOperation(operation);
         req.setData(JsonUtil.parseToJson(dto));
