@@ -6,7 +6,7 @@
             var $premSelctDivEle = $(this).closest('div.premisesTypeDiv');
             if('ONSITE'==checkedType){
                 //reset indexNo for clear
-                $premSelect.find('.premisesIndexNo').val('');
+                // $premSelect.find('.premisesIndexNo').val('');
                 $premSelect.find('.onSiteSelect').removeClass('hidden');
                 $premSelect.find('.conveyanceSelect').addClass('hidden');
                 $premSelect.find('.offSiteSelect').addClass('hidden');
@@ -20,7 +20,7 @@
 
             }else if('CONVEYANCE' == checkedType){
                 //reset indexNo for clear
-                $premSelect.find('.premisesIndexNo').val('');
+                // $premSelect.find('.premisesIndexNo').val('');
                 $premSelect.find('.conveyanceSelect').removeClass('hidden');
                 $premSelect.find('.onSiteSelect').addClass('hidden');
                 $premSelect.find('.offSiteSelect').addClass('hidden');
@@ -33,7 +33,7 @@
                 <!--change hidden length value -->
             }else if('OFFSITE' == checkedType){
                 //reset indexNo for clear
-                $premSelect.find('.premisesIndexNo').val('');
+                // $premSelect.find('.premisesIndexNo').val('');
                 $premSelect.find('.onSiteSelect').addClass('hidden');
                 $premSelect.find('.conveyanceSelect').addClass('hidden');
                 $premSelect.find('.easMtsSelect').addClass('hidden');
@@ -46,7 +46,7 @@
                 <!--change hidden length value -->
 
             }else if('EASMTS' == checkedType){
-                $premSelect.find('.premisesIndexNo').val('');
+                // $premSelect.find('.premisesIndexNo').val('');
                 $premSelect.find('.onSiteSelect').addClass('hidden');
                 $premSelect.find('.conveyanceSelect').addClass('hidden');
                 $premSelect.find('.offSiteSelect').addClass('hidden');
