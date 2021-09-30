@@ -1031,23 +1031,6 @@ public class ClinicalLaboratoryDelegator {
             Map<String, String> reloadChkLstMap = IaisCommonUtils.genNewHashMap();
             Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
             List<AppSvcLaboratoryDisciplinesDto> appSvcLaboratoryDisciplinesDtoList = IaisCommonUtils.genNewArrayList();
-            //0068776
-            if (isRfi){
-                List<AppSvcLaboratoryDisciplinesDto> otherAppSvcLaboratoryDisciplinesDtoList = IaisCommonUtils.genNewArrayList();
-                String rfiPremiseId = "";
-                for (AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtoList){
-                    if (appGrpPremisesDto.isRfiCanEdit()){
-                        rfiPremiseId = appGrpPremisesDto.getPremisesIndexNo();
-                        break;
-                    }
-                }
-                for(AppSvcLaboratoryDisciplinesDto appSvcLaboratoryDisciplinesDto1 : currentSvcDto.getAppSvcLaboratoryDisciplinesDtoList()){
-                    if (!rfiPremiseId.equals(appSvcLaboratoryDisciplinesDto1.getPremiseVal())){
-                        otherAppSvcLaboratoryDisciplinesDtoList.add(appSvcLaboratoryDisciplinesDto1);
-                    }
-                }
-                appSvcLaboratoryDisciplinesDtoList.addAll(otherAppSvcLaboratoryDisciplinesDtoList);
-            }
             int i = 0;
             for (AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtoList) {
                 String name = appGrpPremisesDto.getPremisesIndexNo() + "control--runtime--1";
