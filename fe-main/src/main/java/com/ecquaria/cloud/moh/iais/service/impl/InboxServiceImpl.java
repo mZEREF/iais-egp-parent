@@ -407,13 +407,13 @@ public class InboxServiceImpl implements InboxService {
         AuditTrailDto loginDto = auditTrailMainClient.getLastLoginInfo(loginUserId, sessionId).getEntity();
         if (loginDto != null) {
             auditTrailDto.setActionTime(loginDto.getActionTime());
-        }
-        AuditTrailDto actDto = auditTrailMainClient.getLastAction(sessionId).getEntity();
-        if (actDto != null) {
-            auditTrailDto.setModule(actDto.getModule());
-            auditTrailDto.setFunctionName(actDto.getFunctionName());
-            auditTrailDto.setLicenseNum(actDto.getLicenseNum());
-            auditTrailDto.setApplicationNum(actDto.getApplicationNum());
+            AuditTrailDto actDto = auditTrailMainClient.getLastAction(loginDto.getSessionId()).getEntity();
+            if (actDto != null) {
+                auditTrailDto.setModule(actDto.getModule());
+                auditTrailDto.setFunctionName(actDto.getFunctionName());
+                auditTrailDto.setLicenseNum(actDto.getLicenseNum());
+                auditTrailDto.setApplicationNum(actDto.getApplicationNum());
+            }
         }
 
         return auditTrailDto;
