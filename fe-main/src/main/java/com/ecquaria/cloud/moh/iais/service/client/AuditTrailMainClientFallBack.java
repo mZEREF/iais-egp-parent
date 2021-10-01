@@ -40,7 +40,7 @@ public class AuditTrailMainClientFallBack implements AuditTrailMainClient {
 	}
 
 	@Override
-	public FeignResponseEntity<AuditTrailDto> getLastLoginInfo(String loginUserId) {
+	public FeignResponseEntity<AuditTrailDto> getLastLoginInfo(String loginUserId, String sessionId) {
 		FeignResponseEntity entity = new FeignResponseEntity<>();
 		HttpHeaders headers = new HttpHeaders();
 		entity.setHeaders(headers);
