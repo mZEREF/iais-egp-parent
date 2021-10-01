@@ -67,8 +67,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 /**
@@ -78,20 +76,20 @@ import org.springframework.web.bind.annotation.RequestParam;
 @FeignClient(name = "hcsa-config", configuration = FeignConfiguration.class,
         fallback = HcsaConfigClientFallback.class)
 public interface HcsaConfigClient {
-    @RequestMapping(path = "/iais-hcsa-service/list-svc-doc-config", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(path = "/iais-hcsa-service/list-svc-doc-config", consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<HcsaSvcDocConfigDto>> listSvcDocConfig(@RequestBody List<String> docId);
 
-    @RequestMapping(path = "/hcsa-routing/stage-id", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(path = "/hcsa-routing/stage-id", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<HcsaSvcRoutingStageDto>> getStageName(@RequestParam("serviceId") String serviceId,
                                                                    @RequestParam("stageId") String stageId);
 
-    @RequestMapping(path = "/hcsa-routing/stage-service-id-type-stage", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(path = "/hcsa-routing/stage-service-id-type-stage", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<HcsaSvcRoutingStageDto>> getStageName(@RequestParam("serviceId") String serviceId,
                                                                    @RequestParam("stageId") String stageId,
                                                                    @RequestParam("type") String type,
                                                                    @RequestParam("isPreIns") Integer isPreIns);
 
-    @RequestMapping(path = "/iais-hcsa-service/hcsa-service-by-ids", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(path = "/iais-hcsa-service/hcsa-service-by-ids", consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<HcsaServiceDto>> getHcsaService(@RequestBody List<String> serviceId);
 
     @GetMapping(path = "/iais-hcsa-service/one-of-hcsa-service/{serviceId}", produces = {MediaType.APPLICATION_JSON_VALUE},
@@ -119,7 +117,7 @@ public interface HcsaConfigClient {
     @PostMapping(value = "/iais-hcsa-service/application-premises-by-ids")
     FeignResponseEntity<List<HcsaSvcSpePremisesTypeDto>> applicationPremisesByIds(@RequestBody List<HcsaSvcSpecificStageWorkloadDto> hcsaSvcSpecificStageWorkloadDtoList);
 
-    @RequestMapping(path = "/iais-hcsa-risk/RiskResult", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(path = "/iais-hcsa-risk/RiskResult", consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<RiskResultDto>> getRiskResult(@RequestBody List<RiskAcceptiionDto> riskAcceptiionDtoList);
 
     @GetMapping(value = "/iais-hcsa-service/active-service", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -129,7 +127,7 @@ public interface HcsaConfigClient {
     FeignResponseEntity<List<String>> listServiceP1Name();
 
 
-    @RequestMapping(value = "/iais-hcsa-risk/FinancialShow", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/iais-hcsa-risk/FinancialShow", consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<RiskFinancialShowDto> getRiskFinShow(@RequestBody List<HcsaServiceDto> svcList);
 
     @GetMapping(value = "/iais-hcsa-risk/finriskbysvccode{serviceCode}", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -138,13 +136,13 @@ public interface HcsaConfigClient {
     @PostMapping(value = "/hcsa-routing/svc-work-group-order", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<HcsaSvcStageWorkingGroupDto>> getSvcWorkGroup(@RequestBody HcsaSvcStageWorkingGroupDto dto);
 
-    @RequestMapping(value = "/iais-hcsa-risk/FinanceMatrixMemoryStorage", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/iais-hcsa-risk/FinanceMatrixMemoryStorage", consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<HcsaRiskFinanceMatrixDto>> saveFinRiskMatrix(@RequestBody List<HcsaRiskFinanceMatrixDto> finDtoList);
 
-    @RequestMapping(value = "/iais-hcsa-risk/FinanceMatrixMemoryStorageupdate", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(value = "/iais-hcsa-risk/FinanceMatrixMemoryStorageupdate", consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<HcsaRiskFinanceMatrixDto>> updateFinRiskMatrix(@RequestBody List<HcsaRiskFinanceMatrixDto> finDtoList);
 
-    @RequestMapping(value = "/iais-hcsa-risk/leadership/show", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/iais-hcsa-risk/leadership/show", consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<RiskLeaderShipShowDto> getRiskLeaderShipShow(@RequestBody List<HcsaServiceDto> svcList);
 
     @PostMapping(value = "/iais-hcsa-service/hcsa-service-type", consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -153,16 +151,16 @@ public interface HcsaConfigClient {
     @GetMapping(value = "/iais-hcsa-risk/leadershipbysvccode{serviceCode}", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<HcsaRiskLeadershipMatrixDto>> getLeadershipRiskBySvcCode(@PathVariable("serviceCode") String serviceCode);
 
-    @RequestMapping(value = "/iais-hcsa-risk/LeaderShipMatrixStorage", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/iais-hcsa-risk/LeaderShipMatrixStorage", consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<HcsaRiskLeadershipMatrixDto>> saveLeadershipRiskMatrix(@RequestBody List<HcsaRiskLeadershipMatrixDto> finDtoList);
 
-    @RequestMapping(value = "/iais-hcsa-risk/LeaderShipMatrixStorageupdate", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(value = "/iais-hcsa-risk/LeaderShipMatrixStorageupdate", consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<HcsaRiskLeadershipMatrixDto>> updateLeadershipRiskMatrix(@RequestBody List<HcsaRiskLeadershipMatrixDto> finDtoList);
 
     @GetMapping(value = "/iais-hcsa-risk/RiskLegislative/{serviceCode}", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<HcsaRiskLegislativeMatrixDto>> getLegislativeRiskBySvcCode(@PathVariable("serviceCode") String serviceCode);
 
-    @RequestMapping(value = "/iais-hcsa-risk/legislativeshow", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/iais-hcsa-risk/legislativeshow", consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<RiskLegislativeShowDto> getLegislativeShow(@RequestBody List<HcsaServiceDto> svcList);
 
     @PostMapping(value = "/iais-hcsa-service/pref-period/results",
@@ -173,13 +171,13 @@ public interface HcsaConfigClient {
             consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<HcsaServicePrefInspPeriodDto> savePrefInspPeriod(@RequestBody HcsaServicePrefInspPeriodDto period);
 
-    @RequestMapping(value = "/iais-hcsa-risk/legislativematrixstorage", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/iais-hcsa-risk/legislativematrixstorage", consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<HcsaRiskLegislativeMatrixDto>> saveLegislativeRiskMatrix(@RequestBody List<HcsaRiskLegislativeMatrixDto> finDtoList);
 
-    @RequestMapping(value = "/iais-hcsa-risk/legislativematrixstorageup", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(value = "/iais-hcsa-risk/legislativematrixstorageup", consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<HcsaRiskLegislativeMatrixDto>> updateLegislativeRiskMatrix(@RequestBody List<HcsaRiskLegislativeMatrixDto> finDtoList);
 
-    @RequestMapping(value = "/iais-hcsa-risk/weightageshow", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/iais-hcsa-risk/weightageshow", consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<HcsaRiskWeightageShowDto> getWeightageShow(@RequestBody List<HcsaServiceDto> svcList);
 
 
@@ -197,7 +195,7 @@ public interface HcsaConfigClient {
             consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<HcsaRiskWeightageDto>> saveWeightageMatrixList(@RequestBody List<HcsaRiskWeightageDto> finDtoList);
 
-    @RequestMapping(value = "/iais-hcsa-risk/golbalshow", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/iais-hcsa-risk/golbalshow", consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<GolbalRiskShowDto> getgolbalshow(@RequestBody List<HcsaServiceDto> svcList);
 
     @GetMapping(value = "/iais-hcsa-risk/golbalRiskMatraix/{serviceCode}", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -206,48 +204,48 @@ public interface HcsaConfigClient {
     @GetMapping(value = "/iais-hcsa-risk/golbalextbyid{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<HcsaRiskGolbalExtDto>> getRiskGolbalextDtoById(@PathVariable("id") String id);
 
-    @RequestMapping(value = "/iais-hcsa-risk/golbalrisktorage", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/iais-hcsa-risk/golbalrisktorage", consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<HcsaRiskGlobalDto>> saveGoalbalMatrixList(@RequestBody List<HcsaRiskGlobalDto> finDtoList);
 
-    @RequestMapping(value = "/iais-hcsa-risk/golbalriskupdate", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(value = "/iais-hcsa-risk/golbalriskupdate", consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<HcsaRiskGlobalDto>> udpateGoalbalMatrixList(@RequestBody List<HcsaRiskGlobalDto> finDtoList);
 
-    @RequestMapping(value = "/iais-hcsa-risk/golbalextrisktorage", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/iais-hcsa-risk/golbalextrisktorage", consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<HcsaRiskGolbalExtDto>> saveGoalbalExtMatrixList(@RequestBody List<HcsaRiskGolbalExtDto> finDtoList);
 
-    @RequestMapping(value = "/iais-hcsa-risk/golbalextriskupdate", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(value = "/iais-hcsa-risk/golbalextriskupdate", consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<HcsaRiskGolbalExtDto>> updateGoalbalExtMatrixList(@RequestBody List<HcsaRiskGolbalExtDto> finDtoList);
 
-    @RequestMapping(value = "/iais-hcsa-risk/singlegolbalextriskstorage", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/iais-hcsa-risk/singlegolbalextriskstorage", consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<HcsaRiskGlobalDto> saveGoalbalMatrix(@RequestBody HcsaRiskGlobalDto finDtoList);
 
-    @RequestMapping(value = "/iais-hcsa-risk/singlegolbalextriskup", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(value = "/iais-hcsa-risk/singlegolbalextriskup", consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<HcsaRiskGlobalDto> udpateGoalbalMatrix(@RequestBody HcsaRiskGlobalDto finDtoList);
 
-    @RequestMapping(value = "/iais-hcsa-risk/inspectionshow", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/iais-hcsa-risk/inspectionshow", consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<InspectionShowDto> getInspectionshow(@RequestBody List<HcsaServiceDto> svcList);
 
-    @RequestMapping(value = "/iais-hcsa-risk/InspectionMatrixStorage", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/iais-hcsa-risk/InspectionMatrixStorage", consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<HcsaRiskInspectionMatrixDto>> saveInspectionMatrix(@RequestBody List<HcsaRiskInspectionMatrixDto> finDtoList);
 
-    @RequestMapping(value = "/iais-hcsa-risk/InspectionMatrixup", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(value = "/iais-hcsa-risk/InspectionMatrixup", consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<HcsaRiskInspectionMatrixDto>> udpateInspectionMatrix(@RequestBody List<HcsaRiskInspectionMatrixDto> finDtoList);
 
     @GetMapping(value = "/iais-hcsa-risk/riskInspection/{svcCode}", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<HcsaRiskInspectionMatrixDto>> getInspectionBySvcCode(@PathVariable("svcCode") String svcCode);
 
-    @RequestMapping(value = "/iais-hcsa-risk/licencetenureshow", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/iais-hcsa-risk/licencetenureshow", consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<LicenceTenShowDto> getLicenceTenureShow(@RequestBody List<HcsaServiceDto> svcList);
 
-    @RequestMapping(path = "/iais-hcsa-service/subtype-subsumed/{svcId}", method = RequestMethod.GET)
+    @GetMapping(path = "/iais-hcsa-service/subtype-subsumed/{svcId}")
     FeignResponseEntity<List<HcsaSvcSubtypeOrSubsumedDto>> listSubCorrelation(@PathVariable(name = "svcId") String serviceId);
     @GetMapping(value = "/iais-hcsa-service/avtice-hcas-service-by-name",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<HcsaServiceDto> getActiveHcsaServiceDtoByName(@RequestParam("svcName") String svcName);
 
-    @RequestMapping(value = "/kpi-reminder/module-name-service-code", method = RequestMethod.GET)
+    @GetMapping(value = "/kpi-reminder/module-name-service-code")
     FeignResponseEntity<List<String>> getModuleName(@RequestParam("serviceCode") String serviceCode);
 
-    @RequestMapping(value = "/kpi-reminder/result-service-and-module")
+    @GetMapping(value = "/kpi-reminder/result-service-and-module")
     FeignResponseEntity<HcsaSvcKpiDto> searchResult(@RequestParam("service") String serviceCode, @RequestParam("module") String module);
 
     @PostMapping(value = "/hcsa-routing/svc-work-task-dto", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -257,10 +255,10 @@ public interface HcsaConfigClient {
     FeignResponseEntity saveKpiAndReminder(@RequestBody HcsaSvcKpiDto hcsaSvcKpiDto);
 
 
-    @RequestMapping(value = "/iais-hcsa-risk/LicenceTenureMatrixStorage", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/iais-hcsa-risk/LicenceTenureMatrixStorage", consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<HcsaRiskLicenceTenureDto>> savehcsaRiskLicenceTenure(@RequestBody List<HcsaRiskLicenceTenureDto> finDtoList);
 
-    @RequestMapping(value = "/iais-hcsa-risk/LicenceTenureMatrixup", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(value = "/iais-hcsa-risk/LicenceTenureMatrixup", consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<HcsaRiskLicenceTenureDto>> updatehcsaRiskLicenceTenure(@RequestBody List<HcsaRiskLicenceTenureDto> finDtoList);
 
 
@@ -370,7 +368,7 @@ public interface HcsaConfigClient {
     @PostMapping(path = "/iais-hcsa-fee/returnable-fee",consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<ApplicationDto>> returnFee(@RequestBody List<ApplicationDto> applicationDtos);
 
-    @RequestMapping(path = "/iais-hcsa-service/svc-doc-config-results",method = RequestMethod.GET)
+    @GetMapping(path = "/iais-hcsa-service/svc-doc-config-results")
     FeignResponseEntity<List<HcsaSvcDocConfigDto>> getHcsaSvcDocConfig(@RequestParam(value = "string") String docMapJson);
 
     @GetMapping(path = "/iais-hcsa-service/list-svc-doc-config/{docId}",produces =MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
