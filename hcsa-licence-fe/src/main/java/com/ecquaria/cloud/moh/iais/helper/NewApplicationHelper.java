@@ -2265,7 +2265,7 @@ public class NewApplicationHelper {
                 }
                 Object value = ReflectionUtil.getPropertyObj(f, personFieldDto);
                 if(StringUtil.isEmpty(value)){
-                    ReflectionUtil.setPropertyObj(f.getName(), true, appPsnEditDto);
+                    ReflectionUtil.setPropertyObj(f.getName(), Boolean.TRUE, appPsnEditDto);
                 }
             }
             //confirm with mingde , person_ext field can edit anytime

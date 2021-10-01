@@ -9,14 +9,14 @@ import javax.servlet.jsp.JspException;
 import java.io.IOException;
 
 /**
- * @Description EncryptTag <iais:encrypt var="" value="${...}" /> or <iais:encrypt value="${...}" />
+ * @Description EncryptTag <iais:encrypt define="" value="${...}" /> or <iais:encrypt value="${...}" />
  * @Auther chenlei on 9/28/2021.
  */
 @Slf4j
 public class EncryptTag extends DivTagSupport {
 
     private String value;
-    private String var;
+    private String define;
     private String scope;
 
     @Override
@@ -27,27 +27,28 @@ public class EncryptTag extends DivTagSupport {
         } catch (JspException e) {
             log.info(e.getMessage(), e);
         }
-        setVar(null);
+        setDefine(null);
         setScope(null);
     }
 
     @Override
     public int doStartTag() throws JspException {
         String encrypted = StringUtil.getNonNull(StringUtil.obscured(value));
-        if (!StringUtil.isEmpty(var)) {
+        if (!StringUtil.isEmpty(define)) {
             if ("requst".equals(scope)) {
-                pageContext.getRequest().setAttribute(var, encrypted);
+                pageContext.getRequest().setAttribute(define, encrypted);
             } else if ("session".equals(scope)) {
-                pageContext.getSession().setAttribute(var, encrypted);
+                pageContext.getSession().setAttribute(define, encrypted);
             } else {
-                pageContext.setAttribute(var, encrypted);
+                pageContext.setAttribute(define, encrypted);
             }
-        }
-        try {
-            pageContext.getOut().print(encrypted);
-        } catch (IOException e) {
-            log.error(StringUtil.changeForLog(e.getMessage()), e);
-            throw new IaisRuntimeException("Encrypt Tag: " + e.getMessage(), e);
+        } else {
+            try {
+                pageContext.getOut().print(encrypted);
+            } catch (IOException e) {
+                log.error(StringUtil.changeForLog(e.getMessage()), e);
+                throw new IaisRuntimeException("Encrypt Tag: " + e.getMessage(), e);
+            }
         }
         return SKIP_BODY;
     }
@@ -61,8 +62,8 @@ public class EncryptTag extends DivTagSupport {
         this.scope = scope;
     }
 
-    public void setVar(String var) {
-        this.var = var;
+    public void setDefine(String define) {
+        this.define = define;
     }
 
     public void setValue(String value) throws JspException {
