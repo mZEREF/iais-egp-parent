@@ -26,10 +26,10 @@
     </c:if>
 </head>
 <body style="font-size:16px;">
-<jsp:include page="header.jsp" />
+<%@ include file="header.jsp" %>
 <div class="">
     <layout:insertAttribute name="body" ignore="true" />
 </div>
-<jsp:include page="footer.jsp" />
+<%@ include file="footer.jsp" %>
 </body>
 </html>

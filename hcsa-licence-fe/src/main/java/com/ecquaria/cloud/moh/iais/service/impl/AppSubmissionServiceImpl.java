@@ -2564,7 +2564,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                 }
                 List<AppSvcPrincipalOfficersDto> appSvcClinicalDirectorDtos = dto.getAppSvcClinicalDirectorDtoList();
                 validateClincalDirector.doValidateClincalDirector(errorMap, dto.getAppSvcClinicalDirectorDtoList(), currSvcCode);
-                if ("Y".equals(prsFlag) && appSvcClinicalDirectorDtos != null) {
+                if (appSvcClinicalDirectorDtos != null && "Y".equals(prsFlag)) {
                     int i = 0;
                     for (AppSvcPrincipalOfficersDto person : appSvcClinicalDirectorDtos) {
                         if (!NewApplicationHelper.checkProfRegNo(person.getProfRegNo())) {
@@ -2588,7 +2588,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                     govenMap.putAll(NewApplicationHelper.doValidateGovernanceOfficers(appSvcCgoDtoList, licPersonMap,
                             dto.getServiceCode()));
                 }
-                if ("Y".equals(prsFlag) && appSvcCgoDtoList != null && govenMap.isEmpty()) {
+                if (appSvcCgoDtoList != null && govenMap.isEmpty() && "Y".equals(prsFlag)) {
                     int i = 0;
                     for (AppSvcPrincipalOfficersDto person : appSvcCgoDtoList) {
                         if (!NewApplicationHelper.checkProfRegNo(person.getProfRegNo())) {
@@ -2618,7 +2618,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                 List<AppSvcPersonnelDto> appSvcPersonnelDtoList = dto.getAppSvcPersonnelDtoList();
                 doAppSvcPersonnelDtoList(currentSvcAllPsnConfig, errorMap, appSvcPersonnelDtoList, serviceId, sB,
                         dto.getServiceCode());
-                if ("Y".equals(prsFlag) && appSvcPersonnelDtoList != null) {
+                if (appSvcPersonnelDtoList != null && "Y".equals(prsFlag)) {
                     int i = 0;
                     for (AppSvcPersonnelDto person : appSvcPersonnelDtoList) {
                         if (!NewApplicationHelper.checkProfRegNo(person.getProfRegNo())) {

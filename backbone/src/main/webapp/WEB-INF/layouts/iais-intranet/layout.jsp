@@ -39,15 +39,15 @@
 </head>
 <body>
 <div class="wrapper">
-		<jsp:include page="header.jsp" flush="true"/>
+	<%@ include file="header.jsp" %>
 	<nav id="sidebar">
-	  <jsp:include page="user-info.jsp" flush="true"/>
-		<jsp:include page="left-menu.jsp" />
+		<%@ include file="user-info.jsp" %>
+		<%@ include file="left-menu.jsp" %>
 	</nav>
 	<layout:insertAttribute name="body" ignore="true" />
 </div>
 <br class="clear"/>
-<jsp:include page="footer.jsp" />
+<%@ include file="footer.jsp" %>
 </body>
 </html>
 <!-- end of /_themes/sop6/jsp/layout.jsp -->

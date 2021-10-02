@@ -45,7 +45,7 @@ public interface InboxService {
     Boolean checkEligibility(String appId);
     List<InboxMsgMaskDto> getInboxMaskEntity(String msgId);
     List<PremisesDto> getPremisesByLicId(String licenceId);
-    AuditTrailDto getLastLoginInfo(String loginUserId);
+    AuditTrailDto getLastLoginInfo(String loginUserId, String sessionId);
     Map<String,String> checkRfcStatus(String licenceId);
     Map<String,Boolean> listResultCeased(List<String> licIds);
     Map<String,String> appealIsApprove(String appIdOrLicenceId,String type);
