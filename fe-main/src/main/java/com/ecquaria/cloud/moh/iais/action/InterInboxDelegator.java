@@ -1591,7 +1591,7 @@ public class InterInboxDelegator {
             String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
             IaisEGPHelper.redirectUrl(bpc.response, tokenUrl);
         }else{
-            AuditTrailDto auditTrailDto = inboxService.getLastLoginInfo(loginContext.getLoginId());
+            AuditTrailDto auditTrailDto = inboxService.getLastLoginInfo(loginContext.getLoginId(), bpc.request.getSession().getId());
             InterInboxUserDto interInboxUserDto = new InterInboxUserDto();
             interInboxUserDto.setLicenseeId(loginContext.getLicenseeId());
             interInboxUserDto.setUserId(loginContext.getUserId());

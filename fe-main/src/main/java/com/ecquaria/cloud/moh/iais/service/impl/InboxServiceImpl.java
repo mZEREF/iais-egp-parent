@@ -402,13 +402,12 @@ public class InboxServiceImpl implements InboxService {
     }
 
     @Override
-    public AuditTrailDto getLastLoginInfo(String loginUserId) {
+    public AuditTrailDto getLastLoginInfo(String loginUserId, String sessionId) {
         AuditTrailDto auditTrailDto = new AuditTrailDto();
-        AuditTrailDto loginDto = auditTrailMainClient.getLastLoginInfo(loginUserId).getEntity();
+        AuditTrailDto loginDto = auditTrailMainClient.getLastLoginInfo(loginUserId, sessionId).getEntity();
         if (loginDto != null) {
             auditTrailDto.setActionTime(loginDto.getActionTime());
-            String sessionId = loginDto.getSessionId();
-            AuditTrailDto actDto = auditTrailMainClient.getLastAction(sessionId).getEntity();
+            AuditTrailDto actDto = auditTrailMainClient.getLastAction(loginDto.getSessionId()).getEntity();
             if (actDto != null) {
                 auditTrailDto.setModule(actDto.getModule());
                 auditTrailDto.setFunctionName(actDto.getFunctionName());
