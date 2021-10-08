@@ -316,7 +316,7 @@ public class PaymentBaiduriProxy extends PaymentProxy {
 		}
 
 		// create the SHA-256(default) hash and UTF-8 encode it
-		MessageDigest md = MessageDigest.getInstance(DEFAULT_SECURE_HASH_TYPE.equals(secureHashType) ? "SHA-256" :  secureHashType);
+		MessageDigest md = MessageDigest.getInstance(MessageDigest.isEqual(DEFAULT_SECURE_HASH_TYPE.getBytes(), secureHashType.getBytes()) ? "SHA-256" : secureHashType);
 		byte[] ba = md.digest(SMCStringHelperUtil.getStringBytes(buf.toString()));
 
 
