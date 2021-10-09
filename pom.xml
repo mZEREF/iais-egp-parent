@@ -302,9 +302,6 @@
     <profiles>
         <profile>
             <id>sz-nexus</id>
-			<activation>
-				<activeByDefault>false</activeByDefault>
-			</activation>
             <repositories>
                 <repository>
                     <id>nexus-repo</id>
