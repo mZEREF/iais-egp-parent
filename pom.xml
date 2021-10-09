@@ -301,6 +301,25 @@
     </build>
     <profiles>
         <profile>
+            <id>sz-nexus</id>
+			<activation>
+				<activeByDefault>false</activeByDefault>
+			</activation>
+            <repositories>
+                <repository>
+                    <id>nexus-repo</id>
+                    <name>Nexus Repository</name>
+                    <url>http://nexus:8081/repository/maven-public/</url>
+                    <snapshots>
+                        <enabled>false</enabled>
+                    </snapshots>
+                    <releases>
+                        <enabled>true</enabled>
+                    </releases>
+                </repository>
+            </repositories>
+        </profile>
+        <profile>
             <id>sg-nexus</id>
             <activation>
                 <activeByDefault>true</activeByDefault>
@@ -341,6 +360,24 @@
             </distributionManagement>
         </profile>
         <profile>
+            <id>sg-gdc-nexus</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <distributionManagement>
+                <repository>
+                    <id>moh-iais-nexus</id>
+                    <name>Nexus Releases</name>
+                    <url>${sg.gdc.nexus}</url>
+                </repository>
+                <snapshotRepository>
+                    <id>moh-iais-nexus</id>
+                    <name>Nexus Snapshot</name>
+                    <url>${sg.gdc.nexus.snapshot}</url>
+                </snapshotRepository>
+            </distributionManagement>
+        </profile>
+        <profile>
             <id>cicd-sg-nexus</id>
             <activation>
                 <activeByDefault>false</activeByDefault>
@@ -369,43 +406,6 @@
                     <url>${sg.nexus.snapshot.repo}</url>
                 </snapshotRepository>
             </distributionManagement>
-        </profile>
-        <profile>
-            <id>sg-gdc-nexus</id>
-            <activation>
-                <activeByDefault>false</activeByDefault>
-            </activation>
-            <distributionManagement>
-                <repository>
-                    <id>moh-iais-nexus</id>
-                    <name>Nexus Releases</name>
-                    <url>${sg.gdc.nexus}</url>
-                </repository>
-                <snapshotRepository>
-                    <id>moh-iais-nexus</id>
-                    <name>Nexus Snapshot</name>
-                    <url>${sg.gdc.nexus.snapshot}</url>
-                </snapshotRepository>
-            </distributionManagement>
-        </profile>
-        <profile>
-            <id>sz-nexus</id>
-			<activation>
-				<activeByDefault>false</activeByDefault>
-			</activation>
-            <repositories>
-                <repository>
-                    <id>nexus-repo</id>
-                    <name>Nexus Repository</name>
-                    <url>http://nexus:8081/repository/maven-public/</url>
-                    <snapshots>
-                        <enabled>false</enabled>
-                    </snapshots>
-                    <releases>
-                        <enabled>true</enabled>
-                    </releases>
-                </repository>
-            </repositories>
         </profile>
     </profiles>
 </project>
