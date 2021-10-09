@@ -64,6 +64,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -337,7 +338,7 @@ public class InsepctionNcCheckListImpl implements InsepctionNcCheckListService {
 
     @Override
     public void saveBeforeSubmitSpecCheckList(InspectionFillCheckListDto commDto, List<InspectionSpecServiceDto> inspectionSpecServiceDtos, InspectionFDtosDto serListDto,AdCheckListShowDto adCheckListShowDto,String appPremId) {
-        List<InspectionFillCheckListDto> fillcheckDtoList = getFillcheckDtoListAndSaveCheckListNoVehicle(commDto,adCheckListShowDto,serListDto,appPremId);
+        List<InspectionFillCheckListDto> fillcheckDtoList = getFillcheckDtoListAndSaveCheckListNoVehicle(commDto,serListDto,appPremId);
         AdCheckListShowDto adchklDto =(AdCheckListShowDto) com.ecquaria.cloud.moh.iais.common.utils.CopyUtil.copyMutableObject(adCheckListShowDto);
         if(IaisCommonUtils.isNotEmpty(inspectionSpecServiceDtos)){
             for(InspectionSpecServiceDto inspectionSpecServiceDto : inspectionSpecServiceDtos){
@@ -682,7 +683,7 @@ public class InsepctionNcCheckListImpl implements InsepctionNcCheckListService {
                     temp.setAnswer(saveAnswer);
                     saveItemDtoList.add(temp);
                 }
-                saveItemDtoList = applicationClient.saveAdhocItems(saveItemDtoList).getEntity();
+                saveItemDtoList = applicationClient.saveAdhocItems(filterAdhocItemsNoAnswer(saveItemDtoList)).getEntity();
                 int index = 0;
                 for(AdhocNcCheckItemDto adhocNcCheckItemDto :  itemDtoList){
                     adhocNcCheckItemDto.setId(saveItemDtoList.get(index).getId());
@@ -692,6 +693,19 @@ public class InsepctionNcCheckListImpl implements InsepctionNcCheckListService {
                 saveAdhocChecklist(dto);
             }
         }
+    }
+
+    private List<AdhocChecklistItemDto> filterAdhocItemsNoAnswer(List<AdhocChecklistItemDto> saveItemDtoList){
+        if(IaisCommonUtils.isNotEmpty(saveItemDtoList)){
+            Iterator<AdhocChecklistItemDto>  adhocChecklistItemDtoIterator = saveItemDtoList.listIterator();
+            while(adhocChecklistItemDtoIterator.hasNext()){
+                AdhocChecklistItemDto adhocChecklistItemDto = adhocChecklistItemDtoIterator.next();
+                 if(StringUtil.isEmpty(adhocChecklistItemDto.getAnswer())){
+                    adhocChecklistItemDtoIterator.remove();
+                  }
+             }
+        }
+        return saveItemDtoList;
     }
 
     public void saveAdhocChecklist(AdhocCheckListConifgDto adhocConfig) {
@@ -1256,7 +1270,7 @@ public class InsepctionNcCheckListImpl implements InsepctionNcCheckListService {
 
     @Override
     public void saveBeforeSubmitCheckList(InspectionFillCheckListDto commDto, AdCheckListShowDto showDto, InspectionFDtosDto serListDto, String appPremId) {
-        List<InspectionFillCheckListDto> fillcheckDtoList = getFillcheckDtoListAndSaveCheckListNoVehicle(commDto,showDto,serListDto,appPremId);
+        List<InspectionFillCheckListDto> fillcheckDtoList = getFillcheckDtoListAndSaveCheckListNoVehicle(commDto,serListDto,appPremId);
         if (showDto != null) {
             saveAdhocDto(showDto, appPremId);
         }
@@ -1265,7 +1279,7 @@ public class InsepctionNcCheckListImpl implements InsepctionNcCheckListService {
         }
     }
 
-    private List<InspectionFillCheckListDto> getFillcheckDtoListAndSaveCheckListNoVehicle(InspectionFillCheckListDto commDto, AdCheckListShowDto showDto, InspectionFDtosDto serListDto,String appPremId){
+    private List<InspectionFillCheckListDto> getFillcheckDtoListAndSaveCheckListNoVehicle(InspectionFillCheckListDto commDto, InspectionFDtosDto serListDto,String appPremId){
         List<InspectionFillCheckListDto> fillcheckDtoList = IaisCommonUtils.genNewArrayList();
         if(commDto!=null){
             saveInspectionCheckListDto(commDto,appPremId);
