@@ -799,7 +799,7 @@ public class InsepctionNcCheckListImpl implements InsepctionNcCheckListService {
             for(InspectionFillCheckListDto dto:fillcheckDtoList){
                 List<InspectionCheckQuestionDto> insqDtoList = dto.getCheckList();
                 for (InspectionCheckQuestionDto temp : insqDtoList) {
-                    getAppNcByTemp(temp,ncDto,ncItemDtoList, dto.getVehicleName());
+                    getAppNcByTemp(temp,ncDto,ncItemDtoList, dto.getVehicleName(),dto.getConfigId());
                 }
             }
         }
@@ -828,7 +828,7 @@ public class InsepctionNcCheckListImpl implements InsepctionNcCheckListService {
         return ncItemDtoList;
     }
 
-    private void getAppNcByTemp(InspectionCheckQuestionDto temp, AppPremPreInspectionNcDto ncDto,List<AppPremisesPreInspectionNcItemDto> ncItemDtoList,String vehicleName){
+    private void getAppNcByTemp(InspectionCheckQuestionDto temp, AppPremPreInspectionNcDto ncDto,List<AppPremisesPreInspectionNcItemDto> ncItemDtoList,String vehicleName,String configId){
         if("No".equals(temp.getChkanswer())){
             AppPremisesPreInspectionNcItemDto ncItemDto = new AppPremisesPreInspectionNcItemDto();
             ncItemDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
@@ -844,6 +844,7 @@ public class InsepctionNcCheckListImpl implements InsepctionNcCheckListService {
             }
             ncItemDto.setNcs(temp.getNcs());
             ncItemDto.setVehicleName(vehicleName);
+            ncItemDto.setCheckListConfigId(configId);
             ncItemDtoList.add(ncItemDto);
         }
     }
@@ -1160,46 +1161,7 @@ public class InsepctionNcCheckListImpl implements InsepctionNcCheckListService {
         return false;
     }
 
-    private void getServiceTotalAndNc(InspectionFDtosDto serListDto) {
-        List<InspectionFillCheckListDto> dtoList = serListDto.getFdtoList();
-        int totalNum = 0;
-        int doNum = 0;
-        int ncNum = 0;
-        for(InspectionFillCheckListDto temp:dtoList){
-            if(!IaisCommonUtils.isEmpty(temp.getCheckList())){
-                for(InspectionCheckQuestionDto cqDto : temp.getCheckList()){
-                    totalNum++;
-                    if(!StringUtil.isEmpty(cqDto.getChkanswer())){
-                        doNum++;
-                        if("No".equals(cqDto.getChkanswer())){
-                            ncNum++;
-                        }
-                    }
-                }
-            }
-        }
-        serListDto.setServiceDo(doNum);
-        serListDto.setServiceTotal(totalNum);
-        serListDto.setServiceNc(ncNum);
-    }
 
-    private void getGeneralTotalAndNc(InspectionFillCheckListDto commonDto, InspectionFDtosDto serListDto) {
-        int totalNum = 0;
-        int ncNum = 0;
-        int doNum = 0;
-        for(InspectionCheckQuestionDto cqDto : commonDto.getCheckList()){
-            totalNum++;
-            if(!StringUtil.isEmpty(cqDto.getChkanswer())){
-                doNum++;
-            }
-            if("No".equals(cqDto.getChkanswer())){
-                ncNum++;
-            }
-        }
-        serListDto.setGeneralTotal(totalNum);
-        serListDto.setGeneralDo(doNum);
-        serListDto.setGeneralNc(ncNum);
-    }
 
     // only for show check list
     @Override
