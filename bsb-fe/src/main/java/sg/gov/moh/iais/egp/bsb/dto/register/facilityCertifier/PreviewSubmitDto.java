@@ -33,9 +33,8 @@ public class PreviewSubmitDto extends Node {
 
     @Override
     public boolean doValidation() {
-//        this.validationResultDto = (ValidationResultDto) SpringReflectionUtils.invokeBeanMethod("facRegFeignClient", "validateFacilityPreviewSubmit", new Object[]{this});
-//        return validationResultDto.isPass();
-        return true;
+        this.validationResultDto = (ValidationResultDto) SpringReflectionUtils.invokeBeanMethod("facRegFeignClient", "validateFacilityPreviewSubmit", new Object[]{this});
+        return validationResultDto.isPass();
     }
 
     @Override

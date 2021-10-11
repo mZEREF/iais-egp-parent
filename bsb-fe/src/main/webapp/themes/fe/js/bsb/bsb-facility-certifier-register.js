@@ -1,4 +1,9 @@
 $(function () {
+
+    // var element = $("textarea");
+    // var temp =  element.text().replace(/\r?\n/g,"<br/>").replace(/\s/g,"&nbsp;");
+    // element.html(temp);
+
     $("#next").click(function () {
         showWaiting();
         $("input[name='action_type']").val("jump");

@@ -45,7 +45,7 @@
                                     <%@include file="subStepNavTab.jsp"%>
 
                                     <div class="form-horizontal">
-                                        <h3 class="col-12" style="border-bottom: 1px solid black">Personnel Authorised to Access the Facility
+                                        <h3 class="col-12" style="border-bottom: 1px solid black">Certifying Team Member
                                             <a class="btn-tooltip styleguide-tooltip" href="javascript:void(0);" data-toggle="tooltip" data-html="true" title="" data-original-title="<p>The Facility Administrator/Alternate Facility Administrator is responsible to ensure that the list of authorised personnel is always kept up to date i.e. prompt submission of updates to include newly authorized personnel or to remove personnel who are no longer authorized to access the facility.</p>">i</a>
                                         </h3>
 
@@ -62,12 +62,12 @@
                                                 </c:if>
                                                 <div class="form-group ">
                                                     <div class="col-sm-5 control-label">
-                                                        <label for="name--v--${status.index}">Name</label>
+                                                        <label for="memberName--v--${status.index}">Name</label>
                                                         <span class="mandatory otherQualificationSpan">*</span>
                                                     </div>
                                                     <div class="col-sm-6 col-md-7">
-                                                        <input type="text" autocomplete="off" name="name--v--${status.index}" id="name--v--${status.index}"/>
-                                                        <span data-err-ind="name--v--${status.index}" class="error-msg"></span>
+                                                        <input type="text" autocomplete="off" name="memberName--v--${status.index}" id="memberName--v--${status.index}" value='<c:out value="${cer.memberName}"/>'/>
+                                                        <span data-err-ind="memberName--v--${status.index}" class="error-msg"></span>
                                                     </div>
                                                 </div>
                                                 <div class="form-group ">
@@ -77,14 +77,14 @@
                                                     </div>
                                                     <div class="col-sm-3">
                                                         <select name="idType--v--${status.index}" id="idType--v--${status.index}">
-                                                            <option value="IDTYPE001">NRIC</option>
-                                                            <option value="IDTYPE002">FIN</option>
-                                                            <option value="IDTYPE003">Passport</option>
+                                                            <option value="IDTYPE001" <c:if test="${cer.idType eq 'IDTYPE001'}">selected="selected"</c:if>>NRIC</option>
+                                                            <option value="IDTYPE002" <c:if test="${cer.idType eq 'IDTYPE002'}">selected="selected"</c:if>>FIN</option>
+                                                            <option value="IDTYPE003" <c:if test="${cer.idType eq 'IDTYPE003'}">selected="selected"</c:if>>Passport</option>
                                                         </select>
                                                         <span data-err-ind="idType--v--${status.index}" class="error-msg"></span>
                                                     </div>
                                                     <div class="col-sm-3 col-md-4">
-                                                        <input type="text" autocomplete="off" name="idNo--v--${status.index}" id="idNo--v--${status.index}"/>
+                                                        <input type="text" autocomplete="off" name="idNo--v--${status.index}" id="idNo--v--${status.index}" value='<c:out value="${cer.idNo}"/>'/>
                                                         <span data-err-ind="idNo--v--${status.index}" class="error-msg"></span>
                                                     </div>
                                                 </div>
@@ -95,7 +95,7 @@
                                                         <span class="mandatory otherQualificationSpan">*</span>
                                                     </div>
                                                     <div class="col-sm-6 col-md-7">
-                                                        <input type="text" autocomplete="off" name="birthDate--v--${status.index}" id="birthDate--v--${status.index}" data-date-start-date="01/01/1900"  placeholder="dd/mm/yyyy" maxlength="10" class="date_picker form-control"/>
+                                                        <input type="text" autocomplete="off" name="birthDate--v--${status.index}" id="birthDate--v--${status.index}" value='<c:out value="${cer.birthDate}"/>' data-date-start-date="01/01/1900"  placeholder="dd/mm/yyyy" maxlength="10" class="date_picker form-control"/>
                                                         <span data-err-ind="birthDate--v--${status.index}" class="error-msg"></span>
                                                     </div>
                                                 </div>
@@ -107,11 +107,11 @@
                                                     </div>
                                                     <div class="col-sm-6 col-md-7">
                                                         <div class="col-sm-5" style="margin-top: 8px">
-                                                            <input type="radio" name="sex--v--${status.index}" id="male" value="male" />
+                                                            <input type="radio" name="sex--v--${status.index}" id="male" value="male" <c:if test="${cer.sex eq 'male'}">checked="checked"</c:if> />
                                                             <label for="male">Male</label>
                                                         </div>
                                                         <div class="col-sm-5" style="margin-top: 8px">
-                                                            <input type="radio" name="sex--v--${status.index}" id="femail" value="femail" <c:if test="${facAuth.inputMethod eq 'manual'}">checked="checked"</c:if> />
+                                                            <input type="radio" name="sex--v--${status.index}" id="femail" value="femail" <c:if test="${cer.sex eq 'femail'}">checked="checked"</c:if> />
                                                             <label for="femail">Femail</label>
                                                         </div>
                                                     </div>
@@ -124,6 +124,9 @@
                                                     </div>
                                                     <div class="col-sm-6 col-md-7">
                                                         <select name="nationality--v--${status.index}" id="nationality--v--${status.index}">
+                                                            <c:forEach items="${nationalityOps}" var="na">
+                                                                <option value="${na.value}" <c:if test="${cer.nationality eq na.value}">selected="selected"</c:if>>${na.text}</option>
+                                                            </c:forEach>
                                                         </select>
                                                         <span data-err-ind="nationality--v--${status.index}" class="error-msg"></span>
                                                     </div>
@@ -135,7 +138,7 @@
                                                         <span class="mandatory otherQualificationSpan">*</span>
                                                     </div>
                                                     <div class="col-sm-6 col-md-7">
-                                                        <input type="text" autocomplete="off" name="telNo--v--${status.index}" id="telNo--v--${status.index}"/>
+                                                        <input type="text" autocomplete="off" name="telNo--v--${status.index}" id="telNo--v--${status.index}" value='<c:out value="${cer.telNo}"/>'/>
                                                         <span data-err-ind="telNo--v--${status.index}" class="error-msg"></span>
                                                     </div>
                                                 </div>
@@ -146,7 +149,7 @@
                                                         <span class="mandatory otherQualificationSpan">*</span>
                                                     </div>
                                                     <div class="col-sm-6 col-md-7">
-                                                        <input type="text" autocomplete="off" name="jobDesignation--v--${status.index}" id="jobDesignation--v--${status.index}"/>
+                                                        <input type="text" autocomplete="off" name="jobDesignation--v--${status.index}" id="jobDesignation--v--${status.index}" value='<c:out value="${cer.jobDesignation}"/>'/>
                                                         <span data-err-ind="jobDesignation--v--${status.index}" class="error-msg"></span>
                                                     </div>
                                                 </div>
@@ -159,16 +162,16 @@
                                                     <div class="col-sm-6 col-md-7">
                                                         <div class="col-sm-5" style="margin-top: 8px">
                                                             <label for="lead--v--${status.index}">Yes</label>
-                                                            <input type="radio" name="leadCertifier--v--${status.index}" id="lead--v--${status.index}" onchange="showLeader(this)" value="leader" />
+                                                            <input type="radio" name="leadCertifier--v--${status.index}" id="lead--v--${status.index}" <c:if test="${cer.leadCertifier eq 'leader'}">checked="checked"</c:if> onchange="showLeader(this)" value="leader" />
                                                         </div>
                                                         <div class="col-sm-5" style="margin-top: 8px">
                                                             <label for="common--v--${status.index}">No</label>
-                                                            <input type="radio" name="leadCertifier--v--${status.index}" id="common--v--${status.index}" onchange="hideLeader(this)" value="common" />
+                                                            <input type="radio" name="leadCertifier--v--${status.index}" id="common--v--${status.index}" <c:if test="${cer.leadCertifier eq 'common'}">checked="checked"</c:if> onchange="hideLeader(this)" value="common" />
                                                         </div>
                                                     </div>
                                                 </div>
 
-                                                <div id="leader--v--${status.index}" style="display: none">
+                                                <div id="leader--v--${status.index}" <c:if test="${cer.expertiseArea ne 'leader'}">style="display: none"</c:if>>
                                                 <div class="form-group">
                                                     <div class="col-sm-5 control-label">
                                                         <label for="expertiseArea--v--${status.index}">Area of Expertise (Position)</label>
@@ -176,6 +179,9 @@
                                                     </div>
                                                     <div class="col-sm-6 col-md-7">
                                                         <select name="expertiseArea--v--${status.index}" id="expertiseArea--v--${status.index}">
+                                                            <c:forEach items="${positionOps}" var="pos">
+                                                                <option value="${pos.value}" <c:if test="${cer.expertiseArea eq pos.value}">selected="selected"</c:if>>${pos.text}</option>
+                                                            </c:forEach>
                                                         </select>
                                                         <span data-err-ind="expertiseArea--v--${status.index}" class="error-msg"></span>
                                                     </div>
@@ -188,7 +194,9 @@
                                                         <span class="mandatory otherQualificationSpan">*</span>
                                                     </div>
                                                     <div class="col-sm-6 col-md-7">
-                                                        <textarea autocomplete="off" name="certBSL3Exp--v--${status.index}" id="certBSL3Exp--v--${status.index}" style="width: 100%"></textarea>
+                                                        <textarea autocomplete="off" name="certBSL3Exp--v--${status.index}" id="certBSL3Exp--v--${status.index}" style="width: 100%">
+                                                            <c:out value="${cer.certBSL3Exp}"/>
+                                                        </textarea>
                                                         <span data-err-ind="certBSL3Exp--v--${status.index}" class="error-msg"></span>
                                                     </div>
                                                 </div>
@@ -199,7 +207,9 @@
                                                         <span class="mandatory otherQualificationSpan">*</span>
                                                     </div>
                                                     <div class="col-sm-6 col-md-7">
-                                                        <textarea autocomplete="off" name="commBSL34Exp--v--${status.index}" id="commBSL34Exp--v--${status.index}" style="width: 100%"></textarea>
+                                                        <textarea autocomplete="off" name="commBSL34Exp--v--${status.index}" id="commBSL34Exp--v--${status.index}" style="width: 100%">
+                                                            <c:out value="${cer.commBSL34Exp}"/>
+                                                        </textarea>
                                                         <span data-err-ind="commBSL34Exp--v--${status.index}" class="error-msg"></span>
                                                     </div>
                                                 </div>
@@ -210,7 +220,9 @@
                                                         <span class="mandatory otherQualificationSpan">*</span>
                                                     </div>
                                                     <div class="col-sm-6 col-md-7">
-                                                        <textarea autocomplete="off" name="otherBSL34Exp--v--${status.index}" id="otherBSL34Exp--v--${status.index}" style="width: 100%"></textarea>
+                                                        <textarea autocomplete="off" name="otherBSL34Exp--v--${status.index}" id="otherBSL34Exp--v--${status.index}" style="width: 100%">
+                                                            <c:out value="${cer.otherBSL34Exp}"/>
+                                                        </textarea>
                                                         <span data-err-ind="otherBSL34Exp--v--${status.index}" class="error-msg"></span>
                                                     </div>
                                                 </div>
@@ -221,7 +233,7 @@
                                                         <span class="mandatory otherQualificationSpan">*</span>
                                                     </div>
                                                     <div class="col-sm-6 col-md-7">
-                                                        <input type="text" autocomplete="off" name="eduBackground--v--${status.index}" id="eduBackground--v--${status.index}"/>
+                                                        <input type="text" autocomplete="off" name="eduBackground--v--${status.index}" id="eduBackground--v--${status.index}" value='<c:out value="${cer.eduBackground}"/>' />
                                                         <span data-err-ind="eduBackground--v--${status.index}" class="error-msg"></span>
                                                     </div>
                                                 </div>
@@ -232,7 +244,7 @@
                                                         <span class="mandatory otherQualificationSpan">*</span>
                                                     </div>
                                                     <div class="col-sm-6 col-md-7">
-                                                        <input type="text" autocomplete="off" name="proActivities--v--${status.index}" id="proActivities--v--${status.index}"/>
+                                                        <input type="text" autocomplete="off" name="proActivities--v--${status.index}" id="proActivities--v--${status.index}" value='<c:out value="${cer.proActivities}"/>'/>
                                                         <span data-err-ind="proActivities--v--${status.index}" class="error-msg"></span>
                                                     </div>
                                                 </div>
@@ -243,7 +255,7 @@
                                                         <span class="mandatory otherQualificationSpan">*</span>
                                                     </div>
                                                     <div class="col-sm-6 col-md-7">
-                                                        <input type="text" autocomplete="off" name="proRegAndCert--v--${status.index}" id="proRegAndCert--v--${status.index}"/>
+                                                        <input type="text" autocomplete="off" name="proRegAndCert--v--${status.index}" id="proRegAndCert--v--${status.index}" value='<c:out value="${cer.proRegAndCert}"/>'/>
                                                         <span data-err-ind="proRegAndCert--v--${status.index}" class="error-msg"></span>
                                                     </div>
                                                 </div>
@@ -254,7 +266,7 @@
                                                         <span class="mandatory otherQualificationSpan">*</span>
                                                     </div>
                                                     <div class="col-sm-6 col-md-7">
-                                                        <input type="text" autocomplete="off" name="facRelatedPub--v--${status.index}" id="facRelatedPub--v--${status.index}"/>
+                                                        <input type="text" autocomplete="off" name="facRelatedPub--v--${status.index}" id="facRelatedPub--v--${status.index}" value='<c:out value="${cer.facRelatedPub}"/>'/>
                                                         <span data-err-ind="jobDesignation--v--${status.index}" class="error-msg"></span>
                                                     </div>
                                                 </div>
@@ -263,7 +275,7 @@
                                         </div>
                                         <div class="form-group">
                                             <div class="col-12">
-                                                <a id="addNewSection" style="text-decoration: none" href="javascript:void(0)">+ Add New Authorised Personnel</a>
+                                                <a id="addNewSection" style="text-decoration: none" href="javascript:void(0)">+ Add New Team Member</a>
                                             </div>
                                         </div>
                                     </div>

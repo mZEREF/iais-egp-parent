@@ -1,6 +1,7 @@
 package sg.gov.moh.iais.egp.bsb.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -12,11 +13,13 @@ import sg.gov.moh.iais.egp.bsb.common.node.Node;
 import sg.gov.moh.iais.egp.bsb.common.node.NodeGroup;
 import sg.gov.moh.iais.egp.bsb.common.node.Nodes;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
-import sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityRegisterDto;
 import sg.gov.moh.iais.egp.bsb.dto.register.facilityCertifier.*;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
+
+import java.util.Arrays;
+import java.util.List;
 
 import static sg.gov.moh.iais.egp.bsb.constant.FacCertifierRegisterConstants.*;
 
@@ -38,6 +41,10 @@ public class FacCertifierRegistrationDelegator {
 
     private static final String KEY_NAV_NEXT = "next";
     private static final String KEY_NAV_BACK = "back";
+
+    private static final String KEY_NATIONALITY_OPTIONS = "nationalityOps";
+    private static final String KEY_COUNTRY_OPTIONS = "countryOps";
+    private static final String KEY_POSITION_OPTIONS = "positionOps";
 
     private static final String KEY_ACTION_SUBMIT = "submit";
     private static final String KEY_ACTION_JUMP = "jump";
@@ -84,6 +91,7 @@ public class FacCertifierRegistrationDelegator {
             ParamUtil.setRequestAttr(request, KEY_VALIDATION_ERRORS, orgProfileDto.retrieveValidationResult());
         }
         orgProfileDto.needValidation();
+        ParamUtil.setRequestAttr(request, KEY_COUNTRY_OPTIONS, tmpCountryOps());
         ParamUtil.setRequestAttr(request, NODE_NAME_ORG_PROFILE, orgProfileDto);
     }
 
@@ -97,7 +105,8 @@ public class FacCertifierRegistrationDelegator {
             ParamUtil.setRequestAttr(request, KEY_VALIDATION_ERRORS, administratorDto.retrieveValidationResult());
         }
         administratorDto.needValidation();
-        ParamUtil.setRequestAttr(request, NODE_NAME_ORG_PROFILE, administratorDto);
+        ParamUtil.setRequestAttr(request, KEY_NATIONALITY_OPTIONS, tmpNationalityOps());
+        ParamUtil.setRequestAttr(request, NODE_NAME_ORG_FAC_ADMINISTRATOR, administratorDto);
     }
 
     public void preCertifyingTeam(BaseProcessClass bpc){
@@ -109,6 +118,8 @@ public class FacCertifierRegistrationDelegator {
             ParamUtil.setRequestAttr(request, KEY_VALIDATION_ERRORS, certifyingTeamDto.retrieveValidationResult());
         }
         certifyingTeamDto.needValidation();
+        ParamUtil.setRequestAttr(request, KEY_POSITION_OPTIONS, tmpPositionOps());
+        ParamUtil.setRequestAttr(request, KEY_NATIONALITY_OPTIONS, tmpNationalityOps());
         ParamUtil.setRequestAttr(request, NODE_NAME_ORG_CERTIFYING_TEAM, certifyingTeamDto);
     }
 
@@ -409,6 +420,18 @@ public class FacCertifierRegistrationDelegator {
             log.error("Fail to compute the class name", e);
         }
         return classname;
+    }
+
+    private static List<SelectOption> tmpNationalityOps() {
+        return Arrays.asList(new SelectOption(null, "Please Select"),new SelectOption("Singapore", "Singapore"), new SelectOption("China", "China"),new SelectOption("Malaysia","Malaysia"),new SelectOption("USA","USA"),new SelectOption("UK","UK"));
+    }
+
+    private static List<SelectOption> tmpCountryOps() {
+        return Arrays.asList(new SelectOption(null, "Please Select"),new SelectOption("Singapore", "Singapore"), new SelectOption("China", "China"),new SelectOption("Malaysia","Malaysia"),new SelectOption("USA","USA"),new SelectOption("UK","UK"));
+    }
+
+    private static List<SelectOption> tmpPositionOps() {
+        return Arrays.asList(new SelectOption(null, "Please Select"),new SelectOption("Biosafety Certifier", "Biosafety Certifier"), new SelectOption("Engineering Certifier", "Engineering Certifier"),new SelectOption("Assistant Biosafety Certifier","Assistant Biosafety Certifier"),new SelectOption("Assistant Engineering Certifier","Assistant Engineering Certifier"));
     }
 
 }

@@ -46,17 +46,20 @@
                                                     <span class="mandatory otherQualificationSpan">*</span>
                                                 </div>
                                                 <div class="col-sm-6 col-md-7">
-                                                    <input type="text" autocomplete="off" name="adminNameM" id="adminNameM" value=''/>
+                                                    <input type="text" autocomplete="off" name="adminNameM" id="adminNameM" value='<c:out value="${orgAdmin.mainAdmin.adminName}"/>'/>
                                                     <span data-err-ind="adminNameM" class="error-msg"></span>
                                                 </div>
                                             </div>
-                                            <div class="form-group ">
+                                            <div class="form-group">
                                                 <div class="col-sm-5 control-label">
                                                     <label for="nationalityM">Nationality</label>
                                                     <span class="mandatory otherQualificationSpan">*</span>
                                                 </div>
                                                 <div class="col-sm-6 col-md-7">
                                                     <select name="nationalityM" id="nationalityM">
+                                                        <c:forEach items="${nationalityOps}" var="naM">
+                                                        <option value="${naM.value}" <c:if test="${orgAdmin.mainAdmin.nationality eq naM.value}">selected="selected"</c:if>>${naM.text}</option>
+                                                        </c:forEach>
                                                     </select>
                                                     <span data-err-ind="nationalityM" class="error-msg"></span>
                                                 </div>
@@ -68,14 +71,14 @@
                                                 </div>
                                                 <div class="col-sm-3">
                                                     <select name="idTypeM" id="idTypeM">
-                                                        <option value="IDTYPE001">NRIC</option>
-                                                        <option value="IDTYPE002">FIN</option>
-                                                        <option value="IDTYPE003">Passport</option>
+                                                        <option value="IDTYPE001" <c:if test="${orgAdmin.mainAdmin.idType eq 'IDTYPE001'}">selected="selected"</c:if>>NRIC</option>
+                                                        <option value="IDTYPE002" <c:if test="${orgAdmin.mainAdmin.idType eq 'IDTYPE002'}">selected="selected"</c:if>>FIN</option>
+                                                        <option value="IDTYPE003" <c:if test="${orgAdmin.mainAdmin.idType eq 'IDTYPE003'}">selected="selected"</c:if>>Passport</option>
                                                     </select>
                                                     <span data-err-ind="idTypeM" class="error-msg"></span>
                                                 </div>
                                                 <div class="col-sm-3 col-md-4">
-                                                    <input type="text" autocomplete="off" name="idNoM" id="idNoM"/>
+                                                    <input type="text" autocomplete="off" name="idNoM" id="idNoM" value='<c:out value="${orgAdmin.mainAdmin.idNo}"/>'/>
                                                     <span data-err-ind="idNoM" class="error-msg"></span>
                                                 </div>
                                             </div>
@@ -85,7 +88,7 @@
                                                     <span class="mandatory otherQualificationSpan">*</span>
                                                 </div>
                                                 <div class="col-sm-6 col-md-7">
-                                                    <input type="text" autocomplete="off" name="designationM" id="designationM"/>
+                                                    <input type="text" autocomplete="off" name="designationM" id="designationM" value='<c:out value="${orgAdmin.mainAdmin.designation}"/>' />
                                                     <span data-err-ind="designationM" class="error-msg"></span>
                                                 </div>
                                             </div>
@@ -95,7 +98,7 @@
                                                     <span class="mandatory otherQualificationSpan">*</span>
                                                 </div>
                                                 <div class="col-sm-6 col-md-7">
-                                                    <input type="text" autocomplete="off" name="contactNoM" id="contactNoM"/>
+                                                    <input type="text" autocomplete="off" name="contactNoM" id="contactNoM" value='<c:out value="${orgAdmin.mainAdmin.contactNo}"/>' />
                                                     <span data-err-ind="contactNoM" class="error-msg"></span>
                                                 </div>
                                             </div>
@@ -105,7 +108,7 @@
                                                     <span class="mandatory otherQualificationSpan">*</span>
                                                 </div>
                                                 <div class="col-sm-6 col-md-7">
-                                                    <input type="text" autocomplete="off" name="emailM" id="emailM"/>
+                                                    <input type="text" autocomplete="off" name="emailM" id="emailM" value='<c:out value="${orgAdmin.mainAdmin.email}"/>' />
                                                     <span data-err-ind="emailM" class="error-msg"></span>
                                                 </div>
                                             </div>
@@ -115,7 +118,7 @@
                                                     <span class="mandatory otherQualificationSpan">*</span>
                                                 </div>
                                                 <div class="col-sm-6 col-md-7">
-                                                    <input type="text" autocomplete="off" name="employmentStartDateM" id="employmentStartDateM" data-date-start-date="01/01/1900" value="<c:out value="${facAdmin.mainAdmin.employmentStartDate}"/>" placeholder="dd/mm/yyyy" maxlength="10" class="date_picker form-control"/>
+                                                    <input type="text" autocomplete="off" name="employmentStartDateM" id="employmentStartDateM" data-date-start-date="01/01/1900" value="<c:out value="${orgAdmin.mainAdmin.employmentStartDate}"/>" placeholder="dd/mm/yyyy" maxlength="10" class="date_picker form-control"/>
                                                     <span data-err-ind="employmentStartDateM" class="error-msg"></span>
                                                 </div>
                                             </div>
@@ -129,7 +132,7 @@
                                                     <span class="mandatory otherQualificationSpan">*</span>
                                                 </div>
                                                 <div class="col-sm-6 col-md-7">
-                                                    <input type="text" autocomplete="off" name="adminNameA" id="adminNameA" value='<c:out value="${facAdmin.alternativeAdmin.adminName}"/>'/>
+                                                    <input type="text" autocomplete="off" name="adminNameA" id="adminNameA" value='<c:out value="${orgAdmin.alternativeAdmin.adminName}"/>'/>
                                                     <span data-err-ind="adminNameA" class="error-msg"></span>
                                                 </div>
                                             </div>
@@ -140,6 +143,9 @@
                                                 </div>
                                                 <div class="col-sm-6 col-md-7">
                                                     <select name="nationalityA" id="nationalityA">
+                                                        <c:forEach items="${nationalityOps}" var="naA">
+                                                            <option value="${naA.value}" <c:if test="${orgAdmin.alternativeAdmin.nationality eq naA.value}">selected="selected"</c:if>>${naA.text}</option>
+                                                        </c:forEach>
                                                     </select>
                                                     <span data-err-ind="nationalityA" class="error-msg"></span>
                                                 </div>
@@ -151,14 +157,14 @@
                                                 </div>
                                                 <div class="col-sm-3">
                                                     <select name="idTypeA" id="idTypeA">
-                                                        <option value="IDTYPE001">NRIC</option>
-                                                        <option value="IDTYPE002">FIN</option>
-                                                        <option value="IDTYPE003">Passport</option>
+                                                        <option value="IDTYPE001" <c:if test="${orgAdmin.alternativeAdmin.idType eq 'IDTYPE001'}">selected="selected"</c:if>>NRIC</option>
+                                                        <option value="IDTYPE002" <c:if test="${orgAdmin.alternativeAdmin.idType eq 'IDTYPE002'}">selected="selected"</c:if>>FIN</option>
+                                                        <option value="IDTYPE003" <c:if test="${orgAdmin.alternativeAdmin.idType eq 'IDTYPE001'}">selected="selected"</c:if>>Passport</option>
                                                     </select>
                                                     <span data-err-ind="idTypeA" class="error-msg"></span>
                                                 </div>
                                                 <div class="col-sm-3 col-md-4">
-                                                    <input type="text" autocomplete="off" name="idNoA" id="idNoA" value='<c:out value="${facAdmin.alternativeAdmin.idNumber}"/>'/>
+                                                    <input type="text" autocomplete="off" name="idNoA" id="idNoA" value='<c:out value="${orgAdmin.alternativeAdmin.idNo}"/>'/>
                                                     <span data-err-ind="idNoA" class="error-msg"></span>
                                                 </div>
                                             </div>
@@ -168,7 +174,7 @@
                                                     <span class="mandatory otherQualificationSpan">*</span>
                                                 </div>
                                                 <div class="col-sm-6 col-md-7">
-                                                    <input type="text" autocomplete="off" name="designationA" id="designationA" value='<c:out value="${facAdmin.alternativeAdmin.designation}"/>'/>
+                                                    <input type="text" autocomplete="off" name="designationA" id="designationA" value='<c:out value="${orgAdmin.alternativeAdmin.designation}"/>'/>
                                                     <span data-err-ind="designationA" class="error-msg"></span>
                                                 </div>
                                             </div>
@@ -178,7 +184,7 @@
                                                     <span class="mandatory otherQualificationSpan">*</span>
                                                 </div>
                                                 <div class="col-sm-6 col-md-7">
-                                                    <input type="text" autocomplete="off" name="contactNoA" id="contactNoA" value='<c:out value="${facAdmin.alternativeAdmin.contactNo}"/>'/>
+                                                    <input type="text" autocomplete="off" name="contactNoA" id="contactNoA" value='<c:out value="${orgAdmin.alternativeAdmin.contactNo}"/>'/>
                                                     <span data-err-ind="contactNoA" class="error-msg"></span>
                                                 </div>
                                             </div>
@@ -188,7 +194,7 @@
                                                     <span class="mandatory otherQualificationSpan">*</span>
                                                 </div>
                                                 <div class="col-sm-6 col-md-7">
-                                                    <input type="text" autocomplete="off" name="emailA" id="emailA" value='<c:out value="${facAdmin.alternativeAdmin.email}"/>'/>
+                                                    <input type="text" autocomplete="off" name="emailA" id="emailA" value='<c:out value="${orgAdmin.alternativeAdmin.email}"/>'/>
                                                     <span data-err-ind="emailA" class="error-msg"></span>
                                                 </div>
                                             </div>
@@ -198,7 +204,7 @@
                                                     <span class="mandatory otherQualificationSpan">*</span>
                                                 </div>
                                                 <div class="col-sm-6 col-md-7">
-                                                    <input type="text" autocomplete="off" name="employmentStartDateA" id="employmentStartDateA" data-date-start-date="01/01/1900" value="<c:out value="${facAdmin.alternativeAdmin.employmentStartDate}"/>" placeholder="dd/mm/yyyy" maxlength="10" class="date_picker form-control"/>
+                                                    <input type="text" autocomplete="off" name="employmentStartDateA" id="employmentStartDateA" data-date-start-date="01/01/1900" value="<c:out value="${orgAdmin.alternativeAdmin.employmentStartDate}"/>" placeholder="dd/mm/yyyy" maxlength="10" class="date_picker form-control"/>
                                                     <span data-err-ind="employmentStartDateA" class="error-msg"></span>
                                                 </div>
                                             </div>

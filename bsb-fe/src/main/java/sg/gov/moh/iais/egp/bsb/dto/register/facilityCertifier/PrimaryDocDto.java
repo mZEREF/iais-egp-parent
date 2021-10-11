@@ -34,9 +34,8 @@ public class PrimaryDocDto extends Node {
 
     @Override
     public boolean doValidation() {
-//        this.validationResultDto = (ValidationResultDto) SpringReflectionUtils.invokeBeanMethod("facRegFeignClient", "validateFacilityPrimaryDocs", new Object[]{this});
-//        return validationResultDto.isPass();
-        return true;
+        this.validationResultDto = (ValidationResultDto) SpringReflectionUtils.invokeBeanMethod("facRegFeignClient", "validateFacilityPrimaryDocs", new Object[]{this});
+        return validationResultDto.isPass();
     }
 
     @Override

@@ -55,9 +55,8 @@ public class AdministratorDto extends Node {
 
     @Override
     public boolean doValidation() {
-//        this.validationResultDto = (ValidationResultDto) SpringReflectionUtils.invokeBeanMethod("facRegFeignClient", "validateFacilityProfile", new Object[]{this});
-//        return validationResultDto.isPass();
-        return true;
+        this.validationResultDto = (ValidationResultDto) SpringReflectionUtils.invokeBeanMethod("facRegFeignClient", "validateFacilityProfile", new Object[]{this});
+        return validationResultDto.isPass();
     }
 
     @Override

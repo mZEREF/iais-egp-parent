@@ -45,7 +45,7 @@
                                                 <span class="mandatory otherQualificationSpan">*</span>
                                             </div>
                                             <div class="col-sm-6 col-md-7">
-                                                <input type="text" autocomplete="off" name="orgName" id="orgName" value=''/>
+                                                <input type="text" autocomplete="off" name="orgName" id="orgName" value='${orgProfile.orgName}'/>
                                                 <span data-err-ind="orgName" class="error-msg"></span>
                                             </div>
                                         </div>
@@ -57,11 +57,11 @@
                                             </div>
                                             <div class="col-sm-6 col-md-7">
                                                 <div class="col-sm-4" style="margin-top: 8px">
-                                                    <input type="radio" name="addressType" id="typeLocal" value="local" />
+                                                    <input type="radio" name="addressType" id="typeLocal" value="local" <c:if test="${orgProfile.addressType eq 'local'}">checked</c:if> />
                                                     <label for="typeLocal">Local</label>
                                                 </div>
                                                 <div class="col-sm-4" style="margin-top: 8px">
-                                                    <input type="radio" name="addressType" id="typeOverseas" value="overseas" />
+                                                    <input type="radio" name="addressType" id="typeOverseas" value="overseas" <c:if test="${orgProfile.addressType eq 'overseas'}">checked</c:if> />
                                                     <label for="typeOverseas">Overseas</label>
                                                 </div>
                                             </div>
@@ -73,14 +73,14 @@
                                                 <span class="mandatory otherQualificationSpan">*</span>
                                             </div>
                                             <div class="col-sm-2">
-                                                <input type="text" autocomplete="off" name="floor" id="floor" value=''/>
+                                                <input type="text" autocomplete="off" name="floor" id="floor" value='${orgProfile.floor}'/>
                                                 <span data-err-ind="floor" class="error-msg"></span>
                                             </div>
                                             <div class="hidden-xs col-sm-1" style="text-align: center">
                                                 <p>-</p>
                                             </div>
                                             <div class="col-sm-3 col-md-4">
-                                                <input type="text" autocomplete="off" name="unitNo" id="unitNo" value=''/>
+                                                <input type="text" autocomplete="off" name="unitNo" id="unitNo" value='${orgProfile.unitNo}'/>
                                                 <span data-err-ind="unitNo" class="error-msg"></span>
                                             </div>
                                         </div>
@@ -91,7 +91,7 @@
                                                 <span class="mandatory otherQualificationSpan">*</span>
                                             </div>
                                             <div class="col-sm-6 col-md-7">
-                                                <input type="text" autocomplete="off" name="building" id="building" value=''/>
+                                                <input type="text" autocomplete="off" name="building" id="building" value='${orgProfile.building}'/>
                                                 <span data-err-ind="building" class="error-msg"></span>
                                             </div>
                                         </div>
@@ -102,7 +102,7 @@
                                                 <span class="mandatory otherQualificationSpan">*</span>
                                             </div>
                                             <div class="col-sm-6 col-md-7">
-                                                <input type="text" autocomplete="off" name="streetName" id="streetName" value=''/>
+                                                <input type="text" autocomplete="off" name="streetName" id="streetName" value='${orgProfile.streetName}'/>
                                                 <span data-err-ind="streetName" class="error-msg"></span>
                                             </div>
                                         </div>
@@ -112,7 +112,7 @@
                                                 <label for="address1">Address 1</label>
                                             </div>
                                             <div class="col-sm-6 col-md-7">
-                                                <input type="text" autocomplete="off" name="address1" id="address1" value=''/>
+                                                <input type="text" autocomplete="off" name="address1" id="address1" value='${orgProfile.address1}'/>
                                                 <span data-err-ind="address1" class="error-msg"></span>
                                             </div>
                                         </div>
@@ -122,7 +122,7 @@
                                                 <label for="address2">Address 2</label>
                                             </div>
                                             <div class="col-sm-6 col-md-7">
-                                                <input type="text" autocomplete="off" name="address2" id="address2" value=''/>
+                                                <input type="text" autocomplete="off" name="address2" id="address2" value='${orgProfile.address2}'/>
                                                 <span data-err-ind="address2" class="error-msg"></span>
                                             </div>
                                         </div>
@@ -132,7 +132,7 @@
                                                 <label for="address3">Address 3</label>
                                             </div>
                                             <div class="col-sm-6 col-md-7">
-                                                <input type="text" autocomplete="off" name="address3" id="address3" value=''/>
+                                                <input type="text" autocomplete="off" name="address3" id="address3" value='${orgProfile.address3}'/>
                                                 <span data-err-ind="address3" class="error-msg"></span>
                                             </div>
                                         </div>
@@ -143,19 +143,19 @@
                                                 <span class="mandatory otherQualificationSpan">*</span>
                                             </div>
                                             <div class="col-sm-6 col-md-7">
-                                                <input type="text" autocomplete="off" name="postalCode" id="postalCode" value=''/>
+                                                <input type="text" autocomplete="off" name="postalCode" id="postalCode" value='${orgProfile.postalCode}'/>
                                                 <span data-err-ind="postalCode" class="error-msg"></span>
                                             </div>
                                         </div>
 
-                                        <div id="overseasCon" style="display: none">
+                                        <div id="overseasCon"<c:if test="${orgProfile.addressType ne 'overseas'}">style="display: none"</c:if>>
                                             <div class="form-group ">
                                             <div class="col-sm-5 control-label">
                                                 <label for="city">City</label>
                                                 <span class="mandatory otherQualificationSpan">*</span>
                                             </div>
                                             <div class="col-sm-6 col-md-7">
-                                                <input type="text" autocomplete="off" name="city" id="city" value=''/>
+                                                <input type="text" autocomplete="off" name="city" id="city" value='${orgProfile.city}'/>
                                                 <span data-err-ind="city" class="error-msg"></span>
                                             </div>
                                             </div>
@@ -166,7 +166,7 @@
                                                     <span class="mandatory otherQualificationSpan">*</span>
                                                 </div>
                                                 <div class="col-sm-6 col-md-7">
-                                                    <input type="text" autocomplete="off" name="state" id="state" value=''/>
+                                                    <input type="text" autocomplete="off" name="state" id="state" value='${orgProfile.state}'/>
                                                     <span data-err-ind="state" class="error-msg"></span>
                                                 </div>
                                             </div>
@@ -177,7 +177,10 @@
                                                     <span class="mandatory otherQualificationSpan">*</span>
                                                 </div>
                                                 <div class="col-sm-6 col-md-7">
-                                                    <select name="country" id="country">
+                                                    <select name="country" id="country" >
+                                                        <c:forEach items="${countryOps}" var="co">
+                                                        <option value="${co.value}" <c:if test="${co.value eq orgProfile.country}">selected="selected"</c:if>>${co.text}</option>
+                                                        </c:forEach>
                                                     </select>
                                                     <span data-err-ind="country" class="error-msg"></span>
                                                 </div>
@@ -190,7 +193,7 @@
                                                 <span class="mandatory otherQualificationSpan">*</span>
                                             </div>
                                             <div class="col-sm-6 col-md-7">
-                                                <input type="text" autocomplete="off" name="yearEstablished" id="yearEstablished" value=''/>
+                                                <input type="text" autocomplete="off" name="yearEstablished" id="yearEstablished" value='${orgProfile.yearEstablished}'/>
                                                 <span data-err-ind="yearEstablished" class="error-msg"></span>
                                             </div>
                                         </div>
@@ -201,7 +204,7 @@
                                                 <span class="mandatory otherQualificationSpan">*</span>
                                             </div>
                                             <div class="col-sm-6 col-md-7">
-                                                <input type="text" autocomplete="off" name="email" id="email" value=''/>
+                                                <input type="text" autocomplete="off" name="email" id="email" value='${orgProfile.email}'/>
                                                 <span data-err-ind="email" class="error-msg"></span>
                                             </div>
                                         </div>
@@ -212,7 +215,7 @@
                                                 <span class="mandatory otherQualificationSpan">*</span>
                                             </div>
                                             <div class="col-sm-6 col-md-7">
-                                                <input type="text" autocomplete="off" name="contactNo" id="contactNo" value=''/>
+                                                <input type="text" autocomplete="off" name="contactNo" id="contactNo" value='${orgProfile.contactNo}'/>
                                                 <span data-err-ind="contactNo" class="error-msg"></span>
                                             </div>
                                         </div>
@@ -223,7 +226,7 @@
                                                 <span class="mandatory otherQualificationSpan">*</span>
                                             </div>
                                             <div class="col-sm-6 col-md-7">
-                                                <input type="text" autocomplete="off" name="contactPerson" id="contactPerson" value=''/>
+                                                <input type="text" autocomplete="off" name="contactPerson" id="contactPerson" value='${orgProfile.contactPerson}'/>
                                                 <span data-err-ind="contactPerson" class="error-msg"></span>
                                             </div>
                                         </div>
