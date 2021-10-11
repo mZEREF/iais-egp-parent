@@ -5,7 +5,6 @@ String.prototype.StartWith=function(s){
 		return true;
 	else
 		return false;
-	return true;
 };
 
 String.prototype.EndWith=function(s){
@@ -15,7 +14,6 @@ String.prototype.EndWith=function(s){
 		return true;
 	else
 		return false;
-	return true;
 };
 
 function getEvent(){
