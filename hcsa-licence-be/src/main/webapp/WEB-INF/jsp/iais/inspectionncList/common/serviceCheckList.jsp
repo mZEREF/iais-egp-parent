@@ -33,7 +33,7 @@
                     <c:forEach var = "item" items = "${section.itemDtoList}" varStatus="status">
                         <tr>
                             <td class="row_no">    <div class="form-check"><span>${(status.index + 1) }</span></div></td>
-                            <td><div class="form-check"><a data-toggle="modal" data-target="#DeleteTemplateModalSer${item.incqDto.itemId}">${item.incqDto.regClauseNo}</a></div> </td>
+                            <td><div class="form-check"><a href="javascript:void(0);" data-toggle="modal" data-target="#DeleteTemplateModalSer${item.incqDto.itemId}">${item.incqDto.regClauseNo}</a></div> </td>
                             <div class="modal fade" id="DeleteTemplateModalSer${item.incqDto.itemId}" tabindex="-1" role="dialog" aria-labelledby="regOutsideWindow">
                                 <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
                                     <div class="modal-content">
