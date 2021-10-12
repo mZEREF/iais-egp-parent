@@ -140,7 +140,7 @@ public class InspectEmailAo1Delegator  extends InspectionCheckListCommonMethodDe
         log.info("=======>>>>>startStep>>>>>>>>>>>>>>>>emailRequest");
 
         log.info("=======>>>>>initStep>>>>>>>>>>>>>>>>initRequest");
-        HttpServletRequest request=bpc.request;
+        HttpServletRequest request = bpc.request;
         clearSessionForStartCheckList(request);
         String taskId = verifyTaskId(bpc);
         if(StringUtil.isEmpty(taskId)){
@@ -152,7 +152,7 @@ public class InspectEmailAo1Delegator  extends InspectionCheckListCommonMethodDe
         }
         AuditTrailHelper.auditFunctionWithAppNo(AuditTrailConsts.MODULE_INSPECTION, AuditTrailConsts.FUNCTION_INSPECTION_MAIL,taskDto.getApplicationNo());
         setCheckDataHaveFinished(request,taskDto);
-        ParamUtil.setSessionAttr(request,MSG_CON, null);;
+        ParamUtil.setSessionAttr(request,MSG_CON, null);
         ParamUtil.setSessionAttr(request,INS_EMAIL_DTO, null);
         request.setAttribute(IaisEGPConstant.CRUD_ACTION_TYPE, EMAIL_VIEW);
         //get selections dd hh

@@ -294,6 +294,7 @@ public class InspRemindRecNcMesgBatchJob {
         String itemId = appPremisesPreInspectionNcItemDto.getItemId();
         String beRemark = appPremisesPreInspectionNcItemDto.getBeRemarks();
         String findNcs = appPremisesPreInspectionNcItemDto.getNcs();
+        String checkListConfigId = appPremisesPreInspectionNcItemDto.getCheckListConfigId();
         String vehicleNo = inspectionRectificationProService.getVehicleShowName(appPremisesPreInspectionNcItemDto.getVehicleName(), appSvcVehicleDtos);
         if(StringUtil.isEmpty(beRemark)){
             beRemark = "";
@@ -308,7 +309,7 @@ public class InspRemindRecNcMesgBatchJob {
             for (ChecklistConfigDto checklistConfigDto : checklistConfigDtos) {
                 List<ChecklistItemDto> checklistItemDtos = getCurrentSvcAllItems(checklistConfigDto);
                 if(!IaisCommonUtils.isEmpty(checklistItemDtos)){
-                    inspEmailFieldDto = setFieldByItem(inspEmailFieldDto, checklistConfigDto, checklistItemDtos, itemId, beRemark, findNcs, vehicleNo);
+                    inspEmailFieldDto = setFieldByItem(inspEmailFieldDto, checklistConfigDto, checklistItemDtos, itemId, beRemark, findNcs, vehicleNo, checkListConfigId);
                     if(inspEmailFieldDto != null){
                         return inspEmailFieldDto;
                     }
@@ -340,28 +341,30 @@ public class InspRemindRecNcMesgBatchJob {
     }
 
     private InspEmailFieldDto setFieldByItem(InspEmailFieldDto inspEmailFieldDto, ChecklistConfigDto checklistConfigDto, List<ChecklistItemDto> checklistItemDtos,
-                                             String itemId, String beRemark, String findNcs, String vehicleNo) {
+                                             String itemId, String beRemark, String findNcs, String vehicleNo, String checkListConfigId) {
         if(inspEmailFieldDto == null){
             inspEmailFieldDto = new InspEmailFieldDto();
         }
         boolean containFlag = false;
-        for(ChecklistItemDto checklistItemDto : checklistItemDtos){
-            if(itemId.equals(checklistItemDto.getItemId())){
-                //get category value
-                String category;
-                if(!StringUtil.isEmpty(vehicleNo)) {
-                    category = vehicleNo;
-                } else {
-                    category = getItemCategory(checklistConfigDto);
+        if(checklistConfigDto != null && !StringUtil.isEmpty(checkListConfigId)) {
+            for (ChecklistItemDto checklistItemDto : checklistItemDtos) {
+                if (itemId.equals(checklistItemDto.getItemId()) && checkListConfigId.equals(checklistConfigDto.getId())) {
+                    //get category value
+                    String category;
+                    if (!StringUtil.isEmpty(vehicleNo)) {
+                        category = vehicleNo;
+                    } else {
+                        category = getItemCategory(checklistConfigDto);
+                    }
+                    containFlag = true;
+                    ChecklistItemDto clItemDto = hcsaChklClient.getChklItemById(itemId).getEntity();
+                    //CR Regulation change -> Question
+                    inspEmailFieldDto.setRegulation(clItemDto.getChecklistItem());
+                    //CR question change -> Findings/NCs
+                    inspEmailFieldDto.setQuestion(findNcs);
+                    inspEmailFieldDto.setBeNcRemark(beRemark);
+                    inspEmailFieldDto.setServiceName(category);
                 }
-                containFlag = true;
-                ChecklistItemDto clItemDto = hcsaChklClient.getChklItemById(itemId).getEntity();
-                //CR Regulation change -> Question
-                inspEmailFieldDto.setRegulation(clItemDto.getChecklistItem());
-                //CR question change -> Findings/NCs
-                inspEmailFieldDto.setQuestion(findNcs);
-                inspEmailFieldDto.setBeNcRemark(beRemark);
-                inspEmailFieldDto.setServiceName(category);
             }
         }
         if(!containFlag){
