@@ -247,7 +247,7 @@ public class DORevocationDelegator {
         HttpServletRequest request = bpc.request;
 
         String facilityId = ParamUtil.getString(request, RevocationConstants.PARAM_FACILITY_ID);
-        String haveFile = ParamUtil.getString(request,"from");
+//        String haveFile = ParamUtil.getString(request,"from");
 
         String flag = (String) ParamUtil.getSessionAttr(request, RevocationConstants.FLAG);
         Facility facility1 = (Facility) ParamUtil.getSessionAttr(request, RevocationConstants.FACILITY);

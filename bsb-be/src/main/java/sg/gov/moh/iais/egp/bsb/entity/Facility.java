@@ -2,6 +2,7 @@ package sg.gov.moh.iais.egp.bsb.entity;
 
 
 import lombok.Data;
+import sg.gov.moh.iais.egp.bsb.common.BaseEntity;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -9,7 +10,7 @@ import java.util.List;
 
 
 @Data
-public class Facility implements Serializable {
+public class Facility extends BaseEntity {
     private String id;
 
     private Biological biological;
@@ -81,14 +82,6 @@ public class Facility implements Serializable {
     private Date approvalDate;
 
     private Date expiryDt;
-
-    private Date createdAt;
-
-    private String createdBy;
-
-    private Date modifiedAt;
-
-    private String modifiedBy;
 
     private String riskLevel;
 

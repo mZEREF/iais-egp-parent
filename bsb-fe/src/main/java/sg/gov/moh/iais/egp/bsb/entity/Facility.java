@@ -20,6 +20,8 @@ public class Facility extends BaseEntity {
 
     private List<FacilityAudit> audits;
 
+    private List<FacilityActivity> facilityActivities;
+
     private String facilityName;
 
     private String facilityClassification;
@@ -43,5 +45,7 @@ public class Facility extends BaseEntity {
     private String approvalStatus;
 
     private Date expiryDt;
+
+    private String facilityAddress;
 
 }

@@ -7,7 +7,6 @@ import sg.gov.moh.iais.egp.bsb.common.BaseEntity;
 
 import java.util.Date;
 
-
 @Data
 @EqualsAndHashCode(callSuper = false)
 @ToString(callSuper = true)
@@ -22,5 +21,15 @@ public class FacilityAudit extends BaseEntity {
 
     private String status;
 
-    private Date auditDate;
+    private Date auditDt;
+
+    private String changeReason;
+
+    private String scenarioCategory;
+
+    private String auditOutcome;
+
+    private String finalRemarks;
+
+    private String cancelReason;
 }

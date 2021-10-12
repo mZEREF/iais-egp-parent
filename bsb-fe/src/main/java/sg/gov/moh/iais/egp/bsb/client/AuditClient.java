@@ -2,12 +2,9 @@ package sg.gov.moh.iais.egp.bsb.client;
 
 import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
-import com.fasterxml.jackson.annotation.JsonView;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.cloud.openfeign.SpringQueryMap;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
 import sg.gov.moh.iais.egp.bsb.dto.audit.AuditQueryDto;
@@ -20,17 +17,11 @@ import java.util.List;
  * @author Zhu Tangtang
  */
 
-@FeignClient(name = "bsb-be-api", configuration = FeignConfiguration.class)
+@FeignClient(name = "bsb-fe-api", configuration = FeignConfiguration.class)
 public interface AuditClient {
-
-    @GetMapping(value = "/bsb-audit/query", consumes = MediaType.APPLICATION_JSON_VALUE, produces =MediaType.APPLICATION_JSON_VALUE)
-    ResponseDto<AuditQueryResultDto> doQuery(@SpringQueryMap AuditQueryDto queryDto);
 
     @GetMapping(value = "/bsb-audit/getAllAudit", consumes = MediaType.APPLICATION_JSON_VALUE, produces =MediaType.APPLICATION_JSON_VALUE)
     ResponseDto<AuditQueryResultDto> getAllAudit(@SpringQueryMap AuditQueryDto queryDto);
-
-    @GetMapping(value = "/bsb-audit/getCancelAuditList", consumes = MediaType.APPLICATION_JSON_VALUE, produces =MediaType.APPLICATION_JSON_VALUE)
-    ResponseDto<AuditQueryResultDto> getCancelAuditList(@SpringQueryMap AuditQueryDto queryDto);
 
     @GetMapping(path = "/bsb-audit/getFacilityById")
     FeignResponseEntity<Facility> getFacilityById(@RequestParam("id") String id);
@@ -50,9 +41,6 @@ public interface AuditClient {
     @PostMapping(value = "/bsb-audit/updateAuditApp", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<Void> processAuditDate(@RequestBody FacilityAuditApp auditApp);
 
-//    @PostMapping(value = "/bsb-audit/updateAudit", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-//    FeignResponseEntity<Void> updateAudit(@RequestBody FacilityAudit facilityAudit);
-
     @PostMapping(value = "/bsb-audit/saveSelfAuditReport", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<FacilityAuditApp> saveSelfAuditReport(@RequestBody FacilityAudit facilityAudit);
 
@@ -68,6 +56,6 @@ public interface AuditClient {
     @GetMapping(value = "/bsb-facilityActivity/queryActivityByFacId")
     FeignResponseEntity<List<FacilityActivity>> getFacilityActivityByFacilityId(@RequestParam("facId") String facilityId);
 
-    @GetMapping(path = "/fac_info/facName")
+    @GetMapping(value = "/bsb-audit/facName")
     FeignResponseEntity<List<String>> queryDistinctFN();
 }
