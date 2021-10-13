@@ -425,4 +425,12 @@ public class AppConfigClientFallback implements AppConfigClient{
         entity.setHeaders(headers);
         return entity;
     }
+
+    @Override
+    public FeignResponseEntity<Integer> getFeeMaxMatchingThByServiceCode(String svcCode) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
 }
