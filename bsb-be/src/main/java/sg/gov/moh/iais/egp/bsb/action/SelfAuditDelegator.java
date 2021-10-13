@@ -67,6 +67,7 @@ public class SelfAuditDelegator {
         HttpServletRequest request = bpc.request;
         ParamUtil.setSessionAttr(request,AuditConstants.FACILITY,null);
         ParamUtil.setSessionAttr(request,AuditConstants.AUDIT_DOC_DTO, null);
+        ParamUtil.setSessionAttr(request,AuditConstants.AUDIT_DOC_DTO, null);
 
         String auditId = ParamUtil.getMaskedString(request, AuditConstants.AUDIT_ID);
         FacilityAudit facilityAudit = auditClient.getFacilityAuditById(auditId).getEntity();
@@ -77,81 +78,22 @@ public class SelfAuditDelegator {
         String facilityAddress = JoinAddress.joinAddress(application);
         facility.setFacilityAddress(facilityAddress);
 
+        //get doc
+        List<FacilityDoc> facilityDocList = docClient.getFacilityDocByFacId(facility.getId()).getEntity();
+        List<FacilityDoc> docList = new ArrayList<>();
+        for (FacilityDoc facilityDoc : facilityDocList) {
+            //todo You can only get the current user name
+            String submitByName = IaisEGPHelper.getCurrentAuditTrailDto().getMohUserId();
+            facilityDoc.setSubmitByName(submitByName);
+            docList.add(facilityDoc);
+        }
+        AuditDocDto auditDocDto = new AuditDocDto();
+        auditDocDto.setFacilityDocs(docList);
+
         ParamUtil.setSessionAttr(request,AuditConstants.FACILITY,facility);
         ParamUtil.setRequestAttr(request, AuditConstants.FACILITY_AUDIT, facilityAudit);
+        ParamUtil.setSessionAttr(request,AuditConstants.AUDIT_DOC_DTO, auditDocDto);
     }
-
-    /**
-     * StartStep: doDocument
-     *
-     * @param bpc
-     * @throws
-     */
-//    public void doDocument(BaseProcessClass bpc) {
-//        log.debug(StringUtil.changeForLog("the do doDocument start ...."));
-//        String doDocument = ParamUtil.getString(bpc.request, "uploadFile");
-//        String interalFileId = ParamUtil.getMaskedString(bpc.request, "interalFileId");
-////        if (!StringUtil.isEmpty(interalFileId)) {
-////            fillUpCheckListGetAppClient.deleteAppIntranetDocsById(interalFileId);
-////        }
-//
-////        if ("Y".equals(doDocument)) {
-////            HcsaApplicationProcessUploadFileValidate uploadFileValidate = new HcsaApplicationProcessUploadFileValidate();
-////            Map<String, String> errorMap = uploadFileValidate.validate(bpc.request);
-////            if (!errorMap.isEmpty()) {
-////                ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
-////                ParamUtil.setRequestAttr(bpc.request, "uploadFileValidate", "Y");
-////            } else {
-//                MultipartHttpServletRequest mulReq = (MultipartHttpServletRequest) bpc.request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
-//                CommonsMultipartFile selectedFile = (CommonsMultipartFile) mulReq.getFile("selectedFile");
-//                AppIntranetDocDto appIntranetDocDto = new AppIntranetDocDto();
-//                FacilityDoc facilityDoc = new FacilityDoc();
-//                if (selectedFile != null) {
-//                    //size
-//                    Facility facility=new Facility();
-//                    facility.setId("FBD9D87E-48F0-EB11-8B7D-000C293F0C97");
-//                    facilityDoc.setFacility(facility);
-//
-//                    facilityDoc.setSubmitAt(new Date());
-//                    facilityDoc.setSubmitBy(IaisEGPHelper.getCurrentAuditTrailDto().getMohUserGuid());
-//
-//                    long size = selectedFile.getSize();
-//                    facilityDoc.setSize(size / 1024);
-//                    if (!StringUtil.isEmpty(selectedFile.getOriginalFilename())) {
-//                        log.info(StringUtil.changeForLog("HcsaApplicationAjaxController uploadInternalFile OriginalFilename ==== " + selectedFile.getOriginalFilename()));
-//                        //type
-//                        String[] fileSplit = selectedFile.getOriginalFilename().split("\\.");
-////                        String fileType = fileSplit[fileSplit.length - 1];
-////                        facilityDoc.setType(fileType);
-//                        //name
-//                        String fileName = fileSplit[0];
-//                        facilityDoc.setName(fileName);
-//
-//                        String fileRemark = ParamUtil.getString(bpc.request, "fileRemark");
-////                        if (StringUtil.isEmpty(fileRemark)) {
-////                            fileRemark = fileName;
-////                        }
-//                        //set document
-////                        facilityDoc.setDocDesc(fileRemark);
-//                        //status
-////                        facilityDoc.setDocStatus(AppConsts.COMMON_STATUS_ACTIVE);
-//                        //set audit
-//                        FileRepoDto fileRepoDto = new FileRepoDto();
-//                        fileRepoDto.setFileName(fileName);
-//                        fileRepoDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-//                        fileRepoDto.setRelativePath(AppConsts.FALSE);
-//
-//                        //save file to file DB
-//                        String repo_id = fileRepoClient.saveFiles(selectedFile, JsonUtil.parseToJson(fileRepoDto)).getEntity();
-//                        facilityDoc.setFileRepoId(repo_id);
-//                    }
-//                }
-//                docClient.saveFacilityDoc(facilityDoc).getEntity();
-////                appIntranetDocDto.setId(id);
-////            }
-////        }
-//        log.debug(StringUtil.changeForLog("the do doDocument end ...."));
-//    }
 
     /**
      * AutoStep: submit
@@ -193,7 +135,7 @@ public class SelfAuditDelegator {
         List<FacilityDoc> facilityDocList = docClient.getFacilityDocByFacId(facility.getId()).getEntity();
         List<FacilityDoc> docList = new ArrayList<>();
         for (FacilityDoc facilityDoc : facilityDocList) {
-            //这里拿不到，只能拿到当前用户名
+            //todo You can only get the current user name
             String submitByName = IaisEGPHelper.getCurrentAuditTrailDto().getMohUserId();
             facilityDoc.setSubmitByName(submitByName);
             docList.add(facilityDoc);
@@ -275,7 +217,7 @@ public class SelfAuditDelegator {
         List<FacilityDoc> facilityDocList = docClient.getFacilityDocByFacId(facility.getId()).getEntity();
         List<FacilityDoc> docList = new ArrayList<>();
         for (FacilityDoc facilityDoc : facilityDocList) {
-            //这里拿不到，只能拿到当前用户名
+            //todo You can only get the current user name
             String submitByName = IaisEGPHelper.getCurrentAuditTrailDto().getMohUserId();
             facilityDoc.setSubmitByName(submitByName);
             docList.add(facilityDoc);
@@ -363,4 +305,5 @@ public class SelfAuditDelegator {
 
         return auditAppHistory;
     }
+
 }

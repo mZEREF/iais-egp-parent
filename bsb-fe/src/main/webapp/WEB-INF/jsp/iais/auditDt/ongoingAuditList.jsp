@@ -115,7 +115,7 @@
                                     <tr style="display: table-row;">
                                         <input type="text" value="<fmt:formatDate value='${item.auditDt}' pattern='dd/MM/yyyy'/>" name="lastAuditDt" hidden>
                                         <td>${(status.index + 1) + (pageInfo.pageNo) * pageInfo.size}</td>
-                                        <td width="12%">${item.facility.facilityName}</td>
+                                        <td>${item.facility.facilityName}</td>
                                         <td><iais:code code="${item.auditType}"></iais:code></td>
                                         <td><fmt:formatDate value='${item.auditDt}' pattern='dd/MM/yyyy'/></td>
                                         <c:choose>

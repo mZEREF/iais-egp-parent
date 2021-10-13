@@ -59,4 +59,7 @@ public interface RevocationClient {
     @PostMapping(value = "/bsb-application/updateApplication", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<Application> updateApplication(@RequestBody Application application);
 
+    @GetMapping(path = "/application/appNo")
+    FeignResponseEntity<String> genApplicationNumber(@RequestParam("appType") String appType);
+
 }

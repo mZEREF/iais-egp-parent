@@ -70,13 +70,13 @@ public class AuditDateDelegator {
         if (searchResult.ok()) {
             ParamUtil.setRequestAttr(request, AuditConstants.KEY_AUDIT_PAGE_INFO, searchResult.getEntity().getPageInfo());
             List<FacilityAudit> audits = searchResult.getEntity().getTasks();
-            List<FacilityActivity> activityList = new ArrayList<>();
-            for (FacilityAudit audit : audits) {
-                activityList = auditClient.getFacilityActivityByFacilityId(audit.getFacility().getId()).getEntity();
-                if (activityList!=null&&activityList.size()!=0) {
-                    audit.getFacility().setFacilityActivities(activityList);
-                }
-            }
+//            List<FacilityActivity> activityList = new ArrayList<>();
+//            for (FacilityAudit audit : audits) {
+//                activityList = auditClient.getFacilityActivityByFacilityId(audit.getFacility().getId()).getEntity();
+//                if (activityList!=null&&activityList.size()!=0) {
+//                    audit.getFacility().setFacilityActivities(activityList);
+//                }
+//            }
             ParamUtil.setRequestAttr(request, AuditConstants.KEY_AUDIT_DATA_LIST, audits);
         } else {
             log.warn("get audit API doesn't return ok, the response is {}", searchResult);

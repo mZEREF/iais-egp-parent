@@ -18,6 +18,8 @@ public final class RevocationConstants {
     public static final String PARAM_FACILITY_SEARCH = "facilitySearch";
     public static final String PARAM_PROCESSING_HISTORY = "processingHistory";
 
+    public static final String APP_TYPE_REVOCATION = "BSBAPTY006";
+
     public static final String PARAM_APPROVAL_NO = "approvalNo";
     public static final String PARAM_FACILITY_NAME = "facilityName";
     public static final String PARAM_FACILITY_ADDRESS = "facilityAddress";

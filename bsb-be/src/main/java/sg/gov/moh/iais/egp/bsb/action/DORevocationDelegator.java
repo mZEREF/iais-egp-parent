@@ -254,6 +254,7 @@ public class DORevocationDelegator {
         FeignResponseEntity<Application> result = null;
         if (flag.equals(RevocationConstants.FAC)) {
             Application resultDto = new Application();
+            resultDto.setApplicationNo(revocationClient.genApplicationNumber(RevocationConstants.APP_TYPE_REVOCATION).getEntity());
             Facility facility = new Facility();
             facility.setId(facilityId);
             resultDto.setFacility(facility);
