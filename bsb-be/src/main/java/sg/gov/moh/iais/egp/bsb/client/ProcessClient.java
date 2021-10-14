@@ -7,6 +7,7 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
 import sg.gov.moh.iais.egp.bsb.dto.process.DoScreeningDto;
+import sg.gov.moh.iais.egp.bsb.dto.process.SubmitDetailsDto;
 import sg.gov.moh.iais.egp.bsb.entity.*;
 
 import java.util.List;
@@ -27,15 +28,15 @@ public interface ProcessClient {
     @GetMapping(path = "/bio_info/info/{biologicalId}")
     ResponseDto<Biological> getBiologicalById(@PathVariable(name = "biologicalId") String biologicalId);
 
-    @GetMapping(path = "/app_info/applicationNo")
-    FeignResponseEntity<String> getAndCreateApplicationNo();
-
     @GetMapping(path = "/bsb_MohOfficer/routingHistory/{applicationNo}")
     FeignResponseEntity<List<RoutingHistory>> getRoutingHistoriesByApplicationNo(@RequestParam(name = "applicationNo") String applicationNo);
 
     @GetMapping(path = "/bsb_MohOfficer/applicationMisc")
     FeignResponseEntity<ApplicationMisc> getApplicationMiscByApplicationIdAndAndReason(@RequestParam(value = "applicationId") String applicationId,@RequestParam(value = "reason") String reason);
 
-    @GetMapping(value = "/bsb-facilityActivity/queryActivityByAppId")
-    FeignResponseEntity<FacilityActivity> getFacilityActivityByApplicationId(@RequestParam("appId") String applicationId);
+    @GetMapping(value = "/bsb_MohOfficer/facilityActivity")
+    FeignResponseEntity<FacilityActivity> getFAByAppIdAndIsClonedIsN(@RequestParam("applicationId") String applicationId);
+
+    @GetMapping(value = "/bsb_MohOfficer/submitDetails")
+    FeignResponseEntity<SubmitDetailsDto> getSubmitDetailsByAppId(@RequestParam("applicationId") String applicationId);
 }

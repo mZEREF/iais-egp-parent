@@ -69,7 +69,7 @@ public class BiosafetyEnquiryDelegator {
      * @param bpc
      */
     public void prepareBasicSearch(BaseProcessClass bpc) {
-        String count = ParamUtil.getString(bpc.request, PARAM_SEARCH_CHK);
+        /*String count = ParamUtil.getString(bpc.request, PARAM_SEARCH_CHK);
         if (StringUtils.isEmpty(count)) {
             count = "0";
         }
@@ -113,7 +113,7 @@ public class BiosafetyEnquiryDelegator {
         action.add("Suspend");
         action.add("Reinstate");
         selectOption(bpc.request,"action",action);
-        ParamUtil.setRequestAttr(bpc.request, PARAM_COUNT, count);
+        ParamUtil.setRequestAttr(bpc.request, PARAM_COUNT, count);*/
     }
 
 
@@ -201,7 +201,7 @@ public class BiosafetyEnquiryDelegator {
      * @param bpc
      */
     public void prepareDetail(BaseProcessClass bpc) {
-        HttpServletRequest request = bpc.request;
+        /*HttpServletRequest request = bpc.request;
         String count = ParamUtil.getString(request,"searchChk");
         String appId = ParamUtil.getMaskedString(request,"appId");
         Application application = processClient.getApplicationById(appId).getEntity();
@@ -210,7 +210,7 @@ public class BiosafetyEnquiryDelegator {
         List<Biological> biologicalList = JoinBiologicalName.getBioListByFacilityScheduleList(facilityActivity.getFacilitySchedules(),processClient);
         application.setBiologicalList(biologicalList);
         ParamUtil.setRequestAttr(request,"applicationInfo",application);
-        ParamUtil.setRequestAttr(request,PARAM_COUNT,count);
+        ParamUtil.setRequestAttr(request,PARAM_COUNT,count);*/
     }
 
 
@@ -425,7 +425,7 @@ public class BiosafetyEnquiryDelegator {
     }
 
     private void getResultAndAddFilter(HttpServletRequest request, EnquiryDto enquiryDto, String count) throws ParseException {
-        addFilter(request, enquiryDto, count);
+        /*addFilter(request, enquiryDto, count);
         if ("app".equals(count) && Boolean.TRUE.equals(validationParam(request,"app",enquiryDto))) {
                 ApplicationResultDto applicationResultDto = biosafetyEnquiryClient.getApp(enquiryDto).getEntity();
                 for (Application application : applicationResultDto.getBsbApp()) {
@@ -478,7 +478,7 @@ public class BiosafetyEnquiryDelegator {
             ParamUtil.setRequestAttr(request, BioSafetyEnquiryConstants.PARAM_APPROVED_CERTIFIER_INFO_SEARCH, enquiryDto);
             ParamUtil.setRequestAttr(request, KEY_PAGE_INFO, facilityCerResultDto.getPageInfo());
             log.info(StringUtil.changeForLog(facilityCerResultDto.getBsbAFC().toString() + "==========facility"));
-        }
+        }*/
 
     }
 

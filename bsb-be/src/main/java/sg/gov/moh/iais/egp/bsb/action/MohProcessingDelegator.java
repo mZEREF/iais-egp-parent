@@ -22,6 +22,7 @@ import sg.gov.moh.iais.egp.bsb.dto.BsbEmailParam;
 import sg.gov.moh.iais.egp.bsb.dto.Notification;
 import sg.gov.moh.iais.egp.bsb.dto.audit.AuditDocDto;
 import sg.gov.moh.iais.egp.bsb.dto.process.DoScreeningDto;
+import sg.gov.moh.iais.egp.bsb.dto.process.SubmitDetailsDto;
 import sg.gov.moh.iais.egp.bsb.entity.*;
 import sg.gov.moh.iais.egp.bsb.helper.BsbNotificationHelper;
 import sg.gov.moh.iais.egp.bsb.util.JoinBiologicalName;
@@ -59,18 +60,26 @@ public class MohProcessingDelegator {
 
     public void prepareData(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
-        Application application = (Application)ParamUtil.getSessionAttr(request, ProcessContants.APPLICATION_ATTR);
-        if (application == null){
+        //validation failure,get facilityActivity from session
+        FacilityActivity facilityActivity = (FacilityActivity)ParamUtil.getSessionAttr(request, ProcessContants.FACILITY_ACTIVITY_ATTR);
+        //first log in,get facilityActivity from db
+        if (facilityActivity == null){
             String appId = MaskUtil.unMaskValue("id", ParamUtil.getString(request,ProcessContants.PARAM_APP_ID));
-            application = processClient.getApplicationById(appId).getEntity();
+            //get submitDetailsDto(include application,facility,biologicalAgent,activity)
+            SubmitDetailsDto submitDetailsDto = processClient.getSubmitDetailsByAppId(appId).getEntity();
+            ParamUtil.setSessionAttr(request, ProcessContants.SUBMITDETAILS_ATTR, submitDetailsDto);
+
+            /*application = processClient.getApplicationById(appId).getEntity();
+            //get applicationMisc
             ApplicationMisc applicationMisc = new ApplicationMisc();
             if (application.getStatus().equals(ProcessContants.APPLICATION_STATUS_2)){
                 applicationMisc = processClient.getApplicationMiscByApplicationIdAndAndReason(application.getId(), ProcessContants.APPLICATION_STATUS_1).getEntity();
             }else if (application.getStatus().equals(ProcessContants.APPLICATION_STATUS_3)){
                 applicationMisc = processClient.getApplicationMiscByApplicationIdAndAndReason(application.getId(), ProcessContants.APPLICATION_STATUS_2).getEntity();
-            }
-            FacilityActivity facilityActivity = processClient.getFacilityActivityByApplicationId(appId).getEntity();
-            application.getFacility().setActiveType(facilityActivity.getActivityType());
+            }*/
+
+            //
+            /*application.getFacility().setActiveType(facilityActivity.getActivityType());
             List<FacilitySchedule> facilityScheduleList = facilityActivity.getFacilitySchedules();
             List<Biological> biologicalList = JoinBiologicalName.getBioListByFacilityScheduleList(facilityScheduleList,processClient);
             application.setBiologicalList(biologicalList);
@@ -78,8 +87,6 @@ public class MohProcessingDelegator {
             List<FacilityDoc> facilityDocList = docClient.getFacilityDocByFacId(application.getFacility().getId()).getEntity();
             List<FacilityDoc> docList = new ArrayList<>();
             for (FacilityDoc facilityDoc : facilityDocList) {
-//            String submitByName = IaisEGPHelper.getCurrentAuditTrailDto().getMohUserId();
-//            facilityDoc.setSubmitByName(submitByName);
                 docList.add(facilityDoc);
             }
             AuditDocDto auditDocDto = new AuditDocDto();
@@ -87,7 +94,7 @@ public class MohProcessingDelegator {
             ParamUtil.setSessionAttr(request, RevocationConstants.AUDIT_DOC_DTO, auditDocDto);
             ParamUtil.setSessionAttr(request, ProcessContants.APPLICATION_MISC,applicationMisc);
             ParamUtil.setSessionAttr(request, ProcessContants.PARAM_PROCESSING_HISTORY,(Serializable) historyDtoList);
-            ParamUtil.setSessionAttr(request, ProcessContants.APPLICATION_ATTR, application);
+            ParamUtil.setSessionAttr(request, ProcessContants.APPLICATION_ATTR, application);*/
         }
 
     }

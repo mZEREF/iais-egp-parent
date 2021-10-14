@@ -14,7 +14,13 @@ public class FacilityActivity extends BaseEntity {
 
     private Application application;
 
-    private List<FacilitySchedule> facilitySchedules;
-
     private String activityType;
+
+    private List<FacilityBiologicalAgent> biologicalAgents;
+
+    private Approval approval;
+
+    private String isCloned;
+
+    private String useStatus;
 }

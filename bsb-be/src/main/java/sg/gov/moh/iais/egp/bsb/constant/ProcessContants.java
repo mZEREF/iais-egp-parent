@@ -12,6 +12,8 @@ public class ProcessContants {
 
     public static final String APPLICATION_ATTR = "application";
     public static final String APPLICATION_MISC = "applicationMisc";
+    public static final String FACILITY_ACTIVITY_ATTR = "facilityActivity";
+    public static final String SUBMITDETAILS_ATTR = "submitDetailsDto";
 
     public static final String REMARKS = "remarks";
     public static final String RISK_LEVEL = "riskLevel";

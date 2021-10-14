@@ -76,7 +76,7 @@ public class AORevocationDelegator {
      * @param bpc
      */
     public void prepareTaskListData(BaseProcessClass bpc) {
-        HttpServletRequest request = bpc.request;
+        /*HttpServletRequest request = bpc.request;
         // get search DTO
         ApprovalOfficerQueryDto searchDto=getSearchDto(request);
         ParamUtil.setSessionAttr(request, RevocationConstants.PARAM_APPLICATION_SEARCH, searchDto);
@@ -102,7 +102,7 @@ public class AORevocationDelegator {
             log.warn("get revocation application API doesn't return ok, the response is {}", searchResult);
             ParamUtil.setRequestAttr(request, RevocationConstants.KEY_APPLICATION_PAGE_INFO, PageInfo.emptyPageInfo(searchDto));
             ParamUtil.setRequestAttr(request, RevocationConstants.KEY_APPLICATION_DATA_LIST, new ArrayList<>());
-        }
+        }*/
 
     }
 
