@@ -41,6 +41,7 @@ public class FacCertifierRegistrationDelegator {
 
     private static final String KEY_NAV_NEXT = "next";
     private static final String KEY_NAV_BACK = "back";
+    private static final String KEY_NAV_SAVE_DRAFT = "draft";
 
     private static final String KEY_NATIONALITY_OPTIONS = "nationalityOps";
     private static final String KEY_COUNTRY_OPTIONS = "countryOps";
@@ -195,7 +196,7 @@ public class FacCertifierRegistrationDelegator {
         String actionType = ParamUtil.getString(request, KEY_ACTION_TYPE);
         if (KEY_ACTION_JUMP.equals(actionType)) {
             jumpHandler(request, facRegRoot, currentNodePath, orgProfile);
-        } else {
+        }else {
             throw new IaisRuntimeException(ERR_MSG_INVALID_ACTION);
         }
         ParamUtil.setSessionAttr(request, KEY_ROOT_NODE_GROUP, facRegRoot);
@@ -233,6 +234,7 @@ public class FacCertifierRegistrationDelegator {
 
                     // save data
                     FacilityCertifierRegisterDto finalAllDataDto = FacilityCertifierRegisterDto.from(facRegRoot);
+                    finalAllDataDto.setAppStatus("BSBAPST001");
                     ResponseDto<String> responseDto = facCertifierRegisterClient.saveNewRegisteredFacCertifier(finalAllDataDto);
                     log.info("save new facility response: {}", responseDto);
 
@@ -259,10 +261,7 @@ public class FacCertifierRegistrationDelegator {
         ParamUtil.setRequestAttr(request, KEY_INDEED_ACTION_TYPE, actionType);
     }
 
-    public void doSubmit(BaseProcessClass bpc){
-
-    }
-    public void doSaveDraft(BaseProcessClass bpc){
+    public void preAcknowledge(BaseProcessClass bpc){
 
     }
 
@@ -277,23 +276,54 @@ public class FacCertifierRegistrationDelegator {
         String actionValue = ParamUtil.getString(request, KEY_ACTION_VALUE);
         Assert.hasText(actionValue, "Invalid action value");
         boolean currentLetGo = true;  // if false, we have to stay current node
-        if (KEY_NAV_NEXT.equals(actionValue)) {  // if click next, we need to validate current node anyway
+        if (KEY_NAV_NEXT.equals(actionValue) || KEY_NAV_SAVE_DRAFT.equals(actionValue)) {  // if click next, we need to validate current node anyway
             currentLetGo = currentNode.doValidation();
             if (currentLetGo) {
                 Nodes.passValidation(facRegRoot, currentPath);
             }
         }
         if (currentLetGo) {
-            String destNode = computeDestNodePath(facRegRoot, actionValue);
-            String checkedDestNode = Nodes.jump(facRegRoot, destNode);
-            if (!checkedDestNode.equals(destNode)) {
-                ParamUtil.setRequestAttr(request, KEY_SHOW_ERROR_SWITCH, Boolean.TRUE);
+            if(!KEY_NAV_SAVE_DRAFT.equals(actionValue)){
+                String destNode = computeDestNodePath(facRegRoot, actionValue);
+                String checkedDestNode = Nodes.jump(facRegRoot, destNode);
+                if (!checkedDestNode.equals(destNode)) {
+                    ParamUtil.setRequestAttr(request, KEY_SHOW_ERROR_SWITCH, Boolean.TRUE);
+                }
+                ParamUtil.setSessionAttr(request, KEY_JUMP_DEST_NODE, checkedDestNode);
+            }else{
+                FacilityCertifierRegisterDto finalAllDataDto = FacilityCertifierRegisterDto.from(facRegRoot);
+                finalAllDataDto.setAppStatus("BSBAPST011");
+                ResponseDto<String> responseDto = facCertifierRegisterClient.saveNewRegisteredFacCertifier(finalAllDataDto);
+                log.info("save as draft response: {}", responseDto);
+                ParamUtil.setSessionAttr(request, KEY_JUMP_DEST_NODE, currentPath);
             }
-            ParamUtil.setSessionAttr(request, KEY_JUMP_DEST_NODE, checkedDestNode);
         } else {
             ParamUtil.setRequestAttr(request, KEY_SHOW_ERROR_SWITCH, Boolean.TRUE);
             ParamUtil.setSessionAttr(request, KEY_JUMP_DEST_NODE, currentPath);
         }
+    }
+
+    /**
+     * common actions when we do 'saveDraft'
+     * decide the routing logic
+     * will set a dest node in the request attribute;
+     * will set a floag if we need to show the error messages.
+     * @param facRegRoot root data structure of this flow
+     */
+    public void saveDraftHandler(HttpServletRequest request, NodeGroup facRegRoot, String currentPath, Node currentNode) {
+        boolean currentLetGo = true;  // if false, we have to stay current node// if click next, we need to validate current node anyway
+            currentLetGo = currentNode.doValidation();
+            if (currentLetGo) {
+                Nodes.passValidation(facRegRoot, currentPath);
+            }
+           if (currentLetGo) {
+            FacilityCertifierRegisterDto finalAllDataDto = FacilityCertifierRegisterDto.from(facRegRoot);
+            ResponseDto<String> responseDto = facCertifierRegisterClient.saveNewRegisteredFacCertifier(finalAllDataDto);
+            log.info("save as draft response: {}", responseDto);
+           }else{
+            ParamUtil.setRequestAttr(request, KEY_SHOW_ERROR_SWITCH, Boolean.TRUE);
+           }
+        ParamUtil.setSessionAttr(request, KEY_JUMP_DEST_NODE, currentPath);
     }
 
     public String computeDestNodePath(NodeGroup facRegRoot, String actionValue) {

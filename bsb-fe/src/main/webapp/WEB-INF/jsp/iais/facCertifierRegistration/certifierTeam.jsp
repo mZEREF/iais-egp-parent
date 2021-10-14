@@ -171,8 +171,7 @@
                                                     </div>
                                                 </div>
 
-                                                <div id="leader--v--${status.index}" <c:if test="${cer.expertiseArea ne 'leader'}">style="display: none"</c:if>>
-                                                <div class="form-group">
+                                                <div class="form-group" <c:if test="${cer.expertiseArea ne 'leader'}">style="display: none"</c:if>>
                                                     <div class="col-sm-5 control-label">
                                                         <label for="expertiseArea--v--${status.index}">Area of Expertise (Position)</label>
                                                         <span class="mandatory otherQualificationSpan">*</span>
@@ -186,7 +185,7 @@
                                                         <span data-err-ind="expertiseArea--v--${status.index}" class="error-msg"></span>
                                                     </div>
                                                 </div>
-                                                </div>
+
 
                                                 <div class="form-group ">
                                                     <div class="col-sm-5 control-label">

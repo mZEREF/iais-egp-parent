@@ -91,19 +91,14 @@ public class INTERNET___MohFacilityCertifierRegistration___1 extends BaseProcess
 		EngineHelper.delegate(DELEGATOR, "controlSwitch", this);
 	}
 
-	public void doSubmit_OnStepProcess_0() throws Exception {
-	// 		DoSubmit->OnStepProcess
-		EngineHelper.delegate(DELEGATOR, "doSubmit", this);
-	}
-
-	public void doSaveDraft_OnStepProcess_0() throws Exception {
-	// 		DoSaveDraft->OnStepProcess
-		EngineHelper.delegate(DELEGATOR, "doSaveDraft", this);
-	}
-
 	public void prepare_OnStepProcess_0() throws Exception {
 	// 		Prepare->OnStepProcess
 		EngineHelper.delegate(DELEGATOR, "prepare", this);
+	}
+
+	public void preAcknowledge_OnStepProcess_0() throws Exception {
+		// 		PreAcknowledge->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "preAcknowledge", this);
 	}
 
 }

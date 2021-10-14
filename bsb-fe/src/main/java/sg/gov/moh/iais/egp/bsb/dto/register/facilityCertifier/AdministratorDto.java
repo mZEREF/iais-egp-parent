@@ -5,8 +5,6 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import sg.gov.moh.iais.egp.bsb.client.FacCertifierRegisterClient;
-import sg.gov.moh.iais.egp.bsb.client.FacilityRegisterClient;
 import sg.gov.moh.iais.egp.bsb.common.node.Node;
 import sg.gov.moh.iais.egp.bsb.dto.ValidationResultDto;
 import sg.gov.moh.iais.egp.bsb.util.SpringReflectionUtils;
@@ -55,7 +53,7 @@ public class AdministratorDto extends Node {
 
     @Override
     public boolean doValidation() {
-        this.validationResultDto = (ValidationResultDto) SpringReflectionUtils.invokeBeanMethod("facRegFeignClient", "validateFacilityProfile", new Object[]{this});
+        this.validationResultDto = (ValidationResultDto) SpringReflectionUtils.invokeBeanMethod("cerRegFeignClient", "validateFacilityAdmin", new Object[]{this});
         return validationResultDto.isPass();
     }
 
@@ -108,6 +106,7 @@ public class AdministratorDto extends Node {
         setMainAdmin(mainAdminInfo);
         setAlternativeAdmin(alternativeAdminInfo);
     }
+
 
     private FacilityAdministratorInfo getAdminInfo(HttpServletRequest request, String suffix) {
         FacilityAdministratorInfo adminInfo = new FacilityAdministratorInfo();

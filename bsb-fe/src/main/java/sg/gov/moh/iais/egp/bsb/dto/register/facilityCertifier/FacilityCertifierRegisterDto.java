@@ -15,6 +15,7 @@ import static sg.gov.moh.iais.egp.bsb.constant.FacCertifierRegisterConstants.*;
 @Data
 @Slf4j
 public class FacilityCertifierRegisterDto {
+    private String appStatus;
     private OrganisationProfileDto profileDto;
     private CertifyingTeamDto certifyingTeamDto;
     private AdministratorDto administratorDto;

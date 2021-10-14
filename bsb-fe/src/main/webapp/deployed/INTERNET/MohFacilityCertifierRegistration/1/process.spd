@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Application defaultStart="/Steps/StartStep/Start" dtdVersion="6.0" executable="true" majorVersion="5" minorVersion="0" name="RegisterFacilityCertifier" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" transaction="enable">
+<Application defaultStart="/Steps/StartStep/Start" dtdVersion="6.0" executable="true" majorVersion="6" minorVersion="0" name="RegisterFacilityCertifier" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" transaction="enable">
  <WebServices/>
  <Steps>
   <StartStep defClass="" executor="" icon="" name="Start" x="70" y="0">
@@ -14,13 +14,6 @@
    <probepoint type="none"/>
    <OnStepProcess>
     <JavaCode defClass="" executor="" methodName="preOrganisationInfo_OnStepProcess_0" name="preOrganisationInfo_OnStepProcess_0"/>
-   </OnStepProcess>
-  </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="DoSaveDraft" x="1080" y="350">
-   <Description/>
-   <probepoint type="none"/>
-   <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="doSaveDraft_OnStepProcess_0" name="doSaveDraft_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
   <AutomaticStep defClass="" executor="" icon="" name="Prepare" x="140" y="550">
@@ -63,13 +56,6 @@
    <probepoint type="none"/>
    <OnStepProcess>
     <JavaCode defClass="" executor="" methodName="controlSwitch_OnStepProcess_0" name="controlSwitch_OnStepProcess_0"/>
-   </OnStepProcess>
-  </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="DoSubmit" x="980" y="350">
-   <Description/>
-   <probepoint type="none"/>
-   <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="doSubmit_OnStepProcess_0" name="doSubmit_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
   <AutomaticStep defClass="" executor="" icon="" name="doOriganisationProfile" x="620" y="240">
@@ -128,6 +114,13 @@
     <JavaCode defClass="" executor="" methodName="preCompInfo_OnStepProcess_0" name="preCompInfo_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="PreAcknowledge" x="1000" y="240">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="preAcknowledge_OnStepProcess_0" name="preAcknowledge_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
  </Steps>
  <Pages>
   <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="StartFacilityCertifier" stageIndicator="" x="410" y="0">
@@ -161,6 +154,12 @@
    <probepoint type="none"/>
   </WebPage>
   <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="Administrator" stageIndicator="" x="420" y="100">
+   <OnPageLoad/>
+   <OnPageSubmit/>
+   <Description/>
+   <probepoint type="none"/>
+  </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="AcknowleagePage" stageIndicator="" x="1120" y="240">
    <OnPageLoad/>
    <OnPageSubmit/>
    <Description/>
@@ -200,16 +199,10 @@
    <position>{(680,510)(820,370)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Switches/Switch/Switch2" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/ControlSwitch" style="rectanular">
-   <position>{(820,370)(960,260)}</position>
-  </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/DoSubmit" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch2" style="oblique">
-   <position>{(960,260)(1000,370)}</position>
-  </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/DoSaveDraft" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch2" style="oblique">
-   <position>{(960,260)(1100,370)}</position>
+   <position>{(820,370)(930,260)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch2" style="oblique">
-   <position>{(960,260)(930,570)}</position>
+   <position>{(930,260)(930,570)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/doOriganisationProfile" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/OrganisationProfile" style="rectanular">
    <position>{(430,260)(640,260)}</position>
@@ -265,6 +258,12 @@
   <SynchronousLink destinationName="/Steps/AutomaticStep/PreCompInfo" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
    <position>{(180,370)(280,20)}</position>
   </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PreAcknowledge" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch2" style="rectanular">
+   <position>{(930,260)(1020,260)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/AcknowleagePage" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/PreAcknowledge" style="rectanular">
+   <position>{(1020,260)(1140,260)}</position>
+  </SynchronousLink>
  </Links>
  <Conditions/>
  <Switches>
@@ -277,11 +276,10 @@
    <SwitchCase component="/Steps/AutomaticStep/PreAdministrator" value="&quot;orgInfo_orgAdmin&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/PreCompInfo" value="&quot;compInfo&quot;"/>
   </Switch>
-  <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="action_type" name="Switch2" x="940" y="240">
+  <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="indeed_action_type" name="Switch2" x="910" y="240">
    <Description/>
-   <SwitchCase component="/Steps/AutomaticStep/DoSubmit" value="&quot;submit&quot;"/>
-   <SwitchCase component="/Steps/AutomaticStep/DoSaveDraft" value="&quot;draft&quot;"/>
    <SwitchCase component="/Merges/Merge/Merge1" value="&quot;jump&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/PreAcknowledge" value="&quot;submit&quot;"/>
   </Switch>
  </Switches>
  <Branches/>
