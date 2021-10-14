@@ -13,12 +13,12 @@
     <parent>
         <groupId>com.ecquaria.egp</groupId>
         <artifactId>egp-engine-service</artifactId>
-        <version>20.04.2</version>
+        <version>20.04.3</version>
     </parent>
 
     <properties>
         <revision>0.1</revision>
-        <engine-version>20.04.2</engine-version>
+        <engine-version>20.04.3</engine-version>
         <org.codehaus.mojo.version>1.4</org.codehaus.mojo.version>
         <biz.paluch.maven.configurator.version>1.0.1</biz.paluch.maven.configurator.version>
         <jacoco.version>0.8.6</jacoco.version>
@@ -289,6 +289,7 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>2.22.1</version>
                 <configuration>
+                    <skipTests>true</skipTests>
                     <systemPropertyVariables>
                         <jacoco-agent.destfile>${sonar.jacoco.reportPaths}</jacoco-agent.destfile>
                     </systemPropertyVariables>
