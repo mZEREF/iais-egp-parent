@@ -130,7 +130,7 @@ public class DoDocumentAjaxController {
             doc.setUrl(url);
 //            InspectionFDtosDto serListDto  = (InspectionFDtosDto)ParamUtil.getSessionAttr(request,"serListDto");
 //            doc.setFileSn((serListDto != null && serListDto.getCopyAppPremisesSpecialDocDto()!= null) ? 999:fileSizes);
-            doc.setFileSn(fileSizes==0 ? 999:fileSizes);
+            doc.setFileSn(0);
             doc.setIsUpload(Boolean.TRUE);
             facilityDocs.add(doc);
             if (auditDocDto != null){
@@ -182,7 +182,8 @@ public class DoDocumentAjaxController {
             auditDocDto.setIsUpload(isUpload);
             ParamUtil.setSessionAttr(request,"auditDocDto", auditDocDto);
             InspectionFDtosDto serListDto  = (InspectionFDtosDto)ParamUtil.getSessionAttr(request,"serListDto");
-            map.put("fileSn", (serListDto != null && serListDto.getCopyAppPremisesSpecialDocDto()!= null) ? -1 : facilityDocs.size());
+//            map.put("fileSn", (serListDto != null && serListDto.getCopyAppPremisesSpecialDocDto()!= null) ? -1 : facilityDocs.size());
+            map.put("fileSn", 0);
             if(facilityDocs.size() == 0){
                 map.put("noFilesMessage", MessageUtil.getMessageDesc("GENERAL_ACK018"));
             }

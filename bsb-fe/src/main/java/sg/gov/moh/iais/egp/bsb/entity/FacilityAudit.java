@@ -13,6 +13,8 @@ import java.util.Date;
 public class FacilityAudit extends BaseEntity {
     private String id;
 
+    private Approval approval;
+
     private Facility facility;
 
     private String auditType;

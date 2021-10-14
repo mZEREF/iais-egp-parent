@@ -161,8 +161,6 @@
         </div>
     </div>
 </div>
-<iais:confirm msg="GENERAL_ACK018" needCancel="false" callBack="tagConfirmCallbacksupport()"
-              popupOrder="support"></iais:confirm>
 <script type="text/javascript">
     function doVerifyFileGo(verify) {
         showWaiting();

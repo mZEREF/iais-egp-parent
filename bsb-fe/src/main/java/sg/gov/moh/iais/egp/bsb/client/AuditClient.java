@@ -23,6 +23,9 @@ public interface AuditClient {
     @GetMapping(value = "/bsb-audit/getAllAudit", consumes = MediaType.APPLICATION_JSON_VALUE, produces =MediaType.APPLICATION_JSON_VALUE)
     ResponseDto<AuditQueryResultDto> getAllAudit(@SpringQueryMap AuditQueryDto queryDto);
 
+    @GetMapping(value = "/bsb-audit/getFacilityByApproval")
+    FeignResponseEntity<Facility> getFacilityByApproval(@RequestBody Approval approval);
+
     @GetMapping(path = "/bsb-audit/getFacilityById")
     FeignResponseEntity<Facility> getFacilityById(@RequestParam("id") String id);
 

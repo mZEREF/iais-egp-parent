@@ -17,7 +17,6 @@ import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
 import sg.gov.moh.iais.egp.bsb.dto.audit.AuditQueryDto;
 import sg.gov.moh.iais.egp.bsb.dto.audit.AuditQueryResultDto;
 import sg.gov.moh.iais.egp.bsb.entity.*;
-import sg.gov.moh.iais.egp.bsb.util.TableDisplayUtil;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
@@ -69,13 +68,10 @@ public class AuditDateDelegator {
         if (searchResult.ok()) {
             ParamUtil.setRequestAttr(request, AuditConstants.KEY_AUDIT_PAGE_INFO, searchResult.getEntity().getPageInfo());
             List<FacilityAudit> audits = searchResult.getEntity().getTasks();
-            List<FacilityActivity> activityList = new ArrayList<>();
-//            for (FacilityAudit audit : audits) {
-//                activityList = auditClient.getFacilityActivityByFacilityId(audit.getFacility().getId()).getEntity();
-//                if (activityList!=null&&activityList.size()!=0) {
-//                    audit.getFacility().setFacilityActivities(activityList);
-//                }
-//            }
+            for (FacilityAudit audit : audits) {
+               Facility facility = auditClient.getFacilityByApproval(audit.getApproval()).getEntity();
+               audit.setFacility(facility);
+            }
             ParamUtil.setRequestAttr(request, AuditConstants.KEY_AUDIT_DATA_LIST, audits);
         } else {
             log.warn("get audit API doesn't return ok, the response is {}", searchResult);
@@ -156,97 +152,6 @@ public class AuditDateDelegator {
             audit.setAuditDt(requestAuditDt);
         }
         auditClient.specifyAndChangeAuditDt(audit);
-    }
-
-    /**
-     * AutoStep: prepareData
-     * MohDOCheckAuditDt
-     * MohAOCheckAuditDt
-     * @param bpc
-     */
-    public void prepareDOAndAOReviewData(BaseProcessClass bpc) {
-        HttpServletRequest request = bpc.request;
-        ParamUtil.setSessionAttr(request, AuditConstants.FACILITY_AUDIT_APP, null);
-
-        String auditAppId = "50229C6F-A50F-EC11-BE6E-000C298D317C";
-        FacilityAuditApp facilityAuditApp = auditClient.getFacilityAuditAppById(auditAppId).getEntity();
-
-        Facility facility = facilityAuditApp.getFacilityAudit().getFacility();
-        Application application = new Application();
-        application.setFacility(facility);
-        String facilityAddress = TableDisplayUtil.getOneLineAddress(facility.getBlkNo(),facility.getStreetName(),
-                facility.getFloorNo(),facility.getUnitNo(),facility.getPostalCode());
-        facility.setFacilityAddress(facilityAddress);
-        ParamUtil.setRequestAttr(request,AuditConstants.FACILITY,facility);
-
-        ParamUtil.setSessionAttr(request, AuditConstants.FACILITY_AUDIT_APP, facilityAuditApp);
-    }
-
-    /**
-     * MohDOCheckAuditDt
-     * @param bpc
-     */
-    public void DOVerifiedAuditDate(BaseProcessClass bpc) {
-        HttpServletRequest request = bpc.request;
-        FacilityAuditApp facilityAuditApp = (FacilityAuditApp)ParamUtil.getSessionAttr(request,AuditConstants.FACILITY_AUDIT_APP);
-        String remark = ParamUtil.getRequestString(request,AuditConstants.PARAM_REMARKS);
-        String decision = ParamUtil.getRequestString(request,AuditConstants.PARAM_DECISION);
-        //
-        facilityAuditApp.setDoRemarks(remark);
-        facilityAuditApp.setDoDecision(decision);
-        facilityAuditApp.setStatus("AUDITST005");
-        auditClient.processAuditDate(facilityAuditApp);
-    }
-
-    /**
-     * MohDOCheckAuditDt
-     * @param bpc
-     */
-    public void DORejectAuditDate(BaseProcessClass bpc) {
-        HttpServletRequest request = bpc.request;
-        FacilityAuditApp facilityAuditApp = (FacilityAuditApp)ParamUtil.getSessionAttr(request,AuditConstants.FACILITY_AUDIT_APP);
-        String remark = ParamUtil.getRequestString(request,AuditConstants.PARAM_REMARKS);
-        String reason = ParamUtil.getRequestString(request,AuditConstants.PARAM_REASON);
-        String decision = ParamUtil.getRequestString(request,AuditConstants.PARAM_DECISION);
-        //
-        facilityAuditApp.setDoRemarks(remark);
-        facilityAuditApp.setDoDecision(decision);
-        facilityAuditApp.setDoReason(reason);
-        facilityAuditApp.setStatus("AUDITST005");
-        auditClient.processAuditDate(facilityAuditApp);
-    }
-
-    /**
-     * MohAOCheckAuditDt
-     * @param bpc
-     */
-    public void AOApprovalAuditDate(BaseProcessClass bpc) {
-        HttpServletRequest request = bpc.request;
-        FacilityAuditApp facilityAuditApp = (FacilityAuditApp)ParamUtil.getSessionAttr(request,AuditConstants.FACILITY_AUDIT_APP);
-        String remark = ParamUtil.getRequestString(request,AuditConstants.PARAM_REMARKS);
-        //
-        facilityAuditApp.setAoRemarks(remark);
-        facilityAuditApp.setStatus("AUDITST003");
-        //
-        facilityAuditApp.getFacilityAudit().setStatus("AUDITST002");
-        facilityAuditApp.getFacilityAudit().setAuditDt(facilityAuditApp.getRequestAuditDt());
-        auditClient.processAuditDate(facilityAuditApp);
-    }
-
-    /**
-     * MohAOCheckAuditDt
-     * @param bpc
-     */
-    public void AORejectAuditDate(BaseProcessClass bpc) {
-        HttpServletRequest request = bpc.request;
-        FacilityAuditApp facilityAuditApp = (FacilityAuditApp)ParamUtil.getSessionAttr(request,AuditConstants.FACILITY_AUDIT_APP);
-        String remark = ParamUtil.getRequestString(request,AuditConstants.PARAM_REMARKS);
-        String reason = ParamUtil.getRequestString(request,AuditConstants.PARAM_REASON);
-        //
-        facilityAuditApp.setAoRemarks(remark);
-        facilityAuditApp.setAoReason(reason);
-        facilityAuditApp.setStatus("AUDITST007");
-        auditClient.processAuditDate(facilityAuditApp);
     }
 
     /**
