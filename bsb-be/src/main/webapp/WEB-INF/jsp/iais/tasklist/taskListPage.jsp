@@ -4,6 +4,8 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib uri="http://www.ecq.com/iais" prefix="iais" %>
 <%@ taglib uri="http://www.ecq.com/iais-bsb" prefix="iais-bsb" %>
+<%@ page import="java.lang.String"%>
+<%@ page import="sg.gov.moh.iais.egp.bsb.util.TableDisplayUtil"%>
 
 <%
     //handle to the Engine APIs
@@ -123,12 +125,12 @@
                             <iais:sortableHeader needSort="false" field="processType" value="Process Type"/>
                             <iais:sortableHeader needSort="false" field="notCreated" value="Agents/Toxins"/>
                             <iais:sortableHeader needSort="false" field="applicationDt" value="Application Date"/>
-                            <iais:sortableHeader needSort="false" field="expiryDt" value="Facility/Application Expiry Date"/>
+                            <%--<iais:sortableHeader needSort="false" field="expiryDt" value="Facility/Application Expiry Date"/>--%>
                             <iais:sortableHeader needSort="false" field="status" value="Application Status"/>
                         </tr>
                         </thead>
                         <c:choose>
-                            <%--@elvariable id="dataList" type="java.util.List<sg.gov.moh.iais.egp.bsb.entity.Application>"--%>
+                            <%--@elvariable id="dataList" type="java.util.List<sg.gov.moh.iais.egp.bsb.dto.task.TaskListSearchResultDto$TaskInfo>"--%>
                             <c:when test="${empty dataList}">
                                 <tr>
                                     <td colspan="7">
@@ -147,11 +149,11 @@
                                             <p class="visible-xs visible-sm table-row-title">Application No.</p>
                                             <p>
                                                 <c:choose>
-                                                    <c:when test="${entity.appType eq 'BSBAPTY006' and entity.status eq 'BSBAPST002'}">
-                                                        <a href="/bsb-be/eservicecontinue/INTRANET/MohAOProcessingRevocation?appId=<iais:mask name='id' value='${entity.id}'/>&OWASP_CSRFTOKEN=null"><c:out value="${entity.applicationNo}"/></a>
+                                                    <c:when test="${entity.appType eq 'BSBAPTY006' and entity.appStatus eq 'BSBAPST002'}">
+                                                        <a href="/bsb-be/eservicecontinue/INTRANET/MohAOProcessingRevocation?appId=<iais:mask name='id' value='${entity.appId}'/>&OWASP_CSRFTOKEN=null"><c:out value="${entity.applicationNo}"/></a>
                                                     </c:when>
-                                                    <c:when test="${entity.appType eq 'BSBAPTY001' and (entity.status eq 'BSBAPST001' or entity.status eq 'BSBAPST002' or entity.status eq 'BSBAPST003')}">
-                                                        <a href="/bsb-be/eservicecontinue/INTRANET/MohOfficersProcess?appId=<iais:mask name='id' value='${entity.id}'/>&OWASP_CSRFTOKEN=null"><c:out value="${entity.applicationNo}"/></a>
+                                                    <c:when test="${entity.appType eq 'BSBAPTY001' and (entity.appStatus eq 'BSBAPST001' or entity.appStatus eq 'BSBAPST002' or entity.appStatus eq 'BSBAPST003')}">
+                                                        <a href="/bsb-be/eservicecontinue/INTRANET/MohOfficersProcess?appId=<iais:mask name='id' value='${entity.appId}'/>&OWASP_CSRFTOKEN=null"><c:out value="${entity.applicationNo}"/></a>
                                                     </c:when>
                                                     <c:otherwise>
                                                         <c:out value="${entity.applicationNo}"/>
@@ -165,11 +167,11 @@
                                         </td>
                                         <td>
                                             <p class="visible-xs visible-sm table-row-title">Facility Name/Address</p>
-                                            <p><c:out value="${entity.facility.facilityName}"/></p>
+                                            <p><c:out value="${entity.facilityName}"/>/<c:out value="${TableDisplayUtil.getOneLineAddress(entity.facilityBlkNo, entity.facilityStreetName, entity.facilityFloorNo, entity.facilityUnitNo, entity.facilityPostalCode)}"/></p>
                                         </td>
                                         <td>
                                             <p class="visible-xs visible-sm table-row-title">Facility Type</p>
-                                            <p><iais:code code="${entity.facility.facilityType}"/></p>
+                                            <p><iais:code code="${entity.facilityClassification}"/></p>
                                         </td>
                                         <td>
                                             <p class="visible-xs visible-sm table-row-title">Process Type</p>
@@ -177,19 +179,19 @@
                                         </td>
                                         <td>
                                             <p class="visible-xs visible-sm table-row-title">Agents/Toxins</p>
-                                            <p><c:out value=""/></p>
+                                            <p><c:out value='${String.join(", ", entity.bats)}'/></p>
                                         </td>
                                         <td>
                                             <p class="visible-xs visible-sm table-row-title">Application Date</p>
                                             <p><fmt:formatDate value="${entity.applicationDt}" pattern="dd/MM/yyyy"/></p>
                                         </td>
-                                        <td>
+                                        <%--<td>
                                             <p class="visible-xs visible-sm table-row-title">Facility/Application Expiry Date</p>
                                             <p><fmt:formatDate value="${entity.facility.expiryDt}" pattern="dd/MM/yyyy"/></p>
-                                        </td>
+                                        </td>--%>
                                         <td>
                                             <p class="visible-xs visible-sm table-row-title">Application Status</p>
-                                            <p><iais:code code="${entity.status}"/></p>
+                                            <p><iais:code code="${entity.appStatus}"/></p>
                                         </td>
                                     </tr>
                                 </c:forEach>

@@ -17,7 +17,7 @@ import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
 import sg.gov.moh.iais.egp.bsb.dto.audit.AuditQueryDto;
 import sg.gov.moh.iais.egp.bsb.dto.audit.AuditQueryResultDto;
 import sg.gov.moh.iais.egp.bsb.entity.*;
-import sg.gov.moh.iais.egp.bsb.util.AddressUtil;
+import sg.gov.moh.iais.egp.bsb.util.TableDisplayUtil;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
@@ -174,7 +174,7 @@ public class AuditDateDelegator {
         Facility facility = facilityAuditApp.getFacilityAudit().getFacility();
         Application application = new Application();
         application.setFacility(facility);
-        String facilityAddress = AddressUtil.getOneLineAddress(facility.getBlkNo(),facility.getStreetName(),
+        String facilityAddress = TableDisplayUtil.getOneLineAddress(facility.getBlkNo(),facility.getStreetName(),
                 facility.getFloorNo(),facility.getUnitNo(),facility.getPostalCode());
         facility.setFacilityAddress(facilityAddress);
         ParamUtil.setRequestAttr(request,AuditConstants.FACILITY,facility);

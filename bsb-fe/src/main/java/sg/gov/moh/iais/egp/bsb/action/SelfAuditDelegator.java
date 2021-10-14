@@ -14,7 +14,7 @@ import sg.gov.moh.iais.egp.bsb.client.DocClient;
 import sg.gov.moh.iais.egp.bsb.constant.AuditConstants;
 import sg.gov.moh.iais.egp.bsb.dto.audit.AuditDocDto;
 import sg.gov.moh.iais.egp.bsb.entity.*;
-import sg.gov.moh.iais.egp.bsb.util.AddressUtil;
+import sg.gov.moh.iais.egp.bsb.util.TableDisplayUtil;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
@@ -139,7 +139,7 @@ public class SelfAuditDelegator {
     }
 
     private String getFacAddress(Facility facility){
-        return AddressUtil.getOneLineAddress(facility.getBlkNo(),facility.getStreetName(),
+        return TableDisplayUtil.getOneLineAddress(facility.getBlkNo(),facility.getStreetName(),
                 facility.getFloorNo(),facility.getUnitNo(),facility.getPostalCode());
     }
 }

@@ -16,6 +16,8 @@ import sop.webflow.rt.api.BaseProcessClass;
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
+
+import static sg.gov.moh.iais.egp.bsb.constant.ResponseConstants.ERROR_CODE_VALIDATION_FAIL;
 import static sg.gov.moh.iais.egp.bsb.constant.ResponseConstants.ERROR_INFO_ERROR_MSG;
 
 
@@ -53,14 +55,14 @@ public class TaskListDelegator {
             log.info("Search Task List fail");
             ParamUtil.setRequestAttr(request, KEY_TASK_LIST_PAGE_INFO, PageInfo.emptyPageInfo(searchDto));
             ParamUtil.setRequestAttr(request, KEY_TASK_LIST_DATA_LIST, new ArrayList<>());
-            if("INVALID_ARGS".equals(resultDto.getErrorCode())) {
+            if(ERROR_CODE_VALIDATION_FAIL.equals(resultDto.getErrorCode())) {
                 ParamUtil.setRequestAttr(request, ERROR_INFO_ERROR_MSG, resultDto.getErrorInfos().get(ERROR_INFO_ERROR_MSG));
             }
         }
 
         List<SelectOption> appTypeOps = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_BSB_APP_TYPE);
         ParamUtil.setRequestAttr(request, "appTypeOps", appTypeOps);
-        List<SelectOption> facTypeOps = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_BSB_FAC_TYPE);
+        List<SelectOption> facTypeOps = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_BSB_FAC_CLASSIFICATION);
         ParamUtil.setRequestAttr(request, "facTypeOps", facTypeOps);
         List<SelectOption> processTypeOps = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_BSB_PRO_TYPE);
         ParamUtil.setRequestAttr(request, "processTypeOps", processTypeOps);
