@@ -1,26 +1,20 @@
 package sg.gov.moh.iais.egp.bsb.util;
 
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
-import org.springframework.beans.factory.annotation.Autowired;
-import sg.gov.moh.iais.egp.bsb.client.BiosafetyEnquiryClient;
 import sg.gov.moh.iais.egp.bsb.client.ProcessClient;
-import sg.gov.moh.iais.egp.bsb.entity.Biological;
-import sg.gov.moh.iais.egp.bsb.entity.FacilityBiologicalAgent;
-import sg.gov.moh.iais.egp.bsb.entity.FacilitySchedule;
+import sg.gov.moh.iais.egp.bsb.entity.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
-/**
- * @author : LiRan
- * @date : 2021/8/27
- */
-public class JoinBiologicalName {
-
+public class JoinParamUtil {
     /**
      * This method is used to convert biologicalList to biologicalName
      */
-    public static String joinBiologicalName(List<FacilitySchedule> facilityScheduleList,ProcessClient processClient){
+    //join biological name
+    public static String joinBiologicalName(List<FacilitySchedule> facilityScheduleList, ProcessClient processClient){
         List<Biological> biologicalList=getBioListByFacilityScheduleList(facilityScheduleList,processClient);
         StringBuilder stringBuilder = new StringBuilder();
         if (biologicalList != null && biologicalList.size() > 0){
@@ -67,4 +61,43 @@ public class JoinBiologicalName {
         }
         return biologicalList;
     }
+
+    //join admin name
+    public static String joinAdminNames(List<FacilityAdmin> admins){
+        StringBuilder s = new StringBuilder();
+        if(!IaisCommonUtils.isEmpty(admins)){
+            listDeduplicate(admins);
+            for (int i = 0; i < admins.size(); i++) {
+                s.append(admins.get(i).getName());
+                if (i < admins.size()-1){
+                    s.append(",");
+                }
+            }
+        }
+        return s.toString();
+    }
+
+    private static <T> List<T> listDeduplicate(List<T> list) {
+        Set<T> set = IaisCommonUtils.genNewHashSet();
+        set.addAll(list);
+        list.clear();
+        list.addAll(set);
+        return list;
+    }
+
+    //join activity type
+    public static String joinActivityType(List<FacilityActivity> activityList){
+        StringBuilder s = new StringBuilder();
+        if(!IaisCommonUtils.isEmpty(activityList)){
+            listDeduplicate(activityList);
+            for (int i = 0; i < activityList.size(); i++) {
+                s.append(activityList.get(i));
+                if (i < activityList.size()-1){
+                    s.append(",");
+                }
+            }
+        }
+        return s.toString();
+    }
+
 }
