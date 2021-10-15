@@ -6,15 +6,18 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGroupMiscDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.NotificateApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicAppCorrelationDto;
+import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.service.AppGroupMiscService;
 import com.ecquaria.cloud.moh.iais.service.LicenceService;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
+import com.ecquaria.cloud.moh.iais.service.client.BeEicGatewayClient;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 /**
@@ -31,6 +34,20 @@ public class AppGroupMiscServiceImpl implements AppGroupMiscService {
 
     @Autowired
     private LicenceService licenceService;
+
+    @Autowired
+    private BeEicGatewayClient beEicGatewayClient;
+
+    @Value("${iais.hmac.keyId}")
+    private String keyId;
+    @Value("${iais.hmac.second.keyId}")
+    private String secKeyId;
+
+    @Value("${iais.hmac.secretKey}")
+    private String secretKey;
+    @Value("${iais.hmac.second.secretKey}")
+    private String secSecretKey;
+
     @Override
     public List<NotificateApplicationDto> getNotificateApplicationDtos() {
         return applicationClient.getNotificateApplicationDtos().getEntity();
@@ -38,7 +55,17 @@ public class AppGroupMiscServiceImpl implements AppGroupMiscService {
 
     @Override
     public NotificateApplicationDto saveNotificateApplicationDto(NotificateApplicationDto notificateApplicationDto) {
-        return applicationClient.updateNotificateApplicationDto(notificateApplicationDto).getEntity();
+        notificateApplicationDto =  applicationClient.updateNotificateApplicationDto(notificateApplicationDto).getEntity();
+        List<ApplicationDto> amendApplicationDtos = notificateApplicationDto.getAmendApplicationDtos();
+        if(IaisCommonUtils.isNotEmpty(amendApplicationDtos)){
+            for(ApplicationDto applicationDto: amendApplicationDtos ){
+                HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
+                HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
+                beEicGatewayClient.updateApplication(applicationDto, signature.date(), signature.authorization(),
+                        signature2.date(), signature2.authorization()).getEntity();
+            }
+        }
+        return notificateApplicationDto;
     }
 
     @Override
