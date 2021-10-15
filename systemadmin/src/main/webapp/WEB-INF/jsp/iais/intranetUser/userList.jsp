@@ -153,7 +153,7 @@
                 <!--Modal End-->
 
             </div>
-            <div class="panel-heading" id="exportError" hidden style="font-size: 1.6rem; color: #D22727; padding-left: 20px"><iais:message key="USER_ERR021"
+            <div class="panel-heading" id="exportError" style="display: none; font-size: 1.6rem; color: #D22727; padding-left: 20px"><iais:message key="USER_ERR021"
                                                                                                 escape="flase"></iais:message></div>
             <iais:action style="text-align:center;">
                 <div class="text-right">
