@@ -77,11 +77,16 @@ public class NotificationApplicationUpdateBatchjob {
                         }
 
                     }
-                    newNotificateApplicationDto.setAmendApplicationDtos(newAmendApplicationDtos);
+                    if(IaisCommonUtils.isNotEmpty(newAmendApplicationDtos)){
+                        newNotificateApplicationDto.setAmendApplicationDtos(newAmendApplicationDtos);
+                        AuditTrailDto auditTrailDto = AuditTrailHelper.getCurrentAuditTrailDto();
+                        newNotificateApplicationDto.setAuditTrailDto(auditTrailDto);
+                        appGroupMiscService.saveNotificateApplicationDto(newNotificateApplicationDto);
+                    }else{
+                        log.info(StringUtil.changeForLog("The NotificationApplicationUpdateBatchjob the auto applicaiton do not Generate Licence -->:"
+                                +appGroupMiscDto.getAppGrpId()));
+                    }
                 }
-                AuditTrailDto auditTrailDto = AuditTrailHelper.getCurrentAuditTrailDto();
-                newNotificateApplicationDto.setAuditTrailDto(auditTrailDto);
-                appGroupMiscService.saveNotificateApplicationDto(newNotificateApplicationDto);
             }
         }else{
             log.info(StringUtil.changeForLog("do not have need update Nofificate application"));
