@@ -56,6 +56,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Serializable;
 import java.nio.file.Files;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -1005,7 +1006,24 @@ public class MohIntranetUserDelegator {
         String salutation = orgUserDto.getSalutation();
         String displayName = orgUserDto.getDisplayName();
         String organization = orgUserDto.getOrganization();
-
+        if(orgUserDto.getAccountActivateDatetime()!=null){
+            Calendar calendar=Calendar.getInstance();
+            calendar.setTime(orgUserDto.getAccountActivateDatetime());
+            calendar.set(Calendar.HOUR_OF_DAY,0);
+            calendar.set(Calendar.MINUTE,0);
+            calendar.set(Calendar.SECOND,0);
+            calendar.set(Calendar.MILLISECOND,0);
+            orgUserDto.setAccountActivateDatetime(calendar.getTime());
+        }
+        if(orgUserDto.getAccountDeactivateDatetime()!=null){
+            Calendar calendar=Calendar.getInstance();
+            calendar.setTime(orgUserDto.getAccountDeactivateDatetime());
+            calendar.set(Calendar.HOUR_OF_DAY,0);
+            calendar.set(Calendar.MINUTE,0);
+            calendar.set(Calendar.SECOND,0);
+            calendar.set(Calendar.MILLISECOND,0);
+            orgUserDto.setAccountDeactivateDatetime(calendar.getTime());
+        }
         if (StringUtil.isEmpty(branchUnit)) {
             orgUserDto.setBranchUnit(null);
         }

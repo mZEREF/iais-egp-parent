@@ -1298,11 +1298,12 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                 licenceFeeDto.setExistOnsite(existingOnSiteLic);
                 //set bundle
                 if(!IaisCommonUtils.isEmpty(hcsaFeeBundleItemDtos)){
+                    int matchingTh =appConfigClient.getFeeMaxMatchingThByServiceCode(serviceCode).getEntity();
                     log.debug(StringUtil.changeForLog("set bundle info ..."));
                     if(AppServicesConsts.SERVICE_CODE_EMERGENCY_AMBULANCE_SERVICE.equals(serviceCode)){
                         if(hadEas && hadMts){
                             //judge vehicle count
-                            if(easVehicleCount+mtsVehicleCount <= 10 ){
+                            if(easVehicleCount+mtsVehicleCount <= matchingTh ){
                                 licenceFeeDto.setBundle(1);
                             }else {
                                 licenceFeeDto.setBundle(2);
@@ -1510,9 +1511,10 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                     //set bundle
                     if(!IaisCommonUtils.isEmpty(hcsaFeeBundleItemDtos)){
                         String serviceCode=baseServiceDto.getSvcCode();
+                        int matchingTh =appConfigClient.getFeeMaxMatchingThByServiceCode(serviceCode).getEntity();
                         log.debug(StringUtil.changeForLog("set bundle info ..."));
                         if(AppServicesConsts.SERVICE_CODE_EMERGENCY_AMBULANCE_SERVICE.equals(serviceCode)){
-                            if(easVehicleCount <= 10 ){
+                            if(easVehicleCount <= matchingTh){
                                 licenceFeeDto.setBundle(1);
                             }else {
                                 licenceFeeDto.setBundle(2);
@@ -1520,7 +1522,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                             if(hadEas && hadMts){
                                 if(hciCodeEas!=null&&hciCodeMts!=null){
                                     if(hciCodeEas.equals(hciCodeMts)){
-                                        if(easVehicleCount+mtsVehicleCount <= 10 ){
+                                        if(easVehicleCount+mtsVehicleCount <= matchingTh ){
                                             licenceFeeDto.setBundle(1);
                                         }else {
                                             licenceFeeDto.setBundle(2);
@@ -1532,7 +1534,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                                 setEasMtsBundleInfo(licenceFeeDto, hciCode, hcsaFeeBundleItemDtos, serviceCode, appSubmissionDto.getLicenseeId(), easVehicleCount,appSubmissionDto.getAppType());
                             }
                         } else if(AppServicesConsts.SERVICE_CODE_MEDICAL_TRANSPORT_SERVICE.equals(serviceCode)){
-                            if(mtsVehicleCount <= 10 ){
+                            if(mtsVehicleCount <= matchingTh){
                                 licenceFeeDto.setBundle(1);
                             }else {
                                 licenceFeeDto.setBundle(2);
@@ -1617,8 +1619,9 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                     if(!IaisCommonUtils.isEmpty(hcsaFeeBundleItemDtos)){
                         String serviceCode=hcsaServiceDto.getSvcCode();
                         log.debug(StringUtil.changeForLog("set bundle info ..."));
+                        int matchingTh =appConfigClient.getFeeMaxMatchingThByServiceCode(serviceCode).getEntity();
                         if(AppServicesConsts.SERVICE_CODE_EMERGENCY_AMBULANCE_SERVICE.equals(serviceCode)){
-                            if(easVehicleCount <= 10 ){
+                            if(easVehicleCount <= matchingTh ){
                                 licenceFeeDto.setBundle(1);
                             }else {
                                 licenceFeeDto.setBundle(2);
@@ -1626,7 +1629,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                             if(hadEas && hadMts){
                                 if(hciCodeEas!=null&&hciCodeMts!=null){
                                     if(hciCodeEas.equals(hciCodeMts)){
-                                        if(easVehicleCount+mtsVehicleCount <= 10 ){
+                                        if(easVehicleCount+mtsVehicleCount <= matchingTh ){
                                             licenceFeeDto.setBundle(1);
                                         }else {
                                             licenceFeeDto.setBundle(2);
@@ -1638,7 +1641,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                                 setEasMtsBundleInfo(licenceFeeDto, hciCode, hcsaFeeBundleItemDtos, serviceCode, appSubmissionDto.getLicenseeId(), easVehicleCount,appSubmissionDto.getAppType());
                             }
                         } else if(AppServicesConsts.SERVICE_CODE_MEDICAL_TRANSPORT_SERVICE.equals(serviceCode)){
-                            if(mtsVehicleCount <= 10 ){
+                            if(mtsVehicleCount <= matchingTh ){
                                 licenceFeeDto.setBundle(1);
                             }else {
                                 licenceFeeDto.setBundle(2);
@@ -3804,6 +3807,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
     private void setEasMtsBundleInfo(LicenceFeeDto licenceFeeDto, String hciCode, List<HcsaFeeBundleItemDto> hcsaFeeBundleItemDtos, String serviceCode, String licenseeId, int easMtsVehicleCount,String appType){
         List<HcsaFeeBundleItemDto> bundleDtos = getBundleDtoBySvcCode(hcsaFeeBundleItemDtos,serviceCode);
         boolean hadBundleLicence = false;
+        int matchingTh =appConfigClient.getFeeMaxMatchingThByServiceCode(serviceCode).getEntity();
         if(!IaisCommonUtils.isEmpty(bundleDtos)){
             log.debug(StringUtil.changeForLog("get bundle licence ..."));
             log.debug("hciCode is {}",hciCode);
@@ -3820,7 +3824,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
             licenceFeeDto.setBundle(4);
         }else{
             //judge vehicle count
-            if(easMtsVehicleCount <= 10 ){
+            if(easMtsVehicleCount <= matchingTh ){
                 licenceFeeDto.setBundle(1);
             }else {
                 licenceFeeDto.setBundle(2);
