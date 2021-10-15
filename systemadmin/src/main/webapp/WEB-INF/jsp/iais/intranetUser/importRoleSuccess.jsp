@@ -30,10 +30,10 @@
                 <thead>
                   <tr>
                     <th scope="col" style="width:10%;">No.</th>
-                    <th scope="col" style="width:30%;">User ID</th>
-                    <th scope="col" style="width:30%;">Role ID</th>
-                    <th scope="col" style="width:30%;">Group ID</th>
-                    <th scope="col" style="width:30%;">Status</th>
+                    <th scope="col" style="width:15%;">User ID</th>
+                    <th scope="col" style="width:15%;">Role ID</th>
+                    <th scope="col" style="width:50%;">Group ID</th>
+                    <th scope="col" style="width:10%;">Status</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -100,7 +100,7 @@
       </div>
     </div>
     <iais:action>
-      <a style="margin-left: 16%" class="back" onclick="submit()"><em class="fa fa-angle-left"></em> Back</a>
+      <a style="margin-left: 16%" class="back" href="#" onclick="submit()"><em class="fa fa-angle-left"></em> Back</a>
     </iais:action>
   </form>
 </div>
