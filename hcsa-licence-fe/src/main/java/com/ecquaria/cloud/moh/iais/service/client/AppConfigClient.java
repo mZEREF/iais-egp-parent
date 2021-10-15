@@ -33,7 +33,6 @@ import com.ecquaria.cloudfeign.FeignResponseEntity;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.Mapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -211,4 +210,7 @@ public interface AppConfigClient {
 
     @GetMapping(value = "/iais-hcsa-fee/active-bundle-item", consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<HcsaFeeBundleItemDto>> getActiveBundleDtoList();
+
+    @GetMapping(value = "/iais-hcsa-fee/fee-MatchingTh-ServiceCode/{serviceCode}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<Integer> getFeeMaxMatchingThByServiceCode(@PathVariable(name ="serviceCode") String svcCode);
 }
