@@ -2,9 +2,6 @@ package sg.gov.moh.iais.egp.bsb.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
-import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppIntranetDocDto;
-import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
@@ -12,21 +9,16 @@ import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
-import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import sg.gov.moh.iais.egp.bsb.client.AuditClient;
 import sg.gov.moh.iais.egp.bsb.client.DocClient;
-import sg.gov.moh.iais.egp.bsb.client.FileRepoClient;
 import sg.gov.moh.iais.egp.bsb.constant.AuditConstants;
 import sg.gov.moh.iais.egp.bsb.dto.audit.AuditDocDto;
 import sg.gov.moh.iais.egp.bsb.entity.*;
-import sg.gov.moh.iais.egp.bsb.util.JoinAddress;
-import sop.servlet.webflow.HttpHandler;
+import sg.gov.moh.iais.egp.bsb.util.TableDisplayUtil;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -40,16 +32,11 @@ public class SelfAuditDelegator {
     private AuditClient auditClient;
 
     @Autowired
-    private FileRepoClient fileRepoClient;
-
-    @Autowired
     private DocClient docClient;
 
     /**
      * StartStep: startStep
      *
-     * @param bpc
-     * @throws IllegalAccessException
      */
     public void start(BaseProcessClass bpc) throws IllegalAccessException {
         AuditTrailHelper.auditFunction(AuditConstants.MODULE_AUDIT, AuditConstants.FUNCTION_AUDIT);
@@ -61,7 +48,6 @@ public class SelfAuditDelegator {
     /**
      * AutoStep: prepareData
      *
-     * @param bpc
      */
     public void prepareFacilitySelfAuditData(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
@@ -73,9 +59,8 @@ public class SelfAuditDelegator {
         FacilityAudit facilityAudit = auditClient.getFacilityAuditById(auditId).getEntity();
 
         Facility facility = facilityAudit.getFacility();
-        Application application = new Application();
-        application.setFacility(facility);
-        String facilityAddress = JoinAddress.joinAddress(application);
+        String facilityAddress = TableDisplayUtil.getOneLineAddress(facility.getBlkNo(),
+                facility.getStreetName(),facility.getFloorNo(),facility.getUnitNo(),facility.getPostalCode());
         facility.setFacilityAddress(facilityAddress);
 
         //get doc
@@ -98,7 +83,6 @@ public class SelfAuditDelegator {
     /**
      * AutoStep: submit
      *
-     * @param bpc
      */
     public void submitSelfAuditReport(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
@@ -108,7 +92,7 @@ public class SelfAuditDelegator {
         audit.setScenarioCategory(scenarioCategory);
         audit.setId(auditId);
         audit.setStatus(AuditConstants.PARAM_AUDIT_STATUS_PENDING_DO);
-        FacilityAuditApp facilityAuditApp = auditClient.saveSelfAuditReport(audit).getEntity();
+        auditClient.saveSelfAuditReport(audit).getEntity();
     }
 
     /**
@@ -116,7 +100,7 @@ public class SelfAuditDelegator {
      *
      * @param bpc
      */
-    public void prepareDOProcessSelfAuditData(BaseProcessClass bpc) {
+    public void prepareProcessSelfAuditData(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         ParamUtil.setSessionAttr(request,AuditConstants.FACILITY,null);
         ParamUtil.setSessionAttr(request,AuditConstants.AUDIT_DOC_DTO, null);
@@ -127,9 +111,8 @@ public class SelfAuditDelegator {
         facilityAuditApp.setFacilityAudit(facilityAudit);
 
         Facility facility = facilityAudit.getFacility();
-        Application application = new Application();
-        application.setFacility(facility);
-        String facilityAddress = JoinAddress.joinAddress(application);
+        String facilityAddress = TableDisplayUtil.getOneLineAddress(facility.getBlkNo(),
+                facility.getStreetName(),facility.getFloorNo(),facility.getUnitNo(),facility.getPostalCode());
         facility.setFacilityAddress(facilityAddress);
 
         List<FacilityDoc> facilityDocList = docClient.getFacilityDocByFacId(facility.getId()).getEntity();
@@ -155,7 +138,7 @@ public class SelfAuditDelegator {
      * audit app status change to AUDITST005
      * @param bpc
      */
-    public void DOVerified(BaseProcessClass bpc) {
+    public void doVerified(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         FacilityAuditApp auditApp = before(request);
         auditApp.setStatus(AuditConstants.PARAM_AUDIT_STATUS_PENDING_AO);
@@ -169,7 +152,7 @@ public class SelfAuditDelegator {
      * audit app status change to AUDITST002
      * @param bpc
      */
-    public void DORequestForInformation(BaseProcessClass bpc) {
+    public void doRequestForInformation(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         FacilityAuditApp auditApp = before(request);
         auditApp.setStatus(AuditConstants.PARAM_AUDIT_STATUS_PENDING_APPLICANT_INPUT);
@@ -183,7 +166,7 @@ public class SelfAuditDelegator {
      * audit app status change to AUDITST005
      * @param bpc
      */
-    public void DOReject(BaseProcessClass bpc) {
+    public void doReject(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         FacilityAuditApp auditApp = before(request);
         auditApp.setStatus(AuditConstants.PARAM_AUDIT_STATUS_PENDING_AO);
@@ -194,50 +177,10 @@ public class SelfAuditDelegator {
     }
 
     /**
-     * AutoStep: prepareData
-     *
-     * @param bpc
-     */
-    public void prepareAOProcessSelfAuditData(BaseProcessClass bpc) {
-        HttpServletRequest request = bpc.request;
-        ParamUtil.setSessionAttr(request,AuditConstants.FACILITY,null);
-        ParamUtil.setSessionAttr(request,AuditConstants.AUDIT_DOC_DTO, null);
-
-        String auditAppId = "2228B667-3815-EC11-BE6E-000C298D317C";
-        FacilityAuditApp facilityAuditApp = auditClient.getFacilityAuditAppById(auditAppId).getEntity();
-        FacilityAudit facilityAudit = auditClient.getFacilityAuditById(facilityAuditApp.getFacilityAudit().getId()).getEntity();
-        facilityAuditApp.setFacilityAudit(facilityAudit);
-
-        Facility facility = facilityAudit.getFacility();
-        Application application = new Application();
-        application.setFacility(facility);
-        String facilityAddress = JoinAddress.joinAddress(application);
-        facility.setFacilityAddress(facilityAddress);
-
-        List<FacilityDoc> facilityDocList = docClient.getFacilityDocByFacId(facility.getId()).getEntity();
-        List<FacilityDoc> docList = new ArrayList<>();
-        for (FacilityDoc facilityDoc : facilityDocList) {
-            //todo You can only get the current user name
-            String submitByName = IaisEGPHelper.getCurrentAuditTrailDto().getMohUserId();
-            facilityDoc.setSubmitByName(submitByName);
-            docList.add(facilityDoc);
-        }
-        AuditDocDto auditDocDto = new AuditDocDto();
-        auditDocDto.setFacilityDocs(docList);
-
-        List<FacilityAuditAppHistory> histories = auditClient.getAllHistoryByAuditAppId(facilityAuditApp.getId()).getEntity();
-
-        ParamUtil.setSessionAttr(request,AuditConstants.FACILITY,facility);
-        ParamUtil.setRequestAttr(request, AuditConstants.FACILITY_AUDIT_APP, facilityAuditApp);
-        ParamUtil.setSessionAttr(request,AuditConstants.AUDIT_DOC_DTO, auditDocDto);
-        ParamUtil.setRequestAttr(request,AuditConstants.PARAM_HISTORY,histories);
-    }
-
-    /**
      * audit app status change to AUDITST004
      * @param bpc
      */
-    public void AOInternalClarifications(BaseProcessClass bpc) {
+    public void aoInternalClarifications(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         FacilityAuditApp auditApp = before(request);
         auditApp.setStatus(AuditConstants.PARAM_AUDIT_STATUS_PENDING_DO);
@@ -252,7 +195,7 @@ public class SelfAuditDelegator {
      * audit app status change to AUDITST003
      * @param bpc
      */
-    public void AOApproved(BaseProcessClass bpc) {
+    public void aoApproved(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         FacilityAuditApp auditApp = before(request);
         auditApp.setStatus(AuditConstants.PARAM_AUDIT_STATUS_COMPLETED);

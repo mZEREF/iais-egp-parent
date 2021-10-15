@@ -84,10 +84,13 @@
                                 <thead>
                                 <tr>
                                     <iais:sortableHeader needSort="false" field="" value="S/N" isFE="false"/>
-                                    <iais:sortableHeader needSort="true" field="facilityName" value="Facility Name" isFE="false"/>
-                                    <iais:sortableHeader needSort="true" field="facilityClassification" value="Facility Classification" isFE="false"/>
-                                    <iais:sortableHeader needSort="false" field="" value="Activity type" isFE="false"/>
-                                    <iais:sortableHeader needSort="true" field="facilityStatus" value="Facility Status" isFE="false"/>
+                                    <iais:sortableHeader needSort="false" field="" value="Active Approval No." isFE="false"/>
+                                    <iais:sortableHeader needSort="false" field="" value="Facility Name/Address" isFE="false"/>
+                                    <iais:sortableHeader needSort="false" field="" value="Facility Classification" isFE="false"/>
+                                    <iais:sortableHeader needSort="false" field="" value="Process type" isFE="false"/>
+                                    <iais:sortableHeader needSort="false" field="" value="Agents/Toxins" isFE="false"/>
+                                    <iais:sortableHeader needSort="false" field="" value="Approved Date(dd/mm/yyyy)" isFE="false"/>
+                                    <iais:sortableHeader needSort="false" field="" value="Status" isFE="false"/>
                                     <iais:sortableHeader needSort="false" field="" value="Action" isFE="false"/>
                                 </tr>
                                 </thead>
@@ -95,23 +98,15 @@
                                     <c:set var="auditIndex" value="${(status.index + 1) + (pageInfo.pageNo) * pageInfo.size}"></c:set>
                                     <tr style="display: table-row;">
                                         <td>${(status.index + 1) + (pageInfo.pageNo) * pageInfo.size}</td>
-                                        <td width="15%">${item.facilityName}</td>
-                                        <td width="20%"><iais:code code="${item.facilityClassification}"></iais:code></td>
-                                        <td width="30%">
-                                            <c:forEach var="activity" items="${item.facilityActivities}" varStatus="status">
-                                                <c:choose>
-                                                    <c:when test="${status.last}">
-                                                        <iais:code code="${activity.activityType}"></iais:code>
-                                                    </c:when>
-                                                    <c:otherwise>
-                                                        <iais:code code="${activity.activityType}"></iais:code>,
-                                                    </c:otherwise>
-                                                </c:choose>
-                                            </c:forEach>
-                                        </td>
-                                        <td width="20%"><iais:code code="${item.facilityStatus}"></iais:code></td>
+                                        <td>${item.approveNo}</td>
+                                        <td>${item.facility.facilityName}/${item.facility.facilityAddress}</td>
+                                        <td><iais:code code="${item.facility.facilityClassification}"></iais:code></td>
+                                        <td><iais:code code="${item.processType}"></iais:code></td>
+                                        <td></td>
+                                        <td><fmt:formatDate value="${item.approvalDate}" pattern="dd/MM/yyyy"/></td>
+                                        <td><iais:code code="${item.status}"></iais:code></td>
                                         <td>
-                                            <p><a id="doRevoke" onclick="doRevoke('<iais:mask name="facilityId" value="${item.id}"/>','fac')">Revoke</a></p>
+                                            <p><a id="doRevoke" onclick="doRevoke('<iais:mask name="approvalId" value="${item.id}"/>','fac')">Revoke</a></p>
                                         </td>
                                     </tr>
                                 </c:forEach>
@@ -122,7 +117,7 @@
                 </div>
             </div>
         </div>
-        <input name="facilityId" id="facilityId" value="" hidden>
+        <input name="approvalId" id="approvalId" value="" hidden>
         <input name="from" id="from" value="" hidden>
     </form>
 </div>

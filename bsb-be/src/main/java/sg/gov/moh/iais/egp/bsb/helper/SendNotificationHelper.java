@@ -342,9 +342,9 @@ public class SendNotificationHelper {
                 if (StringUtil.isNotEmpty(appNo)) {
                     Facility facility = facilityClient.queryEmailByAppNo(appNo).getEntity();
                     //get applicant's email
-                    if (facility != null) {
-                        receiptEmail.add(facility.getEmailAddr());
-                    }
+//                    if (facility != null) {
+//                        receiptEmail.add(facility.getEmailAddr());
+//                    }
                 }else if(StringUtil.isNotEmpty(facId)){
                     List<FacilityAdmin> facilityAdmins = bsbEmailClient.queryEmailByFacId(facId).getEntity();
                     for (FacilityAdmin facilityAdmin : facilityAdmins) {

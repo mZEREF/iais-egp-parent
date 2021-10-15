@@ -32,7 +32,7 @@ public class INTRANET___ReviewCancelAudit___1 extends BaseProcessClass {
 
 	public void doSubmit_OnStepProcess_0() throws Exception {
 	// 		doSubmit->OnStepProcess
-		EngineHelper.delegate(DELEGATOR, "DOSubmitCancelAudit", this);
+		EngineHelper.delegate(DELEGATOR, "doSubmitCancelAudit", this);
 	}
 
 }

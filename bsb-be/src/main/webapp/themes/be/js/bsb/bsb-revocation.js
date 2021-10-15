@@ -9,7 +9,7 @@ function doProcess(id,fac){
 
 function doRevoke(id,fac){
     showWaiting();
-    $("#facilityId").val(id);
+    $("#approvalId").val(id);
     $("#from").val(fac);
     $("[name='action_type']").val("doRevoke");
     $("#mainForm").submit();
@@ -54,14 +54,14 @@ $(function () {
         if (reasonValue == "" || reasonValue == null) {
             $("#error_reason").html("Please enter the reason");
         }else{
-            if (isUpload!=null) {
+            // if (isUpload!=null) {
                 $("#error_reason").html("");
                 showWaiting();
                 $("[name='action_type']").val("doSubmit");
                 $("#mainForm").submit();
-            }else {
-                alert("Please upload file");
-            }
+            // }else {
+            //     alert("Please upload file");
+            // }
         }
     });
 

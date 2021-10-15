@@ -49,4 +49,8 @@ public class Facility implements Serializable {
     private Date modifiedAt;
 
     private String modifiedBy;
+
+    private String facilityAddress;
+
+    private String activeType;
 }

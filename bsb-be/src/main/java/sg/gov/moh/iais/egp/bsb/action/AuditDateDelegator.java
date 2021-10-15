@@ -18,7 +18,6 @@ import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
 import sg.gov.moh.iais.egp.bsb.dto.audit.AuditQueryDto;
 import sg.gov.moh.iais.egp.bsb.dto.audit.AuditQueryResultDto;
 import sg.gov.moh.iais.egp.bsb.entity.*;
-import sg.gov.moh.iais.egp.bsb.util.JoinAddress;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
@@ -70,13 +69,6 @@ public class AuditDateDelegator {
         if (searchResult.ok()) {
             ParamUtil.setRequestAttr(request, AuditConstants.KEY_AUDIT_PAGE_INFO, searchResult.getEntity().getPageInfo());
             List<FacilityAudit> audits = searchResult.getEntity().getTasks();
-//            List<FacilityActivity> activityList = new ArrayList<>();
-//            for (FacilityAudit audit : audits) {
-//                activityList = auditClient.getFacilityActivityByFacilityId(audit.getFacility().getId()).getEntity();
-//                if (activityList!=null&&activityList.size()!=0) {
-//                    audit.getFacility().setFacilityActivities(activityList);
-//                }
-//            }
             ParamUtil.setRequestAttr(request, AuditConstants.KEY_AUDIT_DATA_LIST, audits);
         } else {
             log.warn("get audit API doesn't return ok, the response is {}", searchResult);
@@ -175,8 +167,8 @@ public class AuditDateDelegator {
         Facility facility = facilityAuditApp.getFacilityAudit().getFacility();
         Application application = new Application();
         application.setFacility(facility);
-        String facilityAddress = JoinAddress.joinAddress(application);
-        facility.setFacilityAddress(facilityAddress);
+//        String facilityAddress = JoinAddress.joinAddress(application);
+//        facility.setFacilityAddress(facilityAddress);
         ParamUtil.setRequestAttr(request,AuditConstants.FACILITY,facility);
 
         ParamUtil.setSessionAttr(request, AuditConstants.FACILITY_AUDIT_APP, facilityAuditApp);
@@ -186,7 +178,7 @@ public class AuditDateDelegator {
      * MohDOCheckAuditDt
      * @param bpc
      */
-    public void DOVerifiedAuditDate(BaseProcessClass bpc) {
+    public void doVerifiedAuditDate(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         FacilityAuditApp facilityAuditApp = (FacilityAuditApp)ParamUtil.getSessionAttr(request,AuditConstants.FACILITY_AUDIT_APP);
         String remark = ParamUtil.getRequestString(request,AuditConstants.PARAM_REMARKS);
@@ -202,7 +194,7 @@ public class AuditDateDelegator {
      * MohDOCheckAuditDt
      * @param bpc
      */
-    public void DORejectAuditDate(BaseProcessClass bpc) {
+    public void doRejectAuditDate(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         FacilityAuditApp facilityAuditApp = (FacilityAuditApp)ParamUtil.getSessionAttr(request,AuditConstants.FACILITY_AUDIT_APP);
         String remark = ParamUtil.getRequestString(request,AuditConstants.PARAM_REMARKS);
@@ -220,7 +212,7 @@ public class AuditDateDelegator {
      * MohAOCheckAuditDt
      * @param bpc
      */
-    public void AOApprovalAuditDate(BaseProcessClass bpc) {
+    public void aoApprovalAuditDate(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         FacilityAuditApp facilityAuditApp = (FacilityAuditApp)ParamUtil.getSessionAttr(request,AuditConstants.FACILITY_AUDIT_APP);
         String remark = ParamUtil.getRequestString(request,AuditConstants.PARAM_REMARKS);
@@ -237,7 +229,7 @@ public class AuditDateDelegator {
      * MohAOCheckAuditDt
      * @param bpc
      */
-    public void AORejectAuditDate(BaseProcessClass bpc) {
+    public void aoRejectAuditDate(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         FacilityAuditApp facilityAuditApp = (FacilityAuditApp)ParamUtil.getSessionAttr(request,AuditConstants.FACILITY_AUDIT_APP);
         String remark = ParamUtil.getRequestString(request,AuditConstants.PARAM_REMARKS);

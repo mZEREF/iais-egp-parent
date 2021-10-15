@@ -2,18 +2,14 @@ package sg.gov.moh.iais.egp.bsb.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
-import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
-import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
-import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sg.gov.moh.iais.egp.bsb.client.DocClient;
 import sg.gov.moh.iais.egp.bsb.client.ProcessClient;
-import sg.gov.moh.iais.egp.bsb.constant.ProcessContants;
 import sg.gov.moh.iais.egp.bsb.constant.RevocationConstants;
 import sg.gov.moh.iais.egp.bsb.dto.BsbEmailParam;
 import sg.gov.moh.iais.egp.bsb.dto.PageInfo;
@@ -23,13 +19,10 @@ import sg.gov.moh.iais.egp.bsb.dto.revocation.*;
 import sg.gov.moh.iais.egp.bsb.client.RevocationClient;
 import sg.gov.moh.iais.egp.bsb.entity.*;
 import sg.gov.moh.iais.egp.bsb.helper.BsbNotificationHelper;
-import sg.gov.moh.iais.egp.bsb.helper.SendNotificationHelper;
-import sg.gov.moh.iais.egp.bsb.util.JoinAddress;
-import sg.gov.moh.iais.egp.bsb.util.JoinBiologicalName;
+import sg.gov.moh.iais.egp.bsb.util.JoinParamUtil;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -46,9 +39,6 @@ public class AORevocationDelegator {
 
     @Autowired
     private ProcessClient processClient;
-
-//    @Autowired
-//    private SendNotificationHelper sendNotificationHelper;
 
     @Autowired
     private BsbNotificationHelper bsbNotificationHelper;
@@ -76,7 +66,7 @@ public class AORevocationDelegator {
      * @param bpc
      */
     public void prepareTaskListData(BaseProcessClass bpc) {
-        /*HttpServletRequest request = bpc.request;
+        HttpServletRequest request = bpc.request;
         // get search DTO
         ApprovalOfficerQueryDto searchDto=getSearchDto(request);
         ParamUtil.setSessionAttr(request, RevocationConstants.PARAM_APPLICATION_SEARCH, searchDto);
@@ -88,13 +78,13 @@ public class AORevocationDelegator {
             List<Application> applications = searchResult.getEntity().getTasks();
             //get facilityId
             for (Application application : applications) {
-                application.getFacility().setFacilityAddress(JoinAddress.joinAddress(application));
+//                application.getFacility().setFacilityAddress(JoinAddress.joinAddress(application));
                 FacilityActivity activity = revocationClient.getFacilityActivityByApplicationId(application.getId()).getEntity();
                 if (activity!=null) {
-                    application.getFacility().setActiveType(activity.getActivityType());
-                    List<FacilitySchedule> facilityScheduleList = activity.getFacilitySchedules();
-                    String bioNames = JoinBiologicalName.joinBiologicalName(facilityScheduleList, processClient);
-                    application.setBiologicalName(bioNames);
+//                    application.getFacility().setActiveType(activity.getActivityType());
+//                    List<FacilitySchedule> facilityScheduleList = activity.getFacilitySchedules();
+//                    String bioNames = JoinParamUtil.joinBiologicalName(facilityScheduleList, processClient);
+//                    application.setBiologicalName(bioNames);
                 }
             }
             ParamUtil.setRequestAttr(request, RevocationConstants.KEY_APPLICATION_DATA_LIST, applications);
@@ -102,7 +92,7 @@ public class AORevocationDelegator {
             log.warn("get revocation application API doesn't return ok, the response is {}", searchResult);
             ParamUtil.setRequestAttr(request, RevocationConstants.KEY_APPLICATION_PAGE_INFO, PageInfo.emptyPageInfo(searchDto));
             ParamUtil.setRequestAttr(request, RevocationConstants.KEY_APPLICATION_DATA_LIST, new ArrayList<>());
-        }*/
+        }
 
     }
 
@@ -111,7 +101,7 @@ public class AORevocationDelegator {
      *
      * @param bpc
      */
-    public void doSearch(BaseProcessClass bpc) throws ParseException {
+    public void doSearch(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         ParamUtil.setSessionAttr(request, RevocationConstants.PARAM_APPLICATION_SEARCH, null);
         ApprovalOfficerQueryDto searchDto = getSearchDto(request);
@@ -139,12 +129,6 @@ public class AORevocationDelegator {
         searchDto.setSearchAppDateFrom(searchAppDateFrom);
         searchDto.setSearchAppDateTo(searchAppDateTo);
 
-//        String validateStatus = "appDate";
-//        ValidationResult vResult = WebValidationHelper.validateProperty(searchDto,validateStatus);
-//        if(vResult != null && vResult.isHasErrors()){
-//            Map<String,String> errorMap = vResult.retrieveAll();
-//            ParamUtil.setRequestAttr(request, ProcessContants.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
-//        }
         ParamUtil.setSessionAttr(request, RevocationConstants.PARAM_APPLICATION_SEARCH, searchDto);
     }
 
@@ -205,8 +189,8 @@ public class AORevocationDelegator {
         Application application = revocationClient.getApplicationById(appId).getEntity();
         List<ApplicationMisc> applicationMiscs=application.getAppMiscs();
 
-        String address = JoinAddress.joinAddress(application);
-        application.getFacility().setFacilityAddress(address);
+//        String address = JoinAddress.joinAddress(application);
+//        application.getFacility().setFacilityAddress(address);
 
         FacilityActivity activity = revocationClient.getFacilityActivityByApplicationId(application.getId()).getEntity();
         if (activity != null) {
@@ -223,7 +207,7 @@ public class AORevocationDelegator {
         List<FacilityDoc> facilityDocList = docClient.getFacilityDocByFacId(application.getFacility().getId()).getEntity();
         List<FacilityDoc> docList = new ArrayList<>();
         for (FacilityDoc facilityDoc : facilityDocList) {
-            //这里拿不到，只能拿到当前用户名
+            //todo You can only get the current user name
             String submitByName = IaisEGPHelper.getCurrentAuditTrailDto().getMohUserId();
             facilityDoc.setSubmitByName(submitByName);
             docList.add(facilityDoc);
@@ -254,7 +238,7 @@ public class AORevocationDelegator {
         //send notification
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
         String date=dateFormat.format(new Date());
-        String address = JoinAddress.joinAddress(aoDecisionDto.getApplication());
+//        String address = JoinAddress.joinAddress(aoDecisionDto.getApplication());
 
         BsbEmailParam bsbEmailParam = new BsbEmailParam();
         bsbEmailParam.setMsgTemplateId(MSG_TEMPLATE_REVOCATION_USER_APPROVED);
@@ -262,13 +246,13 @@ public class AORevocationDelegator {
         bsbEmailParam.setRefIdType("appNo");
         bsbEmailParam.setQueryCode("1");
         bsbEmailParam.setReqRefNum("1");
-        Map map = new HashMap();
+        Map<String,Object> map = new HashMap<>();
         map.put("applicationNo", aoDecisionDto.getApplication().getApplicationNo());
-        map.put("FacilityAddress",address);
+//        map.put("FacilityAddress",address);
         map.put("FacilityName",aoDecisionDto.getApplication().getFacility().getFacilityName());
         map.put("Date",date);
         map.put("Reason",aoDecisionDto.getMisc().getReasonContent());
-        Map subMap = new HashMap();
+        Map<String,Object> subMap = new HashMap<>();
         subMap.put("applicationNo", aoDecisionDto.getApplication().getApplicationNo());
         bsbEmailParam.setMsgSubject(subMap);
         bsbEmailParam.setMsgContent(map);

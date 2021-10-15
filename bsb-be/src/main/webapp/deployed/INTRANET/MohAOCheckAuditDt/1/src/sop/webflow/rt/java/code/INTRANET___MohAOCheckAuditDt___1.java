@@ -33,12 +33,12 @@ public class INTRANET___MohAOCheckAuditDt___1 extends BaseProcessClass {
 
 	public void reject_OnStepProcess_0() throws Exception {
 	// 		reject->OnStepProcess
-		EngineHelper.delegate(DELEGATOR, "AORejectAuditDate", this);
+		EngineHelper.delegate(DELEGATOR, "aoRejectAuditDate", this);
 	}
 
 	public void approval_OnStepProcess_0() throws Exception {
 	// 		approve->OnStepProcess
-		EngineHelper.delegate(DELEGATOR, "AOApprovalAuditDate", this);
+		EngineHelper.delegate(DELEGATOR, "aoApprovalAuditDate", this);
 	}
 
 

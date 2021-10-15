@@ -69,7 +69,7 @@ public class CancelAuditDelegator {
             List<FacilityAudit> audits = searchResult.getEntity().getTasks();
             for (FacilityAudit audit : audits) {
                 List<FacilityActivity> activityList = auditClient.getFacilityActivityByFacilityId(audit.getFacility().getId()).getEntity();
-                if (activityList!=null&&activityList.size()!=0) {
+                if (!activityList.isEmpty()) {
                     audit.getFacility().setFacilityActivities(activityList);
                 }
             }
@@ -116,7 +116,7 @@ public class CancelAuditDelegator {
         for (String auditId : auditIds) {
             FacilityAudit facilityAudit = auditClient.getFacilityAuditById(auditId).getEntity();
             List<FacilityActivity> activityList = auditClient.getFacilityActivityByFacilityId(facilityAudit.getFacility().getId()).getEntity();
-            if (activityList!=null&&activityList.size()!=0) {
+            if (!activityList.isEmpty()) {
                 facilityAudit.getFacility().setFacilityActivities(activityList);
             }
             auditList.add(facilityAudit);
@@ -127,7 +127,7 @@ public class CancelAuditDelegator {
     /**
      * @param bpc
      */
-    public void DOSubmitCancelAudit(BaseProcessClass bpc) {
+    public void doSubmitCancelAudit(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         List<FacilityAudit> auditList = (List<FacilityAudit>) ParamUtil.getSessionAttr(request, AuditConstants.AUDIT_LIST);
         String cancelReason = ParamUtil.getRequestString(request, AuditConstants.PARAM_REASON);
@@ -146,14 +146,13 @@ public class CancelAuditDelegator {
     public void prepareAOCancelAuditData(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         ParamUtil.setSessionAttr(request, AuditConstants.FACILITY_AUDIT_APP, null);
-//        String auditId = ParamUtil.getMaskedString(request, AuditConstants.AUDIT_ID);
         String auditAppId = "D57B8FFB-151D-EC11-BE6E-000C298D317C";
 
         FacilityAuditApp facilityAuditApp = auditClient.getFacilityAuditAppById(auditAppId).getEntity();
         FacilityAudit facilityAudit = auditClient.getFacilityAuditById(facilityAuditApp.getFacilityAudit().getId()).getEntity();
 
         List<FacilityActivity> activityList = auditClient.getFacilityActivityByFacilityId(facilityAudit.getFacility().getId()).getEntity();
-        if (activityList!=null&&activityList.size()!=0) {
+        if (!activityList.isEmpty()) {
             facilityAudit.getFacility().setFacilityActivities(activityList);
         }
 
@@ -165,7 +164,7 @@ public class CancelAuditDelegator {
     /**
      * @param bpc
      */
-    public void AOApprovalAuditDate(BaseProcessClass bpc) {
+    public void aoApprovalAuditDate(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         FacilityAuditApp auditApp = (FacilityAuditApp)ParamUtil.getSessionAttr(request, AuditConstants.FACILITY_AUDIT_APP);
         FacilityAudit audit = new FacilityAudit();
@@ -178,7 +177,7 @@ public class CancelAuditDelegator {
     /**
      * @param bpc
      */
-    public void AORejectAuditDate(BaseProcessClass bpc) {
+    public void aoRejectAuditDate(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         FacilityAuditApp auditApp = (FacilityAuditApp)ParamUtil.getSessionAttr(request, AuditConstants.FACILITY_AUDIT_APP);
         auditApp.setStatus(AuditConstants.PARAM_AUDIT_STATUS_PENDING_DO);

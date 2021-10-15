@@ -21,6 +21,7 @@ public final class RevocationConstants {
     public static final String APP_TYPE_REVOCATION = "BSBAPTY006";
 
     public static final String PARAM_APPROVAL_NO = "approvalNo";
+    public static final String PARAM_APPROVAL_ID = "approvalId";
     public static final String PARAM_FACILITY_NAME = "facilityName";
     public static final String PARAM_FACILITY_ADDRESS = "facilityAddress";
     public static final String PARAM_FACILITY_CLASSIFICATION = "facilityClassification";
@@ -87,6 +88,7 @@ public final class RevocationConstants {
     public static final String AUDIT_DOC_DTO = "auditDocDto";
 
     public static final String FACILITY = "facility";
+    public static final String APPROVAL = "approval";
     public static final String FLAG = "flag";
     public static final String BACK = "back";
     public static final String FROM = "from";

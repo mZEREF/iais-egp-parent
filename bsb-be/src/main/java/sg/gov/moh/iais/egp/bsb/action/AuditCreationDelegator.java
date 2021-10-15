@@ -12,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import sg.gov.moh.iais.egp.bsb.client.AuditClient;
 import sg.gov.moh.iais.egp.bsb.client.BiosafetyEnquiryClient;
 import sg.gov.moh.iais.egp.bsb.constant.AuditConstants;
-import sg.gov.moh.iais.egp.bsb.constant.RevocationConstants;
 import sg.gov.moh.iais.egp.bsb.dto.PageInfo;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
 import sg.gov.moh.iais.egp.bsb.dto.audit.AuditQueryDto;
@@ -22,7 +21,6 @@ import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashSet;
@@ -74,10 +72,9 @@ public class AuditCreationDelegator {
             ParamUtil.setRequestAttr(request, AuditConstants.KEY_AUDIT_PAGE_INFO, searchResult.getEntity().getPageInfo());
             List<FacilityAudit> audits = searchResult.getEntity().getTasks();
 
-            List<FacilityActivity> activityList = new ArrayList<>();
             for (FacilityAudit audit : audits) {
-                activityList = auditClient.getFacilityActivityByFacilityId(audit.getFacility().getId()).getEntity();
-                if (activityList!=null&&activityList.size()!=0) {
+                List<FacilityActivity> activityList = auditClient.getFacilityActivityByFacilityId(audit.getFacility().getId()).getEntity();
+                if (!activityList.isEmpty()) {
                     audit.getFacility().setFacilityActivities(activityList);
                 }
             }
@@ -138,7 +135,7 @@ public class AuditCreationDelegator {
         for (String fId : list) {
             Facility facility = auditClient.getFacilityById(fId).getEntity();
             List<FacilityActivity> activityList = auditClient.getFacilityActivityByFacilityId(fId).getEntity();
-            if (activityList!=null&&activityList.size()!=0) {
+            if (!activityList.isEmpty()) {
                 facility.setFacilityActivities(activityList);
             }
             facilityList.add(facility);
@@ -161,7 +158,7 @@ public class AuditCreationDelegator {
         facilityAudit.setAuditType(auditType);
         facilityAudit.setStatus("AUDITST001");
         facilityAudit.setRemarks(remarks);
-        if (facilityList.size()>0||facilityList!=null){
+        if (!facilityList.isEmpty()){
             for (Facility facility : facilityList) {
                 Facility fac = new Facility();
                 fac.setId(facility.getId());
@@ -233,7 +230,7 @@ public class AuditCreationDelegator {
     }
 
     public static List<String> repeatListWayTwo(List<String> list){
-        HashSet set = new HashSet(list);
+        HashSet<String> set = new HashSet<>(list);
         list.clear();
         list.addAll(set);
         return list;

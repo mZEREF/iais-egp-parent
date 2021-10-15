@@ -2,7 +2,7 @@ package sg.gov.moh.iais.egp.bsb.dto.revocation;
 
 import lombok.Data;
 import sg.gov.moh.iais.egp.bsb.dto.PageInfo;
-import sg.gov.moh.iais.egp.bsb.entity.Facility;
+import sg.gov.moh.iais.egp.bsb.entity.Approval;
 
 import java.util.List;
 
@@ -11,7 +11,7 @@ import java.util.List;
  **/
 
 @Data
-public class FacilityQueryResultDto {
+public class ApprovalQueryResultDto {
     private PageInfo pageInfo;
-    private List<Facility> tasks;
+    private List<Approval> tasks;
 }
