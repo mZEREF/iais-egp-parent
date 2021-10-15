@@ -1,4 +1,4 @@
-package sg.gov.moh.iais.egp.bsb.dto.register.facilityCertifier;
+package sg.gov.moh.iais.egp.bsb.dto.register.afc;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;

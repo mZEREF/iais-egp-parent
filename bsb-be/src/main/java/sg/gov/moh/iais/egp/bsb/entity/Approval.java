@@ -1,13 +1,12 @@
 package sg.gov.moh.iais.egp.bsb.entity;
-
-
+import com.ecquaria.cloud.moh.iais.common.base.BaseEntity;
 import lombok.Data;
-import sg.gov.moh.iais.egp.bsb.common.BaseEntity;
-
 import java.util.Date;
+
 
 @Data
 public class Approval extends BaseEntity {
+
     private String id;
 
     private String processType;
@@ -16,7 +15,7 @@ public class Approval extends BaseEntity {
 
     private String status;
 
-    private Date approvalSubmissionDate;
+    private Date approvalDate;
 
     private Date approvalStartDate;
 

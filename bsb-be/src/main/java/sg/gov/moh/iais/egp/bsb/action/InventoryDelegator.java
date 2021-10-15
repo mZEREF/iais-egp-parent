@@ -127,18 +127,18 @@ public class InventoryDelegator {
      if("agent".equals(count)){
          InventoryAgentResultDto inventoryAgentResultDto =  inventoryClient.findInventoryByAgentInfo(inventoryDto).getEntity();
          List<FacilityBiologicalAgent> facilityBiologicalAgents = inventoryAgentResultDto.getBsbAgent();
-         for (FacilityBiologicalAgent agent : facilityBiologicalAgents) {
-             agent.setBioName(inventoryClient.getBiologicalById(agent.getBiologicalId()).getEntity().getName());
-         }
+//         for (FacilityBiologicalAgent agent : facilityBiologicalAgents) {
+//             agent.setBioName(inventoryClient.getBiologicalById(agent.getBiologicalId()).getEntity().getName());
+//         }
          ParamUtil.setRequestAttr(request,PARAM_INVENTORY_RESULT,facilityBiologicalAgents);
          ParamUtil.setRequestAttr(request,PARAM_INVENTORY_PARAM,inventoryDto);
          ParamUtil.setRequestAttr(request, KEY_PAGE_INFO, inventoryAgentResultDto.getPageInfo());
      }else if("date".equals(count)){
          InventoryDtResultDto inventoryDtResultDto = inventoryClient.findInventoryByDt(inventoryDto).getEntity();
          List<FacilityBiologicalAgent> facilityBiologicalAgents = inventoryDtResultDto.getBsbDt();
-         for (FacilityBiologicalAgent agent : facilityBiologicalAgents) {
-             agent.setBioName(inventoryClient.getBiologicalById(agent.getBiologicalId()).getEntity().getName());
-         }
+//         for (FacilityBiologicalAgent agent : facilityBiologicalAgents) {
+//             agent.setBioName(inventoryClient.getBiologicalById(agent.getBiologicalId()).getEntity().getName());
+//         }
          ParamUtil.setRequestAttr(request,PARAM_INVENTORY_RESULT,facilityBiologicalAgents);
          ParamUtil.setRequestAttr(request,PARAM_INVENTORY_PARAM,inventoryDto);
          ParamUtil.setRequestAttr(request, KEY_PAGE_INFO, inventoryDtResultDto.getPageInfo());

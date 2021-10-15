@@ -4,12 +4,10 @@ import com.ecquaria.cloud.moh.iais.common.annotation.ExcelProperty;
 import com.ecquaria.cloud.moh.iais.common.annotation.ExcelSheetProperty;
 import lombok.Data;
 import java.io.Serializable;
-import java.util.Date;
 
 /**
- * AUTHOR: YiMing
- * DATE:2021/7/26 15:38
- * DESCRIPTION: TODO
+ *@author YiMing
+ * @version 2021/10/15 14:16
  **/
 
 @Data

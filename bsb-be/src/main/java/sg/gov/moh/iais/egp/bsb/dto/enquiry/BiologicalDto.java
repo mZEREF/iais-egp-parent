@@ -4,9 +4,8 @@ import com.ecquaria.cloud.moh.iais.common.base.BaseEntity;
 import lombok.Data;
 
 /**
- * AUTHOR: YiMing
- * DATE:2021/8/6 13:44
- * DESCRIPTION: TODO
+ *@author YiMing
+ * @version 2021/10/15 14:16
  **/
 
 

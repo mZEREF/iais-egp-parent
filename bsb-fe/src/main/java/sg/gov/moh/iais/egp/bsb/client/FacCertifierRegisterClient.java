@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
 import sg.gov.moh.iais.egp.bsb.dto.ValidationResultDto;
 
-import sg.gov.moh.iais.egp.bsb.dto.register.facilityCertifier.*;
+import sg.gov.moh.iais.egp.bsb.dto.register.afc.*;
 
 
 @FeignClient(value = "bsb-fe-api", configuration = FeignClientsConfiguration.class, contextId = "cerReg")

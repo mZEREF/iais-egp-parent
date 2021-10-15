@@ -18,7 +18,7 @@ import java.util.List;
  **/
 @Slf4j
 public class BiologicalName {
-    public static <T> List<T> setBioName(String pkName, Class<T> t, List<T> list, Object object) {
+    public static <T> List<T> setBioName(String pkName, List<T> list, Object object) {
         try {
             Iterator each = list.iterator();
             while (each.hasNext()) {

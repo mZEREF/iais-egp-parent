@@ -1,4 +1,4 @@
-package sg.gov.moh.iais.egp.bsb.dto.register.facilityCertifier;
+package sg.gov.moh.iais.egp.bsb.dto.register.afc;
 
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;

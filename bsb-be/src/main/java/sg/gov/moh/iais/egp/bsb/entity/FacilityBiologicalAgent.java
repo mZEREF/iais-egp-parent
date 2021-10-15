@@ -1,27 +1,28 @@
 package sg.gov.moh.iais.egp.bsb.entity;
-
+import com.ecquaria.cloud.moh.iais.common.base.BaseEntity;
 import lombok.Data;
 
-import java.io.Serializable;
 import java.util.List;
 
 @Data
-public class FacilityBiologicalAgent implements Serializable {
+public class FacilityBiologicalAgent extends BaseEntity {
 
 	private String id;
 
 	private Facility facility;
 
-	private FacilitySchedule facilitySchedule;
+	private Application application;
 
-	private String riskLevel;
+	private FacilityActivity facilityActivity;
+
+	private String approveType;
 
 	private String biologicalId;
 
 	private List<FacilityAgentSample> facilityAgentSamples;
 
-	private String bioName;
+	private Approval approval;
 
-	private String admin;
 
+	private String useStatus;
 }

@@ -1,4 +1,4 @@
-package sg.gov.moh.iais.egp.bsb.dto.register.facilityCertifier;
+package sg.gov.moh.iais.egp.bsb.dto.register.afc;
 
 import com.ecquaria.sz.commons.util.ParamUtil;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;

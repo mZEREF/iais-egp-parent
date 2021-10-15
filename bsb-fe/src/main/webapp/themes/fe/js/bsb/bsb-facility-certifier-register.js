@@ -1,8 +1,12 @@
 $(function () {
 
-    // var element = $("textarea");
-    // var temp =  element.text().replace(/\r?\n/g,"<br/>").replace(/\s/g,"&nbsp;");
-    // element.html(temp);
+    $('.file-upload').click(function () {
+        var index = $(this).closest('.file-upload-gp').find('input[name="configIndex"]').val();
+        $('input[name="uploadKey"]').val(index);
+        clearFlagValueFEFile();
+        $('#selectFileDiv').html('<input id="selectedFile" class="selectedFile"  name="selectedFile" type="file" style="display: none;" onclick="fileClicked(event)" onchange="fileChangedLocal(this,event)" aria-label="selectedFile1">');
+        $('input[type="file"]').click();
+    });
 
     $("#next").click(function () {
         showWaiting();
@@ -52,6 +56,30 @@ $(function () {
     $(".removeBtn").click(removeBtnEventHandler);
 
 });
+
+function fileClicked(event) {
+    var fileElement = event.target;
+    if (fileElement.value != "") {
+        console.log("Clone( #" + fileElement.id + " ) : " + fileElement.value.split("\\").pop())
+        clone[fileElement.id] = $(fileElement).clone(); //'Saving Clone'
+    }
+    //What ever else you want to do when File Chooser Clicked
+}
+
+// FileChanged()
+function fileChangedLocal(obj, event) {
+    var fileElement = event.target;
+    if (fileElement.value == "") {
+        fileChanged(event);
+    } else {
+        var file = obj.value;
+        if (file != null && file != '' && file != undefined) {
+            var configIndex = $('input[name="uploadKey"]').val();
+            ajaxCallUploadForMax('mainForm',configIndex,true);
+        }
+    }
+}
+
 
 function showLeader(obj){
    $(obj).parent().parent().parent().next().show();
