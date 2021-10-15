@@ -82,7 +82,7 @@
                                                             <div class="table-gp" id="beInboxFilter">
                                                                 <iais:section title="">
                                                                     <div>&nbsp</div>
-                                                                    <c:if test="${application.processType=='PROTYPE001' && application.status=='BSBAPST001'}">
+                                                                    <c:if test="${submitDetailsDto.processType=='PROTYPE001' && submitDetailsDto.applicationStatus=='BSBAPST001'}">
                                                                         <div>
                                                                             <iais:row>
                                                                                 <iais:field value="Risk Level of the Biological Agent/Toxin" required="true"></iais:field>
@@ -193,7 +193,7 @@
                                                                             </iais:row>
                                                                         </div>
                                                                     </c:if>
-                                                                    <c:if test="${(application.processType=='PROTYPE002' || application.processType=='PROTYPE003' || application.processType=='PROTYPE004' || application.processType=='PROTYPE005') && application.status=='BSBAPST001'}">
+                                                                    <c:if test="${(submitDetailsDto.processType=='PROTYPE002' || submitDetailsDto.processType=='PROTYPE003' || submitDetailsDto.processType=='PROTYPE004' || submitDetailsDto.processType=='PROTYPE005') && submitDetailsDto.applicationStatus=='BSBAPST001'}">
                                                                         <div>
                                                                             <iais:row>
                                                                                 <iais:field value="Risk Level of the Biological Agent/Toxin" required="true"></iais:field>
@@ -287,7 +287,7 @@
                                                                             </iais:row>
                                                                         </div>
                                                                     </c:if>
-                                                                    <c:if test="${application.processType=='PROTYPE001' && application.status=='BSBAPST002'}">
+                                                                    <c:if test="${submitDetailsDto.processType=='PROTYPE001' && submitDetailsDto.applicationStatus=='BSBAPST002'}">
                                                                         <div>
                                                                             <iais:row>
                                                                                 <iais:field value="DO Remarks" required="false"></iais:field>
@@ -404,7 +404,7 @@
                                                                             </iais:row>
                                                                         </div>
                                                                     </c:if>
-                                                                    <c:if test="${(application.processType=='PROTYPE002' || application.processType=='PROTYPE003' || application.processType=='PROTYPE004' || application.processType=='PROTYPE005') && application.status=='BSBAPST002'}">
+                                                                    <c:if test="${(submitDetailsDto.processType=='PROTYPE002' || submitDetailsDto.processType=='PROTYPE003' || submitDetailsDto.processType=='PROTYPE004' || submitDetailsDto.processType=='PROTYPE005') && submitDetailsDto.applicationStatus=='BSBAPST002'}">
                                                                         <div>
                                                                             <iais:row>
                                                                                 <iais:field value="DO Remarks" required="false"></iais:field>
@@ -507,7 +507,7 @@
                                                                             </iais:row>
                                                                         </div>
                                                                     </c:if>
-                                                                    <c:if test="${application.status=='BSBAPST003'}">
+                                                                    <c:if test="${submitDetailsDto.applicationStatus=='BSBAPST003'}">
                                                                         <div>
                                                                             <iais:row>
                                                                                 <iais:field value="Risk Level of the Biological Agent/Toxin" required="false"></iais:field>
@@ -583,7 +583,7 @@
                                                                 </iais:section>
                                                                 <div align="right">
                                                                     <a style="float:left;padding-top: 1.1%;" class="back" href="#" id="processBack"><em class="fa fa-angle-left"></em> Back</a>
-                                                                    <c:if test="${(application.processType=='PROTYPE002' || application.processType=='PROTYPE003' || application.processType=='PROTYPE004' || application.processType=='PROTYPE005') && application.status=='BSBAPST003'}">
+                                                                    <c:if test="${(submitDetailsDto.processType=='PROTYPE002' || submitDetailsDto.processType=='PROTYPE003' || submitDetailsDto.processType=='PROTYPE004' || submitDetailsDto.processType=='PROTYPE005') && submitDetailsDto.applicationStatus=='BSBAPST003'}">
                                                                         <button name="finalAssessmentBtn" id="finalAssessmentButton" type="button" class="btn btn-primary">Final Assessment</button>
                                                                     </c:if>
                                                                     <button name="submitButton" id="submitButton" type="button" class="btn btn-primary">Submit</button>

@@ -10,8 +10,6 @@ import sg.gov.moh.iais.egp.bsb.dto.process.DoScreeningDto;
 import sg.gov.moh.iais.egp.bsb.dto.process.SubmitDetailsDto;
 import sg.gov.moh.iais.egp.bsb.entity.*;
 
-import java.util.List;
-
 /**
  * @author : LiRan
  * @date : 2021/8/20
@@ -27,9 +25,6 @@ public interface ProcessClient {
 
     @GetMapping(path = "/bio_info/info/{biologicalId}")
     ResponseDto<Biological> getBiologicalById(@PathVariable(name = "biologicalId") String biologicalId);
-
-    @GetMapping(path = "/bsb_MohOfficer/routingHistory/{applicationNo}")
-    FeignResponseEntity<List<RoutingHistory>> getRoutingHistoriesByApplicationNo(@RequestParam(name = "applicationNo") String applicationNo);
 
     @GetMapping(path = "/bsb_MohOfficer/applicationMisc")
     FeignResponseEntity<ApplicationMisc> getApplicationMiscByApplicationIdAndAndReason(@RequestParam(value = "applicationId") String applicationId,@RequestParam(value = "reason") String reason);

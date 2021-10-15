@@ -2,6 +2,8 @@ package sg.gov.moh.iais.egp.bsb.dto.process;
 
 import lombok.Data;
 import sg.gov.moh.iais.egp.bsb.entity.Biological;
+import sg.gov.moh.iais.egp.bsb.entity.FacilityActivity;
+import sg.gov.moh.iais.egp.bsb.entity.RoutingHistory;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -24,20 +26,16 @@ public class SubmitDetailsDto implements Serializable {
 
     private String facilityName;
 
-    private String postalCode;
-
-    private String blkNo;
-
-    private String floorNo;
-
-    private String unitNo;
-
-    private String streetName;
+    private String facilityAddress;
 
     private Date applicationDt;
 
     private String applicationStatus;
 
+    private FacilityActivity facilityActivity;
+
     private List<Biological> biologicals;
+
+    private List<RoutingHistory> routingHistories;
 
 }

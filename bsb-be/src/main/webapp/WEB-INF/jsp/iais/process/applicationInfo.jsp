@@ -23,7 +23,7 @@
                     </tr>
                     <tr>
                         <td align="right">Facility Name/Address</td>
-                        <td style="padding-left : 20px">${submitDetailsDto.facilityName} / Block ${submitDetailsDto.blkNo} ${submitDetailsDto.streetName} ${submitDetailsDto.floorNo}-${submitDetailsDto.unitNo} Singapore ${submitDetailsDto.postalCode}</td>
+                        <td style="padding-left : 20px">${submitDetailsDto.facilityName}/${submitDetailsDto.facilityAddress}</td>
                     </tr>
                     <tr>
                         <td align="right">Submission Date</td>

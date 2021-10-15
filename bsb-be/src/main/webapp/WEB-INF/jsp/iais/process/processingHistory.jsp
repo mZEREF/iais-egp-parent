@@ -16,7 +16,7 @@
                 </tr>
                 </thead>
                 <tbody>
-                <c:forEach items="${processingHistory}" var="history">
+                <c:forEach items="${submitDetailsDto.routingHistories}" var="history">
                     <tr>
                         <td>
                             <p><iais:code code="${history.actionBy}"></iais:code></p>
