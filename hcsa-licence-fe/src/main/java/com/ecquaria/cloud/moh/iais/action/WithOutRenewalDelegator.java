@@ -749,9 +749,17 @@ public class WithOutRenewalDelegator {
         String autoGrpNo = appSubmissionService.getGroupNo(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
 
         if(appSubmissionDtos.size() == 1){
+            AppSubmissionDto appSubmissionDto = appSubmissionDtos.get(0);
             // create rfc data
-            List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDtos.get(0).getAppGrpPremisesDtoList();
+            List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
                 if(appGrpPremisesDtoList != null){
+                    List<AppGrpPremisesDto> autoPremisesDtos = EqRequestForChangeSubmitResultChange.generateDtosForAutoFields(
+                            appGrpPremisesDtoList,oldAppSubmissionDtoAppGrpPremisesDtoList, appEditSelectDto);
+                    boolean changeAutoFields = EqRequestForChangeSubmitResultChange.isChangeGrpPremises(autoPremisesDtos,
+                            oldAppSubmissionDtoAppGrpPremisesDtoList);
+                    AppSubmissionDto autoAppSubmissionDto = getAutoSubForRenewSelf(autoPremisesDtos,appEditSelectDto,changeAutoFields,appSubmissionDto);
+                    AppEditSelectDto autoChangeSelectDto =  autoAppSubmissionDto != null ? autoAppSubmissionDto.getChangeSelectDto() : null;
+                    int isAutoPremises = isAutoPremises(appEditSelectDto,changeAutoFields);
                     if (appEditSelectDto.isPremisesEdit()) {
                         for (int i = 0; i < appGrpPremisesDtoList.size(); i++) {
                             setRfcHciNameChanged(appGrpPremisesDtoList,oldAppSubmissionDtoAppGrpPremisesDtoList,i);
@@ -759,11 +767,15 @@ public class WithOutRenewalDelegator {
                             if (licenceDtos != null) {
                                 for (LicenceDto licenceDto : licenceDtos) {
                                     AppSubmissionDto appSubmissionDtoByLicenceId = requestForChangeService.getAppSubmissionDtoByLicenceId(licenceDto.getId());
-                                    setRfcPremisesSubmissionDto(appSubmissionDtoByLicenceId,licenseeId,appGrpPremisesDtoList,appSubmissionDtos.get(0),i,MiscUtil.transferEntityDto(appEditSelectDto,AppEditSelectDto.class));
+                                    setRfcPremisesSubmissionDto(appSubmissionDtoByLicenceId,licenseeId,appGrpPremisesDtoList,appSubmissionDto,i,MiscUtil.transferEntityDto(appEditSelectDto,AppEditSelectDto.class));
                                     if (appSubmissionDtoByLicenceId.isAutoRfc()) {
                                         autoAppSubmissionDtos.add(appSubmissionDtoByLicenceId);
                                     } else {
                                         noAutoAppSubmissionDtos.add(appSubmissionDtoByLicenceId);
+                                        if(isAutoPremises == 2){
+                                            autoAppSubmissionDtos.add(EqRequestForChangeSubmitResultChange.generateDtosForAutoPremesis(appSubmissionDtoByLicenceId,
+                                                    autoPremisesDtos,autoGrpNo));
+                                        }
                                     }
                                 }
                             }
@@ -772,12 +784,54 @@ public class WithOutRenewalDelegator {
 
                     if(appEditSelectDto.isLicenseeEdit()){
                         //gen lic change rfc
-                        NewApplicationHelper.addToAuto(getAutoChangeLicAppSubmissions(oldAppSubmissionDto,autoGrpNo,appSubmissionDtos.get(0)), autoAppSubmissionDtos, noAutoAppSubmissionDtos);
+                        NewApplicationHelper.addToAuto(getAutoChangeLicAppSubmissions(oldAppSubmissionDto,autoGrpNo,appSubmissionDto), autoAppSubmissionDtos);
+                        // re-set change edit select dto
+                        if (autoAppSubmissionDto != null) {
+                            autoChangeSelectDto.setLicenseeEdit(true);
+                            appEditSelectDto.setLicenseeEdit(false);
+                        }
                     }
 
                     if(appEditSelectDto.isServiceEdit()){
                         List<AppSubmissionDto> personAppSubmissionList = serviceInfoChangeEffectPersonForRFC.personContact(licenseeId, appSubmissionDtos.get(0), oldAppSubmissionDto);
-                        NewApplicationHelper.addToAuto(personAppSubmissionList, autoAppSubmissionDtos, noAutoAppSubmissionDtos);
+                        NewApplicationHelper.addToAuto(personAppSubmissionList, autoAppSubmissionDtos);
+                        List<String> changeList = appSubmissionDto.getChangeSelectDto().getPersonnelEditList();
+                        if (! appEditSelectDto.isAutoRfc() && !IaisCommonUtils.isEmpty(changeList) && autoAppSubmissionDto == null) {
+                            autoAppSubmissionDto = (AppSubmissionDto) com.ecquaria.cloud.moh.iais.common.utils.CopyUtil.copyMutableObject(appSubmissionDto);
+                            autoAppSubmissionDto.setAmount(0.0);
+                            autoChangeSelectDto = new AppEditSelectDto();
+                            autoAppSubmissionDto.setChangeSelectDto(autoChangeSelectDto);
+                        }
+                        if (autoAppSubmissionDto != null) {
+                            autoChangeSelectDto.setServiceEdit(true);
+                            autoAppSubmissionDto.setAppSvcRelatedInfoDtoList(
+                                    serviceInfoChangeEffectPersonForRFC.generateDtosForAutoFields(autoAppSubmissionDto, oldAppSubmissionDto,
+                                            changeList, appSubmissionDto.getAppEditSelectDto().getPersonnelEditList()));
+                            // re-set change edit select dto
+                            if (!appEditSelectDto.isChangeBusinessName() && !appEditSelectDto.isChangeVehicle() && !appEditSelectDto.isChangePersonnel()) {
+                                appEditSelectDto.setServiceEdit(false);
+                            }
+                        }
+                    }
+
+                    if (appEditSelectDto.isDocEdit() && autoAppSubmissionDto != null) {
+                        appEditSelectDto.setDocEdit(false);
+                        autoChangeSelectDto.setDocEdit(true);
+                    }
+                    // re-set change edit select dto
+                    if (1 == isAutoPremises) {
+                        appEditSelectDto.setPremisesEdit(false);
+                        appEditSelectDto.setPremisesListEdit(false);
+                    }
+                    // add the current auto app submission
+                    if (autoAppSubmissionDto != null) {
+                        if (1 == isAutoPremises || 2 == isAutoPremises) {
+                            autoChangeSelectDto.setPremisesEdit(true);
+                            autoChangeSelectDto.setPremisesListEdit(true);
+                        }
+                        NewApplicationHelper.reSetAdditionalFields(autoAppSubmissionDto, autoChangeSelectDto,autoGrpNo);
+                        autoAppSubmissionDto.setChangeSelectDto(autoChangeSelectDto);
+                        autoAppSubmissionDtos.add(0, autoAppSubmissionDto);
                     }
                 }
         }else if(appSubmissionDtos.size() > 1){
@@ -899,6 +953,33 @@ public class WithOutRenewalDelegator {
         setGiroAcc(renewAppSubmissionDtos,bpc.request);
         ParamUtil.setSessionAttr(bpc.request, RenewalConstants.WITHOUT_RENEWAL_APPSUBMISSION_ATTR,renewDto);
     }
+
+    private AppSubmissionDto getAutoSubForRenewSelf(List<AppGrpPremisesDto> autoPremisesDtos,AppEditSelectDto appEditSelectDto,boolean changeAutoFields,AppSubmissionDto appSubmissionDto){
+        AppSubmissionDto autoAppSubmissionDto = null;
+        if (!appEditSelectDto.isAutoRfc() && (appEditSelectDto.isLicenseeEdit() || appEditSelectDto.isDocEdit() || changeAutoFields)) {
+            autoAppSubmissionDto = (AppSubmissionDto) com.ecquaria.cloud.moh.iais.common.utils.CopyUtil.copyMutableObject(appSubmissionDto);
+            autoAppSubmissionDto.setAmount(0.0);
+            autoAppSubmissionDto.setChangeSelectDto(new AppEditSelectDto());
+            if (changeAutoFields) {
+                autoAppSubmissionDto.setAppGrpPremisesDtoList(autoPremisesDtos);
+            }
+        }
+        return autoAppSubmissionDto;
+    }
+
+    private int isAutoPremises(AppEditSelectDto appEditSelectDto,boolean changeAutoFields){
+            if(appEditSelectDto.isPremisesEdit()){
+                AppEditSelectDto changeSelectDto = new AppEditSelectDto();
+                changeSelectDto.setPremisesEdit(true);
+                changeSelectDto.setPremisesListEdit(true);
+                changeSelectDto.setChangeHciName(appEditSelectDto.isChangeHciName());
+                changeSelectDto.setChangeInLocation(appEditSelectDto.isChangeInLocation());
+                changeSelectDto.setChangeAddFloorUnit(appEditSelectDto.isChangeAddFloorUnit());
+                return changeSelectDto.isAutoRfc() ? 1 : (changeAutoFields ? 2 : 0 );
+            }
+            return -1;
+    }
+
     private void setRfcSubInfo(AppSubmissionDto appSubmissionDtoNew,AppSubmissionDto dto,String autoGrpNo,boolean needDec){
         if(StringUtil.isNotEmpty(autoGrpNo)){
             dto.setAppGrpNo(autoGrpNo);
