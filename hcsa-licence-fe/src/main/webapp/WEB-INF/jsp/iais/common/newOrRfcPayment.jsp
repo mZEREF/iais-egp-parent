@@ -89,7 +89,7 @@
                     </tr>
                 </c:if>
                 <!--complexSpecifiedFeeExt -->
-                <c:if test="${complexSpecifiedFeeExt.svcNames.size()>0 }">
+                <c:if test="${not empty complexSpecifiedFeeExt }">
                     <tr>
                         <td class="breakdown">
                             <p>&nbsp;&nbsp;
@@ -299,7 +299,7 @@
                         </tr>
                     </c:if>
                     <!--simpleSpecifiedFeeExt -->
-                    <c:if test="${simpleSpecifiedFeeExt.svcNames.size()>0 }">
+                    <c:if test="${not empty complexSpecifiedFeeExt }">
                         <tr>
                             <td>
                                 <p>&nbsp;&nbsp;Simple <iais:code code="CDN004"/></p>
@@ -323,7 +323,7 @@
                     </c:if>
 
                     <!--complexSpecifiedFeeExt -->
-                    <c:if test="${complexSpecifiedFeeExt.svcNames.size()>0 }">
+                    <c:if test="${not empty complexSpecifiedFeeExt }">
                         <tr>
                             <td class="breakdown">
                                 <p>&nbsp;&nbsp;<em>Complex <iais:code code="CDN004"/> <c:if test="${complexSpecifiedFeeExt.svcNames.size()>1}">(${complexSpecifiedFeeExt.svcNames.size()})</c:if></em></p>
