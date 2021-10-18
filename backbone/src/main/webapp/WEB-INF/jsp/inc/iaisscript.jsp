@@ -46,7 +46,7 @@
     if(aBoolean){
 %>
 
-<script src="<%=EngineHelper.getWorkspaceContextPath()%>/JavaScriptServlet"></script>
+<script src="<%=request.getContextPath()%>/JavaScriptServlet"></script>
 <%
     }
 %>

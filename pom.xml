@@ -33,15 +33,18 @@
     </properties>
 
     <modules>
+        <module>web</module>
+        <module>web-common</module>
+        <module>backbone</module>
         <module>hcsa-licence-fe</module>
         <module>backbone</module>
         <module>systemadmin</module>
-        <module>web-common</module>
-        <module>web</module>
         <module>fe-main</module>
         <module>hcsa-licence-be</module>
         <module>payment</module>
         <module>be-main</module>
+        <module>bsb-fe</module>
+        <module>bsb-be</module>
     </modules>
     <dependencyManagement>
         <dependencies>
@@ -291,6 +294,7 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>2.22.1</version>
                 <configuration>
+                    <skipTests>true</skipTests>
                     <systemPropertyVariables>
                         <jacoco-agent.destfile>${sonar.jacoco.reportPaths}</jacoco-agent.destfile>
                     </systemPropertyVariables>
@@ -302,6 +306,9 @@
     <profiles>
         <profile>
             <id>sz-nexus</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
             <repositories>
                 <repository>
                     <id>nexus-repo</id>
@@ -319,7 +326,7 @@
         <profile>
             <id>sg-nexus</id>
             <activation>
-                <activeByDefault>true</activeByDefault>
+                <activeByDefault>false</activeByDefault>
             </activation>
             <repositories>
                 <repository>

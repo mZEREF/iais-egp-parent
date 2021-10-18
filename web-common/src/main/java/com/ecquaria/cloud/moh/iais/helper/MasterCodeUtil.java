@@ -121,6 +121,19 @@ public final class MasterCodeUtil {
 
     public static final String DESIGNATION_OTHER_CODE_KEY                               = "DES999";
 
+    //ApplicationInfo
+    public static final String CATE_ID_BSB_APP_TYPE = "FF506BE0-75EF-EB11-8B7D-000C293F0C99";
+    public static final String CATE_ID_BSB_FAC_TYPE = "5013CFE0-9A2B-4D28-ADFC-313383A3FDA8";
+    public static final String CATE_ID_BSB_PRO_TYPE = "B538B60A-DFD1-4D1B-A668-8E9E4D61EC2A";
+    public static final String CATE_ID_BSB_FAC_CLASSIFICATION = "856CC1D9-0272-41AA-AE64-C1C9815FA63E";
+    public static final String CATE_ID_BSB_SCH_TYPE = "D0B94AC3-1FA4-4087-AFCC-C82622A77B80";
+    public static final String CATE_ID_BSB_RISK_LEVEL_OF_THE_BIOLOGICAL_AGENT = "2C41F2F7-6D09-44AC-80B8-F1FA7BC8D38A";
+    public static final String CATE_ID_BSB_APP_STATUS = "B37CA772-53BC-4CD5-A644-F5A34513B6C0";
+
+    //FacilityInfo
+    public static final String CATE_ID_BSB_GAZETTED_AREA = "5B9B1838-C58C-49E9-AA65-3078F67B1ED9";
+    public static final String CATE_ID_BSB_FACILITY_STATUS = "4A6DAE2F-A8D4-4966-A17B-BFBAE669E8E4";
+
     /**
      * @description: refresh the master codes into cache
      *
