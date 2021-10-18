@@ -75,7 +75,13 @@
                     <c:set var="detailFeeDto" value="${AppSubmissionDto.detailFeeDto}"/>
                     <tr>
                         <td>
-                            <p><c:out value="${AppSubmissionDto.serviceName}"></c:out></p>
+                            <c:if test="${AppSubmissionDto.isBundledFee==1}">
+                                <p>&nbsp;&nbsp;Bundled Fees</p>
+                            </c:if>
+                            <p>
+                                <c:if test="${AppSubmissionDto.isBundledFee==1}">&nbsp;&nbsp;-</c:if>
+                                <c:out value="${AppSubmissionDto.serviceName}"/>
+                            </p>
                         </td>
                         <td>
                             Renewal

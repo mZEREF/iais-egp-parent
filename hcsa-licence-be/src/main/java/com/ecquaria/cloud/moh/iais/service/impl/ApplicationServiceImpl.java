@@ -16,6 +16,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.application.AppReturnFeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGroupMiscDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryExtDto;
@@ -65,6 +66,7 @@ import com.ecquaria.cloud.moh.iais.service.client.EicClient;
 import com.ecquaria.cloud.moh.iais.service.client.EmailClient;
 import com.ecquaria.cloud.moh.iais.service.client.FillUpCheckListGetAppClient;
 import com.ecquaria.cloud.moh.iais.service.client.GenerateIdClient;
+import com.ecquaria.cloud.moh.iais.service.client.InspectionTaskClient;
 import com.ecquaria.cloud.moh.iais.service.client.MsgTemplateClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import com.ecquaria.cloud.moh.iais.service.client.TaskOrganizationClient;
@@ -122,6 +124,9 @@ public class ApplicationServiceImpl implements ApplicationService {
 
     @Autowired
     private TaskOrganizationClient taskOrganizationClient;
+
+    @Autowired
+    private InspectionTaskClient inspectionTaskClient;
 
     @Autowired
     MsgTemplateClient msgTemplateClient;
@@ -667,11 +672,14 @@ public class ApplicationServiceImpl implements ApplicationService {
         }
         //0065135
         if(appEditSelectDto != null){
+            if(appEditSelectDto.isLicenseeEdit()) {
+                editSelect = editSelect + "Licensee Details";
+            }
             if(appEditSelectDto.isPremisesEdit()){
-                editSelect = editSelect + "Mode of Service Delivery";
+                editSelect = editSelect + (StringUtil.isEmpty(editSelect)?"":", ") + "Mode of Service Delivery";
             }
             if(appEditSelectDto.isDocEdit()){
-                editSelect = editSelect +(StringUtil.isEmpty(editSelect)?"":", ") +"Primary Documents";
+                editSelect = editSelect + (StringUtil.isEmpty(editSelect)?"":", ") +"Primary Documents";
             }
             if(appEditSelectDto.isServiceEdit()){
                 editSelect = editSelect + (StringUtil.isEmpty(editSelect)?"":", ") +"Service Related Information - " + applicationViewDto.getServiceType();
@@ -1166,10 +1174,10 @@ public class ApplicationServiceImpl implements ApplicationService {
     private List<String> addVehicleNameByAppType(ApplicationDto applicationDto, AppSvcVehicleDto appSvcVehicleDto, List<String> vehicleNoList) {
         if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationDto.getApplicationType())) {
             if(ApplicationConsts.VEHICLE_ACTION_CODE_ADD.equals(appSvcVehicleDto.getActCode())) {
-                vehicleNoList.add(appSvcVehicleDto.getVehicleName());
+                vehicleNoList.add(appSvcVehicleDto.getDisplayName());
             }
         } else {
-            vehicleNoList.add(appSvcVehicleDto.getVehicleName());
+            vehicleNoList.add(appSvcVehicleDto.getDisplayName());
         }
         return vehicleNoList;
     }
@@ -1183,7 +1191,7 @@ public class ApplicationServiceImpl implements ApplicationService {
                 for (String appSvcVehicle : vehicleNoList) {
                     for(AppSvcVehicleDto appSvcVehicleDto : appSvcVehicleDtos) {
                         if(!StringUtil.isEmpty(appSvcVehicle) && appSvcVehicleDto != null) {
-                            if(appSvcVehicle.equals(appSvcVehicleDto.getVehicleName())) {
+                            if(appSvcVehicle.equals(appSvcVehicleDto.getDisplayName())) {
                                 appSvcVehicleDtoList.add(appSvcVehicleDto);
                             }
                         }
@@ -1200,6 +1208,48 @@ public class ApplicationServiceImpl implements ApplicationService {
             }
         }
         return applicationViewDto;
+    }
+
+    @Override
+    public BroadcastApplicationDto setRejectOtherAppGrps(ApplicationGroupDto applicationGroupDto, BroadcastApplicationDto broadcastApplicationDto) {
+        if(applicationGroupDto != null) {
+            String appGrpId = applicationGroupDto.getId();
+            AppGroupMiscDto appGroupMiscDto = applicationClient.getAppGrpMiscByAppGrpIdTypeStatus(appGrpId, ApplicationConsts.APP_GROUP_MISC_TYPE_AMEND_GROUP_ID, AppConsts.COMMON_STATUS_ACTIVE).getEntity();
+            if(appGroupMiscDto != null && !StringUtil.isEmpty(appGroupMiscDto.getId())) {
+                //set misc status
+                appGroupMiscDto.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
+                List<AppGroupMiscDto> appGroupMiscDtos = IaisCommonUtils.genNewArrayList();
+                appGroupMiscDtos.add(appGroupMiscDto);
+                broadcastApplicationDto.setAppGroupMiscDtos(appGroupMiscDtos);
+                //set other group reject
+                String appGroupId = appGroupMiscDto.getMiscValue();
+                ApplicationGroupDto appGrpDto = inspectionTaskClient.getApplicationGroupDtoByAppGroId(appGroupId).getEntity();
+                if(appGrpDto != null) {
+                    appGrpDto.setStatus(ApplicationConsts.APPLICATION_GROUP_STATUS_REJECT);
+                    List<ApplicationGroupDto> applicationGroupDtos = IaisCommonUtils.genNewArrayList();
+                    applicationGroupDtos.add(appGrpDto);
+                    broadcastApplicationDto.setAppMiscGroupDtos(applicationGroupDtos);
+                }
+            }
+        }
+        return broadcastApplicationDto;
+    }
+
+    @Override
+    public BroadcastApplicationDto setAppGrpMiscInactive(ApplicationGroupDto applicationGroupDto, BroadcastApplicationDto broadcastApplicationDto) {
+        if(applicationGroupDto != null) {
+            String appGrpId = applicationGroupDto.getId();
+            AppGroupMiscDto appGroupMiscDto = applicationClient.getAppGrpMiscByAppGrpIdTypeStatus(appGrpId, ApplicationConsts.APP_GROUP_MISC_TYPE_AMEND_GROUP_ID, AppConsts.COMMON_STATUS_ACTIVE).getEntity();
+            if(appGroupMiscDto != null && !StringUtil.isEmpty(appGroupMiscDto.getId())) {
+                appGroupMiscDto.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
+                //set
+                List<AppGroupMiscDto> appGroupMiscDtos = IaisCommonUtils.genNewArrayList();
+                appGroupMiscDtos.add(appGroupMiscDto);
+
+                broadcastApplicationDto.setAppGroupMiscDtos(appGroupMiscDtos);
+            }
+        }
+        return broadcastApplicationDto;
     }
 
     private TaskDto completedTask(TaskDto taskDto) {

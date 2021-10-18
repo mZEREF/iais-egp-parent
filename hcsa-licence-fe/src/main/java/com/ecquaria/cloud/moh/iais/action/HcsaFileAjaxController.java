@@ -1,25 +1,34 @@
 package com.ecquaria.cloud.moh.iais.action;
 
 
+import com.ecquaria.cloud.helper.ConfigHelper;
 import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.message.MessageDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
+import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.ValidationUtils;
 import com.ecquaria.cloud.moh.iais.helper.FileUtils;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
+import com.ecquaria.cloud.systeminfo.ServicesSysteminfo;
 import com.ecquaria.sz.commons.util.JsonUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
@@ -66,24 +75,30 @@ public class HcsaFileAjaxController {
             size = (Integer) ParamUtil.getSessionAttr(request,SEESION_FILES_MAP_AJAX
                     + fileAppendId + SEESION_FILES_MAP_AJAX_MAX_INDEX);
         }
-        String errerMesssage = getErrorMessage(selectedFile);
+        String errorMessage = getErrorMessage(selectedFile);
         MessageDto messageCode = new MessageDto();
-         if(!StringUtil.isEmpty(errerMesssage)){
+         if(!StringUtil.isEmpty(errorMessage)){
              messageCode.setMsgType("N");
-             messageCode.setDescription(errerMesssage);
+             messageCode.setDescription(errorMessage);
              return JsonUtil.toJson(messageCode);
          }else {
              messageCode.setMsgType("Y");
          }
+         File toFile = null;
+         String tempFolder = null;
          try{
              if(reloadIndex == -1){
                  ParamUtil.setSessionAttr(request,SEESION_FILES_MAP_AJAX+fileAppendId+SEESION_FILES_MAP_AJAX_MAX_INDEX,size+1);
                  if (needMaxGlobal) {
                      ParamUtil.setSessionAttr(request, GLOBAL_MAX_INDEX_SESSION_ATTR, size + 1);
                  }
-                 map.put(fileAppendId+size, FileUtils.multipartFileToFile(selectedFile));
+                 tempFolder = request.getSession().getId() + fileAppendId + size;
+                 toFile = FileUtils.multipartFileToFile(selectedFile, tempFolder);
+                 map.put(fileAppendId + size, toFile);
              }else {
-                 map.put(fileAppendId+reloadIndex, FileUtils.multipartFileToFile(selectedFile));
+                 tempFolder = request.getSession().getId() + fileAppendId + reloadIndex;
+                 toFile = FileUtils.multipartFileToFile(selectedFile, tempFolder);
+                 map.put(fileAppendId + reloadIndex, toFile);
                  size = reloadIndex;
              }
 
@@ -92,6 +107,9 @@ public class HcsaFileAjaxController {
              log.info("----------change MultipartFile to file  falie-----------------");
              return "";
          }
+         // Save File to other nodes
+        saveFileToOtherNodes(selectedFile, toFile, tempFolder);
+
         ParamUtil.setSessionAttr(request,SEESION_FILES_MAP_AJAX+fileAppendId,(Serializable)map);
 
         StringBuilder stringBuilder = new StringBuilder();
@@ -102,24 +120,27 @@ public class HcsaFileAjaxController {
         String reUploadButtonString="  <button type=\"button\" class=\"btn btn-secondary btn-sm\"\n" +
                 "                                                    onclick=\"javascript:reUploadFileFeAjax('replaceForUpload',indexReplace,'replaceForUploadForm');\">\n" +
                 "                                               ReUpload</button>";
-        if(selectedFile != null && !StringUtil.isEmpty(selectedFile.getOriginalFilename())) {
-            String[] fileSplit = selectedFile.getOriginalFilename().split("\\.");
-            //name
-            String fileName = IaisCommonUtils.getDocNameByStrings(fileSplit) + "." + fileSplit[fileSplit.length - 1];
-            String CSRF = ParamUtil.getString(request, "OWASP_CSRFTOKEN");
-            String url = "<a href=\"pageContext.request.contextPath/download-session-file?fileAppendIdDown=replaceFileAppendIdDown&fileIndexDown=replaceFileIndexDown&OWASP_CSRFTOKEN=replaceCsrf\" title=\"Download\" class=\"downloadFile\">";
-            fileName = url + fileName + "</a>";
-            stringBuilder.append("<Div ").append(" id ='").append(fileAppendId).append(suffix).append("' >").
-                    append(fileName.replace("pageContext.request.contextPath", "/hcsa-licence-web")
-                            .replace("replaceFileAppendIdDown", fileAppendId)
-                            .replace("replaceFileIndexDown", String.valueOf(size)).replace("replaceCsrf", CSRF))
-                    .append(' ').append(deleteButtonString.replace("replaceForDelete", fileAppendId).
-                    replace("indexReplace", String.valueOf(size)))
-                    .append(reUploadButtonString.replace("replaceForUploadForm", uploadFormId).
-                            replace("replaceForUpload", fileAppendId).
-                            replace("indexReplace", String.valueOf(size))
-                    ).append("</Div>")
-            ;
+        if(selectedFile != null) {
+            String originalFileName = selectedFile.getOriginalFilename();
+            if(originalFileName != null) {
+                String[] fileSplit = originalFileName.split("\\.");
+                //name
+                String fileName = IaisCommonUtils.getDocNameByStrings(fileSplit) + "." + fileSplit[fileSplit.length - 1];
+                String CSRF = ParamUtil.getString(request, "OWASP_CSRFTOKEN");
+                String url = "<a href=\"pageContext.request.contextPath/download-session-file?fileAppendIdDown=replaceFileAppendIdDown&fileIndexDown=replaceFileIndexDown&OWASP_CSRFTOKEN=replaceCsrf\" title=\"Download\" class=\"downloadFile\">";
+                fileName = url + fileName + "</a>";
+                stringBuilder.append("<Div ").append(" id ='").append(fileAppendId).append(suffix).append("' >").
+                        append(fileName.replace("pageContext.request.contextPath", "/hcsa-licence-web")
+                                .replace("replaceFileAppendIdDown", fileAppendId)
+                                .replace("replaceFileIndexDown", String.valueOf(size)).replace("replaceCsrf", StringUtil.getNonNull(CSRF)))
+                        .append(' ').append(deleteButtonString.replace("replaceForDelete", fileAppendId).
+                        replace("indexReplace", String.valueOf(size)))
+                        .append(reUploadButtonString.replace("replaceForUploadForm", uploadFormId).
+                                replace("replaceForUpload", fileAppendId).
+                                replace("indexReplace", String.valueOf(size))
+                        ).append("</Div>")
+                ;
+            }
         }
         messageCode.setDescription(stringBuilder.toString());
         log.info("-----------ajax-upload-file end------------");
@@ -147,8 +168,9 @@ public class HcsaFileAjaxController {
         }
 
         //name
-        if(!StringUtil.isEmpty(selectedFile.getOriginalFilename())) {
-            String[] fileSplit = selectedFile.getOriginalFilename().split("\\.");
+        String orginName = selectedFile.getOriginalFilename();
+        if(orginName != null) {
+            String[] fileSplit = orginName.split("\\.");
             String fileName = IaisCommonUtils.getDocNameByStrings(fileSplit) + "." + fileSplit[fileSplit.length - 1];
             if (fileName.length() > 100) {
                 return MessageUtil.getMessageDesc("GENERAL_ERR0022");
@@ -220,5 +242,52 @@ public class HcsaFileAjaxController {
             }
         }
         log.debug(StringUtil.changeForLog("download-session-file end ...."));
+    }
+
+    private void saveFileToOtherNodes(MultipartFile selectedFile, File toFile, String tempFolder) {
+        List<String> ipAddrs = ServicesSysteminfo.getInstance().getAddressesByServiceName("hcsa-licence-web");
+        if (ipAddrs != null && ipAddrs.size() > 1 && toFile != null) {
+            String localIp = MiscUtil.getLocalHostExactAddress();
+            log.info(StringUtil.changeForLog("Local Ip is ==>" + localIp));
+            RestTemplate restTemplate = new RestTemplate();
+            for (String ip : ipAddrs) {
+                if (localIp.equals(ip)) {
+                    continue;
+                }
+                try {
+                    String port = ConfigHelper.getString("server.port", "8080");
+                    StringBuilder apiUrl = new StringBuilder("http://");
+                    apiUrl.append(ip).append(':').append(port).append("/hcsa-licence-web/tempFile-handler");
+                    log.info("Request URL ==> {}", apiUrl);
+
+                    HttpHeaders headers = new HttpHeaders();
+                    headers.setContentType(MediaType.MULTIPART_FORM_DATA);
+
+                    MultiValueMap<String, Object> multipartRequest = new LinkedMultiValueMap<>();
+                    HttpHeaders fileHeader = new HttpHeaders();
+                    byte[] content = selectedFile.getBytes();
+                    ByteArrayResource fileContentAsResource = new ByteArrayResource(content) {
+                        @Override
+                        public String getFilename() {
+                            return toFile.getName();
+                        }
+                    };
+                    HttpEntity<ByteArrayResource> fileEnt = new HttpEntity<>(fileContentAsResource, fileHeader);
+                    multipartRequest.add("selectedFile", fileEnt);
+                    HttpHeaders jsonHeader = new HttpHeaders();
+                    jsonHeader.setContentType(MediaType.APPLICATION_JSON);
+                    HttpEntity<String> jsonPart = new HttpEntity<>(toFile.getName(), jsonHeader);
+                    multipartRequest.add("fileName", jsonPart);
+                    jsonHeader = new HttpHeaders();
+                    jsonHeader.setContentType(MediaType.APPLICATION_JSON);
+                    jsonPart = new HttpEntity<>("ajaxUpload" + tempFolder, jsonHeader);
+                    multipartRequest.add("folderName", jsonPart);
+                    HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(multipartRequest, headers);
+                    restTemplate.postForObject(apiUrl.toString(), requestEntity, String.class);
+                } catch (Throwable e) {
+                    log.error(e.getMessage(), e);
+                }
+            }
+        }
     }
 }

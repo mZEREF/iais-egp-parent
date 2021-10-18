@@ -52,11 +52,11 @@
                                             <table aria-describedby="" class="table">
                                                 <thead>
                                                 <tr>
-                                                    <th width="25%">Regulation Clause Number</th>
-                                                    <th width="40%">Item</th>
-                                                    <th width="5%">Yes</th>
-                                                    <th width="5%">No</th>
-                                                    <th width="5%">N/A</th>
+                                                    <th scope="col" width="25%">Regulation Clause Number</th>
+                                                    <th scope="col" width="40%">Item</th>
+                                                    <th scope="col" width="5%">Yes</th>
+                                                    <th scope="col" width="5%">No</th>
+                                                    <th scope="col" width="5%">N/A</th>
                                                 </tr>
                                                 </thead>
                                                 <tbody>
@@ -70,9 +70,8 @@
                                                     </td>
 
                                                     <div class="modal fade " id="DeleteTemplateModal${status.index + 1}" tabindex="-1"
-                                                         role="dialog" aria-labelledby="regOutsideWindow"
-                                                         style="left: 50%;top: 50%;transform: translate(-50%,-50%);min-width:80%; overflow: visible;bottom: inherit;right: inherit;">
-                                                        <div class="modal-dialog modal-lg" role="document">
+                                                         role="dialog" aria-labelledby="regOutsideWindow">
+                                                        <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
                                                             <div class="modal-content">
                                                                 <div class="modal-body">
                                                                     <div class="row" style="height:500px;overflow:auto; ">

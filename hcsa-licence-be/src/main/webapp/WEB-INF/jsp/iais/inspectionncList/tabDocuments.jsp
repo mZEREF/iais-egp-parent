@@ -14,12 +14,12 @@
             <table aria-describedby="" class="table">
                 <thead>
                 <tr>
-                    <th width="30%">Document</th>
-                    <th width="20%">File</th>
-                    <th width="10%">Size</th>
-                    <th width="20%">Version</th>
-                    <th width="10%">Submitted By</th>
-                    <th width="10%">Date Submitted</th>
+                    <th scope="col" width="30%">Document</th>
+                    <th scope="col" width="20%">File</th>
+                    <th scope="col" width="10%">Size</th>
+                    <th scope="col" width="20%">Version</th>
+                    <th scope="col" width="10%">Submitted By</th>
+                    <th scope="col" width="10%">Date Submitted</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -51,7 +51,7 @@
                                 <p>
                                     <a hidden href="${pageContext.request.contextPath}/file-repo?filerepo=fileRo${status.index}&fileRo${status.index}=<iais:mask name="fileRo${status.index}"  value="${appSupDocDto.fileRepoId}"/>&fileRepoName=${URLEncoder.encode(appSupDocDto.document, StandardCharsets.UTF_8.toString())}"
                                        title="Download" class="downloadFile"><span id="${appSupDocDto.fileRepoId}Down">trueDown</span> </a>
-                                    <a onclick="doVerifyFileGo('${appSupDocDto.fileRepoId}')"><c:out value="${appSupDocDto.document}"></c:out></a>
+                                    <a href="javascript:void(0);" onclick="doVerifyFileGo('${appSupDocDto.fileRepoId}')"><c:out value="${appSupDocDto.document}"></c:out></a>
                                 </p>
                             </td>
                             <td width="10%">
@@ -82,12 +82,12 @@
             <table aria-describedby="" class="table">
                 <thead>
                 <tr>
-                    <th width="30%">Document</th>
-                    <th width="20%">File</th>
-                    <th width="10%">Size</th>
-                    <th width="20%">Submitted By</th>
-                    <th width="10%">Date Submitted</th>
-                    <th width="10%">Action</th>
+                    <th scope="col" width="30%">Document</th>
+                    <th scope="col" width="20%">File</th>
+                    <th scope="col" width="10%">Size</th>
+                    <th scope="col" width="20%">Submitted By</th>
+                    <th scope="col" width="10%">Date Submitted</th>
+                    <th scope="col" width="10%">Action</th>
                 </tr>
                 </thead>
                 <tbody id="tbodyFileListId">
@@ -119,7 +119,7 @@
                                         <p>
                                             <a hidden href="${pageContext.request.contextPath}/file-repo?filerepo=fileRo${status.index}&fileRo${status.index}=<iais:mask name="fileRo${status.index}"  value="${interalFile.fileRepoId}"/>&fileRepoName=${URLEncoder.encode(interalFile.docName, StandardCharsets.UTF_8.toString())}.${interalFile.docType}"
                                                title="Download" class="downloadFile"><span id="${interalFile.fileRepoId}Down">trueDown</span></a>
-                                            <a  onclick="doVerifyFileGo('${interalFile.fileRepoId}')"><c:out
+                                            <a href="javascript:void(0);" onclick="doVerifyFileGo('${interalFile.fileRepoId}')"><c:out
                                                     value="${interalFile.docName}.${interalFile.docType}"></c:out>
                                             </a>
                                         </p>

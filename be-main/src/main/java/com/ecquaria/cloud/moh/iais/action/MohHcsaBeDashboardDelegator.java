@@ -340,6 +340,7 @@ public class MohHcsaBeDashboardDelegator {
                             successStatus = InspectionConstants.INSPECTION_STATUS_PENDING_JOB_CREATE_TASK_TO_LEADER;
                             beDashboardSupportService.inspectorAo1(loginContext, applicationViewDto, taskDto);
                         }else if(ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_REPORT_REVIEW.equals(status)){
+                            mohHcsaBeDashboardService.createReportResult(taskDto,applicationViewDto,loginContext.getUserId());
                             successStatus = ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_REPORT_REVIEW;
                             routingTask(bpc, HcsaConsts.ROUTING_STAGE_AO2, ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02, RoleConsts.USER_ROLE_AO2,applicationViewDto,taskDto);
                         }else{
@@ -1214,6 +1215,10 @@ public class MohHcsaBeDashboardDelegator {
                         }
                     }
                     applicationMainClient.updateCessationApplications(specApplicationDtos);
+                }
+            } else if (ApplicationConsts.APPLICATION_TYPE_POST_INSPECTION.equals(applicationType)) {
+                if (ApplicationConsts.APPLICATION_STATUS_APPROVED.equals(appStatus)) {
+                    broadcastApplicationDto.getApplicationDto().setStatus(ApplicationConsts.APPLICATION_STATUS_LICENCE_GENERATED);
                 }
             }
         }

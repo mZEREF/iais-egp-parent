@@ -7,6 +7,7 @@ import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst;
 import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.renewal.RenewalConstants;
@@ -50,6 +51,7 @@ import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.helper.SqlHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
+import com.ecquaria.cloud.moh.iais.service.AssessmentGuideService;
 import com.ecquaria.cloud.moh.iais.service.InboxService;
 import com.ecquaria.cloud.moh.iais.service.client.AppInboxClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
@@ -101,8 +103,10 @@ public class InterInboxDelegator {
     }
     @Autowired
     AppInboxClient appInboxClient;
-
-    public static final String twoSentences = "This following licences are bundled with this licence. Would you like to renew them as well:";
+    @Autowired
+    AssessmentGuideService assessmentGuideService;
+    private static final  String LIC_PRINT_FLAG = "InterInboxDelegator_lic_print_flag";
+    public static final String twoSentences = "This following licences are bundled with this licence. Would you like to renew them as well: ";
 
     private static String msgStatus[] = {
             MessageConstants.MESSAGE_STATUS_READ,
@@ -120,6 +124,7 @@ public class InterInboxDelegator {
         IaisEGPHelper.clearSessionAttr(bpc.request,FilterParameter.class);
         initInboxDto(bpc);
         AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_INTERNAL_INBOX, AuditTrailConsts.FUNCTION_INBOX);
+        ParamUtil.setSessionAttr(bpc.request,LIC_PRINT_FLAG,IaisEGPHelper.isActiveMigrated() ? AppConsts.NO : AppConsts.YES);
     }
 
     public void initToPage(BaseProcessClass bpc){
@@ -146,10 +151,12 @@ public class InterInboxDelegator {
         JwtEncoder jwtEncoder = new JwtEncoder();
         String jwtStr = jwtEncoder.encode(claims, privateKey);
         String elisUrl = ConfigHelper.getString("moh.elis.url");
-        bpc.response.setHeader("authToken", jwtStr);
         log.info(StringUtil.changeForLog("Jwt token => " + jwtStr));
         log.info(StringUtil.changeForLog("Elis Url ==> " + elisUrl));
-        IaisEGPHelper.redirectUrl(bpc.response, elisUrl);
+//        IaisEGPHelper.redirectUrl(bpc.response, elisUrl + "?authToken=" + StringUtil.escapeSecurityScript(jwtStr));
+        ParamUtil.setRequestAttr(request, "ssoToElisUrl",
+                elisUrl + "?authToken=" + StringUtil.escapeSecurityScript(jwtStr));
+        IaisEGPHelper.doLogout(request);
     }
 
     public void toMOHAlert(BaseProcessClass bpc) throws IOException {
@@ -165,10 +172,12 @@ public class InterInboxDelegator {
         JwtEncoder jwtEncoder = new JwtEncoder();
         String jwtStr = jwtEncoder.encode(claims, privateKey);
         String alertUrl = ConfigHelper.getString("moh.mohAlert.url");
-        bpc.response.setHeader("authToken", jwtStr);
         log.info(StringUtil.changeForLog("Jwt token => " + jwtStr));
         log.info(StringUtil.changeForLog("Elis Url ==> " + alertUrl));
-        IaisEGPHelper.redirectUrl(bpc.response, alertUrl);
+//        IaisEGPHelper.redirectUrl(bpc.response, alertUrl);
+        ParamUtil.setRequestAttr(request, "ssoToAlertUrl",
+                alertUrl + "?authToken=" + StringUtil.escapeSecurityScript(jwtStr));
+        IaisEGPHelper.doLogout(request);
     }
 
     /**
@@ -1075,7 +1084,7 @@ public class InterInboxDelegator {
             else{
                 inParams.add(applicationStatus);
             }
-            SqlHelper.builderInSql(inboxParam, "status", "appStatus", inParams);
+            SqlHelper.builderInSql(inboxParam, "B.status", "appStatus", inParams);
 //            inboxParam.addFilter("appStatus", applicationStatus,true);
         }
         if(applicationNo != null){
@@ -1184,6 +1193,23 @@ public class InterInboxDelegator {
                 licenceDtos.add(entity);
             }
         }*/
+        //EAS and MTS licence only one active/approve licence for appeal rejected
+        if(applicationDto.getApplicationType().equals(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION)&&applicationDto.getStatus().equals(ApplicationConsts.APPLICATION_STATUS_REJECTED)){
+            List<HcsaServiceDto> hcsaServiceDtos = IaisCommonUtils.genNewArrayList();
+            HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceById(applicationDto.getServiceId());
+            if(AppServicesConsts.SERVICE_CODE_EMERGENCY_AMBULANCE_SERVICE.equals(hcsaServiceDto.getSvcCode()) || AppServicesConsts.SERVICE_CODE_MEDICAL_TRANSPORT_SERVICE.equals(hcsaServiceDto.getSvcCode())){
+                hcsaServiceDtos.add(hcsaServiceDto);
+            }
+            if(!IaisCommonUtils.isEmpty(hcsaServiceDtos)){
+                LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request,AppConsts.SESSION_ATTR_LOGIN_USER);
+                boolean canCreateEasOrMts = assessmentGuideService.canApplyEasOrMts(loginContext.getLicenseeId(),hcsaServiceDtos);
+                if(!canCreateEasOrMts){
+                    ParamUtil.setRequestAttr(bpc.request,InboxConst.APP_RECALL_RESULT,MessageUtil.getMessageDesc("NEW_ERR0029"));
+                    ParamUtil.setRequestAttr(bpc.request,"appIsAppealed",Boolean.FALSE);
+                    return;
+                }
+            }
+        }
         if(!licenceDtos.isEmpty()){
             //change APPEAL_ACK002
             ParamUtil.setRequestAttr(bpc.request,InboxConst.APP_RECALL_RESULT,MessageUtil.getMessageDesc("APPEAL_ACK002"));
@@ -1552,7 +1578,8 @@ public class InterInboxDelegator {
         ParamUtil.setSessionAttr(request,InboxConst.LIC_PARAM, null);
         ParamUtil.setSessionAttr(request,InboxConst.INTER_INBOX_USER_INFO, null);
         ParamUtil.setSessionAttr(request,AppConsts.SESSION_INTER_INBOX_MESSAGE_ID,null);
-
+        ParamUtil.setSessionAttr(request,"DraftNumber",null);
+        ParamUtil.setSessionAttr(request,"isSingle",null);
     }
 
     private InterInboxUserDto initInboxDto(BaseProcessClass bpc) throws IOException {
@@ -1564,7 +1591,7 @@ public class InterInboxDelegator {
             String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
             IaisEGPHelper.redirectUrl(bpc.response, tokenUrl);
         }else{
-            AuditTrailDto auditTrailDto = inboxService.getLastLoginInfo(loginContext.getLoginId());
+            AuditTrailDto auditTrailDto = inboxService.getLastLoginInfo(loginContext.getLoginId(), bpc.request.getSession().getId());
             InterInboxUserDto interInboxUserDto = new InterInboxUserDto();
             interInboxUserDto.setLicenseeId(loginContext.getLicenseeId());
             interInboxUserDto.setUserId(loginContext.getUserId());

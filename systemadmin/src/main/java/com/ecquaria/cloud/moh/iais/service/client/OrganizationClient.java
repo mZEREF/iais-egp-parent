@@ -6,6 +6,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.BeUserQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.FeUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.OrganizationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.UserGroupCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.WorkingGroupDto;
 import com.ecquaria.cloudfeign.FeignConfiguration;
@@ -69,4 +70,7 @@ public interface OrganizationClient {
 
     @GetMapping(value = "/iais-orguser-be/org-user-account-sample-by-organization-id",produces = { MediaType.APPLICATION_JSON_VALUE })
     FeignResponseEntity<List<OrgUserDto>> getUserListByOrganId(@RequestParam("organizationId") String organizationId);
+
+    @GetMapping(value = "/organization/organization-id",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<OrganizationDto> getOrganizationById(@RequestParam("id")String id);
 }

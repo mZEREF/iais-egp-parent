@@ -1,14 +1,16 @@
 <div class="clinicalDirectorContent">
     <input type="hidden" class="isPartEdit" name="isPartEdit${index}" value="0"/>
     <input type="hidden" class="psnEditField" name="psnEditField${index}" value="<c:out value="${clinicalDirectorDto.psnEditFieldStr}" />"/>
-    <input type="hidden" class="cdIndexNo" name="cdIndexNo${index}" value="${clinicalDirectorDto.cgoIndexNo}"/>
+    <input type="hidden" class="cdIndexNo" name="cdIndexNo${index}" value="${clinicalDirectorDto.indexNo}"/>
     <input type="hidden" class="licPerson" name="licPerson" value="${clinicalDirectorDto.licPerson ? '1' : '0'}"/>
     <div class="col-md-12 col-xs-12">
         <div class="edit-content">
             <c:if test="${'true' == canEdit}">
                 <p>
                 <div class="text-right app-font-size-16">
-                    <a class="edit cdEdit"><em class="fa fa-pencil-square-o"></em><span>&nbsp;</span>Edit</a>
+                    <a class="edit cdEdit" href="javascript:void(0);">
+                        <em class="fa fa-pencil-square-o"></em><span>&nbsp;</span>Edit
+                    </a>
                 </div>
                 </p>
             </c:if>
@@ -21,7 +23,9 @@
                 <div class="control-label formtext col-md-5 col-xs-5">
                     <label  class="control-label control-set-font control-font-label">
                         <div class="cgo-header">
-                            <strong>Clinical Director <label class="assign-psn-item"><c:if test="${clinicalDirectorDtoList.size() > 1}">${index+1}</c:if></label></strong>
+                            <strong><c:out value="${singleName}"/>
+                                <label class="assign-psn-item"><c:if test="${clinicalDirectorDtoList.size() > 1}">${index+1}</c:if></label>
+                            </strong>
                         </div>
                     </label>
                 </div>
@@ -55,7 +59,7 @@
             <div class="control control-caption-horizontal">
                 <div class=" form-group form-horizontal formgap">
                     <div class="col-sm-6 control-label formtext col-md-5">
-                        <label  class="control-label control-set-font control-font-label">Assign a Clinical Director Person</label>
+                        <label  class="control-label control-set-font control-font-label">Assign a <c:out value="${singleName}"/> Person</label>
                         <span class="mandatory">*</span>
                     </div>
                     <div class="col-sm-5 col-md-7" id="assignSelect">
@@ -279,7 +283,7 @@
         <div class="row control control-caption-horizontal">
             <div class=" form-group form-horizontal formgap holdCerByEMSDiv">
                 <div class="control-label formtext col-md-5 col-xs-5">
-                    <label  class="control-label control-set-font control-font-label">Clinical Director (CD) holds a valid certification issued by an Emergency Medical Services ("EMS") Medical Directors workshop&nbsp;<span class="mandatory">*</span></label>
+                    <label  class="control-label control-set-font control-font-label">Clinical Governance Officer (CGO) holds a valid certification issued by an Emergency Medical Services ("EMS") Medical Directors workshop&nbsp;<span class="mandatory">*</span></label>
                 </div>
                 <input type="hidden" class="holdCerByEMSVal" name="holdCerByEMSVal${index}" value="${clinicalDirectorDto.holdCerByEMS}"/>
                 <div class="form-check col-md-3 col-xs-3">

@@ -16,6 +16,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremisesSpecialDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcVehicleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
@@ -36,6 +37,7 @@ import com.ecquaria.cloud.moh.iais.service.InsRepService;
 import com.ecquaria.cloud.moh.iais.service.InspectionPreTaskService;
 import com.ecquaria.cloud.moh.iais.service.InspectionRectificationProService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
+import com.ecquaria.cloud.moh.iais.service.client.AppSvcVehicleBeClient;
 import com.ecquaria.cloud.moh.iais.service.client.FillUpCheckListGetAppClient;
 import com.ecquaria.cloudfeign.FeignException;
 import freemarker.template.TemplateException;
@@ -78,6 +80,9 @@ public class InspectionRectificationProDelegator extends InspectionCheckListComm
 
     @Autowired
     private InsRepService insRepService;
+
+    @Autowired
+    private AppSvcVehicleBeClient appSvcVehicleBeClient;
 
     private static final String SERLISTDTO ="serListDto";
     private static final String COMMONDTO ="commonDto";
@@ -151,7 +156,8 @@ public class InspectionRectificationProDelegator extends InspectionCheckListComm
             applicationViewDto = applicationViewService.getApplicationViewDtoByCorrId(taskDto.getRefNo());
             ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
             inspectionPreTaskDto.setAppStatus(applicationDto.getStatus());
-
+            //get vehicle no
+            List<AppSvcVehicleDto> appSvcVehicleDtos = appSvcVehicleBeClient.getAppSvcVehicleDtoListByCorrId(taskDto.getRefNo()).getEntity();
             LicenceDto licenceDto = inspectionPreTaskService.getLicenceDtoByLicenceId(applicationDto.getOriginLicenceId());
             ParamUtil.setSessionAttr(bpc.request,"licenceDto", licenceDto);
             List<InspecUserRecUploadDto> inspecUserRecUploadDtos = IaisCommonUtils.genNewArrayList();
@@ -169,8 +175,10 @@ public class InspectionRectificationProDelegator extends InspectionCheckListComm
                     if (1 == feRecFlag && 0 == recFlag) {
                         InspecUserRecUploadDto iDto = new InspecUserRecUploadDto();
                         iDto.setAppPremisesPreInspectionNcItemDto(appPremisesPreInspectionNcItemDto);
+                        //set Vehicle No. To Show
+                        String vehicleNo = inspectionRectificationProService.getVehicleShowName(appPremisesPreInspectionNcItemDto.getVehicleName(), appSvcVehicleDtos);
+                        iDto.setVehicleNo(vehicleNo);
                         iDto.setAppNo(applicationDto.getApplicationNo());
-                        iDto.setVehicleNo(appPremisesPreInspectionNcItemDto.getVehicleName());
                         if (checklistItemDtos != null && !(checklistItemDtos.isEmpty())) {
                             iDto = setNcDataByItemId(iDto, itemId, checklistItemDtos);
                         }
@@ -412,28 +420,49 @@ public class InspectionRectificationProDelegator extends InspectionCheckListComm
             fileRepoDto = inspectionRectificationProService.getCheckListFileRealName(fileRepoDto, taskDto.getRefNo(), AppConsts.COMMON_STATUS_ACTIVE, ApplicationConsts.APP_DOC_TYPE_CHECK_LIST);
             inspectionReportDto.setPracticesFileId(appPremisesSpecialDocDto.getFileRepoId());
         }
-        //get inspector lead
-        List<String> inspectorLeads = inspectionRectificationProService.getInspectorLeadsByWorkGroupId(taskDto.getWkGrpId());
-        String inspectorLeadShow = getInspectorLeadShowByList(inspectorLeads);
-        //get inspectors
-        InspectionReportDto inspectorUser = insRepService.getInspectorUser(taskDto, loginContext);
-        //get nc count
-        int ncCount = inspectionRectificationProService.getHowMuchNcByAppPremCorrId(taskDto.getRefNo());
-        //set best Practice
-        AppPremisesRecommendationDto ncRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(taskDto.getRefNo(), InspectionConstants.RECOM_TYPE_TCU).getEntity();
-        String bestPractice = "-";
-        if (!StringUtil.isEmpty(ncRecommendationDto.getBestPractice())) {
-            bestPractice = ncRecommendationDto.getBestPractice();
-        }
-        inspectionReportDto.setBestPractice(bestPractice);
-        inspectionReportDto.setInspectors(inspectorUser.getInspectors());
-        inspectionReportDto.setInspectorLeadStr(inspectorLeadShow);
-        inspectionReportDto.setInspectorLeads(inspectorLeads);
-        inspectionReportDto.setNcCount(ncCount);
+        //set show data for view checklist
+        inspectionReportDto = setViewCheckListData(taskDto, inspectionReportDto, loginContext);
+
         ParamUtil.setSessionAttr(bpc.request, "inspectionReportDto", inspectionReportDto);
         ParamUtil.setSessionAttr(bpc.request, "applicationViewDto", applicationViewDto);
         ParamUtil.setSessionAttr(bpc.request, "taskDto", taskDto);
         ParamUtil.setSessionAttr(bpc.request, "fileRepoDto", fileRepoDto);
+    }
+
+    private InspectionReportDto setViewCheckListData(TaskDto taskDto, InspectionReportDto inspectionReportDto, LoginContext loginContext) {
+        if(inspectionReportDto != null) {
+            //get inspector lead
+            List<String> inspectorLeads = inspectionRectificationProService.getInspectorLeadsByWorkGroupId(taskDto.getWkGrpId());
+            String inspectorLeadShow = getInspectorLeadShowByList(inspectorLeads);
+            //get inspectors
+            InspectionReportDto inspectorUser = insRepService.getInspectorUser(taskDto, loginContext);
+            //get nc count
+            int ncCount = inspectionRectificationProService.getHowMuchNcByAppPremCorrId(taskDto.getRefNo());
+            //set best Practice
+            AppPremisesRecommendationDto ncRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(taskDto.getRefNo(), InspectionConstants.RECOM_TYPE_TCU).getEntity();
+            String bestPractice = "-";
+            if (!StringUtil.isEmpty(ncRecommendationDto.getBestPractice())) {
+                bestPractice = ncRecommendationDto.getBestPractice();
+            }
+            //get Observation
+            String observation = fillupChklistService.getObservationByAppPremCorrId(taskDto.getRefNo());
+            if(StringUtil.isEmpty(observation)) {
+                observation = "-";
+            }
+            //get task Remarks
+            String taskRemarks = "-";
+            if (!StringUtil.isEmpty(ncRecommendationDto.getRemarks())) {
+                taskRemarks = ncRecommendationDto.getRemarks();
+            }
+            inspectionReportDto.setObservation(observation);
+            inspectionReportDto.setBestPractice(bestPractice);
+            inspectionReportDto.setTaskRemarks(taskRemarks);
+            inspectionReportDto.setInspectors(inspectorUser.getInspectors());
+            inspectionReportDto.setInspectorLeadStr(inspectorLeadShow);
+            inspectionReportDto.setInspectorLeads(inspectorLeads);
+            inspectionReportDto.setNcCount(ncCount);
+        }
+        return inspectionReportDto;
     }
 
     private String getInspectorLeadShowByList(List<String> inspectorLeads) {

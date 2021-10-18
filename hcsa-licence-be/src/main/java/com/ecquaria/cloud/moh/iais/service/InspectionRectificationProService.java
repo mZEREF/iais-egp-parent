@@ -9,7 +9,9 @@ import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptNonWorkingDateDto;
 import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcVehicleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistItemDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspEmailFieldDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionPreTaskDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
@@ -133,31 +135,49 @@ public interface InspectionRectificationProService {
     FileRepoDto getFileReportById(String fileRepoId);
 
     /**
-      * @author: shicheng
-      * @Date 2020/6/3
-      * @Param: adhocItemId
-      * @return: AdhocChecklistItemDto
-      * @Descripation: getAdhocChecklistItemById
-      */
+     * @author: shicheng
+     * @Date 2020/6/3
+     * @Param: adhocItemId
+     * @return: AdhocChecklistItemDto
+     * @Descripation: getAdhocChecklistItemById
+     */
     AdhocChecklistItemDto getAdhocChecklistItemById(String adhocItemId);
 
     /**
-      * @author: shicheng
-      * @Date 2020/6/3
-      * @Param: itemId
-      * @return: ChecklistItemDto
-      * @Descripation: getChklItemById
-      */
+     * @author: shicheng
+     * @Date 2020/6/3
+     * @Param: itemId
+     * @return: ChecklistItemDto
+     * @Descripation: getChklItemById
+     */
     ChecklistItemDto getChklItemById(String itemId);
 
     FileRepoDto getCheckListFileRealName(FileRepoDto fileRepoDto, String refNo, String status, String checkListFileType);
 
     /**
-      * @author: shicheng
-      * @Date 2021/3/13
-      * @Param: appNo
-      * @return: List<ApptNonWorkingDateDto>
-      * @Descripation: getApptNonWorkingDateByAppNo
-      */
+     * @author: shicheng
+     * @Date 2021/3/13
+     * @Param: appNo
+     * @return: List<ApptNonWorkingDateDto>
+     * @Descripation: getApptNonWorkingDateByAppNo
+     */
     List<ApptNonWorkingDateDto> getApptNonWorkingDateByAppNo(String appNo);
+
+    /**
+      * @author: shicheng
+      * @Date 2021/8/25
+      * @Param: inspEmailFieldDtos
+      * @return: List<InspEmailFieldDto>
+      * @Descripation: sortInspEmailFieldDtoByCategory
+      */
+    List<InspEmailFieldDto> sortInspEmailFieldDtoByCategory(List<InspEmailFieldDto> inspEmailFieldDtos);
+
+    /**
+      * @author: shicheng
+      * @Date 2021/9/22
+      * @Param: appSvcVehicleDtos, vehicleName
+      * @return: String
+      * @Descripation: getVehicleShowName
+      */
+    String getVehicleShowName(String vehicleName, List<AppSvcVehicleDto> appSvcVehicleDtos);
 }

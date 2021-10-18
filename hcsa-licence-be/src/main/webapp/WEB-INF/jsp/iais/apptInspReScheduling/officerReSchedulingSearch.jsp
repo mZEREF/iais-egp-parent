@@ -73,10 +73,11 @@
                 </iais:section>
                 <iais:pagination  param="inspReSchSearchParam" result="inspReSchSearchResult"/>
                 <div class="table-gp">
-                  <table class="table application-group">
+                  <table aria-describedby="" class="table application-group">
                     <thead>
-                      <tr align="center">
-                        <iais:sortableHeader needSort="false" field="" value="S/N"></iais:sortableHeader>
+                      <tr >
+                        <th scope="col" style="display: none"></th>
+                                <iais:sortableHeader needSort="false" field="" value="S/N"></iais:sortableHeader>
                         <iais:sortableHeader needSort="true" field="HCI_NAME" value="HCI Name"></iais:sortableHeader>
                         <iais:sortableHeader needSort="false" field="" value="Inspector(s)"></iais:sortableHeader>
                         <iais:sortableHeader needSort="true" field="RECOM_IN_DATE" value="Date and Time of Inspection"></iais:sortableHeader>

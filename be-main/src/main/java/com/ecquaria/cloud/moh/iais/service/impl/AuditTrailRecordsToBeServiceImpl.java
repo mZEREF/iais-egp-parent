@@ -12,17 +12,21 @@ import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
+import com.ecquaria.cloud.moh.iais.helper.FileUtils;
 import com.ecquaria.cloud.moh.iais.service.AuditTrailRecordsToBeService;
 import com.ecquaria.cloud.moh.iais.service.client.AuditTrailMainBeClient;
 import com.ecquaria.cloud.moh.iais.service.client.GenerateIdClient;
 import com.ecquaria.cloud.moh.iais.service.client.SystemBeLicMainClient;
 import com.ecquaria.sz.commons.util.FileUtil;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -33,10 +37,6 @@ import java.util.zip.CRC32;
 import java.util.zip.CheckedInputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
 
 /**
  * AuditTrailRecordsToBeServiceImpl
@@ -94,7 +94,7 @@ public class AuditTrailRecordsToBeServiceImpl implements AuditTrailRecordsToBeSe
                         log.info(StringUtil.changeForLog(name));
                         if (name.endsWith(RequestForInformationConstants.ZIP_NAME)) {
                             try {
-                                try (InputStream is = new FileInputStream(fil);
+                                try (InputStream is = java.nio.file.Files.newInputStream(fil.toPath());
                                      ByteArrayOutputStream by=new ByteArrayOutputStream();) {
                                     int count;
                                     byte [] size=new byte[1024];
@@ -129,6 +129,7 @@ public class AuditTrailRecordsToBeServiceImpl implements AuditTrailRecordsToBeSe
                                     String submissionId = generateIdClient.getSeqId().getEntity();
                                     this.download(v,name,refId,submissionId);
                                     //save success
+                                    FileUtils.deleteTempFile(fil);
                                 }catch (Exception e){
                                     log.error(e.getMessage(),e);
                                 }
@@ -154,7 +155,8 @@ public class AuditTrailRecordsToBeServiceImpl implements AuditTrailRecordsToBeSe
                 if(!file.exists()){
                     file.mkdirs();
                 }
-                os= new FileOutputStream(MiscUtil.generateFile(sharedPath+File.separator+RequestForInformationConstants.COMPRESS+File.separator+fileName+File.separator,zipEntry.getName()));
+                File outF = MiscUtil.generateFile(sharedPath+File.separator+RequestForInformationConstants.COMPRESS+File.separator+fileName+File.separator,zipEntry.getName());
+                os= java.nio.file.Files.newOutputStream(outF.toPath());
                 bos=new BufferedOutputStream(os);
                 InputStream is=zipFile.getInputStream(zipEntry);
                 bis=new BufferedInputStream(is);

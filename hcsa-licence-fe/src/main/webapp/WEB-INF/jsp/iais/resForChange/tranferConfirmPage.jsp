@@ -193,7 +193,7 @@
           </iais:row>
           <div class="form-check">
             <input class="form-check-input" id="confirm" type="checkbox" name="confirm" aria-invalid="false" value="1" checked="checked" disabled="disabled">
-            <label class="form-check-label" for="confirm"><span class="check-square"></span>I declare that the information that I have submitted is true</label>
+            <label class="form-check-label" for="confirm"><span class="check-square"></span><iais:message key="ACK_DEC001" escape="false" /></label>
             <p><span name="iaisErrorMsg" class="error-msg" id="error_confirmError"></span></p>
           </div>
         </iais:section>
@@ -203,7 +203,7 @@
   <div class="row">
     <div class="container">
       <div class="col-xs-12 col-md-6 text-left">
-        <a class="back" href="/hcsa-licence-web/eservice/INTERNET/MohRequestForChange?licenceId=<iais:mask name="licenceId" value="${prepareTranfer.licenceId}"/>"><em class="fa fa-angle-left"></em> Back</a>
+        <a class="back" href="/hcsa-licence-web/eservice/INTERNET/MohRequestForChange/preparePage"><em class="fa fa-angle-left"></em> Back</a>
       </div>
       <div class="col-xs-12 col-md-6 text-right">
         <a class="btn btn-primary next premiseId" id="Next" href="javascript:void(0);">Next</a>

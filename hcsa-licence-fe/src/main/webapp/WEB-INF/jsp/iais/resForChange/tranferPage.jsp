@@ -45,7 +45,7 @@
                                  <iais:row>
                                    <label class="col-xs-11 col-md-4 control-label">UEN of Licensee to transfer licence to <span style="color: red"> *</span>
                                      <a class="btn-tooltip styleguide-tooltip" data-toggle="tooltip" data-html="true" href="javascript:void(0);"
-                                        title='Please refer to <a>www.uen.org</a> for the UEN of the licensee'
+                                        title='Please refer to <a href = "https://www.uen.gov.sg" target="_blank">www.uen.gov.sg</a> for the UEN of the licensee.'
                                         style="z-index: 10"
                                         data-original-title="">i</a>
                                    </label>
@@ -58,12 +58,12 @@
                                  </iais:row>
                                  <iais:row id = "subLicenseeRow">
                                        <iais:field width="5" mandatory="true" value="Please select the licensee to transfer to"/>
-                                       <iais:value width="10" id = "subLicenseeDiv" cssClass="col-md-6 col-xs-6 other-charges-type-div">
+                                       <iais:value width="10" id = "subLicenseeDiv" cssClass="other-charges-type-div">
                                          <iais:select name="subLicensee" firstOption="Please Select"
                                                        value=""/>
                                        </iais:value>
+                                   <div class="clear"><br></br><br></br><br></br></div>
                                  </iais:row>
-
                          </iais:section>
                   </div>
                 </div>

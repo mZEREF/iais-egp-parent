@@ -13,6 +13,19 @@
     sop.webflow.rt.api.BaseProcessClass process =
             (sop.webflow.rt.api.BaseProcessClass) request.getAttribute("process");
 %>
+<style>
+    .glyphicon {
+        position: relative;
+        top: 15px;
+        display: inline-block;
+        font-family: 'Glyphicons Halflings',sans-serif;
+        font-style: normal;
+        font-weight: normal;
+        line-height: 1;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+    }
+</style>
 <webui:setLayout name="iais-intranet"/>
 <div class="main-content dashboard">
     <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
@@ -22,7 +35,7 @@
                 <div class="row form-horizontal">
                     <div class="bg-title col-xs-12 col-md-12">
                         <h2>
-                            <span>Add a GIRO Payee</span>
+                            <span>Preview GIRO Payee Details</span>
                         </h2>
                     </div>
                     <div class="col-xs-12 col-md-12">
@@ -36,66 +49,84 @@
                                 The GIRO arrangement must be approved by the bank, otherwise GIRO deductions for that payee will fail.
                             </div>
                         </iais:row>
-                        <div class="row">&nbsp;</div>
-                        <div class="row"><h3>Enter GIRO Payee Details</h3></div>
                         <div class="panel-body">
                             <div class="panel-main-content">
                                 <iais:section title="" id = "supPoolList">
-<%--                                    <iais:row>--%>
-<%--                                        <label class="col-xs-0 col-md-4 ">HCI Code(s) :<span class="mandatory">*</span></label>--%>
-<%--                                        <div class="col-sm-7 col-md-6 col-xs-10" style="line-height: 50px;">--%>
-<%--                                            <c:forEach items="${hciSession.rows}" var="hci">--%>
-<%--                                                ${hci.hciCode}<br>--%>
-<%--                                            </c:forEach>--%>
-<%--                                        </div>--%>
-<%--                                    </iais:row>--%>
-<%--                                    <iais:row>--%>
-<%--                                        <label class="col-xs-0 col-md-4 ">HCI Name(s) :<span class="mandatory">*</span></label>--%>
-<%--                                        <div class="col-sm-7 col-md-6 col-xs-10" style="line-height: 50px;">--%>
-<%--                                            <c:forEach items="${hciSession.rows}" var="hci">--%>
-<%--                                                ${hci.hciName}<br>--%>
-<%--                                            </c:forEach>--%>
-<%--                                        </div>--%>
-<%--                                    </iais:row>--%>
+                                    <div class="table-responsive">
+                                        <div class="table-gp">
+                                            <table aria-describedby="" class="table">
+                                                <thead>
+                                                <tr >
+                                                    <th scope="col" style="display: none"></th>
+                                                    <iais:sortableHeader needSort="true"
+                                                                         field="UEN_NO"
+                                                                         value="UEN"/>
+                                                    <iais:sortableHeader needSort="true" field="LICENCE_NO"
+                                                                         value="Licence No."/>
+                                                    <iais:sortableHeader needSort="true" field="SVC_NAME"
+                                                                         value="Service Type"/>
+                                                    <iais:sortableHeader needSort="true" field="LICENSEE_NAME"
+                                                                         value="Licensee"/>
+                                                </tr>
+                                                </thead>
+                                                <tbody id="sortLicSession" class="form-horizontal">
+                                                <c:forEach var="pool"
+                                                           items="${hciSession.rows}"
+                                                           varStatus="status">
+                                                    <tr>
+                                                        <td >
+                                                            <c:out value="${pool.uenNo}"/>
+                                                        </td>
+                                                        <td>
+                                                            <c:out value="${pool.licenceNo}"/>
+                                                        </td>
+                                                        <td >
+                                                            <c:out value="${pool.svcName}"/>
+                                                        </td>
+                                                        <td>
+                                                            <c:out value="${pool.licenseeName}"/>
+                                                        </td>
+                                                    </tr>
+                                                </c:forEach>
+                                                </tbody>
+                                            </table>
+                                        </div>
+
+                                    </div>
+
                                     <iais:row>
-                                        <label class="col-xs-0 col-md-4 ">Account Name :<span class="mandatory">*</span></label>
+                                        <label class="col-xs-0 col-md-4 ">Account Name </label>
                                         <div class="col-sm-7 col-md-6 col-xs-10">
                                             <c:out value="${acctName}"/>
                                         </div>
                                     </iais:row>
                                     <iais:row>
-                                        <label class="col-xs-0 col-md-4 ">Bank Code :<span class="mandatory">*</span></label>
-                                        <div class="col-sm-7 col-md-6 col-xs-10">
-                                            <c:out value="${bankCode}"/>
-                                        </div>
-                                    </iais:row>
-                                    <iais:row>
-                                        <label class="col-xs-0 col-md-4 ">Branch Code :<span class="mandatory">*</span></label>
-                                        <div class="col-sm-7 col-md-6 col-xs-10">
-                                            <c:out value="${branchCode}"/>
-                                        </div>
-                                    </iais:row>
-
-                                    <iais:row>
-                                        <label class="col-xs-0 col-md-4 ">Bank Name :<span class="mandatory">*</span></label>
+                                        <label class="col-xs-0 col-md-4 ">Bank Name </label>
                                         <div class="col-sm-7 col-md-6 col-xs-10">
                                             <iais:code code="${bankName}"/>
                                         </div>
                                     </iais:row>
                                     <iais:row>
-                                        <label class="col-xs-0 col-md-4 ">Bank Account No. :<span class="mandatory">*</span></label>
+                                        <label class="col-xs-0 col-md-4 ">Bank Code </label>
+                                        <div class="col-sm-7 col-md-6 col-xs-10">
+                                            <c:out value="${bankCode}"/>
+                                        </div>
+                                    </iais:row>
+                                    <iais:row>
+                                        <label class="col-xs-0 col-md-4 ">Branch Code </label>
+                                        <div class="col-sm-7 col-md-6 col-xs-10">
+                                            <c:out value="${branchCode}"/>
+                                        </div>
+                                    </iais:row>
+                                    <iais:row>
+                                        <label class="col-xs-0 col-md-4 ">Bank Account No. </label>
                                         <div class="col-sm-7 col-md-6 col-xs-10">
                                             <c:out value="${bankAccountNo}"/>
                                         </div>
                                     </iais:row>
+
                                     <iais:row>
-                                        <label class="col-xs-0 col-md-4 ">Customer Reference No. :<span class="mandatory">*</span></label>
-                                        <div class="col-sm-7 col-md-6 col-xs-10">
-                                            <c:out value="${cusRefNo}"/>
-                                        </div>
-                                    </iais:row>
-                                    <iais:row>
-                                        <label class="col-xs-0 col-md-4 ">GIRO Form :<span class="mandatory">*</span></label>
+                                        <label class="col-xs-0 col-md-4 ">GIRO Form </label>
                                         <div class="document-upload-gp col-sm-7 col-md-6 col-xs-10">
                                             <div class="document-upload-list">
                                                 <div class="file-upload-gp">
@@ -113,9 +144,15 @@
                                             </div>
                                         </div>
                                     </iais:row>
+                                    <iais:row>
+                                        <label class="col-xs-0 col-md-4 ">Internal Remarks </label>
+                                        <div class="col-sm-7 col-md-6 col-xs-10">
+                                            <c:out value="${remarks}"/>
+                                        </div>
+                                    </iais:row>
                                 </iais:section>
                                 <iais:action style="text-align:right;">
-                                    <a style=" float:left;padding-top: 1.1%;text-decoration:none;" onclick="javascript:doBack()"><em class="fa fa-angle-left"> </em> Back</a>
+                                    <a style=" float:left;padding-top: 1.1%;text-decoration:none;" href="#" onclick="javascript:doBack()"><em class="fa fa-angle-left"> </em> Back</a>
                                     <button  class="btn btn-primary" type="button"  onclick="javascript:doSubmit()">Submit</button>
                                 </iais:action>
                             </div>
@@ -138,5 +175,34 @@
         showWaiting();
         $("[name='crud_action_type']").val("submit");
         $("#mainForm").submit();
+    }
+
+    function sortRecords(sortFieldName, sortType) {
+        $.post(
+            '${pageContext.request.contextPath}/sort-licence-session',
+            {
+                crud_action_value : sortFieldName,
+                crud_action_additional : sortType
+            },
+            function (data) {
+                if(data == null){
+                    return;
+                }
+                let res = data.orgPremResult;
+                let html = '';
+                console.log(res.rowCount);
+                for (let i = 0; i < res.rowCount; i++) {
+
+                    html +=
+                        '<tr><td>' + res.rows[i].uenNo + '</td>' +
+                        '<td>' + res.rows[i].licenceNo + '</td>' +
+                        '<td>' + res.rows[i].svcName + '</td>' +
+                        '<td>' + res.rows[i].licenseeName + '</td>' +
+                        '</tr>';
+                }
+                console.log(html);
+                $('#sortLicSession').html(html)
+            }
+        );
     }
 </script>

@@ -13,6 +13,7 @@
     <%@include file="../declarations/document.jsp"%>
     <%@include file="../declarations/statements.jsp"%>
   </c:if>
+
   <c:if test="${appSubmissionDto.appType == 'APTY005'&&renew_rfc_show=='Y'}">
     <%@include file="../declarations/preliminaryQuestion.jsp"%>
     <%@include file="../declarations/document.jsp"%>

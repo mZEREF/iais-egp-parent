@@ -141,6 +141,7 @@
                                                                         <table aria-describedby="" class="table application-group" style="border-collapse:collapse;">
                                                                             <thead>
                                                                             <tr>
+                                                                                <th scope="col" style="display: none"></th>
                                                                                 <iais:sortableHeader needSort="false" field="" value="S/N"></iais:sortableHeader>
                                                                                 <iais:sortableHeader needSort="false" field="GROUP_NO" value="Application No."></iais:sortableHeader>
                                                                                 <iais:sortableHeader needSort="false" field="APP_TYPE" value="Application Type"></iais:sortableHeader>
@@ -161,11 +162,11 @@
                                                                                 <c:otherwise>
                                                                                     <c:forEach var="pool" items="${dashSearchResult.rows}"
                                                                                                varStatus="status">
-                                                                                        <tr style="display: table-row;" id="advfilter${(status.index + 1) + (dashSearchParam.pageNo - 1) * dashSearchParam.pageSize}">
+                                                                                        <tr id="advfilter${(status.index + 1) + (dashSearchParam.pageNo - 1) * dashSearchParam.pageSize}">
                                                                                             <td><c:out value="${(status.index + 1) + (dashSearchParam.pageNo - 1) * dashSearchParam.pageSize}"/></td>
                                                                                             <td>
                                                                                                 <p style="width: 165px;"><c:out value="${pool.groupNo}"/>
-                                                                                                    <a class="accordion-toggle  collapsed" style="float: right" data-toggle="collapse" aria-expanded="false" data-target="#advfilter${(status.index + 1) + (dashSearchParam.pageNo - 1) * dashSearchParam.pageSize}" onclick="getAppByGroupId('${pool.id}','${(status.index + 1) + (dashSearchParam.pageNo - 1) * dashSearchParam.pageSize}')">
+                                                                                                    <a href="javascript:void(0);" class="accordion-toggle  collapsed" data-toggle="collapse" data-target="#dropdown${(status.index + 1) + (dashSearchParam.pageNo - 1) * dashSearchParam.pageSize}" onclick="getAppByGroupId('${pool.id}','${(status.index + 1) + (dashSearchParam.pageNo - 1) * dashSearchParam.pageSize}')">
                                                                                                     </a>
                                                                                                 </p>
                                                                                             </td>
@@ -256,9 +257,9 @@
                 if('Success' == result) {
                     let res = data.ajaxResult;
                     let html = '<tr style="background-color: #F3F3F3;" class="p" id="advfilterson' + divid + '">' +
-                        '<td colspan="7" style="padding: 0px 8px !important;">' +
-                        '<div class="accordian-body p-3 collapse in" id="row1" aria-expanded="true" style="">' +
-                        '<table class="table application-item" style="background-color: #F3F3F3;margin-bottom:0px;" >' +
+                        '<td colspan="7" class="hiddenRow">' +
+                        '<div class="accordian-body p-3 collapse in" id="dropdown' + divid + '" >' +
+                        '<table class="table application-item" style="background-color: #F3F3F3;" >' +
                         '<thead>' +
                         '<tr>';
                     if ("true" == dashSupportFlag) {
@@ -289,7 +290,7 @@
                         if ("true" == dashSupportFlag) {
                             html += '<td><input type="checkbox" name="taskId" id= "taskId" data-appNo="'+ res.rows[i].applicationNo+'" data-taskstatus = "' + res.rows[i].status + '" value="' + res.rows[i].taskMaskId + '" onclick="chooseFirstcheckBox(' + divid + ')"></td>'
                         }
-                        html += '<td><p class="visible-xs visible-sm table-row-title">Application No.</p><p><a onclick="javascript:dashboardAppViewShow(' + "'" + res.rows[i].id + "'" + ');">' + res.rows[i].applicationNo + '</a></p></td>';
+                        html += '<td><p class="visible-xs visible-sm table-row-title">Application No.</p><p><a href="#" onclick="javascript:dashboardAppViewShow(' + "'" + res.rows[i].id + "'" + ');">' + res.rows[i].applicationNo + '</a></p></td>';
                         html += '<td><p class="visible-xs visible-sm table-row-title">Application Type</p><p>' + res.rows[i].appTypeStrShow + '<p></td>' +
                             '<td><p class="visible-xs visible-sm table-row-title">Service Licence</p><p>' + res.rows[i].serviceName + '<p></td>' +
                             '<td><p class="visible-xs visible-sm table-row-title">Officer Assigned</p><p>';

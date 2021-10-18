@@ -173,11 +173,11 @@
         </div>
     </div>
 </c:if>
-<c:if test="${count=='4'}">
+<c:if test="${count=='4'||count=='6'}">
     <h4>
                         <span >Search By Licensee
                             <strong >&nbsp;
-                                <input  id="licenseeChk" type="radio" <c:if test="${count=='4'}">checked</c:if>   value="4"   name="searchChk"  />
+                                <input  id="licenseeChk" type="radio" <c:if test="${count=='4'||count=='6'}">checked</c:if>   value="4"   name="searchChk"  />
                             </strong>
                         </span>
     </h4>
@@ -207,6 +207,14 @@
                         <div class="col-sm-7 col-md-4 col-xs-10">
 
                             <input type="text" maxlength="20" style=" font-weight:normal;" name="licensee_regn_no" value="${SearchParam.filters['licenseeRegnNo']}" />
+
+                        </div >
+                    </iais:row>
+                    <iais:row>
+                        <iais:field value="UEN"/>
+                        <div class="col-sm-7 col-md-4 col-xs-10">
+
+                            <input type="text" maxlength="10" style=" font-weight:normal;" name="uen_no" value="${SearchParam.filters['uen_no']}" />
 
                         </div >
                     </iais:row>
@@ -267,7 +275,7 @@
 </c:if>
 <div class="col-xs-12 col-md-12">
     <iais:action style="text-align:right;">
-        <a style=" float:left;padding-top: 1.1%;text-decoration:none;" onclick="javascript:doLicBack()"><em class="fa fa-angle-left"> </em> Back</a>
+        <a style=" float:left;padding-top: 1.1%;text-decoration:none;" href="#" onclick="javascript:doLicBack()"><em class="fa fa-angle-left"> </em> Back</a>
         <button class="btn btn-secondary" type="button"  onclick="javascript:doLicClear()">Clear</button>
         <button class="btn btn-primary" type="button"  onclick="javascript:doLicSearch()">Search</button>
     </iais:action>

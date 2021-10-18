@@ -16,11 +16,11 @@
             </c:choose>
         </c:if>
         " id="headingPremise" role="tab">
-        <h4 class="panel-title"><a role="button" class="collapse collapsed a-panel-collapse" data-toggle="collapse" href="#collapsePremise${documentIndex}" aria-expanded="true" aria-controls="collapsePremise"  name="printControlNameForApp">Mode of Service Delivery</a></h4>
+        <h4 class="panel-title"><a role="button" class="collapsed" style="text-decoration: none;" data-toggle="collapse" href="#collapsePremise${documentIndex}" aria-expanded="true" aria-controls="collapsePremise"  name="printControlNameForApp">Mode of Service Delivery</a></h4>
     </div>
     <div class="panel-collapse collapse <c:if test="${!empty printFlag}">in</c:if>" id="collapsePremise${documentIndex}" role="tabpanel" aria-labelledby="headingPremise">
         <div class="panel-body">
-            <c:if test="${(AppSubmissionDto.appEditSelectDto==null||AppSubmissionDto.appEditSelectDto.premisesEdit) && empty printView}">
+            <c:if test="${(AppSubmissionDto.appEditSelectDto==null||AppSubmissionDto.appEditSelectDto.premisesEdit) && empty printView && (empty isSingle || isSingle == 'Y')}">
                 <p><div class="text-right app-font-size-16"><a href="#" id="premisesEdit"><em class="fa fa-pencil-square-o"></em>Edit</a></div></p>
             </c:if>
             <c:forEach var="appGrpPremDto" items="${AppSubmissionDto.appGrpPremisesDtoList}"
@@ -65,7 +65,7 @@
                             </div>
                             <div class="row">
                                 <div class="col-md-6">
-                                    <p class="form-check-label" aria-label="premise-1-cytology"><span>Name of HCI</span></p>
+                                    <p class="form-check-label" aria-label="premise-1-cytology"><span>Business Name</span></p>
                                 </div>
                                 <div class="col-md-6">
                                     <p class="form-check-label" aria-label="premise-1-cytology"><span>${appGrpPremDto.hciName}</span></p>
@@ -145,6 +145,14 @@
                             </div>
                             <div class="row">
                                 <div class="col-md-6">
+                                    <p class="form-check-label" aria-label="premise-1-cytology"><span>Email</span></p>
+                                </div>
+                                <div class="col-md-6">
+                                    <p class="form-check-label" aria-label="premise-1-cytology"><span>${appGrpPremDto.easMtsPubEmail}</span></p>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
                                     <p class="form-check-label" aria-label="premise-1-cytology"><span>Are you co-locating with another licensee?</span></p>
                                 </div>
                                 <div class="col-md-6">
@@ -175,7 +183,7 @@
                         <c:if test="${'CONVEYANCE'==appGrpPremDto.premisesType}">
                             <div class="row">
                                 <div class="col-md-6">
-                                    <p class="form-check-label" aria-label="premise-1-cytology"><span>Name of HCI</span></p>
+                                    <p class="form-check-label" aria-label="premise-1-cytology"><span>Business Name</span></p>
                                 </div>
                                 <div class="col-md-6">
                                     <p class="form-check-label" aria-label="premise-1-cytology"><span>${appGrpPremDto.conveyanceHciName}</span></p>
@@ -272,7 +280,7 @@
                         <c:if test="${'OFFSITE'==appGrpPremDto.premisesType}">
                             <div class="row">
                                 <div class="col-md-6">
-                                    <p class="form-check-label" aria-label="premise-1-cytology"><span>Name of HCI</span></p>
+                                    <p class="form-check-label" aria-label="premise-1-cytology"><span>Business Name</span></p>
                                 </div>
                                 <div class="col-md-6">
                                     <p class="form-check-label" aria-label="premise-1-cytology"><span>${appGrpPremDto.offSiteHciName}</span></p>
@@ -360,7 +368,7 @@
                         <c:if test="${'EASMTS'==appGrpPremDto.premisesType}">
                             <div class="row">
                                 <div class="col-md-6">
-                                    <p class="form-check-label" aria-label="premise-1-cytology"><span>Name of HCI</span></p>
+                                    <p class="form-check-label" aria-label="premise-1-cytology"><span>Business Name</span></p>
                                 </div>
                                 <div class="col-md-6">
                                     <p class="form-check-label" aria-label="premise-1-cytology"><span>${appGrpPremDto.easMtsHciName}</span></p>

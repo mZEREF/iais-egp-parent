@@ -22,6 +22,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptUserCalendarDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesInspecApptDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcVehicleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
@@ -36,7 +37,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.inspection.NcAnswerDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
-import com.ecquaria.cloud.moh.iais.common.mask.MaskAttackException;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -140,7 +140,7 @@ public class InspectEmailAo1Delegator  extends InspectionCheckListCommonMethodDe
         log.info("=======>>>>>startStep>>>>>>>>>>>>>>>>emailRequest");
 
         log.info("=======>>>>>initStep>>>>>>>>>>>>>>>>initRequest");
-        HttpServletRequest request=bpc.request;
+        HttpServletRequest request = bpc.request;
         clearSessionForStartCheckList(request);
         String taskId = verifyTaskId(bpc);
         if(StringUtil.isEmpty(taskId)){
@@ -152,7 +152,7 @@ public class InspectEmailAo1Delegator  extends InspectionCheckListCommonMethodDe
         }
         AuditTrailHelper.auditFunctionWithAppNo(AuditTrailConsts.MODULE_INSPECTION, AuditTrailConsts.FUNCTION_INSPECTION_MAIL,taskDto.getApplicationNo());
         setCheckDataHaveFinished(request,taskDto);
-        ParamUtil.setSessionAttr(request,MSG_CON, null);;
+        ParamUtil.setSessionAttr(request,MSG_CON, null);
         ParamUtil.setSessionAttr(request,INS_EMAIL_DTO, null);
         request.setAttribute(IaisEGPConstant.CRUD_ACTION_TYPE, EMAIL_VIEW);
         //get selections dd hh
@@ -446,7 +446,18 @@ public class InspectEmailAo1Delegator  extends InspectionCheckListCommonMethodDe
                             stringBuilder.append("<tr><td>").append(++i);
 //EAS or MTS
                             if(vehicleOpenFlag.equals(InspectionConstants.SWITCH_ACTION_YES)&&applicationViewDto.getAppSvcVehicleDtos()!=null&&(applicationViewDto.getSvcCode().equals(AppServicesConsts.SERVICE_CODE_EMERGENCY_AMBULANCE_SERVICE)||applicationViewDto.getSvcCode().equals(AppServicesConsts.SERVICE_CODE_MEDICAL_TRANSPORT_SERVICE))){
-                                stringBuilder.append(TD).append(StringUtil.viewHtml(ncAnswerDto.getVehicleName()));
+                                boolean isDisplayName=false;
+                                for (AppSvcVehicleDto asvd:applicationViewDto.getAppSvcVehicleDtos()
+                                     ) {
+                                    if(asvd.getVehicleName().equals(ncAnswerDto.getVehicleName())){
+                                        stringBuilder.append(TD).append(StringUtil.viewHtml(asvd.getDisplayName()));
+                                        isDisplayName=true;
+                                        break;
+                                    }
+                                }
+                                if(!isDisplayName){
+                                    stringBuilder.append(TD).append(StringUtil.viewHtml(ncAnswerDto.getType()));
+                                }
                             }else {
                                 stringBuilder.append(TD).append(StringUtil.viewHtml(ncAnswerDto.getType()));
                             }
@@ -458,11 +469,12 @@ public class InspectEmailAo1Delegator  extends InspectionCheckListCommonMethodDe
                         }
                         mapTableTemplate.put("NC_DETAILS",StringUtil.viewHtml(stringBuilder.toString()));
                     }
-                    if(appPreRecommentdationDto!=null&&(appPreRecommentdationDto.getBestPractice()!=null||appPreRecommentdationDto.getRemarks()!=null)){
+                    String observation = fillupChklistService.getObservationByAppPremCorrId(taskDto.getRefNo());
+                    if(appPreRecommentdationDto!=null&&(appPreRecommentdationDto.getBestPractice()!=null||observation!=null)){
                         int sn=1;
                         String[] observations=new String[]{};
-                        if(appPreRecommentdationDto.getRemarks()!=null){
-                            observations=appPreRecommentdationDto.getRemarks().split("\n");
+                        if(observation!=null){
+                            observations=observation.split("\n");
                         }
                         String[] recommendations=new String[]{};
                         if(appPreRecommentdationDto.getBestPractice()!=null){

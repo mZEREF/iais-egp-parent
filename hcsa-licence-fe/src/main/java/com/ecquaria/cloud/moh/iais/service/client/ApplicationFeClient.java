@@ -155,6 +155,11 @@ public interface ApplicationFeClient {
     @GetMapping(value = "/iais-application/application/grp-premises/{appPreId}")
     FeignResponseEntity<AppGrpPremisesEntityDto> getAppGrpPremise(@PathVariable(name = "appPreId")String appPreId);
 
+    /**
+     *  only for RFI applicaiton
+     * @param appNo
+     * @return
+     */
     @RequestMapping(path = "/iais-submission/appSubmissionDto/{appNo}",method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE )
     FeignResponseEntity<AppSubmissionDto>  getAppSubmissionDtoByAppNo(@PathVariable("appNo") String appNo);
 
@@ -398,4 +403,6 @@ public interface ApplicationFeClient {
     @GetMapping(value = "/iais-submission/draft-by-lic-app-id",produces = MediaType.APPLICATION_JSON_VALUE,consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<ApplicationSubDraftDto>> getDraftByLicAppIdAndStatus(@RequestParam("licAppId") String licAppId,@RequestParam("status") String status);
 
+    @PutMapping(value="/iais-application/inactive-declaration-message", consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<String> inActiveDeclaration(@RequestBody AppSubmissionDto appSubmissionDto);
 }

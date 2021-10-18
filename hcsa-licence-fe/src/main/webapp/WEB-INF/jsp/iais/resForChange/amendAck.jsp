@@ -14,10 +14,11 @@
 <%@include file="amendDashboard.jsp" %>
 <%@include file="/WEB-INF/jsp/include/utils.jsp"%>
 <style>
-    .ack-font-14{
-        font-size: 14px;
+    .ack-font-16 {
+        font-size: 16px;
     }
-    .margin-bottom-10{
+
+    .margin-bottom-10 {
         margin-bottom:10px;
     }
 </style>
@@ -38,53 +39,55 @@
                         <c:forEach items="${appSubmissionDtos}" var="appSubmissionDto">
                             <p>- <strong><c:out value="${appSubmissionDto.appSvcRelatedInfoDtoList[0].serviceName}"></c:out></strong></p>
                         </c:forEach>
-                        <p class="ack-font-14">A confirmation email will be sent to ${emailAddress}.</p>
-                        <p class="ack-font-14"><iais:message key="NEW_ACK005" escape="false"></iais:message></p>
-                        <c:if test="${dAmount!='$0.0'}">
-                            <p class="ack-font-14">Transactional details:</p>
-                            <div class="table-responsive">
-                                <table aria-describedby="" class="table">
-                                    <thead>
-                                    <tr>
-                                        <th scope="col" >Application No.</th>
-                                            <%--<c:if test="${'Credit'== payMethod or 'NETS'== payMethod}">
-                                                <th scope="col" >Transactional No.</th>
-                                            </c:if>--%>
-                                        <th scope="col" >Transactional No.</th>
-                                        <th scope="col" >Date & Time</th>
-                                        <th scope="col" >Amount Deducted</th>
-                                        <th scope="col" >Payment Method</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    <tr>
-                                        <td>${appSubmissionDtos.get(0).appGrpNo}</td>
-                                            <%--<c:if test="${'Credit'== payMethod or 'NETS'== payMethod}">
-                                                <td><c:out value="${pmtRefNo}"/></td>
-                                            </c:if>--%>
-                                        <td>
-                                            <c:choose>
-                                                <c:when test="${empty txnRefNo}">
-                                                    N/A
-                                                </c:when>
-                                                <c:otherwise>
-                                                    <c:out value="${txnRefNo}"/>
-                                                </c:otherwise>
-                                            </c:choose>
-                                        </td>
-                                        <td><fmt:formatDate value="${createDate}" pattern="dd/MM/yyyy"></fmt:formatDate></td>
-                                        <td>${dAmount}</td>
-                                        <td>
-                                            <c:choose>
-                                                <c:when test="${empty payMethod}">N/A</c:when>
-                                                <c:otherwise> <iais:code code="${payMethod}"/></c:otherwise>
-                                            </c:choose>
-                                        </td>
-                                    </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </c:if>
+                        <div class="ack-font-16">
+                            <p class="col-xs-12">A confirmation email will be sent to ${emailAddress}.</p>
+                            <p class="col-xs-12"><iais:message key="NEW_ACK005" escape="false"></iais:message></p>
+                            <c:if test="${dAmount!='$0.0'}">
+                                <p class="col-xs-12">Transactional details:</p>
+                                <div class="col-xs-12 col-sm-12 margin-bottom-10 table-responsive">
+                                    <table aria-describedby="" class="table">
+                                        <thead>
+                                        <tr>
+                                            <th scope="col" >Application No.</th>
+                                                <%--<c:if test="${'Credit'== payMethod or 'NETS'== payMethod}">
+                                                    <th scope="col" >Transactional No.</th>
+                                                </c:if>--%>
+                                            <th scope="col" >Transactional No.</th>
+                                            <th scope="col" >Date & Time</th>
+                                            <th scope="col" >Amount Deducted</th>
+                                            <th scope="col" >Payment Method</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr>
+                                            <td>${appSubmissionDtos.get(0).appGrpNo}</td>
+                                                <%--<c:if test="${'Credit'== payMethod or 'NETS'== payMethod}">
+                                                    <td><c:out value="${pmtRefNo}"/></td>
+                                                </c:if>--%>
+                                            <td>
+                                                <c:choose>
+                                                    <c:when test="${empty txnRefNo || empty payMethod}">
+                                                        N/A
+                                                    </c:when>
+                                                    <c:otherwise>
+                                                        <c:out value="${txnRefNo}"/>
+                                                    </c:otherwise>
+                                                </c:choose>
+                                            </td>
+                                            <td><fmt:formatDate value="${createDate}" pattern="dd/MM/yyyy"></fmt:formatDate></td>
+                                            <td>${dAmount}</td>
+                                            <td>
+                                                <c:choose>
+                                                    <c:when test="${empty payMethod}">N/A</c:when>
+                                                    <c:otherwise> <iais:code code="${payMethod}"/></c:otherwise>
+                                                </c:choose>
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </c:if>
+                        </div>
 
                         <div class="col-xs-12 col-sm-12 margin-bottom-10">
                             <div class="button-group col-xs-12 col-sm-6">

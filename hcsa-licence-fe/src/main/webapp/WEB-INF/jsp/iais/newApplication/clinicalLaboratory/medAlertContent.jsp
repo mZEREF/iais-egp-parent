@@ -28,7 +28,11 @@
                     </c:otherwise>
                 </c:choose>
                 <c:if test="${('APTY005' ==AppSubmissionDto.appType || 'APTY004' ==AppSubmissionDto.appType) && requestInformationConfig == null}">
-                    <p><div class="text-right app-font-size-16"><a class="back" id="RfcSkip">Skip<span>&nbsp;</span><em class="fa fa-angle-right"></em></a></div></p>
+                    <div class="text-right app-font-size-16">
+                        <a class="back" id="RfcSkip" href="javascript:void(0);">
+                            Skip<span>&nbsp;</span><em class="fa fa-angle-right"></em>
+                        </a>
+                    </div>
                 </c:if>
                 <c:if test="${'true' != isClickEdit}">
                     <c:set var="locking" value="true"/>
@@ -61,7 +65,7 @@
                 </c:choose>
                 <input type="hidden" name="existingPsn" value="0"/>
                 <input type="hidden" name="isPartEdit" value="0"/>
-                <input type="hidden" name="mapIndexNo" value="${medAlertPsn.cgoIndexNo}"/>
+                <input type="hidden" name="mapIndexNo" value="${medAlertPsn.indexNo}"/>
                 <input type="hidden" name="loadingType" value="${medAlertPsn.loadingType}"/>
                 <div class="row">
                     <div class="control control-caption-horizontal">
@@ -87,7 +91,11 @@
                                 <div class="col-sm-2 text-right">
                                     <div class="edit-content">
                                         <c:if test="${'true' == canEdit}">
-                                            <label class="control-font-label"><a class="edit mapEdit"><em class="fa fa-pencil-square-o"></em><span>&nbsp;</span>Edit</a></label>
+                                            <div class="text-right app-font-size-16">
+                                                <a class="edit mapEdit" href="javascript:void(0);">
+                                                    <em class="fa fa-pencil-square-o"></em><span>&nbsp;</span>Edit
+                                                </a>
+                                            </div>
                                         </c:if>
                                     </div>
                                 </div>
@@ -247,7 +255,7 @@
                 <c:when test="${mapDtoLength >= mapHcsaSvcPersonnel.maximumCount}">
                     <c:set var="needAddPsn" value="false"/>
                 </c:when>
-                <c:when test="${AppSubmissionDto.appType != 'APTY002' && 'true' != canEdit}">
+                <c:when test="${AppSubmissionDto.needEditController && !canEdit}">
                     <c:set var="needAddPsn" value="false"/>
                 </c:when>
             </c:choose>

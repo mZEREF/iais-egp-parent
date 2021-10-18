@@ -2,7 +2,8 @@
 <input type="hidden" id="myinfoTrueOpen" name="myinfoTrueOpen" value="${myinfoTrueOpen}">
 <input type="hidden" id="verifyTakenConfiguration" name="verifyTakenConfiguration" value="<c:out value="${verifyTakenConfiguration}"/>">
 <input type="hidden" id="callAuthoriseApiUri" name="callAuthoriseApiUri" value="<c:out value="${callAuthoriseApiUri}"/>">
-<iais:confirm msg="USER_ACK001"  needCancel="false" callBack="myinfoSupportCallbacksupport()"  yesBtnDesc="I know." popupOrder="myinfoSupport" />
+<iais:confirm msg="USER_ACK001"  needCancel="false" callBack="myinfoSupportCallbacksupport()"  yesBtnDesc="Ok" popupOrder="myinfoSupport" />
+<input type="hidden" id="loadMyInfoData" name="loadMyInfoData" value="${isLoadMyInfoData}"/>
 <script type="text/javascript">
     $(document).ready(function () {
         if( $("#myinfoServiceDown").val() == "Y"){
@@ -28,7 +29,11 @@
     }
 
     function callAuthoriseApi() {
+        var addrType = $("#addrType").val();
         var authoriseUrl = $("#callAuthoriseApiUri").val();
+        if(addrType != null && addrType != ""){
+            authoriseUrl += addrType;
+        }
         window.location = authoriseUrl;
     }
 </script>

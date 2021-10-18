@@ -37,7 +37,7 @@ public interface OrgUserManageService {
 
     FeUserDto getUserByNricAndUen(String uen, String nric);
 
-    FeUserDto getFeUserAccountByNricAndType(String nric, String idType);
+    FeUserDto getFeUserAccountByNricAndType(String nric, String idType, String uen);
 
     void createClientUser(FeUserDto userDto);
 
@@ -71,4 +71,12 @@ public interface OrgUserManageService {
 
     FeUserDto syncFeUserFromBe(FeUserDto feUserDto);
 
+    /**
+      * @author: shicheng
+      * @Date 2021/8/12
+      * @Param: userSession
+      * @return: String
+      * @Descripation: getActiveUserAndRoleFlag
+      */
+    String getActiveUserAndRoleFlag(FeUserDto userSession);
 }

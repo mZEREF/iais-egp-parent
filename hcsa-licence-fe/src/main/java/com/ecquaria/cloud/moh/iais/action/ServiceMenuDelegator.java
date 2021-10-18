@@ -46,9 +46,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -103,10 +105,12 @@ public class ServiceMenuDelegator {
     private static final String RELOAD_BASE_SVC_SELECTED = "reloadBaseSvcSelected";
     private static final String BASE_LIC_PREMISES_MAP = "baseLicPremisesMap";
     private static final String LIC_ALIGN_SEARCH_PARAM = "licAlignSearchParam";
-    private static final String LIC_ALIGN_SEARCH_RESULT= "licAlignSearchResult";
+    private static final String LIC_ALIGN_SEARCH_RESULT = "licAlignSearchResult";
+
+    public static final String DRAFT_NUMBER = NewApplicationDelegator.DRAFT_NUMBER;
 
     List<HcsaServiceDto> allbaseService;
-    List<HcsaServiceDto> allspecifiedService;
+    //List<HcsaServiceDto> allspecifiedService;
     @Autowired
     private ServiceConfigService serviceConfigService;
     @Autowired
@@ -126,7 +130,7 @@ public class ServiceMenuDelegator {
         ParamUtil.setSessionAttr(bpc.request, BASE_SERVICE_ATTR_CHECKED, null);
         ParamUtil.setSessionAttr(bpc.request, BASE_SERVICE_ATTR, null);
         ParamUtil.setSessionAttr(bpc.request, SPECIFIED_SERVICE_ATTR, null);
-        ParamUtil.setSessionAttr(bpc.request,"DraftNumber",null);
+        ParamUtil.setSessionAttr(bpc.request,DRAFT_NUMBER,null);
         ParamUtil.setSessionAttr(bpc.request,NewApplicationDelegator.SELECT_DRAFT_NO,null);
         ParamUtil.setSessionAttr(bpc.request,APP_SELECT_SERVICE,null);
         ParamUtil.setSessionAttr(bpc.request,ONLY_BASE_SVC,null);
@@ -253,24 +257,11 @@ public class ServiceMenuDelegator {
             }
         }
         String  step =(String) bpc.request.getAttribute(VALIDATION_ATTR);
+        ParamUtil.setRequestAttr(bpc.request, VALIDATION_ATTR, step);
         if(NEXT.equals(step)){
             ParamUtil.setSessionAttr(bpc.request,"licenceJudge",licenceJudge);
-            String crud_action_value=bpc.request.getParameter("crud_action_value");
-            String crud_action_additional  =bpc.request.getParameter("crud_action_additional");
-            getDraft(bpc);
-            String attribute =(String)bpc.request.getAttribute(NewApplicationDelegator.SELECT_DRAFT_NO);
-            if("continue".equals(crud_action_value)){
-
-                bpc.request.getSession().setAttribute("DraftNumber", null);
-            }else if("resume".equals(crud_action_value)){
-                bpc.request.getSession().setAttribute("DraftNumber", attribute);
-            }else if(attribute!=null){
-                ParamUtil.setRequestAttr(bpc.request, VALIDATION_ATTR, ERROR_ATTR);
-                return;
-            }
+            checkAction(null ,bpc.request);
         }
-
-        ParamUtil.setRequestAttr(bpc.request, VALIDATION_ATTR, step);
     }
 
     public void prepareData(BaseProcessClass bpc){
@@ -301,8 +292,8 @@ public class ServiceMenuDelegator {
         List<HcsaServiceDto> allspecifiedService = hcsaServiceDtoList.stream()
                 .filter(hcsaServiceDto -> SPECIFIED_SERVICE.equals(hcsaServiceDto.getSvcType())).collect(Collectors.toList());
         //sort
-        allbaseService.sort((h1,h2)->h1.getSvcName().compareTo(h2.getSvcName()));
-        allspecifiedService.sort((h1,h2)->h1.getSvcName().compareTo(h2.getSvcName()));
+        allbaseService.sort(Comparator.comparing(HcsaServiceDto::getSvcName));
+        allspecifiedService.sort(Comparator.comparing(HcsaServiceDto::getSvcName));
         ParamUtil.setSessionAttr(bpc.request, BASE_SERVICE_ATTR, (Serializable) allbaseService);
         ParamUtil.setSessionAttr(bpc.request, SPECIFIED_SERVICE_ATTR, (Serializable) allspecifiedService);
         AppSelectSvcDto appSelectSvcDto = getAppSelectSvcDto(bpc);
@@ -442,13 +433,14 @@ public class ServiceMenuDelegator {
     public void doChooseService(BaseProcessClass bpc){
         log.info(StringUtil.changeForLog("do choose svc start ..."));
         boolean onlyBaseSvc = false;
+        ParamUtil.setSessionAttr(bpc.request, DRAFT_NUMBER, null);
         ParamUtil.setSessionAttr(bpc.request,ONLY_BASE_SVC,onlyBaseSvc);
         String additional = ParamUtil.getString(bpc.request,CRUD_ACTION_ADDITIONAL);
         if(BACK_ATTR.equals(additional)){
             return;
         }
         List<HcsaServiceDto> allbaseService = getAllBaseService(bpc);
-        List<HcsaServiceDto> allspecifiedService = getAllSpeService(bpc);
+        // List<HcsaServiceDto> allspecifiedService = getAllSpeService(bpc);
         AppSelectSvcDto appSelectSvcDto = getAppSelectSvcDto(bpc);
         String currentPage = "chooseSvc";
         String[] basechks = ParamUtil.getStrings(bpc.request, BASE_SERVICE_CHECK_BOX_ATTR);
@@ -758,24 +750,7 @@ public class ServiceMenuDelegator {
         //test
         String value = ParamUtil.getRequestString(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE);
         if(NEXT.equals(value)){
-            getDraft(bpc);
-            String crud_action_value=bpc.request.getParameter("crud_action_value");
-            String attribute =(String)bpc.request.getAttribute(NewApplicationDelegator.SELECT_DRAFT_NO);
-            String draftNo  =bpc.request.getParameter("draftNo");
-            if("continue".equals(crud_action_value)){
-                List<String> list=new ArrayList<>(1);
-                list.add(draftNo);
-                log.info(StringUtil.changeForLog("delete draft start ..."));
-                applicationFeClient.deleteDraftNUmber(list);
-                bpc.request.getSession().setAttribute("DraftNumber", null);
-            }else if("resume".equals(crud_action_value)){
-                bpc.request.getSession().setAttribute("DraftNumber", attribute);
-            }else if(attribute!=null){
-                ParamUtil.setRequestAttr(bpc.request, VALIDATION_ATTR, ERROR_ATTR);
-                ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_VALUE, "chooseSvc");
-                ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE,"loading");
-                return;
-            }
+            checkAction(CHOOSE_SERVICE, bpc.request);
         }
 
         log.info(StringUtil.changeForLog("do choose svc end ..."));
@@ -830,6 +805,7 @@ public class ServiceMenuDelegator {
                         newSpeBaseSvcNames.add(baseServiceDto.getSvcName());
                         //for reload
                         baseReloadDto.setServiceCode(baseServiceDto.getSvcCode());
+                        baseReloadDto.setServiceName(baseServiceDto.getSvcName());
                         baseReloadDto.setLicPremisesId("");
                         baseReloadDtoMap.put(speServiceDto.getSvcCode(),baseReloadDto);
                     }else{
@@ -852,6 +828,7 @@ public class ServiceMenuDelegator {
                             appSvcRelatedInfoDtos.add(appSvcRelatedInfoDto);
                             //for reload
                             baseReloadDto.setServiceCode(baseServiceDto.getSvcCode());
+                            baseReloadDto.setServiceName(baseServiceDto.getSvcName());
                             baseReloadDto.setLicPremisesId(appAlignLicQueryDto.getPremisesId());
                             baseReloadDto.setHciCode(appAlignLicQueryDto.getHciCode());
                             baseReloadDtoMap.put(speServiceDto.getSvcCode(),baseReloadDto);
@@ -925,25 +902,9 @@ public class ServiceMenuDelegator {
             //choose existing
             if(chooseExist){
                 ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE,NEXT);
-                String nextstep = ParamUtil.getString(bpc.request,"crud_action_additional");
+                String nextstep = ParamUtil.getString(bpc.request,CRUD_ACTION_ADDITIONAL);
                 if(NEXT.equals(nextstep)){
-                    String crud_action_value=bpc.request.getParameter("crud_action_value");
-                    String draftNo  =bpc.request.getParameter("draftNo");
-                    getDraft(bpc);
-                    String attribute =(String)bpc.request.getAttribute(NewApplicationDelegator.SELECT_DRAFT_NO);
-                    if("continue".equals(crud_action_value)){
-                        List<String> list=new ArrayList<>(1);
-                        list.add(draftNo);
-                        log.info(StringUtil.changeForLog("delete draft start ..."));
-                        applicationFeClient.deleteDraftNUmber(list);
-                        bpc.request.getSession().setAttribute("DraftNumber", null);
-                    }else if("resume".equals(crud_action_value)){
-                        bpc.request.getSession().setAttribute("DraftNumber", attribute);
-                    }else if(attribute!=null){
-                        //back to curr page
-                        ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_VALUE,CHOOSE_BASE_SVC);
-                        ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE,"loading");
-                    }
+                    checkAction(CHOOSE_BASE_SVC, bpc.request);
                 }
             }else{
                 boolean newLicensee = appSelectSvcDto.isNewLicensee();
@@ -1039,23 +1000,7 @@ public class ServiceMenuDelegator {
 
             String switchStep = ParamUtil.getRequestString(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE);
             if(NEXT.equals(switchStep)){
-                String crud_action_value=bpc.request.getParameter("crud_action_value");
-                String draftNo  =bpc.request.getParameter("draftNo");
-                getDraft(bpc);
-                String attribute =(String)bpc.request.getAttribute(NewApplicationDelegator.SELECT_DRAFT_NO);
-                if("continue".equals(crud_action_value)){
-                    List<String> list=new ArrayList<>(1);
-                    list.add(draftNo);
-                    log.info(StringUtil.changeForLog("delete draft start ..."));
-                    applicationFeClient.deleteDraftNUmber(list);
-                    bpc.request.getSession().setAttribute("DraftNumber", null);
-                }else if("resume".equals(crud_action_value)){
-                    bpc.request.getSession().setAttribute("DraftNumber", attribute);
-                }else if(attribute!=null){
-                    //back to curr page
-                    ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_VALUE,CHOOSE_BASE_SVC);
-                    ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE,"loading");
-                }
+                checkAction(CHOOSE_BASE_SVC, bpc.request);
                 appSelectSvcDto.setBasePage(true);
             }
         }else{
@@ -1081,54 +1026,14 @@ public class ServiceMenuDelegator {
             appSelectSvcDto.setAlign(false);
         }
 
-
         String additional = ParamUtil.getString(bpc.request,CRUD_ACTION_ADDITIONAL);
         if(BACK_ATTR.equals(additional)){
             return;
         }
-        if(appSelectSvcDto.isBasePage()){
 
-        }
-
-        ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE,NEXT);
-        String nextstep = ParamUtil.getString(bpc.request,"crud_action_additional");
-        if(NEXT.equals(nextstep)){
-            String crud_action_value=bpc.request.getParameter("crud_action_value");
-            String draftNo  =bpc.request.getParameter("draftNo");
-            getDraft(bpc);
-            String attribute =(String)bpc.request.getAttribute(NewApplicationDelegator.SELECT_DRAFT_NO);
-            if("continue".equals(crud_action_value)){
-                List<String> list=new ArrayList<>(1);
-                list.add(draftNo);
-                log.info(StringUtil.changeForLog("delete draft start ..."));
-                applicationFeClient.deleteDraftNUmber(list);
-                bpc.request.getSession().setAttribute("DraftNumber", null);
-            }else if("resume".equals(crud_action_value)){
-                bpc.request.getSession().setAttribute("DraftNumber", attribute);
-            }else if(attribute!=null){
-                //back to curr page
-                ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_VALUE,CHOOSE_ALIGN);
-                ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE,"loading");
-            }
-        }
-
-        String switchStep = ParamUtil.getRequestString(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE);
-        if(NEXT.equals(switchStep)){
-            String crud_action_value=bpc.request.getParameter("crud_action_value");
-            String draftNo  =bpc.request.getParameter("draftNo");
-            getDraft(bpc);
-            String attribute =(String)bpc.request.getAttribute(NewApplicationDelegator.SELECT_DRAFT_NO);
-            if("continue".equals(crud_action_value)){
-                List<String> list=new ArrayList<>(1);
-                list.add(draftNo);
-                log.info(StringUtil.changeForLog("delete draft start ..."));
-                applicationFeClient.deleteDraftNUmber(list);
-                bpc.request.getSession().setAttribute("DraftNumber", null);
-            }else if("resume".equals(crud_action_value)){
-                bpc.request.getSession().setAttribute("DraftNumber", attribute);
-            }
-            appSelectSvcDto.setAlignPage(true);
-        }
+        ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE, NEXT);
+        checkAction(CHOOSE_ALIGN, bpc.request);
+        appSelectSvcDto.setAlignPage(true);
 
         ParamUtil.setSessionAttr(bpc.request,APP_SELECT_SERVICE,appSelectSvcDto);
         log.info(StringUtil.changeForLog("do choose align end ..."));
@@ -1169,7 +1074,9 @@ public class ServiceMenuDelegator {
                 AppSvcRelatedInfoDto appSvcRelatedInfoDto = new AppSvcRelatedInfoDto();
                 appSvcRelatedInfoDto.setServiceId(hcsaServiceDto.getId());
                 appSvcRelatedInfoDto.setServiceCode(hcsaServiceDto.getSvcCode());
+                appSvcRelatedInfoDto.setServiceName(hcsaServiceDto.getSvcName());
                 appSvcRelatedInfoDto.setBaseServiceId(hcsaServiceDto.getId());
+                appSvcRelatedInfoDto.setBaseServiceName(hcsaServiceDto.getSvcName());
                 appSvcRelatedInfoDto.setAlignLicenceNo(alignLicenceNo);
                 appSvcRelatedInfoDto.setLicPremisesId(licPremiseId);
                 appSvcRelatedInfoDtos.add(appSvcRelatedInfoDto);
@@ -1189,46 +1096,10 @@ public class ServiceMenuDelegator {
             return;
         }
 
-
         ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE,NEXT);
-        String nextstep = ParamUtil.getString(bpc.request,"crud_action_additional");
-        if(NEXT.equals(nextstep)){
-            String crud_action_value=bpc.request.getParameter("crud_action_value");
-            String draftNo  =bpc.request.getParameter("draftNo");
-            getDraft(bpc);
-            String attribute =(String)bpc.request.getAttribute(NewApplicationDelegator.SELECT_DRAFT_NO);
-            if("continue".equals(crud_action_value)){
-                List<String> list=new ArrayList<>(1);
-                list.add(draftNo);
-                log.info(StringUtil.changeForLog("delete draft start ..."));
-                applicationFeClient.deleteDraftNUmber(list);
-                bpc.request.getSession().setAttribute("DraftNumber", null);
-            }else if("resume".equals(crud_action_value)){
-                bpc.request.getSession().setAttribute("DraftNumber", attribute);
-            }else if(attribute!=null){
-                //back to curr page
-                ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_VALUE,CHOOSE_LICENCE);
-                ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE,"loading");
-            }
-        }
-        String switchStep = ParamUtil.getRequestString(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE);
-        if(NEXT.equals(switchStep)){
-            String crud_action_value=bpc.request.getParameter("crud_action_value");
-            String draftNo  =bpc.request.getParameter("draftNo");
-            getDraft(bpc);
-            String attribute =(String)bpc.request.getAttribute(NewApplicationDelegator.SELECT_DRAFT_NO);
-            if("continue".equals(crud_action_value)){
-                List<String> list=new ArrayList<>(1);
-                list.add(draftNo);
-                log.info(StringUtil.changeForLog("delete draft start ..."));
-                applicationFeClient.deleteDraftNUmber(list);
-                bpc.request.getSession().setAttribute("DraftNumber", null);
-            }else if("resume".equals(crud_action_value)){
-                bpc.request.getSession().setAttribute("DraftNumber", attribute);
-            }
-            appSelectSvcDto.setLicPage(true);
-            ParamUtil.setSessionAttr(bpc.request,APP_SELECT_SERVICE,appSelectSvcDto);
-        }
+        checkAction(CHOOSE_LICENCE, bpc.request);
+        appSelectSvcDto.setLicPage(true);
+        ParamUtil.setSessionAttr(bpc.request,APP_SELECT_SERVICE,appSelectSvcDto);
         log.info(StringUtil.changeForLog("do choose lic end ..."));
     }
 
@@ -1345,21 +1216,47 @@ public class ServiceMenuDelegator {
         log.info(StringUtil.changeForLog("doPage end ..."));
     }
 
-
     //=============================================================================
     //private method
     //=============================================================================
 
-    private void getDraft(BaseProcessClass bpc){
-        LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request,AppConsts.SESSION_ATTR_LOGIN_USER);
+    private void checkAction(String type, HttpServletRequest request) {
+        getDraft(request);
+        String crud_action_value = request.getParameter(IaisEGPConstant.CRUD_ACTION_VALUE);
+        String attribute = (String) request.getAttribute(NewApplicationDelegator.SELECT_DRAFT_NO);
+        if ("continue".equals(crud_action_value)) {
+            if (!StringUtil.isEmpty(type)) {
+                String draftNo  = request.getParameter("draftNo");
+                List<String> list=new ArrayList<>(1);
+                list.add(draftNo);
+                log.info(StringUtil.changeForLog("delete draft start ..."));
+                applicationFeClient.deleteDraftNUmber(list);
+            }
+            ParamUtil.setSessionAttr(request, DRAFT_NUMBER, null);
+        } else if ("resume".equals(crud_action_value)) {
+            ParamUtil.setSessionAttr(request, DRAFT_NUMBER, attribute);
+        } else if (attribute != null) {
+            //back to curr page
+            if (StringUtil.isEmpty(type) || CHOOSE_SERVICE.equals(type)) {
+                ParamUtil.setRequestAttr(request, VALIDATION_ATTR, ERROR_ATTR);
+            }
+            if (!StringUtil.isEmpty(type)) {
+                ParamUtil.setRequestAttr(request, IaisEGPConstant.CRUD_ACTION_TYPE_VALUE, type);
+                ParamUtil.setRequestAttr(request,IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE,"loading");
+            }
+        }
+    }
+
+    private void getDraft(HttpServletRequest request){
+        LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(request,AppConsts.SESSION_ATTR_LOGIN_USER);
         String licenseeId = loginContext.getLicenseeId();
-        List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos=(List<AppSvcRelatedInfoDto>)ParamUtil.getSessionAttr(bpc.request,APP_SVC_RELATED_INFO_LIST);
-        List<String> licenceList =(List<String>) ParamUtil.getSessionAttr(bpc.request, "licence");
+        List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos=(List<AppSvcRelatedInfoDto>)ParamUtil.getSessionAttr(request,APP_SVC_RELATED_INFO_LIST);
+        List<String> licenceList =(List<String>) ParamUtil.getSessionAttr(request, "licence");
         List<String> baseServiceIds=IaisCommonUtils.genNewArrayList();
         if(StringUtil.isEmpty(licenceList)){
-            baseServiceIds = (List<String>) ParamUtil.getSessionAttr(bpc.request, BASE_SERVICE_ATTR_CHECKED);
+            baseServiceIds = (List<String>) ParamUtil.getSessionAttr(request, BASE_SERVICE_ATTR_CHECKED);
         }
-        List<String> specifiedServiceIds = (List<String>) ParamUtil.getSessionAttr(bpc.request, SPECIFIED_SERVICE_ATTR_CHECKED);
+        List<String> specifiedServiceIds = (List<String>) ParamUtil.getSessionAttr(request, SPECIFIED_SERVICE_ATTR_CHECKED);
         List<String> serviceConfigIds = IaisCommonUtils.genNewArrayList();
         if(!IaisCommonUtils.isEmpty(baseServiceIds)){
             serviceConfigIds.addAll(baseServiceIds);
@@ -1390,10 +1287,11 @@ public class ServiceMenuDelegator {
             map.put("licenseeId",licenseeId);
             String entity = applicationFeClient.selectDarft(map).getEntity();
             String new_ack001 = MessageUtil.getMessageDesc("NEW_ACK001");
-            bpc.request.setAttribute("new_ack001",new_ack001);
-            bpc.request.setAttribute(NewApplicationDelegator.SELECT_DRAFT_NO, entity);
+            request.setAttribute("new_ack001",new_ack001);
+            request.setAttribute(NewApplicationDelegator.SELECT_DRAFT_NO, entity);
         }
     }
+
     private void loadingServiceConfig(BaseProcessClass bpc){
         List<String> serviceConfigIds = IaisCommonUtils.genNewArrayList();
     }

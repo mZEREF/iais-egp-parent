@@ -49,7 +49,12 @@
                                                 <div class="row">
                                                     <div class="col-xs-12">
                                                         <div class="table-gp">
-                                                            <table class="table table-bordered">
+                                                            <table aria-describedby="" class="table table-bordered">
+                                                                <thead style="display: none">
+                                                                <tr>
+                                                                    <th scope="col"></th>
+                                                                </tr>
+                                                                </thead>
                                                                 <tbody>
                                                                 <tr>
                                                                     <td class="col-xs-6" align="right">Application No</td>
@@ -101,7 +106,12 @@
                                                 <div class="row">
                                                     <div class="col-xs-12">
                                                         <div class="table-gp">
-                                                            <table class="table table-bordered">
+                                                            <table aria-describedby="" class="table table-bordered">
+                                                                <thead style="display: none">
+                                                                <tr>
+                                                                    <th scope="col"></th>
+                                                                </tr>
+                                                                </thead>
                                                                 <tbody>
                                                                 <tr>
                                                                     <td class="col-xs-6" align="right">HCI Code</td>
@@ -121,7 +131,7 @@
                                                                 </tr>
                                                                 <tr>
                                                                     <td align="right">Email</td>
-                                                                    <td style="padding-left: 15px;">${licenseeDto.emilAddr}<c:if test="${empty licenseeDto.emilAddr}">-</c:if></td>
+                                                                    <td style="padding-left: 15px;">${emilAddr}<c:if test="${empty emilAddr}">-</c:if></td>
                                                                 </tr>
                                                                 </tbody>
                                                             </table>
@@ -139,7 +149,12 @@
                                                 <div class="row">
                                                     <div class="col-xs-12">
                                                         <div class="table-gp">
-                                                            <table class="table table-bordered">
+                                                            <table aria-describedby="" class="table table-bordered">
+                                                                <thead style="display: none">
+                                                                <tr>
+                                                                    <th scope="col"></th>
+                                                                </tr>
+                                                                </thead>
                                                                 <tbody>
                                                                 <tr>
                                                                     <td class="col-xs-6" align="right">Licensee Name (Company)</td>
@@ -202,7 +217,12 @@
                                                 <div class="row">
                                                     <div class="col-xs-12">
                                                         <div class="table-gp">
-                                                            <table class="table table-bordered">
+                                                            <table aria-describedby="" class="table table-bordered">
+                                                                <thead style="display: none">
+                                                                <tr>
+                                                                    <th scope="col"></th>
+                                                                </tr>
+                                                                </thead>
                                                                 <tbody>
                                                                 <tr>
                                                                     <td class="col-xs-6" align="right">Service Name</td>
@@ -235,9 +255,10 @@
                                                         <table aria-describedby="" class="table">
                                                             <thead >
                                                             <tr >
-                                                                <th  style="text-align: center">Mode of Service Delivery</th>
-                                                                <th  style="text-align: center">Service / Granular Service</th>
-                                                                <th  style="text-align: center">Clinical Governance Officers</th>
+                                                                <th scope="col" style="text-align: center">Mode of Service Delivery</th>
+                                                                <th scope="col" style="text-align: center">Service / Granular Service</th>
+                                                                <th scope="col" style="text-align: center">Clinical Governance Officers</th>
+                                                                <th scope="col" style="text-align: center">Section Leader</th>
                                                             </tr>
                                                             </thead>
                                                             <tbody>
@@ -263,6 +284,9 @@
                                                                             <td style="text-align: center">
                                                                                 <p style="padding-left: 15px;">${disciplineAllocation.cgoSelName}<c:if test="${empty disciplineAllocation.cgoSelName}">-</c:if></p>
                                                                             </td>
+                                                                            <td style="text-align: center">
+                                                                                <p style="padding-left: 15px;">${disciplineAllocation.sectionLeaderName}<c:if test="${empty disciplineAllocation.sectionLeaderName}">-</c:if></p>
+                                                                            </td>
                                                                         </tr>
                                                                     </c:forEach>
                                                                 </c:otherwise>
@@ -272,11 +296,48 @@
 
                                                     </div>
                                                 </div>
+                                                <c:if test="${not empty appSvcRelatedInfoDto.appSvcKeyAppointmentHolderDtoList}">
+                                                    <c:forEach items="${appSvcRelatedInfoDto.appSvcKeyAppointmentHolderDtoList}" var="personnel">
+                                                        <div class="panel-heading"><strong>Key Appointment Holder </strong></div>
+                                                        <div class="row">
+                                                            <div class="col-xs-12">
+                                                                <div class="table-gp">
+                                                                    <table aria-describedby="" class="table table-bordered">
+                                                                        <thead style="display: none">
+                                                                        <tr>
+                                                                            <th scope="col"></th>
+                                                                        </tr>
+                                                                        </thead>
+                                                                        <tbody>
+                                                                        <tr>
+                                                                            <td align="right">Salutation</td>
+                                                                            <td class="col-xs-6" style="padding-left: 15px;"><iais:code code="${personnel.salutation}"/><c:if test="${empty personnel.salutation}">-</c:if></td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td align="right">Name</td>
+                                                                            <td class="col-xs-6" style="padding-left: 15px;">${personnel.name}<c:if test="${empty personnel.name}">-</c:if></td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td align="right">ID Type</td>
+                                                                            <td class="col-xs-6" style="padding-left: 15px;"><iais:code code="${personnel.idType}"/><c:if test="${empty personnel.idType}">-</c:if></td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td align="right">ID No</td>
+                                                                            <td class="col-xs-6" style="padding-left: 15px;">${personnel.idNo}<c:if test="${empty personnel.idNo}">-</c:if></td>
+                                                                        </tr>
+                                                                        </tbody>
+                                                                    </table>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </c:forEach>
+
+                                                </c:if>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                                <a  onclick="javascript:SOP.Crud.cfxSubmit('mainForm');" ><em class="fa fa-angle-left"> </em> Back</a>
+                                <a href="#" onclick="javascript:SOP.Crud.cfxSubmit('mainForm');" ><em class="fa fa-angle-left"> </em> Back</a>
                                 </div>
                             </iais:body>
                         </div>

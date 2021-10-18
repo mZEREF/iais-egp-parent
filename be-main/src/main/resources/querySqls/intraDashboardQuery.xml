@@ -501,7 +501,7 @@
     <sql key = "dashSystemDetail"  remarks = "System admin dashboard Detail Search">
         <![CDATA[
              SELECT DISTINCT viewApp.APP_GRP_ID as ID, viewApp.wrk_grp_id, viewApp.GROUP_NO ,viewApp.PMT_STATUS ,viewApp.cou ,viewApp.APP_TYPE ,
-            viewApp.ROLE_ID ,viewApp.STAGE_ID ,viewApp.SUB_STAGE ,viewApp.UPDATED_DT ,viewApp.SUBMIT_DT , viewApp.APPLICATION_NO,
+            viewApp.ROLE_ID ,viewApp.STAGE_ID ,viewApp.SUB_STAGE ,viewApp.UPDATED_DT ,viewApp.SUBMIT_DT,
             viewApp.ACTION_BY
             FROM DASHBOARD_ALL_GRP_APPLICATIONS_VIEW viewApp
             WHERE 1 = 1

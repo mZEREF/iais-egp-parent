@@ -120,10 +120,19 @@
                   <p></p>
                   <div class="row">
                     <div class="col-md-2">
-                      <label style="font-size: 16px">Best Practices</label>
+                      <label style="font-size: 16px">Recommendation</label>
                     </div>
                     <div class="col-md-6">
                       <span style="font-size: 16px"><c:out value="${inspectionReportDto.bestPractice}"/></span>
+                    </div>
+                  </div>
+                  <p></p>
+                  <div class="row">
+                    <div class="col-md-2">
+                      <label style="font-size: 16px">Observation</label>
+                    </div>
+                    <div class="col-md-6">
+                      <span style="font-size: 16px"><c:out value="${inspectionReportDto.observation}"/></span>
                     </div>
                   </div>
                   <p></p>
@@ -169,7 +178,7 @@
                   </div>
                   <p></p>
                   <iais:action >
-                    <a class="back" id="Back" onclick="javascript:doInspRecCheckListBack()" style="float:left"><em class="fa fa-angle-left"></em> Back</a>
+                    <a href="#" class="back" id="Back" onclick="javascript:doInspRecCheckListBack()" style="float:left"><em class="fa fa-angle-left"></em> Back</a>
                     <button class="btn btn-primary" style="float:right" type="button" onclick="javascript:doInspRecCheckListView()">View Checklist</button>
                   </iais:action>
                 </iais:section>

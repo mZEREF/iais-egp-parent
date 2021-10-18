@@ -1,3 +1,4 @@
+<%@ page import="com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts" %>
 <div class="form-check-gp">
     <p class="form-check-title">Please select the personnel to amend his/her contact information</p>
     <div class="form-check-label" style="padding-bottom:67px;width: 50%;">
@@ -9,6 +10,7 @@
         <table aria-describedby="" class="table">
             <thead>
             <tr >
+                <th scope="col" style="display: none"></th>
                 <iais:sortableHeader needSort="true"  field="T3.SVC_NAME" value="Type" isFE="true"/>
                 <iais:sortableHeader needSort="true"  field="T3.LICENCE_NO" value="Licence No." isFE="true"/>
                 <iais:sortableHeader needSort="false"  field="T2.PSN_TYPE" value="Role" isFE="true"/>
@@ -36,18 +38,11 @@
                                     <p class="visible-xs visible-sm table-row-title">Role</p>
                                     <c:forEach var="assessList" items="${pool.roles}" varStatus="assessStatus">
                                         <c:choose>
-                                            <c:when test="${pool.roles.size() == 1}">
-                                                <iais:code code="${assessList}"/>
+                                            <c:when test="${assessList == 'CD'}">
+                                                <%=HcsaConsts.CLINICAL_DIRECTOR%><c:if test="${not assessStatus.last}">,</c:if>
                                             </c:when>
                                             <c:otherwise>
-                                                <c:choose>
-                                                    <c:when test="${pool.roles.size() == assessStatus.index + 1}">
-                                                        <iais:code code="${assessList}"/>
-                                                    </c:when>
-                                                    <c:otherwise>
-                                                        <iais:code code="${assessList}"/>,
-                                                    </c:otherwise>
-                                                </c:choose>
+                                                <iais:code code="${assessList}"/><c:if test="${not assessStatus.last}">,</c:if>
                                             </c:otherwise>
                                         </c:choose>
                                     </c:forEach>

@@ -84,7 +84,7 @@
                                                                      cssClass="nice-select cessationReasons"/>
                                                     </div>
                                                 </div>
-                                                <div class="form-group" id="${num.count}reason${uid.count}" hidden>
+                                                <div class="form-group" id="${num.count}reason${uid.count}" style="display: none;">
                                                     <label class="col-xs-12 col-md-6 control-label ">Others <span
                                                             style="color: red">*</span></label>
                                                     <div class="col-xs-12 col-sm-4 col-md-3">
@@ -107,7 +107,7 @@
                                                                                name="${num.count}patRadio${uid.count}"
                                                                                value="yes"
                                                                                <c:if test="${appCessHci.patNeedTrans ==true}">checked</c:if>
-                                                                               onchange="javascirpt:changePatSelectCessFe(this.value);"
+                                                                               onchange="javascirpt:changePatSelectCessFe();"
                                                                                aria-invalid="false" disabled>
                                                                         <c:if test="${appCessHci.patNeedTrans ==true}">
                                                                             <label class="form-check-label"
@@ -122,7 +122,7 @@
                                                                                name="${num.count}patRadio${uid.count}"
                                                                                value="no"
                                                                                <c:if test="${appCessHci.patNeedTrans == false}">checked</c:if>
-                                                                               onchange="javascirpt:changePatSelectCessFe(this.value);"
+                                                                               onchange="javascirpt:changePatSelectCessFe();"
                                                                                aria-invalid="false" disabled>
                                                                         <c:if test="${appCessHci.patNeedTrans !=true}">
                                                                             <label class="form-check-label"
@@ -250,16 +250,16 @@
                                                               class="error-msg"></span>
                                                     </div>
                                                 </div>--%>
-                                                <div class="form-group" id="${num.count}transferDetail${uid.count}" hidden>
+                                                <div class="form-group" id="${num.count}transferDetail${uid.count}" style="display: none;">
                                                     <label class="col-xs-12 col-md-6">Please provide details of why the transfer could not be done and the reasonable measures that the licensee has taken to ensure continuity of care for the affected patients. </label>
-                                                    <div class="col-xs-6 col-sm-4 col-md-3">
-                                                        <textarea name="${num.count}transferDetail${uid.count}"  cols="30" rows="2" maxLength="1000" readonly="readonly">${appCessHci.transferDetail}</textarea>
+                                                    <div class="col-xs-12 <c:if test='${appCessHci.transferDetailCol == 30}'>col-sm-4 col-md-3 </c:if>">
+                                                        <textarea name="${num.count}transferDetail${uid.count}"  cols="${appCessHci.transferDetailCol}" rows="${appCessHci.transferDetailRow}" maxLength="1000" readonly="readonly">${appCessHci.transferDetail}</textarea>
                                                     </div>
                                                 </div>
-                                                <div class="form-group" id="${num.count}transferredWhere${uid.count}" hidden>
+                                                <div class="form-group" id="${num.count}transferredWhere${uid.count}" style="display: none;">
                                                     <label class="col-xs-12 col-md-6">Please state where the patient's records will be transferred to and where the licensee will store the patients' health records after cessation. </label>
-                                                    <div class="col-xs-6 col-sm-4 col-md-3">
-                                                        <textarea name="${num.count}transferredWhere${uid.count}"  cols="30" rows="2" maxLength="1000" readonly="readonly">${appCessHci.transferredWhere}</textarea>
+                                                    <div class="col-xs-12 <c:if test='${appCessHci.transferredWhereCol == 30}'>col-sm-4 col-md-3 </c:if>">
+                                                        <textarea name="${num.count}transferredWhere${uid.count}"  cols="${appCessHci.transferredWhereCol}" rows="${appCessHci.transferredWhereRow}" maxLength="1000" readonly="readonly">${appCessHci.transferredWhere}</textarea>
                                                     </div>
                                                 </div>
                                                 <c:if test="${isGrpLic}">
@@ -288,7 +288,7 @@
                                                     </div>
                                                 </c:if>
                                                 <c:if test="${!isGrpLic}">
-                                                    <div hidden>
+                                                    <div style="display: none;">
                                                         <input class="form-check-input" type="text"
                                                                name="${num.count}whichTodo${uid.count}"
                                                                value="${appCessHci.premiseId}">
@@ -307,18 +307,18 @@
                                                     their
                                                     underlying <iais:code needLowerCase="true" code="CDN001"/>(s) is/are listed above.</h4>
                                             </div>
-                                            <table class="table-gp tablebox">
+                                            <table aria-describedby="" class="table-gp tablebox">
                                                 <tr>
-                                                    <th style="width: 1%">S/N</th>
-                                                    <th style="width: 25%"><iais:code code="CDN003"/>
+                                                    <th scope="col" style="width: 1%">S/N</th>
+                                                    <th scope="col" style="width: 25%"><iais:code code="CDN003"/>
                                                         Licence No.
                                                     </th>
-                                                    <th style="width: 25%"><iais:code code="CDN003"/>
+                                                    <th scope="col" style="width: 25%"><iais:code code="CDN003"/>
                                                         Name
                                                     </th>
-                                                    <th style="width: 25%"><iais:code code="CDN001"/> Licence No.
+                                                    <th scope="col" style="width: 25%"><iais:code code="CDN001"/> Licence No.
                                                     </th>
-                                                    <th style="width: 25%"><iais:code code="CDN001"/> Name</th>
+                                                    <th scope="col" style="width: 25%"><iais:code code="CDN001"/> Name</th>
                                                 </tr>
                                                 <c:forEach items="${map.value}" var="spec" varStatus="index">
                                                     <tr>

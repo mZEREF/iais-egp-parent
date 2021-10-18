@@ -14,7 +14,9 @@
             <input id="isEditHiddenVal" type="hidden" name="isEdit" value="0"/>
             <c:if test="${('APTY005' ==AppSubmissionDto.appType || 'APTY004' ==AppSubmissionDto.appType) && requestInformationConfig == null}">
                 <div class="app-font-size-16">
-                    <a class="back" id="RfcSkip">Skip<span style="display: inline-block;">&nbsp;</span><em class="fa fa-angle-right"></em></a>
+                    <a class="back" id="RfcSkip" href="javascript:void(0);">
+                        Skip<span style="display: inline-block;">&nbsp;</span><em class="fa fa-angle-right"></em>
+                    </a>
                 </div>
             </c:if>
             <c:set var="canEdit" value="${AppSubmissionDto.appEditSelectDto.serviceEdit}"/>
@@ -24,7 +26,11 @@
 
 <c:set var="premBusinessMap" value="${premAlignBusinessMap}"/>
 <c:forEach var="appGrpPremisesDto" items="${AppSubmissionDto.appGrpPremisesDtoList}" varStatus="status">
-    <c:set var="businessDto" value="${premBusinessMap[appGrpPremisesDto.premisesIndexNo]}"/>
+    <c:forEach var="premBusinessItem" items="${premBusinessMap}" varStatus="premBusinessStatus">
+        <c:if test="${premBusinessItem.key == appGrpPremisesDto.premisesIndexNo}">
+            <c:set var="businessDto" value="${premBusinessItem.value}"/>
+        </c:if>
+    </c:forEach>
     <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
         <div class="panel panel-default">
             <div class="panel-heading " id="business-heading"  role="tab">
@@ -54,10 +60,12 @@
                     <div class="panel-main-content">
                         <div class="col-md-12 col-xs-12">
                             <div class="edit-content">
-                                <c:if test="${'true' == canEdit}">
+                                <c:if test="${'true' == canEdit && (!isRfi || (isRfi && appGrpPremisesDto.rfiCanEdit))}">
                                     <p>
                                     <div class="text-right app-font-size-16">
-                                        <a class="edit businessEdit"><em class="fa fa-pencil-square-o"></em><span>&nbsp;</span>Edit</a>
+                                        <a class="edit businessEdit" href="javascript:void(0);">
+                                            <em class="fa fa-pencil-square-o"></em><span>&nbsp;</span>Edit
+                                        </a>
                                     </div>
                                     </p>
                                 </c:if>
@@ -67,11 +75,11 @@
                             <div class="row control control-caption-horizontal">
                                 <div class=" form-group form-horizontal formgap">
                                     <div class="control-label formtext col-md-5 col-xs-5">
-                                        <label  class="control-label control-set-font control-font-label">Business Name</label>
+                                        <label  class="control-label control-set-font control-font-label">Business Name <a class="btn-tooltip styleguide-tooltip" href="javascript:void(0);" data-toggle="tooltip" data-html="true" title="&lt;p&gt;<iais:message key="NEW_ACK028"></iais:message>&lt;/p&gt;">i</a></label>
                                         <span class="mandatory">*</span>
                                     </div>
                                     <div class="col-md-7 col-xs-12">
-                                        <iais:input cssClass="businessName" maxLength="25" type="text" name="businessName${status.index}" value="${businessDto.businessName}"></iais:input>
+                                        <iais:input cssClass="businessName" maxLength="100" type="text" name="businessName${status.index}" value="${businessDto.businessName}"></iais:input>
                                     </div>
                                 </div>
                             </div>

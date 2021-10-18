@@ -89,7 +89,7 @@
                     </tr>
                 </c:if>
                 <!--complexSpecifiedFeeExt -->
-                <c:if test="${complexSpecifiedFeeExt.svcNames.size()>0 }">
+                <c:if test="${not empty complexSpecifiedFeeExt }">
                     <tr>
                         <td class="breakdown">
                             <p>&nbsp;&nbsp;
@@ -185,33 +185,35 @@
                         </td>
                     </tr>
                 </c:if>
-                <tr>
-                    <td>
-                        <p><em>Complex <iais:code code="CDN004"/> <c:if test="${complexSpecifiedFeeExt.svcNames.size()>1}">(${complexSpecifiedFeeExt.svcNames.size()})</c:if></em></p>
-                        <c:forEach var="svcName" items="${complexSpecifiedFeeExt.svcNames}">
-                            <p>- <c:out value="${svcName}"></c:out></p>
-                        </c:forEach>
+                <c:if test="${not empty complexSpecifiedFeeExt }">
+                    <tr>
+                        <td>
+                            <p><em>Complex <iais:code code="CDN004"/> <c:if test="${complexSpecifiedFeeExt.svcNames.size()>1}">(${complexSpecifiedFeeExt.svcNames.size()})</c:if></em></p>
+                            <c:forEach var="svcName" items="${complexSpecifiedFeeExt.svcNames}">
+                                <p>- <c:out value="${svcName}"></c:out></p>
+                            </c:forEach>
 
-                    </td>
-                    <td>
-                        <p>&nbsp;</p>
-                        <p>
-                            New Licence
-                        </p>
-                    </td>
-                    <td>
-                        <p>&nbsp;</p>
-                        <p>
-                            <c:out value="${AppSubmissionDto.appGrpNo}"></c:out>
-                        </p>
-                    </td>
-                    <td>
-                        <p>&nbsp;</p>
-                        <p>
-                            <c:out value="${complexSpecifiedFeeExt.amountStr}"></c:out>
-                        </p>
-                    </td>
-                </tr>
+                        </td>
+                        <td>
+                            <p>&nbsp;</p>
+                            <p>
+                                New Licence
+                            </p>
+                        </td>
+                        <td>
+                            <p>&nbsp;</p>
+                            <p>
+                                <c:out value="${AppSubmissionDto.appGrpNo}"></c:out>
+                            </p>
+                        </td>
+                        <td>
+                            <p>&nbsp;</p>
+                            <p>
+                                <c:out value="${complexSpecifiedFeeExt.amountStr}"></c:out>
+                            </p>
+                        </td>
+                    </tr>
+                </c:if>
             </c:forEach>
         </c:when>
         <c:otherwise>
@@ -297,7 +299,7 @@
                         </tr>
                     </c:if>
                     <!--simpleSpecifiedFeeExt -->
-                    <c:if test="${simpleSpecifiedFeeExt.svcNames.size()>0 }">
+                    <c:if test="${not empty complexSpecifiedFeeExt }">
                         <tr>
                             <td>
                                 <p>&nbsp;&nbsp;Simple <iais:code code="CDN004"/></p>
@@ -321,7 +323,7 @@
                     </c:if>
 
                     <!--complexSpecifiedFeeExt -->
-                    <c:if test="${complexSpecifiedFeeExt.svcNames.size()>0 }">
+                    <c:if test="${not empty complexSpecifiedFeeExt }">
                         <tr>
                             <td class="breakdown">
                                 <p>&nbsp;&nbsp;<em>Complex <iais:code code="CDN004"/> <c:if test="${complexSpecifiedFeeExt.svcNames.size()>1}">(${complexSpecifiedFeeExt.svcNames.size()})</c:if></em></p>

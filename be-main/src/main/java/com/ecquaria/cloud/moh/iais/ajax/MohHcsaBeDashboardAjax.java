@@ -37,6 +37,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
+import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.helper.SqlHelper;
 import com.ecquaria.cloud.moh.iais.helper.SystemParamUtil;
@@ -551,31 +552,20 @@ public class MohHcsaBeDashboardAjax {
         String applicationString =  ParamUtil.getString(request, "applications");
         String[] applications = applicationString.split(",");
         int approveCheck = 1;
-        StringBuilder noApprove = new StringBuilder();
-        for (String item:applications
-        ) {
+        String noApprove = MessageUtil.getMessageDesc("GENERAL_ERR0050");
+        for (String item:applications) {
             ApplicationDto applicationDto = inspectionTaskMainClient.getApplicationDtoByAppNo(item).getEntity();
             if(ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL01.equals(applicationDto.getStatus()) || ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02.equals(applicationDto.getStatus())){
                 HcsaSvcRoutingStageDto canApproveStageDto = getCanApproveStageDto(applicationDto.getApplicationType(), applicationDto.getStatus(), applicationDto.getRoutingServiceId());
                 boolean canApprove = checkCanApproveStage(canApproveStageDto);
                 if(!canApprove){
-                    if(!StringUtil.isEmpty(noApprove.toString())) {
-                        noApprove.append(' ');
-                    }
-                    noApprove.append(item).append(',');
                     approveCheck = 0;
                 }
             }else{
-                if(!StringUtil.isEmpty(noApprove.toString())) {
-                    noApprove.append(' ');
-                }
-                noApprove.append(item).append(',');
                 approveCheck = 0;
             }
         }
-        if(noApprove.length() > 0){
-            noApprove.deleteCharAt(noApprove.lastIndexOf(","));
-        }
+
         Map<String, Object> map = new HashMap<>();
         map.put("res",approveCheck);
         map.put("noApprove",noApprove);

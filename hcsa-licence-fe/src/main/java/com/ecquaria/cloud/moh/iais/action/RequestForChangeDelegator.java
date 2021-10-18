@@ -139,7 +139,7 @@ public class RequestForChangeDelegator {
                         checkedVals.add(subLicensee);
                     }
                     log.info(StringUtil.changeForLog("subLicensee is -->:"+subLicensee));
-                    String chargeTypeSelHtml = NewApplicationHelper.genMutilSelectOpHtml(chargesTypeAttr, getSelect(uen),
+                    String chargeTypeSelHtml = NewApplicationHelper.genMutilSelectOpHtml(chargesTypeAttr, getSelect(uen,licenceDto),
                             NewApplicationDelegator.FIRESTOPTION, checkedVals, false);
 
                     String subLicenseeError = (String) ParamUtil.getSessionAttr(request, "subLicenseeError");
@@ -152,22 +152,25 @@ public class RequestForChangeDelegator {
                     log.info(StringUtil.changeForLog("subLicenseeError is -->:"+subLicenseeError));
                     chargeTypeSelHtml = chargeTypeSelHtml +" </span>";
                     ajaxResDto.setResultJson(chargeTypeSelHtml);
+                }else if(licenceDto != null && licenceDto.getLicenseeId().equals(licenseeDto.getId())){
+                    error.put("uenError","RFC_ERR021");
                 }
-            }else{
-                ajaxResDto.setResCode(AppConsts.AJAX_RES_CODE_VALIDATE_ERROR);
-                ajaxResDto.setResultJson(MessageUtil.getMessageDesc(error.get("uenError")));
             }
-        }else{
+        }
+        if(!error.isEmpty()){
             ajaxResDto.setResCode(AppConsts.AJAX_RES_CODE_VALIDATE_ERROR);
             ajaxResDto.setResultJson(MessageUtil.getMessageDesc(error.get("uenError")));
         }
         log.info(StringUtil.changeForLog("the do checkUen end ...."));
         return ajaxResDto;
     }
-    private List<SelectOption> getSelect(String uen){
+    private List<SelectOption> getSelect(String uen,LicenceDto licenceDto){
         log.info(StringUtil.changeForLog("the getSelect start ...."));
         List<SelectOption> result = IaisCommonUtils.genNewArrayList();
         if(!StringUtil.isEmpty(uen)){
+            if(isSameUEN(uen,licenceDto)){
+                result.add(new SelectOption("new","Add a new individual licensee"));
+            }
             OrganizationDto organizationDto = serviceConfigService.findOrganizationByUen(uen);
             if(organizationDto != null){
                 List<SubLicenseeDto>  subLicenseeDtos = licenceViewService.getSubLicenseeDto(organizationDto.getId());
@@ -184,8 +187,22 @@ public class RequestForChangeDelegator {
         }else {
             log.info(StringUtil.changeForLog("The uen is null"));
         }
-        result.add(new SelectOption("new","Add a new individual licensee"));
+
         log.info(StringUtil.changeForLog("the getSelect end ...."));
+        return result;
+    }
+
+    private  boolean isSameUEN(String uen,LicenceDto licenceDto){
+        log.info(StringUtil.changeForLog("the isSameUEN start ...."));
+        boolean result = false;
+        if(licenceDto != null){
+            OrganizationDto organizationDto = licenceViewService.getOrganizationDtoByLicenseeId(licenceDto.getLicenseeId());
+            if(organizationDto != null && organizationDto.getUenNo().equals(uen)){
+                result = true;
+            }
+        }
+        log.info(StringUtil.changeForLog("the isSameUEN result is -->:"+result));
+        log.info(StringUtil.changeForLog("the isSameUEN end ...."));
         return result;
     }
     /**
@@ -216,6 +233,7 @@ public class RequestForChangeDelegator {
 
     private void removeSession(HttpServletRequest request){
         request.getSession().removeAttribute("appSubmissionDtos");
+        request.getSession().removeAttribute(RfcConst.APPSUBMISSIONDTO);
         request.getSession().removeAttribute("rfc_eqHciCode");
         request.getSession().removeAttribute("seesion_files_map_ajax_feselectedDeclFile");
         request.getSession().removeAttribute("pageShowFileDtos");
@@ -311,6 +329,7 @@ public class RequestForChangeDelegator {
                 ParamUtil.setSessionAttr(bpc.request,"email",null);
                 ParamUtil.setSessionAttr(bpc.request,"reason",null);
                 ParamUtil.setSessionAttr(bpc.request,"hasSubLicensee",null);
+                ParamUtil.setSessionAttr(bpc.request,"dto",null);
                 ParamUtil.setSessionAttr(bpc.request,"hasNewSubLicensee",null);
                 ParamUtil.setSessionAttr(bpc.request,"subLicensee",null);
                 ParamUtil.setSessionAttr(bpc.request,"subLicenseeError",null);
@@ -366,8 +385,9 @@ public class RequestForChangeDelegator {
                 }
             }
         }
+        // prepare AppEditSelectDto and some service info
         appSubmissionService.setPreviewDta(appSubmissionDto,bpc);
-        //set doc info
+        // set doc info
         List<HcsaSvcDocConfigDto> primaryDocConfig = null;
         List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtos = appSubmissionDto.getAppGrpPrimaryDocDtos();
         if(appGrpPrimaryDocDtos != null && appGrpPrimaryDocDtos.size() > 0){
@@ -429,7 +449,10 @@ public class RequestForChangeDelegator {
         String switchVal = "prepareFirstView";
         if(!StringUtil.isEmpty(editValue)){
             switchVal = "doEdit";
-            if(RfcConst.EDIT_PREMISES.equals(editValue)){
+            if(RfcConst.EDIT_LICENSEE.equals(editValue)) {
+                appEditSelectDto.setLicenseeEdit(true);
+                ParamUtil.setRequestAttr(bpc.request, RfcConst.RFC_CURRENT_EDIT, RfcConst.EDIT_LICENSEE);
+            }else if(RfcConst.EDIT_PREMISES.equals(editValue)){
                 appEditSelectDto.setPremisesEdit(true);
                 ParamUtil.setRequestAttr(bpc.request,RfcConst.RFC_CURRENT_EDIT,RfcConst.EDIT_PREMISES);
             }else if(RfcConst.EDIT_PRIMARY_DOC.equals(editValue)){
@@ -583,6 +606,8 @@ public class RequestForChangeDelegator {
             ParamUtil.setSessionAttr(bpc.request,"reason",reason);
             ParamUtil.setRequestAttr(bpc.request,"crud_action_type_confirm","confirm");
         }
+        AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request,RfcConst.RFCAPPSUBMISSIONDTO);
+        ParamUtil.setRequestAttr(bpc.request,RfcConst.APPSUBMISSIONDTO,appSubmissionDto);
         log.info(StringUtil.changeForLog("The compareChangePercentage end ..."));
     }
 
@@ -747,7 +772,11 @@ public class RequestForChangeDelegator {
                             appGroupMiscDtoList.add(appGroupMiscDto);
                         }
                         appSubmissionDto.setAppGroupMiscDtos(appGroupMiscDtoList);
-
+                         AppEditSelectDto appEditSelectDto = new AppEditSelectDto();
+                        appEditSelectDto.setNeedNewLicNo(true);
+                        requestForChangeService.checkAffectedAppSubmissions(appSubmissionDto, null, amount, draftNo, grpNo,
+                                appEditSelectDto, null,null);
+                        appSubmissionDto.setGetAppInfoFromDto(false);
                         AppSubmissionDto tranferSub = requestForChangeService.submitChange(appSubmissionDto);
                         ParamUtil.setSessionAttr(bpc.request, "app-rfc-tranfer", tranferSub);
                         if (amount == null || MiscUtil.doubleEquals(amount, 0.0)) {
@@ -785,6 +814,9 @@ public class RequestForChangeDelegator {
      */
     public void doValidate(BaseProcessClass bpc) throws CloneNotSupportedException,IOException {
         log.info(StringUtil.changeForLog("The doValidate start ..."));
+        ParamUtil.setSessionAttr(bpc.request,"hasSubLicensee",null);
+        ParamUtil.setSessionAttr(bpc.request,"hasNewSubLicensee",null);
+        ParamUtil.setSessionAttr(bpc.request,"subLicenseeDto",null);
         AppSubmissionDto appSubmissionDto  = (AppSubmissionDto)ParamUtil.getSessionAttr(bpc.request,"prepareTranfer");
         String licenceId = (String) ParamUtil.getSessionAttr(bpc.request, RfcConst.LICENCEID);
         String uen = ParamUtil.getString(bpc.request, "UEN");
@@ -827,6 +859,8 @@ public class RequestForChangeDelegator {
                                 log.error(StringUtil.changeForLog("This id can not get th subLicensee -->:"+subLicensee));
                             }
                         }
+                    }else if(licenceDto.getLicenseeId().equals(licenseeDto.getId())){
+                        error.put("uenError","RFC_ERR021");
                     }
                 }
             }
@@ -868,7 +902,8 @@ public class RequestForChangeDelegator {
      * @Decription prepareAddLicensee
      */
     public void prepareAddLicensee(BaseProcessClass bpc){
-
+        AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request,RfcConst.RFCAPPSUBMISSIONDTO);
+        ParamUtil.setRequestAttr(bpc.request,RfcConst.APPSUBMISSIONDTO,appSubmissionDto);
     }
     /**
      *
@@ -1025,11 +1060,15 @@ public class RequestForChangeDelegator {
             }
             log.info(StringUtil.changeForLog("The  existCount  is -->:"+existCount));
             log.info(StringUtil.changeForLog("The  licenseeKeyApptPersonDtoList.size()  is -->:"+licenseeKeyApptPersonDtoList.size()));
-            log.info(StringUtil.changeForLog("The  existCount/licenseeKeyApptPersonDtoList.size() is -->:"+new BigDecimal(existCount).
-                    divide(new BigDecimal(licenseeKeyApptPersonDtoList.size()))));
-            int diffrent = licenseeKeyApptPersonDtoList.size()- existCount;
+            log.info(StringUtil.changeForLog("The  oldLicenseeKeyApptPersonDtos.size()  is -->:"+oldLicenseeKeyApptPersonDtos.size()));
+            int totleCount = licenseeKeyApptPersonDtoList.size();
+            if(oldLicenseeKeyApptPersonDtos.size() > licenseeKeyApptPersonDtoList.size()){
+                totleCount =  oldLicenseeKeyApptPersonDtos.size();
+            }
+            log.info(StringUtil.changeForLog("The  totleCount  is -->:"+totleCount));
+            int diffrent = totleCount - existCount;
             log.info(StringUtil.changeForLog("The  diffrent  is -->:"+diffrent));
-            BigDecimal ratio = new BigDecimal(diffrent).divide(new BigDecimal(licenseeKeyApptPersonDtoList.size()));
+            BigDecimal ratio = new BigDecimal(diffrent).divide(new BigDecimal(totleCount));
             log.info(StringUtil.changeForLog("The  ratio  is -->:"+ratio));
             if(ratio.compareTo(BigDecimal.valueOf(0.5))>=0){
                 canTransfer = false;
@@ -1099,18 +1138,22 @@ public class RequestForChangeDelegator {
                 log.info(StringUtil.changeForLog("The doValidate svcName is -->:"+svcName));
                 if(AppServicesConsts.SERVICE_NAME_EMERGENCY_AMBULANCE_SERVICE.equals(svcName)
                         || AppServicesConsts.SERVICE_NAME_MEDICAL_TRANSPORT_SERVICE.equals(svcName) ){
-                    List<HcsaServiceDto> hcsaServiceDtos = IaisCommonUtils.genNewArrayList();
-                    HcsaServiceDto hcsaServiceDto = new HcsaServiceDto();
-                    hcsaServiceDto.setSvcName(svcName);
-                    hcsaServiceDtos.add(hcsaServiceDto);
-                    boolean canCreateEasOrMts = appSubmissionService.canApplyEasOrMts(licenseeDto.getId(),hcsaServiceDtos);
-                    log.info(StringUtil.changeForLog("The doValidate canCreateEasOrMts is -->:"+canCreateEasOrMts));
-                    if(!canCreateEasOrMts){
-                        error.put("uenError","RFC_ERR022");
-                        return error;
+                    if(!isSameUEN(uen,licenceDto)){
+                        List<HcsaServiceDto> hcsaServiceDtos = IaisCommonUtils.genNewArrayList();
+                        HcsaServiceDto hcsaServiceDto = new HcsaServiceDto();
+                        hcsaServiceDto.setSvcName(svcName);
+                        hcsaServiceDtos.add(hcsaServiceDto);
+                        boolean canCreateEasOrMts = appSubmissionService.canApplyEasOrMts(licenseeDto.getId(),hcsaServiceDtos);
+                        log.info(StringUtil.changeForLog("The doValidate canCreateEasOrMts is -->:"+canCreateEasOrMts));
+                        if(!canCreateEasOrMts){
+                            error.put("uenError","RFC_ERR022");
+                            return error;
+                        }
+                    }else{
+                        log.info(StringUtil.changeForLog("The same UEN ..."));
                     }
                 }
-                if(OrganizationConstants.LICENSEE_TYPE_CORPPASS.equals(licenseeDto.getLicenseeType())){
+                //if(OrganizationConstants.LICENSEE_TYPE_CORPPASS.equals(licenseeDto.getLicenseeType())){
                     if(!licenceDto.getLicenseeId().equals(licenseeDto.getId())){
                         List<LicenseeKeyApptPersonDto> oldLicenseeKeyApptPersonDtos = requestForChangeService.
                                 getLicenseeKeyApptPersonDtoListByLicenseeId(licenceDto.getLicenseeId());
@@ -1122,9 +1165,9 @@ public class RequestForChangeDelegator {
                     }else{
                         log.info(StringUtil.changeForLog("The same uen -->:"+uen));
                     }
-                }else{
-                    log.info(StringUtil.changeForLog("This is the solo uen-->:"+uen));
-                }
+//                }else{
+//                    log.info(StringUtil.changeForLog("This is the solo uen-->:"+uen));
+//                }
             }
         }
         return error;

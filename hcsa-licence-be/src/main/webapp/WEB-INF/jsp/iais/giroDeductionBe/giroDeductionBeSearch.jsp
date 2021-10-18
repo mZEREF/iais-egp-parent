@@ -86,14 +86,15 @@
                   <span>Search Results</span>
                 </h3>
                 <div class="table-gp">
-                  <table class="table application-group">
+                  <table aria-describedby="" class="table application-group">
                     <iais:pagination  param="giroDedSearchParam" result="giroDedSearchResult"/>
                     <thead>
-                    <tr align="center">
-                      <th style="padding-bottom: 27px">
+                    <tr >
+                      <th scope="col" style="padding-bottom: 27px">
                         <input type="checkbox" name="allGiroDeductionCheck" id="allGiroDeductionCheck" <c:if test="${'check' eq giroDeductionCheck}">checked</c:if> onclick="javascript:giroDeductionCheckAll()" value="<c:out value="${giroDeductionCheck}"/>"/>
                       </th>
-                      <iais:sortableHeader needSort="false" field="" value="S/N"></iais:sortableHeader>
+                      <th scope="col" style="display: none"></th>
+                                <iais:sortableHeader needSort="false" field="" value="S/N"></iais:sortableHeader>
                       <iais:sortableHeader needSort="false" field="HCI_NAME" value="HCI Name"></iais:sortableHeader>
                       <iais:sortableHeader needSort="false" field="GROUP_NO" value="Application No."></iais:sortableHeader>
                       <iais:sortableHeader needSort="false" field="" value="Transaction Reference No."></iais:sortableHeader>

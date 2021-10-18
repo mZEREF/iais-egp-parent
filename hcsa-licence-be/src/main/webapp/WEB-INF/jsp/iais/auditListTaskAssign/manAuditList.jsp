@@ -29,13 +29,13 @@
                                 <table aria-describedby="" class="table">
                                     <thead>
                                     <tr>
-                                        <th width="10%">HCI Code</th>
-                                        <th width="10%">HCI Name</th>
-                                        <th  width="30%">Address</th>
-                                        <th  width="10%">Service Name</th>
-                                        <th  width="15%">Audit Type</th>
-                                        <th width="19%">Assign task to Inspector</th>
-                                        <th width="6%">Select for Audit</th>
+                                        <th scope="col" width="10%">HCI Code</th>
+                                        <th scope="col" width="10%">HCI Name</th>
+                                        <th scope="col" width="30%">Address</th>
+                                        <th scope="col" width="10%">Service Name</th>
+                                        <th scope="col" width="15%">Audit Type</th>
+                                        <th scope="col" width="19%">Assign task to Inspector</th>
+                                        <th scope="col" width="6%">Select for Audit</th>
                                     </tr>
                                     </thead>
                                     <tbody>

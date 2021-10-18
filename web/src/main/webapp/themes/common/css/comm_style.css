@@ -72,3 +72,16 @@ p, span {
     word-wrap: break-word;
     overflow-wrap: break-word;
 }
+
+.form-horizontal label.control-font-label {
+    font-weight: normal !important;
+}
+
+.hidden {
+    display:none !important;
+}
+
+.alignctr a {
+    margin-top: 8px;
+    margin-bottom: 8px;
+}

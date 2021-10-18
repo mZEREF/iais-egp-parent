@@ -18,7 +18,7 @@
       </p>
       <c:forEach var="appGrpPremDto" items="${appSubmissionDto.appGrpPremisesDtoList}"
                  varStatus="status">
-        <div class="panel-main-content">
+        <div class="panel-main-content postion-relative">
           <div class="preview-info">
             <div class="row">
               <div class="col-md-6">
@@ -103,17 +103,17 @@
             </c:if>
             <div class="row">
               <div class="col-md-6">
-                Name of HCI
+                Business Name
                 <a class="btn-tooltip styleguide-tooltip" id="hciNameClick" <c:if test="${empty appGrpPremDto.applicationViewHciNameDtos}">style="display: none" </c:if> data-toggle="tooltip" data-html="true" title="" data-original-title="">i</a>
               </div>
               <div  class="col-md-7" style="position: absolute;z-index: 100;left: 40%;background-color: #EEEEEE;display: none;margin-top: 2%;overflow-y: scroll" id="hciNameShowOrHidden">
-                <p>The  Name of HCI is currently used by another licensee</p>
+                <p>The  Business Name is currently used by another licensee</p>
                 <br>
-                <table    border="1px" style="border-collapse: collapse;border-top: 0px solid #000000;padding: 8px;text-align: center;background-color: #ffffff;width: 100%">
+                <table aria-describedby="" border="1px" style="border-collapse: collapse;border-top: 0px solid #000000;padding: 8px;text-align: center;background-color: #ffffff;width: 100%">
                   <tr>
-                    <td  class="col-md-4">Name of Licensee</td>
-                    <td  class="col-md-4">HCI Name</td>
-                    <td  class="col-md-4">Service Name</td>
+                    <th scope="col"  class="col-md-4">Name of Licensee</th>
+                    <th scope="col"  class="col-md-4">HCI Name</th>
+                    <th scope="col"  class="col-md-4">Service Name</th>
                   </tr>
                   <c:forEach items="${appGrpPremDto.applicationViewHciNameDtos}" var="applicationViewHciNameDtos">
                     <tr>
@@ -159,11 +159,11 @@
               </div>
                 <div  class="col-md-7"  style="position: absolute;z-index: 100;left: 40%;background-color: #EEEEEE;margin-top:2%;display: none;overflow-y: scroll;" id="addressShowOrHidden">
                     <p>The address of the mode of service delivery keyed in by applicant is currently used by another licensee</p>
-                    <table   border="1px" style="border-collapse: collapse;border-top: 0px solid #000000 ;padding: 8px;text-align: center;background-color: #ffffff;width: 100%">
+                    <table aria-describedby="" border="1px" style="border-collapse: collapse;border-top: 0px solid #000000;padding: 8px;text-align: center;background-color: #ffffff;width: 100%">
                       <tr>
-                        <td  class="col-md-4">Name of Licensee</td>
-                        <td  class="col-md-4">HCI Name</td>
-                        <td  class="col-md-4">Service Name</td>
+                        <th scope="col"  class="col-md-4">Name of Licensee</th>
+                        <th scope="col"  class="col-md-4">HCI Name</th>
+                        <th scope="col"  class="col-md-4">Service Name</th>
                       </tr>
                       <c:forEach items="${appGrpPremDto.applicationViewAddress}" var="applicationViewAddress">
                       <tr>
@@ -323,22 +323,20 @@
               </div>
             </div>
 
-            <c:if test="${'OFFSITE'==appGrpPremDto.premisesType || 'CONVEYANCE'==appGrpPremDto.premisesType}">
-              <div class="row">
-                <div class="col-md-6">
-                  Email
+            <div class="row">
+              <div class="col-md-6">
+                Email
+              </div>
+              <div class="col-md-6">
+                <div class="col-md-12">
+                  <span class="newVal " attr="${appGrpPremDto.easMtsPubEmail}">${appGrpPremDto.easMtsPubEmail}</span>
+                  <br>
+                  <span class="oldVal " attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].easMtsPubEmail}" style="display: none">${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].easMtsPubEmail }</span>
                 </div>
                 <div class="col-md-6">
-                  <div class="col-md-12">
-                    <span class="newVal " attr="${appGrpPremDto.easMtsPubEmail}">${appGrpPremDto.easMtsPubEmail}</span>
-                    <br>
-                    <span class="oldVal " attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].easMtsPubEmail}" style="display: none">${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].easMtsPubEmail }</span>
-                  </div>
-                  <div class="col-md-6">
-                  </div>
                 </div>
               </div>
-            </c:if>
+            </div>
 
             <c:if test="${'ONSITE'==appGrpPremDto.premisesType}">
               <div class="row">

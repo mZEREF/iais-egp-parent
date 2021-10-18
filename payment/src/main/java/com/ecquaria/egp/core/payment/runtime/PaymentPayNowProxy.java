@@ -9,6 +9,7 @@ import com.dbs.sgqr.generator.io.QRType;
 import com.ecquaria.cloud.RedirectUtil;
 import com.ecquaria.cloud.entity.sopprojectuserassignment.PaymentBaiduriProxyUtil;
 import com.ecquaria.cloud.entity.sopprojectuserassignment.SMCStringHelperUtil;
+import com.ecquaria.cloud.helper.ConfigHelper;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
@@ -29,14 +30,11 @@ import ecq.commons.helper.StringHelper;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.binary.Base64;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.ResourceUtils;
-import sop.config.ConfigUtil;
 import sop.util.DateUtil;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
-import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -60,8 +58,6 @@ import java.util.Map;
 
 @Slf4j
 public class PaymentPayNowProxy extends PaymentProxy {
-	@Value("${paynow.qr.expiry.minutes}")
-	private int expiryMinutes;
 
 	public static final String DEFAULT_ENCODING = "UTF-8";
 	public static final String IMPL_CONTINUE_TOKEN_PREFIX = "IMPL_CONTINUE_TOKEN_";
@@ -82,7 +78,7 @@ public class PaymentPayNowProxy extends PaymentProxy {
 		String continueToken = getContinueToken();
 		bpc.request.getSession().setAttribute(IMPL_CONTINUE_TOKEN_PREFIX + getTinyKey(), continueToken);
 
-		String bigsURL = AppConsts.REQUEST_TYPE_HTTPS + bpc.request.getServerName()+ConfigUtil.getString("payNow.url");
+		String bigsURL = AppConsts.REQUEST_TYPE_HTTPS + bpc.request.getServerName()+ ConfigHelper.getString("payNow.url");
 		if (StringHelper.isEmpty(bigsURL)) {
 			throw new PaymentException("payNow.url is not set.");
 		}
@@ -122,16 +118,15 @@ public class PaymentPayNowProxy extends PaymentProxy {
 
 		File inputFile = ResourceUtils.getFile("classpath:image/paymentPayNow.png");
 		//sample
-		QRDimensions qrDetails = qrGenerator.getQRDimensions(200, 200, Color.decode("#7C1A78"), inputFile.getPath());
+		QRDimensions qrDetails = qrGenerator.getQRDimensions(200, 200, java.awt.Color.decode("#7C1A78"), inputFile.getPath());
 		// sample Static QR
 		//PayNow payNowObject = qrGenerator.getPayNowObject("0000", "702", "SG", "McDonalds SG", "Singapore", "SG.PAYNOW", "2", "12345678U12A", "1", "20181225");
 
 		//sample Dynamic QR
+		int expiryMinutes = ConfigHelper.getInt("paynow.qr.expiry.minutes");
 		DateFormat df = new SimpleDateFormat("yyyyMMddHHmmss", LOCALE);
 		Calendar cal = Calendar.getInstance();
-		cal.setTime(new Date());
-		int minute = cal.get(Calendar.MINUTE);
-		cal.set(Calendar.MINUTE, minute + expiryMinutes);
+		cal.add(Calendar.MINUTE, expiryMinutes);
 		String expiryDate = df.format(cal.getTime());
 
 		double amount = Double.parseDouble(amo)/100;
@@ -183,7 +178,10 @@ public class PaymentPayNowProxy extends PaymentProxy {
 			paymentRequestDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
 			PaymentBaiduriProxyUtil.getPaymentClient().saveHcsaPaymentResquset(paymentRequestDto);
 		}
-
+		PaymentDto paymentDto=PaymentBaiduriProxyUtil.getPaymentClient().getPaymentDtoByReqRefNo(appGrpNo).getEntity();
+		if(paymentDto!=null&&paymentDto.getPmtStatus().equals(PaymentTransactionEntity.TRANS_STATUS_SUCCESS)){
+			RedirectUtil.redirect(fields.get("vpc_ReturnURL"), bpc.request, bpc.response);
+		}
 		try {
 			StringBuilder bud = new StringBuilder();
 			bud.append(bigsURL).append('?');
@@ -222,18 +220,24 @@ public class PaymentPayNowProxy extends PaymentProxy {
 
 		Map<String, String> fields = getResponseFieldsMap(bpc);
 		log.info(StringUtil.changeForLog("==========>getSessionID:"+bpc.getSession().getId()));
-		log.info(StringUtil.changeForLog("==========>getCHECKOUT_SESSION_ID:"+ParamUtil.getSessionAttr(bpc.request,"CHECKOUT_SESSION_ID")));
 
 		String gwNo = fields.get("vpc_TransactionNo");
 		setGatewayRefNo(gwNo);
 		HttpServletRequest request = bpc.request;
 
-
+		String appGrpNo=refNo;
+		try {
+			appGrpNo=refNo.substring(0,refNo.indexOf('_'));
+		}catch (Exception e){
+			log.error(StringUtil.changeForLog("appGrpNo not found :==== >>>"+refNo));
+		}
 
 		String status = PaymentTransactionEntity.TRANS_STATUS_FAILED;//"Send";
-		PaymentDto paymentDto=PaymentBaiduriProxyUtil.getPaymentClient().getPaymentDtoByReqRefNo(refNo).getEntity();
+		PaymentDto paymentDto=PaymentBaiduriProxyUtil.getPaymentClient().getPaymentDtoByReqRefNo(appGrpNo).getEntity();
 		if(paymentDto!=null&&paymentDto.getPmtStatus().equals(PaymentTransactionEntity.TRANS_STATUS_SUCCESS)){
 			status=PaymentTransactionEntity.TRANS_STATUS_SUCCESS;
+			paymentRequestDto.setStatus(status);
+		}else {
 			paymentRequestDto.setStatus(status);
 		}
 		String invoiceNo = "1234567";
@@ -242,15 +246,9 @@ public class PaymentPayNowProxy extends PaymentProxy {
 		setPaymentTransStatus(status);
 		PaymentBaiduriProxyUtil.getPaymentClient().updatePaymentResquset(paymentRequestDto);
 
-		String appGrpNo=refNo;
-		try {
-			appGrpNo=refNo.substring(0,'_');
-		}catch (Exception e){
-			log.error(StringUtil.changeForLog("appGrpNo not found :==== >>>"+refNo));
-		}
 
 		ApplicationGroupDto applicationGroupDto=PaymentBaiduriProxyUtil.getPaymentAppGrpClient().paymentUpDateByGrpNo(appGrpNo).getEntity();
-		if(applicationGroupDto!=null){
+		if(applicationGroupDto!=null&&status.equals(PaymentTransactionEntity.TRANS_STATUS_SUCCESS)){
 			applicationGroupDto.setPmtStatus(ApplicationConsts.PAYMENT_STATUS_PAY_SUCCESS);
 			applicationGroupDto.setPmtRefNo(refNo);
 			applicationGroupDto.setPaymentDt(new Date());
@@ -265,9 +263,13 @@ public class PaymentPayNowProxy extends PaymentProxy {
 
 			String results="?result="+ MaskUtil.maskValue("result",status)+"&reqRefNo="+MaskUtil.maskValue("reqRefNo",refNo)+"&txnDt="+MaskUtil.maskValue("txnDt", DateUtil.formatDate(new Date(), "dd/MM/yyyy"))+"&txnRefNo="+MaskUtil.maskValue("txnRefNo",transNo);
 			String bigsUrl =AppConsts.REQUEST_TYPE_HTTPS + request.getServerName()+paymentRequestDto.getReturnUrl()+results;
-
-
-			RedirectUtil.redirect(bigsUrl, bpc.request, bpc.response);
+			Boolean payNowSucc= (Boolean) ParamUtil.getSessionAttr(request,appGrpNo+"payNowResult");
+			if(status.equals(PaymentTransactionEntity.TRANS_STATUS_SUCCESS)){
+				ParamUtil.setSessionAttr(request,appGrpNo+"payNowResult",Boolean.TRUE);
+			}
+			if(payNowSucc==null|| !payNowSucc.equals(Boolean.TRUE)){
+				RedirectUtil.redirect(bigsUrl, bpc.request, bpc.response);
+			}
 		} catch (UnsupportedEncodingException e) {
 			log.info(e.getMessage(),e);
 			log.debug(e.getMessage());
@@ -334,17 +336,17 @@ public class PaymentPayNowProxy extends PaymentProxy {
 
 		String prefix = "rvl";
 
-		String version = ConfigUtil.getString(prefix + ".baiduri.version");
-		String command = ConfigUtil.getString(prefix + ".baiduri.command");
-		String accessCode = ConfigUtil.getString(prefix + ".baiduri.accessCode");
+		String version = ConfigHelper.getString(prefix + ".baiduri.version");
+		String command = ConfigHelper.getString(prefix + ".baiduri.command");
+		String accessCode = ConfigHelper.getString(prefix + ".baiduri.accessCode");
 		String merchTxnRef = pd.getSvcRefNo();
-		String merchantId = ConfigUtil.getString(prefix + ".baiduri.merchant");
+		String merchantId = ConfigHelper.getString(prefix + ".baiduri.merchant");
 		String orderInfo = pd.getPaymentDescription();
 		int amount = mul(pd.getAmount(), 100);
-		String currency = ConfigUtil.getString(prefix + ".baiduri.currency");//
-		String locale = ConfigUtil.getString(prefix + ".baiduri.local");
-		String returnURL = ConfigUtil.getString(prefix + ".baiduri.return.url");
-		String returnAuthResponseData = ConfigUtil.getString(prefix + ".baiduri.return.authResponseData");
+		String currency = ConfigHelper.getString(prefix + ".baiduri.currency");//
+		String locale = ConfigHelper.getString(prefix + ".baiduri.local");
+		String returnURL = ConfigHelper.getString(prefix + ".baiduri.return.url");
+		String returnAuthResponseData = ConfigHelper.getString(prefix + ".baiduri.return.authResponseData");
 //		String merchTxnRef = "123456";
 //		String orderInfo = "";
 //		int amount = mul(2.01, 100);

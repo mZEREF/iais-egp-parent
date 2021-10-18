@@ -44,12 +44,12 @@
                     <table aria-describedby="" class="table">
                       <thead>
                       <tr>
-                        <th width="10%">No.</th>
-                        <th width="36%">Regulation Clause Number</th>
-                        <th width="36%">Item</th>
-                        <th width="6%">Yes</th>
-                        <th width="6%">No</th>
-                        <th width="6%">N/A</th>
+                        <th scope="col" width="10%">No.</th>
+                        <th scope="col" width="36%">Regulation Clause Number</th>
+                        <th scope="col" width="36%">Item</th>
+                        <th scope="col" width="6%">Yes</th>
+                        <th scope="col" width="6%">No</th>
+                        <th scope="col" width="6%">N/A</th>
                       </tr>
                       </thead>
                       <tbody>
@@ -72,12 +72,12 @@
                       <table aria-describedby="" class="table">
                         <thead>
                         <tr>
-                          <th width="10%">No.</th>
-                          <th width="36%">Regulation Clause Number</th>
-                          <th width="36%">Item</th>
-                          <th width="6%">Yes</th>
-                          <th width="6%">No</th>
-                          <th width="6%">N/A</th>
+                          <th scope="col" width="10%">No.</th>
+                          <th scope="col" width="36%">Regulation Clause Number</th>
+                          <th scope="col" width="36%">Item</th>
+                          <th scope="col" width="6%">Yes</th>
+                          <th scope="col" width="6%">No</th>
+                          <th scope="col" width="6%">N/A</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -96,7 +96,7 @@
                     </div>
                   </c:forEach>
                   <iais:action >
-                    <a class="back" id="Back" onclick="javascript:doInspectionPreSelfBack()" style="float:left"><em class="fa fa-angle-left"></em> Back</a>
+                    <a href="#" class="back" id="Back" onclick="javascript:doInspectionPreSelfBack()" style="float:left"><em class="fa fa-angle-left"></em> Back</a>
                   </iais:action>
                 </iais:section>
               </iais:body>

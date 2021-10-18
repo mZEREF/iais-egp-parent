@@ -29,13 +29,13 @@
 
       </div>
       <div class="table-gp">
-        <table class="table" border="1px" >
+        <table aria-describedby="" class="table" border="1px" >
           <tr>
-            <c:if test="${type=='licence'}"> <td style="text-align: center">Licence No.</td></c:if>
-            <c:if test="${type=='application'}"> <td style="text-align: center">Application No.</td></c:if>
-            <td style="text-align: center">Service Name</td>
-            <td style="text-align: center">HCI Name</td>
-            <td style="text-align: center">HCI Address</td>
+            <c:if test="${type=='licence'}"> <th scope="col" style="text-align: center">Licence No.</th></c:if>
+            <c:if test="${type=='application'}"> <th scope="col" style="text-align: center">Application No.</th></c:if>
+            <th scope="col" style="text-align: center">Service Name</th>
+            <th scope="col" style="text-align: center">HCI Name</th>
+            <th scope="col" style="text-align: center">HCI Address</th>
           </tr>
           <c:choose>
             <c:when test="${not empty hciNames}">

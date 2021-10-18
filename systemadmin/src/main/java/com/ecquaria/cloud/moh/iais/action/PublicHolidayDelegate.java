@@ -289,7 +289,7 @@ public class PublicHolidayDelegate {
                     List<String> duplicateDateStrList = publicHolidayService.getDuplicateDateStr(duplicateDate);
                     if(!IaisCommonUtils.isEmpty(duplicateDateStrList)){
                         Map<String, String> errMap = IaisCommonUtils.genNewHashMap();
-                        errMap.put("selectedFile", MessageUtil.getMessageDesc("OAPPT_ERR012"));
+                        errMap.put("selectedFile", MessageUtil.getMessageDesc("OAPPT_ERR016"));
                         ParamUtil.setRequestAttr(bpc.request,"duplicateDateStrList", duplicateDateStrList);
                         ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errMap));
                     }
@@ -488,8 +488,16 @@ public class PublicHolidayDelegate {
             }
         }else{
             List<String> yearList = publicHolidayService.getAllYearList();
-            int max = Integer.parseInt(Collections.max(yearList));
-            int min = Integer.parseInt(Collections.min(yearList));
+            int max;
+            int min;
+            if(!IaisCommonUtils.isEmpty(yearList)) {
+                max = Integer.parseInt(Collections.max(yearList));
+                min = Integer.parseInt(Collections.min(yearList));
+            } else {
+                Calendar calendar = Calendar.getInstance();
+                max = calendar.get(Calendar.YEAR);
+                min = calendar.get(Calendar.YEAR);
+            }
             count = count + 2;
             if(max > count){
                 count = max;

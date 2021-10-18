@@ -283,6 +283,7 @@ public class InsReportDelegator {
            }else {
                appPremisesRecommendationDto.setRecomInNumber(0);
            }
+           //appPremisesRecommendationDto.setChronoUnit(AppointmentConstants.RECURRENCE_MONTH);
            appPremisesRecommendationDto.setRemarks(remarks);
            appPremisesRecommendationDto.setRecommendation(recommendationRfc);
            appPremisesRecommendationDto.setRecomDecision(recommendationRfc);

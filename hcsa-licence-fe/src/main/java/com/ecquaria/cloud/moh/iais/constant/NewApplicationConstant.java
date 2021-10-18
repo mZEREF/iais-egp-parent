@@ -1,5 +1,7 @@
 package com.ecquaria.cloud.moh.iais.constant;
 
+import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
+
 /****
  *
  *   @date 12/28/2019
@@ -26,6 +28,8 @@ public class NewApplicationConstant {
     public static final String ACK_TITLE = "title";
     public static final String ACK_SMALL_TITLE = "smallTitle";
 
-    public static final String TITLE_MODE_OF_SVCDLVY = "Mode of Service Delivery";
+    public static final String TITLE_MODE_OF_SVCDLVY = ApplicationConsts.TITLE_MODE_OF_SVCDLVY;
+
+    public static final String CO_MAP = "coMap";
 
 }

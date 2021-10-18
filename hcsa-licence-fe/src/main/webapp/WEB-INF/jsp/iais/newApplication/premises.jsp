@@ -74,10 +74,10 @@
                         </c:when>
                         <c:otherwise>
                             <div class="row">
-                                <div class="col-xs-12 col-sm-6 ">
+                                <div class="col-xs-12 col-md-4">
                                   <a class="back" id="Back" href="#"><em class="fa fa-angle-left"></em> Back</a>
                                 </div>
-                                <div class="col-xs-12 col-sm-6">
+                                <div class="col-xs-12 col-sm-8">
                                     <div class="button-group">
                                         <c:if test="${requestInformationConfig==null}">
                                           <input type="text" style="display: none; " id="selectDraftNo" value="${selectDraftNo}">
@@ -134,7 +134,7 @@
   <input type="text" style="display:none;" name="continueStep" id="continueStep" value="${continueStep}">
   <input type="text" style="display: none" name="crudActionTypeContinue" id="crudActionTypeContinue" value="${crudActionTypeContinue}">
   <input type="text" style="display: none" name="errorMapIs" id="errorMapIs" value="${errormapIs}">
-  <input type="hidden" id="rfc_eqHciNameChange" value="${rfc_eqHciCode}">
+  <%--<input type="hidden" id="rfc_eqHciNameChange" value="${rfc_eqHciCode}">--%>
 </form>
 <script type="text/javascript">
     var init;
@@ -203,7 +203,7 @@
         //Binding method
         $('#Back').click(function(){
             showWaiting();
-            submit('licensee', null,null);
+            submit('licensee', 'back',null);
         });
         $('#Next').click(function(){
             showWaiting();
@@ -220,35 +220,37 @@
         readonlyPartPage($('div.premises-content'));
         $('div.premises-content').each(function () {
             handlePage($(this));
-
         });
         </c:if>
-
-
 
         var mainContent =$('.main-content');
         mainContent.find('input.allDay:checked').each(function (k) {
             console.log(k);
-            var $allDayDiv = $(this).closest('div.col-md-2');
+            var $allDayDiv = $(this).closest('div.all-day-div');
             disabeleForAllDay($allDayDiv);
         });
 
         init = 1;
         //68859
-        if($('#rfc_eqHciNameChange').val()=='false'){
+        /*if ($('#rfc_eqHciNameChange').val()=='false') {
             $("input[name='isPartEdit']").val('1');
             $("input[name='chooseExistData']").val('1');
             $('.premSelect').removeClass('disabled');
             $('.premisesEdit').addClass('hidden');
-        }else if($('#rfc_eqHciNameChange').val()=='true'){
+        } else if ($('#rfc_eqHciNameChange').val()=='true') {
             $("input[name='isPartEdit']").val('0');
             $("input[name='chooseExistData']").val('0');
             $('.premisesEdit').removeClass('hidden');
-        }
+        }*/
         <c:if test="${'APTY002' !=AppSubmissionDto.appType || requestInformationConfig != null}">
-        if($("#errorMapIs").val()=='error'){
-            $('.premisesEdit').trigger('click');
-            $('.premisesEdit').addClass('hidden');
+        if ($("#errorMapIs").val()=='error') {
+            $('div.premContent').each(function () {
+                var $premisesEdit = $(this).find('.premisesEdit');
+                if ($premisesEdit.length > 0) {
+                    $premisesEdit.trigger('click');
+                    $premisesEdit.addClass('hidden');
+                }
+            });
         }
         </c:if>
     });

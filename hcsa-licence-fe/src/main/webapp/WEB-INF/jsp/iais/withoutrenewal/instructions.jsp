@@ -40,16 +40,16 @@
                                             <c:if test="${isSingle == 'Y'}">
                                                 <th scope="col" >Licensee</th>
                                             </c:if>
-                                            <th class="premises-info">Mode of Service Delivery</th>
+                                            <th scope="col" class="premises-info">Mode of Service Delivery</th>
                                             <th scope="col" >Start Date</th>
-                                            <th style="white-space: nowrap;">Expires On</th>
+                                            <th scope="col" style="white-space: nowrap;">Expires On</th>
                                         </tr>
                                         </thead>
                                         <tbody>
                                         <c:forEach items="${renewDto.appSubmissionDtos}"
                                                    var="appSubmissionDtos">
                                             <tr>
-                                                <td>${appSubmissionDtos.licenceNo}</td>
+                                                <td class="word-wrap">${appSubmissionDtos.licenceNo}</td>
                                                 <td>${appSubmissionDtos.serviceName}</td>
                                                 <c:if test="${isSingle == 'Y'}">
                                                     <td>${licenseeName}</td>
@@ -86,7 +86,7 @@
             </div>
         </div>
 </form>
-<iais:confirm msg="GENERAL_ERR0043"  needCancel="false" callBack="tagConfirmCallbacksupportReport()" popupOrder="supportReport" ></iais:confirm>
+<iais:confirm msg="RFC_ACK001"  needCancel="false" callBack="tagConfirmCallbacksupportReport()" popupOrder="supportReport" ></iais:confirm>
 <script>
     $('#proceed').click(function () {
         showWaiting();

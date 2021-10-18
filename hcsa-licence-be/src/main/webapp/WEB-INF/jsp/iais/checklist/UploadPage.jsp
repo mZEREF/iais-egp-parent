@@ -86,26 +86,16 @@
         <span id="error_fileUploadError" name="iaisErrorMsg" class="error-msg"></span>
       </div>
     </div>
-
-
-      <div class="row">
-        <div class="col-xs-6 col-md-4">
-          <a id = "docBack" class="back"><em class="fa fa-angle-left"></em> Back</a>
-        </div>
-        <div class="col-xs-50 col-md-10 text-right">
-          <div class="nav">
-
-            <br><br><br>
-            <div class="text-right text-center-mobile">
-                <div class="button-group"><a class="btn btn-primary next" id="docNext">Next</a></div>
-
-
-            </div>
-          </div>
-
-
+    <div class="row">
+      <div class="col-xs-6 col-md-4">
+        <a href="#" id = "docBack" class="back"><em class="fa fa-angle-left"></em> Back</a>
+      </div>
+      <div class="col-xs-6 col-md-8 text-right">
+        <div class="text-center-mobile">
+          <div class="button-group"><a class="btn btn-primary next" id="docNext">Next</a></div>
         </div>
       </div>
+    </div>
   </form>
 </div>
 

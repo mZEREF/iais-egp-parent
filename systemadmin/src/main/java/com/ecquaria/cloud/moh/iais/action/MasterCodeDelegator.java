@@ -119,9 +119,9 @@ public class MasterCodeDelegator {
             if (StringUtil.isEmpty(masterCodeQueryDto.getCodeValue())) {
                 masterCodeQueryDto.setCodeValue("N/A");
             }
-            String categoryDescription = masterCodeQueryDto.getCodeCategory();
-            String category = masterCodeService.findCodeCategoryByDescription(categoryDescription);
+            String category = masterCodeQueryDto.getCodeCategory();
             MasterCodeCategoryDto masterCodeCategoryDto = masterCodeService.getMasterCodeCategory(category);
+            masterCodeQueryDto.setCodeCategory(masterCodeCategoryDto.getCategoryDescription());
             Integer isCanEdit = masterCodeCategoryDto.getIsEditable();
             if (isCanEdit == 0){
                 masterCodeQueryDto.setIsCentrallyManage(isCanEdit);
@@ -269,7 +269,7 @@ public class MasterCodeDelegator {
         if(!isEffect){
             masterCodeDto.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
         }
-        String codeCategory = masterCodeService.findCodeCategoryByDescription(masterCodeDto.getCodeCategory());
+        String codeCategory = masterCodeDto.getCodeCategory();
         masterCodeDto.setCodeCategory(codeCategory);
         MasterCodeDto msDto = masterCodeService.saveMasterCode(masterCodeDto);
         //eic
@@ -451,7 +451,7 @@ public class MasterCodeDelegator {
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,IaisEGPConstant.NO);
             return;
         }
-        File toFile = FileUtils.multipartFileToFile(file);
+        File toFile = FileUtils.multipartFileToFile(file, request.getSession().getId());
         try{
             List<MasterCodeToExcelDto> masterCodeToExcelDtoList = FileUtils.transformToJavaBean(toFile, MasterCodeToExcelDto.class);
             boolean result = false;
@@ -543,7 +543,7 @@ public class MasterCodeDelegator {
                 }
                 Optional<MasterCodeToExcelDto> cartOptional = Optional.empty();
                 if(!StringUtil.isEmpty(masterCodeToExcelDto.getCodeCategory())){
-                    String  codeCategory =  masterCodeService.findCodeCategoryByDescription(masterCodeToExcelDto.getCodeCategory());
+                    String  codeCategory =  masterCodeToExcelDto.getCodeCategory();
                     if (StringUtil.isEmpty(codeCategory)){
                         String errMsg = MessageUtil.getMessageDesc("MCUPERR001");
                         errItems.add(errMsg);
@@ -676,8 +676,8 @@ public class MasterCodeDelegator {
     }
 
     private void fileValidation(HttpServletRequest request,String originalFilename,Map<String, String> errorMap){
-        String[] split = originalFilename.split("\\.");
         if (!StringUtil.isEmpty(originalFilename)) {
+            String[] split = originalFilename.split("\\.");
             if (split[0].length() > 100) {
                 String errMsg = MessageUtil.getMessageDesc("GENERAL_ERR0022");
                 errorMap.put(MasterCodeConstants.MASTER_CODE_UPLOAD_FILE, errMsg);
@@ -1135,16 +1135,17 @@ public class MasterCodeDelegator {
             if (!isDouble(codeSequenceCMC)) {
                 masterCodeDto.setSequence(-1);
             }else{
-                int codeCategorySequenceInt = ParamUtil.getInt(request, MasterCodeConstants.MASTER_CODE_SEQUENCE_CMC) * 1000;
+                double codeCategorySequenceInt = ParamUtil.getDouble(request, MasterCodeConstants.MASTER_CODE_SEQUENCE_CMC) * 1000;
                 if (codeCategorySequenceInt < 0){
                     masterCodeDto.setSequence(-2);
                 }else{
-                    masterCodeDto.setSequence(codeCategorySequenceInt);
+                    int i =  (int)codeCategorySequenceInt;
+                    masterCodeDto.setSequence(i);
                 }
 
             }
         }
-        masterCodeDto.setVersion(StringUtil.isEmpty(ParamUtil.getString(request, MasterCodeConstants.MASTER_CODE_VERSION_CMC)) ? null : Double.parseDouble(ParamUtil.getString(request, MasterCodeConstants.MASTER_CODE_VERSION_CMC)));
+        masterCodeDto.setVersion(StringUtil.isEmpty(ParamUtil.getString(request, MasterCodeConstants.MASTER_CODE_VERSION_CMC)) ? null : ParamUtil.getDouble(request, MasterCodeConstants.MASTER_CODE_VERSION_CMC));
         masterCodeDto.setEffectiveFrom(Formatter.parseDate(ParamUtil.getString(request, MasterCodeConstants.MASTER_CODE_EFFECTIVE_FROM_CMC)));
         masterCodeDto.setEffectiveTo(Formatter.parseDate(ParamUtil.getString(request, MasterCodeConstants.MASTER_CODE_EFFECTIVE_TO_CMC)));
         masterCodeDto.setIsEditable(1);
@@ -1199,14 +1200,15 @@ public class MasterCodeDelegator {
     }
 
     private Map<String, String> validationFile(HttpServletRequest request, MultipartFile file){
-        String originalFilename = file.getOriginalFilename();
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap(1);
-        fileValidation(request,originalFilename,errorMap);
-        if (file.isEmpty()){
+        if (file==null || file.isEmpty()){
             errorMap.put(MasterCodeConstants.MASTER_CODE_UPLOAD_FILE, "GENERAL_ERR0020");
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,IaisEGPConstant.NO);
             return errorMap;
+        }else if(file.getOriginalFilename()!=null){
+            String originalFilename = file.getOriginalFilename();
+            fileValidation(request,originalFilename,errorMap);
         }
 
         String originalFileName = file.getOriginalFilename();

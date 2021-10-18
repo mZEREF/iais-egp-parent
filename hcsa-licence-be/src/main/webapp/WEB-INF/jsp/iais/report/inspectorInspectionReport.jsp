@@ -122,7 +122,7 @@
                                                                                          firstOption="Please Select"
                                                                                          value="${appPremisesRecommendationDto.processingDecision}"/>
                                                                             <span id="error_submit" class="error-msg"
-                                                                                  hidden>This field is mandatory</span>
+                                                                                  style="display: none;"><iais:message key="GENERAL_ERR0006"></iais:message></span>
                                                                         </iais:value>
                                                                     </iais:row>
                                                                     <c:if test="${applicationViewDto.applicationDto.applicationType=='APTY002'}">

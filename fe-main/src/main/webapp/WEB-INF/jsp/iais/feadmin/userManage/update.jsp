@@ -66,7 +66,7 @@
                         <iais:row>
                           <iais:field value="Email:" width="11"/>
                           <iais:value width="11">
-                            <iais:input type="text" name="emailAddr" id="emailAddr" value="${orgUserDto.emailAddr}"/>
+                            <iais:input type="text" maxLength="320" name="emailAddr" id="emailAddr" value="${orgUserDto.emailAddr}"/>
                           </iais:value>
                         </iais:row>
                         <iais:action>

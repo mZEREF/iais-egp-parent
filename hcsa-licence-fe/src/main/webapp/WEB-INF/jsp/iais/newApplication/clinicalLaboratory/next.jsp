@@ -9,7 +9,9 @@
   <c:choose>
   <c:when test="${('APTY005' ==AppSubmissionDto.appType || 'APTY004' ==AppSubmissionDto.appType) && requestInformationConfig == null}">
   <div class="row">
-    <div class="col-xs-12 col-sm-3"><a class="back" id="Back"><em class="fa fa-angle-left"></em> Back</a></div>
+    <div class="col-xs-12 col-sm-3">
+      <a class="back" id="Back" href="javascript:void(0);"><em class="fa fa-angle-left"></em> Back</a>
+    </div>
     <div class="col-xs-12 col-sm-9">
       <div class="button-group">
         <a id="RfcUndo" class="" href="#" >Undo All Changes</a>
@@ -34,8 +36,10 @@
     </c:when>
     <c:otherwise>
     <div class="row">
-      <div class="col-xs-12 col-sm-6"><a class="back" id="Back"><em class="fa fa-angle-left"></em> Back</a></div>
-      <div class="col-xs-12 col-sm-6">
+      <div class="col-xs-12 col-sm-4">
+        <a class="back" id="Back" href="javascript:void(0);"><em class="fa fa-angle-left"></em> Back</a>
+      </div>
+      <div class="col-xs-12 col-sm-8">
         <div class="button-group">
           <c:if test="${requestInformationConfig==null}">
             <a class="btn btn-secondary" id = "SaveDraft"  href="javascript:void(0);">Save as Draft</a>

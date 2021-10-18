@@ -1499,16 +1499,20 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
             otherRole = curRole;
         }
         if (!StringUtil.isEmpty(leadRole)) {
-            if (RoleConsts.USER_ROLE_INSPECTION_LEAD.equals(leadRole)) {
-                groupLeadName = MasterCodeUtil.getCodeDesc(RoleConsts.USER_MASTER_INSPECTION_LEAD);
-            } else if(RoleConsts.USER_ROLE_BROADCAST.equals(otherRole)){
-                groupLeadName = MasterCodeUtil.getCodeDesc(RoleConsts.USER_MASTER_BROADCAST_LEAD);
+            if(RoleConsts.USER_ROLE_BROADCAST.equals(otherRole)){
+                groupLeadName = "Leader";
             } else {
-                groupLeadName = MasterCodeUtil.getCodeDesc(leadRole);
+                Role role = roleService.getRoleByDomainRoleId(AppConsts.HALP_EGP_DOMAIN, leadRole);
+                if(role != null) {
+                    groupLeadName = role.getName();
+                }
             }
         }
         if (!StringUtil.isEmpty(otherRole)) {
-            groupMemBerName = MasterCodeUtil.getCodeDesc(otherRole);
+            Role role = roleService.getRoleByDomainRoleId(AppConsts.HALP_EGP_DOMAIN, otherRole);
+            if(role != null) {
+                groupMemBerName = role.getName();
+            }
         }
         groupRoleFieldDto.setGroupLeadName(groupLeadName);
         groupRoleFieldDto.setGroupMemBerName(groupMemBerName);

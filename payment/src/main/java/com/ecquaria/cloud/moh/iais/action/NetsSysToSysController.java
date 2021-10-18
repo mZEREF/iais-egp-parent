@@ -9,10 +9,14 @@ import com.dbs.sgqr.generator.io.QRType;
 import com.ecquaria.cloud.RedirectUtil;
 import com.ecquaria.cloud.entity.sopprojectuserassignment.PaymentBaiduriProxyUtil;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
+import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.PaymentDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.PaymentRequestDto;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
+import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.PaymentRedisHelper;
 import com.ecquaria.cloud.moh.iais.service.client.PaymentClient;
 import com.ecquaria.cloud.payment.PaymentTransactionEntity;
@@ -25,6 +29,9 @@ import net.sf.json.JSONObject;
 import org.apache.commons.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -34,8 +41,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.client.RestTemplate;
 import sop.config.ConfigUtil;
-import sun.misc.BASE64Decoder;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -49,6 +56,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
+import java.util.Map;
 
 import static com.ecquaria.egp.core.payment.runtime.PaymentNetsProxy.generateSignature;
 
@@ -62,7 +70,6 @@ public class NetsSysToSysController {
     @Autowired
     private PaymentClient paymentClient;
     public static final Locale LOCALE = new Locale("en", "SG");
-    static BASE64Decoder decoder = new sun.misc.BASE64Decoder();
     @Value("${paynow.qr.expiry.minutes}")
     private int expiryMinutes;
     @Autowired
@@ -114,7 +121,7 @@ public class NetsSysToSysController {
             eNetsStatus= txnResObj.getMsg().getNetsTxnStatus();
         }
         String appGrpNo= reqNo;
-        appGrpNo= reqNo.substring(0,'_');
+        appGrpNo= reqNo.substring(0,reqNo.indexOf('_'));
 
         ApplicationGroupDto applicationGroupDto= PaymentBaiduriProxyUtil.getPaymentAppGrpClient().paymentUpDateByGrpNo(appGrpNo).getEntity();
         if(applicationGroupDto!=null){
@@ -134,17 +141,24 @@ public class NetsSysToSysController {
 
     @RequestMapping( value = "/payNowRefresh", method = RequestMethod.GET)
     public @ResponseBody
-    String payNowImgStringRefresh(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    Map<String, Object> payNowImgStringRefresh(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        Map<String, Object> map = IaisCommonUtils.genNewHashMap();
         String amoStr = (String) ParamUtil.getSessionAttr(request,"payNowAmo");
         String reqNo = (String) ParamUtil.getSessionAttr(request,"payNowReqNo");
-        PaymentDto paymentDto=paymentClient.getPaymentDtoByReqRefNo(reqNo).getEntity();
+        String appGrpNo=reqNo.substring(0,reqNo.indexOf('_'));
+        PaymentDto paymentDto=paymentClient.getPaymentDtoByReqRefNo(appGrpNo).getEntity();
         if(paymentDto!=null&&paymentDto.getPmtStatus().equals(PaymentTransactionEntity.TRANS_STATUS_SUCCESS)){
-            String url=  (String) ParamUtil.getSessionAttr(request,"vpc_ReturnURL");
-            RedirectUtil.redirect(url, request, response);
-
+            AuditTrailDto auditTrailDto = new AuditTrailDto();
+            auditTrailDto.setOperation(AuditTrailConsts.OPERATION_FOREIGN_INTERFACE);
+            auditTrailDto.setOperationType(AuditTrailConsts.OPERATION_TYPE_INTERNET);
+            auditTrailDto.setModule("Payment");
+            auditTrailDto.setFunctionName("payNow Call Back");
+            auditTrailDto.setAfterAction(paymentDto.getResponseMsg());
+            AuditTrailHelper.callSaveAuditTrail(auditTrailDto);
+            map.put("result", "Success");
+            return map;
         }
-        String appGrpNo=reqNo;
-        appGrpNo=reqNo.substring(0,reqNo.indexOf('_'));
+
 
         QRGenerator qrGenerator = new QRGeneratorImpl();
 
@@ -158,9 +172,7 @@ public class NetsSysToSysController {
         //sample Dynamic QR
         DateFormat df = new SimpleDateFormat("yyyyMMddHHmmss", LOCALE);
         Calendar cal = Calendar.getInstance();
-        cal.setTime(new Date());
-        int minute = cal.get(Calendar.MINUTE);
-        cal.set(Calendar.MINUTE, minute + expiryMinutes);
+        cal.add(Calendar.MINUTE, expiryMinutes);
         String expiryDate = df.format(cal.getTime());
         log.info("merchantCategoryCode {}",GatewayPayNowConfig.merchantCategoryCode);
         log.info("txnCurrency {}",GatewayPayNowConfig.txnCurrency);
@@ -190,6 +202,58 @@ public class NetsSysToSysController {
         String sgqrTypeFormattedPayLoad = qrCodeResponse.getSgqrPayload();
         String imageStreamInBase64Format = qrCodeResponse.getImageStream();
         ParamUtil.setSessionAttr(request, "imageStreamInBase64Format",imageStreamInBase64Format);
-        return imageStreamInBase64Format;
+        map.put("result", "Fail");
+        map.put("QrString", imageStreamInBase64Format);
+        return map;
+    }
+
+
+    @RequestMapping( value = "/payNowPoll", method = RequestMethod.GET)
+    public @ResponseBody
+    Map<String, Object> payNowPoll(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        Map<String, Object> map = IaisCommonUtils.genNewHashMap();
+        String amoStr = (String) ParamUtil.getSessionAttr(request,"payNowAmo");
+        String reqNo = (String) ParamUtil.getSessionAttr(request,"payNowReqNo");
+        String appGrpNo=reqNo.substring(0,reqNo.indexOf('_'));
+        PaymentDto paymentDto=paymentClient.getPaymentDtoByReqRefNo(appGrpNo).getEntity();
+        if(paymentDto!=null&&paymentDto.getPmtStatus().equals(PaymentTransactionEntity.TRANS_STATUS_SUCCESS)){
+            AuditTrailDto auditTrailDto = new AuditTrailDto();
+            auditTrailDto.setOperation(AuditTrailConsts.OPERATION_FOREIGN_INTERFACE);
+            auditTrailDto.setOperationType(AuditTrailConsts.OPERATION_TYPE_INTERNET);
+            auditTrailDto.setModule("Payment");
+            auditTrailDto.setFunctionName("payNow Call Back");
+            auditTrailDto.setAfterAction(paymentDto.getResponseMsg());
+            AuditTrailHelper.callSaveAuditTrail(auditTrailDto);
+            map.put("result", "Success");
+            return map;
+        }
+        map.put("result", "Fail");
+        return map;
+
+    }
+
+    @RequestMapping( value = "/payNowMockServer", method = RequestMethod.GET)
+    public @ResponseBody
+    Map<String, Object> payNowMockServer(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        Map<String, Object> map = IaisCommonUtils.genNewHashMap();
+        String reqNo = (String) ParamUtil.getSessionAttr(request,"payNowReqNo");
+        String appGrpNo=reqNo.substring(0,reqNo.indexOf('_'));
+        RestTemplate restTemplate = new RestTemplate();
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        Map<String, Object> params=IaisCommonUtils.genNewHashMap();
+        params.put("responseUrl",GatewayPayNowConfig.mockserverCallbackUrl);
+        params.put("appGrpNum", appGrpNo);
+
+        StringBuilder sb = new StringBuilder(GatewayPayNowConfig.mockserverUrl);
+        sb.append('?');
+        for (String key : params.keySet()) {
+            sb.append(key).append("={").append(key).append("}&");
+        }
+        HttpEntity entity = new HttpEntity(headers);
+        ResponseEntity<String> s =restTemplate.exchange(sb.substring(0, sb.length() - 1),  HttpMethod.GET, entity, String.class, params);
+        map.put("result", "Success");
+        return map;
+
     }
 }

@@ -7,6 +7,8 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.MenuLicenceDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.OrganizationDto;
+
 import java.util.List;
 
 /**
@@ -17,10 +19,17 @@ import java.util.List;
  */
 
 public interface LicenceViewService {
-    public LicenceViewDto getLicenceViewDtoByLicenceId(String licenceId);
-    public LicenseeDto getLicenseeDtoBylicenseeId(String licenseeId);
-    public List<LicenceDto> getLicenceDtoByLicenseeId(String licenseeId);
-    public SearchResult<MenuLicenceDto> getMenuLicence(SearchParam searchParam);
-    public List<SubLicenseeDto> getSubLicenseeDto(String orgId);
-    public SubLicenseeDto getSubLicenseesById(String id);
+
+    LicenseeDto getLicenseeDtoBylicenseeId(String licenseeId);
+
+    OrganizationDto getOrganizationDtoByLicenseeId(String licenseeId);
+
+    List<LicenceDto> getLicenceDtoByLicenseeId(String licenseeId);
+
+    SearchResult<MenuLicenceDto> getMenuLicence(SearchParam searchParam);
+
+    List<SubLicenseeDto> getSubLicenseeDto(String orgId);
+
+    SubLicenseeDto getSubLicenseesById(String id);
+
 }

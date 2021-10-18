@@ -35,7 +35,7 @@
 </c:choose>
 <c:forEach begin="0" end="${psnLength}" varStatus="psnStat">
     <c:set var="psn" value="${psnList[psnStat.index]}"/>
-    <c:set var="mapKey" value="${premIndexNo}${config.id}${psn.cgoIndexNo}"/>
+    <c:set var="mapKey" value="${premIndexNo}${config.id}${psn.indexNo}"/>
     <c:set var="fileList" value="${reloadMap[mapKey]}"/>
     <%@include file="previewSvcDocContent.jsp"%>
 </c:forEach>

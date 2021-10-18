@@ -105,6 +105,7 @@
                   <table aria-describedby="" class="table">
                     <thead>
                     <tr>
+                      <th scope="col" style="display: none"></th>
                       <iais:sortableHeader needSort="false"    field="index" value="No."></iais:sortableHeader>
                       <iais:sortableHeader needSort="false"    field="year" value="Year"></iais:sortableHeader>
                       <iais:sortableHeader needSort="true"   field="START_DATE" value="Blacked Out Date Start"></iais:sortableHeader>
@@ -136,8 +137,8 @@
                             <td><iais:code code="${blackDateAttr.status}"></iais:code></td>
                             <td>
                               <input type="hidden" id="blackDateId" name="blackDateId" value="">
-                              <div class="modal fade" id="DeleteTemplateModal${status.index}" tabindex="-1" role="dialog" aria-labelledby="DeleteTemplateModal" style="left: 50%;top: 50%;transform: translate(-50%,-50%);min-width:80%; overflow: visible;bottom: inherit;right: inherit;">
-                                <div class="modal-dialog" role="document">
+                              <div class="modal fade" id="DeleteTemplateModal${status.index}" tabindex="-1" role="dialog" aria-labelledby="DeleteTemplateModal">
+                                <div class="modal-dialog modal-dialog-centered" role="document">
                                   <div class="modal-content">
 <%--                                    <div class="modal-header">--%>
 <%--                                      <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>--%>

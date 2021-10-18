@@ -348,6 +348,17 @@ public class NotificationHelper {
 							emailDto.setReceipts(receiptEmail);
 						}
 					}
+
+					if(IaisCommonUtils.isEmpty(emailDto.getReceipts()) && StringUtil.isNotEmpty(emailParam.getRecipientEmail())){
+						receiptEmail = IaisCommonUtils.genNewArrayList();
+						receiptEmail.add(emailParam.getRecipientEmail());
+						emailDto.setReceipts(receiptEmail);
+						templateContent.put("officer_name",StringUtil.getNonNull(emailParam.getRecipientName()));
+						mesContext = MsgUtil.getTemplateMessageByContent(emailTemplate, templateContent);
+						//replace num
+						mesContext = MessageTemplateUtil.replaceNum(mesContext);
+						emailDto.setContent(mesContext);
+					}
 					if (msgTemplateDto.getCcrecipient() != null && msgTemplateDto.getCcrecipient().size() > 0) {
 						inspectionEmailTemplateDto = getRecript(msgTemplateDto.getCcrecipient(), refIdType, refId, moduleType, inspectionEmailTemplateDto,recipientUserId);
 						ccEmail = inspectionEmailTemplateDto.getReceiptEmails();

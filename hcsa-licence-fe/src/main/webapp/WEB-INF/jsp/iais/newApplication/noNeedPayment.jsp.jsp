@@ -24,10 +24,10 @@
   <%--            </div>--%>
   <%--        </c:otherwise>--%>
   <%--    </c:choose>--%>
-    <div class="col-xs-12 col-sm-6">
+    <div class="col-xs-12 col-md-4">
       <a id="BACK" class="back"><em class="fa fa-angle-left"></em> Back</a>
     </div>
-  <div class="col-xs-12 col-sm-6">
+  <div class="col-xs-12 col-md-8">
     <p class="text-right text-center-mobile"><iais:input type="button" id="proceed" cssClass="proceed btn btn-primary" value="Pay"></iais:input></p>
   </div>
 </div>

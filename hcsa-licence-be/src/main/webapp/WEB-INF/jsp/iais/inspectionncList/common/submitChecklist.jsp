@@ -1,10 +1,10 @@
 <div class="row">
     <div class="col-xs-12">
         <c:if test="${applicationViewDto.applicationDto.status ==  ApplicationConsts.APPLICATION_STATUS_PENDING_RECTIFICATION_REVIEW}">
-            <a class="back" id="Back" onclick="javascript:doInspRecCheckListViewBack()" style="float:left"><em class="fa fa-angle-left"></em> Back</a>
+            <a href="#" class="back" id="Back" onclick="javascript:doInspRecCheckListViewBack()" style="float:left"><em class="fa fa-angle-left"></em> Back</a>
         </c:if>
         <c:if test="${applicationViewDto.applicationDto.status !=  ApplicationConsts.APPLICATION_STATUS_PENDING_RECTIFICATION_REVIEW}">
-            <a style="float:left;padding-top: 1.1%;" class="back" onclick="javascript:doBackToMain()"><em class="fa fa-angle-left"></em> Back</a>
+            <a href="#" style="float:left;padding-top: 1.1%;" class="back" onclick="javascript:doBackToMain()"><em class="fa fa-angle-left"></em> Back</a>
         </c:if>
         <c:if test="${inspectionNcCheckListDelegator_before_finish_check_list != '1'}">
             <div style="float:right">

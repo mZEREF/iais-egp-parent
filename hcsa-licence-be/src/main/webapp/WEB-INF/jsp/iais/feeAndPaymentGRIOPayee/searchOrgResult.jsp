@@ -8,6 +8,11 @@
             (sop.webflow.rt.api.BaseProcessClass) request.getAttribute("process");
 %>
 <webui:setLayout name="iais-intranet"/>
+<style>
+    .form-check {
+        display: revert;
+    }
+</style>
 <div class="main-content dashboard">
     <form id="mainForm"  method="post" action=<%=process.runtime.continueURL()%>>
         <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
@@ -48,28 +53,28 @@
                                     </label>
                                 </iais:value>
                             </iais:row>
-<%--                            <iais:row>--%>
-<%--                                <iais:field value="HCI Name :"/>--%>
-<%--                                <iais:value width="18">--%>
-<%--                                    <label>--%>
-<%--                                        <input type="text"--%>
-<%--                                               style="width:180%; font-weight:normal;"--%>
-<%--                                               name="hciName" maxlength="100"--%>
-<%--                                               value="${hciName}"/>--%>
-<%--                                    </label>--%>
-<%--                                </iais:value>--%>
-<%--                            </iais:row>--%>
-<%--                            <iais:row>--%>
-<%--                                <iais:field value="HCI Code :"/>--%>
-<%--                                <iais:value width="18">--%>
-<%--                                    <label>--%>
-<%--                                        <input type="text"--%>
-<%--                                               style="width:180%; font-weight:normal;"--%>
-<%--                                               name="hciCode" maxlength="20"--%>
-<%--                                               value="${hciCode}"/>--%>
-<%--                                    </label>--%>
-<%--                                </iais:value>--%>
-<%--                            </iais:row>--%>
+                            <iais:row>
+                                <iais:field value="Licensee"/>
+                                <iais:value width="18">
+                                    <label>
+                                        <input type="text"
+                                               style="width:180%; font-weight:normal;"
+                                               name="licenseeName" maxlength="35"
+                                               value="${licenseeName}"/>
+                                    </label>
+                                </iais:value>
+                            </iais:row>
+                            <iais:row>
+                                <iais:field value="Licence No."/>
+                                <iais:value width="18">
+                                    <label>
+                                        <input type="text"
+                                               style="width:180%; font-weight:normal;"
+                                               name="licenceNoSer" maxlength="35"
+                                               value="${licenceNoSer}"/>
+                                    </label>
+                                </iais:value>
+                            </iais:row>
                             <iais:action style="text-align:right;">
                                 <button class="btn btn-secondary" type="button"
                                         onclick="javascript:doClear()">Clear</button>
@@ -95,16 +100,17 @@
                                                 <div class="table-gp">
                                                     <table aria-describedby="" class="table">
                                                         <thead>
-                                                        <tr align="center">
-                                                            <th style="width:2%">&nbsp;</th>
+                                                        <tr >
+                                                            <th scope="col" style="width:2%">&nbsp;</th>
                                                             <iais:sortableHeader needSort="true"
                                                                                  field="UEN_NO"
                                                                                  value="UEN"/>
-<%--                                                            <iais:sortableHeader needSort="true"--%>
-<%--                                                                                 field="HCI_NAME"--%>
-<%--                                                                                 value="HCI Name"/>--%>
-<%--                                                            <iais:sortableHeader needSort="true" field="HCI_CODE"--%>
-<%--                                                                                 value="HCI Code"/>--%>
+                                                            <iais:sortableHeader needSort="true" field="LICENCE_NO"
+                                                                                 value="Licence No."/>
+                                                            <iais:sortableHeader needSort="true" field="SVC_NAME"
+                                                                                 value="Service Type"/>
+                                                            <iais:sortableHeader needSort="true" field="LICENSEE_NAME"
+                                                                                 value="Licensee"/>
                                                         </tr>
                                                         </thead>
                                                         <tbody class="form-horizontal">
@@ -128,7 +134,7 @@
                                                                                    id="orgPer${status.index + 1}"
                                                                                    type="checkbox"
                                                                                    name="opIds"
-                                                                                   value="${pool.orgId}">
+                                                                                   value="${pool.id}">
                                                                             <label class="form-check-label"
                                                                                    for="orgPer${status.index + 1}"><span
                                                                                     class="check-square"></span>
@@ -137,12 +143,15 @@
                                                                         <td >
                                                                             <c:out value="${pool.uenNo}"/>
                                                                         </td>
-<%--                                                                        <td>--%>
-<%--                                                                            <c:out value="${pool.hciName}"/>--%>
-<%--                                                                        </td>--%>
-<%--                                                                        <td>--%>
-<%--                                                                            <c:out value="${pool.hciCode}"/>--%>
-<%--                                                                        </td>--%>
+                                                                        <td>
+                                                                            <c:out value="${pool.licenceNo}"/>
+                                                                        </td>
+                                                                        <td >
+                                                                            <c:out value="${pool.svcName}"/>
+                                                                        </td>
+                                                                        <td>
+                                                                            <c:out value="${pool.licenseeName}"/>
+                                                                        </td>
                                                                     </tr>
                                                                 </c:forEach>
                                                             </c:otherwise>
@@ -154,7 +163,7 @@
                                             </div>
                                             <div class="row">&nbsp;</div>
                                             <iais:action style="text-align:right;">
-                                                <a style=" float:left;padding-top: 1.1%;text-decoration:none;" onclick="javascript:doBack()"><em class="fa fa-angle-left"> </em> Back</a>
+                                                <a style=" float:left;padding-top: 1.1%;text-decoration:none;" href="#" onclick="javascript:doBack()"><em class="fa fa-angle-left"> </em> Back</a>
 
                                                 <button type="button" class="btn btn-primary SelectBtn"
                                                         disabled

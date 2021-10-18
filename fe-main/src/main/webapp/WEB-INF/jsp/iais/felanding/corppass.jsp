@@ -124,18 +124,17 @@
 
   </c:when>
   <c:otherwise>
-    <%@ page import="com.ncs.secureconnect.sim.lite.SIMUtil4Corpass" %>
-    <%@ page import="com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper" %>
     <%@ page import="com.ecquaria.cloud.moh.iais.helper.FeLoginHelper" %>
     <%@ page import="com.ecquaria.cloud.helper.ConfigHelper" %>
-    <%
+    <%@ page import="com.ncs.secureconnect.sim.lite.SIMConfig" %>
+    <script>
       try {
-        SIMUtil4Corpass.doCorpPassLogin(request, response);
-      } catch (Exception e) {
-        out.println("<br><b>Error initializing Login </b></br>");
-        IaisEGPHelper.sendRedirect(request, response, FeLoginHelper.MAIN_WEB_URL);
+        location.href=<%=SIMConfig.getInstance().getIdpCorpassInitiatedUrl()%>;
+      }catch ( e){
+        console.log('Error initializing Login');
+        location.href=<%=FeLoginHelper.MAIN_WEB_URL%>;
       }
-    %>
+    </script>
   </c:otherwise>
 </c:choose>
 

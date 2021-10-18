@@ -1,3 +1,8 @@
+<style>
+    .form-check {
+        display: revert;
+    }
+</style>
 <div class="row">
     <div class="tab-pane active" id="tabInbox" role="tabpanel">
         <div class="tab-content">
@@ -13,9 +18,9 @@
                             <div class="table-gp">
                                 <table aria-describedby="" class="table">
                                     <thead>
-                                    <tr align="center">
+                                    <tr >
                                         <c:if test="${cease==1}">
-                                            <th class="form-check">
+                                            <th scope="col" class="form-check">
                                                 <c:if test="${!empty SearchResult.rows}">
                                                     <input class="form-check-input licenceCheck"
                                                            type="checkbox" name="userUids"
@@ -48,6 +53,9 @@
                                         <iais:sortableHeader needSort="false"
                                                              field="HCI_ADDRESS"
                                                              value="HCI Address"/>
+                                        <iais:sortableHeader needSort="false"
+                                                             field="UEN_NO"
+                                                             value="UEN"/>
                                         <iais:sortableHeader needSort="false"
                                                              field="LICENSEE_NAME"
                                                              value="Licensee Name"/>
@@ -131,13 +139,13 @@
                                                     </td>
                                                     <td>
                                                         <c:if test="${pool.appCorrId==null}">${pool.applicationNo}</c:if>
-                                                        <c:if test="${pool.appCorrId!=null}"><a
+                                                        <c:if test="${pool.appCorrId!=null}"><a href="#"
                                                                 onclick="javascript:doAppInfo('${MaskUtil.maskValue(IaisEGPConstant.CRUD_ACTION_VALUE,pool.appCorrId)}')">${pool.applicationNo}</a></c:if>
                                                     </td>
                                                     <td><c:out
                                                             value="${pool.applicationType}"/></td>
                                                     <td>
-                                                        <c:if test="${pool.licenceId!=null&&pool.licenceStatus!='Inactive'}"><a
+                                                        <c:if test="${pool.licenceId!=null&&pool.licenceStatus!='Inactive'}"><a href="#"
                                                                 onclick="javascript:doLicInfo('${MaskUtil.maskValue(IaisEGPConstant.CRUD_ACTION_VALUE,pool.licenceId)}')">${pool.licenceNo}</a></c:if>
                                                         <c:if test="${pool.licenceId==null|| pool.licenceStatus=='Inactive'}">${pool.licenceNo}</c:if>
                                                     </td>
@@ -179,6 +187,8 @@
                                                         </c:if>
                                                     </td>
                                                     <td><c:out
+                                                            value="${pool.uen}"/></td>
+                                                    <td><c:out
                                                             value="${pool.licenseeName}"/></td>
                                                     <td><c:if test="${pool.appCorrId==null}">${pool.serviceName}</c:if>
                                                         <c:if test="${pool.appCorrId!=null}"><iais:service value="${pool.serviceName}"/></c:if>
@@ -215,16 +225,20 @@
                             </c:if>
                         </div>
                         <div class="row">&nbsp;</div>
-                        <div class="row" height="1"
-                             style="display: none ;font-size: 1.6rem; color: #D22727; padding-left: 20px"
-                             id="selectDecisionMsg">
-                            <iais:message key="CESS_ERR006" escape="flase"></iais:message>
-                        </div>
-                        <div class="row" height="1"
-                             style="display: none ;font-size: 1.6rem; color: #D22727;padding-left: 20px"
-                             id="selectDecisionMsgActive">
-                            <iais:message key="CESS_ERR005" escape="flase"></iais:message>
-                        </div>
+                        <iais:row id="selectDecisionMsg" style="display: none">
+                            <div class="row" height="1"
+                                 style="font-size: 1.6rem; color: #D22727; padding-left: 20px">
+                                <iais:message key="CESS_ERR006"
+                                              escape="flase"></iais:message>
+                            </div>
+                        </iais:row>
+                        <iais:row id="selectDecisionMsgActive" style="display: none">
+                            <div class="row" height="1"
+                                 style="font-size: 1.6rem; color: #D22727; padding-left: 20px">
+                                <iais:message key="CESS_ERR005"
+                                              escape="flase"></iais:message>
+                            </div>
+                        </iais:row>
                         <iais:action style="text-align:right;">
                             <a class="btn btn-secondary"
                                href="${pageContext.request.contextPath}/officer-online-enquiries-information-file">Download</a>

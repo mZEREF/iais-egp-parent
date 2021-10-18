@@ -20,7 +20,9 @@
             <input id="isEditHiddenVal" type="hidden" name="isEdit" value="0"/>
             <c:if test="${('APTY005' ==AppSubmissionDto.appType || 'APTY004' ==AppSubmissionDto.appType) && requestInformationConfig == null}">
                 <div class="app-font-size-16">
-                    <a class="back" id="RfcSkip">Skip<span style="display: inline-block;">&nbsp;</span><em class="fa fa-angle-right"></em></a>
+                    <a class="back" id="RfcSkip" href="javascript:void(0);">
+                        Skip<span style="display: inline-block;">&nbsp;</span><em class="fa fa-angle-right"></em>
+                    </a>
                 </div>
             </c:if>
             <c:set var="canEdit" value="${AppSubmissionDto.appEditSelectDto.serviceEdit}"/>
@@ -46,9 +48,11 @@
                             <div class=" form-group form-horizontal formgap">
                                 <div class="control-label formtext col-md-5 col-xs-5">
                                     <label  class="control-label control-set-font control-font-label">Type of Charge</label>
+                                    <span class="mandatory">*</span>
                                 </div>
                                 <div class="control-label formtext col-md-4 col-xs-4">
                                     <label  class="control-label control-set-font control-font-label">Amount</label>
+                                    <span class="mandatory">*</span>
                                 </div>
                                 <div class="control-label formtext col-md-2 col-xs-2">
                                     <label  class="control-label control-set-font control-font-label">Remarks</label>
@@ -79,12 +83,12 @@
                             <input type="hidden" class="chargesIndexNo" name="chargesIndexNo${gcStat.index}" value="${generalChargesDto.chargesIndexNo}"/>
                             <div class="col-md-12 col-xs-12">
                                 <div class="edit-content">
-                                    <c:if test="${'true' == canEdit}">
-                                        <p>
+                                    <c:if test="${canEdit}">
                                         <div class="text-right app-font-size-16">
-                                            <a class="edit chargesEdit"><em class="fa fa-pencil-square-o"></em><span>&nbsp;</span>Edit</a>
+                                            <a class="edit chargesEdit" href="javascript:void(0);">
+                                                <em class="fa fa-pencil-square-o"></em><span>&nbsp;</span>Edit
+                                            </a>
                                         </div>
-                                        </p>
                                     </c:if>
                                 </div>
                             </div>
@@ -111,7 +115,8 @@
                                             <iais:input maxLength="150" type="text" cssClass="remarks" name="remarks${gcStat.index}" value="${generalChargesDto.remarks}"></iais:input>
                                         </div>
                                         <div class="control-label formtext col-md-1 col-xs-1">
-                                            <c:if test="${gcStat.index - generalChargesConfig.mandatoryCount >=0}">
+                                            <c:if test="${(gcStat.index - generalChargesConfig.mandatoryCount >= 0) &&
+                                            (!AppSubmissionDto.needEditController || canEdit)}">
                                                 <h4 class="text-danger">
                                                     <em class="fa fa-times-circle del-size-36 removeBtn cursorPointer"></em>
                                                 </h4>
@@ -146,7 +151,7 @@
                             <c:when test="${generalChargesLength >= generalChargesConfig.maximumCount}">
                                 <c:set var="needAddPsn" value="false"/>
                             </c:when>
-                            <c:when test="${AppSubmissionDto.appType != 'APTY002' && 'true' != canEdit}">
+                            <c:when test="${AppSubmissionDto.needEditController && !canEdit}">
                                 <c:set var="needAddPsn" value="false"/>
                             </c:when>
                         </c:choose>
@@ -181,14 +186,17 @@
                                         <div class="row">
                                             <div class="col-md-6 col-xs-6">
                                                 <label  class="control-label control-set-font control-font-label">Category</label>
+                                                <span class="mandatory">*</span>
                                             </div>
                                             <div class="col-md-6 col-xs-6">
                                                 <label  class="control-label control-set-font control-font-label">Type of Charge</label>
+                                                <span class="mandatory">*</span>
                                             </div>
                                         </div>
                                     </div>
                                     <div class="control-label formtext col-md-4 col-xs-4">
                                         <label  class="control-label control-set-font control-font-label">Amount</label>
+                                        <span class="mandatory">*</span>
                                     </div>
                                     <div class="control-label formtext col-md-2 col-xs-2">
                                         <label  class="control-label control-set-font control-font-label">Remarks</label>
@@ -220,11 +228,11 @@
                                 <div class="col-md-12 col-xs-12">
                                     <div class="edit-content">
                                         <c:if test="${'true' == canEdit}">
-                                            <p>
                                             <div class="text-right app-font-size-16">
-                                                <a class="edit otherChargesEdit"><em class="fa fa-pencil-square-o"></em><span>&nbsp;</span>Edit</a>
+                                                <a class="edit otherChargesEdit" href="javascript:void(0);">
+                                                    <em class="fa fa-pencil-square-o"></em><span>&nbsp;</span>Edit
+                                                </a>
                                             </div>
-                                            </p>
                                         </c:if>
                                     </div>
                                 </div>
@@ -259,7 +267,7 @@
                                                 <iais:input maxLength="150" type="text" cssClass="otherRemarks" name="otherRemarks${ocStat.index}" value="${otherChargesDto.remarks}"></iais:input>
                                             </div>
                                             <div class="control-label formtext col-md-1 col-xs-1">
-                                                <c:if test="${ocStat.index - otherChargesConfig.mandatoryCount >=0}">
+                                                <c:if test="${(ocStat.index - otherChargesConfig.mandatoryCount >= 0) && (!AppSubmissionDto.needEditController || canEdit)}">
                                                     <h4 class="text-danger">
                                                         <em class="fa fa-times-circle del-size-36 ocRemoveBtn cursorPointer"></em>
                                                     </h4>
@@ -294,7 +302,7 @@
                                 <c:when test="${otherChargesLength >= otherChargesConfig.maximumCount}">
                                     <c:set var="needAddPsn" value="false"/>
                                 </c:when>
-                                <c:when test="${AppSubmissionDto.appType != 'APTY002' && 'true' != canEdit}">
+                                <c:when test="${AppSubmissionDto.needEditController && !canEdit}">
                                     <c:set var="needAddPsn" value="false"/>
                                 </c:when>
                             </c:choose>

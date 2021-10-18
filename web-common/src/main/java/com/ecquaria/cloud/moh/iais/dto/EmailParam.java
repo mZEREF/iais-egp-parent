@@ -32,4 +32,7 @@ public class EmailParam {
     private List<String> svcCodeList;
     private HashMap<String, String> maskParams;
     private HashMap<String, String> subjectParams;
+    // recipient email addresses Only for history No find
+    private String recipientEmail;
+    private String recipientName;
 }

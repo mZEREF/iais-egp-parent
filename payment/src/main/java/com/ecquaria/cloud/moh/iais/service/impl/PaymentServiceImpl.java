@@ -1,11 +1,15 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
+import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.PaymentDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.PaymentRequestDto;
 import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
+import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.service.PaymentService;
 import com.ecquaria.cloud.moh.iais.service.client.PaymentAppGrpClient;
@@ -14,7 +18,6 @@ import com.ecquaria.cloud.payment.PaymentTransactionEntity;
 import com.ecquaria.egp.core.payment.api.config.GatewayConfig;
 import com.ecquaria.egp.core.payment.runtime.PaymentNetsProxy;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.util.Date;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -25,6 +28,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+
+import java.util.Date;
 
 /**
  * @author weilu
@@ -66,12 +71,13 @@ public class PaymentServiceImpl implements PaymentService {
         PaymentDto paymentDto=paymentClient.getPaymentDtoByReqRefNo(paymentRequestDto.getReqRefNo()).getEntity();
         String appGrpNo;
         try{
-            appGrpNo=paymentRequestDto.getReqRefNo().substring(0,'_');
+            appGrpNo=paymentRequestDto.getReqRefNo().substring(0,paymentRequestDto.getReqRefNo().indexOf('_'));
         }catch (Exception e){
             appGrpNo=paymentRequestDto.getReqRefNo();
         }
         ApplicationGroupDto applicationGroupDto=paymentAppGrpClient.paymentUpDateByGrpNo(appGrpNo).getEntity();
         if(paymentDto!=null){
+            paymentDto.setResponseMsg(JsonUtil.parseToJson(soapiS2SResponse));
             if( "0".equals(soapiS2SResponse.getMsg().getNetsTxnStatus())){
                 paymentDto.setPmtStatus(PaymentTransactionEntity.TRANS_STATUS_SUCCESS);
                 paymentRequestDto.setStatus(PaymentTransactionEntity.TRANS_STATUS_SUCCESS);
@@ -83,6 +89,7 @@ public class PaymentServiceImpl implements PaymentService {
             }
         }else{
             paymentDto = new PaymentDto();
+            paymentDto.setResponseMsg(JsonUtil.parseToJson(soapiS2SResponse));
             paymentDto.setAmount(paymentRequestDto.getAmount());
             paymentDto.setReqRefNo(paymentRequestDto.getReqRefNo());
             paymentDto.setTxnRefNo("TRANS");
@@ -143,6 +150,14 @@ public class PaymentServiceImpl implements PaymentService {
                 restTemplate.exchange(strGWPostURL, HttpMethod.POST, entity, String.class);
         log.info(StringUtil.changeForLog("S2S response status : " + response.getStatusCodeValue()));
         String stringBody = response.getBody();
+        AuditTrailDto auditTrailDto = new AuditTrailDto();
+        auditTrailDto.setOperation(AuditTrailConsts.OPERATION_FOREIGN_INTERFACE);
+        auditTrailDto.setOperationType(AuditTrailConsts.OPERATION_TYPE_INTERNET);
+        auditTrailDto.setModule("Payment");
+        auditTrailDto.setFunctionName("enets Retrieve Payment");
+        auditTrailDto.setBeforeAction(soapiToGW);
+        auditTrailDto.setAfterAction(response.getBody());
+        AuditTrailHelper.callSaveAuditTrail(auditTrailDto);
         String hmacResponseFromGW = response.getHeaders().getFirst("hmac");
         String hmacForResponseGenerated = PaymentNetsProxy.generateSignature(stringBody,
                 secretKey);
@@ -158,5 +173,33 @@ public class PaymentServiceImpl implements PaymentService {
             return null;
 //handle exception flow
         }
+    }
+
+    @Override
+    public void retrievePayNowPayment(PaymentRequestDto paymentRequestDto)  {
+        String appGrpNo;
+        try{
+            appGrpNo=paymentRequestDto.getReqRefNo().substring(0,paymentRequestDto.getReqRefNo().indexOf('_'));
+        }catch (Exception e){
+            appGrpNo=paymentRequestDto.getReqRefNo();
+        }
+        PaymentDto paymentDto=paymentClient.getPaymentDtoByReqRefNo(appGrpNo).getEntity();
+        ApplicationGroupDto applicationGroupDto=paymentAppGrpClient.paymentUpDateByGrpNo(appGrpNo).getEntity();
+        if(paymentDto!=null){
+            paymentDto.setPmtStatus(PaymentTransactionEntity.TRANS_STATUS_SUCCESS);
+            paymentRequestDto.setStatus(PaymentTransactionEntity.TRANS_STATUS_SUCCESS);
+            applicationGroupDto.setPmtStatus(ApplicationConsts.PAYMENT_STATUS_PAY_SUCCESS);
+            paymentClient.saveHcsaPayment(paymentDto);
+        }else{
+            paymentRequestDto.setStatus(PaymentTransactionEntity.TRANS_STATUS_FAILED);
+        }
+        applicationGroupDto.setPaymentDt(new Date());
+        applicationGroupDto.setPmtRefNo(appGrpNo);
+        applicationGroupDto.setPayMethod(ApplicationConsts.PAYMENT_METHOD_NAME_PAYNOW);
+        applicationGroupDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+        if(applicationGroupDto.getPmtStatus().equals(ApplicationConsts.PAYMENT_STATUS_PAY_SUCCESS)){
+            paymentAppGrpClient.doPaymentUpDate(applicationGroupDto);
+        }
+        paymentClient.updatePaymentResquset(paymentRequestDto);
     }
 }

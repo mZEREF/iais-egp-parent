@@ -15,7 +15,12 @@
   <div class="form-tab-panel ui-tabs-panel ui-widget-content ui-corner-bottom" id="tab_page_0">
     <div id="control--runtime--0" class="page control control-area  container-p-1">
       <div id="control--runtime--0--errorMsg_page_top" class="error_placements"></div>
-      <table class="control-grid columns1 " style="width: 100%;">
+      <table aria-describedby="" class="control-grid columns1 " style="width: 100%;">
+        <thead style="display: none">
+        <tr>
+          <th scope="col" ></th>
+        </tr>
+        </thead>
         <tbody>
         <tr height="1">
           <td class="first last" style="width: 100%;">
@@ -37,9 +42,14 @@
                   <c:set value="${cgoList[status.index]}" var="currentCgo"/>
                   <c:set value="${errorMap_governanceOfficers[status.index]}" var="errorMap"/>
                   <c:set value="${status.index}" var="suffix" />
-                  <table class="assignContent control-grid" style="width:100%;">
+                  <table aria-describedby="" class="assignContent control-grid" style="width:100%;">
+                    <thead style="display: none">
+                    <tr>
+                      <th scope="col" ></th>
+                    </tr>
+                    </thead>
                     <input type="hidden" name="isPartEdit" value="0"/>
-                    <input type="hidden" name="cgoIndexNo" value="${currentCgo.cgoIndexNo}"/>
+                    <input type="hidden" name="indexNo" value="${currentCgo.indexNo}"/>
                     <input type="hidden" name="existingPsn" value="0"/>
                     <c:choose>
                       <c:when test="${currentCgo.licPerson}">
@@ -121,7 +131,12 @@
                         </c:choose>
                         <div class="profile-info-gp hidden"></div>
                         <div id="newOfficer" class="new-officer-form hidden">
-                          <table class="control-grid" >
+                          <table aria-describedby="" class="control-grid" >
+                            <thead style="display: none">
+                            <tr>
+                              <th scope="col" ></th>
+                            </tr>
+                            </thead>
                             <tbody>
                             <tr height="1">
                               <td class="first last" style="width: 100%;">
@@ -465,7 +480,7 @@
 
     $('.addListBtn').click(function () {
         /*var assignContent = $('.assignContent:last').html();
-        var appendHtml = '<hr/> <table class="testTable">'+ assignContent+'</table>';
+        var appendHtml = '<hr/> <table aria-describedby="" class="testTable">'+ assignContent+'</table>';
         $('.assignContent:last').after(appendHtml);*/
         $('.hideen-div').addClass('hidden');
         $('.addListBtn').addClass('hidden');

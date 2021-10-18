@@ -25,6 +25,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrel
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesInspecApptDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcVehicleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
@@ -284,7 +285,7 @@ public class InspectionMergeSendNcEmailDelegator {
 
                     AppPremisesRecommendationDto appPreRecommentdationDto =insepctionNcCheckListService.getAppRecomDtoByAppCorrId(appPremisesCorrelationDto.getId(),InspectionConstants.RECOM_TYPE_TCU);
                     List<NcAnswerDto> ncAnswerDtos=insepctionNcCheckListService.getNcAnswerDtoList(appPremisesCorrelationDto.getId());
-
+                    String observation = fillupChklistService.getObservationByAppPremCorrId(appPremisesCorrelationDto.getId());
                     if(ncAnswerDtos.size()!=0){
                         stringBuilder1.append("<tr><td colspan=\"6\"><b>").append(appViewDto.getServiceType()).append("</b></td></tr>");
                         int i=0;
@@ -292,8 +293,22 @@ public class InspectionMergeSendNcEmailDelegator {
                         ) {
                             stringBuilder1.append("<tr><td>").append(++i);
                             //EAS or MTS
-                            if(vehicleOpenFlag.equals(InspectionConstants.SWITCH_ACTION_YES)&&applicationViewDto.getAppSvcVehicleDtos()!=null&&(applicationViewDto.getSvcCode().equals(AppServicesConsts.SERVICE_CODE_EMERGENCY_AMBULANCE_SERVICE)||applicationViewDto.getSvcCode().equals(AppServicesConsts.SERVICE_CODE_MEDICAL_TRANSPORT_SERVICE))){
-                                stringBuilder1.append(TD).append(StringUtil.viewHtml(ncAnswerDto.getVehicleName()));
+                            if(vehicleOpenFlag.equals(InspectionConstants.SWITCH_ACTION_YES)
+                                    &&appViewDto.getAppSvcVehicleDtos()!=null
+                                    &&(appViewDto.getSvcCode().equals(AppServicesConsts.SERVICE_CODE_EMERGENCY_AMBULANCE_SERVICE)
+                                    ||appViewDto.getSvcCode().equals(AppServicesConsts.SERVICE_CODE_MEDICAL_TRANSPORT_SERVICE))){
+                                boolean isDisplayName=false;
+                                for (AppSvcVehicleDto asvd:appViewDto.getAppSvcVehicleDtos()
+                                ) {
+                                    if(asvd.getVehicleName().equals(ncAnswerDto.getVehicleName())){
+                                        stringBuilder1.append(TD).append(StringUtil.viewHtml(asvd.getDisplayName()));
+                                        isDisplayName=true;
+                                        break;
+                                    }
+                                }
+                                if(!isDisplayName){
+                                    stringBuilder1.append(TD).append(StringUtil.viewHtml(ncAnswerDto.getType()));
+                                }
                             }else {
                                 stringBuilder1.append(TD).append(StringUtil.viewHtml(ncAnswerDto.getType()));
                             }
@@ -305,10 +320,10 @@ public class InspectionMergeSendNcEmailDelegator {
                         }
                         mapTableTemplate.put("NC_DETAILS",StringUtil.viewHtml(stringBuilder1.toString()));
                     }
-                    if(appPreRecommentdationDto!=null&&(appPreRecommentdationDto.getBestPractice()!=null||appPreRecommentdationDto.getRemarks()!=null)){
+                    if(appPreRecommentdationDto!=null&&(appPreRecommentdationDto.getBestPractice()!=null||observation!=null)){
                         String[] observations=new String[]{};
-                        if(appPreRecommentdationDto.getRemarks()!=null){
-                            observations=appPreRecommentdationDto.getRemarks().split("\n");
+                        if(observation!=null){
+                            observations=observation.split("\n");
                         }
                         String[] recommendations=new String[]{};
                         if(appPreRecommentdationDto.getBestPractice()!=null){

@@ -148,9 +148,9 @@ public class FECorppassLandingDelegator {
         if (FELandingDelegator.LOGIN_MODE_DUMMY_WITHPASS.equals(openTestMode)) {
             boolean scpCorrect = orgUserManageService.validatePwd(userSession);
             if (!scpCorrect) {
-                ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG , "The account or password is incorrect");
+                ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG , "The account is incorrect");
                 ParamUtil.setRequestAttr(bpc.request, UserConstants.SCP_ERROR, "Y");
-                AuditTrailHelper.insertLoginFailureAuditTrail(bpc.request, userSession.getUenNo(), userSession.getIdentityNo(), "The account or password is incorrect");
+                AuditTrailHelper.insertLoginFailureAuditTrail(bpc.request, userSession.getUenNo(), userSession.getIdentityNo(), "The account is incorrect");
                 return;
             }
         }
@@ -170,11 +170,8 @@ public class FECorppassLandingDelegator {
         boolean isKeyPerson = userSession.isKeyAppointment();
         if (isKeyPerson){
             ParamUtil.setSessionAttr(request, UserConstants.SESSION_USER_DTO, userSession);
-            ParamUtil.setRequestAttr(request, FECorppassLandingDelegator.IS_KEY_APPOINTMENT, "Y");
-        }else {
-            ParamUtil.setRequestAttr(request, FECorppassLandingDelegator.IS_KEY_APPOINTMENT, "N");
         }
-
+        ParamUtil.setRequestAttr(request, FECorppassLandingDelegator.IS_KEY_APPOINTMENT, "Y");
     }
 
     /**
@@ -191,7 +188,9 @@ public class FECorppassLandingDelegator {
         String identityNo =  userSession.getIdentityNo();
         String scp = userSession.getScp();
         userSession =  orgUserManageService.getUserByNricAndUen(uen, identityNo);
-        if (Optional.ofNullable(userSession).isPresent()){
+        //get active flag and active role flag
+        String userAndRoleFlag = orgUserManageService.getActiveUserAndRoleFlag(userSession);
+        if (AppConsts.TRUE.equals(userAndRoleFlag) && Optional.ofNullable(userSession).isPresent()){
             userSession.setScp(scp);
             userSession.setUenNo(uen);
             ParamUtil.setSessionAttr(bpc.request, UserConstants.SESSION_USER_DTO, userSession);

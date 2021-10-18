@@ -30,7 +30,7 @@
                             <thead>
                             <c:choose>
                                 <c:when test="${'Email'.equals(mode)}">
-                                    <tr align="center">
+                                    <tr >
                                         <th scope="col" >S/N</th>
                                         <th scope="col" >Recipient</th>
                                         <th scope="col" >Subject</th>
@@ -45,7 +45,7 @@
                                     </tr>
                                 </c:when>
                                 <c:otherwise>
-                                    <tr align="center">
+                                    <tr >
                                         <th scope="col" >S/N</th>
                                         <th scope="col" >Recipient</th>
                                         <th scope="col" >Header</th>
@@ -119,7 +119,7 @@
                     </div>
                     <div class="row">
                         <div class="col-xs-6 col-sm-6 ">
-                            <a class="back" id="back"><em class="fa fa-angle-left"></em> Back</a>
+                            <a href="#" class="back" id="back"><em class="fa fa-angle-left"></em> Back</a>
                         </div>
                         <div class="col-xs-6 col-sm-6 text-right ">
                             <a class="btn btn-primary" href="${pageContext.request.contextPath}/audit-repo" title="Download">Download</a>

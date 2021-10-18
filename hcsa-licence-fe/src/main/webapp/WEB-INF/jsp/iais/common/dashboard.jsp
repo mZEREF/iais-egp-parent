@@ -7,7 +7,7 @@
     <div class="container">
         <div class="navigation-gp">
             <c:if test="${appeal!='appeal'}">
-                <div class="row">
+                <div class="row d-flex">
                     <%@ include file="./dashboardDropDown.jsp" %>
                 </div>
             </c:if>

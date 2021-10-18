@@ -107,10 +107,18 @@
     </div>
 
     <div class="form-group">
-        <label class="col-xs-12 col-md-4 control-label">Best Practices</label>
+        <label class="col-xs-12 col-md-4 control-label">Recommendation</label>
         <div class="col-xs-8 col-sm-6 col-md-5">
             <textarea cols="43" rows="5" name="bestpractice" id="bestpractice" maxlength="500"><c:out value="${serListDto.bestPractice}"></c:out></textarea>
             <span class="error-msg" id="error_bestPractice" name="iaisErrorMsg"></span>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="col-xs-12 col-md-4 control-label">Observation</label>
+        <div class="col-xs-8 col-sm-6 col-md-5">
+            <textarea cols="43" rows="5" name="observation " id="observation" maxlength="500"><c:out value="${serListDto.observation}"></c:out></textarea>
+            <span class="error-msg" id="error_observation" name="iaisErrorMsg"></span>
         </div>
     </div>
 
@@ -175,7 +183,7 @@
             </p>
         </div>
     </div>
-    <div class="form-group" id="frameworkOp" hidden>
+    <div class="form-group" id="frameworkOp" style="display: none;">
         <label class="col-xs-12 col-md-4 control-label">Which form of risk should it be recorded in risk score framework?<c:if test="${applicationViewDto.applicationDto.status != ApplicationConsts.APPLICATION_STATUS_PENDING_EMAIL_REVIEW}"><span style="color: red"> *</span></c:if></label>
         <div class="col-xs-8 col-sm-6 col-md-5">
             <c:choose>
@@ -191,7 +199,7 @@
             </c:choose>
         </div>
     </div>
-    <div class="form-group" id="frameworkRe" hidden>
+    <div class="form-group" id="frameworkRe" style="display: none;">
         <label class="col-xs-12 col-md-4 control-label">Enforcement Remarks<c:if test="${applicationViewDto.applicationDto.status != ApplicationConsts.APPLICATION_STATUS_PENDING_EMAIL_REVIEW}"><span style="color: red"> *</span></c:if></label>
         <div class="col-xs-8 col-sm-6 col-md-5">
             <textarea name="frameworkRemarks" id="frameworkRemarks" cols="43" rows="5" maxlength="2000"><c:out value="${applicationViewDto.licPremisesAuditDto.lgrRemarks}"></c:out></textarea>

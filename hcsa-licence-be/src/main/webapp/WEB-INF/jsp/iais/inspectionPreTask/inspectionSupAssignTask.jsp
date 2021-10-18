@@ -170,7 +170,7 @@
                     <p></p>
                   </c:if>
                   <iais:action >
-                    <a class="back" id="Back" onclick="javascript:doInspectionSupAssignTaskBack()" style="float:left"><em class="fa fa-angle-left"></em> Back</a>
+                    <a href="#" class="back" id="Back" onclick="javascript:doInspectionSupAssignTaskBack()" style="float:left"><em class="fa fa-angle-left"></em> Back</a>
                     <c:if test="${'true' == inspectionTaskPoolListDto.inspectorFlag}">
                       <button class="btn btn-primary" style="float:right" type="button" onclick="javascript:doInspectionSupAssignTaskNext()">Next</button>
                     </c:if>

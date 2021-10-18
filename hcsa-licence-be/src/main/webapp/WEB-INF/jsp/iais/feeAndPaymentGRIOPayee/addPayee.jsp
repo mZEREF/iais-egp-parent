@@ -21,6 +21,17 @@
         text-transform: uppercase;
         border-radius: 30px;
     }
+    .glyphicon {
+        position: relative;
+        top: 15px;
+        display: inline-block;
+        font-family: 'Glyphicons Halflings',sans-serif;
+        font-style: normal;
+        font-weight: normal;
+        line-height: 1;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+    }
 </style>
 <webui:setLayout name="iais-intranet"/>
 <div class="main-content dashboard">
@@ -33,7 +44,7 @@
                 <div class="row form-horizontal">
                     <div class="bg-title col-xs-12 col-md-12">
                         <h2>
-                            <span>Add a GIRO Payee</span>
+                            <span>Enter GIRO Payee Details</span>
                         </h2>
                     </div>
                     <div class="col-xs-12 col-md-12">
@@ -47,29 +58,53 @@
                                 The GIRO arrangement must be approved by the bank, otherwise GIRO deductions for that payee will fail.
                             </div>
                         </iais:row>
-                        <div class="row">&nbsp;</div>
-                        <div class="row"><h3>Enter GIRO Payee Details</h3></div>
                         <div class="panel-body">
                             <div class="panel-main-content">
                                 <iais:section title="" id = "supPoolList">
-<%--                                    <iais:row>--%>
-<%--                                        <iais:field value="HCI Code(s) :"/>--%>
-<%--                                        <div class="col-sm-7 col-md-4 col-xs-10" style="line-height: 50px;">--%>
-<%--                                            <c:forEach items="${hciSession.rows}" var="hci">--%>
-<%--                                                ${hci.hciCode}<br>--%>
-<%--                                            </c:forEach>--%>
-<%--                                        </div>--%>
-<%--                                    </iais:row>--%>
-<%--                                    <iais:row>--%>
-<%--                                        <iais:field value="HCI Name(s) :"/>--%>
-<%--                                        <div class="col-sm-7 col-md-4 col-xs-10" style="line-height: 50px;">--%>
-<%--                                            <c:forEach items="${hciSession.rows}" var="hci">--%>
-<%--                                                ${hci.hciName}<br>--%>
-<%--                                            </c:forEach>--%>
-<%--                                        </div>--%>
-<%--                                    </iais:row>--%>
+                                    <div class="table-responsive">
+                                        <div class="table-gp">
+                                            <table aria-describedby="" class="table">
+                                                <thead>
+                                                <tr >
+                                                    <th scope="col" style="display: none"></th>
+                                                    <iais:sortableHeader needSort="true"
+                                                                         field="UEN_NO"
+                                                                         value="UEN"/>
+                                                    <iais:sortableHeader needSort="true" field="LICENCE_NO"
+                                                                         value="Licence No."/>
+                                                    <iais:sortableHeader needSort="true" field="SVC_NAME"
+                                                                         value="Service Type"/>
+                                                    <iais:sortableHeader needSort="true" field="LICENSEE_NAME"
+                                                                         value="Licensee"/>
+                                                </tr>
+                                                </thead>
+                                                <tbody id="sortLicSession" class="form-horizontal">
+                                                <c:forEach var="pool"
+                                                           items="${hciSession.rows}"
+                                                           varStatus="status">
+                                                    <tr>
+                                                        <td >
+                                                            <c:out value="${pool.uenNo}"/>
+                                                        </td>
+                                                        <td>
+                                                            <c:out value="${pool.licenceNo}"/>
+                                                        </td>
+                                                        <td >
+                                                            <c:out value="${pool.svcName}"/>
+                                                        </td>
+                                                        <td>
+                                                            <c:out value="${pool.licenseeName}"/>
+                                                        </td>
+                                                    </tr>
+                                                </c:forEach>
+                                                </tbody>
+                                            </table>
+                                        </div>
+
+                                    </div>
+
                                     <iais:row>
-                                        <iais:field value="Account Name :" mandatory="true"/>
+                                        <iais:field value="Account Name " mandatory="true"/>
                                         <div class="col-sm-7 col-md-4 col-xs-10">
                                             <label style="width:180%;font-weight:normal;">
                                                 <input type="text" maxlength="60" onkeypress="keyAlphanumericPress()" style=" font-weight:normal;" name="acctName" value="${acctName}" />
@@ -78,7 +113,14 @@
                                         </div>
                                     </iais:row>
                                     <iais:row>
-                                        <iais:field value="Bank Code :"  mandatory="true"/>
+                                        <iais:field value="Bank Name " mandatory="true"/>
+                                        <div class="col-sm-7 col-md-4 col-xs-10">
+                                            <iais:select name="bankName" options="bankNameSelectOptions" firstOption="Please Select" value="${bankName}" needSort="true" ></iais:select>
+                                            <span  id="error_bankName" name="iaisErrorMsg" class="error-msg" ></span>
+                                        </div >
+                                    </iais:row>
+                                    <iais:row>
+                                        <iais:field value="Bank Code "  mandatory="true"/>
                                         <div class="col-sm-7 col-md-4 col-xs-10">
                                             <label style="width:180%;font-weight:normal;">
                                                 <input type="text" maxlength="4" onkeypress="keyNumericPress()"  style=" font-weight:normal;" name="bankCode" value="${bankCode}" />
@@ -87,7 +129,7 @@
                                         </div>
                                     </iais:row>
                                     <iais:row>
-                                        <iais:field value="Branch Code :"  mandatory="true"/>
+                                        <iais:field value="Branch Code "  mandatory="true"/>
                                         <div class="col-sm-7 col-md-4 col-xs-10">
                                             <label style="width:180%;font-weight:normal;">
                                                 <input type="text" maxlength="3" onkeypress="keyNumericPress()"  style=" font-weight:normal;" name="branchCode" value="${branchCode}" />
@@ -96,14 +138,7 @@
                                         </div>
                                     </iais:row>
                                     <iais:row>
-                                        <iais:field value="Bank Name :" mandatory="true"/>
-                                        <div class="col-sm-7 col-md-4 col-xs-10">
-                                            <iais:select name="bankName" options="bankNameSelectOptions" firstOption="Please Select" value="${bankName}" needSort="true" ></iais:select>
-                                            <span  id="error_bankName" name="iaisErrorMsg" class="error-msg" ></span>
-                                        </div >
-                                    </iais:row>
-                                    <iais:row>
-                                        <iais:field value="Bank Account No. :" mandatory="true"/>
+                                        <iais:field value="Bank Account No. " mandatory="true"/>
                                         <div class="col-sm-7 col-md-4 col-xs-10">
                                             <label style="width:180%;font-weight:normal;">
                                                 <input type="text" maxlength="10" onkeypress="keyAlphanumericPress()"  style=" font-weight:normal;" name="bankAccountNo" value="${bankAccountNo}" />
@@ -111,17 +146,9 @@
                                             </label>
                                         </div>
                                     </iais:row>
+
                                     <iais:row>
-                                        <iais:field value="Customer Reference No. :" mandatory="true"/>
-                                        <div class="col-sm-7 col-md-4 col-xs-10">
-                                            <label style="width:180%;font-weight:normal;">
-                                                <input type="text" maxlength="35" onkeypress="keyAlphanumericPress()" style=" font-weight:normal;" name="cusRefNo" value="${cusRefNo}" />
-                                                <div><span  id="error_cusRefNo" name="iaisErrorMsg" class="error-msg" ></span></div>
-                                            </label>
-                                        </div>
-                                    </iais:row>
-                                    <iais:row>
-                                        <label class="col-xs-0 col-md-4 ">GIRO Form :<span class="mandatory">*</span></label>
+                                        <iais:field value="GIRO Form " mandatory="true"/>
                                         <div class="document-upload-gp col-sm-7 col-md-4 col-xs-10">
                                             <div class="document-upload-list">
                                                 <div class="file-upload-gp">
@@ -143,10 +170,19 @@
                                             </div>
                                         </div>
                                     </iais:row>
+                                    <iais:row>
+                                        <iais:field value="Internal Remarks " />
+                                        <div class="col-sm-7 col-md-4 col-xs-10">
+                                            <label style="width:180%;font-weight:normal;">
+                                                <textarea rows="7" cols="70" maxlength="4000"  style=" font-weight:normal;" name="remarks" >${remarks}</textarea>
+                                                <div><span  id="error_remarks" name="iaisErrorMsg" class="error-msg" ></span></div>
+                                            </label>
+                                        </div>
+                                    </iais:row>
                                 </iais:section>
 
                                 <iais:action style="text-align:right;">
-                                    <a style=" float:left;padding-top: 1.1%;text-decoration:none;" onclick="javascript:doBack()"><em class="fa fa-angle-left"> </em> Back</a>
+                                    <a style=" float:left;padding-top: 1.1%;text-decoration:none;" href="#" onclick="javascript:doBack()"><em class="fa fa-angle-left"> </em> Back</a>
 
                                     <button class="btn btn-primary" type="button"  onclick="javascript:doSubmit()">Preview and Submit</button>
                                 </iais:action>
@@ -280,5 +316,34 @@
                 alert("error");
             }
         });
+    }
+
+    function sortRecords(sortFieldName, sortType) {
+        $.post(
+            '${pageContext.request.contextPath}/sort-licence-session',
+            {
+                crud_action_value : sortFieldName,
+                crud_action_additional : sortType
+            },
+            function (data) {
+                if(data == null){
+                    return;
+                }
+                let res = data.orgPremResult;
+                let html = '';
+                console.log(res.rowCount);
+                for (let i = 0; i < res.rowCount; i++) {
+
+                    html +=
+                        '<tr><td>' + res.rows[i].uenNo + '</td>' +
+                        '<td>' + res.rows[i].licenceNo + '</td>' +
+                        '<td>' + res.rows[i].svcName + '</td>' +
+                        '<td>' + res.rows[i].licenseeName + '</td>' +
+                        '</tr>';
+                }
+                console.log(html);
+                $('#sortLicSession').html(html)
+            }
+        );
     }
 </script>

@@ -23,15 +23,15 @@
 <webui:setLayout name="iais-blank"/>
 
 <div class="main-content">
-    <form method="post" id="mainForm" enctype="multipart/form-data" action=<%=process.runtime.continueURL()%>>
+    <div class="container">
         <div class="row">
-            <div class="col-lg-12 col-xs-12">
-                <div id = "print" class="center-content">
+            <div class="col-xs-12">
+                <div class="center-content">
                     <span style="font-size:2rem;"><%=msg%></span>
                 </div>
             </div>
         </div>
-    </form>
+    </div>
 </div>
 <style>
     .mandatory {

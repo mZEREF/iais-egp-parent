@@ -33,15 +33,15 @@
                         <table aria-describedby="" class="table">
                             <thead>
                             <tr>
-                                <th  width ="5%"><span>Service Name</span></th>
-                                <th width ="8%"><span>Maximum Licence Tenure (X Years)</span></th>
-                                <th  width ="8%"><span>Last Inspection was more than (X Years)</span></th>
-                                <th width ="12%"><span>Eligible for auto renewal</span></th>
-                                <th  width ="5%"><span>Application Type</span></th>
-                                <th width ="21%"><span>Type of Inspection Required</span></th>
-                                <th width ="11%"><span>Pre/Post Licensing Inspection</span></th>
-                                <th width ="15%"><span>Effective Start Date</span></th>
-                                <th width ="15%"><span>Effective End Date</span></th>
+                                <th scope="col" width ="5%"><span>Service Name</span></th>
+                                <th scope="col" width ="8%"><span>Maximum Licence Tenure (X Years)</span></th>
+                                <th scope="col" width ="8%"><span>Last Inspection was more than (X Years)</span></th>
+                                <th scope="col" width ="12%"><span>Eligible for auto renewal</span></th>
+                                <th scope="col" width ="5%"><span>Application Type</span></th>
+                                <th scope="col" width ="21%"><span>Type of Inspection Required</span></th>
+                                <th scope="col" width ="11%"><span>Pre/Post Licensing Inspection</span></th>
+                                <th scope="col" width ="15%"><span>Effective Start Date</span></th>
+                                <th scope="col" width ="15%"><span>Effective End Date</span></th>
                             </tr>
                             </thead>
                             <tbody>

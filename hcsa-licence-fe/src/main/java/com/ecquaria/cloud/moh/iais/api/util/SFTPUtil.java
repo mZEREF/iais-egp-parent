@@ -28,13 +28,14 @@ import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.Session;
 import com.jcraft.jsch.SftpException;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 import java.util.Vector;
 import lombok.extern.slf4j.Slf4j;
+
+import static java.nio.file.Files.newOutputStream;
 
 @Slf4j
 public class SFTPUtil {
@@ -187,7 +188,8 @@ public class SFTPUtil {
     }
 
     public static void download(String directory, String downloadFile,String saveFile, ChannelSftp sftp) {
-        try(OutputStream os = new FileOutputStream(MiscUtil.generateFile(saveFile))) {
+	    File outFile = MiscUtil.generateFile(saveFile);
+        try(OutputStream os = newOutputStream(outFile.toPath())) {
             sftp.cd(directory);
             sftp.get(downloadFile, os);
         } catch (Exception e) {

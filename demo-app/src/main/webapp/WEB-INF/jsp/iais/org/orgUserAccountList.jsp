@@ -84,7 +84,7 @@
     <iais:pagination  param="demoSearchParam" result="demoSearchResult"/>
     <iais:searchSection title="Account List" onclick="" >
         <div class="table-responsive" id="no-more-tables">
-            <table class="table table-bordered table-condensed cf alignctr shadow" id="tableId">
+            <table aria-describedby="" class="table table-bordered table-condensed cf alignctr shadow" id="tableId">
                 <colgroup>
                     <col style="width: 10%;"/>
                     <col style="width: 20%;"/>

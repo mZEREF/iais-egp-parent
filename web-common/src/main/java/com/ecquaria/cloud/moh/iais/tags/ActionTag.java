@@ -35,7 +35,11 @@ public final class ActionTag extends DivTagSupport {
     @Override
     public int doStartTag() throws JspException {
         StringBuilder html = new StringBuilder();
-        html.append("<div class=\"alignctr\"");
+        html.append("<div class=\"alignctr");
+        if (!StringUtil.isEmpty(cssClass)) {
+            html.append(' ').append(cssClass);
+        }
+        html.append('\"');
         if (!StringUtil.isEmpty(id)) {
             html.append(" id=\"").append(id).append('\"');
         }

@@ -29,6 +29,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.helper.RedisCacheHelper;
+import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
@@ -40,24 +41,10 @@ import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.dto.memorypage.PaginationHandler;
 import com.ecquaria.cloud.moh.iais.service.LicenseeService;
+import com.ecquaria.cloud.moh.iais.service.client.BbAuditTrailClient;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import com.ecquaria.egp.api.EGPHelper;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang.StringUtils;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
-import org.sqlite.date.FastDateFormat;
-import sop.iwe.SessionManager;
-import sop.rbac.user.User;
-import sop.servlet.webflow.HttpHandler;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
+import com.ecquaria.sz.commons.util.Calculator;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -70,6 +57,24 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
+import org.sqlite.date.FastDateFormat;
+import sop.audit.SOPAuditLog;
+import sop.audit.SOPAuditLogConstants;
+import sop.iwe.SessionManager;
+import sop.rbac.user.User;
+import sop.servlet.webflow.HttpHandler;
 
 import static com.ecquaria.sz.commons.util.StringUtil.RANDOM;
 
@@ -851,5 +856,73 @@ public final class IaisEGPHelper extends EGPHelper {
         }
         log.info(StringUtil.changeForLog("The isActiveMigrated end ..."));
         return  result;
+    }
+
+    public static void doLogout(HttpServletRequest request) {
+        if (request != null) {
+            sop.rbac.user.UserIdentifier userIden = new  sop.rbac.user.UserIdentifier();
+            sop.iwe.SessionManager session_mgmt = sop.iwe.SessionManager.getInstance(request);
+            LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
+            if (loginContext == null) {
+                return;
+            }
+            String userdomain = session_mgmt.getCurrentUserDomain();
+            String userid=session_mgmt.getCurrentUserID();
+            String sessionId = request.getSession().getId();
+
+            try {
+                //Add audit trail
+                AuditTrailDto auditTrailDto = IaisEGPHelper.getCurrentAuditTrailDto();
+                if (auditTrailDto != null){
+                    log.debug(StringUtil.changeForLog("=====>>>>> current logout" + userid));
+
+                    auditTrailDto.setOperation(AuditTrailConsts.OPERATION_LOGOUT);
+                    if (loginContext != null){
+                        String curDomain = loginContext.getUserDomain();
+                        auditTrailDto.setOperationType(AppConsts.USER_DOMAIN_INTERNET.equalsIgnoreCase(curDomain) ?
+                                AuditTrailConsts.OPERATION_TYPE_INTERNET : AuditTrailConsts.OPERATION_TYPE_INTRANET);
+                        auditTrailDto.setFunctionName(StringUtil.capitalize(loginContext.getUserDomain()) + " Logout");
+                    }
+                    AuditTrailHelper.callSaveAuditTrail(auditTrailDto);
+                }
+                BbAuditTrailClient bbAuditTrailClient = SpringContextHelper.getContext().getBean(BbAuditTrailClient.class);
+                AuditTrailDto loginDto = bbAuditTrailClient.getLoginInfoBySessionId(sessionId).getEntity();
+                Date now = new Date();
+                if (loginDto != null) {
+                    Date before = Formatter.parseDateTime(loginDto.getActionTime());
+                    long duration = now.getTime() - before.getTime();
+                    int minutes = (int) Calculator.div(duration, 60000, 0);
+                    AuditTrailHelper.callSaveSessionDuration(sessionId, minutes);
+                }
+            } catch (Exception e) {
+                log.warn(e.getMessage(), e);
+            }
+
+            if(!StringUtil.isEmpty(userid) && !StringUtil.isEmpty(userdomain)){
+                userIden.setUserDomain(userdomain);
+                userIden.setId(userid);
+                String event = SOPAuditLogConstants.getLogEvent(
+                        SOPAuditLogConstants.KEY_LOGOUT,
+                        new String[] { userIden.getUserDomain() });
+
+                String eventData = SOPAuditLogConstants.getLogEventData(
+                        SOPAuditLogConstants.KEY_LOGOUT, new String[] { userIden.getUserDomain(),userIden.getId() });
+
+                SOPAuditLog.log(userIden, event, eventData,
+                        SOPAuditLogConstants.MODULE_LOGOUT);
+            }
+
+            request.getSession().invalidate();
+            Cookie[] cookies = request.getCookies();
+            if(cookies != null) {
+                Cookie cookie = request.getCookies()[0];
+                cookie.setMaxAge(0);
+            }
+        }
+    }
+
+    public static String generateDummyVehicleNum(int index) {
+        String timeStr = String.valueOf(System.currentTimeMillis()) + index;
+        return timeStr.substring(timeStr.length() - 10);
     }
 }

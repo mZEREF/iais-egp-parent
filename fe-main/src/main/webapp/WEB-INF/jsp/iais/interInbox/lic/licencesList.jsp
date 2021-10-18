@@ -42,15 +42,15 @@
             <div class="row">
                 <div class="col-md-12">
                     <iais:value>
-                        <label class="col-md-3" for="fStartDate" style="text-align:left;margin-top: 1.5%">Licence Start
+                        <label class="col-xs-3 col-md-3 col-lg-3" for="fStartDate" style="text-align:left;margin-top: 1.5%">Licence Start
                             Date:</label>
-                        <div class="col-md-4">
+                        <div class="col-xs-9 col-md-4 col-lg-4">
                             <iais:datePicker id="fStartDate" name="fStartDate" value="${param.fStartDate}"/>
                         </div>
-                        <div class="col-md-1" style="margin-top: 1.5%">
+                        <div class="col-xs-3 col-md-1 col-lg-1" style="margin-top: 1.5%">
                             <label>To</label>
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-xs-9 col-md-4 col-lg-4">
                             <iais:datePicker id="eStartDate" name="eStartDate" value="${param.eStartDate}"/>
                         </div>
                     </iais:value>
@@ -67,15 +67,15 @@
             <div class="row">
                 <div class="col-md-12">
                     <iais:value>
-                        <label class="col-md-3" style="text-align:left;margin-top: 1.5%">Licence Expiry
+                        <label class="col-xs-3 col-md-3 col-lg-3" style="text-align:left;margin-top: 1.5%">Licence Expiry
                             Date:</label>
-                        <div class="col-md-4">
+                        <div class="col-xs-9 col-md-4 col-lg-4">
                             <iais:datePicker id="fExpiryDate" name="fExpiryDate" value="${param.fExpiryDate}"/>
                         </div>
-                        <div class="col-md-1" style="margin-top: 1.5%">
+                        <div class="col-xs-3 col-md-1 col-lg-1" style="margin-top: 1.5%">
                         <label>To</label>
                     </div>
-                        <div class="col-md-4">
+                        <div class="col-xs-9 col-md-4 col-lg-4">
                             <iais:datePicker id="eExpiryDate" name="eExpiryDate" value="${param.eExpiryDate}"/>
                         </div>
                     </iais:value>
@@ -89,21 +89,14 @@
                     </div>
                 </div>
             </div>
-            <div class="row">
-                <div class="col-md-12">
-                    <span class="col-xs-3 col-md-3"></span>
-                    <div class="col-md-5">
-                        <%--<span class="error-msg" style="width: 150%;position: absolute;font-size:1.5rem">${LEEM}</span>--%>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="text-right">
-                            <button type="button" class="btn btn-secondary" onclick="doClearLic()">Clear</button>
-                            <button type="button" class="btn btn-primary" onclick="doSearchLic()">Search</button>
-                        </div>
-                    </div >
+            <div class="col-md-12">
+                <div class="text-right">
+                    <button type="button" class="btn btn-secondary" onclick="doClearLic()">Clear</button>
+                    <button type="button" class="btn btn-primary" onclick="doSearchLic()">Search</button>
                 </div>
             </div>
         </div>
+        <br> <br>
         <iais:pagination param="licParam" result="licResult"/>
     </div>
     <div class="row">
@@ -112,6 +105,7 @@
                 <table aria-describedby="" class="table">
                     <thead>
                     <tr>
+                        <th scope="col" style="display: none;"></th>
                         <iais:sortableHeader needSort="false" field="" value=" " style="width:1%;"/>
                         <iais:sortableHeader needSort="true" field="LICENCE_NO"
                                              value="Licence No." style="width:15%;" isFE="true"/>
@@ -128,7 +122,7 @@
                     <c:choose>
                         <c:when test="${empty licResult.rows}">
                             <tr>
-                                <td colspan="6">
+                                <td colspan="8">
                                     <iais:message key="GENERAL_ACK018" escape="true"/>
                                 </td>
                             </tr>
@@ -136,6 +130,9 @@
                         <c:otherwise>
                             <c:forEach var="licenceQuery" items="${licResult.rows}" varStatus="status">
                                 <tr>
+                                    <td style="display: none;">
+                                        <p class="licId"><iais:mask name="action_id_value" value="${licenceQuery.id}"/></p>
+                                    </td>
                                     <td>
                                         <p class="visible-xs visible-sm table-row-title">Licence No.</p>
                                         <div class="form-check">
@@ -146,11 +143,8 @@
                                             </label>
                                         </div>
                                     </td>
-                                    <td style="display: none;">
-                                        <p class="licId"><iais:mask name="action_id_value" value="${licenceQuery.id}"/></p>
-                                    </td>
                                     <td>
-                                        <a href="#" class="licToView" style="font-size: 16px">${licenceQuery.licenceNo}</a>
+                                        <a href="#" class="licToView word-wrap" style="font-size: 16px">${licenceQuery.licenceNo}</a>
                                         <input type="hidden" name="licenId${status.index}"
                                                value="<iais:mask name= "licenId${status.index}" value="${licenceQuery.id}"/>"/>
                                     </td>
@@ -195,8 +189,8 @@
                     </tbody>
                 </table>
                 <!-- Modal -->
-                <div class="modal fade" id="isRenewedModal" role="dialog" aria-labelledby="myModalLabel" style="left: 50%;top: 50%;transform: translate(-50%,-50%);min-width:60%; overflow: visible;bottom: inherit;right: inherit;">
-                    <div class="modal-dialog modal-lg" role="document" >
+                <div class="modal fade" id="isRenewedModal" role="dialog" aria-labelledby="myModalLabel">
+                    <div class="modal-dialog modal-lg modal-dialog-centered" role="document" >
                         <div class="modal-content">
 <%--                            <div class="modal-header">--%>
 <%--                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>--%>
@@ -214,8 +208,8 @@
                 </div>
                 <!--Modal End-->
                 <!-- Modal -->
-                <div class="modal fade" id="ceasedModal" role="dialog" aria-labelledby="myModalLabel" style="left: 50%;top: 50%;transform: translate(-50%,-50%);min-width:60%; overflow: visible;bottom: inherit;right: inherit;">
-                    <div class="modal-dialog modal-lg" role="document">
+                <div class="modal fade" id="ceasedModal" role="dialog" aria-labelledby="myModalLabel">
+                    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
                         <div class="modal-content">
 <%--                            <div class="modal-header">--%>
 <%--                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>--%>
@@ -242,7 +236,12 @@
                             <a class="btn btn-primary disabled" href="javascript:void(0);" id="lic-cease">Cease</a>
                             <a class="btn btn-primary disabled" href="javascript:void(0);" id="lic-amend">Amend</a>
                             <a class="btn btn-primary disabled" href="javascript:void(0);" id="lic-appeal">Appeal</a>
-                            <a class="btn btn-primary disabled" href="javascript:void(0);" id="lic-print">Print</a>
+                            <c:if test="${InterInboxDelegator_lic_print_flag == '1'}">
+                                <a class="btn btn-primary disabled" href="javascript:void(0);" id="lic-print">Print</a>
+                            </c:if>
+                            <c:if test="${InterInboxDelegator_lic_print_flag == '0'}">
+                                <a class="btn btn-primary disabled" href="javascript:void(0);" id="lic-print-only-show">Print</a>
+                            </c:if>
                         </div>
                     </div>
                 </div>

@@ -82,7 +82,7 @@
                     <div class="table-gp">
                         <table aria-describedby="" class="table">
                             <thead>
-                            <tr align="center">
+                            <tr >
                                 <th scope="col" ></th>
                                 <iais:sortableHeader needSort="false" field="subject" value="S/N"/>
                                 <iais:sortableHeader needSort="true" field="DISTRIBUTION_NAME" value="Distribution Name"/>
@@ -95,49 +95,49 @@
                             </tr>
                             </thead>
                             <tbody>
-                                <c:choose>
-                                    <c:when test="${empty distributionSearchResult.rows}">
-                                        <tr>
-                                            <td colspan="9">
-                                                <iais:message key="GENERAL_ACK018" escape="true"></iais:message>
+                            <c:choose>
+                                <c:when test="${empty distributionSearchResult.rows}">
+                                    <tr>
+                                        <td colspan="9">
+                                            <iais:message key="GENERAL_ACK018" escape="true"></iais:message>
+                                        </td>
+                                    </tr>
+                                </c:when>
+                                <c:otherwise>
+                                    <c:forEach var="item" items="${distributionSearchResult.rows}" varStatus="status">
+                                        <tr style="display: table-row;">
+                                            <td>
+                                                <p><input type="checkbox" name="checkboxlist" value='<iais:mask name="checkboxlist" value="${item.id}"/>'></p>
+                                            </td>
+                                            <td>
+                                                <p><c:out
+                                                        value="${(status.index + 1) + (distributionSearchParam.pageNo - 1) * distributionSearchParam.pageSize}"/></p>
+                                            </td>
+                                            <td>
+                                                <p><c:out value="${item.disname}"/></p>
+                                            </td>
+                                            <td>
+                                                <p><c:out value="${item.service}"/></p>
+                                            </td>
+                                            <td>
+                                                <p><c:out value="${item.role}"/></p>
+                                            </td>
+                                            <td>
+                                                <p><c:out value="${item.mode}"/></p>
+                                            </td>
+                                            <td>
+                                                <p><fmt:formatDate value="${item.createDt}" pattern="dd/MM/yyyy HH:mm:ss"/></p>
+                                            </td>
+                                            <td>
+                                                <p><c:out value="${item.createBy}"/></p>
+                                            </td>
+                                            <td>
+                                                <p><a href="#" onclick="edit('<iais:mask name="editDistribution" value="${item.id}}"/>')">Edit</a></p>
                                             </td>
                                         </tr>
-                                    </c:when>
-                                    <c:otherwise>
-                                        <c:forEach var="item" items="${distributionSearchResult.rows}" varStatus="status">
-                                            <tr style="display: table-row;">
-                                                <td>
-                                                    <p><input type="checkbox" name="checkboxlist" value='<iais:mask name="checkboxlist" value="${item.id}"/>'></p>
-                                                </td>
-                                                <td>
-                                                    <p><c:out
-                                                            value="${(status.index + 1) + (distributionSearchParam.pageNo - 1) * distributionSearchParam.pageSize}"/></p>
-                                                </td>
-                                                <td>
-                                                    <p><c:out value="${item.disname}"/></p>
-                                                </td>
-                                                <td>
-                                                    <p><c:out value="${item.service}"/></p>
-                                                </td>
-                                                <td>
-                                                    <p><c:out value="${item.role}"/></p>
-                                                </td>
-                                                <td>
-                                                    <p><c:out value="${item.mode}"/></p>
-                                                </td>
-                                                <td>
-                                                    <p><fmt:formatDate value="${item.createDt}" pattern="dd/MM/yyyy HH:mm:ss"/></p>
-                                                </td>
-                                                <td>
-                                                    <p><c:out value="${item.createBy}"/></p>
-                                                </td>
-                                                <td>
-                                                    <p><a onclick="edit('<iais:mask name="editDistribution" value="${item.id}}"/>')">Edit</a></p>
-                                                </td>
-                                            </tr>
-                                        </c:forEach>
-                                    </c:otherwise>
-                                </c:choose>
+                                    </c:forEach>
+                                </c:otherwise>
+                            </c:choose>
                             </tbody>
                         </table>
                     </div>
@@ -158,6 +158,8 @@
         <input hidden id="fieldName" name="fieldName" value="">
         <input hidden id="sortType" name="sortType" value="">
         <iais:confirm msg="Please select record for deletion."  needCancel="false" callBack="cancel()" popupOrder="support" ></iais:confirm>
+        <iais:confirm msg="The distribution list cannot be amended as it is still in used by other mass email or sms blast."  needCancel="false" callBack="cancel()" popupOrder="editSupport" ></iais:confirm>
+        <iais:confirm msg="The distribution list cannot be deleted as it is still in used by other mass email or sms blast."  needCancel="false" callBack="cancel()" popupOrder="delSupport" ></iais:confirm>
         <iais:confirm msg="Are you sure you want to delete this item?" yesBtnCls="okBtn btn btn-primary"  needCancel="true" callBack="deleteDis()" popupOrder="deleteSupport" ></iais:confirm>
     </form>
 </div>
@@ -167,121 +169,122 @@
         $("[name='crud_action_type']").val(action);
         $('#mainForm').submit();
     }
-function addList() {
-    showWaiting();
-    submit("create");
-}
+    function addList() {
+        showWaiting();
+        submit("create");
+    }
 
-function deleteList() {
-    checkUse();
-}
+    function deleteList() {
+        checkUse();
+    }
 
 
-function sortRecords(sortFieldName, sortType) {
-    $("[name='fieldName']").val(sortFieldName);
-    $("[name='sortType']").val(sortType);
-    submit("search");
-}
+    function sortRecords(sortFieldName, sortType) {
+        $("[name='fieldName']").val(sortFieldName);
+        $("[name='sortType']").val(sortType);
+        submit("search");
+    }
 
-function cancel() {
-    $('#support').modal('hide');
-}
-function tagConfirmCallbacksupport() {
-    $('#support').modal('hide');
-}
-function deleteDis(){
-    submit("delete");
-}
-function checkUse() {
-    var deleteDis=new Array();
-    $.each($('input:checkbox:checked'),function(){
-        deleteDis.push($(this).val());
-    });
-    $.ajax({
-        data:{
-            checkboxlist:deleteDis
-        },
-        traditional: true,
-        type:"POST",
-        dataType: 'json',
-        url:'/system-admin-web/emailAjax/checkUse.do',
-        error:function(data){
+    function cancel() {
+        $('#support').modal('hide');
+        $('#editSupport').modal('hide');
+        $('#delSupport').modal('hide');
+    }
+    function tagConfirmCallbacksupport() {
+        $('#support').modal('hide');
+        $('#editSupport').modal('hide');
+        $('#delSupport').modal('hide');
+    }
+    function deleteDis(){
+        submit("delete");
+    }
+    function checkUse() {
+        var deleteDis=new Array();
+        $.each($('input:checkbox:checked'),function(){
+            deleteDis.push($(this).val());
+        });
+        $.ajax({
+            data:{
+                checkboxlist:deleteDis
+            },
+            traditional: true,
+            type:"POST",
+            dataType: 'json',
+            url:'/system-admin-web/emailAjax/checkUse.do',
+            error:function(data){
 
-        },
-        success:function(data){
-            if(data.res == 'true'){
-                $('#support').find("span").eq(0).html("The distribution list cannot be deleted as it is still in used by other mass email or sms blast.")
-                $('#support').modal('show');
-            }else{
-                if ($("input:checkbox:checked").length > 0) {
-                    $('#deleteSupport').modal('show');
-                    //alert(1)
-                } else {
-                    $('#support').find("span").eq(0).html("Please select record for deletion.");
-                    $('#support').modal('show');
+            },
+            success:function(data){
+                if(data.res == 'true'){
+                    $('#delSupport').modal('show');
+                }else{
+                    if ($("input:checkbox:checked").length > 0) {
+                        $('#deleteSupport').modal('show');
+                        //alert(1)
+                    } else {
+                        $('#support').modal('show');
+                    }
                 }
             }
-        }
-    });
-}
-function edit(id) {
-    $.ajax({
-        data:{
-            editDistribution:id
-        },
-        type:"POST",
-        dataType: 'json',
-        url:'/system-admin-web/emailAjax/distributionEditCheck.do',
-        error:function(data){
+        });
+    }
+    function edit(id) {
+        $.ajax({
+            data:{
+                editDistribution:id
+            },
+            type:"POST",
+            dataType: 'json',
+            url:'/system-admin-web/emailAjax/distributionEditCheck.do',
+            error:function(data){
 
-        },
-        success:function(data){
-            if(data.canEdit == 1){
-                $("#editDistribution").val(id);
-                submit("edit");
-            }else{
+            },
+            success:function(data){
+                if(data.canEdit == 1){
+                    $("#editDistribution").val(id);
+                    submit("edit");
+                }else{
 
-                $('#support').find("span").eq(1).html("The distribution list cannot be amended as it is still in used by other mass email or sms blast.");
-                $('#support').modal('show');
+                    $('#editSupport').modal('show');
+                }
             }
-        }
-    });
+        });
 
-}
-function jumpToPagechangePage() {
-    submit("page");
-}
-function searchResult() {
-    submit("search");
-}
-function clearSearch(){
-    $('input[name="distributionName"]').val("");
-    $("#service option:first").prop("selected", 'selected');
-    $("#modeDelivery option:first").prop("selected", 'selected');
-    $("#searchCondition .current").text("Please Select");
+    }
+    function jumpToPagechangePage() {
+        submit("page");
+    }
+    function searchResult() {
+        submit("search");
+    }
+    function clearSearch(){
+        $('input[name="distributionName"]').val("");
+        $("#service option:first").prop("selected", 'selected');
+        $("#modeDelivery option:first").prop("selected", 'selected');
+        $("#searchCondition .current").text("Please Select");
 
-    $("input[name='role']").removeAttr("checked");
-}
+        $("input[name='role']").removeAttr("checked");
+    }
 
-$("#service").change(function () {
-    $.ajax({
-        data:{
-            serviceCode:$(this).children('option:selected').val()
-        },
-        type:"POST",
-        dataType: 'json',
-        url:'/system-admin-web/emailAjax/mulrecipientsRoles.do',
-        error:function(data){
+    $("#service").change(function () {
+        $.ajax({
+            data:{
+                serviceCode:$(this).children('option:selected').val()
+            },
+            type:"POST",
+            dataType: 'json',
+            url:'/system-admin-web/emailAjax/mulrecipientsRoles.do',
+            error:function(data){
 
-        },
-        success:function(data){
-            var html = '<label class="col-xs-4 col-md-4 control-label" >Distribution List</label><div class="col-xs-8 col-sm-6 col-md-5">';
-            html += data.roleSelect;
-            html += ' <span id="error_role" name="iaisErrorMsg" class="error-msg"></span></div>';
-            $("#serviceDivByrole").html(html);
-        }
-    });
-})
+            },
+            success:function(data){
+                var html = '<label class="col-xs-4 col-md-4 control-label" >Distribution List</label><div class="col-xs-8 col-sm-6 col-md-5">';
+                html += data.roleSelect;
+                html += ' <span id="error_role" name="iaisErrorMsg" class="error-msg"></span></div>';
+                $("#serviceDivByrole").html(html);
+            }
+        });
+    })
 
 
 </script>

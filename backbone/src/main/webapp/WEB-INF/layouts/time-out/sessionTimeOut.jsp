@@ -10,9 +10,8 @@
   int timeout = 20;  // in minute
   int warning = 15;  // in minute
 %>
-<div id="timeoutDlg" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="timeoutDlg"
-     style="left: 50%; top: 50%; transform: translate(-50%, -50%); min-width: 80%; overflow: visible; bottom: inherit; right: inherit;">
-  <div class="modal-dialog" role="document">
+<div id="timeoutDlg" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="timeoutDlg">
+  <div class="modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content">
       <div class="modal-header">
         <h3 class="modal-title" id="gridSystemModalLabel">Timeout</h3>
@@ -26,9 +25,9 @@
         </div>
       </div>
       <div class="modal-footer">
-        <a onclick="javascript:doLogout();" style="float:right" id="intraTimeOutLogout" class="btn btn-secondary">Logout</a>
-        <span style="float:right">&nbsp;</span>
         <input class="btn btn-secondary" style="float:right" type="button" onclick="javascript:doExtend();" value="Extend"/>
+        <span style="float:right">&nbsp;</span>
+        <a onclick="javascript:doLogout();" style="float:right" id="intraTimeOutLogout" class="btn btn-secondary">Logout</a>
       </div>
     </div>
   </div>

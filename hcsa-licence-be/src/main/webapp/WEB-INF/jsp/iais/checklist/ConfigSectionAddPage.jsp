@@ -17,7 +17,7 @@
           (sop.webflow.rt.api.BaseProcessClass)request.getAttribute("process");
 %>
 <style>
-  .btn.btn-primary {
+/*  .btn.btn-primary {
     font-size: 1.6rem;
     font-weight: 700;
     background: #F2B227;
@@ -26,13 +26,13 @@
     padding: 5px 10px;
     text-transform: uppercase;
     border-radius: 30px;
-  }
+  }*/
 
-  .panel-default {
+ /* .panel-default {
     border-color: #dddddd;
-  }
+  }*/
 
-  .black_overlay{
+  /*.black_overlay{
     display: none;
     position: absolute;
     top: 0%;
@@ -57,7 +57,7 @@
     background-color: white;
     z-index:1002;
     overflow: auto;
-  }
+  }*/
 
 </style>
 <div class="main-content">
@@ -89,19 +89,38 @@
                   <input type="hidden" name="${chklsec.section}" data-name="sectionWant" value="${sectionStatus.index}">
                   <div class="panel panel-default">
                     <div class="panel-heading"  role="tab">
-                      <h4 class="panel-title"><a role="button" data-toggle="collapse" href="#collapseOne${sectionStatus.index}" aria-expanded="true" style="color: black" aria-controls="collapseOne">${chklsec.section}</a>
-                        <p class="text-right"><a class="btnUp" data-id="${sectionStatus.index}" onclick="javascript:swapPosition(${sectionStatus.index},'UP', 'sectionSon')"><em class=""></em>Up</a></p>
-                        <p class="text-right"><a class="btnDown" data-id="${sectionStatus.index}"  onclick="javascript:swapPosition(${sectionStatus.index},'DOWN', 'sectionSon')"><em class=""></em>Down</a></p>
-                        <p class="text-right"><a class="btnDown" data-id="${sectionStatus.index}"  onclick="javascript:removeSection('<iais:mask name="currentValidateId" value="${chklsec.id}"/>')"><em class=""></em>Remove</a></p>
+                      <h4 class="panel-title">
+                        <a role="button" data-toggle="collapse" href="#collapseOne${sectionStatus.index}" aria-expanded="true" style="color: black" aria-controls="collapseOne">${chklsec.section}</a>
+                        <p class="text-right">
+                          <a href="javascript:void(0)" class="btnUp" data-id="${sectionStatus.index}"
+                              onclick="javascript:swapPosition(${sectionStatus.index},'UP', 'sectionSon')">
+                            <em class=""></em>Up
+                          </a>
+                        </p>
+                        <p class="text-right">
+                          <a href="javascript:void(0)" class="btnDown" data-id="${sectionStatus.index}"
+                              onclick="javascript:swapPosition(${sectionStatus.index},'DOWN', 'sectionSon')">
+                            <em class=""></em>Down
+                          </a>
+                        </p>
+                        <p class="text-right">
+                          <a href="javascript:void(0)" class="btnDown" data-id="${sectionStatus.index}"
+                             onclick="javascript:removeSection('<iais:mask name="currentValidateId" value="${chklsec.id}"/>')">
+                            <em class=""></em>Remove
+                          </a>
+                        </p>
                       </h4>
 
                     </div>
                     <div class="panel-collapse collapse in" id="collapseOne${sectionStatus.index}" role="tabpanel" aria-labelledby="headingOne">
                       <div class="panel-body">
-                        <p class="text-right"><a onclick="javascript:routeToItemProcess('<iais:mask name="currentValidateId" value="${chklsec.id}"/>');"><em class="fa fa-pencil-square-o"></em>Config Checklist Item </a></p>
+                        <p class="text-right">
+                          <a href="javascript:void(0)" onclick="javascript:routeToItemProcess('<iais:mask name="currentValidateId" value="${chklsec.id}"/>');">
+                            <em class="fa fa-pencil-square-o"></em>Config Checklist Item
+                          </a>
+                        </p>
 
-
-                        <table id="resultTable" class="table">
+                        <table aria-describedby="" id="resultTable" class="table">
                           <thead>
                           <tr>
                             <th scope="col" >Regulation Clause Number</th>
@@ -113,49 +132,43 @@
                           </tr>
                           </thead>
                           <tbody>
-
                             <c:forEach var = "chklitem" items = "${chklsec.checklistItemDtos}" varStatus="status">
-
-                                    <tr class="itemClass" data-id="${chklitem.itemId}${sectionStatus.index}">
-                                      <input type="hidden" name="${chklitem.itemId}" data-name="itemWant" value="${status.index}">
-                                        <td>
-                                          <p class="visible-xs visible-sm table-row-title">Regulation Clause Number</p>
-                                          <p>${chklitem.regulationClauseNo}</p>
-                                        </td>
-                                        <td>
-                                          <p class="visible-xs visible-sm table-row-title">Regulations</p>
-                                          <p>${chklitem.regulationClause}</p>
-                                        </td>
-                                        <td>
-                                          <p class="visible-xs visible-sm table-row-title">Checklist Item</p>
-                                          <p>${chklitem.checklistItem}</p>
-                                        </td>
-                                        <td>
-                                          <p class="visible-xs visible-sm table-row-title">Risk Level</p>
-                                          <p><iais:code code="${chklitem.riskLevel}"></iais:code></p>
-                                        </td>
-                                        <td>
-                                          <p class="visible-xs visible-sm table-row-title">Status</p>
-                                          <p><iais:code code="${chklitem.status}"></iais:code></p>
-                                        </td>
-
-                                        <td>
-                                          <p class="visible-xs visible-sm table-row-title">Date</p>
-                                          <p><a class="btnUp" data-id="${chklitem.itemId}${sectionStatus.index}" onclick="javascript:swapPosition('${chklitem.itemId}${sectionStatus.index}','UP', 'itemClass')"><em class=""> </em>Up</a>
-                                            <a class="btnUp" data-id="${chklitem.itemId}${sectionStatus.index}" onclick="javascript:swapPosition('${chklitem.itemId}${sectionStatus.index}','DOWN', 'itemClass')"><em class=""></em>Down</a>
-                                            <a class="btnUp"  onclick="javascript:removeSectionItem('<iais:mask name="currentValidateId" value="${chklsec.id}"/>','<iais:mask name="sectionItemid" value="${chklitem.itemId}"/>')"><em class=""></em>Remove</a></p>
-
-
-                                          </p>
-
-                                        </td>
-                                      </tr>
-                                </c:forEach>
-
-
+                              <tr class="itemClass" data-id="${chklitem.itemId}${sectionStatus.index}">
+                                <input type="hidden" name="${chklitem.itemId}" data-name="itemWant" value="${status.index}">
+                                  <td class="word-wrap"><p class="visible-xs visible-sm table-row-title">Regulation Clause Number</p><p>${chklitem.regulationClauseNo}</p></td>
+                                  <td class="word-wrap"><p class="visible-xs visible-sm table-row-title">Regulations</p><p>${chklitem.regulationClause}</p></td>
+                                  <td class="word-wrap"><p class="visible-xs visible-sm table-row-title">Checklist Item</p><p>${chklitem.checklistItem}</p></td>
+                                  <td>
+                                    <p class="visible-xs visible-sm table-row-title">Risk Level</p>
+                                    <p><iais:code code="${chklitem.riskLevel}"></iais:code></p>
+                                  </td>
+                                  <td>
+                                    <p class="visible-xs visible-sm table-row-title">Status</p>
+                                    <p><iais:code code="${chklitem.status}"></iais:code></p>
+                                  </td>
+                                  <td>
+                                    <p class="visible-xs visible-sm table-row-title">Date</p>
+                                    <p>
+                                      <a href="javascript:void(0)" class="btnUp" data-id="${chklitem.itemId}${sectionStatus.index}"
+                                          onclick="javascript:swapPosition('${chklitem.itemId}${sectionStatus.index}','UP', 'itemClass')">
+                                        <em class=""> </em>Up
+                                      </a>
+                                      <br/>
+                                      <a href="javascript:void(0)" class="btnUp" data-id="${chklitem.itemId}${sectionStatus.index}"
+                                          onclick="javascript:swapPosition('${chklitem.itemId}${sectionStatus.index}','DOWN', 'itemClass')">
+                                        <em class=""></em>Down
+                                      </a>
+                                      <br/>
+                                      <a href="javascript:void(0)" class="btnUp"  onclick="javascript:removeSectionItem('<iais:mask
+                                              name="currentValidateId" value="${chklsec.id}"/>','<iais:mask name="sectionItemid" value="${chklitem.itemId}"/>')">
+                                        <em class=""></em>Remove
+                                      </a>
+                                    </p>
+                                  </td>
+                                </tr>
+                            </c:forEach>
                           </tbody>
                         </table>
-
                       </div>
                     </div>
                   </div>
@@ -165,12 +178,12 @@
 
               <div class="row">
                 <div class="col-xs-12 col-sm-6">
-                  <a class="back" onclick="doBack()();"><em class="fa fa-angle-left"></em> Back</a>
+                  <a class="back" onclick="doBack()();" href="javascript:void(0)"><em class="fa fa-angle-left"></em> Back</a>
                 </div>
                 <div class="col-xs-12 col-sm-6">
                   <div class="text-right text-center-mobile">
-                    <a class="btn btn-primary next" href="javascript:void(0);" onclick="javascript:addSectionItem();">Add Section Item</a>
-                    <a class="btn btn-primary next" href="javascript:void(0);" onclick="javascript:preViewConfig();">Next</a>
+                    <a class="btn btn-primary next" href="javascript:void(0)" onclick="javascript:addSectionItem();">Add Section Item</a>
+                    <a class="btn btn-primary next" href="javascript:void(0)" onclick="javascript:preViewConfig();">Next</a>
                   </div>
                 </div>
               </div>

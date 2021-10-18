@@ -52,10 +52,10 @@
           </div>
 
             <div class="row">
-              <div class="col-xs-12 col-sm-6">
-                <a class="back" onclick="doBack()();"><em class="fa fa-angle-left"></em> Back</a>
+              <div class="col-xs-12 col-md-3">
+                <a href="#" class="back" onclick="doBack()();"><em class="fa fa-angle-left"></em> Back</a>
               </div>
-              <div class="col-xs-12 col-sm-6">
+              <div class="col-xs-12 col-md-9">
                 <div class="text-right text-center-mobile">
                   <a class="btn btn-primary next" onclick="javascript:addSectionItem();">Add Section Item</a>
                 </div>

@@ -18,7 +18,7 @@
                     <div class="personnel-list-gp">
                         <div class="personnel-list">
                             <h2>LICENCE-SPECIFIC ROLES</h2>
-                            <form class="form-inline" method="post" id="menuListForm" action=<%=process.runtime.continueURL()%>>
+                            <form class="form-inline" method="post" id="menuListForm" style="justify-content:space-between" action=<%=process.runtime.continueURL()%>>
                                 <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
                                 <input type="hidden" name="crud_action_type" value="">
                                 <input type="hidden" id="personnelNo" name="personnelNo" value=""/>
@@ -51,11 +51,11 @@
                             <table aria-describedby="" class="table">
                                 <thead style="align-content: center">
                                 <tr>
-                                    <th style="width: 15%">Name</th>
-                                    <th style="width: 15%">Email</th>
-                                    <th style="width: 15%">Mobile</th>
-                                    <th style="width: 30%">Licence</th>
-                                    <th style="width: 25%">Roles</th>
+                                    <th scope="col" style="width: 15%">Name</th>
+                                    <th scope="col" style="width: 15%">Email</th>
+                                    <th scope="col" style="width: 15%">Mobile</th>
+                                    <th scope="col" style="width: 30%">Licence</th>
+                                    <th scope="col" style="width: 25%">Roles</th>
                                 </tr>
                                 </thead>
                                 <c:choose>

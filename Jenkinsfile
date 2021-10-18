@@ -1,5 +1,11 @@
-// List of email recipients.
-EMAILS_TO_NOTIFY = 'zamri@toppanecquaria.com'
+EMAILS_TO_NOTIFY = [
+    'josiahee@toppanecquaria.com',
+    'mingde@toppanecquaria.com',
+    'phangkangcheng@toppanecquaria.com',
+    'weiyang@toppanecquaria.com',
+    'zamri@toppanecquaria.com'
+].join(",");
+
 // Specify the connection URL to the Docker daemon.
 DOCKER_URL = 'tcp://hub.ecquaria.com:2375'
 // Destination directory when we do `git clone`.
@@ -293,6 +299,14 @@ def configurePipeline(){
         ])
 }
 
+def sendEmailNotificationForAutomatedTestNonZeroExit(){
+    def subjectHeader = "Automated Testing Non-Zero Exit: ${currentBuild.fullDisplayName}"
+    def emailBody = "Build is waiting for input, see ${env.BUILD_URL}"
+
+    // send email
+    mail to: EMAILS_TO_NOTIFY, subject: subjectHeader, body: emailBody
+}
+
 def sendEmailNotification(){
     def subjectHeader = ""
     def emailBody = ""
@@ -322,6 +336,15 @@ def sendEmailNotification(){
 
     // send email
     mail to: EMAILS_TO_NOTIFY, subject: subjectHeader, body: emailBody
+}
+
+def sendStageNotificationViaEmail(String stageName){
+    def subjectHeader = "Build has reached \"${stageName}\" stage: ${currentBuild.fullDisplayName}"
+    def emailBody = "For build details, see ${env.BUILD_URL}"
+
+    mail to: EMAILS_TO_NOTIFY,
+            subject: subjectHeader,
+            body: emailBody
 }
 
 // setup parameters to use when calling docker
@@ -858,6 +881,9 @@ def uploadVerificationPackage(){
  */
 def waitForVerifier(){
     def stageName = 'Release Gate'
+
+    sendStageNotificationViaEmail(stageName)
+
     stage(stageName){
         def CHOICES_NONE = '- Please Select -'
         def CHOICES_YES = 'Approve this build'
@@ -1155,31 +1181,73 @@ def runAutomatedTests(){
                     "--add-host=egp.sit.intra.iais.com:192.168.0.222"
                 ]
 
+                String CHOICES_RETRY = 'Retry Automated Test'
+                String CHOICES_FAIL = 'Fail the Build'
+                String CHOICES_CONTINUE = 'Continue to Next Stage'
+
+                def availableChoices = [CHOICES_RETRY, CHOICES_FAIL, CHOICES_CONTINUE] as String[]
+
                 docker
                     .image('hub.ecquaria.com/ecq/katalonstudio/katalon:7.8.2-ffmpeg')
                     .inside(dockerArgs.join(" ")){
-                        // def browserType = 'Chrome'
-                        def browserType = 'Chrome (headless)'
-                        sh """
-                            mkdir -p ~/.katalon/license/ && \
+                        while(true){
+                            def browserType = 'Chrome (headless)'
+                            exitCode = sh returnStatus: true, script: """
+                                mkdir -p ~/.katalon/license/ && \
                                 ln -s "$KATALON_OFFLINE_LICENSE" ~/.katalon/license/offline.lic || \
                                 exit \$?
 
-                            xvfb-run -s '-screen 0 1920x1080x24' \
-                            katalonc \
-                                -noSplash \
-                                -runMode=console \
-                                -projectPath="\$(pwd)/$CHECKOUT_DIRECTORY_AUTOMATED_TESTING/moh_iais.prj" \
-                                -retry=0 \
-                                -testSuitePath="Test Suites/Automation Test Suite - SG_SIT" \
-                                -executionProfile="SG_SIT" \
-                                -browserType="$browserType" \
-                                -remoteWebDriverUrl="http://192.168.0.228:4444/wd/hub" \
-                                -remoteWebDriverType="Selenium"
-                        """
-                    }
-            }
-        }
+                                xvfb-run -s '-screen 0 1920x1080x24' \
+                                katalonc \
+                                    -noSplash \
+                                    -runMode=console \
+                                    -projectPath="\$(pwd)/$CHECKOUT_DIRECTORY_AUTOMATED_TESTING/moh_iais.prj" \
+                                    -retry=0 \
+                                    -testSuitePath="Test Suites/Automation Test Suite - SG_SIT" \
+                                    -executionProfile="SG_SIT" \
+                                    -browserType="$browserType" \
+                                    -remoteWebDriverUrl="http://192.168.0.228:4444/wd/hub" \
+                                    -remoteWebDriverType="Selenium"
+                            """
+
+                            if(exitCode != 0){
+                                // non-zero exit code, invoke humans
+                                sendEmailNotificationForAutomatedTestNonZeroExit()
+
+                                def choice = doGateKatalon(
+                                    availableChoices,
+                                    'Run Automated Tests',
+                                    'automatedTestGate',
+                                    'Automated Testing reports a non-zero exit code.',
+                                    'Select a course of action.',
+                                    'Comments submitted here would be recorded (unless "Abort" was used).')
+
+                                println("choice: [" + choice + "]");
+
+                                if(choice.equals(CHOICES_RETRY)){
+                                    println("Retrying test.");
+                                }
+                                else if(choice.equals(CHOICES_FAIL)){
+                                    println("Propogating exit code[$exitCode].");
+                                    sh """
+                                        exit $exitCode
+                                    """
+                                }
+                                else if(choice.equals(CHOICES_CONTINUE)){
+                                    println("Received exit code [$exitCode], but continuing to the next stage.");
+                                    break;
+                                }
+                                else {
+                                    thrown new RuntimeException("Unknown choice[" + choice + "]");
+                                }
+                            } // if block to check exit code
+                            else{
+                                break; // we're done -- no issue to manage.
+                            }
+                        } // while block
+                    } // docker.inside block
+            } // with credentials block
+        } // try block
         catch(e){
             throw e
         }
@@ -1187,9 +1255,60 @@ def runAutomatedTests(){
             sh """
                 rm -f katalon-reports.zip
             """
-			zip archive: true, dir: 'checkouts-at/Reports', glob: '', zipFile: 'katalon-reports.zip'
+
+            if(fileExists('checkouts-at/Reports')){
+                zip archive: true, dir: 'checkouts-at/Reports', glob: '', zipFile: 'katalon-reports.zip'
+            }
+			else{
+                println("Unable to archive katalon-reports.zip -- checkouts-at/Reports doesn't exist.")
+            }
 		}
     }
+}
+
+def doGateKatalon(String[] availableChoices, String stageName, String inputId, String message, String choiceDescription, String commentDescription){
+    def CHOICES_NONE = '- Please Select -'
+    def tmp = [CHOICES_NONE] as String[]
+    def finalChoices = tmp + availableChoices
+
+    println("final choices: " + finalChoices)
+
+    def PARAMETER_CHOICE = 'Decision'
+    def PARAMETER_COMMENTS = 'Comments'
+
+    def _gate
+    def _choice
+    def _comments
+
+    def getAnswer = true
+    while(getAnswer){
+        _gate = input id: inputId,
+                message: message,
+                ok: 'Submit',
+                parameters: [
+                        choice(choices: Arrays.asList(finalChoices),
+                                description: choiceDescription,
+                                name: PARAMETER_CHOICE),
+                        string(defaultValue: '',
+                                description: commentDescription,
+                                name: PARAMETER_COMMENTS, trim: true)
+                ],
+                submitterParameter: 'submitter'
+
+        // will only continue if 'Abort' was not used.
+        _choice = _gate[PARAMETER_CHOICE]
+        _comments = _gate[PARAMETER_COMMENTS]
+
+        getAnswer = _choice.equals(CHOICES_NONE)
+        if(getAnswer){
+            println "Please make a decision before clicking on the submit button."
+        }
+    }
+
+    println "Decision made at ${stageName} stage: ${_choice}"
+    println "Comments given ${stageName} stage: ${_comments}"
+
+    return _choice
 }
 
 def doAutomatedTestGate(){
@@ -1224,6 +1343,8 @@ def doQAGate(){
     def commentDescription = '''\
                             Comments submitted here would be recorded (unless "Abort" was used).
                         '''.stripIndent()
+
+    sendStageNotificationViaEmail(stageName)
 
     doGate(stageName, inputId, message,
         yesText, noText,

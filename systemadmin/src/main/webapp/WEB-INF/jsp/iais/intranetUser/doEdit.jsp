@@ -37,7 +37,7 @@
                         <div class="tab-content">
                             <div class="tab-pane <c:if test="${activeTab==1}">active</c:if> <c:if test="${activeTab==null}">active</c:if>" id="tabAccount" role="tabAccount">
                                 <div class="form-group">
-                                    <label class="col-xs-12 col-md-4 control-label" for="userId">User ID:<span style="color:red">*</span></label>
+                                    <label class="col-xs-12 col-md-4 control-label" for="userId">User ID <span style="color:red">*</span></label>
                                     <iais:value>
                                         <div class="col-xs-8 col-sm-6 col-md-5">
                                             <input id="userId" style="border-color: rgb(237, 237, 237); color: rgb(153, 153, 153);" type="text" maxlength="20" name="userId" value="${orgUserDto.userId}" disabled>
@@ -46,7 +46,7 @@
                                     </iais:value>
                                 </div>
                                     <div class="form-group">
-                                        <label class="col-xs-12 col-md-4 control-label" for="displayName">Display Name:<span style="color:red">*</span></label>
+                                        <label class="col-xs-12 col-md-4 control-label" for="displayName">Display Name <span style="color:red">*</span></label>
                                         <iais:value>
                                             <div class="col-xs-8 col-sm-6 col-md-5">
                                                 <input id="displayName" type="text" maxlength="20" name="displayName" value="${orgUserDto.displayName}">
@@ -55,7 +55,7 @@
                                         </iais:value>
                                     </div>
                                     <div class="form-group">
-                                        <label class="col-xs-12 col-md-4 control-label" for="startDate">Account Activation Start:<span style="color:red">*</span></label>
+                                        <label class="col-xs-12 col-md-4 control-label" for="startDate">Account Activation Start <span style="color:red">*</span></label>
                                         <iais:value>
                                             <div class="col-xs-8 col-sm-6 col-md-5">
                                                 <iais:datePicker id="startDate" name="startDate" dateVal="${orgUserDto.accountActivateDatetime}"/>
@@ -64,7 +64,7 @@
                                         </iais:value>
                                     </div>
                                     <div class="form-group">
-                                        <label class="col-xs-12 col-md-4 control-label" for="endDate">Account Activation End:<span style="color:red">*</span></label>
+                                        <label class="col-xs-12 col-md-4 control-label" for="endDate">Account Activation End <span style="color:red">*</span></label>
                                         <iais:value>
                                             <div class="col-xs-8 col-sm-6 col-md-5">
                                                 <iais:datePicker id="endDate" name="endDate" dateVal="${orgUserDto.accountDeactivateDatetime}"/>
@@ -73,7 +73,7 @@
                                         </iais:value>
                                     </div>
                                 <div class="form-group">
-                                    <label class="col-xs-12 col-md-4 control-label" for="endDate">Status:<span style="color:red">*</span></label>
+                                    <label class="col-xs-12 col-md-4 control-label" for="endDate">Status <span style="color:red">*</span></label>
                                     <iais:value>
                                         <div class="col-xs-8 col-sm-6 col-md-5">
                                             <iais:select id="status" options="statusOptions" firstOption="Please Select" name="status" value="${orgUserDto.status}"/>
@@ -82,7 +82,7 @@
                                     </iais:value>
                                 </div>
                                 <div class="form-group">
-                                    <label class="col-xs-12 col-md-4 control-label" for="remarks">Available:</label>
+                                    <label class="col-xs-12 col-md-4 control-label" for="remarks">Available </label>
                                     <iais:value>
                                         <div class="col-xs-8 col-sm-6 col-md-5">
                                             <input id="available" type="checkbox" name="available" <c:if test="${orgUserDto.available == true}">checked</c:if> >
@@ -92,7 +92,7 @@
                             </div>
                             <div class="tab-pane <c:if test="${activeTab==2}">active</c:if>" id="tabPersonal" role="tabPersonal">
                                 <div class="form-group">
-                                    <label class="col-xs-12 col-md-4 control-label">Salutation:</label>
+                                    <label class="col-xs-12 col-md-4 control-label">Salutation </label>
                                     <iais:value>
                                         <div class="col-xs-8 col-sm-6 col-md-5">
                                             <iais:select name="salutation" options="salutation" firstOption="Please Select" value="${orgUserDto.salutation}"></iais:select>
@@ -100,7 +100,7 @@
                                     </iais:value>
                                 </div>
                                 <div class="form-group">
-                                    <label class="col-xs-12 col-md-4 control-label" for="firstName">Name:<span style="color:red">*</span></label>
+                                    <label class="col-xs-12 col-md-4 control-label" for="firstName">Name <span style="color:red">*</span></label>
                                     <iais:value>
                                         <div class="col-xs-8 col-sm-6 col-md-5">
                                             <input id="firstName" minlength="10" maxlength="66" type="text" name="firstName" value="${orgUserDto.firstName}">
@@ -110,7 +110,7 @@
                                     </iais:value>
                                 </div>
                                 <div class="form-group hidden">
-                                    <label class="col-xs-12 col-md-4 control-label" for="lastName">Last Name:<span style="color:red">*</span></label>
+                                    <label class="col-xs-12 col-md-4 control-label" for="lastName">Last Name <span style="color:red">*</span></label>
                                     <iais:value>
                                         <div class="col-xs-8 col-sm-6 col-md-5">
                                             <input id="lastName" type="text"  minlength="10" maxlength="66" name="lastName" value="${orgUserDto.lastName}">
@@ -120,7 +120,7 @@
                                     </iais:value>
                                 </div>
                                 <div class="form-group">
-                                    <label class="col-xs-12 col-md-4 control-label" for="organization">Organization:</label>
+                                    <label class="col-xs-12 col-md-4 control-label" for="organization">Organization </label>
                                     <iais:value>
                                         <div class="col-xs-8 col-sm-6 col-md-5">
                                             <input id="organization" type="text" maxlength="20" name="organization" value="${orgUserDto.organization}">
@@ -128,7 +128,7 @@
                                     </iais:value>
                                 </div>
                                 <div class="form-group">
-                                    <label class="col-xs-12 col-md-4 control-label" for="division">Division:</label>
+                                    <label class="col-xs-12 col-md-4 control-label" for="division">Division </label>
                                     <iais:value>
                                         <div class="col-xs-8 col-sm-6 col-md-5">
                                             <input id="division" type="text" maxlength="20" name="division" value="${orgUserDto.division}">
@@ -136,7 +136,7 @@
                                     </iais:value>
                                 </div>
                                 <div class="form-group">
-                                    <label class="col-xs-12 col-md-4 control-label" for="branch">Branch / Unit:</label>
+                                    <label class="col-xs-12 col-md-4 control-label" for="branch">Branch / Unit </label>
                                     <iais:value>
                                         <div class="col-xs-8 col-sm-6 col-md-5">
                                             <input id="branch" type="text" maxlength="20" name="branch" value="${orgUserDto.branchUnit}">
@@ -146,7 +146,7 @@
                             </div>
                             <div class="tab-pane <c:if test="${activeTab==3}">active</c:if>" id="tabContact" role="tabContact">
                                 <div class="form-group">
-                                    <label class="col-xs-12 col-md-4 control-label" for="email">Email:<span style="color:red">*</span></label>
+                                    <label class="col-xs-12 col-md-4 control-label" for="email">Email <span style="color:red">*</span></label>
                                     <iais:value>
                                         <div class="col-xs-8 col-sm-6 col-md-5">
                                             <input id="email" type="text" maxlength="66" name="email" value="${orgUserDto.email}">
@@ -155,7 +155,7 @@
                                     </iais:value>
                                 </div>
                                 <div class="form-group">
-                                    <label class="col-xs-12 col-md-4 control-label" for="mobileNo">Mobile No.:<span style="color:red">*</span></label>
+                                    <label class="col-xs-12 col-md-4 control-label" for="mobileNo">Mobile No. <span style="color:red">*</span></label>
                                     <iais:value>
                                         <div class="col-xs-8 col-sm-6 col-md-5">
                                             <input id="mobileNo" maxlength="8" type="text" name="mobileNo" value="${orgUserDto.mobileNo}">
@@ -164,7 +164,7 @@
                                     </iais:value>
                                 </div>
                                 <div class="form-group">
-                                    <label class="col-xs-12 col-md-4 control-label" for="officeNo">Office No.:<span style="color:red">*</span></label>
+                                    <label class="col-xs-12 col-md-4 control-label" for="officeNo">Office No. <span style="color:red">*</span></label>
                                     <iais:value>
                                         <div class="col-xs-8 col-sm-6 col-md-5">
                                             <input id="officeNo" type="text" maxlength="8" name="officeNo" value="${orgUserDto.officeTelNo}">
@@ -173,7 +173,7 @@
                                     </iais:value>
                                 </div>
                                 <div class="form-group">
-                                    <label class="col-xs-12 col-md-4 control-label" for="remarks">Remarks:</label>
+                                    <label class="col-xs-12 col-md-4 control-label" for="remarks">Remarks </label>
                                     <iais:value>
                                         <div class="col-xs-8 col-sm-6 col-md-5">
                                             <input id="remarks" maxlength="100" type="text" name="remarks"
@@ -184,16 +184,15 @@
                             </div>
                         </div>
                             <iais:action>
-                                <a style="margin-left: 0%" class="back <c:if test="${PERSONAL_PROFILE}">hidden</c:if>" onclick="submit('back')"><em class="fa fa-angle-left"></em> Back</a>
+                                <a href="#" style="margin-left: 0%" class="back <c:if test="${PERSONAL_PROFILE}">hidden</c:if>" onclick="submit('back')"><em class="fa fa-angle-left"></em> Back</a>
                                 <a style="margin-left: 90%" class="btn btn-primary" data-toggle="modal" data-target= "#editUser">SUBMIT</a>
                             </iais:action>
                     </div>
                 </div>
 
                 <!-- Modal -->
-                <div class="modal fade" id="editUser" tabindex="-1" role="dialog" aria-labelledby="editUser"
-                     style="left: 50%;top: 50%;transform: translate(-50%,-50%);min-width:80%; overflow: visible;bottom: inherit;right: inherit;">
-                    <div class="modal-dialog" role="document">
+                <div class="modal fade" id="editUser" tabindex="-1" role="dialog" aria-labelledby="editUser">
+                    <div class="modal-dialog modal-dialog-centered" role="document">
                         <div class="modal-content">
 <%--                            <div class="modal-header">--%>
 <%--                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span--%>

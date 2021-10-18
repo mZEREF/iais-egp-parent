@@ -34,10 +34,13 @@
         <br><br>
         <div class="form-horizontal">
             <div class="form-group">
-                <iais:field value="Common" id="commonField"></iais:field>
-                <div class="col-md-3">
-                    <input class="form-check-input" id="common" type="radio" name="common" aria-invalid="false"
-                        value="${common}"> <label for="common">General Regulation</label>
+                <iais:field value="Common" id="commonField"/>
+                <div class="col-md-5">
+                    <p>
+                    <input class="form-check-input" id="common" type="radio" name="common" aria-invalid="false" value="${common}"
+                           style="margin-top: 18px;">
+                    <label for="common" style="margin-left: 20px;">General Regulation</label>
+                    </p>
                 </div>
             </div>
 
@@ -49,7 +52,6 @@
                                      value="${svcName}"></iais:select>
                     </div>
                 </div>
-
 
                 <div class="form-group">
                     <iais:field value="Service Sub-Type" id="subTypeField"></iais:field>
@@ -94,7 +96,6 @@
                 </div>
             </div>
 
-
             <div class="form-group">
                 <iais:field value="Effective Start Date" required="true"></iais:field>
                 <div class="col-md-3">
@@ -111,12 +112,11 @@
                 </div>
             </div>
 
-
         </div>
 
         <div class="row">
             <div class="col-xs-12 col-sm-6">
-                <a class="back" onclick="doBack();"><em class="fa fa-angle-left"></em> Back</a>
+                <a href="#" class="back" onclick="doBack();"><em class="fa fa-angle-left"></em> Back</a>
             </div>
             <div class="col-xs-12 col-sm-6">
                 <div class="text-right text-center-mobile">
@@ -128,9 +128,7 @@
     </form>
 </div>
 
-
 <script type="text/javascript">
-
 
     $(document).ready(function(){
         checkInputStatus();
@@ -166,7 +164,6 @@
         $('#hciCode').attr('disabled', null);
         checkInputStatus()
     }
-
 
     common.onclick = function () {
         if (!hasClick){

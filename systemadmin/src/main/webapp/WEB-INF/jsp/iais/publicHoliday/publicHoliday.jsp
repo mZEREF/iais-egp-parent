@@ -80,7 +80,8 @@
                         <div class="table-gp">
                             <table aria-describedby="" class="table">
                                 <thead>
-                                    <tr align="center">
+                                    <tr >
+                                        <th scope="col" style="display: none"></th>
                                         <iais:sortableHeader needSort="false" field="" value=" "/>
                                         <iais:sortableHeader needSort="false" field="" value="S/N"/>
                                         <iais:sortableHeader needSort="true" field="FROM_DATE" value="Year"/>

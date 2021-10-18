@@ -16,6 +16,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptNonWorkingDateDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcVehicleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistItemDto;
@@ -39,6 +40,7 @@ import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
 import com.ecquaria.cloud.moh.iais.service.ApptInspectionDateService;
 import com.ecquaria.cloud.moh.iais.service.InsepctionNcCheckListService;
 import com.ecquaria.cloud.moh.iais.service.InspectionRectificationProService;
+import com.ecquaria.cloud.moh.iais.service.client.AppSvcVehicleBeClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.AppointmentClient;
 import com.ecquaria.cloud.moh.iais.service.client.BeEicGatewayClient;
@@ -112,6 +114,9 @@ public class InspectionSendRecBatchjob {
     @Autowired
     private InsepctionNcCheckListService insepctionNcCheckListService;
 
+    @Autowired
+    private AppSvcVehicleBeClient appSvcVehicleBeClient;
+
     @Value("${iais.hmac.keyId}")
     private String keyId;
     @Value("${iais.hmac.second.keyId}")
@@ -165,6 +170,7 @@ public class InspectionSendRecBatchjob {
             JobRemindMsgTrackingDto jobRemindMsgTrackingDto2 = systemBeLicClient.getJobRemindMsgTrackingDto(aDto.getId(), MessageConstants.JOB_REMIND_MSG_KEY_SEND_REC_TO_FE).getEntity();
             if(jobRemindMsgTrackingDto2 == null) {
                 List<InspEmailFieldDto> inspEmailFieldDtos = getEmailFieldByAppId(aDto.getId());
+                inspEmailFieldDtos = inspectionRectificationProService.sortInspEmailFieldDtoByCategory(inspEmailFieldDtos);
                 String applicantId;
                 if(ApplicationConsts.APPLICATION_TYPE_POST_INSPECTION.equals(aDto.getApplicationType()) ||
                         ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK.equals(aDto.getApplicationType())) {
@@ -245,6 +251,8 @@ public class InspectionSendRecBatchjob {
         List<InspEmailFieldDto> inspEmailFieldDtos = IaisCommonUtils.genNewArrayList();
         AppPremisesCorrelationDto appPremisesCorrelationDto = applicationClient.getAppPremisesCorrelationDtosByAppId(appId).getEntity();
         String appPremCorrId = appPremisesCorrelationDto.getId();
+        //get vehicle no
+        List<AppSvcVehicleDto> appSvcVehicleDtos = appSvcVehicleBeClient.getAppSvcVehicleDtoListByCorrId(appPremCorrId).getEntity();
         List<ChecklistConfigDto> checklistConfigDtos = getAllCheckListByAppPremCorrId(appPremCorrId);
         AppPremPreInspectionNcDto appPremPreInspectionNcDto = fillUpCheckListGetAppClient.getAppNcByAppCorrId(appPremCorrId).getEntity();
         List<AppPremisesPreInspectionNcItemDto> appPremisesPreInspectionNcItemDtos = fillUpCheckListGetAppClient.getAppNcItemByNcId(appPremPreInspectionNcDto.getId()).getEntity();
@@ -252,7 +260,7 @@ public class InspectionSendRecBatchjob {
             for(AppPremisesPreInspectionNcItemDto appPremisesPreInspectionNcItemDto : appPremisesPreInspectionNcItemDtos){
                 int recFlag = appPremisesPreInspectionNcItemDto.getIsRecitfied();
                 if(0 == recFlag){
-                    InspEmailFieldDto inspEmailFieldDto = setNcDataByItemId(checklistConfigDtos, appPremisesPreInspectionNcItemDto);
+                    InspEmailFieldDto inspEmailFieldDto = setNcDataByItemId(checklistConfigDtos, appPremisesPreInspectionNcItemDto, appSvcVehicleDtos);
                     if(inspEmailFieldDto != null) {
                         inspEmailFieldDtos.add(inspEmailFieldDto);
                     }
@@ -279,12 +287,14 @@ public class InspectionSendRecBatchjob {
         return checklistConfigDtos;
     }
 
-    private InspEmailFieldDto setNcDataByItemId(List<ChecklistConfigDto> checklistConfigDtos, AppPremisesPreInspectionNcItemDto appPremisesPreInspectionNcItemDto) {
+    private InspEmailFieldDto setNcDataByItemId(List<ChecklistConfigDto> checklistConfigDtos, AppPremisesPreInspectionNcItemDto appPremisesPreInspectionNcItemDto,
+                                                List<AppSvcVehicleDto> appSvcVehicleDtos) {
         InspEmailFieldDto inspEmailFieldDto = new InspEmailFieldDto();
         String itemId = appPremisesPreInspectionNcItemDto.getItemId();
         String beRemark = appPremisesPreInspectionNcItemDto.getBeRemarks();
         String findNcs = appPremisesPreInspectionNcItemDto.getNcs();
-        String vehicleNo = appPremisesPreInspectionNcItemDto.getVehicleName();
+        String checkListConfigId = appPremisesPreInspectionNcItemDto.getCheckListConfigId();
+        String vehicleNo = inspectionRectificationProService.getVehicleShowName(appPremisesPreInspectionNcItemDto.getVehicleName(), appSvcVehicleDtos);
         if(StringUtil.isEmpty(beRemark)){
             beRemark = "";
         }
@@ -298,7 +308,7 @@ public class InspectionSendRecBatchjob {
             for (ChecklistConfigDto checklistConfigDto : checklistConfigDtos) {
                 List<ChecklistItemDto> checklistItemDtos = getCurrentSvcAllItems(checklistConfigDto);
                 if(!IaisCommonUtils.isEmpty(checklistItemDtos)){
-                    inspEmailFieldDto = setFieldByItem(inspEmailFieldDto, checklistConfigDto, checklistItemDtos, itemId, beRemark, findNcs, vehicleNo);
+                    inspEmailFieldDto = setFieldByItem(inspEmailFieldDto, checklistConfigDto, checklistItemDtos, itemId, beRemark, findNcs, vehicleNo, checkListConfigId);
                     if(inspEmailFieldDto != null){
                         return inspEmailFieldDto;
                     }
@@ -330,35 +340,37 @@ public class InspectionSendRecBatchjob {
     }
 
     private InspEmailFieldDto setFieldByItem(InspEmailFieldDto inspEmailFieldDto, ChecklistConfigDto checklistConfigDto, List<ChecklistItemDto> checklistItemDtos,
-                                             String itemId, String beRemark, String findNcs, String vehicleNo) {
+                                             String itemId, String beRemark, String findNcs, String vehicleNo, String checkListConfigId) {
         boolean containFlag = false;
-        for(ChecklistItemDto checklistItemDto : checklistItemDtos){
-            if(itemId.equals(checklistItemDto.getItemId())){
-                log.info(StringUtil.changeForLog("itemId Id = " + itemId));
-                //get category value
-                String category;
-                if(!StringUtil.isEmpty(vehicleNo)) {
-                    category = vehicleNo;
-                } else {
-                    category = getItemCategory(checklistConfigDto);
+        if(checklistConfigDto != null && !StringUtil.isEmpty(checkListConfigId)) {
+            for (ChecklistItemDto checklistItemDto : checklistItemDtos) {
+                if (itemId.equals(checklistItemDto.getItemId()) && checkListConfigId.equals(checklistConfigDto.getId())) {
+                    log.info(StringUtil.changeForLog("itemId Id = " + itemId));
+                    //get category value
+                    String category;
+                    if (!StringUtil.isEmpty(vehicleNo)) {
+                        category = vehicleNo;
+                    } else {
+                        category = getItemCategory(checklistConfigDto);
+                    }
+                    containFlag = true;
+                    ChecklistItemDto clItemDto = hcsaChklClient.getChklItemById(itemId).getEntity();
+                    if (clItemDto == null) {
+                        log.info(StringUtil.changeForLog("clItemDto == null"));
+                        clItemDto = new ChecklistItemDto();
+                        clItemDto.setRegulationClause("");
+                        clItemDto.setChecklistItem("");
+                    }
+                    if (inspEmailFieldDto == null) {
+                        inspEmailFieldDto = new InspEmailFieldDto();
+                    }
+                    //CR Regulation change -> Question
+                    inspEmailFieldDto.setRegulation(clItemDto.getChecklistItem());
+                    //CR question change -> Findings/NCs
+                    inspEmailFieldDto.setQuestion(findNcs);
+                    inspEmailFieldDto.setBeNcRemark(beRemark);
+                    inspEmailFieldDto.setServiceName(category);
                 }
-                containFlag = true;
-                ChecklistItemDto clItemDto = hcsaChklClient.getChklItemById(itemId).getEntity();
-                if(clItemDto == null){
-                    log.info(StringUtil.changeForLog("clItemDto == null"));
-                    clItemDto = new ChecklistItemDto();
-                    clItemDto.setRegulationClause("");
-                    clItemDto.setChecklistItem("");
-                }
-                if(inspEmailFieldDto == null){
-                    inspEmailFieldDto = new InspEmailFieldDto();
-                }
-                //CR Regulation change -> Question
-                inspEmailFieldDto.setRegulation(clItemDto.getChecklistItem());
-                //CR question change -> Findings/NCs
-                inspEmailFieldDto.setQuestion(findNcs);
-                inspEmailFieldDto.setBeNcRemark(beRemark);
-                inspEmailFieldDto.setServiceName(category);
             }
         }
         if(!containFlag){

@@ -4,14 +4,14 @@
             <div class="col-xs-12">
                 <div class="tab-gp dashboard-tab" style="margin-left: 6px;margin-right: -8px;">
                     <ul class="nav nav-tabs hidden-xs hidden-sm" role="tablist">
-                        <li class="active" role="presentation" id="inboxTab"><a href="#" aria-controls="tabInbox"
+                        <li class="active" role="presentation" id="inboxTab"><a aria-controls="tabInbox"
                                                                                 role="tab" data-toggle="tab">Inbox
                             (${unreadAndresponseNum})</a></li>
-                        <li class="complete" role="presentation" id="appTab"><a href="#" aria-controls="tabApp"
+                        <li class="complete" role="presentation" id="appTab"><a aria-controls="tabApp"
                                                                                 role="tab" data-toggle="tab"
                                                                                 onclick="msgToAppPage()">Applications</a>
                         </li>
-                        <li class="incomplete" role="presentation" id="licTab"><a href="#" aria-controls="tabLic"
+                        <li class="incomplete" role="presentation" id="licTab"><a aria-controls="tabLic"
                                                                                   role="tab" data-toggle="tab"
                                                                                   onclick="msgToLicPage()">Licences</a>
                         </li>

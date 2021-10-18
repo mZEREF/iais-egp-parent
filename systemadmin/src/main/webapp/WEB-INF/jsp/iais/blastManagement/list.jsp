@@ -86,7 +86,7 @@
                     <div class="table-gp">
                         <table aria-describedby="" class="table">
                             <thead>
-                            <tr align="center">
+                            <tr >
                                 <th scope="col" ></th>
                                 <iais:sortableHeader needSort="false" field="" value="S/N" style="width:1%"/>
                                 <iais:sortableHeader needSort="true" field="SUBJECT" value="Email Subject" style="width:14%"/>
@@ -145,10 +145,10 @@
                                                 <p><c:out value="${item.mode}"/></p>
                                             </td>
                                             <td>
-                                                <p><c:out value="${item.schedule}"/></p>
+                                                <p style="word-break: normal"><c:out value="${item.schedule}"/></p>
                                             </td>
                                             <td>
-                                                <p><c:out value="${item.actual}"/></p>
+                                                <p style="word-break: normal"><c:out value="${item.actual}"/></p>
                                             </td>
                                             <td>
                                                 <p><c:out value="${item.docName}"/></p>
@@ -162,11 +162,11 @@
                                                         <c:when test="${!empty item.actual}">
                                                         </c:when>
                                                         <c:otherwise>
-                                                            <a onclick="edit('${massIndex}')">Edit</a>
+                                                            <a href="#" onclick="edit('${massIndex}')">Edit</a>
                                                         </c:otherwise>
                                                     </c:choose>
 
-                                                    <a onclick="audit('${item.messageId}','${item.mode}','${item.createBy}','${item.createDt}','${item.modifiedBy}','${item.modifiedDt}')">Audit</a>
+                                                    <a href="#" onclick="audit('${item.messageId}','${item.mode}','${item.createBy}','${item.createDt}','${item.modifiedBy}','${item.modifiedDt}')">Audit</a>
                                                 </p>
                                             </td>
                                         </tr>

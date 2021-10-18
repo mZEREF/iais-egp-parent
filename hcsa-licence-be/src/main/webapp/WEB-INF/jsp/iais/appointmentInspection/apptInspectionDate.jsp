@@ -81,9 +81,9 @@
                           </div>
                           <iais:section title="" id = "inspection_date">
                             <div class="table-gp">
-                              <table class="apptApp table">
+                              <table aria-describedby="" class="apptApp table">
                                 <thead>
-                                <tr align="center">
+                                <tr>
                                   <th scope="col" >Application No</th>
                                   <th scope="col" >Application Status</th>
                                   <th scope="col" >MOH Officer(s)</th>

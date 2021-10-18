@@ -110,7 +110,7 @@
                     <div class="table-gp">
                         <table aria-describedby="" class="table">
                             <thead>
-                            <tr>
+                            <tr><th scope="col" style="display: none"></th>
                                 <iais:sortableHeader needSort="false" field="" value="No."></iais:sortableHeader>
                                 <iais:sortableHeader needSort="true" field="operation_des c"
                                                      value="Operation"></iais:sortableHeader>

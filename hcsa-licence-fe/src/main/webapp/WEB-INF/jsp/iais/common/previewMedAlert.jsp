@@ -1,8 +1,3 @@
-<c:forEach var="stepSchem" items="${currentPreviewSvcInfo.hcsaServiceStepSchemeDtos}">
-    <c:if test="${stepSchem.stepCode == 'SVST007'}">
-        <c:set var="currStepName" value="${stepSchem.stepName}"/>
-    </c:if>
-</c:forEach>
 <div class="amended-service-info-gp">
   <label style="font-size: 2.2rem">${currStepName}</label>
   <div class="amend-preview-info">
@@ -14,8 +9,10 @@
             <div  class="col-xs-12" style="margin-bottom: 1%;margin-top: 1%">
               <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span><strong>MedAlert Person<c:if test="${currentPreviewSvcInfo.appSvcMedAlertPersonList.size() > 1}"> ${status.index+1}</c:if>: </strong></p>
             </div>
-            <table class="col-xs-12">
-
+            <table aria-describedby="" class="col-xs-12">
+              <thead style="display: none">
+              <tr><th scope="col"></th></tr>
+              </thead>
               <tr>
                 <td class="col-xs-6">
                   <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Salutation</p>

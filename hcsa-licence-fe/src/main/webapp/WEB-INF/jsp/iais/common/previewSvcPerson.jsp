@@ -1,8 +1,3 @@
-<c:forEach var="stepSchem" items="${currentPreviewSvcInfo.hcsaServiceStepSchemeDtos}">
-    <c:if test="${stepSchem.stepCode == 'SVST006'}">
-        <c:set var="currStepName" value="${stepSchem.stepName}"/>
-    </c:if>
-</c:forEach>
 <div class="amended-service-info-gp">
     <label style="font-size: 2.2rem">${currStepName}</label>
     <div class="amend-preview-info">
@@ -16,7 +11,10 @@
                                     test="${currentPreviewSvcInfo.appSvcPersonnelDtoList.size() > 1}"> ${status.index+1}</c:if>:</strong>
                             </p>
                         </div>
-                        <table class="col-xs-12">
+                        <table aria-describedby="" class="col-xs-12">
+                            <thead style="display: none">
+                            <tr><th scope="col"></th></tr>
+                            </thead>
                             <c:choose>
                                 <c:when test="${currentPreviewSvcInfo.serviceCode=='BLB'}">
                                     <tr>

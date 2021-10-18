@@ -21,40 +21,43 @@
 
 %>
 <webui:setLayout name="iais-internet"/>
-<div class="dashboard" style="background-image:url('<%=webroot1%>img/Masthead-banner.jpg')" >
+<div class="dashboard" id="dashboard" style="background-image:url('<%=webroot1%>img/Masthead-banner.jpg')">
+    <div class="container">
+        <div class="navigation-gp">
+            <div class="row">
+                <%@ include file="../common/dashboardDropDown.jsp" %>
+            </div>
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="dashboard-page-title">
+                        <h1 class="font-weight 0">Laboratory Developed Test</h1>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
+    <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
+    <div class="main-content">
         <div class="container">
-            <div class="navigation-gp">
-                <div class="row">
-                    <%@ include file="../common/dashboardDropDown.jsp" %>
+            <p class="print"><div style="font-size: 16px;text-align: right;"><a href="javascript:void(0)" onclick="printWDPDF()"> <em class="fa fa-print"></em>Print</a></div></p>
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="center-content">
+                        <span style="font-size:2rem;"><%=msg%></span>
+                    </div>
                 </div>
             </div>
         </div>
-        <div class="row">
-            <div class="col-xs-12">
-                <div class="prelogin-title">
-                    <h1>Laboratory Developed Test</h1>
-                </div>
+    </div>
+    <div class="row">
+        <div class="container">
+            <div class="col-xs-12 col-md-6 text-left">
+                <a class="back" href="${backUrl}"><em class="fa fa-angle-left"></em> Back</a>
             </div>
         </div>
-</div>
-<div class="main-content">
-    <form method="post" id="mainForm" enctype="multipart/form-data" action=<%=process.runtime.continueURL()%>>
-        <div class="row">
-            <p class="print"><div style="font-size: 16px;text-align: right;padding-right: 230px;"><a onclick="printWDPDF();"> <em class="fa fa-print"></em>Print</a></div></p>
-            <div class="col-lg-12 col-xs-12">
-                <div id = "print" class="center-content">
-                    <span style="font-size:2rem;"><%=msg%></span>
-                </div>
-            </div>
-            <div class="col-lg-12 col-xs-12">
-                <div class="center-content " style="padding-top: 10px">
-                    <a href="${backUrl}"><em
-                            class="fa fa-angle-left"></em> Back</a>
-                </div>
-            </div>
-        </div>
-    </form>
-</div>
+    </div>
 <style>
     .mandatory {
         color: rgb(255, 0, 0);

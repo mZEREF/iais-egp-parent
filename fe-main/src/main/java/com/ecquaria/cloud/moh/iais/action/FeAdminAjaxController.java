@@ -1,6 +1,6 @@
 package com.ecquaria.cloud.moh.iais.action;
 
-import com.ecquaria.cloud.moh.iais.service.impl.OrgUserManageServiceImpl;
+import com.ecquaria.cloud.moh.iais.service.OrgUserManageService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -24,7 +24,7 @@ import java.util.Map;
 public class FeAdminAjaxController {
 
     @Autowired
-    private OrgUserManageServiceImpl orgUserManageService;
+    private OrgUserManageService orgUserManageService;
 
     @RequestMapping(value = "active.do", method = RequestMethod.POST)
     public @ResponseBody

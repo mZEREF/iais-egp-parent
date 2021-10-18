@@ -13,8 +13,8 @@
 </div>
 </div>
 </div>
-<div class="modal fade" id="isRenewedModal" role="dialog" aria-labelledby="myModalLabel" style="left: 50%;top: 50%;transform: translate(-50%,-50%);min-width:60%; overflow: visible;bottom: inherit;right: inherit;">
-    <div class="modal-dialog modal-lg" role="document" >
+<div class="modal fade" id="isRenewedModal" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog modal-lg modal-dialog-centered" role="document" >
         <div class="modal-content">
 <%--            <div class="modal-header">--%>
 <%--                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>--%>
@@ -101,6 +101,10 @@
 
     $("#amendLicence4_2").click(function(){
         forwordMain("amendLic4_2");
+    });
+
+    $("#amendLicence5").click(function(){
+        forwordMain("amendLic5");
     });
 
     $("#submitDataMoh").click(function(){

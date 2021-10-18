@@ -1,20 +1,28 @@
 package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.renewal.RenewalConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.*;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceStepSchemeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfigDto;
+import com.ecquaria.cloud.moh.iais.common.utils.CopyUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.common.validation.CommonValidator;
 import com.ecquaria.cloud.moh.iais.constant.RfcConst;
 import com.ecquaria.cloud.moh.iais.helper.NewApplicationHelper;
 import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+import sop.util.DateUtil;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
@@ -59,31 +67,40 @@ public class FePrintViewDelegator {
         if(StringUtil.isEmpty(appType)){
             AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(request, NewApplicationDelegator.APPSUBMISSIONDTO);
             if (appSubmissionDto != null) {
+                AppSubmissionDto newAppSubmissionDto = null;
                 if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())){
                     String rfc_eqHciNameChange = request.getParameter(RFC_EQHCINAMECHANGE);
-                    if(RFC_EQHCINAMECHANGE.equals(rfc_eqHciNameChange)){
-                        request.setAttribute(RFC_EQHCINAMECHANGE,RFC_EQHCINAMECHANGE);
-                        ParamUtil.setRequestAttr(request,GROUP_RENEW_APP_RFC, ParamUtil.getRequestString(request,GROUP_RENEW_APP_RFC));
-                        if(StringUtil.isEmpty(viewPrint)){
-                            AppDeclarationMessageDto appDeclarationMessageDto = appSubmissionService.getAppDeclarationMessageDto(request, ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
-                            appSubmissionDto.setAppDeclarationMessageDto(appDeclarationMessageDto);
-                            appSubmissionDto.setAppDeclarationDocDtos(appSubmissionService.getDeclarationFiles(appSubmissionDto.getAppType(), request));
-                        }
+                    log.info(StringUtil.changeForLog("hciNameChange: " + rfc_eqHciNameChange));
+                    request.setAttribute(RFC_EQHCINAMECHANGE, rfc_eqHciNameChange);
+                    if (RFC_EQHCINAMECHANGE.equals(rfc_eqHciNameChange)) {
+                        ParamUtil.setRequestAttr(request, GROUP_RENEW_APP_RFC,
+                                ParamUtil.getRequestString(request, GROUP_RENEW_APP_RFC));
                     }
                 }else if(ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appSubmissionDto.getAppType())){//inbox view dec
                     RenewDto renewDto=new RenewDto();
                     renewDto.setAppSubmissionDtos(Collections.singletonList(appSubmissionDto));
                     request.setAttribute("renewDto",renewDto);
-                } else {
-                    // View and Print
-                    if (StringUtil.isEmpty(viewPrint)) {
-                        appSubmissionDto.setAppDeclarationMessageDto(
-                                appSubmissionService.getAppDeclarationMessageDto(request, appSubmissionDto.getAppType()));
-                        appSubmissionDto.setAppDeclarationDocDtos(
-                                appSubmissionService.getDeclarationFiles(appSubmissionDto.getAppType(), request, true));
+                } else if (ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appSubmissionDto.getAppType())) {
+                    String rfiAppNo = appSubmissionDto.getRfiAppNo();
+                    if (!StringUtil.isEmpty(rfiAppNo)) {
+                        newAppSubmissionDto = (AppSubmissionDto) CopyUtil.copyMutableObject(appSubmissionDto);
+                        List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList = newAppSubmissionDto.getAppSvcRelatedInfoDtoList();
+                        if (appSvcRelatedInfoDtoList != null && !appSvcRelatedInfoDtoList.isEmpty()) {
+                            List<AppSvcRelatedInfoDto> newList = IaisCommonUtils.genNewArrayList(1);
+                            appSvcRelatedInfoDtoList.stream()
+                                    .filter(dto -> rfiAppNo.equals(dto.getAppNo()))
+                                    .findAny()
+                                    .ifPresent(dto -> newList.add(dto));
+                            newAppSubmissionDto.setAppSvcRelatedInfoDtoList(newList);
+                        }
+
                     }
                 }
-                appSubmissionDtoList.add(appSubmissionDto);
+                if (newAppSubmissionDto != null) {
+                    appSubmissionDtoList.add(newAppSubmissionDto);
+                } else {
+                    appSubmissionDtoList.add(appSubmissionDto);
+                }
             }
         }else if(ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appType)){
             RenewDto renewDto = (RenewDto) ParamUtil.getSessionAttr(request, RenewalConstants.WITHOUT_RENEWAL_APPSUBMISSION_ATTR);
@@ -187,17 +204,34 @@ public class FePrintViewDelegator {
                     appSvcRelatedInfoDto.setMultipleSvcDoc(reloadSvcDocMap);
                 }
             }
-            ParamUtil.setSessionAttr(bpc.request, "GovernanceOfficersList", (Serializable) appSvcCgoDtoList);
-            ParamUtil.setSessionAttr(bpc.request, "ReloadPrincipalOfficers", (Serializable) principalOfficersDtos);
-            ParamUtil.setSessionAttr(bpc.request, "ReloadDeputyPrincipalOfficers",(Serializable) deputyPrincipalOfficersDtos);
-            ParamUtil.setSessionAttr(bpc.request, "AppSvcMedAlertPsn",(Serializable) medAlertPsnDtos);
-            ParamUtil.setSessionAttr(bpc.request, "AppSvcPersonnelDtoList", (Serializable)appSvcPersonnelDtos);
-            ParamUtil.setRequestAttr(bpc.request,"appTypeForPrintDec",appSubmissionDto.getAppType());
-            ParamUtil.setRequestAttr(bpc.request,"clinicalDirectorDtoList", appSvcClinicalDirectorDtos);
         }
         ParamUtil.setSessionAttr(bpc.request,SESSION_VIEW_SUBMISSONS, (Serializable) appSubmissionDtoList);
         ParamUtil.setRequestAttr(bpc.request,ATTR_PRINT_VIEW,"test");
         log.debug(StringUtil.changeForLog("print view prepareData end ..."));
+    }
+
+    @RequestMapping(value = "/init-print", method = RequestMethod.POST)
+    public @ResponseBody String initPrint(HttpServletRequest request) {
+        AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(request,
+                NewApplicationDelegator.APPSUBMISSIONDTO);
+        if (appSubmissionDto != null) {
+            log.info(StringUtil.changeForLog("init-print"));
+            appSubmissionDto.setAppDeclarationMessageDto(
+                    appSubmissionService.getAppDeclarationMessageDto(request, appSubmissionDto.getAppType()));
+            appSubmissionDto.setAppDeclarationDocDtos(
+                    appSubmissionService.getDeclarationFiles(appSubmissionDto.getAppType(), request, true));
+            ParamUtil.setSessionAttr(request, NewApplicationDelegator.APPSUBMISSIONDTO, appSubmissionDto);
+            String verifyInfoCheckbox = ParamUtil.getString(request, "verifyInfoCheckbox");
+            appSubmissionDto.setUserAgreement(AppConsts.YES.equals(verifyInfoCheckbox));
+            String effectiveDateStr = ParamUtil.getString(request, "rfcEffectiveDate");
+            appSubmissionDto.setEffectiveDateStr(effectiveDateStr);
+            if (!StringUtil.isEmpty(effectiveDateStr) && CommonValidator.isDate(effectiveDateStr)) {
+                appSubmissionDto.setEffectiveDate(DateUtil.parseDate(effectiveDateStr, Formatter.DATE));
+            } else {
+                appSubmissionDto.setEffectiveDate(null);
+            }
+        }
+        return AppConsts.YES;
     }
 
 }

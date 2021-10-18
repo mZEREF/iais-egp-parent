@@ -49,6 +49,13 @@ $(document).ready(function() {
         var iframe_top = $('#__egovform-iframe').offset().top
         sessionStorage.setItem('iframe_top', iframe_top)
     }
+
+    $('a').each(function () {
+        var h = $(this).attr('href');
+        if (isEmpty(h)) {
+            $(this).attr('href', 'javascript:void(0)');
+        }
+    });
 });
 
 $menu = $('.navigation');

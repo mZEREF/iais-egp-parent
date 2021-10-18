@@ -120,8 +120,9 @@
                 <div class="table-gp">
                   <table aria-describedby="" class="table">
                     <thead>
-                    <tr align="center">
-                      <iais:sortableHeader needSort="false" field="" value="S/N"></iais:sortableHeader>
+                    <tr>
+                      <th scope="col" style="display: none"></th>
+                                <iais:sortableHeader needSort="false" field="" value="S/N"></iais:sortableHeader>
                       <iais:sortableHeader needSort="false" field="GROUP_NO"
                                            value="Application No."></iais:sortableHeader>
                       <iais:sortableHeader needSort="false" field="APP_TYPE"
@@ -149,9 +150,9 @@
                             <td>
                               <p>
                                 <c:out value="${superPool.appGroupNo}"/>
-                                <a class="accordion-toggle  collapsed"
+                                <a href="javascript:void(0);" class="accordion-toggle  collapsed"
                                    data-toggle="collapse" aria-expanded="false"
-                                   data-target="#advfilter${(status.index + 1) + (supTaskSearchParam.pageNo - 1) * supTaskSearchParam.pageSize}"
+                                   data-target="#dropdown${(status.index + 1) + (supTaskSearchParam.pageNo - 1) * supTaskSearchParam.pageSize}"
                                    onclick="javascript:reassignByGroupId('<iais:mask name="appGroupId"
                                                                                        value="${superPool.id}"/>','${(status.index + 1) + (supTaskSearchParam.pageNo - 1) * supTaskSearchParam.pageSize}')">
                                 </a>
@@ -241,8 +242,8 @@
                         var res = data.ajaxResult;
                         var html = '<tr style="background-color: #F3F3F3;" class="p" id="advfilterson' + divid + '">' +
                             '<td colspan="6" style="padding: 0px 8px !important;">' +
-                            '<div class="accordian-body p-3 collapse in" id="row1" aria-expanded="true" style="">' +
-                            '<table class="table" style="background-color: #F3F3F3;margin-bottom:0px;" >' +
+                            '<div class="accordian-body p-3 collapse in" id="dropdown' + divid + '" aria-expanded="true" style="">' +
+                            '<table aria-describedby="" class="table" style="background-color: #F3F3F3;margin-bottom:0px;" >' +
                             '<thead>' +
                             '<tr>';
 
@@ -258,7 +259,7 @@
                             '<tbody>';
                         for (var i = 0; i < res.rowCount; i++) {
                             html += '<tr>';
-                            html += '<td><p class="visible-xs visible-sm table-row-title">Application No</p><p><a onclick="javascript:doReassignTaskAssign(' + "'" + res.rows[i].maskId + "'" + ');">' + res.rows[i].appNo + '</a></p></td>' +
+                            html += '<td><p class="visible-xs visible-sm table-row-title">Application No</p><p><a href="#" onclick="javascript:doReassignTaskAssign(' + "'" + res.rows[i].maskId + "'" + ');">' + res.rows[i].appNo + '</a></p></td>' +
                                 '<td><p class="visible-xs visible-sm table-row-title">Application Status</p><p>' + res.rows[i].appStatus + '<p></td>' +
                                 '<td><p class="visible-xs visible-sm table-row-title">HCI Code</p><p>' + res.rows[i].hciCode + '</p></td>' +
                                 '<td><p class="visible-xs visible-sm table-row-title">HCI Name / Address</p><p>' + res.rows[i].hciAddress + '</p></td>' +

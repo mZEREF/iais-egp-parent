@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.validation;
 
+import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.organization.OrganizationConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.FeUserDto;
@@ -11,6 +12,7 @@ import com.ecquaria.cloud.moh.iais.common.validation.ValidationUtils;
 import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidator;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.constant.UserConstants;
+import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
@@ -42,8 +44,19 @@ public class UserValidator implements CustomizeValidator {
     public Map<String, String> validate(HttpServletRequest request) {
         Map<String, String> map = IaisCommonUtils.genNewHashMap();
         FeUserDto dto = (FeUserDto) ParamUtil.getSessionAttr(request, UserConstants.SESSION_USER_DTO);
+        LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
         if (Objects.isNull(dto)) {
             return map;
+        }
+        //don't in active myself
+        if(loginContext != null) {
+            String userId = loginContext.getUserId();
+            String editId = dto.getId();
+            if(!StringUtil.isEmpty(userId) && userId.equals(editId)) {
+                if(AppConsts.COMMON_STATUS_IACTIVE.equals(dto.getStatus())) {
+                    map.put("active", "You cannot set yourself to inactive");
+                }
+            }
         }
         // designation
         if (MasterCodeUtil.DESIGNATION_OTHER_CODE_KEY.equals(dto.getDesignation())) {
@@ -99,7 +112,7 @@ public class UserValidator implements CustomizeValidator {
             if (dto.getId() == null && dto.getIdentityNo() != null) {
                 String idType = IaisEGPHelper.checkIdentityNoType(dto.getIdentityNo());
                 if (!StringUtil.isEmpty(dto.getIdentityNo()) && !StringUtil.isEmpty(idType)) {
-                    FeUserDto feUserDto = orgUserManageService.getFeUserAccountByNricAndType(dto.getIdentityNo(), idType);
+                    FeUserDto feUserDto = orgUserManageService.getFeUserAccountByNricAndType(dto.getIdentityNo(), idType, dto.getUenNo());
                     if (feUserDto != null) {
                         map.put("idNo", MessageUtil.getMessageDesc("USER_ERR015"));
                     }

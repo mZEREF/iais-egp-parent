@@ -4,23 +4,23 @@ import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceViewDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.utils.PDFGenerator;
 import com.ecquaria.cloud.moh.iais.service.InboxService;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.util.ResourceUtils;
-import sop.webflow.rt.api.BaseProcessClass;
-
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.ResourceUtils;
+import sop.webflow.rt.api.BaseProcessClass;
 
 /**
  * @Author weilu
@@ -39,7 +39,6 @@ public class LicencePrint {
         log.info("=======>>>>>startStep>>>>>>>>>>>>>>>>download");
         List<String> ids = (List<String>) ParamUtil.getSessionAttr(bpc.request, "lic-print-Ids");
         log.info("=======>>>>>startStep>>>>>>>>>>>>>>>>download");
-        File pdfZipFile = new File("LICENCE.zip");
         byte[] buf = new byte[1024];
         List<File> pdfFileList = IaisCommonUtils.genNewArrayList();
         if(!IaisCommonUtils.isEmpty(ids)){
@@ -55,13 +54,19 @@ public class LicencePrint {
                 map.put("licenceNo",licenceViewDto.getLicenceNo());
                 map.put("licenseeName",licenceViewDto.getLicenseeName());
                 map.put("serviceName",licenceViewDto.getServiceName());
-                map.put("hivTesting",licenceViewDto.getHivTesting());
-                map.put("hciName",licenceViewDto.getHciName());
+                if(StringUtil.isEmpty(licenceViewDto.getHivTesting())){
+                    map.put("hivTesting","<br/>");
+                }else{
+                    map.put("hivTesting",licenceViewDto.getHivTesting());
+                }
+
+                //map.put("hciName",licenceViewDto.getHciName());
+                map.put("businessName",licenceViewDto.getBusinessName());
                 map.put("address",licenceViewDto.getAddress());
                 map.put("vehicleNo",licenceViewDto.getVehicleNo());
                 map.put("startDate",licenceViewDto.getStartDate());
                 map.put("endDate",licenceViewDto.getEndDate());
-                OutputStream outputStream = new FileOutputStream(pdfFile);
+                OutputStream outputStream = java.nio.file.Files.newOutputStream(Paths.get(fileName+".pdf"));
                 try {
                     pdfGenerator.generate(outputStream, "licence.ftl", map);
                 }catch (Exception e){

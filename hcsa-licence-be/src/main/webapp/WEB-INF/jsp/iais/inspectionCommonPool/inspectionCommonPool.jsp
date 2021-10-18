@@ -93,9 +93,10 @@
                 </h3>
                 <iais:pagination  param="cPoolSearchParam" result="cPoolSearchResult"/>
                 <div class="table-gp">
-                  <table class="table application-group">
+                  <table aria-describedby="" class="table application-group">
                     <thead>
-                    <tr align="center">
+                    <tr>
+                      <th scope="col" style="display: none"></th>
                       <iais:sortableHeader needSort="false" field="" value="S/N"></iais:sortableHeader>
                       <iais:sortableHeader needSort="false" field="GROUP_NO" value="Application No."></iais:sortableHeader>
                       <iais:sortableHeader needSort="false" field="APP_TYPE" value="Application Type"></iais:sortableHeader>
@@ -120,9 +121,9 @@
                             <td>
                               <p>
                                 <c:out value="${pool.appGroupNo}"/>
-                                <a class="accordion-toggle  collapsed"
+                                <a href="javascript:void(0);" class="accordion-toggle  collapsed"
                                    data-toggle="collapse" aria-expanded="false"
-                                   data-target="#advfilter${(status.index + 1) + (cPoolSearchParam.pageNo - 1) * cPoolSearchParam.pageSize}"
+                                   data-target="#dropdown${(status.index + 1) + (cPoolSearchParam.pageNo - 1) * cPoolSearchParam.pageSize}"
                                    onclick="javascript:commonPoolByGroupId('<iais:mask name="appGroupNo" value="${pool.appGroupNo}"/>','${(status.index + 1) + (cPoolSearchParam.pageNo - 1) * cPoolSearchParam.pageSize}')">
                                 </a>
                               </p>
@@ -234,8 +235,8 @@
                         var res = data.ajaxResult;
                         var html = '<tr style="background-color: #F3F3F3;" class="p" id="advfilterson' + divid + '">' +
                             '<td colspan="6" style="padding: 0px 8px !important;">' +
-                            '<div class="accordian-body p-3 collapse in" id="row1" aria-expanded="true" style="">' +
-                            '<table class="table application-item" style="background-color: #F3F3F3;margin-bottom:0px;" >' +
+                            '<div class="accordian-body p-3 collapse in" id="dropdown' + divid + '" aria-expanded="true" style="">' +
+                            '<table aria-describedby="" class="table application-item" style="background-color: #F3F3F3;margin-bottom:0px;" >' +
                             '<thead>' +
                             '<tr>';
                         html += '<th scope="col" ><input type="checkbox" id="checkbox' + divid + '" onclick="commonPoolAllCheckBox(' + divid + ')" </th>';
@@ -251,7 +252,7 @@
                         for (var i = 0; i < res.rowCount; i++) {
                             html += '<tr>';
                             html += '<td><input type="checkbox" name="comPoolMulCheck" data-appNo="'+ res.rows[i].applicationNo+'" data-taskstatus = "' + res.rows[i].appStatus + '" value="' + res.rows[i].applicationNo + '" onclick="commonPoolCheckBox(' + divid + ')"></td>'
-                            html += '<td><p class="visible-xs visible-sm table-row-title">Application No.</p><p><a onclick="javascript:doInspectionCommonPoolAssign(' + "'" + res.rows[i].maskId + "'" + ');">' + res.rows[i].applicationNo + '</a></p></td>' +
+                            html += '<td><p class="visible-xs visible-sm table-row-title">Application No.</p><p><a href="#" onclick="javascript:doInspectionCommonPoolAssign(' + "'" + res.rows[i].maskId + "'" + ');">' + res.rows[i].applicationNo + '</a></p></td>' +
                                 '<td><p class="visible-xs visible-sm table-row-title">Service</p><p>' + res.rows[i].serviceName + '<p></td>' +
                                 '<td><p class="visible-xs visible-sm table-row-title">Licence Expiry Date</p><p>' + res.rows[i].licenceExpiryDateStr + '<p></td>' +
                                 '<td><p class="visible-xs visible-sm table-row-title">Application Status</p><p>Pending Task Assignment</p></td>' +

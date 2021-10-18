@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.validate.serviceInfo;
 
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.organization.OrganizationConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPrincipalOfficersDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
@@ -39,7 +40,7 @@ public class ValidateClincalDirector implements ValidateFlow {
         for(int i=0;i<appSvcClinicalDirectorDtos.size();i++){
             String assignSelect = appSvcClinicalDirectorDtos.get(i).getAssignSelect();
             if ("-1".equals(assignSelect) || StringUtil.isEmpty(assignSelect)) {
-                map.put("assignSelect" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "Assign a Clinical Director Person", "field"));
+                map.put("assignSelect" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "Assign a " + HcsaConsts.CLINICAL_DIRECTOR + " Person", "field"));
             } else {
                 StringBuilder stringBuilder=new StringBuilder();
 

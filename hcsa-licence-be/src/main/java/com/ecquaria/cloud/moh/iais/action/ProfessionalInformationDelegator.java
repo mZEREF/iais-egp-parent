@@ -223,15 +223,15 @@ public class ProfessionalInformationDelegator {
 			try {
 				professionalResponseDtos = beEicGatewayClient.getProfessionalDetail(professionalParameterDto, signature.date(), signature.authorization(),
 						signature2.date(), signature2.authorization()).getEntity();
+				if(professionalResponseDtos!=null){
+					detailsDto.setDpRecords(professionalResponseDtos.get(0).getQualification().get(0));
+					detailsDto.setRegDit(professionalResponseDtos.get(0).getRegistration().get(0).getRegistrationType());
+					detailsDto.setRegExpDate(professionalResponseDtos.get(0).getRegistration().get(0).getPcEndDate());
+				}
 			}catch (Throwable e){
 				log.error(e.getMessage(),e);
 				request.setAttribute("beEicGatewayClient","Not able to connect to professionalResponseDtos at this moment!");
 				log.error("------>this have error<----- Not able to connect to professionalResponseDtos at this moment!");
-			}
-			if(professionalResponseDtos!=null){
-				detailsDto.setDpRecords(professionalResponseDtos.get(0).getQualification().get(0));
-				detailsDto.setRegDit(professionalResponseDtos.get(0).getRegistration().get(0).getRegistrationType());
-				detailsDto.setRegExpDate(professionalResponseDtos.get(0).getRegistration().get(0).getPcEndDate());
 			}
 		}else {
 			detailsDto.setDpRecords("-");

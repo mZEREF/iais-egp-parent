@@ -24,7 +24,7 @@ public class PaymentRedisConfig {
 
     @Bean(name = "paymentRedisTemplate")
     public RedisTemplate<String, Object> paymentRedisTemplate() {
-        JdkSerializationRedisSerializer jdkSerializationRedisSerializer = new JdkSerializationRedisSerializer(this.getClass().getClassLoader());
+        JdkSerializationRedisSerializer jdkSerializationRedisSerializer = new JdkSerializationRedisSerializer(Thread.currentThread().getContextClassLoader());
         StringRedisSerializer stringSerializer = new StringRedisSerializer();
         RedisTemplate<String, Object> redisTemplate = new RedisTemplate();
         redisTemplate.setHashValueSerializer(new JdkSerializationRedisSerializer());

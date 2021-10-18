@@ -1,9 +1,13 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
+import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.PaymentDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.PaymentRequestDto;
+import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
+import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.service.StripeService;
 import com.ecquaria.cloud.moh.iais.service.client.PaymentAppGrpClient;
@@ -22,9 +26,6 @@ import com.stripe.net.HttpContent;
 import com.stripe.net.RequestOptions;
 import com.stripe.param.checkout.SessionCreateParams;
 import com.stripe.util.StringUtils;
-import java.io.IOException;
-import java.util.Date;
-import java.util.UUID;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -35,6 +36,10 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+
+import java.io.IOException;
+import java.util.Date;
+import java.util.UUID;
 
 /**
  * StripeServiceImpl
@@ -106,12 +111,13 @@ public class StripeServiceImpl implements StripeService {
         PaymentDto paymentDto=paymentClient.getPaymentDtoByReqRefNo(paymentRequestDto.getReqRefNo()).getEntity();
         String appGrpNo;
         try{
-            appGrpNo=paymentRequestDto.getReqRefNo().substring(0,'_');
+            appGrpNo=paymentRequestDto.getReqRefNo().substring(0,paymentRequestDto.getReqRefNo().indexOf('_'));
         }catch (Exception e){
             appGrpNo=paymentRequestDto.getReqRefNo();
         }
         ApplicationGroupDto applicationGroupDto=paymentAppGrpClient.paymentUpDateByGrpNo(appGrpNo).getEntity();
         if(paymentDto!=null){
+            paymentDto.setResponseMsg(JsonUtil.parseToJson(paymentIntent));
             if(paymentIntent!=null && "succeeded".equals(paymentIntent.getStatus())){
                 paymentDto.setPmtStatus(PaymentTransactionEntity.TRANS_STATUS_SUCCESS);
                 paymentRequestDto.setStatus(PaymentTransactionEntity.TRANS_STATUS_SUCCESS);
@@ -127,7 +133,7 @@ public class StripeServiceImpl implements StripeService {
             paymentDto.setReqRefNo(paymentRequestDto.getReqRefNo());
             paymentDto.setTxnRefNo("TRANS");
             paymentDto.setInvoiceNo("1234567");
-
+            paymentDto.setResponseMsg(JsonUtil.parseToJson(paymentIntent));
             if(paymentIntent!=null && "succeeded".equals(paymentIntent.getStatus())){
                 paymentRequestDto.setStatus(PaymentTransactionEntity.TRANS_STATUS_SUCCESS);
                 paymentDto.setPmtStatus(PaymentTransactionEntity.TRANS_STATUS_SUCCESS);
@@ -203,6 +209,14 @@ public class StripeServiceImpl implements StripeService {
         ResponseEntity<String> response =
                 restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
         PaymentIntent session=ApiResource.GSON.fromJson(response.getBody(), PaymentIntent.class);
+        AuditTrailDto auditTrailDto = new AuditTrailDto();
+        auditTrailDto.setOperation(AuditTrailConsts.OPERATION_FOREIGN_INTERFACE);
+        auditTrailDto.setOperationType(AuditTrailConsts.OPERATION_TYPE_INTERNET);
+        auditTrailDto.setModule("Payment");
+        auditTrailDto.setFunctionName("Stripe Retrieve PaymentIntent");
+        auditTrailDto.setBeforeAction(JsonUtil.parseToJson(pi));
+        auditTrailDto.setAfterAction(response.getBody());
+        AuditTrailHelper.callSaveAuditTrail(auditTrailDto);
         return session;
     }
 
@@ -256,6 +270,14 @@ public class StripeServiceImpl implements StripeService {
         ResponseEntity<String> response =
                 restTemplate.exchange(url, HttpMethod.POST, entity, String.class);
         Session session=ApiResource.GSON.fromJson(response.getBody(), Session.class);
+        AuditTrailDto auditTrailDto = new AuditTrailDto();
+        auditTrailDto.setOperation(AuditTrailConsts.OPERATION_FOREIGN_INTERFACE);
+        auditTrailDto.setOperationType(AuditTrailConsts.OPERATION_TYPE_INTERNET);
+        auditTrailDto.setModule("Payment");
+        auditTrailDto.setFunctionName("Stripe Create Session");
+        auditTrailDto.setBeforeAction(JsonUtil.parseToJson(params));
+        auditTrailDto.setAfterAction(response.getBody());
+        AuditTrailHelper.callSaveAuditTrail(auditTrailDto);
         return session;
     }
 
@@ -308,6 +330,14 @@ public class StripeServiceImpl implements StripeService {
         ResponseEntity<String> response =
                 restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
         Session session=ApiResource.GSON.fromJson(response.getBody(), Session.class);
+        AuditTrailDto auditTrailDto = new AuditTrailDto();
+        auditTrailDto.setOperation(AuditTrailConsts.OPERATION_FOREIGN_INTERFACE);
+        auditTrailDto.setOperationType(AuditTrailConsts.OPERATION_TYPE_INTERNET);
+        auditTrailDto.setModule("Payment");
+        auditTrailDto.setFunctionName("Stripe Retrieve Session");
+        auditTrailDto.setBeforeAction(csId);
+        auditTrailDto.setAfterAction(response.getBody());
+        AuditTrailHelper.callSaveAuditTrail(auditTrailDto);
         return session;
     }
 }

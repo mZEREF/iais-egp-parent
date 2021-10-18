@@ -55,7 +55,12 @@ public class GatewayPayNowConfig {
 
 
 	public static final String timeout = ConfigHelper.getString("payNow.payment.refresh.ms");
+	public static final String checkoutTime = ConfigHelper.getString("payNow.payment.poll.time.ms");
 
+
+	public static final String mockserverSwitch = ConfigHelper.getString("paynow.mockserver.switch");
+	public static final String mockserverUrl = ConfigHelper.getString("paynow.mockserver.url");
+	public static final String mockserverCallbackUrl = ConfigHelper.getString("paynow.mockserver.callbackUrl");
 	//"D:\\alipay_log_" + System.currentTimeMillis() + ".txt";
 	public static final String log_path = ConfigHelper.getString("payNow.payment.log.path");
 

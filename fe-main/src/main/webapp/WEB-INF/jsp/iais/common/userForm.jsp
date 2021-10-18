@@ -1,8 +1,15 @@
 <iais:row>
-    <iais:field value="Name" width="11" required="true"/>
+    <iais:field value="Name" width="11" required="${isLoadMyInfoData == '1' ? false : true}"/>
     <iais:value width="11">
-        <iais:input type="text" name="name" id="name" maxLength="66" value="${inter_user_attr.displayName}"/>
-            <span class="error-msg" name="errorMsg" id="error_displayName"></span>
+        <c:choose>
+            <c:when test="${isLoadMyInfoData == '1'}">
+                <label><c:out value="${inter_user_attr.displayName}"/></label>
+            </c:when>
+            <c:otherwise>
+                <iais:input type="text" name="name" id="name" maxLength="66" value="${inter_user_attr.displayName == '-' ? '': inter_user_attr.displayName}"/>
+                <span class="error-msg" name="errorMsg" id="error_displayName"></span>
+            </c:otherwise>
+        </c:choose>
     </iais:value>
 </iais:row>
 <iais:row>
@@ -51,7 +58,7 @@
     <iais:value width="11">
         <iais:select cssClass="designation" name="designation" codeCategory="CATE_ID_DESIGNATION" value="${inter_user_attr.designation}" firstOption="Please Select"
                      onchange="toggleOnSelect('designation', 'DES999', 'designationOther')" />
-        <iais:input type="text" name="designationOther" id="designationOther" value="${inter_user_attr.designationOther}"
+        <iais:input type="text" name="designationOther" id="designationOther" value="${inter_user_attr.designation eq '-' ? '' : inter_user_attr.designationOther}"
                     maxLength="100" style="${inter_user_attr.designation eq 'DES999' ? '' : 'display:none'}" />
         <span class="error-msg" name="errorMsg" id="error_designation"></span>
     </iais:value>
@@ -73,7 +80,7 @@
 <iais:row>
     <iais:field value="Email" width="11" required="true"/>
     <iais:value width="11">
-        <iais:input type="text" name="email" id="email" maxLength="66" value="${inter_user_attr.email}"/>
+        <iais:input type="text" name="email" id="email" maxLength="320" value="${inter_user_attr.email}"/>
             <span class="error-msg" name="errorMsg" id="error_email"></span>
     </iais:value>
 </iais:row>

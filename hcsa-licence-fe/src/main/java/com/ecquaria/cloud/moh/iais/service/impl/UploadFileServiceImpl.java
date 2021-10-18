@@ -61,7 +61,6 @@ import org.springframework.stereotype.Service;
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -78,6 +77,8 @@ import java.util.zip.CRC32;
 import java.util.zip.CheckedOutputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
+
+import static java.nio.file.Files.newOutputStream;
 
 /**
  * @author Wenkang
@@ -137,7 +138,7 @@ public class UploadFileServiceImpl implements UploadFileService {
              groupId = applicationGroup.get(0).getId();
         }
         File file = MiscUtil.generateFile(sharedPath+ AppServicesConsts.FILE_NAME+File.separator+groupId, s+AppServicesConsts.FILE_FORMAT);
-        try (OutputStream fileOutputStream  = Files.newOutputStream(file.toPath());) {
+        try (OutputStream fileOutputStream  = newOutputStream(file.toPath());) {
              if(!file.exists()){
                  boolean newFile = file.createNewFile();
                  if(newFile){
@@ -229,7 +230,7 @@ public class UploadFileServiceImpl implements UploadFileService {
         MiscUtil.checkDirs(zipFile);
         String osPath = outFolder + l + AppServicesConsts.ZIP_NAME;
         File osFile = MiscUtil.generateFile(osPath);
-        try (OutputStream outputStream = new FileOutputStream(osFile);//Destination compressed folder
+        try (OutputStream outputStream = newOutputStream(osFile.toPath());//Destination compressed folder
              CheckedOutputStream cos=new CheckedOutputStream(outputStream,new CRC32());
              ZipOutputStream zos=new ZipOutputStream(cos)) {
 
@@ -377,7 +378,7 @@ public class UploadFileServiceImpl implements UploadFileService {
         }catch (Exception e){
             log.error(e.getMessage(),e);
             log.info(StringUtil.changeForLog("have error-------" +s));
-            return s;
+            throw new IaisRuntimeException(e);
         }
         return s;
     }
@@ -768,7 +769,7 @@ public class UploadFileServiceImpl implements UploadFileService {
         log.info(StringUtil.changeForLog("file repo id is " + id));
         File file=MiscUtil.generateFile(sharedPath+AppServicesConsts.FILE_NAME+File.separator+groupId+ File.separator + AppServicesConsts.FILES,
                 id);
-        try (OutputStream outputStream=Files.newOutputStream(file.toPath())) {
+        try (OutputStream outputStream= newOutputStream(file.toPath())) {
             if(entity!=null){
                 outputStream.write(entity);
             }

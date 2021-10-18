@@ -111,6 +111,69 @@
                     </div>
 
             <br>
+            <div id="control--printerFriendly--36" class="section control " style="overflow: visible;">
+                <div class="control-set-font control-font-header section-header">
+                    <h2>Request Data</h2>
+                </div>
+
+                <c:choose>
+                    <c:when test="${!empty auditLogDetailView.request}">
+                        <div class="table-responsive col-xs-12">
+                            <div class="table-gp">
+                                <table aria-describedby="" class="table">
+                                    <thead>
+                                    <tr><th scope="col" <c:if test="${auditLogDetailView.request.size()==1 and auditLogDetailView.request[0].colName==auditLogDetailView.request[0].longText}">style="display: none" </c:if> >Field</th><th scope="col" >Value</th></tr>
+                                    </thead>
+                                    <tbody>
+                                    <c:forEach var="msg" items="${auditLogDetailView.request}">
+                                        <tr>
+                                            <td <c:if test="${msg.colName==msg.longText}"> style="display: none" </c:if>><c:out value="${msg.colName}"/></td>
+                                            <td class="line-limit-length"><c:out value="${msg.longText}"/></td>
+                                        </tr>
+                                    </c:forEach>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </c:when>
+                    <c:otherwise>
+                        <tr><td>No record found.</td></tr>
+                    </c:otherwise>
+                </c:choose>
+
+            </div>
+            <br>
+            <div id="control--printerFriendly--37" class="section control " style="overflow: visible;">
+                <div class="control-set-font control-font-header section-header">
+                    <h2>Response Data</h2>
+                </div>
+                <c:choose>
+                    <c:when test="${!empty auditLogDetailView.response}">
+                        <div class="table-responsive col-xs-12">
+                            <div class="table-gp">
+                                <table aria-describedby="" class="table">
+                                    <thead>
+                                    <tr><th scope="col"  <c:if test="${auditLogDetailView.response.size()==1 and auditLogDetailView.response[0].colName==auditLogDetailView.response[0].longText}">style="display: none"</c:if>>Field</th><th scope="col" >Value</th></tr>
+                                    </thead>
+                                    <tbody>
+                                    <c:forEach var="msg" items="${auditLogDetailView.response}">
+                                        <tr>
+                                            <td <c:if test="${msg.colName==msg.longText}"> style="display: none" </c:if>><c:out value="${msg.colName}"/></td>
+                                            <td class="line-limit-length"><c:out value="${msg.longText}"/></td>
+                                        </tr>
+                                    </c:forEach>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </c:when>
+                    <c:otherwise>
+                        <tr><td>No record found.</td></tr>
+                    </c:otherwise>
+                </c:choose>
+            </div>
+
+            <br>
                     <div  class="section control " style="overflow: visible;">
                         <div class="control-set-font control-font-header section-header">
                             <h2>Validation Fail Detail</h2>
@@ -140,7 +203,7 @@
                     </div></div></div>
         </div>
         <br>
-        <a class="back" id="Back" onclick="doBack()"><em class="fa fa-angle-left"></em> Back</a>
+        <a href="#" class="back" id="Back" onclick="doBack()"><em class="fa fa-angle-left"></em> Back</a>
     </>
 </div>
 

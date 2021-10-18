@@ -67,7 +67,7 @@
                 <div class="table-gp">
                     <table aria-describedby="" class="table">
                         <thead>
-                        <tr>
+                        <tr><th scope="col" style="display: none"></th>
                             <iais:sortableHeader style="width:1%" needSort="false"  field="" value="S/N" ></iais:sortableHeader>
                             <iais:sortableHeader style="width:5%" needSort="true"  field="domain_type" value="Type"></iais:sortableHeader>
                             <iais:sortableHeader style="width:5%" needSort="true"   field="msg_type" value="Message Type"></iais:sortableHeader>

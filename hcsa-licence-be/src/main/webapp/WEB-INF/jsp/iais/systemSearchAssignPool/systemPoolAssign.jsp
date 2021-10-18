@@ -113,7 +113,7 @@
                   </div>
                   <p></p>
                   <iais:action >
-                    <a class="back" id="Back" onclick="javascript:doSystemUserAssignBack()" style="float:left"><em class="fa fa-angle-left"></em> Back</a>
+                    <a href="#" class="back" id="Back" onclick="javascript:doSystemUserAssignBack()" style="float:left"><em class="fa fa-angle-left"></em> Back</a>
                     <button class="btn btn-primary" style="float:right" type="button" onclick="javascript:doSystemUserAssignNext()">Next</button>
                   </iais:action>
                   <div style="margin-bottom: 200px;"></div>

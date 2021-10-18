@@ -68,6 +68,7 @@ html {
 body {
   font-family: "Open Sans", sans-serif;
   height: 100%;
+  font-size: 1.5rem;
 }
 
 html {
@@ -424,6 +425,7 @@ header .container .logo-img p {
   }
   .nav {
     background: none !important;
+    display: inherit !important;
   }
 }
 header .container .col-xs-2.col-lg-6 {
@@ -687,7 +689,7 @@ header .container .sg-gov-logo a img {
 
 #sidebar ul li.active > a, a[aria-expanded="true"] {
   color: #80ce22;
-  background: transparent;
+  background: transparent !important;
 }
 
 
@@ -1695,7 +1697,6 @@ footer.footerlogin .footer-link ul li:not(:first-child) a:before {
   footer.footerlogin .footer-link ul li a {
     position: relative;
     font-size: 11px;
-    position: relative;
   }
   footer.footerlogin .footer-link ul li a:before {
     content: none;
@@ -1796,7 +1797,7 @@ footer.footerlogin .footer-link ul li:not(:first-child) a:before {
   display: block;
 }
 .panel-group .panel.panel-default > .panel-heading h4 a:before {
-  font-family: fontawesome, sans-serif;
+  font-family: FontAwesome;
   content: "";
   font-size: 4rem;
   color: #2199E8;
@@ -2144,7 +2145,7 @@ input[type=number]::-webkit-outer-spin-button {
   margin: 0;
 }
 .form-check .form-check-label {
-  color: #333333;
+  color: #333333 !important;
   font-size: 1.6rem;
   font-weight: 400;
   position: relative;
@@ -2205,7 +2206,7 @@ input[type=number]::-webkit-outer-spin-button {
 }
 .form-check .form-check-label .check-square:before {
   content: "\f00c";
-  font-family: fontawesome, sans-serif;
+  font-family: fontawesome;
   position: absolute;
   width: 16px;
   height: 16px;
@@ -2585,7 +2586,7 @@ span.error-msg {
   font-family: "Open Sans", sans-serif;
 }
 .nice-select ul.list {
-  max-height: 300px;
+  max-height: 250px;
   -webkit-box-shadow: 0px 10px 20px 0px rgba(0, 0, 0, 0.12);
   -moz-box-shadow: 0px 10px 20px 0px rgba(0, 0, 0, 0.12);
   box-shadow: 0px 10px 20px 0px rgba(0, 0, 0, 0.12);
@@ -2605,6 +2606,7 @@ span.error-msg {
   -o-transform: none;
   transform: none;
   z-index: 99999;
+  overflow-y: scroll;
 }
 .nice-select ul.list li {
   min-height: 50px;
@@ -2973,7 +2975,7 @@ span.error-msg {
 .tab-gp .tab-nav-mobile .swiper-button-prev:before,
 .tab-gp .tab-nav-mobile .swiper-button-next:before {
   font-size: 3.4rem;
-  font-family: fontawesome;
+  font-family: fontawesome, sans-serif;
   display: block;
   width: 16px;
   height: 26px;
@@ -3615,6 +3617,7 @@ span.error-msg {
   }
   .table-gp table.table > tbody > tr > td {
     display: inline-grid;
+    display: -ms-inline-grid;
     width: 47%;
     padding: 0;
     border: 0;
@@ -3644,6 +3647,7 @@ span.error-msg {
   .hiddenRow table.table > tbody > tr > td {
     width: 100%;
     display: inline-grid;
+    display: -ms-inline-grid;
   }
 }
 @media only screen and (min-width : 768px) and (max-width : 992px) {
@@ -3653,6 +3657,7 @@ span.error-msg {
   }
   .table-gp table.table > tbody > tr > td {
     display: inline-grid;
+    display: -ms-inline-grid;
     width: 48%;
     padding: 0;
     border: 0;
@@ -3992,7 +3997,7 @@ iframe .section table .control-grid > tbody > tr:nth-child(odd), iframe .section
   vertical-align: middle;
   color: #333333;
 }
-.dashboard-txt {
+.dashboard-chart .dashboard-tile-item .dashboard-tile .dashboard-txt {
   font-size: 1.3rem;
   color: #333333;
   margin-bottom: 0;

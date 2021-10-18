@@ -6,7 +6,7 @@
             (sop.webflow.rt.api.BaseProcessClass)request.getAttribute("process");
 %>
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui"%>
     <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>
@@ -28,30 +28,77 @@
         display: flex;
         justify-content: center;
         align-items:flex-end;">
-            <a class="btn btn-primary" align="center"
-               href="${payNowCallBackUrl}">Submit</a>
-            <span style="float:right">&nbsp;</span>
             <a class="btn btn-secondary" align="center"
-               href=${payNowCallBackUrl}>Cancel</a>
-<%--            <span style="float:right">&nbsp;</span>--%>
-<%--            <a class="btn btn-secondary" align="center" href="#" onclick="payNowImgStringRefresh()">Refresh</a>--%>
+               href="javascript:void(0)" onclick="submit()">Cancel</a>
+            <c:if test="${GatewayPayNowConfig.mockserverSwitch.equals('on')}">
+                <span style="float:right">&nbsp;</span>
+                <a class="btn btn-secondary" align="center" onclick="payNowMockServer()"
+                    href="javascript:void(0)" >MockServer</a>
+            </c:if>
+
         </div>
     </div>
+    <form id="payNowRedirectForm" style="display: none"
+          name="payNowRedirectForm" action='${payNowCallBackUrl}' method='POST'>
+    </form>
 </div>
 <script  type="text/javascript">
     setInterval(function(){ payNowImgStringRefresh(); }, "${GatewayPayNowConfig.timeout}");
+    setInterval(function(){ payNowPoll(); }, "${GatewayPayNowConfig.checkoutTime}");
+    <c:if test="${GatewayPayNowConfig.mockserverSwitch.equals('on')}">
+
+    function payNowMockServer(){
+        $.ajax({
+            type: "get",
+            url:  "${pageContext.request.contextPath}/payNowMockServer",
+            success: function (data) {
+
+            },
+            error: function (msg) {
+
+            }
+        });
+    }
+    </c:if>
+
+
+
+    function payNowPoll(){
+        $.ajax({
+            type: "get",
+            url:  "${pageContext.request.contextPath}/payNowPoll",
+            success: function (data) {
+                let result = data.result;
+                console.log(result);
+                if('Success' === result){
+                    submit();
+                }
+            }
+        });
+    }
+    function submit(){
+        //showWaiting();
+        $('#payNowRedirectForm').submit();
+        //dismissWaiting();
+    }
 
     function payNowImgStringRefresh(){
+        if(${GatewayPayNowConfig.timeout=="0"}){
+            return;
+        }
         $.ajax({
             type: "get",
             url:  "${pageContext.request.contextPath}/payNowRefresh",
             success: function (data) {
-                console.log(data);
-                $('#payNowImgWm').html('<img id="payNowImg" src="data:image/png;base64,' + data + '" />');
+                let result = data.result;
+                if('Success' !== result){
+                    $('#payNowImgWm').html('<img id="payNowImg" src="data:image/png;base64,' + data.QrString + '" />');
+                }
+                //console.log(data);
                 //$("#payNowImg").attr("src",data);
             },
             error: function (msg) {
-                console.log(msg);
+                //console.log(msg);
             }
         });
     }

@@ -23,6 +23,11 @@
         <div class="col-xs-12">
             <div class="table-gp">
                 <table aria-describedby="" class="table">
+                        <thead style="display: none">
+                        <tr>
+                            <th scope="col"></th>
+                        </tr>
+                        </thead>
                     <tr>
                         <td class="col-xs-4">
                             <p>Licence No.</p>
@@ -129,6 +134,11 @@
         <div class="col-xs-12">
             <div class="table-gp">
                 <table aria-describedby="" class="table">
+                        <thead style="display: none">
+                        <tr>
+                            <th scope="col"></th>
+                        </tr>
+                        </thead>
                     <tr>
                         <td class="col-xs-4">
                             <p>Date of Inspection</p>
@@ -216,6 +226,11 @@
                     <p><h4><strong><span>Part I: Inspection Checklist</span></strong></h4></p>
                 </div>
                 <table aria-describedby="" class="table">
+                        <thead style="display: none">
+                        <tr>
+                            <th scope="col"></th>
+                        </tr>
+                        </thead>
                     <tr>
                         <td class="col-xs-4">
                             <p>Checklist Used</p>
@@ -231,6 +246,11 @@
                 </div>
                 <div class="table-gp">
                     <table aria-describedby="" class="table">
+                        <thead style="display: none">
+                        <tr>
+                            <th scope="col"></th>
+                        </tr>
+                        </thead>
                         <tr>
                             <td class="col-xs-4">
                                 <p>Remarks</p>
@@ -252,12 +272,21 @@
                         </tr>
                         <tr>
                             <td class="col-xs-4">
-                                <p>Recommended Best Practices</p>
+                                <p>Recommendation</p>
                             </td>
                             <td class="col-xs-4">
                                 <p>${insRepDto.bestPractice}</p>
                             </td>
                             <td class="col-xs-4"/>
+                        </tr>
+                        <tr>
+                            <td class="col-xs-4">
+                                <p>Observation</p>
+                            </td>
+                            <td class="col-xs-4">
+                                <p>${insRepDto.observation}</p>
+                            </td>
+                            <td class="col-xs-4"></td>
                         </tr>
                         <tr>
                             <td class="col-xs-4">
@@ -337,6 +366,11 @@
         <div class="col-xs-12">
             <div class="table-gp">
                 <table aria-describedby="" class="table">
+                        <thead style="display: none">
+                        <tr>
+                            <th scope="col"></th>
+                        </tr>
+                        </thead>
                     <tr>
                         <td class="col-xs-4">
                             <p>Rectified</p>
@@ -420,6 +454,11 @@
             <div class="col-xs-12">
                 <div class="table-gp">
                     <table aria-describedby="" class="table">
+                        <thead style="display: none">
+                        <tr>
+                            <th scope="col"></th>
+                        </tr>
+                        </thead>
                         <c:if test="${appType!='APTY005' && appType!='APTY006' && appType!='APTY008' && appType!='APTY001'}">
                             <tr>
                                 <td class="col-xs-4">
@@ -435,7 +474,7 @@
                                 </td>
                                 <td class="col-xs-4"></td>
                             </tr>
-                            <tr id="period" hidden>
+                            <tr id="period" >
                                 <td class="col-xs-4">
                                     <p>Period <strong style="color:#ff0000;"> *</strong></p>
                                 </td>
@@ -448,7 +487,7 @@
                                 </td>
                                 <td class="col-xs-4"></td>
                             </tr>
-                            <tr id="selfPeriod" hidden>
+                            <tr id="selfPeriod">
                                 <td class="col-xs-4">
                                     <p>Other Period <strong style="color:#ff0000;"> *</strong></p>
                                 </td>
@@ -494,6 +533,11 @@
             <div class="col-xs-12">
                 <div class="table-gp">
                     <table aria-describedby="" class="table">
+                        <thead style="display: none">
+                        <tr>
+                            <th scope="col"></th>
+                        </tr>
+                        </thead>
                         <tr>
                             <td class="col-xs-4">
                                 <p>Follow up Action <strong style="color:#ff0000;"> *</strong></p>
@@ -518,7 +562,7 @@
                             </td>
                             <td class="col-xs-4"></td>
                         </tr>
-                        <tr id="engageRemarks" hidden>
+                        <tr id="engageRemarks" style="display: none;">
                             <td class="col-xs-4">
                                 <p>Enforcement Remarks <strong style="color:#ff0000;"> *</strong></p>
                             </td>
@@ -546,6 +590,11 @@
             <div class="col-xs-12">
                 <div class="table-gp">
                     <table aria-describedby="" class="table">
+                        <thead style="display: none">
+                        <tr>
+                            <th scope="col"></th>
+                        </tr>
+                        </thead>
                         <tr>
                             <td class="col-xs-4">
                                 <p>Follow up Action <strong style="color:#ff0000;"> *</strong></p>
@@ -570,7 +619,7 @@
                             </td>
                             <td class="col-xs-4"></td>
                         </tr>
-                        <tr id="engageRemarks" hidden>
+                        <tr id="engageRemarks" style="display: none;">
                             <td class="col-xs-4">
                                 <p>Enforcement Remarks <strong style="color:#ff0000;"> *</strong></p>
                             </td>
@@ -659,6 +708,8 @@
         changeRecommendation(recommendation);
         if ($("#periods").val() == "Others" && type != "APTY005" && type != "APTY007"&& type != "APTY009") {
             changePeriod("Others");
+        } else {
+            $("#selfPeriod").hide();
         }
         if ($('#enforcement').is(':checked')) {
             $("#engageRemarks").show();

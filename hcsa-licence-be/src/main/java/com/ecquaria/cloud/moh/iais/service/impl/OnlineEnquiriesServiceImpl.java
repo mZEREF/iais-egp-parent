@@ -25,6 +25,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcChckListDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDisciplineAllocationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcLaboratoryDisciplinesDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPremisesScopeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPrincipalOfficersDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
@@ -59,6 +60,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.constant.HcsaLicenceBeConstant;
 import com.ecquaria.cloud.moh.iais.dto.RegistrationDetailDto;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
@@ -81,8 +83,10 @@ import com.ecquaria.cloud.moh.iais.service.client.HcsaChklClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
 import com.ecquaria.cloud.moh.iais.service.client.InsRepClient;
+import com.ecquaria.cloud.moh.iais.service.client.InspectionTaskClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import com.ecquaria.sz.commons.util.DateUtil;
+import com.google.common.collect.ImmutableSet;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -144,7 +148,12 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
     AcraUenBeClient acraUenBeClient;
     @Autowired
     private CessationClient cessationClient;
-
+    @Autowired
+    private InspectionTaskClient inspectionTaskClient;
+    private static final Set<String> appReportStatuses = ImmutableSet.of(
+            ApplicationConsts.APPLICATION_STATUS_APPROVED,
+            ApplicationConsts.APPLICATION_STATUS_LICENCE_GENERATED
+    );
     @Override
     @SearchTrack(catalog = "ReqForInfoQuery", key = "licenseeQuery")
     public SearchResult<LicenseeQueryDto> searchLicenseeIdsParam(SearchParam searchParam) {
@@ -166,6 +175,14 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
     @Override
     public void setLicInfo(HttpServletRequest request) {
         String licenceId = (String) ParamUtil.getSessionAttr(request, "id");
+        AppSubmissionDto appSubmission = hcsaLicenceClient.viewAppSubmissionDto(licenceId).getEntity();
+        List<AppSvcPersonnelDto> appSvcPersonnelDtoList=IaisCommonUtils.genNewArrayList();
+        for (AppSvcRelatedInfoDto appSvcRelatedInfoDto:appSubmission.getAppSvcRelatedInfoDtoList()
+        ) {
+            if(appSvcRelatedInfoDto.getAppSvcSectionLeaderList()!=null){
+                appSvcPersonnelDtoList.addAll(appSvcRelatedInfoDto.getAppSvcSectionLeaderList());
+            }
+        }
 
         LicenceDto licenceDto = hcsaLicenceClient.getLicDtoById(licenceId).getEntity();
         OrganizationLicDto organizationLicDto = organizationClient.getOrganizationLicDtoByLicenseeId(licenceDto.getLicenseeId()).getEntity();
@@ -184,6 +201,7 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
             ParamUtil.setSessionAttr(request, "AppSvcChargesPageDto", entity.getAppSvcRelatedInfoDtoList().get(0).getAppSvcChargesPageDto());
             ParamUtil.setSessionAttr(request, "AppSvcVehicleDtoList", (Serializable) entity.getAppSvcRelatedInfoDtoList().get(0).getAppSvcVehicleDtoList());
             ParamUtil.setSessionAttr(request, "AppSvcClinicalDirectorDtoList", (Serializable) entity.getAppSvcRelatedInfoDtoList().get(0).getAppSvcClinicalDirectorDtoList());
+            ParamUtil.setSessionAttr(request, "setLicInfoSvcName", licenceDto.getSvcName());
         }catch (Exception e){
             log.error("not currentPreviewSvcInfo");
         }
@@ -201,24 +219,24 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
                 try {
                     organizationLicDto.getLicenseeDto().setLicenseeType(MasterCodeUtil.getCodeDesc(organizationLicDto.getLicenseeDto().getLicenseeType()));
                 } catch (Exception e) {
-                    organizationLicDto.getLicenseeDto().setLicenseeType("-");
+                    log.error(StringUtil.changeForLog("getLicenseeType {}"+organizationLicDto.getLicenseeDto().getLicenseeType()));
                 }
                 try {
                     organizationLicDto.getLicenseeDto().setAddrType(AcraConsts.getAddressTypeD().get(organizationLicDto.getLicenseeDto().getAddrType()));
                 }catch (Exception e) {
-                    organizationLicDto.getLicenseeDto().setAddrType("-");
+                    log.error(StringUtil.changeForLog("getAddrType {}"+organizationLicDto.getLicenseeDto().getAddrType()));
                 }
             }
             if (organizationLicDto.getLicenseeIndividualDto() != null) {
                 try {
                     organizationLicDto.getLicenseeIndividualDto().setSalutation(MasterCodeUtil.getCodeDesc(organizationLicDto.getLicenseeIndividualDto().getSalutation()));
                 } catch (Exception e) {
-                    organizationLicDto.getLicenseeIndividualDto().setSalutation("-");
+                    log.error(StringUtil.changeForLog("getSalutation {}"+organizationLicDto.getLicenseeIndividualDto().getSalutation()));
                 }
                 try {
                     organizationLicDto.getLicenseeIndividualDto().setIdType(MasterCodeUtil.getCodeDesc(organizationLicDto.getLicenseeIndividualDto().getIdType()));
                 } catch (Exception e) {
-                    organizationLicDto.getLicenseeIndividualDto().setIdType("-");
+                    log.error(StringUtil.changeForLog("getIdType {}"+organizationLicDto.getLicenseeIndividualDto().getIdType()));
                 }
             }
             if (organizationLicDto.getLicenseeKeyApptPersonDtos() != null) {
@@ -228,12 +246,12 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
                         org.setDesignation(AcraConsts.getAppointmentPositionHeld().get(org.getDesignation()));
 
                     } catch (Exception e) {
-                        org.setDesignation("-");
+                        log.error(StringUtil.changeForLog("getDesignation {}"+org.getDesignation()));
                     }
                     try {
                         org.setIdType(AcraConsts.getIdTypes().get(org.getIdType()));
                     } catch (Exception e) {
-                        org.setIdType("-");
+                        log.error(StringUtil.changeForLog("getIdType {}"+org.getIdType()));
                     }
                     org.setSalutation("-");
                 }
@@ -247,28 +265,28 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
                 try {
                     per.getLicKeyPersonnelDto().setPsnType(MasterCodeUtil.getCodeDesc(per.getLicKeyPersonnelDto().getPsnType()));
                 } catch (Exception e) {
-                    per.getLicKeyPersonnelDto().setPsnType( "-");
+                    log.error(StringUtil.changeForLog("getPsnType {}"+per.getLicKeyPersonnelDto().getPsnType()));
                 }
                 try {
                     per.getKeyPersonnelDto().setSalutation(MasterCodeUtil.getCodeDesc(per.getKeyPersonnelDto().getSalutation()));
                 } catch (Exception e) {
-                    per.getKeyPersonnelDto().setSalutation( "-");
+                    log.error(StringUtil.changeForLog("getSalutation {}"+per.getKeyPersonnelDto().getSalutation()));
                 }
                 try {
                     per.getKeyPersonnelDto().setDesignation(MasterCodeUtil.getCodeDesc(per.getKeyPersonnelDto().getDesignation()));
                 } catch (Exception e) {
-                    per.getKeyPersonnelDto().setDesignation( "-");
+                    log.error(StringUtil.changeForLog("getDesignation {}"+per.getKeyPersonnelDto().getDesignation()));
                 }
                 if(per.getKeyPersonnelExtDto()!=null){
                     try {
                         per.getKeyPersonnelExtDto().setProfessionType(MasterCodeUtil.getCodeDesc(per.getKeyPersonnelExtDto().getProfessionType()));
                     } catch (Exception e) {
-                        per.getKeyPersonnelExtDto().setProfessionType("-");
+                        log.error(StringUtil.changeForLog("getProfessionType {}"+per.getKeyPersonnelExtDto().getProfessionType()));
                     }
                     try {
                         per.getKeyPersonnelExtDto().setDescription(MasterCodeUtil.getCodeDesc(per.getKeyPersonnelExtDto().getDescription()));
                     } catch (Exception e) {
-                        per.getKeyPersonnelExtDto().setDescription("-");
+                        log.error(StringUtil.changeForLog("getDescription {}"+per.getKeyPersonnelExtDto().getDescription()));
                     }
                 }
             }
@@ -285,6 +303,7 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
             log.error(e.getMessage(), e);
         }
         ParamUtil.setSessionAttr(request, "personnelsDto", (Serializable) personnelsDto);
+        ParamUtil.setSessionAttr(request, "appSvcSectionLeaderList", (Serializable) appSvcPersonnelDtoList);
     }
 
     @Override
@@ -301,6 +320,7 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
                     case ApplicationConsts.PREMISES_TYPE_ON_SITE:complianceHistoryDto.setInspectionTypeName(InspectionConstants.INSPECTION_TYPE_ONSITE);break;
                     case ApplicationConsts.PREMISES_TYPE_CONVEYANCE:complianceHistoryDto.setInspectionTypeName("Conveyance Inspection");break;
                     case ApplicationConsts.PREMISES_TYPE_OFF_SITE:complianceHistoryDto.setInspectionTypeName("Off-Site Inspection");break;
+                    case ApplicationConsts.PREMISES_TYPE_EAS_MTS_CONVEYANCE:complianceHistoryDto.setInspectionTypeName("Conveyance (in a mobile clinic / ambulance) Inspection");break;
                     default:complianceHistoryDto.setInspectionTypeName("-");
                 }
                 complianceHistoryDto.setAppPremCorrId(appPremisesCorrelationDto.getId());
@@ -347,7 +367,7 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
                         complianceHistoryDto.setSortDate(Formatter.formatDateTime(appPreRecommentdationDtoDate.getRecomInDate(), "yyyy-MM-dd"));
                     }
                     AppPremisesRecommendationDto appPreRecommentdationDtoRep = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appPremisesCorrelationDto.getId(), InspectionConstants.RECOM_TYPE_INSEPCTION_REPORT).getEntity();
-                    if(appPreRecommentdationDtoRep!=null&&appPreRecommentdationDtoDate!=null){
+                    if((appPreRecommentdationDtoRep!=null||appReportStatuses.contains(applicationDto.getStatus()))&&appPreRecommentdationDtoDate!=null){
                         complianceHistoryDtos.add(complianceHistoryDto);
                     }
                 }catch (Exception e){
@@ -387,6 +407,23 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
         //AppPremisesRecommendationDto ncRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appPremisesCorrelationId, InspectionConstants.RECOM_TYPE_INSEPCTION_REPORT).getEntity();
         //inspection report application dto
         AppInsRepDto appInsRepDto = insRepClient.getAppInsRepDto(appPremisesCorrelationId).getEntity();
+        //get Observation
+        String observation = fillupChklistService.getObservationByAppPremCorrId(appPremisesCorrelationId);
+        StringBuilder observationSb=new StringBuilder();
+        if(StringUtil.isEmpty(observation)) {
+            observationSb.append('-');
+        }else {
+            String[] observations=new String[]{};
+            observations=observation.split("\n");
+            if(!StringUtil.isEmpty(observation)){
+                observationSb =new StringBuilder();
+                for (String rk:observations
+                ) {
+                    observationSb.append(rk).append("<br>");
+                }
+            }
+        }
+        inspectionReportDto.setObservation(observationSb.toString());
         inspectionReportDto.setHciCode(appInsRepDto.getHciCode());
         String applicationType = applicationViewDto.getApplicationDto().getApplicationType();
         for (PremisesDto appGrpPremise:licPremisesDto
@@ -514,6 +551,7 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
                 ReportNcRegulationDto reportNcRegulationDto = new ReportNcRegulationDto();
                 reportNcRegulationDto.setNc(ncAnswerDto.getItemQuestion());
                 reportNcRegulationDto.setNcs(ncAnswerDto.getNcs());
+                reportNcRegulationDto.setVehicleName(ncAnswerDto.getVehicleName());
                 String clause = ncAnswerDto.getClause();
                 if (StringUtil.isEmpty(clause)) {
                     reportNcRegulationDto.setRegulation("-");
@@ -531,10 +569,17 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
             List<AppPremisesPreInspectionNcItemDto> listAppPremisesPreInspectionNcItemDtos = fillUpCheckListGetAppClient.getAppNcItemByNcId(ncId).getEntity();
             if (listAppPremisesPreInspectionNcItemDtos != null && !listAppPremisesPreInspectionNcItemDtos.isEmpty()) {
                 for (AppPremisesPreInspectionNcItemDto preInspNc : listAppPremisesPreInspectionNcItemDtos) {
-                    ChecklistItemDto cDto = hcsaChklClient.getChklItemById(preInspNc.getItemId()).getEntity();
+                    String adhocQuestion = preInspNc.getAdhocQuestion();
                     ReportNcRectifiedDto reportNcRectifiedDto = new ReportNcRectifiedDto();
-                    reportNcRectifiedDto.setNc(cDto.getChecklistItem());
+                    if (!StringUtil.isEmpty(adhocQuestion)) {
+                        reportNcRectifiedDto.setNc(adhocQuestion);
+                    } else {
+                        ChecklistItemDto cDto = hcsaChklClient.getChklItemById(preInspNc.getItemId()).getEntity();
+                        reportNcRectifiedDto.setNc(cDto.getChecklistItem());
+                    }
                     reportNcRectifiedDto.setRectified(preInspNc.getIsRecitfied() == 1 ? "Yes" : "No");
+                    reportNcRectifiedDto.setNcs(preInspNc.getNcs());
+                    reportNcRectifiedDto.setVehicleName(preInspNc.getVehicleName());
                     listReportNcRectifiedDto.add(reportNcRectifiedDto);
                 }
                 inspectionReportDto.setNcRectification(listReportNcRectifiedDto);
@@ -669,24 +714,35 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
         EnquiryInspectionReportDto insRepDto = getInsRepDto(applicationViewDto,licenceId);
         try{
             AppPremisesRecommendationDto appPremisesRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appPremisesCorrelationId, InspectionConstants.RECOM_TYPE_INSEPCTION_REPORT).getEntity();
-            if(appPremisesRecommendationDto.getRecomDecision().equals(InspectionReportConstants.APPROVED)||appPremisesRecommendationDto.getRecomDecision().equals(InspectionReportConstants.APPROVEDLTC)||appPremisesRecommendationDto.getRecomDecision().equals(InspectionReportConstants.RFC_APPROVED)){
-                int recomInNumber=appPremisesRecommendationDto.getRecomInNumber();
-                String chronoUnit=MasterCodeUtil.getCodeDesc(appPremisesRecommendationDto.getChronoUnit());
-                if(appPremisesRecommendationDto.getChronoUnit().equals(AppointmentConstants.RECURRENCE_MONTH)){
-                    if(recomInNumber/12 ==1 || recomInNumber/12 >1){
-                        recomInNumber=recomInNumber/12;
-                        chronoUnit=MasterCodeUtil.getCodeDesc(AppointmentConstants.RECURRENCE_YEAR);
+            if(appPremisesRecommendationDto!=null){
+                if(appPremisesRecommendationDto.getRecomDecision().equals(InspectionReportConstants.APPROVED)||appPremisesRecommendationDto.getRecomDecision().equals(InspectionReportConstants.APPROVEDLTC)){
+                    int recomInNumber=appPremisesRecommendationDto.getRecomInNumber();
+                    String chronoUnit=MasterCodeUtil.getCodeDesc(appPremisesRecommendationDto.getChronoUnit());
+                    if(appPremisesRecommendationDto.getChronoUnit().equals(AppointmentConstants.RECURRENCE_MONTH)){
+                        if(recomInNumber/12 ==1 || recomInNumber/12 >1){
+                            recomInNumber=recomInNumber/12;
+                            chronoUnit=MasterCodeUtil.getCodeDesc(AppointmentConstants.RECURRENCE_YEAR);
+                        }
                     }
+                    insRepDto.setRecommendation("Approve with "+recomInNumber+" "+chronoUnit+" Licence");
                 }
-                insRepDto.setRecommendation("Approve with "+recomInNumber+" "+chronoUnit+" Licence");
-            }else {
-                insRepDto.setRecommendation(MasterCodeUtil.getCodeDesc(appPremisesRecommendationDto.getRecomDecision()));
+                if(appPremisesRecommendationDto.getRecomDecision().equals(InspectionReportConstants.RFC_APPROVED)) {
+                    insRepDto.setRecommendation("Approve");
+                }
+                if(appPremisesRecommendationDto.getRecomDecision().equals(InspectionReportConstants.REJECTED)||appPremisesRecommendationDto.getRecomDecision().equals(InspectionReportConstants.RFC_REJECTED)) {
+                    insRepDto.setRecommendation("Rejected");
+                }
             }
         }catch (Exception e){
             log.error(e.getMessage(), e);
             insRepDto.setRecommendation("-");
         }
         AppPremisesRecommendationDto appPremisesRecommendationDto =initRecommendation(appPremisesCorrelationId, applicationViewDto);
+        if(fillupChklistService.checklistNeedVehicleSeparation(applicationViewDto)){
+            ParamUtil.setSessionAttr(request, HcsaLicenceBeConstant.SPECIAL_SERVICE_FOR_CHECKLIST_DECIDE,AppConsts.YES);
+        }
+        String appType = applicationViewDto.getApplicationDto().getApplicationType();
+        ParamUtil.setRequestAttr(request, "appType", appType);
         ParamUtil.setRequestAttr(request, "appPremisesRecommendationDto", appPremisesRecommendationDto);
         ParamUtil.setRequestAttr(request, "insRepDto", insRepDto);
         // 		preInspReport->OnStepProcess
@@ -763,6 +819,8 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
         }
         ParamUtil.setRequestAttr(request,"applicationViewDto",applicationViewDto);
         ParamUtil.setRequestAttr(request,"licenseeDto",licenseeDto);
+        AppGrpPremisesDto appGrpPremisesDto =   inspectionTaskClient.getAppGrpPremisesDtoByAppGroId(appCorrId).getEntity();
+        ParamUtil.setRequestAttr(request,"emilAddr",appGrpPremisesDto.getEasMtsPubEmail());
         List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos =  appSubmissionDto.getAppSvcRelatedInfoDtoList();
         if(IaisCommonUtils.isEmpty(appSvcRelatedInfoDtos)){
             return;
@@ -790,26 +848,39 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
                         appSvcChckListDtoList = appSvcLaboratoryDisciplinesDto.getAppSvcChckListDtoList();
                     }
                 }
-                if(appSvcChckListDtoList != null && appSvcChckListDtoList.size()>0){
-                    for(AppSvcChckListDto appSvcChckListDto:appSvcChckListDtoList){
-                        HcsaSvcSubtypeOrSubsumedDto hcsaSvcSubtypeOrSubsumedDto = getHcsaSvcSubtypeOrSubsumedDtoById(hcsaSvcSubtypeOrSubsumedDtos,appSvcChckListDto.getChkLstConfId());
-                        if(hcsaSvcSubtypeOrSubsumedDto!=null){
+                if (appSvcChckListDtoList != null && appSvcChckListDtoList.size() > 0) {
+                    for (AppSvcChckListDto appSvcChckListDto : appSvcChckListDtoList) {
+                        boolean check = appSvcChckListDto.isCheck();
+                        if(!check){
+                            continue;
+                        }
+                        HcsaSvcSubtypeOrSubsumedDto hcsaSvcSubtypeOrSubsumedDto = getHcsaSvcSubtypeOrSubsumedDtoById(hcsaSvcSubtypeOrSubsumedDtos, appSvcChckListDto.getChkLstConfId());
+                        if (hcsaSvcSubtypeOrSubsumedDto != null) {
                             appSvcChckListDto.setChkName(hcsaSvcSubtypeOrSubsumedDto.getName());
                         }
-                        if(chkLstId.equals(appSvcChckListDto.getChkLstConfId())){
+                        if("Please indicate".equals(appSvcChckListDto.getChkName())){
+                            appSvcChckListDto.setChkName(appSvcChckListDto.getOtherScopeName());
+                        }
+                        if (chkLstId.equals(appSvcChckListDto.getChkLstConfId())) {
                             appSvcDisciplineAllocationDto.setChkLstName(appSvcChckListDto.getChkName());
                         }
                     }
                 }
                 //set selCgoName
                 List<AppSvcPrincipalOfficersDto> appSvcCgoDtoList = appSvcRelatedInfoDto.getAppSvcCgoDtoList();
-                if(appSvcCgoDtoList != null && appSvcCgoDtoList.size()>0){
-                    for(AppSvcPrincipalOfficersDto appSvcCgoDto:appSvcCgoDtoList){
-                        if(idNo.equals(appSvcCgoDto.getIdNo())){
-                            appSvcDisciplineAllocationDto.setCgoSelName(appSvcCgoDto.getName());
+                if (appSvcCgoDtoList != null && appSvcCgoDtoList.size() > 0) {
+                    for (AppSvcPrincipalOfficersDto appSvcCgoDto : appSvcCgoDtoList) {
+                        if (idNo.equals(appSvcCgoDto.getIdNo())) {
+                            if (idNo.equals(appSvcCgoDto.getIdNo())) {
+                                appSvcDisciplineAllocationDto.setCgoSelName(appSvcCgoDto.getName());
+                            }
+                            if(!appSvcDisciplineAllocationDto.isCheck()){
+                                appSvcDisciplineAllocationDto.setCgoSelName(null);
+                            }
                         }
                     }
                 }
+
             }
         }
 

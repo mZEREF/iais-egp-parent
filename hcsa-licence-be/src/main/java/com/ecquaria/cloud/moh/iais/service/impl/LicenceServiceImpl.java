@@ -262,28 +262,44 @@ public class LicenceServiceImpl implements LicenceService {
     public EventBusLicenceGroupDtos createFESuperLicDto(String eventRefNum,String submissionId) {
         EventBusLicenceGroupDtos eventBusLicenceGroupDtos =  getEventBusLicenceGroupDtosByRefNo(eventRefNum);
         if(eventBusLicenceGroupDtos!=null){
+            Date now = new Date();
             EicRequestTrackingDto trackDto = licEicClient.getPendingRecordByReferenceNumber(eventRefNum).getEntity();
-            eicCallFeSuperLic(eventBusLicenceGroupDtos);
-            trackDto.setStatus(AppConsts.EIC_STATUS_PROCESSING_COMPLETE);
+            trackDto.setProcessNum(trackDto.getProcessNum() + 1);
+            trackDto.setFirstActionAt(now);
+            trackDto.setLastActionAt(now);
+            try {
+                eicCallFeSuperLic(eventBusLicenceGroupDtos);
+                trackDto.setStatus(AppConsts.EIC_STATUS_PROCESSING_COMPLETE);
+            } catch (Exception e) {
+                log.error(e.getMessage(), e);
+            }
+            hcsaLicenceClient.updateEicTrackStatus(trackDto);
             //send approve notification
+            trackDto = licEicClient.getPendingRecordByReferenceNumber(eventRefNum + "uen").getEntity();
+            trackDto.setProcessNum(trackDto.getProcessNum() + 1);
+            trackDto.setFirstActionAt(now);
+            trackDto.setLastActionAt(now);
             try{
                 //save new acra info
 //                saveNewAcra(eventBusLicenceGroupDtos);
                 //send issue uen email
                 log.info(StringUtil.changeForLog("send uen email"));
-                sendUenEmail(eventBusLicenceGroupDtos);
-                for (LicenceGroupDto item:eventBusLicenceGroupDtos.getLicenceGroupDtos()
-                ) {
-                    for (SuperLicDto superLicDto : item.getSuperLicDtos()
-                    ) {
-                        sendNotification(superLicDto);
-                    }
-                }
+                generateUEN(eventBusLicenceGroupDtos);
+                trackDto.setStatus(AppConsts.EIC_STATUS_PROCESSING_COMPLETE);
             }catch (Exception e){
                 log.error(e.getMessage(),e);
             }
-            saveLicenceAppRiskInfoDtos(eventBusLicenceGroupDtos.getLicenceGroupDtos(),eventBusLicenceGroupDtos.getAuditTrailDto());
             hcsaLicenceClient.updateEicTrackStatus(trackDto);
+            try {
+                for (LicenceGroupDto item:eventBusLicenceGroupDtos.getLicenceGroupDtos()) {
+                    for (SuperLicDto superLicDto : item.getSuperLicDtos()) {
+                        sendNotification(superLicDto);
+                    }
+                }
+            } catch (Exception e) {
+                log.error(e.getMessage(), e);
+            }
+            saveLicenceAppRiskInfoDtos(eventBusLicenceGroupDtos.getLicenceGroupDtos(),eventBusLicenceGroupDtos.getAuditTrailDto());
         }else{
             log.debug(StringUtil.changeForLog("This eventReo can not get the LicEicRequestTrackingDto -->:"+eventRefNum));
         }
@@ -308,6 +324,42 @@ public class LicenceServiceImpl implements LicenceService {
             }
         }
         log.info("----- create save-lic-app-risk-by-licdtos end ");
+    }
+
+    public void generateUEN(EventBusLicenceGroupDtos eventBusLicenceGroupDtos) {
+        log.info(StringUtil.changeForLog("The generateUen start ..."));
+        try{
+            IaisUENDto iaisUENDto = new IaisUENDto();
+            List<LicenceGroupDto> licenceGroupDtos = eventBusLicenceGroupDtos.getLicenceGroupDtos();
+            if(!IaisCommonUtils.isEmpty(licenceGroupDtos)){
+                LicenceGroupDto  licenceGroupDto = licenceGroupDtos.get(0);
+                List<SuperLicDto> superLicDtos = licenceGroupDto.getSuperLicDtos();
+                if(!IaisCommonUtils.isEmpty(superLicDtos)){
+                    SuperLicDto superLicDto = superLicDtos.get(0);
+                    LicenceDto licenceDto = superLicDto.getLicenceDto();
+                    String svcCode = licenceDto.getSvcCode();
+                    String licenseeId = licenceDto.getLicenseeId();
+                    log.info(StringUtil.changeForLog("The generateUen svcCode is -->: "+svcCode));
+                    log.info(StringUtil.changeForLog("The generateUen licenseeId is -->: "+licenseeId));
+                    iaisUENDto.setLicenseeId(licenseeId);
+                    iaisUENDto.setSvcCode(svcCode);
+                    List<PremisesGroupDto> premisesGroupDtos = superLicDto.getPremisesGroupDtos();
+                    PremisesGroupDto premisesGroupDto = premisesGroupDtos.get(0);
+                    PremisesDto premisesDto = premisesGroupDto.getPremisesDto();
+                    log.info(StringUtil.changeForLog("The generateUen premisesDto.getHciCode() is -->: "+premisesDto.getHciCode()));
+                    iaisUENDto.setPremises(premisesDto);
+                }else{
+                    log.info(StringUtil.changeForLog("The generateUen superLicDtos is null "));
+                }
+            }else{
+                log.info(StringUtil.changeForLog("The generateUen licenceGroupDtos is null "));
+            }
+            acraUenBeClient.generateUen(iaisUENDto);
+            sendUenEmail(eventBusLicenceGroupDtos);
+        }catch (Throwable t){
+            log.error(StringUtil.changeForLog( t.getMessage()),t);
+        }
+        log.info(StringUtil.changeForLog("The generateUen end ..."));
     }
 
     private void saveNewAcra(EventBusLicenceGroupDtos eventBusLicenceGroupDtos) {

@@ -46,6 +46,8 @@ public class PaymentCheckNotResultFromBankJobHandler extends IJobHandler {
                     }else
                     if(("eNets".equals(payReq.getPayMethod())|| ApplicationConsts.PAYMENT_METHOD_NAME_NETS.equals(payReq.getPayMethod()))&&payReq.getMerchantTxnRef()!=null){
                         paymentService.retrieveNetsPayment(payReq);
+                    }else if("PayNow".equals(payReq.getPayMethod())|| ApplicationConsts.PAYMENT_METHOD_NAME_PAYNOW.equals(payReq.getPayMethod())){
+                        paymentService.retrievePayNowPayment(payReq);
                     }else {
                         payReq.setStatus(PaymentTransactionEntity.TRANS_STATUS_FAILED);
                         paymentClient.updatePaymentResquset(payReq);

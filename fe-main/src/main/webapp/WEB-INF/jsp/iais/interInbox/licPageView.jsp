@@ -80,9 +80,11 @@
                 if (!statusDuo.includes('Ceased')){
                     $("#lic-renew").removeClass('disabled');
                     $("#lic-cease").removeClass('disabled');
+                    $("#lic-print").removeClass('disabled');
                 }else{
                     $("#lic-renew").addClass('disabled');
                     $("#lic-cease").addClass('disabled');
+                    $("#lic-print").removeClass('disabled');
                 }
                 console.log(statusDuo);
                 $("#lic-amend").addClass('disabled');

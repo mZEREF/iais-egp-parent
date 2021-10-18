@@ -6,6 +6,8 @@ import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.BroadcastApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.EventApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.RequestInformationSubmitDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.PaymentRequestDto;
@@ -107,4 +109,22 @@ public interface ApplicationService {
       * @Descripation: sortAppSvcVehicleListToShow
       */
     ApplicationViewDto sortAppSvcVehicleListToShow(List<String> vehicleNoList, ApplicationViewDto applicationViewDto);
+
+    /**
+      * @author: shicheng
+      * @Date 2021/9/17
+      * @Param: applicationGroupDto, broadcastApplicationDto
+      * @return: broadcastApplicationDto
+      * @Descripation: setRejectOtherAppGrps
+      */
+    BroadcastApplicationDto setRejectOtherAppGrps(ApplicationGroupDto applicationGroupDto, BroadcastApplicationDto broadcastApplicationDto);
+
+    /**
+      * @author: shicheng
+      * @Date 2021/9/17
+      * @Param: applicationGroupDto, broadcastApplicationDto
+      * @return: broadcastApplicationDto
+      * @Descripation: setAppGrpMiscInactive
+      */
+    BroadcastApplicationDto setAppGrpMiscInactive(ApplicationGroupDto applicationGroupDto, BroadcastApplicationDto broadcastApplicationDto);
 }

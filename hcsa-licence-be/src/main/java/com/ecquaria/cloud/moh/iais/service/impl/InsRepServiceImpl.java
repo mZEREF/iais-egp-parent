@@ -12,7 +12,17 @@ import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremPreInspectionNcDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremisesPreInspectionNcItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.*;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPersonnelDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesEntityDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppInsRepDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryExtDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPremisesScopeDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcVehicleDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationListFileDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicAppCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
@@ -21,24 +31,50 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.HcsaRiskScoreDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskAcceptiionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskResultDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcCateWrkgrpCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcRoutingStageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcStageWorkingGroupDto;
-import com.ecquaria.cloud.moh.iais.common.dto.inspection.*;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.AppInspectionStatusDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionReportDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.NcAnswerDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.ReportNcRectifiedDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.ReportNcRegulationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.ReportResultDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.WorkingGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
-import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.HcsaLicenceBeConstant;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.dto.TaskHistoryDto;
-import com.ecquaria.cloud.moh.iais.helper.*;
-import com.ecquaria.cloud.moh.iais.service.*;
-import com.ecquaria.cloud.moh.iais.service.client.*;
+import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
+import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
+import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
+import com.ecquaria.cloud.moh.iais.service.AppPremisesRoutingHistoryService;
+import com.ecquaria.cloud.moh.iais.service.ApplicationGroupService;
+import com.ecquaria.cloud.moh.iais.service.ApplicationService;
+import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
+import com.ecquaria.cloud.moh.iais.service.FillupChklistService;
+import com.ecquaria.cloud.moh.iais.service.InsRepService;
+import com.ecquaria.cloud.moh.iais.service.InsepctionNcCheckListService;
+import com.ecquaria.cloud.moh.iais.service.InspEmailService;
+import com.ecquaria.cloud.moh.iais.service.TaskService;
+import com.ecquaria.cloud.moh.iais.service.client.AppInspectionStatusClient;
+import com.ecquaria.cloud.moh.iais.service.client.AppPremisesRoutingHistoryClient;
+import com.ecquaria.cloud.moh.iais.service.client.AppSvcVehicleBeClient;
+import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
+import com.ecquaria.cloud.moh.iais.service.client.BeEicGatewayClient;
+import com.ecquaria.cloud.moh.iais.service.client.ComSystemAdminClient;
+import com.ecquaria.cloud.moh.iais.service.client.FillUpCheckListGetAppClient;
+import com.ecquaria.cloud.moh.iais.service.client.HcsaAppClient;
+import com.ecquaria.cloud.moh.iais.service.client.HcsaChklClient;
+import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
+import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
+import com.ecquaria.cloud.moh.iais.service.client.InsRepClient;
+import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
+import com.ecquaria.cloud.moh.iais.service.client.TaskOrganizationClient;
 import com.ecquaria.cloudfeign.FeignException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,10 +83,7 @@ import org.springframework.stereotype.Service;
 import sop.util.CopyUtil;
 import sop.webflow.rt.api.BaseProcessClass;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @author weilu
@@ -105,6 +138,9 @@ public class InsRepServiceImpl implements InsRepService {
     @Autowired
     private AppSvcVehicleBeClient appSvcVehicleBeClient;
 
+    @Autowired
+    private FillupChklistService fillupChklistService;
+
     @Value("${iais.hmac.keyId}")
     private String keyId;
     @Value("${iais.hmac.second.keyId}")
@@ -114,9 +150,26 @@ public class InsRepServiceImpl implements InsRepService {
     @Value("${iais.hmac.second.secretKey}")
     private String secSecretKey;
 
+    //getInsRepDto and  when app status APST019 save ReportResultDto
     @Override
     public InspectionReportDto getInsRepDto(TaskDto taskDto, ApplicationViewDto applicationViewDto, LoginContext loginContext) {
         InspectionReportDto inspectionReportDto = new InspectionReportDto();
+        //get Observation
+        String observation = fillupChklistService.getObservationByAppPremCorrId(taskDto.getRefNo());
+        StringBuilder observationSb=new StringBuilder();
+        if(StringUtil.isEmpty(observation)) {
+            observationSb.append('-');
+        }else {
+            String[] observations = observation.split("\n");
+            if(!StringUtil.isEmpty(observation)){
+                observationSb =new StringBuilder();
+                for (String rk:observations
+                ) {
+                    observationSb.append(rk).append("<br>");
+                }
+            }
+        }
+        inspectionReportDto.setObservation(observationSb.toString());
         //inspection report application dto
         AppInsRepDto appInsRepDto = insRepClient.getAppInsRepDto(taskDto.getRefNo()).getEntity();
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
@@ -171,26 +224,7 @@ public class InsRepServiceImpl implements InsRepService {
             inspectionReportDto.setInspectOffices(nameList);
         }
         //get application type (pre/post)
-        String reasonForVisit = null;
-        if(ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK.equals(appTypeCode)){
-            reasonForVisit = "Audit Inspection";
-        }else if(ApplicationConsts.APPLICATION_TYPE_POST_INSPECTION.equals(appTypeCode)){
-            String appType = MasterCodeUtil.getCodeDesc(appTypeCode);
-            if(!StringUtil.isEmpty(licId)){
-                List<LicAppCorrelationDto> licAppCorrelationDtos = hcsaLicenceClient.getLicCorrBylicId(licId).getEntity();
-                if (!IaisCommonUtils.isEmpty(licAppCorrelationDtos)) {
-                    String applicationId = licAppCorrelationDtos.get(0).getApplicationId();
-                    ApplicationDto applicationDtoOld = applicationClient.getApplicationById(applicationId).getEntity();
-                    String applicationTypeOld = applicationDtoOld.getApplicationType();
-                    appType = MasterCodeUtil.getCodeDesc(applicationTypeOld);
-                }
-            }
-            reasonForVisit = "Post-licensing inspection for " + appType;
-        }else {
-            String appType = MasterCodeUtil.getCodeDesc(appTypeCode);
-            reasonForVisit = "Pre-licensing inspection for " + appType;
-        }
-
+        String reasonForVisit = getReasonForVisit(applicationType,licId,applicationViewDto.getApplicationGroupDto().getIsPreInspection());
         //serviceId transform serviceCode
         List<String> list = IaisCommonUtils.genNewArrayList();
         String serviceId = appInsRepDto.getServiceId();
@@ -221,6 +255,12 @@ public class InsRepServiceImpl implements InsRepService {
         if (IaisCommonUtils.isEmpty(serviceSubTypeName)) {
             serviceSubTypeName.add("-");
         }
+
+        Map<String,String> vehMap = IaisCommonUtils.genNewHashMap();
+        if(IaisCommonUtils.isNotEmpty(applicationViewDto.getAppSvcVehicleDtos())){
+            applicationViewDto.getAppSvcVehicleDtos().forEach(veh -> vehMap.put(veh.getVehicleName(),veh.getDisplayName()));
+        }
+
         inspectionReportDto.setSubsumedServices(serviceSubTypeName);
         //Nc
         List<ReportNcRegulationDto> listReportNcRegulationDto = IaisCommonUtils.genNewArrayList();
@@ -232,7 +272,7 @@ public class InsRepServiceImpl implements InsRepService {
                 ReportNcRegulationDto reportNcRegulationDto = new ReportNcRegulationDto();
                 reportNcRegulationDto.setNc(ncAnswerDto.getItemQuestion());
                 reportNcRegulationDto.setNcs(ncAnswerDto.getNcs());
-                reportNcRegulationDto.setVehicleName(ncAnswerDto.getVehicleName());
+                reportNcRegulationDto.setVehicleName(vehMap.get(ncAnswerDto.getVehicleName()));
                 String clause = ncAnswerDto.getClause();
                 if (StringUtil.isEmpty(clause)) {
                     reportNcRegulationDto.setRegulation("-");
@@ -260,7 +300,7 @@ public class InsRepServiceImpl implements InsRepService {
                     }
                     reportNcRectifiedDto.setRectified(preInspNc.getIsRecitfied() == 1 ? "Yes" : "No");
                     reportNcRectifiedDto.setNcs(preInspNc.getNcs());
-                    reportNcRectifiedDto.setVehicleName(preInspNc.getVehicleName());
+                    reportNcRectifiedDto.setVehicleName(vehMap.get(preInspNc.getVehicleName()));
                     listReportNcRectifiedDto.add(reportNcRectifiedDto);
                 }
                 inspectionReportDto.setNcRectification(listReportNcRectifiedDto);
@@ -405,6 +445,22 @@ public class InsRepServiceImpl implements InsRepService {
         }
         return inspectionReportDto;
     }
+    private String getReasonForVisit(String applicationType,String licenceId,Integer isPre){
+        String applicationTypeOldDesc = "";
+        if(ApplicationConsts.APPLICATION_TYPE_POST_INSPECTION.equals(applicationType)){
+            if(!StringUtil.isEmpty(licenceId)){
+                List<LicAppCorrelationDto> licAppCorrelationDtos = hcsaLicenceClient.getLicCorrBylicId(licenceId).getEntity();
+                if (!IaisCommonUtils.isEmpty(licAppCorrelationDtos)) {
+                    String applicationId = licAppCorrelationDtos.get(0).getApplicationId();
+                    ApplicationDto applicationDtoOld = applicationClient.getApplicationById(applicationId).getEntity();
+                    String applicationTypeOld = applicationDtoOld.getApplicationType();
+                    applicationTypeOldDesc = MasterCodeUtil.getCodeDesc(applicationTypeOld);
+                }
+            }
+        }
+        return IaisCommonUtils.getReasonForVisitInspectionReport(applicationType,MasterCodeUtil.getCodeDesc(applicationType),isPre,applicationTypeOldDesc);
+    }
+
 
     private List<String> getServiceSubTypeName(String correlationId) {
         List<String> serviceSubtypeName = IaisCommonUtils.genNewArrayList();

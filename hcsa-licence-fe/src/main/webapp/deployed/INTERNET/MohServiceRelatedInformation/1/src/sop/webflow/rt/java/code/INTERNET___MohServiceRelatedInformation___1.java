@@ -28,31 +28,6 @@ public class INTERNET___MohServiceRelatedInformation___1 extends BaseProcessClas
 		EngineHelper.delegate(DELEGATOR, "prepareJumpPage", this);
 	}
 
-	public void prepareLaboratoryDisciplines_OnStepProcess_0() throws Exception {
-	// 		PrepareLaboratoryDisciplines->OnStepProcess
-		EngineHelper.delegate(DELEGATOR, "prepareLaboratoryDisciplines", this);
-	}
-
-	public void prepareGovernanceOfficers_OnStepProcess_0() throws Exception {
-	// 		PrepareGovernanceOfficers->OnStepProcess
-		EngineHelper.delegate(DELEGATOR, "prepareGovernanceOfficers", this);
-	}
-
-	public void prepareDisciplineAllocation_OnStepProcess_0() throws Exception {
-	// 		PrepareDisciplineAllocation->OnStepProcess
-		EngineHelper.delegate(DELEGATOR, "prepareDisciplineAllocation", this);
-	}
-
-	public void preparePrincipalOfficers_OnStepProcess_0() throws Exception {
-	// 		PreparePrincipalOfficers->OnStepProcess
-		EngineHelper.delegate(DELEGATOR, "preparePrincipalOfficers", this);
-	}
-
-	public void prepareDocuments_OnStepProcess_0() throws Exception {
-	// 		PrepareDocuments->OnStepProcess
-		EngineHelper.delegate(DELEGATOR, "prepareDocuments", this);
-	}
-
 	public void prepareJump_OnStepProcess_0() throws Exception {
 	// 		prepareJump->OnStepProcess
 		EngineHelper.delegate(DELEGATOR, "prepareJump", this);
@@ -63,31 +38,6 @@ public class INTERNET___MohServiceRelatedInformation___1 extends BaseProcessClas
 		EngineHelper.delegate(DELEGATOR, "prepareView", this);
 	}
 	
-	public void doLaboratoryDisciplines_OnStepProcess_0() throws Exception {
-	// 		doLaboratoryDisciplines->OnStepProcess
-		EngineHelper.delegate(DELEGATOR, "doLaboratoryDisciplines", this);
-	}
-
-	public void doGovernanceOfficers_OnStepProcess_0() throws Exception {
-	// 		doGovernanceOfficers->OnStepProcess
-		EngineHelper.delegate(DELEGATOR, "doGovernanceOfficers", this);
-	}
-
-	public void doDisciplineAllocation_OnStepProcess_0() throws Exception {
-	// 		doDisciplineAllocation->OnStepProcess
-		EngineHelper.delegate(DELEGATOR, "doDisciplineAllocation", this);
-	}
-
-	public void doPrincipalOfficers_OnStepProcess_0() throws Exception {
-	// 		doPrincipalOfficers->OnStepProcess
-		EngineHelper.delegate(DELEGATOR, "doPrincipalOfficers", this);
-	}
-
-	public void doDocuments_OnStepProcess_0() throws Exception {
-	// 		doDocuments->OnStepProcess
-		EngineHelper.delegate(DELEGATOR, "doDocuments", this);
-	}
-
 	public void prepareResult_OnStepProcess_0() throws Exception {
 	// 		PrepareResult->OnStepProcess
 		EngineHelper.delegate(DELEGATOR, "prepareResult", this);
@@ -103,65 +53,15 @@ public class INTERNET___MohServiceRelatedInformation___1 extends BaseProcessClas
 		EngineHelper.delegate(NEWAPPLICATIONDELEGATOR, "doSubmit", this);
 	}
 
-	public void doNuclearMedicineImaging_OnStepProcess_0() throws Exception {
-	// 		doNuclearMedicineImaging->OnStepProcess
-		EngineHelper.delegate(DELEGATOR, "doServicePersonnel", this);
-	}
+	public void prepareStepData_OnStepProcess_0() throws Exception {
+    // 		PrepareStepData->OnStepProcess prepareStepData
+        EngineHelper.delegate(DELEGATOR, "prepareStepData", this);
+    }
 
-	public void prepareNuclearMedicineImaging_OnStepProcess_0() throws Exception {
-	// 		PrepareNuclearMedicineImaging->OnStepProcess
-		EngineHelper.delegate(DELEGATOR, "prepareServicePersonnel", this);
-	}
-
-	public void prePareMedAlertPerson_OnStepProcess_0() throws Exception {
-	// 		PrePareMedAlertPerson->OnStepProcess
-		EngineHelper.delegate(DELEGATOR, "prePareMedAlertPerson", this);
-	}
-
-	public void doMedAlertPerson_OnStepProcess_0() throws Exception {
-	// 		doMedAlertPerson->OnStepProcess
-		EngineHelper.delegate(DELEGATOR, "doMedAlertPerson", this);
-	}
-
-	public void prePareVehicles_OnStepProcess_0() throws Exception {
-	// 		PrePareVehicles->OnStepProcess
-		EngineHelper.delegate(DELEGATOR, "prePareVehicles", this);
-	}
-
-	public void prePareClinicalDirector_OnStepProcess_0() throws Exception {
-	// 		PrePareClinicalDirector->OnStepProcess
-		EngineHelper.delegate(DELEGATOR, "prePareClinicalDirector", this);
-	}
-
-	public void prePareCharges_OnStepProcess_0() throws Exception {
-	// 		PrePareCharges->OnStepProcess
-		EngineHelper.delegate(DELEGATOR, "prePareCharges", this);
-	}
-
-	public void doVehicles_OnStepProcess_0() throws Exception {
-	// 		doVehicles->OnStepProcess
-		EngineHelper.delegate(DELEGATOR, "doVehicles", this);
-	}
-
-	public void doClinicalDirector_OnStepProcess_0() throws Exception {
-	// 		doClinicalDirector->OnStepProcess
-		EngineHelper.delegate(DELEGATOR, "doClinicalDirector", this);
-	}
-
-	public void doCharges_OnStepProcess_0() throws Exception {
-	// 		doCharges->OnStepProcess
-		EngineHelper.delegate(DELEGATOR, "doCharges", this);
-	}
-
-	public void step1_OnStepProcess_0() throws Exception {
-	// 		Step1->OnStepProcess
-		EngineHelper.delegate(DELEGATOR, "prepareBusiness", this);
-	}
-
-	public void doBusiness_OnStepProcess_0() throws Exception {
-	// 		doBusiness->OnStepProcess
-		EngineHelper.delegate(DELEGATOR, "doBusiness", this);
-	}
+    public void doStep_OnStepProcess_0() throws Exception {
+    // 		DoStep->OnStepProcess
+        EngineHelper.delegate(DELEGATOR, "doStep", this);
+    }
 
 	
 

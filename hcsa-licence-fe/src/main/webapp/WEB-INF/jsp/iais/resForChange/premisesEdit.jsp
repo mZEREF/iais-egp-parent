@@ -7,6 +7,16 @@
           (sop.webflow.rt.api.BaseProcessClass) request.getAttribute("process");
 %>
 <webui:setLayout name="iais-internet"/>
+
+<style>
+    @media only screen and (min-width: 630px) {
+        #ackMessageConfim.modal .modal-dialog {
+            max-width: 630px;
+            width: 630px;
+        }
+    }
+</style>
+
 <form method="post" id="menuListForm" action=<%=process.runtime.continueURL()%>>
   <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
   <input type="hidden" name="crud_action_type_form_value" value="">
@@ -43,22 +53,20 @@
                 </div>
                 <!--todo:slect prem issue -->
                 <%@include file="../common/premisesContent.jsp"%>
-                  <div class="application-tab-footer">
-                    <div class="row">
-                      <div class="col-xs-12 col-sm-6 ">
-                        <c:choose>
-                          <c:when test="${requestInformationConfig != null}">
-                            <a class="back" id="back" href="/main-web/eservice/INTERNET/MohInternetInbox"><em class="fa fa-angle-left"></em> Back</a>
-                          </c:when>
-                          <c:otherwise>
-                            <a class="back" id="back"><em class="fa fa-angle-left"></em> Back</a>
-                          </c:otherwise>
-                        </c:choose>
-                      </div>
-                      <div class="col-xs-12 col-sm-6">
-                        <div class="button-group">
-                          <a class="btn btn-primary next" id="previewAndSub" href="javascript:void(0);">Preview</a>
-                        </div>
+                  <div class="row">
+                    <div class="col-xs-12 col-md-6 ">
+                      <c:choose>
+                        <c:when test="${requestInformationConfig != null}">
+                          <a class="back" id="back" href="/main-web/eservice/INTERNET/MohInternetInbox"><em class="fa fa-angle-left"></em> Back</a>
+                        </c:when>
+                        <c:otherwise>
+                          <a class="back" id="back"><em class="fa fa-angle-left"></em> Back</a>
+                        </c:otherwise>
+                      </c:choose>
+                    </div>
+                    <div class="col-xs-12 col-md-6 text-right">
+                      <div class="button-group">
+                        <a class="btn btn-primary next" id="previewAndSub" href="javascript:void(0);">Preview</a>
                       </div>
                     </div>
                   </div>
@@ -68,46 +76,25 @@
           </div>
         </div>
       </div>
-    <input type="text" style="display: none" value="${rfcPendingApplication}" id="rfcPendingApplication" name="rfcPendingApplication">
-    <div class="modal fade" id="ackMessageConfim" role="dialog" aria-labelledby="myModalLabel" style="left: 50%;top: 50%;transform: translate(-50%,-50%);min-width:80%; overflow: visible;bottom: inherit;right: inherit;">
-      <div class="modal-dialog" role="document">
+    <input type="hidden" value="${rfcPendingApplication}" id="rfcPendingApplication" name="rfcPendingApplication">
+    <div class="modal fade" id="ackMessageConfim" role="dialog" aria-labelledby="myModalLabel">
+      <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
-<%--          <div class="modal-header">--%>
-<%--            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>--%>
-<%--            <div class="modal-title" style="font-size: 2rem;">Confirmation Box</div>--%>
-<%--          </div>--%>
           <div class="modal-body" >
-            <div class="row">
-              <div class="col-md-12 " ><span style="font-size: 2rem;">The changes you have made affect licences with pending application</span></div>
+            <div class="modal-body">
+              <div class="col-md-12"><span style="font-size: 2rem;">The changes you have made affect licences with pending application</span></div>
             </div>
-          </div>
-          <div class="row " style="margin-top: 5%;margin-bottom: 5%">
-            <button type="button" class="btn btn-secondary col-md-6" data-dismiss="modal" onclick="cancel()">Continue amending</button>
-            <button type="button" class="next btn btn-primary col-md-6" data-dismiss="modal" onclick="exitAndSave()">Exit and save as draft</button>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="cancel()">Continue amending</button>
+              <button type="button" class="next btn btn-primary" data-dismiss="modal" onclick="exitAndSave()">Exit and save as draft</button>
+            </div>
           </div>
         </div>
       </div>
     </div>
     <input type="text" style="display:none;" value="${hciNameUsed}" name="hciNameUsedInput" id="hciNameUsedInput">
-   <%-- <div class="modal fade" id="hciNameUsed" role="dialog" aria-labelledby="myModalLabel" style="left: 50%;top: 50%;transform: translate(-50%,-50%);min-width:80%; overflow: visible;bottom: inherit;right: inherit;">
-      <div class="modal-dialog" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h4 class="modal-title">Confirmation Box</h4>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-          </div>
-          <div class="modal-body" style="text-align: center;">
-            <div class="row">
-              <div class=""><span style="font-size: 16px;">${newAppPopUpMsg}</span></div>
-            </div>
-          </div>
-          <div class="row " style="margin-top: 5%;margin-bottom: 5%">
-            <button type="button" style="margin-left: 60%" class="next btn btn-primary col-md-4" data-dismiss="modal" onclick="Continue()">Continue</button>
-          </div>
-        </div>
-      </div>
-    </div>--%>
-    <iais:confirm msg="${newAppPopUpMsg}" needCancel="false" callBack="Continue()" popupOrder="hciNameUsed" yesBtnDesc="Continue" needEscapHtml="false"></iais:confirm>
+    <iais:confirm msg="${newAppPopUpMsg}" needCancel="false" callBack="Continue()" popupOrder="hciNameUsed" yesBtnDesc="Continue"
+                  needEscapHtml="false" />
     <input type="text" style="display:none;" name="continueStep" id="continueStep" value="${continueStep}">
     <input type="text" style="display: none" name="crudActionTypeContinue" id="crudActionTypeContinue" value="${crudActionTypeContinue}">
     <%--Validation Field--%>
@@ -193,7 +180,7 @@
         var mainContent =$('.main-content');
         mainContent.find('input.allDay:checked').each(function (k) {
             console.log(k);
-            var $allDayDiv = $(this).closest('div.col-md-2');
+            var $allDayDiv = $(this).closest('div.all-day-div');
             disabeleForAllDay($allDayDiv);
         });
         init = 1;

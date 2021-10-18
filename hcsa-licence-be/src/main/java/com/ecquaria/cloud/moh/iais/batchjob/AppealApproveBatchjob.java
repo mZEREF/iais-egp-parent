@@ -517,7 +517,7 @@ public class AppealApproveBatchjob {
                 ApplicationDto entity = applicationClient.getApplicationById(appealDto.getRelateRecId()).getEntity();
                 List<AppGrpPremisesEntityDto> appGrpPremisesDtos = otherChangeHciNameApp(hciName, entity);
                 appealAppGrpPremisesDto.addAll(appGrpPremisesDtos);
-                if(IaisCommonUtils.isNotEmpty(appealAppGrpPremisesDto)){
+                if(IaisCommonUtils.isNotEmpty(appealAppGrpPremisesDto)&&!entity.getApplicationType().equals(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION)){
                     for (AppGrpPremisesEntityDto appPrem:appealAppGrpPremisesDto
                          ) {
                         List<AppPremisesCorrelationDto> appPremisesCorrelationDtos=applicationClient.getPremCorrDtoByAppGroupId(appPrem.getAppGrpId()).getEntity();
@@ -565,7 +565,9 @@ public class AppealApproveBatchjob {
         }
         ApplicationDto entity = applicationClient.getApplicationById(appealDto.getRelateRecId()).getEntity();
         ApplicationDto o = (ApplicationDto)CopyUtil.copyMutableObject(entity);
-        //o.setStatus(ApplicationConsts.APPLICATION_STATUS_APPROVED);
+        if(o.getApplicationType().equals(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION)){
+            o.setStatus(ApplicationConsts.APPLICATION_STATUS_APPROVED);
+        }
         String appId = o.getId();
         LicAppCorrelationDto licAppCorrelationDto = hcsaLicenceClient.getOneLicAppCorrelationByApplicationId(appId).getEntity();
         List<ApplicationDto> applicationDtos = applicationClient.getApplicationDto(entity).getEntity();
@@ -577,7 +579,9 @@ public class AppealApproveBatchjob {
             addOtherChangeHciNameApp(applicationDtos,appealApplicaiton);
             ApplicationGroupDto applicationGroupDto = applicationClient.getAppById(o.getAppGrpId()).getEntity();
             ApplicationGroupDto a=(ApplicationGroupDto)CopyUtil.copyMutableObject(applicationGroupDto);
-            //a.setStatus(ApplicationConsts.APPLICATION_GROUP_STATUS_APPROVED);
+            if(a.getAppType().equals(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION)){
+                a.setStatus(ApplicationConsts.APPLICATION_GROUP_STATUS_APPROVED);
+            }
             appealApplicationGroupDtos.add(a);
         }else {
             //if licence no generate to do

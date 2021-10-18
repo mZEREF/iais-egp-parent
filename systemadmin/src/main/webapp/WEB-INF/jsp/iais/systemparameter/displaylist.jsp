@@ -93,7 +93,7 @@
                                     <div class="table-gp">
                                     <table aria-describedby="" class="table">
                                         <thead>
-                                        <tr>
+                                        <tr><th scope="col" style="display: none"></th>
                                             <iais:sortableHeader needSort="false" style="width:5%; " field="" value="No."></iais:sortableHeader>
                                             <iais:sortableHeader needSort="true"  style="width:18%" field="domain_type" value="System Parameter Type"></iais:sortableHeader>
                                             <iais:sortableHeader needSort="true" style="width:10%"  field="module" value="Module"></iais:sortableHeader>

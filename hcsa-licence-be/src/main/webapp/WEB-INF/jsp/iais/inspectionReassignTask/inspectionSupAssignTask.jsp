@@ -49,7 +49,7 @@
                                         </iais:value>
                                     </iais:row>
                                     <iais:action >
-                                        <a class="back" id="Back" onclick="javascript:doInspectionReassignTaskBack()" style="float:left"><em class="fa fa-angle-left"></em> Back</a>
+                                        <a href="#" class="back" id="Back" onclick="javascript:doInspectionReassignTaskBack()" style="float:left"><em class="fa fa-angle-left"></em> Back</a>
                                             <button class="btn btn-primary" style="float:right" type="button" onclick="javascript:doInspectionReassignTaskNext()">Next</button>
                                     </iais:action>
                                 </iais:section>

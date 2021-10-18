@@ -33,12 +33,12 @@
                                 <table aria-describedby="" class="table">
                                     <thead>
                                     <tr>
-                                        <th  width="8%">Service Name</th>
-                                        <th  width="15%">Impact of Non Compliance (NC) on Patient Safety</th>
+                                        <th scope="col" width="8%">Service Name</th>
+                                        <th scope="col" width="15%">Impact of Non Compliance (NC) on Patient Safety</th>
                                         <th scope="col" >Effective Start Date</th>
                                         <th scope="col" >Effective End Date</th>
-                                        <th width="8%">Minimum Number of NCs</th>
-                                        <th width="8%">Maximum Number of NCs</th>
+                                        <th scope="col" width="8%">Minimum Number of NCs</th>
+                                        <th scope="col" width="8%">Maximum Number of NCs</th>
                                         <th scope="col" >Compliance Risk</th>
                                     </tr>
                                     </thead>

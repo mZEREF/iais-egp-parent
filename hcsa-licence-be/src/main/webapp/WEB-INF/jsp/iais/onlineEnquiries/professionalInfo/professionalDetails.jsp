@@ -41,7 +41,12 @@
                 <div class="row">
                   <div class="col-xs-12">
                     <div class="table-gp">
-                      <table class="table table-bordered">
+                      <table aria-describedby="" class="table table-bordered">
+                        <thead style="display: none">
+                        <tr>
+                          <th scope="col"></th>
+                        </tr>
+                        </thead>
                         <tbody>
                         <tr>
                           <td class="col-xs-6" align="right">Registration Expiry date</td>
@@ -49,7 +54,7 @@
                         </tr>
                         <tr>
                           <td align="right">Registration Accreditations</td>
-                          <td>&nbsp; <iais:code code="${empty professionalInfo.regDit ? '-' : professionalInfo.regDit}"></iais:code></td>
+                          <td>&nbsp;<iais:code code="${empty professionalInfo.regDit ? '-' : professionalInfo.regDit}"></iais:code></td>
                         </tr>
                         <tr>
                           <td align="right">Disciplinary Records</td>
@@ -76,7 +81,7 @@
 
 
         <iais:action style="text-align:left;">
-          <a class="back" onclick="doCancel()();"><em class="fa fa-angle-left"></em> Back</a>
+          <a href="#" class="back" onclick="doCancel()();"><em class="fa fa-angle-left"></em> Back</a>
         </iais:action>
 
       </div>

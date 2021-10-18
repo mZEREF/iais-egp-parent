@@ -290,7 +290,7 @@ public class LicenceInboxFallback implements LicenceInboxClient {
     }
 
     @Override
-    public FeignResponseEntity<Void> refreshSubLicenseeInfo(LicenseeDto licenseeDto) {
+    public FeignResponseEntity<String> refreshSubLicenseeInfo(LicenseeDto licenseeDto) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);

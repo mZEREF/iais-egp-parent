@@ -14,8 +14,8 @@
 </div>
 </div>
 <!-- Modal -->
-<div class="modal fade" id="isRenewedModal" role="dialog" aria-labelledby="myModalLabel" style="left: 50%;top: 50%;transform: translate(-50%,-50%);min-width:60%; overflow: visible;bottom: inherit;right: inherit;">
-    <div class="modal-dialog modal-lg" role="document" >
+<div class="modal fade" id="isRenewedModal" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog modal-lg modal-dialog-centered" role="document" >
         <div class="modal-content">
 <%--            <div class="modal-header">--%>
 <%--                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>--%>
@@ -33,8 +33,8 @@
 </div>
 <!--Modal End-->
 <!-- Modal -->
-<div class="modal fade" id="ceasedModal" role="dialog" aria-labelledby="myModalLabel" style="left: 50%;top: 50%;transform: translate(-50%,-50%);min-width:60%; overflow: visible;bottom: inherit;right: inherit;">
-    <div class="modal-dialog" role="document" style="width: 760px;">
+<div class="modal fade" id="ceasedModal" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog modal-dialog-centered" role="document" style="width: 760px;">
         <div class="modal-content">
 <%--            <div class="modal-header">--%>
 <%--                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>--%>
@@ -201,6 +201,9 @@
 
     $("#amendLicence4_2").click(function(){
         guideSubmit("amend4_2","main");
+    });
+    $("#amendLicence5").click(function(){
+        guideSubmit("amend5","main");
     });
     $("#updateAdminPersonnel").click(function(){
         guideSubmit("upAdmin","main");

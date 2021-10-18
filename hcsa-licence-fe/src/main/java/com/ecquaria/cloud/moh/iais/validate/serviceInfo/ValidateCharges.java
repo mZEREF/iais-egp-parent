@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.validate.serviceInfo;
 
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcChargesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcChargesPageDto;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
@@ -20,18 +21,24 @@ import java.util.Map;
 @Component
 @Slf4j
 public class ValidateCharges implements ValidateFlow {
+
     @Override
     public void doValidateCharges(Map<String, String> map, AppSvcChargesPageDto appSvcClinicalDirectorDto) {
-        if(appSvcClinicalDirectorDto==null){
+        if (appSvcClinicalDirectorDto == null) {
             return;
         }
+        Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
         List<AppSvcChargesDto> generalChargesDtos = appSvcClinicalDirectorDto.getGeneralChargesDtos();
-        doValidateGeneralCharges(map,generalChargesDtos);
+        doValidateGeneralCharges(errorMap, generalChargesDtos);
         List<AppSvcChargesDto> otherChargesDtos = appSvcClinicalDirectorDto.getOtherChargesDtos();
-        doValidateOtherCharges(map,otherChargesDtos);
+        doValidateOtherCharges(errorMap, otherChargesDtos);
 
-        log.info(StringUtil.changeForLog("====> ValidateCharges->"+ JsonUtil.parseToJson(map)));
+        if (map != null) {
+            map.putAll(errorMap);
+        }
+        log.info(StringUtil.changeForLog("====> ValidateCharges->" + JsonUtil.parseToJson(errorMap)));
     }
+
     protected void doValidateGeneralCharges(Map<String, String> map,List<AppSvcChargesDto> generalChargesDtos){
         if(generalChargesDtos==null || generalChargesDtos.isEmpty()){
             return;
@@ -58,9 +65,7 @@ public class ValidateCharges implements ValidateFlow {
 
             }
             String maxAmount = generalChargesDtos.get(i).getMaxAmount();
-            if(StringUtil.isEmpty(maxAmount)){
-                map.put("maxAmount"+i, MessageUtil.replaceMessage("GENERAL_ERR0006", "this", "field"));
-            }else {
+            if(!StringUtil.isEmpty(maxAmount)){
                 if(maxAmount.length() > 4){
                     String general_err0041= NewApplicationHelper.repLength("Amount","4");
                     map.put("maxAmount"+i,general_err0041);
@@ -110,9 +115,7 @@ public class ValidateCharges implements ValidateFlow {
                 }
             }
             String maxAmount = otherChargesDtos.get(i).getMaxAmount();
-            if(StringUtil.isEmpty(maxAmount)){
-                map.put("otherAmountMax"+i,errMsg);
-            }else {
+            if(!StringUtil.isEmpty(maxAmount)){
                 if(maxAmount.length()>4){
                     String general_err0041= NewApplicationHelper.repLength("Amount","4");
                     map.put("otherAmountMax"+i,general_err0041);

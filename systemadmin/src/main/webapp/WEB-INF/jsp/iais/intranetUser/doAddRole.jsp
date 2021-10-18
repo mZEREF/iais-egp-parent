@@ -35,7 +35,7 @@
                                     <span style="font-size: 18px">${role.value}</span>
                                 </div>
 
-                                <div id="ao1" hidden class="col-md-6">
+                                <div id="ao1" style="display: none" class="col-md-6">
                                     <iais:select name="ao1GroupSelect"  options="ao1GroupOptions" multiSelect="true"></iais:select>
 
 <%--                                    <c:forEach items="${ao1GroupOptions}" var="groupId">--%>
@@ -53,7 +53,7 @@
                                     <span style="font-size: 18px">${role.value}</span>
                                 </div>
 
-                                <div id="ao1Lead" hidden class="col-md-6">
+                                <div id="ao1Lead" style="display: none" class="col-md-6" >
                                     <iais:select name="ao1GroupLeadSelect"  options="ao1GroupOptions" multiSelect="true"></iais:select>
 
 <%--                                    <c:forEach items="${ao1GroupOptions}" var="groupId">--%>
@@ -71,7 +71,7 @@
                                     <span style="font-size: 18px">${role.value}</span>
                                 </div>
 
-                                <div id="ins" hidden class="col-md-6">
+                                <div id="ins" style="display: none" class="col-md-6">
                                     <iais:select name="insGroupSelect"  options="insGroupOptions" multiSelect="true"></iais:select>
 <%--                                    <c:forEach items="${insGroupOptions}" var="groupId">--%>
 <%--                                        <input type="checkbox" value="${groupId.value}" name="insGroupSelect" <c:if test="${role.value eq groupId}">checked</c:if>/><c:out value="${groupId.text}"></c:out><div class="row">&nbsp;</div>--%>
@@ -88,7 +88,7 @@
                                     <span style="font-size: 18px">${role.value}</span>
                                 </div>
 
-                                <div id="insLead" hidden class="col-md-6">
+                                <div id="insLead" style="display: none" class="col-md-6">
                                     <iais:select name="insGroupLeadSelect" options="insGroupOptions" multiSelect="true"></iais:select>
 
 <%--                                    <c:forEach items="${insGroupOptions}" var="groupId">--%>
@@ -106,7 +106,7 @@
                                     <span style="font-size: 18px">${role.value}</span>
                                 </div>
 
-                                <div id="pso" hidden class="col-md-6">
+                                <div id="pso" style="display: none" class="col-md-6">
                                     <iais:select name="psoGroupSelect" options="psoGroupOptions" multiSelect="true"></iais:select>
 
 <%--                                    <c:forEach items="${psoGroupOptions}" var="groupId">--%>
@@ -124,7 +124,7 @@
                                     <span style="font-size: 18px">${role.value}</span>
                                 </div>
 
-                                <div id="psoLead" hidden class="col-md-6">
+                                <div id="psoLead" style="display: none" class="col-md-6">
                                     <iais:select name="psoGroupLeadSelect" options="psoGroupOptions" multiSelect="true"></iais:select>
 
 <%--                                    <c:forEach items="${psoGroupOptions}" var="groupId">--%>
@@ -190,7 +190,7 @@
                 </iais:value>
             </iais:row>
             <iais:action>
-                <a style="margin-left: 0%" class="back" onclick="submit('back')"><em class="fa fa-angle-left"></em> Back</a>
+                <a href="#" style="margin-left: 0%" class="back" onclick="submit('back')"><em class="fa fa-angle-left"></em> Back</a>
                 <a style="margin-left: 83%" class="btn btn-primary" href="#" onclick="submit('doDeactivate')">Remove</a>
             </iais:action>
         </iais:section>

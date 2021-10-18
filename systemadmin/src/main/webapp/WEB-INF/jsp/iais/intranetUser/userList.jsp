@@ -23,6 +23,13 @@
                             </c:when>
                             <c:otherwise>
                                 <th scope="col" >
+                                    <style>
+                                        .table-gp .form-check {
+                                            margin-top: 0px;
+                                            margin-bottom: 14px;
+                                            display: revert;
+                                        }
+                                    </style>
                                     <div class="form-check">
                                         <input type="checkbox" class="form-check-input" name="userUids" id="checkboxAll"
                                                onchange="javascirpt:checkAll();"/>
@@ -32,11 +39,12 @@
                                 </th>
                             </c:otherwise>
                         </c:choose>
-                        <th style="padding-bottom:16px">No.</th>
+                        <th scope="col" style="display: none"></th>
+                        <iais:sortableHeader needSort="false" field="" value="No."  />
                         <iais:sortableHeader needSort="true" field="USER_ID" value="User ID"/>
                         <iais:sortableHeader needSort="true" field="EMAIL_ADDR" value="Email address"/>
                         <iais:sortableHeader needSort="true" field="STATUS" value="Account Status"/>
-                        <th style="padding-bottom:16px">Action</th>
+                        <iais:sortableHeader needSort="false" field="" value="Action"  />
                     </tr>
                     </thead>
                     <tbody>
@@ -101,8 +109,8 @@
                 </table>
                 </div>
                 <!--delete  Modal -->
-                <div class="modal fade" id="deleteModal" role="dialog" aria-labelledby="myModalLabel" style="left: 50%;top: 50%;transform: translate(-50%,-50%);min-width:80%; overflow: visible;bottom: inherit;right: inherit;">
-                    <div class="modal-dialog" role="document">
+                <div class="modal fade" id="deleteModal" role="dialog" aria-labelledby="myModalLabel">
+                    <div class="modal-dialog modal-dialog-centered" role="document">
                         <div class="modal-content">
 <%--                            <div class="modal-header">--%>
 <%--                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>--%>
@@ -121,9 +129,8 @@
                 <!--delete end -->
 
                 <!-- import Modal -->
-                <div class="modal fade" id="importUser" tabindex="-1" role="dialog" aria-labelledby="importUser"
-                     style="left: 50%;top: 50%;transform: translate(-50%,-50%);min-width:80%; overflow: visible;bottom: inherit;right: inherit;">
-                    <div class="modal-dialog" role="document">
+                <div class="modal fade" id="importUser" tabindex="-1" role="dialog" aria-labelledby="importUser">
+                    <div class="modal-dialog modal-dialog-centered" role="document">
                         <div class="modal-content">
 <%--                            <div class="modal-header">--%>
 <%--                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span--%>
@@ -146,7 +153,7 @@
                 <!--Modal End-->
 
             </div>
-            <div class="panel-heading" id="exportError" hidden style="font-size: 1.6rem; color: #D22727; padding-left: 20px"><iais:message key="USER_ERR021"
+            <div class="panel-heading" id="exportError" style="display: none; font-size: 1.6rem; color: #D22727; padding-left: 20px"><iais:message key="USER_ERR021"
                                                                                                 escape="flase"></iais:message></div>
             <iais:action style="text-align:center;">
                 <div class="text-right">

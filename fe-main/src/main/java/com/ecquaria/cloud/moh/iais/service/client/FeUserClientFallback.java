@@ -7,6 +7,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterInboxUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.FeUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.FeUserQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserRoleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrganizationDto;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
@@ -48,7 +49,7 @@ public class FeUserClientFallback implements FeUserClient{
     }
 
     @Override
-    public FeignResponseEntity<FeUserDto> getInternetUserByNricAndIdType(String nric, String idType) {
+    public FeignResponseEntity<FeUserDto> getInternetUserByNricAndIdType(String nric, String idType, String uen) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
@@ -161,12 +162,26 @@ public class FeUserClientFallback implements FeUserClient{
     }
 
     @Override
-    public FeignResponseEntity<IaisApiResult<Void>> validateSingpassAccount(String idNo, String idType) {
+    public FeignResponseEntity<List<OrgUserDto>> getUserListByNricAndIdType(String nric, String idType) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
         return entity;
     }
 
+    @Override
+    public FeignResponseEntity<List<OrgUserRoleDto>> retrieveRolesByUserAccId(String userAccId) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
 
+    @Override
+    public FeignResponseEntity<IaisApiResult<Void>> validateSingpassAccount(String idNo, String idType) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
 }

@@ -1,7 +1,9 @@
 package com.ecquaria.cloud.moh.iais.validation;
 
+import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.organization.OrganizationConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.FeUserDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.OrganizationDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -9,15 +11,19 @@ import com.ecquaria.cloud.moh.iais.common.validation.SgNoValidator;
 import com.ecquaria.cloud.moh.iais.common.validation.ValidationUtils;
 import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidator;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
+import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.service.IntranetUserService;
+import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 
 /**
  * AdminValidator
@@ -30,6 +36,9 @@ public class UserValidator implements CustomizeValidator {
 
     @Autowired
     IntranetUserService intranetUserService;
+
+    @Autowired
+    private OrganizationClient organizationClient;
 
     @Override
     public Map<String, String> validate(HttpServletRequest request) {
@@ -81,7 +90,87 @@ public class UserValidator implements CustomizeValidator {
                 map.put("officeTelNo", MessageUtil.getMessageDesc("GENERAL_ERR0015"));
             }
         }
+        String idNo = dto.getIdentityNo();
+        String idType = dto.getIdType();
+        if (!StringUtil.isEmpty(idNo) && !StringUtil.isEmpty(idType)) {
+            String profile = (String) ParamUtil.getRequestAttr(request, "UserValidator_profile");
+            List<FeUserDto> userList = intranetUserService.getUserListByNricAndIdType(idNo, idType);
+            String identityNoErr = MessageUtil.getMessageDesc("USER_ERR015");
+            if ("edit".equals(profile)) {
+                if (dto.getId() == null) {
+                    map.put("identityNo", MessageUtil.getMessageDesc("GENERAL_ERR0049"));
+                } else {
+                    FeUserDto feUserDto = findAccount(userList, dto.getUenNo(), dto.getId());
+                    if (feUserDto != null) {
+                        map.put("identityNo", identityNoErr);
+                    }
+                }
+            } else if ("create".equals(profile)) {
+                FeUserDto feUserDto;
+                if(StringUtil.isEmpty(dto.getUenNo())) {
+                    //sing pass
+                    feUserDto = findSingPassAccount(userList);
+                } else {
+                    //crop pass
+                    feUserDto = findCropPassAccount(userList, dto.getUenNo());
+                }
+                if (feUserDto != null) {
+                    map.put("identityNo", identityNoErr);
+                }
+            }
+        }
         return map;
+    }
+
+    private FeUserDto findAccount(List<FeUserDto> userAccounts, String uen, String id) {
+        FeUserDto feUserDto = null;
+        if (userAccounts == null || StringUtil.isEmpty(id)) {
+            return feUserDto;
+        }
+        for (FeUserDto userDto : userAccounts) {
+            if (!AppConsts.COMMON_STATUS_DELETED.equals(userDto.getStatus())
+                    && (StringUtil.isEmpty(uen) && StringUtil.isEmpty(userDto.getUenNo())
+                        || !StringUtil.isEmpty(uen) && uen.equals(userDto.getUenNo()))
+                    && !id.equals(userDto.getId())) {
+                feUserDto = userDto;
+                break;
+            }
+        }
+        return feUserDto;
+    }
+
+    private FeUserDto findCropPassAccount(List<FeUserDto> userAccounts, String uen) {
+        FeUserDto feUserDto = null;
+        if (userAccounts == null) {
+            return feUserDto;
+        }
+        for(FeUserDto userDto : userAccounts) {
+            if(userDto != null) {
+                if(!AppConsts.COMMON_STATUS_DELETED.equals(userDto.getStatus())) {
+                    if(uen.equals(userDto.getUenNo())) {
+                        feUserDto = userDto;
+                        break;
+                    }
+                }
+            }
+        }
+        return feUserDto;
+    }
+
+    private FeUserDto findSingPassAccount(List<FeUserDto> userAccounts) {
+        FeUserDto feUserDto = null;
+        if (userAccounts == null) {
+            return feUserDto;
+        }
+        for(FeUserDto userDto : userAccounts) {
+            if(userDto != null) {
+                if(!AppConsts.COMMON_STATUS_DELETED.equals(userDto.getStatus()) && StringUtil.isEmpty(userDto.getUenNo())) {
+                    feUserDto = userDto;
+                    break;
+                }
+            }
+        }
+        return feUserDto;
     }
 
 }

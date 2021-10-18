@@ -92,11 +92,15 @@
   <%@ include file="/WEB-INF/jsp/include/validation.jsp" %>
 </form>
 <script>
-    function printRLPDF(){
-        var url ='${pageContext.request.contextPath}<%=RedirectUtil.appendCsrfGuardToken("/eservice/INTERNET/MohFePrintView/1/",request)%>';
-        var txt='&licenceView=licenceView';
-        window.open(url+txt,'_blank');
-        // window.open("<%=request.getContextPath() %>/eservice/INTERNET/MohAppealPrint?whichPage=relatePage",'_blank');
+    function printRLPDF() {
+        var url ='${pageContext.request.contextPath}<%=RedirectUtil.appendCsrfGuardToken("/eservice/INTERNET/MohFePrintView",request)%>';
+        if (url.indexOf('?') > 0 ) {
+            url += '&';
+        } else {
+            url += '?';
+        }
+        url += 'licenceView=licenceView';
+        window.open(url,'_blank');
     }
 </script>
 

@@ -2,35 +2,43 @@
 <sqls catalog="giroPayee">
     <sql key = "searchByGiroAcctInfo" remarks="search by GIRO Payee account information">
         <![CDATA[
-            SELECT distinct gai.ID, gai.ORGANIZATION_ID,
+            SELECT distinct gai.ID,gai.UEN_NO UEN,gai.LICENCE_ID,SUBSTRING ( gai.LICENCE_NO, 0, 14 )  LICENCE_NO ,
+            gai.SVC_NAME,gai.LICENSEE_NAME,gai.REMARKS,
             gai.BANK_CODE, gai.BANK_NAME, gai.BRANCH_CODE, gai.ACCT_NAME, gai.ACCT_NO,
             gai.DDA_REF_NO
 
-            FROM org_giro_account_info gai
+            FROM giroAccountInfoView gai
             where gai.STATUS = 'CMSTAT001'
-            <#if cusRefNo??> AND charindex(:cusRefNo, gai.DDA_REF_NO) >0 </#if>
+            <#if uen??> AND charindex(:uen, gai.UEN_NO) >0 </#if>
+            <#if licensee??> AND charindex(:licensee, gai.LICENSEE_NAME) >0 </#if>
+            <#if licenceNo??> AND charindex(:licenceNo, gai.LICENCE_NO) >0 </#if>
 
         ]]>
     </sql>
 
     <sql key = "searchByOrgPremView" remarks="search by Organization Premises View">
         <![CDATA[
-            SELECT distinct opv.ID OP_ID, opv.UEN_NO
-            from organization opv
+            SELECT distinct opv.ID , opv.ORG_ID,SUBSTRING ( opv.LICENCE_NO, 0, 14 )  LICENCE_NO , opv.UEN_NO, opv.SVC_NAME, opv.LICENSEE_NAME
+            from UenLicView opv
             where 1 = 1
-            and opv.UEN_NO is not null and opv.UEN_NO !=''
             <#if uenNo??> AND charindex(:uenNo, opv.UEN_NO) >0 </#if>
-            <#if orgIds??> AND ${orgIds} </#if>
+            <#if licensee??> AND charindex(:licensee, opv.LICENSEE_NAME) >0 </#if>
+            <#if licenceNo??> AND charindex(:licenceNo, opv.LICENCE_NO) >0 </#if>
+            <#if licIds??> AND ${licIds} </#if>
 
         ]]>
     </sql>
     <sql key = "searchGiroDeduction" remarks="search ">
         <![CDATA[
         SELECT * from (
-        select dbo.f_hcinameconcat(ag.ID) as HCI_NAME,
-        a.ID,a.APP_GROUP_NO,a.AMOUNT,a.PMT_TYPE,a.PMT_STATUS,a.TXN_REF_NO,a.INVOICE_NO,a.ACCT_NO,a.PAY_DESC
-        from hcsala.dbo.application_group as ag , giro_payment_view as a  WHERE ag.GROUP_NO=a.APP_GROUP_NO )
-        t1 where 1=1 and PMT_STATUS in ('PMT09','PMT03')
+            select dbo.f_hcinameconcat(ag.ID) as HCI_NAME,
+            a.ID,a.APP_GROUP_NO,a.AMOUNT,a.PMT_TYPE,a.PMT_STATUS,a.TXN_REF_NO,a.INVOICE_NO,a.ACCT_NO,a.PAY_DESC
+            from application_group as ag
+            join giro_payment_view as a  on ag.GROUP_NO=a.APP_GROUP_NO
+            join application as app on app.APP_GRP_ID=ag.ID
+            where app.STATUS not in ('APST006','APST009','APST045')
+            ) t1
+        where 1=1 and PMT_STATUS in ('PMT09','PMT03')
         <#if groupNo??> and charindex  (:groupNo,APP_GROUP_NO)>0 </#if>
         <#if acctNo??>and charindex  (:acctNo,ACCT_NO) >0</#if>
         <#if amount??>and charindex  (:amount,AMOUNT) >0 </#if>

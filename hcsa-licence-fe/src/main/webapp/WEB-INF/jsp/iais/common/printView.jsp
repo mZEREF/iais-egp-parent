@@ -14,7 +14,8 @@
         color: #147aab !important;
         background-color: #FFF;
         content: "\f111";
-    font-family: FontAwesome, sans-serif;        position: absolute;
+        font-family: FontAwesome, sans-serif;
+        position: absolute;
         font-size: 12px;
         top: 38%;
         left: 48%;
@@ -62,7 +63,7 @@
 
                                                         <div class="panel panel-default svc-content">
                                                             <div class="panel-heading"  id="headingServiceInfo" role="tab">
-                                                                <h4 class="panel-title"><a class="svc-pannel-collapse collapsed a-panel-collapse"  role="button" data-toggle="collapse" href="#collapseServiceInfo${submisonStat.index}${svcStat.index}" aria-expanded="true" aria-controls="collapseServiceInfo">Service Related Information - ${currentPreviewSvcInfo.serviceName}</a></h4>
+                                                                <h4 class="panel-title"><a class="svc-pannel-collapse collapsed a-panel-collapse" style="text-decoration: none;"  role="button" data-toggle="collapse" href="#collapseServiceInfo${submisonStat.index}${svcStat.index}" aria-expanded="true" aria-controls="collapseServiceInfo">Service Related Information - ${currentPreviewSvcInfo.serviceName}</a></h4>
                                                             </div>
 
                                                             <div class=" panel-collapse collapse in" id="collapseServiceInfo${submisonStat.index}${svcStat.index}" role="tabpanel" aria-labelledby="headingServiceInfo">
@@ -76,13 +77,39 @@
                                                         </div>
                                                     </c:forEach>
                                                     <c:if test="${appTypeForPrintDec != 'APTY009'}">
-                                                    <%@include file="../common/declarations.jsp"%>
-                                                    <  </c:if>
+                                                        <%@include file="../common/declarations.jsp"%>
+                                                    </c:if>
+                                                    <c:if test="${AppSubmissionDto.appType == 'APTY005'}">
+                                                        <c:set var="rfc_from_renew" value="${(not empty AppSubmissionDto.appDeclarationMessageDto && AppSubmissionDto.appDeclarationMessageDto.appType == 'APTY004') ? 'Y' : 'N'}"/>
+                                                        <c:set var="showDeclartion" value="${not empty RFC_eqHciNameChange && RFC_eqHciNameChange != 'RFC_eqHciNameChange'}"/>
+                                                        <c:if test="${showDeclartion && rfc_from_renew != 'Y'}">
+                                                            <div class="row">
+                                                                <div class="form-check col-md-8 col-lg-9 col-xs-12">
+                                                                    Please indicate the date which you would like the changes to be effective (subject to approval). If not indicated, the effective date will be the approval date of the change.
+                                                                </div>
+                                                                <div class="col-md-4 col-lg-3 col-xs-12">
+                                                                    <iais:datePicker cssClass="rfcEffectiveDate" name="rfcEffectiveDate" value="${AppSubmissionDto.effectiveDateStr}" />
+                                                                </div>
+                                                            </div>
+                                                            <div class="form-check">
+                                                                <input class="form-check-input" id="verifyInfoCheckbox" type="checkbox" name="verifyInfoCheckbox" value="1" aria-invalid="false" <c:if test="${AppSubmissionDto.userAgreement}">checked="checked"</c:if> >
+                                                                <label class="form-check-label" for="verifyInfoCheckbox">
+                                                                    <span class="check-square"></span>
+                                                                    <iais:message key="ACK_DEC001" escape="false" />
+                                                                </label>
+                                                            </div>
+                                                            <div>
+                                                                <span id="error_fieldMandatory"  class="error-msg"></span>
+                                                            </div>
+
+                                                            <div>
+                                                                <span id="error_charityHci"  class="error-msg"></span>
+                                                            </div>
+                                                        </c:if>
+                                                    </c:if>
                                                 </div>
                                             </div>
                                         </div>
-
-
                                     </div>
                                 </div>
                             </div>
@@ -97,7 +124,7 @@
 <script type="text/javascript">
     $(document).ready(function () {
         $(':input', '#declarations').prop('disabled', true);
-
+        $('#accordion').find('.collapse').collapse('show');
         var btn = $('.file-upload-gp a', '#declarations');
         if (btn.length > 0) {
             btn.each(function(index, ele) {
@@ -107,7 +134,7 @@
         // textarea
         $('textarea', '#declarations').each(function(index, ele){
             $(ele).parent().append('<div style="border-radius:8px;border: 1px solid #000;padding: 5px;">'
-                + $(ele).val() + '</div>');
+                    + $(ele).val() + '</div>');
             $(ele).remove();
         });
 

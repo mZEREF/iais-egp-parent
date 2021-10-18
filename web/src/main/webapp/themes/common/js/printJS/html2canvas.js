@@ -6702,7 +6702,7 @@
                                                 x = getAbsoluteValue(position[0], width);
                                                 y = getAbsoluteValue(position[position.length - 1], height);
                                                 _e = calculateRadius(backgroundImage, x, y, width, height), rx = _e[0], ry = _e[1];
-                                                if (rx > 0 && rx > 0) {
+                                                if (rx > 0 ) {
                                                     radialGradient_1 = this_1.ctx.createRadialGradient(left + x, top_1 + y, 0, left + x, top_1 + y, rx);
                                                     processColorStops(backgroundImage.stops, rx * 2).forEach(function (colorStop) {
                                                         return radialGradient_1.addColorStop(colorStop.stop, asString(colorStop.color));

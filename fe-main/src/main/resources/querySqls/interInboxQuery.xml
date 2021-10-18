@@ -40,7 +40,7 @@
                 self_assmt_flag,
                 is_fast_tracking,
                 created_dt,
-                version
+                version,NULL as misc_app_id,NULL as IS_AUTO_APPROVE
             FROM APPLICATION AS app where app.app_type in ('APTY001','APTY005','APTY002')) AS wapp
             WHERE wapp.status in ('APST001','APST003','APST004','APST007','APST010','APST011','APST012','APST013','APST014','APST021',
                                     'APST023','APST027','APST028','APST029','APST031','APST032','APST033','APST034','APST039','APST040',
@@ -54,7 +54,8 @@
 
     <sql key = "applicationQuery" remarks = "Query Inter-Application Data by condition">
         <![CDATA[
-         SELECT *
+           SELECT * FROM (
+         SELECT B.*,AG.IS_AUTO_APPROVE as IS_AUTO_APPROVE
             FROM (SELECT
                     app.id,
                     app.application_no,
@@ -86,7 +87,7 @@
                     (case A.status when 'CMSTAT001' then 'APST008' else 'APST093' end) as status,NULL as service_id,A.SERVICE_CODES as code,null,null,A.CREATED_DT,1,null
                 from
                     app_grp_submission_draft AS A
-                where  A.status = 'CMSTAT001' or A.status='DRAFT001') AS B
+                where  A.status = 'CMSTAT001' or A.status='DRAFT001') AS B LEFT join application_group AG on B.app_grp_id =AG.ID
              WHERE B.STATUS != 'CMSTAT002' AND B.STATUS !='APST009'
              AND B.STATUS !='APST051' AND B.STATUS != 'APST072'
              AND B.STATUS != 'APST074'
@@ -96,7 +97,7 @@
              AND B.STATUS != 'APST081'
              AND B.STATUS != 'APST083'
              AND B.APP_TYPE != 'APTY007'
-            <#if id??> AND CHARINDEX(:id, app.id) >0</#if>
+            <#if id??> AND CHARINDEX(:id,B.app.id) >0</#if>
             <#if appType??> AND B.app_type = :appType</#if>
             <#if licenseeId??> AND B.licensee_id = :licenseeId</#if>
             <#if serviceType??> AND B.service_id = :serviceType</#if>
@@ -106,6 +107,7 @@
             <#if createDtStart??> AND B.created_dt > :createDtStart</#if>
             <#if serviceCode??> AND CHARINDEX(:serviceCode, B.code) >0 </#if>
             <#if createDtEnd??> AND B.created_dt < :createDtEnd</#if>
+            ) a
         ]]>
     </sql>
 
@@ -180,7 +182,7 @@
            FROM user_account acc
            JOIN organization org ON acc.ORGANIZATION_ID = org.ID
            JOIN user_role role ON acc.ID = role.USER_ACCT_ID
-           where role.STATUS = 'CMSTAT001' and acc.STATUS != 'CMSTAT002'
+           where role.STATUS != 'CMSTAT002' and acc.STATUS != 'CMSTAT002'
            <#if orgid??>AND org.ID = :orgid</#if>
            <#if roleid??>AND role.ROLE_ID = :roleid</#if>
         ]]>
@@ -215,11 +217,14 @@
 	               as address,p.ORGANIZATION_ID FROM
                    licence as li  join lic_premises lp on li.ID = lp.LICENCE_ID
                    join premises p on lp.PREMISES_ID = p.ID WHERE 1 = 1 <#if licenseeId??>   and li.LICENSEE_ID =:licenseeId </#if>
-                    and p.PREMISES_TYPE in ('ONSITE','OFFSITE','CONVEYANCE','EASMTS') and
-                   li.STATUS ='LICEST001' and p.ID in (
+                    and p.PREMISES_TYPE in ('ONSITE','OFFSITE','CONVEYANCE','EASMTS')
+                    <#if premisesType??> and p.PREMISES_TYPE =:premisesType </#if>
+                    and li.STATUS ='LICEST001' and p.ID in (
                            SELECT  MAX(li.PREMISES_ID) FROM
                    lic_premises as li WHERE li.LICENCE_ID in
-                   (SELECT b.ID FROM licence as b WHERE b.STATUS='LICEST001' <#if licenseeId??>   and b.LICENSEE_ID =:licenseeId </#if>)GROUP by li.LICENCE_ID)
+                   (SELECT b.ID FROM licence as b WHERE b.STATUS='LICEST001'
+                    <#if licenseeId??> and b.LICENSEE_ID =:licenseeId </#if>)GROUP by li.LICENCE_ID)
+
             ]]>
     </sql>
     <sql key = "appPersonnelQuery" remarks = "Query Application Data by condition">
@@ -275,7 +280,7 @@
               <#if serName??> and T1.SVC_NAME IN ${serName} </#if>
               <#if licenseeId??> AND T1.LICENSEE_ID = :licenseeId</#if>
               <#if premTypeList??>AND T3.PREMISES_TYPE IN ${premTypeList}</#if>
-              <#if alignMinExpiryMonth??>AND DATEDIFF(MONTH ,getDate(),T1.EXPIRY_DATE) > :alignMinExpiryMonth</#if>
+              <#if alignMinExpiryMonth??>AND DATEDIFF(MONTH ,getDate(),T1.EXPIRY_DATE) >= :alignMinExpiryMonth</#if>
              )tab1 order by tab1.ORDER_INDEX ASC
         ]]>
     </sql>

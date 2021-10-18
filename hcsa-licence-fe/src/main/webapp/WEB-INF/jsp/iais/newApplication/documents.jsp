@@ -112,10 +112,11 @@
                                         </c:when>
                                         <c:otherwise>
                                             <div class="row">
-                                                <div class="col-xs-12 col-sm-6"><a class="back" id="Back"><em class="fa fa-angle-left"></em> Back</a></div>
+                                                <div class="col-xs-12 col-md-4"><a class="back" id="Back"><em
+                                                        class="fa fa-angle-left"></em> Back</a></div>
                                                 <input type="text" style="display: none" id="selectDraftNo" value="${selectDraftNo}">
                                                 <input type="text" style="display: none; " id="saveDraftSuccess" value="${saveDraftSuccess}">
-                                                <div class="col-xs-12 col-sm-6">
+                                                <div class="col-xs-12 col-md-8">
                                                     <div class="button-group"><c:if test="${requestInformationConfig==null}"><a class="btn btn-secondary" id="SaveDraft" href="javascript:void(0);">Save as Draft</a></c:if>
                                                         <a class="btn btn-primary next" id="Next" href="javascript:void(0);">Next</a>
                                                     </div>
@@ -163,7 +164,7 @@
         //Binding method
         $('#Back').click(function () {
             showWaiting();
-            submit('premises', null, null);
+            submit('premises', 'back', null);
         });
         $('#SaveDraft').click(function () {
             showWaiting();

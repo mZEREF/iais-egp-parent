@@ -1,11 +1,13 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
+import com.ecquaria.cloud.moh.iais.action.ClinicalLaboratoryDelegator;
 import com.ecquaria.cloud.moh.iais.action.HcsaFileAjaxController;
 import com.ecquaria.cloud.moh.iais.action.NewApplicationDelegator;
 import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.EventBusConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.organization.OrganizationConstants;
@@ -26,6 +28,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesEnt
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPrimaryDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionRequestInformationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcChargesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcChargesPageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcChckListDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDisciplineAllocationDto;
@@ -40,6 +43,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupD
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationSubDraftDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.RenewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.SubLicenseeDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcBusinessDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.AmendmentFeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.FeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.HcsaFeeBundleItemDto;
@@ -49,6 +53,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.GiroAccountInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicAppCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeIndividualDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.MenuLicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.PreOrPostInspectionResultDto;
@@ -62,20 +67,19 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfi
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSubtypeOrSubsumedDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterMessageDto;
-import com.ecquaria.cloud.moh.iais.common.dto.organization.FeUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgGiroAccountInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.prs.ProfessionalParameterDto;
 import com.ecquaria.cloud.moh.iais.common.dto.prs.ProfessionalResponseDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
+import com.ecquaria.cloud.moh.iais.common.utils.CopyUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
-import com.ecquaria.cloud.moh.iais.common.validation.CommonValidator;
 import com.ecquaria.cloud.moh.iais.common.validation.SgNoValidator;
 import com.ecquaria.cloud.moh.iais.common.validation.ValidationUtils;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
@@ -120,7 +124,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import sop.util.CopyUtil;
 import sop.webflow.rt.api.BaseProcessClass;
 import sop.webflow.rt.api.Process;
 
@@ -206,6 +209,9 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
     private OrganizationLienceseeClient organizationLienceseeClient;
     @Autowired
     private LicenseeService licenseeService;
+
+    @Value("${moh.halp.prs.enable}")
+    private String prsFlag;
 
     @Override
     public AppSubmissionDto submit(AppSubmissionDto appSubmissionDto, Process process) {
@@ -414,9 +420,9 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
     @Override
     public ProfessionalResponseDto retrievePrsInfo(String profRegNo){
         log.debug(StringUtil.changeForLog("retrieve prs info start ..."));
-        log.debug("prof Reg No is {}",profRegNo);
+        log.info(StringUtil.changeForLog("prof Reg No is " + profRegNo + " - PRS flag is " + prsFlag));
         ProfessionalResponseDto professionalResponseDto = null;
-        if(!StringUtil.isEmpty(profRegNo)){
+        if ("Y".equals(prsFlag) && !StringUtil.isEmpty(profRegNo)) {
             List<String> prgNos = IaisCommonUtils.genNewArrayList();
             prgNos.add(profRegNo);
             ProfessionalParameterDto professionalParameterDto =new ProfessionalParameterDto();
@@ -434,10 +440,12 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                 if(professionalResponseDtos != null && professionalResponseDtos.size() > 0){
                     professionalResponseDto = professionalResponseDtos.get(0);
                 }
+                log.info(StringUtil.changeForLog("ProfessionalResponseDto: " + JsonUtil.parseToJson(professionalResponseDto)));
             } catch (Exception e) {
                 professionalResponseDto = new ProfessionalResponseDto();
+                professionalResponseDto.setHasException(true);
                 log.info(StringUtil.changeForLog("retrieve prs info start ..."));
-                log.error(e.getMessage(), e);
+                log.error(StringUtil.changeForLog(e.getMessage()), e);
             }
         }
         log.debug(StringUtil.changeForLog("retrieve prs res dto end ..."));
@@ -756,24 +764,24 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
         fieldMap.put("organizationId", "orgId");
         fieldMap.put("officeTelNo", "telephoneNo");
         fieldMap.put("emilAddr", "emailAddr");
-        SubLicenseeDto subLicenseeDto = MiscUtil.transferEntityDto(licenseeDto, SubLicenseeDto.class,fieldMap);
-        if (subLicenseeDto != null) {
-            subLicenseeDto.setUenNo(uenNo);
-            if (OrganizationConstants.LICENSEE_TYPE_CORPPASS.equals(subLicenseeDto.getLicenseeType())) {
-                subLicenseeDto.setLicenseeType(OrganizationConstants.LICENSEE_SUB_TYPE_COMPANY);
-            } else if (OrganizationConstants.LICENSEE_SUB_TYPE_SOLO.equals(subLicenseeDto.getLicenseeType())) {
-                List<FeUserDto> feUserDtos = organizationLienceseeClient.getFeUserDtoByLicenseeId(licenseeDto.getId()).getEntity();
-                String idNo = null;
-                if (feUserDtos != null) {
-                    idNo = feUserDtos.stream()
-                            .filter(dto -> StringUtil.isEmpty(uenNo) || !dto.getUserId().toUpperCase(AppConsts.DFT_LOCALE).contains(
-                                    uenNo.toUpperCase(AppConsts.DFT_LOCALE)))
-                            .findAny().map(FeUserDto::getIdNumber).orElseGet(() ->"");
-                }
-                subLicenseeDto.setAssignSelect(IaisEGPConstant.ASSIGN_SELECT_ADD_NEW);
-                subLicenseeDto.setIdNumber(idNo);
-                subLicenseeDto.setLicenseeType(OrganizationConstants.LICENSEE_SUB_TYPE_SOLO);
+        SubLicenseeDto subLicenseeDto = MiscUtil.transferEntityDto(licenseeDto, SubLicenseeDto.class, fieldMap);
+        if (subLicenseeDto == null) {
+            subLicenseeDto = new SubLicenseeDto();
+        }
+        subLicenseeDto.setUenNo(uenNo);
+        if (OrganizationConstants.LICENSEE_TYPE_CORPPASS.equals(subLicenseeDto.getLicenseeType())) {
+            subLicenseeDto.setLicenseeType(OrganizationConstants.LICENSEE_SUB_TYPE_COMPANY);
+        } else if (OrganizationConstants.LICENSEE_SUB_TYPE_SOLO.equals(subLicenseeDto.getLicenseeType())) {
+            subLicenseeDto.setAssignSelect(IaisEGPConstant.ASSIGN_SELECT_ADD_NEW);
+            LicenseeIndividualDto licenseeIndividualDto = Optional.ofNullable(licenseeDto)
+                    .map(LicenseeDto::getLicenseeIndividualDto)
+                    .orElseGet(LicenseeIndividualDto::new);
+            subLicenseeDto.setIdType(licenseeIndividualDto.getIdType());
+            subLicenseeDto.setIdNumber(licenseeIndividualDto.getIdNo());
+            if (!StringUtil.isEmpty(licenseeDto.getMobileNo())) {
+                subLicenseeDto.setTelephoneNo(licenseeDto.getMobileNo());
             }
+            subLicenseeDto.setLicenseeType(OrganizationConstants.LICENSEE_SUB_TYPE_SOLO);
         }
         return subLicenseeDto;
     }
@@ -787,15 +795,18 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
             return false;
         }
         Map<String, String> map = IaisCommonUtils.genNewHashMap();
-
-        ValidationResult result = WebValidationHelper.validateProperty(subLicenseeDto, "save");
+        String propertyName = "save";
+        if (OrganizationConstants.LICENSEE_SUB_TYPE_INDIVIDUAL.equals(subLicenseeDto.getLicenseeType())){
+            propertyName = "soloSave";
+        }
+        ValidationResult result = WebValidationHelper.validateProperty(subLicenseeDto, propertyName);
         if (result != null) {
             map = result.retrieveAll();
         }
 
         // add log
         if (!map.isEmpty()) {
-            log.info(StringUtil.changeForLog("Error Message : " + map + " For the Sub Licensee - " +
+            log.info(StringUtil.changeForLog("Error Message For the Sub Licensee : " + map + " - " +
                     JsonUtil.parseToJson(subLicenseeDto)));
         }
         if (OrganizationConstants.LICENSEE_SUB_TYPE_COMPANY.equals(subLicenseeDto.getLicenseeType())) {
@@ -808,6 +819,121 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                 errorMap.putAll(map);
             }
             return map.isEmpty();
+        }
+    }
+
+    @Override
+    public Map<String, String> validateSectionLeaders(List<AppSvcPersonnelDto> appSvcSectionLeaderList) {
+        Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
+        if (appSvcSectionLeaderList == null || appSvcSectionLeaderList.isEmpty()) {
+            return errorMap;
+        }
+        HttpServletRequest request = MiscUtil.getCurrentRequest();
+        if (request != null) {
+            request.setAttribute(ClinicalLaboratoryDelegator.SECTION_LEADER_LIST, appSvcSectionLeaderList);
+        }
+        for (int i = 0, len = appSvcSectionLeaderList.size(); i < len; i++) {
+            ValidationResult result = WebValidationHelper.validateProperty(appSvcSectionLeaderList.get(i),
+                    ApplicationConsts.PERSONNEL_PSN_SVC_SECTION_LEADER);
+            if (result != null) {
+                int index = i;
+                Map<String, String> map = result.retrieveAll();
+                map.forEach((k, v) -> errorMap.put(k + index, v));
+            }
+        }
+        return errorMap;
+    }
+
+    @Override
+    public void doValidateDisciplineAllocation(Map<String, String> map, List<AppSvcDisciplineAllocationDto> daList,
+            AppSvcRelatedInfoDto currentSvcDto) {
+        if (daList == null || daList.isEmpty()) {
+            return;
+        }
+        Map<String, String> cgoMap = new HashMap<>();
+        Map<String, String> slMap = new HashMap<>();
+        for (int i = 0; i < daList.size(); i++) {
+            String idNo = daList.get(i).getIdNo();
+            if (StringUtil.isEmpty(idNo)) {
+                map.put("disciplineAllocation" + i,
+                        MessageUtil.replaceMessage("GENERAL_ERR0006", "Clinical Governance Officers", "field"));
+            } else {
+                cgoMap.put(idNo, idNo);
+            }
+            String indexNo = daList.get(i).getSlIndex();
+            if (StringUtil.isEmpty(indexNo)) {
+                map.put("disciplineAllocationSl" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "Section Leader", "field"));
+            } else {
+                slMap.put(indexNo, indexNo);
+            }
+        }
+        if (map.isEmpty()) {
+            String error = MessageUtil.getMessageDesc("NEW_ERR0011");
+            List<AppSvcPrincipalOfficersDto> appSvcCgoList = (List<AppSvcPrincipalOfficersDto>) CopyUtil.copyMutableObjectList(
+                    currentSvcDto.getAppSvcCgoDtoList());
+            List<AppSvcPrincipalOfficersDto> appSvcCgoDtos = IaisCommonUtils.genNewArrayList();
+            if (appSvcCgoList != null) {
+                if (daList.size() < appSvcCgoList.size()) {
+                    return;
+                }
+                if (appSvcCgoList.size() <= daList.size()) {
+                    cgoMap.forEach((k, v) -> {
+                        for (AppSvcPrincipalOfficersDto appSvcCgoDto : appSvcCgoList) {
+                            String idNo = appSvcCgoDto.getIdNo();
+                            if (k.equals(idNo)) {
+                                appSvcCgoDtos.add(appSvcCgoDto);
+                            }
+                        }
+                    });
+                }
+                appSvcCgoList.removeAll(appSvcCgoDtos);
+                StringBuilder stringBuilder = new StringBuilder();
+                for (AppSvcPrincipalOfficersDto appSvcCgoDto : appSvcCgoList) {
+                    stringBuilder.append(appSvcCgoDto.getName()).append(',');
+                }
+                if (!StringUtil.isEmpty(stringBuilder.toString())) {
+                    String string = stringBuilder.toString();
+                    String substring = string.substring(0, string.lastIndexOf(','));
+
+                    if (substring.contains(",")) {
+                        error = error.replaceFirst("is", "are");
+                    }
+                    String replace = error.replace("{CGO Name}", substring);
+                    map.put("CGO", replace);
+                }
+            }
+            List<AppSvcPersonnelDto> sectionLeaderDtoList = (List<AppSvcPersonnelDto>) CopyUtil.copyMutableObjectList(
+                    currentSvcDto.getAppSvcSectionLeaderList());
+            List<AppSvcPersonnelDto> sectionLeaderDtos = IaisCommonUtils.genNewArrayList();
+            if (sectionLeaderDtoList != null) {
+                if (daList.size() < sectionLeaderDtoList.size()) {
+                    return;
+                }
+                if (daList.size() >= sectionLeaderDtoList.size()) {
+                    slMap.forEach((k, v) -> {
+                        for (AppSvcPersonnelDto sectionLeaderDto : sectionLeaderDtoList) {
+                            String indexNo = sectionLeaderDto.getIndexNo();
+                            if (k.equals(indexNo)) {
+                                sectionLeaderDtos.add(sectionLeaderDto);
+                            }
+                        }
+                    });
+                }
+                sectionLeaderDtoList.removeAll(sectionLeaderDtos);
+                StringBuilder stringBuilder = new StringBuilder();
+                for (AppSvcPersonnelDto sectionLeaderDto : sectionLeaderDtoList) {
+                    stringBuilder.append(sectionLeaderDto.getName()).append(',');
+                }
+                if (!StringUtil.isEmpty(stringBuilder.toString())) {
+                    String string = stringBuilder.toString();
+                    String substring = string.substring(0, string.lastIndexOf(','));
+                    if (substring.contains(",")) {
+                        error = error.replaceFirst("is", "are");
+                    }
+                    String replace = error.replace("{CGO Name}", substring);
+                    map.put("SL", replace);
+                }
+            }
         }
     }
 
@@ -830,6 +956,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
         });
         return result;
     }
+
 
     private boolean isIn(String appId, List<LicAppCorrelationDto> licAppCorrList) {
         if (licAppCorrList == null || licAppCorrList.isEmpty()) {
@@ -1171,11 +1298,12 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                 licenceFeeDto.setExistOnsite(existingOnSiteLic);
                 //set bundle
                 if(!IaisCommonUtils.isEmpty(hcsaFeeBundleItemDtos)){
+                    int matchingTh =appConfigClient.getFeeMaxMatchingThByServiceCode(serviceCode).getEntity();
                     log.debug(StringUtil.changeForLog("set bundle info ..."));
                     if(AppServicesConsts.SERVICE_CODE_EMERGENCY_AMBULANCE_SERVICE.equals(serviceCode)){
                         if(hadEas && hadMts){
                             //judge vehicle count
-                            if(easVehicleCount+mtsVehicleCount <= 10 ){
+                            if(easVehicleCount+mtsVehicleCount <= matchingTh ){
                                 licenceFeeDto.setBundle(1);
                             }else {
                                 licenceFeeDto.setBundle(2);
@@ -1368,6 +1496,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                     if(ApplicationConsts.SERVICE_CONFIG_TYPE_BASE.equals(appSvcRelatedInfoDto.getServiceType())){
                         licenceFeeDto.setIncludeBase(true);
                     }
+                    licenceFeeDto.setHciCode(appGrpPremisesDtos.get(0).getHciCode());
                     HcsaServiceDto baseServiceDto = HcsaServiceCacheHelper.getServiceById(appSvcRelatedInfoDto.getBaseServiceId());
                     licenceFeeDto.setBaseService(baseServiceDto.getSvcCode());
                     licenceFeeDto.setServiceCode(appSvcRelatedInfoDto.getServiceCode());
@@ -1382,9 +1511,10 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                     //set bundle
                     if(!IaisCommonUtils.isEmpty(hcsaFeeBundleItemDtos)){
                         String serviceCode=baseServiceDto.getSvcCode();
+                        int matchingTh =appConfigClient.getFeeMaxMatchingThByServiceCode(serviceCode).getEntity();
                         log.debug(StringUtil.changeForLog("set bundle info ..."));
                         if(AppServicesConsts.SERVICE_CODE_EMERGENCY_AMBULANCE_SERVICE.equals(serviceCode)){
-                            if(easVehicleCount <= 10 ){
+                            if(easVehicleCount <= matchingTh){
                                 licenceFeeDto.setBundle(1);
                             }else {
                                 licenceFeeDto.setBundle(2);
@@ -1392,7 +1522,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                             if(hadEas && hadMts){
                                 if(hciCodeEas!=null&&hciCodeMts!=null){
                                     if(hciCodeEas.equals(hciCodeMts)){
-                                        if(easVehicleCount+mtsVehicleCount <= 10 ){
+                                        if(easVehicleCount+mtsVehicleCount <= matchingTh ){
                                             licenceFeeDto.setBundle(1);
                                         }else {
                                             licenceFeeDto.setBundle(2);
@@ -1404,7 +1534,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                                 setEasMtsBundleInfo(licenceFeeDto, hciCode, hcsaFeeBundleItemDtos, serviceCode, appSubmissionDto.getLicenseeId(), easVehicleCount,appSubmissionDto.getAppType());
                             }
                         } else if(AppServicesConsts.SERVICE_CODE_MEDICAL_TRANSPORT_SERVICE.equals(serviceCode)){
-                            if(mtsVehicleCount <= 10 ){
+                            if(mtsVehicleCount <= matchingTh){
                                 licenceFeeDto.setBundle(1);
                             }else {
                                 licenceFeeDto.setBundle(2);
@@ -1444,6 +1574,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
             if(!onlySpecifiedSvc) {
                 for (AppSvcRelatedInfoDto appSvcRelatedInfoDto : appSvcRelatedInfoDtos) {
                     LicenceFeeDto licenceFeeDto = new LicenceFeeDto(); licenceFeeDto.setBundle(0);
+                    licenceFeeDto.setHciCode(appGrpPremisesDtos.get(0).getHciCode());
                     HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceByCode(appSvcRelatedInfoDto.getServiceCode());
                     if (hcsaServiceDto == null) {
                         log.info(StringUtil.changeForLog("hcsaServiceDto is empty "));
@@ -1488,8 +1619,9 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                     if(!IaisCommonUtils.isEmpty(hcsaFeeBundleItemDtos)){
                         String serviceCode=hcsaServiceDto.getSvcCode();
                         log.debug(StringUtil.changeForLog("set bundle info ..."));
+                        int matchingTh =appConfigClient.getFeeMaxMatchingThByServiceCode(serviceCode).getEntity();
                         if(AppServicesConsts.SERVICE_CODE_EMERGENCY_AMBULANCE_SERVICE.equals(serviceCode)){
-                            if(easVehicleCount <= 10 ){
+                            if(easVehicleCount <= matchingTh ){
                                 licenceFeeDto.setBundle(1);
                             }else {
                                 licenceFeeDto.setBundle(2);
@@ -1497,7 +1629,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                             if(hadEas && hadMts){
                                 if(hciCodeEas!=null&&hciCodeMts!=null){
                                     if(hciCodeEas.equals(hciCodeMts)){
-                                        if(easVehicleCount+mtsVehicleCount <= 10 ){
+                                        if(easVehicleCount+mtsVehicleCount <= matchingTh ){
                                             licenceFeeDto.setBundle(1);
                                         }else {
                                             licenceFeeDto.setBundle(2);
@@ -1509,7 +1641,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                                 setEasMtsBundleInfo(licenceFeeDto, hciCode, hcsaFeeBundleItemDtos, serviceCode, appSubmissionDto.getLicenseeId(), easVehicleCount,appSubmissionDto.getAppType());
                             }
                         } else if(AppServicesConsts.SERVICE_CODE_MEDICAL_TRANSPORT_SERVICE.equals(serviceCode)){
-                            if(mtsVehicleCount <= 10 ){
+                            if(mtsVehicleCount <= matchingTh ){
                                 licenceFeeDto.setBundle(1);
                             }else {
                                 licenceFeeDto.setBundle(2);
@@ -1585,6 +1717,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                     if(ApplicationConsts.SERVICE_CONFIG_TYPE_BASE.equals(appSvcRelatedInfoDto.getServiceType())){
                         licenceFeeDto.setIncludeBase(true);
                     }
+                    licenceFeeDto.setHciCode(appSubmissionDto.getAppGrpPremisesDtoList().get(0).getHciCode());
                     HcsaServiceDto baseServiceDto = HcsaServiceCacheHelper.getServiceById(appSvcRelatedInfoDto.getBaseServiceId());
                     licenceFeeDto.setBaseService(baseServiceDto.getSvcCode());
                     licenceFeeDto.setServiceCode(appSvcRelatedInfoDto.getServiceCode());
@@ -1615,6 +1748,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
             if(!onlySpecifiedSvc) {
                 for (AppSvcRelatedInfoDto appSvcRelatedInfoDto : appSvcRelatedInfoDtos) {
                     LicenceFeeDto licenceFeeDto = new LicenceFeeDto(); licenceFeeDto.setBundle(0);
+                    licenceFeeDto.setHciCode(appSubmissionDto.getAppGrpPremisesDtoList().get(0).getHciCode());
                     HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceByCode(appSvcRelatedInfoDto.getServiceCode());
                     if (hcsaServiceDto == null) {
                         log.info(StringUtil.changeForLog("hcsaServiceDto is empty "));
@@ -1914,6 +2048,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
             String svcCode = hcsaServiceDto.getSvcCode();
             appSvcRelatedInfoDto.setServiceId(svcId);
             appSvcRelatedInfoDto.setServiceCode(svcCode);
+            appSvcRelatedInfoDto.setServiceName(hcsaServiceDto.getSvcName());
             List<HcsaSvcSubtypeOrSubsumedDto> hcsaSvcSubtypeOrSubsumedDtos= serviceConfigService.loadLaboratoryDisciplines(svcId);
             if(hcsaSvcSubtypeOrSubsumedDtos!=null && !hcsaSvcSubtypeOrSubsumedDtos.isEmpty()){
                 appSubmissionService.changeSvcScopeIdByConfigName(hcsaSvcSubtypeOrSubsumedDtos,appSubmissionDto);
@@ -2298,7 +2433,6 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
             coMap.put("premises", "premises");
         }
         // service info
-        Map<String, List<HcsaSvcPersonnelDto>> allSvcAllPsnConfig = getAllSvcAllPsnConfig(bpc.request);
         List<AppSvcRelatedInfoDto> dto = appSubmissionDto.getAppSvcRelatedInfoDtoList();
         List<AppSvcVehicleDto> appSvcVehicleDtos = IaisCommonUtils.genNewArrayList();
         dto.stream().forEach(obj -> {
@@ -2313,13 +2447,12 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
             List<HcsaServiceStepSchemeDto> hcsaServiceStepSchemeDtos = serviceConfigService.getHcsaServiceStepSchemesByServiceId(serviceId);
             serviceStepDto.setHcsaServiceStepSchemeDtos(hcsaServiceStepSchemeDtos);
             List<HcsaSvcPersonnelDto> currentSvcAllPsnConfig = serviceConfigService.getSvcAllPsnConfig(hcsaServiceStepSchemeDtos, serviceId);
-            Map<String, String> map = doCheckBox(bpc, sB, allSvcAllPsnConfig, currentSvcAllPsnConfig, currSvcInfoDto,dto,
-                    systemParamConfig.getUploadFileLimit(),systemParamConfig.getUploadFileType(),appSubmissionDto.getAppGrpPremisesDtoList());
             // vehicle
             List<String> appIds = NewApplicationHelper.getRelatedAppId(currSvcInfoDto.getAppId(), appSubmissionDto.getLicenceId(),
                     currSvcInfoDto.getServiceName());
             List<AppSvcVehicleDto> oldAppSvcVehicleDto = appSubmissionService.getActiveVehicles(appIds);
-            validateVehicle.doValidateVehicles(map, appSvcVehicleDtos, currSvcInfoDto.getAppSvcVehicleDtoList(), oldAppSvcVehicleDto);
+            Map<String, String> map = doCheckBox(bpc, sB, hcsaServiceStepSchemeDtos, currentSvcAllPsnConfig, currSvcInfoDto,dto,
+                    appSubmissionDto.getAppGrpPremisesDtoList(), oldAppSvcVehicleDto);
             if (!map.isEmpty()) {
                 sB.append(serviceId);
                 previewAndSubmitMap.putAll(map);
@@ -2354,7 +2487,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
             sB.append(errIcon);
         }
         bpc.request.getSession().setAttribute("serviceConfig",sB.toString());
-        log.info(StringUtil.changeForLog("Error Message: " + previewAndSubmitMap));
+        log.info(StringUtil.changeForLog("Error Message for Preview Submit Validation: " + previewAndSubmitMap));
         return previewAndSubmitMap;
     }
 
@@ -2376,9 +2509,17 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
 
     @Override
     public Map<String, String> doCheckBox(BaseProcessClass bpc, StringBuilder sB,
-            Map<String, List<HcsaSvcPersonnelDto>> allSvcAllPsnConfig, List<HcsaSvcPersonnelDto> currentSvcAllPsnConfig,
-            AppSvcRelatedInfoDto dto, List<AppSvcRelatedInfoDto> dtos, int uploadFileLimit, String sysFileType,
-            List<AppGrpPremisesDto> appGrpPremisesDtos) {
+            List<HcsaServiceStepSchemeDto> hcsaServiceStepSchemeDtos, List<HcsaSvcPersonnelDto> currentSvcAllPsnConfig,
+            AppSvcRelatedInfoDto dto, List<AppSvcRelatedInfoDto> dtos, List<AppGrpPremisesDto> appGrpPremisesDtos) {
+        return doCheckBox(bpc, sB, hcsaServiceStepSchemeDtos, currentSvcAllPsnConfig, dto, dtos, appGrpPremisesDtos, null);
+    }
+
+    private Map<String, String> doCheckBox(BaseProcessClass bpc, StringBuilder sB,
+            List<HcsaServiceStepSchemeDto> hcsaServiceStepSchemeDtos, List<HcsaSvcPersonnelDto> currentSvcAllPsnConfig,
+            AppSvcRelatedInfoDto dto, List<AppSvcRelatedInfoDto> dtos, List<AppGrpPremisesDto> appGrpPremisesDtos,
+            List<AppSvcVehicleDto> oldAppSvcVehicleDto) {
+        int uploadFileLimit = systemParamConfig.getUploadFileLimit();
+        String sysFileType = systemParamConfig.getUploadFileType();
         String serviceId = dto.getServiceId();
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
         for (HcsaSvcPersonnelDto hcsaSvcPersonnelDto : currentSvcAllPsnConfig) {
@@ -2386,82 +2527,162 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
             int mandatoryCount = hcsaSvcPersonnelDto.getMandatoryCount();
             valiatePersonnelCount(dto, psnType, mandatoryCount, sB, errorMap);
         }
-        List<AppSvcPrincipalOfficersDto> appSvcMedAlertPersonList = dto.getAppSvcMedAlertPersonList();
-        Map<String, AppSvcPersonAndExtDto> licPersonMap = (Map<String, AppSvcPersonAndExtDto>) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.LICPERSONSELECTMAP);
-        Map<String, String> map = NewApplicationHelper.doValidateMedAlertPsn(appSvcMedAlertPersonList, licPersonMap, dto.getServiceCode());
-        log.info(JsonUtil.parseToJson(map));
-        if (!map.isEmpty()) {
-            sB.append(serviceId);
-            errorMap.put("Medaler", "error");
-        }
-        List<AppSvcLaboratoryDisciplinesDto> appSvcLaboratoryDisciplinesDtoList = dto.getAppSvcLaboratoryDisciplinesDtoList();
-        List<HcsaSvcPersonnelDto> hcsaSvcPersonnelDtos = allSvcAllPsnConfig.get(serviceId);
-
-        List<AppSvcPrincipalOfficersDto> appSvcCgoDtoList = dto.getAppSvcCgoDtoList();
-        doAppSvcCgoDto(hcsaSvcPersonnelDtos, errorMap, appSvcCgoDtoList, serviceId, sB);
-        log.info(sB.toString());
-        List<AppSvcDisciplineAllocationDto> appSvcDisciplineAllocationDtoList = dto.getAppSvcDisciplineAllocationDtoList();
-        doSvcDis(errorMap, appSvcDisciplineAllocationDtoList, serviceId, sB);
-        log.info(StringUtil.changeForLog(JsonUtil.parseToJson(errorMap) + "doSvcDis"));
-        dolabory(errorMap,appSvcDisciplineAllocationDtoList, appSvcLaboratoryDisciplinesDtoList, serviceId, sB);
-        log.info(sB.toString());
-        doSvcDisdolabory(errorMap, appSvcDisciplineAllocationDtoList, appSvcLaboratoryDisciplinesDtoList, serviceId, sB);
-        log.info(StringUtil.changeForLog(JsonUtil.parseToJson(errorMap) + "doSvcDisdolabory"));
-        List<AppSvcPrincipalOfficersDto> appSvcPrincipalOfficersDtoList = dto.getAppSvcPrincipalOfficersDtoList();
-        Map<String, String> govenMap = NewApplicationHelper.doValidateGovernanceOfficers(dto.getAppSvcCgoDtoList(), licPersonMap, dto.getServiceCode());
-        log.info(StringUtil.changeForLog(JsonUtil.parseToJson(govenMap)));
-        if (!govenMap.isEmpty()) {
-            errorMap.put("CGO", "error");
-            sB.append(serviceId);
-            log.info("govenMap is error");
-        }
-        doPO(hcsaSvcPersonnelDtos, errorMap, appSvcPrincipalOfficersDtoList, serviceId, sB);
-        log.info(sB.toString());
-        List<AppSvcPersonnelDto> appSvcPersonnelDtoList = dto.getAppSvcPersonnelDtoList();
-        doAppSvcPersonnelDtoList(hcsaSvcPersonnelDtos, errorMap, appSvcPersonnelDtoList, serviceId, sB,dto.getServiceCode());
-        log.info(sB.toString());
-        List<AppSvcDocDto> appSvcDocDtoLit = dto.getAppSvcDocDtoLit();
-        doSvcDocument(errorMap, appSvcDocDtoLit, serviceId, sB,uploadFileLimit,sysFileType);
-        List<HcsaSvcDocConfigDto> svcDocConfigDtos = IaisCommonUtils.genNewArrayList();
-        List<HcsaSvcDocConfigDto> premServiceDocConfigDtos = IaisCommonUtils.genNewArrayList();
-        List<HcsaSvcDocConfigDto> hcsaSvcDocDtos = serviceConfigService.getAllHcsaSvcDocs(dto.getServiceId());
-        if (!IaisCommonUtils.isEmpty(hcsaSvcDocDtos)) {
-            for(HcsaSvcDocConfigDto hcsaSvcDocConfigDto:hcsaSvcDocDtos){
-                if ("0".equals(hcsaSvcDocConfigDto.getDupForPrem())) {
-                    svcDocConfigDtos.add(hcsaSvcDocConfigDto);
-                } else if ("1".equals(hcsaSvcDocConfigDto.getDupForPrem())) {
-                    premServiceDocConfigDtos.add(hcsaSvcDocConfigDto);
+        String prsError = MessageUtil.getMessageDesc("GENERAL_ERR0042");
+        for (HcsaServiceStepSchemeDto step : hcsaServiceStepSchemeDtos) {
+            String currentStep = Optional.ofNullable(step)
+                    .map(HcsaServiceStepSchemeDto::getStepCode)
+                    .orElse(HcsaConsts.STEP_BUSINESS_NAME);
+            if (HcsaConsts.STEP_BUSINESS_NAME.equals(currentStep)) {
+                // business name
+                List<AppSvcBusinessDto> appSvcBusinessDtoList = dto.getAppSvcBusinessDtoList();
+                Map<String,String> businessNameErrorMap = IaisCommonUtils.genNewHashMap();
+                NewApplicationHelper.doValidateBusiness(appSvcBusinessDtoList, dto.getApplicationType(), dto.getLicenceId(),
+                        businessNameErrorMap);
+                if (!businessNameErrorMap.isEmpty()) {
+                    errorMap.putAll(businessNameErrorMap);
+                    errorMap.put("Business Name", "error");
+                }
+            } else if (HcsaConsts.STEP_VEHICLES.equals(currentStep)) {
+                // Vehicles
+                List<AppSvcVehicleDto> appSvcVehicleDtos = IaisCommonUtils.genNewArrayList();
+                if (!IaisCommonUtils.isEmpty(dtos)) {
+                    for (AppSvcRelatedInfoDto appSvcRelatedInfoDto : dtos) {
+                        // Don't add current service vehicles
+                        if (Objects.equals(appSvcRelatedInfoDto.getServiceId(), serviceId)) {
+                            continue;
+                        }
+                        List<AppSvcVehicleDto> appSvcVehicleDtoList = appSvcRelatedInfoDto.getAppSvcVehicleDtoList();
+                        if (!IaisCommonUtils.isEmpty(appSvcVehicleDtoList)) {
+                            appSvcVehicleDtos.addAll(appSvcVehicleDtoList);
+                        }
+                    }
+                }
+                validateVehicle.doValidateVehicles(errorMap, appSvcVehicleDtos, dto.getAppSvcVehicleDtoList(), oldAppSvcVehicleDto);
+            } else if (HcsaConsts.STEP_CLINICAL_DIRECTOR.equals(currentStep)) {
+                // Clinical Director
+                String currSvcCode = dto.getServiceCode();
+                if (StringUtil.isEmpty(currSvcCode)) {
+                    HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceById(serviceId);
+                    currSvcCode = Optional.of(hcsaServiceDto).map(HcsaServiceDto::getSvcCode).orElseGet(() -> "");
+                }
+                List<AppSvcPrincipalOfficersDto> appSvcClinicalDirectorDtos = dto.getAppSvcClinicalDirectorDtoList();
+                validateClincalDirector.doValidateClincalDirector(errorMap, dto.getAppSvcClinicalDirectorDtoList(), currSvcCode);
+                if (appSvcClinicalDirectorDtos != null && "Y".equals(prsFlag)) {
+                    int i = 0;
+                    for (AppSvcPrincipalOfficersDto person : appSvcClinicalDirectorDtos) {
+                        if (!NewApplicationHelper.checkProfRegNo(person.getProfRegNo())) {
+                            errorMap.put("profRegNo" + i, prsError);
+                            break;
+                        }
+                        i++;
+                    }
+                }
+            } else if (HcsaConsts.STEP_LABORATORY_DISCIPLINES.equals(currentStep)) {
+                List<AppSvcLaboratoryDisciplinesDto> appSvcLaboratoryDisciplinesDtoList = dto.getAppSvcLaboratoryDisciplinesDtoList();
+                List<AppSvcDisciplineAllocationDto> appSvcDisciplineAllocationDtoList = dto.getAppSvcDisciplineAllocationDtoList();
+                doSvcDisdolabory(errorMap, appSvcDisciplineAllocationDtoList, appSvcLaboratoryDisciplinesDtoList);
+            } else if (HcsaConsts.STEP_CLINICAL_GOVERNANCE_OFFICERS.equals(currentStep)) {
+                Map<String, String> govenMap = IaisCommonUtils.genNewHashMap();
+                List<AppSvcPrincipalOfficersDto> appSvcCgoDtoList = dto.getAppSvcCgoDtoList();
+                doAppSvcCgoDto(currentSvcAllPsnConfig, govenMap, appSvcCgoDtoList);
+                if (govenMap.isEmpty()) {
+                    Map<String, AppSvcPersonAndExtDto> licPersonMap = (Map<String, AppSvcPersonAndExtDto>) ParamUtil.getSessionAttr(
+                            bpc.request, NewApplicationDelegator.LICPERSONSELECTMAP);
+                    govenMap.putAll(NewApplicationHelper.doValidateGovernanceOfficers(appSvcCgoDtoList, licPersonMap,
+                            dto.getServiceCode()));
+                }
+                if (appSvcCgoDtoList != null && govenMap.isEmpty() && "Y".equals(prsFlag)) {
+                    int i = 0;
+                    for (AppSvcPrincipalOfficersDto person : appSvcCgoDtoList) {
+                        if (!NewApplicationHelper.checkProfRegNo(person.getProfRegNo())) {
+                            govenMap.put("profRegNo" + i, prsError);
+                            break;
+                        }
+                        i++;
+                    }
+                }
+                if (!govenMap.isEmpty()) {
+                    errorMap.putAll(govenMap);
+                    errorMap.put("CGO", "error");
+                }
+            } else if (HcsaConsts.STEP_SECTION_LEADER.equals(currentStep)) {
+                // Section Leader
+                Map<String, String> map = validateSectionLeaders(dto.getAppSvcSectionLeaderList());
+                if (!map.isEmpty()) {
+                    errorMap.putAll(map);
+                    errorMap.put(ApplicationConsts.PERSONNEL_PSN_SVC_SECTION_LEADER, "error");
+                }
+            } else if (HcsaConsts.STEP_DISCIPLINE_ALLOCATION.equals(currentStep)) {
+                List<AppSvcDisciplineAllocationDto> appSvcDisciplineAllocationDtoList = dto.getAppSvcDisciplineAllocationDtoList();
+                doValidateDisciplineAllocation(errorMap, appSvcDisciplineAllocationDtoList, dto);
+            } else if (HcsaConsts.STEP_CHARGES.equals(currentStep)) {
+                validateCharges.doValidateCharges(errorMap, dto.getAppSvcChargesPageDto());
+            } else if (HcsaConsts.STEP_SERVICE_PERSONNEL.equals(currentStep)) {
+                List<AppSvcPersonnelDto> appSvcPersonnelDtoList = dto.getAppSvcPersonnelDtoList();
+                doAppSvcPersonnelDtoList(currentSvcAllPsnConfig, errorMap, appSvcPersonnelDtoList, serviceId, sB,
+                        dto.getServiceCode());
+                if (appSvcPersonnelDtoList != null && "Y".equals(prsFlag)) {
+                    int i = 0;
+                    for (AppSvcPersonnelDto person : appSvcPersonnelDtoList) {
+                        if (!NewApplicationHelper.checkProfRegNo(person.getProfRegNo())) {
+                            errorMap.put("regnNo" + i, prsError);
+                            break;
+                        }
+                        i++;
+                    }
+                }
+            } else if (HcsaConsts.STEP_PRINCIPAL_OFFICERS.equals(currentStep)) {
+                List<AppSvcPrincipalOfficersDto> appSvcPrincipalOfficersDtoList = dto.getAppSvcPrincipalOfficersDtoList();
+                AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
+                doPO(currentSvcAllPsnConfig, errorMap, appSvcPrincipalOfficersDtoList, appSubmissionDto.getSubLicenseeDto(), serviceId, sB);
+            } else if (HcsaConsts.STEP_KEY_APPOINTMENT_HOLDER.equals(currentStep)) {
+                List<AppSvcPrincipalOfficersDto> appSvcKeyAppointmentHolderList = dto.getAppSvcKeyAppointmentHolderDtoList();
+                Map<String, AppSvcPersonAndExtDto> licPersonMap = (Map<String, AppSvcPersonAndExtDto>) ParamUtil.getSessionAttr(
+                        bpc.request, NewApplicationDelegator.LICPERSONSELECTMAP);
+                Map<String, String> map = NewApplicationHelper.doValidateKeyAppointmentHolder(appSvcKeyAppointmentHolderList, licPersonMap,
+                        dto.getServiceCode());
+                if (!map.isEmpty()) {
+                    errorMap.putAll(map);
+                    errorMap.put("KeyAppointmentHolder", "error");
+                }
+            } else if (HcsaConsts.STEP_MEDALERT_PERSON.equals(currentStep)) {
+                List<AppSvcPrincipalOfficersDto> appSvcMedAlertPersonList = dto.getAppSvcMedAlertPersonList();
+                Map<String, AppSvcPersonAndExtDto> licPersonMap = (Map<String, AppSvcPersonAndExtDto>) ParamUtil.getSessionAttr(
+                        bpc.request, NewApplicationDelegator.LICPERSONSELECTMAP);
+                Map<String, String> map = NewApplicationHelper.doValidateMedAlertPsn(appSvcMedAlertPersonList, licPersonMap,
+                        dto.getServiceCode());
+                if (!map.isEmpty()) {
+                    errorMap.putAll(map);
+                    errorMap.put("Medaler", "error");
+                }
+            } else if (HcsaConsts.STEP_DOCUMENTS.equals(currentStep)) {
+                List<AppSvcDocDto> appSvcDocDtoLit = dto.getAppSvcDocDtoLit();
+                doSvcDocument(errorMap, appSvcDocDtoLit, serviceId, sB, uploadFileLimit, sysFileType);
+                List<HcsaSvcDocConfigDto> svcDocConfigDtos = IaisCommonUtils.genNewArrayList();
+                List<HcsaSvcDocConfigDto> premServiceDocConfigDtos = IaisCommonUtils.genNewArrayList();
+                List<HcsaSvcDocConfigDto> hcsaSvcDocDtos = serviceConfigService.getAllHcsaSvcDocs(dto.getServiceId());
+                if (!IaisCommonUtils.isEmpty(hcsaSvcDocDtos)) {
+                    for (HcsaSvcDocConfigDto hcsaSvcDocConfigDto : hcsaSvcDocDtos) {
+                        if ("0".equals(hcsaSvcDocConfigDto.getDupForPrem())) {
+                            svcDocConfigDtos.add(hcsaSvcDocConfigDto);
+                        } else if ("1".equals(hcsaSvcDocConfigDto.getDupForPrem())) {
+                            premServiceDocConfigDtos.add(hcsaSvcDocConfigDto);
+                        }
+                    }
+                }
+                Map<String, String> svcDocErrMap = IaisCommonUtils.genNewHashMap();
+                NewApplicationHelper.svcDocMandatoryValidate(svcDocConfigDtos, dto.getAppSvcDocDtoLit(), appGrpPremisesDtos, dto,
+                        svcDocErrMap);
+                if (svcDocErrMap.size() > 0) {
+                    errorMap.putAll(svcDocErrMap);
+                    errorMap.put("svcDoc", "error");
                 }
             }
         }
-        Map<String,String> svcDocErrMap = IaisCommonUtils.genNewHashMap();
-        NewApplicationHelper.svcDocMandatoryValidate(svcDocConfigDtos,dto.getAppSvcDocDtoLit(),appGrpPremisesDtos,dto,svcDocErrMap);
-        if(svcDocErrMap.size() > 0){
+        if (!errorMap.isEmpty()) {
             sB.append(serviceId);
-            errorMap.put("svcDoc", "error");
         }
-        log.info(sB.toString());
-        validateCharges.doValidateCharges(errorMap,dto.getAppSvcChargesPageDto());
-        // Clinical Director
-        Map<String,String> svcCdErrMap = IaisCommonUtils.genNewHashMap();
-        String currSvcCode = dto.getServiceCode();
-        if (StringUtil.isEmpty(currSvcCode)) {
-            HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceById(serviceId);
-            currSvcCode = Optional.of(hcsaServiceDto).map(HcsaServiceDto::getSvcCode).orElseGet(() -> "");
-        }
-        validateClincalDirector.doValidateClincalDirector(errorMap,dto.getAppSvcClinicalDirectorDtoList(),currSvcCode);
-        // Vehicles
-        // List<AppSvcVehicleDto> oldAppSvcVehicleDto = getActiveVehicles(dto.getAppId());
-        List<AppSvcVehicleDto> appSvcVehicleDtos = IaisCommonUtils.genNewArrayList();
-        if (!IaisCommonUtils.isEmpty(dtos)) {
-            for (AppSvcRelatedInfoDto appSvcRelatedInfoDto : dtos) {
-                List<AppSvcVehicleDto> appSvcVehicleDtoList = appSvcRelatedInfoDto.getAppSvcVehicleDtoList();
-                if (!IaisCommonUtils.isEmpty(appSvcVehicleDtoList)) {
-                    appSvcVehicleDtos.addAll(appSvcVehicleDtoList);
-                }
-            }
-        }
-        validateVehicle.doValidateVehicles(errorMap,appSvcVehicleDtos,dto.getAppSvcVehicleDtoList(), null);
+        log.info(StringUtil.changeForLog("Error Message in doCheckBox for [" + dto.getServiceCode() + "] : " + errorMap));
         return errorMap;
     }
 
@@ -2478,49 +2699,43 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
             Map<String, String> errorMap) {
         String serviceId = dto.getServiceId();
         if (ApplicationConsts.PERSONNEL_PSN_TYPE_PO.equals(psnType)) {
-            List<AppSvcPrincipalOfficersDto> appSvcPrincipalOfficersDtoList = dto.getAppSvcPrincipalOfficersDtoList();
-            validatePersonMandatoryCount(Collections.singletonList(appSvcPrincipalOfficersDtoList), errorMap,
+            validatePersonMandatoryCount(dto.getAppSvcPrincipalOfficersDtoList(), errorMap,
                     psnType, mandatoryCount, serviceId, sB);
         } else if (ApplicationConsts.PERSONNEL_PSN_TYPE_SVC_PERSONNEL.equals(psnType)) {
-            List<AppSvcPersonnelDto> appSvcPersonnelDtoList = dto.getAppSvcPersonnelDtoList();
-            validatePersonMandatoryCount(Collections.singletonList(appSvcPersonnelDtoList), errorMap,
+            validatePersonMandatoryCount(dto.getAppSvcPersonnelDtoList(), errorMap,
                     psnType, mandatoryCount, serviceId, sB);
         } else if (ApplicationConsts.PERSONNEL_PSN_TYPE_CGO.equals(psnType)) {
-            List<AppSvcPrincipalOfficersDto> appSvcCgoDtoList = dto.getAppSvcCgoDtoList();
-            validatePersonMandatoryCount(Collections.singletonList(appSvcCgoDtoList), errorMap,
+            validatePersonMandatoryCount(dto.getAppSvcCgoDtoList(), errorMap,
                     psnType, mandatoryCount, serviceId, sB);
         } else if (ApplicationConsts.PERSONNEL_PSN_TYPE_MAP.equals(psnType)) {
-            List<AppSvcPrincipalOfficersDto> appSvcMedAlertPersonList = dto.getAppSvcMedAlertPersonList();
-            validatePersonMandatoryCount(Collections.singletonList(appSvcMedAlertPersonList), errorMap,
+            validatePersonMandatoryCount(dto.getAppSvcMedAlertPersonList(), errorMap,
                     psnType, mandatoryCount, serviceId, sB);
         } else if (ApplicationConsts.PERSONNEL_VEHICLES.equals(psnType)) {
-            List<AppSvcVehicleDto> appSvcVehicleDtoList = dto.getAppSvcVehicleDtoList();
-            validatePersonMandatoryCount(Collections.singletonList(appSvcVehicleDtoList), errorMap,
+            validatePersonMandatoryCount(dto.getAppSvcVehicleDtoList(), errorMap,
                     psnType, mandatoryCount, serviceId, sB);
         } else if (ApplicationConsts.PERSONNEL_CLINICAL_DIRECTOR.equals(psnType)) {
-            List<AppSvcPrincipalOfficersDto> appSvcClinicalDirectorDtoList = dto.getAppSvcClinicalDirectorDtoList();
-            validatePersonMandatoryCount(Collections.singletonList(appSvcClinicalDirectorDtoList), errorMap,
+            validatePersonMandatoryCount(dto.getAppSvcClinicalDirectorDtoList(), errorMap,
                     psnType, mandatoryCount, serviceId, sB);
         } else if (ApplicationConsts.PERSONNEL_CHARGES.equals(psnType)) {
-            AppSvcChargesPageDto appSvcChargesPageDto = dto.getAppSvcChargesPageDto();
-            if (appSvcChargesPageDto != null) {
-                validatePersonMandatoryCount(Collections.singletonList(appSvcChargesPageDto.getGeneralChargesDtos()), errorMap,
-                        psnType, mandatoryCount, serviceId, sB);
-            } else {
-                errorMap.put("appSvcChargesPageDto", "appSvcChargesPageDto is null");
-            }
+            List<AppSvcChargesDto> appSvcChargesDtos = Optional.ofNullable(dto.getAppSvcChargesPageDto())
+                    .map(AppSvcChargesPageDto::getGeneralChargesDtos)
+                    .orElseGet(() -> null);
+            validatePersonMandatoryCount(appSvcChargesDtos, errorMap, psnType, mandatoryCount, serviceId, sB);
         } else if (ApplicationConsts.PERSONNEL_CHARGES_OTHER.equals(psnType)) {
-            AppSvcChargesPageDto appSvcChargesPageDto = dto.getAppSvcChargesPageDto();
-            if (appSvcChargesPageDto != null) {
-                validatePersonMandatoryCount(Collections.singletonList(appSvcChargesPageDto.getOtherChargesDtos()), errorMap,
-                        psnType, mandatoryCount, serviceId, sB);
-            } else {
-                errorMap.put("otherAppSvcChargesPageDto", "other appSvcChargesPageDto is null");
-            }
+            List<AppSvcChargesDto> otherChargesDtos = Optional.ofNullable(dto.getAppSvcChargesPageDto())
+                    .map(AppSvcChargesPageDto::getOtherChargesDtos)
+                    .orElseGet(() -> null);
+            validatePersonMandatoryCount(otherChargesDtos, errorMap, psnType, mandatoryCount, serviceId, sB);
+        } else if (ApplicationConsts.PERSONNEL_PSN_SVC_SECTION_LEADER.equals(psnType)) {
+            List<AppSvcPersonnelDto> sectionLeaderList = dto.getAppSvcSectionLeaderList();
+            validatePersonMandatoryCount(sectionLeaderList, errorMap, psnType, mandatoryCount, serviceId, sB);
+        } else if (ApplicationConsts.PERSONNEL_PSN_KAH.equals(psnType)) {
+            List<AppSvcPrincipalOfficersDto> appSvcKeyAppointmentHolderDtoList = dto.getAppSvcKeyAppointmentHolderDtoList();
+            validatePersonMandatoryCount(appSvcKeyAppointmentHolderDtoList, errorMap, psnType, mandatoryCount, serviceId, sB);
         }
     }
 
-    private void validatePersonMandatoryCount(List<Object> list, Map<String, String> map, String type, Integer mandatoryCount,
+    private void validatePersonMandatoryCount(List<?> list, Map<String, String> map, String type, Integer mandatoryCount,
             String serviceId, StringBuilder sB) {
         if (list == null) {
             if (mandatoryCount > 0) {
@@ -2748,6 +2963,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
             List<AppSvcChckListDto> appSvcChckListDtoList = IaisCommonUtils.genNewArrayList();
             List<AppSvcLaboratoryDisciplinesDto> appSvcLaboratoryDisciplinesDtoList =appSvcRelatedInfoDto.getAppSvcLaboratoryDisciplinesDtoList();
             List<AppSvcPrincipalOfficersDto> appSvcCgoDtoList = appSvcRelatedInfoDto.getAppSvcCgoDtoList();
+            List<AppSvcPersonnelDto> appSlList = appSvcRelatedInfoDto.getAppSvcSectionLeaderList();
             if(!IaisCommonUtils.isEmpty(appSvcLaboratoryDisciplinesDtoList) && !StringUtil.isEmpty(premisesIndexNo)){
                 log.info(StringUtil.changeForLog("appSvcLaboratoryDisciplinesDtoList size:"+appSvcLaboratoryDisciplinesDtoList.size()));
                 for(AppSvcLaboratoryDisciplinesDto appSvcLaboratoryDisciplinesDto:appSvcLaboratoryDisciplinesDtoList){
@@ -2782,6 +2998,14 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                                         if(idNo.equals(appSvcCgoDto.getIdNo())){
                                             log.info(StringUtil.changeForLog("set cgoSel ..."));
                                             appSvcDisciplineAllocationDto.setCgoSelName(appSvcCgoDto.getName());
+                                            break;
+                                        }
+                                    }
+                                }
+                                if (!IaisCommonUtils.isEmpty(appSlList) && !StringUtil.isEmpty(allocation.getSlIndex())) {
+                                    for (AppSvcPersonnelDto avpd : appSlList) {
+                                        if(allocation.getSlIndex().equals(avpd.getIndexNo())){
+                                            appSvcDisciplineAllocationDto.setSectionLeaderName(avpd.getName());
                                             break;
                                         }
                                     }
@@ -2821,6 +3045,12 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                 }
             }
             AppEditSelectDto appEditSelectDto = new AppEditSelectDto();
+            boolean licenseeEdit = Optional.ofNullable(appSubmissionDto.getSubLicenseeDto())
+                    .map(SubLicenseeDto::getLicenseeType)
+                    .filter(licenseeType -> StringUtil.isEmpty(licenseeType) ||
+                            OrganizationConstants.LICENSEE_SUB_TYPE_INDIVIDUAL.equals(licenseeType))
+                    .isPresent();
+            appEditSelectDto.setLicenseeEdit(licenseeEdit);
             appEditSelectDto.setPremisesEdit(true);
             appEditSelectDto.setDocEdit(true);
             appEditSelectDto.setServiceEdit(true);
@@ -3056,106 +3286,50 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
 
     }
 
-    private static void doAppSvcCgoDto(List<HcsaSvcPersonnelDto> hcsaSvcPersonnelDtos, Map map, List<AppSvcPrincipalOfficersDto> list, String serviceId, StringBuilder sB) {
+    private static void doAppSvcCgoDto(List<HcsaSvcPersonnelDto> hcsaSvcPersonnelDtos, Map map, List<AppSvcPrincipalOfficersDto> list) {
         if (list == null) {
             if (hcsaSvcPersonnelDtos != null) {
                 for (HcsaSvcPersonnelDto every : hcsaSvcPersonnelDtos) {
                     String psnType = every.getPsnType();
                     if (ApplicationConsts.PERSONNEL_PSN_TYPE_CGO.equals(psnType)) {
                         log.info("PERSONNEL_PSN_TYPE_CGO null");
-                        sB.append(serviceId);
+                        map.put(ApplicationConsts.PERSONNEL_PSN_TYPE_CGO, "CGO can't be null");
                         return;
                     }
                 }
             }
-
             return;
         }
 
-
-        boolean flag = false;
         for (int i = 0; i < list.size(); i++) {
             String assignSelect = list.get(i).getAssignSelect();
             if ("".equals(assignSelect) || assignSelect == null) {
                 map.put("cgoassignSelect" + i, MessageUtil.replaceMessage("GENERAL_ERR0006","cgoassignSelect","field"));
-                flag = true;
             }
             String idType = list.get(i).getIdType();
             if (StringUtil.isEmpty(idType)) {
                 map.put("cgotype" + i, MessageUtil.replaceMessage("GENERAL_ERR0006","cgotype","field"));
-                flag = true;
             }
             String mobileNo = list.get(i).getMobileNo();
             if (StringUtil.isEmpty(mobileNo)) {
                 map.put("cgomobileNo" + i, MessageUtil.replaceMessage("GENERAL_ERR0006","cgomobileNo","field"));
-                flag = true;
             } else {
                 if (!mobileNo.matches("^[8|9][0-9]{7}$")) {
                     map.put("cgomobileNo" + i, "GENERAL_ERR0007");
-                    flag = true;
                 }
             }
             String emailAddr = list.get(i).getEmailAddr();
             if (StringUtil.isEmpty(emailAddr)) {
                 map.put("cgoemailAddr" + i, MessageUtil.replaceMessage("GENERAL_ERR0006","cgoemailAddr","field"));
-                flag = true;
             } else {
                 if (!ValidationUtils.isEmail(emailAddr)) {
                     map.put("cgoemailAddr" + i, "GENERAL_ERR0014");
-                    flag = true;
-                }
-            }
-            if (flag) {
-                sB.append(serviceId);
-
-            }
-
-        }
-    }
-
-    private static void dolabory(Map<String, String> map,List<AppSvcDisciplineAllocationDto> appSvcDisciplineAllocationDtoList, List<AppSvcLaboratoryDisciplinesDto> list, String serviceId, StringBuilder sB) {
-        if (list != null && list.isEmpty()) {
-
-        }
-        if(list!=null&&appSvcDisciplineAllocationDtoList!=null&&!list.isEmpty()){
-            for(AppSvcLaboratoryDisciplinesDto appSvcLaboratoryDisciplinesDto : list){
-                List<AppSvcChckListDto> appSvcChckListDtoList = appSvcLaboratoryDisciplinesDto.getAppSvcChckListDtoList();
-                if(appSvcChckListDtoList!=null&&!appSvcChckListDtoList.isEmpty()){
-                    for(AppSvcChckListDto appSvcChckListDto : appSvcChckListDtoList){
-                        boolean flag=false;
-                        for(AppSvcDisciplineAllocationDto appSvcDisciplineAllocationDto : appSvcDisciplineAllocationDtoList){
-                            if(appSvcChckListDto.getChkLstConfId().equals(appSvcDisciplineAllocationDto.getChkLstConfId())){
-                                flag=true;
-                                break;
-                            }
-                        }
-                        if(!flag){
-                            map.put("allocation","allocation error");
-                            sB.append(serviceId);
-                        }
-                    }
-                }
-            }
-
-        }
-    }
-
-    private static void doSvcDis(Map map, List<AppSvcDisciplineAllocationDto> list, String serviceId, StringBuilder sB) {
-        if (list == null) {
-            return;
-        } else {
-            for (AppSvcDisciplineAllocationDto appSvcDisciplineAllocationDto : list) {
-                String idNo = appSvcDisciplineAllocationDto.getIdNo();
-                if (StringUtil.isEmpty(idNo)) {
-                    map.put("idNo", "idNo empty");
-                    sB.append(serviceId);
-                    return;
                 }
             }
         }
     }
 
-    private static void doSvcDisdolabory(Map map, List<AppSvcDisciplineAllocationDto> appSvcDislist, List<AppSvcLaboratoryDisciplinesDto> appSvclaborlist, String serviceId, StringBuilder sB) {
+    private static void doSvcDisdolabory(Map map, List<AppSvcDisciplineAllocationDto> appSvcDislist, List<AppSvcLaboratoryDisciplinesDto> appSvclaborlist) {
         if (appSvclaborlist == null || appSvclaborlist.isEmpty()) {
             return;
         } else if (appSvclaborlist != null && !appSvclaborlist.isEmpty()) {
@@ -3167,7 +3341,6 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
             if (appSvcChckListDtoList != null) {
                 if (appSvcDislist == null) {
                     map.put("appSvcDislist", "appSvcDislist null");
-                    sB.append(serviceId);
                     return;
                 } else {
                   /*  if( appSvcChckListDtoList.size()!=appSvcDislist.size()){
@@ -3177,13 +3350,13 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                         sB.append(serviceId);
                         return;
                     }
-*/
+                    */
                 }
             }
         }
     }
 
-    private static void doPO(List<HcsaSvcPersonnelDto> hcsaSvcPersonnelDtos, Map oneErrorMap, List<AppSvcPrincipalOfficersDto> poDto, String serviceId, StringBuilder sB) {
+    private static void doPO(List<HcsaSvcPersonnelDto> hcsaSvcPersonnelDtos, Map oneErrorMap, List<AppSvcPrincipalOfficersDto> poDto, SubLicenseeDto subLicenseeDto, String serviceId, StringBuilder sB) {
         if (poDto == null) {
             log.info("podto is null");
             if (hcsaSvcPersonnelDtos != null) {
@@ -3364,6 +3537,15 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                         oneErrorMap.put("deputyEmailAddr" + dpoIndex, "GENERAL_ERR0014");
                     } else if (emailAddr.length() > 66) {
 
+                    }
+                }
+                if (subLicenseeDto != null){
+                    String subLicenseeIdType = subLicenseeDto.getIdType();
+                    String subLicenseeIdNumber = subLicenseeDto.getIdNumber();
+                    if (StringUtil.isNotEmpty(subLicenseeIdType) && StringUtil.isNotEmpty(subLicenseeIdNumber)) {
+                        if (subLicenseeIdType.equals(idType) && subLicenseeIdNumber.equals(idNo)) {
+                            oneErrorMap.put("conflictError" + dpoIndex, MessageUtil.getMessageDesc("NEW_ERR0034"));
+                        }
                     }
                 }
                 dpoIndex++;
@@ -3625,6 +3807,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
     private void setEasMtsBundleInfo(LicenceFeeDto licenceFeeDto, String hciCode, List<HcsaFeeBundleItemDto> hcsaFeeBundleItemDtos, String serviceCode, String licenseeId, int easMtsVehicleCount,String appType){
         List<HcsaFeeBundleItemDto> bundleDtos = getBundleDtoBySvcCode(hcsaFeeBundleItemDtos,serviceCode);
         boolean hadBundleLicence = false;
+        int matchingTh =appConfigClient.getFeeMaxMatchingThByServiceCode(serviceCode).getEntity();
         if(!IaisCommonUtils.isEmpty(bundleDtos)){
             log.debug(StringUtil.changeForLog("get bundle licence ..."));
             log.debug("hciCode is {}",hciCode);
@@ -3641,7 +3824,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
             licenceFeeDto.setBundle(4);
         }else{
             //judge vehicle count
-            if(easMtsVehicleCount <= 10 ){
+            if(easMtsVehicleCount <= matchingTh ){
                 licenceFeeDto.setBundle(1);
             }else {
                 licenceFeeDto.setBundle(2);
@@ -3712,7 +3895,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
         coMap.put("document", "");
         coMap.put("information", "");
         coMap.put("previewli", "");
-        session.setAttribute("coMap", coMap);
+        session.setAttribute(NewApplicationConstant.CO_MAP, coMap);
         //request For Information Loading
         session.removeAttribute(NewApplicationDelegator.REQUESTINFORMATIONCONFIG);
         session.removeAttribute("HcsaSvcSubtypeOrSubsumedDto");
@@ -3728,5 +3911,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                 }
             }
         }
+        session.removeAttribute(NewApplicationDelegator.RFC_APP_GRP_PREMISES_DTO_LIST);
+        session.removeAttribute(NewApplicationDelegator.PREMISESTYPE);
     }
 }

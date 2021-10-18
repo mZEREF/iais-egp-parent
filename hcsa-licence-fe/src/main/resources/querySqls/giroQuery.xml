@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sqls catalog="giroPayee">
+    <sql key = "searchByGiroAcctInfo" remarks="search by GIRO Payee account information">
+        <![CDATA[
+            SELECT distinct gaiView.ID,gaiView.UEN_NO UEN,gaiView.LICENCE_ID, SUBSTRING ( gaiView.LICENCE_NO, 0, 14 )  LICENCE_NO,
+            gaiView.SVC_NAME,gaiView.LICENSEE_NAME,gaiView.REMARKS,
+            gaiView.BANK_CODE, gaiView.BANK_NAME, gaiView.BRANCH_CODE, gaiView.ACCT_NAME, gaiView.ACCT_NO,
+            gaiView.DDA_REF_NO
+
+            FROM (SELECT gai.ID, gai.LICENCE_ID , gai.BANK_CODE, gai.BANK_NAME,
+            gai.BRANCH_CODE, gai.ACCT_NAME, gai.ACCT_NO, gai.DDA_REF_NO, gai.STATUS,
+            null UEN_NO ,lic.LICENCE_NO ,lic.SVC_NAME ,sli.LICENSEE_NAME ,gai.REMARKS
+            FROM hcsal.dbo.licence lic
+            JOIN hcsal.dbo.giro_account_info gai on lic.ID =gai.LICENCE_ID
+            JOIN hcsal.dbo.sub_licensee_info sli on lic.SUB_LICENSEE_ID =sli.ID
+            where  (lic.STATUS ='LICEST001' or lic.STATUS ='LICEST007')
+             and lic.ID not in (select l.ORIGIN_LICENCE_ID from hcsal.dbo.licence l  where l.ORIGIN_LICENCE_ID is not null)
+            <#if org_id??>and gai.ORGANIZATION_ID = :org_id</#if>
+            ) gaiView
+            where gaiView.STATUS = 'CMSTAT001'
+
+        ]]>
+    </sql>
+
+
+
+</sqls>

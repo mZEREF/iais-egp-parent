@@ -4,7 +4,7 @@
 <div class="panel panel-default">
     <div class="panel-heading">
         <h4 class="panel-title">
-            <a class="" data-toggle="collapse" data-parent="#accordion" href="#companyDetail">
+            <a class="" data-toggle="collapse" href="#companyDetail">
                 Company Details
             </a>
         </h4>
@@ -16,7 +16,13 @@
                 <iais:row>
                     <iais:field width="5" value="Who is the licensee"/>
                     <iais:value width="7" display="true">
-                        <iais:code code="${licensee.licenseeType}" />
+                        <c:set var="entityType" value="${licensee.licenseeEntityDto.entityType}"/>
+                        <c:if test="${empty entityType || '-' == entityType}" var="invalidType">
+                            <iais:code code="${licensee.licenseeType}" />
+                        </c:if>
+                        <c:if test="${not invalidType}">
+                            <iais:code code="${entityType}" />
+                        </c:if>
                     </iais:value>
                 </iais:row>
                 <iais:row>
@@ -26,7 +32,7 @@
                     </iais:value>
                 </iais:row>
                 <iais:row>
-                    <iais:field width="5" value="Name of Licensee"/>
+                    <iais:field width="5" value="Licensee Name"/>
                     <iais:value width="7" display="true">
                         <c:out value="${licensee.name}" />
                     </iais:value>
@@ -51,13 +57,13 @@
                 </iais:row>
                 <iais:row>
                     <iais:field width="5" value="Floor No."/>
-                    <iais:value width="7">
+                    <iais:value width="7" display="true">
                         <c:out value="${licensee.floorNo}" />
                     </iais:value>
                 </iais:row>
                 <iais:row>
                     <iais:field width="5" value="Unit No."/>
-                    <iais:value width="7">
+                    <iais:value width="7" display="true">
                         <c:out value="${licensee.unitNo}" />
                     </iais:value>
                 </iais:row>

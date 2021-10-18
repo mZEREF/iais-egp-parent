@@ -7,6 +7,22 @@
             (sop.webflow.rt.api.BaseProcessClass) request.getAttribute("process");
 %>
 <webui:setLayout name="iais-blank"/>
+<style>
+
+    .withdraw-content-box {
+        background-color: #fafafa;
+        border-radius: 14px;
+        padding: 20px;
+        border:1px solid #d1d1d1;
+        margin-bottom: 0;
+    }
+
+    .withdraw-info-gp .withdraw-info-row .withdraw-info p:before {
+        color: #a2d9e7;
+    }
+
+
+</style>
 <div class="container">
     <form method="post" id="mainForm" enctype="multipart/form-data" action=<%=process.runtime.continueURL()%>>
         <div class="navigation-gp">
@@ -15,15 +31,11 @@
                     <div class="internet-content">
                         <div class="center-content">
                             <h2>You are withdrawing for </h2>
-                            <div class="row">
-                                <div class="col-lg-8 col-xs-12">
-                                    <div class="withdraw-content-box">
-                                        <div class="withdraw-info-gp">
-                                            <div class="withdraw-info-row">
-                                                <div class="withdraw-info">
-                                                    <p>${withdrawDtoView.applicationNo}</p>
-                                                </div>
-                                            </div>
+                            <div class="withdraw-content-box">
+                                <div class="withdraw-info-gp">
+                                    <div class="withdraw-info-row">
+                                        <div class="withdraw-info">
+                                            <p><a class="appNo">${withdrawDtoView.applicationNo}</a></p>
                                         </div>
                                     </div>
                                 </div>
@@ -87,8 +99,7 @@
                                           <div id="${withdrawPageShowFile.fileMapId}">
                                               <span name="fileName"
                                                     style="font-size: 14px;color: #2199E8;text-align: center">
-                                              <a title="Download"
-                                                 class="downloadFile">${withdrawPageShowFile.fileName}</a></span>
+                                                      ${withdrawPageShowFile.fileName}</span>
                                           </div>
                                         </c:forEach>
                                         </span>

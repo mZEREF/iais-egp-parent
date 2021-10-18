@@ -15,14 +15,13 @@
 <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
     <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
     <div class="main-content">
-        <div class="tab-gp steps-tab">
-            <div class="tab-content">
-                <div class="tab-pane active" id="premisesTab" role="tabpanel">
-                    <div class="row">
-                        <div class="col-xs-12">
-                            <div class="new-premise-form-conveyance">
-                                <div class="form-horizontal">
-                                    <div id = "print">
+        <div class="container">
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="tab-gp">
+                        <div class="tab-content">
+                            <div class="tab-pane fade in active">
+                                <div class="row form-horizontal">
                                     <iais:row>
                                         <iais:field value="Name of Laboratory" width="11" required="true"/>
                                         <iais:value width="11">
@@ -64,10 +63,10 @@
                                         <label class="col-xs-11 col-md-4 control-label">Status of Test <span style="color: red"> *</span>
                                         </label>
                                         <iais:value width="5">
-                                            <input class="form-check-input " id="testStatus" type="radio" name="testStatus" <c:if test="${laboratoryDevelopTestDto.testStatus == '1'}"> checked="checked"</c:if> aria-invalid="false" value="1" disabled> Active
+                                            <input class="" id="testStatus" type="radio" name="testStatus" <c:if test="${laboratoryDevelopTestDto.testStatus == '1'}"> checked="checked"</c:if> aria-invalid="false" value="1" disabled> Active
                                         </iais:value>
                                         <iais:value width="5">
-                                            <input class="form-check-input " id="testStatus" type="radio" name="testStatus" <c:if test="${laboratoryDevelopTestDto.testStatus == '0'}"> checked="checked"</c:if> aria-invalid="false" value="0" disabled> Inactive
+                                            <input class="" id="testStatus" type="radio" name="testStatus" <c:if test="${laboratoryDevelopTestDto.testStatus == '0'}"> checked="checked"</c:if> aria-invalid="false" value="0" disabled> Inactive
                                         </iais:value>
                                         <iais:value width="11" style="padding-top:12px">
                                         </iais:value>
@@ -80,7 +79,6 @@
                                                       maxlength="300" disabled>${laboratoryDevelopTestDto.remarks}</textarea>
                                         </iais:value>
                                     </iais:row>
-                                        </div>
                                 </div>
                             </div>
                         </div>

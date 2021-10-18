@@ -111,6 +111,10 @@ public interface RequestForChangeService {
     LicenceDto getLicenceDtoIncludeMigrated(String licenceId);
 
     boolean checkAffectedAppSubmissions(List<LicenceDto> selectLicence, AppGrpPremisesDto appGrpPremisesDto,
-            AppGrpPremisesDto oldAppGrpPremisesDto, double amount, String appGroupNo, AppEditSelectDto appEditSelectDto,
-            boolean isAutoRfc, List<AppSubmissionDto> appSubmissionDtos, HttpServletRequest request) throws Exception;
+            AppGrpPremisesDto oldAppGrpPremisesDto, double amount, String draftNo, String appGroupNo,
+            AppEditSelectDto appEditSelectDto, List<AppSubmissionDto> appSubmissionDtos, HttpServletRequest request) throws Exception;
+
+    boolean checkAffectedAppSubmissions(AppSubmissionDto appSubmissionDto,LicenceDto licence, Double amount,
+            String draftNo, String appGroupNo, AppEditSelectDto appEditSelectDto,List<AppSubmissionDto> appSubmissionDtos,
+            HttpServletRequest request);
 }

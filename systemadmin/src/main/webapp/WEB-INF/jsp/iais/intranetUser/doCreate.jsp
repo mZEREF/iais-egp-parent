@@ -45,7 +45,7 @@
                         <div class="tab-content">
                             <div class="tab-pane <c:if test="${activeTab==1}">active</c:if> <c:if test="${activeTab==null}">active</c:if>" id="tabAccount" role="tabAccount">
                                 <div class="form-group">
-                                    <label class="col-xs-12 col-md-4 control-label" for="userId">User ID:<span style="color:red">*</span></label>
+                                    <label class="col-xs-12 col-md-4 control-label" for="userId">User ID <span style="color:red">*</span></label>
                                     <iais:value>
                                         <div class="col-xs-8 col-sm-6 col-md-5">
                                             <input id="userId" type="text" maxlength="20" name="userId" value="${orgUserDto.userId}">
@@ -54,7 +54,7 @@
                                     </iais:value>
                                 </div>
                                 <div class="form-group">
-                                    <label class="col-xs-12 col-md-4 control-label" for="displayName">Display Name:<span style="color:red">*</span></label>
+                                    <label class="col-xs-12 col-md-4 control-label" for="displayName">Display Name <span style="color:red">*</span></label>
                                     <iais:value>
                                         <div class="col-xs-8 col-sm-6 col-md-5">
                                             <input id="displayName" type="text" name="displayName" maxlength="20"
@@ -65,7 +65,7 @@
                                 </div>
                                 <div class="form-group">
                                     <label class="col-xs-12 col-md-4 control-label" for="startDate">Account Activation
-                                        Start:<span style="color:red">*</span></label>
+                                        Start <span style="color:red">*</span></label>
                                     <iais:value>
                                         <div class="col-xs-8 col-sm-6 col-md-5">
                                             <iais:datePicker id="startDate" name="startDate"
@@ -77,7 +77,7 @@
                                 </div>
                                 <div class="form-group">
                                     <label class="col-xs-12 col-md-4 control-label" for="endDate">Account Activation
-                                        End:<span style="color:red">*</span></label>
+                                        End <span style="color:red">*</span></label>
                                     <iais:value>
                                         <div class="col-xs-8 col-sm-6 col-md-5">
                                             <iais:datePicker id="endDate" name="endDate"
@@ -88,7 +88,7 @@
                                     </iais:value>
                                 </div>
                                 <div class="form-group">
-                                    <label class="col-xs-12 col-md-4 control-label" for="remarks">Available:</label>
+                                    <label class="col-xs-12 col-md-4 control-label" for="remarks">Available </label>
                                     <iais:value>
                                         <div class="col-xs-8 col-sm-6 col-md-5">
                                             <input id="available" type="checkbox" name="available" <c:if test="${orgUserDto.available == true}">checked</c:if> >
@@ -98,7 +98,7 @@
                             </div>
                             <div class="tab-pane <c:if test="${activeTab==2}">active</c:if>" id="tabPersonal" role="tabPersonal">
                                 <div class="form-group">
-                                    <label class="col-xs-12 col-md-4 control-label">Salutation:</label>
+                                    <label class="col-xs-12 col-md-4 control-label">Salutation </label>
                                     <iais:value>
                                         <div class="col-xs-8 col-sm-6 col-md-5">
                                             <iais:select name="salutation" options="salutation"
@@ -108,7 +108,7 @@
                                     </iais:value>
                                 </div>
                                 <div class="form-group">
-                                    <label class="col-xs-12 col-md-4 control-label" for="firstName">Name:<span style="color:red">*</span></label>
+                                    <label class="col-xs-12 col-md-4 control-label" for="firstName">Name <span style="color:red">*</span></label>
                                     <iais:value>
                                         <div class="col-xs-8 col-sm-6 col-md-5">
                                             <input id="firstName" type="text" name="firstName" minlength="10" maxlength="66"
@@ -119,7 +119,7 @@
                                     </iais:value>
                                 </div>
                                 <div class="form-group hidden">
-                                    <label class="col-xs-12 col-md-4 control-label" for="lastName">Last Name:<span style="color:red">*</span></label>
+                                    <label class="col-xs-12 col-md-4 control-label" for="lastName">Last Name <span style="color:red">*</span></label>
                                     <iais:value>
                                         <div class="col-xs-8 col-sm-6 col-md-5">
                                             <input id="lastName" type="text" minlength="10" maxlength="66" name="lastName" value="${orgUserDto.lastName} " onkeypress="keyPressName()"/>
@@ -129,7 +129,7 @@
                                     </iais:value>
                                 </div>
                                 <div class="form-group">
-                                    <label class="col-xs-12 col-md-4 control-label" for="organization">Organization:</label>
+                                    <label class="col-xs-12 col-md-4 control-label" for="organization">Organization </label>
                                     <iais:value>
                                         <div class="col-xs-8 col-sm-6 col-md-5">
                                             <input id="organization" type="text" maxlength="20" name="organization" value="${orgUserDto.organization}">
@@ -137,7 +137,7 @@
                                     </iais:value>
                                 </div>
                                 <div class="form-group">
-                                    <label class="col-xs-12 col-md-4 control-label" for="division">Division:</label>
+                                    <label class="col-xs-12 col-md-4 control-label" for="division">Division </label>
                                     <iais:value>
                                         <div class="col-xs-8 col-sm-6 col-md-5">
                                             <input id="division" type="text" maxlength="20" name="division"
@@ -146,7 +146,7 @@
                                     </iais:value>
                                 </div>
                                 <div class="form-group">
-                                    <label class="col-xs-12 col-md-4 control-label" for="branch">Branch / Unit:</label>
+                                    <label class="col-xs-12 col-md-4 control-label" for="branch">Branch / Unit </label>
                                     <iais:value>
                                         <div class="col-xs-8 col-sm-6 col-md-5">
                                             <input id="branch" type="text" maxlength="20" name="branch"
@@ -157,7 +157,7 @@
                             </div>
                             <div class="tab-pane <c:if test="${activeTab==3}">active</c:if>" id="tabContact" role="tabContact">
                                 <div class="form-group">
-                                    <label class="col-xs-12 col-md-4 control-label" for="email">Email:<span style="color:red">*</span></label>
+                                    <label class="col-xs-12 col-md-4 control-label" for="email">Email <span style="color:red">*</span></label>
                                     <iais:value>
                                         <div class="col-xs-8 col-sm-6 col-md-5">
                                             <input id="email" type="text" maxLength="66" name="email" value="${orgUserDto.email}">
@@ -166,7 +166,7 @@
                                     </iais:value>
                                 </div>
                                 <div class="form-group">
-                                    <label class="col-xs-12 col-md-4 control-label" for="mobileNo">Mobile No.:<span style="color:red">*</span></label>
+                                    <label class="col-xs-12 col-md-4 control-label" for="mobileNo">Mobile No. <span style="color:red">*</span></label>
                                     <iais:value>
                                         <div class="col-xs-8 col-sm-6 col-md-5">
                                             <input id="mobileNo" type="text" maxLength="8" name="mobileNo"
@@ -176,7 +176,7 @@
                                     </iais:value>
                                 </div>
                                 <div class="form-group">
-                                    <label class="col-xs-12 col-md-4 control-label" for="officeNo">Office No.:<span style="color:red">*</span></label>
+                                    <label class="col-xs-12 col-md-4 control-label" for="officeNo">Office No. <span style="color:red">*</span></label>
                                     <iais:value>
                                         <div class="col-xs-8 col-sm-6 col-md-5">
                                             <input id="officeNo" type="text" maxLength="8" name="officeNo"
@@ -186,7 +186,7 @@
                                     </iais:value>
                                 </div>
                                 <div class="form-group">
-                                    <label class="col-xs-12 col-md-4 control-label" for="remarks">Remarks:</label>
+                                    <label class="col-xs-12 col-md-4 control-label" for="remarks">Remarks </label>
                                     <iais:value>
                                         <div class="col-xs-8 col-sm-6 col-md-5">
                                             <input id="remarks" type="text" maxLength="100" name="remarks"
@@ -198,7 +198,7 @@
                         </div>
 
                         <iais:action>
-                            <a style="margin-left: 0%" class="back" onclick="submit('back')"><em class="fa fa-angle-left"></em> Back</a>
+                            <a href="#" style="margin-left: 0%" class="back" onclick="submit('back')"><em class="fa fa-angle-left"></em> Back</a>
                             <a style="margin-left: 90%" class="btn btn-primary" href="#" onclick="doCreate()">SUBMIT</a>
                         </iais:action>
                     </div>

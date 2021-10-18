@@ -12,18 +12,18 @@
     String webroot1 = IaisEGPConstant.CSS_ROOT + IaisEGPConstant.FE_CSS_ROOT;
 %>
 <webui:setLayout name="iais-internet"/>
-<div class="dashboard" style="background-image:url('<%=webroot1%>img/Masthead-banner.jpg')">
+<div class="dashboard" id="dashboard" style="background-image:url('<%=webroot1%>img/Masthead-banner.jpg')">
     <div class="container">
         <div class="navigation-gp">
             <div class="row">
                 <%@ include file="../common/dashboardDropDown.jsp" %>
             </div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-xs-12">
-            <div class="prelogin-title">
-                <h1>Laboratory Developed Test</h1>
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="dashboard-page-title">
+                        <h1 class="font-weight 0">Laboratory Developed Test</h1>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -32,15 +32,14 @@
 <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
     <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
     <div class="main-content">
-        <p class="print"><div style="font-size: 16px;text-align: right;padding-right: 230px;"><a onclick="printWDPDF()"> <em class="fa fa-print"></em>Print</a></div></p>
-        <div class="tab-gp steps-tab">
-            <div class="tab-content">
-                <div class="tab-pane active" id="premisesTab" role="tabpanel">
-                    <div class="row">
-                        <div class="col-xs-12">
-                            <div class="new-premise-form-conveyance">
-                                <div class="form-horizontal">
-                                    <div id = "print">
+        <div class="container">
+            <p class="print"><div style="font-size: 16px;text-align: right;"><a href="javascript:void(0)" onclick="printWDPDF()"> <em class="fa fa-print"></em>Print</a></div></p>
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="tab-gp">
+                        <div class="tab-content">
+                            <div class="tab-pane fade in active">
+                                <div class="row form-horizontal">
                                     <iais:row>
                                         <iais:field value="Name of Laboratory" width="11" required="true"/>
                                         <iais:value width="11">
@@ -87,10 +86,10 @@
                                                data-original-title="">i</a>
                                         </label>
                                         <iais:value width="5">
-                                            <input class="form-check-input " id="testStatus" type="radio" name="testStatus" <c:if test="${laboratoryDevelopTestDto.testStatus == '1'}"> checked="checked"</c:if> aria-invalid="false" value="1" disabled> Active
+                                            <input class=" " id="testStatus" type="radio" name="testStatus" <c:if test="${laboratoryDevelopTestDto.testStatus == '1'}"> checked="checked"</c:if> aria-invalid="false" value="1" disabled> Active
                                         </iais:value>
                                         <iais:value width="5">
-                                            <input class="form-check-input " id="testStatus" type="radio" name="testStatus" <c:if test="${laboratoryDevelopTestDto.testStatus == '0'}"> checked="checked"</c:if> aria-invalid="false" value="0" disabled> Inactive
+                                            <input class=" " id="testStatus" type="radio" name="testStatus" <c:if test="${laboratoryDevelopTestDto.testStatus == '0'}"> checked="checked"</c:if> aria-invalid="false" value="0" disabled> Inactive
                                         </iais:value>
                                         <iais:value width="11" style="padding-top:12px">
                                         </iais:value>
@@ -103,21 +102,22 @@
                                                       maxlength="300" disabled>${laboratoryDevelopTestDto.remarks}</textarea>
                                         </iais:value>
                                     </iais:row>
-                                        </div>
-                                    <div class="application-tab-footer">
-                                        <div class="row">
-                                            <div class="col-xs-2 col-md-2">
-                                                <a   style="padding-left: 90px;" align="left" class="back" href="/main-web/eservice/INTERNET/IaisSubmissionData/1/prepareData"><em class="fa fa-angle-left"></em> Back</a></div>
-                                            <div class="text-right col-xs-9 col-md-9">
-                                                <button class="btn btn-primary save" id="savebtn" onclick="javascript:save()">Submit</button>
-                                            </div>
-                                        </div>
-                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="container">
+            <div class="col-xs-12 col-md-6 text-left">
+                <a class="back" href="/main-web/eservice/INTERNET/IaisSubmissionData/1/prepareData"><em class="fa fa-angle-left"></em> Back</a>
+            </div>
+            <div class="col-xs-12 col-md-6 text-right">
+                <button class="btn btn-primary save" id="savebtn" onclick="javascript:save()">NEXT</button>
             </div>
         </div>
     </div>

@@ -1,11 +1,27 @@
 <c:choose>
   <c:when test="${AppSubmissionDto.appType == 'APTY005' && RFC_eqHciNameChange!='RFC_eqHciNameChange'&&renew_rfc_show!='Y'}"></c:when>
-  <c:when test="${isSingle=='N'&&AppSubmissionDto.appType == 'APTY004'}"></c:when>
+  <c:when test="${isSingle=='N'&&AppSubmissionDto.appType == 'APTY004'}">
+    <%--
+    <c:set var="pageShowFileDtos" value="${selectedRENEWFileDocShowPageDto.pageShowFileDtos}" scope="request"/>
+    <c:set var="sec" value="RENEW" scope="request"/>
+    <%@include file="../newApplication/declarations/preliminaryQuestion.jsp"%>
+    <c:if test="${viewPrint != 'Y'}">
+      <%@include file="../newApplication/declarations/proofOfAuthorisationDocument.jsp"%>
+    </c:if>
+    <c:if test="${viewPrint == 'Y'}">
+      <%@include file="../newApplication/declarations/proofOfAuthorisationDocumentView.jsp"%>
+    </c:if>
+    <%@include file="../newApplication/declarations/bankruptcy.jsp"%>
+    <%@include file="../newApplication/declarations/competencies.jsp"%>
+    <%@include file="../newApplication/declarations/crimAndPassApp.jsp"%>
+    <%@include file="../newApplication/declarations/generalAccuracy.jsp"%>
+    --%>
+  </c:when>
   <c:when test=">${licenceView=='licenceView'}"></c:when>
   <c:otherwise>
     <div class="panel panel-default">
       <div class="panel-heading" id="headingOne" role="tab">
-        <h4 class="panel-title"><a class="collapsed a-panel-collapse" role="button" data-toggle="collapse" href="#declarations" aria-expanded="true" aria-controls="declarations" name="printControlNameForApp">Declarations</a></h4>
+        <h4 class="panel-title"><a class="collapsed a-panel-collapse" style="text-decoration: none;" role="button" data-toggle="collapse" href="#declarations" aria-expanded="true" aria-controls="declarations" name="printControlNameForApp">Declarations</a></h4>
       </div>
       <div class="panel-collapse collapse <c:if test="${!empty printFlag}">in</c:if>" id="declarations" role="tabpanel" aria-labelledby="headingOne">
         <div class="panel-body">
@@ -25,7 +41,8 @@
             <%@include file="../newApplication/declarations/crimAndPassApp.jsp"%>
             <%@include file="../newApplication/declarations/generalAccuracy.jsp"%>
           </c:if>
-          <c:if test="${AppSubmissionDto.appType == 'APTY005' && RFC_eqHciNameChange=='RFC_eqHciNameChange'}">
+              <c:set var="rfc_from_renew" value="${AppSubmissionDto.appGroupAppType == 'APTY005' && (not empty AppSubmissionDto.appDeclarationMessageDto && AppSubmissionDto.appDeclarationMessageDto.appType == 'APTY004') ? 'Y' : 'N'}"/>
+          <c:if test="${AppSubmissionDto.appType == 'APTY005' && RFC_eqHciNameChange=='RFC_eqHciNameChange' && rfc_from_renew != 'Y'}">
             <c:set var="pageShowFileDtos" value="${selectedRFCFileDocShowPageDto.pageShowFileDtos}" scope="request"/>
             <c:set var="sec" value="RFC" scope="request"/>
             <%@include file="../newApplication/declarations/preliminaryQuestion.jsp"%>
@@ -46,6 +63,22 @@
                <%@include file="../newApplication/declarations/statements.jsp"%>
               </c:if>
           </c:if>
+
+              <c:if test="${AppSubmissionDto.appType == 'APTY005' && rfc_from_renew == 'Y'}">
+                <c:set var="pageShowFileDtos" value="${selectedRENEWFileDocShowPageDto.pageShowFileDtos}" scope="request"/>
+                <c:set var="sec" value="RENEW" scope="request"/>
+                <%@include file="../newApplication/declarations/preliminaryQuestion.jsp"%>
+                <c:if test="${viewPrint != 'Y'}">
+                  <%@include file="../newApplication/declarations/proofOfAuthorisationDocument.jsp"%>
+                </c:if>
+                <c:if test="${viewPrint == 'Y'}">
+                  <%@include file="../newApplication/declarations/proofOfAuthorisationDocumentView.jsp"%>
+                </c:if>
+                <%@include file="../newApplication/declarations/bankruptcy.jsp"%>
+                <%@include file="../newApplication/declarations/competencies.jsp"%>
+                <%@include file="../newApplication/declarations/crimAndPassApp.jsp"%>
+                <%@include file="../newApplication/declarations/generalAccuracy.jsp"%>
+              </c:if>
           <c:if test="${renewDto.appSubmissionDtos.size()>=1 && renewDto.appSubmissionDtos[0].appType=='APTY004'}">
             <c:set value="${renewDto.appSubmissionDtos[0]}" var="AppSubmissionDto"></c:set>
             <c:set var="pageShowFileDtos" value="${selectedRENEWFileDocShowPageDto.pageShowFileDtos}" scope="request"/>

@@ -21,16 +21,9 @@ import com.ecquaria.cloud.moh.iais.service.client.FileRepositoryClient;
 import com.ecquaria.cloud.moh.iais.service.client.ResponseForInformationClient;
 import com.ecquaria.cloud.moh.iais.service.client.SystemAdminClient;
 import com.ecquaria.sz.commons.util.FileUtil;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.io.FilenameUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
-
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -43,6 +36,12 @@ import java.util.zip.CRC32;
 import java.util.zip.CheckedOutputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+
+import static java.nio.file.Files.newOutputStream;
 
 /**
  * ResponseForInformationServiceImpl
@@ -111,8 +110,9 @@ public class ResponseForInformationServiceImpl implements ResponseForInformation
         if(!groupPath.exists()){
             groupPath.mkdirs();
         }
-        try (OutputStream fileInputStream = new FileOutputStream(MiscUtil.generateFile(sharedOutPath,file.getName()));
-             OutputStream fileOutputStream  = Files.newOutputStream(file.toPath());){
+        File outFile = MiscUtil.generateFile(sharedOutPath, file.getName());
+        try (OutputStream fileInputStream = newOutputStream(outFile.toPath());
+             OutputStream fileOutputStream  = newOutputStream(file.toPath())){
 
             fileOutputStream.write(data.getBytes(StandardCharsets.UTF_8));
             fileInputStream.write(data.getBytes(StandardCharsets.UTF_8));
@@ -138,7 +138,7 @@ public class ResponseForInformationServiceImpl implements ResponseForInformation
                 byte[] entity = fileRepositoryClient.getFileFormDataBase(doc.getFileRepoId()).getEntity();
                 File file = MiscUtil.generateFile(sharedPath + RequestForInformationConstants.FILE_NAME_RFI + File.separator + "files",
                         doc.getFileRepoId() + "emanelififrcohda" + doc.getDocName());
-                try (OutputStream outputStream=Files.newOutputStream(file.toPath());){
+                try (OutputStream outputStream= newOutputStream(file.toPath());){
                     outputStream.write(entity);
                 } catch (Exception e) {
                     log.error(e.getMessage(),e);
@@ -166,7 +166,8 @@ public class ResponseForInformationServiceImpl implements ResponseForInformation
         if(!c.exists()){
             c.mkdirs();
         }
-        try (OutputStream is=new FileOutputStream(MiscUtil.generateFile(sharedOutPath, l+RequestForInformationConstants.ZIP_NAME));
+        File outFile = MiscUtil.generateFile(sharedOutPath, l+RequestForInformationConstants.ZIP_NAME);
+        try (OutputStream is=newOutputStream(outFile.toPath());
              CheckedOutputStream cos=new CheckedOutputStream(is,new CRC32());
              ZipOutputStream zos=new ZipOutputStream(cos);){
             log.info(StringUtil.changeForLog("------------zip file name is"+sharedOutPath+File.separator+ l+RequestForInformationConstants.ZIP_NAME+"--------------------"));
@@ -210,7 +211,11 @@ public class ResponseForInformationServiceImpl implements ResponseForInformation
 
     private void rename(String fileNamesss, String rfiId)  {
         if (sharedOutPath.endsWith("/") || sharedOutPath.endsWith("\\")) {
-            sharedOutPath = sharedOutPath.substring(0, sharedOutPath.length() - 1);
+            synchronized (this) {
+                if (sharedOutPath.endsWith("/") || sharedOutPath.endsWith("\\")) {
+                    sharedOutPath = sharedOutPath.substring(0, sharedOutPath.length() - 1);
+                }
+            }
         }
         File zipFile =MiscUtil.generateFile(sharedOutPath);
         MiscUtil.checkDirs(zipFile);
@@ -254,7 +259,11 @@ public class ResponseForInformationServiceImpl implements ResponseForInformation
 
     private void deleteFile(){
         if (sharedOutPath.endsWith("/") || sharedOutPath.endsWith("\\")) {
-            sharedOutPath = sharedOutPath.substring(0, sharedOutPath.length() - 1);
+            synchronized (this) {
+                if (sharedOutPath.endsWith("/") || sharedOutPath.endsWith("\\")) {
+                    sharedOutPath = sharedOutPath.substring(0, sharedOutPath.length() - 1);
+                }
+            }
         }
         File file = MiscUtil.generateFile(sharedOutPath);
         String repPath = sharedPath + RequestForInformationConstants.FILE_NAME_RFI+File.separator+"files";

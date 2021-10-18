@@ -48,7 +48,7 @@
   <c:if test="${not empty schEdule_AlERt_Msg__atTR}">
     <div class="dashalert alert-info dash-announce alertMaintainace">
       <button aria-label="Close" data-dismiss="alert" class="close" type="button" onclick="javascript:closeMaintainace();"><span aria-hidden="true">x</span></button>
-      <h3 style="margin-top:0;"><i class="fa fa-wrench"></i> Upcoming Scheduled Maintainace</h3> <%--NOSONAR--%>
+      <h3 style="margin-top:0;"><i class="fa fa-wrench"></i> Upcoming Scheduled Maintenance</h3> <%--NOSONAR--%>
                             <c:out value="${schEdule_AlERt_Msg__atTR}" escapeXml="false"/></div>
   </c:if>
   <c:if test="${not empty bAnner_AlERt_Msg__atTR}">
@@ -145,7 +145,8 @@
                             <table aria-describedby="" class="table application-group" style="border-collapse:collapse;">
                                 <thead>
                                 <tr>
-                                    <iais:sortableHeader needSort="false" field="" value="S/N"></iais:sortableHeader>
+                                    <th scope="col" style="display: none"></th>
+                                <iais:sortableHeader needSort="false" field="" value="S/N"></iais:sortableHeader>
                                     <iais:sortableHeader needSort="false" field="GROUP_NO" value="Application No."></iais:sortableHeader>
                                     <iais:sortableHeader needSort="false" field="APP_TYPE" value="Application Type"></iais:sortableHeader>
                                     <iais:sortableHeader needSort="false" field="COU" value="Submission Type"></iais:sortableHeader>

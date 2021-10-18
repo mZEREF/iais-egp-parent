@@ -79,4 +79,7 @@ public interface OrganizationLienceseeClient {
 
     @GetMapping(value = "/iais-internet-user/organization/{uen}",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<OrganizationDto> findOrganizationByUen(@PathVariable("uen") String uen);
+
+    @GetMapping(value = "/iais-licensee/organizationDto/{licenseeId}",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<OrganizationDto> getOrganizationDtoByLicenseeId(@PathVariable(name = "licenseeId") String licenseeId);
 }

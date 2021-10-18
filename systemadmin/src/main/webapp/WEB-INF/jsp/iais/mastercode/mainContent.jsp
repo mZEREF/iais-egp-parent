@@ -20,7 +20,8 @@
                         <table aria-describedby="" class="table">
                             <thead>
                             <tr>
-                                <th style="padding-bottom: 18px;">SN</th>
+                                <th scope="col" style="display: none"></th>
+                                <iais:sortableHeader needSort="false" field="SN" value="SN" style="width:1%" />
                                 <iais:sortableHeader needSort="true" field="code_category" value="Master Code Category" style="width:15%" />
                                 <iais:sortableHeader needSort="true" field="code_value" value="Code Value" style="width:10%"/>
                                 <iais:sortableHeader needSort="true" field="code_category" value="Code Description" style="width:10%"/>
@@ -30,7 +31,7 @@
                                 <iais:sortableHeader needSort="true" field="effective_from" value="Effective Start Date"  style="width:13%"/>
                                 <iais:sortableHeader needSort="true" field="effective_to" value="Effective End Date"  style="width:13%"/>
                                 <iais:sortableHeader needSort="true" field="status" value="Status" style="width:6%"/>
-                                <th style="padding-bottom: 18px;">Action</th>
+                                <iais:sortableHeader needSort="false" field="Action" value="Action" />
                             </tr>
                             </thead>
                             <tbody>
@@ -112,8 +113,8 @@
                                             </td>
                                         </tr>
                                         <!-- Modal -->
-                                        <div class="modal fade" id="deleteModal${status.index}" tabindex="-1" role="dialog" aria-labelledby="deleteModal" style="left: 50%;top: 50%;transform: translate(-50%,-50%);min-width:80%; overflow: visible;bottom: inherit;right: inherit;">
-                                            <div class="modal-dialog" role="document">
+                                        <div class="modal fade" id="deleteModal${status.index}" tabindex="-1" role="dialog" aria-labelledby="deleteModal">
+                                            <div class="modal-dialog modal-dialog-centered" role="document">
                                                 <div class="modal-content">
                                                     <div class="modal-body">
                                                         <div class="row">

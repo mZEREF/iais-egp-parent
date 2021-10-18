@@ -12,7 +12,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.organization.OrganizationDto;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
-import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.constant.UserConstants;
 import com.ecquaria.cloud.moh.iais.dto.OidcAuthDto;
@@ -23,7 +22,9 @@ import com.ecquaria.cloud.moh.iais.helper.FeLoginHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
+import com.ecquaria.cloud.moh.iais.model.MyinfoUtil;
 import com.ecquaria.cloud.moh.iais.service.OrgUserManageService;
+import com.ecquaria.cloud.moh.iais.validation.SoloEditValidator;
 import com.ecquaria.cloudfeign.FeignException;
 import com.ncs.secureconnect.sim.common.LoginInfo;
 import com.ncs.secureconnect.sim.lite.SIMUtil;
@@ -58,6 +59,9 @@ public class FESingpassLandingDelegator {
 
     @Autowired
     private MyInfoAjax myInfoAjax;
+
+    @Autowired
+    private SoloEditValidator soloEditValidator;
 
     /**
      * StartStep: startStep
@@ -143,11 +147,6 @@ public class FESingpassLandingDelegator {
             scp = ParamUtil.getString(request, UserConstants.LOGIN_SCP);
         }
 
-        if (StringUtil.isEmpty(identityNo)){
-            log.info(StringUtil.changeForLog("identityNo ====>>>>>>>>>" + identityNo));
-            return;
-        }
-
         String identityNoUpper = "";
         if(identityNo != null) {
             identityNoUpper = identityNo.toUpperCase();
@@ -166,12 +165,20 @@ public class FESingpassLandingDelegator {
         HttpServletRequest request = bpc.request;
         FeUserDto userSession = (FeUserDto) ParamUtil.getSessionAttr(request, UserConstants.SESSION_USER_DTO);
         log.info("=======>validatePwd>>>>>>>>>{}", openTestMode);
+        //get active flag and active role flag
+        String userAndRoleFlag = orgUserManageService.getActiveUserAndRoleFlag(userSession);
+        if(AppConsts.FALSE.equals(userAndRoleFlag)) {
+            ParamUtil.setRequestAttr(request, IaisEGPConstant.ERRORMSG , "The account is incorrect");
+            ParamUtil.setRequestAttr(request, UserConstants.SCP_ERROR, IaisEGPConstant.YES);
+            AuditTrailHelper.insertLoginFailureAuditTrail(request, userSession.getIdentityNo(), "The account is incorrect");
+            return;
+        }
         if (FELandingDelegator.LOGIN_MODE_DUMMY_WITHPASS.equals(openTestMode)){
             boolean scpCorrect = orgUserManageService.validatePwd(userSession);
             if (!scpCorrect) {
-                ParamUtil.setRequestAttr(request, IaisEGPConstant.ERRORMSG , "The account or password is incorrect");
+                ParamUtil.setRequestAttr(request, IaisEGPConstant.ERRORMSG , "The account is incorrect");
                 ParamUtil.setRequestAttr(request, UserConstants.SCP_ERROR, IaisEGPConstant.YES);
-                AuditTrailHelper.insertLoginFailureAuditTrail(request, userSession.getIdentityNo(), "The account or password is incorrect");
+                AuditTrailHelper.insertLoginFailureAuditTrail(request, userSession.getIdentityNo(), "The account is incorrect");
                 return;
             }
         }
@@ -190,7 +197,8 @@ public class FESingpassLandingDelegator {
         userSession.setScp(scp);
         userSession.setIdentityNo(identityNo);
         userSession.setIdType(idType);
-        if (orgUserManageService.validateSingpassAccount(identityNo, idType)){
+        boolean loginFlag = orgUserManageService.validateSingpassAccount(identityNo, idType);
+        if (loginFlag){
             ParamUtil.setRequestAttr(bpc.request, "errorMsg", MessageUtil.getMessageDesc("GENERAL_ERR0013"));
             ParamUtil.setRequestAttr(bpc.request, "hasMohIssueUen", IaisEGPConstant.YES);
             AuditTrailHelper.insertLoginFailureAuditTrail(request, identityNo);
@@ -215,11 +223,17 @@ public class FESingpassLandingDelegator {
         String identityNo = userSession.getIdentityNo();
         String idType = userSession.getIdType();
         String scp = userSession.getScp();
-        Optional<FeUserDto> optional = Optional.ofNullable(orgUserManageService.getFeUserAccountByNricAndType(identityNo, idType));
-        if (optional.isPresent()){
-            userSession = optional.get();
-            userSession.setScp(scp);
-            ParamUtil.setRequestAttr(request, UserConstants.IS_FIRST_LOGIN, IaisEGPConstant.NO);
+        FeUserDto feUserDto = orgUserManageService.getFeUserAccountByNricAndType(identityNo, idType, null);
+        //Unavailable accounts have been filtered
+        if (feUserDto != null){
+            if(AppConsts.COMMON_STATUS_ACTIVE.equals(feUserDto.getStatus())) {
+                userSession = feUserDto;
+                userSession.setScp(scp);
+                ParamUtil.setRequestAttr(request, UserConstants.IS_FIRST_LOGIN, IaisEGPConstant.NO);
+            } else {
+                ParamUtil.setSessionAttr(request, UserConstants.SESSION_CAN_EDIT_USERINFO, IaisEGPConstant.NO);
+                ParamUtil.setRequestAttr(request, UserConstants.IS_FIRST_LOGIN, IaisEGPConstant.YES);
+            }
         }else {
             ParamUtil.setSessionAttr(request, UserConstants.SESSION_CAN_EDIT_USERINFO, IaisEGPConstant.NO);
             ParamUtil.setRequestAttr(request, UserConstants.IS_FIRST_LOGIN, IaisEGPConstant.YES);
@@ -227,6 +241,7 @@ public class FESingpassLandingDelegator {
 
         log.info(StringUtil.changeForLog("======>> fe user json" + JsonUtil.parseToJson(userSession)));
         ParamUtil.setSessionAttr(request, UserConstants.SESSION_USER_DTO, userSession);
+        reLoadMyInfoData(request);
         log.info(StringUtil.changeForLog("SingPass Login service [receiveUserInfo] END ...."));
     }
 
@@ -239,24 +254,27 @@ public class FESingpassLandingDelegator {
     public void initSingpassInfo(BaseProcessClass bpc) throws FeignException, BaseException {
         log.info(StringUtil.changeForLog("SingPass Login service [initSingpassInfo] START ...."));
         HttpServletRequest request = bpc.request;
+        if(MyinfoUtil.CLEAR_MYINFO_ACTION.equalsIgnoreCase(ParamUtil.getRequestString(request,"refreshMyInfoData"))){
+            log.info(StringUtil.changeForLog("-------CLEAR MYINO ACTCION -------"));
+            clearInfo(request);
+            return;
+        }
         if( !reLoadMyInfoData(request)){
             FeUserDto userSession = (FeUserDto) ParamUtil.getSessionAttr(request, UserConstants.SESSION_USER_DTO);
             if (Optional.ofNullable(userSession).isPresent()){
-                FeLoginHelper.writeUserField(request, userSession);
-                ParamUtil.setSessionAttr(request, UserConstants.SESSION_USER_DTO, userSession);
-                ValidationResult validationResult = WebValidationHelper.validateProperty(userSession, "create");
-                if (validationResult.isHasErrors()) {
-                    Map<String, String> errorMap = validationResult.retrieveAll();
-                    ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
+                setRequestDto(request,userSession);
+                Map<String,String> errorMsg = soloEditValidator.validate(request);
+                if ( !errorMsg.isEmpty()) {
+                    ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMsg));
                     ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ISVALID, IaisEGPConstant.NO);
                 } else {
+                    LicenseeDto liceInfo = (LicenseeDto) ParamUtil.getSessionAttr(request, MyinfoUtil.SOLO_DTO_SEESION);
                     OrganizationDto orgn = new OrganizationDto();
                     orgn.setDoMain(AppConsts.USER_DOMAIN_INTERNET);
                     orgn.setOrgType(UserConstants.ORG_TYPE);
                     orgn.setUenNo(userSession.getUenNo());
                     orgn.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
                     orgn.setFeUserDto(userSession);
-                    LicenseeDto liceInfo = (LicenseeDto) ParamUtil.getSessionAttr(request, UserConstants.SESSION_LICENSEE_INFO_ATTR);
                     orgn.setLicenseeDto(liceInfo);
 
                     FeUserDto createdUser = orgUserManageService.createSingpassAccount(orgn);
@@ -272,17 +290,83 @@ public class FESingpassLandingDelegator {
             log.info(StringUtil.changeForLog("SingPass Login service [initSingpassInfo] END ...."));
         }
     }
+    private void clearInfo(HttpServletRequest request){
+        FeUserDto userSession = (FeUserDto) ParamUtil.getSessionAttr(request, UserConstants.SESSION_USER_DTO);
+        LicenseeDto licenseeDto = (LicenseeDto) ParamUtil.getSessionAttr(request, MyinfoUtil.SOLO_DTO_SEESION);
+        userSession.setMobileNo(null);
+        userSession.setEmail(null);
+        userSession.setDisplayName(null);
+        if(licenseeDto == null){
+            licenseeDto = new LicenseeDto();
+        }else {
+            licenseeDto.setPostalCode(null);
+            licenseeDto.setAddrType(null);
+            licenseeDto.setBlkNo(null);
+            licenseeDto.setFloorNo(null);
+            licenseeDto.setUnitNo(null);
+            licenseeDto.setBuildingName(null);
+            licenseeDto.setStreetName(null);
+            licenseeDto.setMobileNo(null);
+            licenseeDto.setEmilAddr(null);
+            licenseeDto.setName(null);
+        }
+        userSession.setFromMyInfo(0);
+        ParamUtil.setRequestAttr(request, MyinfoUtil.IS_LOAD_MYINFO_DATA, AppConsts.NO);
+        ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.NO);
+        ParamUtil.setRequestAttr(request, MyinfoUtil.SINGPASS_LOGIN, IaisEGPConstant.YES);
+        ParamUtil.setSessionAttr(request, UserConstants.SESSION_USER_DTO,userSession);
+        ParamUtil.setSessionAttr(request,MyinfoUtil.SOLO_DTO_SEESION,licenseeDto);
+    }
+
+    private void setRequestDto(HttpServletRequest request,FeUserDto userSession){
+        LicenseeDto licenseeDto =  (LicenseeDto) ParamUtil.getSessionAttr(request,MyinfoUtil.SOLO_DTO_SEESION);
+        if(licenseeDto == null){
+            licenseeDto = new LicenseeDto();
+        }
+        licenseeDto.setAddrType(ParamUtil.getString(request,"addrType"));
+        userSession.setMobileNo(ParamUtil.getString(request,"telephoneNo"));
+        userSession.setEmail(ParamUtil.getString(request,"emailAddr"));
+        licenseeDto.setMobileNo(userSession.getMobileNo());
+        licenseeDto.setEmilAddr(userSession.getEmail());
+        if(StringUtil.isEmpty(userSession.getDesignation())){
+            userSession.setDesignation(MyinfoUtil.NO_GET_NAME_SHOW_NAME);
+            userSession.setDesignationOther(MyinfoUtil.NO_GET_NAME_SHOW_NAME);
+            userSession.setSalutation(MyinfoUtil.NO_GET_NAME_SHOW_NAME);
+            userSession.setIdType(IaisEGPHelper.checkIdentityNoType(userSession.getIdentityNo()));
+        }
+        if(AppConsts.YES.equalsIgnoreCase(ParamUtil.getString(request,"loadMyInfoData"))){
+            userSession.setFromMyInfo(1);
+            ParamUtil.setRequestAttr(request,MyinfoUtil.IS_LOAD_MYINFO_DATA,AppConsts.YES);
+            ParamUtil.setSessionAttr(request,MyinfoUtil.SOLO_DTO_SEESION,licenseeDto);
+            ParamUtil.setSessionAttr(request, UserConstants.SESSION_USER_DTO,userSession);
+            return;
+        }else {
+            userSession.setFromMyInfo(0);
+        }
+        userSession.setDisplayName(ParamUtil.getString(request,"name"));
+        licenseeDto.setPostalCode(ParamUtil.getString(request,"postalCode"));
+        licenseeDto.setBlkNo(ParamUtil.getString(request,"blkNo"));
+        licenseeDto.setFloorNo(ParamUtil.getString(request,"floorNo"));
+        licenseeDto.setUnitNo(ParamUtil.getString(request,"unitNo"));
+        licenseeDto.setBuildingName(ParamUtil.getString(request,"buildingName"));
+        licenseeDto.setStreetName(ParamUtil.getString(request,"streetName"));
+        licenseeDto.setName(userSession.getDisplayName());
+        ParamUtil.setSessionAttr(request,MyinfoUtil.SOLO_DTO_SEESION,licenseeDto);
+        ParamUtil.setSessionAttr(request, UserConstants.SESSION_USER_DTO,userSession);
+    }
 
     public boolean reLoadMyInfoData( HttpServletRequest request){
         log.info(StringUtil.changeForLog("------------------reLoadMyInfoData start -----------"));
-        if(AppConsts.YES.equalsIgnoreCase(ParamUtil.getRequestString(request,"refreshMyInfoData"))){
+        ParamUtil.setRequestAttr(request, MyinfoUtil.SINGPASS_LOGIN, IaisEGPConstant.YES);
+        if(AppConsts.YES .equalsIgnoreCase( (String) ParamUtil.getSessionAttr(request,MyinfoUtil.MYINFO_TRANSFER_CALL_BACK)) || AppConsts.YES.equalsIgnoreCase(ParamUtil.getRequestString(request,"refreshMyInfoData"))){
             FeUserDto userSession = (FeUserDto) ParamUtil.getSessionAttr(request, UserConstants.SESSION_USER_DTO);
             String identityNo = userSession.getIdentityNo();
-            Optional<MyInfoDto> infoOpt = Optional.ofNullable(myInfoAjax.getMyInfo(identityNo,request));
+            Optional<MyInfoDto> infoOpt = Optional.ofNullable(AppConsts.YES.equalsIgnoreCase( (String) ParamUtil.getSessionAttr(request,MyinfoUtil.MYINFO_TRANSFER_CALL_BACK)) ? myInfoAjax.getMyInfoData(request) :myInfoAjax.getMyInfo(identityNo,request));
             if (infoOpt.isPresent()){
                 MyInfoDto myInfo = infoOpt.get();
                 if(!myInfo.isServiceDown()){
                     log.info(StringUtil.changeForLog("SingPass Login service [receiveUserInfo] MyInfo ...." + JsonUtil.parseToJson(myInfo)));
+                    userSession.setFromMyInfo(1);
                     userSession.setEmail(myInfo.getEmail());
                     userSession.setMobileNo(myInfo.getMobileNo());
                     userSession.setDisplayName(myInfo.getUserName());
@@ -294,12 +378,22 @@ public class FESingpassLandingDelegator {
                     liceInfo.setName(myInfo.getUserName());
                     liceInfo.setBuildingName(myInfo.getBuildingName());
                     liceInfo.setStreetName(myInfo.getStreetName());
-                    ParamUtil.setSessionAttr(request, UserConstants.SESSION_LICENSEE_INFO_ATTR, liceInfo);
+                    liceInfo.setMobileNo(myInfo.getMobileNo());
+                    liceInfo.setEmilAddr(myInfo.getEmail());
+                    liceInfo.setAddrType(myInfo.getAddrType());
+                    String addrType = ParamUtil.getString(request,"addrType");
+                    if(StringUtil.isNotEmpty(addrType)){
+                        liceInfo.setAddrType(addrType);
+                    }
+                    ParamUtil.setSessionAttr(request, MyinfoUtil.SOLO_DTO_SEESION, liceInfo);
+                    ParamUtil.setRequestAttr(request, MyinfoUtil.IS_LOAD_MYINFO_DATA, AppConsts.YES);
+                    ParamUtil.setSessionAttr(request, UserConstants.SESSION_USER_DTO,userSession);
                 }else {
                     ParamUtil.setRequestAttr(request,UserConstants.MY_INFO_SERVICE_OPEN_FLAG, IaisEGPConstant.YES);
                 }
+            }else {
+                ParamUtil.setRequestAttr(request,UserConstants.MY_INFO_SERVICE_OPEN_FLAG, IaisEGPConstant.YES);
             }
-
             ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.NO);
             return true;
         }

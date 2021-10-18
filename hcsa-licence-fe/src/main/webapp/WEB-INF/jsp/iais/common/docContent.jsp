@@ -1,25 +1,26 @@
+<%@ page import="com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts" %>
 <div class="document-upload-list">
     <h3>
         <c:if test="${'1' == config.dupForPrem}">Mode of Service Delivery&nbsp;${premStat.index+1}:&nbsp;</c:if>
         <c:if test="${'svcDoc' == docType}">
             <c:choose>
                 <c:when test="${'1' == config.dupForPerson}">
-                    Clinical Governance Officer&nbsp;${psnStat.index+1}:&nbsp;
+                    <%=HcsaConsts.CLINICAL_GOVERNANCE_OFFICER%>&nbsp;${psnStat.index+1}:&nbsp;
                 </c:when>
                 <c:when test="${'2' == config.dupForPerson}">
-                    Principal Officer&nbsp;${psnStat.index+1}:&nbsp;
+                    <%=HcsaConsts.PRINCIPAL_OFFICER%>&nbsp;${psnStat.index+1}:&nbsp;
                 </c:when>
                 <c:when test="${'4' == config.dupForPerson}">
-                    Nominee&nbsp;${psnStat.index+1}:&nbsp;
+                    <%=HcsaConsts.NOMINEE%>&nbsp;${psnStat.index+1}:&nbsp;
                 </c:when>
                 <c:when test="${'8' == config.dupForPerson}">
-                    MedAlert Person&nbsp;${psnStat.index+1}:&nbsp;
+                    <%=HcsaConsts.MEDALERT_PERSON%>&nbsp;${psnStat.index+1}:&nbsp;
                 </c:when>
                 <c:when test="${'16' == config.dupForPerson}">
-                    Service Personnel&nbsp;${psnStat.index+1}:&nbsp;
+                    <%=HcsaConsts.SERVICE_PERSONNEL%>&nbsp;${psnStat.index+1}:&nbsp;
                 </c:when>
                 <c:when test="${'32' == config.dupForPerson}">
-                    Clinical Director&nbsp;${psnStat.index+1}:&nbsp;
+                    <%=HcsaConsts.CLINICAL_DIRECTOR%>&nbsp;${psnStat.index+1}:&nbsp;
                 </c:when>
             </c:choose>
         </c:if>

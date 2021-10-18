@@ -21,12 +21,12 @@
                         <table aria-describedby="" class="table">
                             <thead>
                             <tr>
-                                <th style="text-align:center">Application No.</th>
-                                <th style="text-align:center">Licence No.</th>
-                                <th style="text-align:center">Service Name</th>
-                                <th style="text-align:center">HCI Name</th>
-                                <th style="text-align:center">HCI Address</th>
-                                <th style="text-align:center">Cessation Date</th>
+                                <th scope="col" style="text-align:center">Application No.</th>
+                                <th scope="col" style="text-align:center">Licence No.</th>
+                                <th scope="col" style="text-align:center">Service Name</th>
+                                <th scope="col" style="text-align:center">HCI Name</th>
+                                <th scope="col" style="text-align:center">HCI Address</th>
+                                <th scope="col" style="text-align:center">Cessation Date</th>
                             </tr>
                             </thead>
                             <tbody>

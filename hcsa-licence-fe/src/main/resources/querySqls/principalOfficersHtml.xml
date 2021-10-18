@@ -94,13 +94,13 @@
                             </div>
                         </div>
                     </div>
-                    <div class="row otherDesignationDiv hidden">
+                    <div class="row otherDesignationDiv">
                         <div class="control control-caption-horizontal">
                             <div class=" form-group form-horizontal formgap">
                                 <div class="col-sm-3 control-label formtext col-md-4">
                                 </div>
                                 <div class="col-sm-5 col-md-8" >
-                                    <input type="text" name="otherDesignation" class="otherDesignation" maxlength="100" autocomplete="off">
+                                    <input type="text" name="otherDesignation" class="otherDesignation" maxlength="100" autocomplete="off" style="display:none;">
                                 </div>
                                 <div  class="col-sm-3  col-md-4"></div>
                                 <div class="col-sm-5 col-md-8">
@@ -247,13 +247,13 @@
                             </div>
                         </div>
                     </div>
-                    <div class="row deputyOtherDesignationDiv hidden">
+                    <div class="row deputyOtherDesignationDiv">
                         <div class="control control-caption-horizontal">
                             <div class=" form-group form-horizontal formgap">
                                 <div class="col-sm-3 control-label formtext col-md-4">
                                 </div>
                                 <div class="col-sm-5 col-md-8">
-                                    <input type="text" name="deputyOtherDesignation" class="deputyOtherDesignation" maxlength="100" autocomplete="off">
+                                    <input type="text" name="deputyOtherDesignation" class="deputyOtherDesignation" maxlength="100" autocomplete="off" style="display:none;">
                                 </div>
                                 <div  class="col-sm-3  col-md-4"></div>
                                 <div class="col-sm-5 col-md-8">
@@ -293,7 +293,7 @@
                         <div class="control control-caption-horizontal">
                             <div class=" form-group form-horizontal formgap">
                                 <div class="col-sm-3 control-label formtext col-md-4">
-                                    <label class="control-label maxlength="320" control-set-font control-font-label">Email Address</label>
+                                    <label class="control-label control-set-font control-font-label">Email Address</label>
                                     <span class="mandatory">*</span>
                                 </div>
                                 <div class="col-sm-4 col-md-8">

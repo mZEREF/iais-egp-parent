@@ -137,10 +137,6 @@ public class HalpAssessmentGuideDelegator {
     @Autowired
     private SystemParamConfig systemParamConfig;
 
-    private String licenseeId;
-
-    private String orgId;
-
     public void start(BaseProcessClass bpc) {
         log.info("****start ******");
         AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_MAIN_FUNCTION, AuditTrailConsts.FUNCTION_ASEESSMENT_GUIDE);
@@ -154,6 +150,8 @@ public class HalpAssessmentGuideDelegator {
         ParamUtil.setSessionAttr(bpc.request, GuideConsts.AMEND_DETAILS_REMOVE_SEARCH_PARAM, null);
         ParamUtil.setSessionAttr(bpc.request, GuideConsts.AMEND_UPDATE_LICENSEE_SEARCH_PARAM, null);
         ParamUtil.setSessionAttr(bpc.request, GuideConsts.AMEND_UPDATE_CONTACT_SEARCH_PARAM, null);
+        ParamUtil.setSessionAttr(bpc.request, GuideConsts.AMEND_UPDATE_VEHICLES_SEARCH_PARAM, null);
+        ParamUtil.setSessionAttr(bpc.request, GuideConsts.AMEND_UPDATE_VEHICLES_SEARCH_RESULT, null);
         ParamUtil.setSessionAttr(bpc.request, GuideConsts.CEASE_LICENCE_SEARCH_PARAM, null);
         ParamUtil.setSessionAttr(bpc.request, GuideConsts.WITHDRAW_APPLICATION_SEARCH_PARAM, null);
         ParamUtil.setSessionAttr(bpc.request, GuideConsts.DRAFT_APPLICATION_SEARCH_PARAM, null);
@@ -211,9 +209,6 @@ public class HalpAssessmentGuideDelegator {
     }
 
     public void perDate(BaseProcessClass bpc) {
-        LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
-        licenseeId = loginContext.getLicenseeId();
-        orgId = loginContext.getOrgId();
 
     }
 
@@ -233,6 +228,7 @@ public class HalpAssessmentGuideDelegator {
     public void renewLic(BaseProcessClass bpc) throws IOException {
         log.info("****start ******");
         SearchParam renewLicSearchParam = HalpSearchResultHelper.gainSearchParam(bpc.request, GuideConsts.RENEW_LICENCE_SEARCH_PARAM,SelfPremisesListQueryDto.class.getName(),"PREMISES_TYPE",SearchParam.DESCENDING,false);
+        String licenseeId = getLicenseeId(bpc.request);
         renewLicSearchParam.addFilter("licenseeId", licenseeId, true);
         QueryHelp.setMainSql("interInboxQuery", "queryPremises", renewLicSearchParam);
         SearchResult<SelfPremisesListQueryDto> renewLicSearchResult = requestForChangeService.searchPreInfo(renewLicSearchParam);
@@ -378,6 +374,7 @@ public class HalpAssessmentGuideDelegator {
                         newSpeBaseSvcNames.add(baseServiceDto.getSvcName());
                         //for reload
                         baseReloadDto.setServiceCode(baseServiceDto.getSvcCode());
+                        baseReloadDto.setServiceName(baseServiceDto.getSvcName());
                         baseReloadDto.setLicPremisesId("");
                         baseReloadDtoMap.put(speServiceDto.getSvcCode(),baseReloadDto);
                     }else{
@@ -400,6 +397,7 @@ public class HalpAssessmentGuideDelegator {
                             appSvcRelatedInfoDtos.add(appSvcRelatedInfoDto);
                             //for reload
                             baseReloadDto.setServiceCode(baseServiceDto.getSvcCode());
+                            baseReloadDto.setServiceName(baseServiceDto.getSvcName());
                             baseReloadDto.setLicPremisesId(appAlignLicQueryDto.getPremisesId());
                             baseReloadDto.setHciCode(appAlignLicQueryDto.getHciCode());
                             baseReloadDtoMap.put(speServiceDto.getSvcCode(),baseReloadDto);
@@ -1041,7 +1039,7 @@ public class HalpAssessmentGuideDelegator {
                         }
                     }
                     if(!IaisCommonUtils.isEmpty(hcsaServiceDtos)){
-                        boolean canCreateEasOrMts = assessmentGuideService.canApplyEasOrMts(licenseeId,hcsaServiceDtos);
+                        boolean canCreateEasOrMts = assessmentGuideService.canApplyEasOrMts(getLicenseeId(bpc.request),hcsaServiceDtos);
                         if(!canCreateEasOrMts){
                             nextstep = currentPage;
                             err = MessageUtil.getMessageDesc("NEW_ERR0029");
@@ -1410,6 +1408,7 @@ public class HalpAssessmentGuideDelegator {
                 AppSvcRelatedInfoDto appSvcRelatedInfoDto = new AppSvcRelatedInfoDto();
                 appSvcRelatedInfoDto.setServiceId(hcsaServiceDto.getId());
                 appSvcRelatedInfoDto.setServiceCode(hcsaServiceDto.getSvcCode());
+                appSvcRelatedInfoDto.setServiceName(hcsaServiceDto.getSvcName());
                 appSvcRelatedInfoDto.setAlignLicenceNo(alignLicenceNo);
                 appSvcRelatedInfoDto.setBaseServiceId(hcsaServiceDto.getId());
                 appSvcRelatedInfoDto.setLicPremisesId(licPremiseId);
@@ -1481,7 +1480,7 @@ public class HalpAssessmentGuideDelegator {
 
     public void renewLicUpdate(BaseProcessClass bpc) {
         SearchParam renewLicUpdateSearchParam = HalpSearchResultHelper.gainSearchParam(bpc.request, GuideConsts.RENEW_LICENCE_UPDATE_SEARCH_PARAM,SelfPremisesListQueryDto.class.getName(),"PREMISES_TYPE",SearchParam.DESCENDING,false);
-        renewLicUpdateSearchParam.addFilter("licenseeId", licenseeId, true);
+        renewLicUpdateSearchParam.addFilter("licenseeId", getLicenseeId(bpc.request), true);
         QueryHelp.setMainSql("interInboxQuery", "queryPremises", renewLicUpdateSearchParam);
         SearchResult<SelfPremisesListQueryDto> renewLicUpdateSearchResult = requestForChangeService.searchPreInfo(renewLicUpdateSearchParam);
         renewLicUpdateSearchResult.getRows().stream().forEach(h -> {
@@ -1719,7 +1718,7 @@ public class HalpAssessmentGuideDelegator {
             }
         }
         SearchParam amendDetailsSearchParam = HalpSearchResultHelper.gainSearchParam(bpc.request, GuideConsts.AMEND_DETAILS_SEARCH_PARAM,SelfPremisesListQueryDto.class.getName(),"PREMISES_TYPE",SearchParam.DESCENDING,false);
-        amendDetailsSearchParam.addFilter("licenseeId", licenseeId, true);
+        amendDetailsSearchParam.addFilter("licenseeId", getLicenseeId(bpc.request), true);
         QueryHelp.setMainSql("interInboxQuery", "queryPremises", amendDetailsSearchParam);
         SearchResult<SelfPremisesListQueryDto> amendHCISearchResult = requestForChangeService.searchPreInfo(amendDetailsSearchParam);
         if (amendHCISearchResult != null && amendHCISearchResult.getRowCount() > 0) {
@@ -1746,7 +1745,7 @@ public class HalpAssessmentGuideDelegator {
     public void amendLic1_2(BaseProcessClass bpc) {
         log.info("****start ******");
         SearchParam amendDetailsRemoveSearchParam = HalpSearchResultHelper.gainSearchParam(bpc.request, GuideConsts.AMEND_DETAILS_REMOVE_SEARCH_PARAM,SelfPremisesListQueryDto.class.getName(),"PREMISES_TYPE",SearchParam.DESCENDING,false);
-        amendDetailsRemoveSearchParam.addFilter("licenseeId", licenseeId, true);
+        amendDetailsRemoveSearchParam.addFilter("licenseeId", getLicenseeId(bpc.request), true);
         QueryHelp.setMainSql("interInboxQuery", "queryPremises", amendDetailsRemoveSearchParam);
         SearchResult<SelfPremisesListQueryDto> amendDetailsRemoveSearchResult = requestForChangeService.searchPreInfo(amendDetailsRemoveSearchParam);
         amendDetailsRemoveSearchResult.getRows().stream().forEach(h -> {
@@ -1768,7 +1767,7 @@ public class HalpAssessmentGuideDelegator {
     public void amendLic2(BaseProcessClass bpc) {
         log.info("****start ******");
         SearchParam amendHCISearchParam = HalpSearchResultHelper.gainSearchParam(bpc.request, "amendHCISearchParam",SelfPremisesListQueryDto.class.getName(),"LICENCE_ID",SearchParam.DESCENDING,false);
-        amendHCISearchParam.addFilter("licenseeId", licenseeId, true);
+        amendHCISearchParam.addFilter("licenseeId", getLicenseeId(bpc.request), true);
         QueryHelp.setMainSql("interInboxQuery", "queryPremises", amendHCISearchParam);
         SearchResult<SelfPremisesListQueryDto> amendHCISearchResult = requestForChangeService.searchPreInfo(amendHCISearchParam);
         amendHCISearchResult.getRows().stream().forEach(h -> {
@@ -1796,10 +1795,58 @@ public class HalpAssessmentGuideDelegator {
         log.info("****end ******");
     }
 
+    public void amendLic5(BaseProcessClass bpc) throws IOException {
+        log.info("****start ******");
+        String licId = ParamUtil.getString(bpc.request, "amendLicenseId");
+        String isNeedDelete = bpc.request.getParameter("isNeedDelete");
+//        String licId = ParamUtil.getString(bpc.request, "licenceNo");
+        String licIdValue = ParamUtil.getMaskedString(bpc.request, licId);
+        if(!StringUtil.isEmpty(licIdValue)){
+            List<ApplicationSubDraftDto> draftByLicAppId = inboxService.getDraftByLicAppId(licIdValue);
+            if("delete".equals(isNeedDelete)){
+                for(ApplicationSubDraftDto applicationSubDraftDto : draftByLicAppId){
+                    inboxService.deleteDraftByNo(applicationSubDraftDto.getDraftNo());
+                }
+                StringBuilder url = new StringBuilder();
+                url.append(InboxConst.URL_HTTPS)
+                        .append(bpc.request.getServerName())
+                        .append(InboxConst.URL_LICENCE_WEB_MODULE+"MohRequestForChange")
+                        .append("?licenceId=")
+                        .append(MaskUtil.maskValue("licenceId",licIdValue));
+                String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
+                IaisEGPHelper.redirectUrl(bpc.response, tokenUrl);
+            }
+        }
+        SearchParam amendUpdateVehiclesSearchParam = HalpSearchResultHelper.gainSearchParam(bpc.request, GuideConsts.AMEND_UPDATE_VEHICLES_SEARCH_PARAM,SelfPremisesListQueryDto.class.getName(),"PREMISES_TYPE",SearchParam.DESCENDING,false);
+        amendUpdateVehiclesSearchParam.addFilter("licenseeId", getLicenseeId(bpc.request), true);
+        amendUpdateVehiclesSearchParam.addFilter("premisesType", ApplicationConsts.PREMISES_TYPE_EAS_MTS_CONVEYANCE, true);
+        QueryHelp.setMainSql("interInboxQuery", "queryPremises", amendUpdateVehiclesSearchParam);
+        SearchResult<SelfPremisesListQueryDto> amendUpdateVehiclesSearchResult = requestForChangeService.searchPreInfo(amendUpdateVehiclesSearchParam);
+        if (amendUpdateVehiclesSearchResult != null && amendUpdateVehiclesSearchResult.getRowCount() > 0) {
+            amendUpdateVehiclesSearchResult.getRows().forEach(h -> {
+                List<PremisesDto> premisesDtoList = inboxService.getPremisesByLicId(h.getLicenceId());
+                List<String> addressList = IaisCommonUtils.genNewArrayList();
+                for (PremisesDto premisesDto:premisesDtoList
+                ) {
+                    addressList.add(MiscUtil.getAddress(premisesDto.getBlkNo(),premisesDto.getStreetName(),premisesDto.getBuildingName(),premisesDto.getFloorNo(),premisesDto.getUnitNo(),premisesDto.getPostalCode()));
+                    h.setPremisesDtoList(addressList);
+                }
+            });
+            ParamUtil.setSessionAttr(bpc.request, GuideConsts.AMEND_UPDATE_VEHICLES_SEARCH_PARAM, amendUpdateVehiclesSearchParam);
+            ParamUtil.setRequestAttr(bpc.request, GuideConsts.AMEND_UPDATE_VEHICLES_SEARCH_RESULT, amendUpdateVehiclesSearchResult);
+            ArrayList<PremisesListQueryDto> newList = IaisCommonUtils.genNewArrayList(amendUpdateVehiclesSearchResult.getRowCount());
+            for (SelfPremisesListQueryDto se : amendUpdateVehiclesSearchResult.getRows()) {
+                newList.add(MiscUtil.transferEntityDto(se, PremisesListQueryDto.class));
+            }
+            ParamUtil.setSessionAttr(bpc.request, RfcConst.PREMISESLISTDTOS, newList);
+        }
+        log.info("****end ******");
+    }
+
     public void amendLic3_1(BaseProcessClass bpc) {
         log.info("****start ******");
         SearchParam amendDetailsSearchParam = HalpSearchResultHelper.gainSearchParam(bpc.request, GuideConsts.AMEND_UPDATE_LICENSEE_SEARCH_PARAM,SelfPremisesListQueryDto.class.getName(),"PREMISES_TYPE",SearchParam.DESCENDING,false);
-        amendDetailsSearchParam.addFilter("licenseeId", licenseeId, true);
+        amendDetailsSearchParam.addFilter("licenseeId", getLicenseeId(bpc.request), true);
         QueryHelp.setMainSql("interInboxQuery", "queryPremises", amendDetailsSearchParam);
         SearchResult<SelfPremisesListQueryDto> amendDetailsSearchResult = requestForChangeService.searchPreInfo(amendDetailsSearchParam);
         amendDetailsSearchResult.getRows().stream().forEach(h -> {
@@ -1833,7 +1880,7 @@ public class HalpAssessmentGuideDelegator {
     public void amendLic4_1(BaseProcessClass bpc) {
         log.info("****start ******");
         SearchParam amendDetailsSearchParam = HalpSearchResultHelper.gainSearchParam(bpc.request, GuideConsts.AMEND_UPDATE_PERSONNEL_SEARCH_PARAM,SelfPremisesListQueryDto.class.getName(),"PREMISES_TYPE",SearchParam.DESCENDING,false);
-        amendDetailsSearchParam.addFilter("licenseeId", licenseeId, true);
+        amendDetailsSearchParam.addFilter("licenseeId", getLicenseeId(bpc.request), true);
         QueryHelp.setMainSql("interInboxQuery", "queryPremises", amendDetailsSearchParam);
         SearchResult<SelfPremisesListQueryDto> amendDetailsSearchResult = requestForChangeService.searchPreInfo(amendDetailsSearchParam);
         amendDetailsSearchResult.getRows().stream().forEach(h -> {
@@ -1856,7 +1903,7 @@ public class HalpAssessmentGuideDelegator {
     public void amendLic4_2(BaseProcessClass bpc) {
         log.info("****start ******");
         List<SelectOption> selectOptions = IaisCommonUtils.genNewArrayList();
-        List<PersonnelListQueryDto> persons = requestForChangeService.getLicencePersonnelListQueryDto(licenseeId);
+        List<PersonnelListQueryDto> persons = requestForChangeService.getLicencePersonnelListQueryDto(getLicenseeId(bpc.request));
         if (!IaisCommonUtils.isEmpty(persons)) {
             List<String> idNos = IaisCommonUtils.genNewArrayList();
             for (PersonnelListQueryDto dto : persons) {
@@ -1871,7 +1918,7 @@ public class HalpAssessmentGuideDelegator {
             }
         }
         SearchParam amendDetailsSearchParam = HalpSearchResultHelper.gainSearchParam(bpc.request, GuideConsts.AMEND_UPDATE_CONTACT_SEARCH_PARAM,PersonnlAssessQueryDto.class.getName(),"T3.ID",SearchParam.DESCENDING,false);
-        amendDetailsSearchParam.addFilter("licenseeId", licenseeId, true);
+        amendDetailsSearchParam.addFilter("licenseeId", getLicenseeId(bpc.request), true);
         String idNo = ParamUtil.getString(bpc.request,"personnelOptions");
         if (idNo != null && !"Please Select".equals(idNo)){
             List<String> idNos = IaisCommonUtils.genNewArrayList();
@@ -1879,7 +1926,7 @@ public class HalpAssessmentGuideDelegator {
             idNos.add(id);
             if (idNos.size() >0){
                 amendDetailsSearchParam = HalpSearchResultHelper.gainSearchParam(bpc.request, GuideConsts.AMEND_UPDATE_CONTACT_SEARCH_PARAM,PersonnlAssessQueryDto.class.getName(),"T3.ID",SearchParam.DESCENDING,false);
-                amendDetailsSearchParam.addFilter("licenseeId", licenseeId, true);
+                amendDetailsSearchParam.addFilter("licenseeId", getLicenseeId(bpc.request), true);
                 amendDetailsSearchParam.addFilter("idNo",idNos,true);
                 QueryHelp.setMainSql("interInboxQuery", "appPersonnelQuery", amendDetailsSearchParam);
                 SearchResult<PersonnlAssessQueryDto> amendDetailsSearchResult = requestForChangeService.searchAssessPsnInfo(amendDetailsSearchParam);
@@ -1902,7 +1949,7 @@ public class HalpAssessmentGuideDelegator {
             idNos.add(id);
             if (idNos.size() >0){
                 SearchParam amendDetailsSearchParam = HalpSearchResultHelper.gainSearchParam(bpc.request, GuideConsts.AMEND_UPDATE_CONTACT_SEARCH_PARAM,PersonnlAssessQueryDto.class.getName(),"T3.ID",SearchParam.DESCENDING,false);
-                amendDetailsSearchParam.addFilter("licenseeId", licenseeId, true);
+                amendDetailsSearchParam.addFilter("licenseeId", getLicenseeId(bpc.request), true);
                 amendDetailsSearchParam.addFilter("idNo",idNos,true);
                 QueryHelp.setMainSql("interInboxQuery", "appPersonnelQuery", amendDetailsSearchParam);
                 SearchResult<PersonnlAssessQueryDto> amendDetailsSearchResult = requestForChangeService.searchAssessPsnInfo(amendDetailsSearchParam);
@@ -1922,7 +1969,7 @@ public class HalpAssessmentGuideDelegator {
     public void ceaseLic(BaseProcessClass bpc) {
         log.info("****start ******");
         SearchParam ceaseLicenceParam = HalpSearchResultHelper.gainSearchParam(bpc.request,GuideConsts.CEASE_LICENCE_SEARCH_PARAM,SelfPremisesListQueryDto.class.getName(),"PREMISES_TYPE",SearchParam.DESCENDING,false);
-        ceaseLicenceParam.addFilter("licenseeId", licenseeId, true);
+        ceaseLicenceParam.addFilter("licenseeId", getLicenseeId(bpc.request), true);
         QueryHelp.setMainSql("interInboxQuery", "queryPremises", ceaseLicenceParam);
         SearchResult<SelfPremisesListQueryDto> ceaseLicenceResult = requestForChangeService.searchPreInfo(ceaseLicenceParam);
         ceaseLicenceResult.getRows().stream().forEach(h -> {
@@ -2028,7 +2075,7 @@ public class HalpAssessmentGuideDelegator {
 
     public void withdrawApp(BaseProcessClass bpc) {
         SearchParam withdrawAppParam = HalpSearchResultHelper.gainSearchParam(bpc.request, GuideConsts.WITHDRAW_APPLICATION_SEARCH_PARAM,InboxAppQueryDto.class.getName(),"CREATED_DT",SearchParam.DESCENDING,false);
-        withdrawAppParam.addFilter("licenseeId", licenseeId, true);
+        withdrawAppParam.addFilter("licenseeId", getLicenseeId(bpc.request), true);
         QueryHelp.setMainSql("interInboxQuery", "assessmentWithdrawAppQuery", withdrawAppParam);
         String repalceService = getRepalceService();
         withdrawAppParam.setMainSql(withdrawAppParam.getMainSql().replace("repalceService",repalceService));
@@ -2079,7 +2126,7 @@ public class HalpAssessmentGuideDelegator {
         draftAppSearchParam.addFilter("licenseeId", licenseeId, true);
         List<String> inParams = IaisCommonUtils.genNewArrayList();
         inParams.add(ApplicationConsts.APPLICATION_STATUS_DRAFT);
-        SqlHelper.builderInSql(draftAppSearchParam, "status", "appStatus", inParams);
+        SqlHelper.builderInSql(draftAppSearchParam, "B.status", "appStatus", inParams);
         QueryHelp.setMainSql("interInboxQuery", "applicationQuery", draftAppSearchParam);
         String repalceService = getRepalceService();
         draftAppSearchParam.setMainSql(draftAppSearchParam.getMainSql().replace("repalceService",repalceService));
@@ -2180,6 +2227,16 @@ public class HalpAssessmentGuideDelegator {
         HalpSearchResultHelper.doSort(bpc.request,searchParam);
     }
 
+    public void amendUpdateVehiclesPage(BaseProcessClass bpc) {
+        SearchParam searchParam = (SearchParam) ParamUtil.getSessionAttr(bpc.request, GuideConsts.AMEND_UPDATE_VEHICLES_SEARCH_PARAM);
+        HalpSearchResultHelper.doPage(bpc.request,searchParam);
+    }
+
+    public void amendUpdateVehiclesSort(BaseProcessClass bpc) {
+        SearchParam searchParam = (SearchParam) ParamUtil.getSessionAttr(bpc.request, GuideConsts.AMEND_UPDATE_VEHICLES_SEARCH_PARAM);
+        HalpSearchResultHelper.doSort(bpc.request,searchParam);
+    }
+
     public void doAmenfLicStep(BaseProcessClass bpc) throws IOException {
         String action = ParamUtil.getString(bpc.request, "guide_action_type");
         String licId = ParamUtil.getString(bpc.request, "amendLicenseId");
@@ -2193,7 +2250,7 @@ public class HalpAssessmentGuideDelegator {
             String id = idNoPersonnal.split(",")[1];
             List<String> idNos = IaisCommonUtils.genNewArrayList();
             idNos.add(id);
-            List<PersonnelListDto> personnelListDtoList = requestForChangeService.getPersonnelListAssessment(idNos,orgId);
+            List<PersonnelListDto> personnelListDtoList = requestForChangeService.getPersonnelListAssessment(idNos,getOrgId(bpc.request));
             ParamUtil.setSessionAttr(bpc.request, "personnelListDtos", (Serializable) personnelListDtoList);
             if("amendLic7".equals(action)) {
                 StringBuilder url2 = new StringBuilder();
@@ -2279,6 +2336,9 @@ public class HalpAssessmentGuideDelegator {
                 }
                 else if("amendLic7".equals(action)){
                     ParamUtil.setRequestAttr(bpc.request,"amend_action_type","toamend4_2");
+                }
+                else if("amendLic8".equals(action)){
+                    ParamUtil.setRequestAttr(bpc.request,"amend_action_type","toamend5");
                 }
                 if (!flag){
                     ParamUtil.setRequestAttr(bpc.request,"licIsAmend",Boolean.TRUE);
@@ -2561,5 +2621,15 @@ public class HalpAssessmentGuideDelegator {
             });
         }
         return result;
+    }
+
+    private String getLicenseeId(HttpServletRequest request) {
+        LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
+        return loginContext.getLicenseeId();
+    }
+
+    private String getOrgId(HttpServletRequest request) {
+        LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
+        return loginContext.getOrgId();
     }
 }

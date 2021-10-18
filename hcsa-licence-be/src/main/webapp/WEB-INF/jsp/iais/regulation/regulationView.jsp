@@ -57,11 +57,15 @@
         }
     }
 
+    table > tbody > tr > td {
+        vertical-align: top;
+    }
 </style>
-<form id="mainForm" method="post" action=<%=process.runtime.continueURL()%>>
-    <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
-    <input hidden="hidden" id="regulationId" name="regulationId" value="">
-    <div class="main-content">
+<div class="main-content">
+    <form id="mainForm" method="post" action=<%=process.runtime.continueURL()%>>
+        <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
+        <input hidden="hidden" id="regulationId" name="regulationId" value="">
+
         <div class="center-content col-xs-12 col-md-12">
         <div class="bg-title"><h2>Regulation Management</h2></div>
         <span id="error_customValidation" name="iaisErrorMsg" class="error-msg"></span>
@@ -84,10 +88,7 @@
                         <span id="error_regulationClause" name="iaisErrorMsg" class="error-msg"></span>
                     </div>
                 </div>
-
-
             </div>
-
         </iais:section>
         <div class="col-xs-12 col-md-12">
             <div class="text-right">
@@ -104,15 +105,15 @@
                 </h3>
                 <iais:pagination  param="regulationSearch" result="regulationResult"/>
                 <div class="table-gp">
-                <table class="table word-wrap">
+                <table aria-describedby="" class="table">
                     <thead>
                     <tr>
-                        <iais:sortableHeader needSort="false" style="padding-bottom:10px" field="" value="No."/>
+                        <iais:sortableHeader needSort="false" field="" value="No."/>
                         <th scope="col" ></th>
                         <iais:sortableHeader needSort="true" field="CLAUSE_NO" value="Regulation Clause Number"/>
                         <iais:sortableHeader needSort="true" field="CLAUSE" value="Regulations"/>
                         <iais:sortableHeader needSort="true" field="status" value="Status"/>
-                        <iais:sortableHeader needSort="false" style="padding-bottom:10px" field="action" value="Action"/>
+                        <iais:sortableHeader needSort="false" field="action" value="Action"/>
                     </tr>
                     </thead>
                     <tbody>
@@ -128,46 +129,39 @@
                             <c:forEach var="item" items="${regulationResult.rows}" varStatus="status">
                                 <tr>
                                     <td class="row_no">
-                                        ${(status.index + 1) + (regulationSearch.pageNo - 1) * regulationSearch.pageSize}
+                                            ${(status.index + 1) + (regulationSearch.pageNo - 1) * regulationSearch.pageSize}
                                     </td>
                                     <td>
                                         <iais:checkbox name="regulation_itemCheckbox" checkboxId="regulation_itemCheckbox"
                                                        request="${pageContext.request}"  value="${item.id}"
                                                        forName="regulation_item_CheckboxReDisplay"/>
                                     </td>
-                                    <td>${item.clauseNo}</td>
-                                    <td>${item.clause}</td>
-                                    <td><iais:code code="${item.status}"></iais:code></td>
+                                    <td class="word-wrap">${item.clauseNo}</td>
+                                    <td class="word-wrap">${item.clause}</td>
+                                    <td>
+                                        <iais:code code="${item.status}"/>
+                                    </td>
                                     <td>
                                         <button type="button"  class="btn btn-default btn-sm" data-toggle="modal" onclick="Utils.markSubmit('mainForm','preUpdate', 'regulationId', '<iais:mask name="regulationId" value="${item.id}"/>')" >Edit</button>
                                         <button type="button"  class="btn btn-default btn-sm" data-toggle="modal" onclick="Utils.markSubmit('mainForm','doDelete', 'regulationId', '<iais:mask name="regulationId" value="${item.id}"/>')" >Delete</button>
                                     </td>
-
                                 </tr>
                             </c:forEach>
                         </c:otherwise>
-
                     </c:choose>
                     </tbody>
                 </table>
                 </div>
                 <div class="table-footnote">
                     <div class="row">
-                        <div class="col-xs-6 col-md-4">
-                        </div>
                         <div class="col-xs-50 col-md-12 text-right">
-                            <div class="nav">
-                                <br><br><br>
-                                <div class="text-right text-center-mobile">
-                                    <a class="btn btn-primary next" href="javascript:void(0);"
-                                       onclick="Utils.submit('mainForm', 'preUpload')">Upload Regulation</a>
+                            <div class="text-center-mobile">
+                                <a class="btn btn-primary next" href="javascript:void(0);"
+                                   onclick="Utils.submit('mainForm', 'preUpload')">Upload Regulation</a>
 
-                                    <a class="btn btn-primary next" href="javascript:void(0);"
-                                       onclick="Utils.submit('mainForm', 'preCreate')">Create</a>
-                                </div>
+                                <a class="btn btn-primary next" href="javascript:void(0);"
+                                   onclick="Utils.submit('mainForm', 'preCreate')">Create</a>
                             </div>
-
-
                         </div>
                     </div>
 
@@ -177,8 +171,8 @@
         </div>
 
         </div>
-    </div>
-</form>
+    </form>
+</div>
 
 <%@include file="/WEB-INF/jsp/include/validation.jsp" %>
 <%@include file="/WEB-INF/jsp/include/utils.jsp"%>

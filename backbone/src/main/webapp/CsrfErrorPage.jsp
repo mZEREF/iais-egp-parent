@@ -1,46 +1,66 @@
-<%-- <%@ taglib uri="/workdesk.tld" prefix="workdesk"%> --%>
-<%@page import="com.ecquaria.cloud.helper.EngineHelper"%>
-<%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui"%>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
-<%@ taglib uri="ecquaria/sop/sop-core" prefix="sop-core"%>
-<%@ taglib uri="ecquaria/sop/egov-smc" prefix="egov-smc"%>
-<%-- <%@include file="/system/sopCommonInclude.jsp"%> --%>
-<webui:setLayout name="none" />
+<%@ page import="com.ecquaria.cloud.helper.ConfigHelper" %>
+<%@ page import="com.ecquaria.cloud.moh.iais.common.constant.AppConsts" %>
+<%@ page import="com.ecquaria.cloud.moh.iais.common.utils.Formatter" %>
+<%@ page import="java.util.Date" %>
+<!-- MOH-IAIS -->
+
+<%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
+
 <%
-    response.setContentType("text/html;charset=UTF-8");
+    sop.webflow.rt.api.BaseProcessClass process =
+            (sop.webflow.rt.api.BaseProcessClass) request.getAttribute("process");
+    String  currentDomain = ConfigHelper.getString("iais.current.domain");
+    String layout = "iais-internet";
+    if(AppConsts.USER_DOMAIN_INTRANET.equals(currentDomain)){
+        layout = "iais-intranet-blank";
+    }
 %>
-<workdesk:baseName name="smc-client">
 
-    <link rel="stylesheet" href="<%=EngineHelper.getResourcePath() %>/_statics/login/css/screen.css" type="text/css"/>
-    <link rel="shortcut icon" href="<%=EngineHelper.getResourcePath() %>/_statics/images/ecq.gif" type="image/x-icon" />
-    <html lang="en" aria-describedby="">
-    <head>
-        <meta http-equiv="Cache-Control" content="no-cache, no-store">
-        <meta http-equiv="Pragma" content="no-cache">
-        <meta http-equiv="Expires" content="0">
-    </head>
-    <body class="login-smc">
+<webui:setLayout name="<%=layout%>"/>
 
-    <br>
-    <center>
-        <table class="session-missing">
-            <thead>
-            <tr>
-                <th scope="col" ></th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr><td>
-                <form name="redirectForm" action="/main-web" method="post">
-                    <SPAN class="error-message"><egov-smc:message key="csrfAttack">CSRF Attack Detected</egov-smc:message></SPAN>
-                    <BR><BR><BR>
-                    <egov-smc:commonLabel>Please click</egov-smc:commonLabel> <A HREF="#" onclick="redirectForm.submit();"><font color="orange"><b><I><egov-smc:commonLabel>HERE</egov-smc:commonLabel></I></b></font></A> <egov-smc:message key="toIndex">to index.</egov-smc:message>
-                </form>
-            </td></tr>
-            </tbody>
-        </table>
-    </center>
-    <BR><BR><BR><BR><BR><BR><BR><BR><BR><BR><BR><BR><BR><BR><BR>
-    </body>
-    </html>
-</workdesk:baseName>
+
+<style type="text/css">
+    .error-box {
+        height: 100%;
+        /* position: fixed;*/
+        background:#fff;
+        width: 100%;
+    }
+    .error-body {
+        padding-top: 5%;
+    }
+    .error-body h1 {
+        font-size: 190px;
+        font-weight: 900;
+        text-shadow: 4px 4px 0 #fff, 6px 6px 0 #f5333f;
+        line-height: 210px;
+        color: #a2d9e7;
+    }
+    .error-body h3 {
+        border: none;
+    }
+
+</style>
+
+<div class="main-content">
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-12">
+                <!------------------------->
+                <div class="error-box">
+                    <div class="error-body text-center">
+                        <h3 class="text-uppercase">Sorry! Internal Server Error !</h3>
+                        <h1>403</h1>
+                        <p style="color: #c00;">CSRF verification failed. Request aborted.</p>
+                        <p class="text-muted"><strong>Error Ticket ID:</strong> ST<%=System.currentTimeMillis()%></p>
+                        <p class="text-muted"><strong>Date/Time:</strong> <%=Formatter.formatDateTime(new Date(),Formatter.DETAIL_DATE_REPORT)%></p>
+                        <p>For system support and assistance, please screenshot this page and email to <a href="mailto:helpdesk@equaria.gov.sg">helpdesk@equaria.gov.sg</a>.</p>
+                    </div>
+                </div>
+                <!------------------------->
+            </div>
+        </div>
+    </div>
+</div>
+
+

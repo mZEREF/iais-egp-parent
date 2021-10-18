@@ -73,9 +73,8 @@ public class ConfirmDialogTag extends TagSupport {
         String divId = popupOrder;
         html.append("<div id=\"").append(divId).append('\"');
         html.append(" class=\"modal fade\" tabindex=\"-1\" role=\"dialog\" aria-labelledby=\"").append(divId);
-        html.append("\" style=\"left: 50%;top: 50%;transform: translate(-50%,-50%);min-width:80%;");
-        html.append("overflow: visible;bottom: inherit;right: inherit;\">");
-        html.append("<div class=\"modal-dialog\" role=\"document\"><div class=\"modal-content\">");
+        html.append("\" aria-hidden=\"true\">");
+        html.append("<div class=\"modal-dialog modal-dialog-centered\" role=\"document\"><div class=\"modal-content\">");
         if (needHeader) {
             html.append("<div class=\"modal-header\">");
             html.append("<button type=\"button\" class=\"close\" data-dismiss=\"modal\" aria-label=\"Close\"><span");

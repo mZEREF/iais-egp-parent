@@ -1,6 +1,5 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
-import com.ecquaria.cloud.helper.ConfigHelper;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
@@ -9,33 +8,89 @@ import com.ecquaria.cloud.moh.iais.common.constant.checklist.HcsaChecklistConsta
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.task.TaskConsts;
-import com.ecquaria.cloud.moh.iais.common.dto.application.*;
+import com.ecquaria.cloud.moh.iais.common.dto.application.AdhocCheckListConifgDto;
+import com.ecquaria.cloud.moh.iais.common.dto.application.AdhocChecklistItemDto;
+import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremInspCorrelationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremPreInspectionNcDto;
+import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremisesPreInspectChklDto;
+import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremisesPreInspectionNcItemDto;
+import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
+import com.ecquaria.cloud.moh.iais.common.dto.application.ChecklistQuestionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.application.PremCheckItem;
+import com.ecquaria.cloud.moh.iais.common.dto.application.SelfAssessment;
+import com.ecquaria.cloud.moh.iais.common.dto.application.SelfAssessmentConfig;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptUserCalendarDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremisesSpecialDocDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.*;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesEntityDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppIntranetDocDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesInspecApptDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcVehicleDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistSectionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcStageWorkingGroupDto;
-import com.ecquaria.cloud.moh.iais.common.dto.inspection.*;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.AdCheckListShowDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.AdhocAnswerDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.AdhocDraftDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.AdhocNcCheckItemDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.AdhocSaveAnswerDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.AnswerForDifDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.AppInspectionStatusDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.AppPremInsDraftDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.CheckListDraftDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionCheckListAnswerDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionCheckQuestionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionFDtosDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionFillCheckListDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionSpecServiceDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.ItemDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.SectionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
-import com.ecquaria.cloud.moh.iais.common.utils.*;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
+import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.BeSelfChecklistHelper;
 import com.ecquaria.cloud.moh.iais.helper.ChecklistHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
-import com.ecquaria.cloud.moh.iais.service.*;
-import com.ecquaria.cloud.moh.iais.service.client.*;
+import com.ecquaria.cloud.moh.iais.service.AdhocChecklistService;
+import com.ecquaria.cloud.moh.iais.service.ApplicationService;
+import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
+import com.ecquaria.cloud.moh.iais.service.FillupChklistService;
+import com.ecquaria.cloud.moh.iais.service.InsepctionNcCheckListService;
+import com.ecquaria.cloud.moh.iais.service.InspectionAssignTaskService;
+import com.ecquaria.cloud.moh.iais.service.TaskService;
+import com.ecquaria.cloud.moh.iais.service.client.AppInspectionStatusClient;
+import com.ecquaria.cloud.moh.iais.service.client.AppPremisesCorrClient;
+import com.ecquaria.cloud.moh.iais.service.client.AppPremisesRoutingHistoryClient;
+import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
+import com.ecquaria.cloud.moh.iais.service.client.AppointmentClient;
+import com.ecquaria.cloud.moh.iais.service.client.FillUpCheckListGetAppClient;
+import com.ecquaria.cloud.moh.iais.service.client.HcsaChklClient;
+import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
+import com.ecquaria.cloud.moh.iais.service.client.InspectionTaskClient;
+import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import com.google.common.collect.Maps;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @Service
@@ -1312,9 +1367,11 @@ public class FillupChklistServiceImpl implements FillupChklistService {
         String startDate = getStringByRecomType(appPremCorrId,InspectionConstants.RECOM_TYPE_INSPCTION_START_TIME);
         String endDate = getStringByRecomType(appPremCorrId,InspectionConstants.RECOM_TYPE_INSPCTION_END_TIME);
         String otherinspectionofficer = getStringByRecomType(appPremCorrId,InspectionConstants.RECOM_TYPE_OTHER_INSPECTIORS);
+        String observation = getObservationByAppPremCorrId(appPremCorrId);
         serListDto.setOtherinspectionofficer(otherinspectionofficer);
         serListDto.setStartTime(startDate);
         serListDto.setEndTime(endDate);
+        serListDto.setObservation(observation);
        String [] startDateHHMM = getStringsByHHDD(startDate);
        if(startDateHHMM != null && startDateHHMM.length == 2){
            serListDto.setStartHour(startDateHHMM[0]);
@@ -1338,6 +1395,17 @@ public class FillupChklistServiceImpl implements FillupChklistService {
         }
         getSvcName(serListDto);
         return serListDto;
+    }
+
+    @Override
+    public String getObservationByAppPremCorrId(String appPremCorrId) {
+        String observation = "";
+        AppPremisesRecommendationDto appPremisesRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType
+                (appPremCorrId, InspectionConstants.RECOM_TYPE_INSP_CHECKLIST_OBSERVATION).getEntity();
+        if(appPremisesRecommendationDto != null) {
+            observation = appPremisesRecommendationDto.getRemarks();
+        }
+        return observation;
     }
 
     @Override
@@ -1946,7 +2014,7 @@ public class FillupChklistServiceImpl implements FillupChklistService {
             for(InspectionFillCheckListDto inspectionFillCheckListDto : inspectionFillCheckListDtos){
                 for(SelfAssessmentConfig selfAssessmentConfig : selfAssessmentConfigs){
                     if(selfAssessmentConfig != null){
-                        if(inspectionFillCheckListDto.isCommonConfig() == selfAssessmentConfig.isCommon()){
+                        if( StringUtil.isEmpty(inspectionFillCheckListDto.getVehicleName()) && inspectionFillCheckListDto.isCommonConfig() == selfAssessmentConfig.isCommon()){
                             List<PremCheckItem> question =  selfAssessmentConfig.getQuestion();
                             if(!IaisCommonUtils.isEmpty(question)){
                                 List<PremCheckItem> ncQs = getAllSelfQs(question);

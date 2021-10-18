@@ -28,7 +28,9 @@
             <input id="isEditHiddenVal" type="hidden" name="isEdit" value="0"/>
             <c:if test="${('APTY005' ==AppSubmissionDto.appType || 'APTY004' ==AppSubmissionDto.appType) && requestInformationConfig == null}">
                 <div class="app-font-size-16">
-                    <a class="back" id="RfcSkip">Skip<span style="display: inline-block;">&nbsp;</span><em class="fa fa-angle-right"></em></a>
+                    <a class="back" id="RfcSkip" href="javascript:void(0);">
+                        Skip<span style="display: inline-block;">&nbsp;</span><em class="fa fa-angle-right"></em>
+                    </a>
                 </div>
             </c:if>
             <c:set var="canEdit" value="${AppSubmissionDto.appEditSelectDto.serviceEdit}"/>
@@ -47,9 +49,7 @@
             <div class=" form-group form-horizontal formgap">
                 <div class="control-label formtext col-md-5 col-xs-5">
                     <label  class="control-label control-set-font control-font-label">
-                        <div style="font-weight: 600;font-size: 2.2rem">
-                            <strong>Clinical Director</strong>
-                        </div>
+                        <p style="font-weight: 600;font-size: 2.2rem"><c:out value="${currStepName}"/></p>
                     </label>
                 </div>
             </div>
@@ -99,13 +99,13 @@
             <c:when test="${cdLength >= clinicalDirectorConfig.maximumCount}">
                 <c:set var="needAddPsn" value="false"/>
             </c:when>
-            <c:when test="${AppSubmissionDto.appType != 'APTY002' && 'true' != canEdit}">
+            <c:when test="${AppSubmissionDto.needEditController && !canEdit}">
                 <c:set var="needAddPsn" value="false"/>
             </c:when>
         </c:choose>
         <div class="col-md-12 col-xs-12 addClinicalDirectorDiv <c:if test="${!needAddPsn}">hidden</c:if>">
             <span class="addClinicalDirectorBtn" style="color:deepskyblue;cursor:pointer;">
-                <span style="">+ Add Clinical Director</span>
+                <span style="">+ Add <c:out value="${singleName}"/></span>
             </span>
         </div>
     </c:if>
@@ -135,27 +135,38 @@
         }
         // init
         $('div.clinicalDirectorContent').each(function () {
-            var assignSelVal = $(this).find('.assignSel:input').val();
+            var $currContent = $(this);
+            var assignSelVal = $currContent.find('.assignSel:input').val();
             console.info("init ---- " + assignSelVal);
             if (isEmpty(assignSelVal)) {
-                $(this).find('select.assignSel option').eq(0).prop("selected", true);
+                $currContent.find('select.assignSel option').eq(0).prop("selected", true);
             } else if ("-1" != assignSelVal && 'newOfficer' != assignSelVal) {
                 var data;
                 try{
-                    data = $.parseJSON($(this).find('.psnEditField:input').val());
+                    data = $.parseJSON($currContent.find('.psnEditField:input').val());
                 } catch (e) {
                     data = {};
                 };
                 if ('1' == $(this).find('.licPerson:input').val()) {
-                    disableCdContent($(this).find('div.person-detail'), data);
+                    disableCdContent($currContent.find('div.person-detail'), data);
                 }
             }
-            //trigger prs
+            // prs
+            /*
             if (!isEmpty($(this).find('.profRegNo').val())) {
                 $(this).find('.profRegNo').trigger('blur');
             }
+            */
+            var prgNo = $currContent.find('input.profRegNo').val();
+            if (!isEmpty(prgNo)) {
+                var assignSelectVal = $currContent.find('select.assignSel').val();
+                var licPerson = $currContent.find('input.licPerson').val();
+                var needControlName = isNeedControlName(assignSelectVal, licPerson, appType);
+                prsCallBackFuns.setEdit($currContent, 'disabled', false, needControlName);
+            }
+            // designation
             $(this).find('.designation').triggerHandler('change');
-            checkNoRegWithProfBoard($(this).find('.noRegWithProfBoard'));
+            checkNoRegWithProfBoard($currContent.find('.noRegWithProfBoard'));
             // update select tag
             $(this).find('select').niceSelect("update");
         });
@@ -335,13 +346,17 @@
             var appType = $('input[name="applicationType"]').val();
             var assignSelectVal = $currContent.find('select.assignSel').val();
             var licPerson = $currContent.find('input.licPerson').val();
-            var needControlName = isNeedControlName(assignSelectVal, licPerson, appType);
-            if(needControlName){
+            var prgNo = $currContent.find('input.profRegNo').val();
+            if(!isEmpty(prgNo)){
+                var needControlName = isNeedControlName(assignSelectVal, licPerson, appType);
+                prsCallBackFuns.setEdit($currContent, 'disabled', false, needControlName);
+            }
+            /*if(needControlName){
                 var prgNo = $currContent.find('input.profRegNo').val();
                 if(!isEmpty(prgNo)){
                     controlEdit($currContent.find('input.field-name'), 'disabled', false);
                 }
-            }
+            }*/
         });
     }
 
@@ -369,6 +384,7 @@
         } else if('newOfficer' == assignSelVal) {
             $content.removeClass('hidden');
             clearFields($content);
+            $content.closest('div.clinicalDirectorContent').find('input.licPerson').val('0');
         } else {
             $content.removeClass('hidden');
             var arr = assignSelVal.split(',');
@@ -387,7 +403,7 @@
             clearFields($content);
             return;
         }
-        console.info("11111111111111");
+        console.log(data);
         $.each(data, function(i, val) {
             if (i == 'psnEditDto') {
                 //console.info(val);
@@ -397,10 +413,10 @@
             } else if(i == 'licPerson'){
                 var licPerson = data.licPerson;
                 // alert(licPerson);
-                if ('1' == licPerson){
-                    $current.find('input.licPerson').val('1');
+                if (licPerson){
+                    $current.closest('div.clinicalDirectorContent').find('input.licPerson').val('1');
                 }else{
-                    $current.find('input.licPerson').val('0');
+                    $current.closest('div.clinicalDirectorContent').find('input.licPerson').val('0');
                 }
             } else if(i == 'speciality'){
                 var speciality = data.speciality;

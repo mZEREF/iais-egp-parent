@@ -1,7 +1,17 @@
 function showWaiting() {
-    $.blockUI({message: '<div style="padding:3px;">We are processing your request now; please do not click the Back or Refresh button in the browser.</div>',
-        css: {width: '25%', border: '1px solid #aaa'},
-        overlayCSS: {opacity: 0.2}});
+    var msg = '<div style="padding:3px;">' +
+        'We are processing your request now; please do not click the Back or Refresh button in the browser.' +
+        '</div>';
+    var cssOpts = {border: '1px solid #aaa'};
+    var scrnWidth = window.screen.width;
+    if (isEmpty(scrnWidth) || scrnWidth > 480) {
+        cssOpts.width = '25%';
+        cssOpts.left = '37%';
+    } else {
+        cssOpts.width = '50%';
+        cssOpts.left = '25%';
+    }
+    $.blockUI({message: msg, css: cssOpts, overlayCSS: {opacity: 0.2}});
 }
 
 function dismissWaiting() {
@@ -91,11 +101,7 @@ function gotoFirstMsg() {
     if (errorTop <= 0) {
         errorTop = $target.offset().top;
     }
-    if (errorTop > 0) {
-        $('html,body').animate({scrollTop: errorTop - 100});
-    } else {
-        $('html,body').animate({scrollTop: errorTop - 100});
-    }
+    $('html,body').animate({scrollTop: errorTop - 100});
 }
 
 function getErrorMsg(){
@@ -256,6 +262,7 @@ function confirmChangeMemoryPage(res) {
     } else if (res.checkAllRemove != null && res.checkAllRemove == '0') {
         checkAllObj.checked = true;
     }
+    $('div#'+ res.pageDivId +' select').niceSelect();
 }
 
 function checkAllMemoryheck(paginationDiv) {
@@ -413,6 +420,9 @@ function clearFields(targetSelector) {
     }
     var $selector = $(targetSelector);
     if (!$selector.is(":input")) {
+        $selector.find("span[name='iaisErrorMsg']").each(function () {
+            $(this).html("");
+        });
         $selector = $(targetSelector).find(':input[class!="not-clear"]');
     }
     if ($selector.length <= 0) {
@@ -433,6 +443,73 @@ function clearFields(targetSelector) {
             }
         }
     });
+}
+
+function fillValue(targetSelector, data, includeHidden){
+    if (isEmpty(targetSelector)) {
+        return;
+    }
+    var $selector = $(targetSelector);
+    if ($selector.length <= 0) {
+        return;
+    }
+    console.info("data - " + data);
+    if (isEmpty(data)) {
+        clearFields($selector);
+        return;
+    }
+    if ($selector.is(":input")) {
+        var type = $selector[0].type, tag = $selector[0].tagName.toLowerCase();
+        console.info("Tag - " + tag + " : " + type);
+        if (type == 'radio') {
+            $selector.filter('[value="' + data + '"]').prop('checked', true);
+            $selector.filter(':not([value="' + data + '"])').prop('checked', false);
+        } else if (type == 'checkbox') {
+            if ($.isArray(data)) {
+                $selector.prop('checked', false);
+                for (var v in data) {
+                    if (curVal == v) {
+                        $(this).prop('checked', true);
+                    }
+                }
+            } else {
+                $selector.filter('[value="' + data + '"]').prop('checked', true);
+                $selector.filter(':not([value="' + data + '"])').prop('checked', false);
+            }
+        } else if (tag == 'select') {
+            var oldVal = $selector.val();
+            $selector.val(data);
+            if (isEmpty($selector.val())) {
+                $selector[0].selectedIndex = 0;
+            }
+            if ($selector.val() != oldVal) {
+                $selector.niceSelect("update");
+            }
+        } else {
+            $selector.val(data);
+        }
+    } else if ($.isArray(data)) {
+        if (includeHidden) {
+            $selector = $(targetSelector).find(':input');
+        } else {
+            $selector = $(targetSelector).find(':input[type!="hidden"]');
+        }
+        if ($selector.length <= 0) {
+            console.log("Can't find the related tag - " + targetSelector);
+            return;
+        }
+        $selector.each(function(i, ele) {
+            fillValue(ele, data[i]);
+        });
+    } else {
+        $.each(data, function(i, val) {
+            var $input = $selector.find('[name="'+ i +'"]:input');
+            if ($input.length == 0) {
+                $input = $selector.find('.' + i + ':input');
+            }
+            fillValue($input, val);
+        });
+    }
 }
 
 function disableContent(targetSelector) {
@@ -482,5 +559,46 @@ function unDisableContent(targetSelector) {
         if (tag == 'select') {
             $input.niceSelect("update");
         }
+    });
+}
+
+function refreshIndex(targetSelector) {
+    if (isEmpty(targetSelector)) {
+        return;
+    }
+    if ($(targetSelector).length == 0) {
+        return;
+    }
+    $(targetSelector).each(function (k,v) {
+        var $ele = $(v);
+        var $selector = $ele.find(':input');
+        if ($selector.length == 0) {
+            $ele.text(k + 1);
+            return;
+        }
+        $selector.each(function () {
+            var type = this.type, tag = this.tagName.toLowerCase(), $input = $(this);
+            var orgName = $input.attr('name');
+            var orgId = $input.attr('id');
+            if (isEmpty(orgName)) {
+                orgName = orgId;
+            }
+            if (isEmpty(orgName)) {
+                return;
+            }
+            var result = /([a-zA-Z_]*)/g.exec(orgName);
+            var name = !isEmpty(result) && result.length > 0 ? result[0] : orgName;
+            $input.prop('name', name + k);
+            if (orgName == orgId) {
+                $input.prop('id', name + k);
+            }
+            var $errorSpan = $ele.find('span[name="iaisErrorMsg"][id="error_'+ orgName +'"]');
+            if ($errorSpan.length > 0) {
+                $errorSpan.prop('id', 'error_' + name + k);
+            }
+            if (tag == 'select') {
+                $input.niceSelect("update");
+            }
+        });
     });
 }

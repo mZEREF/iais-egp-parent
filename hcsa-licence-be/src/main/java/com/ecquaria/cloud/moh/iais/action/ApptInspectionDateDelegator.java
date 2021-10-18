@@ -255,7 +255,7 @@ public class ApptInspectionDateDelegator {
             try {
                 specificDate = sdf3.parse(subDate.toString());
             } catch (ParseException e) {
-                log.error(e.getMessage(), e);
+                log.info("SpecificDate Conversion failure");
             }
             return specificDate;
         }

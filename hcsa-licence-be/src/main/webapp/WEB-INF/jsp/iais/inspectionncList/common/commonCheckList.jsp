@@ -30,16 +30,16 @@
                 <tr>
                     <th scope="col" >No.</th>
                     <th scope="col" >Regulation Clause Number</th>
-                    <th  width="30%">Item</th>
-                    <th class="text-center">Yes</th>
-                    <th class="text-center">No</th>
-                    <th class="text-center">N/A</th>
+                    <th scope="col" width="30%">Item</th>
+                    <th scope="col" class="text-left">Yes</th>
+                    <th scope="col" class="text-left">No</th>
+                    <th scope="col" class="text-left">N/A</th>
                     <c:if test="${ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK != applicationViewDto.applicationDto.applicationType && (ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION == applicationViewDto.applicationDto.status || ApplicationConsts.APPLICATION_STATUS_BEFORE_INSP_DATE_PENDING_INSPECTION == applicationViewDto.applicationDto.status)}">
                         <th scope="col" >Self-assessment Answer</th>
                     </c:if>
                     <th scope="col" >Findings/NCs</th>
                     <th scope="col" >Actions Required</th>
-                    <th class="text-center">Rectified</th>
+                    <th scope="col" class="text-left">Rectified</th>
                     <th scope="col" ></th>
                 </tr>
                 </thead>
@@ -47,9 +47,9 @@
                 <c:forEach var = "item" items = "${section.itemDtoList}" varStatus="two">
                     <tr>
                         <td class="row_no"> <div class="form-check"><span>${(two.index + 1) }</span></div></td>
-                        <td> <div class="form-check"><a data-toggle="modal" data-target="#DeleteTemplateModal${item.incqDto.itemId}">${item.incqDto.regClauseNo}</a></div></td>
-                        <div class="modal fade" id="DeleteTemplateModal${item.incqDto.itemId}" tabindex="-1" role="dialog" aria-labelledby="regOutsideWindow" style="left: 50%;top: 50%;transform: translate(-50%,-50%);min-width:80%; overflow: visible;bottom: inherit;right: inherit;">
-                            <div class="modal-dialog modal-lg" role="document">
+                        <td> <div class="form-check"><a href="javascript:void(0);" data-toggle="modal" data-target="#DeleteTemplateModal${item.incqDto.itemId}">${item.incqDto.regClauseNo}</a></div></td>
+                        <div class="modal fade" id="DeleteTemplateModal${item.incqDto.itemId}" tabindex="-1" role="dialog" aria-labelledby="regOutsideWindow">
+                            <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
                                 <div class="modal-content">
                                         <%--                                                                    <div class="modal-header">--%>
                                         <%--                                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>--%>
@@ -105,8 +105,8 @@
                             <c:set value = "error_${item.incqDto.sectionNameShow}${item.incqDto.itemId}comRemark" var = "err"/>
                             <span class="error-msg" id="<c:out value="${err}"/>" name="iaisErrorMsg"></span>
                         </td>
-                        <td class="text-center">
-                            <div id="<c:out value="${item.incqDto.sectionNameShow}"/><c:out value="${item.incqDto.itemId}"/>comck"   <c:if test="${item.incqDto.chkanswer != 'No'}">hidden</c:if>>
+                        <td class="text-left">
+                            <div id="<c:out value="${item.incqDto.sectionNameShow}"/><c:out value="${item.incqDto.itemId}"/>comck"   <c:if test="${item.incqDto.chkanswer != 'No'}">style="display: none;" </c:if>>
                                 <div class="form-check">
                                     <input name="<c:out value="${item.incqDto.sectionNameShow}"/><c:out value="${item.incqDto.itemId}"/>comrec" id="<c:out value="${item.incqDto.itemId}"/><c:out value="${item.incqDto.sectionNameShow}"/>comrec" type="checkbox" <c:if test="${item.incqDto.rectified}">checked</c:if> value="rec"/>
                                 </div>

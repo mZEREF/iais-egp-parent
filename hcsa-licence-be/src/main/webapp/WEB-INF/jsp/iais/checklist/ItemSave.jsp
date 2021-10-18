@@ -34,97 +34,77 @@
     <br><br>
     <span id="error_question" name="iaisErrorMsg" class="error-msg"></span>
 
+    <span id="error_messageContent" name="iaisErrorMsg" class="error-msg"></span>
+    <br><br>
+    <div class="tab-pane active" id="tabInbox" role="tabpanel">
+        <div class="form-horizontal">
 
-            <span id="error_messageContent" name="iaisErrorMsg" class="error-msg"></span>
-            <br><br>
-            <div class="tab-pane active" id="tabInbox" role="tabpanel">
-                <div class="form-horizontal">
-
-                    <div class="form-group">
-                        <div class="col-xs-5 col-md-3">
-                            <iais:field value="Regulation Clause Number" required="true"></iais:field>
-                            <div class="col-xs-5 col-md-3">
-                                <iais:select name="regulationClauseNo" onchange="displayRegulation()" options="clauseSelect" firstOption="Please Select"  value="${itemRequestAttr.regulationId}"></iais:select>
-                                <span id="error_regulationId" name="iaisErrorMsg" class="error-msg"></span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <div class="col-xs-5 col-md-3">
-                            <iais:field value="Regulation" required="false"></iais:field>
-                            <div class="col-xs-5 col-md-3">
-                                <textarea cols="70" rows="7" name="regulationClause" id="regulationClause"  readonly maxlength="8000"></textarea>
-                                <span id="error_regulationClause" name="iaisErrorMsg" class="error-msg"></span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <div class="col-xs-5 col-md-3">
-                            <iais:field value="Checklist Item" required="true"></iais:field>
-                            <div class="col-xs-5 col-md-3">
-                                <textarea cols="70" rows="7" name="checklistItem" id="checklistItem" maxlength="500"><c:out value="${itemRequestAttr.checklistItem}"> </c:out></textarea>
-                                <span id="error_checklistItem" name="iaisErrorMsg" class="error-msg"></span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <%--the updating page no need to change status--%>
-                    <div class="form-group">
-                        <div class="col-xs-5 col-md-3">
-                            <iais:field value="Status" required="true"></iais:field>
-
-                            <div class="col-xs-5 col-md-3">
-                                    <iais:select name="status" id="status" codeCategory="CATE_ID_COMMON_STATUS"
-                                                 firstOption="Please Select" value="${itemRequestAttr.status}" filterValue="CMSTAT002,CMSTAT004,DRAFT001"/>
-                                <span id="error_status" name="iaisErrorMsg" class="error-msg" ></span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <div class="col-xs-5 col-md-3">
-                            <iais:field value="Risk Level" required="true"></iais:field>
-                            <div class="col-xs-5 col-md-3">
-                                <iais:select name="riskLevel" id="riskLevel" codeCategory="CATE_ID_RISK_LEVEL" firstOption="Please Select" value="${itemRequestAttr.riskLevel}"></iais:select>
-                                <span id="error_riskLevel" name="iaisErrorMsg" class="error-msg"></span>
-                            </div>
-                        </div>
-                    </div>
-
-
-                    <div class="form-group">
-                        <div class="col-xs-5 col-md-3">
-                            <iais:field value="Answer Type" required="true"></iais:field>
-                            <div class="col-xs-5 col-md-3">
-                                <iais:select name="answerType" id="answerType" codeCategory="CATE_ID_ANSWER_TYPE" firstOption="Please Select" filterValue="ANTP003, ANTP001" value="${itemRequestAttr.answerType}"></iais:select>
-                                <span id="error_answerType" name="iaisErrorMsg" class="error-msg"></span>
-                            </div>
-                        </div>
-                    </div>
+            <iais:row>
+                <iais:field value="Regulation Clause Number" required="true"></iais:field>
+                <div class="col-xs-5 col-md-3">
+                    <iais:select name="regulationClauseNo" onchange="displayRegulation()" options="clauseSelect"
+                                 firstOption="Please Select"  value="${itemRequestAttr.regulationId}" needErrorSpan="false" />
+                    <span id="error_regulationId" name="iaisErrorMsg" class="error-msg"></span>
                 </div>
-            </div>
-            <div class="col-xs-12 col-sm-6">
-                <a class="back" onclick="doCancel();"><em class="fa fa-angle-left" ></em> Back</a>
-            </div>
-            <div class="text-right text-center-mobile">
-                <a class="btn btn-secondary" href="javascript:void(0);" onclick="Utils.clearClickStatus('form-horizontal');">Clear</a>
-                <c:choose>
-                    <c:when test="${btnTag eq 'SubmitButton'}">
-                        <a class="btn btn-primary next" onclick="javascript:doSubmit();">Submit</a>
-                    </c:when>
-                    <c:when test="${btnTag eq 'UpdateButton'}">
-                        <a class="btn btn-primary next" onclick="javascript:doSubmit('${itemRequestAttr.itemId}');">Update</a>
-                    </c:when>
-                </c:choose>
-            </div>
+            </iais:row>
 
+            <iais:row>
+                <iais:field value="Regulation" required="false"></iais:field>
+                <div class="col-xs-5 col-md-3">
+                    <textarea cols="70" rows="7" name="regulationClause" id="regulationClause"  readonly maxlength="8000"></textarea>
+                    <span id="error_regulationClause" name="iaisErrorMsg" class="error-msg"></span>
+                </div>
+            </iais:row>
 
+            <iais:row>
+                <iais:field value="Checklist Item" required="true"></iais:field>
+                <div class="col-xs-5 col-md-3">
+                    <textarea cols="70" rows="7" name="checklistItem" id="checklistItem" maxlength="500"><c:out value="${itemRequestAttr.checklistItem}"> </c:out></textarea>
+                    <span id="error_checklistItem" name="iaisErrorMsg" class="error-msg"></span>
+                </div>
+            </iais:row>
 
+            <%--the updating page no need to change status--%>
+            <iais:row>
+                <iais:field value="Status" required="true"></iais:field>
 
+                <div class="col-xs-5 col-md-3">
+                    <iais:select name="status" id="status" codeCategory="CATE_ID_COMMON_STATUS" firstOption="Please Select"
+                                 value="${itemRequestAttr.status}" filterValue="CMSTAT002,CMSTAT004,DRAFT001"/>
+                </div>
+            </iais:row>
 
-</>
+            <iais:row>
+                <iais:field value="Risk Level" required="true"></iais:field>
+                <div class="col-xs-5 col-md-3">
+                    <iais:select name="riskLevel" id="riskLevel" codeCategory="CATE_ID_RISK_LEVEL" firstOption="Please Select"
+                                 value="${itemRequestAttr.riskLevel}" />
+                </div>
+            </iais:row>
+
+            <iais:row>
+                <iais:field value="Answer Type" required="true" />
+                <div class="col-xs-5 col-md-3">
+                    <iais:select name="answerType" id="answerType" codeCategory="CATE_ID_ANSWER_TYPE" firstOption="Please Select"
+                                 filterValue="ANTP003, ANTP001" value="${itemRequestAttr.answerType}" />
+                </div>
+            </iais:row>
+        </div>
+    </div>
+    <div class="col-xs-12 col-md-6">
+        <a class="back" href="javascript:void(0)" onclick="doCancel();"><em class="fa fa-angle-left" ></em> Back</a>
+    </div>
+    <div class="text-right text-center-mobile">
+        <a class="btn btn-secondary" href="javascript:void(0)" onclick="Utils.clearClickStatus('form-horizontal');">Clear</a>
+        <c:choose>
+            <c:when test="${btnTag eq 'SubmitButton'}">
+                <a class="btn btn-primary next" onclick="javascript:doSubmit();">Submit</a>
+            </c:when>
+            <c:when test="${btnTag eq 'UpdateButton'}">
+                <a class="btn btn-primary next" onclick="javascript:doSubmit('${itemRequestAttr.itemId}');">Update</a>
+            </c:when>
+        </c:choose>
+    </div>
 </div>
 <%@include file="/WEB-INF/jsp/include/utils.jsp"%>
 <%@include file="/WEB-INF/jsp/include/validation.jsp"%>

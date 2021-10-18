@@ -19,12 +19,12 @@
                         <h3>You have existing records which conflict with records you have imported</h3>
                         <c:forEach var="oldUser" items="${existUsersOld}" varStatus="status">
                             <span style="font-size: 2rem;">User${status.count} - ${oldUser.firstName}&nbsp;${oldUser.lastName}</span>
-                        <table  style="width: 50%;border-collapse:separate;border-spacing:10px;border: 1px solid #151515">
+                        <table aria-describedby="" style="width: 50%;border-collapse:separate;border-spacing:10px;border: 1px solid #151515">
                             <thead>
                             <tr>
-                                <th style="width: 20%"></th>
-                                <th style="width: 10%"></th>
-                                <th style="width: 1%"></th>
+                                <th scope="col" style="width: 20%"></th>
+                                <th scope="col" style="width: 10%"></th>
+                                <th scope="col" style="width: 1%"></th>
                             </tr>
                             </thead>
                             <tbody>

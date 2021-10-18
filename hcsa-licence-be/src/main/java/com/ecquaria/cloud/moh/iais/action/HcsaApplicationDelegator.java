@@ -253,6 +253,7 @@ public class HcsaApplicationDelegator {
                         applicationViewDto.setAppEditSelectDto(appEditSelectDtos.get(0));
                     } else {
                         AppEditSelectDto appEditSelectDto = new AppEditSelectDto();
+                        appEditSelectDto.setLicenseeEdit(true);
                         appEditSelectDto.setPremisesEdit(true);
                         appEditSelectDto.setDocEdit(true);
                         appEditSelectDto.setServiceEdit(true);
@@ -409,76 +410,78 @@ public class HcsaApplicationDelegator {
                     AppPremisesRecommendationDto clearRecommendationDto = getClearRecommendationDto(appPremCorreId, dateStr, dateTimeShow);
                     insRepService.updateRecommendation(clearRecommendationDto);
                 }
-            } else if (("reject").equals(recommendationStr)) {
-                AppPremisesRecommendationDto appPremisesRecommendationDto = new AppPremisesRecommendationDto();
-                appPremisesRecommendationDto.setRecomDecision(InspectionReportConstants.REJECTED);
-                appPremisesRecommendationDto.setAppPremCorreId(appPremCorreId);
-                appPremisesRecommendationDto.setRecomInNumber(0);
-                appPremisesRecommendationDto.setRecomType(InspectionConstants.RECOM_TYPE_INSEPCTION_REPORT);
-                if (isAppealType || isWithdrawal || isCessation || isRequestForChange) {
-//                    appPremisesRecommendationDto.setRecomDecision("reject");
-                    appPremisesRecommendationDto.setRecomDecision(InspectionReportConstants.RFC_REJECTED);
-                }
-                appPremisesRecommendationDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
-                //save date
-                if (!StringUtil.isEmpty(dateStr)) {
-                    Date date = Formatter.parseDate(dateStr);
-                    appPremisesRecommendationDto.setRecomInDate(date);
-                } else if (!StringUtil.isEmpty(dateTimeShow) && !"-".equals(dateTimeShow)) {
-                    Date date = Formatter.parseDate(dateTimeShow);
-                    appPremisesRecommendationDto.setRecomInDate(date);
-                }
-                insRepService.updateRecommendation(appPremisesRecommendationDto);
-            } else {
-                AppPremisesRecommendationDto appPremisesRecommendationDto = new AppPremisesRecommendationDto();
-                appPremisesRecommendationDto.setAppPremCorreId(appPremCorreId);
-                appPremisesRecommendationDto.setRecomType(InspectionConstants.RECOM_TYPE_INSEPCTION_REPORT);
-                appPremisesRecommendationDto.setRecomDecision(InspectionReportConstants.APPROVED);
-                if (isAppealType || isWithdrawal || isCessation || isRequestForChange) {
-//                    appPremisesRecommendationDto.setRecomDecision("approve");
-                    appPremisesRecommendationDto.setRecomDecision(InspectionReportConstants.RFC_APPROVED);
-                }
-                if ("other".equals(recommendationStr)) {
-                    if(!ApplicationConsts.PROCESSING_DECISION_ROLLBACK.equals(approveSelect)) {
-                        if ((isAppealType && isChangePeriodAppealType) || !isAppealType) {
-                            String number = ParamUtil.getString(bpc.request, "number");
-                            if (!StringUtil.isEmpty(number)) {
-                                String chrono = ParamUtil.getString(bpc.request, "chrono");
-                                appPremisesRecommendationDto.setRecomInNumber(Integer.valueOf(number));
-                                appPremisesRecommendationDto.setChronoUnit(chrono);
-                            } else {
-                                saveRecommenFlag = false;
+            } else if(!ApplicationConsts.APPLICATION_STATUS_REQUEST_INFORMATION.equals(status)) {
+                if (("reject").equals(recommendationStr)) {
+                    AppPremisesRecommendationDto appPremisesRecommendationDto = new AppPremisesRecommendationDto();
+                    appPremisesRecommendationDto.setRecomDecision(InspectionReportConstants.REJECTED);
+                    appPremisesRecommendationDto.setAppPremCorreId(appPremCorreId);
+                    appPremisesRecommendationDto.setRecomInNumber(0);
+                    appPremisesRecommendationDto.setRecomType(InspectionConstants.RECOM_TYPE_INSEPCTION_REPORT);
+                    if (isAppealType || isWithdrawal || isCessation || isRequestForChange) {
+    //                    appPremisesRecommendationDto.setRecomDecision("reject");
+                        appPremisesRecommendationDto.setRecomDecision(InspectionReportConstants.RFC_REJECTED);
+                    }
+                    appPremisesRecommendationDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+                    //save date
+                    if (!StringUtil.isEmpty(dateStr)) {
+                        Date date = Formatter.parseDate(dateStr);
+                        appPremisesRecommendationDto.setRecomInDate(date);
+                    } else if (!StringUtil.isEmpty(dateTimeShow) && !"-".equals(dateTimeShow)) {
+                        Date date = Formatter.parseDate(dateTimeShow);
+                        appPremisesRecommendationDto.setRecomInDate(date);
+                    }
+                    insRepService.updateRecommendation(appPremisesRecommendationDto);
+                } else {
+                    AppPremisesRecommendationDto appPremisesRecommendationDto = new AppPremisesRecommendationDto();
+                    appPremisesRecommendationDto.setAppPremCorreId(appPremCorreId);
+                    appPremisesRecommendationDto.setRecomType(InspectionConstants.RECOM_TYPE_INSEPCTION_REPORT);
+                    appPremisesRecommendationDto.setRecomDecision(InspectionReportConstants.APPROVED);
+                    if (isAppealType || isWithdrawal || isCessation || isRequestForChange) {
+    //                    appPremisesRecommendationDto.setRecomDecision("approve");
+                        appPremisesRecommendationDto.setRecomDecision(InspectionReportConstants.RFC_APPROVED);
+                    }
+                    if ("other".equals(recommendationStr)) {
+                        if (!ApplicationConsts.PROCESSING_DECISION_ROLLBACK.equals(approveSelect)) {
+                            if ((isAppealType && isChangePeriodAppealType) || !isAppealType) {
+                                String number = ParamUtil.getString(bpc.request, "number");
+                                if (!StringUtil.isEmpty(number)) {
+                                    String chrono = ParamUtil.getString(bpc.request, "chrono");
+                                    appPremisesRecommendationDto.setRecomInNumber(Integer.valueOf(number));
+                                    appPremisesRecommendationDto.setChronoUnit(chrono);
+                                } else {
+                                    saveRecommenFlag = false;
+                                }
+                            }
+                        } else {
+                            saveRecommenFlag = false;
+                        }
+                        if (isAppealType) {
+    //                        appPremisesRecommendationDto.setRecomDecision("approve");
+                            appPremisesRecommendationDto.setRecomDecision(InspectionReportConstants.RFC_APPROVED);
+                            if (isLateFeeAppealType) {
+                                String returnFee = ParamUtil.getString(bpc.request, "returnFee");
+                                appPremisesRecommendationDto.setRemarks(returnFee);
                             }
                         }
                     } else {
-                        saveRecommenFlag = false;
-                    }
-                    if (isAppealType) {
-//                        appPremisesRecommendationDto.setRecomDecision("approve");
-                        appPremisesRecommendationDto.setRecomDecision(InspectionReportConstants.RFC_APPROVED);
-                        if (isLateFeeAppealType) {
-                            String returnFee = ParamUtil.getString(bpc.request, "returnFee");
-                            appPremisesRecommendationDto.setRemarks(returnFee);
+                        if (isRequestForChange || isCessationOrWithdrawalFinalStage) {
+                            recommendationStr = "6 DTPE002";
                         }
+                        String[] strs = recommendationStr.split("\\s+");
+                        appPremisesRecommendationDto.setRecomInNumber(Integer.valueOf(strs[0]));
+                        appPremisesRecommendationDto.setChronoUnit(strs[1]);
                     }
-                } else {
-                    if (isRequestForChange || isCessationOrWithdrawalFinalStage) {
-                        recommendationStr = "6 DTPE002";
+                    //save date
+                    if (!StringUtil.isEmpty(dateStr)) {
+                        Date date = Formatter.parseDate(dateStr);
+                        appPremisesRecommendationDto.setRecomInDate(date);
+                    } else if (!StringUtil.isEmpty(dateTimeShow) && !"-".equals(dateTimeShow)) {
+                        Date date = Formatter.parseDate(dateTimeShow);
+                        appPremisesRecommendationDto.setRecomInDate(date);
                     }
-                    String[] strs = recommendationStr.split("\\s+");
-                    appPremisesRecommendationDto.setRecomInNumber(Integer.valueOf(strs[0]));
-                    appPremisesRecommendationDto.setChronoUnit(strs[1]);
-                }
-                //save date
-                if (!StringUtil.isEmpty(dateStr)) {
-                    Date date = Formatter.parseDate(dateStr);
-                    appPremisesRecommendationDto.setRecomInDate(date);
-                } else if (!StringUtil.isEmpty(dateTimeShow) && !"-".equals(dateTimeShow)) {
-                    Date date = Formatter.parseDate(dateTimeShow);
-                    appPremisesRecommendationDto.setRecomInDate(date);
-                }
-                if(saveRecommenFlag) {
-                    insRepService.updateRecommendation(appPremisesRecommendationDto);
+                    if (saveRecommenFlag) {
+                        insRepService.updateRecommendation(appPremisesRecommendationDto);
+                    }
                 }
             }
             String verified = ParamUtil.getString(bpc.request, "verified");
@@ -1607,10 +1610,11 @@ public class HcsaApplicationDelegator {
                     //size
                     long size = selectedFile.getSize();
                     appIntranetDocDto.setDocSize(String.valueOf(size / 1024));
-                    if (!StringUtil.isEmpty(selectedFile.getOriginalFilename())) {
+                    String originName = selectedFile.getOriginalFilename();
+                    if (!StringUtil.isEmpty(originName)) {
                         log.info(StringUtil.changeForLog("HcsaApplicationAjaxController uploadInternalFile OriginalFilename ==== " + selectedFile.getOriginalFilename()));
                         //type
-                        String[] fileSplit = selectedFile.getOriginalFilename().split("\\.");
+                        String[] fileSplit = originName.split("\\.");
                         String fileType = fileSplit[fileSplit.length - 1];
                         appIntranetDocDto.setDocType(fileType);
                         //name
@@ -2378,6 +2382,10 @@ public class HcsaApplicationDelegator {
                 } else if (ApplicationConsts.PAYMENT_STATUS_GIRO_RETRIGGER.equals(appGroupDtoView.getPmtStatus())) {
                     broadcastApplicationDto.getApplicationDto().setStatus(ApplicationConsts.APPLICATION_STATUS_PENDING_PAYMENT_RESUBMIT);
                 }
+            }
+        } else if (ApplicationConsts.APPLICATION_TYPE_POST_INSPECTION.equals(applicationType)) {
+            if (ApplicationConsts.APPLICATION_STATUS_APPROVED.equals(appStatus)) {
+                broadcastApplicationDto.getApplicationDto().setStatus(ApplicationConsts.APPLICATION_STATUS_LICENCE_GENERATED);
             }
         }
         //set appSvcVehicleDto

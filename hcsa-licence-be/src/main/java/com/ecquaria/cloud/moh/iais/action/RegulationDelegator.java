@@ -31,6 +31,13 @@ import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.helper.excel.ExcelWriter;
 import com.ecquaria.cloud.moh.iais.service.RegulationService;
 import ecq.commons.exception.BaseRuntimeException;
+import java.io.File;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,15 +47,6 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import sop.servlet.webflow.HttpHandler;
 import sop.webflow.rt.api.BaseProcessClass;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.File;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 /**
  * @author: yichen
@@ -237,7 +235,7 @@ public class RegulationDelegator {
             return;
         }
 
-        File file = FileUtils.multipartFileToFile(mulReqFile);
+        File file = FileUtils.multipartFileToFile(mulReqFile, request.getSession().getId());
         try {
             List<HcsaChklSvcRegulationDto> reglList = FileUtils.transformToJavaBean(file, HcsaChklSvcRegulationDto.class);
             reglList.forEach(i -> i.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto()));

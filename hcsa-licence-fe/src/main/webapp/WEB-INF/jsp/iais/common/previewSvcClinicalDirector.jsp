@@ -1,26 +1,18 @@
-<%--
-  Created by IntelliJ IDEA.
-  User: ZiXian
-  Date: 2021/4/25
-  Time: 18:00
-  To change this template use File | Settings | File Templates.
---%>
-<c:forEach var="stepSchem" items="${currentPreviewSvcInfo.hcsaServiceStepSchemeDtos}">
-<c:if test="${stepSchem.stepCode == 'SVST009'}">
-    <c:set var="currStepName" value="${stepSchem.stepName}"/>
-</c:if>
-</c:forEach>
+<%@ page import="com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts" %>
 <div class="amended-service-info-gp">
-    <label style="font-size: 2.2rem">Key Clinical Personnel</label>
+    <label style="font-size: 2.2rem">${currStepName}</label>
     <div class="amend-preview-info">
         <div class="form-check-gp">
             <div class="row">
                 <div class="col-xs-12">
                     <c:forEach items="${currentPreviewSvcInfo.appSvcClinicalDirectorDtoList}" var="cdDto" varStatus="status">
                         <div  class="col-xs-12" style="margin-bottom: 1%;margin-top: 1%">
-                            <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span><strong>Key Clinical Personnel<c:if test="${currentPreviewSvcInfo.appSvcClinicalDirectorDtoList.size() > 1}"> ${status.index+1}</c:if>: </strong></p>
+                            <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span><strong><%=HcsaConsts.CLINICAL_DIRECTOR%><c:if test="${currentPreviewSvcInfo.appSvcClinicalDirectorDtoList.size() > 1}"> ${status.index+1}</c:if>: </strong></p>
                         </div>
-                        <table class="col-xs-12">
+                        <table aria-describedby="" class="col-xs-12">
+                            <thead style="display: none">
+                            <tr><th scope="col"></th></tr>
+                            </thead>
                             <tr>
                                 <td class="col-xs-6">
                                     <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Professional Board</p>
@@ -46,7 +38,7 @@
                                         <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>
                                             <c:choose>
                                                 <c:when test="${'1' == cdDto.noRegWithProfBoard}">
-                                                <div class="form-check active">
+                                                <div class="form-check active" style="padding-left:0px">
                                                     <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>
                                                     </p>
                                                 </div>
@@ -166,7 +158,7 @@
                             </tr>
                             <tr>
                                 <td class="col-xs-6">
-                                    <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Clinical Director (CD) holds a valid certification issued by an Emergency Medical Services ("EMS") Medical Directors workshop </p>
+                                    <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Clinical Governance Officer (CGO) holds a valid certification issued by an Emergency Medical Services ("EMS") Medical Directors workshop </p>
                                 </td>
                                 <td>
                                     <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>

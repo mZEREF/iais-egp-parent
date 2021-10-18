@@ -8,12 +8,13 @@
         <input type="hidden" name="crud_action_value" value="">
         <input type="hidden" name="msg_page_action" value="">
         <input type="hidden" name="crud_action_additional" value="">
-        <div class="row">
+        <div class="row d-flex">
             <div class="col-md-4">
                 <label class="col-md-3 control-label" for="inboxType" style="margin-top:5%;">Type</label>
                 <div class="col-md-8">
                     <iais:select name="inboxType" id="inboxType" options="inboxTypeSelect" value="${param.inboxType}" firstOption="All" cssClass="inboxType"/>
                 </div>
+                <br>
             </div>
             <div class="col-md-5">
                 <label class="col-md-3 control-label" for="inboxService" style="margin-top:3%;">Service</label>
@@ -48,6 +49,7 @@
                 <table aria-describedby="" class="table">
                     <thead>
                     <tr>
+                        <th scope="col" style="display: none"></th>
                         <C:if test="${msgPage == 'msgView'}">
                             <iais:sortableHeader needSort="false" field="" value=" "/>
                         </C:if>
@@ -120,8 +122,8 @@
                     </tbody>
                 </table>
                 <!-- Modal -->
-                <div class="modal fade" id="archiveModal" role="dialog" aria-labelledby="myModalLabel" style="left: 50%;top: 50%;transform: translate(-50%,-50%);min-width:80%; overflow: visible;bottom: inherit;right: inherit;">
-                    <div class="modal-dialog" role="document">
+                <div class="modal fade" id="archiveModal" role="dialog" aria-labelledby="myModalLabel">
+                    <div class="modal-dialog modal-dialog-centered" role="document">
                         <div class="modal-content">
 <%--                            <div class="modal-header">--%>
 <%--                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>--%>
@@ -139,8 +141,8 @@
                 </div>
                 <!--Modal End-->
                 <!-- Modal -->
-                <div class="modal fade" id="isArchivedModal" role="dialog" aria-labelledby="myModalLabel" style="left: 50%;top: 50%;transform: translate(-50%,-50%);min-width:80%; overflow: visible;bottom: inherit;right: inherit;">
-                    <div class="modal-dialog" role="document">
+                <div class="modal fade" id="isArchivedModal" role="dialog" aria-labelledby="myModalLabel">
+                    <div class="modal-dialog modal-dialog-centered" role="document">
                         <div class="modal-content">
 <%--                            <div class="modal-header">--%>
 <%--                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>--%>
@@ -157,8 +159,8 @@
                     </div>
                 </div>
                 <!--Modal End-->
-                <div class="modal fade" id="doArchiveModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" style="left: 50%;top: 50%;transform: translate(-50%,-50%);min-width:80%; overflow: visible;bottom: inherit;right: inherit;">
-                    <div class="modal-dialog" role="document">
+                <div class="modal fade" id="doArchiveModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                    <div class="modal-dialog modal-dialog-centered" role="document">
                         <div class="modal-content">
 <%--                            <div class="modal-header">--%>
 <%--                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>--%>

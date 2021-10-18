@@ -55,7 +55,7 @@
       <c:if test="${not empty schEdule_AlERt_Msg__atTR}">
         <div class="dashalert alert-info dash-announce alertMaintainace">
           <button aria-label="Close" data-dismiss="alert" class="close" type="button" onclick="javascript:closeMaintainace();"><span aria-hidden="true">x</span></button>
-          <h3 style="margin-top:0;"><i class="fa fa-wrench"></i> Upcoming Scheduled Maintainace</h3> <%--NOSONAR--%>
+          <h3 style="margin-top:0;"><i class="fa fa-wrench"></i> Upcoming Scheduled Maintenance</h3> <%--NOSONAR--%>
           <c:out value="${schEdule_AlERt_Msg__atTR}" escapeXml="false"/></div>
       </c:if>
       <c:if test="${not empty bAnner_AlERt_Msg__atTR}">
@@ -162,9 +162,10 @@
             </h3>
             <iais:pagination param="dashSearchParam" result="dashSearchResult"/>
             <div class="table-gp">
-              <table class="table application-group" style="border-collapse:collapse;">
+              <table aria-describedby="" class="table application-group" style="border-collapse:collapse;">
                 <thead>
                 <tr>
+                  <th scope="col" style="display: none"></th>
                   <iais:sortableHeader needSort="false" field="" value="S/N"></iais:sortableHeader>
                   <iais:sortableHeader needSort="false" field="GROUP_NO" value="Application No."></iais:sortableHeader>
                   <iais:sortableHeader needSort="false" field="APP_TYPE" value="Application Type"></iais:sortableHeader>
@@ -187,9 +188,9 @@
                                varStatus="status">
                       <tr style="display: table-row;" id="advfilter${(status.index + 1) + (dashSearchParam.pageNo - 1) * dashSearchParam.pageSize}">
                         <td><c:out value="${(status.index + 1) + (dashSearchParam.pageNo - 1) * dashSearchParam.pageSize}"/></td>
-                        <td><p style="width: 165px;"><c:out value="${pool.appGroupNo}"/><a class="accordion-toggle  collapsed" style="float: right"
+                        <td><p style="width: 165px;"><c:out value="${pool.appGroupNo}"/><a href="javascript:void(0);" class="accordion-toggle  collapsed" style="float: right"
                                                                                                    data-toggle="collapse" aria-expanded="false"
-                                                                                                   data-target="#advfilter${(status.index + 1) + (dashSearchParam.pageNo - 1) * dashSearchParam.pageSize}"
+                                                                                                   data-target="#dropdown${(status.index + 1) + (dashSearchParam.pageNo - 1) * dashSearchParam.pageSize}"
                                                                                                    onclick="getAppByGroupId('${pool.appGroupNo}','${(status.index + 1) + (dashSearchParam.pageNo - 1) * dashSearchParam.pageSize}')"></a></p></td>
                         <td><iais:code code="${pool.applicationType}"/></td>
                         <td><c:out value="${pool.submissionType}"/></td>
@@ -309,7 +310,7 @@
                     let res = data.ajaxResult;
                     let html = '<tr style="background-color: #F3F3F3;" class="p" id="advfilterson' + divid + '">' +
                         '<td colspan="7" style="padding: 0px 8px !important;">' +
-                        '<div class="accordian-body p-3 collapse in" id="row1" aria-expanded="true" style="">' +
+                        '<div class="accordian-body p-3 collapse in" id="dropdown' + divid + '" aria-expanded="true" style="">' +
                         '<table class="table application-item" style="background-color: #F3F3F3;margin-bottom:0px;" >' +
                         '<thead>' +
                         '<tr>';
@@ -341,11 +342,11 @@
                         }
                         let canDoTask = res.rows[i].canDoTask;
                         if('1' == canDoTask) {
-                            html += '<td><p class="visible-xs visible-sm table-row-title">Application No.</p><p><a id="' + res.rows[i].taskMaskId + '" onclick="javascript:doDashboardTaskOrShow(' + "'" + res.rows[i].taskMaskId + "'" + ');">' + res.rows[i].applicationNo + '</a></p></td>';
+                            html += '<td><p class="visible-xs visible-sm table-row-title">Application No.</p><p><a href="#" id="' + res.rows[i].taskMaskId + '" onclick="javascript:doDashboardTaskOrShow(' + "'" + res.rows[i].taskMaskId + "'" + ');">' + res.rows[i].applicationNo + '</a></p></td>';
                         } else if ('2' == canDoTask) {
-                            html += '<td><p class="visible-xs visible-sm table-row-title">Application No.</p><p><a id="' + res.rows[i].taskMaskId + '" class="applicationNoAHref" data-href=' + res.rows[i].dashTaskUrl +' data-task=' + res.rows[i].taskMaskId +  '>' + res.rows[i].applicationNo + '</a></p></td>';
+                            html += '<td><p class="visible-xs visible-sm table-row-title">Application No.</p><p><a href="#" id="' + res.rows[i].taskMaskId + '" class="applicationNoAHref" data-href=' + res.rows[i].dashTaskUrl +' data-task=' + res.rows[i].taskMaskId +  '>' + res.rows[i].applicationNo + '</a></p></td>';
                         } else {
-                            html += '<td><p class="visible-xs visible-sm table-row-title">Application No.</p><p><a id="' + res.rows[i].taskMaskId + '" onclick="javascript:dashboardAppViewShow(' + "'" + res.rows[i].id + "'" + ');">' + res.rows[i].applicationNo + '</a></p></td>';
+                            html += '<td><p class="visible-xs visible-sm table-row-title">Application No.</p><p><a href="#" id="' + res.rows[i].taskMaskId + '" onclick="javascript:dashboardAppViewShow(' + "'" + res.rows[i].id + "'" + ');">' + res.rows[i].applicationNo + '</a></p></td>';
                         }
                         html += '<td><p class="visible-xs visible-sm table-row-title">Service</p><p>' + res.rows[i].serviceName + '<p></td>' +
                             '<td><p class="visible-xs visible-sm table-row-title">Licence Expiry Date</p><p>' + res.rows[i].licenceExpiryDateStr + '<p></td>' +
@@ -429,7 +430,7 @@
                         intraDashboardSubmit('approve');
                     }else{
                         dismissWaiting();
-                        $('#approveAo .modal-body span').html(data.noApprove+ " You have no access to approve.");
+                        $('#approveAo .modal-body span').html(data.noApprove);
                         $('#approveAo').modal('show');
                     }
                 }

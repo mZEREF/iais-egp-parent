@@ -47,7 +47,7 @@ public class BroadcastServiceImpl implements BroadcastService {
 
     @Override
     public BroadcastOrganizationDto svaeBroadcastOrganization(BroadcastOrganizationDto broadcastOrganizationDto,Process process,String submissionId) {
-        SubmitResp submitResp = eventBusHelper.submitAsyncRequest(broadcastOrganizationDto, submissionId,
+        SubmitResp submitResp = eventBusHelper.submitAsyncRequestWithoutCallback(broadcastOrganizationDto, submissionId,
                 EventBusConsts.SERVICE_NAME_ROUNTINGTASK,
                 EventBusConsts.OPERATION_ROUNTINGTASK_ROUNTING,
                 broadcastOrganizationDto.getEventRefNo(), process);
@@ -57,7 +57,7 @@ public class BroadcastServiceImpl implements BroadcastService {
 
     @Override
     public BroadcastApplicationDto svaeBroadcastApplicationDto(BroadcastApplicationDto broadcastApplicationDto,Process process,String submissionId) {
-        SubmitResp submitResp = eventBusHelper.submitAsyncRequest(broadcastApplicationDto, submissionId,
+        SubmitResp submitResp = eventBusHelper.submitAsyncRequestWithoutCallback(broadcastApplicationDto, submissionId,
                 EventBusConsts.SERVICE_NAME_APPSUBMIT,
                 EventBusConsts.OPERATION_ROUNTINGTASK_ROUNTING,
                 broadcastApplicationDto.getEventRefNo(), process);
@@ -75,7 +75,7 @@ public class BroadcastServiceImpl implements BroadcastService {
                                                                 String appStatus, String appType) {
         if(applicationViewDto != null) {
             List<AppSvcVehicleDto> appSvcVehicleDtos;
-            if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType)) {
+            if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType) && InspectionConstants.SWITCH_ACTION_YES.equals(vehicleOpenFlag)) {
                 appSvcVehicleDtos = applicationViewDto.getVehicleRfcShowDtos();
             } else {
                 appSvcVehicleDtos = applicationViewDto.getAppSvcVehicleDtos();
@@ -158,7 +158,7 @@ public class BroadcastServiceImpl implements BroadcastService {
                     rollBackLicAppCorrelationDto.setLicenceId(applicationDto.getOriginLicenceId());
 
                     //save
-                    SubmitResp submitResp = eventBusHelper.submitAsyncRequest(eventBeLicenseDto, submissionId,
+                    SubmitResp submitResp = eventBusHelper.submitAsyncRequestWithoutCallback(eventBeLicenseDto, submissionId,
                             EventBusConsts.SERVICE_NAME_LICENCESAVE,
                             EventBusConsts.OPERATION_ROUNTINGTASK_ROUNTING,
                             evenRefNum, process);

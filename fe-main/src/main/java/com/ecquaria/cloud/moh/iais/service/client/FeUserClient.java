@@ -8,6 +8,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterInboxUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.FeUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.FeUserQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserRoleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrganizationDto;
 import com.ecquaria.cloudfeign.FeignConfiguration;
@@ -39,8 +40,8 @@ public interface FeUserClient {
     @GetMapping(value = "/iais-internet-user/{nric}/{idType}/uen-list/")
     FeignResponseEntity<List<String>> getUenListByIdAndType(@PathVariable("nric") String nric, @PathVariable("idType") String idType);
 
-    @GetMapping(value = "/iais-internet-user/user-account/{nric}/{idType}")
-    FeignResponseEntity<FeUserDto> getInternetUserByNricAndIdType(@PathVariable("nric") String nric, @PathVariable("idType") String idType);
+    @GetMapping(value = "/iais-internet-user/user-account/{nric}/{idType}/{uen}")
+    FeignResponseEntity<FeUserDto> getInternetUserByNricAndIdType(@PathVariable("nric") String nric, @PathVariable("idType") String idType, @PathVariable("uen") String uen);
 
     @RequestMapping(path = "/iais-internet-user/edit-user-account",method = RequestMethod.POST,consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<FeUserDto> editUserAccount(@RequestBody FeUserDto feUserDto);
@@ -85,4 +86,10 @@ public interface FeUserClient {
 
     @GetMapping(path = "/iais-internet-user/expire/singpass/list", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<String> getExpireSingPassList();
+
+    @GetMapping(value = "/iais-internet-user/fe-user-acc/{nric}/{idType}", produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<OrgUserDto>> getUserListByNricAndIdType(@PathVariable(value = "nric") String nric, @PathVariable("idType") String idType);
+
+    @GetMapping(value = "/iais-internet-user/inter-user-role-list/{userAccId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<OrgUserRoleDto>> retrieveRolesByUserAccId(@PathVariable("userAccId") String userAccId);
 }

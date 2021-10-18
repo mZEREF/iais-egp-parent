@@ -136,7 +136,7 @@
                                                                             <div id="chooseInspectionBox">
                                                                                 <iais:row>
                                                                                     <label class="col-xs-0 col-md-4 control-label">
-                                                                                        To use recent inspection report?<a onclick="doVerifyFileGo('${AppLastInsGroup.fileReportIdForViewLastReport}')">(View Report)</a>
+                                                                                        To use recent inspection report?<a href="javascript:void(0);" onclick="doVerifyFileGo('${AppLastInsGroup.fileReportIdForViewLastReport}')">(View Report)</a>
                                                                                     </label>
                                                                                     <iais:value width="10">
                                                                                         <p>
@@ -208,7 +208,7 @@
                                                                                     <iais:value width="10">
                                                                                         <p>
                                                                                             <input class="form-check-input" id="routeBackReview"
-                                                                                                   type="checkbox" name="routeBackReview" aria-invalid="false" <c:if test="${routeBackReviewChecked == 'Y'}">checked</c:if> value="Y">
+                                                                                                   type="checkbox" name="routeBackReview" aria-invalid="false" checked value="Y">
                                                                                             <label class="form-check-label" for="routeBackReview"><span class="check-square"></span></label>
                                                                                         </p>
                                                                                     </iais:value>
@@ -354,7 +354,7 @@
                                                                                         <p>
                                                                                             <c:choose>
                                                                                                 <c:when test="${applicationViewDto.applicationDto.status=='APST007' || applicationViewDto.applicationDto.status=='APST012'}">
-                                                                                                    <input class="form-check-input" id="fastTracking"
+                                                                                                    <input class="" id="fastTracking"
                                                                                                     <c:if test="${applicationViewDto.applicationDto.fastTracking}">
                                                                                                            checked disabled
                                                                                                     </c:if>

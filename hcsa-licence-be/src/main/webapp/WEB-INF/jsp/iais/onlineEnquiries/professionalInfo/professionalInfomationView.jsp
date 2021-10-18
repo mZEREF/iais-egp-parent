@@ -32,8 +32,12 @@
 
 
         <div class="form-horizontal">
-            <table width="100%">
-
+            <table aria-describedby="" width="100%">
+                <thead style="display: none">
+                <tr>
+                    <th scope="col"></th>
+                </tr>
+                </thead>
 
             <tr>
                 <td>
@@ -155,7 +159,7 @@
                                 <table aria-describedby="" class="table">
                                     <thead>
                                     <tr>
-                                        <td></td>
+                                        <th scope="col"></th>
                                         <iais:sortableHeader style="padding-bottom:15px" needSort="false" field="index"
                                                              value="S/N"></iais:sortableHeader>
                                         <iais:sortableHeader needSort="true" field="name"
@@ -194,7 +198,7 @@
                                                     <td>
                                                     <c:choose>
                                                         <c:when test="${info.profRegNo != null}">
-                                                        <a onclick="viewPfDetails('<iais:mask name="prRegNo"
+                                                        <a href="#" onclick="viewPfDetails('<iais:mask name="prRegNo"
                                                                                               value="${info.id}|${info.profRegNo}"/>')">${info.profRegNo}</a>
                                                         </c:when>
                                                         <c:otherwise>

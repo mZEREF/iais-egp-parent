@@ -8,6 +8,48 @@
 %>
 <webui:setLayout name="iais-internet"/>
 <%@include file="./dashboard.jsp" %>
+<style>
+    .document-upload-gp .document-upload-list {
+        background-color: #F8F8F8;
+        border-radius: 14px;
+        padding: 30px;
+        margin-bottom: 0;
+    }
+    .document-upload-list {
+        background-color: #F8F8F8;
+        border-radius: 14px;
+        padding: 30px;
+        margin-bottom: 0;
+    }
+    .application-tab-footer {
+        margin-top: 0;
+        padding-top: 0;
+        border-top: 1px solid #BABABA;
+        margin-left: 0;
+        margin-right: 0;
+    }
+    .withdraw-content-box {
+        background-color: #fafafa;
+        border-radius: 14px;
+        padding: 20px;
+        border:1px solid #d1d1d1;
+        margin-bottom: 0;
+    }
+    .modal-header .close {
+        padding: 1rem 1rem;
+        margin: 0rem 0rem 0rem auto;
+    }
+    .withdraw-info-gp .withdraw-info-row .withdraw-info p:before {
+        color: #a2d9e7;
+    }
+
+    .withdraw-info-gp .withdraw-info-row .withdraw-delete {
+        margin-left: 20px;
+        width: 70px;
+        display: inline-block;
+        text-align: right;
+    }
+</style>
 <div class="container">
     <form method="post" id="mainForm" enctype="multipart/form-data" action=<%=process.runtime.continueURL()%>>
         <c:if test="${ apply_page_print=='Y'}">
@@ -62,17 +104,17 @@
                                     </div>
                                 </div>
                             </div>
-                            <div id="newappModal" class="modal fade" role="dialog">
-                                <div class="modal-dialog">
+                            <div id="newappModal" class="modal fade" role="dialog" style="top:10px">
+                                <div class="modal-dialog modal-dialog-centered" role="document">
                                     <!-- Modal content-->
-                                    <div class="modal-content">
+                                    <div class="modal-content" style="top:30px">
                                         <div class="modal-header">
-                                            <button type="button" class="close" data-dismiss="modal">&times;</button>
-                                            <div class="modal-title" style="font-size: 2rem;">Select application for withdrawal</div>
+                                            <div class="modal-title" id="gridSystemModalLabel" style="font-size: 2rem;">Select application for withdrawal</div>
+                                            <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span></button>
                                         </div>
                                         <div id="withdrawPagDiv"></div>
                                         <table aria-describedby="" class="table">
-                                            <thead>
+                                            <thead style="display: none">
                                             <tr>
                                                 <th scope="col" ></th>
                                             </tr>

@@ -8,7 +8,6 @@ import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstant
 import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.risk.RiskConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
-import com.ecquaria.cloud.moh.iais.common.dto.arcaUen.IaisUENDto;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.SmsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPersonnelExtDto;
@@ -94,14 +93,6 @@ import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import com.ecquaria.cloud.moh.iais.service.client.SystemBeLicClient;
 import com.ecquaria.cloud.moh.iais.util.LicenceUtil;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.time.DateUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import sop.webflow.rt.api.BaseProcessClass;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -111,6 +102,13 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.time.DateUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import sop.webflow.rt.api.BaseProcessClass;
 
 /**
  * LicenceApproveBatchjob
@@ -264,7 +262,6 @@ public class LicenceApproveBatchjob {
                         }catch (Exception e){
                             log.error(e.getMessage());
                         }
-                        generateUEN(eventBusLicenceGroupDtos);
                     }
 
                 }
@@ -272,41 +269,6 @@ public class LicenceApproveBatchjob {
             }
         }
         log.debug(StringUtil.changeForLog("The LicenceApproveBatchjob is end ..."));
-    }
-
-    private void generateUEN(EventBusLicenceGroupDtos eventBusLicenceGroupDtos) {
-        log.info(StringUtil.changeForLog("The generateUen start ..."));
-        try{
-            IaisUENDto iaisUENDto = new IaisUENDto();
-            List<LicenceGroupDto> licenceGroupDtos = eventBusLicenceGroupDtos.getLicenceGroupDtos();
-            if(!IaisCommonUtils.isEmpty(licenceGroupDtos)){
-                LicenceGroupDto  licenceGroupDto = licenceGroupDtos.get(0);
-                List<SuperLicDto> superLicDtos = licenceGroupDto.getSuperLicDtos();
-                if(!IaisCommonUtils.isEmpty(superLicDtos)){
-                    SuperLicDto superLicDto = superLicDtos.get(0);
-                    LicenceDto licenceDto = superLicDto.getLicenceDto();
-                    String svcCode = licenceDto.getSvcCode();
-                    String licenseeId = licenceDto.getLicenseeId();
-                    log.info(StringUtil.changeForLog("The generateUen svcCode is -->: "+svcCode));
-                    log.info(StringUtil.changeForLog("The generateUen licenseeId is -->: "+licenseeId));
-                    iaisUENDto.setLicenseeId(licenseeId);
-                    iaisUENDto.setSvcCode(svcCode);
-                    List<PremisesGroupDto> premisesGroupDtos = superLicDto.getPremisesGroupDtos();
-                    PremisesGroupDto premisesGroupDto = premisesGroupDtos.get(0);
-                    PremisesDto premisesDto = premisesGroupDto.getPremisesDto();
-                    log.info(StringUtil.changeForLog("The generateUen premisesDto.getHciCode() is -->: "+premisesDto.getHciCode()));
-                    iaisUENDto.setPremises(premisesDto);
-                }else{
-                    log.info(StringUtil.changeForLog("The generateUen superLicDtos is null "));
-                }
-            }else{
-                log.info(StringUtil.changeForLog("The generateUen licenceGroupDtos is null "));
-            }
-            acraUenBeClient.generateUen(iaisUENDto);
-        }catch (Throwable t){
-           log.error(StringUtil.changeForLog( t.getMessage()),t);
-        }
-        log.info(StringUtil.changeForLog("The generateUen end ..."));
     }
 
     private void updateAppealApplicationStatus(List<ApplicationDto> applicationDtos){
@@ -1158,23 +1120,25 @@ public class LicenceApproveBatchjob {
                     superLicDto.setOriginLicenceDto(originLicenceDto);
                 }
 
-                if ( IaisEGPHelper.isActiveMigrated() && originLicenceDto != null
-                        && originLicenceDto.isMigrated()
-                        && (ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(applicationDto.getApplicationType()) ||
-                        ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationDto.getApplicationType()))
-                       ) {
-                    if(StringUtil.isEmpty(applicationGroupDto.getNewLicenseeId())){
-                        originLicenceDto.setStatus(ApplicationConsts.LICENCE_STATUS_IACTIVE);
-                    }else{
-                        originLicenceDto.setStatus(ApplicationConsts.LICENCE_STATUS_TRANSFERRED);
-                    }
+                if(originLicenceDto != null){
+                    if (originLicenceDto.isMigrated()
+                            && IaisEGPHelper.isActiveMigrated()
+                            && (ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(applicationDto.getApplicationType()) ||
+                            ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationDto.getApplicationType()))
+                            ) {
+                        if(StringUtil.isEmpty(applicationGroupDto.getNewLicenseeId())){
+                            originLicenceDto.setStatus(ApplicationConsts.LICENCE_STATUS_IACTIVE);
+                        }else{
+                            originLicenceDto.setStatus(ApplicationConsts.LICENCE_STATUS_TRANSFERRED);
+                        }
 
+                    }
                 }
                 //create LicSubLicenseeInfoDto
                 LicSubLicenseeInfoDto licSubLicenseeInfoDto = getLicSubLicenseeInfoDto(applicationListDto);
-                if(licSubLicenseeInfoDto != null){
-                    licSubLicenseeInfoDto.setOrgId(organizationId);
-                }
+//                if(licSubLicenseeInfoDto != null){
+//                    licSubLicenseeInfoDto.setOrgId(organizationId);
+//                }
                 superLicDto.setLicSubLicenseeInfoDto(licSubLicenseeInfoDto);
                 //create the lic_app_correlation
                 List<LicAppCorrelationDto> licAppCorrelationDtos = IaisCommonUtils.genNewArrayList();
@@ -1240,6 +1204,7 @@ public class LicenceApproveBatchjob {
         if(!IaisCommonUtils.isEmpty(subLicenseeDtos)){
             SubLicenseeDto subLicenseeDto = subLicenseeDtos.get(0);
             result = MiscUtil.transferEntityDto(subLicenseeDto,LicSubLicenseeInfoDto.class);
+            result.setId(null);
         }
         log.info(StringUtil.changeForLog("The getLicSubLicenseeInfoDto end ..."));
         return result;
@@ -1264,6 +1229,7 @@ public class LicenceApproveBatchjob {
             for (AppSvcPersonnelDto appSvcPersonnelDto : appSvcPersonnelDtos) {
                 LicSvcSpecificPersonnelDto licSvcSpecificPersonnelDto = MiscUtil.transferEntityDto(appSvcPersonnelDto, LicSvcSpecificPersonnelDto.class);
                 licSvcSpecificPersonnelDto.setAppSvcPsnId(licSvcSpecificPersonnelDto.getId());
+                licSvcSpecificPersonnelDto.setId(null);
                 result.add(licSvcSpecificPersonnelDto);
             }
         }
@@ -1434,7 +1400,7 @@ public class LicenceApproveBatchjob {
             licPremisesDto.setIsPostInspNeeded(isPostInspNeeded);
             log.info(StringUtil.changeForLog("The BusinessName is-->："+appPremisesCorrelationDto.getBusinessName()));
             licPremisesDto.setBusinessName(appPremisesCorrelationDto.getBusinessName());
-            if (appPremisesRecommendationDto == null) {
+            if (appPremisesRecommendationDto == null || appPremisesRecommendationDto.getRecomInDate() == null) {
                 licPremisesDto.setIsTcuNeeded(Integer.valueOf(AppConsts.NO));
             } else {
                 licPremisesDto.setIsTcuNeeded(Integer.valueOf(AppConsts.YES));
@@ -1506,6 +1472,8 @@ public class LicenceApproveBatchjob {
                             if(appGrpPersonnelDto!= null){
                                 LicPremisesScopeAllocationDto licPremisesScopeAllocationDto = new LicPremisesScopeAllocationDto();
                                 licPremisesScopeAllocationDto.setLicCgoId(appGrpPersonnelDto.getIdNo());
+                                //licPremisesScopeAllocationDto.setLicPremScopeId(appSvcPremisesScopeAllocationDto.getAppSvcPremScopeId());
+                                licPremisesScopeAllocationDto.setLicPremSvcPersonId(appSvcPremisesScopeAllocationDto.getAppSvcPersonId());
                                 licPremisesScopeGroupDto.setLicPremisesScopeAllocationDto(licPremisesScopeAllocationDto);
                             }else{
                                 log.debug(StringUtil.changeForLog("this appSvcKeyPersonnelDto.getAppGrpPsnId() do not have the AppGrpPersonnelDto -->:"
@@ -1993,7 +1961,8 @@ public class LicenceApproveBatchjob {
                 //appeal add cgo not need new licence no
                 if(applicationDto!=null){
                     if(!applicationDto.isNeedNewLicNo()&&applicationDto.getOriginLicenceId()!=null){
-                        licenceDto.setLicenceNo(originLicenceDto.getLicenceNo());
+                        //the new generated licences should increase the serial no. 69002
+                        //licenceDto.setLicenceNo(originLicenceDto.getLicenceNo());
                         version=originLicenceDto.getVersion()+1;
                     }
                 }

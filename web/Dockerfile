@@ -1,11 +1,14 @@
 FROM 192.168.7.88/ecq/tomcat:9.0.40.1-adoptopenjdk8u265-b01
 USER root
-COPY target/web.war /usr/local/tomcat/webapps/web.war
+RUN deluser --remove-home egpcloud
+RUN adduser -D -u 1000 iais
+RUN chown -R iais:iais /usr/local/tomcat
+COPY --chown=iais:iais target/web.war /usr/local/tomcat/webapps/web.war
 
 COPY docker/setenv.sh /usr/local/tomcat/bin/setenv.sh
 COPY docker/server.xml /usr/local/tomcat/conf/server.xml
 RUN chmod +x /usr/local/tomcat/bin/setenv.sh
-
+USER iais
 CMD ["/usr/local/tomcat/bin/catalina.sh", "run"]
 
 

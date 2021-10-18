@@ -24,10 +24,10 @@
                 <table class="table" width = "100%">
                   <thead>
                   <tr>
-                    <th width = "10%"></th>
-                    <th width = "30%" align = "left">Business Name</th>
-                    <th width = "30%" align = "left">Licensed Premises</th>
-                    <th width = "30%" align = "left">Licensed Conveyances(Vehicle No.)</th>
+                    <th scope="col" width = "10%"></th>
+                    <th scope="col" width = "30%" align = "left">Business Name</th>
+                    <th scope="col" width = "30%" align = "left">Licensed Premises</th>
+                    <th scope="col" width = "30%" align = "left">Licensed Conveyances(Vehicle No.)</th>
                   </tr>
                   </thead>
                   <tbody>
@@ -38,7 +38,7 @@
                     </td>
                     <td>
                       <p class="visible-xs visible-sm table-row-title"><br/></p>
-                      <p>${hciName}</p>
+                      <p>${businessName}</p>
                     </td>
                     <td>
                       <p class="visible-xs visible-sm table-row-title"><br/></p>
@@ -81,6 +81,9 @@
             <br></br>
             <br></br>
             <br></br>
+            <br></br>
+            <br></br>
+            <br></br>
             <div class="lic-footer">
               <p>This licence is issued under the Healthcare Services Act 2020 and is subject to its provisions, as well as any regulations, rules, code of practices and directions issued under it, and any conditions imposed by the Director of Medical Services. The licence is valid from the licence start date until the licence end date, unless revoked, suspended, ceased or surrendered.</p>
               <p>Ministry of Health | Page 1 of 1</p>
@@ -103,7 +106,7 @@
   <meta name="keywords" content=""></meta>
   <style type="text/css">
     @page {
-      size: 1400px 1950px;
+      size: 1400px 2030px;
     }
     * {
       page-break-inside: always;
@@ -124,7 +127,7 @@
     }
     .lic-number {
       text-align: center;
-      margin-top: 380px;
+      margin-top: 420px;
     }
     .lic-number p {
       font-size: 14pt;
@@ -168,7 +171,6 @@
       margin-top: 10px;
       word-wrap:break-word;
       word-break:break-all;
-      margin-left: 10px;
     }
     .lic-dateinfo {
       margin-top: 20px;
@@ -3465,6 +3467,7 @@
       }
       .table-gp table.table > tbody > tr > td {
         display: inline-grid;
+        display: -ms-inline-grid;
         width: 47%;
         padding: 0;
         border: 0;
@@ -3497,6 +3500,7 @@
       }
       .table-gp table.table > tbody > tr > td {
         display: inline-grid;
+        display: -ms-inline-grid;
         width: 48%;
         padding: 0;
         border: 0;

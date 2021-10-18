@@ -14,4 +14,6 @@ public interface AppGroupMiscService {
     public List<NotificateApplicationDto> getNotificateApplicationDtos();
 
     public NotificateApplicationDto saveNotificateApplicationDto(NotificateApplicationDto notificateApplicationDto);
+
+    public void notificationApplicationUpdateBatchjob();
 }

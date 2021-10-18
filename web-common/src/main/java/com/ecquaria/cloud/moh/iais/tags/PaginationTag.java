@@ -26,7 +26,7 @@ public class PaginationTag extends DivTagSupport {
     private String result;
     private String jsFunc;
     private boolean needRowNum;
-    
+
     public PaginationTag() {
         super();
         clearFields();
@@ -67,9 +67,9 @@ public class PaginationTag extends DivTagSupport {
         Object obj = ParamUtil.getScopeAttr((HttpServletRequest)pageContext.getRequest(), param);
 
         if (obj instanceof SearchParam) {
-                SearchParam sp = (SearchParam) obj;
-                pageNo = sp.getPageNo();
-                pageSize = sp.getPageSize();
+            SearchParam sp = (SearchParam) obj;
+            pageNo = sp.getPageNo();
+            pageSize = sp.getPageSize();
         }
 
         SearchResult<?> sr = (SearchResult<?>) ParamUtil.getScopeAttr((HttpServletRequest)pageContext.getRequest(),
@@ -100,7 +100,7 @@ public class PaginationTag extends DivTagSupport {
         StringBuilder sb = new StringBuilder();
         sb.append("<input type=\"hidden\" name = \"pageJumpNoTextchangePage\" value=\"\" id = \"pageJumpNoTextchangePage\">");
         sb.append("<div class=\"row table-info-display\">");
-        sb.append("<div class=\"col-xs-12 col-md-4 text-left\">");
+        sb.append("<div class=\"col-xs-12 col-md-6 text-left\">");
         sb.append("<p class=\"count table-count\">");
         int maxRec = sr.getRowCount() < pageNo * pageSize ? sr.getRowCount() : pageNo * pageSize;
         int statRec = sr.getRowCount() < ((pageNo - 1) * pageSize + 1) ? sr.getRowCount() : ((pageNo - 1) * pageSize + 1);
@@ -127,7 +127,7 @@ public class PaginationTag extends DivTagSupport {
         sb.append("</select>");
         sb.append("</div></div></p></div>");
 
-        sb.append("<div class=\"col-xs-12 col-md-8 text-right\">");
+        sb.append("<div class=\"col-xs-12 col-md-6 text-right\">");
         sb.append("<div class=\"nav\">").append("<ul class=\"pagination\">");
         if (pageNo > 1) {
             sb.append(STARTLI).append(jsFunc).append("('").append(1).append("');\"><span aria-hidden=\"true\"><i class=\"fa fa-angle-double-left\"></i></span></a></li>");
@@ -205,5 +205,5 @@ public class PaginationTag extends DivTagSupport {
     public void setNeedRowNum(boolean needRowNum) {
         this.needRowNum = needRowNum;
     }
-    
+
 }

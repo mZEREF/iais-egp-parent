@@ -14,4 +14,7 @@ public interface PaymentService {
 
     void retrieveNetsPayment(PaymentRequestDto paymentRequestDto) throws Exception;
     SoapiS2SResponse sendTxnQueryReqToGW(String secretKey, String keyId, SoapiS2S soapiTxnQueryReq)throws Exception;
+
+    void retrievePayNowPayment(PaymentRequestDto paymentRequestDto) ;
+
 }

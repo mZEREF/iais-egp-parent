@@ -88,12 +88,13 @@
                 </c:if>
             </div>
         </div>
-        <div class="row">
+        <div class="col-md-12">
             <div class="text-right text-center-mobile" style="margin-right:3%">
                 <button type="button" class="btn btn-secondary" onclick="doAppClear()">Clear</button>
                 <button type="button" class="btn btn-primary" onclick="doSearchApp()">Search</button>
             </div>
         </div>
+        <br> <br>
         <iais:pagination param="appParam" result="appResult"/>
     </form>
 </div>
@@ -103,6 +104,7 @@
             <table aria-describedby="" class="table">
                 <thead>
                 <tr>
+                    <th scope="col" style="display: none"></th>
                     <iais:sortableHeader needSort="true" field="APPLICATION_NO"
                                          value="Application No." isFE="true"  style="width:20%"/>
                     <iais:sortableHeader needSort="true" field="APP_TYPE_DESC" value="Type" isFE="true"  style="width:13%"/>
@@ -198,21 +200,29 @@
                                                 </select>
                                             </c:if>
                                             <c:if test="${app.status == 'APST007'}">
-                                                <select id="appDoSelectActive" class="appDoSelectActive" name="appDoSelectActive">
-                                                    <option value="" selected>Select</option>
-                                                    <c:if test="${app.canInspection}">
-                                                    <c:if test="${app.selfAssmtFlag == 0 || app.selfAssmtFlag == 2}">
-                                                        <option value="Assessment">Assessment</option>
+                                                <select id="appDoSelectActive" <c:if test="${app.autoApprove}">disabled</c:if> class="appDoSelectActive" name="appDoSelectActive">
+                                                    <c:if test="${app.autoApprove}">
+                                                        <option>N/A</option>
                                                     </c:if>
-                                                    <option value="Inspection">Indicate Preferred Inspection Date</option>
-                                                    </c:if>
-                                                    <c:if test="${app.pmtStatus == 'PMT06'}">
-                                                        <option value="Make Payment">Make Payment</option>
-                                                    </c:if>
-                                                    <%--<c:if test="${app.canRecall}">--%>
+                                                        <%--                                                     <c:if test="${app.autoApprove}">--%>
+                                                        <%--                                                    <c:if test="${empty app.miscAppId}"><option value="Appeal">Appeal</option></c:if>--%>
+                                                        <%--                                                    </c:if>--%>
+                                                    <c:if test="${empty app.autoApprove || !app.autoApprove}">
+                                                        <option value="" selected>Select</option>
+                                                        <c:if test="${app.canInspection}">
+                                                            <c:if test="${app.selfAssmtFlag == 0 || app.selfAssmtFlag == 2}">
+                                                                <option value="Assessment">Assessment</option>
+                                                            </c:if>
+                                                            <option value="Inspection">Indicate Preferred Inspection Date</option>
+                                                        </c:if>
+                                                        <c:if test="${app.pmtStatus == 'PMT06'}">
+                                                            <option value="Make Payment">Make Payment</option>
+                                                        </c:if>
+                                                        <%--<c:if test="${app.canRecall}">--%>
                                                         <%--<option value="Recall">Recall</option>--%>
-                                                    <%--</c:if>--%>
-                                                    <option value="Withdraw">Withdraw</option>
+                                                        <%--</c:if>--%>
+                                                        <option value="Withdraw">Withdraw</option>
+                                                    </c:if>
                                                 </select>
                                             </c:if>
                                             <c:if test="${app.status == 'APST028' || app.status == 'APST003' || app.status == 'APST001'
@@ -262,18 +272,20 @@
                                             </c:if>
                                         </c:when>
                                         <c:when test="${app.applicationType == 'APTY009'}">
+                                            <c:if test="${app.status != 'APST005' && app.status != 'APST006' && app.status != 'APST050' && app.canInspection}">
                                             <select id="appDoSelectActive" class="appDoSelectActive" name="appDoSelectActive">
                                                 <option value="" selected>Select</option>
-                                                <c:if test="${app.canInspection}">
                                                 <c:if test="${app.selfAssmtFlag == 0 || app.selfAssmtFlag == 2}">
                                                     <option value="Assessment">Assessment</option>
                                                 </c:if>
                                                     <option value="Inspection">Indicate Preferred Inspection Date</option>
-                                                </c:if>
-                                                <c:if test="${app.pmtStatus == 'PMT06'}">
-                                                    <option value="Make Payment">Make Payment</option>
-                                                </c:if>
                                             </select>
+                                            </c:if>
+                                            <c:if test="${app.status == 'APST005' || app.status == 'APST006' || app.status == 'APST050' || !app.canInspection }">
+                                            <select disabled>
+                                                <option>N/A</option>
+                                            </select>
+                                            </c:if>
                                         </c:when>
                                         <c:when test="${app.applicationType == 'APTY001'}">
                                             <c:if test="${app.pmtStatus == 'PMT06' || app.status == 'APST084'}">
@@ -448,8 +460,8 @@
                 </tbody>
             </table>
             <!-- Modal -->
-            <div class="modal fade" id="isAppealModal" role="dialog" aria-labelledby="myModalLabel" style="left: 50%;top: 50%;transform: translate(-50%,-50%);min-width:80%; overflow: visible;bottom: inherit;right: inherit;">
-                <div class="modal-dialog" role="document">
+            <div class="modal fade" id="isAppealModal" role="dialog" aria-labelledby="myModalLabel" >
+                <div class="modal-dialog modal-dialog-centered" role="document">
                     <div class="modal-content">
 <%--                        <div class="modal-header">--%>
 <%--                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>--%>

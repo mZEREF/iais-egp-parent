@@ -6,8 +6,8 @@
             <thead>
             <tr >
                 <th scope="col" ></th>
-                <iais:sortableHeader needSort="true"  field="HCI_NAME" value="HCI Name" style="width:15%" isFE="true"/>
-                <iais:sortableHeader needSort="true"  field="ADDR_TYPE" value="Type" style="width:15%" isFE="true"/>
+                <iais:sortableHeader needSort="true"  field="p.HCI_NAME" value="HCI Name" style="width:15%" isFE="true"/>
+                <iais:sortableHeader needSort="true"  field="SVC_NAME" value="Type" style="width:15%" isFE="true"/>
                 <iais:sortableHeader needSort="true"  field="LICENCE_NO" value="Licence No." style="width:20%" isFE="true"/>
                 <iais:sortableHeader needSort="true"  field="PREMISES_TYPE" value="Mode of Service Delivery" style="width:15%" isFE="true"/>
                 <iais:sortableHeader needSort="true"  field="ADDRESS" value="Address" style="width:30%" isFE="true"/>

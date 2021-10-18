@@ -3,7 +3,7 @@
     <sql key="NuclearMedicineImaging" cached="no" remarks="generate Nuclear Medicine – Imaging Html">
         <![CDATA[
             <table class="personnel-content">
-                <input type="hidden" name="cgoIndexNo" value=""/>
+                <input type="hidden" name="indexNo" value=""/>
                 <tbody>
                 <tr height="1" class="personnel-header">
                     <td class="" style="width: 100%;">

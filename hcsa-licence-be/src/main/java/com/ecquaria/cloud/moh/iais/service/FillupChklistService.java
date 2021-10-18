@@ -106,4 +106,13 @@ public interface FillupChklistService {
     InspectionSpecServiceDto getOriginalInspectionSpecServiceDtoByTaskId(boolean needVehicleSeparation,boolean beforeFinishList,String taskId);
 
     AdCheckListShowDto getNoVehicleAdhoc(AdCheckListShowDto adCheckListShowDto);
+
+    /**
+      * @author: shicheng
+      * @Date 2021/8/9
+      * @Param: appPremCorrId
+      * @return: String
+      * @Descripation: getObservationByAppPremCorrId
+      */
+    String getObservationByAppPremCorrId(String appPremCorrId);
 }

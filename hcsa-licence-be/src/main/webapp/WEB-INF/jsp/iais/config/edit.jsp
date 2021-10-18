@@ -361,6 +361,40 @@
 
       <div class="form-group">
         <div class="col-xs-12 col-md-9">
+          <label class="col-xs-12 col-md-7 control-label" >Section Leader&nbsp;<span class="mandatory">*</span></label>
+          <div class="col-xs-12 col-md-2">
+            <iais:input type="hidden" name="secldrId" value="${SECLDR.id}"/>
+            <iais:input maxLength="2" type="text" name="man-SectionLeader" value="${SECLDR.mandatoryCount}"
+                        placeholder="minimum count" needErrorSpan="false"/>
+            <span class="error-msg" name="iaisErrorMsg" id="error_mandatoryCount9"></span>
+          </div>
+          <div class="col-xs-12 col-md-2">
+            <iais:input maxLength="2" type="text" name="mix-SectionLeader" value="${SECLDR.maximumCount}"
+                        placeholder="maximum count" needErrorSpan="false"/>
+            <span class="error-msg" name="iaisErrorMsg" id="error_maximumCount9"></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <div class="col-xs-12 col-md-9">
+          <label class="col-xs-12 col-md-7 control-label" >Key Appointment Holder&nbsp;<span class="mandatory">*</span></label>
+          <div class="col-xs-12 col-md-2">
+            <iais:input type="hidden" name="kahId" value="${KAH.id}"/>
+            <iais:input maxLength="2" type="text" name="man-KAH" value="${KAH.mandatoryCount}"
+                        placeholder="minimum count" needErrorSpan="false"/>
+            <span class="error-msg" name="iaisErrorMsg" id="error_mandatoryCount10"></span>
+          </div>
+          <div class="col-xs-12 col-md-2">
+            <iais:input maxLength="2" type="text" name="mix-KAH" value="${KAH.maximumCount}"
+                        placeholder="maximum count" needErrorSpan="false"/>
+            <span class="error-msg" name="iaisErrorMsg" id="error_maximumCount10"></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <div class="col-xs-12 col-md-9">
           <label class="col-xs-12 col-md-7 control-label" for="NumberDocument">Number of Service-Related Document to be uploaded&nbsp;<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-4">
             <input id="NumberDocument" type="text" value="${serviceDocSize}" maxlength="2" name="NumberDocument" maxlength="2">
@@ -581,13 +615,13 @@
 
       <div class="form-group" style="display: none" id="${routingStages.key}" >
         <div class="col-xs-12 col-md-12"  style="margin-top: 10px">
-          <table border="1px" style="text-align: center" valign="middle" >
+          <table aria-describedby="" border="1px" style="text-align: center" valign="middle" >
             <tr>
-              <th style="width: 10% ;height: 40px;text-align: center;padding: 1% 0% 1% "> Application Type&nbsp;<span class="mandatory" >*</span></th>
-              <th  style="width: 20% ;height: 40px;text-align: center"> Service Workflow Routing Stages&nbsp;<span class="mandatory" >*</span></th>
-              <th  style="width: 30% ;height: 40px;text-align: center">Service Routing Scheme&nbsp;<span class="mandatory">*</span></th>
-              <th  style="width: 15% ;height: 40px;text-align: center">Service Workload Manhours&nbsp;<span class="mandatory">*</span></th>
-            <%--  <th  style="width: 25% ;height: 40px;text-align: center">Working Group&nbsp;<span class="mandatory">*</span></th>--%>
+              <th scope="col" style="width: 10% ;height: 40px;text-align: center;padding: 1% 0% 1% "> Application Type&nbsp;<span class="mandatory" >*</span></th>
+              <th scope="col" style="width: 20% ;height: 40px;text-align: center"> Service Workflow Routing Stages&nbsp;<span class="mandatory" >*</span></th>
+              <th scope="col" style="width: 30% ;height: 40px;text-align: center">Service Routing Scheme&nbsp;<span class="mandatory">*</span></th>
+              <th scope="col" style="width: 15% ;height: 40px;text-align: center">Service Workload Manhours&nbsp;<span class="mandatory">*</span></th>
+            <%--  <th scope="col" style="width: 25% ;height: 40px;text-align: center">Working Group&nbsp;<span class="mandatory">*</span></th>--%>
             </tr>
             <c:forEach items="${routingStages.value}" var="routingStage" varStatus="status">
               <tr >

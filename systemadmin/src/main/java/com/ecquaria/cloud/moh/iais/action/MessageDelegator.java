@@ -121,12 +121,14 @@ public class MessageDelegator {
         String description = ParamUtil.getString(request, MessageConstants.PARAM_DESCRIPTION);
         String message = ParamUtil.getString(request, MessageConstants.PARAM_MESSAGE);
         MessageDto editDto = (MessageDto) ParamUtil.getSessionAttr(request, MessageConstants.MESSAGE_REQUEST_DTO);
-        if(description != null && description.indexOf('\n')!= -1){
-            description= description.replaceAll("\n"," ");
+        if(description != null ){
+            description= StringUtil.removeNonUtf8(description);
+            description= StringUtil.viewTextHtml(description);
         }
 
-        if(message != null && message.indexOf('\n')!= -1){
-            message= message.replaceAll("\n"," ");
+        if(message != null ){
+            message= StringUtil.removeNonUtf8(message);
+            message= StringUtil.changeForLog(message);
         }
 
         editDto.setDescription(description);

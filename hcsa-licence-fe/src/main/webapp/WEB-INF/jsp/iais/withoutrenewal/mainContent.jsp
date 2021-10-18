@@ -46,14 +46,14 @@
                                         <div class="row">
                                             <div class="col-xs-12">
                                                 <div class="table-gp">
-                                                    <table class="table table-bordered">
+                                                    <table aria-describedby="" class="table table-bordered">
                                                         <thead>
                                                         <tr>
-                                                            <td class="col-xs-2"><strong>Licence No.</strong></td>
-                                                            <td class="col-xs-2"><strong>Type</strong></td>
-                                                            <td class="col-xs-4"><strong>Mode of Service Delivery</strong></td>
-                                                            <td class="col-xs-2"><strong>Start date</strong></td>
-                                                            <td class="col-xs-2"><strong>Expires on</strong></td>
+                                                            <th scope="col" class="col-xs-2"><strong>Licence No.</strong></th>
+                                                            <th scope="col" class="col-xs-2"><strong>Type</strong></th>
+                                                            <th scope="col" class="col-xs-4"><strong>Mode of Service Delivery</strong></th>
+                                                            <th scope="col" class="col-xs-2"><strong>Start date</strong></th>
+                                                            <th scope="col" class="col-xs-2"><strong>Expires on</strong></th>
                                                         </tr>
                                                         </thead>
                                                         <tbody>

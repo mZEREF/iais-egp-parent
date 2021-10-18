@@ -122,6 +122,8 @@ public final class FieldTag extends DivTagSupport {
         if (!StringUtil.isEmpty(info)) {
             html.append("&nbsp;<span><i class=\"fa fa-info-circle\" data-toggle=\"tooltip\" data-html=\"true\" data-placement=\"bottom\" title=\"")
                     .append(info).append("\"></i></span>&nbsp;");
+        } else {
+            html.append("&nbsp;");
         }
 
 

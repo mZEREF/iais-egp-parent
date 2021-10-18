@@ -90,7 +90,7 @@
                       </div>
                       <iais:action >
                         <button class="btn btn-primary" style="float:right" type="button" onclick="javascript:doInspAvailabilityConSubmit()">Submit</button>
-                        <a class="back" id="Back" onclick="javascript:doInspAvailabilityConBack()" style="float:left"><em class="fa fa-angle-left"></em> Back</a>
+                        <a href="#" class="back" id="Back" onclick="javascript:doInspAvailabilityConBack()" style="float:left"><em class="fa fa-angle-left"></em> Back</a>
                       </iais:action>
                     </iais:section>
                   </iais:body>

@@ -26,8 +26,8 @@
         margin-top: 0;
         padding-top: 0;
         border-top: 1px solid #BABABA;
-        margin-left: -90px;
-        margin-right: -90px;
+        margin-left: 0;
+        margin-right: 0;
     }
     .withdraw-content-box {
         background-color: #fafafa;
@@ -35,6 +35,20 @@
         padding: 20px;
         border:1px solid #d1d1d1;
         margin-bottom: 0;
+    }
+    .modal-header .close {
+        padding: 1rem 1rem;
+        margin: 0rem 0rem 0rem auto;
+    }
+    .withdraw-info-gp .withdraw-info-row .withdraw-info p:before {
+        color: #a2d9e7;
+    }
+
+    .withdraw-info-gp .withdraw-info-row .withdraw-delete {
+        margin-left: 20px;
+        width: 70px;
+        display: inline-block;
+        text-align: right;
     }
 </style>
 <div class="container">
@@ -48,10 +62,10 @@
         <div class="navigation-gp">
             <c:choose>
                 <c:when test="${isDoView eq 'Y'}">
-                    <p class="print"><div style="font-size: 16px;text-align: right"><a onclick="printWDPDF()"> <em class="fa fa-print"></em>Print</a></div></p>
+                    <p class="print"><div style="font-size: 16px;text-align: right"><a href="javascript:void(0);" onclick="printWDPDF()"> <em class="fa fa-print"></em>Print</a></div></p>
                 </c:when>
                 <c:otherwise>
-                    <p class="print"><div style="font-size: 16px;text-align: right"><a onclick="printApplyPrint()"> <em class="fa fa-print"></em>Print</a></div></p>
+                    <p class="print"><div style="font-size: 16px;text-align: right"><a href="javascript:void(0);" onclick="printApplyPrint()"> <em class="fa fa-print"></em>Print</a></div></p>
                 </c:otherwise>
             </c:choose>
             <div class="row">
@@ -65,7 +79,7 @@
                                         <div class="withdraw-info-gp">
                                             <div class="withdraw-info-row">
                                                 <div class="withdraw-info">
-                                                    <p><a class="appNo" onclick="toApplicationView('<iais:mask name="appNo" value="${withdrawAppNo}"/>','${withdrawAppNo}')">${withdrawAppNo}</a></p>
+                                                    <p><a href="javascript:void(0);" class="appNo" onclick="toApplicationView('<iais:mask name="appNo" value="${withdrawAppNo}"/>','${withdrawAppNo}')">${withdrawAppNo}</a></p>
                                                 </div>
                                                 <div class="withdraw-delete"></div>
                                             </div>
@@ -76,10 +90,10 @@
                                             <div class="withdraw-info-gp">
                                                 <div class="withdraw-info-row">
                                                     <div class="withdraw-info">
-                                                        <p><a class="appNo">${wdList.applicationNo}</a></p>
+                                                        <p><a href="javascript:void(0);" class="appNo">${wdList.applicationNo}</a></p>
                                                     </div>
                                                     <div class="withdraw-delete">
-                                                        <p><a onclick="deleteWithdraw(this)"><em
+                                                        <p><a href="javascript:void(0);" onclick="deleteWithdraw(this)"><em
                                                                 class="fa fa-trash-o"></em>Delete</a></p>
                                                     </div>
                                                 </div>
@@ -90,7 +104,7 @@
                                 <c:if test="${isDoView != 'Y'}">
                                     <div class="col-lg-4 col-xs-12">
                                         <div class="withdraw-addmore gradient-light-grey">
-                                            <a href="#newappModal" data-toggle="modal" data-target="#newappModal"><h4>
+                                            <a  href="#newappModal" data-toggle="modal" data-target="#newappModal"><h4>
                                                 <em
                                                         class="fa fa-plus-circle"></em> Add more applications</h4>
                                             </a> <%--NOSONAR--%>
@@ -99,19 +113,17 @@
                                 </c:if>
                             </div>
                         </div>
-                        <div id="newappModal" class="modal fade" role="dialog">
-                            <div class="modal-dialog">
+                        <div id="newappModal" class="modal fade" tabindex="-1" role="dialog" style="top:10px">
+                            <div class="modal-dialog modal-dialog-centered" role="document">
                                 <!-- Modal content-->
-                                <div class="modal-content">
+                                <div class="modal-content" style="top:30px">
                                     <div class="modal-header">
-                                        <button type="button" class="close" data-dismiss="modal">&times;</button>
-                                        <div class="modal-title" style="font-size: 2rem;">Select application for
-                                            withdrawal
-                                        </div>
+                                        <div class="modal-title" id="gridSystemModalLabel" style="font-size: 2rem;">Select application for withdrawal</div>
+                                        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span></button>
                                     </div>
                                     <div id="withdrawPagDiv"></div>
                                     <table aria-describedby="" class="table">
-                                        <thead>
+                                        <thead style="display: none">
                                         <tr>
                                             <th scope="col" ></th>
                                         </tr>
@@ -119,7 +131,7 @@
                                         <tbody id="withdrawBodyDiv"></tbody>
                                     </table>
                                     <div class="modal-footer">
-                                        <a class="btn btn-primary withdraw-next" href="javascript:void(0);">Done</a>
+                                        <a  class="btn btn-primary withdraw-next" href="javascript:void(0);">Done</a>
                                     </div>
                                 </div>
                             </div>
@@ -148,7 +160,7 @@
                             </div>
                         </div>
                         <div id="reason"
-                             <c:if test="${withdrawDtoView.withdrawnReason != 'WDR005' || withdrawDtoView.withdrawnReason== null}">hidden</c:if>>
+                             <c:if test="${withdrawDtoView.withdrawnReason != 'WDR005' || withdrawDtoView.withdrawnReason== null}">style="display: none"</c:if>>
                             <div class="row">
                                 <div class="center-content">
                                     <label class="col-md-4" style="font-size:2rem">Remarks <c:if
@@ -202,9 +214,9 @@
                                                            type="file" style="display: none;"
                                                            aria-label="selectedFile1"
                                                            onclick="fileClicked(event)"
-                                                           onchange="doUserRecUploadConfirmFile(event)"/><a
-                                                        class="btn btn-file-upload btn-secondary"
-                                                        onclick="doFileAddEvent()">Upload</a>
+                                                           onchange="doUserRecUploadConfirmFile(event)"/><a href="javascript:void(0);"
+                                                                                                            class="btn btn-file-upload btn-secondary"
+                                                                                                            onclick="doFileAddEvent()">Upload</a>
                                                 </div>
                                             </c:when>
                                             <c:otherwise>
@@ -266,9 +278,8 @@
                 </div>
             </div>
         </div>
-        <div class="modal fade" id="isAppealModal" role="dialog" aria-labelledby="myModalLabel"
-             style="left: 50%;top: 50%;transform: translate(-50%,-50%);min-width:80%; overflow: visible;bottom: inherit;right: inherit;">
-            <div class="modal-dialog" role="document">
+        <div class="modal fade" id="isAppealModal" role="dialog" aria-labelledby="myModalLabel">
+            <div class="modal-dialog modal-dialog-centered" role="document">
                 <div class="modal-content">
                     <%--                    div class="modal-header">--%>
                     <%--                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>--%>
@@ -388,10 +399,10 @@
                     '                                    <div class="withdraw-info-gp">\n' +
                     '                                        <div class="withdraw-info-row">\n' +
                     '                                            <div class="withdraw-info">\n' +
-                    '                                                <p><a class="appNo" onclick="toApplicationView('+appmask+','+appStrNo+')">'+ appNo+'</a></p>\n'+
+                    '                                                <p><a href="javascript:void(0);" class="appNo" onclick="toApplicationView('+appmask+','+appStrNo+')">'+ appNo+'</a></p>\n'+
                     '                                            </div>\n' +
                     '                                            <div class="withdraw-delete">\n' +
-                    '                                                <p ><a onclick="deleteWithdraw(this)"><i class="fa fa-trash-o"></i>Delete</a></p>\n' +
+                    '                                                <p ><a href="javascript:void(0);" onclick="deleteWithdraw(this)"><i class="fa fa-trash-o"></i>Delete</a></p>\n' +
                     '                                            </div>\n' +
                     '                                        </div>\n' +
                     '                                    </div>\n' +

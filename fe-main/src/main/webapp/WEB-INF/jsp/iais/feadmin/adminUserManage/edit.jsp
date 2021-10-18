@@ -41,43 +41,48 @@
                                     <%@include file="/WEB-INF/jsp/iais/common/userForm.jsp"%>
                                     <c:choose>
                                         <c:when test="${isAdmin.equals('1')}">
-                                            <iais:row  style="margin-bottom:4px">
-                                                <iais:field value="Is Administrator" id="userRole" width="11"/>
-                                                <div class="col-md-3">
+                                            <iais:row  style="margin-bottom:0px">
+                                                <iais:field value="Is Administrator" id="userRole" width="12"/>
+                                                <div class="col-md-3" style="padding-left: 0px;">
                                                     <div class="col-md-1"><input type="radio" style="margin-top: 19px" value="admin" name="role" <c:if test="${inter_user_attr.userRole=='ORG_ADMIN'}">checked</c:if>></div>
                                                     <label class="col-md-2 control-label" >Yes</label>
                                                 </div>
-                                                <div class="col-md-3">
+                                                <div class="col-md-3" style="padding-left: 0px;">
                                                     <div class="col-md-1"><input type="radio" style="margin-top: 19px" value="user" name="role" <c:if test="${inter_user_attr.userRole!='ORG_ADMIN'}">checked</c:if>></div>
                                                     <label class="col-md-2 control-label" >No</label>
                                                 </div>
+                                                <br>
+                                                <div class="col-xs-12 col-md-4 control-label">&nbsp;</div>
+                                                <div class="col-md-3" style="padding-left: 0px;">
+                                                    <span style="padding-left: 15px;" class="error-msg" name="errorMsg" id="error_userRole"></span>
+                                                </div>
                                             </iais:row>
-                                            <div>
-                                                <iais:field value="" width="11"/>
-                                                <span style="padding-left: 15px;" class="error-msg" name="errorMsg" id="error_userRole"></span>
-                                            </div>
+                                            <p></p>
                                             <iais:row>
-                                                <iais:field value="Is Active" width="11"/>
-                                                <div class="col-md-3">
+                                                <iais:field value="Is Active" width="12"/>
+                                                <div class="col-md-3" style="padding-left: 0px;">
                                                     <div class="col-md-1"><input type="radio" style="margin-top: 19px" value="active" name="active" <c:if test="${inter_user_attr.status == 'CMSTAT001'}">checked</c:if>></div>
                                                     <label class="col-md-2 control-label" >Yes</label>
                                                 </div>
-                                                <div class="col-md-3">
+                                                <div class="col-md-3" style="padding-left: 0px;">
                                                     <div class="col-md-1"><input type="radio" style="margin-top: 19px" value="inactive" name="active" <c:if test="${inter_user_attr.status != 'CMSTAT001'}">checked</c:if>></div>
                                                     <label class="col-md-2 control-label" >No</label>
+                                                </div>
+                                                <div class="col-xs-12 col-md-4 control-label">&nbsp;</div>
+                                                <div class="col-md-3" style="padding-left: 0px;">
+                                                    <span style="padding-left: 15px;" class="error-msg" name="errorMsg" id="error_active"></span>
                                                 </div>
                                             </iais:row>
                                         </c:when>
                                     </c:choose>
-                                    <div class="application-tab-footer">
-                                        <div class="row">
-                                            <div class="col-xs-2 col-md-2">
-                                                <a   style="padding-left: 90px;" align="left" class="back" href="#" onclick="cancel()"><em class="fa fa-angle-left"></em> Back</a></div>
-                                            <div class="text-right col-xs-9 col-md-9">
-                                                <button class="btn btn-primary save" id="savebtn" onclick="javascript:save()">Save</button>
-                                            </div>
+                                    <iais:row>
+                                        <div class="col-xs-12 col-md-4 control-label">
+                                            <a align="left" class="back" href="#" onclick="cancel()"><em class="fa fa-angle-left"></em> Back</a></div>
+                                        <div align="right" class="col-sm-7 col-md-6 col-xs-10">
+                                            <button type="button" class="btn btn-secondary" onclick="javascript:doClearInfo()">Clear</button>
+                                            <button class="btn btn-primary save" id="savebtn" onclick="javascript:save()">Save</button>
                                         </div>
-                                    </div>
+                                    </iais:row>
                                 </div>
                             </div>
                         </div>
@@ -101,11 +106,13 @@
     });
 
     function save() {
+        showWaiting();
         $("#action").val("save");
         var mainPoolForm = document.getElementById('mainForm');
         mainPoolForm.submit();
     }
     function cancel() {
+        showWaiting();
         $("#action").val("cancel");
         var mainPoolForm = document.getElementById('mainForm');
         mainPoolForm.submit();
@@ -121,5 +128,11 @@
             showWaiting();
             callAuthoriseApi();
         }
+    }
+
+    function doClearInfo(){
+        $("#action").val("clearInfo");
+        var mainPoolForm = document.getElementById('mainForm');
+        mainPoolForm.submit();
     }
 </script>

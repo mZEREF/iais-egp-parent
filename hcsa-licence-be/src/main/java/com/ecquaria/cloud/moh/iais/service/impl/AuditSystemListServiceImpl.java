@@ -14,6 +14,8 @@ import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptCalendarStatusDto;
+import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
+import com.ecquaria.cloud.moh.iais.common.dto.emailsms.SmsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesEntityDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPrimaryDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesInspecApptDto;
@@ -33,10 +35,13 @@ import com.ecquaria.cloud.moh.iais.common.dto.inspection.LicPremisesAuditDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.LicPremisesAuditInspectorDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
+import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
+import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.MessageTemplateUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.EicClientConstant;
 import com.ecquaria.cloud.moh.iais.constant.HcsaLicenceBeConstant;
@@ -54,24 +59,29 @@ import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.AppointmentClient;
 import com.ecquaria.cloud.moh.iais.service.client.BeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.EgpUserClient;
+import com.ecquaria.cloud.moh.iais.service.client.EmailClient;
 import com.ecquaria.cloud.moh.iais.service.client.EventClient;
 import com.ecquaria.cloud.moh.iais.service.client.GenerateIdClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
 import com.ecquaria.cloud.moh.iais.service.client.InspectionTaskClient;
+import com.ecquaria.cloud.moh.iais.service.client.MsgTemplateClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import com.ecquaria.cloud.moh.iais.service.client.TaskHcsaConfigClient;
 import com.ecquaria.cloud.role.Role;
 import com.ecquaria.cloudfeign.FeignException;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import com.ecquaria.kafka.model.Submission;
+import com.ecquaria.sz.commons.util.MsgUtil;
 import com.google.common.collect.Maps;
+import freemarker.template.TemplateException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -132,6 +142,16 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
     private AppointmentClient appointmentClient;
     @Autowired
     private EgpUserClient egpUserClient;
+
+    @Value("${iais.email.sender}")
+    private String mailSender;
+
+    @Autowired
+    private EmailClient emailClient;
+
+    @Autowired
+    private MsgTemplateClient msgTemplateClient;
+
     @Override
     public void sendMailForAuditPlanerForSms(String emailKey) {
         List<OrgUserDto> userDtoList = organizationClient. retrieveUserRoleByRoleId(RoleConsts.USER_ROLE_AUDIT_PLAN).getEntity();
@@ -381,10 +401,85 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
                     String msgLoginUrl = HmacConstants.HTTPS + "://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_TCU_AUDIT_APPT_PRE_DATE + appNo;
                     //set template value
                     Map<String ,Object> map = IaisCommonUtils.genNewHashMap();
-                    map.put("ApplicantName", applicantName);
-
-
+                    map.put("appNo", appNo);
+                    map.put("applicant", applicantName);
+                    map.put("systemLink", emailLoginUrl);
+                    sendTcuAuditApptEmailSms(orgUserDto, map, appNo);
+                    //send message
+                    map.put("systemLink", msgLoginUrl);
+                    EmailParam msgParam = new EmailParam();
+                    msgParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_AUDIT_PRE_DATE_MSG);
+                    msgParam.setTemplateContent(map);
+                    msgParam.setQueryCode(appNo);
+                    msgParam.setReqRefNum(appNo);
+                    msgParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_ACTION_REQUIRED);
+                    msgParam.setRefId(appNo);
+                    msgParam.setMaskParams(maskParams);
+                    msgParam.setSvcCodeList(serviceCodes);
+                    notificationHelper.sendNotification(msgParam);
                 }
+            }
+        }
+    }
+
+    private void sendTcuAuditApptEmailSms(OrgUserDto orgUserDto, Map<String, Object> map, String appNo) {
+        //email
+        MsgTemplateDto msgTemplateDto = msgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_AUDIT_PRE_DATE_EMAIL).getEntity();
+        if(msgTemplateDto != null){
+            int emailFlag = systemParamConfig.getEgpEmailNotifications();
+            if (0 == emailFlag) {
+                log.info("Tcu Audit please turn on email param.......");
+            } else {
+                List<String> receiptEmail = IaisCommonUtils.genNewArrayList();
+                String emailAddress = orgUserDto.getEmail();
+                if(!StringUtil.isEmpty(emailAddress)) {
+                    receiptEmail.add(emailAddress);
+                }
+                String emailTemplate = msgTemplateDto.getMessageContent();
+                //replace num
+                emailTemplate = MessageTemplateUtil.replaceNum(emailTemplate);
+                //get mesContext
+                String mesContext;
+                try {
+                    mesContext = MsgUtil.getTemplateMessageByContent(emailTemplate, map);
+                } catch (IOException | TemplateException e) {
+                    log.error(e.getMessage(), e);
+                    throw new IaisRuntimeException(e);
+                }
+                if(!IaisCommonUtils.isEmpty(receiptEmail)) {
+                    EmailDto emailDto = new EmailDto();
+                    emailDto.setContent(mesContext);
+                    emailDto.setSubject(msgTemplateDto.getTemplateName());
+                    emailDto.setSender(mailSender);
+                    emailDto.setReceipts(receiptEmail);
+                    emailDto.setClientQueryCode(appNo);
+                    emailDto.setReqRefNum(appNo);
+                    emailClient.sendNotification(emailDto);
+                } else {
+                    log.info("Tcu Audit receiptEmail is null.......");
+                }
+            }
+        }
+        //sms
+        int smsFlag = systemParamConfig.getEgpSmsNotifications();
+        if (0 == smsFlag) {
+            log.info("Tcu Audit please turn on sms param.......");
+        } else {
+            List<String> mobile = IaisCommonUtils.genNewArrayList();
+            String phoneNo = orgUserDto.getMobileNo();
+            if(!StringUtil.isEmpty(phoneNo)) {
+                mobile.add(phoneNo);
+            }
+            if (!IaisCommonUtils.isEmpty(mobile)) {
+                SmsDto smsDto = new SmsDto();
+                smsDto.setSender(mailSender);
+                smsDto.setContent("MOH HALP - Audit Inspection Preferred Date");
+                smsDto.setOnlyOfficeHour(true);
+                smsDto.setReceipts(mobile);
+                smsDto.setReqRefNum(appNo);
+                emailClient.sendSMS(mobile, smsDto, appNo);
+            } else {
+                log.info("Tcu Audit mobile is null.......");
             }
         }
     }
@@ -932,7 +1027,8 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
         }
         return null;
     }
-    private void filetDoc(AppSubmissionDto appSubmissionDto){
+    @Override
+    public void filetDoc(AppSubmissionDto appSubmissionDto){
         List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList = appSubmissionDto.getAppSvcRelatedInfoDtoList();
         if(!IaisCommonUtils.isEmpty(appSvcRelatedInfoDtoList)){
             for (AppSvcRelatedInfoDto appSvcRelatedInfoDto : appSvcRelatedInfoDtoList){
@@ -947,6 +1043,7 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
                             appSvcDocDtoListIterator.remove();
                         }
                     }
+                    setSvcDocsDupForPerson(appSvcDocDtoLit);
                 }
             }
         }
@@ -963,7 +1060,8 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
             }
         }
     }
-    private void setRiskToDto(AppSubmissionDto appSubmissionDto) {
+    @Override
+    public void setRiskToDto(AppSubmissionDto appSubmissionDto) {
         List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = appSubmissionDto.getAppSvcRelatedInfoDtoList();
         List<RiskAcceptiionDto> riskAcceptiionDtoList = IaisCommonUtils.genNewArrayList();
         for(AppSvcRelatedInfoDto appSvcRelatedInfoDto:appSvcRelatedInfoDtos){
@@ -1010,5 +1108,15 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
             }
         }
         return false;
+    }
+
+    private void  setSvcDocsDupForPerson(List<AppSvcDocDto> appSvcDocDtoLit){
+        if(IaisCommonUtils.isNotEmpty(appSvcDocDtoLit)){
+            appSvcDocDtoLit.forEach((v)->{
+                if(StringUtil.isNotEmpty(v.getSvcDocId())){
+                    v.setDupForPerson(hcsaConfigClient.getHcsaSvcDocConfigDtoById(v.getSvcDocId()).getEntity().getDupForPerson());
+                }
+            });
+        }
     }
 }

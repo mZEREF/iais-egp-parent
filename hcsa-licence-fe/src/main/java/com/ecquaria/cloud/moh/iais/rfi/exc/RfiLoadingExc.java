@@ -1,17 +1,21 @@
 package com.ecquaria.cloud.moh.iais.rfi.exc;
 
+import com.ecquaria.cloud.moh.iais.action.NewApplicationDelegator;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcLaboratoryDisciplinesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
+import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.rfi.RfiLoadingCheck;
 import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationFeClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import javax.servlet.http.HttpServletRequest;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -57,8 +61,7 @@ public class RfiLoadingExc implements RfiLoadingCheck {
         appSubmissionDto.setAppSvcRelatedInfoDtoList(appSvcRelatedInfoDtoList);
     }
 
-    @Override
-    public void checkPremiseInfo(AppSubmissionDto appSubmissionDto, String appNo) {
+    public void checkPremiseInfo(HttpServletRequest request, AppSubmissionDto appSubmissionDto, String appNo) {
         List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionService.getAppGrpPremisesDto(appNo);
         List<String> ids = IaisCommonUtils.genNewArrayList();
         String premisesIndexNo = null;
@@ -73,6 +76,18 @@ public class RfiLoadingExc implements RfiLoadingCheck {
             for (AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtoList) {
                 ids.add(appGrpPremisesDto.getId());
                 premisesIndexNo = appGrpPremisesDto.getPremisesIndexNo();
+                //70309
+                if ("newPremise".equals(appGrpPremisesDto.getPremisesSelect())) {
+                    String premisesKey = appGrpPremisesDto.getHciCode() + IaisCommonUtils.genPremisesKey(appGrpPremisesDto.getPostalCode(),
+                            appGrpPremisesDto.getBlkNo(), appGrpPremisesDto.getFloorNo(), appGrpPremisesDto.getUnitNo()) + appGrpPremisesDto.getPremisesType();
+                    appGrpPremisesDto.setPremisesSelect(premisesKey);
+                    List<AppGrpPremisesDto> applicationAppGrpPremisesDtoList = (List<AppGrpPremisesDto>) ParamUtil.getSessionAttr(request, NewApplicationDelegator.RFC_APP_GRP_PREMISES_DTO_LIST);
+                    if (IaisCommonUtils.isEmpty(applicationAppGrpPremisesDtoList)){
+                        applicationAppGrpPremisesDtoList = IaisCommonUtils.genNewArrayList();
+                    }
+                    applicationAppGrpPremisesDtoList.add(appGrpPremisesDto);
+                    ParamUtil.setSessionAttr(request, NewApplicationDelegator.RFC_APP_GRP_PREMISES_DTO_LIST, (Serializable) applicationAppGrpPremisesDtoList);
+                }
             }
         }
         appSubmissionDto.setAppGrpPremisesDtoList(appGrpPremisesDtoList);

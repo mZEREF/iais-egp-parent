@@ -12,27 +12,28 @@ import com.ecquaria.cloud.moh.iais.common.dto.emailsms.SmsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.GiroAccountFormDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.GiroAccountInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.GiroAccountInfoQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.OrganizationPremisesViewQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterMessageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
-import com.ecquaria.cloud.moh.iais.common.dto.organization.OrganizationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.MessageTemplateUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
 import com.ecquaria.cloud.moh.iais.service.GiroAccountService;
-import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.BeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.EmailHistoryCommonClient;
 import com.ecquaria.cloud.moh.iais.service.client.EmailSmsClient;
+import com.ecquaria.cloud.moh.iais.service.client.GiroAccountBeClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicEicClient;
 import com.ecquaria.cloud.moh.iais.service.client.MasterCodeClient;
-import com.ecquaria.cloud.moh.iais.service.client.OrgGiroAccountBeClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -76,11 +77,9 @@ public class GiroAccountServiceImpl implements GiroAccountService {
     @Autowired
     private SystemParamConfig systemParamConfig;
     @Autowired
-    OrgGiroAccountBeClient giroAccountBeClient;
+    private GiroAccountBeClient giroAccountBeClient;
     @Autowired
     private NotificationHelper notificationHelper;
-    @Autowired
-    private ApplicationClient applicationClient;
     @Autowired
     private OrganizationClient organizationClient;
     @Autowired
@@ -156,12 +155,10 @@ public class GiroAccountServiceImpl implements GiroAccountService {
     public void sendEmailForGiroAccountAndSMSAndMessage(GiroAccountInfoDto giroAccountInfoDto,int size) {
         try{
             List<LicenseeDto> licenseeDtos=organizationClient.getLicenseeByOrgId(giroAccountInfoDto.getOrganizationId()).getEntity();
-            OrganizationDto organizationDto=organizationClient.getOrganizationById(giroAccountInfoDto.getOrganizationId()).getEntity();
-//            List<LicenceDto> licenceDtos=hcsaLicenceClient.getLicenceDtoByHciCode(giroAccountInfoDto.getHciCode(),licenseeDtos.get(0).getId()).getEntity();
-            String applicationNumber = organizationDto.getUenNo();
+            LicenceDto licenceDto=hcsaLicenceClient.getLicenceDtoById(giroAccountInfoDto.getLicenceId()).getEntity();
             Map<String, Object> subMap = IaisCommonUtils.genNewHashMap();
-            subMap.put("ApplicationType", "UEN");
-            subMap.put("ApplicationNumber", applicationNumber);
+            subMap.put("ApplicationType", licenceDto.getSvcName());
+            subMap.put("ApplicationNumber", licenceDto.getLicenceNo());
             String emailSubject = getEmailSubject(MsgTemplateConstants.MSG_TEMPLATE_EN_FEP_003_EMAIL,subMap);
             String smsSubject = getEmailSubject(MsgTemplateConstants. MSG_TEMPLATE_EN_FEP_003_SMS ,subMap);
             String messageSubject = getEmailSubject(MsgTemplateConstants.MSG_TEMPLATE_EN_FEP_003_MSG,subMap);
@@ -171,28 +168,10 @@ public class GiroAccountServiceImpl implements GiroAccountService {
             Map<String, Object> templateContent = IaisCommonUtils.genNewHashMap();
             List<OrgUserDto> orgUserDtoList = organizationClient.getOrgUserAccountSampleDtoByOrganizationId(giroAccountInfoDto.getOrganizationId()).getEntity();
             String applicantName=licenseeDtos.get(0).getName();
-//            if(size<5){
-//                List<ApplicationGroupDto> applicationGroupDtos = applicationClient.getApplicationGroupByLicensee(licenseeDtos.get(0).getId()).getEntity();
-//                if(applicationGroupDtos!=null){
-////                    List<LicAppCorrelationDto> licAppCorrelationDtos = hcsaLicenceClient.getLicCorrBylicId(licenceDtos.get(0).getId()).getEntity();
-////                    ApplicationDto applicationDto=applicationClient.getApplicationById(licAppCorrelationDtos.get(0).getApplicationId()).getEntity();
-//                    for (OrgUserDto user:orgUserDtoList
-//                    ) {
-//                        for (ApplicationGroupDto apg:applicationGroupDtos
-//                        ) {
-//                            if (apg.getSubmitBy().equals(user.getId())){
-//                                applicantName=user.getDisplayName();
-//                                break;
-//                            }
-//                        }
-//                    }
-//                }
-//            }
 
             templateContent.put("ApplicantName", applicantName);
-            templateContent.put("ApplicationType",  "UEN");
-            templateContent.put("ApplicationNumber", applicationNumber);
-            //todo need create new giro account time
+            templateContent.put("ApplicationType",  licenceDto.getSvcName());
+            templateContent.put("ApplicationNumber", licenceDto.getLicenceNo());
             templateContent.put("DDMMYYYY", Formatter.formatDateTime(new Date()));
             templateContent.put("email", systemParamConfig.getSystemAddressOne());
             String syName = "<b>"+AppConsts.MOH_AGENCY_NAM_GROUP+"<br/>"+AppConsts.MOH_AGENCY_NAME+"</b>";
@@ -234,32 +213,15 @@ public class GiroAccountServiceImpl implements GiroAccountService {
 
             emailHistoryCommonClient.sendSMS(mobile, smsDto, giroAccountInfoDto.getOrganizationId());
 
-//            EmailParam msgParam = new EmailParam();
-//            msgParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_FEP_003_MSG);
-//            msgParam.setTemplateContent(templateContent);
-//            msgParam.setSubject(messageSubject);
-//            msgParam.setQueryCode(giroAccountInfoDto.getOrganizationId());
             Set<String> svcCodeSet = IaisCommonUtils.genNewHashSet();
 
-//            if(licenceDtos!=null){
-//                msgParam.setReqRefNum(licenceDtos.get(0).getId());
-//                msgParam.setRefId(licenceDtos.get(0).getId());
-//                for (LicenceDto lic:licenceDtos
-//                ) {
-//                    HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceByServiceName(lic.getSvcName());
-//                    if(hcsaServiceDto!=null){
-//                        svcCodeSet.add(hcsaServiceDto.getSvcCode());
-//                    }
-//                }
-//            }else {
-//            msgParam.setReqRefNum(licenseeDtos.get(0).getId());
-//            msgParam.setRefId(licenseeDtos.get(0).getId());
-//            }
+            HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceByServiceName(licenceDto.getSvcName());
+            if(hcsaServiceDto!=null){
+                svcCodeSet.add(hcsaServiceDto.getSvcCode());
+            }
 
             List<String> svcCodeList = IaisCommonUtils.genNewArrayList();
             svcCodeList.addAll(svcCodeSet);
-//            msgParam.setSvcCodeList(svcCodeList);
-//            msgParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
             InterMessageDto interMessageDto = new InterMessageDto();
             interMessageDto.setSrcSystemId(AppConsts.MOH_IAIS_SYSTEM_INBOX_CLIENT_KEY);
             interMessageDto.setSubject(messageSubject);

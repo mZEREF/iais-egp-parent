@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.renewal.RenewalConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
@@ -159,7 +160,11 @@ public class NewApplicationAjaxController {
             String width = "";
             if (ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(type)) {
                 className = "onSite";
-                width = "col-md-2";
+                if (premType.size() > 2) {
+                    width = "col-md-2";
+                } else {
+                    width = "col-md-3";
+                }
             } else if (ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(type)) {
                 className = "conveyance";
                 width = "col-md-3";
@@ -602,7 +607,7 @@ public class NewApplicationAjaxController {
         String errMsg = "You are allowed to add up till only " + dpoMmaximumCount + " DPO";
         if (dpoMmaximumCount - hasNumber > 0) {
             //assign select
-            List<SelectOption> assignPrincipalOfficerSel = NewApplicationHelper.genAssignPersonSel(request, true);
+            List<SelectOption> assignPrincipalOfficerSel = NewApplicationHelper.genAssignPersonSel(request, false);
             Map<String, String> assignPrincipalOfficerAttr = IaisCommonUtils.genNewHashMap();
             assignPrincipalOfficerAttr.put("name", "deputyPoSelect");
             assignPrincipalOfficerAttr.put("class", "deputyPoSelect");
@@ -1249,6 +1254,40 @@ public class NewApplicationAjaxController {
 
     }
 
+    @PostMapping(value = "/section-leader-html")
+    public @ResponseBody AjaxResDto generateSectionLeaderHtml(HttpServletRequest request) {
+        log.debug(StringUtil.changeForLog("the generateSectionLeaderHtml start ...."));
+        AjaxResDto ajaxResDto = new AjaxResDto();
+        ajaxResDto.setResCode("200");
+        int slLength = ParamUtil.getInt(request, "slLength");
+        log.info(StringUtil.changeForLog("The index: " + slLength));
+        String html = SqlMap.INSTANCE.getSql("sectionLeaderHtml", "genSectionLeaderHtml").getSqlStr();
+        html = html.replace("${stepName}", HcsaConsts.SECTION_LEADER);
+        html = html.replace("${index}", String.valueOf(slLength));
+        html = html.replace("${slIndex}", String.valueOf(slLength + 1));
+        List<SelectOption> selectOptions = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_SALUTATION);
+        html = html.replace("${salutionOptions}", generateDropDownHtml(selectOptions, null));
+        ajaxResDto.setResultJson(html);
+        log.debug(StringUtil.changeForLog("the generateSectionLeaderHtml end ...."));
+        return ajaxResDto;
+    }
+
+    private String generateDropDownHtml(List<SelectOption> options, String firstOption) {
+        if (options == null || options.isEmpty()) {
+            return "";
+        }
+        StringBuilder html = new StringBuilder();
+        if (!StringUtil.isEmpty(firstOption)) {
+            html.append("<option value=\"\">").append(StringUtil.escapeHtml(firstOption)).append("</option>");
+        }
+        for (SelectOption option : options) {
+            String val = StringUtil.viewNonNullHtml(option.getValue());
+            String txt = StringUtil.escapeHtml(option.getText());
+            html.append("<option value=\"").append(val).append("\">").append(txt).append("</option>");
+        }
+        return html.toString();
+    }
+
     @PostMapping(value = "/clinical-director-html")
     public @ResponseBody AjaxResDto generateClinicalDirectorHtml(HttpServletRequest request) throws IOException, TemplateException {
         log.debug(StringUtil.changeForLog("the generateClinicalDirectorHtml start ...."));
@@ -1321,6 +1360,7 @@ public class NewApplicationAjaxController {
         paramMap.put("aclsOrBcls",aclsOrBcls);
         paramMap.put("specialitySel",easMtsSpecialtySelStr);
         paramMap.put("personalSelect",personalSelect);
+        paramMap.put("singleName", HcsaConsts.CLINICAL_DIRECTOR);
 
         String clinicalDirectorHtml = SqlMap.INSTANCE.getSql("clinicalDirector", "generateClinicalDirectorHtml",paramMap);
         ajaxResDto.setResultJson(clinicalDirectorHtml);
@@ -1429,6 +1469,52 @@ public class NewApplicationAjaxController {
         ajaxResDto.setResultJson(chargesHtml);
 
         return ajaxResDto;
+    }
+
+    @PostMapping(value = "/keyAppointmentHolder-html")
+    public @ResponseBody AjaxResDto generateKeyAppointmentHolderHtml(HttpServletRequest request) throws TemplateException, IOException {
+
+        AjaxResDto ajaxResDto = new AjaxResDto();
+        ajaxResDto.setResCode("200");
+        int keyAppointmentHolderLength = ParamUtil.getInt(request,"keyAppointmentHolderLength");
+
+        // Assigned person dropdown list
+        Map<String, String> assignSelAttr = IaisCommonUtils.genNewHashMap();
+        List<SelectOption> personOptions = NewApplicationHelper.genAssignPersonSel(request, true);
+        assignSelAttr.put("class", "assignSel");
+        assignSelAttr.put("name", "assignSel" + keyAppointmentHolderLength);
+        assignSelAttr.put("style", "display: none;");
+        String personalSelect = NewApplicationHelper.generateDropDownHtml(assignSelAttr, personOptions, null, null);
+
+        //salutation
+        List<SelectOption> salutationList = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_SALUTATION);
+        Map<String, String> salutationAttr = IaisCommonUtils.genNewHashMap();
+        salutationAttr.put("class", "salutation");
+        salutationAttr.put("name", "salutation" + keyAppointmentHolderLength);
+        salutationAttr.put("style", "display: none;");
+        String salutationSelect = NewApplicationHelper.generateDropDownHtml(salutationAttr, salutationList, NewApplicationDelegator.FIRESTOPTION, null);
+
+        //ID Type
+        List<SelectOption> idTypeList = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_ID_TYPE);
+        Map<String, String> idTypeAttr = IaisCommonUtils.genNewHashMap();
+        idTypeAttr.put("class", "idType");
+        idTypeAttr.put("name", "idType" + keyAppointmentHolderLength);
+        idTypeAttr.put("style", "display: none;");
+        String idTypeSelect = NewApplicationHelper.generateDropDownHtml(idTypeAttr, idTypeList, NewApplicationDelegator.FIRESTOPTION, null);
+
+        Map<String,Object> paramMap = IaisCommonUtils.genNewHashMap();
+        paramMap.put("keyAppointmentHolderLength",keyAppointmentHolderLength + 1);
+        paramMap.put("keyAppointmentHolderSuffix",keyAppointmentHolderLength);
+        paramMap.put("personalSelect",personalSelect);
+        paramMap.put("salutationSelect",salutationSelect);
+        paramMap.put("idTypeSelect",idTypeSelect);
+
+        String keyAppointmentHolderHtml = SqlMap.INSTANCE.getSql("keyAppointmentHolder", "generateKeyAppointmentHolderHtml", paramMap);
+
+        ajaxResDto.setResultJson(keyAppointmentHolderHtml);
+
+        return ajaxResDto;
+
     }
 
     //=============================================================================

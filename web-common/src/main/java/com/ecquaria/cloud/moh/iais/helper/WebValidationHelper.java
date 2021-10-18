@@ -324,12 +324,15 @@ public class WebValidationHelper {
             CustomizeValidator cv = (CustomizeValidator) obj;
             HttpServletRequest request = MiscUtil.getCurrentRequest();
             if (request != null) {
-                if(cv.validate(request) != null) {
-                    errorMap.putAll(cv.validate(request));
+                request.setAttribute(valCls.getSimpleName() + "_profile", property);
+                Map<String, String> map = cv.validate(request);
+                if(map != null && !map.isEmpty()) {
+                    errorMap.putAll(map);
                 }
-            }
-            if(cv.validate(target, request) != null) {
-                errorMap.putAll(cv.validate(target, request));
+                map = cv.validate(target, request);
+                if(map != null && !map.isEmpty()) {
+                    errorMap.putAll(map);
+                }
             }
         } catch (InstantiationException | IllegalAccessException e) {
             log.error(e.getMessage(), e);

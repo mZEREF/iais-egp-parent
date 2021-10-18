@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
 
+import com.ecquaria.cloud.helper.ConfigHelper;
 import com.ecquaria.cloud.moh.iais.action.HcsaApplicationDelegator;
 import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
@@ -59,6 +60,7 @@ import com.ecquaria.cloud.moh.iais.helper.EventBusHelper;
 import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
+import com.ecquaria.cloud.moh.iais.service.AppGroupMiscService;
 import com.ecquaria.cloud.moh.iais.service.ApplicationService;
 import com.ecquaria.cloud.moh.iais.service.BroadcastService;
 import com.ecquaria.cloud.moh.iais.service.LicenceFileDownloadService;
@@ -75,6 +77,7 @@ import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
 import com.ecquaria.cloud.moh.iais.service.client.MsgTemplateClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
+import com.ecquaria.cloud.systeminfo.ServicesSysteminfo;
 import com.ecquaria.kafka.model.Submission;
 import com.ecquaria.sz.commons.util.FileUtil;
 import com.ecquaria.sz.commons.util.MsgUtil;
@@ -82,18 +85,20 @@ import freemarker.template.TemplateException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.nio.file.Files;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -108,6 +113,9 @@ import java.util.zip.CRC32;
 import java.util.zip.CheckedInputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
+
+import static java.nio.file.Files.newInputStream;
+import static java.nio.file.Files.newOutputStream;
 
 
 /**
@@ -182,7 +190,8 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
     private BeEicGatewayClient beEicGatewayClient;
     @Value("${spring.application.name}")
     private String currentApp;
-
+    @Autowired
+    private AppGroupMiscService appGroupMiscService;
     @Value("${iais.current.domain}")
     private String currentDomain;
     @Autowired
@@ -203,7 +212,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                     String name = file.getName();
                     String path = file.getPath();
                     log.info(StringUtil.changeForLog("-----file name is " + name + "====> file path is ==>" + path));
-                    try (InputStream is = new FileInputStream(file);
+                    try (InputStream is = newInputStream(file.toPath());
                          ByteArrayOutputStream by=new ByteArrayOutputStream();) {
                         int count;
                         byte [] size=new byte[1024];
@@ -400,7 +409,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                     if(filzz.isFile() &&filzz.getName().endsWith(AppServicesConsts.FILE_FORMAT)){
                         InputStream  fileInputStream = null;
                         try{
-                            fileInputStream=Files.newInputStream(filzz.toPath());
+                            fileInputStream= newInputStream(filzz.toPath());
                             ByteArrayOutputStream by=new ByteArrayOutputStream();
                             int count;
                             byte [] size=new byte[1024];
@@ -447,7 +456,8 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                     }
                     log.info(StringUtil.changeForLog(file.getPath()+"-----zipFile---------"));
                     String s=sharedPath+File.separator+AppServicesConsts.COMPRESS+File.separator+fileName+File.separator+groupPath+File.separator+zipEntry.getName();
-                    os=new FileOutputStream(MiscUtil.generateFile(s));
+                    File outFile = MiscUtil.generateFile(s);
+                    os= newOutputStream(outFile.toPath());
                     bos=new BufferedOutputStream(os);
                     InputStream is=zipFile.getInputStream(zipEntry);
                     bis=new BufferedInputStream(is);
@@ -948,7 +958,11 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
         }
 
         public void  sendTask(String eventRefNum ,String submissionId) throws  Exception{
-
+        try {
+            appGroupMiscService.notificationApplicationUpdateBatchjob();
+        }catch (Exception e){
+            log.error(e.getMessage(),e);
+        }
         AuditTrailDto intranet =new AuditTrailDto();
         ApplicationNewAndRequstDto applicationNewAndRequstDto=new ApplicationNewAndRequstDto();
         List<ApplicationDto> listNewApplicationDto =IaisCommonUtils.genNewArrayList();
@@ -1051,8 +1065,14 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
             }
             broadcastOrganizationDto.setOneSubmitTaskList(onSubmitTaskList);
             broadcastApplicationDto.setOneSubmitTaskHistoryList(appPremisesRoutingHistoryDtos);
-            broadcastOrganizationDto = broadcastService.svaeBroadcastOrganization(broadcastOrganizationDto,null,submissionId);
-            broadcastApplicationDto  = broadcastService.svaeBroadcastApplicationDto(broadcastApplicationDto,null,submissionId);
+            eventBusHelper.submitAsyncRequest(broadcastOrganizationDto, submissionId,
+                    EventBusConsts.SERVICE_NAME_ROUNTINGTASK,
+                    EventBusConsts.OPERATION_ROUNTINGTASK_ROUNTING,
+                    broadcastOrganizationDto.getEventRefNo(), null);
+            eventBusHelper.submitAsyncRequest(broadcastApplicationDto, submissionId,
+                    EventBusConsts.SERVICE_NAME_APPSUBMIT,
+                    EventBusConsts.OPERATION_ROUNTINGTASK_ROUNTING,
+                    broadcastApplicationDto.getEventRefNo(), null);
             //update fe application stauts
             log.info("update application stauts");
             for(ApplicationDto applicationDto :requestForInfList){
@@ -1074,12 +1094,12 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
         log.info(StringUtil.changeForLog(submissionList .size() +"remove file submissionList .size()"));
         BroadcastOrganizationDto broadcastOrganizationDto =null;
         for(Submission submission : submissionList){
-            if(EventBusConsts.SERVICE_NAME_ROUNTINGTASK.equals(submission.getSubmissionIdentity().getService())){
+            if(EventBusConsts.SERVICE_NAME_ROUNTINGTASK.equals(submission.getSubmissionIdentity().getService())&& "Batchjob".equals(submission.getProcess())){
                 broadcastOrganizationDto = JsonUtil.parseToObject(submission.getData(), BroadcastOrganizationDto.class);
                 break;
             }
         }
-        if(broadcastOrganizationDto!=null){
+        if(broadcastOrganizationDto!=null&&broadcastOrganizationDto.getApplicationNewAndRequstDto()!=null){
             ApplicationNewAndRequstDto applicationNewAndRequstDto = broadcastOrganizationDto.getApplicationNewAndRequstDto();
             String zipFileName = applicationNewAndRequstDto.getZipFileName();
             log.info(StringUtil.changeForLog(JsonUtil.parseToJson(applicationNewAndRequstDto)+"---applicationNewAndRequstDto-----"));
@@ -1098,12 +1118,39 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
     }
 
 
-    private void  moveFile(File file){
+    private void moveFile(File file) {
+        if (!file.exists()) {
+            List<String> ipAddrs = ServicesSysteminfo.getInstance().getAddressesByServiceName("hcsa-licence-web");
+            if (ipAddrs != null && ipAddrs.size() > 1) {
+                String localIp = MiscUtil.getLocalHostExactAddress();
+                log.info(StringUtil.changeForLog("Local Ip is ==>" + localIp));
+                for (String ip : ipAddrs) {
+                    if (localIp.equals(ip)) {
+                        continue;
+                    }
+                    String port = ConfigHelper.getString("server.port", "8080");
+                    StringBuilder apiUrl = new StringBuilder("http://");
+                    apiUrl.append(ip).append(':').append(port).append("/hcsa-licence-web/moveFile");
+                    log.info("Request URL ==> {}", apiUrl);
+                    RestTemplate restTemplate = new RestTemplate();
+                    try {
+                        HttpHeaders header = new HttpHeaders();
+                        header.setContentType(MediaType.APPLICATION_JSON);
+                        HttpEntity entity = new HttpEntity<>(file.getName(), header);
+                        log.info(StringUtil.changeForLog("file name ==> " + file.getName()));
+                        restTemplate.exchange(apiUrl.toString(), HttpMethod.POST, entity, String.class);
+                    } catch (Throwable e) {
+                        log.error(e.getMessage(), e);
+                    }
+                }
+            }
+            return;
+        }
         String name = file.getName();
         log.info(StringUtil.changeForLog("file name is  {}"+name));
-        File moveFile=MiscUtil.generateFile(sharedPath+File.separator+"move",name);
-        try (OutputStream fileOutputStream=new FileOutputStream(moveFile);
-             InputStream fileInputStream=Files.newInputStream(file.toPath())) {
+        File outFile = MiscUtil.generateFile(sharedPath+File.separator+"move", name);
+        try (OutputStream fileOutputStream = newOutputStream(outFile.toPath());
+             InputStream fileInputStream = newInputStream(file.toPath())) {
             int count;
             byte []size=new byte[1024];
             count= fileInputStream.read(size);
@@ -1111,7 +1158,6 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                 fileOutputStream.write(size,0,count);
                 count= fileInputStream.read(size);
             }
-
         }catch (Exception e){
 
             log.error(e.getMessage(),e);

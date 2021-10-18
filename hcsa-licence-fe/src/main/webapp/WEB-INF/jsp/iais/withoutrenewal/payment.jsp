@@ -72,8 +72,9 @@
             if(validatePayment()){
                 $('[name="switch_value"]').val('doPayment');
                 $('#menuListForm').submit();
+            }else {
+                dismissWaiting();
             }
-            dismissWaiting();
         }
 
     });

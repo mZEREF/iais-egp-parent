@@ -126,7 +126,7 @@
               <#if serName??> and T1.SVC_NAME IN ${serName} </#if>
               <#if licenseeId??> AND T1.LICENSEE_ID = :licenseeId</#if>
               <#if premTypeList??>AND T3.PREMISES_TYPE IN ${premTypeList}</#if>
-              <#if alignMinExpiryMonth??>AND DATEDIFF(MONTH ,getDate(),T1.EXPIRY_DATE) > :alignMinExpiryMonth</#if>
+              <#if alignMinExpiryMonth??>AND DATEDIFF(MONTH ,getDate(),T1.EXPIRY_DATE) >= :alignMinExpiryMonth</#if>
              )tab1 order by tab1.ORDER_INDEX ASC
         ]]>
     </sql>

@@ -30,116 +30,125 @@
                         </div>
 
                         <iais:row>
-                            <iais:field value="UEN" width="11" required="true"/>
                             <c:choose>
                                 <c:when test="${'Create'.equals(feusertitle)}">
-                                    <iais:value width="11">
+                                    <iais:field value="UEN" width="12" required="true"/>
+                                    <iais:value width="12">
                                         <input name="uenNo" id="uenNo" type="text" value="${inter_user_attr.uenNo}" />
                                         <span class="error-msg" name="errorMsg" id="error_uenNo"></span>
                                     </iais:value>
                                 </c:when>
+                                <c:when test="${empty inter_user_attr.uenNo}">
+                                    <iais:field value="UEN" width="12"/>
+                                    <iais:value width="12">
+                                        <p>-</p>
+                                        <input name="organizationId" id="organizationId" type="hidden" value="<iais:mask name="organizationId" value="${organizationId}"/>"/>
+                                    </iais:value>
+                                </c:when>
                                 <c:otherwise>
-                                    <iais:value width="11">
+                                    <iais:field value="UEN" width="12" required="true"/>
+                                    <iais:value width="12">
                                         <p><c:out value="${inter_user_attr.uenNo}"></c:out></p>
                                         <input name="organizationId" id="organizationId" type="hidden" value="<iais:mask name="organizationId" value="${organizationId}"/>"/>
                                         <span class="error-msg" name="errorMsg" id="error_uenNo"></span>
                                     </iais:value>
                                 </c:otherwise>
                             </c:choose>
-
                         </iais:row>
 
-                                    <iais:row>
-                                        <iais:field value="Name" width="11" required="true"/>
-                                        <iais:value width="11">
-                                            <iais:input type="text" name="name" id="name" maxLength="66" value="${inter_user_attr.displayName}"/>
-                                            <span class="error-msg" name="errorMsg" id="error_displayName"></span>
-                                        </iais:value>
-                                    </iais:row>
-                                    <iais:row>
-                                        <iais:field value="Salutation" width="11" required="true"/>
-                                        <iais:value width="11">
-                                            <iais:select cssClass="Salutation" name="salutation" id="salutation" value="${inter_user_attr.salutation}"
-                                                         codeCategory="CATE_ID_SALUTATION"  firstOption="Please Select" />
-                                            <span class="error-msg" name="errorMsg" id="error_salutation"></span>
-                                        </iais:value>
-                                    </iais:row>
-                                    <iais:row>
-                                        <iais:field value="ID Type" width="11" required="true"/>
-                                            <iais:value width="11">
-                                                <iais:select name="idType" id="idType" value="${inter_user_attr.idType}"
-                                                             codeCategory="CATE_ID_ID_TYPE" firstOption="Please Select"/>
-                                                <span class="error-msg" name="errorMsg" id="error_idType"></span>
-                                            </iais:value>
-                                    </iais:row>
-                                    <iais:row>
-                                        <iais:field value="ID No" width="11" required="true"/>
-                                        <iais:value width="11">
-                                                <input type="text" name="idNo" id="idNo" value="${inter_user_attr.identityNo}" maxlength="9"/>
-                                                <span class="error-msg" name="errorMsg" id="error_identityNo"></span>
-                                        </iais:value>
-                                    </iais:row>
-                                    <iais:row>
-                                        <iais:field value="Designation" width="11" required="true"/>
-                                        <iais:value width="11">
-                                            <iais:select cssClass="designation" name="designation" codeCategory="CATE_ID_DESIGNATION" value="${inter_user_attr.designation}"
-                                                         firstOption="Please Select" onchange="toggleOnSelect('designation', 'DES999', 'designationOther')" />
-                                            <iais:input type="text" name="designationOther" id="designationOther" value="${inter_user_attr.designationOther}"
-                                                        maxLength="100" style="${inter_user_attr.designation eq 'DES999' ? '' : 'display:none'}"/>
-                                            <span class="error-msg" name="errorMsg" id="error_designation"></span>
-                                        </iais:value>
-                                    </iais:row>
-                                    <iais:row>
-                                        <iais:field value="Mobile No" width="11" required="true"/>
-                                        <iais:value width="11">
-                                            <iais:input type="text" name="mobileNo" id="mobileNo" maxLength="8" value="${inter_user_attr.mobileNo}" />
-                                            <span class="error-msg" name="errorMsg" id="error_mobileNo"></span>
-                                        </iais:value>
-                                    </iais:row>
-                                    <iais:row>
-                                        <iais:field value="Office/Telephone No" width="11" required="true"/>
-                                        <iais:value width="11">
-                                            <iais:input type="text" name="officeNo" id="officeNo" maxLength="8" value="${inter_user_attr.officeTelNo}"/>
-                                            <span class="error-msg" name="errorMsg" id="error_officeTelNo"></span>
-                                        </iais:value>
-                                    </iais:row>
-                                    <iais:row>
-                                        <iais:field value="Email" width="11" required="true"/>
-                                        <iais:value width="11">
-                                            <iais:input type="text" name="email" id="email" maxLength="66" value="${inter_user_attr.email}"/>
-                                            <span class="error-msg" name="errorMsg" id="error_email"></span>
-                                        </iais:value>
-                                    </iais:row>
-                                    <iais:row  style="margin-bottom:4px">
-                                        <iais:field value="Is Administrator" id="userRole" width="11"/>
-                                        <div class="col-md-3">
-                                            <div class="col-md-1"><input type="radio" style="margin-top: 19px" value="admin" name="role" <c:if test="${inter_user_attr.userRole=='ORG_ADMIN'}">checked</c:if>></div>
-                                            <label class="col-md-2 control-label" >Yes</label>
-                                        </div>
-                                        <div class="col-md-3">
-                                            <div class="col-md-1"><input type="radio" style="margin-top: 19px" value="user" name="role" <c:if test="${inter_user_attr.userRole!='ORG_ADMIN'}">checked</c:if>></div>
-                                            <label class="col-md-2 control-label" >No</label>
-                                        </div>
-                                    </iais:row>
-                                    <div>
-                                        <iais:field value="" width="11"/>
-                                        <span style="padding-left: 15px;" class="error-msg" name="errorMsg" id="error_userRole"></span>
-                                    </div>
-                                    <iais:row>
-                                        <iais:field value="Is Active" width="11"/>
-                                        <div class="col-md-3">
-                                            <div class="col-md-1"><input type="radio" style="margin-top: 19px" value="active" name="active" <c:if test="${inter_user_attr.status == 'CMSTAT001'}">checked</c:if>></div>
-                                            <label class="col-md-2 control-label" >Yes</label>
-                                        </div>
-                                        <div class="col-md-3">
-                                            <div class="col-md-1"><input type="radio" style="margin-top: 19px" value="inactive" name="active" <c:if test="${inter_user_attr.status != 'CMSTAT001'}">checked</c:if>></div>
-                                            <label class="col-md-2 control-label" >No</label>
-                                        </div>
-                                    </iais:row>
+                        <iais:row>
+                            <iais:field value="Name" width="12" required="true"/>
+                            <iais:value width="12">
+                                <iais:input type="text" name="name" id="name" maxLength="66" value="${inter_user_attr.displayName}"/>
+                                <span class="error-msg" name="errorMsg" id="error_displayName"></span>
+                            </iais:value>
+                        </iais:row>
+                        <iais:row>
+                            <iais:field value="Salutation" width="12" required="true"/>
+                            <iais:value width="12">
+                                <iais:select cssClass="Salutation" name="salutation" id="salutation" value="${inter_user_attr.salutation}"
+                                             codeCategory="CATE_ID_SALUTATION"  firstOption="Please Select" />
+                                <span class="error-msg" name="errorMsg" id="error_salutation"></span>
+                            </iais:value>
+                        </iais:row>
+                        <iais:row cssClass="solo">
+                            <iais:field value="ID Type" width="12" required="true"/>
+                            <iais:value width="12">
+                                <iais:select name="idType" id="idType" value="${inter_user_attr.idType}"
+                                             codeCategory="CATE_ID_ID_TYPE" firstOption="Please Select"/>
+                                <span class="error-msg" name="errorMsg" id="error_idType"></span>
+                            </iais:value>
+                        </iais:row>
+                        <iais:row cssClass="solo">
+                            <iais:field value="ID No" width="12" required="true"/>
+                            <iais:value width="12">
+                                    <input type="text" name="idNo" id="idNo" value="${inter_user_attr.identityNo}" maxlength="9"/>
+                                    <span class="error-msg" name="errorMsg" id="error_identityNo"></span>
+                            </iais:value>
+                        </iais:row>
+                        <iais:row>
+                            <iais:field value="Designation" width="12" required="true"/>
+                            <iais:value width="12">
+                                <iais:select cssClass="designation" name="designation" codeCategory="CATE_ID_DESIGNATION" value="${inter_user_attr.designation}"
+                                             firstOption="Please Select" onchange="toggleOnSelect('designation', 'DES999', 'designationOther')" />
+                                <iais:input type="text" name="designationOther" id="designationOther" value="${inter_user_attr.designationOther}"
+                                            maxLength="100" style="${inter_user_attr.designation eq 'DES999' ? '' : 'display:none'}"/>
+                                <span class="error-msg" name="errorMsg" id="error_designation"></span>
+                            </iais:value>
+                        </iais:row>
+                        <iais:row>
+                            <iais:field value="Mobile No" width="12" required="true"/>
+                            <iais:value width="12">
+                                <iais:input type="text" name="mobileNo" id="mobileNo" maxLength="8" value="${inter_user_attr.mobileNo}" />
+                                <span class="error-msg" name="errorMsg" id="error_mobileNo"></span>
+                            </iais:value>
+                        </iais:row>
+                        <iais:row>
+                            <iais:field value="Office/Telephone No" width="12" required="true"/>
+                            <iais:value width="12">
+                                <iais:input type="text" name="officeNo" id="officeNo" maxLength="8" value="${inter_user_attr.officeTelNo}"/>
+                                <span class="error-msg" name="errorMsg" id="error_officeTelNo"></span>
+                            </iais:value>
+                        </iais:row>
+                        <iais:row>
+                            <iais:field value="Email" width="12" required="true"/>
+                            <iais:value width="12">
+                                <iais:input type="text" name="email" id="email" maxLength="320" value="${inter_user_attr.email}"/>
+                                <span class="error-msg" name="errorMsg" id="error_email"></span>
+                            </iais:value>
+                        </iais:row>
+                        <iais:row  style="margin-bottom:0px">
+                            <iais:field value="Is Administrator" id="userRole" width="12"/>
+                            <div class="col-md-3" style="padding-left: 0px;">
+                                <div class="col-md-1"><input type="radio" style="margin-top: 19px" value="admin" name="role" <c:if test="${inter_user_attr.userRole=='ORG_ADMIN'}">checked</c:if>></div>
+                                <label class="col-md-2 control-label" >Yes</label>
+                            </div>
+                            <div class="col-md-3" style="padding-left: 0px;">
+                                <div class="col-md-1"><input type="radio" style="margin-top: 19px" value="user" name="role" <c:if test="${inter_user_attr.userRole!='ORG_ADMIN'}">checked</c:if>></div>
+                                <label class="col-md-2 control-label" >No</label>
+                            </div>
+                            <br>
+                            <div class="col-xs-12 col-md-4 control-label">&nbsp;</div>
+                            <div class="col-md-3" style="padding-left: 0px;">
+                                <span style="padding-left: 15px;" class="error-msg" name="errorMsg" id="error_userRole"></span>
+                            </div>
+                        </iais:row>
+                        <p></p>
+                        <iais:row>
+                            <iais:field value="Is Active" width="12"/>
+                            <div class="col-md-3" style="padding-left: 0px;">
+                                <div class="col-md-1"><input type="radio" style="margin-top: 19px" value="active" name="active" <c:if test="${inter_user_attr.status == 'CMSTAT001'}">checked</c:if>></div>
+                                <label class="col-md-2 control-label" >Yes</label>
+                            </div>
+                            <div class="col-md-3" style="padding-left: 0px;">
+                                <div class="col-md-1"><input type="radio" style="margin-top: 19px" value="inactive" name="active" <c:if test="${inter_user_attr.status != 'CMSTAT001'}">checked</c:if>></div>
+                                <label class="col-md-2 control-label" >No</label>
+                            </div>
+                        </iais:row>
                     </div>
                     <div class="row">
                         <div class="col-xs-12 col-sm-6">
-                            <a class="back" id="back" onclick="cancel()"><em class="fa fa-angle-left" ></em> Back</a>
+                            <a href="javascript:void(0);" class="back" id="back" onclick="cancel()"><em class="fa fa-angle-left" ></em> Back</a>
                         </div>
                         <div class="col-xs-12 col-sm-6">
                             <div class="text-right text-center-mobile">
@@ -156,6 +165,12 @@
     <%@include file="/WEB-INF/jsp/include/validation.jsp"%>
 </div>
 <script type="text/javascript">
+    $(document).ready(function(){
+        <c:if test="${'Create' != feusertitle && empty inter_user_attr.uenNo}">
+        disableContent('.solo');
+        </c:if>
+    });
+
     function save() {
         $("#action").val("save");
         var mainPoolForm = document.getElementById('mainForm');

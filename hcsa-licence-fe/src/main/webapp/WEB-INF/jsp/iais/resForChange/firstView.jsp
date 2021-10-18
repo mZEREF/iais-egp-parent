@@ -96,41 +96,45 @@
 </div>
 <script>
     $(document).ready(function () {
+        $('#subLicenseeEdit').click(function () {
+            showWaiting();
+            $('#EditValue').val('licensee');
+            $('#menuListForm').submit();
+        });
+
+        $('#premisesEdit').click(function () {
+            showWaiting();
+            $('#EditValue').val('premises');
+            $('#menuListForm').submit();
+        });
+
+        $('#docEdit').click(function () {
+            showWaiting();
+            $('#EditValue').val('doc');
+            $('#menuListForm').submit();
+        });
+
+        $('#doSvcEdit').click(function () {
+            showWaiting();
+            $('#EditValue').val('service');
+            $('#action').val('serviceForms');
+            $('#menuListForm').submit();
+        });
+
+        $('#Back').click(function () {
+            showWaiting();
+            $('[name="switch_value"]').val('back');
+            $('#menuListForm').submit();
+        });
+
+        $('#rfcPrint').click(function () {
+            // window.print();
+            var url ='${pageContext.request.contextPath}<%=RedirectUtil.appendCsrfGuardToken("/eservice/INTERNET/MohFePrintView/1/?appType=APTY005",request)%>';
+            window.open(url,'_blank');
+        });
+        $('#RFC_BACK').click(function (){
+            location.href="https://${pageContext.request.serverName}/main-web<%=RedirectUtil.appendCsrfGuardToken("/eservice/INTERNET/MohInternetInbox?initPage=initApp",request)%>";
+        });
 
     });
-
-    $('#premisesEdit').click(function () {
-        showWaiting();
-        $('#EditValue').val('premises');
-        $('#menuListForm').submit();
-    });
-
-    $('#docEdit').click(function () {
-        showWaiting();
-        $('#EditValue').val('doc');
-        $('#menuListForm').submit();
-    });
-
-    $('#doSvcEdit').click(function () {
-        showWaiting();
-        $('#EditValue').val('service');
-        $('#action').val('serviceForms');
-        $('#menuListForm').submit();
-    });
-
-    $('#Back').click(function () {
-        showWaiting();
-        $('[name="switch_value"]').val('back');
-        $('#menuListForm').submit();
-    });
-
-    $('#rfcPrint').click(function () {
-        // window.print();
-        var url ='${pageContext.request.contextPath}<%=RedirectUtil.appendCsrfGuardToken("/eservice/INTERNET/MohFePrintView/1/?appType=APTY005",request)%>';
-        window.open(url,'_blank');
-    });
-    $('#RFC_BACK').click(function (){
-        location.href="https://${pageContext.request.serverName}/main-web<%=RedirectUtil.appendCsrfGuardToken("/eservice/INTERNET/MohInternetInbox?initPage=initApp",request)%>";
-    });
-
 </script>

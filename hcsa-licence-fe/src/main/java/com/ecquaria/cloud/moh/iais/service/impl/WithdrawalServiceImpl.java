@@ -263,7 +263,7 @@ public class WithdrawalServiceImpl implements WithdrawalService {
                     applicantName = orgUserDto.getDisplayName();
                 }
                 msgInfoMap.put("Applicant", applicantName);
-                if (!charity && !isRfc && !StringUtil.isEmpty(payMethod)&& !StringUtil.isEmpty(fee)&&fee!=0.0){
+                if (!charity && !isRfc && !StringUtil.isEmpty(payMethod)&& !StringUtil.isEmpty(fee)&&fee>0){
                     msgInfoMap.put("paymentType","0");
                     msgInfoMap.put("returnMount",fee);
                 }
@@ -458,6 +458,7 @@ public class WithdrawalServiceImpl implements WithdrawalService {
             String svcCode = hsd.getSvcCode();
             appSvcRelatedInfoDtoList.get(0).setServiceId(hsd.getId());
             appSvcRelatedInfoDtoList.get(0).setServiceCode(svcCode);
+            appSvcRelatedInfoDtoList.get(0).setServiceName(hsd.getSvcName());
         }
 
         appSubmissionDto.setAppGrpId(null);

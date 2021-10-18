@@ -5,9 +5,10 @@
         SELECT * FROM (
             SELECT master_code_id,
                    master_code_key,
-                   (SELECT category_description FROM cm_master_code_category where code_category = mc.code_category) as code_category,
+                   mc.code_category,
                    code_value,
                    code_description,
+                   (SELECT category_description FROM cm_master_code_category where code_category = mc.code_category) as description,
                    filter_value,
                    sequence,
                    remarks,
@@ -19,7 +20,7 @@
             FROM CM_MASTER_CODE as mc) AS ACM
             WHERE ACM.STATUS != 'CMSTAT002'
             <#if id??> AND CHARINDEX(:id, ACM.master_code_id) >0</#if>
-            <#if codeCategory??> AND ACM.code_category = :codeCategory</#if>
+            <#if codeCategory??> AND ACM.description = :codeCategory</#if>
             <#if codeValue??> AND  charindex(:codeValue, ACM.code_value) >0  </#if>
             <#if codeDescription??> AND charindex(:codeDescription, ACM.code_description) >0  </#if>
             <#if filterValue??> AND charindex(:filterValue, ACM.filter_value) >0 </#if>
@@ -121,6 +122,8 @@
             when 10 then 'Session Timeout'
             when 11 then 'Inactive Record'
             when 12 then 'Unauthorised Access Sources'
+            when 13 then 'All Access'
+            when 14 then 'Foreign Interface'
             else 'unknown'
             end operation_desc,
             nric_number,
@@ -575,7 +578,7 @@
 
     <sql key="userFeAccount"  remarks="userFeAccount">
         <![CDATA[
-			SELECT T1.id,T1.ID_NO,T1.ID_TYPE,T1.SALUTATION,T1.DISPLAY_NAME,T1.DESIGNATION,T1.ORGANIZATION_ID,T4.NAME as licenseeName,
+			SELECT DISTINCT T1.id,T1.ID_NO,T1.ID_TYPE,T1.SALUTATION,T1.DISPLAY_NAME,T1.DESIGNATION,T1.ORGANIZATION_ID,T4.NAME as licenseeName,
 			T1.OTHER_DESIGNATION,T1.STATUS,T3.ROLE_ID
 			from user_account T1
 			left join (SELECT MIN(ROLE_ID) as ROLE_ID,USER_ACCT_ID as USER_ACCT_ID from user_role GROUP BY USER_ACCT_ID) T3 on T1.id = T3.USER_ACCT_ID

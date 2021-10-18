@@ -80,7 +80,7 @@
                                                                  cssClass="nice-select cessationReasons" needSort="false"/>
                                                 </iais:value>
                                             </iais:row>
-                                            <div id="reason" hidden>
+                                            <div id="reason" style="display: none;">
                                                 <iais:row>
                                                     <iais:field value="Others" mandatory="true"/>
                                                     <iais:value width="7">
@@ -104,7 +104,7 @@
                                                                                name="patRadio"
                                                                                value="yes"
                                                                                <c:if test="${appCessHci.patNeedTrans ==true}">checked</c:if>
-                                                                               onchange="javascirpt:changePatSelect(this.value);"
+                                                                               onchange="javascirpt:changePatSelect();"
                                                                                aria-invalid="false">
                                                                         <label class="form-check-label"
                                                                                for="radioYes"><span
@@ -119,7 +119,7 @@
                                                                                name="patRadio"
                                                                                value="no"
                                                                                <c:if test="${appCessHci.patNeedTrans == false}">checked</c:if>
-                                                                               onchange="javascirpt:changePatSelect(this.value);"
+                                                                               onchange="javascirpt:changePatSelect();"
                                                                                aria-invalid="false">
                                                                         <label class="form-check-label"
                                                                                for="radioNo"><span
@@ -252,13 +252,13 @@
                                                     <span id="error_patNoConfirm" name="iaisErrorMsg" class="error-msg"></span>
                                                 </div>
                                             </div>--%>
-                                            <div class="form-group" id="transferDetail" hidden>
+                                            <div class="form-group" id="transferDetail" style="display: none;">
                                                 <label class="col-xs-12 col-md-4">Please provide details of why the transfer could not be done and the reasonable measures that the licensee has taken to ensure continuity of care for the affected patients. </label>
                                                 <div class="col-xs-6 col-sm-4 col-md-3">
                                                     <textarea name="transferDetail"  cols="30" rows="2" maxLength="1000" >${appCessHci.transferDetail}</textarea>
                                                 </div>
                                             </div>
-                                            <div class="form-group" id="transferredWhere" hidden>
+                                            <div class="form-group" id="transferredWhere" style="display: none;">
                                                 <label class="col-xs-12 col-md-4">Please state where the patient's records will be transferred to and where the licensee will store the patients' health records after cessation. </label>
                                                 <div class="col-xs-6 col-sm-4 col-md-3">
                                                     <textarea name="transferredWhere"  cols="30" rows="2" maxLength="1000" >${appCessHci.transferredWhere}</textarea>
@@ -276,14 +276,14 @@
                                     <div><h4>The following specified healthcare services will also be ceased as
                                         their underlying <iais:code needLowerCase="true" code="CDN001"/>(s) is/are listed above.</h4>
                                     </div>
-                                    <table class="table-gp tablebox">
+                                    <table aria-describedby="" class="table-gp tablebox">
                                         <tr style="text-align:center">
-                                            <th style="text-align:center;width: 0%">S/N</th>
-                                            <th style="text-align:center;width: 25%"><iais:code code="CDN003"/> Licence No.
+                                            <th scope="col" style="text-align:center;width: 0%">S/N</th>
+                                            <th scope="col" style="text-align:center;width: 25%"><iais:code code="CDN003"/> Licence No.
                                             </th>
-                                            <th style="text-align:center;width: 25%"><iais:code code="CDN003"/> Name</th>
-                                            <th style="text-align:center;width: 25%"><iais:code code="CDN001"/> Licence No.</th>
-                                            <th style="text-align:center;width: 25%"><iais:code code="CDN001"/> Name</th>
+                                            <th scope="col" style="text-align:center;width: 25%"><iais:code code="CDN003"/> Name</th>
+                                            <th scope="col" style="text-align:center;width: 25%"><iais:code code="CDN001"/> Licence No.</th>
+                                            <th scope="col" style="text-align:center;width: 25%"><iais:code code="CDN001"/> Name</th>
                                         </tr>
                                         <c:forEach items="${map.value}" var="spec" varStatus="index">
                                             <tr style="text-align:center">
@@ -321,8 +321,8 @@
                 </div>
             </div>
         </div>
-        <div class="modal fade" id="PRS_SERVICE_DOWN" role="dialog" aria-labelledby="myModalLabel" style="left: 50%;top: 50%;transform: translate(-50%,-50%);min-width:80%; overflow: visible;bottom: inherit;right: inherit;">
-            <div class="modal-dialog" role="document">
+        <div class="modal fade" id="PRS_SERVICE_DOWN" role="dialog" aria-labelledby="myModalLabel">
+            <div class="modal-dialog modal-dialog-centered" role="document">
                 <div class="modal-content">
                     <div class="modal-body" >
                         <div class="row">
@@ -512,6 +512,24 @@
         if ($('#PRS_SERVICE_DOWN_INPUT').val() == 'PRS_SERVICE_DOWN') {
             $('#PRS_SERVICE_DOWN').modal('show');
         }
+        $("textarea[maxlength]").blur(function() {
+            var area=$(this);
+            var max = parseInt(area.attr("maxlength"),10);
+            if (max > 0) {
+                var value = area.val();
+                var valueLength = area.val().length;
+                if (value && value.indexOf("\n") > -1) {
+                    valueLength += value.split('\n').length - 1;
+                }
+                if (valueLength > max) {
+                    var targetVal = value.substr(0, max);
+                    if (value && value.indexOf("\n") > -1) {
+                        targetVal = value.replaceAll("\n", "\r\n").substr(0, max).replaceAll("\r\n", "\n");
+                    }
+                    area.val(targetVal);
+                }
+            }
+        });
     });
 
 </script>

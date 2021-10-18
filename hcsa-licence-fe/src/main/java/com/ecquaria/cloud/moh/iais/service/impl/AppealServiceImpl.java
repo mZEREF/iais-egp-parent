@@ -351,6 +351,7 @@ public class AppealServiceImpl implements AppealService {
         List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList = new ArrayList<>(1);
         AppSvcRelatedInfoDto appSvcRelatedInfoDto = new AppSvcRelatedInfoDto();
         appSvcRelatedInfoDto.setServiceCode(serviceByServiceName.getSvcCode());
+        appSvcRelatedInfoDto.setServiceName(serviceByServiceName.getSvcName());
         appSvcRelatedInfoDtoList.add(appSvcRelatedInfoDto);
         appSubmissionDto.setAppSvcRelatedInfoDtoList(appSvcRelatedInfoDtoList);
         appSubmissionDto.setServiceName(serviceName);
@@ -909,8 +910,8 @@ public class AppealServiceImpl implements AppealService {
         String[] emailAddress = ParamUtil.getStrings(request, "emailAddress");
         for (int i = 0; i < size; i++) {
             appSvcCgoDto = new AppSvcPrincipalOfficersDto();
-            //cgoIndexNo
-            String cgoIndexNo = new StringBuffer().append("cgo-").append(i).append("-").toString();
+            //indexNo
+            String indexNo = new StringBuffer().append("cgo-").append(i).append("-").toString();
             appSvcCgoDto.setAssignSelect(assignSelect[i]);
             appSvcCgoDto.setSalutation(salutation[i]);
             appSvcCgoDto.setName(name[i]);
@@ -922,7 +923,7 @@ public class AppealServiceImpl implements AppealService {
             appSvcCgoDto.setOtherDesignation(otherDesignations[i]);
             appSvcCgoDto.setMobileNo(mobileNo[i]);
             appSvcCgoDto.setEmailAddr(emailAddress[i]);
-            appSvcCgoDto.setCgoIndexNo(cgoIndexNo);
+            appSvcCgoDto.setIndexNo(indexNo);
             appSvcCgoDto.setOtherQualification(otherQualifications[i]);
             if("Y".equals(prsFlag)){
                 ProfessionalResponseDto professionalResponseDto = prsFlag(professionRegoNo[i]);

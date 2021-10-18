@@ -16,8 +16,10 @@ import com.ecquaria.cloud.moh.iais.common.dto.myinfo.MyInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.EgpUserRoleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.FeUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.FeUserQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserRoleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrganizationDto;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -36,11 +38,6 @@ import com.ecquaria.cloud.moh.iais.service.client.LicenceInboxClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicenseeClient;
 import com.ecquaria.cloud.pwd.util.PasswordUtil;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpStatus;
 import org.json.JSONArray;
@@ -49,6 +46,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import sop.rbac.user.UserIdentifier;
+
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -175,8 +178,8 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
         feAdminClient.updateLicence(licenseeDto);
     }
 
-    private void refreshSubLicenseeInfo(LicenseeDto licenseeDto) {
-        licenceClient.refreshSubLicenseeInfo(licenseeDto);
+    private String refreshSubLicenseeInfo(LicenseeDto licenseeDto) {
+        return licenceClient.refreshSubLicenseeInfo(licenseeDto).getEntity();
     }
     private void refreshBeSubLicenseeInfo(LicenseeDto licenseeDto) {
         eicGatewayFeMainClient.refreshSubLicenseeInfo(licenseeDto);
@@ -216,8 +219,11 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
     }
 
     @Override
-    public FeUserDto getFeUserAccountByNricAndType(String nric, String idType) {
-        return feUserClient.getInternetUserByNricAndIdType(nric, idType).getEntity();
+    public FeUserDto getFeUserAccountByNricAndType(String nric, String idType, String uen) {
+        if(StringUtil.isEmpty(uen)) {
+            uen = "null";
+        }
+        return feUserClient.getInternetUserByNricAndIdType(nric, idType, uen).getEntity();
     }
 
 
@@ -302,6 +308,16 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
     @Override
     public void updateEgpUser(FeUserDto feUserDto) {
         if(feUserDto != null){
+            String status = feUserDto.getStatus();
+            Character accountStatus = null;
+            if (AppConsts.COMMON_STATUS_DELETED.equals(status)) {
+                accountStatus = ClientUser.STATUS_TERMINATED;
+            } else if (AppConsts.COMMON_STATUS_IACTIVE.equals(status)) {
+                accountStatus = ClientUser.STATUS_INACTIVE;
+            } else if (AppConsts.COMMON_STATUS_ACTIVE.equals(status)) {
+                accountStatus = ClientUser.STATUS_ACTIVE;
+            }
+
             ClientUser clientUser = userClient.findUser(AppConsts.HALP_EGP_DOMAIN, feUserDto.getUserId()).getEntity();
             String pwd = PasswordUtil.encryptPassword(AppConsts.HALP_EGP_DOMAIN, IaisEGPHelper.generateRandomString(6), null);
             if (clientUser != null){
@@ -311,7 +327,7 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
                 clientUser.setIdentityNo(feUserDto.getIdentityNo());
                 clientUser.setMobileNo(feUserDto.getMobileNo());
                 clientUser.setContactNo(feUserDto.getOfficeTelNo());
-
+                clientUser.setAccountStatus(accountStatus);
                 //prevent history simple pwd throw 500
                 clientUser.setPassword(pwd);
 
@@ -319,12 +335,11 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
                 //delete egp role
                 feMainRbacClient.deleteUerRoleIds(AppConsts.HALP_EGP_DOMAIN,feUserDto.getUserId(),RoleConsts.USER_ROLE_ORG_ADMIN);
                 feMainRbacClient.deleteUerRoleIds(AppConsts.HALP_EGP_DOMAIN,feUserDto.getUserId(),RoleConsts.USER_ROLE_ORG_USER);
-
-            }else{
+            } else {
                 clientUser = MiscUtil.transferEntityDto(feUserDto, ClientUser.class);
                 clientUser.setUserDomain(AppConsts.HALP_EGP_DOMAIN);
                 clientUser.setId(feUserDto.getUserId());
-                clientUser.setAccountStatus(ClientUser.STATUS_ACTIVE);
+                clientUser.setAccountStatus(accountStatus);
                 String email = feUserDto.getEmail();
                 String salutation = feUserDto.getSalutation();
                 clientUser.setSalutation(salutation);
@@ -349,27 +364,28 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
             }
 
             //assign role
-            EgpUserRoleDto egpUserRole = new EgpUserRoleDto();
-            String roleName = feUserDto.getUserRole();
-            egpUserRole.setUserId(feUserDto.getUserId());
-            egpUserRole.setUserDomain(AppConsts.HALP_EGP_DOMAIN);
-            egpUserRole.setRoleId(roleName);
-            egpUserRole.setPermission("A");
-            //assign role
-            feMainRbacClient.createUerRoleIds(egpUserRole).getEntity();
-
-            //corppass
-            if (RoleConsts.USER_ROLE_ORG_ADMIN.equalsIgnoreCase(roleName) &&
-                    feUserDto.isCorpPass()){
-                EgpUserRoleDto role = new EgpUserRoleDto();
-                role.setUserId(feUserDto.getUserId());
-                role.setUserDomain(AppConsts.HALP_EGP_DOMAIN);
-                role.setPermission("A");
-                role.setRoleId(RoleConsts.USER_ROLE_ORG_USER);
+            if (!AppConsts.COMMON_STATUS_DELETED.equals(status)) {
+                EgpUserRoleDto egpUserRole = new EgpUserRoleDto();
+                String roleName = feUserDto.getUserRole();
+                egpUserRole.setUserId(feUserDto.getUserId());
+                egpUserRole.setUserDomain(AppConsts.HALP_EGP_DOMAIN);
+                egpUserRole.setRoleId(roleName);
+                egpUserRole.setPermission("A");
                 //assign role
-                feMainRbacClient.createUerRoleIds(role).getEntity();
-            }
+                feMainRbacClient.createUerRoleIds(egpUserRole).getEntity();
 
+                //corppass
+                if (RoleConsts.USER_ROLE_ORG_ADMIN.equalsIgnoreCase(roleName) &&
+                        feUserDto.isCorpPass()){
+                    EgpUserRoleDto role = new EgpUserRoleDto();
+                    role.setUserId(feUserDto.getUserId());
+                    role.setUserDomain(AppConsts.HALP_EGP_DOMAIN);
+                    role.setPermission("A");
+                    role.setRoleId(RoleConsts.USER_ROLE_ORG_USER);
+                    //assign role
+                    feMainRbacClient.createUerRoleIds(role).getEntity();
+                }
+            }
 
         }
     }
@@ -421,16 +437,16 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
             organizationDto.setLicenseeDto(licenseeDto);
         }
         organizationDto.setId(organizationById.getId());
-        updateUserBe(organizationDto);
         if(amendLicensee){
             //update licensee
             licenseeDto.setOrganizationId(organizationDto.getId());
             licenseeDto.setName(feUserDto.getDisplayName());
             licenseeDto.setEmilAddr(feUserDto.getEmail());
-            licenseeEntityDto.setOfficeTelNo(feUserDto.getOfficeTelNo());
+            licenseeDto.setUenNo(organizationDto.getUenNo());
+            licenseeEntityDto.setOfficeTelNo(StringUtil.isNotEmpty(feUserDto.getOfficeTelNo()) ? feUserDto.getOfficeTelNo() : feUserDto.getMobileNo());
             licenseeEntityDto.setOfficeEmailAddr(feUserDto.getEmail());
             if (Objects.nonNull(licenseeIndividualDto)) {
-                licenseeIndividualDto.setSalutation(feUserDto.getSalutation());
+                licenseeIndividualDto.setSalutation(StringUtil.isEmpty(feUserDto.getSalutation()) ? "-" : feUserDto.getSalutation());
                 licenseeIndividualDto.setIdType(feUserDto.getIdType());
                 licenseeIndividualDto.setIdNo(feUserDto.getIdentityNo());
                 licenseeIndividualDto.setMobileNo(feUserDto.getMobileNo());
@@ -439,8 +455,18 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
             }
             licenseeDto.setLicenseeEntityDto(licenseeEntityDto);
             refreshLicensee(licenseeDto);
-            refreshSubLicenseeInfo(licenseeDto);
+        }
+        updateUserBe(organizationDto);
+
+        //note update sublic must in the end
+        if(amendLicensee){
+            log.info(StringUtil.changeForLog("Refresh SubLicenseeInfo Start"));
+            licenseeDto.setId(null);
+            String sublicId = refreshSubLicenseeInfo(licenseeDto);
+            log.info(StringUtil.changeForLog("id: " + sublicId));
+            licenseeDto.setId(sublicId);
             refreshBeSubLicenseeInfo(licenseeDto);
+            log.info(StringUtil.changeForLog("Refresh SubLicenseeInfo End"));
         }
         return licenseeDto;
     }
@@ -577,10 +603,10 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
     @Override
     public FeUserDto syncFeUserFromBe(FeUserDto feUserDto) {
         log.info("Synchronize FE user from BE");
+        log.info(StringUtil.changeForLog("Data: " + JsonUtil.parseToJson(feUserDto)));
         if (!isValid(feUserDto)) {
             return feUserDto;
         }
-        log.info(StringUtil.changeForLog("User Id: " + feUserDto.getUserId()));
         // syncronize halp user
         log.info("Synchronize iais user");
         FeUserDto feUserDtoRes = editUserAccount(feUserDto);
@@ -589,6 +615,50 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
         updateEgpUser(feUserDto);
         log.info("Synchronize FE user from BE end.");
         return feUserDtoRes;
+    }
+
+    @Override
+    public String getActiveUserAndRoleFlag(FeUserDto userSession) {
+        //if userSession == null, crop pass first login
+        if(userSession != null) {
+            //if id == null, sing pass login
+            String id = userSession.getId();
+            String identityNo = userSession.getIdentityNo();
+            String idType = userSession.getIdType();
+            if(!StringUtil.isEmpty(identityNo) && !StringUtil.isEmpty(idType)) {
+                List<OrgUserDto> orgUserDtoList = feUserClient.getUserListByNricAndIdType(identityNo, idType).getEntity();
+                if(!IaisCommonUtils.isEmpty(orgUserDtoList)) {
+                    for(OrgUserDto orgUserDto : orgUserDtoList) {
+                        //find sing pass account or crop pass account
+                        if ((StringUtil.isEmpty(id) && orgUserDto.getUserId().equals(identityNo))
+                            || (!StringUtil.isEmpty(id) && id.equals(orgUserDto.getId()))) {
+                            String userStatus = orgUserDto.getStatus();
+                            //if find, check status
+                            if (AppConsts.COMMON_STATUS_ACTIVE.equals(userStatus)) {
+                                List<OrgUserRoleDto> orgUserRoleDtos = feUserClient.retrieveRolesByUserAccId(orgUserDto.getId()).getEntity();
+                                if (!IaisCommonUtils.isEmpty(orgUserRoleDtos)) {
+                                    for (OrgUserRoleDto orgUserRoleDto : orgUserRoleDtos) {
+                                        if (orgUserRoleDto != null) {
+                                            if (AppConsts.COMMON_STATUS_ACTIVE.equals(orgUserRoleDto.getStatus()) && RoleConsts.USER_ROLE_ORG_USER.equals(orgUserRoleDto.getRoleName())) {
+                                                //account active
+                                                return AppConsts.TRUE;
+                                            }
+                                        }
+                                    }
+                                }
+                            } else {
+                                return AppConsts.FALSE;
+                            }
+                        }
+                    }
+                    //first login
+                    return AppConsts.EMPTY_STR_NA;
+                } else {
+                    return AppConsts.EMPTY_STR_NA;
+                }
+            }
+        }
+        return AppConsts.FALSE;
     }
 
     private boolean isValid(FeUserDto feUserDto) {

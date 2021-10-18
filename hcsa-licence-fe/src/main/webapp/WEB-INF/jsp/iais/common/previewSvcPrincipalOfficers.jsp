@@ -1,8 +1,3 @@
-<c:forEach var="stepSchem" items="${currentPreviewSvcInfo.hcsaServiceStepSchemeDtos}">
-    <c:if test="${stepSchem.stepCode == 'SVST004'}">
-        <c:set var="currStepName" value="${stepSchem.stepName}"/>
-    </c:if>
-</c:forEach>
 <div class="amended-service-info-gp">
     <label style="font-size: 2.2rem">${currStepName}</label>
     <div class="amend-preview-info">
@@ -35,7 +30,10 @@
                                 <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span><strong>Nominee<c:if test="${dpoSize > 1}"> ${dpoIndex}</c:if>:</strong></p>
                             </div>
                         </c:if>
-                        <table class="col-xs-12">
+                        <table aria-describedby="" class="col-xs-12">
+                            <thead style="display: none">
+                            <tr><th scope="col"></th></tr>
+                            </thead>
                             <c:choose>
                                 <c:when test="${po.psnType=='PO'}">
 

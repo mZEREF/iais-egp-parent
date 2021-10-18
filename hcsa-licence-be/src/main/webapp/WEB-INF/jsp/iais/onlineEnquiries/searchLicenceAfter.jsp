@@ -77,7 +77,7 @@
 
     function checkAll(isAso) {
         if ($('#checkboxAll').is(':checked')) {
-            $("input[name='appIds']").attr("checked", "true");
+            $('input[name="appIds"]').prop("checked", true);
             var chk = $("[name='appIds']:checked");
             var dropIds = new Array();
             chk.each(function () {
@@ -91,7 +91,7 @@
             }
 
         } else {
-            $("input[name='appIds']").removeAttr("checked");
+            $('input[name="appIds"]').prop("checked", false);
             $('.CeaseBtn').prop('disabled', true);
             $('.ReqForInfoBtn').prop('disabled', true);
         }
@@ -198,11 +198,11 @@
         chk.each(function () {
             dropIds.push($(this).val());
         });
-        var flog = false;
+        var flog = true;
         for (var i = 0; i < dropIds.length; i++) {
             var str = dropIds[i].split('|')[3];
-            if (str === 'Active') {
-                flog = true;
+            if (str !== 'Active') {
+                flog = false;
             }
         }
         if (flog) {

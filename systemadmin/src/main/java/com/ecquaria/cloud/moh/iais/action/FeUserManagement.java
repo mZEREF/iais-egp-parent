@@ -35,6 +35,7 @@ import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -132,18 +133,19 @@ public class FeUserManagement {
 
     public void delete(BaseProcessClass bpc){
         String[] userId =  ParamUtil.getMaskedStrings(bpc.request, "userId");
-        for (String item:userId
-             ) {
-            if (!StringUtil.isEmpty(item)){
+        log.info(StringUtil.changeForLog("The deleted user: " + Arrays.toString(userId)));
+        for (String item : userId) {
+            if (!StringUtil.isEmpty(item)) {
                 OrgUserDto orgUserDto = intranetUserService.findIntranetUserById(item);
                 orgUserDto.setStatus(AppConsts.COMMON_STATUS_DELETED);
                 orgUserDto.setIdentityNo(orgUserDto.getIdNumber());
                 intranetUserService.updateOrgUser(orgUserDto);
                 //sync fe db
                 try {
-                    String orgId = orgUserDto.getOrgId();
                     List<FeUserDto> userList = intranetUserService.getUserListByNricAndIdType(orgUserDto.getIdNumber(),orgUserDto.getIdType());
-                    Optional<FeUserDto> user = userList.stream().filter(i -> i.getOrgId().equals(orgId)).findFirst();
+                    Optional<FeUserDto> user = userList.stream()
+                            .filter(i -> item.equals(i.getId()))
+                            .findAny();
                     user.ifPresent(i -> {
                         i.setStatus(AppConsts.COMMON_STATUS_DELETED);
                         eicGatewayClient.syncFeUser(i);
@@ -163,19 +165,18 @@ public class FeUserManagement {
         CrudHelper.doPaging(searchParamGroup,bpc.request);
     }
 
-    public void edit(BaseProcessClass bpc){
-        ParamUtil.setSessionAttr(bpc.request,"inter_user_attr_is_corppass",null);
-        String userId = ParamUtil.getMaskedString(bpc.request,"userId");
+    public void edit(BaseProcessClass bpc) {
+        ParamUtil.setSessionAttr(bpc.request, "inter_user_attr_is_corppass", null);
+        String userId = ParamUtil.getMaskedString(bpc.request, "userId");
         FeUserDto feUserDto;
-
-        if(!StringUtil.isEmpty(userId)){
+        if (!StringUtil.isEmpty(userId)) {
             feUserDto = organizationClient.getUserAccount(userId).getEntity();
-            ParamUtil.setSessionAttr(bpc.request,"inter_user_attr",feUserDto);
-        }else{
-            feUserDto = (FeUserDto)ParamUtil.getSessionAttr(bpc.request,"inter_user_attr");
+            ParamUtil.setSessionAttr(bpc.request, "inter_user_attr", feUserDto);
+        } else {
+            feUserDto = (FeUserDto) ParamUtil.getSessionAttr(bpc.request, "inter_user_attr");
         }
-        ParamUtil.setSessionAttr(bpc.request,"feusertitle", "Edit");
-        organizationSelection(bpc,feUserDto.getOrgId());
+        ParamUtil.setSessionAttr(bpc.request, "feusertitle", "Edit");
+        organizationSelection(bpc, feUserDto.getOrgId());
     }
 
     public void create(BaseProcessClass bpc){
@@ -206,9 +207,13 @@ public class FeUserManagement {
             active = "active".equals(active) ? AppConsts.COMMON_STATUS_ACTIVE : AppConsts.COMMON_STATUS_IACTIVE;
             userAttr = Optional.ofNullable(userAttr).orElseGet(() -> new FeUserDto());
             String prevIdNumber = userAttr.getIdentityNo();
-            userAttr.setIdType(idType);
-            userAttr.setIdentityNo(idNo);
-            userAttr.setIdNumber(idNo);
+            if (!StringUtil.isEmpty(userAttr.getUenNo()) || "Create".equals(title)) {
+                userAttr.setIdType(idType);
+                userAttr.setIdentityNo(idNo);
+                userAttr.setIdNumber(idNo);
+            } else {
+                idNo = userAttr.getIdentityNo();
+            }
             userAttr.setDisplayName(name);
             userAttr.setSalutation(salutation);
             userAttr.setDesignation(designation);
@@ -227,7 +232,6 @@ public class FeUserManagement {
             orgUserRoleDtoUser.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
 
             if("admin".equals(role)){
-                //TODO i don't know why this need two role
                 orgUserRoleDtoAdmin.setRoleName(RoleConsts.USER_ROLE_ORG_ADMIN);
                 orgUserRoleDtoUser.setRoleName(RoleConsts.USER_ROLE_ORG_USER);
                 orgUserRoleDtoList.add(orgUserRoleDtoAdmin);

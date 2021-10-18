@@ -7,6 +7,7 @@
         <table aria-describedby="" class="table">
             <thead>
             <tr >
+                <th scope="col" style="display: none"></th>
                 <iais:sortableHeader needSort="true"  field="NAME" value="Name"/>
                 <iais:sortableHeader needSort="true"  field="PREMISES_TYPE" value="Mode of Service Delivery"/>
                 <iais:sortableHeader needSort="false"  field="ADDRESS" value="Address"/>

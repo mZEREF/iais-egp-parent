@@ -31,7 +31,6 @@ import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.EicClientConstant;
-import com.ecquaria.cloud.moh.iais.helper.AccessUtil;
 import com.ecquaria.cloud.moh.iais.helper.EicRequestTrackingHelper;
 import com.ecquaria.cloud.moh.iais.helper.HalpStringUtils;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
@@ -403,13 +402,12 @@ public class InboxServiceImpl implements InboxService {
     }
 
     @Override
-    public AuditTrailDto getLastLoginInfo(String loginUserId) {
+    public AuditTrailDto getLastLoginInfo(String loginUserId, String sessionId) {
         AuditTrailDto auditTrailDto = new AuditTrailDto();
-        AuditTrailDto loginDto = auditTrailMainClient.getLastLoginInfo(loginUserId).getEntity();
+        AuditTrailDto loginDto = auditTrailMainClient.getLastLoginInfo(loginUserId, sessionId).getEntity();
         if (loginDto != null) {
             auditTrailDto.setActionTime(loginDto.getActionTime());
-            String sessionId = loginDto.getSessionId();
-            AuditTrailDto actDto = auditTrailMainClient.getLastAction(sessionId).getEntity();
+            AuditTrailDto actDto = auditTrailMainClient.getLastAction(loginDto.getSessionId()).getEntity();
             if (actDto != null) {
                 auditTrailDto.setModule(actDto.getModule());
                 auditTrailDto.setFunctionName(actDto.getFunctionName());
@@ -449,6 +447,16 @@ public class InboxServiceImpl implements InboxService {
             Boolean entity = appInboxClient.isLiscenceAppealOrCessation(licenceId).getEntity();
             if(!entity){
                 errorMap.put("errorMessage",MessageUtil.getMessageDesc("INBOX_ACK010"));
+            }
+            List<LicenceDto> licenceDtos = licenceInboxClient.getLicenceDtosByLicenseeId(licenceDto.getLicenseeId()).getEntity();
+            for (LicenceDto licenceDto1 : licenceDtos){
+                if (ApplicationConsts.LICENCE_STATUS_APPROVED.equals(licenceDto1.getStatus()) &&
+                        StringUtil.isNotEmpty(licenceDto.getSvcName()) &&
+                        licenceDto.getSvcName().equals(licenceDto1.getSvcName()) &&
+                        StringUtil.isNotEmpty(licenceDto1.getOriginLicenceId()) &&
+                        licenceDto1.getOriginLicenceId().equals(licenceDto.getId())){
+                    errorMap.put("errorMessage",MessageUtil.getMessageDesc("INBOX_ACK025"));
+                }
             }
         }else{
             errorMap.put("errorMessage",MessageUtil.getMessageDesc("INBOX_ACK011"));
@@ -527,12 +535,12 @@ public class InboxServiceImpl implements InboxService {
     @Override
     public LicenceViewDto getLicenceViewDtoByLicenceId(String licenceId) {
         LicenceViewDto licenceViewDto =  licenceInboxClient.getAllStatusLicenceByLicenceId(licenceId).getEntity();
-        if(licenceViewDto!=null){
-            LicenceDto licenceDto = licenceViewDto.getLicenceDto();
-            String licenseeId = licenceDto.getLicenseeId();
-            LicenseeDto licenseeDto = this.getLicenseeDtoBylicenseeId(licenseeId);
-            licenceViewDto.setLicenseeDto(licenseeDto);
-        }
+//        if(licenceViewDto!=null){
+//            LicenceDto licenceDto = licenceViewDto.getLicenceDto();
+//            String licenseeId = licenceDto.getLicenseeId();
+//            LicenseeDto licenseeDto = this.getLicenseeDtoBylicenseeId(licenseeId);
+//            licenceViewDto.setLicenseeDto(licenseeDto);
+//        }
         return licenceViewDto;
     }
 

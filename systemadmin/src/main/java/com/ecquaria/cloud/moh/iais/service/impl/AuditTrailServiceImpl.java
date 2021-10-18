@@ -13,9 +13,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.audit.AuditTrailExcelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.audit.AuditTrailQueryDto;
-import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
-import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.dto.AuditLogRecView;
 import com.ecquaria.cloud.moh.iais.service.AuditTrailService;
 import com.ecquaria.cloud.moh.iais.service.client.AuditTrailClient;
@@ -61,9 +59,9 @@ public class AuditTrailServiceImpl implements AuditTrailService {
     public ArrayList<AuditLogRecView> genAuditLogRecList(String detail) {
         ArrayList<AuditLogRecView> list = IaisCommonUtils.genNewArrayList();
         ObjectMapper mapper = new ObjectMapper();
+        Map<String, Object> map = IaisCommonUtils.genNewHashMap();
         try {
             JsonNode jn = mapper.readTree(detail);
-            Map<String, Object> map = null;
             if (jn.isArray()) {
                 map = IaisCommonUtils.genNewHashMap(jn.size());
                 for (JsonNode js : jn) {
@@ -73,13 +71,16 @@ public class AuditTrailServiceImpl implements AuditTrailService {
                         map.put(ent.getKey(), ent.getValue());
                     }
                 }
-            } else {
-                map = JsonUtil.parseToObject(detail, Map.class);
+                if(map.isEmpty()){
+                    map.put(detail,detail);
+                }
+            }else {
+                map.put(detail,detail);
             }
-            addAuditLogRevToList(list, map);
         } catch (JsonProcessingException e) {
-            throw new IaisRuntimeException(e);
+            map.put(detail,detail);
         }
+        addAuditLogRevToList(list, map);
         return list;
     }
 

@@ -26,7 +26,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSubtypeOrSubsumedDto;
-import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgGiroAccountInfoDto;
 import com.ecquaria.cloud.moh.iais.common.utils.CopyUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
@@ -295,6 +294,7 @@ public class RetriggerGiroPaymentDelegator {
     public void prePayment(BaseProcessClass bpc) throws Exception {
         log.info(StringUtil.changeForLog("the prePayment start ...."));
         AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request,NewApplicationDelegator.APPSUBMISSIONDTO);
+        List<AppSubmissionDto> forGiroList = IaisCommonUtils.genNewArrayList();
         if(appSubmissionDto != null){
             String appType = appSubmissionDto.getAppType();
             List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = appSubmissionDto.getAppSvcRelatedInfoDtoList();
@@ -303,11 +303,13 @@ public class RetriggerGiroPaymentDelegator {
                 appSubmissionDto.setFeeInfoDtos(feeDto.getFeeInfoDtos());
                 String amountStr = Formatter.formatterMoney(appSubmissionDto.getAmount());
                 appSubmissionDto.setAmountStr(amountStr);
+                forGiroList.add(appSubmissionDto);
             }else if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType)){
                 List<AppSubmissionDto> appSubmissionDtoList = IaisCommonUtils.genNewArrayList();
                 if(!IaisCommonUtils.isEmpty(appSvcRelatedInfoDtos)){
                     double rfcAmount = 100;
                     for(AppSvcRelatedInfoDto appSvcRelatedInfoDto:appSvcRelatedInfoDtos){
+                        appSubmissionDto.setLicenceId(appSvcRelatedInfoDto.getLicenceId());
                         AppSubmissionDto oneSvcSubmisonDto = (AppSubmissionDto) CopyUtil.copyMutableObject(appSubmissionDto);
                         List<AppSvcRelatedInfoDto> oneSvcRelateInfoDto = IaisCommonUtils.genNewArrayList();
                         oneSvcRelateInfoDto.add(appSvcRelatedInfoDto);
@@ -318,6 +320,7 @@ public class RetriggerGiroPaymentDelegator {
                         appSubmissionDtoList.add(oneSvcSubmisonDto);
                     }
                 }
+                forGiroList.add(appSubmissionDto);
                 ParamUtil.setSessionAttr(bpc.request,"appSubmissionDtos", (Serializable) appSubmissionDtoList);
             }else if(ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appType)){
                 List<AppSubmissionDto> rfcAppSubmissionDtos = IaisCommonUtils.genNewArrayList();
@@ -327,6 +330,7 @@ public class RetriggerGiroPaymentDelegator {
                 if(!IaisCommonUtils.isEmpty(appSvcRelatedInfoDtos) && !IaisCommonUtils.isEmpty(appGrpPremisesDtos)){
                     for(AppSvcRelatedInfoDto appSvcRelatedInfoDto:appSvcRelatedInfoDtos){
                         String applicationType = appSvcRelatedInfoDto.getApplicationType();
+                        appSubmissionDto.setLicenceId(appSvcRelatedInfoDto.getLicenceId());
                         AppSubmissionDto oneSvcSubmisonDto = (AppSubmissionDto) CopyUtil.copyMutableObject(appSubmissionDto);
                         List<AppSvcRelatedInfoDto> oneSvcRelateInfoDto = IaisCommonUtils.genNewArrayList();
                         oneSvcRelateInfoDto.add(appSvcRelatedInfoDto);
@@ -342,6 +346,7 @@ public class RetriggerGiroPaymentDelegator {
                             renewSubmisonDtos.add(oneSvcSubmisonDto);
                         }
                     }
+                    forGiroList.addAll(renewSubmisonDtos);
                 }
                 //set fee info
                 boolean isCharity = NewApplicationHelper.isCharity(bpc.request);
@@ -363,10 +368,9 @@ public class RetriggerGiroPaymentDelegator {
             ParamUtil.setRequestAttr(bpc.request,NewApplicationConstant.ATTR_RELOAD_PAYMENT_METHOD,appSubmissionDto.getPaymentMethod());
         }
         boolean isGiroAcc = false;
-        List<OrgGiroAccountInfoDto> orgGiroAccountInfoDtos = appSubmissionService.getOrgGiroAccDtosByLicenseeId(NewApplicationHelper.getLicenseeId(bpc.request));
-        if(!IaisCommonUtils.isEmpty(orgGiroAccountInfoDtos)){
+        List<SelectOption> giroAccSel = NewApplicationHelper.getGiroAccOptions(forGiroList, appSubmissionDto);
+        if(!IaisCommonUtils.isEmpty(giroAccSel)){
             isGiroAcc = true;
-            List<SelectOption> giroAccSel = NewApplicationHelper.genGiroAccSel(orgGiroAccountInfoDtos);
             ParamUtil.setRequestAttr(bpc.request, "giroAccSel", giroAccSel);
         }
         ParamUtil.setRequestAttr(bpc.request,"IsGiroAcc",isGiroAcc);
@@ -504,10 +508,9 @@ public class RetriggerGiroPaymentDelegator {
                 switch2 = SWITCH_VALUE_PRE_PAYMENT;
             }
             boolean isGiroAcc = false;
-            List<OrgGiroAccountInfoDto> orgGiroAccountInfoDtos = appSubmissionService.getOrgGiroAccDtosByLicenseeId(NewApplicationHelper.getLicenseeId(bpc.request));
-            if(!IaisCommonUtils.isEmpty(orgGiroAccountInfoDtos)){
+            List<SelectOption> giroAccSel = NewApplicationHelper.getGiroAccOptions(null, appSubmissionDto);
+            if(!IaisCommonUtils.isEmpty(giroAccSel)){
                 isGiroAcc = true;
-                List<SelectOption> giroAccSel = NewApplicationHelper.genGiroAccSel(orgGiroAccountInfoDtos);
                 ParamUtil.setRequestAttr(bpc.request, "giroAccSel", giroAccSel);
             }
             ParamUtil.setRequestAttr(bpc.request,"IsGiroAcc",isGiroAcc);

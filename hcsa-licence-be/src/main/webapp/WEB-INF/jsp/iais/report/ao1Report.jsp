@@ -11,6 +11,11 @@
         <div class="col-xs-12">
             <div class="table-gp">
                 <table aria-describedby="" class="table">
+                        <thead style="display: none">
+                        <tr>
+                            <th scope="col"></th>
+                        </tr>
+                        </thead>
                     <tr>
                         <td class="col-xs-4">
                             <p>Licence No.</p>
@@ -116,6 +121,11 @@
         <div class="col-xs-12">
             <div class="table-gp">
                 <table aria-describedby="" class="table">
+                        <thead style="display: none">
+                        <tr>
+                            <th scope="col"></th>
+                        </tr>
+                        </thead>
                     <tr>
                         <td class="col-xs-4">
                             <p>Date of Inspection</p>
@@ -204,6 +214,11 @@
                     <p><h4><strong><span>Part I: Inspection Checklist</span></strong></h4></p>
                 </div>
                 <table aria-describedby="" class="table">
+                        <thead style="display: none">
+                        <tr>
+                            <th scope="col"></th>
+                        </tr>
+                        </thead>
                     <tr>
                         <td class="col-xs-4">
                             <p>Checklist Used</p>
@@ -217,6 +232,11 @@
                     <p><h4><strong><span>Part II: Findings</span></strong></h4></p>
                 </div>
                 <table aria-describedby="" class="table">
+                        <thead style="display: none">
+                        <tr>
+                            <th scope="col"></th>
+                        </tr>
+                        </thead>
                     <tr>
                         <td class="col-xs-4">
                             <p>Remarks</p>
@@ -239,12 +259,21 @@
                     </tr>
                     <tr>
                         <td class="col-xs-4">
-                            <p>Recommended Best Practices</p>
+                            <p>Recommendation</p>
                         </td>
                         <td class="col-xs-4">
                             <p>${insRepDto.bestPractice}</p>
                         </td>
                         <td class="col-xs-4">
+                    </tr>
+                    <tr>
+                        <td class="col-xs-4">
+                            <p>Observation</p>
+                        </td>
+                        <td class="col-xs-4">
+                            <p>${insRepDto.observation}</p>
+                        </td>
+                        <td class="col-xs-4"></td>
                     </tr>
                     <tr>
                         <td class="col-xs-4">
@@ -322,6 +351,11 @@
         <div class="col-xs-12">
             <div class="table-gp">
                 <table aria-describedby="" class="table">
+                        <thead style="display: none">
+                        <tr>
+                            <th scope="col"></th>
+                        </tr>
+                        </thead>
                     <tr>
                         <td class="col-xs-4">
                             <p>Rectified</p>
@@ -405,12 +439,18 @@
             <div class="col-xs-12">
                 <div class="table-gp">
                     <table aria-describedby="" class="table">
+                        <thead style="display: none">
+                        <tr>
+                            <th scope="col"></th>
+                        </tr>
+                        </thead>
                         <tr>
                             <td class="col-xs-4">
                                 <p>Recommendation</p>
                             </td>
                             <td class="col-xs-4">
-                                <p><iais:code code="${appPremisesRecommendationDto.period}"/></p>
+                                <p>
+                                    <iais:code code="${empty appPremisesRecommendation_Show_Desc ? appPremisesRecommendationDto.period : appPremisesRecommendation_Show_Desc}"/></p>
                             </td>
                             <td class="col-xs-4"></td>
                         </tr>
@@ -428,6 +468,11 @@
             <div class="col-xs-12">
                 <div class="table-gp">
                     <table aria-describedby="" class="table">
+                        <thead style="display: none">
+                        <tr>
+                            <th scope="col"></th>
+                        </tr>
+                        </thead>
                         <tr>
                             <td class="col-xs-4">
                                 <p>Follow up Action</p>
@@ -487,6 +532,11 @@
             <div class="col-xs-12">
                 <div class="table-gp">
                     <table aria-describedby="" class="table">
+                        <thead style="display: none">
+                        <tr>
+                            <th scope="col"></th>
+                        </tr>
+                        </thead>
                         <tr>
                             <td class="col-xs-4">
                                 <p>Follow up Action</p>

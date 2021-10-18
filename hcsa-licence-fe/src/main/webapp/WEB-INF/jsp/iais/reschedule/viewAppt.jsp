@@ -11,6 +11,11 @@
 %>
 <webui:setLayout name="iais-internet"/>
 <%@include file="../common/dashboard.jsp"%>
+<style>
+    .form-check {
+        display: revert;
+    }
+</style>
 <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
     <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
     <div class="main-content">
@@ -27,8 +32,7 @@
                         <table aria-describedby="" class="table">
                             <thead>
                             <tr>
-                                <th class="form-check" >
-
+                                <th scope="col" class="form-check" >
                                 </th>
                                 <iais:sortableHeader needSort="false" field="" value="S/N" ></iais:sortableHeader>
                                 <iais:sortableHeader needSort="true"  field="T3.BLK_NO" value="Mode of Service Delivery"  isFE="true"></iais:sortableHeader>

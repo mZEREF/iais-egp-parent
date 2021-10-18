@@ -69,7 +69,12 @@
                                     <div class="row">
                                         <div class="col-xs-12">
                                             <div class="table-gp">
-                                                <table class="table table-bordered">
+                                                <table aria-describedby="" class="table table-bordered">
+                                                    <thead style="display: none">
+                                                    <tr>
+                                                        <th scope="col" ></th>
+                                                    </tr>
+                                                    </thead>
                                                     <tbody>
                                                     <tr>
                                                         <td class="col-xs-6" align="right">Application No. (Overall)
@@ -115,7 +120,12 @@
                                     <div class="row">
                                         <div class="col-xs-12">
                                             <div class="table-gp">
-                                                <table class="table table-bordered">
+                                                <table aria-describedby="" class="table table-bordered">
+                                                    <thead style="display: none">
+                                                    <tr>
+                                                        <th scope="col" ></th>
+                                                    </tr>
+                                                    </thead>
                                                     <tbody>
                                                     <tr>
                                                         <td class="col-xs-6" align="right">HCI Code</td>

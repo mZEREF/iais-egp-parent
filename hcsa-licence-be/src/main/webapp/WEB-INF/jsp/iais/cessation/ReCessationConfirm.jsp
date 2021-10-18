@@ -79,7 +79,7 @@
                                                                  cssClass="nice-select cessationReasons"/>
                                                 </iais:value>
                                             </iais:row>
-                                            <div id="reason" hidden>
+                                            <div id="reason" style="display: none;">
                                                 <iais:row>
                                                     <iais:field value="Others"/>
                                                     <iais:value width="7">
@@ -282,13 +282,13 @@
                                                     <span id="error_patNoConfirm" name="iaisErrorMsg" class="error-msg"></span>
                                                 </div>
                                             </div>--%>
-                                            <div class="form-group" id="transferDetail" hidden>
+                                            <div class="form-group" id="transferDetail" style="display: none;">
                                                 <label class="col-xs-12 col-md-4">Please provide details of why the transfer could not be done and the reasonable measures that the licensee has taken to ensure continuity of care for the affected patients. </label>
                                                 <div class="col-xs-6 col-sm-4 col-md-3">
                                                     <textarea name="transferDetail"  cols="30" rows="2" maxLength="1000" readonly="readonly">${appCessHci.transferDetail}</textarea>
                                                 </div>
                                             </div>
-                                            <div class="form-group" id="transferredWhere" hidden>
+                                            <div class="form-group" id="transferredWhere" style="display: none;">
                                                 <label class="col-xs-12 col-md-4">Please state where the patient's records will be transferred to and where the licensee will store the patients' health records after cessation. </label>
                                                 <div class="col-xs-6 col-sm-4 col-md-3">
                                                     <textarea name="transferredWhere"  cols="30" rows="2" maxLength="1000" readonly="readonly">${appCessHci.transferredWhere}</textarea>
@@ -306,14 +306,14 @@
                                     <div><h4>The following specified healthcare services will also be ceased as
                                         their underlying <iais:code needLowerCase="true" code="CDN001"/>(s) is/are listed above.</h4>
                                     </div>
-                                    <table class="table-gp tablebox">
+                                    <table aria-describedby="" class="table-gp tablebox">
                                         <tr style="text-align:center">
-                                            <th style="text-align:center;width: 0%">S/N</th>
-                                            <th style="text-align:center;width: 25%"><iais:code code="CDN003"/> Licence No.
+                                            <th scope="col" style="text-align:center;width: 0%">S/N</th>
+                                            <th scope="col" style="text-align:center;width: 25%"><iais:code code="CDN003"/> Licence No.
                                             </th>
-                                            <th style="text-align:center;width: 25%"><iais:code code="CDN003"/> Name</th>
-                                            <th style="text-align:center;width: 25%"><iais:code code="CDN001"/> Licence No.</th>
-                                            <th style="text-align:center;width: 25%"><iais:code code="CDN001"/> Name</th>
+                                            <th scope="col" style="text-align:center;width: 25%"><iais:code code="CDN003"/> Name</th>
+                                            <th scope="col" style="text-align:center;width: 25%"><iais:code code="CDN001"/> Licence No.</th>
+                                            <th scope="col" style="text-align:center;width: 25%"><iais:code code="CDN001"/> Name</th>
                                         </tr>
                                         <c:forEach items="${map.value}" var="spec" varStatus="index">
                                             <tr style="text-align:center">
@@ -344,7 +344,7 @@
                 <div class="application-tab-footer">
                     <div class="row">
                         <div class="col-xs-12 col-sm-6">
-                            <a onclick="confirmBack('back')"><em class="fa fa-angle-left"></em> Back</a>
+                            <a href= "#" onclick="confirmBack('back')"><em class="fa fa-angle-left"></em> Back</a>
                         </div>
                         <div class="col-xs-12 col-sm-6">
                             <div class="button-group"><a class="btn btn-primary next" onclick="confirmSubmit('submit')">Submit</a>

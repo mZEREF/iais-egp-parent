@@ -4,15 +4,24 @@
 <%@ page import="com.ecquaria.cloud.moh.iais.dto.LoginContext" %>
 <%@ page import="com.ecquaria.cloud.moh.iais.common.utils.ParamUtil" %>
 <%@ page import="com.ecquaria.cloud.moh.iais.common.constant.AppConsts" %>
+<%@ page import="com.ecquaria.egov.core.agency.Agency" %>
 <%
     String webrooth=IaisEGPConstant.CSS_ROOT+IaisEGPConstant.FE_CSS_ROOT;
     String internetWebSite = UrlConfig.getInstance().getInternetWebSite();
     String internetInbox = UrlConfig.getInstance().getInternetInbox();
 //    String googleSearch = ConfigHelper.getString("halp.googlesearch.flag", "Y");
     String currentApp = ConfigHelper.getString("spring.application.name", "Y");
+    String enableWogaa = ConfigHelper.getString("wogaa.enable", "N");
     LoginContext loginContext_attr = (LoginContext) ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
 %>
 <%--<script async src="https://cse.google.com/cse.js?cx=003171281875156206280:63zw-tveixa"></script>--%>
+<%
+    if ("Y".equals(enableWogaa)) {
+%>
+<script src="https://assets.dcube.cloud/scripts/wogaa.js"></script>
+<%
+    }
+%>
 <section class="logo">
     <div class="container" style="width: 100% !important; max-width: 100% !important; padding-left: 30px;">
         <div class="row">

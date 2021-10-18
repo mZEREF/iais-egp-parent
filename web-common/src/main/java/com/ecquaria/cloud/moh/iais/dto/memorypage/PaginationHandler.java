@@ -140,7 +140,7 @@ public class PaginationHandler<T extends Serializable> implements Serializable {
 
         sb.append("<input type=\"hidden\" name = \"pageJumpNoTextchangePage\" value=\"\" id = \"pageJumpNoTextchangePage\">");
         sb.append("<div class=\"row table-info-display\">");
-        sb.append("<div class=\"col-xs-12 col-md-4 text-left\">");
+        sb.append("<div class=\"col-xs-12 col-md-6 text-left\">");
         sb.append("<p class=\"count table-count\">");
         int maxRec = totalRows < currentPageNo * pageSize ? totalRows : currentPageNo * pageSize;
         int statRec = totalRows < ((currentPageNo - 1) * pageSize + 1) ? totalRows : ((currentPageNo - 1) * pageSize + 1);
@@ -165,7 +165,7 @@ public class PaginationHandler<T extends Serializable> implements Serializable {
         }
         sb.append("</select>");
         sb.append("</div></div></p></div>");
-        sb.append("<div class=\"col-xs-12 col-md-8 text-right\">");
+        sb.append("<div class=\"col-xs-12 col-md-6 text-right\">");
         sb.append("<div class=\"nav\">").append("<ul class=\"pagination\">");
         if (currentPageNo > 1) {
             sb.append(STARTLI).append(jumpPageFuncName).append("('").append(1).append("');\"><span aria-hidden=\"true\"><i class=\"fa fa-angle-double-left\"></i></span></a></li>");

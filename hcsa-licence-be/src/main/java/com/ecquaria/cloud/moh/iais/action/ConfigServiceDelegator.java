@@ -5,7 +5,6 @@ import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
-import com.ecquaria.cloud.moh.iais.common.constant.task.TaskConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceStepSchemeDto;
@@ -50,15 +49,39 @@ public class ConfigServiceDelegator {
     @Autowired
     private OrganizationClient organizationClient;
 
-    private static final String CLINICAL_GOVERNANCE_OFFICER ="Clinical Governance Officers";
-    private static final String SERVICE_PERSONNEL="Service Personnel";
-    private static final String PRINCIPAL_OFFICERS="Principal Officers";
-    private static final String DOCUMENTS    =       "Documents";
-    private static final String MEDALERT_PERSON  ="MedAlert Person";
-    private static final String BUSINESS_NAME   ="Business Name";
-    private static final String CLINICAL_DIRECTOR="Clinical Director";
-    private static final String VEHICLES=  "Vehicles";
-    private static final String CHARGES ="Charges";
+    private static Map<String, Integer> SEQ_MAP = new HashMap<>();
+    private static Map<String, String> NAME_MAP = new HashMap<>();
+
+    static {
+        SEQ_MAP.put(HcsaConsts.STEP_BUSINESS_NAME, 1);
+        SEQ_MAP.put(HcsaConsts.STEP_VEHICLES, 2);
+        SEQ_MAP.put(HcsaConsts.STEP_CLINICAL_DIRECTOR, 3);
+        SEQ_MAP.put(HcsaConsts.STEP_LABORATORY_DISCIPLINES, 4);
+        SEQ_MAP.put(HcsaConsts.STEP_CLINICAL_GOVERNANCE_OFFICERS, 5);
+        SEQ_MAP.put(HcsaConsts.STEP_SECTION_LEADER, 6);
+        SEQ_MAP.put(HcsaConsts.STEP_DISCIPLINE_ALLOCATION, 7);
+        SEQ_MAP.put(HcsaConsts.STEP_CHARGES, 8);
+        SEQ_MAP.put(HcsaConsts.STEP_SERVICE_PERSONNEL, 9);
+        SEQ_MAP.put(HcsaConsts.STEP_PRINCIPAL_OFFICERS, 10);
+        SEQ_MAP.put(HcsaConsts.STEP_KEY_APPOINTMENT_HOLDER, 11);
+        SEQ_MAP.put(HcsaConsts.STEP_MEDALERT_PERSON, 12);
+        SEQ_MAP.put(HcsaConsts.STEP_DOCUMENTS, 13);
+        SEQ_MAP = Collections.unmodifiableMap(SEQ_MAP);
+
+        NAME_MAP.put(ApplicationConsts.PERSONNEL_PSN_TYPE_PO, "principalOfficer");
+        NAME_MAP.put(ApplicationConsts.PERSONNEL_PSN_TYPE_DPO, "DeputyPrincipalOfficer");
+        NAME_MAP.put(ApplicationConsts.PERSONNEL_PSN_TYPE_CGO, "ClinicalGovernanceOfficer");
+        NAME_MAP.put(ApplicationConsts.PERSONNEL_PSN_TYPE_SVC_PERSONNEL, "ServicePersonnel");
+        NAME_MAP.put(ApplicationConsts.PERSONNEL_PSN_TYPE_MAP, "MedalertPerson");
+        NAME_MAP.put(ApplicationConsts.PERSONNEL_CLINICAL_DIRECTOR, "clinical_director");
+        NAME_MAP.put(ApplicationConsts.PERSONNEL_VEHICLES, "vehicles");
+        NAME_MAP.put(ApplicationConsts.PERSONNEL_CHARGES, "charges");
+        NAME_MAP.put(ApplicationConsts.PERSONNEL_CHARGES_OTHER, "other-charges");
+        NAME_MAP.put(ApplicationConsts.PERSONNEL_PSN_SVC_SECTION_LEADER, "SectionLeader");
+        NAME_MAP.put(ApplicationConsts.PERSONNEL_PSN_KAH, "KAH");
+        NAME_MAP = Collections.unmodifiableMap(NAME_MAP);
+    }
+
     public void start(BaseProcessClass bpc){
         log.info("*********start***********");
         removeSession(bpc);
@@ -292,163 +315,62 @@ public class ConfigServiceDelegator {
                 hcsaSvcSpePremisesTypeDtos.add(hcsaSvcSpePremisesTypeDto);
             }
         }
-        String manvehicles = request.getParameter("man-vehicles");
-        String mixvehicles = request.getParameter("mix-vehicles");
-        HcsaSvcPersonnelDto vehicles=
-                configService.getHcsaSvcPersonnelDto(manvehicles,mixvehicles,ApplicationConsts.PERSONNEL_VEHICLES);
-       //01
-        String manclinicaldirectorr = request.getParameter("man-clinical_director");
-        String mixclinicaldirector = request.getParameter("mix-clinical_director");
-        HcsaSvcPersonnelDto director=
-                configService.getHcsaSvcPersonnelDto(manclinicaldirectorr,mixclinicaldirector,ApplicationConsts.PERSONNEL_CLINICAL_DIRECTOR);//03
-        String mancharges = request.getParameter("man-charges");
-        String mixcharges = request.getParameter("mix-charges");
-        HcsaSvcPersonnelDto charges=
-                configService.getHcsaSvcPersonnelDto(mancharges,mixcharges,ApplicationConsts.PERSONNEL_CHARGES);
-      //04
-
-        String manOtherCharges = request.getParameter("man-other-charges");
-        String mixOtherCharges = request.getParameter("mix-other-charges");
-        HcsaSvcPersonnelDto otherCharges=
-                configService.getHcsaSvcPersonnelDto(manOtherCharges,mixOtherCharges,ApplicationConsts.PERSONNEL_CHARGES_OTHER);
-
-
-        String manprincipalOfficer = request.getParameter("man-principalOfficer");
-        String mixprincipalOfficer = request.getParameter("mix-principalOfficer");
+        // personnel
         List<HcsaSvcPersonnelDto> hcsaSvcPersonnelDtos = IaisCommonUtils.genNewArrayList();
-        List<HcsaServiceStepSchemeDto> hcsaServiceStepSchemeDtos = IaisCommonUtils.genNewArrayList();
-        HcsaSvcPersonnelDto poDto =
-                configService.getHcsaSvcPersonnelDto(manprincipalOfficer,mixprincipalOfficer,ApplicationConsts.PERSONNEL_PSN_TYPE_PO);
-
+        HcsaSvcPersonnelDto poDto = getHcsaSvcPersonnelDto(ApplicationConsts.PERSONNEL_PSN_TYPE_PO, request);
+        HcsaSvcPersonnelDto dpoDto = getHcsaSvcPersonnelDto(ApplicationConsts.PERSONNEL_PSN_TYPE_DPO, request);
+        HcsaSvcPersonnelDto cgoDto = getHcsaSvcPersonnelDto(ApplicationConsts.PERSONNEL_PSN_TYPE_CGO, request);
+        HcsaSvcPersonnelDto svcPersonnelDto = getHcsaSvcPersonnelDto(ApplicationConsts.PERSONNEL_PSN_TYPE_SVC_PERSONNEL, request);
+        HcsaSvcPersonnelDto mapPersonnelDto = getHcsaSvcPersonnelDto(ApplicationConsts.PERSONNEL_PSN_TYPE_MAP, request);
+        HcsaSvcPersonnelDto director = getHcsaSvcPersonnelDto(ApplicationConsts.PERSONNEL_CLINICAL_DIRECTOR, request);
+        HcsaSvcPersonnelDto vehicles = getHcsaSvcPersonnelDto(ApplicationConsts.PERSONNEL_VEHICLES, request);
+        HcsaSvcPersonnelDto charges = getHcsaSvcPersonnelDto(ApplicationConsts.PERSONNEL_CHARGES, request);
+        HcsaSvcPersonnelDto otherCharges = getHcsaSvcPersonnelDto(ApplicationConsts.PERSONNEL_CHARGES_OTHER, request);
+        HcsaSvcPersonnelDto slPersonnelDto = getHcsaSvcPersonnelDto(ApplicationConsts.PERSONNEL_PSN_SVC_SECTION_LEADER, request);
+        HcsaSvcPersonnelDto kahPersonnelDto = getHcsaSvcPersonnelDto(ApplicationConsts.PERSONNEL_PSN_KAH, request);
         hcsaSvcPersonnelDtos.add(poDto);
-
-        String mandeputyPrincipalOfficer = request.getParameter("man-DeputyPrincipalOfficer");
-        String mixdeputyPrincipalOfficer = request.getParameter("mix-DeputyPrincipalOfficer");
-        HcsaSvcPersonnelDto dpoDto =
-                configService.getHcsaSvcPersonnelDto(mandeputyPrincipalOfficer,mixdeputyPrincipalOfficer,ApplicationConsts.PERSONNEL_PSN_TYPE_DPO);
-
         hcsaSvcPersonnelDtos.add(dpoDto);
-        String manclinicalGovernanceOfficer = request.getParameter("man-ClinicalGovernanceOfficer");
-        String mixclinicalGovernanceOfficer = request.getParameter("mix-ClinicalGovernanceOfficer");
-        HcsaSvcPersonnelDto cgoDto =
-                configService.getHcsaSvcPersonnelDto(manclinicalGovernanceOfficer,mixclinicalGovernanceOfficer,ApplicationConsts.PERSONNEL_PSN_TYPE_CGO);
-
-        //todo is mandatory ,cannot
-        int count=1;
         hcsaSvcPersonnelDtos.add(cgoDto);
-        String manservicePersonnel = request.getParameter("man-ServicePersonnel");
-        String mixservicePersonnel = request.getParameter("mix-ServicePersonnel");
-        HcsaSvcPersonnelDto svcPersonnelDto =
-                configService.getHcsaSvcPersonnelDto(manservicePersonnel,mixservicePersonnel,ApplicationConsts.PERSONNEL_PSN_TYPE_SVC_PERSONNEL);
-
         hcsaSvcPersonnelDtos.add(svcPersonnelDto);
-        String manMedalertPerson = request.getParameter("man-MedalertPerson");
-        String mixMedalertPerson = request.getParameter("mix-MedalertPerson");
-        HcsaSvcPersonnelDto mapPersonnelDto =
-                configService.getHcsaSvcPersonnelDto(manMedalertPerson,mixMedalertPerson,ApplicationConsts.PERSONNEL_PSN_TYPE_MAP);
-
-        String businessName = request.getParameter("business-name");
-        request.setAttribute("businessName",businessName);
         hcsaSvcPersonnelDtos.add(mapPersonnelDto);//4
         hcsaSvcPersonnelDtos.add(director);//5
         hcsaSvcPersonnelDtos.add(vehicles);//6
         hcsaSvcPersonnelDtos.add(charges);//7
         hcsaSvcPersonnelDtos.add(otherCharges);//8
+        hcsaSvcPersonnelDtos.add(slPersonnelDto);//9
+        hcsaSvcPersonnelDtos.add(kahPersonnelDto);//10
+
+        String businessName = request.getParameter("business-name");
+        request.setAttribute("businessName",businessName);
         String pageName = request.getParameter("pageName");
         request.setAttribute("pageName",pageName);
-        if(vehicles.getMandatoryCount()>0&&vehicles.getMaximumCount()>0){
-            HcsaServiceStepSchemeDto hcsaServiceStepSchemeDto=new HcsaServiceStepSchemeDto();
-            hcsaServiceStepSchemeDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
-            hcsaServiceStepSchemeDto.setStepCode(HcsaConsts.STEP_VEHICLES);//vehicles
-            hcsaServiceStepSchemeDto.setSeqNum(count);
-            hcsaServiceStepSchemeDto.setStepName(VEHICLES);
-            hcsaServiceStepSchemeDtos.add(hcsaServiceStepSchemeDto);
-            count++;
-        }
-        if(!hcsaSvcSubtypeOrSubsumedDtos.isEmpty()){
-            HcsaServiceStepSchemeDto hcsaServiceStepSchemeDto=new HcsaServiceStepSchemeDto();
-            hcsaServiceStepSchemeDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
-            hcsaServiceStepSchemeDto.setStepCode(HcsaConsts.STEP_LABORATORY_DISCIPLINES);//labory
-            hcsaServiceStepSchemeDto.setSeqNum(count);
-            hcsaServiceStepSchemeDto.setStepName(pageName);
-            hcsaServiceStepSchemeDtos.add(hcsaServiceStepSchemeDto);
-            count++;
-        }
+        // step
+        List<HcsaServiceStepSchemeDto> hcsaServiceStepSchemeDtos = IaisCommonUtils.genNewArrayList();
+        addStepSchemeDto(vehicles.getMandatoryCount() > 0 && vehicles.getMaximumCount() > 0, HcsaConsts.STEP_VEHICLES,
+                HcsaConsts.VEHICLES, hcsaServiceStepSchemeDtos);
+        addStepSchemeDto(!hcsaSvcSubtypeOrSubsumedDtos.isEmpty(), HcsaConsts.STEP_LABORATORY_DISCIPLINES,
+                pageName, hcsaServiceStepSchemeDtos);
+        addStepSchemeDto(director.getMandatoryCount() > 0 && director.getMaximumCount() > 0, HcsaConsts.STEP_CLINICAL_DIRECTOR,
+                HcsaConsts.CLINICAL_DIRECTOR, hcsaServiceStepSchemeDtos);
+        addStepSchemeDto(charges.getMandatoryCount() > 0 && charges.getMaximumCount() > 0, HcsaConsts.STEP_CHARGES,
+                HcsaConsts.CHARGES, hcsaServiceStepSchemeDtos);
+        addStepSchemeDto(businessName != null && String.valueOf(1).equals(businessName), HcsaConsts.STEP_BUSINESS_NAME,
+                HcsaConsts.BUSINESS_NAME, hcsaServiceStepSchemeDtos);
+        addStepSchemeDto(cgoDto.getMandatoryCount() > 0 && cgoDto.getMaximumCount() > 0, HcsaConsts.STEP_CLINICAL_GOVERNANCE_OFFICERS,
+                HcsaConsts.CLINICAL_GOVERNANCE_OFFICERS, hcsaServiceStepSchemeDtos);
+        addStepSchemeDto(!hcsaSvcSubtypeOrSubsumedDtos.isEmpty() && cgoDto.getMandatoryCount() > 0 && cgoDto.getMaximumCount() > 0,
+                HcsaConsts.STEP_DISCIPLINE_ALLOCATION, pageName + " Allocation", hcsaServiceStepSchemeDtos);
+        addStepSchemeDto(svcPersonnelDto.getMandatoryCount() > 0 && svcPersonnelDto.getMaximumCount() > 0,
+                HcsaConsts.STEP_SERVICE_PERSONNEL, HcsaConsts.SERVICE_PERSONNEL, hcsaServiceStepSchemeDtos);
+        addStepSchemeDto(poDto.getMandatoryCount() > 0 && poDto.getMaximumCount() > 0, HcsaConsts.STEP_PRINCIPAL_OFFICERS,
+                HcsaConsts.PRINCIPAL_OFFICERS, hcsaServiceStepSchemeDtos);
+        addStepSchemeDto(mapPersonnelDto.getMandatoryCount() > 0 && mapPersonnelDto.getMaximumCount() > 0,
+                HcsaConsts.STEP_MEDALERT_PERSON, HcsaConsts.MEDALERT_PERSON, hcsaServiceStepSchemeDtos);
+        addStepSchemeDto(slPersonnelDto.getMandatoryCount() > 0 && slPersonnelDto.getMaximumCount() > 0,
+                HcsaConsts.STEP_SECTION_LEADER, HcsaConsts.SECTION_LEADER, hcsaServiceStepSchemeDtos);
+        addStepSchemeDto(kahPersonnelDto.getMandatoryCount() > 0 && kahPersonnelDto.getMaximumCount() > 0,
+                HcsaConsts.STEP_KEY_APPOINTMENT_HOLDER, HcsaConsts.KEY_APPOINTMENT_HOLDER, hcsaServiceStepSchemeDtos);
 
-        if(director.getMandatoryCount()>0&&director.getMaximumCount()>0){
-            HcsaServiceStepSchemeDto hcsaServiceStepSchemeDto=new HcsaServiceStepSchemeDto();
-            hcsaServiceStepSchemeDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
-            hcsaServiceStepSchemeDto.setStepCode(HcsaConsts.STEP_CLINICAL_DIRECTOR);//clinical
-            hcsaServiceStepSchemeDto.setSeqNum(count);
-            hcsaServiceStepSchemeDto.setStepName(CLINICAL_DIRECTOR);
-            hcsaServiceStepSchemeDtos.add(hcsaServiceStepSchemeDto);
-            count++;
-        }
-        if(charges.getMandatoryCount()>0&&charges.getMaximumCount()>0){
-            HcsaServiceStepSchemeDto hcsaServiceStepSchemeDto=new HcsaServiceStepSchemeDto();
-            hcsaServiceStepSchemeDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
-            hcsaServiceStepSchemeDto.setStepCode(HcsaConsts.STEP_CHARGES);//charges
-            hcsaServiceStepSchemeDto.setSeqNum(count);
-            hcsaServiceStepSchemeDto.setStepName(CHARGES);
-            hcsaServiceStepSchemeDtos.add(hcsaServiceStepSchemeDto);
-            count++;
-        }
-        if(businessName!=null&&String.valueOf(1).equals(businessName)){
-            HcsaServiceStepSchemeDto hcsaServiceStepSchemeDto=new HcsaServiceStepSchemeDto();
-            hcsaServiceStepSchemeDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
-            hcsaServiceStepSchemeDto.setStepCode(HcsaConsts.STEP_BUSINESS_NAME);//business name
-            hcsaServiceStepSchemeDto.setSeqNum(count);
-            hcsaServiceStepSchemeDto.setStepName(BUSINESS_NAME);
-            hcsaServiceStepSchemeDtos.add(hcsaServiceStepSchemeDto);
-            count++;
-        }
-
-        if(cgoDto.getMandatoryCount()>0&&cgoDto.getMaximumCount()>0){
-            HcsaServiceStepSchemeDto hcsaServiceStepSchemeDto=new HcsaServiceStepSchemeDto();
-            hcsaServiceStepSchemeDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
-            hcsaServiceStepSchemeDto.setStepCode(HcsaConsts.STEP_CLINICAL_GOVERNANCE_OFFICERS);//cgo
-            hcsaServiceStepSchemeDto.setSeqNum(count);
-            hcsaServiceStepSchemeDto.setStepName(CLINICAL_GOVERNANCE_OFFICER);
-            hcsaServiceStepSchemeDtos.add(hcsaServiceStepSchemeDto);
-            count++;
-        }
-        if(!hcsaSvcSubtypeOrSubsumedDtos.isEmpty()&&cgoDto.getMandatoryCount()>0&&cgoDto.getMaximumCount()>0){
-            HcsaServiceStepSchemeDto hcsaServiceStepSchemeDto=new HcsaServiceStepSchemeDto();
-            hcsaServiceStepSchemeDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
-            hcsaServiceStepSchemeDto.setStepCode(HcsaConsts.STEP_DISCIPLINE_ALLOCATION);//discip
-            hcsaServiceStepSchemeDto.setSeqNum(count);
-            hcsaServiceStepSchemeDto.setStepName(pageName+" Allocation");
-            hcsaServiceStepSchemeDtos.add(hcsaServiceStepSchemeDto);
-            count++;
-        }
-        if(svcPersonnelDto.getMandatoryCount()>0&&svcPersonnelDto.getMaximumCount()>0){
-            HcsaServiceStepSchemeDto hcsaServiceStepSchemeDto=new HcsaServiceStepSchemeDto();
-            hcsaServiceStepSchemeDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
-            hcsaServiceStepSchemeDto.setStepCode(HcsaConsts.STEP_SERVICE_PERSONNEL);
-            hcsaServiceStepSchemeDto.setSeqNum(count);
-            hcsaServiceStepSchemeDto.setStepName(SERVICE_PERSONNEL);
-            hcsaServiceStepSchemeDtos.add(hcsaServiceStepSchemeDto);
-            count++;
-        }
-        if(poDto.getMandatoryCount()>0&&poDto.getMaximumCount()>0){
-            HcsaServiceStepSchemeDto hcsaServiceStepSchemeDto=new HcsaServiceStepSchemeDto();
-            hcsaServiceStepSchemeDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
-            hcsaServiceStepSchemeDto.setStepCode(HcsaConsts.STEP_PRINCIPAL_OFFICERS);
-            hcsaServiceStepSchemeDto.setSeqNum(count);
-            hcsaServiceStepSchemeDto.setStepName(PRINCIPAL_OFFICERS);
-            hcsaServiceStepSchemeDtos.add(hcsaServiceStepSchemeDto);
-            count++;
-        }
-
-        if(mapPersonnelDto.getMandatoryCount()>0&&mapPersonnelDto.getMaximumCount()>0){
-            HcsaServiceStepSchemeDto hcsaServiceStepSchemeDto=new HcsaServiceStepSchemeDto();
-            hcsaServiceStepSchemeDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
-            hcsaServiceStepSchemeDto.setStepCode(HcsaConsts.STEP_MEDALERT_PERSON);
-            hcsaServiceStepSchemeDto.setSeqNum(count);
-            hcsaServiceStepSchemeDto.setStepName(MEDALERT_PERSON);
-            hcsaServiceStepSchemeDtos.add(hcsaServiceStepSchemeDto);
-            count++;
-        }
         List<HcsaSvcDocConfigDto> hcsaSvcDocConfigDtos = IaisCommonUtils.genNewArrayList();
         List<HcsaSvcDocConfigDto> hcsaSvcDocConfig=IaisCommonUtils.genNewArrayList();
         String numberDocument = request.getParameter("NumberDocument");
@@ -484,13 +406,8 @@ public class ConfigServiceDelegator {
                 hcsaSvcDocConfigDtos.add(hcsaSvcDocConfigDto);
                 hcsaSvcDocConfig.add(hcsaSvcDocConfigDto);
             }
-            HcsaServiceStepSchemeDto hcsaServiceStepSchemeDto=new HcsaServiceStepSchemeDto();
-            hcsaServiceStepSchemeDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
-            hcsaServiceStepSchemeDto.setStepCode("SVST005");
-            hcsaServiceStepSchemeDto.setSeqNum(count);
-            hcsaServiceStepSchemeDto.setStepName(DOCUMENTS);
-            hcsaServiceStepSchemeDtos.add(hcsaServiceStepSchemeDto);
-            count++;
+
+            addStepSchemeDto(true, HcsaConsts.STEP_DOCUMENTS, HcsaConsts.DOCUMENTS, hcsaServiceStepSchemeDtos);
         }
         request.setAttribute("serviceDoc",hcsaSvcDocConfigDtos);
         request.setAttribute("comDocSize",numberfields);
@@ -797,5 +714,23 @@ public class ConfigServiceDelegator {
         return hcsaServiceConfigDto;
     }
 
+    private HcsaSvcPersonnelDto getHcsaSvcPersonnelDto(String psnType, HttpServletRequest request) {
+        String manMedalertPerson = request.getParameter("man-" + NAME_MAP.get(psnType));
+        String mixMedalertPerson = request.getParameter("mix-" + NAME_MAP.get(psnType));
+        return configService.getHcsaSvcPersonnelDto(manMedalertPerson, mixMedalertPerson, psnType);
+    }
+
+    private void addStepSchemeDto(boolean isNeed, String stepCode, String stepName,
+            List<HcsaServiceStepSchemeDto> hcsaServiceStepSchemeDtos) {
+        if (!isNeed) {
+            return;
+        }
+        HcsaServiceStepSchemeDto hcsaServiceStepSchemeDto = new HcsaServiceStepSchemeDto();
+        hcsaServiceStepSchemeDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+        hcsaServiceStepSchemeDto.setStepCode(stepCode);
+        hcsaServiceStepSchemeDto.setSeqNum(SEQ_MAP.get(stepCode));
+        hcsaServiceStepSchemeDto.setStepName(stepName);
+        hcsaServiceStepSchemeDtos.add(hcsaServiceStepSchemeDto);
+    }
 
 }

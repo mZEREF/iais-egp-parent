@@ -1,4 +1,5 @@
 <%@ page import="com.ecquaria.cloud.RedirectUtil" %>
+<%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>
 <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%
@@ -7,6 +8,10 @@
             (sop.webflow.rt.api.BaseProcessClass)request.getAttribute("process");
 %>
 <webui:setLayout name="iais-internet"/>
+
+<c:set var="isRfi" value="${not empty requestInformationConfig}"/>
+<c:set var="isHciNameChange" value="${RFC_eqHciNameChange == 'RFC_eqHciNameChange'}"/>
+
 <%@ include file="./dashboard.jsp" %>
 <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
     <input type="hidden" name="crud_action_type_tab" value="">
@@ -60,8 +65,8 @@
                                                     </div>
                                                 </c:forEach>
                                                 <c:choose>
-                                                    <c:when test="${AppSubmissionDto.appType == 'APTY005' && RFC_eqHciNameChange!='RFC_eqHciNameChange'&&renew_rfc_show!='Y'}">
-
+                                                    <c:when test="${AppSubmissionDto.appType == 'APTY005' && !isHciNameChange && renew_rfc_show != 'Y'}">
+                                                        <%-- RFC hci Name change --%>
                                                     </c:when>
                                                     <c:otherwise>
                                                         <%@include file="../common/declarations.jsp"%>
@@ -69,12 +74,12 @@
                                                 </c:choose>
 
                                             </div>
-                                            <c:if test="${AppSubmissionDto.appType == 'APTY005' && requestInformationConfig == null && RFC_eqHciNameChange!='RFC_eqHciNameChange'&&renew_rfc_show!='Y'}">
+                                            <c:if test="${AppSubmissionDto.appType == 'APTY005' && !isRfi && !isHciNameChange && renew_rfc_show!='Y'}">
                                                 <div class="row">
-                                                    <div class="col-md-7"  style="text-align: justify;width: 70%">
+                                                    <div class="form-check col-md-8 col-lg-9 col-xs-12">
                                                         Please indicate the date which you would like the changes to be effective (subject to approval). If not indicated, the effective date will be the approval date of the change.
                                                     </div>
-                                                    <div class="col-md-5" style="width: 30%">
+                                                    <div class="col-md-4 col-lg-3 col-xs-12">
                                                         <iais:datePicker cssClass="rfcEffectiveDate" name="rfcEffectiveDate" value="${AppSubmissionDto.effectiveDateStr}" />
                                                     </div>
                                                 </div>
@@ -87,10 +92,13 @@
                                                 </div>
                                                 <br/>
                                             </c:if>
-                                            <c:if test="${AppSubmissionDto.appType == 'APTY005' && RFC_eqHciNameChange!='RFC_eqHciNameChange'&&renew_rfc_show!='Y'}">
+                                            <c:if test="${AppSubmissionDto.appType == 'APTY005' && !isHciNameChange && renew_rfc_show!='Y'}">
                                                 <div class="form-check">
                                                     <input class="form-check-input" id="verifyInfoCheckbox" type="checkbox" name="verifyInfoCheckbox" value="1" aria-invalid="false" <c:if test="${AppSubmissionDto.userAgreement}">checked="checked"</c:if> >
-                                                    <label class="form-check-label" for="verifyInfoCheckbox"><span class="check-square"></span><iais:message key="ACK_DEC001"></iais:message></label>
+                                                    <label class="form-check-label" for="verifyInfoCheckbox">
+                                                        <span class="check-square"></span>
+                                                        <iais:message key="ACK_DEC001" escape="false" />
+                                                    </label>
                                                 </div>
                                                 <div>
                                                     <span id="error_fieldMandatory"  class="error-msg"></span>
@@ -100,29 +108,35 @@
                                                     <span id="error_charityHci"  class="error-msg"></span>
                                                 </div>
                                             </c:if>
+                                            <c:if test="${('APTY005' ==AppSubmissionDto.appType || 'APTY004' ==AppSubmissionDto.appType) && !isRfi}">
+                                                <div class="col-xs-12 text-right">
+                                                    <a href="#" class="rfcBack">Click here to amend other sections</a>
+                                                </div>
+                                            </c:if>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="application-tab-footer">
                                     <div class="row">
-                                        <div class="col-xs-12 col-sm-6"><a class="back" id="Back"><em class="fa fa-angle-left"></em> Back</a></div>
-                                        <div class="col-xs-12 col-sm-6">
+                                        <div class="col-xs-12 col-md-4">
+                                            <a class="back" id="Back"><em class="fa fa-angle-left"></em> Back</a>
+                                        </div>
+                                        <div class="col-xs-12 col-md-8">
                                             <div class="button-group">
                                                 <c:if test="${requestInformationConfig==null}">
                                                     <input type="text" style="display: none" id="selectDraftNo" value="${selectDraftNo}">
                                                     <input type="text" style="display: none; " id="saveDraftSuccess" value="${saveDraftSuccess}">
-
-                                                        <a class="btn btn-secondary" id = "SaveDraft"  >Save as Draft</a>
-
+                                                    <a class="btn btn-secondary" id = "SaveDraft">Save as Draft</a>
                                                 </c:if>
                                                 <c:choose>
                                                     <c:when test="${requestInformationConfig != null}">
-                                                        <a class="next btn btn-primary" id = "Next">Submit </a></div>
+                                                        <a class="next btn btn-primary" id = "Next">Submit </a>
                                                     </c:when>
                                                     <c:otherwise>
-                                                        <a class="next btn btn-primary" id = "Next">Submit</a></div>
+                                                        <a class="next btn btn-primary" id = "Next">Submit</a>
                                                     </c:otherwise>
                                                 </c:choose>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -140,8 +154,8 @@
     <iais:confirm msg="This application has been saved successfully" callBack="cancel()" popupOrder="saveDraft" yesBtnDesc="continue" cancelBtnDesc="exit to inbox" cancelBtnCls="btn btn-primary" yesBtnCls="btn btn-secondary" cancelFunc="jumpPage()"></iais:confirm>
 </c:if>
 <input type="hidden" id="rfcPendingApplication" value="${rfcPendingApplication}">
-<div class="modal fade" id="rfcPending" role="dialog" aria-labelledby="myModalLabel" style="left: 50%;top: 50%;transform: translate(-50%,-50%);min-width:80%; overflow: visible;bottom: inherit;right: inherit;">
-    <div class="modal-dialog" role="document">
+<div class="modal fade" id="rfcPending" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
 <%--            <div class="modal-header">--%>
 <%--                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>--%>
@@ -235,6 +249,11 @@
             submitForms('preview',null,null,svcCode);
         });
 
+        $('.rfcBack').click(function () {
+            showWaiting();
+            submit('jump','back',null);
+        });
+
         <c:if test="${'APTY005' ==AppSubmissionDto.appType && requestInformationConfig == null}">
         <c:if test="${AppSubmissionDto.appEditSelectDto.premisesEdit}">
         $('#docEdit').unbind();
@@ -242,6 +261,14 @@
         $('#Back').unbind();
         $('#Back').click(function(){
             submit('premises',null,null);
+        });
+        </c:if>
+        <c:if test="${AppSubmissionDto.appEditSelectDto.licenseeEdit}">
+        $('#docEdit').unbind();
+        $('.doSvcEdit').unbind();
+        $('#Back').unbind();
+        $('#Back').click(function(){
+            submit('licensee',null,null);
         });
         </c:if>
         <c:if test="${AppSubmissionDto.appEditSelectDto.docEdit}">
@@ -260,26 +287,46 @@
 
     });
 
-    function preview(){
+    function preview() {
         // window.print();
-        var url ='${pageContext.request.contextPath}<%=RedirectUtil.appendCsrfGuardToken("/eservice/INTERNET/MohFePrintView/1/",request)%>';
+        clearErrorMsg();
         var txt = '';
         <c:if test="${empty viewPrint}">
-        $(':checked, textarea','#declarations').each(function(){
+        $(':checked, textarea').each(function(){
             txt += '&' + $(this).attr('name') + '=' + $(this).val();
         });
-        $("input[name='effectiveDt']").each(function (){
+        $("input[name='effectiveDt'], input[name='rfcEffectiveDate']").each(function (){
             txt += '&' + $(this).attr('name') + '=' + $(this).val();
         });
-        if (url.indexOf('?') < 0) {
-            url += '?';
-            if (txt != '') {
-                txt = txt.substring()
-            }
-        }
         </c:if>
-        var rfc="&RFC_eqHciNameChange="+$('#RFC_eqHciNameChange').val();
-        window.open(url +rfc+ txt,'_blank');
+        var url = '${pageContext.request.contextPath}<%=RedirectUtil.appendCsrfGuardToken("/eservice/INTERNET/MohFePrintView/1/",request)%>';
+        var rfc = "RFC_eqHciNameChange="+$('#RFC_eqHciNameChange').val();
+        var isHciNameChange = $('#RFC_eqHciNameChange').val();
+        if (isEmpty(isHciNameChange)) {
+            isHciNameChange = '-1';
+        }
+        var rfc = "RFC_eqHciNameChange=" + isHciNameChange;
+        if (url.indexOf('?') < 0) {
+            url += '?' + rfc;
+        } else {
+            url += '&' + rfc;
+        }
+        if (isEmpty(txt)) {
+            window.open(url,'_blank');
+        } else {
+            $.ajax({
+                'url':'${pageContext.request.contextPath}/init-print',
+                'dataType': 'json',
+                'data': rfc + txt,
+                'type': 'POST',
+                'success': function (data) {
+                    window.open(url,'_blank');
+                },
+                'error':function (data) {
+                    console.log("err: " + data);
+                }
+            });
+        }
     };
 
     function saveDraft() {

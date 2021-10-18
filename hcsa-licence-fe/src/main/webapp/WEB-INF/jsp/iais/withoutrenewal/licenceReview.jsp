@@ -41,15 +41,23 @@
                                 <br/>
                                 <br/>
                                 <div class="multiservice">
+                                    <!-- for desktop -->
                                     <div class="tab-gp side-tab clearfix">
-                                        <ul class="nav nav-pills nav-stacked hidden-xs hidden-sm"  ${isSingle == 'Y' ? 'hidden' : ''} role="tablist">
+                                     <c:if test="${isSingle != 'Y'}">
+                                        <ul class="nav nav-pills nav-stacked hidden-xs hidden-sm" role="tablist">
                                             <c:forEach var="serviceName" items="${serviceNames}" varStatus="status">
-                                                <li class="complete ${status.index == '0' ? 'active' : ''} tableMain" id="dtoList${status.index}" role="presentation"><a href="#serviceName${status.index}" aria-controls="lorem1" role="tab" data-toggle="tab">${serviceName}</a></li>
+                                                <li class="complete ${status.index == '0' ? 'active' : ''} tableMain" id="dtoList${status.index}" onclick="javascirpt:changeTabForMoreRenew('${status.index}')" role="presentation"><a href="#serviceName${status.index}" aria-controls="lorem1" role="tab" data-toggle="tab">${serviceName}</a></li>
                                             </c:forEach>
                                         </ul>
-
-                                        <%--main content--%>
-
+                                        <!-- for Mobile -->
+                                        <div class="mobile-side-nav-tab visible-xs visible-sm">
+                                            <select  aria-label="serviceSelectMobile" id="moblieSelectRenew" onchange="javascirpt:changeTabForMoreRenewMobile(this.value)">
+                                                <c:forEach var="serviceName" items="${serviceNames}" varStatus="status">
+                                                    <option value="${status.index}" ${status.index == '0' ? 'selected' : ''}>${serviceName}</option>
+                                                </c:forEach>
+                                            </select>
+                                        </div>
+                                        </c:if>
                                         <div class="tab-gp steps-tab">
                                             <div class="tab-content" style="padding-top: 0px;">
                                                 <c:if test="${isSingle == 'Y'}">
@@ -69,6 +77,7 @@
                                                                     <c:if test="${isSingle == 'N'}">
                                                                         <h2 style='border-bottom:none;'>${AppSubmissionDto.serviceName}; Licence No. ${AppSubmissionDto.licenceNo}</h2>
                                                                     </c:if>
+                                                                    <%@include file="../common/previewLicensee.jsp"%>
                                                                     <%@include file="../common/previewPremises.jsp"%>
                                                                     <%@include file="../common/previewPrimary.jsp"%>
                                                                     <div class="panel panel-default svc-content">
@@ -82,7 +91,7 @@
                                                                         </div>
                                                                         <div class=" panel-collapse collapse" id="collapseServiceInfo${documentIndex}" role="tabpanel" aria-labelledby="headingServiceInfo">
                                                                             <div class="panel-body">
-                                                                                <c:if test="${AppSubmissionDto.appEditSelectDto==null||AppSubmissionDto.appEditSelectDto.serviceEdit}">
+                                                                                <c:if test="${AppSubmissionDto.appEditSelectDto==null||AppSubmissionDto.appEditSelectDto.serviceEdit && (empty isSingle || isSingle == 'Y')}">
                                                                                     <p class="text-right"><div class="text-right app-font-size-16"><a href="#" id="doSvcEdit"><em class="fa fa-pencil-square-o"></em>Edit</a></div></p>
                                                                                 </c:if>
                                                                                 <div class="panel-main-content">
@@ -93,11 +102,12 @@
                                                                                     <c:set var="ReloadDeputyPrincipalOfficers" value="${deputyPrincipalOfficersDtosList.get(documentIndex)}"></c:set>
                                                                                     <c:set var="currentPreviewSvcInfo" value="${AppSubmissionDto.appSvcRelatedInfoDtoList.get(0)}"></c:set>
                                                                                     <c:if test="${AppSubmissionDto.appType=='APTY004'}">
-                                                                                        <c:set var="GovernanceOfficersList" value="${currentPreviewSvcInfo.appSvcDocDtoLit}"></c:set>
+                                                                                        <c:set var="GovernanceOfficersList" value="${currentPreviewSvcInfo.appSvcCgoDtoList}"></c:set>
                                                                                         <c:set var="AppSvcPersonnelDtoList" value="${currentPreviewSvcInfo.appSvcPersonnelDtoList}"></c:set>
                                                                                         <c:set var="AppSvcMedAlertPsn" value="${currentPreviewSvcInfo.appSvcMedAlertPersonList}"></c:set>
                                                                                         <c:set var="ReloadPrincipalOfficers" value="${currentPreviewSvcInfo.poList}"></c:set>
                                                                                         <c:set var="ReloadDeputyPrincipalOfficers" value="${currentPreviewSvcInfo.dpoList}"></c:set>
+                                                                                        <c:set var="clinicalDirectorDtoList" value="${currentPreviewSvcInfo.appSvcClinicalDirectorDtoList}"/>
                                                                                     </c:if>
                                                                                     <c:set var="svcDocConfig" value="${AppSubmissionDto.appSvcRelatedInfoDtoList.get(0).svcDocConfig}"/>
                                                                                     <%@include file="../common/previewSvcInfo.jsp"%>
@@ -145,10 +155,10 @@
                         </div>
                         <div class="application-tab-footer">
                             <div class="row">
-                                <div class="col-xs-12 col-sm-8">
+                                <div class="col-xs-12 col-sm-7">
                                     <a id="BACK" class="back"><em class="fa fa-angle-left"></em> Back</a>
                                 </div>
-                                <div class="col-xs-12 col-sm-1">
+                                <div class="col-xs-12 col-sm-2">
                                     <p class="print text-right"><a href="#" id="print-review"> <em class="fa fa-print"></em>Print</a></p>
                                 </div>
                                 <div class="col-xs-12 col-sm-3">
@@ -163,8 +173,8 @@
         </div>
     </div>
     <input type="hidden" id="rfcPendingApplication" value="${rfcPendingApplication}">
-    <div class="modal fade" id="rfcPending" role="dialog" aria-labelledby="myModalLabel" style="left: 50%;top: 50%;transform: translate(-50%,-50%);min-width:80%; overflow: visible;bottom: inherit;right: inherit;">
-        <div class="modal-dialog" role="document">
+    <div class="modal fade" id="rfcPending" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
 <%--                <div class="modal-header">--%>
 <%--                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>--%>
@@ -292,5 +302,21 @@
         window.open(url+ txt,'_blank');
     })
 
+    $('#subLicenseeEdit').click(function () {
+        showWaiting();
+        $('#EditValue').val('licensee');
+        $('[name="switch_value"]').val('doEdit');
+        $('#mainForm').submit();
+    });
+
+    function changeTabForMoreRenew(value){
+        if($('#moblieSelectRenew').val() != value)
+        fillValue('#moblieSelectRenew',value);
+    }
+    function changeTabForMoreRenewMobile(value){
+        setTimeout(function(){
+            $("#dtoList"+value).find("a").click();
+        }, 100);
+    }
 
 </script>

@@ -1,6 +1,6 @@
 /*
  * MyInfo TUO RESTAPI (Staging)
- * ** STAGING ENVIRONMENT ONLY **  REST API for retrieving Person data from MyInfo for Tell-Us-Once.  **Note - this is an initial specification and is subject to changes through the course of the TUO implementation.** 
+ * ** STAGING ENVIRONMENT ONLY **  REST API for retrieving Person data from MyInfo for Tell-Us-Once.  **Note - this is an initial specification and is subject to changes through the course of the TUO implementation.**
  *
  * OpenAPI spec version: 1.0
  * Contact: eric_chang@tech.gov.sg
@@ -17,35 +17,33 @@ package com.ecquaria.cloud.moh.iais.model;
 import com.ecquaria.cloud.helper.ConfigHelper;
 import com.ecquaria.cloud.helper.SpringContextHelper;
 import com.ecquaria.cloud.moh.iais.auth.MyInfoClient;
+import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.acra.AcraConsts;
+import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.myinfo.GetTokenDto;
 import com.ecquaria.cloud.moh.iais.common.dto.myinfo.MyInfoTakenDto;
 import com.ecquaria.cloud.moh.iais.common.jwt.SignatureUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
+import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
-import java.security.KeyFactory;
+import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import java.security.NoSuchAlgorithmException;
-import java.security.PrivateKey;
-import java.security.PublicKey;
 import java.security.SecureRandom;
-import java.security.spec.PKCS8EncodedKeySpec;
-import java.security.spec.X509EncodedKeySpec;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 import lombok.extern.slf4j.Slf4j;
-import org.bouncycastle.util.encoders.Base64;
-import org.jose4j.jwa.AlgorithmConstraints;
-import org.jose4j.jwe.JsonWebEncryption;
-import org.jose4j.jws.JsonWebSignature;
 import org.springframework.context.ApplicationContext;
+import org.springframework.http.CacheControl;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.HttpClientErrorException;
 
 
@@ -61,104 +59,54 @@ public class MyinfoUtil {
 	public static  final String MYINFODTO_REFRESH = "myinfoDto_refresh";
 	public static  final long TAKEN_DURATION_TIME = 30*60*1000l;;
 
-	public static final  String CALL_MYINFO_PROCESS_SESSION_NAME = "CALL_MYINFO_PROCESS_SESSION_NAME";
-	public static final  String CALL_MYINFO_PROCESS_SESSION_NAME_NRIC = "CALL_MYINFO_PROCESS_SESSION_NAME_NRIC";
-	public static final  String CALL_MYINFO_DTO_SEESION                     = "CALL_MYINFO_DTO_SEESION";
+	public static final  String CALL_MYINFO_PROCESS_SESSION_NAME = "call_myinfo_process_session_name";
+	public static final  String CALL_MYINFO_PROCESS_SESSION_NAME_NRIC = "call_myinfo_process_session_name_nric";
+	public static final  String CALL_MYINFO_DTO_SEESION                     = "call_myinfo_dto_seesion";
+	public static final  String SOLO_DTO_SEESION = "myinfo_solo_dto_seesion";
+	public static final  String SOLO_DTO_SEESION_ACTION = "saveSoleAction";
+	public static final  String MYINFO_TRANSFER_CALL_BACK = "myinfo_transfer_call_back";
+	public static final  String SINGPASS_LOGIN                = "myinfo_sinpass_login_evaluate";
+	public static final  String NO_GET_NAME_SHOW_NAME           = "-";
+
+	public static final  String CLEAR_MYINFO_ACTION = "clearMyInfo";
+
+	public static final  String IS_LOAD_MYINFO_DATA  = "isLoadMyInfoData";
 	/**
-     * Retrieves Person data from MyInfo
-     *
-     * Retrieves Person data from MyInfo based on UIN/FIN. This API does not require authorisation token, and retrieves only a user&#39;s basic profile (i.e. excluding CPF and IRAS data)  The available returned attributes from this API includes  - name: Name - hanyupinyinname: HanYuPinYin - aliasname: Alias - hanyupinyinaliasname: HanYuPinYinAlias - marriedname: MarriedName - sex: Sex - race: Race - dialect: Dialect - nationality: Nationality - dob: DOB - birthcountry: BirthCountry - vehno: VehNo - regadd: RegAdd - mailadd: MailAdd - billadd: BillAdd - housingtype: HousingType - hdbtype: HDBType - email: Email - homeno: HomeNo - mobileno: MobileNo - marital: Marital - marriagedate: MarriageDate - divorcedate: DivorceDate - householdincome: HouseholdIncome - relationships: Relationships - edulevel: EduLevel - gradyear: GradYear - schoolname: SchoolName - occupation: Occupation - employment: Employment  Note - null values indicate that the field is unavailable
-     * @throws Exception 
-     */
-    public static String getPersonBasic( String authorization,String idNumber,List<String> attributes,String clientId,String singPassEServiceId,String txnNo) throws Exception {
+	 * Retrieves Person data from MyInfo
+	 *
+	 * Retrieves Person data from MyInfo based on UIN/FIN. This API does not require authorisation token, and retrieves only a user&#39;s basic profile (i.e. excluding CPF and IRAS data)  The available returned attributes from this API includes  - name: Name - hanyupinyinname: HanYuPinYin - aliasname: Alias - hanyupinyinaliasname: HanYuPinYinAlias - marriedname: MarriedName - sex: Sex - race: Race - dialect: Dialect - nationality: Nationality - dob: DOB - birthcountry: BirthCountry - vehno: VehNo - regadd: RegAdd - mailadd: MailAdd - billadd: BillAdd - housingtype: HousingType - hdbtype: HDBType - email: Email - homeno: HomeNo - mobileno: MobileNo - marital: Marital - marriagedate: MarriageDate - divorcedate: DivorceDate - householdincome: HouseholdIncome - relationships: Relationships - edulevel: EduLevel - gradyear: GradYear - schoolname: SchoolName - occupation: Occupation - employment: Employment  Note - null values indicate that the field is unavailable
+	 * @throws Exception
+	 */
+	public static String getPersonBasic( String authorization,String idNumber,List<String> attributes,String clientId,String singPassEServiceId,String txnNo) throws Exception {
 		ApplicationContext context = SpringContextHelper.getContext();
-    	if (context == null){
-    		return null;
+		if (context == null){
+			return null;
 		}
 
 		MyInfoClient myInfoClient = context.getBean(MyInfoClient.class);
 
-    	String  encipheredData =myInfoClient.searchDataByIdNumber(authorization,idNumber,attributes.toArray(new String[attributes.size()]),clientId,singPassEServiceId,txnNo).getBody();
-        return decodeEncipheredData(encipheredData);
-    }
-
-    public static String decodeEncipheredData(String encipheredData) throws Exception {
-    	if(StringUtil.isEmpty(encipheredData)){
-    		return encipheredData;
-		}
-		JsonWebEncryption jwe = new JsonWebEncryption();
-		jwe.setCompactSerialization(encipheredData);
-		log.info(StringUtil.changeForLog("JWE Algorithm ================> " + jwe.getAlgorithmHeaderValue()));
-		log.info(StringUtil.changeForLog("JWE Enc ===============> " + jwe.getEncryptionMethodHeaderParameter()));
-		jwe.setAlgorithmConstraints(
-				new AlgorithmConstraints(
-						AlgorithmConstraints.ConstraintType.WHITELIST,
-						jwe.getAlgorithmHeaderValue())
-		);
-
-		jwe.setContentEncryptionAlgorithmConstraints(
-				new AlgorithmConstraints(
-						AlgorithmConstraints.ConstraintType.WHITELIST,
-						jwe.getEncryptionMethodHeaderParameter())
-		);
-		String  keyStore = ConfigHelper.getString("myinfo.jwe.priclientkey");
-		jwe.setKey(getPrivateKey(keyStore));
-
-		encipheredData = jwe.getPlaintextString();
-		log.info(StringUtil.changeForLog("Get the payload from the JWE =======>" + encipheredData));
-
-		String  jwskeyStore = ConfigHelper.getString("myinfo.jws.pubclientkey");
-		PublicKey pubKey = getPublicKey(jwskeyStore);
-		// Create a new JsonWebSignature
-		JsonWebSignature jws = new JsonWebSignature();
-		// Set the compact serialization on the JWS
-		jws.setCompactSerialization( encipheredData);
-		// Set the verification key
-		jws.setKey(pubKey);
-		// Check the signature
-		boolean signatureVerified = jws.verifySignature();
-		//Get the payload, or signed content, from the JWS
-		if(signatureVerified){
-			encipheredData = jws.getPayload();
-		}else {
-			log.debug("jws check is failed");
-		}
-		return  encipheredData;
+		String  encipheredData =myInfoClient.searchDataByIdNumber(authorization,idNumber,attributes.toArray(new String[attributes.size()]),clientId,singPassEServiceId,txnNo).getBody();
+		return decodeEncipheredData(encipheredData);
 	}
 
-	public static PrivateKey getPrivateKey(String clientKeystore) {
-	    PrivateKey privateKey = null;
-		byte[] encodedKey = Base64.decode(clientKeystore);
-		try {
-			PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(encodedKey);
-			KeyFactory kf = KeyFactory.getInstance("RSA");
-	        privateKey = (PrivateKey)kf.generatePrivate(keySpec);
-		} catch (Exception e){
-			log.info(e.getMessage(),e);
+	public static String decodeEncipheredData(String encipheredData) throws Exception {
+		if(StringUtil.isEmpty(encipheredData)){
+			return encipheredData;
 		}
-		return privateKey;
-	}
-	public static PublicKey getPublicKey(String clientKeystore) {
-		PublicKey publicKey = null;
-		byte[] encodedKey = Base64.decode(clientKeystore);
-		try {
-			X509EncodedKeySpec keySpec = new X509EncodedKeySpec(encodedKey);
-			KeyFactory kf = KeyFactory.getInstance("RSA");
-			publicKey  = (PublicKey)kf.generatePublic(keySpec);
-		} catch (Exception e){
-			log.info(e.getMessage(),e);
-		}
-		return publicKey;
+
+		String privateKey = ConfigHelper.getString("myinfo.common.priclientkey");
+
+		return SignatureUtil.decryptToken(encipheredData, privateKey).getPayload().toString();
 	}
 
 	public static String getBaseString( String idNum, List<String> attrs, String clientId, String singpassEserviceId, String txnNo){
 		StringBuilder sb = new StringBuilder();
-			String ipAddress = ConfigHelper.getString("myinfo.ip.address.basestring.gateway");
-			sb.append("GET&").append(ipAddress);
-			String idnum = "/" + idNum + "/";
-			sb.append(idnum);
-		   sb.append("?attributes=");
-		   if (attrs.size() > 0) {
+		String ipAddress = ConfigHelper.getString("myinfo.ip.address.basestring.gateway");
+		sb.append("GET&").append(ipAddress);
+		String idnum = "/" + idNum + "/";
+		sb.append(idnum);
+		sb.append("?attributes=");
+		if (attrs.size() > 0) {
 			for (int i = 0; i < attrs.size(); i++) {
 				if (i == (attrs.size() - 1)) {
 					sb.append(attrs.get(i));
@@ -166,22 +114,22 @@ public class MyinfoUtil {
 					sb.append(attrs.get(i)).append(',');
 				}
 			}
-		   }
-		    sb.append("&client_id=").append(clientId);
-		   sb.append("&singpassEserviceId=").append(singpassEserviceId);
-			sb.append("&txnNo=").append(txnNo);
+		}
+		sb.append("&client_id=").append(clientId);
+		sb.append("&singpassEserviceId=").append(singpassEserviceId);
+		sb.append("&txnNo=").append(txnNo);
 		return sb.toString();
 	}
 
 	public static String getAuthorization(String realm, String signature, String appId, long nonce, long timestamp) {
 		StringBuilder sb = new StringBuilder();
-			sb.append("Apex_l2_Eg realm=\"").append(realm );
-			sb.append("\",apex_l2_eg_app_id=\"").append(appId);
-			sb.append("\",apex_l2_eg_nonce=\"").append(nonce);
-			sb.append("\",apex_l2_eg_signature_method=\"SHA256withRSA\"");
-			sb.append(",apex_l2_eg_signature=\"").append(signature);
-			sb.append("\",apex_l2_eg_timestamp=\"").append(timestamp);
-			sb.append("\",apex_l2_eg_version=\"1.0\"");
+		sb.append("Apex_l2_Eg realm=\"").append(realm );
+		sb.append("\",apex_l2_eg_app_id=\"").append(appId);
+		sb.append("\",apex_l2_eg_nonce=\"").append(nonce);
+		sb.append("\",apex_l2_eg_signature_method=\"SHA256withRSA\"");
+		sb.append(",apex_l2_eg_signature=\"").append(signature);
+		sb.append("\",apex_l2_eg_timestamp=\"").append(timestamp);
+		sb.append("\",apex_l2_eg_version=\"1.0\"");
 		return sb.toString();
 	}
 
@@ -228,12 +176,12 @@ public class MyinfoUtil {
 
 	public static String getAuthoriseApiUrl(String authApiUrl,String nric,String clientId,String attributes,String spEsvcId,String purpose,String state,String redirectUrl){
 		String authoriseUrl = authApiUrl + "/" + nric + "/"+
-		         "?client_id=" + clientId +
+				"?client_id=" + clientId +
 				"&attributes=" + attributes +
 				"&sp_esvcId=" + spEsvcId +
 				"&purpose=" + purpose +
-				"&state=" + state +
-				"&redirect_uri=" + redirectUrl;
+				"&redirect_uri=" + redirectUrl+
+				"&state=" + state;
 		return authoriseUrl;
 	}
 
@@ -263,57 +211,89 @@ public class MyinfoUtil {
 			log.error(e.getMessage(),e);
 			nonceValue = timestamp;
 		}
+		String appId = ConfigHelper.getString("myinfo.common.app.id", clientId);
 		TreeMap<String, String> baseParams = new TreeMap<>();
-		baseParams.put(AcraConsts.SP_ESVCID + "=", spEsvcId);
+		baseParams.put(AcraConsts.APP_ID + "=", appId);
+		baseParams.put(AcraConsts.SIGNATURE_METHOD + "=", "RS256");
 		baseParams.put(AcraConsts.CLIENT_ID + "=", clientId);
 		baseParams.put(AcraConsts.ATTRIBUTE + "=", attribute);
 		baseParams.put(AcraConsts.TIMESTAMP + "=", timestamp);
 		baseParams.put(AcraConsts.NONCE + "=", nonceValue);
-		baseParams.put(AcraConsts.SIGNATURE_METHOD + "=","RS256");
+		baseParams.put(AcraConsts.SP_ESVCID + "=", spEsvcId);
 		String baseString = SignatureUtil.generateBaseString(method, requestUrl, baseParams);
+		log.info(StringUtil.changeForLog("Myinfo person base string => " + baseString));
 		String signature =  SignatureUtil.generateSignature(baseString, privateKeyPEM);
+		log.info(StringUtil.changeForLog("Myinfo person signature => " + signature));
 		TreeMap<String, String> authHeaderParams = new TreeMap<>();
 		authHeaderParams.put(AcraConsts.TIMESTAMP + "=", timestamp);
 		authHeaderParams.put(AcraConsts.NONCE + "=", nonceValue);
 		authHeaderParams.put(AcraConsts.APP_ID + "=", clientId);
 		authHeaderParams.put(AcraConsts.SIGNATURE_METHOD + "=", "RS256");
 		authHeaderParams.put(AcraConsts.SIGNATURE + "=", signature);
-		return SignatureUtil.generateAuthorizationHeader(authHeaderParams) +  ','+ takenType+ validToken;
+		return SignatureUtil.generateAuthorizationHeader(authHeaderParams) +  ','+ takenType + " " + validToken;
 	}
 
-	public static String generateAuthorizationHeaderForMyInfoTaken(String method, String grantType, String code, String privateKeyPEM,String clientSecret,String requestUrl,String clientId,String state,String redirectUri,String privateKeyContent){
+	public static String generateAuthorizationHeaderForMyInfoTaken(String method, String grantType, String code, String privateKeyPEM,String clientSecret,String requestUrl,String clientId,String state,String redirectUri) throws NoSuchAlgorithmException {
 		log.info(StringUtil.changeForLog("---------generateAuthorizationHeaderForMyInfoTaken state = "+ state));
 		String authlevel = ConfigHelper.getString("myinfo.common.authlevel","L2");
 		if(!authlevel .equalsIgnoreCase("L2")){
 			return "";
 		}
-    	TreeMap<String, String> baseParams = new TreeMap<>();
+		String appId = ConfigHelper.getString("myinfo.common.app.id", clientId);
+		String timestamp = String.valueOf(System.currentTimeMillis());
+		SecureRandom secureRandom = SecureRandom.getInstance("SHA1PRNG");
+		String nonce = timestamp +	(secureRandom.nextInt(9000) + 1000);
+		TreeMap<String, String> baseParams = new TreeMap<>();
 		baseParams.put(AcraConsts.GRANT_TYPE + "=", grantType);
 		baseParams.put(AcraConsts.CODE + "=", code);
 		baseParams.put(AcraConsts.REDIRECT_URI + "=", redirectUri);
 		baseParams.put(AcraConsts.CLIENT_ID + "=", clientId);
 		baseParams.put(AcraConsts.CLIENT_SECRET + "=", clientSecret);
-		baseParams.put(AcraConsts.SIGNATURE_METHOD + "=","RS256");
+		baseParams.put("app_id=", appId);
+		baseParams.put("nonce=", nonce);
+		baseParams.put(AcraConsts.SIGNATURE_METHOD + "=", "RS256");
+		baseParams.put("timestamp=", timestamp);
+		baseParams.put("state=", state);
 		String baseString = SignatureUtil.generateBaseString(method, requestUrl, baseParams);
+		log.info(StringUtil.changeForLog("Token auth base string ==> " + baseString));
 		String signature =  SignatureUtil.generateSignature(baseString, privateKeyPEM);
+		log.info(StringUtil.changeForLog("Token auth signature ==> " + signature));
 		TreeMap<String, String> authHeaderParams = new TreeMap<>();
-		authHeaderParams.put(AcraConsts.SIGNATURE_METHOD + "=", "RS256");
+		authHeaderParams.put("app_id=", appId);
+		authHeaderParams.put("nonce=", nonce);
 		authHeaderParams.put(AcraConsts.SIGNATURE + "=", signature);
+		authHeaderParams.put(AcraConsts.SIGNATURE_METHOD + "=", "RS256");
+		authHeaderParams.put("timestamp=", timestamp);
+
 		return SignatureUtil.generateAuthorizationHeader(authHeaderParams);
 	}
 
-	public static MyInfoTakenDto getTakenCallMyInfo(String method, String grantType, String code, String privateKeyPEM, String clientSecret, String requestUrl, String clientId, String state, String redirectUri,String privateKeyContent){
+	public static MyInfoTakenDto getTakenCallMyInfo(String method, String grantType, String code, String privateKeyPEM, String clientSecret, String requestUrl, String clientId, String state, String redirectUri) throws NoSuchAlgorithmException {
 		GetTokenDto getTokenDto = new GetTokenDto(code,grantType,clientSecret,clientId,redirectUri,state);
-		String authorizationHeader = generateAuthorizationHeaderForMyInfoTaken(method, grantType, code, privateKeyPEM, clientSecret, requestUrl, clientId, state, redirectUri,privateKeyContent);
+		String authorizationHeader = generateAuthorizationHeaderForMyInfoTaken(method, grantType, code, privateKeyPEM, clientSecret, requestUrl, clientId, state, redirectUri);
 		if(StringUtil.isEmpty(authorizationHeader)){
 			log.info("--------getTakenCallMyInfo authorizationHeader is null-------------");
 			return null;
+		} else {
+			log.info(StringUtil.changeForLog("Token Auth Header ==> " + authorizationHeader));
 		}
 		ResponseEntity<MyInfoTakenDto> resEntity;
-		HttpHeaders header = IaisCommonUtils.getHttpHeadersForMyInfoTaken(MediaType.APPLICATION_FORM_URLENCODED,null,authorizationHeader,null,null);
+		HttpHeaders header = new HttpHeaders();
+		header.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+		header.setCacheControl(CacheControl.noCache());
+		header.set("Authorization", authorizationHeader);
 		HttpStatus httpStatus;
 		try {
-			resEntity = IaisCommonUtils.callEicGatewayWithBody(requestUrl , HttpMethod.POST,getTokenDto,null, header,MyInfoTakenDto.class,null);
+			String eicUrl = ConfigHelper.getString("myinfo.taken.requestUrl",requestUrl);
+			resEntity = IaisCommonUtils.callEicGatewayWithBody(eicUrl , HttpMethod.POST,handleRequestBody(getTokenDto),null, header,MyInfoTakenDto.class,null);
+			AuditTrailDto auditTrailDto = new AuditTrailDto();
+			auditTrailDto.setOperation(AuditTrailConsts.OPERATION_FOREIGN_INTERFACE);
+			auditTrailDto.setOperationType(AuditTrailConsts.OPERATION_TYPE_INTERNET);
+			auditTrailDto.setModule("MyInfo");
+			auditTrailDto.setFunctionName("getTakenCallMyInfo");
+			auditTrailDto.setBeforeAction(JsonUtil.parseToJson(getTokenDto));
+			auditTrailDto.setAfterAction(JsonUtil.parseToJson(resEntity));
+			AuditTrailHelper.callSaveAuditTrail(auditTrailDto);
 			httpStatus = resEntity.getStatusCode();
 			if( httpStatus == HttpStatus.OK){
 				return resEntity.getBody();
@@ -325,5 +305,16 @@ public class MyinfoUtil {
 			return null;
 		}
 
+	}
+
+	private static MultiValueMap<String, String> handleRequestBody(GetTokenDto getTokenDto) {
+		MultiValueMap<String, String> newMap = new LinkedMultiValueMap<>();
+		newMap.add("code", getTokenDto.getCode());
+		newMap.add("grant_type", getTokenDto.getGrant_type());
+		newMap.add("client_secret", getTokenDto.getClient_secret());
+		newMap.add("client_id", getTokenDto.getClient_id());
+		newMap.add("redirect_uri", getTokenDto.getRedirect_uri());
+		newMap.add("state", getTokenDto.getState());
+		return newMap;
 	}
 }

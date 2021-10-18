@@ -342,12 +342,12 @@
 
       <div class="form-group" style="display: none" id="${routingStages.key}">
         <div class="col-xs-12 col-md-12"  style="margin-top: 10px" >
-          <table border="1px" style="text-align: center" valign="middle">
+          <table aria-describedby="" border="1px" style="text-align: center" valign="middle">
             <tr>
-              <th style="width: 10% ;height: 40px;text-align: center"> Application Type&nbsp;<span class="mandatory" >*</span></th>
-              <th  style="width: 20% ;height: 40px;text-align: center"> Service Workflow Routing Stages&nbsp;<span class="mandatory" >*</span></th>
-              <th  style="width: 30% ;height: 40px;text-align: center">Service Routing Scheme&nbsp;<span class="mandatory">*</span></th>
-              <th  style="width: 15% ;height: 40px;text-align: center">Service Workload Manhours&nbsp;<span class="mandatory">*</span></th>
+              <th scope="col" style="width: 10% ;height: 40px;text-align: center"> Application Type&nbsp;<span class="mandatory" >*</span></th>
+              <th scope="col" style="width: 20% ;height: 40px;text-align: center"> Service Workflow Routing Stages&nbsp;<span class="mandatory" >*</span></th>
+              <th scope="col" style="width: 30% ;height: 40px;text-align: center">Service Routing Scheme&nbsp;<span class="mandatory">*</span></th>
+              <th scope="col" style="width: 15% ;height: 40px;text-align: center">Service Workload Manhours&nbsp;<span class="mandatory">*</span></th>
             </tr>
             <c:forEach items="${routingStages.value}" var="routingStage" varStatus="status">
               <tr>

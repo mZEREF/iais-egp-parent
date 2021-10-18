@@ -14,6 +14,7 @@
 package com.ecquaria.cloud.moh.iais.helper;
 
 import com.ecquaria.cloud.helper.SpringContextHelper;
+import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.RedisNameSpaceConstant;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
@@ -24,12 +25,12 @@ import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.service.client.MasterCodeClient;
-import lombok.extern.slf4j.Slf4j;
-
 import java.lang.reflect.Field;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import lombok.extern.slf4j.Slf4j;
 
 
 /**
@@ -79,7 +80,6 @@ public final class MasterCodeUtil {
     public static final String CATE_ID_SERVICE_STEP                = "E498C55D-9723-EA11-BE7D-000C29F371DC";
     public static final String CATE_ID_SERVICE_PERSONNEL_PSN_TYPE  = "D44B5FF6-5028-EA11-BE78-000C29D29DB0";
     public static final String CATE_ID_PROCESS_FILE_TRACK_STATUS   = "38902DD7-1E29-EA11-BE7D-000C29F371DC";
-    public static final String CATE_ID_CONFIG_EFFECTIVE_DATE       = "A22973DF-2094-EA11-BE7A-000C29D29DB0";
     public static final String CATE_ID_APPLICATION_DRAFT_VALIDITY  = "A89CA599-179F-EA11-BE7A-000C29D29DB0";
     public static final String CATE_ID_LICENCE_STATUS              = "CF69FBD0-B37A-4DD9-9BD6-0A153ED55BF8";
 
@@ -101,7 +101,7 @@ public final class MasterCodeUtil {
     public static final String CATE_ID_PROFESSION_BOARD                 = "ED29FF07-7FA1-EB11-8B7F-000C29FD17F9";
     public static final String CATE_ID_EAS_MTS_SPECIALTY                = "6DC1ED79-08A4-EB11-8B7F-000C29FD17F9";
     public static final String CATE_ID_BANK_NAME                        = "137A214B-8611-EA11-BE78-874C29D29DB0";
-
+    public static final String CATE_ID_CESSION_REASION                  = "20941117-A009-4E45-AD2F-22F233EAA28D";
 
     //charges
     public static final String CATE_ID_GENERAL_CONVEYANCE_CHARGES_TYPE                  = "D4F72703-47A3-EB11-8B7F-000C29FD17F9";
@@ -114,14 +114,12 @@ public final class MasterCodeUtil {
     public static final String CATE_ID_INFECTION_CONTROL_EQUIPMENT_CHARGES_TYPE         = "BC3A0435-F5A3-EB11-8B7F-000C29FD17F9";
     public static final String CATE_ID_MEDICATIONS_CHARGES_TYPE                         = "A721D57E-F5A3-EB11-8B7F-000C29FD17F9";
     public static final String CATE_ID_MISCELLANEOUS_CHARGES_TYPE                       = "5ADA2A9A-F6A3-EB11-8B7F-000C29FD17F9";
-
-    // Inspection entity
     public static final String CATE_ID_INSPECTION_ENTITY_TYPE                           = "796E6112-36B1-EB11-8B7D-000C293F0C99";
-
-    public static final String DESIGNATION_OTHER_CODE_KEY                               = "DES999";
-
     public static final String CATE_ID_LICENSEE_TYPE                                    = "1CC74A81-ACA4-EA11-BE7A-000C29D29DB0";
     public static final String CATE_ID_LICENSEE_SUB_TYPE                                = "AB50CD91-80D5-EB11-8B7F-000C29FD17F9";
+    public static final String CATE_ID_FREE_RENEW_HCI_CODES                             = "C8D460B4-A20F-EC11-8B7E-000C293F0C99";
+
+    public static final String DESIGNATION_OTHER_CODE_KEY                               = "DES999";
 
     //ApplicationInfo
     public static final String CATE_ID_BSB_APP_TYPE = "FF506BE0-75EF-EB11-8B7D-000C293F0C99";
@@ -201,6 +199,7 @@ public final class MasterCodeUtil {
     public static List<String> getCodeKeyByCodeValue(String codeVal){
         List<String> codeKey = IaisCommonUtils.genNewArrayList();
         SearchParam param = new SearchParam(MasterCodeView.class.getName());
+        param.addParam("activeFilter", "Yes");
         param.addFilter("codeValFilter", codeVal, true);
         QueryHelp.setMainSql(WEBCOMMON, RETRIEVE_MASTER_CODES, param);
         MasterCodeClient client = SpringContextHelper.getContext().getBean(MasterCodeClient.class);
@@ -256,9 +255,20 @@ public final class MasterCodeUtil {
             MasterCodeClient client = SpringContextHelper.getContext().getBean(MasterCodeClient.class);
             SearchResult<MasterCodeView> sr = client.retrieveMasterCodes(param).getEntity();
             if (sr.getRowCount() > 0) {
-                MasterCodeView mc = sr.getRows().get(0);
-                desc = mc.getCodeValue();
-                addMcToCache(mc);
+                Date now = new Date();
+                int version = -1;
+                for (MasterCodeView mc : sr.getRows()) {
+                    if (AppConsts.COMMON_STATUS_ACTIVE.equals(mc.getStatus())
+                            && now.after(mc.getEffectFrom())
+                            && (mc.getEffectTo() == null || now.before(mc.getEffectTo()))) {
+                        addMcToCache(mc);
+                        return mc.getCodeValue();
+                    } else if (mc.getVersion() > version) {
+                        desc = mc.getCodeValue();
+                        addMcToCache(mc);
+                        version = mc.getVersion();
+                    }
+                }
             } else {
                 return "";
             }
@@ -329,17 +339,19 @@ public final class MasterCodeUtil {
         if (list == null) {
             SearchParam param = new SearchParam(MasterCodeView.class.getName());
             param.setSort(SEQUENCE, SearchParam.ASCENDING);
+            param.addParam("activeFilter", "Yes");
             param.addFilter("cateFilter", cateId, true);
             QueryHelp.setMainSql(WEBCOMMON, RETRIEVE_MASTER_CODES, param);
             MasterCodeClient client = SpringContextHelper.getContext().getBean(MasterCodeClient.class);
             SearchResult<MasterCodeView> sr = client.retrieveMasterCodes(param).getEntity();
             if (sr.getRowCount() > 0) {
+                Date now = new Date();
                 list = sr.getRows();
-                list.forEach(m ->
-                        SpringContextHelper.getContext().getBean(RedisCacheHelper.class)
-                                .set(RedisNameSpaceConstant.CACHE_NAME_CODE, m.getCode(), m.getCodeValue(),
-                                RedisCacheHelper.NOT_EXPIRE)
-                );
+                list.forEach(m -> {
+                    SpringContextHelper.getContext().getBean(RedisCacheHelper.class)
+                            .set(RedisNameSpaceConstant.CACHE_NAME_CODE, m.getCode(), m.getCodeValue(),
+                                    RedisCacheHelper.NOT_EXPIRE);
+                });
                 SpringContextHelper.getContext().getBean(RedisCacheHelper.class)
                         .set(RedisNameSpaceConstant.CACHE_NAME_CATE_MAP, cateId, list,
                         RedisCacheHelper.NOT_EXPIRE);
@@ -357,18 +369,20 @@ public final class MasterCodeUtil {
         if (list == null) {
             SearchParam param = new SearchParam(MasterCodeView.class.getName());
             param.setSort(SEQUENCE, SearchParam.ASCENDING);
+            param.addParam("activeFilter", "Yes");
             param.addFilter("filterAttr", filter, true);
             QueryHelp.setMainSql(WEBCOMMON, RETRIEVE_MASTER_CODES, param);
             MasterCodeClient client = SpringContextHelper.getContext().getBean(MasterCodeClient.class);
             SearchResult<MasterCodeView> sr = client.retrieveMasterCodes(param).getEntity();
             if (sr.getRowCount() > 0) {
                 list = sr.getRows();
-                list.forEach(m ->
-                        SpringContextHelper.getContext().getBean(RedisCacheHelper.class)
-                                .set(RedisNameSpaceConstant.CACHE_NAME_CODE,
-                                m.getCode(), m.getCodeValue(),
-                                RedisCacheHelper.NOT_EXPIRE)
-                );
+                Date now = new Date();
+                list.forEach(m -> {
+                    SpringContextHelper.getContext().getBean(RedisCacheHelper.class)
+                            .set(RedisNameSpaceConstant.CACHE_NAME_CODE,
+                                    m.getCode(), m.getCodeValue(),
+                                    RedisCacheHelper.NOT_EXPIRE);
+                });
                 SpringContextHelper.getContext().getBean(RedisCacheHelper.class).set(CACHE_NAME_FILTER,
                         filter, list, RedisCacheHelper.NOT_EXPIRE);
             } else {
@@ -388,8 +402,14 @@ public final class MasterCodeUtil {
     }
 
     private static void addMcToCache(MasterCodeView mc) {
+        Date now = new Date();
         RedisCacheHelper rch = SpringContextHelper.getContext().getBean(RedisCacheHelper.class);
         rch.set(RedisNameSpaceConstant.CACHE_NAME_CODE, mc.getCode(), mc.getCodeValue());
+        if (!(AppConsts.COMMON_STATUS_ACTIVE.equals(mc.getStatus())
+                && now.after(mc.getEffectFrom())
+                && (mc.getEffectTo() == null || now.before(mc.getEffectTo())))) {
+            return;
+        }
         String cate = String.valueOf(mc.getCategory());
         List<MasterCodeView> list = rch.get(RedisNameSpaceConstant.CACHE_NAME_CATE_MAP, cate);
         if (list == null) {

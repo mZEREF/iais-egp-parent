@@ -2,7 +2,7 @@
 <%@page import="com.ecquaria.egp.core.payment.api.config.GatewayConfig" %>
 <%@page import="com.ecquaria.egp.core.payment.api.config.GatewayNetsConfig" %>
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui"%>

@@ -21,7 +21,7 @@
                     <div class="table-gp">
                         <table aria-describedby="" class="table">
                             <thead>
-                            <tr align="center">
+                            <tr >
                                 <th scope="col" >S/N</th>
                                 <th scope="col" >Service</th>
                                 <th scope="col" >Workload Manhours<br>(For illustration only)</th>

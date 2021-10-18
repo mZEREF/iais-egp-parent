@@ -37,7 +37,7 @@
         <module>web-common</module>
         <module>backbone</module>
         <module>hcsa-licence-fe</module>
-        <module>demo-app</module>
+        <module>backbone</module>
         <module>systemadmin</module>
         <module>fe-main</module>
         <module>hcsa-licence-be</module>
@@ -131,7 +131,7 @@
             <dependency>
                 <groupId>com.ecquaria.sz</groupId>
                 <artifactId>ecq-sz-commons</artifactId>
-                <version>0.41</version>
+                <version>0.43</version>
             </dependency>
             <dependency>
                 <groupId>com.ncs.secureconnect</groupId>
@@ -211,6 +211,11 @@
                 <groupId>com.dbs.sgqr.generator</groupId>
                 <artifactId>SGQRGenerator</artifactId>
                 <version>1.6</version>
+            </dependency>
+            <dependency>
+                <groupId>org.xhtmlrenderer</groupId>
+                <artifactId>flying-saucer-pdf</artifactId>
+                <version>9.1.20</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
@@ -293,6 +298,7 @@
                     <systemPropertyVariables>
                         <jacoco-agent.destfile>${sonar.jacoco.reportPaths}</jacoco-agent.destfile>
                     </systemPropertyVariables>
+                    <skipTests>true</skipTests>
                 </configuration>
             </plugin>
         </plugins>

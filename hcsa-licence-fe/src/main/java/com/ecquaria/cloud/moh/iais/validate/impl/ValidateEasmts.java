@@ -3,7 +3,6 @@ package com.ecquaria.cloud.moh.iais.validate.impl;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesOperationalUnitDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.CheckCoLocationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
@@ -19,10 +18,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -34,45 +31,43 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class ValidateEasmts extends AbstractValidate implements ValidateFlow {
     @Autowired
     private LicenceClient licenceClient;
+
     @Override
-    public void doValidatePremises(Map<String, String> map, AppGrpPremisesDto appGrpPremisesDto,Integer index, String masterCodeDto,List<String> floorUnitList, List<String> floorUnitNo,String licenseeId) {
+    public void doValidatePremises(Map<String, String> map, AppGrpPremisesDto appGrpPremisesDto,Integer index, String masterCodeDto,
+            List<String> floorUnitList, List<String> floorUnitNo,String licenseeId, String appType, String licenceId) {
         String easMtsHciName = appGrpPremisesDto.getEasMtsHciName();
         if(StringUtil.isEmpty(easMtsHciName)){
-            map.put("easMtsHciName"+index, MessageUtil.replaceMessage("GENERAL_ERR0006", "Name of HCI", "field"));
+            map.put("easMtsHciName"+index, MessageUtil.replaceMessage("GENERAL_ERR0006", "Business Name", "field"));
         }else {
             if(easMtsHciName.length()>100){
                 String general_err0041=NewApplicationHelper.repLength("HCI Name","100");
                 map.put("easMtsHciName" + index, general_err0041);
             }else {
-                int hciNameChanged = appGrpPremisesDto.getHciNameChanged();
-                if(2==hciNameChanged){
-
-                }else {
-                    if(masterCodeDto!=null){
-                        String[] s = masterCodeDto.split(" ");
-                        StringBuilder sb=new StringBuilder();
-                        Map<Integer,String> treeMap=new LinkedHashMap<>();
-                        for (int i = 0; i < s.length; i++) {
-                            if (easMtsHciName.toUpperCase().contains(s[i].toUpperCase())) {
-                                treeMap.put(easMtsHciName.toUpperCase().indexOf(s[i].toUpperCase()),s[i]);
+                int hciNameChanged = 0;
+                if (!ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType)) {
+                    hciNameChanged = NewApplicationHelper.checkNameChanged(easMtsHciName, null, licenceId);
+                }
+                if (2 == hciNameChanged || 4 == hciNameChanged) {
+                    //no need validate hci name have keyword (is migrated and hci name never changed)
+                } else {
+                    Map<Integer, String> blacklistMap = NewApplicationHelper.checkBlacklist(easMtsHciName);
+                    if (!blacklistMap.isEmpty()) {
+                        StringBuilder sb = new StringBuilder();
+                        AtomicInteger length = new AtomicInteger();
+                        blacklistMap.forEach((k, v) -> {
+                            length.getAndIncrement();
+                            sb.append(v);
+                            if (map.size() != length.get()) {
+                                sb.append(',').append(' ');
                             }
-                        }
-                        if(!treeMap.isEmpty()){
-                            AtomicInteger length=new AtomicInteger();
-                            treeMap.forEach((k,v)->{
-                                length.getAndIncrement();
-                                sb.append(v);
-                                if(length.get()!=treeMap.size()){
-                                    sb.append(',').append(' ');
-                                }
-                            });
-                            map.put("easMtsHciName" + index, MessageUtil.replaceMessage("GENERAL_ERR0016", sb.toString(), "keywords"));
-                        }
+                        });
+                        map.put("easMtsHciName" + index, MessageUtil.replaceMessage("GENERAL_ERR0016", sb.toString(), "keywords"));
                     }
-                    List<PremisesDto> premisesDtos = licenceClient.getPremisesDtoByHciNameAndPremType(easMtsHciName,ApplicationConsts.PREMISES_TYPE_EAS_MTS_CONVEYANCE,licenseeId).getEntity();
-                    if(!IaisCommonUtils.isEmpty(premisesDtos)){
-                        map.put("hciNameUsed", MessageUtil.getMessageDesc("NEW_ACK011"));
-                    }
+                }
+
+                List<PremisesDto> premisesDtos = licenceClient.getPremisesDtoByHciNameAndPremType(easMtsHciName,ApplicationConsts.PREMISES_TYPE_EAS_MTS_CONVEYANCE,licenseeId).getEntity();
+                if(!IaisCommonUtils.isEmpty(premisesDtos)){
+                    map.put("hciNameUsed", MessageUtil.getMessageDesc("NEW_ACK011"));
                 }
 
             }
@@ -154,7 +149,7 @@ public class ValidateEasmts extends AbstractValidate implements ValidateFlow {
         }
         if(appPremisesOperationalUnitDtos!=null&&!appPremisesOperationalUnitDtos.isEmpty()){
             //
-            checkOperaionUnit(appPremisesOperationalUnitDtos,map,"opOffFloorNo"+index,"opOffUnitNo"+index,floorUnitList,"offFloorUnit"+index,floorUnitNo,appGrpPremisesDto);
+            checkOperaionUnit(appPremisesOperationalUnitDtos,map,"opEasMtsFloorNo"+index,"opEasMtsUnitNo"+index,floorUnitList,"EasMtsFloorUnit"+index,floorUnitNo,appGrpPremisesDto);
         }
     }
 

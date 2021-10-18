@@ -24,11 +24,13 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppIntranetDocDto
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcVehicleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcStageWorkingGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AppInspectionStatusDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspEmailFieldDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspRectificationSaveDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspecUserRecUploadDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionPreTaskDto;
@@ -80,6 +82,7 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -561,6 +564,55 @@ public class InspectionRectificationProImpl implements InspectionRectificationPr
                     if(workingGroupDto != null){
                         List<ApptNonWorkingDateDto> nonWorkingDateListByWorkGroupId = appointmentClient.getNonWorkingDateListByWorkGroupId(AppConsts.MOH_IAIS_SYSTEM_APPT_CLIENT_KEY, workingGroupDto.getGroupName()).getEntity();
                         return nonWorkingDateListByWorkGroupId;
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public List<InspEmailFieldDto> sortInspEmailFieldDtoByCategory(List<InspEmailFieldDto> inspEmailFieldDtos) {
+        List<InspEmailFieldDto> sortInspEmailFieldDtos = IaisCommonUtils.genNewArrayList();
+        if(!IaisCommonUtils.isEmpty(inspEmailFieldDtos)) {
+            List<String> categorys = IaisCommonUtils.genNewArrayList();
+            for(InspEmailFieldDto inspEmailFieldDto : inspEmailFieldDtos) {
+                if(inspEmailFieldDto != null) {
+                    String category = inspEmailFieldDto.getServiceName();
+                    if(StringUtil.isEmpty(category)) {
+                        sortInspEmailFieldDtos.add(inspEmailFieldDto);
+                    } else {
+                        if(!categorys.contains(category)) {
+                            categorys.add(category);
+                        }
+                    }
+                }
+            }
+            if(!IaisCommonUtils.isEmpty(categorys)) {
+                Collections.sort(categorys);
+                for(InspEmailFieldDto inspEmailFieldDto : inspEmailFieldDtos) {
+                    if(inspEmailFieldDto != null) {
+                        String serviceName = inspEmailFieldDto.getServiceName();
+                        for (String category : categorys) {
+                            if(serviceName.equals(category)) {
+                                sortInspEmailFieldDtos.add(inspEmailFieldDto);
+                            }
+                        }
+                    }
+                }
+            }
+            return sortInspEmailFieldDtos;
+        }
+        return inspEmailFieldDtos;
+    }
+
+    @Override
+    public String getVehicleShowName(String vehicleName, List<AppSvcVehicleDto> appSvcVehicleDtos) {
+        if(!StringUtil.isEmpty(vehicleName) && !IaisCommonUtils.isEmpty(appSvcVehicleDtos)) {
+            for(AppSvcVehicleDto appSvcVehicleDto : appSvcVehicleDtos) {
+                if(appSvcVehicleDto != null) {
+                    if(appSvcVehicleDto.getVehicleName().equals(vehicleName)) {
+                        return appSvcVehicleDto.getDisplayName();
                     }
                 }
             }

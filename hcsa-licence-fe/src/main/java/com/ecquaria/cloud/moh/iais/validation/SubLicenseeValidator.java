@@ -4,6 +4,7 @@ package com.ecquaria.cloud.moh.iais.validation;
 import com.ecquaria.cloud.moh.iais.action.NewApplicationDelegator;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.organization.OrganizationConstants;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.SubLicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -38,11 +39,6 @@ public class SubLicenseeValidator implements CustomizeValidator {
         String idNumber = subLicenseeDto.getIdNumber();
         String licenseeType = subLicenseeDto.getLicenseeType();
         if (!OrganizationConstants.LICENSEE_SUB_TYPE_COMPANY.equals(licenseeType)) {
-            String assignSelect = subLicenseeDto.getAssignSelect();
-            if (StringUtil.isEmpty(assignSelect) || "-1".equals(assignSelect)) {
-                errorMap.put("assignSelect", MANDATORY_MSG);
-            }
-
             if (StringUtil.isEmpty(idNumber)) {
                 errorMap.put("idNumber", MANDATORY_MSG);
             } else if (!validateIdNo(idType, idNumber)) {
@@ -50,21 +46,33 @@ public class SubLicenseeValidator implements CustomizeValidator {
             }
         }
 
-        if (OrganizationConstants.LICENSEE_SUB_TYPE_INDIVIDUAL.equals(licenseeType)) {
+        if (OrganizationConstants.LICENSEE_SUB_TYPE_INDIVIDUAL.equals(licenseeType) || StringUtil.isEmpty(licenseeType)) {
+            String assignSelect = subLicenseeDto.getAssignSelect();
+            if (StringUtil.isEmpty(assignSelect) || "-1".equals(assignSelect)) {
+                errorMap.put("assignSelect", MANDATORY_MSG);
+            }
+
             if (StringUtil.isEmpty(idType)) {
                 errorMap.put("idType", MANDATORY_MSG);
             }
-
-            String mobileNo = subLicenseeDto.getTelephoneNo();
-            if (mobileNo != null && !CommonValidator.isMobile(mobileNo)) {
-                errorMap.put("telephoneNo", MessageUtil.getMessageDesc("GENERAL_ERR0015"));
-            }
         }
-
-        if (OrganizationConstants.LICENSEE_SUB_TYPE_SOLO.equals(licenseeType)) {
+        String telephoneNoErr=MessageUtil.getMessageDesc("GENERAL_ERR0015");
+        if (OrganizationConstants.LICENSEE_SUB_TYPE_COMPANY.equals(licenseeType)) {
             String telephoneNo = subLicenseeDto.getTelephoneNo();
             if (telephoneNo != null && !CommonValidator.isTelephoneNo(telephoneNo)) {
-                errorMap.put("telephoneNo", MessageUtil.getMessageDesc("GENERAL_ERR0015"));
+                errorMap.put("telephoneNo", telephoneNoErr);
+            }
+        }
+        if (OrganizationConstants.LICENSEE_SUB_TYPE_INDIVIDUAL.equals(licenseeType)) {
+            String mobileNo = subLicenseeDto.getTelephoneNo();
+            if (mobileNo != null && !CommonValidator.isMobile(mobileNo)) {
+                errorMap.put("telephoneNo", telephoneNoErr);
+            }
+        }
+        if (OrganizationConstants.LICENSEE_SUB_TYPE_SOLO.equals(licenseeType)) {
+            String telephoneNo = subLicenseeDto.getTelephoneNo();
+            if (telephoneNo != null && !CommonValidator.isMobile(telephoneNo)) {
+                errorMap.put("telephoneNo", telephoneNoErr);
             }
         }
 
@@ -85,9 +93,12 @@ public class SubLicenseeValidator implements CustomizeValidator {
 
         if (errorMap.isEmpty() && IaisEGPConstant.ASSIGN_SELECT_ADD_NEW.equals(subLicenseeDto.getAssignSelect())
                 && OrganizationConstants.LICENSEE_SUB_TYPE_INDIVIDUAL.equals(licenseeType)) {
+            AppSubmissionDto appSubmissionDto = (AppSubmissionDto)ParamUtil.getSessionAttr(request, NewApplicationDelegator.APPSUBMISSIONDTO);
+            boolean needVal = appSubmissionDto != null &&
+                    ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appSubmissionDto.getAppType());
             Map<String, SubLicenseeDto> psnMap = (Map<String, SubLicenseeDto>) ParamUtil.getSessionAttr(request,
                     NewApplicationDelegator.LICENSEE_MAP);
-            if (psnMap != null && psnMap.get(NewApplicationHelper.getPersonKey(idType, idNumber)) != null) {
+            if (needVal && psnMap != null && psnMap.get(NewApplicationHelper.getPersonKey(idType, idNumber)) != null) {
                 errorMap.put("idNumber", MessageUtil.replaceMessage("NEW_ERR0006", idNumber, "{ID No.}"));
             }
         }

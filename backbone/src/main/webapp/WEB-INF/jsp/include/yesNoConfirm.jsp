@@ -18,7 +18,7 @@
         var data = options.data;
         var modalHtml = '';
         modalHtml += '<div class="modal fade" id="' + id + '">';
-        modalHtml += '<div class="modal-dialog">';
+        modalHtml += '<div class="modal-dialog modal-dialog-centered">';
         modalHtml += '<div class="modal-content">';
         modalHtml += '<div class="modal-header">';
         modalHtml += '<h5 class="modal-title">' + title + '</h5>';

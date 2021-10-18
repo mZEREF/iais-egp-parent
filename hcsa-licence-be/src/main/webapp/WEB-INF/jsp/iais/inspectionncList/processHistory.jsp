@@ -6,14 +6,14 @@
 <div class="row">
     <div class="col-xs-12">
         <div class="table-gp">
-            <table aria-describedby="" class="table">
+            <table aria-describedby="" style="table-layout:fixed;" class="table application-group">
                 <thead>
                 <tr>
-                    <th scope="col" >Username</th>
-                    <th scope="col" >Working Group</th>
-                    <th scope="col" >Status Update</th>
-                    <th scope="col" >Remarks</th>
-                    <th scope="col" >Last Updated</th>
+                    <th width="17%" scope="col" >Username</th>
+                    <th width="17%" scope="col" >Working Group</th>
+                    <th width="17%" scope="col" >Status Update</th>
+                    <th width="32%" scope="col" >Remarks</th>
+                    <th width="17%" scope="col" >Last Updated</th>
                 </tr>
                 </thead>
                 <tbody>
