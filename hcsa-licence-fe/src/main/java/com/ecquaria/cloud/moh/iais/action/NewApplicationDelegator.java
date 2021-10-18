@@ -2812,7 +2812,9 @@ public class NewApplicationDelegator {
                         AppEditSelectDto newChangeSelectDto = new AppEditSelectDto();
                         newChangeSelectDto.setPremisesEdit(true);
                         newChangeSelectDto.setPremisesListEdit(true);
-                        autoDto.setAppGrpPremisesDtoList(autoPremisesDtos);
+                        autoDto.setAppGrpPremisesDtoList(NewApplicationHelper.updatePremisesIndex(
+                                (List<AppGrpPremisesDto>) CopyUtil.copyMutableObjectList(autoPremisesDtos),
+                                autoDto.getAppGrpPremisesDtoList()));
                         autoDto.setChangeSelectDto(newChangeSelectDto);
                         autoDto.setAppGrpStatus(null);
                         autoDto.setAmount(0.0);
