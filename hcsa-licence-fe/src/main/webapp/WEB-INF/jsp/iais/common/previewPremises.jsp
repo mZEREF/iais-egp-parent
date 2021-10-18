@@ -20,7 +20,7 @@
     </div>
     <div class="panel-collapse collapse <c:if test="${!empty printFlag}">in</c:if>" id="collapsePremise${documentIndex}" role="tabpanel" aria-labelledby="headingPremise">
         <div class="panel-body">
-            <c:if test="${(AppSubmissionDto.appEditSelectDto==null||AppSubmissionDto.appEditSelectDto.premisesEdit) && empty printView}">
+            <c:if test="${(AppSubmissionDto.appEditSelectDto==null||AppSubmissionDto.appEditSelectDto.premisesEdit) && empty printView && (empty isSingle || isSingle == 'Y')}">
                 <p><div class="text-right app-font-size-16"><a href="#" id="premisesEdit"><em class="fa fa-pencil-square-o"></em>Edit</a></div></p>
             </c:if>
             <c:forEach var="appGrpPremDto" items="${AppSubmissionDto.appGrpPremisesDtoList}"
