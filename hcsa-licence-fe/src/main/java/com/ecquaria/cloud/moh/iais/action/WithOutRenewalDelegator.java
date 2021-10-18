@@ -132,6 +132,7 @@ public class WithOutRenewalDelegator {
     private static final String EDIT = "doEdit";
     private static final String PREFIXTITLE = "prefixTitle";
     private static final String LOADING_DRAFT = "loadingDraft";
+    private static final String SINGLE_SERVICE = "isSingle";
     @Autowired
     WithOutRenewalService outRenewalService;
 
@@ -401,10 +402,10 @@ public class WithOutRenewalDelegator {
                     appEditSelectDto.setPremisesEdit(true);
                     appEditSelectDto.setDocEdit(true);
                     appEditSelectDto.setServiceEdit(true);
-                    ParamUtil.setSessionAttr(bpc.request, "isSingle", "Y");
+                    ParamUtil.setSessionAttr(bpc.request, SINGLE_SERVICE, "Y");
                     ParamUtil.setSessionAttr(bpc.request,"renew_licence_no",appSubmissionDto.getLicenceNo());
                 } else {
-                    ParamUtil.setSessionAttr(bpc.request, "isSingle", "N");
+                    ParamUtil.setSessionAttr(bpc.request, SINGLE_SERVICE, "N");
                 }
                 appSubmissionDto.setAppEditSelectDto(appEditSelectDto);
             }
@@ -1902,7 +1903,7 @@ public class WithOutRenewalDelegator {
             ParamUtil.setSessionAttr(bpc.request, "deputyPrincipalOfficersDtosList", (Serializable) deputyPrincipalOfficersDtosList);
         }
         if(appSubmissionDtos.size() >1){
-            ParamUtil.setSessionAttr(bpc.request, "isSingle", "N");
+            ParamUtil.setSessionAttr(bpc.request, SINGLE_SERVICE, "N");
         }
         AppSubmissionDto oldAppSubmissionDto = (AppSubmissionDto) bpc.request.getSession().getAttribute("oldRenewAppSubmissionDto");
         if (oldAppSubmissionDto != null && appSubmissionDto != null) {

@@ -21,7 +21,7 @@
     <div id="previewLicensee${empty documentIndex ? "" : documentIndex}" class="panel-collapse collapse <c:if test="${!empty printFlag}">in</c:if>">
         <div class="panel-body">
             <c:if test="${(empty AppSubmissionDto.appEditSelectDto || AppSubmissionDto.appEditSelectDto.licenseeEdit)
-            && empty printView && subLicenseeDto.licenseeType ne soloType}">
+            && empty printView && subLicenseeDto.licenseeType ne soloType && (empty isSingle || isSingle == 'Y')}">
                 <p><div class="text-right app-font-size-16"><a href="#" id="subLicenseeEdit"><em class="fa fa-pencil-square-o"></em>Edit</a></div></p>
             </c:if>
             <div class="panel-main-content form-horizontal min-row">

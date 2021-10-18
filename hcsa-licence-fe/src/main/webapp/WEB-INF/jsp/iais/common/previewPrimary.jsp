@@ -15,7 +15,7 @@
     </div>
     <div class="panel-collapse collapse <c:if test="${!empty printFlag}">in</c:if>" id="collapseOne${documentIndex}" role="tabpanel" aria-labelledby="headingOne">
         <div class="panel-body">
-            <c:if test="${(AppSubmissionDto.appEditSelectDto==null||AppSubmissionDto.appEditSelectDto.docEdit) && empty printView}">
+            <c:if test="${(AppSubmissionDto.appEditSelectDto==null||AppSubmissionDto.appEditSelectDto.docEdit) && empty printView && (empty isSingle || isSingle == 'Y')}">
                 <p class="mb-0"><div class="text-right app-font-size-16"><a href="#" id="docEdit"><em class="fa fa-pencil-square-o"></em>Edit</a></div></p>
             </c:if>
             <div class="elemClass-1561088919456">
