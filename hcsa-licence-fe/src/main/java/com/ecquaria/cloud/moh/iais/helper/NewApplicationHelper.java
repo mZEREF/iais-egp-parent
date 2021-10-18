@@ -104,11 +104,23 @@ import sop.util.DateUtil;
 public class NewApplicationHelper {
 
     public static void reSetAdditionalFields(AppSubmissionDto appSubmissionDto, AppEditSelectDto appEditSelectDto) {
+        reSetAdditionalFields(appSubmissionDto, appEditSelectDto, null);
+    }
+
+    public static void reSetAdditionalFields(AppSubmissionDto appSubmissionDto, AppEditSelectDto appEditSelectDto, String appGrpNo) {
         if (appSubmissionDto == null || appSubmissionDto.getAppGrpPremisesDtoList() == null || appEditSelectDto == null) {
             return;
         }
         boolean isNeedNewLicNo = appEditSelectDto.isNeedNewLicNo();
         boolean isAutoRfc = appEditSelectDto.isAutoRfc();
+        reSetAdditionalFields(appSubmissionDto, isNeedNewLicNo, isAutoRfc, appGrpNo);
+    }
+
+    public static void reSetAdditionalFields(AppSubmissionDto appSubmissionDto, boolean isNeedNewLicNo, boolean isAutoRfc,
+            String appGrpNo) {
+        if (appSubmissionDto == null || appSubmissionDto.getAppGrpPremisesDtoList() == null) {
+            return;
+        }
         int selfAssMtFlag = isAutoRfc ? ApplicationConsts.PROHIBIT_SUBMIT_RFI_SELF_ASSESSMENT :
                 ApplicationConsts.PENDING_SUBMIT_SELF_ASSESSMENT;
         appSubmissionDto.setAutoRfc(isAutoRfc);
@@ -117,6 +129,9 @@ public class NewApplicationHelper {
             appGrpPremisesDto.setNeedNewLicNo(Boolean.valueOf(isNeedNewLicNo));
             appGrpPremisesDto.setSelfAssMtFlag(selfAssMtFlag);
         });
+        if (!StringUtil.isEmpty(appGrpNo)) {
+            appSubmissionDto.setAppGrpNo(appGrpNo);
+        }
     }
 
     public static void reSetDataByAppEditSelectDto(AppSubmissionDto scourceDto, AppSubmissionDto targetDto) {
@@ -4238,6 +4253,24 @@ public class NewApplicationHelper {
         return appIds;
     }
 
+    public static void addToAuto(List<AppSubmissionDto> sourceList, List<AppSubmissionDto> autoSaveList) {
+        if (sourceList == null) {
+            return;
+        }
+        List<AppSubmissionDto> newAuto = IaisCommonUtils.genNewArrayList();
+        sourceList.stream().forEach(dto -> {
+            String licenceId = Optional.ofNullable(dto.getLicenceId()).orElseGet(() -> "");
+            Optional<AppSubmissionDto> optional = autoSaveList.stream()
+                    .filter(source -> licenceId.equals(source.getLicenceId()))
+                    .findAny();
+            if (optional.isPresent()) {
+                NewApplicationHelper.reSetDataByAppEditSelectDto(dto, optional.get());
+            } else {
+                newAuto.add(dto);
+            }
+        });
+        autoSaveList.addAll(newAuto);
+    }
 
     public static void addToAuto(List<AppSubmissionDto> sourceList, List<AppSubmissionDto> autoSaveList,
                            List<AppSubmissionDto> notAutoSaveAppsubmission) {

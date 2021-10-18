@@ -254,7 +254,10 @@ public class PageDataCopyUtil {
         return list;
     }
     public static List<AppSvcPrincipalOfficersDto> copyAppSvcCgo(List<AppSvcPrincipalOfficersDto> appSvcCgoDtoList) {
-        List<AppSvcPrincipalOfficersDto> list=IaisCommonUtils.genNewArrayList();
+        List<AppSvcPrincipalOfficersDto> list = IaisCommonUtils.genNewArrayList();
+        if (appSvcCgoDtoList == null || appSvcCgoDtoList.isEmpty()) {
+            return list;
+        }
         for (AppSvcPrincipalOfficersDto appSvcCgoDto : appSvcCgoDtoList) {
             AppSvcPrincipalOfficersDto cgoDto=new AppSvcPrincipalOfficersDto();
             cgoDto.setSalutation(appSvcCgoDto.getSalutation());
@@ -272,9 +275,27 @@ public class PageDataCopyUtil {
             cgoDto.setEmailAddr(appSvcCgoDto.getEmailAddr());
             list.add(cgoDto);
         }
-        list.sort((s1,s2)->(s1.getIdNo().compareTo(s2.getIdNo())));
+        list.sort(Comparator.comparing(AppSvcPrincipalOfficersDto::getIdNo));
         return list;
     }
+
+    public static List<AppSvcPrincipalOfficersDto> copyAppSvcKah(List<AppSvcPrincipalOfficersDto> appSvcKahDtoList) {
+        List<AppSvcPrincipalOfficersDto> list = IaisCommonUtils.genNewArrayList();
+        if (appSvcKahDtoList == null || appSvcKahDtoList.isEmpty()) {
+            return list;
+        }
+        for (AppSvcPrincipalOfficersDto appSvcKahDto : appSvcKahDtoList) {
+            AppSvcPrincipalOfficersDto kahDto = new AppSvcPrincipalOfficersDto();
+            kahDto.setSalutation(appSvcKahDto.getSalutation());
+            kahDto.setName(appSvcKahDto.getName());
+            kahDto.setIdNo(appSvcKahDto.getIdNo());
+            kahDto.setIdType(appSvcKahDto.getIdType());
+            list.add(kahDto);
+        }
+        list.sort(Comparator.comparing(AppSvcPrincipalOfficersDto::getIdNo));
+        return list;
+    }
+
     public static List<AppSvcChckListDto> copyAppSvcChckListDto(List<AppSvcChckListDto> appSvcChckListDtos){
         List<AppSvcChckListDto> list=IaisCommonUtils.genNewArrayList();
         if(appSvcChckListDtos!=null){
