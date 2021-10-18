@@ -2808,18 +2808,8 @@ public class NewApplicationDelegator {
                     isAutoPremises = 2;
                     autoGroupNo = getRfcGroupNo(autoGroupNo);
                     for (AppSubmissionDto dto : appSubmissionDtos) {
-                        AppSubmissionDto autoDto = (AppSubmissionDto) CopyUtil.copyMutableObject(dto);
-                        AppEditSelectDto newChangeSelectDto = new AppEditSelectDto();
-                        newChangeSelectDto.setPremisesEdit(true);
-                        newChangeSelectDto.setPremisesListEdit(true);
-                        autoDto.setAppGrpPremisesDtoList(NewApplicationHelper.updatePremisesIndex(
-                                (List<AppGrpPremisesDto>) CopyUtil.copyMutableObjectList(autoPremisesDtos),
-                                autoDto.getAppGrpPremisesDtoList()));
-                        autoDto.setChangeSelectDto(newChangeSelectDto);
-                        autoDto.setAppGrpStatus(null);
-                        autoDto.setAmount(0.0);
-                        NewApplicationHelper.reSetAdditionalFields(autoDto, newChangeSelectDto, autoGroupNo);
-                        autoSaveAppsubmission.add(autoDto);
+                        autoSaveAppsubmission.add(EqRequestForChangeSubmitResultChange.generateDtosForAutoPremesis(dto,
+                                autoPremisesDtos, autoGroupNo));
                     }
                 } else {
                     isAutoPremises = 0;

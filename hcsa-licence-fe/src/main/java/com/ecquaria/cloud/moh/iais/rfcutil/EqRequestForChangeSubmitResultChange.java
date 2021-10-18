@@ -1001,4 +1001,20 @@ public class EqRequestForChangeSubmitResultChange {
         return new AppSvcLaboratoryDisciplinesDto();
     }
 
+    public static AppSubmissionDto generateDtosForAutoPremesis(AppSubmissionDto srcDto, List<AppGrpPremisesDto> autoPremisesDtos,
+            String autoGroupNo) {
+        AppSubmissionDto autoDto = (AppSubmissionDto) CopyUtil.copyMutableObject(srcDto);
+        AppEditSelectDto newChangeSelectDto = new AppEditSelectDto();
+        newChangeSelectDto.setPremisesEdit(true);
+        newChangeSelectDto.setPremisesListEdit(true);
+        autoDto.setAppGrpPremisesDtoList(NewApplicationHelper.updatePremisesIndex(
+                (List<AppGrpPremisesDto>) CopyUtil.copyMutableObjectList(autoPremisesDtos),
+                autoDto.getAppGrpPremisesDtoList()));
+        autoDto.setChangeSelectDto(newChangeSelectDto);
+        autoDto.setAppGrpStatus(null);
+        autoDto.setAmount(0.0);
+        NewApplicationHelper.reSetAdditionalFields(autoDto, newChangeSelectDto, autoGroupNo);
+        return autoDto;
+    }
+
 }
