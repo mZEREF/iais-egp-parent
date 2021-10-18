@@ -53,7 +53,7 @@
                           <br><span class="error-msg" name="iaisErrorMsg" id="error_userRoleUploadRole${status.count}"></span>
                         </td>
                         <td>
-                          <p><c:out value="${user.workGroupId}"></c:out></p>
+                          <p style="line-height:20px;"><c:out value="${user.workGroupId}"></c:out></p>
                           <br><span class="error-msg" name="iaisErrorMsg" id="error_userRoleUploadWorkGroupId${status.count}"></span>
                         </td>
                         <td>
@@ -75,7 +75,7 @@
                           <p><c:out value="${user.roleId}"></c:out></p>
                         </td>
                         <td>
-                          <p><c:out value="${user.workGroupId}"></c:out></p>
+                          <p style="line-height:20px;"><c:out value="${user.workGroupId}"></c:out></p>
                         </td>
                         <td>
                           <p><c:out value="SUCCESS"></c:out></p>
