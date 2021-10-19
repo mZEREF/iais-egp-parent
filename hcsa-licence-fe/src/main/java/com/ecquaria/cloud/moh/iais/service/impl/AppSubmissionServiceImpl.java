@@ -3901,16 +3901,6 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
         session.removeAttribute("HcsaSvcSubtypeOrSubsumedDto");
         // CR: Licensee Details
         session.removeAttribute(NewApplicationDelegator.LICENSEE_MAP);
-        // clear selectLicence
-        Enumeration<?> names = session.getAttributeNames();
-        if (names != null) {
-            while (names.hasMoreElements()) {
-                String name = (String) names.nextElement();
-                if (name.startsWith("selectLicence")) {
-                    session.removeAttribute(name);
-                }
-            }
-        }
         session.removeAttribute(NewApplicationDelegator.RFC_APP_GRP_PREMISES_DTO_LIST);
         session.removeAttribute(NewApplicationDelegator.PREMISESTYPE);
     }
