@@ -1255,6 +1255,9 @@ public class WithOutRenewalDelegator {
                     appSubmissionDto.setIsBundledFee(1);
                     isBundledFee=true;
                 }
+                if(hcsaServiceDto.getSvcCode().equals(AppServicesConsts.SERVICE_CODE_NUCLEAR_MEDICINE_ASSAY)||hcsaServiceDto.getSvcCode().equals(AppServicesConsts.SERVICE_CODE_NUCLEAR_MEDICINE_IMAGING)){
+                    appSubmissionDto.setIsSpecifiedFee(1);
+                }
             }catch (Exception e){
                 log.error(e.getMessage(),e);
             }
