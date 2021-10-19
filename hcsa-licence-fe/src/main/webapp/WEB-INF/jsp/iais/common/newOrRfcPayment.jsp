@@ -299,7 +299,7 @@
                         </tr>
                     </c:if>
                     <!--simpleSpecifiedFeeExt -->
-                    <c:if test="${not empty complexSpecifiedFeeExt }">
+                    <c:if test="${not empty simpleSpecifiedFeeExt }">
                         <tr>
                             <td>
                                 <p>&nbsp;&nbsp;Simple <iais:code code="CDN004"/></p>
