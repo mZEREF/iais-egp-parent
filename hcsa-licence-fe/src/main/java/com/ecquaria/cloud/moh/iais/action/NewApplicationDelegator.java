@@ -3006,14 +3006,7 @@ public class NewApplicationDelegator {
             }
         }
         // app group misc
-        if (!StringUtil.isEmpty(notAutoGroupId) && !StringUtil.isEmpty(autoGroupId)) {
-            AppGroupMiscDto appGroupMiscDto = new AppGroupMiscDto();
-            appGroupMiscDto.setAppGrpId(notAutoGroupId);
-            appGroupMiscDto.setMiscValue(autoGroupId);
-            appGroupMiscDto.setMiscType(ApplicationConsts.APP_GROUP_MISC_TYPE_AMEND_GROUP_ID);
-            appGroupMiscDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
-            appSubmissionService.saveAppGrpMisc(appGroupMiscDto);
-        }
+        appSubmissionService.saveAutoRFCLinkAppGroupMisc(notAutoGroupId,autoGroupId);
         log.info(StringUtil.changeForLog("------ Save Data End ------"));
         bpc.request.getSession().setAttribute(APP_SUBMISSIONS, appSubmissionDtoList);
         bpc.request.getSession().setAttribute(ACK_APP_SUBMISSIONS, ackPageAppSubmissionDto);

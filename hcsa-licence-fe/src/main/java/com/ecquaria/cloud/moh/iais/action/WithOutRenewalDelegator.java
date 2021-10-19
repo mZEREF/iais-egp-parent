@@ -888,6 +888,7 @@ public class WithOutRenewalDelegator {
                 AuditTrailHelper.auditFunctionWithLicNo(AuditTrailConsts.MODULE_RENEW,AuditTrailConsts.MODULE_RENEW,appSubmissionDtos.get(0).getLicenceNo());
             }
         }
+        String autoGroupId = null;
         if (!autoAppSubmissionDtos.isEmpty()) {
             AppSubmissionListDto autoAppSubmissionListDto = new AppSubmissionListDto();
             String autoSubmissionId = generateIdClient.getSeqId().getEntity();
@@ -897,6 +898,7 @@ public class WithOutRenewalDelegator {
                 setRfcSubInfo(appSubmissionDtos.get(0),appSubmissionDto,autoGrpNo,needDec);
             }
             List<AppSubmissionDto> saveutoAppSubmissionDto = requestForChangeService.saveAppsForRequestForGoupAndAppChangeByList(autoAppSubmissionDtos);
+            autoGroupId = saveutoAppSubmissionDto.get(0).getAppGrpId();
             AuditTrailDto at = AuditTrailHelper.getCurrentAuditTrailDto();
             at.setModule(AuditTrailConsts.MODULE_RENEW);
             at.setFunctionName(AuditTrailConsts.FUNCTION_RENEW);
@@ -913,6 +915,7 @@ public class WithOutRenewalDelegator {
             appSubmissionDto.setAuditTrailDto(currentAuditTrailDto);
         }
         List<AppSubmissionDto> appSubmissionDtos3 = requestForChangeService.saveAppsForRequestForGoupAndAppChangeByList(appSubmissionDtos1);
+        String notAutoGroupId = appSubmissionDtos3.get(0).getAppGrpId();
         appSubmissionListDto.setAppSubmissionDtos(appSubmissionDtos3);
         appSubmissionListDto.setAuditTrailDto(AuditTrailHelper.getCurrentAuditTrailDto());
         appSubmissionListDto.setEventRefNo(l.toString());
@@ -939,12 +942,15 @@ public class WithOutRenewalDelegator {
             appSubmissionDto.setServiceName(appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0).getServiceName());
             appSubmissionDto.setAmountStr("$0");
             appSubmissionDto.setAmount(0.0);
-            appSubmissionDto.setId(appSubmissionDtos3.get(0).getId());
+            appSubmissionDto.setId(notAutoGroupId);
         }
         for (AppSubmissionDto appSubmissionDto : appSubmissionDtos) {
             appSubmissionDto.setAppGrpNo(appGrpNo);
-            appSubmissionDto.setAppGrpId(appSubmissionDtos3.get(0).getAppGrpId());
+            appSubmissionDto.setAppGrpId(notAutoGroupId);
         }
+
+        // app group misc
+        appSubmissionService.saveAutoRFCLinkAppGroupMisc(notAutoGroupId,autoGroupId);
 
         bpc.request.getSession().setAttribute("rfcAppSubmissionDtos", rfcAppSubmissionDtos);
         ParamUtil.setSessionAttr(bpc.request, "serviceNamesAck", (Serializable) serviceNamesAck);

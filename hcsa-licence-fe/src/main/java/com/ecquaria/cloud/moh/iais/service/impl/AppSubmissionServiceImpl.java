@@ -3914,4 +3914,16 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
         session.removeAttribute(NewApplicationDelegator.RFC_APP_GRP_PREMISES_DTO_LIST);
         session.removeAttribute(NewApplicationDelegator.PREMISESTYPE);
     }
+
+    @Override
+    public void saveAutoRFCLinkAppGroupMisc(String notAutoGroupId, String autoGroupId) {
+        if (StringUtil.isNotEmpty(notAutoGroupId) && StringUtil.isNotEmpty(autoGroupId)) {
+            AppGroupMiscDto appGroupMiscDto = new AppGroupMiscDto();
+            appGroupMiscDto.setAppGrpId(notAutoGroupId);
+            appGroupMiscDto.setMiscValue(autoGroupId);
+            appGroupMiscDto.setMiscType(ApplicationConsts.APP_GROUP_MISC_TYPE_AMEND_GROUP_ID);
+            appGroupMiscDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+            saveAppGrpMisc(appGroupMiscDto);
+        }
+    }
 }
