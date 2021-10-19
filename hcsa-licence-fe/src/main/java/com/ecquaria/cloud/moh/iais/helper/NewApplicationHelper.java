@@ -4422,4 +4422,22 @@ public class NewApplicationHelper {
         return false;
     }
 
+    public static List<AppGrpPremisesDto> updatePremisesIndex(List<AppGrpPremisesDto> appGrpPremisesDtoList,
+            List<AppGrpPremisesDto> oldAppGrpPremisesDtoList) {
+        if (appGrpPremisesDtoList == null || appGrpPremisesDtoList.isEmpty() || oldAppGrpPremisesDtoList == null || oldAppGrpPremisesDtoList.isEmpty()) {
+            return appGrpPremisesDtoList;
+        }
+        String premisesIndexNo = oldAppGrpPremisesDtoList.get(0).getPremisesIndexNo();
+        return updatePremisesIndex(appGrpPremisesDtoList, premisesIndexNo);
+    }
+
+    public static List<AppGrpPremisesDto> updatePremisesIndex(List<AppGrpPremisesDto> appGrpPremisesDtoList, String premisesIndexNo) {
+        if (appGrpPremisesDtoList == null || appGrpPremisesDtoList.isEmpty()) {
+            return appGrpPremisesDtoList;
+        }
+        for (AppGrpPremisesDto dto : appGrpPremisesDtoList) {
+            dto.setPremisesIndexNo(premisesIndexNo);
+        }
+        return appGrpPremisesDtoList;
+    }
 }

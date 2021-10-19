@@ -2808,16 +2808,8 @@ public class NewApplicationDelegator {
                     isAutoPremises = 2;
                     autoGroupNo = getRfcGroupNo(autoGroupNo);
                     for (AppSubmissionDto dto : appSubmissionDtos) {
-                        AppSubmissionDto autoDto = (AppSubmissionDto) CopyUtil.copyMutableObject(dto);
-                        AppEditSelectDto newChangeSelectDto = new AppEditSelectDto();
-                        newChangeSelectDto.setPremisesEdit(true);
-                        newChangeSelectDto.setPremisesListEdit(true);
-                        autoDto.setAppGrpPremisesDtoList(autoPremisesDtos);
-                        autoDto.setChangeSelectDto(newChangeSelectDto);
-                        autoDto.setAppGrpStatus(null);
-                        autoDto.setAmount(0.0);
-                        NewApplicationHelper.reSetAdditionalFields(autoDto, newChangeSelectDto, autoGroupNo);
-                        autoSaveAppsubmission.add(autoDto);
+                        autoSaveAppsubmission.add(EqRequestForChangeSubmitResultChange.generateDtosForAutoPremesis(dto,
+                                autoPremisesDtos, autoGroupNo));
                     }
                 } else {
                     isAutoPremises = 0;
@@ -3014,14 +3006,7 @@ public class NewApplicationDelegator {
             }
         }
         // app group misc
-        if (!StringUtil.isEmpty(notAutoGroupId) && !StringUtil.isEmpty(autoGroupId)) {
-            AppGroupMiscDto appGroupMiscDto = new AppGroupMiscDto();
-            appGroupMiscDto.setAppGrpId(notAutoGroupId);
-            appGroupMiscDto.setMiscValue(autoGroupId);
-            appGroupMiscDto.setMiscType(ApplicationConsts.APP_GROUP_MISC_TYPE_AMEND_GROUP_ID);
-            appGroupMiscDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
-            appSubmissionService.saveAppGrpMisc(appGroupMiscDto);
-        }
+        appSubmissionService.saveAutoRFCLinkAppGroupMisc(notAutoGroupId,autoGroupId);
         log.info(StringUtil.changeForLog("------ Save Data End ------"));
         bpc.request.getSession().setAttribute(APP_SUBMISSIONS, appSubmissionDtoList);
         bpc.request.getSession().setAttribute(ACK_APP_SUBMISSIONS, ackPageAppSubmissionDto);

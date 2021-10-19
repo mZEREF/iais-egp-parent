@@ -157,4 +157,6 @@ public interface AppSubmissionService {
 
     void doValidateDisciplineAllocation(Map<String, String> map, List<AppSvcDisciplineAllocationDto> daList,
             AppSvcRelatedInfoDto currentSvcDto);
+
+    void saveAutoRFCLinkAppGroupMisc(String notAutoGroupId,String autoGroupId);
 }
