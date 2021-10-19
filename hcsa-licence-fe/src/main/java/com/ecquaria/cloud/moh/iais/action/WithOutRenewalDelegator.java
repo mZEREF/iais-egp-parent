@@ -889,6 +889,7 @@ public class WithOutRenewalDelegator {
             }
         }
         String autoGroupId = null;
+        String appGrpStatus = ApplicationConsts.APPLICATION_GROUP_STATUS_SUBMITED;
         if (!autoAppSubmissionDtos.isEmpty()) {
             AppSubmissionListDto autoAppSubmissionListDto = new AppSubmissionListDto();
             String autoSubmissionId = generateIdClient.getSeqId().getEntity();
@@ -899,6 +900,7 @@ public class WithOutRenewalDelegator {
             }
             List<AppSubmissionDto> saveutoAppSubmissionDto = requestForChangeService.saveAppsForRequestForGoupAndAppChangeByList(autoAppSubmissionDtos);
             autoGroupId = saveutoAppSubmissionDto.get(0).getAppGrpId();
+            appGrpStatus = ApplicationConsts.APPLICATION_GROUP_STATUS_PENDING_AUTO;
             AuditTrailDto at = AuditTrailHelper.getCurrentAuditTrailDto();
             at.setModule(AuditTrailConsts.MODULE_RENEW);
             at.setFunctionName(AuditTrailConsts.FUNCTION_RENEW);
@@ -912,6 +914,7 @@ public class WithOutRenewalDelegator {
 
         for(AppSubmissionDto appSubmissionDto : appSubmissionDtos1){
             appSubmissionDto.setAutoRfc(false);
+            appSubmissionDto.setAppGrpStatus(appGrpStatus);
             appSubmissionDto.setAuditTrailDto(currentAuditTrailDto);
         }
         List<AppSubmissionDto> appSubmissionDtos3 = requestForChangeService.saveAppsForRequestForGoupAndAppChangeByList(appSubmissionDtos1);
