@@ -10,7 +10,6 @@ public class ProcessContants {
     public static final String MODULE_SYSTEM_CONFIG = "System Configuration";
     public static final String FUNCTION_ERROR_MESSAGES_MANAGEMENT = "MOH Process New Application";
 
-    public static final String APPLICATION_MISC = "applicationMisc";
     public static final String SUBMITDETAILS_ATTR = "submitDetailsDto";
     public static final String MOH_PROCESS_ATTR = "mohProcessDto";
 
@@ -27,7 +26,6 @@ public class ProcessContants {
     public static final String VALIDITY_END_DATE = "validityEndDate";
     public static final String FINAL_REMARKS = "finalRemarks";
 
-    public static final String PARAM_PROCESSING_HISTORY = "processingHistory";
     public static final String PARAM_APP_ID = "appId";
 
     public static final String APPLICATION_STATUS_1 = "BSBAPST001";
@@ -37,8 +35,6 @@ public class ProcessContants {
     public static final String APPLICATION_STATUS_5 = "BSBAPST005";
     public static final String APPLICATION_STATUS_8 = "BSBAPST008";
     public static final String APPLICATION_STATUS_9 = "BSBAPST009";
-
-    public static final String APPLICATION_PROCESS_TYPE_1 = "PROTYPE001";
 
     public static final String VALIDATE_STATUS_1 = "doS";
     public static final String VALIDATE_STATUS_2 = "doP";
@@ -63,8 +59,6 @@ public class ProcessContants {
     public static final String CRUD_ACTION_TYPE_14 = "hmReject";
 
     public static final String MOH_PROCESS = "mohProcess";
-
-    public static final String MOH_PROCESS_DTO = "mohProcessDto";
 
     public static final String ERRORMSG = "errorMsg";
 

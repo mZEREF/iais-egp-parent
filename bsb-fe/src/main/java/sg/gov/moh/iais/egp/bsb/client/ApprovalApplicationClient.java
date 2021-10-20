@@ -32,9 +32,4 @@ public interface ApprovalApplicationClient {
     @GetMapping(path = "/bsb-approval/biologicalName/{id}")
     FeignResponseEntity<Biological> getBiologicalById(@PathVariable("id") String id);
 
-    @GetMapping(path = "/bsb-approval/facilitySchedule/{facilityId}")
-    FeignResponseEntity<List<FacilitySchedule>> getFacilityScheduleByFacilityId(@PathVariable("facilityId") String facilityId);
-
-    @GetMapping(path = "/bsb-approval/facilityBiologicalAgent/{facilityScheduleId}")
-    FeignResponseEntity<List<FacilityBiologicalAgent>> getFacilityBiologicalAgentByFacilityScheduleId(@PathVariable("facilityScheduleId") String facilityScheduleId);
 }

@@ -46,6 +46,7 @@
                                                         <td class="first last">
                                                             <div class="control control-caption-horizontal">
                                                                 <div class=" form-group form-horizontal formgap">
+
                                                                     <div class="col-sm-4 control-label formtext ">
                                                                         <label class="control-label control-set-font control-font-label">Schedule</label>
                                                                         <span class="mandatory">*</span>
@@ -437,7 +438,7 @@
                                                                             <label class="control-label control-set-font control-font-label">Name of Courier Service Provider</label>
                                                                             <span class="mandatory">*</span>
                                                                         </div>
-                                                                        <div class="col-sm-5 col-md-7 control-font-label" id="postalCode">
+                                                                        <div class="col-sm-4 col-md-7 control-font-label" id="postalCode">
                                                                             <iais:input maxLength="100" type="text" name="nameOfCourierServiceProvider" value="${approvalApplicationDto.courierServiceProviderName}"></iais:input>
                                                                             <span id="error_courierServiceProviderName" name="iaisErrorMsg" class="error-msg"></span>
                                                                         </div>

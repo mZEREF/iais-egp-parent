@@ -2,14 +2,11 @@ package sg.gov.moh.iais.egp.bsb.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
-import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
-import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
-import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sg.gov.moh.iais.egp.bsb.client.DocClient;
@@ -83,11 +80,11 @@ public class MohProcessingDelegator {
         auditDocDto.setFacilityDocs(facilityDocList);
         ParamUtil.setSessionAttr(request, RevocationConstants.AUDIT_DOC_DTO, auditDocDto);
         //
-        MohProcessDto mohProcessDto = (MohProcessDto)ParamUtil.getRequestAttr(request, ProcessContants.MOH_PROCESS_DTO);
-        ParamUtil.setRequestAttr(request,ProcessContants.MOH_PROCESS_DTO,mohProcessDto);
+        MohProcessDto mohProcessDto = (MohProcessDto)ParamUtil.getRequestAttr(request, ProcessContants.MOH_PROCESS_ATTR);
+        ParamUtil.setRequestAttr(request,ProcessContants.MOH_PROCESS_ATTR,mohProcessDto);
     }
 
-    public void prepareSwitch(BaseProcessClass bpc) throws ParseException{
+    public void prepareSwitch(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
         MohProcessDto mohProcessDto = getDtoByForm(bpc);
         String processingDecision = mohProcessDto.getProcessDecision();
@@ -135,17 +132,17 @@ public class MohProcessingDelegator {
             crudActionType = ProcessContants.CRUD_ACTION_TYPE_14;
         }
         ParamUtil.setRequestAttr(request,ProcessContants.CRUD_ACTION_TYPE,crudActionType);
-        ParamUtil.setRequestAttr(request,ProcessContants.MOH_PROCESS_DTO,mohProcessDto);
+        ParamUtil.setRequestAttr(request,ProcessContants.MOH_PROCESS_ATTR,mohProcessDto);
     }
 
-    public void screenedByDO(BaseProcessClass bpc) throws ParseException{
+    public void screenedByDO(BaseProcessClass bpc){
         String status = ProcessContants.APPLICATION_STATUS_2;
         MohProcessDto mohProcessDto = getDtoByForm(bpc);
         mohProcessDto.setProcessStatus(status);
         processClient.saveMohProcess(mohProcessDto);
     }
 
-    public void doReject(BaseProcessClass bpc) throws ParseException {
+    public void doReject(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
         String status = ProcessContants.APPLICATION_STATUS_8;
         MohProcessDto mohProcessDto = getDtoByForm(bpc);
@@ -169,7 +166,7 @@ public class MohProcessingDelegator {
         bsbNotificationHelper.sendNotification(bsbEmailParam);*/
     }
 
-    public void requestForInformation(BaseProcessClass bpc) throws ParseException{
+    public void requestForInformation(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
         String status = ProcessContants.APPLICATION_STATUS_4;
         MohProcessDto mohProcessDto = getDtoByForm(bpc);
@@ -197,14 +194,14 @@ public class MohProcessingDelegator {
         bsbNotificationHelper.sendNotification(bsbEmailParam);*/
     }
 
-    public void approvalForInspection(BaseProcessClass bpc) throws ParseException{
+    public void approvalForInspection(BaseProcessClass bpc){
         String status = ProcessContants.APPLICATION_STATUS_5;
         MohProcessDto mohProcessDto = getDtoByForm(bpc);
         mohProcessDto.setProcessStatus(status);
         processClient.saveMohProcess(mohProcessDto);
     }
 
-    public void aoReject(BaseProcessClass bpc) throws ParseException{
+    public void aoReject(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
         String status = ProcessContants.APPLICATION_STATUS_8;
         MohProcessDto mohProcessDto = getDtoByForm(bpc);
@@ -228,49 +225,49 @@ public class MohProcessingDelegator {
         bsbNotificationHelper.sendNotification(bsbEmailParam);*/
     }
 
-    public void routeBackToDO(BaseProcessClass bpc) throws ParseException{
+    public void routeBackToDO(BaseProcessClass bpc){
         String status = ProcessContants.APPLICATION_STATUS_1;
         MohProcessDto mohProcessDto = getDtoByForm(bpc);
         mohProcessDto.setProcessStatus(status);
         processClient.saveMohProcess(mohProcessDto);
     }
 
-    public void routeToHM(BaseProcessClass bpc) throws ParseException{
+    public void routeToHM(BaseProcessClass bpc){
         String status = ProcessContants.APPLICATION_STATUS_3;
         MohProcessDto mohProcessDto = getDtoByForm(bpc);
         mohProcessDto.setProcessStatus(status);
         processClient.saveMohProcess(mohProcessDto);
     }
 
-    public void hmReject(BaseProcessClass bpc) throws ParseException{
+    public void hmReject(BaseProcessClass bpc){
         String status = ProcessContants.APPLICATION_STATUS_2;
         MohProcessDto mohProcessDto = getDtoByForm(bpc);
         mohProcessDto.setProcessStatus(status);
         processClient.saveMohProcess(mohProcessDto);
     }
 
-    public void hmApprove(BaseProcessClass bpc) throws ParseException{
+    public void hmApprove(BaseProcessClass bpc){
         String status = ProcessContants.APPLICATION_STATUS_2;
         MohProcessDto mohProcessDto = getDtoByForm(bpc);
         mohProcessDto.setProcessStatus(status);
         processClient.saveMohProcess(mohProcessDto);
     }
 
-    public void recommendApproval(BaseProcessClass bpc) throws ParseException{
+    public void recommendApproval(BaseProcessClass bpc){
         String status = ProcessContants.APPLICATION_STATUS_2;
         MohProcessDto mohProcessDto = getDtoByForm(bpc);
         mohProcessDto.setProcessStatus(status);
         processClient.saveMohProcess(mohProcessDto);
     }
 
-    public void recommendRejection(BaseProcessClass bpc) throws ParseException{
+    public void recommendRejection(BaseProcessClass bpc){
         String status = ProcessContants.APPLICATION_STATUS_2;
         MohProcessDto mohProcessDto = getDtoByForm(bpc);
         mohProcessDto.setProcessStatus(status);
         processClient.saveMohProcess(mohProcessDto);
     }
 
-    public void aoApproved(BaseProcessClass bpc) throws ParseException{
+    public void aoApproved(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
         String status = ProcessContants.APPLICATION_STATUS_9;
         Date approvalDate = new Date();

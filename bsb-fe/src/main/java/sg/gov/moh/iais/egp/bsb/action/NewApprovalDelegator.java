@@ -2,14 +2,11 @@ package sg.gov.moh.iais.egp.bsb.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
-import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPrimaryDocDto;
 import com.ecquaria.cloud.moh.iais.common.utils.*;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
-import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.*;
 import com.ecquaria.cloud.moh.iais.service.client.ComFileRepoClient;
 import lombok.extern.slf4j.Slf4j;
@@ -22,7 +19,6 @@ import sg.gov.moh.iais.egp.bsb.dto.approval.ApprovalApplicationDto;
 import sg.gov.moh.iais.egp.bsb.dto.approval.DocConfigDto;
 import sg.gov.moh.iais.egp.bsb.entity.Biological;
 import sg.gov.moh.iais.egp.bsb.entity.Facility;
-import sg.gov.moh.iais.egp.bsb.entity.FacilityDoc;
 import sop.servlet.webflow.HttpHandler;
 import sop.webflow.rt.api.BaseProcessClass;
 
@@ -71,8 +67,6 @@ public class NewApprovalDelegator {
         HttpServletRequest request = bpc.request;
         String taskList = ParamUtil.getString(request, TASK_LIST);
         ParamUtil.setSessionAttr(request, TASK_LIST, taskList);
-//        ParamUtil.setSessionAttr(request, TASK_LIST, ApprovalApplicationConstants.APPROVAL_TYPE_2);
-//        ParamUtil.setSessionAttr(request, TASK_LIST, ApprovalApplicationConstants.APPROVAL_TYPE_3);
         IaisEGPHelper.clearSessionAttr(request, ApprovalApplicationConstants.class);
     }
 
@@ -201,7 +195,7 @@ public class NewApprovalDelegator {
         //uploadDocument
         List<DocConfigDto> docConfigDtoList = (List<DocConfigDto>) request.getSession().getAttribute(PRIMARY_DOC_CONFIG);
         MultipartHttpServletRequest mulReq = (MultipartHttpServletRequest) bpc.request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
-        Map<String, File> fileMap = new HashMap<>();
+        /*Map<String, File> fileMap = new HashMap<>();
         for(int i =0;i<docConfigDtoList.size();i++){
             String docKey = i+"primaryDoc";
             fileMap = (Map<String, File>) ParamUtil.getSessionAttr(mulReq,HcsaFileAjaxController.SEESION_FILES_MAP_AJAX+docKey);
@@ -211,7 +205,7 @@ public class NewApprovalDelegator {
                 String configKey = "primaryDoc"+docConfigDtoList.get(i).getIndex();
                 ParamUtil.setSessionAttr(request,configKey,(Serializable) fileList);
             }
-        }
+        }*/
     }
 
     public void doPreview(BaseProcessClass bpc) {
@@ -371,9 +365,9 @@ public class NewApprovalDelegator {
         for(int i =0;i<docConfigDtoList.size();i++){
             String docKey = i+"primaryDoc";
             fileMap = (Map<String, File>) ParamUtil.getSessionAttr(mulReq,HcsaFileAjaxController.SEESION_FILES_MAP_AJAX+docKey);
-            List<File> fileList = new ArrayList<>(fileMap.values());
-            List<String> fileRepoIdList = comFileRepoClient.saveFileRepo(fileList);
             if (fileMap != null){
+                List<File> fileList = new ArrayList<>(fileMap.values());
+                List<String> fileRepoIdList = comFileRepoClient.saveFileRepo(fileList);
                 int finalI = i;
                 fileMap.forEach((k, v)->{
                     int index = k.indexOf(docKey);
@@ -398,7 +392,6 @@ public class NewApprovalDelegator {
                     }
                 });
             }
-
         }*/
     }
 
