@@ -198,20 +198,12 @@
 <script type="text/javascript">
     function keyAlphanumericPress() {
         var keyCode = event.keyCode;
-        if (keyCode >= 48 && keyCode <= 57 || keyCode >= 65 && keyCode <= 90 || keyCode >= 97 && keyCode <= 122) {
-            event.returnValue = true;
-        }else {
-            event.returnValue = false;
-        }
+        event.returnValue = keyCode >= 48 && keyCode <= 57 || keyCode >= 65 && keyCode <= 90 || keyCode >= 97 && keyCode <= 122 || keyCode === 32;
     }
 
     function keyNumericPress() {
         var keyCode = event.keyCode;
-        if (keyCode >= 48 && keyCode <= 57 ) {
-            event.returnValue = true;
-        }else {
-            event.returnValue = false;
-        }
+        event.returnValue = keyCode >= 48 && keyCode <= 57;
     }
 
     function doBack(){
