@@ -14,6 +14,7 @@
     <div class="main-content">
         <div class="container center-content">
             <div class="col-xs-12">
+                <h3>Please key in patient information</h3>
                 <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
                     <%@include file="section/patientDetailSection.jsp" %>
                 </div>
@@ -22,3 +23,28 @@
         </div>
     </div>
 </form>
+<script>
+    $(document).ready(function() {
+        if($('#saveDraftSuccess').val()=='success'){
+            $('#saveDraft').modal('show');
+        }
+        function cancel() {
+            $('#saveDraft').modal('hide');
+        }
+
+        function jumpPage() {
+            submit('premises','saveDraft','jumpPage');
+        }
+
+        $('#backBtn').click(function () {
+            showWaiting();
+            submit('jump','back',null);
+        });
+
+        $('#nextBtn').click(function () {
+            showWaiting();
+            submit('preview','next','');
+        });
+
+    });
+</script>

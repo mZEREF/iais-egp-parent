@@ -1,9 +1,9 @@
 <div class="panel panel-default">
     <div class="panel-heading">
         <h4 class="panel-title">
-            <a class="" data-toggle="collapse" href="#patientDetails">
+            <strong>
                 Details of Patient
-            </a>
+            </strong>
         </h4>
     </div>
     <div id="patientDetails" class="panel-collapse collapse in">
