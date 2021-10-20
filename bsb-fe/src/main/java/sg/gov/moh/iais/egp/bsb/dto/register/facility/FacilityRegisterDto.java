@@ -6,6 +6,9 @@ import lombok.NoArgsConstructor;
 import org.springframework.util.Assert;
 import sg.gov.moh.iais.egp.bsb.common.node.Node;
 import sg.gov.moh.iais.egp.bsb.common.node.NodeGroup;
+import sg.gov.moh.iais.egp.bsb.common.node.simple.SimpleNode;
+import sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants;
+
 import java.util.Map;
 import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.*;
 
@@ -25,17 +28,19 @@ public class FacilityRegisterDto {
     private PreviewSubmitDto previewSubmitDto;
 
 
+
+    /** Write the facRegRoot NodeGroup into a DTO, then send the DTO to save the data. */
     public static FacilityRegisterDto from(NodeGroup facRegRoot) {
         FacilityRegisterDto dto = new FacilityRegisterDto();
-        dto.setFacilitySelectionDto((FacilitySelectionDto) facRegRoot.at(NODE_NAME_FAC_SELECTION));
-        dto.setFacilityProfileDto((FacilityProfileDto) facRegRoot.at(NODE_NAME_FAC_INFO + facRegRoot.getPathSeparator() + NODE_NAME_FAC_PROFILE));
-        dto.setFacilityOperatorDto((FacilityOperatorDto) facRegRoot.at(NODE_NAME_FAC_INFO + facRegRoot.getPathSeparator() + NODE_NAME_FAC_OPERATOR));
-        dto.setFacilityAuthoriserDto((FacilityAuthoriserDto) facRegRoot.at(NODE_NAME_FAC_INFO + facRegRoot.getPathSeparator() + NODE_NAME_FAC_AUTH));
-        dto.setFacilityAdministratorDto((FacilityAdministratorDto) facRegRoot.at(NODE_NAME_FAC_INFO + facRegRoot.getPathSeparator() + NODE_NAME_FAC_ADMIN));
-        dto.setFacilityOfficerDto((FacilityOfficerDto) facRegRoot.at(NODE_NAME_FAC_INFO + facRegRoot.getPathSeparator() + NODE_NAME_FAC_OFFICER));
-        dto.setFacilityCommitteeDto((FacilityCommitteeDto) facRegRoot.at(NODE_NAME_FAC_INFO + facRegRoot.getPathSeparator() + NODE_NAME_FAC_COMMITTEE));
-        dto.setPrimaryDocDto((PrimaryDocDto) facRegRoot.at(NODE_NAME_PRIMARY_DOC));
-        dto.setPreviewSubmitDto((PreviewSubmitDto) facRegRoot.at(NODE_NAME_PREVIEW_SUBMIT));
+        dto.setFacilitySelectionDto((FacilitySelectionDto) ((SimpleNode) facRegRoot.at(NODE_NAME_FAC_SELECTION)).getValue());
+        dto.setFacilityProfileDto((FacilityProfileDto) ((SimpleNode) facRegRoot.at(NODE_NAME_FAC_INFO + facRegRoot.getPathSeparator() + NODE_NAME_FAC_PROFILE)).getValue());
+        dto.setFacilityOperatorDto((FacilityOperatorDto) ((SimpleNode) facRegRoot.at(NODE_NAME_FAC_INFO + facRegRoot.getPathSeparator() + NODE_NAME_FAC_OPERATOR)).getValue());
+        dto.setFacilityAuthoriserDto((FacilityAuthoriserDto) ((SimpleNode) facRegRoot.at(NODE_NAME_FAC_INFO + facRegRoot.getPathSeparator() + NODE_NAME_FAC_AUTH)).getValue());
+        dto.setFacilityAdministratorDto((FacilityAdministratorDto) ((SimpleNode) facRegRoot.at(NODE_NAME_FAC_INFO + facRegRoot.getPathSeparator() + NODE_NAME_FAC_ADMIN)).getValue());
+        dto.setFacilityOfficerDto((FacilityOfficerDto) ((SimpleNode) facRegRoot.at(NODE_NAME_FAC_INFO + facRegRoot.getPathSeparator() + NODE_NAME_FAC_OFFICER)).getValue());
+        dto.setFacilityCommitteeDto((FacilityCommitteeDto) ((SimpleNode) facRegRoot.at(NODE_NAME_FAC_INFO + facRegRoot.getPathSeparator() + NODE_NAME_FAC_COMMITTEE)).getValue());
+        dto.setPrimaryDocDto((PrimaryDocDto) ((SimpleNode) facRegRoot.at(NODE_NAME_PRIMARY_DOC)).getValue());
+        dto.setPreviewSubmitDto((PreviewSubmitDto) ((SimpleNode) facRegRoot.at(NODE_NAME_PREVIEW_SUBMIT)).getValue());
 
         NodeGroup batGroup = (NodeGroup) facRegRoot.at(NODE_NAME_FAC_BAT_INFO);
         Map<String, BiologicalAgentToxinDto> batInfoMap = getBatInfoMap(batGroup);
@@ -47,9 +52,55 @@ public class FacilityRegisterDto {
         Assert.notNull(batNodeGroup, "Biological Agent/Toxin node group must not be null!");
         Map<String, BiologicalAgentToxinDto> batMap = Maps.newLinkedHashMapWithExpectedSize(batNodeGroup.count());
         for (Node node : batNodeGroup.getAllNodes()) {
-            assert node instanceof BiologicalAgentToxinDto;
-            batMap.put(node.getName(), (BiologicalAgentToxinDto) node);
+            assert node instanceof SimpleNode;
+            batMap.put(node.getName(), (BiologicalAgentToxinDto) ((SimpleNode) node).getValue());
         }
         return batMap;
+    }
+
+
+    /** Convert data in this big DTO into a facRegRoot NodeGroup
+     *  This is needed when we want to view the saved data or edit it */
+    public NodeGroup toFacRegRootGroup(String name) {
+        SimpleNode facSelectionNode = new SimpleNode(facilitySelectionDto, NODE_NAME_FAC_SELECTION, new Node[0]);
+        SimpleNode facProfileNode = new SimpleNode(facilityProfileDto, NODE_NAME_FAC_PROFILE, new Node[0]);
+        SimpleNode facOperatorNode = new SimpleNode(facilityOperatorDto, NODE_NAME_FAC_OPERATOR, new Node[]{facProfileNode});
+        SimpleNode facAuthNode = new SimpleNode(facilityAuthoriserDto, NODE_NAME_FAC_AUTH, new Node[]{facProfileNode, facOperatorNode});
+        SimpleNode facAdminNode = new SimpleNode(facilityAdministratorDto, NODE_NAME_FAC_ADMIN, new Node[]{facProfileNode, facOperatorNode, facAuthNode});
+        SimpleNode facOfficerNode = new SimpleNode(facilityOfficerDto, NODE_NAME_FAC_OFFICER, new Node[]{facProfileNode, facOperatorNode, facAuthNode, facAdminNode});
+        SimpleNode facCommitteeNode = new SimpleNode(facilityCommitteeDto, NODE_NAME_FAC_COMMITTEE, new Node[]{facProfileNode, facOperatorNode, facAuthNode, facAdminNode, facOfficerNode});
+
+
+        NodeGroup facInfoNodeGroup = new NodeGroup.Builder().name(NODE_NAME_FAC_INFO)
+                .dependNodes(new Node[]{facSelectionNode})
+                .addNode(facProfileNode)
+                .addNode(facOperatorNode)
+                .addNode(facAuthNode)
+                .addNode(facAdminNode)
+                .addNode(facOfficerNode)
+                .addNode(facCommitteeNode)
+                .build();
+
+        NodeGroup.Builder batInfoNodeGroupBuilder = new NodeGroup.Builder().name(NODE_NAME_FAC_BAT_INFO)
+                .dependNodes(new Node[]{facSelectionNode, facInfoNodeGroup});
+        for (Map.Entry<String, BiologicalAgentToxinDto> entry : biologicalAgentToxinMap.entrySet()) {
+            SimpleNode batNode = new SimpleNode(entry.getValue(), entry.getKey(), new Node[0]);
+            batInfoNodeGroupBuilder.addNode(batNode);
+        }
+        NodeGroup batInfoNodeGroup = batInfoNodeGroupBuilder.build();
+
+        Node companyInfoDto = new Node(FacRegisterConstants.NODE_NAME_COMPANY_INFO, new Node[0]);
+        SimpleNode otherAppInfoNode = new SimpleNode(OtherApplicationInfoDto.getAllCheckedInstance(), NODE_NAME_OTHER_INFO, new Node[]{facSelectionNode, facInfoNodeGroup, batInfoNodeGroup});
+        SimpleNode primaryDocNode = new SimpleNode(primaryDocDto, NODE_NAME_PRIMARY_DOC, new Node[]{facSelectionNode, facInfoNodeGroup, batInfoNodeGroup, otherAppInfoNode});
+        SimpleNode previewSubmitNode = new SimpleNode(previewSubmitDto, NODE_NAME_PREVIEW_SUBMIT, new Node[]{facSelectionNode, facInfoNodeGroup, batInfoNodeGroup, otherAppInfoNode, primaryDocNode});
+        return new NodeGroup.Builder().name(name)
+                .addNode(companyInfoDto)
+                .addNode(facSelectionNode)
+                .addNode(facInfoNodeGroup)
+                .addNode(batInfoNodeGroup)
+                .addNode(otherAppInfoNode)
+                .addNode(primaryDocNode)
+                .addNode(previewSubmitNode)
+                .build();
     }
 }

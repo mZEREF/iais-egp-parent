@@ -1,11 +1,13 @@
 package sg.gov.moh.iais.egp.bsb.dto.register.facility;
 
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import sg.gov.moh.iais.egp.bsb.common.node.Node;
+import sg.gov.moh.iais.egp.bsb.common.node.simple.ValidatableNodeValue;
 import sg.gov.moh.iais.egp.bsb.dto.ValidationResultDto;
 import sg.gov.moh.iais.egp.bsb.util.SpringReflectionUtils;
 
@@ -18,11 +20,11 @@ import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.NODE_NAME_FA
 
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonIgnoreProperties({"name", "available", "validated", "dependNodes", "validationResultDto"})
-public class FacilityAuthoriserDto extends Node {
+public class FacilityAuthoriserDto extends ValidatableNodeValue {
     @Data
     @NoArgsConstructor
     public static class FacilityAuthorisedPersonnel implements Serializable {
+        private String authEntityId;
         private String name;
         private String nationality;
         private String idType;
@@ -37,19 +39,15 @@ public class FacilityAuthoriserDto extends Node {
     }
 
     private String inputMethod;
-    private final List<FacilityAuthorisedPersonnel> facAuthPersonnelList;
+    private List<FacilityAuthorisedPersonnel> facAuthPersonnelList;
     private String isProtectedPlace;
 
+    @JsonIgnore
     private ValidationResultDto validationResultDto;
 
-    public FacilityAuthoriserDto(String name, Node[] dependNodes) {
-        super(name, dependNodes);
+    public FacilityAuthoriserDto() {
         facAuthPersonnelList = new ArrayList<>();
         facAuthPersonnelList.add(new FacilityAuthorisedPersonnel());
-    }
-
-    public static FacilityAuthoriserDto getInstance(Node[] dependNodes) {
-        return new FacilityAuthoriserDto(NODE_NAME_FAC_AUTH, dependNodes);
     }
 
     @Override
@@ -67,14 +65,17 @@ public class FacilityAuthoriserDto extends Node {
     }
 
     @Override
-    public void needValidation() {
-        super.needValidation();
+    public void clearValidationResult() {
         this.validationResultDto = null;
     }
 
 
     public List<FacilityAuthorisedPersonnel> getFacAuthPersonnelList() {
         return new ArrayList<>(facAuthPersonnelList);
+    }
+
+    public void setFacAuthPersonnelList(List<FacilityAuthorisedPersonnel> facAuthPersonnelList) {
+        this.facAuthPersonnelList = new ArrayList<>(facAuthPersonnelList);
     }
 
     public void clearAuthPersonnel() {

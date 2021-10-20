@@ -7,6 +7,9 @@ import java.util.Set;
 public class MasterCodeConstants {
     private MasterCodeConstants() {}
 
+    public static final String YES = "Y";
+    public static final String NO = "N";
+
     public static final String APP_TYPE_NEW = "BSBAPTY001";
     public static final String APP_TYPE_RENEW = "BSBAPTY002";
     public static final String APP_TYPE_RFC = "BSBAPTY003";
@@ -92,8 +95,27 @@ public class MasterCodeConstants {
     public static final String ADMIN_TYPE_MAIN = "main";
     public static final String ADMIN_TYPE_ALTERNATIVE = "alter";
 
+    public static final String SAMPLE_NATURE_CULTURE_ISOLATE = "BNOTS001";
+    public static final String SAMPLE_NATURE_PURE_TOXIN = "BNOTS002";
+    public static final String SAMPLE_NATURE_CLINICAL = "BNOTS003";
+    public static final String SAMPLE_NATURE_ANIMAL = "BNOTS004";
+    public static final String SAMPLE_NATURE_ENVIRONMENTAL = "BNOTS005";
+    public static final String SAMPLE_NATURE_FOOD = "BNOTS006";
+    public static final String SAMPLE_NATURE_OTHER = "BNOTS007";
 
-    public static final String ID_TYPE_NRIC = "IDTYPE001";
-    public static final String ID_TYPE_FIN = "IDTYPE002";
-    public static final String ID_TYPE_PASSPORT = "IDTYPE003";
+    public static final String ENTITY_STATUS_PROCESSING = "BSBCENS001";
+    public static final String ENTITY_STATUS_REJECTED = "BSBCENS002";
+    public static final String ENTITY_STATUS_IN_USE = "BSBCENS003";
+    public static final String ENTITY_STATUS_DEPRECATED = "BSBCENS004";
+
+    public static final String APPROVAL_TYPE_POSSESS = "APPRTY001";
+    public static final String APPROVAL_TYPE_LSP = "APPRTY002";
+    public static final String APPROVAL_TYPE_SP_HANDLE = "APPRTY003";
+    public static final String APPROVAL_TYPE_FAC_REG = "APPRTY004";
+
+    public static final String APPROVAL_STATUS_ACTIVE = "APPRSTA001";
+    public static final String APPROVAL_STATUS_CANCELLED = "APPRSTA002";
+    public static final String APPROVAL_STATUS_REVOKED = "APPRSTA003";
+    public static final String APPROVAL_STATUS_SUSPENDED = "APPRSTA004";
+    public static final String APPROVAL_STATUS_EXPIRED = "APPRSTA005";
 }

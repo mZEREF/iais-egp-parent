@@ -128,7 +128,14 @@
                                                         <tr>
                                                             <td>
                                                                 <p class="visible-xs visible-sm table-row-title">Application No.</p>
-                                                                <p><c:out value="${app.applicationNo}"/></p>
+                                                                <c:choose>
+                                                                    <c:when test="${app.processType eq 'PROTYPE001'}">
+                                                                        <a href="/bsb-fe/eservice/INTERNET/MohBsbViewFacRegApplication?appId=<iais:mask name='id' value='${app.id}'/><c:if test="${app.status eq 'BSBAPST001'}">&editId=<iais:mask name='editId' value='${app.id}'/></c:if>"><c:out value="${app.applicationNo}"/></a>
+                                                                    </c:when>
+                                                                    <c:otherwise>
+                                                                        <c:out value="${app.applicationNo}"/>
+                                                                    </c:otherwise>
+                                                                </c:choose>
                                                             </td>
                                                             <td>
                                                                 <p class="visible-xs visible-sm table-row-title">Application Type</p>
@@ -148,8 +155,13 @@
                                                             </td>
                                                             <td>
                                                                 <p class="visible-xs visible-sm table-row-title">Actions</p>
-                                                                <select id="appAction${status.index}" name="appAction${status.index}">
-                                                                    <option value="" selected="selected">Select</option>
+                                                                <select id="appAction${status.index}" name="appAction${status.index}" data-action-select="">
+                                                                    <option value="#" selected="selected">Select</option>
+                                                                    <c:choose>
+                                                                        <c:when test="${app.processType eq 'PROTYPE001' and app.status eq 'BSBAPST001'}">
+                                                                            <option value="/bsb-fe/eservice/INTERNET/MohBsbFacilityRegistration?editId=<iais:mask name='editId' value='${app.id}'/>">Edit</option>
+                                                                        </c:when>
+                                                                    </c:choose>
                                                                 </select>
                                                             </td>
                                                         </tr>

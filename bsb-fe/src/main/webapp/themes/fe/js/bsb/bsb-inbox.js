@@ -36,4 +36,8 @@ $(function () {
         $("[name='action_type']").val("search");
         $("#mainForm").submit();
     });
+
+    $("select[data-action-select]").change(function () {
+        window.location = this.value;
+    });
 });

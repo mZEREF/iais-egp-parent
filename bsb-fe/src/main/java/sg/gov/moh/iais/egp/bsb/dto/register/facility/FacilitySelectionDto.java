@@ -1,14 +1,12 @@
 package sg.gov.moh.iais.egp.bsb.dto.register.facility;
 
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import sg.gov.moh.iais.egp.bsb.common.node.Node;
-import sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants;
+import sg.gov.moh.iais.egp.bsb.common.node.simple.ValidatableNodeValue;
 import sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants;
 import sg.gov.moh.iais.egp.bsb.dto.ValidationResultDto;
 import sg.gov.moh.iais.egp.bsb.util.SpringReflectionUtils;
-
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -17,18 +15,17 @@ import java.util.List;
 
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonIgnoreProperties({"name", "available", "validated", "dependNodes", "validationResultDto"})
-public class FacilitySelectionDto extends Node {
+public class FacilitySelectionDto extends ValidatableNodeValue {
     private String facClassification;
-    private final List<String> activityTypes;
+    private List<String> activityTypes;
 
+    @JsonIgnore
     private ValidationResultDto validationResultDto;
 
-    public FacilitySelectionDto(String name, Node[] dependNodes) {
-        super(name, dependNodes);
-        this.activityTypes = new ArrayList<>();
-    }
 
+    public FacilitySelectionDto() {
+        activityTypes = new ArrayList<>();
+    }
 
     @Override
     public boolean doValidation() {
@@ -45,15 +42,11 @@ public class FacilitySelectionDto extends Node {
     }
 
     @Override
-    public void needValidation() {
-        super.needValidation();
+    public void clearValidationResult() {
         this.validationResultDto = null;
     }
 
 
-    public static FacilitySelectionDto getInstance(Node[] dependNodes) {
-        return new FacilitySelectionDto(FacRegisterConstants.NODE_NAME_FAC_SELECTION, dependNodes);
-    }
 
     public void addActivityType(String activityType) {
         activityTypes.add(activityType);
@@ -88,9 +81,11 @@ public class FacilitySelectionDto extends Node {
         return new ArrayList<>(activityTypes);
     }
 
+    public void setActivityTypes(List<String> activityTypes) {
+        this.activityTypes = new ArrayList<>(activityTypes);
+    }
 
-
-//    ---------------------------- request -> object ----------------------------------------------
+    //    ---------------------------- request -> object ----------------------------------------------
 
     private static final String KEY_SELECTION_CLASSIFICATION = "facClassification";
     private static final String KEY_FAC_AVTVI_TYPE_BLS3 = "bsl3ActviTypes";

@@ -9,6 +9,7 @@ import org.springframework.util.ReflectionUtils;
 import java.lang.reflect.Method;
 
 
+/** This is a very common class, may be moved to common module in the future */
 @Component
 public class SpringReflectionUtils implements ApplicationContextAware {
     private static ApplicationContext applicationContext;

@@ -1,20 +1,17 @@
 package sg.gov.moh.iais.egp.bsb.dto.register.facility;
 
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import sg.gov.moh.iais.egp.bsb.common.node.Node;
+import sg.gov.moh.iais.egp.bsb.common.node.simple.ValidatableNodeValue;
 import sg.gov.moh.iais.egp.bsb.dto.ValidationResultDto;
 import sg.gov.moh.iais.egp.bsb.util.SpringReflectionUtils;
 
 import javax.servlet.http.HttpServletRequest;
 
-import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.NODE_NAME_FAC_OPERATOR;
-
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonIgnoreProperties({"name", "available", "validated", "dependNodes", "validationResultDto"})
-public class FacilityOperatorDto extends Node {
+public class FacilityOperatorDto extends ValidatableNodeValue {
     private String facOperator;
     private String designeeName;
     private String nationality;
@@ -25,15 +22,8 @@ public class FacilityOperatorDto extends Node {
     private String email;
     private String employmentStartDate;
 
+    @JsonIgnore
     private ValidationResultDto validationResultDto;
-
-    public FacilityOperatorDto(String name, Node[] dependNodes) {
-        super(name, dependNodes);
-    }
-
-    public static FacilityOperatorDto getInstance(Node[] dependNodes) {
-        return new FacilityOperatorDto(NODE_NAME_FAC_OPERATOR, dependNodes);
-    }
 
 
     @Override
@@ -51,10 +41,10 @@ public class FacilityOperatorDto extends Node {
     }
 
     @Override
-    public void needValidation() {
-        super.needValidation();
+    public void clearValidationResult() {
         this.validationResultDto = null;
     }
+
 
 
     public String getFacOperator() {

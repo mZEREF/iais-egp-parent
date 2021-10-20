@@ -39,7 +39,6 @@
             <div class="row">
                 <div class="col-xs-12">
                     <div class="tab-gp steps-tab">
-                        <%@ include file="InnerNavTab.jsp" %>
                         <div class="tab-content">
                             <div class="tab-pane fade in active">
                                 <div id="previewSubmitPanel" role="tabpanel">
@@ -55,7 +54,7 @@
                                                         </div>
                                                         <div id="previewFacInfo" class="panel-collapse collapse">
                                                             <div class="panel-body">
-                                                                <div class="text-right app-font-size-16"><a href="#" data-step-key="facInfo_facProfile"><em class="fa fa-pencil-square-o"></em>Edit</a></div>
+                                                                <div class="text-right app-font-size-16"><c:if test="${not empty maskedEditId}"><a href="/bsb-fe/eservice/INTERNET/MohBsbFacilityRegistration?editId=${maskedEditId}"><em class="fa fa-pencil-square-o"></em>Edit</a></c:if></div>
                                                                 <div class="panel-main-content form-horizontal min-row">
                                                                     <div class="form-group">
                                                                         <div class="col-10"><strong>Facility Profile</strong></div>
@@ -401,7 +400,7 @@
                                                         </div>
                                                         <div id="previewBatInfo" class="panel-collapse collapse">
                                                             <div class="panel-body">
-                                                                <div class="text-right app-font-size-16"><a href="#" data-step-key="batInfo"><em class="fa fa-pencil-square-o"></em>Edit</a></div>
+                                                                <div class="text-right app-font-size-16"><c:if test="${not empty maskedEditId}"><a href="/bsb-fe/eservice/INTERNET/MohBsbFacilityRegistration?editId=${maskedEditId}"><em class="fa fa-pencil-square-o"></em>Edit</a></c:if></div>
                                                                 <c:forEach var="bat" items="${batList}">
                                                                     <div class="panel-main-content form-horizontal min-row">
                                                                         <div class="form-group">
@@ -439,7 +438,7 @@
                                                         </div>
                                                         <div id="previewDocs" class="panel-collapse collapse">
                                                             <div class="panel-body">
-                                                                <div class="text-right app-font-size-16"><a href="#" data-step-key="primaryDocs"><em class="fa fa-pencil-square-o"></em>Edit</a></div>
+                                                                <div class="text-right app-font-size-16"><c:if test="${not empty maskedEditId}"><a href="/bsb-fe/eservice/INTERNET/MohBsbFacilityRegistration?editId=${maskedEditId}"><em class="fa fa-pencil-square-o"></em>Edit</a></c:if></div>
                                                                 <div class="panel-main-content form-horizontal min-row">
                                                                     <div class="form-group">
                                                                         <div class="col-10"><strong>Uploaded Documents</strong></div>
@@ -453,55 +452,13 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="form-horizontal" style="padding: 30px 20px 10px;">
-                                        <div class="form-group ">
-                                            <div class="col-sm-5 control-label">
-                                                <label for="remarks">Remarks</label>
-                                            </div>
-                                            <div class="col-sm-6 col-md-7">
-                                                <textarea class="col-xs-12" name="remarks" id="remarks" rows="5"><c:out value="${previewSubmit.remarks}"/></textarea>
-                                                <span data-err-ind="remarks" class="error-msg"></span>
-                                            </div>
-                                        </div>
-                                        <div class="form-group ">
-                                            <div class="col-sm-5 control-label">
-                                                <label for="approvedFacCertifier">Select Approved Facility Certifier</label>
-                                                <span class="mandatory otherQualificationSpan">*</span>
-                                            </div>
-                                            <div class="col-sm-6 col-md-7">
-                                                <select name="approvedFacCertifier" id="approvedFacCertifier">
-                                                    <c:forEach items="${approvedFacCertifierOps}" var="certifier">
-                                                        <option value="${certifier.value}" <c:if test="${previewSubmit.approvedFacCertifier eq certifier.value}">selected="selected"</c:if>>${certifier.text}</option>
-                                                    </c:forEach>
-                                                </select>
-                                                <span data-err-ind="approvedFacCertifier" class="error-msg"></span>
-                                            </div>
-                                        </div>
-                                        <div class="form-group ">
-                                            <div class="col-sm-5 control-label">
-                                                <label for="reason">Reasons to Choose This AFC</label>
-                                            </div>
-                                            <div class="col-sm-6 col-md-7">
-                                                <textarea class="col-xs-12" name="reason" id="reason" rows="2"><c:out value="${previewSubmit.reason}"/></textarea>
-                                                <span data-err-ind="reason" class="error-msg"></span>
-                                            </div>
-                                        </div>
-                                        <div class="form-group ">
-                                            <div class="col-xs-1" style="padding: 30px 0 20px 30px;">
-                                                <input type="checkbox" name="declare" id="declare" value="Y" <c:if test="${previewSubmit.declare eq 'Y'}">checked="checked"</c:if> />
-                                            </div>
-                                            <div class="col-xs-10 control-label">
-                                                <label for="declare">I, hereby declare that all the information I have provided here is true and accurate. If any of the information given herein changes or becomes inaccurate in any way, I shall immediately notify MOH Biosafety Branch of such change or inaccuracy.</label>
-                                                <span data-err-ind="declare" class="error-msg"></span>
-                                            </div>
-                                        </div>
-                                    </div>
                                 </div>
-
-                                <%@ include file="InnerFooter.jsp" %>
                             </div>
                         </div>
                     </div>
+                </div>
+                <div class="col-xs-12">
+                    <a class="back" href="/bsb-fe/eservice/INTERNET/MohBSBInboxApp"><em class="fa fa-angle-left"></em> Back</a>
                 </div>
             </div>
         </div>

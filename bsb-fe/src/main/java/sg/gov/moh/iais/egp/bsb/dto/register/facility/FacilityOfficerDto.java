@@ -1,20 +1,18 @@
 package sg.gov.moh.iais.egp.bsb.dto.register.facility;
 
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import sg.gov.moh.iais.egp.bsb.common.node.Node;
+import sg.gov.moh.iais.egp.bsb.common.node.simple.ValidatableNodeValue;
 import sg.gov.moh.iais.egp.bsb.dto.ValidationResultDto;
 import sg.gov.moh.iais.egp.bsb.util.SpringReflectionUtils;
 
 import javax.servlet.http.HttpServletRequest;
 
-import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.NODE_NAME_FAC_OFFICER;
-
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonIgnoreProperties({"name", "available", "validated", "dependNodes", "validationResultDto"})
-public class FacilityOfficerDto extends Node {
+public class FacilityOfficerDto extends ValidatableNodeValue {
+    private String officerEntityId;
     private String officerName;
     private String nationality;
     private String idType;
@@ -24,15 +22,9 @@ public class FacilityOfficerDto extends Node {
     private String email;
     private String employmentStartDate;
 
+    @JsonIgnore
     private ValidationResultDto validationResultDto;
 
-    public FacilityOfficerDto(String name, Node[] dependNodes) {
-        super(name, dependNodes);
-    }
-
-    public static FacilityOfficerDto getInstance(Node[] dependNodes) {
-        return new FacilityOfficerDto(NODE_NAME_FAC_OFFICER, dependNodes);
-    }
 
 
     @Override
@@ -50,11 +42,18 @@ public class FacilityOfficerDto extends Node {
     }
 
     @Override
-    public void needValidation() {
-        super.needValidation();
+    public void clearValidationResult() {
         this.validationResultDto = null;
     }
 
+
+    public String getOfficerEntityId() {
+        return officerEntityId;
+    }
+
+    public void setOfficerEntityId(String officerEntityId) {
+        this.officerEntityId = officerEntityId;
+    }
 
     public String getOfficerName() {
         return officerName;

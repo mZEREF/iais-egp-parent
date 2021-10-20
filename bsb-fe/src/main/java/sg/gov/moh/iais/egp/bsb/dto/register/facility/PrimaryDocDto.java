@@ -1,9 +1,8 @@
 package sg.gov.moh.iais.egp.bsb.dto.register.facility;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.google.common.collect.Maps;
-import sg.gov.moh.iais.egp.bsb.common.node.Node;
+import sg.gov.moh.iais.egp.bsb.common.node.simple.ValidatableNodeValue;
 import sg.gov.moh.iais.egp.bsb.dto.ValidationResultDto;
 import sg.gov.moh.iais.egp.bsb.util.SpringReflectionUtils;
 
@@ -12,25 +11,18 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
-import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.NODE_NAME_PRIMARY_DOC;
-
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonIgnoreProperties({"name", "available", "validated", "dependNodes", "validationResultDto"})
-public class PrimaryDocDto extends Node {
+public class PrimaryDocDto extends ValidatableNodeValue {
     private Map<String, File> uploadedFiles;
 
+    @JsonIgnore
     private ValidationResultDto validationResultDto;
 
-    public PrimaryDocDto(String name, Node[] dependNodes) {
-        super(name, dependNodes);
-        uploadedFiles = Maps.newHashMapWithExpectedSize(0);
-    }
 
-    public static PrimaryDocDto getInstance(Node[] dependNodes) {
-        return new PrimaryDocDto(NODE_NAME_PRIMARY_DOC, dependNodes);
+    public PrimaryDocDto() {
+        uploadedFiles = new HashMap<>();
     }
-
 
     @Override
     public boolean doValidation() {
@@ -47,8 +39,7 @@ public class PrimaryDocDto extends Node {
     }
 
     @Override
-    public void needValidation() {
-        super.needValidation();
+    public void clearValidationResult() {
         this.validationResultDto = null;
     }
 

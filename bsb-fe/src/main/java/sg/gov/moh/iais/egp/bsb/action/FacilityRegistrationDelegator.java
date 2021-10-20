@@ -4,6 +4,7 @@ package sg.gov.moh.iais.egp.bsb.action;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
+import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -14,9 +15,11 @@ import sg.gov.moh.iais.egp.bsb.client.FacilityRegisterClient;
 import sg.gov.moh.iais.egp.bsb.common.node.Node;
 import sg.gov.moh.iais.egp.bsb.common.node.NodeGroup;
 import sg.gov.moh.iais.egp.bsb.common.node.Nodes;
+import sg.gov.moh.iais.egp.bsb.common.node.simple.SimpleNode;
 import sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
 import sg.gov.moh.iais.egp.bsb.dto.register.facility.*;
+import sg.gov.moh.iais.egp.bsb.util.LogUtil;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
@@ -32,6 +35,7 @@ import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.*;
 public class FacilityRegistrationDelegator {
     private static final String KEY_ROOT_NODE_GROUP = "facRegRoot";
 
+    private static final String KEY_EDIT_APP_ID = "editId";
     private static final String KEY_ACTION_TYPE = "action_type";
     private static final String KEY_INDEED_ACTION_TYPE = "indeed_action_type";
     private static final String KEY_ACTION_VALUE = "action_value";
@@ -64,7 +68,34 @@ public class FacilityRegistrationDelegator {
     public void init(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         request.getSession().removeAttribute(KEY_ROOT_NODE_GROUP);
-        ParamUtil.setSessionAttr(request, KEY_ROOT_NODE_GROUP, getFacilityRegisterRoot(request));
+        boolean newFacReg = true;
+
+        // check if we are doing editing
+        String maskedAppId = request.getParameter(KEY_EDIT_APP_ID);
+        if (StringUtils.hasLength(maskedAppId)) {
+            if (log.isInfoEnabled()) {
+                log.info("masked app ID: {}", LogUtil.escapeCrlf(maskedAppId));
+            }
+            newFacReg = false;
+            boolean failRetrieveEditData = true;
+            String appId = MaskUtil.unMaskValue(KEY_EDIT_APP_ID, maskedAppId);
+            if (appId != null && !maskedAppId.equals(appId)) {
+                ResponseDto<FacilityRegisterDto> resultDto = facRegClient.getFacilityRegistrationAppData(appId);
+                if (resultDto.ok()) {
+                    failRetrieveEditData = false;
+                    NodeGroup facRegRoot = resultDto.getEntity().toFacRegRootGroup(KEY_ROOT_NODE_GROUP);
+                    ParamUtil.setSessionAttr(request, KEY_ROOT_NODE_GROUP, facRegRoot);
+                }
+            }
+            if (failRetrieveEditData) {
+                throw new IaisRuntimeException("Fail to retrieve app data");
+            }
+        }
+
+
+        if (newFacReg) {
+            ParamUtil.setSessionAttr(request, KEY_ROOT_NODE_GROUP, getFacilityRegisterRoot(request));
+        }
     }
 
     public void preCompInfo(BaseProcessClass bpc) {
@@ -87,29 +118,31 @@ public class FacilityRegistrationDelegator {
     public void preServiceSelection(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         NodeGroup facRegRoot = getFacilityRegisterRoot(request);
-        FacilitySelectionDto selectionDto = (FacilitySelectionDto) facRegRoot.getNode(NODE_NAME_FAC_SELECTION);
+        SimpleNode facSelectionNode = (SimpleNode) facRegRoot.getNode(NODE_NAME_FAC_SELECTION);
+        FacilitySelectionDto selectionDto = (FacilitySelectionDto) facSelectionNode.getValue();
         Boolean needShowError = (Boolean) ParamUtil.getRequestAttr(request, KEY_SHOW_ERROR_SWITCH);
         if (needShowError == Boolean.TRUE) {
             ParamUtil.setRequestAttr(request, KEY_VALIDATION_ERRORS, selectionDto.retrieveValidationResult());
         }
-        selectionDto.needValidation();
+        facSelectionNode.needValidation();
         ParamUtil.setRequestAttr(request, NODE_NAME_FAC_SELECTION, selectionDto);
     }
 
     public void handleServiceSelection(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         NodeGroup facRegRoot = getFacilityRegisterRoot(request);
-        FacilitySelectionDto selectionDto = (FacilitySelectionDto) facRegRoot.getNode(NODE_NAME_FAC_SELECTION);
+        SimpleNode facSelectionNode = (SimpleNode) facRegRoot.getNode(NODE_NAME_FAC_SELECTION);
+        FacilitySelectionDto selectionDto = (FacilitySelectionDto) facSelectionNode.getValue();
         selectionDto.reqObjMapping(request);
 
         String actionType = ParamUtil.getString(request, KEY_ACTION_TYPE);
         if (KEY_ACTION_JUMP.equals(actionType)) {
-            jumpHandler(request, facRegRoot, NODE_NAME_FAC_SELECTION, selectionDto);
+            jumpHandler(request, facRegRoot, NODE_NAME_FAC_SELECTION, facSelectionNode);
         } else {
             throw new IaisRuntimeException(ERR_MSG_INVALID_ACTION);
         }
 
-        if (selectionDto.isValidated()) {
+        if (facSelectionNode.isValidated()) {
             NodeGroup batGroup = (NodeGroup) facRegRoot.getNode(NODE_NAME_FAC_BAT_INFO);
             changeBatNodeGroup(batGroup, selectionDto);
         }
@@ -121,12 +154,13 @@ public class FacilityRegistrationDelegator {
         HttpServletRequest request = bpc.request;
         NodeGroup facRegRoot = getFacilityRegisterRoot(request);
         String currentNodePath = NODE_NAME_FAC_INFO + facRegRoot.getPathSeparator() + NODE_NAME_FAC_PROFILE;
-        FacilityProfileDto facProfileDto = (FacilityProfileDto) facRegRoot.at(currentNodePath);
+        SimpleNode facProfileNode = (SimpleNode) facRegRoot.at(currentNodePath);
+        FacilityProfileDto facProfileDto = (FacilityProfileDto) facProfileNode.getValue();
         Boolean needShowError = (Boolean) ParamUtil.getRequestAttr(request, KEY_SHOW_ERROR_SWITCH);
         if (needShowError == Boolean.TRUE) {
             ParamUtil.setRequestAttr(request, KEY_VALIDATION_ERRORS, facProfileDto.retrieveValidationResult());
         }
-        facProfileDto.needValidation();
+        facProfileNode.needValidation();
         ParamUtil.setRequestAttr(request, NODE_NAME_FAC_PROFILE, facProfileDto);
     }
 
@@ -134,14 +168,16 @@ public class FacilityRegistrationDelegator {
         HttpServletRequest request = bpc.request;
         NodeGroup facRegRoot = getFacilityRegisterRoot(request);
         String currentNodePath = NODE_NAME_FAC_INFO + facRegRoot.getPathSeparator() + NODE_NAME_FAC_PROFILE;
-        FacilityProfileDto facProfileDto = (FacilityProfileDto) facRegRoot.at(currentNodePath);
+        SimpleNode facProfileNode = (SimpleNode) facRegRoot.at(currentNodePath);
+        FacilityProfileDto facProfileDto = (FacilityProfileDto) facProfileNode.getValue();
         facProfileDto.reqObjMapping(request);
-        FacilityAuthoriserDto facAuthDto = (FacilityAuthoriserDto) facRegRoot.at(NODE_NAME_FAC_INFO + facRegRoot.getPathSeparator() + NODE_NAME_FAC_AUTH);
+        SimpleNode facAuthNode = (SimpleNode) facRegRoot.at(NODE_NAME_FAC_INFO + facRegRoot.getPathSeparator() + NODE_NAME_FAC_AUTH);
+        FacilityAuthoriserDto facAuthDto = (FacilityAuthoriserDto) facAuthNode.getValue();
         facAuthDto.setIsProtectedPlace(facProfileDto.getIsFacilityProtected());
 
         String actionType = ParamUtil.getString(request, KEY_ACTION_TYPE);
         if (KEY_ACTION_JUMP.equals(actionType)) {
-            jumpHandler(request, facRegRoot, currentNodePath, facProfileDto);
+            jumpHandler(request, facRegRoot, currentNodePath, facProfileNode);
         } else {
             throw new IaisRuntimeException(ERR_MSG_INVALID_ACTION);
         }
@@ -152,12 +188,13 @@ public class FacilityRegistrationDelegator {
         HttpServletRequest request = bpc.request;
         NodeGroup facRegRoot = getFacilityRegisterRoot(request);
         String currentNodePath = NODE_NAME_FAC_INFO + facRegRoot.getPathSeparator() + NODE_NAME_FAC_OPERATOR;
-        FacilityOperatorDto facOpDto = (FacilityOperatorDto) facRegRoot.at(currentNodePath);
+        SimpleNode facOpNode = (SimpleNode) facRegRoot.at(currentNodePath);
+        FacilityOperatorDto facOpDto = (FacilityOperatorDto) facOpNode.getValue();
         Boolean needShowError = (Boolean) ParamUtil.getRequestAttr(request, KEY_SHOW_ERROR_SWITCH);
         if (needShowError == Boolean.TRUE) {
             ParamUtil.setRequestAttr(request, KEY_VALIDATION_ERRORS, facOpDto.retrieveValidationResult());
         }
-        facOpDto.needValidation();
+        facOpNode.needValidation();
         ParamUtil.setRequestAttr(request, NODE_NAME_FAC_OPERATOR, facOpDto);
 
         ParamUtil.setRequestAttr(request, KEY_NATIONALITY_OPTIONS, tmpNationalityOps());
@@ -169,12 +206,13 @@ public class FacilityRegistrationDelegator {
         HttpServletRequest request = bpc.request;
         NodeGroup facRegRoot = getFacilityRegisterRoot(request);
         String currentNodePath = NODE_NAME_FAC_INFO + facRegRoot.getPathSeparator() + NODE_NAME_FAC_OPERATOR;
-        FacilityOperatorDto facOpDto = (FacilityOperatorDto) facRegRoot.at(currentNodePath);
+        SimpleNode facOpNode = (SimpleNode) facRegRoot.at(currentNodePath);
+        FacilityOperatorDto facOpDto = (FacilityOperatorDto) facOpNode.getValue();
         facOpDto.reqObjMapping(request);
 
         String actionType = ParamUtil.getString(request, KEY_ACTION_TYPE);
         if (KEY_ACTION_JUMP.equals(actionType)) {
-            jumpHandler(request, facRegRoot, currentNodePath, facOpDto);
+            jumpHandler(request, facRegRoot, currentNodePath, facOpNode);
         } else {
             throw new IaisRuntimeException(ERR_MSG_INVALID_ACTION);
         }
@@ -185,12 +223,13 @@ public class FacilityRegistrationDelegator {
         HttpServletRequest request = bpc.request;
         NodeGroup facRegRoot = getFacilityRegisterRoot(request);
         String currentNodePath = NODE_NAME_FAC_INFO + facRegRoot.getPathSeparator() + NODE_NAME_FAC_AUTH;
-        FacilityAuthoriserDto facAuthDto = (FacilityAuthoriserDto) facRegRoot.at(currentNodePath);
+        SimpleNode facAuthNode = (SimpleNode) facRegRoot.at(currentNodePath);
+        FacilityAuthoriserDto facAuthDto = (FacilityAuthoriserDto) facAuthNode.getValue();
         Boolean needShowError = (Boolean) ParamUtil.getRequestAttr(request, KEY_SHOW_ERROR_SWITCH);
         if (needShowError == Boolean.TRUE) {
             ParamUtil.setRequestAttr(request, KEY_VALIDATION_ERRORS, facAuthDto.retrieveValidationResult());
         }
-        facAuthDto.needValidation();
+        facAuthNode.needValidation();
         ParamUtil.setRequestAttr(request, NODE_NAME_FAC_AUTH, facAuthDto);
 
         ParamUtil.setRequestAttr(request, KEY_NATIONALITY_OPTIONS, tmpNationalityOps());
@@ -200,12 +239,13 @@ public class FacilityRegistrationDelegator {
         HttpServletRequest request = bpc.request;
         NodeGroup facRegRoot = getFacilityRegisterRoot(request);
         String currentNodePath = NODE_NAME_FAC_INFO + facRegRoot.getPathSeparator() + NODE_NAME_FAC_AUTH;
-        FacilityAuthoriserDto facAuthDto = (FacilityAuthoriserDto) facRegRoot.at(currentNodePath);
+        SimpleNode facAuthNode = (SimpleNode) facRegRoot.at(currentNodePath);
+        FacilityAuthoriserDto facAuthDto = (FacilityAuthoriserDto) facAuthNode.getValue();
         facAuthDto.reqObjMapping(request);
 
         String actionType = ParamUtil.getString(request, KEY_ACTION_TYPE);
         if (KEY_ACTION_JUMP.equals(actionType)) {
-            jumpHandler(request, facRegRoot, currentNodePath, facAuthDto);
+            jumpHandler(request, facRegRoot, currentNodePath, facAuthNode);
         } else {
             throw new IaisRuntimeException(ERR_MSG_INVALID_ACTION);
         }
@@ -216,12 +256,13 @@ public class FacilityRegistrationDelegator {
         HttpServletRequest request = bpc.request;
         NodeGroup facRegRoot = getFacilityRegisterRoot(request);
         String currentNodePath = NODE_NAME_FAC_INFO + facRegRoot.getPathSeparator() + NODE_NAME_FAC_ADMIN;
-        FacilityAdministratorDto facAdminDto = (FacilityAdministratorDto) facRegRoot.at(currentNodePath);
+        SimpleNode facAdminNode = (SimpleNode) facRegRoot.at(currentNodePath);
+        FacilityAdministratorDto facAdminDto = (FacilityAdministratorDto) facAdminNode.getValue();
         Boolean needShowError = (Boolean) ParamUtil.getRequestAttr(request, KEY_SHOW_ERROR_SWITCH);
         if (needShowError == Boolean.TRUE) {
             ParamUtil.setRequestAttr(request, KEY_VALIDATION_ERRORS, facAdminDto.retrieveValidationResult());
         }
-        facAdminDto.needValidation();
+        facAdminNode.needValidation();
         ParamUtil.setRequestAttr(request, NODE_NAME_FAC_ADMIN, facAdminDto);
 
         ParamUtil.setRequestAttr(request, KEY_NATIONALITY_OPTIONS, tmpNationalityOps());
@@ -231,12 +272,13 @@ public class FacilityRegistrationDelegator {
         HttpServletRequest request = bpc.request;
         NodeGroup facRegRoot = getFacilityRegisterRoot(request);
         String currentNodePath = NODE_NAME_FAC_INFO + facRegRoot.getPathSeparator() + NODE_NAME_FAC_ADMIN;
-        FacilityAdministratorDto facAdminDto = (FacilityAdministratorDto) facRegRoot.at(currentNodePath);
+        SimpleNode facAdminNode = (SimpleNode) facRegRoot.at(currentNodePath);
+        FacilityAdministratorDto facAdminDto = (FacilityAdministratorDto) facAdminNode.getValue();
         facAdminDto.reqObjMapping(request);
 
         String actionType = ParamUtil.getString(request, KEY_ACTION_TYPE);
         if (KEY_ACTION_JUMP.equals(actionType)) {
-            jumpHandler(request, facRegRoot, currentNodePath, facAdminDto);
+            jumpHandler(request, facRegRoot, currentNodePath, facAdminNode);
         } else {
             throw new IaisRuntimeException(ERR_MSG_INVALID_ACTION);
         }
@@ -247,12 +289,13 @@ public class FacilityRegistrationDelegator {
         HttpServletRequest request = bpc.request;
         NodeGroup facRegRoot = getFacilityRegisterRoot(request);
         String currentNodePath = NODE_NAME_FAC_INFO + facRegRoot.getPathSeparator() + NODE_NAME_FAC_OFFICER;
-        FacilityOfficerDto facOfficerDto = (FacilityOfficerDto) facRegRoot.at(currentNodePath);
+        SimpleNode facOfficerNode = (SimpleNode) facRegRoot.at(currentNodePath);
+        FacilityOfficerDto facOfficerDto = (FacilityOfficerDto) facOfficerNode.getValue();
         Boolean needShowError = (Boolean) ParamUtil.getRequestAttr(request, KEY_SHOW_ERROR_SWITCH);
         if (needShowError == Boolean.TRUE) {
             ParamUtil.setRequestAttr(request, KEY_VALIDATION_ERRORS, facOfficerDto.retrieveValidationResult());
         }
-        facOfficerDto.needValidation();
+        facOfficerNode.needValidation();
         ParamUtil.setRequestAttr(request, NODE_NAME_FAC_OFFICER, facOfficerDto);
 
         ParamUtil.setRequestAttr(request, KEY_NATIONALITY_OPTIONS, tmpNationalityOps());
@@ -262,12 +305,13 @@ public class FacilityRegistrationDelegator {
         HttpServletRequest request = bpc.request;
         NodeGroup facRegRoot = getFacilityRegisterRoot(request);
         String currentNodePath = NODE_NAME_FAC_INFO + facRegRoot.getPathSeparator() + NODE_NAME_FAC_OFFICER;
-        FacilityOfficerDto facOfficerDto = (FacilityOfficerDto) facRegRoot.at(currentNodePath);
+        SimpleNode facOfficerNode = (SimpleNode) facRegRoot.at(currentNodePath);
+        FacilityOfficerDto facOfficerDto = (FacilityOfficerDto) facOfficerNode.getValue();
         facOfficerDto.reqObjMapping(request);
 
         String actionType = ParamUtil.getString(request, KEY_ACTION_TYPE);
         if (KEY_ACTION_JUMP.equals(actionType)) {
-            jumpHandler(request, facRegRoot, currentNodePath, facOfficerDto);
+            jumpHandler(request, facRegRoot, currentNodePath, facOfficerNode);
         } else {
             throw new IaisRuntimeException(ERR_MSG_INVALID_ACTION);
         }
@@ -278,12 +322,13 @@ public class FacilityRegistrationDelegator {
         HttpServletRequest request = bpc.request;
         NodeGroup facRegRoot = getFacilityRegisterRoot(request);
         String currentNodePath = NODE_NAME_FAC_INFO + facRegRoot.getPathSeparator() + NODE_NAME_FAC_COMMITTEE;
-        FacilityCommitteeDto facCommitteeDto = (FacilityCommitteeDto) facRegRoot.at(currentNodePath);
+        SimpleNode facCommitteeNode = (SimpleNode) facRegRoot.at(currentNodePath);
+        FacilityCommitteeDto facCommitteeDto = (FacilityCommitteeDto) facCommitteeNode.getValue();
         Boolean needShowError = (Boolean) ParamUtil.getRequestAttr(request, KEY_SHOW_ERROR_SWITCH);
         if (needShowError == Boolean.TRUE) {
             ParamUtil.setRequestAttr(request, KEY_VALIDATION_ERRORS, facCommitteeDto.retrieveValidationResult());
         }
-        facCommitteeDto.needValidation();
+        facCommitteeNode.needValidation();
         ParamUtil.setRequestAttr(request, NODE_NAME_FAC_COMMITTEE, facCommitteeDto);
 
         ParamUtil.setRequestAttr(request, KEY_NATIONALITY_OPTIONS, tmpNationalityOps());
@@ -295,12 +340,13 @@ public class FacilityRegistrationDelegator {
         HttpServletRequest request = bpc.request;
         NodeGroup facRegRoot = getFacilityRegisterRoot(request);
         String currentNodePath = NODE_NAME_FAC_INFO + facRegRoot.getPathSeparator() + NODE_NAME_FAC_COMMITTEE;
-        FacilityCommitteeDto facCommitteeDto = (FacilityCommitteeDto) facRegRoot.at(currentNodePath);
+        SimpleNode facCommitteeNode = (SimpleNode) facRegRoot.at(currentNodePath);
+        FacilityCommitteeDto facCommitteeDto = (FacilityCommitteeDto) facCommitteeNode.getValue();
         facCommitteeDto.reqObjMapping(request);
 
         String actionType = ParamUtil.getString(request, KEY_ACTION_TYPE);
         if (KEY_ACTION_JUMP.equals(actionType)) {
-            jumpHandler(request, facRegRoot, currentNodePath, facCommitteeDto);
+            jumpHandler(request, facRegRoot, currentNodePath, facCommitteeNode);
         } else {
             throw new IaisRuntimeException(ERR_MSG_INVALID_ACTION);
         }
@@ -311,17 +357,19 @@ public class FacilityRegistrationDelegator {
         HttpServletRequest request = bpc.request;
         NodeGroup facRegRoot = getFacilityRegisterRoot(request);
         String currentNodePath = (String) ParamUtil.getSessionAttr(request, KEY_JUMP_DEST_NODE);
-        BiologicalAgentToxinDto batDto = (BiologicalAgentToxinDto) facRegRoot.at(currentNodePath);
+        SimpleNode batNode = (SimpleNode) facRegRoot.at(currentNodePath);
+        BiologicalAgentToxinDto batDto = (BiologicalAgentToxinDto) batNode.getValue();
         Boolean needShowError = (Boolean) ParamUtil.getRequestAttr(request, KEY_SHOW_ERROR_SWITCH);
         if (needShowError == Boolean.TRUE) {
             ParamUtil.setRequestAttr(request, KEY_VALIDATION_ERRORS, batDto.retrieveValidationResult());
         }
-        batDto.needValidation();
+        batNode.needValidation();
         ParamUtil.setRequestAttr(request, NODE_NAME_FAC_BAT_INFO, batDto);
 
         NodeGroup batGroup = (NodeGroup) facRegRoot.at(NODE_NAME_FAC_BAT_INFO);
         ParamUtil.setRequestAttr(request, "activeNodeKey", batGroup.getActiveNodeKey());
-        FacilitySelectionDto selectionDto = (FacilitySelectionDto) facRegRoot.at(NODE_NAME_FAC_SELECTION);
+        SimpleNode facSelectionNode = (SimpleNode) facRegRoot.getNode(NODE_NAME_FAC_SELECTION);
+        FacilitySelectionDto selectionDto = (FacilitySelectionDto) facSelectionNode.getValue();
         ParamUtil.setRequestAttr(request, "activityTypes", selectionDto.getActivityTypes());
 
         List<SelectOption> scheduleOps = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_BSB_SCHEDULE_TYPE);
@@ -337,12 +385,13 @@ public class FacilityRegistrationDelegator {
         HttpServletRequest request = bpc.request;
         NodeGroup facRegRoot = getFacilityRegisterRoot(request);
         String currentNodePath = (String) ParamUtil.getSessionAttr(request, KEY_JUMP_DEST_NODE);
-        BiologicalAgentToxinDto batDto = (BiologicalAgentToxinDto) facRegRoot.at(currentNodePath);
+        SimpleNode batNode = (SimpleNode) facRegRoot.at(currentNodePath);
+        BiologicalAgentToxinDto batDto = (BiologicalAgentToxinDto) batNode.getValue();
         batDto.reqObjMapping(request);
 
         String actionType = ParamUtil.getString(request, KEY_ACTION_TYPE);
         if (KEY_ACTION_JUMP.equals(actionType)) {
-            jumpHandler(request, facRegRoot, currentNodePath, batDto);
+            jumpHandler(request, facRegRoot, currentNodePath, batNode);
         } else {
             throw new IaisRuntimeException(ERR_MSG_INVALID_ACTION);
         }
@@ -352,12 +401,13 @@ public class FacilityRegistrationDelegator {
     public void preOtherAppInfo(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         NodeGroup facRegRoot = getFacilityRegisterRoot(request);
-        OtherApplicationInfoDto otherAppInfoDto = (OtherApplicationInfoDto) facRegRoot.at(NODE_NAME_OTHER_INFO);
+        SimpleNode otherAppInfoNode = (SimpleNode) facRegRoot.at(NODE_NAME_OTHER_INFO);
+        OtherApplicationInfoDto otherAppInfoDto = (OtherApplicationInfoDto) otherAppInfoNode.getValue();
         Boolean needShowError = (Boolean) ParamUtil.getRequestAttr(request, KEY_SHOW_ERROR_SWITCH);
         if (needShowError == Boolean.TRUE) {
             ParamUtil.setRequestAttr(request, KEY_VALIDATION_ERRORS, otherAppInfoDto.retrieveValidationResult());
         }
-        otherAppInfoDto.needValidation();
+        otherAppInfoNode.needValidation();
         ParamUtil.setRequestAttr(request, NODE_NAME_OTHER_INFO, otherAppInfoDto);
     }
 
@@ -365,12 +415,13 @@ public class FacilityRegistrationDelegator {
         HttpServletRequest request = bpc.request;
         NodeGroup facRegRoot = getFacilityRegisterRoot(request);
         String currentNodePath = NODE_NAME_OTHER_INFO;
-        OtherApplicationInfoDto otherAppInfoDto = (OtherApplicationInfoDto) facRegRoot.at(currentNodePath);
+        SimpleNode otherAppInfoNode = (SimpleNode) facRegRoot.at(NODE_NAME_OTHER_INFO);
+        OtherApplicationInfoDto otherAppInfoDto = (OtherApplicationInfoDto) otherAppInfoNode.getValue();
         otherAppInfoDto.reqObjMapping(request);
 
         String actionType = ParamUtil.getString(request, KEY_ACTION_TYPE);
         if (KEY_ACTION_JUMP.equals(actionType)) {
-            jumpHandler(request, facRegRoot, currentNodePath, otherAppInfoDto);
+            jumpHandler(request, facRegRoot, currentNodePath, otherAppInfoNode);
         } else {
             throw new IaisRuntimeException(ERR_MSG_INVALID_ACTION);
         }
@@ -380,12 +431,13 @@ public class FacilityRegistrationDelegator {
     public void prePrimaryDoc(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         NodeGroup facRegRoot = getFacilityRegisterRoot(request);
-        PrimaryDocDto primaryDocDto = (PrimaryDocDto) facRegRoot.at(NODE_NAME_PRIMARY_DOC);
+        SimpleNode primaryDocNode = (SimpleNode) facRegRoot.at(NODE_NAME_PRIMARY_DOC);
+        PrimaryDocDto primaryDocDto = (PrimaryDocDto) primaryDocNode.getValue();
         Boolean needShowError = (Boolean) ParamUtil.getRequestAttr(request, KEY_SHOW_ERROR_SWITCH);
         if (needShowError == Boolean.TRUE) {
             ParamUtil.setRequestAttr(request, KEY_VALIDATION_ERRORS, primaryDocDto.retrieveValidationResult());
         }
-        primaryDocDto.needValidation();
+        primaryDocNode.needValidation();
         ParamUtil.setRequestAttr(request, NODE_NAME_PRIMARY_DOC, primaryDocDto);
     }
 
@@ -393,12 +445,13 @@ public class FacilityRegistrationDelegator {
         HttpServletRequest request = bpc.request;
         NodeGroup facRegRoot = getFacilityRegisterRoot(request);
         String currentNodePath = NODE_NAME_PRIMARY_DOC;
-        PrimaryDocDto primaryDocDto = (PrimaryDocDto) facRegRoot.at(currentNodePath);
+        SimpleNode primaryDocNode = (SimpleNode) facRegRoot.at(NODE_NAME_PRIMARY_DOC);
+        PrimaryDocDto primaryDocDto = (PrimaryDocDto) primaryDocNode.getValue();
         primaryDocDto.reqObjMapping(request);
 
         String actionType = ParamUtil.getString(request, KEY_ACTION_TYPE);
         if (KEY_ACTION_JUMP.equals(actionType)) {
-            jumpHandler(request, facRegRoot, currentNodePath, primaryDocDto);
+            jumpHandler(request, facRegRoot, currentNodePath, primaryDocNode);
         } else {
             throw new IaisRuntimeException(ERR_MSG_INVALID_ACTION);
         }
@@ -408,20 +461,21 @@ public class FacilityRegistrationDelegator {
     public void prePreviewSubmit(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         NodeGroup facRegRoot = getFacilityRegisterRoot(request);
-        PreviewSubmitDto previewSubmitDto = (PreviewSubmitDto) facRegRoot.at(NODE_NAME_PREVIEW_SUBMIT);
+        SimpleNode previewSubmitNode = (SimpleNode) facRegRoot.at(NODE_NAME_PREVIEW_SUBMIT);
+        PreviewSubmitDto previewSubmitDto = (PreviewSubmitDto) previewSubmitNode.getValue();
         Boolean needShowError = (Boolean) ParamUtil.getRequestAttr(request, KEY_SHOW_ERROR_SWITCH);
         if (needShowError == Boolean.TRUE) {
             ParamUtil.setRequestAttr(request, KEY_VALIDATION_ERRORS, previewSubmitDto.retrieveValidationResult());
         }
-        previewSubmitDto.needValidation();
+        previewSubmitNode.needValidation();
         ParamUtil.setRequestAttr(request, NODE_NAME_PREVIEW_SUBMIT, previewSubmitDto);
 
-        ParamUtil.setRequestAttr(request, NODE_NAME_FAC_PROFILE, facRegRoot.at(NODE_NAME_FAC_INFO + facRegRoot.getPathSeparator() + NODE_NAME_FAC_PROFILE));
-        ParamUtil.setRequestAttr(request, NODE_NAME_FAC_OPERATOR, facRegRoot.at(NODE_NAME_FAC_INFO + facRegRoot.getPathSeparator() + NODE_NAME_FAC_OPERATOR));
-        ParamUtil.setRequestAttr(request, NODE_NAME_FAC_AUTH, facRegRoot.at(NODE_NAME_FAC_INFO + facRegRoot.getPathSeparator() + NODE_NAME_FAC_AUTH));
-        ParamUtil.setRequestAttr(request, NODE_NAME_FAC_ADMIN, facRegRoot.at(NODE_NAME_FAC_INFO + facRegRoot.getPathSeparator() + NODE_NAME_FAC_ADMIN));
-        ParamUtil.setRequestAttr(request, NODE_NAME_FAC_OFFICER, facRegRoot.at(NODE_NAME_FAC_INFO + facRegRoot.getPathSeparator() + NODE_NAME_FAC_OFFICER));
-        ParamUtil.setRequestAttr(request, NODE_NAME_FAC_COMMITTEE, facRegRoot.at(NODE_NAME_FAC_INFO + facRegRoot.getPathSeparator() + NODE_NAME_FAC_COMMITTEE));
+        ParamUtil.setRequestAttr(request, NODE_NAME_FAC_PROFILE, ((SimpleNode)facRegRoot.at(NODE_NAME_FAC_INFO + facRegRoot.getPathSeparator() + NODE_NAME_FAC_PROFILE)).getValue());
+        ParamUtil.setRequestAttr(request, NODE_NAME_FAC_OPERATOR, ((SimpleNode)facRegRoot.at(NODE_NAME_FAC_INFO + facRegRoot.getPathSeparator() + NODE_NAME_FAC_OPERATOR)).getValue());
+        ParamUtil.setRequestAttr(request, NODE_NAME_FAC_AUTH, ((SimpleNode)facRegRoot.at(NODE_NAME_FAC_INFO + facRegRoot.getPathSeparator() + NODE_NAME_FAC_AUTH)).getValue());
+        ParamUtil.setRequestAttr(request, NODE_NAME_FAC_ADMIN, ((SimpleNode)facRegRoot.at(NODE_NAME_FAC_INFO + facRegRoot.getPathSeparator() + NODE_NAME_FAC_ADMIN)).getValue());
+        ParamUtil.setRequestAttr(request, NODE_NAME_FAC_OFFICER, ((SimpleNode)facRegRoot.at(NODE_NAME_FAC_INFO + facRegRoot.getPathSeparator() + NODE_NAME_FAC_OFFICER)).getValue());
+        ParamUtil.setRequestAttr(request, NODE_NAME_FAC_COMMITTEE, ((SimpleNode)facRegRoot.at(NODE_NAME_FAC_INFO + facRegRoot.getPathSeparator() + NODE_NAME_FAC_COMMITTEE)).getValue());
 
         NodeGroup batNodeGroup = (NodeGroup) facRegRoot.at(NODE_NAME_FAC_BAT_INFO);
         List<BiologicalAgentToxinDto> batList = getBatInfoList(batNodeGroup);
@@ -435,15 +489,16 @@ public class FacilityRegistrationDelegator {
         HttpServletRequest request = bpc.request;
         NodeGroup facRegRoot = getFacilityRegisterRoot(request);
         String currentNodePath = NODE_NAME_PREVIEW_SUBMIT;
-        PreviewSubmitDto previewSubmitDto = (PreviewSubmitDto) facRegRoot.at(currentNodePath);
+        SimpleNode previewSubmitNode = (SimpleNode) facRegRoot.at(NODE_NAME_PREVIEW_SUBMIT);
+        PreviewSubmitDto previewSubmitDto = (PreviewSubmitDto) previewSubmitNode.getValue();
         previewSubmitDto.reqObjMapping(request);
 
         String actionType = ParamUtil.getString(request, KEY_ACTION_TYPE);
         String actionValue = ParamUtil.getString(request, KEY_ACTION_VALUE);
         if (KEY_ACTION_JUMP.equals(actionType)) {
             if (KEY_NAV_NEXT.equals(actionValue)) {
-                if (previewSubmitDto.doValidation()) {
-                    previewSubmitDto.passValidation();
+                if (previewSubmitNode.doValidation()) {
+                    previewSubmitNode.passValidation();
 
                     // save data
                     FacilityRegisterDto finalAllDataDto = FacilityRegisterDto.from(facRegRoot);
@@ -456,7 +511,7 @@ public class FacilityRegistrationDelegator {
                     ParamUtil.setSessionAttr(request, KEY_JUMP_DEST_NODE, NODE_NAME_PREVIEW_SUBMIT);
                 }
             } else {
-                jumpHandler(request, facRegRoot, currentNodePath, previewSubmitDto);
+                jumpHandler(request, facRegRoot, currentNodePath, previewSubmitNode);
             }
         } else {
             throw new IaisRuntimeException(ERR_MSG_INVALID_ACTION);
@@ -570,41 +625,41 @@ public class FacilityRegistrationDelegator {
 
 
     public static NodeGroup newFacRegisterRoot(String name) {
-        Node companyInfoDto = new Node(FacRegisterConstants.NODE_NAME_COMPANY_INFO, new Node[0]);
-        FacilitySelectionDto facSelectionDto = FacilitySelectionDto.getInstance(new Node[0]);
-        NodeGroup facInfoNodeGroup = newFacInfoNodeGroup(new Node[]{facSelectionDto});
-        NodeGroup batNodeGroup = initBatNodeGroup(new Node[]{facSelectionDto, facInfoNodeGroup});
-        OtherApplicationInfoDto otherAppInfoDto = OtherApplicationInfoDto.getInstance(new Node[]{facSelectionDto, facInfoNodeGroup, batNodeGroup});
-        PrimaryDocDto primaryDocDto = PrimaryDocDto.getInstance(new Node[]{facSelectionDto, facInfoNodeGroup, batNodeGroup, otherAppInfoDto});
-        PreviewSubmitDto previewSubmitDto = PreviewSubmitDto.getInstance(new Node[]{facSelectionDto, facInfoNodeGroup, batNodeGroup, otherAppInfoDto, primaryDocDto});
+        Node companyInfoNode = new Node(FacRegisterConstants.NODE_NAME_COMPANY_INFO, new Node[0]);
+        SimpleNode facSelectionNode = new SimpleNode(new FacilitySelectionDto(), NODE_NAME_FAC_SELECTION, new Node[0]);
+        NodeGroup facInfoNodeGroup = newFacInfoNodeGroup(new Node[]{facSelectionNode});
+        NodeGroup batNodeGroup = initBatNodeGroup(new Node[]{facSelectionNode, facInfoNodeGroup});
+        SimpleNode otherAppInfoNode = new SimpleNode(new OtherApplicationInfoDto(), NODE_NAME_OTHER_INFO, new Node[]{facSelectionNode, facInfoNodeGroup, batNodeGroup});
+        SimpleNode primaryDocNode = new SimpleNode(new PrimaryDocDto(), NODE_NAME_PRIMARY_DOC, new Node[]{facSelectionNode, facInfoNodeGroup, batNodeGroup, otherAppInfoNode});
+        SimpleNode previewSubmitNode = new SimpleNode(new PreviewSubmitDto(), NODE_NAME_PREVIEW_SUBMIT, new Node[]{facSelectionNode, facInfoNodeGroup, batNodeGroup, otherAppInfoNode, primaryDocNode});
 
         return new NodeGroup.Builder().name(name)
-                .addNode(companyInfoDto)
-                .addNode(facSelectionDto)
+                .addNode(companyInfoNode)
+                .addNode(facSelectionNode)
                 .addNode(facInfoNodeGroup)
                 .addNode(batNodeGroup)
-                .addNode(otherAppInfoDto)
-                .addNode(primaryDocDto)
-                .addNode(previewSubmitDto)
+                .addNode(otherAppInfoNode)
+                .addNode(primaryDocNode)
+                .addNode(previewSubmitNode)
                 .build();
     }
 
     public static NodeGroup newFacInfoNodeGroup(Node[] dependNodes) {
-        FacilityProfileDto facProfileDto = FacilityProfileDto.getInstance(new Node[0]);
-        FacilityOperatorDto facOperatorDto = FacilityOperatorDto.getInstance(new Node[]{facProfileDto});
-        FacilityAuthoriserDto facAuthDto = FacilityAuthoriserDto.getInstance(new Node[]{facProfileDto, facOperatorDto});
-        FacilityAdministratorDto facAdminDto = FacilityAdministratorDto.getInstance(new Node[]{facProfileDto, facOperatorDto, facAuthDto});
-        FacilityOfficerDto facOfficerDto = FacilityOfficerDto.getInstance(new Node[]{facProfileDto, facOperatorDto, facAuthDto, facAdminDto});
-        FacilityCommitteeDto facCommitteeDto = FacilityCommitteeDto.getInstance(new Node[]{facProfileDto, facOperatorDto, facAuthDto, facAdminDto, facOfficerDto});
+        SimpleNode facProfileNode = new SimpleNode(new FacilityProfileDto(), NODE_NAME_FAC_PROFILE, new Node[0]);
+        SimpleNode facOperatorNode = new SimpleNode(new FacilityOperatorDto(), NODE_NAME_FAC_OPERATOR, new Node[]{facProfileNode});
+        SimpleNode facAuthNode = new SimpleNode(new FacilityAuthoriserDto(), NODE_NAME_FAC_AUTH, new Node[]{facProfileNode, facOperatorNode});
+        SimpleNode facAdminNode = new SimpleNode(new FacilityAdministratorDto(), NODE_NAME_FAC_ADMIN, new Node[]{facProfileNode, facOperatorNode, facAuthNode});
+        SimpleNode facOfficerNode = new SimpleNode(new FacilityOfficerDto(), NODE_NAME_FAC_OFFICER, new Node[]{facProfileNode, facOperatorNode, facAuthNode, facAdminNode});
+        SimpleNode facCommitteeNode = new SimpleNode(new FacilityCommitteeDto(), NODE_NAME_FAC_COMMITTEE, new Node[]{facProfileNode, facOperatorNode, facAuthNode, facAdminNode, facOfficerNode});
 
         return new NodeGroup.Builder().name(NODE_NAME_FAC_INFO)
                 .dependNodes(dependNodes)
-                .addNode(facProfileDto)
-                .addNode(facOperatorDto)
-                .addNode(facAuthDto)
-                .addNode(facAdminDto)
-                .addNode(facOfficerDto)
-                .addNode(facCommitteeDto)
+                .addNode(facProfileNode)
+                .addNode(facOperatorNode)
+                .addNode(facAuthNode)
+                .addNode(facAdminNode)
+                .addNode(facOfficerNode)
+                .addNode(facCommitteeNode)
                 .build();
     }
 
@@ -622,8 +677,7 @@ public class FacilityRegistrationDelegator {
         Node[] subNodes = new Node[selectionDto.getActivityTypes().size()];
         List<String> activityTypes = selectionDto.getActivityTypes();
         for (int i = 0; i < activityTypes.size(); i++) {
-            BiologicalAgentToxinDto batDto = new BiologicalAgentToxinDto(activityTypes.get(i), new Node[0]);
-            subNodes[i] = batDto;
+            subNodes[i] = new SimpleNode(new BiologicalAgentToxinDto(activityTypes.get(i)), activityTypes.get(i), new Node[0]);
         }
         batNodeGroup.replaceNodes(subNodes);
     }
@@ -632,8 +686,8 @@ public class FacilityRegistrationDelegator {
         Assert.notNull(batNodeGroup, ERR_MSG_BAT_NOT_NULL);
         List<BiologicalAgentToxinDto> batList = new ArrayList<>(batNodeGroup.count());
         for (Node node : batNodeGroup.getAllNodes()) {
-            assert node instanceof BiologicalAgentToxinDto;
-            batList.add((BiologicalAgentToxinDto) node);
+            assert node instanceof SimpleNode;
+            batList.add((BiologicalAgentToxinDto) ((SimpleNode) node).getValue());
         }
         return batList;
     }

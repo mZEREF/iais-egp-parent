@@ -1,24 +1,21 @@
 package sg.gov.moh.iais.egp.bsb.dto.register.facility;
 
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import sg.gov.moh.iais.egp.bsb.common.node.Node;
+import sg.gov.moh.iais.egp.bsb.common.node.simple.ValidatableNodeValue;
 import sg.gov.moh.iais.egp.bsb.dto.ValidationResultDto;
 import sg.gov.moh.iais.egp.bsb.util.SpringReflectionUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonIgnoreProperties({"name", "available", "validated", "dependNodes", "validationResultDto"})
-public class BiologicalAgentToxinDto extends Node {
+public class BiologicalAgentToxinDto extends ValidatableNodeValue {
     @Data
     @NoArgsConstructor
     public static class BATInfo implements Serializable {
@@ -26,9 +23,13 @@ public class BiologicalAgentToxinDto extends Node {
         private String batName;
         private List<String> sampleType;
         private String otherSampleType;
+        /* The key is the sample type, the value is the entity ID related to it */
+        private Map<String, String> sampleEntityIdMap;
     }
 
-    private final List<BATInfo> batInfos;
+    private String activityEntityId;
+    private String activityType;
+    private List<BATInfo> batInfos;
     private List<String> workType;
     private String sampleWorkDetail;
     private String procurementMode;
@@ -48,16 +49,24 @@ public class BiologicalAgentToxinDto extends Node {
     private String courierServiceProviderName;
     private String remark;
 
+    @JsonIgnore
     private ValidationResultDto validationResultDto;
 
 
-    public BiologicalAgentToxinDto(String name, Node[] dependNodes) {
-        super(name, dependNodes);
+    public BiologicalAgentToxinDto() {
         batInfos = new ArrayList<>();
         BATInfo batInfo = new BATInfo();
         batInfo.sampleType = new ArrayList<>();
+        batInfo.sampleEntityIdMap  = new HashMap<>();
         batInfos.add(batInfo);
+        workType = new ArrayList<>();
     }
+
+    public BiologicalAgentToxinDto(String activityType) {
+        this();
+        this.activityType = activityType;
+    }
+
 
     @Override
     public boolean doValidation() {
@@ -74,9 +83,26 @@ public class BiologicalAgentToxinDto extends Node {
     }
 
     @Override
-    public void needValidation() {
-        super.needValidation();
+    public void clearValidationResult() {
         this.validationResultDto = null;
+    }
+
+
+
+    public String getActivityType() {
+        return activityType;
+    }
+
+    public void setActivityType(String activityType) {
+        this.activityType = activityType;
+    }
+
+    public String getActivityEntityId() {
+        return activityEntityId;
+    }
+
+    public void setActivityEntityId(String activityEntityId) {
+        this.activityEntityId = activityEntityId;
     }
 
     public List<BATInfo> getBatInfos() {
@@ -89,6 +115,10 @@ public class BiologicalAgentToxinDto extends Node {
 
     public void addBatInfo(BATInfo info) {
         this.batInfos.add(info);
+    }
+
+    public void setBatInfos(List<BATInfo> batInfos) {
+        this.batInfos = new ArrayList<>(batInfos);
     }
 
     public String getProcurementMode() {
@@ -108,11 +138,11 @@ public class BiologicalAgentToxinDto extends Node {
     }
 
     public List<String> getWorkType() {
-        return workType;
+        return new ArrayList<>(workType);
     }
 
     public void setWorkType(List<String> workType) {
-        this.workType = workType;
+        this.workType = new ArrayList<>(workType);
     }
 
     public String getSampleWorkDetail() {

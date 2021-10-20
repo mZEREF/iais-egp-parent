@@ -3,6 +3,8 @@ package sg.gov.moh.iais.egp.bsb.client;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.cloud.openfeign.FeignClientsConfiguration;
 import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
@@ -48,4 +50,7 @@ public interface FacilityRegisterClient {
 
     @PostMapping(path = "/register/facility", consumes = MediaType.APPLICATION_JSON_VALUE, produces =MediaType.APPLICATION_JSON_VALUE)
     ResponseDto<String> saveNewRegisteredFacility(@RequestBody FacilityRegisterDto dto);
+
+    @GetMapping(path = "/register/facility/application/{appId}", produces =MediaType.APPLICATION_JSON_VALUE)
+    ResponseDto<FacilityRegisterDto> getFacilityRegistrationAppData(@PathVariable("appId") String appId);
 }

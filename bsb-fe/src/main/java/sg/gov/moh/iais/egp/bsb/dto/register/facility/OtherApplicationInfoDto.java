@@ -1,33 +1,33 @@
 package sg.gov.moh.iais.egp.bsb.dto.register.facility;
 
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import sg.gov.moh.iais.egp.bsb.common.node.Node;
+import sg.gov.moh.iais.egp.bsb.common.node.simple.ValidatableNodeValue;
+import sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants;
 import sg.gov.moh.iais.egp.bsb.dto.ValidationResultDto;
 import sg.gov.moh.iais.egp.bsb.util.SpringReflectionUtils;
 
 import javax.servlet.http.HttpServletRequest;
 
-import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.NODE_NAME_OTHER_INFO;
-
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonIgnoreProperties({"name", "available", "validated", "dependNodes", "validationResultDto"})
-public class OtherApplicationInfoDto extends Node {
+public class OtherApplicationInfoDto extends ValidatableNodeValue {
     private String facOpDeInformedResponsibilities;
     private String facCommitteeInformedResponsibilities;
     private String bioRiskManagementDeclare;
     private String infoAuthenticatedDeclare;
 
+    @JsonIgnore
     private ValidationResultDto validationResultDto;
 
-    public OtherApplicationInfoDto(String name, Node[] dependNodes) {
-        super(name, dependNodes);
-    }
-
-    public static OtherApplicationInfoDto getInstance(Node[] dependNodes) {
-        return new OtherApplicationInfoDto(NODE_NAME_OTHER_INFO, dependNodes);
+    public static OtherApplicationInfoDto getAllCheckedInstance() {
+        OtherApplicationInfoDto dto = new OtherApplicationInfoDto();
+        dto.setFacOpDeInformedResponsibilities(MasterCodeConstants.YES);
+        dto.setFacCommitteeInformedResponsibilities(MasterCodeConstants.YES);
+        dto.setBioRiskManagementDeclare(MasterCodeConstants.YES);
+        dto.setInfoAuthenticatedDeclare(MasterCodeConstants.YES);
+        return dto;
     }
 
 
@@ -46,8 +46,7 @@ public class OtherApplicationInfoDto extends Node {
     }
 
     @Override
-    public void needValidation() {
-        super.needValidation();
+    public void clearValidationResult() {
         this.validationResultDto = null;
     }
 

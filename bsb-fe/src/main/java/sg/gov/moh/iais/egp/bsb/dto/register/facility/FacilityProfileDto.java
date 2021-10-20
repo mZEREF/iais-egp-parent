@@ -1,20 +1,18 @@
 package sg.gov.moh.iais.egp.bsb.dto.register.facility;
 
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import sg.gov.moh.iais.egp.bsb.common.node.Node;
+import sg.gov.moh.iais.egp.bsb.common.node.simple.ValidatableNodeValue;
 import sg.gov.moh.iais.egp.bsb.dto.ValidationResultDto;
 import sg.gov.moh.iais.egp.bsb.util.SpringReflectionUtils;
 
 import javax.servlet.http.HttpServletRequest;
 
-import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.NODE_NAME_FAC_PROFILE;
-
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonIgnoreProperties({"name", "available", "validated", "dependNodes", "validationResultDto"})
-public class FacilityProfileDto extends Node {
+public class FacilityProfileDto extends ValidatableNodeValue {
+    private String facilityEntityId;
     private String facName;
     private String block;
     private String streetName;
@@ -23,15 +21,8 @@ public class FacilityProfileDto extends Node {
     private String postalCode;
     private String isFacilityProtected;
 
-    public FacilityProfileDto(String name, Node[] dependNodes) {
-        super(name, dependNodes);
-    }
 
-    public static FacilityProfileDto getInstance(Node[] dependNodes) {
-        return new FacilityProfileDto(NODE_NAME_FAC_PROFILE, dependNodes);
-    }
-
-
+    @JsonIgnore
     private ValidationResultDto validationResultDto;
 
     @Override
@@ -49,11 +40,18 @@ public class FacilityProfileDto extends Node {
     }
 
     @Override
-    public void needValidation() {
-        super.needValidation();
+    public void clearValidationResult() {
         this.validationResultDto = null;
     }
 
+
+    public String getFacilityEntityId() {
+        return facilityEntityId;
+    }
+
+    public void setFacilityEntityId(String facilityEntityId) {
+        this.facilityEntityId = facilityEntityId;
+    }
 
     public String getFacName() {
         return facName;

@@ -1,25 +1,23 @@
 package sg.gov.moh.iais.egp.bsb.dto.register.facility;
 
 import com.ecquaria.sz.commons.util.ParamUtil;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import sg.gov.moh.iais.egp.bsb.common.node.Node;
+import sg.gov.moh.iais.egp.bsb.common.node.simple.ValidatableNodeValue;
 import sg.gov.moh.iais.egp.bsb.dto.ValidationResultDto;
 import sg.gov.moh.iais.egp.bsb.util.SpringReflectionUtils;
-
 import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
-import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.NODE_NAME_FAC_ADMIN;
 
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonIgnoreProperties({"name", "available", "validated", "dependNodes", "validationResultDto"})
-public class FacilityAdministratorDto extends Node {
+public class FacilityAdministratorDto extends ValidatableNodeValue {
     @Data
     @NoArgsConstructor
     public static class FacilityAdministratorInfo implements Serializable {
+        private String adminEntityId;
         private String adminName;
         private String nationality;
         private String idType;
@@ -33,13 +31,9 @@ public class FacilityAdministratorDto extends Node {
     private FacilityAdministratorInfo mainAdmin;
     private FacilityAdministratorInfo alternativeAdmin;
 
+    @JsonIgnore
     private ValidationResultDto validationResultDto;
 
-    public FacilityAdministratorDto(String name, Node[] dependNodes) {
-        super(name, dependNodes);
-        mainAdmin = new FacilityAdministratorInfo();
-        alternativeAdmin = new FacilityAdministratorInfo();
-    }
 
     @Override
     public boolean doValidation() {
@@ -56,15 +50,10 @@ public class FacilityAdministratorDto extends Node {
     }
 
     @Override
-    public void needValidation() {
-        super.needValidation();
+    public void clearValidationResult() {
         this.validationResultDto = null;
     }
 
-
-    public static FacilityAdministratorDto getInstance(Node[] dependNodes) {
-        return new FacilityAdministratorDto(NODE_NAME_FAC_ADMIN, dependNodes);
-    }
 
     public FacilityAdministratorInfo getMainAdmin() {
         return mainAdmin;
