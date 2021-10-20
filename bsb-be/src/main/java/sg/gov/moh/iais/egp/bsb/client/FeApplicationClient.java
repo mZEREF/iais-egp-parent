@@ -6,12 +6,6 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-/**
- * FileRepoClient
- *
- * @author Jinhua
- * @date 2019/11/26 12:29
- */
 @FeignClient(name = "bsb-fe-api", configuration = FeignConfiguration.class)
 public interface FeApplicationClient {
     @GetMapping(path = "/application/appNo")

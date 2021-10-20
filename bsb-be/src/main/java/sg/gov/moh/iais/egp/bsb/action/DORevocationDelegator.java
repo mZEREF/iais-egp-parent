@@ -13,6 +13,7 @@ import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.client.RestTemplate;
 import sg.gov.moh.iais.egp.bsb.client.*;
 import sg.gov.moh.iais.egp.bsb.constant.AuditConstants;
 import sg.gov.moh.iais.egp.bsb.constant.RevocationConstants;
@@ -22,6 +23,7 @@ import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
 import sg.gov.moh.iais.egp.bsb.dto.audit.AuditDocDto;
 import sg.gov.moh.iais.egp.bsb.dto.revocation.ApprovalQueryDto;
 import sg.gov.moh.iais.egp.bsb.dto.revocation.ApprovalQueryResultDto;
+import sg.gov.moh.iais.egp.bsb.dto.revocation.SubmitRevokeDto;
 import sg.gov.moh.iais.egp.bsb.entity.*;
 import sg.gov.moh.iais.egp.bsb.helper.BsbNotificationHelper;
 import sg.gov.moh.iais.egp.bsb.util.JoinParamUtil;
@@ -88,9 +90,16 @@ public class DORevocationDelegator {
             List<Approval> approvals = searchResult.getEntity().getTasks();
             for (Approval approval : approvals) {
                 List<FacilityActivity> activities = approval.getFacilityActivities();
-                Facility facility = activities.get(0).getFacility();
-                String address = TableDisplayUtil.getOneLineAddress(facility.getBlkNo(),facility.getStreetName(),facility.getFloorNo(),
-                        facility.getUnitNo(),facility.getPostalCode());
+                List<FacilityBiologicalAgent> facilityBiologicalAgents = approval.getFacilityBiologicalAgents();
+                Facility facility = new Facility();
+                if (!activities.isEmpty()){
+                    facility = activities.get(0).getFacility();
+                } else if (!facilityBiologicalAgents.isEmpty()){
+                    facility = facilityBiologicalAgents.get(0).getFacility();
+                }
+
+                String address = TableDisplayUtil.getOneLineAddress(facility.getBlkNo(), facility.getStreetName(), facility.getFloorNo(),
+                        facility.getUnitNo(), facility.getPostalCode());
                 facility.setFacilityAddress(address);
                 approval.setFacility(facility);
             }
@@ -177,7 +186,8 @@ public class DORevocationDelegator {
         ParamUtil.setSessionAttr(request, RevocationConstants.AUDIT_DOC_DTO, null);
         ParamUtil.setSessionAttr(request, RevocationConstants.FLAG, null);
         ParamUtil.setSessionAttr(request, RevocationConstants.BACK, null);
-        ParamUtil.setSessionAttr(request,RevocationConstants.AUDIT_DOC_DTO, null);
+        ParamUtil.setSessionAttr(request, RevocationConstants.AUDIT_DOC_DTO, null);
+        ParamUtil.setSessionAttr(request, RevocationConstants.APPROVAL, null);
 
         String from = ParamUtil.getRequestString(request, RevocationConstants.FROM);
 
@@ -205,7 +215,7 @@ public class DORevocationDelegator {
                 AuditDocDto auditDocDto = new AuditDocDto();
                 auditDocDto.setFacilityDocs(docList);
 
-                ParamUtil.setSessionAttr(request,RevocationConstants.AUDIT_DOC_DTO, auditDocDto);
+                ParamUtil.setSessionAttr(request, RevocationConstants.AUDIT_DOC_DTO, auditDocDto);
                 ParamUtil.setSessionAttr(request, RevocationConstants.PARAM_APPLICATION, application);
                 ParamUtil.setSessionAttr(request, RevocationConstants.FACILITY, application.getFacility());
                 ParamUtil.setSessionAttr(request, RevocationConstants.FLAG, RevocationConstants.APP);
@@ -216,8 +226,8 @@ public class DORevocationDelegator {
                 Approval approval = revocationClient.getApprovalById(approvalId).getEntity();
                 List<FacilityActivity> activities = approval.getFacilityActivities();
                 Facility facility = activities.get(0).getFacility();
-                String address = TableDisplayUtil.getOneLineAddress(facility.getBlkNo(),facility.getStreetName(),facility.getFloorNo(),
-                        facility.getUnitNo(),facility.getPostalCode());
+                String address = TableDisplayUtil.getOneLineAddress(facility.getBlkNo(), facility.getStreetName(), facility.getFloorNo(),
+                        facility.getUnitNo(), facility.getPostalCode());
                 facility.setFacilityAddress(address);
                 approval.setFacility(facility);
 
@@ -239,31 +249,28 @@ public class DORevocationDelegator {
 
         String flag = (String) ParamUtil.getSessionAttr(request, RevocationConstants.FLAG);
         Facility facility = (Facility) ParamUtil.getSessionAttr(request, RevocationConstants.FACILITY);
+        Approval approval = (Approval) ParamUtil.getSessionAttr(request, RevocationConstants.APPROVAL);
         FeignResponseEntity<Application> result = null;
-//        if (flag.equals(RevocationConstants.FAC)) {
-//            Application resultDto = new Application();
-//            resultDto.setApplicationNo(feApplicationClient.genApplicationNumber(RevocationConstants.APP_TYPE_REVOCATION).getEntity());
-//            Facility facility = new Facility();
-//            facility.setId(facilityId);
-//            resultDto.setFacility(facility);
-//            resultDto.setAppType(RevocationConstants.PARAM_APPLICATION_TYPE_REVOCATION);
-//
-//            String approvalType = facility1.getApprovalType();
-//            if (approvalType != null) {
-//                if (approvalType.equals(RevocationConstants.PARAM_APPROVAL_TYPE_APPROVAL_TO_POSSESS)) {
-//                    resultDto.setProcessType(RevocationConstants.PARAM_PROCESS_TYPE_APPROVAL_TO_POSSESS);
-//                }
-//                if (approvalType.equals(RevocationConstants.PARAM_APPROVAL_TYPE_APPROVAL_TO_LSP)) {
-//                    resultDto.setProcessType(RevocationConstants.PARAM_PROCESS_TYPE_APPROVAL_TO_LSP);
-//                }
-//                if (approvalType.equals(RevocationConstants.PARAM_APPROVAL_TYPE_SPECIAL_APPROVAL_TO_HANDLE)) {
-//                    resultDto.setProcessType(RevocationConstants.PARAM_PROCESS_TYPE_SPECIAL_APPROVAL_TO_HANDLE);
-//                }
-//            }
-//            resultDto.setStatus(RevocationConstants.PARAM_APPLICATION_STATUS_PENDING_AO);
-//            resultDto.setApplicationDt(new Date());
-//            result = revocationClient.saveApplication(resultDto);
-//        }
+        if (flag.equals(RevocationConstants.FAC)) {
+            Application application = new Application();
+
+//            RestTemplate restTemplate = new RestTemplate();
+//            String appNo=(String) restTemplate.getForEntity("http://bsb-fe-api/",null,String.class).getBody();
+
+//            application.setApplicationNo(feApplicationClient.genApplicationNumber(RevocationConstants.APP_TYPE_REVOCATION).getEntity());
+            application.setApplicationNo("Application001");
+            application.setFacility(facility);
+            application.setAppType(RevocationConstants.PARAM_APPLICATION_TYPE_REVOCATION);
+
+            String processType = approval.getProcessType();
+            application.setProcessType(processType);
+            application.setStatus(RevocationConstants.PARAM_APPLICATION_STATUS_PENDING_AO);
+            application.setApplicationDt(new Date());
+            SubmitRevokeDto dto = new SubmitRevokeDto();
+            dto.setApplication(application);
+            dto.setApproval(approval);
+            result = revocationClient.saveApplication(dto);
+        }
 //        if (flag.equals(RevocationConstants.APP)) {
 //            Application resultDto = (Application)ParamUtil.getSessionAttr(request, RevocationConstants.PARAM_APPLICATION);
 //            Facility facility = new Facility();
@@ -273,31 +280,28 @@ public class DORevocationDelegator {
 //            resultDto.setApplicationDt(new Date());
 //            result = revocationClient.updateApplication(resultDto);
 //        }
-//
-//        String reason = ParamUtil.getString(request, RevocationConstants.PARAM_REASON);
-//        String remarks = ParamUtil.getString(request, RevocationConstants.PARAM_DOREMARKS);
-//
-//        ApplicationMisc miscDto = new ApplicationMisc();
-//        Application app = new Application();
-//        app.setId(result.getEntity().getId());
-//        miscDto.setRemarks(remarks);
-//        miscDto.setReasonContent(reason);
-//        miscDto.setApplication(app);
-//        miscDto.setReason(RevocationConstants.PARAM_REASON_TYPE_DO);
-//        ResponseDto<ApplicationMisc> miscResponseDto = revocationClient.saveApplicationMisc(miscDto);
-//        if ("INVALID_ARGS".equals(miscResponseDto.getErrorCode())) {
-//            ParamUtil.setRequestAttr(request, ERROR_INFO_ERROR_MSG, miscResponseDto.getErrorInfos().get(ERROR_INFO_ERROR_MSG));
-//        }
-//
-//        //get user name
-//        LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
-//        Application application = result.getEntity();
-//        RoutingHistory historyDto = new RoutingHistory();
-//        historyDto.setAppStatus(RevocationConstants.PARAM_APPLICATION_STATUS_PENDING_AO);
-//        historyDto.setActionBy(loginContext.getUserName());
-//        historyDto.setInternalRemarks(miscDto.getRemarks());
-//        historyDto.setApplicationNo(application.getApplicationNo());
-//        revocationClient.saveHistory(historyDto);
+
+        String reason = ParamUtil.getString(request, RevocationConstants.PARAM_REASON);
+        String remarks = ParamUtil.getString(request, RevocationConstants.PARAM_DOREMARKS);
+
+        ApplicationMisc miscDto = new ApplicationMisc();
+        miscDto.setRemarks(remarks);
+        miscDto.setReasonContent(reason);
+        miscDto.setApplication(result.getEntity());
+        miscDto.setReason(RevocationConstants.PARAM_REASON_TYPE_DO);
+        ResponseDto<ApplicationMisc> miscResponseDto = revocationClient.saveApplicationMisc(miscDto);
+        if ("INVALID_ARGS".equals(miscResponseDto.getErrorCode())) {
+            ParamUtil.setRequestAttr(request, ERROR_INFO_ERROR_MSG, miscResponseDto.getErrorInfos().get(ERROR_INFO_ERROR_MSG));
+        }
+        //get user name
+        LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
+        Application application = result.getEntity();
+        RoutingHistory historyDto = new RoutingHistory();
+        historyDto.setAppStatus(RevocationConstants.PARAM_APPLICATION_STATUS_PENDING_AO);
+        historyDto.setActionBy(loginContext.getUserName());
+        historyDto.setInternalRemarks(miscDto.getRemarks());
+        historyDto.setApplicationNo(application.getApplicationNo());
+        revocationClient.saveHistory(historyDto);
 //
 //        BsbEmailParam bsbEmailParam = new BsbEmailParam();
 //        bsbEmailParam.setMsgTemplateId(MSG_TEMPLATE_REVOCATION_AO_APPROVED);

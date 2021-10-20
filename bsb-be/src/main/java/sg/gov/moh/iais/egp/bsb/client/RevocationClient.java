@@ -26,7 +26,7 @@ public interface RevocationClient {
     FeignResponseEntity<Application> getApplicationById(@PathVariable(name = "id") String id);
 
     @PostMapping(path = "/bsb-application/save",consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<Application> saveApplication(@RequestBody Application application);
+    FeignResponseEntity<Application> saveApplication(@RequestBody SubmitRevokeDto dto);
 
     @PostMapping(path = "/bsb-application/savemisc", consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
     ResponseDto<ApplicationMisc> saveApplicationMisc(@RequestBody ApplicationMisc misc);
