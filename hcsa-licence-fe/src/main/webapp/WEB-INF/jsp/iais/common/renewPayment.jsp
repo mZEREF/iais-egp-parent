@@ -78,8 +78,11 @@
                             <c:if test="${AppSubmissionDto.isBundledFee==1}">
                                 <p>&nbsp;&nbsp;Bundled Fees</p>
                             </c:if>
+                            <c:if test="${AppSubmissionDto.isSpecifiedFee==1}">
+                                <p>&nbsp;&nbsp;Complex <iais:code code="CDN004"/></p>
+                            </c:if>
                             <p>
-                                <c:if test="${AppSubmissionDto.isBundledFee==1}">&nbsp;&nbsp;-</c:if>
+                                <c:if test="${AppSubmissionDto.isBundledFee==1||AppSubmissionDto.isSpecifiedFee==1}">&nbsp;&nbsp;-</c:if>
                                 <c:out value="${AppSubmissionDto.serviceName}"/>
                             </p>
                         </td>
