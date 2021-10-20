@@ -159,8 +159,13 @@ public class WriteMultipartFileAjaxController {
                     CSRF= (String) ParamUtil.getSessionAttr(request,"replaceCsrf");
                 }
                 String urls="/hcsa-licence-web/download-giro-file?filerepo=fileRo"+i+"&OWASP_CSRFTOKEN=replaceCsrf"+"&fileRo"+i+"="+ MaskUtil.maskValue("fileRo"+i,temp.getId()) +"&fileRepoName="+temp.getDocName();
+                if(CSRF==null){
+                    urls="/hcsa-licence-web/download-giro-file?filerepo=fileRo"+i+"&fileRo"+i+"="+ MaskUtil.maskValue("fileRo"+i,temp.getId()) +"&fileRepoName="+temp.getDocName();
+                }else {
+                    urls=urls.replace("replaceCsrf",CSRF);
+                }
                 String box = "<p class='fileList'>" +
-                        "<a href=\""+urls.replace("replaceCsrf",CSRF)+"\">"+temp.getDocName()+"</a>" +
+                        "<a href=\""+urls+"\">"+temp.getDocName()+"</a>" +
                         "&emsp;<button name='fileDeleteButton' value='" +
                         temp.getDocSize() +
                         "' " +
