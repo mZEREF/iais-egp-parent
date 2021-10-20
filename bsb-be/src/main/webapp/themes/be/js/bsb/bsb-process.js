@@ -1,5 +1,23 @@
 $(function () {
     validate();
+    var riskLevel = $("#riskLevel").val();
+    if (riskLevel == "RLOTBA001" || riskLevel == "RLOTBA003"){
+        $("#commentFalse").hide();
+        $("#commentTrue").show();
+    }else{
+        $("#commentFalse").show();
+        $("#commentTrue").hide();
+    }
+    $("#riskLevel").change(function () {
+        var selectValue = $(this).val();
+        if(selectValue == "RLOTBA001" || selectValue == "RLOTBA003") {
+            $("#commentFalse").hide();
+            $("#commentTrue").show();
+        }else{
+            $("#commentFalse").show();
+            $("#commentTrue").hide();
+        }
+    })
     $("#submitButton").click(function () {
         $('#mainForm').submit();
     })

@@ -10,10 +10,9 @@ public class ProcessContants {
     public static final String MODULE_SYSTEM_CONFIG = "System Configuration";
     public static final String FUNCTION_ERROR_MESSAGES_MANAGEMENT = "MOH Process New Application";
 
-    public static final String APPLICATION_ATTR = "application";
     public static final String APPLICATION_MISC = "applicationMisc";
-    public static final String FACILITY_ACTIVITY_ATTR = "facilityActivity";
     public static final String SUBMITDETAILS_ATTR = "submitDetailsDto";
+    public static final String MOH_PROCESS_ATTR = "mohProcessDto";
 
     public static final String REMARKS = "remarks";
     public static final String RISK_LEVEL = "riskLevel";
@@ -41,10 +40,10 @@ public class ProcessContants {
 
     public static final String APPLICATION_PROCESS_TYPE_1 = "PROTYPE001";
 
-    public static final String VALIDATE_STATUS_1 = "DOType1";
-    public static final String VALIDATE_STATUS_2 = "DOType2";
-    public static final String VALIDATE_STATUS_3 = "AOType1";
-    public static final String VALIDATE_STATUS_4 = "AOType2";
+    public static final String VALIDATE_STATUS_1 = "doS";
+    public static final String VALIDATE_STATUS_2 = "doP";
+    public static final String VALIDATE_STATUS_3 = "aoS";
+    public static final String VALIDATE_STATUS_4 = "aoP";
     public static final String VALIDATE_STATUS_5 = "HMType";
 
     public static final String CRUD_ACTION_TYPE = "crud_action_type";
@@ -63,9 +62,9 @@ public class ProcessContants {
     public static final String CRUD_ACTION_TYPE_13 = "hmApprove";
     public static final String CRUD_ACTION_TYPE_14 = "hmReject";
 
-    public static final String DO_PROCESS = "doProcess";
+    public static final String MOH_PROCESS = "mohProcess";
 
-    public static final String DO_SCREENING_DTO = "doScreeningDto";
+    public static final String MOH_PROCESS_DTO = "mohProcessDto";
 
     public static final String ERRORMSG = "errorMsg";
 

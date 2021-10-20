@@ -53,8 +53,8 @@ public class JoinParamUtil {
                 if (facilityBiologicalAgentList != null && facilityBiologicalAgentList.size() > 0){
                     for (int j = 0; j < facilityBiologicalAgentList.size(); j++) {
                         String biologicalId = facilityBiologicalAgentList.get(j).getBiologicalId();
-                        Biological biological = processClient.getBiologicalById(biologicalId).getEntity();
-                        biologicalList.add(biological);
+                        /*Biological biological = processClient.getBiologicalById(biologicalId).getEntity();
+                        biologicalList.add(biological);*/
                     }
                 }
             }

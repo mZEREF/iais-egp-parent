@@ -4,6 +4,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import sg.gov.moh.iais.egp.bsb.common.BaseEntity;
+
 import java.util.Date;
 
 
@@ -26,4 +27,22 @@ public class ApplicationMisc extends BaseEntity {
     private String remarks;
 
     private String finalRemarks;
+
+    private String riskLevel;
+
+    private String riskLevelComments;
+
+    private Date erpReportDt;
+
+    private Date redTeamingReportDt;
+
+    private Date lentivirusReportDt;
+
+    private Date internalInspectionReportDt;
+
+    private Date validityStartDt;
+
+    private Date validityEndDt;
+
+    private String selectedAfc;
 }

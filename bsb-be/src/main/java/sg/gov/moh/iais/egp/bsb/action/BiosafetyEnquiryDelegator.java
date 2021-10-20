@@ -170,16 +170,16 @@ public class BiosafetyEnquiryDelegator {
 
 
     public void prepareDetail(BaseProcessClass bpc) {
-        HttpServletRequest request = bpc.request;
+        /*HttpServletRequest request = bpc.request;
         String count = ParamUtil.getString(request,PARAM_SEARCH_CHK);
         String appId = ParamUtil.getMaskedString(request,"appId");
         Application application = processClient.getApplicationById(appId).getEntity();
         FacilityActivity facilityActivity = biosafetyEnquiryClient.getFacilityActivityByApplicationId(appId).getEntity();
-//        application.getFacility().setActiveType(facilityActivity.getActivityType());
-//        List<Biological> biologicalList = JoinBiologicalName.getBioListByFacilityScheduleList(facilityActivity.getFacilitySchedules(),processClient);
-//        application.setBiologicalList(biologicalList);
+        application.getFacility().setActiveType(facilityActivity.getActivityType());
+        List<Biological> biologicalList = JoinBiologicalName.getBioListByFacilityScheduleList(facilityActivity.getFacilitySchedules(),processClient);
+        application.setBiologicalList(biologicalList);
         ParamUtil.setRequestAttr(request,"applicationInfo",application);
-        ParamUtil.setRequestAttr(request,PARAM_COUNT,count);
+        ParamUtil.setRequestAttr(request,PARAM_COUNT,count);*/
     }
 
 
@@ -670,7 +670,7 @@ public class BiosafetyEnquiryDelegator {
 
     //join biological name according to risk level
     private void joinBioNamesAndRiskLevel(List<FacilityActivity> activities){
-        StringBuilder nameSb = new StringBuilder();
+        /*StringBuilder nameSb = new StringBuilder();
         StringBuilder rlSb = new StringBuilder();
         Map<String,StringBuilder> bios = new HashMap<>();
         Set<String> schedules = new HashSet<>();
@@ -707,7 +707,7 @@ public class BiosafetyEnquiryDelegator {
             schedules.clear();
             //clear hashMap
             bios.clear();
-        }
+        }*/
     }
 
     //join admin name by admin or alter for show

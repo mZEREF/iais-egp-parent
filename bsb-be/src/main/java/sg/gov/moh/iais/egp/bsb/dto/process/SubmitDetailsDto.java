@@ -1,6 +1,7 @@
 package sg.gov.moh.iais.egp.bsb.dto.process;
 
 import lombok.Data;
+import sg.gov.moh.iais.egp.bsb.entity.ApplicationMisc;
 import sg.gov.moh.iais.egp.bsb.entity.Biological;
 import sg.gov.moh.iais.egp.bsb.entity.FacilityActivity;
 import sg.gov.moh.iais.egp.bsb.entity.RoutingHistory;
@@ -38,4 +39,8 @@ public class SubmitDetailsDto implements Serializable {
 
     private List<RoutingHistory> routingHistories;
 
+    /**
+     * This is used to display the last misc of the previous person
+     */
+    private ApplicationMisc applicationMisc;
 }
