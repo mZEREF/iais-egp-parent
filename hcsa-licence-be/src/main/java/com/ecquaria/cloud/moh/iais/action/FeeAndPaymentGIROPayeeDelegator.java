@@ -334,7 +334,7 @@ public class FeeAndPaymentGIROPayeeDelegator {
                 repMap.put("fieldNo","Account Name");
                 errorMap.put("acctName", MessageUtil.getMessageDesc("GENERAL_ERR0036",repMap));
             }
-            if(!isAlphanumeric(acctName)){
+            if(!isAlphanumericSpaceChar(acctName)){
                 errorMap.put("acctName", MessageUtil.getMessageDesc("USER_ERR003"));
             }
         }
@@ -370,7 +370,7 @@ public class FeeAndPaymentGIROPayeeDelegator {
                 repMap.put("fieldNo","Bank Account No");
                 errorMap.put("bankAccountNo", MessageUtil.getMessageDesc("GENERAL_ERR0036",repMap));
             }
-            if(!isAlphanumeric(bankAccountNo)){
+            if(!isAlphanumericSpaceChar(bankAccountNo)){
                 errorMap.put("bankAccountNo", MessageUtil.getMessageDesc("USER_ERR003"));
             }
         }
@@ -513,11 +513,11 @@ public class FeeAndPaymentGIROPayeeDelegator {
 
     }
 
-    public static boolean isAlphanumeric(CharSequence cs)
+    public static boolean isAlphanumericSpaceChar(CharSequence cs)
     {
         int sz = cs.length();
         for (int i = 0; i < sz; i++) {
-            if (!Character.isLetterOrDigit(cs.charAt(i))) {
+            if (!(Character.isLetterOrDigit(cs.charAt(i))||Character.isSpaceChar(cs.charAt(i)))) {
                 return false;
             }
         }

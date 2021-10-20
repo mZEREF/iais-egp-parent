@@ -91,7 +91,7 @@
                                                                         </div>
                                                                         <div class=" panel-collapse collapse" id="collapseServiceInfo${documentIndex}" role="tabpanel" aria-labelledby="headingServiceInfo">
                                                                             <div class="panel-body">
-                                                                                <c:if test="${AppSubmissionDto.appEditSelectDto==null||AppSubmissionDto.appEditSelectDto.serviceEdit}">
+                                                                                <c:if test="${AppSubmissionDto.appEditSelectDto==null||AppSubmissionDto.appEditSelectDto.serviceEdit && (empty isSingle || isSingle == 'Y')}">
                                                                                     <p class="text-right"><div class="text-right app-font-size-16"><a href="#" id="doSvcEdit"><em class="fa fa-pencil-square-o"></em>Edit</a></div></p>
                                                                                 </c:if>
                                                                                 <div class="panel-main-content">
