@@ -8,21 +8,26 @@
 %>
 <webui:setLayout name="iais-internet"/>
 
-<%-- current page: stage--%>
-<input type="hidden" name="ar_page" value="stage"/>
-<%--preview/ack--%>
-<%@ include file="common/arHeader.jsp" %>
+<%-- current page: ack --%>
+<input type="hidden" name="ar_page" value="ack"/>
+
+<%@ include file="arHeader.jsp" %>
 
 <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
     <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
     <div class="main-content">
         <div class="container center-content">
             <div class="col-xs-12">
-                <h3>Please key in patient information</h3>
-                <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
-                    <%@include file="section/patientDetailSection.jsp" %>
+                <h3>Successful Submission</h3>
+                <div>Thank you for your submission.</div>
+                <div class="application-tab-footer">
+                    <div class="col-xs-12 col-sm-12 col-md-12">
+                        <div class="button-group">
+                            <a class="btn btn-secondary premiseSaveDraft" id="startSbt" >Start Another Submission</a>
+                            <a class="btn btn-primary next premiseId" href="/main-web/eservice/INTERNET/MohInternetInbox" >Go to DashBoard</a></div>
+                        </div>
+                    </div>
                 </div>
-                <%@include file="common/arFooter.jsp" %>
             </div>
         </div>
     </div>
