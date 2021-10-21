@@ -64,6 +64,7 @@
                             </c:otherwise>
                         </c:choose>
                         <%@ include file="../../interInbox/app/eServicesMenuParam.jsp" %>
+                        <%@ include file="../../interInbox/app/dataSubmissionMenuParam.jsp" %>
                         </ol>
                     </c:if>
                 </c:when>
