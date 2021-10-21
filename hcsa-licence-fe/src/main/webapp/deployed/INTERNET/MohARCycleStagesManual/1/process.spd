@@ -1,0 +1,524 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Application defaultStart="/Steps/StartStep/Start" dtdVersion="6.0" executable="true" majorVersion="2" minorVersion="0" name="MohARCycleStagesManual" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" transaction="enable">
+ <WebServices/>
+ <Steps>
+  <StartStep defClass="" executor="" icon="" name="Start" x="100" y="550">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="start_OnStepProcess_0" name="start_OnStepProcess_0"/>
+   </OnStepProcess>
+  </StartStep>
+  <AutomaticStep defClass="" executor="" icon="" name="PrepareCycleStageSelection" x="190" y="550">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="prepareCycleStageSelection_OnStepProcess_0" name="prepareCycleStageSelection_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="PrepareStage" x="500" y="550">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="prepareStage_OnStepProcess_0" name="prepareStage_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="PrepareARCycle" x="770" y="20">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="prepareARCycle_OnStepProcess_0" name="prepareARCycle_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="PrepareIUICycle" x="770" y="100">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="prepareIUICycle_OnStepProcess_0" name="prepareIUICycle_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="PrepareEFOCycle" x="770" y="170">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="prepareEFOCycle_OnStepProcess_0" name="prepareEFOCycle_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="PrepareOocyteRetrieval" x="770" y="250">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="prepareOocyteRetrieval_OnStepProcess_0" name="prepareOocyteRetrieval_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="PrepareFertilisation" x="770" y="340">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="prepareFertilisation_OnStepProcess_0" name="prepareFertilisation_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <InvokeStep defClass="" executor="" icon="" name="ARCycle" processname="MohARCycleStage" project="INTERNET" version="-1" x="1040" y="10">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess/>
+   <OnStepComplete/>
+  </InvokeStep>
+  <InvokeStep defClass="" executor="" icon="" name="IUICycle" processname="MohIUICycleStage" project="INTERNET" version="-1" x="1050" y="90">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess/>
+   <OnStepComplete/>
+  </InvokeStep>
+  <InvokeStep defClass="" executor="" icon="" name="EFOCycle" processname="MohEFOCycleStage" project="INTERNET" version="-1" x="1050" y="170">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess/>
+   <OnStepComplete/>
+  </InvokeStep>
+  <InvokeStep defClass="" executor="" icon="" name="OocyteRetrieval" processname="MohOocyteRetrieval" project="INTERNET" version="-1" x="1050" y="250">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess/>
+   <OnStepComplete/>
+  </InvokeStep>
+  <InvokeStep defClass="" executor="" icon="" name="Fertilisation" processname="MohFertilisation" project="INTERNET" version="-1" x="1050" y="330">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess/>
+   <OnStepComplete/>
+  </InvokeStep>
+  <AutomaticStep defClass="" executor="" icon="" name="PrepareEmbryoCreated" x="770" y="410">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="prepareEmbryoCreated_OnStepProcess_0" name="prepareEmbryoCreated_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <InvokeStep defClass="" executor="" icon="" name="EmbryoCreated" processname="MohEmbryoCreated" project="INTERNET" version="-1" x="1050" y="400">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess/>
+   <OnStepComplete/>
+  </InvokeStep>
+  <AutomaticStep defClass="" executor="" icon="" name="PrepareThawing" x="770" y="480">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="prepareThawing_OnStepProcess_0" name="prepareThawing_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <InvokeStep defClass="" executor="" icon="" name="Thawing" processname="MohThawing" project="INTERNET" version="-1" x="1050" y="470">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess/>
+   <OnStepComplete/>
+  </InvokeStep>
+  <InvokeStep defClass="" executor="" icon="" name="Preimplantation" processname="MohPreimplantation" project="INTERNET" version="-1" x="1050" y="540">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess/>
+   <OnStepComplete/>
+  </InvokeStep>
+  <AutomaticStep defClass="" executor="" icon="" name="PreparePreimplantation" x="770" y="550">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="preparePreimplantation_OnStepProcess_0" name="preparePreimplantation_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <InvokeStep defClass="" executor="" icon="" name="EmbryoTransfer" processname="MohEmbryoTransfer" project="INTERNET" version="-1" x="1050" y="610">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess/>
+   <OnStepComplete/>
+  </InvokeStep>
+  <AutomaticStep defClass="" executor="" icon="" name="PrepareEmbryoTransfer" x="770" y="610">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="prepareEmbryoTransfer_OnStepProcess_0" name="prepareEmbryoTransfer_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <InvokeStep defClass="" executor="" icon="" name="ARTreatmentSubsidies" processname="MohARTreatmentSubsidies" project="INTERNET" version="-1" x="1050" y="670">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess/>
+   <OnStepComplete/>
+  </InvokeStep>
+  <AutomaticStep defClass="" executor="" icon="" name="PrepareARTreatmentSubsidies" x="770" y="670">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="prepareARTreatmentSubsidies_OnStepProcess_0" name="prepareARTreatmentSubsidies_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="PrepareIUITreatmentSubsidies" x="770" y="740">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="prepareIUITreatmentSubsidies_OnStepProcess_0" name="prepareIUITreatmentSubsidies_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <InvokeStep defClass="" executor="" icon="" name="IUITreatmentSubsidies" processname="MohIUITreatmentSubsidies" project="INTERNET" version="-1" x="1050" y="740">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess/>
+   <OnStepComplete/>
+  </InvokeStep>
+  <InvokeStep defClass="" executor="" icon="" name="OutcomeEmbryoTransferred" processname="MohOutcomeEmbryoTransferred" project="INTERNET" version="-1" x="1050" y="800">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess/>
+   <OnStepComplete/>
+  </InvokeStep>
+  <AutomaticStep defClass="" executor="" icon="" name="PrepareOutcomeEmbryoTransferred" x="770" y="800">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="prepareOutcomeEmbryoTransferred_OnStepProcess_0" name="prepareOutcomeEmbryoTransferred_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="PrepareOutcome" x="770" y="860">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="prepareOutcome_OnStepProcess_0" name="prepareOutcome_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <InvokeStep defClass="" executor="" icon="" name="Outcome" processname="MohOutcome" project="INTERNET" version="-1" x="1050" y="860">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess/>
+   <OnStepComplete/>
+  </InvokeStep>
+  <AutomaticStep defClass="" executor="" icon="" name="PrepareOutcomePregnancy" x="770" y="920">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="prepareOutcomePregnancy_OnStepProcess_0" name="prepareOutcomePregnancy_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <InvokeStep defClass="" executor="" icon="" name="OutcomePregnancy" processname="MohOutcomePregnancy" project="INTERNET" version="-1" x="1050" y="920">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess/>
+   <OnStepComplete/>
+  </InvokeStep>
+  <InvokeStep defClass="" executor="" icon="" name="Freezing" processname="MohFreezing" project="INTERNET" version="-1" x="1050" y="980">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess/>
+   <OnStepComplete/>
+  </InvokeStep>
+  <AutomaticStep defClass="" executor="" icon="" name="PrepareFreezing" x="770" y="980">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="prepareFreezing_OnStepProcess_0" name="prepareFreezing_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <InvokeStep defClass="" executor="" icon="" name="Donation" processname="MohDonation" project="INTERNET" version="-1" x="1050" y="1060">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess/>
+   <OnStepComplete/>
+  </InvokeStep>
+  <AutomaticStep defClass="" executor="" icon="" name="PrepareDonation" x="770" y="1060">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="prepareDonation_OnStepProcess_0" name="prepareDonation_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <InvokeStep defClass="" executor="" icon="" name="Disposal" processname="MohDisposal" project="INTERNET" version="-1" x="1050" y="1140">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess/>
+   <OnStepComplete/>
+  </InvokeStep>
+  <AutomaticStep defClass="" executor="" icon="" name="PrepareDisposal" x="770" y="1140">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="prepareDisposal_OnStepProcess_0" name="prepareDisposal_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <InvokeStep defClass="" executor="" icon="" name="EndCycle" processname="MohEndCycle" project="INTERNET" version="-1" x="1050" y="1210">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess/>
+   <OnStepComplete/>
+  </InvokeStep>
+  <AutomaticStep defClass="" executor="" icon="" name="PrepareEndCycle" x="770" y="1210">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="prepareEndCycle_OnStepProcess_0" name="prepareEndCycle_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <InvokeStep defClass="" executor="" icon="" name="TransferInOut" processname="MohTransferInOut" project="INTERNET" version="-1" x="1050" y="1280">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess/>
+   <OnStepComplete/>
+  </InvokeStep>
+  <AutomaticStep defClass="" executor="" icon="" name="PrepareTransferInOut" x="770" y="1280">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="prepareTransferInOut_OnStepProcess_0" name="prepareTransferInOut_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="Back" x="940" y="1340">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="back_OnStepProcess_0" name="back_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <ReturnInvokeProcessStep defClass="" executor="" icon="" name="Return" x="1070" y="1340">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess/>
+  </ReturnInvokeProcessStep>
+ </Steps>
+ <Pages>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="CycleStageSelection" stageIndicator="" x="360" y="550">
+   <OnPageLoad/>
+   <OnPageSubmit/>
+   <Description/>
+   <probepoint type="none"/>
+  </WebPage>
+ </Pages>
+ <Forms/>
+ <Links>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PrepareCycleStageSelection" linkstyle="Direct" name="" sourceName="/Steps/StartStep/Start" style="oblique">
+   <position>{(120,570)(210,570)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/CycleStageSelection" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/PrepareCycleStageSelection" style="oblique">
+   <position>{(210,570)(380,570)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PrepareStage" linkstyle="Direct" name="" sourceName="/Pages/WebPage/CycleStageSelection" style="oblique">
+   <position>{(380,570)(520,570)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Switches/Switch/Switch1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/PrepareStage" style="oblique">
+   <position>{(520,570)(670,570)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PrepareARCycle" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
+   <position>{(670,570)(790,40)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PrepareIUICycle" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
+   <position>{(670,570)(790,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PrepareEFOCycle" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
+   <position>{(670,570)(790,190)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PrepareOocyteRetrieval" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
+   <position>{(670,570)(790,270)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PrepareFertilisation" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
+   <position>{(670,570)(790,360)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PrepareEmbryoCreated" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
+   <position>{(670,570)(790,430)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PrepareThawing" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
+   <position>{(670,570)(790,500)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PreparePreimplantation" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
+   <position>{(670,570)(790,570)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PrepareEmbryoTransfer" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
+   <position>{(670,570)(790,630)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PrepareARTreatmentSubsidies" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
+   <position>{(670,570)(790,690)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PrepareIUITreatmentSubsidies" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
+   <position>{(670,570)(790,760)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PrepareOutcomeEmbryoTransferred" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
+   <position>{(670,570)(790,820)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PrepareOutcome" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
+   <position>{(670,570)(790,880)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PrepareOutcomePregnancy" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
+   <position>{(670,570)(790,940)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PrepareFreezing" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
+   <position>{(670,570)(790,1000)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PrepareDonation" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
+   <position>{(670,570)(790,1080)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PrepareDisposal" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
+   <position>{(670,570)(790,1160)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PrepareEndCycle" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
+   <position>{(670,570)(790,1230)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PrepareTransferInOut" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
+   <position>{(670,570)(790,1300)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/Back" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
+   <position>{(670,570)(960,1360)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/InvokeStep/ARCycle" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/PrepareARCycle" style="oblique">
+   <position>{(790,40)(1060,30)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/InvokeStep/IUICycle" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/PrepareIUICycle" style="oblique">
+   <position>{(790,120)(1070,110)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/InvokeStep/EFOCycle" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/PrepareEFOCycle" style="oblique">
+   <position>{(790,190)(1070,190)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/InvokeStep/OocyteRetrieval" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/PrepareOocyteRetrieval" style="oblique">
+   <position>{(790,270)(1070,270)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/InvokeStep/Fertilisation" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/PrepareFertilisation" style="oblique">
+   <position>{(790,360)(1070,350)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/InvokeStep/EmbryoCreated" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/PrepareEmbryoCreated" style="oblique">
+   <position>{(790,430)(1070,420)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/InvokeStep/Thawing" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/PrepareThawing" style="oblique">
+   <position>{(790,500)(1070,490)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/InvokeStep/Preimplantation" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/PreparePreimplantation" style="oblique">
+   <position>{(790,570)(1070,560)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/InvokeStep/EmbryoTransfer" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/PrepareEmbryoTransfer" style="oblique">
+   <position>{(790,630)(1070,630)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/InvokeStep/ARTreatmentSubsidies" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/PrepareARTreatmentSubsidies" style="oblique">
+   <position>{(790,690)(1070,690)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/InvokeStep/IUITreatmentSubsidies" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/PrepareIUITreatmentSubsidies" style="oblique">
+   <position>{(790,760)(1070,760)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/InvokeStep/OutcomeEmbryoTransferred" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/PrepareOutcomeEmbryoTransferred" style="oblique">
+   <position>{(790,820)(1070,820)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/InvokeStep/Outcome" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/PrepareOutcome" style="oblique">
+   <position>{(790,880)(1070,880)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/InvokeStep/OutcomePregnancy" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/PrepareOutcomePregnancy" style="oblique">
+   <position>{(790,940)(1070,940)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/InvokeStep/Freezing" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/PrepareFreezing" style="oblique">
+   <position>{(790,1000)(1070,1000)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/InvokeStep/Donation" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/PrepareDonation" style="oblique">
+   <position>{(790,1080)(1070,1080)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/InvokeStep/Disposal" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/PrepareDisposal" style="oblique">
+   <position>{(790,1160)(1070,1160)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/InvokeStep/EndCycle" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/PrepareEndCycle" style="oblique">
+   <position>{(790,1230)(1070,1230)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/InvokeStep/TransferInOut" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/PrepareTransferInOut" style="oblique">
+   <position>{(790,1300)(1070,1300)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Steps/InvokeStep/ARCycle" style="oblique">
+   <position>{(1060,30)(1240,760)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Steps/InvokeStep/IUICycle" style="oblique">
+   <position>{(1070,110)(1240,760)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Steps/InvokeStep/EFOCycle" style="oblique">
+   <position>{(1070,190)(1240,760)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Steps/InvokeStep/OocyteRetrieval" style="oblique">
+   <position>{(1070,270)(1240,760)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Steps/InvokeStep/Fertilisation" style="oblique">
+   <position>{(1070,350)(1240,760)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Steps/InvokeStep/EmbryoCreated" style="oblique">
+   <position>{(1070,420)(1240,760)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Steps/InvokeStep/Thawing" style="oblique">
+   <position>{(1070,490)(1240,760)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Steps/InvokeStep/Preimplantation" style="oblique">
+   <position>{(1070,560)(1240,760)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Steps/InvokeStep/EmbryoTransfer" style="oblique">
+   <position>{(1070,630)(1240,760)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Steps/InvokeStep/ARTreatmentSubsidies" style="oblique">
+   <position>{(1070,690)(1240,760)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Steps/InvokeStep/IUITreatmentSubsidies" style="oblique">
+   <position>{(1070,760)(1240,760)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Steps/InvokeStep/OutcomeEmbryoTransferred" style="oblique">
+   <position>{(1070,820)(1240,760)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Steps/InvokeStep/Outcome" style="oblique">
+   <position>{(1070,880)(1240,760)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Steps/InvokeStep/OutcomePregnancy" style="oblique">
+   <position>{(1070,940)(1240,760)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Steps/InvokeStep/Freezing" style="oblique">
+   <position>{(1070,1000)(1240,760)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Steps/InvokeStep/Donation" style="oblique">
+   <position>{(1070,1080)(1240,760)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Steps/InvokeStep/Disposal" style="oblique">
+   <position>{(1070,1160)(1240,760)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Steps/InvokeStep/EndCycle" style="oblique">
+   <position>{(1070,1230)(1240,760)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Steps/InvokeStep/TransferInOut" style="oblique">
+   <position>{(1070,1300)(1240,760)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/ReturnInvokeProcessStep/Return" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/Back" style="oblique">
+   <position>{(960,1360)(1090,1360)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PrepareCycleStageSelection" linkstyle="Direct" name="" sourceName="/Merges/Merge/Merge1" style="oblique">
+   <position>{(1240,760)(1239,-32)(268,-27)(210,570)}</position>
+  </SynchronousLink>
+ </Links>
+ <Conditions/>
+ <Switches>
+  <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="crud_action_type_ct" name="Switch1" x="650" y="550">
+   <Description/>
+   <SwitchCase component="/Steps/AutomaticStep/PrepareARCycle" value="&quot;ARCycle&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/PrepareIUICycle" value="&quot;IUICycle&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/PrepareEFOCycle" value="&quot;EFOCycle&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/PrepareOocyteRetrieval" value="&quot;OocyteRetrieval&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/PrepareFertilisation" value="&quot;Fertilisation&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/PrepareEmbryoCreated" value="&quot;EmbryoCreated&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/PrepareThawing" value="&quot;Thawing&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/PreparePreimplantation" value="&quot;Preimplantation&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/PrepareEmbryoTransfer" value="&quot;EmbryoTransfer&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/PrepareARTreatmentSubsidies" value="&quot;ARTreatmentSubsidies&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/PrepareIUITreatmentSubsidies" value="&quot;IUITreatmentSubsidies&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/PrepareOutcomeEmbryoTransferred" value="&quot;OutcomeEmbryoTransferred&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/PrepareOutcome" value="&quot;Outcome&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/PrepareOutcomePregnancy" value="&quot;OutcomePregnancy&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/PrepareFreezing" value="&quot;Freezing&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/PrepareDonation" value="&quot;Donation&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/PrepareDisposal" value="&quot;Disposal&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/PrepareEndCycle" value="&quot;EndCycle&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/PrepareTransferInOut" value="&quot;TransferInOut&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/Back" value="&quot;Back&quot;"/>
+  </Switch>
+ </Switches>
+ <Branches/>
+ <Merges>
+  <Merge defClass="" executor="" icon="" name="Merge1" type="Or" x="1220" y="740">
+   <Description/>
+  </Merge>
+ </Merges>
+ <StudioLabels/>
+ <StageIndicator/>
+ <AuthenticationRequire agent="false" authentication="false" citizen="false" counterStaff="false" workingGroup=""/>
+</Application>

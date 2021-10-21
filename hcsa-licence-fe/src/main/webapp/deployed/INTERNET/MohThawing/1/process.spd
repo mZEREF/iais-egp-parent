@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Application defaultStart="/Steps/StartStep/Start" dtdVersion="6.0" executable="true" majorVersion="1" minorVersion="0" name="MohThawing" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" transaction="enable">
+ <WebServices/>
+ <Steps>
+  <StartStep defClass="" executor="" icon="" name="Start" x="80" y="290">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="start_OnStepProcess_0" name="start_OnStepProcess_0"/>
+   </OnStepProcess>
+  </StartStep>
+  <AutomaticStep defClass="" executor="" icon="" name="PreparePage" x="520" y="180">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="preparePage_OnStepProcess_0" name="preparePage_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="PageAction" x="900" y="180">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="pageAction_OnStepProcess_0" name="pageAction_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="Submission" x="520" y="540">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="submission_OnStepProcess_0" name="submission_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <ReturnInvokeProcessStep defClass="" executor="" icon="" name="Retrun" x="660" y="100">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess/>
+  </ReturnInvokeProcessStep>
+  <AutomaticStep defClass="" executor="" icon="" name="PrepareSwitch" x="210" y="290">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="prepareSwitch_OnStepProcess_0" name="prepareSwitch_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="PrepareConfim" x="520" y="290">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="prepareConfim_OnStepProcess_0" name="prepareConfim_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="Return" x="520" y="100">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="return_OnStepProcess_0" name="return_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="Draft" x="520" y="430">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="draft_OnStepProcess_0" name="draft_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="PageConfirmAction" x="900" y="290">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="pageConfirmAction_OnStepProcess_0" name="pageConfirmAction_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+ </Steps>
+ <Pages>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="StagePage" stageIndicator="" x="660" y="180">
+   <OnPageLoad/>
+   <OnPageSubmit/>
+   <Description/>
+   <probepoint type="none"/>
+  </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="StagePageConfirm" stageIndicator="" x="660" y="290">
+   <OnPageLoad/>
+   <OnPageSubmit/>
+   <Description/>
+   <probepoint type="none"/>
+  </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="Ack" stageIndicator="" x="660" y="540">
+   <OnPageLoad/>
+   <OnPageSubmit/>
+   <Description/>
+   <probepoint type="none"/>
+  </WebPage>
+ </Pages>
+ <Forms/>
+ <Links>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PrepareSwitch" linkstyle="Direct" name="" sourceName="/Steps/StartStep/Start" style="oblique">
+   <position>{(100,310)(230,310)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Switches/Switch/Switch1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/PrepareSwitch" style="oblique">
+   <position>{(230,310)(360,310)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/Return" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
+   <position>{(360,310)(540,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PreparePage" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
+   <position>{(360,310)(540,200)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PrepareConfim" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
+   <position>{(360,310)(540,310)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/Draft" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
+   <position>{(360,310)(540,450)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/Submission" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
+   <position>{(360,310)(540,560)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/ReturnInvokeProcessStep/Retrun" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/Return" style="oblique">
+   <position>{(540,120)(680,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/StagePage" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/PreparePage" style="oblique">
+   <position>{(540,200)(680,200)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PageAction" linkstyle="Direct" name="" sourceName="/Pages/WebPage/StagePage" style="oblique">
+   <position>{(680,200)(920,200)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/PageAction" style="oblique">
+   <position>{(920,200)(1170,300)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/StagePageConfirm" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/PrepareConfim" style="oblique">
+   <position>{(540,310)(680,310)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PageConfirmAction" linkstyle="Direct" name="" sourceName="/Pages/WebPage/StagePageConfirm" style="oblique">
+   <position>{(680,310)(920,310)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/PageConfirmAction" style="oblique">
+   <position>{(920,310)(1170,300)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/Draft" style="oblique">
+   <position>{(540,450)(1170,300)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/Ack" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/Submission" style="oblique">
+   <position>{(540,560)(680,560)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PrepareSwitch" linkstyle="Direct" name="" sourceName="/Merges/Merge/Merge1" style="oblique">
+   <position>{(1170,300)(1167,37)(245,33)(230,310)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Pages/WebPage/Ack" style="oblique">
+   <position>{(680,560)(1170,300)}</position>
+  </SynchronousLink>
+ </Links>
+ <Conditions/>
+ <Switches>
+  <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="crud_action_type" name="Switch1" x="340" y="290">
+   <Description/>
+   <SwitchCase component="/Steps/AutomaticStep/Return" value="&quot;return&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/PreparePage" value="&quot;page&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/PrepareConfim" value="&quot;confirm&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/Draft" value="&quot;draft&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/Submission" value="&quot;submission&quot;"/>
+  </Switch>
+ </Switches>
+ <Branches/>
+ <Merges>
+  <Merge defClass="" executor="" icon="" name="Merge1" type="Or" x="1150" y="280">
+   <Description/>
+  </Merge>
+ </Merges>
+ <StudioLabels/>
+ <StageIndicator/>
+ <AuthenticationRequire agent="false" authentication="false" citizen="false" counterStaff="false" workingGroup=""/>
+</Application>

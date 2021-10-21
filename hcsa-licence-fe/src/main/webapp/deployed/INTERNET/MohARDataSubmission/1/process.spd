@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Application defaultStart="/Steps/StartStep/Start" dtdVersion="6.0" executable="true" majorVersion="1" minorVersion="0" name="MohARDataSubmission" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" transaction="enable">
+ <WebServices/>
+ <Steps>
+  <StartStep defClass="" executor="" icon="" name="Start" x="80" y="300">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="start_OnStepProcess_0" name="start_OnStepProcess_0"/>
+   </OnStepProcess>
+  </StartStep>
+  <AutomaticStep defClass="" executor="" icon="" name="PrepareARSubmission" x="140" y="300">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="prepareARSubmission_OnStepProcess_0" name="prepareARSubmission_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="PrepareAR" x="480" y="300">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="prepareAR_OnStepProcess_0" name="prepareAR_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="PreparePIM" x="820" y="60">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="preparePIM_OnStepProcess_0" name="preparePIM_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="PreparePIF" x="820" y="170">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="preparePIF_OnStepProcess_0" name="preparePIF_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="PrepareCSM" x="820" y="300">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="prepareCSM_OnStepProcess_0" name="prepareCSM_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <InvokeStep defClass="" executor="" icon="" name="PIM" processname="MohARPatientInformationManual" project="INTERNET" version="-1" x="1010" y="70">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess/>
+   <OnStepComplete/>
+  </InvokeStep>
+  <InvokeStep defClass="" executor="" icon="" name="PIF" processname="" project="" version="" x="1010" y="180">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess/>
+   <OnStepComplete/>
+  </InvokeStep>
+  <InvokeStep defClass="" executor="" icon="" name="CSM" processname="MohARCycleStagesManual" project="INTERNET" version="-1" x="1010" y="300">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess/>
+   <OnStepComplete/>
+  </InvokeStep>
+  <InvokeStep defClass="" executor="" icon="" name="DS" processname="" project="" version="" x="1010" y="490">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess/>
+   <OnStepComplete/>
+  </InvokeStep>
+  <AutomaticStep defClass="" executor="" icon="" name="PrepareDS" x="820" y="470">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="prepareDS_OnStepProcess_0" name="prepareDS_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <InvokeStep defClass="" executor="" icon="" name="CSF" processname="" project="" version="" x="1010" y="400">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess/>
+   <OnStepComplete/>
+  </InvokeStep>
+  <AutomaticStep defClass="" executor="" icon="" name="PrepareCSF" x="820" y="370">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="prepareCSF_OnStepProcess_0" name="prepareCSF_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="Back" x="950" y="590">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="back_OnStepProcess_0" name="back_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <ReturnInvokeProcessStep defClass="" executor="" icon="" name="return" x="1120" y="590">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess/>
+  </ReturnInvokeProcessStep>
+ </Steps>
+ <Pages>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="ARSubmissionPage" stageIndicator="" x="290" y="300">
+   <OnPageLoad/>
+   <OnPageSubmit/>
+   <Description/>
+   <probepoint type="none"/>
+  </WebPage>
+ </Pages>
+ <Forms/>
+ <Links>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PrepareARSubmission" linkstyle="Direct" name="" sourceName="/Steps/StartStep/Start" style="oblique">
+   <position>{(100,320)(160,320)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/ARSubmissionPage" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/PrepareARSubmission" style="oblique">
+   <position>{(160,320)(310,320)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PrepareAR" linkstyle="Direct" name="" sourceName="/Pages/WebPage/ARSubmissionPage" style="oblique">
+   <position>{(310,320)(500,320)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Switches/Switch/Switch1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/PrepareAR" style="oblique">
+   <position>{(500,320)(630,320)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PreparePIM" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
+   <position>{(630,320)(840,80)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/InvokeStep/PIM" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/PreparePIM" style="oblique">
+   <position>{(840,80)(1030,90)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Steps/InvokeStep/PIM" style="oblique">
+   <position>{(1030,90)(1240,320)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PreparePIF" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
+   <position>{(630,320)(840,190)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/InvokeStep/PIF" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/PreparePIF" style="oblique">
+   <position>{(840,190)(1030,200)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Steps/InvokeStep/PIF" style="oblique">
+   <position>{(1030,200)(1240,320)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PrepareCSM" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
+   <position>{(630,320)(840,320)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/InvokeStep/CSM" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/PrepareCSM" style="oblique">
+   <position>{(840,320)(1030,320)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PrepareCSF" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
+   <position>{(630,320)(840,390)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/InvokeStep/CSF" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/PrepareCSF" style="oblique">
+   <position>{(840,390)(1030,420)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Steps/InvokeStep/CSF" style="oblique">
+   <position>{(1030,420)(1240,320)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PrepareDS" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
+   <position>{(630,320)(840,490)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/InvokeStep/DS" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/PrepareDS" style="oblique">
+   <position>{(840,490)(1030,510)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Steps/InvokeStep/DS" style="oblique">
+   <position>{(1030,510)(1240,320)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/Back" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
+   <position>{(630,320)(970,610)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Steps/InvokeStep/CSM" style="oblique">
+   <position>{(1030,320)(1240,320)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/ReturnInvokeProcessStep/return" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/Back" style="oblique">
+   <position>{(970,610)(1140,610)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PrepareARSubmission" linkstyle="Direct" name="" sourceName="/Merges/Merge/Merge1" style="oblique">
+   <position>{(1240,320)(1236,10)(197,24)(160,320)}</position>
+  </SynchronousLink>
+ </Links>
+ <Conditions/>
+ <Switches>
+  <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="crud_action_type_ar" name="Switch1" x="610" y="300">
+   <Description/>
+   <SwitchCase component="/Steps/AutomaticStep/PreparePIM" value="&quot;pim&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/PreparePIF" value="&quot;pif&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/PrepareCSM" value="&quot;csm&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/PrepareCSF" value="&quot;csf&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/PrepareDS" value="&quot;ds&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/Back" value="&quot;back&quot;"/>
+  </Switch>
+ </Switches>
+ <Branches/>
+ <Merges>
+  <Merge defClass="" executor="" icon="" name="Merge1" type="Or" x="1220" y="300">
+   <Description/>
+  </Merge>
+ </Merges>
+ <StudioLabels/>
+ <StageIndicator/>
+ <AuthenticationRequire agent="false" authentication="false" citizen="false" counterStaff="false" workingGroup=""/>
+</Application>

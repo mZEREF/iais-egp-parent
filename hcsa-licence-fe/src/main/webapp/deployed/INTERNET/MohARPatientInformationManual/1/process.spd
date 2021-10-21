@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Application defaultStart="Steps/StartStep/Step1" dtdVersion="6.0" majorVersion="1" minorVersion="0" name="MohARPatientInformationManual" packageName="sop.webflow.rt.java.code">	
+ <WebServices/>
+ <Steps>
+  <StartStep name="Step1" x="100" y="100" defClass="" executor="">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess/>
+  </StartStep>
+ </Steps>
+ <Pages/>
+ <Forms/>
+ <Links/>
+ <Conditions/>
+ <Switches/>
+ <Branches/>
+ <Merges/>
+ <StudioLabels/>
+ <StageIndicator/>
+ <AuthenticationRequire authentication="false" agent="false" citizen="false" workingGroup="" counterStaff="false"/>
+</Application>
