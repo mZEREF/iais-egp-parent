@@ -103,6 +103,8 @@ public abstract  class CommonDelegator {
      * @throws
      */
     public void doDraft(BaseProcessClass bpc) {
+        String currentStage = (String)bpc.request.getAttribute("currentStage");
+        bpc.request.setAttribute("crud_action_type",currentStage);
         draft(bpc);
     }
     /**
@@ -137,6 +139,9 @@ public abstract  class CommonDelegator {
      * @throws
      */
     public void doPageAction(BaseProcessClass bpc) {
+        bpc.request.setAttribute("currentStage","page");
+        String crud_action_type = (String)bpc.request.getAttribute("crud_type");
+        bpc.request.setAttribute("crud_action_type",crud_action_type);
         pageAction(bpc);
     }
     /**
@@ -154,6 +159,9 @@ public abstract  class CommonDelegator {
      * @throws
      */
     public void doPageConfirmAction(BaseProcessClass bpc) {
+        bpc.request.setAttribute("currentStage","confirm");
+        String crud_action_type = (String)bpc.request.getAttribute("crud_type");
+        bpc.request.setAttribute("crud_action_type",crud_action_type);
         pageConfirmAction(bpc);
     }
     /**
