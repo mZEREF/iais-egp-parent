@@ -1,3 +1,4 @@
+<%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
 <%@ taglib uri="http://www.ecq.com/iais" prefix="iais" %>
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>
 <%
@@ -19,7 +20,7 @@
             <div class="col-xs-12">
                 <h3>Please key in the cycle information below.</h3>
                 <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
-                    <%@include file="section/efoDetailSection.jsp" %>
+                    <%@include file="section/patientDetailSection.jsp" %>
                 </div>
                 <%@include file="common/arFooter.jsp" %>
             </div>
