@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.action.datasubmission;
 
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant;
 import lombok.extern.slf4j.Slf4j;
 import sop.webflow.rt.api.BaseProcessClass;
 
@@ -36,6 +37,8 @@ public class ArCycleStagesManualDelegator {
      * @throws
      */
     public void doPrepareStage(BaseProcessClass bpc) {
+        String crud_action_type_ds = bpc.request.getParameter(DataSubmissionConstant.CRUD_TYPE);
+        bpc.request.setAttribute(DataSubmissionConstant.CRUD_ACTION_TYPE_CT,crud_action_type_ds);
     }
     /**
      * StartStep: PrepareARCycle
