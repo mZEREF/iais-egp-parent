@@ -8,9 +8,6 @@
 %>
 <webui:setLayout name="iais-internet"/>
 
-<c:set var="title" value="Joelle Lim" />
-<c:set var="smallTitle" value="Joelle Lim" />
-
 <%-- current page: stage--%>
 <input type="hidden" name="ar_page" value="stage"/>
 <%--preview/ack--%>
