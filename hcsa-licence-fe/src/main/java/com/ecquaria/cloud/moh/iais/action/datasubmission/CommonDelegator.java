@@ -20,6 +20,12 @@ public abstract  class CommonDelegator {
     public void doStart(BaseProcessClass bpc) {
         start(bpc);
     }
+    /**
+     * StartStep: Start
+     *
+     * @param bpc
+     * @throws
+     */
     public abstract void  start(BaseProcessClass bpc);
 
     /**
@@ -31,6 +37,12 @@ public abstract  class CommonDelegator {
     public void doPrepareSwitch(BaseProcessClass bpc) {
         prepareSwitch(bpc);
     }
+    /**
+     * StartStep: PrepareSwitch
+     *
+     * @param bpc
+     * @throws
+     */
     public abstract void  prepareSwitch(BaseProcessClass bpc);
 
     /**
@@ -42,6 +54,12 @@ public abstract  class CommonDelegator {
     public void doReturn(BaseProcessClass bpc) {
         returnStep(bpc);
     }
+    /**
+     * StartStep: Return
+     *
+     * @param bpc
+     * @throws
+     */
     public abstract void  returnStep(BaseProcessClass bpc);
 
     /**
@@ -53,6 +71,12 @@ public abstract  class CommonDelegator {
     public void doPreparePage(BaseProcessClass bpc) {
         preparePage(bpc);
     }
+    /**
+     * StartStep: PreparePage
+     *
+     * @param bpc
+     * @throws
+     */
     public abstract void  preparePage(BaseProcessClass bpc);
 
     /**
@@ -64,6 +88,12 @@ public abstract  class CommonDelegator {
     public void doPrepareConfim(BaseProcessClass bpc) {
         prepareConfim(bpc);
     }
+    /**
+     * StartStep: PrepareConfim
+     *
+     * @param bpc
+     * @throws
+     */
     public abstract void  prepareConfim(BaseProcessClass bpc);
 
     /**
@@ -75,6 +105,12 @@ public abstract  class CommonDelegator {
     public void doDraft(BaseProcessClass bpc) {
         draft(bpc);
     }
+    /**
+     * StartStep: Draft
+     *
+     * @param bpc
+     * @throws
+     */
     public abstract void  draft(BaseProcessClass bpc);
 
     /**
@@ -86,6 +122,12 @@ public abstract  class CommonDelegator {
     public void doSubmission(BaseProcessClass bpc) {
         submission(bpc);
     }
+    /**
+     * StartStep: Submission
+     *
+     * @param bpc
+     * @throws
+     */
     public abstract void  submission(BaseProcessClass bpc);
 
     /**
@@ -97,6 +139,12 @@ public abstract  class CommonDelegator {
     public void doPageAction(BaseProcessClass bpc) {
         pageAction(bpc);
     }
+    /**
+     * StartStep: PageAction
+     *
+     * @param bpc
+     * @throws
+     */
     public abstract void  pageAction(BaseProcessClass bpc);
 
     /**
@@ -108,6 +156,12 @@ public abstract  class CommonDelegator {
     public void doPageConfirmAction(BaseProcessClass bpc) {
         pageConfirmAction(bpc);
     }
+    /**
+     * StartStep: PageConfirmAction
+     *
+     * @param bpc
+     * @throws
+     */
     public abstract void  pageConfirmAction(BaseProcessClass bpc);
 
 }
