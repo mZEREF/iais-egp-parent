@@ -11,7 +11,7 @@
 <c:set var="title" value="Joelle Lim" />
 <c:set var="smallTitle" value="Joelle Lim" />
 
-<%@ include file="assistedReproduction/arHeader.jsp" %>
+<%@ include file="assistedReproduction/common/arHeader.jsp" %>
 
 <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
   <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
@@ -22,7 +22,7 @@
         <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
           <a href="#" onclick="submit('AR');">Assisted Reproduction</a>
         </div>
-        <%@include file="assistedReproduction/arFooter.jsp" %>
+        <%@include file="assistedReproduction/common/arFooter.jsp" %>
       </div>
     </div>
   </div>
