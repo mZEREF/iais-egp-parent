@@ -9,5 +9,5 @@
     <a href="#">Edit a Draft Submission</a>
 </li>
 <li>
-    <a href="#">Amend a Submission</a>
+    <a href="#">Withdraw Submission</a>
 </li>
