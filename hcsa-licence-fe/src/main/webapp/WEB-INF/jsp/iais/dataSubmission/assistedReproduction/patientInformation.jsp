@@ -11,6 +11,9 @@
 <c:set var="title" value="Joelle Lim" />
 <c:set var="smallTitle" value="Joelle Lim" />
 
+<%-- current page: stage--%>
+<input type="hidden" name="ar_page" value="stage"/>
+<%--preview/ack--%>
 <%@ include file="arHeader.jsp" %>
 
 <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
@@ -27,43 +30,3 @@
         </div>
     </div>
 </form>
-<script>
-    $(document).ready(function() {
-        if($('#saveDraftSuccess').val()=='success'){
-            $('#saveDraft').modal('show');
-        }
-        function cancel() {
-            $('#saveDraft').modal('hide');
-        }
-
-        function jumpPage() {
-            submit('premises','saveDraft','jumpPage');
-        }
-
-        $('#backBtn').click(function () {
-            showWaiting();
-            //submit('page');
-            submit('return');
-        });
-
-        $('#saveDraftBtn').click(function () {
-            showWaiting();
-            submit('saveDraft');
-        });
-
-        $('#nextBtn').click(function () {
-            showWaiting();
-            submit('confirm');
-        });
-
-    });
-
-    function submit(action,value,additional){
-        $("[name='crud_type']").val(action);
-        $("[name='crud_action_value']").val(value);
-        $("[name='crud_action_additional']").val(additional);
-        var mainForm = document.getElementById('mainForm');
-        showWaiting();
-        mainForm.submit();
-    }
-</script>

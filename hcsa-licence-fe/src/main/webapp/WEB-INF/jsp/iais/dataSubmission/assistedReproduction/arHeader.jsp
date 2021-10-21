@@ -1,5 +1,12 @@
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c" %>
 <%@ page import="com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant" %>
+
+<%
+    String webroot1=IaisEGPConstant.CSS_ROOT+IaisEGPConstant.FE_CSS_ROOT;
+%>
+
+<script type="text/javascript" src="<%=webroot1%>js/dataSubmission/ar_common.js"></script>
+
 <c:if test="${empty title}">
     <div class="dashboard" id="comDashboard">
         <div class="container" style="padding: 0 90px;">
@@ -13,7 +20,7 @@
     </div>
 </c:if>
 <c:if test="${not empty title}">
-    <div class="dashboard" id="comDashboard" style="background-image:url('<%=IaisEGPConstant.CSS_ROOT+IaisEGPConstant.FE_CSS_ROOT%>img/Masthead-banner.jpg')" >
+    <div class="dashboard" id="comDashboard" style="background-image:url('<%=webroot1%>img/Masthead-banner.jpg')" >
         <div class="container" style="padding: 0 90px;">
             <div class="row d-flex">
                 <%@ include file="/WEB-INF/jsp/iais/common/dashboardDropDown.jsp" %>
