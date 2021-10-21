@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.action.datasubmission;
 
+import com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant;
 import lombok.extern.slf4j.Slf4j;
 import sop.webflow.rt.api.BaseProcessClass;
 
@@ -140,7 +141,7 @@ public abstract  class CommonDelegator {
      */
     public void doPageAction(BaseProcessClass bpc) {
         bpc.request.setAttribute("currentStage","page");
-        String crud_action_type = (String)bpc.request.getAttribute("crud_type");
+        String crud_action_type = (String)bpc.request.getAttribute(DataSubmissionConstant.CRUD_TYPE);
         bpc.request.setAttribute("crud_action_type",crud_action_type);
         pageAction(bpc);
     }
