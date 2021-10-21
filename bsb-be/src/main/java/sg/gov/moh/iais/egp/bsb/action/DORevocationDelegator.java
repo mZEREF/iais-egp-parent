@@ -13,6 +13,7 @@ import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestTemplate;
 import sg.gov.moh.iais.egp.bsb.client.*;
 import sg.gov.moh.iais.egp.bsb.constant.AuditConstants;
@@ -195,15 +196,10 @@ public class DORevocationDelegator {
             if (from.equals(RevocationConstants.APP)) {
                 String appId = ParamUtil.getMaskedString(request, RevocationConstants.PARAM_APP_ID);
                 Application application = revocationClient.getApplicationById(appId).getEntity();
-                //Do address processing
-//                String address = JoinAddress.joinAddress(application);
-//                application.getFacility().setFacilityAddress(address);
-
                 FacilityActivity activity = revocationClient.getFacilityActivityByApplicationId(application.getId()).getEntity();
                 if (activity != null) {
                     application.getFacility().setActiveType(activity.getActivityType());
                 }
-
                 List<FacilityDoc> facilityDocList = docClient.getFacilityDocByFacId(application.getFacility().getId()).getEntity();
                 List<FacilityDoc> docList = new ArrayList<>();
                 for (FacilityDoc facilityDoc : facilityDocList) {
@@ -224,11 +220,27 @@ public class DORevocationDelegator {
             if (from.equals(RevocationConstants.FAC)) {
                 String approvalId = ParamUtil.getMaskedString(request, RevocationConstants.PARAM_APPROVAL_ID);
                 Approval approval = revocationClient.getApprovalById(approvalId).getEntity();
-                List<FacilityActivity> activities = approval.getFacilityActivities();
-                Facility facility = activities.get(0).getFacility();
-                String address = TableDisplayUtil.getOneLineAddress(facility.getBlkNo(), facility.getStreetName(), facility.getFloorNo(),
-                        facility.getUnitNo(), facility.getPostalCode());
-                facility.setFacilityAddress(address);
+                Facility facility = new Facility();
+                if (approval.getProcessType().equals(RevocationConstants.PARAM_PROCESS_TYPE_FACILITY_REGISTRATION)){
+                    //join with activity
+                    List<FacilityActivity> activities = approval.getFacilityActivities();
+                    if (!activities.isEmpty()) {
+                        facility = activities.get(0).getFacility();
+                    }
+                } else if (approval.getProcessType().equals(RevocationConstants.PARAM_PROCESS_TYPE_AFC_REGISTRATION)){
+                    //join with bsb_facility_certifier_reg
+                }else{
+                    //join with BA/T
+                    List<FacilityBiologicalAgent> agents = approval.getFacilityBiologicalAgents();
+                    if (!agents.isEmpty()) {
+                        facility = agents.get(0).getFacility();
+                    }
+                }
+                if (!StringUtils.isEmpty(facility)) {
+                    String address = TableDisplayUtil.getOneLineAddress(facility.getBlkNo(), facility.getStreetName(), facility.getFloorNo(),
+                            facility.getUnitNo(), facility.getPostalCode());
+                    facility.setFacilityAddress(address);
+                }
                 approval.setFacility(facility);
 
                 ParamUtil.setSessionAttr(request, RevocationConstants.APPROVAL, approval);
@@ -248,7 +260,6 @@ public class DORevocationDelegator {
         HttpServletRequest request = bpc.request;
 
         String flag = (String) ParamUtil.getSessionAttr(request, RevocationConstants.FLAG);
-        Facility facility = (Facility) ParamUtil.getSessionAttr(request, RevocationConstants.FACILITY);
         Approval approval = (Approval) ParamUtil.getSessionAttr(request, RevocationConstants.APPROVAL);
         FeignResponseEntity<Application> result = null;
         if (flag.equals(RevocationConstants.FAC)) {
@@ -258,8 +269,6 @@ public class DORevocationDelegator {
 //            String appNo=(String) restTemplate.getForEntity("http://bsb-fe-api/",null,String.class).getBody();
 
 //            application.setApplicationNo(feApplicationClient.genApplicationNumber(RevocationConstants.APP_TYPE_REVOCATION).getEntity());
-            application.setApplicationNo("Application001");
-            application.setFacility(facility);
             application.setAppType(RevocationConstants.PARAM_APPLICATION_TYPE_REVOCATION);
 
             String processType = approval.getProcessType();
