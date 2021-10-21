@@ -13,6 +13,7 @@
 <input type="hidden" name="crud_action_value" id="crud_action_value"/>
 <input type="hidden" name="crud_action_additional" id="crud_action_additional"/>
 <input type="hidden" id = "baseContextPath" value="<%=request.getContextPath()%>">
+<input type="hidden" name="crud_type" id="crud_type"/>
 
 <script type="text/javascript">
 
