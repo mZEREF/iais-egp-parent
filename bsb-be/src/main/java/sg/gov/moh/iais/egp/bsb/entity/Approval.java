@@ -22,7 +22,9 @@ public class Approval extends BaseEntity{
     private Date approvalStartDate;
 
     private Date approvalExpiryDate;
+
     private List<FacilityActivity> facilityActivities;
+
     private List<FacilityBiologicalAgent> facilityBiologicalAgents;
     private Facility facility;
 }

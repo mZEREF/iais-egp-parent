@@ -340,7 +340,7 @@
                     <iais:row>
                         <iais:field value="AFC Status"/>
                         <div class="col-sm-7 col-md-4 col-xs-10">
-                            <iais:select name="afcStatus" codeCategory="CATE_ID_BSB_FACILITY_STATUS" firstOption="Please Select" value="${approvedSearchParam.afcStatus}"></iais:select>
+                                <iais:select name="afcStatus" codeCategory="CATE_ID_BSB_APPROVAL_STATUS" firstOption="Please Select" value="${approvedSearchParam.afcStatus}"></iais:select>
                         </div>
                     </iais:row>
                     <iais:row>

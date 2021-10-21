@@ -73,6 +73,8 @@ public class EnquiryDto extends PagingAndSortingDto implements Serializable {
 
     private String approvalType;
 
+    private String approvalNo;
+
     private Date approvalSubmissionDateFrom;
 
     @ValidateWithMethod(message = MESSAGE_END_DATE_EARLIER_THAN_START_DATE, methodName = "checkApprovalSubDtToAfterFrom", parameterType = Date.class, profiles = {"approval"})

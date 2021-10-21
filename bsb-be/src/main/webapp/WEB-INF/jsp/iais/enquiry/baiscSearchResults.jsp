@@ -146,7 +146,7 @@
                                         </thead>
                                         <tbody class="form-horizontal">
                                         <c:choose>
-                                            <c:when test="${empty facilityInfoDto}">
+                                            <c:when test="${empty facInfoSearchResult}">
                                                 <tr>
                                                     <td colspan="6">
                                                         <iais:message key="GENERAL_ACK018" escape="true"></iais:message>
@@ -154,35 +154,33 @@
                                                 </tr>
                                             </c:when>
                                             <c:otherwise>
-                                                <c:forEach var="items" items="${facilityInfoDto}" varStatus="status">
+                                                <c:forEach var="items" items="${facInfoSearchResult}" varStatus="status">
                                                     <tr name="basicData">
                                                         <td><c:out value="${status.index + 1}"/></td>
-                                                        <td><c:out value="${items.facilitySchedule.facilityActivity.facility.facilityName}"/></td>
-                                                        <td><c:out value="${items.facilitySchedule.facilityActivity.facility.blkNo}"/> <c:out
-                                                                value="${items.facilitySchedule.facilityActivity.facility.streetName}"/> <c:out
-                                                                value="${items.facilitySchedule.facilityActivity.facility.floorNo}"/>-<c:out
-                                                                value="${items.facilitySchedule.facilityActivity.facility.unitNo}"/> <c:out
-                                                                value="${items.facilitySchedule.facilityActivity.facility.postalCode}"/></td>
+                                                        <td><c:out value="${items.facility.facilityName}"/></td>
+                                                        <td><c:out value="${items.facility.blkNo}"/> <c:out
+                                                                value="${items.facility.streetName}"/> <c:out
+                                                                value="${items.facility.floorNo}"/>-<c:out
+                                                                value="${items.facility.unitNo}"/> <c:out
+                                                                value="${items.facility.postalCode}"/></td>
                                                         <td><iais:code
-                                                                code="${items.facilitySchedule.facilityActivity.facility.facilityClassification}"></iais:code></td>
+                                                                code="${items.facility.facilityClassification}"></iais:code></td>
                                                         <td><iais:code
-                                                                code="${items.facilitySchedule.facilityActivity.activityType}"></iais:code></td>
+                                                                code="${items.activityType}"></iais:code></td>
                                                         <td><c:out value="${items.bioName}"/></td>
                                                         <td><iais:code code="${items.riskLevel}"></iais:code></td>
-                                                        <td><fmt:formatDate value='${items.facilitySchedule.facilityActivity.facility.expiryDt}'
-                                                                            pattern='dd/MM/yyyy'/></td>
+                                                        <td><fmt:formatDate value='${items.approval.approvalExpiryDate}' pattern='dd/MM/yyyy'/></td>
                                                         <td>
-                                                            <c:if test="${items.facilitySchedule.facilityActivity.facility.isProtected == 'Y'}">
+                                                            <c:if test="${items.facility.isProtected == 'Y'}">
                                                                 <c:out value="yes"/></c:if>
-                                                            <c:if test="${items.facilitySchedule.facilityActivity.facility.isProtected =='N'}">
+                                                            <c:if test="${items.facility.isProtected =='N'}">
                                                                 <c:out value="No"/></c:if>
                                                         </td>
-                                                        <td><c:out value="${items.facilitySchedule.facilityActivity.facility.operator.facOperator}"/></td>
-                                                        <td>
-                                                        <td><c:out value="${items.admin}"/></td></td>
+                                                        <td><c:out value="${items.facility.operator.facOperator}"/></td>
+                                                        <td><c:out value="${items.admin}"/></td>
                                                         <td><iais:code
-                                                                code="${items.facilitySchedule.facilityActivity.facility.facilityStatus}"></iais:code></td>
-                                                        <td><c:out value="${items.facilitySchedule.facilityActivity.facility.approval}"/></td>
+                                                                code="${items.approval.status}"></iais:code></td>
+                                                        <td><c:out value="approval01"/></td>
                                                     </tr>
                                                 </c:forEach>
                                             </c:otherwise>

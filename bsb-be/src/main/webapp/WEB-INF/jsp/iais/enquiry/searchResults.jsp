@@ -170,7 +170,7 @@
                                                     code="${items.activityType}"></iais:code></td>
                                             <td><c:out value="${items.bioName}"/></td>
                                             <td><iais:code code="${items.riskLevel}"></iais:code></td>
-                                            <td><fmt:formatDate value='${items.facility.approval.approvalExpiryDate}' pattern='dd/MM/yyyy'/></td>
+                                            <td><fmt:formatDate value='${items.approval.approvalExpiryDate}' pattern='dd/MM/yyyy'/></td>
                                             <td>
                                                 <c:if test="${items.facility.isProtected == 'Y'}">
                                                     <c:out value="yes"/></c:if>
@@ -180,8 +180,8 @@
                                             <td><c:out value="${items.facility.operator.facOperator}"/></td>
                                             <td><c:out value="${items.admin}"/></td>
                                             <td><iais:code
-                                                    code="${items.facility.approval.status}"></iais:code></td>
-<%--                                            <td><c:out value="${items.facilitySchedule.facilityActivity.facility.approval}"/></td>--%>
+                                                    code="${items.approval.status}"></iais:code></td>
+                                            <td><c:out value="approval01"/></td>
                                         </tr>
                                     </c:forEach>
                                 </c:otherwise>
@@ -312,13 +312,17 @@
                                     <c:forEach var="items" items="${approvedSearchResult}" varStatus="status">
                                         <tr name="basicData">
                                             <td><c:out value="${status.index + 1}"/></td>
-                                            <td><c:out value = "${items.facilityName}"/></td>
-                                            <td><c:out value="0915 xxxx tech 4-168"></c:out></td>
-                                            <td><iais:code code="${items.facilityStatus}"></iais:code></td>
-                                            <td><c:out value="${items.admin}"/></td>
-                                            <td><fmt:formatDate value='${items.approvalDate}'
+                                            <td><c:out value = "${items.orgName}"/></td>
+                                            <td><c:out value="${items.streetName}"/>
+                                                <c:out value="${items.building}"/>
+                                                <c:out value="${items.floorNo}"/>
+                                                <c:out value="${items.unitNo}"/>
+                                                <c:out value="${items.postalCode}"/></td>
+                                            <td><iais:code code="${items.approval.status}"></iais:code></td>
+                                            <td><c:out value="${items.adminName}"/></td>
+                                            <td><fmt:formatDate value='${items.approval.approvalDate}'
                                                                 pattern='dd/MM/yyyy'/></td>
-                                            <td><fmt:formatDate value='${items.expiryDt}' pattern='dd/MM/yyyy'/></td>
+                                            <td><fmt:formatDate value='${items.approval.approvalExpiryDate}' pattern='dd/MM/yyyy'/></td>
                                         </tr>
                                     </c:forEach>
                                 </c:otherwise>

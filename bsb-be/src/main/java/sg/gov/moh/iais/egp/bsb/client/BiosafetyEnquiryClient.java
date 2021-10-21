@@ -3,7 +3,6 @@ package sg.gov.moh.iais.egp.bsb.client;
 import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.cloud.openfeign.SpringQueryMap;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
@@ -49,11 +48,8 @@ public interface BiosafetyEnquiryClient {
     @GetMapping(value = "/approval_info/app", consumes = MediaType.APPLICATION_JSON_VALUE, produces =MediaType.APPLICATION_JSON_VALUE)
     ResponseDto<ApprovalResultDto> getApproval(@RequestBody  EnquiryDto dto);
 
-    @GetMapping(value = "/fac_info/afc", consumes = MediaType.APPLICATION_JSON_VALUE, produces =MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/afc_info/afc", consumes = MediaType.APPLICATION_JSON_VALUE, produces =MediaType.APPLICATION_JSON_VALUE)
     ResponseDto<ApprovedFacilityCerResultDto> getAFC(@RequestBody  EnquiryDto dto);
-
-    @GetMapping(path ="/afc_info/{orgName}")
-    ResponseDto<ApprovedFacilityCerResultDto> getAfcByOrgName(@PathVariable(name = "orgName") String orgName);
 
     @PostMapping(path ="/bio_info/biologicalIdList", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     ResponseDto<List<Biological>> getBiologicalsById(@RequestBody List<String> biologicalIdList);

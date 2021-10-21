@@ -2,19 +2,19 @@ package sg.gov.moh.iais.egp.bsb.dto.enquiry;
 
 import lombok.Data;
 import sg.gov.moh.iais.egp.bsb.dto.PageInfo;
-import sg.gov.moh.iais.egp.bsb.entity.Facility;
+import sg.gov.moh.iais.egp.bsb.entity.FacilityCertifierReg;
 
 import java.util.List;
 
+
 /**
- * AUTHOR: YiMing
- * DATE:2021/8/16 9:31
- * DESCRIPTION: TODO
+ *@author YiMing
+ * @version 2021/10/15 14:16
  **/
 
 @Data
 public class ApprovedFacilityCerResultDto {
     private PageInfo pageInfo;
 
-    private List<Facility> bsbAFC;
+    private List<FacilityCertifierReg> bsbAFC;
 }

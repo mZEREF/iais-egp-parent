@@ -31,14 +31,11 @@ import sg.gov.moh.iais.egp.bsb.dto.EmailTemplateDto;
 import sg.gov.moh.iais.egp.bsb.entity.FacilityAdmin;
 
 import java.io.IOException;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
- * AUTHOR: YiMing
- * DATE:2021/9/16 17:10
- * DESCRIPTION: TODO
+ *@author YiMing
+ * @version 2021/10/15 14:16
  **/
 
 @Slf4j
@@ -109,22 +106,22 @@ public class BsbNotificationHelper {
            List<String> receiptEmails;
            List<String> ccEmails;
            List<String> bccEmails;
-           if (msgTemplateDto.getRecipient() != null && msgTemplateDto.getRecipient().size() > 0) {
-               emailTemplateDto = getRecript(msgTemplateDto.getRecipient(), refIdType, refId, emailTemplateDto);
+           if (msgTemplateDto.getRecipient() != null && !msgTemplateDto.getRecipient().isEmpty()) {
+               getRecript(msgTemplateDto.getRecipient(), refIdType, refId, emailTemplateDto);
                receiptEmails = emailTemplateDto.getReceiptEmail();
                if (!IaisCommonUtils.isEmpty(receiptEmails)) {
                    emailDto.setReceipts(receiptEmails);
                }
            }
-           if (msgTemplateDto.getCcrecipient() != null && msgTemplateDto.getCcrecipient().size() > 0) {
-               emailTemplateDto = getRecript(msgTemplateDto.getCcrecipient(), refIdType, refId, emailTemplateDto);
+           if (msgTemplateDto.getCcrecipient() != null && !msgTemplateDto.getCcrecipient().isEmpty()) {
+               getRecript(msgTemplateDto.getCcrecipient(), refIdType, refId, emailTemplateDto);
                ccEmails = emailTemplateDto.getReceiptEmail();
                if (!IaisCommonUtils.isEmpty(ccEmails)) {
                    emailDto.setCcList(ccEmails);
                }
            }
-           if (msgTemplateDto.getBccrecipient() != null && msgTemplateDto.getBccrecipient().size() > 0) {
-               emailTemplateDto = getRecript(msgTemplateDto.getBccrecipient(), refIdType, refId, emailTemplateDto);
+           if (msgTemplateDto.getBccrecipient() != null && !msgTemplateDto.getBccrecipient().isEmpty()) {
+               getRecript(msgTemplateDto.getBccrecipient(), refIdType, refId, emailTemplateDto);
                bccEmails = emailTemplateDto.getReceiptEmail();
                if (!IaisCommonUtils.isEmpty(bccEmails)) {
                    emailDto.setBccList(bccEmails);
@@ -199,7 +196,7 @@ public class BsbNotificationHelper {
                for (Map.Entry<String, String> adminEntry : adminTypes.entrySet()) {
                    String key = adminEntry.getKey();
                    String adminValue = adminEntry.getValue();
-                   List<String> officerEmails = IaisCommonUtils.genNewArrayList();
+                   List<String> officerEmails = new ArrayList<>();
                    String officerEmail = emailAddressMap.get(key);
                    officerEmails.add(officerEmail);
                    if (!IaisCommonUtils.isEmpty(msgContent) && StringUtils.isNotEmpty(adminValue)) {
@@ -263,9 +260,9 @@ public class BsbNotificationHelper {
     }
 
     private void getOfficer(List<String> roles, EmailTemplateDto emailTemplateDto) {
-        List<String> adminRoles = IaisCommonUtils.genNewArrayList();
-        List<String> passRoles = IaisCommonUtils.genNewArrayList();
-        List<String> emails = IaisCommonUtils.genNewArrayList();
+        List<String> adminRoles = new ArrayList<>();
+        List<String> passRoles = new ArrayList<>();
+        List<String> emails = new ArrayList<>();
         adminRoles.add(UserRoleConstants.USER_ROLE_ASO);
         adminRoles.add(UserRoleConstants.USER_ROLE_PSO);
         adminRoles.add(UserRoleConstants.USER_ROLE_AO1);
@@ -323,11 +320,11 @@ public class BsbNotificationHelper {
         Map<String, String> emailAddressMap = emailTemplateDto.getEmailAddress();
 
         if (adminTypesMap == null) {
-            adminTypesMap = IaisCommonUtils.genNewHashMap();
+            adminTypesMap = new HashMap<>();
         }
 
         if (emailAddressMap == null) {
-            emailAddressMap = IaisCommonUtils.genNewHashMap();
+            emailAddressMap = new HashMap<>();
         }
 
         int index = admins.size();
