@@ -110,16 +110,16 @@ public class ValidateClincalDirector implements ValidateFlow {
 //                }else {
 //
 //                }
-                Date specialtyGetDate = appSvcClinicalDirectorDtos.get(i).getSpecialtyGetDate();
+                String typeOfCurrRegi = appSvcClinicalDirectorDtos.get(i).getTypeOfCurrRegi();
+                /*Date specialtyGetDate = appSvcClinicalDirectorDtos.get(i).getSpecialtyGetDate();
                 String specialtyStr = appSvcClinicalDirectorDtos.get(i).getSpeciality();
                 String regNo = appSvcClinicalDirectorDtos.get(i).getProfRegNo();
-                String typeOfCurrRegi = appSvcClinicalDirectorDtos.get(i).getTypeOfCurrRegi();
                 //non-mandatory when no return Specialty value from PRS
                 if(!(!StringUtil.isEmpty(regNo) && !StringUtil.isEmpty(typeOfCurrRegi) && StringUtil.isEmpty(specialtyStr))){
                     if(StringUtil.isEmpty(specialtyGetDate)) {
                         map.put("specialtyGetDate" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "specialtyGetDate", "field"));
                     }
-                }
+                }*/
                 if(StringUtil.isEmpty(typeOfCurrRegi)){
                     map.put("typeOfCurrRegi"+i, MessageUtil.replaceMessage("GENERAL_ERR0006", "typeOfCurrRegi", "field"));
                 }else {
