@@ -1,4 +1,4 @@
-package com.ecquaria.cloud.moh.iais.action.DataSubmission;
+package com.ecquaria.cloud.moh.iais.action.datasubmission;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import lombok.extern.slf4j.Slf4j;

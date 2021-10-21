@@ -1,4 +1,4 @@
-package com.ecquaria.cloud.moh.iais.action.DataSubmission;
+package com.ecquaria.cloud.moh.iais.action.datasubmission;
 
 import lombok.extern.slf4j.Slf4j;
 import sop.webflow.rt.api.BaseProcessClass;
