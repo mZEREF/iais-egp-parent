@@ -29,9 +29,14 @@ $(document).ready(function() {
     }
 
     if ($('#nextBtn').length > 0) {
+        var currPage = $('input[name="ar_page"]').val();
+        if ('preview' == currPage) {
+            $('#nextBtn').html('Submit');
+        } else if ('stage' == currPage){
+            $('#nextBtn').html('Preview');
+        }
         $('#nextBtn').click(function () {
             showWaiting();
-            var currPage = $('input[name="ar_page"]').val();
             if ('preview' == currPage) {
                 submit('submission');
             } else {
