@@ -5039,6 +5039,7 @@ public class ClinicalLaboratoryDelegator {
         appSvcPsnDto.setTypeOfCurrRegi(typeOfCurrRegi);
         appSvcPsnDto.setTypeOfRegister(typeOfRegister);
 
+        appSvcPsnDto.setSpecialtyGetDateStr(specialtyGetDateStr);
         if (StringUtil.isEmpty(specialtyGetDateStr)) {
             appSvcPsnDto.setSpecialtyGetDate(null);
         } else {
