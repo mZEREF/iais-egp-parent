@@ -28,6 +28,9 @@ public interface SystemAdminClient  {
     @RequestMapping(path = "/draft-number/{type}",method = RequestMethod.GET)
     FeignResponseEntity<String> draftNumber(@PathVariable(name = "type")  String applicationType);
 
+    @RequestMapping(path = "/submission-id/{type}",method = RequestMethod.GET)
+    FeignResponseEntity<String> submissionID(@PathVariable(name = "type")  String submissionType);
+
     @GetMapping(path = "/application-number")
     FeignResponseEntity<String> applicationNumber(@RequestParam(value = "type") String applicationType);
 

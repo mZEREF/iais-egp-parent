@@ -4,9 +4,10 @@ import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.mastercode.MasterCodeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
+import org.springframework.http.HttpHeaders;
+
 import java.util.List;
 import java.util.Map;
-import org.springframework.http.HttpHeaders;
 
 /**
  * SystemAdminClientFallback
@@ -19,6 +20,14 @@ public class SystemAdminClientFallback implements SystemAdminClient{
 
     @Override
     public FeignResponseEntity<String> draftNumber(String applicationType) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    @Override
+    public FeignResponseEntity<String> submissionID(String submissionType) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);

@@ -93,12 +93,11 @@ public class EfoCycleStageDelegator extends CommonDelegator{
         }
         ValidationResult validationResult = WebValidationHelper.validateProperty(efoCycleStageDto, "save");
         Map<String, String> errorMap = validationResult.retrieveAll();
-
+        ParamUtil.setSessionAttr(bpc.request, "arSuperDataSubmissionDto", arSuperDataSubmissionDto);
         if (!errorMap.isEmpty() || validationResult.isHasErrors()) {
             WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
             ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
             ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.CRUD_ACTION_TYPE, "page");
-            ParamUtil.setSessionAttr(bpc.request, "efoCycleStageDto", efoCycleStageDto);
             return;
         }
 
@@ -109,6 +108,7 @@ public class EfoCycleStageDelegator extends CommonDelegator{
 
     @Override
     public void pageConfirmAction(BaseProcessClass bpc) {
+        ArSuperDataSubmissionDto arSuperDataSubmissionDto= (ArSuperDataSubmissionDto) ParamUtil.getSessionAttr(bpc.request,"arSuperDataSubmissionDto");
 
     }
 
