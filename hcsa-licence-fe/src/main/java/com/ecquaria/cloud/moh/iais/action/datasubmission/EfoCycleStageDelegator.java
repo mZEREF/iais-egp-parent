@@ -1,15 +1,25 @@
 package com.ecquaria.cloud.moh.iais.action.datasubmission;
 
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.intranetUser.IntranetUserConstant;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.EfoCycleStageDto;
+import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
+import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
+import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import lombok.extern.slf4j.Slf4j;
+import sop.util.DateUtil;
 import sop.webflow.rt.api.BaseProcessClass;
 
+import javax.servlet.http.HttpServletRequest;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Map;
 
 /**
  * EfoCycleStageDelegator
@@ -38,6 +48,12 @@ public class EfoCycleStageDelegator extends CommonDelegator{
 
     @Override
     public void preparePage(BaseProcessClass bpc) {
+        ArSuperDataSubmissionDto arSuperDataSubmissionDto= (ArSuperDataSubmissionDto) ParamUtil.getSessionAttr(bpc.request,"arSuperDataSubmissionDto");
+        arSuperDataSubmissionDto.setEfoCycleStageDto(new EfoCycleStageDto());
+        arSuperDataSubmissionDto.getEfoCycleStageDto().setYearNum(getYear(new Date(),new Date()));
+        arSuperDataSubmissionDto.getEfoCycleStageDto().setMonthNum(getMon(new Date(),new Date()));
+        arSuperDataSubmissionDto.getEfoCycleStageDto().setPerformed("");
+
         MasterCodeUtil.retrieveOptionsByCate("");
 
     }
@@ -49,6 +65,7 @@ public class EfoCycleStageDelegator extends CommonDelegator{
 
     @Override
     public void draft(BaseProcessClass bpc) {
+        ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.CRUD_ACTION_TYPE, "page");
 
     }
 
@@ -59,6 +76,30 @@ public class EfoCycleStageDelegator extends CommonDelegator{
 
     @Override
     public void pageAction(BaseProcessClass bpc) {
+        EfoCycleStageDto efoCycleStageDto=new EfoCycleStageDto();
+        HttpServletRequest request=bpc.request;
+        String othersReason = ParamUtil.getRequestString(request, "othersReason");
+        String reasonSelect = ParamUtil.getRequestString(request, "reasonSelect");
+        boolean indicated = (boolean) ParamUtil.getRequestAttr(request, "indicatedRadio");
+        String startDateStr = ParamUtil.getRequestString(request, "efoDateStarted");
+        Date startDate = DateUtil.parseDate(startDateStr, AppConsts.DEFAULT_DATE_FORMAT);
+        efoCycleStageDto.setDateStarted(startDate);
+        efoCycleStageDto.setIndicated(indicated);
+        efoCycleStageDto.setReason(reasonSelect);
+        if(othersReason!=null){
+            efoCycleStageDto.setOthersReason(othersReason);
+        }
+        ValidationResult validationResult = WebValidationHelper.validateProperty(efoCycleStageDto, "save");
+        Map<String, String> errorMap = validationResult.retrieveAll();
+
+        if (!errorMap.isEmpty() || validationResult.isHasErrors()) {
+            WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
+            ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
+            ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.CRUD_ACTION_TYPE, "page");
+            ParamUtil.setSessionAttr(bpc.request, "efoCycleStageDto", efoCycleStageDto);
+            return;
+        }
+        ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.CRUD_ACTION_TYPE, "confirm");
 
     }
 
