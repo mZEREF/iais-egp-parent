@@ -132,6 +132,9 @@
                                                                     <c:when test="${app.processType eq 'PROTYPE001'}">
                                                                         <a href="/bsb-fe/eservice/INTERNET/MohBsbViewFacRegApplication?appId=<iais:mask name='id' value='${app.id}'/><c:if test="${app.status eq 'BSBAPST001'}">&editId=<iais:mask name='editId' value='${app.id}'/></c:if>"><c:out value="${app.applicationNo}"/></a>
                                                                     </c:when>
+                                                                    <c:when test="${app.processType eq 'PROTYPE005'}">
+                                                                        <a href="/bsb-fe/eservice/INTERNET/MohBsbViewCertRegApplication?appId=<iais:mask name='id' value='${app.id}'/><c:if test="${app.status eq 'BSBAPST001'}">&editId=<iais:mask name='editId' value='${app.id}'/></c:if>"><c:out value="${app.applicationNo}"/></a>
+                                                                    </c:when>
                                                                     <c:otherwise>
                                                                         <c:out value="${app.applicationNo}"/>
                                                                     </c:otherwise>
@@ -160,6 +163,9 @@
                                                                     <c:choose>
                                                                         <c:when test="${app.processType eq 'PROTYPE001' and app.status eq 'BSBAPST001'}">
                                                                             <option value="/bsb-fe/eservice/INTERNET/MohBsbFacilityRegistration?editId=<iais:mask name='editId' value='${app.id}'/>">Edit</option>
+                                                                        </c:when>
+                                                                        <c:when test="${app.processType eq 'PROTYPE005' and app.status eq 'BSBAPST001'}">
+                                                                            <option value="/bsb-fe/eservice/INTERNET/MohFacilityCertifierRegistration?editId=<iais:mask name='editId' value='${app.id}'/>">Edit</option>
                                                                         </c:when>
                                                                     </c:choose>
                                                                 </select>

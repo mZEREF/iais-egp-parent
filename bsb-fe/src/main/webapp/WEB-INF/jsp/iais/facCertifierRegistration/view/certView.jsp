@@ -1,4 +1,5 @@
 <%@ page import="static sg.gov.moh.iais.egp.bsb.constant.GlobalConstants.WEB_ROOT"%>
+<%@ page import="sg.gov.moh.iais.egp.bsb.util.TableDisplayUtil"%>
 <%@ taglib prefix="webui" uri="http://www.ecquaria.com/webui" %>
 <%@ taglib prefix="ias" uri="http://www.ecq.com/iais" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
@@ -13,7 +14,7 @@
 <webui:setLayout name="iais-internet"/>
 
 <script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-common.js"></script>
-<script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-facility-certifier-register.js"></script>
+<script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-facility-register.js"></script>
 
 <%@include file="/WEB-INF/jsp/iais/include/showErrorMsg.jsp"%>
 
@@ -29,7 +30,6 @@
             <div class="row">
                 <div class="col-xs-12">
                     <div class="tab-gp steps-tab">
-                        <%@ include file="InnerNavTab.jsp" %>
                         <div class="tab-content">
                             <div class="tab-pane fade in active">
                                 <div id="previewSubmitPanel" role="tabpanel">
@@ -40,12 +40,12 @@
                                                     <div class="panel panel-default">
                                                         <div class="panel-heading completed">
                                                             <h4 class="panel-title">
-                                                                <a class="collapsed" data-toggle="collapse" href="#previewFacInfo">Facility Informations</a>
+                                                                <a class="collapsed" data-toggle="collapse" href="#previewFacInfo">Facility Certifier Informations</a>
                                                             </h4>
                                                         </div>
                                                         <div id="previewFacInfo" class="panel-collapse collapse">
                                                             <div class="panel-body">
-                                                                <div class="text-right app-font-size-16"><a href="#" data-step-key="orgInfo_orgProfile"><em class="fa fa-pencil-square-o"></em>Edit</a></div>
+                                                                <div class="text-right app-font-size-16"><c:if test="${not empty maskedEditId}"><a href="/bsb-fe/eservice/INTERNET/MohFacilityCertifierRegistration?editId=${maskedEditId}"><em class="fa fa-pencil-square-o"></em>Edit</a></c:if></div>
                                                                 <div class="panel-main-content form-horizontal min-row">
                                                                     <div class="form-group">
                                                                         <div class="col-10"><strong>Facility Profile</strong></div>
@@ -62,11 +62,6 @@
                                                                             <div class="col-sm-7 col-md-5 col-xs-7"><p>${orgProfile.streetName} ${orgProfile.building} ${orgProfile.floor} - ${orgProfile.unitNo} ${orgProfile.postalCode}</p></div>
                                                                             <div class="clear"></div>
                                                                         </div>
-                                                                        <div class="form-group">
-                                                                            <label class="col-xs-5 col-md-4 control-label">Is the facility a Protected Place?</label>
-                                                                            <div class="col-sm-7 col-md-5 col-xs-7"><p></p></div>
-                                                                            <div class="clear"></div>
-                                                                        </div>
                                                                     </div>
                                                                 </div>
                                                                 <div class="panel-main-content form-horizontal min-row">
@@ -77,10 +72,10 @@
                                                                     <c:forEach var="tMember" items="${orgCerTeam.certifierTeamMemberList}" varStatus="status">
                                                                         <div>
                                                                             <c:if test="${orgCerTeam.certifierTeamMemberList.size() > 1}">
-                                                                            <div class="form-group">
-                                                                                <label class="col-xs-5 col-md-4 control-label">Team Member ${status.index + 1}</label>
-                                                                                <div class="clear"></div>
-                                                                            </div>
+                                                                                <div class="form-group">
+                                                                                    <label class="col-xs-5 col-md-4 control-label">Team Member ${status.index + 1}</label>
+                                                                                    <div class="clear"></div>
+                                                                                </div>
                                                                             </c:if>
                                                                             <div class="form-group">
                                                                                 <label class="col-xs-5 col-md-4 control-label">Name</label>
@@ -122,7 +117,7 @@
                                                                 </div>
                                                                 <div class="panel-main-content form-horizontal min-row">
                                                                     <div class="form-group">
-                                                                        <div class="col-10"><strong>Facility Administrator</strong></div>
+                                                                        <div class="col-10"><strong>Facility Certifier Administrator</strong></div>
                                                                         <div class="clear"></div>
                                                                     </div>
                                                                     <div>
@@ -219,7 +214,7 @@
                                                         </div>
                                                         <div id="previewDocs" class="panel-collapse collapse">
                                                             <div class="panel-body">
-                                                                <div class="text-right app-font-size-16"><a href="#" data-step-key="primaryDocs"><em class="fa fa-pencil-square-o"></em>Edit</a></div>
+                                                                <div class="text-right app-font-size-16"><c:if test="${not empty maskedEditId}"><a href="/bsb-fe/eservice/INTERNET/MohFacilityCertifierRegistration?editId=${maskedEditId}"><em class="fa fa-pencil-square-o"></em>Edit</a></c:if></div>
                                                                 <div class="panel-main-content form-horizontal min-row">
                                                                     <div class="form-group">
                                                                         <div class="col-10"><strong>Uploaded Documents</strong></div>
@@ -233,43 +228,13 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="form-horizontal" style="padding: 30px 20px 10px;">
-                                        <div class="form-group ">
-                                            <div class="col-sm-5 control-label">
-                                                <label for="remarks">Remarks</label>
-                                            </div>
-                                            <div class="col-sm-6 col-md-7">
-                                                <textarea class="col-xs-12" name="remarks" id="remarks" rows="5"><c:out value="${previewSubmit.remarks}"/></textarea>
-                                                <span data-err-ind="remarks" class="error-msg"></span>
-                                            </div>
-                                        </div>
-                                        <div class="form-group ">
-                                            <div class="col-xs-1" style="padding: 30px 0 20px 30px;">
-                                                <input type="checkbox" name="require" id="require" value="Y" <c:if test="${previewSubmit.require eq 'Y'}">checked = checked</c:if>/>
-                                            </div>
-                                            <div class="col-xs-10 control-label" style="padding: 30px 0">
-                                                <label for="require" >Declaration of compliance with MOH requirements including those stipulatedin the checklist</label>
-                                                <span data-err-ind="require" class="error-msg"></span>
-                                            </div>
-                                        </div>
-
-                                        <div class="form-group ">
-                                            <div class="col-xs-1" style="padding: 30px 0 0 30px;">
-                                                <input type="checkbox" name="accuracy" id="accuracy" value="Y" <c:if test="${previewSubmit.accuracy eq 'Y'}">checked = checked</c:if>/>
-                                            </div>
-                                            <div class="col-xs-10 control-label" style="padding: 30px 0">
-                                                <label for="accuracy">Declaration on the accuracy of submission</label>
-                                                <span data-err-ind="accuracy" class="error-msg"></span>
-                                            </div>
-                                        </div>
-
-                                    </div>
                                 </div>
-
-                                <%@ include file="InnerFooter.jsp" %>
                             </div>
                         </div>
                     </div>
+                </div>
+                <div class="col-xs-12">
+                    <a class="back" href="/bsb-fe/eservice/INTERNET/MohBSBInboxApp"><em class="fa fa-angle-left"></em> Back</a>
                 </div>
             </div>
         </div>

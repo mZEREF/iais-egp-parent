@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import sg.gov.moh.iais.egp.bsb.common.node.Node;
+import sg.gov.moh.iais.egp.bsb.common.node.simple.ValidatableNodeValue;
 import sg.gov.moh.iais.egp.bsb.dto.ValidationResultDto;
 import sg.gov.moh.iais.egp.bsb.util.SpringReflectionUtils;
 
@@ -15,15 +16,15 @@ import java.io.Serializable;
 
 import static sg.gov.moh.iais.egp.bsb.constant.FacCertifierRegisterConstants.NODE_NAME_ORG_FAC_ADMINISTRATOR;
 
+
 /**
- * @author : YiMing
- * @date :2021/9/26 15:13
- * DESCRIPTION: TODO
+ *@author YiMing
+ * @version 2021/10/15 14:16
  **/
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties({"name", "available", "validated", "dependNodes", "validationResultDto"})
-public class AdministratorDto extends Node {
+public class AdministratorDto extends ValidatableNodeValue {
     @Data
     @NoArgsConstructor
     public static class FacilityAdministratorInfo implements Serializable {
@@ -43,14 +44,6 @@ public class AdministratorDto extends Node {
 
     private ValidationResultDto validationResultDto;
 
-    public AdministratorDto(String name, Node[] dependNodes) {
-        super(name, dependNodes);
-    }
-
-    public static AdministratorDto getInstance(Node[] dependNodes) {
-        return new AdministratorDto(NODE_NAME_ORG_FAC_ADMINISTRATOR, dependNodes);
-    }
-
     @Override
     public boolean doValidation() {
         this.validationResultDto = (ValidationResultDto) SpringReflectionUtils.invokeBeanMethod("cerRegFeignClient", "validateFacilityAdmin", new Object[]{this});
@@ -63,12 +56,6 @@ public class AdministratorDto extends Node {
             throw new IllegalStateException("This DTO is not validated");
         }
         return this.validationResultDto.toErrorMsg();
-    }
-
-    @Override
-    public void needValidation() {
-        super.needValidation();
-        this.validationResultDto = null;
     }
 
     public FacilityAdministratorInfo getMainAdmin() {

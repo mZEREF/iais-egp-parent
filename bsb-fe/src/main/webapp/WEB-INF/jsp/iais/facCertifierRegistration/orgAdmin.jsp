@@ -159,7 +159,7 @@
                                                     <select name="idTypeA" id="idTypeA">
                                                         <option value="IDTYPE001" <c:if test="${orgAdmin.alternativeAdmin.idType eq 'IDTYPE001'}">selected="selected"</c:if>>NRIC</option>
                                                         <option value="IDTYPE002" <c:if test="${orgAdmin.alternativeAdmin.idType eq 'IDTYPE002'}">selected="selected"</c:if>>FIN</option>
-                                                        <option value="IDTYPE003" <c:if test="${orgAdmin.alternativeAdmin.idType eq 'IDTYPE001'}">selected="selected"</c:if>>Passport</option>
+                                                        <option value="IDTYPE003" <c:if test="${orgAdmin.alternativeAdmin.idType eq 'IDTYPE003'}">selected="selected"</c:if>>Passport</option>
                                                     </select>
                                                     <span data-err-ind="idTypeA" class="error-msg"></span>
                                                 </div>

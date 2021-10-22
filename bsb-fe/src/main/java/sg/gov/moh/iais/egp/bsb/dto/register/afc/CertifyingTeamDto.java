@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import sg.gov.moh.iais.egp.bsb.common.node.Node;
+import sg.gov.moh.iais.egp.bsb.common.node.simple.ValidatableNodeValue;
 import sg.gov.moh.iais.egp.bsb.dto.ValidationResultDto;
 import sg.gov.moh.iais.egp.bsb.util.SpringReflectionUtils;
 
@@ -18,14 +19,14 @@ import java.util.List;
 import static sg.gov.moh.iais.egp.bsb.constant.FacCertifierRegisterConstants.NODE_NAME_ORG_CERTIFYING_TEAM;
 
 
+
 /**
- * AUTHOR: YiMing
- * DATE:2021/9/26 15:13
- * DESCRIPTION: TODO
+ *@author YiMing
+ * @version 2021/10/15 14:16
  **/
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties({"name", "available", "validated", "dependNodes", "validationResultDto"})
-public class CertifyingTeamDto extends Node {
+public class CertifyingTeamDto extends ValidatableNodeValue {
     @Data
     @NoArgsConstructor
     public static class CertifierTeamMember implements Serializable {
@@ -51,15 +52,11 @@ public class CertifyingTeamDto extends Node {
     private final List<CertifierTeamMember> certifierTeamMemberList;
     private ValidationResultDto validationResultDto;
 
-    public CertifyingTeamDto(String name, Node[] dependNodes) {
-        super(name, dependNodes);
+    public CertifyingTeamDto() {
         certifierTeamMemberList = new ArrayList<>();
         certifierTeamMemberList.add(new CertifierTeamMember());
     }
 
-    public static CertifyingTeamDto getInstance(Node[] dependNodes) {
-        return new CertifyingTeamDto(NODE_NAME_ORG_CERTIFYING_TEAM, dependNodes);
-    }
     @Override
     public boolean doValidation() {
         this.validationResultDto = (ValidationResultDto) SpringReflectionUtils.invokeBeanMethod("cerRegFeignClient", "validateCertifierTeam", new Object[]{this});
@@ -87,11 +84,6 @@ public class CertifyingTeamDto extends Node {
         return this.validationResultDto.toErrorMsg();
     }
 
-    @Override
-    public void needValidation() {
-        super.needValidation();
-        this.validationResultDto = null;
-    }
 
 
     //    ---------------------------- request -> object ----------------------------------------------

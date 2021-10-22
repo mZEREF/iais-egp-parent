@@ -309,8 +309,6 @@ public class BiosafetyEnquiryDelegator {
         }
         if (applicationSubmissionDateFrom != null) {
             enquiryDto.setApplicationSubmissionDateFrom(applicationSubmissionDateFrom);
-        } else {
-            enquiryDto.setApplicationSubmissionDateFrom(DateUtil.yearAgoDt());
         }
         if (applicationSubmissionDateTo != null) {
             enquiryDto.setApplicationSubmissionDateTo(applicationSubmissionDateTo);
@@ -416,11 +414,10 @@ public class BiosafetyEnquiryDelegator {
         addFilter(request, enquiryDto, count);
         if (CHOOSE_MARK_APPLICATION.equals(count) && Boolean.TRUE.equals(validationParam(request, "app", enquiryDto))) {
             ApplicationResultDto applicationResultDto = biosafetyEnquiryClient.getApp(enquiryDto).getEntity();
-            List<Application> applications = applicationResultDto.getBsbApp();
             ParamUtil.setRequestAttr(request, BioSafetyEnquiryConstants.PARAM_APPLICATION_INFO_RESULT, applicationResultDto.getBsbApp());
             ParamUtil.setRequestAttr(request, BioSafetyEnquiryConstants.PARAM_APPLICATION_INFO_SEARCH, enquiryDto);
             ParamUtil.setRequestAttr(request, KEY_PAGE_INFO, applicationResultDto.getPageInfo());
-            log.info(StringUtil.changeForLog(applicationResultDto.getBsbApp().toString() + "===================application"));
+//            log.info(StringUtil.changeForLog(applicationResultDto.getBsbApp().toString() + "===================application"));
         } else if (CHOOSE_MARK_FACILITY.equals(count) && Boolean.TRUE.equals(validationParam(request, "fac", enquiryDto))) {
             FacilityResultDto facilityResultDto = biosafetyEnquiryClient.getFac(enquiryDto).getEntity();
             List<FacilityActivity> activities = facilityResultDto.getBsbFac();

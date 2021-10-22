@@ -72,19 +72,29 @@
                                     <c:forEach var="items" items="${appInfoSearchResult}" varStatus="status">
                                         <tr name="basicData">
                                             <td><c:out value="${status.index+1}"/></td>
-                                            <td><a onclick="javascript:doAppInfo('<iais:mask name="appId"
-                                                                                             value="${items.id}"/>')"><c:out
-                                                    value="${items.applicationNo}"/></a></td>
+                                            <td>
+                                                <c:choose>
+                                                <c:when test="${items.appType eq 'BSBAPTY006' and items.appStatus eq 'BSBAPST002'}">
+                                                    <a href="/bsb-be/eservicecontinue/INTRANET/MohAOProcessingRevocation?appId=<iais:mask name='id' value='${items.id}'/>&OWASP_CSRFTOKEN=null"><c:out value="${items.applicationNo}"/></a>
+                                                </c:when>
+                                                <c:when test="${items.appType eq 'BSBAPTY001' and (items.appStatus eq 'BSBAPST001' or items.appStatus eq 'BSBAPST002' or items.appStatus eq 'BSBAPST003')}">
+                                                    <a href="/bsb-be/eservicecontinue/INTRANET/MohOfficersProcess?appId=<iais:mask name='id' value='${items.id}'/>&OWASP_CSRFTOKEN=null"><c:out value="${items.applicationNo}"/></a>
+                                                </c:when>
+                                                <c:otherwise>
+                                                    <c:out value="${items.applicationNo}"/>
+                                                </c:otherwise>
+                                            </c:choose>
+                                            </td>
                                             <td><iais:code code="${items.appType}"></iais:code></td>
-                                            <td><iais:code code="${items.status}"></iais:code></td>
+                                            <td><iais:code code="${items.appStatus}"></iais:code></td>
                                             <td><fmt:formatDate value='${items.applicationDt}'
                                                                 pattern='dd/MM/yyyy'/></td>
                                             <td><fmt:formatDate value='${items.approvalDate}'
                                                                 pattern='dd/MM/yyyy'/></td>
                                             <td><iais:code
-                                                    code="${items.facility.facilityClassification}"></iais:code></td>
-                                            <td><iais:code code="${items.facility.activeType}"></iais:code></td>
-                                            <td><iais:code code="${items.facility.facilityName}"></iais:code></td>
+                                                    code="${items.facilityClassification}"></iais:code></td>
+                                            <td><iais:code code="${items.facilityType}"></iais:code></td>
+                                            <td><iais:code code="${items.facilityName}"></iais:code></td>
                                             <td><c:out value="${items.bioName}"></c:out></td>
                                             <td><iais:code code="${items.riskLevel}"></iais:code></td>
                                             <td><iais:code code="${items.processType}"></iais:code></td>

@@ -3,8 +3,7 @@ package sg.gov.moh.iais.egp.bsb.dto.register.afc;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import sg.gov.moh.iais.egp.bsb.common.node.Node;
-import sg.gov.moh.iais.egp.bsb.constant.FacCertifierRegisterConstants;
+import sg.gov.moh.iais.egp.bsb.common.node.simple.ValidatableNodeValue;
 import sg.gov.moh.iais.egp.bsb.dto.ValidationResultDto;
 import sg.gov.moh.iais.egp.bsb.util.SpringReflectionUtils;
 
@@ -16,20 +15,12 @@ import javax.servlet.http.HttpServletRequest;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties({"name", "available", "validated", "dependNodes", "validationResultDto"})
-public class PreviewSubmitDto extends Node {
+public class PreviewSubmitDto extends ValidatableNodeValue {
     private String remarks;
     private String require;
     private String accuracy;
 
     private ValidationResultDto validationResultDto;
-
-    public PreviewSubmitDto(String name, Node[] dependNodes) {
-        super(name, dependNodes);
-    }
-
-    public static PreviewSubmitDto getInstance(Node[] dependNodes) {
-        return new PreviewSubmitDto(FacCertifierRegisterConstants.NODE_NAME_CER_PREVIEW_SUBMIT, dependNodes);
-    }
 
     @Override
     public boolean doValidation() {
@@ -43,12 +34,6 @@ public class PreviewSubmitDto extends Node {
             throw new IllegalStateException("This DTO is not validated");
         }
         return this.validationResultDto.toErrorMsg();
-    }
-
-    @Override
-    public void needValidation() {
-        super.needValidation();
-        this.validationResultDto = null;
     }
 
 

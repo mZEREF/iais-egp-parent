@@ -3,24 +3,23 @@ package sg.gov.moh.iais.egp.bsb.dto.register.afc;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import sg.gov.moh.iais.egp.bsb.common.node.Node;
+import sg.gov.moh.iais.egp.bsb.common.node.simple.ValidatableNodeValue;
 import sg.gov.moh.iais.egp.bsb.dto.ValidationResultDto;
 import sg.gov.moh.iais.egp.bsb.util.SpringReflectionUtils;
 
 import javax.servlet.http.HttpServletRequest;
 
-import static sg.gov.moh.iais.egp.bsb.constant.FacCertifierRegisterConstants.*;
+
 
 
 /**
- * AUTHOR: YiMing
- * DATE:2021/9/26 15:12
- * DESCRIPTION: TODO
+ *@author YiMing
+ * @version 2021/10/15 14:16
  **/
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties({"name", "available", "validated", "dependNodes", "validationResultDto"})
-public class OrganisationProfileDto extends Node {
+public class OrganisationProfileDto extends ValidatableNodeValue {
     private String orgName;
     private String addressType;
     private String floor;
@@ -40,13 +39,6 @@ public class OrganisationProfileDto extends Node {
     private String contactPerson;
     private ValidationResultDto validationResultDto;
 
-    public OrganisationProfileDto(String name, Node[] dependNodes) {
-        super(name, dependNodes);
-    }
-
-    public static OrganisationProfileDto getInstance(Node[] dependNodes) {
-        return new OrganisationProfileDto(NODE_NAME_ORG_PROFILE, dependNodes);
-    }
 
     @Override
     public boolean doValidation() {
@@ -62,11 +54,8 @@ public class OrganisationProfileDto extends Node {
         return this.validationResultDto.toErrorMsg();
     }
 
-    @Override
-    public void needValidation() {
-        super.needValidation();
-        this.validationResultDto = null;
-    }
+
+
 
     public String getOrgName() {
         return orgName;

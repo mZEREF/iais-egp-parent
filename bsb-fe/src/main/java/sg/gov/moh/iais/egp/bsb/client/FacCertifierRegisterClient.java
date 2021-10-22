@@ -3,6 +3,8 @@ package sg.gov.moh.iais.egp.bsb.client;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.cloud.openfeign.FeignClientsConfiguration;
 import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
@@ -22,7 +24,6 @@ public interface FacCertifierRegisterClient {
     @PostMapping(path = "/register/faCer/validate/facAdmin", consumes = MediaType.APPLICATION_JSON_VALUE, produces =MediaType.APPLICATION_JSON_VALUE)
     ValidationResultDto validateFacilityAdmin(@RequestBody AdministratorDto dto);
 
-
     @PostMapping(path = "/register/faCer/validate/primaryDocs", consumes = MediaType.APPLICATION_JSON_VALUE, produces =MediaType.APPLICATION_JSON_VALUE)
     ValidationResultDto validateCerPrimaryDocs(@RequestBody PrimaryDocDto dto);
 
@@ -31,4 +32,8 @@ public interface FacCertifierRegisterClient {
 
     @PostMapping(path = "/register/faCer", consumes = MediaType.APPLICATION_JSON_VALUE, produces =MediaType.APPLICATION_JSON_VALUE)
     ResponseDto<String> saveNewRegisteredFacCertifier(@RequestBody FacilityCertifierRegisterDto dto);
+
+    @GetMapping(path = "/register/faCer/application/{appId}", produces =MediaType.APPLICATION_JSON_VALUE)
+    ResponseDto<FacilityCertifierRegisterDto> getCertifierRegistrationAppData(@PathVariable("appId") String appId);
+
 }

@@ -8,14 +8,13 @@ import sg.gov.moh.iais.egp.bsb.entity.Application;
 import java.util.List;
 
 /**
- * AUTHOR: YiMing
- * DATE:2021/8/11 14:28
- * DESCRIPTION: TODO
+ *@author YiMing
+ * @version 2021/10/15 14:16
  **/
 
 @Data
 public class ApplicationResultDto {
     private PageInfo pageInfo;
 
-    private List<Application> bsbApp;
+    private List<ApplicationInfoDto> bsbApp;
 }

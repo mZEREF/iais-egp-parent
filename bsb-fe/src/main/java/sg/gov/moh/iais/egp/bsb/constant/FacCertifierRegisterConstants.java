@@ -1,9 +1,8 @@
 package sg.gov.moh.iais.egp.bsb.constant;
 
 /**
- * AUTHOR: YiMing
- * DATE:2021/9/26 14:48
- * DESCRIPTION: TODO
+ *@author YiMing
+ * @version 2021/10/15 14:16
  **/
 public class FacCertifierRegisterConstants {
     public static final String NODE_NAME_COMPANY_INFO = "compInfo";

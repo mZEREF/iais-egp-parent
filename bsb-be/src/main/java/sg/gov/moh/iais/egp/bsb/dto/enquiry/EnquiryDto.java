@@ -1,5 +1,6 @@
 package sg.gov.moh.iais.egp.bsb.dto.enquiry;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
 import net.sf.oval.constraint.ValidateWithMethod;
 import sg.gov.moh.iais.egp.bsb.dto.PagingAndSortingDto;
@@ -14,6 +15,9 @@ import java.util.List;
  **/
 
 @Data
+@ToString(callSuper = true)
+@EqualsAndHashCode(callSuper = true)
+@JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class EnquiryDto extends PagingAndSortingDto implements Serializable {
     private static final String MESSAGE_END_DATE_EARLIER_THAN_START_DATE = "EndDate can not be earlier than startDate.";
     private String id;

@@ -7,9 +7,8 @@ import java.io.Serializable;
 import java.util.Date;
 
 /**
- * AUTHOR: YiMing
- * DATE:2021/7/26 10:48
- * DESCRIPTION: TODO
+ *@author YiMing
+ * @version 2021/10/15 14:16
  **/
 
 @Data
@@ -51,8 +50,6 @@ public class ApplicationInfoDto implements Serializable{
 
     @ExcelProperty(cellIndex = 11, cellName = "Process Type")
     private String processType;
-
-    private String scheduleType;
 
     @ExcelProperty(cellIndex = 12, cellName = "Verified By DO")
     private Date doVerifiedDt;
