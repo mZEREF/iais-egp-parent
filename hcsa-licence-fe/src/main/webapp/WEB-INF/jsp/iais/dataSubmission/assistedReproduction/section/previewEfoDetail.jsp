@@ -22,7 +22,7 @@
                 <iais:row>
                     <iais:field width="5" value="Date Started" mandatory="true"/>
                     <iais:value width="7" cssClass="col-md-7">
-                        <fmt:formatDate value="${arSuperDataSubmissionDto.efoCycleStageDto.dateStarted}" pattern="dd/MM/yyyy"></fmt:formatDate>
+                        <fmt:formatDate value="${arSuperDataSubmissionDto.efoCycleStageDto.startDate}" pattern="dd/MM/yyyy"></fmt:formatDate>
                     </iais:value>
                 </iais:row>
                 <iais:row>
@@ -32,35 +32,12 @@
                     </iais:value>
                 </iais:row>
                 <iais:row>
-                    <iais:field width="5" value="Is it Medically Indicated?" mandatory="true"/>
-                    <iais:value width="3" cssClass="col-md-3">
-                        <div class="form-check">
-                            <input class="form-check-input"
-                                   type="radio"
-                                   name="patRadio"
-                                   value="yes"
-                                   id="radioYes"
-                                   <c:if test="${empty arSuperDataSubmissionDto.efoCycleStageDto.indicated || arSuperDataSubmissionDto.efoCycleStageDto.indicated ==true }">checked</c:if>
-                                   aria-invalid="false"
-                                   disabled>
-                            <label class="form-check-label"
-                                   for="radioYes"><span
-                                    class="check-circle"></span>Yes</label>
-                        </div>
-                    </iais:value>
-                    <iais:value width="4" cssClass="col-md-4">
-                        <div class="form-check">
-                            <input class="form-check-input" type="radio"
-                                   name="patRadio"
-                                   value="no"
-                                   id="radioNo"
-                                   <c:if test="${arSuperDataSubmissionDto.efoCycleStageDto.indicated == false}">checked</c:if>
-                                   aria-invalid="false"
-                                   disabled>
-                            <label class="form-check-label"
-                                   for="radioNo"><span
-                                    class="check-circle"></span>No</label>
-                        </div>
+                    <iais:field width="5" value="Is it Medically Indicated?" mandatory="false"/>
+                    <iais:value width="7" cssClass="col-md-7">
+                        <c:if test="${arSuperDataSubmissionDto.efoCycleStageDto.isMedicallyIndicated ==1 }">
+                            <label class="form-check-label" >Yes</label></c:if>
+                        <c:if test="${arSuperDataSubmissionDto.efoCycleStageDto.isMedicallyIndicated ==0 }">
+                            <label class="form-check-label" >No</label></c:if>
                     </iais:value>
                 </iais:row>
                 <iais:row>

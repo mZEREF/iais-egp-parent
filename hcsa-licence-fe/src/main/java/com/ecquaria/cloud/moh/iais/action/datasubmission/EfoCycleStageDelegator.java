@@ -53,6 +53,7 @@ public class EfoCycleStageDelegator extends CommonDelegator{
         arSuperDataSubmissionDto.getEfoCycleStageDto().setYearNum(getYear(new Date(),new Date()));
         arSuperDataSubmissionDto.getEfoCycleStageDto().setMonthNum(getMon(new Date(),new Date()));
         arSuperDataSubmissionDto.getEfoCycleStageDto().setPerformed("");
+        arSuperDataSubmissionDto.getEfoCycleStageDto().setSubmissionId("");
 
         MasterCodeUtil.retrieveOptionsByCate("");
 
@@ -76,15 +77,16 @@ public class EfoCycleStageDelegator extends CommonDelegator{
 
     @Override
     public void pageAction(BaseProcessClass bpc) {
-        EfoCycleStageDto efoCycleStageDto=new EfoCycleStageDto();
+        ArSuperDataSubmissionDto arSuperDataSubmissionDto= (ArSuperDataSubmissionDto) ParamUtil.getSessionAttr(bpc.request,"arSuperDataSubmissionDto");
+        EfoCycleStageDto efoCycleStageDto=arSuperDataSubmissionDto.getEfoCycleStageDto();
         HttpServletRequest request=bpc.request;
         String othersReason = ParamUtil.getRequestString(request, "othersReason");
         String reasonSelect = ParamUtil.getRequestString(request, "reasonSelect");
-        boolean indicated = (boolean) ParamUtil.getRequestAttr(request, "indicatedRadio");
+        Integer indicated = (Integer) ParamUtil.getRequestAttr(request, "indicatedRadio");
         String startDateStr = ParamUtil.getRequestString(request, "efoDateStarted");
         Date startDate = DateUtil.parseDate(startDateStr, AppConsts.DEFAULT_DATE_FORMAT);
-        efoCycleStageDto.setDateStarted(startDate);
-        efoCycleStageDto.setIndicated(indicated);
+        efoCycleStageDto.setStartDate(startDate);
+        efoCycleStageDto.setIsMedicallyIndicated(indicated);
         efoCycleStageDto.setReason(reasonSelect);
         if(othersReason!=null){
             efoCycleStageDto.setOthersReason(othersReason);
@@ -99,6 +101,8 @@ public class EfoCycleStageDelegator extends CommonDelegator{
             ParamUtil.setSessionAttr(bpc.request, "efoCycleStageDto", efoCycleStageDto);
             return;
         }
+
+
         ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.CRUD_ACTION_TYPE, "confirm");
 
     }
