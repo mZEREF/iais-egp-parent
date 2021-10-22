@@ -204,7 +204,6 @@
                 <div class="control-label formtext col-md-5 col-xs-5 specialtyGetDateLabel">
                     <label  class="control-label control-set-font control-font-label">
                         Date when specialty was obtained
-                        <span class="mandatory">*</span>
                     </label>
                 </div>
                 <div class="col-md-3 col-xs-12">
