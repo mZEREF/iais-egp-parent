@@ -402,12 +402,16 @@ function toggleOnSelect(sel, val, elem) {
     if (isEmpty(sel)) {
         return;
     }
-    var $selector = $('#' + sel);
+    var $selector = $(sel);
     if ($selector.length == 0) {
+        $selector = $('#' + sel);
+    } else if ($selector.length == 0) {
         $selector = $('.' + sel);
     }
-    var $target = $('#' + elem);
+    var $target = $(elem);
     if ($target.length == 0) {
+        $target = $('#' + elem);
+    } else if ($target.length == 0) {
         $target = $('.' + sel);
     }
     if ($selector.length == 0 || $target.length == 0) {
@@ -425,12 +429,16 @@ function toggleOnCheck(sel, elem, hide) {
     if (isEmpty(sel)) {
         return;
     }
-    var $selector = $('#' + sel);
+    var $selector = $(sel);
     if ($selector.length == 0) {
+        $selector = $('#' + sel);
+    } else if ($selector.length == 0) {
         $selector = $('.' + sel);
     }
-    var $target = $('#' + elem);
+    var $target = $(elem);
     if ($target.length == 0) {
+        $target = $('#' + elem);
+    } else if ($target.length == 0) {
         $target = $('.' + sel);
     }
     if ($selector.length == 0 || $target.length == 0) {
