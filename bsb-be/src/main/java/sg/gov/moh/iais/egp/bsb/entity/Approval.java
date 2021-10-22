@@ -27,4 +27,5 @@ public class Approval extends BaseEntity{
 
     private List<FacilityBiologicalAgent> facilityBiologicalAgents;
     private Facility facility;
+    private String activeType;
 }

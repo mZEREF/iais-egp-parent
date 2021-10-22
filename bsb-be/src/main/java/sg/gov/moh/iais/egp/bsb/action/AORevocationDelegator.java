@@ -77,16 +77,16 @@ public class AORevocationDelegator {
             ParamUtil.setRequestAttr(request, RevocationConstants.KEY_APPLICATION_PAGE_INFO, searchResult.getEntity().getPageInfo());
             List<Application> applications = searchResult.getEntity().getTasks();
             //get facilityId
-            for (Application application : applications) {
+//            for (Application application : applications) {
 //                application.getFacility().setFacilityAddress(JoinAddress.joinAddress(application));
-                FacilityActivity activity = revocationClient.getFacilityActivityByApplicationId(application.getId()).getEntity();
-                if (activity!=null) {
+//                FacilityActivity activity = revocationClient.getFacilityActivityByApplicationId(application.getId()).getEntity();
+//                if (activity!=null) {
 //                    application.getFacility().setActiveType(activity.getActivityType());
 //                    List<FacilitySchedule> facilityScheduleList = activity.getFacilitySchedules();
 //                    String bioNames = JoinParamUtil.joinBiologicalName(facilityScheduleList, processClient);
 //                    application.setBiologicalName(bioNames);
-                }
-            }
+//                }
+//            }
             ParamUtil.setRequestAttr(request, RevocationConstants.KEY_APPLICATION_DATA_LIST, applications);
         } else {
             log.warn("get revocation application API doesn't return ok, the response is {}", searchResult);
@@ -179,45 +179,45 @@ public class AORevocationDelegator {
      */
     public void prepareData(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
-        ParamUtil.setSessionAttr(request, RevocationConstants.PARAM_APPLICATION, null);
-        ParamUtil.setSessionAttr(request,RevocationConstants.AUDIT_DOC_DTO, null);
-        ParamUtil.setSessionAttr(request, RevocationConstants.FLAG, null);
-        ParamUtil.setSessionAttr(request, RevocationConstants.BACK, null);
-        String appId = ParamUtil.getRequestString(request,RevocationConstants.PARAM_APP_ID);
-        appId = MaskUtil.unMaskValue("id",appId);
+//        ParamUtil.setSessionAttr(request, RevocationConstants.PARAM_APPLICATION, null);
+//        ParamUtil.setSessionAttr(request,RevocationConstants.AUDIT_DOC_DTO, null);
+//        ParamUtil.setSessionAttr(request, RevocationConstants.FLAG, null);
+//        ParamUtil.setSessionAttr(request, RevocationConstants.BACK, null);
+//        String appId = ParamUtil.getRequestString(request,RevocationConstants.PARAM_APP_ID);
+//        appId = MaskUtil.unMaskValue("id",appId);
 
-        Application application = revocationClient.getApplicationById(appId).getEntity();
-        List<ApplicationMisc> applicationMiscs=application.getAppMiscs();
+//        Application application = revocationClient.getRevokeDetailByApplicationId(appId).getEntity();
+//        List<ApplicationMisc> applicationMiscs=application.getAppMiscs();
 
 //        String address = JoinAddress.joinAddress(application);
 //        application.getFacility().setFacilityAddress(address);
 
-        FacilityActivity activity = revocationClient.getFacilityActivityByApplicationId(application.getId()).getEntity();
-        if (activity != null) {
-            application.getFacility().setActiveType(activity.getActivityType());
-        }
-        ParamUtil.setSessionAttr(request, RevocationConstants.PARAM_APPLICATION, application);
-        ParamUtil.setSessionAttr(request, RevocationConstants.FACILITY, application.getFacility());
-        ParamUtil.setRequestAttr(request, RevocationConstants.PARAM_APPLICATION_MISC_LIST, applicationMiscs);
-
-        //get history list
-        List<RoutingHistory> historyDtoList = revocationClient.getAllHistory().getEntity();
-        ParamUtil.setRequestAttr(request, RevocationConstants.PARAM_PROCESSING_HISTORY,historyDtoList);
-
-        List<FacilityDoc> facilityDocList = docClient.getFacilityDocByFacId(application.getFacility().getId()).getEntity();
-        List<FacilityDoc> docList = new ArrayList<>();
-        for (FacilityDoc facilityDoc : facilityDocList) {
-            //todo You can only get the current user name
-            String submitByName = IaisEGPHelper.getCurrentAuditTrailDto().getMohUserId();
-            facilityDoc.setSubmitByName(submitByName);
-            docList.add(facilityDoc);
-        }
-        AuditDocDto auditDocDto = new AuditDocDto();
-        auditDocDto.setFacilityDocs(docList);
-
-        ParamUtil.setSessionAttr(request,RevocationConstants.AUDIT_DOC_DTO, auditDocDto);
-        ParamUtil.setSessionAttr(request, RevocationConstants.FLAG, RevocationConstants.APP);
-        ParamUtil.setSessionAttr(request, RevocationConstants.BACK, RevocationConstants.REVOCATION_TASK_LIST);
+//        FacilityActivity activity = revocationClient.getFacilityActivityByApplicationId(application.getId()).getEntity();
+//        if (activity != null) {
+//            application.getFacility().setActiveType(activity.getActivityType());
+//        }
+//        ParamUtil.setSessionAttr(request, RevocationConstants.PARAM_APPLICATION, application);
+//        ParamUtil.setSessionAttr(request, RevocationConstants.FACILITY, application.getFacility());
+//        ParamUtil.setRequestAttr(request, RevocationConstants.PARAM_APPLICATION_MISC_LIST, applicationMiscs);
+//
+//        //get history list
+//        List<RoutingHistory> historyDtoList = revocationClient.getAllHistory().getEntity();
+//        ParamUtil.setRequestAttr(request, RevocationConstants.PARAM_PROCESSING_HISTORY,historyDtoList);
+//
+//        List<FacilityDoc> facilityDocList = docClient.getFacilityDocByFacId(application.getFacility().getId()).getEntity();
+//        List<FacilityDoc> docList = new ArrayList<>();
+//        for (FacilityDoc facilityDoc : facilityDocList) {
+//            //todo You can only get the current user name
+//            String submitByName = IaisEGPHelper.getCurrentAuditTrailDto().getMohUserId();
+//            facilityDoc.setSubmitByName(submitByName);
+//            docList.add(facilityDoc);
+//        }
+//        AuditDocDto auditDocDto = new AuditDocDto();
+//        auditDocDto.setFacilityDocs(docList);
+//
+//        ParamUtil.setSessionAttr(request,RevocationConstants.AUDIT_DOC_DTO, auditDocDto);
+//        ParamUtil.setSessionAttr(request, RevocationConstants.FLAG, RevocationConstants.APP);
+//        ParamUtil.setSessionAttr(request, RevocationConstants.BACK, RevocationConstants.REVOCATION_TASK_LIST);
     }
 
     /**

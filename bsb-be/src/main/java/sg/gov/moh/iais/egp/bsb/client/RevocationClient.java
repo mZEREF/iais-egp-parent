@@ -23,10 +23,10 @@ import java.util.List;
 public interface RevocationClient {
 
     @GetMapping(path = "/bsb-application/{id}")
-    FeignResponseEntity<Application> getApplicationById(@PathVariable(name = "id") String id);
+    FeignResponseEntity<ViewSelectedRevokeApplicationDto> getRevokeDetailByApplicationId(@PathVariable(name = "id") String id);
 
     @PostMapping(path = "/bsb-application/save",consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<Application> saveApplication(@RequestBody SubmitRevokeDto dto);
+    FeignResponseEntity<Application> saveRevokeApplication(@RequestBody SubmitRevokeDto dto);
 
     @PostMapping(path = "/bsb-application/savemisc", consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
     ResponseDto<ApplicationMisc> saveApplicationMisc(@RequestBody ApplicationMisc misc);

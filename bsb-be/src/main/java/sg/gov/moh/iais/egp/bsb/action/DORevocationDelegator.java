@@ -25,6 +25,7 @@ import sg.gov.moh.iais.egp.bsb.dto.audit.AuditDocDto;
 import sg.gov.moh.iais.egp.bsb.dto.revocation.ApprovalQueryDto;
 import sg.gov.moh.iais.egp.bsb.dto.revocation.ApprovalQueryResultDto;
 import sg.gov.moh.iais.egp.bsb.dto.revocation.SubmitRevokeDto;
+import sg.gov.moh.iais.egp.bsb.dto.revocation.ViewSelectedRevokeApplicationDto;
 import sg.gov.moh.iais.egp.bsb.entity.*;
 import sg.gov.moh.iais.egp.bsb.helper.BsbNotificationHelper;
 import sg.gov.moh.iais.egp.bsb.util.JoinParamUtil;
@@ -93,9 +94,9 @@ public class DORevocationDelegator {
                 List<FacilityActivity> activities = approval.getFacilityActivities();
                 List<FacilityBiologicalAgent> facilityBiologicalAgents = approval.getFacilityBiologicalAgents();
                 Facility facility = new Facility();
-                if (!activities.isEmpty()){
+                if (!activities.isEmpty()) {
                     facility = activities.get(0).getFacility();
-                } else if (!facilityBiologicalAgents.isEmpty()){
+                } else if (!facilityBiologicalAgents.isEmpty()) {
                     facility = facilityBiologicalAgents.get(0).getFacility();
                 }
 
@@ -195,25 +196,58 @@ public class DORevocationDelegator {
         if (StringUtil.isNotEmpty(from)) {
             if (from.equals(RevocationConstants.APP)) {
                 String appId = ParamUtil.getMaskedString(request, RevocationConstants.PARAM_APP_ID);
-                Application application = revocationClient.getApplicationById(appId).getEntity();
-                FacilityActivity activity = revocationClient.getFacilityActivityByApplicationId(application.getId()).getEntity();
-                if (activity != null) {
-                    application.getFacility().setActiveType(activity.getActivityType());
+                ViewSelectedRevokeApplicationDto dto = revocationClient.getRevokeDetailByApplicationId(appId).getEntity();
+                Application application = dto.getApplication();
+                String processType = application.getProcessType();
+                Facility facility = new Facility();
+                Approval approval = new Approval();
+                String address = "";
+                if (processType.equals(RevocationConstants.PARAM_PROCESS_TYPE_FACILITY_REGISTRATION)) {
+                    //join with activity
+                    approval = dto.getActivity().getApproval();
+                    approval.setActiveType(dto.getActivity().getActivityType());
+                    facility = dto.getActivity().getFacility();
+                    facility.setActiveType(dto.getActivity().getActivityType());
+                    if (!StringUtils.isEmpty(facility)) {
+                        address = TableDisplayUtil.getOneLineAddress(facility.getBlkNo(), facility.getStreetName(), facility.getFloorNo(),
+                                facility.getUnitNo(), facility.getPostalCode());
+                        facility.setFacilityAddress(address);
+                    }
+                } else if (processType.equals(RevocationConstants.PARAM_PROCESS_TYPE_AFC_REGISTRATION)) {
+                    //join with bsb_facility_certifier_reg
+                    approval = dto.getFacilityCertifierReg().getApproval();
+                } else {
+                    //join with BA/T
+                    approval = dto.getFacilityBiologicalAgent().getApproval();
+                    approval.setActiveType(dto.getFacilityBiologicalAgent().getFacilityActivity().getActivityType());
+                    facility = dto.getFacilityBiologicalAgent().getFacility();
+                    facility.setActiveType(dto.getFacilityBiologicalAgent().getFacilityActivity().getActivityType());
+                    if (!StringUtils.isEmpty(facility)) {
+                        address = TableDisplayUtil.getOneLineAddress(facility.getBlkNo(), facility.getStreetName(), facility.getFloorNo(),
+                                facility.getUnitNo(), facility.getPostalCode());
+                        facility.setFacilityAddress(address);
+                    }
                 }
-                List<FacilityDoc> facilityDocList = docClient.getFacilityDocByFacId(application.getFacility().getId()).getEntity();
-                List<FacilityDoc> docList = new ArrayList<>();
-                for (FacilityDoc facilityDoc : facilityDocList) {
-                    //todo You can only get the current user name
-                    String submitByName = IaisEGPHelper.getCurrentAuditTrailDto().getMohUserId();
-                    facilityDoc.setSubmitByName(submitByName);
-                    docList.add(facilityDoc);
-                }
+                approval.setFacility(facility);
                 AuditDocDto auditDocDto = new AuditDocDto();
-                auditDocDto.setFacilityDocs(docList);
+                if (!StringUtils.isEmpty(facility.getId())) {
+                    List<FacilityDoc> facilityDocList = docClient.getFacilityDocByFacId(facility.getId()).getEntity();
+                    List<FacilityDoc> docList = new ArrayList<>();
+                    if (!facilityDocList.isEmpty()) {
+                        for (FacilityDoc facilityDoc : facilityDocList) {
+                            //todo You can only get the current user name
+                            String submitByName = IaisEGPHelper.getCurrentAuditTrailDto().getMohUserId();
+                            facilityDoc.setSubmitByName(submitByName);
+                            docList.add(facilityDoc);
+                        }
+                    }
+                    auditDocDto.setFacilityDocs(docList);
+                }
 
                 ParamUtil.setSessionAttr(request, RevocationConstants.AUDIT_DOC_DTO, auditDocDto);
                 ParamUtil.setSessionAttr(request, RevocationConstants.PARAM_APPLICATION, application);
-                ParamUtil.setSessionAttr(request, RevocationConstants.FACILITY, application.getFacility());
+                ParamUtil.setSessionAttr(request, RevocationConstants.FACILITY, facility);
+                ParamUtil.setSessionAttr(request, RevocationConstants.APPROVAL, approval);
                 ParamUtil.setSessionAttr(request, RevocationConstants.FLAG, RevocationConstants.APP);
                 ParamUtil.setSessionAttr(request, RevocationConstants.BACK, RevocationConstants.REVOCATION_APPLICATION);
             }
@@ -221,15 +255,15 @@ public class DORevocationDelegator {
                 String approvalId = ParamUtil.getMaskedString(request, RevocationConstants.PARAM_APPROVAL_ID);
                 Approval approval = revocationClient.getApprovalById(approvalId).getEntity();
                 Facility facility = new Facility();
-                if (approval.getProcessType().equals(RevocationConstants.PARAM_PROCESS_TYPE_FACILITY_REGISTRATION)){
+                if (approval.getProcessType().equals(RevocationConstants.PARAM_PROCESS_TYPE_FACILITY_REGISTRATION)) {
                     //join with activity
                     List<FacilityActivity> activities = approval.getFacilityActivities();
                     if (!activities.isEmpty()) {
                         facility = activities.get(0).getFacility();
                     }
-                } else if (approval.getProcessType().equals(RevocationConstants.PARAM_PROCESS_TYPE_AFC_REGISTRATION)){
+                } else if (approval.getProcessType().equals(RevocationConstants.PARAM_PROCESS_TYPE_AFC_REGISTRATION)) {
                     //join with bsb_facility_certifier_reg
-                }else{
+                } else {
                     //join with BA/T
                     List<FacilityBiologicalAgent> agents = approval.getFacilityBiologicalAgents();
                     if (!agents.isEmpty()) {
@@ -278,17 +312,14 @@ public class DORevocationDelegator {
             SubmitRevokeDto dto = new SubmitRevokeDto();
             dto.setApplication(application);
             dto.setApproval(approval);
-            result = revocationClient.saveApplication(dto);
+            result = revocationClient.saveRevokeApplication(dto);
         }
-//        if (flag.equals(RevocationConstants.APP)) {
-//            Application resultDto = (Application)ParamUtil.getSessionAttr(request, RevocationConstants.PARAM_APPLICATION);
-//            Facility facility = new Facility();
-//            facility.setId(facilityId);
-//            resultDto.setFacility(facility);
-//            resultDto.setStatus(RevocationConstants.PARAM_APPLICATION_STATUS_PENDING_AO);
-//            resultDto.setApplicationDt(new Date());
-//            result = revocationClient.updateApplication(resultDto);
-//        }
+        if (flag.equals(RevocationConstants.APP)) {
+            Application application = (Application)ParamUtil.getSessionAttr(request, RevocationConstants.PARAM_APPLICATION);
+            application.setStatus(RevocationConstants.PARAM_APPLICATION_STATUS_PENDING_AO);
+            application.setApplicationDt(new Date());
+            result = revocationClient.updateApplication(application);
+        }
 
         String reason = ParamUtil.getString(request, RevocationConstants.PARAM_REASON);
         String remarks = ParamUtil.getString(request, RevocationConstants.PARAM_DOREMARKS);
