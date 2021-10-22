@@ -446,10 +446,10 @@ function toggleOnCheck(sel, elem, hide) {
     }
     if ($selector.is(':checked')) {
         if (hide) {
-            $target.show();
-        } else {
             $target.hide();
             clearFields($target);
+        } else {
+            $target.show();
         }
     } else {
         if (hide) {
