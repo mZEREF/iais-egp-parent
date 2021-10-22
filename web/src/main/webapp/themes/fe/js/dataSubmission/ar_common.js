@@ -9,10 +9,13 @@ $(document).ready(function() {
     function jumpPage() {
         submit('premises','saveDraft','jumpPage');
     }
+    var currPage = $('input[name="ar_page"]').val();
+    if (isEmpty(currPage)) {
+        currPage = "";
+    }
     if ($('#backBtn').length > 0) {
         $('#backBtn').click(function () {
             showWaiting();
-            var currPage = $('input[name="ar_page"]').val();
             if ('preview' == currPage) {
                 submit('page');
             } else {
@@ -22,18 +25,23 @@ $(document).ready(function() {
     }
 
     if ($('#saveDraftBtn').length > 0) {
-        $('#saveDraftBtn').click(function () {
-            showWaiting();
-            submit('saveDraft');
-        });
+        if ('ar-submission' == currPage) {
+            $('#saveDraftBtn').remove();
+        } else {
+            $('#saveDraftBtn').click(function () {
+                showWaiting();
+                submit('saveDraft');
+            });
+        }
     }
 
     if ($('#nextBtn').length > 0) {
-        var currPage = $('input[name="ar_page"]').val();
         if ('preview' == currPage) {
             $('#nextBtn').html('Submit');
         } else if ('stage' == currPage){
             $('#nextBtn').html('Preview');
+        } else if ('ar-submission' == currPage){
+            $('#nextBtn').html('Proceed');
         }
         $('#nextBtn').click(function () {
             showWaiting();
