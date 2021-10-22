@@ -14,3 +14,5 @@
 <input type="hidden" id="saveDraftSuccess" value="${saveDraftSuccess}">
 <iais:confirm msg="This application has been saved successfully" callBack="cancel()" popupOrder="saveDraft" yesBtnDesc="continue"
               cancelBtnDesc="exit to inbox" cancelBtnCls="btn btn-primary" yesBtnCls="btn btn-secondary" cancelFunc="jumpPage()" />
+<%-- validation --%>
+<%@ include file="/WEB-INF/jsp/include/validation.jsp" %>
