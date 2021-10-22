@@ -8,6 +8,7 @@ import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.StringUtils;
 import sg.gov.moh.iais.egp.bsb.client.DocClient;
 import sg.gov.moh.iais.egp.bsb.client.ProcessClient;
 import sg.gov.moh.iais.egp.bsb.constant.RevocationConstants;
@@ -20,6 +21,7 @@ import sg.gov.moh.iais.egp.bsb.client.RevocationClient;
 import sg.gov.moh.iais.egp.bsb.entity.*;
 import sg.gov.moh.iais.egp.bsb.helper.BsbNotificationHelper;
 import sg.gov.moh.iais.egp.bsb.util.JoinParamUtil;
+import sg.gov.moh.iais.egp.bsb.util.TableDisplayUtil;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
@@ -179,45 +181,76 @@ public class AORevocationDelegator {
      */
     public void prepareData(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
-//        ParamUtil.setSessionAttr(request, RevocationConstants.PARAM_APPLICATION, null);
-//        ParamUtil.setSessionAttr(request,RevocationConstants.AUDIT_DOC_DTO, null);
-//        ParamUtil.setSessionAttr(request, RevocationConstants.FLAG, null);
-//        ParamUtil.setSessionAttr(request, RevocationConstants.BACK, null);
-//        String appId = ParamUtil.getRequestString(request,RevocationConstants.PARAM_APP_ID);
-//        appId = MaskUtil.unMaskValue("id",appId);
+        ParamUtil.setSessionAttr(request, RevocationConstants.PARAM_APPLICATION, null);
+        ParamUtil.setSessionAttr(request,RevocationConstants.AUDIT_DOC_DTO, null);
+        ParamUtil.setSessionAttr(request, RevocationConstants.FACILITY, null);
+        ParamUtil.setSessionAttr(request, RevocationConstants.FLAG, null);
+        ParamUtil.setSessionAttr(request, RevocationConstants.BACK, null);
+        ParamUtil.setRequestAttr(request, RevocationConstants.PARAM_APPLICATION_MISC_LIST, null);
+        String appId = ParamUtil.getRequestString(request,RevocationConstants.PARAM_APP_ID);
+        appId = MaskUtil.unMaskValue("id",appId);
 
-//        Application application = revocationClient.getRevokeDetailByApplicationId(appId).getEntity();
-//        List<ApplicationMisc> applicationMiscs=application.getAppMiscs();
+        ViewSelectedRevokeApplicationDto dto = revocationClient.getRevokeDetailByApplicationId(appId).getEntity();
+        Application application = dto.getApplication();
+        List<ApplicationMisc> applicationMiscs=application.getAppMiscs();
+        String processType = application.getProcessType();
+        Facility facility = new Facility();
+        Approval approval = new Approval();
+        String address = "";
+        if (processType.equals(RevocationConstants.PARAM_PROCESS_TYPE_FACILITY_REGISTRATION)) {
+            //join with activity
+            approval = dto.getActivity().getApproval();
+            approval.setActiveType(dto.getActivity().getActivityType());
+            facility = dto.getActivity().getFacility();
+            facility.setActiveType(dto.getActivity().getActivityType());
+            if (!StringUtils.isEmpty(facility)) {
+                address = TableDisplayUtil.getOneLineAddress(facility.getBlkNo(), facility.getStreetName(), facility.getFloorNo(),
+                        facility.getUnitNo(), facility.getPostalCode());
+                facility.setFacilityAddress(address);
+            }
+        } else if (processType.equals(RevocationConstants.PARAM_PROCESS_TYPE_AFC_REGISTRATION)) {
+            //join with bsb_facility_certifier_reg
+            approval = dto.getFacilityCertifierReg().getApproval();
+        } else {
+            //join with BA/T
+            approval = dto.getFacilityBiologicalAgent().getApproval();
+            approval.setActiveType(dto.getFacilityBiologicalAgent().getFacilityActivity().getActivityType());
+            facility = dto.getFacilityBiologicalAgent().getFacility();
+            facility.setActiveType(dto.getFacilityBiologicalAgent().getFacilityActivity().getActivityType());
+            if (!StringUtils.isEmpty(facility)) {
+                address = TableDisplayUtil.getOneLineAddress(facility.getBlkNo(), facility.getStreetName(), facility.getFloorNo(),
+                        facility.getUnitNo(), facility.getPostalCode());
+                facility.setFacilityAddress(address);
+            }
+        }
 
-//        String address = JoinAddress.joinAddress(application);
-//        application.getFacility().setFacilityAddress(address);
 
-//        FacilityActivity activity = revocationClient.getFacilityActivityByApplicationId(application.getId()).getEntity();
-//        if (activity != null) {
-//            application.getFacility().setActiveType(activity.getActivityType());
-//        }
-//        ParamUtil.setSessionAttr(request, RevocationConstants.PARAM_APPLICATION, application);
-//        ParamUtil.setSessionAttr(request, RevocationConstants.FACILITY, application.getFacility());
-//        ParamUtil.setRequestAttr(request, RevocationConstants.PARAM_APPLICATION_MISC_LIST, applicationMiscs);
-//
-//        //get history list
-//        List<RoutingHistory> historyDtoList = revocationClient.getAllHistory().getEntity();
-//        ParamUtil.setRequestAttr(request, RevocationConstants.PARAM_PROCESSING_HISTORY,historyDtoList);
-//
-//        List<FacilityDoc> facilityDocList = docClient.getFacilityDocByFacId(application.getFacility().getId()).getEntity();
-//        List<FacilityDoc> docList = new ArrayList<>();
-//        for (FacilityDoc facilityDoc : facilityDocList) {
-//            //todo You can only get the current user name
-//            String submitByName = IaisEGPHelper.getCurrentAuditTrailDto().getMohUserId();
-//            facilityDoc.setSubmitByName(submitByName);
-//            docList.add(facilityDoc);
-//        }
-//        AuditDocDto auditDocDto = new AuditDocDto();
-//        auditDocDto.setFacilityDocs(docList);
-//
-//        ParamUtil.setSessionAttr(request,RevocationConstants.AUDIT_DOC_DTO, auditDocDto);
-//        ParamUtil.setSessionAttr(request, RevocationConstants.FLAG, RevocationConstants.APP);
-//        ParamUtil.setSessionAttr(request, RevocationConstants.BACK, RevocationConstants.REVOCATION_TASK_LIST);
+        //get history list
+        List<RoutingHistory> historyDtoList = revocationClient.getAllHistory().getEntity();
+        ParamUtil.setRequestAttr(request, RevocationConstants.PARAM_PROCESSING_HISTORY,historyDtoList);
+
+        AuditDocDto auditDocDto = new AuditDocDto();
+        if (!StringUtils.isEmpty(facility.getId())) {
+            List<FacilityDoc> facilityDocList = docClient.getFacilityDocByFacId(facility.getId()).getEntity();
+            List<FacilityDoc> docList = new ArrayList<>();
+            for (FacilityDoc facilityDoc : facilityDocList) {
+                //todo You can only get the current user name
+                String submitByName = IaisEGPHelper.getCurrentAuditTrailDto().getMohUserId();
+                facilityDoc.setSubmitByName(submitByName);
+                docList.add(facilityDoc);
+            }
+            auditDocDto.setFacilityDocs(docList);
+        }
+        if (!StringUtils.isEmpty(facility.getId())) {
+            ParamUtil.setSessionAttr(request, RevocationConstants.FACILITY, facility);
+        }
+        approval.setFacility(facility);
+        ParamUtil.setSessionAttr(request, RevocationConstants.PARAM_APPLICATION, application);
+        ParamUtil.setSessionAttr(request, RevocationConstants.APPROVAL, approval);
+        ParamUtil.setRequestAttr(request, RevocationConstants.PARAM_APPLICATION_MISC_LIST, applicationMiscs);
+        ParamUtil.setSessionAttr(request,RevocationConstants.AUDIT_DOC_DTO, auditDocDto);
+        ParamUtil.setSessionAttr(request, RevocationConstants.FLAG, RevocationConstants.APP);
+        ParamUtil.setSessionAttr(request, RevocationConstants.BACK, RevocationConstants.REVOCATION_TASK_LIST);
     }
 
     /**
@@ -230,15 +263,17 @@ public class AORevocationDelegator {
     public void approve(BaseProcessClass bpc) {
         AODecisionDto aoDecisionDto = before(bpc);
         revocationClient.updateApplicationStatusById(aoDecisionDto.getApplication().getId(),RevocationConstants.PARAM_APPLICATION_STATUS_APPROVED);
-        revocationClient.updateFacilityStatusById(aoDecisionDto.getApplication().getFacility().getId(),RevocationConstants.PARAM_FACILITY_STATUS_REVOKED,RevocationConstants.PARAM_APPROVAL_STATUS_REVOKED);
+        revocationClient.updateApprovalStatusById(aoDecisionDto.getApproval().getId(),RevocationConstants.PARAM_APPROVAL_STATUS_REVOKED);
         revocationClient.saveApplicationMisc(aoDecisionDto.getMisc());
         aoDecisionDto.getHistory().setAppStatus(RevocationConstants.PARAM_APPLICATION_STATUS_APPROVED);
         revocationClient.saveHistory(aoDecisionDto.getHistory());
 
+        Facility facility = aoDecisionDto.getApproval().getFacility();
         //send notification
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
         String date=dateFormat.format(new Date());
-//        String address = JoinAddress.joinAddress(aoDecisionDto.getApplication());
+        String address = TableDisplayUtil.getOneLineAddress(facility.getBlkNo(), facility.getStreetName(), facility.getFloorNo(),
+                facility.getUnitNo(), facility.getPostalCode());
 
         BsbEmailParam bsbEmailParam = new BsbEmailParam();
         bsbEmailParam.setMsgTemplateId(MSG_TEMPLATE_REVOCATION_USER_APPROVED);
@@ -248,7 +283,7 @@ public class AORevocationDelegator {
         bsbEmailParam.setReqRefNum("1");
         Map<String,Object> map = new HashMap<>();
         map.put("applicationNo", aoDecisionDto.getApplication().getApplicationNo());
-//        map.put("FacilityAddress",address);
+        map.put("FacilityAddress",address);
         map.put("FacilityName",aoDecisionDto.getApplication().getFacility().getFacilityName());
         map.put("Date",date);
         map.put("Reason",aoDecisionDto.getMisc().getReasonContent());
@@ -318,7 +353,8 @@ public class AORevocationDelegator {
 
     private AODecisionDto before(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
-        Application application =(Application)ParamUtil.getSessionAttr(request, RevocationConstants.PARAM_APPLICATION);
+        Application application = (Application)ParamUtil.getSessionAttr(request, RevocationConstants.PARAM_APPLICATION);
+        Approval approval = (Approval) ParamUtil.getSessionAttr(request, RevocationConstants.APPROVAL);
 
         String reason = ParamUtil.getString(request, RevocationConstants.PARAM_REASON);
         String remarks = ParamUtil.getString(request, RevocationConstants.PARAM_AOREMARKS);
@@ -354,6 +390,7 @@ public class AORevocationDelegator {
         aoDecisionDto.setApplication(application);
         aoDecisionDto.setMisc(misc);
         aoDecisionDto.setHistory(history);
+        aoDecisionDto.setApproval(approval);
 
         return aoDecisionDto;
     }

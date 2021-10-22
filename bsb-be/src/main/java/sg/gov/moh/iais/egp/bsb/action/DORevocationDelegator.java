@@ -99,10 +99,11 @@ public class DORevocationDelegator {
                 } else if (!facilityBiologicalAgents.isEmpty()) {
                     facility = facilityBiologicalAgents.get(0).getFacility();
                 }
-
-                String address = TableDisplayUtil.getOneLineAddress(facility.getBlkNo(), facility.getStreetName(), facility.getFloorNo(),
-                        facility.getUnitNo(), facility.getPostalCode());
-                facility.setFacilityAddress(address);
+                if (!StringUtils.isEmpty(facility)) {
+                    String address = TableDisplayUtil.getOneLineAddress(facility.getBlkNo(), facility.getStreetName(), facility.getFloorNo(),
+                            facility.getUnitNo(), facility.getPostalCode());
+                    facility.setFacilityAddress(address);
+                }
                 approval.setFacility(facility);
             }
             //get facilityId

@@ -82,7 +82,7 @@
                                                                         <iais:row>
                                                                             <iais:field value="Current Status" required="false"/>
                                                                             <iais:value width="10">
-                                                                                <p><iais:code code="${facility.facilityStatus}"/></p>
+                                                                                <p><iais:code code="${approval.status}"/></p>
                                                                             </iais:value>
                                                                         </iais:row>
                                                                     </div>

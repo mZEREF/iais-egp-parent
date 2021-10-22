@@ -43,8 +43,8 @@ public interface RevocationClient {
     @PutMapping(value = "/bsb-application/update", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<Void> updateApplicationStatusById(@RequestParam(value = "id") String id, @RequestParam(value = "status") String status);
 
-    @PutMapping(value = "/bsb-application/updateFacilityStatus", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<Void> updateFacilityStatusById(@RequestParam(value = "id") String id, @RequestParam(value = "status") String status, @RequestParam(value = "approvalStatus") String approvalStatus);
+    @PutMapping(value = "/bsb-application/updateApprovalStatusById", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<Void> updateApprovalStatusById(@RequestParam(value = "id") String id, @RequestParam(value = "status") String status);
 
     @GetMapping(value = "/bsb-application/queryMisc", consumes = MediaType.APPLICATION_JSON_VALUE, produces =MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<ApplicationMisc>> getApplicationMiscByAppId(@RequestParam("applicationId") String applicationId);
