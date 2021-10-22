@@ -402,11 +402,54 @@ function toggleOnSelect(sel, val, elem) {
     if (isEmpty(sel)) {
         return;
     }
-    if ($('#' + sel).val() == val) {
-        $('#' + elem).show();
+    var $selector = $('#' + sel);
+    if ($selector.length == 0) {
+        $selector = $('.' + sel);
+    }
+    var $target = $('#' + elem);
+    if ($target.length == 0) {
+        $target = $('.' + sel);
+    }
+    if ($selector.length == 0 || $target.length == 0) {
+        return;
+    }
+    if ($selector.val() == val) {
+        $target.show();
     } else {
-        $('#' + elem).hide();
-        clearFields('#' + elem);
+        $target.hide();
+        clearFields($target);
+    }
+}
+
+function toggleOnCheck(sel, elem, hide) {
+    if (isEmpty(sel)) {
+        return;
+    }
+    var $selector = $('#' + sel);
+    if ($selector.length == 0) {
+        $selector = $('.' + sel);
+    }
+    var $target = $('#' + elem);
+    if ($target.length == 0) {
+        $target = $('.' + sel);
+    }
+    if ($selector.length == 0 || $target.length == 0) {
+        return;
+    }
+    if ($selector.is(':checked')) {
+        if (hide) {
+            $target.show();
+        } else {
+            $target.hide();
+            clearFields($target);
+        }
+    } else {
+        if (hide) {
+            $target.show();
+        } else {
+            $target.hide();
+            clearFields($target);
+        }
     }
 }
 
