@@ -1,3 +1,4 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <div class="panel panel-default">
     <div class="panel-heading">
         <h4 class="panel-title">
@@ -9,27 +10,59 @@
     <div id="efoDetails" class="panel-collapse collapse in">
         <div class="panel-body">
             <div class="panel-main-content form-horizontal">
+                <c:set var="arCycleStageDto" value="${arSuperDataSubmissionDto.arCycleStageDto}" />
+                <c:set var="patientDto" value="${arSuperDataSubmissionDto.patientDto}" />
                 <h3>
-                    <p><label style="font-family:'Arial Negreta', 'Arial Normal', 'Arial';font-weight:700;"><c:out value="${arSuperDataSubmissionDto.patientDto.patientName}"/></label><label style="font-family:'Arial Normal', 'Arial';font-weight:400;"><c:out value="(${arSuperDataSubmissionDto.patientDto.patientIdNO})"/></label></p>
+                    <p><label style="font-family:'Arial Negreta', 'Arial Normal', 'Arial';font-weight:700;"><c:out value="${patientDto.patientName}"/></label><label style="font-family:'Arial Normal', 'Arial';font-weight:400;"><c:out value="${patientDto.patientIdNO}"/></label></p>
                 </h3>
                 <iais:row>
-                    <iais:field width="5" value="Premises where egg freezing only cycle is performed" mandatory="true"/>
+                    <iais:field width="5" value="Premises where AR is performed" mandatory="true"/>
                     <iais:value width="7" cssClass="col-md-7" label="true">
-                        <c:out value="${arSuperDataSubmissionDto.efoCycleStageDto.performed}"/>
+                        <c:out value=""/>
                     </iais:value>
                 </iais:row>
                 <iais:row>
                     <iais:field width="5" value="Date Started" mandatory="true"/>
                     <iais:value width="7" cssClass="col-md-7">
-                        <iais:datePicker id="efoDateStarted" name="efoDateStarted" value="${arSuperDataSubmissionDto.efoCycleStageDto.dateStarted}"/>
+                        <iais:datePicker id="arCycleStageDtoDateStarted" name="arCycleStageDtoDateStarted" value="${arCycleStageDto.dateStarted}"/>
                     </iais:value>
                 </iais:row>
                 <iais:row>
-                    <iais:field width="5" value="Patient's Age as of This Treatment" mandatory="false"/>
+                    <iais:field width="5" value="Patient's Age as of This Cycle" mandatory="false"/>
                     <iais:value width="7" cssClass="col-md-7" label="true">
-                        <c:out value="${arSuperDataSubmissionDto.efoCycleStageDto.yearNum} Years and ${arSuperDataSubmissionDto.efoCycleStageDto.monthNum} Months"/>
+                        <c:out value="${arCycleStageDto.cycleAge}"/>
                     </iais:value>
                 </iais:row>
+
+                <iais:row>
+                    <iais:field width="5" value="Main Indication" mandatory="true"/>
+                    <iais:value width="7" cssClass="col-md-7">
+                        <iais:select name="mainIndication" options="mainIndicationDrops" firstOption="Please Select" value="${arCycleStageDto.mainIndication}"  onchange ="showMainIndicationOther(this.value)"/>
+                </iais:value>
+                </iais:row>
+
+                <iais:row id="mainIndicationOtherRow">
+                    <iais:field width="5" value="Main Indication (Others)" mandatory="true"/>
+                    <iais:value width="7" cssClass="col-md-7">
+                        <iais:input maxLength="100" type="text" name="mainIndicationOther" id="mainIndicationOther" value="${arCycleStageDto.mainIndicationOther}" />
+                    </iais:value>
+                </iais:row>
+
+                <iais:row>
+                    <iais:field width="5" value="Main Indication" mandatory="true"/>
+                    <iais:value width="7" cssClass="col-md-7">
+                        <iais:select name="mainIndication" options="mainIndicationDrops" firstOption="Please Select" value="${arCycleStageDto.mainIndication}"  onchange ="showMainIndicationOther(this.value)"/>
+                    </iais:value>
+                </iais:row>
+
+                <iais:row id="mainIndicationOtherRow">
+                    <iais:field width="5" value="Main Indication (Others)" mandatory="true"/>
+                    <iais:value width="7" cssClass="col-md-7">
+                        <iais:input maxLength="100" type="text" name="mainIndicationOther" id="mainIndicationOther" value="${arCycleStageDto.mainIndicationOther}" />
+                    </iais:value>
+                </iais:row>
+
+
                 <iais:row>
                     <iais:field width="5" value="Is it Medically Indicated?" mandatory="true"/>
                     <iais:value width="3" cssClass="col-md-3">
@@ -87,32 +120,15 @@
     </div>
 </div>
 <<script  type="text/javascript">
-$('#reasonSelect').change(function () {
-
-var reason= $('#reasonSelect option:selected').val();
-if("MS003"==reason){
-$('#cgo').attr("style" ,"display: block");
-
-}else  {
-$('#cgo').attr("style" ,"display: none");
-
-}
-if("MS008"==reason){
-$('#selectHciNameAppeal').attr("style","display: block");
-
-}else {
-$('#selectHciNameAppeal').attr("style","display: none");
-}
-if("MS004"==reason){
-$('#licenceYear').attr("style","display: block");
-}else {
-$('#licenceYear').attr("style","display: none");
-}
-if("MS007"==reason){
-$('#othersReason').attr("style","display: block");
-}else {
-$('#othersReason').attr("style","display: none");
-}
-
-});
+  $(document).ready(function (){
+     showMainIndicationOther($("#mainIndication").val());
+   });
+   function showMainIndicationOther(value){
+       if(value == 'AR_MI_001'){
+            $("#mainIndicationOtherRow").show();
+         }else {
+          $("#mainIndicationOtherRow").hide();
+          $('#mainIndicationOther').val("");
+       }
+   }
 </script>
