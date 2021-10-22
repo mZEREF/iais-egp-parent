@@ -26,6 +26,6 @@ public class ArAjaxController {
     public @ResponseBody String genArCycleStages(HttpServletRequest request) {
         String currCycle = ParamUtil.getString(request, "currCycle");
         String currStage = ParamUtil.getString(request, "currStage");
-        return DataSubmissionHelper.getOptions(DataSubmissionHelper.getNextStageForAr(currCycle, currStage));
+        return DataSubmissionHelper.genOptionHtmls(DataSubmissionHelper.getNextStageForAr(currCycle, currStage));
     }
 }

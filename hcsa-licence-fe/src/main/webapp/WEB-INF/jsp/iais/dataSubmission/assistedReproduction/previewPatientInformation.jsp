@@ -24,7 +24,7 @@
             <div class="col-xs-12">
                 <h3>Please key in patient information</h3>
                 <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
-                    <%@include file="section/patientDetailSection.jsp" %>
+                    <%@include file="section/previewPatientDetail.jsp" %>
                 </div>
                 <%@include file="common/arFooter.jsp" %>
             </div>

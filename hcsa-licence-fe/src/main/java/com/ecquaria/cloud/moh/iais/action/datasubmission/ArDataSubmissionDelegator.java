@@ -1,12 +1,31 @@
 package com.ecquaria.cloud.moh.iais.action.datasubmission;
 
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
+import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant;
+import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
+import com.ecquaria.cloud.moh.iais.dto.LoginContext;
+import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
+import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
+import com.ecquaria.cloud.moh.iais.service.client.LicenceClient;
+import com.ecquaria.cloud.moh.iais.service.datasubmission.ArDataSubmissionService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
+
+import javax.servlet.http.HttpSession;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * ARDataSubmissionDelegator
+ * <p>
+ * Process: MohARDataSubmission
  *
  * @author suocheng
  * @date 10/20/2021
@@ -14,6 +33,12 @@ import sop.webflow.rt.api.BaseProcessClass;
 @Delegator("arDataSubmissionDelegator")
 @Slf4j
 public class ArDataSubmissionDelegator {
+
+    @Autowired
+    private ArDataSubmissionService arDataSubmissionService;
+
+    private static final String PREMISES = "premises";
+
     /**
      * StartStep: Start
      *
@@ -21,8 +46,12 @@ public class ArDataSubmissionDelegator {
      * @throws
      */
     public void doStart(BaseProcessClass bpc) {
-
+        log.info("----- Assisted Reproduction Submission Start -----");
+        HttpSession session = bpc.request.getSession();
+        session.removeAttribute(DataSubmissionConstant.AR_PREMISES_MAP);
+        session.removeAttribute(DataSubmissionConstant.AR_PREMISES);
     }
+
     /**
      * StartStep: PrepareARSubmission
      *
@@ -31,8 +60,90 @@ public class ArDataSubmissionDelegator {
      */
     public void doPrepareARSubmission(BaseProcessClass bpc) {
         String crud_action_type_ds = bpc.request.getParameter(DataSubmissionConstant.CRUD_TYPE);
-        bpc.request.setAttribute(DataSubmissionConstant.CRUD_ACTION_TYPE_AR,crud_action_type_ds);
+        bpc.request.setAttribute(DataSubmissionConstant.CRUD_ACTION_TYPE_AR, crud_action_type_ds);
+        Map<String, AppGrpPremisesDto> appGrpPremisesMap =
+                (Map<String, AppGrpPremisesDto>) bpc.request.getSession().getAttribute(DataSubmissionConstant.AR_PREMISES_MAP);
+        if (appGrpPremisesMap == null || appGrpPremisesMap.isEmpty()) {
+            LoginContext loginContext = DataSubmissionHelper.getLoginContext(bpc.request);
+            String licenseeId = null;
+            if (loginContext != null) {
+                licenseeId = loginContext.getLicenseeId();
+            }
+            appGrpPremisesMap = arDataSubmissionService.getAppGrpPremises(licenseeId, "");
+            bpc.request.getSession().setAttribute(DataSubmissionConstant.AR_PREMISES_MAP, appGrpPremisesMap);
+        }
+        if (appGrpPremisesMap.isEmpty()) {
+            Map<String, String> map = IaisCommonUtils.genNewHashMap(2);
+            map.put(PREMISES, "There are no active Assisted Reproduction licences");
+            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(map));
+        } else if (appGrpPremisesMap.size() == 1) {
+            appGrpPremisesMap.forEach((k, v) -> {
+                bpc.request.getSession().setAttribute(DataSubmissionConstant.AR_PREMISES, v);
+                bpc.request.setAttribute("premisesLabel", DataSubmissionHelper.getPremisesLabel(v));
+            });
+        } else {
+            bpc.request.setAttribute("premisesOpts", DataSubmissionHelper.genPremisesOptions(appGrpPremisesMap));
+        }
     }
+
+    /**
+     * StartStep: PreparePIM
+     *
+     * @param bpc
+     * @throws
+     */
+    public void doPrepareAR(BaseProcessClass bpc) {
+        String submissionType = ParamUtil.getString(bpc.request, "submissionType");
+        String submissionMethod = ParamUtil.getString(bpc.request, "submissionMethod");
+        Map<String, String> map = IaisCommonUtils.genNewHashMap(3);
+        String actionType = null;
+        if (StringUtil.isEmpty(submissionType)) {
+            map.put("submissionType", "GENERAL_ERR0006");
+        } else if (DataSubmissionConsts.AR_TYPE_SBT_PATIENT_INFO.equals(submissionType)) {
+            if (DataSubmissionConsts.DATA_SUBMISSION_METHOD_MANUAL_ENTRY.equals(submissionMethod)) {
+                actionType = "pim";
+            } else if (DataSubmissionConsts.DATA_SUBMISSION_METHOD_MANUAL_ENTRY.equals(submissionMethod)) {
+                actionType = "pif";
+            } else {
+                map.put("submissionMethod", "GENERAL_ERR0006");
+            }
+        } else if (DataSubmissionConsts.AR_TYPE_SBT_CYCLE_STAGE.equals(submissionType)) {
+            if (DataSubmissionConsts.DATA_SUBMISSION_METHOD_MANUAL_ENTRY.equals(submissionMethod)) {
+                actionType = "csm";
+            } else if (DataSubmissionConsts.DATA_SUBMISSION_METHOD_MANUAL_ENTRY.equals(submissionMethod)) {
+                actionType = "csf";
+            } else {
+                map.put("submissionMethod", "GENERAL_ERR0006");
+            }
+        } else if (DataSubmissionConsts.AR_TYPE_SBT_DONOR_SAMPLE.equals(submissionType)) {
+            actionType = "ds";
+        }
+        // check premises
+        HttpSession session = bpc.request.getSession();
+        Map<String, AppGrpPremisesDto> appGrpPremisesMap = (Map<String, AppGrpPremisesDto>) session.getAttribute(DataSubmissionConstant.AR_PREMISES_MAP);
+        String premises = ParamUtil.getString(bpc.request, PREMISES);
+        if (!StringUtil.isEmpty(premises)) {
+            AppGrpPremisesDto dto = null;
+            if (appGrpPremisesMap != null) {
+                dto = appGrpPremisesMap.get(premises);
+            }
+            if (dto == null) {
+                map.put(PREMISES, "GENERAL_ERR0049");
+            } else {
+                session.setAttribute(DataSubmissionConstant.AR_PREMISES, dto);
+            }
+        } else if (IaisCommonUtils.isNotEmpty(appGrpPremisesMap)) {
+            map.put(PREMISES, "GENERAL_ERR0006");
+        } else if (DataSubmissionHelper.getCurrentPremises(bpc.request) == null) {
+            map.put(PREMISES, "There are no active Assisted Reproduction licences");
+        }
+        if (!map.isEmpty()) {
+            actionType = "invalid";
+            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(map));
+        }
+        ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.CRUD_ACTION_TYPE_AR, actionType);
+    }
+
     /**
      * StartStep: PreparePIM
      *
@@ -42,6 +153,7 @@ public class ArDataSubmissionDelegator {
     public void doPreparePIM(BaseProcessClass bpc) {
 
     }
+
     /**
      * StartStep: PreparePIF
      *
@@ -51,6 +163,7 @@ public class ArDataSubmissionDelegator {
     public void doPreparePIF(BaseProcessClass bpc) {
 
     }
+
     /**
      * StartStep: PrepareCSM
      *
@@ -60,6 +173,7 @@ public class ArDataSubmissionDelegator {
     public void doPrepareCSM(BaseProcessClass bpc) {
 
     }
+
     /**
      * StartStep: PrepareCSF
      *
@@ -69,6 +183,7 @@ public class ArDataSubmissionDelegator {
     public void doPrepareCSF(BaseProcessClass bpc) {
 
     }
+
     /**
      * StartStep: PrepareDS
      *
@@ -78,6 +193,7 @@ public class ArDataSubmissionDelegator {
     public void doPrepareDS(BaseProcessClass bpc) {
 
     }
+
     /**
      * StartStep: Back
      *

@@ -88,14 +88,14 @@
     <JavaCode defClass="" executor="" methodName="prepareCSF_OnStepProcess_0" name="prepareCSF_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="Back" x="950" y="590">
+  <AutomaticStep defClass="" executor="" icon="" name="Back" x="840" y="580">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
     <JavaCode defClass="" executor="" methodName="back_OnStepProcess_0" name="back_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <ReturnInvokeProcessStep defClass="" executor="" icon="" name="return" x="1120" y="590">
+  <ReturnInvokeProcessStep defClass="" executor="" icon="" name="return" x="1020" y="580">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess/>
@@ -166,16 +166,19 @@
    <position>{(1030,510)(1240,320)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/Back" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
-   <position>{(630,320)(970,610)}</position>
+   <position>{(630,320)(860,600)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Steps/InvokeStep/CSM" style="oblique">
    <position>{(1030,320)(1240,320)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/ReturnInvokeProcessStep/return" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/Back" style="oblique">
-   <position>{(970,610)(1140,610)}</position>
+   <position>{(860,600)(1040,600)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/PrepareARSubmission" linkstyle="Direct" name="" sourceName="/Merges/Merge/Merge1" style="oblique">
    <position>{(1240,320)(1236,10)(197,24)(160,320)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PrepareARSubmission" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch1" style="rectanular">
+   <position>{(630,320)(628,411)(198,485)(160,320)}</position>
   </SynchronousLink>
  </Links>
  <Conditions/>
@@ -188,6 +191,7 @@
    <SwitchCase component="/Steps/AutomaticStep/PrepareCSF" value="&quot;csf&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/PrepareDS" value="&quot;ds&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/Back" value="&quot;back&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/PrepareARSubmission" value="&quot;invalid&quot;"/>
   </Switch>
  </Switches>
  <Branches/>
