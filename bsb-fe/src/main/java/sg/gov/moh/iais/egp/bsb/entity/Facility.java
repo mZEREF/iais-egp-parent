@@ -3,24 +3,25 @@ package sg.gov.moh.iais.egp.bsb.entity;
 import lombok.Data;
 import sg.gov.moh.iais.egp.bsb.common.BaseEntity;
 
-import java.util.Date;
 import java.util.List;
 
 @Data
 public class Facility extends BaseEntity {
     private String id;
 
-    private FacilityBiological facBiological;
-
     private List<FacilityDoc> docs;
+
+    private FacilityOperator operator;
+
+    private FacilityOfficer officer;
 
     private List<FacilityAdmin> admins;
 
+    private List<FacilityActivity> facilityActivities;
+
     private List<FacilityAuthoriser> authorizers;
 
-    private List<FacilityAudit> audits;
-
-    private List<FacilityActivity> facilityActivities;
+    private List<FacilityBiosafetyCommittee> bioCommittees;
 
     private String facilityName;
 
@@ -38,14 +39,10 @@ public class Facility extends BaseEntity {
 
     private String isProtected;
 
-    private String scheduleType;
+    //self audit
+    private String facilityAddress;
 
     private String approval;
 
     private String approvalStatus;
-
-    private Date expiryDt;
-
-    private String facilityAddress;
-
 }

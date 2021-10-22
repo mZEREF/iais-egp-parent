@@ -5,7 +5,6 @@ import lombok.Data;
 
 import java.util.List;
 
-
 @Data
 public class FacilityActivity extends BaseEntity {
     private String id;
@@ -14,7 +13,13 @@ public class FacilityActivity extends BaseEntity {
 
     private Application application;
 
-    private List<FacilitySchedule> facilitySchedules;
-
     private String activityType;
+
+    private List<FacilityBiologicalAgent> biologicalAgents;
+
+    private Approval approval;
+
+    private String cloned;
+
+    private String useStatus;
 }
