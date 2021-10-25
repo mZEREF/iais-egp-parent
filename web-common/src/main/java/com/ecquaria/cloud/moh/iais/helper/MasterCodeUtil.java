@@ -136,10 +136,13 @@ public final class MasterCodeUtil {
     public static final String CATE_ID_BSB_GAZETTED_AREA = "5B9B1838-C58C-49E9-AA65-3078F67B1ED9";
     public static final String CATE_ID_BSB_FACILITY_STATUS = "4A6DAE2F-A8D4-4966-A17B-BFBAE669E8E4";
 
-    //Nationality
+    // Data Submission Id Type
+    public static final String CATE_ID_DS_ID_TYPE = "AA1FF089-5B35-EC11-BE73-000C298D317C";
+
+    // Nationality
     public static final String CATE_ID_NATIONALITY = "21941117-A009-4E45-AD2F-22F233EAA28D";
 
-    //Ethnic Group
+    // Ethnic Group
     public static final String CATE_ID_ETHNIC_GROUP = "22941117-A009-4E45-AD2F-22F233EAA28D";
 
     /**
