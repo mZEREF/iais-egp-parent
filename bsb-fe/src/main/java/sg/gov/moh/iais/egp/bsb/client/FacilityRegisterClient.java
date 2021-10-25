@@ -12,7 +12,6 @@ import sg.gov.moh.iais.egp.bsb.dto.ValidationResultDto;
 import sg.gov.moh.iais.egp.bsb.dto.register.facility.*;
 
 
-
 @FeignClient(value = "bsb-fe-api", configuration = FeignClientsConfiguration.class, contextId = "facReg")
 public interface FacilityRegisterClient {
     @PostMapping(path = "/register/facility/validate/facSelection", consumes = MediaType.APPLICATION_JSON_VALUE, produces =MediaType.APPLICATION_JSON_VALUE)
@@ -43,7 +42,7 @@ public interface FacilityRegisterClient {
     ValidationResultDto validateFacilityOtherAppInfo(@RequestBody OtherApplicationInfoDto dto);
 
     @PostMapping(path = "/register/facility/validate/primaryDocs", consumes = MediaType.APPLICATION_JSON_VALUE, produces =MediaType.APPLICATION_JSON_VALUE)
-    ValidationResultDto validateFacilityPrimaryDocs(@RequestBody PrimaryDocDto dto);
+    ValidationResultDto validateFacilityPrimaryDocs(@RequestBody PrimaryDocDto.DocsMetaDto dto);
 
     @PostMapping(path = "/register/facility/validate/previewSubmit", consumes = MediaType.APPLICATION_JSON_VALUE, produces =MediaType.APPLICATION_JSON_VALUE)
     ValidationResultDto validateFacilityPreviewSubmit(@RequestBody PreviewSubmitDto dto);

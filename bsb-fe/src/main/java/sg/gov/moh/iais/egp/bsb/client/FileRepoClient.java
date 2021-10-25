@@ -7,22 +7,21 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
 import java.util.List;
 
-/**
- * FileRepoClient
- *
- * @author Jinhua
- * @date 2019/11/26 12:29
- */
+
+
 @FeignClient(name = "FILE-REPOSITORY", configuration = {FeignConfiguration.class},
         fallback = FileRepoClientFallback.class)
 public interface FileRepoClient {
-    @RequestMapping(method = RequestMethod.POST, produces =  MediaType.APPLICATION_JSON_VALUE ,
-            consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    FeignResponseEntity<String> saveFiles(@RequestPart("selectedFile") MultipartFile file,
-                                          @RequestParam("filerepoInfo") String fileRepoInfo);
+    @PostMapping( produces =  MediaType.APPLICATION_JSON_VALUE , consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    FeignResponseEntity<String> saveFile(@RequestPart("selectedFile") MultipartFile file,
+                                         @RequestParam("filerepoInfo") String fileRepoInfo);
+
+    @PostMapping(value = "/saveFiles", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    FeignResponseEntity<List<String>> saveFiles(@RequestPart("selectedFiles") List<MultipartFile> files);
+
+
     @GetMapping(value = "/{guid}")
     FeignResponseEntity<byte[]> getFileFormDataBase(@PathVariable(name = "guid") String guid);
 

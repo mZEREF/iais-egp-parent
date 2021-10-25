@@ -15,7 +15,15 @@ import java.util.List;
  */
 public class FileRepoClientFallback implements FileRepoClient{
     @Override
-    public FeignResponseEntity<String> saveFiles(MultipartFile file, String auditTrailDto) {
+    public FeignResponseEntity<String> saveFile(MultipartFile file, String auditTrailDto) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    @Override
+    public FeignResponseEntity<List<String>> saveFiles(List<MultipartFile> files) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);

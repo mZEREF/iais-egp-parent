@@ -3,6 +3,7 @@ package sg.gov.moh.iais.egp.bsb.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
+import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoDto;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -11,14 +12,18 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
 import sg.gov.moh.iais.egp.bsb.client.FacilityRegisterClient;
+import sg.gov.moh.iais.egp.bsb.client.FileRepoClient;
 import sg.gov.moh.iais.egp.bsb.common.node.Node;
 import sg.gov.moh.iais.egp.bsb.common.node.NodeGroup;
 import sg.gov.moh.iais.egp.bsb.common.node.Nodes;
 import sg.gov.moh.iais.egp.bsb.common.node.simple.SimpleNode;
+import sg.gov.moh.iais.egp.bsb.constant.DocConstants;
 import sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
 import sg.gov.moh.iais.egp.bsb.dto.register.facility.*;
+import sg.gov.moh.iais.egp.bsb.entity.DocSetting;
 import sg.gov.moh.iais.egp.bsb.util.LogUtil;
 import sop.webflow.rt.api.BaseProcessClass;
 
@@ -26,6 +31,8 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.*;
 
@@ -33,7 +40,7 @@ import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.*;
 @Slf4j
 @Delegator("bsbFacilityRegisterDelegator")
 public class FacilityRegistrationDelegator {
-    private static final String KEY_ROOT_NODE_GROUP = "facRegRoot";
+    public static final String KEY_ROOT_NODE_GROUP = "facRegRoot";
 
     private static final String KEY_EDIT_APP_ID = "editId";
     private static final String KEY_ACTION_TYPE = "action_type";
@@ -59,10 +66,12 @@ public class FacilityRegistrationDelegator {
     private static final String ERR_MSG_INVALID_ACTION = "Invalid action";
 
     private final FacilityRegisterClient facRegClient;
+    private final FileRepoClient fileRepoClient;
 
     @Autowired
-    public FacilityRegistrationDelegator(FacilityRegisterClient facRegClient) {
+    public FacilityRegistrationDelegator(FacilityRegisterClient facRegClient, FileRepoClient fileRepoClient) {
         this.facRegClient = facRegClient;
+        this.fileRepoClient = fileRepoClient;
     }
 
     public void init(BaseProcessClass bpc) {
@@ -438,7 +447,25 @@ public class FacilityRegistrationDelegator {
             ParamUtil.setRequestAttr(request, KEY_VALIDATION_ERRORS, primaryDocDto.retrieveValidationResult());
         }
         primaryDocNode.needValidation();
-        ParamUtil.setRequestAttr(request, NODE_NAME_PRIMARY_DOC, primaryDocDto);
+
+        /* Currently hard code here, will be retrieved from DB by a config mechanism in the future */
+        List<DocSetting> docSettings = new ArrayList<>();
+        docSettings.add(new DocSetting(DocConstants.DOC_TYPE_BIO_SAFETY_COORDINATOR_CERTIFICATES, "BioSafety Coordinator Certificates", true));
+        docSettings.add(new DocSetting(DocConstants.DOC_TYPE_INVENTORY_FILE, "Inventory File", false));
+        docSettings.add(new DocSetting(DocConstants.DOC_TYPE_EMAC_ENDORSEMENT, "GMAC Endorsement", false));
+        docSettings.add(new DocSetting(DocConstants.DOC_TYPE_RISK_ASSESS_PLAN, "Risk Assessment Plan", false));
+        docSettings.add(new DocSetting(DocConstants.DOC_TYPE_STANDARD_OPERATING_PROCEDURE, "Standard Operating Procedure", false));
+        docSettings.add(new DocSetting(DocConstants.DOC_TYPE_EMERGENCY_RESPONSE_PLAN, "Emergency Response Plan", false));
+        docSettings.add(new DocSetting(DocConstants.DOC_TYPE_BIO_SAFETY_COM, "Approval/Endorsement : Biosafety Com", false));
+        docSettings.add(new DocSetting(DocConstants.DOC_TYPE_FACILITY_PLAN_LAYOUT, "Facility Plan/Layout", false));
+        docSettings.add(new DocSetting(DocConstants.DOC_TYPE_OTHERS, "Others", false));
+        ParamUtil.setRequestAttr(request, "docSettings", docSettings);
+
+        Map<String, List<PrimaryDocDto.DocRecordInfo>> savedFiles = primaryDocDto.getExistDocTypeMap();
+        Map<String, List<PrimaryDocDto.NewDocInfo>> newFiles = primaryDocDto.getNewDocTypeMap();
+        ParamUtil.setRequestAttr(request, "savedFiles", savedFiles);
+        ParamUtil.setRequestAttr(request, "newFiles", newFiles);
+
     }
 
     public void handlePrimaryDoc(BaseProcessClass bpc) {
@@ -500,10 +527,24 @@ public class FacilityRegistrationDelegator {
                 if (previewSubmitNode.doValidation()) {
                     previewSubmitNode.passValidation();
 
+                    // save docs
+                    SimpleNode primaryDocNode = (SimpleNode) facRegRoot.at(NODE_NAME_PRIMARY_DOC);
+                    PrimaryDocDto primaryDocDto = (PrimaryDocDto) primaryDocNode.getValue();
+                    List<MultipartFile> files = primaryDocDto.getNewDocMap().values().stream().map(PrimaryDocDto.NewDocInfo::getMultipartFile).collect(Collectors.toList());
+                    List<String> repoIds = fileRepoClient.saveFiles(files).getEntity();
+                    primaryDocDto.newFileSaved(repoIds);
+
                     // save data
                     FacilityRegisterDto finalAllDataDto = FacilityRegisterDto.from(facRegRoot);
                     ResponseDto<String> responseDto = facRegClient.saveNewRegisteredFacility(finalAllDataDto);
                     log.info("save new facility response: {}", responseDto);
+
+                    // delete docs
+                    for (String id: primaryDocDto.getToBeDeletedRepoIds()) {
+                        FileRepoDto fileRepoDto = new FileRepoDto();
+                        fileRepoDto.setId(id);
+                        fileRepoClient.removeFileById(fileRepoDto);
+                    }
 
                     ParamUtil.setRequestAttr(request, KEY_ACTION_TYPE, KEY_ACTION_SUBMIT);
                 } else {
