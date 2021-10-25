@@ -1,10 +1,9 @@
 package sg.gov.moh.iais.egp.bsb.dto.revocation;
 
 import lombok.Data;
-import sg.gov.moh.iais.egp.bsb.entity.Application;
-import sg.gov.moh.iais.egp.bsb.entity.ApplicationMisc;
-import sg.gov.moh.iais.egp.bsb.entity.Approval;
-import sg.gov.moh.iais.egp.bsb.entity.RoutingHistory;
+import sg.gov.moh.iais.egp.bsb.entity.*;
+
+import java.util.List;
 
 /**
  * @author Zhu Tangtang
@@ -14,4 +13,6 @@ import sg.gov.moh.iais.egp.bsb.entity.RoutingHistory;
 public class SubmitRevokeDto {
     public Application application;
     public Approval approval;
+    private List<FacilityBiologicalAgent> agents;
+    private List<FacilityActivity> activities;
 }

@@ -26,7 +26,7 @@ public interface RevocationClient {
     FeignResponseEntity<ViewSelectedRevokeApplicationDto> getRevokeDetailByApplicationId(@PathVariable(name = "id") String id);
 
     @PostMapping(path = "/bsb-application/save",consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<Application> saveRevokeApplication(@RequestBody SubmitRevokeDto dto);
+    FeignResponseEntity<SubmitRevokeDto> saveRevokeApplication(@RequestBody SubmitRevokeDto dto);
 
     @PostMapping(path = "/bsb-application/savemisc", consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
     ResponseDto<ApplicationMisc> saveApplicationMisc(@RequestBody ApplicationMisc misc);
@@ -44,7 +44,7 @@ public interface RevocationClient {
     FeignResponseEntity<Void> updateApplicationStatusById(@RequestParam(value = "id") String id, @RequestParam(value = "status") String status);
 
     @PutMapping(value = "/bsb-application/updateApprovalStatusById", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<Void> updateApprovalStatusById(@RequestParam(value = "id") String id, @RequestParam(value = "status") String status);
+    FeignResponseEntity<Void> updateApprovalStatusById(@RequestParam(value = "id") String id, @RequestParam(value = "status") String status,@RequestParam(value = "decision") String decision);
 
     @GetMapping(value = "/bsb-application/queryMisc", consumes = MediaType.APPLICATION_JSON_VALUE, produces =MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<ApplicationMisc>> getApplicationMiscByAppId(@RequestParam("applicationId") String applicationId);
@@ -53,7 +53,7 @@ public interface RevocationClient {
     FeignResponseEntity<FacilityActivity> getFacilityActivityByApplicationId(@RequestParam("appId") String applicationId);
 
     @PostMapping(value = "/bsb-application/updateApplication", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<Application> updateApplication(@RequestBody Application application);
+    FeignResponseEntity<SubmitRevokeDto> updateApplication(@RequestBody Application application);
 
     @GetMapping(value = "/bsb-application/getActiveApproval", consumes = MediaType.APPLICATION_JSON_VALUE, produces =MediaType.APPLICATION_JSON_VALUE)
     ResponseDto<ApprovalQueryResultDto> queryActiveApproval(@SpringQueryMap ApprovalQueryDto queryDto);

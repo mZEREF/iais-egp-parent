@@ -263,7 +263,7 @@ public class AORevocationDelegator {
     public void approve(BaseProcessClass bpc) {
         AODecisionDto aoDecisionDto = before(bpc);
         revocationClient.updateApplicationStatusById(aoDecisionDto.getApplication().getId(),RevocationConstants.PARAM_APPLICATION_STATUS_APPROVED);
-        revocationClient.updateApprovalStatusById(aoDecisionDto.getApproval().getId(),RevocationConstants.PARAM_APPROVAL_STATUS_REVOKED);
+        revocationClient.updateApprovalStatusById(aoDecisionDto.getApproval().getId(),RevocationConstants.PARAM_APPROVAL_STATUS_REVOKED,"approve");
         revocationClient.saveApplicationMisc(aoDecisionDto.getMisc());
         aoDecisionDto.getHistory().setAppStatus(RevocationConstants.PARAM_APPLICATION_STATUS_APPROVED);
         revocationClient.saveHistory(aoDecisionDto.getHistory());
@@ -304,6 +304,7 @@ public class AORevocationDelegator {
     public void reject(BaseProcessClass bpc) {
         AODecisionDto aoDecisionDto = before(bpc);
         revocationClient.updateApplicationStatusById(aoDecisionDto.getApplication().getId(),RevocationConstants.PARAM_APPLICATION_STATUS_REJECTED);
+        revocationClient.updateApprovalStatusById(aoDecisionDto.getApproval().getId(),RevocationConstants.PARAM_APPROVAL_STATUS_REVOKED,"reject");
         revocationClient.saveApplicationMisc(aoDecisionDto.getMisc());
         aoDecisionDto.getHistory().setAppStatus(RevocationConstants.PARAM_APPLICATION_STATUS_REJECTED);
         revocationClient.saveHistory(aoDecisionDto.getHistory());

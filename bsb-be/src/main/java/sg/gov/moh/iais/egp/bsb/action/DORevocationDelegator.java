@@ -296,7 +296,7 @@ public class DORevocationDelegator {
 
         String flag = (String) ParamUtil.getSessionAttr(request, RevocationConstants.FLAG);
         Approval approval = (Approval) ParamUtil.getSessionAttr(request, RevocationConstants.APPROVAL);
-        FeignResponseEntity<Application> result = null;
+        FeignResponseEntity<SubmitRevokeDto> result = null;
         if (flag.equals(RevocationConstants.FAC)) {
             Application application = new Application();
 
@@ -328,7 +328,7 @@ public class DORevocationDelegator {
         ApplicationMisc miscDto = new ApplicationMisc();
         miscDto.setRemarks(remarks);
         miscDto.setReasonContent(reason);
-        miscDto.setApplication(result.getEntity());
+        miscDto.setApplication(result.getEntity().getApplication());
         miscDto.setReason(RevocationConstants.PARAM_REASON_TYPE_DO);
         ResponseDto<ApplicationMisc> miscResponseDto = revocationClient.saveApplicationMisc(miscDto);
         if ("INVALID_ARGS".equals(miscResponseDto.getErrorCode())) {
@@ -336,45 +336,42 @@ public class DORevocationDelegator {
         }
         //get user name
         LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
-        Application application = result.getEntity();
+        Application application = result.getEntity().getApplication();
         RoutingHistory historyDto = new RoutingHistory();
         historyDto.setAppStatus(RevocationConstants.PARAM_APPLICATION_STATUS_PENDING_AO);
         historyDto.setActionBy(loginContext.getUserName());
         historyDto.setInternalRemarks(miscDto.getRemarks());
         historyDto.setApplicationNo(application.getApplicationNo());
         revocationClient.saveHistory(historyDto);
-//
-//        BsbEmailParam bsbEmailParam = new BsbEmailParam();
-//        bsbEmailParam.setMsgTemplateId(MSG_TEMPLATE_REVOCATION_AO_APPROVED);
-//        bsbEmailParam.setRefId(application.getFacility().getId());
-//        bsbEmailParam.setRefIdType("facId");
-//        bsbEmailParam.setQueryCode("1");
-//        bsbEmailParam.setReqRefNum("1");
-//        Map<String,Object> map = new HashMap<>();
-//        map.put("applicationNo", application.getApplicationNo());
-//        map.put("ApprovalNo", "Approval001");
-//        if (application.getProcessType().equals(RevocationConstants.PARAM_PROCESS_TYPE_APPROVAL_TO_POSSESS)
-//                || application.getProcessType().equals(RevocationConstants.PARAM_PROCESS_TYPE_APPROVAL_TO_LSP)
-//                || application.getProcessType().equals(RevocationConstants.PARAM_PROCESS_TYPE_SPECIAL_APPROVAL_TO_HANDLE)) {
-//            map.put("Type", facility1.getApprovalType());
-//        }
-//        if (application.getProcessType().equals(RevocationConstants.PARAM_PROCESS_TYPE_FACILITY_REGISTRATION)) {
-//            List<FacilityActivity> activityList = auditClient.getFacilityActivityByFacilityId(facility1.getId()).getEntity();
-//            String activityType = "";
-//            if (!activityList.isEmpty()) {
-//                activityType = JoinParamUtil.joinActivityType(activityList);
-//            }
-//            map.put("Type", activityType);
-//        }
-//        if (application.getProcessType().equals(RevocationConstants.PARAM_PROCESS_TYPE_AFC_REGISTRATION)) {
-//            map.put("Type", MasterCodeUtil.getCodeDesc(RevocationConstants.PARAM_PROCESS_TYPE_AFC_REGISTRATION));
-//        }
-//        map.put("officer", loginContext.getUserName());
-//        Map<String,Object> subMap = new HashMap<>();
-//        subMap.put("applicationNo", application.getApplicationNo());
-//        bsbEmailParam.setMsgSubject(subMap);
-//        bsbEmailParam.setMsgContent(map);
-//        bsbNotificationHelper.sendNotification(bsbEmailParam);
+
+        BsbEmailParam bsbEmailParam = new BsbEmailParam();
+        bsbEmailParam.setMsgTemplateId(MSG_TEMPLATE_REVOCATION_AO_APPROVED);
+        bsbEmailParam.setRefId(application.getFacility().getId());
+        bsbEmailParam.setRefIdType("facId");
+        bsbEmailParam.setQueryCode("1");
+        bsbEmailParam.setReqRefNum("1");
+        Map<String,Object> map = new HashMap<>();
+        map.put("applicationNo", application.getApplicationNo());
+        map.put("ApprovalNo", "Approval001");
+        if (application.getProcessType().equals(RevocationConstants.PARAM_PROCESS_TYPE_FACILITY_REGISTRATION)) {
+            List<FacilityActivity> activityList = result.getEntity().getActivities();
+            String activityType = "";
+            if (!activityList.isEmpty()) {
+                activityType = JoinParamUtil.joinActivityType(activityList);
+            }
+            map.put("Type", activityType);
+        }else if (application.getProcessType().equals(RevocationConstants.PARAM_PROCESS_TYPE_AFC_REGISTRATION)) {
+            map.put("Type", MasterCodeUtil.getCodeDesc(RevocationConstants.PARAM_PROCESS_TYPE_AFC_REGISTRATION));
+        }else{
+            List<FacilityBiologicalAgent> agents = result.getEntity().getAgents();
+            map.put("Type", agents.get(0).getApproveType());
+        }
+        map.put("officer", loginContext.getUserName());
+        Map<String,Object> subMap = new HashMap<>();
+        subMap.put("applicationNo", application.getApplicationNo());
+        bsbEmailParam.setMsgSubject(subMap);
+        bsbEmailParam.setMsgContent(map);
+        bsbNotificationHelper.sendNotification(bsbEmailParam);
     }
 
     /**
@@ -382,7 +379,7 @@ public class DORevocationDelegator {
      *
      * @param bpc
      */
-    public void updateNum(BaseProcessClass bpc) {
+    public void updateInventory(BaseProcessClass bpc) {
         //TODO update inventory method
     }
 

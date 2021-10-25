@@ -26,7 +26,7 @@ public class INTRANET___MohDOSubmitRevocation___1 extends BaseProcessClass {
 	}
 
 	public void updateNum_OnStepProcess_0() throws Exception {
-		EngineHelper.delegate(DELEGATOR, "updateNum", this);
+		EngineHelper.delegate(DELEGATOR, "updateInventory", this);
 	}
 
 	public void submit_OnStepProcess_0() throws Exception {
