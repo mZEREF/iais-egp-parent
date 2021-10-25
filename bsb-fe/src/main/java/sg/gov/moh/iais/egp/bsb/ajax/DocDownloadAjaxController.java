@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import sg.gov.moh.iais.egp.bsb.action.FacilityRegistrationDelegator;
 import sg.gov.moh.iais.egp.bsb.client.FileRepoClient;
+import sg.gov.moh.iais.egp.bsb.common.multipart.ByteArrayMultipartFile;
 import sg.gov.moh.iais.egp.bsb.common.node.NodeGroup;
 import sg.gov.moh.iais.egp.bsb.common.node.simple.SimpleNode;
 import sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants;
@@ -22,6 +23,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.function.BiFunction;
+import java.util.function.UnaryOperator;
 
 
 @RestController
@@ -35,30 +38,29 @@ public class DocDownloadAjaxController {
         this.fileRepoClient = fileRepoClient;
     }
 
-    @GetMapping("/new/{id}")
-    public void downloadNotSavedFile(@PathVariable("id") String maskedTmpId, HttpServletRequest request, HttpServletResponse response) {
+
+    /**
+     * Common method to download the file
+     * @param maskedId masked id received from request
+     * @param unmaskFunc used to decrypt the masked id, this function must throw a exception if the decryption fails
+     * @param retrieveFileFunc used to retrieve the MultipartFile, this function can return null if not found
+     */
+    public void downloadFile(HttpServletRequest request, HttpServletResponse response, String maskedId, UnaryOperator<String> unmaskFunc, BiFunction<HttpServletRequest, String, MultipartFile> retrieveFileFunc) {
         String filename = "error";
         long length = 0;
         byte[] data = new byte[0];
 
         try {
             if (log.isInfoEnabled()) {
-                log.info("Masked id is:{}", LogUtil.escapeCrlf(maskedTmpId));
+                log.info("Masked id is:{}", LogUtil.escapeCrlf(maskedId));
             }
 
-            String tmpId = MaskUtil.unMaskValue("file", maskedTmpId);
-            if (tmpId == null || maskedTmpId == null || tmpId.equals(maskedTmpId)) {
-                throw new MaskAttackException("Masked id is invalid");
-            }
+            String id = unmaskFunc.apply(maskedId);
+            log.info("Unmasked id is {}", id);
 
-            log.info("tmpId is {}", tmpId);
-
-            NodeGroup facRegRoot = (NodeGroup) ParamUtil.getSessionAttr(request, FacilityRegistrationDelegator.KEY_ROOT_NODE_GROUP);
-            SimpleNode primaryDocNode = (SimpleNode) facRegRoot.at(FacRegisterConstants.NODE_NAME_PRIMARY_DOC);
-            PrimaryDocDto primaryDocDto = (PrimaryDocDto) primaryDocNode.getValue();
-            MultipartFile file = primaryDocDto.getNewDocMap().get(tmpId).getMultipartFile();
+            MultipartFile file = retrieveFileFunc.apply(request, id);
             if (file == null) {
-                throw new IllegalStateException("Can not find the MultipartFile for the tmpId");
+                throw new IllegalStateException("Can not find the MultipartFile for the id");
             }
 
             filename = file.getOriginalFilename();
@@ -81,40 +83,56 @@ public class DocDownloadAjaxController {
         }
     }
 
-    @GetMapping("/repo/{id}")
+
+    @GetMapping("/facReg/new/{id}")
+    public void downloadNotSavedFile(@PathVariable("id") String maskedTmpId, HttpServletRequest request, HttpServletResponse response) {
+        downloadFile(request, response, maskedTmpId, this::unmaskFileId, this::facRegGetNewFile);
+    }
+
+    @GetMapping("/facReg/repo/{id}")
     public void downloadSavedFile(@PathVariable("id") String maskedRepoId, HttpServletRequest request, HttpServletResponse response) {
-        if (log.isInfoEnabled()) {
-            log.info("Masked id is:{}", LogUtil.escapeCrlf(maskedRepoId));
-        }
+        downloadFile(request, response, maskedRepoId, this::unmaskFileId, this::facRegGetSavedFile);
+    }
 
-        String repoId = MaskUtil.unMaskValue("file", maskedRepoId);
-        if (repoId == null || maskedRepoId == null || repoId.equals(maskedRepoId)) {
-            log.warn("Masked id is invalid");
-            return;
-        }
-        log.info("repoId is {}", repoId);
 
+
+    /**
+     * Use the param 'file' to unmask the id
+     * @return unmasked id
+     * @throws MaskAttackException if fail to unmask the parameter
+     */
+    private String unmaskFileId(String maskedId) {
+        String tmpId = MaskUtil.unMaskValue("file", maskedId);
+        if (tmpId == null || maskedId == null || tmpId.equals(maskedId)) {
+            throw new MaskAttackException("Masked id is invalid");
+        }
+        return tmpId;
+    }
+
+    /**
+     * Facility registration get the new doc file object
+     * @param id key of the newDocMap in the PrimaryDocDto
+     */
+    private MultipartFile facRegGetNewFile(HttpServletRequest request, String id) {
         NodeGroup facRegRoot = (NodeGroup) ParamUtil.getSessionAttr(request, FacilityRegistrationDelegator.KEY_ROOT_NODE_GROUP);
         SimpleNode primaryDocNode = (SimpleNode) facRegRoot.at(FacRegisterConstants.NODE_NAME_PRIMARY_DOC);
         PrimaryDocDto primaryDocDto = (PrimaryDocDto) primaryDocNode.getValue();
-        PrimaryDocDto.DocRecordInfo info = primaryDocDto.getSavedDocMap().get(repoId);
+        return primaryDocDto.getNewDocMap().get(id).getMultipartFile();
+    }
+
+    /**
+     * Facility registration get the saved doc file data
+     * @param id key of the savedDocMap in the PrimaryDocDto
+     */
+    private MultipartFile facRegGetSavedFile(HttpServletRequest request, String id) {
+        NodeGroup facRegRoot = (NodeGroup) ParamUtil.getSessionAttr(request, FacilityRegistrationDelegator.KEY_ROOT_NODE_GROUP);
+        SimpleNode primaryDocNode = (SimpleNode) facRegRoot.at(FacRegisterConstants.NODE_NAME_PRIMARY_DOC);
+        PrimaryDocDto primaryDocDto = (PrimaryDocDto) primaryDocNode.getValue();
+        PrimaryDocDto.DocRecordInfo info = primaryDocDto.getSavedDocMap().get(id);
         if (info == null) {
-            log.error("Can not get the record for the repo id");
-            return;
+            throw new IllegalStateException("Can not get the record for the repo id");
         }
-
-        byte[] content = fileRepoClient.getFileFormDataBase(repoId).getEntity();
-
-        try {
-            response.addHeader("Content-Disposition", "attachment;filename=\"" + info.getFilename() + "\"");
-            response.addHeader("Content-Length", "" + info.getSize());
-            response.setContentType("application/x-octet-stream");
-            OutputStream ops = response.getOutputStream();
-            ops.write(content);
-            ops.close();
-            ops.flush();
-        } catch (IOException e) {
-            log.error("Fail to write file to response", e);
-        }
+        byte[] content = fileRepoClient.getFileFormDataBase(id).getEntity();
+        return new ByteArrayMultipartFile(null, info.getFilename(), null, content);
     }
 }

@@ -6,6 +6,7 @@
 <%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
 <%@ taglib prefix="iais-bsb" uri="http://www.ecq.com/iais-bsb" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ page import="java.lang.String" %>
 
 <%
     sop.webflow.rt.api.BaseProcessClass process =
@@ -28,6 +29,8 @@
 <%--@elvariable id="facOfficer" type="sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityOfficerDto"--%>
 <%--@elvariable id="facCommittee" type="sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityCommitteeDto"--%>
 <%--@elvariable id="batList" type="java.util.List<sg.gov.moh.iais.egp.bsb.dto.register.facility.BiologicalAgentToxinDto>"--%>
+<%--@elvariable id="docSettings" type="java.util.List<sg.gov.moh.iais.egp.bsb.entity.DocSetting>"--%>
+<%--@elvariable id="primaryDocs" type="java.util.Map<java.lang.String, java.util.List<sg.gov.moh.iais.egp.bsb.dto.register.facility.PrimaryDocDto$DocMeta>>"--%>
 <%--@elvariable id="previewSubmit" type="sg.gov.moh.iais.egp.bsb.dto.register.facility.PreviewSubmitDto"--%>
 <form method="post" id="mainForm" action="<%=process.runtime.continueURL()%>">
     <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
@@ -441,10 +444,23 @@
                                                             <div class="panel-body">
                                                                 <div class="text-right app-font-size-16"><a href="#" data-step-key="primaryDocs"><em class="fa fa-pencil-square-o"></em>Edit</a></div>
                                                                 <div class="panel-main-content form-horizontal min-row">
-                                                                    <div class="form-group">
-                                                                        <div class="col-10"><strong>Uploaded Documents</strong></div>
-                                                                        <div class="clear"></div>
-                                                                    </div>
+                                                                    <c:forEach var="doc" items="${docSettings}">
+                                                                        <c:set var="docFiles" value="${primaryDocs.get(doc.type)}"/>
+                                                                        <c:if test="${not empty docFiles}">
+                                                                            <div class="form-group">
+                                                                                <div class="col-10"><strong>${doc.typeDisplay}</strong></div>
+                                                                                <div class="clear"></div>
+                                                                            </div>
+                                                                            <div>
+                                                                                <c:forEach var="file" items="${docFiles}">
+                                                                                    <div class="form-group">
+                                                                                        <div class="col-10"><p>${file.filename}(${String.format("%.1f", file.size/1024.0)}KB)</p></div>
+                                                                                        <div class="clear"></div>
+                                                                                    </div>
+                                                                                </c:forEach>
+                                                                            </div>
+                                                                        </c:if>
+                                                                    </c:forEach>
                                                                 </div>
                                                             </div>
                                                         </div>

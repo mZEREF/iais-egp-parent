@@ -448,24 +448,12 @@ public class FacilityRegistrationDelegator {
         }
         primaryDocNode.needValidation();
 
-        /* Currently hard code here, will be retrieved from DB by a config mechanism in the future */
-        List<DocSetting> docSettings = new ArrayList<>();
-        docSettings.add(new DocSetting(DocConstants.DOC_TYPE_BIO_SAFETY_COORDINATOR_CERTIFICATES, "BioSafety Coordinator Certificates", true));
-        docSettings.add(new DocSetting(DocConstants.DOC_TYPE_INVENTORY_FILE, "Inventory File", false));
-        docSettings.add(new DocSetting(DocConstants.DOC_TYPE_EMAC_ENDORSEMENT, "GMAC Endorsement", false));
-        docSettings.add(new DocSetting(DocConstants.DOC_TYPE_RISK_ASSESS_PLAN, "Risk Assessment Plan", false));
-        docSettings.add(new DocSetting(DocConstants.DOC_TYPE_STANDARD_OPERATING_PROCEDURE, "Standard Operating Procedure", false));
-        docSettings.add(new DocSetting(DocConstants.DOC_TYPE_EMERGENCY_RESPONSE_PLAN, "Emergency Response Plan", false));
-        docSettings.add(new DocSetting(DocConstants.DOC_TYPE_BIO_SAFETY_COM, "Approval/Endorsement : Biosafety Com", false));
-        docSettings.add(new DocSetting(DocConstants.DOC_TYPE_FACILITY_PLAN_LAYOUT, "Facility Plan/Layout", false));
-        docSettings.add(new DocSetting(DocConstants.DOC_TYPE_OTHERS, "Others", false));
-        ParamUtil.setRequestAttr(request, "docSettings", docSettings);
+        ParamUtil.setRequestAttr(request, "docSettings", getFacRegDocSettings());
 
         Map<String, List<PrimaryDocDto.DocRecordInfo>> savedFiles = primaryDocDto.getExistDocTypeMap();
         Map<String, List<PrimaryDocDto.NewDocInfo>> newFiles = primaryDocDto.getNewDocTypeMap();
         ParamUtil.setRequestAttr(request, "savedFiles", savedFiles);
         ParamUtil.setRequestAttr(request, "newFiles", newFiles);
-
     }
 
     public void handlePrimaryDoc(BaseProcessClass bpc) {
@@ -507,6 +495,9 @@ public class FacilityRegistrationDelegator {
         NodeGroup batNodeGroup = (NodeGroup) facRegRoot.at(NODE_NAME_FAC_BAT_INFO);
         List<BiologicalAgentToxinDto> batList = getBatInfoList(batNodeGroup);
         ParamUtil.setRequestAttr(request, "batList", batList);
+
+        ParamUtil.setRequestAttr(request, "docSettings", getFacRegDocSettings());
+        ParamUtil.setRequestAttr(request, NODE_NAME_PRIMARY_DOC, ((PrimaryDocDto)((SimpleNode)facRegRoot.at(NODE_NAME_PRIMARY_DOC)).getValue()).getAllDocTypeMap());
 
         List<SelectOption> approvedFacCertifierOps = new ArrayList<>(0);
         ParamUtil.setRequestAttr(request, "approvedFacCertifierOps", approvedFacCertifierOps);
@@ -825,5 +816,20 @@ public class FacilityRegistrationDelegator {
         personnelRoleOps.add(new SelectOption("COMTPRO003", "Person in charge of safe and proper functioning of facility and equipment"));
         personnelRoleOps.add(new SelectOption("COMTPRO004", "Other qualified personnel"));
         return personnelRoleOps;
+    }
+
+    /* Will be removed in future, will get this from config mechanism */
+    private List<DocSetting> getFacRegDocSettings () {
+        List<DocSetting> docSettings = new ArrayList<>();
+        docSettings.add(new DocSetting(DocConstants.DOC_TYPE_BIO_SAFETY_COORDINATOR_CERTIFICATES, "BioSafety Coordinator Certificates", true));
+        docSettings.add(new DocSetting(DocConstants.DOC_TYPE_INVENTORY_FILE, "Inventory File", false));
+        docSettings.add(new DocSetting(DocConstants.DOC_TYPE_EMAC_ENDORSEMENT, "GMAC Endorsement", false));
+        docSettings.add(new DocSetting(DocConstants.DOC_TYPE_RISK_ASSESS_PLAN, "Risk Assessment Plan", false));
+        docSettings.add(new DocSetting(DocConstants.DOC_TYPE_STANDARD_OPERATING_PROCEDURE, "Standard Operating Procedure", false));
+        docSettings.add(new DocSetting(DocConstants.DOC_TYPE_EMERGENCY_RESPONSE_PLAN, "Emergency Response Plan", false));
+        docSettings.add(new DocSetting(DocConstants.DOC_TYPE_BIO_SAFETY_COM, "Approval/Endorsement : Biosafety Com", false));
+        docSettings.add(new DocSetting(DocConstants.DOC_TYPE_FACILITY_PLAN_LAYOUT, "Facility Plan/Layout", false));
+        docSettings.add(new DocSetting(DocConstants.DOC_TYPE_OTHERS, "Others", false));
+        return docSettings;
     }
 }

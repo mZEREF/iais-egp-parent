@@ -63,7 +63,7 @@
                                                                         type="button" class="btn btn-secondary btn-sm" onclick="deleteSavedFile('${tmpId}')">Delete</button><button
                                                                         type="button" class="btn btn-secondary btn-sm" onclick="reloadSavedFile('${tmpId}', '${maskDocType}')">Reload</button><button
                                                                         type="button" class="btn btn-secondary btn-sm" onclick="downloadFile('saved', '${tmpId}', '${maskDocType}', '${info.filename}')">Download</button>
-                                                                    <span data-err-ind="${tmpId}" class="error-msg"></span>
+                                                                    <span data-err-ind="${info.repoId}" class="error-msg"></span>
                                                                 </div>
                                                             </c:forEach>
                                                         </c:if>
@@ -75,11 +75,11 @@
                                                                         type="button" class="btn btn-secondary btn-sm" onclick="deleteNewFile('${tmpId}')">Delete</button><button
                                                                         type="button" class="btn btn-secondary btn-sm" onclick="reloadNewFile('${tmpId}', '${maskDocType}')">Reload</button><button
                                                                         type="button" class="btn btn-secondary btn-sm" onclick="downloadFile('new', '${tmpId}', '${maskDocType}', '${info.filename}')">Download</button>
-                                                                    <span data-err-ind="${tmpId}" class="error-msg"></span>
+                                                                    <span data-err-ind="${info.tmpId}" class="error-msg"></span>
                                                                 </div>
                                                             </c:forEach>
                                                         </c:if>
-                                                        <a class="btn file-upload btn-secondary" data-upload-file="${maskDocType}" href="javascript:void(0);">Upload</a><span data-err-ind="${maskDocType}" class="error-msg"></span>
+                                                        <a class="btn file-upload btn-secondary" data-upload-file="${maskDocType}" href="javascript:void(0);">Upload</a><span data-err-ind="${doc.type}" class="error-msg"></span>
                                                     </div>
                                                 </div>
                                             </c:forEach>

@@ -223,9 +223,9 @@ function reloadNewFile(id, type) {
 function downloadFile(cond, id, type, filename) {
     var url;
     if (cond === 'saved') {
-        url = "/bsb-fe/ajax/doc/download/repo/" + id;
+        url = "/bsb-fe/ajax/doc/download/facReg/repo/" + id;
     } else if (cond === 'new') {
-        url = "/bsb-fe/ajax/doc/download/new/" + id;
+        url = "/bsb-fe/ajax/doc/download/facReg/new/" + id;
     }
 
     if (url) {
