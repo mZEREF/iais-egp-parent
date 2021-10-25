@@ -11,7 +11,7 @@
         <div class="panel-body">
             <div class="panel-main-content form-horizontal">
                 <h3>
-                    <p><label style="font-family:'Arial Negreta', 'Arial Normal', 'Arial';font-weight:700;"><c:out value="${arSuperDataSubmissionDto.patientDto.patientName}"/></label><label style="font-family:'Arial Normal', 'Arial';font-weight:400;"><c:out value="(${arSuperDataSubmissionDto.patientDto.patientIdNO})"/></label></p>
+                    <p><label style="font-family:'Arial Negreta', 'Arial Normal', 'Arial';font-weight:700;"><c:out value="${arSuperDataSubmissionDto.patientInfoDto.patient.name}"/></label><label style="font-family:'Arial Normal', 'Arial';font-weight:400;"><c:out value="(${arSuperDataSubmissionDto.patientInfoDto.patient.idNumber})"/></label></p>
                 </h3>
                 <iais:row>
                     <iais:field width="5" value="Premises where egg freezing only cycle is performed" mandatory="true"/>
@@ -46,15 +46,17 @@
                         <iais:code code="${arSuperDataSubmissionDto.efoCycleStageDto.reason}"/>
                     </iais:value>
                 </iais:row>
-                <iais:row>
-                    <iais:field width="5" value="" mandatory="false"/>
-                    <iais:value width="7" cssClass="col-md-7">
-                        <div id="othersReason" style="display: none" >
-                            <input type="text" maxlength="20"   name="othersReason" value="${arSuperDataSubmissionDto.efoCycleStageDto.otherReason}" >
-                            <span class="error-msg" name="iaisErrorMsg" id="error_otherReason"></span>
-                        </div>
-                    </iais:value>
-                </iais:row>
+                <c:if test="${arSuperDataSubmissionDto.efoCycleStageDto.reason=='EFOR004'}">
+                    <iais:row>
+                        <iais:field width="5" value="" mandatory="false"/>
+                        <iais:value width="7" cssClass="col-md-7">
+                            <div id="othersReason" style="display: none" >
+                                <c:out value="${arSuperDataSubmissionDto.efoCycleStageDto.othersReason}"/>
+                            </div>
+                        </iais:value>
+                    </iais:row>
+                </c:if>
+
 
             </div>
         </div>

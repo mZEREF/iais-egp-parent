@@ -1,5 +1,6 @@
 <%@ taglib uri="http://www.ecq.com/iais" prefix="iais" %>
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>
+<%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
 <%
     //handle to the Engine APIs
     sop.webflow.rt.api.BaseProcessClass process =
@@ -8,7 +9,7 @@
 <webui:setLayout name="iais-internet"/>
 
 
-<%@ include file="arHeader.jsp" %>
+<%@ include file="common/arHeader.jsp" %>
 <%-- current page: stage--%>
 <input type="hidden" name="ar_page" value="stage"/>
 <%--preview/ack--%>

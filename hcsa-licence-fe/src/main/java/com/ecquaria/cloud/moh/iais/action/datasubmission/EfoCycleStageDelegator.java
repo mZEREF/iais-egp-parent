@@ -16,7 +16,6 @@ import sop.util.DateUtil;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.Period;
@@ -42,6 +41,9 @@ public class EfoCycleStageDelegator extends CommonDelegator{
 
     @Override
     public void prepareSwitch(BaseProcessClass bpc) {
+        ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.CRUD_ACTION_TYPE, "page");
+
+        ParamUtil.setSessionAttr(bpc.request,"arSuperDataSubmissionDto",new ArSuperDataSubmissionDto());
 
     }
 
@@ -57,11 +59,11 @@ public class EfoCycleStageDelegator extends CommonDelegator{
         Date birthDate= null;
         try {
             birthDate = Formatter.parseDateTime(arSuperDataSubmissionDto.getPatientInfoDto().getPatient().getBirthDate(), AppConsts.DEFAULT_DATE_FORMAT);
-        } catch (ParseException e) {
+        } catch (Exception e) {
             log.error(e.getMessage(),e);
         }
-        arSuperDataSubmissionDto.getEfoCycleStageDto().setYearNum(getYear(birthDate,new Date()));
-        arSuperDataSubmissionDto.getEfoCycleStageDto().setMonthNum(getMon(birthDate,new Date()));
+        arSuperDataSubmissionDto.getEfoCycleStageDto().setYearNum(getYear(new Date(),new Date()));
+        arSuperDataSubmissionDto.getEfoCycleStageDto().setMonthNum(getMon(new Date(),new Date()));
         arSuperDataSubmissionDto.getEfoCycleStageDto().setPerformed("");
         arSuperDataSubmissionDto.getEfoCycleStageDto().setSubmissionId("");
 

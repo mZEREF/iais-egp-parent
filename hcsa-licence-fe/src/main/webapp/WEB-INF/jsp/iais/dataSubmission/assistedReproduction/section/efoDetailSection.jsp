@@ -10,7 +10,7 @@
         <div class="panel-body">
             <div class="panel-main-content form-horizontal">
                 <h3>
-                    <p><label style="font-family:'Arial Negreta', 'Arial Normal', 'Arial';font-weight:700;"><c:out value="${arSuperDataSubmissionDto.patientDto.patientName}"/></label><label style="font-family:'Arial Normal', 'Arial';font-weight:400;"><c:out value="(${arSuperDataSubmissionDto.patientDto.patientIdNO})"/></label></p>
+                    <p><label style="font-family:'Arial Negreta', 'Arial Normal', 'Arial';font-weight:700;"><c:out value="${arSuperDataSubmissionDto.patientInfoDto.patient.name}"/></label><label style="font-family:'Arial Normal', 'Arial';font-weight:400;"><c:out value="(${arSuperDataSubmissionDto.patientInfoDto.patient.idNumber})"/></label></p>
                 </h3>
                 <iais:row>
                     <iais:field width="5" value="Premises where egg freezing only cycle is performed" mandatory="false"/>
@@ -40,8 +40,7 @@
                                    value="1"
                                    id="radioYes"
                                    <c:if test="${empty arSuperDataSubmissionDto.efoCycleStageDto.isMedicallyIndicated || arSuperDataSubmissionDto.efoCycleStageDto.isMedicallyIndicated ==1 }">checked</c:if>
-                                   aria-invalid="false"
-                                   disabled>
+                                   aria-invalid="false">
                             <label class="form-check-label"
                                    for="radioYes"><span
                                     class="check-circle"></span>Yes</label>
@@ -52,8 +51,7 @@
                             <input class="form-check-input" type="radio"
                                    name="indicatedRadio" value="0" id="radioNo"
                                    <c:if test="${arSuperDataSubmissionDto.efoCycleStageDto.isMedicallyIndicated == 0}">checked</c:if>
-                                   aria-invalid="false"
-                                   disabled>
+                                   aria-invalid="false">
                             <label class="form-check-label"
                                    for="radioNo"><span
                                     class="check-circle"></span>No</label>
@@ -70,7 +68,7 @@
                     <iais:field width="5" value="" mandatory="false"/>
                     <iais:value width="7" cssClass="col-md-7">
                         <div id="othersReason" style="display: none" >
-                            <input type="text" maxlength="20"   name="othersReason" value="${arSuperDataSubmissionDto.efoCycleStageDto.otherReason}" >
+                            <input type="text" maxlength="20"   name="othersReason" value="${arSuperDataSubmissionDto.efoCycleStageDto.othersReason}" >
                         </div>
                     </iais:value>
                 </iais:row>
@@ -79,7 +77,7 @@
         </div>
     </div>
 </div>
-<<script  type="text/javascript">
+<script  type="text/javascript">
 $('#reasonSelect').change(function () {
 
 var reason= $('#reasonSelect option:selected').val();
