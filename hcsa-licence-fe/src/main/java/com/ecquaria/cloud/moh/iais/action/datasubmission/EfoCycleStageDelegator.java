@@ -8,6 +8,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSub
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.EfoCycleStageDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
@@ -36,14 +37,30 @@ public class EfoCycleStageDelegator extends CommonDelegator{
 
     @Override
     public void start(BaseProcessClass bpc) {
+        ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.CRUD_ACTION_TYPE, "page");
+        ArSuperDataSubmissionDto arSuperDataSubmissionDto=new ArSuperDataSubmissionDto();
+
+//        arSuperDataSubmissionDto.setEfoCycleStageDto(new EfoCycleStageDto());
+//        Date birthDate= null;
+//        try {
+//            birthDate = Formatter.parseDateTime(arSuperDataSubmissionDto.getPatientInfoDto().getPatient().getBirthDate(), AppConsts.DEFAULT_DATE_FORMAT);
+//        } catch (Exception e) {
+//            log.error(e.getMessage(),e);
+//        }
+//        arSuperDataSubmissionDto.getEfoCycleStageDto().setYearNum(getYear(new Date(),new Date()));
+//        arSuperDataSubmissionDto.getEfoCycleStageDto().setMonthNum(getMon(new Date(),new Date()));
+//        arSuperDataSubmissionDto.getEfoCycleStageDto().setPerformed("");
+//        arSuperDataSubmissionDto.getEfoCycleStageDto().setSubmissionId(MasterCodeUtil.CATE_ID_EFO_REASON);
+//
+//        arSuperDataSubmissionDto.getEfoCycleStageDto().setStartDate(new Date());
+
+        ParamUtil.setSessionAttr(bpc.request,"arSuperDataSubmissionDto",arSuperDataSubmissionDto);
 
     }
 
     @Override
     public void prepareSwitch(BaseProcessClass bpc) {
-        ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.CRUD_ACTION_TYPE, "page");
-
-        ParamUtil.setSessionAttr(bpc.request,"arSuperDataSubmissionDto",new ArSuperDataSubmissionDto());
+        log.info(StringUtil.changeForLog("crud_action_type is ======>"+ParamUtil.getRequestString(bpc.request,IntranetUserConstant.CRUD_ACTION_TYPE)));
 
     }
 
@@ -65,7 +82,7 @@ public class EfoCycleStageDelegator extends CommonDelegator{
         arSuperDataSubmissionDto.getEfoCycleStageDto().setYearNum(getYear(new Date(),new Date()));
         arSuperDataSubmissionDto.getEfoCycleStageDto().setMonthNum(getMon(new Date(),new Date()));
         arSuperDataSubmissionDto.getEfoCycleStageDto().setPerformed("");
-        arSuperDataSubmissionDto.getEfoCycleStageDto().setSubmissionId("");
+        arSuperDataSubmissionDto.getEfoCycleStageDto().setSubmissionId(MasterCodeUtil.CATE_ID_EFO_REASON);
 
         List<SelectOption> efoReasonSelectOption= MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_EFO_REASON);
         ParamUtil.setRequestAttr(bpc.request,"efoReasonSelectOption",efoReasonSelectOption);

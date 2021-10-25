@@ -1,1 +1,1 @@
-<%@include file = "/WEB-INF/jsp/iais/dataSubmission/assistedReproduction/arAck.jsp"%>
+<%@include file = "/WEB-INF/jsp/iais/dataSubmission/assistedReproduction/common/arAck.jsp"%>

@@ -2,9 +2,9 @@
 <div class="panel panel-default">
     <div class="panel-heading">
         <h4 class="panel-title">
-            <strong>
+            <a class="collapsed" data-toggle="collapse" href="#">
                 Egg Freezing Only Cycle
-            </strong>
+            </a>
         </h4>
     </div>
     <div id="efoDetails" class="panel-collapse collapse in">
@@ -14,13 +14,13 @@
                     <p><label style="font-family:'Arial Negreta', 'Arial Normal', 'Arial';font-weight:700;"><c:out value="${arSuperDataSubmissionDto.patientInfoDto.patient.name}"/></label><label style="font-family:'Arial Normal', 'Arial';font-weight:400;"><c:out value="(${arSuperDataSubmissionDto.patientInfoDto.patient.idNumber})"/></label></p>
                 </h3>
                 <iais:row>
-                    <iais:field width="5" value="Premises where egg freezing only cycle is performed" mandatory="true"/>
+                    <iais:field width="5" value="Premises where IUI is Performed" mandatory="false"/>
                     <iais:value width="7" cssClass="col-md-7" label="true">
                         <c:out value="${arSuperDataSubmissionDto.efoCycleStageDto.performed}"/>
                     </iais:value>
                 </iais:row>
                 <iais:row>
-                    <iais:field width="5" value="Date Started" mandatory="true"/>
+                    <iais:field width="5" value="Date Started" mandatory="false"/>
                     <iais:value width="7" cssClass="col-md-7">
                         <fmt:formatDate value="${arSuperDataSubmissionDto.efoCycleStageDto.startDate}" pattern="dd/MM/yyyy"></fmt:formatDate>
                     </iais:value>
@@ -41,7 +41,7 @@
                     </iais:value>
                 </iais:row>
                 <iais:row>
-                    <iais:field width="5" value="Reasons" mandatory="true"/>
+                    <iais:field width="5" value="Reasons" mandatory="false"/>
                     <iais:value width="7" cssClass="col-md-7">
                         <iais:code code="${arSuperDataSubmissionDto.efoCycleStageDto.reason}"/>
                     </iais:value>
