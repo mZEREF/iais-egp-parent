@@ -43,13 +43,7 @@
                 <iais:row>
                     <iais:field width="5" value="Reasons" mandatory="true"/>
                     <iais:value width="7" cssClass="col-md-7">
-                        <select id="reasonSelect" name="reasonSelect" style="margin-left: 2%">
-                            <option value="">Please Select</option>
-                            <c:forEach items="${selectOptionList}" var="selectOption">
-                                <option value="${selectOption.value}" <c:if test="${arSuperDataSubmissionDto.efoCycleStageDto.reason==selectOption.value}">selected="selected"</c:if> >${selectOption.text}</option>
-                            </c:forEach>
-                        </select>
-                        <div style="margin-top: 1%"> <span  class="error-msg" name="iaisErrorMsg" id="error_reason"></span></div>
+                        <iais:code code="${arSuperDataSubmissionDto.efoCycleStageDto.reason}"/>
                     </iais:value>
                 </iais:row>
                 <iais:row>

@@ -63,12 +63,7 @@
                 <iais:row>
                     <iais:field width="5" value="Reasons" mandatory="false"/>
                     <iais:value width="7" cssClass="col-md-7">
-                        <select id="reasonSelect" name="reasonSelect" style="margin-left: 2%">
-                            <option value="">Please Select</option>
-                            <c:forEach items="${selectOptionList}" var="selectOption">
-                                <option value="${selectOption.value}" <c:if test="${arSuperDataSubmissionDto.efoCycleStageDto.reason==selectOption.value}">selected="selected"</c:if> >${selectOption.text}</option>
-                            </c:forEach>
-                        </select>
+                        <iais:select cssClass="reasonSelect"  name="reasonSelect" firstOption="Please Select" options="efoReasonSelectOption" value="${arSuperDataSubmissionDto.efoCycleStageDto.reason}"></iais:select>
                     </iais:value>
                 </iais:row>
                 <iais:row>
@@ -88,25 +83,8 @@
 $('#reasonSelect').change(function () {
 
 var reason= $('#reasonSelect option:selected').val();
-if("MS003"==reason){
-$('#cgo').attr("style" ,"display: block");
 
-}else  {
-$('#cgo').attr("style" ,"display: none");
-
-}
-if("MS008"==reason){
-$('#selectHciNameAppeal').attr("style","display: block");
-
-}else {
-$('#selectHciNameAppeal').attr("style","display: none");
-}
-if("MS004"==reason){
-$('#licenceYear').attr("style","display: block");
-}else {
-$('#licenceYear').attr("style","display: none");
-}
-if("MS007"==reason){
+if("EFOR004"==reason){
 $('#othersReason').attr("style","display: block");
 }else {
 $('#othersReason').attr("style","display: none");

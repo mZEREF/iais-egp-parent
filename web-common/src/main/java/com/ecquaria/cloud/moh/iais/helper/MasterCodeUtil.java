@@ -25,12 +25,13 @@ import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.service.client.MasterCodeClient;
+import lombok.extern.slf4j.Slf4j;
+
 import java.lang.reflect.Field;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import lombok.extern.slf4j.Slf4j;
 
 
 /**
@@ -82,6 +83,7 @@ public final class MasterCodeUtil {
     public static final String CATE_ID_PROCESS_FILE_TRACK_STATUS   = "38902DD7-1E29-EA11-BE7D-000C29F371DC";
     public static final String CATE_ID_APPLICATION_DRAFT_VALIDITY  = "A89CA599-179F-EA11-BE7A-000C29D29DB0";
     public static final String CATE_ID_LICENCE_STATUS              = "CF69FBD0-B37A-4DD9-9BD6-0A153ED55BF8";
+    public static final String CATE_ID_EFO_REASON                  = "4AADAE2F-A8D4-4966-A17B-BFBAE669E8E4";
 
     public static final String CATE_ID_SYSTEM_PARAMETER_MODULE          = "1D3F6F1A-5334-EA11-BE7D-000C29F371DC";
     public static final String CATE_ID_SYSTEM_PARAMETER_TYPE            = "364C7AFB-5234-EA11-BE7D-000C29F371DC";

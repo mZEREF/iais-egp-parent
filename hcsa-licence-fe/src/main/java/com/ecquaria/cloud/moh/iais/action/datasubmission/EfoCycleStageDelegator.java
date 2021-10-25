@@ -3,8 +3,10 @@ package com.ecquaria.cloud.moh.iais.action.datasubmission;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.intranetUser.IntranetUserConstant;
+import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.EfoCycleStageDto;
+import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
@@ -14,11 +16,13 @@ import sop.util.DateUtil;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -50,12 +54,19 @@ public class EfoCycleStageDelegator extends CommonDelegator{
     public void preparePage(BaseProcessClass bpc) {
         ArSuperDataSubmissionDto arSuperDataSubmissionDto= (ArSuperDataSubmissionDto) ParamUtil.getSessionAttr(bpc.request,"arSuperDataSubmissionDto");
         arSuperDataSubmissionDto.setEfoCycleStageDto(new EfoCycleStageDto());
-        arSuperDataSubmissionDto.getEfoCycleStageDto().setYearNum(getYear(new Date(),new Date()));
-        arSuperDataSubmissionDto.getEfoCycleStageDto().setMonthNum(getMon(new Date(),new Date()));
+        Date birthDate= null;
+        try {
+            birthDate = Formatter.parseDateTime(arSuperDataSubmissionDto.getPatientInfoDto().getPatient().getBirthDate(), AppConsts.DEFAULT_DATE_FORMAT);
+        } catch (ParseException e) {
+            log.error(e.getMessage(),e);
+        }
+        arSuperDataSubmissionDto.getEfoCycleStageDto().setYearNum(getYear(birthDate,new Date()));
+        arSuperDataSubmissionDto.getEfoCycleStageDto().setMonthNum(getMon(birthDate,new Date()));
         arSuperDataSubmissionDto.getEfoCycleStageDto().setPerformed("");
         arSuperDataSubmissionDto.getEfoCycleStageDto().setSubmissionId("");
 
-        MasterCodeUtil.retrieveOptionsByCate("");
+        List<SelectOption> efoReasonSelectOption= MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_EFO_REASON);
+        ParamUtil.setRequestAttr(bpc.request,"efoReasonSelectOption",efoReasonSelectOption);
 
     }
 

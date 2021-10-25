@@ -32,11 +32,7 @@ public class EfoDtoValidate implements CustomizeValidator {
         String dateStarted = ParamUtil.getRequestString(httpServletRequest, IntranetUserConstant.INTRANET_STARTDATE);
         String reason = ParamUtil.getRequestString(httpServletRequest, IntranetUserConstant.INTRANET_MOBILENO);
         if (!StringUtil.isEmpty(dateStarted) ) {
-            String[] eftStartDateStr = dateStarted.split("/");
             Date today = new Date();
-            //get today string
-            String todayStr = Formatter.formatDateTime(today, AppConsts.DEFAULT_DATE_FORMAT);
-            //get start Date By request
             Date sDate;
             try {
                 sDate = Formatter.parseDateTime(dateStarted, AppConsts.DEFAULT_DATE_FORMAT);
@@ -49,7 +45,7 @@ public class EfoDtoValidate implements CustomizeValidator {
             }
         }
 
-        if ("WDR005".equals(reason)) {
+        if (!StringUtil.isEmpty(reason)&&"EFOR004".equals(reason)) {
             String othersReason = ParamUtil.getRequestString(httpServletRequest, IntranetUserConstant.INTRANET_OFFICETELNO);
             if (StringUtil.isEmpty(othersReason)) {
                 String errMsg = MessageUtil.replaceMessage("GENERAL_ERR0006","Remarks", "field");
