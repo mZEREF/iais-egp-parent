@@ -195,7 +195,7 @@ public class AORevocationDelegator {
         List<ApplicationMisc> applicationMiscs=application.getAppMiscs();
         String processType = application.getProcessType();
         Facility facility = new Facility();
-        Approval approval = new Approval();
+        Approval approval;
         String address = "";
         if (processType.equals(RevocationConstants.PARAM_PROCESS_TYPE_FACILITY_REGISTRATION)) {
             //join with activity
@@ -234,7 +234,6 @@ public class AORevocationDelegator {
             List<FacilityDoc> facilityDocList = docClient.getFacilityDocByFacId(facility.getId()).getEntity();
             List<FacilityDoc> docList = new ArrayList<>();
             for (FacilityDoc facilityDoc : facilityDocList) {
-                //todo You can only get the current user name
                 String submitByName = IaisEGPHelper.getCurrentAuditTrailDto().getMohUserId();
                 facilityDoc.setSubmitByName(submitByName);
                 docList.add(facilityDoc);
@@ -255,8 +254,6 @@ public class AORevocationDelegator {
 
     /**
      * AutoStep: approve
-     * Change the status of bsb_facility to Revoked
-     * Change the status of bsb_application to Approved
      *
      * @param bpc
      */
@@ -297,8 +294,6 @@ public class AORevocationDelegator {
     /**
      * AutoStep: reject
      *
-     * Change the status of bsb_application to Rejected
-     *
      * @param bpc
      */
     public void reject(BaseProcessClass bpc) {
@@ -313,8 +308,6 @@ public class AORevocationDelegator {
     /**
      * AutoStep: routeback
      *
-     * Change the status of bsb_application to Pending DO
-     *
      * @param bpc
      */
     public void routebackToDO(BaseProcessClass bpc) {
@@ -327,8 +320,6 @@ public class AORevocationDelegator {
 
     /**
      * AutoStep: routeToHM
-     *
-     * Change the status of bsb_application to Pending HM
      *
      * @param bpc
      */

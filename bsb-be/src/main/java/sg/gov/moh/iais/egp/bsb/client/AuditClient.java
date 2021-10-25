@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
 import sg.gov.moh.iais.egp.bsb.dto.audit.AuditQueryDto;
 import sg.gov.moh.iais.egp.bsb.dto.audit.AuditQueryResultDto;
+import sg.gov.moh.iais.egp.bsb.dto.audit.FacilityQueryResultDto;
 import sg.gov.moh.iais.egp.bsb.entity.*;
 
 import java.util.List;
@@ -22,6 +23,9 @@ public interface AuditClient {
 
     @GetMapping(value = "/bsb-audit/query", consumes = MediaType.APPLICATION_JSON_VALUE, produces =MediaType.APPLICATION_JSON_VALUE)
     ResponseDto<AuditQueryResultDto> doQuery(@SpringQueryMap AuditQueryDto queryDto);
+
+    @GetMapping(value = "/bsb-audit/queryFacility", consumes = MediaType.APPLICATION_JSON_VALUE, produces =MediaType.APPLICATION_JSON_VALUE)
+    ResponseDto<FacilityQueryResultDto> queryFacility(@SpringQueryMap AuditQueryDto queryDto);
 
     @GetMapping(value = "/bsb-audit/getAllAudit", consumes = MediaType.APPLICATION_JSON_VALUE, produces =MediaType.APPLICATION_JSON_VALUE)
     ResponseDto<AuditQueryResultDto> getAllAudit(@SpringQueryMap AuditQueryDto queryDto);
