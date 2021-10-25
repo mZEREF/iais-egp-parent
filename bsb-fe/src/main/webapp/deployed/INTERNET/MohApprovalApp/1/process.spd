@@ -1,0 +1,266 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Application defaultStart="/Steps/StartStep/Start" dtdVersion="6.0" executable="true" majorVersion="1" minorVersion="0" name="MohApprovalApp" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" transaction="enable">
+ <WebServices />
+ <Steps>
+  <StartStep defClass="" executor="" icon="" name="Start" x="10" y="10">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="start_OnStepProcess_0" name="start_OnStepProcess_0" />
+   </OnStepProcess>
+  </StartStep>
+  <AutomaticStep defClass="" executor="" icon="" name="Init" x="120" y="10">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="init_OnStepProcess_0" name="init_OnStepProcess_0" />
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="PrepareCompanyInfo" x="230" y="10">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="prepareCompanyInfo_OnStepProcess_0" name="prepareCompanyInfo_OnStepProcess_0" />
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="PrepareDocuments" x="230" y="280">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="prepareDocuments_OnStepProcess_0" name="prepareDocuments_OnStepProcess_0" />
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="PreparePreview" x="230" y="350">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="preparePreview_OnStepProcess_0" name="preparePreview_OnStepProcess_0" />
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="HandleCompanyInfo" x="500" y="10">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="handleCompanyInfo_OnStepProcess_0" name="handleCompanyInfo_OnStepProcess_0" />
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="HandleDocuments" x="490" y="280">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="handleDocuments_OnStepProcess_0" name="handleDocuments_OnStepProcess_0" />
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="HandlePreview" x="500" y="340">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="handlePreview_OnStepProcess_0" name="handlePreview_OnStepProcess_0" />
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="ActionFilter" x="910" y="240">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="actionFilter_OnStepProcess_0" name="actionFilter_OnStepProcess_0" />
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="DoSubmit" x="1030" y="430">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="doSubmit_OnStepProcess_0" name="doSubmit_OnStepProcess_0" />
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="DoSaveDraft" x="1020" y="350">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="doSaveDraft_OnStepProcess_0" name="doSaveDraft_OnStepProcess_0" />
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="JumpFilter" x="80" y="430">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="jumpFilter_OnStepProcess_0" name="jumpFilter_OnStepProcess_0" />
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="PrepareApprovalProfile" x="240" y="180">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="prepareApprovalProfile_OnStepProcess_0" name="prepareApprovalProfile_OnStepProcess_0" />
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="HandleApprovalProfile" x="540" y="180">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="handleApprovalProfile_OnStepProcess_0" name="handleApprovalProfile_OnStepProcess_0" />
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="PrepareActivity" x="260" y="80">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="prepareActivity_OnStepProcess_0" name="prepareActivity_OnStepProcess_0" />
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="HandleActivity" x="520" y="80">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="handleActivity_OnStepProcess_0" name="handleActivity_OnStepProcess_0" />
+   </OnStepProcess>
+  </AutomaticStep>
+ </Steps>
+ <Pages>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="CompanyInfo" stageIndicator="" x="370" y="10">
+   <OnPageLoad />
+   <OnPageSubmit />
+   <Description />
+   <probepoint type="none" />
+  </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="ActivityPage" stageIndicator="" x="380" y="70">
+   <OnPageLoad />
+   <OnPageSubmit />
+   <Description />
+   <probepoint type="none" />
+  </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="DocumentsPage" stageIndicator="" x="360" y="280">
+   <OnPageLoad />
+   <OnPageSubmit />
+   <Description />
+   <probepoint type="none" />
+  </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="PreviewPage" stageIndicator="" x="370" y="350">
+   <OnPageLoad />
+   <OnPageSubmit />
+   <Description />
+   <probepoint type="none" />
+  </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="AcknowledgePage" stageIndicator="" x="1130" y="430">
+   <OnPageLoad />
+   <OnPageSubmit />
+   <Description />
+   <probepoint type="none" />
+  </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="ApprovalProfilePage" stageIndicator="" x="400" y="170">
+   <OnPageLoad />
+   <OnPageSubmit />
+   <Description />
+   <probepoint type="none" />
+  </WebPage>
+ </Pages>
+ <Forms />
+ <Links>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/Init" linkstyle="Direct" name="" sourceName="/Steps/StartStep/Start" style="oblique">
+   <position>{(30,30)(140,30)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PrepareCompanyInfo" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/Init" style="oblique">
+   <position>{(140,30)(250,30)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/CompanyInfo" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/PrepareCompanyInfo" style="oblique">
+   <position>{(250,30)(390,30)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/HandleCompanyInfo" linkstyle="Direct" name="" sourceName="/Pages/WebPage/CompanyInfo" style="oblique">
+   <position>{(390,30)(520,30)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/DocumentsPage" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/PrepareDocuments" style="oblique">
+   <position>{(250,300)(380,300)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/HandleDocuments" linkstyle="Direct" name="" sourceName="/Pages/WebPage/DocumentsPage" style="oblique">
+   <position>{(380,300)(510,300)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/PreviewPage" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/PreparePreview" style="oblique">
+   <position>{(250,370)(390,370)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/HandlePreview" linkstyle="Direct" name="" sourceName="/Pages/WebPage/PreviewPage" style="oblique">
+   <position>{(390,370)(520,360)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/ActionFilter" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/HandleCompanyInfo" style="oblique">
+   <position>{(520,30)(930,260)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/ActionFilter" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/HandleDocuments" style="oblique">
+   <position>{(510,300)(930,260)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/ActionFilter" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/HandlePreview" style="oblique">
+   <position>{(520,360)(930,260)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Switches/Switch/ActionSwitch" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/ActionFilter" style="oblique">
+   <position>{(930,260)(930,450)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/DoSubmit" linkstyle="Direct" name="" sourceName="/Switches/Switch/ActionSwitch" style="oblique">
+   <position>{(930,450)(1050,450)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/AcknowledgePage" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/DoSubmit" style="oblique">
+   <position>{(1050,450)(1150,450)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/DoSaveDraft" linkstyle="Direct" name="" sourceName="/Switches/Switch/ActionSwitch" style="oblique">
+   <position>{(930,450)(1040,370)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/JumpFilter" linkstyle="Direct" name="" sourceName="/Switches/Switch/ActionSwitch" style="oblique">
+   <position>{(930,450)(100,450)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Switches/Switch/PageJumpSwitch" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/JumpFilter" style="oblique">
+   <position>{(100,450)(90,210)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PrepareCompanyInfo" linkstyle="Direct" name="" sourceName="/Switches/Switch/PageJumpSwitch" style="oblique">
+   <position>{(90,210)(250,30)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PrepareDocuments" linkstyle="Direct" name="" sourceName="/Switches/Switch/PageJumpSwitch" style="oblique">
+   <position>{(90,210)(250,300)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PreparePreview" linkstyle="Direct" name="" sourceName="/Switches/Switch/PageJumpSwitch" style="oblique">
+   <position>{(90,210)(250,370)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PrepareActivity" linkstyle="Direct" name="" sourceName="/Switches/Switch/PageJumpSwitch" style="oblique">
+   <position>{(90,210)(280,100)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/ActivityPage" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/PrepareActivity" style="oblique">
+   <position>{(280,100)(400,90)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/HandleActivity" linkstyle="Direct" name="" sourceName="/Pages/WebPage/ActivityPage" style="oblique">
+   <position>{(400,90)(540,100)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/ActionFilter" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/HandleActivity" style="oblique">
+   <position>{(540,100)(930,260)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PrepareApprovalProfile" linkstyle="Direct" name="" sourceName="/Switches/Switch/PageJumpSwitch" style="oblique">
+   <position>{(90,210)(260,200)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/ApprovalProfilePage" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/PrepareApprovalProfile" style="oblique">
+   <position>{(260,200)(420,190)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/HandleApprovalProfile" linkstyle="Direct" name="" sourceName="/Pages/WebPage/ApprovalProfilePage" style="oblique">
+   <position>{(420,190)(560,200)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/ActionFilter" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/HandleApprovalProfile" style="oblique">
+   <position>{(560,200)(930,260)}</position>
+  </SynchronousLink>
+ </Links>
+ <Conditions />
+ <Switches>
+  <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="indeed_action_type" name="ActionSwitch" x="910" y="430">
+   <Description />
+   <SwitchCase component="/Steps/AutomaticStep/DoSubmit" value="&quot;submit&quot;" />
+   <SwitchCase component="/Steps/AutomaticStep/DoSaveDraft" value="&quot;draft&quot;" />
+   <SwitchCase component="/Steps/AutomaticStep/JumpFilter" value="&quot;jump&quot;" />
+  </Switch>
+  <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="nodeRoute" name="PageJumpSwitch" x="70" y="190">
+   <Description />
+   <SwitchCase component="/Steps/AutomaticStep/PrepareCompanyInfo" value="&quot;companyInfo&quot;" />
+   <SwitchCase component="/Steps/AutomaticStep/PrepareDocuments" value="&quot;documents&quot;" />
+   <SwitchCase component="/Steps/AutomaticStep/PreparePreview" value="&quot;preview&quot;" />
+   <SwitchCase component="/Steps/AutomaticStep/PrepareActivity" value="&quot;activity&quot;" />
+   <SwitchCase component="/Steps/AutomaticStep/PrepareApprovalProfile" value="&quot;approvalProfile&quot;" />
+  </Switch>
+ </Switches>
+ <Branches />
+ <Merges />
+ <StudioLabels />
+ <StageIndicator />
+ <AuthenticationRequire agent="false" authentication="false" citizen="false" counterStaff="false" workingGroup="" />
+</Application>
+
