@@ -4,6 +4,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -29,8 +30,8 @@ public final class DataSubmissionHelper {
         return (LoginContext) ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
     }
 
-    public static AppGrpPremisesDto getCurrentPremises(HttpServletRequest request) {
-        return (AppGrpPremisesDto) ParamUtil.getSessionAttr(request, DataSubmissionConstant.AR_PREMISES);
+    public static ArSuperDataSubmissionDto getCurrentArDataSubmission(HttpServletRequest request) {
+        return (ArSuperDataSubmissionDto) ParamUtil.getSessionAttr(request, DataSubmissionConstant.AR_DATA_SUBMISSION);
     }
 
     public static List<String> getNextStageForAr(String currCycle, String currStage) {
