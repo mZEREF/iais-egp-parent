@@ -196,7 +196,7 @@ public class WriteMultipartFileAjaxController {
         BlastManagementDto blastManagementDto = (BlastManagementDto) ParamUtil.getSessionAttr(request,"giroAcctFileDto");
         if(blastManagementDto != null&&blastManagementDto.getAttachmentDtos()!=null){
             for (AttachmentDto att:blastManagementDto.getAttachmentDtos()
-                 ) {
+            ) {
                 if(att.getId().equals(fileRepoId)){
                     byte[] fileData =att.getData();
                     if(fileData != null){

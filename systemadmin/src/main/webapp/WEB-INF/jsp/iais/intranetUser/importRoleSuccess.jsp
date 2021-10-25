@@ -86,12 +86,56 @@
                     <c:otherwise>
                       <tr>
                         <td>
-                          <iais:message key="GENERAL_ACK018" escape="true"></iais:message>
-                          <!--No Record!!-->
+                          <p><c:out value="${status.count}"></c:out></p>
+                        </td>
+                        <td>
+                          <p><c:out value="${user.userId}"></c:out></p>
+                          <br><span class="error-msg" name="iaisErrorMsg" id="error_userRoleUploadUserId${status.count}"></span>
+                        </td>
+                        <td>
+                          <p><c:out value="${user.roleId}"></c:out></p>
+                          <br><span class="error-msg" name="iaisErrorMsg" id="error_userRoleUploadRole${status.count}"></span>
+                        </td>
+                        <td>
+                          <p style="line-height:20px;"><c:out value="${user.workGroupId}"></c:out></p>
+                          <br><span class="error-msg" name="iaisErrorMsg" id="error_userRoleUploadWorkGroupId${status.count}"></span>
+                        </td>
+                        <td>
+                          <p><c:out value="FAIL"></c:out></p>
                         </td>
                       </tr>
-                    </c:otherwise>
-                  </c:choose>
+                    </c:forEach>
+                  </c:when>
+                  <c:when test="${'SUCCESS' eq ackSuccessFlag}">
+                    <c:forEach var="user" items="${egpUserRoleDtos}" varStatus="status">
+                      <tr>
+                        <td>
+                          <p><c:out value="${status.count}"></c:out></p>
+                        </td>
+                        <td>
+                          <p><c:out value="${user.userId}"></c:out></p>
+                        </td>
+                        <td>
+                          <p><c:out value="${user.roleId}"></c:out></p>
+                        </td>
+                        <td>
+                          <p style="line-height:20px;"><c:out value="${user.workGroupId}"></c:out></p>
+                        </td>
+                        <td>
+                          <p><c:out value="SUCCESS"></c:out></p>
+                        </td>
+                      </tr>
+                    </c:forEach>
+                  </c:when>
+                  <c:otherwise>
+                    <tr>
+                      <td>
+                        <iais:message key="GENERAL_ACK018" escape="true"></iais:message>
+                        <!--No Record!!-->
+                      </td>
+                    </tr>
+                  </c:otherwise>
+                </c:choose>
                 </tbody>
               </table>
             </div>
