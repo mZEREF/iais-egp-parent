@@ -25,7 +25,7 @@ import java.util.Map;
 @Slf4j
 @Controller
 @RequestMapping("/bsbApprovalSelect")
-public class BiologicalAjaxController {
+public class ApprovalAppAjaxController {
     @Autowired
     private ApprovalAppClient approvalAppClient;
 

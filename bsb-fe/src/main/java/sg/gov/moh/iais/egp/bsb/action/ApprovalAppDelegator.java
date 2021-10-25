@@ -16,10 +16,9 @@ import sg.gov.moh.iais.egp.bsb.common.node.Nodes;
 import sg.gov.moh.iais.egp.bsb.common.node.simple.SimpleNode;
 import sg.gov.moh.iais.egp.bsb.constant.ApprovalApplicationConstants;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
-import sg.gov.moh.iais.egp.bsb.dto.approvalApp.ActivityDto;
-import sg.gov.moh.iais.egp.bsb.dto.approvalApp.ApprovalAppDto;
-import sg.gov.moh.iais.egp.bsb.dto.approvalApp.PreviewSubmitDto;
-import sg.gov.moh.iais.egp.bsb.dto.approvalApp.PrimaryDocDto;
+import sg.gov.moh.iais.egp.bsb.dto.approvalApp.*;
+import sg.gov.moh.iais.egp.bsb.dto.register.facility.BiologicalAgentToxinDto;
+import sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilitySelectionDto;
 import sg.gov.moh.iais.egp.bsb.entity.Facility;
 import sg.gov.moh.iais.egp.bsb.util.LogUtil;
 import sop.webflow.rt.api.BaseProcessClass;
@@ -132,10 +131,39 @@ public class ApprovalAppDelegator {
             }
         }
         ParamUtil.setRequestAttr(request, ApprovalApplicationConstants.FACILITY_NAME_SELECT, facilityNameList);
+        // TODO test my code how to add to chenwei
+        NodeGroup approvalAppRoot = getApprovalAppRoot(request);
+        SimpleNode activityNode = (SimpleNode) approvalAppRoot.getNode(NODE_NAME_ACTIVITY);
+        ActivityDto activityDto = (ActivityDto)activityNode.getValue();
+        Boolean needShowError = (Boolean) ParamUtil.getRequestAttr(request, KEY_SHOW_ERROR_SWITCH);
+        if (needShowError == Boolean.TRUE) {
+            ParamUtil.setRequestAttr(request, KEY_VALIDATION_ERRORS, activityDto.retrieveValidationResult());
+        }
+        activityNode.needValidation();
+        ParamUtil.setRequestAttr(request, NODE_NAME_ACTIVITY, activityDto);
     }
 
     public void handleActivity(BaseProcessClass bpc){
+        HttpServletRequest request = bpc.request;
+        NodeGroup approvalAppRoot = getApprovalAppRoot(request);
+        //TODO ??? one floor code what is currentNodePath
+        SimpleNode activityNode = (SimpleNode) approvalAppRoot.getNode(NODE_NAME_ACTIVITY);
+        ActivityDto activityDto = (ActivityDto) activityNode.getValue();
+        activityDto.reqObjMapping(request);
 
+        String actionType = ParamUtil.getString(request, KEY_ACTION_TYPE);
+        if (KEY_ACTION_JUMP.equals(actionType)) {
+            jumpHandler(request, approvalAppRoot, NODE_NAME_ACTIVITY, activityNode);
+        } else {
+            throw new IaisRuntimeException(ERR_MSG_INVALID_ACTION);
+        }
+
+        if (activityNode.isValidated()) {
+            NodeGroup approvalProfileGroup = (NodeGroup) approvalAppRoot.getNode(NODE_NAME_APPROVAL_PROFILE);
+            //todo jixu
+            /*changeBatNodeGroup(approvalProfileGroup, activityDto);*/
+        }
+        ParamUtil.setSessionAttr(request, KEY_ROOT_NODE_GROUP, approvalAppRoot);
     }
 
     public void prepareApprovalProfile(BaseProcessClass bpc){
@@ -145,9 +173,33 @@ public class ApprovalAppDelegator {
     }
 
     public void prepareDocuments(BaseProcessClass bpc){
+        HttpServletRequest request = bpc.request;
+        NodeGroup approvalAppRoot = getApprovalAppRoot(request);
+        SimpleNode primaryDocNode = (SimpleNode) approvalAppRoot.at(NODE_NAME_PRIMARY_DOC);
+        PrimaryDocDto primaryDocDto = (PrimaryDocDto)primaryDocNode.getValue();
+        Boolean needShowError = (Boolean) ParamUtil.getRequestAttr(request, KEY_SHOW_ERROR_SWITCH);
+        if (needShowError == Boolean.TRUE) {
+            ParamUtil.setRequestAttr(request, KEY_VALIDATION_ERRORS, primaryDocDto.retrieveValidationResult());
+        }
+        primaryDocNode.needValidation();
+        ParamUtil.setRequestAttr(request, NODE_NAME_PRIMARY_DOC, primaryDocDto);
     }
 
     public void handleDocuments(BaseProcessClass bpc){
+        HttpServletRequest request = bpc.request;
+        NodeGroup approvalAppRoot = getApprovalAppRoot(request);
+        String currentNodePath = NODE_NAME_PRIMARY_DOC;
+        SimpleNode primaryDocNode = (SimpleNode) approvalAppRoot.at(NODE_NAME_PRIMARY_DOC);
+        PrimaryDocDto primaryDocDto = (PrimaryDocDto) primaryDocNode.getValue();
+        primaryDocDto.reqObjMapping(request);
+
+        String actionType = ParamUtil.getString(request, KEY_ACTION_TYPE);
+        if (KEY_ACTION_JUMP.equals(actionType)) {
+            jumpHandler(request, approvalAppRoot, currentNodePath, primaryDocNode);
+        } else {
+            throw new IaisRuntimeException(ERR_MSG_INVALID_ACTION);
+        }
+        ParamUtil.setSessionAttr(request, KEY_ROOT_NODE_GROUP, approvalAppRoot);
     }
 
     public void preparePreview(BaseProcessClass bpc){
@@ -216,6 +268,17 @@ public class ApprovalAppDelegator {
                 .dependNodes(dependNodes)
                 .addNode(new Node("error", new Node[0]))
                 .build();
+    }
+
+    public static void changeApprovalProfileNodeGroup(NodeGroup approvalProfileNodeGroup, ActivityDto activityDto) {
+        // TODO errorMessage condition update
+        /*Assert.notNull(approvalProfileNodeGroup, ERR_MSG_BAT_NOT_NULL);
+        Node[] subNodes = new Node[activityDto.getSchedules().size()];
+        List<String> activityTypes = activityDto.getSchedules();
+        for (int i = 0; i < activityTypes.size(); i++) {
+            subNodes[i] = new SimpleNode(new ApprovalProfileDto(activityTypes.get(i)), activityTypes.get(i), new Node[0]);
+        }
+        approvalProfileNodeGroup.replaceNodes(subNodes);*/
     }
 
     /**

@@ -55,27 +55,27 @@
                         </div>
                         <div class="col-sm-4 col-md-7 control-font-label">
                             <div class="form-check">
-                                <input type="checkbox" class="form-check-input" name="schedule1" id="schedule1" <c:if test="${serviceSelection.facClassification eq 'FACCLA001' and serviceSelection.activityTypes.contains('ACTVITY001')}">checked="checked"</c:if> value="ACTVITY001"/>
+                                <input type="checkbox" class="form-check-input" name="schedule" id="schedule1" <c:if test="${serviceSelection.facClassification eq 'FACCLA001' and serviceSelection.activityTypes.contains('ACTVITY001')}">checked="checked"</c:if> value="ACTVITY001"/>
                                 <label for="schedule1" class="form-check-label"><span class="check-square"></span>First Schedule Part I</label>
                             </div>
                             <div class="form-check">
-                                <input type="checkbox" class="form-check-input" name="schedule2" id="schedule2" <c:if test="${serviceSelection.facClassification eq 'FACCLA001' and serviceSelection.activityTypes.contains('ACTVITY005')}">checked="checked"</c:if> value="ACTVITY005"/>
+                                <input type="checkbox" class="form-check-input" name="schedule" id="schedule2" <c:if test="${serviceSelection.facClassification eq 'FACCLA001' and serviceSelection.activityTypes.contains('ACTVITY005')}">checked="checked"</c:if> value="ACTVITY005"/>
                                 <label for="schedule2" class="form-check-label"><span class="check-square"></span>First Schedule Part II</label>
                             </div>
                             <div class="form-check">
-                                <input type="checkbox" class="form-check-input" name="schedule3" id="schedule3" <c:if test="${serviceSelection.facClassification eq 'FACCLA001' and serviceSelection.activityTypes.contains('ACTVITY007')}">checked="checked"</c:if> value="ACTVITY007"/>
+                                <input type="checkbox" class="form-check-input" name="schedule" id="schedule3" <c:if test="${serviceSelection.facClassification eq 'FACCLA001' and serviceSelection.activityTypes.contains('ACTVITY007')}">checked="checked"</c:if> value="ACTVITY007"/>
                                 <label for="schedule3" class="form-check-label"><span class="check-square"></span>Second Schedule</label>
                             </div>
                             <div class="form-check">
-                                <input type="checkbox" class="form-check-input" name="schedule4" id="schedule4" <c:if test="${serviceSelection.facClassification eq 'FACCLA001' and serviceSelection.activityTypes.contains('ACTVITY009')}">checked="checked"</c:if> value="ACTVITY009"/>
+                                <input type="checkbox" class="form-check-input" name="schedule" id="schedule4" <c:if test="${serviceSelection.facClassification eq 'FACCLA001' and serviceSelection.activityTypes.contains('ACTVITY009')}">checked="checked"</c:if> value="ACTVITY009"/>
                                 <label for="schedule4" class="form-check-label"><span class="check-square"></span>Third Schedule</label>
                             </div>
                             <div class="form-check">
-                                <input type="checkbox" class="form-check-input" name="schedule5" id="schedule5" <c:if test="${serviceSelection.facClassification eq 'FACCLA001' and serviceSelection.activityTypes.contains('ACTVITY009')}">checked="checked"</c:if> value="ACTVITY009"/>
+                                <input type="checkbox" class="form-check-input" name="schedule" id="schedule5" <c:if test="${serviceSelection.facClassification eq 'FACCLA001' and serviceSelection.activityTypes.contains('ACTVITY009')}">checked="checked"</c:if> value="ACTVITY009"/>
                                 <label for="schedule5" class="form-check-label"><span class="check-square"></span>Fourth Schedule</label>
                             </div>
                             <div class="form-check">
-                                <input type="checkbox" class="form-check-input" name="schedule6" id="schedule6" <c:if test="${serviceSelection.facClassification eq 'FACCLA001' and serviceSelection.activityTypes.contains('ACTVITY009')}">checked="checked"</c:if> value="ACTVITY009"/>
+                                <input type="checkbox" class="form-check-input" name="schedule" id="schedule6" <c:if test="${serviceSelection.facClassification eq 'FACCLA001' and serviceSelection.activityTypes.contains('ACTVITY009')}">checked="checked"</c:if> value="ACTVITY009"/>
                                 <label for="schedule6" class="form-check-label"><span class="check-square"></span>Fifth Schedule</label>
                             </div>
                         </div>
