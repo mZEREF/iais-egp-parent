@@ -1,14 +1,11 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
-<!--test start-->
-<c:set var="name" value="Joelle Lim" />
-<c:set var="idType" value="IDTYPE001" />
-<c:set var="idNumber" value="S7812344D" />
-<!--test end-->
+<%--
+<c:set var="headingSign" value="${not empty svcSecMap.licensee ? 'incompleted' : 'completed'}"/>
+--%>
 
-<c:set var="headingSign" value="${not empty svcSecMap.licensee ? 'incompleted' : 'completed'}" />
 <div class="panel panel-default">
-    <div class="panel-heading ${headingSign}">
+    <div class="panel-heading completed">
         <h4 class="panel-title">
             <a class="" data-toggle="collapse" href="#patientDetails">
                 Details of Patient
@@ -17,25 +14,84 @@
     </div>
     <div id="patientDetails" class="panel-collapse collapse in">
         <div class="panel-body">
-            <div class="panel-main-content form-horizontal "><%--min-row--%>
+            <div class="panel-main-content form-horizontal ">
                 <iais:row>
                     <iais:field width="5" value="Name (as per NRIC/Passport)"/>
                     <iais:value width="7" display="true">
-                        <c:out value="${name}" />
+                        <c:out value="${patient.name}" />
                     </iais:value>
                 </iais:row>
                 <iais:row>
                     <iais:field width="5" value="ID Type"/>
                     <iais:value width="7" display="true">
-                        <iais:code code="${idType}" />
+                        <iais:code code="${patient.idType}" />
                     </iais:value>
                 </iais:row>
                 <iais:row>
                     <iais:field width="5" value="ID No."/>
                     <iais:value width="7" display="true">
-                        <c:out value="${idNumber}" />
+                        <c:out value="${patient.idNumber}" />
                     </iais:value>
                 </iais:row>
+                <iais:row>
+                    <iais:field width="5" value="Date of Birth."/>
+                    <iais:value width="7" display="true">
+                        <c:out value="${patient.birthDate}" />
+                    </iais:value>
+                </iais:row>
+                <iais:row>
+                    <iais:field width="5" value="Nationality"/>
+                    <iais:value width="7" display="true">
+                        <iais:code code="${patient.nationality}" />
+                    </iais:value>
+                </iais:row>
+                <iais:row>
+                    <iais:field width="5" value="Ethnic Group"/>
+                    <iais:value width="7" display="true">
+                        <iais:code code="${patient.ethnicGroup}" />
+                    </iais:value>
+                </iais:row>
+                <div class="form-group"  style="<c:if test="${patient.ethnicGroup ne 'ETHG005'}">'display:none'</c:if>">
+                    <iais:field width="5" value="Ethnic Group (Others)"/>
+                    <iais:value width="7" display="true">
+                        <iais:code code="${patient.ethnicGroupOther}" />
+                    </iais:value>
+                </div>
+                <div id="previousData" <c:if test="${!patient.previousIdentification}">style="display:none"</c:if> >
+                    <iais:row>
+                        <p><strong>Previous Identification (if appliable)</strong></p>
+                    </iais:row>
+                    <iais:row>
+                        <iais:field width="5" value="Name (as per NRIC/Passport)"/>
+                        <iais:value width="7" display="true">
+                            <c:out value="${previous.name}" />
+                        </iais:value>
+                    </iais:row>
+                    <iais:row>
+                        <iais:field width="5" value="ID Type"/>
+                        <iais:value width="7" display="true">
+                            <iais:code code="${previous.idType}" />
+                        </iais:value>
+                    </iais:row>
+                    <iais:row>
+                        <iais:field width="5" value="ID No."/>
+                        <iais:value width="7" display="true">
+                            <c:out value="${previous.idNumber}" />
+                        </iais:value>
+                    </iais:row>
+                    <iais:row>
+                        <iais:field width="5" value="Date of Birth."/>
+                        <iais:value width="7" display="true">
+                            <c:out value="${previous.birthDate}" />
+                        </iais:value>
+                    </iais:row>
+                    <iais:row>
+                        <iais:field width="5" value="Nationality"/>
+                        <iais:value width="7" display="true">
+                            <iais:code code="${previous.nationality}" />
+                        </iais:value>
+                    </iais:row>
+                </div>
             </div>
         </div>
     </div>

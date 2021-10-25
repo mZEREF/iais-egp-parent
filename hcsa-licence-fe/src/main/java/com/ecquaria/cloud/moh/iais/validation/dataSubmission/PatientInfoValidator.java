@@ -36,6 +36,12 @@ public class PatientInfoValidator implements CustomizeValidator {
                 if (previous == null) {
                     previous = new PatientDto();
                 }
+                boolean retrievePrevious = patientInfo.isRetrievePrevious();
+                if (!retrievePrevious) {
+                    map.put("retrievePrevious", "Please click \"Retrieve Identification\" button to retrieve Identification.");
+                } else if (!StringUtil.isEmpty(previous.getName())) {
+                    map.put("retrievePrevious", "GENERAL_ACK018");
+                }
                 result = WebValidationHelper.validateProperty(previous, "AR");
                 if (result != null) {
                     map.putAll(result.retrieveAll());
@@ -47,7 +53,7 @@ public class PatientInfoValidator implements CustomizeValidator {
             }
             result = WebValidationHelper.validateProperty(husband, "AR");
             if (result != null) {
-                map.putAll(result.retrieveAll());
+                map.putAll(result.retrieveAll("", "Hdb"));
             }
         }
         return map;

@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.action.datasubmission;
 
+import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant;
 import com.ecquaria.sz.commons.util.ParamUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -37,6 +38,8 @@ public abstract  class CommonDelegator {
      * @throws
      */
     public void doPrepareSwitch(BaseProcessClass bpc) {
+        ParamUtil.setRequestAttr(bpc.request,"title", "New Assisted Reproduction Submission");
+        //ParamUtil.setRequestAttr(bpc.request, "smallTitle", "You are submitting for <strong>Patient Information</strong>");
         prepareSwitch(bpc);
     }
     /**

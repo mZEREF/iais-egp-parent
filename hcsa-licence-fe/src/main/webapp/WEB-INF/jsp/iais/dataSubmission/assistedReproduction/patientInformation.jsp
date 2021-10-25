@@ -12,6 +12,11 @@
 %>
 <webui:setLayout name="iais-internet"/>
 
+<c:set var="patientInfoDto" value="${AR_DATA_SUBMISSION.patientInfoDto}" />
+<c:set var="patient" value="${patientInfoDto.patient}" />
+<c:set var="previous" value="${patientInfoDto.previous}" />
+<c:set var="husband" value="${patientInfoDto.husband}" />
+
 <%-- current page: stage--%>
 <input type="hidden" name="ar_page" value="stage"/>
 <%--preview/ack--%>
@@ -25,6 +30,7 @@
                 <h3>Please key in patient information</h3>
                 <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
                     <%@include file="section/patientDetailSection.jsp" %>
+                    <%@include file="section/husbandDetailSection.jsp" %>
                 </div>
                 <%@include file="common/arFooter.jsp" %>
             </div>
