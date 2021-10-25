@@ -45,7 +45,7 @@
                 <iais:row>
                     <iais:field width="5" value="No. Retrieved (Total)"/>
                     <iais:value width="7" cssClass="col-md-7">
-                        <c:out value="${totalRetrievedNum}" />
+                        <label name="totalRetrievedNum">${totalRetrievedNum}</label>
                     </iais:value>
                 </iais:row>
                 <iais:row>
@@ -84,6 +84,14 @@
                     $("#isFromPatientTissue").attr("disabled",false);
                 }
             }
+        });
+
+        $('input[type="text"]').blur(function () {
+            var totalNum = 0;
+            for(var i in $('input[type="text"]')){
+                totalNum += i.val();
+            }
+            $('#totalRetrievedNum').val(totalNum);
         });
     });
 </script>
