@@ -60,6 +60,7 @@ import com.ecquaria.cloud.moh.iais.helper.EventBusHelper;
 import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
+import com.ecquaria.cloud.moh.iais.service.AppGroupMiscService;
 import com.ecquaria.cloud.moh.iais.service.ApplicationService;
 import com.ecquaria.cloud.moh.iais.service.BroadcastService;
 import com.ecquaria.cloud.moh.iais.service.LicenceFileDownloadService;
@@ -81,6 +82,16 @@ import com.ecquaria.kafka.model.Submission;
 import com.ecquaria.sz.commons.util.FileUtil;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
+import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
+
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
@@ -102,15 +113,6 @@ import java.util.zip.CRC32;
 import java.util.zip.CheckedInputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
-import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 
 import static java.nio.file.Files.newInputStream;
 import static java.nio.file.Files.newOutputStream;
@@ -188,7 +190,8 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
     private BeEicGatewayClient beEicGatewayClient;
     @Value("${spring.application.name}")
     private String currentApp;
-
+    @Autowired
+    private AppGroupMiscService appGroupMiscService;
     @Value("${iais.current.domain}")
     private String currentDomain;
     @Autowired
@@ -955,7 +958,11 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
         }
 
         public void  sendTask(String eventRefNum ,String submissionId) throws  Exception{
-
+        try {
+            appGroupMiscService.notificationApplicationUpdateBatchjob();
+        }catch (Exception e){
+            log.error(e.getMessage(),e);
+        }
         AuditTrailDto intranet =new AuditTrailDto();
         ApplicationNewAndRequstDto applicationNewAndRequstDto=new ApplicationNewAndRequstDto();
         List<ApplicationDto> listNewApplicationDto =IaisCommonUtils.genNewArrayList();

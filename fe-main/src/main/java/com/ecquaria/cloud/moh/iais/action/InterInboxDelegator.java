@@ -71,14 +71,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.Serializable;
 import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.ListIterator;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @Author: Hc
@@ -1580,6 +1573,16 @@ public class InterInboxDelegator {
         ParamUtil.setSessionAttr(request,AppConsts.SESSION_INTER_INBOX_MESSAGE_ID,null);
         ParamUtil.setSessionAttr(request,"DraftNumber",null);
         ParamUtil.setSessionAttr(request,"isSingle",null);
+        // clear selectLicence
+        Enumeration<?> names = request.getSession().getAttributeNames();
+        if (names != null) {
+            while (names.hasMoreElements()) {
+                String name = (String) names.nextElement();
+                if (name.startsWith("selectLicence")) {
+                    request.getSession().removeAttribute(name);
+                }
+            }
+        }
     }
 
     private InterInboxUserDto initInboxDto(BaseProcessClass bpc) throws IOException {
