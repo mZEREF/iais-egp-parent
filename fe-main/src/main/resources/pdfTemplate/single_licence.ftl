@@ -46,7 +46,11 @@
                     </td>
                     <td>
                       <p class="visible-xs visible-sm table-row-title"><br/></p>
-                      <p>${vehicleNo}</p>
+                      <p>
+                      <ul class="v-numberlist">
+                      ${vehicleNo}
+                      </ul>
+                      </p>
                     </td>
                   </tr>
                   </tbody>

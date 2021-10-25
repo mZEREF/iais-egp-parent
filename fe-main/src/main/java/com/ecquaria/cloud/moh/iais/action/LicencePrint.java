@@ -67,7 +67,7 @@ public class LicencePrint {
                     map.put("baseServiceName",licenceViewDto.getBaseServiceName());
                 }
                 //map.put("hciName",licenceViewDto.getHciName());
-                map.put("businessName",licenceViewDto.getBusinessName());
+                map.put("businessName",StringUtil.isEmpty(licenceViewDto.getBusinessName())?AppConsts.EMPTY_STR_NA:licenceViewDto.getBusinessName());
                 map.put("address",licenceViewDto.getAddress());
                 map.put("vehicleNo",StringUtil.isEmpty(VehicleNo1)?AppConsts.EMPTY_STR_NA:VehicleNo1);
                // map.put("vehicleNo",licenceViewDto.getVehicleNo());
