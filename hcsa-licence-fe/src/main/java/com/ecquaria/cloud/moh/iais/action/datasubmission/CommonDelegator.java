@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.action.datasubmission;
 
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import lombok.extern.slf4j.Slf4j;
@@ -40,8 +41,15 @@ public abstract class CommonDelegator {
      * @throws
      */
     public void doPrepareSwitch(BaseProcessClass bpc) {
+        log.info(StringUtil.changeForLog("-----" + this.getClass().getSimpleName() + " Prepare Switch -----"));
         ParamUtil.setRequestAttr(bpc.request, "title", "New Assisted Reproduction Submission");
         //ParamUtil.setRequestAttr(bpc.request, "smallTitle", "You are submitting for <strong>Patient Information</strong>");
+        String actionType = (String) ParamUtil.getRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE);
+        log.info(StringUtil.changeForLog("----- Action Type: " + actionType + " -----"));
+        if (StringUtil.isEmpty(actionType)) {
+            actionType = "page";
+            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, actionType);
+        }
         prepareSwitch(bpc);
     }
 
@@ -78,6 +86,7 @@ public abstract class CommonDelegator {
      * @throws
      */
     public void doPreparePage(BaseProcessClass bpc) {
+        log.info(StringUtil.changeForLog("-----" + this.getClass().getSimpleName() + " Prepare Page -----"));
         preparePage(bpc);
     }
 

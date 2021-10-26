@@ -211,8 +211,5 @@ public interface LicenceClient {
     @GetMapping(value = "/hcsa-licence-rfc/premises-for-business-name", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<PremisesDto> getPremisesDtoForBusinessName(@RequestParam("licenceId") String licenceId);
 
-    @GetMapping(value = "/hcsa-licence/idnumber-nationality", produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<PatientDto> getPatientDto(@PathVariable("idNumber") String idNumber,
-            @PathVariable("nationality") String nationality, @PathVariable("orgId") String orgId);
 
 }

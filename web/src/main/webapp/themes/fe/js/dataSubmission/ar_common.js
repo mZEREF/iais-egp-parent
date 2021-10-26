@@ -12,6 +12,8 @@ $(document).ready(function() {
     var currPage = $('input[name="ar_page"]').val();
     if (isEmpty(currPage)) {
         currPage = "";
+    } else if ('ar-submission' == currPage) {
+        clearFields('#accordion');
     }
     if ($('#backBtn').length > 0) {
         $('#backBtn').click(function () {

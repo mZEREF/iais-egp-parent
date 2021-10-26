@@ -155,7 +155,7 @@ public class ArDataSubmissionDelegator {
      * @throws
      */
     public void doPreparePIM(BaseProcessClass bpc) {
-
+        log.info("----- Patient Information -----");
     }
 
     /**
