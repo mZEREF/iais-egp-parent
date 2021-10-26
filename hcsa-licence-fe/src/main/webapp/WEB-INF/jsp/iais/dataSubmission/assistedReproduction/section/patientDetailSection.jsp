@@ -47,7 +47,7 @@
                                          value="${previous.nationality}" cssClass="preNationalitySel"/>
                         </iais:value>
                         <iais:value width="3" cssClass="col-md-3" display="true">
-                            <a class="retrieveIdentification" onclick="retrieveIdentification('preIdNumber', 'preNationality', 'previousPatientCallback')">
+                            <a class="retrieveIdentification" onclick="retrieveIdentification()">
                                 Retrieve Identification
                             </a>
                             <input type="hidden" name="retrievePrevious" value="${not empty previous ? '1' : '0'}"/>
@@ -74,27 +74,19 @@
 <iais:confirm msg="GENERAL_ACK018" callBack="$('#noFoundDiv').modal('hide');" popupOrder="noFoundDiv" />
 
 <script type="text/javascript">
-    function retrieveIdentification(idTag, nationalityTag, callback, options) {
-        var idNo = '';
-        if ($('#' + idTag).length > 0) {
-            idNo = $('#' + idTag).val();
-        } else if ($('[name="' + idTag + '"]').length > 0) {
-            idNo = $('#' + idTag).val();
-        }
-        var nationality = '';
-        if ($('#' + nationalityTag).length > 0) {
-            nationality = $('#' + nationalityTag).val();
-        } else if ($('[name="' + nationalityTag + '"]').length > 0) {
-            nationality = $('#' + nationalityTag).val();
-        }
+    function callCommonAjax(options, callback) {
         if (isEmpty(options)) {
             options = {};
         }
-        options.idNo = idNo;
-        options.nationality = nationality;
-
+        var url = '${pageContext.request.contextPath}';
+        if (!isEmpty(options.url)) {
+            url += options.url;
+        } else {
+            url += '/ar/retrieve-identification';
+        }
+        console.log(url);
         $.ajax({
-            url: '${pageContext.request.contextPath}/ar/retrieve-identification',
+            url: url,
             dataType: 'json',
             data: options,
             type: 'POST',
@@ -114,17 +106,27 @@
         });
     }
 
+    function retrieveIdentification() {
+        var idNo = $('input[name="preIdNumber"]').val();
+        var nationality = $('#preNationality').val();
+        var options = {
+            idNo: idNo,
+            nationality: nationality
+        }
+        callCommonAjax(options, previousPatientCallback);
+    }
+
     function previousPatientCallback(data) {
         if (isEmpty(data)) {
-            $('preName').find('p').html('');
-            $('preBirthDate').find('p').html('');
+            $('#preName').find('p').text('');
+            $('#preBirthDate').find('p').text('');
             $('[name="retrievePrevious"]').val('0');
             $('#noFoundDiv').modal('show');
             return;
         }
         $('[name="retrievePrevious"]').val('1');
-        $('preName').find('p').html(data.name);
-        $('preBirthDate').find('p').html(data.birthDate);
+        $('#preName').find('p').text(data.name);
+        $('#preBirthDate').find('p').text(data.birthDate);
     }
 
     function callFunc(func) {

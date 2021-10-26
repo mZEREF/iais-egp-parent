@@ -28,13 +28,11 @@
                                      value="${selectionDto.patientNationality}" cssClass="nationalitySel"/>
                     </iais:value>
                     <iais:value width="3" cssClass="col-md-3" display="true">
-                        <a class="retrieveIdentification" onclick="retrieveIdentification('patientIdNumber', 'patientNationality',
-                        'validatePatientCallback', {'flag': 'stageSlection'})">
+                        <a class="retrieveIdentification" onclick="retrieveValidatePatient()">
                             Validate Patient
                         </a>
-                        <input type="hidden" name="retrievePrevious" value="${not empty previous ? '1' : '0'}"/>
                     </iais:value>
-                    <span class="error-msg col-md-12" name="iaisErrorMsg" id="error_retrievePrevious"></span>
+                    <span class="error-msg col-md-12" name="iaisErrorMsg" id="error_patientName"></span>
                 </iais:row>
                 <iais:row>
                     <iais:field width="5" value="Name"/>
@@ -70,27 +68,19 @@
 </div>
 <iais:confirm msg="GENERAL_ACK018" callBack="$('#noFoundDiv').modal('hide');" popupOrder="noFoundDiv" />
 <script type="text/javascript">
-    function retrieveIdentification(idTag, nationalityTag, callback, options) {
-        var idNo = '';
-        if ($('#' + idTag).length > 0) {
-            idNo = $('#' + idTag).val();
-        } else if ($('[name="' + idTag + '"]').length > 0) {
-            idNo = $('#' + idTag).val();
-        }
-        var nationality = '';
-        if ($('#' + nationalityTag).length > 0) {
-            nationality = $('#' + nationalityTag).val();
-        } else if ($('[name="' + nationalityTag + '"]').length > 0) {
-            nationality = $('#' + nationalityTag).val();
-        }
+    function callCommonAjax(options, callback) {
         if (isEmpty(options)) {
             options = {};
         }
-        options.idNo = idNo;
-        options.nationality = nationality;
-
+        var url = '${pageContext.request.contextPath}';
+        if (!isEmpty(options.url)) {
+            url += options.url;
+        } else {
+            url += '/ar/retrieve-identification';
+        }
+        console.log(url);
         $.ajax({
-            url: '${pageContext.request.contextPath}/ar/retrieve-identification',
+            url: url,
             dataType: 'json',
             data: options,
             type: 'POST',
@@ -110,13 +100,37 @@
         });
     }
 
+    function retrieveValidatePatient() {
+        var idNo = $('input[name="patientIdNumber"]').val();
+        var nationality = $('#patientNationality').val();
+        var options = {
+            idNo: idNo,
+            nationality: nationality,
+            url: '/ar/retrieve-valid-selection'
+        }
+        callCommonAjax(options, validatePatientCallback);
+    }
+
     function validatePatientCallback(data){
         if (isEmpty(data)) {
-            $('patientName').find('p').html('');
-            $('preBirthDate').find('p').html('');
-            $('[name="retrievePrevious"]').val('0');
-            $('#noFoundDiv').modal('show');
+            $('#patientName').find('p').text('');
+            clearFields('#patientNameHidden');
+            $('#undergoingCycleCycle').find('p').text('');
+            clearFields('#undergoingCycleHidden');
+            $('#lastStage').find('p').text('');
+            clearFields('#lastStageHidden');
             return;
         }
+        $('#patientName').find('p').text(data.patientName);
+        $('#patientNameHidden').val(data.patientName);
+        if (data.undergoingCycle) {
+            $('#undergoingCycleCycle').find('p').text('Yes');
+            $('#undergoingCycleHidden').val('1');
+        } else {
+            $('#undergoingCycleCycle').find('p').text('No');
+            $('#undergoingCycleHidden').val('0');
+        }
+        $('#lastStage').find('p').text(data.lastStageDesc);
+        $('#lastStageHidden').val(data.lastStage);
     }
 </script>

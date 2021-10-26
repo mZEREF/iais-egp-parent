@@ -1,10 +1,12 @@
 package com.ecquaria.cloud.moh.iais.action.datasubmission;
 
 import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.CycleStageSelectionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
@@ -34,20 +36,43 @@ public class ArAjaxController {
     private PatientService patientService;
 
     @GetMapping(value = "/ar-cycle-stage")
-    public @ResponseBody String genArCycleStages(HttpServletRequest request) {
+    public @ResponseBody
+    String genArCycleStages(HttpServletRequest request) {
         String currCycle = ParamUtil.getString(request, "currCycle");
         String currStage = ParamUtil.getString(request, "currStage");
         return DataSubmissionHelper.genOptionHtmls(DataSubmissionHelper.getNextStageForAr(currCycle, currStage));
     }
 
     @PostMapping(value = "/retrieve-identification")
-    public @ResponseBody PatientDto retrieveIdentification(HttpServletRequest request) {
+    public @ResponseBody
+    PatientDto retrieveIdentification(HttpServletRequest request) {
         String idNo = ParamUtil.getString(request, "idNo");
         String nationality = ParamUtil.getString(request, "nationality");
         LoginContext loginContext = DataSubmissionHelper.getLoginContext(request);
         String orgId = Optional.ofNullable(loginContext).map(LoginContext::getOrgId).orElse("");
         PatientDto patient = patientService.getPatientDto(idNo, nationality, orgId);
-
-        return new PatientDto();
+        ParamUtil.setSessionAttr(request, DataSubmissionConstant.AR_PATIENT, patient);
+        return patient;
     }
+
+    @PostMapping(value = "/retrieve-valid-selection")
+    public @ResponseBody
+    CycleStageSelectionDto retrieveValidSelection(HttpServletRequest request) {
+        String idNo = ParamUtil.getString(request, "idNo");
+        String nationality = ParamUtil.getString(request, "nationality");
+        LoginContext loginContext = DataSubmissionHelper.getLoginContext(request);
+        String orgId = Optional.ofNullable(loginContext).map(LoginContext::getOrgId).orElse("");
+        PatientDto patient = patientService.getPatientDto(idNo, nationality, orgId);
+        ParamUtil.setSessionAttr(request, DataSubmissionConstant.AR_PATIENT, patient);
+        CycleStageSelectionDto dto = null;
+        if (patient != null) {
+            dto = new CycleStageSelectionDto();
+            dto.setPatientIdNumber(idNo);
+            dto.setPatientNationality(nationality);
+            dto.setPatientName(patient.getName());
+            // lastStage & undergoingCycle
+        }
+        return dto;
+    }
+
 }
