@@ -169,8 +169,8 @@ public abstract class CommonDelegator {
         log.info(StringUtil.changeForLog("-----" + this.getClass().getSimpleName() + " Page Action -----"));
         // for draft back
         ParamUtil.setRequestAttr(bpc.request, "currentStage", "page");
-        String crud_action_type = ParamUtil.getString(bpc.request, DataSubmissionConstant.CRUD_TYPE);
-        ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, crud_action_type);
+        String actionType = ParamUtil.getString(bpc.request, DataSubmissionConstant.CRUD_TYPE);
+        ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, actionType);
         pageAction(bpc);
     }
 

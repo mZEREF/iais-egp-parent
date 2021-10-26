@@ -42,7 +42,7 @@
                     </iais:row>
                     <iais:row>
                         <iais:field width="5" value="Nationality" mandatory="true"/>
-                        <iais:value width="4" cssClass="col-md-7">
+                        <iais:value width="4" cssClass="col-md-4">
                             <iais:select name="preNationality" firstOption="Please Select" codeCategory="CATE_ID_NATIONALITY"
                                          value="${previous.nationality}" cssClass="preNationalitySel"/>
                         </iais:value>
@@ -71,8 +71,8 @@
         </div>
     </div>
 </div>
-<iais:confirm msg="GENERAL_ACK018" callBack="$('#noFoundDiv').modal('hide');" popupOrder="noFoundDiv" />
-
+<iais:confirm msg="GENERAL_ACK018" callBack="$('#noFoundDiv').modal('hide');" popupOrder="noFoundDiv" needCancel="false"
+              needFungDuoJi="false"/>
 <script type="text/javascript">
     function callCommonAjax(options, callback) {
         if (isEmpty(options)) {
@@ -134,6 +134,19 @@
             this[func].apply(this, Array.prototype.slice.call(arguments, 1));
         } catch (e) {
             console.log(e);
+        }
+    }
+
+    function checkEthinicGroupMantory(nationTag, ethinicGroupLabel) {
+        console.log("checkEthinicGroupMantory");
+        var $selector = $(nationTag);
+        var $target = $(ethinicGroupLabel);
+        if ($selector.length <= 0 || $target.length <= 0) {
+            return;
+        }
+        $target.find('.mandatory').remove();
+        if ('NAT0001' == $selector.val()) {
+            $target.append('<span class="mandatory">*</span>');
         }
     }
 </script>

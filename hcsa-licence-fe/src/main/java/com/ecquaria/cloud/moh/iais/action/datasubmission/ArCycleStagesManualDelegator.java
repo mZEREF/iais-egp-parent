@@ -46,6 +46,7 @@ public class ArCycleStagesManualDelegator {
     public void doPrepareCycleStageSelection(BaseProcessClass bpc) {
         List<String> nextStages = DataSubmissionHelper.getNextStageForAr(null, null);
         bpc.request.setAttribute("stage_options", DataSubmissionHelper.genOptions(nextStages));
+        ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.CURRENT_PAGE_STAGE, "cycle-stage-selection");
     }
 
     /**

@@ -21,27 +21,20 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 /**
  * @Description Ajax
  * @Auther chenlei on 10/21/2021.
  */
-@RequestMapping(value = "ar")
+@RequestMapping(value = "/ar")
 @Controller
 @Slf4j
 public class ArAjaxController {
 
     @Autowired
     private PatientService patientService;
-
-    @GetMapping(value = "/ar-cycle-stage")
-    public @ResponseBody
-    String genArCycleStages(HttpServletRequest request) {
-        String currCycle = ParamUtil.getString(request, "currCycle");
-        String currStage = ParamUtil.getString(request, "currStage");
-        return DataSubmissionHelper.genOptionHtmls(DataSubmissionHelper.getNextStageForAr(currCycle, currStage));
-    }
 
     @PostMapping(value = "/retrieve-identification")
     public @ResponseBody
@@ -57,22 +50,26 @@ public class ArAjaxController {
 
     @PostMapping(value = "/retrieve-valid-selection")
     public @ResponseBody
-    CycleStageSelectionDto retrieveValidSelection(HttpServletRequest request) {
+    Map<String, Object> retrieveValidSelection(HttpServletRequest request) {
         String idNo = ParamUtil.getString(request, "idNo");
         String nationality = ParamUtil.getString(request, "nationality");
         LoginContext loginContext = DataSubmissionHelper.getLoginContext(request);
         String orgId = Optional.ofNullable(loginContext).map(LoginContext::getOrgId).orElse("");
         PatientDto patient = patientService.getPatientDto(idNo, nationality, orgId);
         ParamUtil.setSessionAttr(request, DataSubmissionConstant.AR_PATIENT, patient);
-        CycleStageSelectionDto dto = null;
+        Map<String, Object> result = IaisCommonUtils.genNewHashMap(2);
         if (patient != null) {
-            dto = new CycleStageSelectionDto();
+            CycleStageSelectionDto dto = new CycleStageSelectionDto();
             dto.setPatientIdNumber(idNo);
             dto.setPatientNationality(nationality);
             dto.setPatientName(patient.getName());
             // lastStage & undergoingCycle
+            result.put("selection", dto);
         }
-        return dto;
+        String currCycle = ParamUtil.getString(request, "currCycle");
+        String currStage = ParamUtil.getString(request, "currStage");
+        result.put("stagHtmls", DataSubmissionHelper.genOptionHtmls(DataSubmissionHelper.getNextStageForAr(currCycle, currStage)));
+        return result;
     }
 
 }

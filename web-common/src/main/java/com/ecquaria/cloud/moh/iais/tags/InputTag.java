@@ -20,6 +20,7 @@ public class InputTag extends DivTagSupport{
     private String autocomplete;
     private String maxLength;
     private String onclick;
+    private String onchange;
     private String placeholder;
     private boolean needErrorSpan;
     private boolean needDisabled;
@@ -43,6 +44,7 @@ public class InputTag extends DivTagSupport{
         setAutocomplete("off");
         setMaxLength(null);
         setOnclick(null);
+        setOnchange(null);
         setNeedErrorSpan(true);
         setNeedDisabled(false);
         setPlaceholder(null);
@@ -90,6 +92,9 @@ public class InputTag extends DivTagSupport{
         }
         if (!StringUtil.isEmpty(onclick)) {
             html.append(" onclick=\"").append(onclick).append('\"');
+        }
+        if (!StringUtil.isEmpty(onchange)) {
+            html.append(" onchange=\"").append(onchange).append('\"');
         }
         html.append('>');
 
@@ -141,6 +146,9 @@ public class InputTag extends DivTagSupport{
     }
     public void setOnclick(String onclick) {
         this.onclick = onclick;
+    }
+    public void setOnchange(String onchange) {
+        this.onchange = onchange;
     }
     public void setPlaceholder(String placeholder) {
         this.placeholder = placeholder;

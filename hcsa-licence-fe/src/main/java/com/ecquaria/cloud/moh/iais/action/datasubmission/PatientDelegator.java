@@ -9,6 +9,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInfoDto
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
+import com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
@@ -68,17 +69,19 @@ public class PatientDelegator extends CommonDelegator{
     @Override
     public void pageAction(BaseProcessClass bpc) {
         PatientInfoDto patientInfo = getPatientInfoFromPage(bpc.request);
-        ValidationResult result = WebValidationHelper.validateProperty(patientInfo, "AR");
+        ArSuperDataSubmissionDto dataSubmission = DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
+        dataSubmission.setPatientInfoDto(patientInfo);
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
-        if (result != null) {
-            errorMap.putAll(result.retrieveAll());
+        String actionType = ParamUtil.getString(bpc.request, DataSubmissionConstant.CRUD_TYPE);
+        if ("confirm".equals(actionType)) {
+            ValidationResult result = WebValidationHelper.validateProperty(patientInfo, "AR");
+            if (result != null) {
+                errorMap.putAll(result.retrieveAll());
+            }
         }
         if (!errorMap.isEmpty()) {
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "page");
-        } else {
-            ArSuperDataSubmissionDto dataSubmission = DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
-            dataSubmission.setPatientInfoDto(patientInfo);
         }
     }
 

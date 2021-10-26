@@ -35,7 +35,8 @@
                             </label>
                         </div>
                         <div class="form-check">
-                            <input class="form-check-input" id="AR_TP003" type="radio" name="submissionType" value="AR_TP003" />
+                            <input class="form-check-input" id="AR_TP003" type="radio" name="submissionType" value="AR_TP003"
+                                   onclick="toggleOnCheck(this, 'submission-method', true)"/>
                             <label class="form-check-label" for="AR_TP003">
                                 <span class="check-circle"></span><iais:code code="AR_TP003"/>
                             </label>
