@@ -14,7 +14,6 @@
 <%@ include file="common/arHeader.jsp" %>
 
 <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
-    <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
     <div class="main-content">
         <div class="container center-content">
             <div class="col-xs-12">

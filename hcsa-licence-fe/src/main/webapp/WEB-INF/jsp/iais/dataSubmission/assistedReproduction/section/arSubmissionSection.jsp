@@ -7,7 +7,7 @@
                     <div class="form-check-gp col-xs-12 col-md-12">
                         <p class="form-check-title">AR Centre that is performing this submission</p>
                     </div>
-                    <div class="col-xs-12 col-md-12">
+                    <div class="col-xs-12 col-md-8">
                         <c:if test="${not empty premisesLabel}">
                         <p>${premisesLabel}</p>
                         </c:if>
@@ -44,7 +44,7 @@
                     </div>
                 </iais:row>
                 <iais:row id="submission-method" style="display:none">
-                    <div class="form-check-gp">
+                    <div class="form-check-gp col-xs-12 col-md-12">
                         <p class="form-check-title">Please select the method of submission</p>
                         <div class="form-check">
                             <input class="form-check-input" id="DS_MTD001" type="radio" name="submissionMethod" value="DS_MTD001" />

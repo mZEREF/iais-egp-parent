@@ -16,3 +16,4 @@
               cancelBtnDesc="exit to inbox" cancelBtnCls="btn btn-primary" yesBtnCls="btn btn-secondary" cancelFunc="jumpPage()" />
 <%-- validation --%>
 <%@ include file="/WEB-INF/jsp/include/validation.jsp" %>
+<%@ include file="formHidden.jsp" %>
