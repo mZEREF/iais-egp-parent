@@ -18,7 +18,7 @@
 <c:set var="husband" value="${patientInfoDto.husband}" />
 
 <%-- current page: stage--%>
-<input type="hidden" name="ar_page" value="stage"/>
+<input type="hidden" name="ar_page" value="preview"/>
 <%--preview/ack--%>
 <%@ include file="common/arHeader.jsp" %>
 
