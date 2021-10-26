@@ -9,7 +9,6 @@
 <webui:setLayout name="iais-internet"/>
 
 <%-- current page: ack --%>
-<input type="hidden" name="ar_page" value="ack"/>
 
 <%@ include file="arHeader.jsp" %>
 

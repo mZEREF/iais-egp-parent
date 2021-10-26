@@ -127,7 +127,7 @@ public abstract class CommonDelegator {
      */
     public void doDraft(BaseProcessClass bpc) {
         String currentStage = (String) bpc.request.getAttribute(DataSubmissionConstant.CURRENT_PAGE_STAGE);
-        bpc.request.setAttribute("crud_action_type", currentStage);
+        ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, currentStage);
         draft(bpc);
     }
 
@@ -146,6 +146,7 @@ public abstract class CommonDelegator {
      * @throws
      */
     public void doSubmission(BaseProcessClass bpc) {
+        ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.CURRENT_PAGE_STAGE, "ack");
         submission(bpc);
     }
 

@@ -8,9 +8,6 @@
 %>
 <webui:setLayout name="iais-internet"/>
 
-<c:set var="title" value="Joelle Lim" />
-<c:set var="smallTitle" value="Joelle Lim" />
-
 <%@ include file="assistedReproduction/common/arHeader.jsp" %>
 
 <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
