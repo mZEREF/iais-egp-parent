@@ -1,8 +1,12 @@
 package com.ecquaria.cloud.moh.iais.service.client;
 
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArCycleStageDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArDonorDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientDto;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import org.springframework.http.HttpHeaders;
+
+import java.util.List;
 
 /**
  * @Description ArCommonFeClientFallback
@@ -10,12 +14,46 @@ import org.springframework.http.HttpHeaders;
  */
 public class ArFeClientFallback implements ArFeClient {
 
-    @Override
-    public FeignResponseEntity<PatientDto> getPatientDto(String idNumber, String nationality, String orgId) {
+    private FeignResponseEntity getFeignResponseEntity(){
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
         return entity;
+    }
+
+    @Override
+    public FeignResponseEntity<PatientDto> getPatientDto(String idNumber, String nationality, String orgId) {
+       return getFeignResponseEntity();
+    }
+
+    @Override
+    public FeignResponseEntity<ArCycleStageDto> saveArCycleStageDto(ArCycleStageDto arCycleStageDto) {
+        return getFeignResponseEntity();
+    }
+
+    @Override
+    public FeignResponseEntity<ArCycleStageDto> getArCycleStageDtoById(String id) {
+        return getFeignResponseEntity();
+    }
+
+    @Override
+    public FeignResponseEntity<List<ArCycleStageDto>> getArCycleStageDtosBySubmissionId(String submissionId) {
+        return getFeignResponseEntity();
+    }
+
+    @Override
+    public FeignResponseEntity<ArDonorDto> saveArDonorDto(ArDonorDto arDonorDto) {
+        return getFeignResponseEntity();
+    }
+
+    @Override
+    public FeignResponseEntity<ArDonorDto> getArDonorDtoById(String id) {
+        return getFeignResponseEntity();
+    }
+
+    @Override
+    public FeignResponseEntity<List<ArDonorDto>> getArDonorDtosByCycleStageId(String cycleStageId) {
+        return getFeignResponseEntity();
     }
 
 }
