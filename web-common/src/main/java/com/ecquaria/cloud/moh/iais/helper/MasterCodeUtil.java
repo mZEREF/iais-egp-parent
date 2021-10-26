@@ -148,6 +148,11 @@ public final class MasterCodeUtil {
     //Data Submission Current AR Treatment
     public static final String CURRENT_AR_TREATMENT = "27383D78-59F2-4AE1-878A-A65596D3DF1E";
 
+    //Data Submission Source Of Semen
+    public static final String SOURCE_OF_SEMEN = "ECC6C3F0-1E3E-4F1E-91A9-7EACA6DC7CC3";
+
+    //Data Submission Ar Techniques Used
+    public static final String AR_TECHNIQUES_USED = "50371FBA-6377-453F-B1CD-0EC89C6EA213";
     /**
      * @description: refresh the master codes into cache
      *
