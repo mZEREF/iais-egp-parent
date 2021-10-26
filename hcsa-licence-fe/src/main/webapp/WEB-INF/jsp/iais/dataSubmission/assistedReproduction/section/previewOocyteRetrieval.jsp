@@ -15,10 +15,10 @@
                 <iais:row>
                     <iais:field width="5" value="Oocyte(s) was retrieved from?"/>
                     <iais:value width="7" display="true">
-                        <c:if test="${oocyteRetrievalStageDto.isFromPatient}">Patient</c:if>
-                        <c:if test="${oocyteRetrievalStageDto.isFromPatientTissue}">Patient's Ovarian Tissue</c:if>
-                        <c:if test="${oocyteRetrievalStageDto.isFromDonor}">Directed Donor</c:if>
-                        <c:if test="${oocyteRetrievalStageDto.isFromDonorTissue}">Directed Donor's Ovarian Tissue</c:if>
+                        <c:if test="${oocyteRetrievalStageDto.isFromPatient}"><p class="col-12">Patient</p></c:if>
+                        <c:if test="${oocyteRetrievalStageDto.isFromPatientTissue}"><p class="col-12">Patient's Ovarian Tissue</p></c:if>
+                        <c:if test="${oocyteRetrievalStageDto.isFromDonor}"><p class="col-12">Directed Donor</p></c:if>
+                        <c:if test="${oocyteRetrievalStageDto.isFromDonorTissue}"><p class="col-12">Directed Donor's Ovarian Tissue</p></c:if>
                     </iais:value>
                 </iais:row>
                 <iais:row>
@@ -48,43 +48,46 @@
                 <iais:row>
                     <iais:field width="5" value="Severe Ovarian Hyperstimulation Syndrome"/>
                     <iais:value width="7" display="true">
-                        <c:out value="${oocyteRetrievalStageDto.isOvarianSyndrome}"/>
+                        <c:if test="${oocyteRetrievalStageDto.isOvarianSyndrome}">Yes</c:if>
+                        <c:if test="${not oocyteRetrievalStageDto.isOvarianSyndrome}">No</c:if>
                     </iais:value>
                 </iais:row>
                 <h4>Patient's Inventory</h4>
                 <table aria-describedby="" class="table discipline-table">
                     <thead>
-                    <tr>
-                        <th scope="col"></th>
-                        <th scope="col">Frozen Oocytes</th>
-                        <th scope="col">Thawed Oocytes</th>
-                        <th scope="col">Fresh Oocytes</th>
-                        <th scope="col">Frozen Embryos</th>
-                        <th scope="col">Thawed Embryos</th>
-                        <th scope="col">Fresh Embryos</th>
-                        <th scope="col">Frozen Sperms</th>
-                    </tr>
+                        <tr>
+                            <th scope="col"></th>
+                            <th scope="col">Frozen Oocytes</th>
+                            <th scope="col">Thawed Oocytes</th>
+                            <th scope="col">Fresh Oocytes</th>
+                            <th scope="col">Frozen Embryos</th>
+                            <th scope="col">Thawed Embryos</th>
+                            <th scope="col">Fresh Embryos</th>
+                            <th scope="col">Frozen Sperms</th>
+                        </tr>
                     </thead>
-                    <tr>
-                        <th scope="col">Changes</th>
-                        <th scope="col">0</th>
-                        <th scope="col">0</th>
-                        <th scope="col">${freshOocytes}</th>
-                        <th scope="col">0</th>
-                        <th scope="col">0</th>
-                        <th scope="col">0</th>
-                        <th scope="col">0</th>
-                    </tr>
-                    <tr>
-                        <th scope="col">Current</th>
-                        <th scope="col"></th>
-                        <th scope="col"></th>
-                        <th scope="col"></th>
-                        <th scope="col"></th>
-                        <th scope="col"></th>
-                        <th scope="col"></th>
-                        <th scope="col"></th>
-                    </tr>
+                    <tbody>
+                        <tr>
+                            <th scope="col">Changes</th>
+                            <th scope="col">0</th>
+                            <th scope="col">0</th>
+                            <th scope="col">${freshOocytes}</th>
+                            <th scope="col">0</th>
+                            <th scope="col">0</th>
+                            <th scope="col">0</th>
+                            <th scope="col">0</th>
+                        </tr>
+                        <tr>
+                            <th scope="col">Current</th>
+                            <th scope="col">0</th>
+                            <th scope="col">0</th>
+                            <th scope="col">0</th>
+                            <th scope="col">0</th>
+                            <th scope="col">0</th>
+                            <th scope="col">0</th>
+                            <th scope="col">0</th>
+                        </tr>
+                    </tbody>
                 </table>
             </div>
         </div>

@@ -13,14 +13,22 @@
                 <iais:row>
                     <iais:field width="5" value="Oocyte(s) was retrieved from?" mandatory="true"/>
                     <iais:value width="7" cssClass="col-md-7">
-                        <input type="checkbox" name="isFromPatient" value="true"
-                            <c:if test="${oocyteRetrievalStageDto.isFromPatient}"> checked </c:if> >Patient
-                        <input type="checkbox" name="isFromPatientTissue" value="true"
-                            <c:if test="${oocyteRetrievalStageDto.isFromPatientTissue}"> checked </c:if> >Patient's Ovarian Tissue
-                        <input type="checkbox" name="isFromDonor" value="true"
-                            <c:if test="${oocyteRetrievalStageDto.isFromDonor}"> checked </c:if> >Directed Donor
-                        <input type="checkbox" name="isFromDonorTissue" value="true"
-                            <c:if test="${oocyteRetrievalStageDto.isFromDonorTissue}"> checked </c:if> >Directed Donor's Ovarian Tissue
+                        <div class="col-12">
+                            <input type="checkbox" name="isFromPatient" value="true"
+                                <c:if test="${oocyteRetrievalStageDto.isFromPatient}"> checked </c:if> >Patient
+                        </div>
+                        <div class="col-12">
+                            <input type="checkbox" name="isFromPatientTissue" value="true"
+                                <c:if test="${oocyteRetrievalStageDto.isFromPatientTissue}"> checked </c:if> >Patient's Ovarian Tissue
+                        </div>
+                        <div class="col-12">
+                            <input type="checkbox" name="isFromDonor" value="true"
+                                <c:if test="${oocyteRetrievalStageDto.isFromDonor}"> checked </c:if> >Directed Donor
+                        </div>
+                        <div class="col-12">
+                            <input type="checkbox" name="isFromDonorTissue" value="true"
+                                <c:if test="${oocyteRetrievalStageDto.isFromDonorTissue}"> checked </c:if> >Directed Donor's Ovarian Tissue
+                        </div>
                     </iais:value>
                     <span id="error_oocyteRetrievalFrom" name="iaisErrorMsg" class="error-msg"></span>
                 </iais:row>
@@ -49,15 +57,17 @@
                     </iais:value>
                 </iais:row>
                 <iais:row>
-                    <iais:field width="5" value="Severe Ovarian Hyperstimulation Syndrome" mandatory="true"/>
-                    <a class="btn-tooltip styleguide-tooltip" href="javascript:void(0);" data-toggle="tooltip" data-html="true" title="&lt;p&gt;<iais:message key="NEW_ACK028"></iais:message>&lt;/p&gt;">i</a>
+                    <label class="col-xs-5 col-md-4 control-label" >Severe Ovarian Hyperstimulation Syndrome
+                        <span class="mandatory">*</span>
+                        <a class="btn-tooltip styleguide-tooltip" href="javascript:void(0);" data-toggle="tooltip" data-html="true" title="&lt;p&gt;<iais:message key="NEW_ACK028"></iais:message>&lt;/p&gt;">i</a>
+                    </label>
                     <iais:value width="3" cssClass="col-md-3">
                         <input type="radio" name="isOvarianSyndrome" value="true"
                             <c:if test="${oocyteRetrievalStageDto.isOvarianSyndrome}"> checked </c:if> >Yes
                     </iais:value>
                     <iais:value width="4" cssClass="col-md-4">
                         <input type="radio" name="isOvarianSyndrome" value="false"
-                            <c:if test="${not oocyteRetrievalStageDto.isOvarianSyndrome}"> checked </c:if> >No
+                            <c:if test="${oocyteRetrievalStageDto.isOvarianSyndrome == false}"> checked </c:if> >No
                     </iais:value>
                 </iais:row>
             </div>
@@ -66,7 +76,7 @@
 </div>
 <script>
     $(document).ready(function () {
-        $('input[type="checkbox"]').click(function () {
+        $('input[type="checkbox"]').change(function () {
             if (this.name == "isFromPatient" || this.name == "isFromPatientTissue"){
                 if(this.val() == "true"){
                     $("#isFromDonor").attr("disabled",true);
@@ -86,7 +96,7 @@
             }
         });
 
-        $('input[type="text"]').blur(function () {
+        $('input[type="text"]').change(function () {
             var totalNum = 0;
             for(var i in $('input[type="text"]')){
                 totalNum += i.val();

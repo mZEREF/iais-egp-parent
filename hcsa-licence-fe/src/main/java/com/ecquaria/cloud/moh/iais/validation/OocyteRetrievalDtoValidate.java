@@ -23,13 +23,13 @@ import java.util.Map;
 @Slf4j
 public class OocyteRetrievalDtoValidate implements CustomizeValidator {
     @Override
-    public Map<String, String> validate(Object obj, String[] profiles, HttpServletRequest request) {
+    public Map<String, String> validate(HttpServletRequest request) {
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
         ArSuperDataSubmissionDto arSuperDataSubmissionDto = (ArSuperDataSubmissionDto) ParamUtil.getSessionAttr(request, "arSuperDataSubmissionDto");
         OocyteRetrievalStageDto oocyteRetrievalStageDto = arSuperDataSubmissionDto.getOocyteRetrievalStageDto();
         if (oocyteRetrievalStageDto != null){
-            if (!(oocyteRetrievalStageDto.isFromPatient() || oocyteRetrievalStageDto.isFromPatientTissue()
-                    || oocyteRetrievalStageDto.isFromDonor() || oocyteRetrievalStageDto.isFromDonorTissue())){
+            if (!(oocyteRetrievalStageDto.getIsFromPatient() || oocyteRetrievalStageDto.getIsFromPatientTissue()
+                    || oocyteRetrievalStageDto.getIsFromDonor() || oocyteRetrievalStageDto.getIsFromDonorTissue())){
                 String errMsg = MessageUtil.replaceMessage("GENERAL_ERR0006","Oocyte(s) was retrieved from", "field");
                 errorMap.put("oocyteRetrievalFrom",errMsg);
             }

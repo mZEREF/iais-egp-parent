@@ -25,7 +25,8 @@ import java.util.Map;
 public class OocyteRetrievalDelegator extends CommonDelegator {
     @Override
     public void start(BaseProcessClass bpc) {
-
+        ParamUtil.setSessionAttr(bpc.request, "arSuperDataSubmissionDto",new ArSuperDataSubmissionDto());
+        ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.CRUD_ACTION_TYPE, "page");
     }
 
     @Override
@@ -44,6 +45,7 @@ public class OocyteRetrievalDelegator extends CommonDelegator {
         OocyteRetrievalStageDto oocyteRetrievalStageDto = arSuperDataSubmissionDto.getOocyteRetrievalStageDto();
         if (oocyteRetrievalStageDto == null) {
             oocyteRetrievalStageDto = new OocyteRetrievalStageDto();
+            oocyteRetrievalStageDto.setIsFromDonorTissue(true);
             arSuperDataSubmissionDto.setOocyteRetrievalStageDto(oocyteRetrievalStageDto);
         }
         ParamUtil.setRequestAttr(bpc.request, "totalRetrievedNum", oocyteRetrievalStageDto.getTotalNum());
@@ -83,14 +85,14 @@ public class OocyteRetrievalDelegator extends CommonDelegator {
         String otherRetrievedNum = ParamUtil.getString(request, "otherRetrievedNum");
         boolean isOvarianSyndrome = "true".equals(ParamUtil.getString(request, "isOvarianSyndrome"));
 
-        oocyteRetrievalStageDto.setFromPatient(isFromPatient);
-        oocyteRetrievalStageDto.setFromPatientTissue(isFromPatientTissue);
-        oocyteRetrievalStageDto.setFromDonor(isFromDonor);
-        oocyteRetrievalStageDto.setFromDonorTissue(isFromDonorTissue);
+        oocyteRetrievalStageDto.setIsFromPatient(isFromPatient);
+        oocyteRetrievalStageDto.setIsFromPatientTissue(isFromPatientTissue);
+        oocyteRetrievalStageDto.setIsFromDonor(isFromDonor);
+        oocyteRetrievalStageDto.setIsFromDonorTissue(isFromDonorTissue);
         oocyteRetrievalStageDto.setMatureRetrievedNum(matureRetrievedNum);
         oocyteRetrievalStageDto.setImmatureRetrievedNum(immatureRetrievedNum);
         oocyteRetrievalStageDto.setOtherRetrievedNum(otherRetrievedNum);
-        oocyteRetrievalStageDto.setOvarianSyndrome(isOvarianSyndrome);
+        oocyteRetrievalStageDto.setIsOvarianSyndrome(isOvarianSyndrome);
 
         ValidationResult validationResult = WebValidationHelper.validateProperty(oocyteRetrievalStageDto, "save");
         Map<String, String> errorMap = validationResult.retrieveAll();
