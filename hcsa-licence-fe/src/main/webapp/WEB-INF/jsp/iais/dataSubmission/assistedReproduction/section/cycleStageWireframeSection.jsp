@@ -37,7 +37,7 @@
                 <iais:row>
                     <iais:field width="5" value="Main Indication" mandatory="true"/>
                     <iais:value width="7" cssClass="col-md-7">
-                        <iais:select name="mainIndication" options="mainIndicationDrops" firstOption="Please Select" value="${arCycleStageDto.mainIndication}"  onchange ="showMainIndicationOther(this.value)"/>
+                        <iais:select name="mainIndication" options="mainIndicationDrops" firstOption="Please Select" value="${arCycleStageDto.mainIndication}"  onchange ="toggleOnSelect(this, 'AR_MI_001', 'mainIndicationOtherRow')"/>
                 </iais:value>
                 </iais:row>
 
@@ -49,16 +49,16 @@
                 </iais:row>
 
                 <iais:row>
-                    <iais:field width="5" value="Main Indication" mandatory="true"/>
+                    <iais:field width="5" value="Other Indication" mandatory="true"/>
                     <iais:value width="7" cssClass="col-md-7">
-                        <iais:select name="mainIndication" options="mainIndicationDrops" firstOption="Please Select" value="${arCycleStageDto.mainIndication}"  onchange ="showMainIndicationOther(this.value)"/>
+                        <iais:select name="otherIndication" multiSelect="true" options="otherIndicationDrops" firstOption="Please Select" multiValues="${arCycleStageDto.otherIndicationValues}"  onchange ="toggleMultiSelect(this, 'AR_0I_001', 'otherIndicationOthersRow')"/>
                     </iais:value>
                 </iais:row>
 
-                <iais:row id="mainIndicationOtherRow">
-                    <iais:field width="5" value="Main Indication (Others)" mandatory="true"/>
+                <iais:row id="otherIndicationOthersRow">
+                    <iais:field width="5" value="Other Indication (Others)" mandatory="true"/>
                     <iais:value width="7" cssClass="col-md-7">
-                        <iais:input maxLength="100" type="text" name="mainIndicationOther" id="mainIndicationOther" value="${arCycleStageDto.mainIndicationOthers}" />
+                        <iais:input maxLength="100" type="text" name="otherIndicationOthers" id="otherIndicationOthers" value="${arCycleStageDto.otherIndicationOthers}" />
                     </iais:value>
                 </iais:row>
 
@@ -144,33 +144,26 @@
                     <iais:field width="5" value="No. of Children conceived through AR" mandatory="false"/>
                     <iais:value width="7" cssClass="col-md-7">
                         <iais:value width="7" cssClass="col-md-7">
-                            <iais:select name="totalNumberARCPreviouslyUndergonePatient" options="numberArcPreviouslyDropDown" firstOption="Please Select" value="${arCycleStageDto.totalNumberARCPreviouslyUndergonePatient}"  onchange ="showTotalNumberARUnkown(this.value)"/>
+                            <iais:select name="totalNumberARCPreviouslyUndergonePatient" options="numberArcPreviouslyDropDown" firstOption="Please Select" value="${arCycleStageDto.totalNumberARCPreviouslyUndergonePatient}"  onchange ="toggleOnSelect(this, '21', 'totalNumberARCOtherRow')"/>
                         </iais:value>
                     </iais:value>
                 </iais:row>
 
+                <iais:row id="totalNumberARCOtherRow">
+                    <iais:field width="5" value="Number of Cycles undergone Overseas" mandatory="true"/>
+                    <iais:value width="7" cssClass="col-md-7">
+                        <iais:input maxLength="100" type="text" name="numberCyclesUndergoneOverseas" id="numberCyclesUndergoneOverseas" value="${arCycleStageDto.numberCyclesUndergoneOverseas}" />
+                    </iais:value>
+                </iais:row>
             </div>
         </div>
     </div>
 </div>
 <<script  type="text/javascript">
   $(document).ready(function (){
-     showMainIndicationOther($("#mainIndication").val());
+     toggleOnSelect("#mainIndication",'AR_MI_001', 'mainIndicationOtherRow');
+     toggleOnSelect("#totalNumberARCPreviouslyUndergonePatient",'21', 'totalNumberARCOtherRow');
+     toggleOnMultiSelect("#otherIndication",'AR_0I_001', 'otherIndicationOthersRo');
    });
-   function showMainIndicationOther(value){
-       if(value == 'AR_MI_001'){
-            $("#mainIndicationOtherRow").show();
-         }else {
-          $("#mainIndicationOtherRow").hide();
-          $('#mainIndicationOther').val("");
-       }
-   }
 
-   function showTotalNumberARUnkown(value){
-    if(value == '21'){
-
-    }else {
-
-   }
-   }
 </script>

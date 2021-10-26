@@ -398,6 +398,40 @@ function fileChanged(event) {
     //What ever else you want to do when File Chooser Changed
 }
 
+function toggleOnMultiSelect(sel, val, elem) {
+    if (isEmpty(sel)) {
+        return;
+    }
+    var $selector = $(sel);
+    if ($selector.length == 0) {
+        $selector = $('#' + sel);
+    } else if ($selector.length == 0) {
+        $selector = $('.' + sel);
+    }
+    var $target = $(elem);
+    if ($target.length == 0) {
+        $target = $('#' + elem);
+    } else if ($target.length == 0) {
+        $target = $('.' + sel);
+    }
+    if ($selector.length == 0 || $target.length == 0) {
+        return;
+    }
+    var haveValue = false;
+
+    $selector.multiselect("getChecked").map(function(){
+        if(this.value == val){
+            $target.show();
+            haveValue = true;
+            return;
+        }
+    });
+
+    if(!haveValue){
+        $target.hide();
+        clearFields($target);
+    }
+}
 function toggleOnSelect(sel, val, elem) {
     if (isEmpty(sel)) {
         return;
