@@ -107,7 +107,7 @@ public abstract class CommonDelegator {
      */
     public void doPrepareConfim(BaseProcessClass bpc) {
         log.info(StringUtil.changeForLog("-----" + this.getClass().getSimpleName() + " Prepare Confirm Page -----"));
-        ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.CURRENT_PAGE_STAGE, "confirm");
+        ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.CURRENT_PAGE_STAGE, "preview");
         prepareConfim(bpc);
     }
 
@@ -126,7 +126,7 @@ public abstract class CommonDelegator {
      * @throws
      */
     public void doDraft(BaseProcessClass bpc) {
-        String currentStage = (String) bpc.request.getAttribute(DataSubmissionConstant.CURRENT_PAGE_STAGE);
+        String currentStage = (String) ParamUtil.getRequestAttr(bpc.request, "currentStage");
         ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, currentStage);
         draft(bpc);
     }
@@ -165,8 +165,9 @@ public abstract class CommonDelegator {
      * @throws
      */
     public void doPageAction(BaseProcessClass bpc) {
-        log.info(StringUtil.changeForLog("-----" + this.getClass().getSimpleName() + " Prepare Page -----"));
-        ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.CURRENT_PAGE_STAGE, "page");
+        log.info(StringUtil.changeForLog("-----" + this.getClass().getSimpleName() + " Page Action -----"));
+        // for draft back
+        ParamUtil.setRequestAttr(bpc.request, "currentStage", "page");
         String crud_action_type = ParamUtil.getString(bpc.request, DataSubmissionConstant.CRUD_TYPE);
         ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, crud_action_type);
         pageAction(bpc);
@@ -188,7 +189,8 @@ public abstract class CommonDelegator {
      */
     public void doPageConfirmAction(BaseProcessClass bpc) {
         log.info(StringUtil.changeForLog("-----" + this.getClass().getSimpleName() + " Confirm Action -----"));
-        ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.CURRENT_PAGE_STAGE, "confirm");
+        // for draft back
+        ParamUtil.setRequestAttr(bpc.request, "currentStage", "confirm");
         String crud_action_type = ParamUtil.getString(bpc.request, DataSubmissionConstant.CRUD_TYPE);
         ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, crud_action_type);
         pageConfirmAction(bpc);

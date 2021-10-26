@@ -39,7 +39,7 @@ $(document).ready(function() {
     }
 
     if ($('#nextBtn').length > 0) {
-        if ('confirm' == currPage) {
+        if ('preview' == currPage) {
             $('#nextBtn').html('Submit');
         } else if ('stage' == currPage){
             $('#nextBtn').html('Preview');
@@ -48,7 +48,7 @@ $(document).ready(function() {
         }
         $('#nextBtn').click(function () {
             showWaiting();
-            if ('confirm' == currPage) {
+            if ('preview' == currPage) {
                 submit('submission');
             } else {
                 submit('confirm');
