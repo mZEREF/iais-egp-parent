@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.service.client;
 
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArCycleStageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArDonorDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.FertilisationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientDto;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloudfeign.FeignConfiguration;
@@ -35,7 +36,16 @@ public interface ArFeClient {
     @GetMapping(value = "/ar-common/ar-donor/id", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<ArDonorDto> getArDonorDtoById(@RequestParam(name = "id") String id) ;
 
-
     @GetMapping(value = "/ar-common/ar-donor/cycleStageId", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<ArDonorDto>> getArDonorDtosByCycleStageId(@RequestParam(name = "cycleStageId") String cycleStageId);
+
+    @PutMapping(value = "/ar-common/fertilisation/save", produces = MediaType.APPLICATION_JSON_VALUE,consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<FertilisationDto> saveFertilisationDto(@RequestBody FertilisationDto fertilisationDto);
+
+    @GetMapping(value = "/ar-common/fertilisation/id", produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<FertilisationDto> getFertilisationDtoById(@RequestParam(name = "id") String id);
+
+    @GetMapping(value = "/ar-common/fertilisation/submissionId", produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<FertilisationDto>> getFertilisationDtosBySubmissionId(@RequestParam(name = "submissionId") String submissionId) ;
+
 }

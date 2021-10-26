@@ -12,10 +12,10 @@
                 <iais:row>
                     <iais:field width="5" value="Source of Semen" mandatory="true"/>
                     <iais:value width="7" cssClass="col-md-7">
-                        <iais:checkbox name="sourceOfSemen" checkboxId="donor" value="Donor" />
-                        <iais:checkbox name="sourceOfSemen" checkboxId="donorsTesticularTissue" value="Donor's Testicular Tissue" /><br />
-                        <iais:checkbox name="sourceOfSemen" checkboxId="husband" value="Husband" />
-                        <iais:checkbox name="sourceOfSemen" checkboxId="husbandsTesticularTissue" value="Husband's Testicular Tissue" />
+                        <iais:checkbox name="donor" checkboxId="donor" value="Donor" />
+                        <iais:checkbox name="donorsTesticularTissue" checkboxId="donorsTesticularTissue" value="Donor's Testicular Tissue" /><br />
+                        <iais:checkbox name="husband" checkboxId="husband" value="Husband" />
+                        <iais:checkbox name="husbandsTesticularTissue" checkboxId="husbandsTesticularTissue" value="Husband's Testicular Tissue" />
                     </iais:value>
                 </iais:row>
                 <iais:row>
@@ -33,10 +33,10 @@
                 <iais:row>
                     <iais:field width="5" value="AR Techniques Used" mandatory="true"/>
                     <iais:value width="7" cssClass="col-md-7">
-                        <iais:checkbox name="arTechniquesUsed" checkboxId="IVF" value="IVF" />
-                        <iais:checkbox name="arTechniquesUsed" checkboxId="GIF" value="GIF" /><br />
-                        <iais:checkbox name="arTechniquesUsed" checkboxId="ICSI" value="ICSI" />
-                        <iais:checkbox name="arTechniquesUsed" checkboxId="ZIFT" value="ZIFT" />
+                        <iais:checkbox name="ivfUsed" checkboxId="ivf" value="IVF" />
+                        <iais:checkbox name="gifUsed" checkboxId="gif" value="GIF" /><br />
+                        <iais:checkbox name="icsiUsed" checkboxId="icsi" value="ICSI" />
+                        <iais:checkbox name="ziftUsed" checkboxId="zift" value="ZIFT" />
                     </iais:value>
                 </iais:row>
                 <iais:row>
