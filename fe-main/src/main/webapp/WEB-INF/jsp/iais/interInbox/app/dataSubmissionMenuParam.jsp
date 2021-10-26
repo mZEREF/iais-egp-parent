@@ -1,4 +1,4 @@
-<li class="divider" role="separator"></li>
+<!--<li class="divider" role="separator"></li> -->
 <li>
     <a href="/hcsa-licence-web/eservice/INTERNET/MohDataSubmission">Submit Data</a>
 </li>
