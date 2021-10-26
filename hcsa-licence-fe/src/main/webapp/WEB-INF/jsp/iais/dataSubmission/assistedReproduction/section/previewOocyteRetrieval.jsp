@@ -1,6 +1,5 @@
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
-<c:set var="headingSign" value="${not empty svcSecMap.licensee ? 'incompleted' : 'completed'}"/>
+<c:set var="headingSign" value="completed"/>
 <c:set var="oocyteRetrievalStageDto" value="${arSuperDataSubmissionDto.oocyteRetrievalStageDto}"/>
 <div class="panel panel-default">
     <div class="panel-heading ${headingSign}">

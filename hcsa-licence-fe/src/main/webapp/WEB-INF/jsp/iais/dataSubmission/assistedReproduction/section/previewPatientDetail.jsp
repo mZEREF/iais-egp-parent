@@ -1,11 +1,7 @@
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-
-<%--
-<c:set var="headingSign" value="${not empty svcSecMap.licensee ? 'incompleted' : 'completed'}"/>
---%>
+<c:set var="headingSign" value="completed"/>
 
 <div class="panel panel-default">
-    <div class="panel-heading completed">
+    <div class="panel-heading ${headingSign}">
         <h4 class="panel-title">
             <a class="" data-toggle="collapse" href="#patientDetails">
                 Details of Patient
