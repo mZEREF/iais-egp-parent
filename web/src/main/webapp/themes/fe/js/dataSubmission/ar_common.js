@@ -10,6 +10,7 @@ $(document).ready(function() {
         submit('premises','saveDraft','jumpPage');
     }
     var currPage = $('input[name="ar_page"]').val();
+    console.log('----- ' + currPage + ' -----');
     if (isEmpty(currPage)) {
         currPage = "";
     } else if ('ar-submission' == currPage) {

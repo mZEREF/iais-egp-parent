@@ -163,7 +163,7 @@ public abstract class CommonDelegator {
     public void doPageAction(BaseProcessClass bpc) {
         bpc.request.setAttribute("currentStage", "page");
         String crud_action_type = ParamUtil.getString(bpc.request, DataSubmissionConstant.CRUD_TYPE);
-        bpc.request.setAttribute(IaisEGPConstant.CRUD_ACTION_TYPE, crud_action_type);
+        ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, crud_action_type);
         pageAction(bpc);
     }
 

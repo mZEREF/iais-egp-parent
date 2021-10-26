@@ -62,6 +62,7 @@ public class PatientDelegator extends CommonDelegator{
         }
         if (!errorMap.isEmpty()) {
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
+            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "page");
         } else {
             ArSuperDataSubmissionDto dataSubmission = DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
             dataSubmission.setPatientInfoDto(patientInfo);
