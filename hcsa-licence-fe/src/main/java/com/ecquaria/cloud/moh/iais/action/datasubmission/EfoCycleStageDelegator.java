@@ -5,11 +5,14 @@ import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.EfoCycleStageDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInfoDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
+import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import lombok.extern.slf4j.Slf4j;
@@ -37,10 +40,16 @@ public class EfoCycleStageDelegator extends CommonDelegator{
 
     @Override
     public void start(BaseProcessClass bpc) {
+        AuditTrailHelper.auditFunction("Assisted Reproduction", "EFO Cycle Stage");
+
         ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "page");
+        ParamUtil.setRequestAttr(bpc.request, "smallTitle", "You are submitting for <strong>Cycle Stages</strong>");
+
         ArSuperDataSubmissionDto arSuperDataSubmissionDto=new ArSuperDataSubmissionDto();
 
         arSuperDataSubmissionDto.setEfoCycleStageDto(new EfoCycleStageDto());
+        arSuperDataSubmissionDto.setPatientInfoDto(new PatientInfoDto());
+
         Date birthDate= null;
         try {
             birthDate = Formatter.parseDateTime(arSuperDataSubmissionDto.getPatientInfoDto().getPatient().getBirthDate(), AppConsts.DEFAULT_DATE_FORMAT);
@@ -48,8 +57,10 @@ public class EfoCycleStageDelegator extends CommonDelegator{
             log.error(e.getMessage(),e);
         }
         arSuperDataSubmissionDto.getEfoCycleStageDto().setPerformed("");
-
-        arSuperDataSubmissionDto.getEfoCycleStageDto().setStartDate(new Date());
+        arSuperDataSubmissionDto.getPatientInfoDto().setPatient(new PatientDto());
+        arSuperDataSubmissionDto.getPatientInfoDto().getPatient().setBirthDate(DateUtil.formatDate(new Date(),AppConsts.DEFAULT_DATE_FORMAT));
+        arSuperDataSubmissionDto.getPatientInfoDto().getPatient().setName("junyu");
+        arSuperDataSubmissionDto.getPatientInfoDto().getPatient().setIdNumber("123456");
 
         ParamUtil.setSessionAttr(bpc.request,"arSuperDataSubmissionDto",arSuperDataSubmissionDto);
 
@@ -69,8 +80,9 @@ public class EfoCycleStageDelegator extends CommonDelegator{
     @Override
     public void preparePage(BaseProcessClass bpc) {
         ArSuperDataSubmissionDto arSuperDataSubmissionDto= (ArSuperDataSubmissionDto) ParamUtil.getSessionAttr(bpc.request,"arSuperDataSubmissionDto");
-        arSuperDataSubmissionDto.getEfoCycleStageDto().setYearNum(getYear(new Date(),new Date()));
-        arSuperDataSubmissionDto.getEfoCycleStageDto().setMonthNum(getMon(new Date(),new Date()));
+        Date startDate = DateUtil.parseDate(arSuperDataSubmissionDto.getPatientInfoDto().getPatient().getBirthDate(), AppConsts.DEFAULT_DATE_FORMAT);
+        arSuperDataSubmissionDto.getEfoCycleStageDto().setYearNum(getYear(startDate,new Date()));
+        arSuperDataSubmissionDto.getEfoCycleStageDto().setMonthNum(getMon(startDate,new Date()));
 
         List<SelectOption> efoReasonSelectOption= MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_EFO_REASON);
         ParamUtil.setRequestAttr(bpc.request,"efoReasonSelectOption",efoReasonSelectOption);
