@@ -2,7 +2,7 @@ package com.ecquaria.cloud.moh.iais.action.datasubmission;
 
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant;
-import com.ecquaria.sz.commons.util.ParamUtil;
+import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import lombok.extern.slf4j.Slf4j;
 import sop.webflow.rt.api.BaseProcessClass;
 
@@ -13,7 +13,8 @@ import sop.webflow.rt.api.BaseProcessClass;
  * @date 10/20/2021
  */
 @Slf4j
-public abstract  class CommonDelegator {
+public abstract class CommonDelegator {
+
     /**
      * StartStep: Start
      *
@@ -23,13 +24,14 @@ public abstract  class CommonDelegator {
     public void doStart(BaseProcessClass bpc) {
         start(bpc);
     }
+
     /**
      * StartStep: Start
      *
      * @param bpc
      * @throws
      */
-    public abstract void  start(BaseProcessClass bpc);
+    public abstract void start(BaseProcessClass bpc);
 
     /**
      * StartStep: PrepareSwitch
@@ -38,17 +40,18 @@ public abstract  class CommonDelegator {
      * @throws
      */
     public void doPrepareSwitch(BaseProcessClass bpc) {
-        ParamUtil.setRequestAttr(bpc.request,"title", "New Assisted Reproduction Submission");
+        ParamUtil.setRequestAttr(bpc.request, "title", "New Assisted Reproduction Submission");
         //ParamUtil.setRequestAttr(bpc.request, "smallTitle", "You are submitting for <strong>Patient Information</strong>");
         prepareSwitch(bpc);
     }
+
     /**
      * StartStep: PrepareSwitch
      *
      * @param bpc
      * @throws
      */
-    public abstract void  prepareSwitch(BaseProcessClass bpc);
+    public abstract void prepareSwitch(BaseProcessClass bpc);
 
     /**
      * StartStep: Return
@@ -59,13 +62,14 @@ public abstract  class CommonDelegator {
     public void doReturn(BaseProcessClass bpc) {
         returnStep(bpc);
     }
+
     /**
      * StartStep: Return
      *
      * @param bpc
      * @throws
      */
-    public abstract void  returnStep(BaseProcessClass bpc);
+    public abstract void returnStep(BaseProcessClass bpc);
 
     /**
      * StartStep: PreparePage
@@ -76,13 +80,14 @@ public abstract  class CommonDelegator {
     public void doPreparePage(BaseProcessClass bpc) {
         preparePage(bpc);
     }
+
     /**
      * StartStep: PreparePage
      *
      * @param bpc
      * @throws
      */
-    public abstract void  preparePage(BaseProcessClass bpc);
+    public abstract void preparePage(BaseProcessClass bpc);
 
     /**
      * StartStep: PrepareConfim
@@ -93,13 +98,14 @@ public abstract  class CommonDelegator {
     public void doPrepareConfim(BaseProcessClass bpc) {
         prepareConfim(bpc);
     }
+
     /**
      * StartStep: PrepareConfim
      *
      * @param bpc
      * @throws
      */
-    public abstract void  prepareConfim(BaseProcessClass bpc);
+    public abstract void prepareConfim(BaseProcessClass bpc);
 
     /**
      * StartStep: Draft
@@ -108,17 +114,18 @@ public abstract  class CommonDelegator {
      * @throws
      */
     public void doDraft(BaseProcessClass bpc) {
-        String currentStage = (String)bpc.request.getAttribute("currentStage");
-        bpc.request.setAttribute("crud_action_type",currentStage);
+        String currentStage = (String) bpc.request.getAttribute("currentStage");
+        bpc.request.setAttribute("crud_action_type", currentStage);
         draft(bpc);
     }
+
     /**
      * StartStep: Draft
      *
      * @param bpc
      * @throws
      */
-    public abstract void  draft(BaseProcessClass bpc);
+    public abstract void draft(BaseProcessClass bpc);
 
     /**
      * StartStep: Submission
@@ -129,13 +136,14 @@ public abstract  class CommonDelegator {
     public void doSubmission(BaseProcessClass bpc) {
         submission(bpc);
     }
+
     /**
      * StartStep: Submission
      *
      * @param bpc
      * @throws
      */
-    public abstract void  submission(BaseProcessClass bpc);
+    public abstract void submission(BaseProcessClass bpc);
 
     /**
      * StartStep: PageAction
@@ -144,18 +152,19 @@ public abstract  class CommonDelegator {
      * @throws
      */
     public void doPageAction(BaseProcessClass bpc) {
-        bpc.request.setAttribute("currentStage","page");
-        String crud_action_type = ParamUtil.getString(bpc.request,DataSubmissionConstant.CRUD_TYPE);
-        bpc.request.setAttribute("crud_action_type",crud_action_type);
+        bpc.request.setAttribute("currentStage", "page");
+        String crud_action_type = ParamUtil.getString(bpc.request, DataSubmissionConstant.CRUD_TYPE);
+        bpc.request.setAttribute(IaisEGPConstant.CRUD_ACTION_TYPE, crud_action_type);
         pageAction(bpc);
     }
+
     /**
      * StartStep: PageAction
      *
      * @param bpc
      * @throws
      */
-    public abstract void  pageAction(BaseProcessClass bpc);
+    public abstract void pageAction(BaseProcessClass bpc);
 
     /**
      * StartStep: PageConfirmAction
@@ -164,17 +173,18 @@ public abstract  class CommonDelegator {
      * @throws
      */
     public void doPageConfirmAction(BaseProcessClass bpc) {
-        bpc.request.setAttribute("currentStage","confirm");
-        String crud_action_type = (String)bpc.request.getAttribute("crud_type");
-        bpc.request.setAttribute("crud_action_type",crud_action_type);
+        bpc.request.setAttribute("currentStage", "confirm");
+        String crud_action_type = ParamUtil.getString(bpc.request, DataSubmissionConstant.CRUD_TYPE);
+        bpc.request.setAttribute(IaisEGPConstant.CRUD_ACTION_TYPE, crud_action_type);
         pageConfirmAction(bpc);
     }
+
     /**
      * StartStep: PageConfirmAction
      *
      * @param bpc
      * @throws
      */
-    public abstract void  pageConfirmAction(BaseProcessClass bpc);
+    public abstract void pageConfirmAction(BaseProcessClass bpc);
 
 }
