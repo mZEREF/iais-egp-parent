@@ -54,6 +54,20 @@ public class PatientDelegator extends CommonDelegator{
 
     @Override
     public void prepareConfim(BaseProcessClass bpc) {
+    }
+
+    @Override
+    public void draft(BaseProcessClass bpc) {
+
+    }
+
+    @Override
+    public void submission(BaseProcessClass bpc) {
+
+    }
+
+    @Override
+    public void pageAction(BaseProcessClass bpc) {
         PatientInfoDto patientInfo = getPatientInfoFromPage(bpc.request);
         ValidationResult result = WebValidationHelper.validateProperty(patientInfo, "AR");
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
@@ -103,21 +117,6 @@ public class PatientDelegator extends CommonDelegator{
         husband.setEthnicGroupOther(ParamUtil.getString(request, "ethnicGroupOtherHbd"));
         patientInfo.setHusband(husband);
         return patientInfo;
-    }
-
-    @Override
-    public void draft(BaseProcessClass bpc) {
-
-    }
-
-    @Override
-    public void submission(BaseProcessClass bpc) {
-
-    }
-
-    @Override
-    public void pageAction(BaseProcessClass bpc) {
-
     }
 
     @Override

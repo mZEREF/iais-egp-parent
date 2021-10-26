@@ -9,6 +9,8 @@
 
 <script type="text/javascript" src="<%=webroot1%>js/dataSubmission/ar_common.js"></script>
 
+<input type="hidden" name="ar_page" value="${currentPageStage}"/>
+
 <c:if test="${empty title}">
     <div class="dashboard" id="comDashboard" style="padding: 30px 0 0;">
         <div class="container" style="padding: 0 90px;">

@@ -8,11 +8,8 @@
 %>
 <webui:setLayout name="iais-internet"/>
 
-
 <%@ include file="common/arHeader.jsp" %>
-<%-- current page: stage--%>
-<input type="hidden" name="ar_page" value="preview"/>
-<%--preview/ack--%>
+
 <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
     <div class="main-content">
         <div class="container center-content">

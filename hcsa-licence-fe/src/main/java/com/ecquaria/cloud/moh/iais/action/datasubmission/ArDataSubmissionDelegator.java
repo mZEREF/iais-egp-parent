@@ -60,6 +60,7 @@ public class ArDataSubmissionDelegator {
     public void doPrepareARSubmission(BaseProcessClass bpc) {
         String crud_action_type_ds = bpc.request.getParameter(DataSubmissionConstant.CRUD_TYPE);
         bpc.request.setAttribute(DataSubmissionConstant.CRUD_ACTION_TYPE_AR, crud_action_type_ds);
+        ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.CURRENT_PAGE_STAGE, "ar-submission");
         Map<String, AppGrpPremisesDto> appGrpPremisesMap =
                 (Map<String, AppGrpPremisesDto>) bpc.request.getSession().getAttribute(DataSubmissionConstant.AR_PREMISES_MAP);
         if (appGrpPremisesMap == null || appGrpPremisesMap.isEmpty()) {

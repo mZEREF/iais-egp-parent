@@ -12,9 +12,6 @@
 %>
 <webui:setLayout name="iais-internet"/>
 
-<%-- current page: ar-submission--%>
-<input type="hidden" name="ar_page" value="ar-submission"/>
-
 <%@ include file="common/arHeader.jsp" %>
 
 <form method="post" id="mainForm" action=<%=continueURL%>>

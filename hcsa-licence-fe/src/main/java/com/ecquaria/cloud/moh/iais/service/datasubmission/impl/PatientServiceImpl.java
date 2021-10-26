@@ -25,7 +25,8 @@ public class PatientServiceImpl implements PatientService {
         if (StringUtil.isEmpty(idNumber) || StringUtil.isEmpty(nationality) || StringUtil.isEmpty(orgId)) {
             return null;
         }
-        return arFeClient.getPatientDto(idNumber, nationality, orgId).getEntity();
+        //return arFeClient.getPatientDto(idNumber, nationality, orgId).getEntity();
+        return new PatientDto();
     }
 
 }

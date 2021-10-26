@@ -19,7 +19,7 @@ $(document).ready(function() {
     if ($('#backBtn').length > 0) {
         $('#backBtn').click(function () {
             showWaiting();
-            if ('preview' == currPage) {
+            if ('confirm' == currPage) {
                 submit('page');
             } else {
                 submit('return');
@@ -39,7 +39,7 @@ $(document).ready(function() {
     }
 
     if ($('#nextBtn').length > 0) {
-        if ('preview' == currPage) {
+        if ('confirm' == currPage) {
             $('#nextBtn').html('Submit');
         } else if ('stage' == currPage){
             $('#nextBtn').html('Preview');
@@ -48,7 +48,7 @@ $(document).ready(function() {
         }
         $('#nextBtn').click(function () {
             showWaiting();
-            if ('preview' == currPage) {
+            if ('confirm' == currPage) {
                 submit('submission');
             } else {
                 submit('confirm');

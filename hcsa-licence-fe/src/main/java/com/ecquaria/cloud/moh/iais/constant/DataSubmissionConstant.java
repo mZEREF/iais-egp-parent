@@ -14,6 +14,8 @@ public class DataSubmissionConstant {
     public static String CRUD_ACTION_TYPE_AR                = "crud_action_type_ar";
     public static String CRUD_ACTION_TYPE_CT                = "crud_action_type_ct";
 
+    public static String CURRENT_PAGE_STAGE                 = "currentPageStage";
+
     public static String AR_DATA_SUBMISSION                 = "AR_DATA_SUBMISSION";
     public static String AR_PREMISES_MAP                    = "AR_PREMISES_MAP";
     public static String AR_PREMISES                        = "AR_PREMISES";
