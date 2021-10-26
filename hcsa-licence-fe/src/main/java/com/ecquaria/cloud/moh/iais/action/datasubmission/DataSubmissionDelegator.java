@@ -31,8 +31,7 @@ public class DataSubmissionDelegator {
      * @throws
      */
     public void doPrepareDataSubmissionSelect(BaseProcessClass bpc) {
-        String crud_action_type_ds = bpc.request.getParameter(DataSubmissionConstant.CRUD_TYPE);
-        bpc.request.setAttribute(DataSubmissionConstant.CRUD_ACTION_TYPE_DS,crud_action_type_ds);
+
 
     }
     /**
@@ -42,7 +41,8 @@ public class DataSubmissionDelegator {
      * @throws
      */
     public void doPrepareDataSubmission(BaseProcessClass bpc) {
-
+        String crud_action_type_ds = bpc.request.getParameter(DataSubmissionConstant.CRUD_TYPE);
+        bpc.request.setAttribute(DataSubmissionConstant.CRUD_ACTION_TYPE_DS,crud_action_type_ds);
     }
     /**
      * StartStep: PrepeareAR
