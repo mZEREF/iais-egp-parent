@@ -96,7 +96,6 @@ public class EfoCycleStageDelegator extends CommonDelegator{
 
     @Override
     public void draft(BaseProcessClass bpc) {
-        ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "page");
 
     }
 
@@ -112,7 +111,7 @@ public class EfoCycleStageDelegator extends CommonDelegator{
         HttpServletRequest request=bpc.request;
         String othersReason = ParamUtil.getRequestString(request, "othersReason");
         String reasonSelect = ParamUtil.getRequestString(request, "reasonSelect");
-        Integer indicated = (Integer) ParamUtil.getRequestAttr(request, "indicatedRadio");
+        Integer indicated =  ParamUtil.getInt(request, "indicatedRadio");
         String startDateStr = ParamUtil.getRequestString(request, "efoDateStarted");
         Date startDate = DateUtil.parseDate(startDateStr, AppConsts.DEFAULT_DATE_FORMAT);
         efoCycleStageDto.setStartDate(startDate);

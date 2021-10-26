@@ -1,4 +1,4 @@
-package com.ecquaria.cloud.moh.iais.validation;
+package com.ecquaria.cloud.moh.iais.validation.dataSubmission;
 
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
@@ -23,7 +23,7 @@ import java.util.Map;
  */
 @Component
 @Slf4j
-public class EfoDtoValidate implements CustomizeValidator {
+public class EfoDtoValidator implements CustomizeValidator {
     @Override
     public Map<String, String> validate(HttpServletRequest httpServletRequest) {
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
