@@ -1,9 +1,21 @@
 package com.ecquaria.cloud.moh.iais.action.datasubmission;
 
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.CycleStageSelectionDto;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
+import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
+import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant;
+import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
+import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
+import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import lombok.extern.slf4j.Slf4j;
 import sop.webflow.rt.api.BaseProcessClass;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.List;
+import java.util.Map;
 
 /**
  * ARCycleStagesManualDelegator
@@ -14,6 +26,7 @@ import sop.webflow.rt.api.BaseProcessClass;
 @Delegator("arCycleStagesManualDelegator")
 @Slf4j
 public class ArCycleStagesManualDelegator {
+
     /**
      * StartStep: Start
      *
@@ -21,7 +34,9 @@ public class ArCycleStagesManualDelegator {
      * @throws
      */
     public void doStart(BaseProcessClass bpc) {
+        log.info("----- ArCycleStagesManualDelegator Start -----");
     }
+
     /**
      * StartStep: PrepareCycleStageSelection
      *
@@ -29,7 +44,10 @@ public class ArCycleStagesManualDelegator {
      * @throws
      */
     public void doPrepareCycleStageSelection(BaseProcessClass bpc) {
+        List<String> nextStages = DataSubmissionHelper.getNextStageForAr(null, null);
+        bpc.request.setAttribute("stage_options", DataSubmissionHelper.genOptions(nextStages));
     }
+
     /**
      * StartStep: PrepareStage
      *
@@ -37,9 +55,35 @@ public class ArCycleStagesManualDelegator {
      * @throws
      */
     public void doPrepareStage(BaseProcessClass bpc) {
-        String crud_action_type_ds = bpc.request.getParameter(DataSubmissionConstant.CRUD_TYPE);
-        bpc.request.setAttribute(DataSubmissionConstant.CRUD_ACTION_TYPE_CT,crud_action_type_ds);
+        CycleStageSelectionDto selectionDto = getSelectionDtoFromPage(bpc.request);
+        ArSuperDataSubmissionDto currentArDataSubmission = DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
+        currentArDataSubmission.setSelectionDto(selectionDto);
+        // validation
+        Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
+        ValidationResult result = WebValidationHelper.validateProperty(selectionDto, "AR");
+        if (result != null) {
+            errorMap.putAll(result.retrieveAll());
+        }
+        if (!errorMap.isEmpty()) {
+            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
+            bpc.request.setAttribute(DataSubmissionConstant.CRUD_ACTION_TYPE_CT, "invalid");
+        } else {
+            bpc.request.setAttribute(DataSubmissionConstant.CRUD_ACTION_TYPE_CT, selectionDto.getStage());
+        }
     }
+
+    private CycleStageSelectionDto getSelectionDtoFromPage(HttpServletRequest request) {
+        CycleStageSelectionDto selectionDto = new CycleStageSelectionDto();
+        selectionDto.setPatientIdType(ParamUtil.getString(request, "patientIdType"));
+        selectionDto.setPatientIdNumber(ParamUtil.getString(request, "patientIdNumber"));
+        selectionDto.setPatientNationality(ParamUtil.getString(request, "patientNationality"));
+        selectionDto.setPatientName(ParamUtil.getString(request, "patientName"));
+        selectionDto.setUndergoingCycle("1".equals(ParamUtil.getString(request, "undergoingCycle")));
+        selectionDto.setLastStage(ParamUtil.getString(request, "lastStage"));
+        selectionDto.setStage(ParamUtil.getString(request, "stage"));
+        return selectionDto;
+    }
+
     /**
      * StartStep: PrepareARCycle
      *
@@ -48,6 +92,7 @@ public class ArCycleStagesManualDelegator {
      */
     public void doPrepareARCycle(BaseProcessClass bpc) {
     }
+
     /**
      * StartStep: PrepareIUICycle
      *
@@ -56,6 +101,7 @@ public class ArCycleStagesManualDelegator {
      */
     public void doPrepareIUICycle(BaseProcessClass bpc) {
     }
+
     /**
      * StartStep: PrepareEFOCycle
      *
@@ -64,6 +110,7 @@ public class ArCycleStagesManualDelegator {
      */
     public void doPrepareEFOCycle(BaseProcessClass bpc) {
     }
+
     /**
      * StartStep: PrepareOocyteRetrieval
      *
@@ -72,6 +119,7 @@ public class ArCycleStagesManualDelegator {
      */
     public void doPrepareOocyteRetrieval(BaseProcessClass bpc) {
     }
+
     /**
      * StartStep: PrepareFertilisation
      *
@@ -80,6 +128,7 @@ public class ArCycleStagesManualDelegator {
      */
     public void doPrepareFertilisation(BaseProcessClass bpc) {
     }
+
     /**
      * StartStep: PrepareEmbryoCreated
      *
@@ -88,6 +137,7 @@ public class ArCycleStagesManualDelegator {
      */
     public void doPrepareEmbryoCreated(BaseProcessClass bpc) {
     }
+
     /**
      * StartStep: PrepareThawing
      *
@@ -96,6 +146,7 @@ public class ArCycleStagesManualDelegator {
      */
     public void doPrepareThawing(BaseProcessClass bpc) {
     }
+
     /**
      * StartStep: PreparePreimplantation
      *
@@ -104,6 +155,7 @@ public class ArCycleStagesManualDelegator {
      */
     public void doPreparePreimplantation(BaseProcessClass bpc) {
     }
+
     /**
      * StartStep: PrepareEmbryoTransfer
      *
@@ -112,6 +164,7 @@ public class ArCycleStagesManualDelegator {
      */
     public void doPrepareEmbryoTransfer(BaseProcessClass bpc) {
     }
+
     /**
      * StartStep: PrepareARTreatmentSubsidies
      *
@@ -120,6 +173,7 @@ public class ArCycleStagesManualDelegator {
      */
     public void doPrepareARTreatmentSubsidies(BaseProcessClass bpc) {
     }
+
     /**
      * StartStep: PrepareIUITreatmentSubsidies
      *
@@ -128,6 +182,7 @@ public class ArCycleStagesManualDelegator {
      */
     public void doPrepareIUITreatmentSubsidies(BaseProcessClass bpc) {
     }
+
     /**
      * StartStep: PrepareOutcomeEmbryoTransferred
      *
@@ -136,6 +191,7 @@ public class ArCycleStagesManualDelegator {
      */
     public void doPrepareOutcomeEmbryoTransferred(BaseProcessClass bpc) {
     }
+
     /**
      * StartStep: PrepareOutcome
      *
@@ -144,6 +200,7 @@ public class ArCycleStagesManualDelegator {
      */
     public void doPrepareOutcome(BaseProcessClass bpc) {
     }
+
     /**
      * StartStep: PrepareOutcomePregnancy
      *
@@ -152,6 +209,7 @@ public class ArCycleStagesManualDelegator {
      */
     public void doPrepareOutcomePregnancy(BaseProcessClass bpc) {
     }
+
     /**
      * StartStep: PrepareFreezing
      *
@@ -160,6 +218,7 @@ public class ArCycleStagesManualDelegator {
      */
     public void doPrepareFreezing(BaseProcessClass bpc) {
     }
+
     /**
      * StartStep: PrepareDonation
      *
@@ -168,6 +227,7 @@ public class ArCycleStagesManualDelegator {
      */
     public void doPrepareDonation(BaseProcessClass bpc) {
     }
+
     /**
      * StartStep: PrepareDisposal
      *
@@ -176,6 +236,7 @@ public class ArCycleStagesManualDelegator {
      */
     public void doPrepareDisposal(BaseProcessClass bpc) {
     }
+
     /**
      * StartStep: PrepareEndCycle
      *
@@ -184,6 +245,7 @@ public class ArCycleStagesManualDelegator {
      */
     public void doPrepareEndCycle(BaseProcessClass bpc) {
     }
+
     /**
      * StartStep: PrepareTransferInOut
      *
@@ -192,6 +254,7 @@ public class ArCycleStagesManualDelegator {
      */
     public void doPrepareTransferInOut(BaseProcessClass bpc) {
     }
+
     /**
      * StartStep: Back
      *

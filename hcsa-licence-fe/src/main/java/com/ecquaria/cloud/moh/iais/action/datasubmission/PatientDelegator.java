@@ -44,7 +44,6 @@ public class PatientDelegator extends CommonDelegator{
 
     @Override
     public void returnStep(BaseProcessClass bpc) {
-
     }
 
     @Override

@@ -37,7 +37,7 @@
                                          value="${previous.idType}" cssClass="idTypeSel"/>
                         </iais:value>
                         <iais:value width="4" cssClass="col-md-4">
-                            <iais:input maxLength="9" type="text" name="preIdNumber" value="${previous.idNumber}" />
+                            <iais:input maxLength="20" type="text" name="preIdNumber" value="${previous.idNumber}" />
                         </iais:value>
                     </iais:row>
                     <iais:row>
@@ -74,7 +74,7 @@
 <iais:confirm msg="GENERAL_ACK018" callBack="$('#noFoundDiv').modal('hide');" popupOrder="noFoundDiv" />
 
 <script type="text/javascript">
-    function retrieveIdentification(idTag, nationalityTag, callback) {
+    function retrieveIdentification(idTag, nationalityTag, callback, options) {
         var idNo = '';
         if ($('#' + idTag).length > 0) {
             idNo = $('#' + idTag).val();
@@ -87,13 +87,16 @@
         } else if ($('[name="' + nationalityTag + '"]').length > 0) {
             nationality = $('#' + nationalityTag).val();
         }
+        if (isEmpty(options)) {
+            options = {};
+        }
+        options.idNo = idNo;
+        options.nationality = nationality;
+
         $.ajax({
             url: '${pageContext.request.contextPath}/ar/retrieve-identification',
             dataType: 'json',
-            data: {
-                "idNo": idNo,
-                "nationality": nationality
-            },
+            data: options,
             type: 'POST',
             success: function (data) {
                 if (typeof callback === 'function') {

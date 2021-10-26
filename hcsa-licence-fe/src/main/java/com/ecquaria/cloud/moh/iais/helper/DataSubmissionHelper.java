@@ -195,6 +195,24 @@ public final class DataSubmissionHelper {
         return opts.toString();
     }
 
+    public static List<SelectOption> genOptions(List<String> options) {
+        return genOptions(options, "Please Select");
+    }
+
+    public static List<SelectOption> genOptions(List<String> options, String firstOption) {
+        List<SelectOption> opts = IaisCommonUtils.genNewArrayList();
+        if (!StringUtil.isEmpty(firstOption)) {
+            opts.add(0, new SelectOption("", firstOption));
+        }
+        if (options == null || options.isEmpty()) {
+            return opts;
+        }
+        for (String opt : options) {
+            opts.add(new SelectOption(opt, MasterCodeUtil.getCodeDesc(opt)));
+        }
+        return opts;
+    }
+
     public static List<SelectOption> genOptions(Map<String, String> map, String firstOption, boolean sort) {
         List<SelectOption> opts = IaisCommonUtils.genNewArrayList();
         if (map != null && !map.isEmpty()) {

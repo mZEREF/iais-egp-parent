@@ -11,7 +11,7 @@
                      cssClass="idTypeSel${suffix}"/>
     </iais:value>
     <iais:value width="4" cssClass="col-md-4">
-        <iais:input maxLength="9" type="text" name="idNumber${suffix}" value="${person.idNumber}" />
+        <iais:input maxLength="20" type="text" name="idNumber${suffix}" value="${person.idNumber}" />
     </iais:value>
 </iais:row>
 <iais:row>
