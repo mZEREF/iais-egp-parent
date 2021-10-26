@@ -1,6 +1,6 @@
-<%@ taglib prefix="fmt" uri="http://java.sun.com/jstl/fmt" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <div class="panel panel-default">
-    <div class="panel-heading">
+    <div class="panel-heading completed ">
         <h4 class="panel-title">
             <a class="collapsed" data-toggle="collapse" href="#">
                 Egg Freezing Only Cycle
@@ -46,17 +46,16 @@
                         <iais:code code="${arSuperDataSubmissionDto.efoCycleStageDto.reason}"/>
                     </iais:value>
                 </iais:row>
-                <c:if test="${arSuperDataSubmissionDto.efoCycleStageDto.reason=='EFOR004'}">
-                    <iais:row>
-                        <iais:field width="5" value="" mandatory="false"/>
-                        <iais:value width="7" cssClass="col-md-7">
-                            <div id="othersReason" style="display: none" >
-                                <c:out value="${arSuperDataSubmissionDto.efoCycleStageDto.othersReason}"/>
-                            </div>
-                        </iais:value>
-                    </iais:row>
-                </c:if>
-
+                <iais:row>
+                    <iais:field width="5" value="" mandatory="false"/>
+                    <iais:value width="7" cssClass="col-md-7">
+                        <div id="othersReason" <c:if test="${arSuperDataSubmissionDto.efoCycleStageDto.reason=='EFOR004'}">
+                            style="display: none"
+                        </c:if> >
+                            <c:out value="${arSuperDataSubmissionDto.efoCycleStageDto.othersReason}"/>
+                        </div>
+                    </iais:value>
+                </iais:row>
 
             </div>
         </div>

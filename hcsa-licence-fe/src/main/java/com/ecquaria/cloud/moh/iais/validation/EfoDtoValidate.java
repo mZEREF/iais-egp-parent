@@ -1,7 +1,6 @@
 package com.ecquaria.cloud.moh.iais.validation;
 
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
-import com.ecquaria.cloud.moh.iais.common.constant.intranetUser.IntranetUserConstant;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -29,8 +28,8 @@ public class EfoDtoValidate implements CustomizeValidator {
     public Map<String, String> validate(HttpServletRequest httpServletRequest) {
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
 
-        String dateStarted = ParamUtil.getRequestString(httpServletRequest, IntranetUserConstant.INTRANET_STARTDATE);
-        String reason = ParamUtil.getRequestString(httpServletRequest, IntranetUserConstant.INTRANET_MOBILENO);
+        String dateStarted = ParamUtil.getRequestString(httpServletRequest, "efoDateStarted");
+        String reason = ParamUtil.getRequestString(httpServletRequest, "reasonSelect");
         if (!StringUtil.isEmpty(dateStarted) ) {
             Date today = new Date();
             Date sDate;
@@ -41,12 +40,12 @@ public class EfoDtoValidate implements CustomizeValidator {
                 sDate = new Date();
             }
             if( today.after(sDate)) {
-                errorMap.put("dateStarted", "USER_ERR007");
+                errorMap.put("startDate", "USER_ERR007");
             }
         }
 
         if (!StringUtil.isEmpty(reason)&&"EFOR004".equals(reason)) {
-            String othersReason = ParamUtil.getRequestString(httpServletRequest, IntranetUserConstant.INTRANET_OFFICETELNO);
+            String othersReason = ParamUtil.getRequestString(httpServletRequest, "othersReason");
             if (StringUtil.isEmpty(othersReason)) {
                 String errMsg = MessageUtil.replaceMessage("GENERAL_ERR0006","Remarks", "field");
                 errorMap.put("othersReason", errMsg);

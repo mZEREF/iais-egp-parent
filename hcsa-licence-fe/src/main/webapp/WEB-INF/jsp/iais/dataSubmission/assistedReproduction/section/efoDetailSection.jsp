@@ -21,7 +21,8 @@
                 <iais:row>
                     <iais:field width="5" value="Date Started" mandatory="true"/>
                     <iais:value width="7" cssClass="col-md-7">
-                        <iais:datePicker id="efoDateStarted" name="efoDateStarted" value="${arSuperDataSubmissionDto.efoCycleStageDto.startDate}"/>
+                        <iais:datePicker id="efoDateStarted" name="efoDateStarted" dateVal="${arSuperDataSubmissionDto.efoCycleStageDto.startDate}"/>
+                        <span class="error-msg" name="iaisErrorMsg" id="error_startDate"></span>
                     </iais:value>
                 </iais:row>
                 <iais:row>
@@ -62,13 +63,16 @@
                     <iais:field width="5" value="Reasons" mandatory="true"/>
                     <iais:value width="7" cssClass="col-md-7">
                         <iais:select cssClass="reasonSelect"  name="reasonSelect" firstOption="Please Select" options="efoReasonSelectOption" value="${arSuperDataSubmissionDto.efoCycleStageDto.reason}"></iais:select>
+                        <span class="error-msg" name="iaisErrorMsg" id="error_reason"></span>
                     </iais:value>
                 </iais:row>
+
                 <iais:row>
                     <iais:field width="5" value="" mandatory="false"/>
                     <iais:value width="7" cssClass="col-md-7">
-                        <div id="othersReason" style="display: none" >
+                        <div id="othersReason" <c:if test="${arSuperDataSubmissionDto.efoCycleStageDto.reason!='EFOR004'}">style="display: none"</c:if> >
                             <input type="text" maxlength="20"   name="othersReason" value="${arSuperDataSubmissionDto.efoCycleStageDto.othersReason}" >
+                            <span class="error-msg" name="iaisErrorMsg" id="error_othersReason"></span>
                         </div>
                     </iais:value>
                 </iais:row>

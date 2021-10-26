@@ -2,7 +2,6 @@ package com.ecquaria.cloud.moh.iais.action.datasubmission;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
-import com.ecquaria.cloud.moh.iais.common.constant.intranetUser.IntranetUserConstant;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.EfoCycleStageDto;
@@ -10,6 +9,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
+import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import lombok.extern.slf4j.Slf4j;
@@ -37,22 +37,19 @@ public class EfoCycleStageDelegator extends CommonDelegator{
 
     @Override
     public void start(BaseProcessClass bpc) {
-        ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.CRUD_ACTION_TYPE, "page");
+        ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "page");
         ArSuperDataSubmissionDto arSuperDataSubmissionDto=new ArSuperDataSubmissionDto();
 
-//        arSuperDataSubmissionDto.setEfoCycleStageDto(new EfoCycleStageDto());
-//        Date birthDate= null;
-//        try {
-//            birthDate = Formatter.parseDateTime(arSuperDataSubmissionDto.getPatientInfoDto().getPatient().getBirthDate(), AppConsts.DEFAULT_DATE_FORMAT);
-//        } catch (Exception e) {
-//            log.error(e.getMessage(),e);
-//        }
-//        arSuperDataSubmissionDto.getEfoCycleStageDto().setYearNum(getYear(new Date(),new Date()));
-//        arSuperDataSubmissionDto.getEfoCycleStageDto().setMonthNum(getMon(new Date(),new Date()));
-//        arSuperDataSubmissionDto.getEfoCycleStageDto().setPerformed("");
-//        arSuperDataSubmissionDto.getEfoCycleStageDto().setSubmissionId(MasterCodeUtil.CATE_ID_EFO_REASON);
-//
-//        arSuperDataSubmissionDto.getEfoCycleStageDto().setStartDate(new Date());
+        arSuperDataSubmissionDto.setEfoCycleStageDto(new EfoCycleStageDto());
+        Date birthDate= null;
+        try {
+            birthDate = Formatter.parseDateTime(arSuperDataSubmissionDto.getPatientInfoDto().getPatient().getBirthDate(), AppConsts.DEFAULT_DATE_FORMAT);
+        } catch (Exception e) {
+            log.error(e.getMessage(),e);
+        }
+        arSuperDataSubmissionDto.getEfoCycleStageDto().setPerformed("");
+
+        arSuperDataSubmissionDto.getEfoCycleStageDto().setStartDate(new Date());
 
         ParamUtil.setSessionAttr(bpc.request,"arSuperDataSubmissionDto",arSuperDataSubmissionDto);
 
@@ -60,7 +57,7 @@ public class EfoCycleStageDelegator extends CommonDelegator{
 
     @Override
     public void prepareSwitch(BaseProcessClass bpc) {
-        log.info(StringUtil.changeForLog("crud_action_type is ======>"+ParamUtil.getRequestString(bpc.request,IntranetUserConstant.CRUD_ACTION_TYPE)));
+        log.info(StringUtil.changeForLog("crud_action_type is ======>"+ParamUtil.getRequestString(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE)));
 
     }
 
@@ -72,17 +69,8 @@ public class EfoCycleStageDelegator extends CommonDelegator{
     @Override
     public void preparePage(BaseProcessClass bpc) {
         ArSuperDataSubmissionDto arSuperDataSubmissionDto= (ArSuperDataSubmissionDto) ParamUtil.getSessionAttr(bpc.request,"arSuperDataSubmissionDto");
-        arSuperDataSubmissionDto.setEfoCycleStageDto(new EfoCycleStageDto());
-        Date birthDate= null;
-        try {
-            birthDate = Formatter.parseDateTime(arSuperDataSubmissionDto.getPatientInfoDto().getPatient().getBirthDate(), AppConsts.DEFAULT_DATE_FORMAT);
-        } catch (Exception e) {
-            log.error(e.getMessage(),e);
-        }
         arSuperDataSubmissionDto.getEfoCycleStageDto().setYearNum(getYear(new Date(),new Date()));
         arSuperDataSubmissionDto.getEfoCycleStageDto().setMonthNum(getMon(new Date(),new Date()));
-        arSuperDataSubmissionDto.getEfoCycleStageDto().setPerformed("");
-        arSuperDataSubmissionDto.getEfoCycleStageDto().setSubmissionId(MasterCodeUtil.CATE_ID_EFO_REASON);
 
         List<SelectOption> efoReasonSelectOption= MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_EFO_REASON);
         ParamUtil.setRequestAttr(bpc.request,"efoReasonSelectOption",efoReasonSelectOption);
@@ -96,7 +84,7 @@ public class EfoCycleStageDelegator extends CommonDelegator{
 
     @Override
     public void draft(BaseProcessClass bpc) {
-        ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.CRUD_ACTION_TYPE, "page");
+        ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "page");
 
     }
 
@@ -118,6 +106,7 @@ public class EfoCycleStageDelegator extends CommonDelegator{
         efoCycleStageDto.setStartDate(startDate);
         efoCycleStageDto.setIsMedicallyIndicated(indicated);
         efoCycleStageDto.setReason(reasonSelect);
+        efoCycleStageDto.setSubmissionId(MasterCodeUtil.CATE_ID_EFO_REASON);
         if(othersReason!=null){
             efoCycleStageDto.setOthersReason(othersReason);
         }
@@ -126,13 +115,13 @@ public class EfoCycleStageDelegator extends CommonDelegator{
         ParamUtil.setSessionAttr(bpc.request, "arSuperDataSubmissionDto", arSuperDataSubmissionDto);
         if (!errorMap.isEmpty() || validationResult.isHasErrors()) {
             WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
-            ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
-            ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.CRUD_ACTION_TYPE, "page");
+            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
+            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "page");
             return;
         }
 
 
-        ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.CRUD_ACTION_TYPE, "confirm");
+        ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "confirm");
 
     }
 
