@@ -250,4 +250,16 @@ public final class DataSubmissionHelper {
         return StringUtil.escapeHtml(appGrpPremisesDto.getBusinessName() + ", " + appGrpPremisesDto.getAddress());
     }
 
+    public static List<SelectOption> getNumsSelections(int startNum,int endNum){
+        List<SelectOption> selectOptions = IaisCommonUtils.genNewArrayList(endNum+1-startNum);
+        for(int num = startNum;num<= endNum; endNum++){
+            String key = String.valueOf(num);
+            selectOptions.add(new SelectOption(key,key));
+        }
+        return selectOptions;
+    }
+
+    public static List<SelectOption> getNumsSelections(int endNum){
+        return getNumsSelections(0,endNum);
+    }
 }

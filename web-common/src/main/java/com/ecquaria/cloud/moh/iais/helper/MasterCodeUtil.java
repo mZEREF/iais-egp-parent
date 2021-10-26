@@ -145,6 +145,9 @@ public final class MasterCodeUtil {
     // Ethnic Group
     public static final String CATE_ID_ETHNIC_GROUP = "22941117-A009-4E45-AD2F-22F233EAA28D";
 
+    //Data Submission Current AR Treatment
+    public static final String CURRENT_AR_TREATMENT = "27383D78-59F2-4AE1-878A-A65596D3DF1E";
+
     /**
      * @description: refresh the master codes into cache
      *

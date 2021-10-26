@@ -16,7 +16,7 @@
             <div class="col-xs-12">
                 <h3>Please key in the cycle information below.</h3>
                 <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
-                    <%@include file="section/patientDetailSection.jsp" %>
+                    <%@include file="section/cycleStageWireframeSection.jsp" %>
                 </div>
                 <%@include file="common/arFooter.jsp" %>
             </div>
