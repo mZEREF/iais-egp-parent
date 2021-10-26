@@ -1,3 +1,5 @@
+<script type="text/javascript" src="<%=webroot1%>js/dataSubmission/efoSection.js"></script>
+
 <div class="panel panel-default">
     <div class="panel-heading">
         <h4 class="panel-title">
@@ -81,16 +83,3 @@
         </div>
     </div>
 </div>
-<script  type="text/javascript">
-$('#reasonSelect').change(function () {
-
-var reason= $('#reasonSelect option:selected').val();
-
-if("EFOR004"==reason){
-$('#othersReason').attr("style","display: block");
-}else {
-$('#othersReason').attr("style","display: none");
-}
-
-});
-</script>
