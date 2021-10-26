@@ -124,7 +124,7 @@
    <position>{(680,200)(920,200)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/PageAction" style="oblique">
-   <position>{(920,200)(1170,300)}</position>
+   <position>{(920,200)(1225,340)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Pages/WebPage/StagePageConfirm" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/PrepareConfim" style="oblique">
    <position>{(540,310)(680,310)}</position>
@@ -132,25 +132,25 @@
   <SynchronousLink destinationName="/Steps/AutomaticStep/PageConfirmAction" linkstyle="Direct" name="" sourceName="/Pages/WebPage/StagePageConfirm" style="oblique">
    <position>{(680,310)(920,310)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/PageConfirmAction" style="oblique">
-   <position>{(920,310)(1170,300)}</position>
-  </SynchronousLink>
   <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/Draft" style="oblique">
-   <position>{(540,450)(1170,300)}</position>
+   <position>{(540,450)(1225,340)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Pages/WebPage/Ack" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/Submission" style="oblique">
    <position>{(540,560)(680,560)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/PrepareSwitch" linkstyle="Direct" name="" sourceName="/Merges/Merge/Merge1" style="oblique">
-   <position>{(1170,300)(1167,37)(245,33)(230,310)}</position>
-  </SynchronousLink>
   <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Pages/WebPage/Ack" style="oblique">
-   <position>{(680,560)(1170,300)}</position>
+   <position>{(680,560)(1225,340)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/PageConfirmAction" style="oblique">
+   <position>{(920,310)(1225,340)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PrepareSwitch" linkstyle="Rectangle" name="" sourceName="/Merges/Merge/Merge1" style="rectanular">
+   <position>{(1225,340)(250,48)(230,310)}</position>
   </SynchronousLink>
  </Links>
  <Conditions/>
  <Switches>
-  <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="crud_action_type" name="Switch1" x="340" y="290">
+  <Switch defClass="" defaultComponent="/Steps/AutomaticStep/PreparePage" executor="" icon="" leftOperand="crud_action_type" name="Switch1" x="340" y="290">
    <Description/>
    <SwitchCase component="/Steps/AutomaticStep/Return" value="&quot;return&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/PreparePage" value="&quot;page&quot;"/>
@@ -161,7 +161,7 @@
  </Switches>
  <Branches/>
  <Merges>
-  <Merge defClass="" executor="" icon="" name="Merge1" type="Or" x="1150" y="280">
+  <Merge defClass="" executor="" icon="" name="Merge1" type="Or" x="1180" y="290">
    <Description/>
   </Merge>
  </Merges>

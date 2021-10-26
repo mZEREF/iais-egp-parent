@@ -13,13 +13,13 @@
                     <p><label style="font-family:'Arial Negreta', 'Arial Normal', 'Arial';font-weight:700;"><c:out value="${arSuperDataSubmissionDto.patientInfoDto.patient.name}"/></label><label style="font-family:'Arial Normal', 'Arial';font-weight:400;"><c:out value="(${arSuperDataSubmissionDto.patientInfoDto.patient.idNumber})"/></label></p>
                 </h3>
                 <iais:row>
-                    <iais:field width="5" value="Premises where egg freezing only cycle is performed" mandatory="false"/>
+                    <iais:field width="5" value="Premises where egg freezing only cycle is performed" mandatory="true"/>
                     <iais:value width="7" cssClass="col-md-7" label="true">
                         <c:out value="${arSuperDataSubmissionDto.efoCycleStageDto.performed}"/>
                     </iais:value>
                 </iais:row>
                 <iais:row>
-                    <iais:field width="5" value="Date Started" mandatory="false"/>
+                    <iais:field width="5" value="Date Started" mandatory="true"/>
                     <iais:value width="7" cssClass="col-md-7">
                         <iais:datePicker id="efoDateStarted" name="efoDateStarted" value="${arSuperDataSubmissionDto.efoCycleStageDto.startDate}"/>
                     </iais:value>
@@ -59,7 +59,7 @@
                     </iais:value>
                 </iais:row>
                 <iais:row>
-                    <iais:field width="5" value="Reasons" mandatory="false"/>
+                    <iais:field width="5" value="Reasons" mandatory="true"/>
                     <iais:value width="7" cssClass="col-md-7">
                         <iais:select cssClass="reasonSelect"  name="reasonSelect" firstOption="Please Select" options="efoReasonSelectOption" value="${arSuperDataSubmissionDto.efoCycleStageDto.reason}"></iais:select>
                     </iais:value>
