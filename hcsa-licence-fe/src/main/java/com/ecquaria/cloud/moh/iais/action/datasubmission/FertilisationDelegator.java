@@ -6,7 +6,7 @@ import sop.webflow.rt.api.BaseProcessClass;
 
 @Delegator("fertilisationDelegator")
 @Slf4j
-public class fertilisationDelegator extends CommonDelegator{
+public class FertilisationDelegator extends CommonDelegator{
     @Override
     public void start(BaseProcessClass bpc) {
 
