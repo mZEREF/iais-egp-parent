@@ -80,52 +80,54 @@ public class EqRequestForChangeSubmitResultChange {
             AppGrpPremisesDto copy = (AppGrpPremisesDto) CopyUtil.copyMutableObject(appGrpPremisesDtoList.get(i));
             AppGrpPremisesDto appGrpPremisesDto = oldAppGrpPremisesDtoList.get(i);
             // re-set not auto fields
-            if (appEditSelectDto.isChangeHciName() || appEditSelectDto.isChangeInLocation()) {
-                if (ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(appGrpPremisesDto.getPremisesType())) {
-                    copy.setPostalCode(appGrpPremisesDto.getPostalCode());
-                    copy.setAddrType(appGrpPremisesDto.getAddrType());
-                    copy.setBlkNo(appGrpPremisesDto.getBlkNo());
-                    copy.setFloorNo(appGrpPremisesDto.getFloorNo());
-                    copy.setUnitNo(appGrpPremisesDto.getUnitNo());
-                    copy.setStreetName(appGrpPremisesDto.getStreetName());
-                    copy.setBuildingName(appGrpPremisesDto.getBuildingName());
-
-                    copy.setHciName(appGrpPremisesDto.getHciName());
-                } else if (ApplicationConsts.PREMISES_TYPE_OFF_SITE.equals(appGrpPremisesDto.getPremisesType())) {
-                    copy.setOffSitePostalCode(appGrpPremisesDto.getOffSitePostalCode());
-                    copy.setOffSiteAddressType(appGrpPremisesDto.getOffSiteAddressType());
-                    copy.setOffSiteBlockNo(appGrpPremisesDto.getOffSiteBlockNo());
-                    copy.setOffSiteFloorNo(appGrpPremisesDto.getOffSiteFloorNo());
-                    copy.setOffSiteUnitNo(appGrpPremisesDto.getOffSiteUnitNo());
-                    copy.setOffSiteStreetName(appGrpPremisesDto.getOffSiteStreetName());
-                    copy.setOffSiteBuildingName(appGrpPremisesDto.getOffSiteBuildingName());
-
-                    copy.setOffSiteHciName(appGrpPremisesDto.getOffSiteHciName());
-                } else if (ApplicationConsts.PREMISES_TYPE_EAS_MTS_CONVEYANCE.equals(appGrpPremisesDto.getPremisesType())) {
-                    //EASMTS
-                    copy.setEasMtsHciName(appGrpPremisesDto.getEasMtsHciName());
-                    copy.setEasMtsPostalCode(appGrpPremisesDto.getEasMtsPostalCode());
-                    copy.setEasMtsAddressType(appGrpPremisesDto.getEasMtsAddressType());
-                    copy.setEasMtsBlockNo(appGrpPremisesDto.getEasMtsBlockNo());
-                    copy.setEasMtsFloorNo(appGrpPremisesDto.getEasMtsFloorNo());
-                    copy.setEasMtsUnitNo(appGrpPremisesDto.getEasMtsUnitNo());
-                    copy.setEasMtsStreetName(appGrpPremisesDto.getEasMtsStreetName());
-                    copy.setEasMtsBuildingName(appGrpPremisesDto.getEasMtsBuildingName());
-                } else {
-                    copy.setConveyancePostalCode(appGrpPremisesDto.getConveyancePostalCode());
-                    copy.setConveyanceAddressType(appGrpPremisesDto.getConveyanceAddressType());
-                    copy.setConveyanceBlockNo(appGrpPremisesDto.getConveyanceBlockNo());
-                    copy.setConveyanceFloorNo(appGrpPremisesDto.getConveyanceFloorNo());
-                    copy.setConveyanceUnitNo(appGrpPremisesDto.getConveyanceUnitNo());
-                    copy.setConveyanceStreetName(appGrpPremisesDto.getConveyanceStreetName());
-                    copy.setConveyanceBuildingName(appGrpPremisesDto.getConveyanceBuildingName());
-                    copy.setConveyanceHciName(appGrpPremisesDto.getConveyanceHciName());
-                }
+            if (appEditSelectDto.isChangeHciName() || appEditSelectDto.isChangeInLocation() || appEditSelectDto.isChangeAddFloorUnit()) {
+                copy.setPremisesType(appGrpPremisesDto.getPremisesType());
+                // on site or all
+                copy.setPostalCode(appGrpPremisesDto.getPostalCode());
+                copy.setAddrType(appGrpPremisesDto.getAddrType());
+                copy.setBlkNo(appGrpPremisesDto.getBlkNo());
+                copy.setFloorNo(appGrpPremisesDto.getFloorNo());
+                copy.setUnitNo(appGrpPremisesDto.getUnitNo());
+                copy.setStreetName(appGrpPremisesDto.getStreetName());
+                copy.setBuildingName(appGrpPremisesDto.getBuildingName());
+                copy.setHciName(appGrpPremisesDto.getHciName());
+                // off site
+                copy.setOffSitePostalCode(appGrpPremisesDto.getOffSitePostalCode());
+                copy.setOffSiteAddressType(appGrpPremisesDto.getOffSiteAddressType());
+                copy.setOffSiteBlockNo(appGrpPremisesDto.getOffSiteBlockNo());
+                copy.setOffSiteFloorNo(appGrpPremisesDto.getOffSiteFloorNo());
+                copy.setOffSiteUnitNo(appGrpPremisesDto.getOffSiteUnitNo());
+                copy.setOffSiteStreetName(appGrpPremisesDto.getOffSiteStreetName());
+                copy.setOffSiteBuildingName(appGrpPremisesDto.getOffSiteBuildingName());
+                copy.setOffSiteHciName(appGrpPremisesDto.getOffSiteHciName());
+                //EASMTS
+                copy.setEasMtsHciName(appGrpPremisesDto.getEasMtsHciName());
+                copy.setEasMtsPostalCode(appGrpPremisesDto.getEasMtsPostalCode());
+                copy.setEasMtsAddressType(appGrpPremisesDto.getEasMtsAddressType());
+                copy.setEasMtsBlockNo(appGrpPremisesDto.getEasMtsBlockNo());
+                copy.setEasMtsFloorNo(appGrpPremisesDto.getEasMtsFloorNo());
+                copy.setEasMtsUnitNo(appGrpPremisesDto.getEasMtsUnitNo());
+                copy.setEasMtsStreetName(appGrpPremisesDto.getEasMtsStreetName());
+                copy.setEasMtsBuildingName(appGrpPremisesDto.getEasMtsBuildingName());
+                // conveyance
+                copy.setConveyancePostalCode(appGrpPremisesDto.getConveyancePostalCode());
+                copy.setConveyanceAddressType(appGrpPremisesDto.getConveyanceAddressType());
+                copy.setConveyanceBlockNo(appGrpPremisesDto.getConveyanceBlockNo());
+                copy.setConveyanceFloorNo(appGrpPremisesDto.getConveyanceFloorNo());
+                copy.setConveyanceUnitNo(appGrpPremisesDto.getConveyanceUnitNo());
+                copy.setConveyanceStreetName(appGrpPremisesDto.getConveyanceStreetName());
+                copy.setConveyanceBuildingName(appGrpPremisesDto.getConveyanceBuildingName());
+                copy.setConveyanceHciName(appGrpPremisesDto.getConveyanceHciName());
             }
             if (appEditSelectDto.isChangeAddFloorUnit()) {
                 List<AppPremisesOperationalUnitDto> appPremisesOperationalUnitDtoList =
                         PageDataCopyUtil.copyAppPremisesOperationalUnitDto(appGrpPremisesDto.getAppPremisesOperationalUnitDtos());
                 copy.setAppPremisesOperationalUnitDtos(appPremisesOperationalUnitDtoList);
+            }
+            // re-set other day
+            copy.setLicenceDtos(appGrpPremisesDto.getLicenceDtos());
+            if (StringUtil.isEmpty(copy.getCertIssuedDtStr()) && StringUtil.isEmpty(appGrpPremisesDto.getCertIssuedDtStr())) {
+                copy.setCertIssuedDtStr(appGrpPremisesDto.getCertIssuedDtStr());
             }
             result.add(copy);
         }
@@ -974,6 +976,7 @@ public class EqRequestForChangeSubmitResultChange {
         List<String> personnelEditList = appEditSelectDto.getPersonnelEditList();
         if (personnelEditList == null) {
             personnelEditList = IaisCommonUtils.genNewArrayList();
+            appEditSelectDto.setPersonnelEditList(personnelEditList);
         }
         // check allocation step
         if (!personnelEditList.contains(HcsaConsts.STEP_DISCIPLINE_ALLOCATION)) {

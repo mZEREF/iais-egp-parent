@@ -2739,19 +2739,20 @@ public class NewApplicationDelegator {
         }
         // init auto app submission
         // split out the auto parts
-        List<AppGrpPremisesDto> autoPremisesDtos = EqRequestForChangeSubmitResultChange.generateDtosForAutoFields(
+       /* List<AppGrpPremisesDto> autoPremisesDtos = EqRequestForChangeSubmitResultChange.generateDtosForAutoFields(
                 appGrpPremisesDtoList, oldAppGrpPremisesDtoList, appEditSelectDto);
         boolean changeAutoFields = EqRequestForChangeSubmitResultChange.isChangeGrpPremises(autoPremisesDtos,
                 oldAppGrpPremisesDtoList);
         log.info(StringUtil.changeForLog("Change Premises auto fields: " + changeAutoFields));
-        if (!isAutoRfc && (appEditSelectDto.isLicenseeEdit() || appEditSelectDto.isDocEdit() || changeAutoFields)) {
+        */
+        if (!isAutoRfc && (appEditSelectDto.isLicenseeEdit() || appEditSelectDto.isDocEdit())) {
             autoAppSubmissionDto = (AppSubmissionDto) CopyUtil.copyMutableObject(appSubmissionDto);
             autoAppSubmissionDto.setAmount(0.0);
             autoChangeSelectDto = new AppEditSelectDto();
             autoAppSubmissionDto.setChangeSelectDto(autoChangeSelectDto);
-            if (changeAutoFields) {
+            /*if (changeAutoFields) {
                 autoAppSubmissionDto.setAppGrpPremisesDtoList(autoPremisesDtos);
-            }
+            }*/
         }
         // check the premises step is auto or not
         int isAutoPremises = -1;
@@ -2804,7 +2805,8 @@ public class NewApplicationDelegator {
             } else {
                 notAutoSaveAppsubmission.addAll(appSubmissionDtos);
                 // split out the auto parts
-                if (changeAutoFields) {
+                isAutoPremises = 0;
+                /*if (changeAutoFields) {
                     isAutoPremises = 2;
                     autoGroupNo = getRfcGroupNo(autoGroupNo);
                     for (AppSubmissionDto dto : appSubmissionDtos) {
@@ -2813,7 +2815,7 @@ public class NewApplicationDelegator {
                     }
                 } else {
                     isAutoPremises = 0;
-                }
+                }*/
             }
         }
         log.info(StringUtil.changeForLog("isAutoPremises: " + isAutoPremises));
@@ -2867,7 +2869,7 @@ public class NewApplicationDelegator {
             NewApplicationHelper.addToAuto(personAppSubmissionList, autoSaveAppsubmission);
             // re-set current auto dto
             List<String> changeList = appSubmissionDto.getChangeSelectDto().getPersonnelEditList();
-            if (!isAutoRfc && !IaisCommonUtils.isEmpty(changeList) && autoAppSubmissionDto == null) {
+            if (!isAutoRfc && autoAppSubmissionDto == null && (!appEditSelectDto.isChangePersonnel() || !IaisCommonUtils.isEmpty(changeList))) {
                 autoAppSubmissionDto = (AppSubmissionDto) CopyUtil.copyMutableObject(appSubmissionDto);
                 autoAppSubmissionDto.setAmount(0.0);
                 autoChangeSelectDto = new AppEditSelectDto();
@@ -2885,15 +2887,18 @@ public class NewApplicationDelegator {
             }
         }
         // re-set change edit select dto
-        if (1 == isAutoPremises) {
+        /*if (1 == isAutoPremises) {
             appEditSelectDto.setPremisesEdit(false);
             appEditSelectDto.setPremisesListEdit(false);
         }
+        if (1 == isAutoPremises || 2 == isAutoPremises) {
+            autoChangeSelectDto.setPremisesEdit(true);
+            autoChangeSelectDto.setPremisesListEdit(true);
+        }*/
         // add the current auto app submission
         if (autoAppSubmissionDto != null) {
-            if (1 == isAutoPremises || 2 == isAutoPremises) {
-                autoChangeSelectDto.setPremisesEdit(true);
-                autoChangeSelectDto.setPremisesListEdit(true);
+            if (0 == isAutoPremises) {
+                autoAppSubmissionDto.setAppGrpPremisesDtoList(oldAppGrpPremisesDtoList);
             }
             autoGroupNo = getRfcGroupNo(autoGroupNo);
             NewApplicationHelper.reSetAdditionalFields(autoAppSubmissionDto, autoChangeSelectDto, autoGroupNo);
