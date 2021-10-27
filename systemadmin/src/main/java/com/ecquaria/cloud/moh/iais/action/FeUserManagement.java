@@ -309,6 +309,9 @@ public class FeUserManagement {
                     Map<String,String> successMap = IaisCommonUtils.genNewHashMap();
                     successMap.put("save","suceess");
                     //save be
+                    userDto.setAuditTrailDto(att);
+                    orgUserRoleDtoAdmin.setAuditTrailDto(att);
+                    orgUserRoleDtoUser.setAuditTrailDto(att);
                     //save client
                     if("Edit".equals(title)) {
                         intranetUserService.updateOrgUser(userDto);

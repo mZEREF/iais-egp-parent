@@ -8,7 +8,7 @@
             </strong>
         </h4>
     </div>
-    <div id="patientDetails" class="panel-collapse collapse in">
+    <div id="cycleStageSectionPanel" class="panel-collapse collapse in">
         <div class="panel-body">
             <div class="panel-main-content form-horizontal">
                 <iais:row>
@@ -33,8 +33,9 @@
                             Validate Patient
                         </a>
                         <input type="hidden" name="retrieveData" value="${selectionDto.retrieveData}"/>
+                        <span class="error-msg col-md-12" name="iaisErrorMsg" id="error_retrieveData"></span>
+                        <span class="error-msg col-md-12" name="iaisErrorMsg" id="error_patientName"></span>
                     </iais:value>
-                    <span class="error-msg col-md-12" name="iaisErrorMsg" id="error_patientName error_retrieveData"></span>
                 </iais:row>
                 <iais:row>
                     <iais:field width="5" value="Name"/>
@@ -77,11 +78,9 @@
         if (isEmpty(options)) {
             options = {};
         }
-        var url = '${pageContext.request.contextPath}';
+        var url = '';
         if (!isEmpty(options.url)) {
-            url += options.url;
-        } else {
-            url += '/ar/retrieve-identification';
+            url = options.url;
         }
         console.log(url);
         $.ajax({
@@ -106,17 +105,26 @@
     }
 
     function retrieveValidatePatient() {
+        showWaiting();
+        var idType = $('#patientIdType').val();
         var idNo = $('input[name="patientIdNumber"]').val();
         var nationality = $('#patientNationality').val();
         var options = {
+            idType: idType,
             idNo: idNo,
             nationality: nationality,
-            url: '/ar/retrieve-valid-selection'
+            url: '${pageContext.request.contextPath}/ar/retrieve-valid-selection'
         }
         callCommonAjax(options, validatePatientCallback);
     }
 
     function validatePatientCallback(data){
+        clearErrorMsg();
+        if (!isEmpty(data.errorMsg)) {
+            doValidationParse(data.errorMsg);
+            dismissWaiting();
+            return;
+        }
         $('[name="retrieveData"]').val('1');
         // stage options
         $('#stage').html(data.stagHtmls);
@@ -130,6 +138,7 @@
             $('#lastStage').find('p').text('');
             clearFields('#lastStageHidden');
             $('#noFoundDiv').modal('show');
+            dismissWaiting();
             return;
         }
         fillValue('#patientIdType', data.selection.patientIdType);
@@ -144,5 +153,6 @@
         }
         $('#lastStage').find('p').text(data.selection.lastStageDesc);
         $('#lastStageHidden').val(data.selection.lastStage);
+        dismissWaiting();
     }
 </script>

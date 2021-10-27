@@ -8,6 +8,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInfoDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
@@ -88,7 +89,11 @@ public class PatientDelegator extends CommonDelegator{
     private PatientInfoDto getPatientInfoFromPage(HttpServletRequest request) {
         PatientInfoDto patientInfo = new PatientInfoDto();
         PatientDto patient = new PatientDto();
-        patient.setName(ParamUtil.getString(request, "name"));
+        String name = ParamUtil.getString(request, "name");
+        if (StringUtil.isNotEmpty(name)) {
+            name = name.toLowerCase(AppConsts.DFT_LOCALE);
+        }
+        patient.setName(name);
         patient.setIdType(ParamUtil.getString(request, "idType"));
         patient.setIdNumber(ParamUtil.getString(request, "idNumber"));
         patient.setBirthDate(ParamUtil.getString(request, "birthDate"));

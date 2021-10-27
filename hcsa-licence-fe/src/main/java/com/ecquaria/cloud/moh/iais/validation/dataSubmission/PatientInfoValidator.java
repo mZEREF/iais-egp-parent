@@ -38,7 +38,7 @@ public class PatientInfoValidator implements CustomizeValidator {
                 }
                 boolean retrievePrevious = patientInfo.isRetrievePrevious();
                 if (!retrievePrevious) {
-                    map.put("retrievePrevious", "Please click \"Retrieve Identification\" button to retrieve Identification.");
+                    map.put("retrievePrevious", "DS_ERR005");
                 } else if (!StringUtil.isEmpty(previous.getName())) {
                     map.put("retrievePrevious", "GENERAL_ACK018");
                 }

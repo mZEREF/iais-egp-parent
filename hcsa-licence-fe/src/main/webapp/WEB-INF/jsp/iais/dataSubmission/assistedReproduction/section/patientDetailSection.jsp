@@ -107,11 +107,14 @@
     }
 
     function retrieveIdentification() {
+        var idType = $('#patientIdType').val();
         var idNo = $('input[name="preIdNumber"]').val();
         var nationality = $('#preNationality').val();
         var options = {
+            idType: idType,
             idNo: idNo,
-            nationality: nationality
+            nationality: nationality,
+            url: '${pageContext.request.contextPath}/ar/retrieve-identification'
         }
         callCommonAjax(options, previousPatientCallback);
     }

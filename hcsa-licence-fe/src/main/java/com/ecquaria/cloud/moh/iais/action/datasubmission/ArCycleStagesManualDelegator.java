@@ -67,7 +67,7 @@ public class ArCycleStagesManualDelegator {
         currentArDataSubmission.setSelectionDto(selectionDto);
         // validation
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
-        ValidationResult result = WebValidationHelper.validateProperty(selectionDto, "AR");
+        ValidationResult result = WebValidationHelper.validateProperty(selectionDto, "save");
         if (result != null) {
             errorMap.putAll(result.retrieveAll());
         }
@@ -84,6 +84,9 @@ public class ArCycleStagesManualDelegator {
         selectionDto.setPatientIdType(ParamUtil.getString(request, "patientIdType"));
         selectionDto.setPatientIdNumber(ParamUtil.getString(request, "patientIdNumber"));
         selectionDto.setPatientNationality(ParamUtil.getString(request, "patientNationality"));
+//        selectionDto.setRetrieveData(StringUtil.getNonNull(ParamUtil.getString(request, "retrieveData")));
+//        selectionDto.setPatientName(StringUtil.getNonNull(ParamUtil.getString(request, "patientName")));
+        selectionDto.setRetrieveData(ParamUtil.getString(request, "retrieveData"));
         selectionDto.setPatientName(ParamUtil.getString(request, "patientName"));
         selectionDto.setUndergoingCycle("1".equals(ParamUtil.getString(request, "undergoingCycle")));
         selectionDto.setLastStage(ParamUtil.getString(request, "lastStage"));
