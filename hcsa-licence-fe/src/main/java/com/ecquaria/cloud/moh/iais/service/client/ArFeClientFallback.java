@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.service.client;
 
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArCycleStageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArDonorDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.FertilisationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientDto;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
@@ -69,6 +70,12 @@ public class ArFeClientFallback implements ArFeClient {
 
     @Override
     public FeignResponseEntity<List<FertilisationDto>> getFertilisationDtosBySubmissionId(String submissionId) {
+        return getFeignResponseEntity();
+    }
+
+    @Override
+    public FeignResponseEntity<ArSuperDataSubmissionDto> saveArSuperDataSubmissionDto(
+            ArSuperDataSubmissionDto arSuperDataSubmissionDto) {
         return getFeignResponseEntity();
     }
 

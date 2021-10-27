@@ -53,7 +53,7 @@ public class PatientInfoValidator implements CustomizeValidator {
             }
             result = WebValidationHelper.validateProperty(husband, "AR");
             if (result != null) {
-                map.putAll(result.retrieveAll("", "Hdb"));
+                map.putAll(result.retrieveAll("", "Hbd"));
             }
         }
         return map;

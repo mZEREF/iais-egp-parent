@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.service.client;
 
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArCycleStageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArDonorDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.FertilisationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientDto;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -47,5 +48,10 @@ public interface ArFeClient {
 
     @GetMapping(value = "/ar-common/fertilisation/submissionId", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<FertilisationDto>> getFertilisationDtosBySubmissionId(@RequestParam(name = "submissionId") String submissionId) ;
+
+    @PutMapping(value = "/ar-common/save-ar-data-submission", produces = MediaType.APPLICATION_JSON_VALUE,consumes =
+            MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<ArSuperDataSubmissionDto> saveArSuperDataSubmissionDto(@RequestBody ArSuperDataSubmissionDto arSuperDataSubmissionDto);
+
 
 }

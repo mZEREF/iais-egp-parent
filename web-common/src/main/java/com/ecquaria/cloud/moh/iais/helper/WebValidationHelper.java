@@ -179,14 +179,14 @@ public class WebValidationHelper {
                     if (!StringUtil.isEmpty(msg)) {
                         Field field = cls.getDeclaredField(name);
                         if (field != null) {
+                            if (msg.contains("/")) {
+                                msg = msg.substring(0, msg.indexOf('/'));
+                            }
                             CustomMsg cMsg = field.getAnnotation(CustomMsg.class);
                             if (cMsg != null && cMsg.placeHolders().length > 0) {
                                 Map<String, String> repMap = IaisCommonUtils.genNewHashMap(cMsg.placeHolders().length);
                                 for (int i = 0; i < cMsg.placeHolders().length; i++) {
                                     repMap.put(cMsg.placeHolders()[i], cMsg.replaceVals()[i]);
-                                }
-                                if (msg.contains("/")) {
-                                    msg = msg.substring(0, msg.indexOf('/'));
                                 }
                                 msg = MessageUtil.getMessageDesc(msg, repMap);
                             }
