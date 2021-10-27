@@ -8,14 +8,30 @@ import sg.gov.moh.iais.egp.bsb.entity.Approval;
 
 import java.util.List;
 
+
 /**
- * AUTHOR: YiMing
- * DATE:2021/8/13 13:33
- * DESCRIPTION: TODO
+ *@author YiMing
+ * @version 2021/10/15 14:16
  **/
 @Data
 public class ApprovalResultDto {
+
     private PageInfo pageInfo;
 
-    private List<Approval> bsbApproval;
+    private List<ApprovalInfo> bsbApproval;
+
+    @Data
+    public static class ApprovalInfo {
+        private String type;
+        private String status;
+        private String facClassification;
+        private String facType;
+        private String facName;
+        private String facAddress;
+        private String facStatus;
+        private String bat;
+        private String sampleName;
+        private String riskLevel;
+    }
+
 }

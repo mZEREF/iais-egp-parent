@@ -433,11 +433,6 @@ public class BiosafetyEnquiryDelegator {
             log.info(StringUtil.changeForLog(facilityResultDto.getBsbFac().toString() + "========="));
         } else if (CHOOSE_MARK_APPROVAL.equals(count) && Boolean.TRUE.equals(validationParam(request, "approval", enquiryDto))) {
             ApprovalResultDto approvalResultDto = biosafetyEnquiryClient.getApproval(enquiryDto).getEntity();
-            List<Approval> approvals = approvalResultDto.getBsbApproval();
-            for (Approval approval : approvals) {
-                Map<String,String> infos = joinBioNamesAndRiskLevel(approval.getFacilityBiologicalAgents());
-                joinAdmin(approval.getFacilityActivities());
-            }
             ParamUtil.setRequestAttr(request, BioSafetyEnquiryConstants.PARAM_APPROVAL_INFO_RESULT, approvalResultDto.getBsbApproval());
             ParamUtil.setRequestAttr(request, BioSafetyEnquiryConstants.PARAM_APPROVAL_INFO_SEARCH, enquiryDto);
             ParamUtil.setRequestAttr(request, KEY_PAGE_INFO, approvalResultDto.getPageInfo());
