@@ -13,6 +13,7 @@ import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
+import com.ecquaria.cloud.moh.iais.helper.ControllerHelper;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.PatientService;
@@ -22,6 +23,7 @@ import org.springframework.data.repository.query.Param;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -88,22 +90,15 @@ public class PatientDelegator extends CommonDelegator{
 
     private PatientInfoDto getPatientInfoFromPage(HttpServletRequest request) {
         PatientInfoDto patientInfo = new PatientInfoDto();
-        PatientDto patient = new PatientDto();
-        String name = ParamUtil.getString(request, "name");
-        if (StringUtil.isNotEmpty(name)) {
-            name = name.toLowerCase(AppConsts.DFT_LOCALE);
+        PatientDto patient = ControllerHelper.get(request, PatientDto.class);
+        if (StringUtil.isNotEmpty(patient.getName())) {
+            patient.setName(patient.getName().toUpperCase(AppConsts.DFT_LOCALE));
         }
-        patient.setName(name);
-        patient.setIdType(ParamUtil.getString(request, "idType"));
-        patient.setIdNumber(ParamUtil.getString(request, "idNumber"));
-        patient.setBirthDate(ParamUtil.getString(request, "birthDate"));
-        patient.setNationality(ParamUtil.getString(request, "nationality"));
-        patient.setEthnicGroup(ParamUtil.getString(request, "ethnicGroup"));
-        patient.setEthnicGroupOther(ParamUtil.getString(request, "ethnicGroupOther"));
-        boolean previousIdentification = AppConsts.YES.equals(ParamUtil.getString(request, "previousIdentification"));
-        patient.setPreviousIdentification(previousIdentification);
+        if (StringUtil.isEmpty(patient.getEthnicGroup())) {
+            patient.setEthnicGroup("");
+        }
         patientInfo.setPatient(patient);
-        if (previousIdentification) {
+        if (patient.isPreviousIdentification()) {
             String preIdNumber = ParamUtil.getString(request, "preIdNumber");
             String preNationality = ParamUtil.getString(request, "preNationality");
             String orgId = null;
@@ -114,14 +109,13 @@ public class PatientDelegator extends CommonDelegator{
             PatientDto previous = patientService.getPatientDto(preIdNumber, preNationality, orgId);
             patientInfo.setPrevious(previous);
         }
-        HusbandDto husband = new HusbandDto();
-        husband.setName(ParamUtil.getString(request, "nameHbd"));
-        husband.setIdType(ParamUtil.getString(request, "idTypeHbd"));
-        husband.setIdNumber(ParamUtil.getString(request, "idNumberHbd"));
-        husband.setBirthDate(ParamUtil.getString(request, "birthDateHbd"));
-        husband.setNationality(ParamUtil.getString(request, "nationalityHbd"));
-        husband.setEthnicGroup(ParamUtil.getString(request, "ethnicGroup"));
-        husband.setEthnicGroupOther(ParamUtil.getString(request, "ethnicGroupOtherHbd"));
+        HusbandDto husband = ControllerHelper.get(request, HusbandDto.class, "Hbd");
+        if (StringUtil.isNotEmpty(husband.getName())) {
+            husband.setName(husband.getName().toUpperCase(AppConsts.DFT_LOCALE));
+        }
+        if (StringUtil.isEmpty(husband.getEthnicGroup())) {
+            husband.setEthnicGroup("");
+        }
         patientInfo.setHusband(husband);
         return patientInfo;
     }

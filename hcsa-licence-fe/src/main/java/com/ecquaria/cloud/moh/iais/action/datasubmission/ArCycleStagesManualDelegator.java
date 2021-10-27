@@ -101,6 +101,7 @@ public class ArCycleStagesManualDelegator {
      * @throws
      */
     public void doPrepareARCycle(BaseProcessClass bpc) {
+        log.info("----- doPrepareARCycle -----");
     }
 
     /**

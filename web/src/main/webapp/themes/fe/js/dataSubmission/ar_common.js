@@ -70,27 +70,6 @@ function submit(action,value,additional){
     mainForm.submit();
 }
 
-function retrieveIdentification() {
-    var idNo = $('input[name="preIdNumber"]').val();
-    var nationality = $('#preNationality').val();
-    var options = {
-        idNo: idNo,
-        nationality: nationality
-    }
-    callCommonAjax(options, previousPatientCallback);
-}
-
-function retrieveValidatePatient() {
-    var idNo = $('input[name="patientIdNumber"]').val();
-    var nationality = $('#patientNationality').val();
-    var options = {
-        idNo: idNo,
-        nationality: nationality,
-        url: '/ar/retrieve-valid-selection'
-    }
-    callCommonAjax(options, validatePatientCallback);
-}
-
 function checkEthinicGroupMantory(nationTag, ethinicGroupLabel) {
     console.log("checkEthinicGroupMantory");
     var $selector = $(nationTag);
