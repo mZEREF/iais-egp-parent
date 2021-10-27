@@ -20,8 +20,7 @@ public class FertilisationDelegator extends CommonDelegator{
         HttpServletRequest request = bpc.request;
         ParamUtil.setSessionAttr(request,SOURCE_OF_SEMENS, (Serializable) MasterCodeUtil.retrieveByCategory(MasterCodeUtil.SOURCE_OF_SEMEN));
 
-        HttpServletRequest request2 = bpc.request;
-        ParamUtil.setSessionAttr(request2,AR_TECHNIQUES_USEDS, (Serializable) MasterCodeUtil.retrieveByCategory(MasterCodeUtil.AR_TECHNIQUES_USED));
+        ParamUtil.setSessionAttr(request,AR_TECHNIQUES_USEDS, (Serializable) MasterCodeUtil.retrieveByCategory(MasterCodeUtil.AR_TECHNIQUES_USED));
     }
 
     @Override
