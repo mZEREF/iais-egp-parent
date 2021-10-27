@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.helper;
 
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ReflectionUtil;
@@ -22,27 +23,32 @@ import java.util.Date;
 @Slf4j
 public final class ControllerHelper {
 
-    public static <T> T get(HttpServletRequest request, Class<T> clazz) throws Exception {
+    public static <T> T get(HttpServletRequest request, Class<T> clazz) {
         return get(request, clazz, null);
     }
 
-    public static <T> T get(HttpServletRequest request, Class<T> clazz, String shortName) throws Exception {
+    public static <T> T get(HttpServletRequest request, Class<T> clazz, String shortName) {
         if (clazz == null) {
             return null;
         }
 
-        return get(request, clazz.newInstance(), shortName);
+        try {
+            return get(request, clazz.newInstance(), shortName);
+        } catch (Exception e) {
+            log.error(StringUtil.changeForLog(e.getMessage()), e);
+            throw new IaisRuntimeException(e);
+        }
     }
 
-    public static <T> T get(HttpServletRequest request, T obj) throws Exception {
+    public static <T> T get(HttpServletRequest request, T obj) {
         return get(request, obj, null);
     }
 
-    public static <T> T get(HttpServletRequest request, T obj, String shortName) throws Exception {
+    public static <T> T get(HttpServletRequest request, T obj, String shortName) {
         return get(request, obj, shortName, null);
     }
 
-    public static <T> T get(HttpServletRequest request, T obj, String shortName, String suffix) throws Exception {
+    public static <T> T get(HttpServletRequest request, T obj, String shortName, String suffix) {
         if (obj == null) {
             return obj;
         }
@@ -68,11 +74,11 @@ public final class ControllerHelper {
         return obj;
     }
 
-    private static Field[] getFields(Class<?> claszz) throws Exception {
+    private static Field[] getFields(Class<?> claszz) {
         return getFields(claszz, null);
     }
 
-    private static Field[] getFields(Class<?> claszz, Field[] fields) throws Exception {
+    private static Field[] getFields(Class<?> claszz, Field[] fields) {
         if (claszz == null) {
             return null;
         }
@@ -89,7 +95,7 @@ public final class ControllerHelper {
         return fields;
     }
 
-    private static boolean isFieldExist(HttpServletRequest request, String shortName, String id, Field field) throws Exception {
+    private static boolean isFieldExist(HttpServletRequest request, String shortName, String id, Field field) {
         if (field == null) {
             return false;
         }
