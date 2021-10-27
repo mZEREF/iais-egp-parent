@@ -5,8 +5,10 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSub
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.EmbryoCreatedStageDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
+import com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
+import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import lombok.extern.slf4j.Slf4j;
@@ -29,11 +31,14 @@ public class EmbryoCreatedDelegator extends CommonDelegator{
         AuditTrailHelper.auditFunction("Assisted Reproduction", "Embryo Created Cycle Stage");
         ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "page");
         ParamUtil.setSessionAttr(bpc.request, "smallTitle", "You are submitting for <strong>Cycle Stages</strong>");
-        ArSuperDataSubmissionDto arSuperDataSubmissionDto=new ArSuperDataSubmissionDto();
+        ArSuperDataSubmissionDto arSuperDataSubmissionDto= DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
+        if(arSuperDataSubmissionDto==null){
+            arSuperDataSubmissionDto=new ArSuperDataSubmissionDto();
+        }
         arSuperDataSubmissionDto.setEmbryoCreatedStageDto(new EmbryoCreatedStageDto());
 
 
-        ParamUtil.setSessionAttr(bpc.request,"arSuperDataSubmissionDto",arSuperDataSubmissionDto);
+        ParamUtil.setSessionAttr(bpc.request,DataSubmissionConstant.AR_DATA_SUBMISSION,arSuperDataSubmissionDto);
     }
 
     @Override
@@ -68,7 +73,7 @@ public class EmbryoCreatedDelegator extends CommonDelegator{
 
     @Override
     public void pageAction(BaseProcessClass bpc) {
-        ArSuperDataSubmissionDto arSuperDataSubmissionDto= (ArSuperDataSubmissionDto) ParamUtil.getSessionAttr(bpc.request,"arSuperDataSubmissionDto");
+        ArSuperDataSubmissionDto arSuperDataSubmissionDto= DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
         EmbryoCreatedStageDto embryoCreatedStageDto=arSuperDataSubmissionDto.getEmbryoCreatedStageDto();
         HttpServletRequest request=bpc.request;
         Integer transEmbrFreshOccNum =  null;
@@ -120,7 +125,7 @@ public class EmbryoCreatedDelegator extends CommonDelegator{
 
         ValidationResult validationResult = WebValidationHelper.validateProperty(embryoCreatedStageDto, "save");
         Map<String, String> errorMap = validationResult.retrieveAll();
-        ParamUtil.setSessionAttr(bpc.request, "arSuperDataSubmissionDto", arSuperDataSubmissionDto);
+        ParamUtil.setSessionAttr(bpc.request, DataSubmissionConstant.AR_DATA_SUBMISSION, arSuperDataSubmissionDto);
         if (!errorMap.isEmpty() || validationResult.isHasErrors()) {
             WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));

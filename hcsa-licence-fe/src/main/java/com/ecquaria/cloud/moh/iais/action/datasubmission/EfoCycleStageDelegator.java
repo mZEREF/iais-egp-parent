@@ -11,8 +11,10 @@ import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
+import com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
+import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import lombok.extern.slf4j.Slf4j;
@@ -45,7 +47,10 @@ public class EfoCycleStageDelegator extends CommonDelegator{
         ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "page");
         ParamUtil.setSessionAttr(bpc.request, "smallTitle", "You are submitting for <strong>Cycle Stages</strong>");
 
-        ArSuperDataSubmissionDto arSuperDataSubmissionDto=new ArSuperDataSubmissionDto();
+        ArSuperDataSubmissionDto arSuperDataSubmissionDto=DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
+        if(arSuperDataSubmissionDto==null){
+            arSuperDataSubmissionDto=new ArSuperDataSubmissionDto();
+        }
 
         arSuperDataSubmissionDto.setEfoCycleStageDto(new EfoCycleStageDto());
         arSuperDataSubmissionDto.setPatientInfoDto(new PatientInfoDto());
@@ -62,7 +67,7 @@ public class EfoCycleStageDelegator extends CommonDelegator{
         arSuperDataSubmissionDto.getPatientInfoDto().getPatient().setName("junyu");
         arSuperDataSubmissionDto.getPatientInfoDto().getPatient().setIdNumber("123456");
 
-        ParamUtil.setSessionAttr(bpc.request,"arSuperDataSubmissionDto",arSuperDataSubmissionDto);
+        ParamUtil.setSessionAttr(bpc.request, DataSubmissionConstant.AR_DATA_SUBMISSION,arSuperDataSubmissionDto);
 
     }
 
@@ -79,7 +84,7 @@ public class EfoCycleStageDelegator extends CommonDelegator{
 
     @Override
     public void preparePage(BaseProcessClass bpc) {
-        ArSuperDataSubmissionDto arSuperDataSubmissionDto= (ArSuperDataSubmissionDto) ParamUtil.getSessionAttr(bpc.request,"arSuperDataSubmissionDto");
+        ArSuperDataSubmissionDto arSuperDataSubmissionDto= DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
         Date startDate = DateUtil.parseDate(arSuperDataSubmissionDto.getPatientInfoDto().getPatient().getBirthDate(), AppConsts.DEFAULT_DATE_FORMAT);
         arSuperDataSubmissionDto.getEfoCycleStageDto().setYearNum(getYear(startDate,new Date()));
         arSuperDataSubmissionDto.getEfoCycleStageDto().setMonthNum(getMon(startDate,new Date()));
@@ -106,7 +111,7 @@ public class EfoCycleStageDelegator extends CommonDelegator{
 
     @Override
     public void pageAction(BaseProcessClass bpc) {
-        ArSuperDataSubmissionDto arSuperDataSubmissionDto= (ArSuperDataSubmissionDto) ParamUtil.getSessionAttr(bpc.request,"arSuperDataSubmissionDto");
+        ArSuperDataSubmissionDto arSuperDataSubmissionDto= DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
         EfoCycleStageDto efoCycleStageDto=arSuperDataSubmissionDto.getEfoCycleStageDto();
         HttpServletRequest request=bpc.request;
         String othersReason = ParamUtil.getRequestString(request, "othersReason");
@@ -123,7 +128,7 @@ public class EfoCycleStageDelegator extends CommonDelegator{
         }
         ValidationResult validationResult = WebValidationHelper.validateProperty(efoCycleStageDto, "save");
         Map<String, String> errorMap = validationResult.retrieveAll();
-        ParamUtil.setSessionAttr(bpc.request, "arSuperDataSubmissionDto", arSuperDataSubmissionDto);
+        ParamUtil.setSessionAttr(bpc.request, DataSubmissionConstant.AR_DATA_SUBMISSION, arSuperDataSubmissionDto);
         if (!errorMap.isEmpty() || validationResult.isHasErrors()) {
             WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
@@ -138,7 +143,7 @@ public class EfoCycleStageDelegator extends CommonDelegator{
 
     @Override
     public void pageConfirmAction(BaseProcessClass bpc) {
-        ArSuperDataSubmissionDto arSuperDataSubmissionDto= (ArSuperDataSubmissionDto) ParamUtil.getSessionAttr(bpc.request,"arSuperDataSubmissionDto");
+        ArSuperDataSubmissionDto arSuperDataSubmissionDto= (ArSuperDataSubmissionDto) ParamUtil.getSessionAttr(bpc.request,DataSubmissionConstant.AR_DATA_SUBMISSION);
 
     }
 
