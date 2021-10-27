@@ -23,6 +23,7 @@ public abstract class CommonDelegator {
      * @throws
      */
     public void doStart(BaseProcessClass bpc) {
+        log.info(StringUtil.changeForLog("-----" + this.getClass().getSimpleName() + " Start -----"));
         start(bpc);
     }
 
