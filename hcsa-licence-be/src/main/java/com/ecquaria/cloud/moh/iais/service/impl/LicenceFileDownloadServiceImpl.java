@@ -959,7 +959,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
 
         public void  sendTask(String eventRefNum ,String submissionId) throws  Exception{
         try {
-            appGroupMiscService.notificationApplicationUpdateBatchjob();
+           // appGroupMiscService.notificationApplicationUpdateBatchjob();
         }catch (Exception e){
             log.error(e.getMessage(),e);
         }

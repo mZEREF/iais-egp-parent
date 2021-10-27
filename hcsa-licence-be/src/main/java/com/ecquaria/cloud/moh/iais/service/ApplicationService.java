@@ -43,6 +43,8 @@ public interface ApplicationService {
 
     public List<PaymentRequestDto> eicFeStripeRefund(List<AppReturnFeeDto> appReturnFeeDtos);
 
+    public ApplicationDto callEicInterApplication(ApplicationDto applicationDto);
+
     public List<RequestInformationSubmitDto> getRequestInformationSubmitDtos(List<ApplicationDto> applicationDtos);
 
     public List<AppEditSelectDto> getAppEditSelectDtos(String appId, String changeType);

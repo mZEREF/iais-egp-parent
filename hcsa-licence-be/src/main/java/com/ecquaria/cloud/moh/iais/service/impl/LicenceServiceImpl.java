@@ -52,6 +52,7 @@ import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
+import com.ecquaria.cloud.moh.iais.service.ApplicationService;
 import com.ecquaria.cloud.moh.iais.service.InspectionAssignTaskService;
 import com.ecquaria.cloud.moh.iais.service.LicenceService;
 import com.ecquaria.cloud.moh.iais.service.client.AcraUenBeClient;
@@ -1020,11 +1021,47 @@ public class LicenceServiceImpl implements LicenceService {
         }
     }
 
+    @Autowired
+    private ApplicationService applicationService;
+
     public void eicCallFeSuperLic(EventBusLicenceGroupDtos dto) {
+        log.info(StringUtil.changeForLog("The eicCallFeSuperLic start ..."));
         HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
         HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
         beEicGatewayClient.createLicence(dto, signature.date(), signature.authorization(),
                 signature2.date(), signature2.authorization()).getEntity();
+
+        List<LicenceGroupDto> licenceGroupDtos  = dto.getLicenceGroupDtos();
+        if(IaisCommonUtils.isNotEmpty(licenceGroupDtos)){
+            LicenceGroupDto licenceGroupDto = licenceGroupDtos.get(0);
+            if(licenceGroupDto != null){
+                List<SuperLicDto> superLicDtos = licenceGroupDto.getSuperLicDtos();
+                if(IaisCommonUtils.isNotEmpty(superLicDtos)){
+                    LicenceDto licenceDto = superLicDtos.get(0).getLicenceDto();
+                    if(licenceDto != null){
+                        List<ApplicationDto> applicationDtos = dto.getApplicationDto();
+                        if(IaisCommonUtils.isNotEmpty(applicationDtos)){
+                            for(ApplicationDto applicationDto : applicationDtos){
+                                applicationDto.setNewLicenceId(licenceDto.getId());
+                                applicationService.callEicInterApplication(applicationDto);
+                            }
+                        }else{
+                            log.error(StringUtil.changeForLog("The applicationDtos is null"));
+                        }
+                    }else{
+                        log.error(StringUtil.changeForLog("The licenceDto is null"));
+                    }
+                }else{
+                    log.error(StringUtil.changeForLog("The superLicDtos is null"));
+                }
+            }else{
+                log.error(StringUtil.changeForLog("The licenceGroupDto is null"));
+            }
+        }else{
+            log.error(StringUtil.changeForLog("The licenceGroupDtos is null"));
+        }
+
+        log.info(StringUtil.changeForLog("The eicCallFeSuperLic end ..."));
     }
 
     @Override

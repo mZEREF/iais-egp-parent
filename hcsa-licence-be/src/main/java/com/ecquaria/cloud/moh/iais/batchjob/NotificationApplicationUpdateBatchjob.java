@@ -27,7 +27,7 @@ public class NotificationApplicationUpdateBatchjob {
     }
     public void jobExecute(){
         log.info(StringUtil.changeForLog("The NotificationApplicationUpdateBatchjob start ..."));
-        appGroupMiscService.notificationApplicationUpdateBatchjob();
+       // appGroupMiscService.notificationApplicationUpdateBatchjob();
         log.info(StringUtil.changeForLog("The NotificationApplicationUpdateBatchjob end ..."));
 
     }
