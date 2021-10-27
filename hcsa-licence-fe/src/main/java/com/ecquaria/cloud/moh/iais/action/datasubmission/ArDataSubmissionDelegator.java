@@ -93,10 +93,15 @@ public class ArDataSubmissionDelegator {
      * @throws
      */
     public void doPrepareAR(BaseProcessClass bpc) {
+        String crudype = ParamUtil.getString(bpc.request, DataSubmissionConstant.CRUD_TYPE);
+        if (StringUtil.isIn(crudype, new String[]{"back", "return"})) {
+            ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.CRUD_ACTION_TYPE_AR, "back");
+            return;
+        }
         String submissionType = ParamUtil.getString(bpc.request, "submissionType");
         String submissionMethod = ParamUtil.getString(bpc.request, "submissionMethod");
-        Map<String, String> map = IaisCommonUtils.genNewHashMap(3);
         String actionType = null;
+        Map<String, String> map = IaisCommonUtils.genNewHashMap(3);
         if (StringUtil.isEmpty(submissionType)) {
             map.put("submissionType", "GENERAL_ERR0006");
         } else if (DataSubmissionConsts.AR_TYPE_SBT_PATIENT_INFO.equals(submissionType)) {
