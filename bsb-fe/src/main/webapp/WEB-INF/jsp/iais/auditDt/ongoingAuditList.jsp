@@ -33,37 +33,28 @@
                             </div>
                             <p></p>
                             <div id="beInboxFilter" class="collapse intranet-content">
-                                <iais:row>
-                                    <iais:field value="Facility Name"/>
-                                    <iais:value width="18">
-                                        <iais:select name="facilityName" id="facilityName"
-                                                     value="${auditSearch.facilityName}"
-                                                     options="facilityName"
-                                                     firstOption="Please Select"/>
-                                    </iais:value>
-                                </iais:row>
+<%--                                <iais:row>--%>
+<%--                                    <iais:field value="Facility Name"/>--%>
+<%--                                    <iais:value width="18">--%>
+<%--                                        <iais:select name="facilityName" id="facilityName"--%>
+<%--                                                     value="${auditSearch.facilityName}"--%>
+<%--                                                     options="facilityName"--%>
+<%--                                                     firstOption="Please Select"/>--%>
+<%--                                    </iais:value>--%>
+<%--                                </iais:row>--%>
+
+<%--                                <iais:row>--%>
+<%--                                    <iais:field value="Facility classification"/>--%>
+<%--                                    <iais:value width="18">--%>
+<%--                                        <iais:select name="facilityClassification" id="facilityClassification"--%>
+<%--                                                     value="${auditSearch.facilityClassification}"--%>
+<%--                                                     codeCategory="CATE_ID_BSB_FAC_CLASSIFICATION"--%>
+<%--                                                     firstOption="Please Select"/>--%>
+<%--                                    </iais:value>--%>
+<%--                                </iais:row>--%>
 
                                 <iais:row>
-                                    <iais:field value="Facility classification"/>
-                                    <iais:value width="18">
-                                        <iais:select name="facilityClassification" id="facilityClassification"
-                                                     value="${auditSearch.facilityClassification}"
-                                                     codeCategory="CATE_ID_BSB_FAC_CLASSIFICATION"
-                                                     firstOption="Please Select"/>
-                                    </iais:value>
-                                </iais:row>
-
-                                <iais:row>
-                                    <iais:field value="Active Type"/>
-                                    <iais:value width="18">
-                                        <iais:select name="facilityType" id="facilityType"
-                                                     value="${auditSearch.activeType}"
-                                                     codeCategory="CATE_ID_BSB_ACTIVE_TYPE" firstOption="Please Select"/>
-                                    </iais:value>
-                                </iais:row>
-
-                                <iais:row>
-                                    <iais:field value="Audit Type" required="true"/>
+                                    <iais:field value="Audit Type"/>
                                     <iais:value width="18">
                                         <iais:select name="auditType" id="auditType"
                                                      value="${auditSearch.auditType}"
@@ -74,12 +65,12 @@
                                     </iais:value>
                                 </iais:row>
 
-                                <iais:row>
-                                    <iais:field value="Audit Window Period" required="false"/>
-                                    <iais:value width="18">
-                                        <p style="font-size: large"><c:out value="1/1/${year} - 31/12/${year}"></c:out></p>
-                                    </iais:value>
-                                </iais:row>
+<%--                                <iais:row>--%>
+<%--                                    <iais:field value="Audit Window Period" required="false"/>--%>
+<%--                                    <iais:value width="18">--%>
+<%--                                        <p style="font-size: large"><c:out value="1/1/${year} - 31/12/${year}"></c:out></p>--%>
+<%--                                    </iais:value>--%>
+<%--                                </iais:row>--%>
 
                                 <iais:action style="text-align:right;">
                                     <button class="btn btn-secondary" type="button" id="clearBtn" name="clearBtn">

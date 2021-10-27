@@ -265,30 +265,30 @@ public class AORevocationDelegator {
         aoDecisionDto.getHistory().setAppStatus(RevocationConstants.PARAM_APPLICATION_STATUS_APPROVED);
         revocationClient.saveHistory(aoDecisionDto.getHistory());
 
-        Facility facility = aoDecisionDto.getApproval().getFacility();
-        //send notification
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-        String date=dateFormat.format(new Date());
-        String address = TableDisplayUtil.getOneLineAddress(facility.getBlkNo(), facility.getStreetName(), facility.getFloorNo(),
-                facility.getUnitNo(), facility.getPostalCode());
-
-        BsbEmailParam bsbEmailParam = new BsbEmailParam();
-        bsbEmailParam.setMsgTemplateId(MSG_TEMPLATE_REVOCATION_USER_APPROVED);
-        bsbEmailParam.setRefId(aoDecisionDto.getApplication().getApplicationNo());
-        bsbEmailParam.setRefIdType("appNo");
-        bsbEmailParam.setQueryCode("1");
-        bsbEmailParam.setReqRefNum("1");
-        Map<String,Object> map = new HashMap<>();
-        map.put("applicationNo", aoDecisionDto.getApplication().getApplicationNo());
-        map.put("FacilityAddress",address);
-        map.put("FacilityName",aoDecisionDto.getApplication().getFacility().getFacilityName());
-        map.put("Date",date);
-        map.put("Reason",aoDecisionDto.getMisc().getReasonContent());
-        Map<String,Object> subMap = new HashMap<>();
-        subMap.put("applicationNo", aoDecisionDto.getApplication().getApplicationNo());
-        bsbEmailParam.setMsgSubject(subMap);
-        bsbEmailParam.setMsgContent(map);
-        bsbNotificationHelper.sendNotification(bsbEmailParam);
+//        Facility facility = aoDecisionDto.getApproval().getFacility();
+//        //send notification
+//        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+//        String date=dateFormat.format(new Date());
+//        String address = TableDisplayUtil.getOneLineAddress(facility.getBlkNo(), facility.getStreetName(), facility.getFloorNo(),
+//                facility.getUnitNo(), facility.getPostalCode());
+//
+//        BsbEmailParam bsbEmailParam = new BsbEmailParam();
+//        bsbEmailParam.setMsgTemplateId(MSG_TEMPLATE_REVOCATION_USER_APPROVED);
+//        bsbEmailParam.setRefId(aoDecisionDto.getApplication().getApplicationNo());
+//        bsbEmailParam.setRefIdType("appNo");
+//        bsbEmailParam.setQueryCode("1");
+//        bsbEmailParam.setReqRefNum("1");
+//        Map<String,Object> map = new HashMap<>();
+//        map.put("applicationNo", aoDecisionDto.getApplication().getApplicationNo());
+//        map.put("FacilityAddress",address);
+//        map.put("FacilityName",aoDecisionDto.getApplication().getFacility().getFacilityName());
+//        map.put("Date",date);
+//        map.put("Reason",aoDecisionDto.getMisc().getReasonContent());
+//        Map<String,Object> subMap = new HashMap<>();
+//        subMap.put("applicationNo", aoDecisionDto.getApplication().getApplicationNo());
+//        bsbEmailParam.setMsgSubject(subMap);
+//        bsbEmailParam.setMsgContent(map);
+//        bsbNotificationHelper.sendNotification(bsbEmailParam);
     }
 
     /**

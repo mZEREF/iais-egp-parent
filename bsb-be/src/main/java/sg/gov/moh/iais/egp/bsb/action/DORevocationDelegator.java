@@ -347,34 +347,34 @@ public class DORevocationDelegator {
         historyDto.setApplicationNo(application.getApplicationNo());
         revocationClient.saveHistory(historyDto);
 
-        BsbEmailParam bsbEmailParam = new BsbEmailParam();
-        bsbEmailParam.setMsgTemplateId(MSG_TEMPLATE_REVOCATION_AO_APPROVED);
-        bsbEmailParam.setRefId(application.getFacility().getId());
-        bsbEmailParam.setRefIdType("facId");
-        bsbEmailParam.setQueryCode("1");
-        bsbEmailParam.setReqRefNum("1");
-        Map<String,Object> map = new HashMap<>();
-        map.put("applicationNo", application.getApplicationNo());
-        map.put("ApprovalNo", "Approval001");
-        if (application.getProcessType().equals(RevocationConstants.PARAM_PROCESS_TYPE_FACILITY_REGISTRATION)) {
-            List<FacilityActivity> activityList = result.getEntity().getActivities();
-            String activityType = "";
-            if (!activityList.isEmpty()) {
-                activityType = JoinParamUtil.joinActivityType(activityList);
-            }
-            map.put("Type", activityType);
-        }else if (application.getProcessType().equals(RevocationConstants.PARAM_PROCESS_TYPE_AFC_REGISTRATION)) {
-            map.put("Type", MasterCodeUtil.getCodeDesc(RevocationConstants.PARAM_PROCESS_TYPE_AFC_REGISTRATION));
-        }else{
-            List<FacilityBiologicalAgent> agents = result.getEntity().getAgents();
-            map.put("Type", agents.get(0).getApproveType());
-        }
-        map.put("officer", loginContext.getUserName());
-        Map<String,Object> subMap = new HashMap<>();
-        subMap.put("applicationNo", application.getApplicationNo());
-        bsbEmailParam.setMsgSubject(subMap);
-        bsbEmailParam.setMsgContent(map);
-        bsbNotificationHelper.sendNotification(bsbEmailParam);
+//        BsbEmailParam bsbEmailParam = new BsbEmailParam();
+//        bsbEmailParam.setMsgTemplateId(MSG_TEMPLATE_REVOCATION_AO_APPROVED);
+//        bsbEmailParam.setRefId(application.getFacility().getId());
+//        bsbEmailParam.setRefIdType("facId");
+//        bsbEmailParam.setQueryCode("1");
+//        bsbEmailParam.setReqRefNum("1");
+//        Map<String,Object> map = new HashMap<>();
+//        map.put("applicationNo", application.getApplicationNo());
+//        map.put("ApprovalNo", "Approval001");
+//        if (application.getProcessType().equals(RevocationConstants.PARAM_PROCESS_TYPE_FACILITY_REGISTRATION)) {
+//            List<FacilityActivity> activityList = result.getEntity().getActivities();
+//            String activityType = "";
+//            if (!activityList.isEmpty()) {
+//                activityType = JoinParamUtil.joinActivityType(activityList);
+//            }
+//            map.put("Type", activityType);
+//        }else if (application.getProcessType().equals(RevocationConstants.PARAM_PROCESS_TYPE_AFC_REGISTRATION)) {
+//            map.put("Type", MasterCodeUtil.getCodeDesc(RevocationConstants.PARAM_PROCESS_TYPE_AFC_REGISTRATION));
+//        }else{
+//            List<FacilityBiologicalAgent> agents = result.getEntity().getAgents();
+//            map.put("Type", agents.get(0).getApproveType());
+//        }
+//        map.put("officer", loginContext.getUserName());
+//        Map<String,Object> subMap = new HashMap<>();
+//        subMap.put("applicationNo", application.getApplicationNo());
+//        bsbEmailParam.setMsgSubject(subMap);
+//        bsbEmailParam.setMsgContent(map);
+//        bsbNotificationHelper.sendNotification(bsbEmailParam);
     }
 
     /**
