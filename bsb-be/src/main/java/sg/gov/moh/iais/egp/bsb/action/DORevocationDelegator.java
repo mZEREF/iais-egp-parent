@@ -252,10 +252,11 @@ public class DORevocationDelegator {
                 ParamUtil.setSessionAttr(request, RevocationConstants.FACILITY, facility);
                 ParamUtil.setSessionAttr(request, RevocationConstants.APPROVAL, approval);
                 ParamUtil.setSessionAttr(request, RevocationConstants.FLAG, RevocationConstants.APP);
-                ParamUtil.setSessionAttr(request, RevocationConstants.BACK, RevocationConstants.REVOCATION_APPLICATION);
+                ParamUtil.setSessionAttr(request, RevocationConstants.BACK, RevocationConstants.REVOCATION_TASK_LIST);
             }
             if (from.equals(RevocationConstants.FAC)) {
-                String approvalId = ParamUtil.getMaskedString(request, RevocationConstants.PARAM_APPROVAL_ID);
+                String approvalId = ParamUtil.getRequestString(request,RevocationConstants.PARAM_APPROVAL_ID);
+                approvalId = MaskUtil.unMaskValue("id",approvalId);
                 Approval approval = revocationClient.getApprovalById(approvalId).getEntity();
                 Facility facility = new Facility();
                 if (approval.getProcessType().equals(RevocationConstants.PARAM_PROCESS_TYPE_FACILITY_REGISTRATION)) {

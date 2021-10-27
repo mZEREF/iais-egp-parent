@@ -238,6 +238,9 @@
                                 <iais:sortableHeader needSort="false"
                                                      field="Physical Possession of BA/T"
                                                      value="Physical Possession of BA/T"/>
+                                <iais:sortableHeader needSort="false"
+                                                     field=""
+                                                     value="action"/>
                             </tr>
                             </thead>
                             <tbody class="form-horizontal">
@@ -264,6 +267,16 @@
                                             <td><iais:code code="${items.sampleName}"/></td>
                                             <td><iais:code code="${items.riskLevel}"/></td>
                                             <td>12</td>
+                                            <td>
+                                                <c:choose>
+                                                    <c:when test="${items.status eq 'APPRSTA001' or items.status eq 'APPRSTA004'}">
+                                                        <a href="/bsb-be/eservicecontinue/INTRANET/MohDOSubmitRevocation?approvalId=<iais:mask name='id' value='${items.id}'/>&OWASP_CSRFTOKEN=null&from=fac">revoke</a>
+                                                    </c:when>
+                                                    <c:otherwise>
+
+                                                    </c:otherwise>
+                                                </c:choose>
+                                            </td>
                                         </tr>
                                     </c:forEach>
                                 </c:otherwise>
