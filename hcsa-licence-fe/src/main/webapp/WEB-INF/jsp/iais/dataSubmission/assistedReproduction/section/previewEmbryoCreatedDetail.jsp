@@ -13,31 +13,31 @@
                 <iais:row>
                     <label class="col-xs-6 col-md-6 ">No. Transferrable embryos created from fresh oocyte(s)</label>
                     <label class="col-xs-6 col-md-6">
-                        <c:out value="${AR_DATA_SUBMISSION.embryoCreatedStageDto.transEmbrFreshOccNum}"/>
+                        <c:out value="${arSuperDataSubmissionDto.embryoCreatedStageDto.transEmbrFreshOccNum}"/>
                     </label>
                 </iais:row>
                 <iais:row>
                     <label class="col-xs-6 col-md-6 ">No. of Poor Quality / Unhealthy / Abnormally / Developed created from fresh oocyte(s)</label>
                     <label class="col-xs-6 col-md-6">
-                        <c:out value="${AR_DATA_SUBMISSION.embryoCreatedStageDto.poorDevFreshOccNum}"/>
+                        <c:out value="${arSuperDataSubmissionDto.embryoCreatedStageDto.poorDevFreshOccNum}"/>
                     </label>
                 </iais:row>
                 <iais:row>
                     <label class="col-xs-6 col-md-6 ">No. Transferrable embryos created from thawed oocyte(s)</label>
                     <label class="col-xs-6 col-md-6">
-                        <c:out value="${AR_DATA_SUBMISSION.embryoCreatedStageDto.transEmbrThawOccNum}"/>
+                        <c:out value="${arSuperDataSubmissionDto.embryoCreatedStageDto.transEmbrThawOccNum}"/>
                     </label>
                 </iais:row>
                 <iais:row>
                     <label class="col-xs-6 col-md-6 ">No. of Poor Quality / Unhealthy / Abnormally / Developed created from thawed oocyte(s)</label>
                     <label class="col-xs-6 col-md-6">
-                        <c:out value="${AR_DATA_SUBMISSION.embryoCreatedStageDto.poorDevThawOccNum}"/>
+                        <c:out value="${arSuperDataSubmissionDto.embryoCreatedStageDto.poorDevThawOccNum}"/>
                     </label>
                 </iais:row>
                 <iais:row>
                     <label class="col-xs-6 col-md-6 ">Total No. Created</label>
                     <label class="col-xs-6 col-md-6">
-                        <c:out value="${AR_DATA_SUBMISSION.embryoCreatedStageDto.totalNum}"/>
+                        <c:out value="${arSuperDataSubmissionDto.embryoCreatedStageDto.totalNum}"/>
                     </label>
                 </iais:row>
 

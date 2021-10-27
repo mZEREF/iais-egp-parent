@@ -101,17 +101,23 @@ public class EmbryoCreatedDelegator extends CommonDelegator{
             log.error("no int");
         }
         int totalNum =0;
+        int totalThawedNum =0;
+        int totalFreshNum =0;
         if(transEmbrFreshOccNum!=null){
             totalNum+=transEmbrFreshOccNum;
+            totalFreshNum+=transEmbrFreshOccNum;
         }
         if(poorDevFreshOccNum!=null){
             totalNum+=poorDevFreshOccNum;
+            totalFreshNum+=poorDevFreshOccNum;
         }
         if(transEmbrThawOccNum!=null){
             totalNum+=transEmbrThawOccNum;
+            totalThawedNum+=transEmbrThawOccNum;
         }
         if(poorDevThawOccNum!=null){
             totalNum+=poorDevThawOccNum;
+            totalThawedNum+=poorDevThawOccNum;
         }
         embryoCreatedStageDto.setTransEmbrFreshOccNum(transEmbrFreshOccNum);
         embryoCreatedStageDto.setTransEmbrThawOccNum(transEmbrThawOccNum);
@@ -125,6 +131,17 @@ public class EmbryoCreatedDelegator extends CommonDelegator{
 
         ValidationResult validationResult = WebValidationHelper.validateProperty(embryoCreatedStageDto, "save");
         Map<String, String> errorMap = validationResult.retrieveAll();
+        String errMsgFresh = "Total sum of data item 1, 2 cannot be greater than number of fresh oocytes tagged to patient";
+        String errMsgThawed = "Total sum of data item 3, 4 cannot be greater than number of thawed oocytes tagged to patient";
+
+        if(totalThawedNum>10){
+            errorMap.put("poorDevThawOccNum", errMsgThawed);
+
+        }
+        if(totalFreshNum>10){
+            errorMap.put("poorDevFreshOccNum", errMsgFresh);
+
+        }
         ParamUtil.setSessionAttr(bpc.request, DataSubmissionConstant.AR_DATA_SUBMISSION, arSuperDataSubmissionDto);
         if (!errorMap.isEmpty() || validationResult.isHasErrors()) {
             WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);

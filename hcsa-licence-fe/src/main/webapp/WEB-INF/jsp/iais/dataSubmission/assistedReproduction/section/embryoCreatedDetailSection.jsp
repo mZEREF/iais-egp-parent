@@ -15,35 +15,35 @@
                 <iais:row>
                     <iais:field width="6" value="No. Transferrable embryos created from fresh oocyte(s)" mandatory="true"/>
                     <iais:value width="6" cssClass="col-md-6" label="true">
-                        <input type="text" maxlength="2" id="transEmbrFreshOccNum" name="transEmbrFreshOccNum" onkeypress="keyNumericPress()" value="${AR_DATA_SUBMISSION.embryoCreatedStageDto.transEmbrFreshOccNum}"/>
+                        <input type="text" maxlength="2" id="transEmbrFreshOccNum" name="transEmbrFreshOccNum" onkeypress="keyNumericPress()" value="${arSuperDataSubmissionDto.embryoCreatedStageDto.transEmbrFreshOccNum}"/>
                         <span class="error-msg" name="iaisErrorMsg" id="error_transEmbrFreshOccNum"></span>
                     </iais:value>
                 </iais:row>
                 <iais:row>
                     <iais:field width="6" value="No. of Poor Quality / Unhealthy / Abnormally / Developed created from fresh oocyte(s)" mandatory="true"/>
                     <iais:value width="6" cssClass="col-md-6" label="true">
-                        <input type="text" maxlength="2" id="poorDevFreshOccNum" name="poorDevFreshOccNum" onkeypress="keyNumericPress()" value="${AR_DATA_SUBMISSION.embryoCreatedStageDto.poorDevFreshOccNum}"/>
+                        <input type="text" maxlength="2" id="poorDevFreshOccNum" name="poorDevFreshOccNum" onkeypress="keyNumericPress()" value="${arSuperDataSubmissionDto.embryoCreatedStageDto.poorDevFreshOccNum}"/>
                         <span class="error-msg" name="iaisErrorMsg" id="error_poorDevFreshOccNum"></span>
                     </iais:value>
                 </iais:row>
                 <iais:row>
                     <iais:field width="6" value="No. Transferrable embryos created from thawed oocyte(s)" mandatory="true"/>
                     <iais:value width="6" cssClass="col-md-6" label="true">
-                        <input type="text" maxlength="2" id="transEmbrThawOccNum" name="transEmbrThawOccNum" onkeypress="keyNumericPress()" value="${AR_DATA_SUBMISSION.embryoCreatedStageDto.transEmbrThawOccNum}"/>
+                        <input type="text" maxlength="2" id="transEmbrThawOccNum" name="transEmbrThawOccNum" onkeypress="keyNumericPress()" value="${arSuperDataSubmissionDto.embryoCreatedStageDto.transEmbrThawOccNum}"/>
                         <span class="error-msg" name="iaisErrorMsg" id="error_transEmbrThawOccNum"></span>
                     </iais:value>
                 </iais:row>
                 <iais:row>
                     <iais:field width="6" value="No. of Poor Quality / Unhealthy / Abnormally / Developed created from thawed oocyte(s)" mandatory="true"/>
                     <iais:value width="6" cssClass="col-md-6" label="true">
-                        <input type="text" maxlength="2" id="poorDevThawOccNum" name="poorDevThawOccNum" onkeypress="keyNumericPress()" value="${AR_DATA_SUBMISSION.embryoCreatedStageDto.poorDevThawOccNum}"/>
+                        <input type="text" maxlength="2" id="poorDevThawOccNum" name="poorDevThawOccNum" onkeypress="keyNumericPress()" value="${arSuperDataSubmissionDto.embryoCreatedStageDto.poorDevThawOccNum}"/>
                         <span class="error-msg" name="iaisErrorMsg" id="error_poorDevThawOccNum"></span>
                     </iais:value>
                 </iais:row>
                 <iais:row>
                     <iais:field width="6" value="Total No. Created" mandatory="false"/>
                     <iais:value width="6" cssClass="col-md-6" label="true">
-                        <label id="totalNum" name="totalNum">${AR_DATA_SUBMISSION.embryoCreatedStageDto.totalNum}</label>
+                        <label id="totalNum" name="totalNum">${arSuperDataSubmissionDto.embryoCreatedStageDto.totalNum}</label>
                     </iais:value>
                 </iais:row>
 
