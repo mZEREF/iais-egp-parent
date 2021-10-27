@@ -1,11 +1,13 @@
-$('#reasonSelect').change(function () {
+$(document).ready(function() {
+    $('#reasonSelect').change(function () {
 
-    var reason= $('#reasonSelect option:selected').val();
+        var reason= $('#reasonSelect option:selected').val();
 
-    if("EFOR004"==reason){
-        $('#othersReason').attr("style","display: block");
-    }else {
-        $('#othersReason').attr("style","display: none");
-    }
+        if("EFOR004"==reason){
+            $('#othersReason').attr("style","display: block");
+        }else {
+            $('#othersReason').attr("style","display: none");
+        }
 
+    });
 });

@@ -47,7 +47,7 @@ public class EfoDtoValidator implements CustomizeValidator {
         if (!StringUtil.isEmpty(reason)&&"EFOR004".equals(reason)) {
             String othersReason = ParamUtil.getRequestString(httpServletRequest, "othersReason");
             if (StringUtil.isEmpty(othersReason)) {
-                String errMsg = MessageUtil.replaceMessage("GENERAL_ERR0006","Remarks", "field");
+                String errMsg = MessageUtil.replaceMessage("GENERAL_ERR0006","Others Reason", "field");
                 errorMap.put("othersReason", errMsg);
             }else if(othersReason.length()>20){
                 Map<String, String> repMap=IaisCommonUtils.genNewHashMap();
