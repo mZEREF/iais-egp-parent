@@ -1,4 +1,4 @@
-package com.ecquaria.cloud.moh.iais.validation;
+package com.ecquaria.cloud.moh.iais.validation.dataSubmission;
 
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.OocyteRetrievalStageDto;
@@ -21,7 +21,7 @@ import java.util.Map;
 
 @Component
 @Slf4j
-public class OocyteRetrievalDtoValidate implements CustomizeValidator {
+public class OocyteRetrievalDtoValidator implements CustomizeValidator {
     @Override
     public Map<String, String> validate(HttpServletRequest request) {
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();

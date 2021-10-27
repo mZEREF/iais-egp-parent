@@ -6,6 +6,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSub
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.OocyteRetrievalStageDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
+import com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import lombok.extern.slf4j.Slf4j;
 import sop.webflow.rt.api.BaseProcessClass;
@@ -25,7 +26,7 @@ import java.util.Map;
 public class OocyteRetrievalDelegator extends CommonDelegator {
     @Override
     public void start(BaseProcessClass bpc) {
-        ParamUtil.setSessionAttr(bpc.request, "arSuperDataSubmissionDto",new ArSuperDataSubmissionDto());
+        ParamUtil.setSessionAttr(bpc.request, DataSubmissionConstant.AR_DATA_SUBMISSION,new ArSuperDataSubmissionDto());
         ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.CRUD_ACTION_TYPE, "page");
     }
 
@@ -41,7 +42,7 @@ public class OocyteRetrievalDelegator extends CommonDelegator {
 
     @Override
     public void preparePage(BaseProcessClass bpc) {
-        ArSuperDataSubmissionDto arSuperDataSubmissionDto = (ArSuperDataSubmissionDto) ParamUtil.getSessionAttr(bpc.request, "arSuperDataSubmissionDto");
+        ArSuperDataSubmissionDto arSuperDataSubmissionDto = (ArSuperDataSubmissionDto) ParamUtil.getSessionAttr(bpc.request, DataSubmissionConstant.AR_DATA_SUBMISSION);
         OocyteRetrievalStageDto oocyteRetrievalStageDto = arSuperDataSubmissionDto.getOocyteRetrievalStageDto();
         if (oocyteRetrievalStageDto == null) {
             oocyteRetrievalStageDto = new OocyteRetrievalStageDto();
@@ -52,7 +53,7 @@ public class OocyteRetrievalDelegator extends CommonDelegator {
 
     @Override
     public void prepareConfim(BaseProcessClass bpc) {
-        ArSuperDataSubmissionDto arSuperDataSubmissionDto = (ArSuperDataSubmissionDto) ParamUtil.getSessionAttr(bpc.request, "arSuperDataSubmissionDto");
+        ArSuperDataSubmissionDto arSuperDataSubmissionDto = (ArSuperDataSubmissionDto) ParamUtil.getSessionAttr(bpc.request, DataSubmissionConstant.AR_DATA_SUBMISSION);
         OocyteRetrievalStageDto oocyteRetrievalStageDto = arSuperDataSubmissionDto.getOocyteRetrievalStageDto();
         String totalNum = oocyteRetrievalStageDto.getTotalNum();
         ParamUtil.setRequestAttr(bpc.request, "totalRetrievedNum", totalNum);
@@ -72,9 +73,25 @@ public class OocyteRetrievalDelegator extends CommonDelegator {
 
     @Override
     public void pageAction(BaseProcessClass bpc) {
-        ArSuperDataSubmissionDto arSuperDataSubmissionDto = (ArSuperDataSubmissionDto) ParamUtil.getSessionAttr(bpc.request, "arSuperDataSubmissionDto");
+        ArSuperDataSubmissionDto arSuperDataSubmissionDto = (ArSuperDataSubmissionDto) ParamUtil.getSessionAttr(bpc.request, DataSubmissionConstant.AR_DATA_SUBMISSION);
         OocyteRetrievalStageDto oocyteRetrievalStageDto = arSuperDataSubmissionDto.getOocyteRetrievalStageDto();
         HttpServletRequest request = bpc.request;
+        fromPageData(oocyteRetrievalStageDto, request);
+
+        ValidationResult validationResult = WebValidationHelper.validateProperty(oocyteRetrievalStageDto, "save");
+        Map<String, String> errorMap = validationResult.retrieveAll();
+
+        if (!errorMap.isEmpty() || validationResult.isHasErrors()) {
+            WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
+            ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
+            ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.CRUD_ACTION_TYPE, "page");
+            ParamUtil.setSessionAttr(bpc.request, "oocyteRetrievalStageDto", oocyteRetrievalStageDto);
+            return;
+        }
+        ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.CRUD_ACTION_TYPE, "confirm");
+    }
+
+    private void fromPageData(OocyteRetrievalStageDto oocyteRetrievalStageDto, HttpServletRequest request) {
         boolean isFromPatient = "true".equals(ParamUtil.getString(request, "isFromPatient"));
         boolean isFromPatientTissue = "true".equals(ParamUtil.getString(request, "isFromPatientTissue"));
         boolean isFromDonor = "true".equals(ParamUtil.getString(request, "isFromDonor"));
@@ -92,18 +109,6 @@ public class OocyteRetrievalDelegator extends CommonDelegator {
         oocyteRetrievalStageDto.setImmatureRetrievedNum(immatureRetrievedNum);
         oocyteRetrievalStageDto.setOtherRetrievedNum(otherRetrievedNum);
         oocyteRetrievalStageDto.setIsOvarianSyndrome(isOvarianSyndrome);
-
-        ValidationResult validationResult = WebValidationHelper.validateProperty(oocyteRetrievalStageDto, "save");
-        Map<String, String> errorMap = validationResult.retrieveAll();
-
-        if (!errorMap.isEmpty() || validationResult.isHasErrors()) {
-            WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
-            ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
-            ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.CRUD_ACTION_TYPE, "page");
-            ParamUtil.setSessionAttr(bpc.request, "oocyteRetrievalStageDto", oocyteRetrievalStageDto);
-            return;
-        }
-        ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.CRUD_ACTION_TYPE, "confirm");
     }
 
     @Override
