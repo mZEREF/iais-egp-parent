@@ -45,7 +45,6 @@ public class OocyteRetrievalDelegator extends CommonDelegator {
         OocyteRetrievalStageDto oocyteRetrievalStageDto = arSuperDataSubmissionDto.getOocyteRetrievalStageDto();
         if (oocyteRetrievalStageDto == null) {
             oocyteRetrievalStageDto = new OocyteRetrievalStageDto();
-            oocyteRetrievalStageDto.setIsFromDonorTissue(true);
             arSuperDataSubmissionDto.setOocyteRetrievalStageDto(oocyteRetrievalStageDto);
         }
         ParamUtil.setRequestAttr(bpc.request, "totalRetrievedNum", oocyteRetrievalStageDto.getTotalNum());

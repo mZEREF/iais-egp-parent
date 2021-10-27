@@ -13,21 +13,49 @@
                 <iais:row>
                     <iais:field width="5" value="Oocyte(s) was retrieved from?" mandatory="true"/>
                     <iais:value width="7" cssClass="col-md-7">
-                        <div class="col-12">
-                            <input type="checkbox" name="isFromPatient" value="true"
-                                <c:if test="${oocyteRetrievalStageDto.isFromPatient}"> checked </c:if> >Patient
+                        <div class="form-check col-xs-12" >
+                            <input class="form-check-input" type="checkbox"
+                                   name="isFromPatient"
+                                   value="true"
+                                   id="isFromPatient"
+                                   <c:if test="${oocyteRetrievalStageDto.isFromPatient}">checked</c:if>
+                                   aria-invalid="false">
+                            <label class="form-check-label"
+                                   for="isFromPatient"><span
+                                    class="check-square"></span>Patient</label>
                         </div>
-                        <div class="col-12">
-                            <input type="checkbox" name="isFromPatientTissue" value="true"
-                                <c:if test="${oocyteRetrievalStageDto.isFromPatientTissue}"> checked </c:if> >Patient's Ovarian Tissue
+                        <div class="form-check col-xs-12" >
+                            <input class="form-check-input" type="checkbox"
+                                   name="isFromPatientTissue"
+                                   value="true"
+                                   id="isFromPatientTissue"
+                                   <c:if test="${oocyteRetrievalStageDto.isFromPatientTissue}">checked</c:if>
+                                   aria-invalid="false">
+                            <label class="form-check-label"
+                                   for="isFromPatientTissue"><span
+                                    class="check-square"></span>Patient's Ovarian Tissue</label>
                         </div>
-                        <div class="col-12">
-                            <input type="checkbox" name="isFromDonor" value="true"
-                                <c:if test="${oocyteRetrievalStageDto.isFromDonor}"> checked </c:if> >Directed Donor
+                        <div class="form-check col-xs-12" >
+                            <input class="form-check-input" type="checkbox"
+                                   name="isFromDonor"
+                                   value="true"
+                                   id="isFromDonor"
+                                   <c:if test="${oocyteRetrievalStageDto.isFromDonor}">checked</c:if>
+                                   aria-invalid="false">
+                            <label class="form-check-label"
+                                   for="isFromDonor"><span
+                                    class="check-square"></span>Directed Donor</label>
                         </div>
-                        <div class="col-12">
-                            <input type="checkbox" name="isFromDonorTissue" value="true"
-                                <c:if test="${oocyteRetrievalStageDto.isFromDonorTissue}"> checked </c:if> >Directed Donor's Ovarian Tissue
+                        <div class="form-check col-xs-12" >
+                            <input class="form-check-input" type="checkbox"
+                                   name="isFromDonorTissue"
+                                   value="true"
+                                   id="isFromDonorTissue"
+                                   <c:if test="${oocyteRetrievalStageDto.isFromDonorTissue}">checked</c:if>
+                                   aria-invalid="false">
+                            <label class="form-check-label"
+                                   for="isFromDonorTissue"><span
+                                    class="check-square"></span>Directed Donor's Ovarian Tissue</label>
                         </div>
                     </iais:value>
                     <span id="error_oocyteRetrievalFrom" name="iaisErrorMsg" class="error-msg"></span>
@@ -62,12 +90,32 @@
                         <a class="btn-tooltip styleguide-tooltip" href="javascript:void(0);" data-toggle="tooltip" data-html="true" title="&lt;p&gt;<iais:message key="NEW_ACK028"></iais:message>&lt;/p&gt;">i</a>
                     </label>
                     <iais:value width="3" cssClass="col-md-3">
-                        <input type="radio" name="isOvarianSyndrome" value="true"
-                            <c:if test="${oocyteRetrievalStageDto.isOvarianSyndrome}"> checked </c:if> >Yes
+                        <div class="form-check">
+                            <input class="form-check-input"
+                                   type="radio"
+                                   name="isOvarianSyndrome"
+                                   value="true"
+                                   id="isOvarianSyndromeYes"
+                                   <c:if test="${oocyteRetrievalStageDto.isOvarianSyndrome}">checked</c:if>
+                                   aria-invalid="false">
+                            <label class="form-check-label"
+                                   for="isOvarianSyndromeYes"><span
+                                    class="check-circle"></span>Yes</label>
+                        </div>
                     </iais:value>
                     <iais:value width="4" cssClass="col-md-4">
-                        <input type="radio" name="isOvarianSyndrome" value="false"
-                            <c:if test="${oocyteRetrievalStageDto.isOvarianSyndrome == false}"> checked </c:if> >No
+                        <div class="form-check">
+                            <input class="form-check-input"
+                                   type="radio"
+                                   name="isOvarianSyndrome"
+                                   value="false"
+                                   id="isOvarianSyndromeNo"
+                                   <c:if test="${! oocyteRetrievalStageDto.isOvarianSyndrome}">checked</c:if>
+                                   aria-invalid="false">
+                            <label class="form-check-label"
+                                   for="isOvarianSyndromeNo"><span
+                                    class="check-circle"></span>No</label>
+                        </div>
                     </iais:value>
                 </iais:row>
             </div>
@@ -77,26 +125,17 @@
 <script>
     $(document).ready(function () {
         $('input[type="checkbox"]').click(function () {
+            let setVal = $(this).prop('checked');
             if (this.name == "isFromPatient" || this.name == "isFromPatientTissue"){
-                if($(this).prop('checked')){
-                    $("#isFromDonor").attr("disabled",true);
-                    $("#isFromDonorTissue").attr("disabled",true);
-                }else {
-                    $("#isFromDonor").attr("disabled",false);
-                    $("#isFromDonorTissue").attr("disabled",false);
-                }
+                $("#isFromDonor").attr("disabled",setVal);
+                $("#isFromDonorTissue").attr("disabled",setVal);
             }else if (this.name == "isFromDonor" || this.name == "isFromDonorTissue"){
-                if($(this).prop('checked')){
-                    $("#isFromPatient").attr("disabled",true);
-                    $("#isFromPatientTissue").attr("disabled",true);
-                }else {
-                    $("#isFromPatient").attr("disabled",false);
-                    $("#isFromPatientTissue").attr("disabled",false);
-                }
+                $("#isFromPatient").attr("disabled",setVal);
+                $("#isFromPatientTissue").attr("disabled",setVal);
             }
         });
 
-        $('input[type="text"]').blur(function () {
+        $('input[type="text"]').change(function () {
             var totalNum = 0;
             $('input[type="text"]').each(function (){
                 let val = $(this).val();
