@@ -27,13 +27,13 @@ public final class ControllerHelper {
         return get(request, clazz, null);
     }
 
-    public static <T> T get(HttpServletRequest request, Class<T> clazz, String shortName) {
+    public static <T> T get(HttpServletRequest request, Class<T> clazz, String suffix) {
         if (clazz == null) {
             return null;
         }
 
         try {
-            return get(request, clazz.newInstance(), shortName);
+            return get(request, clazz.newInstance(), suffix);
         } catch (Exception e) {
             log.error(StringUtil.changeForLog(e.getMessage()), e);
             throw new IaisRuntimeException(e);
@@ -44,8 +44,8 @@ public final class ControllerHelper {
         return get(request, obj, null);
     }
 
-    public static <T> T get(HttpServletRequest request, T obj, String shortName) {
-        return get(request, obj, shortName, null);
+    public static <T> T get(HttpServletRequest request, T obj, String suffix) {
+        return get(request, obj, null, suffix);
     }
 
     public static <T> T get(HttpServletRequest request, T obj, String shortName, String suffix) {
