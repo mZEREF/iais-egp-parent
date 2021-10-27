@@ -12,7 +12,7 @@
 %>
 <webui:setLayout name="iais-internet"/>
 
-<c:set var="patientInfoDto" value="${AR_DATA_SUBMISSION.patientInfoDto}" />
+<c:set var="patientInfoDto" value="${arSuperDataSubmissionDto.patientInfoDto}" />
 <c:set var="patient" value="${patientInfoDto.patient}" />
 <c:set var="previous" value="${patientInfoDto.previous}" />
 <c:set var="husband" value="${patientInfoDto.husband}" />

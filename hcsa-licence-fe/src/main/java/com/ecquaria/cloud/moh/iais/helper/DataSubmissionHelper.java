@@ -31,7 +31,11 @@ public final class DataSubmissionHelper {
     }
 
     public static ArSuperDataSubmissionDto getCurrentArDataSubmission(HttpServletRequest request) {
-        return (ArSuperDataSubmissionDto) ParamUtil.getSessionAttr(request, DataSubmissionConstant.AR_DATA_SUBMISSION);
+        ArSuperDataSubmissionDto arSuperDataSubmissionDto = (ArSuperDataSubmissionDto) ParamUtil.getSessionAttr(request, DataSubmissionConstant.AR_DATA_SUBMISSION);
+        if(arSuperDataSubmissionDto == null){
+            log.info("------------------------------------AR_SUPER_DATA_SUBMISSION_DTO is null-----------------");
+        }
+        return arSuperDataSubmissionDto;
     }
 
     public static List<String> getNextStageForAr(String currCycle, String currStage) {

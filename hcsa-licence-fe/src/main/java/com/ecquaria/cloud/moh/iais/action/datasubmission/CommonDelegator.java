@@ -16,7 +16,6 @@ import sop.webflow.rt.api.BaseProcessClass;
 @Slf4j
 public abstract class CommonDelegator {
 
-    public static String AR_SUPER_DATA_SUBMISSION_DTO = "arSuperDataSubmissionDto";
     /**
      * StartStep: Start
      *

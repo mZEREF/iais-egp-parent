@@ -1,4 +1,4 @@
-<c:set var="selectionDto" value="${AR_DATA_SUBMISSION.selectionDto}" />
+<c:set var="selectionDto" value="${arSuperDataSubmissionDto.selectionDto}" />
 
 <div class="panel panel-default">
     <div class="panel-heading">
