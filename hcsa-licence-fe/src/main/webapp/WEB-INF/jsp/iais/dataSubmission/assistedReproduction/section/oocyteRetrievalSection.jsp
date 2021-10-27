@@ -57,8 +57,8 @@
                                    for="isFromDonorTissue"><span
                                     class="check-square"></span>Directed Donor's Ovarian Tissue</label>
                         </div>
+                        <span id="error_oocyteRetrievalFrom" name="iaisErrorMsg" class="error-msg"></span>
                     </iais:value>
-                    <span id="error_oocyteRetrievalFrom" name="iaisErrorMsg" class="error-msg"></span>
                 </iais:row>
                 <iais:row>
                     <iais:field width="5" value="No. Retrieved (Mature)"/>
@@ -87,7 +87,7 @@
                 <iais:row>
                     <label class="col-xs-5 col-md-4 control-label" >Severe Ovarian Hyperstimulation Syndrome
                         <span class="mandatory">*</span>
-                        <a class="btn-tooltip styleguide-tooltip" href="javascript:void(0);" data-toggle="tooltip" data-html="true" title="&lt;p&gt;<iais:message key="NEW_ACK028"></iais:message>&lt;/p&gt;">i</a>
+                        <a class="btn-tooltip styleguide-tooltip" href="javascript:void(0);" data-toggle="tooltip" data-html="true" title="&lt;p&gt;<iais:message key="DS_ACK001"></iais:message>&lt;/p&gt;">i</a>
                     </label>
                     <iais:value width="3" cssClass="col-md-3">
                         <div class="form-check">

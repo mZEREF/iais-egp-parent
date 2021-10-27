@@ -52,7 +52,7 @@
                         <c:if test="${not oocyteRetrievalStageDto.isOvarianSyndrome}">No</c:if>
                     </iais:value>
                 </iais:row>
-                <h4>Patient's Inventory</h4>
+                <h3>Patient's Inventory</h3>
                 <table aria-describedby="" class="table discipline-table">
                     <thead>
                         <tr>
