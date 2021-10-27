@@ -2,8 +2,12 @@ package com.ecquaria.cloud.moh.iais.action.datasubmission;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArCycleStageDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArDonorDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
+import com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant;
+import com.ecquaria.cloud.moh.iais.helper.ControllerHelper;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -11,6 +15,7 @@ import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * ArCycleStageDelegator
@@ -49,10 +54,21 @@ public class ArCycleStageDelegator extends CommonDelegator {
     public void preparePage(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         ArSuperDataSubmissionDto arSuperDataSubmissionDto = DataSubmissionHelper.getCurrentArDataSubmission(request);
+        arSuperDataSubmissionDto = new ArSuperDataSubmissionDto();
         ArCycleStageDto arCycleStageDto = arSuperDataSubmissionDto.getArCycleStageDto();
+        List<ArDonorDto> arDonorDtos = arSuperDataSubmissionDto.getArDonorDtos();
         if(arCycleStageDto == null){
             arCycleStageDto = new ArCycleStageDto();
+            arSuperDataSubmissionDto.setArCycleStageDto(arCycleStageDto);
         }
+        if(IaisCommonUtils.isEmpty(arDonorDtos)){
+            arDonorDtos = IaisCommonUtils.genNewArrayList();
+            ArDonorDto arDonorDto = new ArDonorDto();
+            arDonorDto.setArDonorIndex(0);
+            arDonorDtos.add(arDonorDto);
+        }
+        arCycleStageDto.setArDonorDtos(arDonorDtos);
+        ParamUtil.setSessionAttr(request, DataSubmissionConstant.AR_DATA_SUBMISSION,arSuperDataSubmissionDto);
     }
 
     @Override
@@ -72,11 +88,26 @@ public class ArCycleStageDelegator extends CommonDelegator {
 
     @Override
     public void pageAction(BaseProcessClass bpc) {
-
+        HttpServletRequest request = bpc.request;
+        ArSuperDataSubmissionDto arSuperDataSubmissionDto = DataSubmissionHelper.getCurrentArDataSubmission(request);
+        ArCycleStageDto arCycleStageDto = arSuperDataSubmissionDto.getArCycleStageDto();
+        setArCycleStageDtoByPage(request,arCycleStageDto);
+        validationGoToByValidationDto(request,arCycleStageDto);
+        ParamUtil.setSessionAttr(request, DataSubmissionConstant.AR_DATA_SUBMISSION,arSuperDataSubmissionDto);
     }
 
     @Override
     public void pageConfirmAction(BaseProcessClass bpc) {
 
+    }
+
+    private void setArCycleStageDtoByPage(HttpServletRequest request,ArCycleStageDto arCycleStageDto){
+        ControllerHelper.get(request,arCycleStageDto);
+        arCycleStageDto.setStartDate(ParamUtil.getString(request,"arCycleStageDtoDateStarted"));
+        List<ArDonorDto> arDonorDtos = arCycleStageDto.getArDonorDtos();
+        arDonorDtos.forEach(arDonorDto -> {
+            String arDonorIndex = String.valueOf(arDonorDto.getArDonorIndex());
+            ControllerHelper.get(request,arDonorDto,arDonorIndex);
+        });
     }
 }

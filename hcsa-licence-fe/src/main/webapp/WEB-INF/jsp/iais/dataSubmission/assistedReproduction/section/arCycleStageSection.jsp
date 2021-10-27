@@ -107,7 +107,7 @@
                                            aria-invalid="false">
                                     <label class="form-check-label"
                                            for="currentArTreatmentCheck${currentArTreatmentCode}"><span
-                                            class="check-circle"></span></label>
+                                            class="check-square"></span></label>
                                 </div>
                             </c:forEach>
                     </iais:value>
@@ -256,4 +256,7 @@
      toggleOnMultiSelect("#otherIndication",'AR_0I_001', 'otherIndicationOthersRo');
    });
 
+   function validateDonor(donorIndex){
+
+   }
 </script>

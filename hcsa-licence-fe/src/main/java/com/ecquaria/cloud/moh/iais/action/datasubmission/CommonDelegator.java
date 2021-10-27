@@ -2,10 +2,15 @@ package com.ecquaria.cloud.moh.iais.action.datasubmission;
 
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
+import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import lombok.extern.slf4j.Slf4j;
 import sop.webflow.rt.api.BaseProcessClass;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.Map;
 
 /**
  * CommonDelegator
@@ -205,4 +210,21 @@ public abstract class CommonDelegator {
      */
     public abstract void pageConfirmAction(BaseProcessClass bpc);
 
+    public  final boolean validationGoToByValidationDto(HttpServletRequest request,Object obj, String property, String passCrudActionType,String failedCrudActionType){
+        ValidationResult validationResult = WebValidationHelper.validateProperty(obj, property);
+        Map<String, String> errorMap = validationResult.retrieveAll();
+        if (!errorMap.isEmpty() || validationResult.isHasErrors()) {
+            WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
+            ParamUtil.setRequestAttr(request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
+            ParamUtil.setRequestAttr(request, IaisEGPConstant.CRUD_ACTION_TYPE,failedCrudActionType);
+            return false;
+        }else {
+            ParamUtil.setRequestAttr(request, IaisEGPConstant.CRUD_ACTION_TYPE,passCrudActionType);
+        }
+        return true;
+    }
+
+    public  final boolean validationGoToByValidationDto(HttpServletRequest request,Object obj){
+        return validationGoToByValidationDto(request,obj,"save","confirm","page");
+    }
 }

@@ -256,7 +256,7 @@ public final class DataSubmissionHelper {
 
     public static List<SelectOption> getNumsSelections(int startNum,int endNum){
         List<SelectOption> selectOptions = IaisCommonUtils.genNewArrayList(endNum+1-startNum);
-        for(int num = startNum;num<= endNum; endNum++){
+        for(int num = startNum;num<= endNum; num++){
             String key = String.valueOf(num);
             selectOptions.add(new SelectOption(key,key));
         }
