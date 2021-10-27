@@ -1,4 +1,4 @@
-<div class="panel panel-default">
+ <div class="panel panel-default">
     <div class="panel-heading">
         <h4 class="panel-title">
             <strong>
@@ -23,7 +23,7 @@
                                        aria-invalid="false">
                                 <label class="form-check-label"
                                        for="sourceOfSemenCheck${sourceOfSemenCode}"><span
-                                        class="check-circle"></span></label>
+                                        class="check-square"></span>${sourceOfSemen.codeValue}</label>
                             </div>
                         </c:forEach>
                     </iais:value>
@@ -31,13 +31,13 @@
                 <iais:row>
                     <iais:field width="5" value="How many vials of sperm were extracted?" mandatory="true"/>
                     <iais:value width="7" cssClass="col-md-7">
-                        <iais:input maxLength="2" type="text" name="extractedSpermVials"  />
+                        <iais:input maxLength="2" type="text" name="extractedSpermVialsNum"  />
                     </iais:value>
                 </iais:row>
                 <iais:row>
                     <iais:field width="5" value="How many vials of sperm were used in this cycle?" mandatory="true"/>
                     <iais:value width="7" cssClass="col-md-7">
-                        <iais:input maxLength="2" type="text" name="usedSpermVials"  />
+                        <iais:input maxLength="2" type="text" name="usedSpermVialsNum"  />
                     </iais:value>
                 </iais:row>
                 <iais:row>
@@ -54,7 +54,7 @@
                                        aria-invalid="false">
                                 <label class="form-check-label"
                                        for="arTechniquesUsedCheck${arTechniquesUsedCode}"><span
-                                        class="check-circle"></span></label>
+                                        class="check-square"></span>${arTechniquesUsed.codeValue}</label>
                             </div>
                         </c:forEach>
                     </iais:value>
@@ -62,49 +62,49 @@
                 <iais:row>
                     <iais:field width="5" value="No. of Fresh Oocytes Inseminated" mandatory="true"/>
                     <iais:value width="7" cssClass="col-md-7">
-                        <iais:input maxLength="2" type="text" name="freshOocytesInseminated" />
+                        <iais:input maxLength="2" type="text" name="freshOocytesInseminatedNum" />
                     </iais:value>
                 </iais:row>
                 <iais:row>
                     <iais:field width="5" value="No. of Fresh Oocytes Microinjected" mandatory="true"/>
                     <iais:value width="7" cssClass="col-md-7">
-                        <iais:input maxLength="2" type="text" name="freshOocytesMicroinjected"  />
+                        <iais:input maxLength="2" type="text" name="freshOocytesMicroinjectedNum"  />
                     </iais:value>
                 </iais:row>
                 <iais:row>
                     <iais:field width="5" value="No. of Fresh Oocytes Used for GIFT" mandatory="true"/>
                     <iais:value width="7" cssClass="col-md-7">
-                        <iais:input maxLength="2" type="text" name="usedGiftFreshOocytes"  />
+                        <iais:input maxLength="2" type="text" name="freshOocytesGiftNum"  />
                     </iais:value>
                 </iais:row>
                 <iais:row>
                     <iais:field width="5" value="No. of Fresh Oocytes Used for ZIFT" mandatory="true"/>
                     <iais:value width="7" cssClass="col-md-7">
-                        <iais:input maxLength="2" type="text" name="usedZiftFreshOocytes" />
+                        <iais:input maxLength="2" type="text" name="freshOocytesZiftNum" />
                     </iais:value>
                 </iais:row>
                 <iais:row>
                     <iais:field width="5" value="No. of Thawed Oocytes Inseminated" mandatory="true"/>
                     <iais:value width="7" cssClass="col-md-7">
-                        <iais:input maxLength="2" type="text" name="thawedOocytesInseminated"  />
+                        <iais:input maxLength="2" type="text" name="thawedOocytesInseminatedNum"  />
                     </iais:value>
                 </iais:row>
                 <iais:row>
                     <iais:field width="5" value="No. of Thawed Oocytes Microinjected" mandatory="true"/>
                     <iais:value width="7" cssClass="col-md-7">
-                        <iais:input maxLength="2" type="text" name="thawedOocytesMicroinjected"  />
+                        <iais:input maxLength="2" type="text" name="thawedOocytesMicroinjectedNum"  />
                     </iais:value>
                 </iais:row>
                 <iais:row>
                     <iais:field width="5" value="No. of Thawed Oocytes Used for GIFT" mandatory="true"/>
                     <iais:value width="7" cssClass="col-md-7">
-                        <iais:input maxLength="2" type="text" name="UsedGiftThawedOocytes"  />
+                        <iais:input maxLength="2" type="text" name="thawedOocytesGiftNum"  />
                     </iais:value>
                 </iais:row>
                 <iais:row>
                     <iais:field width="5" value="No. of Thawed Oocytes Used for ZIFT" mandatory="true"/>
                     <iais:value width="7" cssClass="col-md-7">
-                        <iais:input maxLength="2" type="text" name="usedZiftThawedOocytes" />
+                        <iais:input maxLength="2" type="text" name="thawedOocytesZiftNum" />
                     </iais:value>
                 </iais:row>
             </div>
