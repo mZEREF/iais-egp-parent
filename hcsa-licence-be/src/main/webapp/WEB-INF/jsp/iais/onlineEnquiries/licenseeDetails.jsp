@@ -54,11 +54,15 @@
                         <td align="right">Block No</td>
                         <td class="col-xs-6" style="padding-left: 15px;">${organizationLicDto.licenseeDto.blkNo}<c:if test="${empty organizationLicDto.licenseeDto.blkNo}">-</c:if></td>
                     </tr>
-
+                    <tr>
+                        <td align="right">Floor No</td>
+                        <td class="col-xs-6" style="padding-left: 15px;">${organizationLicDto.licenseeDto.floorNo}<c:if test="${empty organizationLicDto.licenseeDto.floorNo}">-</c:if></td>
+                    </tr>
                     <tr>
                         <td align="right">Unit No</td>
                         <td class="col-xs-6" style="padding-left: 15px;">${organizationLicDto.licenseeDto.unitNo}<c:if test="${empty organizationLicDto.licenseeDto.unitNo}">-</c:if></td>
-                    </tr><tr>
+                    </tr>
+                    <tr>
                         <td align="right">Street Name</td>
                         <td class="col-xs-6" style="padding-left: 15px;">${organizationLicDto.licenseeDto.streetName}<c:if test="${empty organizationLicDto.licenseeDto.streetName}">-</c:if></td>
                     </tr>
