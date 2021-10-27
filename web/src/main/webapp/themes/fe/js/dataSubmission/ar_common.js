@@ -21,6 +21,8 @@ $(document).ready(function() {
             showWaiting();
             if ('confirm' == currPage) {
                 submit('page');
+            } else if ('ar-submission' == currPage) {
+                submit('back');
             } else {
                 submit('return');
             }

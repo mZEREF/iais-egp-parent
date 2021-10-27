@@ -692,11 +692,9 @@ function callCommonAjax(options, callback) {
     if (isEmpty(options)) {
         options = {};
     }
-    var url = '${pageContext.request.contextPath}';
+    var url = '';
     if (!isEmpty(options.url)) {
-        url += options.url;
-    } else {
-        url += '/ar/retrieve-identification';
+        url = options.url;
     }
     console.log(url);
     $.ajax({

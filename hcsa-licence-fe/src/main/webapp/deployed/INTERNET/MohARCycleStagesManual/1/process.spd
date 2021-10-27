@@ -512,7 +512,7 @@
    <SwitchCase component="/Steps/AutomaticStep/PrepareDisposal" value="&quot;AR_STG014&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/PrepareEndCycle" value="&quot;AR_STG015&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/PrepareTransferInOut" value="&quot;AR_STG016&quot;"/>
-   <SwitchCase component="/Steps/AutomaticStep/Back" value="&quot;Back&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/Back" value="&quot;back&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/PrepareCycleStageSelection" value="&quot;invalid&quot;"/>
   </Switch>
  </Switches>

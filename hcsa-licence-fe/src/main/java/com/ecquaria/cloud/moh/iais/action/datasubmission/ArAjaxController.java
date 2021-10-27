@@ -1,26 +1,24 @@
 package com.ecquaria.cloud.moh.iais.action.datasubmission;
 
-import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.CycleStageSelectionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
-import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant;
+import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
-import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
+import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.PatientService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -51,20 +49,31 @@ public class ArAjaxController {
     @PostMapping(value = "/retrieve-valid-selection")
     public @ResponseBody
     Map<String, Object> retrieveValidSelection(HttpServletRequest request) {
+        String idType = ParamUtil.getString(request, "idType");
         String idNo = ParamUtil.getString(request, "idNo");
         String nationality = ParamUtil.getString(request, "nationality");
-        LoginContext loginContext = DataSubmissionHelper.getLoginContext(request);
-        String orgId = Optional.ofNullable(loginContext).map(LoginContext::getOrgId).orElse("");
-        PatientDto patient = patientService.getPatientDto(idNo, nationality, orgId);
-        ParamUtil.setSessionAttr(request, DataSubmissionConstant.AR_PATIENT, patient);
-        Map<String, Object> result = IaisCommonUtils.genNewHashMap(2);
-        if (patient != null) {
-            CycleStageSelectionDto dto = new CycleStageSelectionDto();
-            dto.setPatientIdNumber(idNo);
-            dto.setPatientNationality(nationality);
-            dto.setPatientName(patient.getName());
-            // lastStage & undergoingCycle
-            result.put("selection", dto);
+        CycleStageSelectionDto dto = new CycleStageSelectionDto();
+        dto.setPatientIdType(idType);
+        dto.setPatientIdNumber(idNo);
+        dto.setPatientNationality(nationality);
+        Map<String, Object> result = IaisCommonUtils.genNewHashMap(3);
+        Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
+        ValidationResult vr = WebValidationHelper.validateProperty(dto, "AR");
+        if (vr != null) {
+            errorMap.putAll(vr.retrieveAll());
+        }
+        if (!errorMap.isEmpty()) {
+            result.put(IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
+        } else {
+            LoginContext loginContext = DataSubmissionHelper.getLoginContext(request);
+            String orgId = Optional.ofNullable(loginContext).map(LoginContext::getOrgId).orElse("");
+            PatientDto patient = patientService.getPatientDto(idNo, nationality, orgId);
+            ParamUtil.setSessionAttr(request, DataSubmissionConstant.AR_PATIENT, patient);
+            if (patient != null) {
+                dto.setPatientName(patient.getName());
+                // lastStage & undergoingCycle
+                result.put("selection", dto);
+            }
         }
         String currCycle = ParamUtil.getString(request, "currCycle");
         String currStage = ParamUtil.getString(request, "currStage");
