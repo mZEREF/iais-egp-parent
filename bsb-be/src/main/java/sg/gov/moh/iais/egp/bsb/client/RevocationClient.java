@@ -49,8 +49,8 @@ public interface RevocationClient {
     @GetMapping(value = "/bsb-application/queryMisc", consumes = MediaType.APPLICATION_JSON_VALUE, produces =MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<ApplicationMisc>> getApplicationMiscByAppId(@RequestParam("applicationId") String applicationId);
 
-    @GetMapping(value = "/bsb-facilityActivity/queryActivityByAppId")
-    FeignResponseEntity<FacilityActivity> getFacilityActivityByApplicationId(@RequestParam("appId") String applicationId);
+//    @GetMapping(value = "/bsb-facilityActivity/queryActivityByAppId")
+//    FeignResponseEntity<FacilityActivity> getFacilityActivityByApplicationId(@RequestParam("appId") String applicationId);
 
     @PostMapping(value = "/bsb-application/updateApplication", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<SubmitRevokeDto> updateApplication(@RequestBody Application application);

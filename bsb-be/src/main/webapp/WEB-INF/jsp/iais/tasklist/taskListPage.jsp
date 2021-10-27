@@ -26,6 +26,7 @@
         <input type="hidden" name="action_type" value="">
         <input type="hidden" name="action_value" value="">
         <input type="hidden" name="action_additional" value="">
+        <input type="hidden" name="from" id="from" value="">
 
 
 
@@ -151,6 +152,9 @@
                                                 <c:choose>
                                                     <c:when test="${entity.appType eq 'BSBAPTY006' and entity.appStatus eq 'BSBAPST002'}">
                                                         <a href="/bsb-be/eservicecontinue/INTRANET/MohAOProcessingRevocation?appId=<iais:mask name='id' value='${entity.appId}'/>&OWASP_CSRFTOKEN=null"><c:out value="${entity.applicationNo}"/></a>
+                                                    </c:when>
+                                                    <c:when test="${entity.appType eq 'BSBAPTY006' and entity.appStatus eq 'BSBAPST001'}">
+                                                        <a href="/bsb-be/eservicecontinue/INTRANET/MohDOSubmitRevocation?appId=<iais:mask name='id' value='${entity.appId}'/>&OWASP_CSRFTOKEN=null&from=app"><c:out value="${entity.applicationNo}"/></a>
                                                     </c:when>
                                                     <c:when test="${entity.appType eq 'BSBAPTY001' and (entity.appStatus eq 'BSBAPST001' or entity.appStatus eq 'BSBAPST002' or entity.appStatus eq 'BSBAPST003')}">
                                                         <a href="/bsb-be/eservicecontinue/INTRANET/MohOfficersProcess?appId=<iais:mask name='id' value='${entity.appId}'/>&OWASP_CSRFTOKEN=null"><c:out value="${entity.applicationNo}"/></a>

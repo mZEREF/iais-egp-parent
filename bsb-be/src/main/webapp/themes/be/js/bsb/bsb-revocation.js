@@ -1,11 +1,11 @@
 //DO submit revocation process entrance
-function doProcess(id,fac){
-    showWaiting();
-    $("#appId").val(id);
-    $("#from").val(fac);
-    $("[name='action_type']").val("doProcess");
-    $("#mainForm").submit();
-}
+// function doProcess(fac){
+//     showWaiting();
+    // $("#appId").val(id);
+    // $("#from").val(fac);
+    // $("[name='action_type']").val("doProcess");
+    // $("#mainForm").submit();
+// }
 
 function doRevoke(id,fac){
     showWaiting();

@@ -25,10 +25,13 @@ public class AuditQueryDto extends PagingAndSortingDto implements Serializable {
 
     private String auditType;
 
+    private String from;
+
     public void clearAllFields() {
         facilityName = "";
         activeType = "";
         facilityClassification = "";
         auditType = "";
+        from = "";
     }
 }

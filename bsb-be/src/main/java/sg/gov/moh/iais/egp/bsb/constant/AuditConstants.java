@@ -14,6 +14,9 @@ public final class AuditConstants {
     public static final String PARAM_AUDIT_TYPE = "auditType";
     public static final String PARAM_AUDIT_DATE = "auditDate";
 
+    public static final String PARAM_CREATE_AUDIT = "createAudit";
+    public static final String PARAM_CANCEL_AUDIT = "cancelAudit";
+
     public static final String PARAM_REMARKS = "remark";
     public static final String PARAM_REASON = "reason";
     public static final String PARAM_DECISION = "decision";

@@ -39,7 +39,7 @@
                                         <iais:select name="facilityName" id="facilityName"
                                                      value="${auditSearch.facilityName}"
                                                      options="facilityName"
-                                                     firstOption="Please Select"/>
+                                                     firstOption="All"/>
                                     </iais:value>
                                 </iais:row>
 
@@ -49,7 +49,7 @@
                                         <iais:select name="facilityClassification" id="facilityClassification"
                                                      value="${auditSearch.facilityClassification}"
                                                      codeCategory="CATE_ID_BSB_FAC_CLASSIFICATION"
-                                                     firstOption="Please Select"/>
+                                                     firstOption="All"/>
                                     </iais:value>
                                 </iais:row>
 
@@ -58,7 +58,7 @@
                                     <iais:value width="18">
                                         <iais:select name="facilityType" id="facilityType"
                                                      value="${auditSearch.activeType}"
-                                                     codeCategory="CATE_ID_BSB_ACTIVE_TYPE" firstOption="Please Select"/>
+                                                     codeCategory="CATE_ID_BSB_ACTIVE_TYPE" firstOption="All"/>
                                     </iais:value>
                                 </iais:row>
 
@@ -67,7 +67,7 @@
                                     <iais:value width="18">
                                         <iais:select name="auditType" id="auditType"
                                                      value="${auditSearch.auditType}"
-                                                     codeCategory="CATE_ID_BSB_AUDIT_TYPE" firstOption="Please Select"/>
+                                                     codeCategory="CATE_ID_BSB_AUDIT_TYPE" firstOption="All"/>
                                         <span id="error_auditType"
                                               name="iaisErrorMsg"
                                               class="error-msg"></span>
@@ -108,24 +108,50 @@
                                 <c:forEach var="item" items="${dataList}" varStatus="status">
                                     <c:set var="auditIndex" value="${(status.index + 1) + (pageInfo.pageNo) * pageInfo.size}"></c:set>
                                     <tr style="display: table-row;">
-                                        <td><input name="auditId" type="checkbox" id="auditId${auditIndex}" value="<iais:mask name='auditId' value='${item.id}'/>"></td>
-                                        <td width="10%">${item.facility.facilityName}</td>
-                                        <td width="20%"><iais:code code="${item.facility.facilityClassification}"></iais:code></td>
-                                        <td width="30%">
-                                            <c:forEach var="activity" items="${item.facility.facilityActivities}" varStatus="status">
+                                            <%--                                        <input type="hidden" name="auditId" value="<iais:mask name='auditId' value='${item.id}'/>">--%>
+                                        <td><input name="facId" type="checkbox" id="auditId${auditIndex}" value="<iais:mask name='facId' value='${item.facility.id}'/>"></td>
+                                        <td width="12%">${item.facility.facilityName}</td>
+                                        <td width="15%"><iais:code code="${item.facility.facilityClassification}"></iais:code></td>
+                                        <td width="30%"><iais:code code="${item.activityType}"></iais:code></td>
+                                        <td>
+                                                <%--                                            <fmt:formatDate value='${item.approval.modifiedAt}' pattern='dd/MM/yyyy'/>--%>
+                                        </td>
+                                        <td>
+                                            <c:forEach var="audit" items="${item.approval.facilityAudits}" varStatus="status">
                                                 <c:choose>
                                                     <c:when test="${status.last}">
-                                                        <iais:code code="${activity.activityType}"></iais:code>
+                                                        <iais:code code="${audit.auditType}"></iais:code>
                                                     </c:when>
                                                     <c:otherwise>
-                                                        <iais:code code="${activity.activityType}"></iais:code>,
+                                                        <iais:code code="${audit.auditType}"></iais:code>,
                                                     </c:otherwise>
                                                 </c:choose>
                                             </c:forEach>
                                         </td>
-                                        <td><fmt:formatDate value='${item.auditDt}' pattern='dd/MM/yyyy'/></td>
-                                        <td><iais:code code="${item.auditType}"></iais:code></td>
-                                        <td><iais:code code="${item.cancelReason}"></iais:code></td>
+                                        <td>
+                                            <c:forEach var="audit" items="${item.approval.facilityAudits}" varStatus="status">
+                                                <c:choose>
+                                                    <c:when test="${status.last}">
+                                                        <iais:code code="${audit.scenarioCategory}"></iais:code>
+                                                    </c:when>
+                                                    <c:otherwise>
+                                                        <iais:code code="${audit.scenarioCategory}"></iais:code>,
+                                                    </c:otherwise>
+                                                </c:choose>
+                                            </c:forEach>
+                                        </td>
+                                        <td>
+                                            <c:forEach var="audit" items="${item.approval.facilityAudits}" varStatus="status">
+                                                <c:choose>
+                                                    <c:when test="${status.last}">
+                                                        <c:out value="${audit.auditOutcome}"/>
+                                                    </c:when>
+                                                    <c:otherwise>
+                                                        <c:out value="${audit.auditOutcome}"/>,
+                                                    </c:otherwise>
+                                                </c:choose>
+                                            </c:forEach>
+                                        </td>
                                     </tr>
                                 </c:forEach>
                             </table>

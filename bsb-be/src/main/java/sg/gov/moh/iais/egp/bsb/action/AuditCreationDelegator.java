@@ -15,7 +15,6 @@ import sg.gov.moh.iais.egp.bsb.constant.AuditConstants;
 import sg.gov.moh.iais.egp.bsb.dto.PageInfo;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
 import sg.gov.moh.iais.egp.bsb.dto.audit.AuditQueryDto;
-import sg.gov.moh.iais.egp.bsb.dto.audit.AuditQueryResultDto;
 import sg.gov.moh.iais.egp.bsb.dto.audit.FacilityQueryResultDto;
 import sg.gov.moh.iais.egp.bsb.entity.*;
 import sop.webflow.rt.api.BaseProcessClass;
@@ -65,35 +64,14 @@ public class AuditCreationDelegator {
         selectOption(request);
         // get search DTO
         AuditQueryDto searchDto=getSearchDto(request);
+        searchDto.setFrom(AuditConstants.PARAM_CREATE_AUDIT);
         ParamUtil.setSessionAttr(request, AuditConstants.PARAM_AUDIT_SEARCH, searchDto);
         // call API to get searched data
-//        ResponseDto<AuditQueryResultDto> searchResult = auditClient.doQuery(searchDto);
         ResponseDto<FacilityQueryResultDto> searchResult = auditClient.queryFacility(searchDto);
 
-//        if (searchResult.ok()) {
-//            ParamUtil.setRequestAttr(request, AuditConstants.KEY_AUDIT_PAGE_INFO, searchResult.getEntity().getPageInfo());
-//            List<FacilityAudit> audits = searchResult.getEntity().getTasks();
-//            for (FacilityAudit audit : audits) {
-//                List<FacilityActivity> activityList = auditClient.getFacilityActivityByFacilityId(audit.getFacility().getId()).getEntity();
-//                if (!activityList.isEmpty()) {
-//                    audit.getFacility().setFacilityActivities(activityList);
-//                }
-//            }
-//            ParamUtil.setRequestAttr(request, AuditConstants.KEY_AUDIT_DATA_LIST, audits);
-//        } else {
-//            log.warn("get audit API doesn't return ok, the response is {}", searchResult);
-//            ParamUtil.setRequestAttr(request, AuditConstants.KEY_AUDIT_PAGE_INFO, PageInfo.emptyPageInfo(searchDto));
-//            ParamUtil.setRequestAttr(request, AuditConstants.KEY_AUDIT_DATA_LIST, new ArrayList<>());
-//        }
         if (searchResult.ok()) {
             ParamUtil.setRequestAttr(request, AuditConstants.KEY_AUDIT_PAGE_INFO, searchResult.getEntity().getPageInfo());
-            List<Facility> audits = searchResult.getEntity().getTasks();
-//            for (FacilityAudit audit : audits) {
-//                List<FacilityActivity> activityList = auditClient.getFacilityActivityByFacilityId(audit.getFacility().getId()).getEntity();
-//                if (!activityList.isEmpty()) {
-//                    audit.getFacility().setFacilityActivities(activityList);
-//                }
-//            }
+            List<FacilityActivity> audits = searchResult.getEntity().getTasks();
             ParamUtil.setRequestAttr(request, AuditConstants.KEY_AUDIT_DATA_LIST, audits);
         } else {
             log.warn("get audit API doesn't return ok, the response is {}", searchResult);

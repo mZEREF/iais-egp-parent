@@ -33,15 +33,15 @@ $(function () {
     });
 
     $("#searchBtn").click(function (){
-        var optionValue = $("#auditType option:selected").val();
-        if (optionValue == "Please Select" || optionValue == "") {
-            $("#error_auditType").html("This is Mandatory");
-        }else {
+        // var optionValue = $("#auditType option:selected").val();
+        // if (optionValue == "Please Select" || optionValue == "") {
+        //     $("#error_auditType").html("This is Mandatory");
+        // }else {
             showWaiting();
             $("#error_auditType").html("");
             $("[name='action_type']").val("doSearch");
             $("#mainForm").submit();
-        }
+        // }
     });
 
     $("#clearBtn").click(function () {
@@ -49,7 +49,8 @@ $(function () {
         $("#facilityType option:first").prop("selected",'selected');
         $("#auditType option:first").prop("selected",'selected');
         $("#facilityName option:first").prop("selected",'selected');
-        $("#beInboxFilter .current").text("Please Select");
+        $("#beInboxFilter .current").text("All");
+        // $("#auditType .current").text("All");
     });
 
     $("#submitAudit").click(function () {

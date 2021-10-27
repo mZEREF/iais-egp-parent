@@ -4,6 +4,7 @@ import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
+import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
@@ -196,7 +197,8 @@ public class DORevocationDelegator {
 
         if (StringUtil.isNotEmpty(from)) {
             if (from.equals(RevocationConstants.APP)) {
-                String appId = ParamUtil.getMaskedString(request, RevocationConstants.PARAM_APP_ID);
+                String appId = ParamUtil.getRequestString(request,RevocationConstants.PARAM_APP_ID);
+                appId = MaskUtil.unMaskValue("id",appId);
                 ViewSelectedRevokeApplicationDto dto = revocationClient.getRevokeDetailByApplicationId(appId).getEntity();
                 Application application = dto.getApplication();
                 String processType = application.getProcessType();
