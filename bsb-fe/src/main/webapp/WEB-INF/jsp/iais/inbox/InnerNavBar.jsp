@@ -5,8 +5,11 @@
     <li role="presentation" id="appTab">
         <a href="/bsb-fe/eservice/INTERNET/MohBSBInboxApp" aria-controls="tabApp" role="tab">Applications</a>
     </li>
-    <li role="presentation" id="approvalsTab">
-        <a href="#" aria-controls="tabLic" role="tab">Approvals</a>
+    <li role="presentation" id="approvalFacTab">
+        <a href="/bsb-fe/eservice/INTERNET/MohBsbInboxApprovalFacAdmin" aria-controls="tabLic" role="tab">Approvals (Fac)</a>
+    </li>
+    <li role="presentation" id="approvalAfcTab">
+        <a href="/bsb-fe/eservice/INTERNET/MohBsbInboxApprovaAfc" aria-controls="tabLic" role="tab">Approvals (Afc)</a>
     </li>
     <li role="presentation" id="certTab">
         <a href="#" aria-controls="tabLic" role="tab">Certifications</a>
@@ -27,7 +30,10 @@
             <a href="/bsb-fe/eservice/INTERNET/MohBSBInboxApp" aria-controls="tabApplication" role="tab">Applications</a>
         </div>
         <div class="swiper-slide">
-            <a href="#" aria-controls="tabLicence" role="tab">Approvals</a>
+            <a href="/bsb-fe/eservice/INTERNET/MohBsbInboxApprovalFacAdmin" aria-controls="tabLicence" role="tab">Approvals (Fac)</a>
+        </div>
+        <div class="swiper-slide">
+            <a href="/bsb-fe/eservice/INTERNET/MohBsbInboxApprovaAfc" aria-controls="tabLicence" role="tab">Approvals (Afc)</a>
         </div>
         <div class="swiper-slide">
             <a href="#" aria-controls="tabLicence" role="tab">Certifications</a>

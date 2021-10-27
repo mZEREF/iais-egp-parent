@@ -123,6 +123,7 @@ public final class MasterCodeUtil {
     public static final String CATE_ID_LICENSEE_TYPE                                    = "1CC74A81-ACA4-EA11-BE7A-000C29D29DB0";
     public static final String CATE_ID_LICENSEE_SUB_TYPE                                = "AB50CD91-80D5-EB11-8B7F-000C29FD17F9";
 
+
     //ApplicationInfo
     public static final String CATE_ID_BSB_APP_TYPE = "FF506BE0-75EF-EB11-8B7D-000C293F0C99";
     public static final String CATE_ID_BSB_FAC_TYPE = "5013CFE0-9A2B-4D28-ADFC-313383A3FDA8";
@@ -172,7 +173,6 @@ public final class MasterCodeUtil {
      * @author: Jinhua on 2019/7/26 11:04
      * @param: []
      * @return: void
-     *
      */
     public static void refreshCache() {
         MasterCodeClient client = SpringContextHelper.getContext().getBean(MasterCodeClient.class);

@@ -28,4 +28,10 @@ public class ValidationResultDto implements Serializable {
         ObjectMapper mapper = new ObjectMapper();
         return mapper.writeValueAsString(errorMap);
     }
+
+    @SneakyThrows
+    public static String toErrorMsg(Object errorMsgHolder) {
+        ObjectMapper mapper = new ObjectMapper();
+        return mapper.writeValueAsString(errorMsgHolder);
+    }
 }

@@ -7,6 +7,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%@ taglib uri="http://www.ecq.com/iais-bsb" prefix="iais-bsb" %>
 <%@ page pageEncoding="UTF-8" contentType="text/html; charset=UTF-8"%>
+<%@ page import="sg.gov.moh.iais.egp.bsb.util.TableDisplayUtil" %>
 <%
     sop.webflow.rt.api.BaseProcessClass process =
             (sop.webflow.rt.api.BaseProcessClass) request.getAttribute("process");
@@ -18,15 +19,15 @@
 <script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-inbox.js"></script>
 
 
-<%@include file="../dashboard/dashboard.jsp"%>
-
+<%@include file="../../dashboard/dashboard.jsp"%>
+<%@include file="/WEB-INF/jsp/iais/include/showErrorMsg.jsp"%>
 
 <div class="main-content">
     <div class="container">
         <div class="row">
             <div class="col-xs-12">
                 <div class="tab-gp dashboard-tab" style="margin-left: 6px;margin-right: -8px;">
-                    <%@ include file="../InnerNavBar.jsp"%>
+                    <%@ include file="../../InnerNavBar.jsp"%>
 
                     <div class="tab-content">
                         <form class="" method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
@@ -38,22 +39,22 @@
                                 <input type="hidden" name="action_additional" value="">
 
 
-                                <%--@elvariable id="inboxAppSearchDto" type="sg.gov.moh.iais.egp.bsb.dto.inbox.InboxAppSearchDto"--%>
+                                <%--@elvariable id="inboxApprovalSearchDto" type="sg.gov.moh.iais.egp.bsb.dto.inbox.InboxApprovalSearchDto"--%>
                                 <div class="row">
-                                    <label for="searchAppNo" class="col-sm-3 col-md-2 control-label">Application No.:</label>
+                                    <label for="searchApprovalNo" class="col-sm-3 col-md-2 control-label">Approval No.:</label>
                                     <div class="col-sm-7 col-md-5">
-                                        <input type="text" id="searchAppNo" name="searchAppNo" value="${inboxAppSearchDto.searchAppNo}"/>
-                                        <span data-err-ind="searchAppNo" class="error-msg"></span>
+                                        <input type="text" id="searchApprovalNo" name="searchApprovalNo" value="${inboxApprovalSearchDto.searchApprovalNo}"/>
+                                        <span data-err-ind="searchApprovalNo" class="error-msg"></span>
                                     </div>
                                 </div>
                                 <div class="row" style="margin-bottom: 15px">
                                     <label for="searchProcessType" class="col-sm-3 col-md-2 control-label">Process Type:</label>
                                     <div class="col-sm-7 col-md-5">
                                         <select id="searchProcessType" name="searchProcessType">
-                                            <option value='<c:out value=""/>' <c:if test="${inboxAppSearchDto.searchProcessType eq ''}">selected="selected"</c:if>>All</option>
+                                            <option value='<c:out value=""/>' <c:if test="${inboxApprovalSearchDto.searchProcessType eq ''}">selected="selected"</c:if>>All</option>
                                             <%--@elvariable id="processTypeOps" type="java.util.List<com.ecquaria.cloud.moh.iais.common.dto.SelectOption>"--%>
                                             <c:forEach var="appStatusItem" items="${processTypeOps}">
-                                                <option value='<c:out value="${appStatusItem.value}"/>' <c:if test="${inboxAppSearchDto.searchProcessType eq appStatusItem.value}">selected="selected"</c:if> ><c:out value="${appStatusItem.text}"/></option>
+                                                <option value='<c:out value="${appStatusItem.value}"/>' <c:if test="${inboxApprovalSearchDto.searchProcessType eq appStatusItem.value}">selected="selected"</c:if> ><c:out value="${appStatusItem.text}"/></option>
                                             </c:forEach>
                                         </select>
                                         <span data-err-ind="searchProcessType" class="error-msg"></span>
@@ -63,29 +64,45 @@
                                     <label for="searchStatus" class="col-sm-3 col-md-2 control-label">Status:</label>
                                     <div class="col-sm-7 col-md-5">
                                         <select id="searchStatus" name="searchStatus">
-                                            <option value='<c:out value=""/>' <c:if test="${inboxAppSearchDto.searchStatus eq ''}">selected="selected"</c:if>>All</option>
-                                            <%--@elvariable id="appStatusOps" type="java.util.List<com.ecquaria.cloud.moh.iais.common.dto.SelectOption>"--%>
-                                            <c:forEach var="appStatusItem" items="${appStatusOps}">
-                                                <option value='<c:out value="${appStatusItem.value}"/>' <c:if test="${inboxAppSearchDto.searchStatus eq appStatusItem.value}">selected="selected"</c:if> ><c:out value="${appStatusItem.text}"/></option>
+                                            <option value='<c:out value=""/>' <c:if test="${inboxApprovalSearchDto.searchStatus eq ''}">selected="selected"</c:if>>All</option>
+                                            <%--@elvariable id="approvalStatusOps" type="java.util.List<com.ecquaria.cloud.moh.iais.common.dto.SelectOption>"--%>
+                                            <c:forEach var="approvalStatusItem" items="${approvalStatusOps}">
+                                                <option value='<c:out value="${approvalStatusItem.value}"/>' <c:if test="${inboxApprovalSearchDto.searchStatus eq approvalStatusItem.value}">selected="selected"</c:if> ><c:out value="${approvalStatusItem.text}"/></option>
                                             </c:forEach>
                                         </select>
                                         <span data-err-ind="searchStatus" class="error-msg"></span>
                                     </div>
                                 </div>
-                                <div class="row">
+                                <div class="row" style="margin-bottom: 15px">
                                     <div class="col-xs-12 col-sm-6">
-                                        <label class="col-xs-12 col-sm-4 control-label" style="padding-left: 0">Application Date</label>
+                                        <label class="col-xs-12 col-sm-4 control-label" style="padding-left: 0">Start Date</label>
                                         <div class="col-xs-12 col-sm-8">
-                                            <iais:datePicker id="searchSubmissionDateFrom" name="searchSubmissionDateFrom" value="${inboxAppSearchDto.searchSubmissionDateFrom}"/>
+                                            <iais:datePicker id="searchStartDateFrom" name="searchStartDateFrom" value="${inboxApprovalSearchDto.searchStartDateFrom}"/>
                                         </div>
-                                        <span data-err-ind="searchSubmissionDateFrom" class="error-msg"></span>
+                                        <span data-err-ind="searchStartDateFrom" class="error-msg"></span>
                                     </div>
                                     <div class="col-xs-12 col-sm-6">
                                         <label class="col-xs-2 col-sm-2 control-label" style="padding-left: 0">To</label>
                                         <div class="col-xs-12 col-sm-8">
-                                            <iais:datePicker id="searchSubmissionDateTo" name="searchSubmissionDateTo" value="${inboxAppSearchDto.searchSubmissionDateTo}"/>
+                                            <iais:datePicker id="searchStartDateTo" name="searchStartDateTo" value="${inboxApprovalSearchDto.searchStartDateTo}"/>
                                         </div>
-                                        <span data-err-ind="searchSubmissionDateTo" class="error-msg"></span>
+                                        <span data-err-ind="searchStartDateTo" class="error-msg"></span>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-xs-12 col-sm-6">
+                                        <label class="col-xs-12 col-sm-4 control-label" style="padding-left: 0">Expiry Date</label>
+                                        <div class="col-xs-12 col-sm-8">
+                                            <iais:datePicker id="searchExpiryDateFrom" name="searchExpiryDateFrom" value="${inboxApprovalSearchDto.searchExpiryDateFrom}"/>
+                                        </div>
+                                        <span data-err-ind="searchExpiryDateFrom" class="error-msg"></span>
+                                    </div>
+                                    <div class="col-xs-12 col-sm-6">
+                                        <label class="col-xs-2 col-sm-2 control-label" style="padding-left: 0">To</label>
+                                        <div class="col-xs-12 col-sm-8">
+                                            <iais:datePicker id="searchExpiryDateTo" name="searchExpiryDateTo" value="${inboxApprovalSearchDto.searchExpiryDateTo}"/>
+                                        </div>
+                                        <span data-err-ind="searchExpiryDateTo" class="error-msg"></span>
                                     </div>
                                 </div>
                                 <div class="row text-right text-center-mobile">
@@ -105,17 +122,20 @@
                                             <thead>
                                             <tr>
                                                 <%-- need to use new tag in future --%>
-                                                <iais:sortableHeader needSort="true" field="applicationNo" value="Application No." isFE="true" style="width:15%"/>
-                                                <iais:sortableHeader needSort="true" field="appType" value="Application Type" isFE="true" style="width:18%"/>
-                                                <iais:sortableHeader needSort="true" field="processType" value="Process Type" isFE="true"/>
-                                                <iais:sortableHeader needSort="true" field="status" value="Status" isFE="true"/>
-                                                <iais:sortableHeader needSort="true" field="applicationDt" value="Date Submitted" isFE="true" style="width:18%"/>
-                                                <iais:sortableHeader needSort="false" field="" value="Actions" isFE="true" style="width:17%"/>
+                                                <iais:sortableHeader needSort="true" field="approveNo" value="Approval No." isFE="true" style="width:12%"/>
+                                                <iais:sortableHeader needSort="true" field="processType" value="Process Type" isFE="true" style="width:12%"/>
+                                                <iais:sortableHeader needSort="true" field="status" value="Status" isFE="true" style="width:10%"/>
+                                                <iais:sortableHeader needSort="false" field="facilityName" value="Facility" isFE="true" style="width:8%"/>
+                                                <iais:sortableHeader needSort="false" field="" value="Facility Address" isFE="true" style="width:14%"/>
+                                                <iais:sortableHeader needSort="true" field="approvalStartDate" value="Start Date" isFE="true" style="width:13%"/>
+                                                <iais:sortableHeader needSort="true" field="approvalExpiryDate" value="Expiry Date" isFE="true" style="width:14%"/>
+                                                <iais:sortableHeader needSort="false" field="" value="Download" isFE="true" style="width:5%"/>
+                                                <iais:sortableHeader needSort="false" field="" value="Actions" isFE="true" style="width:12%"/>
                                             </tr>
                                             </thead>
                                             <tbody>
                                             <c:choose>
-                                                <%--@elvariable id="dataList" type="java.util.List<sg.gov.moh.iais.egp.bsb.entity.Application>"--%>
+                                                <%--@elvariable id="dataList" type="java.util.List<sg.gov.moh.iais.egp.bsb.dto.inbox.InboxApprovalFacAdminResultDto$ApprovalInfo>"--%>
                                                 <c:when test="${empty dataList}">
                                                     <tr>
                                                         <td colspan="6">
@@ -124,50 +144,44 @@
                                                     </tr>
                                                 </c:when>
                                                 <c:otherwise>
-                                                    <c:forEach var="app" items="${dataList}" varStatus="status">
+                                                    <c:forEach var="approval" items="${dataList}" varStatus="status">
                                                         <tr>
                                                             <td>
-                                                                <p class="visible-xs visible-sm table-row-title">Application No.</p>
-                                                                <c:choose>
-                                                                    <c:when test="${app.processType eq 'PROTYPE001'}">
-                                                                        <a href="/bsb-fe/eservice/INTERNET/MohBsbViewFacRegApplication?appId=<iais:mask name='id' value='${app.id}'/><c:if test="${app.status eq 'BSBAPST001'}">&editId=<iais:mask name='editId' value='${app.id}'/></c:if>"><c:out value="${app.applicationNo}"/></a>
-                                                                    </c:when>
-                                                                    <c:when test="${app.processType eq 'PROTYPE005'}">
-                                                                        <a href="/bsb-fe/eservice/INTERNET/MohBsbViewCertRegApplication?appId=<iais:mask name='id' value='${app.id}'/><c:if test="${app.status eq 'BSBAPST001'}">&editId=<iais:mask name='editId' value='${app.id}'/></c:if>"><c:out value="${app.applicationNo}"/></a>
-                                                                    </c:when>
-                                                                    <c:otherwise>
-                                                                        <c:out value="${app.applicationNo}"/>
-                                                                    </c:otherwise>
-                                                                </c:choose>
-                                                            </td>
-                                                            <td>
-                                                                <p class="visible-xs visible-sm table-row-title">Application Type</p>
-                                                                <p style="text-align: center"><iais:code code="${app.appType}"/></p>
+                                                                <p class="visible-xs visible-sm table-row-title">Approval No.</p>
+                                                                <p><c:out value="${approval.approveNo}"/></p>
                                                             </td>
                                                             <td>
                                                                 <p class="visible-xs visible-sm table-row-title">Process Type</p>
-                                                                <p><iais:code code="${app.processType}"/></p>
+                                                                <p><iais:code code="${approval.processType}"/></p>
                                                             </td>
                                                             <td>
                                                                 <p class="visible-xs visible-sm table-row-title">Status</p>
-                                                                <p><iais:code code="${app.status}"/></p>
+                                                                <p style="text-align: center"><iais:code code="${approval.status}"/></p>
                                                             </td>
                                                             <td>
-                                                                <p class="visible-xs visible-sm table-row-title">Date Submitted</p>
-                                                                <p><fmt:formatDate value="${app.applicationDt}" pattern="dd/MM/yyyy HH:mm:ss"/></p>
+                                                                <p class="visible-xs visible-sm table-row-title">Facility</p>
+                                                                <p style="text-align: center"><c:out value="${approval.facilityName}"/></p>
+                                                            </td>
+                                                            <td>
+                                                                <p class="visible-xs visible-sm table-row-title">Facility Address</p>
+                                                                <p><c:out value="${TableDisplayUtil.getOneLineAddress(approval.blkNo, approval.streetName, approval.floorNo, approval.unitNo, approval.postalCode)}"/></p>
+                                                            </td>
+                                                            <td>
+                                                                <p class="visible-xs visible-sm table-row-title">Start Date</p>
+                                                                <p><fmt:formatDate value="${approval.approvalStartDate}" pattern="dd MMM yyyy"/></p>
+                                                            </td>
+                                                            <td>
+                                                                <p class="visible-xs visible-sm table-row-title">Expiry Date</p>
+                                                                <p><fmt:formatDate value="${approval.approvalExpiryDate}" pattern="dd MMM yyyy"/></p>
+                                                            </td>
+                                                            <td>
+                                                                <p class="visible-xs visible-sm table-row-title">Download</p>
+                                                                <p></p>
                                                             </td>
                                                             <td>
                                                                 <p class="visible-xs visible-sm table-row-title">Actions</p>
-                                                                <select id="appAction${status.index}" name="appAction${status.index}" data-action-select="">
+                                                                <select id="approvalAction${status.index}" name="approvalAction${status.index}" data-action-select="">
                                                                     <option value="#" selected="selected">Select</option>
-                                                                    <c:choose>
-                                                                        <c:when test="${app.processType eq 'PROTYPE001' and app.status eq 'BSBAPST001'}">
-                                                                            <option value="/bsb-fe/eservice/INTERNET/MohBsbFacilityRegistration?editId=<iais:mask name='editId' value='${app.id}'/>">Edit</option>
-                                                                        </c:when>
-                                                                        <c:when test="${app.processType eq 'PROTYPE005' and app.status eq 'BSBAPST001'}">
-                                                                            <option value="/bsb-fe/eservice/INTERNET/MohFacilityCertifierRegistration?editId=<iais:mask name='editId' value='${app.id}'/>">Edit</option>
-                                                                        </c:when>
-                                                                    </c:choose>
                                                                 </select>
                                                             </td>
                                                         </tr>
