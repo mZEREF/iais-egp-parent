@@ -5,6 +5,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSub
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.CycleStageSelectionDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
@@ -56,6 +57,11 @@ public class ArCycleStagesManualDelegator {
      * @throws
      */
     public void doPrepareStage(BaseProcessClass bpc) {
+        String crudype = ParamUtil.getString(bpc.request, DataSubmissionConstant.CRUD_TYPE);
+        if (StringUtil.isIn(crudype, new String[]{"return", "back"})) {
+            ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.CRUD_ACTION_TYPE_CT, "back");
+            return;
+        }
         CycleStageSelectionDto selectionDto = getSelectionDtoFromPage(bpc.request);
         ArSuperDataSubmissionDto currentArDataSubmission = DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
         currentArDataSubmission.setSelectionDto(selectionDto);
