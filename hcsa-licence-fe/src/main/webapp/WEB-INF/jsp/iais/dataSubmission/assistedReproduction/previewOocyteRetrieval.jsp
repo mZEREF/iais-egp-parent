@@ -19,6 +19,7 @@
                 <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
                     <%@include file="section/previewOocyteRetrieval.jsp" %>
                 </div>
+                <%@include file="common/arFooter.jsp" %>
             </div>
         </div>
     </div>
