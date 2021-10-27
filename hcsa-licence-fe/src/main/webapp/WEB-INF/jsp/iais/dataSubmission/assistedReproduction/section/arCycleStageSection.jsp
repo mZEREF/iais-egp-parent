@@ -7,7 +7,7 @@
             </strong>
         </h4>
     </div>
-    <div id="efoDetails" class="panel-collapse collapse in">
+    <div id="arStageDetails" class="panel-collapse collapse in">
         <div class="panel-body">
             <div class="panel-main-content form-horizontal">
                 <c:set var="arCycleStageDto" value="${arSuperDataSubmissionDto.arCycleStageDto}" />
@@ -113,6 +113,7 @@
                     </iais:value>
                     <span id="error_currentArTreatment" name="iaisErrorMsg" class="error-msg"></span>
                 </iais:row>
+
                 <iais:row>
                     <iais:field width="5" value="No. of Children from Current Marriage" mandatory="false"/>
                     <iais:value width="7" cssClass="col-md-7">
@@ -155,6 +156,95 @@
                         <iais:input maxLength="100" type="text" name="numberCyclesUndergoneOverseas" id="numberCyclesUndergoneOverseas" value="${arCycleStageDto.numberCyclesUndergoneOverseas}" />
                     </iais:value>
                 </iais:row>
+                <iais:row>
+                    <iais:field width="5" value="Number of Cycles undergone Locally" mandatory="false"/>
+                    <iais:value width="7" cssClass="col-md-7">
+                        <iais:value width="7" cssClass="col-md-7">
+                           <c:out value=""/>
+                        </iais:value>
+                    </iais:value>
+                </iais:row>
+
+                <iais:row>
+                    <iais:field width="5" value="In-Vitro Maturation" mandatory="false"/>
+                    <iais:value width="3" cssClass="col-md-3">
+                        <div class="form-check">
+                            <input class="form-check-input"
+                                   type="radio"
+                                   name="enhancedCounselling"
+                                   value="1"
+                                   id="enhancedCounsellingRadioYes"
+                                   <c:if test="${arCycleStageDto.enhancedCounselling}">checked</c:if>
+                                   aria-invalid="false">
+                            <label class="form-check-label"
+                                   for="enhancedCounsellingRadioYes"><span
+                                    class="check-circle"></span>Yes</label>
+                        </div>
+                    </iais:value>
+                    <iais:value width="4" cssClass="col-md-4">
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio"
+                                   name="enhancedCounselling"
+                                   value="0"
+                                   id="enhancedCounsellingRadioNo"
+                                   <c:if test="${!arCycleStageDto.enhancedCounselling}">checked</c:if>
+                                   aria-invalid="false">
+                            <label class="form-check-label"
+                                   for="enhancedCounsellingRadioNo"><span
+                                    class="check-circle"></span>No</label>
+                        </div>
+                    </iais:value>
+                </iais:row>
+
+                <iais:row>
+                    <iais:field width="5" value="AR Practitioner" mandatory="true"/>
+                    <iais:value width="7" cssClass="col-md-7">
+                        <iais:value width="7" cssClass="col-md-7">
+                            <iais:select name="practitioner" options="practitionerDropDown" firstOption="Please Select" value="${arCycleStageDto.practitioner}"/>
+                        </iais:value>
+                    </iais:value>
+                </iais:row>
+
+                <iais:row>
+                    <iais:field width="5" value="Embryologist" mandatory="false"/>
+                    <iais:value width="7" cssClass="col-md-7">
+                        <iais:value width="7" cssClass="col-md-7">
+                            <iais:select name="embryologist" options="embryologistDropDown" firstOption="Please Select" value="${arCycleStageDto.embryologist}"/>
+                        </iais:value>
+                    </iais:value>
+                </iais:row>
+
+                <iais:row>
+                    <iais:field width="5" value="In-Vitro Maturation" mandatory="false"/>
+                    <iais:value width="3" cssClass="col-md-3">
+                        <div class="form-check">
+                            <input class="form-check-input"
+                                   type="radio"
+                                   name="oocyteEmbryoSpermsUsed"
+                                   value="1"
+                                   id="oocyteEmbryoSpermsUsedRadioYes"
+                                   <c:if test="${arCycleStageDto.oocyteEmbryoSpermsUsed}">checked</c:if>
+                                   aria-invalid="false">
+                            <label class="form-check-label"
+                                   for="oocyteEmbryoSpermsUsedRadioYes"><span
+                                    class="check-circle"></span>Yes</label>
+                        </div>
+                    </iais:value>
+                    <iais:value width="4" cssClass="col-md-4">
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio"
+                                   name="oocyteEmbryoSpermsUsed"
+                                   value="0"
+                                   id="oocyteEmbryoSpermsUsedRadioNo"
+                                   <c:if test="${!arCycleStageDto.oocyteEmbryoSpermsUsed}">checked</c:if>
+                                   aria-invalid="false">
+                            <label class="form-check-label"
+                                   for="oocyteEmbryoSpermsUsedRadioNo"><span
+                                    class="check-circle"></span>No</label>
+                        </div>
+                    </iais:value>
+                </iais:row>
+                <%@include file="donorSection.jsp"%>
             </div>
         </div>
     </div>
