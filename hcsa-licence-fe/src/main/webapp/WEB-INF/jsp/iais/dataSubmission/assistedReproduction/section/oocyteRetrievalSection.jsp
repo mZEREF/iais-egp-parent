@@ -53,7 +53,7 @@
                 <iais:row>
                     <iais:field width="5" value="No. Retrieved (Total)"/>
                     <iais:value width="7" cssClass="col-md-7">
-                        <label name="totalRetrievedNum">${totalRetrievedNum}</label>
+                        <p id="totalRetrievedNum">${totalRetrievedNum}</p>
                     </iais:value>
                 </iais:row>
                 <iais:row>
@@ -76,9 +76,9 @@
 </div>
 <script>
     $(document).ready(function () {
-        $('input[type="checkbox"]').change(function () {
+        $('input[type="checkbox"]').click(function () {
             if (this.name == "isFromPatient" || this.name == "isFromPatientTissue"){
-                if(this.val() == "true"){
+                if($(this).prop('checked')){
                     $("#isFromDonor").attr("disabled",true);
                     $("#isFromDonorTissue").attr("disabled",true);
                 }else {
@@ -86,7 +86,7 @@
                     $("#isFromDonorTissue").attr("disabled",false);
                 }
             }else if (this.name == "isFromDonor" || this.name == "isFromDonorTissue"){
-                if(this.val() == "true"){
+                if($(this).prop('checked')){
                     $("#isFromPatient").attr("disabled",true);
                     $("#isFromPatientTissue").attr("disabled",true);
                 }else {
@@ -96,12 +96,18 @@
             }
         });
 
-        $('input[type="text"]').change(function () {
+        $('input[type="text"]').blur(function () {
             var totalNum = 0;
-            for(var i in $('input[type="text"]')){
-                totalNum += i.val();
-            }
-            $('#totalRetrievedNum').val(totalNum);
+            $('input[type="text"]').each(function (){
+                let val = $(this).val();
+                if (val){
+                    var intNum = parseInt(val);
+                    if (intNum){
+                        totalNum += intNum;
+                    }
+                }
+            })
+            $('#totalRetrievedNum').html(totalNum);
         });
     });
 </script>
