@@ -19,7 +19,7 @@
 
 <%@ include file="common/arHeader.jsp" %>
 
-<script type="text/javascript" src="<%=webroot1%>js/dataSubmission/person.js"></script>
+<script type="text/javascript" src="<%=webroot1%>js/dataSubmission/cycleStageSelection.js"></script>
 
 <form method="post" id="mainForm" action=<%=continueURL%>>
     <div class="main-content">
