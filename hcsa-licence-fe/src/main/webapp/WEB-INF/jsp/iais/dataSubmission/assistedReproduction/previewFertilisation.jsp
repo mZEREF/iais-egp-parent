@@ -15,7 +15,7 @@
     <div class="main-content">
         <div class="container center-content">
             <div class="col-xs-12">
-                <h3>Please key in the cycle information below</h3>
+                <h3>Preview and Submit</h3>
                 <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
                     <%@include file="section/previewFertilisationDetail.jsp" %>
                 </div>

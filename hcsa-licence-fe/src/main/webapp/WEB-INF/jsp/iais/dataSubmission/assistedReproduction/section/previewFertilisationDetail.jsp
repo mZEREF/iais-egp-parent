@@ -34,8 +34,8 @@
                 <iais:row>
                     <iais:field width="5" value="AR Techniques Used"/>
                     <iais:value width="7" display="true">
-                        <c:forEach items="${fertilisationDto.atuList}" var="sos" varStatus="staus">
-                            <c:if test="${staus.index !=0}"> <br></c:if> <iais:code code="${sos}"/>
+                        <c:forEach items="${fertilisationDto.atuList}" var="atu" varStatus="staus">
+                            <c:if test="${staus.index !=0}"> <br></c:if> <iais:code code="${atu}"/>
                         </c:forEach>
                     </iais:value>
                 </iais:row>
@@ -87,6 +87,7 @@
                         <c:out value="${fertilisationDto.thawedOocytesZiftNum}" />
                     </iais:value>
                 </iais:row>
+
             </div>
         </div>
     </div>
