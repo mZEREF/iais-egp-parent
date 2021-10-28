@@ -6,6 +6,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArDonorDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
+import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationProperty;
 import com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.helper.ControllerHelper;
@@ -17,6 +18,7 @@ import sop.webflow.rt.api.BaseProcessClass;
 import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
 import java.util.List;
+import java.util.Map;
 
 /**
  * ArCycleStageDelegator
@@ -97,9 +99,24 @@ public class ArCycleStageDelegator extends CommonDelegator {
         ArSuperDataSubmissionDto arSuperDataSubmissionDto = DataSubmissionHelper.getCurrentArDataSubmission(request);
         ArCycleStageDto arCycleStageDto = arSuperDataSubmissionDto.getArCycleStageDto();
         setArCycleStageDtoByPage(request,arCycleStageDto);
-        validatePageData(request,arCycleStageDto,arCycleStageDto.getArDonorDtos());
+        validatePageDataHaveValidationProperty(request,arCycleStageDto,arCycleStageDto.getArDonorDtos(),getByArCycleStageDto(arCycleStageDto));
         ParamUtil.setSessionAttr(request, DataSubmissionConstant.AR_DATA_SUBMISSION,arSuperDataSubmissionDto);
     }
+
+    private Map<Object,ValidationProperty> getByArCycleStageDto(ArCycleStageDto arCycleStageDto){
+        Map<Object,ValidationProperty> validationPropertyList = IaisCommonUtils.genNewHashMap();
+        if(IaisCommonUtils.isNotEmpty(arCycleStageDto.getArDonorDtos())){
+            arCycleStageDto.getArDonorDtos().forEach( arDonorDto -> {
+               ValidationProperty validationProperty = new ValidationProperty();
+               validationProperty.setIndex(arDonorDto.getArDonorIndex());
+                validationProperty.setSuffix(String.valueOf(arDonorDto.getArDonorIndex()));
+                validationPropertyList.put(arDonorDto,validationProperty);
+                    }
+            );
+        }
+        return validationPropertyList;
+    }
+
 
     @Override
     public void pageConfirmAction(BaseProcessClass bpc) {
