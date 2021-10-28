@@ -1,5 +1,8 @@
 package com.ecquaria.cloud.moh.iais.action.datasubmission;
 
+import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -28,11 +31,12 @@ import java.util.Map;
  */
 @Slf4j
 public abstract class CommonDelegator {
-    protected static final String ACTION_TYPE_PAGE         = "page";
-    protected static final String ACTION_TYPE_RETURN       = "return";
-    protected static final String ACTION_TYPE_CONFIRM      = "confirm";
-    protected static final String ACTION_TYPE_DRAFT        = "draft";
-    protected static final String ACTION_TYPE_SUBMISSION   = "submission";
+
+    protected static final String ACTION_TYPE_PAGE = "page";
+    protected static final String ACTION_TYPE_RETURN = "return";
+    protected static final String ACTION_TYPE_CONFIRM = "confirm";
+    protected static final String ACTION_TYPE_DRAFT = "draft";
+    protected static final String ACTION_TYPE_SUBMISSION = "submission";
 
     @Autowired
     private ArDataSubmissionService arDataSubmissionService;
@@ -204,7 +208,7 @@ public abstract class CommonDelegator {
     public void doPageAction(BaseProcessClass bpc) {
         log.info(StringUtil.changeForLog("-----" + this.getClass().getSimpleName() + " Page Action -----"));
         // for draft back
-        ParamUtil.setRequestAttr(bpc.request, "currentStage", "page");
+        ParamUtil.setRequestAttr(bpc.request, "currentStage", ACTION_TYPE_PAGE);
         String actionType = ParamUtil.getString(bpc.request, DataSubmissionConstant.CRUD_TYPE);
         ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, actionType);
         pageAction(bpc);
@@ -227,7 +231,7 @@ public abstract class CommonDelegator {
     public void doPageConfirmAction(BaseProcessClass bpc) {
         log.info(StringUtil.changeForLog("-----" + this.getClass().getSimpleName() + " Confirm Action -----"));
         // for draft back
-        ParamUtil.setRequestAttr(bpc.request, "currentStage", "confirm");
+        ParamUtil.setRequestAttr(bpc.request, "currentStage", ACTION_TYPE_CONFIRM);
         String crud_action_type = ParamUtil.getString(bpc.request, DataSubmissionConstant.CRUD_TYPE);
         ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, crud_action_type);
         pageConfirmAction(bpc);
@@ -272,4 +276,5 @@ public abstract class CommonDelegator {
     public  final boolean validationGoToByValidationDto(HttpServletRequest request,Object obj,List ...validationDtos){
         return validationGoToByValidationDto(request,obj,"save",ACTION_TYPE_CONFIRM,ACTION_TYPE_PAGE,validationDtos);
     }
+
 }
