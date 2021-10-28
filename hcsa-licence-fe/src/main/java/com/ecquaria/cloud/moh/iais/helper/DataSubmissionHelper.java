@@ -45,6 +45,8 @@ public final class DataSubmissionHelper {
             result.add(DataSubmissionConsts.AR_CYCLE_AR);
             result.add(DataSubmissionConsts.AR_CYCLE_IUI);
             result.add(DataSubmissionConsts.AR_CYCLE_EFO);
+            result.add(DataSubmissionConsts.AR_CYCLE_EFO);
+
             // result.add(DataSubmissionConsts.AR_CYCLE_NON);
         } else if (DataSubmissionConsts.AR_CYCLE_NON.equals(currCycle) || DataSubmissionConsts.AR_STAGE_END_CYCLE.equals(currStage)) {
             result.add(DataSubmissionConsts.AR_CYCLE_AR);

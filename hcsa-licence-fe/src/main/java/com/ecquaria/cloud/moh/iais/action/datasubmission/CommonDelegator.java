@@ -6,11 +6,17 @@ import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
+import com.ecquaria.cloud.moh.iais.dto.LoginContext;
+import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
+import com.ecquaria.cloud.moh.iais.service.client.SystemAdminClient;
+import com.ecquaria.cloud.moh.iais.service.datasubmission.ArDataSubmissionService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -27,6 +33,9 @@ public abstract class CommonDelegator {
     protected static final String ACTION_TYPE_CONFIRM      = "confirm";
     protected static final String ACTION_TYPE_DRAFT        = "draft";
     protected static final String ACTION_TYPE_SUBMISSION   = "submission";
+
+    @Autowired
+    private ArDataSubmissionService arDataSubmissionService;
 
     /**
      * StartStep: Start
@@ -161,6 +170,21 @@ public abstract class CommonDelegator {
     public void doSubmission(BaseProcessClass bpc) {
         ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.CURRENT_PAGE_STAGE, "ack");
         submission(bpc);
+        ArSuperDataSubmissionDto arSuperDataSubmission = DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
+        DataSubmissionDto dataSubmissionDto = arSuperDataSubmission.getCurrentDataSubmissionDto();
+        dataSubmissionDto.setSubmissionNo(arDataSubmissionService.getSubmissionNo(dataSubmissionDto.getSubmissionType(),
+                dataSubmissionDto.getCycleStage(), arSuperDataSubmission.getLastDataSubmissionDto()));
+        if (StringUtil.isEmpty(dataSubmissionDto.getStatus())) {
+            dataSubmissionDto.setStatus(DataSubmissionConsts.DS_STATUS_COMPLETED);
+        }
+        LoginContext loginContext = DataSubmissionHelper.getLoginContext(bpc.request);
+        if (loginContext != null) {
+            dataSubmissionDto.setSubmitBy(loginContext.getUserId());
+            dataSubmissionDto.setSubmitDt(new Date());
+        }
+        dataSubmissionDto.setVersion(1);
+        arSuperDataSubmission = arDataSubmissionService.saveArSuperDataSubmissionDto(arSuperDataSubmission);
+        ParamUtil.setSessionAttr(bpc.request, DataSubmissionConstant.AR_DATA_SUBMISSION, arSuperDataSubmission);
     }
 
     /**
@@ -180,7 +204,7 @@ public abstract class CommonDelegator {
     public void doPageAction(BaseProcessClass bpc) {
         log.info(StringUtil.changeForLog("-----" + this.getClass().getSimpleName() + " Page Action -----"));
         // for draft back
-        ParamUtil.setRequestAttr(bpc.request, "currentStage", ACTION_TYPE_PAGE);
+        ParamUtil.setRequestAttr(bpc.request, "currentStage", "page");
         String actionType = ParamUtil.getString(bpc.request, DataSubmissionConstant.CRUD_TYPE);
         ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, actionType);
         pageAction(bpc);
@@ -203,7 +227,7 @@ public abstract class CommonDelegator {
     public void doPageConfirmAction(BaseProcessClass bpc) {
         log.info(StringUtil.changeForLog("-----" + this.getClass().getSimpleName() + " Confirm Action -----"));
         // for draft back
-        ParamUtil.setRequestAttr(bpc.request, "currentStage", ACTION_TYPE_CONFIRM);
+        ParamUtil.setRequestAttr(bpc.request, "currentStage", "confirm");
         String crud_action_type = ParamUtil.getString(bpc.request, DataSubmissionConstant.CRUD_TYPE);
         ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, crud_action_type);
         pageConfirmAction(bpc);

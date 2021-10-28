@@ -2,7 +2,9 @@ package com.ecquaria.cloud.moh.iais.action.datasubmission;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.HusbandDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInfoDto;
@@ -39,6 +41,14 @@ public class PatientDelegator extends CommonDelegator{
 
     @Override
     public void start(BaseProcessClass bpc) {
+        ArSuperDataSubmissionDto currentArDataSubmission = DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
+        DataSubmissionDto dataSubmission = currentArDataSubmission.getCurrentDataSubmissionDto();
+        if (dataSubmission == null) {
+            dataSubmission = new DataSubmissionDto();
+            currentArDataSubmission.setCurrentDataSubmissionDto(dataSubmission);
+        }
+        dataSubmission.setSubmissionType(DataSubmissionConsts.DATA_SUBMISSION_TYPE_AR);
+        dataSubmission.setCycleStage(DataSubmissionConsts.DATA_SUBMISSION_CYCLE_STAGE_PATIENT);
     }
 
     @Override
@@ -66,7 +76,6 @@ public class PatientDelegator extends CommonDelegator{
 
     @Override
     public void submission(BaseProcessClass bpc) {
-
     }
 
     @Override
@@ -94,25 +103,35 @@ public class PatientDelegator extends CommonDelegator{
         if (StringUtil.isNotEmpty(patient.getName())) {
             patient.setName(patient.getName().toUpperCase(AppConsts.DFT_LOCALE));
         }
+        // for oval validation
         if (StringUtil.isEmpty(patient.getEthnicGroup())) {
             patient.setEthnicGroup("");
         }
         patientInfo.setPatient(patient);
         if (patient.isPreviousIdentification()) {
+            String preIdType = ParamUtil.getString(request, "preIdType");
             String preIdNumber = ParamUtil.getString(request, "preIdNumber");
             String preNationality = ParamUtil.getString(request, "preNationality");
-            String orgId = null;
-            LoginContext loginContext = DataSubmissionHelper.getLoginContext(request);
-            if (loginContext != null) {
-                orgId = loginContext.getOrgId();
+            String retrievePrevious = ParamUtil.getString(request, "retrievePrevious");
+            PatientDto previous = new PatientDto();
+            previous.setIdType(preIdType);
+            previous.setIdNumber(preIdNumber);
+            previous.setNationality(preNationality);
+            if (AppConsts.YES.equals(retrievePrevious)) {
+                String orgId = null;
+                LoginContext loginContext = DataSubmissionHelper.getLoginContext(request);
+                if (loginContext != null) {
+                    orgId = loginContext.getOrgId();
+                }
+                previous = patientService.getPatientDto(preIdNumber, preNationality, orgId);
             }
-            PatientDto previous = patientService.getPatientDto(preIdNumber, preNationality, orgId);
             patientInfo.setPrevious(previous);
         }
         HusbandDto husband = ControllerHelper.get(request, HusbandDto.class, "Hbd");
         if (StringUtil.isNotEmpty(husband.getName())) {
             husband.setName(husband.getName().toUpperCase(AppConsts.DFT_LOCALE));
         }
+        // for oval validation
         if (StringUtil.isEmpty(husband.getEthnicGroup())) {
             husband.setEthnicGroup("");
         }

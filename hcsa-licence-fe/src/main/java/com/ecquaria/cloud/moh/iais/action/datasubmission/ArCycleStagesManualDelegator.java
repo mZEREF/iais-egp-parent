@@ -1,8 +1,10 @@
 package com.ecquaria.cloud.moh.iais.action.datasubmission;
 
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.CycleStageSelectionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -75,6 +77,13 @@ public class ArCycleStagesManualDelegator {
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
             bpc.request.setAttribute(DataSubmissionConstant.CRUD_ACTION_TYPE_CT, "invalid");
         } else {
+            DataSubmissionDto dataSubmission = currentArDataSubmission.getCurrentDataSubmissionDto();
+            if (dataSubmission == null) {
+                dataSubmission = new DataSubmissionDto();
+                currentArDataSubmission.setCurrentDataSubmissionDto(dataSubmission);
+            }
+            dataSubmission.setSubmissionType(DataSubmissionConsts.DATA_SUBMISSION_TYPE_AR);
+            dataSubmission.setCycleStage(selectionDto.getStage());
             bpc.request.setAttribute(DataSubmissionConstant.CRUD_ACTION_TYPE_CT, selectionDto.getStage());
         }
     }

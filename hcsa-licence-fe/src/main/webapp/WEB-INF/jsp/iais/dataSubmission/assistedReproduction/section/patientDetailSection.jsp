@@ -51,8 +51,8 @@
                                 Retrieve Identification
                             </a>
                             <input type="hidden" name="retrievePrevious" value="${not empty previous ? '1' : '0'}"/>
+                            <span class="error-msg col-md-12" name="iaisErrorMsg" id="error_retrievePrevious"></span>
                         </iais:value>
-                        <span class="error-msg col-md-12" name="iaisErrorMsg" id="error_retrievePrevious"></span>
                     </iais:row>
                     <iais:row>
                         <iais:field width="5" value="Name"/>
@@ -74,40 +74,9 @@
 <iais:confirm msg="GENERAL_ACK018" callBack="$('#noFoundDiv').modal('hide');" popupOrder="noFoundDiv" needCancel="false"
               needFungDuoJi="false"/>
 <script type="text/javascript">
-    function callCommonAjax(options, callback) {
-        if (isEmpty(options)) {
-            options = {};
-        }
-        var url = '${pageContext.request.contextPath}';
-        if (!isEmpty(options.url)) {
-            url += options.url;
-        } else {
-            url += '/ar/retrieve-identification';
-        }
-        console.log(url);
-        $.ajax({
-            url: url,
-            dataType: 'json',
-            data: options,
-            type: 'POST',
-            success: function (data) {
-                if (typeof callback === 'function') {
-                    callback(data);
-                } else if (!isEmpty(callback)) {
-                    callFunc(callback, data);
-                }
-                dismissWaiting();
-            },
-            error: function (data) {
-                console.log("err");
-                console.log(data);
-                dismissWaiting();
-            }
-        });
-    }
-
     function retrieveIdentification() {
-        var idType = $('#patientIdType').val();
+        showWaiting();
+        var idType = $('#preIdType').val();
         var idNo = $('input[name="preIdNumber"]').val();
         var nationality = $('#preNationality').val();
         var options = {
@@ -120,11 +89,18 @@
     }
 
     function previousPatientCallback(data) {
-        if (isEmpty(data)) {
+        clearErrorMsg();
+        if (isEmpty(data) || isEmpty(data.patient) || !isEmpty(data.errorMsg) || data.invalidType) {
             $('#preName').find('p').text('');
             $('#preBirthDate').find('p').text('');
             $('[name="retrievePrevious"]').val('0');
-            $('#noFoundDiv').modal('show');
+            if (!isEmpty(data.errorMsg)) {
+                doValidationParse(data.errorMsg);
+            } else if (data.invalidType) {
+                showErrorMsg('error_preIdType', '<iais:message key="GENERAL_ERR0051" />');
+            } else {
+                $('#noFoundDiv').modal('show');
+            }
             return;
         }
         $('[name="retrievePrevious"]').val('1');
@@ -132,7 +108,7 @@
         $('#preBirthDate').find('p').text(data.birthDate);
     }
 
-    function callFunc(func) {
+    /*function callFunc(func) {
         try {
             this[func].apply(this, Array.prototype.slice.call(arguments, 1));
         } catch (e) {
@@ -151,5 +127,5 @@
         if ('NAT0001' == $selector.val()) {
             $target.append('<span class="mandatory">*</span>');
         }
-    }
+    }*/
 </script>

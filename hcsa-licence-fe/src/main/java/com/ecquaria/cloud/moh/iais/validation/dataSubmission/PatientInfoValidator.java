@@ -27,12 +27,12 @@ public class PatientInfoValidator implements CustomizeValidator {
             if (patient == null) {
                 patient = new PatientDto();
             }
-            ValidationResult result = WebValidationHelper.validateProperty(patient, "AR");
+            ValidationResult result = WebValidationHelper.validateProperty(patient, "save");
             if (result != null) {
                 map.putAll(result.retrieveAll());
             }
             if (patient.isPreviousIdentification()) {
-                PatientDto previous = patientInfo.getPatient();
+                PatientDto previous = patientInfo.getPrevious();
                 if (previous == null) {
                     previous = new PatientDto();
                 }
@@ -42,16 +42,16 @@ public class PatientInfoValidator implements CustomizeValidator {
                 } else if (!StringUtil.isEmpty(previous.getName())) {
                     map.put("retrievePrevious", "GENERAL_ACK018");
                 }
-                result = WebValidationHelper.validateProperty(previous, "AR");
+                result = WebValidationHelper.validateProperty(previous, "ART");
                 if (result != null) {
-                    map.putAll(result.retrieveAll());
+                    map.putAll(result.retrieveAll("pre", ""));
                 }
             }
             HusbandDto husband = patientInfo.getHusband();
             if (husband == null) {
                 husband = new HusbandDto();
             }
-            result = WebValidationHelper.validateProperty(husband, "AR");
+            result = WebValidationHelper.validateProperty(husband, "save");
             if (result != null) {
                 map.putAll(result.retrieveAll("", "Hbd"));
             }
