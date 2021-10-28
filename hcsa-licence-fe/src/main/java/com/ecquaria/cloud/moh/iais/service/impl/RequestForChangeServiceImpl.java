@@ -93,6 +93,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import static java.util.regex.Pattern.compile;
 
@@ -1855,6 +1856,24 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
 
     @Override
     public void sendRfcSubmittedEmail(List<AppSubmissionDto> appSubmissionDtos, String pmtMethod) throws IOException, TemplateException {
+        if (appSubmissionDtos == null || appSubmissionDtos.isEmpty()) {
+            log.info("No submissions to send email.");
+        }
+        appSubmissionDtos.stream()
+                .collect(Collectors.groupingBy(AppSubmissionDto::getAppGrpNo))
+                .forEach((groupNo, appSubmissionDtoList) -> {
+                    log.info(StringUtil.changeForLog("The Group No for Email: " + groupNo));
+                    String method = appSubmissionDtoList.get(0).isAutoRfc() ? null : pmtMethod;
+                    try {
+                        sendRfcEmail(appSubmissionDtoList, method);
+                    } catch (Exception e) {
+                        log.error(StringUtil.changeForLog(groupNo + " : " + e.getMessage()), e);
+                    }
+                });
+    }
+
+    private void sendRfcEmail(List<AppSubmissionDto> appSubmissionDtos, String pmtMethod) throws IOException,
+            TemplateException {
         AppSubmissionDto appSubmissionDto=appSubmissionDtos.get(0);
         String appGroupId = appSubmissionDto.getAppGrpId();
         ApplicationGroupDto applicationGroupDto=applicationFeClient.getApplicationGroup(appGroupId).getEntity();
@@ -1986,8 +2005,6 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
             smsParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_LICENSEE_ID);
             notificationHelper.sendNotification(smsParam);
         }
-
-
     }
 
     private void sendRfcLicenseeSubmittedEmail(List<AppSubmissionDto> appSubmissionDtos, String pmtMethod) throws IOException, TemplateException {
