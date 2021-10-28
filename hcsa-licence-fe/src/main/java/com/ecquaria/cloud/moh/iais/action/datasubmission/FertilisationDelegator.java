@@ -3,6 +3,7 @@ package com.ecquaria.cloud.moh.iais.action.datasubmission;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.FertilisationDto;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant;
@@ -15,6 +16,7 @@ import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
+import java.util.Arrays;
 import java.util.Map;
 
 @Delegator("fertilisationDelegator")
@@ -83,6 +85,16 @@ public class FertilisationDelegator extends CommonDelegator{
         ParamUtil.getStringsToString(request,"arTechniquesUsed");
         fertilisationDto.setThawedOocytesGiftNum(ParamUtil.getString(request,"thawedOocytesGiftNum"));
         fertilisationDto.setThawedOocytesZiftNum(ParamUtil.getString(request,"thawedOocytesZiftNum"));
+         if( !IaisCommonUtils.isEmpty(sourceOfSemen)){
+             fertilisationDto.setSosList(Arrays.asList(sourceOfSemen));
+         }else{
+             fertilisationDto.setSosList(null);
+         }
+        if( !IaisCommonUtils.isEmpty(arTechniquesUsed)){
+            fertilisationDto.setAtuList(Arrays.asList(arTechniquesUsed));
+        }else{
+            fertilisationDto.setAtuList(null);
+        }
 
         ValidationResult validationResult = WebValidationHelper.validateProperty(fertilisationDto, "save");
         Map<String, String> errorMap = validationResult.retrieveAll();
