@@ -10,25 +10,18 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 import sg.gov.moh.iais.egp.bsb.client.DocClient;
-import sg.gov.moh.iais.egp.bsb.client.ProcessClient;
 import sg.gov.moh.iais.egp.bsb.constant.RevocationConstants;
-import sg.gov.moh.iais.egp.bsb.dto.BsbEmailParam;
 import sg.gov.moh.iais.egp.bsb.dto.PageInfo;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
 import sg.gov.moh.iais.egp.bsb.dto.audit.AuditDocDto;
 import sg.gov.moh.iais.egp.bsb.dto.revocation.*;
 import sg.gov.moh.iais.egp.bsb.client.RevocationClient;
 import sg.gov.moh.iais.egp.bsb.entity.*;
-import sg.gov.moh.iais.egp.bsb.helper.BsbNotificationHelper;
-import sg.gov.moh.iais.egp.bsb.util.JoinParamUtil;
 import sg.gov.moh.iais.egp.bsb.util.TableDisplayUtil;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
-import java.text.SimpleDateFormat;
 import java.util.*;
-
-import static sg.gov.moh.iais.egp.bsb.constant.EmailConstants.*;
 
 /**
  * @author Zhu Tangtang
@@ -38,13 +31,6 @@ import static sg.gov.moh.iais.egp.bsb.constant.EmailConstants.*;
 public class AORevocationDelegator {
     @Autowired
     private RevocationClient revocationClient;
-
-    @Autowired
-    private ProcessClient processClient;
-
-    @Autowired
-    private BsbNotificationHelper bsbNotificationHelper;
-
     @Autowired
     private DocClient docClient;
 
