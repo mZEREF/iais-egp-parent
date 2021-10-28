@@ -27,9 +27,9 @@ public class INTERNET___MohApprovalApp___1 extends BaseProcessClass {
 		EngineHelper.delegate(DELEGATOR, "start", this);
 	}
 
-	public void prepareCompanyInfo_OnStepProcess_0() throws Exception {
-	// 		PrepareCompanyInfo->OnStepProcess
-		EngineHelper.delegate(DELEGATOR, "prepareCompanyInfo", this);
+	public void preCompInfo_OnStepProcess_0() throws Exception {
+	// 		PreCompInfo->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "preCompInfo", this);
 	}
 
 	public void prepareApprovalProfile_OnStepProcess_0() throws Exception {
@@ -42,19 +42,19 @@ public class INTERNET___MohApprovalApp___1 extends BaseProcessClass {
 		EngineHelper.delegate(DELEGATOR, "prepareActivity", this);
 	}
 
-	public void prepareDocuments_OnStepProcess_0() throws Exception {
-	// 		PrepareDocuments->OnStepProcess
-		EngineHelper.delegate(DELEGATOR, "prepareDocuments", this);
+	public void prePrimaryDoc_OnStepProcess_0() throws Exception {
+	// 		PrePrimaryDoc->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "prePrimaryDoc", this);
 	}
 
-	public void preparePreview_OnStepProcess_0() throws Exception {
-	// 		PreparePreview->OnStepProcess
-		EngineHelper.delegate(DELEGATOR, "preparePreview", this);
+	public void prePreviewSubmit_OnStepProcess_0() throws Exception {
+	// 		PrePreviewSubmit->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "prePreviewSubmit", this);
 	}
 
-	public void handleCompanyInfo_OnStepProcess_0() throws Exception {
-	// 		HandleCompanyInfo->OnStepProcess
-		EngineHelper.delegate(DELEGATOR, "handleCompanyInfo", this);
+	public void handleCompInfo_OnStepProcess_0() throws Exception {
+	// 		HandleCompInfo->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "handleCompInfo", this);
 	}
 
 	public void handleApprovalProfile_OnStepProcess_0() throws Exception {
@@ -67,14 +67,14 @@ public class INTERNET___MohApprovalApp___1 extends BaseProcessClass {
 		EngineHelper.delegate(DELEGATOR, "handleActivity", this);
 	}
 
-	public void handleDocuments_OnStepProcess_0() throws Exception {
-	// 		HandleDocuments->OnStepProcess
-		EngineHelper.delegate(DELEGATOR, "handleDocuments", this);
+	public void handlePrimaryDoc_OnStepProcess_0() throws Exception {
+	// 		HandlePrimaryDoc->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "handlePrimaryDoc", this);
 	}
 
-	public void handlePreview_OnStepProcess_0() throws Exception {
-	// 		HandlePreview->OnStepProcess
-		EngineHelper.delegate(DELEGATOR, "handlePreview", this);
+	public void handlePreviewSubmit_OnStepProcess_0() throws Exception {
+	// 		HandlePreviewSubmit->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "handlePreviewSubmit", this);
 	}
 
 	public void actionFilter_OnStepProcess_0() throws Exception {

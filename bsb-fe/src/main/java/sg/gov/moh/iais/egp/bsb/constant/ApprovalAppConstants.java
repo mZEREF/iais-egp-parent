@@ -9,7 +9,7 @@ public class ApprovalAppConstants {
 
     public static final String NODE_NAME_COMPANY_INFO = "compInfo";
     public static final String NODE_NAME_ACTIVITY = "activity";
-    public static final String NODE_NAME_APPROVAL_PROFILE = "approvalProfiles";
+    public static final String NODE_NAME_APPROVAL_PROFILE = "approvalProfile";
     public static final String NODE_NAME_PRIMARY_DOC = "primaryDocs";
     public static final String NODE_NAME_PREVIEW_SUBMIT = "previewSubmit";
 

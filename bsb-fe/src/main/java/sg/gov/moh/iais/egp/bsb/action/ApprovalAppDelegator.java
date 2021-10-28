@@ -2,23 +2,25 @@ package sg.gov.moh.iais.egp.bsb.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
+import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoDto;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
 import sg.gov.moh.iais.egp.bsb.client.ApprovalAppClient;
+import sg.gov.moh.iais.egp.bsb.client.FileRepoClient;
 import sg.gov.moh.iais.egp.bsb.common.node.Node;
 import sg.gov.moh.iais.egp.bsb.common.node.NodeGroup;
 import sg.gov.moh.iais.egp.bsb.common.node.Nodes;
 import sg.gov.moh.iais.egp.bsb.common.node.simple.SimpleNode;
-import sg.gov.moh.iais.egp.bsb.constant.ApprovalApplicationConstants;
+import sg.gov.moh.iais.egp.bsb.constant.DocConstants;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
-import sg.gov.moh.iais.egp.bsb.dto.approvalApp.*;
-import sg.gov.moh.iais.egp.bsb.dto.register.facility.BiologicalAgentToxinDto;
-import sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilitySelectionDto;
+import sg.gov.moh.iais.egp.bsb.dto.approval.*;
+import sg.gov.moh.iais.egp.bsb.entity.Biological;
+import sg.gov.moh.iais.egp.bsb.entity.DocSetting;
 import sg.gov.moh.iais.egp.bsb.entity.Facility;
 import sg.gov.moh.iais.egp.bsb.util.LogUtil;
 import sop.webflow.rt.api.BaseProcessClass;
@@ -27,6 +29,8 @@ import javax.servlet.http.HttpServletRequest;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import static sg.gov.moh.iais.egp.bsb.constant.ApprovalAppConstants.*;
 
@@ -55,18 +59,19 @@ public class ApprovalAppDelegator {
 
     private static final String KEY_SHOW_ERROR_SWITCH = "needShowValidationError";
 
-    private static final String KEY_NATIONALITY_OPTIONS = "nationalityOps";
-
     private static final String ERR_MSG_BAT_NOT_NULL = "Biological Agent/Toxin node group must not be null!";
     private static final String ERR_MSG_NULL_GROUP = "Node group must not be null!";
     private static final String ERR_MSG_NULL_NAME = "Name must not be null!";
     private static final String ERR_MSG_INVALID_ACTION = "Invalid action";
 
-    private final ApprovalAppClient approvalAppClient;
+    private static final String FACILITY_ID_SELECT = "facilityIdSelect";
 
-    @Autowired
-    public ApprovalAppDelegator(ApprovalAppClient approvalAppClient) {
+    private final ApprovalAppClient approvalAppClient;
+    private final FileRepoClient fileRepoClient;
+
+    public ApprovalAppDelegator(ApprovalAppClient approvalAppClient, FileRepoClient fileRepoClient) {
         this.approvalAppClient = approvalAppClient;
+        this.fileRepoClient = fileRepoClient;
     }
 
     public void init(BaseProcessClass bpc) {
@@ -86,7 +91,6 @@ public class ApprovalAppDelegator {
                 ResponseDto<ApprovalAppDto> resultDto = approvalAppClient.getApprovalAppAppData(appId);
                 if (resultDto.ok()) {
                     failRetrieveEditData = false;
-                    //TODO
                     NodeGroup approvalAppNodeGroup = resultDto.getEntity().toApprovalAppRootGroup(KEY_ROOT_NODE_GROUP);
                     ParamUtil.setSessionAttr(request, KEY_ROOT_NODE_GROUP, approvalAppNodeGroup);
                 }
@@ -101,14 +105,14 @@ public class ApprovalAppDelegator {
     }
 
     public void start(BaseProcessClass bpc){
-
+        // do nothing now
     }
 
-    public void prepareCompanyInfo(BaseProcessClass bpc){
+    public void preCompInfo(BaseProcessClass bpc){
         // do nothing now, need to prepare company info in the future
     }
 
-    public void handleCompanyInfo(BaseProcessClass bpc){
+    public void handleCompInfo(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
         NodeGroup approvalAppRoot = getApprovalAppRoot(request);
         Node compInfoNode = approvalAppRoot.getNode(NODE_NAME_COMPANY_INFO);
@@ -124,14 +128,13 @@ public class ApprovalAppDelegator {
     public void prepareActivity(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
         List<Facility> facilityList = approvalAppClient.getAllMainActApprovalFac().getEntity();
-        List<SelectOption> facilityNameList =  new ArrayList<>(facilityList.size());
-        if (facilityList != null && !facilityList.isEmpty()){
+        List<SelectOption> facilityIdList =  new ArrayList<>(facilityList.size());
+        if (!facilityList.isEmpty()){
             for (Facility fac : facilityList) {
-                facilityNameList.add(new SelectOption(fac.getId(),fac.getFacilityName()));
+                facilityIdList.add(new SelectOption(fac.getId(),fac.getFacilityName()));
             }
         }
-        ParamUtil.setRequestAttr(request, ApprovalApplicationConstants.FACILITY_NAME_SELECT, facilityNameList);
-        // TODO test my code how to add to chenwei
+        ParamUtil.setRequestAttr(request, FACILITY_ID_SELECT, facilityIdList);
         NodeGroup approvalAppRoot = getApprovalAppRoot(request);
         SimpleNode activityNode = (SimpleNode) approvalAppRoot.getNode(NODE_NAME_ACTIVITY);
         ActivityDto activityDto = (ActivityDto)activityNode.getValue();
@@ -146,46 +149,99 @@ public class ApprovalAppDelegator {
     public void handleActivity(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
         NodeGroup approvalAppRoot = getApprovalAppRoot(request);
-        //TODO ??? one floor code what is currentNodePath
         SimpleNode activityNode = (SimpleNode) approvalAppRoot.getNode(NODE_NAME_ACTIVITY);
         ActivityDto activityDto = (ActivityDto) activityNode.getValue();
         activityDto.reqObjMapping(request);
 
         String actionType = ParamUtil.getString(request, KEY_ACTION_TYPE);
+        String actionValue = ParamUtil.getString(request, KEY_ACTION_VALUE);
+        Assert.hasText(actionValue, "Invalid action value");
+        boolean currentLetGo = true;
+        if (KEY_NAV_NEXT.equals(actionValue)) {  // if click next, we need to validate current node anyway
+            currentLetGo = activityNode.doValidation();
+            if (currentLetGo) {
+                Nodes.passValidation(approvalAppRoot, NODE_NAME_ACTIVITY);
+            }
+        }
+
+        if (activityNode.isValidated()) {
+            NodeGroup approvalProfileGroup = (NodeGroup) approvalAppRoot.getNode(NODE_NAME_APPROVAL_PROFILE);
+            changeApprovalProfileNodeGroup(approvalProfileGroup, activityDto);
+        }
         if (KEY_ACTION_JUMP.equals(actionType)) {
             jumpHandler(request, approvalAppRoot, NODE_NAME_ACTIVITY, activityNode);
         } else {
             throw new IaisRuntimeException(ERR_MSG_INVALID_ACTION);
         }
-
-        if (activityNode.isValidated()) {
-            NodeGroup approvalProfileGroup = (NodeGroup) approvalAppRoot.getNode(NODE_NAME_APPROVAL_PROFILE);
-            //todo jixu
-            /*changeBatNodeGroup(approvalProfileGroup, activityDto);*/
-        }
         ParamUtil.setSessionAttr(request, KEY_ROOT_NODE_GROUP, approvalAppRoot);
     }
 
     public void prepareApprovalProfile(BaseProcessClass bpc){
+        HttpServletRequest request = bpc.request;
+        NodeGroup approvalAppRoot = getApprovalAppRoot(request);
+        String currentNodePath = (String) ParamUtil.getSessionAttr(request, KEY_JUMP_DEST_NODE);
+        SimpleNode approvalProfileNode = (SimpleNode) approvalAppRoot.at(currentNodePath);
+        ApprovalProfileDto approvalProfileDto = (ApprovalProfileDto) approvalProfileNode.getValue();
+        Boolean needShowError = (Boolean) ParamUtil.getRequestAttr(request, KEY_SHOW_ERROR_SWITCH);
+        if (needShowError == Boolean.TRUE) {
+            ParamUtil.setRequestAttr(request, KEY_VALIDATION_ERRORS, approvalProfileDto.retrieveValidationResult());
+        }
+        approvalProfileNode.needValidation();
+        ParamUtil.setRequestAttr(request, NODE_NAME_APPROVAL_PROFILE, approvalProfileDto);
+
+        NodeGroup approvalProfileGroup = (NodeGroup) approvalAppRoot.at(NODE_NAME_APPROVAL_PROFILE);
+        ParamUtil.setRequestAttr(request, "activeNodeKey", approvalProfileGroup.getActiveNodeKey());
+        SimpleNode activityNode = (SimpleNode) approvalAppRoot.getNode(NODE_NAME_ACTIVITY);
+        ActivityDto activityDto = (ActivityDto) activityNode.getValue();
+        ParamUtil.setRequestAttr(request, "schedules", activityDto.getSchedules());
+        String currentSchedule = approvalProfileNode.getName();
+        List<Biological> biologicalList = this.approvalAppClient.getBiologicalBySchedule(currentSchedule).getEntity();
+        List<SelectOption> batIdOps = new ArrayList<>(biologicalList.size());
+        if (!biologicalList.isEmpty()){
+            for (Biological biological : biologicalList) {
+                batIdOps.add(new SelectOption(biological.getId(),biological.getName()));
+            }
+        }
+        ParamUtil.setRequestAttr(request, "batIdOps", batIdOps);
     }
 
     public void handleApprovalProfile(BaseProcessClass bpc){
+        HttpServletRequest request = bpc.request;
+        NodeGroup approvalAppRoot = getApprovalAppRoot(request);
+        String currentNodePath = (String) ParamUtil.getSessionAttr(request, KEY_JUMP_DEST_NODE);
+        SimpleNode approvalProfileNode = (SimpleNode) approvalAppRoot.at(currentNodePath);
+        ApprovalProfileDto approvalProfileDto = (ApprovalProfileDto) approvalProfileNode.getValue();
+        approvalProfileDto.reqObjMapping(request);
+
+        String actionType = ParamUtil.getString(request, KEY_ACTION_TYPE);
+        if (KEY_ACTION_JUMP.equals(actionType)) {
+            jumpHandler(request, approvalAppRoot, currentNodePath, approvalProfileNode);
+        } else {
+            throw new IaisRuntimeException(ERR_MSG_INVALID_ACTION);
+        }
+        ParamUtil.setSessionAttr(request, KEY_ROOT_NODE_GROUP, approvalAppRoot);
     }
 
-    public void prepareDocuments(BaseProcessClass bpc){
+    public void prePrimaryDoc(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
         NodeGroup approvalAppRoot = getApprovalAppRoot(request);
         SimpleNode primaryDocNode = (SimpleNode) approvalAppRoot.at(NODE_NAME_PRIMARY_DOC);
-        PrimaryDocDto primaryDocDto = (PrimaryDocDto)primaryDocNode.getValue();
+        PrimaryDocDto primaryDocDto = (PrimaryDocDto) primaryDocNode.getValue();
         Boolean needShowError = (Boolean) ParamUtil.getRequestAttr(request, KEY_SHOW_ERROR_SWITCH);
         if (needShowError == Boolean.TRUE) {
             ParamUtil.setRequestAttr(request, KEY_VALIDATION_ERRORS, primaryDocDto.retrieveValidationResult());
         }
         primaryDocNode.needValidation();
-        ParamUtil.setRequestAttr(request, NODE_NAME_PRIMARY_DOC, primaryDocDto);
+
+        ParamUtil.setRequestAttr(request, "docSettings", getApprovalAppDocSettings());
+
+        Map<String, List<PrimaryDocDto.DocRecordInfo>> savedFiles = primaryDocDto.getExistDocTypeMap();
+        Map<String, List<PrimaryDocDto.NewDocInfo>> newFiles = primaryDocDto.getNewDocTypeMap();
+        ParamUtil.setRequestAttr(request, "savedFiles", savedFiles);
+        ParamUtil.setRequestAttr(request, "newFiles", newFiles);
     }
 
-    public void handleDocuments(BaseProcessClass bpc){
+    public void handlePrimaryDoc(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
         NodeGroup approvalAppRoot = getApprovalAppRoot(request);
         String currentNodePath = NODE_NAME_PRIMARY_DOC;
@@ -202,10 +258,55 @@ public class ApprovalAppDelegator {
         ParamUtil.setSessionAttr(request, KEY_ROOT_NODE_GROUP, approvalAppRoot);
     }
 
-    public void preparePreview(BaseProcessClass bpc){
+    public void prePreviewSubmit(BaseProcessClass bpc) {
+        HttpServletRequest request = bpc.request;
+        NodeGroup approvalAppRoot = getApprovalAppRoot(request);
+
+        NodeGroup approvalProfileGroup = (NodeGroup) approvalAppRoot.at(NODE_NAME_APPROVAL_PROFILE);
+        List<ApprovalProfileDto> batList = getApprovalProfileList(approvalProfileGroup);
+        ParamUtil.setRequestAttr(request, "approvalProfileList", batList);
+
+        ParamUtil.setRequestAttr(request, "docSettings", getApprovalAppDocSettings());
+        ParamUtil.setRequestAttr(request, NODE_NAME_PRIMARY_DOC, ((PrimaryDocDto)((SimpleNode)approvalAppRoot.at(NODE_NAME_PRIMARY_DOC)).getValue()).getAllDocTypeMap());
     }
 
-    public void handlePreview(BaseProcessClass bpc){
+    public void handlePreviewSubmit(BaseProcessClass bpc) {
+        HttpServletRequest request = bpc.request;
+        NodeGroup approvalAppRoot = getApprovalAppRoot(request);
+        String currentNodePath = NODE_NAME_PREVIEW_SUBMIT;
+        Node previewSubmitNode = approvalAppRoot.at(NODE_NAME_PREVIEW_SUBMIT);
+
+        String actionType = ParamUtil.getString(request, KEY_ACTION_TYPE);
+        String actionValue = ParamUtil.getString(request, KEY_ACTION_VALUE);
+        if (KEY_ACTION_JUMP.equals(actionType)) {
+            if (KEY_NAV_NEXT.equals(actionValue)) {
+                // save docs
+                SimpleNode primaryDocNode = (SimpleNode) approvalAppRoot.at(NODE_NAME_PRIMARY_DOC);
+                PrimaryDocDto primaryDocDto = (PrimaryDocDto) primaryDocNode.getValue();
+                List<MultipartFile> files = primaryDocDto.getNewDocMap().values().stream().map(PrimaryDocDto.NewDocInfo::getMultipartFile).collect(Collectors.toList());
+                List<String> repoIds = fileRepoClient.saveFiles(files).getEntity();
+                primaryDocDto.newFileSaved(repoIds);
+
+                // save data
+                ApprovalAppDto finalAllDataDto = ApprovalAppDto.from(approvalAppRoot);
+                ResponseDto<String> responseDto = approvalAppClient.saveNewApprovalApp(finalAllDataDto);
+                log.info("save new approval application response: {}", responseDto);
+
+                // delete docs
+                for (String id: primaryDocDto.getToBeDeletedRepoIds()) {
+                    FileRepoDto fileRepoDto = new FileRepoDto();
+                    fileRepoDto.setId(id);
+                    fileRepoClient.removeFileById(fileRepoDto);
+                }
+
+                ParamUtil.setRequestAttr(request, KEY_ACTION_TYPE, KEY_ACTION_SUBMIT);
+            } else {
+                jumpHandler(request, approvalAppRoot, currentNodePath, previewSubmitNode);
+            }
+        } else {
+            throw new IaisRuntimeException(ERR_MSG_INVALID_ACTION);
+        }
+        ParamUtil.setSessionAttr(request, KEY_ROOT_NODE_GROUP, approvalAppRoot);
     }
 
     public void actionFilter(BaseProcessClass bpc){
@@ -230,9 +331,11 @@ public class ApprovalAppDelegator {
     }
 
     public void doSaveDraft(BaseProcessClass bpc){
+        // do nothing now
     }
 
     public void doSubmit(BaseProcessClass bpc){
+        // do nothing now
     }
 
     /**
@@ -248,11 +351,10 @@ public class ApprovalAppDelegator {
 
     public static NodeGroup newApprovalAppRoot(String name) {
         Node companyInfoNode = new Node(NODE_NAME_COMPANY_INFO, new Node[0]);
-        //TODO primaryDocDto previewSubmitDto is not mine
         SimpleNode activityNode = new SimpleNode(new ActivityDto(),NODE_NAME_ACTIVITY,new Node[0]);
         NodeGroup approvalProfileNodeGroup = initApprovalProfileNodeGroup(new Node[]{activityNode});
         SimpleNode primaryDocNode = new SimpleNode(new PrimaryDocDto(),NODE_NAME_PRIMARY_DOC,new Node[]{approvalProfileNodeGroup,approvalProfileNodeGroup});
-        SimpleNode previewSubmitNode = new SimpleNode(new PreviewSubmitDto(),NODE_NAME_PREVIEW_SUBMIT,new Node[]{approvalProfileNodeGroup,approvalProfileNodeGroup,primaryDocNode});
+        Node previewSubmitNode = new Node(NODE_NAME_PREVIEW_SUBMIT,new Node[]{approvalProfileNodeGroup,approvalProfileNodeGroup,primaryDocNode});
         NodeGroup build = new NodeGroup.Builder().name(name)
                 .addNode(companyInfoNode)
                 .addNode(activityNode)
@@ -271,14 +373,13 @@ public class ApprovalAppDelegator {
     }
 
     public static void changeApprovalProfileNodeGroup(NodeGroup approvalProfileNodeGroup, ActivityDto activityDto) {
-        // TODO errorMessage condition update
-        /*Assert.notNull(approvalProfileNodeGroup, ERR_MSG_BAT_NOT_NULL);
+        Assert.notNull(approvalProfileNodeGroup, ERR_MSG_BAT_NOT_NULL);
         Node[] subNodes = new Node[activityDto.getSchedules().size()];
-        List<String> activityTypes = activityDto.getSchedules();
-        for (int i = 0; i < activityTypes.size(); i++) {
-            subNodes[i] = new SimpleNode(new ApprovalProfileDto(activityTypes.get(i)), activityTypes.get(i), new Node[0]);
+        List<String> schedules = activityDto.getSchedules();
+        for (int i = 0; i < schedules.size(); i++) {
+            subNodes[i] = new SimpleNode(new ApprovalProfileDto(schedules.get(i)), schedules.get(i), new Node[0]);
         }
-        approvalProfileNodeGroup.replaceNodes(subNodes);*/
+        approvalProfileNodeGroup.replaceNodes(subNodes);
     }
 
     /**
@@ -336,5 +437,81 @@ public class ApprovalAppDelegator {
 
     public String approvalProfileNodeSpecialHandle(String destNode) {
         return destNode.startsWith(NODE_NAME_APPROVAL_PROFILE) ? NODE_NAME_APPROVAL_PROFILE : destNode;
+    }
+
+    /**
+     * Compute the class name for the nav tab.
+     * The result will be active, complete or incomplete
+     * @param group the node group of the approvalAppRoot
+     * @return the class name
+     */
+    public static String computeTabClassname(NodeGroup group, String name) {
+        Assert.notNull(group, ERR_MSG_NULL_GROUP);
+        Assert.notNull(name, ERR_MSG_NULL_NAME);
+        String className;
+        if (name.equals(group.getActiveNodeKey())) {
+            className = "active";
+        } else {
+            Node node = group.getNode(name);
+            Assert.notNull(node, name + " node does not exist!");
+            className = node.isValidated() ? "complete" : "incomplete";
+        }
+        return className;
+    }
+
+    /**
+     * Same logic as {@link #computeTabClassname(NodeGroup, String)}, but will not throw exception.
+     * And give a default classname when exception occur.
+     * This behaviour is intended for the usage in the JSP, we don't want the JSP throw an exception.
+     */
+    public static String computeTabClassnameForJsp(NodeGroup group, String name) {
+        String classname = "incomplete";
+        try {
+            classname = computeTabClassname(group, name);
+        } catch (Exception e) {
+            log.error("Fail to compute the class name", e);
+        }
+        return classname;
+    }
+
+    /**
+     *
+     * @param group the node group of the approvalAppRoot
+     */
+    public static boolean ifNodeSelected(NodeGroup group, String name) {
+        Assert.notNull(group, ERR_MSG_NULL_GROUP);
+        Assert.notNull(name, ERR_MSG_NULL_NAME);
+        return name.equals(group.getActiveNodeKey());
+    }
+
+    public static boolean ifNodeSelectedForJsp(NodeGroup group, String name) {
+        boolean selected = false;
+        try {
+            selected = ifNodeSelected(group, name);
+        } catch (Exception e) {
+            log.error("Fail to judge if the node selected", e);
+        }
+        return selected;
+    }
+
+    /* Will be removed in future, will get this from config mechanism */
+    private List<DocSetting> getApprovalAppDocSettings () {
+        List<DocSetting> docSettings = new ArrayList<>();
+        docSettings.add(new DocSetting(DocConstants.DOC_TYPE_BIO_SAFETY_COM, "Approval/Endorsement: Biosafety Committee", true));
+        docSettings.add(new DocSetting(DocConstants.DOC_TYPE_RISK_ASSESSMENT, "Risk Assessment", false));
+        docSettings.add(new DocSetting(DocConstants.DOC_TYPE_STANDARD_OPERATING_PROCEDURE, "Standard Operating Procedure (SOP)", false));
+        docSettings.add(new DocSetting(DocConstants.DOC_TYPE_GMAC_ENDORSEMENT, "GMAC Endorsement", false));
+        docSettings.add(new DocSetting(DocConstants.DOC_TYPE_OTHERS, "Others", false));
+        return docSettings;
+    }
+
+    public static List<ApprovalProfileDto> getApprovalProfileList(NodeGroup approvalProfileNodeGroup) {
+        Assert.notNull(approvalProfileNodeGroup, ERR_MSG_BAT_NOT_NULL);
+        List<ApprovalProfileDto> approvalProfileList = new ArrayList<>(approvalProfileNodeGroup.count());
+        for (Node node : approvalProfileNodeGroup.getAllNodes()) {
+            assert node instanceof SimpleNode;
+            approvalProfileList.add((ApprovalProfileDto) ((SimpleNode) node).getValue());
+        }
+        return approvalProfileList;
     }
 }

@@ -1,7 +1,7 @@
 package sg.gov.moh.iais.egp.bsb.ajax;
 
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
-import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +26,10 @@ import java.util.Map;
 @Controller
 @RequestMapping("/bsbApprovalSelect")
 public class ApprovalAppAjaxController {
+    private static final String RESULT = "result";
+    private static final String RESULT_SUCCESS = "success";
+    private static final String RESULT_FAIL = "fail";
+
     @Autowired
     private ApprovalAppClient approvalAppClient;
 
@@ -36,12 +40,19 @@ public class ApprovalAppAjaxController {
         String facilityId = request.getParameter("facilityId");
         if (StringUtil.hasLength(facilityId)){
             List<FacilityActivity> facilityActivityList = approvalAppClient.getApprovalFAByFacId(facilityId).getEntity();
-            jsonMap.put("result", "success");
-            jsonMap.put("queryResult",facilityActivityList);
+            List<SelectOption> facilityActivitySelect = new ArrayList<>(facilityActivityList.size());
+            if (facilityActivityList != null && !facilityActivityList.isEmpty()){
+                for (FacilityActivity facilityActivity : facilityActivityList) {
+                    facilityActivitySelect.add(new SelectOption(facilityActivity.getId(),facilityActivity.getActivityType()));
+                }
+                jsonMap.put(RESULT, RESULT_SUCCESS);
+                jsonMap.put("queryResult",facilityActivitySelect);
+            }else {
+                jsonMap.put(RESULT, RESULT_FAIL);
+            }
         }else {
-            jsonMap.put("result", "Fail");
+            jsonMap.put(RESULT, RESULT_FAIL);
         }
         return jsonMap;
     }
-
 }

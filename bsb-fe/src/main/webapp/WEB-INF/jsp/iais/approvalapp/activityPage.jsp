@@ -30,23 +30,30 @@
         <div class="component-gp col-xs-12 col-sm-11 col-md-10 col-lg-8" style="margin-top:0px">
             <div class="row">
                 <div class="col-xs-12 col-md-10">
-                    <div class=" form-group form-horizontal formgap">
+                    <div class="form-group form-horizontal formgap">
                         <div class="col-sm-4 control-label formtext ">
                             <label class="control-label control-set-font control-font-label">Facility Name</label>
                             <span class="mandatory">*</span>
                         </div>
                         <div class="col-sm-4 col-md-7 control-font-label">
-                            <input type="hidden" id="facilityName" name="facilityName" value="">
-                            <iais:select name="facilityId" id="facilityId" disabled="false" options="facilityNameSelect" firstOption="Please Select" value=""></iais:select>
+                            <input type="hidden" id="facilityName" name="facilityName" value="${activity.facilityName}">
+                            <select name="facilityId" id="facilityId">
+                                <c:forEach items="${facilityIdSelect}" var="id">
+                                    <option value="${id.value}" <c:if test="${activity.facilityId eq id.value}">selected="selected"</c:if>>${id.text}</option>
+                                </c:forEach>
+                            </select>
+                            <span data-err-ind="facilityId" class="error-msg"></span>
                         </div>
                     </div>
-                    <div class=" form-group form-horizontal formgap">
+                    <div class="form-group form-horizontal formgap">
                         <div class="col-sm-4 control-label formtext ">
                             <label class="control-label control-set-font control-font-label">Activity Type</label>
                             <span class="mandatory">*</span>
                         </div>
                         <div class="col-sm-4 col-md-7 control-font-label">
-                            <iais:select name="activityType" id="activityType" disabled="false" options="activityTypeSelect" firstOption="Please Select" value=""></iais:select>
+                            <input type="hidden" id="activityType" name="activityType" value="${activity.activityType}">
+                            <iais:select name="activityId" id="activityId" disabled="false" firstOption="Please Select" value="${activity.activityId}"></iais:select>
+                            <span data-err-ind="activityType" class="error-msg"></span>
                         </div>
                     </div>
                     <div class=" form-group form-horizontal formgap">
@@ -55,28 +62,31 @@
                         </div>
                         <div class="col-sm-4 col-md-7 control-font-label">
                             <div class="form-check">
-                                <input type="checkbox" class="form-check-input" name="schedule" id="schedule1" <c:if test="${serviceSelection.facClassification eq 'FACCLA001' and serviceSelection.activityTypes.contains('ACTVITY001')}">checked="checked"</c:if> value="ACTVITY001"/>
+                                <input type="checkbox" class="form-check-input" name="schedules" id="schedule1" <c:if test="${activity.schedules.contains('SCHTYPE001')}">checked="checked"</c:if> value="SCHTYPE001"/>
                                 <label for="schedule1" class="form-check-label"><span class="check-square"></span>First Schedule Part I</label>
                             </div>
                             <div class="form-check">
-                                <input type="checkbox" class="form-check-input" name="schedule" id="schedule2" <c:if test="${serviceSelection.facClassification eq 'FACCLA001' and serviceSelection.activityTypes.contains('ACTVITY005')}">checked="checked"</c:if> value="ACTVITY005"/>
+                                <input type="checkbox" class="form-check-input" name="schedules" id="schedule2" <c:if test="${activity.schedules.contains('SCHTYPE002')}">checked="checked"</c:if> value="SCHTYPE002"/>
                                 <label for="schedule2" class="form-check-label"><span class="check-square"></span>First Schedule Part II</label>
                             </div>
                             <div class="form-check">
-                                <input type="checkbox" class="form-check-input" name="schedule" id="schedule3" <c:if test="${serviceSelection.facClassification eq 'FACCLA001' and serviceSelection.activityTypes.contains('ACTVITY007')}">checked="checked"</c:if> value="ACTVITY007"/>
+                                <input type="checkbox" class="form-check-input" name="schedules" id="schedule3" <c:if test="${activity.schedules.contains('SCHTYPE003')}">checked="checked"</c:if> value="SCHTYPE003"/>
                                 <label for="schedule3" class="form-check-label"><span class="check-square"></span>Second Schedule</label>
                             </div>
                             <div class="form-check">
-                                <input type="checkbox" class="form-check-input" name="schedule" id="schedule4" <c:if test="${serviceSelection.facClassification eq 'FACCLA001' and serviceSelection.activityTypes.contains('ACTVITY009')}">checked="checked"</c:if> value="ACTVITY009"/>
+                                <input type="checkbox" class="form-check-input" name="schedules" id="schedule4" <c:if test="${activity.schedules.contains('SCHTYPE004')}">checked="checked"</c:if> value="SCHTYPE004"/>
                                 <label for="schedule4" class="form-check-label"><span class="check-square"></span>Third Schedule</label>
                             </div>
                             <div class="form-check">
-                                <input type="checkbox" class="form-check-input" name="schedule" id="schedule5" <c:if test="${serviceSelection.facClassification eq 'FACCLA001' and serviceSelection.activityTypes.contains('ACTVITY009')}">checked="checked"</c:if> value="ACTVITY009"/>
+                                <input type="checkbox" class="form-check-input" name="schedules" id="schedule5" <c:if test="${activity.schedules.contains('SCHTYPE005')}">checked="checked"</c:if> value="SCHTYPE005"/>
                                 <label for="schedule5" class="form-check-label"><span class="check-square"></span>Fourth Schedule</label>
                             </div>
                             <div class="form-check">
-                                <input type="checkbox" class="form-check-input" name="schedule" id="schedule6" <c:if test="${serviceSelection.facClassification eq 'FACCLA001' and serviceSelection.activityTypes.contains('ACTVITY009')}">checked="checked"</c:if> value="ACTVITY009"/>
+                                <input type="checkbox" class="form-check-input" name="schedules" id="schedule6" <c:if test="${activity.schedules.contains('SCHTYPE006')}">checked="checked"</c:if> value="SCHTYPE006"/>
                                 <label for="schedule6" class="form-check-label"><span class="check-square"></span>Fifth Schedule</label>
+                            </div>
+                            <div>
+                                <span data-err-ind="schedules" class="error-msg"></span>
                             </div>
                         </div>
                     </div>

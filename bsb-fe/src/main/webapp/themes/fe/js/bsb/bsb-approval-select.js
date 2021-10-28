@@ -9,17 +9,15 @@ $(function (){
                     var result = data.result;
                     if(result == 'success'){
                         var queryResult = data.queryResult;
-                        console.log(queryResult);
                         var optionString = "";
                         var optionString1 = "";
                         for (var i = 0; i < queryResult.length; i++) {
-                            optionString += "<option value=\""  + queryResult[i] + "\">" + queryResult[i] + "</option>";
-                            optionString1+= "<li data-value=\""+queryResult[i].id+"\" class=\"option\">"+queryResult[i].activityType+"</li>"
+                            optionString += "<option value=\""  + queryResult[i].value + "\">" + queryResult[i].text + "</option>";
+                            optionString1+= "<li data-value=\""+queryResult[i].value+"\" class=\"option\">"+queryResult[i].text+"</li>"
                         }
-                        $("select[name = 'activityType']").html("<option value=\"\">Please select<\/option>"+optionString);
-                        $("select[name = 'activityType']").next().children("ul.list").html("<li data-value class=\"option selected focus\">Please Select<\/li>"+optionString1);
+                        $("select[name = 'activityId']").html("<option value=\"\">Please select<\/option>"+optionString);
+                        $("select[name = 'activityId']").next().children("ul.list").html("<li data-value class=\"option selected focus\">Please Select<\/li>"+optionString1);
                     }else{
-
                     }
                 }
             )

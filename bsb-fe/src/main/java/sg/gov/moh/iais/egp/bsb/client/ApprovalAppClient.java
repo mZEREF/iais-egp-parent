@@ -7,10 +7,9 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
 import sg.gov.moh.iais.egp.bsb.dto.ValidationResultDto;
-import sg.gov.moh.iais.egp.bsb.dto.approvalApp.ActivityDto;
-import sg.gov.moh.iais.egp.bsb.dto.approvalApp.ApprovalAppDto;
-import sg.gov.moh.iais.egp.bsb.dto.register.facility.PreviewSubmitDto;
-import sg.gov.moh.iais.egp.bsb.dto.register.facility.PrimaryDocDto;
+import sg.gov.moh.iais.egp.bsb.dto.approval.*;
+import sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityRegisterDto;
+import sg.gov.moh.iais.egp.bsb.entity.Biological;
 import sg.gov.moh.iais.egp.bsb.entity.Facility;
 import sg.gov.moh.iais.egp.bsb.entity.FacilityActivity;
 
@@ -26,11 +25,11 @@ public interface ApprovalAppClient {
     @PostMapping(path = "/approvalApp/approvalToPossess/validate/activity", consumes = MediaType.APPLICATION_JSON_VALUE, produces =MediaType.APPLICATION_JSON_VALUE)
     ValidationResultDto validateActivity(@RequestBody ActivityDto dto);
 
-    @PostMapping(path = "/approvalApp/approvalToPossess/validate/primaryDocs", consumes = MediaType.APPLICATION_JSON_VALUE, produces =MediaType.APPLICATION_JSON_VALUE)
-    ValidationResultDto validateFacilityPrimaryDocs(@RequestBody PrimaryDocDto dto);
+    @PostMapping(path = "/approvalApp/approvalToPossess/validate/approvalProfile", consumes = MediaType.APPLICATION_JSON_VALUE, produces =MediaType.APPLICATION_JSON_VALUE)
+    ValidationResultDto validateApprovalProfile(@RequestBody ApprovalProfileDto dto);
 
-    @PostMapping(path = "/approvalApp/approvalToPossess/validate/previewSubmit", consumes = MediaType.APPLICATION_JSON_VALUE, produces =MediaType.APPLICATION_JSON_VALUE)
-    ValidationResultDto validateFacilityPreviewSubmit(@RequestBody PreviewSubmitDto dto);
+    @PostMapping(path = "/approvalApp/approvalToPossess/validate/primaryDocs", consumes = MediaType.APPLICATION_JSON_VALUE, produces =MediaType.APPLICATION_JSON_VALUE)
+    ValidationResultDto validateApprovalPrimaryDocs(@RequestBody PrimaryDocDto.DocsMetaDto dto);
 
     @GetMapping(path = "/approvalApp/approvalToPossess/application/{appId}", produces =MediaType.APPLICATION_JSON_VALUE)
     ResponseDto<ApprovalAppDto> getApprovalAppAppData(@PathVariable("appId") String appId);
@@ -40,4 +39,13 @@ public interface ApprovalAppClient {
 
     @GetMapping(path = "/approvalApp/approvalToPossess/getApprovalFAByFacId/{facilityId}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<FacilityActivity>> getApprovalFAByFacId(@RequestParam("facilityId") String facilityId);
+
+    @GetMapping(path = "/approvalApp/approvalToPossess/getBiologicalBySchedule/{schedule}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<Biological>> getBiologicalBySchedule(@RequestParam("schedule") String schedule);
+
+    @PostMapping(path = "/approvalApp/approvalToPossess/application", consumes = MediaType.APPLICATION_JSON_VALUE, produces =MediaType.APPLICATION_JSON_VALUE)
+    ResponseDto<String> saveNewApprovalApp(@RequestBody ApprovalAppDto approvalAppDto);
+
+    @PostMapping(path = "/register/facility", consumes = MediaType.APPLICATION_JSON_VALUE, produces =MediaType.APPLICATION_JSON_VALUE)
+    ResponseDto<String> saveNewRegisteredFacility(@RequestBody FacilityRegisterDto dto);
 }

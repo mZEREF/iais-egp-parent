@@ -27,10 +27,10 @@
             <br/>
             <%--@elvariable id="batList" type="java.util.List<sg.gov.moh.iais.egp.bsb.dto.register.facility.BiologicalAgentToxinDto>"--%>
             <c:forEach var="bat" items="${batList}">
-                <p><strong><iais:code code="${bat.name}"/>:
-                <c:forEach var="info" items="${bat.batInfos}" varStatus="infoStatus">
-                    <c:if test="${infoStatus.index > 0}">, </c:if><iais:code code="${info.schedule}"/>
-                </c:forEach>
+                <p><strong><iais:code code="${bat.activityType}"/>:
+                    <c:forEach var="info" items="${bat.batInfos}" varStatus="infoStatus">
+                        <c:if test="${infoStatus.index > 0}">, </c:if><iais:code code="${info.schedule}"/>
+                    </c:forEach>
                 </strong></p>
             </c:forEach>
             <br/>

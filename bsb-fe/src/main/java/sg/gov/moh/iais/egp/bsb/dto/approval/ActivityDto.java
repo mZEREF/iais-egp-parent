@@ -1,10 +1,9 @@
-package sg.gov.moh.iais.egp.bsb.dto.approvalApp;
+package sg.gov.moh.iais.egp.bsb.dto.approval;
 
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import sg.gov.moh.iais.egp.bsb.common.node.simple.ValidatableNodeValue;
-import sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants;
 import sg.gov.moh.iais.egp.bsb.dto.ValidationResultDto;
 import sg.gov.moh.iais.egp.bsb.util.SpringReflectionUtils;
 
@@ -19,8 +18,10 @@ import java.util.List;
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ActivityDto extends ValidatableNodeValue {
+    private String facilityId;
     private String facilityName;
-    private String activity;
+    private String activityId;
+    private String activityType;
     private List<String> schedules;
 
     @JsonIgnore
@@ -68,6 +69,14 @@ public class ActivityDto extends ValidatableNodeValue {
         this.schedules.clear();
     }
 
+    public String getFacilityId() {
+        return facilityId;
+    }
+
+    public void setFacilityId(String facilityId) {
+        this.facilityId = facilityId;
+    }
+
     public String getFacilityName() {
         return facilityName;
     }
@@ -76,34 +85,48 @@ public class ActivityDto extends ValidatableNodeValue {
         this.facilityName = facilityName;
     }
 
-    public String getActivity() {
-        return activity;
+    public String getActivityId() {
+        return activityId;
     }
 
-    public void setActivity(String activity) {
-        this.activity = activity;
+    public void setActivityId(String activityId) {
+        this.activityId = activityId;
+    }
+
+    public String getActivityType() {
+        return activityType;
+    }
+
+    public void setActivityType(String activityType) {
+        this.activityType = activityType;
     }
 
     public List<String> getSchedules() {
         return schedules;
     }
 
-    public void setSchedules(List<String> schedule) {
-        this.schedules = schedule;
+    public void setSchedules(List<String> schedules) {
+        this.schedules = schedules;
     }
 
 //    ---------------------------- request -> object ----------------------------------------------
 
     private static final String KEY_ACTIVITY_FACILITY_ID = "facilityId";
+    private static final String KEY_ACTIVITY_FACILITY_NAME = "facilityName";
+    private static final String KEY_ACTIVITY_ACTIVITY_ID = "activityId";
     private static final String KEY_ACTIVITY_ACTIVITY_TYPE = "activityType";
-    private static final String KEY_ACTIVITY_SCHEDULE = "schedule";
+    private static final String KEY_ACTIVITY_SCHEDULE = "schedules";
 
     public void reqObjMapping(HttpServletRequest request) {
         String newFacilityId = ParamUtil.getString(request, KEY_ACTIVITY_FACILITY_ID);
+        String newFacilityName = ParamUtil.getString(request,KEY_ACTIVITY_FACILITY_NAME);
+        String newActivityId = ParamUtil.getString(request,KEY_ACTIVITY_ACTIVITY_ID);
         String newActivityType = ParamUtil.getString(request,KEY_ACTIVITY_ACTIVITY_TYPE);
-        this.setFacilityName(newFacilityId);
-        this.setActivity(newActivityType);
-        String[] schedules = ParamUtil.getStrings(request, KEY_ACTIVITY_SCHEDULE);
-        this.replaceSchedules(schedules);
+        this.setFacilityId(newFacilityId);
+        this.setFacilityName(newFacilityName);
+        this.setActivityId(newActivityId);
+        this.setActivityType(newActivityType);
+        String[] scheduleArray = ParamUtil.getStrings(request, KEY_ACTIVITY_SCHEDULE);
+        this.replaceSchedules(scheduleArray);
     }
 }
