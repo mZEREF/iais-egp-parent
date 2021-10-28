@@ -128,10 +128,20 @@ public final class ControllerHelper {
         } else if (double.class.isAssignableFrom(type)) {
             value = ParamUtil.getDouble(request, name, 0);
         } else if (Integer.class.isAssignableFrom(type)) {
-            value = ParamUtil.getInt(request, name);
+            value = ParamUtil.getString(request, name);
+            if(StringUtil.isDigit((String) value)){
+                return Integer.valueOf((String) value);
+            }
         } else if (Long.class.isAssignableFrom(type)) {
-            value = ParamUtil.getLong(request, name);
+            value = ParamUtil.getString(request, name);
+            if(StringUtil.isDigit((String) value)){
+                return Long.valueOf((String) value);
+            }
         } else if (Double.class.isAssignableFrom(type)) {
+            value = ParamUtil.getString(request, name);
+            if(StringUtil.isNumber((String) value)){
+                return Double.valueOf((String) value);
+            }
             value = ParamUtil.getDouble(request, name);
         } else if (boolean.class.isAssignableFrom(type) || Boolean.class.isAssignableFrom(type)) {
             value = AppConsts.YES.equals(ParamUtil.getString(request, name));
