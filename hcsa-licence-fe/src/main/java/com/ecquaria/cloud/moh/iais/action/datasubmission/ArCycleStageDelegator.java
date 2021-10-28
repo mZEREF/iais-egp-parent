@@ -78,7 +78,12 @@ public class ArCycleStageDelegator extends CommonDelegator {
 
     @Override
     public void draft(BaseProcessClass bpc) {
+        HttpServletRequest request = bpc.request;
+        ArSuperDataSubmissionDto arSuperDataSubmissionDto = DataSubmissionHelper.getCurrentArDataSubmission(request);
+        setArCycleStageDtoByPage(request,arSuperDataSubmissionDto.getArCycleStageDto());
+        //todo do draft
 
+        ParamUtil.setSessionAttr(request, DataSubmissionConstant.AR_DATA_SUBMISSION,arSuperDataSubmissionDto);
     }
 
     @Override
@@ -92,19 +97,21 @@ public class ArCycleStageDelegator extends CommonDelegator {
         ArSuperDataSubmissionDto arSuperDataSubmissionDto = DataSubmissionHelper.getCurrentArDataSubmission(request);
         ArCycleStageDto arCycleStageDto = arSuperDataSubmissionDto.getArCycleStageDto();
         setArCycleStageDtoByPage(request,arCycleStageDto);
-        validationGoToByValidationDto(request,arCycleStageDto,arCycleStageDto.getArDonorDtos());
+        validatePageData(request,arCycleStageDto,arCycleStageDto.getArDonorDtos());
         ParamUtil.setSessionAttr(request, DataSubmissionConstant.AR_DATA_SUBMISSION,arSuperDataSubmissionDto);
-        ParamUtil.setRequestAttr(request, IaisEGPConstant.CRUD_ACTION_TYPE,ACTION_TYPE_CONFIRM);
     }
 
     @Override
     public void pageConfirmAction(BaseProcessClass bpc) {
+        HttpServletRequest request = bpc.request;
+        ArSuperDataSubmissionDto arSuperDataSubmissionDto = DataSubmissionHelper.getCurrentArDataSubmission(request);
+         //todo save
 
+        ParamUtil.setSessionAttr(request, DataSubmissionConstant.AR_DATA_SUBMISSION,arSuperDataSubmissionDto);
     }
 
     private void setArCycleStageDtoByPage(HttpServletRequest request,ArCycleStageDto arCycleStageDto){
         ControllerHelper.get(request,arCycleStageDto);
-        arCycleStageDto.setStartDate(ParamUtil.getString(request,"arCycleStageDtoDateStarted"));
         List<ArDonorDto> arDonorDtos = arCycleStageDto.getArDonorDtos();
         arDonorDtos.forEach(arDonorDto -> {
             String arDonorIndex = String.valueOf(arDonorDto.getArDonorIndex());

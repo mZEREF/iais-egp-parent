@@ -153,6 +153,12 @@ public final class MasterCodeUtil {
 
     //Data Submission Ar Techniques Used
     public static final String AR_TECHNIQUES_USED = "50371FBA-6377-453F-B1CD-0EC89C6EA213";
+
+    //Data Submission Ar Techniques Used
+    public static final String AR_MAIN_INDICATION  = "BCCA3319-3881-464B-AE69-EA4C1FA95B2E";
+
+    //Data Submission Ar Techniques Used
+    public static final String AR_OTHER_INDICATION = "925F6CBB-A12D-4D15-9C85-6E4F09F8C44B";
     /**
      * @description: refresh the master codes into cache
      *

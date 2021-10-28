@@ -245,18 +245,16 @@ public abstract class CommonDelegator {
      */
     public abstract void pageConfirmAction(BaseProcessClass bpc);
 
-    public  final boolean validationGoToByValidationDto(HttpServletRequest request, Object obj, String property, String passCrudActionType, String failedCrudActionType, List ...validationDtos){
+    public  final boolean validatePageData(HttpServletRequest request, Object obj, String property, String passCrudActionType, String failedCrudActionType, List validationDtos){
         ValidationResult validationResult = WebValidationHelper.validateProperty(obj, property);
         Map<String, String> errorMap = validationResult.retrieveAll();
         if( !IaisCommonUtils.isEmpty(validationDtos)){
-                for (List validationDtoList : validationDtos) {
-                    validationDtoList.forEach(validationDto -> {
-                        Map<String, String> errorMap1 =  WebValidationHelper.validateProperty(validationDto, property).retrieveAll();
-                        if(!errorMap1.isEmpty()){
-                            errorMap.putAll(errorMap1);
-                        }
-                    });
+              validationDtos.forEach(o -> {
+                Map<String, String> errorMap1 =  WebValidationHelper.validateProperty(o, property).retrieveAll();
+                if(!errorMap1.isEmpty()){
+                    errorMap.putAll(errorMap1);
                 }
+            });
         }
         if (!errorMap.isEmpty()) {
             WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
@@ -269,12 +267,21 @@ public abstract class CommonDelegator {
         return true;
     }
 
-    public  final boolean validationGoToByValidationDto(HttpServletRequest request,Object obj){
-        return validationGoToByValidationDto(request,obj,"save",ACTION_TYPE_CONFIRM,ACTION_TYPE_PAGE,null);
+    public  final boolean validatePageData(HttpServletRequest request,Object obj){
+        return validatePageData(request,obj,"save");
     }
 
-    public  final boolean validationGoToByValidationDto(HttpServletRequest request,Object obj,List ...validationDtos){
-        return validationGoToByValidationDto(request,obj,"save",ACTION_TYPE_CONFIRM,ACTION_TYPE_PAGE,validationDtos);
+    public  final boolean validatePageData(HttpServletRequest request,Object obj,List validationDtos){
+        return validatePageData(request,obj,"save",ACTION_TYPE_CONFIRM,ACTION_TYPE_PAGE,validationDtos);
     }
+
+    public  final boolean validatePageData(HttpServletRequest request,Object obj,String property){
+        return validatePageData(request,obj,property,ACTION_TYPE_CONFIRM,ACTION_TYPE_PAGE,null);
+    }
+
+    public  final boolean validatePageData(HttpServletRequest request,Object obj,String property,List validationDtos){
+        return validatePageData(request,obj,property,ACTION_TYPE_CONFIRM,ACTION_TYPE_PAGE,validationDtos);
+    }
+
 
 }

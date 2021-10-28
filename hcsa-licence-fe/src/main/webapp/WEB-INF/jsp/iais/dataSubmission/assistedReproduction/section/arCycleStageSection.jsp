@@ -36,7 +36,7 @@
                 <iais:row>
                     <iais:field width="5" value="Main Indication" mandatory="true"/>
                     <iais:value width="7" cssClass="col-md-7">
-                        <iais:select name="mainIndication" options="mainIndicationDrops" firstOption="Please Select" value="${arCycleStageDto.mainIndication}"  onchange ="toggleOnSelect(this, 'AR_MI_001', 'mainIndicationOtherRow')"/>
+                        <iais:select name="mainIndication"  firstOption="Please Select" codeCategory="AR_MAIN_INDICATION" value="${arCycleStageDto.mainIndication}"  onchange ="toggleOnSelect(this, 'AR_MI_013', 'mainIndicationOtherRow')"/>
                 </iais:value>
                 </iais:row>
 
@@ -50,7 +50,7 @@
                 <iais:row>
                     <iais:field width="5" value="Other Indication" mandatory="true"/>
                     <iais:value width="7" cssClass="col-md-7">
-                        <iais:select name="otherIndication" multiSelect="true" options="otherIndicationDrops" firstOption="Please Select" multiValues="${arCycleStageDto.otherIndicationValues}"  onchange ="toggleMultiSelect(this, 'AR_0I_001', 'otherIndicationOthersRow')"/>
+                        <iais:select name="otherIndication" multiSelect="true"  codeCategory="AR_OTHER_INDICATION" firstOption="Please Select" multiValues="${arCycleStageDto.otherIndicationValues}"  onchange ="toggleMultiSelect(this, 'AR_0I_013', 'otherIndicationOthersRow')"/>
                     </iais:value>
                 </iais:row>
 
@@ -251,9 +251,9 @@
 <%@include file="donorSection.jsp"%>
 <script  type="text/javascript">
   $(document).ready(function (){
-     toggleOnSelect("#mainIndication",'AR_MI_001', 'mainIndicationOtherRow');
+     toggleOnSelect("#mainIndication",'AR_MI_013', 'mainIndicationOtherRow');
      toggleOnSelect("#totalNumberARCPreviouslyUndergonePatient",'21', 'totalNumberARCOtherRow');
-     toggleOnMultiSelect("#otherIndication",'AR_0I_001', 'otherIndicationOthersRo');
+     toggleOnMultiSelect("#otherIndication",'AR_0I_013', 'otherIndicationOthersRo');
    });
 
    function validateDonor(donorIndex){
