@@ -19,6 +19,8 @@
 
 <%@ include file="common/arHeader.jsp" %>
 
+<script type="text/javascript" src="<%=webroot1%>js/dataSubmission/patientInformation.js"></script>
+
 <form method="post" id="mainForm" action=<%=continueURL%>>
     <div class="main-content">
         <div class="container center-content">
