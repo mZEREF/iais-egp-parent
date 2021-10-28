@@ -4,17 +4,18 @@ import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.intranetUser.IntranetUserConstant;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ThawingStageDto;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant;
+import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import lombok.extern.slf4j.Slf4j;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
-import java.util.Optional;
 
 /**
  * ThawingDelegator
@@ -29,7 +30,6 @@ import java.util.Optional;
 public class ThawingDelegator extends CommonDelegator {
     @Override
     public void start(BaseProcessClass bpc) {
-        ParamUtil.setSessionAttr(bpc.request, DataSubmissionConstant.AR_DATA_SUBMISSION, new ArSuperDataSubmissionDto());
         ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.CRUD_ACTION_TYPE, "page");
     }
 
@@ -45,17 +45,24 @@ public class ThawingDelegator extends CommonDelegator {
 
     @Override
     public void preparePage(BaseProcessClass bpc) {
-        ArSuperDataSubmissionDto arSuperDataSubmissionDto = (ArSuperDataSubmissionDto) ParamUtil.getSessionAttr(bpc.request, DataSubmissionConstant.AR_DATA_SUBMISSION);
+        ArSuperDataSubmissionDto arSuperDataSubmissionDto = DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
         ThawingStageDto thawingStageDto = arSuperDataSubmissionDto.getThawingStageDto();
         if (thawingStageDto == null) {
             thawingStageDto = new ThawingStageDto();
+            thawingStageDto.setThawedOocytesNum(0);
+            thawingStageDto.setThawedOocytesSurvivedMatureNum(0);
+            thawingStageDto.setThawedOocytesSurvivedImmatureNum(0);
+            thawingStageDto.setThawedOocytesSurvivedOtherNum(0);
+            thawingStageDto.setThawedEmbryosNum(0);
+            thawingStageDto.setThawedEmbryosSurvivedNum(0);
             arSuperDataSubmissionDto.setThawingStageDto(thawingStageDto);
+            ParamUtil.setSessionAttr(bpc.request, DataSubmissionConstant.AR_DATA_SUBMISSION, arSuperDataSubmissionDto);
         }
     }
 
     @Override
     public void prepareConfim(BaseProcessClass bpc) {
-        ArSuperDataSubmissionDto arSuperDataSubmissionDto = (ArSuperDataSubmissionDto) ParamUtil.getSessionAttr(bpc.request, DataSubmissionConstant.AR_DATA_SUBMISSION);
+        ArSuperDataSubmissionDto arSuperDataSubmissionDto = DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
         ThawingStageDto thawingStageDto = arSuperDataSubmissionDto.getThawingStageDto();
 
         String changeFrozenOocytes = thawingStageDto.getThawedOocytesNum() > 0 ? "+" + thawingStageDto.getThawedOocytesNum() : "0";
@@ -80,22 +87,25 @@ public class ThawingDelegator extends CommonDelegator {
 
     @Override
     public void pageAction(BaseProcessClass bpc) {
-        ArSuperDataSubmissionDto arSuperDataSubmissionDto = (ArSuperDataSubmissionDto) ParamUtil.getSessionAttr(bpc.request, DataSubmissionConstant.AR_DATA_SUBMISSION);
+        ArSuperDataSubmissionDto arSuperDataSubmissionDto = DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
         ThawingStageDto thawingStageDto = arSuperDataSubmissionDto.getThawingStageDto();
         HttpServletRequest request = bpc.request;
         fromPageData(thawingStageDto, request);
 
-        ValidationResult validationResult = WebValidationHelper.validateProperty(thawingStageDto, "save");
-        Map<String, String> errorMap = validationResult.retrieveAll();
+        Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
+        String crud_action_type = ParamUtil.getRequestString(request, IntranetUserConstant.CRUD_ACTION_TYPE);
 
-        if (!errorMap.isEmpty() || validationResult.isHasErrors()) {
-            WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
-            ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
-            ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.CRUD_ACTION_TYPE, "page");
-            ParamUtil.setSessionAttr(bpc.request, "thawingStageDto", thawingStageDto);
-            return;
+        if ("confirm".equals(crud_action_type)) {
+            ValidationResult validationResult = WebValidationHelper.validateProperty(thawingStageDto, "save");
+            errorMap = validationResult.retrieveAll();
         }
-        ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.CRUD_ACTION_TYPE, "confirm");
+
+        if (!errorMap.isEmpty()) {
+            WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
+            ParamUtil.setRequestAttr(request, IntranetUserConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
+            ParamUtil.setRequestAttr(request, IntranetUserConstant.CRUD_ACTION_TYPE, "page");
+            ParamUtil.setSessionAttr(request, "thawingStageDto", thawingStageDto);
+        }
     }
 
     private void fromPageData(ThawingStageDto thawingStageDto, HttpServletRequest request) {

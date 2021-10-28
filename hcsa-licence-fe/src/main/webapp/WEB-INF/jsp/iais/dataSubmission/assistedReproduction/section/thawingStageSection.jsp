@@ -39,6 +39,7 @@
                                     class="check-square"></span>Embryo(s)</label>
                         </div>
                     </iais:value>
+                    <span id="error_thawings" name="iaisErrorMsg" class="error-msg col-md-7"></span>
                 </iais:row>
                 <div class="oocytesParts" <c:if test="${!thawingStageDto.hasOocyte}">style="display: none;"</c:if>>
                     <iais:row>
