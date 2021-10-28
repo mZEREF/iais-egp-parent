@@ -7,6 +7,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSub
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant;
+import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.helper.ControllerHelper;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
@@ -47,14 +48,13 @@ public class ArCycleStageDelegator extends CommonDelegator {
 
     @Override
     public void returnStep(BaseProcessClass bpc) {
-
+        ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.CURRENT_PAGE_STAGE, ACTION_TYPE_PAGE);
     }
 
     @Override
     public void preparePage(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         ArSuperDataSubmissionDto arSuperDataSubmissionDto = DataSubmissionHelper.getCurrentArDataSubmission(request);
-        arSuperDataSubmissionDto = new ArSuperDataSubmissionDto();
         ArCycleStageDto arCycleStageDto = arSuperDataSubmissionDto.getArCycleStageDto();
         List<ArDonorDto> arDonorDtos = arSuperDataSubmissionDto.getArDonorDtos();
         if(arCycleStageDto == null){
@@ -94,6 +94,7 @@ public class ArCycleStageDelegator extends CommonDelegator {
         setArCycleStageDtoByPage(request,arCycleStageDto);
         validationGoToByValidationDto(request,arCycleStageDto,arCycleStageDto.getArDonorDtos());
         ParamUtil.setSessionAttr(request, DataSubmissionConstant.AR_DATA_SUBMISSION,arSuperDataSubmissionDto);
+        ParamUtil.setRequestAttr(request, IaisEGPConstant.CRUD_ACTION_TYPE,ACTION_TYPE_CONFIRM);
     }
 
     @Override

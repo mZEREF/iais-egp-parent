@@ -19,7 +19,7 @@ $(document).ready(function() {
     if ($('#backBtn').length > 0) {
         $('#backBtn').click(function () {
             showWaiting();
-            if ('confirm' == currPage) {
+            if ('preview' == currPage) {
                 submit('page');
             } else if ('ar-submission' == currPage) {
                 submit('back');

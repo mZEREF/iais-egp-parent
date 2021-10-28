@@ -97,7 +97,7 @@
                     <iais:value width="7" cssClass="col-md-7">
                             <c:forEach items="${currentArTreatments}" var="currentArTreatment">
                                 <c:set var="currentArTreatmentCode" value="${currentArTreatment.code}"/>
-                                <div class="form-check col-xs-12" >
+                                <div class="form-check col-xs-7" >
                                     <input class="form-check-input" type="checkbox"
                                            name="currentArTreatment"
                                            value="${currentArTreatmentCode}"
@@ -106,7 +106,8 @@
                                            aria-invalid="false">
                                     <label class="form-check-label"
                                            for="currentArTreatmentCheck${currentArTreatmentCode}"><span
-                                            class="check-square"></span></label>
+                                            class="check-square"></span>
+                                        <c:out value="${currentArTreatment.codeValue}"/></label>
                                 </div>
                             </c:forEach>
                     </iais:value>

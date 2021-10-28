@@ -11,7 +11,7 @@
         <div class="panel-body">
             <div class="panel-main-content form-horizontal">
                 <c:set var="arCycleStageDto" value="${arSuperDataSubmissionDto.arCycleStageDto}" />
-                <c:set var="patientDto" value="${arSuperDataSubmissionDto.patientDto}" />
+                <c:set var="patientDto" value="${arSuperDataSubmissionDto.patientInfoDto.patient}" />
                 <h3>
                     <p><label style="font-family:'Arial Negreta', 'Arial Normal', 'Arial';font-weight:700;"><c:out value="${patientDto.patientName}"/></label><label style="font-family:'Arial Normal', 'Arial';font-weight:400;"><c:out value="${patientDto.patientIdNO}"/></label></p>
                 </h3>
@@ -74,20 +74,9 @@
                 <iais:row>
                     <iais:field width="5" value="Current AR Treatment" mandatory="true"/>
                     <iais:value width="7" cssClass="col-md-7">
-                        <c:forEach items="${currentArTreatments}" var="currentArTreatment">
-                            <c:set var="currentArTreatmentCode" value="${currentArTreatment.code}"/>
-                            <div class="form-check col-xs-12" >
-                                <input class="form-check-input" type="checkbox"
-                                       name="currentArTreatment"
-                                       value="${currentArTreatmentCode}"
-                                       id="currentArTreatmentCheck${currentArTreatmentCode}"
-                                       <c:if test="${arCycleStageDto.currentARTreatment ge currentArTreatmentCode}">checked</c:if>
-                                       aria-invalid="false">
-                                <label class="form-check-label"
-                                       for="currentArTreatmentCheck${currentArTreatmentCode}"><span
-                                        class="check-square"></span></label>
-                            </div>
-                        </c:forEach>
+                            <c:forEach items="${arCycleStageDto.otherIndicationValues}" var="otherIndicationValue" varStatus="status">
+                                <c:if test="${status.index != 0}"><br></c:if> <iais:code code="${otherIndicationValue}"/>
+                            </c:forEach>
                     </iais:value>
                     <span id="error_currentArTreatment" name="iaisErrorMsg" class="error-msg"></span>
                 </iais:row>

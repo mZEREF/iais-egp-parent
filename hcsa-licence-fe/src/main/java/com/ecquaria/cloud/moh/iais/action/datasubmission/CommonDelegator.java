@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.action.datasubmission;
 
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
@@ -216,18 +217,18 @@ public abstract class CommonDelegator {
      */
     public abstract void pageConfirmAction(BaseProcessClass bpc);
 
-    public  final boolean validationGoToByValidationDto(HttpServletRequest request, Object obj, String property, String passCrudActionType, String failedCrudActionType, List<?> ...validationDtos){
+    public  final boolean validationGoToByValidationDto(HttpServletRequest request, Object obj, String property, String passCrudActionType, String failedCrudActionType, List ...validationDtos){
         ValidationResult validationResult = WebValidationHelper.validateProperty(obj, property);
         Map<String, String> errorMap = validationResult.retrieveAll();
-        if(validationDtos != null && validationDtos.length >=1 ){
-            for (int i = 0; i < validationDtos.length; i++) {
-                validationDtos[i].forEach(validationDto -> {
-                    Map<String, String> errorMap1 =  WebValidationHelper.validateProperty(validationDto, property).retrieveAll();
-                    if(!errorMap1.isEmpty()){
-                        errorMap.putAll(errorMap1);
-                    }
-                });
-            }
+        if( !IaisCommonUtils.isEmpty(validationDtos)){
+                for (List validationDtoList : validationDtos) {
+                    validationDtoList.forEach(validationDto -> {
+                        Map<String, String> errorMap1 =  WebValidationHelper.validateProperty(validationDto, property).retrieveAll();
+                        if(!errorMap1.isEmpty()){
+                            errorMap.putAll(errorMap1);
+                        }
+                    });
+                }
         }
         if (!errorMap.isEmpty()) {
             WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
@@ -244,7 +245,7 @@ public abstract class CommonDelegator {
         return validationGoToByValidationDto(request,obj,"save",ACTION_TYPE_CONFIRM,ACTION_TYPE_PAGE,null);
     }
 
-    public  final boolean validationGoToByValidationDto(HttpServletRequest request,Object obj,List<?> ...validationDtos){
+    public  final boolean validationGoToByValidationDto(HttpServletRequest request,Object obj,List ...validationDtos){
         return validationGoToByValidationDto(request,obj,"save",ACTION_TYPE_CONFIRM,ACTION_TYPE_PAGE,validationDtos);
     }
 }
