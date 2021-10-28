@@ -1,14 +1,15 @@
+<div class="panel panel-default">
      <div class="panel-heading">
-         <h4 class="panel-title">
+         <h4  class="panel-title" data-toggle="collapse" href="#arDonorDtoDetails">
         <strong>
             Details of Donor(s)
           </strong>
        </h4>
     </div>
 
-     <div id="arStageDetails" class="panel-collapse collapse in">
+     <div id="arDonorDtoDetails" class="panel-collapse collapse in">
          <c:set var="arDonorDtos" value="${arCycleStageDto.arDonorDtos}"/>
-         <c:forEach items="${arDonorDto}" var="arDonorDtos">
+         <c:forEach items="${arDonorDtos}" var="arDonorDto">
              <c:set var="arDonorIndex" value="${arDonorDto.arDonorIndex}"/>
             <div class="panel-body">
              <div class="panel-main-content form-horizontal">
@@ -106,10 +107,11 @@
                  </iais:row>
                  <iais:row>
                      <iais:value width="5" cssClass="col-md-3" display="true">
-                         <a class="addDonor"  onclick="addDonor()"style="text-decoration:none;">Add Donor Details</a>
+                         <a class="addDonor"  onclick="addDonor()"style="text-decoration:none;">+ Add Donor Details</a>
                      </iais:value>
                  </iais:row>
              </div>
              </div>
      </c:forEach>
      </div>
+</div>

@@ -92,7 +92,7 @@ public class ArCycleStageDelegator extends CommonDelegator {
         ArSuperDataSubmissionDto arSuperDataSubmissionDto = DataSubmissionHelper.getCurrentArDataSubmission(request);
         ArCycleStageDto arCycleStageDto = arSuperDataSubmissionDto.getArCycleStageDto();
         setArCycleStageDtoByPage(request,arCycleStageDto);
-        validationGoToByValidationDto(request,arCycleStageDto);
+        validationGoToByValidationDto(request,arCycleStageDto,arCycleStageDto.getArDonorDtos());
         ParamUtil.setSessionAttr(request, DataSubmissionConstant.AR_DATA_SUBMISSION,arSuperDataSubmissionDto);
     }
 

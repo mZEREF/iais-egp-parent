@@ -10,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -20,6 +21,11 @@ import java.util.Map;
  */
 @Slf4j
 public abstract class CommonDelegator {
+    protected static final String ACTION_TYPE_PAGE         = "page";
+    protected static final String ACTION_TYPE_RETURN       = "return";
+    protected static final String ACTION_TYPE_CONFIRM      = "confirm";
+    protected static final String ACTION_TYPE_DRAFT        = "draft";
+    protected static final String ACTION_TYPE_SUBMISSION   = "submission";
 
     /**
      * StartStep: Start
@@ -53,7 +59,7 @@ public abstract class CommonDelegator {
         String actionType = (String) ParamUtil.getRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE);
         log.info(StringUtil.changeForLog("----- Action Type: " + actionType + " -----"));
         if (StringUtil.isEmpty(actionType)) {
-            actionType = "page";
+            actionType = ACTION_TYPE_PAGE;
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, actionType);
         }
         prepareSwitch(bpc);
@@ -93,7 +99,7 @@ public abstract class CommonDelegator {
      */
     public void doPreparePage(BaseProcessClass bpc) {
         log.info(StringUtil.changeForLog("-----" + this.getClass().getSimpleName() + " Prepare Page -----"));
-        ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.CURRENT_PAGE_STAGE, "page");
+        ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.CURRENT_PAGE_STAGE, ACTION_TYPE_PAGE);
         preparePage(bpc);
     }
 
@@ -173,7 +179,7 @@ public abstract class CommonDelegator {
     public void doPageAction(BaseProcessClass bpc) {
         log.info(StringUtil.changeForLog("-----" + this.getClass().getSimpleName() + " Page Action -----"));
         // for draft back
-        ParamUtil.setRequestAttr(bpc.request, "currentStage", "page");
+        ParamUtil.setRequestAttr(bpc.request, "currentStage", ACTION_TYPE_PAGE);
         String actionType = ParamUtil.getString(bpc.request, DataSubmissionConstant.CRUD_TYPE);
         ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, actionType);
         pageAction(bpc);
@@ -196,7 +202,7 @@ public abstract class CommonDelegator {
     public void doPageConfirmAction(BaseProcessClass bpc) {
         log.info(StringUtil.changeForLog("-----" + this.getClass().getSimpleName() + " Confirm Action -----"));
         // for draft back
-        ParamUtil.setRequestAttr(bpc.request, "currentStage", "confirm");
+        ParamUtil.setRequestAttr(bpc.request, "currentStage", ACTION_TYPE_CONFIRM);
         String crud_action_type = ParamUtil.getString(bpc.request, DataSubmissionConstant.CRUD_TYPE);
         ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, crud_action_type);
         pageConfirmAction(bpc);
@@ -210,21 +216,35 @@ public abstract class CommonDelegator {
      */
     public abstract void pageConfirmAction(BaseProcessClass bpc);
 
-    public  final boolean validationGoToByValidationDto(HttpServletRequest request,Object obj, String property, String passCrudActionType,String failedCrudActionType){
+    public  final boolean validationGoToByValidationDto(HttpServletRequest request, Object obj, String property, String passCrudActionType, String failedCrudActionType, List<?> ...validationDtos){
         ValidationResult validationResult = WebValidationHelper.validateProperty(obj, property);
         Map<String, String> errorMap = validationResult.retrieveAll();
-        if (!errorMap.isEmpty() || validationResult.isHasErrors()) {
+        if(validationDtos != null && validationDtos.length >=1 ){
+            for (int i = 0; i < validationDtos.length; i++) {
+                validationDtos[i].forEach(validationDto -> {
+                    Map<String, String> errorMap1 =  WebValidationHelper.validateProperty(validationDto, property).retrieveAll();
+                    if(!errorMap1.isEmpty()){
+                        errorMap.putAll(errorMap1);
+                    }
+                });
+            }
+        }
+        if (!errorMap.isEmpty()) {
             WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
             ParamUtil.setRequestAttr(request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
             ParamUtil.setRequestAttr(request, IaisEGPConstant.CRUD_ACTION_TYPE,failedCrudActionType);
             return false;
-        }else {
+        }else if(StringUtil.isNotEmpty(passCrudActionType)){
             ParamUtil.setRequestAttr(request, IaisEGPConstant.CRUD_ACTION_TYPE,passCrudActionType);
         }
         return true;
     }
 
     public  final boolean validationGoToByValidationDto(HttpServletRequest request,Object obj){
-        return validationGoToByValidationDto(request,obj,"save","confirm","page");
+        return validationGoToByValidationDto(request,obj,"save",ACTION_TYPE_CONFIRM,ACTION_TYPE_PAGE,null);
+    }
+
+    public  final boolean validationGoToByValidationDto(HttpServletRequest request,Object obj,List<?> ...validationDtos){
+        return validationGoToByValidationDto(request,obj,"save",ACTION_TYPE_CONFIRM,ACTION_TYPE_PAGE,validationDtos);
     }
 }
