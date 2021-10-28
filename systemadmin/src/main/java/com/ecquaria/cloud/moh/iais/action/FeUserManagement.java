@@ -6,6 +6,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.intranetUser.IntranetUserConstant;
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
+import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
@@ -15,13 +16,16 @@ import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserRoleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrganizationDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
+import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
+import com.ecquaria.cloud.moh.iais.constant.EicClientConstant;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
+import com.ecquaria.cloud.moh.iais.helper.EicRequestTrackingHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.helper.SystemParamUtil;
@@ -29,17 +33,17 @@ import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.IntranetUserService;
 import com.ecquaria.cloud.moh.iais.service.client.EicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import sop.webflow.rt.api.BaseProcessClass;
-
-import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import javax.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import sop.webflow.rt.api.BaseProcessClass;
 
 @Delegator(value = "feUserManagement")
 @Slf4j
@@ -51,6 +55,13 @@ public class FeUserManagement {
     OrganizationClient organizationClient;
     @Autowired
     IntranetUserService intranetUserService;
+    @Autowired
+    EicRequestTrackingHelper requestTrackingHelper;
+    @Value("${spring.application.name}")
+    private String currentApp;
+    @Value("${iais.current.domain}")
+    private String currentDomain;
+
     public void start(BaseProcessClass bpc){
         log.debug("****doStart Process ****");
         AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_USER_MANAGEMENT, AuditTrailConsts.FUNCTION_USER_MANAGEMENT);
@@ -326,10 +337,18 @@ public class FeUserManagement {
                         userAttr.setId(orgUserDto.getId());
                         intranetUserService.assignRole(orgUserRoleDtoList);
                     }
+                    EicRequestTrackingDto track = requestTrackingHelper.clientSaveEicRequestTracking(EicClientConstant.ORGANIZATION_CLIENT,
+                            FeUserManagement.class.getName(), "syncFeUser", currentApp + "-" + currentDomain,
+                            FeUserDto.class.getName(), JsonUtil.parseToJson(userAttr));
                     //sync fe db
                     try {
-                        eicGatewayClient.syncFeUser(userAttr);
-                    }catch (Exception e){
+                        syncFeUser(userAttr);
+                        track.setProcessNum(track.getProcessNum() + 1);
+                        track.setStatus(AppConsts.EIC_STATUS_PROCESSING_COMPLETE);
+                        requestTrackingHelper.saveEicTrack(EicClientConstant.ORGANIZATION_CLIENT, track);
+                    } catch (Throwable e){
+                        track.setProcessNum(track.getProcessNum() + 1);
+                        requestTrackingHelper.saveEicTrack(EicClientConstant.ORGANIZATION_CLIENT, track);
                         log.error(e.getMessage(), e);
                     }
 
@@ -341,6 +360,10 @@ public class FeUserManagement {
                 }
             }
         }
+    }
+
+    public void syncFeUser(FeUserDto userAttr) {
+        eicGatewayClient.syncFeUser(userAttr);
     }
 
     private SearchParam getSearchParam(HttpServletRequest request, boolean refresh){
