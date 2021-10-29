@@ -5,6 +5,8 @@ import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmission
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.CycleDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.CycleStageSelectionDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -18,6 +20,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * @Description Data Submission Helper
@@ -31,8 +34,9 @@ public final class DataSubmissionHelper {
     }
 
     public static ArSuperDataSubmissionDto getCurrentArDataSubmission(HttpServletRequest request) {
-        ArSuperDataSubmissionDto arSuperDataSubmissionDto = (ArSuperDataSubmissionDto) ParamUtil.getSessionAttr(request, DataSubmissionConstant.AR_DATA_SUBMISSION);
-        if(arSuperDataSubmissionDto == null){
+        ArSuperDataSubmissionDto arSuperDataSubmissionDto = (ArSuperDataSubmissionDto) ParamUtil.getSessionAttr(request,
+                DataSubmissionConstant.AR_DATA_SUBMISSION);
+        if (arSuperDataSubmissionDto == null) {
             log.info("------------------------------------AR_SUPER_DATA_SUBMISSION_DTO is null-----------------");
         }
         return arSuperDataSubmissionDto;
@@ -42,24 +46,21 @@ public final class DataSubmissionHelper {
         ParamUtil.setSessionAttr(request, DataSubmissionConstant.AR_DATA_SUBMISSION, arSuperDataSubmissionDto);
     }
 
-    public static List<String> getNextStageForAr(String currCycle, String currStage) {
-        log.info(StringUtil.changeForLog("----- The current cycle stage is " + currCycle + " : " + currStage + " -----"));
+    public static List<String> getNextStageForAR(String currCycle, String currStage, String lastStatus) {
+        log.info(StringUtil.changeForLog("----- The current cycle stage is " + currCycle + " : " + currStage + " : " + lastStatus +
+                " -----"));
         List<String> result = IaisCommonUtils.genNewArrayList();
-        if (StringUtil.isEmpty(currCycle)) {
-            result.add(DataSubmissionConsts.AR_CYCLE_AR);
-            result.add(DataSubmissionConsts.AR_CYCLE_IUI);
-            result.add(DataSubmissionConsts.AR_CYCLE_EFO);
-            result.add(DataSubmissionConsts.AR_CYCLE_EFO);
-
-            // result.add(DataSubmissionConsts.AR_CYCLE_NON);
-        } else if (DataSubmissionConsts.AR_CYCLE_NON.equals(currCycle) || DataSubmissionConsts.AR_STAGE_END_CYCLE.equals(currStage)) {
+        if (StringUtil.isEmpty(currCycle)
+                || DataSubmissionConsts.AR_CYCLE_NON.equals(currCycle)
+                || DataSubmissionConsts.AR_STAGE_END_CYCLE.equals(currStage)
+                || IaisCommonUtils.getDsFinalStatus().contains(lastStatus)) {
             result.add(DataSubmissionConsts.AR_CYCLE_AR);
             result.add(DataSubmissionConsts.AR_CYCLE_IUI);
             result.add(DataSubmissionConsts.AR_CYCLE_EFO);
             result.add(DataSubmissionConsts.AR_STAGE_DISPOSAL);
             result.add(DataSubmissionConsts.AR_STAGE_DONATION);
             result.add(DataSubmissionConsts.AR_STAGE_TRANSFER_IN_AND_OUT);
-        } else if (DataSubmissionConsts.AR_CYCLE_NON.equals(currCycle) || DataSubmissionConsts.AR_STAGE_END_CYCLE.equals(currStage)) {
+        } else if (DataSubmissionConsts.AR_CYCLE_NON.equals(currCycle)) {
             result.add(DataSubmissionConsts.AR_STAGE_DISPOSAL);
             result.add(DataSubmissionConsts.AR_STAGE_DONATION);
             result.add(DataSubmissionConsts.AR_STAGE_TRANSFER_IN_AND_OUT);
@@ -158,7 +159,7 @@ public final class DataSubmissionHelper {
                 result.add(DataSubmissionConsts.AR_STAGE_AR_TREATMENT_SUBSIDIES);
                 result.add(DataSubmissionConsts.AR_STAGE_END_CYCLE);
             } else {
-                result.add(DataSubmissionConsts.AR_STAGE_END_CYCLE);
+                //result.add(DataSubmissionConsts.AR_STAGE_END_CYCLE);
             }
         } else if (DataSubmissionConsts.AR_CYCLE_IUI.equals(currCycle)) {
             if (DataSubmissionConsts.AR_CYCLE_IUI.equals(currStage) || StringUtil.isEmpty(currStage)) {
@@ -169,7 +170,7 @@ public final class DataSubmissionHelper {
             } else if (DataSubmissionConsts.AR_STAGE_OUTCOME_OF_PREGNANCY.equals(currStage)) {
                 result.add(DataSubmissionConsts.AR_STAGE_IUI_TREATMENT_SUBSIDIES);
             } else {
-                result.add(DataSubmissionConsts.AR_STAGE_END_CYCLE);
+                //result.add(DataSubmissionConsts.AR_STAGE_END_CYCLE);
             }
         } else if (DataSubmissionConsts.AR_CYCLE_EFO.equals(currCycle)) {
             if (DataSubmissionConsts.AR_CYCLE_EFO.equals(currStage) || StringUtil.isEmpty(currStage)) {
@@ -181,7 +182,7 @@ public final class DataSubmissionHelper {
                 result.add(DataSubmissionConsts.AR_STAGE_DISPOSAL);
                 result.add(DataSubmissionConsts.AR_STAGE_FREEZING);
             } else {
-                result.add(DataSubmissionConsts.AR_STAGE_END_CYCLE);
+                //result.add(DataSubmissionConsts.AR_STAGE_END_CYCLE);
             }
         }
         return result;
@@ -260,16 +261,38 @@ public final class DataSubmissionHelper {
         return StringUtil.escapeHtml(appGrpPremisesDto.getBusinessName() + ", " + appGrpPremisesDto.getAddress());
     }
 
-    public static List<SelectOption> getNumsSelections(int startNum,int endNum){
-        List<SelectOption> selectOptions = IaisCommonUtils.genNewArrayList(endNum+1-startNum);
-        for(int num = startNum;num<= endNum; num++){
+    public static List<SelectOption> getNumsSelections(int startNum, int endNum) {
+        List<SelectOption> selectOptions = IaisCommonUtils.genNewArrayList(endNum + 1 - startNum);
+        for (int num = startNum; num <= endNum; num++) {
             String key = String.valueOf(num);
-            selectOptions.add(new SelectOption(key,key));
+            selectOptions.add(new SelectOption(key, key));
         }
         return selectOptions;
     }
 
-    public static List<SelectOption> getNumsSelections(int endNum){
-        return getNumsSelections(0,endNum);
+    public static List<SelectOption> getNumsSelections(int endNum) {
+        return getNumsSelections(0, endNum);
     }
+
+    public static CycleDto genCycleDto(CycleStageSelectionDto selectionDto) {
+        String stage = selectionDto.getStage();
+        String cycle;
+        String cycleId = null;
+        if (selectionDto.isUndergoingCycle()) {
+            cycle = selectionDto.getLastCycle();
+            cycleId = selectionDto.getLastCycleId();
+        } else if (StringUtil.isIn(stage, new String[]{DataSubmissionConsts.AR_CYCLE_AR,
+                DataSubmissionConsts.AR_CYCLE_IUI,
+                DataSubmissionConsts.AR_CYCLE_EFO})) {
+            cycle = stage;
+        } else {
+            cycle = DataSubmissionConsts.AR_CYCLE_NON;
+        }
+        CycleDto cycleDto = new CycleDto();
+        cycleDto.setCycleType(cycle);
+        cycleDto.setId(cycleId);
+        cycleDto.setStatus(DataSubmissionConsts.DS_STATUS_ACTIVE);
+        return cycleDto;
+    }
+
 }

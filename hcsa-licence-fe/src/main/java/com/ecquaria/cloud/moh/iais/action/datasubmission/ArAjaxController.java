@@ -4,11 +4,12 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.CycleStageSele
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
-import com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
+import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.ArDataSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.PatientService;
@@ -100,23 +101,19 @@ public class ArAjaxController {
                     .map(ds -> ds.getAppGrpPremisesDto())
                     .map(premises -> premises.getHciCode())
                     .orElse("");
-            dto = arDataSubmissionService.getCycleStageSelectionDtoByConds(idNo, nationality, orgId, hicCode);
-
-           /* PatientDto patient = patientService.getPatientDto(idNo, nationality, orgId);
-            if (patient != null && !Objects.equals(patient.getIdType(), idType)) {
-                patient = null;
-                result.put("invalidType", true);
+            CycleStageSelectionDto dbDto = arDataSubmissionService.getCycleStageSelectionDtoByConds(idNo, nationality, orgId, hicCode);
+            if (dbDto != null) {
+                dto = dbDto;
             }
-            //ParamUtil.setSessionAttr(request, DataSubmissionConstant.AR_PATIENT, patient);
-            if (patient != null) {
-                dto.setPatientName(patient.getName());
-                // lastStage & undergoingCycle
-            }*/
+            if (StringUtil.isNotEmpty(dto.getLastStage())) {
+                dto.setLastStageDesc(MasterCodeUtil.getCodeDesc(dto.getLastStage()));
+            }
             result.put("selection", dto);
         }
-        String currCycle = ParamUtil.getString(request, "currCycle");
-        String currStage = ParamUtil.getString(request, "currStage");
-        result.put("stagHtmls", DataSubmissionHelper.genOptionHtmls(DataSubmissionHelper.getNextStageForAr(currCycle, currStage)));
+        String currCycle = dto.getLastCycle();
+        String currStage = dto.getLastStage();
+        String lastStatus = dto.getLastStatus();
+        result.put("stagHtmls", DataSubmissionHelper.genOptionHtmls(DataSubmissionHelper.getNextStageForAR(currCycle, currStage, lastStatus)));
         return result;
     }
 

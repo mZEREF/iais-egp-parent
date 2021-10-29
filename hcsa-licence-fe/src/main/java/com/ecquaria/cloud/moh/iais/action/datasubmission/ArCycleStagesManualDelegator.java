@@ -53,7 +53,7 @@ public class ArCycleStagesManualDelegator {
      * @throws
      */
     public void doPrepareCycleStageSelection(BaseProcessClass bpc) {
-        List<String> nextStages = DataSubmissionHelper.getNextStageForAr(null, null);
+        List<String> nextStages = DataSubmissionHelper.getNextStageForAR(null, null, null);
         bpc.request.setAttribute("stage_options", DataSubmissionHelper.genOptions(nextStages));
         ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.CURRENT_PAGE_STAGE, "cycle-stage-selection");
     }
@@ -86,24 +86,26 @@ public class ArCycleStagesManualDelegator {
             DataSubmissionDto dataSubmission = currentArDataSubmission.getCurrentDataSubmissionDto();
             if (dataSubmission == null) {
                 dataSubmission = new DataSubmissionDto();
-                currentArDataSubmission.setCurrentDataSubmissionDto(dataSubmission);
             }
             dataSubmission.setSubmissionType(DataSubmissionConsts.DATA_SUBMISSION_TYPE_AR);
-            dataSubmission.setCycleStage(selectionDto.getStage());
             // re-set data
+            String stage = selectionDto.getStage();
             String hicCode = Optional.ofNullable(currentArDataSubmission.getAppGrpPremisesDto())
                     .map(premises -> premises.getHciCode())
                     .orElse("");
             ArSuperDataSubmissionDto newDto = arDataSubmissionService.getArSuperDataSubmissionDto(selectionDto.getPatientCode(),
                     hicCode);
-            newDto.setCurrentDataSubmissionDto(dataSubmission);
             newDto.setAppGrpPremisesDto(currentArDataSubmission.getAppGrpPremisesDto());
             newDto.setSubmissionType(currentArDataSubmission.getSubmissionType());
             newDto.setArSubmissionType(currentArDataSubmission.getArSubmissionType());
             newDto.setSubmissionMethod(currentArDataSubmission.getSubmissionMethod());
-            newDto.setSelectionDto(selectionDto);
+            dataSubmission.setCycleStage(stage);
+            newDto.setCurrentDataSubmissionDto(dataSubmission);
+            selectionDto = newDto.getSelectionDto();
+            selectionDto.setStage(stage);
+            newDto.setCycleDto(DataSubmissionHelper.genCycleDto(selectionDto));
             DataSubmissionHelper.setCurrentArDataSubmission(newDto, bpc.request);
-            bpc.request.setAttribute(DataSubmissionConstant.CRUD_ACTION_TYPE_CT, selectionDto.getStage());
+            bpc.request.setAttribute(DataSubmissionConstant.CRUD_ACTION_TYPE_CT, stage);
         }
     }
 

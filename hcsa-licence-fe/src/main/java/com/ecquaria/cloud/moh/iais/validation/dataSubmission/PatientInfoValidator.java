@@ -8,18 +8,27 @@ import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidator;
+import com.ecquaria.cloud.moh.iais.dto.LoginContext;
+import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
+import com.ecquaria.cloud.moh.iais.service.datasubmission.PatientService;
+import com.ecquaria.cloud.moh.iais.service.datasubmission.impl.PatientServiceImpl;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * @Description PatientInfoValidator
  * @Auther chenlei on 10/25/2021.
  */
 public class PatientInfoValidator implements CustomizeValidator {
+
+    @Autowired
+    private PatientService patientService;
 
     @Override
     public Map<String, String> validate(Object obj, String[] profiles, HttpServletRequest request) {
@@ -34,7 +43,12 @@ public class PatientInfoValidator implements CustomizeValidator {
             if (result != null) {
                 map.putAll(result.retrieveAll());
             }
-            if (!StringUtil.isEmpty(patient.getBirthDate())) {
+            LoginContext loginContext = DataSubmissionHelper.getLoginContext(request);
+            String orgId = Optional.ofNullable(loginContext).map(LoginContext::getOrgId).orElse("");
+            PatientDto patientDto = patientService.getPatientDto(patient.getIdNumber(), patient.getNationality(), orgId);
+            if (patientDto != null) {
+                map.put("idNumber", MessageUtil.getMessageDesc("DS_ERR007"));
+            }else if (!StringUtil.isEmpty(patient.getBirthDate())) {
                 String age1 = MasterCodeUtil.getCodeDesc("PT_AGE_001");
                 String age2 = MasterCodeUtil.getCodeDesc("PT_AGE_002");
                 if (StringUtil.isDigit(age1) && StringUtil.isDigit(age2)) {
