@@ -103,7 +103,7 @@ public class ArCycleStagesManualDelegator {
             newDto.setCurrentDataSubmissionDto(dataSubmission);
             selectionDto = newDto.getSelectionDto();
             selectionDto.setStage(stage);
-            newDto.setCycleDto(DataSubmissionHelper.genCycleDto(selectionDto));
+            newDto.setCycleDto(DataSubmissionHelper.genCycleDto(selectionDto, hicCode));
             DataSubmissionHelper.setCurrentArDataSubmission(newDto, bpc.request);
             bpc.request.setAttribute(DataSubmissionConstant.CRUD_ACTION_TYPE_CT, stage);
         }

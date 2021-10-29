@@ -4,6 +4,7 @@ import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.CycleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.HusbandDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientDto;
@@ -20,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -28,7 +30,7 @@ import java.util.UUID;
  */
 @Delegator("patientDelegator")
 @Slf4j
-public class PatientDelegator extends CommonDelegator{
+public class PatientDelegator extends CommonDelegator {
 
     @Autowired
     private PatientService patientService;
@@ -43,6 +45,16 @@ public class PatientDelegator extends CommonDelegator{
         }
         dataSubmission.setSubmissionType(DataSubmissionConsts.DATA_SUBMISSION_TYPE_AR);
         dataSubmission.setCycleStage(DataSubmissionConsts.DATA_SUBMISSION_CYCLE_STAGE_PATIENT);
+        CycleDto cycleDto = currentArDataSubmission.getCycleDto();
+        if (cycleDto == null) {
+            cycleDto = new CycleDto();
+        }
+        String hicCode = Optional.ofNullable(currentArDataSubmission.getAppGrpPremisesDto())
+                .map(premises -> premises.getHciCode())
+                .orElse("");
+        cycleDto.setHciCode(hicCode);
+        cycleDto.setCycleType(DataSubmissionConsts.DATA_SUBMISSION_CYCLE_STAGE_PATIENT);
+        currentArDataSubmission.setCycleDto(cycleDto);
         DataSubmissionHelper.setCurrentArDataSubmission(currentArDataSubmission, bpc.request);
     }
 
@@ -57,11 +69,14 @@ public class PatientDelegator extends CommonDelegator{
         ArSuperDataSubmissionDto dataSubmission = DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
         dataSubmission.setPatientInfoDto(patientInfo);
         validatePageData(bpc.request, patientInfo, "AR", ACTION_TYPE_CONFIRM);
-        DataSubmissionHelper.setCurrentArDataSubmission(dataSubmission, bpc.request);
     }
 
     private PatientInfoDto getPatientInfoFromPage(HttpServletRequest request) {
-        PatientInfoDto patientInfo = new PatientInfoDto();
+        ArSuperDataSubmissionDto currentArDataSubmission = DataSubmissionHelper.getCurrentArDataSubmission(request);
+        PatientInfoDto patientInfo = currentArDataSubmission.getPatientInfoDto();
+        if (patientInfo == null) {
+            patientInfo = new PatientInfoDto();
+        }
         PatientDto patient = ControllerHelper.get(request, PatientDto.class);
         if (StringUtil.isNotEmpty(patient.getName())) {
             patient.setName(patient.getName().toUpperCase(AppConsts.DFT_LOCALE));
@@ -74,8 +89,12 @@ public class PatientDelegator extends CommonDelegator{
         if (loginContext != null) {
             patient.setOrgId(loginContext.getOrgId());
         }
-        patient.setPatientCode(UUID.randomUUID().toString());
+        patient.setPatientCode(
+                Optional.of(patientInfo.getPatient()).map(dto -> dto.getPatientCode()).orElseGet(() -> UUID.randomUUID().toString()));
         patientInfo.setPatient(patient);
+        if (currentArDataSubmission.getCycleDto() != null) {
+            currentArDataSubmission.getCycleDto().setPatientCode(patient.getPatientCode());
+        }
         if (patient.isPreviousIdentification()) {
             String preIdType = ParamUtil.getString(request, "preIdType");
             String preIdNumber = ParamUtil.getString(request, "preIdNumber");
@@ -99,7 +118,14 @@ public class PatientDelegator extends CommonDelegator{
             husband.setEthnicGroup("");
         }
         patientInfo.setHusband(husband);
+        DataSubmissionHelper.setCurrentArDataSubmission(currentArDataSubmission, request);
         return patientInfo;
+    }
+
+    @Override
+    public void submission(BaseProcessClass bpc) {
+
+        super.submission(bpc);
     }
 
 }

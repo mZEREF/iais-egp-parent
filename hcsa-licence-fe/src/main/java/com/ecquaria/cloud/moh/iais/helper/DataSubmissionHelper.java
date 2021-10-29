@@ -274,7 +274,7 @@ public final class DataSubmissionHelper {
         return getNumsSelections(0, endNum);
     }
 
-    public static CycleDto genCycleDto(CycleStageSelectionDto selectionDto) {
+    public static CycleDto genCycleDto(CycleStageSelectionDto selectionDto, String hciCode) {
         String stage = selectionDto.getStage();
         String cycle;
         String cycleId = null;
@@ -290,6 +290,7 @@ public final class DataSubmissionHelper {
         }
         CycleDto cycleDto = new CycleDto();
         cycleDto.setCycleType(cycle);
+        cycleDto.setHciCode(hciCode);
         cycleDto.setId(cycleId);
         cycleDto.setStatus(DataSubmissionConsts.DS_STATUS_ACTIVE);
         return cycleDto;
