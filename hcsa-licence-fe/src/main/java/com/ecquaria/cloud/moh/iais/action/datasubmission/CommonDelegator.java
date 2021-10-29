@@ -281,6 +281,7 @@ public abstract class CommonDelegator {
             }
         }
         if (!errorMap.isEmpty()) {
+            log.info(StringUtil.changeForLog("----- Error Massage: " + errorMap + " -----"));
             WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
             ParamUtil.setRequestAttr(request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
             ParamUtil.setRequestAttr(request, IaisEGPConstant.CRUD_ACTION_TYPE, failedCrudActionType);
