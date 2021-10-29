@@ -38,6 +38,10 @@ public final class DataSubmissionHelper {
         return arSuperDataSubmissionDto;
     }
 
+    public static void setCurrentArDataSubmission(ArSuperDataSubmissionDto arSuperDataSubmissionDto, HttpServletRequest request) {
+        ParamUtil.setSessionAttr(request, DataSubmissionConstant.AR_DATA_SUBMISSION, arSuperDataSubmissionDto);
+    }
+
     public static List<String> getNextStageForAr(String currCycle, String currStage) {
         log.info(StringUtil.changeForLog("----- The current cycle stage is " + currCycle + " : " + currStage + " -----"));
         List<String> result = IaisCommonUtils.genNewArrayList();
