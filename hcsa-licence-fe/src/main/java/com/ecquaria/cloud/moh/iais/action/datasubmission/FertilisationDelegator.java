@@ -96,16 +96,17 @@ public class FertilisationDelegator extends CommonDelegator{
             fertilisationDto.setAtuList(null);
         }
 
+        ParamUtil.setSessionAttr(bpc.request, DataSubmissionConstant.AR_DATA_SUBMISSION, arSuperDataSubmissionDto);
         ValidationResult validationResult = WebValidationHelper.validateProperty(fertilisationDto, "save");
         Map<String, String> errorMap = validationResult.retrieveAll();
 
-        ParamUtil.setSessionAttr(bpc.request, DataSubmissionConstant.AR_DATA_SUBMISSION, arSuperDataSubmissionDto);
         if (!errorMap.isEmpty() || validationResult.isHasErrors()) {
             WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "page");
             return;
         }
+
         ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "confirm");
 
     }
