@@ -70,7 +70,7 @@ public class FertilisationDelegator extends CommonDelegator{
         String[] arTechniquesUsed = ParamUtil.getStrings(request,"arTechniquesUsed");
 
         ArSuperDataSubmissionDto arSuperDataSubmissionDto = DataSubmissionHelper.getCurrentArDataSubmission(request);
-        arSuperDataSubmissionDto = new ArSuperDataSubmissionDto();
+        //arSuperDataSubmissionDto = new ArSuperDataSubmissionDto();
         FertilisationDto fertilisationDto = arSuperDataSubmissionDto.getFertilisationDto() == null ? new FertilisationDto() : arSuperDataSubmissionDto.getFertilisationDto();
 
         fertilisationDto.setExtractedSpermVialsNum(ParamUtil.getString(request,"extractedSpermVialsNum"));
