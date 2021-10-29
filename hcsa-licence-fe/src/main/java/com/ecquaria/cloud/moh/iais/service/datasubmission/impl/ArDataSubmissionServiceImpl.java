@@ -83,6 +83,11 @@ public class ArDataSubmissionServiceImpl implements ArDataSubmissionService {
     }
 
     @Override
+    public ArSuperDataSubmissionDto saveBeArSuperDataSubmissionDto(ArSuperDataSubmissionDto arSuperDataSubmission) {
+        return null;
+    }
+
+    @Override
     public ArSuperDataSubmissionDto saveDataSubmissionDraft(ArSuperDataSubmissionDto arSuperDataSubmissionDto) {
         return arFeClient.doUpdateDataSubmissionDraft(arSuperDataSubmissionDto).getEntity();
     }
