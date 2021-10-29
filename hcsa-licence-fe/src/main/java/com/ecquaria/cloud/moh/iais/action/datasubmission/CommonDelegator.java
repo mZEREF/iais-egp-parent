@@ -57,7 +57,7 @@ public abstract class CommonDelegator {
      * @param bpc
      * @throws
      */
-    public void start(BaseProcessClass bpc) {};
+    public void start(BaseProcessClass bpc) {}
 
     /**
      * StartStep: PrepareSwitch
@@ -102,7 +102,7 @@ public abstract class CommonDelegator {
      * @param bpc
      * @throws
      */
-    public void returnStep(BaseProcessClass bpc) {};
+    public void returnStep(BaseProcessClass bpc) {}
 
     /**
      * StartStep: PreparePage
@@ -122,7 +122,7 @@ public abstract class CommonDelegator {
      * @param bpc
      * @throws
      */
-    public void preparePage(BaseProcessClass bpc) {};
+    public void preparePage(BaseProcessClass bpc) {}
 
     /**
      * StartStep: PrepareConfim
@@ -249,7 +249,7 @@ public abstract class CommonDelegator {
      * @param bpc
      * @throws
      */
-    public void pageConfirmAction(BaseProcessClass bpc){};
+    public void pageConfirmAction(BaseProcessClass bpc){}
 
     public final boolean validatePageData(HttpServletRequest request, Object obj, String property, String passCrudActionType,
             String failedCrudActionType, List validationDtos, Map<Object, ValidationProperty> validationPropertyList) {

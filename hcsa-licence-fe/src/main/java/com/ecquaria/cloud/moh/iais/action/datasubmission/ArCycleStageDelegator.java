@@ -8,7 +8,6 @@ import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationProperty;
 import com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant;
-import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.helper.ControllerHelper;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
@@ -73,25 +72,6 @@ public class ArCycleStageDelegator extends CommonDelegator {
         ParamUtil.setSessionAttr(request, DataSubmissionConstant.AR_DATA_SUBMISSION,arSuperDataSubmissionDto);
     }
 
-    @Override
-    public void prepareConfim(BaseProcessClass bpc) {
-
-    }
-
-    @Override
-    public void draft(BaseProcessClass bpc) {
-        HttpServletRequest request = bpc.request;
-        ArSuperDataSubmissionDto arSuperDataSubmissionDto = DataSubmissionHelper.getCurrentArDataSubmission(request);
-        setArCycleStageDtoByPage(request,arSuperDataSubmissionDto.getArCycleStageDto());
-        //todo do draft
-
-        ParamUtil.setSessionAttr(request, DataSubmissionConstant.AR_DATA_SUBMISSION,arSuperDataSubmissionDto);
-    }
-
-    @Override
-    public void submission(BaseProcessClass bpc) {
-
-    }
 
     @Override
     public void pageAction(BaseProcessClass bpc) {
@@ -115,16 +95,6 @@ public class ArCycleStageDelegator extends CommonDelegator {
             );
         }
         return validationPropertyList;
-    }
-
-
-    @Override
-    public void pageConfirmAction(BaseProcessClass bpc) {
-        HttpServletRequest request = bpc.request;
-        ArSuperDataSubmissionDto arSuperDataSubmissionDto = DataSubmissionHelper.getCurrentArDataSubmission(request);
-         //todo save
-
-        ParamUtil.setSessionAttr(request, DataSubmissionConstant.AR_DATA_SUBMISSION,arSuperDataSubmissionDto);
     }
 
     private void setArCycleStageDtoByPage(HttpServletRequest request,ArCycleStageDto arCycleStageDto){
