@@ -254,8 +254,6 @@ function expDownload(content, filename) {
     a.remove();
 }
 
-
-
 function genFileInfo(fileInputEl) {
     var f = fileInputEl.files;
     return f[0].name + '(' + (f[0].size/1024).toFixed(1) + 'KB)';

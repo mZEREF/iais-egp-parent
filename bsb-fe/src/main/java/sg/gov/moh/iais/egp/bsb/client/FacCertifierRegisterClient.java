@@ -25,7 +25,7 @@ public interface FacCertifierRegisterClient {
     ValidationResultDto validateFacilityAdmin(@RequestBody AdministratorDto dto);
 
     @PostMapping(path = "/register/faCer/validate/primaryDocs", consumes = MediaType.APPLICATION_JSON_VALUE, produces =MediaType.APPLICATION_JSON_VALUE)
-    ValidationResultDto validateCerPrimaryDocs(@RequestBody PrimaryDocDto dto);
+    ValidationResultDto validateCerPrimaryDocs(@RequestBody PrimaryDocDto.DocsMetaDto dto);
 
     @PostMapping(path = "/register/faCer/validate/previewSubmit", consumes = MediaType.APPLICATION_JSON_VALUE, produces =MediaType.APPLICATION_JSON_VALUE)
     ValidationResultDto validateFaCerPreviewSubmit(@RequestBody PreviewSubmitDto dto);

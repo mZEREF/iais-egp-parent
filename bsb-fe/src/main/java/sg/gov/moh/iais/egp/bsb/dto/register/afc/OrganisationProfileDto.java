@@ -20,6 +20,7 @@ import javax.servlet.http.HttpServletRequest;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties({"name", "available", "validated", "dependNodes", "validationResultDto"})
 public class OrganisationProfileDto extends ValidatableNodeValue {
+    private String facCertEntityId;
     private String orgName;
     private String addressType;
     private String floor;
@@ -79,6 +80,14 @@ public class OrganisationProfileDto extends ValidatableNodeValue {
 
     public void setFloor(String floor) {
         this.floor = floor;
+    }
+
+    public String getFacCertEntityId() {
+        return facCertEntityId;
+    }
+
+    public void setFacCertEntityId(String facCertEntityId) {
+        this.facCertEntityId = facCertEntityId;
     }
 
     public String getUnitNo() {

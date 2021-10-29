@@ -28,6 +28,7 @@ public class AdministratorDto extends ValidatableNodeValue {
     @Data
     @NoArgsConstructor
     public static class FacilityAdministratorInfo implements Serializable {
+        private String adminEntityId;
         private String adminName;
         private String nationality;
         private String idType;

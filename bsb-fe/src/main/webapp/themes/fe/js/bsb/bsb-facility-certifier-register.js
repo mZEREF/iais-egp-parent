@@ -1,13 +1,4 @@
 $(function () {
-
-    $('.file-upload').click(function () {
-        var index = $(this).closest('.file-upload-gp').find('input[name="configIndex"]').val();
-        $('input[name="uploadKey"]').val(index);
-        clearFlagValueFEFile();
-        $('#selectFileDiv').html('<input id="selectedFile" class="selectedFile"  name="selectedFile" type="file" style="display: none;" onclick="fileClicked(event)" onchange="fileChangedLocal(this,event)" aria-label="selectedFile1">');
-        $('input[type="file"]').click();
-    });
-
     $("#next").click(function () {
         showWaiting();
         $("input[name='action_type']").val("jump");
@@ -36,6 +27,22 @@ $(function () {
         $("#mainForm").submit();
     });
 
+    // doc upload
+    $("a[data-upload-file]").click(function () {
+        // create input file
+        var name = $(this).attr("data-upload-file");
+        var id = name + +new Date();
+        var newFileInput = document.createElement("input");
+        newFileInput.setAttribute("type", "file");
+        newFileInput.setAttribute("id", id);
+        newFileInput.setAttribute("name", name);
+        newFileInput.addEventListener("change", addReloadFile);
+        $("#fileUploadInputDiv").append(newFileInput);
+
+        // click to select file
+        newFileInput.click();
+    });
+
 
     // // facility classification radio button changes
     var overseasVal = $("#overseasCon");
@@ -57,26 +64,31 @@ $(function () {
 
 });
 
-function fileClicked(event) {
-    var fileElement = event.target;
-    if (fileElement.value != "") {
-        console.log("Clone( #" + fileElement.id + " ) : " + fileElement.value.split("\\").pop())
-        clone[fileElement.id] = $(fileElement).clone(); //'Saving Clone'
-    }
-    //What ever else you want to do when File Chooser Clicked
+function deleteSavedFile(id) {
+    // delete delete button, reload button and download button
+    var fileDiv = document.getElementById(id + "FileDiv");
+    fileDiv.parentNode.removeChild(fileDiv);
+
+    // add id into the delete list
+    var deleteSavedInput = document.getElementById("deleteExistFiles");
+    appendInputValue(deleteSavedInput, id);
 }
 
-// FileChanged()
-function fileChangedLocal(obj, event) {
-    var fileElement = event.target;
-    if (fileElement.value == "") {
-        fileChanged(event);
+function deleteNewFile(id) {
+    // delete delete button, reload button and download button
+    var fileDiv = document.getElementById(id + "FileDiv");
+    fileDiv.parentNode.removeChild(fileDiv);
+
+    // add id into the delete list
+    var deleteSavedInput = document.getElementById("deleteNewFiles");
+    appendInputValue(deleteSavedInput, id);
+}
+
+function appendInputValue(input, value) {
+    if (input.value) {
+        input.value = input.value + "," + value;
     } else {
-        var file = obj.value;
-        if (file != null && file != '' && file != undefined) {
-            var configIndex = $('input[name="uploadKey"]').val();
-            ajaxCallUploadForMax('mainForm',configIndex,true);
-        }
+        input.value = value;
     }
 }
 
@@ -142,6 +154,49 @@ function removeSection(num, sectionIdPrefix, hiddenInputName, titlePrefix, separ
             changeH3(sectionIdPrefix, 0, titlePrefix, separator);
         }
     }
+}
+
+function addReloadFile() {
+    var id = this.getAttribute("id");
+    var fileDiv = document.getElementById(id + "FileDiv");
+    if (fileDiv) {
+        // change filename and size
+        var spanEl = document.getElementById(id + 'Span');
+        spanEl.innerText = genFileInfo(this);
+    } else {
+        // add filename, size, delete and reload button
+        var span = document.createElement("span");
+        span.setAttribute("id", id + "Span");
+        span.innerText = genFileInfo(this);
+
+        var delBtn = document.createElement("button");
+        delBtn.setAttribute("type", "button");
+        delBtn.setAttribute("class", "btn btn-secondary btn-sm delFileBtn");
+        delBtn.setAttribute("onclick", "deleteFile('" + id + "')");
+        delBtn.innerText = "Delete";
+
+        var reloadBtn = document.createElement("button");
+        reloadBtn.setAttribute("type", "button");
+        reloadBtn.setAttribute("class", "btn btn-secondary btn-sm reUploadFileBtn");
+        reloadBtn.setAttribute("onclick", "reloadFile('" + id + "')");
+        reloadBtn.innerText = "Reload";
+
+        fileDiv = document.createElement("div");
+        fileDiv.setAttribute("id", id + "FileDiv");
+        fileDiv.appendChild(span);
+        fileDiv.appendChild(delBtn);
+        fileDiv.appendChild(reloadBtn);
+
+        var name = this.getAttribute("name");
+        var gpa = $("a[data-upload-file=" + name + "]");
+        var gp = gpa.closest('.file-upload-gp')[0];
+        gp.insertBefore(fileDiv, gpa[0]);
+    }
+}
+
+function genFileInfo(fileInputEl) {
+    var f = fileInputEl.files;
+    return f[0].name + '(' + (f[0].size/1024).toFixed(1) + 'KB)';
 }
 
 function changeH3(sectionIdPrefix, num, titlePrefix, separator) {

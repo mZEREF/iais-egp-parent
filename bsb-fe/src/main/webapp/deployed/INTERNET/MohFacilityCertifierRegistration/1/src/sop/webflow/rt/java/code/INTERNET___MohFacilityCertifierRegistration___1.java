@@ -18,7 +18,6 @@ public class INTERNET___MohFacilityCertifierRegistration___1 extends BaseProcess
 
 	public void start_OnStepProcess_0() throws Exception {
 	// 		Start->OnStepProcess
-		EngineHelper.delegate(DELEGATOR, "start", this);
 	}
 
 	public void init_OnStepProcess_0() throws Exception {
@@ -98,7 +97,6 @@ public class INTERNET___MohFacilityCertifierRegistration___1 extends BaseProcess
 
 	public void preAcknowledge_OnStepProcess_0() throws Exception {
 		// 		PreAcknowledge->OnStepProcess
-		EngineHelper.delegate(DELEGATOR, "preAcknowledge", this);
 	}
 
 }

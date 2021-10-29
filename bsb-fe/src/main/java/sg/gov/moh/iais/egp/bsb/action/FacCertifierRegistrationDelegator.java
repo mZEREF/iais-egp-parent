@@ -9,23 +9,30 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
 import sg.gov.moh.iais.egp.bsb.client.FacCertifierRegisterClient;
+import sg.gov.moh.iais.egp.bsb.client.FileRepoClient;
 import sg.gov.moh.iais.egp.bsb.common.node.Node;
 import sg.gov.moh.iais.egp.bsb.common.node.NodeGroup;
 import sg.gov.moh.iais.egp.bsb.common.node.Nodes;
 import sg.gov.moh.iais.egp.bsb.common.node.simple.SimpleNode;
+import sg.gov.moh.iais.egp.bsb.constant.DocConstants;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
 import sg.gov.moh.iais.egp.bsb.dto.register.afc.*;
+import sg.gov.moh.iais.egp.bsb.entity.DocSetting;
 import sg.gov.moh.iais.egp.bsb.util.LogUtil;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import static sg.gov.moh.iais.egp.bsb.constant.FacCertifierRegisterConstants.*;
-
+import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.NODE_NAME_PRIMARY_DOC;
 
 
 /**
@@ -68,6 +75,8 @@ public class FacCertifierRegistrationDelegator {
 
     @Autowired
     private FacCertifierRegisterClient facCertifierRegisterClient;
+    @Autowired
+    private FileRepoClient fileRepoClient;
 
 
     public void init(BaseProcessClass bpc) {
@@ -156,10 +165,23 @@ public class FacCertifierRegistrationDelegator {
         ParamUtil.setRequestAttr(request, NODE_NAME_ORG_CERTIFYING_TEAM, certifyingTeamDto);
     }
 
-    public void prepareDocuments(){
-    if(log.isInfoEnabled()){
-        log.info("will update doc ");
-    }
+    public void prepareDocuments(BaseProcessClass bpc){
+        HttpServletRequest request = bpc.request;
+        NodeGroup facRegRoot = getFacCertifierRegisterRoot(request);
+        SimpleNode primaryDocNode = (SimpleNode) facRegRoot.at(NODE_NAME_FAC_PRIMARY_DOCUMENT);
+       PrimaryDocDto primaryDocDto = (PrimaryDocDto) primaryDocNode.getValue();
+        Boolean needShowError = (Boolean) ParamUtil.getRequestAttr(request, KEY_SHOW_ERROR_SWITCH);
+        if (needShowError == Boolean.TRUE) {
+            ParamUtil.setRequestAttr(request, KEY_VALIDATION_ERRORS, primaryDocDto.retrieveValidationResult());
+        }
+        primaryDocNode.needValidation();
+
+        ParamUtil.setRequestAttr(request, "docSettings", getFacRegDocSettings());
+
+        Map<String, List<PrimaryDocDto.DocRecordInfo>> savedFiles = primaryDocDto.getExistDocTypeMap();
+        Map<String, List<PrimaryDocDto.NewDocInfo>> newFiles = primaryDocDto.getNewDocTypeMap();
+        ParamUtil.setRequestAttr(request, "savedFiles", savedFiles);
+        ParamUtil.setRequestAttr(request, "newFiles", newFiles);
     }
 
     public void preparePreview(BaseProcessClass bpc){
@@ -177,6 +199,8 @@ public class FacCertifierRegistrationDelegator {
         ParamUtil.setRequestAttr(request, NODE_NAME_ORG_PROFILE, ((SimpleNode) facRegRoot.at(NODE_NAME_ORGANISATION_INFO + facRegRoot.getPathSeparator() + NODE_NAME_ORG_PROFILE)).getValue());
         ParamUtil.setRequestAttr(request, NODE_NAME_ORG_CERTIFYING_TEAM, ((SimpleNode) facRegRoot.at(NODE_NAME_ORGANISATION_INFO + facRegRoot.getPathSeparator() + NODE_NAME_ORG_CERTIFYING_TEAM)).getValue());
         ParamUtil.setRequestAttr(request, NODE_NAME_ORG_FAC_ADMINISTRATOR, ((SimpleNode) facRegRoot.at(NODE_NAME_ORGANISATION_INFO + facRegRoot.getPathSeparator() + NODE_NAME_ORG_FAC_ADMINISTRATOR)).getValue());
+        ParamUtil.setRequestAttr(request, "docSettings", getFacRegDocSettings());
+        ParamUtil.setRequestAttr(request, NODE_NAME_FAC_PRIMARY_DOCUMENT, ((PrimaryDocDto)((SimpleNode)facRegRoot.at(NODE_NAME_FAC_PRIMARY_DOCUMENT)).getValue()).getAllDocTypeMap());
     }
 
     public void doCompInfo(BaseProcessClass bpc){
@@ -272,6 +296,14 @@ public class FacCertifierRegistrationDelegator {
                 if (previewSubmitDto.doValidation()) {
                     previewSubmitNode.passValidation();
 
+                    //upload document
+                    SimpleNode primaryDocNode = (SimpleNode) facRegRoot.at(NODE_NAME_FAC_PRIMARY_DOCUMENT);
+                    PrimaryDocDto primaryDocDto = (PrimaryDocDto) primaryDocNode.getValue();
+                    MultipartFile[] files = primaryDocDto.getNewDocMap().values().stream().map(PrimaryDocDto.NewDocInfo::getMultipartFile).toArray(MultipartFile[]::new);
+                    List<String> repoIds = fileRepoClient.saveFiles(files).getEntity();
+                    primaryDocDto.newFileSaved(repoIds);
+
+
                     // save data
                     FacilityCertifierRegisterDto finalAllDataDto = FacilityCertifierRegisterDto.from(facRegRoot);
                     finalAllDataDto.setAppStatus("BSBAPST001");
@@ -301,9 +333,7 @@ public class FacCertifierRegistrationDelegator {
         ParamUtil.setRequestAttr(request, KEY_INDEED_ACTION_TYPE, actionType);
     }
 
-    public void preAcknowledge(BaseProcessClass bpc){
 
-    }
 
     /**
      * common actions when we do 'jump'
@@ -502,6 +532,18 @@ public class FacCertifierRegistrationDelegator {
 
     private static List<SelectOption> tmpPositionOps() {
         return Arrays.asList(new SelectOption(null, TEXT_VALUE_PLEASE_SELECT),new SelectOption("Biosafety Certifier", "Biosafety Certifier"), new SelectOption("Engineering Certifier", "Engineering Certifier"),new SelectOption("Assistant Biosafety Certifier","Assistant Biosafety Certifier"),new SelectOption("Assistant Engineering Certifier","Assistant Engineering Certifier"));
+    }
+
+
+    /* Will be removed in future, will get this from config mechanism */
+    private List<DocSetting> getFacRegDocSettings () {
+        List<DocSetting> docSettings = new ArrayList<>();
+        docSettings.add(new DocSetting(DocConstants.DOC_TYPE_COMPANY_INFORMATION, "Company Information", true));
+        docSettings.add(new DocSetting(DocConstants.DOC_TYPE_SOP_FOR_CERTIFICATION, "SOP for Certification", true));
+        docSettings.add(new DocSetting(DocConstants.DOC_TYPE_OTHERS, "Others", false));
+        docSettings.add(new DocSetting(DocConstants.DOC_TYPE_TESTIMONIALS, "Testimonials", true));
+        docSettings.add(new DocSetting(DocConstants.DOC_TYPE_CURRICULUM_VITAE, "Curriculum Vitae", true));
+        return docSettings;
     }
 
 }

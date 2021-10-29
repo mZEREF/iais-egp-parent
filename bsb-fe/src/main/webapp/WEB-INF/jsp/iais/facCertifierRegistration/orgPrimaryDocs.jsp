@@ -5,6 +5,7 @@
 <%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
 <%@ taglib prefix="iais-bsb" uri="http://www.ecq.com/iais-bsb" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ page import="com.ecquaria.cloud.moh.iais.common.utils.MaskUtil" %>
 
 <%
     sop.webflow.rt.api.BaseProcessClass process =
@@ -19,11 +20,14 @@
 
 <%@include file="dashboard.jsp"%>
 
-<form method="post" id="mainForm" action="<%=process.runtime.continueURL()%>">
+<form method="post" id="mainForm" enctype="multipart/form-data" action="<%=process.runtime.continueURL()%>">
     <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
     <input type="hidden" name="action_type" value="">
     <input type="hidden" name="action_value" value="">
     <input type="hidden" name="action_additional" value="">
+    <input type="hidden" id="deleteExistFiles" name="deleteExistFiles" value="">
+    <input type="hidden" id="deleteNewFiles" name="deleteNewFiles" value="">
+    <div id="fileUploadInputDiv" style="display: none"></div>
     <div class="main-content">
         <div class="container">
             <div class="row">
@@ -42,43 +46,39 @@
                                         </div>
                                         <div class="document-upload-gp">
                                             <h2>PRIMARY DOCUMENTS</h2>
-
-                                            <div class="document-upload-list">
-                                                <h3>Company Information <span class="mandatory otherQualificationSpan">*</span></h3>
-                                                <div class="file-upload-gp">
-                                                    <a class="btn file-upload btn-secondary" href="javascript:void(0);">Upload</a>
+                                            <c:forEach var="doc" items="${docSettings}">
+                                                <c:set var="maskDocType" value="${MaskUtil.maskValue('file', doc.type)}"/>
+                                                <div class="document-upload-list">
+                                                    <h3>${doc.typeDisplay}<c:if test="${doc.mandatory}"> <span class="mandatory otherQualificationSpan">*</span></c:if></h3>
+                                                    <div class="file-upload-gp">
+                                                        <c:if test="${savedFiles.get(doc.type) ne null}">
+                                                            <c:forEach var="info" items="${savedFiles.get(doc.type)}">
+                                                                <c:set var="tmpId" value="${MaskUtil.maskValue('file', info.repoId)}"/>
+                                                                <div id="${tmpId}FileDiv">
+                                                                    <span id="${tmpId}Span">${info.filename}(${String.format("%.1f", info.size/1024.0)}KB)</span><button
+                                                                        type="button" class="btn btn-secondary btn-sm" onclick="deleteSavedFile('${tmpId}')">Delete</button><button
+                                                                        type="button" class="btn btn-secondary btn-sm" onclick="reloadSavedFile('${tmpId}', '${maskDocType}')">Reload</button><button
+                                                                        type="button" class="btn btn-secondary btn-sm" onclick="downloadFile('saved', '${tmpId}', '${maskDocType}', '${info.filename}')">Download</button>
+                                                                    <span data-err-ind="${info.repoId}" class="error-msg"></span>
+                                                                </div>
+                                                            </c:forEach>
+                                                        </c:if>
+                                                        <c:if test="${newFiles.get(doc.type) ne null}">
+                                                            <c:forEach var="info" items="${newFiles.get(doc.type)}">
+                                                                <c:set var="tmpId" value="${MaskUtil.maskValue('file', info.tmpId)}"/>
+                                                                <div id="${tmpId}FileDiv">
+                                                                    <span id="${tmpId}Span">${info.filename}(${String.format("%.1f", info.size/1024.0)}KB)</span><button
+                                                                        type="button" class="btn btn-secondary btn-sm" onclick="deleteNewFile('${tmpId}')">Delete</button><button
+                                                                        type="button" class="btn btn-secondary btn-sm" onclick="reloadNewFile('${tmpId}', '${maskDocType}')">Reload</button><button
+                                                                        type="button" class="btn btn-secondary btn-sm" onclick="downloadFile('new', '${tmpId}', '${maskDocType}', '${info.filename}')">Download</button>
+                                                                    <span data-err-ind="${info.tmpId}" class="error-msg"></span>
+                                                                </div>
+                                                            </c:forEach>
+                                                        </c:if>
+                                                        <a class="btn file-upload btn-secondary" data-upload-file="${maskDocType}" href="javascript:void(0);">Upload</a><span data-err-ind="${doc.type}" class="error-msg"></span>
+                                                    </div>
                                                 </div>
-                                            </div>
-
-                                            <div class="document-upload-list">
-                                                <h3>SOP for Certification <span class="mandatory otherQualificationSpan">*</span></h3>
-                                                <div class="file-upload-gp">
-                                                    <a class="btn file-upload btn-secondary" href="javascript:void(0);">Upload</a>
-                                                </div>
-                                            </div>
-
-                                            <div class="document-upload-list">
-                                                <h3>Others</h3>
-                                                <div class="file-upload-gp">
-                                                    <a class="btn file-upload btn-secondary" href="javascript:void(0);">Upload</a>
-                                                </div>
-                                            </div>
-
-                                            <h2 style="margin: 10px 0;border-bottom: 1px solid black">Team Member</h2>
-
-                                            <div class="document-upload-list">
-                                                <h3>Testimonials <span class="mandatory otherQualificationSpan">*</span></h3>
-                                                <div class="file-upload-gp">
-                                                    <a class="btn file-upload btn-secondary" href="javascript:void(0);">Upload</a>
-                                                </div>
-                                            </div>
-
-                                            <div class="document-upload-list">
-                                                <h3>Curriculum Vitae <span class="mandatory otherQualificationSpan">*</span></h3>
-                                                <div class="file-upload-gp">
-                                                    <a class="btn file-upload btn-secondary" href="javascript:void(0);">Upload</a>
-                                                </div>
-                                            </div>
+                                            </c:forEach>
                                         </div>
                                     </div>
                                 </div>

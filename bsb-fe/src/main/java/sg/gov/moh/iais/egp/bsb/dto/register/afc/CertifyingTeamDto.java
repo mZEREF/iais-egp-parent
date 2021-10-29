@@ -30,6 +30,7 @@ public class CertifyingTeamDto extends ValidatableNodeValue {
     @Data
     @NoArgsConstructor
     public static class CertifierTeamMember implements Serializable {
+        private String memberEntityId;
         private String memberName;
         private String idType;
         private String idNo;

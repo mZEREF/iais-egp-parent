@@ -283,7 +283,7 @@ public class ApprovalAppDelegator {
                 // save docs
                 SimpleNode primaryDocNode = (SimpleNode) approvalAppRoot.at(NODE_NAME_PRIMARY_DOC);
                 PrimaryDocDto primaryDocDto = (PrimaryDocDto) primaryDocNode.getValue();
-                List<MultipartFile> files = primaryDocDto.getNewDocMap().values().stream().map(PrimaryDocDto.NewDocInfo::getMultipartFile).collect(Collectors.toList());
+                MultipartFile[] files = primaryDocDto.getNewDocMap().values().stream().map(PrimaryDocDto.NewDocInfo::getMultipartFile).toArray(MultipartFile[]::new);
                 List<String> repoIds = fileRepoClient.saveFiles(files).getEntity();
                 primaryDocDto.newFileSaved(repoIds);
 
