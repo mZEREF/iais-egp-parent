@@ -246,29 +246,31 @@ public abstract class CommonDelegator {
      */
     public abstract void pageConfirmAction(BaseProcessClass bpc);
 
-    public  final boolean validatePageData(HttpServletRequest request, Object obj, String property, String passCrudActionType, String failedCrudActionType, List validationDtos, Map<Object,ValidationProperty> validationPropertyList){
+    public final boolean validatePageData(HttpServletRequest request, Object obj, String property, String passCrudActionType,
+            String failedCrudActionType, List validationDtos, Map<Object, ValidationProperty> validationPropertyList) {
         ValidationResult validationResult = WebValidationHelper.validateProperty(obj, property);
-        String  prefix = "";
-        String  suffix = "";
-        if(IaisCommonUtils.isNotEmpty(validationPropertyList)){
+        String prefix = "";
+        String suffix = "";
+        if (IaisCommonUtils.isNotEmpty(validationPropertyList)) {
             ValidationProperty validationProperty = validationPropertyList.get(obj);
-            if( validationProperty !=null){
+            if (validationProperty != null) {
                 prefix = validationProperty.getPrefix();
                 suffix = validationProperty.getSuffix();
             }
         }
-        Map<String, String> errorMap = validationResult.retrieveAll( prefix,suffix);
-        if( !IaisCommonUtils.isEmpty(validationDtos)){
+        Map<String, String> errorMap = validationResult.retrieveAll(prefix, suffix);
+        if (!IaisCommonUtils.isEmpty(validationDtos)) {
             for (int i = 0; i < validationDtos.size(); i++) {
-                if(IaisCommonUtils.isNotEmpty(validationPropertyList)){
+                if (IaisCommonUtils.isNotEmpty(validationPropertyList)) {
                     ValidationProperty validationProperty = validationPropertyList.get(validationDtos.get(i));
-                    if( validationProperty !=null){
-                    prefix = validationProperty.getPrefix();
-                    suffix = validationProperty.getSuffix();
+                    if (validationProperty != null) {
+                        prefix = validationProperty.getPrefix();
+                        suffix = validationProperty.getSuffix();
                     }
                 }
-                Map<String, String> errorMap1 = WebValidationHelper.validateProperty( validationDtos.get(i), property).retrieveAll(prefix,suffix);
-                if(!errorMap1.isEmpty()){
+                Map<String, String> errorMap1 = WebValidationHelper.validateProperty(validationDtos.get(i), property).retrieveAll(
+                        prefix, suffix);
+                if (!errorMap1.isEmpty()) {
                     errorMap.putAll(errorMap1);
                 }
             }
@@ -276,45 +278,50 @@ public abstract class CommonDelegator {
         if (!errorMap.isEmpty()) {
             WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
             ParamUtil.setRequestAttr(request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
-            ParamUtil.setRequestAttr(request, IaisEGPConstant.CRUD_ACTION_TYPE,failedCrudActionType);
+            ParamUtil.setRequestAttr(request, IaisEGPConstant.CRUD_ACTION_TYPE, failedCrudActionType);
             return false;
-        }else if(StringUtil.isNotEmpty(passCrudActionType)){
-            ParamUtil.setRequestAttr(request, IaisEGPConstant.CRUD_ACTION_TYPE,passCrudActionType);
+        } else if (StringUtil.isNotEmpty(passCrudActionType)) {
+            ParamUtil.setRequestAttr(request, IaisEGPConstant.CRUD_ACTION_TYPE, passCrudActionType);
         }
         return true;
     }
 
-    public  final boolean validatePageData(HttpServletRequest request,Object obj){
-        return validatePageData(request,obj,"save");
+    public final boolean validatePageData(HttpServletRequest request, Object obj) {
+        return validatePageData(request, obj, "save");
     }
 
-    public  final boolean validatePageData(HttpServletRequest request,Object obj,List validationDtos){
-        return validatePageData(request,obj,"save",ACTION_TYPE_CONFIRM,ACTION_TYPE_PAGE,validationDtos,null);
+    public final boolean validatePageData(HttpServletRequest request, Object obj, List validationDtos) {
+        return validatePageData(request, obj, "save", ACTION_TYPE_CONFIRM, ACTION_TYPE_PAGE, validationDtos, null);
     }
 
-    public  final boolean validatePageData(HttpServletRequest request,Object obj,String property){
-        return validatePageData(request,obj,property,ACTION_TYPE_CONFIRM,ACTION_TYPE_PAGE,null,null);
+    public final boolean validatePageData(HttpServletRequest request, Object obj, String property) {
+        return validatePageData(request, obj, property, ACTION_TYPE_CONFIRM, ACTION_TYPE_PAGE, null, null);
     }
 
-    public  final boolean validatePageData(HttpServletRequest request,Object obj,String property,List validationDtos){
-        return validatePageData(request,obj,property,ACTION_TYPE_CONFIRM,ACTION_TYPE_PAGE,validationDtos,null);
+    public final boolean validatePageData(HttpServletRequest request, Object obj, String property, List validationDtos) {
+        return validatePageData(request, obj, property, ACTION_TYPE_CONFIRM, ACTION_TYPE_PAGE, validationDtos, null);
     }
 
-    public  final boolean validatePageDataHaveValidationProperty(HttpServletRequest request,Object obj,List validationDtos, Map<Object,ValidationProperty> validationPropertyList){
-        return validatePageDataHaveValidationProperty(request,obj,"save",validationDtos,validationPropertyList);
+    public final boolean validatePageDataHaveValidationProperty(HttpServletRequest request, Object obj, List validationDtos,
+            Map<Object, ValidationProperty> validationPropertyList) {
+        return validatePageDataHaveValidationProperty(request, obj, "save", validationDtos, validationPropertyList);
     }
 
-    public  final boolean validatePageDataHaveValidationProperty(HttpServletRequest request,Object obj,ValidationProperty validationProperty){
-        return validatePageDataHaveValidationProperty(request,obj,"save",validationProperty);
+    public final boolean validatePageDataHaveValidationProperty(HttpServletRequest request, Object obj,
+            ValidationProperty validationProperty) {
+        return validatePageDataHaveValidationProperty(request, obj, "save", validationProperty);
     }
 
-    public  final boolean validatePageDataHaveValidationProperty(HttpServletRequest request,Object obj,String property,ValidationProperty validationProperty){
-        Map<Object,ValidationProperty> validationPropertyList = IaisCommonUtils.genNewHashMap();
-        validationPropertyList.put(obj,validationProperty);
-        return validatePageData(request,obj,property,ACTION_TYPE_CONFIRM,ACTION_TYPE_PAGE,null,validationPropertyList);
+    public final boolean validatePageDataHaveValidationProperty(HttpServletRequest request, Object obj, String property,
+            ValidationProperty validationProperty) {
+        Map<Object, ValidationProperty> validationPropertyList = IaisCommonUtils.genNewHashMap();
+        validationPropertyList.put(obj, validationProperty);
+        return validatePageData(request, obj, property, ACTION_TYPE_CONFIRM, ACTION_TYPE_PAGE, null, validationPropertyList);
     }
 
-    public  final boolean validatePageDataHaveValidationProperty(HttpServletRequest request,Object obj,String property,List validationDtos, Map<Object,ValidationProperty> validationPropertyList){
-        return validatePageData(request,obj,property,ACTION_TYPE_CONFIRM,ACTION_TYPE_PAGE,validationDtos,validationPropertyList);
+    public final boolean validatePageDataHaveValidationProperty(HttpServletRequest request, Object obj, String property,
+            List validationDtos, Map<Object, ValidationProperty> validationPropertyList) {
+        return validatePageData(request, obj, property, ACTION_TYPE_CONFIRM, ACTION_TYPE_PAGE, validationDtos, validationPropertyList);
     }
+
 }

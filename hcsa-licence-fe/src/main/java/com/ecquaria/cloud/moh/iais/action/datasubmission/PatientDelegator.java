@@ -85,7 +85,7 @@ public class PatientDelegator extends CommonDelegator{
         dataSubmission.setPatientInfoDto(patientInfo);
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
         String actionType = ParamUtil.getString(bpc.request, DataSubmissionConstant.CRUD_TYPE);
-        if ("confirm".equals(actionType)) {
+        if (ACTION_TYPE_CONFIRM.equals(actionType)) {
             ValidationResult result = WebValidationHelper.validateProperty(patientInfo, "AR");
             if (result != null) {
                 errorMap.putAll(result.retrieveAll());
@@ -93,7 +93,7 @@ public class PatientDelegator extends CommonDelegator{
         }
         if (!errorMap.isEmpty()) {
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
-            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "page");
+            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, ACTION_TYPE_PAGE);
         }
     }
 
