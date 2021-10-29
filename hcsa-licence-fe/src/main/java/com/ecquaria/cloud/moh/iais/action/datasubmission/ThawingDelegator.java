@@ -35,7 +35,7 @@ public class ThawingDelegator extends CommonDelegator {
 
     @Override
     public void prepareSwitch(BaseProcessClass bpc) {
-
+        ParamUtil.setRequestAttr(bpc.request, "smallTitle", "You are submitting for <strong>Thawing (Oocytes & Embryos) Stage</strong>");
     }
 
     @Override
@@ -104,7 +104,6 @@ public class ThawingDelegator extends CommonDelegator {
             WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
             ParamUtil.setRequestAttr(request, IntranetUserConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
             ParamUtil.setRequestAttr(request, IntranetUserConstant.CRUD_ACTION_TYPE, "page");
-            ParamUtil.setSessionAttr(request, "thawingStageDto", thawingStageDto);
         }
     }
 

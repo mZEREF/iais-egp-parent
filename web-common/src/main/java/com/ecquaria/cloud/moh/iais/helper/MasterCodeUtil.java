@@ -84,6 +84,7 @@ public final class MasterCodeUtil {
     public static final String CATE_ID_APPLICATION_DRAFT_VALIDITY  = "A89CA599-179F-EA11-BE7A-000C29D29DB0";
     public static final String CATE_ID_LICENCE_STATUS              = "CF69FBD0-B37A-4DD9-9BD6-0A153ED55BF8";
     public static final String CATE_ID_EFO_REASON                  = "4AADAE2F-A8D4-4966-A17B-BFBAE669E8E4";
+    public static final String CATE_ID_AGE_OF_EMBRYO_TRANSFER      = "5DAF8193-CBA8-414F-8873-5A3CC4794133";
 
     public static final String CATE_ID_SYSTEM_PARAMETER_MODULE          = "1D3F6F1A-5334-EA11-BE7D-000C29F371DC";
     public static final String CATE_ID_SYSTEM_PARAMETER_TYPE            = "364C7AFB-5234-EA11-BE7D-000C29F371DC";

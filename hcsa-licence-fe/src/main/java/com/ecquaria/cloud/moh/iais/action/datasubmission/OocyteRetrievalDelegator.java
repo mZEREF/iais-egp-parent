@@ -34,7 +34,7 @@ public class OocyteRetrievalDelegator extends CommonDelegator {
 
     @Override
     public void prepareSwitch(BaseProcessClass bpc) {
-
+        ParamUtil.setRequestAttr(bpc.request, "smallTitle", "You are submitting for <strong>Oocyte Retrieval Stage</strong>");
     }
 
     @Override
@@ -96,7 +96,6 @@ public class OocyteRetrievalDelegator extends CommonDelegator {
             WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
             ParamUtil.setRequestAttr(request, IntranetUserConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
             ParamUtil.setRequestAttr(request, IntranetUserConstant.CRUD_ACTION_TYPE, "page");
-            ParamUtil.setSessionAttr(request, "oocyteRetrievalStageDto", oocyteRetrievalStageDto);
         }
     }
 
