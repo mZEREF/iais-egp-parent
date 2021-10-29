@@ -24,12 +24,14 @@ public interface ArFeClient {
     FeignResponseEntity<PatientDto> getPatientDto(@RequestParam(name = "idNumber") String idNumber,
             @RequestParam(name = "nationality") String nationality, @RequestParam(name = "orgId") String orgId);
 
-    @GetMapping(value = "/ar-common/cycle-stage-selection", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/data-submission/cycle-stage-selection", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<CycleStageSelectionDto> getCycleStageSelectionDtoByConds(@RequestParam(name = "idNumber") String idNumber,
-            @RequestParam(name = "nationality") String nationality, @RequestParam(name = "orgId") String orgId);
+            @RequestParam(name = "nationality") String nationality, @RequestParam(name = "orgId") String orgId,
+            @RequestParam(name = "hciCode") String hciCode);
 
-    @GetMapping(value = "/ar-data-submission/patient-code", produces = MediaType.APPLICATION_JSON_VALUE,consumes = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<ArSuperDataSubmissionDto> getArSuperDataSubmissionDto(@RequestParam(name = "patientCode") String patientCode);
+    @GetMapping(value = "/ar-data-submission/patient-code-hci-code", produces = MediaType.APPLICATION_JSON_VALUE,consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<ArSuperDataSubmissionDto> getArSuperDataSubmissionDto(@RequestParam(name = "patientCode") String patientCode,
+            @RequestParam(name = "hciCode") String hciCode);
 
     @PutMapping(value = "/ar-common/ar-cycle-stage/save", produces = MediaType.APPLICATION_JSON_VALUE,consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<ArCycleStageDto> saveArCycleStageDto(@RequestBody ArCycleStageDto arCycleStageDto);

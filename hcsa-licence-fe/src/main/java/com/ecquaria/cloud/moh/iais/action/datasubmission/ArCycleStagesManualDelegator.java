@@ -21,6 +21,7 @@ import sop.webflow.rt.api.BaseProcessClass;
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * ARCycleStagesManualDelegator
@@ -90,8 +91,11 @@ public class ArCycleStagesManualDelegator {
             dataSubmission.setSubmissionType(DataSubmissionConsts.DATA_SUBMISSION_TYPE_AR);
             dataSubmission.setCycleStage(selectionDto.getStage());
             // re-set data
-            ArSuperDataSubmissionDto newDto = arDataSubmissionService.getArSuperDataSubmissionDto(
-                    selectionDto.getPatientCode());
+            String hicCode = Optional.ofNullable(currentArDataSubmission.getAppGrpPremisesDto())
+                    .map(premises -> premises.getHciCode())
+                    .orElse("");
+            ArSuperDataSubmissionDto newDto = arDataSubmissionService.getArSuperDataSubmissionDto(selectionDto.getPatientCode(),
+                    hicCode);
             newDto.setCurrentDataSubmissionDto(dataSubmission);
             newDto.setAppGrpPremisesDto(currentArDataSubmission.getAppGrpPremisesDto());
             newDto.setSubmissionType(currentArDataSubmission.getSubmissionType());

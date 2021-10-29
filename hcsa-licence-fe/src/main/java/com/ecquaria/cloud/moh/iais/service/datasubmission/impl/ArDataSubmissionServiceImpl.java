@@ -61,20 +61,20 @@ public class ArDataSubmissionServiceImpl implements ArDataSubmissionService {
     }
 
     @Override
-    public CycleStageSelectionDto getCycleStageSelectionDtoByConds(String idNumber, String nationality, String orgId) {
+    public CycleStageSelectionDto getCycleStageSelectionDtoByConds(String idNumber, String nationality, String orgId, String hciCode) {
         if (StringUtil.isEmpty(idNumber) || StringUtil.isEmpty(nationality) || StringUtil.isEmpty(orgId)) {
             return null;
         }
-        return arFeClient.getCycleStageSelectionDtoByConds(idNumber, nationality, orgId).getEntity();
+        return arFeClient.getCycleStageSelectionDtoByConds(idNumber, nationality, orgId, hciCode).getEntity();
     }
 
     @Override
-    public ArSuperDataSubmissionDto getArSuperDataSubmissionDto(String patientCode) {
+    public ArSuperDataSubmissionDto getArSuperDataSubmissionDto(String patientCode, String hciCOde) {
         if (StringUtil.isEmpty(patientCode)) {
             log.warn("----- No Patient Code -----");
             return null;
         }
-        return arFeClient.getArSuperDataSubmissionDto(patientCode).getEntity();
+        return arFeClient.getArSuperDataSubmissionDto(patientCode, hciCOde).getEntity();
     }
 
     @Override
