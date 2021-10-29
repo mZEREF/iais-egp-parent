@@ -39,4 +39,29 @@ $(document).ready(function () {
             $('#AbnormalDisplay').attr("style","display: none");
         }
     });
+
+
+    $('#isEmbryosBiopsiedLocal').change(function () {
+
+        var reason= $('#isEmbryosBiopsiedLocal option:selected').val();
+
+        if("0"==reason){
+            $('#othersEmbryosBiopsyDisplay').attr("style","display: block");
+        }else {
+            $('#othersEmbryosBiopsyDisplay').attr("style","display: none");
+        }
+
+    });
+
+    $('#isBiopsyLocal').change(function () {
+
+        var reason= $('#isBiopsyLocal option:selected').val();
+
+        if("0"==reason){
+            $('#othersBiopsyDisplay').attr("style","display: block");
+        }else {
+            $('#othersBiopsyDisplay').attr("style","display: none");
+        }
+
+    });
 });
