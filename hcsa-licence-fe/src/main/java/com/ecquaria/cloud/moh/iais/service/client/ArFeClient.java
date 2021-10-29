@@ -5,15 +5,15 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArDonorDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.FertilisationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientDto;
-import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
+import java.util.List;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @FeignClient(name = "hcsa-licence",configuration = FeignConfiguration.class,fallback = ArFeClientFallback.class)
 public interface ArFeClient {
@@ -52,6 +52,10 @@ public interface ArFeClient {
     @PutMapping(value = "/ar-common/save-ar-data-submission", produces = MediaType.APPLICATION_JSON_VALUE,consumes =
             MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<ArSuperDataSubmissionDto> saveArSuperDataSubmissionDto(@RequestBody ArSuperDataSubmissionDto arSuperDataSubmissionDto);
+
+    @PutMapping(value = "/data-submission/draft", produces = MediaType.APPLICATION_JSON_VALUE,consumes =
+            MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<ArSuperDataSubmissionDto> doUpdateDataSubmissionDraft(@RequestBody ArSuperDataSubmissionDto arSuperDataSubmissionDto);
 
 
 }

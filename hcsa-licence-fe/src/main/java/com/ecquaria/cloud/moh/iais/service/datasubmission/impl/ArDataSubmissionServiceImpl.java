@@ -64,6 +64,11 @@ public class ArDataSubmissionServiceImpl implements ArDataSubmissionService {
     }
 
     @Override
+    public ArSuperDataSubmissionDto saveDataSubmissionDraft(ArSuperDataSubmissionDto arSuperDataSubmissionDto) {
+        return arFeClient.doUpdateDataSubmissionDraft(arSuperDataSubmissionDto).getEntity();
+    }
+
+    @Override
     public String getSubmissionNo(String submisisonType, String cycleStage, DataSubmissionDto lastDataSubmissionDto) {
         String submissionNo = null;
         int serialNo = 0;
