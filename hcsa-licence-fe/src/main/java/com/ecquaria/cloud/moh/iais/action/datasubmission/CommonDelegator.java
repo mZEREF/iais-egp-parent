@@ -156,7 +156,7 @@ public abstract class CommonDelegator {
         ArSuperDataSubmissionDto arSuperDataSubmission = DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
         if(arSuperDataSubmission != null){
             arSuperDataSubmission = arDataSubmissionService.saveDataSubmissionDraft(arSuperDataSubmission);
-
+            DataSubmissionHelper.setCurrentArDataSubmission(arSuperDataSubmission,bpc.request);
         }else{
             log.info(StringUtil.changeForLog("The arSuperDataSubmission is null"));
         }

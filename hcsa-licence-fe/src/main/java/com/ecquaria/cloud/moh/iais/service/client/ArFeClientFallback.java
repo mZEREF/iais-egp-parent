@@ -78,5 +78,8 @@ public class ArFeClientFallback implements ArFeClient {
             ArSuperDataSubmissionDto arSuperDataSubmissionDto) {
         return getFeignResponseEntity();
     }
-
+    @Override
+    public FeignResponseEntity<ArSuperDataSubmissionDto> doUpdateDataSubmissionDraft(ArSuperDataSubmissionDto arSuperDataSubmissionDto) {
+        return getFeignResponseEntity();
+    }
 }
