@@ -18,6 +18,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
+
+import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
@@ -292,42 +294,27 @@ public abstract class CommonDelegator {
         return true;
     }
 
-    public final boolean validatePageData(HttpServletRequest request, Object obj) {
-        return validatePageData(request, obj, "save");
+    public final boolean validatePageData(HttpServletRequest request, Object obj, String property,String... actionType) {
+        return needValidate(request,actionType) ? validatePageData(request, obj, property, ACTION_TYPE_CONFIRM, ACTION_TYPE_PAGE, null, null) : false;
     }
 
-    public final boolean validatePageData(HttpServletRequest request, Object obj, List validationDtos) {
-        return validatePageData(request, obj, "save", ACTION_TYPE_CONFIRM, ACTION_TYPE_PAGE, validationDtos, null);
-    }
-
-    public final boolean validatePageData(HttpServletRequest request, Object obj, String property) {
-        return validatePageData(request, obj, property, ACTION_TYPE_CONFIRM, ACTION_TYPE_PAGE, null, null);
-    }
-
-    public final boolean validatePageData(HttpServletRequest request, Object obj, String property, List validationDtos) {
-        return validatePageData(request, obj, property, ACTION_TYPE_CONFIRM, ACTION_TYPE_PAGE, validationDtos, null);
-    }
-
-    public final boolean validatePageDataHaveValidationProperty(HttpServletRequest request, Object obj, List validationDtos,
-            Map<Object, ValidationProperty> validationPropertyList) {
-        return validatePageDataHaveValidationProperty(request, obj, "save", validationDtos, validationPropertyList);
-    }
-
-    public final boolean validatePageDataHaveValidationProperty(HttpServletRequest request, Object obj,
-            ValidationProperty validationProperty) {
-        return validatePageDataHaveValidationProperty(request, obj, "save", validationProperty);
+    public final boolean validatePageData(HttpServletRequest request, Object obj, String property, List validationDtos,String... actionType) {
+        return needValidate(request,actionType) ?  validatePageData(request, obj, property, ACTION_TYPE_CONFIRM, ACTION_TYPE_PAGE, validationDtos, null) : false;
     }
 
     public final boolean validatePageDataHaveValidationProperty(HttpServletRequest request, Object obj, String property,
-            ValidationProperty validationProperty) {
+            ValidationProperty validationProperty,String ...actionType) {
         Map<Object, ValidationProperty> validationPropertyList = IaisCommonUtils.genNewHashMap();
         validationPropertyList.put(obj, validationProperty);
-        return validatePageData(request, obj, property, ACTION_TYPE_CONFIRM, ACTION_TYPE_PAGE, null, validationPropertyList);
+        return  needValidate(request,actionType) ? validatePageData(request, obj, property, ACTION_TYPE_CONFIRM, ACTION_TYPE_PAGE, null, validationPropertyList) : false;
     }
 
     public final boolean validatePageDataHaveValidationProperty(HttpServletRequest request, Object obj, String property,
-            List validationDtos, Map<Object, ValidationProperty> validationPropertyList) {
-        return validatePageData(request, obj, property, ACTION_TYPE_CONFIRM, ACTION_TYPE_PAGE, validationDtos, validationPropertyList);
+            List validationDtos, Map<Object, ValidationProperty> validationPropertyList,String ...actionType) {
+        return   needValidate(request,actionType) ? validatePageData(request, obj, property, ACTION_TYPE_CONFIRM, ACTION_TYPE_PAGE, validationDtos, validationPropertyList) : false;
+    }
+    private boolean needValidate(HttpServletRequest request,String ... actionType){
+      return StringUtil.isIn(ParamUtil.getString(request, DataSubmissionConstant.CRUD_TYPE),actionType);
     }
 
 }

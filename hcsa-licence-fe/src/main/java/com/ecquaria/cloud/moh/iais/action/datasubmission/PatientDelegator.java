@@ -56,10 +56,7 @@ public class PatientDelegator extends CommonDelegator{
         PatientInfoDto patientInfo = getPatientInfoFromPage(bpc.request);
         ArSuperDataSubmissionDto dataSubmission = DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
         dataSubmission.setPatientInfoDto(patientInfo);
-        String actionType = ParamUtil.getString(bpc.request, DataSubmissionConstant.CRUD_TYPE);
-        if (ACTION_TYPE_CONFIRM.equals(actionType)) {
-            validatePageData(bpc.request, patientInfo, "AR");
-        }
+        validatePageData(bpc.request, patientInfo, "AR",ACTION_TYPE_CONFIRM);
         DataSubmissionHelper.setCurrentArDataSubmission(dataSubmission, bpc.request);
     }
 
