@@ -11,10 +11,10 @@ import com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
+import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.ArDataSubmissionService;
 import lombok.extern.slf4j.Slf4j;
-import org.checkerframework.checker.units.qual.A;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
 
@@ -149,7 +149,8 @@ public class ArDataSubmissionDelegator {
             dataSubmission.setArSubmissionType(submissionType);
             dataSubmission.setSubmissionMethod(submissionMethod);
             dataSubmission.setAppGrpPremisesDto(appGrpPremisesDto);
-            session.setAttribute(DataSubmissionConstant.AR_DATA_SUBMISSION, dataSubmission);
+            dataSubmission.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+            DataSubmissionHelper.setCurrentArDataSubmission(dataSubmission, bpc.request);
         }
         ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.CRUD_ACTION_TYPE_AR, actionType);
     }

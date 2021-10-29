@@ -49,7 +49,7 @@ public interface ArFeClient {
     @GetMapping(value = "/ar-common/fertilisation/submissionId", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<FertilisationDto>> getFertilisationDtosBySubmissionId(@RequestParam(name = "submissionId") String submissionId) ;
 
-    @PutMapping(value = "/ar-common/save-ar-data-submission", produces = MediaType.APPLICATION_JSON_VALUE,consumes =
+    @PutMapping(value = "/ar-common/ar-data-submission", produces = MediaType.APPLICATION_JSON_VALUE,consumes =
             MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<ArSuperDataSubmissionDto> saveArSuperDataSubmissionDto(@RequestBody ArSuperDataSubmissionDto arSuperDataSubmissionDto);
 

@@ -8,25 +8,19 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DataSubmission
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.HusbandDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInfoDto;
-import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
-import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant;
-import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.ControllerHelper;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
-import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.PatientService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.repository.query.Param;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.Locale;
-import java.util.Map;
+import java.util.UUID;
 
 /**
  * @Description PatientDelegator
@@ -49,6 +43,7 @@ public class PatientDelegator extends CommonDelegator{
         }
         dataSubmission.setSubmissionType(DataSubmissionConsts.DATA_SUBMISSION_TYPE_AR);
         dataSubmission.setCycleStage(DataSubmissionConsts.DATA_SUBMISSION_CYCLE_STAGE_PATIENT);
+        DataSubmissionHelper.setCurrentArDataSubmission(currentArDataSubmission, bpc.request);
     }
 
     @Override
@@ -57,44 +52,15 @@ public class PatientDelegator extends CommonDelegator{
     }
 
     @Override
-    public void returnStep(BaseProcessClass bpc) {
-    }
-
-    @Override
-    public void preparePage(BaseProcessClass bpc) {
-
-    }
-
-    @Override
-    public void prepareConfim(BaseProcessClass bpc) {
-    }
-
-    @Override
-    public void draft(BaseProcessClass bpc) {
-
-    }
-
-    @Override
-    public void submission(BaseProcessClass bpc) {
-    }
-
-    @Override
     public void pageAction(BaseProcessClass bpc) {
         PatientInfoDto patientInfo = getPatientInfoFromPage(bpc.request);
         ArSuperDataSubmissionDto dataSubmission = DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
         dataSubmission.setPatientInfoDto(patientInfo);
-        Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
         String actionType = ParamUtil.getString(bpc.request, DataSubmissionConstant.CRUD_TYPE);
         if (ACTION_TYPE_CONFIRM.equals(actionType)) {
-            ValidationResult result = WebValidationHelper.validateProperty(patientInfo, "AR");
-            if (result != null) {
-                errorMap.putAll(result.retrieveAll());
-            }
+            validatePageData(bpc.request, patientInfo, "AR");
         }
-        if (!errorMap.isEmpty()) {
-            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
-            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, ACTION_TYPE_PAGE);
-        }
+        DataSubmissionHelper.setCurrentArDataSubmission(dataSubmission, bpc.request);
     }
 
     private PatientInfoDto getPatientInfoFromPage(HttpServletRequest request) {
@@ -107,6 +73,11 @@ public class PatientDelegator extends CommonDelegator{
         if (StringUtil.isEmpty(patient.getEthnicGroup())) {
             patient.setEthnicGroup("");
         }
+        LoginContext loginContext = DataSubmissionHelper.getLoginContext(request);
+        if (loginContext != null) {
+            patient.setOrgId(loginContext.getOrgId());
+        }
+        patient.setPatientCode(UUID.randomUUID().toString());
         patientInfo.setPatient(patient);
         if (patient.isPreviousIdentification()) {
             String preIdType = ParamUtil.getString(request, "preIdType");
@@ -118,12 +89,7 @@ public class PatientDelegator extends CommonDelegator{
             previous.setIdNumber(preIdNumber);
             previous.setNationality(preNationality);
             if (AppConsts.YES.equals(retrievePrevious)) {
-                String orgId = null;
-                LoginContext loginContext = DataSubmissionHelper.getLoginContext(request);
-                if (loginContext != null) {
-                    orgId = loginContext.getOrgId();
-                }
-                previous = patientService.getPatientDto(preIdNumber, preNationality, orgId);
+                previous = patientService.getPatientDto(preIdNumber, preNationality, patient.getOrgId());
             }
             patientInfo.setPrevious(previous);
         }
@@ -137,11 +103,6 @@ public class PatientDelegator extends CommonDelegator{
         }
         patientInfo.setHusband(husband);
         return patientInfo;
-    }
-
-    @Override
-    public void pageConfirmAction(BaseProcessClass bpc) {
-
     }
 
 }
