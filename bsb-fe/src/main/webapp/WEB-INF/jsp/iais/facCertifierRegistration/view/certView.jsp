@@ -216,10 +216,23 @@
                                                             <div class="panel-body">
                                                                 <div class="text-right app-font-size-16"><c:if test="${not empty maskedEditId}"><a href="/bsb-fe/eservice/INTERNET/MohFacilityCertifierRegistration?editId=${maskedEditId}"><em class="fa fa-pencil-square-o"></em>Edit</a></c:if></div>
                                                                 <div class="panel-main-content form-horizontal min-row">
-                                                                    <div class="form-group">
-                                                                        <div class="col-10"><strong>Uploaded Documents</strong></div>
-                                                                        <div class="clear"></div>
-                                                                    </div>
+                                                                    <c:forEach var="doc" items="${docSettings}">
+                                                                        <c:set var="docFiles" value="${primaryDoc.get(doc.type)}"/>
+                                                                        <c:if test="${not empty docFiles}">
+                                                                            <div class="form-group">
+                                                                                <div class="col-10"><strong>${doc.typeDisplay}</strong></div>
+                                                                                <div class="clear"></div>
+                                                                            </div>
+                                                                            <div>
+                                                                                <c:forEach var="file" items="${docFiles}">
+                                                                                    <div class="form-group">
+                                                                                        <div class="col-10"><p>${file.filename}(${String.format("%.1f", file.size/1024.0)}KB)</p></div>
+                                                                                        <div class="clear"></div>
+                                                                                    </div>
+                                                                                </c:forEach>
+                                                                            </div>
+                                                                        </c:if>
+                                                                    </c:forEach>
                                                                 </div>
                                                             </div>
                                                         </div>

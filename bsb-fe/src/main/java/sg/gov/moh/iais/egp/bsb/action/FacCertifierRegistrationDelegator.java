@@ -1,6 +1,8 @@
 package sg.gov.moh.iais.egp.bsb.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
+import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
@@ -43,8 +45,10 @@ import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.NODE_NAME_PR
 @Slf4j
 @Delegator("bsbFacCertifierRegisterDelegator")
 public class FacCertifierRegistrationDelegator {
+    public static final String MODULE_NAME = "Facility Certifier Registration";
+    public static final String KEY_ROOT_NODE_GROUP = "facCertifierRegRoot";
+
     private static final String KEY_EDIT_APP_ID = "editId";
-    private static final String KEY_ROOT_NODE_GROUP = "facCertifierRegRoot";
     private static final String KEY_ACTION_TYPE = "action_type";
     private static final String KEY_INDEED_ACTION_TYPE = "indeed_action_type";
     private static final String KEY_ACTION_VALUE = "action_value";
@@ -306,6 +310,8 @@ public class FacCertifierRegistrationDelegator {
 
                     // save data
                     FacilityCertifierRegisterDto finalAllDataDto = FacilityCertifierRegisterDto.from(facRegRoot);
+                    AuditTrailDto auditTrailDto = (AuditTrailDto) ParamUtil.getSessionAttr(request, AuditTrailConsts.SESSION_ATTR_PARAM_NAME);
+                    finalAllDataDto.setAuditTrailDto(auditTrailDto);
                     finalAllDataDto.setAppStatus("BSBAPST001");
                     ResponseDto<String> responseDto = facCertifierRegisterClient.saveNewRegisteredFacCertifier(finalAllDataDto);
                     log.info("save new facility response: {}", responseDto);

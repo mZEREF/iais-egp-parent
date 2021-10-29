@@ -1,5 +1,6 @@
 package sg.gov.moh.iais.egp.bsb.dto.register.afc;
 
+import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import sg.gov.moh.iais.egp.bsb.common.node.Node;
@@ -27,6 +28,7 @@ public class FacilityCertifierRegisterDto {
     private AdministratorDto administratorDto;
     private Collection<PrimaryDocDto.DocRecordInfo> docRecordInfos;
     private PreviewSubmitDto previewSubmitDto;
+    private AuditTrailDto auditTrailDto;
 
     public static FacilityCertifierRegisterDto from(NodeGroup facRegRoot){
         FacilityCertifierRegisterDto dto = new FacilityCertifierRegisterDto();

@@ -84,6 +84,50 @@ function deleteNewFile(id) {
     appendInputValue(deleteSavedInput, id);
 }
 
+function reloadSavedFile(id, type) {
+    deleteSavedFile(id);
+    $("a[data-upload-file=" + type + "]")[0].click();
+}
+
+function reloadNewFile(id, type) {
+    deleteNewFile(id);
+    $("a[data-upload-file=" + type + "]")[0].click();
+}
+
+function downloadFile(cond, id, type, filename) {
+    var url;
+    if (cond === 'saved') {
+        url = "/bsb-fe/ajax/doc/download/facCertReg/repo/" + id;
+    } else if (cond === 'new') {
+        url = "/bsb-fe/ajax/doc/download/facCertReg/new/" + id;
+    }
+
+    if (url) {
+        $.ajax({
+            type: "GET",
+            url: url,
+            async: true,
+            responseType: "blob",
+            success: function(content) {
+                expDownload(content, filename);
+            },
+            error: function () {
+                $("span[data-err-ind='" + type + "']").innerText = "Fail to download the file";
+            }
+        });
+    }
+}
+
+function expDownload(content, filename) {
+    var a = document.createElement("a");
+    var blob = new Blob([content]);
+    a.href = window.URL.createObjectURL(blob);
+    a.target = "_parent";
+    a.download = filename;
+    a.click();
+    a.remove();
+}
+
 function appendInputValue(input, value) {
     if (input.value) {
         input.value = input.value + "," + value;
@@ -91,7 +135,6 @@ function appendInputValue(input, value) {
         input.value = value;
     }
 }
-
 
 function showLeader(obj){
    $(obj).parent().parent().parent().next().show();
