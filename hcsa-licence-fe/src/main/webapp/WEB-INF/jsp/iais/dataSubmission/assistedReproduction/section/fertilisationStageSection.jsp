@@ -27,6 +27,7 @@
                             </div>
 
                         </c:forEach>
+                        <span class="error-msg" name="iaisErrorMsg" id="error_sourceOfSemen"></span>
                     </iais:value>
                 </iais:row>
                 <iais:row>
@@ -58,6 +59,7 @@
                                         class="check-square"></span>${arTechniquesUsed.codeValue}</label>
                             </div>
                         </c:forEach>
+                        <span class="error-msg" name="iaisErrorMsg" id="error_arTechniquesUsed"></span>
                     </iais:value>
                 </iais:row>
                 <iais:row>
@@ -79,7 +81,7 @@
                     </iais:value>
                 </iais:row>
                 <iais:row>
-                    <iais:field width="5" value="No. of Fresh Oocytes Used for ZIFT" mandatory="true"/>
+                    <iais:field width="5" value="No. of Fresh Oocytes Used for ZIFT" />
                     <iais:value width="7" cssClass="col-md-7">
                         <iais:input maxLength="2" type="text" name="freshOocytesZiftNum" />
                     </iais:value>
