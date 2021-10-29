@@ -16,6 +16,10 @@ import com.ecquaria.cloud.helper.EngineHelper;
 public class INTERNET___MohBSBInboxApp___1 extends BaseProcessClass {
 	private static final String DELEGATOR ="bsbInboxAppDelegator";
 
+	public void start_OnStepProcess_0() throws Exception {
+		EngineHelper.delegate(DELEGATOR, "start", this);
+	}
+
 	public void prepareData_OnStepProcess_0() throws Exception {
 		EngineHelper.delegate(DELEGATOR, "prepareData", this);
 	}

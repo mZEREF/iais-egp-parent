@@ -23,7 +23,7 @@ public class FileRepoClientFallback implements FileRepoClient{
     }
 
     @Override
-    public FeignResponseEntity<List<String>> saveFiles(List<MultipartFile> files) {
+    public FeignResponseEntity<List<String>> saveFiles(MultipartFile[] files) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);

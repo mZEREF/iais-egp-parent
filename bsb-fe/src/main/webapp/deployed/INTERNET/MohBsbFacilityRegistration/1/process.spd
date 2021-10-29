@@ -5,7 +5,9 @@
   <StartStep defClass="" executor="" icon="" name="Start" x="80" y="50">
    <Description />
    <probepoint type="none" />
-   <OnStepProcess />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="start_OnStepProcess_0" name="start_OnStepProcess_0" />
+   </OnStepProcess>
   </StartStep>
   <AutomaticStep defClass="" executor="" icon="" name="PreServiceSelection" x="260" y="160">
    <Description />
@@ -449,10 +451,10 @@
    <position>{(1290,600)(1420,600)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/ActionFilter" linkstyle="Direct" name="" sourceName="/Merges/Merge/Merge1" style="oblique">
-   <position>{(870,600)(1025,630)}</position>
+   <position>{(870,600)(1000,600)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Switches/Switch/ActionSwitch" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/ActionFilter" style="rectanular">
-   <position>{(1025,630)(1140,600)}</position>
+   <position>{(1000,600)(1140,600)}</position>
   </SynchronousLink>
  </Links>
  <Conditions />

@@ -2,11 +2,14 @@ package sg.gov.moh.iais.egp.bsb.action;
 
 
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
+import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoDto;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
+import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +25,18 @@ import sg.gov.moh.iais.egp.bsb.common.node.simple.SimpleNode;
 import sg.gov.moh.iais.egp.bsb.constant.DocConstants;
 import sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
-import sg.gov.moh.iais.egp.bsb.dto.register.facility.*;
+import sg.gov.moh.iais.egp.bsb.dto.register.facility.BiologicalAgentToxinDto;
+import sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityAdministratorDto;
+import sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityAuthoriserDto;
+import sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityCommitteeDto;
+import sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityOfficerDto;
+import sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityOperatorDto;
+import sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityProfileDto;
+import sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityRegisterDto;
+import sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilitySelectionDto;
+import sg.gov.moh.iais.egp.bsb.dto.register.facility.OtherApplicationInfoDto;
+import sg.gov.moh.iais.egp.bsb.dto.register.facility.PreviewSubmitDto;
+import sg.gov.moh.iais.egp.bsb.dto.register.facility.PrimaryDocDto;
 import sg.gov.moh.iais.egp.bsb.entity.DocSetting;
 import sg.gov.moh.iais.egp.bsb.util.LogUtil;
 import sop.webflow.rt.api.BaseProcessClass;
@@ -32,7 +46,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.*;
 
@@ -40,6 +53,7 @@ import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.*;
 @Slf4j
 @Delegator("bsbFacilityRegisterDelegator")
 public class FacilityRegistrationDelegator {
+    public static final String MODULE_NAME = "Facility Registration";
     public static final String KEY_ROOT_NODE_GROUP = "facRegRoot";
 
     private static final String KEY_EDIT_APP_ID = "editId";
@@ -74,9 +88,15 @@ public class FacilityRegistrationDelegator {
         this.fileRepoClient = fileRepoClient;
     }
 
-    public void init(BaseProcessClass bpc) {
+    public void start(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         request.getSession().removeAttribute(KEY_ROOT_NODE_GROUP);
+
+        AuditTrailHelper.auditFunction(MODULE_NAME, MODULE_NAME);
+    }
+
+    public void init(BaseProcessClass bpc) {
+        HttpServletRequest request = bpc.request;
         boolean newFacReg = true;
 
         // check if we are doing editing
@@ -423,14 +443,13 @@ public class FacilityRegistrationDelegator {
     public void handleOtherAppInfo(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         NodeGroup facRegRoot = getFacilityRegisterRoot(request);
-        String currentNodePath = NODE_NAME_OTHER_INFO;
         SimpleNode otherAppInfoNode = (SimpleNode) facRegRoot.at(NODE_NAME_OTHER_INFO);
         OtherApplicationInfoDto otherAppInfoDto = (OtherApplicationInfoDto) otherAppInfoNode.getValue();
         otherAppInfoDto.reqObjMapping(request);
 
         String actionType = ParamUtil.getString(request, KEY_ACTION_TYPE);
         if (KEY_ACTION_JUMP.equals(actionType)) {
-            jumpHandler(request, facRegRoot, currentNodePath, otherAppInfoNode);
+            jumpHandler(request, facRegRoot, NODE_NAME_OTHER_INFO, otherAppInfoNode);
         } else {
             throw new IaisRuntimeException(ERR_MSG_INVALID_ACTION);
         }
@@ -459,14 +478,13 @@ public class FacilityRegistrationDelegator {
     public void handlePrimaryDoc(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         NodeGroup facRegRoot = getFacilityRegisterRoot(request);
-        String currentNodePath = NODE_NAME_PRIMARY_DOC;
         SimpleNode primaryDocNode = (SimpleNode) facRegRoot.at(NODE_NAME_PRIMARY_DOC);
         PrimaryDocDto primaryDocDto = (PrimaryDocDto) primaryDocNode.getValue();
         primaryDocDto.reqObjMapping(request);
 
         String actionType = ParamUtil.getString(request, KEY_ACTION_TYPE);
         if (KEY_ACTION_JUMP.equals(actionType)) {
-            jumpHandler(request, facRegRoot, currentNodePath, primaryDocNode);
+            jumpHandler(request, facRegRoot, NODE_NAME_PRIMARY_DOC, primaryDocNode);
         } else {
             throw new IaisRuntimeException(ERR_MSG_INVALID_ACTION);
         }
@@ -506,7 +524,6 @@ public class FacilityRegistrationDelegator {
     public void handlePreviewSubmit(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         NodeGroup facRegRoot = getFacilityRegisterRoot(request);
-        String currentNodePath = NODE_NAME_PREVIEW_SUBMIT;
         SimpleNode previewSubmitNode = (SimpleNode) facRegRoot.at(NODE_NAME_PREVIEW_SUBMIT);
         PreviewSubmitDto previewSubmitDto = (PreviewSubmitDto) previewSubmitNode.getValue();
         previewSubmitDto.reqObjMapping(request);
@@ -521,12 +538,14 @@ public class FacilityRegistrationDelegator {
                     // save docs
                     SimpleNode primaryDocNode = (SimpleNode) facRegRoot.at(NODE_NAME_PRIMARY_DOC);
                     PrimaryDocDto primaryDocDto = (PrimaryDocDto) primaryDocNode.getValue();
-                    List<MultipartFile> files = primaryDocDto.getNewDocMap().values().stream().map(PrimaryDocDto.NewDocInfo::getMultipartFile).collect(Collectors.toList());
+                    MultipartFile[] files = primaryDocDto.getNewDocMap().values().stream().map(PrimaryDocDto.NewDocInfo::getMultipartFile).toArray(MultipartFile[]::new);
                     List<String> repoIds = fileRepoClient.saveFiles(files).getEntity();
                     primaryDocDto.newFileSaved(repoIds);
 
                     // save data
                     FacilityRegisterDto finalAllDataDto = FacilityRegisterDto.from(facRegRoot);
+                    AuditTrailDto auditTrailDto = (AuditTrailDto) ParamUtil.getSessionAttr(request, AuditTrailConsts.SESSION_ATTR_PARAM_NAME);
+                    finalAllDataDto.setAuditTrailDto(auditTrailDto);
                     ResponseDto<String> responseDto = facRegClient.saveNewRegisteredFacility(finalAllDataDto);
                     log.info("save new facility response: {}", responseDto);
 
@@ -543,7 +562,7 @@ public class FacilityRegistrationDelegator {
                     ParamUtil.setSessionAttr(request, KEY_JUMP_DEST_NODE, NODE_NAME_PREVIEW_SUBMIT);
                 }
             } else {
-                jumpHandler(request, facRegRoot, currentNodePath, previewSubmitNode);
+                jumpHandler(request, facRegRoot, NODE_NAME_PREVIEW_SUBMIT, previewSubmitNode);
             }
         } else {
             throw new IaisRuntimeException(ERR_MSG_INVALID_ACTION);

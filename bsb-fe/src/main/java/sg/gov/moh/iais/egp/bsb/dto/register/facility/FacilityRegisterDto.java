@@ -1,5 +1,6 @@
 package sg.gov.moh.iais.egp.bsb.dto.register.facility;
 
+import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.google.common.collect.Maps;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -28,6 +29,7 @@ public class FacilityRegisterDto {
     private Map<String, BiologicalAgentToxinDto> biologicalAgentToxinMap;
     private Collection<PrimaryDocDto.DocRecordInfo> docRecordInfos;
     private PreviewSubmitDto previewSubmitDto;
+    private AuditTrailDto auditTrailDto;
 
 
 

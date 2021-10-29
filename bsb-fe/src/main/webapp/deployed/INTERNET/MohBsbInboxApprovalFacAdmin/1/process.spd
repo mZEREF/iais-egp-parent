@@ -5,7 +5,9 @@
   <StartStep defClass="" executor="" icon="" name="Start" x="100" y="100">
    <Description />
    <probepoint type="none" />
-   <OnStepProcess />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="start_OnStepProcess_0" name="start_OnStepProcess_0" />
+   </OnStepProcess>
   </StartStep>
   <AutomaticStep defClass="" executor="" icon="" name="Init" x="250" y="100">
    <Description />

@@ -19,7 +19,7 @@ public interface FileRepoClient {
                                          @RequestParam("filerepoInfo") String fileRepoInfo);
 
     @PostMapping(value = "/saveFiles", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    FeignResponseEntity<List<String>> saveFiles(@RequestPart("selectedFiles") List<MultipartFile> files);
+    FeignResponseEntity<List<String>> saveFiles(@RequestPart("selectedFiles") MultipartFile[] files);
 
 
     @GetMapping(value = "/{guid}")

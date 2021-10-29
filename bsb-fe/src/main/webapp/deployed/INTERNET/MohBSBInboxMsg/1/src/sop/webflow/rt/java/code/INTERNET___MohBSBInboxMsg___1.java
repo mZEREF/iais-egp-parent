@@ -17,6 +17,9 @@ import sop.webflow.rt.api.BaseProcessClass;
 public class INTERNET___MohBSBInboxMsg___1 extends BaseProcessClass {
 	private static final String DELEGATOR ="bsbInboxMsgDelegator";
 
+	public void start_OnStepProcess_0() throws Exception {
+		EngineHelper.delegate(DELEGATOR, "start", this);
+	}
 
 	public void prepareData_OnStepProcess_0() throws Exception {
 		EngineHelper.delegate(DELEGATOR, "prepareData", this);

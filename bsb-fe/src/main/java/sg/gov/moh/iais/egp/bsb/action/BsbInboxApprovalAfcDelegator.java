@@ -1,8 +1,10 @@
 package sg.gov.moh.iais.egp.bsb.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
+import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,9 +47,15 @@ public class BsbInboxApprovalAfcDelegator {
         this.inboxClient = inboxClient;
     }
 
-    public void init(BaseProcessClass bpc) {
+    public void start(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         request.getSession().removeAttribute(KEY_INBOX_APPROVAL_SEARCH_DTO);
+
+        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_INTERNAL_INBOX, "Inbox Approval (AFC Admin)");
+    }
+
+    public void init(BaseProcessClass bpc) {
+        // do nothing
     }
 
     public void prepareData(BaseProcessClass bpc) {

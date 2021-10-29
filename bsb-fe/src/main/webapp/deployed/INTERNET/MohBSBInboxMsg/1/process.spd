@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Application defaultStart="/Steps/StartStep/Step1" dtdVersion="6.0" executable="true" majorVersion="2" minorVersion="0" name="MohBSBInboxMsg" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" transaction="enable">
+<Application defaultStart="/Steps/StartStep/Start" dtdVersion="6.0" executable="true" majorVersion="3" minorVersion="0" name="MohBSBInboxMsg" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" transaction="enable">
  <WebServices />
  <Steps>
-  <StartStep defClass="" executor="" icon="" name="Step1" x="100" y="100">
+  <StartStep defClass="" executor="" icon="" name="Start" x="100" y="100">
    <Description />
    <probepoint type="none" />
-   <OnStepProcess />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="start_OnStepProcess_0" name="start_OnStepProcess_0" />
+   </OnStepProcess>
   </StartStep>
   <AutomaticStep defClass="" executor="" icon="" name="init" x="250" y="100">
    <Description />
@@ -63,7 +65,7 @@
  </Pages>
  <Forms />
  <Links>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/init" linkstyle="Direct" name="" sourceName="/Steps/StartStep/Step1" style="oblique">
+  <SynchronousLink destinationName="/Steps/AutomaticStep/init" linkstyle="Direct" name="" sourceName="/Steps/StartStep/Start" style="oblique">
    <position>{(120,120)(270,120)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/PrepareData" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/init" style="oblique">
@@ -105,7 +107,7 @@
  </Links>
  <Conditions />
  <Switches>
-  <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="action_type" name="Switch1" x="590" y="350">
+  <Switch defClass="" defaultComponent="/Steps/AutomaticStep/Search" executor="" icon="" leftOperand="action_type" name="Switch1" x="590" y="350">
    <Description />
    <SwitchCase component="/Steps/AutomaticStep/Page" value="&quot;page&quot;" />
    <SwitchCase component="/Steps/AutomaticStep/ViewMsg" value="&quot;viewMsg&quot;" />

@@ -17,6 +17,10 @@ import sop.webflow.rt.api.BaseProcessClass;
 public class INTERNET___MohBsbFacilityRegistration___1 extends BaseProcessClass {
 	private static final String DELEGATOR ="bsbFacilityRegisterDelegator";
 
+	public void start_OnStepProcess_0() throws Exception {
+		EngineHelper.delegate(DELEGATOR, "start", this);
+	}
+
 	public void init_OnStepProcess_0() throws Exception {
 		EngineHelper.delegate(DELEGATOR, "init", this);
 	}

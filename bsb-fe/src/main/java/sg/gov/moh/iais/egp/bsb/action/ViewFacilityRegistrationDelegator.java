@@ -5,6 +5,7 @@ import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
+import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sg.gov.moh.iais.egp.bsb.client.FacilityRegisterClient;
@@ -34,6 +35,10 @@ public class ViewFacilityRegistrationDelegator {
     @Autowired
     public ViewFacilityRegistrationDelegator(FacilityRegisterClient facRegClient) {
         this.facRegClient = facRegClient;
+    }
+
+    public void start(BaseProcessClass bpc) { // NOSONAR
+        AuditTrailHelper.auditFunction("Facility Registration", "View Application");
     }
 
     public void init(BaseProcessClass bpc) {

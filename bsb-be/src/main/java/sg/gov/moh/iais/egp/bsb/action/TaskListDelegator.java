@@ -2,8 +2,10 @@ package sg.gov.moh.iais.egp.bsb.action;
 
 
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
+import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,9 +44,17 @@ public class TaskListDelegator {
         this.taskListClient = taskListClient;
     }
 
+    public void start(BaseProcessClass bpc) {
+        HttpServletRequest request = bpc.request;
+        request.getSession().removeAttribute(KEY_TASK_LIST_SEARCH_DTO);
+
+        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_INTRANET_DASHBOARD, AuditTrailConsts.FUNCTION_TASK_LIST);
+    }
+
     public void prepareData(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         TaskListSearchDto searchDto = getSearchDto(request);
+        ParamUtil.setSessionAttr(request, KEY_TASK_LIST_SEARCH_DTO, searchDto);
 
         ResponseDto<TaskListSearchResultDto> resultDto = taskListClient.getTaskList(searchDto);
 

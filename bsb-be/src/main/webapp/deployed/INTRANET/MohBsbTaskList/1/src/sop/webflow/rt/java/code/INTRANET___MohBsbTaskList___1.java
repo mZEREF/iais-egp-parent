@@ -26,7 +26,7 @@ public class INTRANET___MohBsbTaskList___1 extends BaseProcessClass {
 	}
 
 	public void start_OnStepProcess_0() throws Exception {
-
+		EngineHelper.delegate(DELEGATOR, "start", this);
 	}
 
 	public void page_OnStepProcess_0() throws Exception {

@@ -4,6 +4,7 @@ import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.intranetUser.IntranetUserConstant;
+import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.FeUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrganizationDto;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
@@ -23,6 +24,7 @@ import ncs.secureconnect.sim.entities.Constants;
 import ncs.secureconnect.sim.entities.corpass.UserInfoToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.util.StringUtils;
 import sop.webflow.rt.api.BaseProcessClass;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
@@ -41,21 +43,10 @@ public class FECorppassLandingDelegator {
     @Autowired
     private OrgUserManageService orgUserManageService;
 
-    /**
-     * StartStep: startStep
-     *
-     * @param bpc
-     * @throws
-     */
     public void startStep(BaseProcessClass bpc){
+        // empty, do nothing
     }
 
-    /**
-     * StartStep: croppassCallBack
-     *
-     * @param bpc
-     * @throws
-     */
     public void corppassCallBack(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
         log.info(StringUtil.changeForLog("Corppass Login service [corppassCallBack] START ...."));
@@ -65,6 +56,10 @@ public class FECorppassLandingDelegator {
 
         AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_MAIN_FUNCTION,
                 AuditTrailConsts.FUNCTION_SINGPASS_CORPASS);
+        // set program name to BSB
+        AuditTrailDto dto = (AuditTrailDto) ParamUtil.getSessionAttr(request, AuditTrailConsts.SESSION_ATTR_PARAM_NAME);
+        dto.setProgrameName("BSB");
+        ParamUtil.setSessionAttr(request, AuditTrailConsts.SESSION_ATTR_PARAM_NAME, dto);
 
         String uen;
         String identityNo;
@@ -77,12 +72,6 @@ public class FECorppassLandingDelegator {
                 || FELandingDelegator.LOGIN_MODE_REAL_OIDC.equals(openTestMode)) {
             String samlArt = ParamUtil.getString(request, Constants.SAML_ART);
             LoginInfo loginInfo = SIMUtil4Corpass.doCorpPassArtifactResolution(request, samlArt);
-
-            if (loginInfo == null) {
-                log.info("<== oLoginInfo is empty ==>");
-                return;
-            }
-
             log.debug(StringUtil.changeForLog("oLoginInfo" + JsonUtil.parseToJson(loginInfo)));
 
             UserInfoToken userInfoToken = loginInfo.getUserInfo();
@@ -102,7 +91,7 @@ public class FECorppassLandingDelegator {
             scp =  ParamUtil.getRequestString(request, UserConstants.LOGIN_SCP);
         }
 
-        if (StringUtil.isEmpty(identityNo)){
+        if (StringUtils.isEmpty(identityNo)){
             log.info(StringUtil.changeForLog("identityNo ====>>>>>>>>>" + identityNo));
             AuditTrailHelper.insertLoginFailureAuditTrail(bpc.request, uen, identityNo);
             return;
@@ -152,12 +141,6 @@ public class FECorppassLandingDelegator {
     }
 
 
-    /**
-     * StartStep: validateKeyAppointment
-     *
-     * @param bpc
-     * @throws
-     */
     public void validateKeyAppointment(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
         FeUserDto userSession = (FeUserDto) ParamUtil.getSessionAttr(request, UserConstants.SESSION_USER_DTO);
@@ -172,12 +155,7 @@ public class FECorppassLandingDelegator {
     }
 
     /**
-     * StartStep: loginUser
-     *
      * Init login info
-     *
-     * @param bpc
-     * @throws
      */
     public void loginUser(BaseProcessClass bpc) throws FeignException, BaseException {
         FeUserDto userSession = (FeUserDto) ParamUtil.getSessionAttr(bpc.request, UserConstants.SESSION_USER_DTO);
@@ -189,11 +167,8 @@ public class FECorppassLandingDelegator {
             userSession.setScp(scp);
             userSession.setUenNo(uen);
             ParamUtil.setSessionAttr(bpc.request, UserConstants.SESSION_USER_DTO, userSession);
-            //normal user also can login  (2020/12)
             ParamUtil.setRequestAttr(bpc.request, UserConstants.IS_ADMIN, "Y");
             FeLoginHelper.initUserInfo(bpc.request, userSession);
-            //issue 68766
-            //orgUserManageService.setSingPassAutoCeased(uen, identityNo);
         }else {
             // Add Audit Trail -- Start
             AuditTrailHelper.insertLoginFailureAuditTrail(bpc.request, uen, identityNo, "GENERAL_ERR0012");
@@ -204,12 +179,7 @@ public class FECorppassLandingDelegator {
     }
 
     /**
-     * StartStep: initCorppassUserInfo
-     *
      * Create Corppass User
-     *
-     * @param bpc
-     * @throws
      */
     public void initCorppassUserInfo(BaseProcessClass bpc) throws FeignException, BaseException {
         HttpServletRequest request = bpc.request;
@@ -246,9 +216,6 @@ public class FECorppassLandingDelegator {
 
     /**
      * StartStep: isDeclare
-     *
-     * @param bpc
-     * @throws
      */
     public void isDeclare(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
@@ -268,22 +235,10 @@ public class FECorppassLandingDelegator {
     }
 
 
-    /**
-     * StartStep: ban
-     *
-     * @param bpc
-     * @throws
-     */
     public void ban(BaseProcessClass bpc){
-        HttpServletRequest request = bpc.request;
+        // do nothing
     }
 
-    /**
-     * StartStep: receiveEntityFormEDH
-     *
-     * @param bpc
-     * @throws
-     */
     public void receiveEntityFormEDH(BaseProcessClass bpc){
         log.info("receiveEntityFormEDH Start...........");
         HttpServletRequest request = bpc.request;
