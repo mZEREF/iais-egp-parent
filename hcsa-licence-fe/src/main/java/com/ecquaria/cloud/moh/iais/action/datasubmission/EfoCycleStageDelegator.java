@@ -45,7 +45,6 @@ public class EfoCycleStageDelegator extends CommonDelegator{
         AuditTrailHelper.auditFunction("Assisted Reproduction", "EFO Cycle Stage");
 
         ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "page");
-        ParamUtil.setSessionAttr(bpc.request, "smallTitle", "You are submitting for <strong>Cycle Stages</strong>");
 
         ArSuperDataSubmissionDto arSuperDataSubmissionDto=DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
         if(arSuperDataSubmissionDto==null){
@@ -74,6 +73,7 @@ public class EfoCycleStageDelegator extends CommonDelegator{
     @Override
     public void prepareSwitch(BaseProcessClass bpc) {
         log.info(StringUtil.changeForLog("crud_action_type is ======>"+ParamUtil.getRequestString(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE)));
+        ParamUtil.setRequestAttr(bpc.request, "smallTitle", "You are submitting for <strong>Cycle Stages</strong>");
 
     }
 

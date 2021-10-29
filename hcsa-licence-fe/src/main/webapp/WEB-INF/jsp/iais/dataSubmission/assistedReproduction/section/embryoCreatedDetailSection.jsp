@@ -8,7 +8,7 @@
             </strong>
         </h4>
     </div>
-    <div id="efoDetails" class="panel-collapse collapse in">
+    <div id="embryoCreatedDetails" class="panel-collapse collapse in">
         <div class="panel-body">
             <div class="panel-main-content form-horizontal">
 

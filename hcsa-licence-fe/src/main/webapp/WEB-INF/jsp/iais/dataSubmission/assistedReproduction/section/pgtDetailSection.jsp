@@ -74,10 +74,11 @@
                                    for="isOtherPgt"><span
                                     class="check-square"></span>Others</label>
                         </div>
+                        <span class="error-msg" name="iaisErrorMsg" id="error_pgt_type"></span>
                     </iais:value>
                 </iais:row>
 
-                <div id="pgtMDisplay" style="display: none">
+                <div id="pgtMDisplay" <c:if test="${ arSuperDataSubmissionDto.pgtStageDto.isPgtM !=1 }">style="display: none"</c:if> >
                     <iais:row>
                         <iais:field width="6" value="PGT-M" />
                     </iais:row>
@@ -101,12 +102,12 @@
                             <div class="form-check">
                                 <input class="form-check-input"
                                        type="checkbox"
-                                       name="isPftMWithHla"
-                                       id="isPftMWithHla"
-                                       <c:if test="${ arSuperDataSubmissionDto.pgtStageDto.isPftMWithHla ==1 }">checked</c:if>
+                                       name="isPgtMWithHla"
+                                       id="isPgtMWithHla"
+                                       <c:if test="${ arSuperDataSubmissionDto.pgtStageDto.isPgtMWithHla ==1 }">checked</c:if>
                                        aria-invalid="false">
                                 <label class="form-check-label"
-                                       for="isPftMWithHla"><span
+                                       for="isPgtMWithHla"><span
                                         class="check-square"></span>Together with HLA Matching</label>
                             </div>
                         </iais:value>
@@ -123,33 +124,36 @@
                                        for="isPgtMNon"><span
                                         class="check-square"></span>None of the above</label>
                             </div>
+                            <span class="error-msg" name="iaisErrorMsg" id="error_pgt_m_performed"></span>
                         </iais:value>
                     </iais:row>
                     <iais:row>
-                        <iais:field width="6" value="PGT-M Appeal Reference No." mandatory="false"/>
+                        <iais:field width="6" value="PGT-M Appeal Reference No." mandatory="true"/>
                         <iais:value width="6" cssClass="col-md-6">
-                            <input type="text" maxlength="20"   name="pgtMRefNo" value="${arSuperDataSubmissionDto.pgtStageDto.pgtMRefNo}" >
-
+                            <input type="text" maxlength="19"   name="pgtMRefNo" value="${arSuperDataSubmissionDto.pgtStageDto.pgtMRefNo}" >
+                            <span class="error-msg" name="iaisErrorMsg" id="error_pgt_m_ref_no"></span>
                         </iais:value>
                     </iais:row>
                     <iais:row>
                         <iais:field width="6" value="What Condition was PGT-M Performed to Detect?" mandatory="true"/>
                         <iais:value width="6" cssClass="col-md-6">
                             <input type="text" maxlength="20"   name="pgtMCondition" value="${arSuperDataSubmissionDto.pgtStageDto.pgtMCondition}" >
+                            <span class="error-msg" name="iaisErrorMsg" id="error_PgtMCondition"></span>
                         </iais:value>
                     </iais:row>
                 </div>
 
-                <div id="pgtSrDisplay" style="display: none">
+                <div id="pgtSrDisplay" <c:if test="${ arSuperDataSubmissionDto.pgtStageDto.isPgtSr !=1 }">style="display: none"</c:if>>
                     <iais:row>
                         <iais:field width="6" value="What Condition and Structural Rearrangement was PGT-SR Performed?" mandatory="true"/>
                         <iais:value width="6" cssClass="col-md-6">
                             <input type="text" maxlength="20"   name="pgtSrCondition" value="${arSuperDataSubmissionDto.pgtStageDto.pgtSrCondition}" >
+                            <span class="error-msg" name="iaisErrorMsg" id="error_PgtSrCondition"></span>
                         </iais:value>
                     </iais:row>
                 </div>
 
-                <div id="pgtADisplay" style="display: none">
+                <div id="pgtADisplay" <c:if test="${ arSuperDataSubmissionDto.pgtStageDto.isPgtA !=1 }">style="display: none"</c:if>>
                     <iais:row>
                         <iais:field width="6" value="PGT-A Performed Because of" mandatory="true"/>
                         <iais:value width="6" cssClass="col-md-6">
@@ -192,51 +196,59 @@
                                        for="isPgtATomrpl"><span
                                         class="check-square"></span>Two Or More Repeated Pregnancy Losses</label>
                             </div>
+                            <span class="error-msg" name="iaisErrorMsg" id="error_PerformedBecause"></span>
+
                         </iais:value>
                     </iais:row>
                     <iais:row>
                         <iais:field width="6" value="What was the Result of the PGT-A Test?" mandatory="true"/>
-                        <iais:value width="3" cssClass="col-md-3">
-                            <div class="form-check">
-                                <input class="form-check-input"
-                                       type="radio"
-                                       name="pgtAResult"
-                                       value="Normal"
-                                       id="radioNormal"
-                                       <c:if test="${ arSuperDataSubmissionDto.pgtStageDto.pgtAResult =='Normal' }">checked</c:if>
-                                       aria-invalid="false">
-                                <label class="form-check-label"
-                                       for="radioNormal"><span
-                                        class="check-circle"></span>Normal</label>
-                            </div>
-                        </iais:value>
-                        <iais:value width="3" cssClass="col-md-3">
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio"
-                                       name="pgtAResult" value="Abnormal" id="radioAbnormal"
-                                       <c:if test="${arSuperDataSubmissionDto.pgtStageDto.pgtAResult == 'Abnormal'}">checked</c:if>
-                                       aria-invalid="false">
-                                <label class="form-check-label"
-                                       for="radioAbnormal"><span
-                                        class="check-circle"></span>Abnormal</label>
-                            </div>
-                        </iais:value>
+                        <div class="col-md-6">
+                            <iais:value width="6" cssClass="col-md-6">
+                                <div class="form-check">
+                                    <input class="form-check-input"
+                                           type="radio"
+                                           name="pgtAResult"
+                                           value="Normal"
+                                           id="radioNormal"
+                                           <c:if test="${ arSuperDataSubmissionDto.pgtStageDto.pgtAResult =='Normal' }">checked</c:if>
+                                           aria-invalid="false">
+                                    <label class="form-check-label"
+                                           for="radioNormal"><span
+                                            class="check-circle"></span>Normal</label>
+                                </div>
+                            </iais:value>
+                            <iais:value width="6" cssClass="col-md-6">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio"
+                                           name="pgtAResult" value="Abnormal" id="radioAbnormal"
+                                           <c:if test="${arSuperDataSubmissionDto.pgtStageDto.pgtAResult == 'Abnormal'}">checked</c:if>
+                                           aria-invalid="false">
+                                    <label class="form-check-label"
+                                           for="radioAbnormal"><span
+                                            class="check-circle"></span>Abnormal</label>
+                                </div>
+                            </iais:value>
+                            <span class="error-msg" name="iaisErrorMsg" id="error_PGTAResult"></span>
+                        </div>
+
                     </iais:row>
                     <div id="AbnormalDisplay" style="display: none">
                         <iais:row>
                             <iais:field width="6" value="What Abnormal Condition was Found for the PGT-A Test?" mandatory="true"/>
                             <iais:value width="6" cssClass="col-md-6">
                                 <input type="text" maxlength="20"   name="pgtACondition" value="${arSuperDataSubmissionDto.pgtStageDto.pgtACondition}" >
+                                <span class="error-msg" name="iaisErrorMsg" id="error_PgtACondition"></span>
                             </iais:value>
                         </iais:row>
                     </div>
                 </div>
 
-                <div id="pttDisplay" style="display: none">
+                <div id="pttDisplay" <c:if test="${ arSuperDataSubmissionDto.pgtStageDto.isPtt !=1 }">style="display: none"</c:if>>
                     <iais:row>
                         <iais:field width="6" value="What Condition was PTT Perfomed to Detect" mandatory="true"/>
                         <iais:value width="6" cssClass="col-md-6">
                             <input type="text" maxlength="20"   name="pttCondition" value="${arSuperDataSubmissionDto.pgtStageDto.pttCondition}" >
+                            <span class="error-msg" name="iaisErrorMsg" id="error_pttCondition"></span>
                         </iais:value>
                     </iais:row>
 
@@ -244,47 +256,53 @@
 
                 <iais:row>
                     <iais:field width="6" value="Please indicate Preimplantation Genetic Testing Co-funding?" mandatory="true"/>
-                    <iais:value width="3" cssClass="col-md-3">
-                        <div class="form-check">
-                            <input class="form-check-input"
-                                   type="radio"
-                                   name="isPgtCoFunding"
-                                   value="1"
-                                   id="radioYes"
-                                   <c:if test="${ arSuperDataSubmissionDto.pgtStageDto.isPgtCoFunding ==1 }">checked</c:if>
-                                   aria-invalid="false">
-                            <label class="form-check-label"
-                                   for="radioYes"><span
-                                    class="check-circle"></span>Yes</label>
-                        </div>
-                    </iais:value>
-                    <iais:value width="3" cssClass="col-md-3">
-                        <div class="form-check">
-                            <input class="form-check-input" type="radio"
-                                   name="isPgtCoFunding" value="0" id="radioNo"
-                                   <c:if test="${arSuperDataSubmissionDto.pgtStageDto.isPgtCoFunding == 0}">checked</c:if>
-                                   aria-invalid="false">
-                            <label class="form-check-label"
-                                   for="radioNo"><span
-                                    class="check-circle"></span>No</label>
-                        </div>
-                    </iais:value>
+                    <div class="col-md-6">
+                        <iais:value width="3" cssClass="col-md-3">
+                            <div class="form-check">
+                                <input class="form-check-input"
+                                       type="radio"
+                                       name="isPgtCoFunding"
+                                       value="1"
+                                       id="radioYes"
+                                       <c:if test="${ arSuperDataSubmissionDto.pgtStageDto.isPgtCoFunding ==1 }">checked</c:if>
+                                       aria-invalid="false">
+                                <label class="form-check-label"
+                                       for="radioYes"><span
+                                        class="check-circle"></span>Yes</label>
+                            </div>
+                        </iais:value>
+                        <iais:value width="3" cssClass="col-md-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio"
+                                       name="isPgtCoFunding" value="0" id="radioNo"
+                                       <c:if test="${arSuperDataSubmissionDto.pgtStageDto.isPgtCoFunding == 0}">checked</c:if>
+                                       aria-invalid="false">
+                                <label class="form-check-label"
+                                       for="radioNo"><span
+                                        class="check-circle"></span>No</label>
+                            </div>
+                        </iais:value>
+                        <span class="error-msg" name="iaisErrorMsg" id="error_isPgtCoFunding"></span>
+                    </div>
                 </iais:row>
 
                 <iais:row>
                     <iais:field width="6" value="Embryos were Biospied At" mandatory="true"/>
                     <iais:value width="6" cssClass="col-md-6">
-                        <iais:select cssClass="isEmbryosBiopsiedLocal"  name="isEmbryosBiopsiedLocal" firstOption="Please Select" options="efoReasonSelectOption" value="${arSuperDataSubmissionDto.pgtStageDto.isEmbryosBiopsiedLocal}"></iais:select>
+                        <select name="isEmbryosBiopsiedLocal" id="isEmbryosBiopsiedLocal">
+                            <option value="" <c:if test="${empty arSuperDataSubmissionDto.pgtStageDto.isEmbryosBiopsiedLocal}">selected="selected"</c:if>>Please Select</option>
+                            <option value="1" <c:if test="${arSuperDataSubmissionDto.pgtStageDto.isEmbryosBiopsiedLocal ==1}">selected="selected"</c:if>>HCI name tagged to the active AR licence</option>
+                            <option value="0" <c:if test="${arSuperDataSubmissionDto.pgtStageDto.isEmbryosBiopsiedLocal ==0}">selected="selected"</c:if>>Others</option>
+                        </select>
+                        <span class="error-msg" name="iaisErrorMsg" id="error_isEmbryosBiopsiedLocal"></span>
                     </iais:value>
                 </iais:row>
-                <div id="othersBiopsyDisplay" <c:if test="${arSuperDataSubmissionDto.pgtStageDto.isEmbryosBiopsiedLocal!='EFOR004'}">style="display: none"</c:if>>
+                <div id="othersEmbryosBiopsyDisplay" <c:if test="${arSuperDataSubmissionDto.pgtStageDto.isEmbryosBiopsiedLocal!=0}">style="display: none"</c:if>>
                     <iais:row>
-                        <iais:field width="6" value="Other Centre where Embryos were Biospied At" mandatory="false"/>
+                        <iais:field width="6" value="Other Centre where Embryos were Biospied At" mandatory="true"/>
                         <iais:value width="6" cssClass="col-md-6">
-                            <div id="otherEmbryosBiopsiedAddr"  >
-                                <input type="text" maxlength="20"   name="otherEmbryosBiopsiedAddr" value="${arSuperDataSubmissionDto.pgtStageDto.otherEmbryosBiopsiedAddr}" >
-                                <span class="error-msg" name="iaisErrorMsg" id="error_otherEmbryosBiopsiedAddr"></span>
-                            </div>
+                            <input type="text" maxlength="20"   name="otherEmbryosBiopsiedAddr" value="${arSuperDataSubmissionDto.pgtStageDto.otherEmbryosBiopsiedAddr}" >
+                            <span class="error-msg" name="iaisErrorMsg" id="error_otherEmbryosBiopsiedAddr"></span>
                         </iais:value>
                     </iais:row>
                 </div>
@@ -292,18 +310,20 @@
                 <iais:row>
                     <iais:field width="6" value="Biopsy Done By" mandatory="true"/>
                     <iais:value width="6" cssClass="col-md-6">
-                        <iais:select cssClass="isBiopsyLocal"  name="isBiopsyLocal" firstOption="Please Select" options="efoReasonSelectOption" value="${arSuperDataSubmissionDto.pgtStageDto.isBiopsyLocal}"></iais:select>
-                        <span class="error-msg" name="iaisErrorMsg" id="error_reason"></span>
+                        <select name="isBiopsyLocal" id="isBiopsyLocal">
+                            <option value="" <c:if test="${empty arSuperDataSubmissionDto.pgtStageDto.isBiopsyLocal}">selected="selected"</c:if>>Please Select</option>
+                            <option value="1" <c:if test="${arSuperDataSubmissionDto.pgtStageDto.isBiopsyLocal ==1}">selected="selected"</c:if>>List of Embryologists tagged to the active AR licence</option>
+                            <option value="0" <c:if test="${arSuperDataSubmissionDto.pgtStageDto.isBiopsyLocal ==0}">selected="selected"</c:if>>Others</option>
+                        </select>
+                        <span class="error-msg" name="iaisErrorMsg" id="error_isBiopsyLocal"></span>
                     </iais:value>
                 </iais:row>
-                <div id="othersBiopsyDisplay" <c:if test="${arSuperDataSubmissionDto.pgtStageDto.isBiopsyLocal!='EFOR004'}">style="display: none"</c:if>>
+                <div id="othersBiopsyDisplay" <c:if test="${arSuperDataSubmissionDto.pgtStageDto.isBiopsyLocal!=0}">style="display: none"</c:if>>
                     <iais:row>
-                        <iais:field width="6" value="Biopsy Done By (Others)" mandatory="false"/>
+                        <iais:field width="6" value="Biopsy Done By (Others)" mandatory="true"/>
                         <iais:value width="6" cssClass="col-md-6">
-                            <div id="otherBiopsyAddr"  >
-                                <input type="text" maxlength="20"   name="otherBiopsyAddr" value="${arSuperDataSubmissionDto.pgtStageDto.otherBiopsyAddr}" >
-                                <span class="error-msg" name="iaisErrorMsg" id="error_otherBiopsyAddr"></span>
-                            </div>
+                            <input type="text" maxlength="20"   name="otherBiopsyAddr" value="${arSuperDataSubmissionDto.pgtStageDto.otherBiopsyAddr}" >
+                            <span class="error-msg" name="iaisErrorMsg" id="error_otherBiopsyAddr"></span>
                         </iais:value>
                     </iais:row>
                 </div>
@@ -354,6 +374,31 @@
             }else {
                 $('#AbnormalDisplay').attr("style","display: none");
             }
+        });
+
+
+        $('#isEmbryosBiopsiedLocal').change(function () {
+
+            var reason= $('#isEmbryosBiopsiedLocal option:selected').val();
+
+            if("0"==reason){
+                $('#othersEmbryosBiopsyDisplay').attr("style","display: block");
+            }else {
+                $('#othersEmbryosBiopsyDisplay').attr("style","display: none");
+            }
+
+        });
+
+        $('#isBiopsyLocal').change(function () {
+
+            var reason= $('#isBiopsyLocal option:selected').val();
+
+            if("0"==reason){
+                $('#othersBiopsyDisplay').attr("style","display: block");
+            }else {
+                $('#othersBiopsyDisplay').attr("style","display: none");
+            }
+
         });
     });
 
