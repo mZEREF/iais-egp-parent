@@ -160,6 +160,10 @@ public final class MasterCodeUtil {
 
     //Data Submission Ar Techniques Used
     public static final String AR_OTHER_INDICATION = "925F6CBB-A12D-4D15-9C85-6E4F09F8C44B";
+
+    //Data Submission Ar donors used TYpe
+    public static final String AR_DONOR_USED_TYPE = "C64D732A-9FA3-4D8E-AF7B-9B95B1645430";
+
     /**
      * @description: refresh the master codes into cache
      *

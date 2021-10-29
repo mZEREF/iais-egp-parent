@@ -17,9 +17,23 @@
                 <iais:row>
                     <iais:field width="5" value="Please Indicate" mandatory="true"/>
                     <iais:value width="7" cssClass="col-md-7">
-
+                        <c:forEach items="${donorUsedTypes}" var="donorUsedType">
+                            <c:set var="donorUsedTypeCode" value="${donorUsedType.code}"/>
+                            <div class="form-check col-xs-7" >
+                                <input class="form-check-input" type="checkbox"
+                                       name="pleaseIndicate${arDonorIndex}"
+                                       value="${donorUsedTypeCode}"
+                                       id="pleaseIndicateCheck${arDonorIndex}${donorUsedTypeCode}"
+                                       <c:if test="${arDonorDto.pleaseIndicate ge donorUsedTypeCode}">checked</c:if>
+                                       aria-invalid="false">
+                                <label class="form-check-label"
+                                       for="pleaseIndicateCheck${arDonorIndex}${donorUsedTypeCode}"><span
+                                        class="check-square"></span>
+                                    <c:out value="${donorUsedType.codeValue}"/></label>
+                            </div>
+                        </c:forEach>
                     </iais:value>
-                    <span id="error_currentArTreatment${arDonorDto.arDonorIndex}" name="iaisErrorMsg" class="error-msg"></span>
+                    <span id="error_pleaseIndicate${arDonorDto.arDonorIndex}" name="iaisErrorMsg" class="error-msg"></span>
                 </iais:row>
 
                  <iais:row>

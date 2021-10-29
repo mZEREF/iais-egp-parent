@@ -72,20 +72,19 @@
                 </iais:row>
 
                 <iais:row>
-                    <iais:field width="5" value="Current AR Treatment" mandatory="true"/>
+                    <iais:field width="5" value="Current AR Treatment" mandatory="false"/>
                     <iais:value width="7" cssClass="col-md-7">
-                            <c:forEach items="${arCycleStageDto.otherIndicationValues}" var="otherIndicationValue" varStatus="status">
-                                <c:if test="${status.index != 0}"><br></c:if> <iais:code code="${otherIndicationValue}"/>
+                            <c:forEach items="${arCycleStageDto.currentARTreatmentValues}" var="currentAR" varStatus="status">
+                                <c:if test="${status.index != 0}"><br></c:if> <iais:code code="${currentAR}"/>
                             </c:forEach>
                     </iais:value>
-                    <span id="error_currentArTreatment" name="iaisErrorMsg" class="error-msg"></span>
                 </iais:row>
 
                 <iais:row>
                     <iais:field width="5" value="No. of Children from Current Marriage" mandatory="false"/>
                     <iais:value width="7" cssClass="col-md-7">
                         <iais:value width="7" cssClass="col-md-7">
-                            <iais:select name="noChildrenCurrentMarriage" options="noChildrenDropDown" firstOption="Please Select" value="${arCycleStageDto.noChildrenCurrentMarriage}"/>
+                            <c:out value="${arCycleStageDto.noChildrenCurrentMarriage}"/>
                         </iais:value>
                     </iais:value>
                 </iais:row>
@@ -94,7 +93,7 @@
                     <iais:field width="5" value="No. of Children from Previous Marriage" mandatory="false"/>
                     <iais:value width="7" cssClass="col-md-7">
                         <iais:value width="7" cssClass="col-md-7">
-                            <iais:select name="noChildrenPreviousMarriage" options="noChildrenDropDown" firstOption="Please Select" value="${arCycleStageDto.noChildrenPreviousMarriage}"/>
+                            <c:out value="${arCycleStageDto.noChildrenPreviousMarriage}"/>
                         </iais:value>
                     </iais:value>
                 </iais:row>
@@ -103,7 +102,7 @@
                     <iais:field width="5" value="No. of Children conceived through AR" mandatory="false"/>
                     <iais:value width="7" cssClass="col-md-7">
                         <iais:value width="7" cssClass="col-md-7">
-                            <iais:select name="noChildrenConceivedAR" options="noChildrenDropDown" firstOption="Please Select" value="${arCycleStageDto.noChildrenConceivedAR}"/>
+                            <c:out value="${arCycleStageDto.noChildrenConceivedAR}"/>
                         </iais:value>
                     </iais:value>
                 </iais:row>
@@ -112,7 +111,7 @@
                     <iais:field width="5" value="No. of Children conceived through AR" mandatory="false"/>
                     <iais:value width="7" cssClass="col-md-7">
                         <iais:value width="7" cssClass="col-md-7">
-                            <iais:select name="totalNumberARCPreviouslyUndergonePatient" options="numberArcPreviouslyDropDown" firstOption="Please Select" value="${arCycleStageDto.totalNumberARCPreviouslyUndergonePatient}"  onchange ="toggleOnSelect(this, '21', 'totalNumberARCOtherRow')"/>
+                            <c:out value="${arCycleStageDto.totalNumberARCPreviouslyUndergonePatient}"/>
                         </iais:value>
                     </iais:value>
                 </iais:row>
@@ -120,7 +119,7 @@
                 <iais:row id="totalNumberARCOtherRow">
                     <iais:field width="5" value="Number of Cycles undergone Overseas" mandatory="true"/>
                     <iais:value width="7" cssClass="col-md-7">
-                        <iais:input maxLength="100" type="text" name="numberCyclesUndergoneOverseas" id="numberCyclesUndergoneOverseas" value="${arCycleStageDto.numberCyclesUndergoneOverseas}" />
+                        <c:out value="${arCycleStageDto.numberCyclesUndergoneOverseas}"/>
                     </iais:value>
                 </iais:row>
                 <iais:row>
@@ -134,40 +133,16 @@
 
                 <iais:row>
                     <iais:field width="5" value="Enhanced Counselling" mandatory="false"/>
-                    <iais:value width="3" cssClass="col-md-3">
-                        <div class="form-check">
-                            <input class="form-check-input"
-                                   type="radio"
-                                   name="enhancedCounselling"
-                                   value="1"
-                                   id="enhancedCounsellingRadioYes"
-                                   <c:if test="${arCycleStageDto.enhancedCounselling}">checked</c:if>
-                                   aria-invalid="false">
-                            <label class="form-check-label"
-                                   for="enhancedCounsellingRadioYes"><span
-                                    class="check-circle"></span>Yes</label>
-                        </div>
-                    </iais:value>
-                    <iais:value width="4" cssClass="col-md-4">
-                        <div class="form-check">
-                            <input class="form-check-input" type="radio"
-                                   name="enhancedCounselling"
-                                   value="0"
-                                   id="enhancedCounsellingRadioNo"
-                                   <c:if test="${!arCycleStageDto.enhancedCounselling}">checked</c:if>
-                                   aria-invalid="false">
-                            <label class="form-check-label"
-                                   for="enhancedCounsellingRadioNo"><span
-                                    class="check-circle"></span>No</label>
-                        </div>
+                    <iais:value width="7" cssClass="col-md-7">
+                        <c:out value="${arCycleStageDto.enhancedCounselling ? 'Yes' : 'No'}"/>
                     </iais:value>
                 </iais:row>
 
                 <iais:row>
-                    <iais:field width="5" value="AR Practitioner" mandatory="true"/>
+                    <iais:field width="5" value="AR Practitioner" mandatory="false"/>
                     <iais:value width="7" cssClass="col-md-7">
                         <iais:value width="7" cssClass="col-md-7">
-                            <iais:select name="practitioner" options="practitionerDropDown" firstOption="Please Select" value="${arCycleStageDto.practitioner}"/>
+                            <c:out value="${arCycleStageDto.practitioner}"/>
                         </iais:value>
                     </iais:value>
                 </iais:row>
@@ -176,7 +151,7 @@
                     <iais:field width="5" value="Embryologist" mandatory="false"/>
                     <iais:value width="7" cssClass="col-md-7">
                         <iais:value width="7" cssClass="col-md-7">
-                            <iais:select name="embryologist" options="embryologistDropDown" firstOption="Please Select" value="${arCycleStageDto.embryologist}"/>
+                            <c:out value="${arCycleStageDto.embryologist}"/>
                         </iais:value>
                     </iais:value>
                 </iais:row>
@@ -190,6 +165,7 @@
             </div>
         </div>
     </div>
+    <%@include file="previewDonorSection.jsp"%>
 </div>
 
 <%@include file="donorSection.jsp"%>

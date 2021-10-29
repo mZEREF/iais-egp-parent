@@ -17,7 +17,6 @@ import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -31,14 +30,15 @@ import java.util.Map;
 @Slf4j
 public class ArCycleStageDelegator extends CommonDelegator {
 
-    private final static String  CURRENT_AR_TREATMENT_SESSION = "currentArTreatments";
-    private final static String  NO_CHILDREN_DROP_DOWN = "noChildrenDropDown";
+    private final static String  CURRENT_AR_TREATMENT_SESSION    = "currentArTreatments";
+    private final static String  NO_CHILDREN_DROP_DOWN           = "noChildrenDropDown";
     private final static String  NUMBER_ARC_PREVIOUSLY_DROP_DOWN = "numberArcPreviouslyDropDown";
-    private final static String  CRUD_ACTION_VALUE_AR_STAGE   = "crud_action_value_ar_stage";
-    private final static String  CRUD_ACTION_VALUE_VALIATE_DONOR   = "crud_action_value_valiate_donor";
-    private final static String  PRACTITIONER_DROP_DOWN       = "practitionerDropDown";
-    private final static String  EMBRYOLOGIST_DROP_DOWN       = "embryologistDropDown";
+    private final static String  CRUD_ACTION_VALUE_AR_STAGE      = "crud_action_value_ar_stage";
+    private final static String  CRUD_ACTION_VALUE_VALIATE_DONOR = "crud_action_value_valiate_donor";
+    private final static String  PRACTITIONER_DROP_DOWN          = "practitionerDropDown";
+    private final static String  EMBRYOLOGIST_DROP_DOWN          = "embryologistDropDown";
     private final static String  DONOR_AGE_DONATION_DROP_DOWN    = "donorAgeDonationDropDown";
+    private final static String  DONOR_USED_TYPES               = "donorUsedTypes";
     @Override
     public void start(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
@@ -49,6 +49,7 @@ public class ArCycleStageDelegator extends CommonDelegator {
         ParamUtil.setSessionAttr(request, PRACTITIONER_DROP_DOWN,(Serializable) getPractitioner());
         ParamUtil.setSessionAttr(request, EMBRYOLOGIST_DROP_DOWN,(Serializable) getEmbryologist());
         ParamUtil.setSessionAttr(request, DONOR_AGE_DONATION_DROP_DOWN,(Serializable)DataSubmissionHelper.getNumsSelections(18,50));
+        ParamUtil.setSessionAttr(request, DONOR_USED_TYPES,(Serializable) MasterCodeUtil.retrieveByCategory(MasterCodeUtil.AR_DONOR_USED_TYPE));
     }
 
     //TODO from ar center
@@ -154,12 +155,15 @@ public class ArCycleStageDelegator extends CommonDelegator {
     private void setArCycleStageDtoByPage(HttpServletRequest request,ArCycleStageDto arCycleStageDto){
         ControllerHelper.get(request,arCycleStageDto);
         arCycleStageDto.setCurrentARTreatment(ParamUtil.getStringsToString(request,"currentArTreatment"));
+        arCycleStageDto.setCurrentARTreatmentValues(ParamUtil.getListStrings(request,"currentArTreatment"));
         arCycleStageDto.setOtherIndication(ParamUtil.getStringsToString(request,"otherIndication"));
         arCycleStageDto.setOtherIndicationValues(ParamUtil.getListStrings(request,"otherIndication"));
         List<ArDonorDto> arDonorDtos = arCycleStageDto.getArDonorDtos();
         arDonorDtos.forEach(arDonorDto -> {
             String arDonorIndex = String.valueOf(arDonorDto.getArDonorIndex());
             ControllerHelper.get(request,arDonorDto,arDonorIndex);
+            arDonorDto.setPleaseIndicate(ParamUtil.getStringsToString(request,"pleaseIndicate"+arDonorIndex));
+            arDonorDto.setPleaseIndicateValues(ParamUtil.getListStrings(request,"pleaseIndicate"+arDonorIndex));
         });
     }
 }
