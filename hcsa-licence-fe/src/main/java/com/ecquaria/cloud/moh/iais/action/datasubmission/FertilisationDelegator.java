@@ -19,6 +19,13 @@ import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Map;
 
+/**
+ * FertilisationDelegator
+ *
+ * @author fanghao
+ * @date 2021/10/28
+ */
+
 @Delegator("fertilisationDelegator")
 @Slf4j
 public class FertilisationDelegator extends CommonDelegator{
@@ -70,8 +77,9 @@ public class FertilisationDelegator extends CommonDelegator{
         String[] arTechniquesUsed = ParamUtil.getStrings(request,"arTechniquesUsed");
 
         ArSuperDataSubmissionDto arSuperDataSubmissionDto = DataSubmissionHelper.getCurrentArDataSubmission(request);
-        arSuperDataSubmissionDto = arSuperDataSubmissionDto  == null ? new ArSuperDataSubmissionDto() : arSuperDataSubmissionDto;
+        //arSuperDataSubmissionDto = arSuperDataSubmissionDto  == null ? new ArSuperDataSubmissionDto() : arSuperDataSubmissionDto;
         FertilisationDto fertilisationDto = arSuperDataSubmissionDto.getFertilisationDto() == null ? new FertilisationDto() : arSuperDataSubmissionDto.getFertilisationDto();
+
         fertilisationDto.setExtractedSpermVialsNum(ParamUtil.getString(request,"extractedSpermVialsNum"));
         fertilisationDto.setUsedSpermVialsNum(ParamUtil.getString(request,"usedSpermVialsNum"));
         fertilisationDto.setFreshOocytesInseminatedNum(ParamUtil.getString(request,"freshOocytesInseminatedNum"));
@@ -97,6 +105,7 @@ public class FertilisationDelegator extends CommonDelegator{
 
         arSuperDataSubmissionDto.setFertilisationDto(fertilisationDto);
         ParamUtil.setSessionAttr(bpc.request, DataSubmissionConstant.AR_DATA_SUBMISSION, arSuperDataSubmissionDto);
+
         ValidationResult validationResult = WebValidationHelper.validateProperty(fertilisationDto, "save");
         Map<String, String> errorMap = validationResult.retrieveAll();
 
