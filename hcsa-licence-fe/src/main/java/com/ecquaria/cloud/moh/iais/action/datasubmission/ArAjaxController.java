@@ -10,6 +10,7 @@ import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
+import com.ecquaria.cloud.moh.iais.service.datasubmission.ArDataSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.PatientService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +35,9 @@ public class ArAjaxController {
 
     @Autowired
     private PatientService patientService;
+
+    @Autowired
+    private ArDataSubmissionService arDataSubmissionService;
 
     @PostMapping(value = "/retrieve-identification")
     public @ResponseBody
@@ -65,7 +69,7 @@ public class ArAjaxController {
                 patient = null;
                 result.put("invalidType", true);
             }
-            ParamUtil.setSessionAttr(request, DataSubmissionConstant.AR_PATIENT, patient);
+            //ParamUtil.setSessionAttr(request, DataSubmissionConstant.AR_PATIENT, patient);
             result.put("patient", patient);
         }
         return result;
@@ -92,17 +96,19 @@ public class ArAjaxController {
         } else {
             LoginContext loginContext = DataSubmissionHelper.getLoginContext(request);
             String orgId = Optional.ofNullable(loginContext).map(LoginContext::getOrgId).orElse("");
-            PatientDto patient = patientService.getPatientDto(idNo, nationality, orgId);
+            dto = arDataSubmissionService.getCycleStageSelectionDtoByConds(idNo, nationality, orgId);
+
+           /* PatientDto patient = patientService.getPatientDto(idNo, nationality, orgId);
             if (patient != null && !Objects.equals(patient.getIdType(), idType)) {
                 patient = null;
                 result.put("invalidType", true);
             }
-            ParamUtil.setSessionAttr(request, DataSubmissionConstant.AR_PATIENT, patient);
+            //ParamUtil.setSessionAttr(request, DataSubmissionConstant.AR_PATIENT, patient);
             if (patient != null) {
                 dto.setPatientName(patient.getName());
                 // lastStage & undergoingCycle
-                result.put("selection", dto);
-            }
+            }*/
+            result.put("selection", dto);
         }
         String currCycle = ParamUtil.getString(request, "currCycle");
         String currStage = ParamUtil.getString(request, "currStage");

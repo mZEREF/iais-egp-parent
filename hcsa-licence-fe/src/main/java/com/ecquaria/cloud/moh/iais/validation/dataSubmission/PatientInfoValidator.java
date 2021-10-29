@@ -3,10 +3,13 @@ package com.ecquaria.cloud.moh.iais.validation.dataSubmission;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.HusbandDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInfoDto;
+import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidator;
+import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
+import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 
 import javax.servlet.http.HttpServletRequest;
@@ -30,6 +33,19 @@ public class PatientInfoValidator implements CustomizeValidator {
             ValidationResult result = WebValidationHelper.validateProperty(patient, "save");
             if (result != null) {
                 map.putAll(result.retrieveAll());
+            }
+            if (!StringUtil.isEmpty(patient.getBirthDate())) {
+                String age1 = MasterCodeUtil.getCodeDesc("PT_AGE_001");
+                String age2 = MasterCodeUtil.getCodeDesc("PT_AGE_002");
+                if (StringUtil.isDigit(age1) && StringUtil.isDigit(age2)) {
+                    int age = Formatter.getAge(patient.getBirthDate());
+                    if (Integer.parseInt(age1) > age || Integer.parseInt(age2) < age) {
+                        Map<String, String> repMap = IaisCommonUtils.genNewHashMap(2);
+                        repMap.put("0", age1);
+                        repMap.put("1", age2);
+                        map.put("birthDate", MessageUtil.getMessageDesc("DS_ERR006", repMap));
+                    }
+                }
             }
             if (patient.isPreviousIdentification()) {
                 PatientDto previous = patientInfo.getPrevious();

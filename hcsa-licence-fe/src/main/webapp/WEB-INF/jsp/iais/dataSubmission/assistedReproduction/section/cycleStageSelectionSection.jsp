@@ -33,6 +33,7 @@
                             Validate Patient
                         </a>
                         <input type="hidden" name="retrieveData" value="${selectionDto.retrieveData}"/>
+                        <input type="hidden" name="patientCode" value="${selectionDto.patientCode}"/>
                         <span class="error-msg col-md-12" name="iaisErrorMsg" id="error_retrieveData"></span>
                         <span class="error-msg col-md-12" name="iaisErrorMsg" id="error_patientName"></span>
                     </iais:value>

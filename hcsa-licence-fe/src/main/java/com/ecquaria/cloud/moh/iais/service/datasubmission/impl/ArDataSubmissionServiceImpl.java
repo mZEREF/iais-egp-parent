@@ -4,7 +4,9 @@ import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.CycleStageSelectionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DataSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInfoDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -56,6 +58,23 @@ public class ArDataSubmissionServiceImpl implements ArDataSubmissionService {
             }
         }
         return appGrpPremisesDtoMap;
+    }
+
+    @Override
+    public CycleStageSelectionDto getCycleStageSelectionDtoByConds(String idNumber, String nationality, String orgId) {
+        if (StringUtil.isEmpty(idNumber) || StringUtil.isEmpty(nationality) || StringUtil.isEmpty(orgId)) {
+            return null;
+        }
+        return arFeClient.getCycleStageSelectionDtoByConds(idNumber, nationality, orgId).getEntity();
+    }
+
+    @Override
+    public ArSuperDataSubmissionDto getArSuperDataSubmissionDto(String patientCode) {
+        if (StringUtil.isEmpty(patientCode)) {
+            log.warn("----- No Patient Code -----");
+            return null;
+        }
+        return arFeClient.getArSuperDataSubmissionDto(patientCode).getEntity();
     }
 
     @Override

@@ -13,7 +13,9 @@ import com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
+import com.ecquaria.cloud.moh.iais.service.datasubmission.ArDataSubmissionService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
@@ -29,6 +31,9 @@ import java.util.Map;
 @Delegator("arCycleStagesManualDelegator")
 @Slf4j
 public class ArCycleStagesManualDelegator {
+
+    @Autowired
+    private ArDataSubmissionService arDataSubmissionService;
 
     /**
      * StartStep: Start
@@ -84,6 +89,16 @@ public class ArCycleStagesManualDelegator {
             }
             dataSubmission.setSubmissionType(DataSubmissionConsts.DATA_SUBMISSION_TYPE_AR);
             dataSubmission.setCycleStage(selectionDto.getStage());
+            // re-set data
+            ArSuperDataSubmissionDto newDto = arDataSubmissionService.getArSuperDataSubmissionDto(
+                    selectionDto.getPatientCode());
+            newDto.setCurrentDataSubmissionDto(dataSubmission);
+            newDto.setAppGrpPremisesDto(currentArDataSubmission.getAppGrpPremisesDto());
+            newDto.setSubmissionType(currentArDataSubmission.getSubmissionType());
+            newDto.setArSubmissionType(currentArDataSubmission.getArSubmissionType());
+            newDto.setSubmissionMethod(currentArDataSubmission.getSubmissionMethod());
+            newDto.setSelectionDto(selectionDto);
+            DataSubmissionHelper.setCurrentArDataSubmission(newDto, bpc.request);
             bpc.request.setAttribute(DataSubmissionConstant.CRUD_ACTION_TYPE_CT, selectionDto.getStage());
         }
     }
@@ -93,6 +108,7 @@ public class ArCycleStagesManualDelegator {
         selectionDto.setPatientIdType(ParamUtil.getString(request, "patientIdType"));
         selectionDto.setPatientIdNumber(ParamUtil.getString(request, "patientIdNumber"));
         selectionDto.setPatientNationality(ParamUtil.getString(request, "patientNationality"));
+        selectionDto.setPatientCode(ParamUtil.getString(request, "patientCode"));
 //        selectionDto.setRetrieveData(StringUtil.getNonNull(ParamUtil.getString(request, "retrieveData")));
 //        selectionDto.setPatientName(StringUtil.getNonNull(ParamUtil.getString(request, "patientName")));
         selectionDto.setRetrieveData(ParamUtil.getString(request, "retrieveData"));

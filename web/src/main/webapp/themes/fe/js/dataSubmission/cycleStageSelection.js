@@ -14,17 +14,13 @@ function retrieveValidatePatient() {
 
 function validatePatientCallback(data){
     clearErrorMsg();
-    if (!isEmpty(data.errorMsg)) {
-        doValidationParse(data.errorMsg);
-        dismissWaiting();
-        return;
-    }
-    $('[name="retrieveData"]').val('1');
     // stage options
     $('#stage').html(data.stagHtmls);
     $('#stage').niceSelect("update");
-    // re-set other values
-    if (isEmpty(data.selection)) {
+    // check
+    if (isEmpty(data) || isEmpty(data.selection) || !isEmpty(data.errorMsg) || data.invalidType) {
+        $('[name="retrieveData"]').val('0');
+        $('[name="patientCode"]').val('');
         $('#patientName').find('p').text('');
         clearFields('#patientNameHidden');
         $('#undergoingCycleCycle').find('p').text('');
@@ -32,9 +28,17 @@ function validatePatientCallback(data){
         $('#lastStage').find('p').text('');
         clearFields('#lastStageHidden');
         $('#noFoundDiv').modal('show');
-        dismissWaiting();
+        if (!isEmpty(data.errorMsg)) {
+            doValidationParse(data.errorMsg);
+        } else if (data.invalidType) {
+            showErrorMsg('error_preIdType', '<iais:message key="GENERAL_ERR0051" />');
+        } else {
+            $('#noFoundDiv').modal('show');
+        }
         return;
     }
+    $('[name="retrieveData"]').val('1');
+    $('[name="patientCode"]').val(data.selection.patientCode);
     fillValue('#patientIdType', data.selection.patientIdType);
     $('#patientName').find('p').text(data.selection.patientName);
     $('#patientNameHidden').val(data.selection.patientName);
@@ -47,5 +51,4 @@ function validatePatientCallback(data){
     }
     $('#lastStage').find('p').text(data.selection.lastStageDesc);
     $('#lastStageHidden').val(data.selection.lastStage);
-    dismissWaiting();
 }
