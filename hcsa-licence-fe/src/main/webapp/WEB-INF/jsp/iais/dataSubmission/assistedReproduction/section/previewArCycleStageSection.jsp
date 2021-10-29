@@ -133,7 +133,7 @@
                 </iais:row>
 
                 <iais:row>
-                    <iais:field width="5" value="In-Vitro Maturation" mandatory="false"/>
+                    <iais:field width="5" value="Enhanced Counselling" mandatory="false"/>
                     <iais:value width="3" cssClass="col-md-3">
                         <div class="form-check">
                             <input class="form-check-input"
@@ -182,33 +182,9 @@
                 </iais:row>
 
                 <iais:row>
-                    <iais:field width="5" value="In-Vitro Maturation" mandatory="false"/>
-                    <iais:value width="3" cssClass="col-md-3">
-                        <div class="form-check">
-                            <input class="form-check-input"
-                                   type="radio"
-                                   name="oocyteEmbryoSpermsUsed"
-                                   value="1"
-                                   id="oocyteEmbryoSpermsUsedRadioYes"
-                                   <c:if test="${arCycleStageDto.oocyteEmbryoSpermsUsed}">checked</c:if>
-                                   aria-invalid="false">
-                            <label class="form-check-label"
-                                   for="oocyteEmbryoSpermsUsedRadioYes"><span
-                                    class="check-circle"></span>Yes</label>
-                        </div>
-                    </iais:value>
-                    <iais:value width="4" cssClass="col-md-4">
-                        <div class="form-check">
-                            <input class="form-check-input" type="radio"
-                                   name="oocyteEmbryoSpermsUsed"
-                                   value="0"
-                                   id="oocyteEmbryoSpermsUsedRadioNo"
-                                   <c:if test="${!arCycleStageDto.oocyteEmbryoSpermsUsed}">checked</c:if>
-                                   aria-invalid="false">
-                            <label class="form-check-label"
-                                   for="oocyteEmbryoSpermsUsedRadioNo"><span
-                                    class="check-circle"></span>No</label>
-                        </div>
+                    <iais:field width="5" value="Was a donor's Oocyte(s)/Embryo(s)/Sperms used in this cycle?" mandatory="false"/>
+                    <iais:value width="7" cssClass="col-md-7">
+                        <c:out value="${arCycleStageDto.oocyteEmbryoSpermsUsed ? 'Yes' : 'No'}"/>
                     </iais:value>
                 </iais:row>
             </div>

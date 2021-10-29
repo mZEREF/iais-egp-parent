@@ -1,4 +1,6 @@
 <div class="panel panel-default">
+    <input type="hidden" name="crud_action_value_ar_stage" id="crud_action_value_ar_stage" value="-2"/>
+    <input type="hidden" name="crud_action_value_valiate_donor" id="crud_action_value_valiate_donor" value="-1"/>
     <div class="panel-heading">
         <h4 class="panel-title" data-toggle="collapse" href="#arStageDetails">
             <strong>
@@ -50,7 +52,7 @@
                 <iais:row>
                     <iais:field width="5" value="Other Indication" mandatory="true"/>
                     <iais:value width="7" cssClass="col-md-7">
-                        <iais:select name="otherIndication" multiSelect="true"  codeCategory="AR_OTHER_INDICATION" firstOption="Please Select" multiValues="${arCycleStageDto.otherIndicationValues}"  onchange ="toggleMultiSelect(this, 'AR_0I_013', 'otherIndicationOthersRow')"/>
+                        <iais:select name="otherIndication" multiSelect="true"  codeCategory="AR_OTHER_INDICATION"  multiValues="${arCycleStageDto.otherIndicationValues}"  onchange ="toggleMultiSelect(this, 'AR_0I_013', 'otherIndicationOthersRow')"/>
                     </iais:value>
                 </iais:row>
 
@@ -142,7 +144,7 @@
                 </iais:row>
 
                 <iais:row>
-                    <iais:field width="5" value="No. of Children conceived through AR" mandatory="false"/>
+                    <iais:field width="5" value="Total Number of AR cycles previously undergone by patient" mandatory="false"/>
                     <iais:value width="7" cssClass="col-md-7">
                         <iais:value width="7" cssClass="col-md-7">
                             <iais:select name="totalNumberARCPreviouslyUndergonePatient" options="numberArcPreviouslyDropDown" firstOption="Please Select" value="${arCycleStageDto.totalNumberARCPreviouslyUndergonePatient}"  onchange ="toggleOnSelect(this, '21', 'totalNumberARCOtherRow')"/>
@@ -166,7 +168,7 @@
                 </iais:row>
 
                 <iais:row>
-                    <iais:field width="5" value="In-Vitro Maturation" mandatory="false"/>
+                    <iais:field width="5" value="Enhanced Counselling" mandatory="false"/>
                     <iais:value width="3" cssClass="col-md-3">
                         <div class="form-check">
                             <input class="form-check-input"
@@ -215,7 +217,7 @@
                 </iais:row>
 
                 <iais:row>
-                    <iais:field width="5" value="In-Vitro Maturation" mandatory="false"/>
+                    <iais:field width="5" value="Was a donor's Oocyte(s)/Embryo(s)/Sperms used in this cycle?" mandatory="true"/>
                     <iais:value width="3" cssClass="col-md-3">
                         <div class="form-check">
                             <input class="form-check-input"
@@ -256,7 +258,33 @@
      toggleOnMultiSelect("#otherIndication",'AR_0I_013', 'otherIndicationOthersRo');
    });
 
-   function validateDonor(donorIndex){
-
+   function validateDonor(index){
+       $("#crud_action_value_valiate_donor").val(index);
+       submit("page");
    }
+
+   function addDonor(){
+       //index ==-1 : add
+       $("#crud_action_value_ar_stage").val("-1");
+       submit("page");
+   }
+
+   function deleteDonor(index){
+       if($("#crud_action_value_donor_size").val()>1){
+           $("#crud_action_value_ar_stage").val(index);
+           submit("page");
+       }else {
+
+       }
+   }
+
+   function showDonor(index){
+       $("#deleteDonor"+index).show();
+       $("#source"+index+"Row").hide();
+   }
+  function hideDonor(index){
+      $("#deleteDonor"+index).hide();
+      $("#source"+index+"Row").show();
+  }
+
 </script>
