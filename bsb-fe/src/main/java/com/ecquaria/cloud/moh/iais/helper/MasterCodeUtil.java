@@ -167,6 +167,12 @@ public final class MasterCodeUtil {
     public static final String CATE_ID_BSB_AUDIT_TYPE                   = "FF506BE2-43E2-EB32-2B7D-000C336F0C25";
     public static final String CATE_ID_BSB_TYPE_OF_TRANSACTION          = "89BB7BD1-C2C5-4A67-B5B7-C804FDC227EF";
 
+    //Data Submission
+    public static final String CATE_ID_BSB_DATA_SUBMISSION_DISPOSAL_TYPE                = "4488C998-6E2B-4C08-A710-6D2044EFC505";
+    public static final String CATE_ID_BSB_DATA_SUBMISSION_DOCUMENT_TYPE                = "6147EC09-D6BC-40F0-8651-B878B67EA379";
+    public static final String CATE_ID_BSB_DATA_SUBMISSION_UNIT_OF_MEASUREMENT          = "DE22CEE1-8F36-4D99-B81C-A23CB1E38249";
+    public static final String CATE_ID_BSB_DATA_SUBMISSION_MODE_OF_MEASUREMENT          = "2BCC226D-52A1-41BA-8168-2131C2DFAE54";
+
     /**
      * @description: refresh the master codes into cache
      *
