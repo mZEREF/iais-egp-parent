@@ -6,7 +6,6 @@
 <%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
 <%@ taglib prefix="iais-bsb" uri="http://www.ecq.com/iais-bsb" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ page import="java.lang.String" %>
 
 <%
     sop.webflow.rt.api.BaseProcessClass process =
@@ -31,7 +30,6 @@
             <div class="row">
                 <div class="col-xs-12">
                     <div class="tab-gp steps-tab">
-                        <%@ include file="InnerNavTab.jsp" %>
                         <div class="tab-content">
                             <div class="tab-pane fade in active">
                                 <div id="previewSubmitPanel" role="tabpanel">
@@ -47,11 +45,11 @@
                                                         </div>
                                                         <div id="previewBatInfo" class="panel-collapse collapse">
                                                             <div class="panel-body">
-                                                                <div class="text-right app-font-size-16"><a href="#" data-step-key="approvalProfile"><em class="fa fa-pencil-square-o"></em>Edit</a></div>
+                                                                <div class="text-right app-font-size-16"><c:if test="${not empty maskedEditId}"><a href="/bsb-fe/eservice/INTERNET/MohApprovalApplication?editId=${maskedEditId}"><em class="fa fa-pencil-square-o"></em>Edit</a></c:if></div>
                                                                 <c:forEach var="approvalProfile" items="${approvalProfileList}">
                                                                     <div class="panel-main-content form-horizontal min-row">
                                                                         <div class="form-group">
-                                                                            <div class="col-10"><strong><iais:code code="${bat.schedule}"/></strong></div>
+                                                                            <div class="col-10"><strong><iais:code code="${approvalProfile.schedule}"/></strong></div>
                                                                             <div class="clear"></div>
                                                                         </div>
                                                                         <c:forEach var="info" items="${approvalProfile.batInfos}">
@@ -79,7 +77,7 @@
                                                                             <div>
                                                                                 <div class="form-group">
                                                                                     <label class="col-xs-5 col-md-4 control-label">Mode of Procurement</label>
-                                                                                    <div class="col-sm-7 col-md-5 col-xs-7"><p><iais:code code="${info.procurementMode}"/></p></div>
+                                                                                    <div class="col-sm-7 col-md-5 col-xs-7"><p>${info.procurementMode}</p></div>
                                                                                     <div class="clear"></div>
                                                                                 </div>
                                                                             </div>
@@ -142,7 +140,7 @@
                                                                             <div>
                                                                                 <div class="form-group">
                                                                                     <label class="col-xs-5 col-md-4 control-label">Country</label>
-                                                                                    <div class="col-sm-7 col-md-5 col-xs-7"><p><iais:code code="${info.transferCountry}"/></p></div>
+                                                                                    <div class="col-sm-7 col-md-5 col-xs-7"><p>${info.transferCountry}</p></div>
                                                                                     <div class="clear"></div>
                                                                                 </div>
                                                                             </div>
@@ -195,25 +193,12 @@
                                                         </div>
                                                         <div id="previewDocs" class="panel-collapse collapse">
                                                             <div class="panel-body">
-                                                                <div class="text-right app-font-size-16"><a href="#" data-step-key="primaryDocs"><em class="fa fa-pencil-square-o"></em>Edit</a></div>
+                                                                <div class="text-right app-font-size-16"><c:if test="${not empty maskedEditId}"><a href="/bsb-fe/eservice/INTERNET/MohApprovalApplication?editId=${maskedEditId}"><em class="fa fa-pencil-square-o"></em>Edit</a></c:if></div>
                                                                 <div class="panel-main-content form-horizontal min-row">
-                                                                    <c:forEach var="doc" items="${docSettings}">
-                                                                        <c:set var="docFiles" value="${primaryDocs.get(doc.type)}"/>
-                                                                        <c:if test="${not empty docFiles}">
-                                                                            <div class="form-group">
-                                                                                <div class="col-10"><strong>${doc.typeDisplay}</strong></div>
-                                                                                <div class="clear"></div>
-                                                                            </div>
-                                                                            <div>
-                                                                                <c:forEach var="file" items="${docFiles}">
-                                                                                    <div class="form-group">
-                                                                                        <div class="col-10"><p>${file.filename}(${String.format("%.1f", file.size/1024.0)}KB)</p></div>
-                                                                                        <div class="clear"></div>
-                                                                                    </div>
-                                                                                </c:forEach>
-                                                                            </div>
-                                                                        </c:if>
-                                                                    </c:forEach>
+                                                                    <div class="form-group">
+                                                                        <div class="col-10"><strong>Uploaded Documents</strong></div>
+                                                                        <div class="clear"></div>
+                                                                    </div>
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -223,10 +208,12 @@
                                         </div>
                                     </div>
                                 </div>
-                                <%@ include file="InnerFooter.jsp" %>
                             </div>
                         </div>
                     </div>
+                </div>
+                <div class="col-xs-12">
+                    <a class="back" href="/bsb-fe/eservice/INTERNET/MohBSBInboxApp"><em class="fa fa-angle-left"></em> Back</a>
                 </div>
             </div>
         </div>

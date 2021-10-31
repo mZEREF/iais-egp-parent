@@ -1,5 +1,6 @@
 package sg.gov.moh.iais.egp.bsb.dto.approval;
 
+import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -47,10 +48,6 @@ public class ActivityDto extends ValidatableNodeValue {
 
     @Override
     public void clearValidationResult() {
-        this.validationResultDto = null;
-    }
-
-    public void addSchedule(String schedule){
         this.validationResultDto = null;
     }
 
@@ -118,10 +115,12 @@ public class ActivityDto extends ValidatableNodeValue {
     private static final String KEY_ACTIVITY_SCHEDULE = "schedules";
 
     public void reqObjMapping(HttpServletRequest request) {
-        String newFacilityId = ParamUtil.getString(request, KEY_ACTIVITY_FACILITY_ID);
+        String maskFacilityId = ParamUtil.getString(request, KEY_ACTIVITY_FACILITY_ID);
         String newFacilityName = ParamUtil.getString(request,KEY_ACTIVITY_FACILITY_NAME);
-        String newActivityId = ParamUtil.getString(request,KEY_ACTIVITY_ACTIVITY_ID);
+        String maskActivityId = ParamUtil.getString(request,KEY_ACTIVITY_ACTIVITY_ID);
         String newActivityType = ParamUtil.getString(request,KEY_ACTIVITY_ACTIVITY_TYPE);
+        String newFacilityId = MaskUtil.unMaskValue(KEY_ACTIVITY_FACILITY_ID,maskFacilityId);
+        String newActivityId = MaskUtil.unMaskValue(KEY_ACTIVITY_ACTIVITY_ID,maskActivityId);
         this.setFacilityId(newFacilityId);
         this.setFacilityName(newFacilityName);
         this.setActivityId(newActivityId);

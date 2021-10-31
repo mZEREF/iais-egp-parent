@@ -55,7 +55,7 @@ public class FacilityBiological extends BaseEntity {
 
     private String remarks;
 
-    private long prodMaxVolumeLitres;
+    private String prodMaxVolumeLitres;
 
     private String lspMethod;
 

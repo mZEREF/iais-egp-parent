@@ -5,6 +5,7 @@
 <%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
 <%@ taglib prefix="iais-bsb" uri="http://www.ecq.com/iais-bsb" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ page import="com.ecquaria.cloud.moh.iais.common.utils.MaskUtil" %>
 
 <%
     sop.webflow.rt.api.BaseProcessClass process =
@@ -14,7 +15,6 @@
 
 <script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-common.js"></script>
 <script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-approval-app.js"></script>
-<script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-approval-select.js"></script>
 
 <%@include file="/WEB-INF/jsp/iais/include/showErrorMsg.jsp"%>
 
@@ -38,8 +38,8 @@
                         <div class="col-sm-4 col-md-7 control-font-label">
                             <input type="hidden" id="facilityName" name="facilityName" value="${activity.facilityName}">
                             <select name="facilityId" id="facilityId">
-                                <c:forEach items="${facilityIdSelect}" var="id">
-                                    <option value="${id.value}" <c:if test="${activity.facilityId eq id.value}">selected="selected"</c:if>>${id.text}</option>
+                                <c:forEach items="${facilityIdSelect}" var="facSelect">
+                                    <option value="${MaskUtil.maskValue('facilityId',facSelect.value)}" <c:if test="${activity.facilityId eq facSelect.value}">selected="selected"</c:if>>${facSelect.text}</option>
                                 </c:forEach>
                             </select>
                             <span data-err-ind="facilityId" class="error-msg"></span>
@@ -52,7 +52,13 @@
                         </div>
                         <div class="col-sm-4 col-md-7 control-font-label">
                             <input type="hidden" id="activityType" name="activityType" value="${activity.activityType}">
-                            <iais:select name="activityId" id="activityId" disabled="false" firstOption="Please Select" value="${activity.activityId}"></iais:select>
+                            <select name="activityId" id="activityId">
+                                <c:forEach items="${activityIdSelectDto}" var="selectDto">
+                                    <c:forEach items="${selectDto.activityIdList}" var="selectList">
+                                        <option value="${MaskUtil.maskValue('activityId',selectList.value)}" <c:if test="${activity.activityId eq selectList.value}">selected="selected"</c:if>><iais:code code="${selectList.text}"></iais:code></option>
+                                    </c:forEach>
+                                </c:forEach>
+                            </select>
                             <span data-err-ind="activityType" class="error-msg"></span>
                         </div>
                     </div>

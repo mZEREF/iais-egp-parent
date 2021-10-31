@@ -22,15 +22,17 @@ import sg.gov.moh.iais.egp.bsb.dto.approval.*;
 import sg.gov.moh.iais.egp.bsb.entity.Biological;
 import sg.gov.moh.iais.egp.bsb.entity.DocSetting;
 import sg.gov.moh.iais.egp.bsb.entity.Facility;
+import sg.gov.moh.iais.egp.bsb.entity.FacilityActivity;
+import sg.gov.moh.iais.egp.bsb.util.CollectionUtils;
 import sg.gov.moh.iais.egp.bsb.util.LogUtil;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import static sg.gov.moh.iais.egp.bsb.constant.ApprovalAppConstants.*;
 
@@ -65,6 +67,7 @@ public class ApprovalAppDelegator {
     private static final String ERR_MSG_INVALID_ACTION = "Invalid action";
 
     private static final String FACILITY_ID_SELECT = "facilityIdSelect";
+    private static final String ACTIVITY_ID_SELECT_DTO = "activityIdSelectDto";
 
     private final ApprovalAppClient approvalAppClient;
     private final FileRepoClient fileRepoClient;
@@ -91,8 +94,8 @@ public class ApprovalAppDelegator {
                 ResponseDto<ApprovalAppDto> resultDto = approvalAppClient.getApprovalAppAppData(appId);
                 if (resultDto.ok()) {
                     failRetrieveEditData = false;
-                    NodeGroup approvalAppNodeGroup = resultDto.getEntity().toApprovalAppRootGroup(KEY_ROOT_NODE_GROUP);
-                    ParamUtil.setSessionAttr(request, KEY_ROOT_NODE_GROUP, approvalAppNodeGroup);
+                    NodeGroup approvalAppRoot = resultDto.getEntity().toApprovalAppRootGroup(KEY_ROOT_NODE_GROUP);
+                    ParamUtil.setSessionAttr(request, KEY_ROOT_NODE_GROUP, approvalAppRoot);
                 }
             }
             if (failRetrieveEditData) {
@@ -128,13 +131,24 @@ public class ApprovalAppDelegator {
     public void prepareActivity(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
         List<Facility> facilityList = approvalAppClient.getAllMainActApprovalFac().getEntity();
-        List<SelectOption> facilityIdList =  new ArrayList<>(facilityList.size());
+        List<SelectOption> facilityIdList = new ArrayList<>(facilityList.size());
+        List<FacilityActivitySelectDto> facilityActivitySelectDtoList = new ArrayList<>();
         if (!facilityList.isEmpty()){
             for (Facility fac : facilityList) {
+                //initialize facility selectOption
                 facilityIdList.add(new SelectOption(fac.getId(),fac.getFacilityName()));
+                //initialize facilityActivity selectOption
+                List<FacilityActivity> facilityActivityList = approvalAppClient.getApprovalFAByFacId(fac.getId()).getEntity();
+                List<SelectOption> activityIdList = new ArrayList<>(facilityActivityList.size());
+                for (FacilityActivity facilityActivity : facilityActivityList) {
+                    activityIdList.add(new SelectOption(facilityActivity.getId(),facilityActivity.getActivityType()));
+                }
+                facilityActivitySelectDtoList.add(new FacilityActivitySelectDto(fac.getId(),activityIdList));
             }
         }
+        ParamUtil.setRequestAttr(request, ACTIVITY_ID_SELECT_DTO, facilityActivitySelectDtoList);
         ParamUtil.setRequestAttr(request, FACILITY_ID_SELECT, facilityIdList);
+
         NodeGroup approvalAppRoot = getApprovalAppRoot(request);
         SimpleNode activityNode = (SimpleNode) approvalAppRoot.getNode(NODE_NAME_ACTIVITY);
         ActivityDto activityDto = (ActivityDto)activityNode.getValue();
@@ -225,7 +239,19 @@ public class ApprovalAppDelegator {
     public void prePrimaryDoc(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
         NodeGroup approvalAppRoot = getApprovalAppRoot(request);
-        SimpleNode primaryDocNode = (SimpleNode) approvalAppRoot.at(NODE_NAME_PRIMARY_DOC);
+        //get the current facilityId doc (facility registration upload doc)
+        SimpleNode activityNode = (SimpleNode) approvalAppRoot.getNode(NODE_NAME_ACTIVITY);
+        ActivityDto activityDto = (ActivityDto) activityNode.getValue();
+        Collection<PrimaryDocDto.DocRecordInfo> docRecordInfos = approvalAppClient.getFacDocByFacId(activityDto.getFacilityId()).getEntity();
+
+        // todo
+        PrimaryDocDto registrationPrimaryDocDto = new PrimaryDocDto();
+        registrationPrimaryDocDto.setSavedDocMap(CollectionUtils.uniqueIndexMap(docRecordInfos, PrimaryDocDto.DocRecordInfo::getRepoId));
+        SimpleNode primaryDocNode = new SimpleNode(registrationPrimaryDocDto, NODE_NAME_PRIMARY_DOC, new Node[]{activityNode,approvalAppRoot});
+
+
+
+        /*SimpleNode primaryDocNode = (SimpleNode) approvalAppRoot.at(NODE_NAME_PRIMARY_DOC);*/
         PrimaryDocDto primaryDocDto = (PrimaryDocDto) primaryDocNode.getValue();
         Boolean needShowError = (Boolean) ParamUtil.getRequestAttr(request, KEY_SHOW_ERROR_SWITCH);
         if (needShowError == Boolean.TRUE) {
@@ -353,8 +379,8 @@ public class ApprovalAppDelegator {
         Node companyInfoNode = new Node(NODE_NAME_COMPANY_INFO, new Node[0]);
         SimpleNode activityNode = new SimpleNode(new ActivityDto(),NODE_NAME_ACTIVITY,new Node[0]);
         NodeGroup approvalProfileNodeGroup = initApprovalProfileNodeGroup(new Node[]{activityNode});
-        SimpleNode primaryDocNode = new SimpleNode(new PrimaryDocDto(),NODE_NAME_PRIMARY_DOC,new Node[]{approvalProfileNodeGroup,approvalProfileNodeGroup});
-        Node previewSubmitNode = new Node(NODE_NAME_PREVIEW_SUBMIT,new Node[]{approvalProfileNodeGroup,approvalProfileNodeGroup,primaryDocNode});
+        SimpleNode primaryDocNode = new SimpleNode(new PrimaryDocDto(),NODE_NAME_PRIMARY_DOC,new Node[]{activityNode,approvalProfileNodeGroup});
+        Node previewSubmitNode = new Node(NODE_NAME_PREVIEW_SUBMIT,new Node[]{activityNode,approvalProfileNodeGroup,primaryDocNode});
         NodeGroup build = new NodeGroup.Builder().name(name)
                 .addNode(companyInfoNode)
                 .addNode(activityNode)
@@ -514,4 +540,5 @@ public class ApprovalAppDelegator {
         }
         return approvalProfileList;
     }
+
 }

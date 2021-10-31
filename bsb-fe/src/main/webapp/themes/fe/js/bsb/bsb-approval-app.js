@@ -20,6 +20,9 @@ $(function () {
         $("#mainForm").submit();
     });
 
+    $("#facilityName").val($("#facilityId").find("option:checked").text());
+    $("#activityType").val($("#activityId").find("option:checked").text());
+
     $("#facilityId").change(function (){
         $("#facilityName").val($("#facilityId").find("option:checked").text());
     })

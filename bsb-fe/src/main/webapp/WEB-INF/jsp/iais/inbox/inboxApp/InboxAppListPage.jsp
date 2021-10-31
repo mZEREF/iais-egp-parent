@@ -167,6 +167,9 @@
                                                                         <c:when test="${app.processType eq 'PROTYPE001' and app.status eq 'BSBAPST001'}">
                                                                             <option value="/bsb-fe/eservice/INTERNET/MohBsbFacilityRegistration?editId=<iais:mask name='editId' value='${app.id}'/>">Edit</option>
                                                                         </c:when>
+                                                                        <c:when test="${app.processType eq 'PROTYPE002' and app.status eq 'BSBAPST001'}">
+                                                                            <option value="/bsb-fe/eservice/INTERNET/MohApprovalApplication?editId=<iais:mask name='editId' value='${app.id}'/>">Edit</option>
+                                                                        </c:when>
                                                                         <c:when test="${app.processType eq 'PROTYPE005' and app.status eq 'BSBAPST001'}">
                                                                             <option value="/bsb-fe/eservice/INTERNET/MohFacilityCertifierRegistration?editId=<iais:mask name='editId' value='${app.id}'/>">Edit</option>
                                                                         </c:when>

@@ -32,27 +32,26 @@ public class ApprovalAppDto {
         dto.setActivityDto((ActivityDto) ((SimpleNode) approvalAppRoot.at(NODE_NAME_ACTIVITY)).getValue());
         PrimaryDocDto primaryDocDto = (PrimaryDocDto) ((SimpleNode) approvalAppRoot.at(NODE_NAME_PRIMARY_DOC)).getValue();
         dto.setDocRecordInfos(primaryDocDto.getSavedDocMap().values());
-        NodeGroup approvalAppNodeGroup = (NodeGroup) approvalAppRoot.at(NODE_NAME_APPROVAL_PROFILE);
-        Map<String, ApprovalProfileDto> approvalProfileMap = getApprovalProfileMap(approvalAppNodeGroup);
+        NodeGroup approvalProfileNodeGroup = (NodeGroup) approvalAppRoot.at(NODE_NAME_APPROVAL_PROFILE);
+        Map<String, ApprovalProfileDto> approvalProfileMap = getApprovalProfileMap(approvalProfileNodeGroup);
         dto.setApprovalProfileMap(approvalProfileMap);
         return dto;
     }
 
-    public static Map<String, ApprovalProfileDto> getApprovalProfileMap(NodeGroup approvalAppNodeGroup) {
-        Assert.notNull(approvalAppNodeGroup, "Approval profile node group must not be null!");
-        Map<String, ApprovalProfileDto> approvalProfileMap = Maps.newLinkedHashMapWithExpectedSize(approvalAppNodeGroup.count());
-        for (Node node : approvalAppNodeGroup.getAllNodes()) {
+    public static Map<String, ApprovalProfileDto> getApprovalProfileMap(NodeGroup approvalProfileNodeGroup) {
+        Assert.notNull(approvalProfileNodeGroup, "Approval profile node group must not be null!");
+        Map<String, ApprovalProfileDto> approvalProfileMap = Maps.newLinkedHashMapWithExpectedSize(approvalProfileNodeGroup.count());
+        for (Node node : approvalProfileNodeGroup.getAllNodes()) {
             assert node instanceof SimpleNode;
             approvalProfileMap.put(node.getName(), (ApprovalProfileDto) ((SimpleNode) node).getValue());
         }
         return approvalProfileMap;
     }
 
-
     /** Convert data in this big DTO into a approvalAppRoot NodeGroup
      *  This is needed when we want to view the saved data or edit it */
     public NodeGroup toApprovalAppRootGroup(String name) {
-        SimpleNode activityNode = new SimpleNode(new ActivityDto(),NODE_NAME_ACTIVITY,new Node[0]);
+        SimpleNode activityNode = new SimpleNode(activityDto,NODE_NAME_ACTIVITY,new Node[0]);
 
         NodeGroup.Builder approvalProfileNodeGroupBuilder = new NodeGroup.Builder().name(NODE_NAME_APPROVAL_PROFILE)
                 .dependNodes(new Node[]{activityNode});
@@ -75,4 +74,5 @@ public class ApprovalAppDto {
                 .addNode(previewSubmitNode)
                 .build();
     }
+
 }
