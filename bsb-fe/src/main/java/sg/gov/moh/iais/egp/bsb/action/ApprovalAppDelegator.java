@@ -46,6 +46,7 @@ public class ApprovalAppDelegator {
     private static final String KEY_ROOT_NODE_GROUP = "approvalAppRoot";
 
     private static final String KEY_EDIT_APP_ID = "editId";
+    private static final String KEY_PROCESS_TYPE = "processType";
     private static final String KEY_ACTION_TYPE = "action_type";
     private static final String KEY_INDEED_ACTION_TYPE = "indeed_action_type";
     private static final String KEY_ACTION_VALUE = "action_value";
@@ -102,6 +103,9 @@ public class ApprovalAppDelegator {
                 throw new IaisRuntimeException("Fail to retrieve app data");
             }
         }
+        String maskedProcessType = request.getParameter(KEY_PROCESS_TYPE);
+        String processType = MaskUtil.unMaskValue(KEY_PROCESS_TYPE,maskedProcessType);
+        ParamUtil.setSessionAttr(request, KEY_PROCESS_TYPE, processType);
         if (newApprovalApp) {
             ParamUtil.setSessionAttr(request, KEY_ROOT_NODE_GROUP, getApprovalAppRoot(request));
         }
@@ -109,6 +113,8 @@ public class ApprovalAppDelegator {
 
     public void start(BaseProcessClass bpc){
         // do nothing now
+        HttpServletRequest request = bpc.request;
+        ParamUtil.setSessionAttr(request, KEY_PROCESS_TYPE, null);
     }
 
     public void preCompInfo(BaseProcessClass bpc){
@@ -248,8 +254,6 @@ public class ApprovalAppDelegator {
         PrimaryDocDto registrationPrimaryDocDto = new PrimaryDocDto();
         registrationPrimaryDocDto.setSavedDocMap(CollectionUtils.uniqueIndexMap(docRecordInfos, PrimaryDocDto.DocRecordInfo::getRepoId));
         SimpleNode primaryDocNode = new SimpleNode(registrationPrimaryDocDto, NODE_NAME_PRIMARY_DOC, new Node[]{activityNode,approvalAppRoot});
-
-
 
         /*SimpleNode primaryDocNode = (SimpleNode) approvalAppRoot.at(NODE_NAME_PRIMARY_DOC);*/
         PrimaryDocDto primaryDocDto = (PrimaryDocDto) primaryDocNode.getValue();

@@ -106,7 +106,7 @@ public class ActivityDto extends ValidatableNodeValue {
         this.schedules = schedules;
     }
 
-//    ---------------------------- request -> object ----------------------------------------------
+    //    ---------------------------- request -> object ----------------------------------------------
 
     private static final String KEY_ACTIVITY_FACILITY_ID = "facilityId";
     private static final String KEY_ACTIVITY_FACILITY_NAME = "facilityName";

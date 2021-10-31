@@ -42,11 +42,19 @@ public class ApprovalProfileDto extends ValidatableNodeValue {
         private String transferPostalCode;
         private String courierServiceProviderName;
         private String remarks;
+
+        private String prjName;
+        private String principalInvestigatorName;
+        private String workActivityIntended;
+        private String startDate;
+        private String endDate;
     }
 
     private List<BATInfo> batInfos;
 
     private String schedule;
+
+    private String processType;
 
     @JsonIgnore
     private ValidationResultDto validationResultDto;
@@ -87,6 +95,14 @@ public class ApprovalProfileDto extends ValidatableNodeValue {
 
     public void setSchedule(String schedule) {
         this.schedule = schedule;
+    }
+
+    public String getProcessType() {
+        return processType;
+    }
+
+    public void setProcessType(String processType) {
+        this.processType = processType;
     }
 
     public List<BATInfo> getBatInfos() {
@@ -137,6 +153,14 @@ public class ApprovalProfileDto extends ValidatableNodeValue {
     private static final String KEY_COURIER_SERVICE_PROVIDER_NAME = "courierServiceProviderName";
     private static final String KEY_REMARKS = "remarks";
 
+    private static final String KEY_PRJ_NAME = "prjName";
+    private static final String KEY_PRINCIPAL_INVESTIGATOR_NAME = "principalInvestigatorName";
+    private static final String KEY_WORK_ACTIVITY_INTENDED = "workActivityIntended";
+    private static final String KEY_START_DATE = "startDate";
+    private static final String KEY_END_DATE = "endDate";
+
+    private static final String PROCESS_TYPE = "processType";
+
     public void reqObjMapping(HttpServletRequest request) {
         clearBatInfos();
         int amt = ParamUtil.getInt(request, KEY_SECTION_AMT);
@@ -161,7 +185,14 @@ public class ApprovalProfileDto extends ValidatableNodeValue {
             info.setTransferPostalCode(ParamUtil.getString(request, KEY_TRANSFER_POSTAL_CODE + SEPARATOR +i));
             info.setCourierServiceProviderName(ParamUtil.getString(request, KEY_COURIER_SERVICE_PROVIDER_NAME + SEPARATOR +i));
             info.setRemarks(ParamUtil.getString(request, KEY_REMARKS + SEPARATOR +i));
+            info.setPrjName(ParamUtil.getString(request, KEY_PRJ_NAME + SEPARATOR +i));
+            info.setPrincipalInvestigatorName(ParamUtil.getString(request, KEY_PRINCIPAL_INVESTIGATOR_NAME + SEPARATOR +i));
+            info.setWorkActivityIntended(ParamUtil.getString(request, KEY_WORK_ACTIVITY_INTENDED + SEPARATOR +i));
+            info.setStartDate(ParamUtil.getString(request, KEY_START_DATE + SEPARATOR +i));
+            info.setEndDate(ParamUtil.getString(request, KEY_END_DATE + SEPARATOR +i));
             addBatInfo(info);
         }
+        String newProcessType = (String) ParamUtil.getSessionAttr(request,PROCESS_TYPE);
+        this.setProcessType(newProcessType);
     }
 }
