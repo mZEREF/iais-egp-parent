@@ -167,6 +167,9 @@ public final class MasterCodeUtil {
     //Data Submission Ar Freezing Cryopreserved Options
     public static final String AR_FREE_CRYO_OPTIONS = "B456C51B-B13A-EC11-BE73-000C298D317C";
 
+    //Data Submission Ar IUI Treatment Subsidies
+    public static final String PLEASE_INDICATE_IUI_CO_FUNDING = "4AAB50BC-7F5B-4187-930C-A296491B3ACE";
+
     /**
      * @description: refresh the master codes into cache
      *
