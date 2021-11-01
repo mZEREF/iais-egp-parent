@@ -15,20 +15,21 @@
                     <iais:field width="5" value="Patient ID No." mandatory="true"/>
                     <iais:value width="3" cssClass="col-md-3">
                         <iais:select name="patientIdType" firstOption="Please Select" codeCategory="CATE_ID_DS_ID_TYPE"
-                                     value="${selectionDto.patientIdType}" cssClass="idTypeSel" onchange="clearFields('#retrieveDataDiv')"/>
+                                     value="${selectionDto.patientIdType}" cssClass="idTypeSel" onchange="clearFields('.patientData')"/>
                     </iais:value>
                     <iais:value width="4" cssClass="col-md-4">
                         <iais:input maxLength="20" type="text" name="patientIdNumber" value="${selectionDto.patientIdNumber}"
-                                    onchange="clearFields('#retrieveDataDiv')"/>
+                                    onchange="clearFields('.patientData')"/>
                     </iais:value>
                 </iais:row>
                 <iais:row>
                     <iais:field width="5" value="Patient Nationality" mandatory="true"/>
                     <iais:value width="4" cssClass="col-md-4">
                         <iais:select name="patientNationality" firstOption="Please Select" codeCategory="CATE_ID_NATIONALITY"
-                                     value="${selectionDto.patientNationality}" cssClass="nationalitySel" onchange="clearFields('#retrieveDataDiv')"/>
+                                     value="${selectionDto.patientNationality}" cssClass="nationalitySel"
+                                     onchange="clearFields('.patientData')"/>
                     </iais:value>
-                    <iais:value width="3" cssClass="col-md-3" display="true" id="retrieveDataDiv">
+                    <iais:value width="3" cssClass="col-md-3 patientData" display="true" id="retrieveDataDiv">
                         <a class="retrieveIdentification" onclick="retrieveValidatePatient()">
                             Validate Patient
                         </a>
@@ -38,14 +39,14 @@
                         <span class="error-msg col-md-12" name="iaisErrorMsg" id="error_patientName"></span>
                     </iais:value>
                 </iais:row>
-                <iais:row>
+                <iais:row cssClass="patientData">
                     <iais:field width="5" value="Name"/>
                     <iais:value width="7" cssClass="col-md-7" display="true" id="patientName">
                         ${selectionDto.patientName}
                     </iais:value>
                     <input type="hidden" name="patientName" id="patientNameHidden" value="${selectionDto.patientName}">
                 </iais:row>
-                <iais:row>
+                <iais:row cssClass="patientData">
                     <iais:field width="5" value="Is patient undergoing cycle currently?"/>
                     <iais:value width="7" cssClass="col-md-7" display="true" id="undergoingCycleCycle">
                         <c:if test="${not empty selectionDto.patientName}">
@@ -54,7 +55,7 @@
                     </iais:value>
                     <input type="hidden" name="undergoingCycle" id="undergoingCycleHidden" value="${selectionDto.undergoingCycle ? '1' : '0'}">
                 </iais:row>
-                <iais:row>
+                <iais:row cssClass="patientData">
                     <iais:field width="5" value="Last Stage Submitted"/>
                     <iais:value width="7" cssClass="col-md-7" display="true" id="lastStage">
                         <c:if test="${not empty selectionDto.lastStage}" var="hasLastStage">
