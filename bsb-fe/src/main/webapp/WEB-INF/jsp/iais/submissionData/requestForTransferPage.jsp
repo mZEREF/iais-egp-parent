@@ -18,84 +18,55 @@
     <input type="hidden" name="action_value" value="">
     <input type="hidden" name="action_additional" value="">
     <div class="main-content">
-        <div class="container">
-            <div class="row">
-                <div class="col-xs-12">
-                    <div class="tab-gp">
-                        <div class="tab-content">
-                            <div class="tab-pane fade in active">
-                                <div class="row form-horizontal">
-                                    <iais:row>
-                                        <iais:field value="Schedule Type" width="11" required="true"/>
-                                        <iais:value width="11">
-                                            <iais:select name="scheduleType" id="scheduleType"
-                                                         value=""
-                                                         codeCategory="CATE_ID_BSB_SCH_TYPE"
-                                                         firstOption="Please Select"/>
-                                            <span class="error-msg" name="errorMsg" id="error_scheduleType"></span>
-                                        </iais:value>
-                                    </iais:row>
-                                    <iais:row>
-                                        <iais:field value="Biological Agent/Toxin Code" width="11" required="true"/>
-                                        <iais:value width="11">
-                                            <input type="text" name="BATCode" id="BATCode" maxlength="20" value="">
-                                            <span class="error-msg" name="errorMsg" id="error_BATCode"></span>
-                                        </iais:value>
-                                    </iais:row>
-                                    <c:if test="1=1">
-                                        <%--Schedule Type 不是 Fifth Schedule，而且biological type为agent时，不显示--%>
-                                        <iais:row>
-                                            <iais:field value="Expected Quantity of Biological Agent" width="11"
-                                                        required="true"/>
-                                            <iais:value width="11">
-                                                <input type="text" name="expectedBatQty" id="expectedBatQty"
-                                                       maxlength="66" value="">
-                                                <span class="error-msg" name="errorMsg"
-                                                      id="error_expectedBatQty"></span>
-                                            </iais:value>
-                                        </iais:row>
-                                    </c:if>
-                                    <c:if test="1=1">
-                                        <%--Schedule Type 为 Fifth Schedule,biological_type为toxin，显示--%>
-                                        <iais:row>
-                                            <iais:field value="Expected Quantity to Receive" width="11"
-                                                        required="true"/>
-                                            <iais:value width="11">
-                                                <input type="number" name="receivedQty" id="receivedQty" value=""
-                                                       maxlength="11"
-                                                       οninput="this.value=this.value.replace(/\D*(\d*)(\.?)(\d{0,3})\d*/,'$1$2$3')">
-                                                <span class="error-msg" name="errorMsg" id="error_receivedQty"></span>
-                                            </iais:value>
-                                        </iais:row>
-                                    </c:if>
-                                    <c:if test="1=1">
-                                        <%--Schedule Type 为 Fifth Schedule,biological_type为toxin，显示--%>
-                                        <iais:row>
-                                            <iais:field value="Unit of Measurement" width="11" required="true"/>
-                                            <iais:value width="11">
-                                                <iais:select name="measurementUnit" id="measurementUnit"
-                                                             value=""
-                                                             codeCategory="CATE_ID_BSB_DATA_SUBMISSION_UNIT_OF_MEASUREMENT"
-                                                             firstOption="Please Select"/>
-                                                <span class="error-msg" name="errorMsg"
-                                                      id="error_measurementUnit"></span>
-                                            </iais:value>
-                                        </iais:row>
-                                    </c:if>
-                                    <iais:row>
-                                        <iais:field value="Transferring Facility" width="11" required="false"/>
-                                        <iais:value width="11">
-                                            <label><p>facility name</p></label>
-                                        </iais:value>
-                                    </iais:row>
+    <div class="row">
+        <div class="col-lg-12 col-xs-12">
+            <div class="center-content">
+                <div class="internet-content">
+                    <iais:body>
+                        <div class="col-xs-12">
+                            <div class="tab-gp dashboard-tab">
+                                <ul class="nav nav-tabs hidden-xs hidden-sm" role="tablist">
+                                    <li class="active" id="info" role="presentation">
+                                        <a href="#tabFacInfo"
+                                           id="infoa"
+                                           aria-controls="tabFacInfo"
+                                           role="tab"
+                                           data-toggle="tab">Facility Info</a></li>
+                                    <li class="complete" id="bat" role="presentation">
+                                        <a href="#tabBat"
+                                           id="bata"
+                                           aria-controls="tabBat" role="tab"
+                                           data-toggle="tab">Biological Agent/Toxin</a></li>
+                                </ul>
+                                <div class="tab-nav-mobile visible-xs visible-sm">
+                                    <div class="swiper-wrapper" role="tablist">
+                                        <div class="swiper-slide"><a href="#tabFacInfo" aria-controls="tabFacInfo"
+                                                                     role="tab"
+                                                                     data-toggle="tab">Facility Info</a>
+                                        </div>
+                                        <div class="swiper-slide"><a href="#tabBat" aria-controls="tabBat"
+                                                                     role="tab" data-toggle="tab">Biological Agent/Toxin</a>
+                                        </div>
+                                    </div>
+                                    <div class="swiper-button-prev"></div>
+                                    <div class="swiper-button-next"></div>
+                                </div>
+                                <div class="tab-content">
+                                    <div class="tab-pane active" id="tabFacInfo" role="tabpanel">
+                                        <%@include file="requestForTransferPage/facilityInfo.jsp" %>
+                                    </div>
+                                    <div class="tab-pane" id="tabBat" role="tabpanel">
+                                        <%@include file="requestForTransferPage/bat.jsp" %>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </iais:body>
                 </div>
             </div>
         </div>
     </div>
+</div>
     <div class="row">
         <div class="container">
             <div class="col-xs-12 col-md-6 text-left">
@@ -107,4 +78,4 @@
         </div>
     </div>
 </form>
-<%@include file="/WEB-INF/jsp/include/validation.jsp" %>
+<%@include file="/WEB-INF/jsp/include/validation.jsp"%>
