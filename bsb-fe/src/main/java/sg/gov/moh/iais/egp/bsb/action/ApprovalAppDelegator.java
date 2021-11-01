@@ -409,7 +409,7 @@ public class ApprovalAppDelegator {
         for (int i = 0; i < schedules.size(); i++) {
             subNodes[i] = new SimpleNode(new ApprovalProfileDto(schedules.get(i)), schedules.get(i), new Node[0]);
         }
-        approvalProfileNodeGroup.replaceNodes(subNodes);
+        approvalProfileNodeGroup.reorganizeNodes(subNodes);
     }
 
     /**

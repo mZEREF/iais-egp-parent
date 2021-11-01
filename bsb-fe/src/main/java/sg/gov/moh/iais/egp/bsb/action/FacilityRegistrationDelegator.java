@@ -730,7 +730,7 @@ public class FacilityRegistrationDelegator {
         for (int i = 0; i < activityTypes.size(); i++) {
             subNodes[i] = new SimpleNode(new BiologicalAgentToxinDto(activityTypes.get(i)), activityTypes.get(i), new Node[0]);
         }
-        batNodeGroup.replaceNodes(subNodes);
+        batNodeGroup.reorganizeNodes(subNodes);
     }
 
     public static List<BiologicalAgentToxinDto> getBatInfoList(NodeGroup batNodeGroup) {

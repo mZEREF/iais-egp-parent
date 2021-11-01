@@ -9,6 +9,8 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 
 /**
@@ -28,7 +30,10 @@ import java.util.Map;
  * {@link #getCurrentVisibleNode} method. This method will return a member Node path that is not a group.
  */
 public class NodeGroup extends Node {
-    private static final String ERR_MSG_NODE_NOT_NULL = "Node can not be null";
+    protected static final String ERR_MSG_NODE_NOT_NULL = "Node can not be null";
+    protected static final String ERR_MSG_NODE_GROUP_NOT_EMPTY = "Nodes can not be empty";
+    protected static final String ERR_MSG_INVALID_ACTIVE_NODE = "The node group does not contain the active node key!";
+    protected static final String ERR_MSG_INVALID_PATH = "Path must not be empty!";
 
     /**
      * This map contains members of this group.
@@ -101,7 +106,7 @@ public class NodeGroup extends Node {
         }
 
         public Builder setNode(Map<String, Node> nodes) {
-            Assert.notEmpty(nodes, "Nodes can not be empty!");
+            Assert.notEmpty(nodes, ERR_MSG_NODE_GROUP_NOT_EMPTY);
             this.nodes = new LinkedHashMap<>(nodes);
             return this;
         }
@@ -167,7 +172,7 @@ public class NodeGroup extends Node {
      * or if we find the 'a_b' but it doesn't contain 'c', this method will return null.
      * @return a Node if find; null if not */
     public Node at(String path) {
-        Assert.hasLength(path, "Path must not be empty!");
+        Assert.hasLength(path, ERR_MSG_INVALID_PATH);
         Node destNode = null;
         String[] namePart = path.split(pathSeparator, 2);
         if (namePart.length > 1) {
@@ -196,7 +201,7 @@ public class NodeGroup extends Node {
     public String getNextName() {
         Node activeNode = getNode(activeNodeKey);
         if (activeNode == null) {
-            throw new IllegalStateException("The node group does not contain the active node key!");
+            throw new IllegalStateException(ERR_MSG_INVALID_ACTIVE_NODE);
         }
         if (activeNode instanceof NodeGroup) {
             String subNextName = ((NodeGroup) activeNode).getNextName();
@@ -228,7 +233,7 @@ public class NodeGroup extends Node {
     public String getPreviousName() {
         Node activeNode = getNode(activeNodeKey);
         if (activeNode == null) {
-            throw new IllegalStateException("The node group does not contain the active node key!");
+            throw new IllegalStateException(ERR_MSG_INVALID_ACTIVE_NODE);
         }
         if (activeNode instanceof NodeGroup) {
             String subPreviousName = ((NodeGroup) activeNode).getPreviousName();
@@ -257,7 +262,7 @@ public class NodeGroup extends Node {
 
     public void removeNode(String name) {
         if (this.nodes.size() == 1) {
-            throw new IllegalStateException("Node group can not be empty");
+            throw new IllegalStateException(ERR_MSG_NODE_GROUP_NOT_EMPTY);
         }
         this.nodes.remove(name);
     }
@@ -291,7 +296,7 @@ public class NodeGroup extends Node {
      * @param node will replace the old Node
      */
     public void replaceNode(String name, Node node) {
-        Assert.hasLength(name, "name must not be empty");
+        Assert.hasLength(name, ERR_MSG_NODE_NAME_NOT_EMPTY);
         Assert.notNull(node, ERR_MSG_NODE_NOT_NULL);
         LinkedHashMap<String, Node> tmpMap = Maps.newLinkedHashMapWithExpectedSize(this.nodes.size());
         for (Map.Entry<String, Node> entry : this.nodes.entrySet()) {
@@ -309,14 +314,47 @@ public class NodeGroup extends Node {
     }
 
     /**
-     * Replace members in this group to specific list.
-     * Keep the existing nodes if the given node contain the node with same name.
-     * ATTENTION! The logic of this method is different from other replace methods, this method will retain nodes
-     * with the same name.
-     * @param nodes to replace current members
+     * Replace nodes with the same name
+     * @see #replaceNodes(Map)
+     * @param nodes new Node list
      */
     public void replaceNodes(Node[] nodes) {
-        Assert.notEmpty(nodes, "Node list can not be empty");
+        Assert.notEmpty(nodes, ERR_MSG_NODE_GROUP_NOT_EMPTY);
+        Map<String, Node> newNodeMap = Arrays.stream(nodes).collect(Collectors.toMap(Node::getName, Function.identity()));
+        replaceNodes(newNodeMap);
+    }
+
+    /**
+     * Replace nodes with the same name.
+     * If the name in the parameter is not contained by this group, it will be ignored
+     * @param nodes new nodes, key is node name, value is the Node
+     */
+    public void replaceNodes(Map<String, Node> nodes) {
+        Assert.notEmpty(nodes, ERR_MSG_NODE_GROUP_NOT_EMPTY);
+        LinkedHashMap<String, Node> tmpMap = Maps.newLinkedHashMapWithExpectedSize(this.nodes.size());
+        for (Map.Entry<String, Node> entry : this.nodes.entrySet()) {
+            Node newNode = nodes.get(entry.getKey());
+            if (newNode != null) {
+                tmpMap.put(newNode.getName(), newNode);
+                if (entry.getKey().equals(this.activeNodeKey)) {
+                    this.activeNodeKey = newNode.getName();
+                }
+            } else {
+                tmpMap.put(entry.getKey(), entry.getValue());
+            }
+        }
+        this.nodes.clear();
+        this.nodes.putAll(tmpMap);
+    }
+
+    /**
+     * Replace members in this group to specific list.
+     * Keep the existing nodes if the given node contain the node with same name.
+     * This method totally change the node list but keep the old data.
+     * @param nodes to replace current members
+     */
+    public void reorganizeNodes(Node[] nodes) {
+        Assert.notEmpty(nodes, ERR_MSG_NODE_GROUP_NOT_EMPTY);
         LinkedHashMap<String, Node> tmpMap = Maps.newLinkedHashMapWithExpectedSize(nodes.length);
         for (Node n : nodes) {
             Node existsNode = this.nodes.get(n.getName());

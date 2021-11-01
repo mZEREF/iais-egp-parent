@@ -5,6 +5,8 @@ import java.io.Serializable;
 
 
 public class Node implements Serializable {
+    protected static final String ERR_MSG_NODE_NAME_NOT_EMPTY = "Node name must not be empty";
+
     protected final String name;
     protected boolean available;
     protected boolean validated;
@@ -16,7 +18,7 @@ public class Node implements Serializable {
 
 
     public Node(String name, Node[] dependNodes) {
-        Assert.notNull(name, "Node name must not be null");
+        Assert.hasLength(name, ERR_MSG_NODE_NAME_NOT_EMPTY);
         this.name = name;
         this.dependNodes = dependNodes == null ? new Node[0] : dependNodes.clone();
         this.available = true;
