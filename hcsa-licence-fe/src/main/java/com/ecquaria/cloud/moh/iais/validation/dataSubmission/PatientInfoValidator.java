@@ -19,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 
 /**
@@ -46,9 +47,9 @@ public class PatientInfoValidator implements CustomizeValidator {
             LoginContext loginContext = DataSubmissionHelper.getLoginContext(request);
             String orgId = Optional.ofNullable(loginContext).map(LoginContext::getOrgId).orElse("");
             PatientDto patientDto = patientService.getPatientDto(patient.getIdNumber(), patient.getNationality(), orgId);
-            if (patientDto != null) {
+            if (patientDto != null && (StringUtil.isEmpty(patient.getId()) || !Objects.equals(patientDto.getId(), patient.getId()))) {
                 map.put("idNumber", MessageUtil.getMessageDesc("DS_ERR007"));
-            }else if (!StringUtil.isEmpty(patient.getBirthDate())) {
+            } else if (!StringUtil.isEmpty(patient.getBirthDate())) {
                 String age1 = MasterCodeUtil.getCodeDesc("PT_AGE_001");
                 String age2 = MasterCodeUtil.getCodeDesc("PT_AGE_002");
                 if (StringUtil.isDigit(age1) && StringUtil.isDigit(age2)) {
