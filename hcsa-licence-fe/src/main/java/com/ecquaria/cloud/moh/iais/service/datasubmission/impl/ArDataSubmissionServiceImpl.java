@@ -63,11 +63,12 @@ public class ArDataSubmissionServiceImpl implements ArDataSubmissionService {
     }
 
     @Override
-    public CycleStageSelectionDto getCycleStageSelectionDtoByConds(String idNumber, String nationality, String orgId, String hciCode) {
-        if (StringUtil.isEmpty(idNumber) || StringUtil.isEmpty(nationality) || StringUtil.isEmpty(orgId)) {
+    public CycleStageSelectionDto getCycleStageSelectionDtoByConds(String idType, String idNumber, String nationality, String orgId,
+            String hciCode) {
+        if (StringUtil.isEmpty(idType) || StringUtil.isEmpty(idNumber) || StringUtil.isEmpty(nationality) || StringUtil.isEmpty(orgId)) {
             return null;
         }
-        return arFeClient.getCycleStageSelectionDtoByConds(idNumber, nationality, orgId, hciCode).getEntity();
+        return arFeClient.getCycleStageSelectionDtoByConds(idType, idNumber, nationality, orgId, hciCode).getEntity();
     }
 
     @Override

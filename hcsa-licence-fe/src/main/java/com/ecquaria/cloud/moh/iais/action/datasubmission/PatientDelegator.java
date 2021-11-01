@@ -15,6 +15,7 @@ import com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.ControllerHelper;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
+import com.ecquaria.cloud.moh.iais.service.client.GenerateIdClient;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.PatientService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +36,9 @@ public class PatientDelegator extends CommonDelegator {
     @Autowired
     private PatientService patientService;
 
+    @Autowired
+    private GenerateIdClient generateIdClient;
+
     @Override
     public void start(BaseProcessClass bpc) {
         ArSuperDataSubmissionDto currentArDataSubmission = DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
@@ -45,6 +49,7 @@ public class PatientDelegator extends CommonDelegator {
         }
         dataSubmission.setSubmissionType(DataSubmissionConsts.DATA_SUBMISSION_TYPE_AR);
         dataSubmission.setCycleStage(DataSubmissionConsts.DATA_SUBMISSION_CYCLE_STAGE_PATIENT);
+        dataSubmission.setStatus(DataSubmissionConsts.DS_STATUS_ACTIVE);
         currentArDataSubmission.setCycleDto(initCycleDto(currentArDataSubmission));
         DataSubmissionHelper.setCurrentArDataSubmission(currentArDataSubmission, bpc.request);
     }
@@ -72,7 +77,7 @@ public class PatientDelegator extends CommonDelegator {
         } else {
             patient.setId(null);
         }
-         ControllerHelper.get(request, patient);
+        ControllerHelper.get(request, patient);
         if (StringUtil.isNotEmpty(patient.getName())) {
             patient.setName(patient.getName().toUpperCase(AppConsts.DFT_LOCALE));
         }
@@ -86,7 +91,7 @@ public class PatientDelegator extends CommonDelegator {
         }
         String patientCode = Optional.ofNullable(patientInfo.getPatient())
                 .map(dto -> dto.getPatientCode())
-                .orElseGet(() -> UUID.randomUUID().toString());
+                .orElseGet(() -> generateIdClient.getSeqId().getEntity());
         patient.setPatientCode(patientCode);
         patientInfo.setPatient(patient);
         // check previous
@@ -95,7 +100,8 @@ public class PatientDelegator extends CommonDelegator {
             patientInfo.setRetrievePrevious(AppConsts.YES.equals(retrievePrevious));
             PatientDto previous = ControllerHelper.get(request, PatientDto.class, "pre", "");
             if (patientInfo.isRetrievePrevious()) {
-                PatientDto db = patientService.getPatientDto(previous.getIdNumber(), previous.getNationality(), patient.getOrgId());
+                PatientDto db = patientService.getPatientDto(previous.getIdType(), previous.getIdNumber(), previous.getNationality(),
+                        patient.getOrgId());
                 if (db != null && !StringUtil.isEmpty(db.getId())) {
                     previous = db;
                 }
@@ -118,6 +124,7 @@ public class PatientDelegator extends CommonDelegator {
             cycleDto = initCycleDto(currentArDataSubmission);
         }
         cycleDto.setPatientCode(patientCode);
+        cycleDto.setStatus(DataSubmissionConsts.DS_STATUS_ACTIVE);
         currentArDataSubmission.setCycleDto(cycleDto);
         DataSubmissionHelper.setCurrentArDataSubmission(currentArDataSubmission, request);
         return patientInfo;

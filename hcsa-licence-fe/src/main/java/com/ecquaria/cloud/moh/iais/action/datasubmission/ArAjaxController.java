@@ -65,12 +65,10 @@ public class ArAjaxController {
         } else {
             LoginContext loginContext = DataSubmissionHelper.getLoginContext(request);
             String orgId = Optional.ofNullable(loginContext).map(LoginContext::getOrgId).orElse("");
-            patient = patientService.getPatientDto(idNo, nationality, orgId);
-            if (patient != null && !Objects.equals(patient.getIdType(), idType)) {
-                patient = null;
-                result.put("invalidType", true);
+            PatientDto db = patientService.getPatientDto(idType, idNo, nationality, orgId);
+            if (db != null) {
+                patient = db;
             }
-            //ParamUtil.setSessionAttr(request, DataSubmissionConstant.AR_PATIENT, patient);
             result.put("patient", patient);
         }
         return result;
@@ -101,7 +99,8 @@ public class ArAjaxController {
                     .map(ds -> ds.getAppGrpPremisesDto())
                     .map(premises -> premises.getHciCode())
                     .orElse("");
-            CycleStageSelectionDto dbDto = arDataSubmissionService.getCycleStageSelectionDtoByConds(idNo, nationality, orgId, hicCode);
+            CycleStageSelectionDto dbDto = arDataSubmissionService.getCycleStageSelectionDtoByConds(idType, idNo, nationality, orgId,
+                    hicCode);
             if (dbDto != null) {
                 dto = dbDto;
             }
@@ -113,7 +112,8 @@ public class ArAjaxController {
         String currCycle = dto.getLastCycle();
         String currStage = dto.getLastStage();
         String lastStatus = dto.getLastStatus();
-        result.put("stagHtmls", DataSubmissionHelper.genOptionHtmls(DataSubmissionHelper.getNextStageForAR(currCycle, currStage, lastStatus)));
+        result.put("stagHtmls", DataSubmissionHelper.genOptionHtmls(DataSubmissionHelper.getNextStageForAR(currCycle, currStage,
+                lastStatus)));
         return result;
     }
 

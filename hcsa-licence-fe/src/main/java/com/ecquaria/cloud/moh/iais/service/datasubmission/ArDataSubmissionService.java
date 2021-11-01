@@ -12,7 +12,8 @@ public interface ArDataSubmissionService {
 
     Map<String,AppGrpPremisesDto> getAppGrpPremises(String licenseeId, String serviceName);
 
-    CycleStageSelectionDto getCycleStageSelectionDtoByConds(String idNumber, String nationality, String orgId, String hciCode);
+    CycleStageSelectionDto getCycleStageSelectionDtoByConds(String idType, String idNumber, String nationality, String orgId,
+            String hciCode);
 
     ArSuperDataSubmissionDto getArSuperDataSubmissionDto(String patientCode, String hciCOde);
 

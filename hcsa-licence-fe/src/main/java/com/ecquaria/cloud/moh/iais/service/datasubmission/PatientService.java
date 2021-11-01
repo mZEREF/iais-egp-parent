@@ -4,6 +4,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientDto;
 
 public interface PatientService {
 
-    PatientDto getPatientDto(String idNumber, String nationality, String orgId);
+    PatientDto getPatientDto(String idType, String idNumber, String nationality, String orgId);
 
 }

@@ -115,10 +115,9 @@ public class ArCycleStagesManualDelegator {
         selectionDto.setPatientIdNumber(ParamUtil.getString(request, "patientIdNumber"));
         selectionDto.setPatientNationality(ParamUtil.getString(request, "patientNationality"));
         selectionDto.setPatientCode(ParamUtil.getString(request, "patientCode"));
+        //TODO test
 //        selectionDto.setRetrieveData(StringUtil.getNonNull(ParamUtil.getString(request, "retrieveData")));
 //        selectionDto.setPatientName(StringUtil.getNonNull(ParamUtil.getString(request, "patientName")));
-        selectionDto.setRetrieveData(ParamUtil.getString(request, "retrieveData"));
-        selectionDto.setPatientName(ParamUtil.getString(request, "patientName"));
         selectionDto.setUndergoingCycle("1".equals(ParamUtil.getString(request, "undergoingCycle")));
         selectionDto.setLastStage(ParamUtil.getString(request, "lastStage"));
         selectionDto.setStage(ParamUtil.getString(request, "stage"));

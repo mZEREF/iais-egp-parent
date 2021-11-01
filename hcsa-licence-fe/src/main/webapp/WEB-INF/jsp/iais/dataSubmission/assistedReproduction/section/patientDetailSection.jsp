@@ -91,14 +91,12 @@
 
     function previousPatientCallback(data) {
         clearErrorMsg();
-        if (isEmpty(data) || isEmpty(data.patient) || !isEmpty(data.errorMsg) || data.invalidType) {
+        if (isEmpty(data) || isEmpty(data.patient) || isEmpty(data.patient.id) || !isEmpty(data.errorMsg) ) {
             $('#preName').find('p').text('');
             $('#preBirthDate').find('p').text('');
             $('[name="retrievePrevious"]').val('0');
             if (!isEmpty(data.errorMsg)) {
                 doValidationParse(data.errorMsg);
-            } else if (data.invalidType) {
-                showErrorMsg('error_preIdType', $('#_ERR0051').val());
             } else {
                 $('#noFoundDiv').modal('show');
             }

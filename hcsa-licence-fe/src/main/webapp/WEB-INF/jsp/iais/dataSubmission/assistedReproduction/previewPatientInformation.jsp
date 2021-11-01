@@ -16,6 +16,7 @@
 <c:set var="patient" value="${patientInfoDto.patient}" />
 <c:set var="previous" value="${patientInfoDto.previous}" />
 <c:set var="husband" value="${patientInfoDto.husband}" />
+<c:set var="declaration" value="${arSuperDataSubmissionDto.currentDataSubmissionDto.declaration}" />
 
 <%@ include file="common/arHeader.jsp" %>
 
@@ -27,6 +28,7 @@
                 <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
                     <%@include file="section/previewPatientDetail.jsp" %>
                     <%@include file="section/previewHusbandDetail.jsp" %>
+                    <%@include file="common/arDeclaration.jsp" %>
                 </div>
                 <%@include file="common/arFooter.jsp" %>
             </div>
