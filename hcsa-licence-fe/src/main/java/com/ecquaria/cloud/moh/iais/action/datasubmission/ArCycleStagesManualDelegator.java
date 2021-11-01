@@ -93,18 +93,18 @@ public class ArCycleStagesManualDelegator {
             String hicCode = Optional.ofNullable(currentArDataSubmission.getAppGrpPremisesDto())
                     .map(premises -> premises.getHciCode())
                     .orElse("");
-            ArSuperDataSubmissionDto newDto = arDataSubmissionService.getArSuperDataSubmissionDto(selectionDto.getPatientCode(),
-                    hicCode);
-            newDto.setAppGrpPremisesDto(currentArDataSubmission.getAppGrpPremisesDto());
-            newDto.setSubmissionType(currentArDataSubmission.getSubmissionType());
-            newDto.setArSubmissionType(currentArDataSubmission.getArSubmissionType());
-            newDto.setSubmissionMethod(currentArDataSubmission.getSubmissionMethod());
-            dataSubmission.setCycleStage(stage);
-            newDto.setCurrentDataSubmissionDto(dataSubmission);
-            selectionDto = newDto.getSelectionDto();
-            selectionDto.setStage(stage);
-            newDto.setCycleDto(DataSubmissionHelper.genCycleDto(selectionDto, hicCode));
-            DataSubmissionHelper.setCurrentArDataSubmission(newDto, bpc.request);
+//            ArSuperDataSubmissionDto newDto = arDataSubmissionService.getArSuperDataSubmissionDto(selectionDto.getPatientCode(),
+//                    hicCode);
+//            newDto.setAppGrpPremisesDto(currentArDataSubmission.getAppGrpPremisesDto());
+//            newDto.setSubmissionType(currentArDataSubmission.getSubmissionType());
+//            newDto.setArSubmissionType(currentArDataSubmission.getArSubmissionType());
+//            newDto.setSubmissionMethod(currentArDataSubmission.getSubmissionMethod());
+//            dataSubmission.setCycleStage(stage);
+//            newDto.setCurrentDataSubmissionDto(dataSubmission);
+//            selectionDto = newDto.getSelectionDto();
+//            selectionDto.setStage(stage);
+//            newDto.setCycleDto(DataSubmissionHelper.genCycleDto(selectionDto, hicCode));
+//            DataSubmissionHelper.setCurrentArDataSubmission(newDto, bpc.request);
             bpc.request.setAttribute(DataSubmissionConstant.CRUD_ACTION_TYPE_CT, stage);
         }
     }
