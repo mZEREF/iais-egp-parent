@@ -1,10 +1,8 @@
-
-<c:set var="headingSign" value="completed"/>
 <c:set var="thawingStageDto" value="${arSuperDataSubmissionDto.thawingStageDto}"/>
 <div class="panel panel-default">
-    <div class="panel-heading ${headingSign}">
+    <div class="panel-heading completed">
         <h4 class="panel-title">
-            <a class="" data-toggle="collapse" href="#patientDetails">
+            <a class="collapsed" data-toggle="collapse" href="#">
                 Thawing (Oocytes & Embryos)
             </a>
         </h4>

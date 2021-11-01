@@ -8,7 +8,6 @@ import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
-import com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import lombok.extern.slf4j.Slf4j;
@@ -29,18 +28,8 @@ import java.util.Map;
 
 public class ThawingDelegator extends CommonDelegator {
     @Override
-    public void start(BaseProcessClass bpc) {
-        ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.CRUD_ACTION_TYPE, "page");
-    }
-
-    @Override
     public void prepareSwitch(BaseProcessClass bpc) {
         ParamUtil.setRequestAttr(bpc.request, "smallTitle", "You are submitting for <strong>Thawing (Oocytes & Embryos) Stage</strong>");
-    }
-
-    @Override
-    public void returnStep(BaseProcessClass bpc) {
-
     }
 
     @Override
@@ -56,7 +45,7 @@ public class ThawingDelegator extends CommonDelegator {
             thawingStageDto.setThawedEmbryosNum(0);
             thawingStageDto.setThawedEmbryosSurvivedNum(0);
             arSuperDataSubmissionDto.setThawingStageDto(thawingStageDto);
-            ParamUtil.setSessionAttr(bpc.request, DataSubmissionConstant.AR_DATA_SUBMISSION, arSuperDataSubmissionDto);
+            DataSubmissionHelper.setCurrentArDataSubmission(arSuperDataSubmissionDto, bpc.request);
         }
     }
 
@@ -76,21 +65,12 @@ public class ThawingDelegator extends CommonDelegator {
     }
 
     @Override
-    public void draft(BaseProcessClass bpc) {
-
-    }
-
-    @Override
-    public void submission(BaseProcessClass bpc) {
-
-    }
-
-    @Override
     public void pageAction(BaseProcessClass bpc) {
         ArSuperDataSubmissionDto arSuperDataSubmissionDto = DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
         ThawingStageDto thawingStageDto = arSuperDataSubmissionDto.getThawingStageDto();
         HttpServletRequest request = bpc.request;
         fromPageData(thawingStageDto, request);
+        DataSubmissionHelper.setCurrentArDataSubmission(arSuperDataSubmissionDto, request);
 
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
         String crud_action_type = ParamUtil.getRequestString(request, IntranetUserConstant.CRUD_ACTION_TYPE);
@@ -125,11 +105,6 @@ public class ThawingDelegator extends CommonDelegator {
         thawingStageDto.setThawedOocytesSurvivedOtherNum(thawedOocytesSurvivedOtherNum);
         thawingStageDto.setThawedEmbryosNum(thawedEmbryosNum);
         thawingStageDto.setThawedEmbryosSurvivedNum(thawedEmbryosSurvivedNum);
-    }
-
-    @Override
-    public void pageConfirmAction(BaseProcessClass bpc) {
-
     }
 
     private int getInt(HttpServletRequest request, String param){
