@@ -9,7 +9,6 @@ import com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
-import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import lombok.extern.slf4j.Slf4j;
 import sop.webflow.rt.api.BaseProcessClass;
@@ -37,7 +36,6 @@ public class PgtCycleStageDelegator extends CommonDelegator{
         arSuperDataSubmissionDto.setPgtStageDto(new PgtStageDto());
         arSuperDataSubmissionDto.getPgtStageDto().setIsPgtMNon(1);
         arSuperDataSubmissionDto.getPgtStageDto().setIsPgtCoFunding(0);
-        arSuperDataSubmissionDto.getPgtStageDto().setSubmissionId(MasterCodeUtil.CATE_ID_EFO_REASON);
 
         ParamUtil.setSessionAttr(bpc.request, DataSubmissionConstant.AR_DATA_SUBMISSION,arSuperDataSubmissionDto);
     }

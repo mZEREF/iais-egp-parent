@@ -9,7 +9,6 @@ import com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
-import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import lombok.extern.slf4j.Slf4j;
 import sop.webflow.rt.api.BaseProcessClass;
@@ -125,9 +124,6 @@ public class EmbryoCreatedDelegator extends CommonDelegator{
         embryoCreatedStageDto.setPoorDevThawOccNum(poorDevThawOccNum);
 
         embryoCreatedStageDto.setTotalNum(totalNum);
-
-
-        embryoCreatedStageDto.setSubmissionId(MasterCodeUtil.CATE_ID_EFO_REASON);
 
         ValidationResult validationResult = WebValidationHelper.validateProperty(embryoCreatedStageDto, "save");
         Map<String, String> errorMap = validationResult.retrieveAll();

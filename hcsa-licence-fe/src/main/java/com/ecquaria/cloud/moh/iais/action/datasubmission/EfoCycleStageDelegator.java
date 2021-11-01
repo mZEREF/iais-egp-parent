@@ -122,7 +122,6 @@ public class EfoCycleStageDelegator extends CommonDelegator{
         efoCycleStageDto.setStartDate(startDate);
         efoCycleStageDto.setIsMedicallyIndicated(indicated);
         efoCycleStageDto.setReason(reasonSelect);
-        efoCycleStageDto.setSubmissionId(MasterCodeUtil.CATE_ID_EFO_REASON);
         if(othersReason!=null){
             efoCycleStageDto.setOthersReason(othersReason);
         }
