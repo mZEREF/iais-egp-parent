@@ -1,1 +1,1 @@
-<%@include file="/WEB-INF/jsp/iais/dataSubmission/arFreezing/arFreezingSuccess.jsp"%>
+<%@include file="/WEB-INF/jsp/iais/dataSubmission/assistedReproduction/arFreezingSuccess.jsp"%>
