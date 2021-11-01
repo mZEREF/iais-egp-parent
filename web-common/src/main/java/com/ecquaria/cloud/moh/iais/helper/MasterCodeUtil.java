@@ -164,6 +164,9 @@ public final class MasterCodeUtil {
     //Data Submission Ar donors used TYpe
     public static final String AR_DONOR_USED_TYPE = "C64D732A-9FA3-4D8E-AF7B-9B95B1645430";
 
+    //Data Submission Ar Freezing Cryopreserved Options
+    public static final String AR_FREE_CRYO_OPTIONS = "B456C51B-B13A-EC11-BE73-000C298D317C";
+
     /**
      * @description: refresh the master codes into cache
      *
