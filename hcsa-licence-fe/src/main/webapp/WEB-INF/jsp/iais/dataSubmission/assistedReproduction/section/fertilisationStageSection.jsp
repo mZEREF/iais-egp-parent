@@ -9,6 +9,7 @@
     <div id="patientDetails" class="panel-collapse collapse in">
         <div class="panel-body">
             <div class="panel-main-content form-horizontal">
+                <c:set var="fertilisationDto" value="${arSuperDataSubmissionDto.fertilisationDto}" />
                 <iais:row>
                     <iais:field width="5" value="Source of Semen" mandatory="true"/>
                     <iais:value width="7" cssClass="col-md-7">
@@ -19,7 +20,9 @@
                                        name="sourceOfSemen"
                                        value="${sourceOfSemenCode}"
                                        id="sourceOfSemenCheck${sourceOfSemenCode}"
-                                       <c:if test="">checked</c:if>
+                                <c:forEach var="sosObj" items="${fertilisationDto.sosList}">
+                                       <c:if test="${sosObj == sourceOfSemenCode}">checked</c:if>
+                                </c:forEach>
                                        aria-invalid="false">
                                 <label class="form-check-label"
                                        for="sourceOfSemenCheck${sourceOfSemenCode}"><span
@@ -33,13 +36,13 @@
                 <iais:row>
                     <iais:field width="5" value="How many vials of sperm were extracted?" mandatory="true"/>
                     <iais:value width="7" cssClass="col-md-7">
-                        <iais:input maxLength="2" type="text" name="extractedSpermVialsNum"  />
+                        <iais:input maxLength="2" type="text" name="extractedSpermVialsNum" value="${fertilisationDto.extractedSpermVialsNum}"  />
                     </iais:value>
                 </iais:row>
                 <iais:row>
                     <iais:field width="5" value="How many vials of sperm were used in this cycle?" mandatory="true"/>
                     <iais:value width="7" cssClass="col-md-7">
-                        <iais:input maxLength="2" type="text" name="usedSpermVialsNum"  />
+                        <iais:input maxLength="2" type="text" name="usedSpermVialsNum" value="${fertilisationDto.usedSpermVialsNum}" />
                     </iais:value>
                 </iais:row>
                 <iais:row>
@@ -52,7 +55,9 @@
                                        name="arTechniquesUsed"
                                        value="${arTechniquesUsedCode}"
                                        id="arTechniquesUsedCheck${arTechniquesUsedCode}"
-                                       <c:if test="">checked</c:if>
+                                       <c:forEach var="atuObj" items="${fertilisationDto.atuList}">
+                                        <c:if test="${atuObj == arTechniquesUsedCode}">checked</c:if>
+                                       </c:forEach>
                                        aria-invalid="false">
                                 <label class="form-check-label"
                                        for="arTechniquesUsedCheck${arTechniquesUsedCode}"><span
@@ -65,49 +70,49 @@
                 <iais:row>
                     <iais:field width="5" value="No. of Fresh Oocytes Inseminated" />
                     <iais:value width="7" cssClass="col-md-7">
-                        <iais:input maxLength="2" type="text" name="freshOocytesInseminatedNum" />
+                        <iais:input maxLength="2" type="text" name="freshOocytesInseminatedNum" value="${fertilisationDto.freshOocytesInseminatedNum}" />
                     </iais:value>
                 </iais:row>
                 <iais:row>
                     <iais:field width="5" value="No. of Fresh Oocytes Microinjected"/>
                     <iais:value width="7" cssClass="col-md-7">
-                        <iais:input maxLength="2" type="text" name="freshOocytesMicroinjectedNum"  />
+                        <iais:input maxLength="2" type="text" name="freshOocytesMicroInjectedNum" value="${fertilisationDto.freshOocytesMicroInjectedNum}" />
                     </iais:value>
                 </iais:row>
                 <iais:row>
                     <iais:field width="5" value="No. of Fresh Oocytes Used for GIFT" />
                     <iais:value width="7" cssClass="col-md-7">
-                        <iais:input maxLength="2" type="text" name="freshOocytesGiftNum"  />
+                        <iais:input maxLength="2" type="text" name="freshOocytesGiftNum" value="${fertilisationDto.freshOocytesGiftNum}" />
                     </iais:value>
                 </iais:row>
                 <iais:row>
                     <iais:field width="5" value="No. of Fresh Oocytes Used for ZIFT" />
                     <iais:value width="7" cssClass="col-md-7">
-                        <iais:input maxLength="2" type="text" name="freshOocytesZiftNum" />
+                        <iais:input maxLength="2" type="text" name="freshOocytesZiftNum" value="${fertilisationDto.freshOocytesZiftNum}" />
                     </iais:value>
                 </iais:row>
                 <iais:row>
                     <iais:field width="5" value="No. of Thawed Oocytes Inseminated"/>
                     <iais:value width="7" cssClass="col-md-7">
-                        <iais:input maxLength="2" type="text" name="thawedOocytesInseminatedNum"  />
+                        <iais:input maxLength="2" type="text" name="thawedOocytesInseminatedNum" value="${fertilisationDto.thawedOocytesInseminatedNum}"  />
                     </iais:value>
                 </iais:row>
                 <iais:row>
                     <iais:field width="5" value="No. of Thawed Oocytes Microinjected" />
                     <iais:value width="7" cssClass="col-md-7">
-                        <iais:input maxLength="2" type="text" name="thawedOocytesMicroinjectedNum"  />
+                        <iais:input maxLength="2" type="text" name="thawedOocytesMicroinjectedNum"  value="${fertilisationDto.thawedOocytesMicroinjectedNum}" />
                     </iais:value>
                 </iais:row>
                 <iais:row>
                     <iais:field width="5" value="No. of Thawed Oocytes Used for GIFT" />
                     <iais:value width="7" cssClass="col-md-7">
-                        <iais:input maxLength="2" type="text" name="thawedOocytesGiftNum"  />
+                        <iais:input maxLength="2" type="text" name="thawedOocytesGiftNum" value="${fertilisationDto.thawedOocytesGiftNum}"  />
                     </iais:value>
                 </iais:row>
                 <iais:row>
                     <iais:field width="5" value="No. of Thawed Oocytes Used for ZIFT" />
                     <iais:value width="7" cssClass="col-md-7">
-                        <iais:input maxLength="2" type="text" name="thawedOocytesZiftNum" />
+                        <iais:input maxLength="2" type="text" name="thawedOocytesZiftNum" value="${fertilisationDto.thawedOocytesZiftNum}"  />
                     </iais:value>
                 </iais:row>
             </div>

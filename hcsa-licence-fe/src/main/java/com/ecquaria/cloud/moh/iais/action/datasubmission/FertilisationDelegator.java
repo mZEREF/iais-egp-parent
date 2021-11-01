@@ -8,6 +8,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
+import com.ecquaria.cloud.moh.iais.helper.ControllerHelper;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
@@ -52,7 +53,9 @@ public class FertilisationDelegator extends CommonDelegator{
 
     @Override
     public void preparePage(BaseProcessClass bpc) {
-
+        HttpServletRequest request = bpc.request;
+        ArSuperDataSubmissionDto arSuperDataSubmissionDto = DataSubmissionHelper.getCurrentArDataSubmission(request);
+        ParamUtil.setSessionAttr(request, DataSubmissionConstant.AR_DATA_SUBMISSION, arSuperDataSubmissionDto);
     }
 
     @Override
@@ -77,21 +80,10 @@ public class FertilisationDelegator extends CommonDelegator{
         String[] arTechniquesUsed = ParamUtil.getStrings(request,"arTechniquesUsed");
 
         ArSuperDataSubmissionDto arSuperDataSubmissionDto = DataSubmissionHelper.getCurrentArDataSubmission(request);
-        //arSuperDataSubmissionDto = arSuperDataSubmissionDto  == null ? new ArSuperDataSubmissionDto() : arSuperDataSubmissionDto;
-        FertilisationDto fertilisationDto = arSuperDataSubmissionDto.getFertilisationDto() == null ? new FertilisationDto() : arSuperDataSubmissionDto.getFertilisationDto();
 
-        fertilisationDto.setExtractedSpermVialsNum(ParamUtil.getString(request,"extractedSpermVialsNum"));
-        fertilisationDto.setUsedSpermVialsNum(ParamUtil.getString(request,"usedSpermVialsNum"));
-        fertilisationDto.setFreshOocytesInseminatedNum(ParamUtil.getString(request,"freshOocytesInseminatedNum"));
-        fertilisationDto.setFreshOocytesMicroInjectedNum(ParamUtil.getString(request,"freshOocytesMicroinjectedNum"));
-        fertilisationDto.setFreshOocytesGiftNum(ParamUtil.getString(request,"freshOocytesGiftNum"));
-        fertilisationDto.setFreshOocytesZiftNum(ParamUtil.getString(request,"freshOocytesZiftNum"));
-        fertilisationDto.setThawedOocytesInseminatedNum(ParamUtil.getString(request,"thawedOocytesInseminatedNum"));
-        fertilisationDto.setThawedOocytesMicroinjectedNum(ParamUtil.getString(request,"thawedOocytesMicroinjectedNum"));
-        ParamUtil.getStringsToString(request,"sourceOfSemen");
-        ParamUtil.getStringsToString(request,"arTechniquesUsed");
-        fertilisationDto.setThawedOocytesGiftNum(ParamUtil.getString(request,"thawedOocytesGiftNum"));
-        fertilisationDto.setThawedOocytesZiftNum(ParamUtil.getString(request,"thawedOocytesZiftNum"));
+        arSuperDataSubmissionDto = arSuperDataSubmissionDto  == null ? new ArSuperDataSubmissionDto() : arSuperDataSubmissionDto;
+        FertilisationDto fertilisationDto = arSuperDataSubmissionDto.getFertilisationDto() == null ? new FertilisationDto() : arSuperDataSubmissionDto.getFertilisationDto();
+        ControllerHelper.get(request,fertilisationDto);
          if( !IaisCommonUtils.isEmpty(sourceOfSemen)){
              fertilisationDto.setSosList(Arrays.asList(sourceOfSemen));
          }else{

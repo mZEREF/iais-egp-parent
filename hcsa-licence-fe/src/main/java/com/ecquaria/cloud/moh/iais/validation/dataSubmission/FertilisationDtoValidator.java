@@ -30,6 +30,7 @@ public class FertilisationDtoValidator implements CustomizeValidator {
         ArSuperDataSubmissionDto arSuperDataSubmissionDto = (ArSuperDataSubmissionDto) ParamUtil.getSessionAttr(request, DataSubmissionConstant.AR_DATA_SUBMISSION);
         FertilisationDto fertilisationDto = arSuperDataSubmissionDto.getFertilisationDto();
         List<String> atuList = fertilisationDto.getAtuList();
+        List<String> sosList = fertilisationDto.getSosList();
                 if(IaisCommonUtils.isNotEmpty(atuList)){
                     if (atuList.contains(DataSubmissionConsts.AR_TECHNIQUES_USED_IVF)){
                         if (StringUtil.isEmpty(fertilisationDto.getFreshOocytesInseminatedNum())){
@@ -64,6 +65,11 @@ public class FertilisationDtoValidator implements CustomizeValidator {
                         }
                     }
 
+                }else {
+                    errorMap.put("arTechniquesUsed","GENERAL_ERR0006");
+                }
+                if(IaisCommonUtils.isEmpty(sosList)){
+                    errorMap.put("sourceOfSemen","GENERAL_ERR0006");
                 }
         return  errorMap;
     }
