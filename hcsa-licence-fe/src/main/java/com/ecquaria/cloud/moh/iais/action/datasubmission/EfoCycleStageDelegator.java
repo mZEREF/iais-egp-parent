@@ -60,7 +60,7 @@ public class EfoCycleStageDelegator extends CommonDelegator{
         } catch (Exception e) {
             log.error(e.getMessage(),e);
         }
-        arSuperDataSubmissionDto.getEfoCycleStageDto().setPerformed("");
+        arSuperDataSubmissionDto.getEfoCycleStageDto().setPerformed("test");
         arSuperDataSubmissionDto.getPatientInfoDto().setPatient(new PatientDto());
         arSuperDataSubmissionDto.getPatientInfoDto().getPatient().setBirthDate(DateUtil.formatDate(new Date(),AppConsts.DEFAULT_DATE_FORMAT));
         arSuperDataSubmissionDto.getPatientInfoDto().getPatient().setName("junyu");

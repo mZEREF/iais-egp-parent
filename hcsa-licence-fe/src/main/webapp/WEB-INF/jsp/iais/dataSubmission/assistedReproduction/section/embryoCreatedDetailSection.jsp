@@ -43,7 +43,7 @@
                 <iais:row>
                     <iais:field width="6" value="Total No. Created" mandatory="false"/>
                     <iais:value width="6" display="true">
-                        <label id="totalNum" name="totalNum">${arSuperDataSubmissionDto.embryoCreatedStageDto.totalNum}</label>
+                        <div id="totalNum" name="totalNum">${arSuperDataSubmissionDto.embryoCreatedStageDto.totalNum}</div>
                     </iais:value>
                 </iais:row>
 

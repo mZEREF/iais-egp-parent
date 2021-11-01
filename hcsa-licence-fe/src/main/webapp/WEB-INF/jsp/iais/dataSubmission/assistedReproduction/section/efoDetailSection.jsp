@@ -16,7 +16,7 @@
                 </h3>
                 <iais:row>
                     <iais:field width="6" value="Premises where egg freezing only cycle is performed" mandatory="true"/>
-                    <iais:value width="6" cssClass="col-md-6" >
+                    <iais:value width="6"  display="true">
                         <c:out value="${arSuperDataSubmissionDto.efoCycleStageDto.performed}"/>
                     </iais:value>
                 </iais:row>
@@ -29,9 +29,9 @@
                 </iais:row>
                 <iais:row>
                     <iais:field width="6" value="Patient's Age as of This Treatment" mandatory="false"/>
-                    <label class="col-xs-6 col-md-6 control-label">
+                    <iais:value width="6"  display="true">
                         <c:out value="${arSuperDataSubmissionDto.efoCycleStageDto.yearNum} Years and ${arSuperDataSubmissionDto.efoCycleStageDto.monthNum} Months"/>
-                    </label>
+                    </iais:value>
                 </iais:row>
                 <iais:row>
                     <iais:field width="6" value="Is it Medically Indicated?" mandatory="true"/>
