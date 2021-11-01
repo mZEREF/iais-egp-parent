@@ -1,10 +1,10 @@
 package com.ecquaria.cloud.moh.iais.service.datasubmission;
 
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSubFreezingStageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.CycleStageSelectionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DataSubmissionDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInfoDto;
 
 import java.util.Map;
 
@@ -24,4 +24,12 @@ public interface ArDataSubmissionService {
 
     String getSubmissionNo(String submisisonType, String cycleStage, DataSubmissionDto lastDataSubmissionDto);
 
+    /**
+      * @author: shicheng
+      * @Date 2021/11/1
+      * @Param: ArSubFreezingStageDto
+      * @return: arSubFreezingStageDto, cryopreservedNum, cryopreservationDate
+      * @Descripation: set cryopreservedNum and cryopreservationDate
+      */
+    ArSubFreezingStageDto setFreeCryoNumAndDate(ArSubFreezingStageDto arSubFreezingStageDto, String cryopreservedNum, String cryopreservationDate);
 }

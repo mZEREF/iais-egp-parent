@@ -3,10 +3,10 @@ package com.ecquaria.cloud.moh.iais.service.datasubmission.impl;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSubFreezingStageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.CycleStageSelectionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DataSubmissionDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInfoDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -19,6 +19,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.text.ParseException;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -115,6 +117,27 @@ public class ArDataSubmissionServiceImpl implements ArDataSubmissionService {
         }
         log.info(StringUtil.changeForLog("The submissionNo : " + submissionNo));
         return submissionNo;
+    }
+
+    @Override
+    public ArSubFreezingStageDto setFreeCryoNumAndDate(ArSubFreezingStageDto arSubFreezingStageDto, String cryopreservedNum, String cryopreservationDate) {
+        if(!StringUtil.isEmpty(cryopreservedNum)) {
+            try {
+                int cryopreservedNo = Integer.parseInt(cryopreservedNum);
+                arSubFreezingStageDto.setCryopreservedNum(cryopreservedNo);
+            } catch (Exception e) {
+                log.info("Freezing invalid cryopreservedNum");
+            }
+        }
+        if(!StringUtil.isEmpty(cryopreservationDate)) {
+            try {
+                Date date = Formatter.parseDateTime(cryopreservationDate, AppConsts.DEFAULT_DATE_TIME_FORMAT);
+                arSubFreezingStageDto.setCryopreservedDate(date);
+            } catch (ParseException e) {
+                log.info("Freezing invalid cryopreservationDate");
+            }
+        }
+        return arSubFreezingStageDto;
     }
 
 }

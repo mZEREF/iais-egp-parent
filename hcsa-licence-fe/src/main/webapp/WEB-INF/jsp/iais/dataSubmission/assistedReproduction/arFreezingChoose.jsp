@@ -55,7 +55,7 @@
                   <iais:row>
                     <iais:field value="No. Cryopreserved" mandatory="true"/>
                     <iais:value cssClass="col-md-3">
-                      <input type="text" maxlength="2" style="margin-bottom: 0px;" name="cryopreservedNum" value="${arSuperDataSubmissionDto.arSubFreezingStageDto.cryopreservedNum}"/>
+                      <input type="number" maxlength="2" style="margin-bottom: 0px;" name="cryopreservedNum" value="${arSuperDataSubmissionDto.arSubFreezingStageDto.cryopreservedNum}"/>
                       <br>
                     </iais:value>
                     <span class="error-msg" name="iaisErrorMsg" id="error_cryopreservedNum"></span>
@@ -78,6 +78,3 @@
   </div>
 </form>
 <%@ include file="/WEB-INF/jsp/include/validation.jsp" %>
-<script type="text/javascript">
-
-</script>
