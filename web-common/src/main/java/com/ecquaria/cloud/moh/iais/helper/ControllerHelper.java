@@ -40,6 +40,19 @@ public final class ControllerHelper {
         }
     }
 
+    public static <T> T get(HttpServletRequest request, Class<T> clazz, String shortName, String suffix) {
+        if (clazz == null) {
+            return null;
+        }
+
+        try {
+            return get(request, clazz.newInstance(), shortName, suffix);
+        } catch (Exception e) {
+            log.error(StringUtil.changeForLog(e.getMessage()), e);
+            throw new IaisRuntimeException(e);
+        }
+    }
+
     public static <T> T get(HttpServletRequest request, T obj) {
         return get(request, obj, null);
     }
@@ -129,17 +142,17 @@ public final class ControllerHelper {
             value = ParamUtil.getDouble(request, name, 0);
         } else if (Integer.class.isAssignableFrom(type)) {
             value = ParamUtil.getString(request, name);
-            if(StringUtil.isDigit((String) value)){
+            if (StringUtil.isDigit((String) value)) {
                 return Integer.valueOf((String) value);
             }
         } else if (Long.class.isAssignableFrom(type)) {
             value = ParamUtil.getString(request, name);
-            if(StringUtil.isDigit((String) value)){
+            if (StringUtil.isDigit((String) value)) {
                 return Long.valueOf((String) value);
             }
         } else if (Double.class.isAssignableFrom(type)) {
             value = ParamUtil.getString(request, name);
-            if(StringUtil.isNumber((String) value)){
+            if (StringUtil.isNumber((String) value)) {
                 return Double.valueOf((String) value);
             }
             value = ParamUtil.getDouble(request, name);
