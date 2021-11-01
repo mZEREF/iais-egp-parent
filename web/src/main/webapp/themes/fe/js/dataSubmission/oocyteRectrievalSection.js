@@ -1,12 +1,20 @@
 $(document).ready(function () {
     $('input[type="checkbox"]').click(function () {
-        let setVal = $(this).prop('checked');
-        if (this.name == "isFromPatient" || this.name == "isFromPatientTissue"){
-            $("#isFromDonor").attr("disabled",setVal);
-            $("#isFromDonorTissue").attr("disabled",setVal);
-        }else if (this.name == "isFromDonor" || this.name == "isFromDonorTissue"){
-            $("#isFromPatient").attr("disabled",setVal);
-            $("#isFromPatientTissue").attr("disabled",setVal);
+        if ($("#isFromPatient").prop('checked') || $("#isFromPatientTissue").prop('checked')){
+            $("#isFromPatient").attr("disabled",false);
+            $("#isFromPatientTissue").attr("disabled",false);
+            $("#isFromDonor").attr("disabled",true);
+            $("#isFromDonorTissue").attr("disabled",true);
+        }else if ($("#isFromDonor").prop('checked') || $("#isFromDonorTissue").prop('checked')){
+            $("#isFromPatient").attr("disabled",true);
+            $("#isFromPatientTissue").attr("disabled",true);
+            $("#isFromDonor").attr("disabled",false);
+            $("#isFromDonorTissue").attr("disabled",false);
+        }else {
+            $("#isFromPatient").attr("disabled",false);
+            $("#isFromPatientTissue").attr("disabled",false);
+            $("#isFromDonor").attr("disabled",false);
+            $("#isFromDonorTissue").attr("disabled",false);
         }
     });
 

@@ -1,19 +1,17 @@
-
-<c:set var="headingSign" value="completed"/>
 <c:set var="oocyteRetrievalStageDto" value="${arSuperDataSubmissionDto.oocyteRetrievalStageDto}"/>
 <div class="panel panel-default">
-    <div class="panel-heading ${headingSign}">
+    <div class="panel-heading completed">
         <h4 class="panel-title">
-            <a class="" data-toggle="collapse" href="#patientDetails">
+            <a class="collapsed" data-toggle="collapse" href="#">
                 Details of Patient
             </a>
         </h4>
     </div>
     <div id="patientDetails" class="panel-collapse collapse in">
         <div class="panel-body">
-            <div class="panel-main-content form-horizontal "><%--min-row--%>
+            <div class="panel-main-content form-horizontal ">
                 <iais:row>
-                    <iais:field width="5" value="Oocyte(s) was retrieved from?"/>
+                    <iais:field width="5" value="Oocyte(s) was retrieved from?" cssClass="col-md-6"/>
                     <iais:value width="7" display="true">
                         <c:if test="${oocyteRetrievalStageDto.isFromPatient}"><p class="col-12">Patient</p></c:if>
                         <c:if test="${oocyteRetrievalStageDto.isFromPatientTissue}"><p class="col-12">Patient's Ovarian Tissue</p></c:if>
@@ -22,31 +20,31 @@
                     </iais:value>
                 </iais:row>
                 <iais:row>
-                    <iais:field width="5" value="No. Retrieved (Mature)"/>
+                    <iais:field width="5" value="No. Retrieved (Mature)" cssClass="col-md-6"/>
                     <iais:value width="7" display="true">
                         <c:out value="${oocyteRetrievalStageDto.matureRetrievedNum}"/>
                     </iais:value>
                 </iais:row>
                 <iais:row>
-                    <iais:field width="5" value="No. Retrieved (Immature)"/>
+                    <iais:field width="5" value="No. Retrieved (Immature)" cssClass="col-md-6"/>
                     <iais:value width="7" display="true">
                         <c:out value="${oocyteRetrievalStageDto.immatureRetrievedNum}"/>
                     </iais:value>
                 </iais:row>
                 <iais:row>
-                    <iais:field width="5" value="No. Retrieved (Others)"/>
+                    <iais:field width="5" value="No. Retrieved (Others)" cssClass="col-md-6"/>
                     <iais:value width="7" display="true">
                         <c:out value="${oocyteRetrievalStageDto.otherRetrievedNum}"/>
                     </iais:value>
                 </iais:row>
                 <iais:row>
-                    <iais:field width="5" value="No. Retrieved (Total)"/>
+                    <iais:field width="5" value="No. Retrieved (Total)" cssClass="col-md-6"/>
                     <iais:value width="7" display="true">
                         <c:out value="${totalRetrievedNum}"/>
                     </iais:value>
                 </iais:row>
                 <iais:row>
-                    <iais:field width="5" value="Severe Ovarian Hyperstimulation Syndrome"/>
+                    <iais:field width="5" value="Severe Ovarian Hyperstimulation Syndrome" cssClass="col-md-6"/>
                     <iais:value width="7" display="true">
                         <c:if test="${oocyteRetrievalStageDto.isOvarianSyndrome}">Yes</c:if>
                         <c:if test="${not oocyteRetrievalStageDto.isOvarianSyndrome}">No</c:if>
