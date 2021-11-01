@@ -66,8 +66,6 @@ public class PatientDelegator extends CommonDelegator {
     @Override
     public void pageAction(BaseProcessClass bpc) {
         PatientInfoDto patientInfo = getPatientInfoFromPage(bpc.request);
-        ArSuperDataSubmissionDto dataSubmission = DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
-        dataSubmission.setPatientInfoDto(patientInfo);
         validatePageData(bpc.request, patientInfo, "AR", ACTION_TYPE_CONFIRM);
     }
 
@@ -89,11 +87,13 @@ public class PatientDelegator extends CommonDelegator {
         if (loginContext != null) {
             patient.setOrgId(loginContext.getOrgId());
         }
-        patient.setPatientCode(
-                Optional.of(patientInfo.getPatient()).map(dto -> dto.getPatientCode()).orElseGet(() -> UUID.randomUUID().toString()));
+        String patientCode = Optional.of(patientInfo.getPatient())
+                .map(dto -> dto.getPatientCode())
+                .orElseGet(() -> UUID.randomUUID().toString());
+        patient.setPatientCode(patientCode);
         patientInfo.setPatient(patient);
         if (currentArDataSubmission.getCycleDto() != null) {
-            currentArDataSubmission.getCycleDto().setPatientCode(patient.getPatientCode());
+            currentArDataSubmission.getCycleDto().setPatientCode(patientCode);
         }
         if (patient.isPreviousIdentification()) {
             String preIdType = ParamUtil.getString(request, "preIdType");
@@ -124,7 +124,6 @@ public class PatientDelegator extends CommonDelegator {
 
     @Override
     public void submission(BaseProcessClass bpc) {
-
         super.submission(bpc);
     }
 
