@@ -119,7 +119,6 @@ public class FertilisationDelegator extends CommonDelegator{
         ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "confirm");
 
     }
-    //private FertilisationDto getFertilisationFromPage(HttpServletRequest request)
 
     @Override
     public void pageConfirmAction(BaseProcessClass bpc) {
