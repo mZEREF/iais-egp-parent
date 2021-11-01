@@ -2,6 +2,8 @@ package sg.gov.moh.iais.egp.bsb.common.node;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.Assert;
+import java.util.HashMap;
+import java.util.Map;
 
 
 @Slf4j
@@ -101,7 +103,21 @@ public class Nodes {
         /* If the checkedDestNode is not equals to the destNode, we need to validate them one by one until not passed.
          * Because when user click back multi times, many nodes are actually valid but the status is not validated,
          * we need to let user pass by one click. */
+        /* In order to avoid infinite loop, we use a map to count fail amount for each node path,
+         * if it fails 3 times for the same path, we think the code has error */
+        Map<String, Integer> failCountMap = new HashMap<>();
+        int failCount;
+
         while (!checkedDestNode.equals(destNode)) {
+            // get fail count for this node
+            failCount = failCountMap.getOrDefault(checkedDestNode, 0);
+            if (failCount > 2) {
+                throw new IllegalStateException("Infinite loop, node group has logic error!");
+            }
+            // add fail count by one
+            failCountMap.put(checkedDestNode, ++failCount);
+
+            // call validation
             Node ptNode = facRegRoot.at(checkedDestNode);
             if (ptNode.doValidation()) {
                 passValidation(facRegRoot, checkedDestNode);
