@@ -28,6 +28,8 @@ import java.util.Map;
  * {@link #getCurrentVisibleNode} method. This method will return a member Node path that is not a group.
  */
 public class NodeGroup extends Node {
+    private static final String ERR_MSG_NODE_NOT_NULL = "Node can not be null";
+
     /**
      * This map contains members of this group.
      * This map must never be empty.
@@ -137,6 +139,15 @@ public class NodeGroup extends Node {
     /** Get the amount of the children/members */
     public int count() {
         return this.nodes.size();
+    }
+
+    /**
+     * Check if this group contains a member with the name
+     * @param name of Node
+     * @return true if this group contains a Node with specific name
+     */
+    public boolean contains(String name) {
+        return this.nodes.containsKey(name);
     }
 
     /** Get a copy of the child/member nodes */
@@ -252,8 +263,56 @@ public class NodeGroup extends Node {
     }
 
     /**
+     * Replace a member with the same node name.
+     * If this group doesn't contain the node name, this method will do nothing.
+     * The active node will not change after this method
+     * @param node to be replaced
+     */
+    public void replaceNode(Node node) {
+        Assert.notNull(node, ERR_MSG_NODE_NOT_NULL);
+        String nodeName = node.getName();
+        LinkedHashMap<String, Node> tmpMap = Maps.newLinkedHashMapWithExpectedSize(this.nodes.size());
+        for (Map.Entry<String, Node> entry : this.nodes.entrySet()) {
+            if (nodeName.equals(entry.getKey())) {
+                tmpMap.put(entry.getKey(), node);
+            } else {
+                tmpMap.put(entry.getKey(), entry.getValue());
+            }
+        }
+        this.nodes.clear();
+        this.nodes.putAll(tmpMap);
+    }
+
+    /**
+     * Replace a member has the name to another node.
+     * If this group doesn't contain the node name, this method will do nothing.
+     * The activeNode of this group won't change or change to the new node name (if the replaced name is the activeNode)
+     * @param name of the Node to be replaced
+     * @param node will replace the old Node
+     */
+    public void replaceNode(String name, Node node) {
+        Assert.hasLength(name, "name must not be empty");
+        Assert.notNull(node, ERR_MSG_NODE_NOT_NULL);
+        LinkedHashMap<String, Node> tmpMap = Maps.newLinkedHashMapWithExpectedSize(this.nodes.size());
+        for (Map.Entry<String, Node> entry : this.nodes.entrySet()) {
+            if (name.equals(entry.getKey())) {
+                tmpMap.put(node.getName(), node);
+                if (this.activeNodeKey.equals(name)) {
+                    this.activeNodeKey = node.getName();
+                }
+            } else {
+                tmpMap.put(entry.getKey(), entry.getValue());
+            }
+        }
+        this.nodes.clear();
+        this.nodes.putAll(tmpMap);
+    }
+
+    /**
      * Replace members in this group to specific list.
      * Keep the existing nodes if the given node contain the node with same name.
+     * ATTENTION! The logic of this method is different from other replace methods, this method will retain nodes
+     * with the same name.
      * @param nodes to replace current members
      */
     public void replaceNodes(Node[] nodes) {
