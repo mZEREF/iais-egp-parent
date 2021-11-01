@@ -62,7 +62,7 @@
 <script>
     $(function () {
         $("#nextBtn").click(function () {
-            showWaiting();
+            // showWaiting();
             var optionValue = $("#selectType option:selected").val();
             if (optionValue == "1") {
                 $("[name='action_type']").val("doConsume");

@@ -1,129 +1,129 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Application defaultStart="/Steps/StartStep/start" dtdVersion="6.0" executable="true" majorVersion="1" minorVersion="0" name="BsbDataSubmission" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" transaction="enable">
- <WebServices/>
+ <WebServices />
  <Steps>
   <StartStep defClass="" executor="" icon="" name="start" x="50" y="240">
-   <Description/>
-   <probepoint type="none"/>
+   <Description />
+   <probepoint type="none" />
    <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="start_OnStepProcess_0" name="start_OnStepProcess_0"/>
+    <JavaCode defClass="" executor="" methodName="start_OnStepProcess_0" name="start_OnStepProcess_0" />
    </OnStepProcess>
   </StartStep>
   <AutomaticStep defClass="" executor="" icon="" name="prepareDataSubmissionSelect" x="130" y="240">
-   <Description/>
-   <probepoint type="none"/>
+   <Description />
+   <probepoint type="none" />
    <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="prepareDataSubmissionSelect_OnStepProcess_0" name="prepareDataSubmissionSelect_OnStepProcess_0"/>
+    <JavaCode defClass="" executor="" methodName="prepareDataSubmissionSelect_OnStepProcess_0" name="prepareDataSubmissionSelect_OnStepProcess_0" />
    </OnStepProcess>
   </AutomaticStep>
   <AutomaticStep defClass="" executor="" icon="" name="prepareSwitch" x="500" y="240">
-   <Description/>
-   <probepoint type="none"/>
+   <Description />
+   <probepoint type="none" />
    <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="prepareSwitch_OnStepProcess_0" name="prepareSwitch_OnStepProcess_0"/>
+    <JavaCode defClass="" executor="" methodName="prepareSwitch_OnStepProcess_0" name="prepareSwitch_OnStepProcess_0" />
    </OnStepProcess>
   </AutomaticStep>
   <AutomaticStep defClass="" executor="" icon="" name="prepareExport" x="780" y="130">
-   <Description/>
-   <probepoint type="none"/>
+   <Description />
+   <probepoint type="none" />
    <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="prepareExport_OnStepProcess_0" name="prepareExport_OnStepProcess_0"/>
+    <JavaCode defClass="" executor="" methodName="prepareExport_OnStepProcess_0" name="prepareExport_OnStepProcess_0" />
    </OnStepProcess>
   </AutomaticStep>
   <AutomaticStep defClass="" executor="" icon="" name="prepareDisposal" x="770" y="20">
-   <Description/>
-   <probepoint type="none"/>
+   <Description />
+   <probepoint type="none" />
    <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="prepareDisposal_OnStepProcess_0" name="prepareDisposal_OnStepProcess_0"/>
+    <JavaCode defClass="" executor="" methodName="prepareDisposal_OnStepProcess_0" name="prepareDisposal_OnStepProcess_0" />
    </OnStepProcess>
   </AutomaticStep>
   <AutomaticStep defClass="" executor="" icon="" name="prepareReceipt" x="780" y="240">
-   <Description/>
-   <probepoint type="none"/>
+   <Description />
+   <probepoint type="none" />
    <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="prepareReceipt_OnStepProcess_0" name="prepareReceipt_OnStepProcess_0"/>
+    <JavaCode defClass="" executor="" methodName="prepareReceipt_OnStepProcess_0" name="prepareReceipt_OnStepProcess_0" />
    </OnStepProcess>
   </AutomaticStep>
   <AutomaticStep defClass="" executor="" icon="" name="prepareConsume" x="770" y="-80">
-   <Description/>
-   <probepoint type="none"/>
+   <Description />
+   <probepoint type="none" />
    <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="prepareConsume_OnStepProcess_0" name="prepareConsume_OnStepProcess_0"/>
+    <JavaCode defClass="" executor="" methodName="prepareConsume_OnStepProcess_0" name="prepareConsume_OnStepProcess_0" />
    </OnStepProcess>
   </AutomaticStep>
   <AutomaticStep defClass="" executor="" icon="" name="prepareRequestTransfer" x="760" y="370">
-   <Description/>
-   <probepoint type="none"/>
+   <Description />
+   <probepoint type="none" />
    <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="prepareTransfer_OnStepProcess_0" name="prepareTransfer_OnStepProcess_0"/>
+    <JavaCode defClass="" executor="" methodName="prepareTransfer_OnStepProcess_0" name="prepareTransfer_OnStepProcess_0" />
    </OnStepProcess>
   </AutomaticStep>
   <InvokeStep defClass="" executor="" icon="" name="Consume" processname="ConsumeNotification" project="" version="-1" x="1000" y="-80">
-   <Description/>
-   <probepoint type="none"/>
-   <OnStepProcess/>
-   <OnStepComplete/>
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess />
+   <OnStepComplete />
   </InvokeStep>
   <InvokeStep defClass="" executor="" icon="" name="Disposal" processname="DisposalNotification" project="" version="-1" x="1000" y="20">
-   <Description/>
-   <probepoint type="none"/>
-   <OnStepProcess/>
-   <OnStepComplete/>
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess />
+   <OnStepComplete />
   </InvokeStep>
   <InvokeStep defClass="" executor="" icon="" name="Export" processname="ExportNotification" project="" version="-1" x="1000" y="130">
-   <Description/>
-   <probepoint type="none"/>
-   <OnStepProcess/>
-   <OnStepComplete/>
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess />
+   <OnStepComplete />
   </InvokeStep>
   <InvokeStep defClass="" executor="" icon="" name="Receipt" processname="ReceiptNotification" project="" version="-1" x="1000" y="240">
-   <Description/>
-   <probepoint type="none"/>
-   <OnStepProcess/>
-   <OnStepComplete/>
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess />
+   <OnStepComplete />
   </InvokeStep>
   <InvokeStep defClass="" executor="" icon="" name="RequestTransfer" processname="RequestForTransfer" project="" version="-1" x="970" y="370">
-   <Description/>
-   <probepoint type="none"/>
-   <OnStepProcess/>
-   <OnStepComplete/>
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess />
+   <OnStepComplete />
   </InvokeStep>
   <AutomaticStep defClass="" executor="" icon="" name="prepareTransferNotification" x="760" y="490">
-   <Description/>
-   <probepoint type="none"/>
+   <Description />
+   <probepoint type="none" />
    <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="prepareTransferNotification_OnStepProcess_0" name="prepareTransferNotification_OnStepProcess_0"/>
+    <JavaCode defClass="" executor="" methodName="prepareTransferNotification_OnStepProcess_0" name="prepareTransferNotification_OnStepProcess_0" />
    </OnStepProcess>
   </AutomaticStep>
   <InvokeStep defClass="" executor="" icon="" name="TransferNofication" processname="TransferNofication" project="" version="-1" x="960" y="490">
-   <Description/>
-   <probepoint type="none"/>
-   <OnStepProcess/>
-   <OnStepComplete/>
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess />
+   <OnStepComplete />
   </InvokeStep>
   <AutomaticStep defClass="" executor="" icon="" name="preAckOfReceiptOfTransfer" x="760" y="620">
-   <Description/>
-   <probepoint type="none"/>
+   <Description />
+   <probepoint type="none" />
    <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="preAckOfReceiptOfTransfer_OnStepProcess_0" name="preAckOfReceiptOfTransfer_OnStepProcess_0"/>
+    <JavaCode defClass="" executor="" methodName="preAckOfReceiptOfTransfer_OnStepProcess_0" name="preAckOfReceiptOfTransfer_OnStepProcess_0" />
    </OnStepProcess>
   </AutomaticStep>
   <InvokeStep defClass="" executor="" icon="" name="AckOfReceiptOfTransfer" processname="AckOfReceiptOfTransfer" project="" version="-1" x="950" y="620">
-   <Description/>
-   <probepoint type="none"/>
-   <OnStepProcess/>
-   <OnStepComplete/>
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess />
+   <OnStepComplete />
   </InvokeStep>
  </Steps>
  <Pages>
   <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="DataSubmissionSelectPage" stageIndicator="" x="310" y="240">
-   <OnPageLoad/>
-   <OnPageSubmit/>
-   <Description/>
-   <probepoint type="none"/>
+   <OnPageLoad />
+   <OnPageSubmit />
+   <Description />
+   <probepoint type="none" />
   </WebPage>
  </Pages>
- <Forms/>
+ <Forms />
  <Links>
   <SynchronousLink destinationName="/Steps/AutomaticStep/prepareDataSubmissionSelect" linkstyle="Direct" name="" sourceName="/Steps/StartStep/start" style="oblique">
    <position>{(70,260)(150,260)}</position>
@@ -204,26 +204,27 @@
    <position>{(970,640)(1200,260)}</position>
   </SynchronousLink>
  </Links>
- <Conditions/>
+ <Conditions />
  <Switches>
-  <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="" name="Switch1" x="660" y="240">
-   <Description/>
-   <SwitchCase component="/Steps/AutomaticStep/prepareExport" value=""/>
-   <SwitchCase component="/Steps/AutomaticStep/prepareDisposal" value=""/>
-   <SwitchCase component="/Steps/AutomaticStep/prepareConsume" value=""/>
-   <SwitchCase component="/Steps/AutomaticStep/prepareReceipt" value=""/>
-   <SwitchCase component="/Steps/AutomaticStep/prepareRequestTransfer" value=""/>
-   <SwitchCase component="/Steps/AutomaticStep/prepareTransferNotification" value=""/>
-   <SwitchCase component="/Steps/AutomaticStep/preAckOfReceiptOfTransfer" value=""/>
+  <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="action_type" name="Switch1" x="660" y="240">
+   <Description />
+   <SwitchCase component="/Steps/AutomaticStep/prepareExport" value="&quot;doExport&quot;" />
+   <SwitchCase component="/Steps/AutomaticStep/prepareDisposal" value="&quot;doDisposal&quot;" />
+   <SwitchCase component="/Steps/AutomaticStep/prepareConsume" value="&quot;doConsume&quot;" />
+   <SwitchCase component="/Steps/AutomaticStep/prepareReceipt" value="&quot;doReceipt&quot;" />
+   <SwitchCase component="/Steps/AutomaticStep/prepareRequestTransfer" value="&quot;doRequestTransfer&quot;" />
+   <SwitchCase component="/Steps/AutomaticStep/prepareTransferNotification" value="&quot;doTransferNotification&quot;" />
+   <SwitchCase component="/Steps/AutomaticStep/preAckOfReceiptOfTransfer" value="&quot;doAckOfReceiptOfTransfer&quot;" />
   </Switch>
  </Switches>
- <Branches/>
+ <Branches />
  <Merges>
   <Merge defClass="" executor="" icon="" name="Merge1" type="Or" x="1180" y="240">
-   <Description/>
+   <Description />
   </Merge>
  </Merges>
- <StudioLabels/>
- <StageIndicator/>
- <AuthenticationRequire agent="false" authentication="false" citizen="false" counterStaff="false" workingGroup=""/>
+ <StudioLabels />
+ <StageIndicator />
+ <AuthenticationRequire agent="false" authentication="false" citizen="false" counterStaff="false" workingGroup="" />
 </Application>
+
