@@ -50,7 +50,8 @@ public class EqRequestForChangeSubmitResultChange {
         if (appGrpPremisesDtoList == null || oldAppGrpPremisesDtoList == null) {
             return false;
         }
-        if (!appGrpPremisesDtoList.equals(oldAppGrpPremisesDtoList)) {
+
+        if (!PageDataCopyUtil.copyAppGrpPremises(appGrpPremisesDtoList).equals(PageDataCopyUtil.copyAppGrpPremises(oldAppGrpPremisesDtoList))) {
             return true;
         }
         return false;
