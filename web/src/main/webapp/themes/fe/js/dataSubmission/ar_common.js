@@ -35,7 +35,7 @@ $(document).ready(function() {
         } else {
             $('#saveDraftBtn').click(function () {
                 showWaiting();
-                submit('saveDraft');
+                submit('draft');
             });
         }
     }

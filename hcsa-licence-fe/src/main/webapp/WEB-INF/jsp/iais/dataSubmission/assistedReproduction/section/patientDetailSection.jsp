@@ -13,7 +13,7 @@
                 <c:set var="person" value="${patient}" />
                 <%@include file="personSection.jsp" %>
                 <iais:row>
-                    <iais:field width="5" value="Is AR Centre aware of patient’s previous identification?" mandatory="true"/>
+                    <iais:field width="5" value="Is AR Centre aware of patient's previous identification?" mandatory="true"/>
                     <div class="form-check col-md-3 col-xs-3">
                         <input class="form-check-input" <c:if test="${patient.previousIdentification}">checked="checked"</c:if>
                                type="radio" name="previousIdentification" value = "1" aria-invalid="false"
