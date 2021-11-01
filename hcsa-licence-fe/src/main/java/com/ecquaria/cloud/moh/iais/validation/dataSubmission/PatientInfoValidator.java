@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.validation.dataSubmission;
 
+import com.ecquaria.cloud.helper.SpringContextHelper;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.HusbandDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInfoDto;
@@ -28,9 +29,6 @@ import java.util.Optional;
  */
 public class PatientInfoValidator implements CustomizeValidator {
 
-    @Autowired
-    private PatientService patientService;
-
     @Override
     public Map<String, String> validate(Object obj, String[] profiles, HttpServletRequest request) {
         Map<String, String> map = IaisCommonUtils.genNewHashMap();
@@ -46,6 +44,7 @@ public class PatientInfoValidator implements CustomizeValidator {
             }
             LoginContext loginContext = DataSubmissionHelper.getLoginContext(request);
             String orgId = Optional.ofNullable(loginContext).map(LoginContext::getOrgId).orElse("");
+            PatientService patientService = SpringContextHelper.getContext().getBean(PatientService.class);
             PatientDto patientDto = patientService.getPatientDto(patient.getIdNumber(), patient.getNationality(), orgId);
             if (patientDto != null && (StringUtil.isEmpty(patient.getId()) || !Objects.equals(patientDto.getId(), patient.getId()))) {
                 map.put("idNumber", MessageUtil.getMessageDesc("DS_ERR007"));
@@ -67,15 +66,16 @@ public class PatientInfoValidator implements CustomizeValidator {
                 if (previous == null) {
                     previous = new PatientDto();
                 }
-                boolean retrievePrevious = patientInfo.isRetrievePrevious();
-                if (!retrievePrevious) {
-                    map.put("retrievePrevious", "DS_ERR005");
-                } else if (!StringUtil.isEmpty(previous.getName())) {
-                    map.put("retrievePrevious", "GENERAL_ACK018");
-                }
                 result = WebValidationHelper.validateProperty(previous, "ART");
-                if (result != null) {
+                if (result != null && result.isHasErrors()) {
                     map.putAll(result.retrieveAll("pre", ""));
+                } else {
+                    boolean retrievePrevious = patientInfo.isRetrievePrevious();
+                    if (!retrievePrevious) {
+                        map.put("retrievePrevious", "DS_ERR005");
+                    } else if (StringUtil.isEmpty(previous.getId())) {
+                        map.put("retrievePrevious", "GENERAL_ACK018");
+                    }
                 }
             }
             HusbandDto husband = patientInfo.getHusband();

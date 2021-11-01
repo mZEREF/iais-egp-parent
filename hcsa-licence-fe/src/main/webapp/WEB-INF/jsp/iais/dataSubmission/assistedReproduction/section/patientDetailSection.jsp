@@ -79,11 +79,12 @@
         var idType = $('#preIdType').val();
         var idNo = $('input[name="preIdNumber"]').val();
         var nationality = $('#preNationality').val();
+        var url = $('#_contextPath').val() + '/ar/retrieve-identification';
         var options = {
             idType: idType,
             idNo: idNo,
             nationality: nationality,
-            url: '${pageContext.request.contextPath}/ar/retrieve-identification'
+            url: url
         }
         callCommonAjax(options, previousPatientCallback);
     }
@@ -97,15 +98,15 @@
             if (!isEmpty(data.errorMsg)) {
                 doValidationParse(data.errorMsg);
             } else if (data.invalidType) {
-                showErrorMsg('error_preIdType', '<iais:message key="GENERAL_ERR0051" />');
+                showErrorMsg('error_preIdType', $('#_ERR0051').val());
             } else {
                 $('#noFoundDiv').modal('show');
             }
             return;
         }
         $('[name="retrievePrevious"]').val('1');
-        $('#preName').find('p').text(data.name);
-        $('#preBirthDate').find('p').text(data.birthDate);
+        $('#preName').find('p').text(data.patient.name);
+        $('#preBirthDate').find('p').text(data.patient.birthDate);
     }
 
     /*function callFunc(func) {

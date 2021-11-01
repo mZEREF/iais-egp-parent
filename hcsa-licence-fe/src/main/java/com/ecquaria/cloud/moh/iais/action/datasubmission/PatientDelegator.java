@@ -45,16 +45,7 @@ public class PatientDelegator extends CommonDelegator {
         }
         dataSubmission.setSubmissionType(DataSubmissionConsts.DATA_SUBMISSION_TYPE_AR);
         dataSubmission.setCycleStage(DataSubmissionConsts.DATA_SUBMISSION_CYCLE_STAGE_PATIENT);
-        CycleDto cycleDto = currentArDataSubmission.getCycleDto();
-        if (cycleDto == null) {
-            cycleDto = new CycleDto();
-        }
-        String hicCode = Optional.ofNullable(currentArDataSubmission.getAppGrpPremisesDto())
-                .map(premises -> premises.getHciCode())
-                .orElse("");
-        cycleDto.setHciCode(hicCode);
-        cycleDto.setCycleType(DataSubmissionConsts.DATA_SUBMISSION_CYCLE_STAGE_PATIENT);
-        currentArDataSubmission.setCycleDto(cycleDto);
+        currentArDataSubmission.setCycleDto(initCycleDto(currentArDataSubmission));
         DataSubmissionHelper.setCurrentArDataSubmission(currentArDataSubmission, bpc.request);
     }
 
@@ -75,7 +66,13 @@ public class PatientDelegator extends CommonDelegator {
         if (patientInfo == null) {
             patientInfo = new PatientInfoDto();
         }
-        PatientDto patient = ControllerHelper.get(request, PatientDto.class);
+        PatientDto patient = patientInfo.getPatient();
+        if (patient == null) {
+            patient = new PatientDto();
+        } else {
+            patient.setId(null);
+        }
+         ControllerHelper.get(request, patient);
         if (StringUtil.isNotEmpty(patient.getName())) {
             patient.setName(patient.getName().toUpperCase(AppConsts.DFT_LOCALE));
         }
@@ -87,25 +84,21 @@ public class PatientDelegator extends CommonDelegator {
         if (loginContext != null) {
             patient.setOrgId(loginContext.getOrgId());
         }
-        String patientCode = Optional.of(patientInfo.getPatient())
+        String patientCode = Optional.ofNullable(patientInfo.getPatient())
                 .map(dto -> dto.getPatientCode())
                 .orElseGet(() -> UUID.randomUUID().toString());
         patient.setPatientCode(patientCode);
         patientInfo.setPatient(patient);
-        if (currentArDataSubmission.getCycleDto() != null) {
-            currentArDataSubmission.getCycleDto().setPatientCode(patientCode);
-        }
+        // check previous
         if (patient.isPreviousIdentification()) {
-            String preIdType = ParamUtil.getString(request, "preIdType");
-            String preIdNumber = ParamUtil.getString(request, "preIdNumber");
-            String preNationality = ParamUtil.getString(request, "preNationality");
             String retrievePrevious = ParamUtil.getString(request, "retrievePrevious");
-            PatientDto previous = new PatientDto();
-            previous.setIdType(preIdType);
-            previous.setIdNumber(preIdNumber);
-            previous.setNationality(preNationality);
-            if (AppConsts.YES.equals(retrievePrevious)) {
-                previous = patientService.getPatientDto(preIdNumber, preNationality, patient.getOrgId());
+            patientInfo.setRetrievePrevious(AppConsts.YES.equals(retrievePrevious));
+            PatientDto previous = ControllerHelper.get(request, PatientDto.class, "pre", "");
+            if (patientInfo.isRetrievePrevious()) {
+                PatientDto db = patientService.getPatientDto(previous.getIdNumber(), previous.getNationality(), patient.getOrgId());
+                if (db != null && !StringUtil.isEmpty(db.getId())) {
+                    previous = db;
+                }
             }
             patientInfo.setPrevious(previous);
         }
@@ -118,13 +111,29 @@ public class PatientDelegator extends CommonDelegator {
             husband.setEthnicGroup("");
         }
         patientInfo.setHusband(husband);
+        currentArDataSubmission.setPatientInfoDto(patientInfo);
+        // ret-set cycle dto
+        CycleDto cycleDto = currentArDataSubmission.getCycleDto();
+        if (cycleDto == null) {
+            cycleDto = initCycleDto(currentArDataSubmission);
+        }
+        cycleDto.setPatientCode(patientCode);
+        currentArDataSubmission.setCycleDto(cycleDto);
         DataSubmissionHelper.setCurrentArDataSubmission(currentArDataSubmission, request);
         return patientInfo;
     }
 
-    @Override
-    public void submission(BaseProcessClass bpc) {
-        super.submission(bpc);
+    private CycleDto initCycleDto(ArSuperDataSubmissionDto currentArDataSubmission) {
+        CycleDto cycleDto = currentArDataSubmission.getCycleDto();
+        if (cycleDto == null) {
+            cycleDto = new CycleDto();
+        }
+        String hicCode = Optional.ofNullable(currentArDataSubmission.getAppGrpPremisesDto())
+                .map(premises -> premises.getHciCode())
+                .orElse("");
+        cycleDto.setHciCode(hicCode);
+        cycleDto.setCycleType(DataSubmissionConsts.DATA_SUBMISSION_CYCLE_STAGE_PATIENT);
+        return cycleDto;
     }
 
 }

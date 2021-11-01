@@ -35,3 +35,4 @@
         </div>
     </div>
 </form>
+<input type="hidden" id="_ERR0051" name="_ERR0051" value="<iais:message key="GENERAL_ERR0051" />"/>

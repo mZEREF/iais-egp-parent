@@ -1255,7 +1255,7 @@ public class LicenceViewServiceDelegator {
         return appEditSelectDto;
     }
 
-    private void contrastNewAndOld(AppSubmissionDto appSubmissionDto,HttpServletRequest request) throws Exception {
+    private void contrastNewAndOld(AppSubmissionDto appSubmissionDto,HttpServletRequest request) {
         AppSubmissionDto oldAppSubmissionDto = appSubmissionDto.getOldAppSubmissionDto();
         dealWithMultipleDoc(appSubmissionDto);
         if (oldAppSubmissionDto == null) {
@@ -1847,7 +1847,9 @@ public class LicenceViewServiceDelegator {
             }
         }
     }
-    private void appSvcPersonnelDtoList( List<AppSvcPersonnelDto> appSvcPersonnelDtoList,List<AppSvcPersonnelDto> oldAppSvcPersonnelDtoList ){
+
+    private void appSvcPersonnelDtoList(List<AppSvcPersonnelDto> appSvcPersonnelDtoList,
+            List<AppSvcPersonnelDto> oldAppSvcPersonnelDtoList) {
         if (IaisCommonUtils.isEmpty(appSvcPersonnelDtoList) && oldAppSvcPersonnelDtoList != null) {
             appSvcPersonnelDtoList = new ArrayList<>(oldAppSvcPersonnelDtoList.size());
             for (int i = 0; i < oldAppSvcPersonnelDtoList.size(); i++) {
@@ -1872,10 +1874,10 @@ public class LicenceViewServiceDelegator {
                     appSvcPersonnelDto.setQualification("");
                     appSvcPersonnelDtoList.add(appSvcPersonnelDto);
                 }
-            }else if(oldSize < size){
-                for(int i=0;i<size-oldSize;i++){
+            } else if (oldSize < size) {
+                for (int i = 0; i < size - oldSize; i++) {
                     AppSvcPersonnelDto appSvcPersonnelDto = new AppSvcPersonnelDto();
-                    appSvcPersonnelDto.setPersonnelType(oldAppSvcPersonnelDtoList.get(oldSize+i).getPersonnelType());
+                    appSvcPersonnelDto.setPersonnelType(appSvcPersonnelDtoList.get(oldSize + i).getPersonnelType());
                     appSvcPersonnelDto.setDesignation("");
                     appSvcPersonnelDto.setName("");
                     appSvcPersonnelDto.setProfRegNo("");

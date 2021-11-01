@@ -10,6 +10,7 @@
 <script type="text/javascript" src="<%=webroot1%>js/dataSubmission/ar_common.js"></script>
 
 <input type="hidden" name="ar_page" value="${currentPageStage}"/>
+<input type="hidden" id="_contextPath" name="_contextPath" value="${pageContext.request.contextPath}"/>
 
 <c:if test="${empty title}">
     <div class="dashboard" id="comDashboard" style="padding: 30px 0 0;">
