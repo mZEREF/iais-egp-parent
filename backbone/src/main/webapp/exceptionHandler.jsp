@@ -12,7 +12,7 @@
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%
-  String resourcePath = EngineHelper.getResourcePath();
+  String resourcePathExp = EngineHelper.getResourcePath();
 %>
 <!DOCTYPE html>
 <html lang="en">
@@ -20,12 +20,12 @@
   <title>Error</title>
 </head>
 <body>
-<link href="<%=resourcePath%>/_statics/css/jquery-ui/smoothness/jquery-ui-custom.css" rel="stylesheet">
-<link href="<%=resourcePath%>/_statics/css/jquery-ui/form-viewer/jquery-ui-all.css" rel="stylesheet">
-<link href="<%=resourcePath%>/_statics/css/core/core.css" rel="stylesheet">
-<link href="<%=resourcePath%>/_themes/egov/css/template.css" rel="stylesheet">
-<link href="<%=resourcePath%>/_statics/css/error-page.css" rel="stylesheet">
-<script type="text/javascript" src="<%=resourcePath%>/javascripts/egov/jquery-3.5.1.min.js"></script>
+<link href="<%=resourcePathExp%>/_statics/css/jquery-ui/smoothness/jquery-ui-custom.css" rel="stylesheet">
+<link href="<%=resourcePathExp%>/_statics/css/jquery-ui/form-viewer/jquery-ui-all.css" rel="stylesheet">
+<link href="<%=resourcePathExp%>/_statics/css/core/core.css" rel="stylesheet">
+<link href="<%=resourcePathExp%>/_themes/egov/css/template.css" rel="stylesheet">
+<link href="<%=resourcePathExp%>/_statics/css/error-page.css" rel="stylesheet">
+<script type="text/javascript" src="<%=resourcePathExp%>/javascripts/egov/jquery-3.5.1.min.js"></script>
 
   <%
     Map<String, Object> errors = (Map<String, Object>) request.getAttribute("errors");
