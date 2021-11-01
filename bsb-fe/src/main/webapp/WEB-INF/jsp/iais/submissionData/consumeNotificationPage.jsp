@@ -44,33 +44,48 @@
                                             <span class="error-msg" name="errorMsg" id="errorBAT"></span>
                                         </iais:value>
                                     </iais:row>
-                                    <iais:row>
-                                        <iais:field value="Type of Consumption" width="11" required="true"/>
-                                        <iais:value width="11">
-                                            <iais:select name="consumeType" id="consumeType"
-                                                         value=""
-                                                         codeCategory="CATE_ID_BSB_DATA_SUBMISSION_DISPOSAL_TYPE"
-                                                         firstOption="Please Select"/>
-                                            <span class="error-msg" name="errorMsg" id="errorConsumeType"></span>
-                                        </iais:value>
-                                    </iais:row>
-                                    <iais:row>
-                                        <iais:field value="Quantity Consumed" width="11" required="true"/>
-                                        <iais:value width="11">
-                                            <input type="number" name="consumedQty" id="consumedQty" value="" maxlength="11" οninput="this.value=this.value.replace(/\D*(\d*)(\.?)(\d{0,3})\d*/,'$1$2$3')"   >
-                                            <span class="error-msg" name="errorMsg" id="errorConsumedQty"></span>
-                                        </iais:value>
-                                    </iais:row>
-                                    <iais:row>
-                                        <iais:field value="Unit of Measurement" width="11" required="true"/>
-                                        <iais:value width="11">
-                                            <iais:select name="measurementUnit" id="measurementUnit"
-                                                         value=""
-                                                         codeCategory="CATE_ID_BSB_DATA_SUBMISSION_UNIT_OF_MEASUREMENT"
-                                                         firstOption="Please Select"/>
-                                            <span class="error-msg" name="errorMsg" id="errorMeasurementUnit"></span>
-                                        </iais:value>
-                                    </iais:row>
+                                    <c:if test="1=1">
+                                        <%--Schedule Type 不是 Fifth Schedule，而且biological type为agent时，不显示--%>
+                                        <iais:row>
+                                            <iais:field value="Type of Consumption" width="11" required="true"/>
+                                            <iais:value width="11">
+                                                <iais:select name="consumeType" id="consumeType"
+                                                             value=""
+                                                             codeCategory="CATE_ID_BSB_DATA_SUBMISSION_DISPOSAL_TYPE"
+                                                             firstOption="Please Select"/>
+                                                <span class="error-msg" name="errorMsg"
+                                                      id="errorConsumeType"></span>
+                                            </iais:value>
+                                        </iais:row>
+                                    </c:if>
+                                    <c:if test="1=1">
+                                        <%--Schedule Type 为 Fifth Schedule且biological type为toxin时，显示--%>
+                                        <%--不能为负--%>
+                                        <iais:row>
+                                            <iais:field value="Quantity Consumed" width="11" required="true"/>
+                                            <iais:value width="11">
+                                                <input type="number" name="consumedQty" id="consumedQty" value=""
+                                                       maxlength="11"
+                                                       οninput="this.value=this.value.replace(/\D*(\d*)(\.?)(\d{0,3})\d*/,'$1$2$3')">
+                                                <span class="error-msg" name="errorMsg"
+                                                      id="errorConsumedQty"></span>
+                                            </iais:value>
+                                        </iais:row>
+                                    </c:if>
+                                    <c:if test="1=1">
+                                        <%--Schedule Type 为 Fifth Schedule且biological_type为toxin时，显示--%>
+                                        <iais:row>
+                                            <iais:field value="Unit of Measurement" width="11" required="true"/>
+                                            <iais:value width="11">
+                                                <iais:select name="measurementUnit" id="measurementUnit"
+                                                             value=""
+                                                             codeCategory="CATE_ID_BSB_DATA_SUBMISSION_UNIT_OF_MEASUREMENT"
+                                                             firstOption="Please Select"/>
+                                                <span class="error-msg" name="errorMsg"
+                                                      id="errorMeasurementUnit"></span>
+                                            </iais:value>
+                                        </iais:row>
+                                    </c:if>
                                     <iais:row>
                                         <iais:field value="Facility Name" width="11" required="false"/>
                                         <iais:value width="11">

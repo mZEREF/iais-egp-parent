@@ -42,33 +42,46 @@
                                             <span class="error-msg" name="errorMsg" id="error_BATCode"></span>
                                         </iais:value>
                                     </iais:row>
-                                    <iais:row>
-                                        <iais:field value="Expected Quantity of Biological Agent" width="11" required="true"/>
+                                    <c:if test="1=1">
+                                        <%--Schedule Type 不是 Fifth Schedule，而且biological type为agent时，不显示--%>
+                                        <iais:row>
+                                            <iais:field value="Expected Quantity of Biological Agent" width="11"
+                                                        required="true"/>
                                             <iais:value width="11">
                                                 <input type="text" name="expectedBatQty" id="expectedBatQty"
                                                        maxlength="66" value="">
-                                                <span class="error-msg" name="errorMsg" id="error_expectedBatQty"></span>
+                                                <span class="error-msg" name="errorMsg"
+                                                      id="error_expectedBatQty"></span>
                                             </iais:value>
-                                    </iais:row>
-                                    <iais:row>
-                                        <iais:field value="Expected Quantity to Receive" width="11" required="true"/>
+                                        </iais:row>
+                                    </c:if>
+                                    <c:if test="1=1">
+                                        <%--Schedule Type 为 Fifth Schedule,biological_type为toxin，显示--%>
+                                        <iais:row>
+                                            <iais:field value="Expected Quantity to Receive" width="11"
+                                                        required="true"/>
                                             <iais:value width="11">
                                                 <input type="number" name="receivedQty" id="receivedQty" value=""
                                                        maxlength="11"
                                                        οninput="this.value=this.value.replace(/\D*(\d*)(\.?)(\d{0,3})\d*/,'$1$2$3')">
                                                 <span class="error-msg" name="errorMsg" id="error_receivedQty"></span>
                                             </iais:value>
-                                    </iais:row>
-                                    <iais:row>
-                                        <iais:field value="Unit of Measurement" width="11" required="true"/>
-                                        <iais:value width="11">
-                                            <iais:select name="measurementUnit" id="measurementUnit"
-                                                         value=""
-                                                         codeCategory="CATE_ID_BSB_DATA_SUBMISSION_UNIT_OF_MEASUREMENT"
-                                                         firstOption="Please Select"/>
-                                            <span class="error-msg" name="errorMsg" id="error_measurementUnit"></span>
-                                        </iais:value>
-                                    </iais:row>
+                                        </iais:row>
+                                    </c:if>
+                                    <c:if test="1=1">
+                                        <%--Schedule Type 为 Fifth Schedule,biological_type为toxin，显示--%>
+                                        <iais:row>
+                                            <iais:field value="Unit of Measurement" width="11" required="true"/>
+                                            <iais:value width="11">
+                                                <iais:select name="measurementUnit" id="measurementUnit"
+                                                             value=""
+                                                             codeCategory="CATE_ID_BSB_DATA_SUBMISSION_UNIT_OF_MEASUREMENT"
+                                                             firstOption="Please Select"/>
+                                                <span class="error-msg" name="errorMsg"
+                                                      id="error_measurementUnit"></span>
+                                            </iais:value>
+                                        </iais:row>
+                                    </c:if>
                                     <iais:row>
                                         <iais:field value="Transferring Facility" width="11" required="false"/>
                                         <iais:value width="11">
@@ -94,4 +107,4 @@
         </div>
     </div>
 </form>
-<%@include file="/WEB-INF/jsp/include/validation.jsp"%>
+<%@include file="/WEB-INF/jsp/include/validation.jsp" %>
