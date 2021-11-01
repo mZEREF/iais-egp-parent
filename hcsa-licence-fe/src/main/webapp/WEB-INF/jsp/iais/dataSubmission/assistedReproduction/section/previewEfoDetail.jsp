@@ -11,46 +11,48 @@
         <div class="panel-body">
             <div class="panel-main-content form-horizontal">
                 <h3>
-                    <p><label style="font-family:'Arial Negreta', 'Arial Normal', 'Arial';font-weight:700;"><c:out value="${arSuperDataSubmissionDto.patientInfoDto.patient.name}"/></label><label style="font-family:'Arial Normal', 'Arial';font-weight:400;"><c:out value="(${arSuperDataSubmissionDto.patientInfoDto.patient.idNumber})"/></label></p>
+                    <p><label style="font-family:'Arial Negreta', 'Arial Normal', 'Arial';font-weight:600;"><c:out value="${arSuperDataSubmissionDto.patientInfoDto.patient.name}"/></label><label style="font-family:'Arial Normal', 'Arial';font-weight:400;"><c:out value="(${arSuperDataSubmissionDto.patientInfoDto.patient.idNumber})"/></label></p>
                 </h3>
                 <iais:row>
-                    <label class="col-xs-6 col-md-6 ">Premises where IUI is Performed</label>
-                    <label class="col-xs-6 col-md-6 "><c:out value="${arSuperDataSubmissionDto.efoCycleStageDto.performed}"/></label>
+                    <iais:field width="6" value="Premises where IUI is Performed" mandatory="false"/>
+                    <iais:value width="6" display="true">
+                        <c:out value="${arSuperDataSubmissionDto.efoCycleStageDto.performed}"/>
+                    </iais:value>
                 </iais:row>
                 <iais:row>
-                    <label class="col-xs-6 col-md-6 ">Date Started</label>
-                    <label class="col-xs-6 col-md-6">
+                    <iais:field width="6" value="Date Started" mandatory="false"/>
+                    <iais:value width="6" display="true">
                         <fmt:formatDate value="${arSuperDataSubmissionDto.efoCycleStageDto.startDate}" pattern="dd/MM/yyyy"></fmt:formatDate>
-                    </label>
+                    </iais:value>
                 </iais:row>
                 <iais:row>
-                    <label class="col-xs-6 col-md-6 ">Patient's Age as of This Treatment</label>
-                    <label class="col-xs-6 col-md-6">
+                    <iais:field width="6" value="Patient's Age as of This Treatment" mandatory="false"/>
+                    <iais:value width="6" display="true">
                         <c:out value="${arSuperDataSubmissionDto.efoCycleStageDto.yearNum} Years and ${arSuperDataSubmissionDto.efoCycleStageDto.monthNum} Months"/>
-                    </label>
+                    </iais:value>
                 </iais:row>
                 <iais:row>
-                    <label class="col-xs-6 col-md-6 ">Is it Medically Indicated?</label>
-                    <label class="col-xs-6 col-md-6">
+                    <iais:field width="6" value="Is it Medically Indicated?" mandatory="false"/>
+                    <iais:value width="6" display="true">
                         <c:if test="${arSuperDataSubmissionDto.efoCycleStageDto.isMedicallyIndicated ==1 }">
-                            <label class="form-check-label" >Yes</label></c:if>
+                            Yes</c:if>
                         <c:if test="${arSuperDataSubmissionDto.efoCycleStageDto.isMedicallyIndicated ==0 }">
-                            <label class="form-check-label" >No</label></c:if>
-                    </label>
+                            No</c:if>
+                    </iais:value>
                 </iais:row>
                 <iais:row>
-                    <label class="col-xs-6 col-md-6 ">Reasons</label>
-                    <label class="col-xs-6 col-md-6">
+                    <iais:field width="6" value="Reasons" mandatory="false"/>
+                    <iais:value width="6" display="true">
                         <iais:code code="${arSuperDataSubmissionDto.efoCycleStageDto.reason}"/>
-                    </label>
+                    </iais:value>
                 </iais:row>
                 <iais:row>
-                    <label class="col-xs-6 col-md-6 "></label>
-                    <label class="col-xs-6 col-md-6">
+                    <iais:field width="6" value="" mandatory="false"/>
+                    <iais:value width="6" display="true">
                         <div id="othersReason" <c:if test="${arSuperDataSubmissionDto.efoCycleStageDto.reason=='EFOR004'}">style="display: none"</c:if> >
                             <c:out value="${arSuperDataSubmissionDto.efoCycleStageDto.othersReason}"/>
                         </div>
-                    </label>
+                    </iais:value>
                 </iais:row>
 
             </div>

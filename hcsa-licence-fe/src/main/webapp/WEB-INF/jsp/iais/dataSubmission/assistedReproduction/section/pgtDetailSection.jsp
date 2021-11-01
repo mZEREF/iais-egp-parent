@@ -1,4 +1,4 @@
-<%--<script type="text/javascript" src="<%=webroot1%>js/dataSubmission/pgtSection.js"></script>--%>
+<script type="text/javascript" src="<%=webroot1%>js/dataSubmission/pgtSection.js"></script>
 
 <div class="panel panel-default">
     <div class="panel-heading">
@@ -145,6 +145,9 @@
 
                 <div id="pgtSrDisplay" <c:if test="${ arSuperDataSubmissionDto.pgtStageDto.isPgtSr !=1 }">style="display: none"</c:if>>
                     <iais:row>
+                        <iais:field width="6" value="PGT-SR" />
+                    </iais:row>
+                    <iais:row>
                         <iais:field width="6" value="What Condition and Structural Rearrangement was PGT-SR Performed?" mandatory="true"/>
                         <iais:value width="6" cssClass="col-md-6">
                             <input type="text" maxlength="20"   name="pgtSrCondition" value="${arSuperDataSubmissionDto.pgtStageDto.pgtSrCondition}" >
@@ -154,6 +157,9 @@
                 </div>
 
                 <div id="pgtADisplay" <c:if test="${ arSuperDataSubmissionDto.pgtStageDto.isPgtA !=1 }">style="display: none"</c:if>>
+                    <iais:row>
+                        <iais:field width="6" value="PGT-A" />
+                    </iais:row>
                     <iais:row>
                         <iais:field width="6" value="PGT-A Performed Because of" mandatory="true"/>
                         <iais:value width="6" cssClass="col-md-6">
@@ -245,6 +251,9 @@
 
                 <div id="pttDisplay" <c:if test="${ arSuperDataSubmissionDto.pgtStageDto.isPtt !=1 }">style="display: none"</c:if>>
                     <iais:row>
+                        <iais:field width="6" value="PTT" />
+                    </iais:row>
+                    <iais:row>
                         <iais:field width="6" value="What Condition was PTT Perfomed to Detect" mandatory="true"/>
                         <iais:value width="6" cssClass="col-md-6">
                             <input type="text" maxlength="20"   name="pttCondition" value="${arSuperDataSubmissionDto.pgtStageDto.pttCondition}" >
@@ -333,73 +342,3 @@
     </div>
 </div>
 
-<script type="text/javascript">
-    $(document).ready(function () {
-        $('#isPgtM').change(function () {
-            if($(this).is(':checked')){
-                $('#pgtMDisplay').attr("style","display: block");
-            }else {
-                $('#pgtMDisplay').attr("style","display: none");
-            }
-        });
-
-        $('#isPgtSr').change(function () {
-            if($(this).is(':checked')){
-                $('#pgtSrDisplay').attr("style","display: block");
-            }else {
-                $('#pgtSrDisplay').attr("style","display: none");
-            }
-        });
-
-        $('#isPgtA').change(function () {
-            if($(this).is(':checked')){
-                $('#pgtADisplay').attr("style","display: block");
-            }else {
-                $('#pgtADisplay').attr("style","display: none");
-            }
-        });
-
-        $('#isPtt').change(function () {
-            if($(this).is(':checked')){
-                $('#pttDisplay').attr("style","display: block");
-            }else {
-                $('#pttDisplay').attr("style","display: none");
-            }
-        });
-
-        $("[name='pgtAResult']").change(function () {
-
-            if($(this).val()=='Abnormal'){
-                $('#AbnormalDisplay').attr("style","display: block");
-            }else {
-                $('#AbnormalDisplay').attr("style","display: none");
-            }
-        });
-
-
-        $('#isEmbryosBiopsiedLocal').change(function () {
-
-            var reason= $('#isEmbryosBiopsiedLocal option:selected').val();
-
-            if("0"==reason){
-                $('#othersEmbryosBiopsyDisplay').attr("style","display: block");
-            }else {
-                $('#othersEmbryosBiopsyDisplay').attr("style","display: none");
-            }
-
-        });
-
-        $('#isBiopsyLocal').change(function () {
-
-            var reason= $('#isBiopsyLocal option:selected').val();
-
-            if("0"==reason){
-                $('#othersBiopsyDisplay').attr("style","display: block");
-            }else {
-                $('#othersBiopsyDisplay').attr("style","display: none");
-            }
-
-        });
-    });
-
-</script>
