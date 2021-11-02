@@ -5,9 +5,10 @@ $(document).ready(function() {
     function cancel() {
         $('#saveDraft').modal('hide');
     }
-
-    function jumpPage() {
-        submit('premises','saveDraft','jumpPage');
+    // draft modal
+    var $draft = $("#_draftModal");
+    if ($draft.length > 0) {
+        $draft.modal('show');
     }
     var currPage = $('input[name="ar_page"]').val();
     console.log('----- ' + currPage + ' -----');
