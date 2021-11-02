@@ -85,7 +85,6 @@ import com.ecquaria.cloud.moh.iais.service.client.LicenceClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationLienceseeClient;
 import com.ecquaria.cloud.moh.iais.service.client.SystemAdminClient;
 import com.ecquaria.cloud.moh.iais.service.impl.ServiceInfoChangeEffectPersonForRFC;
-import com.ecquaria.cloud.moh.iais.service.impl.ServiceInfoChangeEffectPersonForRenew;
 import com.ecquaria.cloud.moh.iais.validate.declarationsValidate.DeclarationsUtil;
 import com.ecquaria.cloud.moh.iais.validation.PaymentValidate;
 import com.ecquaria.sz.commons.util.MsgUtil;
@@ -157,8 +156,6 @@ public class WithOutRenewalDelegator {
     private OrganizationLienceseeClient organizationLienceseeClient;
     @Autowired
     private ApplicationFeClient applicationFeClient;
-    @Autowired
-    private ServiceInfoChangeEffectPersonForRenew serviceInfoChangeEffectPersonForRenew;
     @Value("${iais.system.one.address}")
     private String systemAddressOne;
 
@@ -1360,7 +1357,8 @@ public class WithOutRenewalDelegator {
             updateDraftStatus(appSubmissionDto);
         }
         List<AppSubmissionDto> rfcAppSubmissionDtos=(List<AppSubmissionDto>)bpc.request.getSession().getAttribute("rfcAppSubmissionDtos");
-        if(rfcAppSubmissionDtos!=null){
+        boolean b=false;
+        if(IaisCommonUtils.isNotEmpty(rfcAppSubmissionDtos)){
             for(AppSubmissionDto appSubmissionDto : rfcAppSubmissionDtos){
                 String appGrpNo = appSubmissionDto.getAppGrpNo();
                 List<ApplicationDto> entity = applicationFeClient.getApplicationsByGroupNo(appGrpNo).getEntity();
@@ -1375,21 +1373,18 @@ public class WithOutRenewalDelegator {
                     applicationFeClient.updateAppGrpPmtStatus(applicationGroupDto);
 
                 }
-            }
-
-        }
-        boolean b=false;
-        if(rfcAppSubmissionDtos!=null){
-            for (AppSubmissionDto appSubmDto : rfcAppSubmissionDtos) {
-                if(appSubmDto.getAppType().equals(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE)){
-                    b=true;
+                if(!b && ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equalsIgnoreCase(appSubmissionDto.getAppType())){
+                    b = true;
                 }
             }
         }
+
+        //send rfc email
         if(b){
             rfcAppSubmissionDtos.get(0).setAppGrpId(appSubmissionDtos.get(0).getAppGrpId());
             requestForChangeService.sendRfcSubmittedEmail(rfcAppSubmissionDtos,appSubmissionDtos.get(0).getPaymentMethod());
         }
+
         String licenseeId = null;
         if (interInboxUserDto != null) {
             licenseeId = interInboxUserDto.getLicenseeId();
@@ -1647,10 +1642,8 @@ public class WithOutRenewalDelegator {
         ParamUtil.setSessionAttr(bpc.request, RenewalConstants.WITHOUT_RENEWAL_APPSUBMISSION_ATTR, renewDto);
         String groupNo = "";
         String appGrpId = "";
-        String licenseeId = null;
         if ( !IaisCommonUtils.isEmpty(appSubmissionDtos)) {
             groupNo = appSubmissionDtos.get(0).getAppGrpNo();
-            licenseeId = appSubmissionDtos.get(0).getLicenseeId();
             appGrpId = appSubmissionDtos.get(0).getAppGrpId();
             for (AppSubmissionDto appSubmissionDto : appSubmissionDtos) {
                 appSubmissionDto.setPaymentMethod(payMethod);
@@ -1694,7 +1687,6 @@ public class WithOutRenewalDelegator {
                 }
                 appSubmissionDtos.get(0).setTotalAmountGroup(a);
             }
-            LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
             try {
                 //renew
                 sendEmail(bpc.request,appSubmissionDtos);

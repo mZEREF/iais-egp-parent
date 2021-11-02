@@ -8,5 +8,5 @@ import org.springframework.stereotype.Component;
  * @date 2021/4/27 16:15
  */
 @Component
-public class ServiceInfoChangeEffectPersonForRenew extends ServiceInfoChangeEffectPersonAbstract implements ServiceInfoChangeEffectPerson {
+public class ServiceInfoChangeEffectPersonForRenew extends ServiceInfoChangeEffectPersonAbstract {
 }
