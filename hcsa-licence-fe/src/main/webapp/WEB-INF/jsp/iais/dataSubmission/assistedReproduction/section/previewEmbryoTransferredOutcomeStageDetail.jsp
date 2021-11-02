@@ -1,5 +1,5 @@
 <c:set var="headingSign" value="completed"/>
-<c:set var="fertilisationDto" value="${arSuperDataSubmissionDto.embryoTransferredOutcomeStageDto}"/>
+<c:set var="embryoTransferredOutcomeStageDto" value="${arSuperDataSubmissionDto.embryoTransferredOutcomeStageDto}"/>
 <div class="panel panel-default">
     <div class="panel-heading ${headingSign}">
         <h4 class="panel-title">

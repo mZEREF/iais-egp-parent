@@ -53,7 +53,8 @@ public class OutcomeEmbryoTransferredDelegator extends CommonDelegator{
         EmbryoTransferredOutcomeStageDto embryoTransferredOutcomeStageDto =
                 arSuperDataSubmissionDto.getEmbryoTransferredOutcomeStageDto() == null ? new EmbryoTransferredOutcomeStageDto() : arSuperDataSubmissionDto.getEmbryoTransferredOutcomeStageDto();
 
-        ControllerHelper.get(request,embryoTransferredOutcomeStageDto);
+        String transferedOutcome = ParamUtil.getRequestString(request, "transferedOutcome");
+        embryoTransferredOutcomeStageDto.setTransferedOutcome(transferedOutcome);
         arSuperDataSubmissionDto.setEmbryoTransferredOutcomeStageDto(embryoTransferredOutcomeStageDto);
 
         ParamUtil.setSessionAttr(request, DataSubmissionConstant.AR_DATA_SUBMISSION, arSuperDataSubmissionDto);
