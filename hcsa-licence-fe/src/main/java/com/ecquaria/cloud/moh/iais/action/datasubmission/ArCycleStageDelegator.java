@@ -5,6 +5,8 @@ import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArCycleStageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArDonorDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInfoDto;
+import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationProperty;
@@ -38,7 +40,9 @@ public class ArCycleStageDelegator extends CommonDelegator {
     private final static String  PRACTITIONER_DROP_DOWN          = "practitionerDropDown";
     private final static String  EMBRYOLOGIST_DROP_DOWN          = "embryologistDropDown";
     private final static String  DONOR_AGE_DONATION_DROP_DOWN    = "donorAgeDonationDropDown";
-    private final static String  DONOR_USED_TYPES               = "donorUsedTypes";
+    private final static String  DONOR_USED_TYPES                = "donorUsedTypes";
+    private final static String  DONOR_SOURSE_DROP_DOWN          = "donorSourseDropDown";
+    private final static String  DONOR_SOURSE_OTHERS             = "Others";
     @Override
     public void start(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
@@ -50,6 +54,7 @@ public class ArCycleStageDelegator extends CommonDelegator {
         ParamUtil.setSessionAttr(request, EMBRYOLOGIST_DROP_DOWN,(Serializable) getEmbryologist());
         ParamUtil.setSessionAttr(request, DONOR_AGE_DONATION_DROP_DOWN,(Serializable)DataSubmissionHelper.getNumsSelections(18,50));
         ParamUtil.setSessionAttr(request, DONOR_USED_TYPES,(Serializable) MasterCodeUtil.retrieveByCategory(MasterCodeUtil.AR_DONOR_USED_TYPE));
+        ParamUtil.setSessionAttr(request, DONOR_SOURSE_DROP_DOWN,(Serializable) getSourseList());
     }
 
     //TODO from ar center
@@ -64,7 +69,13 @@ public class ArCycleStageDelegator extends CommonDelegator {
         selectOptions.add(new SelectOption("embryologist","embryologist"));
         return selectOptions;
     }
-
+    //TODO from ar center
+    private List<SelectOption> getSourseList(){
+        List<SelectOption> selectOptions  = IaisCommonUtils.genNewArrayList();
+        selectOptions.add(new SelectOption("sourseTest","sourseTest"));
+        selectOptions.add(new SelectOption( DONOR_SOURSE_OTHERS,DONOR_SOURSE_OTHERS));
+        return selectOptions;
+    }
 
     @Override
     public void prepareSwitch(BaseProcessClass bpc) {
@@ -92,9 +103,22 @@ public class ArCycleStageDelegator extends CommonDelegator {
             arSuperDataSubmissionDto.setArDonorDtos(arDonorDtos);
         }
         arCycleStageDto.setArDonorDtos(arDonorDtos);
+        setCycleAgeByPatientInfoDto(arCycleStageDto,arSuperDataSubmissionDto.getPatientInfoDto());
         ParamUtil.setSessionAttr(request, DataSubmissionConstant.AR_DATA_SUBMISSION,arSuperDataSubmissionDto);
     }
 
+    private void setCycleAgeByPatientInfoDto(ArCycleStageDto arCycleStageDto, PatientInfoDto patientInfoDto){
+        if(patientInfoDto != null && patientInfoDto.getPatient() !=null){
+            List<Integer> integers = Formatter.getYearsAndDays(patientInfoDto.getPatient().getBirthDate());
+            if(IaisCommonUtils.isNotEmpty(integers)){
+                int year = integers.get(0);
+                int month = integers.get(integers.size()-1);
+                arCycleStageDto.setCycleAgeYear(year);
+                arCycleStageDto.setCycleAgeMonth(month);
+                arCycleStageDto.setCycleAge(IaisCommonUtils.getRecommendationYears(year *12 + month));
+            }
+        }
+    }
 
     @Override
     public void pageAction(BaseProcessClass bpc) {
@@ -102,6 +126,7 @@ public class ArCycleStageDelegator extends CommonDelegator {
         ArSuperDataSubmissionDto arSuperDataSubmissionDto = DataSubmissionHelper.getCurrentArDataSubmission(request);
         ArCycleStageDto arCycleStageDto = arSuperDataSubmissionDto.getArCycleStageDto();
         setArCycleStageDtoByPage(request,arCycleStageDto);
+        DataSubmissionHelper.setCurrentArDataSubmission(arSuperDataSubmissionDto,request);
         validatePageDataHaveValidationProperty(request,arCycleStageDto,"save",arCycleStageDto.getArDonorDtos(),getByArCycleStageDto(arCycleStageDto), ACTION_TYPE_CONFIRM);
         actionArDonorDtos(request,arCycleStageDto.getArDonorDtos());
         valiateDonorDtos(request,arCycleStageDto.getArDonorDtos());
@@ -110,6 +135,7 @@ public class ArCycleStageDelegator extends CommonDelegator {
 
     private void actionArDonorDtos(HttpServletRequest request,List<ArDonorDto> arDonorDtos){
         int actionArDonor = ParamUtil.getInt(request,CRUD_ACTION_VALUE_AR_STAGE);
+        //actionArDonor default =-3;
         if(actionArDonor == -1){
             //add
             for (int i = 0; i < arDonorDtos.size(); i++) {
@@ -122,6 +148,9 @@ public class ArCycleStageDelegator extends CommonDelegator {
             for (int i = 0; i < arDonorDtos.size(); i++) {
                 arDonorDtos.get(i).setArDonorIndex(i);
             }
+        }else if(actionArDonor == -3){
+            arDonorDtos.clear();
+            arDonorDtos.add(getInitArDonorDto(0));
         }
     }
 
@@ -164,6 +193,21 @@ public class ArCycleStageDelegator extends CommonDelegator {
             ControllerHelper.get(request,arDonorDto,arDonorIndex);
             arDonorDto.setPleaseIndicate(ParamUtil.getStringsToString(request,"pleaseIndicate"+arDonorIndex));
             arDonorDto.setPleaseIndicateValues(ParamUtil.getListStrings(request,"pleaseIndicate"+arDonorIndex));
+            clearNoClearDataForDrDonorDto(arDonorDto);
         });
     }
+
+     private void clearNoClearDataForDrDonorDto(ArDonorDto arDonorDto){
+        if(arDonorDto.isDirectedDonation()){
+            arDonorDto.setDonorSampleCodeId(null);
+            arDonorDto.setDonorSampleCode(null);
+            arDonorDto.setSource(null);
+            arDonorDto.setOtherSource(null);
+        }else {
+            arDonorDto.setPleaseIndicate(null);
+            arDonorDto.setIdNumber(null);
+            arDonorDto.setIdType(null);
+            arDonorDto.setPleaseIndicateValues(null);
+        }
+     }
 }

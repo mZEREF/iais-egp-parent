@@ -14,12 +14,12 @@
                 <c:set var="arCycleStageDto" value="${arSuperDataSubmissionDto.arCycleStageDto}" />
                 <c:set var="patientDto" value="${arSuperDataSubmissionDto.patientInfoDto.patient}" />
                 <h3>
-                    <p><label style="font-family:'Arial Negreta', 'Arial Normal', 'Arial';font-weight:700;"><c:out value="${patientDto.patientName}"/></label><label style="font-family:'Arial Normal', 'Arial';font-weight:400;"><c:out value="${patientDto.patientIdNO}"/></label></p>
+                    <p><label style="font-family:'Arial Negreta', 'Arial Normal', 'Arial';font-weight:700;"><c:out value="${patientDto.name}"/>&nbsp</label><label style="font-family:'Arial Normal', 'Arial';font-weight:400;">${empty patientDto.idNumber ? "" : "("}<c:out value="${patientDto.idNumber}"/>${empty patientDto.idNumber ? "" : ")"} </label></p>
                 </h3>
                 <iais:row>
                     <iais:field width="5" value="Premises where AR is performed" mandatory="true"/>
-                    <iais:value width="7" cssClass="col-md-7" label="true">
-                        <c:out value=""/>
+                    <iais:value width="7" cssClass="col-md-7" display="true">
+                        <c:out value="${arCycleStageDto.cycleAge}"/>
                     </iais:value>
                 </iais:row>
                 <iais:row>
@@ -52,7 +52,7 @@
                 <iais:row>
                     <iais:field width="5" value="Other Indication" mandatory="true"/>
                     <iais:value width="7" cssClass="col-md-7">
-                        <iais:select name="otherIndication" multiSelect="true"  codeCategory="AR_OTHER_INDICATION"  multiValues="${arCycleStageDto.otherIndicationValues}"  onchange ="toggleMultiSelect(this, 'AR_0I_013', 'otherIndicationOthersRow')"/>
+                        <iais:select name="otherIndication" multiSelect="true"  codeCategory="AR_OTHER_INDICATION"  multiValues="${arCycleStageDto.otherIndicationValues}"  />
                     </iais:value>
                 </iais:row>
 
@@ -104,7 +104,7 @@
                                            name="currentArTreatment"
                                            value="${currentArTreatmentCode}"
                                            id="currentArTreatmentCheck${currentArTreatmentCode}"
-                                           <c:if test="${arCycleStageDto.currentARTreatment ge currentArTreatmentCode}">checked</c:if>
+                                           <c:if test="${StringUtil.stringContain(arCycleStageDto.currentARTreatment,currentArTreatmentCode)}">checked</c:if>
                                            aria-invalid="false">
                                     <label class="form-check-label"
                                            for="currentArTreatmentCheck${currentArTreatmentCode}"><span
@@ -177,7 +177,7 @@
                                    value="1"
                                    id="enhancedCounsellingRadioYes"
                                    <c:if test="${arCycleStageDto.enhancedCounselling}">checked</c:if>
-                                   aria-invalid="false">
+                                   aria-invalid="false" >
                             <label class="form-check-label"
                                    for="enhancedCounsellingRadioYes"><span
                                     class="check-circle"></span>Yes</label>
@@ -190,7 +190,7 @@
                                    value="0"
                                    id="enhancedCounsellingRadioNo"
                                    <c:if test="${!arCycleStageDto.enhancedCounselling}">checked</c:if>
-                                   aria-invalid="false">
+                                   aria-invalid="false"  >
                             <label class="form-check-label"
                                    for="enhancedCounsellingRadioNo"><span
                                     class="check-circle"></span>No</label>
@@ -219,14 +219,14 @@
                 <iais:row>
                     <iais:field width="5" value="Was a donor's Oocyte(s)/Embryo(s)/Sperms used in this cycle?" mandatory="true"/>
                     <iais:value width="3" cssClass="col-md-3">
-                        <div class="form-check">
+                        <div class="form-check" onclick="">
                             <input class="form-check-input"
                                    type="radio"
                                    name="oocyteEmbryoSpermsUsed"
                                    value="1"
                                    id="oocyteEmbryoSpermsUsedRadioYes"
                                    <c:if test="${arCycleStageDto.oocyteEmbryoSpermsUsed}">checked</c:if>
-                                   aria-invalid="false">
+                                   aria-invalid="false" onchange="showOocyteEmbryoSpermsUsedControlClass()">
                             <label class="form-check-label"
                                    for="oocyteEmbryoSpermsUsedRadioYes"><span
                                     class="check-circle"></span>Yes</label>
@@ -239,7 +239,7 @@
                                    value="0"
                                    id="oocyteEmbryoSpermsUsedRadioNo"
                                    <c:if test="${!arCycleStageDto.oocyteEmbryoSpermsUsed}">checked</c:if>
-                                   aria-invalid="false">
+                                   aria-invalid="false" onchange="hideOocyteEmbryoSpermsUsedControlClass(1)">
                             <label class="form-check-label"
                                    for="oocyteEmbryoSpermsUsedRadioNo"><span
                                     class="check-circle"></span>No</label>
@@ -255,17 +255,16 @@
   $(document).ready(function (){
      toggleOnSelect("#mainIndication",'AR_MI_013', 'mainIndicationOtherRow');
      toggleOnSelect("#totalNumberARCPreviouslyUndergonePatient",'21', 'totalNumberARCOtherRow');
-     toggleOnMultiSelect("#otherIndication",'AR_0I_013', 'otherIndicationOthersRo');
+     if(${arCycleStageDto.oocyteEmbryoSpermsUsed}){
+         showOocyteEmbryoSpermsUsedControlClass();
+     }else {
+         hideOocyteEmbryoSpermsUsedControlClass(0);
+     }
+
    });
 
    function validateDonor(index){
        $("#crud_action_value_valiate_donor").val(index);
-       submit("page");
-   }
-
-   function addDonor(){
-       //index ==-1 : add
-       $("#crud_action_value_ar_stage").val("-1");
        submit("page");
    }
 
@@ -277,14 +276,49 @@
 
        }
    }
+  function addDonor(){
+      //index ==-1 : add
+      sumbitPage(-1);
+  }
+  function rollbackDonor(){
+      //index ==-3 : rollbackDonor to 1
+      sumbitPage(-3);
+  }
+
+  function sumbitPage(donorAction){
+      $("#crud_action_value_ar_stage").val(donorAction);
+      submit("page");
+  }
+
 
    function showDonor(index){
        $("#deleteDonor"+index).show();
        $("#source"+index+"Row").hide();
+       $("#otherSource"+index+"Row").hide();
+       $("#donorSampleCodeId"+index+"Row").hide();
+       $("#source"+index).val("");
+       $("#otherSource"+index).val("");
+       $("#donorSampleCodeId"+index).val("");
+       $("#idNo"+index+"Row").show();
    }
   function hideDonor(index){
       $("#deleteDonor"+index).hide();
       $("#source"+index+"Row").show();
+      $("#donorSampleCodeId"+index+"Row").show();
+      $("#idNo"+index+"Row").hide();
+      $("#idType"+index).val("");
+      $("#idNumber"+index).val("");
   }
 
+  function showOocyteEmbryoSpermsUsedControlClass(){
+       $(".yesOocyteEmbryoSpermsUsedControl").show();
+  }
+
+  function hideOocyteEmbryoSpermsUsedControlClass(flag){
+      if(flag == 1){
+          rollbackDonor();
+      }else {
+          $(".oocyteEmbryoSpermsUsedControlClass").hide();
+      }
+  }
 </script>

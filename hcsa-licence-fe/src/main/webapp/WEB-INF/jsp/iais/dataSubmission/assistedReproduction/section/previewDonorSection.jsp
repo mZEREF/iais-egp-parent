@@ -13,9 +13,9 @@
          <c:forEach items="${arDonorDtos}" var="arDonorDto">
              <c:set var="arDonorIndex" value="${arDonorDto.arDonorIndex}"/>
              <div class="panel-main-content form-horizontal">
-                <iais:row>
-                    <iais:field width="5" value="Please Indicate" mandatory="true"/>
-                    <iais:value width="7" cssClass="col-md-7">
+                <iais:row cssClass="oocyteEmbryoSpermsUsedControlClass yesOocyteEmbryoSpermsUsedControl">
+                    <iais:field width="5" value="Please Indicate" />
+                    <iais:value width="7" cssClass="col-md-7" display="true">
                         <c:forEach items="${arDonorDto.pleaseIndicateValues}" var="pleaseIndicateValue" varStatus="status">
                             <c:if test="${status.index != 0}"><br></c:if> <iais:code code="${pleaseIndicateValue}"/>
                         </c:forEach>
@@ -24,53 +24,53 @@
                 </iais:row>
 
                  <iais:row>
-                     <iais:field width="5" value="Donor" mandatory="true"/>
-                     <iais:value width="7" cssClass="col-md-7" label="true">
+                     <iais:field width="5" value="Donor" />
+                     <iais:value width="7" cssClass="col-md-7" display="true">
                          <c:out value="${arDonorDto.arDonorIndex+1}"/>
                      </iais:value>
                  </iais:row>
 
-                 <iais:row>
-                     <iais:field width="5" value="Is this a Directed Donation?" mandatory="true"/>
-                     <iais:value width="7" cssClass="col-md-7">
+                 <iais:row cssClass="oocyteEmbryoSpermsUsedControlClass yesOocyteEmbryoSpermsUsedControl">
+                     <iais:field width="5" value="Is this a Directed Donation?" />
+                     <iais:value width="7" cssClass="col-md-7" display="true">
                          <c:out value="${arDonorDto.directedDonation ? 'Yes' : 'No'}"/>
                      </iais:value>
                  </iais:row>
 
-                 <iais:row>
-                     <iais:field width="5" value="ID No." mandatory="true"/>
-                     <iais:value width="3" cssClass="col-md-3">
+                 <iais:row cssClass="oocyteEmbryoSpermsUsedControlClass yesOocyteEmbryoSpermsUsedControl">
+                     <iais:field width="5" value="ID No." />
+                     <iais:value width="3" cssClass="col-md-3" display="true">
                          <iais:code code="${arDonorDto.idType}"/>
                      </iais:value>
-                     <iais:value width="4" cssClass="col-md-4">
+                     <iais:value width="4" cssClass="col-md-4" display="true">
                          <c:out value="${arDonorDto.idNumber}" />
                      </iais:value>
                  </iais:row>
 
-                 <iais:row id="donorSampleCodeId${arDonorIndex}Row">
-                     <iais:field width="5" value="Donor Sample Code / ID" mandatory="true"/>
-                     <iais:value width="7" cssClass="col-md-7">
+                 <iais:row cssClass="oocyteEmbryoSpermsUsedControlClass" id="donorSampleCodeId${arDonorIndex}Row">
+                     <iais:field width="5" value="Donor Sample Code / ID" />
+                     <iais:value width="7" cssClass="col-md-7" display="true">
                          <c:out value="${arDonorDto.donorSampleCodeId}" />
                      </iais:value>
                  </iais:row>
 
-                 <iais:row id="source${arDonorIndex}Row" style="${arDonorDto.directedDonation ? 'display: none;' : ''}">
-                     <iais:field width="5" value="Source (i.e. AR Centre or Bank Name)" mandatory="true"/>
-                     <iais:value width="7" cssClass="col-md-7">
+                 <iais:row  cssClass="oocyteEmbryoSpermsUsedControlClass" id="source${arDonorIndex}Row" style="${arDonorDto.directedDonation ? 'display: none;' : ''}">
+                     <iais:field width="5" value="Source (i.e. AR Centre or Bank Name)" />
+                     <iais:value width="7" cssClass="col-md-7" display="true">
                          <iais:code code="${arDonorDto.source}"/>
                      </iais:value>
                  </iais:row>
 
-                 <iais:row id="otherSource${arDonorIndex}Row" >
-                     <iais:field width="5" value="Source (Others)" mandatory="true"/>
-                     <iais:value width="7" cssClass="col-md-7">
+                 <iais:row cssClass="oocyteEmbryoSpermsUsedControlClass" id="otherSource${arDonorIndex}Row" >
+                     <iais:field width="5" value="Source (Others)" />
+                     <iais:value width="7" cssClass="col-md-7" display="true">
                          <c:out value="${arDonorDto.otherSource}" />
                      </iais:value>
                  </iais:row>
 
                  <iais:row>
-                     <iais:field width="5" value="Donor's Age at Donation" mandatory="true"/>
-                     <iais:value width="7" cssClass="col-md-7">
+                     <iais:field width="5" value="Donor's Age at Donation" />
+                     <iais:value width="7" cssClass="col-md-7" display="true">
                          <c:out value="${arDonorDto.donorAgeDonation}" />
                      </iais:value>
                  </iais:row>
