@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.service.datasubmission.impl;
 
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
+import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSubFreezingStageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
@@ -13,6 +14,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.NewApplicationHelper;
 import com.ecquaria.cloud.moh.iais.service.client.ArFeClient;
 import com.ecquaria.cloud.moh.iais.service.client.FeEicGatewayClient;
+import com.ecquaria.cloud.moh.iais.service.client.LicEicClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceClient;
 import com.ecquaria.cloud.moh.iais.service.client.SystemAdminClient;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.ArDataSubmissionService;
@@ -43,6 +45,9 @@ public class ArDataSubmissionServiceImpl implements ArDataSubmissionService {
 
     @Autowired
     private FeEicGatewayClient feEicGatewayClient;
+
+    @Autowired
+    private LicEicClient licEicClient;
 
     @Override
     public Map<String, AppGrpPremisesDto> getAppGrpPremises(String licenseeId, String serviceName) {
@@ -85,10 +90,32 @@ public class ArDataSubmissionServiceImpl implements ArDataSubmissionService {
 
     @Override
     public ArSuperDataSubmissionDto saveArSuperDataSubmissionDto(ArSuperDataSubmissionDto arSuperDataSubmission) {
+        log.info(StringUtil.changeForLog("do the saveArSuperDataSubmissionDto ..."));
         return arFeClient.saveArSuperDataSubmissionDto(arSuperDataSubmission).getEntity();
     }
 
+
     @Override
+    public ArSuperDataSubmissionDto saveArSuperDataSubmissionDtoToBE(ArSuperDataSubmissionDto arSuperDataSubmission) {
+        log.info(StringUtil.changeForLog(" the saveArSuperDataSubmissionDtoToBE start ..."));
+        arSuperDataSubmission.setFe(false);
+        arSuperDataSubmission = saveBeArSuperDataSubmissionDto(arSuperDataSubmission);
+
+        DataSubmissionDto dataSubmission =  arSuperDataSubmission.getCurrentDataSubmissionDto();
+        String refNo = dataSubmission.getSubmissionNo() + dataSubmission.getVersion();
+        log.info(StringUtil.changeForLog(" the saveArSuperDataSubmissionDtoToBE refNo is -->:"+refNo));
+        EicRequestTrackingDto eicRequestTrackingDto = licEicClient.getPendingRecordByReferenceNumber(refNo).getEntity();
+        if(eicRequestTrackingDto != null){
+            eicRequestTrackingDto.setProcessNum(eicRequestTrackingDto.getProcessNum()+1);
+            eicRequestTrackingDto.setStatus(AppConsts.EIC_STATUS_PROCESSING_COMPLETE);
+            licEicClient.saveEicTrack(eicRequestTrackingDto);
+        }else{
+            log.warn(StringUtil.changeForLog(" do not have the eicRequestTrackingDto for this  refNo -->:"+refNo));
+        }
+        log.info(StringUtil.changeForLog(" the saveArSuperDataSubmissionDtoToBE end ..."));
+        return arSuperDataSubmission;
+    }
+
     public ArSuperDataSubmissionDto saveBeArSuperDataSubmissionDto(ArSuperDataSubmissionDto arSuperDataSubmission) {
         return feEicGatewayClient.saveBeArSuperDataSubmissionDto(arSuperDataSubmission).getEntity();
     }
