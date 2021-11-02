@@ -179,7 +179,7 @@ public class DocumentDto {
      * This method is dangerous! The relationship between the ids and the files in this dto is fragile!
      * We rely on the order is not changed! So we use a LinkedHashMap to save our data.
      */
-    public void newFileSaved(List<String> repoIds) {
+    private void newFileSaved(List<String> repoIds) {
         Iterator<String> repoIdIt = repoIds.iterator();
         Iterator<NewDocInfo> newDocIt = newDocMap.values().iterator();
         while (repoIdIt.hasNext() && newDocIt.hasNext()) {

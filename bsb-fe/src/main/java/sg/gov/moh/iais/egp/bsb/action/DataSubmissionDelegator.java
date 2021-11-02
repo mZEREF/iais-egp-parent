@@ -1,91 +1,65 @@
 package sg.gov.moh.iais.egp.bsb.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import lombok.extern.slf4j.Slf4j;
+import sg.gov.moh.iais.egp.bsb.dto.submission.ConsumeNotificationDto;
+import sg.gov.moh.iais.egp.bsb.dto.submission.DisposalNotificationDto;
+import sg.gov.moh.iais.egp.bsb.dto.submission.ExportNotificationDto;
+import sg.gov.moh.iais.egp.bsb.dto.submission.ReceiptNotificationDto;
 import sop.webflow.rt.api.BaseProcessClass;
 
-/**
- * DataSubmissionDelegator
- *
- * @author tangtang
- */
+import javax.servlet.http.HttpServletRequest;
+
 @Delegator("dataSubmissionDelegator")
 @Slf4j
 public class DataSubmissionDelegator {
     /**
-     * StartStep: Start
-     *
-     * @param bpc
-     * @throws
-     */
-    public void doStart(BaseProcessClass bpc) {
-
+     * start
+     * This module is used to initialize data
+     * */
+    public void start(BaseProcessClass bpc){
+        if(log.isInfoEnabled()){
+            log.info("In the future this module will be used to initialize some data");
+        }
     }
-
     /**
      * StartStep: PrepareDataSubmissionSelect
-     *
-     * @param bpc
-     * @throws
      */
-    public void doPrepareDataSubmissionSelect(BaseProcessClass bpc) {
-
-
+    public void doPrepareFacilitySelect(BaseProcessClass bpc) {
+        // todo get facility info
     }
     /**
-     * StartStep: PrepareDataSubmission
-     *
-     * @param bpc
-     * @throws
+     * StartStep: PrepareSwitch
      */
-    public void doPrepareDataSubmission(BaseProcessClass bpc) {
-
+    public void doPrepareSwitch(BaseProcessClass bpc) {
     }
     /**
-     * StartStep: PrepeareAR
-     *
-     * @param bpc
-     * @throws
+     * StartStep: prepareConsume
      */
-    public void doPrepeareAR(BaseProcessClass bpc) {
-
+    public void prepareConsume(BaseProcessClass bpc) {
+        HttpServletRequest request = bpc.request;
+        ParamUtil.setRequestAttr(request,"consumeNotification",new ConsumeNotificationDto());
     }
     /**
-     * StartStep: PrepeareLDT
-     *
-     * @param bpc
-     * @throws
+     * StartStep: prepareConsume
      */
-    public void doPrepeareLDT(BaseProcessClass bpc) {
-
+    public void prepareDisposal(BaseProcessClass bpc) {
+        HttpServletRequest request = bpc.request;
+        ParamUtil.setRequestAttr(request,"disposalNotification",new DisposalNotificationDto());
     }
     /**
-     * StartStep: PrepeareVS
-     *
-     * @param bpc
-     * @throws
+     * StartStep: prepareConsume
      */
-    public void doPrepeareVS(BaseProcessClass bpc) {
-
+    public void prepareExport(BaseProcessClass bpc) {
+        HttpServletRequest request = bpc.request;
+        ParamUtil.setRequestAttr(request,"exportNotification",new ExportNotificationDto());
     }
     /**
-     * StartStep: PrepeareDP
-     *
-     * @param bpc
-     * @throws
+     * StartStep: prepareConsume
      */
-    public void doPrepeareDP(BaseProcessClass bpc) {
-
+    public void prepareReceive(BaseProcessClass bpc) {
+        HttpServletRequest request = bpc.request;
+        ParamUtil.setRequestAttr(request,"receiveNotification",new ReceiptNotificationDto());
     }
-    /**
-     * StartStep: PrepeareTP
-     *
-     * @param bpc
-     * @throws
-     */
-    public void doPrepeareTP(BaseProcessClass bpc) {
-
-    }
-
-
 }

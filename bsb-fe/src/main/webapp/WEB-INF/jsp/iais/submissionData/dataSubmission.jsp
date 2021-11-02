@@ -39,6 +39,7 @@
                                                 <option value="5">Request for Transfer</option>
                                                 <option value="6">Notification of Transfer</option>
                                                 <option value="7">Acknowledgement of Receipt of Transfer</option>
+                                                <option value="8">Submit Facility Report and Inventory</option>
                                             </select>
                                         </iais:value>
                                     </iais:row>
@@ -62,7 +63,7 @@
 <script>
     $(function () {
         $("#nextBtn").click(function () {
-            // showWaiting();
+            showWaiting();
             var optionValue = $("#selectType option:selected").val();
             if (optionValue == "1") {
                 $("[name='action_type']").val("doConsume");
@@ -78,6 +79,8 @@
                 $("[name='action_type']").val("doTransferNotification");
             }else if (optionValue == "7") {
                 $("[name='action_type']").val("doAckOfReceiptOfTransfer");
+            }else if (optionValue == "8") {
+
             }
             $("#mainForm").submit();
         })

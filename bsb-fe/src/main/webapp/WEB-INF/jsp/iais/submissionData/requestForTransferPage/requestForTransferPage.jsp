@@ -58,7 +58,7 @@
                                 </div>
                                 <div class="tab-content">
                                     <div class="tab-pane active" id="tabFacInfo" role="tabpanel">
-                                        <%@include file="facilityInfo.jsp" %>
+                                        <%@include file="../common/facilityInfo.jsp" %>
                                     </div>
                                     <div class="tab-pane" id="tabBat" role="tabpanel">
                                         <%@include file="bat.jsp" %>

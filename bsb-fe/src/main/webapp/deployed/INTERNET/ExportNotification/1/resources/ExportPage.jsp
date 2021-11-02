@@ -1,1 +1,1 @@
-<%@include file = "/WEB-INF/jsp/iais/submissionData/exportNotificationPage.jsp"%>
+<%@include file = "/WEB-INF/jsp/iais/submissionData/exportNotification/exportNotificationPage.jsp"%>
