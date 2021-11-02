@@ -78,9 +78,8 @@
         </div>
     </div>
 </div>
-<iais:confirm msg="GENERAL_ACK018" callBack="$('#noFoundDiv').modal('hide');" popupOrder="noFoundDiv" needCancel="false"
-              needFungDuoJi="false"/>
 <script type="text/javascript">
+    /*
     function retrieveValidatePatient() {
         showWaiting();
         var idType = $('#patientIdType').val();
@@ -136,4 +135,5 @@
         }
         $('#lastStageHidden').val(data.selection.lastStage);
     }
+    */
 </script>

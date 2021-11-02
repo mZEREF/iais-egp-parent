@@ -74,6 +74,30 @@
 <iais:confirm msg="GENERAL_ACK018" callBack="$('#noFoundDiv').modal('hide');" popupOrder="noFoundDiv" needCancel="false"
               needFungDuoJi="false"/>
 <script type="text/javascript">
+    function checkMantory(sel, targetLabel, val) {
+        console.log("checkEthinicGroupMantory");
+        var $selector = $(sel);
+        if ($selector.length == 0) {
+            $selector = $('#' + sel);
+        } else if ($selector.length == 0) {
+            $selector = $('.' + sel);
+        }
+        var $target = $(targetLabel);
+        if ($target.length == 0) {
+            $target = $('#' + targetLabel);
+        } else if ($selector.length == 0) {
+            $target = $('.' + targetLabel);
+        }
+        if ($selector.length <= 0 || $target.length <= 0) {
+            return;
+        }
+        $target.find('.mandatory').remove();
+        if (isEmpty(val) && val != '' && $target.is(':checked') || val == $selector.val()) {
+            $target.append('<span class="mandatory">*</span>');
+        }
+    }
+
+    /*
     function retrieveIdentification() {
         showWaiting();
         var idType = $('#preIdType').val();
@@ -105,26 +129,6 @@
         $('[name="retrievePrevious"]').val('1');
         $('#preName').find('p').text(data.patient.name);
         $('#preBirthDate').find('p').text(data.patient.birthDate);
-    }
-
-    /*function callFunc(func) {
-        try {
-            this[func].apply(this, Array.prototype.slice.call(arguments, 1));
-        } catch (e) {
-            console.log(e);
-        }
-    }
-
-    function checkEthinicGroupMantory(nationTag, ethinicGroupLabel) {
-        console.log("checkEthinicGroupMantory");
-        var $selector = $(nationTag);
-        var $target = $(ethinicGroupLabel);
-        if ($selector.length <= 0 || $target.length <= 0) {
-            return;
-        }
-        $target.find('.mandatory').remove();
-        if ('NAT0001' == $selector.val()) {
-            $target.append('<span class="mandatory">*</span>');
-        }
     }*/
+
 </script>

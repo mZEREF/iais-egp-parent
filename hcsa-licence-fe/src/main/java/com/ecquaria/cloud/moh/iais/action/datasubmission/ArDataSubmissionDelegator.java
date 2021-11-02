@@ -20,6 +20,7 @@ import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpSession;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * ARDataSubmissionDelegator
@@ -49,6 +50,7 @@ public class ArDataSubmissionDelegator {
         HttpSession session = bpc.request.getSession();
         session.removeAttribute(DataSubmissionConstant.AR_PREMISES_MAP);
         session.removeAttribute(DataSubmissionConstant.AR_PREMISES);
+        session.removeAttribute(DataSubmissionConstant.AR_DATA_SUBMISSION);
     }
 
     /**
@@ -126,7 +128,8 @@ public class ArDataSubmissionDelegator {
         // check premises
         HttpSession session = bpc.request.getSession();
         String premises = ParamUtil.getString(bpc.request, PREMISES);
-        Map<String, AppGrpPremisesDto> appGrpPremisesMap = (Map<String, AppGrpPremisesDto>) session.getAttribute(DataSubmissionConstant.AR_PREMISES_MAP);
+        Map<String, AppGrpPremisesDto> appGrpPremisesMap = (Map<String, AppGrpPremisesDto>) session.getAttribute(
+                DataSubmissionConstant.AR_PREMISES_MAP);
         AppGrpPremisesDto appGrpPremisesDto = (AppGrpPremisesDto) session.getAttribute(DataSubmissionConstant.AR_PREMISES);
         if (!StringUtil.isEmpty(premises)) {
             if (appGrpPremisesMap != null) {
@@ -143,9 +146,37 @@ public class ArDataSubmissionDelegator {
         if (!map.isEmpty()) {
             actionType = "invalid";
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(map));
-        } else {
             ArSuperDataSubmissionDto dataSubmission = new ArSuperDataSubmissionDto();
+            dataSubmission.setArSubmissionType(submissionType);
+            dataSubmission.setSubmissionMethod(submissionMethod);
+            dataSubmission.setAppGrpPremisesDto(appGrpPremisesDto);
+            ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.AR_DATA_SUBMISSION, dataSubmission);
+        } else {
+            ArSuperDataSubmissionDto dataSubmission = null;
+            String orgId = Optional.ofNullable(DataSubmissionHelper.getLoginContext(bpc.request))
+                    .map(LoginContext::getOrgId).orElse("");
+            String hciCode = Optional.ofNullable(appGrpPremisesDto)
+                    .map(AppGrpPremisesDto::getHciCode)
+                    .orElse("");
+            String actionValue = ParamUtil.getString(bpc.request, IaisEGPConstant.CRUD_ACTION_VALUE);
+            log.info(StringUtil.changeForLog("Action Type: " + actionValue));
+            if (StringUtil.isEmpty(actionValue)) {
+                ArSuperDataSubmissionDto dataSubmissionDraft = arDataSubmissionService.getArSuperDataSubmissionDtoDraftByConds(
+                        orgId, submissionType, hciCode);
+                if (dataSubmissionDraft != null) {
+                    ParamUtil.setRequestAttr(bpc.request, "hasDraft", true);
+                    actionType = "invalid";
+                }
+            } else if ("resume".equals(actionValue)) {
+                dataSubmission = arDataSubmissionService.getArSuperDataSubmissionDtoDraftByConds(orgId, submissionType, hciCode);
+            } else if ("delete".equals(actionValue)) {
+                arDataSubmissionService.deleteArSuperDataSubmissionDtoDraftByConds(orgId, submissionType, hciCode);
+            }
+            if (dataSubmission == null) {
+                dataSubmission = new ArSuperDataSubmissionDto();
+            }
             dataSubmission.setSubmissionType(DataSubmissionConsts.DATA_SUBMISSION_TYPE_AR);
+            dataSubmission.setOrgId(orgId);
             dataSubmission.setArSubmissionType(submissionType);
             dataSubmission.setSubmissionMethod(submissionMethod);
             dataSubmission.setAppGrpPremisesDto(appGrpPremisesDto);

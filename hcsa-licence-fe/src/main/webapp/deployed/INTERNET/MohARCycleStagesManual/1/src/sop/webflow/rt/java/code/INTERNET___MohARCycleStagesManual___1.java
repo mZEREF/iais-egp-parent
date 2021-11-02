@@ -132,4 +132,14 @@ public class INTERNET___MohARCycleStagesManual___1 extends BaseProcessClass {
 		EngineHelper.delegate(DELEGATOR, "doBack", this);
 	}
 
+    public void prepareRegisterPatient_OnStepProcess_0() throws Exception {
+    // 		PrepareRegisterPatient->OnStepProcess
+        EngineHelper.delegate(DELEGATOR, "doPrepareRegisterPatient", this);
+    }
+
+    public void draft_OnStepProcess_0() throws Exception {
+    // 		Draft->OnStepProcess
+        EngineHelper.delegate(DELEGATOR, "doDraft", this);
+    }
+
 }

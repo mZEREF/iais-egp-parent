@@ -12,6 +12,7 @@ import com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
+import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.ArDataSubmissionService;
 import java.util.Date;
@@ -157,7 +158,8 @@ public abstract class CommonDelegator {
         if(arSuperDataSubmission != null){
             arSuperDataSubmission = arDataSubmissionService.saveDataSubmissionDraft(arSuperDataSubmission);
             DataSubmissionHelper.setCurrentArDataSubmission(arSuperDataSubmission,bpc.request);
-        }else{
+            ParamUtil.setRequestAttr(bpc.request, "saveDraftSuccess", "success");
+        } else {
             log.info(StringUtil.changeForLog("The arSuperDataSubmission is null"));
         }
         draft(bpc);
@@ -261,7 +263,18 @@ public abstract class CommonDelegator {
      * @param bpc
      * @throws
      */
-    public void pageConfirmAction(BaseProcessClass bpc){}
+    public void pageConfirmAction(BaseProcessClass bpc) {
+        // validation
+        String declaration = ParamUtil.getString(bpc.request, "declaration");
+        Map<String, String> errorMap = IaisCommonUtils.genNewHashMap(1);
+        if (StringUtil.isEmpty(declaration)) {
+            errorMap.put("declaration", "GENERAL_ERR0006");
+        }
+        if (!errorMap.isEmpty()) {
+            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
+            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, ACTION_TYPE_CONFIRM);
+        }
+    }
 
     public final boolean validatePageData(HttpServletRequest request, Object obj, String property, String passCrudActionType,
             String failedCrudActionType, List validationDtos, Map<Object, ValidationProperty> validationPropertyList) {

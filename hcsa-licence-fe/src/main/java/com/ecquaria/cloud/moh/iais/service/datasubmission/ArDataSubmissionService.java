@@ -12,7 +12,7 @@ import java.util.Map;
 
 public interface ArDataSubmissionService {
 
-    Map<String,AppGrpPremisesDto> getAppGrpPremises(String licenseeId, String serviceName);
+    Map<String, AppGrpPremisesDto> getAppGrpPremises(String licenseeId, String serviceName);
 
     CycleStageSelectionDto getCycleStageSelectionDtoByConds(String idType, String idNumber, String nationality, String orgId,
             String hciCode);
@@ -24,6 +24,18 @@ public interface ArDataSubmissionService {
     ArSuperDataSubmissionDto saveArSuperDataSubmissionDtoToBE(ArSuperDataSubmissionDto arSuperDataSubmission);
 
     ArSuperDataSubmissionDto saveDataSubmissionDraft(ArSuperDataSubmissionDto arSuperDataSubmissionDto);
+
+    ArSuperDataSubmissionDto getArSuperDataSubmissionDtoDraftById(String id);
+
+    ArSuperDataSubmissionDto getArSuperDataSubmissionDtoDraftByConds(String idType, String idNumber, String nationality, String orgId,
+            String hciCode);
+
+    ArSuperDataSubmissionDto getArSuperDataSubmissionDtoDraftByConds(String orgId, String submissionType, String hciCode);
+
+    void deleteArSuperDataSubmissionDtoDraftByConds(String idType, String idNumber, String nationality, String orgId,
+            String hciCode);
+
+    void deleteArSuperDataSubmissionDtoDraftByConds(String orgId, String submissionType, String hciCode);
 
     String getSubmissionNo(String submisisonType, String cycleStage, DataSubmissionDto lastDataSubmissionDto);
 

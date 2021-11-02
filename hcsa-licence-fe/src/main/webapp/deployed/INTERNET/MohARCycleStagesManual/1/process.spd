@@ -263,7 +263,7 @@
    <OnStepProcess/>
    <OnStepComplete/>
   </InvokeStep>
-  <AutomaticStep defClass="" executor="" icon="" name="PrepareTransferInOut" x="810" y="1280">
+  <AutomaticStep defClass="" executor="" icon="" name="PrepareTransferInOut" x="800" y="1270">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
@@ -282,6 +282,26 @@
    <probepoint type="none"/>
    <OnStepProcess/>
   </ReturnInvokeProcessStep>
+  <AutomaticStep defClass="" executor="" icon="" name="PrepareRegisterPatient" x="550" y="790">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="prepareRegisterPatient_OnStepProcess_0" name="prepareRegisterPatient_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <InvokeStep defClass="" executor="" icon="" name="Patient" processname="MohARPatientInformationManual" project="" version="-1" x="240" y="790">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess/>
+   <OnStepComplete/>
+  </InvokeStep>
+  <AutomaticStep defClass="" executor="" icon="" name="Draft" x="580" y="910">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="draft_OnStepProcess_0" name="draft_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
  </Steps>
  <Pages>
   <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="CycleStageSelection" stageIndicator="" x="310" y="550">
@@ -360,7 +380,7 @@
    <position>{(610,570)(840,1230)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/PrepareTransferInOut" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
-   <position>{(610,570)(830,1300)}</position>
+   <position>{(610,570)(820,1290)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/Back" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
    <position>{(610,570)(610,430)}</position>
@@ -420,7 +440,7 @@
    <position>{(840,1230)(1080,1230)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/InvokeStep/TransferInOut" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/PrepareTransferInOut" style="oblique">
-   <position>{(830,1300)(1070,1300)}</position>
+   <position>{(820,1290)(1070,1300)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Steps/InvokeStep/ARCycle" style="oblique">
    <position>{(1090,40)(1240,760)}</position>
@@ -486,7 +506,22 @@
    <position>{(1240,760)(1239,-32)(268,-27)(210,570)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/PrepareCycleStageSelection" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch1" style="rectanular">
-   <position>{(610,570)(608,666)(263,753)(210,570)}</position>
+   <position>{(610,570)(609,670)(260,711)(210,570)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PrepareRegisterPatient" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch1" style="rectanular">
+   <position>{(610,570)(570,810)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/InvokeStep/Patient" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/PrepareRegisterPatient" style="rectanular">
+   <position>{(570,810)(260,810)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PrepareCycleStageSelection" linkstyle="Rectangle" name="" sourceName="/Steps/InvokeStep/Patient" style="rectanular">
+   <position>{(260,810)(210,570)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/Draft" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch1" style="rectanular">
+   <position>{(610,570)(600,930)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PrepareCycleStageSelection" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/Draft" style="rectanular">
+   <position>{(600,930)(260,929)(210,570)}</position>
   </SynchronousLink>
  </Links>
  <Conditions/>
@@ -513,7 +548,9 @@
    <SwitchCase component="/Steps/AutomaticStep/PrepareEndCycle" value="&quot;AR_STG015&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/PrepareTransferInOut" value="&quot;AR_STG016&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/Back" value="&quot;back&quot;"/>
-   <SwitchCase component="/Steps/AutomaticStep/PrepareCycleStageSelection" value="&quot;invalid&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/PrepareCycleStageSelection" value="&quot;current&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/PrepareRegisterPatient" value="&quot;patient&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/Draft" value="&quot;draft&quot;"/>
   </Switch>
  </Switches>
  <Branches/>

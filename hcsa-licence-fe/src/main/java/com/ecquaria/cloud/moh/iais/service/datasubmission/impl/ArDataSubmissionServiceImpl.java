@@ -23,10 +23,15 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+
 import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 /**
  * @Description ArDataSubmissionServiceImpl
@@ -96,6 +101,19 @@ public class ArDataSubmissionServiceImpl implements ArDataSubmissionService {
         return arFeClient.saveArSuperDataSubmissionDto(arSuperDataSubmission).getEntity();
     }
 
+    @Override
+    public ArSuperDataSubmissionDto saveDataSubmissionDraft(ArSuperDataSubmissionDto arSuperDataSubmissionDto) {
+        return arFeClient.doUpdateDataSubmissionDraft(arSuperDataSubmissionDto).getEntity();
+    }
+
+    @Override
+    public ArSuperDataSubmissionDto getArSuperDataSubmissionDtoDraftById(String id) {
+        log.info(StringUtil.changeForLog("----- Param: " + id + " -----"));
+        if (StringUtil.isEmpty(id)) {
+            return null;
+        }
+        return arFeClient.getArSuperDataSubmissionDtoDraftById(id).getEntity();
+    }
 
     @Override
     public ArSuperDataSubmissionDto saveArSuperDataSubmissionDtoToBE(ArSuperDataSubmissionDto arSuperDataSubmission) {
@@ -103,16 +121,16 @@ public class ArDataSubmissionServiceImpl implements ArDataSubmissionService {
         arSuperDataSubmission.setFe(false);
         arSuperDataSubmission = saveBeArSuperDataSubmissionDto(arSuperDataSubmission);
 
-        DataSubmissionDto dataSubmission =  arSuperDataSubmission.getCurrentDataSubmissionDto();
+        DataSubmissionDto dataSubmission = arSuperDataSubmission.getCurrentDataSubmissionDto();
         String refNo = dataSubmission.getSubmissionNo() + dataSubmission.getVersion();
-        log.info(StringUtil.changeForLog(" the saveArSuperDataSubmissionDtoToBE refNo is -->:"+refNo));
+        log.info(StringUtil.changeForLog(" the saveArSuperDataSubmissionDtoToBE refNo is -->:" + refNo));
         EicRequestTrackingDto eicRequestTrackingDto = licEicClient.getPendingRecordByReferenceNumber(refNo).getEntity();
-        if(eicRequestTrackingDto != null){
-            eicRequestTrackingDto.setProcessNum(eicRequestTrackingDto.getProcessNum()+1);
+        if (eicRequestTrackingDto != null) {
+            eicRequestTrackingDto.setProcessNum(eicRequestTrackingDto.getProcessNum() + 1);
             eicRequestTrackingDto.setStatus(AppConsts.EIC_STATUS_PROCESSING_COMPLETE);
             licEicClient.saveEicTrack(eicRequestTrackingDto);
-        }else{
-            log.warn(StringUtil.changeForLog(" do not have the eicRequestTrackingDto for this  refNo -->:"+refNo));
+        } else {
+            log.warn(StringUtil.changeForLog(" do not have the eicRequestTrackingDto for this  refNo -->:" + refNo));
         }
         log.info(StringUtil.changeForLog(" the saveArSuperDataSubmissionDtoToBE end ..."));
         return arSuperDataSubmission;
@@ -123,8 +141,51 @@ public class ArDataSubmissionServiceImpl implements ArDataSubmissionService {
     }
 
     @Override
-    public ArSuperDataSubmissionDto saveDataSubmissionDraft(ArSuperDataSubmissionDto arSuperDataSubmissionDto) {
-        return arFeClient.doUpdateDataSubmissionDraft(arSuperDataSubmissionDto).getEntity();
+    public ArSuperDataSubmissionDto getArSuperDataSubmissionDtoDraftByConds(String idType, String idNumber, String nationality,
+            String orgId, String hciCode) {
+        log.info(StringUtil.changeForLog("----- Param: " + orgId + " : " + hciCode + " : " + idType
+                + " : " + idNumber + " : " + nationality + " -----"));
+        if (StringUtil.isEmpty(orgId) || StringUtil.isEmpty(idType) || StringUtil.isEmpty(idNumber)
+                || StringUtil.isEmpty(nationality) || StringUtil.isEmpty(hciCode)) {
+            return null;
+        }
+        return arFeClient.getArSuperDataSubmissionDtoDraftByConds(idType, idNumber, nationality, orgId, hciCode).getEntity();
+    }
+
+    @Override
+    public ArSuperDataSubmissionDto getArSuperDataSubmissionDtoDraftByConds(String orgId, String submissionType, String hciCode) {
+        log.info(StringUtil.changeForLog("----- Param: " + orgId + " : " + submissionType + " : " + hciCode + " -----"));
+        if (StringUtil.isEmpty(orgId) || StringUtil.isEmpty(submissionType)) {
+            return null;
+        }
+        if (DataSubmissionConsts.AR_TYPE_SBT_PATIENT_INFO.equals(submissionType)) {
+            hciCode = null;
+        }
+        return arFeClient.getArSuperDataSubmissionDtoDraftByConds(orgId, submissionType, hciCode).getEntity();
+    }
+
+    @Override
+    public void deleteArSuperDataSubmissionDtoDraftByConds(String idType, String idNumber, String nationality,
+            String orgId, String hciCode) {
+        log.info("----- Delete Param: " + orgId + " : " + hciCode + " : " + idType + " : " + idNumber + " : "
+                + nationality + " -----");
+        if (StringUtil.isEmpty(orgId) || StringUtil.isEmpty(idType) || StringUtil.isEmpty(idNumber)
+                || StringUtil.isEmpty(nationality) || StringUtil.isEmpty(hciCode)) {
+            return;
+        }
+        arFeClient.deleteArSuperDataSubmissionDtoDraftByConds(idType, idNumber, nationality, orgId, hciCode);
+    }
+
+    @Override
+    public void deleteArSuperDataSubmissionDtoDraftByConds(String orgId, String submissionType, String hciCode) {
+        log.info("----- Delete Param: " + orgId + " : " + submissionType + " -----");
+        if (StringUtil.isEmpty(orgId) || StringUtil.isEmpty(submissionType)) {
+            return;
+        }
+        if (DataSubmissionConsts.AR_TYPE_SBT_PATIENT_INFO.equals(submissionType)) {
+            hciCode = null;
+        }
+        arFeClient.deleteArSuperDataSubmissionDtoDraftByConds(orgId, submissionType, hciCode);
     }
 
     @Override
@@ -153,8 +214,9 @@ public class ArDataSubmissionServiceImpl implements ArDataSubmissionService {
     }
 
     @Override
-    public ArSubFreezingStageDto setFreeCryoNumAndDate(ArSubFreezingStageDto arSubFreezingStageDto, String cryopreservedNum, String cryopreservationDate) {
-        if(!StringUtil.isEmpty(cryopreservedNum)) {
+    public ArSubFreezingStageDto setFreeCryoNumAndDate(ArSubFreezingStageDto arSubFreezingStageDto, String cryopreservedNum,
+            String cryopreservationDate) {
+        if (!StringUtil.isEmpty(cryopreservedNum)) {
             try {
                 int cryopreservedNo = Integer.parseInt(cryopreservedNum);
                 arSubFreezingStageDto.setCryopreservedNum(cryopreservedNo);
@@ -162,7 +224,7 @@ public class ArDataSubmissionServiceImpl implements ArDataSubmissionService {
                 log.info("Freezing invalid cryopreservedNum");
             }
         }
-        if(!StringUtil.isEmpty(cryopreservationDate)) {
+        if (!StringUtil.isEmpty(cryopreservationDate)) {
             try {
                 Date date = Formatter.parseDateTime(cryopreservationDate, AppConsts.DEFAULT_DATE_TIME_FORMAT);
                 arSubFreezingStageDto.setCryopreservedDate(date);
@@ -194,5 +256,6 @@ public class ArDataSubmissionServiceImpl implements ArDataSubmissionService {
         }
         return arSubFreezingStageDto;
     }
+
 
 }

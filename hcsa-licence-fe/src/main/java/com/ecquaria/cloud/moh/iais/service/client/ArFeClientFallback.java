@@ -17,7 +17,7 @@ import java.util.List;
  */
 public class ArFeClientFallback implements ArFeClient {
 
-    private FeignResponseEntity getFeignResponseEntity(){
+    private FeignResponseEntity getFeignResponseEntity() {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
@@ -26,11 +26,12 @@ public class ArFeClientFallback implements ArFeClient {
 
     @Override
     public FeignResponseEntity<PatientDto> getPatientDto(String idType, String idNumber, String nationality, String orgId) {
-       return getFeignResponseEntity();
+        return getFeignResponseEntity();
     }
 
     @Override
-    public FeignResponseEntity<CycleStageSelectionDto> getCycleStageSelectionDtoByConds(String idType, String idNumber, String nationality,
+    public FeignResponseEntity<CycleStageSelectionDto> getCycleStageSelectionDtoByConds(String idType, String idNumber,
+            String nationality,
             String orgId, String hciCode) {
         return getFeignResponseEntity();
     }
@@ -90,8 +91,39 @@ public class ArFeClientFallback implements ArFeClient {
             ArSuperDataSubmissionDto arSuperDataSubmissionDto) {
         return getFeignResponseEntity();
     }
+
     @Override
-    public FeignResponseEntity<ArSuperDataSubmissionDto> doUpdateDataSubmissionDraft(ArSuperDataSubmissionDto arSuperDataSubmissionDto) {
+    public FeignResponseEntity<ArSuperDataSubmissionDto> doUpdateDataSubmissionDraft(
+            ArSuperDataSubmissionDto arSuperDataSubmissionDto) {
         return getFeignResponseEntity();
     }
+
+    @Override
+    public FeignResponseEntity<ArSuperDataSubmissionDto> getArSuperDataSubmissionDtoDraftById(String id) {
+        return getFeignResponseEntity();
+    }
+
+    @Override
+    public FeignResponseEntity<ArSuperDataSubmissionDto> getArSuperDataSubmissionDtoDraftByConds(String idType, String idNumber,
+            String nationality, String orgId, String hciCode) {
+        return getFeignResponseEntity();
+    }
+
+    @Override
+    public FeignResponseEntity<ArSuperDataSubmissionDto> getArSuperDataSubmissionDtoDraftByConds(String orgId, String submissionType,
+            String hciCode) {
+        return getFeignResponseEntity();
+    }
+
+    @Override
+    public FeignResponseEntity<Void> deleteArSuperDataSubmissionDtoDraftByConds(String idType, String idNumber, String nationality,
+            String orgId, String hciCode) {
+        return getFeignResponseEntity();
+    }
+
+    @Override
+    public FeignResponseEntity<Void> deleteArSuperDataSubmissionDtoDraftByConds(String orgId, String submissionType, String hciCode) {
+        return getFeignResponseEntity();
+    }
+
 }

@@ -12,8 +12,17 @@
     </div>
 </div>
 <input type="hidden" id="saveDraftSuccess" value="${saveDraftSuccess}">
-<iais:confirm msg="This application has been saved successfully" callBack="cancel()" popupOrder="saveDraft" yesBtnDesc="continue"
-              cancelBtnDesc="exit to inbox" cancelBtnCls="btn btn-primary" yesBtnCls="btn btn-secondary" cancelFunc="jumpPage()" />
+<iais:confirm msg="This application has been saved successfully" callBack="cancelDraft();" popupOrder="saveDraft" yesBtnDesc="continue"
+              cancelBtnDesc="exit to inbox" cancelBtnCls="btn btn-primary" yesBtnCls="btn btn-secondary" cancelFunc="jumpToInbox()" />
 <%-- validation --%>
 <%@ include file="/WEB-INF/jsp/include/validation.jsp" %>
 <%@ include file="formHidden.jsp" %>
+<script>
+    function cancelDraft() {
+        $('#saveDraft').modal('hide');
+    }
+
+    function jumpToInbox() {
+        docuemt.href = "/main-web/eservice/INTERNET/MohInternetInbox";
+    }
+</script>

@@ -11,10 +11,13 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInfoDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant;
+import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.ControllerHelper;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
+import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.client.GenerateIdClient;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.PatientService;
 import lombok.extern.slf4j.Slf4j;
@@ -22,6 +25,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -62,7 +66,12 @@ public class PatientDelegator extends CommonDelegator {
     @Override
     public void pageAction(BaseProcessClass bpc) {
         PatientInfoDto patientInfo = getPatientInfoFromPage(bpc.request);
-        validatePageData(bpc.request, patientInfo, "AR", ACTION_TYPE_CONFIRM);
+        String actionType = ParamUtil.getString(bpc.request, DataSubmissionConstant.CRUD_TYPE);
+        if (ACTION_TYPE_DRAFT.equals(actionType)) {
+            // validatePageForDraft(patientInfo.getPatient(), bpc.request);
+        } else {
+            validatePageData(bpc.request, patientInfo, "save", ACTION_TYPE_CONFIRM);
+        }
     }
 
     private PatientInfoDto getPatientInfoFromPage(HttpServletRequest request) {
@@ -142,5 +151,14 @@ public class PatientDelegator extends CommonDelegator {
         cycleDto.setCycleType(DataSubmissionConsts.DATA_SUBMISSION_CYCLE_STAGE_PATIENT);
         return cycleDto;
     }
+
+    /*private void validatePageForDraft(PatientDto patient, HttpServletRequest request) {
+        ValidationResult validationResult = WebValidationHelper.validateProperty(patient, "ART");
+        if (validationResult != null && validationResult.isHasErrors()) {
+            Map<String, String> errorMap = validationResult.retrieveAll();
+            ParamUtil.setRequestAttr(request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
+            ParamUtil.setRequestAttr(request, IaisEGPConstant.CRUD_ACTION_TYPE, ACTION_TYPE_PAGE);
+        }
+    }*/
 
 }

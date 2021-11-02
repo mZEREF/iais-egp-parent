@@ -496,7 +496,7 @@ function toggleOnCheck(sel, elem, hide) {
 }
 
 function checkMantory(sel, targetLabel, val) {
-    console.log("checkEthinicGroupMantory");
+    console.log("checkMantory");
     var $selector = $(sel);
     if ($selector.length == 0) {
         $selector = $('#' + sel);

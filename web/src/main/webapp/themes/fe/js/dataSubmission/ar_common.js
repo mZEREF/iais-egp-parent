@@ -1,9 +1,6 @@
 $(document).ready(function() {
-    if($('#saveDraftSuccess').val()=='success'){
+    if($('#saveDraftSuccess').val()=='success' && $('#saveDraft').length > 0){
         $('#saveDraft').modal('show');
-    }
-    function cancel() {
-        $('#saveDraft').modal('hide');
     }
     // draft modal
     var $draft = $("#_draftModal");
@@ -62,6 +59,14 @@ $(document).ready(function() {
     }
 });
 
+function cancelDraft() {
+    $('#saveDraft').modal('hide');
+}
+
+function jumpToInbox() {
+    docuemt.href = "/main-web/eservice/INTERNET/MohInternetInbox";
+}
+
 function submit(action,value,additional){
     $("[name='crud_type']").val(action);
     $("[name='crud_action_value']").val(value);
@@ -69,17 +74,4 @@ function submit(action,value,additional){
     var mainForm = document.getElementById('mainForm');
     showWaiting();
     mainForm.submit();
-}
-
-function checkEthinicGroupMantory(nationTag, ethinicGroupLabel) {
-    console.log("checkEthinicGroupMantory");
-    var $selector = $(nationTag);
-    var $target = $(ethinicGroupLabel);
-    if ($selector.length <= 0 || $target.length <= 0) {
-        return;
-    }
-    $target.find('.mandatory').remove();
-    if ('NAT0001' == $selector.val()) {
-        $target.append('<span class="mandatory">*</span>');
-    }
 }
