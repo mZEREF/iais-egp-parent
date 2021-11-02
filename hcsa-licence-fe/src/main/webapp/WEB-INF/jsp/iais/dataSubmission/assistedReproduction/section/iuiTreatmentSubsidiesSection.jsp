@@ -11,37 +11,22 @@
             <div class="panel-main-content form-horizontal">
                 <c:set var="iuiTreatmentSubsidiesDto" value="${arSuperDataSubmissionDto.iuiTreatmentSubsidiesDto}" />
                 <iais:row>
-                    <iais:field width="6" value="Please indicate IUI Co-funding?" mandatory="true"/>
-                    <iais:value width="3" cssClass="col-md-3">
-                        <c:forEach items="${pleaseIndicateIuiCoFunding}" var="pleaseIndicateIuiCoFund">
-                        <div class="form-check">
-                            <input class="form-check-input"
-                                   type="radio"
-                                   name="indicateCoFunding"
-                                   value="1"
-                                   id="radiofunding"
-                                   <c:if test="${iuiTreatmentSubsidiesDto.artCoFunding}">checked</c:if>
-                                   aria-invalid="false">
-                            <label class="form-check-label"
-                                   for="radiofunding"><span
-                                    class="check-circle"></span>${pleaseIndicateIuiCoFund.artCoFunding}</label>
-                        </div>
-                        </c:forEach>
-                    </iais:value>
-                    <iais:value width="3" cssClass="col-md-3">
-                        <c:forEach items="${pleaseIndicateIuiCoFunding}" var="pleaseIndicateIuiCoFund">
-                        <div class="form-check">
-                            <input class="form-check-input"
-                                   type="radio"
-                                   name="indicateCoFunding"
-                                   value="0"
-                                   id="radioSubsidy"
-                                   <c:if test="${!iuiTreatmentSubsidiesDto.artCoFunding}">checked</c:if>
-                                   aria-invalid="false">
-                            <label class="form-check-label"
-                                   for="radioSubsidy"><span
-                                    class="check-circle"></span>${pleaseIndicateIuiCoFund.artCoFunding}</label>
-                        </div>
+                    <iais:field width="5" value="Please indicate IUI Co-funding?" mandatory="true"/>
+                    <iais:value width="7" cssClass="col-md-7">
+                        <c:forEach items="${pleaseIndicateIuiCoFunding}" var="pleaseIndicateIui">
+                            <c:set var="pleaseIndicateIuiCode" value="${pleaseIndicateIui.code}"/>
+                            <div class="form-check col-xs-7">
+                                <input class="form-check-input"
+                                       type="radio"
+                                       name="pleaseIndicateIui"
+                                       value="${pleaseIndicateIuiCode}"
+                                       id="pleaseIndicateIuiCoFundCheck${pleaseIndicateIuiCode}"
+                                       <c:if test="${iuiTreatmentSubsidiesDto.artCoFunding}">checked</c:if>
+                                       aria-invalid="false">
+                                <label class="form-check-label"
+                                       for="pleaseIndicateIuiCoFundCheck${pleaseIndicateIuiCode}"><span>
+                                    class="check-circle"></span>${pleaseIndicateIui.codeValue}</label>
+                            </div>
                         </c:forEach>
                     </iais:value>
                 </iais:row>
