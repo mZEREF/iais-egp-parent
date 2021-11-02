@@ -8,6 +8,7 @@ import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidat
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Date;
 import java.util.Map;
 import java.util.regex.Pattern;
 
@@ -27,17 +28,22 @@ public class ArSubFreezingValidator implements CustomizeValidator {
             ArSubFreezingStageDto arSubFreezingStageDto = arSuperDataSubmission.getArSubFreezingStageDto();
             if(arSubFreezingStageDto != null) {
                 String cryopreservedNum = arSubFreezingStageDto.getCryopreservedNum() + "";
+                Date cryopreservedDate = arSubFreezingStageDto.getCryopreservedDate();
                 Map<String, String> errMap = IaisCommonUtils.genNewHashMap();
-                if (StringUtil.isEmpty(cryopreservedNum)){
-                    return null;
+                if(cryopreservedDate != null) {
+                    if(cryopreservedDate.after(new Date())) {
+                        errMap.put("cryopreservedDate", "DS_ERR010");
+                    }
                 }
-                if (cryopreservedNum.length() > 2) {
-                    errMap.put("cryopreservedNum", "DS_ERR009");
-                }
-                Pattern pattern = compile("[0-9]*");
-                boolean hoursFlag = pattern.matcher(cryopreservedNum).matches();
-                if (!hoursFlag) {
-                    errMap.put("cryopreservedNum", "GENERAL_ERR0002");
+                if (!StringUtil.isEmpty(cryopreservedNum)){
+                    if (cryopreservedNum.length() > 2) {
+                        errMap.put("cryopreservedNum", "DS_ERR009");
+                    }
+                    Pattern pattern = compile("(-?[1-9]\\\\d*)|0");
+                    boolean hoursFlag = pattern.matcher(cryopreservedNum).matches();
+                    if (!hoursFlag) {
+                        errMap.put("cryopreservedNum", "GENERAL_ERR0002");
+                    }
                 }
             }
         }
