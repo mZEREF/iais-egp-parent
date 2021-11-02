@@ -42,19 +42,28 @@ public class IuiTreatmentSubsidiesDelegator extends CommonDelegator {
     @Override
     public void prepareConfim(BaseProcessClass bpc) {
 
+
     }
 
     @Override
+
     public void pageAction(BaseProcessClass bpc) {
+        HttpServletRequest request=bpc.request;
         ArSuperDataSubmissionDto arSuperDataSubmissionDto= DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
         IuiTreatmentSubsidiesDto iuiTreatmentSubsidiesDto=arSuperDataSubmissionDto.getIuiTreatmentSubsidiesDto();
-        HttpServletRequest request=bpc.request;
+        if(iuiTreatmentSubsidiesDto == null) {
+            iuiTreatmentSubsidiesDto = new IuiTreatmentSubsidiesDto();
+        }
         String pleaseIndicateIui =  ParamUtil.getString(request, "pleaseIndicateIui");
         iuiTreatmentSubsidiesDto.setArtCoFunding(pleaseIndicateIui);
-        iuiTreatmentSubsidiesDto.setSubmissionId(MasterCodeUtil.CATE_ID_EFO_REASON);
+
+        arSuperDataSubmissionDto.setIuiTreatmentSubsidiesDto(iuiTreatmentSubsidiesDto);
+
+        ParamUtil.setSessionAttr(bpc.request, DataSubmissionConstant.AR_DATA_SUBMISSION, arSuperDataSubmissionDto);
+
         ValidationResult validationResult = WebValidationHelper.validateProperty(iuiTreatmentSubsidiesDto, "save");
         Map<String, String> errorMap = validationResult.retrieveAll();
-        ParamUtil.setSessionAttr(bpc.request, DataSubmissionConstant.AR_DATA_SUBMISSION, arSuperDataSubmissionDto);
+
         if (!errorMap.isEmpty() || validationResult.isHasErrors()) {
             WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));

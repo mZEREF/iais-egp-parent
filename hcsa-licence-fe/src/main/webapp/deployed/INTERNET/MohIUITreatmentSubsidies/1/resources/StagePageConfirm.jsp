@@ -1,1 +1,1 @@
-<%@include file="/WEB-INF/jsp/iais/dataSubmission/assistedReproduction/prevviewIuiTreatmentSubsidies.jsp"%>
+<%@include file="/WEB-INF/jsp/iais/dataSubmission/assistedReproduction/previewIuiTreatmentSubsidies.jsp"%>

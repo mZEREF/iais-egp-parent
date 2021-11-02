@@ -11,13 +11,10 @@
         <div class="panel-body">
             <div class="panel-main-content form-horizontal">
                 <iais:row>
-                    <label class="col-xs-6 col-md-6 ">Please indicate IUI Co-funding</label>
-                    <label class="col-xs-6 col-md-6">
-                        <c:if test="${arSuperDataSubmissionDto.iuiTreatmentSubsidiesDto.artCoFunding ==1 }">
-                            <label class="form-check-label" >No Co-funding</label></c:if>
-                        <c:if test="${arSuperDataSubmissionDto.iuiTreatmentSubsidiesDto.artCoFunding ==0 }">
-                            <label class="form-check-label" >IUI Cycle Subsidy</label></c:if>
-                    </label>
+                    <iais:field width="5" value="Please indicate IUI Co-funding"/>
+                    <iais:value width="7" cssClass="col-md-7">
+                         <iais:code code="${PICF}"/>
+                    </iais:value>
                 </iais:row>
             </div>
         </div>

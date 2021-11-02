@@ -21,7 +21,7 @@
                                        name="pleaseIndicateIui"
                                        value="${pleaseIndicateIuiValue}"
                                        id="pleaseIndicateIuiCoFundCheck${pleaseIndicateIuiCode}"
-                                       <c:if test="${iuiTreatmentSubsidiesDto.artCoFunding}">checked</c:if>
+                                       <c:if test="${iuiTreatmentSubsidiesDto.pleaseIndicateIui ge pleaseIndicateIuiValue}">checked</c:if>
                                        aria-invalid="false">
                                 <label class="form-check-label">
                                     <span class="check-circle" for="radioNo"></span>
