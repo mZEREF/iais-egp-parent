@@ -15,7 +15,7 @@ $(document).ready(function() {
     if (isEmpty(currPage)) {
         currPage = "";
     } else if ('ar-submission' == currPage) {
-        clearFields('#accordion');
+        // clearFields('#accordion');
     }
     if ($('#backBtn').length > 0) {
         $('#backBtn').click(function () {
