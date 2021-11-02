@@ -71,10 +71,10 @@ public class TransferRequestDto {
         for (int i = 0; i < amt; i++) {
             TransferList transferList = new TransferList();
             transferList.setScheduleType(ParamUtil.getString(request,KEY_PREFIX_SCHEDULE_TYPE+SEPARATOR+i));
-            transferList.setScheduleType(ParamUtil.getString(request,KEY_PREFIX_BAT_CODE+SEPARATOR+i));
-            transferList.setScheduleType(ParamUtil.getString(request,KEY_PREFIX_EXPECTED_BAT_QTY+SEPARATOR+i));
-            transferList.setScheduleType(ParamUtil.getString(request,KEY_PREFIX_RECEIVE_QTY +SEPARATOR+i));
-            transferList.setScheduleType(ParamUtil.getString(request,KEY_PREFIX_MEASUREMENT_UNIT+SEPARATOR+i));
+            transferList.setBatCode(ParamUtil.getString(request,KEY_PREFIX_BAT_CODE+SEPARATOR+i));
+            transferList.setExpectedBatQty(ParamUtil.getString(request,KEY_PREFIX_EXPECTED_BAT_QTY+SEPARATOR+i));
+            transferList.setReceivedQty(ParamUtil.getString(request,KEY_PREFIX_RECEIVE_QTY +SEPARATOR+i));
+            transferList.setMeaUnit(ParamUtil.getString(request,KEY_PREFIX_MEASUREMENT_UNIT+SEPARATOR+i));
             addTransferLists(transferList);
         }
 

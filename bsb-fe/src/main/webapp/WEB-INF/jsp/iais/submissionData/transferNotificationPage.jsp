@@ -79,7 +79,7 @@
                                             <iais:value width="11">
                                                 <input type="number" name="transferQty" id="transferQty" value=""
                                                        maxlength="11"
-                                                       οninput="this.value=this.value.replace(/\D*(\d*)(\.?)(\d{0,3})\d*/,'$1$2$3')">
+                                                       oninput="this.value=this.value.replace(/\D*(\d*)(\.?)(\d{0,3})\d*/,'$1$2$3')">
                                                 <span class="error-msg" name="errorMsg" id="error_TransferQty"></span>
                                             </iais:value>
                                         </iais:row>
@@ -115,7 +115,7 @@
                                         <iais:value width="11">
                                             <iais:datePicker id="expectedTransferDate"
                                                              name="exexpectedTransferDateportDate"
-                                                             dateVal=""></iais:datePicker>
+                                                             dateVal=""/>
                                             <span class="error-msg" name="errorMsg"
                                                   id="error_expectedTransferDate"></span>
                                         </iais:value>
@@ -134,19 +134,19 @@
                                         <iais:field value="Name of Courier Service Provider" width="11"
                                                     required="true"/>
                                         <iais:value width="11">
-                                            <input type="text" name="providerName" id="providerName"
-                                                   maxlength="100" value="">
+                                            <label for="providerName"></label><input type="text" name="providerName" id="providerName"
+                                                                                     maxlength="100" value=""/>
                                             <span class="error-msg" name="errorMsg" id="error_providerName"></span>
                                         </iais:value>
                                     </iais:row>
                                     <iais:row>
                                         <iais:field value="Remarks" width="11" required="false"/>
                                         <iais:value width="11">
-                                            <textarea id="remarks"
-                                                      style="width: 100%;margin-bottom: 15px;"
-                                                      rows="6"
-                                                      name="remarks"
-                                                      maxlength="500"></textarea>
+                                            <label for="remarks"></label><textarea id="remarks"
+                                                                                   style="width: 100%;margin-bottom: 15px;"
+                                                                                   rows="6"
+                                                                                   name="remarks"
+                                                                                   maxlength="500"></textarea>
                                             <span class="error-msg" name="errorMsg" id="error_remarks"></span>
                                         </iais:value>
                                     </iais:row>

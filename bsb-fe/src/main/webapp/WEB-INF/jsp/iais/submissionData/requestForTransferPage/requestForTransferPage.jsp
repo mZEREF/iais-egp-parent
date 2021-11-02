@@ -58,10 +58,10 @@
                                 </div>
                                 <div class="tab-content">
                                     <div class="tab-pane active" id="tabFacInfo" role="tabpanel">
-                                        <%@include file="requestForTransferPage/facilityInfo.jsp" %>
+                                        <%@include file="facilityInfo.jsp" %>
                                     </div>
                                     <div class="tab-pane" id="tabBat" role="tabpanel">
-                                        <%@include file="requestForTransferPage/bat.jsp" %>
+                                        <%@include file="bat.jsp" %>
                                     </div>
                                 </div>
                             </div>
@@ -72,7 +72,7 @@
         </div>
     </div>
 </div>
-    <div class="row">
+    <div class="row" style="margin-bottom: 20px">
         <div class="container">
             <div class="col-xs-12 col-md-6 text-left">
                 <a class="back" href="#"><em class="fa fa-angle-left"></em> Back</a>
