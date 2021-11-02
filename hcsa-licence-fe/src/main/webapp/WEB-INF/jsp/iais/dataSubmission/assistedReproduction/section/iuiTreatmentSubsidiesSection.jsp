@@ -12,20 +12,20 @@
                 <c:set var="iuiTreatmentSubsidiesDto" value="${arSuperDataSubmissionDto.iuiTreatmentSubsidiesDto}" />
                 <iais:row>
                     <iais:field width="5" value="Please indicate IUI Co-funding?" mandatory="true"/>
-                    <iais:value width="7" cssClass="col-md-7">
+                    <iais:value width="3" cssClass="col-md-3">
                         <c:forEach items="${pleaseIndicateIuiCoFunding}" var="pleaseIndicateIui">
-                            <c:set var="pleaseIndicateIuiCode" value="${pleaseIndicateIui.code}"/>
-                            <div class="form-check col-xs-7">
+                            <c:set var="pleaseIndicateIuiValue" value="${pleaseIndicateIui.value}"/>
+                            <div class="form-check">
                                 <input class="form-check-input"
                                        type="radio"
                                        name="pleaseIndicateIui"
-                                       value="${pleaseIndicateIuiCode}"
+                                       value="${pleaseIndicateIuiValue}"
                                        id="pleaseIndicateIuiCoFundCheck${pleaseIndicateIuiCode}"
                                        <c:if test="${iuiTreatmentSubsidiesDto.artCoFunding}">checked</c:if>
                                        aria-invalid="false">
-                                <label class="form-check-label"
-                                       for="pleaseIndicateIuiCoFundCheck${pleaseIndicateIuiCode}"><span>
-                                    class="check-circle"></span>${pleaseIndicateIui.codeValue}</label>
+                                <label class="form-check-label">
+                                    <span>class="check-circle"></span><c:out value="${pleaseIndicateIui.text}"></c:out>
+                                </label>
                             </div>
                         </c:forEach>
                     </iais:value>
