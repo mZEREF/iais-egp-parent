@@ -11,7 +11,7 @@
             <div class="panel-main-content form-horizontal">
                 <c:set var="iuiTreatmentSubsidiesDto" value="${arSuperDataSubmissionDto.iuiTreatmentSubsidiesDto}" />
                 <iais:row>
-                    <iais:field width="5" value="Please indicate IUI Co-funding?" mandatory="true"/>
+                    <iais:field value="Please indicate IUI Co-funding?" mandatory="true"/>
                     <iais:value width="3" cssClass="col-md-3">
                         <c:forEach items="${pleaseIndicateIuiCoFunding}" var="pleaseIndicateIui">
                             <c:set var="pleaseIndicateIuiValue" value="${pleaseIndicateIui.value}"/>
@@ -24,7 +24,8 @@
                                        <c:if test="${iuiTreatmentSubsidiesDto.artCoFunding}">checked</c:if>
                                        aria-invalid="false">
                                 <label class="form-check-label">
-                                    <span>class="check-circle"></span><c:out value="${pleaseIndicateIui.text}"></c:out>
+                                    <span class="check-circle" for="radioNo"></span>
+                                    <c:out value="${pleaseIndicateIui.text}"></c:out>
                                 </label>
                             </div>
                         </c:forEach>

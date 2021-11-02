@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.action.datasubmission;
 
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.IuiTreatmentSubsidiesDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -15,6 +16,7 @@ import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
+import java.util.List;
 import java.util.Map;
 
 @Delegator("iuiTreatmentSubsidiesDelegator")
@@ -32,16 +34,8 @@ public class IuiTreatmentSubsidiesDelegator extends CommonDelegator {
 
     @Override
     public void prepareSwitch(BaseProcessClass bpc) {
-
-    }
-
-    @Override
-    public void returnStep(BaseProcessClass bpc) {
-
-    }
-
-    @Override
-    public void preparePage(BaseProcessClass bpc) {
+        List<SelectOption> SelectOptions = (List<SelectOption>)ParamUtil.getSessionAttr(bpc.request, PLEASE_INDICATE_IUI_CO_FUNDING);
+        ParamUtil.setSessionAttr(bpc.request, PLEASE_INDICATE_IUI_CO_FUNDING, (Serializable) MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.PLEASE_INDICATE_IUI_CO_FUNDING));
 
     }
 
@@ -51,22 +45,12 @@ public class IuiTreatmentSubsidiesDelegator extends CommonDelegator {
     }
 
     @Override
-    public void draft(BaseProcessClass bpc) {
-
-    }
-
-    @Override
-    public void submission(BaseProcessClass bpc) {
-
-    }
-
-    @Override
     public void pageAction(BaseProcessClass bpc) {
         ArSuperDataSubmissionDto arSuperDataSubmissionDto= DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
         IuiTreatmentSubsidiesDto iuiTreatmentSubsidiesDto=arSuperDataSubmissionDto.getIuiTreatmentSubsidiesDto();
         HttpServletRequest request=bpc.request;
-        String indicateCoFunding =  ParamUtil.getString(request, "indicateCoFunding");
-        iuiTreatmentSubsidiesDto.setArtCoFunding(indicateCoFunding);
+        String pleaseIndicateIui =  ParamUtil.getString(request, "pleaseIndicateIui");
+        iuiTreatmentSubsidiesDto.setArtCoFunding(pleaseIndicateIui);
         iuiTreatmentSubsidiesDto.setSubmissionId(MasterCodeUtil.CATE_ID_EFO_REASON);
         ValidationResult validationResult = WebValidationHelper.validateProperty(iuiTreatmentSubsidiesDto, "save");
         Map<String, String> errorMap = validationResult.retrieveAll();
