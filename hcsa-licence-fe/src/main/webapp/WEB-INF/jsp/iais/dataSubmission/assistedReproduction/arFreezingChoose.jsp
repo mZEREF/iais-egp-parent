@@ -68,11 +68,12 @@
                     <span class="error-msg" name="iaisErrorMsg" id="error_cryopreservedDate"></span>
                   </iais:row>
                 </div>
-                <%@include file="common/arFooter.jsp" %>
               </div>
             </div>
           </div>
+          <%@include file="common/arDeclaration.jsp" %>
         </div>
+        <%@include file="common/arFooter.jsp" %>
       </div>
     </div>
   </div>

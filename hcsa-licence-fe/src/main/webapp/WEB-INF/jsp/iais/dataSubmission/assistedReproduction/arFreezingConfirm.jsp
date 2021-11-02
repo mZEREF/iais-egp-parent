@@ -63,11 +63,12 @@
                     </iais:value>
                   </iais:row>
                 </div>
-                <%@include file="common/arFooter.jsp" %>
               </div>
             </div>
           </div>
+          <%@include file="common/arDeclaration.jsp" %>
         </div>
+        <%@include file="common/arFooter.jsp" %>
       </div>
     </div>
   </div>
