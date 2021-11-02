@@ -5,6 +5,7 @@
 <%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
 <%@ taglib prefix="iais-bsb" uri="http://www.ecq.com/iais-bsb" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ page import="com.ecquaria.cloud.moh.iais.common.utils.MaskUtil" %>
 
 <%
     sop.webflow.rt.api.BaseProcessClass process =
@@ -48,6 +49,7 @@
                                                     <div class="form-horizontal">
                                                         <div id="sectionGroup">
                                                             <c:forEach var="info" items="${approvalProfile.batInfos}" varStatus="status">
+                                                                <input type="hidden" name="facilityBiologicalAgentEntityId--v--${status.index}" value="${MaskUtil.maskValue('facilityBiologicalAgentEntityId',info.facilityBiologicalAgentEntityId)}">
                                                                 <section id="approvalProfileSection--v--${status.index}">
                                                                     <div class="form-group ">
                                                                         <div class="col-sm-5 control-label">
@@ -63,7 +65,7 @@
                                                                             <span data-err-ind="batId--v--${status.index}" class="error-msg"></span>
                                                                         </div>
                                                                     </div>
-                                                                    <c:when test="${processType eq 'PROTYPE002' or processType eq 'PROTYPE003'}">
+                                                                    <c:if test="${processType eq 'PROTYPE002' or processType eq 'PROTYPE003'}">
                                                                         <div class="form-group">
                                                                             <div class="col-sm-5 control-label">
                                                                                 <label for="prodMaxVolumeLitres--v--${status.index}">Estimated maximum volume (in litres) of production at any one time</label>
@@ -84,7 +86,7 @@
                                                                                 <span data-err-ind="lspMethod--v--${status.index}" class="error-msg"></span>
                                                                             </div>
                                                                         </div>
-                                                                    </c:when>
+                                                                    </c:if>
                                                                     <div class="form-group ">
                                                                         <div class="col-sm-5 control-label">
                                                                             <label for="procurementMode--v--${status.index}">Mode of Procurement</label>
@@ -98,7 +100,7 @@
                                                                             <span data-err-ind="procurementMode--v--${status.index}" class="error-msg"></span>
                                                                         </div>
                                                                     </div>
-                                                                    <c:when test="${processType eq 'PROTYPE002' or processType eq 'PROTYPE003'}">
+                                                                    <c:if test="${processType eq 'PROTYPE002' or processType eq 'PROTYPE003'}">
                                                                         <div class="form-group">
                                                                             <div class="col-sm-5 control-label">
                                                                                 <label for="facilityNameOfTransfer--v--${status.index}">Transfer From Facility Name</label>
@@ -228,8 +230,8 @@
                                                                                 <span data-err-ind="courierServiceProviderName--v--${status.index}" class="error-msg"></span>
                                                                             </div>
                                                                         </div>
-                                                                    </c:when>
-                                                                    <c:when test="${processType eq 'PROTYPE004'}">
+                                                                    </c:if>
+                                                                    <c:if test="${processType eq 'PROTYPE004'}">
                                                                         <div class="form-group">
                                                                             <div class="col-sm-5 control-label">
                                                                                 <label for="prjName--v--${status.index}">Name of Project</label>
@@ -280,7 +282,7 @@
                                                                                 <span data-err-ind="endDate--v--${status.index}" class="error-msg"></span>
                                                                             </div>
                                                                         </div>
-                                                                    </c:when>
+                                                                    </c:if>
                                                                     <div class="form-group">
                                                                         <div class="col-sm-5 control-label">
                                                                             <label for="remarks--v--${status.index}">Remarks</label>

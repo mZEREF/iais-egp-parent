@@ -1,5 +1,6 @@
 package sg.gov.moh.iais.egp.bsb.dto.approval;
 
+import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -23,6 +24,8 @@ public class ApprovalProfileDto extends ValidatableNodeValue {
     @Data
     @NoArgsConstructor
     public static class BATInfo implements Serializable {
+        private String facilityBiologicalAgentEntityId;
+
         private String batId;
         private String batName;
         private String prodMaxVolumeLitres;
@@ -48,13 +51,13 @@ public class ApprovalProfileDto extends ValidatableNodeValue {
         private String workActivityIntended;
         private String startDate;
         private String endDate;
+
+        private String processType;
     }
 
     private List<BATInfo> batInfos;
 
     private String schedule;
-
-    private String processType;
 
     @JsonIgnore
     private ValidationResultDto validationResultDto;
@@ -97,14 +100,6 @@ public class ApprovalProfileDto extends ValidatableNodeValue {
         this.schedule = schedule;
     }
 
-    public String getProcessType() {
-        return processType;
-    }
-
-    public void setProcessType(String processType) {
-        this.processType = processType;
-    }
-
     public List<BATInfo> getBatInfos() {
         return new ArrayList<>(batInfos);
     }
@@ -133,31 +128,32 @@ public class ApprovalProfileDto extends ValidatableNodeValue {
 
     private static final String SEPARATOR = "--v--";
     private static final String KEY_SECTION_AMT = "sectionAmt";
+    private static final String KEY_PREFIX_FAC_BAT_ENTITY_ID = "facilityBiologicalAgentEntityId";
     private static final String KEY_PREFIX_BAT_ID = "batId";
     private static final String KEY_PREFIX_BAT_NAME = "batName";
-    private static final String KEY_PROD_MAX_VOLUME_LITRES = "prodMaxVolumeLitres";
-    private static final String KEY_LSP_METHOD = "lspMethod";
-    private static final String KEY_PROCUREMENT_MODE = "procurementMode";
-    private static final String KEY_FACILITY_NAME_OF_TRANSFER = "facilityNameOfTransfer";
-    private static final String KEY_EXPECTED_DATE_OF_IMPORT = "expectedDateOfImport";
-    private static final String KEY_CONTACT_PERSON_NAME_OF_TRANSFER = "contactPersonNameOfTransfer";
-    private static final String KEY_IMP_CTC_PERSON_NO = "impCtcPersonNo";
-    private static final String KEY_CONTACT_PERSON_EMAIL_OF_TRANSFER = "contactPersonEmailOfTransfer";
-    private static final String KEY_TRANSFER_FAC_ADDR_1 = "transferFacAddr1";
-    private static final String KEY_TRANSFER_FAC_ADDR_2 = "transferFacAddr2";
-    private static final String KEY_TRANSFER_FAC_ADDR_3 = "transferFacAddr3";
-    private static final String KEY_TRANSFER_COUNTRY = "transferCountry";
-    private static final String KEY_TRANSFER_CITY = "transferCity";
-    private static final String KEY_TRANSFER_STATE = "transferState";
-    private static final String KEY_TRANSFER_POSTAL_CODE = "transferPostalCode";
-    private static final String KEY_COURIER_SERVICE_PROVIDER_NAME = "courierServiceProviderName";
-    private static final String KEY_REMARKS = "remarks";
+    private static final String KEY_PREFIX_PROD_MAX_VOLUME_LITRES = "prodMaxVolumeLitres";
+    private static final String KEY_PREFIX_LSP_METHOD = "lspMethod";
+    private static final String KEY_PREFIX_PROCUREMENT_MODE = "procurementMode";
+    private static final String KEY_PREFIX_FACILITY_NAME_OF_TRANSFER = "facilityNameOfTransfer";
+    private static final String KEY_PREFIX_EXPECTED_DATE_OF_IMPORT = "expectedDateOfImport";
+    private static final String KEY_PREFIX_CONTACT_PERSON_NAME_OF_TRANSFER = "contactPersonNameOfTransfer";
+    private static final String KEY_PREFIX_IMP_CTC_PERSON_NO = "impCtcPersonNo";
+    private static final String KEY_PREFIX_CONTACT_PERSON_EMAIL_OF_TRANSFER = "contactPersonEmailOfTransfer";
+    private static final String KEY_PREFIX_TRANSFER_FAC_ADDR_1 = "transferFacAddr1";
+    private static final String KEY_PREFIX_TRANSFER_FAC_ADDR_2 = "transferFacAddr2";
+    private static final String KEY_PREFIX_TRANSFER_FAC_ADDR_3 = "transferFacAddr3";
+    private static final String KEY_PREFIX_TRANSFER_COUNTRY = "transferCountry";
+    private static final String KEY_PREFIX_TRANSFER_CITY = "transferCity";
+    private static final String KEY_PREFIX_TRANSFER_STATE = "transferState";
+    private static final String KEY_PREFIX_TRANSFER_POSTAL_CODE = "transferPostalCode";
+    private static final String KEY_PREFIX_COURIER_SERVICE_PROVIDER_NAME = "courierServiceProviderName";
+    private static final String KEY_PREFIX_REMARKS = "remarks";
 
-    private static final String KEY_PRJ_NAME = "prjName";
-    private static final String KEY_PRINCIPAL_INVESTIGATOR_NAME = "principalInvestigatorName";
-    private static final String KEY_WORK_ACTIVITY_INTENDED = "workActivityIntended";
-    private static final String KEY_START_DATE = "startDate";
-    private static final String KEY_END_DATE = "endDate";
+    private static final String KEY_PREFIX_PRJ_NAME = "prjName";
+    private static final String KEY_PREFIX_PRINCIPAL_INVESTIGATOR_NAME = "principalInvestigatorName";
+    private static final String KEY_PREFIX_WORK_ACTIVITY_INTENDED = "workActivityIntended";
+    private static final String KEY_PREFIX_START_DATE = "startDate";
+    private static final String KEY_PREFIX_END_DATE = "endDate";
 
     private static final String PROCESS_TYPE = "processType";
 
@@ -166,33 +162,36 @@ public class ApprovalProfileDto extends ValidatableNodeValue {
         int amt = ParamUtil.getInt(request, KEY_SECTION_AMT);
         for (int i = 0; i < amt; i++) {
             BATInfo info = new BATInfo();
+            String maskFacilityBiologicalAgentEntityId = ParamUtil.getString(request, KEY_PREFIX_FAC_BAT_ENTITY_ID + SEPARATOR + i);
+            String newFacilityBiologicalAgentEntityId = MaskUtil.unMaskValue(KEY_PREFIX_FAC_BAT_ENTITY_ID, maskFacilityBiologicalAgentEntityId);
+            info.setFacilityBiologicalAgentEntityId(newFacilityBiologicalAgentEntityId);
             info.setBatId(ParamUtil.getString(request, KEY_PREFIX_BAT_ID + SEPARATOR +i));
             info.setBatName(ParamUtil.getString(request, KEY_PREFIX_BAT_NAME + SEPARATOR +i));
-            info.setProdMaxVolumeLitres(ParamUtil.getString(request, KEY_PROD_MAX_VOLUME_LITRES + SEPARATOR +i));
-            info.setLspMethod(ParamUtil.getString(request, KEY_LSP_METHOD + SEPARATOR +i));
-            info.setProcurementMode(ParamUtil.getString(request, KEY_PROCUREMENT_MODE + SEPARATOR +i));
-            info.setFacilityNameOfTransfer(ParamUtil.getString(request, KEY_FACILITY_NAME_OF_TRANSFER + SEPARATOR +i));
-            info.setExpectedDateOfImport(ParamUtil.getString(request, KEY_EXPECTED_DATE_OF_IMPORT + SEPARATOR +i));
-            info.setContactPersonNameOfTransfer(ParamUtil.getString(request, KEY_CONTACT_PERSON_NAME_OF_TRANSFER + SEPARATOR +i));
-            info.setImpCtcPersonNo(ParamUtil.getString(request, KEY_IMP_CTC_PERSON_NO + SEPARATOR +i));
-            info.setContactPersonEmailOfTransfer(ParamUtil.getString(request, KEY_CONTACT_PERSON_EMAIL_OF_TRANSFER + SEPARATOR +i));
-            info.setTransferFacAddr1(ParamUtil.getString(request, KEY_TRANSFER_FAC_ADDR_1 + SEPARATOR +i));
-            info.setTransferFacAddr2(ParamUtil.getString(request, KEY_TRANSFER_FAC_ADDR_2 + SEPARATOR +i));
-            info.setTransferFacAddr3(ParamUtil.getString(request, KEY_TRANSFER_FAC_ADDR_3 + SEPARATOR +i));
-            info.setTransferCountry(ParamUtil.getString(request, KEY_TRANSFER_COUNTRY + SEPARATOR +i));
-            info.setTransferCity(ParamUtil.getString(request, KEY_TRANSFER_CITY + SEPARATOR +i));
-            info.setTransferState(ParamUtil.getString(request, KEY_TRANSFER_STATE + SEPARATOR +i));
-            info.setTransferPostalCode(ParamUtil.getString(request, KEY_TRANSFER_POSTAL_CODE + SEPARATOR +i));
-            info.setCourierServiceProviderName(ParamUtil.getString(request, KEY_COURIER_SERVICE_PROVIDER_NAME + SEPARATOR +i));
-            info.setRemarks(ParamUtil.getString(request, KEY_REMARKS + SEPARATOR +i));
-            info.setPrjName(ParamUtil.getString(request, KEY_PRJ_NAME + SEPARATOR +i));
-            info.setPrincipalInvestigatorName(ParamUtil.getString(request, KEY_PRINCIPAL_INVESTIGATOR_NAME + SEPARATOR +i));
-            info.setWorkActivityIntended(ParamUtil.getString(request, KEY_WORK_ACTIVITY_INTENDED + SEPARATOR +i));
-            info.setStartDate(ParamUtil.getString(request, KEY_START_DATE + SEPARATOR +i));
-            info.setEndDate(ParamUtil.getString(request, KEY_END_DATE + SEPARATOR +i));
+            info.setProdMaxVolumeLitres(ParamUtil.getString(request, KEY_PREFIX_PROD_MAX_VOLUME_LITRES + SEPARATOR +i));
+            info.setLspMethod(ParamUtil.getString(request, KEY_PREFIX_LSP_METHOD + SEPARATOR +i));
+            info.setProcurementMode(ParamUtil.getString(request, KEY_PREFIX_PROCUREMENT_MODE + SEPARATOR +i));
+            info.setFacilityNameOfTransfer(ParamUtil.getString(request, KEY_PREFIX_FACILITY_NAME_OF_TRANSFER + SEPARATOR +i));
+            info.setExpectedDateOfImport(ParamUtil.getString(request, KEY_PREFIX_EXPECTED_DATE_OF_IMPORT + SEPARATOR +i));
+            info.setContactPersonNameOfTransfer(ParamUtil.getString(request, KEY_PREFIX_CONTACT_PERSON_NAME_OF_TRANSFER + SEPARATOR +i));
+            info.setImpCtcPersonNo(ParamUtil.getString(request, KEY_PREFIX_IMP_CTC_PERSON_NO + SEPARATOR +i));
+            info.setContactPersonEmailOfTransfer(ParamUtil.getString(request, KEY_PREFIX_CONTACT_PERSON_EMAIL_OF_TRANSFER + SEPARATOR +i));
+            info.setTransferFacAddr1(ParamUtil.getString(request, KEY_PREFIX_TRANSFER_FAC_ADDR_1 + SEPARATOR +i));
+            info.setTransferFacAddr2(ParamUtil.getString(request, KEY_PREFIX_TRANSFER_FAC_ADDR_2 + SEPARATOR +i));
+            info.setTransferFacAddr3(ParamUtil.getString(request, KEY_PREFIX_TRANSFER_FAC_ADDR_3 + SEPARATOR +i));
+            info.setTransferCountry(ParamUtil.getString(request, KEY_PREFIX_TRANSFER_COUNTRY + SEPARATOR +i));
+            info.setTransferCity(ParamUtil.getString(request, KEY_PREFIX_TRANSFER_CITY + SEPARATOR +i));
+            info.setTransferState(ParamUtil.getString(request, KEY_PREFIX_TRANSFER_STATE + SEPARATOR +i));
+            info.setTransferPostalCode(ParamUtil.getString(request, KEY_PREFIX_TRANSFER_POSTAL_CODE + SEPARATOR +i));
+            info.setCourierServiceProviderName(ParamUtil.getString(request, KEY_PREFIX_COURIER_SERVICE_PROVIDER_NAME + SEPARATOR +i));
+            info.setRemarks(ParamUtil.getString(request, KEY_PREFIX_REMARKS + SEPARATOR +i));
+            info.setPrjName(ParamUtil.getString(request, KEY_PREFIX_PRJ_NAME + SEPARATOR +i));
+            info.setPrincipalInvestigatorName(ParamUtil.getString(request, KEY_PREFIX_PRINCIPAL_INVESTIGATOR_NAME + SEPARATOR +i));
+            info.setWorkActivityIntended(ParamUtil.getString(request, KEY_PREFIX_WORK_ACTIVITY_INTENDED + SEPARATOR +i));
+            info.setStartDate(ParamUtil.getString(request, KEY_PREFIX_START_DATE + SEPARATOR +i));
+            info.setEndDate(ParamUtil.getString(request, KEY_PREFIX_END_DATE + SEPARATOR +i));
+            String newProcessType = (String) ParamUtil.getSessionAttr(request,PROCESS_TYPE);
+            info.setProcessType(newProcessType);
             addBatInfo(info);
         }
-        String newProcessType = (String) ParamUtil.getSessionAttr(request,PROCESS_TYPE);
-        this.setProcessType(newProcessType);
     }
 }

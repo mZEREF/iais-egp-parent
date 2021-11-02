@@ -10,7 +10,7 @@
         <div class="row">
             <div class="col-xs-12">
                 <div class="dashboard-page-title">
-                    <h1>New Approval Application</h1>
+                    <h1>New <iais:code code="${processType}"/></h1>
                 </div>
             </div>
         </div>

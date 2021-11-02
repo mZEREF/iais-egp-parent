@@ -1,6 +1,8 @@
 package sg.gov.moh.iais.egp.bsb.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
+import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoDto;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
@@ -185,8 +187,21 @@ public class ApprovalAppDelegator {
         }
 
         if (activityNode.isValidated()) {
+            //replace new approvalProfileGroup to approvalAppRoot by scheduleList
             NodeGroup approvalProfileGroup = (NodeGroup) approvalAppRoot.getNode(NODE_NAME_APPROVAL_PROFILE);
             changeApprovalProfileNodeGroup(approvalProfileGroup, activityDto);
+            //get primaryDocDto(facility registration upload doc) by current facilityId
+            Collection<PrimaryDocDto.DocRecordInfo> docRecordInfos = approvalAppClient.getFacDocByFacId(activityDto.getFacilityId()).getEntity();
+            PrimaryDocDto registrationPrimaryDocDto = new PrimaryDocDto();
+            registrationPrimaryDocDto.setSavedDocMap(CollectionUtils.uniqueIndexMap(docRecordInfos, PrimaryDocDto.DocRecordInfo::getRepoId));
+            //get new primaryDocNode
+            NodeGroup approvalProfileNodeGroup = (NodeGroup) approvalAppRoot.at(NODE_NAME_APPROVAL_PROFILE);
+            SimpleNode primaryDocNode = new SimpleNode(registrationPrimaryDocDto, NODE_NAME_PRIMARY_DOC, new Node[]{activityNode,approvalProfileNodeGroup});
+            //replace new primaryDocNode to approvalAppRoot
+            approvalAppRoot.replaceNode(primaryDocNode);
+            //replace new previewSubmitNode to approvalAppRoot(reason:this node is depend on old primaryDocNode)
+            Node previewSubmitNode = new Node(NODE_NAME_PREVIEW_SUBMIT,new Node[]{activityNode,approvalProfileNodeGroup,primaryDocNode});
+            approvalAppRoot.replaceNode(previewSubmitNode);
         }
         if (KEY_ACTION_JUMP.equals(actionType)) {
             jumpHandler(request, approvalAppRoot, NODE_NAME_ACTIVITY, activityNode);
@@ -245,17 +260,7 @@ public class ApprovalAppDelegator {
     public void prePrimaryDoc(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
         NodeGroup approvalAppRoot = getApprovalAppRoot(request);
-        //get the current facilityId doc (facility registration upload doc)
-        SimpleNode activityNode = (SimpleNode) approvalAppRoot.getNode(NODE_NAME_ACTIVITY);
-        ActivityDto activityDto = (ActivityDto) activityNode.getValue();
-        Collection<PrimaryDocDto.DocRecordInfo> docRecordInfos = approvalAppClient.getFacDocByFacId(activityDto.getFacilityId()).getEntity();
-
-        // todo
-        PrimaryDocDto registrationPrimaryDocDto = new PrimaryDocDto();
-        registrationPrimaryDocDto.setSavedDocMap(CollectionUtils.uniqueIndexMap(docRecordInfos, PrimaryDocDto.DocRecordInfo::getRepoId));
-        SimpleNode primaryDocNode = new SimpleNode(registrationPrimaryDocDto, NODE_NAME_PRIMARY_DOC, new Node[]{activityNode,approvalAppRoot});
-
-        /*SimpleNode primaryDocNode = (SimpleNode) approvalAppRoot.at(NODE_NAME_PRIMARY_DOC);*/
+        SimpleNode primaryDocNode = (SimpleNode) approvalAppRoot.at(NODE_NAME_PRIMARY_DOC);
         PrimaryDocDto primaryDocDto = (PrimaryDocDto) primaryDocNode.getValue();
         Boolean needShowError = (Boolean) ParamUtil.getRequestAttr(request, KEY_SHOW_ERROR_SWITCH);
         if (needShowError == Boolean.TRUE) {
@@ -274,14 +279,13 @@ public class ApprovalAppDelegator {
     public void handlePrimaryDoc(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
         NodeGroup approvalAppRoot = getApprovalAppRoot(request);
-        String currentNodePath = NODE_NAME_PRIMARY_DOC;
         SimpleNode primaryDocNode = (SimpleNode) approvalAppRoot.at(NODE_NAME_PRIMARY_DOC);
         PrimaryDocDto primaryDocDto = (PrimaryDocDto) primaryDocNode.getValue();
         primaryDocDto.reqObjMapping(request);
 
         String actionType = ParamUtil.getString(request, KEY_ACTION_TYPE);
         if (KEY_ACTION_JUMP.equals(actionType)) {
-            jumpHandler(request, approvalAppRoot, currentNodePath, primaryDocNode);
+            jumpHandler(request, approvalAppRoot, NODE_NAME_PRIMARY_DOC, primaryDocNode);
         } else {
             throw new IaisRuntimeException(ERR_MSG_INVALID_ACTION);
         }
@@ -303,7 +307,6 @@ public class ApprovalAppDelegator {
     public void handlePreviewSubmit(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         NodeGroup approvalAppRoot = getApprovalAppRoot(request);
-        String currentNodePath = NODE_NAME_PREVIEW_SUBMIT;
         Node previewSubmitNode = approvalAppRoot.at(NODE_NAME_PREVIEW_SUBMIT);
 
         String actionType = ParamUtil.getString(request, KEY_ACTION_TYPE);
@@ -319,6 +322,8 @@ public class ApprovalAppDelegator {
 
                 // save data
                 ApprovalAppDto finalAllDataDto = ApprovalAppDto.from(approvalAppRoot);
+                AuditTrailDto auditTrailDto = (AuditTrailDto) ParamUtil.getSessionAttr(request, AuditTrailConsts.SESSION_ATTR_PARAM_NAME);
+                finalAllDataDto.setAuditTrailDto(auditTrailDto);
                 ResponseDto<String> responseDto = approvalAppClient.saveNewApprovalApp(finalAllDataDto);
                 log.info("save new approval application response: {}", responseDto);
 
@@ -331,7 +336,7 @@ public class ApprovalAppDelegator {
 
                 ParamUtil.setRequestAttr(request, KEY_ACTION_TYPE, KEY_ACTION_SUBMIT);
             } else {
-                jumpHandler(request, approvalAppRoot, currentNodePath, previewSubmitNode);
+                jumpHandler(request, approvalAppRoot, NODE_NAME_PREVIEW_SUBMIT, previewSubmitNode);
             }
         } else {
             throw new IaisRuntimeException(ERR_MSG_INVALID_ACTION);
@@ -402,6 +407,9 @@ public class ApprovalAppDelegator {
                 .build();
     }
 
+    /**
+     * change new approvalProfileGroup to approvalAppRoot by scheduleList
+     */
     public static void changeApprovalProfileNodeGroup(NodeGroup approvalProfileNodeGroup, ActivityDto activityDto) {
         Assert.notNull(approvalProfileNodeGroup, ERR_MSG_BAT_NOT_NULL);
         Node[] subNodes = new Node[activityDto.getSchedules().size()];
