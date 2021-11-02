@@ -3,6 +3,7 @@ package com.ecquaria.cloud.moh.iais.service.datasubmission.impl;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
+import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSubFreezingStageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
@@ -18,13 +19,14 @@ import com.ecquaria.cloud.moh.iais.service.client.LicEicClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceClient;
 import com.ecquaria.cloud.moh.iais.service.client.SystemAdminClient;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.ArDataSubmissionService;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 /**
  * @Description ArDataSubmissionServiceImpl
@@ -166,6 +168,28 @@ public class ArDataSubmissionServiceImpl implements ArDataSubmissionService {
                 arSubFreezingStageDto.setCryopreservedDate(date);
             } catch (ParseException e) {
                 log.info("Freezing invalid cryopreservationDate");
+            }
+        }
+        return arSubFreezingStageDto;
+    }
+
+    @Override
+    public ArSubFreezingStageDto checkValueIsDirtyData(String freeCryoRadio, ArSubFreezingStageDto arSubFreezingStageDto, List<SelectOption> freeCryoOptions) {
+        if(!IaisCommonUtils.isEmpty(freeCryoOptions)) {
+            boolean codeValueFlag = false;
+            for(SelectOption selectOption : freeCryoOptions) {
+                if(selectOption != null) {
+                    String codeValue = selectOption.getValue();
+                    if(!StringUtil.isEmpty(codeValue) && codeValue.equals(freeCryoRadio)) {
+                        codeValueFlag = true;
+                        break;
+                    }
+                }
+            }
+            if(codeValueFlag) {
+                arSubFreezingStageDto.setCryopreservedType(freeCryoRadio);
+            } else {
+                arSubFreezingStageDto.setCryopreservedType(null);
             }
         }
         return arSubFreezingStageDto;

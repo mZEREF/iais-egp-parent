@@ -67,6 +67,9 @@ public class FreezingStageDelegator extends CommonDelegator {
                 //set cryopreservedNum and cryopreservationDate
                 arSubFreezingStageDto = arDataSubmissionService.setFreeCryoNumAndDate(arSubFreezingStageDto, cryopreservedNum, cryopreservationDate);
                 if (freeCryoRadios != null && freeCryoRadios.length > 0) {
+                    //Verify that the value is dirty data
+                    List<SelectOption> freeCryoOptions = (List<SelectOption>)ParamUtil.getSessionAttr(bpc.request, "arFreeCryoOptions");
+                    arSubFreezingStageDto = arDataSubmissionService.checkValueIsDirtyData(freeCryoRadios[0], arSubFreezingStageDto, freeCryoOptions);
                     arSubFreezingStageDto.setCryopreservedType(freeCryoRadios[0]);
                 }
 

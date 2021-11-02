@@ -1,11 +1,13 @@
 package com.ecquaria.cloud.moh.iais.service.datasubmission;
 
+import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSubFreezingStageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.CycleStageSelectionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DataSubmissionDto;
 
+import java.util.List;
 import java.util.Map;
 
 public interface ArDataSubmissionService {
@@ -33,4 +35,13 @@ public interface ArDataSubmissionService {
       * @Descripation: set cryopreservedNum and cryopreservationDate
       */
     ArSubFreezingStageDto setFreeCryoNumAndDate(ArSubFreezingStageDto arSubFreezingStageDto, String cryopreservedNum, String cryopreservationDate);
+
+    /**
+      * @author: shicheng
+      * @Date 2021/11/2
+      * @Param: freeCryoRadio, arSubFreezingStageDto, freeCryoOptions
+      * @return: ArSubFreezingStageDto
+      * @Descripation: Verify that the value is dirty data
+      */
+    ArSubFreezingStageDto checkValueIsDirtyData(String freeCryoRadio, ArSubFreezingStageDto arSubFreezingStageDto, List<SelectOption> freeCryoOptions);
 }
