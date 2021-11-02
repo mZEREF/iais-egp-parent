@@ -39,7 +39,7 @@ public class ArSubFreezingValidator implements CustomizeValidator {
                     if (cryopreservedNum.length() > 2) {
                         errMap.put("cryopreservedNum", "DS_ERR009");
                     }
-                    Pattern pattern = compile("(-?[1-9]\\\\d*)|0");
+                    Pattern pattern = compile("(-?[1-9]\\d*)|0");
                     boolean hoursFlag = pattern.matcher(cryopreservedNum).matches();
                     if (!hoursFlag) {
                         errMap.put("cryopreservedNum", "GENERAL_ERR0002");
