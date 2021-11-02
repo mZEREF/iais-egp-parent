@@ -11,8 +11,8 @@
             <div class="panel-main-content form-horizontal">
                 <c:set var="fertilisationDto" value="${arSuperDataSubmissionDto.fertilisationDto}" />
                 <iais:row>
-                    <iais:field width="5" value="Source of Semen" mandatory="true"/>
-                    <iais:value width="7" cssClass="col-md-7">
+                    <iais:field  value="Source of Semen" mandatory="true"/>
+                    <iais:value width="3" cssClass="col-md-3">
                         <c:forEach items="${sourceOfSemens}" var="sourceOfSemen">
                             <c:set var="sourceOfSemenCode" value="${sourceOfSemen.code}"/>
                             <div class="form-check col-xs-12" >

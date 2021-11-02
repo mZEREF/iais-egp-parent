@@ -172,6 +172,9 @@ public final class MasterCodeUtil {
     //Data Submission Ar IUI Treatment Subsidies
     public static final String PLEASE_INDICATE_IUI_CO_FUNDING = "4AAB50BC-7F5B-4187-930C-A296491B3ACE";
 
+    //Data Submission Outcome of Embryo Transferred
+    public static final String OUTCOME_OF_EMBRYO_TRANSFERRED = "2D84C8E8-8CFA-46AD-8A00-4C01510A5D7F";
+
     /**
      * @description: refresh the master codes into cache
      *
