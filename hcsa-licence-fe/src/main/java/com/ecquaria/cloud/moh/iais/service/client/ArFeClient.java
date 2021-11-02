@@ -11,8 +11,8 @@ import com.ecquaria.cloudfeign.FeignResponseEntity;
 import java.util.List;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -62,11 +62,11 @@ public interface ArFeClient {
     @GetMapping(value = "/ar-common/fertilisation/submissionId", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<FertilisationDto>> getFertilisationDtosBySubmissionId(@RequestParam(name = "submissionId") String submissionId) ;
 
-    @PutMapping(value = "/ar-common/ar-data-submission", produces = MediaType.APPLICATION_JSON_VALUE,consumes =
+    @PostMapping(value = "/ar-common/ar-data-submission", produces = MediaType.APPLICATION_JSON_VALUE,consumes =
             MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<ArSuperDataSubmissionDto> saveArSuperDataSubmissionDto(@RequestBody ArSuperDataSubmissionDto arSuperDataSubmissionDto);
 
-    @PutMapping(value = "/data-submission/draft", produces = MediaType.APPLICATION_JSON_VALUE,consumes =
+    @PostMapping(value = "/data-submission/draft", produces = MediaType.APPLICATION_JSON_VALUE,consumes =
             MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<ArSuperDataSubmissionDto> doUpdateDataSubmissionDraft(@RequestBody ArSuperDataSubmissionDto arSuperDataSubmissionDto);
 
