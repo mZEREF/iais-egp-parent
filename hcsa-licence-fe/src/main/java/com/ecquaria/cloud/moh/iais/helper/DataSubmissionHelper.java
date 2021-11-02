@@ -15,12 +15,9 @@ import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 /**
  * @Description Data Submission Helper
@@ -60,6 +57,7 @@ public final class DataSubmissionHelper {
             result.add(DataSubmissionConsts.AR_STAGE_DISPOSAL);
             result.add(DataSubmissionConsts.AR_STAGE_DONATION);
             result.add(DataSubmissionConsts.AR_STAGE_TRANSFER_IN_AND_OUT);
+            result.add(DataSubmissionConsts.AR_STAGE_FREEZING);
         } else if (DataSubmissionConsts.AR_CYCLE_NON.equals(currCycle)) {
             result.add(DataSubmissionConsts.AR_STAGE_DISPOSAL);
             result.add(DataSubmissionConsts.AR_STAGE_DONATION);

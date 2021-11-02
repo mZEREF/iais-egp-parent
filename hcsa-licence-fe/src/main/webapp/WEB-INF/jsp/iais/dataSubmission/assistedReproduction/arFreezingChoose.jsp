@@ -42,40 +42,42 @@
                 <div class="panel-main-content form-horizontal">
                   <iais:row>
                     <iais:field value="What was cryopreserved?" mandatory="true"/>
-                    <iais:value cssClass="col-md-3">
-                      <c:forEach items="${freeCryoOptions}" var="freeCryo">
-                        <input class="form-check-input" <c:if test="${arSuperDataSubmissionDto.arSubFreezingStageDto.cryopreservedType eq freeCryo.value}">checked="checked"</c:if>
-                               type="radio" name="freeCryoRadio" value = "<c:out value="${freeCryo.value}"/>" aria-invalid="false">
-                        <label class="form-check-label" ><span class="check-circle"></span><c:out value="${freeCryo.text}"/></label>
-                        <br>
+                    <iais:value width="3" cssClass="col-md-7">
+                      <c:forEach items="${arFreeCryoOptions}" var="freeCryo" varStatus="index">
+                        <div class="form-check" col-xs-7 style="padding-left: 0px;">
+                          <input class="form-check-input" <c:if test="${arSuperDataSubmissionDto.arSubFreezingStageDto.cryopreservedType eq freeCryo.value}">checked="checked"</c:if>
+                                 type="radio" name="freeCryoRadio" value = "<c:out value="${freeCryo.value}"/>" aria-invalid="false"
+                                 id="freeCryopreserved${index.index}"
+                          >
+                          <label class="form-check-label" for="freeCryopreserved${index.index}">
+                            <span class="check-circle"></span><c:out value="${freeCryo.text}"/>
+                          </label>
+                        </div>
                       </c:forEach>
+                      <span class="error-msg" name="iaisErrorMsg" id="error_cryopreservedType"></span>
                     </iais:value>
-                    <span class="error-msg" name="iaisErrorMsg" id="error_cryopreservedType"></span>
                   </iais:row>
                   <iais:row>
                     <iais:field value="No. Cryopreserved" mandatory="true"/>
                     <iais:value cssClass="col-md-3">
-                      <input type="number" maxlength="2" style="margin-bottom: 0px;" name="cryopreservedNum" value="${arSuperDataSubmissionDto.arSubFreezingStageDto.cryopreservedNum}"/>
-                      <br>
+                      <input type="number" oninput="if(value.length>2)value=value.slice(0,2)" style="margin-bottom: 0px;" name="cryopreservedNum" value="${arSuperDataSubmissionDto.arSubFreezingStageDto.cryopreservedNum}"/>
+                      <br><span class="error-msg" name="iaisErrorMsg" id="error_cryopreservedNum"></span>
                     </iais:value>
-                    <span class="error-msg" name="iaisErrorMsg" id="error_cryopreservedNum"></span>
                   </iais:row>
                   <iais:row>
                     <iais:field value="Cryopreservation Date" mandatory="true"/>
                     <iais:value cssClass="col-md-3">
                       <iais:datePicker id = "cryopreservationDate" name = "cryopreservationDate" dateVal="${arSuperDataSubmissionDto.arSubFreezingStageDto.cryopreservedDate}"></iais:datePicker>
+                      <span class="error-msg" name="iaisErrorMsg" id="error_cryopreservedDate"></span>
                     </iais:value>
-                    <span class="error-msg" name="iaisErrorMsg" id="error_cryopreservedDate"></span>
                   </iais:row>
                 </div>
               </div>
             </div>
           </div>
-          <%@include file="common/arDeclaration.jsp" %>
         </div>
         <%@include file="common/arFooter.jsp" %>
       </div>
     </div>
   </div>
 </form>
-<%@ include file="/WEB-INF/jsp/include/validation.jsp" %>

@@ -47,6 +47,9 @@ public class ArSubFreezingValidator implements CustomizeValidator {
                 }
             }
         }
+        if(map.isEmpty()) {
+            return null;
+        }
         return map;
     }
 }

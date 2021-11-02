@@ -51,13 +51,6 @@ public class FreezingStageDelegator extends CommonDelegator {
     }
 
     @Override
-    public void preparePage(BaseProcessClass bpc) {
-        ArSuperDataSubmissionDto arSuperDataSubmission = DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
-
-        ParamUtil.setSessionAttr(bpc.request, DataSubmissionConstant.AR_DATA_SUBMISSION, arSuperDataSubmission);
-    }
-
-    @Override
     public void pageAction(BaseProcessClass bpc) {
         ArSuperDataSubmissionDto arSuperDataSubmission = DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
         if(arSuperDataSubmission != null) {
@@ -65,26 +58,29 @@ public class FreezingStageDelegator extends CommonDelegator {
             if(arSubFreezingStageDto == null) {
                 arSubFreezingStageDto = new ArSubFreezingStageDto();
             }
-            //get value by form page
-            String[] freeCryoRadios = ParamUtil.getStrings(bpc.request, "freeCryoRadio");
-            String cryopreservedNum = ParamUtil.getRequestString(bpc.request, "cryopreservedNum");
-            String cryopreservationDate = ParamUtil.getRequestString(bpc.request, "cryopreservationDate");
-            //set cryopreservedNum and cryopreservationDate
-            arSubFreezingStageDto = arDataSubmissionService.setFreeCryoNumAndDate(arSubFreezingStageDto, cryopreservedNum, cryopreservationDate);
-            if(freeCryoRadios != null && freeCryoRadios.length > 0) {
-                arSubFreezingStageDto.setCryopreservedType(freeCryoRadios[0]);
-            }
+            String actionType = ParamUtil.getRequestString(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE);
+            if(CommonDelegator.ACTION_TYPE_CONFIRM.equals(actionType)) {
+                //get value by form page
+                String[] freeCryoRadios = ParamUtil.getStrings(bpc.request, "freeCryoRadio");
+                String cryopreservedNum = ParamUtil.getRequestString(bpc.request, "cryopreservedNum");
+                String cryopreservationDate = ParamUtil.getRequestString(bpc.request, "cryopreservationDate");
+                //set cryopreservedNum and cryopreservationDate
+                arSubFreezingStageDto = arDataSubmissionService.setFreeCryoNumAndDate(arSubFreezingStageDto, cryopreservedNum, cryopreservationDate);
+                if (freeCryoRadios != null && freeCryoRadios.length > 0) {
+                    arSubFreezingStageDto.setCryopreservedType(freeCryoRadios[0]);
+                }
 
-            ValidationResult validationResult = WebValidationHelper.validateProperty(arSubFreezingStageDto,"common");
-            if (validationResult.isHasErrors()) {
-                Map<String, String> errorMap = validationResult.retrieveAll();
-                ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
-                WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
-                ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, CommonDelegator.ACTION_TYPE_PAGE);
-            } else {
-                ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, CommonDelegator.ACTION_TYPE_CONFIRM);
+                ValidationResult validationResult = WebValidationHelper.validateProperty(arSubFreezingStageDto, "common");
+                if (validationResult.isHasErrors()) {
+                    Map<String, String> errorMap = validationResult.retrieveAll();
+                    ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
+                    WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
+                    ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, CommonDelegator.ACTION_TYPE_PAGE);
+                } else {
+                    ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, CommonDelegator.ACTION_TYPE_CONFIRM);
+                }
+                arSuperDataSubmission.setArSubFreezingStageDto(arSubFreezingStageDto);
             }
-            arSuperDataSubmission.setArSubFreezingStageDto(arSubFreezingStageDto);
         }
         ParamUtil.setSessionAttr(bpc.request, DataSubmissionConstant.AR_DATA_SUBMISSION, arSuperDataSubmission);
     }
