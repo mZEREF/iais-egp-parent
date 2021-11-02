@@ -495,6 +495,30 @@ function toggleOnCheck(sel, elem, hide) {
     }
 }
 
+function checkMantory(sel, targetLabel, val) {
+    console.log("checkEthinicGroupMantory");
+    var $selector = $(sel);
+    if ($selector.length == 0) {
+        $selector = $('#' + sel);
+    } else if ($selector.length == 0) {
+        $selector = $('.' + sel);
+    }
+    var $target = $(targetLabel);
+    if ($target.length == 0) {
+        $target = $('#' + targetLabel);
+    } else if ($selector.length == 0) {
+        $target = $('.' + targetLabel);
+    }
+    if ($selector.length <= 0 || $target.length <= 0) {
+        console.log("Tags error in checkMantory!");
+        return;
+    }
+    $target.find('.mandatory').remove();
+    if (isEmpty(val) && val != '' && $target.is(':checked') || val == $selector.val()) {
+        $target.append('<span class="mandatory">*</span>');
+    }
+}
+
 function isEmpty(str) {
     return typeof str === 'undefined' || str == null || str == '' || str == 'undefined';
 }
