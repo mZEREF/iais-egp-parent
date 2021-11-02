@@ -12,17 +12,17 @@ import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.NewApplicationHelper;
 import com.ecquaria.cloud.moh.iais.service.client.ArFeClient;
+import com.ecquaria.cloud.moh.iais.service.client.FeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceClient;
 import com.ecquaria.cloud.moh.iais.service.client.SystemAdminClient;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.ArDataSubmissionService;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 /**
  * @Description ArDataSubmissionServiceImpl
@@ -40,6 +40,9 @@ public class ArDataSubmissionServiceImpl implements ArDataSubmissionService {
 
     @Autowired
     private SystemAdminClient systemAdminClient;
+
+    @Autowired
+    private FeEicGatewayClient feEicGatewayClient;
 
     @Override
     public Map<String, AppGrpPremisesDto> getAppGrpPremises(String licenseeId, String serviceName) {
@@ -87,7 +90,7 @@ public class ArDataSubmissionServiceImpl implements ArDataSubmissionService {
 
     @Override
     public ArSuperDataSubmissionDto saveBeArSuperDataSubmissionDto(ArSuperDataSubmissionDto arSuperDataSubmission) {
-        return null;
+        return feEicGatewayClient.saveBeArSuperDataSubmissionDto(arSuperDataSubmission).getEntity();
     }
 
     @Override
