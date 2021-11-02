@@ -9,7 +9,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.EmbryoTransfer
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
-import com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
@@ -22,22 +21,19 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * EmbryoTransferDelegator
+ *
+ * @author jiawei
+ * @date 11/1/2021
+ */
+
 @Delegator("embryoTransferDelegator")
 @Slf4j
 public class EmbryoTransferDelegator extends CommonDelegator {
     @Override
-    public void start(BaseProcessClass bpc) {
-        ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.CRUD_ACTION_TYPE, "page");
-    }
-
-    @Override
     public void prepareSwitch(BaseProcessClass bpc) {
         ParamUtil.setRequestAttr(bpc.request, "smallTitle", "You are submitting for <strong>Embryo Transferred Stage</strong>");
-    }
-
-    @Override
-    public void returnStep(BaseProcessClass bpc) {
-
     }
 
     @Override
@@ -48,7 +44,7 @@ public class EmbryoTransferDelegator extends CommonDelegator {
             embryoTransferStageDto = new EmbryoTransferStageDto();
             embryoTransferStageDto.setTransferNum(1);
             arSuperDataSubmissionDto.setEmbryoTransferStageDto(embryoTransferStageDto);
-            ParamUtil.setSessionAttr(bpc.request, DataSubmissionConstant.AR_DATA_SUBMISSION, arSuperDataSubmissionDto);
+            DataSubmissionHelper.setCurrentArDataSubmission(arSuperDataSubmissionDto, bpc.request);
         }
 
         List<SelectOption> transferNumSelectOption = IaisCommonUtils.genNewArrayList();
@@ -69,25 +65,12 @@ public class EmbryoTransferDelegator extends CommonDelegator {
     }
 
     @Override
-    public void prepareConfim(BaseProcessClass bpc) {
-    }
-
-    @Override
-    public void draft(BaseProcessClass bpc) {
-
-    }
-
-    @Override
-    public void submission(BaseProcessClass bpc) {
-
-    }
-
-    @Override
     public void pageAction(BaseProcessClass bpc) {
         ArSuperDataSubmissionDto arSuperDataSubmissionDto = DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
         EmbryoTransferStageDto embryoTransferStageDto = arSuperDataSubmissionDto.getEmbryoTransferStageDto();
         HttpServletRequest request = bpc.request;
         fromPageData(embryoTransferStageDto, request);
+        DataSubmissionHelper.setCurrentArDataSubmission(arSuperDataSubmissionDto, request);
 
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
         String crud_action_type = ParamUtil.getRequestString(request, IntranetUserConstant.CRUD_ACTION_TYPE);
@@ -130,10 +113,5 @@ public class EmbryoTransferDelegator extends CommonDelegator {
         embryoTransferStageDto.setThirdEmbryoType(thirdEmbryoType);
         embryoTransferStageDto.setFirstTransferDate(firstTransferDate);
         embryoTransferStageDto.setSecondTransferDate(secondTransferDate);
-    }
-
-    @Override
-    public void pageConfirmAction(BaseProcessClass bpc) {
-
     }
 }

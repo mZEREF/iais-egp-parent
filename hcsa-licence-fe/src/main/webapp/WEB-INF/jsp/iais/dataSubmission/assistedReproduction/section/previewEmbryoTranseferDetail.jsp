@@ -1,17 +1,16 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
-<c:set var="headingSign" value="completed"/>
 <c:set var="embryoTransferStageDto" value="${arSuperDataSubmissionDto.embryoTransferStageDto}"/>
 <div class="panel panel-default">
-    <div class="panel-heading ${headingSign}">
+    <div class="panel-heading completed">
         <h4 class="panel-title">
-            <a class="" data-toggle="collapse" href="#patientDetails">
+            <a class="collapsed" data-toggle="collapse" href="#">
                 Details of Patient
             </a>
         </h4>
     </div>
     <div id="patientDetails" class="panel-collapse collapse in">
         <div class="panel-body">
-            <div class="panel-main-content form-horizontal "><%--min-row--%>
+            <div class="panel-main-content form-horizontal ">
                 <iais:row>
                     <iais:field width="5" value="No. Transferred" cssClass="col-md-7"/>
                     <iais:value width="7" display="true">
@@ -21,7 +20,7 @@
                 <iais:row>
                     <iais:field width="5" value="Age of 1st Embryo Transferred" cssClass="col-md-7"/>
                     <iais:value width="7" display="true">
-                        <c:out value="${embryoTransferStageDto.firstEmbryoAge}"/>
+                        <iais:code code="${embryoTransferStageDto.firstEmbryoAge}"/>
                     </iais:value>
                 </iais:row>
                 <iais:row>
@@ -34,7 +33,7 @@
                     <iais:row>
                         <iais:field width="5" value="Age of 2nd Embryo Transferred" cssClass="col-md-7"/>
                         <iais:value width="7" display="true">
-                            <c:out value="${secondEmbryoAge}"/>
+                            <iais:code code="${embryoTransferStageDto.secondEmbryoAge}"/>
                         </iais:value>
                     </iais:row>
                     <iais:row>
@@ -48,7 +47,7 @@
                     <iais:row>
                         <iais:field width="5" value="Age of 3rd Embryo Transferred" cssClass="col-md-7"/>
                         <iais:value width="7" display="true">
-                            <c:out value="${embryoTransferStageDto.thirdEmbryoAge}"/>
+                            <iais:code code="${embryoTransferStageDto.thirdEmbryoAge}"/>
                         </iais:value>
                     </iais:row>
                     <iais:row>
