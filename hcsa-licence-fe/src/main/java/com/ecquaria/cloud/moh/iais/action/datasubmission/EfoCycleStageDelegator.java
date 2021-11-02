@@ -44,28 +44,26 @@ public class EfoCycleStageDelegator extends CommonDelegator{
     public void start(BaseProcessClass bpc) {
         AuditTrailHelper.auditFunction("Assisted Reproduction", "EFO Cycle Stage");
 
-        ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "page");
-
         ArSuperDataSubmissionDto arSuperDataSubmissionDto=DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
         if(arSuperDataSubmissionDto==null){
             arSuperDataSubmissionDto=new ArSuperDataSubmissionDto();
         }
+        if(arSuperDataSubmissionDto.getPatientInfoDto()==null){
+            arSuperDataSubmissionDto.setPatientInfoDto(new PatientInfoDto());
+            Date birthDate= null;
+            try {
+                birthDate = Formatter.parseDateTime(arSuperDataSubmissionDto.getPatientInfoDto().getPatient().getBirthDate(), AppConsts.DEFAULT_DATE_FORMAT);
+            } catch (Exception e) {
+                log.error(e.getMessage(),e);
+            }
+            arSuperDataSubmissionDto.getPatientInfoDto().setPatient(new PatientDto());
+            arSuperDataSubmissionDto.getPatientInfoDto().getPatient().setBirthDate(DateUtil.formatDate(new Date(),AppConsts.DEFAULT_DATE_FORMAT));
+            arSuperDataSubmissionDto.getPatientInfoDto().getPatient().setName("junyu");
+            arSuperDataSubmissionDto.getPatientInfoDto().getPatient().setIdNumber("123456");
 
-        arSuperDataSubmissionDto.setEfoCycleStageDto(new EfoCycleStageDto());
-        arSuperDataSubmissionDto.setPatientInfoDto(new PatientInfoDto());
-
-        Date birthDate= null;
-        try {
-            birthDate = Formatter.parseDateTime(arSuperDataSubmissionDto.getPatientInfoDto().getPatient().getBirthDate(), AppConsts.DEFAULT_DATE_FORMAT);
-        } catch (Exception e) {
-            log.error(e.getMessage(),e);
+            arSuperDataSubmissionDto.setEfoCycleStageDto(new EfoCycleStageDto());
+            arSuperDataSubmissionDto.getEfoCycleStageDto().setPerformed("test");
         }
-        arSuperDataSubmissionDto.getEfoCycleStageDto().setPerformed("test");
-        arSuperDataSubmissionDto.getPatientInfoDto().setPatient(new PatientDto());
-        arSuperDataSubmissionDto.getPatientInfoDto().getPatient().setBirthDate(DateUtil.formatDate(new Date(),AppConsts.DEFAULT_DATE_FORMAT));
-        arSuperDataSubmissionDto.getPatientInfoDto().getPatient().setName("junyu");
-        arSuperDataSubmissionDto.getPatientInfoDto().getPatient().setIdNumber("123456");
-
         ParamUtil.setSessionAttr(bpc.request, DataSubmissionConstant.AR_DATA_SUBMISSION,arSuperDataSubmissionDto);
 
     }
@@ -142,7 +140,6 @@ public class EfoCycleStageDelegator extends CommonDelegator{
 
     @Override
     public void pageConfirmAction(BaseProcessClass bpc) {
-        ArSuperDataSubmissionDto arSuperDataSubmissionDto= (ArSuperDataSubmissionDto) ParamUtil.getSessionAttr(bpc.request,DataSubmissionConstant.AR_DATA_SUBMISSION);
 
     }
 

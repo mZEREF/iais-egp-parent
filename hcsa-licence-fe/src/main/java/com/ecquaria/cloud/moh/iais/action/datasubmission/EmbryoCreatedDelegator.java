@@ -28,12 +28,14 @@ public class EmbryoCreatedDelegator extends CommonDelegator{
     @Override
     public void start(BaseProcessClass bpc) {
         AuditTrailHelper.auditFunction("Assisted Reproduction", "Embryo Created Cycle Stage");
-        ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "page");
+
         ArSuperDataSubmissionDto arSuperDataSubmissionDto= DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
         if(arSuperDataSubmissionDto==null){
             arSuperDataSubmissionDto=new ArSuperDataSubmissionDto();
         }
-        arSuperDataSubmissionDto.setEmbryoCreatedStageDto(new EmbryoCreatedStageDto());
+        if(arSuperDataSubmissionDto.getEmbryoCreatedStageDto()==null){
+            arSuperDataSubmissionDto.setEmbryoCreatedStageDto(new EmbryoCreatedStageDto());
+        }
 
 
         ParamUtil.setSessionAttr(bpc.request,DataSubmissionConstant.AR_DATA_SUBMISSION,arSuperDataSubmissionDto);

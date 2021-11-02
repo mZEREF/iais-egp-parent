@@ -28,14 +28,16 @@ public class PgtCycleStageDelegator extends CommonDelegator{
     @Override
     public void start(BaseProcessClass bpc) {
         AuditTrailHelper.auditFunction("Assisted Reproduction", "Preimplantation Genetic Testing");
-        ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "page");
+
         ArSuperDataSubmissionDto arSuperDataSubmissionDto= DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
         if(arSuperDataSubmissionDto==null){
             arSuperDataSubmissionDto=new ArSuperDataSubmissionDto();
         }
-        arSuperDataSubmissionDto.setPgtStageDto(new PgtStageDto());
-        arSuperDataSubmissionDto.getPgtStageDto().setIsPgtMNon(1);
-        arSuperDataSubmissionDto.getPgtStageDto().setIsPgtCoFunding(0);
+        if(arSuperDataSubmissionDto.getPgtStageDto()==null){
+            arSuperDataSubmissionDto.setPgtStageDto(new PgtStageDto());
+            arSuperDataSubmissionDto.getPgtStageDto().setIsPgtMNon(1);
+            arSuperDataSubmissionDto.getPgtStageDto().setIsPgtCoFunding(0);
+        }
 
         ParamUtil.setSessionAttr(bpc.request, DataSubmissionConstant.AR_DATA_SUBMISSION,arSuperDataSubmissionDto);
     }
