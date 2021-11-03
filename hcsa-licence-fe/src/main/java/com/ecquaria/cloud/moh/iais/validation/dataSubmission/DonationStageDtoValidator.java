@@ -89,16 +89,14 @@ public class DonationStageDtoValidator implements CustomizeValidator {
             }
         }
 
-        if(donationStageDto.getResDonarNum()!=null||donationStageDto.getCurCenResDonatedNum()!=null){
-            if(donationStageDto.getResDonarNum()>0){
-                if(donationStageDto.getIsCurCenResTypeHescr()+donationStageDto.getIsCurCenResTypeRrar()+donationStageDto.getIsCurCenResTypeOther()==0){
-                    errorMap.put("curCenResType", errMsgErr006);
-                }
+        if(donationStageDto.getResDonarNum()!=null&&donationStageDto.getResDonarNum()>0){
+            if(donationStageDto.getIsCurCenResTypeHescr()+donationStageDto.getIsCurCenResTypeRrar()+donationStageDto.getIsCurCenResTypeOther()==0){
+                errorMap.put("curCenResType", errMsgErr006);
             }
-            if(donationStageDto.getCurCenResDonatedNum()>0){
-                if(donationStageDto.getIsCurCenResTypeHescr()+donationStageDto.getIsCurCenResTypeRrar()+donationStageDto.getIsCurCenResTypeOther()==0){
-                    errorMap.put("curCenResType", errMsgErr006);
-                }
+        }
+        if(donationStageDto.getCurCenResDonatedNum()!=null&&donationStageDto.getCurCenResDonatedNum()>0){
+            if(donationStageDto.getIsCurCenResTypeHescr()+donationStageDto.getIsCurCenResTypeRrar()+donationStageDto.getIsCurCenResTypeOther()==0){
+                errorMap.put("curCenResType", errMsgErr006);
             }
         }
         if(donationStageDto.getIsCurCenResTypeOther()==1){

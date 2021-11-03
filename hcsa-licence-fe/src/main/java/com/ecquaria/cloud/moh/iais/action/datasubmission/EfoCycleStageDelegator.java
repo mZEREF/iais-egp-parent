@@ -5,9 +5,6 @@ import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.EfoCycleStageDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInfoDto;
-import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
@@ -48,19 +45,7 @@ public class EfoCycleStageDelegator extends CommonDelegator{
         if(arSuperDataSubmissionDto==null){
             arSuperDataSubmissionDto=new ArSuperDataSubmissionDto();
         }
-        if(arSuperDataSubmissionDto.getPatientInfoDto()==null){
-            arSuperDataSubmissionDto.setPatientInfoDto(new PatientInfoDto());
-            Date birthDate= null;
-            try {
-                birthDate = Formatter.parseDateTime(arSuperDataSubmissionDto.getPatientInfoDto().getPatient().getBirthDate(), AppConsts.DEFAULT_DATE_FORMAT);
-            } catch (Exception e) {
-                log.error(e.getMessage(),e);
-            }
-            arSuperDataSubmissionDto.getPatientInfoDto().setPatient(new PatientDto());
-            arSuperDataSubmissionDto.getPatientInfoDto().getPatient().setBirthDate(DateUtil.formatDate(new Date(),AppConsts.DEFAULT_DATE_FORMAT));
-            arSuperDataSubmissionDto.getPatientInfoDto().getPatient().setName("junyu");
-            arSuperDataSubmissionDto.getPatientInfoDto().getPatient().setIdNumber("123456");
-
+        if(arSuperDataSubmissionDto.getEfoCycleStageDto()==null){
             arSuperDataSubmissionDto.setEfoCycleStageDto(new EfoCycleStageDto());
             arSuperDataSubmissionDto.getEfoCycleStageDto().setPerformed("test");
         }

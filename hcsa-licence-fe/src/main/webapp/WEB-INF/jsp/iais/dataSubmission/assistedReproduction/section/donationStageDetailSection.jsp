@@ -1,4 +1,4 @@
-<%--<script type="text/javascript" src="<%=webroot1%>js/dataSubmission/efoSection.js"></script>--%>
+<%--<script type="text/javascript" src="<%=webroot1%>js/dataSubmission/donationSection.js"></script>--%>
 
 <div class="panel panel-default">
     <div class="panel-heading">

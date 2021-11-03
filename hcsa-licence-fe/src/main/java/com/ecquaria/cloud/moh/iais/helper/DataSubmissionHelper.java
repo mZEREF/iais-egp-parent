@@ -287,6 +287,7 @@ public final class DataSubmissionHelper {
         }
         CycleDto cycleDto = new CycleDto();
         cycleDto.setCycleType(cycle);
+        cycleDto.setPatientCode(selectionDto.getPatientCode());
         cycleDto.setHciCode(hciCode);
         cycleDto.setId(cycleId);
         cycleDto.setStatus(DataSubmissionConsts.DS_STATUS_ACTIVE);
