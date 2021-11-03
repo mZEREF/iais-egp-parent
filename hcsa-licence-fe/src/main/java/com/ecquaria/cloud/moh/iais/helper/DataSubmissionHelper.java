@@ -50,7 +50,7 @@ public final class DataSubmissionHelper {
         if (StringUtil.isEmpty(currCycle)
                 || DataSubmissionConsts.AR_CYCLE_NON.equals(currCycle)
                 || DataSubmissionConsts.AR_STAGE_END_CYCLE.equals(currStage)
-                || IaisCommonUtils.getDsFinalStatus().contains(lastStatus)) {
+                || IaisCommonUtils.getDsCycleFinalStatus().contains(lastStatus)) {
             result.add(DataSubmissionConsts.AR_CYCLE_AR);
             result.add(DataSubmissionConsts.AR_CYCLE_IUI);
             result.add(DataSubmissionConsts.AR_CYCLE_EFO);
