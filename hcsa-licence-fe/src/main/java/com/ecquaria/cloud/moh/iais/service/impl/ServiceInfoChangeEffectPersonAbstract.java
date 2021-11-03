@@ -48,7 +48,7 @@ public class ServiceInfoChangeEffectPersonAbstract implements ServiceInfoChangeE
      * @param appSubmissionDto
      * @param oldAppSubmissionDto
      * @param changeList:         The changed personnel types.
-     *                            Refer to the method - personContact in this class
+     *                            Refer to the method - EqRequestForChangeSubmitResultChange.eqServiceChange and personContact
      * @param stepList:           The steps which is changed, it will contains not-auto fields and maybe it contains auto fields.
      *                            Refer to the method - EqRequestForChangeSubmitResultChange.compareNotChangePersonnel
      * @return The svc related info with the auto fields changed
@@ -86,6 +86,9 @@ public class ServiceInfoChangeEffectPersonAbstract implements ServiceInfoChangeE
             } else if (HcsaConsts.STEP_PRINCIPAL_OFFICERS.equals(step)) {
                 reSetPersonnels(oldSvcInfoDto, newDto, step, changeList.contains(ApplicationConsts.PERSONNEL_PSN_TYPE_PO));
             } else if (HcsaConsts.STEP_CLINICAL_GOVERNANCE_OFFICERS.equals(step)) {
+                if (changeList.contains(HcsaConsts.STEP_DISCIPLINE_ALLOCATION) && !stepList.contains(HcsaConsts.STEP_DISCIPLINE_ALLOCATION)) {
+                    newDto.setAppSvcDisciplineAllocationDtoList(reSetAllocation(newDto, oldSvcInfoDto));
+                }
                 reSetPersonnels(oldSvcInfoDto, newDto, step, changeList.contains(ApplicationConsts.PERSONNEL_PSN_TYPE_CGO));
             } else if (HcsaConsts.STEP_CLINICAL_DIRECTOR.equals(step)) {
                 reSetPersonnels(oldSvcInfoDto, newDto, step, changeList.contains(ApplicationConsts.PERSONNEL_CLINICAL_DIRECTOR));
@@ -96,6 +99,24 @@ public class ServiceInfoChangeEffectPersonAbstract implements ServiceInfoChangeE
         List<AppSvcRelatedInfoDto> result = IaisCommonUtils.genNewArrayList(1);
         result.add(newDto);
         return result;
+    }
+
+    private List<AppSvcDisciplineAllocationDto> reSetAllocation(AppSvcRelatedInfoDto newDto, AppSvcRelatedInfoDto oldSvcInfoDto) {
+        List<AppSvcDisciplineAllocationDto> newAllocations = newDto.getAppSvcDisciplineAllocationDtoList();
+        if (newAllocations == null || newAllocations.isEmpty() || oldSvcInfoDto.getAppSvcCgoDtoList() == null) {
+            return newAllocations;
+        }
+        boolean isOld = true;
+        for (AppSvcDisciplineAllocationDto dto : newAllocations) {
+            isOld = oldSvcInfoDto.getAppSvcCgoDtoList().stream().anyMatch(cgo -> Objects.equals(cgo.getIdNo(), dto.getIdNo()));
+            if (!isOld) {
+                break;
+            }
+        }
+        if (!isOld) {
+            return (List<AppSvcDisciplineAllocationDto>) CopyUtil.copyMutableObjectList(oldSvcInfoDto.getAppSvcDisciplineAllocationDtoList());
+        }
+        return newAllocations;
     }
 
     private void reSetPersonnels(AppSvcRelatedInfoDto sourceReletedInfo, AppSvcRelatedInfoDto targetReletedInfo, String step,
@@ -211,7 +232,13 @@ public class ServiceInfoChangeEffectPersonAbstract implements ServiceInfoChangeE
         } else if (isChanged(kahList, oldKahList)) {
             currEditList.add(ApplicationConsts.PERSONNEL_PSN_KAH);
         }
-        appSubmissionDto.getChangeSelectDto().setPersonnelEditList(currEditList);
+        List<String> changeList = appSubmissionDto.getChangeSelectDto().getPersonnelEditList();
+        if (changeList == null) {
+            changeList = IaisCommonUtils.genNewArrayList();
+        }
+        changeList.addAll(currEditList);
+        appSubmissionDto.getChangeSelectDto().setPersonnelEditList(changeList);
+
         list.addAll(set);
         List<LicKeyPersonnelDto> licKeyPersonnelDtos = IaisCommonUtils.genNewArrayList();
         for (String string : list) {

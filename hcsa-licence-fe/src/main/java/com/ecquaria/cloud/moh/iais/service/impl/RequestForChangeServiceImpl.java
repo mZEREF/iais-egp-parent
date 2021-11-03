@@ -90,6 +90,7 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Pattern;
@@ -1376,6 +1377,16 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
         if (appSubmissionDto == null) {
             return;
         }
+        String premisesIndexNo = Optional.of(appSubmissionDto.getAppGrpPremisesDtoList())
+                .filter(list -> list.size() > 0)
+                .map(list -> list.get(0))
+                .map(AppGrpPremisesDto::getPremisesIndexNo)
+                .orElse("");
+        String premisesType = Optional.of(appSubmissionDto.getAppGrpPremisesDtoList())
+                .filter(list -> list.size() > 0)
+                .map(list -> list.get(0))
+                .map(AppGrpPremisesDto::getPremisesType)
+                .orElse("");
         AppSvcRelatedInfoDto appSvcRelatedInfoDto = appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0);
         List<AppSvcDocDto> appSvcDocDtoLit = appSvcRelatedInfoDto.getAppSvcDocDtoLit();
         List<AppGrpPrimaryDocDto> dtoAppGrpPrimaryDocDtos = appSubmissionDto.getAppGrpPrimaryDocDtos();
@@ -1411,6 +1422,10 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                         appGrpPrimaryDocDto.setMd5Code(appSvcDocDto.getMd5Code());
                         appGrpPrimaryDocDto.setVersion(appSvcDocDto.getVersion());
                         appGrpPrimaryDocDto.setSeqNum(appSvcDocDto.getSeqNum());
+                        if ("1".equals(entity.getDupForPrem())) {
+                            appGrpPrimaryDocDto.setPremisessName(premisesIndexNo);
+                            appGrpPrimaryDocDto.setPremisessType(premisesType);
+                        }
                         appGrpPrimaryDocDtos.add(appGrpPrimaryDocDto);
                         appSvcDocDtos.add(appSvcDocDto);
                     }else {

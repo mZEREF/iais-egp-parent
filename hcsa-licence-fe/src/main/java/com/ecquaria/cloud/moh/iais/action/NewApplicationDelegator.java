@@ -2869,7 +2869,7 @@ public class NewApplicationDelegator {
             NewApplicationHelper.addToAuto(personAppSubmissionList, autoSaveAppsubmission);
             // re-set current auto dto
             List<String> changeList = appSubmissionDto.getChangeSelectDto().getPersonnelEditList();
-            if (!isAutoRfc && autoAppSubmissionDto == null && (!appEditSelectDto.isChangePersonnel() || !IaisCommonUtils.isEmpty(changeList))) {
+            if (!isAutoRfc && autoAppSubmissionDto == null && !IaisCommonUtils.isEmpty(changeList)) {
                 autoAppSubmissionDto = (AppSubmissionDto) CopyUtil.copyMutableObject(appSubmissionDto);
                 autoAppSubmissionDto.setAmount(0.0);
                 autoChangeSelectDto = new AppEditSelectDto();
@@ -2984,6 +2984,7 @@ public class NewApplicationDelegator {
                 dto.setEffectiveDate(effectiveDate);
                 dto.setAppDeclarationMessageDto(appDeclarationMessageDto);
                 dto.setAppDeclarationDocDtos(appDeclarationDocDtos);
+                dto.setAppGrpStatus(ApplicationConsts.APPLICATION_GROUP_STATUS_SUBMITED);
             });
             // save application, group, declaration
             List<AppSubmissionDto> appSubmissionDtos1 = requestForChangeService.saveAppsForRequestForGoupAndAppChangeByList(autoSaveAppsubmission);
