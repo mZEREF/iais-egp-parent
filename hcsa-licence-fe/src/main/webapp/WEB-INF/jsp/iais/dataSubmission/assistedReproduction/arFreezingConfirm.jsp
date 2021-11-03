@@ -42,24 +42,21 @@
               <div class="panel-body">
                 <div class="panel-main-content form-horizontal">
                   <iais:row>
-                    <iais:field value="What was cryopreserved?" mandatory="true"/>
-                    <iais:value cssClass="col-md-3">
-                      <c:forEach items="${freeCryoOptions}" var="freeCryo">
-                        <span style="font-size: 16px"><iais:code code="${arSuperDataSubmissionDto.arSubFreezingStageDto.cryopreservedType}"/></span>
-                      </c:forEach>
+                    <iais:field value="What was cryopreserved?"/>
+                    <iais:value cssClass="col-xs-5 col-md-6 control-label">
+                      <span style="font-size: 16px" class="col-xs-6 col-md-6 control-label"><iais:code code="${arSuperDataSubmissionDto.arSubFreezingStageDto.cryopreservedType}"/></span>
                     </iais:value>
                   </iais:row>
                   <iais:row>
-                    <iais:field value="No. Cryopreserved" mandatory="true"/>
-                    <iais:value cssClass="col-md-3">
-                      <span style="font-size: 16px"><c:out value="${arSuperDataSubmissionDto.arSubFreezingStageDto.cryopreservedNum}"/></span>
-                      <br>
+                    <iais:field value="No. Cryopreserved"/>
+                    <iais:value cssClass="col-xs-5 col-md-6 control-label">
+                      <span style="font-size: 16px" class="col-xs-6 col-md-6 control-label"><c:out value="${arSuperDataSubmissionDto.arSubFreezingStageDto.cryopreservedNum}"/></span>
                     </iais:value>
                   </iais:row>
                   <iais:row>
-                    <iais:field value="Cryopreservation Date" mandatory="true"/>
-                    <iais:value cssClass="col-md-3">
-                      <fmt:formatDate value='${arSuperDataSubmissionDto.arSubFreezingStageDto.cryopreservedDate}' pattern='dd/MM/yyyy' />
+                    <iais:field value="Cryopreservation Date"/>
+                    <iais:value cssClass="col-xs-5 col-md-6 control-label">
+                      <span style="font-size: 16px" class="col-xs-6 col-md-6 control-label"><fmt:formatDate value='${arSuperDataSubmissionDto.arSubFreezingStageDto.cryopreservedDate}' pattern='dd/MM/yyyy' /></span>
                     </iais:value>
                   </iais:row>
                 </div>

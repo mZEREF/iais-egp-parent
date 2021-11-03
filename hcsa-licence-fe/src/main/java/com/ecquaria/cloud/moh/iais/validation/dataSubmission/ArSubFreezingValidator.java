@@ -22,21 +22,27 @@ public class ArSubFreezingValidator implements CustomizeValidator {
 
     @Override
     public Map<String, String> validate(HttpServletRequest request) {
-        Map<String ,String> map= IaisCommonUtils.genNewHashMap();
+        Map<String, String> errMap = IaisCommonUtils.genNewHashMap();
         ArSuperDataSubmissionDto arSuperDataSubmission = DataSubmissionHelper.getCurrentArDataSubmission(request);
         if(arSuperDataSubmission != null) {
             ArSubFreezingStageDto arSubFreezingStageDto = arSuperDataSubmission.getArSubFreezingStageDto();
             if(arSubFreezingStageDto != null) {
                 String cryopreservedNum = arSubFreezingStageDto.getCryopreservedNum() + "";
                 Date cryopreservedDate = arSubFreezingStageDto.getCryopreservedDate();
-                Map<String, String> errMap = IaisCommonUtils.genNewHashMap();
                 if(cryopreservedDate != null) {
                     if(cryopreservedDate.after(new Date())) {
                         errMap.put("cryopreservedDate", "DS_ERR010");
                     }
                 }
                 if (!StringUtil.isEmpty(cryopreservedNum)){
-                    if (cryopreservedNum.length() > 2) {
+                    String cryoNumValiStr;
+                    String firstStr = cryopreservedNum.substring(0,1);
+                    if("-".equals(firstStr)) {
+                        cryoNumValiStr = cryopreservedNum.substring(1);
+                    } else {
+                        cryoNumValiStr = cryopreservedNum;
+                    }
+                    if (cryoNumValiStr.length() > 2) {
                         errMap.put("cryopreservedNum", "DS_ERR009");
                     }
                     Pattern pattern = compile("(-?[1-9]\\d*)|0");
@@ -47,9 +53,9 @@ public class ArSubFreezingValidator implements CustomizeValidator {
                 }
             }
         }
-        if(map.isEmpty()) {
+        if(errMap.isEmpty()) {
             return null;
         }
-        return map;
+        return errMap;
     }
 }

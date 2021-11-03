@@ -60,7 +60,7 @@
                   <iais:row>
                     <iais:field value="No. Cryopreserved" mandatory="true"/>
                     <iais:value cssClass="col-md-3">
-                      <input type="number" oninput="if(value.length>2)value=value.slice(0,2)" style="margin-bottom: 0px;" name="cryopreservedNum" value="${arSuperDataSubmissionDto.arSubFreezingStageDto.cryopreservedNum}"/>
+                      <input type="number" oninput="if(value.length>3)value=value.slice(0,3)" style="margin-bottom: 0px;" name="cryopreservedNum" value="${arSuperDataSubmissionDto.arSubFreezingStageDto.cryopreservedNum}"/>
                       <br><span class="error-msg" name="iaisErrorMsg" id="error_cryopreservedNum"></span>
                     </iais:value>
                   </iais:row>

@@ -70,9 +70,8 @@ public class FreezingStageDelegator extends CommonDelegator {
                     //Verify that the value is dirty data
                     List<SelectOption> freeCryoOptions = (List<SelectOption>)ParamUtil.getSessionAttr(bpc.request, "arFreeCryoOptions");
                     arSubFreezingStageDto = arDataSubmissionService.checkValueIsDirtyData(freeCryoRadios[0], arSubFreezingStageDto, freeCryoOptions);
-                    arSubFreezingStageDto.setCryopreservedType(freeCryoRadios[0]);
                 }
-
+                arSuperDataSubmission.setArSubFreezingStageDto(arSubFreezingStageDto);
                 ValidationResult validationResult = WebValidationHelper.validateProperty(arSubFreezingStageDto, "common");
                 if (validationResult.isHasErrors()) {
                     Map<String, String> errorMap = validationResult.retrieveAll();
@@ -82,7 +81,6 @@ public class FreezingStageDelegator extends CommonDelegator {
                 } else {
                     ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, CommonDelegator.ACTION_TYPE_CONFIRM);
                 }
-                arSuperDataSubmission.setArSubFreezingStageDto(arSubFreezingStageDto);
             }
         }
         ParamUtil.setSessionAttr(bpc.request, DataSubmissionConstant.AR_DATA_SUBMISSION, arSuperDataSubmission);
