@@ -89,9 +89,9 @@ public class LicenceExpiredBatchJob {
         log.debug(StringUtil.changeForLog("The CessationLicenceBatchJob is doBatchJob ..."));
         Date date = new Date();
         String dateStr = DateUtil.formatDate(date, "yyyy-MM-dd");
-        String status = ApplicationConsts.LICENCE_STATUS_ACTIVE;
         //get expired date + 1 = today de licence
-        List<LicenceDto> licenceDtos = hcsaLicenceClient.cessationLicenceDtos(status, dateStr).getEntity();
+        List<LicenceDto> licenceDtos = hcsaLicenceClient.cessationLicenceDtos(ApplicationConsts.LICENCE_STATUS_ACTIVE,
+                dateStr).getEntity();
         List<LicenceDto> licenceDtosForSave = IaisCommonUtils.genNewArrayList();
         List<String> ids = IaisCommonUtils.genNewArrayList();
         if (!IaisCommonUtils.isEmpty(licenceDtos)) {
@@ -248,18 +248,23 @@ public class LicenceExpiredBatchJob {
         for (LicenceDto licenceDto : licenceDtos) {
             try {
                 licenceDto.setAuditTrailDto(auditTrailDto);
-                String originLicenceId = licenceDto.getOriginLicenceId();
-                LicenceDto interimLicDto = hcsaLicenceClient.getLicDtoById(originLicenceId).getEntity();
-                interimLicDto.setStatus(ApplicationConsts.LICENCE_STATUS_IACTIVE);
-                interimLicDto.setEndDate(date);
                 licenceDto.setStatus(ApplicationConsts.LICENCE_STATUS_ACTIVE);
                 updateLicenceDtos.add(licenceDto);
-                updateLicenceDtos.add(interimLicDto);
+
+                String originLicenceId = licenceDto.getOriginLicenceId();
+                LicenceDto interimLicDto = hcsaLicenceClient.getLicDtoById(originLicenceId).getEntity();
+
+                while(interimLicDto != null && (ApplicationConsts.LICENCE_STATUS_ACTIVE.equals(interimLicDto.getStatus())
+                        ||ApplicationConsts.LICENCE_STATUS_APPROVED.equals(interimLicDto.getStatus()))){
+                    interimLicDto.setStatus(ApplicationConsts.LICENCE_STATUS_IACTIVE);
+                    interimLicDto.setEndDate(date);
+                    updateLicenceDtos.add(interimLicDto);
+                    interimLicDto = hcsaLicenceClient.getLicDtoById(interimLicDto.getOriginLicenceId()).getEntity();
+                }
                 //send email
                 String licenceDtoId = licenceDto.getId();
                 String svcName = licenceDto.getSvcName();
                 String licenceNo = licenceDto.getLicenceNo();
-                String licenseeId = licenceDto.getLicenseeId();
 
                 Map<String, Object> emailMap = IaisCommonUtils.genNewHashMap();
                 String appId= hcsaLicenceClient.getLicCorrBylicId(licenceDtoId).getEntity().get(0).getApplicationId();
@@ -346,7 +351,6 @@ public class LicenceExpiredBatchJob {
             String licId = licenceDto.getId();
             String svcName = licenceDto.getSvcName();
             String licenceNo = licenceDto.getLicenceNo();
-            String licenseeId = licenceDto.getLicenseeId();
             try {
                 Map<String, Object> emailMap = IaisCommonUtils.genNewHashMap();
                 String appId= hcsaLicenceClient.getLicCorrBylicId(licId).getEntity().get(0).getApplicationId();
