@@ -267,10 +267,12 @@ public abstract class CommonDelegator {
         // validation
         String declaration = ParamUtil.getString(bpc.request, "declaration");
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap(1);
-        if (StringUtil.isEmpty(declaration)) {
-            errorMap.put("declaration", "GENERAL_ERR0006");
+        String actionType = ParamUtil.getString(bpc.request, DataSubmissionConstant.CRUD_TYPE);
+        if (ACTION_TYPE_SUBMISSION.equals(actionType) && StringUtil.isEmpty(declaration)) {
+            errorMap.put("declaration", "GE NERAL_ERR0006");
         }
         if (!errorMap.isEmpty()) {
+            log.error("------No checked for declaration-----");
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, ACTION_TYPE_CONFIRM);
         }

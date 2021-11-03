@@ -136,6 +136,7 @@ public class ArCycleStagesManualDelegator {
         }
         dataSubmission.setSubmissionType(DataSubmissionConsts.DATA_SUBMISSION_TYPE_AR);
         String stage = selectionDto.getStage();
+        dataSubmission.setCycleStage(stage);
         ArSuperDataSubmissionDto newDto = arDataSubmissionService.getArSuperDataSubmissionDto(selectionDto.getPatientCode(),
                 hicCode);
         if (newDto != null) {
@@ -145,7 +146,6 @@ public class ArCycleStagesManualDelegator {
             newDto.setArSubmissionType(currentArDataSubmission.getArSubmissionType());
             newDto.setSubmissionMethod(currentArDataSubmission.getSubmissionMethod());
             newDto.setOrgId(currentArDataSubmission.getOrgId());
-            dataSubmission.setCycleStage(stage);
             newDto.setCurrentDataSubmissionDto(dataSubmission);
             selectionDto = newDto.getSelectionDto();
             selectionDto.setStage(stage);
