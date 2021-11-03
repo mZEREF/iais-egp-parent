@@ -15,10 +15,12 @@ import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.ArDataSubmissionService;
+
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
+
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
@@ -143,7 +145,9 @@ public abstract class CommonDelegator {
      * @param bpc
      * @throws
      */
-    public void prepareConfim(BaseProcessClass bpc) {};
+    public void prepareConfim(BaseProcessClass bpc) {}
+
+    ;
 
     /**
      * StartStep: Draft
@@ -155,9 +159,9 @@ public abstract class CommonDelegator {
         String currentStage = (String) ParamUtil.getRequestAttr(bpc.request, "currentStage");
         ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, currentStage);
         ArSuperDataSubmissionDto arSuperDataSubmission = DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
-        if(arSuperDataSubmission != null){
+        if (arSuperDataSubmission != null) {
             arSuperDataSubmission = arDataSubmissionService.saveDataSubmissionDraft(arSuperDataSubmission);
-            DataSubmissionHelper.setCurrentArDataSubmission(arSuperDataSubmission,bpc.request);
+            DataSubmissionHelper.setCurrentArDataSubmission(arSuperDataSubmission, bpc.request);
             ParamUtil.setRequestAttr(bpc.request, "saveDraftSuccess", "success");
         } else {
             log.info(StringUtil.changeForLog("The arSuperDataSubmission is null"));
@@ -171,7 +175,9 @@ public abstract class CommonDelegator {
      * @param bpc
      * @throws
      */
-    public void draft(BaseProcessClass bpc){};
+    public void draft(BaseProcessClass bpc) {}
+
+    ;
 
     /**
      * StartStep: Submission
@@ -197,10 +203,12 @@ public abstract class CommonDelegator {
         arSuperDataSubmission = arDataSubmissionService.saveArSuperDataSubmissionDto(arSuperDataSubmission);
         try {
             arSuperDataSubmission = arDataSubmissionService.saveArSuperDataSubmissionDtoToBE(arSuperDataSubmission);
-        }catch (Exception e){
-            log.error(StringUtil.changeForLog("The Eic saveArSuperDataSubmissionDtoToBE failed ===>" + e.getMessage()),e);
+        } catch (Exception e) {
+            log.error(StringUtil.changeForLog("The Eic saveArSuperDataSubmissionDtoToBE failed ===>" + e.getMessage()), e);
         }
+        if (!StringUtil.isEmpty(arSuperDataSubmission.getDraftId())) {
 
+        }
         ParamUtil.setSessionAttr(bpc.request, DataSubmissionConstant.AR_DATA_SUBMISSION, arSuperDataSubmission);
     }
 
@@ -210,7 +218,9 @@ public abstract class CommonDelegator {
      * @param bpc
      * @throws
      */
-    public void submission(BaseProcessClass bpc){};
+    public void submission(BaseProcessClass bpc) {}
+
+    ;
 
     /**
      * StartStep: PageAction
@@ -269,7 +279,7 @@ public abstract class CommonDelegator {
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap(1);
         String actionType = ParamUtil.getString(bpc.request, DataSubmissionConstant.CRUD_TYPE);
         if (ACTION_TYPE_SUBMISSION.equals(actionType) && StringUtil.isEmpty(declaration)) {
-            errorMap.put("declaration", "GE NERAL_ERR0006");
+            errorMap.put("declaration", "GENERAL_ERR0006");
         }
         if (!errorMap.isEmpty()) {
             log.error("------No checked for declaration-----");
@@ -319,27 +329,33 @@ public abstract class CommonDelegator {
         return true;
     }
 
-    public final boolean validatePageData(HttpServletRequest request, Object obj, String property,String... actionType) {
-        return needValidate(request,actionType) ? validatePageData(request, obj, property, ACTION_TYPE_CONFIRM, ACTION_TYPE_PAGE, null, null) : true;
+    public final boolean validatePageData(HttpServletRequest request, Object obj, String property, String... actionType) {
+        return needValidate(request, actionType) ? validatePageData(request, obj, property, ACTION_TYPE_CONFIRM, ACTION_TYPE_PAGE,
+                null, null) : true;
     }
 
-    public final boolean validatePageData(HttpServletRequest request, Object obj, String property, List validationDtos,String... actionType) {
-        return needValidate(request,actionType) ?  validatePageData(request, obj, property, ACTION_TYPE_CONFIRM, ACTION_TYPE_PAGE, validationDtos, null) : true;
+    public final boolean validatePageData(HttpServletRequest request, Object obj, String property, List validationDtos,
+            String... actionType) {
+        return needValidate(request, actionType) ? validatePageData(request, obj, property, ACTION_TYPE_CONFIRM, ACTION_TYPE_PAGE,
+                validationDtos, null) : true;
     }
 
     public final boolean validatePageDataHaveValidationProperty(HttpServletRequest request, Object obj, String property,
-            ValidationProperty validationProperty,String ...actionType) {
+            ValidationProperty validationProperty, String... actionType) {
         Map<Object, ValidationProperty> validationPropertyList = IaisCommonUtils.genNewHashMap();
         validationPropertyList.put(obj, validationProperty);
-        return  needValidate(request,actionType) ? validatePageData(request, obj, property, ACTION_TYPE_CONFIRM, ACTION_TYPE_PAGE, null, validationPropertyList) : true;
+        return needValidate(request, actionType) ? validatePageData(request, obj, property, ACTION_TYPE_CONFIRM, ACTION_TYPE_PAGE,
+                null, validationPropertyList) : true;
     }
 
     public final boolean validatePageDataHaveValidationProperty(HttpServletRequest request, Object obj, String property,
-            List validationDtos, Map<Object, ValidationProperty> validationPropertyList,String ...actionType) {
-        return   needValidate(request,actionType) ? validatePageData(request, obj, property, ACTION_TYPE_CONFIRM, ACTION_TYPE_PAGE, validationDtos, validationPropertyList) : true;
+            List validationDtos, Map<Object, ValidationProperty> validationPropertyList, String... actionType) {
+        return needValidate(request, actionType) ? validatePageData(request, obj, property, ACTION_TYPE_CONFIRM, ACTION_TYPE_PAGE,
+                validationDtos, validationPropertyList) : true;
     }
-    private boolean needValidate(HttpServletRequest request,String ... actionType){
-      return StringUtil.isIn(ParamUtil.getString(request, DataSubmissionConstant.CRUD_TYPE),actionType);
+
+    private boolean needValidate(HttpServletRequest request, String... actionType) {
+        return StringUtil.isIn(ParamUtil.getString(request, DataSubmissionConstant.CRUD_TYPE), actionType);
     }
 
 }

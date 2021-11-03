@@ -89,6 +89,10 @@ public interface LicenceClient {
     @GetMapping(path= "/hcsa-licence/application-licence-premises", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<AppGrpPremisesDto>> getDistinctPremisesByLicenseeId(@RequestParam(value = "licenseeId") String licenseeId, @RequestParam(value ="serviceName") String serviceName);
 
+    @GetMapping(path = "/hcsa-licence/latest-licence-premises", produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<AppGrpPremisesDto>> getLatestPremisesByConds(@RequestParam(value = "licenseeId") String licenseeId,
+            @RequestParam(value = "svcNames", required = false) List<String> svcNames, @RequestParam(value = "loadAll") boolean loadAll);
+
     @PostMapping(value = "/hcsa-licence-rfc/psn-param", consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<SearchResult<PersonnelQueryDto>> psnDoQuery(SearchParam searchParam);
     @PostMapping(value = "/hcsa-licence/exist-base-service-info",consumes = MediaType.APPLICATION_JSON_VALUE)

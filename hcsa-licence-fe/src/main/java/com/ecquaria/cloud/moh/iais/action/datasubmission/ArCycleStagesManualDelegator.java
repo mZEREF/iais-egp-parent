@@ -57,6 +57,8 @@ public class ArCycleStagesManualDelegator {
         List<String> nextStages = DataSubmissionHelper.getNextStageForAR(null, null, null);
         bpc.request.setAttribute("stage_options", DataSubmissionHelper.genOptions(nextStages));
         ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.CURRENT_PAGE_STAGE, "cycle-stage-selection");
+        ParamUtil.setRequestAttr(bpc.request, "title", "New Assisted Reproduction Submission");
+        ParamUtil.setRequestAttr(bpc.request, "smallTitle", "You are submitting for <strong>Cycle Stages</strong>");
     }
 
     /**
@@ -69,15 +71,15 @@ public class ArCycleStagesManualDelegator {
         CycleStageSelectionDto selectionDto = getSelectionDtoFromPage(bpc.request);
         ArSuperDataSubmissionDto currentArDataSubmission = DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
         currentArDataSubmission.setSelectionDto(selectionDto);
+        DataSubmissionHelper.setCurrentArDataSubmission(currentArDataSubmission, bpc.request);
         String crudype = ParamUtil.getString(bpc.request, DataSubmissionConstant.CRUD_TYPE);
         if (StringUtil.isIn(crudype, new String[]{"return", "back"})) {
             ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.CRUD_ACTION_TYPE_CT, "back");
-            DataSubmissionHelper.setCurrentArDataSubmission(currentArDataSubmission, bpc.request);
             return;
         }
         // validation
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
-        String profile = "draft".equals(crudype) ? "ART" : "save";
+        String profile = StringUtil.isIn(crudype, new String[]{"draft", "patient"}) ? "ART" : "save";
         ValidationResult result = WebValidationHelper.validateProperty(selectionDto, profile);
         if (result != null) {
             errorMap.putAll(result.retrieveAll());
@@ -87,42 +89,84 @@ public class ArCycleStagesManualDelegator {
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
             stage = "current";
         } else {
-            String orgId = currentArDataSubmission.getOrgId();
-            String hciCode = Optional.ofNullable(currentArDataSubmission.getAppGrpPremisesDto())
-                    .map(AppGrpPremisesDto::getHciCode)
-                    .orElse("");
-            String actionValue = ParamUtil.getString(bpc.request, IaisEGPConstant.CRUD_ACTION_VALUE);
-            log.info(StringUtil.changeForLog("Action Type: " + actionValue));
-            if (StringUtil.isEmpty(actionValue)) {
-                ArSuperDataSubmissionDto dataSubmissionDraft = arDataSubmissionService.getArSuperDataSubmissionDtoDraftByConds(
-                        selectionDto.getPatientIdType(), selectionDto.getPatientIdNumber(), selectionDto.getPatientNationality(),
-                        orgId, hciCode);
-                if (dataSubmissionDraft != null) {
-                    currentArDataSubmission.setDraftId(dataSubmissionDraft.getDraftId());
-                    DataSubmissionHelper.setCurrentArDataSubmission(currentArDataSubmission, bpc.request);
-                    stage = "current";
-                    ParamUtil.setRequestAttr(bpc.request, "hasDraft", true);
-                } else {
-                    handleArSuperDataSubmissionDto(currentArDataSubmission, selectionDto, bpc.request);
-                }
-            } else if ("resume".equals(actionValue)) {
-                ArSuperDataSubmissionDto arSuperDataSubmissionDtoDraft = arDataSubmissionService.getArSuperDataSubmissionDtoDraftById(
-                        currentArDataSubmission.getDraftId());
-                if (arSuperDataSubmissionDtoDraft != null) {
-                    DataSubmissionHelper.setCurrentArDataSubmission(arSuperDataSubmissionDtoDraft, bpc.request);
-                } else {
-                    log.warn(StringUtil.changeForLog("The draft is null for " + currentArDataSubmission.getDraftId()));
-                    handleArSuperDataSubmissionDto(currentArDataSubmission, selectionDto, bpc.request);
-                }
-            } else if ("delete".equals(actionValue)) {
-                arDataSubmissionService.deleteArSuperDataSubmissionDtoDraftByConds(selectionDto.getPatientIdType(), selectionDto.getPatientIdNumber(), selectionDto.getPatientNationality(),
-                orgId, hciCode);
-                handleArSuperDataSubmissionDto(currentArDataSubmission, selectionDto, bpc.request);
-            } else if ("patient".equals(actionValue)) {
-                stage = "patient";
+            if ("patient".equals(crudype)) {
+                stage = checkPatient(currentArDataSubmission, bpc.request);
+            } else if ("draft".equals(crudype)) {
+                stage = "draft";
+            } else {
+                stage = checkCycleStage(currentArDataSubmission, selectionDto, bpc.request);
             }
         }
         ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.CRUD_ACTION_TYPE_CT, stage);
+    }
+
+    private String checkPatient(ArSuperDataSubmissionDto currentArDataSubmission, HttpServletRequest request) {
+        String stage = "patient";
+        String orgId = currentArDataSubmission.getOrgId();
+        String actionValue = ParamUtil.getString(request, IaisEGPConstant.CRUD_ACTION_VALUE);
+        log.info(StringUtil.changeForLog("Action Type: " + actionValue));
+        if (StringUtil.isEmpty(actionValue) || "patient".equals(actionValue)) {
+            ArSuperDataSubmissionDto dataSubmissionDraft = arDataSubmissionService.getArSuperDataSubmissionDtoDraftByConds(
+                    orgId, DataSubmissionConsts.AR_TYPE_SBT_PATIENT_INFO, null);
+            if (dataSubmissionDraft != null) {
+                currentArDataSubmission.setDraftId(dataSubmissionDraft.getDraftId());
+                currentArDataSubmission.setArSubmissionType(DataSubmissionConsts.AR_TYPE_SBT_PATIENT_INFO);
+                stage = "current";
+                ParamUtil.setRequestAttr(request, "hasDraft", true);
+            }
+        } else if ("resume".equals(actionValue)) {
+            ArSuperDataSubmissionDto arSuperDataSubmissionDtoDraft = arDataSubmissionService.getArSuperDataSubmissionDtoDraftById(
+                    currentArDataSubmission.getDraftId());
+            if (arSuperDataSubmissionDtoDraft != null) {
+                DataSubmissionHelper.setCurrentArDataSubmission(arSuperDataSubmissionDtoDraft, request);
+            } else {
+                log.warn(StringUtil.changeForLog("The draft is null for " + currentArDataSubmission.getDraftId()));
+            }
+        } else if ("delete".equals(actionValue)) {
+            arDataSubmissionService.deleteArSuperDataSubmissionDtoDraftByConds(orgId, DataSubmissionConsts.AR_TYPE_SBT_PATIENT_INFO,
+                    null);
+        }
+        DataSubmissionHelper.setCurrentArDataSubmission(currentArDataSubmission, request);
+        return stage;
+    }
+
+    private String checkCycleStage(ArSuperDataSubmissionDto currentArDataSubmission,
+            CycleStageSelectionDto selectionDto, HttpServletRequest request) {
+        String stage = selectionDto.getStage();
+        String orgId = currentArDataSubmission.getOrgId();
+        String hciCode = Optional.ofNullable(currentArDataSubmission.getAppGrpPremisesDto())
+                .map(AppGrpPremisesDto::getHciCode)
+                .orElse("");
+        String actionValue = ParamUtil.getString(request, IaisEGPConstant.CRUD_ACTION_VALUE);
+        log.info(StringUtil.changeForLog("Action Type: " + actionValue));
+        if (StringUtil.isEmpty(actionValue)) {
+            ArSuperDataSubmissionDto dataSubmissionDraft = arDataSubmissionService.getArSuperDataSubmissionDtoDraftByConds(
+                    selectionDto.getPatientIdType(), selectionDto.getPatientIdNumber(), selectionDto.getPatientNationality(),
+                    orgId, hciCode);
+            if (dataSubmissionDraft != null) {
+                currentArDataSubmission.setDraftId(dataSubmissionDraft.getDraftId());
+                DataSubmissionHelper.setCurrentArDataSubmission(currentArDataSubmission, request);
+                stage = "current";
+                ParamUtil.setRequestAttr(request, "hasDraft", true);
+            } else {
+                handleArSuperDataSubmissionDto(currentArDataSubmission, selectionDto, request);
+            }
+        } else if ("resume".equals(actionValue)) {
+            ArSuperDataSubmissionDto arSuperDataSubmissionDtoDraft = arDataSubmissionService.getArSuperDataSubmissionDtoDraftById(
+                    currentArDataSubmission.getDraftId());
+            if (arSuperDataSubmissionDtoDraft != null) {
+                DataSubmissionHelper.setCurrentArDataSubmission(arSuperDataSubmissionDtoDraft, request);
+            } else {
+                log.warn(StringUtil.changeForLog("The draft is null for " + currentArDataSubmission.getDraftId()));
+                handleArSuperDataSubmissionDto(currentArDataSubmission, selectionDto, request);
+            }
+        } else if ("delete".equals(actionValue)) {
+            arDataSubmissionService.deleteArSuperDataSubmissionDtoDraftByConds(selectionDto.getPatientIdType(),
+                    selectionDto.getPatientIdNumber(), selectionDto.getPatientNationality(),
+                    orgId, hciCode);
+            handleArSuperDataSubmissionDto(currentArDataSubmission, selectionDto, request);
+        }
+        return stage;
     }
 
     private void handleArSuperDataSubmissionDto(ArSuperDataSubmissionDto currentArDataSubmission,
@@ -183,6 +227,7 @@ public class ArCycleStagesManualDelegator {
      * @throws
      */
     public void doBack(BaseProcessClass bpc) {
+        log.info("----- Back -----");
     }
 
     /**
@@ -211,9 +256,9 @@ public class ArCycleStagesManualDelegator {
         String currentStage = (String) ParamUtil.getRequestAttr(bpc.request, "currentStage");
         ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, currentStage);
         ArSuperDataSubmissionDto arSuperDataSubmission = DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
-        if(arSuperDataSubmission != null){
+        if (arSuperDataSubmission != null) {
             arSuperDataSubmission = arDataSubmissionService.saveDataSubmissionDraft(arSuperDataSubmission);
-            DataSubmissionHelper.setCurrentArDataSubmission(arSuperDataSubmission,bpc.request);
+            DataSubmissionHelper.setCurrentArDataSubmission(arSuperDataSubmission, bpc.request);
             ParamUtil.setRequestAttr(bpc.request, "saveDraftSuccess", "success");
         } else {
             log.info(StringUtil.changeForLog("The arSuperDataSubmission is null"));

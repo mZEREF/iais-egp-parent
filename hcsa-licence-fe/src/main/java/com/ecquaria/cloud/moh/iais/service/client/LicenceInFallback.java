@@ -34,6 +34,13 @@ import java.util.List;
 @Component
 public class LicenceInFallback implements LicenceClient {
 
+    private FeignResponseEntity getFeignResponseEntity() {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
     @Override
     public FeignResponseEntity<AppSubmissionDto> getAppSubmissionDto(String licenceId) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
@@ -100,7 +107,7 @@ public class LicenceInFallback implements LicenceClient {
 
     @Override
     public FeignResponseEntity<String> doSave(LicenceDto licenceDto) {
-        return null;
+        return getFeignResponseEntity();
     }
 
     @Override
@@ -164,6 +171,12 @@ public class LicenceInFallback implements LicenceClient {
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
         return entity;
+    }
+
+    @Override
+    public FeignResponseEntity<List<AppGrpPremisesDto>> getLatestPremisesByConds(String licenseeId, List<String> svcNames,
+            boolean loadAll) {
+        return null;
     }
 
     @Override
@@ -487,10 +500,7 @@ public class LicenceInFallback implements LicenceClient {
 
     @Override
     public FeignResponseEntity<PremisesDto> getPremisesDtoForBusinessName(String licenceId) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+        return getFeignResponseEntity();
     }
 
 }

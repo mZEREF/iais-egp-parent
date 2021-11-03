@@ -25,6 +25,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -59,8 +60,11 @@ public class ArDataSubmissionServiceImpl implements ArDataSubmissionService {
         if (StringUtil.isEmpty(licenseeId)) {
             return IaisCommonUtils.genNewHashMap();
         }
-        List<AppGrpPremisesDto> appGrpPremisesDtos = licenceClient.getDistinctPremisesByLicenseeId(licenseeId,
-                serviceName).getEntity();
+        List<String> svcNames = new ArrayList<>();
+        if (!StringUtil.isEmpty(serviceName)) {
+            svcNames.add(serviceName);
+        }
+        List<AppGrpPremisesDto> appGrpPremisesDtos = licenceClient.getLatestPremisesByConds(licenseeId, svcNames, false).getEntity();
         Map<String, AppGrpPremisesDto> appGrpPremisesDtoMap = IaisCommonUtils.genNewHashMap();
         if (appGrpPremisesDtos == null || appGrpPremisesDtos.isEmpty()) {
             return appGrpPremisesDtoMap;

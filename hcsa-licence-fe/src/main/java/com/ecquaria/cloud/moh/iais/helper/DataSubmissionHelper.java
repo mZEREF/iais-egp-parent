@@ -254,10 +254,7 @@ public final class DataSubmissionHelper {
     }
 
     public static String getPremisesLabel(AppGrpPremisesDto appGrpPremisesDto) {
-        if (appGrpPremisesDto == null) {
-            return "";
-        }
-        return StringUtil.escapeHtml(appGrpPremisesDto.getBusinessName() + ", " + appGrpPremisesDto.getAddress());
+        return IaisCommonUtils.getPremisesLabel(appGrpPremisesDto);
     }
 
     public static List<SelectOption> getNumsSelections(int startNum, int endNum) {

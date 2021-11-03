@@ -17,12 +17,3 @@
 <%-- validation --%>
 <%@ include file="/WEB-INF/jsp/include/validation.jsp" %>
 <%@ include file="formHidden.jsp" %>
-<script>
-    function cancelDraft() {
-        $('#saveDraft').modal('hide');
-    }
-
-    function jumpToInbox() {
-        docuemt.href = "/main-web/eservice/INTERNET/MohInternetInbox";
-    }
-</script>

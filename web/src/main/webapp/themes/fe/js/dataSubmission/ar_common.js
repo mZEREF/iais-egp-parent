@@ -64,7 +64,13 @@ function cancelDraft() {
 }
 
 function jumpToInbox() {
-    docuemt.href = "/main-web/eservice/INTERNET/MohInternetInbox";
+    showWaiting();
+    var token = $('input[name="OWASP_CSRFTOKEN"]').val();
+    var url = "/main-web/eservice/INTERNET/MohInternetInbox";
+    if (!isEmpty(token)) {
+        url += '?OWASP_CSRFTOKEN=' + token;
+    }
+    document.location = url;
 }
 
 function submit(action,value,additional){

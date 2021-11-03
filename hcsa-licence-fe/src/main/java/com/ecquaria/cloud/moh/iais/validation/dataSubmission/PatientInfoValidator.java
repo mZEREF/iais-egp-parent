@@ -58,7 +58,7 @@ public class PatientInfoValidator implements CustomizeValidator {
         if (!StringUtil.isEmpty(birthDate) && CommonValidator.isDate(birthDate)) {
             try {
                 if (Formatter.compareDateByDay(birthDate) > 0) {
-                    map.put("birthDate", "DS_ERR001");
+                    map.put("birthDate", MessageUtil.replaceMessage("DS_ERR001", "Date of Birth", "field"));
                 } else {
                     String age1 = MasterCodeUtil.getCodeDesc("PT_AGE_001");
                     String age2 = MasterCodeUtil.getCodeDesc("PT_AGE_002");

@@ -34,16 +34,16 @@
         </div>
     </div>
 </form>
-<c:if test="${hasDraft}">
+<c:if test="${hasDraft && arSuperDataSubmissionDto.arSubmissionType eq 'AR_TP002'}">
     <iais:confirm msg="DS_MSG002" callBack="submit('confirm', 'resume');" popupOrder="_draftModal"  yesBtnDesc="Continue"
                   cancelBtnCls="btn btn-primary" yesBtnCls="btn btn-secondary"
                   cancelBtnDesc="Delete" cancelFunc="submit('confirm', 'delete');" />
 </c:if>
+<c:if test="${hasDraft && arSuperDataSubmissionDto.arSubmissionType eq 'AR_TP001'}">
+    <iais:confirm msg="DS_MSG001" callBack="submit('patient', 'resume');" popupOrder="_draftModal"  yesBtnDesc="Continue"
+                  cancelBtnCls="btn btn-primary" yesBtnCls="btn btn-secondary"
+                  cancelBtnDesc="Delete" cancelFunc="submit('patient', 'delete')" />
+</c:if>
 <iais:confirm msg="DS_MSG003" callBack="$('#noFoundDiv').modal('hide');" popupOrder="noFoundDiv"  yesBtnDesc="Close"
               cancelBtnDesc="Register Patient" cancelBtnCls="btn btn-primary" yesBtnCls="btn btn-secondary"
-              cancelFunc="submit('', 'patient');" />
-<script type="text/javascript">
-    <c:if test="${hasDraft}">
-    //$('#_draftModal').modal('show');
-    </c:if>
-</script>
+              cancelFunc="submit('patient', 'patient');" />
