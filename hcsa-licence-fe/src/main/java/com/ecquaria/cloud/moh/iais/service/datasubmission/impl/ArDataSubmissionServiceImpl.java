@@ -5,10 +5,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmission
 import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSubFreezingStageDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.CycleStageSelectionDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DataSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.*;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -25,6 +22,7 @@ import org.springframework.stereotype.Service;
 
 
 import java.text.ParseException;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -56,6 +54,7 @@ public class ArDataSubmissionServiceImpl implements ArDataSubmissionService {
     @Autowired
     private LicEicClient licEicClient;
 
+    private static final List<String> statuses = IaisCommonUtils.getDsCycleFinalStatus();
     @Override
     public Map<String, AppGrpPremisesDto> getAppGrpPremises(String licenseeId, String serviceName) {
         if (StringUtil.isEmpty(licenseeId)) {
@@ -195,7 +194,7 @@ public class ArDataSubmissionServiceImpl implements ArDataSubmissionService {
         if (!DataSubmissionConsts.DATA_SUBMISSION_CYCLE_STAGE_PATIENT.equals(cycleStage)) {
             if (lastDataSubmissionDto != null
                     && submisisonType.equals(lastDataSubmissionDto.getSubmissionType())
-                    && !IaisCommonUtils.getDsFinalStatus().contains(lastDataSubmissionDto.getStatus())
+                    && !statuses.contains(lastDataSubmissionDto.getStatus())
                     && lastDataSubmissionDto.getSubmissionNo() != null) {
                 String[] previous = lastDataSubmissionDto.getSubmissionNo().split("-");
                 submissionNo = previous[0];
@@ -257,5 +256,13 @@ public class ArDataSubmissionServiceImpl implements ArDataSubmissionService {
         return arSubFreezingStageDto;
     }
 
-
+    @Override
+    public List<CycleDto> getByPatientCodeAndHciCodeAndCycleTypeAndStatuses(String patientCode, String hciCode, String cycleType, String ... status) {
+        CycleDto cycleDto = new CycleDto();
+        cycleDto.setPatientCode(patientCode);
+        cycleDto.setHciCode(hciCode);
+        cycleDto.setCycleType(cycleType);
+        cycleDto.setStatuses(IaisCommonUtils.isEmpty(status) ? statuses : Arrays.asList(status));
+        return arFeClient.getByPatientCodeAndHciCodeAndCycleTypeAndStatuses(cycleDto).getEntity();
+    }
 }

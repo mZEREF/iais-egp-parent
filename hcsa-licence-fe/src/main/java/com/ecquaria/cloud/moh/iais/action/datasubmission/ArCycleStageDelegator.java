@@ -1,11 +1,10 @@
 package com.ecquaria.cloud.moh.iais.action.datasubmission;
 
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArCycleStageDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArDonorDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInfoDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.*;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -14,13 +13,16 @@ import com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant;
 import com.ecquaria.cloud.moh.iais.helper.ControllerHelper;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
+import com.ecquaria.cloud.moh.iais.service.datasubmission.ArDataSubmissionService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * ArCycleStageDelegator
@@ -43,6 +45,9 @@ public class ArCycleStageDelegator extends CommonDelegator {
     private final static String  DONOR_USED_TYPES                = "donorUsedTypes";
     private final static String  DONOR_SOURSE_DROP_DOWN          = "donorSourseDropDown";
     private final static String  DONOR_SOURSE_OTHERS             = "Others";
+
+    @Autowired
+    private ArDataSubmissionService arDataSubmissionService;
     @Override
     public void start(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
@@ -103,13 +108,14 @@ public class ArCycleStageDelegator extends CommonDelegator {
             arSuperDataSubmissionDto.setArDonorDtos(arDonorDtos);
         }
         arCycleStageDto.setArDonorDtos(arDonorDtos);
-        setCycleAgeByPatientInfoDto(arCycleStageDto,arSuperDataSubmissionDto.getPatientInfoDto());
+        setCycleAgeByPatientInfoDtoAndHcicode(arCycleStageDto,arSuperDataSubmissionDto.getPatientInfoDto(),arSuperDataSubmissionDto.getAppGrpPremisesDto().getHciCode());
         ParamUtil.setSessionAttr(request, DataSubmissionConstant.AR_DATA_SUBMISSION,arSuperDataSubmissionDto);
     }
 
-    private void setCycleAgeByPatientInfoDto(ArCycleStageDto arCycleStageDto, PatientInfoDto patientInfoDto){
+    private void setCycleAgeByPatientInfoDtoAndHcicode(ArCycleStageDto arCycleStageDto, PatientInfoDto patientInfoDto,String hciCode){
         if(patientInfoDto != null && patientInfoDto.getPatient() !=null){
-            List<Integer> integers = Formatter.getYearsAndDays(patientInfoDto.getPatient().getBirthDate());
+            PatientDto patientDto = patientInfoDto.getPatient();
+            List<Integer> integers = Formatter.getYearsAndDays(patientDto.getBirthDate());
             if(IaisCommonUtils.isNotEmpty(integers)){
                 int year = integers.get(0);
                 int month = integers.get(integers.size()-1);
@@ -117,6 +123,8 @@ public class ArCycleStageDelegator extends CommonDelegator {
                 arCycleStageDto.setCycleAgeMonth(month);
                 arCycleStageDto.setCycleAge(IaisCommonUtils.getRecommendationYears(year *12 + month));
             }
+            List<CycleDto> cycleDtos = arDataSubmissionService.getByPatientCodeAndHciCodeAndCycleTypeAndStatuses(patientDto.getPatientCode(),hciCode, DataSubmissionConsts.AR_CYCLE_AR);
+            arCycleStageDto.setNumberOfCyclesUndergoneLocally(IaisCommonUtils.isNotEmpty(cycleDtos) ? cycleDtos.size() : 0);
         }
     }
 
