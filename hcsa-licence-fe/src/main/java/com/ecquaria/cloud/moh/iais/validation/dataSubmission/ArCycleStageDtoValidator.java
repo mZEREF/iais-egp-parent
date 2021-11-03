@@ -5,10 +5,12 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSub
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidator;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
+import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -25,7 +27,14 @@ public class ArCycleStageDtoValidator implements CustomizeValidator {
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
         ArSuperDataSubmissionDto arSuperDataSubmissionDto = DataSubmissionHelper.getCurrentArDataSubmission(request);
         ArCycleStageDto arCycleStageDto = arSuperDataSubmissionDto.getArCycleStageDto();
-
+        if( (IaisCommonUtils.getIntByNum(arCycleStageDto.getNoChildrenCurrentMarriage(),0)
+                + IaisCommonUtils.getIntByNum(arCycleStageDto. getNoChildrenPreviousMarriage(),0) ) < IaisCommonUtils.getIntByNum(arCycleStageDto.getNoChildrenConceivedAR(),0) ){
+            Map<String,String> stringStringMap = IaisCommonUtils.genNewHashMap(3);
+            stringStringMap.put("field1","");
+            stringStringMap.put("field2","No. of Children with Current Marriage");
+            stringStringMap.put("field3","No. of Children with Previous Marriage");
+            errorMap.put("noChildrenConceivedAR", MessageUtil.getMessageDesc("DS_ERR011",stringStringMap)).trim();
+        }
         return errorMap;
     }
 

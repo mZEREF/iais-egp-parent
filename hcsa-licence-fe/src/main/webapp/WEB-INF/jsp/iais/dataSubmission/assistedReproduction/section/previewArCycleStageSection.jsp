@@ -18,7 +18,7 @@
                 <iais:row>
                     <iais:field width="5" value="Premises where AR is performed" />
                     <iais:value width="7" cssClass="col-md-7" display="true">
-                        <c:out value="${arCycleStageDto.cycleAge}"/>
+                        <c:out value="${arCycleStageDto.appGrpPremisesDto.premiseLabel}"/>
                     </iais:value>
                 </iais:row>
                 <iais:row>
@@ -41,7 +41,7 @@
                     </iais:value>
                 </iais:row>
 
-                <iais:row id="mainIndicationOtherRow">
+                <iais:row style="${arCycleStageDto.mainIndication eq DataSubmissionConsts.AR_MAIN_INDICATION_OTHERS ? '' : 'display: none'}">
                     <iais:field width="5" value="Main Indication (Others)" />
                     <iais:value width="7" cssClass="col-md-7" display="true">
                         <c:out value="${arCycleStageDto.mainIndicationOthers}"/>
@@ -57,7 +57,7 @@
                     </iais:value>
                 </iais:row>
 
-                <iais:row id="otherIndicationOthersRow">
+                <iais:row style="${StringUtil.stringContain(arCycleStageDto.otherIndication,DataSubmissionConsts.AR_OTHER_INDICATION_OTHERS) ? '' : 'display: none'}">
                     <iais:field width="5" value="Other Indication (Others)" />
                     <iais:value width="7" cssClass="col-md-7" display="true">
                         <c:out value="${arCycleStageDto.otherIndicationOthers}"/>
@@ -116,7 +116,7 @@
                     </iais:value>
                 </iais:row>
 
-                <iais:row id="totalNumberARCOtherRow">
+                <iais:row id="totalNumberARCOtherRow" style="${ arCycleStageDto.totalNumberARCPreviouslyUndergonePatient == 21 ? '' : 'display: none'}">
                     <iais:field width="5" value="Number of Cycles undergone Overseas" />
                     <iais:value width="7" cssClass="col-md-7" display="true">
                         <c:out value="${arCycleStageDto.numberCyclesUndergoneOverseas}"/>
@@ -126,7 +126,7 @@
                     <iais:field width="5" value="Number of Cycles undergone Locally" />
                     <iais:value width="7" cssClass="col-md-7">
                         <iais:value width="7" cssClass="col-md-7" display="true">
-                            <c:out value=""/>
+                            <c:out value="${arCycleStageDto.numberOfCyclesUndergoneLocally}"/>
                         </iais:value>
                     </iais:value>
                 </iais:row>

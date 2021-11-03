@@ -111,10 +111,10 @@
                      </iais:value>
                  </iais:row>
 
-                 <iais:row>
+                 <iais:row cssClass="oocyteEmbryoSpermsUsedControlClass yesOocyteEmbryoSpermsUsedControl">
                      <iais:field width="5" value="Donor's Age at Donation" mandatory="true"/>
                      <iais:value width="4" cssClass="col-md-4">
-                         <iais:select name="donorAgeDonation${arDonorIndex}" firstOption="Please Select"  options="donorAgeDonationDropDown" value="${arDonorDto.donorAgeDonation}"
+                         <iais:select name="age${arDonorIndex}" firstOption="Please Select"  options="donorAgeDonationDropDown" value="${arDonorDto.donorAgeDonation}"
                                       cssClass="donorAgeDonation${arDonorIndex}"/>
                      </iais:value>
                      <iais:value width="3" cssClass="col-md-3" display="true">

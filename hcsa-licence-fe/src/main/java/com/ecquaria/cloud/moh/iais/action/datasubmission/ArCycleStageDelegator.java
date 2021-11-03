@@ -216,6 +216,7 @@ public class ArCycleStageDelegator extends CommonDelegator {
             arDonorDto.setIdNumber(null);
             arDonorDto.setIdType(null);
             arDonorDto.setPleaseIndicateValues(null);
+            arDonorDto.setAge(null);
         }
      }
 }

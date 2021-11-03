@@ -19,7 +19,7 @@
                 <iais:row>
                     <iais:field width="5" value="Premises where AR is performed" mandatory="true"/>
                     <iais:value width="7" cssClass="col-md-7" display="true">
-                        <c:out value="${arCycleStageDto.cycleAge}"/>
+                        <c:out value="${arCycleStageDto.appGrpPremisesDto.premiseLabel}"/>
                     </iais:value>
                 </iais:row>
                 <iais:row>
@@ -162,7 +162,7 @@
                     <iais:field width="5" value="Number of Cycles undergone Locally" mandatory="false"/>
                     <iais:value width="7" cssClass="col-md-7">
                         <iais:value width="7" cssClass="col-md-7">
-                           <c:out value=""/>
+                           <c:out value="${arCycleStageDto.numberOfCyclesUndergoneLocally}"/>
                         </iais:value>
                     </iais:value>
                 </iais:row>
