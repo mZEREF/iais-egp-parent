@@ -50,7 +50,7 @@
                     <iais:row>
                         <iais:field width="6" value="" mandatory="false"/>
                         <iais:value width="6" display="true">
-                            <c:out value="${arSuperDataSubmissionDto.efoCycleStageDto.othersReason}"/>
+                            <c:out value="${arSuperDataSubmissionDto.efoCycleStageDto.otherReason}"/>
                         </iais:value>
                     </iais:row>
                 </div>

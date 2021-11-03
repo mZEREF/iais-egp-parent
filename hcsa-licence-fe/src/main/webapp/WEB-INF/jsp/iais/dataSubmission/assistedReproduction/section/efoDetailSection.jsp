@@ -72,7 +72,7 @@
                     <iais:row>
                         <iais:field width="6" value="" mandatory="false"/>
                         <iais:value width="6" cssClass="col-md-6">
-                            <input type="text" maxlength="20"   name="othersReason" value="${arSuperDataSubmissionDto.efoCycleStageDto.othersReason}" >
+                            <input type="text" maxlength="20"   name="othersReason" value="${arSuperDataSubmissionDto.efoCycleStageDto.otherReason}" >
                             <span class="error-msg" name="iaisErrorMsg" id="error_othersReason"></span>
                         </iais:value>
                     </iais:row>
