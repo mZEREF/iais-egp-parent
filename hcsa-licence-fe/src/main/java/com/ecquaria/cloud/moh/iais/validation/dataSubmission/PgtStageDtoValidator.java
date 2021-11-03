@@ -126,7 +126,7 @@ public class PgtStageDtoValidator implements CustomizeValidator {
 
         if(StringUtil.isEmpty(pgtStageDto.getIsEmbryosBiopsiedLocal())){
             errorMap.put("isEmbryosBiopsiedLocal", errMsgErr006);
-        }else if( pgtStageDto.getIsEmbryosBiopsiedLocal()==0){
+        }else if( "Others".equals(pgtStageDto.getIsEmbryosBiopsiedLocal())){
             if(StringUtil.isEmpty(pgtStageDto.getOtherEmbryosBiopsiedAddr())){
                 errorMap.put("otherEmbryosBiopsiedAddr", errMsgErr006);
             }else  if(pgtStageDto.getOtherEmbryosBiopsiedAddr().length()>20){
@@ -139,7 +139,7 @@ public class PgtStageDtoValidator implements CustomizeValidator {
         }
         if(StringUtil.isEmpty(pgtStageDto.getIsBiopsyLocal())){
             errorMap.put("isBiopsyLocal", errMsgErr006);
-        }else if( pgtStageDto.getIsBiopsyLocal()==0){
+        }else if( "Others".equals(pgtStageDto.getIsBiopsyLocal())){
             if(StringUtil.isEmpty(pgtStageDto.getOtherBiopsyAddr())){
                 errorMap.put("otherBiopsyAddr", errMsgErr006);
             }else  if(pgtStageDto.getOtherBiopsyAddr().length()>20){

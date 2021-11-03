@@ -31,11 +31,10 @@
                 <iais:row>
                     <iais:field width="6" value="Which AR Centre was Gamete(s)/Embryo(s) Donated to?" mandatory="false"/>
                     <iais:value width="6" display="true">
-                        <c:if test="${arSuperDataSubmissionDto.donationStageDto.isCurCenDonatedNum==1}">AR Centres with active AR licence</c:if>
-                        <c:if test="${arSuperDataSubmissionDto.donationStageDto.isCurCenDonatedNum==0}">Others</c:if>
+                        <c:out value="${arSuperDataSubmissionDto.donationStageDto.isCurCenDonated}"/>
                     </iais:value>
                 </iais:row>
-                <div id="otherDonatedCenDisplay" <c:if test="${arSuperDataSubmissionDto.donationStageDto.isCurCenDonatedNum!=0}">style="display: none"</c:if>>
+                <div id="otherDonatedCenDisplay" <c:if test="${arSuperDataSubmissionDto.donationStageDto.isCurCenDonated!='Others'}">style="display: none"</c:if>>
                     <iais:row>
                         <iais:field width="6" value="Other Centre where Embryos were Biospied At" />
                         <iais:value width="6" display="true">
@@ -43,7 +42,7 @@
                         </iais:value>
                     </iais:row>
                 </div>
-                <div id="directedDonorIdDisplay" <c:if test="${arSuperDataSubmissionDto.donationStageDto.isCurCenDonatedNum==0}">style="display: none"</c:if>>
+                <div id="directedDonorIdDisplay" <c:if test="${arSuperDataSubmissionDto.donationStageDto.isCurCenDonated=='Others'}">style="display: none"</c:if>>
                     <iais:row>
                         <iais:field width="6" value="ID of Directed Donor (if applicable)"/>
                         <iais:value width="6" display="true">
@@ -88,11 +87,10 @@
                 <iais:row>
                     <iais:field width="6" value="Other AR Centre / Institution Sent to" id="isInsSentToCurField" />
                     <iais:value width="6" display="true">
-                        <c:if test="${arSuperDataSubmissionDto.donationStageDto.isInsSentToCur ==1}">AR Centres with active AR licence</c:if>
-                        <c:if test="${arSuperDataSubmissionDto.donationStageDto.isInsSentToCur ==0}">Others</c:if>
+                        <c:out value="${arSuperDataSubmissionDto.donationStageDto.isInsSentToCur}"/>
                     </iais:value>
                 </iais:row>
-                <div id="insSentToOtherCenDisplay" <c:if test="${arSuperDataSubmissionDto.donationStageDto.isInsSentToCur!=0}">style="display: none"</c:if>>
+                <div id="insSentToOtherCenDisplay" <c:if test="${arSuperDataSubmissionDto.donationStageDto.isInsSentToCur!='Others'}">style="display: none"</c:if>>
                     <iais:row>
                         <iais:field width="6" value="Other Type of Research Donated for" />
                         <iais:value width="6" display="true">

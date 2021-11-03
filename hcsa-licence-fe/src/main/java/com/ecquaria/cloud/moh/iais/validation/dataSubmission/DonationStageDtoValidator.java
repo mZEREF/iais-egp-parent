@@ -53,9 +53,9 @@ public class DonationStageDtoValidator implements CustomizeValidator {
                 errorMap.put("otherCenDonatedNum", "Cannot be greater than number of samples under patient");
             }
             if(donationStageDto.getOtherCenDonatedNum()>0){
-                if(donationStageDto.getIsCurCenDonatedNum()==null){
-                    errorMap.put("isCurCenDonatedNum", errMsgErr006);
-                }else if(donationStageDto.getIsCurCenDonatedNum()==0){
+                if(donationStageDto.getIsCurCenDonated()==null){
+                    errorMap.put("isCurCenDonated", errMsgErr006);
+                }else if("Others".equals(donationStageDto.getIsCurCenDonated())){
                     if(StringUtil.isEmpty(donationStageDto.getOtherCenDonatedNum())){
                         errorMap.put("otherDonatedCen", errMsgErr006);
                     }
@@ -118,7 +118,7 @@ public class DonationStageDtoValidator implements CustomizeValidator {
             if(donationStageDto.getOtherCenResDonarNum()>0){
                 if(donationStageDto.getIsInsSentToCur()==null){
                     errorMap.put("isInsSentToCur", errMsgErr006);
-                }else if(donationStageDto.getIsInsSentToCur()==0){
+                }else if("Others".equals(donationStageDto.getIsInsSentToCur())){
                     if(StringUtil.isEmpty(donationStageDto.getInsSentToOtherCen())){
                         errorMap.put("insSentToOtherCen", errMsgErr006);
                     }

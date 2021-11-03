@@ -4,6 +4,7 @@ import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DonationStageDto;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant;
@@ -52,6 +53,13 @@ public class DonationStageDelegator extends CommonDelegator{
         ParamUtil.setRequestAttr(bpc.request,"donatedTypeSelectOption",donatedTypeSelectOption);
         List<SelectOption> donationReasonSelectOption= MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_DONATION_REASON);
         ParamUtil.setRequestAttr(bpc.request,"donationReasonSelectOption",donationReasonSelectOption);
+
+        List<SelectOption> curCenDonatedSelectOption= IaisCommonUtils.genNewArrayList();
+
+        ParamUtil.setRequestAttr(bpc.request,"curCenDonatedSelectOption",curCenDonatedSelectOption);
+        List<SelectOption> insSentToCurSelectOption= IaisCommonUtils.genNewArrayList();
+
+        ParamUtil.setRequestAttr(bpc.request,"insSentToCurSelectOption",insSentToCurSelectOption);
     }
 
 
@@ -130,11 +138,9 @@ public class DonationStageDelegator extends CommonDelegator{
         donationStageDto.setIsCurCenResTypeOther(0);
         String donatedType=ParamUtil.getString(request,"donatedType");
         donationStageDto.setDonatedType(donatedType);
-        String isCurCenDonatedNum=ParamUtil.getString(request,"isCurCenDonatedNum");
-        if("1".equals(isCurCenDonatedNum)){
-            donationStageDto.setIsCurCenDonatedNum(1);
-        }else if("0".equals(isCurCenDonatedNum)){
-            donationStageDto.setIsCurCenDonatedNum(0);
+        String isCurCenDonated=ParamUtil.getString(request,"isCurCenDonated");
+        donationStageDto.setIsCurCenDonated(isCurCenDonated);
+        if("Others".equals(isCurCenDonated)){
             String otherDonatedCen=ParamUtil.getString(request,"otherDonatedCen");
             donationStageDto.setOtherDonatedCen(otherDonatedCen);
         }
@@ -159,10 +165,8 @@ public class DonationStageDelegator extends CommonDelegator{
 
         }
         String isInsSentToCur=ParamUtil.getString(request,"isInsSentToCur");
-        if("1".equals(isInsSentToCur)){
-            donationStageDto.setIsInsSentToCur(1);
-        }else if("0".equals(isInsSentToCur)){
-            donationStageDto.setIsInsSentToCur(0);
+        donationStageDto.setIsInsSentToCur(isInsSentToCur);
+        if("Others".equals(isInsSentToCur)){
             String insSentToOtherCen=ParamUtil.getString(request,"insSentToOtherCen");
             donationStageDto.setInsSentToOtherCen(insSentToOtherCen);
 

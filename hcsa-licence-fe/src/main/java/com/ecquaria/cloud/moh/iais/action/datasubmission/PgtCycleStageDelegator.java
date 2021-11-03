@@ -1,8 +1,10 @@
 package com.ecquaria.cloud.moh.iais.action.datasubmission;
 
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PgtStageDto;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant;
@@ -14,6 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -45,7 +48,12 @@ public class PgtCycleStageDelegator extends CommonDelegator{
     @Override
     public void prepareSwitch(BaseProcessClass bpc) {
         ParamUtil.setRequestAttr(bpc.request, "smallTitle", "You are submitting for <strong>Cycle Stages</strong>");
+        List<SelectOption> embryosBiopsiedLocalSelectOption= IaisCommonUtils.genNewArrayList();
 
+        ParamUtil.setRequestAttr(bpc.request,"embryosBiopsiedLocalSelectOption",embryosBiopsiedLocalSelectOption);
+        List<SelectOption> biopsyLocalSelectOption= IaisCommonUtils.genNewArrayList();
+
+        ParamUtil.setRequestAttr(bpc.request,"biopsyLocalSelectOption",biopsyLocalSelectOption);
     }
 
 
@@ -144,22 +152,18 @@ public class PgtCycleStageDelegator extends CommonDelegator{
             pgtStageDto.setIsPgtCoFunding(1);
         }
         String isEmbryosBiopsiedLocal = ParamUtil.getString(request, "isEmbryosBiopsiedLocal");
-        if("0".equals(isEmbryosBiopsiedLocal)){
-            pgtStageDto.setIsEmbryosBiopsiedLocal(0);
+        pgtStageDto.setIsEmbryosBiopsiedLocal(isEmbryosBiopsiedLocal);
+        if("Others".equals(isEmbryosBiopsiedLocal)){
             String otherEmbryosBiopsiedAddr = ParamUtil.getString(request, "otherEmbryosBiopsiedAddr");
             pgtStageDto.setOtherEmbryosBiopsiedAddr(otherEmbryosBiopsiedAddr);
         }
-        if("1".equals(isEmbryosBiopsiedLocal)){
-            pgtStageDto.setIsEmbryosBiopsiedLocal(1);
-        }
+
         String isBiopsyLocal = ParamUtil.getString(request, "isBiopsyLocal");
-        if("0".equals(isBiopsyLocal)){
-            pgtStageDto.setIsBiopsyLocal(0);
+        pgtStageDto.setIsBiopsyLocal(isBiopsyLocal);
+
+        if("Others".equals(isBiopsyLocal)){
             String otherBiopsyAddr = ParamUtil.getString(request, "otherBiopsyAddr");
             pgtStageDto.setOtherBiopsyAddr(otherBiopsyAddr);
-        }
-        if("1".equals(isBiopsyLocal)){
-            pgtStageDto.setIsBiopsyLocal(1);
         }
 
         ParamUtil.setSessionAttr(bpc.request, DataSubmissionConstant.AR_DATA_SUBMISSION, arSuperDataSubmissionDto);

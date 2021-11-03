@@ -123,15 +123,10 @@
                 <iais:row>
                     <iais:field width="6" value="Embryos were Biospied At"/>
                     <iais:value width="6" display="true">
-                        <c:if test="${ arSuperDataSubmissionDto.pgtStageDto.isPgtCoFunding ==1 }">
-                            HCI name tagged to the active AR licence
-                        </c:if>
-                        <c:if test="${ arSuperDataSubmissionDto.pgtStageDto.isPgtCoFunding ==0 }">
-                            Others
-                        </c:if>
+                        <c:out value="${arSuperDataSubmissionDto.pgtStageDto.isEmbryosBiopsiedLocal}"/>
                     </iais:value>
                 </iais:row>
-                <div id="othersEmbryosBiopsyDisplay" <c:if test="${ arSuperDataSubmissionDto.pgtStageDto.isEmbryosBiopsiedLocal ==1 }">style="display: none"</c:if> >
+                <div id="othersEmbryosBiopsyDisplay" <c:if test="${ arSuperDataSubmissionDto.pgtStageDto.isEmbryosBiopsiedLocal =='Others' }">style="display: none"</c:if> >
                     <iais:row>
                         <iais:field width="6" value="Other Centre where Embryos were Biospied At"/>
                         <iais:value width="6" display="true">
@@ -143,15 +138,10 @@
                 <iais:row>
                     <iais:field width="6" value="Biopsy Done By"/>
                     <iais:value width="6" display="true">
-                        <c:if test="${ arSuperDataSubmissionDto.pgtStageDto.isBiopsyLocal ==1 }">
-                            List of Embryologists tagged to the active AR licence
-                        </c:if>
-                        <c:if test="${ arSuperDataSubmissionDto.pgtStageDto.isBiopsyLocal ==0 }">
-                            Others
-                        </c:if>
+                        <c:out value="${arSuperDataSubmissionDto.pgtStageDto.isBiopsyLocal}"/>
                     </iais:value>
                 </iais:row>
-                <div id="othersBiopsyDisplay" <c:if test="${ arSuperDataSubmissionDto.pgtStageDto.isBiopsyLocal ==1 }">style="display: none"</c:if> >
+                <div id="othersBiopsyDisplay" <c:if test="${ arSuperDataSubmissionDto.pgtStageDto.isBiopsyLocal =='Others' }">style="display: none"</c:if> >
                     <iais:row>
                         <iais:field width="6" value="Biopsy Done By (Others)"/>
                         <iais:value width="6" display="true">

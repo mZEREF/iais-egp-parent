@@ -34,17 +34,19 @@
                     </iais:value>
                 </iais:row>
                 <iais:row>
-                    <iais:field width="6" value="Which AR Centre was Gamete(s)/Embryo(s) Donated to?" id="isCurCenDonatedNumField" mandatory="false"/>
+                    <iais:field width="6" value="Which AR Centre was Gamete(s)/Embryo(s) Donated to?" id="isCurCenDonatedField" mandatory="false"/>
                     <iais:value width="6" cssClass="col-md-6">
-                        <select name="isCurCenDonatedNum" id="isCurCenDonatedNum">
-                            <option value="" <c:if test="${empty arSuperDataSubmissionDto.donationStageDto.isCurCenDonatedNum}">selected="selected"</c:if>>Please Select</option>
-                            <option value="1" <c:if test="${arSuperDataSubmissionDto.donationStageDto.isCurCenDonatedNum ==1}">selected="selected"</c:if>>AR Centres with active AR licence</option>
-                            <option value="0" <c:if test="${arSuperDataSubmissionDto.donationStageDto.isCurCenDonatedNum ==0}">selected="selected"</c:if>>Others</option>
+                        <select name="isCurCenDonated" id="isCurCenDonated">
+                            <option value="" <c:if test="${empty arSuperDataSubmissionDto.donationStageDto.isCurCenDonated}">selected="selected"</c:if>>Please Select</option>
+                            <c:forEach items="${curCenDonatedSelectOption}" var="selectOption">
+                                <option value="${selectOption.value}" <c:if test="${arSuperDataSubmissionDto.donationStageDto.isCurCenDonated ==selectOption.value}">selected="selected"</c:if>>${selectOption.text}</option>
+                            </c:forEach>
+                            <option value="Others" <c:if test="${arSuperDataSubmissionDto.donationStageDto.isCurCenDonated =='Others'}">selected="selected"</c:if>>Others</option>
                         </select>
-                        <span class="error-msg" name="iaisErrorMsg" id="error_isCurCenDonatedNum"></span>
+                        <span class="error-msg" name="iaisErrorMsg" id="error_isCurCenDonated"></span>
                     </iais:value>
                 </iais:row>
-                <div id="otherDonatedCenDisplay" <c:if test="${arSuperDataSubmissionDto.donationStageDto.isCurCenDonatedNum!=0}">style="display: none"</c:if>>
+                <div id="otherDonatedCenDisplay" <c:if test="${arSuperDataSubmissionDto.donationStageDto.isCurCenDonated!='Others'}">style="display: none"</c:if>>
                     <iais:row>
                         <iais:field width="6" value="Other Centre where Embryos were Biospied At" mandatory="true"/>
                         <iais:value width="6" cssClass="col-md-6">
@@ -53,7 +55,7 @@
                         </iais:value>
                     </iais:row>
                 </div>
-                <div id="directedDonorIdDisplay" <c:if test="${arSuperDataSubmissionDto.donationStageDto.isCurCenDonatedNum==0}">style="display: none"</c:if>>
+                <div id="directedDonorIdDisplay" <c:if test="${arSuperDataSubmissionDto.donationStageDto.isCurCenDonated=='Others'}">style="display: none"</c:if>>
                     <iais:row>
                         <iais:field width="6" value="ID of Directed Donor (if applicable)" mandatory="false"/>
                         <iais:value width="6" cssClass="col-md-6">
@@ -143,13 +145,15 @@
                     <iais:value width="6" cssClass="col-md-6">
                         <select name="isInsSentToCur" id="isInsSentToCur">
                             <option value="" <c:if test="${empty arSuperDataSubmissionDto.donationStageDto.isInsSentToCur}">selected="selected"</c:if>>Please Select</option>
-                            <option value="1" <c:if test="${arSuperDataSubmissionDto.donationStageDto.isInsSentToCur ==1}">selected="selected"</c:if>>AR Centres with active AR licence</option>
-                            <option value="0" <c:if test="${arSuperDataSubmissionDto.donationStageDto.isInsSentToCur ==0}">selected="selected"</c:if>>Others</option>
+                            <c:forEach items="${insSentToCurSelectOption}" var="selectOption">
+                                <option value="${selectOption.value}" <c:if test="${arSuperDataSubmissionDto.donationStageDto.isInsSentToCur ==selectOption.value}">selected="selected"</c:if>>${selectOption.text}</option>
+                            </c:forEach>
+                            <option value="Others" <c:if test="${arSuperDataSubmissionDto.donationStageDto.isInsSentToCur =='Others'}">selected="selected"</c:if>>Others</option>
                         </select>
                         <span class="error-msg" name="iaisErrorMsg" id="error_isInsSentToCur"></span>
                     </iais:value>
                 </iais:row>
-                <div id="insSentToOtherCenDisplay" <c:if test="${arSuperDataSubmissionDto.donationStageDto.isInsSentToCur!=0}">style="display: none"</c:if>>
+                <div id="insSentToOtherCenDisplay" <c:if test="${arSuperDataSubmissionDto.donationStageDto.isInsSentToCur!='Others'}">style="display: none"</c:if>>
                     <iais:row>
                         <iais:field width="6" value="Other Type of Research Donated for" mandatory="true"/>
                         <iais:value width="6" cssClass="col-md-6">
@@ -211,9 +215,9 @@
         $('#totalNum').html(totalNum);
 
         if(Number(curCenDonatedNum)>0){
-            $('#isCurCenDonatedNumField').html('Which AR Centre was Gamete(s)/Embryo(s) Donated to? <span class="mandatory">*</span>')
+            $('#isCurCenDonatedField').html('Which AR Centre was Gamete(s)/Embryo(s) Donated to? <span class="mandatory">*</span>')
         }else {
-            $('#isCurCenDonatedNumField').html('Which AR Centre was Gamete(s)/Embryo(s) Donated to?')
+            $('#isCurCenDonatedField').html('Which AR Centre was Gamete(s)/Embryo(s) Donated to?')
         }
 
         if(Number(resDonarNum)>0||Number(curCenResDonatedNum)>0){
@@ -234,11 +238,11 @@
         var keyCode = event.keyCode;
         event.returnValue = keyCode >= 48 && keyCode <= 57;
     }
-    $('#isCurCenDonatedNum').change(function () {
+    $('#isCurCenDonated').change(function () {
 
-        var reason= $('#isCurCenDonatedNum option:selected').val();
+        var reason= $('#isCurCenDonated option:selected').val();
 
-        if("0"==reason){
+        if("Others"==reason){
             $('#otherDonatedCenDisplay').attr("style","display: block");
             $('#directedDonorIdDisplay').attr("style","display: none");
 
@@ -260,7 +264,7 @@
 
         var reason= $('#isInsSentToCurField option:selected').val();
 
-        if("0"==reason){
+        if("Others"==reason){
             $('#insSentToOtherCenDisplay').attr("style","display: block");
         }else {
             $('#insSentToOtherCenDisplay').attr("style","display: none");

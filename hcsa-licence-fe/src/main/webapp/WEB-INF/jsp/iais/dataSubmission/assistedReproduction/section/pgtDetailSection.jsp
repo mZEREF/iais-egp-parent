@@ -311,13 +311,15 @@
                     <iais:value width="6" cssClass="col-md-6">
                         <select name="isEmbryosBiopsiedLocal" id="isEmbryosBiopsiedLocal">
                             <option value="" <c:if test="${empty arSuperDataSubmissionDto.pgtStageDto.isEmbryosBiopsiedLocal}">selected="selected"</c:if>>Please Select</option>
-                            <option value="1" <c:if test="${arSuperDataSubmissionDto.pgtStageDto.isEmbryosBiopsiedLocal ==1}">selected="selected"</c:if>>HCI name tagged to the active AR licence</option>
-                            <option value="0" <c:if test="${arSuperDataSubmissionDto.pgtStageDto.isEmbryosBiopsiedLocal ==0}">selected="selected"</c:if>>Others</option>
+                            <c:forEach items="${embryosBiopsiedLocalSelectOption}" var="selectOption">
+                                <option value="${selectOption.value}" <c:if test="${arSuperDataSubmissionDto.pgtStageDto.isEmbryosBiopsiedLocal ==selectOption.value}">selected="selected"</c:if>>${selectOption.text}</option>
+                            </c:forEach>
+                            <option value="Others" <c:if test="${arSuperDataSubmissionDto.pgtStageDto.isEmbryosBiopsiedLocal =='Others'}">selected="selected"</c:if>>Others</option>
                         </select>
                         <span class="error-msg" name="iaisErrorMsg" id="error_isEmbryosBiopsiedLocal"></span>
                     </iais:value>
                 </iais:row>
-                <div id="othersEmbryosBiopsyDisplay" <c:if test="${arSuperDataSubmissionDto.pgtStageDto.isEmbryosBiopsiedLocal!=0}">style="display: none"</c:if>>
+                <div id="othersEmbryosBiopsyDisplay" <c:if test="${arSuperDataSubmissionDto.pgtStageDto.isEmbryosBiopsiedLocal!='Others'}">style="display: none"</c:if>>
                     <iais:row>
                         <iais:field width="6" value="Other Centre where Embryos were Biospied At" mandatory="true"/>
                         <iais:value width="6" cssClass="col-md-6">
@@ -332,13 +334,15 @@
                     <iais:value width="6" cssClass="col-md-6">
                         <select name="isBiopsyLocal" id="isBiopsyLocal">
                             <option value="" <c:if test="${empty arSuperDataSubmissionDto.pgtStageDto.isBiopsyLocal}">selected="selected"</c:if>>Please Select</option>
-                            <option value="1" <c:if test="${arSuperDataSubmissionDto.pgtStageDto.isBiopsyLocal ==1}">selected="selected"</c:if>>List of Embryologists tagged to the active AR licence</option>
-                            <option value="0" <c:if test="${arSuperDataSubmissionDto.pgtStageDto.isBiopsyLocal ==0}">selected="selected"</c:if>>Others</option>
+                            <c:forEach items="${biopsyLocalSelectOption}" var="selectOption">
+                                <option value="${selectOption.value}" <c:if test="${arSuperDataSubmissionDto.pgtStageDto.isBiopsyLocal ==selectOption.value}">selected="selected"</c:if>>${selectOption.text}</option>
+                            </c:forEach>
+                            <option value="Others" <c:if test="${arSuperDataSubmissionDto.pgtStageDto.isBiopsyLocal =='Others'}">selected="selected"</c:if>>Others</option>
                         </select>
                         <span class="error-msg" name="iaisErrorMsg" id="error_isBiopsyLocal"></span>
                     </iais:value>
                 </iais:row>
-                <div id="othersBiopsyDisplay" <c:if test="${arSuperDataSubmissionDto.pgtStageDto.isBiopsyLocal!=0}">style="display: none"</c:if>>
+                <div id="othersBiopsyDisplay" <c:if test="${arSuperDataSubmissionDto.pgtStageDto.isBiopsyLocal!='Others'}">style="display: none"</c:if>>
                     <iais:row>
                         <iais:field width="6" value="Biopsy Done By (Others)" mandatory="true"/>
                         <iais:value width="6" cssClass="col-md-6">

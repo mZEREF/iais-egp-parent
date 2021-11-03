@@ -53,7 +53,7 @@ $(document).ready(function () {
 
         var reason= $('#isEmbryosBiopsiedLocal option:selected').val();
 
-        if("0"==reason){
+        if("Others"==reason){
             $('#othersEmbryosBiopsyDisplay').attr("style","display: block");
         }else {
             $('#othersEmbryosBiopsyDisplay').attr("style","display: none");
@@ -65,7 +65,7 @@ $(document).ready(function () {
 
         var reason= $('#isBiopsyLocal option:selected').val();
 
-        if("0"==reason){
+        if("Others"==reason){
             $('#othersBiopsyDisplay').attr("style","display: block");
         }else {
             $('#othersBiopsyDisplay').attr("style","display: none");
