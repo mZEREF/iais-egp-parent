@@ -48,36 +48,14 @@ public class DonationStageDelegator extends CommonDelegator{
     public void prepareSwitch(BaseProcessClass bpc) {
         ParamUtil.setRequestAttr(bpc.request, "smallTitle", "You are submitting for <strong>Cycle Stages</strong>");
 
-
-    }
-
-    @Override
-    public void returnStep(BaseProcessClass bpc) {
-
-    }
-
-    @Override
-    public void preparePage(BaseProcessClass bpc) {
         List<SelectOption> donatedTypeSelectOption= MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_DONATED_TYPE);
         ParamUtil.setRequestAttr(bpc.request,"donatedTypeSelectOption",donatedTypeSelectOption);
         List<SelectOption> donationReasonSelectOption= MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_DONATION_REASON);
         ParamUtil.setRequestAttr(bpc.request,"donationReasonSelectOption",donationReasonSelectOption);
     }
 
-    @Override
-    public void prepareConfim(BaseProcessClass bpc) {
 
-    }
 
-    @Override
-    public void draft(BaseProcessClass bpc) {
-
-    }
-
-    @Override
-    public void submission(BaseProcessClass bpc) {
-
-    }
 
     @Override
     public void pageAction(BaseProcessClass bpc) {
@@ -212,8 +190,5 @@ public class DonationStageDelegator extends CommonDelegator{
         ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "confirm");
     }
 
-    @Override
-    public void pageConfirmAction(BaseProcessClass bpc) {
 
-    }
 }

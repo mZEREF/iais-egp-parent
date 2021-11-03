@@ -47,30 +47,7 @@ public class EmbryoCreatedDelegator extends CommonDelegator{
 
     }
 
-    @Override
-    public void returnStep(BaseProcessClass bpc) {
 
-    }
-
-    @Override
-    public void preparePage(BaseProcessClass bpc) {
-
-    }
-
-    @Override
-    public void prepareConfim(BaseProcessClass bpc) {
-
-    }
-
-    @Override
-    public void draft(BaseProcessClass bpc) {
-
-    }
-
-    @Override
-    public void submission(BaseProcessClass bpc) {
-
-    }
 
     @Override
     public void pageAction(BaseProcessClass bpc) {
@@ -152,8 +129,5 @@ public class EmbryoCreatedDelegator extends CommonDelegator{
         ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "confirm");
     }
 
-    @Override
-    public void pageConfirmAction(BaseProcessClass bpc) {
 
-    }
 }

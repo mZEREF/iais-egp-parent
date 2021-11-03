@@ -48,30 +48,7 @@ public class PgtCycleStageDelegator extends CommonDelegator{
 
     }
 
-    @Override
-    public void returnStep(BaseProcessClass bpc) {
 
-    }
-
-    @Override
-    public void preparePage(BaseProcessClass bpc) {
-
-    }
-
-    @Override
-    public void prepareConfim(BaseProcessClass bpc) {
-
-    }
-
-    @Override
-    public void draft(BaseProcessClass bpc) {
-
-    }
-
-    @Override
-    public void submission(BaseProcessClass bpc) {
-
-    }
 
     @Override
     public void pageAction(BaseProcessClass bpc) {
@@ -200,8 +177,5 @@ public class PgtCycleStageDelegator extends CommonDelegator{
 
     }
 
-    @Override
-    public void pageConfirmAction(BaseProcessClass bpc) {
 
-    }
 }

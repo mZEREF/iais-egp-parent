@@ -21,7 +21,7 @@
                                type="radio" name="declaration" value="No" aria-invalid="false">
                         <label class="form-check-label" ><span class="check-circle"></span>No</label>
                     </div>
-                    <span class="error-msg col-md-7" name="iaisErrorMsg" id="error_previousIdentification"></span>
+                    <span class="error-msg col-md-7" name="iaisErrorMsg" id="error_declaration"></span>
                 </iais:row>
             </div>
         </div>

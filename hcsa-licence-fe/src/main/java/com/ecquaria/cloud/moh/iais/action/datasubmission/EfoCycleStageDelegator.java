@@ -49,6 +49,9 @@ public class EfoCycleStageDelegator extends CommonDelegator{
             arSuperDataSubmissionDto.setEfoCycleStageDto(new EfoCycleStageDto());
             arSuperDataSubmissionDto.getEfoCycleStageDto().setPerformed(arSuperDataSubmissionDto.getAppGrpPremisesDto().getHciName());
         }
+        Date startDate = DateUtil.parseDate(arSuperDataSubmissionDto.getPatientInfoDto().getPatient().getBirthDate(), AppConsts.DEFAULT_DATE_FORMAT);
+        arSuperDataSubmissionDto.getEfoCycleStageDto().setYearNum(getYear(startDate,new Date()));
+        arSuperDataSubmissionDto.getEfoCycleStageDto().setMonthNum(getMon(startDate,new Date()));
         ParamUtil.setSessionAttr(bpc.request, DataSubmissionConstant.AR_DATA_SUBMISSION,arSuperDataSubmissionDto);
 
     }
@@ -57,40 +60,11 @@ public class EfoCycleStageDelegator extends CommonDelegator{
     public void prepareSwitch(BaseProcessClass bpc) {
         log.info(StringUtil.changeForLog("crud_action_type is ======>"+ParamUtil.getRequestString(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE)));
         ParamUtil.setRequestAttr(bpc.request, "smallTitle", "You are submitting for <strong>Cycle Stages</strong>");
-
-    }
-
-    @Override
-    public void returnStep(BaseProcessClass bpc) {
-
-    }
-
-    @Override
-    public void preparePage(BaseProcessClass bpc) {
-        ArSuperDataSubmissionDto arSuperDataSubmissionDto= DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
-        Date startDate = DateUtil.parseDate(arSuperDataSubmissionDto.getPatientInfoDto().getPatient().getBirthDate(), AppConsts.DEFAULT_DATE_FORMAT);
-        arSuperDataSubmissionDto.getEfoCycleStageDto().setYearNum(getYear(startDate,new Date()));
-        arSuperDataSubmissionDto.getEfoCycleStageDto().setMonthNum(getMon(startDate,new Date()));
-
         List<SelectOption> efoReasonSelectOption= MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_EFO_REASON);
         ParamUtil.setRequestAttr(bpc.request,"efoReasonSelectOption",efoReasonSelectOption);
 
     }
 
-    @Override
-    public void prepareConfim(BaseProcessClass bpc) {
-
-    }
-
-    @Override
-    public void draft(BaseProcessClass bpc) {
-
-    }
-
-    @Override
-    public void submission(BaseProcessClass bpc) {
-
-    }
 
     @Override
     public void pageAction(BaseProcessClass bpc) {
@@ -120,11 +94,6 @@ public class EfoCycleStageDelegator extends CommonDelegator{
 
 
         ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "confirm");
-
-    }
-
-    @Override
-    public void pageConfirmAction(BaseProcessClass bpc) {
 
     }
 
