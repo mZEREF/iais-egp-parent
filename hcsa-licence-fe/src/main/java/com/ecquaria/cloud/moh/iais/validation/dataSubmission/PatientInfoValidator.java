@@ -36,30 +36,30 @@ public class PatientInfoValidator implements CustomizeValidator {
     @Override
     public Map<String, String> validate(Object obj, String[] profiles, HttpServletRequest request) {
         Map<String, String> map = IaisCommonUtils.genNewHashMap();
-        if (StringUtil.isIn("AR", profiles)) {
-            PatientInfoDto patientInfo = (PatientInfoDto) obj;
-            PatientDto patient = patientInfo.getPatient();
-            if (patient == null) {
-                patient = new PatientDto();
-            }
-            ValidationResult result = WebValidationHelper.validateProperty(patient, "save");
-            if (result != null) {
-                map.putAll(result.retrieveAll());
-            }
-            LoginContext loginContext = DataSubmissionHelper.getLoginContext(request);
-            String orgId = Optional.ofNullable(loginContext).map(LoginContext::getOrgId).orElse("");
-            PatientService patientService = SpringContextHelper.getContext().getBean(PatientService.class);
-            PatientDto patientDto = patientService.getPatientDto(patient.getIdType(), patient.getIdNumber(),
-                    patient.getNationality(), orgId);
-            if (patientDto != null && (StringUtil.isEmpty(patient.getId()) || !Objects.equals(patientDto.getId(), patient.getId()))) {
-                map.put("idNumber", MessageUtil.getMessageDesc("DS_ERR007"));
-            }
-            String birthDate = patient.getBirthDate();
-            if (!StringUtil.isEmpty(birthDate) && CommonValidator.isDate(birthDate)) {
-                try {
-                    if (Formatter.compareDateByDay(birthDate) >0) {
-                        map.put("birthDate", "DS_ERR001");
-                    } else {
+        //if (StringUtil.isIn("save", profiles)) {
+        PatientInfoDto patientInfo = (PatientInfoDto) obj;
+        PatientDto patient = patientInfo.getPatient();
+        if (patient == null) {
+            patient = new PatientDto();
+        }
+        ValidationResult result = WebValidationHelper.validateProperty(patient, "save");
+        if (result != null) {
+            map.putAll(result.retrieveAll());
+        }
+        LoginContext loginContext = DataSubmissionHelper.getLoginContext(request);
+        String orgId = Optional.ofNullable(loginContext).map(LoginContext::getOrgId).orElse("");
+        PatientService patientService = SpringContextHelper.getContext().getBean(PatientService.class);
+        PatientDto patientDto = patientService.getPatientDto(patient.getIdType(), patient.getIdNumber(),
+                patient.getNationality(), orgId);
+        if (patientDto != null && (StringUtil.isEmpty(patient.getId()) || !Objects.equals(patientDto.getId(), patient.getId()))) {
+            map.put("idNumber", MessageUtil.getMessageDesc("DS_ERR007"));
+        }
+        String birthDate = patient.getBirthDate();
+        if (!StringUtil.isEmpty(birthDate) && CommonValidator.isDate(birthDate)) {
+            try {
+                if (Formatter.compareDateByDay(birthDate) > 0) {
+                    map.put("birthDate", "DS_ERR001");
+                } else {
                     String age1 = MasterCodeUtil.getCodeDesc("PT_AGE_001");
                     String age2 = MasterCodeUtil.getCodeDesc("PT_AGE_002");
                     if (StringUtil.isDigit(age1) && StringUtil.isDigit(age2)) {
@@ -72,36 +72,36 @@ public class PatientInfoValidator implements CustomizeValidator {
                         }
                     }
 
-                    }
-                } catch (Exception e) {
-                    log.error(StringUtil.changeForLog(e.getMessage()), e);
                 }
-            }
-            if (patient.isPreviousIdentification()) {
-                PatientDto previous = patientInfo.getPrevious();
-                if (previous == null) {
-                    previous = new PatientDto();
-                }
-                result = WebValidationHelper.validateProperty(previous, "ART");
-                if (result != null && result.isHasErrors()) {
-                    map.putAll(result.retrieveAll("pre", ""));
-                }
-                boolean retrievePrevious = patientInfo.isRetrievePrevious();
-                if (!retrievePrevious) {
-                    map.put("retrievePrevious", "DS_ERR005");
-                } else if (StringUtil.isEmpty(previous.getId())) {
-                    map.put("retrievePrevious", "GENERAL_ACK018");
-                }
-            }
-            HusbandDto husband = patientInfo.getHusband();
-            if (husband == null) {
-                husband = new HusbandDto();
-            }
-            result = WebValidationHelper.validateProperty(husband, "save");
-            if (result != null) {
-                map.putAll(result.retrieveAll("", "Hbd"));
+            } catch (Exception e) {
+                log.error(StringUtil.changeForLog(e.getMessage()), e);
             }
         }
+        if (patient.isPreviousIdentification()) {
+            PatientDto previous = patientInfo.getPrevious();
+            if (previous == null) {
+                previous = new PatientDto();
+            }
+            result = WebValidationHelper.validateProperty(previous, "ART");
+            if (result != null && result.isHasErrors()) {
+                map.putAll(result.retrieveAll("pre", ""));
+            }
+            boolean retrievePrevious = patientInfo.isRetrievePrevious();
+            if (!retrievePrevious) {
+                map.put("retrievePrevious", "DS_ERR005");
+            } else if (StringUtil.isEmpty(previous.getId())) {
+                map.put("retrievePrevious", "GENERAL_ACK018");
+            }
+        }
+        HusbandDto husband = patientInfo.getHusband();
+        if (husband == null) {
+            husband = new HusbandDto();
+        }
+        result = WebValidationHelper.validateProperty(husband, "save");
+        if (result != null) {
+            map.putAll(result.retrieveAll("", "Hbd"));
+        }
+        //}
         return map;
     }
 
