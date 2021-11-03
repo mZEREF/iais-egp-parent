@@ -105,7 +105,7 @@ public class EfoCycleStageDelegator extends CommonDelegator{
         efoCycleStageDto.setStartDate(startDate);
         efoCycleStageDto.setIsMedicallyIndicated(indicated);
         efoCycleStageDto.setReason(reasonSelect);
-        if(othersReason!=null){
+        if(othersReason!=null&& "EFOR004".equals(reasonSelect)){
             efoCycleStageDto.setOtherReason(othersReason);
         }
         ValidationResult validationResult = WebValidationHelper.validateProperty(efoCycleStageDto, "save");
