@@ -19,7 +19,7 @@
                 <iais:row>
                     <iais:field width="5" value="Premises where AR is performed" mandatory="true"/>
                     <iais:value width="7" cssClass="col-md-7" display="true">
-                        <c:out value="${arCycleStageDto.appGrpPremisesDto.premiseLabel}"/>
+                        <c:out value="${arSuperDataSubmissionDto.appGrpPremisesDto.premiseLabel}"/>
                     </iais:value>
                 </iais:row>
                 <iais:row>
@@ -189,13 +189,14 @@
                                    name="enhancedCounselling"
                                    value="0"
                                    id="enhancedCounsellingRadioNo"
-                                   <c:if test="${!arCycleStageDto.enhancedCounselling}">checked</c:if>
+                                   <c:if test="${arCycleStageDto.enhancedCounselling != null && !arCycleStageDto.enhancedCounselling}">checked</c:if>
                                    aria-invalid="false"  >
                             <label class="form-check-label"
                                    for="enhancedCounsellingRadioNo"><span
                                     class="check-circle"></span>No</label>
                         </div>
                     </iais:value>
+                    <span id="error_enhancedCounselling" name="iaisErrorMsg" class="error-msg"></span>
                 </iais:row>
 
                 <iais:row>
@@ -222,26 +223,26 @@
                         <div class="form-check" onclick="">
                             <input class="form-check-input"
                                    type="radio"
-                                   name="oocyteEmbryoSpermsUsed"
+                                   name="usedDonorOocyte"
                                    value="1"
-                                   id="oocyteEmbryoSpermsUsedRadioYes"
-                                   <c:if test="${arCycleStageDto.oocyteEmbryoSpermsUsed}">checked</c:if>
-                                   aria-invalid="false" onchange="showOocyteEmbryoSpermsUsedControlClass()">
+                                   id="usedDonorOocyteRadioYes"
+                                   <c:if test="${arCycleStageDto.usedDonorOocyte}">checked</c:if>
+                                   aria-invalid="false" onchange="showUsedDonorOocyteControlClass(1)">
                             <label class="form-check-label"
-                                   for="oocyteEmbryoSpermsUsedRadioYes"><span
+                                   for="usedDonorOocyteRadioYes"><span
                                     class="check-circle"></span>Yes</label>
                         </div>
                     </iais:value>
                     <iais:value width="4" cssClass="col-md-4">
                         <div class="form-check">
                             <input class="form-check-input" type="radio"
-                                   name="oocyteEmbryoSpermsUsed"
+                                   name="usedDonorOocyte"
                                    value="0"
-                                   id="oocyteEmbryoSpermsUsedRadioNo"
-                                   <c:if test="${!arCycleStageDto.oocyteEmbryoSpermsUsed}">checked</c:if>
-                                   aria-invalid="false" onchange="hideOocyteEmbryoSpermsUsedControlClass(1)">
+                                   id="usedDonorOocyteRadioNo"
+                                   <c:if test="${!arCycleStageDto.usedDonorOocyte}">checked</c:if>
+                                   aria-invalid="false" onchange="hideUsedDonorOocyteControlClass(1)">
                             <label class="form-check-label"
-                                   for="oocyteEmbryoSpermsUsedRadioNo"><span
+                                   for="usedDonorOocyteRadioNo"><span
                                     class="check-circle"></span>No</label>
                         </div>
                     </iais:value>
@@ -255,10 +256,10 @@
   $(document).ready(function (){
      toggleOnSelect("#mainIndication",'AR_MI_013', 'mainIndicationOtherRow');
      toggleOnSelect("#totalNumberARCPreviouslyUndergonePatient",'21', 'totalNumberARCOtherRow');
-     if(${arCycleStageDto.oocyteEmbryoSpermsUsed}){
-         showOocyteEmbryoSpermsUsedControlClass();
+     if(${arCycleStageDto.usedDonorOocyte}){
+         showUsedDonorOocyteControlClass(0);
      }else {
-         hideOocyteEmbryoSpermsUsedControlClass(0);
+         hideUsedDonorOocyteControlClass(0);
      }
 
    });
@@ -280,9 +281,14 @@
       //index ==-1 : add
       sumbitPage(-1);
   }
-  function rollbackDonor(){
-      //index ==-3 : rollbackDonor to 1
-      sumbitPage(-3);
+  function rollbackDonor(flag){
+      //index ==-3 : rollbackDonor to 0
+      //index ==-4 : rollbackDonor to 1
+      if(flag == 1){
+          sumbitPage(-3);
+      }else {
+          sumbitPage(-4);
+      }
   }
 
   function sumbitPage(donorAction){
@@ -310,15 +316,19 @@
       $("#idNumber"+index).val("");
   }
 
-  function showOocyteEmbryoSpermsUsedControlClass(){
-       $(".yesOocyteEmbryoSpermsUsedControl").show();
+  function showUsedDonorOocyteControlClass(flag){
+      if(flag == 1){
+          rollbackDonor(0);
+      }else {
+          $(".yesUsedDonorOocyteControl").show();
+      }
   }
 
-  function hideOocyteEmbryoSpermsUsedControlClass(flag){
+  function hideUsedDonorOocyteControlClass(flag){
       if(flag == 1){
-          rollbackDonor();
+          rollbackDonor(1);
       }else {
-          $(".oocyteEmbryoSpermsUsedControlClass").hide();
+          $(".usedDonorOocyteControlClass").hide();
       }
   }
 </script>

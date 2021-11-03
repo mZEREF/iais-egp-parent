@@ -18,7 +18,7 @@
                 <iais:row>
                     <iais:field width="5" value="Premises where AR is performed" />
                     <iais:value width="7" cssClass="col-md-7" display="true">
-                        <c:out value="${arCycleStageDto.appGrpPremisesDto.premiseLabel}"/>
+                        <c:out value="${arSuperDataSubmissionDto.appGrpPremisesDto.premiseLabel}"/>
                     </iais:value>
                 </iais:row>
                 <iais:row>
@@ -159,7 +159,7 @@
                 <iais:row>
                     <iais:field width="5" value="Was a donor's Oocyte(s)/Embryo(s)/Sperms used in this cycle?" />
                     <iais:value width="7" cssClass="col-md-7"  display="true">
-                        <c:out value="${arCycleStageDto.oocyteEmbryoSpermsUsed ? 'Yes' : 'No'}"/>
+                        <c:out value="${arCycleStageDto.usedDonorOocyte ? 'Yes' : 'No'}"/>
                     </iais:value>
                 </iais:row>
             </div>
@@ -167,21 +167,3 @@
     </div>
 </div>
 <%@include file="previewDonorSection.jsp"%>
-<script  type="text/javascript">
-    $(document).ready(function (){
-        if(${arCycleStageDto.oocyteEmbryoSpermsUsed}){
-            showOocyteEmbryoSpermsUsedControlClass();
-        }else {
-            hideOocyteEmbryoSpermsUsedControlClass(0);
-        }
-
-    });
-
-    function showOocyteEmbryoSpermsUsedControlClass(){
-        $(".yesOocyteEmbryoSpermsUsedControl").show();
-    }
-
-    function hideOocyteEmbryoSpermsUsedControlClass(flag){
-        $(".oocyteEmbryoSpermsUsedControlClass").hide();
-    }
-</script>
