@@ -318,23 +318,23 @@ public abstract class CommonDelegator {
     }
 
     public final boolean validatePageData(HttpServletRequest request, Object obj, String property,String... actionType) {
-        return needValidate(request,actionType) ? validatePageData(request, obj, property, ACTION_TYPE_CONFIRM, ACTION_TYPE_PAGE, null, null) : false;
+        return needValidate(request,actionType) ? validatePageData(request, obj, property, ACTION_TYPE_CONFIRM, ACTION_TYPE_PAGE, null, null) : true;
     }
 
     public final boolean validatePageData(HttpServletRequest request, Object obj, String property, List validationDtos,String... actionType) {
-        return needValidate(request,actionType) ?  validatePageData(request, obj, property, ACTION_TYPE_CONFIRM, ACTION_TYPE_PAGE, validationDtos, null) : false;
+        return needValidate(request,actionType) ?  validatePageData(request, obj, property, ACTION_TYPE_CONFIRM, ACTION_TYPE_PAGE, validationDtos, null) : true;
     }
 
     public final boolean validatePageDataHaveValidationProperty(HttpServletRequest request, Object obj, String property,
             ValidationProperty validationProperty,String ...actionType) {
         Map<Object, ValidationProperty> validationPropertyList = IaisCommonUtils.genNewHashMap();
         validationPropertyList.put(obj, validationProperty);
-        return  needValidate(request,actionType) ? validatePageData(request, obj, property, ACTION_TYPE_CONFIRM, ACTION_TYPE_PAGE, null, validationPropertyList) : false;
+        return  needValidate(request,actionType) ? validatePageData(request, obj, property, ACTION_TYPE_CONFIRM, ACTION_TYPE_PAGE, null, validationPropertyList) : true;
     }
 
     public final boolean validatePageDataHaveValidationProperty(HttpServletRequest request, Object obj, String property,
             List validationDtos, Map<Object, ValidationProperty> validationPropertyList,String ...actionType) {
-        return   needValidate(request,actionType) ? validatePageData(request, obj, property, ACTION_TYPE_CONFIRM, ACTION_TYPE_PAGE, validationDtos, validationPropertyList) : false;
+        return   needValidate(request,actionType) ? validatePageData(request, obj, property, ACTION_TYPE_CONFIRM, ACTION_TYPE_PAGE, validationDtos, validationPropertyList) : true;
     }
     private boolean needValidate(HttpServletRequest request,String ... actionType){
       return StringUtil.isIn(ParamUtil.getString(request, DataSubmissionConstant.CRUD_TYPE),actionType);
