@@ -47,7 +47,7 @@ public class EfoCycleStageDelegator extends CommonDelegator{
         }
         if(arSuperDataSubmissionDto.getEfoCycleStageDto()==null){
             arSuperDataSubmissionDto.setEfoCycleStageDto(new EfoCycleStageDto());
-            arSuperDataSubmissionDto.getEfoCycleStageDto().setPerformed("test");
+            arSuperDataSubmissionDto.getEfoCycleStageDto().setPerformed(arSuperDataSubmissionDto.getAppGrpPremisesDto().getHciName());
         }
         ParamUtil.setSessionAttr(bpc.request, DataSubmissionConstant.AR_DATA_SUBMISSION,arSuperDataSubmissionDto);
 
