@@ -1,4 +1,12 @@
 $(document).ready(function () {
+    $('#isOtherPgt').change(function () {
+        if($(this).is(':checked')){
+            $('#pgtOthersDisplay').attr("style","display: block");
+        }else {
+            $('#pgtOthersDisplay').attr("style","display: none");
+        }
+    });
+
     $('#isPgtM').change(function () {
         if($(this).is(':checked')){
             $('#pgtMDisplay').attr("style","display: block");

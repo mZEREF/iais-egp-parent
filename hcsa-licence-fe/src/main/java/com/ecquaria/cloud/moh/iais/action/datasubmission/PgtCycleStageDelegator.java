@@ -155,6 +155,8 @@ public class PgtCycleStageDelegator extends CommonDelegator{
 
         if("on".equals(isOtherPgt)){
             pgtStageDto.setIsOtherPgt(1);
+            String otherPgt = ParamUtil.getString(request, "otherPgt");
+            pgtStageDto.setOtherPgt(otherPgt);
         }
 
         String isPgtCoFunding = ParamUtil.getString(request, "isPgtCoFunding");

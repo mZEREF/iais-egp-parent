@@ -78,6 +78,18 @@ public class PgtStageDtoValidator implements CustomizeValidator {
             }
         }
 
+        if(pgtStageDto.getIsOtherPgt()==1){
+            if(StringUtil.isEmpty(pgtStageDto.getOtherPgt())){
+                errorMap.put("otherPgt", errMsgErr006);
+            }else  if(pgtStageDto.getOtherPgt().length()>20){
+                Map<String, String> repMap=IaisCommonUtils.genNewHashMap();
+                repMap.put("number","20");
+                repMap.put("fieldNo","Field");
+                String errMsg = MessageUtil.getMessageDesc("GENERAL_ERR0036",repMap);
+                errorMap.put("otherPgt", errMsg);
+            }
+        }
+
         if(pgtStageDto.getIsPgtA()==1){
             if(pgtStageDto.getIsPgtAAma()+pgtStageDto.getIsPgtATomrif()+pgtStageDto.getIsPgtATomrpl()==0){
                 errorMap.put("PerformedBecause", errMsgErr006);

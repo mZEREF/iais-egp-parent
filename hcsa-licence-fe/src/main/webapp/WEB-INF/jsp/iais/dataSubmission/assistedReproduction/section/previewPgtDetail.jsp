@@ -22,6 +22,17 @@
                     </iais:value>
 
                 </iais:row>
+                <div id="pgtOthersDisplay" <c:if test="${ arSuperDataSubmissionDto.pgtStageDto.isOtherPgt !=1 }">style="display: none"</c:if>>
+                    <iais:row>
+                        <iais:field width="6" value="Others" />
+                    </iais:row>
+                    <iais:row>
+                        <iais:field width="6" value="Other Types of Genetic Testing" />
+                        <iais:value width="6" display="true">
+                            <c:out value="${arSuperDataSubmissionDto.pgtStageDto.otherPgt}"/>
+                        </iais:value>
+                    </iais:row>
+                </div>
                 <div id="pgtMDisplay" <c:if test="${ arSuperDataSubmissionDto.pgtStageDto.isPgtM !=1 }">style="display: none"</c:if> >
                     <iais:row>
                         <iais:field width="6" value="PGT-M" />
