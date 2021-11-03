@@ -3296,7 +3296,7 @@ span.error-msg {
     .table-gp table.table > tbody > tr > td p.table-row-title {
         font-weight: 600;
         margin-bottom: 3px;
-       /* line-height: 9px;*/
+        /* line-height: 9px;*/
     }
     .table-gp table.table > tbody > tr:not(:last-child) {
         margin-bottom: 20px;
@@ -5678,15 +5678,33 @@ section.logo img {
     width: 100%;
     position: relative;
 }
+.lic-headerbox {
+    height: 245px;
+}
+.lic-title {
+    text-align: center;
+    margin-top: 5px;
+}
+.lic-title p {
+    font-size: 14pt;
+}
+.lic-title h2 {
+    font-size: 22pt;
+    font-weight: 700;
+    text-transform:uppercase;
+    border:none;
+    margin-bottom: 5px;
+    padding-bottom: 7px;
+}
 .lic-number {
     text-align: center;
-    margin-top: 380px;
+    margin-top: 10px;
 }
 .lic-number p {
     font-size: 14pt;
 }
 .lic-number h2 {
-    font-size: 24pt;
+    font-size: 18pt;
     font-weight: 700;
     text-transform:uppercase;
     border:none;
@@ -5746,7 +5764,7 @@ section.logo img {
     display: inline-block;
     font-size: 16px;
     margin: 4px;
- }
+}
 ul.v-numberlist li {
     list-style: none outside none;
 }
@@ -5789,10 +5807,10 @@ ul.v-numberlist li::before {
         min-height: auto;
     }
     .nav {
-        background:#transparent; 
+        background:#transparent;
         display: inherit !important;
     }
-    .tab-gp .nav { 
+    .tab-gp .nav {
         display: flex !important;
     }
     .tab-gp .hidden-xs {
@@ -5820,8 +5838,8 @@ ul.v-numberlist li::before {
         transition: all 0.3s ease;
     }
     .nav ul.pagination > li > a, .nav ul.pagination > li span {
-    font-size: 1.4rem;
-    padding: 6px 8px;
+        font-size: 1.4rem;
+        padding: 6px 8px;
     }
 
     .table-gp table.table > tbody > tr > td p {
@@ -5830,12 +5848,12 @@ ul.v-numberlist li::before {
     }
 
     .table-info-display {
-    margin: 20px 15px 25px 12px;
-    background: #efefef;
-    padding: 8px;
-    border-radius: 8px;
-    -moz-border-radius: 8px;
-    -webkit-border-radius: 8px;
+        margin: 20px 15px 25px 12px;
+        background: #efefef;
+        padding: 8px;
+        border-radius: 8px;
+        -moz-border-radius: 8px;
+        -webkit-border-radius: 8px;
     }
 
     .table-info-display .nav { float: right; }
@@ -5848,11 +5866,11 @@ ul.v-numberlist li::before {
         padding-bottom: 12px;
         background: #fff;
     }
-      .nav {
-        background:#transparent; 
+    .nav {
+        background:#transparent;
         display: inherit !important;
     }
-    .tab-gp .nav { 
+    .tab-gp .nav {
         display: flex !important;
     }
     .tab-gp .hidden-xs {
