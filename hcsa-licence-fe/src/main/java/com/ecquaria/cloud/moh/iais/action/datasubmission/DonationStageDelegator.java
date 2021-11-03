@@ -191,7 +191,7 @@ public class DonationStageDelegator extends CommonDelegator{
         }
         String donationReason=ParamUtil.getString(request,"donationReason");
         donationStageDto.setDonationReason(donationReason);
-        if("DONNES004".equals(donationReason)){
+        if("DONRES004".equals(donationReason)){
             String otherDonationReason=ParamUtil.getString(request,"otherDonationReason");
             donationStageDto.setOtherDonationReason(otherDonationReason);
         }

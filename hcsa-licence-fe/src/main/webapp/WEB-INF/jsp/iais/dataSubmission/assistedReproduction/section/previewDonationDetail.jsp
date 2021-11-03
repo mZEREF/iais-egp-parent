@@ -31,8 +31,8 @@
                 <iais:row>
                     <iais:field width="6" value="Which AR Centre was Gamete(s)/Embryo(s) Donated to?" mandatory="false"/>
                     <iais:value width="6" display="true">
-                        <c:if test="${arSuperDataSubmissionDto.donationStageDto.isCurCenDonatedNum=1}">AR Centres with active AR licence</c:if>
-                        <c:if test="${arSuperDataSubmissionDto.donationStageDto.isCurCenDonatedNum=0}">Others</c:if>
+                        <c:if test="${arSuperDataSubmissionDto.donationStageDto.isCurCenDonatedNum==1}">AR Centres with active AR licence</c:if>
+                        <c:if test="${arSuperDataSubmissionDto.donationStageDto.isCurCenDonatedNum==0}">Others</c:if>
                     </iais:value>
                 </iais:row>
                 <div id="otherDonatedCenDisplay" <c:if test="${arSuperDataSubmissionDto.donationStageDto.isCurCenDonatedNum!=0}">style="display: none"</c:if>>
