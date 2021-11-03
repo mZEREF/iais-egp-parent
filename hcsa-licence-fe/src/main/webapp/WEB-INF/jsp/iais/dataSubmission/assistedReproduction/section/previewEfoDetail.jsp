@@ -46,15 +46,14 @@
                         <iais:code code="${arSuperDataSubmissionDto.efoCycleStageDto.reason}"/>
                     </iais:value>
                 </iais:row>
-                <iais:row>
-                    <iais:field width="6" value="" mandatory="false"/>
-                    <iais:value width="6" display="true">
-                        <div id="othersReason" <c:if test="${arSuperDataSubmissionDto.efoCycleStageDto.reason=='EFOR004'}">style="display: none"</c:if> >
+                <div id="othersReason" <c:if test="${arSuperDataSubmissionDto.efoCycleStageDto.reason=='EFOR004'}">style="display: none"</c:if> >
+                    <iais:row>
+                        <iais:field width="6" value="" mandatory="false"/>
+                        <iais:value width="6" display="true">
                             <c:out value="${arSuperDataSubmissionDto.efoCycleStageDto.othersReason}"/>
-                        </div>
-                    </iais:value>
-                </iais:row>
-
+                        </iais:value>
+                    </iais:row>
+                </div>
             </div>
         </div>
     </div>

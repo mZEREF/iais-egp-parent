@@ -68,17 +68,15 @@
                         <span class="error-msg" name="iaisErrorMsg" id="error_reason"></span>
                     </iais:value>
                 </iais:row>
-
-                <iais:row>
-                    <iais:field width="6" value="" mandatory="false"/>
-                    <iais:value width="6" cssClass="col-md-6">
-                        <div id="othersReason" <c:if test="${arSuperDataSubmissionDto.efoCycleStageDto.reason!='EFOR004'}">style="display: none"</c:if> >
+                <div id="othersReason" <c:if test="${arSuperDataSubmissionDto.efoCycleStageDto.reason!='EFOR004'}">style="display: none"</c:if> >
+                    <iais:row>
+                        <iais:field width="6" value="" mandatory="false"/>
+                        <iais:value width="6" cssClass="col-md-6">
                             <input type="text" maxlength="20"   name="othersReason" value="${arSuperDataSubmissionDto.efoCycleStageDto.othersReason}" >
                             <span class="error-msg" name="iaisErrorMsg" id="error_othersReason"></span>
-                        </div>
-                    </iais:value>
-                </iais:row>
-
+                        </iais:value>
+                    </iais:row>
+                </div>
             </div>
         </div>
     </div>

@@ -196,10 +196,7 @@
     </div>
 </div>
 <script type="text/javascript" >
-    $(document).ready(function () {
 
-
-    });
     $('input[type="text"]').blur(function () {
 
         var curCenDonatedNum = $('#curCenDonatedNum').val();
