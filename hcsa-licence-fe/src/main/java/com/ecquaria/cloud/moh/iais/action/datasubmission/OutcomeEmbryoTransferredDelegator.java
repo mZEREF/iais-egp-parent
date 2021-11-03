@@ -45,6 +45,20 @@ public class OutcomeEmbryoTransferredDelegator extends CommonDelegator{
         ParamUtil.setSessionAttr(request, DataSubmissionConstant.AR_DATA_SUBMISSION, arSuperDataSubmissionDto);
     }
     @Override
+    public void prepareConfim(BaseProcessClass bpc) {
+
+    }
+
+    @Override
+    public void draft(BaseProcessClass bpc) {
+
+    }
+    @Override
+    public void submission(BaseProcessClass bpc) {
+
+    }
+
+    @Override
     public void pageAction(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         ArSuperDataSubmissionDto arSuperDataSubmissionDto = DataSubmissionHelper.getCurrentArDataSubmission(request);
@@ -56,19 +70,12 @@ public class OutcomeEmbryoTransferredDelegator extends CommonDelegator{
         String transferedOutcome = ParamUtil.getRequestString(request, "transferedOutcome");
         embryoTransferredOutcomeStageDto.setTransferedOutcome(transferedOutcome);
         arSuperDataSubmissionDto.setEmbryoTransferredOutcomeStageDto(embryoTransferredOutcomeStageDto);
-
         ParamUtil.setSessionAttr(request, DataSubmissionConstant.AR_DATA_SUBMISSION, arSuperDataSubmissionDto);
+        validatePageData(request, embryoTransferredOutcomeStageDto,"save",ACTION_TYPE_CONFIRM);
+    }
+    @Override
+    public void pageConfirmAction(BaseProcessClass bpc) {
 
-        ValidationResult validationResult = WebValidationHelper.validateProperty(embryoTransferredOutcomeStageDto, "save");
-        Map<String, String> errorMap = validationResult.retrieveAll();
-
-        if (!errorMap.isEmpty() || validationResult.isHasErrors()) {
-            WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
-            ParamUtil.setRequestAttr(request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
-            ParamUtil.setRequestAttr(request, IaisEGPConstant.CRUD_ACTION_TYPE, "page");
-            return;
-        }
-        ParamUtil.setRequestAttr(request, IaisEGPConstant.CRUD_ACTION_TYPE, "confirm");
     }
 
 }

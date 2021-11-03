@@ -94,24 +94,10 @@ public class FertilisationDelegator extends CommonDelegator{
         }else{
             fertilisationDto.setAtuList(null);
         }
-
         arSuperDataSubmissionDto.setFertilisationDto(fertilisationDto);
         ParamUtil.setSessionAttr(bpc.request, DataSubmissionConstant.AR_DATA_SUBMISSION, arSuperDataSubmissionDto);
-
-        ValidationResult validationResult = WebValidationHelper.validateProperty(fertilisationDto, "save");
-        Map<String, String> errorMap = validationResult.retrieveAll();
-
-        if (!errorMap.isEmpty() || validationResult.isHasErrors()) {
-            WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
-            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
-            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "page");
-            return;
-        }
-
-        ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "confirm");
-
+        validatePageData(request, fertilisationDto,"save",ACTION_TYPE_CONFIRM);
     }
-
     @Override
     public void pageConfirmAction(BaseProcessClass bpc) {
 
