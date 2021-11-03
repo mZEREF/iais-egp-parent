@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.validation.dataSubmission;
 
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArCycleStageDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArDonorDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidator;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -33,8 +35,15 @@ public class ArCycleStageDtoValidator implements CustomizeValidator {
             stringStringMap.put("field1","");
             stringStringMap.put("field2","No. of Children with Current Marriage");
             stringStringMap.put("field3","No. of Children with Previous Marriage");
-            errorMap.put("noChildrenConceivedAR", MessageUtil.getMessageDesc("DS_ERR011",stringStringMap)).trim();
+            errorMap.put("noChildrenConceivedAR", MessageUtil.getMessageDesc("DS_ERR011",stringStringMap).trim());
         }
+        List<ArDonorDto> arDonorDtos = arCycleStageDto.getArDonorDtos();
+        arDonorDtos.forEach( arDonorDto -> {
+                    if(arCycleStageDto.isUsedDonorOocyte() && arDonorDto.getAge() == null){
+                        errorMap.put("age"+ arDonorDto.getArDonorIndex() ,"GENERAL_ERR0006");
+                    }
+                  }
+                );
         return errorMap;
     }
 
