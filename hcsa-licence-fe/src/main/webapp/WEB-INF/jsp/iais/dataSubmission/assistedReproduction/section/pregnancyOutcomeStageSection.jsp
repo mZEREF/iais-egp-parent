@@ -1,4 +1,4 @@
-<script type="text/javascript" src="<%=webroot1%>js/dataSubmission/oocyteRectrievalSection.js"></script>
+<script type="text/javascript" src="<%=webroot1%>js/dataSubmission/pregnancyOutcomeStageDto.js"></script>
 <c:set var="pregnancyOutcomeStageDto" value="${arSuperDataSubmissionDto.pregnancyOutcomeStageDto}"/>
 <div class="panel panel-default">
     <div class="panel-heading">
@@ -125,7 +125,7 @@
                     <iais:row>
                         <div class="col-sm-6 control-label formtext col-md-5">
                             <label  class="control-label control-set-font control-font-label">Date of Delivery</label>
-                            <c:if test="${pregnancyOutcomeStageDto.pregnancyOutcome != 'Live Birth'}"><span class="mandatory">*</span></c:if>
+                            <c:if test="${pregnancyOutcomeStageDto.pregnancyOutcome == 'Live Birth'}"><span class="mandatory">*</span></c:if>
                         </div>
                         <div class="col-md-7">
                             <div class="form-check col-12">
@@ -199,7 +199,7 @@
                     <iais:row>
                         <div class="col-sm-6 control-label formtext col-md-5">
                             <label  class="control-label control-set-font control-font-label">Baby Details Unknown (Loss to Follow-up)</label>
-                            <c:if test="${pregnancyOutcomeStageDto.pregnancyOutcome != 'Live Birth'}"><span class="mandatory">*</span></c:if>
+                            <c:if test="${pregnancyOutcomeStageDto.pregnancyOutcome == 'Live Birth'}"><span class="mandatory">*</span></c:if>
                         </div>
                         <div class="col-md-7">
                             <div class="form-check col-12">
@@ -230,7 +230,9 @@
                     </iais:row>
                 </div>
 
-                <%@include file="pregnancyOutcomeStageBabySection.jsp" %>
+                <div <c:if test="${pregnancyOutcomeStageDto.babyDetailsUnknown}">style="display:none;"</c:if>>
+                    <%@include file="pregnancyOutcomeStageBabySection.jsp" %>
+                </div>
 
                 <iais:row>
                     <iais:field width="5" value="Total No. of Baby Admitted to NICU Care" mandatory="true"/>
@@ -238,30 +240,36 @@
                         <iais:select name="l2CareBabyNum" options="l2CareBabyNumSelectOption" value="${pregnancyOutcomeStageDto.l2CareBabyNum}"></iais:select>
                     </iais:value>
                 </iais:row>
-                <iais:row>
-                    <iais:field width="5" value="No. of Baby Admitted to L2 Care" mandatory="true"/>
-                    <iais:value width="7" cssClass="col-md-7">
-                        <iais:select name="l2CareBabyNum" options="l2CareBabyNumSelectOption" value="${pregnancyOutcomeStageDto.l2CareBabyNum}"></iais:select>
-                    </iais:value>
-                </iais:row>
-                <iais:row>
-                    <iais:field width="5" value="No. of Baby Admitted to L3 Care" mandatory="true"/>
-                    <iais:value width="7" cssClass="col-md-7">
-                        <iais:select name="l3CareBabyNum" options="l3CareBabyNumSelectOption" value="${pregnancyOutcomeStageDto.l3CareBabyNum}"></iais:select>
-                    </iais:value>
-                </iais:row>
-                <iais:row>
-                    <iais:field width="5" value="No. Days Baby Stay in L2 (Provide average if > one baby stayed)"/>
-                    <iais:value width="7" cssClass="col-md-7">
-                        <iais:input maxLength="4" type="text" name="l2CareBabyDays" id="l2CareBabyDays" value="${pregnancyOutcomeStageDto.l2CareBabyDays}"/>
-                    </iais:value>
-                </iais:row>
-                <iais:row>
-                    <iais:field width="5" value="No. Days Baby Stay in L3 (Provide average if > one baby stayed)"/>
-                    <iais:value width="7" cssClass="col-md-7">
-                        <iais:input maxLength="4" type="text" name="l2CareBl3CareBabyDaysabyDays" id="l3CareBabyDays" value="${pregnancyOutcomeStageDto.l3CareBabyDays}"/>
-                    </iais:value>
-                </iais:row>
+                <div <c:if test="${pregnancyOutcomeStageDto.l2CareBabyNum < 1}">style="display:none;"</c:if>>
+                    <iais:row>
+                        <iais:field width="5" value="No. of Baby Admitted to L2 Care" mandatory="true"/>
+                        <iais:value width="7" cssClass="col-md-7">
+                            <iais:select name="l2CareBabyNum" options="l2CareBabyNumSelectOption" value="${pregnancyOutcomeStageDto.l2CareBabyNum}"></iais:select>
+                        </iais:value>
+                    </iais:row>
+                    <iais:row>
+                        <iais:field width="5" value="No. of Baby Admitted to L3 Care" mandatory="true"/>
+                        <iais:value width="7" cssClass="col-md-7">
+                            <iais:select name="l3CareBabyNum" options="l3CareBabyNumSelectOption" value="${pregnancyOutcomeStageDto.l3CareBabyNum}"></iais:select>
+                        </iais:value>
+                    </iais:row>
+                </div>
+                <div <c:if test="${pregnancyOutcomeStageDto.l2CareBabyNum < 1}">style="display:none;"</c:if>>
+                    <iais:row>
+                        <iais:field width="5" value="No. Days Baby Stay in L2 (Provide average if > one baby stayed)"/>
+                        <iais:value width="7" cssClass="col-md-7">
+                            <iais:input maxLength="4" type="text" name="l2CareBabyDays" id="l2CareBabyDays" value="${pregnancyOutcomeStageDto.l2CareBabyDays}"/>
+                        </iais:value>
+                    </iais:row>
+                </div>
+                <div <c:if test="${pregnancyOutcomeStageDto.l3CareBabyNum < 1}">style="display:none;"</c:if>>
+                    <iais:row>
+                        <iais:field width="5" value="No. Days Baby Stay in L3 (Provide average if > one baby stayed)"/>
+                        <iais:value width="7" cssClass="col-md-7">
+                            <iais:input maxLength="4" type="text" name="l2CareBl3CareBabyDaysabyDays" id="l3CareBabyDays" value="${pregnancyOutcomeStageDto.l3CareBabyDays}"/>
+                        </iais:value>
+                    </iais:row>
+                </div>
             </div>
         </div>
     </div>
