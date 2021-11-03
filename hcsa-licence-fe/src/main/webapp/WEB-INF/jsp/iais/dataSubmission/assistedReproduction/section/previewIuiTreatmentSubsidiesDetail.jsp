@@ -10,10 +10,11 @@
     <div id="efoDetails" class="panel-collapse collapse in">
         <div class="panel-body">
             <div class="panel-main-content form-horizontal">
+                <c:set var="iuiTreatmentSubsidiesDto" value="${arSuperDataSubmissionDto.iuiTreatmentSubsidiesDto}" />
                 <iais:row>
                     <iais:field width="5" value="Please indicate IUI Co-funding"/>
-                    <iais:value width="7" cssClass="col-md-7">
-                         <iais:code code="${PICF}"/>
+                    <iais:value width="7" cssClass="col-xs-5 col-md-6 control-label">
+                        <span class="col-xs-6 col-md-6 control-label" style="font-size: 16px"><iais:code code="${iuiTreatmentSubsidiesDto.artCoFunding}"/></span>
                     </iais:value>
                 </iais:row>
             </div>

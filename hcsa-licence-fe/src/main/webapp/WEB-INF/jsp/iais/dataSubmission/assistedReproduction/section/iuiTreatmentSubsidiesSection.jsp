@@ -15,13 +15,13 @@
                     <iais:value width="3" cssClass="col-md-3">
                         <c:forEach items="${pleaseIndicateIuiCoFunding}" var="pleaseIndicateIui">
                             <c:set var="pleaseIndicateIuiValue" value="${pleaseIndicateIui.value}"/>
-                            <div class="form-check">
+                            <div class="form-check" style="padding-left: 0px;">
                                 <input class="form-check-input"
                                        type="radio"
                                        name="pleaseIndicateIui"
                                        value="${pleaseIndicateIuiValue}"
                                        id="pleaseIndicateIuiCoFundCheck${pleaseIndicateIuiCode}"
-                                       <c:if test="${iuiTreatmentSubsidiesDto.pleaseIndicateIui ge pleaseIndicateIuiValue}">checked</c:if>
+                                       <c:if test="${pleaseIndicateIuiValue eq iuiTreatmentSubsidiesDto.artCoFunding}">checked</c:if>
                                        aria-invalid="false">
                                 <label class="form-check-label">
                                     <span class="check-circle" for="radioNo"></span>
@@ -29,6 +29,7 @@
                                 </label>
                             </div>
                         </c:forEach>
+                        <span class="error-msg" name="iaisErrorMsg" id="error_artCoFunding"></span>
                     </iais:value>
                 </iais:row>
             </div>

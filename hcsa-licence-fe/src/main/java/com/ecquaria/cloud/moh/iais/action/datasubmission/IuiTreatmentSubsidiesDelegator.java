@@ -1,7 +1,6 @@
 package com.ecquaria.cloud.moh.iais.action.datasubmission;
 
 import com.ecquaria.cloud.annotation.Delegator;
-import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.IuiTreatmentSubsidiesDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -16,7 +15,6 @@ import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
-import java.util.List;
 import java.util.Map;
 
 @Delegator("iuiTreatmentSubsidiesDelegator")
@@ -27,15 +25,19 @@ public class IuiTreatmentSubsidiesDelegator extends CommonDelegator {
     @Override
     public void start(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
-        ArSuperDataSubmissionDto arSuperDataSubmissionDto = new ArSuperDataSubmissionDto();
+        ArSuperDataSubmissionDto arSuperDataSubmissionDto= DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
+        IuiTreatmentSubsidiesDto iuiTreatmentSubsidiesDto=arSuperDataSubmissionDto.getIuiTreatmentSubsidiesDto();
+        if(iuiTreatmentSubsidiesDto == null) {
+            iuiTreatmentSubsidiesDto = new IuiTreatmentSubsidiesDto();
+        }
+        iuiTreatmentSubsidiesDto.setArtCoFunding("PICF001");
+        arSuperDataSubmissionDto.setIuiTreatmentSubsidiesDto(iuiTreatmentSubsidiesDto);
         ParamUtil.setSessionAttr(request,PLEASE_INDICATE_IUI_CO_FUNDING, (Serializable) MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.PLEASE_INDICATE_IUI_CO_FUNDING));
         ParamUtil.setSessionAttr(bpc.request, DataSubmissionConstant.AR_DATA_SUBMISSION, arSuperDataSubmissionDto);
     }
 
     @Override
     public void prepareSwitch(BaseProcessClass bpc) {
-        List<SelectOption> SelectOptions = (List<SelectOption>)ParamUtil.getSessionAttr(bpc.request, PLEASE_INDICATE_IUI_CO_FUNDING);
-        ParamUtil.setSessionAttr(bpc.request, PLEASE_INDICATE_IUI_CO_FUNDING, (Serializable) MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.PLEASE_INDICATE_IUI_CO_FUNDING));
 
     }
 
@@ -48,29 +50,31 @@ public class IuiTreatmentSubsidiesDelegator extends CommonDelegator {
     @Override
 
     public void pageAction(BaseProcessClass bpc) {
-        HttpServletRequest request=bpc.request;
         ArSuperDataSubmissionDto arSuperDataSubmissionDto= DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
         IuiTreatmentSubsidiesDto iuiTreatmentSubsidiesDto=arSuperDataSubmissionDto.getIuiTreatmentSubsidiesDto();
         if(iuiTreatmentSubsidiesDto == null) {
             iuiTreatmentSubsidiesDto = new IuiTreatmentSubsidiesDto();
         }
-        String pleaseIndicateIui =  ParamUtil.getString(request, "pleaseIndicateIui");
-        iuiTreatmentSubsidiesDto.setArtCoFunding(pleaseIndicateIui);
+        String actionType = ParamUtil.getRequestString(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE);
+        if (CommonDelegator.ACTION_TYPE_CONFIRM.equals(actionType)) {
+            String pleaseIndicateIui = ParamUtil.getString(bpc.request, "pleaseIndicateIui");
+            iuiTreatmentSubsidiesDto.setArtCoFunding(pleaseIndicateIui);
 
-        arSuperDataSubmissionDto.setIuiTreatmentSubsidiesDto(iuiTreatmentSubsidiesDto);
+            arSuperDataSubmissionDto.setIuiTreatmentSubsidiesDto(iuiTreatmentSubsidiesDto);
 
-        ParamUtil.setSessionAttr(bpc.request, DataSubmissionConstant.AR_DATA_SUBMISSION, arSuperDataSubmissionDto);
+            ParamUtil.setSessionAttr(bpc.request, DataSubmissionConstant.AR_DATA_SUBMISSION, arSuperDataSubmissionDto);
 
-        ValidationResult validationResult = WebValidationHelper.validateProperty(iuiTreatmentSubsidiesDto, "save");
-        Map<String, String> errorMap = validationResult.retrieveAll();
+            ValidationResult validationResult = WebValidationHelper.validateProperty(iuiTreatmentSubsidiesDto, "save");
+            Map<String, String> errorMap = validationResult.retrieveAll();
 
-        if (!errorMap.isEmpty() || validationResult.isHasErrors()) {
-            WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
-            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
-            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "page");
-            return;
+            if (!errorMap.isEmpty() || validationResult.isHasErrors()) {
+                WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
+                ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
+                ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "page");
+                return;
+            }
+            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "confirm");
         }
-        ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "confirm");
     }
 
     @Override
