@@ -57,7 +57,6 @@ public final class DataSubmissionHelper {
             result.add(DataSubmissionConsts.AR_STAGE_DISPOSAL);
             result.add(DataSubmissionConsts.AR_STAGE_DONATION);
             result.add(DataSubmissionConsts.AR_STAGE_TRANSFER_IN_AND_OUT);
-            result.add(DataSubmissionConsts.AR_STAGE_FREEZING);
         } else if (DataSubmissionConsts.AR_CYCLE_NON.equals(currCycle)) {
             result.add(DataSubmissionConsts.AR_STAGE_DISPOSAL);
             result.add(DataSubmissionConsts.AR_STAGE_DONATION);
