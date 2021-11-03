@@ -72,9 +72,9 @@ public class TransferNotificationDto {
     }
 
     public boolean doValidation() {
-        DocumentDto.DocsMetaDto docsMetaDto = null;
+        List<DocumentDto.DocMeta> docsMetaDto = null;
         if(documentDto != null){
-            docsMetaDto = documentDto.getDocsMetaDto();
+            docsMetaDto = documentDto.getMetaDtoList();
         }
         this.validationResultDto = (ValidationResultDto) SpringReflectionUtils.invokeBeanMethod("cerRegFeignClient", "validateFacilityAdmin", new Object[]{transferNotList,docsMetaDto});
         return validationResultDto.isPass();

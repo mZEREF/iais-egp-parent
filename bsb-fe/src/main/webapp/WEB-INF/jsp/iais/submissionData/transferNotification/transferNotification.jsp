@@ -15,7 +15,7 @@
 <webui:setLayout name="iais-internet"/>
 
 <script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-common.js"></script>
-<script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-request-for-transfer.js"></script>
+<script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-transfer-notification.js"></script>
 
 <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
     <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
@@ -58,10 +58,10 @@
                                 </div>
                                 <div class="tab-content">
                                     <div class="tab-pane active" id="tabFacInfo" role="tabpanel">
-                                        <%@include file="../transferNotification/facilityInfo.jsp" %>
+                                        <%@include file="facilityInfo.jsp" %>
                                     </div>
                                     <div class="tab-pane" id="tabNotBat" role="tabpanel">
-                                        <%@include file="../transferNotification/tranNotBat.jsp" %>
+                                        <%@include file="tranNotBat.jsp" %>
                                     </div>
                                 </div>
                             </div>

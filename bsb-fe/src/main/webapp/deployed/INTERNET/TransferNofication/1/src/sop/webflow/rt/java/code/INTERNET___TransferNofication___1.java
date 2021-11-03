@@ -11,8 +11,10 @@
  */
 package sop.webflow.rt.java.code;
 import sop.webflow.rt.api.BaseProcessClass;
+import com.ecquaria.cloud.helper.EngineHelper;
 
 public class INTERNET___TransferNofication___1 extends BaseProcessClass {
+	private static final String DELEGATOR ="transferNotificationDelegator";
 
 	public void start_OnStepProcess_0() throws Exception {
 	// 		start->OnStepProcess
@@ -20,6 +22,7 @@ public class INTERNET___TransferNofication___1 extends BaseProcessClass {
 
 	public void prepareData_OnStepProcess_0() throws Exception {
 	// 		prepareData->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "prepareData", this);
 	}
 
 	public void saveAndPrepareConfirm_OnStepProcess_0() throws Exception {

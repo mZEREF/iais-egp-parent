@@ -42,7 +42,7 @@ public class FacilityCertifierRegisterDto {
     }
 
     public NodeGroup toFacilityCertRegister(String name){
-        //新生成一个NodeGroup
+        //generate new NodeGroup
         SimpleNode orgProfileNode = new SimpleNode(profileDto,NODE_NAME_ORG_PROFILE,new Node[0]);
         SimpleNode certifierTeamNode = new SimpleNode(certifyingTeamDto,NODE_NAME_ORG_CERTIFYING_TEAM,new Node[]{orgProfileNode});
         SimpleNode administratorNode = new SimpleNode(administratorDto,NODE_NAME_ORG_FAC_ADMINISTRATOR,new Node[]{orgProfileNode,certifierTeamNode});

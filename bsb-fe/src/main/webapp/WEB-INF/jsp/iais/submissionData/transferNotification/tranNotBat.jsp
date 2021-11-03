@@ -1,7 +1,7 @@
-<input type="hidden" name="sectionAmt" value="${transferNot.transferLists.size()}">
+<input type="hidden" name="sectionAmt" value="${transferNot.transferNotList.size()}">
 
 <input type="hidden" id="section_repeat_amt_input_name" value="sectionAmt" readonly disabled>
-<input type="hidden" id="section_repeat_section_id_prefix" value="reqTSection" readonly disabled>
+<input type="hidden" id="section_repeat_section_id_prefix" value="notTSection" readonly disabled>
 <input type="hidden" id="section_repeat_header_title_prefix" value="Agent / Toxin " readonly disabled>
 <input type="hidden" id="section_repeat_section_group_id" value="sectionGroup" readonly disabled>
 <input type="hidden" id="section_repeat_separator" value="--v--" readonly disabled>
@@ -12,9 +12,9 @@
         <div class="col-xs-12 col-sm-12" style="padding: 20px 30px 10px 30px; border-radius: 15px;margin: 0 auto">
             <div class = "col-xs-12 col-sm-12">
                 <div id="sectionGroup">
-                    <c:forEach var="reqT" items="${transferNot.transferLists}" varStatus="status">
-                        <section id="reqTSection--v--${status.index}">
-                            <c:if test="${transferNot.transferLists.size() > 1}">
+                    <c:forEach var="reqT" items="${transferNot.transferNotList}" varStatus="status">
+                        <section id="notTSection--v--${status.index}">
+                            <c:if test="${transferNot.transferNotList.size() > 1}">
                                 <div class="form-group">
                                     <h3 class="col-xs-9 col-sm-10 col-md-11" style="border-bottom: 1px solid black">Agent / Toxin ${status.index + 1}</h3>
                                     <c:if test="${status.index gt 0}">
@@ -29,11 +29,12 @@
                                 </div>
                                 <div class="col-sm-6 col-md-7">
                                     <iais:select name="scheduleType--v--${status.index}" id="scheduleType--v--${status.index}"
-                                                 value=""
+                                                 value="" onchange="stChange(this)"
                                                  codeCategory="CATE_ID_BSB_SCH_TYPE"
                                                  firstOption="Please Select"/>
                                     <span data-err-ind="scheduleType--v--${status.index}" class="error-msg"></span>
                                 </div>
+                                <input type="hidden" id="sType--v--${status.index}"  readonly disabled>
                             </div>
                             <div class="form-group">
                                 <div class="col-sm-5 control-label">
@@ -46,6 +47,7 @@
                                 </div>
                             </div>
 
+                            <div id="agentEpFifth--v--${status.index}" style="display: none">
                            <%--Displayed for First, Second, Third and Fourth Schedule biological agent--%>
                             <div class="form-group">
                                 <div class="col-sm-5 control-label">
@@ -72,7 +74,9 @@
                                     <span data-err-ind="batQty--v--${status.index}" class="error-msg"></span>
                                 </div>
                             </div>
+                            </div>
 
+                            <div id="agentFifth--v--${status.index}" style="display: none">
                            <%--Displayed for Fifth Schedule toxin--%>
                             <div class="form-group">
                                 <div class="col-sm-5 control-label">
@@ -101,6 +105,8 @@
                                     <span data-err-ind="mstUnit--v--${status.index}" class="error-msg"></span>
                                 </div>
                             </div>
+                            </div>
+<%--                            <%@include file="../common/batDocument.jsp" %>--%>
                         </section>
                     </c:forEach>
                 </div>
