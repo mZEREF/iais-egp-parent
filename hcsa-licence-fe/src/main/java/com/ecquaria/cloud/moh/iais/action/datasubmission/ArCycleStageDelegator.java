@@ -104,7 +104,6 @@ public class ArCycleStageDelegator extends CommonDelegator {
         }
         if(IaisCommonUtils.isEmpty(arDonorDtos)){
             arDonorDtos = IaisCommonUtils.genNewArrayList();
-            arDonorDtos.add(getInitArDonorDto(0));
             arSuperDataSubmissionDto.setArDonorDtos(arDonorDtos);
         }
         arCycleStageDto.setArDonorDtos(arDonorDtos);
@@ -241,7 +240,6 @@ public class ArCycleStageDelegator extends CommonDelegator {
 
      private void clearNoClearDataForDrDonorDto(ArDonorDto arDonorDto){
         if(arDonorDto.isDirectedDonation()){
-            arDonorDto.setDonorSampleCodeId(null);
             arDonorDto.setDonorSampleCode(null);
             arDonorDto.setSource(null);
             arDonorDto.setOtherSource(null);

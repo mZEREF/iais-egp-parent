@@ -99,12 +99,12 @@
                     <iais:value width="7" cssClass="col-md-7">
                             <c:forEach items="${currentArTreatments}" var="currentArTreatment">
                                 <c:set var="currentArTreatmentCode" value="${currentArTreatment.code}"/>
-                                <div class="form-check col-xs-7" >
+                                <div class="form-check col-xs-12" >
                                     <input class="form-check-input" type="checkbox"
                                            name="currentArTreatment"
                                            value="${currentArTreatmentCode}"
                                            id="currentArTreatmentCheck${currentArTreatmentCode}"
-                                           <c:if test="${StringUtil.stringContain(arCycleStageDto.currentARTreatment,currentArTreatmentCode)}">checked</c:if>
+                                           <c:if test="${StringUtil.stringContain(arCycleStageDto.currentArTreatment,currentArTreatmentCode)}">checked</c:if>
                                            aria-invalid="false">
                                     <label class="form-check-label"
                                            for="currentArTreatmentCheck${currentArTreatmentCode}"><span
@@ -112,8 +112,8 @@
                                         <c:out value="${currentArTreatment.codeValue}"/></label>
                                 </div>
                             </c:forEach>
+                        <span id="error_currentArTreatment" name="iaisErrorMsg" class="error-msg"></span>
                     </iais:value>
-                    <span id="error_currentArTreatment" name="iaisErrorMsg" class="error-msg"></span>
                 </iais:row>
 
                 <iais:row>
@@ -301,16 +301,16 @@
        $("#deleteDonor"+index).show();
        $("#source"+index+"Row").hide();
        $("#otherSource"+index+"Row").hide();
-       $("#donorSampleCodeId"+index+"Row").hide();
+       $("#donorSampleCode"+index+"Row").hide();
        $("#source"+index).val("");
        $("#otherSource"+index).val("");
-       $("#donorSampleCodeId"+index).val("");
+       $("#donorSampleCode"+index).val("");
        $("#idNo"+index+"Row").show();
    }
   function hideDonor(index){
       $("#deleteDonor"+index).hide();
       $("#source"+index+"Row").show();
-      $("#donorSampleCodeId"+index+"Row").show();
+      $("#donorSampleCode"+index+"Row").show();
       $("#idNo"+index+"Row").hide();
       $("#idType"+index).val("");
       $("#idNumber"+index).val("");
@@ -320,7 +320,7 @@
       if(flag == 1){
           rollbackDonor(0);
       }else {
-          $(".yesUsedDonorOocyteControl").show();
+          $(".usedDonorOocyteControl").show();
       }
   }
 

@@ -52,7 +52,7 @@
                  <iais:row cssClass="usedDonorOocyteControlClass" id="donorSampleCodeId${arDonorIndex}Row">
                      <iais:field width="5" value="Donor Sample Code / ID" />
                      <iais:value width="7" cssClass="col-md-7" display="true">
-                         <c:out value="${arDonorDto.donorSampleCodeId}" />
+                         <c:out value="${arDonorDto.donorSampleCode}" />
                      </iais:value>
                  </iais:row>
 

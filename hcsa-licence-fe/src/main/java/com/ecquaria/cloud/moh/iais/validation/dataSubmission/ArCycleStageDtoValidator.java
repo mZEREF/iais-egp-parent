@@ -4,6 +4,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArCycleStageDt
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArDonorDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
+import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidator;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
@@ -41,6 +42,9 @@ public class ArCycleStageDtoValidator implements CustomizeValidator {
         arDonorDtos.forEach( arDonorDto -> {
                     if(arCycleStageDto.isUsedDonorOocyte() && arDonorDto.getAge() == null){
                         errorMap.put("age"+ arDonorDto.getArDonorIndex() ,"GENERAL_ERR0006");
+                    }
+                    if(!arDonorDto.isDirectedDonation() && StringUtil.isEmpty(arDonorDto.getDonorSampleCode())){
+                        errorMap.put("donorSampleCode"+ arDonorDto.getArDonorIndex() ,"GENERAL_ERR0006");
                     }
                   }
                 );

@@ -67,14 +67,14 @@
                 <iais:row>
                     <iais:field width="5" value="In-Vitro Maturation" />
                     <iais:value width="7" cssClass="col-md-3" display="true">
-                        <c:out value="${arCycleStageDto.inVitroMaturation ? Yes : No}"/>
+                        <c:out value="${arCycleStageDto.inVitroMaturation ? 'Yes' : 'No'}"/>
                     </iais:value>
                 </iais:row>
 
                 <iais:row>
                     <iais:field width="5" value="Current AR Treatment" />
                     <iais:value width="7" cssClass="col-md-7">
-                            <c:forEach items="${arCycleStageDto.currentARTreatmentValues}" var="currentAR" varStatus="status">
+                            <c:forEach items="${arCycleStageDto.currentArTreatmentValues}" var="currentAR" varStatus="status">
                                 <c:if test="${status.index != 0}"><br></c:if> <iais:code code="${currentAR}"/>
                             </c:forEach>
                     </iais:value>
@@ -134,7 +134,7 @@
                 <iais:row>
                     <iais:field width="5" value="Enhanced Counselling" />
                     <iais:value width="7" cssClass="col-md-7" display="true">
-                        <c:out value="${arCycleStageDto.enhancedCounselling ? 'Yes' : 'No'}"/>
+                        <c:out value="${arCycleStageDto.enhancedCounselling == null ? 'NA' : arCycleStageDto.enhancedCounselling ? 'Yes' : 'No'}"/>
                     </iais:value>
                 </iais:row>
 

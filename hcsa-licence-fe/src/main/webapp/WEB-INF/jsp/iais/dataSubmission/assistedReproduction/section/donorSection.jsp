@@ -1,4 +1,4 @@
-<div class="panel panel-default usedDonorOocyteControlClass yesUsedDonorOocyteControl">
+<div class="panel panel-default usedDonorOocyteControlClass">
      <div class="panel-heading">
          <h4  class="panel-title" data-toggle="collapse" href="#arDonorDtoDetails">
         <strong>
@@ -15,7 +15,7 @@
              <c:set var="arDonorIndex" value="${arDonorDto.arDonorIndex}"/>
              <div class="panel-main-content form-horizontal">
 
-                <iais:row cssClass="usedDonorOocyteControlClass yesUsedDonorOocyteControl">
+                <iais:row >
                     <iais:field width="5" value="Please Indicate" mandatory="true"/>
                     <iais:value width="7" cssClass="col-md-7">
                         <c:forEach items="${donorUsedTypes}" var="donorUsedType">
@@ -44,7 +44,7 @@
                      </iais:value>
                  </iais:row>
 
-                 <iais:row cssClass="usedDonorOocyteControlClass yesUsedDonorOocyteControl">
+                 <iais:row>
                      <iais:field width="5" value="Is this a Directed Donation?" mandatory="true"/>
                      <iais:value width="3" cssClass="col-md-3">
                          <div class="form-check" onclick="showDonor('${arDonorIndex}')">
@@ -78,7 +78,7 @@
                      </iais:value>
                  </iais:row>
 
-                 <iais:row id="idNo${arDonorIndex}Row" cssClass="usedDonorOocyteControlClass yesUsedDonorOocyteControl" style="${!arDonorDto.directedDonation ? 'display: none;' : ''}">
+                 <iais:row id="idNo${arDonorIndex}Row"  style="${!arDonorDto.directedDonation ? 'display: none;' : ''}">
                      <iais:field width="5" value="ID No." mandatory="true"/>
                      <iais:value width="3" cssClass="col-md-3">
                          <iais:select name="idType${arDonorIndex}" firstOption="Please Select" codeCategory="CATE_ID_DS_ID_TYPE" value="${arDonorDto.idType}"
@@ -89,14 +89,14 @@
                      </iais:value>
                  </iais:row>
 
-                 <iais:row id="donorSampleCodeId${arDonorIndex}Row"  cssClass="usedDonorOocyteControlClass true" style="${arDonorDto.directedDonation ? 'display: none;' : ''}">
+                 <iais:row id="donorSampleCode${arDonorIndex}Row"   style="${arDonorDto.directedDonation ? 'display: none;' : ''}">
                      <iais:field width="5" value="Donor Sample Code / ID" mandatory="true"/>
                      <iais:value width="7" cssClass="col-md-7">
-                         <iais:input maxLength="100" type="text" name="donorSampleCodeId${arDonorIndex}" id="donorSampleCodeId${arDonorIndex}" value="${arDonorDto.donorSampleCodeId}" />
+                         <iais:input maxLength="100" type="text" name="donorSampleCode${arDonorIndex}" id="donorSampleCode${arDonorIndex}" value="${arDonorDto.donorSampleCode}" />
                      </iais:value>
                  </iais:row>
 
-                 <iais:row id="source${arDonorIndex}Row" cssClass="usedDonorOocyteControlClass" style="${arDonorDto.directedDonation ? 'display: none;' : ''}">
+                 <iais:row id="source${arDonorIndex}Row" style="${arDonorDto.directedDonation ? 'display: none;' : ''}">
                      <iais:field width="5" value="Source (i.e. AR Centre or Bank Name)" mandatory="true"/>
                      <iais:value width="7" cssClass="col-md-7">
                          <iais:select name="source${arDonorIndex}" firstOption="Please Select" options="donorSourseDropDown" value="${arDonorDto.source}"
@@ -104,14 +104,14 @@
                      </iais:value>
                  </iais:row>
 
-                 <iais:row id="otherSource${arDonorIndex}Row"  cssClass="usedDonorOocyteControlClass" style="${arDonorDto.source eq 'Others'? '' : 'display: none'}">
+                 <iais:row id="otherSource${arDonorIndex}Row" style="${arDonorDto.source eq 'Others'? '' : 'display: none'}">
                      <iais:field width="5" value="Source (Others)" mandatory="true"/>
                      <iais:value width="7" cssClass="col-md-7">
                          <iais:input maxLength="100" type="text" name="otherSource${arDonorIndex}" id="otherSource${arDonorIndex}" value="${arDonorDto.otherSource}" />
                      </iais:value>
                  </iais:row>
 
-                 <iais:row cssClass="usedDonorOocyteControlClass yesUsedDonorOocyteControl">
+                 <iais:row>
                      <iais:field width="5" value="Donor's Age at Donation" mandatory="true"/>
                      <iais:value width="4" cssClass="col-md-4">
                          <iais:select name="age${arDonorIndex}" firstOption="Please Select"  options="donorAgeDonationDropDown" value="${arDonorDto.age}"
@@ -128,7 +128,7 @@
              </div>
         </c:forEach>
              <c:if test="${arDonorDtos.size()<4}">
-         <iais:row  cssClass="usedDonorOocyteControlClass">
+         <iais:row >
              <iais:value width="5" cssClass="col-md-3" display="true">
                  <a class="addDonor"   onclick="addDonor()"style="text-decoration:none;">+ Add Donor Details</a>
              </iais:value>
