@@ -180,23 +180,21 @@ public class DonationStageDelegator extends CommonDelegator{
             donationStageDto.setOtherDonationReason(otherDonationReason);
         }
 
-        ParamUtil.setSessionAttr(bpc.request, DataSubmissionConstant.AR_DATA_SUBMISSION, arSuperDataSubmissionDto);
-
-        ValidationResult validationResult = WebValidationHelper.validateProperty(donationStageDto, "save");
-        Map<String, String> errorMap = validationResult.retrieveAll();
-        if(StringUtil.isNotEmpty(donationStageDto.getDirectedDonorId())){
-            //ID must be a registered patient in the receiving AR Centre
-            donationStageDto.getIsCurCenDonated();
+        DataSubmissionHelper.setCurrentArDataSubmission(arSuperDataSubmissionDto,bpc.request);
+        String actionType=ParamUtil.getRequestString(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE);
+        if("confirm".equals(actionType)){
+            ValidationResult validationResult = WebValidationHelper.validateProperty(donationStageDto, "save");
+            Map<String, String> errorMap = validationResult.retrieveAll();
+            if(StringUtil.isNotEmpty(donationStageDto.getDirectedDonorId())){
+                //ID must be a registered patient in the receiving AR Centre
+                donationStageDto.getIsCurCenDonated();
+            }
+            if (!errorMap.isEmpty() || validationResult.isHasErrors()) {
+                WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
+                ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
+                ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "page");
+            }
         }
-        if (!errorMap.isEmpty() || validationResult.isHasErrors()) {
-            WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
-            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
-            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "page");
-            return;
-        }
-
-
-        ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "confirm");
     }
 
 

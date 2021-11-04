@@ -104,29 +104,29 @@ public class EmbryoCreatedDelegator extends CommonDelegator{
 
         embryoCreatedStageDto.setTotalNum(totalNum);
 
-        ValidationResult validationResult = WebValidationHelper.validateProperty(embryoCreatedStageDto, "save");
-        Map<String, String> errorMap = validationResult.retrieveAll();
-        String errMsgFresh = "Total sum of data item 1, 2 cannot be greater than number of fresh oocytes tagged to patient";
-        String errMsgThawed = "Total sum of data item 3, 4 cannot be greater than number of thawed oocytes tagged to patient";
 
-        if(totalThawedNum>10){
-            errorMap.put("poorDevThawOccNum", errMsgThawed);
+        DataSubmissionHelper.setCurrentArDataSubmission(arSuperDataSubmissionDto,bpc.request);
+        String actionType=ParamUtil.getRequestString(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE);
+        if("confirm".equals(actionType)){
+            ValidationResult validationResult = WebValidationHelper.validateProperty(embryoCreatedStageDto, "save");
+            Map<String, String> errorMap = validationResult.retrieveAll();
+            String errMsgFresh = "Total sum of data item 1, 2 cannot be greater than number of fresh oocytes tagged to patient";
+            String errMsgThawed = "Total sum of data item 3, 4 cannot be greater than number of thawed oocytes tagged to patient";
 
+            if(totalThawedNum>10){
+                errorMap.put("poorDevThawOccNum", errMsgThawed);
+
+            }
+            if(totalFreshNum>10){
+                errorMap.put("poorDevFreshOccNum", errMsgFresh);
+
+            }
+            if (!errorMap.isEmpty() || validationResult.isHasErrors()) {
+                WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
+                ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
+                ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "page");
+            }
         }
-        if(totalFreshNum>10){
-            errorMap.put("poorDevFreshOccNum", errMsgFresh);
-
-        }
-        ParamUtil.setSessionAttr(bpc.request, DataSubmissionConstant.AR_DATA_SUBMISSION, arSuperDataSubmissionDto);
-        if (!errorMap.isEmpty() || validationResult.isHasErrors()) {
-            WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
-            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
-            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "page");
-            return;
-        }
-
-
-        ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "confirm");
     }
 
 

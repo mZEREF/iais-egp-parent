@@ -82,19 +82,17 @@ public class EfoCycleStageDelegator extends CommonDelegator{
         if(othersReason!=null&& "EFOR004".equals(reasonSelect)){
             efoCycleStageDto.setOtherReason(othersReason);
         }
-        ValidationResult validationResult = WebValidationHelper.validateProperty(efoCycleStageDto, "save");
-        Map<String, String> errorMap = validationResult.retrieveAll();
-        ParamUtil.setSessionAttr(bpc.request, DataSubmissionConstant.AR_DATA_SUBMISSION, arSuperDataSubmissionDto);
-        if (!errorMap.isEmpty() || validationResult.isHasErrors()) {
-            WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
-            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
-            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "page");
-            return;
+        DataSubmissionHelper.setCurrentArDataSubmission(arSuperDataSubmissionDto,bpc.request);
+        String actionType=ParamUtil.getRequestString(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE);
+        if("confirm".equals(actionType)){
+            ValidationResult validationResult = WebValidationHelper.validateProperty(efoCycleStageDto, "save");
+            Map<String, String> errorMap = validationResult.retrieveAll();
+            if (!errorMap.isEmpty() || validationResult.isHasErrors()) {
+                WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
+                ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
+                ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "page");
+            }
         }
-
-
-        ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "confirm");
-
     }
 
 

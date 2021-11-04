@@ -11,7 +11,9 @@
         <div class="panel-body">
             <div class="panel-main-content form-horizontal">
                 <h3>
-                    <p><label style="font-family:'Arial Negreta', 'Arial Normal', 'Arial';font-weight:600;"><c:out value="${arSuperDataSubmissionDto.patientInfoDto.patient.name}"/></label><label style="font-family:'Arial Normal', 'Arial';font-weight:400;"><c:out value="(${arSuperDataSubmissionDto.patientInfoDto.patient.idNumber})"/></label></p>
+                    <label ><c:out value="${arSuperDataSubmissionDto.patientInfoDto.patient.name}"/></label>
+                    <span style="font-weight:normal"><c:out value="(${arSuperDataSubmissionDto.patientInfoDto.patient.idNumber})"/>
+                    </span>
                 </h3>
                 <iais:row>
                     <iais:field width="6" value="Premises where IUI is Performed" mandatory="false"/>
@@ -46,7 +48,7 @@
                         <iais:code code="${arSuperDataSubmissionDto.efoCycleStageDto.reason}"/>
                     </iais:value>
                 </iais:row>
-                <div id="othersReason" <c:if test="${arSuperDataSubmissionDto.efoCycleStageDto.reason=='EFOR004'}">style="display: none"</c:if> >
+                <div id="othersReason" <c:if test="${arSuperDataSubmissionDto.efoCycleStageDto.reason!='EFOR004'}">style="display: none"</c:if> >
                     <iais:row>
                         <iais:field width="6" value="" mandatory="false"/>
                         <iais:value width="6" display="true">

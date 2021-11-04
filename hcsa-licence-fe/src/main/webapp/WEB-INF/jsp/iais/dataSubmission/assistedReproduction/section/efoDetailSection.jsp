@@ -12,7 +12,9 @@
         <div class="panel-body">
             <div class="panel-main-content form-horizontal">
                 <h3>
-                    <p><label ><c:out value="${arSuperDataSubmissionDto.patientInfoDto.patient.name}"/><c:out value="(${arSuperDataSubmissionDto.patientInfoDto.patient.idNumber})"/></label></p>
+                    <label ><c:out value="${arSuperDataSubmissionDto.patientInfoDto.patient.name}"/></label>
+                    <span style="font-weight:normal"><c:out value="(${arSuperDataSubmissionDto.patientInfoDto.patient.idNumber})"/>
+                    </span>
                 </h3>
                 <iais:row>
                     <iais:field width="6" value="Premises where egg freezing only cycle is performed" mandatory="true"/>
