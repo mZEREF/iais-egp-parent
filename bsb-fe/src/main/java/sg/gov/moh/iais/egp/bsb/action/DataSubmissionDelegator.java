@@ -1,19 +1,30 @@
 package sg.gov.moh.iais.egp.bsb.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import lombok.extern.slf4j.Slf4j;
-import sg.gov.moh.iais.egp.bsb.dto.submission.ConsumeNotificationDto;
-import sg.gov.moh.iais.egp.bsb.dto.submission.DisposalNotificationDto;
-import sg.gov.moh.iais.egp.bsb.dto.submission.ExportNotificationDto;
-import sg.gov.moh.iais.egp.bsb.dto.submission.ReceiptNotificationDto;
+import org.springframework.beans.factory.annotation.Autowired;
+import sg.gov.moh.iais.egp.bsb.client.DataSubmissionClient;
+import sg.gov.moh.iais.egp.bsb.constant.AuditConstants;
+import sg.gov.moh.iais.egp.bsb.dto.submission.*;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+
+import static sg.gov.moh.iais.egp.bsb.constant.DataSubmissionConstants.KEY_PREFIX_REMARKS;
+
 
 @Delegator("dataSubmissionDelegator")
 @Slf4j
 public class DataSubmissionDelegator {
+    @Autowired
+    private DataSubmissionClient dataSubmissionClient;
+
     /**
      * start
      * This module is used to initialize data
@@ -24,10 +35,11 @@ public class DataSubmissionDelegator {
         }
     }
     /**
-     * StartStep: PrepareDataSubmissionSelect
+     * StartStep: PrepareFacilitySelect
      */
     public void doPrepareFacilitySelect(BaseProcessClass bpc) {
-        // todo get facility info
+        HttpServletRequest request = bpc.request;
+        selectOption(request);
     }
     /**
      * StartStep: PrepareSwitch
@@ -41,6 +53,28 @@ public class DataSubmissionDelegator {
         HttpServletRequest request = bpc.request;
         ParamUtil.setRequestAttr(request,"consumeNotification",new ConsumeNotificationDto());
     }
+    /**
+     * StartStep: prepareConfirm
+     */
+    public void prepareConfirm(BaseProcessClass bpc) {
+        HttpServletRequest request = bpc.request;
+//        ParamUtil.setSessionAttr(request,"consumeNotification", null);
+        ConsumeNotificationDto dto = new ConsumeNotificationDto();
+        dto.reqObjectMapping(request);
+        dto.setRemarks(ParamUtil.getString(request,KEY_PREFIX_REMARKS));
+        ParamUtil.setRequestAttr(request,"notification", dto);
+    }
+    /**
+     * StartStep: saveConsumeNot
+     */
+    public void saveConsumeNot(BaseProcessClass bpc) {
+        HttpServletRequest request = bpc.request;
+        ConsumeNotificationDto dto = (ConsumeNotificationDto) ParamUtil.getSessionAttr(request,"consumeNotification");
+
+
+    }
+
+
     /**
      * StartStep: prepareConsume
      */
@@ -61,5 +95,16 @@ public class DataSubmissionDelegator {
     public void prepareReceive(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         ParamUtil.setRequestAttr(request,"receiveNotification",new ReceiptNotificationDto());
+    }
+
+    public void selectOption(HttpServletRequest request) {
+        FacListDto facListDto = dataSubmissionClient.queryAllApprovalFacList().getEntity();
+        List<FacListDto.FacList> facLists = facListDto.getFacLists();
+        facLists.remove(0);
+        List<SelectOption> selectModel = IaisCommonUtils.genNewArrayList();
+        for (FacListDto.FacList fac : facLists) {
+            selectModel.add(new SelectOption(fac.getFacId(), fac.getFacName()));
+        }
+        ParamUtil.setRequestAttr(request, "facList", selectModel);
     }
 }

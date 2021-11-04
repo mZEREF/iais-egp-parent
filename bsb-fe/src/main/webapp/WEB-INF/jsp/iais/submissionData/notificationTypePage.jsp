@@ -6,13 +6,14 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ page import="com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant" %>
+<%@ page import="static sg.gov.moh.iais.egp.bsb.constant.GlobalConstants.WEB_ROOT" %>
 <%
     sop.webflow.rt.api.BaseProcessClass process =
             (sop.webflow.rt.api.BaseProcessClass) request.getAttribute("process");
     String webroot1 = IaisEGPConstant.CSS_ROOT + IaisEGPConstant.FE_CSS_ROOT;
 %>
 <webui:setLayout name="iais-internet"/>
-
+<script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-data-submission.js"></script>
 <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
     <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
     <input type="hidden" name="action_type" value="">
@@ -60,29 +61,3 @@
     </div>
 </form>
 <%@include file="/WEB-INF/jsp/include/validation.jsp" %>
-<script>
-    $(function () {
-        $("#nextBtn").click(function () {
-            showWaiting();
-            var optionValue = $("#selectType option:selected").val();
-            if (optionValue == "1") {
-                $("[name='action_type']").val("doConsume");
-            }else if (optionValue == "2") {
-                $("[name='action_type']").val("doDisposal");
-            }else if (optionValue == "3") {
-                $("[name='action_type']").val("doExport");
-            }else if (optionValue == "4") {
-                $("[name='action_type']").val("doReceipt");
-            }else if (optionValue == "5") {
-                $("[name='action_type']").val("doRequestTransfer");
-            }else if (optionValue == "6") {
-                $("[name='action_type']").val("doTransferNotification");
-            }else if (optionValue == "7") {
-                $("[name='action_type']").val("doAckOfReceiptOfTransfer");
-            }else if (optionValue == "8") {
-
-            }
-            $("#mainForm").submit();
-        })
-    });
-</script>

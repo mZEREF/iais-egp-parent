@@ -11,8 +11,10 @@
  */
 package sop.webflow.rt.java.code;
 import sop.webflow.rt.api.BaseProcessClass;
+import com.ecquaria.cloud.helper.EngineHelper;
 
 public class INTERNET___BsbDataSubmission___1 extends BaseProcessClass {
+	private static final String DELEGATOR = "dataSubmissionDelegator";
 
 	public void start_OnStepProcess_0() throws Exception {
 	// 		start->OnStepProcess
@@ -52,6 +54,11 @@ public class INTERNET___BsbDataSubmission___1 extends BaseProcessClass {
 
 	public void preAckOfReceiptOfTransfer_OnStepProcess_0() throws Exception {
 	// 		preAckOfReceiptOfTransfer->OnStepProcess
+	}
+
+	public void prepareFacilitySelect_OnStepProcess_0() throws Exception {
+		// 		prepareFacilitySelect->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "doPrepareFacilitySelect", this);
 	}
 
 }
