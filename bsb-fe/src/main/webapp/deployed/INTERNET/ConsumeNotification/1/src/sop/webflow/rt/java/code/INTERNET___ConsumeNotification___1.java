@@ -28,12 +28,12 @@ public class INTERNET___ConsumeNotification___1 extends BaseProcessClass {
 
 	public void saveAndPrepareConfirm_OnStepProcess_0() throws Exception {
 	// 		saveAndPrepareConfirm->OnStepProcess
-		EngineHelper.delegate(DELEGATOR, "start", this);
+		EngineHelper.delegate(DELEGATOR, "prepareConfirm", this);
 	}
 
 	public void save_OnStepProcess_0() throws Exception {
 	// 		save->OnStepProcess
-		EngineHelper.delegate(DELEGATOR, "start", this);
+		EngineHelper.delegate(DELEGATOR, "saveConsumeNot", this);
 	}
 
 }

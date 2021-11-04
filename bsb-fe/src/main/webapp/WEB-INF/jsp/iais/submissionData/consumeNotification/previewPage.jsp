@@ -44,9 +44,6 @@
                                                         </div>
                                                         <div id="previewFacInfo" class="panel-collapse collapse">
                                                             <div class="panel-body">
-                                                                <div class="text-right app-font-size-16"><a href="#"><em
-                                                                        class="fa fa-pencil-square-o"></em>Edit</a>
-                                                                </div>
                                                                 <div class="panel-main-content form-horizontal min-row">
                                                                     <div class="form-group">
                                                                         <div class="col-10"><strong>Facility
@@ -169,50 +166,102 @@
 <%--                                                                        </c:forEach>--%>
                                                                     </div>
                                                                 </c:forEach>
+                                                                <div class="panel-main-content form-horizontal min-row">
+                                                                    <div class="form-group">
+                                                                        <div class="col-10"><strong>Additional Details</strong></div>
+                                                                        <div class="clear"></div>
+                                                                    </div>
+                                                                    <div>
+                                                                        <div class="form-group">
+                                                                            <label class="col-xs-5 col-md-4 control-label">Complete Destruction/Disposal</label>
+                                                                            <div class="col-sm-7 col-md-5 col-xs-7">
+                                                                                <p>${info.scheduleType}</p>
+                                                                            </div>
+                                                                            <div class="clear"></div>
+                                                                        </div>
+                                                                        <div class="form-group">
+                                                                            <label class="col-xs-5 col-md-4 control-label">Method of Destruction</label>
+                                                                            <div class="col-sm-7 col-md-5 col-xs-7">
+                                                                                <p>${info.bat}</p>
+                                                                            </div>
+                                                                            <div class="clear"></div>
+                                                                        </div>
+                                                                        <div class="form-group">
+                                                                            <label class="col-xs-5 col-md-4 control-label">Details and/or procedures of destruction</label>
+                                                                            <div class="col-sm-7 col-md-5 col-xs-7">
+                                                                                <p>${info.consumeType}</p>
+                                                                            </div>
+                                                                            <div class="clear"></div>
+                                                                        </div>
+                                                                        <div class="form-group">
+                                                                            <label class="col-xs-5 col-md-4 control-label">Facility Name</label>
+                                                                            <div class="col-sm-7 col-md-5 col-xs-7">
+                                                                                <p>${info.consumedQty}</p>
+                                                                            </div>
+                                                                            <div class="clear"></div>
+                                                                        </div>
+                                                                        <div class="form-group">
+                                                                            <label class="col-xs-5 col-md-4 control-label">Remarks</label>
+                                                                            <div class="col-sm-7 col-md-5 col-xs-7">
+                                                                                <p>${info.meaUnit}</p>
+                                                                            </div>
+                                                                            <div class="clear"></div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+<%--                                                        <c:forEach var="doc" items="${docSettings}">--%>
+<%--                                                            <c:set var="docFiles"--%>
+<%--                                                                   value="${primaryDocs.get(doc.type)}"/>--%>
+<%--                                                            <c:if test="${not empty docFiles}">--%>
+<%--                                                                <div class="form-group">--%>
+<%--                                                                    <div class="col-10">--%>
+<%--                                                                        <strong>${doc.typeDisplay}</strong>--%>
+<%--                                                                    </div>--%>
+<%--                                                                    <div class="clear"></div>--%>
+<%--                                                                </div>--%>
+<%--                                                                <div>--%>
+<%--                                                                    <c:forEach var="file"--%>
+<%--                                                                               items="${docFiles}">--%>
+<%--                                                                        <div class="form-group">--%>
+<%--                                                                            <div class="col-10">--%>
+<%--                                                                                <p>${file.filename}(${String.format("%.1f", file.size/1024.0)}KB)</p>--%>
+<%--                                                                            </div>--%>
+<%--                                                                            <div class="clear"></div>--%>
+<%--                                                                        </div>--%>
+<%--                                                                    </c:forEach>--%>
+<%--                                                                </div>--%>
+<%--                                                            </c:if>--%>
+<%--                                                        </c:forEach>--%>
+                                                    </div>
+
+                                                    <div class="panel panel-default">
+                                                        <div class="panel-heading completed">
+                                                            <h4 class="panel-title">
+                                                                <a class="collapsed" data-toggle="collapse"
+                                                                   href="#previewDocs">Declarations</a>
+                                                            </h4>
+                                                        </div>
+                                                        <div id="previewDocs" class="panel-collapse collapse">
+                                                            <div class="panel-body">
+                                                                <div class="panel-main-content form-horizontal min-row">
+                                                                    <div class="form-group ">
+                                                                        <div class="col-xs-1" style="padding: 30px 0 20px 30px;">
+                                                                            <input type="checkbox" name="declare" id="declare" value="Y"/>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="form-group ">
+                                                                        <div class="col-xs-10 control-label">
+                                                                            <label for="declare">I, hereby declare that all the information I have provided here is true and accurate. The facility no longer possesses inventory of the biological agent/toxin following the destruction and/or disposal of the declared materials.</label>
+                                                                            <span data-err-ind="declare" class="error-msg"></span>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
                                                             </div>
                                                         </div>
                                                     </div>
-<%--                                                    <div class="panel panel-default">--%>
-<%--                                                        <div class="panel-heading completed">--%>
-<%--                                                            <h4 class="panel-title">--%>
-<%--                                                                <a class="collapsed" data-toggle="collapse"--%>
-<%--                                                                   href="#previewDocs">Primary Documents</a>--%>
-<%--                                                            </h4>--%>
-<%--                                                        </div>--%>
-<%--                                                        <div id="previewDocs" class="panel-collapse collapse">--%>
-<%--                                                            <div class="panel-body">--%>
-<%--                                                                <div class="text-right app-font-size-16"><a href="#"--%>
-<%--                                                                                                            data-step-key="primaryDocs"><em--%>
-<%--                                                                        class="fa fa-pencil-square-o"></em>Edit</a>--%>
-<%--                                                                </div>--%>
-<%--                                                                <div class="panel-main-content form-horizontal min-row">--%>
-<%--                                                                    <c:forEach var="doc" items="${docSettings}">--%>
-<%--                                                                        <c:set var="docFiles"--%>
-<%--                                                                               value="${primaryDocs.get(doc.type)}"/>--%>
-<%--                                                                        <c:if test="${not empty docFiles}">--%>
-<%--                                                                            <div class="form-group">--%>
-<%--                                                                                <div class="col-10">--%>
-<%--                                                                                    <strong>${doc.typeDisplay}</strong>--%>
-<%--                                                                                </div>--%>
-<%--                                                                                <div class="clear"></div>--%>
-<%--                                                                            </div>--%>
-<%--                                                                            <div>--%>
-<%--                                                                                <c:forEach var="file"--%>
-<%--                                                                                           items="${docFiles}">--%>
-<%--                                                                                    <div class="form-group">--%>
-<%--                                                                                        <div class="col-10">--%>
-<%--                                                                                            <p>${file.filename}(${String.format("%.1f", file.size/1024.0)}KB)</p>--%>
-<%--                                                                                        </div>--%>
-<%--                                                                                        <div class="clear"></div>--%>
-<%--                                                                                    </div>--%>
-<%--                                                                                </c:forEach>--%>
-<%--                                                                            </div>--%>
-<%--                                                                        </c:if>--%>
-<%--                                                                    </c:forEach>--%>
-<%--                                                                </div>--%>
-<%--                                                            </div>--%>
-<%--                                                        </div>--%>
-<%--                                                    </div>--%>
+
                                                 </div>
                                             </div>
                                         </div>

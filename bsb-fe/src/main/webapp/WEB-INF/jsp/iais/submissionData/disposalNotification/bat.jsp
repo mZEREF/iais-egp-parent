@@ -10,15 +10,19 @@
     <div class="panel-heading"><strong>Biological Agent/Toxin</strong></div>
     <div class="row form-horizontal">
         <div class="col-xs-12 col-sm-12" style="padding: 20px 30px 10px 30px; border-radius: 15px;margin: 0 auto">
-            <div class = "col-xs-12 col-sm-12">
+            <div class="col-xs-12 col-sm-12">
                 <div id="sectionGroup">
                     <c:forEach var="item" items="${disposalNotification.disposalLists}" varStatus="status">
                         <section id="reqTSection--v--${status.index}">
                             <c:if test="${disposalNotification.disposalLists.size() > 1}">
                                 <div class="form-group">
-                                    <h3 class="col-xs-9 col-sm-10 col-md-11" style="border-bottom: 1px solid black">Agent / Toxin ${status.index + 1}</h3>
+                                    <h3 class="col-xs-9 col-sm-10 col-md-11" style="border-bottom: 1px solid black">
+                                        Agent / Toxin ${status.index + 1}</h3>
                                     <c:if test="${status.index gt 0}">
-                                        <div class="col-sm-1"><h4 class="text-danger"><em data-current-idx="${status.index}" class="fa fa-times-circle del-size-36 cursorPointer removeBtn"></em></h4></div>
+                                        <div class="col-sm-1"><h4 class="text-danger"><em
+                                                data-current-idx="${status.index}"
+                                                class="fa fa-times-circle del-size-36 cursorPointer removeBtn"></em>
+                                        </h4></div>
                                     </c:if>
                                 </div>
                             </c:if>
@@ -28,8 +32,9 @@
                                     <span class="mandatory otherQualificationSpan">*</span>
                                 </div>
                                 <div class="col-sm-6 col-md-7">
-                                    <iais:select name="scheduleType--v--${status.index}" id="scheduleType--v--${status.index}"
-                                                 value=""
+                                    <iais:select name="scheduleType--v--${status.index}"
+                                                 id="scheduleType--v--${status.index}"
+                                                 value="" onchange="schTypeChange(this)"
                                                  codeCategory="CATE_ID_BSB_SCH_TYPE"
                                                  firstOption="Please Select"/>
                                     <span data-err-ind="scheduleType--v--${status.index}" class="error-msg"></span>
@@ -47,34 +52,34 @@
                                     <span data-err-ind="bat--v--${status.index}" class="error-msg"></span>
                                 </div>
                             </div>
-
-                            <div class="form-group">
-                                <div class="col-sm-5 control-label">
-                                    <label for="disposedQty--v--${status.index}">Quantity Disposed</label>
-                                    <span class="mandatory otherQualificationSpan">*</span>
+                            <div id="agentFifth--v--${status.index}" style="display: none">
+                                <div class="form-group">
+                                    <div class="col-sm-5 control-label">
+                                        <label for="disposedQty--v--${status.index}">Quantity Disposed</label>
+                                        <span class="mandatory otherQualificationSpan">*</span>
+                                    </div>
+                                    <div class="col-sm-6 col-md-7">
+                                            <%--Displayed for Fifth Schedule toxin--%>
+                                        <input type="number" name="disposedQty--v--${status.index}"
+                                               id="disposedQty--v--${status.index}" value=""
+                                               maxlength="11"
+                                               οninput="this.value=this.value.replace(/\D*(\d*)(\.?)(\d{0,3})\d*/,'$1$2$3')">
+                                        <span data-err-ind="disposedQty--v--${status.index}" class="error-msg"></span>
+                                    </div>
                                 </div>
-                                <div class="col-sm-6 col-md-7">
-                                        <%--Schedule Type 为 Fifth Schedule且biological type为toxin时，显示--%>
-                                        <%--不能为负--%>
-                                    <input type="number" name="disposedQty--v--${status.index}" id="disposedQty--v--${status.index}" value=""
-                                           maxlength="11"
-                                           οninput="this.value=this.value.replace(/\D*(\d*)(\.?)(\d{0,3})\d*/,'$1$2$3')">
-                                    <span data-err-ind="disposedQty--v--${status.index}" class="error-msg"></span>
-                                </div>
-                            </div>
-
-                            <div class="form-group">
-                                <div class="col-sm-5 control-label">
-                                    <label for="meaUnit--v--${status.index}">Unit of Measurement</label>
-                                    <span class="mandatory otherQualificationSpan">*</span>
-                                </div>
-                                <div class="col-sm-6 col-md-7">
-                                        <%--Schedule Type 为 Fifth Schedule且biological_type为toxin时，显示--%>
-                                    <iais:select name="meaUnit--v--${status.index}" id="meaUnit--v--${status.index}"
-                                                 value=""
-                                                 codeCategory="CATE_ID_BSB_DATA_SUBMISSION_UNIT_OF_MEASUREMENT"
-                                                 firstOption="Please Select"/>
-                                    <span data-err-ind="meaUnit--v--${status.index}" class="error-msg"></span>
+                                <div class="form-group">
+                                    <div class="col-sm-5 control-label">
+                                        <label for="meaUnit--v--${status.index}">Unit of Measurement</label>
+                                        <span class="mandatory otherQualificationSpan">*</span>
+                                    </div>
+                                    <div class="col-sm-6 col-md-7">
+                                            <%--Displayed for Fifth Schedule toxin--%>
+                                        <iais:select name="meaUnit--v--${status.index}" id="meaUnit--v--${status.index}"
+                                                     value=""
+                                                     codeCategory="CATE_ID_BSB_DATA_SUBMISSION_UNIT_OF_MEASUREMENT"
+                                                     firstOption="Please Select"/>
+                                        <span data-err-ind="meaUnit--v--${status.index}" class="error-msg"></span>
+                                    </div>
                                 </div>
                             </div>
                             <div class="form-group">
@@ -91,7 +96,8 @@
                                     <span class="mandatory otherQualificationSpan">*</span>
                                 </div>
                                 <div class="col-sm-6 col-md-7">
-                                    <textarea id="destructMethod--v--${status.index}" style="width: 100%;margin-bottom: 15px;"
+                                    <textarea id="destructMethod--v--${status.index}"
+                                              style="width: 100%;margin-bottom: 15px;"
                                               rows="6"
                                               name="destructMethod--v--${status.index}"
                                               maxlength="300"></textarea>
@@ -100,68 +106,39 @@
                             </div>
                             <div class="form-group">
                                 <div class="col-sm-5 control-label">
-                                    <label for="destructDetails--v--${status.index}">Details and/or procedures of destruction</label>
+                                    <label for="destructDetails--v--${status.index}">Details and/or procedures of
+                                        destruction</label>
                                     <span class="mandatory otherQualificationSpan">*</span>
                                 </div>
                                 <div class="col-sm-6 col-md-7">
-                                    <textarea id="destructDetails--v--${status.index}" style="width: 100%;margin-bottom: 15px;"
+                                    <textarea id="destructDetails--v--${status.index}"
+                                              style="width: 100%;margin-bottom: 15px;"
                                               rows="6"
                                               name="destructDetails--v--${status.index}"
                                               maxlength="1000"></textarea>
                                     <span data-err-ind="destructDetails--v--${status.index}" class="error-msg"></span>
                                 </div>
                             </div>
-                            <div class="form-group">
-                                <div class="col-sm-5 control-label">
-                                    <label for="provider--v--${status.index}">Facility Name</label>
-                                </div>
-                                <div class="col-sm-6 col-md-7">
-                                    <label><p>facility name</p></label>
-                                </div>
-                            </div>
-
-                            <div class="form-group">
-                                <div class="col-sm-5 control-label">
-                                    <label for="remarks--v--${status.index}">Remarks</label>
-                                    <span class="mandatory otherQualificationSpan">*</span>
-                                </div>
-                                <div class="col-sm-6 col-md-7">
-                                    <textarea id="remarks--v--${status.index}" style="width: 100%;margin-bottom: 15px;" rows="6"
-                                              name="remarks--v--${status.index}"
-                                              maxlength="300"></textarea>
-                                    <span data-err-ind="remarks--v--${status.index}" class="error-msg"></span>
+                            <div id="toxinDoc--v--${status.index}" style="display: none">
+                                <div class="form-group">
+                                    <div class="col-sm-5 control-label">
+                                        <label for="attachment--v--${status.index}">Attachment</label>
+                                    </div>
+                                    <div class="col-sm-6 col-md-7">
+                                        <input type="file" name="attachment--v--${status.index}"
+                                               id="attachment--v--${status.index}">
+                                    </div>
                                 </div>
                             </div>
-                            <div class="form-group">
-                                <div class="col-sm-5 control-label">
-                                    <label for="documentType--v--${status.index}">Document Type</label>
-                                </div>
-                                <div class="col-sm-6 col-md-7">
-                                    <select name="documentType--v--${status.index}" id="documentType--v--${status.index}">
-                                        <option value="3DOCTYPE001">Inventory: Biological Agents</option>
-                                        <option value="3DOCTYPE002">Inventory: Toxins</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <div class="col-sm-5 control-label">
-                                    <label for="attachment--v--${status.index}">Attachment</label>
-                                </div>
-                                <div class="col-sm-6 col-md-7">
-                                    <input type="file" name="attachment--v--${status.index}" id="attachment--v--${status.index}">
-                                </div>
-                            </div>
-                            <div class="form-group ">
-                                <div class="col-xs-1" style="padding: 30px 0 20px 30px;">
-                                        <%--<c:if test="${previewSubmit.declare eq 'Y'}">checked="checked"</c:if>--%>
-                                    <input type="checkbox" name="declare" id="declare" value="Y"/>
-                                </div>
-                                <div class="col-xs-10 control-label">
-                                    <label for="declare">I, hereby declare that all the information I have
-                                        provided here is true and accurate. The facility no longer possesses
-                                        inventory of the biological agent/toxin following the destruction and/or
-                                        disposal of the declared materials.</label>
-                                    <span data-err-ind="declare" class="error-msg"></span>
+                            <div id="agentEpFifth--v--${status.index}" style="display: none">
+                                <div class="form-group">
+                                    <div class="col-sm-5 control-label">
+                                        <label for="attachment--v--${status.index}">Attachment</label>
+                                    </div>
+                                    <div class="col-sm-6 col-md-7">
+                                        <input type="file" name="attachment--v--${status.index}"
+                                               id="attachment--v--${status.index}">
+                                    </div>
                                 </div>
                             </div>
                         </section>
@@ -172,7 +149,65 @@
                         <a class="btn btn-secondary" id="addNewSection" href="javascript:void(0);">ADD AGENT/TOXIN</a>
                     </div>
                 </div>
+                <div class="row form-horizontal">
+                    <div class="form-group">
+                        <div class="col-sm-5 control-label">
+                            <label>Facility Name</label>
+                        </div>
+                        <div class="col-sm-6 col-md-7">
+                            <label><p>facility name</p></label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-5 control-label">
+                            <label for="remarks">Remarks</label>
+                            <span class="mandatory otherQualificationSpan">*</span>
+                        </div>
+                        <div class="col-sm-6 col-md-7">
+                            <textarea id="remarks" style="width: 100%;margin-bottom: 15px;"
+                                      rows="6"
+                                      name="remarks"
+                                      maxlength="300"></textarea>
+                            <span data-err-ind="remarks" class="error-msg"></span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-5 control-label">
+                            <label for="documentType">Document Type</label>
+                        </div>
+                        <div class="col-sm-6 col-md-7">
+                            <select name="documentType" id="documentType">
+                                <option value="3DOCTYPE001">Please Select</option>
+                                <option value="3DOCTYPE001">Inventory: Biological Agents</option>
+                                <option value="3DOCTYPE002">Inventory: Toxins</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-5 control-label">
+                            <label for="attachment">Attachment</label>
+                        </div>
+                        <div class="col-sm-6 col-md-7">
+                            <input type="file" name="attachment"
+                                   id="attachment">
+                        </div>
+                    </div>
+                    <div class="form-group ">
+                        <div class="col-xs-1" style="padding: 30px 0 20px 30px;">
+                            <%--<c:if test="${previewSubmit.declare eq 'Y'}">checked="checked"</c:if>--%>
+                            <input type="checkbox" name="declare" id="declare" value="Y"/>
+                        </div>
+                        <div class="col-xs-10 control-label">
+                            <label for="declare">I, hereby declare that all the information I have
+                                provided here is true and accurate. The facility no longer possesses
+                                inventory of the biological agent/toxin following the destruction and/or
+                                disposal of the declared materials.</label>
+                            <span data-err-ind="declare" class="error-msg"></span>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
+</div>
 </div>

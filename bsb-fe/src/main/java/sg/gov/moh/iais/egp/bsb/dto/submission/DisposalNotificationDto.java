@@ -1,18 +1,21 @@
 package sg.gov.moh.iais.egp.bsb.dto.submission;
 
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import sg.gov.moh.iais.egp.bsb.dto.ValidationResultDto;
+import sg.gov.moh.iais.egp.bsb.util.SpringReflectionUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import static sg.gov.moh.iais.egp.bsb.constant.DataSubmissionConstants.*;
 /**
  * @author Zhu Tangtang
- * @date 2021/11/2 13:19
  */
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -24,12 +27,17 @@ public class DisposalNotificationDto {
         private String bat;
         private String disposedQty;
         private String meaUnit;
-        private String destructMethod;
-        private String destructDetails;
-        private String remarks;
+        private DocumentDto batDocumentDto;
     }
 
     private List<DisposalList> disposalLists;
+    private DocumentDto documentDto;
+    private String destructMethod;
+    private String destructDetails;
+    private String remarks;
+
+    @JsonIgnore
+    private ValidationResultDto validationResultDto;
 
     public DisposalNotificationDto() {
         disposalLists = new ArrayList<>();
@@ -51,17 +59,35 @@ public class DisposalNotificationDto {
         this.disposalLists = new ArrayList<>(receiptLists);
     }
 
+    public DocumentDto getDocumentDto() {
+        return documentDto;
+    }
+
+    public void setDocumentDto(DocumentDto documentDto) {
+        this.documentDto = documentDto;
+    }
+
+    public boolean doValidation() {
+        List<DocumentDto.DocMeta> docsMetaDto = null;
+        if(documentDto != null){
+            docsMetaDto = documentDto.getMetaDtoList();
+        }
+        this.validationResultDto = (ValidationResultDto) SpringReflectionUtils.invokeBeanMethod("cerRegFeignClient", "validateFacilityAdmin", new Object[]{disposalLists,docsMetaDto});
+        return validationResultDto.isPass();
+    }
+
+
 
     //----------------------request-->object----------------------------------
-    private static final String SEPARATOR                   = "--v--";
-    private static final String KEY_SECTION_AMT             = "sectionAmt";
-    private static final String KEY_PREFIX_SCHEDULE_TYPE    = "scheduleType";
-    private static final String KEY_PREFIX_BAT         = "bat";
-    private static final String KEY_PREFIX_DISPOSE_QTY = "disposedQty";
-    private static final String KEY_PREFIX_MEASUREMENT_UNIT = "meaUnit";
-    private static final String KEY_PREFIX_DESTRUCT_METHOD = "destructMethod";
-    private static final String KEY_PREFIX_DESTRUCT_DETAILS = "destructDetails";
-    private static final String KEY_PREFIX_REMARKS = "remarks";
+//    private static final String SEPARATOR                   = "--v--";
+//    private static final String KEY_SECTION_AMT             = "sectionAmt";
+//    private static final String KEY_PREFIX_SCHEDULE_TYPE    = "scheduleType";
+//    private static final String KEY_PREFIX_BAT         = "bat";
+//    private static final String KEY_PREFIX_DISPOSE_QTY = "disposedQty";
+//    private static final String KEY_PREFIX_MEASUREMENT_UNIT = "meaUnit";
+//    private static final String KEY_PREFIX_DESTRUCT_METHOD = "destructMethod";
+//    private static final String KEY_PREFIX_DESTRUCT_DETAILS = "destructDetails";
+//    private static final String KEY_PREFIX_REMARKS = "remarks";
 
 
     /**
@@ -77,10 +103,7 @@ public class DisposalNotificationDto {
             disposalList.setScheduleType(ParamUtil.getString(request,KEY_PREFIX_SCHEDULE_TYPE+SEPARATOR+i));
             disposalList.setBat(ParamUtil.getString(request,KEY_PREFIX_BAT+SEPARATOR+i));
             disposalList.setDisposedQty(ParamUtil.getString(request,KEY_PREFIX_DISPOSE_QTY+SEPARATOR+i));
-            disposalList.setMeaUnit(ParamUtil.getString(request,KEY_PREFIX_MEASUREMENT_UNIT+SEPARATOR+i));
-            disposalList.setDestructMethod(ParamUtil.getString(request,KEY_PREFIX_DESTRUCT_METHOD+SEPARATOR+i));
-            disposalList.setDestructDetails(ParamUtil.getString(request,KEY_PREFIX_DESTRUCT_DETAILS+SEPARATOR+i));
-            disposalList.setRemarks(ParamUtil.getString(request,KEY_PREFIX_REMARKS+SEPARATOR+i));
+            disposalList.setMeaUnit(ParamUtil.getString(request,KEY_PREFIX_MEASUREMENT_UNIT+ SEPARATOR+i));
             addDisposalLists(disposalList);
         }
 
