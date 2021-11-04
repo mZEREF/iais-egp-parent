@@ -1,9 +1,9 @@
 <div class="panel panel-default usedDonorOocyteControlClass">
      <div class="panel-heading">
-         <h4  class="panel-title" data-toggle="collapse" href="#arDonorDtoDetails">
-        <strong>
+         <h4  class="panel-title" >
+        <a href="#arDonorDtoDetails" data-toggle="collapse" >
             Details of Donor(s)
-          </strong>
+          </a>
        </h4>
     </div>
 
@@ -16,7 +16,7 @@
              <div class="panel-main-content form-horizontal">
 
                 <iais:row >
-                    <iais:field width="5" value="Please Indicate" mandatory="true"/>
+                    <iais:field width="5" value="Please Indicate" mandatory="false"/>
                     <iais:value width="7" cssClass="col-md-7">
                         <c:forEach items="${donorUsedTypes}" var="donorUsedType">
                             <c:set var="donorUsedTypeCode" value="${donorUsedType.code}"/>
@@ -100,11 +100,11 @@
                      <iais:field width="5" value="Source (i.e. AR Centre or Bank Name)" mandatory="true"/>
                      <iais:value width="7" cssClass="col-md-7">
                          <iais:select name="source${arDonorIndex}" firstOption="Please Select" options="donorSourseDropDown" value="${arDonorDto.source}"
-                                      cssClass="source${arDonorIndex}" onchange=" toggleOnSelect(this,'Others', 'otherSource${arDonorIndex}Row');"/>
+                                      cssClass="source${arDonorIndex}" onchange=" toggleOnSelect(this,'${DataSubmissionConsts.AR_SOURCE_OTHER}', 'otherSource${arDonorIndex}Row');"/>
                      </iais:value>
                  </iais:row>
 
-                 <iais:row id="otherSource${arDonorIndex}Row" style="${arDonorDto.source eq 'Others'? '' : 'display: none'}">
+                 <iais:row id="otherSource${arDonorIndex}Row" style="${arDonorDto.source eq DataSubmissionConsts.AR_SOURCE_OTHER ? '' : 'display: none'}">
                      <iais:field width="5" value="Source (Others)" mandatory="true"/>
                      <iais:value width="7" cssClass="col-md-7">
                          <iais:input maxLength="100" type="text" name="otherSource${arDonorIndex}" id="otherSource${arDonorIndex}" value="${arDonorDto.otherSource}" />

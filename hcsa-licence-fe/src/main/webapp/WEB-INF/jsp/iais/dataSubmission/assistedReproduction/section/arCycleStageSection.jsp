@@ -2,10 +2,10 @@
     <input type="hidden" name="crud_action_value_ar_stage" id="crud_action_value_ar_stage" value="-2"/>
     <input type="hidden" name="crud_action_value_valiate_donor" id="crud_action_value_valiate_donor" value="-1"/>
     <div class="panel-heading">
-        <h4 class="panel-title" data-toggle="collapse" href="#arStageDetails">
-            <strong>
+        <h4 class="panel-title"  >
+            <a href="#arStageDetails" data-toggle="collapse">
                 Assisted Reproduction Submission
-            </strong>
+            </a>
         </h4>
     </div>
     <div id="arStageDetails" class="panel-collapse collapse in">
@@ -50,13 +50,13 @@
                 </iais:row>
 
                 <iais:row>
-                    <iais:field width="5" value="Other Indication" mandatory="true"/>
+                    <iais:field width="5" value="Other Indication" mandatory="false"/>
                     <iais:value width="7" cssClass="col-md-7">
-                        <iais:select name="otherIndication" multiSelect="true"  codeCategory="AR_OTHER_INDICATION"  multiValues="${arCycleStageDto.otherIndicationValues}"  />
+                        <iais:select name="otherIndication" multiSelect="true"  codeCategory="AR_OTHER_INDICATION"  multiValues="${arCycleStageDto.otherIndicationValues}"/>
                     </iais:value>
                 </iais:row>
 
-                <iais:row id="otherIndicationOthersRow">
+                <iais:row id="otherIndicationOthersRow" style="${StringUtil.stringContain(arCycleStageDto.otherIndication,DataSubmissionConsts.AR_OTHER_INDICATION_OTHERS) ? '' :'display: none;' }">
                     <iais:field width="5" value="Other Indication (Others)" mandatory="true"/>
                     <iais:value width="7" cssClass="col-md-7">
                         <iais:input maxLength="100" type="text" name="otherIndicationOthers" id="otherIndicationOthers" value="${arCycleStageDto.otherIndicationOthers}" />
@@ -120,7 +120,7 @@
                     <iais:field width="5" value="No. of Children from Current Marriage" mandatory="false"/>
                     <iais:value width="7" cssClass="col-md-7">
                         <iais:value width="7" cssClass="col-md-7">
-                            <iais:select name="noChildrenCurrentMarriage" options="noChildrenDropDown" firstOption="Please Select" value="${arCycleStageDto.noChildrenCurrentMarriage}"/>
+                            <iais:select name="currentMarriageChildren" options="noChildrenDropDown" firstOption="Please Select" value="${arCycleStageDto.currentMarriageChildren}"/>
                         </iais:value>
                     </iais:value>
                 </iais:row>
@@ -129,7 +129,7 @@
                     <iais:field width="5" value="No. of Children from Previous Marriage" mandatory="false"/>
                     <iais:value width="7" cssClass="col-md-7">
                         <iais:value width="7" cssClass="col-md-7">
-                            <iais:select name="noChildrenPreviousMarriage" options="noChildrenDropDown" firstOption="Please Select" value="${arCycleStageDto.noChildrenPreviousMarriage}"/>
+                            <iais:select name="previousMarriageChildren" options="noChildrenDropDown" firstOption="Please Select" value="${arCycleStageDto.previousMarriageChildren}"/>
                         </iais:value>
                     </iais:value>
                 </iais:row>
@@ -138,7 +138,7 @@
                     <iais:field width="5" value="No. of Children conceived through AR" mandatory="false"/>
                     <iais:value width="7" cssClass="col-md-7">
                         <iais:value width="7" cssClass="col-md-7">
-                            <iais:select name="noChildrenConceivedAR" options="noChildrenDropDown" firstOption="Please Select" value="${arCycleStageDto.noChildrenConceivedAR}"/>
+                            <iais:select name="deliveredThroughChildren" options="noChildrenDropDown" firstOption="Please Select" value="${arCycleStageDto.deliveredThroughChildren}"/>
                         </iais:value>
                     </iais:value>
                 </iais:row>
@@ -147,7 +147,7 @@
                     <iais:field width="5" value="Total Number of AR cycles previously undergone by patient" mandatory="false"/>
                     <iais:value width="7" cssClass="col-md-7">
                         <iais:value width="7" cssClass="col-md-7">
-                            <iais:select name="totalNumberARCPreviouslyUndergonePatient" options="numberArcPreviouslyDropDown" firstOption="Please Select" value="${arCycleStageDto.totalNumberARCPreviouslyUndergonePatient}"  onchange ="toggleOnSelect(this, '21', 'totalNumberARCOtherRow')"/>
+                            <iais:select name="totalPreviouslyPreviously" options="numberArcPreviouslyDropDown" firstOption="Please Select" value="${arCycleStageDto.totalPreviouslyPreviously}"  onchange ="toggleOnSelect(this, '21', 'totalNumberARCOtherRow')"/>
                         </iais:value>
                     </iais:value>
                 </iais:row>
@@ -155,7 +155,7 @@
                 <iais:row id="totalNumberARCOtherRow">
                     <iais:field width="5" value="Number of Cycles undergone Overseas" mandatory="true"/>
                     <iais:value width="7" cssClass="col-md-7">
-                        <iais:input maxLength="100" type="text" name="numberCyclesUndergoneOverseas" id="numberCyclesUndergoneOverseas" value="${arCycleStageDto.numberCyclesUndergoneOverseas}" />
+                        <iais:input maxLength="2" type="text" name="cyclesUndergoneOverseas" id="cyclesUndergoneOverseas" value="${arCycleStageDto.cyclesUndergoneOverseas}" />
                     </iais:value>
                 </iais:row>
                 <iais:row>
@@ -254,8 +254,8 @@
 <%@include file="donorSection.jsp"%>
 <script  type="text/javascript">
   $(document).ready(function (){
-     toggleOnSelect("#mainIndication",'AR_MI_013', 'mainIndicationOtherRow');
-     toggleOnSelect("#totalNumberARCPreviouslyUndergonePatient",'21', 'totalNumberARCOtherRow');
+     toggleOnSelect("#mainIndication",'${DataSubmissionConsts.AR_MAIN_INDICATION_OTHERS}', 'mainIndicationOtherRow');
+     toggleOnSelect("#totalPreviouslyPreviously",'21', 'totalNumberARCOtherRow');
      if(${arCycleStageDto.usedDonorOocyte}){
          showUsedDonorOocyteControlClass(0);
      }else {

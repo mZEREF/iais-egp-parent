@@ -78,7 +78,7 @@ public class ArCycleStageDelegator extends CommonDelegator {
     private List<SelectOption> getSourseList(){
         List<SelectOption> selectOptions  = IaisCommonUtils.genNewArrayList();
         selectOptions.add(new SelectOption("sourseTest","sourseTest"));
-        selectOptions.add(new SelectOption( DONOR_SOURSE_OTHERS,DONOR_SOURSE_OTHERS));
+        selectOptions.add(new SelectOption(DataSubmissionConsts.AR_SOURCE_OTHER,DONOR_SOURSE_OTHERS));
         return selectOptions;
     }
 
@@ -135,11 +135,11 @@ public class ArCycleStageDelegator extends CommonDelegator {
         setArCycleStageDtoByPage(request,arCycleStageDto);
         DataSubmissionHelper.setCurrentArDataSubmission(arSuperDataSubmissionDto,request);
         validatePageDataHaveValidationProperty(request,arCycleStageDto,"save",arCycleStageDto.getArDonorDtos(),getByArCycleStageDto(arCycleStageDto), ACTION_TYPE_CONFIRM);
+        arCycleStageDto.getArDonorDtos().forEach(arDonorDto -> setEmptyDataForNullDrDonorDto(arDonorDto));
         actionArDonorDtos(request,arCycleStageDto.getArDonorDtos());
         valiateDonorDtos(request,arCycleStageDto.getArDonorDtos());
         DataSubmissionHelper.setCurrentArDataSubmission(arSuperDataSubmissionDto,request);
     }
-
     private void actionArDonorDtos(HttpServletRequest request,List<ArDonorDto> arDonorDtos){
         int actionArDonor = ParamUtil.getInt(request,CRUD_ACTION_VALUE_AR_STAGE);
         //actionArDonor default =-3;
@@ -243,12 +243,28 @@ public class ArCycleStageDelegator extends CommonDelegator {
             arDonorDto.setDonorSampleCode(null);
             arDonorDto.setSource(null);
             arDonorDto.setOtherSource(null);
+            arDonorDto.setIdType(StringUtil.getNonNull(arDonorDto.getIdType()));
+            arDonorDto.setIdNumber(StringUtil.getNonNull(arDonorDto.getIdNumber()));
         }else {
             arDonorDto.setPleaseIndicate(null);
             arDonorDto.setIdNumber(null);
             arDonorDto.setIdType(null);
             arDonorDto.setPleaseIndicateValues(null);
-            arDonorDto.setAge(null);
+            arDonorDto.setSource(StringUtil.getNonNull(arDonorDto.getSource()));
+            arDonorDto.setOtherSource(StringUtil.getNonNull(arDonorDto.getOtherSource()));
+            arDonorDto.setDonorSampleCode(StringUtil.getNonNull(arDonorDto.getDonorSampleCode()));
         }
      }
+
+    private void setEmptyDataForNullDrDonorDto(ArDonorDto arDonorDto){
+        if(arDonorDto.isDirectedDonation()){
+            arDonorDto.setIdType(StringUtil.getStringEmptyToNull( arDonorDto.getIdType()));
+            arDonorDto.setIdNumber(StringUtil.getStringEmptyToNull( arDonorDto.getIdNumber()));
+        }else {
+            arDonorDto.setSource(StringUtil.getStringEmptyToNull(arDonorDto.getSource()));
+            arDonorDto.setOtherSource(StringUtil.getStringEmptyToNull(arDonorDto.getOtherSource()));
+            arDonorDto.setDonorSampleCode(StringUtil.getStringEmptyToNull(arDonorDto.getDonorSampleCode()));
+        }
+    }
+
 }

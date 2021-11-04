@@ -1,10 +1,10 @@
 <c:set var="headingSign" value="completed"/>
 <div class="panel panel-default">
     <div class="panel-heading ${headingSign}">
-        <h4 class="panel-title" data-toggle="collapse" href="#viewArCycleStage">
-            <strong>
+        <h4 class="panel-title" >
+            <a href="#viewArCycleStage" data-toggle="collapse" >
                 Assisted Reproduction Submission
-            </strong>
+            </a>
         </h4>
     </div>
     <div id="viewArCycleStage" class="panel-collapse collapse in">
@@ -84,7 +84,7 @@
                     <iais:field width="5" value="No. of Children from Current Marriage" />
                     <iais:value width="7" cssClass="col-md-7">
                         <iais:value width="7" cssClass="col-md-7" display="true">
-                            <c:out value="${arCycleStageDto.noChildrenCurrentMarriage}"/>
+                            <c:out value="${arCycleStageDto.currentMarriageChildren}"/>
                         </iais:value>
                     </iais:value>
                 </iais:row>
@@ -93,7 +93,7 @@
                     <iais:field width="5" value="No. of Children from Previous Marriage" />
                     <iais:value width="7" cssClass="col-md-7">
                         <iais:value width="7" cssClass="col-md-7" display="true">
-                            <c:out value="${arCycleStageDto.noChildrenPreviousMarriage}"/>
+                            <c:out value="${arCycleStageDto.previousMarriageChildren}"/>
                         </iais:value>
                     </iais:value>
                 </iais:row>
@@ -102,7 +102,7 @@
                     <iais:field width="5" value="No. of Children conceived through AR" />
                     <iais:value width="7" cssClass="col-md-7">
                         <iais:value width="7" cssClass="col-md-7" display="true">
-                            <c:out value="${arCycleStageDto.noChildrenConceivedAR}"/>
+                            <c:out value="${arCycleStageDto.deliveredThroughChildren}"/>
                         </iais:value>
                     </iais:value>
                 </iais:row>
@@ -111,15 +111,15 @@
                     <iais:field width="5" value="No. of Children conceived through AR" />
                     <iais:value width="7" cssClass="col-md-7">
                         <iais:value width="7" cssClass="col-md-7" display="true">
-                            <c:out value="${arCycleStageDto.totalNumberARCPreviouslyUndergonePatient}"/>
+                            <c:out value="${arCycleStageDto.totalPreviouslyPreviously}"/>
                         </iais:value>
                     </iais:value>
                 </iais:row>
 
-                <iais:row id="totalNumberARCOtherRow" style="${ arCycleStageDto.totalNumberARCPreviouslyUndergonePatient == 21 ? '' : 'display: none'}">
+                <iais:row id="totalNumberARCOtherRow" style="${ arCycleStageDto.totalPreviouslyPreviously == 21 ? '' : 'display: none'}">
                     <iais:field width="5" value="Number of Cycles undergone Overseas" />
                     <iais:value width="7" cssClass="col-md-7" display="true">
-                        <c:out value="${arCycleStageDto.numberCyclesUndergoneOverseas}"/>
+                        <c:out value="${arCycleStageDto.cyclesUndergoneOverseas}"/>
                     </iais:value>
                 </iais:row>
                 <iais:row>

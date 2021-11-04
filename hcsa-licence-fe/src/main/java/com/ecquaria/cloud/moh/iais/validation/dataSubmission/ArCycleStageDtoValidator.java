@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.validation.dataSubmission;
 
+import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArCycleStageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArDonorDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
@@ -30,24 +31,49 @@ public class ArCycleStageDtoValidator implements CustomizeValidator {
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
         ArSuperDataSubmissionDto arSuperDataSubmissionDto = DataSubmissionHelper.getCurrentArDataSubmission(request);
         ArCycleStageDto arCycleStageDto = arSuperDataSubmissionDto.getArCycleStageDto();
-        if( (IaisCommonUtils.getIntByNum(arCycleStageDto.getNoChildrenCurrentMarriage(),0)
-                + IaisCommonUtils.getIntByNum(arCycleStageDto. getNoChildrenPreviousMarriage(),0) ) < IaisCommonUtils.getIntByNum(arCycleStageDto.getNoChildrenConceivedAR(),0) ){
+
+        if(arCycleStageDto.getTotalPreviouslyPreviously() != null && arCycleStageDto.getTotalPreviouslyPreviously() == 21 && StringUtil.isEmpty(arCycleStageDto.getCyclesUndergoneOverseas())){
+            errorMap.put("cyclesUndergoneOverseas" ,"GENERAL_ERR0006");
+        }
+
+        if(StringUtil.getNonNull(arCycleStageDto.getOtherIndication()).contains(DataSubmissionConsts.AR_OTHER_INDICATION_OTHERS)
+                && StringUtil.isEmpty(arCycleStageDto.getOtherIndicationOthers())){
+            errorMap.put("otherIndicationOthers" ,"GENERAL_ERR0006");
+        }
+
+        if( !arCycleStageDto.validateEnhancedCounselling(arCycleStageDto.getEnhancedCounselling())){
+            errorMap.put("enhancedCounselling" ,"GENERAL_ERR0006");
+        }
+
+        if( (IaisCommonUtils.getIntByNum(arCycleStageDto.getCurrentMarriageChildren(),0)
+                + IaisCommonUtils.getIntByNum(arCycleStageDto. getPreviousMarriageChildren(),0) ) < IaisCommonUtils.getIntByNum(arCycleStageDto.getDeliveredThroughChildren(),0) ){
             Map<String,String> stringStringMap = IaisCommonUtils.genNewHashMap(3);
             stringStringMap.put("field1","");
             stringStringMap.put("field2","No. of Children with Current Marriage");
             stringStringMap.put("field3","No. of Children with Previous Marriage");
-            errorMap.put("noChildrenConceivedAR", MessageUtil.getMessageDesc("DS_ERR011",stringStringMap).trim());
+            errorMap.put("deliveredThroughChildren", MessageUtil.getMessageDesc("DS_ERR011",stringStringMap).trim());
         }
+
         List<ArDonorDto> arDonorDtos = arCycleStageDto.getArDonorDtos();
         arDonorDtos.forEach( arDonorDto -> {
                     if(arCycleStageDto.isUsedDonorOocyte() && arDonorDto.getAge() == null){
                         errorMap.put("age"+ arDonorDto.getArDonorIndex() ,"GENERAL_ERR0006");
                     }
-                    if(!arDonorDto.isDirectedDonation() && StringUtil.isEmpty(arDonorDto.getDonorSampleCode())){
+
+                    if(!arDonorDto.validateDirectedDonationYesNotNull(arDonorDto.getIdNumber())){
+                        errorMap.put("idNumber"+ arDonorDto.getArDonorIndex() ,"GENERAL_ERR0006");
+                    }
+
+                    if(!arDonorDto.validateSourceOtherNotNull(arDonorDto.getOtherSource())){
+                        errorMap.put("otherSource"+ arDonorDto.getArDonorIndex() ,"GENERAL_ERR0006");
+                    }
+
+                    if(!arDonorDto.validateDirectedDonationNoNotNull(arDonorDto.getDonorSampleCode())){
                         errorMap.put("donorSampleCode"+ arDonorDto.getArDonorIndex() ,"GENERAL_ERR0006");
                     }
                   }
                 );
+
         return errorMap;
     }
 

@@ -1,9 +1,9 @@
 <div class="panel panel-default" style="${arCycleStageDto.usedDonorOocyte ?  '' : 'display: none;'}">
-     <div class="panel-heading">
-         <h4  class="panel-title" data-toggle="collapse" href="#arDonorDtoDetails">
-        <strong>
+     <div class="panel-heading ${headingSign}">
+         <h4  class="panel-title" >
+        <a href="#arDonorDtoDetails" data-toggle="collapse"  >
             Details of Donor(s)
-          </strong>
+          </a>
        </h4>
     </div>
 
@@ -63,7 +63,7 @@
                      </iais:value>
                  </iais:row>
 
-                 <c:if test="${arDonorDto.source == 'Others'}">
+                 <c:if test="${arDonorDto.source == DataSubmissionConsts.AR_SOURCE_OTHER}">
                  <iais:row cssClass="usedDonorOocyteControlClass" id="otherSource${arDonorIndex}Row" >
                      <iais:field width="5" value="Source (Others)" />
                      <iais:value width="7" cssClass="col-md-7" display="true">
