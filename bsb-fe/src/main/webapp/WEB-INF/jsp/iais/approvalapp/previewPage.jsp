@@ -51,7 +51,7 @@
                                                                 <c:forEach var="approvalProfile" items="${approvalProfileList}">
                                                                     <div class="panel-main-content form-horizontal min-row">
                                                                         <div class="form-group">
-                                                                            <div class="col-10"><strong><iais:code code="${bat.schedule}"/></strong></div>
+                                                                            <div class="col-10"><strong><iais:code code="${approvalProfile.schedule}"/></strong></div>
                                                                             <div class="clear"></div>
                                                                         </div>
                                                                         <c:forEach var="info" items="${approvalProfile.batInfos}">

@@ -25,18 +25,7 @@ import sg.gov.moh.iais.egp.bsb.common.node.simple.SimpleNode;
 import sg.gov.moh.iais.egp.bsb.constant.DocConstants;
 import sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
-import sg.gov.moh.iais.egp.bsb.dto.register.facility.BiologicalAgentToxinDto;
-import sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityAdministratorDto;
-import sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityAuthoriserDto;
-import sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityCommitteeDto;
-import sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityOfficerDto;
-import sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityOperatorDto;
-import sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityProfileDto;
-import sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityRegisterDto;
-import sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilitySelectionDto;
-import sg.gov.moh.iais.egp.bsb.dto.register.facility.OtherApplicationInfoDto;
-import sg.gov.moh.iais.egp.bsb.dto.register.facility.PreviewSubmitDto;
-import sg.gov.moh.iais.egp.bsb.dto.register.facility.PrimaryDocDto;
+import sg.gov.moh.iais.egp.bsb.dto.register.facility.*;
 import sg.gov.moh.iais.egp.bsb.entity.DocSetting;
 import sg.gov.moh.iais.egp.bsb.util.LogUtil;
 import sop.webflow.rt.api.BaseProcessClass;
@@ -51,8 +40,8 @@ import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.*;
 
 
 @Slf4j
-@Delegator("bsbFacilityRegisterDelegator")
-public class FacilityRegistrationDelegator {
+@Delegator("rfcFacilityRegisterDelegator")
+public class RfcFacilityRegistrationDelegator {
     public static final String MODULE_NAME = "Facility Registration";
     public static final String KEY_ROOT_NODE_GROUP = "facRegRoot";
 
@@ -83,7 +72,7 @@ public class FacilityRegistrationDelegator {
     private final FileRepoClient fileRepoClient;
 
     @Autowired
-    public FacilityRegistrationDelegator(FacilityRegisterClient facRegClient, FileRepoClient fileRepoClient) {
+    public RfcFacilityRegistrationDelegator(FacilityRegisterClient facRegClient, FileRepoClient fileRepoClient) {
         this.facRegClient = facRegClient;
         this.fileRepoClient = fileRepoClient;
     }
@@ -109,9 +98,12 @@ public class FacilityRegistrationDelegator {
             boolean failRetrieveEditData = true;
             String appId = MaskUtil.unMaskValue(KEY_EDIT_APP_ID, maskedAppId);
             if (appId != null && !maskedAppId.equals(appId)) {
-                ResponseDto<FacilityRegisterDto> resultDto = facRegClient.getFacilityRegistrationAppDataByApplicationId(appId);
+                ResponseDto<FacilityRegisterDto> resultDto = facRegClient.getFacilityRegistrationAppDataByApprovalId(appId);
                 if (resultDto.ok()) {
                     failRetrieveEditData = false;
+                    // TODO this is test old dto and new dto
+                    FacilityRegisterDto oldFacilityRegisterDto = resultDto.getEntity();
+                    ParamUtil.setRequestAttr(request, "oldFacilityRegisterDto", oldFacilityRegisterDto);
                     NodeGroup facRegRoot = resultDto.getEntity().toFacRegRootGroup(KEY_ROOT_NODE_GROUP);
                     ParamUtil.setSessionAttr(request, KEY_ROOT_NODE_GROUP, facRegRoot);
                 }
@@ -120,7 +112,6 @@ public class FacilityRegistrationDelegator {
                 throw new IaisRuntimeException("Fail to retrieve app data");
             }
         }
-
 
         if (newFacReg) {
             ParamUtil.setSessionAttr(request, KEY_ROOT_NODE_GROUP, getFacilityRegisterRoot(request));
@@ -178,7 +169,6 @@ public class FacilityRegistrationDelegator {
         ParamUtil.setSessionAttr(request, KEY_ROOT_NODE_GROUP, facRegRoot);
     }
 
-
     public void preFacProfile(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         NodeGroup facRegRoot = getFacilityRegisterRoot(request);
@@ -228,8 +218,6 @@ public class FacilityRegistrationDelegator {
 
         ParamUtil.setRequestAttr(request, KEY_NATIONALITY_OPTIONS, tmpNationalityOps());
     }
-
-
 
     public void handleFacOperator(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
@@ -363,7 +351,6 @@ public class FacilityRegistrationDelegator {
         ParamUtil.setRequestAttr(request, KEY_NATIONALITY_OPTIONS, tmpNationalityOps());
         ParamUtil.setRequestAttr(request, "personnelRoleOps", tmpPersonnelRoleOps());
     }
-
 
     public void handleFacInfoCommittee(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
@@ -570,8 +557,6 @@ public class FacilityRegistrationDelegator {
         ParamUtil.setSessionAttr(request, KEY_ROOT_NODE_GROUP, facRegRoot);
     }
 
-
-
     /**
      * Do special route changes.
      * This method is used when we re-use some pages for different nodes,
@@ -583,7 +568,6 @@ public class FacilityRegistrationDelegator {
         destNode = batNodeSpecialHandle(destNode);
         ParamUtil.setRequestAttr(request, KEY_DEST_NODE_ROUTE, destNode);
     }
-
 
     /**
      * Get the root data structure of this flow
@@ -619,7 +603,6 @@ public class FacilityRegistrationDelegator {
         return destNode;
     }
 
-
     /**
      * common actions when we do 'jump'
      * decide the routing logic
@@ -650,9 +633,6 @@ public class FacilityRegistrationDelegator {
         }
     }
 
-
-
-
     public String batNodeSpecialHandle(String destNode) {
         return destNode.startsWith(NODE_NAME_FAC_BAT_INFO) ? NODE_NAME_FAC_BAT_INFO : destNode;
     }
@@ -673,7 +653,6 @@ public class FacilityRegistrationDelegator {
         List<BiologicalAgentToxinDto> batList = getBatInfoList(batNodeGroup);
         ParamUtil.setRequestAttr(request, "batList", batList);
     }
-
 
     public static NodeGroup newFacRegisterRoot(String name) {
         Node companyInfoNode = new Node(FacRegisterConstants.NODE_NAME_COMPANY_INFO, new Node[0]);
@@ -720,8 +699,6 @@ public class FacilityRegistrationDelegator {
                 .addNode(new Node("error", new Node[0]))
                 .build();
     }
-
-
 
     public static void changeBatNodeGroup(NodeGroup batNodeGroup, FacilitySelectionDto selectionDto) {
         Assert.notNull(batNodeGroup, ERR_MSG_BAT_NOT_NULL);

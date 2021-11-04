@@ -19,11 +19,6 @@
   <input type="hidden" name="action_type" value="">
   <input type="hidden" name="action_value" value="">
   <div class="container">
-    <div class="row col-xs-12 col-sm-12">
-      <div class="dashboard-page-title" style="border-bottom: 1px solid black;">
-        <h1>Application for New Approval Application</h1>
-      </div>
-    </div>
     <div class="component-gp col-xs-12 col-sm-11 col-md-10 col-lg-8">
       <br/>
       <div class="col-xs-12 col-sm-12" style="background-color: rgba(242, 242, 242, 1); padding: 20px 30px 10px 30px; border-radius: 15px;">

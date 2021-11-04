@@ -17,14 +17,13 @@ import sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityRegisterDto;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
-
 import java.util.List;
 
 import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.*;
 
-@Delegator(value = "bsbViewFacRegAppDelegator")
+@Delegator(value = "rfcViewFacRegAppDelegator")
 @Slf4j
-public class ViewFacilityRegistrationDelegator {
+public class RfcViewFacilityRegistrationDelegator {
     private static final String KEY_ROOT_NODE_GROUP = "facRegRoot";
     private static final String KEY_APP_ID = "appId";
     private static final String KEY_EDIT_APP_ID = "editId";
@@ -33,7 +32,7 @@ public class ViewFacilityRegistrationDelegator {
     private final FacilityRegisterClient facRegClient;
 
     @Autowired
-    public ViewFacilityRegistrationDelegator(FacilityRegisterClient facRegClient) {
+    public RfcViewFacilityRegistrationDelegator(FacilityRegisterClient facRegClient) {
         this.facRegClient = facRegClient;
     }
 
@@ -64,7 +63,7 @@ public class ViewFacilityRegistrationDelegator {
         String appId = (String) ParamUtil.getRequestAttr(request, KEY_APP_ID);
 
         // retrieve app data of facility registration
-        ResponseDto<FacilityRegisterDto> resultDto = facRegClient.getFacilityRegistrationAppDataByApplicationId(appId);
+        ResponseDto<FacilityRegisterDto> resultDto = facRegClient.getFacilityRegistrationAppDataByApprovalId(appId);
         if (resultDto.ok()) {
             NodeGroup facRegRoot = resultDto.getEntity().toFacRegRootGroup(KEY_ROOT_NODE_GROUP);
 

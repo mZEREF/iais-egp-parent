@@ -15,6 +15,7 @@ public class InboxApprovalFacAdminResultDto {
 
     @Data
     public static class ApprovalInfo {
+        private String id;
         private String approveNo;
         private String processType;
         private String status;

@@ -22,6 +22,7 @@
 <%@include file="../../dashboard/dashboard.jsp"%>
 <%@include file="/WEB-INF/jsp/iais/include/showErrorMsg.jsp"%>
 
+<fmt:setLocale value="en"/>
 <div class="main-content">
     <div class="container">
         <div class="row">
@@ -148,7 +149,14 @@
                                                         <tr>
                                                             <td>
                                                                 <p class="visible-xs visible-sm table-row-title">Approval No.</p>
-                                                                <p><c:out value="${approval.approveNo}"/></p>
+                                                                <c:choose>
+                                                                    <c:when test="${approval.processType eq 'PROTYPE001'}">
+                                                                        <a href="/bsb-fe/eservice/INTERNET/MohRfcViewFacRegApplication?appId=<iais:mask name='id' value='${approval.id}'/><c:if test="${approval.status eq 'APPRSTA001'}">&editId=<iais:mask name='editId' value='${approval.id}'/></c:if>"><c:out value="${approval.approveNo}"/></a>
+                                                                    </c:when>
+                                                                    <c:otherwise>
+                                                                        <c:out value="${approval.approveNo}"/>
+                                                                    </c:otherwise>
+                                                                </c:choose>
                                                             </td>
                                                             <td>
                                                                 <p class="visible-xs visible-sm table-row-title">Process Type</p>

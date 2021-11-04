@@ -30,6 +30,7 @@ public class ViewApprovalPossessDelegator {
     private static final String KEY_APP_ID = "appId";
     private static final String KEY_EDIT_APP_ID = "editId";
     private static final String KEY_MASKED_EDIT_APP_ID = "maskedEditId";
+    private static final String KEY_PROCESS_TYPE = "processType";
 
     private final ApprovalAppClient approvalAppClient;
 
@@ -40,12 +41,14 @@ public class ViewApprovalPossessDelegator {
     public void init(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         String maskedAppId = request.getParameter(KEY_APP_ID);
+        String maskProcessType = request.getParameter(KEY_PROCESS_TYPE);
         String appId = MaskUtil.unMaskValue("id", maskedAppId);
+        String processType = MaskUtil.unMaskValue(KEY_PROCESS_TYPE,maskProcessType);
         if (maskedAppId == null || appId == null || maskedAppId.equals(appId)) {
             throw new IaisRuntimeException("Invalid App ID");
         }
         ParamUtil.setRequestAttr(request, KEY_APP_ID, appId);
-
+        ParamUtil.setRequestAttr(request, KEY_PROCESS_TYPE, processType);
         // check if this app is editable
         String maskedEditAppId = request.getParameter(KEY_EDIT_APP_ID);
         String editAppId = MaskUtil.unMaskValue(KEY_EDIT_APP_ID, maskedEditAppId);
