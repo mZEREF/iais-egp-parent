@@ -1,4 +1,4 @@
-<input type="hidden" name="sectionAmt" value="${transferNot.transferNotList.size()}">
+<input type="hidden" name="sectionAmt" value="${transferNotDto.transferNotList.size()}">
 
 <input type="hidden" id="section_repeat_amt_input_name" value="sectionAmt" readonly disabled>
 <input type="hidden" id="section_repeat_section_id_prefix" value="notTSection" readonly disabled>
@@ -12,9 +12,9 @@
         <div class="col-xs-12 col-sm-12" style="padding: 20px 30px 10px 30px; border-radius: 15px;margin: 0 auto">
             <div class = "col-xs-12 col-sm-12">
                 <div id="sectionGroup">
-                    <c:forEach var="reqT" items="${transferNot.transferNotList}" varStatus="status">
+                    <c:forEach var="reqT" items="${transferNotDto.transferNotList}" varStatus="status">
                         <section id="notTSection--v--${status.index}">
-                            <c:if test="${transferNot.transferNotList.size() > 1}">
+                            <c:if test="${transferNotDto.transferNotList.size() > 1}">
                                 <div class="form-group">
                                     <h3 class="col-xs-9 col-sm-10 col-md-11" style="border-bottom: 1px solid black">Agent / Toxin ${status.index + 1}</h3>
                                     <c:if test="${status.index gt 0}">
@@ -148,7 +148,7 @@
                             <span class="mandatory otherQualificationSpan">*</span>
                         </div>
                         <div class="col-sm-6 col-md-7">
-                            <input type="text" autocomplete="off" name="expArrivalTime" id="expArrivalTime" data-date-start-date="01/01/1900"  placeholder="dd/mm/yyyy" maxlength="10" class="date_picker form-control"/>
+                            <input type="text" name="expArrivalTime" id="expArrivalTime" maxlength="10" value=""/>
                             <span data-err-ind="expArrivalTime" class="error-msg"></span>
                         </div>
                     </div>
@@ -165,11 +165,9 @@
                     <div class="form-group">
                         <div class="col-sm-5 control-label">
                             <label for="remarks">Remarks</label>
-                            <span class="mandatory otherQualificationSpan">*</span>
                         </div>
                         <div class="col-sm-6 col-md-7">
                            <textarea id="remarks" style="width: 100%;margin-bottom: 15px;" rows="6" name="remarks" maxlength="500"></textarea>
-                            <span data-err-ind="remarks" class="error-msg"></span>
                         </div>
                     </div>
                 </div>

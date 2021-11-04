@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Application defaultStart="/Steps/StartStep/start" dtdVersion="6.0" executable="true" majorVersion="1" minorVersion="0" name="TransferNofication" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" transaction="enable">
+<Application defaultStart="/Steps/StartStep/start" dtdVersion="6.0" executable="true" majorVersion="8" minorVersion="0" name="TransferNofication" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" transaction="enable">
  <WebServices/>
  <Steps>
   <StartStep defClass="" executor="" icon="" name="start" x="50" y="240">
@@ -9,14 +9,14 @@
     <JavaCode defClass="" executor="" methodName="start_OnStepProcess_0" name="start_OnStepProcess_0"/>
    </OnStepProcess>
   </StartStep>
-  <AutomaticStep defClass="" executor="" icon="" name="prepareData" x="170" y="240">
+  <AutomaticStep defClass="" executor="" icon="" name="prepareData" x="140" y="240">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
     <JavaCode defClass="" executor="" methodName="prepareData_OnStepProcess_0" name="prepareData_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="saveAndPrepareConfirm" x="440" y="240">
+  <AutomaticStep defClass="" executor="" icon="" name="saveAndPrepareConfirm" x="380" y="240">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
@@ -32,7 +32,7 @@
   </AutomaticStep>
  </Steps>
  <Pages>
-  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="TransferNoficationPage" stageIndicator="" x="290" y="240">
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="TransferNoficationPage" stageIndicator="" x="260" y="240">
    <OnPageLoad/>
    <OnPageSubmit/>
    <Description/>
@@ -54,16 +54,13 @@
  <Forms/>
  <Links>
   <SynchronousLink destinationName="/Steps/AutomaticStep/prepareData" linkstyle="Rectangle" name="" sourceName="/Steps/StartStep/start" style="rectanular">
-   <position>{(70,260)(190,260)}</position>
+   <position>{(70,260)(160,260)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Pages/WebPage/TransferNoficationPage" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/prepareData" style="rectanular">
-   <position>{(190,260)(310,260)}</position>
+   <position>{(160,260)(280,260)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/saveAndPrepareConfirm" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/TransferNoficationPage" style="rectanular">
-   <position>{(310,260)(460,260)}</position>
-  </SynchronousLink>
-  <SynchronousLink destinationName="/Pages/WebPage/ConfirmPage" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/saveAndPrepareConfirm" style="rectanular">
-   <position>{(460,260)(630,260)}</position>
+   <position>{(280,260)(400,260)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/save" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/ConfirmPage" style="rectanular">
    <position>{(630,260)(760,260)}</position>
@@ -71,8 +68,21 @@
   <SynchronousLink destinationName="/Pages/WebPage/ackPage" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/save" style="rectanular">
    <position>{(760,260)(870,260)}</position>
   </SynchronousLink>
+  <SynchronousLink destinationName="/Conditions/Condition/Cond1" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/saveAndPrepareConfirm" style="rectanular">
+   <position>{(400,260)(550,260)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/ConfirmPage" linkstyle="Rectangle" name="" sourceName="/Conditions/Condition/Cond1" style="rectanular">
+   <position>{(550,260)(630,260)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/prepareData" linkstyle="Rectangle" name="" sourceName="/Conditions/Condition/Cond1" style="rectanular">
+   <position>{(550,260)(177,174)(160,260)}</position>
+  </SynchronousLink>
  </Links>
- <Conditions/>
+ <Conditions>
+  <Condition componentIfFalse="/Steps/AutomaticStep/prepareData" componentIfTrue="/Pages/WebPage/ConfirmPage" defClass="" executor="" icon="" leftOperand="isValid" name="Cond1" operator="=" rightOperand="&quot;Y&quot;" x="530" y="240">
+   <Description/>
+  </Condition>
+ </Conditions>
  <Switches/>
  <Branches/>
  <Merges/>

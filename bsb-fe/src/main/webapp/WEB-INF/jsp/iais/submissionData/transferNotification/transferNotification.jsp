@@ -17,6 +17,8 @@
 <script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-common.js"></script>
 <script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-transfer-notification.js"></script>
 
+<%@include file="/WEB-INF/jsp/iais/submissionData/common/showTabErrorMsg.jsp"%>
+
 <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
     <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
     <input type="hidden" name="action_type" value="">
@@ -83,4 +85,4 @@
         </div>
     </div>
 </form>
-<%@include file="/WEB-INF/jsp/include/validation.jsp"%>
+

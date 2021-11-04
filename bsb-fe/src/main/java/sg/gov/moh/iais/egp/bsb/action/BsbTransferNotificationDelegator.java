@@ -3,7 +3,9 @@ package sg.gov.moh.iais.egp.bsb.action;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.util.StringUtils;
 import sg.gov.moh.iais.egp.bsb.client.TransferClient;
+import sg.gov.moh.iais.egp.bsb.constant.ValidationConstants;
 import sg.gov.moh.iais.egp.bsb.dto.submission.TransferNotificationDto;
 import sop.webflow.rt.api.BaseProcessClass;
 
@@ -40,8 +42,12 @@ public class BsbTransferNotificationDelegator {
      * */
     public void prepareData(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
+        Boolean needShowError = (Boolean) ParamUtil.getRequestAttr(request,ValidationConstants.KEY_SHOW_ERROR_SWITCH);
         TransferNotificationDto transferNotificationDto = getTransferNotification(request);
-        ParamUtil.setRequestAttr(request,"transferNot",transferNotificationDto);
+        if(Boolean.TRUE.equals(needShowError)){
+            ParamUtil.setRequestAttr(request,ValidationConstants.KEY_VALIDATION_ERRORS,transferNotificationDto.retrieveValidationResult());
+        }
+        ParamUtil.setRequestAttr(request,KEY_TRANSFER_NOTIFICATION_DTO,transferNotificationDto);
     }
 
     public void saveAndPrepareConfirm(BaseProcessClass bpc){
@@ -49,12 +55,15 @@ public class BsbTransferNotificationDelegator {
          //get value from jsp and bind value to dto
          TransferNotificationDto notificationDto = getTransferNotification(request);
          notificationDto.reqObjectMapping(request);
-         ParamUtil.setSessionAttr(request,"transferNot",notificationDto);
+         doValidation(notificationDto,request);
+         ParamUtil.setSessionAttr(request,KEY_TRANSFER_NOTIFICATION_DTO,notificationDto);
     }
 
     public void save(BaseProcessClass bpc){
          HttpServletRequest request = bpc.request;
          TransferNotificationDto notificationDto = getTransferNotification(request);
+         String ensure = ParamUtil.getString(request,"ensure");
+         notificationDto.setEnsure(ensure);
          transferClient.saveNewTransferNot(notificationDto);
     }
 
@@ -68,5 +77,19 @@ public class BsbTransferNotificationDelegator {
 
     private TransferNotificationDto getDefaultDto() {
         return new TransferNotificationDto();
+    }
+
+
+    /**
+     * just a method to do simple valid,maybe update in the future
+     * doValidation
+     * */
+    public void doValidation(TransferNotificationDto dto,HttpServletRequest request){
+        if(dto.doValidation()){
+            ParamUtil.setRequestAttr(request, ValidationConstants.IS_VALID,ValidationConstants.YES);
+        }else{
+            ParamUtil.setRequestAttr(request, ValidationConstants.IS_VALID,ValidationConstants.NO);
+            ParamUtil.setRequestAttr(request,ValidationConstants.KEY_SHOW_ERROR_SWITCH,Boolean.TRUE);
+        }
     }
 }

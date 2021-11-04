@@ -161,7 +161,6 @@ public class TransferNotificationDto implements Serializable {
     private static final String KEY_EXPECTED_ARRIVAL_TIME   = "expArrivalTime";
     private static final String KEY_PROVIDER_NAME           = "providerName";
     private static final String KEY_REMARK                  = "remarks";
-    private static final String KEY_ENSURE                  = "ensure";
 
 
     /**
@@ -186,7 +185,6 @@ public class TransferNotificationDto implements Serializable {
         this.setExpArrivalTime(ParamUtil.getString(request,KEY_EXPECTED_ARRIVAL_TIME));
         this.setProviderName(ParamUtil.getString(request,KEY_PROVIDER_NAME));
         this.setRemarks(ParamUtil.getString(request,KEY_REMARK));
-        this.setEnsure(ParamUtil.getString(request,KEY_ENSURE));
     }
 
 }

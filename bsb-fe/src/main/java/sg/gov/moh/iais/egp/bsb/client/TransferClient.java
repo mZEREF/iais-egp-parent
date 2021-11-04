@@ -20,6 +20,6 @@ public interface TransferClient {
     @PostMapping(path = "/not/transfer/save", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     ResponseDto<String> saveNewTransferNot(@RequestBody TransferNotificationDto notificationDto);
 
-    @PostMapping(path = "/not/transfer/validate/orgProfile", consumes = MediaType.APPLICATION_JSON_VALUE, produces =MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(path = "/not/transfer/validate/trNot", consumes = MediaType.APPLICATION_JSON_VALUE, produces =MediaType.APPLICATION_JSON_VALUE)
     ValidationResultDto validateTransferNot(@RequestBody TransferNotificationDto dto);
 }
