@@ -1,12 +1,12 @@
 <div class="panel panel-default">
     <div class="panel-heading">
         <h4 class="panel-title">
-            <strong>
+            <a class="" data-toggle="collapse" href="#ar-declaration">
                 Declarations
-            </strong>
+            </a>
         </h4>
     </div>
-    <div id="patientDetails" class="panel-collapse collapse in">
+    <div id="ar-declaration" class="panel-collapse collapse in">
         <div class="panel-body">
             <div class="panel-main-content form-horizontal">
                 <iais:row>

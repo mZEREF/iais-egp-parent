@@ -43,6 +43,16 @@ public final class DataSubmissionHelper {
         ParamUtil.setSessionAttr(request, DataSubmissionConstant.AR_DATA_SUBMISSION, arSuperDataSubmissionDto);
     }
 
+    public static List<String> getNextStageForAR(CycleStageSelectionDto selectionDto) {
+        if (selectionDto == null || StringUtil.isEmpty(selectionDto.getPatientCode())) {
+            return null;
+        }
+        String currCycle = selectionDto.getLastCycle();
+        String currStage = selectionDto.getLastStage();
+        String lastStatus = selectionDto.getLastStatus();
+        return DataSubmissionHelper.getNextStageForAR(currCycle, currStage, lastStatus);
+    }
+
     public static List<String> getNextStageForAR(String currCycle, String currStage, String lastStatus) {
         log.info(StringUtil.changeForLog("----- The current cycle stage is " + currCycle + " : " + currStage + " : " + lastStatus +
                 " -----"));
@@ -54,12 +64,6 @@ public final class DataSubmissionHelper {
             result.add(DataSubmissionConsts.AR_CYCLE_AR);
             result.add(DataSubmissionConsts.AR_CYCLE_IUI);
             result.add(DataSubmissionConsts.AR_CYCLE_EFO);
-            result.add(DataSubmissionConsts.AR_STAGE_DISPOSAL);
-            result.add(DataSubmissionConsts.AR_STAGE_DONATION);
-            result.add(DataSubmissionConsts.AR_STAGE_TRANSFER_IN_AND_OUT);
-            result.add(DataSubmissionConsts.AR_STAGE_EMBRYO_CREATED);
-            result.add(DataSubmissionConsts.AR_STAGE_PRE_IMPLANTAION_GENETIC_TESTING);
-        } else if (DataSubmissionConsts.AR_CYCLE_NON.equals(currCycle)) {
             result.add(DataSubmissionConsts.AR_STAGE_DISPOSAL);
             result.add(DataSubmissionConsts.AR_STAGE_DONATION);
             result.add(DataSubmissionConsts.AR_STAGE_TRANSFER_IN_AND_OUT);

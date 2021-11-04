@@ -4,6 +4,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.*;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -57,5 +58,7 @@ public interface ArDataSubmissionService {
     List<CycleDto> getByPatientCodeAndHciCodeAndCycleTypeAndStatuses(String patientCode,String hciCode, String cycleType,String... status);
 
     void updateDataSubmissionDraftStatus(String draftId, String status);
+
+    Date getLastCompletedCycleStartDate(String patientCode, String hciCode);
 
 }

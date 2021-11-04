@@ -230,7 +230,7 @@ public class ArDataSubmissionServiceImpl implements ArDataSubmissionService {
             try {
                 Date date = Formatter.parseDate(cryopreservationDate);
                 arSubFreezingStageDto.setCryopreservedDate(date);
-            } catch (ParseException e) {
+            } catch (Exception e) {
                 log.info("Freezing invalid cryopreservationDate");
             }
         }
@@ -276,6 +276,15 @@ public class ArDataSubmissionServiceImpl implements ArDataSubmissionService {
             return;
         }
         arFeClient.updateDataSubmissionDraftStatus(draftId, status);
+    }
+
+    @Override
+    public Date getLastCompletedCycleStartDate(String patientCode, String hciCode) {
+        log.info(StringUtil.changeForLog("PatientCode: " + patientCode + " - hciCode: " + hciCode));
+        if (StringUtil.isEmpty(patientCode) || StringUtil.isEmpty(hciCode)) {
+            return null;
+        }
+        return arFeClient.getLastCompletedCycleStartDate(patientCode, hciCode).getEntity();
     }
 
 }

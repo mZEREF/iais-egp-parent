@@ -66,6 +66,7 @@
                                 <span class="check-circle"></span><iais:code code="DS_MTD002"/>
                             </label>
                         </div>
+                        <span class="error-msg" name="iaisErrorMsg" id="error_submissionMethod"></span>
                     </div>
                 </div>
             </div>

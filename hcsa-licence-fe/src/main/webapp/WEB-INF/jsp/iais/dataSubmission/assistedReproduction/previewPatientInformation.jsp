@@ -18,13 +18,26 @@
 <c:set var="husband" value="${patientInfoDto.husband}" />
 <c:set var="declaration" value="${arSuperDataSubmissionDto.currentDataSubmissionDto.declaration}" />
 
+<c:set var="headingSign" value="completed"/>
+
 <%@ include file="common/arHeader.jsp" %>
+
+<script type="text/javascript" src="<%=webroot1%>js/dataSubmission/patientInformation.js"></script>
 
 <form method="post" id="mainForm" action=<%=continueURL%>>
     <div class="main-content">
         <div class="container center-content">
             <div class="col-xs-12">
-                <h3>Please key in patient information</h3>
+                <div class="row form-group" style="border-bottom: 1px solid #D1D1D1;">
+                    <div class="col-xs-12 col-md-10">
+                        <strong style="font-size: 2rem;">Preview & Submit</strong>
+                    </div>
+                    <div class="col-xs-12 col-md-2 text-right">
+                        <p class="print" style="font-size: 16px;">
+                            <a onclick="printData()" href="javascript:void(0);"> <em class="fa fa-print"></em>Print</a>
+                        </p>
+                    </div>
+                </div>
                 <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
                     <%@include file="section/previewPatientDetail.jsp" %>
                     <%@include file="section/previewHusbandDetail.jsp" %>
@@ -35,3 +48,4 @@
         </div>
     </div>
 </form>
+<input type="hidden" name="printflag" id="printflag" value="patient">

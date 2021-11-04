@@ -20,6 +20,7 @@ import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpSession;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 
 /**
@@ -143,16 +144,17 @@ public class ArDataSubmissionDelegator {
         } else if (appGrpPremisesDto == null) {
             map.put(PREMISES, "There are no active Assisted Reproduction licences");
         }
+        ArSuperDataSubmissionDto dataSubmission = DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
+        if (reNew(dataSubmission, submissionType, submissionMethod, appGrpPremisesDto)) {
+            dataSubmission = new ArSuperDataSubmissionDto();
+        }
         if (!map.isEmpty()) {
-            actionType = "invalid";
-            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(map));
-            ArSuperDataSubmissionDto dataSubmission = new ArSuperDataSubmissionDto();
             dataSubmission.setArSubmissionType(submissionType);
             dataSubmission.setSubmissionMethod(submissionMethod);
             dataSubmission.setAppGrpPremisesDto(appGrpPremisesDto);
-            ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.AR_DATA_SUBMISSION, dataSubmission);
+            actionType = "invalid";
+            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(map));
         } else {
-            ArSuperDataSubmissionDto dataSubmission = null;
             String orgId = Optional.ofNullable(DataSubmissionHelper.getLoginContext(bpc.request))
                     .map(LoginContext::getOrgId).orElse("");
             String hciCode = Optional.ofNullable(appGrpPremisesDto)
@@ -169,11 +171,12 @@ public class ArDataSubmissionDelegator {
                 }
             } else if ("resume".equals(actionValue)) {
                 dataSubmission = arDataSubmissionService.getArSuperDataSubmissionDtoDraftByConds(orgId, submissionType, hciCode);
+                if (dataSubmission == null) {
+                    log.warn("Can't resume data!");
+                    dataSubmission = new ArSuperDataSubmissionDto();
+                }
             } else if ("delete".equals(actionValue)) {
                 arDataSubmissionService.deleteArSuperDataSubmissionDtoDraftByConds(orgId, submissionType, hciCode);
-            }
-            if (dataSubmission == null) {
-                dataSubmission = new ArSuperDataSubmissionDto();
             }
             dataSubmission.setSubmissionType(DataSubmissionConsts.DATA_SUBMISSION_TYPE_AR);
             dataSubmission.setOrgId(orgId);
@@ -181,9 +184,25 @@ public class ArDataSubmissionDelegator {
             dataSubmission.setSubmissionMethod(submissionMethod);
             dataSubmission.setAppGrpPremisesDto(appGrpPremisesDto);
             dataSubmission.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-            DataSubmissionHelper.setCurrentArDataSubmission(dataSubmission, bpc.request);
         }
+        DataSubmissionHelper.setCurrentArDataSubmission(dataSubmission, bpc.request);
         ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.CRUD_ACTION_TYPE_AR, actionType);
+    }
+
+    private boolean reNew(ArSuperDataSubmissionDto arSuperDto, String submissionType, String submissionMethod,
+            AppGrpPremisesDto appGrpPremisesDto) {
+        if (arSuperDto == null
+                || !Objects.equals(submissionType, arSuperDto.getArSubmissionType())
+                || !Objects.equals(submissionMethod, arSuperDto.getSubmissionMethod())) {
+            return true;
+        }
+        String hciCode = Optional.ofNullable(appGrpPremisesDto)
+                .map(AppGrpPremisesDto::getHciCode)
+                .orElse("");
+        String old = Optional.ofNullable(arSuperDto.getAppGrpPremisesDto())
+                .map(AppGrpPremisesDto::getHciCode)
+                .orElse("");
+        return !Objects.equals(hciCode, old);
     }
 
     /**
@@ -213,7 +232,6 @@ public class ArDataSubmissionDelegator {
      * @throws
      */
     public void doPrepareCSM(BaseProcessClass bpc) {
-
     }
 
     /**

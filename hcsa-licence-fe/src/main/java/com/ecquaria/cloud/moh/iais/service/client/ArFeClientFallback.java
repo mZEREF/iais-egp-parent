@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -133,6 +134,11 @@ public class ArFeClientFallback implements ArFeClient {
     @Override
     public FeignResponseEntity<Void> updateDataSubmissionDraftStatus(String draftId, String status) {
         return getFeignResponseEntity(draftId, status);
+    }
+
+    @Override
+    public FeignResponseEntity<Date> getLastCompletedCycleStartDate(String patientCode, String hciCode) {
+        return getFeignResponseEntity(patientCode, hciCode);
     }
 
 }

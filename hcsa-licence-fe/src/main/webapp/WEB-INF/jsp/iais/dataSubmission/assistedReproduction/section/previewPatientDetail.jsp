@@ -1,4 +1,3 @@
-<c:set var="headingSign" value="completed"/>
 
 <div class="panel panel-default">
     <div class="panel-heading ${headingSign}">

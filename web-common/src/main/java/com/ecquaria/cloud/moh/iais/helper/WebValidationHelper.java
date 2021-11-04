@@ -333,11 +333,7 @@ public class WebValidationHelper {
                 if(map != null && !map.isEmpty()) {
                     errorMap.putAll(map);
                 }
-                String[] profiles = new String[0];
-                if (!StringUtil.isEmpty(property)) {
-                    profiles = property.split("\\,");
-                }
-                map = cv.validate(target, profiles, request);
+                map = cv.validate(target, property, request);
                 if(map != null && !map.isEmpty()) {
                     errorMap.putAll(map);
                 }

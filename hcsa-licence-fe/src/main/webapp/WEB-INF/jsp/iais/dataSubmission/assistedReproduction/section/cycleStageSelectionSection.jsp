@@ -79,9 +79,9 @@
     </div>
 </div>
 <script type="text/javascript">
-    /*
     function retrieveValidatePatient() {
         showWaiting();
+        var stage = $('#stage').val();
         var idType = $('#patientIdType').val();
         var idNo = $('input[name="patientIdNumber"]').val();
         var nationality = $('#patientNationality').val();
@@ -90,6 +90,7 @@
             idType: idType,
             idNo: idNo,
             nationality: nationality,
+            stage: stage,
             url: url
         }
         callCommonAjax(options, validatePatientCallback);
@@ -100,6 +101,7 @@
         // stage options
         $('#stage').html(data.stagHtmls);
         $('#stage').niceSelect("update");
+        fillValue('#stage', data.stage);
         // check
         if (isEmpty(data) || isEmpty(data.selection) || isEmpty(data.selection.patientName) || !isEmpty(data.errorMsg)) {
             $('[name="retrieveData"]').val('0');
@@ -135,5 +137,4 @@
         }
         $('#lastStageHidden').val(data.selection.lastStage);
     }
-    */
 </script>

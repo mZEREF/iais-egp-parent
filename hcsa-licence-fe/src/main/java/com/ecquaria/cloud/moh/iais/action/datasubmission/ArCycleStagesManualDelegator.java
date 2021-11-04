@@ -54,8 +54,14 @@ public class ArCycleStagesManualDelegator {
      * @throws
      */
     public void doPrepareCycleStageSelection(BaseProcessClass bpc) {
-        List<String> nextStages = DataSubmissionHelper.getNextStageForAR(null, null, null);
+        ArSuperDataSubmissionDto currentArDataSubmission = DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
+        CycleStageSelectionDto selectionDto = currentArDataSubmission.getSelectionDto();
+        List<String> nextStages = null;
+        if (selectionDto != null) {
+            nextStages = DataSubmissionHelper.getNextStageForAR(selectionDto);
+        }
         bpc.request.setAttribute("stage_options", DataSubmissionHelper.genOptions(nextStages));
+
         ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.CURRENT_PAGE_STAGE, "cycle-stage-selection");
         ParamUtil.setRequestAttr(bpc.request, "title", "New Assisted Reproduction Submission");
         ParamUtil.setRequestAttr(bpc.request, "smallTitle", "You are submitting for <strong>Cycle Stages</strong>");
@@ -84,7 +90,7 @@ public class ArCycleStagesManualDelegator {
         if (result != null) {
             errorMap.putAll(result.retrieveAll());
         }
-        String stage = selectionDto.getStage();
+        String stage;
         if (!errorMap.isEmpty()) {
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
             stage = "current";
@@ -181,27 +187,22 @@ public class ArCycleStagesManualDelegator {
         dataSubmission.setSubmissionType(DataSubmissionConsts.DATA_SUBMISSION_TYPE_AR);
         String stage = selectionDto.getStage();
         dataSubmission.setCycleStage(stage);
+        currentArDataSubmission.setCurrentDataSubmissionDto(dataSubmission);
         ArSuperDataSubmissionDto newDto = arDataSubmissionService.getArSuperDataSubmissionDto(selectionDto.getPatientCode(),
                 hicCode);
         if (newDto != null) {
             log.info("-----Retieve ArSuperDataSubmissionDto from DB-----");
-            newDto.setAppGrpPremisesDto(currentArDataSubmission.getAppGrpPremisesDto());
-            newDto.setSubmissionType(currentArDataSubmission.getSubmissionType());
-            newDto.setArSubmissionType(currentArDataSubmission.getArSubmissionType());
-            newDto.setSubmissionMethod(currentArDataSubmission.getSubmissionMethod());
-            newDto.setOrgId(currentArDataSubmission.getOrgId());
-            newDto.setCurrentDataSubmissionDto(dataSubmission);
+            currentArDataSubmission.setPatientInfoDto(newDto.getPatientInfoDto());
             selectionDto = newDto.getSelectionDto();
             selectionDto.setStage(stage);
-            newDto.setCycleDto(DataSubmissionHelper.genCycleDto(selectionDto, hicCode));
-            DataSubmissionHelper.setCurrentArDataSubmission(newDto, request);
+            currentArDataSubmission.setSelectionDto(selectionDto);
+            currentArDataSubmission.setCycleDto(DataSubmissionHelper.genCycleDto(selectionDto, hicCode));
         } else {
             // for test
             log.info("-----No ArSuperDataSubmissionDto found from DB-----");
-            currentArDataSubmission.setCurrentDataSubmissionDto(dataSubmission);
             currentArDataSubmission.setCycleDto(DataSubmissionHelper.genCycleDto(selectionDto, hicCode));
-            DataSubmissionHelper.setCurrentArDataSubmission(currentArDataSubmission, request);
         }
+        DataSubmissionHelper.setCurrentArDataSubmission(currentArDataSubmission, request);
     }
 
     private CycleStageSelectionDto getSelectionDtoFromPage(HttpServletRequest request) {
@@ -210,10 +211,9 @@ public class ArCycleStagesManualDelegator {
         selectionDto.setPatientIdNumber(ParamUtil.getString(request, "patientIdNumber"));
         selectionDto.setPatientNationality(ParamUtil.getString(request, "patientNationality"));
         selectionDto.setPatientCode(ParamUtil.getString(request, "patientCode"));
-        //TODO test
-        selectionDto.setPatientName(ParamUtil.getString(request, "patientName"));
-//        selectionDto.setRetrieveData(StringUtil.getNonNull(ParamUtil.getString(request, "retrieveData")));
-//        selectionDto.setPatientName(StringUtil.getNonNull(ParamUtil.getString(request, "patientName")));
+        //selectionDto.setPatientName(ParamUtil.getString(request, "patientName"));
+        selectionDto.setRetrieveData(StringUtil.getNonNull(ParamUtil.getString(request, "retrieveData")));
+        selectionDto.setPatientName(StringUtil.getNonNull(ParamUtil.getString(request, "patientName")));
         selectionDto.setUndergoingCycle("1".equals(ParamUtil.getString(request, "undergoingCycle")));
         selectionDto.setLastStage(ParamUtil.getString(request, "lastStage"));
         selectionDto.setStage(ParamUtil.getString(request, "stage"));

@@ -80,6 +80,7 @@ public class ArAjaxController {
         String idType = ParamUtil.getString(request, "idType");
         String idNo = ParamUtil.getString(request, "idNo");
         String nationality = ParamUtil.getString(request, "nationality");
+        String stage = ParamUtil.getString(request, "stage");
         CycleStageSelectionDto dto = new CycleStageSelectionDto();
         dto.setPatientIdType(idType);
         dto.setPatientIdNumber(idNo);
@@ -104,6 +105,7 @@ public class ArAjaxController {
             if (dbDto != null) {
                 dto = dbDto;
             }
+            dto.setHciCode(hicCode);
             if (StringUtil.isNotEmpty(dto.getLastStage())) {
                 dto.setLastStageDesc(MasterCodeUtil.getCodeDesc(dto.getLastStage()));
             }
@@ -114,6 +116,7 @@ public class ArAjaxController {
         String lastStatus = dto.getLastStatus();
         result.put("stagHtmls", DataSubmissionHelper.genOptionHtmls(DataSubmissionHelper.getNextStageForAR(currCycle, currStage,
                 lastStatus)));
+        result.put("stage", stage);
         return result;
     }
 
