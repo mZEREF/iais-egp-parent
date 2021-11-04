@@ -246,7 +246,7 @@
               <h3>${serviceName}</h3>
               <span>${hivTesting}</span>
               <p class="note"><strong>Note:</strong>
-                The licensee stated above is permitted to provide the special licensable healthcare service to which this licence relates, on the condition that the licensee must at all times also be granted a licence to provide [Underlying licence], being a licensable healthcare service prescribed as underlying to that special licensable healthcare service.
+                The licensee stated above is permitted to provide the special licensable healthcare service to which this licence relates, on the condition that the licensee must at all times also be granted a licence to provide ${baseServiceName}, being a licensable healthcare service prescribed as underlying to that special licensable healthcare service.
               </p>
             </div>
             <div class="lic-approved-info">
