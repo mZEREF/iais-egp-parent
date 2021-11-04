@@ -370,7 +370,7 @@
             </div>
             <div class="lic-footer" >
               <p >This licence is issued under the Healthcare Services Act 2020 and is subject to its provisions, as well as any regulations, rules, code of practices and directions issued under it, and any conditions imposed by the Director of Medical Services. The licence is valid from the licence start date until the licence end date, unless revoked, suspended, ceased or surrendered.</p>
-              <p>Ministry of Health | Page 1 of 1</p>
+              <p>Ministry of Health | Page 2 of 2</p>
             </div>
           </div>
         </div>
