@@ -2,20 +2,26 @@ package com.ecquaria.cloud.moh.iais.action.datasubmission;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PgtStageDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
+import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
+import com.ecquaria.cloud.moh.iais.service.client.LicenceClient;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -28,6 +34,9 @@ import java.util.Map;
 @Delegator("preimplantationDelegator")
 @Slf4j
 public class PgtCycleStageDelegator extends CommonDelegator{
+    @Autowired
+    private LicenceClient licenceClient;
+    
     @Override
     public void start(BaseProcessClass bpc) {
         AuditTrailHelper.auditFunction("Assisted Reproduction", "Preimplantation Genetic Testing");
@@ -49,7 +58,29 @@ public class PgtCycleStageDelegator extends CommonDelegator{
     public void prepareSwitch(BaseProcessClass bpc) {
         ParamUtil.setRequestAttr(bpc.request, "smallTitle", "You are submitting for <strong>Cycle Stages</strong>");
         List<SelectOption> embryosBiopsiedLocalSelectOption= IaisCommonUtils.genNewArrayList();
-
+        LoginContext loginContext = DataSubmissionHelper.getLoginContext(bpc.request);
+        String licenseeId = null;
+        if (loginContext != null) {
+            licenseeId = loginContext.getLicenseeId();
+        }
+        //AR licence
+        String serviceName="";
+        List<String> svcNames = new ArrayList<>();
+        if (!StringUtil.isEmpty(serviceName)) {
+            svcNames.add(serviceName);
+        }
+        List<AppGrpPremisesDto> appGrpPremisesDtos = licenceClient.getLatestPremisesByConds(licenseeId, svcNames, false).getEntity();
+        if (appGrpPremisesDtos != null && !appGrpPremisesDtos.isEmpty()) {
+            for (AppGrpPremisesDto premises:appGrpPremisesDtos
+            ) {
+                if(StringUtil.isNotEmpty(premises.getHciName())){
+                    SelectOption selectOption=new SelectOption();
+                    selectOption.setValue(premises.getHciName());
+                    selectOption.setText(premises.getHciName());
+                    embryosBiopsiedLocalSelectOption.add(selectOption);
+                }
+            }
+        }
         ParamUtil.setRequestAttr(bpc.request,"embryosBiopsiedLocalSelectOption",embryosBiopsiedLocalSelectOption);
         List<SelectOption> biopsyLocalSelectOption= IaisCommonUtils.genNewArrayList();
 
