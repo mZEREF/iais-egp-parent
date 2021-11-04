@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.action.datasubmission;
 
+import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.OutcomeStageDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -8,11 +9,22 @@ import com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
+import lombok.extern.slf4j.Slf4j;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import java.util.Map;
 
-public class OutcomeStageDelegator extends CommonDelegator{
+/**
+ * OutcomeDelegator
+ *
+ * @author zhixing
+ * @date 2021/11/4
+ */
+
+@Delegator("outcomeDelegator")
+@Slf4j
+public class OutcomeDelegator extends CommonDelegator{
+
     @Override
     public void start(BaseProcessClass bpc) {
 

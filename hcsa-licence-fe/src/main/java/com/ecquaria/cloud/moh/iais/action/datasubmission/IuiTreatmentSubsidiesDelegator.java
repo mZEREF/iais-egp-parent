@@ -17,6 +17,13 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
 import java.util.Map;
 
+/**
+ * IuiTreatmentSubsidiesDelegator
+ *
+ * @author zhixing
+ * @date 2021/10/28
+ */
+
 @Delegator("iuiTreatmentSubsidiesDelegator")
 @Slf4j
 public class IuiTreatmentSubsidiesDelegator extends CommonDelegator {

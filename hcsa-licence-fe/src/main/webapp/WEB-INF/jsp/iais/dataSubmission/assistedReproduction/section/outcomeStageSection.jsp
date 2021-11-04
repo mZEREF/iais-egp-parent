@@ -2,7 +2,7 @@
     <div class="panel-heading">
         <h4 class="panel-title">
             <strong>
-                IUI Treatment Subsidies
+                Outcome
             </strong>
         </h4>
     </div>
