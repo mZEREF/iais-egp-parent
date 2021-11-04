@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.action.datasubmission;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DonationStageDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
@@ -10,14 +11,18 @@ import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
+import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
+import com.ecquaria.cloud.moh.iais.service.client.LicenceClient;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -30,6 +35,8 @@ import java.util.Map;
 @Delegator("donationDelegator")
 @Slf4j
 public class DonationStageDelegator extends CommonDelegator{
+    @Autowired
+    private LicenceClient licenceClient;
 
     @Override
     public void start(BaseProcessClass bpc) {
@@ -55,11 +62,35 @@ public class DonationStageDelegator extends CommonDelegator{
         List<SelectOption> donationReasonSelectOption= MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_DONATION_REASON);
         ParamUtil.setRequestAttr(bpc.request,"donationReasonSelectOption",donationReasonSelectOption);
 
-        List<SelectOption> curCenDonatedSelectOption= IaisCommonUtils.genNewArrayList();
+        LoginContext loginContext = DataSubmissionHelper.getLoginContext(bpc.request);
+        String licenseeId = null;
+        if (loginContext != null) {
+            licenseeId = loginContext.getLicenseeId();
+        }
+        //AR licence
+        String serviceName="";
+        List<String> svcNames = new ArrayList<>();
+        if (!StringUtil.isEmpty(serviceName)) {
+            svcNames.add(serviceName);
+        }
+        List<AppGrpPremisesDto> appGrpPremisesDtos = licenceClient.getLatestPremisesByConds(licenseeId, svcNames, false).getEntity();
 
-        ParamUtil.setRequestAttr(bpc.request,"curCenDonatedSelectOption",curCenDonatedSelectOption);
+        List<SelectOption> curCenDonatedSelectOption= IaisCommonUtils.genNewArrayList();
         List<SelectOption> insSentToCurSelectOption= IaisCommonUtils.genNewArrayList();
 
+        if (appGrpPremisesDtos != null && !appGrpPremisesDtos.isEmpty()) {
+            for (AppGrpPremisesDto premises:appGrpPremisesDtos
+            ) {
+                if(StringUtil.isNotEmpty(premises.getHciName())){
+                    SelectOption selectOption=new SelectOption();
+                    selectOption.setValue(premises.getHciName());
+                    selectOption.setText(premises.getHciName());
+                    curCenDonatedSelectOption.add(selectOption);
+                    insSentToCurSelectOption.add(selectOption);
+                }
+            }
+        }
+        ParamUtil.setRequestAttr(bpc.request,"curCenDonatedSelectOption",curCenDonatedSelectOption);
         ParamUtil.setRequestAttr(bpc.request,"insSentToCurSelectOption",insSentToCurSelectOption);
     }
 
