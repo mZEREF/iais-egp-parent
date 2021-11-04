@@ -24,6 +24,8 @@ public class DocConstants {
     public static final String DOC_TYPE_SOP_FOR_CERTIFICATION = "sopForCertification";
     public static final String DOC_TYPE_TESTIMONIALS= "testimonials";
     public static final String DOC_TYPE_CURRICULUM_VITAE = "curriculumVitae";
+    public static final String DOC_TYPE_INVENTORY_AGENT   = "Inventory: Biological Agents";
+    public static final String DOC_TYPE_INVENTORY_TOXIN   = "Inventory: Toxins";
 
     /* This constant may be removed in the future, we may get the order and other settings from DB */
     public static final List<String> FAC_REG_DOC_TYPE_ORDER = Collections.unmodifiableList(Arrays.asList(

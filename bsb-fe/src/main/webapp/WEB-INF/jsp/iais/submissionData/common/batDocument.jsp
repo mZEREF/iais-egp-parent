@@ -8,8 +8,8 @@
 <div class="row">
     <div id="PrimaryDocsPanel" role="tabpanel">
         <div class="document-content">
-            <c:if test="">
             <div class="document-upload-gp">
+                <c:set var = "doc" value = "${doSettings.get('agent')}"/>
                 <c:set var="maskDocType" value="${MaskUtil.maskValue('file', doc.type)}"/>
                 <div class="document-upload-list">
                     <h3>${doc.typeDisplay}<c:if test="${doc.mandatory}"> <span
@@ -56,13 +56,12 @@
                                 </div>
                             </c:forEach>
                         </c:if>
-                        <a class="btn file-upload btn-secondary" data-upload-file="${maskDocType}"
-                           href="javascript:void(0);">Upload</a><span data-err-ind="${doc.type}"
-                                                                      class="error-msg"></span>
+                        <a class="btn file-upload btn-secondary"  data-upload-file="${maskDocType}"
+                           href="javascript:void(0);">Upload</a>
+                        <span data-err-ind="${doc.type}" class="error-msg"></span>
                     </div>
                 </div>
             </div>
-            </c:if>
         </div>
     </div>
 </div>

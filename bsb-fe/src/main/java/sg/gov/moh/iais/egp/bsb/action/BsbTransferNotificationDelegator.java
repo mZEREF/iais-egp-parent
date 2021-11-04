@@ -3,7 +3,9 @@ package sg.gov.moh.iais.egp.bsb.action;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import lombok.extern.slf4j.Slf4j;
+import sg.gov.moh.iais.egp.bsb.client.TransferClient;
 import sg.gov.moh.iais.egp.bsb.dto.submission.TransferNotificationDto;
+import sg.gov.moh.iais.egp.bsb.util.LogUtil;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
@@ -16,6 +18,12 @@ import javax.servlet.http.HttpServletRequest;
 @Slf4j
 @Delegator(value = "transferNotificationDelegator")
 public class BsbTransferNotificationDelegator {
+    public static final String KEY_TRANSFER_NOTIFICATION_DTO = "transferNotDto";
+    private final TransferClient transferClient;
+
+    public BsbTransferNotificationDelegator(TransferClient transferClient) {
+        this.transferClient = transferClient;
+    }
 
     /**
      * start
@@ -33,6 +41,33 @@ public class BsbTransferNotificationDelegator {
      * */
     public void prepareData(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
-        ParamUtil.setRequestAttr(request,"transferNot",new TransferNotificationDto());
+        TransferNotificationDto transferNotificationDto = getTransferNotification(request);
+        ParamUtil.setRequestAttr(request,"transferNot",transferNotificationDto);
+    }
+
+    public void saveAndPrepareConfirm(BaseProcessClass bpc){
+         HttpServletRequest request = bpc.request;
+         //get value from jsp and bind value to dto
+         TransferNotificationDto notificationDto = getTransferNotification(request);
+         notificationDto.reqObjectMapping(request);
+         ParamUtil.setRequestAttr(request,"transferNot",notificationDto);
+    }
+
+    public void save(BaseProcessClass bpc){
+         HttpServletRequest request = bpc.request;
+         TransferNotificationDto notificationDto = getTransferNotification(request);
+        transferClient.saveNewTransferNot(notificationDto);
+    }
+
+    /**
+     * this method just used to charge if dto exist
+     * */
+    public TransferNotificationDto getTransferNotification(HttpServletRequest request){
+        TransferNotificationDto notificationDto = (TransferNotificationDto) ParamUtil.getSessionAttr(request,KEY_TRANSFER_NOTIFICATION_DTO);
+        return notificationDto == null?getDefaultDto():notificationDto;
+    }
+
+    private TransferNotificationDto getDefaultDto() {
+        return new TransferNotificationDto();
     }
 }

@@ -74,6 +74,7 @@
                                     <span data-err-ind="batQty--v--${status.index}" class="error-msg"></span>
                                 </div>
                             </div>
+                               <%@include file="../common/batDocument.jsp" %>
                             </div>
 
                             <div id="agentFifth--v--${status.index}" style="display: none">

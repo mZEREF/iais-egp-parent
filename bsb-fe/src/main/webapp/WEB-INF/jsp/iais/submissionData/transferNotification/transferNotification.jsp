@@ -78,7 +78,7 @@
                 <a class="back" href="#"><em class="fa fa-angle-left"></em> Back</a>
             </div>
             <div class="col-xs-12 col-md-6 text-right">
-                <button class="btn btn-primary save" id="savebtn" onclick="javascript:save()">NEXT</button>
+                <button class="btn btn-primary save" id="savebtn">NEXT</button>
             </div>
         </div>
     </div>

@@ -9,6 +9,7 @@ import sg.gov.moh.iais.egp.bsb.dto.ValidationResultDto;
 import sg.gov.moh.iais.egp.bsb.util.SpringReflectionUtils;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.Serializable;
 import java.util.*;
 
 /**
@@ -17,11 +18,11 @@ import java.util.*;
  **/
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class TransferNotificationDto {
+public class TransferNotificationDto implements Serializable {
 
     @Data
     @NoArgsConstructor
-    public static class TransferNot{
+    public static class TransferNot implements Serializable{
         private String scheduleType;
         private String batCode;
         private String transferType;
@@ -39,13 +40,75 @@ public class TransferNotificationDto {
 
 
     private List<TransferNot> transferNotList;
+    private String facId;
+    private String receiveFacility;
+    private String expectedTfDate;
+    private String expArrivalTime;
+    private String providerName;
+    private String remarks;
+    private String ensure;
 
-    private DocumentDto documentDto;
 
 
     @JsonIgnore
     private ValidationResultDto validationResultDto;
 
+
+    public String getExpectedTfDate() {
+        return expectedTfDate;
+    }
+
+    public void setExpectedTfDate(String expectedTfDate) {
+        this.expectedTfDate = expectedTfDate;
+    }
+
+    public String getExpArrivalTime() {
+        return expArrivalTime;
+    }
+
+    public void setExpArrivalTime(String expArrivalTime) {
+        this.expArrivalTime = expArrivalTime;
+    }
+
+    public String getProviderName() {
+        return providerName;
+    }
+
+    public void setProviderName(String providerName) {
+        this.providerName = providerName;
+    }
+
+    public String getRemarks() {
+        return remarks;
+    }
+
+    public void setRemarks(String remarks) {
+        this.remarks = remarks;
+    }
+
+    public String getReceiveFacility() {
+        return receiveFacility;
+    }
+
+    public void setReceiveFacility(String receiveFacility) {
+        this.receiveFacility = receiveFacility;
+    }
+
+    public String getFacId() {
+        return facId;
+    }
+
+    public void setFacId(String facId) {
+        this.facId = facId;
+    }
+
+    public String getEnsure() {
+        return ensure;
+    }
+
+    public void setEnsure(String ensure) {
+        this.ensure = ensure;
+    }
 
     //transferNotList getter setter
     public List<TransferNot> getTransferNotList() { return new ArrayList<>(transferNotList);
@@ -63,20 +126,12 @@ public class TransferNotificationDto {
         this.transferNotList = new ArrayList<>(transferLists);
     }
 
-    public DocumentDto getDocumentDto() {
-        return documentDto;
-    }
 
-    public void setDocumentDto(DocumentDto documentDto) {
-        this.documentDto = documentDto;
-    }
+
+    //------------------------------------------Validation---------------------------------------------
 
     public boolean doValidation() {
-        List<DocumentDto.DocMeta> docsMetaDto = null;
-        if(documentDto != null){
-            docsMetaDto = documentDto.getMetaDtoList();
-        }
-        this.validationResultDto = (ValidationResultDto) SpringReflectionUtils.invokeBeanMethod("cerRegFeignClient", "validateFacilityAdmin", new Object[]{transferNotList,docsMetaDto});
+        this.validationResultDto = (ValidationResultDto) SpringReflectionUtils.invokeBeanMethod("transferFeignClient", "validateTransferNot", new Object[]{this});
         return validationResultDto.isPass();
     }
 
@@ -102,6 +157,11 @@ public class TransferNotificationDto {
     private static final String KEY_PREFIX_TRANSFER_TYPE    = "batQty";
     private static final String KEY_PREFIX_TRANSFER_QTY     = "transferQty";
     private static final String KEY_PREFIX_MEASUREMENT_UNIT = "mstUnit";
+    private static final String KEY_EXPECTED_TRANSFER_DATE  = "expectedTfDate";
+    private static final String KEY_EXPECTED_ARRIVAL_TIME   = "expArrivalTime";
+    private static final String KEY_PROVIDER_NAME           = "providerName";
+    private static final String KEY_REMARK                  = "remarks";
+    private static final String KEY_ENSURE                  = "ensure";
 
 
     /**
@@ -122,7 +182,11 @@ public class TransferNotificationDto {
             transferNot.setMstUnit(ParamUtil.getString(request,KEY_PREFIX_MEASUREMENT_UNIT+SEPARATOR+i));
             addTransferNotList(transferNot);
         }
-
+        this.setExpectedTfDate(ParamUtil.getString(request,KEY_EXPECTED_TRANSFER_DATE));
+        this.setExpArrivalTime(ParamUtil.getString(request,KEY_EXPECTED_ARRIVAL_TIME));
+        this.setProviderName(ParamUtil.getString(request,KEY_PROVIDER_NAME));
+        this.setRemarks(ParamUtil.getString(request,KEY_REMARK));
+        this.setEnsure(ParamUtil.getString(request,KEY_ENSURE));
     }
 
 }

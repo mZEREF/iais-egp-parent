@@ -27,10 +27,12 @@ public class INTERNET___TransferNofication___1 extends BaseProcessClass {
 
 	public void saveAndPrepareConfirm_OnStepProcess_0() throws Exception {
 	// 		saveAndPrepareConfirm->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "saveAndPrepareConfirm", this);
 	}
 
 	public void save_OnStepProcess_0() throws Exception {
 	// 		save->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "save", this);
 	}
 
 }
