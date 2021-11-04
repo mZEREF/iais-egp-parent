@@ -6,6 +6,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSub
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DonationStageDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
@@ -144,9 +145,10 @@ public class DonationStageDelegator extends CommonDelegator{
             String otherDonatedCen=ParamUtil.getString(request,"otherDonatedCen");
             donationStageDto.setOtherDonatedCen(otherDonatedCen);
         }
-        //ID must be a registered patient in the receiving AR Centre
-        String directedDonorId=ParamUtil.getString(request,"directedDonorId");
-        donationStageDto.setDirectedDonorId(directedDonorId);
+        if(StringUtil.isNotEmpty(isCurCenDonated)&&!"Others".equals(isCurCenDonated)){
+            String directedDonorId=ParamUtil.getString(request,"directedDonorId");
+            donationStageDto.setDirectedDonorId(directedDonorId);
+        }
         String isCurCenResTypeHescr=ParamUtil.getString(request,"isCurCenResTypeHescr");
         if("on".equals(isCurCenResTypeHescr)){
             donationStageDto.setIsCurCenResTypeHescr(1);
@@ -182,7 +184,10 @@ public class DonationStageDelegator extends CommonDelegator{
 
         ValidationResult validationResult = WebValidationHelper.validateProperty(donationStageDto, "save");
         Map<String, String> errorMap = validationResult.retrieveAll();
-
+        if(StringUtil.isNotEmpty(donationStageDto.getDirectedDonorId())){
+            //ID must be a registered patient in the receiving AR Centre
+            donationStageDto.getIsCurCenDonated();
+        }
         if (!errorMap.isEmpty() || validationResult.isHasErrors()) {
             WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));

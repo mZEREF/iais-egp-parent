@@ -33,10 +33,7 @@ $(document).ready(function () {
     });
 
 
-    function keyNumericPress() {
-        var keyCode = event.keyCode;
-        event.returnValue = keyCode >= 48 && keyCode <= 57;
-    }
+
     $('#isCurCenDonated').change(function () {
 
         var reason= $('#isCurCenDonated option:selected').val();
@@ -83,3 +80,8 @@ $(document).ready(function () {
 
     });
 });
+
+function keyNumericPress() {
+    var keyCode = event.keyCode;
+    event.returnValue = keyCode >= 48 && keyCode <= 57;
+}

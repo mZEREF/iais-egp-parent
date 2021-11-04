@@ -126,7 +126,7 @@
                         <c:out value="${arSuperDataSubmissionDto.pgtStageDto.isEmbryosBiopsiedLocal}"/>
                     </iais:value>
                 </iais:row>
-                <div id="othersEmbryosBiopsyDisplay" <c:if test="${ arSuperDataSubmissionDto.pgtStageDto.isEmbryosBiopsiedLocal =='Others' }">style="display: none"</c:if> >
+                <div id="othersEmbryosBiopsyDisplay" <c:if test="${ arSuperDataSubmissionDto.pgtStageDto.isEmbryosBiopsiedLocal !='Others' }">style="display: none"</c:if> >
                     <iais:row>
                         <iais:field width="6" value="Other Centre where Embryos were Biospied At"/>
                         <iais:value width="6" display="true">
@@ -141,7 +141,7 @@
                         <c:out value="${arSuperDataSubmissionDto.pgtStageDto.isBiopsyLocal}"/>
                     </iais:value>
                 </iais:row>
-                <div id="othersBiopsyDisplay" <c:if test="${ arSuperDataSubmissionDto.pgtStageDto.isBiopsyLocal =='Others' }">style="display: none"</c:if> >
+                <div id="othersBiopsyDisplay" <c:if test="${ arSuperDataSubmissionDto.pgtStageDto.isBiopsyLocal !='Others' }">style="display: none"</c:if> >
                     <iais:row>
                         <iais:field width="6" value="Biopsy Done By (Others)"/>
                         <iais:value width="6" display="true">
