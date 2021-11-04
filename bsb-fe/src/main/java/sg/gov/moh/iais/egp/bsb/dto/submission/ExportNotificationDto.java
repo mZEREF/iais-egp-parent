@@ -73,11 +73,11 @@ public class ExportNotificationDto {
     }
 
     public boolean doValidation() {
-        List<DocumentDto.DocMeta> docsMetaDto = null;
-        if(documentDto != null){
-            docsMetaDto = documentDto.getMetaDtoList();
-        }
-        this.validationResultDto = (ValidationResultDto) SpringReflectionUtils.invokeBeanMethod("cerRegFeignClient", "validateFacilityAdmin", new Object[]{exportLists,docsMetaDto});
+//        List<DocumentDto.DocMeta> docsMetaDto = null;
+//        if(documentDto != null){
+//            docsMetaDto = documentDto.getMetaDtoList();
+//        }
+//        this.validationResultDto = (ValidationResultDto) SpringReflectionUtils.invokeBeanMethod("cerRegFeignClient", "validateFacilityAdmin", new Object[]{exportLists,docsMetaDto});
         return validationResultDto.isPass();
     }
 

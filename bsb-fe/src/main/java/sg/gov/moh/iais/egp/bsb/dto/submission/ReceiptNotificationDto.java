@@ -76,11 +76,11 @@ public class ReceiptNotificationDto {
     }
 
     public boolean doValidation() {
-        List<DocumentDto.DocMeta> docsMetaDto = null;
-        if(documentDto != null){
-            docsMetaDto = documentDto.getMetaDtoList();
-        }
-        this.validationResultDto = (ValidationResultDto) SpringReflectionUtils.invokeBeanMethod("cerRegFeignClient", "validateFacilityAdmin", new Object[]{receiptLists,docsMetaDto});
+//        List<DocumentDto.DocMeta> docsMetaDto = null;
+//        if(documentDto != null){
+//            docsMetaDto = documentDto.getMetaDtoList();
+//        }
+//        this.validationResultDto = (ValidationResultDto) SpringReflectionUtils.invokeBeanMethod("cerRegFeignClient", "validateFacilityAdmin", new Object[]{receiptLists,docsMetaDto});
         return validationResultDto.isPass();
     }
 

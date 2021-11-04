@@ -1,5 +1,10 @@
 $(function () {
 
+    $("#next").click(function (){
+        $("#mainForm").submit();
+    })
+
+
     $("#addNewSection").click(function () {
         var meta = readSectionRepeatMetaData();
         addSection(meta.amtInputName, meta.sectionIdPrefix, meta.headerTitlePrefix, meta.sectionGroupId, meta.separator);

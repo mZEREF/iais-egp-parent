@@ -68,11 +68,11 @@ public class DisposalNotificationDto {
     }
 
     public boolean doValidation() {
-        List<DocumentDto.DocMeta> docsMetaDto = null;
-        if(documentDto != null){
-            docsMetaDto = documentDto.getMetaDtoList();
-        }
-        this.validationResultDto = (ValidationResultDto) SpringReflectionUtils.invokeBeanMethod("cerRegFeignClient", "validateFacilityAdmin", new Object[]{disposalLists,docsMetaDto});
+//        List<DocumentDto.DocMeta> docsMetaDto = null;
+//        if(documentDto != null){
+//            docsMetaDto = documentDto.getMetaDtoList();
+//        }
+//        this.validationResultDto = (ValidationResultDto) SpringReflectionUtils.invokeBeanMethod("cerRegFeignClient", "validateFacilityAdmin", new Object[]{disposalLists,docsMetaDto});
         return validationResultDto.isPass();
     }
 

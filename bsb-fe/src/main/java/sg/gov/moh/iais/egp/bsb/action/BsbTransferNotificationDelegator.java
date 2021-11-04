@@ -5,7 +5,6 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import lombok.extern.slf4j.Slf4j;
 import sg.gov.moh.iais.egp.bsb.client.TransferClient;
 import sg.gov.moh.iais.egp.bsb.dto.submission.TransferNotificationDto;
-import sg.gov.moh.iais.egp.bsb.util.LogUtil;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
@@ -50,13 +49,13 @@ public class BsbTransferNotificationDelegator {
          //get value from jsp and bind value to dto
          TransferNotificationDto notificationDto = getTransferNotification(request);
          notificationDto.reqObjectMapping(request);
-         ParamUtil.setRequestAttr(request,"transferNot",notificationDto);
+         ParamUtil.setSessionAttr(request,"transferNot",notificationDto);
     }
 
     public void save(BaseProcessClass bpc){
          HttpServletRequest request = bpc.request;
          TransferNotificationDto notificationDto = getTransferNotification(request);
-        transferClient.saveNewTransferNot(notificationDto);
+         transferClient.saveNewTransferNot(notificationDto);
     }
 
     /**

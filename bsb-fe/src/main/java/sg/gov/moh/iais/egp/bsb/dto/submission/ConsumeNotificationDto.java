@@ -68,11 +68,11 @@ public class ConsumeNotificationDto {
     }
 
     public boolean doValidation() {
-        List<DocumentDto.DocMeta> docsMetaDto = null;
-        if(documentDto != null){
-            docsMetaDto = documentDto.getMetaDtoList();
-        }
-        this.validationResultDto = (ValidationResultDto) SpringReflectionUtils.invokeBeanMethod("cerRegFeignClient", "validateFacilityAdmin", new Object[]{consumptionLists,docsMetaDto});
+//        List<DocumentDto.DocMeta> docsMetaDto = null;
+//        if(documentDto != null){
+//            docsMetaDto = documentDto.getMetaDtoList();
+//        }
+//        this.validationResultDto = (ValidationResultDto) SpringReflectionUtils.invokeBeanMethod("cerRegFeignClient", "validateFacilityAdmin", new Object[]{consumptionLists,docsMetaDto});
         return validationResultDto.isPass();
     }
 

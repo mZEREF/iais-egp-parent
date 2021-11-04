@@ -210,11 +210,11 @@
                                                                             <br/>
                                                                             <div class="col-sm-4" style="margin-top: 8px">
                                                                                 <input type="radio" name="declare" id="declareT" value="yes"/>
-                                                                                <label for="declareT">Local</label>
+                                                                                <label for="declareT">yes</label>
                                                                             </div>
                                                                             <div class="col-sm-4" style="margin-top: 8px">
                                                                                 <input type="radio" name="declare" id="declareN" value="no"/>
-                                                                                <label for="declareN">Overseas</label>
+                                                                                <label for="declareN">no</label>
                                                                             </div>
                                                                         </div>
                                                                     </div>

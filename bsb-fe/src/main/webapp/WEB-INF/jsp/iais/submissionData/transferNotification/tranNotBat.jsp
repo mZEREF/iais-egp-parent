@@ -34,7 +34,6 @@
                                                  firstOption="Please Select"/>
                                     <span data-err-ind="scheduleType--v--${status.index}" class="error-msg"></span>
                                 </div>
-                                <input type="hidden" id="sType--v--${status.index}"  readonly disabled>
                             </div>
                             <div class="form-group">
                                 <div class="col-sm-5 control-label">
