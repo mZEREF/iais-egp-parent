@@ -268,4 +268,14 @@ public class ArDataSubmissionServiceImpl implements ArDataSubmissionService {
         cycleDto.setStatuses(IaisCommonUtils.isEmpty(status) ? statuses : Arrays.asList(status));
         return arFeClient.getByPatientCodeAndHciCodeAndCycleTypeAndStatuses(cycleDto).getEntity();
     }
+
+    @Override
+    public void updateDataSubmissionDraftStatus(String draftId, String status) {
+        log.info(StringUtil.changeForLog("------Draft ID: " + draftId + " - Status: " + status + "------"));
+        if (StringUtil.isEmpty(draftId) || StringUtil.isEmpty(status)) {
+            return;
+        }
+        arFeClient.updateDataSubmissionDraftStatus(draftId, status);
+    }
+
 }

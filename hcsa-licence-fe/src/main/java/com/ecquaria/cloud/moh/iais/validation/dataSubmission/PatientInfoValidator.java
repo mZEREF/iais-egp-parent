@@ -92,6 +92,11 @@ public class PatientInfoValidator implements CustomizeValidator {
             } else if (StringUtil.isEmpty(previous.getId())) {
                 map.put("retrievePrevious", "GENERAL_ACK018");
             }
+            if (!StringUtil.isEmpty(previous.getIdNumber()) && previous.getIdNumber().equals(patient.getIdNumber())
+                    && Objects.equals(previous.getIdType(), patient.getIdType())
+                    && Objects.equals(previous.getNationality(), patient.getNationality())) {
+                map.put("preIdNumber", "GENERAL_ERR0051");
+            }
         }
         HusbandDto husband = patientInfo.getHusband();
         if (husband == null) {
@@ -100,6 +105,11 @@ public class PatientInfoValidator implements CustomizeValidator {
         result = WebValidationHelper.validateProperty(husband, "save");
         if (result != null) {
             map.putAll(result.retrieveAll("", "Hbd"));
+        }
+        if (!StringUtil.isEmpty(husband.getIdNumber()) && husband.getIdNumber().equals(patient.getIdNumber())
+                && Objects.equals(husband.getIdType(), patient.getIdType())
+                && Objects.equals(husband.getNationality(), patient.getNationality())) {
+            map.put("idNumberHbd", "GENERAL_ERR0051");
         }
         //}
         return map;

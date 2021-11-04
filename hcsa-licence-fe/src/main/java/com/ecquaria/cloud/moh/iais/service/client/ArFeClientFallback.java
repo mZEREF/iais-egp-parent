@@ -2,17 +2,21 @@ package com.ecquaria.cloud.moh.iais.service.client;
 
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.*;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 
+import java.util.Arrays;
 import java.util.List;
 
 /**
  * @Description ArCommonFeClientFallback
  * @Auther chenlei on 10/26/2021.
  */
+@Slf4j
 public class ArFeClientFallback implements ArFeClient {
 
-    private FeignResponseEntity getFeignResponseEntity() {
+    private FeignResponseEntity getFeignResponseEntity(Object... params) {
+        log.warn("--------Params: " + Arrays.toString(params) + "-----------");
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
@@ -118,11 +122,17 @@ public class ArFeClientFallback implements ArFeClient {
 
     @Override
     public FeignResponseEntity<Void> deleteArSuperDataSubmissionDtoDraftByConds(String orgId, String submissionType, String hciCode) {
-        return getFeignResponseEntity();
+        return getFeignResponseEntity(submissionType, hciCode);
     }
 
     @Override
     public FeignResponseEntity<List<CycleDto>> getByPatientCodeAndHciCodeAndCycleTypeAndStatuses(CycleDto cycleDto) {
-        return getFeignResponseEntity();
+        return getFeignResponseEntity(cycleDto);
     }
+
+    @Override
+    public FeignResponseEntity<Void> updateDataSubmissionDraftStatus(String draftId, String status) {
+        return getFeignResponseEntity(draftId, status);
+    }
+
 }

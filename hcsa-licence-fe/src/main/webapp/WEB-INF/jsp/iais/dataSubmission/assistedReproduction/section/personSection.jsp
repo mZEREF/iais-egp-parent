@@ -37,6 +37,7 @@
 <div class="form-group" id="ethnicGroupOtherDiv${suffix}" style="<c:if test="${person.ethnicGroup ne 'ETHG005'}">display:none</c:if>">
     <iais:field width="5" value="Ethnic Group (Others)" mandatory="true"/>
     <iais:value width="7" cssClass="col-md-7">
-        <iais:input maxLength="66" type="text" name="ethnicGroupOther${suffix}" id="ethnicGroupOther${suffix}" value="${person.ethnicGroupOther}"/>
+        <iais:input maxLength="20" type="text" name="ethnicGroupOther${suffix}" id="ethnicGroupOther${suffix}"
+                    value="${person.ethnicGroupOther}"/>
     </iais:value>
 </div>

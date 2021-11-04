@@ -55,4 +55,7 @@ public interface ArDataSubmissionService {
     ArSubFreezingStageDto checkValueIsDirtyData(String freeCryoRadio, ArSubFreezingStageDto arSubFreezingStageDto, List<SelectOption> freeCryoOptions);
 
     List<CycleDto> getByPatientCodeAndHciCodeAndCycleTypeAndStatuses(String patientCode,String hciCode, String cycleType,String... status);
+
+    void updateDataSubmissionDraftStatus(String draftId, String status);
+
 }

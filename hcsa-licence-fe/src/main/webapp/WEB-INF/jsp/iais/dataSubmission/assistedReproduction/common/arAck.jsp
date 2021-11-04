@@ -18,7 +18,7 @@
         <div class="container center-content">
             <div class="col-xs-12">
                 <h3>Successful Submission</h3>
-                <div>Thank you for your submission.</div>
+                <div><iais:message key="DS_MSG004"/></div>
                 <div class="application-tab-footer">
                     <div class="col-xs-12 col-sm-12 col-md-12">
                         <div class="button-group">

@@ -207,7 +207,8 @@ public abstract class CommonDelegator {
             log.error(StringUtil.changeForLog("The Eic saveArSuperDataSubmissionDtoToBE failed ===>" + e.getMessage()), e);
         }
         if (!StringUtil.isEmpty(arSuperDataSubmission.getDraftId())) {
-
+            arDataSubmissionService.updateDataSubmissionDraftStatus(arSuperDataSubmission.getDraftId(),
+                    DataSubmissionConsts.DS_STATUS_INACTIVE);
         }
         ParamUtil.setSessionAttr(bpc.request, DataSubmissionConstant.AR_DATA_SUBMISSION, arSuperDataSubmission);
     }
