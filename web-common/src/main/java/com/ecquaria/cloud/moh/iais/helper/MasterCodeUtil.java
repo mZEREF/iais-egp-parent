@@ -87,6 +87,10 @@ public final class MasterCodeUtil {
     public static final String CATE_ID_DONATED_TYPE                = "FB120D85-0A85-4AEC-BF79-FB5598582345";
     public static final String CATE_ID_DONATION_REASON             = "FB121B45-0A85-4AEC-BF79-FB5598582345";
     public static final String CATE_ID_AGE_OF_EMBRYO_TRANSFER      = "5DAF8193-CBA8-414F-8873-5A3CC4794133";
+    public static final String CATE_ID_ORDER_IN_ULTRASOUND         = "CDD1E8F5-92B9-4B7C-B66F-871A59703EB3";
+    public static final String CATE_ID_OUTCOME_OFPREGNANCY         = "E54B1A96-9AE8-4D3C-B620-D8C6F60090DC";
+    public static final String CATE_ID_MODE_OF_DELIVERY            = "BA3BDE36-50B7-442F-8A26-C4DD4A50A91B";
+    public static final String CATE_ID_BABY_BIRTH_WEIGHT           = "6A3AD422-C5B8-44BB-A62F-A69CF558C006";
 
     public static final String CATE_ID_SYSTEM_PARAMETER_MODULE          = "1D3F6F1A-5334-EA11-BE7D-000C29F371DC";
     public static final String CATE_ID_SYSTEM_PARAMETER_TYPE            = "364C7AFB-5234-EA11-BE7D-000C29F371DC";

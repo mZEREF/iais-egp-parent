@@ -48,7 +48,7 @@
       </div>
     </div>
   </iais:row>
-  <div <c:if test="${pregnancyOutcomeBabyDto.birthDefect != 'yes'}">style="display:none;"</c:if>>
+  <div name="defectTypeSectionName" <c:if test="${pregnancyOutcomeBabyDto.birthDefect != 'yes'}">style="display:none;"</c:if>>
     <iais:row>
       <iais:field width="5" value="Baby 1 Defect Type" mandatory="true"/>
       <iais:value width="7" cssClass="col-md-7">
@@ -143,7 +143,7 @@
         <span id="error_oocyteRetrievalFrom" name="iaisErrorMsg" class="error-msg"></span>
       </iais:value>
     </iais:row>
-    <div <c:if test="${pregnancyOutcomeBabyDto.defectTypes != 'other'}">style="display:none;"</c:if>>
+    <div name = "otherDefectTypeDivName" <c:if test="${pregnancyOutcomeBabyDto.defectTypes != 'other'}">style="display:none;"</c:if>>
       <iais:row>
         <iais:field width="5" value="Baby 1 Defect Type (Others)" mandatory="true"/>
         <iais:value width="7" cssClass="col-md-7">
