@@ -14,9 +14,9 @@
                 <iais:row>
                     <iais:field width="6" value="Is Clinical Pregnancy Detected?" mandatory="false"/>
                     <iais:value width="6" display="true">
-                        <c:if test="${arSuperDataSubmissionDto.outcomeStageDto.pregnancyDetected ==1 }">
+                        <c:if test="${outcomeStageDto.pregnancyDetected == true }">
                             Yes</c:if>
-                        <c:if test="${arSuperDataSubmissionDto.outcomeStageDto.pregnancyDetected ==0 }">
+                        <c:if test="${outcomeStageDto.pregnancyDetected == false }">
                             No</c:if>
                     </iais:value>
                 </iais:row>

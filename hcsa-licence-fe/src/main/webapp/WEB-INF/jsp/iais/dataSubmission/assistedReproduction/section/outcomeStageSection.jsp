@@ -17,28 +17,28 @@
                             <input class="form-check-input"
                                    type="radio"
                                    name="detectedRadio"
-                                   value="1"
+                                   value="true"
                                    id="radioYes"
-                                   <c:if test="${outcomeStageDto.pregnancyDetected}">checked</c:if>
                                    aria-invalid="false">
                             <label class="form-check-label"
                                    for="radioYes"><span
                                     class="check-circle"></span>Yes</label>
                         </div>
+                        <span class="error-msg" name="iaisErrorMsg" id="error_artCoFunding"></span>
                     </iais:value>
                     <iais:value width="3" cssClass="col-md-3">
                         <div class="form-check">
                             <input class="form-check-input"
                                    type="radio"
                                    name="detectedRadio"
-                                   value="0"
+                                   value="false"
                                    id="radioNo"
-                                   <c:if test="${!outcomeStageDto.pregnancyDetected}">checked</c:if>
                                    aria-invalid="false">
                             <label class="form-check-label"
                                    for="radioNo"><span
                                     class="check-circle"></span>No</label>
                         </div>
+                        <span class="error-msg" name="iaisErrorMsg" id="error_pregnancyDetected"></span>
                     </iais:value>
                 </iais:row>
             </div>
