@@ -51,9 +51,9 @@ public class LicencePrint {
                 PDFGenerator pdfGenerator = new PDFGenerator(templateDir);
                 String fileName = "LICENCE" + fileNum ;
                 File pdfFile = new File(fileName+".pdf");
-//                Map<String,String> VehicleNo = licenceViewDto.getVehicleNoMap();
-//                String VehicleNo1 = VehicleNo.get("VehicleNo1");
-//                String VehicleNo2 = VehicleNo.get("VehicleNo2");
+                Map<String,String> VehicleNo = licenceViewDto.getVehicleNoMap();
+                String VehicleNo1 = VehicleNo.get("VehicleNo1");
+                String VehicleNo2 = VehicleNo.get("VehicleNo2");
                 Map<String, String> map = IaisCommonUtils.genNewHashMap();
                 map.put("licenceNo",licenceViewDto.getLicenceNo());
                 map.put("licenseeName",licenceViewDto.getLicenseeName());
@@ -69,33 +69,37 @@ public class LicencePrint {
                 //map.put("hciName",licenceViewDto.getHciName());
                 map.put("businessName",StringUtil.isEmpty(licenceViewDto.getBusinessName())?AppConsts.EMPTY_STR_NA:licenceViewDto.getBusinessName());
                 map.put("address",licenceViewDto.getAddress());
-               // map.put("vehicleNo",StringUtil.isEmpty(VehicleNo1)?AppConsts.EMPTY_STR_NA:VehicleNo1);
-                map.put("vehicleNo",licenceViewDto.getVehicleNo());
-//                if(StringUtil.isNotEmpty(VehicleNo2)){
-//                    map.put("vehicleNo2",VehicleNo2);
-//                }
+                if(StringUtil.isNotEmpty(VehicleNo2)){
+                    map.put("vehicleNo",StringUtil.isEmpty(VehicleNo1)?AppConsts.EMPTY_STR_NA:VehicleNo1);
+                    map.put("vehicleNo2",VehicleNo2);
+                }else{
+                    map.put("vehicleNo",licenceViewDto.getVehicleNo());
+                }
+//                String str = "<li>VehicleNo1</li><li>VehicleNo2</li><li>VehicleNo3</li><li>VehicleNo4</li><li>VehicleNo5</li><li>VehicleNo6</li><li>VehicleNo7</li><li>VehicleNo8</li><li>VehicleNo9</li><li>VehicleNo10</li>";
+//                map.put("vehicleNo",str);
+//                map.put("vehicleNo2",str);
                 map.put("startDate",licenceViewDto.getStartDate());
                 map.put("endDate",licenceViewDto.getEndDate());
                 OutputStream outputStream = java.nio.file.Files.newOutputStream(Paths.get(fileName+".pdf"));
                 try {
-                    pdfGenerator.generate(outputStream, "licence.ftl", map);
-                    //pdfGenerator.generate(outputStream, "single_licence.ftl", map);
-//                    String ftlName = null;
-//                    if(StringUtil.isNotEmpty(licenceViewDto.getBaseServiceName())){
-//                       if(StringUtil.isEmpty(VehicleNo2)){
-//                           ftlName = "sls_single_licence.ftl";
-//                       }else{
-//                           ftlName = "sls_multiple_licence.ftl";
-//                       }
-//                    }else{
-//                        if(StringUtil.isEmpty(VehicleNo2)){
-//                            ftlName = "single_licence.ftl";
-//                        }else{
-//                            ftlName = "multiple_licence.ftl";
-//                        }
-//                    }
-//                    log.info(StringUtil.changeForLog("The ftlName is -->:"+ftlName));
-//                    pdfGenerator.generate(outputStream, ftlName, map);
+                    //pdfGenerator.generate(outputStream, "licence.ftl", map);
+                    pdfGenerator.generate(outputStream, "single_licence.ftl", map);
+                    String ftlName = null;
+                    if(StringUtil.isNotEmpty(licenceViewDto.getBaseServiceName())){
+                       if(StringUtil.isEmpty(VehicleNo2)){
+                           ftlName = "sls_single_licence.ftl";
+                       }else{
+                           ftlName = "sls_multiple_licence.ftl";
+                       }
+                    }else{
+                        if(StringUtil.isEmpty(VehicleNo2)){
+                            ftlName = "single_licence.ftl";
+                        }else{
+                            ftlName = "multiple_licence.ftl";
+                        }
+                    }
+                    log.info(StringUtil.changeForLog("The ftlName is -->:"+ftlName));
+                    pdfGenerator.generate(outputStream, ftlName, map);
                 }catch (Exception e){
                     log.error(e.getMessage(),e);
                 }
