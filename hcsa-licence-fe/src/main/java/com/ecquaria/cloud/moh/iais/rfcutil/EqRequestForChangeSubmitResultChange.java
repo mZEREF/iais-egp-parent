@@ -50,7 +50,8 @@ public class EqRequestForChangeSubmitResultChange {
         if (appGrpPremisesDtoList == null || oldAppGrpPremisesDtoList == null) {
             return false;
         }
-        if (!appGrpPremisesDtoList.equals(oldAppGrpPremisesDtoList)) {
+
+        if (!PageDataCopyUtil.copyAppGrpPremises(appGrpPremisesDtoList).equals(PageDataCopyUtil.copyAppGrpPremises(oldAppGrpPremisesDtoList))) {
             return true;
         }
         return false;
@@ -80,52 +81,54 @@ public class EqRequestForChangeSubmitResultChange {
             AppGrpPremisesDto copy = (AppGrpPremisesDto) CopyUtil.copyMutableObject(appGrpPremisesDtoList.get(i));
             AppGrpPremisesDto appGrpPremisesDto = oldAppGrpPremisesDtoList.get(i);
             // re-set not auto fields
-            if (appEditSelectDto.isChangeHciName() || appEditSelectDto.isChangeInLocation()) {
-                if (ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(appGrpPremisesDto.getPremisesType())) {
-                    copy.setPostalCode(appGrpPremisesDto.getPostalCode());
-                    copy.setAddrType(appGrpPremisesDto.getAddrType());
-                    copy.setBlkNo(appGrpPremisesDto.getBlkNo());
-                    copy.setFloorNo(appGrpPremisesDto.getFloorNo());
-                    copy.setUnitNo(appGrpPremisesDto.getUnitNo());
-                    copy.setStreetName(appGrpPremisesDto.getStreetName());
-                    copy.setBuildingName(appGrpPremisesDto.getBuildingName());
-
-                    copy.setHciName(appGrpPremisesDto.getHciName());
-                } else if (ApplicationConsts.PREMISES_TYPE_OFF_SITE.equals(appGrpPremisesDto.getPremisesType())) {
-                    copy.setOffSitePostalCode(appGrpPremisesDto.getOffSitePostalCode());
-                    copy.setOffSiteAddressType(appGrpPremisesDto.getOffSiteAddressType());
-                    copy.setOffSiteBlockNo(appGrpPremisesDto.getOffSiteBlockNo());
-                    copy.setOffSiteFloorNo(appGrpPremisesDto.getOffSiteFloorNo());
-                    copy.setOffSiteUnitNo(appGrpPremisesDto.getOffSiteUnitNo());
-                    copy.setOffSiteStreetName(appGrpPremisesDto.getOffSiteStreetName());
-                    copy.setOffSiteBuildingName(appGrpPremisesDto.getOffSiteBuildingName());
-
-                    copy.setOffSiteHciName(appGrpPremisesDto.getOffSiteHciName());
-                } else if (ApplicationConsts.PREMISES_TYPE_EAS_MTS_CONVEYANCE.equals(appGrpPremisesDto.getPremisesType())) {
-                    //EASMTS
-                    copy.setEasMtsHciName(appGrpPremisesDto.getEasMtsHciName());
-                    copy.setEasMtsPostalCode(appGrpPremisesDto.getEasMtsPostalCode());
-                    copy.setEasMtsAddressType(appGrpPremisesDto.getEasMtsAddressType());
-                    copy.setEasMtsBlockNo(appGrpPremisesDto.getEasMtsBlockNo());
-                    copy.setEasMtsFloorNo(appGrpPremisesDto.getEasMtsFloorNo());
-                    copy.setEasMtsUnitNo(appGrpPremisesDto.getEasMtsUnitNo());
-                    copy.setEasMtsStreetName(appGrpPremisesDto.getEasMtsStreetName());
-                    copy.setEasMtsBuildingName(appGrpPremisesDto.getEasMtsBuildingName());
-                } else {
-                    copy.setConveyancePostalCode(appGrpPremisesDto.getConveyancePostalCode());
-                    copy.setConveyanceAddressType(appGrpPremisesDto.getConveyanceAddressType());
-                    copy.setConveyanceBlockNo(appGrpPremisesDto.getConveyanceBlockNo());
-                    copy.setConveyanceFloorNo(appGrpPremisesDto.getConveyanceFloorNo());
-                    copy.setConveyanceUnitNo(appGrpPremisesDto.getConveyanceUnitNo());
-                    copy.setConveyanceStreetName(appGrpPremisesDto.getConveyanceStreetName());
-                    copy.setConveyanceBuildingName(appGrpPremisesDto.getConveyanceBuildingName());
-                    copy.setConveyanceHciName(appGrpPremisesDto.getConveyanceHciName());
-                }
+            if (appEditSelectDto.isChangeHciName() || appEditSelectDto.isChangeInLocation() || appEditSelectDto.isChangeAddFloorUnit()) {
+                copy.setPremisesType(appGrpPremisesDto.getPremisesType());
+                // on site or all
+                copy.setPostalCode(appGrpPremisesDto.getPostalCode());
+                copy.setAddrType(appGrpPremisesDto.getAddrType());
+                copy.setBlkNo(appGrpPremisesDto.getBlkNo());
+                copy.setFloorNo(appGrpPremisesDto.getFloorNo());
+                copy.setUnitNo(appGrpPremisesDto.getUnitNo());
+                copy.setStreetName(appGrpPremisesDto.getStreetName());
+                copy.setBuildingName(appGrpPremisesDto.getBuildingName());
+                copy.setHciName(appGrpPremisesDto.getHciName());
+                // off site
+                copy.setOffSitePostalCode(appGrpPremisesDto.getOffSitePostalCode());
+                copy.setOffSiteAddressType(appGrpPremisesDto.getOffSiteAddressType());
+                copy.setOffSiteBlockNo(appGrpPremisesDto.getOffSiteBlockNo());
+                copy.setOffSiteFloorNo(appGrpPremisesDto.getOffSiteFloorNo());
+                copy.setOffSiteUnitNo(appGrpPremisesDto.getOffSiteUnitNo());
+                copy.setOffSiteStreetName(appGrpPremisesDto.getOffSiteStreetName());
+                copy.setOffSiteBuildingName(appGrpPremisesDto.getOffSiteBuildingName());
+                copy.setOffSiteHciName(appGrpPremisesDto.getOffSiteHciName());
+                //EASMTS
+                copy.setEasMtsHciName(appGrpPremisesDto.getEasMtsHciName());
+                copy.setEasMtsPostalCode(appGrpPremisesDto.getEasMtsPostalCode());
+                copy.setEasMtsAddressType(appGrpPremisesDto.getEasMtsAddressType());
+                copy.setEasMtsBlockNo(appGrpPremisesDto.getEasMtsBlockNo());
+                copy.setEasMtsFloorNo(appGrpPremisesDto.getEasMtsFloorNo());
+                copy.setEasMtsUnitNo(appGrpPremisesDto.getEasMtsUnitNo());
+                copy.setEasMtsStreetName(appGrpPremisesDto.getEasMtsStreetName());
+                copy.setEasMtsBuildingName(appGrpPremisesDto.getEasMtsBuildingName());
+                // conveyance
+                copy.setConveyancePostalCode(appGrpPremisesDto.getConveyancePostalCode());
+                copy.setConveyanceAddressType(appGrpPremisesDto.getConveyanceAddressType());
+                copy.setConveyanceBlockNo(appGrpPremisesDto.getConveyanceBlockNo());
+                copy.setConveyanceFloorNo(appGrpPremisesDto.getConveyanceFloorNo());
+                copy.setConveyanceUnitNo(appGrpPremisesDto.getConveyanceUnitNo());
+                copy.setConveyanceStreetName(appGrpPremisesDto.getConveyanceStreetName());
+                copy.setConveyanceBuildingName(appGrpPremisesDto.getConveyanceBuildingName());
+                copy.setConveyanceHciName(appGrpPremisesDto.getConveyanceHciName());
             }
             if (appEditSelectDto.isChangeAddFloorUnit()) {
                 List<AppPremisesOperationalUnitDto> appPremisesOperationalUnitDtoList =
                         PageDataCopyUtil.copyAppPremisesOperationalUnitDto(appGrpPremisesDto.getAppPremisesOperationalUnitDtos());
                 copy.setAppPremisesOperationalUnitDtos(appPremisesOperationalUnitDtoList);
+            }
+            // re-set other day
+            copy.setLicenceDtos(appGrpPremisesDto.getLicenceDtos());
+            if (StringUtil.isEmpty(copy.getCertIssuedDtStr()) && StringUtil.isEmpty(appGrpPremisesDto.getCertIssuedDtStr())) {
+                copy.setCertIssuedDtStr(appGrpPremisesDto.getCertIssuedDtStr());
             }
             result.add(copy);
         }
@@ -133,6 +136,12 @@ public class EqRequestForChangeSubmitResultChange {
     }
 
     public static boolean eqServiceChange(List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList, List<AppSvcRelatedInfoDto> oldAppSvcRelatedInfoDtoList) throws Exception {
+        return eqServiceChange(appSvcRelatedInfoDtoList, oldAppSvcRelatedInfoDtoList, null);
+    }
+
+    public static boolean eqServiceChange(List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList,
+            List<AppSvcRelatedInfoDto> oldAppSvcRelatedInfoDtoList, AppEditSelectDto appEditSelectDto) {
+        List<String> changeList = IaisCommonUtils.genNewArrayList();
         List<AppSvcRelatedInfoDto> n = (List<AppSvcRelatedInfoDto>) CopyUtil.copyMutableObjectList(appSvcRelatedInfoDtoList);
         List<AppSvcRelatedInfoDto> o = (List<AppSvcRelatedInfoDto>) CopyUtil.copyMutableObjectList(oldAppSvcRelatedInfoDtoList);
         List<AppSvcDisciplineAllocationDto> appSvcDisciplineAllocationDtoList = n.get(0).getAppSvcDisciplineAllocationDtoList();
@@ -151,66 +160,93 @@ public class EqRequestForChangeSubmitResultChange {
         boolean eqSvcDoc = eqSvcDoc(appSvcDocDtoLit, oldAppSvcDocDtoLit);
         boolean eqAppSvcVehicle = isChangeAppSvcVehicleDto(n.get(0).getAppSvcVehicleDtoList(), o.get(0).getAppSvcVehicleDtoList());
         boolean eqAppSvcChargesPageDto = eqAppSvcChargesPageDto(n.get(0).getAppSvcChargesPageDto(), o.get(0).getAppSvcChargesPageDto());
-        boolean changePersonnel = changePersonnel(appSvcRelatedInfoDtoList, oldAppSvcRelatedInfoDtoList);
+        boolean changePersonnel = changePersonnel(appSvcRelatedInfoDtoList, oldAppSvcRelatedInfoDtoList, changeList);
         boolean eqAppSvcBusiness = isChangeAppSvcBusinessDto(n.get(0).getAppSvcBusinessDtoList(), o.get(0).getAppSvcBusinessDtoList());
+        if (flag1 && !flag) {
+            changeList.add(HcsaConsts.STEP_DISCIPLINE_ALLOCATION);
+        }
+        if (eqSvcDoc) {
+            changeList.add(HcsaConsts.STEP_DOCUMENTS);
+        }
+        if (eqAppSvcChargesPageDto) {
+            changeList.add(HcsaConsts.STEP_CHARGES);
+        }
+        if (appEditSelectDto != null) {
+            List<String> personnelEditList = appEditSelectDto.getPersonnelEditList();
+            if (personnelEditList == null) {
+                personnelEditList = IaisCommonUtils.genNewArrayList();
+            }
+            personnelEditList.addAll(changeList);
+            appEditSelectDto.setPersonnelEditList(personnelEditList);
+        }
         if (!flag || !flag1 || eqSvcDoc || eqAppSvcVehicle ||eqAppSvcChargesPageDto || changePersonnel || eqAppSvcBusiness) {
             return true;
         }
         return false;
     }
 
-    public static boolean changePersonnel(List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList,
-            List<AppSvcRelatedInfoDto> oldAppSvcRelatedInfoDtoList) {
+    private static boolean changePersonnel(List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList,
+            List<AppSvcRelatedInfoDto> oldAppSvcRelatedInfoDtoList, List<String> changeList) {
         List<AppSvcRelatedInfoDto> n = null;
         List<AppSvcRelatedInfoDto> o = null;
         n = (List<AppSvcRelatedInfoDto>) CopyUtil.copyMutableObjectList(appSvcRelatedInfoDtoList);
         o = (List<AppSvcRelatedInfoDto>) CopyUtil.copyMutableObjectList(oldAppSvcRelatedInfoDtoList);
+        boolean changePersonnel = false;
         if (n == null || o == null) {
-            return true;
+            changePersonnel = true;
         }
-        boolean eqAppSvcClinicalDirector = eqAppSvcClinicalDirector(n.get(0).getAppSvcClinicalDirectorDtoList(), o.get(0).getAppSvcClinicalDirectorDtoList());
+        boolean eqAppSvcClinicalDirector = eqAppSvcClinicalDirector(n.get(0).getAppSvcClinicalDirectorDtoList(),
+                o.get(0).getAppSvcClinicalDirectorDtoList());
         if (eqAppSvcClinicalDirector) {
-            return true;
+            //changeList.add(HcsaConsts.STEP_CLINICAL_DIRECTOR);
+            changePersonnel = true;
         }
         List<AppSvcPersonnelDto> appSvcPersonnelDtoList = n.get(0).getAppSvcPersonnelDtoList();
         List<AppSvcPersonnelDto> oldAppSvcPersonnelDtoList = o.get(0).getAppSvcPersonnelDtoList();
         boolean eqServicePseronnel = eqServicePseronnel(appSvcPersonnelDtoList, oldAppSvcPersonnelDtoList);
         if (eqServicePseronnel) {
-            return true;
+            changeList.add(HcsaConsts.STEP_SERVICE_PERSONNEL);
+            changePersonnel = true;
         }
         // section leader
         List<AppSvcPersonnelDto> appSvcSectionLeaderList = n.get(0).getAppSvcSectionLeaderList();
         List<AppSvcPersonnelDto> oldAppSvcSectionLeaderList = o.get(0).getAppSvcSectionLeaderList();
         boolean eqSectionLeader = eqServicePseronnel(appSvcSectionLeaderList, oldAppSvcSectionLeaderList);
         if (eqSectionLeader) {
-            return true;
+            changeList.add(HcsaConsts.STEP_SECTION_LEADER);
+            changePersonnel = true;
         }
         List<AppSvcPrincipalOfficersDto> appSvcPrincipalOfficersDtoList = n.get(0).getAppSvcPrincipalOfficersDtoList();
         List<AppSvcPrincipalOfficersDto> oldAppSvcPrincipalOfficersDtoList = o.get(0).getAppSvcPrincipalOfficersDtoList();
         boolean eqSvcPrincipalOfficers = eqSvcPrincipalOfficers(appSvcPrincipalOfficersDtoList, oldAppSvcPrincipalOfficersDtoList);
         if (eqSvcPrincipalOfficers) {
-            return true;
+            //changeList.add(HcsaConsts.STEP_PRINCIPAL_OFFICERS);
+            changePersonnel = true;
         }
         List<AppSvcPrincipalOfficersDto> appSvcCgoDtoList = n.get(0).getAppSvcCgoDtoList();
         List<AppSvcPrincipalOfficersDto> oldAppSvcCgoDtoList = o.get(0).getAppSvcCgoDtoList();
         boolean eqCgo = eqCgo(appSvcCgoDtoList, oldAppSvcCgoDtoList);
         if (eqCgo) {
-            return true;
+            //changeList.add(HcsaConsts.STEP_CLINICAL_GOVERNANCE_OFFICERS);
+            changePersonnel = true;
         }
         List<AppSvcPrincipalOfficersDto> appSvcMedAlertPersonList = n.get(0).getAppSvcMedAlertPersonList();
         List<AppSvcPrincipalOfficersDto> oldAppSvcMedAlertPersonList = o.get(0).getAppSvcMedAlertPersonList();
         boolean eqMeadrter = eqMeadrter(appSvcMedAlertPersonList, oldAppSvcMedAlertPersonList);
         if (eqMeadrter) {
-            return true;
+            //changeList.add(HcsaConsts.STEP_MEDALERT_PERSON);
+            changePersonnel = true;
         }
         // kah
         List<AppSvcPrincipalOfficersDto> appSvcKeyAppointmentHolderDtoList = n.get(0).getAppSvcKeyAppointmentHolderDtoList();
         List<AppSvcPrincipalOfficersDto> oldAppSvcKeyAppointmentHolderDtoList = o.get(0).getAppSvcKeyAppointmentHolderDtoList();
-        boolean eqKeyAppointmentHolder = eqKeyAppointmentHolder(appSvcKeyAppointmentHolderDtoList, oldAppSvcKeyAppointmentHolderDtoList);
+        boolean eqKeyAppointmentHolder = eqKeyAppointmentHolder(appSvcKeyAppointmentHolderDtoList,
+                oldAppSvcKeyAppointmentHolderDtoList);
         if (eqKeyAppointmentHolder) {
-            return true;
+            //changeList.add(HcsaConsts.STEP_KEY_APPOINTMENT_HOLDER);
+            changePersonnel = true;
         }
-        return false;
+        return changePersonnel;
     }
 
     private static boolean eqAppSvcLaboratoryDisciplines(List<AppSvcLaboratoryDisciplinesDto> appSvcLaboratoryDisciplinesDtoList,List<AppSvcLaboratoryDisciplinesDto> oldAppSvcLaboratoryDisciplinesDtoList){
@@ -771,6 +807,21 @@ public class EqRequestForChangeSubmitResultChange {
         boolean changeBusiness = isChangeAppSvcBusinessDtos(appSubmissionDto.getAppSvcRelatedInfoDtoList(),
                 oldAppSubmissionDto.getAppSvcRelatedInfoDtoList());
         boolean notChangePersonnel = compareNotChangePersonnel(appSubmissionDto, oldAppSubmissionDto);
+        // for splitting the submission
+        AppEditSelectDto showDto = appSubmissionDto.getAppEditSelectDto();
+        List<String> stepList = showDto.getPersonnelEditList();
+        if (stepList == null) {
+            stepList = IaisCommonUtils.genNewArrayList();
+        }
+        if (changeVehicles) {
+            stepList.add(HcsaConsts.STEP_VEHICLES);
+        }
+        if (changeBusiness) {
+            stepList.add(HcsaConsts.STEP_BUSINESS_NAME);
+        }
+        showDto.setPersonnelEditList(stepList);
+        appSubmissionDto.setAppEditSelectDto(showDto);
+        // change edit select dto
         appEditSelectDto.setChangeInLocation(changeInLocation);
         appEditSelectDto.setChangeAddFloorUnit(eqAddFloorNo);
         appEditSelectDto.setChangeVehicle(changeVehicles);
@@ -794,23 +845,12 @@ public class EqRequestForChangeSubmitResultChange {
         }
         List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList = appSubmissionDto.getAppSvcRelatedInfoDtoList();
         List<AppSvcRelatedInfoDto> oldAppSvcRelatedInfoDtoList = oldAppSubmissionDto.getAppSvcRelatedInfoDtoList();
-        serviceIsChange = eqServiceChange(appSvcRelatedInfoDtoList, oldAppSvcRelatedInfoDtoList);
+        serviceIsChange = eqServiceChange(appSvcRelatedInfoDtoList, oldAppSvcRelatedInfoDtoList, appEditSelectDto);
         appEditSelectDto.setDocEdit(docIsChange);
         appEditSelectDto.setLicenseeEdit(licenseeChange);
         appEditSelectDto.setServiceEdit(serviceIsChange);
         appEditSelectDto.setPremisesEdit(grpPremiseIsChange);
         appSubmissionDto.setChangeSelectDto(appEditSelectDto);
-        // for splitting the submission
-        if (changeVehicles) {
-            AppEditSelectDto showEdit = appSubmissionDto.getAppEditSelectDto();
-            List<String> personnelEditList = showEdit.getPersonnelEditList();
-            if (personnelEditList == null) {
-                personnelEditList = IaisCommonUtils.genNewArrayList();
-            }
-            personnelEditList.add(HcsaConsts.STEP_VEHICLES);
-            showEdit.setPersonnelEditList(personnelEditList);
-            appSubmissionDto.setAppEditSelectDto(showEdit);
-        }
         return appEditSelectDto;
     }
 
@@ -960,11 +1000,11 @@ public class EqRequestForChangeSubmitResultChange {
         }
         appEditSelectDto.setPersonnelEditList(personnelEditList);
         appSubmissionDto.setAppEditSelectDto(appEditSelectDto);
-        checkAppSvcInfoOtherSteps(appSubmissionDto, oldAppSubmissionDto);
+        //checkAppSvcInfoOtherSteps(appSubmissionDto, oldAppSubmissionDto);
         return isAuto;
     }
 
-    public static void checkAppSvcInfoOtherSteps(AppSubmissionDto appSubmissionDto, AppSubmissionDto oldAppSubmissionDto) {
+    /*public static void checkAppSvcInfoOtherSteps(AppSubmissionDto appSubmissionDto, AppSubmissionDto oldAppSubmissionDto) {
         AppEditSelectDto appEditSelectDto = appSubmissionDto.getAppEditSelectDto();
         if (appEditSelectDto == null || !appEditSelectDto.isServiceEdit()) {
             return;
@@ -974,23 +1014,24 @@ public class EqRequestForChangeSubmitResultChange {
         List<String> personnelEditList = appEditSelectDto.getPersonnelEditList();
         if (personnelEditList == null) {
             personnelEditList = IaisCommonUtils.genNewArrayList();
+            appEditSelectDto.setPersonnelEditList(personnelEditList);
         }
         // check allocation step
-        if (!personnelEditList.contains(HcsaConsts.STEP_DISCIPLINE_ALLOCATION)) {
+       *//* if (!personnelEditList.contains(HcsaConsts.STEP_DISCIPLINE_ALLOCATION)) {
             List<AppSvcDisciplineAllocationDto> allocationDtoList = appSvcRelatedInfoDtoList.getAppSvcDisciplineAllocationDtoList();
             List<AppSvcDisciplineAllocationDto> oldAllocationDtoList =
                     oldAppSvcRelatedInfoDtoList.getAppSvcDisciplineAllocationDtoList();
             if (oldAllocationDtoList != null && !Objects.equals(allocationDtoList, oldAllocationDtoList)) {
                 personnelEditList.add(HcsaConsts.STEP_DISCIPLINE_ALLOCATION);
             }
-        }
+        }*//*
 
         List<AppSvcBusinessDto> appSvcBusinessDtoList = appSvcRelatedInfoDtoList.getAppSvcBusinessDtoList();
         List<AppSvcBusinessDto> oldBusinessDtoList = oldAppSvcRelatedInfoDtoList.getAppSvcBusinessDtoList();
         if (!Objects.equals(appSvcBusinessDtoList, oldBusinessDtoList)) {
             personnelEditList.add(HcsaConsts.STEP_BUSINESS_NAME);
         }
-    }
+    }*/
 
     private static AppSvcLaboratoryDisciplinesDto getDisciplinesDto(List<AppSvcLaboratoryDisciplinesDto> disciplinesDto, String hciName) {
         for (AppSvcLaboratoryDisciplinesDto iten : disciplinesDto) {

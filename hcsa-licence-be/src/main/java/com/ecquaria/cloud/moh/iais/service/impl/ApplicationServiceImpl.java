@@ -267,7 +267,7 @@ public class ApplicationServiceImpl implements ApplicationService {
     public ApplicationDto updateBEApplicaiton(ApplicationDto applicationDto) {
         return applicationClient.updateApplication(applicationDto).getEntity();
     }
-
+    @Override
     public ApplicationDto callEicInterApplication(ApplicationDto applicationDto) {
         HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
         HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);

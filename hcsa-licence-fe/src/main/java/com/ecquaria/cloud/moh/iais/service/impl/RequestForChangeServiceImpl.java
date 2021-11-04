@@ -90,9 +90,11 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import static java.util.regex.Pattern.compile;
 
@@ -1375,6 +1377,16 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
         if (appSubmissionDto == null) {
             return;
         }
+        String premisesIndexNo = Optional.of(appSubmissionDto.getAppGrpPremisesDtoList())
+                .filter(list -> list.size() > 0)
+                .map(list -> list.get(0))
+                .map(AppGrpPremisesDto::getPremisesIndexNo)
+                .orElse("");
+        String premisesType = Optional.of(appSubmissionDto.getAppGrpPremisesDtoList())
+                .filter(list -> list.size() > 0)
+                .map(list -> list.get(0))
+                .map(AppGrpPremisesDto::getPremisesType)
+                .orElse("");
         AppSvcRelatedInfoDto appSvcRelatedInfoDto = appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0);
         List<AppSvcDocDto> appSvcDocDtoLit = appSvcRelatedInfoDto.getAppSvcDocDtoLit();
         List<AppGrpPrimaryDocDto> dtoAppGrpPrimaryDocDtos = appSubmissionDto.getAppGrpPrimaryDocDtos();
@@ -1410,6 +1422,10 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                         appGrpPrimaryDocDto.setMd5Code(appSvcDocDto.getMd5Code());
                         appGrpPrimaryDocDto.setVersion(appSvcDocDto.getVersion());
                         appGrpPrimaryDocDto.setSeqNum(appSvcDocDto.getSeqNum());
+                        if ("1".equals(entity.getDupForPrem())) {
+                            appGrpPrimaryDocDto.setPremisessName(premisesIndexNo);
+                            appGrpPrimaryDocDto.setPremisessType(premisesType);
+                        }
                         appGrpPrimaryDocDtos.add(appGrpPrimaryDocDto);
                         appSvcDocDtos.add(appSvcDocDto);
                     }else {
@@ -1855,6 +1871,24 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
 
     @Override
     public void sendRfcSubmittedEmail(List<AppSubmissionDto> appSubmissionDtos, String pmtMethod) throws IOException, TemplateException {
+        if (appSubmissionDtos == null || appSubmissionDtos.isEmpty()) {
+            log.info("No submissions to send email.");
+        }
+        appSubmissionDtos.stream()
+                .collect(Collectors.groupingBy(AppSubmissionDto::getAppGrpNo))
+                .forEach((groupNo, appSubmissionDtoList) -> {
+                    log.info(StringUtil.changeForLog("The Group No for Email: " + groupNo));
+                    String method = appSubmissionDtoList.get(0).isAutoRfc() ? null : pmtMethod;
+                    try {
+                        sendRfcEmail(appSubmissionDtoList, method);
+                    } catch (Exception e) {
+                        log.error(StringUtil.changeForLog(groupNo + " : " + e.getMessage()), e);
+                    }
+                });
+    }
+
+    private void sendRfcEmail(List<AppSubmissionDto> appSubmissionDtos, String pmtMethod) throws IOException,
+            TemplateException {
         AppSubmissionDto appSubmissionDto=appSubmissionDtos.get(0);
         String appGroupId = appSubmissionDto.getAppGrpId();
         ApplicationGroupDto applicationGroupDto=applicationFeClient.getApplicationGroup(appGroupId).getEntity();
@@ -1986,8 +2020,6 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
             smsParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_LICENSEE_ID);
             notificationHelper.sendNotification(smsParam);
         }
-
-
     }
 
     private void sendRfcLicenseeSubmittedEmail(List<AppSubmissionDto> appSubmissionDtos, String pmtMethod) throws IOException, TemplateException {

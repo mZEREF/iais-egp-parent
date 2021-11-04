@@ -595,6 +595,9 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
             sendAsoWithdrow(applicationGroup,application,appPremisesCorrelation, appPremiseMiscEntities);
         }catch (Exception e){
             log.error(e.getMessage(),e);
+            processFileTrackDto.setStatus(ProcessFileTrackConsts.PROCESS_FILE_TRACK_STATUS_PENDING_PROCESS);
+            applicationClient.updateProcessFileTrack(processFileTrackDto);
+            return Boolean.FALSE;
         }
         requeOrNew(requestForInfList,applicationGroup,application,updateTaskList);
         update(cessionOrwith,listApplicationDto,applicationGroup,application);
@@ -959,7 +962,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
 
         public void  sendTask(String eventRefNum ,String submissionId) throws  Exception{
         try {
-            appGroupMiscService.notificationApplicationUpdateBatchjob();
+           // appGroupMiscService.notificationApplicationUpdateBatchjob();
         }catch (Exception e){
             log.error(e.getMessage(),e);
         }
