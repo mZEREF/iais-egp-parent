@@ -18,7 +18,8 @@
                 <h3>Preview and Submit</h3>
                 <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
                     <%@include file="section/previewFertilisationDetail.jsp" %>
-                </div>
+                    <%@include file="common/arDeclaration.jsp" %>
+                </div>s
                 <%@include file="common/arFooter.jsp" %>
             </div>
         </div>
