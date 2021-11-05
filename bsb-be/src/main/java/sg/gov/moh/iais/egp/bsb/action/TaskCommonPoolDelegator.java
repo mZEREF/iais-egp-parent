@@ -3,9 +3,10 @@ package sg.gov.moh.iais.egp.bsb.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
-import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
+import com.ecquaria.cloud.moh.iais.common.utils.LogUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
@@ -15,10 +16,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import sg.gov.moh.iais.egp.bsb.client.BsbTaskClient;
 import sg.gov.moh.iais.egp.bsb.dto.PageInfo;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
+import sg.gov.moh.iais.egp.bsb.dto.task.TaskAssignDto;
 import sg.gov.moh.iais.egp.bsb.dto.task.TaskListSearchDto;
 import sg.gov.moh.iais.egp.bsb.dto.task.TaskListSearchResultDto;
 import sg.gov.moh.iais.egp.bsb.service.UserRoleService;
 import sop.webflow.rt.api.BaseProcessClass;
+
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -29,8 +32,9 @@ import static sg.gov.moh.iais.egp.bsb.constant.ResponseConstants.ERROR_INFO_ERRO
 
 
 @Slf4j
-@Delegator("bsbTaskListDelegator")
-public class TaskListDelegator {
+@Delegator("bsbTaskCommonPoolDelegator")
+public class TaskCommonPoolDelegator {
+    private static final String MODULE_NAME = "BSB Task Pool";
     private static final String KEY_ROLE_OPTIONS = "BsbRoleOptions";
     private static final String KEY_CUR_ROLE = "bsbCurRole";
     private static final String KEY_ROLE_ID = "commonRoleId";
@@ -38,6 +42,8 @@ public class TaskListDelegator {
     private static final String KEY_TASK_LIST_SEARCH_DTO = "taskListSearchDto";
     private static final String KEY_TASK_LIST_PAGE_INFO = "pageInfo";
     private static final String KEY_TASK_LIST_DATA_LIST = "dataList";
+    private static final String KEY_PICK_UP_TASK = "pickTaskIds";
+    private static final String KEY_ASSIGN_RESULT = "assignResult";
 
     private static final String KEY_ACTION_VALUE = "action_value";
 
@@ -48,7 +54,7 @@ public class TaskListDelegator {
     private final BsbTaskClient bsbTaskClient;
 
     @Autowired
-    public TaskListDelegator(UserRoleService userRoleService, BsbTaskClient bsbTaskClient) {
+    public TaskCommonPoolDelegator(UserRoleService userRoleService, BsbTaskClient bsbTaskClient) {
         this.userRoleService = userRoleService;
         this.bsbTaskClient = bsbTaskClient;
     }
@@ -56,8 +62,6 @@ public class TaskListDelegator {
     public void start(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         request.getSession().removeAttribute(KEY_TASK_LIST_SEARCH_DTO);
-
-        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_INTRANET_DASHBOARD, AuditTrailConsts.FUNCTION_TASK_LIST);
     }
 
     public void init(BaseProcessClass bpc) {
@@ -69,11 +73,13 @@ public class TaskListDelegator {
     }
 
     public void prepareData(BaseProcessClass bpc) {
+        AuditTrailHelper.auditFunction(MODULE_NAME, "Task List");
+
         HttpServletRequest request = bpc.request;
         TaskListSearchDto searchDto = getSearchDto(request);
         ParamUtil.setSessionAttr(request, KEY_TASK_LIST_SEARCH_DTO, searchDto);
 
-        ResponseDto<TaskListSearchResultDto> resultDto = bsbTaskClient.getTaskList(searchDto);
+        ResponseDto<TaskListSearchResultDto> resultDto = bsbTaskClient.getTaskPool(searchDto);
 
         if (resultDto.ok()) {
             ParamUtil.setRequestAttr(request, KEY_TASK_LIST_PAGE_INFO, resultDto.getEntity().getPageInfo());
@@ -91,8 +97,6 @@ public class TaskListDelegator {
         ParamUtil.setRequestAttr(request, KEY_CUR_ROLE, loginContext.getCurRoleId());
         List<SelectOption> appTypeOps = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_BSB_APP_TYPE);
         ParamUtil.setRequestAttr(request, "appTypeOps", appTypeOps);
-        List<SelectOption> appStatusTypeOps = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_BSB_APP_STATUS);
-        ParamUtil.setRequestAttr(request, "appStatusOps", appStatusTypeOps);
     }
 
     public void search(BaseProcessClass bpc) {
@@ -123,7 +127,6 @@ public class TaskListDelegator {
         ParamUtil.setSessionAttr(request, KEY_TASK_LIST_SEARCH_DTO, searchDto);
     }
 
-
     public void changeRole(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         String roleId = ParamUtil.getString(request, KEY_ROLE_ID);
@@ -144,7 +147,75 @@ public class TaskListDelegator {
         ParamUtil.setSessionAttr(request, KEY_TASK_LIST_SEARCH_DTO, searchDto);
     }
 
+    public void assign(BaseProcessClass bpc) {
+        AuditTrailHelper.auditFunction(MODULE_NAME, "Assign Task");
+        HttpServletRequest request = bpc.request;
+        String maskedTaskId = ParamUtil.getString(request, KEY_ACTION_VALUE);
+        if (log.isInfoEnabled()) {
+            log.info("masked task id: [{}]", LogUtil.escapeCrlf(maskedTaskId));
+        }
+        String taskId = MaskUtil.unMaskValue("id", maskedTaskId);
+        if (taskId == null || taskId.equals(maskedTaskId)) {
+            throw new IaisRuntimeException("Invalid masked task ID");
+        }
 
+        LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
+        String userId = loginContext.getUserId();
+
+        ResponseDto<String> assignResult = bsbTaskClient.assignTask(taskId, userId);
+        if (assignResult.ok()) {
+            ParamUtil.setRequestAttr(request, KEY_ASSIGN_RESULT, "Task has been assigned to you successfully!");
+        } else {
+            ParamUtil.setRequestAttr(request, KEY_ASSIGN_RESULT, "Fail to assign this task to you!");
+        }
+    }
+
+    public void multiAssign(BaseProcessClass bpc) {
+        AuditTrailHelper.auditFunction(MODULE_NAME, "Assign Task");
+        HttpServletRequest request = bpc.request;
+        String[] maskedTaskIds = ParamUtil.getStrings(request, KEY_PICK_UP_TASK);
+        if (maskedTaskIds == null || maskedTaskIds.length < 1) {
+            ParamUtil.setRequestAttr(request, KEY_ASSIGN_RESULT, "No task has been picked up!");
+            return;
+        }
+
+        LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
+        String userId = loginContext.getUserId();
+
+        // create DTO used to call assign API
+        List<TaskAssignDto> taskAssignDtoList = new ArrayList<>(maskedTaskIds.length);
+        for (String maskedTaskId : maskedTaskIds) {
+            String taskId = MaskUtil.unMaskValue("id", maskedTaskId);
+            if ((taskId == null || taskId.equals(maskedTaskId)) && log.isWarnEnabled()) {
+                log.warn("Invalid masked task id: {}", maskedTaskId);
+            } else {
+                TaskAssignDto dto = new TaskAssignDto(taskId, userId);
+                taskAssignDtoList.add(dto);
+            }
+        }
+
+        if (taskAssignDtoList.isEmpty()) {
+            ParamUtil.setRequestAttr(request, KEY_ASSIGN_RESULT, "No task has been picked up!");
+        } else {
+            // assign tasks
+            taskAssignDtoList = bsbTaskClient.assignMultiTasks(taskAssignDtoList);
+
+            // generate result acknowledge message
+            List<String> successAppNos = new ArrayList<>(taskAssignDtoList.size());
+            for (TaskAssignDto dto : taskAssignDtoList) {
+                if (dto.isSuccess()) {
+                    successAppNos.add(dto.getAppNo());
+                }
+            }
+            String msg = "Following tasks have been assigned (Application No.): " + String.join(", ", successAppNos);
+            ParamUtil.setRequestAttr(request, KEY_ASSIGN_RESULT, msg);
+        }
+
+    }
+
+    public void detail(BaseProcessClass bpc) {
+        // do nothing now
+    }
 
 
     private TaskListSearchDto getSearchDto(HttpServletRequest request) {
@@ -154,7 +225,6 @@ public class TaskListDelegator {
             dto.defaultPaging();
 
             LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
-            dto.setUserId(loginContext.getUserId());
             dto.setRoleIds(Collections.singleton(loginContext.getCurRoleId()));
         }
         return dto;
@@ -163,7 +233,6 @@ public class TaskListDelegator {
     private static TaskListSearchDto bindModel(HttpServletRequest request, TaskListSearchDto dto) {
         dto.setSearchAppNo(request.getParameter("searchAppNo"));
         dto.setSearchAppType(request.getParameter("searchAppType"));
-        dto.setSearchAppStatus(request.getParameter("searchAppStatus"));
         return dto;
     }
 }

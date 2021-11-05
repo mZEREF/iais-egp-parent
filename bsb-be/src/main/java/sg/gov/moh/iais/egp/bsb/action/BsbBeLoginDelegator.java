@@ -59,23 +59,18 @@ public class BsbBeLoginDelegator {
 
     public void start(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
-        LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
-        String sessionId = UserSessionUtil.getLoginSessionID(bpc.request.getSession());
+        LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
+        String sessionId = UserSessionUtil.getLoginSessionID(request.getSession());
         UserSession us = ProcessCacheHelper.getUserSessionFromCache(sessionId);
         if(loginContext!=null && us != null && "Active".equals(us.getStatus())){
             if(loginContext.getUserDomain().equals(IntranetUserConstant.DOMAIN_INTRANET)){
-                ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, "Y");
+                ParamUtil.setRequestAttr(request, IntranetUserConstant.ISVALID, "Y");
             }else {
-                ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, "N");
+                ParamUtil.setRequestAttr(request, IntranetUserConstant.ISVALID, "N");
             }
         } else {
-            ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, "N");
+            ParamUtil.setRequestAttr(request, IntranetUserConstant.ISVALID, "N");
         }
-
-        // set program name to BSB
-        AuditTrailDto dto = (AuditTrailDto) ParamUtil.getSessionAttr(request, AuditTrailConsts.SESSION_ATTR_PARAM_NAME);
-        dto.setProgrameName("BSB");
-        ParamUtil.setSessionAttr(request, AuditTrailConsts.SESSION_ATTR_PARAM_NAME, dto);
     }
 
     public void preLogin(BaseProcessClass bpc){
@@ -145,6 +140,8 @@ public class BsbBeLoginDelegator {
         auditTrailDto.setModule("Intranet Login");
         auditTrailDto.setFunctionName("Intranet Login");
         auditTrailDto.setLoginTime(new Date());
+        auditTrailDto.setProgrameName("BSB");
+        ParamUtil.setSessionAttr(request, AuditTrailConsts.SESSION_ATTR_PARAM_NAME, auditTrailDto);
         IaisEGPHelper.setAuditLoginUserInfo(auditTrailDto);
         AuditTrailHelper.callSaveAuditTrail(auditTrailDto);
     }

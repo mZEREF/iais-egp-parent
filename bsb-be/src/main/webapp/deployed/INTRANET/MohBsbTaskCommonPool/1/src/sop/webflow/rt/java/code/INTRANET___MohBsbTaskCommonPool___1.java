@@ -14,11 +14,15 @@ import com.ecquaria.cloud.helper.EngineHelper;
 
 import sop.webflow.rt.api.BaseProcessClass;
 
-public class INTRANET___MohBsbTaskList___1 extends BaseProcessClass {
-	private static final String DELEGATOR ="bsbTaskListDelegator";
+public class INTRANET___MohBsbTaskCommonPool___1 extends BaseProcessClass {
+	private static final String DELEGATOR ="bsbTaskCommonPoolDelegator";
+
+	public void start_OnStepProcess_0() throws Exception {
+		EngineHelper.delegate(DELEGATOR, "start", this);
+	}
 
 	public void init_OnStepProcess_0() throws Exception {
-		EngineHelper.delegate(DELEGATOR, "init", this);
+		EngineHelper.delegate(DELEGATOR, "init", this); 
 	}
 
 	public void prepareData_OnStepProcess_0() throws Exception {
@@ -29,16 +33,24 @@ public class INTRANET___MohBsbTaskList___1 extends BaseProcessClass {
 		EngineHelper.delegate(DELEGATOR, "search", this); 
 	}
 
-	public void start_OnStepProcess_0() throws Exception {
-		EngineHelper.delegate(DELEGATOR, "start", this);
-	}
-
 	public void page_OnStepProcess_0() throws Exception {
-		EngineHelper.delegate(DELEGATOR, "page", this);
+		EngineHelper.delegate(DELEGATOR, "page", this); 
 	}
 
 	public void changeRole_OnStepProcess_0() throws Exception {
-		EngineHelper.delegate(DELEGATOR, "changeRole", this);
+		EngineHelper.delegate(DELEGATOR, "changeRole", this); 
+	}
+
+	public void assign_OnStepProcess_0() throws Exception {
+		EngineHelper.delegate(DELEGATOR, "assign", this); 
+	}
+
+	public void multiAssign_OnStepProcess_0() throws Exception {
+		EngineHelper.delegate(DELEGATOR, "multiAssign", this); 
+	}
+
+	public void detail_OnStepProcess_0() throws Exception {
+		EngineHelper.delegate(DELEGATOR, "detail", this); 
 	}
 
 }
