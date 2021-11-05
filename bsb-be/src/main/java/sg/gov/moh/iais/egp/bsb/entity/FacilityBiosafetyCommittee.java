@@ -14,6 +14,7 @@ import javax.persistence.*;
 import java.util.Date;
 
 @Data
+@EqualsAndHashCode(callSuper = true)
 public class FacilityBiosafetyCommittee extends BaseEntity {
 
   private String id;

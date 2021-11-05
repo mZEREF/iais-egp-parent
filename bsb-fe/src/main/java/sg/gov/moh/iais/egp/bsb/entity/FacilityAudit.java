@@ -8,7 +8,7 @@ import sg.gov.moh.iais.egp.bsb.common.BaseEntity;
 import java.util.Date;
 
 @Data
-@EqualsAndHashCode(callSuper = false)
+@EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
 public class FacilityAudit extends BaseEntity {
     private String id;

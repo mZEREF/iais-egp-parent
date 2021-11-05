@@ -1,11 +1,13 @@
 package sg.gov.moh.iais.egp.bsb.entity;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import sg.gov.moh.iais.egp.bsb.common.BaseEntity;
 
 import java.util.Date;
 
 @Data
+@EqualsAndHashCode(callSuper = true)
 public class FacilityOfficer extends BaseEntity {
     private String id;
 

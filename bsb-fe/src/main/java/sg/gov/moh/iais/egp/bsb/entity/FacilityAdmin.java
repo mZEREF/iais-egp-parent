@@ -9,7 +9,7 @@ import java.util.Date;
 
 
 @Data
-@EqualsAndHashCode(callSuper = false)
+@EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
 public class FacilityAdmin extends BaseEntity {
     private String id;

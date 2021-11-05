@@ -2,6 +2,7 @@ package sg.gov.moh.iais.egp.bsb.dto.revocation;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import sg.gov.moh.iais.egp.bsb.dto.PagingAndSortingDto;
 
 import java.io.Serializable;
@@ -11,6 +12,7 @@ import java.io.Serializable;
  * @date 2021/8/31 15:35
  */
 @Data
+@EqualsAndHashCode(callSuper = true)
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class ApprovalQueryDto extends PagingAndSortingDto implements Serializable {
     private String facilityName;

@@ -10,7 +10,7 @@ import java.util.Date;
 
 
 @Data
-@EqualsAndHashCode(callSuper = false)
+@EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
 public class FacilityBiological extends BaseEntity {
     private String id;
