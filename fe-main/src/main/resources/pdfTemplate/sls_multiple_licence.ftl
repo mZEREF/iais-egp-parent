@@ -245,6 +245,9 @@
               <p>Service Licence</p>
               <h3>${serviceName}</h3>
               <span>${hivTesting}</span>
+              <p class="note"><strong>Note:</strong>
+                The licensee stated above is permitted to provide the special licensable healthcare service to which this licence relates, on the condition that the licensee must at all times also be granted a licence to provide ${baseServiceName}, being a licensable healthcare service prescribed as underlying to that special licensable healthcare service.
+              </p>
             </div>
             <div class="lic-approved-info">
               <div class="table-responsive">
@@ -274,7 +277,7 @@
                       <p class="visible-xs visible-sm table-row-title">Licensed Conveyances (vehicle No.)</p>
                       <p>
                       <ul class="v-numberlist">
-                       ${vehicleNo}
+                      ${vehicleNo}
                       </ul>
                       </p>
                     </td>
@@ -333,7 +336,7 @@
                       <p class="visible-xs visible-sm table-row-title">Licensed Conveyances (vehicle No.)</p>
                       <p>
                       <ul class="v-numberlist">
-                        ${vehicleNo2}
+                      ${vehicleNo2}
                       </ul>
                       </p>
                     </td>
@@ -367,7 +370,7 @@
             </div>
             <div class="lic-footer" >
               <p >This licence is issued under the Healthcare Services Act 2020 and is subject to its provisions, as well as any regulations, rules, code of practices and directions issued under it, and any conditions imposed by the Director of Medical Services. The licence is valid from the licence start date until the licence end date, unless revoked, suspended, ceased or surrendered.</p>
-              <p>Ministry of Health | Page 1 of 1</p>
+              <p>Ministry of Health | Page 2 of 2</p>
             </div>
           </div>
         </div>

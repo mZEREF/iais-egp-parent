@@ -3897,8 +3897,10 @@ public class NewApplicationDelegator {
                     }
                     if(AppConsts.TRUE.equals(allDay)){
                         weeklyDto.setSelectAllDay(true);
-                        //todo:generate star,end
-
+                        weeklyDto.setStartFromHH(null);
+                        weeklyDto.setStartFromMM(null);
+                        weeklyDto.setEndToHH(null);
+                        weeklyDto.setEndToMM(null);
                     }else{
                         String weeklyStartHH = ParamUtil.getString(request,genPageName(premVal,"onSiteWeeklyStartHH",j));
                         String weeklyStartMM = ParamUtil.getString(request,genPageName(premVal,"onSiteWeeklyStartMM",j));
@@ -3925,6 +3927,10 @@ public class NewApplicationDelegator {
                     }
                     if(AppConsts.TRUE.equals(allDay)){
                         phDto.setSelectAllDay(true);
+                        phDto.setStartFromHH(null);
+                        phDto.setStartFromMM(null);
+                        phDto.setEndToHH(null);
+                        phDto.setEndToMM(null);
                         phDtoList.add(phDto);
                     }else{
                         String phStartHH = ParamUtil.getString(request,genPageName(premVal,"onSitePhStartHH",j));
@@ -4004,6 +4010,10 @@ public class NewApplicationDelegator {
                     }
                     if(AppConsts.TRUE.equals(allDay)){
                         weeklyDto.setSelectAllDay(true);
+                        weeklyDto.setStartFromHH(null);
+                        weeklyDto.setStartFromMM(null);
+                        weeklyDto.setEndToHH(null);
+                        weeklyDto.setEndToMM(null);
                     }else{
                         String weeklyStartHH = ParamUtil.getString(request,genPageName(premVal,"conveyanceWeeklyStartHH",j));
                         String weeklyStartMM = ParamUtil.getString(request,genPageName(premVal,"conveyanceWeeklyStartMM",j));
@@ -4030,6 +4040,10 @@ public class NewApplicationDelegator {
                     }
                     if(AppConsts.TRUE.equals(allDay)){
                         phDto.setSelectAllDay(true);
+                        phDto.setStartFromHH(null);
+                        phDto.setStartFromMM(null);
+                        phDto.setEndToHH(null);
+                        phDto.setEndToMM(null);
                         phDtoList.add(phDto);
                     }else{
                         String phStartHH = ParamUtil.getString(request,genPageName(premVal,"conveyancePhStartHH",j));
@@ -4103,6 +4117,10 @@ public class NewApplicationDelegator {
                     }
                     if(AppConsts.TRUE.equals(allDay)){
                         weeklyDto.setSelectAllDay(true);
+                        weeklyDto.setStartFromHH(null);
+                        weeklyDto.setStartFromMM(null);
+                        weeklyDto.setEndToHH(null);
+                        weeklyDto.setEndToMM(null);
                     }else{
                         String weeklyStartHH = ParamUtil.getString(request,genPageName(premVal,"offSiteWeeklyStartHH",j));
                         String weeklyStartMM = ParamUtil.getString(request,genPageName(premVal,"offSiteWeeklyStartMM",j));
@@ -4129,6 +4147,10 @@ public class NewApplicationDelegator {
                     }
                     if(AppConsts.TRUE.equals(allDay)){
                         phDto.setSelectAllDay(true);
+                        phDto.setStartFromHH(null);
+                        phDto.setStartFromMM(null);
+                        phDto.setEndToHH(null);
+                        phDto.setEndToMM(null);
                         phDtoList.add(phDto);
                     }else{
                         String phStartHH = ParamUtil.getString(request,genPageName(premVal,"offSitePhStartHH",j));

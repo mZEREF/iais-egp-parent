@@ -214,9 +214,6 @@
     p {
       margin: 0 0 10px;
     }
-    p.note {
-      font-size: 10pt;
-    }
     .table > thead > tr > th, .table > tbody > tr > th, .table > tfoot > tr > th, .table > thead > tr > td, .table > tbody > tr > td, .table > tfoot > tr > td {
       line-height: 1.42857143;
     }
@@ -272,70 +269,7 @@
                     </td>
                     <td>
                       <p class="visible-xs visible-sm table-row-title">Licensed Conveyances (vehicle No.)</p>
-                      <p>
-                      <ul class="v-numberlist">
-                       ${vehicleNo}
-                      </ul>
-                      </p>
-                    </td>
-                  </tr>
-                  </tbody>
-                </table>
-              </div>
-            </div>
-
-            <div class="lic-footer">
-              <p>This licence is issued under the Healthcare Services Act 2020 and is subject to its provisions, as well as any regulations, rules, code of practices and directions issued under it, and any conditions imposed by the Director of Medical Services. The licence is valid from the licence start date until the licence end date, unless revoked, suspended, ceased or surrendered.</p>
-              <p>Ministry of Health | Page 1 of 2</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-
-    <!-- License 2 -->
-    <div class="row">
-      <div class="col-xs-12">
-        <div class="instruction-content center-content">
-          <div class="licence_box">
-            <div class="lic-headerbox"></div>
-            <div class="lic-number">
-              <p>Licence No.</p>
-              <h2>${licenceNo}</h2>
-            </div>
-
-            <div class="lic-approved-info">
-              <div class="table-responsive">
-                <table class="table">
-                  <thead>
-                  <tr>
-                    <th></th>
-                    <th>Business Name</th>
-                    <th>Licensed Premises</th>
-                    <th>Licensed Conveyances <br></br>(Vehicle No.)</th>
-                  </tr>
-                  </thead>
-                  <tbody>
-                  <tr>
-                    <td>
-                      <p>1</p>
-                    </td>
-                    <td>
-                      <p class="visible-xs visible-sm table-row-title">Business Name</p>
-                      <p>${businessName}</p>
-                    </td>
-                    <td>
-                      <p class="visible-xs visible-sm table-row-title">Licensed Premises</p>
-                      <p>${address}</p>
-                    </td>
-                    <td>
-                      <p class="visible-xs visible-sm table-row-title">Licensed Conveyances (vehicle No.)</p>
-                      <p>
-                      <ul class="v-numberlist">
-                        ${vehicleNo2}
-                      </ul>
-                      </p>
+                    ${vehicleNo}
                     </td>
                   </tr>
                   </tbody>
