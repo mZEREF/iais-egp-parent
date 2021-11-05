@@ -13,10 +13,10 @@
                 <iais:row>
                     <iais:field width="5" value="Oocyte(s) was retrieved from?" cssClass="col-md-6"/>
                     <iais:value width="7" display="true">
-                        <c:if test="${oocyteRetrievalStageDto.isFromPatient}"><p class="col-12">Patient</p></c:if>
-                        <c:if test="${oocyteRetrievalStageDto.isFromPatientTissue}"><p class="col-12">Patient's Ovarian Tissue</p></c:if>
-                        <c:if test="${oocyteRetrievalStageDto.isFromDonor}"><p class="col-12">Directed Donor</p></c:if>
-                        <c:if test="${oocyteRetrievalStageDto.isFromDonorTissue}"><p class="col-12">Directed Donor's Ovarian Tissue</p></c:if>
+                        <c:if test="${oocyteRetrievalStageDto.isFromPatient}"><p>Patient</p></c:if>
+                        <c:if test="${oocyteRetrievalStageDto.isFromPatientTissue}"><p>Patient's Ovarian Tissue</p></c:if>
+                        <c:if test="${oocyteRetrievalStageDto.isFromDonor}"><p>Directed Donor</p></c:if>
+                        <c:if test="${oocyteRetrievalStageDto.isFromDonorTissue}"><p>Directed Donor's Ovarian Tissue</p></c:if>
                     </iais:value>
                 </iais:row>
                 <iais:row>
@@ -50,43 +50,7 @@
                         <c:if test="${not oocyteRetrievalStageDto.isOvarianSyndrome}">No</c:if>
                     </iais:value>
                 </iais:row>
-                <h3>Patient's Inventory</h3>
-                <table aria-describedby="" class="table discipline-table">
-                    <thead>
-                        <tr>
-                            <th scope="col"></th>
-                            <th scope="col">Frozen Oocytes</th>
-                            <th scope="col">Thawed Oocytes</th>
-                            <th scope="col">Fresh Oocytes</th>
-                            <th scope="col">Frozen Embryos</th>
-                            <th scope="col">Thawed Embryos</th>
-                            <th scope="col">Fresh Embryos</th>
-                            <th scope="col">Frozen Sperms</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <th scope="col">Changes</th>
-                            <th scope="col">0</th>
-                            <th scope="col">0</th>
-                            <th scope="col">${freshOocytes}</th>
-                            <th scope="col">0</th>
-                            <th scope="col">0</th>
-                            <th scope="col">0</th>
-                            <th scope="col">0</th>
-                        </tr>
-                        <tr>
-                            <th scope="col">Current</th>
-                            <th scope="col">0</th>
-                            <th scope="col">0</th>
-                            <th scope="col">0</th>
-                            <th scope="col">0</th>
-                            <th scope="col">0</th>
-                            <th scope="col">0</th>
-                            <th scope="col">0</th>
-                        </tr>
-                    </tbody>
-                </table>
+                <%@include file="../common/patientInventoryTable.jsp" %>
             </div>
         </div>
     </div>

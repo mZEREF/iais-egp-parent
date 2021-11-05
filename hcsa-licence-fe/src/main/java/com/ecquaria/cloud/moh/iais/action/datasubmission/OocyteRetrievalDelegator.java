@@ -52,9 +52,10 @@ public class OocyteRetrievalDelegator extends CommonDelegator {
         ArSuperDataSubmissionDto arSuperDataSubmissionDto = DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
         OocyteRetrievalStageDto oocyteRetrievalStageDto = arSuperDataSubmissionDto.getOocyteRetrievalStageDto();
         int totalNum = oocyteRetrievalStageDto.getTotalNum();
+        DataSubmissionHelper.initPatientInventoryTable(bpc.request);
         ParamUtil.setRequestAttr(bpc.request, "totalRetrievedNum", totalNum);
         String freshOocytes = totalNum > 0 ? "+" + totalNum : "0";
-        ParamUtil.setRequestAttr(bpc.request, "freshOocytes",freshOocytes);
+        ParamUtil.setRequestAttr(bpc.request, "changeFreshOocytes",freshOocytes);
     }
 
     @Override
