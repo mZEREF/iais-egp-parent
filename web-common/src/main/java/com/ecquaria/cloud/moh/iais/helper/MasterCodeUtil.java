@@ -182,6 +182,9 @@ public final class MasterCodeUtil {
     //Data Submission Transfer In And Out
     public static final String WHAT_WAS_TRANSFERRED = "611D5523-86AA-4018-A095-93B01D1F2A29";
     public static final String TRANSFERRED_IN_FROM = "F8AB83C2-5C6A-4480-A253-DF757BB9C8F6";
+
+    //Data Submission Ar End Cycle Stage
+    public static final String END_CYCLE_REASON_FOR_ABANDONMENT = "5CA671D7-1D42-412B-AABA-1F3D0919379B";
     /**
      * @description: refresh the master codes into cache
      *

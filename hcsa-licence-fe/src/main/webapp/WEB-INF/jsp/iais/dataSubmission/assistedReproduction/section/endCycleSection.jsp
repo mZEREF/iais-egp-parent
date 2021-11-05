@@ -44,7 +44,7 @@
                 <iais:row>
                     <iais:field width="6" value="Reason for Abandonment" mandatory="true"/>
                     <iais:value width="6" cssClass="col-md-6">
-                        <iais:select cssClass="reasonSelect"  name="abandonReason" firstOption="Please Select" options="endReasonSelectOption" value="${endCycleStageDto.abandonReason}"></iais:select>
+                        <iais:select cssClass="reasonSelect"  name="abandonReason" codeCategory="END_CYCLE_REASON_FOR_ABANDONMENT" firstOption="Please Select" options="endReasonSelectOption" value="${endCycleStageDto.abandonReason}"></iais:select>
                         <span class="error-msg" name="iaisErrorMsg" id="error_reason"></span>
                     </iais:value>
                 </iais:row>
@@ -56,6 +56,7 @@
                             <span class="error-msg" name="iaisErrorMsg" id="error_otherAbandonReason"></span>
                         </iais:value>
                     </iais:row>
+                </div>
             </div>
         </div>
     </div>
