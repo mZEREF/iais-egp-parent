@@ -35,4 +35,8 @@ public class INTERNET___TransferNofication___1 extends BaseProcessClass {
 		EngineHelper.delegate(DELEGATOR, "save", this);
 	}
 
+	public void saveDraft_OnStepProcess_0() throws Exception {
+		// 		saveDraft->OnStepProcess
+	}
+
 }
