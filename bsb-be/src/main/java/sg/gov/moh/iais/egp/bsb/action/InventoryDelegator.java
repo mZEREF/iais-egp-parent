@@ -7,6 +7,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import sg.gov.moh.iais.egp.bsb.client.InventoryClient;
 import sg.gov.moh.iais.egp.bsb.dto.inventory.InventoryAgentResultDto;
@@ -163,7 +164,7 @@ public class InventoryDelegator {
      */
     public void preBasicData(BaseProcessClass bpc) {
         String count = ParamUtil.getString(bpc.request, "searchChk");
-        if (StringUtil.isEmpty(count) || count == null) {
+        if (StringUtils.isEmpty(count) || count == null) {
             count = "0";
         }
         ParamUtil.setRequestAttr(bpc.request, "count", count);

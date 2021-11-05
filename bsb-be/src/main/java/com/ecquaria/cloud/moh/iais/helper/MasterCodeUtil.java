@@ -25,6 +25,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.service.client.MasterCodeClient;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
 
 import java.lang.reflect.Field;
 import java.util.List;
@@ -255,13 +256,13 @@ public final class MasterCodeUtil {
      */
     public static String getCodeKeyByCateIdAndCodeVal(String cateId, String codeValue) {
         String codeKey = null;
-        if (StringUtil.isEmpty(cateId)) {
+        if (StringUtils.isEmpty(cateId)) {
             return codeKey;
         }
         List<MasterCodeView> masterCodes = retrieveByCategory(cateId);
         if (IaisCommonUtils.isNotEmpty(masterCodes)) {
             Optional<String> code = masterCodes.stream()
-                    .filter(i -> StringUtil.isEmpty(codeValue) ? StringUtil.isEmpty(i.getCodeValue()) :
+                    .filter(i -> StringUtils.isEmpty(codeValue) ? StringUtils.isEmpty(i.getCodeValue()) :
                             codeValue.equalsIgnoreCase(i.getCodeValue()))
                     .findAny()
                     .map(MasterCodeView::getCode);
@@ -280,7 +281,7 @@ public final class MasterCodeUtil {
     public static String getCodeDesc(String code) {
         String desc = SpringContextHelper.getContext().getBean(RedisCacheHelper.class)
                 .get(RedisNameSpaceConstant.CACHE_NAME_CODE, code);
-        if (StringUtil.isEmpty(desc) && !StringUtil.isEmpty(code)) {
+        if (StringUtils.isEmpty(desc) && !StringUtils.isEmpty(code)) {
             SearchParam param = new SearchParam(MasterCodeView.class.getName());
             param.addFilter("codeFilter", code, true);
             QueryHelp.setMainSql(WEBCOMMON, RETRIEVE_MASTER_CODES, param);
@@ -428,7 +429,7 @@ public final class MasterCodeUtil {
         }
         list.add(mc);
         rch.set(RedisNameSpaceConstant.CACHE_NAME_CATE_MAP, cate, list);
-        if (StringUtil.isEmpty(mc.getFilterValue())) {
+        if (StringUtils.isEmpty(mc.getFilterValue())) {
             return;
         }
         list = rch.get(CACHE_NAME_FILTER, mc.getFilterValue());

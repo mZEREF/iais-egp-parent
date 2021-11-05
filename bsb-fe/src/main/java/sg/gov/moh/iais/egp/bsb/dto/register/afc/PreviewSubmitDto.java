@@ -7,11 +7,7 @@ import sg.gov.moh.iais.egp.bsb.common.node.simple.ValidatableNodeValue;
 import sg.gov.moh.iais.egp.bsb.dto.ValidationResultDto;
 import sg.gov.moh.iais.egp.bsb.util.SpringReflectionUtils;
 
-
 import javax.servlet.http.HttpServletRequest;
-
-
-
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties({"name", "available", "validated", "dependNodes", "validationResultDto"})

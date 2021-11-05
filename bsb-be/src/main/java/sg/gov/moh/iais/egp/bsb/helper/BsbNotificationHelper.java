@@ -135,11 +135,10 @@ public class BsbNotificationHelper {
            String content = getEmailContent(msgTemplateDto,msgContent);
 
            if(StringUtils.isEmpty(content) && "-".equals(content)){
-               log.info("content is missing");
                try {
                    throw new CustomerException(MSG_ERROR_STATUS,"subMap missing parameter or template error");
                } catch (CustomerException e) {
-                   e.printStackTrace();
+                   log.error("content is missing ");
                }
            }
            emailDto.setSubject(subject);
@@ -160,7 +159,7 @@ public class BsbNotificationHelper {
                try {
                    emailSmsClient.sendEmail(emailDto,attachments);
                } catch (IOException e) {
-                   e.printStackTrace();
+                   log.error("send email fail {} ",e.getMessage());
                }
            }else {
 
@@ -181,7 +180,7 @@ public class BsbNotificationHelper {
                                emailSmsClient.sendEmail(emailDto, null);
                            }
                        } catch (IOException e) {
-                           e.printStackTrace();
+                           log.error("send email fail {} ",e.getMessage());
                        }
                    }
                } else {
@@ -212,7 +211,7 @@ public class BsbNotificationHelper {
                        try {
                            emailSmsClient.sendEmail(emailDto,attachments);
                        } catch (IOException e) {
-                           e.printStackTrace();
+                           log.error("send email fail {} ",e.getMessage());
                        }
                    }else {
                        if (AppConsts.DOMAIN_INTERNET.equalsIgnoreCase(currentDomain)) {
@@ -226,7 +225,7 @@ public class BsbNotificationHelper {
                            try {
                                emailSmsClient.sendEmail(emailDto, null);
                            } catch (IOException e) {
-                               e.printStackTrace();
+                               log.error("send email fail {} ",e.getMessage());
                            }
                        }
                    }

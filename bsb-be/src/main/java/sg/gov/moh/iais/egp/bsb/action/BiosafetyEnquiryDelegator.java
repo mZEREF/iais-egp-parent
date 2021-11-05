@@ -17,7 +17,6 @@ import sg.gov.moh.iais.egp.bsb.constant.BioSafetyEnquiryConstants;
 import sg.gov.moh.iais.egp.bsb.constant.ProcessContants;
 import sg.gov.moh.iais.egp.bsb.dto.enquiry.*;
 import sg.gov.moh.iais.egp.bsb.entity.*;
-import sg.gov.moh.iais.egp.bsb.util.DateUtil;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;

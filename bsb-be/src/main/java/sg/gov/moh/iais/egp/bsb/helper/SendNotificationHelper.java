@@ -22,7 +22,6 @@ import sg.gov.moh.iais.egp.bsb.dto.Letter;
 import sg.gov.moh.iais.egp.bsb.dto.Notification;
 import sg.gov.moh.iais.egp.bsb.entity.Facility;
 import sg.gov.moh.iais.egp.bsb.entity.FacilityAdmin;
-import sg.gov.moh.iais.egp.bsb.util.DateUtil;
 
 import java.io.IOException;
 import java.util.List;
@@ -139,8 +138,8 @@ public class SendNotificationHelper {
         emailDto.setContent(emailContent);
         emailDto.setSubject(emailSubject);
         emailDto.setSender(this.mailSender);
-        emailDto.setReqRefNum(DateUtil.generateRandomNum());
-        emailDto.setClientQueryCode(DateUtil.generateRandomByDate());
+        emailDto.setReqRefNum("");
+        emailDto.setClientQueryCode("DateUtil.generateRandomByDate()");
         if (!STATUS_NEW_APP_REQUEST_FOR_INFO.equals(notification.getStatus()) || !STATUS_NEW_APP_REMIND_PNEF_INVENTORY.equals(notification.getStatus())) {
             try {
                 emailSmsClient.sendEmail(emailDto, null);
