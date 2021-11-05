@@ -17,7 +17,7 @@ import java.util.Map;
 
 public class ThawingStageDtoValidator implements CustomizeValidator {
     @Override
-    public Map<String, String> validate(Object obj, String[] profiles, HttpServletRequest request) {
+    public Map<String, String> validate(Object obj, String profile, HttpServletRequest request) {
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
         ThawingStageDto thawingStageDto = (ThawingStageDto) obj;
         if (!(thawingStageDto.getHasEmbryo() || thawingStageDto.getHasOocyte())){

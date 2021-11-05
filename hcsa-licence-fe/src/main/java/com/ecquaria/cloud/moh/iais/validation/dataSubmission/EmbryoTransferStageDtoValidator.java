@@ -18,7 +18,7 @@ import java.util.Map;
 
 public class EmbryoTransferStageDtoValidator implements CustomizeValidator {
     @Override
-    public Map<String, String> validate(Object obj, String[] profiles, HttpServletRequest request) {
+    public Map<String, String> validate(Object obj, String profile, HttpServletRequest request) {
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
         EmbryoTransferStageDto embryoTransferStageDto = (EmbryoTransferStageDto) obj;
         //TODO 1st Date of Transfer and 2nd Date of Transfer (if applicable)•	Cannot be earlier than cycle start date

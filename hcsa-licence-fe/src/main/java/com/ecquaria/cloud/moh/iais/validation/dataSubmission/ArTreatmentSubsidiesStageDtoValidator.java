@@ -16,7 +16,7 @@ import java.util.Map;
 
 public class ArTreatmentSubsidiesStageDtoValidator implements CustomizeValidator {
     @Override
-    public Map<String, String> validate(Object obj, String[] profiles, HttpServletRequest request) {
+    public Map<String, String> validate(Object obj, String profile, HttpServletRequest request) {
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
         ArTreatmentSubsidiesStageDto arTreatmentSubsidiesStageDto = (ArTreatmentSubsidiesStageDto) obj;
         //TODO validate isThereAppeal
