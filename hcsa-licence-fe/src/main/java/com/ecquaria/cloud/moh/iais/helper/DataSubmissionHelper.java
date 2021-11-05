@@ -297,4 +297,22 @@ public final class DataSubmissionHelper {
         return cycleDto;
     }
 
+    public static void initPatientInventoryTable(HttpServletRequest request){
+        ParamUtil.setRequestAttr(request,"changeFrozenOocytes",0);
+        ParamUtil.setRequestAttr(request,"changeThawedOocytes",0);
+        ParamUtil.setRequestAttr(request,"changeFreshOocytes",0);
+        ParamUtil.setRequestAttr(request,"changeFrozenEmbryos",0);
+        ParamUtil.setRequestAttr(request,"changeThawedEmbryos",0);
+        ParamUtil.setRequestAttr(request,"changeFreshEmbryos",0);
+        ParamUtil.setRequestAttr(request,"changeFrozenSperms",0);
+
+        ParamUtil.setRequestAttr(request,"currentFrozenOocytes",0);
+        ParamUtil.setRequestAttr(request,"currentThawedOocytes",0);
+        ParamUtil.setRequestAttr(request,"currentFreshOocytes",0);
+        ParamUtil.setRequestAttr(request,"currentFrozenEmbryos",0);
+        ParamUtil.setRequestAttr(request,"currentThawedEmbryos",0);
+        ParamUtil.setRequestAttr(request,"currentFreshEmbryos",0);
+        ParamUtil.setRequestAttr(request,"currentFrozenSperms",0);
+    }
+
 }
