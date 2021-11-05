@@ -21,7 +21,7 @@ import java.util.Map;
 @Slf4j
 public class OocyteRetrievalDtoValidator implements CustomizeValidator {
     @Override
-    public Map<String, String> validate(Object obj, String[] profiles, HttpServletRequest request) {
+    public Map<String, String> validate(Object obj, String profile, HttpServletRequest request) {
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
         OocyteRetrievalStageDto oocyteRetrievalStageDto = (OocyteRetrievalStageDto) obj;
         if (!(oocyteRetrievalStageDto.getIsFromPatient() || oocyteRetrievalStageDto.getIsFromPatientTissue()

@@ -34,7 +34,7 @@ import java.util.Optional;
 public class PatientInfoValidator implements CustomizeValidator {
 
     @Override
-    public Map<String, String> validate(Object obj, String[] profiles, HttpServletRequest request) {
+    public Map<String, String> validate(Object obj, String profile, HttpServletRequest request) {
         Map<String, String> map = IaisCommonUtils.genNewHashMap();
         //if (StringUtil.isIn("save", profiles)) {
         PatientInfoDto patientInfo = (PatientInfoDto) obj;
