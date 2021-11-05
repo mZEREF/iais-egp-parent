@@ -1,7 +1,9 @@
 package com.ecquaria.cloud.moh.iais.action.datasubmission;
 
+import com.ecquaria.cloud.RedirectUtil;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
@@ -19,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpSession;
+import java.io.IOException;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -260,9 +263,13 @@ public class ArDataSubmissionDelegator {
      * @param bpc
      * @throws
      */
-    public void doBack(BaseProcessClass bpc) {
-
+    public void doBack(BaseProcessClass bpc) throws IOException {
+        StringBuilder url = new StringBuilder();
+        url.append(InboxConst.URL_HTTPS)
+                .append(bpc.request.getServerName())
+                .append(InboxConst.URL_LICENCE_WEB_MODULE+"MohDataSubmission");
+        String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
+        IaisEGPHelper.redirectUrl(bpc.response, tokenUrl);
     }
-
 
 }

@@ -2,9 +2,11 @@ package com.ecquaria.cloud.moh.iais.action.datasubmission;
 
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.CycleStageSelectionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientDto;
+import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.common.validation.CommonValidator;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
@@ -22,7 +24,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 
 /**
@@ -53,7 +54,7 @@ public class ArAjaxController {
         Map<String, Object> result = IaisCommonUtils.genNewHashMap(3);
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
         ValidationResult vr = WebValidationHelper.validateProperty(patient, "ART");
-        if (vr != null) {
+        if (vr != null && vr.isHasErrors()) {
             Map<String, String> params = IaisCommonUtils.genNewHashMap();
             params.put("idType", "preIdType");
             params.put("idNumber", "preIdNumber");
@@ -66,10 +67,7 @@ public class ArAjaxController {
             LoginContext loginContext = DataSubmissionHelper.getLoginContext(request);
             String orgId = Optional.ofNullable(loginContext).map(LoginContext::getOrgId).orElse("");
             PatientDto db = patientService.getPatientDto(idType, idNo, nationality, orgId);
-            if (db != null) {
-                patient = db;
-            }
-            result.put("patient", patient);
+            result.put("patient", db);
         }
         return result;
     }
@@ -117,6 +115,23 @@ public class ArAjaxController {
         result.put("stagHtmls", DataSubmissionHelper.genOptionHtmls(DataSubmissionHelper.getNextStageForAR(currCycle, currStage,
                 lastStatus)));
         result.put("stage", stage);
+        return result;
+    }
+
+    @PostMapping(value = "/patient-age")
+    public @ResponseBody
+    Map<String, Object> checkPatientAge(HttpServletRequest request) throws Exception {
+        String birthDate = ParamUtil.getString(request, "birthDate");
+        Map<String, Object> result = IaisCommonUtils.genNewHashMap(3);
+        if (StringUtil.isEmpty(birthDate) || !CommonValidator.isDate(birthDate) || Formatter.compareDateByDay(birthDate) > 0) {
+            return result;
+        }
+        String age1 = MasterCodeUtil.getCodeDesc("PT_AGE_001");
+        String age2 = MasterCodeUtil.getCodeDesc("PT_AGE_002");
+        int age = Formatter.getAge(birthDate);
+        if (Integer.parseInt(age1) > age || Integer.parseInt(age2) < age) {
+            result.put("showAgeMsg", true);
+        }
         return result;
     }
 

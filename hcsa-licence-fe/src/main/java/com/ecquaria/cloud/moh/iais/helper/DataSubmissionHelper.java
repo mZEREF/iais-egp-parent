@@ -54,8 +54,8 @@ public final class DataSubmissionHelper {
     }
 
     public static List<String> getNextStageForAR(String currCycle, String currStage, String lastStatus) {
-        log.info(StringUtil.changeForLog("----- The current cycle stage is " + currCycle + " : " + currStage + " : " + lastStatus +
-                " -----"));
+        log.info(StringUtil.changeForLog("----- The current cycle stage is " +
+                currCycle + " : " + currStage + " : " + lastStatus + " -----"));
         List<String> result = IaisCommonUtils.genNewArrayList();
         if (StringUtil.isEmpty(currCycle)
                 || DataSubmissionConsts.AR_CYCLE_NON.equals(currCycle)
@@ -71,99 +71,47 @@ public final class DataSubmissionHelper {
             if (DataSubmissionConsts.AR_CYCLE_AR.equals(currStage) || StringUtil.isEmpty(currStage)) {
                 result.add(DataSubmissionConsts.AR_STAGE_OOCYTE_RETRIEVAL);
                 result.add(DataSubmissionConsts.AR_STAGE_THAWING);
-                result.add(DataSubmissionConsts.AR_STAGE_DONATION);
-                result.add(DataSubmissionConsts.AR_STAGE_DISPOSAL);
-                result.add(DataSubmissionConsts.AR_STAGE_TRANSFER_IN_AND_OUT);
-                result.add(DataSubmissionConsts.AR_STAGE_AR_TREATMENT_SUBSIDIES);
-                result.add(DataSubmissionConsts.AR_STAGE_END_CYCLE);
             } else if (DataSubmissionConsts.AR_STAGE_OOCYTE_RETRIEVAL.equals(currStage)) {
                 result.add(DataSubmissionConsts.AR_STAGE_FERTILISATION);
                 result.add(DataSubmissionConsts.AR_STAGE_FREEZING);
                 result.add(DataSubmissionConsts.AR_STAGE_THAWING);
-                result.add(DataSubmissionConsts.AR_STAGE_DONATION);
-                result.add(DataSubmissionConsts.AR_STAGE_DISPOSAL);
-                result.add(DataSubmissionConsts.AR_STAGE_TRANSFER_IN_AND_OUT);
-                result.add(DataSubmissionConsts.AR_STAGE_AR_TREATMENT_SUBSIDIES);
-                result.add(DataSubmissionConsts.AR_STAGE_END_CYCLE);
             } else if (DataSubmissionConsts.AR_STAGE_THAWING.equals(currStage)) {
                 result.add(DataSubmissionConsts.AR_STAGE_FERTILISATION);
                 result.add(DataSubmissionConsts.AR_STAGE_PRE_IMPLANTAION_GENETIC_TESTING);
                 result.add(DataSubmissionConsts.AR_STAGE_EMBRYO_TRANSFER);
                 result.add(DataSubmissionConsts.AR_STAGE_FREEZING);
-                result.add(DataSubmissionConsts.AR_STAGE_DONATION);
-                result.add(DataSubmissionConsts.AR_STAGE_DISPOSAL);
-                result.add(DataSubmissionConsts.AR_STAGE_TRANSFER_IN_AND_OUT);
-                result.add(DataSubmissionConsts.AR_STAGE_AR_TREATMENT_SUBSIDIES);
-                result.add(DataSubmissionConsts.AR_STAGE_END_CYCLE);
             } else if (DataSubmissionConsts.AR_STAGE_FERTILISATION.equals(currStage)) {
                 result.add(DataSubmissionConsts.AR_STAGE_EMBRYO_CREATED);
-                result.add(DataSubmissionConsts.AR_STAGE_DONATION);
-                result.add(DataSubmissionConsts.AR_STAGE_DISPOSAL);
-                result.add(DataSubmissionConsts.AR_STAGE_TRANSFER_IN_AND_OUT);
-                result.add(DataSubmissionConsts.AR_STAGE_AR_TREATMENT_SUBSIDIES);
-                result.add(DataSubmissionConsts.AR_STAGE_END_CYCLE);
             } else if (DataSubmissionConsts.AR_STAGE_EMBRYO_CREATED.equals(currStage)) {
                 result.add(DataSubmissionConsts.AR_STAGE_PRE_IMPLANTAION_GENETIC_TESTING);
                 result.add(DataSubmissionConsts.AR_STAGE_EMBRYO_TRANSFER);
                 result.add(DataSubmissionConsts.AR_STAGE_FREEZING);
-                result.add(DataSubmissionConsts.AR_STAGE_DONATION);
-                result.add(DataSubmissionConsts.AR_STAGE_DISPOSAL);
-                result.add(DataSubmissionConsts.AR_STAGE_TRANSFER_IN_AND_OUT);
-                result.add(DataSubmissionConsts.AR_STAGE_AR_TREATMENT_SUBSIDIES);
-                result.add(DataSubmissionConsts.AR_STAGE_END_CYCLE);
             } else if (DataSubmissionConsts.AR_STAGE_PRE_IMPLANTAION_GENETIC_TESTING.equals(currStage)) {
                 result.add(DataSubmissionConsts.AR_STAGE_PRE_IMPLANTAION_GENETIC_TESTING);
                 result.add(DataSubmissionConsts.AR_STAGE_EMBRYO_TRANSFER);
                 result.add(DataSubmissionConsts.AR_STAGE_FREEZING);
-                result.add(DataSubmissionConsts.AR_STAGE_DONATION);
-                result.add(DataSubmissionConsts.AR_STAGE_DISPOSAL);
-                result.add(DataSubmissionConsts.AR_STAGE_TRANSFER_IN_AND_OUT);
-                result.add(DataSubmissionConsts.AR_STAGE_AR_TREATMENT_SUBSIDIES);
-                result.add(DataSubmissionConsts.AR_STAGE_END_CYCLE);
             } else if (DataSubmissionConsts.AR_STAGE_EMBRYO_TRANSFER.equals(currStage)) {
                 result.add(DataSubmissionConsts.AR_STAGE_OUTCOME_OF_EMBRYO_TRANSFERED);
-                result.add(DataSubmissionConsts.AR_STAGE_DONATION);
-                result.add(DataSubmissionConsts.AR_STAGE_DISPOSAL);
-                result.add(DataSubmissionConsts.AR_STAGE_TRANSFER_IN_AND_OUT);
-                result.add(DataSubmissionConsts.AR_STAGE_AR_TREATMENT_SUBSIDIES);
-                result.add(DataSubmissionConsts.AR_STAGE_END_CYCLE);
             } else if (DataSubmissionConsts.AR_STAGE_OUTCOME_OF_EMBRYO_TRANSFERED.equals(currStage)) {
                 result.add(DataSubmissionConsts.AR_STAGE_OUTCOME_OF_PREGNANCY);
-                result.add(DataSubmissionConsts.AR_STAGE_DONATION);
-                result.add(DataSubmissionConsts.AR_STAGE_DISPOSAL);
-                result.add(DataSubmissionConsts.AR_STAGE_TRANSFER_IN_AND_OUT);
-                result.add(DataSubmissionConsts.AR_STAGE_AR_TREATMENT_SUBSIDIES);
-                result.add(DataSubmissionConsts.AR_STAGE_END_CYCLE);
             } else if (DataSubmissionConsts.AR_STAGE_FREEZING.equals(currStage)) {
                 result.add(DataSubmissionConsts.AR_STAGE_FERTILISATION);
                 result.add(DataSubmissionConsts.AR_STAGE_PRE_IMPLANTAION_GENETIC_TESTING);
                 result.add(DataSubmissionConsts.AR_STAGE_EMBRYO_TRANSFER);
-                result.add(DataSubmissionConsts.AR_STAGE_DONATION);
-                result.add(DataSubmissionConsts.AR_STAGE_DISPOSAL);
-                result.add(DataSubmissionConsts.AR_STAGE_TRANSFER_IN_AND_OUT);
-                result.add(DataSubmissionConsts.AR_STAGE_AR_TREATMENT_SUBSIDIES);
-                result.add(DataSubmissionConsts.AR_STAGE_END_CYCLE);
             } else if (DataSubmissionConsts.AR_STAGE_DISPOSAL.equals(currStage)) {
                 result.add(DataSubmissionConsts.AR_STAGE_FERTILISATION);
                 result.add(DataSubmissionConsts.AR_STAGE_PRE_IMPLANTAION_GENETIC_TESTING);
                 result.add(DataSubmissionConsts.AR_STAGE_EMBRYO_TRANSFER);
-                result.add(DataSubmissionConsts.AR_STAGE_DONATION);
-                result.add(DataSubmissionConsts.AR_STAGE_DISPOSAL);
-                result.add(DataSubmissionConsts.AR_STAGE_TRANSFER_IN_AND_OUT);
-                result.add(DataSubmissionConsts.AR_STAGE_AR_TREATMENT_SUBSIDIES);
-                result.add(DataSubmissionConsts.AR_STAGE_END_CYCLE);
             } else if (DataSubmissionConsts.AR_STAGE_DONATION.equals(currStage)) {
                 result.add(DataSubmissionConsts.AR_STAGE_FERTILISATION);
                 result.add(DataSubmissionConsts.AR_STAGE_PRE_IMPLANTAION_GENETIC_TESTING);
                 result.add(DataSubmissionConsts.AR_STAGE_EMBRYO_TRANSFER);
-                result.add(DataSubmissionConsts.AR_STAGE_DONATION);
-                result.add(DataSubmissionConsts.AR_STAGE_DISPOSAL);
-                result.add(DataSubmissionConsts.AR_STAGE_TRANSFER_IN_AND_OUT);
-                result.add(DataSubmissionConsts.AR_STAGE_AR_TREATMENT_SUBSIDIES);
-                result.add(DataSubmissionConsts.AR_STAGE_END_CYCLE);
-            } else {
-                //result.add(DataSubmissionConsts.AR_STAGE_END_CYCLE);
             }
+            result.add(DataSubmissionConsts.AR_STAGE_DONATION);
+            result.add(DataSubmissionConsts.AR_STAGE_DISPOSAL);
+            result.add(DataSubmissionConsts.AR_STAGE_TRANSFER_IN_AND_OUT);
+            result.add(DataSubmissionConsts.AR_STAGE_AR_TREATMENT_SUBSIDIES);
+            result.add(DataSubmissionConsts.AR_STAGE_END_CYCLE);
         } else if (DataSubmissionConsts.AR_CYCLE_IUI.equals(currCycle)) {
             if (DataSubmissionConsts.AR_CYCLE_IUI.equals(currStage) || StringUtil.isEmpty(currStage)) {
                 result.add(DataSubmissionConsts.AR_STAGE_OUTCOME);
@@ -172,8 +120,6 @@ public final class DataSubmissionHelper {
                 result.add(DataSubmissionConsts.AR_STAGE_IUI_TREATMENT_SUBSIDIES);
             } else if (DataSubmissionConsts.AR_STAGE_OUTCOME_OF_PREGNANCY.equals(currStage)) {
                 result.add(DataSubmissionConsts.AR_STAGE_IUI_TREATMENT_SUBSIDIES);
-            } else {
-                //result.add(DataSubmissionConsts.AR_STAGE_END_CYCLE);
             }
         } else if (DataSubmissionConsts.AR_CYCLE_EFO.equals(currCycle)) {
             if (DataSubmissionConsts.AR_CYCLE_EFO.equals(currStage) || StringUtil.isEmpty(currStage)) {
@@ -184,8 +130,6 @@ public final class DataSubmissionHelper {
                 result.add(DataSubmissionConsts.AR_STAGE_DONATION);
                 result.add(DataSubmissionConsts.AR_STAGE_DISPOSAL);
                 result.add(DataSubmissionConsts.AR_STAGE_FREEZING);
-            } else {
-                //result.add(DataSubmissionConsts.AR_STAGE_END_CYCLE);
             }
         }
         return result;
@@ -295,6 +239,15 @@ public final class DataSubmissionHelper {
         cycleDto.setId(cycleId);
         cycleDto.setStatus(DataSubmissionConsts.DS_STATUS_ACTIVE);
         return cycleDto;
+    }
+
+    public static String getPatientAgeMessage() {
+        String age1 = MasterCodeUtil.getCodeDesc("PT_AGE_001");
+        String age2 = MasterCodeUtil.getCodeDesc("PT_AGE_002");
+        Map<String, String> repMap = IaisCommonUtils.genNewHashMap(2);
+        repMap.put("0", age1);
+        repMap.put("1", age2);
+        return MessageUtil.getMessageDesc("DS_MSG005", repMap);
     }
 
     public static void initPatientInventoryTable(HttpServletRequest request){

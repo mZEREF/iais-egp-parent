@@ -59,19 +59,6 @@ public class PatientInfoValidator implements CustomizeValidator {
             try {
                 if (Formatter.compareDateByDay(birthDate) > 0) {
                     map.put("birthDate", MessageUtil.replaceMessage("DS_ERR001", "Date of Birth", "field"));
-                } else {
-                    String age1 = MasterCodeUtil.getCodeDesc("PT_AGE_001");
-                    String age2 = MasterCodeUtil.getCodeDesc("PT_AGE_002");
-                    if (StringUtil.isDigit(age1) && StringUtil.isDigit(age2)) {
-                        int age = Formatter.getAge(patient.getBirthDate());
-                        if (Integer.parseInt(age1) > age || Integer.parseInt(age2) < age) {
-                            Map<String, String> repMap = IaisCommonUtils.genNewHashMap(2);
-                            repMap.put("0", age1);
-                            repMap.put("1", age2);
-                            map.put("birthDate", MessageUtil.getMessageDesc("DS_ERR006", repMap));
-                        }
-                    }
-
                 }
             } catch (Exception e) {
                 log.error(StringUtil.changeForLog(e.getMessage()), e);

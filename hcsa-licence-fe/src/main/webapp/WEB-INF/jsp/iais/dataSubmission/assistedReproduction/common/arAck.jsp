@@ -22,8 +22,8 @@
                 <div class="application-tab-footer">
                     <div class="col-xs-12 col-sm-12 col-md-12">
                         <div class="button-group">
-                            <a class="btn btn-secondary" href="/hcsa-licence-web/eservice/INTERNET/MohDataSubmission" >Start Another Submission</a>
-                            <a class="btn btn-primary" href="/main-web/eservice/INTERNET/MohInternetInbox" >Go to DashBoard</a></div>
+                            <a class="btn btn-secondary" href="/hcsa-licence-web/eservice/INTERNET/MohARDataSubmission">Start Another Submission</a>
+                            <a class="btn btn-primary" href="/main-web/eservice/INTERNET/MohInternetInbox">Go to DashBoard</a></div>
                         </div>
                     </div>
                 </div>

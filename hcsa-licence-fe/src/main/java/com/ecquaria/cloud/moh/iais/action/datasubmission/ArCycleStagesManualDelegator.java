@@ -13,6 +13,7 @@ import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
+import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.ArDataSubmissionService;
 import lombok.extern.slf4j.Slf4j;
@@ -22,6 +23,7 @@ import sop.webflow.rt.api.BaseProcessClass;
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 
 /**
@@ -186,8 +188,12 @@ public class ArCycleStagesManualDelegator {
         }
         dataSubmission.setSubmissionType(DataSubmissionConsts.DATA_SUBMISSION_TYPE_AR);
         String stage = selectionDto.getStage();
+        if (!Objects.equals(stage, dataSubmission.getCycleStage())) {
+            currentArDataSubmission = reNew(currentArDataSubmission);
+        }
         dataSubmission.setCycleStage(stage);
         currentArDataSubmission.setCurrentDataSubmissionDto(dataSubmission);
+        currentArDataSubmission.setCycleDto(DataSubmissionHelper.genCycleDto(selectionDto, hicCode));
         ArSuperDataSubmissionDto newDto = arDataSubmissionService.getArSuperDataSubmissionDto(selectionDto.getPatientCode(),
                 hicCode);
         if (newDto != null) {
@@ -196,13 +202,22 @@ public class ArCycleStagesManualDelegator {
             selectionDto = newDto.getSelectionDto();
             selectionDto.setStage(stage);
             currentArDataSubmission.setSelectionDto(selectionDto);
-            currentArDataSubmission.setCycleDto(DataSubmissionHelper.genCycleDto(selectionDto, hicCode));
         } else {
-            // for test
-            log.info("-----No ArSuperDataSubmissionDto found from DB-----");
-            currentArDataSubmission.setCycleDto(DataSubmissionHelper.genCycleDto(selectionDto, hicCode));
+            log.warn("-----No ArSuperDataSubmissionDto found from DB-----");
         }
         DataSubmissionHelper.setCurrentArDataSubmission(currentArDataSubmission, request);
+    }
+
+    private ArSuperDataSubmissionDto reNew(ArSuperDataSubmissionDto currentArDataSubmission) {
+        ArSuperDataSubmissionDto newDto = new ArSuperDataSubmissionDto();
+        newDto.setSubmissionType(DataSubmissionConsts.DATA_SUBMISSION_TYPE_AR);
+        newDto.setOrgId(currentArDataSubmission.getOrgId());
+        newDto.setArSubmissionType(currentArDataSubmission.getArSubmissionType());
+        newDto.setSubmissionMethod(currentArDataSubmission.getSubmissionMethod());
+        newDto.setAppGrpPremisesDto(currentArDataSubmission.getAppGrpPremisesDto());
+        newDto.setSelectionDto(currentArDataSubmission.getSelectionDto());
+        newDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+        return newDto;
     }
 
     private CycleStageSelectionDto getSelectionDtoFromPage(HttpServletRequest request) {

@@ -61,6 +61,7 @@ public class PatientDelegator extends CommonDelegator {
     @Override
     public void prepareSwitch(BaseProcessClass bpc) {
         ParamUtil.setRequestAttr(bpc.request, "smallTitle", "You are submitting for <strong>Patient Information</strong>");
+        ParamUtil.setRequestAttr(bpc.request, "ageMsg", DataSubmissionHelper.getPatientAgeMessage());
     }
 
     @Override
@@ -151,14 +152,5 @@ public class PatientDelegator extends CommonDelegator {
         cycleDto.setCycleType(DataSubmissionConsts.DATA_SUBMISSION_CYCLE_STAGE_PATIENT);
         return cycleDto;
     }
-
-    /*private void validatePageForDraft(PatientDto patient, HttpServletRequest request) {
-        ValidationResult validationResult = WebValidationHelper.validateProperty(patient, "ART");
-        if (validationResult != null && validationResult.isHasErrors()) {
-            Map<String, String> errorMap = validationResult.retrieveAll();
-            ParamUtil.setRequestAttr(request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
-            ParamUtil.setRequestAttr(request, IaisEGPConstant.CRUD_ACTION_TYPE, ACTION_TYPE_PAGE);
-        }
-    }*/
 
 }

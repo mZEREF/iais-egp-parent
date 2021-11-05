@@ -686,12 +686,16 @@ function callCommonAjax(options, callback) {
     if (!isEmpty(options.url)) {
         url = options.url;
     }
+    var type = 'POST';
+    if (!isEmpty(options.type)) {
+        type = options.type;
+    }
     console.log(url);
     $.ajax({
         url: url,
         dataType: 'json',
         data: options,
-        type: 'POST',
+        type: type,
         success: function (data) {
             if (typeof callback === 'function') {
                 callback(data);
