@@ -9,9 +9,11 @@ import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidat
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.ArDataSubmissionService;
+import lombok.extern.slf4j.Slf4j;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.swing.*;
+import java.text.ParseException;
 import java.util.Date;
 import java.util.Map;
 
@@ -19,6 +21,7 @@ import java.util.Map;
  * @Description CycleStageSelectionValidator
  * @Auther chenlei on 11/4/2021.
  */
+@Slf4j
 public class CycleStageSelectionValidator implements CustomizeValidator {
 
     @Override
@@ -33,10 +36,14 @@ public class CycleStageSelectionValidator implements CustomizeValidator {
             Date lastStartDate = service.getLastCompletedCycleStartDate(selectionDto.getPatientCode(), selectionDto.getHciCode());
             String period = MasterCodeUtil.getCodeDesc("DS_CP_001");
             if (lastStartDate != null && StringUtil.isDigit(period)) {
-                int p = Integer.parseInt(period);
-                int target = Formatter.compareDateByDay(lastStartDate);
-                if (target < p) {
-                    errorMsg.put("patientIdNumber", MessageUtil.getMessageDesc("DS_ERR013"));
+                try {
+                    int p = Integer.parseInt(period);
+                    int target = Formatter.compareDateByDay(lastStartDate, new Date());
+                    if (target < p) {
+                        errorMsg.put("patientIdNumber", MessageUtil.getMessageDesc("DS_ERR013"));
+                    }
+                } catch (Exception e) {
+                    log.info(StringUtil.changeForLog(e.getMessage()), e);
                 }
             }
         }
