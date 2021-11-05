@@ -38,6 +38,8 @@ public class OutcomePregnancyDelegator extends CommonDelegator {
         PregnancyOutcomeStageDto pregnancyOutcomeStageDto = arSuperDataSubmissionDto.getPregnancyOutcomeStageDto();
         if (pregnancyOutcomeStageDto == null) {
             pregnancyOutcomeStageDto = new PregnancyOutcomeStageDto();
+            pregnancyOutcomeStageDto.setL2CareBabyNum(0);
+            pregnancyOutcomeStageDto.setL3CareBabyNum(0);
             arSuperDataSubmissionDto.setPregnancyOutcomeStageDto(pregnancyOutcomeStageDto);
             DataSubmissionHelper.setCurrentArDataSubmission(arSuperDataSubmissionDto, bpc.request);
         }

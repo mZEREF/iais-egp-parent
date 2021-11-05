@@ -14,13 +14,13 @@
                 <iais:row>
                     <iais:field width="5" value="Order Shown in 1st Ultrasound (if Pregnancy confirmed)" mandatory="true"/>
                     <iais:value width="7" cssClass="col-md-7">
-                        <iais:select name="firstUltrasoundOrderShow" id="firstUltrasoundOrderShow" options="firstUltrasoundOrderShowSelectOption" value="${pregnancyOutcomeStageDto.firstUltrasoundOrderShow}"></iais:select>
+                        <iais:select name="firstUltrasoundOrderShow" firstOption="Please Select" id="firstUltrasoundOrderShow" options="firstUltrasoundOrderShowSelectOption" value="${pregnancyOutcomeStageDto.firstUltrasoundOrderShow}"></iais:select>
                     </iais:value>
                 </iais:row>
                 <iais:row>
                     <iais:field width="5" value="Outcome of Pregnancy" mandatory="true"/>
                     <iais:value width="7" cssClass="col-md-7">
-                        <iais:select name="pregnancyOutcome" id="pregnancyOutcome" options="pregnancyOutcomeSelectOption" value="${pregnancyOutcomeStageDto.pregnancyOutcome}"></iais:select>
+                        <iais:select name="pregnancyOutcome" firstOption="Please Select" id="pregnancyOutcome" options="pregnancyOutcomeSelectOption" value="${pregnancyOutcomeStageDto.pregnancyOutcome}"></iais:select>
                     </iais:value>
                 </iais:row>
                 <div id="otherPregnancyOutcomeDiv" <c:if test="${pregnancyOutcomeStageDto.pregnancyOutcome != 'Others'}">style="display:none;"</c:if>>
@@ -118,7 +118,7 @@
                     <iais:row>
                         <iais:field width="5" value="Mode of Delivery" mandatory="true"/>
                         <iais:value width="7" cssClass="col-md-7">
-                            <iais:select name="deliveryMode" options="deliveryModeSelectOption" value="${pregnancyOutcomeStageDto.deliveryMode}"></iais:select>
+                            <iais:select name="deliveryMode" firstOption="Please Select" options="deliveryModeSelectOption" value="${pregnancyOutcomeStageDto.deliveryMode}"></iais:select>
                         </iais:value>
                     </iais:row>
 
@@ -127,7 +127,7 @@
                             <c:if test="${pregnancyOutcomeStageDto.pregnancyOutcome == 'Live Birth'}"><span class="mandatory">*</span></c:if>
                         </label>
                         <div class="col-md-7">
-                            <div class="form-check col-12">
+                            <div class="form-check col-12" style="padding: 0px">
                                 <input class="form-check-input"
                                        type="checkbox"
                                        name="deliveryDate"
@@ -139,7 +139,7 @@
                                        for="deliveryModeUnknown"><span
                                         class="check-square"></span>Unknown</label>
                             </div>
-                            <div class="col-12">
+                            <div class="col-12"  style="padding: 0px">
                                 <iais:datePicker id="deliveryDate" name="deliveryDate" dateVal="${pregnancyOutcomeStageDto.deliveryDate}"/>
                             </div>
                         </div>

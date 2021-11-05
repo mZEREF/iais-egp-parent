@@ -82,22 +82,8 @@ $(document).ready(function () {
             $('#l3CareBabyDaysDiv').hide();
         }
     });
-
-    $('.birthDefect').change(function () {
-        if (!$(this).val() == 'yes') {
-            $(this).next('div[name="defectTypeSectionName"]').show();
-        } else {
-            $(this).next('div[name="defectTypeSectionName"]').hide();
-        }
-    });
-
-    $('.defectType').change(function () {
-        if (!$(this).val() == 'other') {
-            $(this).next('div[name="otherDefectTypeDivName"]').show();
-        } else {
-            $(this).next('div[name="otherDefectTypeDivName"]').hide();
-        }
-    });
+    bindBirthDefect();
+    bindDefectType();
 
     $('#maleLiveBirthNum').change(changeTotalLiveBirthNum);
 
@@ -107,6 +93,31 @@ $(document).ready(function () {
 
     $('#femaleLiveBirthNum').change(changeBabySection);
 });
+
+function bindBirthDefect() {
+    $('.birthDefect').unbind();
+    $('.birthDefect').change(function () {
+        console.log("birthDefect is :"+$(this).val());
+        if ($(this).val() == 'Yes') {
+            $(this).closest(".form-group").next('div[name="defectTypeSectionName"]').show();
+        } else {
+            $(this).closest(".form-group").next('div[name="defectTypeSectionName"]').hide();
+        }
+    });
+}
+
+function bindDefectType() {
+    $('.defectType').unbind();
+    $('.defectType').change(function () {
+        if ($(this).val()=="other") {
+            if ($(this).prop("checked")){
+                $(this).closest(".form-group").next('div[name="otherDefectTypeDivName"]').show();
+            } else {
+                $(this).closest(".form-group").next('div[name="otherDefectTypeDivName"]').hide();
+            }
+        }
+    });
+}
 
 function changeTotalLiveBirthNum() {
     let maleLiveBirthNum = parseInt($('#maleLiveBirthNum').val());
@@ -156,7 +167,8 @@ var addBabaSection = function (babyIndex,babySize) {
                 }else {
                     $('#pregnancyOutcomeStageBabySection'+ (babyIndex - 1)).nextAll('.pregnancyOutcomeStageBabySection').find('.birthWeight').niceSelect();
                 }
-                //TODO Bind event
+                bindBirthDefect();
+                bindDefectType();
             }
             dismissWaiting();
         },
