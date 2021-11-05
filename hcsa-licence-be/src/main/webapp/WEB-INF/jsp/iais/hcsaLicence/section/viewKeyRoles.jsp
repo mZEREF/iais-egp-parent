@@ -105,11 +105,11 @@
                     </div>
                     <div class="col-md-6">
                         <div class="col-md-6">
-                            <span class="newVal " attr="${newLicenceDto.addrType}"><c:out value="${newLicenceDto.addrType}"/></span>
+                            <span class="newVal " attr="${newLicenceDto.addrType}"><iais:code code="${newLicenceDto.addrType}"/></span>
 
                         </div>
                         <div class="col-md-6">
-                            <span class="oldVal" attr="${oldLicenceDto.addrType}" style="display: none"><c:out value="${oldLicenceDto.addrType}"/></span>
+                            <span class="oldVal" attr="${oldLicenceDto.addrType}" style="display: none"><iais:code code="${oldLicenceDto.addrType}"/></span>
                         </div>
                     </div>
                 </div>
