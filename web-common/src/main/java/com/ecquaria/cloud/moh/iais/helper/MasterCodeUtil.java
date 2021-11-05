@@ -181,7 +181,7 @@ public final class MasterCodeUtil {
 
     //Data Submission Transfer In And Out
     public static final String WHAT_WAS_TRANSFERRED = "611D5523-86AA-4018-A095-93B01D1F2A29";
-
+    public static final String TRANSFERRED_IN_FROM = "F8AB83C2-5C6A-4480-A253-DF757BB9C8F6";
     /**
      * @description: refresh the master codes into cache
      *
