@@ -179,6 +179,9 @@ public final class MasterCodeUtil {
     //Data Submission Outcome of Embryo Transferred
     public static final String OUTCOME_OF_EMBRYO_TRANSFERRED = "2D84C8E8-8CFA-46AD-8A00-4C01510A5D7F";
 
+    //Data Submission Transfer In And Out
+    public static final String WHAT_WAS_TRANSFERRED = "611D5523-86AA-4018-A095-93B01D1F2A29";
+
     /**
      * @description: refresh the master codes into cache
      *
