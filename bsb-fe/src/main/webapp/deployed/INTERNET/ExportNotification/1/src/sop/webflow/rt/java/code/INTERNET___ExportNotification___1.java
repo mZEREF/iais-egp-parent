@@ -34,4 +34,8 @@ public class INTERNET___ExportNotification___1 extends BaseProcessClass {
 	// 		save->OnStepProcess
 	}
 
+	public void saveDraft_OnStepProcess_0() throws Exception {
+		// 		saveDraft->OnStepProcess
+	}
+
 }

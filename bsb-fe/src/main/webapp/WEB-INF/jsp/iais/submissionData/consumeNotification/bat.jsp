@@ -1,4 +1,4 @@
-<input type="hidden" name="sectionAmt" value="${consumeNotification.consumptionLists.size()}">
+<input type="hidden" name="sectionAmt" value="${consumeNotification.consumptionNotList.size()}">
 
 <input type="hidden" id="section_repeat_amt_input_name" value="sectionAmt" readonly disabled>
 <input type="hidden" id="section_repeat_section_id_prefix" value="reqTSection" readonly disabled>
@@ -12,17 +12,13 @@
         <div class="col-xs-12 col-sm-12" style="padding: 20px 30px 10px 30px; border-radius: 15px;margin: 0 auto">
             <div class="col-xs-12 col-sm-12">
                 <div id="sectionGroup">
-                    <c:forEach var="item" items="${consumeNotification.consumptionLists}" varStatus="status">
+                    <c:forEach var="item" items="${consumeNotification.consumptionNotList}" varStatus="status">
                         <section id="reqTSection--v--${status.index}">
-                            <c:if test="${consumeNotification.consumptionLists.size() > 1}">
+                            <c:if test="${consumeNotification.consumptionNotList.size() > 1}">
                                 <div class="form-group">
-                                    <h3 class="col-xs-9 col-sm-10 col-md-11" style="border-bottom: 1px solid black">
-                                        Agent / Toxin ${status.index + 1}</h3>
+                                    <h3 class="col-xs-9 col-sm-10 col-md-11" style="border-bottom: 1px solid black">Agent / Toxin ${status.index + 1}</h3>
                                     <c:if test="${status.index gt 0}">
-                                        <div class="col-sm-1"><h4 class="text-danger"><em id="currentIdx"
-                                                                                          data-current-idx="${status.index}"
-                                                                                          class="fa fa-times-circle del-size-36 cursorPointer removeBtn"></em>
-                                        </h4></div>
+                                        <div class="col-sm-1"><h4 class="text-danger"><em id="currentIdx" data-current-idx="${status.index}" class="fa fa-times-circle del-size-36 cursorPointer removeBtn"></em></h4></div>
                                     </c:if>
                                 </div>
                             </c:if>
@@ -106,15 +102,15 @@
                                         <span data-err-ind="meaUnit--v--${status.index}" class="error-msg"></span>
                                     </div>
                                 </div>
-                                <div class="form-group">
-                                    <div class="col-sm-5 control-label">
-                                        <label for="attachment--v--${status.index}">Attachment</label>
-                                    </div>
-                                    <div class="col-sm-6 col-md-7">
-                                        <input type="file" name="attachment--v--${status.index}"
-                                               id="attachment--v--${status.index}">
-                                    </div>
-                                </div>
+<%--                                <div class="form-group">--%>
+<%--                                    <div class="col-sm-5 control-label">--%>
+<%--                                        <label for="attachment--v--${status.index}">Attachment</label>--%>
+<%--                                    </div>--%>
+<%--                                    <div class="col-sm-6 col-md-7">--%>
+<%--                                        <input type="file" name="attachment--v--${status.index}"--%>
+<%--                                               id="attachment--v--${status.index}">--%>
+<%--                                    </div>--%>
+<%--                                </div>--%>
                             </div>
                         </section>
                     </c:forEach>
@@ -146,26 +142,26 @@
                             <span data-err-ind="remarks" class="error-msg"></span>
                         </div>
                     </div>
-                    <div class="form-group">
-                        <div class="col-sm-5 control-label">
-                            <label for="documentType">Document Type</label>
-                        </div>
-                        <div class="col-sm-6 col-md-7">
-                            <select name="documentType" id="documentType">
-                                <option value="0">Please Select</option>
-                                <option value="3DOCTYPE001">Inventory: Biological Agents</option>
-                                <option value="3DOCTYPE002">Inventory: Toxins</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <div class="col-sm-5 control-label">
-                            <label for="attachment">Attachment</label>
-                        </div>
-                        <div class="col-sm-6 col-md-7">
-                            <input type="file" name="attachment" id="attachment">
-                        </div>
-                    </div>
+<%--                    <div class="form-group">--%>
+<%--                        <div class="col-sm-5 control-label">--%>
+<%--                            <label for="documentType">Document Type</label>--%>
+<%--                        </div>--%>
+<%--                        <div class="col-sm-6 col-md-7">--%>
+<%--                            <select name="documentType" id="documentType">--%>
+<%--                                <option value="0">Please Select</option>--%>
+<%--                                <option value="3DOCTYPE001">Inventory: Biological Agents</option>--%>
+<%--                                <option value="3DOCTYPE002">Inventory: Toxins</option>--%>
+<%--                            </select>--%>
+<%--                        </div>--%>
+<%--                    </div>--%>
+<%--                    <div class="form-group">--%>
+<%--                        <div class="col-sm-5 control-label">--%>
+<%--                            <label for="attachment">Attachment</label>--%>
+<%--                        </div>--%>
+<%--                        <div class="col-sm-6 col-md-7">--%>
+<%--                            <input type="file" name="attachment" id="attachment">--%>
+<%--                        </div>--%>
+<%--                    </div>--%>
                 </div>
             </div>
         </div>

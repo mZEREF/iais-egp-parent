@@ -230,7 +230,7 @@ public class AuditCreationDelegator {
 
     public void selectOption(HttpServletRequest request){
         List<String> facNames = biosafetyEnquiryClient.queryDistinctFN().getEntity();
-        List<SelectOption> selectModel = IaisCommonUtils.genNewArrayList();
+        List<SelectOption> selectModel = new ArrayList<>();
         for (String facName : facNames) {
             selectModel.add(new SelectOption(facName,facName));
         }

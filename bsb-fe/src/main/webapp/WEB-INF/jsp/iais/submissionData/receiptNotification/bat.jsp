@@ -106,17 +106,17 @@
                                     </div>
                                 </div>
                             </div>
-                            <div id="agentEpFifth--v--${status.index}" style="display: none">
-                                <div class="form-group">
-                                    <div class="col-sm-5 control-label">
-                                        <label for="attachment--v--${status.index}">Attachment</label>
-                                    </div>
-                                    <div class="col-sm-6 col-md-7">
-                                        <input type="file" name="attachment--v--${status.index}"
-                                               id="attachment--v--${status.index}">
-                                    </div>
-                                </div>
-                            </div>
+<%--                            <div id="agentEpFifth--v--${status.index}" style="display: none">--%>
+<%--                                <div class="form-group">--%>
+<%--                                    <div class="col-sm-5 control-label">--%>
+<%--                                        <label for="attachment--v--${status.index}">Attachment</label>--%>
+<%--                                    </div>--%>
+<%--                                    <div class="col-sm-6 col-md-7">--%>
+<%--                                        <input type="file" name="attachment--v--${status.index}"--%>
+<%--                                               id="attachment--v--${status.index}">--%>
+<%--                                    </div>--%>
+<%--                                </div>--%>
+<%--                            </div>--%>
                         </section>
                     </c:forEach>
                 </div>
@@ -257,26 +257,26 @@
                             <span data-err-ind="remarks" class="error-msg"></span>
                         </div>
                     </div>
-                    <div class="form-group">
-                        <div class="col-sm-5 control-label">
-                            <label for="documentType">Document Type</label>
-                        </div>
-                        <div class="col-sm-6 col-md-7">
-                            <select name="documentType" id="documentType">
-                                <option value="3DOCTYPE001">Please Select</option>
-                                <option value="3DOCTYPE001">Inventory: Biological Agents</option>
-                                <option value="3DOCTYPE002">Inventory: Toxins</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <div class="col-sm-5 control-label">
-                            <label for="attachment">Attachment</label>
-                        </div>
-                        <div class="col-sm-6 col-md-7">
-                            <input type="file" name="attachment" id="attachment">
-                        </div>
-                    </div>
+<%--                    <div class="form-group">--%>
+<%--                        <div class="col-sm-5 control-label">--%>
+<%--                            <label for="documentType">Document Type</label>--%>
+<%--                        </div>--%>
+<%--                        <div class="col-sm-6 col-md-7">--%>
+<%--                            <select name="documentType" id="documentType">--%>
+<%--                                <option value="3DOCTYPE001">Please Select</option>--%>
+<%--                                <option value="3DOCTYPE001">Inventory: Biological Agents</option>--%>
+<%--                                <option value="3DOCTYPE002">Inventory: Toxins</option>--%>
+<%--                            </select>--%>
+<%--                        </div>--%>
+<%--                    </div>--%>
+<%--                    <div class="form-group">--%>
+<%--                        <div class="col-sm-5 control-label">--%>
+<%--                            <label for="attachment">Attachment</label>--%>
+<%--                        </div>--%>
+<%--                        <div class="col-sm-6 col-md-7">--%>
+<%--                            <input type="file" name="attachment" id="attachment">--%>
+<%--                        </div>--%>
+<%--                    </div>--%>
                     <div class="form-group ">
                         <div class="col-xs-1" style="padding: 30px 0 20px 30px;">
                             <%--<c:if test="${previewSubmit.declare eq 'Y'}">checked="checked"</c:if>--%>

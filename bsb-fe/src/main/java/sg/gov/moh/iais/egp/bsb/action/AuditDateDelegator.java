@@ -3,7 +3,6 @@ package sg.gov.moh.iais.egp.bsb.action;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
-import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
@@ -208,7 +207,7 @@ public class AuditDateDelegator {
 
     public void selectOption(HttpServletRequest request) {
         List<String> facNames = auditClient.queryDistinctFN().getEntity();
-        List<SelectOption> selectModel = IaisCommonUtils.genNewArrayList();
+        List<SelectOption> selectModel = new ArrayList<>();
         for (String facName : facNames) {
             selectModel.add(new SelectOption(facName, facName));
         }

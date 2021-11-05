@@ -13,8 +13,10 @@
     String webroot1 = IaisEGPConstant.CSS_ROOT + IaisEGPConstant.FE_CSS_ROOT;
 %>
 <webui:setLayout name="iais-internet"/>
+<script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-common.js"></script>
 <script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-request-for-transfer.js"></script>
 <script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-data-submission.js"></script>
+<%@include file="/WEB-INF/jsp/iais/submissionData/common/showTabErrorMsg.jsp"%>
 <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
     <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
     <input type="hidden" name="action_type" value="">
@@ -73,12 +75,14 @@
     <div class="row">
         <div class="container">
             <div class="col-xs-12 col-md-6 text-left">
-                <a class="back" href="#"><em class="fa fa-angle-left"></em> Back</a>
+                <a class="back" href="#" id="back"><em class="fa fa-angle-left"></em> Back</a>
             </div>
-            <div class="col-xs-12 col-md-6 text-right">
-                <button class="btn btn-primary save" id="savebtn">NEXT</button>
+            <div class="form-group">
+                <div class="col-xs-12 col-md-6 text-right">
+                    <button class="btn btn-secondary save" id="saveDraft">Save as Draft</button>
+                    <button class="btn btn-primary save" id="doConfirm">NEXT</button>
+                </div>
             </div>
         </div>
     </div>
 </form>
-<%@include file="/WEB-INF/jsp/include/validation.jsp"%>

@@ -2,12 +2,11 @@ package sg.gov.moh.iais.egp.bsb.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
-import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
+import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import sg.gov.moh.iais.egp.bsb.client.DataSubmissionClient;
-import sg.gov.moh.iais.egp.bsb.constant.AuditConstants;
+import sg.gov.moh.iais.egp.bsb.constant.ValidationConstants;
 import sg.gov.moh.iais.egp.bsb.dto.submission.*;
 import sop.webflow.rt.api.BaseProcessClass;
 
@@ -16,14 +15,20 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import static sg.gov.moh.iais.egp.bsb.constant.DataSubmissionConstants.KEY_PREFIX_REMARKS;
-
-
-@Delegator("dataSubmissionDelegator")
 @Slf4j
+@Delegator("dataSubmissionDelegator")
 public class DataSubmissionDelegator {
-    @Autowired
+    public static final String KEY_CONSUME_NOTIFICATION_DTO = "consumeNotification";
+    public static final String KEY_FACILITY_INFO = "facilityInfo";
+    public static final String KEY_FAC_LISTS = "facLists";
+    public static final String KEY_FAC_SELECTION = "facSelection";
+    public static final String KEY_FAC_ID = "facId";
+
     private DataSubmissionClient dataSubmissionClient;
+
+    public DataSubmissionDelegator(DataSubmissionClient dataSubmissionClient){
+        this.dataSubmissionClient = dataSubmissionClient;
+    }
 
     /**
      * start
@@ -36,42 +41,73 @@ public class DataSubmissionDelegator {
     }
     /**
      * StartStep: PrepareFacilitySelect
+     * prepare facility list
      */
     public void doPrepareFacilitySelect(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         selectOption(request);
     }
     /**
+     * StartStep: PrepareFacilitySelect
+     * get the selected facility id
+     */
+    public void doPrepareDataSubmissionSelect(BaseProcessClass bpc) {
+        HttpServletRequest request = bpc.request;
+        ParamUtil.setSessionAttr(request,KEY_FAC_ID,null);
+        String facId = ParamUtil.getRequestString(request,KEY_FAC_ID);
+        facId = MaskUtil.unMaskValue("id",facId);
+        ParamUtil.setSessionAttr(request,KEY_FAC_ID,facId);
+    }
+    /**
      * StartStep: PrepareSwitch
+     * Maybe it will be useful in the future
      */
     public void doPrepareSwitch(BaseProcessClass bpc) {
+        //todo
     }
     /**
      * StartStep: prepareConsume
+     * Prepare data for the callback and facility info
      */
     public void prepareConsume(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
-        ParamUtil.setRequestAttr(request,"consumeNotification",new ConsumeNotificationDto());
+        ParamUtil.setSessionAttr(request,KEY_FACILITY_INFO,null);
+        //
+        Boolean needShowError = (Boolean) ParamUtil.getRequestAttr(request,ValidationConstants.KEY_SHOW_ERROR_SWITCH);
+        ConsumeNotificationDto consumeNotification = getConsumeNotification(request);
+        if(Boolean.TRUE.equals(needShowError)){
+            ParamUtil.setRequestAttr(request,ValidationConstants.KEY_VALIDATION_ERRORS,consumeNotification.retrieveValidationResult());
+        }
+        //prepare facility info
+        String facId = (String) ParamUtil.getSessionAttr(request,KEY_FAC_ID);
+        List<FacListDto.FacList> facLists = (List<FacListDto.FacList>)ParamUtil.getSessionAttr(request,KEY_FAC_LISTS);
+        for (FacListDto.FacList facList : facLists) {
+            if (facList.getFacId().equals(facId)){
+                ParamUtil.setSessionAttr(request,KEY_FACILITY_INFO,facList);
+            }
+        }
+        ParamUtil.setRequestAttr(request,KEY_CONSUME_NOTIFICATION_DTO,new ConsumeNotificationDto());
     }
     /**
      * StartStep: prepareConfirm
+     * Put data into session for preview and save
      */
     public void prepareConfirm(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
-//        ParamUtil.setSessionAttr(request,"consumeNotification", null);
-        ConsumeNotificationDto dto = new ConsumeNotificationDto();
-        dto.reqObjectMapping(request);
-        dto.setRemarks(ParamUtil.getString(request,KEY_PREFIX_REMARKS));
-        ParamUtil.setRequestAttr(request,"notification", dto);
+        ParamUtil.setSessionAttr(request,KEY_CONSUME_NOTIFICATION_DTO, null);
+        ConsumeNotificationDto consumeNotification = getConsumeNotification(request);
+        consumeNotification.reqObjectMapping(request);
+        doValidation(consumeNotification,request);
+        ParamUtil.setSessionAttr(request,KEY_CONSUME_NOTIFICATION_DTO, consumeNotification);
     }
     /**
      * StartStep: saveConsumeNot
+     * save consume notification
      */
     public void saveConsumeNot(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
-        ConsumeNotificationDto dto = (ConsumeNotificationDto) ParamUtil.getSessionAttr(request,"consumeNotification");
-
-
+        ConsumeNotificationDto dto = getConsumeNotification(request);
+        dataSubmissionClient.saveConsumeNot(dto);
     }
 
 
@@ -97,14 +133,46 @@ public class DataSubmissionDelegator {
         ParamUtil.setRequestAttr(request,"receiveNotification",new ReceiptNotificationDto());
     }
 
+    /**
+     * This method is used to query all Facility info
+     */
     public void selectOption(HttpServletRequest request) {
+        ParamUtil.setSessionAttr(request,KEY_FAC_LISTS,null);
         FacListDto facListDto = dataSubmissionClient.queryAllApprovalFacList().getEntity();
         List<FacListDto.FacList> facLists = facListDto.getFacLists();
         facLists.remove(0);
-        List<SelectOption> selectModel = IaisCommonUtils.genNewArrayList();
+        List<SelectOption> selectModel = new ArrayList<>();
         for (FacListDto.FacList fac : facLists) {
             selectModel.add(new SelectOption(fac.getFacId(), fac.getFacName()));
         }
-        ParamUtil.setRequestAttr(request, "facList", selectModel);
+        ParamUtil.setRequestAttr(request, KEY_FAC_SELECTION, selectModel);
+        //Put in session called for later operations
+        ParamUtil.setSessionAttr(request,KEY_FAC_LISTS,(Serializable) facLists);
+    }
+
+    /**
+     * this method just used to charge if dto exist
+     * */
+    public ConsumeNotificationDto getConsumeNotification(HttpServletRequest request){
+        ConsumeNotificationDto notificationDto = (ConsumeNotificationDto) ParamUtil.getSessionAttr(request,KEY_CONSUME_NOTIFICATION_DTO);
+        return notificationDto == null ? getDefaultConsumeNotDto() : notificationDto;
+    }
+
+    private ConsumeNotificationDto getDefaultConsumeNotDto() {
+        return new ConsumeNotificationDto();
+    }
+
+    /**
+     * just a method to do simple valid,maybe update in the future
+     * doValidation
+     * */
+    public void doValidation(ConsumeNotificationDto dto,HttpServletRequest request){
+        if(dto.doValidation()){
+            ParamUtil.setRequestAttr(request, ValidationConstants.IS_VALID,ValidationConstants.YES);
+        }else{
+            ParamUtil.setRequestAttr(request, ValidationConstants.IS_VALID,ValidationConstants.NO);
+            ParamUtil.setRequestAttr(request,ValidationConstants.KEY_SHOW_ERROR_SWITCH,Boolean.TRUE);
+        }
     }
 }
+

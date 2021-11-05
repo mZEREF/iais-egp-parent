@@ -36,4 +36,8 @@ public class INTERNET___ConsumeNotification___1 extends BaseProcessClass {
 		EngineHelper.delegate(DELEGATOR, "saveConsumeNot", this);
 	}
 
+	public void saveDraft_OnStepProcess_0() throws Exception {
+		// 		saveDraft->OnStepProcess
+	}
+
 }

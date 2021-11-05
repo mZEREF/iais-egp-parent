@@ -14,10 +14,8 @@
 %>
 <webui:setLayout name="iais-internet"/>
 
-<script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-common.js"></script>
-<script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-approval-app.js"></script>
+<script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-data-submission.js"></script>
 
-<%@include file="/WEB-INF/jsp/iais/include/showErrorMsg.jsp" %>
 <%@include file="../../inbox/dashboard/dashboard.jsp"%>
 <form method="post" id="mainForm" action="<%=process.runtime.continueURL()%>">
     <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
@@ -91,7 +89,7 @@
                                                             <div class="panel-body">
                                                                 <div class="text-right app-font-size-16"><a href="/bsb-fe/eservicecontinue/INTERNET/ConsumeNotification" data-step-key="approvalProfile"><em class="fa fa-pencil-square-o"></em>Edit</a>
                                                                 </div>
-                                                                <c:forEach var="info" items="${notification.consumptionLists}" varStatus="status">
+                                                                <c:forEach var="info" items="${consumeNotification.consumptionNotList}" varStatus="status">
                                                                     <div class="panel-main-content form-horizontal min-row">
                                                                         <div class="form-group">
                                                                             <div class="col-10"><strong>Agents/Toxin ${status.index+1}</strong></div>
@@ -163,52 +161,31 @@
                                                                                     <div class="clear"></div>
                                                                                 </div>
                                                                             </div>
-<%--                                                                        </c:forEach>--%>
+                                                                        </c:forEach>
                                                                     </div>
-                                                                </c:forEach>
-                                                                <div class="panel-main-content form-horizontal min-row">
-                                                                    <div class="form-group">
-                                                                        <div class="col-10"><strong>Additional Details</strong></div>
-                                                                        <div class="clear"></div>
-                                                                    </div>
-                                                                    <div>
+
+                                                                    <div class="panel-main-content form-horizontal min-row">
                                                                         <div class="form-group">
-                                                                            <label class="col-xs-5 col-md-4 control-label">Complete Destruction/Disposal</label>
-                                                                            <div class="col-sm-7 col-md-5 col-xs-7">
-                                                                                <p>${info.scheduleType}</p>
-                                                                            </div>
+                                                                            <div class="col-10"><strong>Additional Details</strong></div>
                                                                             <div class="clear"></div>
                                                                         </div>
-                                                                        <div class="form-group">
-                                                                            <label class="col-xs-5 col-md-4 control-label">Method of Destruction</label>
-                                                                            <div class="col-sm-7 col-md-5 col-xs-7">
-                                                                                <p>${info.bat}</p>
+                                                                        <div>
+                                                                            <div class="form-group">
+                                                                                <label class="col-xs-5 col-md-4 control-label">Facility Name</label>
+                                                                                <div class="col-sm-7 col-md-5 col-xs-7">
+                                                                                    <p>${consumeNotification.facId}</p>
+                                                                                </div>
+                                                                                <div class="clear"></div>
                                                                             </div>
-                                                                            <div class="clear"></div>
-                                                                        </div>
-                                                                        <div class="form-group">
-                                                                            <label class="col-xs-5 col-md-4 control-label">Details and/or procedures of destruction</label>
-                                                                            <div class="col-sm-7 col-md-5 col-xs-7">
-                                                                                <p>${info.consumeType}</p>
+                                                                            <div class="form-group">
+                                                                                <label class="col-xs-5 col-md-4 control-label">Remarks</label>
+                                                                                <div class="col-sm-7 col-md-5 col-xs-7">
+                                                                                    <p>${consumeNotification.remarks}</p>
+                                                                                </div>
+                                                                                <div class="clear"></div>
                                                                             </div>
-                                                                            <div class="clear"></div>
-                                                                        </div>
-                                                                        <div class="form-group">
-                                                                            <label class="col-xs-5 col-md-4 control-label">Facility Name</label>
-                                                                            <div class="col-sm-7 col-md-5 col-xs-7">
-                                                                                <p>${info.consumedQty}</p>
-                                                                            </div>
-                                                                            <div class="clear"></div>
-                                                                        </div>
-                                                                        <div class="form-group">
-                                                                            <label class="col-xs-5 col-md-4 control-label">Remarks</label>
-                                                                            <div class="col-sm-7 col-md-5 col-xs-7">
-                                                                                <p>${info.meaUnit}</p>
-                                                                            </div>
-                                                                            <div class="clear"></div>
                                                                         </div>
                                                                     </div>
-                                                                </div>
                                                             </div>
                                                         </div>
 <%--                                                        <c:forEach var="doc" items="${docSettings}">--%>
@@ -250,8 +227,8 @@
                                                                         <div class="col-xs-1" style="padding: 30px 0 20px 30px;">
                                                                             <input type="checkbox" name="declare" id="declare" value="Y"/>
                                                                         </div>
-                                                                    </div>
-                                                                    <div class="form-group ">
+<%--                                                                    </div>--%>
+<%--                                                                    <div class="form-group ">--%>
                                                                         <div class="col-xs-10 control-label">
                                                                             <label for="declare">I, hereby declare that all the information I have provided here is true and accurate. The facility no longer possesses inventory of the biological agent/toxin following the destruction and/or disposal of the declared materials.</label>
                                                                             <span data-err-ind="declare" class="error-msg"></span>
@@ -267,7 +244,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <%--                                <%@ include file="InnerFooter.jsp" %>--%>
+                                <%@ include file="../InnerFooter.jsp" %>
                             </div>
                         </div>
                     </div>

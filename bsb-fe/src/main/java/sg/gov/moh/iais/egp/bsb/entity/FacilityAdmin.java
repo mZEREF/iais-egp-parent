@@ -33,5 +33,7 @@ public class FacilityAdmin extends BaseEntity {
     private Date employmentStartDate;
 
     private String status;
+
+    private String nationality;
 }
 

@@ -23,7 +23,6 @@ function schTypeChange(obj) {
             {schedule: schedule},
             function (data) {
                 var result = data.result;
-                console.log("sssssss==" + bat);
                 if (result == 'success') {
                     var queryResult = data.queryResult;
                     console.log(queryResult);
@@ -44,10 +43,41 @@ function schTypeChange(obj) {
 }
 
 $(function (){
+    //facilitySelectPage.jsp
     $("#savebtn").click(function (){
+        showWaiting();
+        var optionVal = $("#facSelect option:selected").val();
+        $("#facId").val(optionVal);
         $("#mainForm").submit();
     });
 
+    //notification page
+    $("#doConfirm").click(function (){
+        showWaiting();
+        $("[name='action_type']").val("doConfirm");
+        $("#mainForm").submit();
+    });
+
+    //InnerFooter.jsp & notification page
+    $("#saveButton").click(function (){
+        showWaiting();
+        $("[name='action_type']").val("doSave");
+        $("#mainForm").submit();
+    });
+
+    // $("#saveDraft").click(function (){
+    //     showWaiting();
+    //     $("[name='action_type']").val("saveDraft");
+    //     $("#mainForm").submit();
+    // });
+
+    $("#back").click(function (){
+        showWaiting();
+        $("[name='action_type']").val("doBack");
+        $("#mainForm").submit();
+    });
+
+    //notificationTypePage.jsp
     $("#nextBtn").click(function () {
         showWaiting();
         var optionValue = $("#selectType option:selected").val();

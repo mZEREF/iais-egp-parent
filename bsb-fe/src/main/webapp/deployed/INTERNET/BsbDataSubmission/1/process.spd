@@ -180,9 +180,6 @@
   <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Steps/InvokeStep/RequestTransfer" style="oblique">
    <position>{(990,390)(1200,260)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/prepareDataSubmissionSelect" linkstyle="Rectangle" name="" sourceName="/Merges/Merge/Merge1" style="rectanular">
-   <position>{(1200,260)(219,769)(219,617)(219,286)(150,260)}</position>
-  </SynchronousLink>
   <SynchronousLink destinationName="/Steps/InvokeStep/Consume" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/prepareConsume" style="rectanular">
    <position>{(790,-60)(1020,-60)}</position>
   </SynchronousLink>
@@ -221,6 +218,9 @@
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/prepareDataSubmissionSelect" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/FacilitySelectPage" style="rectanular">
    <position>{(30,260)(150,260)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/prepareFacilitySelect" linkstyle="Rectangle" name="" sourceName="/Merges/Merge/Merge1" style="rectanular">
+   <position>{(1200,260)(-92,839)(-130,260)}</position>
   </SynchronousLink>
  </Links>
  <Conditions />
