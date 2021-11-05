@@ -534,21 +534,23 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
                 user.setAcraGetEntityJsonStr(entityJson);
                 JSONObject object = new JSONObject(entityJson);
                 if (Optional.ofNullable(object).isPresent()){
-                    JSONArray licences = object.getJSONArray("licences");
-                    if (Optional.ofNullable(licences).isPresent()){
-                        for (int i = 0; i < licences.length(); i++) {
-                            JSONObject licence = licences.optJSONObject(i);
-                            if (Optional.ofNullable(licence).isPresent()){
-                                JSONObject acraLicensee = licence.optJSONObject("licensee");
-                                String nric = acraLicensee.optJSONObject("id-no").getString("value");
-                                if (user.getIdentityNo().equals(nric)){
-                                    log.info("writeInfoFromEDH START................. {}", nric);
-                                    String licenseeName = acraLicensee.optJSONObject("name").getString("value");
-                                    user.setDisplayName(licenseeName);
-                                    break;
+                    if (object.has("licences")) {
+                        JSONArray licences = object.getJSONArray("licences");
+                        if (Optional.ofNullable(licences).isPresent()){
+                            for (int i = 0; i < licences.length(); i++) {
+                                JSONObject licence = licences.optJSONObject(i);
+                                if (Optional.ofNullable(licence).isPresent()){
+                                    JSONObject acraLicensee = licence.optJSONObject("licensee");
+                                    String nric = acraLicensee.optJSONObject("id-no").getString("value");
+                                    if (user.getIdentityNo().equals(nric)){
+                                        log.info("writeInfoFromEDH START................. {}", nric);
+                                        String licenseeName = acraLicensee.optJSONObject("name").getString("value");
+                                        user.setDisplayName(licenseeName);
+                                        break;
+                                    }
                                 }
-                            }
 
+                            }
                         }
                     }
 
