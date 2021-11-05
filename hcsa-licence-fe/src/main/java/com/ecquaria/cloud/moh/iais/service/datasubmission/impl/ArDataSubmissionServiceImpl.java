@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.service.datasubmission.impl;
 
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
@@ -213,6 +214,11 @@ public class ArDataSubmissionServiceImpl implements ArDataSubmissionService {
         }
         log.info(StringUtil.changeForLog("The submissionNo : " + submissionNo));
         return submissionNo;
+    }
+
+    @Override
+    public String getDraftNo(String submissionType) {
+        return systemAdminClient.draftNumber(ApplicationConsts.DATA_SUBMISSION).getEntity();
     }
 
     @Override

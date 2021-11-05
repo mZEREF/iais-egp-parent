@@ -333,7 +333,7 @@ public class WebValidationHelper {
                 if(map != null && !map.isEmpty()) {
                     errorMap.putAll(map);
                 }
-                //map = cv.validate(target, property, request);
+                map = cv.validate(target, property, request);
                 if(map != null && !map.isEmpty()) {
                     errorMap.putAll(map);
                 }

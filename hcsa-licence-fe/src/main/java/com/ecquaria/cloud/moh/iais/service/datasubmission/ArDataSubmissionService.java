@@ -37,6 +37,8 @@ public interface ArDataSubmissionService {
 
     String getSubmissionNo(String submisisonType, String cycleStage, DataSubmissionDto lastDataSubmissionDto);
 
+    String getDraftNo(String submissionType);
+
     /**
       * @author: shicheng
       * @Date 2021/11/1

@@ -79,8 +79,11 @@
 <script>
     $(document).ready(function() {
         $('input[name="birthDate"]').on('blur, change', function () {
-            showWaiting();
             var birthDate = $(this).val();
+            if (isEmpty(birthDate)) {
+                return;
+            }
+            showWaiting();
             var url = $('#_contextPath').val() + '/ar/patient-age';
             var options = {
                 birthDate: birthDate,
@@ -88,6 +91,8 @@
             }
             callCommonAjax(options, checkBirthDateCallback);
         });
+
+        $('input[name="birthDate"]').trigger('change');
     });
 
     function checkBirthDateCallback(data) {
