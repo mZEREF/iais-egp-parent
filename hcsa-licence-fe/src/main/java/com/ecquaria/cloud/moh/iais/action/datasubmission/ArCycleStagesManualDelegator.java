@@ -6,6 +6,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.CycleStageSelectionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DataSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -179,7 +180,7 @@ public class ArCycleStagesManualDelegator {
 
     private void handleArSuperDataSubmissionDto(ArSuperDataSubmissionDto currentArDataSubmission,
             CycleStageSelectionDto selectionDto, HttpServletRequest request) {
-        String hicCode = Optional.ofNullable(currentArDataSubmission.getAppGrpPremisesDto())
+        String hciCode = Optional.ofNullable(currentArDataSubmission.getAppGrpPremisesDto())
                 .map(premises -> premises.getHciCode())
                 .orElse("");
         DataSubmissionDto dataSubmission = currentArDataSubmission.getCurrentDataSubmissionDto();
@@ -193,17 +194,20 @@ public class ArCycleStagesManualDelegator {
         }
         dataSubmission.setCycleStage(stage);
         currentArDataSubmission.setCurrentDataSubmissionDto(dataSubmission);
-        currentArDataSubmission.setCycleDto(DataSubmissionHelper.genCycleDto(selectionDto, hicCode));
         ArSuperDataSubmissionDto newDto = arDataSubmissionService.getArSuperDataSubmissionDto(selectionDto.getPatientCode(),
-                hicCode);
+                hciCode);
         if (newDto != null) {
             log.info("-----Retieve ArSuperDataSubmissionDto from DB-----");
-            currentArDataSubmission.setPatientInfoDto(newDto.getPatientInfoDto());
             selectionDto = newDto.getSelectionDto();
             selectionDto.setStage(stage);
             currentArDataSubmission.setSelectionDto(selectionDto);
+            currentArDataSubmission.setCycleDto(DataSubmissionHelper.genCycleDto(selectionDto, hciCode));
+            currentArDataSubmission.setPatientInfoDto(newDto.getPatientInfoDto());
+            currentArDataSubmission.setLastDataSubmissionDto(newDto.getLastDataSubmissionDto());
         } else {
-            log.warn("-----No ArSuperDataSubmissionDto found from DB-----");
+            String msg = "No ArSuperDataSubmissionDto found from DB - " + selectionDto.getPatientCode() + " : " + hciCode;
+            log.warn(StringUtil.changeForLog("-----" + msg + "-----"));
+            throw new IaisRuntimeException(msg);
         }
         DataSubmissionHelper.setCurrentArDataSubmission(currentArDataSubmission, request);
     }
