@@ -44,23 +44,22 @@
                 <iais:row>
                     <iais:field width="5" value="What was Transferred?" mandatory="true"/>
                     <iais:value width="7" cssClass="col-md-7">
-                        <c:forEach items="${sourceOfSemens}" var="sourceOfSemen">
-                            <c:set var="sourceOfSemenCode" value="${sourceOfSemen.code}"/>
+                        <c:forEach items="${transferreds}" var="transferred">
+                            <c:set var="transferredCode" value="${transferred.code}"/>
                             <div class="form-check col-xs-12" >
                                 <input class="form-check-input" type="checkbox"
-                                       name="sourceOfSemen"
-                                       value="${sourceOfSemenCode}"
-                                       id="sourceOfSemenCheck${sourceOfSemenCode}"
-                                <c:forEach var="sosObj" items="${transferInOutStageDto.transferredList}">
-                                       <c:if test="${sosObj == sourceOfSemenCode}">checked</c:if>
+                                       name="transferred"
+                                       value="${transferredCode}"
+                                       id="transferredCheck${transferredCode}"
+                                <c:forEach var="transferredObj" items="${transferInOutStageDto.transferredList}">
+                                       <c:if test="${transferredObj == transferredCode}">checked</c:if>
                                 </c:forEach>
                                        aria-invalid="false">
                                 <label class="form-check-label"
-                                       for="sourceOfSemenCheck${sourceOfSemenCode}"><span
-                                        class="check-square"></span>${sourceOfSemen.codeValue}</label>
+                                       for="transferredCheck${transferredCode}"><span
+                                        class="check-square"></span>${transferred.codeValue}</label>
                             </div>
                         </c:forEach>
-                        <span class="error-msg" name="iaisErrorMsg" id="error_sourceOfSemen"></span>
                     </iais:value>
                 </iais:row>
                 <iais:row>
@@ -115,7 +114,7 @@
                 <iais:row>
                     <iais:field width="5" value="Transferred In From" mandatory="true"/>
                     <iais:value width="7" cssClass="col-md-7">
-                        <iais:select name="transInFromHciCode"  codeCategory="OUTCOME_OF_EMBRYO_TRANSFERRED" value="${transferInOutStageDto.transInFromHciCode}" />
+                        <iais:select name="transInFromHciCode"  codeCategory="TRANSFERRED_IN_FROM" value="${transferInOutStageDto.transInFromHciCode}" />
                     </iais:value>
                 </iais:row>
                 <iais:row>
@@ -127,7 +126,7 @@
                 <iais:row>
                     <iais:field width="5" value="Transfer Out To" mandatory="true"/>
                     <iais:value width="7" cssClass="col-md-7">
-                        <iais:select name="transOutToHciCode"  codeCategory="OUTCOME_OF_EMBRYO_TRANSFERRED" value="${transferInOutStageDto.transOutToHciCode}" />
+                        <iais:select name="transOutToHciCode"  codeCategory="TRANSFERRED_IN_FROM" value="${transferInOutStageDto.transOutToHciCode}" />
                     </iais:value>
                 </iais:row>
                 <iais:row>
