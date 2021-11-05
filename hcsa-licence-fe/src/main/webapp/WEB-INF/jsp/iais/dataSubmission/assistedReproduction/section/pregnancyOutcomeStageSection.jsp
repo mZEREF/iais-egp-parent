@@ -47,7 +47,7 @@
                     <iais:row>
                         <iais:field width="5" value="No. Live Birth (Total)"/>
                         <iais:value width="7" cssClass="col-md-7">
-                            <span id="totalLiveBirthNum"></span>
+                            <span id="totalLiveBirthNum">${pregnancyOutcomeStageDto.maleLiveBirthNum + pregnancyOutcomeStageDto.femaleLiveBirthNum}</span>
                         </iais:value>
                     </iais:row>
                 </div>
@@ -228,11 +228,9 @@
                     </iais:row>
                 </div>
 
-                <div id="pregnancyOutcomeStageBabySection" <c:if test="${pregnancyOutcomeStageDto.babyDetailsUnknown}">style="display:none;"</c:if>>
-                    <%@include file="pregnancyOutcomeStageBabySection.jsp" %>
-                </div>
+                <%@include file="pregnancyOutcomeStageBabySection.jsp" %>
 
-                <iais:row>
+                <iais:row cssClass="NICUCareBabyNumRow">
                     <iais:field width="5" value="Total No. of Baby Admitted to NICU Care" mandatory="true"/>
                     <iais:value width="7" cssClass="col-md-7">
                         <iais:select name="NICUCareBabyNum" id="NICUCareBabyNum" options="NICUCareBabyNumSelectOption" value="${pregnancyOutcomeStageDto.l2CareBabyNum + pregnancyOutcomeStageDto.l3CareBabyNum}"></iais:select>

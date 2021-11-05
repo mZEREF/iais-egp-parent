@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sqls catalog="pregnancyOutcomeStage">
+    <sql key="generatePregnancyOutcomeBabyHtml" cached="no" remarks="generate Pregnancy Outcome Baby Html">
+        <![CDATA[
+            <div class="pregnancyOutcomeStageBabySection" id="pregnancyOutcomeStageBabySection${babyIndex}">
+                <div class="form-group">
+                    <label class="col-xs-5 col-md-4 control-label">Baby ${babyDisplayNum} Birth Weight</label>
+                    <div class="col-sm-7 col-md-5 col-xs-7 col-md-7">
+                        <select class="birthWeight" name="birthWeight${babyIndex}" id="birthWeight${babyIndex}">
+                              <option value="">Please Select</option>
+                              ${babyWeightSelectOptions}
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-xs-5 col-md-4 control-label">Baby ${babyDisplayNum} Birth Defect</label>
+                    <div class="col-md-7">
+                        <div class="form-check col-12">
+                            <input class="form-check-input birthDefect"
+                                   type="radio"
+                                   name="birthDefect${babyIndex}"
+                                   value="Yes"
+                                   id="birthDefect${babyIndex}Yes"
+                                   aria-invalid="false">
+                            <label class="form-check-label"
+                                   for="birthDefect${babyIndex}Yes"><span
+                                    class="check-circle"></span>Yes</label>
+                        </div>
+                        <div class="form-check col-12">
+                            <input class="form-check-input birthDefect"
+                                   type="radio"
+                                   name="birthDefect${babyIndex}"
+                                   value="No"
+                                   id="birthDefect${babyIndex}No"
+                                   checked
+                                   aria-invalid="false">
+                            <label class="form-check-label"
+                                   for="birthDefect${babyIndex}No"><span
+                                    class="check-circle"></span>No</label>
+                        </div>
+                        <div class="form-check col-12">
+                            <input class="form-check-input birthDefect"
+                                   type="radio"
+                                   name="birthDefect${babyIndex}"
+                                   value="Unknown"
+                                   id="birthDefect${babyIndex}Unknown"
+                                   aria-invalid="false">
+                            <label class="form-check-label"
+                                   for="birthDefect${babyIndex}Unknown"><span
+                                    class="check-circle"></span>Unknown</label>
+                        </div>
+                    </div>
+                </div>
+                <div name="defectTypeSectionName" style="display:none;">
+                    <div class="form-group">
+                        <label class="col-xs-5 col-md-4 control-label">Baby ${babyDisplayNum} Defect Type
+                            &nbsp;<span class="mandatory">*</span>
+                        </label>
+                        <div class="col-sm-7 col-md-5 col-xs-7 col-md-7">
+                            <div class="form-check col-xs-12">
+                                <input class="form-check-input defectType" type="checkbox"
+                                       name="defectType${babyIndex}"
+                                       value="CA"
+                                       id="defectType${babyIndex}CA"
+                                       aria-invalid="false">
+                                <label class="form-check-label"
+                                       for="defectType${babyIndex}CA"><span
+                                        class="check-square"></span>Chromosomal Anomalies</label>
+                            </div>
+                            <div class="form-check col-xs-12">
+                                <input class="form-check-input defectType" type="checkbox"
+                                       name="defectType${babyIndex}"
+                                       value="HA"
+                                       id="defectType${babyIndex}HA"
+                                       aria-invalid="false">
+                                <label class="form-check-label"
+                                       for="defectType${babyIndex}HA"><span
+                                        class="check-square"></span>Heart Anomalies</label>
+                            </div>
+                            <div class="form-check col-xs-12">
+                                <input class="form-check-input defectType" type="checkbox"
+                                       name="defectType${babyIndex}"
+                                       value="MA"
+                                       id="defectType${babyIndex}MA"
+                                       aria-invalid="false">
+                                <label class="form-check-label"
+                                       for="defectType${babyIndex}MA"><span
+                                        class="check-square"></span>Musculoskeletal Anomalies</label>
+                            </div>
+                            <div class="form-check col-xs-12">
+                                <input class="form-check-input defectType" type="checkbox"
+                                       name="defectType${babyIndex}"
+                                       value="NSA"
+                                       id="defectType${babyIndex}NSA"
+                                       aria-invalid="false">
+                                <label class="form-check-label"
+                                       for="defectType${babyIndex}NSA"><span
+                                        class="check-square"></span>Nervous System Anomalies</label>
+                            </div>
+                            <div class="form-check col-xs-12">
+                                <input class="form-check-input defectType" type="checkbox"
+                                       name="defectType${babyIndex}"
+                                       value="OFA"
+                                       id="defectType${babyIndex}OFA"
+                                       aria-invalid="false">
+                                <label class="form-check-label"
+                                       for="defectType${babyIndex}OFA"><span
+                                        class="check-square"></span>Other Fetal Anomalies</label>
+                            </div>
+                            <div class="form-check col-xs-12">
+                                <input class="form-check-input defectType" type="checkbox"
+                                       name="defectType${babyIndex}"
+                                       value="RSA"
+                                       id="defectType${babyIndex}RSA"
+                                       aria-invalid="false">
+                                <label class="form-check-label"
+                                       for="defectType${babyIndex}RSA"><span
+                                        class="check-square"></span>Respiratory System Anomalies</label>
+                            </div>
+                            <div class="form-check col-xs-12">
+                                <input class="form-check-input defectType" type="checkbox"
+                                       name="defectType${babyIndex}"
+                                       value="USA"
+                                       id="defectType${babyIndex}USA"
+                                       aria-invalid="false">
+                                <label class="form-check-label"
+                                       for="defectType${babyIndex}USA"><span
+                                        class="check-square"></span>Urinary System Anomalies</label>
+                            </div>
+                            <div class="form-check col-xs-12">
+                                <input class="form-check-input defectType" type="checkbox"
+                                       name="defectType${babyIndex}"
+                                       value="other"
+                                       id="defectType${babyIndex}Other"
+                                       aria-invalid="false">
+                                <label class="form-check-label"
+                                       for="defectType${babyIndex}Other"><span
+                                        class="check-square"></span>Others</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div name="otherDefectTypeDivName" style="display:none;">
+                        <div class="form-group">
+                            <label class="col-xs-5 col-md-4 control-label">Baby ${babyDisplayNum} Defect Type (Others)
+                                &nbsp;<span class="mandatory">*</span>
+                            </label>
+                            <div class="col-sm-7 col-md-5 col-xs-7 col-md-7">
+                                <input type="text" class="otherDefectType" id="otherDefectType" name="otherDefectType" maxlength="20" autocomplete="off">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        ]]>
+    </sql>
+</sqls>
+
+

@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.action.datasubmission;
 
+import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.CycleStageSelectionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
@@ -9,12 +10,14 @@ import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.CommonValidator;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
+import com.ecquaria.cloud.moh.iais.dto.AjaxResDto;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.ArDataSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.PatientService;
+import com.ecquaria.cloud.moh.iais.sql.SqlMap;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -23,6 +26,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -135,4 +139,50 @@ public class ArAjaxController {
         return result;
     }
 
+    @PostMapping(value = "/pregnancy-outcome-baby-html")
+    public @ResponseBody
+    AjaxResDto generatePregnancyOutcomeBabyHtml(HttpServletRequest request) {
+        log.debug(StringUtil.changeForLog("the generatePregnancyOutcomeBabyHtml start ...."));
+
+        AjaxResDto ajaxResDto = new AjaxResDto();
+        ajaxResDto.setResCode("200");
+
+        int babyIndex = ParamUtil.getInt(request, "babyIndex");
+        int babySize = ParamUtil.getInt(request, "babySize");
+        List<SelectOption> babyWeightSelectOptions = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_BABY_BIRTH_WEIGHT);
+
+        String sqlStr = SqlMap.INSTANCE.getSql("pregnancyOutcomeStage", "generatePregnancyOutcomeBabyHtml").getSqlStr();
+        StringBuilder resultJson = new StringBuilder();
+
+        for (int i = 0; i < babySize; i++) {
+            int myBabyIndex = babyIndex + i;
+            String mySqlStr = sqlStr;
+            mySqlStr = mySqlStr.replace("${babyIndex}", String.valueOf(myBabyIndex));
+            mySqlStr = mySqlStr.replace("${babyDisplayNum}", String.valueOf(myBabyIndex + 1));
+            mySqlStr = mySqlStr.replace("${babyWeightSelectOptions}", generateDropDownHtml(babyWeightSelectOptions, null));
+            resultJson.append(mySqlStr);
+        }
+
+        ajaxResDto.setResultJson(resultJson.toString());
+
+        log.debug(StringUtil.changeForLog("the generatePregnancyOutcomeBabyHtml end ...."));
+        return ajaxResDto;
+
+    }
+
+    private String generateDropDownHtml(List<SelectOption> options, String firstOption) {
+        if (options == null || options.isEmpty()) {
+            return "";
+        }
+        StringBuilder html = new StringBuilder();
+        if (!StringUtil.isEmpty(firstOption)) {
+            html.append("<option value=\"\">").append(StringUtil.escapeHtml(firstOption)).append("</option>");
+        }
+        for (SelectOption option : options) {
+            String val = StringUtil.viewNonNullHtml(option.getValue());
+            String txt = StringUtil.escapeHtml(option.getText());
+            html.append("<option value=\"").append(val).append("\">").append(txt).append("</option>");
+        }
+        return html.toString();
+    }
 }

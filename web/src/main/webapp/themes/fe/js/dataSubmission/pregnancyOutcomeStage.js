@@ -52,9 +52,9 @@ $(document).ready(function () {
 
     $('input[name="babyDetailsUnknown"]').change(function () {
         if (!$(this).val()){
-            $('#pregnancyOutcomeStageBabySection').show();
+            $('.pregnancyOutcomeStageBabySection').show();
         }else {
-            $('#pregnancyOutcomeStageBabySection').hide();
+            $('.pregnancyOutcomeStageBabySection').hide();
         }
     });
 
@@ -83,19 +83,86 @@ $(document).ready(function () {
         }
     });
 
-    $('input[name="birthDefect"]').change(function () {
-        if (!$(this).val() == 'yes'){
+    $('.birthDefect').change(function () {
+        if (!$(this).val() == 'yes') {
             $(this).next('div[name="defectTypeSectionName"]').show();
-        }else {
+        } else {
             $(this).next('div[name="defectTypeSectionName"]').hide();
         }
     });
 
-    $('input[name="defectType"]').change(function () {
-        if (!$(this).val() == 'other'){
+    $('.defectType').change(function () {
+        if (!$(this).val() == 'other') {
             $(this).next('div[name="otherDefectTypeDivName"]').show();
-        }else {
+        } else {
             $(this).next('div[name="otherDefectTypeDivName"]').hide();
         }
     });
+
+    $('#maleLiveBirthNum').change(changeTotalLiveBirthNum);
+
+    $('#femaleLiveBirthNum').change(changeTotalLiveBirthNum);
+
+    $('#maleLiveBirthNum').change(changeBabySection);
+
+    $('#femaleLiveBirthNum').change(changeBabySection);
 });
+
+function changeTotalLiveBirthNum() {
+    let maleLiveBirthNum = parseInt($('#maleLiveBirthNum').val());
+    let femaleLiveBirthNum = parseInt($('#femaleLiveBirthNum').val());
+    let total = 0;
+    if (maleLiveBirthNum) {
+        console.log("maleLiveBirthNum:" + maleLiveBirthNum);
+        total += maleLiveBirthNum;
+    }
+    if (femaleLiveBirthNum) {
+        console.log("femaleLiveBirthNum:" + femaleLiveBirthNum);
+        total += femaleLiveBirthNum;
+    }
+    $('#totalLiveBirthNum').html(total);
+}
+
+function changeBabySection() {
+    let currentBabySize = $('div[name="defectTypeSectionName"]').length;
+    let babySize = parseInt($('#totalLiveBirthNum').html());
+    if (babySize > currentBabySize) {
+        addBabaSection(currentBabySize,babySize - currentBabySize);
+    }else if (babySize < currentBabySize){
+        if (babySize == 0){
+            $('.pregnancyOutcomeStageBabySection').remove();
+        }else {
+            $('#pregnancyOutcomeStageBabySection'+ (babySize - 1)).nextAll('.pregnancyOutcomeStageBabySection').remove()
+        }
+    }
+}
+
+var addBabaSection = function (babyIndex,babySize) {
+    showWaiting();
+    console.log($('#_contextPath').val());
+    $.ajax({
+        url: $('#_contextPath').val() + '/ar/pregnancy-outcome-baby-html',
+        dataType: 'json',
+        data: {
+            "babyIndex": babyIndex,
+            "babySize":babySize
+        },
+        type: 'POST',
+        success: function (data) {
+            if ('200' == data.resCode) {
+                $('.NICUCareBabyNumRow').before(data.resultJson + '');
+                if (babyIndex == 0){
+                    $('.birthWeight').niceSelect();
+                }else {
+                    $('#pregnancyOutcomeStageBabySection'+ (babyIndex - 1)).nextAll('.pregnancyOutcomeStageBabySection').find('.birthWeight').niceSelect();
+                }
+                //TODO Bind event
+            }
+            dismissWaiting();
+        },
+        error: function (data) {
+            console.log("err");
+            dismissWaiting();
+        }
+    });
+}
