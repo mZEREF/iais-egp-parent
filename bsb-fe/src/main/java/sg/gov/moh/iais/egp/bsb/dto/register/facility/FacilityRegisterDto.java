@@ -11,6 +11,7 @@ import sg.gov.moh.iais.egp.bsb.common.node.simple.SimpleNode;
 import sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants;
 import sg.gov.moh.iais.egp.bsb.util.CollectionUtils;
 
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.Map;
 import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.*;
@@ -18,7 +19,7 @@ import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.*;
 
 @Data
 @NoArgsConstructor
-public class FacilityRegisterDto {
+public class FacilityRegisterDto implements Serializable{
     private FacilitySelectionDto facilitySelectionDto;
     private FacilityProfileDto facilityProfileDto;
     private FacilityOperatorDto facilityOperatorDto;
@@ -62,8 +63,7 @@ public class FacilityRegisterDto {
         }
         return batMap;
     }
-
-
+    
     /** Convert data in this big DTO into a facRegRoot NodeGroup
      *  This is needed when we want to view the saved data or edit it */
     public NodeGroup toFacRegRootGroup(String name) {
@@ -74,7 +74,6 @@ public class FacilityRegisterDto {
         SimpleNode facAdminNode = new SimpleNode(facilityAdministratorDto, NODE_NAME_FAC_ADMIN, new Node[]{facProfileNode, facOperatorNode, facAuthNode});
         SimpleNode facOfficerNode = new SimpleNode(facilityOfficerDto, NODE_NAME_FAC_OFFICER, new Node[]{facProfileNode, facOperatorNode, facAuthNode, facAdminNode});
         SimpleNode facCommitteeNode = new SimpleNode(facilityCommitteeDto, NODE_NAME_FAC_COMMITTEE, new Node[]{facProfileNode, facOperatorNode, facAuthNode, facAdminNode, facOfficerNode});
-
 
         NodeGroup facInfoNodeGroup = new NodeGroup.Builder().name(NODE_NAME_FAC_INFO)
                 .dependNodes(new Node[]{facSelectionNode})

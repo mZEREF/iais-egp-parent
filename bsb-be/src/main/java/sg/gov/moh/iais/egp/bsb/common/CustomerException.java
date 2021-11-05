@@ -3,7 +3,6 @@ package sg.gov.moh.iais.egp.bsb.common;
 /**
  * @author YiMing
  * DATE:2021/9/10 9:35
- * DESCRIPTION: TODO
  **/
 public class CustomerException extends Exception {
 

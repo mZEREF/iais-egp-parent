@@ -20,7 +20,6 @@ import java.util.Map;
 /**
  * AUTHOR: YiMing
  * DATE:2021/8/6 14:32
- * DESCRIPTION: TODO
  **/
 
 @Slf4j
@@ -38,7 +37,7 @@ public class BiologicalAjaxController {
          if(StringUtils.isEmpty(schedule)){schedule="null";}
          log.info(StringUtil.changeForLog("ajax query schedule"+schedule));
          List<BiologicalDto> biologicalDtoList = biosafetyEnquiryClient.queryBiologicalBySchedule(schedule).getEntity();
-        if(biologicalDtoList != null && biologicalDtoList.size()>0) {
+        if(biologicalDtoList != null && !biologicalDtoList.isEmpty()) {
             log.info(StringUtil.changeForLog("ajax biologicalDtoList "+biologicalDtoList));
             List<String> strings = IaisCommonUtils.genNewArrayList();
             for (BiologicalDto biologicalDto : biologicalDtoList) {

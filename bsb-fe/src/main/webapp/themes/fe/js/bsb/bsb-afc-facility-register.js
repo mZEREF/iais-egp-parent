@@ -1,42 +1,4 @@
-function readonlyPartPage() {
-    $("input[type='text']").css("color", "#999");
-    $("input[type='text']").css("border-color", "#ededed");
-    $("input[type='text']").attr("disabled",true);
-    $("input[type='radio']").attr("disabled",true);
-    $("input[type='checkbox']").attr("disabled",true);
-    $("div.nice-select").addClass("disabled");
-    //$("input[type='text']").find('.date_picker').unbind();
-
-    /*$Ele.find('input[type="file"]').prop('readonly',true);
-    $Ele.find('div.multi-select input').prop('disabled',true);*/
-
-    //special
-    $("#facAddr").attr("disabled",true);
-    $("#addNewSection").removeAttr("href");
-    $("#addNewSection").removeAttr("onclick");
-    $(".removeBtn").removeAttr("onclick");
-}
-
-function unreadonlyPartPage() {
-    $("input[type='text']").css("color", "");
-    $("input[type='text']").css("border-color", "");
-    $("input[type='text']").removeAttr("disabled");
-    $("input[type='radio']").removeAttr("disabled");
-    $("input[type='checkbox']").removeAttr("disabled");
-    $("div.nice-select").removeClass("disabled");
-    /*$Ele.find('input[type="file"]').prop('readonly',false);
-    $Ele.find('.date_picker').datepicker({
-        format:"dd/mm/yyyy",
-        autoclose:true,
-        todayHighlight:true,
-        orientation:'bottom'
-    });*/
-    //special
-    $("#facAddr").removeAttr("disabled");
-
-}
 $(function () {
-
     readonlyPartPage();
 
     $("#edit").click(function (){
@@ -171,6 +133,37 @@ $(function () {
         amtHiddenInput.val(nextAmt);
     });
 });
+
+function readonlyPartPage() {
+    $("input[type='text']").css("color", "#999");
+    $("input[type='text']").css("border-color", "#ededed");
+    $("input[type='text']").attr("disabled",true);
+    $("input[type='radio']").attr("disabled",true);
+    $("input[type='checkbox']").attr("disabled",true);
+    $("div.nice-select").addClass("disabled");
+    $(".btn.btn-secondary").attr("disabled",true);
+    $(".btn.file-upload.btn-secondary").css("pointer-events","none");
+    $("#addNewSection").attr("disabled",true).css("pointer-events","none");
+    $("#addNewSection").css({opacity:0.5});
+    $("#addNewBatSection").attr("disabled",true).css("pointer-events","none");
+    $("#addNewBatSection").css({opacity:0.5});
+
+}
+
+function unreadonlyPartPage() {
+    $("input[type='text']").css("color", "");
+    $("input[type='text']").css("border-color", "");
+    $("input[type='text']").removeAttr("disabled");
+    $("input[type='radio']").removeAttr("disabled");
+    $("input[type='checkbox']").removeAttr("disabled");
+    $("div.nice-select").removeClass("disabled");
+    $(".btn.btn-secondary").removeAttr("disabled");
+    $(".btn.file-upload.btn-secondary").css("pointer-events","auto");
+    $("#addNewSection").attr("disabled",false).css("pointer-events","auto");
+    $("#addNewSection").css({opacity:1});
+    $("#addNewBatSection").attr("disabled",false).css("pointer-events","auto");
+    $("#addNewBatSection").css({opacity:1});
+}
 
 function addReloadFile() {
     var id = this.getAttribute("id");

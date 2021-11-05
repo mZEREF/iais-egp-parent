@@ -23,9 +23,9 @@ import sg.gov.moh.iais.egp.bsb.common.node.NodeGroup;
 import sg.gov.moh.iais.egp.bsb.common.node.Nodes;
 import sg.gov.moh.iais.egp.bsb.common.node.simple.SimpleNode;
 import sg.gov.moh.iais.egp.bsb.constant.DocConstants;
-import sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
 import sg.gov.moh.iais.egp.bsb.dto.register.facility.*;
+import sg.gov.moh.iais.egp.bsb.dto.rfc.RfcTestFacRegDto;
 import sg.gov.moh.iais.egp.bsb.entity.DocSetting;
 import sg.gov.moh.iais.egp.bsb.util.LogUtil;
 import sop.webflow.rt.api.BaseProcessClass;
@@ -86,35 +86,31 @@ public class RfcFacilityRegistrationDelegator {
 
     public void init(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
-        boolean newFacReg = true;
-
         // check if we are doing editing
         String maskedAppId = request.getParameter(KEY_EDIT_APP_ID);
         if (StringUtils.hasLength(maskedAppId)) {
             if (log.isInfoEnabled()) {
-                log.info("masked app ID: {}", LogUtil.escapeCrlf(maskedAppId));
+                log.info("masked approval ID: {}", LogUtil.escapeCrlf(maskedAppId));
             }
-            newFacReg = false;
             boolean failRetrieveEditData = true;
             String appId = MaskUtil.unMaskValue(KEY_EDIT_APP_ID, maskedAppId);
             if (appId != null && !maskedAppId.equals(appId)) {
                 ResponseDto<FacilityRegisterDto> resultDto = facRegClient.getFacilityRegistrationAppDataByApprovalId(appId);
                 if (resultDto.ok()) {
                     failRetrieveEditData = false;
-                    // TODO this is test old dto and new dto
+                    //TODO for improving
                     FacilityRegisterDto oldFacilityRegisterDto = resultDto.getEntity();
-                    ParamUtil.setRequestAttr(request, "oldFacilityRegisterDto", oldFacilityRegisterDto);
-                    NodeGroup facRegRoot = resultDto.getEntity().toFacRegRootGroup(KEY_ROOT_NODE_GROUP);
+                    RfcTestFacRegDto rfcTestFacRegDto = new RfcTestFacRegDto();
+                    rfcTestFacRegDto.setOldFacRegDto(oldFacilityRegisterDto);
+                    ParamUtil.setSessionAttr(request, "rfcTestFacRegDto", rfcTestFacRegDto);
+
+                    NodeGroup facRegRoot = oldFacilityRegisterDto.toFacRegRootGroup(KEY_ROOT_NODE_GROUP);
                     ParamUtil.setSessionAttr(request, KEY_ROOT_NODE_GROUP, facRegRoot);
                 }
             }
             if (failRetrieveEditData) {
                 throw new IaisRuntimeException("Fail to retrieve app data");
             }
-        }
-
-        if (newFacReg) {
-            ParamUtil.setSessionAttr(request, KEY_ROOT_NODE_GROUP, getFacilityRegisterRoot(request));
         }
     }
 
@@ -124,7 +120,7 @@ public class RfcFacilityRegistrationDelegator {
 
     public void handleCompInfo(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
-        NodeGroup facRegRoot = getFacilityRegisterRoot(request);
+        NodeGroup facRegRoot = (NodeGroup) ParamUtil.getSessionAttr(request, KEY_ROOT_NODE_GROUP);
         Node compInfoNode = facRegRoot.getNode(NODE_NAME_COMPANY_INFO);
         String actionType = ParamUtil.getString(request, KEY_ACTION_TYPE);
         if (KEY_ACTION_JUMP.equals(actionType)) {
@@ -137,7 +133,7 @@ public class RfcFacilityRegistrationDelegator {
 
     public void preServiceSelection(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
-        NodeGroup facRegRoot = getFacilityRegisterRoot(request);
+        NodeGroup facRegRoot = (NodeGroup) ParamUtil.getSessionAttr(request, KEY_ROOT_NODE_GROUP);
         SimpleNode facSelectionNode = (SimpleNode) facRegRoot.getNode(NODE_NAME_FAC_SELECTION);
         FacilitySelectionDto selectionDto = (FacilitySelectionDto) facSelectionNode.getValue();
         Boolean needShowError = (Boolean) ParamUtil.getRequestAttr(request, KEY_SHOW_ERROR_SWITCH);
@@ -150,7 +146,7 @@ public class RfcFacilityRegistrationDelegator {
 
     public void handleServiceSelection(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
-        NodeGroup facRegRoot = getFacilityRegisterRoot(request);
+        NodeGroup facRegRoot = (NodeGroup) ParamUtil.getSessionAttr(request, KEY_ROOT_NODE_GROUP);
         SimpleNode facSelectionNode = (SimpleNode) facRegRoot.getNode(NODE_NAME_FAC_SELECTION);
         FacilitySelectionDto selectionDto = (FacilitySelectionDto) facSelectionNode.getValue();
         selectionDto.reqObjMapping(request);
@@ -171,7 +167,7 @@ public class RfcFacilityRegistrationDelegator {
 
     public void preFacProfile(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
-        NodeGroup facRegRoot = getFacilityRegisterRoot(request);
+        NodeGroup facRegRoot = (NodeGroup) ParamUtil.getSessionAttr(request, KEY_ROOT_NODE_GROUP);
         String currentNodePath = NODE_NAME_FAC_INFO + facRegRoot.getPathSeparator() + NODE_NAME_FAC_PROFILE;
         SimpleNode facProfileNode = (SimpleNode) facRegRoot.at(currentNodePath);
         FacilityProfileDto facProfileDto = (FacilityProfileDto) facProfileNode.getValue();
@@ -185,7 +181,7 @@ public class RfcFacilityRegistrationDelegator {
 
     public void handleFacProfile(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
-        NodeGroup facRegRoot = getFacilityRegisterRoot(request);
+        NodeGroup facRegRoot = (NodeGroup) ParamUtil.getSessionAttr(request, KEY_ROOT_NODE_GROUP);
         String currentNodePath = NODE_NAME_FAC_INFO + facRegRoot.getPathSeparator() + NODE_NAME_FAC_PROFILE;
         SimpleNode facProfileNode = (SimpleNode) facRegRoot.at(currentNodePath);
         FacilityProfileDto facProfileDto = (FacilityProfileDto) facProfileNode.getValue();
@@ -205,7 +201,7 @@ public class RfcFacilityRegistrationDelegator {
 
     public void preFacOperator(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
-        NodeGroup facRegRoot = getFacilityRegisterRoot(request);
+        NodeGroup facRegRoot = (NodeGroup) ParamUtil.getSessionAttr(request, KEY_ROOT_NODE_GROUP);
         String currentNodePath = NODE_NAME_FAC_INFO + facRegRoot.getPathSeparator() + NODE_NAME_FAC_OPERATOR;
         SimpleNode facOpNode = (SimpleNode) facRegRoot.at(currentNodePath);
         FacilityOperatorDto facOpDto = (FacilityOperatorDto) facOpNode.getValue();
@@ -221,7 +217,7 @@ public class RfcFacilityRegistrationDelegator {
 
     public void handleFacOperator(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
-        NodeGroup facRegRoot = getFacilityRegisterRoot(request);
+        NodeGroup facRegRoot = (NodeGroup) ParamUtil.getSessionAttr(request, KEY_ROOT_NODE_GROUP);
         String currentNodePath = NODE_NAME_FAC_INFO + facRegRoot.getPathSeparator() + NODE_NAME_FAC_OPERATOR;
         SimpleNode facOpNode = (SimpleNode) facRegRoot.at(currentNodePath);
         FacilityOperatorDto facOpDto = (FacilityOperatorDto) facOpNode.getValue();
@@ -238,7 +234,7 @@ public class RfcFacilityRegistrationDelegator {
 
     public void preFacInfoAuthoriser(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
-        NodeGroup facRegRoot = getFacilityRegisterRoot(request);
+        NodeGroup facRegRoot = (NodeGroup) ParamUtil.getSessionAttr(request, KEY_ROOT_NODE_GROUP);
         String currentNodePath = NODE_NAME_FAC_INFO + facRegRoot.getPathSeparator() + NODE_NAME_FAC_AUTH;
         SimpleNode facAuthNode = (SimpleNode) facRegRoot.at(currentNodePath);
         FacilityAuthoriserDto facAuthDto = (FacilityAuthoriserDto) facAuthNode.getValue();
@@ -254,7 +250,7 @@ public class RfcFacilityRegistrationDelegator {
 
     public void handleFacInfoAuthoriser(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
-        NodeGroup facRegRoot = getFacilityRegisterRoot(request);
+        NodeGroup facRegRoot = (NodeGroup) ParamUtil.getSessionAttr(request, KEY_ROOT_NODE_GROUP);
         String currentNodePath = NODE_NAME_FAC_INFO + facRegRoot.getPathSeparator() + NODE_NAME_FAC_AUTH;
         SimpleNode facAuthNode = (SimpleNode) facRegRoot.at(currentNodePath);
         FacilityAuthoriserDto facAuthDto = (FacilityAuthoriserDto) facAuthNode.getValue();
@@ -271,7 +267,7 @@ public class RfcFacilityRegistrationDelegator {
 
     public void preFacAdmin(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
-        NodeGroup facRegRoot = getFacilityRegisterRoot(request);
+        NodeGroup facRegRoot = (NodeGroup) ParamUtil.getSessionAttr(request, KEY_ROOT_NODE_GROUP);
         String currentNodePath = NODE_NAME_FAC_INFO + facRegRoot.getPathSeparator() + NODE_NAME_FAC_ADMIN;
         SimpleNode facAdminNode = (SimpleNode) facRegRoot.at(currentNodePath);
         FacilityAdministratorDto facAdminDto = (FacilityAdministratorDto) facAdminNode.getValue();
@@ -287,7 +283,7 @@ public class RfcFacilityRegistrationDelegator {
 
     public void handleFacAdmin(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
-        NodeGroup facRegRoot = getFacilityRegisterRoot(request);
+        NodeGroup facRegRoot = (NodeGroup) ParamUtil.getSessionAttr(request, KEY_ROOT_NODE_GROUP);
         String currentNodePath = NODE_NAME_FAC_INFO + facRegRoot.getPathSeparator() + NODE_NAME_FAC_ADMIN;
         SimpleNode facAdminNode = (SimpleNode) facRegRoot.at(currentNodePath);
         FacilityAdministratorDto facAdminDto = (FacilityAdministratorDto) facAdminNode.getValue();
@@ -304,7 +300,7 @@ public class RfcFacilityRegistrationDelegator {
 
     public void preFacOfficer(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
-        NodeGroup facRegRoot = getFacilityRegisterRoot(request);
+        NodeGroup facRegRoot = (NodeGroup) ParamUtil.getSessionAttr(request, KEY_ROOT_NODE_GROUP);
         String currentNodePath = NODE_NAME_FAC_INFO + facRegRoot.getPathSeparator() + NODE_NAME_FAC_OFFICER;
         SimpleNode facOfficerNode = (SimpleNode) facRegRoot.at(currentNodePath);
         FacilityOfficerDto facOfficerDto = (FacilityOfficerDto) facOfficerNode.getValue();
@@ -320,7 +316,7 @@ public class RfcFacilityRegistrationDelegator {
 
     public void handleFacOfficer(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
-        NodeGroup facRegRoot = getFacilityRegisterRoot(request);
+        NodeGroup facRegRoot = (NodeGroup) ParamUtil.getSessionAttr(request, KEY_ROOT_NODE_GROUP);
         String currentNodePath = NODE_NAME_FAC_INFO + facRegRoot.getPathSeparator() + NODE_NAME_FAC_OFFICER;
         SimpleNode facOfficerNode = (SimpleNode) facRegRoot.at(currentNodePath);
         FacilityOfficerDto facOfficerDto = (FacilityOfficerDto) facOfficerNode.getValue();
@@ -337,7 +333,7 @@ public class RfcFacilityRegistrationDelegator {
 
     public void preFacInfoCommittee(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
-        NodeGroup facRegRoot = getFacilityRegisterRoot(request);
+        NodeGroup facRegRoot = (NodeGroup) ParamUtil.getSessionAttr(request, KEY_ROOT_NODE_GROUP);
         String currentNodePath = NODE_NAME_FAC_INFO + facRegRoot.getPathSeparator() + NODE_NAME_FAC_COMMITTEE;
         SimpleNode facCommitteeNode = (SimpleNode) facRegRoot.at(currentNodePath);
         FacilityCommitteeDto facCommitteeDto = (FacilityCommitteeDto) facCommitteeNode.getValue();
@@ -354,7 +350,7 @@ public class RfcFacilityRegistrationDelegator {
 
     public void handleFacInfoCommittee(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
-        NodeGroup facRegRoot = getFacilityRegisterRoot(request);
+        NodeGroup facRegRoot = (NodeGroup) ParamUtil.getSessionAttr(request, KEY_ROOT_NODE_GROUP);
         String currentNodePath = NODE_NAME_FAC_INFO + facRegRoot.getPathSeparator() + NODE_NAME_FAC_COMMITTEE;
         SimpleNode facCommitteeNode = (SimpleNode) facRegRoot.at(currentNodePath);
         FacilityCommitteeDto facCommitteeDto = (FacilityCommitteeDto) facCommitteeNode.getValue();
@@ -371,7 +367,7 @@ public class RfcFacilityRegistrationDelegator {
 
     public void preBAToxin(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
-        NodeGroup facRegRoot = getFacilityRegisterRoot(request);
+        NodeGroup facRegRoot = (NodeGroup) ParamUtil.getSessionAttr(request, KEY_ROOT_NODE_GROUP);
         String currentNodePath = (String) ParamUtil.getSessionAttr(request, KEY_JUMP_DEST_NODE);
         SimpleNode batNode = (SimpleNode) facRegRoot.at(currentNodePath);
         BiologicalAgentToxinDto batDto = (BiologicalAgentToxinDto) batNode.getValue();
@@ -399,7 +395,7 @@ public class RfcFacilityRegistrationDelegator {
 
     public void handleBAToxin(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
-        NodeGroup facRegRoot = getFacilityRegisterRoot(request);
+        NodeGroup facRegRoot = (NodeGroup) ParamUtil.getSessionAttr(request, KEY_ROOT_NODE_GROUP);
         String currentNodePath = (String) ParamUtil.getSessionAttr(request, KEY_JUMP_DEST_NODE);
         SimpleNode batNode = (SimpleNode) facRegRoot.at(currentNodePath);
         BiologicalAgentToxinDto batDto = (BiologicalAgentToxinDto) batNode.getValue();
@@ -416,7 +412,7 @@ public class RfcFacilityRegistrationDelegator {
 
     public void preOtherAppInfo(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
-        NodeGroup facRegRoot = getFacilityRegisterRoot(request);
+        NodeGroup facRegRoot = (NodeGroup) ParamUtil.getSessionAttr(request, KEY_ROOT_NODE_GROUP);
         SimpleNode otherAppInfoNode = (SimpleNode) facRegRoot.at(NODE_NAME_OTHER_INFO);
         OtherApplicationInfoDto otherAppInfoDto = (OtherApplicationInfoDto) otherAppInfoNode.getValue();
         Boolean needShowError = (Boolean) ParamUtil.getRequestAttr(request, KEY_SHOW_ERROR_SWITCH);
@@ -429,7 +425,7 @@ public class RfcFacilityRegistrationDelegator {
 
     public void handleOtherAppInfo(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
-        NodeGroup facRegRoot = getFacilityRegisterRoot(request);
+        NodeGroup facRegRoot = (NodeGroup) ParamUtil.getSessionAttr(request, KEY_ROOT_NODE_GROUP);
         SimpleNode otherAppInfoNode = (SimpleNode) facRegRoot.at(NODE_NAME_OTHER_INFO);
         OtherApplicationInfoDto otherAppInfoDto = (OtherApplicationInfoDto) otherAppInfoNode.getValue();
         otherAppInfoDto.reqObjMapping(request);
@@ -445,7 +441,7 @@ public class RfcFacilityRegistrationDelegator {
 
     public void prePrimaryDoc(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
-        NodeGroup facRegRoot = getFacilityRegisterRoot(request);
+        NodeGroup facRegRoot = (NodeGroup) ParamUtil.getSessionAttr(request, KEY_ROOT_NODE_GROUP);
         SimpleNode primaryDocNode = (SimpleNode) facRegRoot.at(NODE_NAME_PRIMARY_DOC);
         PrimaryDocDto primaryDocDto = (PrimaryDocDto) primaryDocNode.getValue();
         Boolean needShowError = (Boolean) ParamUtil.getRequestAttr(request, KEY_SHOW_ERROR_SWITCH);
@@ -464,7 +460,7 @@ public class RfcFacilityRegistrationDelegator {
 
     public void handlePrimaryDoc(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
-        NodeGroup facRegRoot = getFacilityRegisterRoot(request);
+        NodeGroup facRegRoot = (NodeGroup) ParamUtil.getSessionAttr(request, KEY_ROOT_NODE_GROUP);
         SimpleNode primaryDocNode = (SimpleNode) facRegRoot.at(NODE_NAME_PRIMARY_DOC);
         PrimaryDocDto primaryDocDto = (PrimaryDocDto) primaryDocNode.getValue();
         primaryDocDto.reqObjMapping(request);
@@ -480,7 +476,8 @@ public class RfcFacilityRegistrationDelegator {
 
     public void prePreviewSubmit(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
-        NodeGroup facRegRoot = getFacilityRegisterRoot(request);
+        ParamUtil.getSessionAttr(request,"oldFacilityRegisterDto");
+        NodeGroup facRegRoot = (NodeGroup) ParamUtil.getSessionAttr(request, KEY_ROOT_NODE_GROUP);
         SimpleNode previewSubmitNode = (SimpleNode) facRegRoot.at(NODE_NAME_PREVIEW_SUBMIT);
         PreviewSubmitDto previewSubmitDto = (PreviewSubmitDto) previewSubmitNode.getValue();
         Boolean needShowError = (Boolean) ParamUtil.getRequestAttr(request, KEY_SHOW_ERROR_SWITCH);
@@ -489,6 +486,12 @@ public class RfcFacilityRegistrationDelegator {
         }
         previewSubmitNode.needValidation();
         ParamUtil.setRequestAttr(request, NODE_NAME_PREVIEW_SUBMIT, previewSubmitDto);
+        //TODO set rfcTestDto to session
+        RfcTestFacRegDto rfcTestFacRegDto = (RfcTestFacRegDto)ParamUtil.getSessionAttr(request,"rfcTestFacRegDto");
+        FacilityRegisterDto newFacilityRegisterDto = FacilityRegisterDto.from(facRegRoot);
+        rfcTestFacRegDto.setNewFacRegDto(newFacilityRegisterDto);
+        rfcTestFacRegDto.compareOldAndNew();
+        ParamUtil.setSessionAttr(request,"RfcTestFacRegDto",rfcTestFacRegDto);
 
         ParamUtil.setRequestAttr(request, NODE_NAME_FAC_PROFILE, ((SimpleNode)facRegRoot.at(NODE_NAME_FAC_INFO + facRegRoot.getPathSeparator() + NODE_NAME_FAC_PROFILE)).getValue());
         ParamUtil.setRequestAttr(request, NODE_NAME_FAC_OPERATOR, ((SimpleNode)facRegRoot.at(NODE_NAME_FAC_INFO + facRegRoot.getPathSeparator() + NODE_NAME_FAC_OPERATOR)).getValue());
@@ -510,7 +513,7 @@ public class RfcFacilityRegistrationDelegator {
 
     public void handlePreviewSubmit(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
-        NodeGroup facRegRoot = getFacilityRegisterRoot(request);
+        NodeGroup facRegRoot = (NodeGroup) ParamUtil.getSessionAttr(request, KEY_ROOT_NODE_GROUP);
         SimpleNode previewSubmitNode = (SimpleNode) facRegRoot.at(NODE_NAME_PREVIEW_SUBMIT);
         PreviewSubmitDto previewSubmitDto = (PreviewSubmitDto) previewSubmitNode.getValue();
         previewSubmitDto.reqObjMapping(request);
@@ -567,17 +570,6 @@ public class RfcFacilityRegistrationDelegator {
         String destNode = (String) ParamUtil.getSessionAttr(request, KEY_JUMP_DEST_NODE);
         destNode = batNodeSpecialHandle(destNode);
         ParamUtil.setRequestAttr(request, KEY_DEST_NODE_ROUTE, destNode);
-    }
-
-    /**
-     * Get the root data structure of this flow
-     */
-    public NodeGroup getFacilityRegisterRoot(HttpServletRequest request) {
-        NodeGroup root = (NodeGroup) ParamUtil.getSessionAttr(request, KEY_ROOT_NODE_GROUP);
-        if (root == null) {
-            root = newFacRegisterRoot(KEY_ROOT_NODE_GROUP);
-        }
-        return root;
     }
 
     /**
@@ -648,30 +640,10 @@ public class RfcFacilityRegistrationDelegator {
 
     public void preAcknowledge(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
-        NodeGroup facRegRoot = getFacilityRegisterRoot(request);
+        NodeGroup facRegRoot = (NodeGroup) ParamUtil.getSessionAttr(request, KEY_ROOT_NODE_GROUP);
         NodeGroup batNodeGroup = (NodeGroup) facRegRoot.at(NODE_NAME_FAC_BAT_INFO);
         List<BiologicalAgentToxinDto> batList = getBatInfoList(batNodeGroup);
         ParamUtil.setRequestAttr(request, "batList", batList);
-    }
-
-    public static NodeGroup newFacRegisterRoot(String name) {
-        Node companyInfoNode = new Node(FacRegisterConstants.NODE_NAME_COMPANY_INFO, new Node[0]);
-        SimpleNode facSelectionNode = new SimpleNode(new FacilitySelectionDto(), NODE_NAME_FAC_SELECTION, new Node[0]);
-        NodeGroup facInfoNodeGroup = newFacInfoNodeGroup(new Node[]{facSelectionNode});
-        NodeGroup batNodeGroup = initBatNodeGroup(new Node[]{facSelectionNode, facInfoNodeGroup});
-        SimpleNode otherAppInfoNode = new SimpleNode(new OtherApplicationInfoDto(), NODE_NAME_OTHER_INFO, new Node[]{facSelectionNode, facInfoNodeGroup, batNodeGroup});
-        SimpleNode primaryDocNode = new SimpleNode(new PrimaryDocDto(), NODE_NAME_PRIMARY_DOC, new Node[]{facSelectionNode, facInfoNodeGroup, batNodeGroup, otherAppInfoNode});
-        SimpleNode previewSubmitNode = new SimpleNode(new PreviewSubmitDto(), NODE_NAME_PREVIEW_SUBMIT, new Node[]{facSelectionNode, facInfoNodeGroup, batNodeGroup, otherAppInfoNode, primaryDocNode});
-
-        return new NodeGroup.Builder().name(name)
-                .addNode(companyInfoNode)
-                .addNode(facSelectionNode)
-                .addNode(facInfoNodeGroup)
-                .addNode(batNodeGroup)
-                .addNode(otherAppInfoNode)
-                .addNode(primaryDocNode)
-                .addNode(previewSubmitNode)
-                .build();
     }
 
     public static NodeGroup newFacInfoNodeGroup(Node[] dependNodes) {
@@ -690,13 +662,6 @@ public class RfcFacilityRegistrationDelegator {
                 .addNode(facAdminNode)
                 .addNode(facOfficerNode)
                 .addNode(facCommitteeNode)
-                .build();
-    }
-
-    public static NodeGroup initBatNodeGroup(Node[] dependNodes) {
-        return new NodeGroup.Builder().name(NODE_NAME_FAC_BAT_INFO)
-                .dependNodes(dependNodes)
-                .addNode(new Node("error", new Node[0]))
                 .build();
     }
 
@@ -719,9 +684,6 @@ public class RfcFacilityRegistrationDelegator {
         }
         return batList;
     }
-
-
-
 
     /**
      * Compute the class name for the nav tab.

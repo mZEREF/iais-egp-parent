@@ -15,7 +15,6 @@ import java.util.List;
 /**
  * AUTHOR: YiMing
  * DATE:2021/9/15 10:03
- * DESCRIPTION: TODO
  **/
 @FeignClient(name = "iais-organization",configuration = FeignConfiguration.class)
 public interface OrganizationClient {

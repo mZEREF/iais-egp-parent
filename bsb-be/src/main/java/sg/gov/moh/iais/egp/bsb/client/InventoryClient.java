@@ -18,7 +18,6 @@ import java.util.List;
 /**
  * AUTHOR: YiMing
  * DATE:2021/8/31 10:33
- * DESCRIPTION: TODO
  **/
 
 @FeignClient(name = "bsb-be-api", configuration = FeignConfiguration.class)

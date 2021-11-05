@@ -24,7 +24,6 @@ import java.util.List;
 /**
  * AUTHOR: YiMing
  * DATE:2021/7/15 18:24
- * DESCRIPTION: TODO
  **/
 @Delegator(value = "inventoryDelegator")
 @Slf4j
@@ -43,8 +42,6 @@ public class InventoryDelegator {
 
     /**
      * AutoStep: prepareData
-     *
-     * @param bpc
      */
     public void prepareData(BaseProcessClass bpc) throws ParseException {
         HttpServletRequest request = bpc.request;
@@ -58,7 +55,6 @@ public class InventoryDelegator {
 
     /**
      * AutoStep: changePage
-     * @param bpc
      */
     public void page(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
@@ -146,12 +142,8 @@ public class InventoryDelegator {
 
     }
 
-
-
     /**
      * AutoStep: preHistoryData
-     *
-     * @param bpc
      */
     public void preHistoryData(BaseProcessClass bpc) {
         String count = ParamUtil.getString(bpc.request, "searchChk");
@@ -161,17 +153,13 @@ public class InventoryDelegator {
 
     /**
      * AutoStep: doAdjustment
-     *
-     * @param bpc
      */
     public void doAdjustment(BaseProcessClass bpc) {
-
+        //do nothing now
     }
 
     /**
      * AutoStep: preBasicData
-     *
-     * @param bpc
      */
     public void preBasicData(BaseProcessClass bpc) {
         String count = ParamUtil.getString(bpc.request, "searchChk");
@@ -183,8 +171,6 @@ public class InventoryDelegator {
 
     /**
      * AutoStep: preBasicList
-     *
-     * @param bpc
      */
     public void preBasicList(BaseProcessClass bpc) {
         String count = ParamUtil.getString(bpc.request, "searchChk");
@@ -194,11 +180,9 @@ public class InventoryDelegator {
 
     /**
      * AutoStep: doBasicAdjustment
-     *
-     * @param bpc
      */
     public void doBasicAdjustment(BaseProcessClass bpc) {
-
+        //do nothing now
     }
 
     public void selectOption(HttpServletRequest request, String name, List<String> strings) {
@@ -230,6 +214,5 @@ public class InventoryDelegator {
         InventoryDto dto = new InventoryDto();
         return dto;
     }
-
 
 }
