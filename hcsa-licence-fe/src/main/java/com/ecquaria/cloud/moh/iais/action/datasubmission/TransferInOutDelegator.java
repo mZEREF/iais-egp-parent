@@ -24,10 +24,25 @@ public class TransferInOutDelegator extends CommonDelegator {
     }
 
     @Override
+    public void returnStep(BaseProcessClass bpc) {
+
+    }
+
+    @Override
     public void preparePage(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         ArSuperDataSubmissionDto arSuperDataSubmissionDto = DataSubmissionHelper.getCurrentArDataSubmission(request);
         ParamUtil.setSessionAttr(request, DataSubmissionConstant.AR_DATA_SUBMISSION, arSuperDataSubmissionDto);
+    }
+
+    @Override
+    public void prepareConfim(BaseProcessClass bpc) {
+
+    }
+
+    @Override
+    public void submission(BaseProcessClass bpc) {
+
     }
 
     @Override
@@ -39,5 +54,8 @@ public class TransferInOutDelegator extends CommonDelegator {
     public void pageAction(BaseProcessClass bpc) {
 
     }
+    @Override
+    public void pageConfirmAction(BaseProcessClass bpc) {
 
+    }
 }
