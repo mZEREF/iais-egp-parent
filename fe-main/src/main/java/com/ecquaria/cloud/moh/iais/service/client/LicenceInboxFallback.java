@@ -19,6 +19,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PersonnlAssessQueryDt
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesListQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.SelfPremisesListQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inbox.InboxDataSubmissionQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InboxLicenceQueryDto;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import org.springframework.http.HttpHeaders;
@@ -34,6 +35,13 @@ import java.util.List;
  **/
 @Component
 public class LicenceInboxFallback implements LicenceInboxClient {
+
+    private  FeignResponseEntity getEntity(){
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
     @Override
     public FeignResponseEntity<SearchResult<InboxLicenceQueryDto>> searchResultFromLicence(SearchParam searchParam){
         FeignResponseEntity entity = new FeignResponseEntity<>();
@@ -297,4 +305,8 @@ public class LicenceInboxFallback implements LicenceInboxClient {
         return entity;
     }
 
+    @Override
+    public FeignResponseEntity<SearchResult<InboxDataSubmissionQueryDto>> searchLicence(SearchParam searchParam) {
+        return getEntity();
+    }
 }

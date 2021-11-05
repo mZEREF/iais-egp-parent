@@ -19,6 +19,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PersonnlAssessQueryDt
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesListQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.SelfPremisesListQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inbox.InboxDataSubmissionQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InboxLicenceQueryDto;
 import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
@@ -140,5 +141,8 @@ public interface LicenceInboxClient {
     @PutMapping(value = "/lic-common/refresh-sub-licensee", consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<String> refreshSubLicenseeInfo(@RequestBody LicenseeDto licenseeDto);
+
+    @PostMapping(value = "/data-submission/data-submission-param",consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity <SearchResult<InboxDataSubmissionQueryDto>> searchLicence(@RequestBody SearchParam searchParam);
 
 }
