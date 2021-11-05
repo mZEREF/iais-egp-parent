@@ -102,61 +102,48 @@ public class DonationStageDelegator extends CommonDelegator{
         ArSuperDataSubmissionDto arSuperDataSubmissionDto= DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
         DonationStageDto donationStageDto=arSuperDataSubmissionDto.getDonationStageDto();
         HttpServletRequest request=bpc.request;
+        int totalNum =0;
         Integer curCenDonatedNum =  null;
         try {
             curCenDonatedNum =  ParamUtil.getInt(request, "curCenDonatedNum");
+            totalNum+=curCenDonatedNum;
         }catch (Exception e){
             log.error("no int");
         }
         Integer otherCenDonatedNum = null;
         try {
             otherCenDonatedNum = ParamUtil.getInt(request, "otherCenDonatedNum");
+            totalNum+=otherCenDonatedNum;
         }catch (Exception e){
             log.error("no int");
         }
         Integer resDonarNum = null;
         try {
             resDonarNum =  ParamUtil.getInt(request, "resDonarNum");
+            totalNum+=resDonarNum;
         }catch (Exception e){
             log.error("no int");
         }
         Integer curCenResDonatedNum = null;
         try {
             curCenResDonatedNum =  ParamUtil.getInt(request, "curCenResDonatedNum");
+            totalNum+=curCenResDonatedNum;
         }catch (Exception e){
             log.error("no int");
         }
         Integer otherCenResDonarNum = null;
         try {
             otherCenResDonarNum =  ParamUtil.getInt(request, "otherCenResDonarNum");
+            totalNum+=otherCenResDonarNum;
         }catch (Exception e){
             log.error("no int");
         }
         Integer trainingNum = null;
         try {
             trainingNum =  ParamUtil.getInt(request, "trainingNum");
+            totalNum+=trainingNum;
         }catch (Exception e){
             log.error("no int");
-        }
-        int totalNum =0;
-
-        if(curCenDonatedNum!=null){
-            totalNum+=curCenDonatedNum;
-        }
-        if(otherCenDonatedNum!=null){
-            totalNum+=otherCenDonatedNum;
-        }
-        if(resDonarNum!=null){
-            totalNum+=resDonarNum;
-        }
-        if(curCenResDonatedNum!=null){
-            totalNum+=curCenResDonatedNum;
-        }
-        if(otherCenResDonarNum!=null){
-            totalNum+=otherCenResDonarNum;
-        }
-        if(trainingNum!=null){
-            totalNum+=trainingNum;
         }
         donationStageDto.setCurCenDonatedNum(curCenDonatedNum);
         donationStageDto.setOtherCenDonatedNum(otherCenDonatedNum);
