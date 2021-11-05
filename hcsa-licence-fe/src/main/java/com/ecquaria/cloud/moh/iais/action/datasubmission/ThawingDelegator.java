@@ -111,7 +111,11 @@ public class ThawingDelegator extends CommonDelegator {
         String s = ParamUtil.getString(request, param);
         int result = 0;
         if (StringUtil.isNotEmpty(s)){
-            result = Integer.valueOf(s);
+            try {
+                result = Integer.parseInt(s);
+            }catch (NumberFormatException ignored){
+
+            }
         }
         return result;
     }

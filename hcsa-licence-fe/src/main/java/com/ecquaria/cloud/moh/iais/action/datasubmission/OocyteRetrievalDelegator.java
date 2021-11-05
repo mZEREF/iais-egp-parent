@@ -104,7 +104,11 @@ public class OocyteRetrievalDelegator extends CommonDelegator {
         String s = ParamUtil.getString(request, param);
         int result = 0;
         if (StringUtil.isNotEmpty(s)){
-            result = Integer.parseInt(s);
+            try {
+                result = Integer.parseInt(s);
+            }catch (NumberFormatException ignored){
+
+            }
         }
         return result;
     }
