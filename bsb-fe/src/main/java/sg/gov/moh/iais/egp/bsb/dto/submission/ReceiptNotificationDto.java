@@ -26,11 +26,9 @@ public class ReceiptNotificationDto {
         private String bat;
         private String receiveQty;
         private String meaUnit;
-        private DocumentDto batDocumentDto;
     }
 
     private List<ReceiptList> receiptLists;
-    private DocumentDto documentDto;
     private String modeProcurement;
     private String sourceFacilityName;
     private String sourceFacilityAddress;
@@ -64,14 +62,6 @@ public class ReceiptNotificationDto {
 
     public void setConsumptionLists(List<ReceiptList> receiptLists) {
         this.receiptLists = new ArrayList<>(receiptLists);
-    }
-
-    public DocumentDto getDocumentDto() {
-        return documentDto;
-    }
-
-    public void setDocumentDto(DocumentDto documentDto) {
-        this.documentDto = documentDto;
     }
 
     public boolean doValidation() {

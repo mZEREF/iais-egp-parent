@@ -26,11 +26,9 @@ public class DisposalNotificationDto {
         private String bat;
         private String disposedQty;
         private String meaUnit;
-        private DocumentDto batDocumentDto;
     }
 
     private List<DisposalList> disposalLists;
-    private DocumentDto documentDto;
     private String destructMethod;
     private String destructDetails;
     private String remarks;
@@ -58,13 +56,6 @@ public class DisposalNotificationDto {
         this.disposalLists = new ArrayList<>(receiptLists);
     }
 
-    public DocumentDto getDocumentDto() {
-        return documentDto;
-    }
-
-    public void setDocumentDto(DocumentDto documentDto) {
-        this.documentDto = documentDto;
-    }
 
     public boolean doValidation() {
 //        List<DocumentDto.DocMeta> docsMetaDto = null;

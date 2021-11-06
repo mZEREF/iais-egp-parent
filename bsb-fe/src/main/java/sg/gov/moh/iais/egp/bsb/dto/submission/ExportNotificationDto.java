@@ -28,11 +28,9 @@ public class ExportNotificationDto {
         private String transferType;
         private String transferQty;
         private String meaUnit;
-        private DocumentDto batDocumentDto;
     }
 
     private List<ExportList> exportLists;
-    private DocumentDto documentDto;
     private String receivedFacility;
     private String receivedCountry;
     private String exportDate;
@@ -61,14 +59,6 @@ public class ExportNotificationDto {
 
     public void setExportLists(List<ExportList> exportLists) {
         this.exportLists = new ArrayList<>(exportLists);
-    }
-
-    public DocumentDto getDocumentDto() {
-        return documentDto;
-    }
-
-    public void setDocumentDto(DocumentDto documentDto) {
-        this.documentDto = documentDto;
     }
 
     public boolean doValidation() {

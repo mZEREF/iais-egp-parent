@@ -1,15 +1,21 @@
 package sg.gov.moh.iais.egp.bsb.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.moh.iais.common.utils.LogUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.util.StringUtils;
+import org.springframework.util.CollectionUtils;
+import org.springframework.web.multipart.MultipartFile;
+import sg.gov.moh.iais.egp.bsb.client.FileRepoClient;
 import sg.gov.moh.iais.egp.bsb.client.TransferClient;
 import sg.gov.moh.iais.egp.bsb.constant.ValidationConstants;
+import sg.gov.moh.iais.egp.bsb.dto.submission.PrimaryDocDto;
 import sg.gov.moh.iais.egp.bsb.dto.submission.TransferNotificationDto;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author YiMing
@@ -21,9 +27,11 @@ import javax.servlet.http.HttpServletRequest;
 public class BsbTransferNotificationDelegator {
     public static final String KEY_TRANSFER_NOTIFICATION_DTO = "transferNotDto";
     private final TransferClient transferClient;
+    private final FileRepoClient fileRepoClient;
 
-    public BsbTransferNotificationDelegator(TransferClient transferClient) {
+    public BsbTransferNotificationDelegator(TransferClient transferClient, FileRepoClient fileRepoClient) {
         this.transferClient = transferClient;
+        this.fileRepoClient = fileRepoClient;
     }
 
     /**
@@ -47,6 +55,10 @@ public class BsbTransferNotificationDelegator {
         if(Boolean.TRUE.equals(needShowError)){
             ParamUtil.setRequestAttr(request,ValidationConstants.KEY_VALIDATION_ERRORS,transferNotificationDto.retrieveValidationResult());
         }
+        List<PrimaryDocDto.DocRecordInfo> savedFiles = new ArrayList<>();
+        List<PrimaryDocDto.NewDocInfo> newFiles = new ArrayList<>();
+        ParamUtil.setRequestAttr(request, "savedFiles", savedFiles);
+        ParamUtil.setRequestAttr(request, "newFiles", newFiles);
         ParamUtil.setRequestAttr(request,KEY_TRANSFER_NOTIFICATION_DTO,transferNotificationDto);
     }
 
@@ -62,6 +74,22 @@ public class BsbTransferNotificationDelegator {
     public void save(BaseProcessClass bpc){
          HttpServletRequest request = bpc.request;
          TransferNotificationDto notificationDto = getTransferNotification(request);
+         List<TransferNotificationDto.TransferNot> transferNotList = notificationDto.getTransferNotList();
+         if(!CollectionUtils.isEmpty(transferNotList)){
+             for (TransferNotificationDto.TransferNot not : transferNotList) {
+                 PrimaryDocDto primaryDocDto = not.getPrimaryDocDto();
+                 if(primaryDocDto != null){
+                     MultipartFile[] files = primaryDocDto.getNewDocMap().values().stream().map(PrimaryDocDto.NewDocInfo::getMultipartFile).toArray(MultipartFile[]::new);
+                     List<String> repoIds = fileRepoClient.saveFiles(files).getEntity();
+                     primaryDocDto.newFileSaved(repoIds);
+                     not.setRecordInfos(primaryDocDto.getSavedDocMap().values());
+                 }else{
+                     log.info("please ensure your object has value");
+                 }
+             }
+         }else{
+             log.info("you have not key your transferList");
+         }
          String ensure = ParamUtil.getString(request,"ensure");
          notificationDto.setEnsure(ensure);
          transferClient.saveNewTransferNot(notificationDto);

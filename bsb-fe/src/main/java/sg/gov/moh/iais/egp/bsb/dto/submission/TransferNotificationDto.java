@@ -5,8 +5,9 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.util.StringUtils;
+import sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants;
 import sg.gov.moh.iais.egp.bsb.dto.ValidationResultDto;
-import sg.gov.moh.iais.egp.bsb.util.SpringReflectionUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
@@ -29,6 +30,9 @@ public class TransferNotificationDto implements Serializable {
         private String batQty;
         private String transferQty;
         private String mstUnit;
+        @JsonIgnore
+        private PrimaryDocDto primaryDocDto;
+        private Collection<PrimaryDocDto.DocRecordInfo> recordInfos;
     }
 
 
@@ -126,13 +130,11 @@ public class TransferNotificationDto implements Serializable {
         this.transferNotList = new ArrayList<>(transferLists);
     }
 
-
-
     //------------------------------------------Validation---------------------------------------------
 
     public boolean doValidation() {
-        this.validationResultDto = (ValidationResultDto) SpringReflectionUtils.invokeBeanMethod("transferFeignClient", "validateTransferNot", new Object[]{this});
-        return validationResultDto.isPass();
+//        this.validationResultDto = (ValidationResultDto) SpringReflectionUtils.invokeBeanMethod("transferFeignClient", "validateTransferNot", new Object[]{this});
+        return true;
     }
 
 
@@ -161,6 +163,8 @@ public class TransferNotificationDto implements Serializable {
     private static final String KEY_EXPECTED_ARRIVAL_TIME   = "expArrivalTime";
     private static final String KEY_PROVIDER_NAME           = "providerName";
     private static final String KEY_REMARK                  = "remarks";
+    private static final String KEY_DOC_TYPE_INVENTORY_TOXIN="ityToxin";
+    private static final String KEY_DOC_TYPE_INVENTORY_BAT  ="ityBat";
 
 
     /**
@@ -173,12 +177,16 @@ public class TransferNotificationDto implements Serializable {
 
         for (int i = 0; i < amt; i++) {
             TransferNot transferNot = new TransferNot();
-            transferNot.setScheduleType(ParamUtil.getString(request,KEY_PREFIX_SCHEDULE_TYPE+SEPARATOR+i));
+            String scheduleType = ParamUtil.getString(request,KEY_PREFIX_SCHEDULE_TYPE+SEPARATOR+i);
+            transferNot.setScheduleType(scheduleType);
             transferNot.setBatCode(ParamUtil.getString(request,KEY_PREFIX_BAT_CODE+SEPARATOR+i));
             transferNot.setTransferType(ParamUtil.getString(request,KEY_PREFIX_BAT_QTY+SEPARATOR+i));
             transferNot.setBatQty(ParamUtil.getString(request,KEY_PREFIX_TRANSFER_TYPE +SEPARATOR+i));
             transferNot.setTransferQty(ParamUtil.getString(request,KEY_PREFIX_TRANSFER_QTY+SEPARATOR+i));
             transferNot.setMstUnit(ParamUtil.getString(request,KEY_PREFIX_MEASUREMENT_UNIT+SEPARATOR+i));
+            PrimaryDocDto primaryDocDto = new PrimaryDocDto();
+            primaryDocDto.reqObjMapping(request,getDocType(scheduleType),String.valueOf(i));
+            transferNot.setPrimaryDocDto(primaryDocDto);
             addTransferNotList(transferNot);
         }
         this.setExpectedTfDate(ParamUtil.getString(request,KEY_EXPECTED_TRANSFER_DATE));
@@ -186,5 +194,27 @@ public class TransferNotificationDto implements Serializable {
         this.setProviderName(ParamUtil.getString(request,KEY_PROVIDER_NAME));
         this.setRemarks(ParamUtil.getString(request,KEY_REMARK));
     }
+
+    public String getDocType(String scheduleType){
+        String docType = "";
+        if(StringUtils.hasLength(scheduleType)){
+            switch (scheduleType){
+                case MasterCodeConstants.FIRST_SCHEDULE_PART_I:
+                case MasterCodeConstants.FIRST_SCHEDULE_PART_II:
+                case MasterCodeConstants.SECOND_SCHEDULE:
+                case MasterCodeConstants.THIRD_SCHEDULE:
+                case MasterCodeConstants.FOURTH_SCHEDULE:
+                    docType = KEY_DOC_TYPE_INVENTORY_BAT;
+                    break;
+                case MasterCodeConstants.FIFTH_SCHEDULE:
+                    docType = KEY_DOC_TYPE_INVENTORY_TOXIN;
+                    break;
+                default:
+                    break;
+            }
+        }
+        return docType;
+    }
+
 
 }

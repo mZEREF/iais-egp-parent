@@ -3,10 +3,7 @@ package sg.gov.moh.iais.egp.bsb.util;
 import com.google.common.collect.Maps;
 import org.springframework.util.Assert;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Function;
 
 public class CollectionUtils {
@@ -27,6 +24,9 @@ public class CollectionUtils {
         Assert.notNull(collection, ERR_MSG_COLLECTION_NOT_NULL);
         Assert.notNull(function, ERR_MSG_FUNC_NOT_NULL);
         Map<Y, List<X>> map = Maps.newLinkedHashMapWithExpectedSize(collection.size());
+        for (X x : collection) {
+
+        }
         for (X x : collection) {
             Y key = function.apply(x);
             List<X> list = map.get(key);
