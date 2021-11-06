@@ -54,9 +54,8 @@
     <div class="row">
         <div class="container">
             <div class="col-xs-12 col-md-6 text-right">
-                <button class="btn btn-primary save" id="savebtn">NEXT</button>
+                <button class="btn btn-primary save" id="next">NEXT</button>
             </div>
         </div>
     </div>
 </form>
-<%@include file="/WEB-INF/jsp/include/validation.jsp" %>

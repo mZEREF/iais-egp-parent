@@ -26,8 +26,16 @@ public class INTERNET___DisposalNotification___1 extends BaseProcessClass {
 		EngineHelper.delegate(DELEGATOR, "prepareDisposal", this);
 	}
 
+	public void step1_OnStepProcess_0() throws Exception {
+		// 		Step1->OnStepProcess
+	}
+
 	public void saveAndPrepareConfirm_OnStepProcess_0() throws Exception {
 	// 		saveAndPrepareConfirm->OnStepProcess
+	}
+
+	public void step2_OnStepProcess_0() throws Exception {
+		// 		Step2->OnStepProcess
 	}
 
 	public void save_OnStepProcess_0() throws Exception {

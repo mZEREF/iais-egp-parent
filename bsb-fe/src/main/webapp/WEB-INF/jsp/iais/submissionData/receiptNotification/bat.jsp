@@ -16,13 +16,9 @@
                         <section id="reqTSection--v--${status.index}">
                             <c:if test="${receiveNotification.receiptLists.size() > 1}">
                                 <div class="form-group">
-                                    <h3 class="col-xs-9 col-sm-10 col-md-11" style="border-bottom: 1px solid black">
-                                        Agent / Toxin ${status.index + 1}</h3>
+                                    <h3 class="col-xs-9 col-sm-10 col-md-11" style="border-bottom: 1px solid black">Agent / Toxin ${status.index + 1}</h3>
                                     <c:if test="${status.index gt 0}">
-                                        <div class="col-sm-1"><h4 class="text-danger"><em
-                                                data-current-idx="${status.index}"
-                                                class="fa fa-times-circle del-size-36 cursorPointer removeBtn"></em>
-                                        </h4></div>
+                                        <div class="col-sm-1"><h4 class="text-danger"><em data-current-idx="${status.index}" class="fa fa-times-circle del-size-36 cursorPointer removeBtn"></em></h4></div>
                                     </c:if>
                                 </div>
                             </c:if>
@@ -92,8 +88,7 @@
                                                      value=""
                                                      codeCategory="CATE_ID_BSB_DATA_SUBMISSION_MODE_OF_MEASUREMENT"
                                                      firstOption="Please Select"/>
-                                        <span data-err-ind="modeProcurement--v--${status.index}"
-                                              class="error-msg"></span>
+                                        <span data-err-ind="modeProcurement--v--${status.index}" class="error-msg"></span>
                                     </div>
                                 </div>
                                 <div class="form-group">
@@ -101,8 +96,7 @@
                                         <label for="attachment--v--${status.index}">Attachment</label>
                                     </div>
                                     <div class="col-sm-6 col-md-7">
-                                        <input type="file" name="attachment--v--${status.index}"
-                                               id="attachment--v--${status.index}">
+                                        <input type="file" name="attachment--v--${status.index}" id="attachment--v--${status.index}">
                                     </div>
                                 </div>
                             </div>
@@ -122,14 +116,16 @@
                 </div>
                 <div class="form-group">
                     <div class="col-12">
-                        <a class="btn btn-secondary" id="addNewSection" href="javascript:void(0);">ADD
-                            AGENT/TOXIN</a>
+                        <a class="btn btn-secondary" id="addNewSection" href="javascript:void(0);">ADD AGENT/TOXIN</a>
                     </div>
                 </div>
                 <div class="row form-horizontal">
                     <div class="form-group">
                         <div class="col-sm-5 control-label">
                             <label>Facility Name</label>
+                        </div>
+                        <div class="col-sm-6 col-md-7">
+                            <label>${facilityInfo.facName}</label>
                         </div>
                     </div>
                     <div class="form-group">
@@ -138,41 +134,34 @@
                             <span class="mandatory otherQualificationSpan">*</span>
                         </div>
                         <div class="col-sm-6 col-md-7">
-                                    <textarea id="sourceFacilityName"
-                                              style="width: 100%;margin-bottom: 15px;" rows="6"
-                                              name="sourceFacilityName"
-                                              maxlength="300"></textarea>
-                            <span data-err-ind="sourceFacilityName"
-                                  class="error-msg"></span>
+                            <textarea id="sourceFacilityName"
+                                      style="width: 100%;margin-bottom: 15px;" rows="6"
+                                      name="sourceFacilityName"
+                                      maxlength="300"></textarea>
+                            <span data-err-ind="sourceFacilityName" class="error-msg"></span>
                         </div>
                     </div>
                     <div class="form-group">
                         <div class="col-sm-5 control-label">
-                            <label for="sourceFacilityAddress">Address of Source
-                                Facility</label>
+                            <label for="sourceFacilityAddress">Address of Source Facility</label>
                             <span class="mandatory otherQualificationSpan">*</span>
                         </div>
                         <div class="col-sm-6 col-md-7">
-                            <input type="text" name="sourceFacilityAddress"
-                                   id="sourceFacilityAddress"
-                                   maxlength="100" value="">
-                            <span data-err-ind="sourceFacilityAddress"
-                                  class="error-msg"></span>
+                            <input type="text" name="sourceFacilityAddress" id="sourceFacilityAddress" maxlength="100" value="">
+                            <span data-err-ind="sourceFacilityAddress" class="error-msg"></span>
                         </div>
                     </div>
                     <div class="form-group">
                         <div class="col-sm-5 control-label">
-                            <label for="sourceFacilityContactPerson">Contact Person of
-                                Source Facility</label>
+                            <label for="sourceFacilityContactPerson">Contact Person of Source Facility</label>
                             <span class="mandatory otherQualificationSpan">*</span>
                         </div>
                         <div class="col-sm-6 col-md-7">
-                                    <textarea id="sourceFacilityContactPerson"
-                                              style="width: 100%;margin-bottom: 15px;" rows="6"
-                                              name="sourceFacilityContactPerson"
-                                              maxlength="300"></textarea>
-                            <span data-err-ind="sourceFacilityContactPerson"
-                                  class="error-msg"></span>
+                            <textarea id="sourceFacilityContactPerson"
+                                      style="width: 100%;margin-bottom: 15px;" rows="6"
+                                      name="sourceFacilityContactPerson"
+                                      maxlength="300"></textarea>
+                            <span data-err-ind="sourceFacilityContactPerson" class="error-msg"></span>
                         </div>
                     </div>
                     <div class="form-group">
@@ -181,11 +170,8 @@
                             <span class="mandatory otherQualificationSpan">*</span>
                         </div>
                         <div class="col-sm-6 col-md-7">
-                            <input type="text" name="contactPersonEmail"
-                                   id="contactPersonEmail"
-                                   maxlength="66" value="">
-                            <span data-err-ind="contactPersonEmail"
-                                  class="error-msg"></span>
+                            <input type="text" name="contactPersonEmail" id="contactPersonEmail" maxlength="66" value="">
+                            <span data-err-ind="contactPersonEmail" class="error-msg"></span>
                         </div>
                     </div>
                     <div class="form-group">
@@ -194,9 +180,7 @@
                             <span class="mandatory otherQualificationSpan">*</span>
                         </div>
                         <div class="col-sm-6 col-md-7">
-                            <input type="text" name="contactPersonTel"
-                                   id="contactPersonTel"
-                                   maxlength="20" value="">
+                            <input type="text" name="contactPersonTel" id="contactPersonTel" maxlength="20" value="">
                             <span data-err-ind="contactPersonTel" class="error-msg"></span>
                         </div>
                     </div>
@@ -206,8 +190,7 @@
                             <span class="mandatory otherQualificationSpan">*</span>
                         </div>
                         <div class="col-sm-6 col-md-7">
-                            <input type="text" name="provider"
-                                   id="provider" maxlength="100" value="">
+                            <input type="text" name="provider" id="provider" maxlength="100" value="">
                             <span data-err-ind="provider" class="error-msg"></span>
                         </div>
                     </div>
@@ -217,8 +200,7 @@
                             <span class="mandatory otherQualificationSpan">*</span>
                         </div>
                         <div class="col-sm-6 col-md-7">
-                            <input type="text" name="flightNo"
-                                   id="flightNo" maxlength="20" value="">
+                            <input type="text" name="flightNo" id="flightNo" maxlength="20" value="">
                             <span data-err-ind="flightNo" class="error-msg"></span>
                         </div>
                     </div>
@@ -228,9 +210,7 @@
                             <span class="mandatory otherQualificationSpan">*</span>
                         </div>
                         <div class="col-sm-6 col-md-7">
-                            <iais:datePicker id="actualArrivalDate"
-                                             name="actualArrivalDate"
-                                             dateVal=""></iais:datePicker>
+                            <iais:datePicker id="actualArrivalDate" name="actualArrivalDate" dateVal=""></iais:datePicker>
                             <span data-err-ind="actualArrivalDate" class="error-msg"></span>
                         </div>
                     </div>

@@ -22,8 +22,16 @@ public class INTERNET___AckOfReceiptOfTransfer___1 extends BaseProcessClass {
 	// 		prepareData->OnStepProcess
 	}
 
+	public void prepareSwitch1_OnStepProcess_0() throws Exception {
+		// 		prepareSwitch1->OnStepProcess
+	}
+
 	public void saveAndPreConfirm_OnStepProcess_0() throws Exception {
 	// 		saveAndPreConfirm->OnStepProcess
+	}
+
+	public void prepareSwitch2_OnStepProcess_0() throws Exception {
+		// 		prepareSwitch2->OnStepProcess
 	}
 
 	public void save_OnStepProcess_0() throws Exception {

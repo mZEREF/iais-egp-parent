@@ -25,9 +25,18 @@ public class INTERNET___TransferNofication___1 extends BaseProcessClass {
 		EngineHelper.delegate(DELEGATOR, "prepareData", this);
 	}
 
+	public void prepareSwitch1_OnStepProcess_0() throws Exception {
+		// 		prepareSwitch1->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "prepareSwitch1", this);
+	}
+
 	public void saveAndPrepareConfirm_OnStepProcess_0() throws Exception {
 	// 		saveAndPrepareConfirm->OnStepProcess
 		EngineHelper.delegate(DELEGATOR, "saveAndPrepareConfirm", this);
+	}
+
+	public void prepareSwitch2_OnStepProcess_0() throws Exception {
+		// 		prepareSwitch2->OnStepProcess
 	}
 
 	public void save_OnStepProcess_0() throws Exception {
@@ -38,5 +47,4 @@ public class INTERNET___TransferNofication___1 extends BaseProcessClass {
 	public void saveDraft_OnStepProcess_0() throws Exception {
 		// 		saveDraft->OnStepProcess
 	}
-
 }

@@ -5,9 +5,11 @@ import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 import sg.gov.moh.iais.egp.bsb.client.DataSubmissionClient;
 import sg.gov.moh.iais.egp.bsb.constant.ValidationConstants;
 import sg.gov.moh.iais.egp.bsb.dto.submission.*;
+import sop.servlet.webflow.HttpHandler;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
@@ -58,13 +60,7 @@ public class DataSubmissionDelegator {
         facId = MaskUtil.unMaskValue("id",facId);
         ParamUtil.setSessionAttr(request,KEY_FAC_ID,facId);
     }
-    /**
-     * StartStep: PrepareSwitch
-     * Maybe it will be useful in the future
-     */
-    public void doPrepareSwitch(BaseProcessClass bpc) {
-        //todo
-    }
+
     /**
      * StartStep: prepareConsume
      * Prepare data for the callback and facility info
@@ -88,6 +84,18 @@ public class DataSubmissionDelegator {
         }
         ParamUtil.setRequestAttr(request,KEY_CONSUME_NOTIFICATION_DTO,new ConsumeNotificationDto());
     }
+
+    /**
+     * StartStep: PrepareSwitch
+     * Maybe it will be useful in the future
+     */
+    public void prepareSwitch1(BaseProcessClass bpc) {
+        log.info("=======>>>>>startStep>>>>>>>>>>>>>>>>user");
+        MultipartHttpServletRequest request = (MultipartHttpServletRequest) bpc.request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
+        String action_type = request.getParameter("action_type");
+        ParamUtil.setSessionAttr(bpc.request, "action_type", action_type);
+    }
+
     /**
      * StartStep: prepareConfirm
      * Put data into session for preview and save

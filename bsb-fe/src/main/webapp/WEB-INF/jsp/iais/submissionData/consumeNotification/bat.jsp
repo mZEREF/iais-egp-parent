@@ -64,15 +64,14 @@
                                         <span data-err-ind="consumeType--v--${status.index}" class="error-msg"></span>
                                     </div>
                                 </div>
-                                <div class="form-group">
-                                    <div class="col-sm-5 control-label">
-                                        <label for="attachment--v--${status.index}">Attachment</label>
-                                    </div>
-                                    <div class="col-sm-6 col-md-7">
-                                        <input type="file" name="attachment--v--${status.index}"
-                                               id="attachment--v--${status.index}">
-                                    </div>
-                                </div>
+<%--                                <div class="form-group">--%>
+<%--                                    <div class="col-sm-5 control-label">--%>
+<%--                                        <label for="attachment--v--${status.index}">Attachment</label>--%>
+<%--                                    </div>--%>
+<%--                                    <div class="col-sm-6 col-md-7">--%>
+<%--                                        <input type="file" name="attachment--v--${status.index}" id="attachment--v--${status.index}">--%>
+<%--                                    </div>--%>
+<%--                                </div>--%>
                             </div>
                             <div id="agentFifth--v--${status.index}" style="display: none">
                                 <div class="form-group">
@@ -126,7 +125,7 @@
                             <label>Facility Name</label>
                         </div>
                         <div class="col-sm-6 col-md-7">
-                            <label><p>facility name</p></label>
+                            <label>${facilityInfo.facName}</label>
                         </div>
                     </div>
                     <div class="form-group">
@@ -135,10 +134,10 @@
                             <span class="mandatory otherQualificationSpan">*</span>
                         </div>
                         <div class="col-sm-6 col-md-7">
-                        <textarea id="remarks" style="width: 100%;margin-bottom: 15px;"
-                                  rows="6"
-                                  name="remarks"
-                                  maxlength="500"></textarea>
+                            <textarea id="remarks" style="width: 100%;margin-bottom: 15px;"
+                                      rows="6"
+                                      name="remarks"
+                                      maxlength="500"></textarea>
                             <span data-err-ind="remarks" class="error-msg"></span>
                         </div>
                     </div>

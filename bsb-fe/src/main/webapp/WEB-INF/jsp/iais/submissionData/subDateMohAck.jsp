@@ -45,7 +45,8 @@
             <div class="row">
                 <div class="col-xs-12">
                     <div class="center-content">
-                        <span style="font-size:2rem;"><%=msg%></span>
+<%--                        <span style="font-size:2rem;"><%=msg%></span>--%>
+                        <span style="font-size:2rem;">You have successfully submit</span>
                     </div>
                 </div>
             </div>
@@ -54,7 +55,7 @@
     <div class="row">
         <div class="container">
             <div class="col-xs-12 col-md-6 text-left">
-                <a class="back" href="${backUrl}"><em class="fa fa-angle-left"></em> Back</a>
+                <a class="back" href="#"><em class="fa fa-angle-left"></em> Back</a>
             </div>
         </div>
     </div>

@@ -16,13 +16,9 @@
                         <section id="reqTSection--v--${status.index}">
                             <c:if test="${exportNotification.exportLists.size() > 1}">
                                 <div class="form-group">
-                                    <h3 class="col-xs-9 col-sm-10 col-md-11" style="border-bottom: 1px solid black">
-                                        Agent / Toxin ${status.index + 1}</h3>
+                                    <h3 class="col-xs-9 col-sm-10 col-md-11" style="border-bottom: 1px solid black">Agent / Toxin ${status.index + 1}</h3>
                                     <c:if test="${status.index gt 0}">
-                                        <div class="col-sm-1"><h4 class="text-danger"><em
-                                                data-current-idx="${status.index}"
-                                                class="fa fa-times-circle del-size-36 cursorPointer removeBtn"></em>
-                                        </h4></div>
+                                        <div class="col-sm-1"><h4 class="text-danger"><em data-current-idx="${status.index}" class="fa fa-times-circle del-size-36 cursorPointer removeBtn"></em></h4></div>
                                     </c:if>
                                 </div>
                             </c:if>
@@ -68,15 +64,14 @@
                                         <span data-err-ind="transferType--v--${status.index}" class="error-msg"></span>
                                     </div>
                                 </div>
-                                <div class="form-group">
-                                    <div class="col-sm-5 control-label">
-                                        <label for="attachment--v--${status.index}">Attachment</label>
-                                    </div>
-                                    <div class="col-sm-6 col-md-7">
-                                        <input type="file" name="attachment--v--${status.index}"
-                                               id="attachment--v--${status.index}">
-                                    </div>
-                                </div>
+<%--                                <div class="form-group">--%>
+<%--                                    <div class="col-sm-5 control-label">--%>
+<%--                                        <label for="attachment--v--${status.index}">Attachment</label>--%>
+<%--                                    </div>--%>
+<%--                                    <div class="col-sm-6 col-md-7">--%>
+<%--                                        <input type="file" name="attachment--v--${status.index}" id="attachment--v--${status.index}">--%>
+<%--                                    </div>--%>
+<%--                                </div>--%>
                             </div>
                             <div id="agentFifth--v--${status.index}" style="display: none">
                                 <div class="form-group">
@@ -131,6 +126,9 @@
                         <div class="col-sm-5 control-label">
                             <label>Facility Name</label>
                         </div>
+                        <div class="col-sm-6 col-md-7">
+                            <label>${facilityInfo.facName}</label>
+                        </div>
                     </div>
                     <div class="form-group">
                         <div class="col-sm-5 control-label">
@@ -165,9 +163,7 @@
                             <span class="mandatory otherQualificationSpan">*</span>
                         </div>
                         <div class="col-sm-6 col-md-7">
-                            <iais:datePicker id="exportDate"
-                                             name="exportDate"
-                                             dateVal=""></iais:datePicker>
+                            <iais:datePicker id="exportDate" name="exportDate" dateVal=""></iais:datePicker>
                             <span data-err-ind="exportDate--v--${status.index}" class="error-msg"></span>
                         </div>
                     </div>
@@ -177,9 +173,7 @@
                             <span class="mandatory otherQualificationSpan">*</span>
                         </div>
                         <div class="col-sm-6 col-md-7">
-                            <input type="text" name="provider"
-                                   id="provider"
-                                   maxlength="100" value="">
+                            <input type="text" name="provider" id="provider" maxlength="100" value="">
                             <span data-err-ind="provider" class="error-msg"></span>
                         </div>
                     </div>
@@ -189,9 +183,7 @@
                             <span class="mandatory otherQualificationSpan">*</span>
                         </div>
                         <div class="col-sm-6 col-md-7">
-                            <input type="text" name="flightNo"
-                                   id="flightNo"
-                                   maxlength="20" value="">
+                            <input type="text" name="flightNo" id="flightNo" maxlength="20" value="">
                             <span data-err-ind="flightNo" class="error-msg"></span>
                         </div>
                     </div>
@@ -202,10 +194,10 @@
                             <span class="mandatory otherQualificationSpan">*</span>
                         </div>
                         <div class="col-sm-6 col-md-7">
-                                    <textarea id="remarks" style="width: 100%;margin-bottom: 15px;"
-                                              rows="6"
-                                              name="remarks"
-                                              maxlength="300"></textarea>
+                            <textarea id="remarks" style="width: 100%;margin-bottom: 15px;"
+                                      rows="6"
+                                      name="remarks"
+                                      maxlength="300"></textarea>
                             <span data-err-ind="remarks" class="error-msg"></span>
                         </div>
                     </div>

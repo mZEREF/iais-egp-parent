@@ -15,6 +15,7 @@
 <webui:setLayout name="iais-internet"/>
 
 <script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-data-submission.js"></script>
+<script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-data-sub-common.js"></script>
 
 <%@include file="../../inbox/dashboard/dashboard.jsp"%>
 <form method="post" id="mainForm" action="<%=process.runtime.continueURL()%>">

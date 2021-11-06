@@ -16,13 +16,9 @@
                         <section id="reqTSection--v--${status.index}">
                             <c:if test="${disposalNotification.disposalLists.size() > 1}">
                                 <div class="form-group">
-                                    <h3 class="col-xs-9 col-sm-10 col-md-11" style="border-bottom: 1px solid black">
-                                        Agent / Toxin ${status.index + 1}</h3>
+                                    <h3 class="col-xs-9 col-sm-10 col-md-11" style="border-bottom: 1px solid black">Agent / Toxin ${status.index + 1}</h3>
                                     <c:if test="${status.index gt 0}">
-                                        <div class="col-sm-1"><h4 class="text-danger"><em
-                                                data-current-idx="${status.index}"
-                                                class="fa fa-times-circle del-size-36 cursorPointer removeBtn"></em>
-                                        </h4></div>
+                                        <div class="col-sm-1"><h4 class="text-danger"><em data-current-idx="${status.index}" class="fa fa-times-circle del-size-36 cursorPointer removeBtn"></em></h4></div>
                                     </c:if>
                                 </div>
                             </c:if>
@@ -106,8 +102,7 @@
                             </div>
                             <div class="form-group">
                                 <div class="col-sm-5 control-label">
-                                    <label for="destructDetails--v--${status.index}">Details and/or procedures of
-                                        destruction</label>
+                                    <label for="destructDetails--v--${status.index}">Details and/or procedures of destruction</label>
                                     <span class="mandatory otherQualificationSpan">*</span>
                                 </div>
                                 <div class="col-sm-6 col-md-7">
@@ -125,8 +120,7 @@
                                         <label for="attachment--v--${status.index}">Attachment</label>
                                     </div>
                                     <div class="col-sm-6 col-md-7">
-                                        <input type="file" name="attachment--v--${status.index}"
-                                               id="attachment--v--${status.index}">
+                                        <input type="file" name="attachment--v--${status.index}" id="attachment--v--${status.index}">
                                     </div>
                                 </div>
                             </div>
@@ -155,7 +149,7 @@
                             <label>Facility Name</label>
                         </div>
                         <div class="col-sm-6 col-md-7">
-                            <label><p>facility name</p></label>
+                            <label>${facilityInfo.facName}</label>
                         </div>
                     </div>
                     <div class="form-group">

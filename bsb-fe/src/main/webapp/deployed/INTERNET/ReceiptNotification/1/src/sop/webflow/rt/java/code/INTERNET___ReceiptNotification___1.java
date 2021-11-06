@@ -26,8 +26,16 @@ public class INTERNET___ReceiptNotification___1 extends BaseProcessClass {
 		EngineHelper.delegate(DELEGATOR, "prepareReceive", this);
 	}
 
+	public void prepareSwitch1_OnStepProcess_0() throws Exception {
+		// 		prepareSwitch1->OnStepProcess
+	}
+
 	public void saveAndPrepareConfirm_OnStepProcess_0() throws Exception {
 	// 		saveAndPrepareConfirm->OnStepProcess
+	}
+
+	public void prepareSwitch2_OnStepProcess_0() throws Exception {
+		// 		prepareSwitch2->OnStepProcess
 	}
 
 	public void save_OnStepProcess_0() throws Exception {

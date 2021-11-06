@@ -44,7 +44,7 @@ function schTypeChange(obj) {
 
 $(function (){
     //facilitySelectPage.jsp
-    $("#savebtn").click(function (){
+    $("#next").click(function (){
         showWaiting();
         var optionVal = $("#facSelect option:selected").val();
         $("#facId").val(optionVal);
