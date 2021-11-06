@@ -7,6 +7,7 @@
 --%>
 <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%@ taglib uri="http://www.ecq.com/iais" prefix="iais" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ page import="com.ecquaria.cloud.helper.SpringContextHelper" %>
@@ -23,7 +24,14 @@
           (sop.webflow.rt.api.BaseProcessClass) request.getAttribute("process");
 %>
 <webui:setLayout name="iais-intranet"/>
-
+<c:set var="crole" value="${iais_Login_User_Info_Attr.curRoleId}"></c:set>
+<c:if test="${fn:startsWith(crole, 'BSB_')}">
+  <script>
+    $(function () {
+      document.location ="/bsb-be/eservice/INTRANET/MohBsbTaskList"
+    })
+  </script>
+</c:if>
 <%
   String webroot = IaisEGPConstant.BE_CSS_ROOT;
 
