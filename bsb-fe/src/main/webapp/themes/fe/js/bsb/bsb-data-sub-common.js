@@ -1,4 +1,5 @@
 $(function () {
+    isHidden();
     $("#addNewSection").click(function () {
         var meta = readSectionRepeatMetaData();
         addSection(meta.amtInputName, meta.sectionIdPrefix, meta.headerTitlePrefix, meta.sectionGroupId, meta.separator);
@@ -24,6 +25,21 @@ $(function () {
 
 });
 
+function isHidden() {
+    var size = $("[name='sectionAmt']").val();
+    for (var i = 0; i<size;i++){
+        var schedule = $("#scheduleType--v--"+i).val();
+        if (schedule !== 'SCHTYPE006' && schedule !== '') {
+            $("#agentFifth--v--" + i).hide();
+            $("#agentEpFifth--v--" + i).show();
+            $("#toxinDoc--v--" + i).hide();
+        } else if (schedule === "SCHTYPE006") {
+            $("#agentEpFifth--v--" + i).hide();
+            $("#agentFifth--v--" + i).show();
+            $("#toxinDoc--v--" + i).show();
+        }
+    }
+}
 
 function addSection(amtInputName, sectionIdPrefix, headerTitlePrefix, sectionGroupId, separator) {
     var amtHiddenInput = $("input[name=" + amtInputName +"]");

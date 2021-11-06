@@ -37,6 +37,7 @@ public class DataSubmissionDelegator {
      * This module is used to initialize data
      * */
     public void start(BaseProcessClass bpc){
+        ParamUtil.setSessionAttr(bpc.request,KEY_CONSUME_NOTIFICATION_DTO,null);
         if(log.isInfoEnabled()){
             log.info("In the future this module will be used to initialize some data");
         }
@@ -69,8 +70,8 @@ public class DataSubmissionDelegator {
         HttpServletRequest request = bpc.request;
         ParamUtil.setSessionAttr(request,KEY_FACILITY_INFO,null);
         //
-        Boolean needShowError = (Boolean) ParamUtil.getRequestAttr(request,ValidationConstants.KEY_SHOW_ERROR_SWITCH);
         ConsumeNotificationDto consumeNotification = getConsumeNotification(request);
+        Boolean needShowError = (Boolean) ParamUtil.getRequestAttr(request,ValidationConstants.KEY_SHOW_ERROR_SWITCH);
         if(Boolean.TRUE.equals(needShowError)){
             ParamUtil.setRequestAttr(request,ValidationConstants.KEY_VALIDATION_ERRORS,consumeNotification.retrieveValidationResult());
         }
@@ -82,7 +83,7 @@ public class DataSubmissionDelegator {
                 ParamUtil.setSessionAttr(request,KEY_FACILITY_INFO,facList);
             }
         }
-        ParamUtil.setRequestAttr(request,KEY_CONSUME_NOTIFICATION_DTO,new ConsumeNotificationDto());
+        ParamUtil.setSessionAttr(request,KEY_CONSUME_NOTIFICATION_DTO, consumeNotification);
     }
 
     /**
@@ -92,8 +93,8 @@ public class DataSubmissionDelegator {
     public void prepareSwitch1(BaseProcessClass bpc) {
         log.info("=======>>>>>startStep>>>>>>>>>>>>>>>>user");
         MultipartHttpServletRequest request = (MultipartHttpServletRequest) bpc.request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
-        String action_type = request.getParameter("action_type");
-        ParamUtil.setSessionAttr(bpc.request, "action_type", action_type);
+        String actionType = request.getParameter("action_type");
+        ParamUtil.setSessionAttr(bpc.request, "action_type", actionType);
     }
 
     /**
@@ -102,7 +103,7 @@ public class DataSubmissionDelegator {
      */
     public void prepareConfirm(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
-        ParamUtil.setSessionAttr(request,KEY_CONSUME_NOTIFICATION_DTO, null);
+//        ParamUtil.setSessionAttr(request,KEY_CONSUME_NOTIFICATION_DTO, null);
         ConsumeNotificationDto consumeNotification = getConsumeNotification(request);
         consumeNotification.reqObjectMapping(request);
         doValidation(consumeNotification,request);

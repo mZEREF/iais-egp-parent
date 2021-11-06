@@ -30,12 +30,15 @@
                                 <div class="col-sm-6 col-md-7">
                                     <iais:select name="scheduleType--v--${status.index}"
                                                  id="scheduleType--v--${status.index}"
-                                                 value="" onchange="schTypeChange(this)"
+                                                 value="${item.scheduleType}" onchange="schTypeChange(this)"
                                                  codeCategory="CATE_ID_BSB_SCH_TYPE"
                                                  firstOption="Please Select"/>
                                     <span data-err-ind="scheduleType--v--${status.index}" class="error-msg"></span>
                                 </div>
                             </div>
+                            <c:if test="${item.scheduleType != ''}">
+
+                            </c:if>
                             <div class="form-group">
                                 <div class="col-sm-5 control-label">
                                     <label for="bat--v--${status.index}">Biological Agent/Toxin</label>
@@ -44,7 +47,7 @@
                                 <div class="col-sm-6 col-md-7">
                                     <iais:select name="bat--v--${status.index}" id="bat--v--${status.index}"
                                                  options="" firstOption="Please Select"
-                                                 value=""/>
+                                                 value="${item.bat}"/>
                                     <span data-err-ind="bat--v--${status.index}" class="error-msg"></span>
                                 </div>
                             </div>
@@ -58,7 +61,7 @@
                                             <%--Displayed for First, Second, Third and Fourth Schedule biological agent--%>
                                         <iais:select name="consumeType--v--${status.index}"
                                                      id="consumeType--v--${status.index}"
-                                                     value=""
+                                                     value="${item.consumeType}"
                                                      codeCategory="CATE_ID_BSB_DATA_SUBMISSION_DISPOSAL_TYPE"
                                                      firstOption="Please Select"/>
                                         <span data-err-ind="consumeType--v--${status.index}" class="error-msg"></span>
@@ -82,7 +85,7 @@
                                     <div class="col-sm-6 col-md-7">
                                             <%--Displayed for Fifth Schedule toxin--%>
                                         <input type="number" name="consumedQty--v--${status.index}"
-                                               id="consumedQty--v--${status.index}" value=""
+                                               id="consumedQty--v--${status.index}" value="${item.consumedQty}"
                                                maxlength="11"
                                                οninput="this.value=this.value.replace(/\D*(\d*)(\.?)(\d{0,3})\d*/,'$1$2$3')">
                                         <span data-err-ind="consumedQty--v--${status.index}" class="error-msg"></span>
@@ -95,7 +98,7 @@
                                     </div>
                                     <div class="col-sm-6 col-md-7">
                                         <iais:select name="meaUnit--v--${status.index}" id="meaUnit--v--${status.index}"
-                                                     value=""
+                                                     value="${item.meaUnit}"
                                                      codeCategory="CATE_ID_BSB_DATA_SUBMISSION_UNIT_OF_MEASUREMENT"
                                                      firstOption="Please Select"/>
                                         <span data-err-ind="meaUnit--v--${status.index}" class="error-msg"></span>
@@ -137,7 +140,7 @@
                             <textarea id="remarks" style="width: 100%;margin-bottom: 15px;"
                                       rows="6"
                                       name="remarks"
-                                      maxlength="500"></textarea>
+                                      maxlength="500">${consumeNotification.remarks}</textarea>
                             <span data-err-ind="remarks" class="error-msg"></span>
                         </div>
                     </div>
