@@ -106,8 +106,13 @@ public class GiroDeductionBeServiceImpl implements GiroDeductionBeService {
                 }
             }
         }
-        //todo msg url
-        String url = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_LOGIN;
+        StringBuilder url = new StringBuilder();
+        url.append(HmacConstants.HTTPS + "://").append(systemParamConfig.getInterServerName())
+                .append(InboxConst.URL_LICENCE_WEB_MODULE+"MohRetriggerGiroPayment")
+                .append("?appGrpNo=")
+                .append(appGroupNo);
+        HashMap<String,String> mapPrem=IaisCommonUtils.genNewHashMap();
+        mapPrem.put("appGrpNo",appGroupNo);
         map.put("systemLink", url);
         ApplicationDto appDto = applicationDtos.get(0);
         String appNo = appDto.getApplicationNo();
@@ -128,6 +133,7 @@ public class GiroDeductionBeServiceImpl implements GiroDeductionBeService {
                 serviceCodes.add(serviceCode);
             }
         }
+        emailParam.setMaskParams(mapPrem);
         emailParam.setSvcCodeList(serviceCodes);
         emailParam.setSubject(subject);
         notificationHelper.sendNotification(emailParam);
