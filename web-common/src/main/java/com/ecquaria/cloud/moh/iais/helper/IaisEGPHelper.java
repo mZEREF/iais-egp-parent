@@ -155,6 +155,21 @@ public final class IaisEGPHelper extends EGPHelper {
         response.sendRedirect(url);
     }
 
+    public static void redirectUrl(HttpServletResponse response,String url,Map<String,String> params){
+        try {
+            if(IaisCommonUtils.isNotEmpty(params)){
+                StringBuilder stringBuilder = new StringBuilder();
+                stringBuilder.append(url).append("?");
+                params.forEach((key,value) ->{
+                    stringBuilder.append(key).append("=").append(value);
+                });
+            }
+            IaisEGPHelper.redirectUrl(response, url);
+        } catch (IOException e) {
+            log.error(e.getMessage(),e);
+        }
+    }
+
     /**
      * @author: Shicheng on 2020/11/03 13:49
      * @description: encryption Prs the signature

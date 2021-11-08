@@ -1,5 +1,4 @@
 <form class="" method="post" id="dataForm" action=<%=process.runtime.continueURL()%>>
-    <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
     <%-- validation --%>
     <%@ include file="/WEB-INF/jsp/include/validation.jsp" %>
     <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
@@ -8,9 +7,9 @@
             <div class="row">
                 <div class="col-md-12">
                     <iais:value>
-                        <label class="col-xs-3 col-md-3" for="licNoPath" style="text-align:left;margin-top: 1.5%">Search by submission ID</label>
+                        <label class="col-xs-3 col-md-3" for="submissionNoDataSubmission" style="text-align:left;margin-top: 1.5%">Search by submission ID</label>
                         <div class="col-xs-9 col-md-9">
-                            <input id="licNoPath" name="licNoPath" type="text" maxlength="24"
+                            <input id="submissionNoDataSubmission" name="submissionNoDataSubmission" type="text" maxlength="24"
                                    value="${param.submissionNo}">
                         </div>
                     </iais:value>
@@ -19,9 +18,9 @@
             <div class="row" style="margin-bottom: 1.5%">
                 <div class="col-md-12">
                     <iais:value>
-                        <label class="col-xs-3 col-md-3" for="dataSubmissionType" style="text-align:left;margin-top: 1.5%">Type</label>
+                        <label class="col-xs-3 col-md-3" for="typeDataSubmission" style="text-align:left;margin-top: 1.5%">Type</label>
                         <div class="col-xs-9 col-md-9">
-                            <iais:select name="dataSubmissionType"  options="dataSubmissionType" value="${param.type}" firstOption="All" cssClass="dataSubmissionType"/>
+                            <iais:select name="typeDataSubmission"  codeCategory="DATA_SUBMISSION_TYPE" value="${param.type}" firstOption="All" cssClass="dataSubmissionType"/>
                         </div>
                     </iais:value>
                 </div>
@@ -29,9 +28,9 @@
             <div class="row" style="margin-bottom: 1.5%">
                 <div class="col-md-12">
                     <iais:value>
-                        <label class="col-xs-3 col-md-3" for="dataSubmissionStatus" style="text-align:left;margin-top: 1.5%">Status</label>
+                        <label class="col-xs-3 col-md-3" for="statusDataSubmission" style="text-align:left;margin-top: 1.5%">Status</label>
                         <div class="col-xs-9 col-md-9">
-                            <iais:select name="dataSubmissionStatus" id="dataSubmissionStatus" options="dataSubmissionStatus" value="${param.status}" firstOption="All" cssClass="dataSubmissionStatus"/>
+                            <iais:select name="statusDataSubmission" id="statusDataSubmission" codeCategory="DATA_SUBMISSION_STATUS" value="${param.status}" firstOption="All" cssClass="dataSubmissionStatus"/>
                         </div>
                     </iais:value>
                 </div>
@@ -43,7 +42,7 @@
             </div>
         </div>
         <br> <br>
-        <iais:pagination param="dataSubmission" result="dataSubmissionResult"/>
+        <iais:pagination param="dataSubmissionParam" result="dataSubmissionResult"/>
     </div>
     <div class="row">
         <div class="col-xs-12">
@@ -84,49 +83,35 @@
                                         <p class="visible-xs visible-sm table-row-title"></p>
                                         <div class="form-check">
                                             <input class="form-check-input licenceCheck" id="dataSubmission${submissionNo}" type="checkbox"
-                                                   name="submissionNo" value="${inboxDataSubmissionQuery.submissionNo}" aria-invalid="false" <c:if test="${inboxDataSubmissionQuery.submissionSelect}">checked</c:if> onclick="doViewData('${submissionNo}')">
+                                                   name="submissionNo" value="${inboxDataSubmissionQuery.submissionNo}" aria-invalid="false" <c:if test="${inboxDataSubmissionQuery.submissionSelect}">checked</c:if> onclick="doCheckBoxSelect('${submissionNo}')">
                                             <label class="form-check-label" for="dataSubmission${submissionNo}"><span
                                                     class="check-square"></span>
                                             </label>
                                         </div>
                                     </td>
                                     <td>
-                                        <a href="#" class="licToView word-wrap" style="font-size: 16px">${licenceQuery.licenceNo}</a>
-                                        <input type="hidden" name="licenId${status.index}"
-                                               value="<iais:mask name= "licenId${status.index}" value="${licenceQuery.id}"/>"/>
+                                        <a href="#" class="licToView word-wrap" style="font-size: 16px" onclick="doViewData('${submissionNo}')">${submissionNo}</a>
                                     </td>
                                     <td>
                                         <p class="visible-xs visible-sm table-row-title">Type</p>
-                                        <p>${licenceQuery.svcName}</p>
+                                       <iais:code code="${inboxDataSubmissionQuery.type}"/>
                                     </td>
                                     <td>
                                         <p class="visible-xs visible-sm table-row-title">Status</p>
-                                        <p style="margin-right: 26px;"><iais:code code="${licenceQuery.status}"/></p>
+                                        <p style="margin-right: 26px;"><iais:code code="${inboxDataSubmissionQuery.status}"/></p>
                                     </td>
                                     <td>
-                                        <p class="visible-xs visible-sm table-row-title">Mode of Service Delivery</p>
-                                        <c:choose>
-                                            <c:when test="${licenceQuery.premisesDtoList.size() == 1}">
-                                                <P>${licenceQuery.premisesDtoList[0]}</P>
-                                            </c:when>
-                                            <c:otherwise>
-                                                <select>
-                                                    <option value ="">Multiple</option>
-                                                    <c:forEach items="${licenceQuery.premisesDtoList}" var="address" varStatus="index">
-                                                        <option value ="${address}">${address}</option>
-                                                    </c:forEach>
-                                                </select>
-                                            </c:otherwise>
-                                        </c:choose>
+                                        <p class="visible-xs visible-sm table-row-title">Business Name</p>
+                                        <p style="margin-right: 26px;"><c:out value="${inboxDataSubmissionQuery.businessName}"/></p>
                                     </td>
                                     <td>
-                                        <p class="visible-xs visible-sm table-row-title">Start Date</p>
-                                        <p><fmt:formatDate value="${licenceQuery.startDate}"
+                                        <p class="visible-xs visible-sm table-row-title">Last Updated</p>
+                                        <p><fmt:formatDate value="${licenceQuery.lastUpdated}"
                                                            pattern="dd/MM/yyyy"/></p>
                                     </td>
                                     <td>
-                                        <p class="visible-xs visible-sm table-row-title">Expiry Date</p>
-                                        <p><fmt:formatDate value="${licenceQuery.expiryDate}"
+                                        <p class="visible-xs visible-sm table-row-title">Submitted On</p>
+                                        <p><fmt:formatDate value="${licenceQuery.submittedOn}"
                                                            pattern="dd/MM/yyyy"/></p>
                                     </td>
                                 </tr>
@@ -135,47 +120,6 @@
                     </c:choose>
                     </tbody>
                 </table>
-                <!-- Modal -->
-                <div class="modal fade" id="isRenewedModal" role="dialog" aria-labelledby="myModalLabel">
-                    <div class="modal-dialog modal-lg modal-dialog-centered" role="document" >
-                        <div class="modal-content">
-<%--                            <div class="modal-header">--%>
-<%--                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>--%>
-<%--                            </div>--%>
-                            <div class="modal-body" style="text-align: center">
-                                <div class="row">
-                                    <div class="col-md-12"><span style="font-size: 2rem;">${LAEM}</span></div>
-                                </div>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary btn-md" data-dismiss="modal">Close</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <!--Modal End-->
-                <!-- Modal -->
-                <div class="modal fade" id="ceasedModal" role="dialog" aria-labelledby="myModalLabel">
-                    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
-                        <div class="modal-content">
-<%--                            <div class="modal-header">--%>
-<%--                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>--%>
-<%--                            </div>--%>
-                            <div class="modal-body" style="text-align: center">
-                                <div class="row">
-                                    <div class="col-md-12"><span style="font-size: 2rem;">
-                                        ${cessationError}
-                                        </span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary btn-md" data-dismiss="modal">Close</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <!--Modal End-->
                 <div class="row" style="padding-bottom: 9%">
                     <div class="col-md-12">
                         <div class="col-md-12 text-right">
@@ -189,15 +133,17 @@
             </div>
         </div>
     </div>
-    <input type="hidden" value="" id="isNeedDelete" name="isNeedDelete">
-    <input type="hidden" value="" id="bundle" name="bundle">
-    <iais:confirm msg="${draftByLicAppId}" callBack="cancel()" popupOrder="draftByLicAppId" yesBtnDesc="cancel" cancelBtnDesc="delete" cancelBtnCls="btn btn-primary" yesBtnCls="btn btn-secondary" cancelFunc="deleteRfcDraft()"></iais:confirm>
-    <iais:confirm msg="${draftByLicAppId}" callBack="cancel()" popupOrder="draftRenewByLicAppId" yesBtnDesc="cancel" cancelBtnDesc="delete" cancelBtnCls="btn btn-primary" yesBtnCls="btn btn-secondary" cancelFunc="deleteRenewDraft()"></iais:confirm>
-    <iais:confirm msg="${draftByLicAppId}" callBack="cancel()" popupOrder="draftAppealByLicAppId" yesBtnDesc="cancel" cancelBtnDesc="delete" cancelBtnCls="btn btn-primary" yesBtnCls="btn btn-secondary" cancelFunc="deleteAppealDraft()"></iais:confirm>
-    <iais:confirm msg="${draftByLicAppId}" callBack="cancel()" popupOrder="draftCeaseByLicAppId" yesBtnDesc="cancel" cancelBtnDesc="delete" cancelBtnCls="btn btn-primary" yesBtnCls="btn btn-secondary" cancelFunc="deleteCeaseDraft()"></iais:confirm>
-    <iais:confirm msg="${draftByLicAppId}" callBack="bundleNo()" popupOrder="bundleShow" yesBtnDesc="no" cancelBtnDesc="yes" cancelBtnCls="btn btn-primary" yesBtnCls="btn btn-secondary" cancelFunc="bundleYes()"></iais:confirm>
+    <input type="hidden" value="${empty needValidatorSize ? 0 : needValidatorSize}" id="needValidatorSize" name="needValidatorSize">
+    <iais:confirm msg="DS_ERR014" needCancel="false" popupOrder="actionDsButton"  yesBtnDesc="Yes"   yesBtnCls="btn btn-secondary"  callBack="cancelBallDsButton()" />
 </form>
 <script>
+
+    $(document).ready(function () {
+        if(${actionDsButtonShow == 1}){
+            $("#actionDsButton").show();
+        }
+    });
+
     function doClearSearch(){
         $("#licType option:first").prop("selected", 'selected').val("");
         $("#licStatus option:first").prop("selected", 'selected').val("");
@@ -205,6 +151,26 @@
 
     function doSearch(){
         doSubmitForDataSubmission("search");
+    }
+    function doCheckBoxSelect(actionNo){
+        let size = $("#needValidatorSize").val()
+        if($("#dataSubmission"+actionNo).is(':checked')){
+            size++;
+        }else {
+            size--;
+        }
+        $("#needValidatorSize").val(size);
+        if(size > 0){
+            $('#ds-deleteDraft').removeClass("disabled");
+            $('#ds-amend').removeClass("disabled");
+            $('#ds-withdraw').removeClass("disabled");
+            $('#ds-unlock').removeClass("disabled");
+        }else {
+            $('#ds-deleteDraft').addClass("disabled");
+            $('#ds-amend').addClass("disabled");
+            $('#ds-withdraw').addClass("disabled");
+            $('#ds-unlock').addClass("disabled");
+        }
     }
 
     function doViewData(actionNo){
@@ -216,4 +182,14 @@
         showWaiting();
         submit(action);
     }
+
+    function cancelBallDsButton(){
+        $("#actionDsButton").hide();
+    }
+
+
+    $('#ds-deleteDraft').click(doSubmitForDataSubmission('deleteDraft'));
+    $('#ds-amend').click(doSubmitForDataSubmission('rfc'));
+    $('#ds-withdraw').click(doSubmitForDataSubmission('withdraw'));
+    $('#ds-unlock').click(doSubmitForDataSubmission('unlock'));
 </script>

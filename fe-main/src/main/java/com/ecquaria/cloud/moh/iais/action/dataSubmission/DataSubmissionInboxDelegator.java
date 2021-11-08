@@ -1,12 +1,28 @@
 package com.ecquaria.cloud.moh.iais.action.dataSubmission;
 
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.moh.iais.action.HalpAssessmentGuideDelegator;
+import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst;
+import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
+import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
+import com.ecquaria.cloud.moh.iais.common.dto.inbox.InboxDataSubmissionQueryDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
+import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.helper.ControllerHelper;
+import com.ecquaria.cloud.moh.iais.helper.HalpSearchResultHelper;
+import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
+import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
+import com.ecquaria.cloud.moh.iais.service.client.LicenceInboxClient;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -19,6 +35,15 @@ import java.util.Map;
 @Slf4j
 public class DataSubmissionInboxDelegator {
 
+	private final static  String NEED_VALIDATOR_SIZE = "needValidatorSize";
+	private final static  String ACTION_DS_BUTTON_SHOW = "actionDsButtonShow";
+	private final static  String DELETE_DRAFT          = "deleteDraft";
+	private final static  String AMENDED                ="doRFC";
+	private final static  String WITHDRAW               = "withdraw";
+	private final static  String UNLOCK                 = "unlock";
+    public final  static Map<String,String>  SUBMISSIONNO_STATUS = getSubmissionNoStatus();
+    @Autowired
+	private LicenceInboxClient licenceInboxClient;
 	/**
 	 * Step: doStart
 	 *
@@ -37,7 +62,8 @@ public class DataSubmissionInboxDelegator {
 	}
 
 	public void clearSession(HttpServletRequest request){
-
+		ParamUtil.setSessionAttr(request,InboxConst.DS_PARAM,null);
+		ParamUtil.setSessionAttr(request, ACTION_DS_BUTTON_SHOW, AppConsts.NO);
 	}
 	private void setLog(String sepName){
 		setLog(sepName,true,null);
@@ -77,8 +103,12 @@ public class DataSubmissionInboxDelegator {
 	public void prepare(BaseProcessClass bpc){
 		setLog("prepare");
 		HttpServletRequest request = bpc.request;
+		SearchParam searchParam = HalpSearchResultHelper.gainSearchParam(request, InboxConst.DS_PARAM, InboxDataSubmissionQueryDto.class.getName(),"CREATED_DT",SearchParam.DESCENDING,false);
+		QueryHelp.setMainSql( InboxConst.INBOX_QUERY,  InboxConst.INBOX_DS_QUERY,searchParam);
+		ParamUtil.setSessionAttr(request, InboxConst.DS_RESULT,licenceInboxClient.searchLicence(searchParam).getEntity());
 		setLog("prepare",false);
 	}
+
 
 	/**
 	 * Step: actionData
@@ -101,8 +131,19 @@ public class DataSubmissionInboxDelegator {
 	public void search(BaseProcessClass bpc){
 		setLog("search");
 		HttpServletRequest request = bpc.request;
+		setSearchParam(request);
 		setLog("search",false);
 	}
+
+	private void setSearchParam(HttpServletRequest request){
+		SearchParam searchParam = HalpSearchResultHelper.gainSearchParam(request, InboxConst.DS_PARAM, InboxDataSubmissionQueryDto.class.getName(),"CREATED_DT",SearchParam.DESCENDING,false);
+		InboxDataSubmissionQueryDto inboxDataSubmissionQueryDto = ControllerHelper.get(request,InboxDataSubmissionQueryDto.class,"DataSubmission");
+		HalpAssessmentGuideDelegator.setParamByField(searchParam,"submissionNo",inboxDataSubmissionQueryDto.getSubmissionNo(),true);
+		HalpAssessmentGuideDelegator.setParamByField(searchParam,"status",inboxDataSubmissionQueryDto.getStatus(),true,InboxConst.SEARCH_ALL);
+		HalpAssessmentGuideDelegator.setParamByField(searchParam,"type",inboxDataSubmissionQueryDto.getType() ,true,InboxConst.SEARCH_ALL);
+		ParamUtil.setSessionAttr(request, InboxConst.DS_PARAM,searchParam);
+	}
+
 
 	/**
 	 * Step: page
@@ -113,6 +154,9 @@ public class DataSubmissionInboxDelegator {
 	public void page(BaseProcessClass bpc){
 		setLog("page");
 		HttpServletRequest request = bpc.request;
+		SearchParam searchParam = HalpSearchResultHelper.gainSearchParam(request, InboxConst.DS_PARAM, InboxDataSubmissionQueryDto.class.getName(),"CREATED_DT",SearchParam.DESCENDING,false);
+		HalpSearchResultHelper.doPage(request,searchParam);
+		ParamUtil.setSessionAttr(request, InboxConst.DS_PARAM,searchParam);
 		setLog("page",false);
 	}
 
@@ -125,6 +169,9 @@ public class DataSubmissionInboxDelegator {
 	public void sort(BaseProcessClass bpc){
 		setLog("sort");
 		HttpServletRequest request = bpc.request;
+		SearchParam searchParam = HalpSearchResultHelper.gainSearchParam(request, InboxConst.DS_PARAM, InboxDataSubmissionQueryDto.class.getName(),"CREATED_DT",SearchParam.DESCENDING,false);
+		HalpSearchResultHelper.doSort(request,searchParam);
+		ParamUtil.setSessionAttr(request, InboxConst.DS_PARAM,searchParam);
 		setLog("sort",false);
 	}
 
@@ -135,9 +182,10 @@ public class DataSubmissionInboxDelegator {
 	 * @throws
 	 */
 	public void deleteDraft(BaseProcessClass bpc){
-		setLog("deleteDraft");
+		setLog(DELETE_DRAFT);
 		HttpServletRequest request = bpc.request;
-		setLog("deleteDraft",false);
+		toShowMessage(request,DELETE_DRAFT);
+		setLog(DELETE_DRAFT,false);
 	}
 
 	/**
@@ -149,7 +197,39 @@ public class DataSubmissionInboxDelegator {
 	public void view(BaseProcessClass bpc){
 		setLog("view");
 		HttpServletRequest request = bpc.request;
+		HttpServletResponse response = bpc.response;
+        String submissionNo = ParamUtil.getString(request,"crud_type_action_submission_no");
+		InboxDataSubmissionQueryDto inboxDataSubmissionQueryDto =  getInboxDataSubmissionQueryDtoBySubmissionNo(request,submissionNo);
+		if(inboxDataSubmissionQueryDto == null){
+			return;
+		}
+		Map<String,String> params = IaisCommonUtils.genNewHashMap(2);
+		if(StringUtil.isNotEmpty(getStatusBySubmissionNo(submissionNo,DELETE_DRAFT))){
+			params.put("dsType",inboxDataSubmissionQueryDto.getType());
+			params.put("draftNo",submissionNo);
+			redirectUrlByDSType(response,request.getServerName(), "MohDsDraft",params);
+		}else {
+			//todo
+		}
 		setLog("view",false);
+	}
+
+	private InboxDataSubmissionQueryDto getInboxDataSubmissionQueryDtoBySubmissionNo(HttpServletRequest request,String submissionNo){
+		SearchResult<InboxDataSubmissionQueryDto> submissionQueryDtoSearchResult =(SearchResult<InboxDataSubmissionQueryDto>)ParamUtil.getSessionAttr(request, InboxConst.DS_RESULT);
+		if(submissionQueryDtoSearchResult != null && IaisCommonUtils.isNotEmpty(submissionQueryDtoSearchResult.getRows())){
+			for (InboxDataSubmissionQueryDto obj : submissionQueryDtoSearchResult.getRows()) {
+				if( submissionNo.equalsIgnoreCase(obj.getSubmissionNo())){
+					return obj;
+				}
+			}
+		}
+		return null;
+	}
+
+	private void redirectUrlByDSType(HttpServletResponse response,String serverName,String process,Map<String,String> params){
+		StringBuilder stringBuilder = new StringBuilder();
+		stringBuilder.append("https://").append(serverName).append("/hcsa-licence-web/").append(process);
+		IaisEGPHelper.redirectUrl(response,stringBuilder.toString(),params);
 	}
 
 	/**
@@ -159,9 +239,10 @@ public class DataSubmissionInboxDelegator {
 	 * @throws
 	 */
 	public void doRFC(BaseProcessClass bpc){
-		setLog("doRFC");
+		setLog(AMENDED);
 		HttpServletRequest request = bpc.request;
-		setLog("doRFC",false);
+		toShowMessage(request,AMENDED);
+		setLog(AMENDED,false);
 	}
 
 	/**
@@ -171,9 +252,10 @@ public class DataSubmissionInboxDelegator {
 	 * @throws
 	 */
 	public void withdraw(BaseProcessClass bpc){
-		setLog("withdraw");
+		setLog(WITHDRAW);
 		HttpServletRequest request = bpc.request;
-		setLog("withdraw",false);
+		toShowMessage(request,WITHDRAW);
+		setLog(WITHDRAW,false);
 	}
 
 	/**
@@ -183,12 +265,92 @@ public class DataSubmissionInboxDelegator {
 	 * @throws
 	 */
 	public void unlock(BaseProcessClass bpc){
-		setLog("unlock");
+		setLog(UNLOCK);
 		HttpServletRequest request = bpc.request;
-		setLog("unlock",false);
+		toShowMessage(request,UNLOCK);
+		setLog(UNLOCK,false);
+	}
+
+	 private void  toShowMessage(HttpServletRequest request,String actionValue){
+	      if(showMessage(request,actionValue)){
+	      	ParamUtil.setSessionAttr(request,ACTION_DS_BUTTON_SHOW,AppConsts.YES);
+		  }else {
+			  ParamUtil.setSessionAttr(request,ACTION_DS_BUTTON_SHOW,AppConsts.NO);
+		  }
+	 }
+    private  boolean showMessage(HttpServletRequest request,String actionValue){
+		 String sizeString = ParamUtil.getString(request,NEED_VALIDATOR_SIZE);
+		 List<String> submissionNos = ParamUtil.getListStrings(request,"submissionNo");
+		 int size = -1;
+		 if(StringUtil.isEmpty(sizeString)){
+			 try {
+				 size = Integer.parseInt(sizeString);
+			 } catch (Exception e) {
+				 log.error(e.getMessage(),e);
+			 }
+		 }
+
+		 if(size <= 0){
+		 	return true;
+		 }
+
+		 if( IaisCommonUtils.isNotEmpty(submissionNos)){
+			 SearchResult<InboxDataSubmissionQueryDto> submissionQueryDtoSearchResult =(SearchResult<InboxDataSubmissionQueryDto>)ParamUtil.getSessionAttr(request, InboxConst.DS_RESULT);
+			 if(submissionQueryDtoSearchResult != null && IaisCommonUtils.isNotEmpty(submissionQueryDtoSearchResult.getRows())){
+			 	List<InboxDataSubmissionQueryDto> inboxDataSubmissionQueryDtos = submissionQueryDtoSearchResult.getRows();
+				 List<InboxDataSubmissionQueryDto> actionInboxDataSubmissionQueryDtos  = IaisCommonUtils.genNewArrayList(inboxDataSubmissionQueryDtos.size());
+			 	inboxDataSubmissionQueryDtos.forEach( inboxDataSubmissionQueryDto -> {
+					 for (String submissionNo : submissionNos) {
+						 if (submissionNo.equalsIgnoreCase(inboxDataSubmissionQueryDto.getSubmissionNo())) {
+							 inboxDataSubmissionQueryDto.setSubmissionSelect(true);
+							  if(StringUtil.isNotEmpty(getStatusBySubmissionNo(submissionNo,actionValue))){
+								  actionInboxDataSubmissionQueryDtos.add(inboxDataSubmissionQueryDto);
+							  }
+							 break;
+						 }
+					 }
+				 });
+				 actionDoInboxDataSubmissionQueryDtos(actionInboxDataSubmissionQueryDtos,actionValue,size);
+				 return actionInboxDataSubmissionQueryDtos.size() != size;
+			 }
+
+		 }
+
+		 return false;
 	}
 
 
+	private void actionDoInboxDataSubmissionQueryDtos(List<InboxDataSubmissionQueryDto> actionInboxDataSubmissionQueryDtos,String actionValue,int actionSize){
+		if(actionSize != actionInboxDataSubmissionQueryDtos.size()){
+			return;
+		}
+		actionInboxDataSubmissionQueryDtos.forEach(obj->{
+			if(DELETE_DRAFT.equalsIgnoreCase(actionValue)){
+				//todo delete data
+				licenceInboxClient.deleteArSuperDataSubmissionDtoDraftByDraftNo(obj.getSubmissionNo());
+			}else if (AMENDED.equals(actionValue)){
 
+			}else if(WITHDRAW.equals(actionValue)){
+
+			}else if(UNLOCK.equals(actionValue)){
+
+			}
+		});
+	}
+
+	private static String getStatusBySubmissionNo(String submissionNo,String actionValue){
+		if(StringUtil.isEmpty(submissionNo) || submissionNo.length() <10 ){
+			return "";
+		}
+		String prefix = actionValue.equals(DELETE_DRAFT)? submissionNo.substring(0,2) : submissionNo.substring(0,4);
+		return SUBMISSIONNO_STATUS.get(prefix);
+	}
+
+	private  static Map<String,String> getSubmissionNoStatus(){
+		Map<String,String> stringStringMap = IaisCommonUtils.genNewHashMap(7);
+		//todo
+		stringStringMap.put("DS",DataSubmissionConsts.DS_STATUS_DRAFT);
+		return stringStringMap;
+	}
 
 }

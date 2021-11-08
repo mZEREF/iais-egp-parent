@@ -288,12 +288,12 @@
     <sql key = "dataSubmissionQuery" remarks = "Query data Submission Inter-Inbox Data by condition">
         <![CDATA[
           SELECT * FROM (
-           SELECT dds.ID as ID,dc.HCI_CODE HCI_CODE,dc.CYCLE_TYPE [TYPE],dds.STATUS STATUS,dds.SUBMISSION_NO SUBMISSION_NO,dds.SUBMIT_DT SUBMIT_DT,dds.CREATED_DT CREATED_DT ,dds.CYCLE_STAGE  CYCLE_STAGE,dds.SUBMISSION_TYPE SUBMISSION_TYPE FROM  ds_cycle dc
+           SELECT dds.ID as ID,dc.HCI_CODE HCI_CODE,dc.DS_TYPE [TYPE],dds.STATUS STATUS,dds.SUBMISSION_NO SUBMISSION_NO,dds.SUBMIT_DT SUBMIT_DT,dds.CREATED_DT CREATED_DT ,dds.CYCLE_STAGE  CYCLE_STAGE,dds.SUBMISSION_TYPE SUBMISSION_TYPE FROM  ds_cycle dc
            left join  ds_data_submission dds
            on dc.ID  = dds.CYCLE_ID WHERE  dds.STATUS != 'DS002'
            UNION
-           SELECT ddsd.ID ID,ddsd.HCI_CODE HCI_CODE,ddsd.CYCLE_TYPE [TYPE],ddsd.STATUS STATUS,ddsd.DRAFT_NO SUBMISSION_NO,ddsd.CREATED_DT SUBMIT_DT,ddsd.CREATED_DT CREATED_DT,ddsd.SUBMISSION_STAGE CYCLE_STAGE ,ddsd.SUBMISSION_TYPE SUBMISSION_TYPE
-           FROM ds_data_submission_draft ddsd
+           SELECT ddsd.ID ID,ddsd.HCI_CODE HCI_CODE,ddsd.DS_TYPE [TYPE],ddsd.STATUS STATUS,ddsd.DRAFT_NO SUBMISSION_NO,ddsd.CREATED_DT SUBMIT_DT,ddsd.CREATED_DT CREATED_DT,ddsd.SUBMISSION_STAGE CYCLE_STAGE ,ddsd.SUBMISSION_TYPE SUBMISSION_TYPE
+           FROM ds_data_submission_draft ddsd WHERE STATUS = 'CMSTAT001'
            ) t1
           left join (
           select DISTINCT p.HCI_CODE HCI_CODE,lp.BUSINESS_NAME BUSINESS_NAME FROM  premises p
@@ -303,9 +303,9 @@
           on  lp.LICENCE_ID = licence.ID
           WHERE licence.STATUS = 'LICEST001' AND p.STATUS= 'CMSTAT001') t2  on t1.HCI_CODE = t2.HCI_CODE
           WHERE 1=1
-          <#if mainType??> and t1.[type] IN ${mainType}</#if>
+          <#if type??> and t1.[type] = :type </#if>
           <#if submissionNo??> and t1.SUBMISSION_NO = :submissionNo</#if>
-          <#if STATUS ??> and t1.STATUS = :status</#if>
+          <#if status ??> and t1.STATUS = :status</#if>
         ]]>
     </sql>
 </sqls>

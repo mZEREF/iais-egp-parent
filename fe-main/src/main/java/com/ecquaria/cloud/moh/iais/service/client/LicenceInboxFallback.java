@@ -309,4 +309,9 @@ public class LicenceInboxFallback implements LicenceInboxClient {
     public FeignResponseEntity<SearchResult<InboxDataSubmissionQueryDto>> searchLicence(SearchParam searchParam) {
         return getEntity();
     }
+
+    @Override
+    public FeignResponseEntity<Void> deleteArSuperDataSubmissionDtoDraftByDraftNo(String draftNo) {
+        return getEntity();
+    }
 }

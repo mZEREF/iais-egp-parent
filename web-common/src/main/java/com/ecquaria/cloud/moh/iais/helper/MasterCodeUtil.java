@@ -16,6 +16,7 @@ package com.ecquaria.cloud.moh.iais.helper;
 import com.ecquaria.cloud.helper.SpringContextHelper;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.RedisNameSpaceConstant;
+import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
@@ -186,6 +187,11 @@ public final class MasterCodeUtil {
 
     //Data Submission Ar End Cycle Stage
     public static final String END_CYCLE_REASON_FOR_ABANDONMENT = "5CA671D7-1D42-412B-AABA-1F3D0919379B";
+
+    //Data Submission Type
+    public static final String DATA_SUBMISSION_TYPE           = "6E7A2098-3C1C-4292-89E5-71C345A98028";
+    //Data Submission Status
+    public static final String DATA_SUBMISSION_STATUS          = "55fdea54-f29d-4a33-a7e2-184c4cdb8581";
     /**
      * @description: refresh the master codes into cache
      *
