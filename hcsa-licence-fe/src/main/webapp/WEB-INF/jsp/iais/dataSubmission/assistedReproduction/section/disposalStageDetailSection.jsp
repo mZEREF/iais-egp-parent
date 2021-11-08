@@ -106,6 +106,7 @@
                     <iais:field width="6" value="Total No. Disposed Of" mandatory="false"/>
                     <iais:value width="6" display="true">
                         <div id="totalNum" name="totalNum">${arSuperDataSubmissionDto.disposalStageDto.totalNum}</div>
+                        <span class="error-msg" name="iaisErrorMsg" id="error_totalNum"></span>
                     </iais:value>
                 </iais:row>
             </div>
