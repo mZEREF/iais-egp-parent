@@ -5,6 +5,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DonationStageDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInventoryDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -81,10 +82,10 @@ public class DonationStageDelegator extends CommonDelegator{
         if (appGrpPremisesDtos != null && !appGrpPremisesDtos.isEmpty()) {
             for (AppGrpPremisesDto premises:appGrpPremisesDtos
             ) {
-                if(StringUtil.isNotEmpty(premises.getHciName())){
+                if(StringUtil.isNotEmpty(premises.getBusinessName())){
                     SelectOption selectOption=new SelectOption();
-                    selectOption.setValue(premises.getHciName());
-                    selectOption.setText(premises.getHciName());
+                    selectOption.setValue(premises.getBusinessName());
+                    selectOption.setText(premises.getBusinessName());
                     curCenDonatedSelectOption.add(selectOption);
                     insSentToCurSelectOption.add(selectOption);
                 }
@@ -214,6 +215,10 @@ public class DonationStageDelegator extends CommonDelegator{
             }
         }
     }
-
+    @Override
+    public void prepareConfim(BaseProcessClass bpc) {
+        PatientInventoryDto patientInventoryDto = new PatientInventoryDto();
+        ParamUtil.setRequestAttr(bpc.request, "patientInventoryDto", patientInventoryDto);
+    }
 
 }

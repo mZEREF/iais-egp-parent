@@ -73,10 +73,10 @@ public class PgtCycleStageDelegator extends CommonDelegator{
         if (appGrpPremisesDtos != null && !appGrpPremisesDtos.isEmpty()) {
             for (AppGrpPremisesDto premises:appGrpPremisesDtos
             ) {
-                if(StringUtil.isNotEmpty(premises.getHciName())){
+                if(StringUtil.isNotEmpty(premises.getBusinessName())){
                     SelectOption selectOption=new SelectOption();
-                    selectOption.setValue(premises.getHciName());
-                    selectOption.setText(premises.getHciName());
+                    selectOption.setValue(premises.getBusinessName());
+                    selectOption.setText(premises.getBusinessName());
                     embryosBiopsiedLocalSelectOption.add(selectOption);
                 }
             }

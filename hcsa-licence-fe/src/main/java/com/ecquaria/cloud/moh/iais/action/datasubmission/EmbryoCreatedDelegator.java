@@ -3,6 +3,7 @@ package com.ecquaria.cloud.moh.iais.action.datasubmission;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.EmbryoCreatedStageDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInventoryDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant;
@@ -129,5 +130,9 @@ public class EmbryoCreatedDelegator extends CommonDelegator{
         }
     }
 
-
+    @Override
+    public void prepareConfim(BaseProcessClass bpc) {
+        PatientInventoryDto patientInventoryDto = new PatientInventoryDto();
+        ParamUtil.setRequestAttr(bpc.request, "patientInventoryDto", patientInventoryDto);
+    }
 }
