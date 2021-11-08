@@ -4,6 +4,7 @@ import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.EndCycleStageDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
@@ -29,6 +30,8 @@ public class endCycleDelegator extends CommonDelegator{
     public void prepareSwitch(BaseProcessClass bpc) {
         ArSuperDataSubmissionDto arSuperDataSubmissionDto = DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
         ParamUtil.setSessionAttr(bpc.request, DataSubmissionConstant.AR_DATA_SUBMISSION, arSuperDataSubmissionDto);
+        log.info(StringUtil.changeForLog("crud_action_type is ======>"+ParamUtil.getRequestString(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE)));
+        ParamUtil.setRequestAttr(bpc.request, "smallTitle", "You are submitting for <strong>Cycle Stage</strong>");
     }
 
     @Override
@@ -42,7 +45,7 @@ public class endCycleDelegator extends CommonDelegator{
         String actionType = ParamUtil.getRequestString(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE);
         if (CommonDelegator.ACTION_TYPE_CONFIRM.equals(actionType)) {
             String cycleAbandoned = ParamUtil.getString(bpc.request, "cycleAbandoned");
-            String abandonReason = ParamUtil.getRequestString(bpc.request, "abandonReason");
+            String abandonReason = ParamUtil.getRequestString(bpc.request, "abandonReasonSelect");
             String otherAbandonReason = ParamUtil.getRequestString(bpc.request, "otherAbandonReason");
             endCycleStageDto.setCycleAbandoned(Boolean.parseBoolean(cycleAbandoned));
             endCycleStageDto.setAbandonReason(abandonReason);
