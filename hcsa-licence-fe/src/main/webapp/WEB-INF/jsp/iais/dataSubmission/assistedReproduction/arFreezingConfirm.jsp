@@ -59,6 +59,7 @@
                       <span style="font-size: 16px" class="col-xs-6 col-md-6 control-label"><fmt:formatDate value='${arSuperDataSubmissionDto.arSubFreezingStageDto.cryopreservedDate}' pattern='dd/MM/yyyy' /></span>
                     </iais:value>
                   </iais:row>
+                  <%@include file="common/patientInventoryTable.jsp" %>
                 </div>
               </div>
             </div>
