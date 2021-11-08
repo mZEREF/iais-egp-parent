@@ -25,9 +25,6 @@ public class CollectionUtils {
         Assert.notNull(function, ERR_MSG_FUNC_NOT_NULL);
         Map<Y, List<X>> map = Maps.newLinkedHashMapWithExpectedSize(collection.size());
         for (X x : collection) {
-
-        }
-        for (X x : collection) {
             Y key = function.apply(x);
             List<X> list = map.get(key);
             if (list == null) {

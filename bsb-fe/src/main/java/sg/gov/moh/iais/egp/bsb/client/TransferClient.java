@@ -18,8 +18,8 @@ import sg.gov.moh.iais.egp.bsb.dto.submission.TransferNotificationDto;
 public interface TransferClient {
 
     @PostMapping(path = "/not/transfer/save", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    ResponseDto<String> saveNewTransferNot(@RequestBody TransferNotificationDto notificationDto);
+    ResponseDto<String> saveNewTransferNot(@RequestBody TransferNotificationDto.TransferNotNeedR transferNotNeedR);
 
     @PostMapping(path = "/not/transfer/validate/trNot", consumes = MediaType.APPLICATION_JSON_VALUE, produces =MediaType.APPLICATION_JSON_VALUE)
-    ValidationResultDto validateTransferNot(@RequestBody TransferNotificationDto dto);
+    ValidationResultDto validateTransferNot(@RequestBody TransferNotificationDto.TransferNotNeedR transferNotNeedR);
 }

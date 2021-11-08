@@ -65,6 +65,31 @@ function addSection(amtInputName, sectionIdPrefix, headerTitlePrefix, sectionGro
     amtHiddenInput.val(nextAmt);
 }
 
+function deleteNewFile(id) {
+    // delete delete button, reload button and download button
+    var fileDiv = document.getElementById(id + "FileDiv");
+    fileDiv.parentNode.removeChild(fileDiv);
+
+    // add id into the delete list
+    var deleteSavedInput = document.getElementById("deleteNewFiles");
+    appendInputValue(deleteSavedInput, id);
+}
+
+function reloadNewFile(id) {
+    deleteNewFile(id);
+    var ids = id.split("--v--");
+    var text = ids[0]+"--v--"+ids[1].charAt(0);
+    $("a[data-upload-file=" + text + "]")[0].click();
+}
+
+function appendInputValue(input, value) {
+    if (input.value) {
+        input.value = input.value + "," + value;
+    } else {
+        input.value = value;
+    }
+}
+
 function changeH3(sectionIdPrefix, num, titlePrefix, separator) {
     var title = num > 0 ? titlePrefix + num : titlePrefix;
     $("#" + sectionIdPrefix + separator + num + " > div > h3").text(title);
@@ -107,13 +132,13 @@ function addReloadFile() {
         var delBtn = document.createElement("button");
         delBtn.setAttribute("type", "button");
         delBtn.setAttribute("class", "btn btn-secondary btn-sm delFileBtn");
-        delBtn.setAttribute("onclick", "deleteFile('" + id + "')");
+        delBtn.setAttribute("onclick", "deleteNewFile('" + id + "')");
         delBtn.innerText = "Delete";
 
         var reloadBtn = document.createElement("button");
         reloadBtn.setAttribute("type", "button");
         reloadBtn.setAttribute("class", "btn btn-secondary btn-sm reUploadFileBtn");
-        reloadBtn.setAttribute("onclick", "reloadFile('" + id + "')");
+        reloadBtn.setAttribute("onclick", "reloadNewFile('" + id + "')");
         reloadBtn.innerText = "Reload";
 
         fileDiv = document.createElement("div");
@@ -132,6 +157,35 @@ function addReloadFile() {
 function genFileInfo(fileInputEl) {
     var f = fileInputEl.files;
     return f[0].name + '(' + (f[0].size/1024).toFixed(1) + 'KB)';
+}
+
+function downloadFile(cond, id, filename) {
+    var url = "/bsb-fe/ajax/doc/download/dataSub/new/" + id;
+
+    if (url) {
+        $.ajax({
+            type: "GET",
+            url: url,
+            async: true,
+            responseType: "blob",
+            success: function(content) {
+                expDownload(content, filename);
+            },
+            error: function () {
+                $("span[data-err-ind='" + type + "']").innerText = "Fail to download the file";
+            }
+        });
+    }
+}
+
+function expDownload(content, filename) {
+    var a = document.createElement("a");
+    var blob = new Blob([content]);
+    a.href = window.URL.createObjectURL(blob);
+    a.target = "_parent";
+    a.download = filename;
+    a.click();
+    a.remove();
 }
 
 //---------- START kinda common func ----------

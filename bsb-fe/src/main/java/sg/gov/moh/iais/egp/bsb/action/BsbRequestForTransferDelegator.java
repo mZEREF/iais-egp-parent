@@ -45,8 +45,8 @@ public class BsbRequestForTransferDelegator {
 
     public Map<String,DocSetting> getDocSettingMap(){
         Map<String,DocSetting> settingMap = new HashMap<>();
-        settingMap.put("agent",new DocSetting(DocConstants.DOC_TYPE_INVENTORY_AGENT,"Inventory: Biological Agents",true));
-        settingMap.put("toxin",new DocSetting(DocConstants.DOC_TYPE_INVENTORY_TOXIN,"Inventory: Toxins",true));
+        settingMap.put("ityBat",new DocSetting(DocConstants.DOC_TYPE_INVENTORY_AGENT,"Inventory: Biological Agents",true));
+        settingMap.put("ityToxin",new DocSetting(DocConstants.DOC_TYPE_INVENTORY_TOXIN,"Inventory: Toxins",true));
         settingMap.put("others",new DocSetting(DocConstants.DOC_TYPE_OTHERS,"others",true));
         return settingMap;
     }

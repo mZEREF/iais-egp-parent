@@ -1,21 +1,25 @@
 package sg.gov.moh.iais.egp.bsb.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
-import com.ecquaria.cloud.moh.iais.common.utils.LogUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 import sg.gov.moh.iais.egp.bsb.client.FileRepoClient;
 import sg.gov.moh.iais.egp.bsb.client.TransferClient;
+import sg.gov.moh.iais.egp.bsb.constant.DocConstants;
 import sg.gov.moh.iais.egp.bsb.constant.ValidationConstants;
 import sg.gov.moh.iais.egp.bsb.dto.submission.PrimaryDocDto;
 import sg.gov.moh.iais.egp.bsb.dto.submission.TransferNotificationDto;
+import sg.gov.moh.iais.egp.bsb.entity.DocSetting;
+import sop.servlet.webflow.HttpHandler;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author YiMing
@@ -55,10 +59,8 @@ public class BsbTransferNotificationDelegator {
         if(Boolean.TRUE.equals(needShowError)){
             ParamUtil.setRequestAttr(request,ValidationConstants.KEY_VALIDATION_ERRORS,transferNotificationDto.retrieveValidationResult());
         }
-        List<PrimaryDocDto.DocRecordInfo> savedFiles = new ArrayList<>();
-        List<PrimaryDocDto.NewDocInfo> newFiles = new ArrayList<>();
-        ParamUtil.setRequestAttr(request, "savedFiles", savedFiles);
-        ParamUtil.setRequestAttr(request, "newFiles", newFiles);
+        Map<String,DocSetting> settingMap = getDocSettingMap();
+        ParamUtil.setRequestAttr(request,"doSettings",settingMap);
         ParamUtil.setRequestAttr(request,KEY_TRANSFER_NOTIFICATION_DTO,transferNotificationDto);
     }
 
@@ -68,9 +70,27 @@ public class BsbTransferNotificationDelegator {
          TransferNotificationDto notificationDto = getTransferNotification(request);
          notificationDto.reqObjectMapping(request);
          doValidation(notificationDto,request);
+         //use to show file information
+        ParamUtil.setRequestAttr(request,"doSettings",getDocSettingMap());
+        ParamUtil.setRequestAttr(request,"docMeta",notificationDto.getAllDocMetaByDocType());
          ParamUtil.setSessionAttr(request,KEY_TRANSFER_NOTIFICATION_DTO,notificationDto);
     }
 
+    /**
+     * StartStep: PrepareSwitch
+     * Maybe it will be useful in the future
+     */
+    public void prepareSwitch1(BaseProcessClass bpc) {
+        log.info("=======>>>>>startStep>>>>>>>>>>>>>>>>user");
+        MultipartHttpServletRequest request = (MultipartHttpServletRequest) bpc.request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
+        String actionType = request.getParameter("action_type");
+        ParamUtil.setSessionAttr(bpc.request, "action_type", actionType);
+    }
+
+    /**
+     * save
+     * save information to database finally
+     * */
     public void save(BaseProcessClass bpc){
          HttpServletRequest request = bpc.request;
          TransferNotificationDto notificationDto = getTransferNotification(request);
@@ -79,10 +99,12 @@ public class BsbTransferNotificationDelegator {
              for (TransferNotificationDto.TransferNot not : transferNotList) {
                  PrimaryDocDto primaryDocDto = not.getPrimaryDocDto();
                  if(primaryDocDto != null){
+                     //complete simple save file to db and save data to dto for show in jsp
                      MultipartFile[] files = primaryDocDto.getNewDocMap().values().stream().map(PrimaryDocDto.NewDocInfo::getMultipartFile).toArray(MultipartFile[]::new);
                      List<String> repoIds = fileRepoClient.saveFiles(files).getEntity();
                      primaryDocDto.newFileSaved(repoIds);
-                     not.setRecordInfos(primaryDocDto.getSavedDocMap().values());
+                     //newFile change to saved File and save info to db
+                     not.setSavedInfos(primaryDocDto.getExistDocTypeList());
                  }else{
                      log.info("please ensure your object has value");
                  }
@@ -92,13 +114,15 @@ public class BsbTransferNotificationDelegator {
          }
          String ensure = ParamUtil.getString(request,"ensure");
          notificationDto.setEnsure(ensure);
-         transferClient.saveNewTransferNot(notificationDto);
+         TransferNotificationDto.TransferNotNeedR transferNotNeedR = notificationDto.getTransferNotNeedR();
+         transferClient.saveNewTransferNot(transferNotNeedR);
     }
 
     /**
      * this method just used to charge if dto exist
+     * @return TransferNotification
      * */
-    public TransferNotificationDto getTransferNotification(HttpServletRequest request){
+    private TransferNotificationDto getTransferNotification(HttpServletRequest request){
         TransferNotificationDto notificationDto = (TransferNotificationDto) ParamUtil.getSessionAttr(request,KEY_TRANSFER_NOTIFICATION_DTO);
         return notificationDto == null?getDefaultDto():notificationDto;
     }
@@ -112,12 +136,25 @@ public class BsbTransferNotificationDelegator {
      * just a method to do simple valid,maybe update in the future
      * doValidation
      * */
-    public void doValidation(TransferNotificationDto dto,HttpServletRequest request){
+    private void doValidation(TransferNotificationDto dto,HttpServletRequest request){
         if(dto.doValidation()){
             ParamUtil.setRequestAttr(request, ValidationConstants.IS_VALID,ValidationConstants.YES);
         }else{
             ParamUtil.setRequestAttr(request, ValidationConstants.IS_VALID,ValidationConstants.NO);
             ParamUtil.setRequestAttr(request,ValidationConstants.KEY_SHOW_ERROR_SWITCH,Boolean.TRUE);
         }
+    }
+
+    /**
+     *a way to get default display in jsp
+     * getDocSettingMap
+     * @return Map<String,DocSetting>
+     * */
+    private Map<String, DocSetting> getDocSettingMap(){
+        Map<String,DocSetting> settingMap = new HashMap<>();
+        settingMap.put("ityBat",new DocSetting(DocConstants.DOC_TYPE_INVENTORY_AGENT,"Inventory: Biological Agents",true));
+        settingMap.put("ityToxin",new DocSetting(DocConstants.DOC_TYPE_INVENTORY_TOXIN,"Inventory: Toxins",true));
+        settingMap.put("others",new DocSetting(DocConstants.DOC_TYPE_OTHERS,"others",true));
+        return settingMap;
     }
 }

@@ -5,6 +5,9 @@
 <input type="hidden" id="section_repeat_header_title_prefix" value="Agent / Toxin " readonly disabled>
 <input type="hidden" id="section_repeat_section_group_id" value="sectionGroup" readonly disabled>
 <input type="hidden" id="section_repeat_separator" value="--v--" readonly disabled>
+<input type="hidden" id="deleteNewFiles" name="deleteNewFiles" value="">
+<input type="hidden" id="documentList" name="documentList" value="document-upload-list">
+
 
 <div class="panel panel-default">
     <div class="panel-heading"><strong>Biological Agent/Toxin</strong></div>
@@ -73,6 +76,11 @@
                                     <span data-err-ind="batQty--v--${status.index}" class="error-msg"></span>
                                 </div>
                             </div>
+
+                               <div class="form-group">
+                                   <%@include file="../common/batDocument.jsp" %>
+                               </div>
+
                             </div>
 
                             <div id="agentFifth--v--${status.index}" style="display: none">
@@ -104,9 +112,11 @@
                                     <span data-err-ind="mstUnit--v--${status.index}" class="error-msg"></span>
                                 </div>
                             </div>
-                            </div>
-                            <div class="form-group">
-                                <%@include file="../common/batDocument.jsp" %>
+
+                               <div class="form-group">
+                                   <%@include file="../common/batDocument.jsp" %>
+                               </div>
+
                             </div>
                         </section>
                     </c:forEach>
@@ -145,7 +155,7 @@
                     </div>
                     <div class="form-group">
                         <div class="col-sm-5 control-label">
-                            <label for="expArrivalTime">Expected Arrival Time at Receiving Facility</label>
+                            <label for="expArrivalTime">Expected Arrival Time at Receiving Facility </label>
                             <span class="mandatory otherQualificationSpan">*</span>
                         </div>
                         <div class="col-sm-6 col-md-7">

@@ -1,6 +1,8 @@
 package sg.gov.moh.iais.egp.bsb.dto.submission;
 
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -8,18 +10,22 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import sg.gov.moh.iais.egp.bsb.common.multipart.ByteArrayMultipartFile;
 import sg.gov.moh.iais.egp.bsb.dto.ValidationResultDto;
 import sg.gov.moh.iais.egp.bsb.util.LogUtil;
+import sg.gov.moh.iais.egp.bsb.util.SpringReflectionUtils;
 import sop.servlet.webflow.HttpHandler;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * @author YiMing
@@ -104,10 +110,34 @@ public class PrimaryDocDto implements Serializable {
         toBeDeletedRepoIds = new HashSet<>();
     }
 
+    /**
+     * just a simple way to get saved file list
+     * getExistDocTypeList
+     * */
+    public List<PrimaryDocDto.DocRecordInfo> getExistDocTypeList(){
+        return new ArrayList<>(savedDocMap.values());
+    }
+
+
+
+    /**
+     * just a simple way to get new file list
+     * getExistDocTypeList
+     * */
+    public List<PrimaryDocDto.NewDocInfo> getNewDocTypeList(){
+        return new ArrayList<>(newDocMap.values());
+    }
+
 
     //----------------------validate------------------------------------
-    public boolean doValidation() {
-        return validationResultDto.isPass();
+    public List<PrimaryDocDto.DocMeta> doValidation() {
+        List<PrimaryDocDto.DocMeta> metaDtoList = new ArrayList<>(this.savedDocMap.size() + this.newDocMap.size());
+
+        this.newDocMap.values().forEach(i -> {
+            PrimaryDocDto.DocMeta docMeta = new PrimaryDocDto.DocMeta(i.getTmpId(), i.getDocType(), i.getFilename(), i.getSize(), "dataSub");
+            metaDtoList.add(docMeta);
+        });
+        return metaDtoList;
     }
 
 
@@ -161,12 +191,15 @@ public class PrimaryDocDto implements Serializable {
     }
 
 
+    private static final String MASK_PARAM              = "file";
     private static final String SEPARATOR               = "--v--";
-    private static final String KEY_DELETED_SAVED_FILES = "deleteExistFiles";
     private static final String KEY_DELETED_NEW_FILES   = "deleteNewFiles";
 
     public void reqObjMapping(HttpServletRequest request,String docType,String amt){
         MultipartHttpServletRequest mulReq = (MultipartHttpServletRequest) request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
+        //delete new files
+        deleteNewFiles(mulReq);
+
         // read new uploaded files
         Iterator<String> inputNameIt = mulReq.getFileNames();
         Date currentDate = new Date();
@@ -202,6 +235,19 @@ public class PrimaryDocDto implements Serializable {
                 }
             }
         }
+        }
+    }
+
+    public void deleteNewFiles(MultipartHttpServletRequest mulReq){
+        String deleteNewFilesString = ParamUtil.getString(mulReq, KEY_DELETED_NEW_FILES);
+        if (log.isInfoEnabled()) {
+            log.info("deleteNewFilesString: {}", LogUtil.escapeCrlf(deleteNewFilesString));
+        }
+        if (StringUtils.hasLength(deleteNewFilesString)) {
+            List<String> deleteFileTmpIds = Arrays.stream(deleteNewFilesString.split(","))
+                    .map(f -> MaskUtil.unMaskValue(MASK_PARAM, f))
+                    .collect(Collectors.toList());
+            deleteFileTmpIds.forEach(this.newDocMap::remove);
         }
     }
 
