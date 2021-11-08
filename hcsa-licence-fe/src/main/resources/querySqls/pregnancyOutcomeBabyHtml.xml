@@ -146,7 +146,7 @@
                                 &nbsp;<span class="mandatory">*</span>
                             </label>
                             <div class="col-sm-7 col-md-5 col-xs-7 col-md-7">
-                                <input type="text" class="otherDefectType" id="otherDefectType" name="otherDefectType" maxlength="20" autocomplete="off">
+                                <input type="text" class="otherDefectType" id="otherDefectType${babyIndex}" name="otherDefectType${babyIndex}" maxlength="20" autocomplete="off">
                             </div>
                         </div>
                     </div>

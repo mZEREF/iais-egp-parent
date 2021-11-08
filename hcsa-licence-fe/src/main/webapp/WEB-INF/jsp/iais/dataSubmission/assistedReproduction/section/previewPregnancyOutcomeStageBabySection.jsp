@@ -1,66 +1,30 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
-<c:forEach items="${pregnancyOutcomeStageDto.pregnancyOutcomeBabyDtos}" var="pregnancyOutcomeBabyDto"
-           varStatus="status">
-    <c:set value="${defectTypesArray[status.index]}" var="defectTypes"/>
-    <c:set value="${otherDefectTypes[status.index]}" var="otherDefectType"/>
-    <div class="pregnancyOutcomeStageBabySection" id="pregnancyOutcomeStageBabySection${status.index}"
-         <c:if test="${pregnancyOutcomeStageDto.babyDetailsUnknown}">style="display:none;"</c:if>>
+<div <c:if test="${pregnancyOutcomeStageDto.babyDetailsUnknown}">style="display:none;"</c:if>>
+    <c:forEach items="${pregnancyOutcomeStageDto.pregnancyOutcomeBabyDtos}"
+               var="pregnancyOutcomeBabyDto"
+               varStatus="status">
+        <c:set value="${defectTypesArray[status.index]}" var="defectTypes"/>
+        <c:set value="${otherDefectTypes[status.index]}" var="otherDefectType"/>
         <c:set var="displayNum" value="${status.index + 1}"/>
         <iais:row>
-            <iais:field width="5" value="Baby ${displayNum} Birth Weight" mandatory="true"/>
-            <iais:value width="7" cssClass="col-md-7">
-                <iais:select id="birthWeight${status.index}" firstOption="Please Select"
-                             name="birthWeight${status.index}" options="birthWeightSelectOption"
-                             value="${pregnancyOutcomeBabyDto.birthWeight}"></iais:select>
+            <iais:field width="7" value="Baby ${displayNum} Birth Weight"
+                        cssClass="col-md-7"/>
+            <iais:value width="5" cssClass="col-md-5">
+                <iais:code code="${pregnancyOutcomeBabyDto.birthWeight}"/>
             </iais:value>
         </iais:row>
-
         <iais:row>
-            <iais:field width="5" value="Baby ${displayNum} Birth Defect"/>
-            <div class="col-md-7">
-                <div class="form-check col-12">
-                    <input class="form-check-input birthDefect"
-                           type="radio"
-                           name="birthDefect${status.index}"
-                           value="Yes"
-                           id="birthDefect${status.index}Yes"
-                           <c:if test="${pregnancyOutcomeBabyDto.birthDefect == 'Yes'}">checked</c:if>
-                           aria-invalid="false">
-                    <label class="form-check-label"
-                           for="birthDefect${status.index}Yes"><span
-                            class="check-circle"></span>Yes</label>
-                </div>
-                <div class="form-check col-12">
-                    <input class="form-check-input birthDefect"
-                           type="radio"
-                           name="birthDefect${status.index}"
-                           value="No"
-                           id="birthDefect${status.index}No"
-                           <c:if test="${pregnancyOutcomeBabyDto.birthDefect == 'No'}">checked</c:if>
-                           aria-invalid="false">
-                    <label class="form-check-label"
-                           for="birthDefect${status.index}No"><span
-                            class="check-circle"></span>No</label>
-                </div>
-                <div class="form-check col-12">
-                    <input class="form-check-input birthDefect"
-                           type="radio"
-                           name="birthDefect${status.index}"
-                           value="Unknown"
-                           id="birthDefect${status.index}Unknown"
-                           <c:if test="${pregnancyOutcomeBabyDto.birthDefect == 'Unknown'}">checked</c:if>
-                           aria-invalid="false">
-                    <label class="form-check-label"
-                           for="birthDefect${status.index}Unknown"><span
-                            class="check-circle"></span>Unknown</label>
-                </div>
-            </div>
+            <iais:field width="7" value="Baby ${displayNum} Birth Defect"
+                        cssClass="col-md-7"/>
+            <iais:value width="5" cssClass="col-md-5">
+                <c:out value="${pregnancyOutcomeBabyDto.birthDefect}"/>
+            </iais:value>
         </iais:row>
         <div name="defectTypeSectionName"
              <c:if test="${pregnancyOutcomeBabyDto.birthDefect != 'yes'}">style="display:none;"</c:if>>
             <iais:row>
-                <iais:field width="5" value="Baby ${displayNum} Defect Type" mandatory="true"/>
-                <iais:value width="7" cssClass="col-md-7">
+                <iais:field width="7" value="Baby ${displayNum} Defect Type" mandatory="true"/>
+                <iais:value width="5" cssClass="col-md-5">
                     <div class="form-check col-xs-12">
                         <input class="form-check-input defectType" type="checkbox"
                                name="defectType${status.index}"
@@ -149,14 +113,14 @@
                                for="defectType${status.index}Other"><span
                                 class="check-square"></span>Others</label>
                     </div>
-                    <span id="error_oocyteRetrievalFrom" name="iaisErrorMsg" class="error-msg"></span>
                 </iais:value>
             </iais:row>
             <div name="otherDefectTypeDivName"
                  <c:if test="${!fn:contains(defectTypes,'other')}">style="display:none;"</c:if>>
                 <iais:row>
-                    <iais:field width="5" value="Baby ${displayNum} Defect Type (Others)" mandatory="true"/>
-                    <iais:value width="7" cssClass="col-md-7">
+                    <iais:field width="7" value="Baby ${displayNum} Defect Type (Others)" mandatory="true"/>
+                    <iais:value width="5" cssClass="col-md-5">
+                        <c:out value=""/>
                         <iais:input maxLength="20" type="text" cssClass="otherDefectType"
                                     name="otherDefectType${status.index}" id="otherDefectType${status.index}"
                                     value="${otherDefectType}"/>
@@ -164,5 +128,5 @@
                 </iais:row>
             </div>
         </div>
-    </div>
-</c:forEach>
+    </c:forEach>
+</div>
