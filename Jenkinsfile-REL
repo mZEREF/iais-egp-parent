@@ -938,7 +938,7 @@ def waitForVerifier(){
                                     name: PARAMETER_COMMENTS,
                                     trim: true)
                     ],
-                    submitter: 'admin, mingde@ecquaria.com, anantharaj@ecquaria.com',
+                    submitter: 'admin, mingde@ecquaria.com, anantharaj@ecquaria.com, julianlee@ecquaria.com',
                     submitterParameter: 'approvedByUserId'
 
             def _choice = _gate[PARAMETER_CHOICE]
