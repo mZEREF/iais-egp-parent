@@ -195,7 +195,7 @@ public class ArDataSubmissionServiceImpl implements ArDataSubmissionService {
     public String getSubmissionNo(String submisisonType, String cycleStage, DataSubmissionDto lastDataSubmissionDto) {
         String submissionNo = null;
         int serialNo = 0;
-        if (!DataSubmissionConsts.DATA_SUBMISSION_CYCLE_STAGE_PATIENT.equals(cycleStage)) {
+        if (!DataSubmissionConsts.DS_CYCLE_STAGE_PATIENT.equals(cycleStage)) {
             if (lastDataSubmissionDto != null
                     && submisisonType.equals(lastDataSubmissionDto.getSubmissionType())
                     && !statuses.contains(lastDataSubmissionDto.getStatus())

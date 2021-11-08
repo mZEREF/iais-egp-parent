@@ -237,7 +237,7 @@ public final class DataSubmissionHelper {
             cycle = DataSubmissionConsts.AR_CYCLE_NON;
         }
         CycleDto cycleDto = new CycleDto();
-        cycleDto.setDsType(DataSubmissionConsts.DATA_SUBMISSION_TYPE_AR);
+        cycleDto.setDsType(DataSubmissionConsts.DS_TYPE_AR);
         cycleDto.setCycleType(cycle);
         cycleDto.setPatientCode(selectionDto.getPatientCode());
         cycleDto.setHciCode(hciCode);

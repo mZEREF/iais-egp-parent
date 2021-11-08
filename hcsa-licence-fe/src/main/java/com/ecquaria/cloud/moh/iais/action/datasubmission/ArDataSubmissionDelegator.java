@@ -111,17 +111,17 @@ public class ArDataSubmissionDelegator {
         if (StringUtil.isEmpty(submissionType)) {
             map.put("submissionType", "GENERAL_ERR0006");
         } else if (DataSubmissionConsts.AR_TYPE_SBT_PATIENT_INFO.equals(submissionType)) {
-            if (DataSubmissionConsts.DATA_SUBMISSION_METHOD_MANUAL_ENTRY.equals(submissionMethod)) {
+            if (DataSubmissionConsts.DS_METHOD_MANUAL_ENTRY.equals(submissionMethod)) {
                 actionType = "pim";
-            } else if (DataSubmissionConsts.DATA_SUBMISSION_METHOD_MANUAL_ENTRY.equals(submissionMethod)) {
+            } else if (DataSubmissionConsts.DS_METHOD_MANUAL_ENTRY.equals(submissionMethod)) {
                 actionType = "pif";
             } else {
                 map.put("submissionMethod", "GENERAL_ERR0006");
             }
         } else if (DataSubmissionConsts.AR_TYPE_SBT_CYCLE_STAGE.equals(submissionType)) {
-            if (DataSubmissionConsts.DATA_SUBMISSION_METHOD_MANUAL_ENTRY.equals(submissionMethod)) {
+            if (DataSubmissionConsts.DS_METHOD_MANUAL_ENTRY.equals(submissionMethod)) {
                 actionType = "csm";
-            } else if (DataSubmissionConsts.DATA_SUBMISSION_METHOD_MANUAL_ENTRY.equals(submissionMethod)) {
+            } else if (DataSubmissionConsts.DS_METHOD_MANUAL_ENTRY.equals(submissionMethod)) {
                 actionType = "csf";
             } else {
                 map.put("submissionMethod", "GENERAL_ERR0006");

@@ -278,7 +278,7 @@ public class ArCycleStagesManualDelegator {
         log.info("-----Prepare Register Patient-----");
         ArSuperDataSubmissionDto currentArDataSubmission = DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
         currentArDataSubmission.setArSubmissionType(DataSubmissionConsts.AR_TYPE_SBT_PATIENT_INFO);
-        currentArDataSubmission.setSubmissionMethod(DataSubmissionConsts.DATA_SUBMISSION_METHOD_MANUAL_ENTRY);
+        currentArDataSubmission.setSubmissionMethod(DataSubmissionConsts.DS_METHOD_MANUAL_ENTRY);
         currentArDataSubmission.setCurrentDataSubmissionDto(null);
         currentArDataSubmission.setCycleDto(null);
         DataSubmissionHelper.setCurrentArDataSubmission(currentArDataSubmission, bpc.request);

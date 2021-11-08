@@ -59,7 +59,7 @@ public class MohDsDraftDelegator {
         String uri = "";
         if (StringUtil.isEmpty(dsType) || StringUtil.isEmpty(draftNo)) {
             uri = DEFAULT_URI;
-        } else if (DataSubmissionConsts.DATA_SUBMISSION_TYPE_AR.equals(dsType)) {
+        } else if (DataSubmissionConsts.DS_TYPE_AR.equals(dsType)) {
             ArSuperDataSubmissionDto dataSubmissionDto = arFeClient.getArSuperDataSubmissionDtoDraftByDraftNo(draftNo).getEntity();
             if (dataSubmissionDto == null) {
                 uri = DEFAULT_URI;
