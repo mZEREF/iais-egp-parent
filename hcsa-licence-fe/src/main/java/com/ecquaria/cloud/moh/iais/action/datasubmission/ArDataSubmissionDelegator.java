@@ -181,7 +181,7 @@ public class ArDataSubmissionDelegator {
             } else if ("delete".equals(actionValue)) {
                 arDataSubmissionService.deleteArSuperDataSubmissionDtoDraftByConds(orgId, submissionType, hciCode);
             }
-            dataSubmission.setSubmissionType(DataSubmissionConsts.DATA_SUBMISSION_TYPE_AR);
+            dataSubmission.setSubmissionType(DataSubmissionConsts.DS_TYPE_AR);
             dataSubmission.setOrgId(orgId);
             dataSubmission.setArSubmissionType(submissionType);
             dataSubmission.setSubmissionMethod(submissionMethod);

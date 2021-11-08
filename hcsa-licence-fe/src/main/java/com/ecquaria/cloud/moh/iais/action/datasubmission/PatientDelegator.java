@@ -51,8 +51,8 @@ public class PatientDelegator extends CommonDelegator {
             dataSubmission = new DataSubmissionDto();
             currentArDataSubmission.setCurrentDataSubmissionDto(dataSubmission);
         }
-        dataSubmission.setSubmissionType(DataSubmissionConsts.DATA_SUBMISSION_TYPE_AR);
-        dataSubmission.setCycleStage(DataSubmissionConsts.DATA_SUBMISSION_CYCLE_STAGE_PATIENT);
+        dataSubmission.setSubmissionType(DataSubmissionConsts.DS_TYPE_AR);
+        dataSubmission.setCycleStage(DataSubmissionConsts.DS_CYCLE_STAGE_PATIENT);
         dataSubmission.setStatus(DataSubmissionConsts.DS_STATUS_ACTIVE);
         currentArDataSubmission.setCycleDto(initCycleDto(currentArDataSubmission));
         DataSubmissionHelper.setCurrentArDataSubmission(currentArDataSubmission, bpc.request);
@@ -149,7 +149,8 @@ public class PatientDelegator extends CommonDelegator {
                 .map(premises -> premises.getHciCode())
                 .orElse("");
         cycleDto.setHciCode(hicCode);
-        cycleDto.setCycleType(DataSubmissionConsts.DATA_SUBMISSION_CYCLE_STAGE_PATIENT);
+        cycleDto.setDsType(DataSubmissionConsts.DS_TYPE_AR);
+        cycleDto.setCycleType(DataSubmissionConsts.DS_CYCLE_STAGE_PATIENT);
         return cycleDto;
     }
 
