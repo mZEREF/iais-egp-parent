@@ -63,7 +63,6 @@ public class DataSubmissionInboxDelegator {
 
 	public void clearSession(HttpServletRequest request){
 		ParamUtil.setSessionAttr(request,InboxConst.DS_PARAM,null);
-		ParamUtil.setSessionAttr(request, ACTION_DS_BUTTON_SHOW, AppConsts.NO);
 	}
 	private void setLog(String sepName){
 		setLog(sepName,true,null);
@@ -207,7 +206,7 @@ public class DataSubmissionInboxDelegator {
 		if(StringUtil.isNotEmpty(getStatusBySubmissionNo(submissionNo,DELETE_DRAFT))){
 			params.put("dsType",inboxDataSubmissionQueryDto.getType());
 			params.put("draftNo",submissionNo);
-			redirectUrlByDSType(response,request.getServerName(), "MohDsDraft",params);
+			IaisEGPHelper.redirectUrl(response,request.getServerName(), "MohDsDraft",InboxConst.URL_LICENCE_WEB_MODULE,params);
 		}else {
 			//todo
 		}
@@ -226,11 +225,7 @@ public class DataSubmissionInboxDelegator {
 		return null;
 	}
 
-	private void redirectUrlByDSType(HttpServletResponse response,String serverName,String process,Map<String,String> params){
-		StringBuilder stringBuilder = new StringBuilder();
-		stringBuilder.append("https://").append(serverName).append("/hcsa-licence-web/").append(process);
-		IaisEGPHelper.redirectUrl(response,stringBuilder.toString(),params);
-	}
+
 
 	/**
 	 * Step: doRFC
@@ -271,11 +266,10 @@ public class DataSubmissionInboxDelegator {
 		setLog(UNLOCK,false);
 	}
 
-	 private void  toShowMessage(HttpServletRequest request,String actionValue){
+	 private void toShowMessage(HttpServletRequest request,String actionValue){
 	      if(showMessage(request,actionValue)){
-	      	ParamUtil.setSessionAttr(request,ACTION_DS_BUTTON_SHOW,AppConsts.YES);
-		  }else {
-			  ParamUtil.setSessionAttr(request,ACTION_DS_BUTTON_SHOW,AppConsts.NO);
+	      	ParamUtil.setRequestAttr(request,ACTION_DS_BUTTON_SHOW,AppConsts.YES);
+	      	ParamUtil.setRequestAttr(request,NEED_VALIDATOR_SIZE,ParamUtil.getString(request,NEED_VALIDATOR_SIZE));
 		  }
 	 }
     private  boolean showMessage(HttpServletRequest request,String actionValue){

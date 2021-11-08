@@ -141,6 +141,21 @@
   <SynchronousLink destinationName="/Steps/AutomaticStep/Prepare" linkstyle="Rectangle" name="" sourceName="/Merges/Merge/Merge1" style="rectanular">
    <position>{(930,60)(145,-121)(130,120)}</position>
   </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge2" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/View" style="rectanular">
+   <position>{(660,210)(930,300)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge2" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/RFC" style="rectanular">
+   <position>{(660,280)(930,300)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge2" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/Withdraw" style="rectanular">
+   <position>{(660,370)(930,300)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge2" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/Unlock" style="rectanular">
+   <position>{(680,510)(930,300)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/Prepare" linkstyle="Rectangle" name="" sourceName="/Merges/Merge/Merge2" style="rectanular">
+   <position>{(930,300)(143,363)(130,120)}</position>
+  </SynchronousLink>
  </Links>
  <Conditions/>
  <Switches>
@@ -159,6 +174,9 @@
  <Branches/>
  <Merges>
   <Merge defClass="" executor="" icon="" name="Merge1" type="Or" x="910" y="40">
+   <Description/>
+  </Merge>
+  <Merge defClass="" executor="" icon="" name="Merge2" type="Or" x="910" y="280">
    <Description/>
   </Merge>
  </Merges>

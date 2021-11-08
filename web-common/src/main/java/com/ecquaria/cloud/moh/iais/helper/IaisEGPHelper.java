@@ -155,6 +155,11 @@ public final class IaisEGPHelper extends EGPHelper {
         response.sendRedirect(url);
     }
 
+    public static void redirectUrl(HttpServletResponse response,String serverName,String process,String modelName,Map<String,String> params){
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("https://").append(serverName).append(modelName).append(process);
+        IaisEGPHelper.redirectUrl(response,stringBuilder.toString(),params);
+    }
     public static void redirectUrl(HttpServletResponse response,String url,Map<String,String> params){
         try {
             if(IaisCommonUtils.isNotEmpty(params)){
