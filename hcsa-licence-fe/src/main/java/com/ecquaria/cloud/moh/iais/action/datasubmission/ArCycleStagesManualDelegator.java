@@ -30,6 +30,8 @@ import java.util.Optional;
 /**
  * ARCycleStagesManualDelegator
  *
+ * Process: MohARCycleStagesManual
+ *
  * @author suocheng
  * @date 10/21/2021
  */
@@ -102,6 +104,12 @@ public class ArCycleStagesManualDelegator {
                 stage = checkPatient(currentArDataSubmission, bpc.request);
             } else if ("draft".equals(crudype)) {
                 stage = "draft";
+                // re-set cycle stage
+                DataSubmissionDto dataSubmissionDto = currentArDataSubmission.getCurrentDataSubmissionDto();
+                if (dataSubmissionDto != null) {
+                    dataSubmissionDto.setCycleStage(null);
+                    DataSubmissionHelper.setCurrentArDataSubmission(currentArDataSubmission, bpc.request);
+                }
             } else {
                 stage = checkCycleStage(currentArDataSubmission, selectionDto, bpc.request);
             }
@@ -276,6 +284,7 @@ public class ArCycleStagesManualDelegator {
         ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, currentStage);
         ArSuperDataSubmissionDto arSuperDataSubmission = DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
         if (arSuperDataSubmission != null) {
+            arSuperDataSubmission.setDraftNo(arDataSubmissionService.getDraftNo(DataSubmissionConsts.DATA_SUBMISSION_TYPE_AR));
             arSuperDataSubmission = arDataSubmissionService.saveDataSubmissionDraft(arSuperDataSubmission);
             DataSubmissionHelper.setCurrentArDataSubmission(arSuperDataSubmission, bpc.request);
             ParamUtil.setRequestAttr(bpc.request, "saveDraftSuccess", "success");

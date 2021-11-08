@@ -230,6 +230,9 @@ public final class DataSubmissionHelper {
                 DataSubmissionConsts.AR_CYCLE_IUI,
                 DataSubmissionConsts.AR_CYCLE_EFO})) {
             cycle = stage;
+        } else if (DataSubmissionConsts.AR_CYCLE_NON.equals(selectionDto.getLastCycle())) {
+            cycle = DataSubmissionConsts.AR_CYCLE_NON;
+            cycleId = selectionDto.getLastCycleId();
         } else {
             cycle = DataSubmissionConsts.AR_CYCLE_NON;
         }

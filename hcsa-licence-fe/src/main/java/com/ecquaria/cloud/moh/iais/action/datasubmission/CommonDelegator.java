@@ -2,7 +2,10 @@ package com.ecquaria.cloud.moh.iais.action.datasubmission;
 
 import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.CycleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DataSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.EmbryoTransferredOutcomeStageDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.OutcomeStageDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -18,6 +21,7 @@ import com.ecquaria.cloud.moh.iais.service.datasubmission.ArDataSubmissionServic
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import javax.servlet.http.HttpServletRequest;
 
 import lombok.extern.slf4j.Slf4j;
@@ -195,6 +199,39 @@ public abstract class CommonDelegator {
         if (StringUtil.isEmpty(dataSubmissionDto.getStatus())) {
             dataSubmissionDto.setStatus(DataSubmissionConsts.DS_STATUS_COMPLETED);
         }
+        String stage = dataSubmissionDto.getCycleStage();
+        CycleDto cycle = arSuperDataSubmission.getCycleDto();
+        String cycleType = cycle.getCycleType();
+        String status = DataSubmissionConsts.DS_STATUS_ACTIVE;
+        if (DataSubmissionConsts.AR_CYCLE_AR.equals(cycleType)) {
+            if (DataSubmissionConsts.AR_STAGE_END_CYCLE.equals(stage)) {
+                status = DataSubmissionConsts.DS_STATUS_COMPLETED_END_CYCEL;
+            } else if (DataSubmissionConsts.AR_STAGE_OUTCOME_OF_EMBRYO_TRANSFERED.equals(stage)) {
+                EmbryoTransferredOutcomeStageDto outcomeStageDto = arSuperDataSubmission.getEmbryoTransferredOutcomeStageDto();
+                if (StringUtil.isIn(outcomeStageDto, new String[]{
+                        DataSubmissionConsts.OUTCOME_OF_EMBRYO_TRANSFERRED_NO_PREGNANCY_DETECTED,
+                        DataSubmissionConsts.OUTCOME_OF_EMBRYO_TRANSFERRED_UNKNOWN})) {
+                    status = DataSubmissionConsts.DS_STATUS_OET_NO_PREGNACY_UNKNOWN;
+                }
+            } else if (DataSubmissionConsts.AR_STAGE_OUTCOME_OF_PREGNANCY.equals(stage)) {
+                status = DataSubmissionConsts.DS_STATUS_COMPLETED_OUTCOME_OF_PREGNANCY;
+            }
+        } else if (DataSubmissionConsts.AR_CYCLE_EFO.equals(cycleType)) {
+            if (DataSubmissionConsts.AR_STAGE_FREEZING.equals(stage)) {
+                status = DataSubmissionConsts.DS_STATUS_COMPLETE_FREEZING;
+            }
+        } else if (DataSubmissionConsts.AR_CYCLE_IUI.equals(cycleType)) {
+            if (DataSubmissionConsts.AR_STAGE_OUTCOME.equals(stage)) {
+                OutcomeStageDto outcomeStageDto = arSuperDataSubmission.getOutcomeStageDto();
+                if (!outcomeStageDto.isPregnancyDetected()) {
+                    status = DataSubmissionConsts.DS_STATUS_OUTCOME_NO_DETECTED;
+                }
+            }
+        } else if (DataSubmissionConsts.AR_CYCLE_NON.equals(cycleType)) {
+            status = DataSubmissionConsts.DS_STATUS_COMPLETED;
+        }
+        cycle.setStatus(status);
+
         LoginContext loginContext = DataSubmissionHelper.getLoginContext(bpc.request);
         if (loginContext != null) {
             dataSubmissionDto.setSubmitBy(loginContext.getUserId());
