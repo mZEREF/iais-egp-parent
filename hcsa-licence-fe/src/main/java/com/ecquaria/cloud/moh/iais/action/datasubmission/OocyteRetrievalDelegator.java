@@ -4,6 +4,7 @@ import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.intranetUser.IntranetUserConstant;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.OocyteRetrievalStageDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInventoryDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -52,10 +53,9 @@ public class OocyteRetrievalDelegator extends CommonDelegator {
         ArSuperDataSubmissionDto arSuperDataSubmissionDto = DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
         OocyteRetrievalStageDto oocyteRetrievalStageDto = arSuperDataSubmissionDto.getOocyteRetrievalStageDto();
         int totalNum = oocyteRetrievalStageDto.getTotalNum();
-        DataSubmissionHelper.initPatientInventoryTable(bpc.request);
         ParamUtil.setRequestAttr(bpc.request, "totalRetrievedNum", totalNum);
-        String freshOocytes = totalNum > 0 ? "+" + totalNum : "0";
-        ParamUtil.setRequestAttr(bpc.request, "changeFreshOocytes",freshOocytes);
+        PatientInventoryDto patientInventoryDto = DataSubmissionHelper.initPatientInventoryTable(bpc.request);
+        patientInventoryDto.setChangeFreshOocytes(totalNum);
     }
 
     @Override

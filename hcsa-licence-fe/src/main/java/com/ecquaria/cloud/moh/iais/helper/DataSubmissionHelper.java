@@ -7,6 +7,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.CycleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.CycleStageSelectionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInventoryDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -250,22 +251,10 @@ public final class DataSubmissionHelper {
         return MessageUtil.getMessageDesc("DS_MSG005", repMap);
     }
 
-    public static void initPatientInventoryTable(HttpServletRequest request){
-        ParamUtil.setRequestAttr(request,"changeFrozenOocytes",0);
-        ParamUtil.setRequestAttr(request,"changeThawedOocytes",0);
-        ParamUtil.setRequestAttr(request,"changeFreshOocytes",0);
-        ParamUtil.setRequestAttr(request,"changeFrozenEmbryos",0);
-        ParamUtil.setRequestAttr(request,"changeThawedEmbryos",0);
-        ParamUtil.setRequestAttr(request,"changeFreshEmbryos",0);
-        ParamUtil.setRequestAttr(request,"changeFrozenSperms",0);
-
-        ParamUtil.setRequestAttr(request,"currentFrozenOocytes",0);
-        ParamUtil.setRequestAttr(request,"currentThawedOocytes",0);
-        ParamUtil.setRequestAttr(request,"currentFreshOocytes",0);
-        ParamUtil.setRequestAttr(request,"currentFrozenEmbryos",0);
-        ParamUtil.setRequestAttr(request,"currentThawedEmbryos",0);
-        ParamUtil.setRequestAttr(request,"currentFreshEmbryos",0);
-        ParamUtil.setRequestAttr(request,"currentFrozenSperms",0);
+    public static PatientInventoryDto initPatientInventoryTable(HttpServletRequest request) {
+        PatientInventoryDto patientInventoryDto = new PatientInventoryDto();
+        ParamUtil.setRequestAttr(request, "patientInventoryDto", patientInventoryDto);
+        return patientInventoryDto;
     }
 
 }
