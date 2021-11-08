@@ -42,22 +42,24 @@
                     </iais:value>
                 </iais:row>
                 <iais:row>
-                    <iais:field width="6" value="Reason for Abandonment" mandatory="true"/>
-                    <iais:value width="6" cssClass="col-md-6">
-                        <iais:select cssClass="reasonSelect"  name="abandonReason" codeCategory="END_CYCLE_REASON_FOR_ABANDONMENT" firstOption="Please Select" options="endReasonSelectOption" value="${endCycleStageDto.abandonReason}"></iais:select>
-                        <span class="error-msg" name="iaisErrorMsg" id="error_reason"></span>
+                    <iais:field width="5" value="Reason for Abandonment" mandatory="true"/>
+                    <iais:value width="7" cssClass="col-md-7">
+                        <iais:select name="abandonReason"  firstOption="Please Select" codeCategory="END_CYCLE_REASON_FOR_ABANDONMENT" value="${endCycleStageDto.abandonReason}"  onchange ="toggleOnSelect(this, 'ENDRA005', 'otherAbandonReasonRow')"/>
                     </iais:value>
                 </iais:row>
-                <div id="othersAbandonment" <c:if test="${endCycleStageDto.abandonReason!=''}">style="display: none"</c:if> >
-                    <iais:row>
-                        <iais:field width="6" value="" mandatory="false"/>
-                        <iais:value width="6" cssClass="col-md-6">
-                            <input type="text" maxlength="20"   name="otherAbandonReason" value="${endCycleStageDto.otherAbandonReason}" >
-                            <span class="error-msg" name="iaisErrorMsg" id="error_otherAbandonReason"></span>
-                        </iais:value>
-                    </iais:row>
-                </div>
+                <iais:row id="otherAbandonReasonRow">
+                    <iais:field width="5" value="Reason for Abandonment (Others)" mandatory="true"/>
+                    <iais:value width="7" cssClass="col-md-7">
+                        <iais:input maxLength="100" type="text" name="otherAbandonReason" id="otherAbandonReason" value="${endCycleStageDto.otherAbandonReason}" />
+                    </iais:value>
+                </iais:row>
             </div>
         </div>
     </div>
 </div>
+<%@include file="donorSection.jsp"%>
+<script  type="text/javascript">
+    $(document).ready(function (){
+        toggleOnSelect("#abandonReason",'${DataSubmissionConsts.END_CYCLE_REASON_FOR_ABANDONMENT}', 'otherAbandonReasonRow');
+    });
+</script>

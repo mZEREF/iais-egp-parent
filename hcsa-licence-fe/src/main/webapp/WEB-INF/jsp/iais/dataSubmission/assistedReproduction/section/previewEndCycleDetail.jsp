@@ -20,20 +20,20 @@
                             No, Cycle has ended</c:if>
                     </iais:value>
                 </iais:row>
+
                 <iais:row>
-                    <iais:field width="6" value="Reason for Abandonment" mandatory="false"/>
-                    <iais:value width="6" display="true">
-                        <iais:code code="${endCycleStageDto.reason}"/>
+                    <iais:field width="5" value="Reason for Abandonment" mandatory="false"/>
+                    <iais:value width="7" cssClass="col-md-7"  display="true">
+                        <iais:code code="${endCycleStageDto.abandonReason}"/>
                     </iais:value>
                 </iais:row>
-                <div id="otherAbandonReason" <c:if test="${efoCycleStageDto.abandonReason!='ENDRA005'}">style="display: none"</c:if> >
-                    <iais:row>
-                        <iais:field width="6" value="" mandatory="false"/>
-                        <iais:value width="6" display="true">
-                            <c:out value="${endCycleStageDto.otherAbandonReason}"/>
-                        </iais:value>
-                    </iais:row>
-                </div>
+
+                <iais:row style="${endCycleStageDto.abandonReason eq DataSubmissionConsts.END_CYCLE_REASON_FOR_ABANDONMENT_OTHERS ? '' : 'display: none'}">
+                    <iais:field width="5" value="Reason for Abandonment (Others)" />
+                    <iais:value width="7" cssClass="col-md-7" display="true">
+                        <c:out value="${endCycleStageDto.otherAbandonReason}"/>
+                    </iais:value>
+                </iais:row>
             </div>
         </div>
     </div>
