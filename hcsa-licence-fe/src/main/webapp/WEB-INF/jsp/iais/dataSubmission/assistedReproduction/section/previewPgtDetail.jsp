@@ -149,7 +149,6 @@
                         </iais:value>
                     </iais:row>
                 </div>
-                <%@include file="../common/patientInventoryTable.jsp" %>
             </div>
         </div>
     </div>
