@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.action.datasubmission;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.intranetUser.IntranetUserConstant;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArDonorDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.OocyteRetrievalStageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInventoryDto;
@@ -15,6 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -43,6 +45,15 @@ public class OocyteRetrievalDelegator extends CommonDelegator {
             oocyteRetrievalStageDto.setImmatureRetrievedNum(0);
             oocyteRetrievalStageDto.setOtherRetrievedNum(0);
             arSuperDataSubmissionDto.setOocyteRetrievalStageDto(oocyteRetrievalStageDto);
+            List<ArDonorDto> arDonorDtoList = arSuperDataSubmissionDto.getArDonorDtos();
+            if (IaisCommonUtils.isNotEmpty(arDonorDtoList)) {
+                for (ArDonorDto arDonorDto : arDonorDtoList) {
+                    if (arDonorDto.isDirectedDonation()) {
+                        oocyteRetrievalStageDto.setIsFromDonor(true);
+                        break;
+                    }
+                }
+            }
             DataSubmissionHelper.setCurrentArDataSubmission(arSuperDataSubmissionDto, bpc.request);
         }
         ParamUtil.setRequestAttr(bpc.request, "totalRetrievedNum", oocyteRetrievalStageDto.getTotalNum());

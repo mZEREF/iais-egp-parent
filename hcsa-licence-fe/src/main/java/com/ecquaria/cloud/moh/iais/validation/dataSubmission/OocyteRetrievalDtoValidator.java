@@ -37,7 +37,6 @@ public class OocyteRetrievalDtoValidator implements CustomizeValidator {
             String errMsg = MessageUtil.replaceMessage("GENERAL_ERR0006", "Oocyte(s) was retrieved from", "field");
             errorMap.put("oocyteRetrievalFrom", errMsg);
         }
-        //TODO Directed Donor is checked if 'Is this a Directed Donation' is 'Yes'
         return errorMap;
     }
 }
