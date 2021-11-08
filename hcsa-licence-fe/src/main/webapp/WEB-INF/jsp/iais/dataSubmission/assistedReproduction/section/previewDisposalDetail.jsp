@@ -82,6 +82,7 @@
                         <c:out value="${arSuperDataSubmissionDto.disposalStageDto.totalNum}"/>
                     </iais:value>
                 </iais:row>
+                <%@include file="../common/patientInventoryTable.jsp" %>
             </div>
         </div>
     </div>

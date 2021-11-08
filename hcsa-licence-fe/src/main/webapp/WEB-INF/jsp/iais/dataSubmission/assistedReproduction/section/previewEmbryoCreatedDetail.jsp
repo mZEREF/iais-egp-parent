@@ -40,7 +40,7 @@
                         <c:out value="${arSuperDataSubmissionDto.embryoCreatedStageDto.totalNum}"/>
                     </iais:value>
                 </iais:row>
-
+                <%@include file="../common/patientInventoryTable.jsp" %>
             </div>
         </div>
     </div>

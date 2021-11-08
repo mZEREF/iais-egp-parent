@@ -124,6 +124,7 @@
                         <div id="totalNum" name="totalNum">${arSuperDataSubmissionDto.donationStageDto.totalNum}</div>
                     </iais:value>
                 </iais:row>
+                <%@include file="../common/patientInventoryTable.jsp" %>
             </div>
         </div>
     </div>

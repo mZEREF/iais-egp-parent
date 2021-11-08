@@ -59,78 +59,81 @@ public class DisposalStageDelegator extends CommonDelegator{
         disposalStageDto.setDisposedType(disposedType);
         int totalNum =0;
 
-        switch (disposedType){
-            case "DISPTY001":
-            case "DISPTY002":
-            case "DISPTY003":
-                disposalStageDto.setDisposedTypeDisplay(1);
-                Integer immature =  null;
-                try {
-                    immature =  ParamUtil.getInt(request, "immature");
-                    totalNum+=immature;
-                    disposalStageDto.setImmature(immature);
-                }catch (Exception e){
-                    log.error("no int");
-                }
-                Integer abnormallyFertilised = null;
-                try {
-                    abnormallyFertilised = ParamUtil.getInt(request, "abnormallyFertilised");
-                    totalNum+=abnormallyFertilised;
-                    disposalStageDto.setAbnormallyFertilised(abnormallyFertilised);
-                }catch (Exception e){
-                    log.error("no int");
-                }
-                Integer unfertilised = null;
-                try {
-                    unfertilised =  ParamUtil.getInt(request, "unfertilised");
-                    totalNum+=unfertilised;
-                    disposalStageDto.setUnfertilised(unfertilised);
-                }catch (Exception e){
-                    log.error("no int");
-                }
-                Integer atretic = null;
-                try {
-                    atretic =  ParamUtil.getInt(request, "atretic");
-                    totalNum+=atretic;
-                    disposalStageDto.setAtretic(atretic);
-                }catch (Exception e){
-                    log.error("no int");
-                }
-                Integer damaged = null;
-                try {
-                    damaged =  ParamUtil.getInt(request, "damaged");
-                    totalNum+=damaged;
-                    disposalStageDto.setDamaged(damaged);
-                }catch (Exception e){
-                    log.error("no int");
-                }
-                Integer lysedOrDegenerated = null;
-                try {
-                    lysedOrDegenerated =  ParamUtil.getInt(request, "lysedOrDegenerated");
-                    totalNum+=lysedOrDegenerated;
-                    disposalStageDto.setLysedOrDegenerated(lysedOrDegenerated);
-                }catch (Exception e){
-                    log.error("no int");
-                }
-                break;
-            case "DISPTY004":
-            case "DISPTY005":
-            case "DISPTY006":
-                disposalStageDto.setDisposedTypeDisplay(2);
-                Integer unhealthyNum = null;
-                try {
-                    unhealthyNum =  ParamUtil.getInt(request, "unhealthyNum");
-                    totalNum+=unhealthyNum;
-                    disposalStageDto.setUnhealthyNum(unhealthyNum);
-                }catch (Exception e){
-                    log.error("no int");
-                }
-                break;
-            case "DISPTY007":
-                disposalStageDto.setDisposedTypeDisplay(3);
-                break;
-            default:
+        if(disposedType!=null){
+            switch (disposedType){
+                case "DISPTY001":
+                case "DISPTY002":
+                case "DISPTY003":
+                    disposalStageDto.setDisposedTypeDisplay(1);
+                    Integer immature =  null;
+                    try {
+                        immature =  ParamUtil.getInt(request, "immature");
+                        totalNum+=immature;
+                        disposalStageDto.setImmature(immature);
+                    }catch (Exception e){
+                        log.error("no int");
+                    }
+                    Integer abnormallyFertilised = null;
+                    try {
+                        abnormallyFertilised = ParamUtil.getInt(request, "abnormallyFertilised");
+                        totalNum+=abnormallyFertilised;
+                        disposalStageDto.setAbnormallyFertilised(abnormallyFertilised);
+                    }catch (Exception e){
+                        log.error("no int");
+                    }
+                    Integer unfertilised = null;
+                    try {
+                        unfertilised =  ParamUtil.getInt(request, "unfertilised");
+                        totalNum+=unfertilised;
+                        disposalStageDto.setUnfertilised(unfertilised);
+                    }catch (Exception e){
+                        log.error("no int");
+                    }
+                    Integer atretic = null;
+                    try {
+                        atretic =  ParamUtil.getInt(request, "atretic");
+                        totalNum+=atretic;
+                        disposalStageDto.setAtretic(atretic);
+                    }catch (Exception e){
+                        log.error("no int");
+                    }
+                    Integer damaged = null;
+                    try {
+                        damaged =  ParamUtil.getInt(request, "damaged");
+                        totalNum+=damaged;
+                        disposalStageDto.setDamaged(damaged);
+                    }catch (Exception e){
+                        log.error("no int");
+                    }
+                    Integer lysedOrDegenerated = null;
+                    try {
+                        lysedOrDegenerated =  ParamUtil.getInt(request, "lysedOrDegenerated");
+                        totalNum+=lysedOrDegenerated;
+                        disposalStageDto.setLysedOrDegenerated(lysedOrDegenerated);
+                    }catch (Exception e){
+                        log.error("no int");
+                    }
+                    break;
+                case "DISPTY004":
+                case "DISPTY005":
+                case "DISPTY006":
+                    disposalStageDto.setDisposedTypeDisplay(2);
+                    Integer unhealthyNum = null;
+                    try {
+                        unhealthyNum =  ParamUtil.getInt(request, "unhealthyNum");
+                        totalNum+=unhealthyNum;
+                        disposalStageDto.setUnhealthyNum(unhealthyNum);
+                    }catch (Exception e){
+                        log.error("no int");
+                    }
+                    break;
+                case "DISPTY007":
+                    disposalStageDto.setDisposedTypeDisplay(3);
+                    break;
+                default:
+            }
         }
+
         Integer otherDiscardedNum = null;
         try {
             otherDiscardedNum =  ParamUtil.getInt(request, "otherDiscardedNum");
