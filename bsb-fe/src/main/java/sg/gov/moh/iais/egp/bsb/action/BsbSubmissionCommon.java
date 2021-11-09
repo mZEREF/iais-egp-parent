@@ -1,5 +1,6 @@
 package sg.gov.moh.iais.egp.bsb.action;
 
+import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.utils.LogUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -23,6 +24,7 @@ import java.util.stream.Collectors;
  **/
 
 @Slf4j
+@Delegator("bsbSubmissionCommon")
 public class BsbSubmissionCommon {
     private static final String KEY_FACILITY_INFO = "facInfo";
     public static final String KEY_FAC_LIST_DTO = "facListDto";

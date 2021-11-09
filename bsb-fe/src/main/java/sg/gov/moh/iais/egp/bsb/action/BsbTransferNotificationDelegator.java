@@ -42,7 +42,7 @@ public class BsbTransferNotificationDelegator {
     private final BsbSubmissionCommon subCommon;
 
 
-    public BsbTransferNotificationDelegator(TransferClient transferClient, FileRepoClient fileRepoClient, DataSubmissionClient dataSubmissionClient, BsbSubmissionCommon subCommon) {
+    public BsbTransferNotificationDelegator(TransferClient transferClient, FileRepoClient fileRepoClient, BsbSubmissionCommon subCommon) {
         this.transferClient = transferClient;
         this.fileRepoClient = fileRepoClient;
         this.subCommon = subCommon;

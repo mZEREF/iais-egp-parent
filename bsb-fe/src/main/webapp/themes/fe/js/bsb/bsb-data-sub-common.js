@@ -59,6 +59,7 @@ function addSection(amtInputName, sectionIdPrefix, headerTitlePrefix, sectionGro
     var newHeaderDiv = newSectionHeader(nextAmt, headerTitlePrefix);
     newSectionDiv.replaceChild(newHeaderDiv, newSectionDiv.firstChild);
     modifyClonedNode(newSectionDiv, nextAmt - 1, separator);
+    $("a[data-upload-file = 'upload--v--"+nextAmt+"']").prevAll().remove();
 
     var sectionGroupDiv = document.getElementById(sectionGroupId);
     sectionGroupDiv.appendChild(newSectionDiv);
@@ -282,9 +283,6 @@ function replaceNodeAttributeSuffixNum(node, attrName, num, separator) {
             newValue = rawValue;
         }
         node.setAttribute(attrName, newValue);
-        if(node.nodeName === 'A'){
-            node.parent().find("div#"+newValue).empty();
-        }
     }
 }
 
