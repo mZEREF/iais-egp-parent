@@ -182,7 +182,7 @@
     }
     .lic-footer p {
       font-size: 11pt;
-      text-align: center;
+
     }
     .table-responsive {
       display: block;
@@ -214,9 +214,6 @@
     p {
       margin: 0 0 10px;
     }
-    p.note {
-      font-size: 10pt;
-    }
     .table > thead > tr > th, .table > tbody > tr > th, .table > tfoot > tr > th, .table > thead > tr > td, .table > tbody > tr > td, .table > tfoot > tr > td {
       line-height: 1.42857143;
     }
@@ -235,14 +232,14 @@
               <h2>UNDER THE HEALTHCARE SERVICES ACT (HCSA)</h2>
             </div>
             <div class="lic-number">
-              <p>Licence No.</p>
+              <p>LICENCE NO.</p>
               <h2>${licenceNo}</h2>
             </div>
             <div class="lic-info">
-              <p>Name of Licensee</p>
+              <p>NAME OF LICENSEE</p>
               <h3>${licenseeName}</h3>
               <br></br>
-              <p>Service Licence</p>
+              <p>LICENSABLE HEALTHCARE SERVICE</p>
               <h3>${serviceName}</h3>
               <span>${hivTesting}</span>
             </div>
@@ -251,91 +248,29 @@
                 <table class="table">
                   <thead>
                   <tr>
-                    <th></th>
-                    <th>Business Name</th>
-                    <th>Licensed Premises <br></br>(Address)</th>
-                    <th>Licensed Conveyances <br></br>(Vehicle No.)</th>
+                    <td></td>
+                    <td><u>BUSINESS NAME</u></td>
+                    <td><u>LICENSED PREMISES <br></br>(ADDRESS)</u></td>
+                    <td><u>LICENSED CONVEYANCES <br></br>(VEHICLE NO.)</u></td>
                   </tr>
                   </thead>
                   <tbody>
                   <tr>
                     <td>
+                      <p></p>
                       <p>1</p>
                     </td>
                     <td>
-                      <p class="visible-xs visible-sm table-row-title">Business Name</p>
-                      <p>${businessName}</p>
+                      <p class="visible-xs visible-sm table-row-title"></p>
+                      <p><u style ="font-weight:bold;">${businessName}</u></p>
                     </td>
                     <td>
-                      <p class="visible-xs visible-sm table-row-title">Licensed Premises</p>
-                      <p> ${address}</p>
+                      <p class="visible-xs visible-sm table-row-title"></p>
+                      <p><u style ="font-weight:bold;"> ${address}</u></p>
                     </td>
                     <td>
-                      <p class="visible-xs visible-sm table-row-title">Licensed Conveyances (vehicle No.)</p>
-                      <p>
-                      <ul class="v-numberlist">
-                       ${vehicleNo}
-                      </ul>
-                      </p>
-                    </td>
-                  </tr>
-                  </tbody>
-                </table>
-              </div>
-            </div>
-
-            <div class="lic-footer">
-              <p>This licence is issued under the Healthcare Services Act 2020 and is subject to its provisions, as well as any regulations, rules, code of practices and directions issued under it, and any conditions imposed by the Director of Medical Services. The licence is valid from the licence start date until the licence end date, unless revoked, suspended, ceased or surrendered.</p>
-              <p>Ministry of Health | Page 1 of 2</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-
-    <!-- License 2 -->
-    <div class="row">
-      <div class="col-xs-12">
-        <div class="instruction-content center-content">
-          <div class="licence_box">
-            <div class="lic-headerbox"></div>
-            <div class="lic-number">
-              <p>Licence No.</p>
-              <h2>${licenceNo}</h2>
-            </div>
-
-            <div class="lic-approved-info">
-              <div class="table-responsive">
-                <table class="table">
-                  <thead>
-                  <tr>
-                    <th></th>
-                    <th>Business Name</th>
-                    <th>Licensed Premises</th>
-                    <th>Licensed Conveyances <br></br>(Vehicle No.)</th>
-                  </tr>
-                  </thead>
-                  <tbody>
-                  <tr>
-                    <td>
-                      <p>1</p>
-                    </td>
-                    <td>
-                      <p class="visible-xs visible-sm table-row-title">Business Name</p>
-                      <p>${businessName}</p>
-                    </td>
-                    <td>
-                      <p class="visible-xs visible-sm table-row-title">Licensed Premises</p>
-                      <p>${address}</p>
-                    </td>
-                    <td>
-                      <p class="visible-xs visible-sm table-row-title">Licensed Conveyances (vehicle No.)</p>
-                      <p>
-                      <ul class="v-numberlist">
-                        ${vehicleNo2}
-                      </ul>
-                      </p>
+                      <p class="visible-xs visible-sm table-row-title"></p>
+                    ${vehicleNo}
                     </td>
                   </tr>
                   </tbody>
@@ -347,13 +282,13 @@
                 <tr align = "left">
                   <td width = "50%">
                     <div class="col-xs-12 col-md-6" style="padding-left: 0px">
-                      <p>Licence Start Date</p>
+                      <p>LICENCE START DATE</p>
                       <h3>${startDate}</h3>
                     </div>
                   </td>
                   <td width = "50%" align = "left">
                     <div class="col-xs-12 col-md-6">
-                      <p>Licence End Date</p>
+                      <p>LICENCE END DATE</p>
                       <h3>${endDate}</h3>
                     </div>
                   </td>
@@ -366,8 +301,8 @@
               <span>This is a computer -generated document. No Signature is required</span>
             </div>
             <div class="lic-footer" >
-              <p >This licence is issued under the Healthcare Services Act 2020 and is subject to its provisions, as well as any regulations, rules, code of practices and directions issued under it, and any conditions imposed by the Director of Medical Services. The licence is valid from the licence start date until the licence end date, unless revoked, suspended, ceased or surrendered.</p>
-              <p>Ministry of Health | Page 1 of 1</p>
+              <p style = "text-align: left;">This licence is issued under the Healthcare Services Act 2020 and is subject to its provisions, as well as any regulations, rules, code of practices and directions issued under it, and any conditions imposed by the Director of Medical Services. The licence is valid from the licence start date until the licence end date, unless revoked, suspended, ceased or surrendered.</p>
+              <p style = "text-align: center;">Ministry of Health | Page 1 of 1</p>
             </div>
           </div>
         </div>
