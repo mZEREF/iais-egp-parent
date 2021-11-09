@@ -77,6 +77,11 @@ $(function (){
         $("[name='action_type']").val("doBack");
         $("#mainForm").submit();
     });
+    $("#edit").click(function (){
+        showWaiting();
+        $("[name='action_type']").val("doBack");
+        $("#mainForm").submit();
+    });
 
     //notificationTypePage.jsp
     $("#nextBtn").click(function () {

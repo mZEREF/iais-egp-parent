@@ -44,4 +44,20 @@ public final class DataSubmissionConstants {
 
     public static final String KEY_DOC_TYPE_INVENTORY_TOXIN="ityToxin";
     public static final String KEY_DOC_TYPE_INVENTORY_BAT  ="ityBat";
+    public static final String KEY_DOC_TYPE_OTHERS  ="others";
+
+    public static final String KEY_CONSUME_NOTIFICATION_DTO = "consumeNotification";
+    public static final String KEY_DISPOSAL_NOTIFICATION_DTO = "disposalNotification";
+    public static final String KEY_EXPORT_NOTIFICATION_DTO = "exportNotification";
+    public static final String KEY_RECEIPT_NOTIFICATION_DTO = "receiveNotification";
+    public static final String KEY_FACILITY_INFO = "facilityInfo";
+    public static final String KEY_FAC_LISTS = "facLists";
+    public static final String KEY_FAC_SELECTION = "facSelection";
+    public static final String KEY_ACTION_TYPE = "action_type";
+    public static final String KEY_FAC_LIST_DTO = "facListDto";
+    public static final String KEY_DO_SETTINGS = "doSettings";
+    public static final String KEY_DOC_META = "docMeta";
+    public static final String KEY_SCHEDULE_TYPE = "scheduleType";
+    public static final String KEY_NON_OBJECT_ERROR = "please ensure your object has value";
+    public static final String KEY_EMPTY_LIST_ERROR = "you have not key your consumeList";
 }

@@ -56,7 +56,7 @@
     <div class="row">
         <div class="container">
             <div class="col-xs-12 col-md-6 text-left">
-                <a class="back" href="#"><em class="fa fa-angle-left"></em> Back</a>
+                <a class="back" href="/bsb-fe/eservice/INTERNET/BsbDataSubmission"><em class="fa fa-angle-left"></em> Back</a>
             </div>
         </div>
     </div>

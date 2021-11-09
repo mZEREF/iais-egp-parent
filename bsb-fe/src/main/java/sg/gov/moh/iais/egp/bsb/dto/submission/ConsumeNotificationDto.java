@@ -106,7 +106,7 @@ public class ConsumeNotificationDto implements Serializable {
     @Data
     @NoArgsConstructor
     public static class ConsumeNotNeedR{
-        private List<ConsumeNotNeed> consumeNotNeedList;
+        private List<ConsumeNotNeed> needList;
         private String facId;
         private String remarks;
         private String ensure;
@@ -210,7 +210,7 @@ public class ConsumeNotificationDto implements Serializable {
             consumeNotNeed.setSavedInfos(t.getSavedInfos());
             return consumeNotNeed; }).collect(Collectors.toList());
         ConsumeNotNeedR consumeNotNeedR = new ConsumeNotNeedR();
-        consumeNotNeedR.setConsumeNotNeedList(consumeNotNeeds);
+        consumeNotNeedR.setNeedList(consumeNotNeeds);
         consumeNotNeedR.setEnsure(this.ensure);
         consumeNotNeedR.setRemarks(this.remarks);
         consumeNotNeedR.setFacId(this.facId);

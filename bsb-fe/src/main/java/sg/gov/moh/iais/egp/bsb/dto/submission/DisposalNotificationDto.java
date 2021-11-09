@@ -3,15 +3,23 @@ package sg.gov.moh.iais.egp.bsb.dto.submission;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
+import sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants;
 import sg.gov.moh.iais.egp.bsb.dto.ValidationResultDto;
 import sg.gov.moh.iais.egp.bsb.util.SpringReflectionUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import static sg.gov.moh.iais.egp.bsb.constant.DataSubmissionConstants.*;
 /**
@@ -82,6 +90,29 @@ public class DisposalNotificationDto implements Serializable{
         disposalNotList.add(new DisposalNot());
     }
 
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class DisposalNotNeed{
+        private String scheduleType;
+        private String bat;
+        private String disposedQty;
+        private String meaUnit;
+        private String destructMethod;
+        private String destructDetails;
+        private List<PrimaryDocDto.DocRecordInfo> savedInfos;
+        private List<PrimaryDocDto.DocMeta> docMetas;
+    }
+
+    @Data
+    @NoArgsConstructor
+    public static class DisposalNotNeedR{
+        private List<DisposalNotNeed> needList;
+        private String facId;
+        private String remarks;
+        private String ensure;
+    }
+
     public List<DisposalNot> getDisposalNotList() { return new ArrayList<>(disposalNotList);
     }
 
@@ -122,7 +153,8 @@ public class DisposalNotificationDto implements Serializable{
     }
     // validate
     public boolean doValidation() {
-        this.validationResultDto = (ValidationResultDto) SpringReflectionUtils.invokeBeanMethod("dataSubmissionFeignClient", "validateDisposalNot", new Object[]{this});
+        DisposalNotNeedR needR = getDisposalNotNeedR();
+        this.validationResultDto = (ValidationResultDto) SpringReflectionUtils.invokeBeanMethod("dataSubmissionFeignClient", "validateDisposalNot", new Object[]{needR});
         return validationResultDto.isPass();
     }
 
@@ -137,6 +169,54 @@ public class DisposalNotificationDto implements Serializable{
         this.validationResultDto = null;
     }
 
+    /**
+     * This method is for JSP shows and contains all file information sorted by type
+     * getAllDocMetaByDocType
+     * @return Map<String,List<PrimaryDocDto.DocMeta>>
+     * */
+    public Map<String,List<PrimaryDocDto.DocMeta>> getAllDocMetaByDocType(){
+        List<PrimaryDocDto.DocMeta> docMetas = this.disposalNotList.stream().flatMap(i->i.getDocMetas().stream()).collect(Collectors.toList());
+        return sg.gov.moh.iais.egp.bsb.util.CollectionUtils.groupCollectionToMap(docMetas,PrimaryDocDto.DocMeta::getDocType);
+    }
+
+    /**
+     * This method is for downloading and contains all file information sorted by tmpId
+     *getAllNewDocInfo
+     * @return Map<String,PrimaryDocDto.NewDocInfo>
+     * */
+    public Map<String,PrimaryDocDto.NewDocInfo> getAllNewDocInfo(){
+        Map<String,PrimaryDocDto.NewDocInfo> newRecordMap = new HashMap<>();
+        if(CollectionUtils.isEmpty(this.disposalNotList)){
+            List<PrimaryDocDto.NewDocInfo> newDocInfos = disposalNotList.stream().flatMap(i->i.getNewDocInfos().stream()).collect(Collectors.toList());
+            newRecordMap = newDocInfos.stream().collect(Collectors.toMap(PrimaryDocDto.NewDocInfo::getTmpId, Function.identity()));
+        }
+        return newRecordMap;
+    }
+
+    /**
+     * this method is used to consume useful data by feign
+     * setDisposalNotNeedR
+     * @return DisposalNotNeedR
+     * */
+    public DisposalNotNeedR getDisposalNotNeedR(){
+        List<DisposalNotNeed> disposalNotNeeds = disposalNotList.stream().map(t->{
+            DisposalNotNeed disposalNoyNeed = new DisposalNotNeed();
+            disposalNoyNeed.setScheduleType(t.getScheduleType());
+            disposalNoyNeed.setBat(t.getBat());
+            disposalNoyNeed.setMeaUnit(t.getMeaUnit());
+            disposalNoyNeed.setDisposedQty(t.getDisposedQty());
+            disposalNoyNeed.setDestructMethod(t.getDestructMethod());
+            disposalNoyNeed.setDestructDetails(t.getDestructDetails());
+            disposalNoyNeed.setDocMetas(t.getDocMetas());
+            disposalNoyNeed.setSavedInfos(t.getSavedInfos());
+            return disposalNoyNeed; }).collect(Collectors.toList());
+        DisposalNotNeedR disposalNoyNeedR = new DisposalNotNeedR();
+        disposalNoyNeedR.setNeedList(disposalNotNeeds);
+        disposalNoyNeedR.setEnsure(this.ensure);
+        disposalNoyNeedR.setRemarks(this.remarks);
+        disposalNoyNeedR.setFacId(this.facId);
+        return disposalNoyNeedR;
+    }
 
     /**
      * reqObjectMapping
@@ -147,15 +227,50 @@ public class DisposalNotificationDto implements Serializable{
         clearDisposalLists();
         for (int i = 0; i < amt; i++) {
             DisposalNot disposalNot = new DisposalNot();
-            disposalNot.setScheduleType(ParamUtil.getString(request,KEY_PREFIX_SCHEDULE_TYPE+SEPARATOR+i));
+            String scheduleType = ParamUtil.getString(request, KEY_PREFIX_SCHEDULE_TYPE + SEPARATOR + i);
+            disposalNot.setScheduleType(scheduleType);
             disposalNot.setBat(ParamUtil.getString(request,KEY_PREFIX_BAT+SEPARATOR+i));
             disposalNot.setDisposedQty(ParamUtil.getString(request,KEY_PREFIX_DISPOSE_QTY+SEPARATOR+i));
             disposalNot.setMeaUnit(ParamUtil.getString(request,KEY_PREFIX_MEASUREMENT_UNIT+ SEPARATOR+i));
             disposalNot.setDestructMethod(ParamUtil.getString(request,KEY_PREFIX_DESTRUCT_METHOD+SEPARATOR+i));
             disposalNot.setDestructDetails(ParamUtil.getString(request,KEY_PREFIX_DESTRUCT_DETAILS+SEPARATOR+i));
+
+            PrimaryDocDto primaryDocDto = new PrimaryDocDto();
+            primaryDocDto.reqObjMapping(request,getDocType(scheduleType),String.valueOf(i));
+            disposalNot.setPrimaryDocDto(primaryDocDto);
+            disposalNot.setDocType(getDocType(scheduleType));
+            //joint repoId exist
+            String newRepoId = String.join(",", primaryDocDto.getNewDocMap().keySet());
+            disposalNot.setRepoIdNewString(newRepoId);
+            //set newDocFiles
+            disposalNot.setNewDocInfos(primaryDocDto.getNewDocTypeList());
+            //set need Validation value
+            disposalNot.setDocMetas(primaryDocDto.doValidation());
+
             addDisposalLists(disposalNot);
         }
         this.setRemarks(ParamUtil.getString(request,KEY_PREFIX_REMARKS));
         this.setFacId((String) ParamUtil.getSessionAttr(request,KEY_FAC_ID));
+    }
+
+    public String getDocType(String scheduleType){
+        String docType = "";
+        if(StringUtils.hasLength(scheduleType)){
+            switch (scheduleType){
+                case MasterCodeConstants.FIRST_SCHEDULE_PART_I:
+                case MasterCodeConstants.FIRST_SCHEDULE_PART_II:
+                case MasterCodeConstants.SECOND_SCHEDULE:
+                case MasterCodeConstants.THIRD_SCHEDULE:
+                case MasterCodeConstants.FOURTH_SCHEDULE:
+                    docType = KEY_DOC_TYPE_INVENTORY_BAT;
+                    break;
+                case MasterCodeConstants.FIFTH_SCHEDULE:
+                    docType = KEY_DOC_TYPE_INVENTORY_TOXIN;
+                    break;
+                default:
+                    break;
+            }
+        }
+        return docType;
     }
 }

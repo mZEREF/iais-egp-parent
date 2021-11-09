@@ -31,7 +31,7 @@
                                     <iais:select name="scheduleType--v--${status.index}"
                                                  id="scheduleType--v--${status.index}"
                                                  value="${item.scheduleType}" onchange="schTypeChange(this)"
-                                                 codeCategory="CATE_ID_BSB_SCH_TYPE"
+                                                 options="scheduleType"
                                                  firstOption="Please Select"/>
                                     <span data-err-ind="scheduleType--v--${status.index}" class="error-msg"></span>
                                 </div>

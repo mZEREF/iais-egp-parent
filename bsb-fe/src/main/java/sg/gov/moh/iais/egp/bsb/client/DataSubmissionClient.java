@@ -26,15 +26,24 @@ public interface DataSubmissionClient {
     @PostMapping(value = "/dataSubmission/saveConsumeNot", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     ResponseDto<String> saveConsumeNot(@RequestBody ConsumeNotificationDto.ConsumeNotNeedR consumeNotNeedR);
 
+    @PostMapping(value = "/dataSubmission/saveDisposalNot", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    ResponseDto<String> saveDisposalNot(@RequestBody DisposalNotificationDto.DisposalNotNeedR disposalNotNeedR);
+
+    @PostMapping(value = "/dataSubmission/saveExportNot", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    ResponseDto<String> saveExportNot(@RequestBody ExportNotificationDto.ExportNotNeedR exportNotNeedR);
+
+    @PostMapping(value = "/dataSubmission/saveReceiptNot", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    ResponseDto<String> saveReceiptNot(@RequestBody ReceiptNotificationDto.ReceiptNotNeedR receiptNotNeedR);
+
     @PostMapping(path = "/dataSubmission/validate/conNot", consumes = MediaType.APPLICATION_JSON_VALUE, produces =MediaType.APPLICATION_JSON_VALUE)
     ValidationResultDto validateConsumeNot(@RequestBody ConsumeNotificationDto.ConsumeNotNeedR consumeNotNeedR);
 
     @PostMapping(path = "/dataSubmission/validate/disNot", consumes = MediaType.APPLICATION_JSON_VALUE, produces =MediaType.APPLICATION_JSON_VALUE)
-    ValidationResultDto validateDisposalNot(@RequestBody DisposalNotificationDto dto);
+    ValidationResultDto validateDisposalNot(@RequestBody DisposalNotificationDto.DisposalNotNeedR disposalNotNeedR);
 
     @PostMapping(path = "/dataSubmission/validate/expNot", consumes = MediaType.APPLICATION_JSON_VALUE, produces =MediaType.APPLICATION_JSON_VALUE)
-    ValidationResultDto validateExportNot(@RequestBody ExportNotificationDto dto);
+    ValidationResultDto validateExportNot(@RequestBody ExportNotificationDto.ExportNotNeedR exportNotNeedR);
 
     @PostMapping(path = "/dataSubmission/validate/recNot", consumes = MediaType.APPLICATION_JSON_VALUE, produces =MediaType.APPLICATION_JSON_VALUE)
-    ValidationResultDto validateReceiptNot(@RequestBody ReceiptNotificationDto dto);
+    ValidationResultDto validateReceiptNot(@RequestBody ReceiptNotificationDto.ReceiptNotNeedR receiptNotNeedR);
 }

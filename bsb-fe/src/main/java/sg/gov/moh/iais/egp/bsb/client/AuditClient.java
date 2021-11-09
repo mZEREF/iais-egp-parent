@@ -16,7 +16,6 @@ import java.util.List;
 /**
  * @author Zhu Tangtang
  */
-
 @FeignClient(name = "bsb-fe-api", configuration = FeignConfiguration.class)
 public interface AuditClient {
 

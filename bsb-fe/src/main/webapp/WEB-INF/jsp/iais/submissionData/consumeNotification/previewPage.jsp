@@ -85,7 +85,7 @@
                                                         </div>
                                                         <div id="previewBatInfo" class="panel-collapse collapse">
                                                             <div class="panel-body">
-                                                                <div class="text-right app-font-size-16"><a href="#" id="back" data-step-key="approvalProfile"><em class="fa fa-pencil-square-o"></em>Edit</a>
+                                                                <div class="text-right app-font-size-16"><a href="#" id="edit" data-step-key="approvalProfile"><em class="fa fa-pencil-square-o"></em>Edit</a>
                                                                 </div>
                                                                 <c:forEach var="info" items="${consumeNotification.consumptionNotList}" varStatus="status">
                                                                     <div class="panel-main-content form-horizontal min-row">
