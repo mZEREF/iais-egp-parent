@@ -1,15 +1,15 @@
 $(document).ready(function () {
     $('#transferTypeOut').click(function () {
-
+        if($(this).is(':checked')){
             $('.inFromParts').attr("style","display: block");
             $('.outFromParts').attr("style","display: none");
-
+        }
     });
        $('#transferTypeOut').click(function () {
-
-               $('.outFromParts').attr("style","display: block");
-               $('.inFromParts').attr("style","display: none");
-
+           if($(this).is(':checked')) {
+               $('.outFromParts').attr("style", "display: block");
+               $('.inFromParts').attr("style", "display: none");
+           }
 
        });
 
