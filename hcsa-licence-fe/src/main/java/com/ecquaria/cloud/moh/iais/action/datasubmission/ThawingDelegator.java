@@ -3,6 +3,7 @@ package com.ecquaria.cloud.moh.iais.action.datasubmission;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.intranetUser.IntranetUserConstant;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInventoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ThawingStageDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -54,14 +55,11 @@ public class ThawingDelegator extends CommonDelegator {
         ArSuperDataSubmissionDto arSuperDataSubmissionDto = DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
         ThawingStageDto thawingStageDto = arSuperDataSubmissionDto.getThawingStageDto();
 
-        String changeFrozenOocytes = thawingStageDto.getThawedOocytesNum() > 0 ? "+" + thawingStageDto.getThawedOocytesNum() : "0";
-        String changeThawedOocytes = thawingStageDto.getThawedOocytesSurvivedMatureNum() > 0 ? "+" + thawingStageDto.getThawedOocytesSurvivedMatureNum() : "0";
-        String changeFrozenEmbryos = thawingStageDto.getThawedEmbryosNum() > 0 ? "+" + thawingStageDto.getThawedEmbryosNum() : "0";
-        String changeThawedEmbryos = thawingStageDto.getThawedEmbryosSurvivedNum() > 0 ? "+" + thawingStageDto.getThawedEmbryosSurvivedNum() : "0";
-        ParamUtil.setRequestAttr(bpc.request, "changeFrozenOocytes", changeFrozenOocytes);
-        ParamUtil.setRequestAttr(bpc.request, "changeThawedOocytes", changeThawedOocytes);
-        ParamUtil.setRequestAttr(bpc.request, "changeFrozenEmbryos", changeFrozenEmbryos);
-        ParamUtil.setRequestAttr(bpc.request, "changeThawedEmbryos", changeThawedEmbryos);
+        PatientInventoryDto patientInventoryDto = DataSubmissionHelper.initPatientInventoryTable(bpc.request);
+        patientInventoryDto.setChangeFrozenOocytes(thawingStageDto.getThawedOocytesNum());
+        patientInventoryDto.setChangeThawedOocytes(thawingStageDto.getThawedOocytesSurvivedMatureNum());
+        patientInventoryDto.setChangeFrozenEmbryos(thawingStageDto.getThawedEmbryosNum());
+        patientInventoryDto.setChangeThawedEmbryos(thawingStageDto.getThawedEmbryosSurvivedNum());
     }
 
     @Override
