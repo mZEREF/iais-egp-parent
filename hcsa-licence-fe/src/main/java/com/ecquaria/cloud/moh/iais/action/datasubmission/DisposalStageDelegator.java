@@ -163,6 +163,33 @@ public class DisposalStageDelegator extends CommonDelegator{
     @Override
     public void prepareConfim(BaseProcessClass bpc) {
         PatientInventoryDto patientInventoryDto = new PatientInventoryDto();
+        ArSuperDataSubmissionDto arSuperDataSubmissionDto= DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
+        DisposalStageDto disposalStageDto=arSuperDataSubmissionDto.getDisposalStageDto();
+        switch (disposalStageDto.getDisposedType()){
+            case "DISPTY001":
+                patientInventoryDto.setChangeFreshOocytes(-disposalStageDto.getTotalNum());
+                break;
+            case "DISPTY002":
+                patientInventoryDto.setChangeFrozenOocytes(-disposalStageDto.getTotalNum());
+                break;
+            case "DISPTY003":
+                patientInventoryDto.setChangeThawedOocytes(-disposalStageDto.getTotalNum());
+                break;
+            case "DISPTY004":
+                patientInventoryDto.setChangeFreshEmbryos(-disposalStageDto.getTotalNum());
+                break;
+            case "DISPTY005":
+                patientInventoryDto.setChangeFrozenEmbryos(-disposalStageDto.getTotalNum());
+                break;
+            case "DISPTY006":
+                patientInventoryDto.setChangeThawedEmbryos(-disposalStageDto.getTotalNum());
+                break;
+            case "DISPTY007":
+                patientInventoryDto.setChangeFrozenSperms(-disposalStageDto.getTotalNum());
+                break;
+            default:
+        }
+
         ParamUtil.setRequestAttr(bpc.request, "patientInventoryDto", patientInventoryDto);
     }
 }

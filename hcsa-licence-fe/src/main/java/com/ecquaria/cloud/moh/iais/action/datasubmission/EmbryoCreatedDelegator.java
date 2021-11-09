@@ -133,6 +133,15 @@ public class EmbryoCreatedDelegator extends CommonDelegator{
     @Override
     public void prepareConfim(BaseProcessClass bpc) {
         PatientInventoryDto patientInventoryDto = new PatientInventoryDto();
+        ArSuperDataSubmissionDto arSuperDataSubmissionDto= DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
+        EmbryoCreatedStageDto embryoCreatedStageDto=arSuperDataSubmissionDto.getEmbryoCreatedStageDto();
+
+        patientInventoryDto.setChangeFreshOocytes(-embryoCreatedStageDto.getPoorDevFreshOccNum()-embryoCreatedStageDto.getTransEmbrFreshOccNum());
+        patientInventoryDto.setChangeThawedOocytes(-embryoCreatedStageDto.getPoorDevThawOccNum()-embryoCreatedStageDto.getTransEmbrThawOccNum());
+
+        patientInventoryDto.setChangeFreshEmbryos(embryoCreatedStageDto.getPoorDevFreshOccNum()+embryoCreatedStageDto.getTransEmbrFreshOccNum());
+        patientInventoryDto.setChangeThawedEmbryos(embryoCreatedStageDto.getPoorDevThawOccNum()+embryoCreatedStageDto.getTransEmbrThawOccNum());
+
         ParamUtil.setRequestAttr(bpc.request, "patientInventoryDto", patientInventoryDto);
     }
 }

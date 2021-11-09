@@ -218,6 +218,24 @@ public class DonationStageDelegator extends CommonDelegator{
     @Override
     public void prepareConfim(BaseProcessClass bpc) {
         PatientInventoryDto patientInventoryDto = new PatientInventoryDto();
+        ArSuperDataSubmissionDto arSuperDataSubmissionDto= DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
+        DonationStageDto donationStageDto=arSuperDataSubmissionDto.getDonationStageDto();
+        switch (donationStageDto.getDonatedType()){
+            case "DONTY001":
+                patientInventoryDto.setChangeFreshOocytes(-donationStageDto.getTotalNum());
+                break;
+            case "DONTY002":
+                patientInventoryDto.setChangeFrozenOocytes(-donationStageDto.getTotalNum());
+                break;
+
+            case "DONTY003":
+                patientInventoryDto.setChangeFrozenEmbryos(-donationStageDto.getTotalNum());
+                break;
+            case "DONTY004":
+                patientInventoryDto.setChangeFrozenSperms(-donationStageDto.getTotalNum());
+                break;
+            default:
+        }
         ParamUtil.setRequestAttr(bpc.request, "patientInventoryDto", patientInventoryDto);
     }
 
