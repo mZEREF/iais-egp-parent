@@ -136,7 +136,7 @@
                             <iais:select  cssClass="inFromSelect" name="transInFromHciCode"  codeCategory="TRANSFERRED_IN_FROM" value="${transferInOutStageDto.transInFromHciCode}" />
                         </iais:value>
                     </iais:row>
-                   <div class="inFromOthersParts" <c:if test="${transferInOutStageDto.transInFromHciCode !='Others'}">style="display: none;"</c:if>>
+                   <div class="inFromOthersParts" <c:if test="${transferInOutStageDto.transInFromHciCode !='AR_TIT_003'}">style="display: none;"</c:if>>
                         <iais:row>
                             <iais:field width="5" value="Transferred In From (Others)" mandatory="true"/>
                             <iais:value width="7" cssClass="col-md-7">
@@ -145,7 +145,6 @@
                         </iais:row>
                     </div>
                 </div>
-
                 <div class="outFromParts" <c:if test="${transferInOutStageDto.transferType !='out'}">style="display: none;"</c:if>>
                     <iais:row>
                         <iais:field width="5" value="Transfer Out To" mandatory="true"/>
@@ -153,14 +152,14 @@
                             <iais:select  cssClass="outFromSelect" name="transOutToHciCode"  codeCategory="TRANSFERRED_IN_FROM" value="${transferInOutStageDto.transOutToHciCode}" />
                         </iais:value>
                     </iais:row>
-                   <%-- <div class="outFromOthersParts" <c:if test="${transferInOutStageDto.transInFromHciCode !='Others'}">style="display: none;"</c:if>>
+                   <div class="outFromOthersParts" <c:if test="${transferInOutStageDto.transInFromHciCode !='AR_TIT_003'}">style="display: none;"</c:if>>
                         <iais:row>
                             <iais:field width="5" value="Transfer Out To (Others)" mandatory="true"/>
                             <iais:value width="7" cssClass="col-md-7">
                                 <iais:input id="othersOutFrom" maxLength="20" type="text" name="transOutToOthers" value="${transferInOutStageDto.transOutToOthers}" />
                             </iais:value>
                         </iais:row>
-                    </div>--%>
+                    </div>
                 </div>
 
                 <iais:row>
