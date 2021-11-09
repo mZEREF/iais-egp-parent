@@ -27,7 +27,7 @@
                         <iais:code code="${endCycleStageDto.abandonReason}"/>
                     </iais:value>
                 </iais:row>
-                <div id="otherAbandonReason" <c:if test="${endCycleStageDto.abandonReason!='EFOR004'}">style="display: none"</c:if> >
+                <div id="otherAbandonReason" <c:if test="${endCycleStageDto.abandonReason!='ENDRA005'}">style="display: none"</c:if> >
                     <iais:row>
                         <iais:field width="5" value="Reason for Abandonment (Others)" />
                         <iais:value width="7" cssClass="col-md-7" display="true">

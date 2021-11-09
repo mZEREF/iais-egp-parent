@@ -25,11 +25,12 @@ public class EndCycleStageDtoValidator implements CustomizeValidator {
     public Map<String, String> validate(HttpServletRequest httpServletRequest) {
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
 
-        String abandonReason = ParamUtil.getRequestString(httpServletRequest, "abandonReasonSelect");
         String cycleAbandoned = ParamUtil.getRequestString(httpServletRequest, "cycleAbandoned");
+        String abandonReason = ParamUtil.getRequestString(httpServletRequest, "abandonReasonSelect");
         if(cycleAbandoned ==null){
             errorMap.put("cycleAbandoned" ,"GENERAL_ERR0006");
         }
+
         if (!StringUtil.isEmpty(abandonReason) && "ENDRA005".equals(abandonReason)) {
             String otherAbandonReason = ParamUtil.getRequestString(httpServletRequest, "otherAbandonReason");
             if (StringUtil.isEmpty(otherAbandonReason)) {

@@ -20,12 +20,13 @@
                                    name="cycleAbandoned"
                                    value="true"
                                    id="radioYes"
-                                   <c:if test="">checked</c:if>
+                                   <c:if test="${endCycleStageDto.cycleAbandoned == true }">checked</c:if>
                                    aria-invalid="false">
                             <label class="form-check-label"
                                    for="radioYes"><span
                                     class="check-circle"></span>Yes</label>
                         </div>
+                        <span class="error-msg" name="iaisErrorMsg" id="error_cycleAbandoned"></span>
                     </iais:value>
                     <iais:value width="3" cssClass="col-md-3">
                         <div class="form-check">
@@ -34,7 +35,7 @@
                                    name="cycleAbandoned"
                                    value="false"
                                    id="radioNo"
-                                   <c:if test="">checked</c:if>
+                                   <c:if test="${endCycleStageDto.cycleAbandoned == false }">checked</c:if>
                                    aria-invalid="false">
                             <label class="form-check-label"
                                    for="radioNo"><span
@@ -92,5 +93,3 @@
         });
     });
 </script>
-
-

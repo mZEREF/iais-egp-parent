@@ -11,6 +11,8 @@ import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
 import lombok.extern.slf4j.Slf4j;
 import sop.webflow.rt.api.BaseProcessClass;
 
+import javax.servlet.http.HttpServletRequest;
+
 /**
  * EndCycleDelegator
  *
@@ -28,10 +30,12 @@ public class endCycleDelegator extends CommonDelegator{
 
     @Override
     public void prepareSwitch(BaseProcessClass bpc) {
-        ArSuperDataSubmissionDto arSuperDataSubmissionDto = DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
-        ParamUtil.setSessionAttr(bpc.request, DataSubmissionConstant.AR_DATA_SUBMISSION, arSuperDataSubmissionDto);
         log.info(StringUtil.changeForLog("crud_action_type is ======>"+ParamUtil.getRequestString(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE)));
         ParamUtil.setRequestAttr(bpc.request, "smallTitle", "You are submitting for <strong>Cycle Stage</strong>");
+        HttpServletRequest request = bpc.request;
+        ArSuperDataSubmissionDto arSuperDataSubmissionDto = DataSubmissionHelper.getCurrentArDataSubmission(request);
+        ParamUtil.setSessionAttr(request, DataSubmissionConstant.AR_DATA_SUBMISSION, arSuperDataSubmissionDto);
+
     }
 
     @Override
@@ -45,12 +49,11 @@ public class endCycleDelegator extends CommonDelegator{
         String actionType = ParamUtil.getRequestString(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE);
         if (CommonDelegator.ACTION_TYPE_CONFIRM.equals(actionType)) {
             String cycleAbandoned = ParamUtil.getString(bpc.request, "cycleAbandoned");
-            String abandonReason = ParamUtil.getRequestString(bpc.request, "abandonReasonSelect");
+            String abandonReasonSelect = ParamUtil.getRequestString(bpc.request, "abandonReasonSelect");
             String otherAbandonReason = ParamUtil.getRequestString(bpc.request, "otherAbandonReason");
             endCycleStageDto.setCycleAbandoned(Boolean.parseBoolean(cycleAbandoned));
-            endCycleStageDto.setAbandonReason(abandonReason);
-            endCycleStageDto.setOtherAbandonReason(otherAbandonReason);
-            if (otherAbandonReason != null && "ENDRA005".equals(abandonReason)) {
+            endCycleStageDto.setAbandonReason(abandonReasonSelect);
+            if (otherAbandonReason != null && "ENDRA005".equals(abandonReasonSelect)) {
                 endCycleStageDto.setOtherAbandonReason(otherAbandonReason);
             }
             arSuperDataSubmissionDto.setEndCycleStageDto(endCycleStageDto);
