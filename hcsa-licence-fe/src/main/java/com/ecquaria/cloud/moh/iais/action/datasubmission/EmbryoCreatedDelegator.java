@@ -136,11 +136,10 @@ public class EmbryoCreatedDelegator extends CommonDelegator{
         ArSuperDataSubmissionDto arSuperDataSubmissionDto= DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
         EmbryoCreatedStageDto embryoCreatedStageDto=arSuperDataSubmissionDto.getEmbryoCreatedStageDto();
 
-        patientInventoryDto.setChangeFreshOocytes(-embryoCreatedStageDto.getPoorDevFreshOccNum()-embryoCreatedStageDto.getTransEmbrFreshOccNum());
-        patientInventoryDto.setChangeThawedOocytes(-embryoCreatedStageDto.getPoorDevThawOccNum()-embryoCreatedStageDto.getTransEmbrThawOccNum());
+//        patientInventoryDto.setChangeFreshOocytes(-embryoCreatedStageDto.getPoorDevFreshOccNum()-embryoCreatedStageDto.getTransEmbrFreshOccNum());
+//        patientInventoryDto.setChangeThawedOocytes(-embryoCreatedStageDto.getPoorDevThawOccNum()-embryoCreatedStageDto.getTransEmbrThawOccNum());
 
-        patientInventoryDto.setChangeFreshEmbryos(embryoCreatedStageDto.getPoorDevFreshOccNum()+embryoCreatedStageDto.getTransEmbrFreshOccNum());
-        patientInventoryDto.setChangeThawedEmbryos(embryoCreatedStageDto.getPoorDevThawOccNum()+embryoCreatedStageDto.getTransEmbrThawOccNum());
+        patientInventoryDto.setChangeFreshEmbryos(embryoCreatedStageDto.getTotalNum());
 
         ParamUtil.setRequestAttr(bpc.request, "patientInventoryDto", patientInventoryDto);
     }

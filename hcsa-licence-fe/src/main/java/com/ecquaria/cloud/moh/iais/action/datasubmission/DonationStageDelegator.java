@@ -222,7 +222,7 @@ public class DonationStageDelegator extends CommonDelegator{
         DonationStageDto donationStageDto=arSuperDataSubmissionDto.getDonationStageDto();
         switch (donationStageDto.getDonatedType()){
             case "DONTY001":
-                patientInventoryDto.setChangeFreshOocytes(-donationStageDto.getTotalNum());
+                patientInventoryDto.setChangeFrozenOocytes(-donationStageDto.getTotalNum());
                 break;
             case "DONTY002":
                 patientInventoryDto.setChangeFrozenOocytes(-donationStageDto.getTotalNum());
