@@ -86,6 +86,7 @@ import java.io.Serializable;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -252,7 +253,7 @@ public class RequestForChangeMenuDelegator {
             for (LicenceDto licenceDto : licenceDtoByHciCode) {
                 stringBuilder.append(licenceDto.getSvcName()).append(", ");
             }
-            premisesListQueryDto.setSvcId(stringBuilder.toString().substring(0, stringBuilder.toString().lastIndexOf(',')));
+            premisesListQueryDto.setSvcId(stringBuilder.substring(0, stringBuilder.toString().lastIndexOf(',')));
         }
         if (rows.isEmpty()) {
             bpc.request.setAttribute("ACK018", MessageUtil.getMessageDesc("GENERAL_ACK018"));
@@ -282,7 +283,7 @@ public class RequestForChangeMenuDelegator {
         list.add(conveyance);
         list.add(onsite);
         list.add(EASMTSsiet);
-        list.sort((s1,s2)->(s1.getText().compareTo(s2.getText())));
+        list.sort(Comparator.comparing(SelectOption::getText));
     }
 
 

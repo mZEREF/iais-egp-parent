@@ -400,23 +400,23 @@ public class EqRequestForChangeSubmitResultChange {
         }
         return true;
     }
-    public static boolean eqOperationalUnitDtoList( List<AppPremisesOperationalUnitDto> appPremisesOperationalUnitDtoList ,List<AppPremisesOperationalUnitDto> oldAppSubmissionDtoAppGrpPremisesDtoList){
-        if(appPremisesOperationalUnitDtoList==null && oldAppSubmissionDtoAppGrpPremisesDtoList==null){
+
+    public static boolean eqOperationalUnitDtoList(List<AppPremisesOperationalUnitDto> appPremisesOperationalUnitDtoList,
+            List<AppPremisesOperationalUnitDto> oldAppSubmissionDtoAppGrpPremisesDtoList) {
+        if (appPremisesOperationalUnitDtoList == null || oldAppSubmissionDtoAppGrpPremisesDtoList == null) {
             return false;
         }
-        if(appPremisesOperationalUnitDtoList==null && oldAppSubmissionDtoAppGrpPremisesDtoList!=null){
-            return true;
+        int n1 = appPremisesOperationalUnitDtoList.size();
+        int n2 = oldAppSubmissionDtoAppGrpPremisesDtoList.size();
+        if (n1 != n2) {
+            return false;
         }
-        if(appPremisesOperationalUnitDtoList!=null && oldAppSubmissionDtoAppGrpPremisesDtoList==null){
-            return true;
+        for (AppPremisesOperationalUnitDto dto : appPremisesOperationalUnitDtoList) {
+            if (!oldAppSubmissionDtoAppGrpPremisesDtoList.contains(dto)) {
+                return false;
+            }
         }
-        List<AppPremisesOperationalUnitDto> n = PageDataCopyUtil.copyAppPremisesOperationalUnitDto(appPremisesOperationalUnitDtoList);
-        List<AppPremisesOperationalUnitDto> o = PageDataCopyUtil.copyAppPremisesOperationalUnitDto(oldAppSubmissionDtoAppGrpPremisesDtoList);
-        if(!n.equals(o)){
-            return true;
-        }
-
-        return false;
+        return true;
     }
 
     public static boolean isChangeFloorUnit(AppSubmissionDto appSubmissionDto, AppSubmissionDto oldAppSubmissionDto){
@@ -428,10 +428,18 @@ public class EqRequestForChangeSubmitResultChange {
     public static boolean eqAddFloorNo( List<AppGrpPremisesDto> appGrpPremisesDtoList , List<AppGrpPremisesDto> oldAppGrpPremisesDtoList){
         List<AppPremisesOperationalUnitDto> appPremisesOperationalUnitDtos=new ArrayList<>(10);
         appGrpPremisesDtoList.forEach((v)->{
+            AppPremisesOperationalUnitDto currDto = new AppPremisesOperationalUnitDto();
+            currDto.setFloorNo(v.getFloorNo());
+            currDto.setUnitNo(v.getUnitNo());
+            appPremisesOperationalUnitDtos.add(currDto);
             appPremisesOperationalUnitDtos.addAll(v.getAppPremisesOperationalUnitDtos());
         });
         List<AppPremisesOperationalUnitDto> oldAppPremisesOperationalUnitDtos=new ArrayList<>(10);
         oldAppGrpPremisesDtoList.forEach((v)->{
+            AppPremisesOperationalUnitDto currDto = new AppPremisesOperationalUnitDto();
+            currDto.setFloorNo(v.getFloorNo());
+            currDto.setUnitNo(v.getUnitNo());
+            oldAppPremisesOperationalUnitDtos.add(currDto);
             oldAppPremisesOperationalUnitDtos.addAll(v.getAppPremisesOperationalUnitDtos());
         });
         return eqOperationalUnitDtoList(appPremisesOperationalUnitDtos,oldAppPremisesOperationalUnitDtos);
@@ -700,7 +708,7 @@ public class EqRequestForChangeSubmitResultChange {
             for (int i = 0; i < length; i++) {
                 AppGrpPremisesDto appGrpPremisesDto = appGrpPremisesDtos.get(0);
                 AppGrpPremisesDto oldAppGrpPremisesDto = oldAppGrpPremisesDtos.get(0);
-                if (!appGrpPremisesDto.getAddress().equals(oldAppGrpPremisesDto.getAddress())) {
+                if (!appGrpPremisesDto.getAddressWithoutFU().equals(oldAppGrpPremisesDto.getAddressWithoutFU())) {
                     return false;
                 }
             }
@@ -979,6 +987,12 @@ public class EqRequestForChangeSubmitResultChange {
             }
             if (!newDisciplinesDto.equals(oldDisciplinesDto)) {
 
+            }
+        } else if (!IaisCommonUtils.isEmpty(newDisciplinesDto) || !IaisCommonUtils.isEmpty(oldDisciplinesDto)) {
+            isAuto = false;
+            personnelEditList.add(HcsaConsts.STEP_LABORATORY_DISCIPLINES);
+            if (!IaisCommonUtils.isEmpty(oldAppSvcRelatedInfoDtoList.getAppSvcDisciplineAllocationDtoList())) {
+                personnelEditList.add(HcsaConsts.STEP_DISCIPLINE_ALLOCATION);
             }
         }
         // KAH
