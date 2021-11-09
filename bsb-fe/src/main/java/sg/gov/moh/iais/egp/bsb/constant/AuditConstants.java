@@ -7,8 +7,9 @@ import lombok.NoArgsConstructor;
  * @date 2021/7/6 15:04
  */
 
-@NoArgsConstructor
 public final class AuditConstants {
+    public AuditConstants() {
+    }
 
     public static final String PARAM_AUDIT_SEARCH = "auditSearch";
     public static final String PARAM_AUDIT_TYPE = "auditType";

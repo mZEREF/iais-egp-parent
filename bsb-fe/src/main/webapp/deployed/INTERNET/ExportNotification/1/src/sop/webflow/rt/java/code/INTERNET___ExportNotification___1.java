@@ -23,15 +23,17 @@ public class INTERNET___ExportNotification___1 extends BaseProcessClass {
 
 	public void prepareData_OnStepProcess_0() throws Exception {
 	// 		prepareData->OnStepProcess
-		EngineHelper.delegate(DELEGATOR, "prepareExport", this);
+		EngineHelper.delegate(DELEGATOR, "prepareExportData", this);
 	}
 
 	public void prepareSwitch1_OnStepProcess_0() throws Exception {
 		// 		prepareSwitch1->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "prepareSwitch1", this);
 	}
 
 	public void saveAndPrepareConfirm_OnStepProcess_0() throws Exception {
 	// 		saveAndPrepareConfirm->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "prepareExportConfirm", this);
 	}
 
 	public void prepareSwitch2_OnStepProcess_0() throws Exception {
@@ -40,6 +42,7 @@ public class INTERNET___ExportNotification___1 extends BaseProcessClass {
 
 	public void save_OnStepProcess_0() throws Exception {
 	// 		save->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "saveExportNot", this);
 	}
 
 	public void saveDraft_OnStepProcess_0() throws Exception {

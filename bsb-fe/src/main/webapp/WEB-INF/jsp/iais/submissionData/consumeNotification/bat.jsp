@@ -1,7 +1,7 @@
 <input type="hidden" name="sectionAmt" value="${consumeNotification.consumptionNotList.size()}">
 
 <input type="hidden" id="section_repeat_amt_input_name" value="sectionAmt" readonly disabled>
-<input type="hidden" id="section_repeat_section_id_prefix" value="reqTSection" readonly disabled>
+<input type="hidden" id="section_repeat_section_id_prefix" value="conSection" readonly disabled>
 <input type="hidden" id="section_repeat_header_title_prefix" value="Agent / Toxin " readonly disabled>
 <input type="hidden" id="section_repeat_section_group_id" value="sectionGroup" readonly disabled>
 <input type="hidden" id="section_repeat_separator" value="--v--" readonly disabled>
@@ -13,7 +13,7 @@
             <div class="col-xs-12 col-sm-12">
                 <div id="sectionGroup">
                     <c:forEach var="item" items="${consumeNotification.consumptionNotList}" varStatus="status">
-                        <section id="reqTSection--v--${status.index}">
+                        <section id="conSection--v--${status.index}">
                             <c:if test="${consumeNotification.consumptionNotList.size() > 1}">
                                 <div class="form-group">
                                     <h3 class="col-xs-9 col-sm-10 col-md-11" style="border-bottom: 1px solid black">Agent / Toxin ${status.index + 1}</h3>
@@ -67,14 +67,9 @@
                                         <span data-err-ind="consumeType--v--${status.index}" class="error-msg"></span>
                                     </div>
                                 </div>
-<%--                                <div class="form-group">--%>
-<%--                                    <div class="col-sm-5 control-label">--%>
-<%--                                        <label for="attachment--v--${status.index}">Attachment</label>--%>
-<%--                                    </div>--%>
-<%--                                    <div class="col-sm-6 col-md-7">--%>
-<%--                                        <input type="file" name="attachment--v--${status.index}" id="attachment--v--${status.index}">--%>
-<%--                                    </div>--%>
-<%--                                </div>--%>
+                                <div class="form-group">
+                                    <%@include file="../common/batDocument.jsp" %>
+                                </div>
                             </div>
                             <div id="agentFifth--v--${status.index}" style="display: none">
                                 <div class="form-group">
@@ -104,15 +99,9 @@
                                         <span data-err-ind="meaUnit--v--${status.index}" class="error-msg"></span>
                                     </div>
                                 </div>
-<%--                                <div class="form-group">--%>
-<%--                                    <div class="col-sm-5 control-label">--%>
-<%--                                        <label for="attachment--v--${status.index}">Attachment</label>--%>
-<%--                                    </div>--%>
-<%--                                    <div class="col-sm-6 col-md-7">--%>
-<%--                                        <input type="file" name="attachment--v--${status.index}"--%>
-<%--                                               id="attachment--v--${status.index}">--%>
-<%--                                    </div>--%>
-<%--                                </div>--%>
+                                <div class="form-group">
+                                    <%@include file="../common/batDocument.jsp" %>
+                                </div>
                             </div>
                         </section>
                     </c:forEach>
@@ -144,26 +133,6 @@
                             <span data-err-ind="remarks" class="error-msg"></span>
                         </div>
                     </div>
-<%--                    <div class="form-group">--%>
-<%--                        <div class="col-sm-5 control-label">--%>
-<%--                            <label for="documentType">Document Type</label>--%>
-<%--                        </div>--%>
-<%--                        <div class="col-sm-6 col-md-7">--%>
-<%--                            <select name="documentType" id="documentType">--%>
-<%--                                <option value="0">Please Select</option>--%>
-<%--                                <option value="3DOCTYPE001">Inventory: Biological Agents</option>--%>
-<%--                                <option value="3DOCTYPE002">Inventory: Toxins</option>--%>
-<%--                            </select>--%>
-<%--                        </div>--%>
-<%--                    </div>--%>
-<%--                    <div class="form-group">--%>
-<%--                        <div class="col-sm-5 control-label">--%>
-<%--                            <label for="attachment">Attachment</label>--%>
-<%--                        </div>--%>
-<%--                        <div class="col-sm-6 col-md-7">--%>
-<%--                            <input type="file" name="attachment" id="attachment">--%>
-<%--                        </div>--%>
-<%--                    </div>--%>
                 </div>
             </div>
         </div>

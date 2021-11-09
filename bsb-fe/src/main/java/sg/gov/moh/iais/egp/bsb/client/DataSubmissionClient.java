@@ -7,9 +7,7 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
 import sg.gov.moh.iais.egp.bsb.dto.ValidationResultDto;
-import sg.gov.moh.iais.egp.bsb.dto.submission.BiologicalDto;
-import sg.gov.moh.iais.egp.bsb.dto.submission.ConsumeNotificationDto;
-import sg.gov.moh.iais.egp.bsb.dto.submission.FacListDto;
+import sg.gov.moh.iais.egp.bsb.dto.submission.*;
 
 import java.util.List;
 
@@ -26,8 +24,17 @@ public interface DataSubmissionClient {
     FeignResponseEntity<FacListDto> queryAllApprovalFacList();
 
     @PostMapping(value = "/dataSubmission/saveConsumeNot", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    ResponseDto<String> saveConsumeNot(@RequestBody ConsumeNotificationDto notificationDto);
+    ResponseDto<String> saveConsumeNot(@RequestBody ConsumeNotificationDto.ConsumeNotNeedR consumeNotNeedR);
 
     @PostMapping(path = "/dataSubmission/validate/conNot", consumes = MediaType.APPLICATION_JSON_VALUE, produces =MediaType.APPLICATION_JSON_VALUE)
-    ValidationResultDto validateConsumeNot(@RequestBody ConsumeNotificationDto dto);
+    ValidationResultDto validateConsumeNot(@RequestBody ConsumeNotificationDto.ConsumeNotNeedR consumeNotNeedR);
+
+    @PostMapping(path = "/dataSubmission/validate/disNot", consumes = MediaType.APPLICATION_JSON_VALUE, produces =MediaType.APPLICATION_JSON_VALUE)
+    ValidationResultDto validateDisposalNot(@RequestBody DisposalNotificationDto dto);
+
+    @PostMapping(path = "/dataSubmission/validate/expNot", consumes = MediaType.APPLICATION_JSON_VALUE, produces =MediaType.APPLICATION_JSON_VALUE)
+    ValidationResultDto validateExportNot(@RequestBody ExportNotificationDto dto);
+
+    @PostMapping(path = "/dataSubmission/validate/recNot", consumes = MediaType.APPLICATION_JSON_VALUE, produces =MediaType.APPLICATION_JSON_VALUE)
+    ValidationResultDto validateReceiptNot(@RequestBody ReceiptNotificationDto dto);
 }

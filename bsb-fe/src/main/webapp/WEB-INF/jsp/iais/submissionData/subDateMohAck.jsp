@@ -13,24 +13,25 @@
 %>
 <%
     String webroot1=IaisEGPConstant.CSS_ROOT+IaisEGPConstant.FE_CSS_ROOT;
-    String noContainCLB = ParamUtil.getRequestString(request,"noContainCLB");
+//    String noContainCLB = ParamUtil.getRequestString(request,"noContainCLB");
     String msg = "Thank you for your submission.";
-    if(!StringUtil.isEmpty(noContainCLB)){
-        msg = noContainCLB;
-    }
+//    if(!StringUtil.isEmpty(noContainCLB)){
+//        msg = noContainCLB;
+//    }
 
 %>
 <webui:setLayout name="iais-internet"/>
 <div class="dashboard" id="dashboard" style="background-image:url('<%=webroot1%>img/Masthead-banner.jpg')">
     <div class="container">
         <div class="navigation-gp">
-            <div class="row">
-<%--                <%@ include file="../common/dashboardDropDown.jsp" %>--%>
-            </div>
+<%--            <div class="row">--%>
+<%--                <%@include file="common/dashboard.jsp" %>--%>
+<%--            </div>--%>
             <div class="row">
                 <div class="col-xs-12">
                     <div class="dashboard-page-title">
-                        <h1 class="font-weight 0">Laboratory Developed Test</h1>
+                        <h1 class="font-weight 0">xxx Submission</h1>
+                        <h3>You are submitting for xxx</h3>
                     </div>
                 </div>
             </div>
@@ -45,8 +46,8 @@
             <div class="row">
                 <div class="col-xs-12">
                     <div class="center-content">
-<%--                        <span style="font-size:2rem;"><%=msg%></span>--%>
-                        <span style="font-size:2rem;">You have successfully submit</span>
+                        <span style="font-size:2rem;"><%=msg%></span>
+<%--                        <span style="font-size:2rem;">You have successfully submit</span>--%>
                     </div>
                 </div>
             </div>

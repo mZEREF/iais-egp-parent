@@ -17,7 +17,7 @@
 <script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-data-submission.js"></script>
 <script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-data-sub-common.js"></script>
 
-<%@include file="../../inbox/dashboard/dashboard.jsp"%>
+<%@include file="../../inbox/dashboard/dashboard.jsp" %>
 <form method="post" id="mainForm" action="<%=process.runtime.continueURL()%>">
     <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
     <input type="hidden" name="action_type" value="">
@@ -76,94 +76,108 @@
                                                         </div>
                                                     </div>
 
-
                                                     <div class="panel panel-default">
                                                         <div class="panel-heading completed">
                                                             <h4 class="panel-title">
-                                                                <a class="collapsed" data-toggle="collapse" href="#previewBatInfo">Biological Agents &amp;Toxins</a>
+                                                                <a class="collapsed" data-toggle="collapse" href="#previewBatInfo">Biological Agents&amp;Toxins</a>
                                                             </h4>
                                                         </div>
                                                         <div id="previewBatInfo" class="panel-collapse collapse">
                                                             <div class="panel-body">
-                                                                <div class="text-right app-font-size-16"><a href="#" id="back" data-step-key="approvalProfile"><em class="fa fa-pencil-square-o"></em>Edit</a>
-                                                                </div>
-                                                                <c:forEach var="info" items="${consumeNotification.consumptionNotList}" varStatus="status">
-                                                                    <div class="panel-main-content form-horizontal min-row">
+                                                                <div class="text-right app-font-size-16"><a href="#" id="back" data-step-key="approvalProfile"><em class="fa fa-pencil-square-o"></em>Edit</a></div>
+                                                                <c:forEach var="info" items="${disposalNotification.disposalNotList}" varStatus="status">
+                                                                <div class="panel-main-content form-horizontal min-row">
+                                                                    <div class="form-group">
+                                                                        <div class="col-10">
+                                                                            <strong>Agents/Toxin ${status.index+1}</strong>
+                                                                        </div>
+                                                                        <div class="clear"></div>
+                                                                    </div>
+                                                                    <div>
                                                                         <div class="form-group">
-                                                                            <div class="col-10"><strong>Agents/Toxin ${status.index+1}</strong></div>
+                                                                            <label class="col-xs-5 col-md-4 control-label">Schedule Type</label>
+                                                                            <div class="col-sm-7 col-md-5 col-xs-7">
+                                                                                <p><iais:code code="${info.scheduleType}"/></p>
+                                                                            </div>
                                                                             <div class="clear"></div>
                                                                         </div>
-                                                                            <div>
-                                                                                <div class="form-group">
-                                                                                    <label class="col-xs-5 col-md-4 control-label">Schedule Type</label>
-                                                                                    <div class="col-sm-7 col-md-5 col-xs-7">
-                                                                                        <p><iais:code code="${info.scheduleType}"/></p>
-                                                                                    </div>
-                                                                                    <div class="clear"></div>
-                                                                                </div>
-                                                                                <div class="form-group">
-                                                                                    <label class="col-xs-5 col-md-4 control-label">Biological Agent/Toxin</label>
-                                                                                    <div class="col-sm-7 col-md-5 col-xs-7">
-                                                                                        <p>${info.bat}</p>
-                                                                                    </div>
-                                                                                    <div class="clear"></div>
-                                                                                </div>
-                                                                                <div class="form-group">
-                                                                                    <label class="col-xs-5 col-md-4 control-label">Type of Consumption</label>
-                                                                                    <div class="col-sm-7 col-md-5 col-xs-7">
-                                                                                        <p><iais:code code="${info.consumeType}"/></p>
-                                                                                    </div>
-                                                                                    <div class="clear"></div>
-                                                                                </div>
-                                                                                <div class="form-group">
-                                                                                    <label class="col-xs-5 col-md-4 control-label">Quantity Consumed</label>
-                                                                                    <div class="col-sm-7 col-md-5 col-xs-7">
-                                                                                        <p>${info.consumedQty}</p>
-                                                                                    </div>
-                                                                                    <div class="clear"></div>
-                                                                                </div>
-                                                                                <div class="form-group">
-                                                                                    <label class="col-xs-5 col-md-4 control-label">Unit of Measurement Transferred</label>
-                                                                                    <div class="col-sm-7 col-md-5 col-xs-7">
-                                                                                        <p><iais:code code="${info.meaUnit}"/></p>
-                                                                                    </div>
-                                                                                    <div class="clear"></div>
-                                                                                </div>
+                                                                        <div class="form-group">
+                                                                            <label class="col-xs-5 col-md-4 control-label">Biological Agent/Toxin</label>
+                                                                            <div class="col-sm-7 col-md-5 col-xs-7">
+                                                                                <p>${info.bat}</p>
                                                                             </div>
-                                                                        </c:forEach>
-                                                                    </div>
+                                                                            <div class="clear"></div>
+                                                                        </div>
+                                                                        <div class="form-group">
+                                                                            <label class="col-xs-5 col-md-4 control-label">Quantity Disposed</label>
+                                                                            <div class="col-sm-7 col-md-5 col-xs-7">
+                                                                                <p>${info.disposedQty}</p>
+                                                                            </div>
+                                                                            <div class="clear"></div>
+                                                                        </div>
+                                                                        <div class="form-group">
+                                                                            <label class="col-xs-5 col-md-4 control-label">Unit of Measurement Transferred</label>
+                                                                            <div class="col-sm-7 col-md-5 col-xs-7">
+                                                                                <p><iais:code code="${info.meaUnit}"/></p>
+                                                                            </div>
+                                                                            <div class="clear"></div>
+                                                                        </div>
 
-                                                                    <div class="panel-main-content form-horizontal min-row">
                                                                         <div class="form-group">
-                                                                            <div class="col-10"><strong>Additional Details</strong></div>
+                                                                            <label class="col-xs-5 col-md-4 control-label">Complete Destruction/Disposal</label>
+                                                                            <div class="col-sm-7 col-md-5 col-xs-7">
+                                                                                <p>Yes</p>
+                                                                            </div>
                                                                             <div class="clear"></div>
                                                                         </div>
-                                                                        <div>
-                                                                            <div class="form-group">
-                                                                                <label class="col-xs-5 col-md-4 control-label">Facility Name</label>
-                                                                                <div class="col-sm-7 col-md-5 col-xs-7">
-                                                                                    <p>${facilityInfo.facName}</p>
-                                                                                </div>
-                                                                                <div class="clear"></div>
+                                                                        <div class="form-group">
+                                                                            <label class="col-xs-5 col-md-4 control-label">Method of Destruction</label>
+                                                                            <div class="col-sm-7 col-md-5 col-xs-7">
+                                                                                <p>${info.destructMethod}</p>
                                                                             </div>
-                                                                            <div class="form-group">
-                                                                                <label class="col-xs-5 col-md-4 control-label">Remarks</label>
-                                                                                <div class="col-sm-7 col-md-5 col-xs-7">
-                                                                                    <p>${consumeNotification.remarks}</p>
-                                                                                </div>
-                                                                                <div class="clear"></div>
+                                                                            <div class="clear"></div>
+                                                                        </div>
+                                                                        <div class="form-group">
+                                                                            <label class="col-xs-5 col-md-4 control-label">Details and/or procedures of destruction</label>
+                                                                            <div class="col-sm-7 col-md-5 col-xs-7">
+                                                                                <p>${info.destructDetails}</p>
                                                                             </div>
+                                                                            <div class="clear"></div>
                                                                         </div>
                                                                     </div>
+                                                                    </c:forEach>
+                                                                </div>
+
+                                                                <div class="panel-main-content form-horizontal min-row">
+                                                                    <div class="form-group">
+                                                                        <div class="col-10"><strong>Additional Details</strong></div>
+                                                                        <div class="clear"></div>
+                                                                    </div>
+                                                                    <div>
+                                                                        <div class="form-group">
+                                                                            <label class="col-xs-5 col-md-4 control-label">Facility Name</label>
+                                                                            <div class="col-sm-7 col-md-5 col-xs-7">
+                                                                                <p>${facilityInfo.facName}</p>
+                                                                            </div>
+                                                                            <div class="clear"></div>
+                                                                        </div>
+                                                                        <div class="form-group">
+                                                                            <label class="col-xs-5 col-md-4 control-label">Remarks</label>
+                                                                            <div class="col-sm-7 col-md-5 col-xs-7">
+                                                                                <p>${disposalNotification.remarks}</p>
+                                                                            </div>
+                                                                            <div class="clear"></div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
                                                             </div>
                                                         </div>
                                                     </div>
 
                                                     <div class="panel panel-default">
-                                                        <div class="panel-heading completed">
+                                                        <div class="panel-heading">
                                                             <h4 class="panel-title">
-                                                                <a class="collapsed" data-toggle="collapse"
-                                                                   href="#previewDocs">Declarations</a>
+                                                                <a class="collapsed" data-toggle="collapse" href="#previewDocs">Declarations</a>
                                                             </h4>
                                                         </div>
                                                         <div id="previewDocs" class="panel-collapse collapse">
@@ -174,7 +188,13 @@
                                                                             <input type="checkbox" name="ensure" id="ensure" value="Y"/>
                                                                         </div>
                                                                         <div class="col-xs-10 control-label">
-                                                                            <label for="ensure">The information provided in this submission and any document submitted together with the submissoin is not false, misleading or inaccurate in any particular manner.</label>
+                                                                            <label for="ensure">I, hereby declare that
+                                                                                all the information I have provided here
+                                                                                is true and accurate. The facility no
+                                                                                longer possesses inventory of the
+                                                                                biological agent/toxin following the
+                                                                                destruction and/or disposal of the
+                                                                                declared materials.</label>
                                                                             <span data-err-ind="ensure" class="error-msg"></span>
                                                                         </div>
                                                                     </div>
@@ -182,7 +202,6 @@
                                                             </div>
                                                         </div>
                                                     </div>
-
                                                 </div>
                                             </div>
                                         </div>

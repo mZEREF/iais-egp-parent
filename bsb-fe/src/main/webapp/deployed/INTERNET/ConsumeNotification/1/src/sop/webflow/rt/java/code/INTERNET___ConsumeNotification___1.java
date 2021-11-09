@@ -23,7 +23,7 @@ public class INTERNET___ConsumeNotification___1 extends BaseProcessClass {
 
 	public void prepareData_OnStepProcess_0() throws Exception {
 	// 		prepareData->OnStepProcess
-		EngineHelper.delegate(DELEGATOR, "prepareConsume", this);
+		EngineHelper.delegate(DELEGATOR, "prepareConsumeData", this);
 	}
 
 	public void prepareSwitch1_OnStepProcess_0() throws Exception {
@@ -33,7 +33,7 @@ public class INTERNET___ConsumeNotification___1 extends BaseProcessClass {
 
 	public void saveAndPrepareConfirm_OnStepProcess_0() throws Exception {
 	// 		saveAndPrepareConfirm->OnStepProcess
-		EngineHelper.delegate(DELEGATOR, "prepareConfirm", this);
+		EngineHelper.delegate(DELEGATOR, "prepareConsumeConfirm", this);
 	}
 
 	public void prepareSwitch2_OnStepProcess_0() throws Exception {

@@ -13,10 +13,13 @@
     String webroot1 = IaisEGPConstant.CSS_ROOT + IaisEGPConstant.FE_CSS_ROOT;
 %>
 <webui:setLayout name="iais-internet"/>
+
 <script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-common.js"></script>
 <script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-data-sub-common.js"></script>
 <script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-data-submission.js"></script>
-<%@include file="/WEB-INF/jsp/iais/submissionData/common/showTabErrorMsg.jsp"%>
+
+<%@include file="/WEB-INF/jsp/iais/include/showErrorMsg.jsp"%>
+
 <form method="post" id="mainForm" enctype="multipart/form-data" action=<%=process.runtime.continueURL()%>>
     <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
     <input type="hidden" name="action_type" value="">
