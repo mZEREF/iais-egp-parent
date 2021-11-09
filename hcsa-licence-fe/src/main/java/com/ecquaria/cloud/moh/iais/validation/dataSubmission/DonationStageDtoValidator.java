@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.validation.dataSubmission;
 
+import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DonationStageDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
@@ -141,7 +142,7 @@ public class DonationStageDtoValidator implements CustomizeValidator {
 
         if(StringUtil.isEmpty(donationStageDto.getDonationReason())){
             errorMap.put("donationReason", errMsgErr006);
-        }else if("DONRES004".equals(donationStageDto.getDonationReason())){
+        }else if(DataSubmissionConsts.DONATION_REASON_OTHERS.equals(donationStageDto.getDonationReason())){
             if(StringUtil.isEmpty(donationStageDto.getOtherDonationReason())){
                 errorMap.put("otherDonationReason", errMsgErr006);
             }

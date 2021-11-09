@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.action.datasubmission;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.EfoCycleStageDto;
@@ -79,7 +80,7 @@ public class EfoCycleStageDelegator extends CommonDelegator{
         efoCycleStageDto.setStartDate(startDate);
         efoCycleStageDto.setIsMedicallyIndicated(indicated);
         efoCycleStageDto.setReason(reasonSelect);
-        if(othersReason!=null&& "EFOR004".equals(reasonSelect)){
+        if(othersReason!=null&& DataSubmissionConsts.EFO_REASON_OTHERS.equals(reasonSelect)){
             efoCycleStageDto.setOtherReason(othersReason);
         }
         DataSubmissionHelper.setCurrentArDataSubmission(arSuperDataSubmissionDto,bpc.request);

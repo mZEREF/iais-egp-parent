@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.action.datasubmission;
 
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
@@ -194,7 +195,7 @@ public class DonationStageDelegator extends CommonDelegator{
         }
         String donationReason=ParamUtil.getString(request,"donationReason");
         donationStageDto.setDonationReason(donationReason);
-        if("DONRES004".equals(donationReason)){
+        if(DataSubmissionConsts.DONATION_REASON_OTHERS.equals(donationReason)){
             String otherDonationReason=ParamUtil.getString(request,"otherDonationReason");
             donationStageDto.setOtherDonationReason(otherDonationReason);
         }
@@ -221,17 +222,17 @@ public class DonationStageDelegator extends CommonDelegator{
         ArSuperDataSubmissionDto arSuperDataSubmissionDto= DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
         DonationStageDto donationStageDto=arSuperDataSubmissionDto.getDonationStageDto();
         switch (donationStageDto.getDonatedType()){
-            case "DONTY001":
+            case DataSubmissionConsts.DONATED_TYPE_FRESH_OOCYTE:
                 patientInventoryDto.setChangeFrozenOocytes(-donationStageDto.getTotalNum());
                 break;
-            case "DONTY002":
+            case DataSubmissionConsts.DONATED_TYPE_FROZEN_OOCYTE:
                 patientInventoryDto.setChangeFrozenOocytes(-donationStageDto.getTotalNum());
                 break;
 
-            case "DONTY003":
+            case DataSubmissionConsts.DONATED_TYPE_FROZEN_EMBRYO:
                 patientInventoryDto.setChangeFrozenEmbryos(-donationStageDto.getTotalNum());
                 break;
-            case "DONTY004":
+            case DataSubmissionConsts.DONATED_TYPE_FROZEN_SPERM:
                 patientInventoryDto.setChangeFrozenSperms(-donationStageDto.getTotalNum());
                 break;
             default:

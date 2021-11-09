@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.action.datasubmission;
 
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DisposalStageDto;
@@ -62,9 +63,9 @@ public class DisposalStageDelegator extends CommonDelegator{
 
         if(disposedType!=null){
             switch (disposedType){
-                case "DISPTY001":
-                case "DISPTY002":
-                case "DISPTY003":
+                case DataSubmissionConsts.DISPOSAL_TYPE_FRESH_OOCYTE:
+                case DataSubmissionConsts.DISPOSAL_TYPE_FROZEN_OOCYTE:
+                case DataSubmissionConsts.DISPOSAL_TYPE_THAWED_OOCYTE:
                     disposalStageDto.setDisposedTypeDisplay(1);
                     Integer immature =  null;
                     try {
@@ -115,9 +116,9 @@ public class DisposalStageDelegator extends CommonDelegator{
                         log.error("no int");
                     }
                     break;
-                case "DISPTY004":
-                case "DISPTY005":
-                case "DISPTY006":
+                case DataSubmissionConsts.DISPOSAL_TYPE_FRESH_EMBRYO:
+                case DataSubmissionConsts.DISPOSAL_TYPE_FROZEN_EMBRYO:
+                case DataSubmissionConsts.DISPOSAL_TYPE_THAWED_EMBRYO:
                     disposalStageDto.setDisposedTypeDisplay(2);
                     Integer unhealthyNum = null;
                     try {
@@ -128,7 +129,7 @@ public class DisposalStageDelegator extends CommonDelegator{
                         log.error("no int");
                     }
                     break;
-                case "DISPTY007":
+                case DataSubmissionConsts.DISPOSAL_TYPE_FROZEN_SPERM:
                     disposalStageDto.setDisposedTypeDisplay(3);
                     break;
                 default:
@@ -166,25 +167,25 @@ public class DisposalStageDelegator extends CommonDelegator{
         ArSuperDataSubmissionDto arSuperDataSubmissionDto= DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
         DisposalStageDto disposalStageDto=arSuperDataSubmissionDto.getDisposalStageDto();
         switch (disposalStageDto.getDisposedType()){
-            case "DISPTY001":
+            case DataSubmissionConsts.DISPOSAL_TYPE_FRESH_OOCYTE:
                 patientInventoryDto.setChangeFreshOocytes(-disposalStageDto.getTotalNum());
                 break;
-            case "DISPTY002":
+            case DataSubmissionConsts.DISPOSAL_TYPE_FROZEN_OOCYTE:
                 patientInventoryDto.setChangeFrozenOocytes(-disposalStageDto.getTotalNum());
                 break;
-            case "DISPTY003":
+            case DataSubmissionConsts.DISPOSAL_TYPE_THAWED_OOCYTE:
                 patientInventoryDto.setChangeThawedOocytes(-disposalStageDto.getTotalNum());
                 break;
-            case "DISPTY004":
+            case DataSubmissionConsts.DISPOSAL_TYPE_FRESH_EMBRYO:
                 patientInventoryDto.setChangeFreshEmbryos(-disposalStageDto.getTotalNum());
                 break;
-            case "DISPTY005":
+            case DataSubmissionConsts.DISPOSAL_TYPE_FROZEN_EMBRYO:
                 patientInventoryDto.setChangeFrozenEmbryos(-disposalStageDto.getTotalNum());
                 break;
-            case "DISPTY006":
+            case DataSubmissionConsts.DISPOSAL_TYPE_THAWED_EMBRYO:
                 patientInventoryDto.setChangeThawedEmbryos(-disposalStageDto.getTotalNum());
                 break;
-            case "DISPTY007":
+            case DataSubmissionConsts.DISPOSAL_TYPE_FROZEN_SPERM:
                 patientInventoryDto.setChangeFrozenSperms(-disposalStageDto.getTotalNum());
                 break;
             default:

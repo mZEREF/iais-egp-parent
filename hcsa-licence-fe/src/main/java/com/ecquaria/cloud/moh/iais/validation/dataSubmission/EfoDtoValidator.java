@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.validation.dataSubmission;
 
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -44,7 +45,7 @@ public class EfoDtoValidator implements CustomizeValidator {
             }
         }
 
-        if (!StringUtil.isEmpty(reason)&&"EFOR004".equals(reason)) {
+        if (!StringUtil.isEmpty(reason)&& DataSubmissionConsts.EFO_REASON_OTHERS.equals(reason)) {
             String othersReason = ParamUtil.getRequestString(httpServletRequest, "othersReason");
             if (StringUtil.isEmpty(othersReason)) {
                 String errMsg = MessageUtil.replaceMessage("GENERAL_ERR0006","Others Reason", "field");
