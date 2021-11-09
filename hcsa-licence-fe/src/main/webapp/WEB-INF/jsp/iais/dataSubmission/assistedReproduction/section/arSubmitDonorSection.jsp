@@ -15,7 +15,7 @@
                     <iais:row>
                         <iais:field width="5" value="Is Sample from a Directed Donation?" mandatory="true"/>
                         <iais:value width="3" cssClass="col-md-3">
-                            <div class="form-check" onclick="showDonor()">
+                            <div class="form-check" onclick="showDonationYes()">
                                 <input class="form-check-input"
                                        type="radio"
                                        name="directedDonation"
@@ -29,7 +29,7 @@
                             </div>
                         </iais:value>
                         <iais:value width="3" cssClass="col-md-3">
-                            <div class="form-check" onclick="hideDonor()">
+                            <div class="form-check" onclick="showDonationNo()">
                                 <input class="form-check-input" type="radio"
                                        name="directedDonation"
                                        value="0"
@@ -97,15 +97,15 @@
                         <iais:row id="sampleType" >
                             <iais:field width="5" value="Sample Type" mandatory="true"/>
                             <iais:value width="7" cssClass="col-md-7">
-                                <%--<iais:select name="sampleType" firstOption="Please Select" codeCategory="CATE_ID_DS_ID_TYPE" value="${donorSampleDto.sampleType}"--%>
-                                             <%--cssClass="sampleType"/>--%>
+                                <iais:select name="sampleType" firstOption="Please Select" codeCategory="CATE_ID_DS_ID_TYPE" value="${donorSampleDto.sampleType}"
+                                             cssClass="sampleType"/>
                             </iais:value>
                         </iais:row>
                         <iais:row >
                             <iais:field width="5" value="Is Donor’s Identity Known?" mandatory="true"/>
                             <iais:value width="7" cssClass="col-md-7">
-                                <%--<iais:select name="donorIdentityKnown" firstOption="Please Select" codeCategory="CATE_ID_DS_ID_TYPE" value="${donorSampleDto.donorIdentityKnown}"--%>
-                                             <%--cssClass="donorIdentityKnown"/>--%>
+                                <iais:select name="donorIdentityKnown" firstOption="Please Select" codeCategory="CATE_ID_DS_ID_TYPE" value="${donorSampleDto.donorIdentityKnown}"
+                                             cssClass="donorIdentityKnown"/>
                             </iais:value>
                         </iais:row>
                         <iais:row id="donorSampleCodeRow"   >
@@ -118,8 +118,8 @@
                             <iais:row >
                                 <iais:field width="5" value="Donor's ID Type" mandatory="true"/>
                                 <iais:value width="7" cssClass="col-md-7">
-                                    <%--<iais:select name="idType" firstOption="Please Select" codeCategory="CATE_ID_DS_ID_TYPE" value="${donorSampleDto.idType}"--%>
-                                                 <%--cssClass="idTypeSel"/>--%>
+                                    <iais:select name="idType" firstOption="Please Select" codeCategory="CATE_ID_DS_ID_TYPE" value="${donorSampleDto.idType}"
+                                                 cssClass="idTypeSel"/>
                                 </iais:value>
                             </iais:row>
                             <iais:row  >
@@ -139,7 +139,7 @@
 
                     <iais:row>
                         <iais:field width="5" value="Donor's Age when Sample was Collected" mandatory="true"/>
-                        <iais:value width="7" cssClass="col-md-4">
+                        <iais:value width="7" cssClass="col-md-7">
                             <iais:input maxLength="2" type="text" name="donorAge" value="" />
                         </iais:value>
                     </iais:row>
@@ -152,3 +152,13 @@
         </div>
     </div>
 </div>
+<script  type="text/javascript">
+    function showDonationYes(){
+     $("#directedDonationYes").show();
+     $("#directedDonationNo").hide();
+    }
+    function showDonationNo(){
+        $("#directedDonationNo").show();
+        $("#directedDonationYes").hide();
+    }
+</script>
