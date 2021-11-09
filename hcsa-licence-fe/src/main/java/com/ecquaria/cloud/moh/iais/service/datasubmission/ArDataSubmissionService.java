@@ -63,4 +63,12 @@ public interface ArDataSubmissionService {
 
     Date getLastCompletedCycleStartDate(String patientCode, String hciCode);
 
+    /**
+      * @author: shicheng
+      * @Date 2021/11/9
+      * @Param: patientInventoryDto, arSubFreezingStageDto
+      * @return: PatientInventoryDto
+      * @Descripation: setFreezingPatientChange
+      */
+    PatientInventoryDto setFreezingPatientChange(PatientInventoryDto patientInventoryDto, ArSubFreezingStageDto arSubFreezingStageDto);
 }
