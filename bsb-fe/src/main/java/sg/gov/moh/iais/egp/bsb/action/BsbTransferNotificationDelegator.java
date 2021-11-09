@@ -1,17 +1,22 @@
 package sg.gov.moh.iais.egp.bsb.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.moh.iais.common.utils.LogUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
+import sg.gov.moh.iais.egp.bsb.client.DataSubmissionClient;
 import sg.gov.moh.iais.egp.bsb.client.FileRepoClient;
 import sg.gov.moh.iais.egp.bsb.client.TransferClient;
 import sg.gov.moh.iais.egp.bsb.constant.DocConstants;
 import sg.gov.moh.iais.egp.bsb.constant.ValidationConstants;
+import sg.gov.moh.iais.egp.bsb.dto.submission.FacListDto;
 import sg.gov.moh.iais.egp.bsb.dto.submission.PrimaryDocDto;
 import sg.gov.moh.iais.egp.bsb.dto.submission.TransferNotificationDto;
+import sg.gov.moh.iais.egp.bsb.entity.Biological;
 import sg.gov.moh.iais.egp.bsb.entity.DocSetting;
 import sop.servlet.webflow.HttpHandler;
 import sop.webflow.rt.api.BaseProcessClass;
@@ -30,12 +35,17 @@ import java.util.Map;
 @Delegator(value = "transferNotificationDelegator")
 public class BsbTransferNotificationDelegator {
     public static final String KEY_TRANSFER_NOTIFICATION_DTO = "transferNotDto";
+    public static final String KEY_FAC_LIST_DTO = "facListDto";
+    public static final String KEY_FAC_ID = "facId";
     private final TransferClient transferClient;
     private final FileRepoClient fileRepoClient;
+    private final BsbSubmissionCommon subCommon;
 
-    public BsbTransferNotificationDelegator(TransferClient transferClient, FileRepoClient fileRepoClient) {
+
+    public BsbTransferNotificationDelegator(TransferClient transferClient, FileRepoClient fileRepoClient, DataSubmissionClient dataSubmissionClient, BsbSubmissionCommon subCommon) {
         this.transferClient = transferClient;
         this.fileRepoClient = fileRepoClient;
+        this.subCommon = subCommon;
     }
 
     /**
@@ -54,6 +64,23 @@ public class BsbTransferNotificationDelegator {
      * */
     public void prepareData(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
+        //prepare facility info
+        String facId = (String) ParamUtil.getSessionAttr(request,KEY_FAC_ID);
+        FacListDto facListDto = subCommon.getFacListDto(request);
+        ParamUtil.setSessionAttr(request,KEY_FAC_LIST_DTO,facListDto);
+        if(log.isInfoEnabled()){
+            log.info("facListDto,facId value is {},{}", LogUtil.escapeCrlf(facListDto.toString()),LogUtil.escapeCrlf(facId));
+        }
+        if(StringUtils.hasLength(facId)){
+            //this part is prepared data for facInfo show in jsp
+            FacListDto.FacList facList = subCommon.getFacListById(request,facId);
+            ParamUtil.setSessionAttr(request,"facilityInfo",facList);
+            List<Biological> biological = facList.getBioMap().get(facId);
+            subCommon.prepareSelectOption(request,"scheduleType",biological);
+        }else{
+            log.error("Your function has arguments with null values");
+        }
+
         Boolean needShowError = (Boolean) ParamUtil.getRequestAttr(request,ValidationConstants.KEY_SHOW_ERROR_SWITCH);
         TransferNotificationDto transferNotificationDto = getTransferNotification(request);
         if(Boolean.TRUE.equals(needShowError)){
@@ -132,6 +159,7 @@ public class BsbTransferNotificationDelegator {
     }
 
 
+
     /**
      * just a method to do simple valid,maybe update in the future
      * doValidation
@@ -157,4 +185,5 @@ public class BsbTransferNotificationDelegator {
         settingMap.put("others",new DocSetting(DocConstants.DOC_TYPE_OTHERS,"others",true));
         return settingMap;
     }
+
 }

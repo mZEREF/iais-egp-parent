@@ -10,16 +10,22 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import sg.gov.moh.iais.egp.bsb.action.BsbSubmissionCommon;
+import sg.gov.moh.iais.egp.bsb.action.BsbTransferNotificationDelegator;
 import sg.gov.moh.iais.egp.bsb.client.DataSubmissionClient;
 import sg.gov.moh.iais.egp.bsb.dto.submission.BiologicalDto;
+import sg.gov.moh.iais.egp.bsb.dto.submission.FacListDto;
+import sg.gov.moh.iais.egp.bsb.entity.Biological;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 /**
- * AUTHOR: YiMing
- * DATE:2021/8/6 14:32
+ *@author YiMing
+ * @version 2021/10/15 14:16
  **/
 
 @Slf4j
@@ -27,21 +33,28 @@ import java.util.Map;
 @RequestMapping("/bio-info")
 public class BiologicalAjaxController {
     @Autowired
-    private DataSubmissionClient dataSubmissionClient;
+    private BsbSubmissionCommon subCommon;
 
+
+    /**
+     * this ajax method is used to get biological info by schedule from FacListDto
+     * queryBiologicalBySchedule
+     * @return Map<String, Object>
+     * */
     @PostMapping(value = "bio.do")
     public @ResponseBody
     Map<String, Object> queryBiologicalBySchedule(HttpServletRequest request) {
-        Map<String, Object> jsonMap = IaisCommonUtils.genNewHashMap();
+        Map<String, Object> jsonMap = new HashMap<>();
          String schedule = ParamUtil.getString(request,"schedule");
          if(StringUtils.isEmpty(schedule)){schedule="null";}
          log.info(StringUtil.changeForLog("ajax query schedule"+schedule));
-         List<BiologicalDto> biologicalDtoList = dataSubmissionClient.queryBiologicalBySchedule(schedule).getEntity();
-        if(biologicalDtoList != null && !biologicalDtoList.isEmpty()) {
-            log.info(StringUtil.changeForLog("ajax biologicalDtoList "+biologicalDtoList));
-            List<String> strings = IaisCommonUtils.genNewArrayList();
-            for (BiologicalDto biologicalDto : biologicalDtoList) {
-                strings.add(biologicalDto.getName());
+         //call delegator method to get biological info from facListDto
+         List<Biological>biologicalList = subCommon.getBiologicalById(request);
+        if(biologicalList != null && !biologicalList.isEmpty()) {
+            log.info(StringUtil.changeForLog("ajax biologicalList "+biologicalList));
+            List<String> strings = new ArrayList<>();
+            for (Biological b : biologicalList) {
+                strings.add(b.getName());
             }
             jsonMap.put("result", "success");
             jsonMap.put("queryResult",strings);

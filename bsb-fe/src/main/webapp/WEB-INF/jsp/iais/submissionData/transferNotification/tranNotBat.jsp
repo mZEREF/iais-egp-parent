@@ -32,19 +32,21 @@
                                 </div>
                                 <div class="col-sm-6 col-md-7">
                                     <iais:select name="scheduleType--v--${status.index}" id="scheduleType--v--${status.index}"
-                                                 value="" onchange="stChange(this)"
-                                                 codeCategory="CATE_ID_BSB_SCH_TYPE"
+                                                 value="${reqT.scheduleType}" onchange="stChange(this)"
+                                                 options="scheduleType"
                                                  firstOption="Please Select"/>
                                     <span data-err-ind="scheduleType--v--${status.index}" class="error-msg"></span>
                                 </div>
                             </div>
                             <div class="form-group">
                                 <div class="col-sm-5 control-label">
-                                    <label for="batCode--v--${status.index}">Biological Agent/Toxin Code</label>
+                                    <label for="batCode--v--${status.index}">Biological Agent/Toxin</label>
                                     <span class="mandatory otherQualificationSpan">*</span>
                                 </div>
                                 <div class="col-sm-6 col-md-7">
-                                    <input type="text" name="batCode--v--${status.index}" id="batCode--v--${status.index}" maxlength="20" value="">
+                                    <iais:select name="batCode--v--${status.index}" id="batCode--v--${status.index}"
+                                                 options="" firstOption="Please Select"
+                                                 value="${reqT.batCode}"/>
                                     <span data-err-ind="batCode--v--${status.index}" class="error-msg"></span>
                                 </div>
                             </div>
@@ -58,7 +60,7 @@
                                 </div>
                                 <div class="col-sm-6 col-md-7">
                                     <iais:select name="transferType--v--${status.index}" id="transferType--v--${status.index}"
-                                                 value=""
+                                                 value="${reqT.transferType}"
                                                  codeCategory="CATE_ID_BSB_DATA_SUBMISSION_DISPOSAL_TYPE"
                                                  firstOption="Please Select"/>
                                     <span data-err-ind="transferType--v--${status.index}" class="error-msg"></span>
@@ -72,7 +74,7 @@
                                     <span class="mandatory otherQualificationSpan">*</span>
                                 </div>
                                 <div class="col-sm-6 col-md-7">
-                                    <input type="number" name="batQty--v--${status.index}" id="batQty--v--${status.index}" value="">
+                                    <input type="number" name="batQty--v--${status.index}" id="batQty--v--${status.index}" value="${reqT.batQty}">
                                     <span data-err-ind="batQty--v--${status.index}" class="error-msg"></span>
                                 </div>
                             </div>
@@ -91,7 +93,7 @@
                                     <span class="mandatory otherQualificationSpan">*</span>
                                 </div>
                                 <div class="col-sm-6 col-md-7">
-                                    <input type="number" name="transferQty--v--${status.index}" id="transferQty--v--${status.index}" value=""
+                                    <input type="number" name="transferQty--v--${status.index}" id="transferQty--v--${status.index}" value="${reqT.transferQty}"
                                            maxlength="11"
                                            oninput="this.value=this.value.replace(/\D*(\d*)(\.?)(\d{0,3})\d*/,'$1$2$3')">
                                     <span data-err-ind="transferQty--v--${status.index}" class="error-msg"></span>
@@ -106,7 +108,7 @@
                                 </div>
                                 <div class="col-sm-6 col-md-7">
                                     <iais:select name="mstUnit--v--${status.index}" id="mstUnit--v--${status.index}"
-                                                 value=""
+                                                 value="${reqT.mstUnit}"
                                                  codeCategory="CATE_ID_BSB_DATA_SUBMISSION_UNIT_OF_MEASUREMENT"
                                                  firstOption="Please Select"/>
                                     <span data-err-ind="mstUnit--v--${status.index}" class="error-msg"></span>
@@ -132,7 +134,7 @@
                             <label>Facility Name</label>
                         </div>
                         <div class="col-sm-6 col-md-7">
-                            <label>facility name</label>
+                            <label>${facList.name}</label>
                         </div>
                     </div>
                     <div class="form-group">
@@ -140,7 +142,7 @@
                             <label>Receiving Facility</label>
                         </div>
                         <div class="col-sm-6 col-md-7">
-                            <label><p>Receiving Facility</p></label>
+                            <label><p>${facList.name}</p></label>
                         </div>
                     </div>
                     <div class="form-group">
@@ -149,7 +151,7 @@
                             <span class="mandatory otherQualificationSpan">*</span>
                         </div>
                         <div class="col-sm-6 col-md-7">
-                            <input type="text" autocomplete="off" name="expectedTfDate" id="expectedTfDate" data-date-start-date="01/01/1900"  placeholder="dd/mm/yyyy" maxlength="10" class="date_picker form-control"/>
+                            <input type="text" autocomplete="off" name="expectedTfDate" id="expectedTfDate" data-date-start-date="01/01/1900"  placeholder="dd/mm/yyyy" maxlength="10" class="date_picker form-control" value="${transferNotDto.expectedTfDate}"/>
                             <span data-err-ind="expectedTfDate" class="error-msg"></span>
                         </div>
                     </div>
@@ -159,7 +161,7 @@
                             <span class="mandatory otherQualificationSpan">*</span>
                         </div>
                         <div class="col-sm-6 col-md-7">
-                            <input type="text" name="expArrivalTime" id="expArrivalTime" maxlength="10" value=""/>
+                            <input type="text" name="expArrivalTime" id="expArrivalTime" maxlength="10" value="${transferNotDto.expArrivalTime}"/>
                             <span data-err-ind="expArrivalTime" class="error-msg"></span>
                         </div>
                     </div>
@@ -169,7 +171,7 @@
                             <span class="mandatory otherQualificationSpan">*</span>
                         </div>
                         <div class="col-sm-6 col-md-7">
-                            <input type="text" name="providerName" id="providerName" maxlength="100" value=""/>
+                            <input type="text" name="providerName" id="providerName" maxlength="100" value="${transferNotDto.providerName}"/>
                             <span data-err-ind="providerName" class="error-msg"></span>
                         </div>
                     </div>
@@ -178,7 +180,7 @@
                             <label for="remarks">Remarks</label>
                         </div>
                         <div class="col-sm-6 col-md-7">
-                           <textarea id="remarks" style="width: 100%;margin-bottom: 15px;" rows="6" name="remarks" maxlength="500"></textarea>
+                           <textarea id="remarks" style="width: 100%;margin-bottom: 15px;" rows="6" name="remarks" maxlength="500">${transferNotDto.remarks}</textarea>
                         </div>
                     </div>
                 </div>

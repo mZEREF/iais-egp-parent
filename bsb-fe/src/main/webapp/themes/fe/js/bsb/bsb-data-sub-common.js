@@ -275,6 +275,27 @@ function replaceNodeAttributeSuffixNum(node, attrName, num, separator) {
         var newValue;
         if (parts.length > 1) {
             newValue = parts[0] + separator + num;
+            if(parts[1].substr(1,parts[1].length).length>1){
+                newValue = parts[0] + separator +num + parts[1].substr(1,parts[1].length);
+            }
+        } else {
+            newValue = rawValue;
+        }
+        node.setAttribute(attrName, newValue);
+        if(node.nodeName === 'A'){
+            node.parent().find("div#"+newValue).empty();
+        }
+    }
+}
+
+function replaceButtonAttributeSuffixNum(node, attrName, num, separator) {
+    if (node.hasAttribute(attrName)) {
+        var rawValue = node.getAttribute(attrName);
+        var value = rawValue.substr(rawValue.indexOf("(")+1,rawValue.indexOf(")"));
+        var parts = value.split(separator);
+        var newValue;
+        if (parts.length > 1) {
+            newValue = rawValue.substr(0,rawValue.indexOf("(")+1)+parts[0] + separator + num + +new Date()+"\')";
         } else {
             newValue = rawValue;
         }
