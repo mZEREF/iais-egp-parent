@@ -136,6 +136,34 @@ public final class DataSubmissionHelper {
         return result;
     }
 
+    public static CycleDto genCycleDto(CycleStageSelectionDto selectionDto, String hciCode) {
+        String stage = selectionDto.getStage();
+        String cycle;
+        String cycleId = null;
+        if (StringUtil.isIn(stage, new String[]{DataSubmissionConsts.AR_STAGE_TRANSFER_IN_AND_OUT,
+                DataSubmissionConsts.AR_STAGE_DONATION,
+                DataSubmissionConsts.AR_STAGE_DISPOSAL})) {
+            cycle = DataSubmissionConsts.AR_CYCLE_NON;
+        } else if (selectionDto.isUndergoingCycle()) {
+            cycle = selectionDto.getLastCycle();
+            cycleId = selectionDto.getLastCycleId();
+        } else if (StringUtil.isIn(stage, new String[]{DataSubmissionConsts.AR_CYCLE_AR,
+                DataSubmissionConsts.AR_CYCLE_IUI,
+                DataSubmissionConsts.AR_CYCLE_EFO})) {
+            cycle = stage;
+        } else {
+            cycle = DataSubmissionConsts.AR_CYCLE_NON;
+        }
+        CycleDto cycleDto = new CycleDto();
+        cycleDto.setDsType(DataSubmissionConsts.DS_TYPE_AR);
+        cycleDto.setCycleType(cycle);
+        cycleDto.setPatientCode(selectionDto.getPatientCode());
+        cycleDto.setHciCode(hciCode);
+        cycleDto.setId(cycleId);
+        cycleDto.setStatus(DataSubmissionConsts.DS_STATUS_ACTIVE);
+        return cycleDto;
+    }
+
     public static String genOptionHtmls(List<String> options) {
         return genOptionHtmls(options, "Please Select");
     }
@@ -217,33 +245,6 @@ public final class DataSubmissionHelper {
 
     public static List<SelectOption> getNumsSelections(int endNum) {
         return getNumsSelections(0, endNum);
-    }
-
-    public static CycleDto genCycleDto(CycleStageSelectionDto selectionDto, String hciCode) {
-        String stage = selectionDto.getStage();
-        String cycle;
-        String cycleId = null;
-        if (selectionDto.isUndergoingCycle()) {
-            cycle = selectionDto.getLastCycle();
-            cycleId = selectionDto.getLastCycleId();
-        } else if (StringUtil.isIn(stage, new String[]{DataSubmissionConsts.AR_CYCLE_AR,
-                DataSubmissionConsts.AR_CYCLE_IUI,
-                DataSubmissionConsts.AR_CYCLE_EFO})) {
-            cycle = stage;
-        } else if (DataSubmissionConsts.AR_CYCLE_NON.equals(selectionDto.getLastCycle())) {
-            cycle = DataSubmissionConsts.AR_CYCLE_NON;
-            cycleId = selectionDto.getLastCycleId();
-        } else {
-            cycle = DataSubmissionConsts.AR_CYCLE_NON;
-        }
-        CycleDto cycleDto = new CycleDto();
-        cycleDto.setDsType(DataSubmissionConsts.DS_TYPE_AR);
-        cycleDto.setCycleType(cycle);
-        cycleDto.setPatientCode(selectionDto.getPatientCode());
-        cycleDto.setHciCode(hciCode);
-        cycleDto.setId(cycleId);
-        cycleDto.setStatus(DataSubmissionConsts.DS_STATUS_ACTIVE);
-        return cycleDto;
     }
 
     public static String getPatientAgeMessage() {
