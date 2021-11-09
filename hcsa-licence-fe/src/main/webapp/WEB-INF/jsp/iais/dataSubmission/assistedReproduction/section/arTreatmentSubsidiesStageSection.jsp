@@ -23,7 +23,7 @@
                                    aria-invalid="false">
                             <label class="form-check-label"
                                    for="coFundingNo"><span
-                                    class="check-circle"></span>No Co-funding for this cycle (selected by default)</label>
+                                    class="check-circle"></span>No Co-funding for this cycle</label>
                         </div>
                         <div class="form-check">
                             <input class="form-check-input"
