@@ -22,77 +22,33 @@
       </div>
     </div>
   </div>
-  <div class="row" style=" height : 450px">
+  <div class="row" >
         <div class="container">
-            <div class="col-xs-12">
-
-                <div  class="u29" onclick="submit('AR')">
-                  <div  class="u29_div" >
-                  </div>
-                  <div class="u29_text ">
-                    <p><span style="text-decoration:none;">Assisted Reproduction</span></p>
-                  </div>
-                </div>
-              <div id="u30" class="ax_default image" onclick="submit('AR')">
-                <img id="u30_img" class="img " src="<%=webrootDS%>img/AR.jpg">
-                <div id="u30_text" class="text " style="display:none; visibility: hidden">
-                  <p></p>
-                </div>
+            <div class="col-xs-12" style="height: 60px">
+              <div class="col-xs-8 col-md-4 text-left">
+                <a class="btn btn-primary next premiseId" onclick="submit('AR')"  href="javascript:void(0);">Assisted Reproduction</a>
               </div>
-
-              <div id="u17" class="ax_default box_1 disabled" onclick="submit('DP')">
-                <div id="u17_div" class="disabled"></div>
-                <div id="u17_text" class="text ">
-                  <p><span style="text-decoration:none;">Drug Practices</span></p>
-                </div>
-              </div>
-              <div id="u20" class="ax_default ellipse" onclick="submit('DP')">
-                <img id="u20_img" class="img " src="<%=webrootDS%>img/DP.jpg">
-                <div id="u20_text" class="text " style="display:none; visibility: hidden">
-                  <p></p>
-                </div>
-              </div>
-
-              <div id="u18" class="ax_default box_1" onclick="submit('LDT')">
-                <div id="u18_div" class=""></div>
-                <div id="u18_text" class="text ">
-                  <p><span style="text-decoration:none;">Laboratory Developed Test</span></p>
-                </div>
-              </div>
-              <div id="u19" class="ax_default icon" onclick="submit('LDT')">
-                <img id="u19_img" class="img " src="<%=webrootDS%>img/LDT.jpg">
-                <div id="u19_text" class="text " style="display:none; visibility: hidden">
-                  <p></p>
-                </div>
-              </div>
-
-              <div id="u16" class="ax_default box_1" onclick="submit('TP')">
-                <div id="u16_div" class=""></div>
-                <div id="u16_text" class="text ">
-                  <p><span style="text-decoration:none;">Termination of Pregnancy</span></p>
-                </div>
-              </div>
-              <div id="u24" class="ax_default image" onclick="submit('TP')">
-                <img id="u24_img" class="img " src="<%=webrootDS%>img/TP.jpg">
-                <div id="u24_text" class="text " style="display:none; visibility: hidden">
-                  <p></p>
-                </div>
-              </div>
-
-              <div id="u14" class="ax_default box_1" onclick="submit('VS')">
-                <div id="u14_div" class=""></div>
-                <div id="u14_text" class="text ">
-                  <p><span style="text-decoration:none;">Voluntary Sterilisation</span></p>
-                </div>
-              </div>
-              <div id="u15" class="ax_default icon" onclick="submit('VS')">
-                <img id="u15_img" class="img " src="<%=webrootDS%>img/VS.jpg">
-                <div id="u15_text" class="text " style="display:none; visibility: hidden">
-                  <p></p>
-                </div>
-              </div>
-
             </div>
+              <div class="col-xs-12" style="height: 60px">
+              <div class="col-xs-8 col-md-4 text-left">
+                <a class="btn btn-primary next premiseId" onclick="submit('DP')"  href="javascript:void(0);">Drug Practices</a>
+              </div>
+            </div>
+          <div class="col-xs-12"  style="height: 60px">
+            <div class="col-xs-8 col-md-4 text-left">
+              <a class="btn btn-primary next premiseId" onclick="submit('LDT')"  href="javascript:void(0);">Laboratory Developed Test</a>
+            </div>
+          </div>
+          <div class="col-xs-12" style="height: 60px">
+            <div class="col-xs-8 col-md-4 text-left">
+              <a class="btn btn-primary next premiseId" onclick="submit('TP')"  href="javascript:void(0);">Termination of Pregnancy</a>
+            </div>
+          </div>
+          <div class="col-xs-12"  style="height: 60px">
+            <div class="col-xs-8 col-md-4 text-left">
+              <a class="btn btn-primary next premiseId" onclick="submit('VS')"  href="javascript:void(0);">Voluntary Sterilisation</a>
+            </div>
+          </div>
         </div>
   </div>
   <div class="row">

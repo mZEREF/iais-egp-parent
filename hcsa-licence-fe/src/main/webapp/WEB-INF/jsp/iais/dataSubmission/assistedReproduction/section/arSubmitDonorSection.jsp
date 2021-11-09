@@ -45,10 +45,10 @@
                     <div id="directedDonationYes" style="${!donorSampleDto.directedDonation ? 'display: none;' : ''}">
                         <iais:row id="idNoRow" >
                             <iais:field width="5" value="Donor's ID Type" mandatory="true"/>
-                            <iais:value width="7" cssClass="col-md-7">
-                                <iais:select name="idType" firstOption="Please Select" codeCategory="CATE_ID_DS_ID_TYPE" value="${donorSampleDto.idType}"
-                                             cssClass="idTypeSel"/>
-                            </iais:value>
+                            <%--<iais:value width="7" cssClass="col-md-7">--%>
+                                <%--<iais:select name="idType" firstOption="Please Select" codeCategory="CATE_ID_DS_ID_TYPE" value="${donorSampleDto.idType}"--%>
+                                             <%--cssClass="idTypeSel"/>--%>
+                            <%--</iais:value>--%>
                         </iais:row>
                         <iais:row  >
                             <iais:field width="5" value="Donor's ID No." mandatory="true"/>
@@ -71,7 +71,7 @@
                                            name="donorRelation"
                                            value="F"
                                            id = "donorRelationF"
-                                           <c:if test="${donorSampleDto.donarRelation = 'F'}">checked</c:if>
+                                           <c:if test="${donorSampleDto.donarRelation == 'F'}">checked</c:if>
                                            aria-invalid="false">
                                     <label class="form-check-label"
                                            for="donorRelationF"><span
@@ -84,7 +84,7 @@
                                            name="donorRelation"
                                            value="0"
                                            id = "donorRelationR"
-                                           <c:if test="${!donorSampleDto.donarRelation = 'R'}">checked</c:if>
+                                           <c:if test="${!donorSampleDto.donarRelation == 'R'}">checked</c:if>
                                            aria-invalid="false">
                                     <label class="form-check-label"
                                            for="donorRelationR" ><span
@@ -97,15 +97,15 @@
                         <iais:row id="sampleType" >
                             <iais:field width="5" value="Sample Type" mandatory="true"/>
                             <iais:value width="7" cssClass="col-md-7">
-                                <iais:select name="sampleType" firstOption="Please Select" codeCategory="CATE_ID_DS_ID_TYPE" value="${donorSampleDto.sampleType}"
-                                             cssClass="sampleType"/>
+                                <%--<iais:select name="sampleType" firstOption="Please Select" codeCategory="CATE_ID_DS_ID_TYPE" value="${donorSampleDto.sampleType}"--%>
+                                             <%--cssClass="sampleType"/>--%>
                             </iais:value>
                         </iais:row>
                         <iais:row >
                             <iais:field width="5" value="Is Donor’s Identity Known?" mandatory="true"/>
                             <iais:value width="7" cssClass="col-md-7">
-                                <iais:select name="donorIdentityKnown" firstOption="Please Select" codeCategory="CATE_ID_DS_ID_TYPE" value="${donorSampleDto.donorIdentityKnown}"
-                                             cssClass="donorIdentityKnown"/>
+                                <%--<iais:select name="donorIdentityKnown" firstOption="Please Select" codeCategory="CATE_ID_DS_ID_TYPE" value="${donorSampleDto.donorIdentityKnown}"--%>
+                                             <%--cssClass="donorIdentityKnown"/>--%>
                             </iais:value>
                         </iais:row>
                         <iais:row id="donorSampleCodeRow"   >
@@ -118,8 +118,8 @@
                             <iais:row >
                                 <iais:field width="5" value="Donor's ID Type" mandatory="true"/>
                                 <iais:value width="7" cssClass="col-md-7">
-                                    <iais:select name="idType" firstOption="Please Select" codeCategory="CATE_ID_DS_ID_TYPE" value="${donorSampleDto.idType}"
-                                                 cssClass="idTypeSel"/>
+                                    <%--<iais:select name="idType" firstOption="Please Select" codeCategory="CATE_ID_DS_ID_TYPE" value="${donorSampleDto.idType}"--%>
+                                                 <%--cssClass="idTypeSel"/>--%>
                                 </iais:value>
                             </iais:row>
                             <iais:row  >
