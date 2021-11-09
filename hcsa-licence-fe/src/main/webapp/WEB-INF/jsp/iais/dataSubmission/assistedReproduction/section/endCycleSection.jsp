@@ -1,3 +1,4 @@
+<%--<script type="text/javascript" src="<%=webroot1%>js/dataSubmission/endSection.js"></script>--%>
 <div class="panel panel-default">
     <div class="panel-heading">
         <h4 class="panel-title">
@@ -41,23 +42,55 @@
                         </div>
                     </iais:value>
                 </iais:row>
-                <iais:row>
-                    <iais:field width="5" value="Reason for Abandonment" mandatory="true"/>
-                    <iais:value width="7" cssClass="col-md-7">
-                        <iais:select cssClass="abandonReasonSelect"  name="abandonReasonSelect" firstOption="Please Select" codeCategory="END_CYCLE_REASON_FOR_ABANDONMENT" value="${endCycleStageDto.abandonReason}"/>
-                        <span class="error-msg" name="iaisErrorMsg" id="error_abandonReason"></span>
-                    </iais:value>
-                </iais:row>
-                <div <c:if test="${endCycleStageDto.abandonReason!='ENDRA005'}">style="display: none"</c:if> >
-                    <iais:row  id="otherAbandonReasonRow" >
-                        <iais:field width="5" value="" mandatory="true"/>
+                <div class="endFromParts" <c:if test="${transferInOutStageDto.transferType !='true'}">style="display: none;"</c:if>>
+                    <iais:row>
+                        <iais:field width="5" value="Reason for Abandonment" mandatory="true"/>
                         <iais:value width="7" cssClass="col-md-7">
-                            <iais:input maxLength="20" type="text" name="otherAbandonReason" value="${endCycleStageDto.otherAbandonReason}" />
-                            <span class="error-msg" name="iaisErrorMsg" id="error_otherAbandonReason"></span>
+                            <iais:select cssClass="abandonReasonSelect"  name="abandonReasonSelect" firstOption="Please Select" codeCategory="END_CYCLE_REASON_FOR_ABANDONMENT" value="${endCycleStageDto.abandonReason}"/>
+                            <span class="error-msg" name="iaisErrorMsg" id="error_abandonReason"></span>
                         </iais:value>
                     </iais:row>
+                    <div  id="otherAbandonReason" <c:if test="${endCycleStageDto.abandonReason!='ENDRA005'}">style="display: none"</c:if> >
+                        <iais:row>
+                            <iais:field width="5" value="Reason for Abandonment (Others)" mandatory="true"/>
+                            <iais:value width="7" cssClass="col-md-7">
+                                <iais:input maxLength="20" type="text" name="otherAbandonReason" value="${endCycleStageDto.otherAbandonReason}" />
+                                <span class="error-msg" name="iaisErrorMsg" id="error_otherAbandonReason"></span>
+                            </iais:value>
+                        </iais:row>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
+<script type="text/javascript">
+    $(document).ready(function() {
+        $('#abandonReasonSelect').change(function () {
+
+            var abandonReason= $('#abandonReasonSelect option:selected').val();
+
+            if(abandonReason == "ENDRA005"){
+                $('#otherAbandonReason').attr("style","display: block");
+            }else {
+                $('#otherAbandonReason').attr("style","display: none");
+            }
+        });
+    });
+
+    $(document).ready(function () {
+        $('#radioYes').click(function () {
+            if($(this).prop('checked')){
+                $('.endFromParts').show();
+            }
+        });
+
+        $('#radioNo').click(function () {
+            if($(this).prop('checked')){
+                $('.endFromParts').hide();
+            }
+        });
+    });
+</script>
+
+
