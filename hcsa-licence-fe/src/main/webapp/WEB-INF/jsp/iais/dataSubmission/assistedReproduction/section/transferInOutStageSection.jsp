@@ -20,7 +20,7 @@
                                    name="transferType"
                                    value="in"
                                    id="transferTypeIn"
-                                   <c:if test="${transferInOutStageDto.transferType == 'in'}">checked</c:if>
+                                   <c:if test="${transferInOutStageDto.transferType =='in'}">checked</c:if>
                                    aria-invalid="false">
                             <label class="form-check-label"
                                    for="transferTypeIn"><span
@@ -104,7 +104,7 @@
                             <input class="form-check-input"
                                    type="radio"
                                    name="fromDonor"
-                                   value="1"
+                                   value="true"
                                    id="fromDonorYes"
                                    <c:if test="${transferInOutStageDto.fromDonor}">checked</c:if>
                                    aria-invalid="false">
@@ -118,7 +118,7 @@
                             <input class="form-check-input"
                                    type="radio"
                                    name="fromDonor"
-                                   value="0"
+                                   value="false"
                                    id="fromDonorNo"
                                    <c:if test="${!transferInOutStageDto.fromDonor}">checked</c:if>
                                    aria-invalid="false">
@@ -129,18 +129,18 @@
                     </iais:value>
                 </iais:row>
 
-                <div class="inFromParts" >
+                <div class="inFromParts"<c:if test="${transferInOutStageDto.transferType !='in'}">style="display: none;"</c:if>>
                     <iais:row>
                         <iais:field width="5" value="Transferred In From" mandatory="true"/>
                         <iais:value width="7" cssClass="col-md-7">
-                            <iais:select name="transInFromHciCode"  codeCategory="TRANSFERRED_IN_FROM" value="${transferInOutStageDto.transInFromHciCode}" />
+                            <iais:select  cssClass="inFromSelect" name="transInFromHciCode"  codeCategory="TRANSFERRED_IN_FROM" value="${transferInOutStageDto.transInFromHciCode}" />
                         </iais:value>
                     </iais:row>
-                    <div class="inFromOthersParts" >
+                   <div class="inFromOthersParts" <c:if test="${transferInOutStageDto.transInFromHciCode !='Others'}">style="display: none;"</c:if>>
                         <iais:row>
                             <iais:field width="5" value="Transferred In From (Others)" mandatory="true"/>
                             <iais:value width="7" cssClass="col-md-7">
-                                <iais:input maxLength="20" type="text" name="transInFromOthers" value="${transferInOutStageDto.transInFromOthers}" />
+                                <iais:input id="othersInFrom" maxLength="20" type="text" name="transInFromOthers" value="${transferInOutStageDto.transInFromOthers}" />
                             </iais:value>
                         </iais:row>
                     </div>
@@ -150,17 +150,17 @@
                     <iais:row>
                         <iais:field width="5" value="Transfer Out To" mandatory="true"/>
                         <iais:value width="7" cssClass="col-md-7">
-                            <iais:select name="transOutToHciCode"  codeCategory="TRANSFERRED_IN_FROM" value="${transferInOutStageDto.transOutToHciCode}" />
+                            <iais:select  cssClass="outFromSelect" name="transOutToHciCode"  codeCategory="TRANSFERRED_IN_FROM" value="${transferInOutStageDto.transOutToHciCode}" />
                         </iais:value>
                     </iais:row>
-                    <div class="outFromOthersParts" <c:if test="${transferInOutStageDto.transInFromHciCode !='Others' && transferInOutStageDto.transInFromHciCode !=''}">style="display: none;"</c:if>>
+                   <%-- <div class="outFromOthersParts" <c:if test="${transferInOutStageDto.transInFromHciCode !='Others'}">style="display: none;"</c:if>>
                         <iais:row>
                             <iais:field width="5" value="Transfer Out To (Others)" mandatory="true"/>
                             <iais:value width="7" cssClass="col-md-7">
-                                <iais:input maxLength="20" type="text" name="transOutToOthers" value="${transferInOutStageDto.transOutToOthers}" />
+                                <iais:input id="othersOutFrom" maxLength="20" type="text" name="transOutToOthers" value="${transferInOutStageDto.transOutToOthers}" />
                             </iais:value>
                         </iais:row>
-                    </div>
+                    </div>--%>
                 </div>
 
                 <iais:row>
