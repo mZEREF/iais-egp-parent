@@ -17,7 +17,7 @@
                     <iais:value width="7" cssClass="col-md-7">
                         <iais:select name="firstUltrasoundOrderShow" firstOption="Please Select"
                                      id="firstUltrasoundOrderShow" options="firstUltrasoundOrderShowSelectOption"
-                                     value="${pregnancyOutcomeStageDto.firstUltrasoundOrderShow}"></iais:select>
+                                     value="${pregnancyOutcomeStageDto.firstUltrasoundOrderShow}"/>
                     </iais:value>
                 </iais:row>
                 <iais:row>
@@ -25,11 +25,10 @@
                     <iais:value width="7" cssClass="col-md-7">
                         <iais:select name="pregnancyOutcome" firstOption="Please Select" id="pregnancyOutcome"
                                      options="pregnancyOutcomeSelectOption"
-                                     value="${pregnancyOutcomeStageDto.pregnancyOutcome}"></iais:select>
+                                     value="${pregnancyOutcomeStageDto.pregnancyOutcome}"/>
                     </iais:value>
                 </iais:row>
-                <div id="otherPregnancyOutcomeDiv"
-                     <c:if test="${pregnancyOutcomeStageDto.pregnancyOutcome != 'Others'}">style="display:none;"</c:if>>
+                <div id="otherPregnancyOutcomeDiv">
                     <iais:row id="pregnancyOutcomeField">
                         <iais:field width="5" value="Outcome of Pregnancy (Others)" mandatory="true"/>
                         <iais:value width="7" cssClass="col-md-7">
@@ -39,8 +38,7 @@
                         </iais:value>
                     </iais:row>
                 </div>
-                <div id="liveBirthNumSection"
-                     <c:if test="${pregnancyOutcomeStageDto.pregnancyOutcome != 'Live Birth'}">style="display:none;"</c:if>>
+                <div id="liveBirthNumSection">
                     <iais:row>
                         <iais:field width="5" value="No. Live Birth (Male)" mandatory="true"/>
                         <iais:value width="7" cssClass="col-md-7">
@@ -62,8 +60,7 @@
                         </iais:value>
                     </iais:row>
                 </div>
-                <div id="stillBirthNumSection"
-                     <c:if test="${pregnancyOutcomeStageDto.pregnancyOutcome != 'No Live Birth'}">style="display:none;"</c:if>>
+                <div id="stillBirthNumSection">
                     <iais:row>
                         <iais:field width="5" value="No. of Still Birth"/>
                         <iais:value width="7" cssClass="col-md-7">
@@ -86,8 +83,7 @@
                         </iais:value>
                     </iais:row>
                 </div>
-                <div id="wasSelFoeReduCarryOutDiv"
-                     <c:if test="${not (pregnancyOutcomeStageDto.pregnancyOutcome == 'Live Birth' && pregnancyOutcomeStageDto.firstUltrasoundOrderShow == 'Singleton')}">style="display:none;"</c:if>>
+                <div id="wasSelFoeReduCarryOutDiv">
                     <iais:row>
                         <iais:field width="5" value="Was Selective foetal Reduction Carried Out?"/>
                         <div class="col-md-7">
@@ -130,21 +126,19 @@
                         </div>
                     </iais:row>
                 </div>
-                <div id="deliverySection"
-                     <c:if test="${pregnancyOutcomeStageDto.firstUltrasoundOrderShow == 'Unknown'}">style="display:none;"</c:if>>
+                <div id="deliverySection">
                     <iais:row>
                         <iais:field width="5" value="Mode of Delivery" mandatory="true"/>
                         <iais:value width="7" cssClass="col-md-7">
                             <iais:select name="deliveryMode" firstOption="Please Select"
                                          options="deliveryModeSelectOption"
-                                         value="${pregnancyOutcomeStageDto.deliveryMode}"></iais:select>
+                                         value="${pregnancyOutcomeStageDto.deliveryMode}"/>
                         </iais:value>
                     </iais:row>
 
                     <iais:row>
                         <label class="col-xs-5 col-md-4 control-label">Date of Delivery&nbsp;
-                            <c:if test="${pregnancyOutcomeStageDto.pregnancyOutcome == 'Live Birth'}"><span
-                                    class="mandatory">*</span></c:if>
+                            <span id="deliveryDateFieldMandatory" class="mandatory">*</span>
                         </label>
                         <div class="col-md-7">
                             <div class="form-check col-12" style="padding: 0px">
@@ -207,8 +201,7 @@
                             </div>
                         </div>
                     </iais:row>
-                    <div id="localBirthPlaceDiv"
-                         <c:if test="${pregnancyOutcomeStageDto.birthPlace != 'Local'}">style="display:none;"</c:if>>
+                    <div id="localBirthPlaceDiv">
                         <iais:row>
                             <iais:field width="5" value="Place of Local Birth"/>
                             <iais:value width="7" cssClass="col-md-7">
@@ -220,8 +213,7 @@
 
                     <iais:row>
                         <label class="col-xs-5 col-md-4 control-label">Baby Details Unknown (Loss to Follow-up)
-                            &nbsp;<c:if test="${pregnancyOutcomeStageDto.pregnancyOutcome == 'Live Birth'}"><span
-                                    class="mandatory">*</span></c:if>
+                            &nbsp;<span id="babyDetailsUnknownFieldMandatory" class="mandatory">*</span>
                         </label>
                         <div class="col-md-7">
                             <div class="form-check col-12">
@@ -258,28 +250,26 @@
                     <iais:field width="5" value="Total No. of Baby Admitted to NICU Care" mandatory="true"/>
                     <iais:value width="7" cssClass="col-md-7">
                         <iais:select name="NICUCareBabyNum" id="NICUCareBabyNum" options="NICUCareBabyNumSelectOption"
-                                     value="${pregnancyOutcomeStageDto.l2CareBabyNum + pregnancyOutcomeStageDto.l3CareBabyNum}"></iais:select>
+                                     value="${pregnancyOutcomeStageDto.l2CareBabyNum + pregnancyOutcomeStageDto.l3CareBabyNum}"/>
                     </iais:value>
                 </iais:row>
-                <div id="careBabyNumSection"
-                     <c:if test="${pregnancyOutcomeStageDto.l2CareBabyNum + pregnancyOutcomeStageDto.l3CareBabyNum < 1}">style="display:none;"</c:if>>
+                <div id="careBabyNumSection">
                     <iais:row>
                         <iais:field width="5" value="No. of Baby Admitted to L2 Care" mandatory="true"/>
                         <iais:value width="7" cssClass="col-md-7">
                             <iais:select name="l2CareBabyNum" id="l2CareBabyNum" options="l2CareBabyNumSelectOption"
-                                         value="${pregnancyOutcomeStageDto.l2CareBabyNum}"></iais:select>
+                                         value="${pregnancyOutcomeStageDto.l2CareBabyNum}"/>
                         </iais:value>
                     </iais:row>
                     <iais:row>
                         <iais:field width="5" value="No. of Baby Admitted to L3 Care" mandatory="true"/>
                         <iais:value width="7" cssClass="col-md-7">
                             <iais:select name="l3CareBabyNum" id="l3CareBabyNum" options="l3CareBabyNumSelectOption"
-                                         value="${pregnancyOutcomeStageDto.l3CareBabyNum}"></iais:select>
+                                         value="${pregnancyOutcomeStageDto.l3CareBabyNum}"/>
                         </iais:value>
                     </iais:row>
                 </div>
-                <div id="l2CareBabyDaysDiv"
-                     <c:if test="${pregnancyOutcomeStageDto.l2CareBabyNum < 1}">style="display:none;"</c:if>>
+                <div id="l2CareBabyDaysDiv">
                     <iais:row>
                         <iais:field width="5" value="No. Days Baby Stay in L2 (Provide average if > one baby stayed)"/>
                         <iais:value width="7" cssClass="col-md-7">
@@ -288,8 +278,7 @@
                         </iais:value>
                     </iais:row>
                 </div>
-                <div id="l3CareBabyDaysDiv"
-                     <c:if test="${pregnancyOutcomeStageDto.l3CareBabyNum < 1}">style="display:none;"</c:if>>
+                <div id="l3CareBabyDaysDiv">
                     <iais:row>
                         <iais:field width="5" value="No. Days Baby Stay in L3 (Provide average if > one baby stayed)"/>
                         <iais:value width="7" cssClass="col-md-7">

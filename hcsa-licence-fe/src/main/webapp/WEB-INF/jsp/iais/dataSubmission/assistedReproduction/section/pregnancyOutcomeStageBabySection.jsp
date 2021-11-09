@@ -3,8 +3,7 @@
            varStatus="status">
     <c:set value="${defectTypesArray[status.index]}" var="defectTypes"/>
     <c:set value="${otherDefectTypes[status.index]}" var="otherDefectType"/>
-    <div class="pregnancyOutcomeStageBabySection" id="pregnancyOutcomeStageBabySection${status.index}"
-         <c:if test="${pregnancyOutcomeStageDto.babyDetailsUnknown}">style="display:none;"</c:if>>
+    <div class="pregnancyOutcomeStageBabySection" id="pregnancyOutcomeStageBabySection${status.index}">
         <c:set var="displayNum" value="${status.index + 1}"/>
         <iais:row>
             <iais:field width="5" value="Baby ${displayNum} Birth Weight" mandatory="true"/>
@@ -56,8 +55,7 @@
                 </div>
             </div>
         </iais:row>
-        <div name="defectTypeSectionName"
-             <c:if test="${pregnancyOutcomeBabyDto.birthDefect != 'yes'}">style="display:none;"</c:if>>
+        <div name="defectTypeSectionName">
             <iais:row>
                 <iais:field width="5" value="Baby ${displayNum} Defect Type" mandatory="true"/>
                 <iais:value width="7" cssClass="col-md-7">
@@ -152,8 +150,7 @@
                     <span id="error_oocyteRetrievalFrom" name="iaisErrorMsg" class="error-msg"></span>
                 </iais:value>
             </iais:row>
-            <div name="otherDefectTypeDivName"
-                 <c:if test="${!fn:contains(defectTypes,'other')}">style="display:none;"</c:if>>
+            <div name="otherDefectTypeDivName">
                 <iais:row>
                     <iais:field width="5" value="Baby ${displayNum} Defect Type (Others)" mandatory="true"/>
                     <iais:value width="7" cssClass="col-md-7">
