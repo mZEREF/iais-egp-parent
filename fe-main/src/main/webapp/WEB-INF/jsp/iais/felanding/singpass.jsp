@@ -88,40 +88,38 @@
     <head>
     <title>SingPass QRcode</title>
     <%
-      String nonce = UUID.randomUUID().toString();
-      String state = UUID.randomUUID().toString();
-      ParamUtil.setSessionAttr(request, "qrcode_state", state);
-      ParamUtil.setSessionAttr(request, "qrcode_nonce", nonce);
+//      String nonce = UUID.randomUUID().toString();
+//      String state = UUID.randomUUID().toString();
+//      ParamUtil.setSessionAttr(request, "qrcode_state", state);
+//      ParamUtil.setSessionAttr(request, "qrcode_nonce", nonce);
       String qrjsUrl = ConfigHelper.getString("singpass.oidc.js.url");
-      request.setAttribute("qrjsUrl", qrjsUrl);
+      String mockjsUrl = ConfigHelper.getString("singpass.oidc.mockserver.js.url");
+      String ndijsUrl = ConfigHelper.getString("singpass.oidc.ndi.js.url");
+      String profileName = StringUtil.escapeSecurityScript(ConfigHelper.getString("singpass.oidc.profileName"));
+      String oidcAppId = StringUtil.escapeSecurityScript(ConfigHelper.getString("singpass.oidc.appId"));
+      String clientId = StringUtil.escapeSecurityScript(ConfigHelper.getString("singpass.oidc.clientId"));
+      String redirectUrl = StringUtil.escapeSecurityScript(ConfigHelper.getString("singpass.oidc.redirectUrl"));
+      boolean mockFlag = ConfigHelper.getBoolean("oidc.mock.enable");
+//      String ndiEmbedAuthJsUrl = ConfigHelper.getString("singpass.oidc.embedAuthjs.url");
+//      request.setAttribute("ndiEmbedAuthJsUrl", ndiEmbedAuthJsUrl);
     %>
     <script src="<%=qrjsUrl%>"></script>
+      <% if (mockFlag) {  %>
+      <script src="<%=mockjsUrl%>"></script>
+      <% } else { %>
+      <script src="<%=ndijsUrl%>"></script>
+      <% }  %>
+
+<%--    <script src="<%=ndiEmbedAuthJsUrl%>"></script>--%>
     <script language="JavaScript">
-        async function initQrCode(){
-            const authParamsSupplier = async () => {
-                return {state:'<%=state%>' , nonce:'<%=nonce%>'}
-            };
-
-            const onError = (errorId, message) => {
-                alert('An unexpected error has occurred.Please try again later or contact MOE Customer Service Centre for assistance.');
-            }
-
-            const initAuthSessionResponse = window.NDI.initAuthSession (
-                'ndi-qr',
-                {
-                    clientId: '<%= StringUtil.escapeSecurityScript(ConfigHelper.getString("singpass.oidc.clientId"))%>',
-                    redirectUri: '<%= StringUtil.escapeSecurityScript(ConfigHelper.getString("singpass.oidc.redirectUrl"))%>',
-                    scope: 'openid',
-                    responseType: 'code'
-                },
-                authParamsSupplier,
-                onError
-            );
+        async function init() {
+            await eic_init('qr-sp-block','<%=profileName%>','<%=clientId%>','<%=oidcAppId%>','<%=redirectUrl%>','singpass');
         }
+
     </script>
     </head>
-    <body onload="initQrCode()">
-    <div id="ndi-qr"></div>
+    <body onload="init();">
+    <div id="qr-sp-block"></div>
     </body>
     </html>
 
