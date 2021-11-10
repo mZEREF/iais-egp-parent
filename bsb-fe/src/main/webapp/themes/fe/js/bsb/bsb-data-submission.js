@@ -102,7 +102,7 @@ $(function (){
         }else if (optionValue == "7") {
             $("[name='action_type']").val("doAckOfReceiptOfTransfer");
         }else if (optionValue == "8") {
-
+            $("[name='action_type']").val("doReportInventory");
         }
         $("#mainForm").submit();
     })

@@ -58,13 +58,13 @@
     <JavaCode defClass="" executor="" methodName="prepareTransfer_OnStepProcess_0" name="prepareTransfer_OnStepProcess_0" />
    </OnStepProcess>
   </AutomaticStep>
-  <InvokeStep defClass="" executor="" icon="" name="Consume" processname="ConsumeNotification" project="" version="-1" x="1000" y="-80">
+  <InvokeStep defClass="" executor="" icon="" name="Consume" processname="ConsumeNotification" project="" version="-1" x="980" y="-80">
    <Description />
    <probepoint type="none" />
    <OnStepProcess />
    <OnStepComplete />
   </InvokeStep>
-  <InvokeStep defClass="" executor="" icon="" name="Disposal" processname="DisposalNotification" project="" version="-1" x="1000" y="20">
+  <InvokeStep defClass="" executor="" icon="" name="Disposal" processname="DisposalNotification" project="" version="-1" x="980" y="20">
    <Description />
    <probepoint type="none" />
    <OnStepProcess />
@@ -121,6 +121,19 @@
     <JavaCode defClass="" executor="" methodName="prepareFacilitySelect_OnStepProcess_0" name="prepareFacilitySelect_OnStepProcess_0" />
    </OnStepProcess>
   </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="preFacReportAndInventory" x="760" y="740">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="preFacReportAndInventory_OnStepProcess_0" name="preFacReportAndInventory_OnStepProcess_0" />
+   </OnStepProcess>
+  </AutomaticStep>
+  <InvokeStep defClass="" executor="" icon="" name="FacilityReportAndInventory" processname="BsbReportInventory" project="" version="-1" x="950" y="740">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess />
+   <OnStepComplete />
+  </InvokeStep>
  </Steps>
  <Pages>
   <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="DataSubmissionSelectPage" stageIndicator="" x="310" y="240">
@@ -169,10 +182,10 @@
    <position>{(680,260)(780,390)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Steps/InvokeStep/Consume" style="oblique">
-   <position>{(1020,-60)(1200,260)}</position>
+   <position>{(1000,-60)(1200,260)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Steps/InvokeStep/Disposal" style="oblique">
-   <position>{(1020,40)(1200,260)}</position>
+   <position>{(1000,40)(1200,260)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Steps/InvokeStep/Receipt" style="oblique">
    <position>{(1020,260)(1200,260)}</position>
@@ -181,10 +194,10 @@
    <position>{(990,390)(1200,260)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/InvokeStep/Consume" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/prepareConsume" style="rectanular">
-   <position>{(790,-60)(1020,-60)}</position>
+   <position>{(790,-60)(1000,-60)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/InvokeStep/Disposal" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/prepareDisposal" style="rectanular">
-   <position>{(790,40)(1020,40)}</position>
+   <position>{(790,40)(1000,40)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/InvokeStep/Export" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/prepareExport" style="rectanular">
    <position>{(800,150)(1020,150)}</position>
@@ -222,6 +235,15 @@
   <SynchronousLink destinationName="/Steps/AutomaticStep/prepareFacilitySelect" linkstyle="Rectangle" name="" sourceName="/Merges/Merge/Merge1" style="rectanular">
    <position>{(1200,260)(-92,839)(-130,260)}</position>
   </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/preFacReportAndInventory" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
+   <position>{(680,260)(780,760)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/InvokeStep/FacilityReportAndInventory" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/preFacReportAndInventory" style="rectanular">
+   <position>{(780,760)(970,760)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Steps/InvokeStep/FacilityReportAndInventory" style="oblique">
+   <position>{(970,760)(1200,260)}</position>
+  </SynchronousLink>
  </Links>
  <Conditions />
  <Switches>
@@ -234,6 +256,7 @@
    <SwitchCase component="/Steps/AutomaticStep/prepareRequestTransfer" value="&quot;doRequestTransfer&quot;" />
    <SwitchCase component="/Steps/AutomaticStep/prepareTransferNotification" value="&quot;doTransferNotification&quot;" />
    <SwitchCase component="/Steps/AutomaticStep/preAckOfReceiptOfTransfer" value="&quot;doAckOfReceiptOfTransfer&quot;" />
+   <SwitchCase component="/Steps/AutomaticStep/preFacReportAndInventory" value="&quot;doReportInventory&quot;" />
   </Switch>
  </Switches>
  <Branches />
