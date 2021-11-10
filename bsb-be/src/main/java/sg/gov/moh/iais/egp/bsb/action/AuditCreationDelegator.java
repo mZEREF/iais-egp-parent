@@ -2,7 +2,6 @@ package sg.gov.moh.iais.egp.bsb.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
-import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
@@ -10,7 +9,7 @@ import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
-import sg.gov.moh.iais.egp.bsb.client.AuditClient;
+import sg.gov.moh.iais.egp.bsb.client.AuditClientBE;
 import sg.gov.moh.iais.egp.bsb.client.BiosafetyEnquiryClient;
 import sg.gov.moh.iais.egp.bsb.constant.AuditConstants;
 import sg.gov.moh.iais.egp.bsb.dto.PageInfo;
@@ -46,7 +45,7 @@ public class AuditCreationDelegator {
     private static final String ACTIVITY_TYPE_8 = "ACTVITY008";
 
     @Autowired
-    private AuditClient auditClient;
+    private AuditClientBE auditClientBE;
     @Autowired
     private BiosafetyEnquiryClient biosafetyEnquiryClient;
 
@@ -78,7 +77,7 @@ public class AuditCreationDelegator {
         searchDto.setFrom(AuditConstants.PARAM_CREATE_AUDIT);
         ParamUtil.setSessionAttr(request, AuditConstants.PARAM_AUDIT_SEARCH, searchDto);
         // call API to get searched data
-        ResponseDto<FacilityQueryResultDto> searchResult = auditClient.queryFacility(searchDto);
+        ResponseDto<FacilityQueryResultDto> searchResult = auditClientBE.queryFacility(searchDto);
 
         if (searchResult.ok()) {
             ParamUtil.setRequestAttr(request, AuditConstants.KEY_AUDIT_PAGE_INFO, searchResult.getEntity().getPageInfo());
@@ -137,8 +136,8 @@ public class AuditCreationDelegator {
         List<String> list = repeatListWayTwo(facList);
         List<Facility> facilityList=new ArrayList<>();
         for (String fId : list) {
-            Facility facility = auditClient.getFacilityById(fId).getEntity();
-            List<FacilityActivity> activityList = auditClient.getFacilityActivityByFacilityId(fId).getEntity();
+            Facility facility = auditClientBE.getFacilityById(fId).getEntity();
+            List<FacilityActivity> activityList = auditClientBE.getFacilityActivityByFacilityId(fId).getEntity();
             if (!activityList.isEmpty()) {
                 facility.setFacilityActivities(activityList);
             }
@@ -171,7 +170,7 @@ public class AuditCreationDelegator {
                         facilityAudit.setApproval(facilityActivity.getApproval());
                     }
                 }
-                auditClient.saveFacilityAudit(facilityAudit);
+                auditClientBE.saveFacilityAudit(facilityAudit);
             }
         }
     }

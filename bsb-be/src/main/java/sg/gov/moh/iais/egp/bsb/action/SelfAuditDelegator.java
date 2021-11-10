@@ -9,7 +9,7 @@ import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import sg.gov.moh.iais.egp.bsb.client.AuditClient;
+import sg.gov.moh.iais.egp.bsb.client.AuditClientBE;
 import sg.gov.moh.iais.egp.bsb.client.DocClient;
 import sg.gov.moh.iais.egp.bsb.constant.AuditConstants;
 import sg.gov.moh.iais.egp.bsb.dto.audit.AuditDocDto;
@@ -29,7 +29,7 @@ import java.util.List;
 public class SelfAuditDelegator {
 
     @Autowired
-    private AuditClient auditClient;
+    private AuditClientBE auditClientBE;
 
     @Autowired
     private DocClient docClient;
@@ -56,7 +56,7 @@ public class SelfAuditDelegator {
         ParamUtil.setSessionAttr(request,AuditConstants.AUDIT_DOC_DTO, null);
 
         String auditId = ParamUtil.getMaskedString(request, AuditConstants.AUDIT_ID);
-        FacilityAudit facilityAudit = auditClient.getFacilityAuditById(auditId).getEntity();
+        FacilityAudit facilityAudit = auditClientBE.getFacilityAuditById(auditId).getEntity();
 
         Facility facility = facilityAudit.getFacility();
         String facilityAddress = TableDisplayUtil.getOneLineAddress(facility.getBlkNo(),
@@ -92,7 +92,7 @@ public class SelfAuditDelegator {
         audit.setScenarioCategory(scenarioCategory);
         audit.setId(auditId);
         audit.setStatus(AuditConstants.PARAM_AUDIT_STATUS_PENDING_DO);
-        auditClient.saveSelfAuditReport(audit).getEntity();
+        auditClientBE.updateAudit(audit).getEntity();
     }
 
     /**
@@ -106,8 +106,8 @@ public class SelfAuditDelegator {
         ParamUtil.setSessionAttr(request,AuditConstants.AUDIT_DOC_DTO, null);
 
         String auditAppId = "2228B667-3815-EC11-BE6E-000C298D317C";
-        FacilityAuditApp facilityAuditApp = auditClient.getFacilityAuditAppById(auditAppId).getEntity();
-        FacilityAudit facilityAudit = auditClient.getFacilityAuditById(facilityAuditApp.getFacilityAudit().getId()).getEntity();
+        FacilityAuditApp facilityAuditApp = auditClientBE.getFacilityAuditAppById(auditAppId).getEntity();
+        FacilityAudit facilityAudit = auditClientBE.getFacilityAuditById(facilityAuditApp.getFacilityAudit().getId()).getEntity();
         facilityAuditApp.setFacilityAudit(facilityAudit);
 
         Facility facility = facilityAudit.getFacility();
@@ -126,7 +126,7 @@ public class SelfAuditDelegator {
         AuditDocDto auditDocDto = new AuditDocDto();
         auditDocDto.setFacilityDocs(docList);
 
-        List<FacilityAuditAppHistory> histories = auditClient.getAllHistoryByAuditAppId(facilityAuditApp.getId()).getEntity();
+        List<FacilityAuditAppHistory> histories = auditClientBE.getAllHistoryByAuditAppId(facilityAuditApp.getId()).getEntity();
 
         ParamUtil.setSessionAttr(request,AuditConstants.FACILITY,facility);
         ParamUtil.setRequestAttr(request, AuditConstants.FACILITY_AUDIT_APP, facilityAuditApp);
@@ -142,10 +142,10 @@ public class SelfAuditDelegator {
         HttpServletRequest request = bpc.request;
         FacilityAuditApp auditApp = before(request);
         auditApp.setStatus(AuditConstants.PARAM_AUDIT_STATUS_PENDING_AO);
-        auditClient.processAuditDate(auditApp).getEntity();
+        auditClientBE.processAuditDate(auditApp).getEntity();
         FacilityAuditAppHistory auditAppHistory = abHistory(request);
         auditAppHistory.setAppStatus(auditApp.getStatus());
-        auditClient.saveHistory(auditAppHistory);
+        auditClientBE.saveHistory(auditAppHistory);
     }
 
     /**
@@ -156,10 +156,10 @@ public class SelfAuditDelegator {
         HttpServletRequest request = bpc.request;
         FacilityAuditApp auditApp = before(request);
         auditApp.setStatus(AuditConstants.PARAM_AUDIT_STATUS_PENDING_APPLICANT_INPUT);
-        auditClient.processAuditDate(auditApp);
+        auditClientBE.processAuditDate(auditApp);
         FacilityAuditAppHistory auditAppHistory = abHistory(request);
         auditAppHistory.setAppStatus(auditApp.getStatus());
-        auditClient.saveHistory(auditAppHistory);
+        auditClientBE.saveHistory(auditAppHistory);
     }
 
     /**
@@ -170,10 +170,10 @@ public class SelfAuditDelegator {
         HttpServletRequest request = bpc.request;
         FacilityAuditApp auditApp = before(request);
         auditApp.setStatus(AuditConstants.PARAM_AUDIT_STATUS_PENDING_AO);
-        auditClient.processAuditDate(auditApp);
+        auditClientBE.processAuditDate(auditApp);
         FacilityAuditAppHistory auditAppHistory = abHistory(request);
         auditAppHistory.setAppStatus(auditApp.getStatus());
-        auditClient.saveHistory(auditAppHistory);
+        auditClientBE.saveHistory(auditAppHistory);
     }
 
     /**
@@ -185,10 +185,10 @@ public class SelfAuditDelegator {
         FacilityAuditApp auditApp = before(request);
         auditApp.setStatus(AuditConstants.PARAM_AUDIT_STATUS_PENDING_DO);
         auditApp.getFacilityAudit().setStatus(AuditConstants.PARAM_AUDIT_STATUS_PENDING_DO);
-        auditClient.processAuditDate(auditApp);
+        auditClientBE.processAuditDate(auditApp);
         FacilityAuditAppHistory auditAppHistory = abHistory(request);
         auditAppHistory.setAppStatus(auditApp.getStatus());
-        auditClient.saveHistory(auditAppHistory);
+        auditClientBE.saveHistory(auditAppHistory);
     }
 
     /**
@@ -200,10 +200,10 @@ public class SelfAuditDelegator {
         FacilityAuditApp auditApp = before(request);
         auditApp.setStatus(AuditConstants.PARAM_AUDIT_STATUS_COMPLETED);
         auditApp.getFacilityAudit().setStatus(AuditConstants.PARAM_AUDIT_STATUS_COMPLETED);
-        auditClient.processAuditDate(auditApp);
+        auditClientBE.processAuditDate(auditApp);
         FacilityAuditAppHistory auditAppHistory = abHistory(request);
         auditAppHistory.setAppStatus(auditApp.getStatus());
-        auditClient.saveHistory(auditAppHistory);
+        auditClientBE.saveHistory(auditAppHistory);
     }
 
 

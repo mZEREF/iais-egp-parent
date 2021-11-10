@@ -7,7 +7,7 @@ import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
-import sg.gov.moh.iais.egp.bsb.client.AuditClient;
+import sg.gov.moh.iais.egp.bsb.client.AuditClientBE;
 import sg.gov.moh.iais.egp.bsb.constant.AuditConstants;
 import sg.gov.moh.iais.egp.bsb.constant.RevocationConstants;
 import sg.gov.moh.iais.egp.bsb.entity.*;
@@ -22,10 +22,14 @@ import java.util.List;
  */
 @Slf4j
 @Delegator(value = "auditDateDelegator")
-public class AuditDateDelegator {
+public class AuditDateDelegatorBE {
+
+    private final AuditClientBE auditClientBE;
 
     @Autowired
-    private AuditClient auditClient;
+    public AuditDateDelegatorBE(AuditClientBE auditClientBE){
+        this.auditClientBE = auditClientBE;
+    }
 
     /**
      * StartStep: startStep
@@ -51,7 +55,7 @@ public class AuditDateDelegator {
         ParamUtil.setSessionAttr(request, AuditConstants.FACILITY_AUDIT_APP, null);
 
         String auditAppId = "8DD7CCC0-52A2-4204-A0BA-F7A99CB18980";
-        FacilityAuditApp facilityAuditApp = auditClient.getFacilityAuditAppById(auditAppId).getEntity();
+        FacilityAuditApp facilityAuditApp = auditClientBE.getFacilityAuditAppById(auditAppId).getEntity();
         Approval approval = facilityAuditApp.getFacilityAudit().getApproval();
         Facility facility = new Facility();
         if (approval.getProcessType().equals(RevocationConstants.PARAM_PROCESS_TYPE_FACILITY_REGISTRATION)) {
@@ -92,7 +96,7 @@ public class AuditDateDelegator {
         facilityAuditApp.setDoRemarks(remark);
         facilityAuditApp.setDoDecision(decision);
         facilityAuditApp.setStatus(AuditConstants.PARAM_AUDIT_STATUS_PENDING_AO);
-        auditClient.processAuditDate(facilityAuditApp);
+        auditClientBE.processAuditDate(facilityAuditApp);
     }
 
     /**
@@ -110,7 +114,7 @@ public class AuditDateDelegator {
         facilityAuditApp.setDoDecision(decision);
         facilityAuditApp.setDoReason(reason);
         facilityAuditApp.setStatus(AuditConstants.PARAM_AUDIT_STATUS_PENDING_AO);
-        auditClient.processAuditDate(facilityAuditApp);
+        auditClientBE.processAuditDate(facilityAuditApp);
     }
 
     /**
@@ -127,7 +131,7 @@ public class AuditDateDelegator {
         //
         facilityAuditApp.getFacilityAudit().setStatus(AuditConstants.PARAM_AUDIT_STATUS_PENDING_APPLICANT_INPUT);
         facilityAuditApp.getFacilityAudit().setAuditDt(facilityAuditApp.getRequestAuditDt());
-        auditClient.processAuditDate(facilityAuditApp);
+        auditClientBE.processAuditDate(facilityAuditApp);
     }
 
     /**
@@ -143,6 +147,6 @@ public class AuditDateDelegator {
         facilityAuditApp.setAoRemarks(remark);
         facilityAuditApp.setAoReason(reason);
         facilityAuditApp.setStatus(AuditConstants.PARAM_AUDIT_STATUS_CANCELLED);
-        auditClient.processAuditDate(facilityAuditApp);
+        auditClientBE.processAuditDate(facilityAuditApp);
     }
 }

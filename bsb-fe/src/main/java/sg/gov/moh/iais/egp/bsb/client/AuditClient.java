@@ -18,12 +18,11 @@ import java.util.List;
  */
 @FeignClient(name = "bsb-fe-api", configuration = FeignConfiguration.class)
 public interface AuditClient {
-
     @GetMapping(value = "/bsb-audit/getAllAudit", consumes = MediaType.APPLICATION_JSON_VALUE, produces =MediaType.APPLICATION_JSON_VALUE)
     ResponseDto<AuditQueryResultDto> getAllAudit(@SpringQueryMap AuditQueryDto queryDto);
 
     @GetMapping(value = "/bsb-audit/getFacilityByApproval")
-    FeignResponseEntity<Facility> getFacilityByApproval(@RequestBody Approval approval);
+    FeignResponseEntity<Facility> getFacilityByApproval(@RequestParam("approvalId") String approvalId,@RequestParam("processType") String processType);
 
     @GetMapping(path = "/bsb-audit/{id}",consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<FacilityAudit> getFacilityAuditById(@PathVariable(name = "id") String id);

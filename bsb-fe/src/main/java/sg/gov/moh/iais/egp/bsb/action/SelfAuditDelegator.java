@@ -25,11 +25,14 @@ import java.util.List;
 @Delegator(value = "selfAuditDelegator")
 public class SelfAuditDelegator {
 
-    @Autowired
-    private AuditClient auditClient;
+    private final AuditClient auditClient;
+    private final DocClient docClient;
 
     @Autowired
-    private DocClient docClient;
+    public SelfAuditDelegator(AuditClient auditClient,DocClient docClient){
+        this.auditClient = auditClient;
+        this.docClient = docClient;
+    }
 
     /**
      * StartStep: startStep
@@ -57,7 +60,7 @@ public class SelfAuditDelegator {
         String auditId = ParamUtil.getMaskedString(request, AuditConstants.AUDIT_ID);
         FacilityAudit facilityAudit = auditClient.getFacilityAuditById(auditId).getEntity();
 
-        Facility facility = auditClient.getFacilityByApproval(facilityAudit.getApproval()).getEntity();
+        Facility facility = auditClient.getFacilityByApproval(facilityAudit.getApproval().getId(),facilityAudit.getApproval().getProcessType()).getEntity();
         String facilityAddress = getFacAddress(facility);
         facility.setFacilityAddress(facilityAddress);
         facility.setApproval(facilityAudit.getApproval().getApproveNo());

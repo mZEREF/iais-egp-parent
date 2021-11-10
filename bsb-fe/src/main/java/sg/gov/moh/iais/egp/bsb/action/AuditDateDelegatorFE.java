@@ -29,11 +29,14 @@ import java.util.List;
  * @author Zhu Tangtang
  */
 @Slf4j
-@Delegator(value = "auditDateDelegator")
-public class AuditDateDelegator {
+@Delegator(value = "auditDateDelegatorFE")
+public class AuditDateDelegatorFE {
+    private final AuditClient auditClient;
 
     @Autowired
-    private AuditClient auditClient;
+    public AuditDateDelegatorFE(AuditClient auditClient){
+        this.auditClient = auditClient;
+    }
 
     /**
      * StartStep: startStep
@@ -68,7 +71,7 @@ public class AuditDateDelegator {
             ParamUtil.setRequestAttr(request, AuditConstants.KEY_AUDIT_PAGE_INFO, searchResult.getEntity().getPageInfo());
             List<FacilityAudit> audits = searchResult.getEntity().getTasks();
             for (FacilityAudit audit : audits) {
-               Facility facility = auditClient.getFacilityByApproval(audit.getApproval()).getEntity();
+               Facility facility = auditClient.getFacilityByApproval(audit.getApproval().getId(),audit.getApproval().getProcessType()).getEntity();
                audit.setFacility(facility);
             }
             ParamUtil.setRequestAttr(request, AuditConstants.KEY_AUDIT_DATA_LIST, audits);

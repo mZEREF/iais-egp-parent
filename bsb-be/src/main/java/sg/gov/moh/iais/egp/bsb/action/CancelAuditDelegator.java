@@ -2,19 +2,17 @@ package sg.gov.moh.iais.egp.bsb.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
-import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import sg.gov.moh.iais.egp.bsb.client.AuditClient;
+import sg.gov.moh.iais.egp.bsb.client.AuditClientBE;
 import sg.gov.moh.iais.egp.bsb.client.BiosafetyEnquiryClient;
 import sg.gov.moh.iais.egp.bsb.constant.AuditConstants;
 import sg.gov.moh.iais.egp.bsb.dto.PageInfo;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
 import sg.gov.moh.iais.egp.bsb.dto.audit.AuditQueryDto;
-import sg.gov.moh.iais.egp.bsb.dto.audit.AuditQueryResultDto;
 import sg.gov.moh.iais.egp.bsb.dto.audit.FacilityQueryResultDto;
 import sg.gov.moh.iais.egp.bsb.entity.*;
 import sop.webflow.rt.api.BaseProcessClass;
@@ -32,7 +30,7 @@ import java.util.List;
 public class CancelAuditDelegator {
 
     @Autowired
-    private AuditClient auditClient;
+    private AuditClientBE auditClientBE;
 
     @Autowired
     private BiosafetyEnquiryClient biosafetyEnquiryClient;
@@ -64,7 +62,7 @@ public class CancelAuditDelegator {
         searchDto.setFrom(AuditConstants.PARAM_CANCEL_AUDIT);
         ParamUtil.setSessionAttr(request, AuditConstants.PARAM_AUDIT_SEARCH, searchDto);
         // call API to get searched data
-        ResponseDto<FacilityQueryResultDto> searchResult = auditClient.queryFacility(searchDto);
+        ResponseDto<FacilityQueryResultDto> searchResult = auditClientBE.queryFacility(searchDto);
 
         if (searchResult.ok()) {
             ParamUtil.setRequestAttr(request, AuditConstants.KEY_AUDIT_PAGE_INFO, searchResult.getEntity().getPageInfo());
@@ -110,8 +108,8 @@ public class CancelAuditDelegator {
         String[] auditIds = ParamUtil.getMaskedStrings(request, AuditConstants.AUDIT_ID);
         List<FacilityAudit> auditList = new ArrayList<>();
         for (String auditId : auditIds) {
-            FacilityAudit facilityAudit = auditClient.getFacilityAuditById(auditId).getEntity();
-            List<FacilityActivity> activityList = auditClient.getFacilityActivityByFacilityId(facilityAudit.getFacility().getId()).getEntity();
+            FacilityAudit facilityAudit = auditClientBE.getFacilityAuditById(auditId).getEntity();
+            List<FacilityActivity> activityList = auditClientBE.getFacilityActivityByFacilityId(facilityAudit.getFacility().getId()).getEntity();
             if (!activityList.isEmpty()) {
                 facilityAudit.getFacility().setFacilityActivities(activityList);
             }
@@ -130,7 +128,7 @@ public class CancelAuditDelegator {
         for (FacilityAudit audit : auditList) {
             audit.setCancelReason(cancelReason);
             audit.setStatus(AuditConstants.PARAM_AUDIT_STATUS_PENDING_AO);
-            auditClient.saveSelfAuditReport(audit);
+            auditClientBE.updateAudit(audit);
         }
     }
 
@@ -144,10 +142,10 @@ public class CancelAuditDelegator {
         ParamUtil.setSessionAttr(request, AuditConstants.FACILITY_AUDIT_APP, null);
         String auditAppId = "D57B8FFB-151D-EC11-BE6E-000C298D317C";
 
-        FacilityAuditApp facilityAuditApp = auditClient.getFacilityAuditAppById(auditAppId).getEntity();
-        FacilityAudit facilityAudit = auditClient.getFacilityAuditById(facilityAuditApp.getFacilityAudit().getId()).getEntity();
+        FacilityAuditApp facilityAuditApp = auditClientBE.getFacilityAuditAppById(auditAppId).getEntity();
+        FacilityAudit facilityAudit = auditClientBE.getFacilityAuditById(facilityAuditApp.getFacilityAudit().getId()).getEntity();
 
-        List<FacilityActivity> activityList = auditClient.getFacilityActivityByFacilityId(facilityAudit.getFacility().getId()).getEntity();
+        List<FacilityActivity> activityList = auditClientBE.getFacilityActivityByFacilityId(facilityAudit.getFacility().getId()).getEntity();
         if (!activityList.isEmpty()) {
             facilityAudit.getFacility().setFacilityActivities(activityList);
         }
@@ -167,7 +165,7 @@ public class CancelAuditDelegator {
         auditApp.setStatus(AuditConstants.PARAM_AUDIT_STATUS_CANCELLED);
         audit.setStatus(AuditConstants.PARAM_AUDIT_STATUS_CANCELLED);
         auditApp.setFacilityAudit(audit);
-        auditClient.processAuditDate(auditApp);
+        auditClientBE.processAuditDate(auditApp);
     }
 
     /**
@@ -177,7 +175,7 @@ public class CancelAuditDelegator {
         HttpServletRequest request = bpc.request;
         FacilityAuditApp auditApp = (FacilityAuditApp)ParamUtil.getSessionAttr(request, AuditConstants.FACILITY_AUDIT_APP);
         auditApp.setStatus(AuditConstants.PARAM_AUDIT_STATUS_PENDING_DO);
-        auditClient.processAuditDate(auditApp);
+        auditClientBE.processAuditDate(auditApp);
     }
 
     /**

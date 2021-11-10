@@ -19,13 +19,10 @@ import java.util.List;
  */
 
 @FeignClient(name = "bsb-be-api", configuration = FeignConfiguration.class)
-public interface AuditClient {
+public interface AuditClientBE {
 
     @GetMapping(value = "/bsb-audit/queryFacility", consumes = MediaType.APPLICATION_JSON_VALUE, produces =MediaType.APPLICATION_JSON_VALUE)
     ResponseDto<FacilityQueryResultDto> queryFacility(@SpringQueryMap AuditQueryDto queryDto);
-
-    @GetMapping(value = "/bsb-audit/getAllAudit", consumes = MediaType.APPLICATION_JSON_VALUE, produces =MediaType.APPLICATION_JSON_VALUE)
-    ResponseDto<AuditQueryResultDto> getAllAudit(@SpringQueryMap AuditQueryDto queryDto);
 
     @GetMapping(value = "/bsb-audit/getCancelAuditList", consumes = MediaType.APPLICATION_JSON_VALUE, produces =MediaType.APPLICATION_JSON_VALUE)
     ResponseDto<AuditQueryResultDto> getCancelAuditList(@SpringQueryMap AuditQueryDto queryDto);
@@ -39,17 +36,14 @@ public interface AuditClient {
     @GetMapping(path = "/bsb-audit/{id}",consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<FacilityAudit> getFacilityAuditById(@PathVariable(name = "id") String id);
 
-    @PostMapping(value = "/bsb-audit/specifyAndChangeAuditDt",consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<Void> specifyAndChangeAuditDt(@RequestBody FacilityAudit facilityAudit);
-
     @GetMapping(value = "/bsb-audit/getFacilityAuditAppById",consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<FacilityAuditApp> getFacilityAuditAppById(@RequestParam("id") String id);
 
     @PostMapping(value = "/bsb-audit/updateAuditApp", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<Void> processAuditDate(@RequestBody FacilityAuditApp auditApp);
 
-    @PostMapping(value = "/bsb-audit/saveSelfAuditReport", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<FacilityAuditApp> saveSelfAuditReport(@RequestBody FacilityAudit facilityAudit);
+    @PostMapping(value = "/bsb-audit/updateAudit", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<Void> updateAudit(@RequestBody FacilityAudit facilityAudit);
 
     @PostMapping(value = "/bsb-auditHistory/saveHistory", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<FacilityAuditAppHistory> saveHistory(@RequestBody FacilityAuditAppHistory history);
