@@ -1,8 +1,10 @@
 package com.ecquaria.cloud.moh.iais.validation.dataSubmission;
 
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.EmbryoCreatedStageDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
-import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidator;
+import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -21,72 +23,73 @@ import java.util.Map;
 public class EmbryoCreatedStageDtoValidator implements CustomizeValidator {
     @Override
     public Map<String, String> validate(HttpServletRequest httpServletRequest) {
+        ArSuperDataSubmissionDto arSuperDataSubmissionDto= DataSubmissionHelper.getCurrentArDataSubmission(httpServletRequest);
+        EmbryoCreatedStageDto embryoCreatedStageDto=arSuperDataSubmissionDto.getEmbryoCreatedStageDto();
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
+        int totalThawedMax =100;
+        int totalFreshMax =100;
+        int totalThawedNum =0;
+        int totalFreshNum =0;
 
-        Integer transEmbrFreshOccNum =  null;
-        try {
-            transEmbrFreshOccNum =  ParamUtil.getInt(httpServletRequest, "transEmbrFreshOccNum");
-        }catch (Exception e){
-            log.error("no int");
-        }
 
-        if (transEmbrFreshOccNum==null) {
+        if (embryoCreatedStageDto.getTransEmbrFreshOccNum()==null) {
             String errMsg = MessageUtil.replaceMessage("GENERAL_ERR0006","This field", "field");
             errorMap.put("othersReason", errMsg);
-        }else if(transEmbrFreshOccNum>99){
+        }else if(embryoCreatedStageDto.getTransEmbrFreshOccNum()>99){
+            totalFreshNum+=embryoCreatedStageDto.getTransEmbrFreshOccNum();
             Map<String, String> repMap=IaisCommonUtils.genNewHashMap();
             repMap.put("number","2");
             repMap.put("fieldNo","This field");
             String errMsg = MessageUtil.getMessageDesc("GENERAL_ERR0036",repMap);
             errorMap.put("transEmbrFreshOccNum", errMsg);
         }
-        Integer poorDevFreshOccNum = null;
-        try {
-            poorDevFreshOccNum = ParamUtil.getInt(httpServletRequest, "poorDevFreshOccNum");
-        }catch (Exception e){
-            log.error("no int");
-        }
-        if (poorDevFreshOccNum==null) {
+
+        if (embryoCreatedStageDto.getPoorDevFreshOccNum()==null) {
             String errMsg = MessageUtil.replaceMessage("GENERAL_ERR0006","This field", "field");
             errorMap.put("poorDevFreshOccNum", errMsg);
-        }else if(poorDevFreshOccNum>99){
+        }else if(embryoCreatedStageDto.getPoorDevFreshOccNum()>99){
+            totalFreshNum+=embryoCreatedStageDto.getPoorDevFreshOccNum();
             Map<String, String> repMap=IaisCommonUtils.genNewHashMap();
             repMap.put("number","2");
             repMap.put("fieldNo","This field");
             String errMsg = MessageUtil.getMessageDesc("GENERAL_ERR0036",repMap);
             errorMap.put("poorDevFreshOccNum", errMsg);
         }
-        Integer transEmbrThawOccNum = null;
-        try {
-            transEmbrThawOccNum =  ParamUtil.getInt(httpServletRequest, "transEmbrThawOccNum");
-        }catch (Exception e){
-            log.error("no int");
-        }
-        if (transEmbrThawOccNum == null) {
+
+        if (embryoCreatedStageDto.getTransEmbrThawOccNum() == null) {
             String errMsg = MessageUtil.replaceMessage("GENERAL_ERR0006","This field", "field");
             errorMap.put("transEmbrThawOccNum", errMsg);
-        }else if(transEmbrThawOccNum>99){
+        }else if(embryoCreatedStageDto.getTransEmbrThawOccNum()>99){
+            totalThawedNum+=embryoCreatedStageDto.getTransEmbrThawOccNum();
             Map<String, String> repMap=IaisCommonUtils.genNewHashMap();
             repMap.put("number","2");
             repMap.put("fieldNo","This field");
             String errMsg = MessageUtil.getMessageDesc("GENERAL_ERR0036",repMap);
             errorMap.put("transEmbrThawOccNum", errMsg);
         }
-        Integer poorDevThawOccNum = null;
-        try {
-            poorDevThawOccNum =  ParamUtil.getInt(httpServletRequest, "poorDevThawOccNum");
-        }catch (Exception e){
-            log.error("no int");
-        }
-        if (poorDevThawOccNum == null) {
+
+        if (embryoCreatedStageDto.getPoorDevThawOccNum() == null) {
             String errMsg = MessageUtil.replaceMessage("GENERAL_ERR0006","This field", "field");
             errorMap.put("poorDevThawOccNum", errMsg);
-        }else if(poorDevThawOccNum>99){
+        }else if(embryoCreatedStageDto.getPoorDevThawOccNum()>99){
+            totalThawedNum+=embryoCreatedStageDto.getPoorDevThawOccNum();
             Map<String, String> repMap=IaisCommonUtils.genNewHashMap();
             repMap.put("number","2");
             repMap.put("fieldNo","This field");
             String errMsg = MessageUtil.getMessageDesc("GENERAL_ERR0036",repMap);
             errorMap.put("poorDevThawOccNum", errMsg);
+        }
+
+        String errMsgFresh = "Total sum of data item 1, 2 cannot be greater than number of fresh oocytes tagged to patient";
+        String errMsgThawed = "Total sum of data item 3, 4 cannot be greater than number of thawed oocytes tagged to patient";
+
+        if(totalThawedNum>totalThawedMax){
+            errorMap.put("poorDevThawOccNum", errMsgThawed);
+
+        }
+        if(totalFreshNum>totalFreshMax){
+            errorMap.put("poorDevFreshOccNum", errMsgFresh);
+
         }
         return errorMap;
     }

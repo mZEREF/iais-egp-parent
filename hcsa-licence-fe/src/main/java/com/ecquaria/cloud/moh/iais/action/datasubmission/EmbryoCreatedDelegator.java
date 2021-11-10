@@ -55,48 +55,34 @@ public class EmbryoCreatedDelegator extends CommonDelegator{
         ArSuperDataSubmissionDto arSuperDataSubmissionDto= DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
         EmbryoCreatedStageDto embryoCreatedStageDto=arSuperDataSubmissionDto.getEmbryoCreatedStageDto();
         HttpServletRequest request=bpc.request;
+        int totalNum =0;
         Integer transEmbrFreshOccNum =  null;
         try {
             transEmbrFreshOccNum =  ParamUtil.getInt(request, "transEmbrFreshOccNum");
+            totalNum+=transEmbrFreshOccNum;
         }catch (Exception e){
             log.error("no int");
         }
         Integer poorDevFreshOccNum = null;
         try {
             poorDevFreshOccNum = ParamUtil.getInt(request, "poorDevFreshOccNum");
+            totalNum+=poorDevFreshOccNum;
         }catch (Exception e){
             log.error("no int");
         }
         Integer transEmbrThawOccNum = null;
         try {
             transEmbrThawOccNum =  ParamUtil.getInt(request, "transEmbrThawOccNum");
+            totalNum+=transEmbrThawOccNum;
         }catch (Exception e){
             log.error("no int");
         }
         Integer poorDevThawOccNum = null;
         try {
             poorDevThawOccNum =  ParamUtil.getInt(request, "poorDevThawOccNum");
+            totalNum+=poorDevThawOccNum;
         }catch (Exception e){
             log.error("no int");
-        }
-        int totalNum =0;
-        int totalThawedNum =0;
-        int totalFreshNum =0;
-        if(transEmbrFreshOccNum!=null){
-            totalNum+=transEmbrFreshOccNum;
-            totalFreshNum+=transEmbrFreshOccNum;
-        }
-        if(poorDevFreshOccNum!=null){
-            totalNum+=poorDevFreshOccNum;
-            totalFreshNum+=poorDevFreshOccNum;
-        }
-        if(transEmbrThawOccNum!=null){
-            totalNum+=transEmbrThawOccNum;
-            totalThawedNum+=transEmbrThawOccNum;
-        }
-        if(poorDevThawOccNum!=null){
-            totalNum+=poorDevThawOccNum;
-            totalThawedNum+=poorDevThawOccNum;
         }
         embryoCreatedStageDto.setTransEmbrFreshOccNum(transEmbrFreshOccNum);
         embryoCreatedStageDto.setTransEmbrThawOccNum(transEmbrThawOccNum);
@@ -111,17 +97,7 @@ public class EmbryoCreatedDelegator extends CommonDelegator{
         if("confirm".equals(actionType)){
             ValidationResult validationResult = WebValidationHelper.validateProperty(embryoCreatedStageDto, "save");
             Map<String, String> errorMap = validationResult.retrieveAll();
-            String errMsgFresh = "Total sum of data item 1, 2 cannot be greater than number of fresh oocytes tagged to patient";
-            String errMsgThawed = "Total sum of data item 3, 4 cannot be greater than number of thawed oocytes tagged to patient";
 
-            if(totalThawedNum>10){
-                errorMap.put("poorDevThawOccNum", errMsgThawed);
-
-            }
-            if(totalFreshNum>10){
-                errorMap.put("poorDevFreshOccNum", errMsgFresh);
-
-            }
             if (!errorMap.isEmpty() || validationResult.isHasErrors()) {
                 WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));

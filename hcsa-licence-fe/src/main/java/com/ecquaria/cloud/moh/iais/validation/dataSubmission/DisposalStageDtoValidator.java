@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.validation.dataSubmission;
 
+import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DisposalStageDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
@@ -29,6 +30,35 @@ public class DisposalStageDtoValidator implements CustomizeValidator {
 
         }
         int maxSamplesNum=100;
+
+        if(disposalStageDto.getDisposedType()!=null){
+            switch (disposalStageDto.getDisposedType()){
+                case DataSubmissionConsts.DISPOSAL_TYPE_FRESH_OOCYTE:
+                    maxSamplesNum=100;
+                    break;
+                case DataSubmissionConsts.DISPOSAL_TYPE_FROZEN_OOCYTE:
+                    maxSamplesNum=100;
+                    break;
+                case DataSubmissionConsts.DISPOSAL_TYPE_THAWED_OOCYTE:
+                    maxSamplesNum=100;
+                    break;
+                case DataSubmissionConsts.DISPOSAL_TYPE_FRESH_EMBRYO:
+                    maxSamplesNum=100;
+                    break;
+                case DataSubmissionConsts.DISPOSAL_TYPE_FROZEN_EMBRYO:
+                    maxSamplesNum=100;
+                    break;
+                case DataSubmissionConsts.DISPOSAL_TYPE_THAWED_EMBRYO:
+                    maxSamplesNum=100;
+                    break;
+                case DataSubmissionConsts.DISPOSAL_TYPE_FROZEN_SPERM:
+                    maxSamplesNum=100;
+                    break;
+                default:
+            }
+        }
+
+
 
         if(disposalStageDto.getImmature()!=null){
             if(disposalStageDto.getImmature()>99){

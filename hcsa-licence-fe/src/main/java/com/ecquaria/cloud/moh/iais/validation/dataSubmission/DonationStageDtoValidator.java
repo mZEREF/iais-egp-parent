@@ -29,6 +29,24 @@ public class DonationStageDtoValidator implements CustomizeValidator {
         String errMsgErr006 = MessageUtil.getMessageDesc("GENERAL_ERR0006");
         int maxSamplesNum=100;
 
+        if(donationStageDto.getDonatedType()!=null){
+            switch (donationStageDto.getDonatedType()){
+                case DataSubmissionConsts.DONATED_TYPE_FRESH_OOCYTE:
+                    maxSamplesNum=100;
+                    break;
+                case DataSubmissionConsts.DONATED_TYPE_FROZEN_OOCYTE:
+                    maxSamplesNum=100;
+                    break;
+                case DataSubmissionConsts.DONATED_TYPE_FROZEN_EMBRYO:
+                    maxSamplesNum=100;
+                    break;
+                case DataSubmissionConsts.DONATED_TYPE_FROZEN_SPERM:
+                    maxSamplesNum=100;
+                    break;
+                default:
+            }
+        }
+
         if(donationStageDto.getCurCenDonatedNum()!=null){
             if(donationStageDto.getCurCenDonatedNum()>99){
                 Map<String, String> repMap=IaisCommonUtils.genNewHashMap();
