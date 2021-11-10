@@ -423,37 +423,40 @@
                   </div>
                   <div class="col-md-6">
                     <div class="col-md-4" style="padding-right: 0px">
+                      <c:if test="${weeklyDto.selectAllDay}">
+                      <span class="newVal" attr=""></span>
+                      </c:if>
+                      <c:if test="${!weeklyDto.selectAllDay}">
                       <span class="newVal" attr="${weeklyDto.startFrom}">
-                        <c:if test="${weeklyDto.selectAllDay}">
-                        </c:if>
-                        <c:if test="${!weeklyDto.selectAllDay}">
-                          <fmt:formatDate value="${weeklyDto.startFrom}" pattern="HH : mm"/>
-                        </c:if>
+                        <fmt:formatDate value="${weeklyDto.startFrom}" pattern="HH : mm"/>
                       </span>
-                      <span class="oldVal" style="display: none" attr="${oldWeeklyDto.startFrom}">
-                        <c:if test="${oldWeeklyDto.selectAllDay}">
-                        </c:if>
-                        <c:if test="${!oldWeeklyDto.selectAllDay}">
-                          <fmt:formatDate value="${oldWeeklyDto.startFrom}" pattern="HH : mm"/>
-                        </c:if>
+                      </c:if>
+                      <c:if test="${oldWeeklyDto.selectAllDay}">
+                        <span class="oldVal" attr=""></span>
+                      </c:if>
+                      <c:if test="${!oldWeeklyDto.selectAllDay}">
+                      <span class="oldVal" attr="${oldWeeklyDto.startFrom}">
+                        <fmt:formatDate value="${oldWeeklyDto.startFrom}" pattern="HH : mm"/>
                       </span>
+                      </c:if>
                     </div>
                     <div class="col-md-4" style="padding-right: 0px">
-                      <span class="newVal" attr="${weeklyDto.endTo}">
-                        <c:if test="${weeklyDto.selectAllDay}">
-                        </c:if>
-                        <c:if test="${!weeklyDto.selectAllDay}">
-                          <fmt:formatDate value="${weeklyDto.endTo}" pattern="HH : mm"/>
-                        </c:if>
-                      </span>
-                      <span class="oldVal" style="display: none" attr="${oldWeeklyDto.endTo}">
-                         <c:if test="${oldWeeklyDto.selectAllDay}">
-
-                         </c:if>
-                         <c:if test="${!oldWeeklyDto.selectAllDay}">
-                           <fmt:formatDate value="${oldWeeklyDto.endTo}" pattern="HH : mm"/>
-                         </c:if>
-                      </span>
+                      <c:if test="${weeklyDto.selectAllDay}">
+                        <span class="newVal" attr=""></span>
+                      </c:if>
+                      <c:if test="${!weeklyDto.selectAllDay}">
+                        <span class="newVal" attr="${weeklyDto.endTo}">
+                            <fmt:formatDate value="${weeklyDto.endTo}" pattern="HH : mm"/>
+                        </span>
+                      </c:if>
+                      <c:if test="${oldWeeklyDto.selectAllDay}">
+                        <span class="oldVal" attr=""></span>
+                      </c:if>
+                      <c:if test="${!oldWeeklyDto.selectAllDay}">
+                        <span class="oldVal" attr="${oldWeeklyDto.endTo}">
+                            <fmt:formatDate value="${oldWeeklyDto.endTo}" pattern="HH : mm"/>
+                        </span>
+                      </c:if>
                     </div>
                     <div class="col-md-4" style="padding-right: 0px">
                       <div class="col-md-6" style="padding: 0px">
@@ -507,42 +510,41 @@
                   </div>
                   <div class="col-md-6">
                     <div class="col-md-4" style="padding-right: 0px">
-                      <span class="newVal" attr="${op.startFrom}">
-                        <c:if test="${op.selectAllDay}">
-                        </c:if>
-                        <c:if test="${!op.selectAllDay}">
+                      <c:if test="${op.selectAllDay}">
+                        <span class="newVal" attr=""></span>
+                      </c:if>
+                      <c:if test="${!op.selectAllDay}">
+                        <span class="newVal" attr="${op.startFrom}">
                           <fmt:formatDate value="${op.startFrom}" pattern="HH : mm"/>
-                        </c:if>
-                      </span>
-                      <span class="oldVal" style="display: none" attr="${oldOp.startFrom}">
-                        <c:if test="${oldOp.selectAllDay}">
-                        </c:if>
-                        <c:if test="${!oldOp.selectAllDay}">
+                        </span>
+                      </c:if>
+                      <c:if test="${oldOp.selectAllDay}">
+                        <span class="oldVal" attr=""></span>
+                      </c:if>
+                      <c:if test="${!oldOp.selectAllDay}">
+                        <span class="oldVal" attr="${oldOp.startFrom}">
                           <fmt:formatDate value="${oldOp.startFrom}" pattern="HH : mm"/>
-                        </c:if>
-                      </span>
-
+                        </span>
+                      </c:if>
                     </div>
 
                     <div class="col-md-4" style="padding-right: 0px">
-                      <span class="newVal" attr="${op.endTo}">
-                        <c:if test="${op.selectAllDay}">
-
-                        </c:if>
-                         <c:if test="${!op.selectAllDay}">
-                           <fmt:formatDate value="${op.endTo}" pattern="HH : mm"/>
-                         </c:if>
-
-                      </span>
-                      <span class="oldVal" style="display: none" attr="${oldOp.endTo}">
-                        <c:if test="${oldOp.selectAllDay}">
-
-                        </c:if>
-                        <c:if test="${!oldOp.selectAllDay}">
-                          <fmt:formatDate value="${oldOp.endTo}" pattern="HH : mm"/>
-                        </c:if>
-                      </span>
-
+                      <c:if test="${op.selectAllDay}">
+                        <span class="newVal" attr=""></span>
+                      </c:if>
+                      <c:if test="${!op.selectAllDay}">
+                        <span class="newVal" attr="${op.endTo}">
+                         <fmt:formatDate value="${op.endTo}" pattern="HH : mm"/>
+                        </span>
+                      </c:if>
+                      <c:if test="${oldOp.selectAllDay}">
+                        <span class="oldVal" attr=""></span>
+                      </c:if>
+                      <c:if test="${!oldOp.selectAllDay}">
+                        <span class="oldVal" attr="${oldOp.endTo}">
+                         <fmt:formatDate value="${oldOp.endTo}" pattern="HH : mm"/>
+                        </span>
+                      </c:if>
                     </div>
 
                     <div class="col-md-4" style="padding-right: 0px">
