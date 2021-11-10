@@ -11,45 +11,45 @@
         <div class="panel-body">
             <div class="panel-main-content form-horizontal "><%--min-row--%>
                 <iais:row>
-                    <iais:field width="7" value="Thawing Oocyte(s) or Embryo(s)" cssClass="col-md-7"/>
-                    <iais:value width="5" cssClass="col-md-5">
+                    <iais:field width="6" value="Thawing Oocyte(s) or Embryo(s)" cssClass="col-md-6"/>
+                    <iais:value width="6" cssClass="col-md-6">
                         <c:if test="${thawingStageDto.hasOocyte}"><p class="col-12">Oocyte(s)</p></c:if>
                         <c:if test="${thawingStageDto.hasEmbryo}"><p class="col-12">Embryo(s)</p></c:if>
                     </iais:value>
                 </iais:row>
                 <iais:row>
-                    <iais:field width="7" value="No. of Oocytes Thawed" cssClass="col-md-7"/>
-                    <iais:value width="5" cssClass="col-md-5">
+                    <iais:field width="6" value="No. of Oocytes Thawed" cssClass="col-md-6"/>
+                    <iais:value width="6" cssClass="col-md-6">
                         <c:out value="${thawingStageDto.thawedOocytesNum}"/>
                     </iais:value>
                 </iais:row>
                 <iais:row>
-                    <iais:field width="7" value="No. of Oocytes Survived after Thawing (Mature)" cssClass="col-md-7"/>
-                    <iais:value width="5" cssClass="col-md-5">
+                    <iais:field width="6" value="No. of Oocytes Survived after Thawing (Mature)" cssClass="col-md-6"/>
+                    <iais:value width="6" cssClass="col-md-6">
                         <c:out value="${thawingStageDto.thawedOocytesSurvivedMatureNum}"/>
                     </iais:value>
                 </iais:row>
                 <iais:row>
-                    <iais:field width="7" value="No. of Oocytes Survived after Thawing (Immature)" cssClass="col-md-7"/>
-                    <iais:value width="5" cssClass="col-md-5">
+                    <iais:field width="6" value="No. of Oocytes Survived after Thawing (Immature)" cssClass="col-md-6"/>
+                    <iais:value width="6" cssClass="col-md-6">
                         <c:out value="${thawingStageDto.thawedOocytesSurvivedImmatureNum}"/>
                     </iais:value>
                 </iais:row>
                 <iais:row>
-                    <iais:field width="7" value="No. of Oocytes Survived after Thawing (Others)" cssClass="col-md-7"/>
-                    <iais:value width="5" cssClass="col-md-5">
+                    <iais:field width="6" value="No. of Oocytes Survived after Thawing (Others)" cssClass="col-md-6"/>
+                    <iais:value width="6" cssClass="col-md-6">
                         <c:out value="${thawingStageDto.thawedOocytesSurvivedOtherNum}"/>
                     </iais:value>
                 </iais:row>
                 <iais:row>
-                    <iais:field width="7" value="No. of Embryos Thawed" cssClass="col-md-7"/>
-                    <iais:value width="5" cssClass="col-md-5">
+                    <iais:field width="6" value="No. of Embryos Thawed" cssClass="col-md-6"/>
+                    <iais:value width="6" cssClass="col-md-6">
                         <c:out value="${thawingStageDto.thawedEmbryosNum}"/>
                     </iais:value>
                 </iais:row>
                 <iais:row>
-                    <iais:field width="7" value="No. of Embryos Survived after Thawing" cssClass="col-md-7"/>
-                    <iais:value width="5" cssClass="col-md-5">
+                    <iais:field width="6" value="No. of Embryos Survived after Thawing" cssClass="col-md-6"/>
+                    <iais:value width="6" cssClass="col-md-6">
                         <c:out value="${thawingStageDto.thawedEmbryosSurvivedNum}"/>
                     </iais:value>
                 </iais:row>

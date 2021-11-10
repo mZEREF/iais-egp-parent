@@ -12,9 +12,9 @@
         <div class="panel-body">
             <div class="panel-main-content form-horizontal">
                 <iais:row>
-                    <iais:field width="5" value="Thawing Oocyte(s) or Embryo(s)" mandatory="true"/>
+                    <iais:field width="6" value="Thawing Oocyte(s) or Embryo(s)" mandatory="true" cssClass="col-md-6"/>
                     <iais:value width="3" cssClass="col-md-3">
-                        <div class="form-check col-xs-12" >
+                        <div class="form-check col-xs-12">
                             <input class="form-check-input" type="checkbox"
                                    name="hasOocyte"
                                    value="true"
@@ -26,8 +26,8 @@
                                     class="check-square"></span>Oocyte(s)</label>
                         </div>
                     </iais:value>
-                    <iais:value width="4" cssClass="col-md-4">
-                        <div class="form-check col-xs-12" >
+                    <iais:value width="3" cssClass="col-md-3">
+                        <div class="form-check col-xs-12">
                             <input class="form-check-input" type="checkbox"
                                    name="hasEmbryo"
                                    value="true"
@@ -39,45 +39,59 @@
                                     class="check-square"></span>Embryo(s)</label>
                         </div>
                     </iais:value>
-                    <span id="error_thawings" name="iaisErrorMsg" class="error-msg col-md-7"></span>
+                    <span id="error_thawings" name="iaisErrorMsg" class="error-msg col-md-6"></span>
                 </iais:row>
                 <div class="oocytesParts" <c:if test="${!thawingStageDto.hasOocyte}">style="display: none;"</c:if>>
                     <iais:row>
-                        <iais:field width="5" value="No. of Oocytes Thawed" mandatory="true"/>
-                        <iais:value width="7" cssClass="col-md-7">
-                            <iais:input maxLength="2" type="text" name="thawedOocytesNum" id="thawedOocytesNum" value="${thawingStageDto.thawedOocytesNum}"/>
+                        <iais:field width="6" value="No. of Oocytes Thawed" mandatory="true" cssClass="col-md-6"/>
+                        <iais:value width="6" cssClass="col-md-6">
+                            <iais:input maxLength="2" type="text" name="thawedOocytesNum" id="thawedOocytesNum"
+                                        value="${thawingStageDto.thawedOocytesNum}"/>
                         </iais:value>
                     </iais:row>
                     <iais:row>
-                        <iais:field width="5" value="No. of Oocytes Survived after Thawing (Mature)" mandatory="true"/>
-                        <iais:value width="7" cssClass="col-md-7">
-                            <iais:input maxLength="2" type="text" name="thawedOocytesSurvivedMatureNum" id="thawedOocytesSurvivedMatureNum" value="${thawingStageDto.thawedOocytesSurvivedMatureNum}"/>
+                        <iais:field width="6" value="No. of Oocytes Survived after Thawing (Mature)" mandatory="true"
+                                    cssClass="col-md-6"/>
+                        <iais:value width="6" cssClass="col-md-6">
+                            <iais:input maxLength="2" type="text" name="thawedOocytesSurvivedMatureNum"
+                                        id="thawedOocytesSurvivedMatureNum"
+                                        value="${thawingStageDto.thawedOocytesSurvivedMatureNum}"/>
                         </iais:value>
                     </iais:row>
                     <iais:row>
-                        <iais:field width="5" value="No. of Oocytes Survived after Thawing (Immature)" mandatory="true"/>
-                        <iais:value width="7" cssClass="col-md-7">
-                            <iais:input maxLength="2" type="text" name="thawedOocytesSurvivedImmatureNum" id="thawedOocytesSurvivedImmatureNum" value="${thawingStageDto.thawedOocytesSurvivedImmatureNum}"/>
+                        <iais:field width="6" value="No. of Oocytes Survived after Thawing (Immature)" mandatory="true"
+                                    cssClass="col-md-6"/>
+                        <iais:value width="6" cssClass="col-md-6">
+                            <iais:input maxLength="2" type="text" name="thawedOocytesSurvivedImmatureNum"
+                                        id="thawedOocytesSurvivedImmatureNum"
+                                        value="${thawingStageDto.thawedOocytesSurvivedImmatureNum}"/>
                         </iais:value>
                     </iais:row>
                     <iais:row>
-                        <iais:field width="5" value="No. of Oocytes Survived after Thawing (Others)" mandatory="true"/>
-                        <iais:value width="7" cssClass="col-md-7">
-                            <iais:input maxLength="2" type="text" name="thawedOocytesSurvivedOtherNum" id="thawedOocytesSurvivedOtherNum" value="${thawingStageDto.thawedOocytesSurvivedOtherNum}"/>
+                        <iais:field width="6" value="No. of Oocytes Survived after Thawing (Others)" mandatory="true"
+                                    cssClass="col-md-6"/>
+                        <iais:value width="6" cssClass="col-md-6">
+                            <iais:input maxLength="2" type="text" name="thawedOocytesSurvivedOtherNum"
+                                        id="thawedOocytesSurvivedOtherNum"
+                                        value="${thawingStageDto.thawedOocytesSurvivedOtherNum}"/>
                         </iais:value>
                     </iais:row>
                 </div>
                 <div class="embryosParts" <c:if test="${!thawingStageDto.hasEmbryo}">style="display: none;"</c:if>>
                     <iais:row>
-                        <iais:field width="5" value="No. of Embryos Thawed" mandatory="true"/>
-                        <iais:value width="7" cssClass="col-md-7">
-                            <iais:input maxLength="2" type="text" name="thawedEmbryosNum" id="thawedEmbryosNum" value="${thawingStageDto.thawedEmbryosNum}"/>
+                        <iais:field width="6" value="No. of Embryos Thawed" mandatory="true" cssClass="col-md-6"/>
+                        <iais:value width="6" cssClass="col-md-6">
+                            <iais:input maxLength="2" type="text" name="thawedEmbryosNum" id="thawedEmbryosNum"
+                                        value="${thawingStageDto.thawedEmbryosNum}"/>
                         </iais:value>
                     </iais:row>
                     <iais:row>
-                        <iais:field width="5" value="No. of Embryos Survived after Thawing" mandatory="true"/>
-                        <iais:value width="7" cssClass="col-md-7">
-                            <iais:input maxLength="2" type="text" name="thawedEmbryosSurvivedNum" id="thawedEmbryosSurvivedNum" value="${thawingStageDto.thawedEmbryosSurvivedNum}"/>
+                        <iais:field width="6" value="No. of Embryos Survived after Thawing" mandatory="true"
+                                    cssClass="col-md-6"/>
+                        <iais:value width="6" cssClass="col-md-6">
+                            <iais:input maxLength="2" type="text" name="thawedEmbryosSurvivedNum"
+                                        id="thawedEmbryosSurvivedNum"
+                                        value="${thawingStageDto.thawedEmbryosSurvivedNum}"/>
                         </iais:value>
                     </iais:row>
                 </div>
