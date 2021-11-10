@@ -43,7 +43,7 @@ public class OutcomePregnancyDelegator extends CommonDelegator {
         if (pregnancyOutcomeStageDto == null) {
             pregnancyOutcomeStageDto = new PregnancyOutcomeStageDto();
             pregnancyOutcomeStageDto.setBabyDetailsUnknown(false);
-            pregnancyOutcomeStageDto.setBirthPlace("Local");
+            pregnancyOutcomeStageDto.setBirthPlace("Local Birth");
             pregnancyOutcomeStageDto.setWasSelFoeReduCarryOut(1);
             pregnancyOutcomeStageDto.setL2CareBabyNum(0);
             pregnancyOutcomeStageDto.setL3CareBabyNum(0);
@@ -199,7 +199,7 @@ public class OutcomePregnancyDelegator extends CommonDelegator {
                 for (String defectType : defectTypes) {
                     PregnancyOutcomeBabyDefectDto pregnancyOutcomeBabyDefectDto = new PregnancyOutcomeBabyDefectDto();
                     pregnancyOutcomeBabyDefectDto.setDefectType(defectType);
-                    if ("".equals(defectType)) {
+                    if ("other".equals(defectType)) {
                         pregnancyOutcomeBabyDefectDto.setOtherDefectType(otherDefectType);
                     }
                     pregnancyOutcomeBabyDefectDtos.add(pregnancyOutcomeBabyDefectDto);

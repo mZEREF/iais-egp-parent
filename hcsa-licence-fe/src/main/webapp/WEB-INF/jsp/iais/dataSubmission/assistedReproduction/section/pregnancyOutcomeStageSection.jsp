@@ -167,9 +167,9 @@
                                 <input class="form-check-input"
                                        type="radio"
                                        name="birthPlace"
-                                       value="Local"
+                                       value="Local Birth"
                                        id="birthPlaceLocal"
-                                       <c:if test="${pregnancyOutcomeStageDto.birthPlace == 'Local'}">checked</c:if>
+                                       <c:if test="${pregnancyOutcomeStageDto.birthPlace == 'Local Birth'}">checked</c:if>
                                        aria-invalid="false">
                                 <label class="form-check-label"
                                        for="birthPlaceLocal"><span
@@ -179,9 +179,9 @@
                                 <input class="form-check-input"
                                        type="radio"
                                        name="birthPlace"
-                                       value="Overseas"
+                                       value="Overseas Birth"
                                        id="birthPlaceOverseas"
-                                       <c:if test="${pregnancyOutcomeStageDto.birthPlace == 'Overseas'}">checked</c:if>
+                                       <c:if test="${pregnancyOutcomeStageDto.birthPlace == 'Overseas Birth'}">checked</c:if>
                                        aria-invalid="false">
                                 <label class="form-check-label"
                                        for="birthPlaceOverseas"><span

@@ -107,7 +107,7 @@
                             <c:if test="${pregnancyOutcomeStageDto.deliveryDateType == 'Unknown'}">Unknown</c:if>
                             <c:if test="${pregnancyOutcomeStageDto.deliveryDateType != 'Unknown'}">
                                 <fmt:formatDate value="${pregnancyOutcomeStageDto.deliveryDate}"
-                                                pattern="dd/MM/yyyy"></fmt:formatDate>
+                                                pattern="dd/MM/yyyy"/>
                             </c:if>
                         </iais:value>
                     </iais:row>
@@ -119,7 +119,7 @@
                         </iais:value>
                     </iais:row>
                     <div id="localBirthPlaceDiv"
-                         <c:if test="${pregnancyOutcomeStageDto.birthPlace != 'Local'}">style="display:none;"</c:if>>
+                         <c:if test="${pregnancyOutcomeStageDto.birthPlace != 'Local Birth'}">style="display:none;"</c:if>>
                         <iais:row>
                             <iais:field width="7" value="Place of Local Birth"
                                         cssClass="col-md-7"/>
@@ -132,7 +132,7 @@
                         <iais:field width="7" value="Baby Details Unknown (Loss to Follow-up)"
                                     cssClass="col-md-7"/>
                         <iais:value width="5" cssClass="col-md-5">
-                            <c:out value="${pregnancyOutcomeStageDto.babyDetailsUnknown}"/>
+                            <c:out value="${pregnancyOutcomeStageDto.babyDetailsUnknown?'yes':'no'}"/>
                         </iais:value>
                     </iais:row>
                 </div>

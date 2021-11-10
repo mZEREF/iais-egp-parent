@@ -117,7 +117,7 @@ function pregnancyOutcomeChangeFunction() {
 
 function birthPlaceChangeFunction() {
     let $localBirthPlaceDiv = $('#localBirthPlaceDiv');
-    if ($('input[name="birthPlace"]:checked').val() == "Local") {
+    if ($('input[name="birthPlace"]:checked').val() == "Local Birth") {
         $localBirthPlaceDiv.show();
     } else {
         $localBirthPlaceDiv.hide();
@@ -126,7 +126,7 @@ function birthPlaceChangeFunction() {
 
 function babyDetailsUnknownChangeFunction() {
     let $pregnancyOutcomeStageBabySection = $('.pregnancyOutcomeStageBabySection');
-    if ($('input[name="babyDetailsUnknown"]:checked').val()) {
+    if ($('input[name="babyDetailsUnknown"]:checked').val() == 'true') {
         $pregnancyOutcomeStageBabySection.hide();
     } else {
         $pregnancyOutcomeStageBabySection.show();
@@ -171,7 +171,7 @@ function bindBirthDefect() {
     let $birthDefect = $('.birthDefect');
     $birthDefect.unbind();
     $birthDefect.change(function () {
-        if ($(this).val() == 'Yes') {
+        if ($(this).closest(".form-group").find('.birthDefect:checked').val() == "Yes") {
             $(this).closest(".form-group").next('div[name="defectTypeSectionName"]').show();
         } else {
             $(this).closest(".form-group").next('div[name="defectTypeSectionName"]').hide();
@@ -222,7 +222,6 @@ function changeBabySection() {
 
 function addBabaSection(babyIndex, babySize) {
     showWaiting();
-    console.log($('#_contextPath').val());
     $.ajax({
         url: $('#_contextPath').val() + '/ar/pregnancy-outcome-baby-html',
         dataType: 'json',
