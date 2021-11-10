@@ -28,6 +28,7 @@ public class RfcViewFacilityRegistrationDelegator {
     private static final String KEY_APP_ID = "appId";
     private static final String KEY_EDIT_APP_ID = "editId";
     private static final String KEY_MASKED_EDIT_APP_ID = "maskedEditId";
+    private static final String KEY_APPROVE_NO = "approveNo";
 
     private final FacilityRegisterClient facRegClient;
 
@@ -37,7 +38,9 @@ public class RfcViewFacilityRegistrationDelegator {
     }
 
     public void start(BaseProcessClass bpc) { // NOSONAR
+        HttpServletRequest request = bpc.request;
         AuditTrailHelper.auditFunction("Facility Registration", "View Application");
+        request.getSession().removeAttribute(KEY_APPROVE_NO);
     }
 
     public void init(BaseProcessClass bpc) {
@@ -56,6 +59,10 @@ public class RfcViewFacilityRegistrationDelegator {
                 !maskedEditAppId.equals(editAppId) && appId.equals(editAppId)) {
             ParamUtil.setRequestAttr(request, KEY_MASKED_EDIT_APP_ID, maskedEditAppId);
         }
+
+        //rfc approveNo
+        String approveNo = request.getParameter(KEY_APPROVE_NO);
+        ParamUtil.setSessionAttr(request,KEY_APPROVE_NO,approveNo);
     }
 
     public void prepareData(BaseProcessClass bpc) {

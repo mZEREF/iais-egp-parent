@@ -838,7 +838,7 @@ public class FacilityRegistrationDelegator {
 
     /* Will be removed in future, will get this from config mechanism */
     private List<DocSetting> getFacRegDocSettings () {
-        List<DocSetting> docSettings = new ArrayList<>();
+        List<DocSetting> docSettings = new ArrayList<>(9);
         docSettings.add(new DocSetting(DocConstants.DOC_TYPE_BIO_SAFETY_COORDINATOR_CERTIFICATES, "BioSafety Coordinator Certificates", true));
         docSettings.add(new DocSetting(DocConstants.DOC_TYPE_INVENTORY_FILE, "Inventory File", false));
         docSettings.add(new DocSetting(DocConstants.DOC_TYPE_GMAC_ENDORSEMENT, "GMAC Endorsement", false));

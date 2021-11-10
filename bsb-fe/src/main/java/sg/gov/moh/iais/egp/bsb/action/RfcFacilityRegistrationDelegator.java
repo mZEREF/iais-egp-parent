@@ -22,10 +22,14 @@ import sg.gov.moh.iais.egp.bsb.common.node.Node;
 import sg.gov.moh.iais.egp.bsb.common.node.NodeGroup;
 import sg.gov.moh.iais.egp.bsb.common.node.Nodes;
 import sg.gov.moh.iais.egp.bsb.common.node.simple.SimpleNode;
+import sg.gov.moh.iais.egp.bsb.common.rfc.DecisionFlowType;
+import sg.gov.moh.iais.egp.bsb.common.rfc.DecisionFlowTypeImpl;
 import sg.gov.moh.iais.egp.bsb.constant.DocConstants;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
 import sg.gov.moh.iais.egp.bsb.dto.register.facility.*;
-import sg.gov.moh.iais.egp.bsb.dto.rfc.RfcTestFacRegDto;
+import sg.gov.moh.iais.egp.bsb.common.rfc.CompareTwoObject;
+import sg.gov.moh.iais.egp.bsb.dto.rfc.DiffContent;
+import sg.gov.moh.iais.egp.bsb.constant.RfcFlowType;
 import sg.gov.moh.iais.egp.bsb.entity.DocSetting;
 import sg.gov.moh.iais.egp.bsb.util.LogUtil;
 import sop.webflow.rt.api.BaseProcessClass;
@@ -68,6 +72,9 @@ public class RfcFacilityRegistrationDelegator {
     private static final String ERR_MSG_NULL_NAME = "Name must not be null!";
     private static final String ERR_MSG_INVALID_ACTION = "Invalid action";
 
+    //This oldFacilityRegisterDto is the original data, which is for comparison with each DTO modification before Submit(unchangeable)
+    private static final String KEY_OLD_FACILITY_REGISTER_DTO = "oldFacilityRegisterDto";
+
     private final FacilityRegisterClient facRegClient;
     private final FileRepoClient fileRepoClient;
 
@@ -80,7 +87,7 @@ public class RfcFacilityRegistrationDelegator {
     public void start(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         request.getSession().removeAttribute(KEY_ROOT_NODE_GROUP);
-
+        request.getSession().removeAttribute(KEY_OLD_FACILITY_REGISTER_DTO);
         AuditTrailHelper.auditFunction(MODULE_NAME, MODULE_NAME);
     }
 
@@ -98,11 +105,9 @@ public class RfcFacilityRegistrationDelegator {
                 ResponseDto<FacilityRegisterDto> resultDto = facRegClient.getFacilityRegistrationAppDataByApprovalId(appId);
                 if (resultDto.ok()) {
                     failRetrieveEditData = false;
-                    //TODO for improving
+                    //This oldFacilityRegisterDto is the original data, which is for comparison with each DTO modification before Submit(unchangeable)
                     FacilityRegisterDto oldFacilityRegisterDto = resultDto.getEntity();
-                    RfcTestFacRegDto rfcTestFacRegDto = new RfcTestFacRegDto();
-                    rfcTestFacRegDto.setOldFacRegDto(oldFacilityRegisterDto);
-                    ParamUtil.setSessionAttr(request, "rfcTestFacRegDto", rfcTestFacRegDto);
+                    ParamUtil.setSessionAttr(request, KEY_OLD_FACILITY_REGISTER_DTO, oldFacilityRegisterDto);
 
                     NodeGroup facRegRoot = oldFacilityRegisterDto.toFacRegRootGroup(KEY_ROOT_NODE_GROUP);
                     ParamUtil.setSessionAttr(request, KEY_ROOT_NODE_GROUP, facRegRoot);
@@ -476,7 +481,6 @@ public class RfcFacilityRegistrationDelegator {
 
     public void prePreviewSubmit(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
-        ParamUtil.getSessionAttr(request,"oldFacilityRegisterDto");
         NodeGroup facRegRoot = (NodeGroup) ParamUtil.getSessionAttr(request, KEY_ROOT_NODE_GROUP);
         SimpleNode previewSubmitNode = (SimpleNode) facRegRoot.at(NODE_NAME_PREVIEW_SUBMIT);
         PreviewSubmitDto previewSubmitDto = (PreviewSubmitDto) previewSubmitNode.getValue();
@@ -486,12 +490,6 @@ public class RfcFacilityRegistrationDelegator {
         }
         previewSubmitNode.needValidation();
         ParamUtil.setRequestAttr(request, NODE_NAME_PREVIEW_SUBMIT, previewSubmitDto);
-        //TODO set rfcTestDto to session
-        RfcTestFacRegDto rfcTestFacRegDto = (RfcTestFacRegDto)ParamUtil.getSessionAttr(request,"rfcTestFacRegDto");
-        FacilityRegisterDto newFacilityRegisterDto = FacilityRegisterDto.from(facRegRoot);
-        rfcTestFacRegDto.setNewFacRegDto(newFacilityRegisterDto);
-        rfcTestFacRegDto.compareOldAndNew();
-        ParamUtil.setSessionAttr(request,"RfcTestFacRegDto",rfcTestFacRegDto);
 
         ParamUtil.setRequestAttr(request, NODE_NAME_FAC_PROFILE, ((SimpleNode)facRegRoot.at(NODE_NAME_FAC_INFO + facRegRoot.getPathSeparator() + NODE_NAME_FAC_PROFILE)).getValue());
         ParamUtil.setRequestAttr(request, NODE_NAME_FAC_OPERATOR, ((SimpleNode)facRegRoot.at(NODE_NAME_FAC_INFO + facRegRoot.getPathSeparator() + NODE_NAME_FAC_OPERATOR)).getValue());
@@ -534,6 +532,13 @@ public class RfcFacilityRegistrationDelegator {
 
                     // save data
                     FacilityRegisterDto finalAllDataDto = FacilityRegisterDto.from(facRegRoot);
+
+                    //rfc compare to decision flowType
+                    FacilityRegisterDto oldFacilityRegisterDto = (FacilityRegisterDto)ParamUtil.getSessionAttr(request, KEY_OLD_FACILITY_REGISTER_DTO);
+                    DecisionFlowType flowType = new DecisionFlowTypeImpl();
+                    RfcFlowType rfcFlowType = flowType.facRegFlowType(compareTwoDto(oldFacilityRegisterDto,finalAllDataDto));
+                    ParamUtil.setRequestAttr(request, "rfcFlowType", rfcFlowType);
+
                     AuditTrailDto auditTrailDto = (AuditTrailDto) ParamUtil.getSessionAttr(request, AuditTrailConsts.SESSION_ATTR_PARAM_NAME);
                     finalAllDataDto.setAuditTrailDto(auditTrailDto);
                     ResponseDto<String> responseDto = facRegClient.saveNewRegisteredFacility(finalAllDataDto);
@@ -545,7 +550,6 @@ public class RfcFacilityRegistrationDelegator {
                         fileRepoDto.setId(id);
                         fileRepoClient.removeFileById(fileRepoDto);
                     }
-
                     ParamUtil.setRequestAttr(request, KEY_ACTION_TYPE, KEY_ACTION_SUBMIT);
                 } else {
                     ParamUtil.setRequestAttr(request, KEY_SHOW_ERROR_SWITCH, Boolean.TRUE);
@@ -639,11 +643,7 @@ public class RfcFacilityRegistrationDelegator {
     }
 
     public void preAcknowledge(BaseProcessClass bpc) {
-        HttpServletRequest request = bpc.request;
-        NodeGroup facRegRoot = (NodeGroup) ParamUtil.getSessionAttr(request, KEY_ROOT_NODE_GROUP);
-        NodeGroup batNodeGroup = (NodeGroup) facRegRoot.at(NODE_NAME_FAC_BAT_INFO);
-        List<BiologicalAgentToxinDto> batList = getBatInfoList(batNodeGroup);
-        ParamUtil.setRequestAttr(request, "batList", batList);
+        //do nothing now
     }
 
     public static NodeGroup newFacInfoNodeGroup(Node[] dependNodes) {
@@ -760,7 +760,6 @@ public class RfcFacilityRegistrationDelegator {
         return classname;
     }
 
-
     /* Will be removed in future, will get this from master code */
     private static List<SelectOption> tmpNationalityOps() {
         return Arrays.asList(new SelectOption("SG", "Singaporean"), new SelectOption("AFG", "Afghan"));
@@ -778,7 +777,7 @@ public class RfcFacilityRegistrationDelegator {
 
     /* Will be removed in future, will get this from config mechanism */
     private List<DocSetting> getFacRegDocSettings () {
-        List<DocSetting> docSettings = new ArrayList<>();
+        List<DocSetting> docSettings = new ArrayList<>(9);
         docSettings.add(new DocSetting(DocConstants.DOC_TYPE_BIO_SAFETY_COORDINATOR_CERTIFICATES, "BioSafety Coordinator Certificates", true));
         docSettings.add(new DocSetting(DocConstants.DOC_TYPE_INVENTORY_FILE, "Inventory File", false));
         docSettings.add(new DocSetting(DocConstants.DOC_TYPE_GMAC_ENDORSEMENT, "GMAC Endorsement", false));
@@ -789,5 +788,19 @@ public class RfcFacilityRegistrationDelegator {
         docSettings.add(new DocSetting(DocConstants.DOC_TYPE_FACILITY_PLAN_LAYOUT, "Facility Plan/Layout", false));
         docSettings.add(new DocSetting(DocConstants.DOC_TYPE_OTHERS, "Others", false));
         return docSettings;
+    }
+
+    //rfc compare
+    public List<DiffContent> compareTwoDto(FacilityRegisterDto oldFacilityRegisterDto, FacilityRegisterDto newFacilityRegisterDto){
+        List<DiffContent> diffContentList = new ArrayList<>();
+        CompareTwoObject.diff(oldFacilityRegisterDto.getFacilitySelectionDto(), newFacilityRegisterDto.getFacilitySelectionDto(), diffContentList);
+        CompareTwoObject.diff(oldFacilityRegisterDto.getFacilityProfileDto(), newFacilityRegisterDto.getFacilityProfileDto(), diffContentList);
+        CompareTwoObject.diff(oldFacilityRegisterDto.getFacilityOperatorDto(), newFacilityRegisterDto.getFacilityOperatorDto(), diffContentList);
+        CompareTwoObject.diff(oldFacilityRegisterDto.getFacilityAuthoriserDto(), newFacilityRegisterDto.getFacilityAuthoriserDto(), diffContentList, FacilityAuthoriserDto.FacilityAuthorisedPersonnel.class);
+        CompareTwoObject.diff(oldFacilityRegisterDto.getFacilityAdministratorDto(), newFacilityRegisterDto.getFacilityAdministratorDto(), diffContentList, FacilityAdministratorDto.FacilityAdministratorInfo.class);
+        CompareTwoObject.diff(oldFacilityRegisterDto.getFacilityOfficerDto(), newFacilityRegisterDto.getFacilityOfficerDto(), diffContentList);
+        CompareTwoObject.diff(oldFacilityRegisterDto.getFacilityCommitteeDto(), newFacilityRegisterDto.getFacilityCommitteeDto(), diffContentList);
+        //biologicalAgentToxinMap,docRecordInfos don't process
+        return diffContentList;
     }
 }

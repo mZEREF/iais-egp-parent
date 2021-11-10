@@ -57,19 +57,16 @@
                                                                         <div class="form-group">
                                                                             <label class="col-xs-5 col-md-4 control-label">Facility Name</label>
                                                                             <div class="col-sm-6 col-md-4 col-xs-6"><p>${facProfile.facName}</p></div>
-                                                                            <div class="col-sm-6 col-md-4 col-xs-6"><p>${oldFacilityRegisterDto.facilityProfileDto.facName}</p></div>
                                                                             <div class="clear"></div>
                                                                         </div>
                                                                         <div class="form-group">
                                                                             <label class="col-xs-5 col-md-4 control-label">Facility Address</label>
                                                                             <div class="col-sm-6 col-md-4 col-xs-6"><p>${TableDisplayUtil.getOneLineAddress(facProfile.block, facProfile.streetName, facProfile.floor, facProfile.unitNo, facProfile.postalCode)}</p></div>
-                                                                            <div class="col-sm-6 col-md-4 col-xs-6"><p>${TableDisplayUtil.getOneLineAddress(oldFacilityRegisterDto.facilityProfileDto.block, oldFacilityRegisterDto.facilityProfileDto.streetName, oldFacilityRegisterDto.facilityProfileDto.floor, oldFacilityRegisterDto.facilityProfileDto.unitNo, oldFacilityRegisterDto.facilityProfileDto.postalCode)}</p></div>
                                                                             <div class="clear"></div>
                                                                         </div>
                                                                         <div class="form-group">
                                                                             <label class="col-xs-5 col-md-4 control-label">Is the facility a Protected Place?</label>
                                                                             <div class="col-sm-6 col-md-4 col-xs-6"><p>${facProfile.isFacilityProtected}</p></div>
-                                                                            <div class="col-sm-6 col-md-4 col-xs-6"><p>${oldFacilityRegisterDto.facilityProfileDto.isFacilityProtected}</p></div>
                                                                             <div class="clear"></div>
                                                                         </div>
                                                                     </div>
@@ -83,48 +80,40 @@
                                                                         <div class="form-group">
                                                                             <label class="col-xs-5 col-md-4 control-label">Facility Operator</label>
                                                                             <div class="col-sm-6 col-md-4 col-xs-6"><p>${facOperator.facOperator}</p></div>
-                                                                            <div class="col-sm-6 col-md-4 col-xs-6"><p>${facOperator.facOperator}</p></div>
                                                                             <div class="clear"></div>
                                                                         </div>
                                                                         <div class="form-group">
                                                                             <label class="col-xs-5 col-md-4 control-label">Facility Operator Designee Name</label>
-                                                                            <div class="col-sm-6 col-md-4 col-xs-6"><p>${facOperator.designeeName}</p></div>
                                                                             <div class="col-sm-6 col-md-4 col-xs-6"><p>${facOperator.designeeName}</p></div>
                                                                             <div class="clear"></div>
                                                                         </div>
                                                                         <div class="form-group">
                                                                             <label class="col-xs-5 col-md-4 control-label">NRIC/FIN</label>
                                                                             <div class="col-sm-6 col-md-4 col-xs-6"><p>${facOperator.idNumber}</p></div>
-                                                                            <div class="col-sm-6 col-md-4 col-xs-6"><p>${facOperator.idNumber}</p></div>
                                                                             <div class="clear"></div>
                                                                         </div>
                                                                         <div class="form-group">
                                                                             <label class="col-xs-5 col-md-4 control-label">Nationality</label>
-                                                                            <div class="col-sm-6 col-md-4 col-xs-6"><p>${facOperator.nationality}</p></div>
                                                                             <div class="col-sm-6 col-md-4 col-xs-6"><p>${facOperator.nationality}</p></div>
                                                                             <div class="clear"></div>
                                                                         </div>
                                                                         <div class="form-group">
                                                                             <label class="col-xs-5 col-md-4 control-label">Designation</label>
                                                                             <div class="col-sm-6 col-md-4 col-xs-6"><p>${facOperator.designation}</p></div>
-                                                                            <div class="col-sm-6 col-md-4 col-xs-6"><p>${facOperator.designation}</p></div>
                                                                             <div class="clear"></div>
                                                                         </div>
                                                                         <div class="form-group">
                                                                             <label class="col-xs-5 col-md-4 control-label">Contect No.</label>
-                                                                            <div class="col-sm-6 col-md-4 col-xs-6"><p>${facOperator.contactNo}</p></div>
                                                                             <div class="col-sm-6 col-md-4 col-xs-6"><p>${facOperator.contactNo}</p></div>
                                                                             <div class="clear"></div>
                                                                         </div>
                                                                         <div class="form-group">
                                                                             <label class="col-xs-5 col-md-4 control-label">Email</label>
                                                                             <div class="col-sm-6 col-md-4 col-xs-6"><p>${facOperator.email}</p></div>
-                                                                            <div class="col-sm-6 col-md-4 col-xs-6"><p>${facOperator.email}</p></div>
                                                                             <div class="clear"></div>
                                                                         </div>
                                                                         <div class="form-group">
                                                                             <label class="col-xs-5 col-md-4 control-label">Employment Start Date</label>
-                                                                            <div class="col-sm-6 col-md-4 col-xs-6"><p>${facOperator.employmentStartDate}</p></div>
                                                                             <div class="col-sm-6 col-md-4 col-xs-6"><p>${facOperator.employmentStartDate}</p></div>
                                                                             <div class="clear"></div>
                                                                         </div>
@@ -219,42 +208,35 @@
                                                                         <div class="form-group">
                                                                             <label class="col-xs-5 col-md-4 control-label">Name</label>
                                                                             <div class="col-sm-6 col-md-4 col-xs-6"><p>${facAdmin.mainAdmin.adminName}</p></div>
-                                                                            <div class="col-sm-6 col-md-4 col-xs-6"><p>${facAdmin.mainAdmin.adminName}</p></div>
                                                                             <div class="clear"></div>
                                                                         </div>
                                                                         <div class="form-group">
                                                                             <label class="col-xs-5 col-md-4 control-label">NRIC/FIN</label>
-                                                                            <div class="col-sm-6 col-md-4 col-xs-6"><p>${facAdmin.mainAdmin.idNumber}</p></div>
                                                                             <div class="col-sm-6 col-md-4 col-xs-6"><p>${facAdmin.mainAdmin.idNumber}</p></div>
                                                                             <div class="clear"></div>
                                                                         </div>
                                                                         <div class="form-group">
                                                                             <label class="col-xs-5 col-md-4 control-label">Nationality</label>
                                                                             <div class="col-sm-6 col-md-4 col-xs-6"><p>${facAdmin.mainAdmin.nationality}</p></div>
-                                                                            <div class="col-sm-6 col-md-4 col-xs-6"><p>${facAdmin.mainAdmin.nationality}</p></div>
                                                                             <div class="clear"></div>
                                                                         </div>
                                                                         <div class="form-group">
                                                                             <label class="col-xs-5 col-md-4 control-label">Designation</label>
-                                                                            <div class="col-sm-6 col-md-4 col-xs-6"><p>${facAdmin.mainAdmin.designation}</p></div>
                                                                             <div class="col-sm-6 col-md-4 col-xs-6"><p>${facAdmin.mainAdmin.designation}</p></div>
                                                                             <div class="clear"></div>
                                                                         </div>
                                                                         <div class="form-group">
                                                                             <label class="col-xs-5 col-md-4 control-label">Contect No.</label>
                                                                             <div class="col-sm-6 col-md-4 col-xs-6"><p>${facAdmin.mainAdmin.contactNo}</p></div>
-                                                                            <div class="col-sm-6 col-md-4 col-xs-6"><p>${facAdmin.mainAdmin.contactNo}</p></div>
                                                                             <div class="clear"></div>
                                                                         </div>
                                                                         <div class="form-group">
                                                                             <label class="col-xs-5 col-md-4 control-label">Email Address</label>
                                                                             <div class="col-sm-6 col-md-4 col-xs-6"><p>${facAdmin.mainAdmin.email}</p></div>
-                                                                            <div class="col-sm-6 col-md-4 col-xs-6"><p>${facAdmin.mainAdmin.email}</p></div>
                                                                             <div class="clear"></div>
                                                                         </div>
                                                                         <div class="form-group">
                                                                             <label class="col-xs-5 col-md-4 control-label">Employment Start Date</label>
-                                                                            <div class="col-sm-6 col-md-4 col-xs-6"><p>${facAdmin.mainAdmin.employmentStartDate}</p></div>
                                                                             <div class="col-sm-6 col-md-4 col-xs-6"><p>${facAdmin.mainAdmin.employmentStartDate}</p></div>
                                                                             <div class="clear"></div>
                                                                         </div>
@@ -267,42 +249,35 @@
                                                                         <div class="form-group">
                                                                             <label class="col-xs-5 col-md-4 control-label">Name</label>
                                                                             <div class="col-sm-6 col-md-4 col-xs-6"><p>${facAdmin.alternativeAdmin.adminName}</p></div>
-                                                                            <div class="col-sm-6 col-md-4 col-xs-6"><p>${facAdmin.alternativeAdmin.adminName}</p></div>
                                                                             <div class="clear"></div>
                                                                         </div>
                                                                         <div class="form-group">
                                                                             <label class="col-xs-5 col-md-4 control-label">NRIC/FIN</label>
-                                                                            <div class="col-sm-6 col-md-4 col-xs-6"><p>${facAdmin.alternativeAdmin.idNumber}</p></div>
                                                                             <div class="col-sm-6 col-md-4 col-xs-6"><p>${facAdmin.alternativeAdmin.idNumber}</p></div>
                                                                             <div class="clear"></div>
                                                                         </div>
                                                                         <div class="form-group">
                                                                             <label class="col-xs-5 col-md-4 control-label">Nationality</label>
                                                                             <div class="col-sm-6 col-md-4 col-xs-6"><p>${facAdmin.alternativeAdmin.nationality}</p></div>
-                                                                            <div class="col-sm-6 col-md-4 col-xs-6"><p>${facAdmin.alternativeAdmin.nationality}</p></div>
                                                                             <div class="clear"></div>
                                                                         </div>
                                                                         <div class="form-group">
                                                                             <label class="col-xs-5 col-md-4 control-label">Designation</label>
-                                                                            <div class="col-sm-6 col-md-4 col-xs-6"><p>${facAdmin.alternativeAdmin.designation}</p></div>
                                                                             <div class="col-sm-6 col-md-4 col-xs-6"><p>${facAdmin.alternativeAdmin.designation}</p></div>
                                                                             <div class="clear"></div>
                                                                         </div>
                                                                         <div class="form-group">
                                                                             <label class="col-xs-5 col-md-4 control-label">Contect No.</label>
                                                                             <div class="col-sm-6 col-md-4 col-xs-6"><p>${facAdmin.alternativeAdmin.contactNo}</p></div>
-                                                                            <div class="col-sm-6 col-md-4 col-xs-6"><p>${facAdmin.alternativeAdmin.contactNo}</p></div>
                                                                             <div class="clear"></div>
                                                                         </div>
                                                                         <div class="form-group">
                                                                             <label class="col-xs-5 col-md-4 control-label">Email Address</label>
                                                                             <div class="col-sm-6 col-md-4 col-xs-6"><p>${facAdmin.alternativeAdmin.email}</p></div>
-                                                                            <div class="col-sm-6 col-md-4 col-xs-6"><p>${facAdmin.alternativeAdmin.email}</p></div>
                                                                             <div class="clear"></div>
                                                                         </div>
                                                                         <div class="form-group">
                                                                             <label class="col-xs-5 col-md-4 control-label">Employment Start Date</label>
-                                                                            <div class="col-sm-6 col-md-4 col-xs-6"><p>${facAdmin.alternativeAdmin.employmentStartDate}</p></div>
                                                                             <div class="col-sm-6 col-md-4 col-xs-6"><p>${facAdmin.alternativeAdmin.employmentStartDate}</p></div>
                                                                             <div class="clear"></div>
                                                                         </div>
@@ -317,42 +292,35 @@
                                                                         <div class="form-group">
                                                                             <label class="col-xs-5 col-md-4 control-label">Name</label>
                                                                             <div class="col-sm-6 col-md-4 col-xs-6"><p>${facOfficer.officerName}</p></div>
-                                                                            <div class="col-sm-6 col-md-4 col-xs-6"><p>${facOfficer.officerName}</p></div>
                                                                             <div class="clear"></div>
                                                                         </div>
                                                                         <div class="form-group">
                                                                             <label class="col-xs-5 col-md-4 control-label">NRIC/FIN</label>
-                                                                            <div class="col-sm-6 col-md-4 col-xs-6"><p>${facOfficer.idNumber}</p></div>
                                                                             <div class="col-sm-6 col-md-4 col-xs-6"><p>${facOfficer.idNumber}</p></div>
                                                                             <div class="clear"></div>
                                                                         </div>
                                                                         <div class="form-group">
                                                                             <label class="col-xs-5 col-md-4 control-label">Nationality</label>
                                                                             <div class="col-sm-6 col-md-4 col-xs-6"><p>${facOfficer.nationality}</p></div>
-                                                                            <div class="col-sm-6 col-md-4 col-xs-6"><p>${facOfficer.nationality}</p></div>
                                                                             <div class="clear"></div>
                                                                         </div>
                                                                         <div class="form-group">
                                                                             <label class="col-xs-5 col-md-4 control-label">Designation</label>
-                                                                            <div class="col-sm-6 col-md-4 col-xs-6"><p>${facOfficer.designation}</p></div>
                                                                             <div class="col-sm-6 col-md-4 col-xs-6"><p>${facOfficer.designation}</p></div>
                                                                             <div class="clear"></div>
                                                                         </div>
                                                                         <div class="form-group">
                                                                             <label class="col-xs-5 col-md-4 control-label">Contect No.</label>
                                                                             <div class="col-sm-6 col-md-4 col-xs-6"><p>${facOfficer.contactNo}</p></div>
-                                                                            <div class="col-sm-6 col-md-4 col-xs-6"><p>${facOfficer.contactNo}</p></div>
                                                                             <div class="clear"></div>
                                                                         </div>
                                                                         <div class="form-group">
                                                                             <label class="col-xs-5 col-md-4 control-label">Email Address</label>
                                                                             <div class="col-sm-6 col-md-4 col-xs-6"><p>${facOfficer.email}</p></div>
-                                                                            <div class="col-sm-6 col-md-4 col-xs-6"><p>${facOfficer.email}</p></div>
                                                                             <div class="clear"></div>
                                                                         </div>
                                                                         <div class="form-group">
                                                                             <label class="col-xs-5 col-md-4 control-label">Employment Start Date</label>
-                                                                            <div class="col-sm-6 col-md-4 col-xs-6"><p>${facOfficer.employmentStartDate}</p></div>
                                                                             <div class="col-sm-6 col-md-4 col-xs-6"><p>${facOfficer.employmentStartDate}</p></div>
                                                                             <div class="clear"></div>
                                                                         </div>

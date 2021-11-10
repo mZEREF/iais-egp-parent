@@ -74,8 +74,6 @@ public class PreviewSubmitDto extends ValidatableNodeValue {
         this.declare = declare;
     }
 
-
-
 //    ---------------------------- request -> object ----------------------------------------------
 
     private static final String KEY_REMARKS = "remarks";

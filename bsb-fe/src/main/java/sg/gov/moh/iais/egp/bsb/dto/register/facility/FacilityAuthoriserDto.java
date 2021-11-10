@@ -2,22 +2,18 @@ package sg.gov.moh.iais.egp.bsb.dto.register.facility;
 
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import sg.gov.moh.iais.egp.bsb.common.node.Node;
 import sg.gov.moh.iais.egp.bsb.common.node.simple.ValidatableNodeValue;
 import sg.gov.moh.iais.egp.bsb.dto.ValidationResultDto;
 import sg.gov.moh.iais.egp.bsb.util.SpringReflectionUtils;
+import sg.gov.moh.iais.egp.common.annotation.RfcAttributeDesc;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-
-import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.NODE_NAME_FAC_AUTH;
-
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class FacilityAuthoriserDto extends ValidatableNodeValue {
@@ -25,21 +21,46 @@ public class FacilityAuthoriserDto extends ValidatableNodeValue {
     @NoArgsConstructor
     public static class FacilityAuthorisedPersonnel implements Serializable {
         private String authEntityId;
+
+        @RfcAttributeDesc(aliasName = "iais.bsbfe.facAuthoriser.name")
         private String name;
+
+        @RfcAttributeDesc(aliasName = "iais.bsbfe.facAuthoriser.nationality")
         private String nationality;
+
+        @RfcAttributeDesc(aliasName = "iais.bsbfe.facAuthoriser.idType")
         private String idType;
+
+        @RfcAttributeDesc(aliasName = "iais.bsbfe.facAuthoriser.idNumber")
         private String idNumber;
+
+        @RfcAttributeDesc(aliasName = "iais.bsbfe.facAuthoriser.designation")
         private String designation;
+
+        @RfcAttributeDesc(aliasName = "iais.bsbfe.facAuthoriser.contactNo")
         private String contactNo;
+
+        @RfcAttributeDesc(aliasName = "iais.bsbfe.facAuthoriser.email")
         private String email;
+
+        @RfcAttributeDesc(aliasName = "iais.bsbfe.facAuthoriser.employmentStartDate")
         private String employmentStartDate;
+
+        @RfcAttributeDesc(aliasName = "iais.bsbfe.facAuthoriser.employmentPeriod")
         private String employmentPeriod;
+
+        @RfcAttributeDesc(aliasName = "iais.bsbfe.facAuthoriser.workArea")
         private String workArea;
+
+        @RfcAttributeDesc(aliasName = "iais.bsbfe.facAuthoriser.securityClearanceDate")
         private String securityClearanceDate;
     }
 
     private String inputMethod;
+
+    @RfcAttributeDesc(aliasName = "iais.bsbfe.facAuthoriser.addOrDelete")
     private List<FacilityAuthorisedPersonnel> facAuthPersonnelList;
+
     private String isProtectedPlace;
 
     @JsonIgnore
@@ -120,6 +141,7 @@ public class FacilityAuthoriserDto extends ValidatableNodeValue {
     private static final String KEY_PREFIX_EMP_PERIOD = "employmentPeriod";
     private static final String KEY_PREFIX_SEC_CL_DT = "securityClearanceDate";
     private static final String KEY_PREFIX_WORK_AREA = "workArea";
+
 
 
     public void reqObjMapping(HttpServletRequest request) {

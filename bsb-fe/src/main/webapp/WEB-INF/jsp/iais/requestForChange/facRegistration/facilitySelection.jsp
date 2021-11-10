@@ -75,7 +75,6 @@
                                 <label for="rfRadio" class="form-check-label"><span class="check-square"></span>Registered Facility</label>
                             </div>
                         </div>
-
                         <p class="assessment-title">Activity Type</p>
                         <div id="bsl3Types" <c:if test="${serviceSelection.facClassification ne 'FACCLA001'}">style="display: none"</c:if>>
                             <div class="form-check">

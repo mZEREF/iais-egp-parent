@@ -11,30 +11,32 @@
 
 <%@include file="dashboard.jsp"%>
 
+<%
+    java.text.SimpleDateFormat formatter = new java.text.SimpleDateFormat("dd-MM-yyyy");
+    java.util.Date currentTime = new java.util.Date();
+    String currentDate = formatter.format(currentTime);
+%>
+
 <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
     <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
     <input type="hidden" name="action_type" value="">
     <input type="hidden" name="action_value" value="">
     <div class="container">
-        <div class="row col-xs-12 col-sm-12">
-            <div class="dashboard-page-title" style="border-bottom: 1px solid black;">
-                <h1>New Application</h1>
-            </div>
-        </div>
         <div class="component-gp col-xs-12 col-sm-11 col-md-10 col-lg-8">
             <br/>
-            <p><strong>Submission successful</strong></p>
-            <br/>
-            <%--@elvariable id="batList" type="java.util.List<sg.gov.moh.iais.egp.bsb.dto.register.facility.BiologicalAgentToxinDto>"--%>
-            <c:forEach var="bat" items="${batList}">
-                <p><strong><iais:code code="${bat.activityType}"/>:
-                <c:forEach var="info" items="${bat.batInfos}" varStatus="infoStatus">
-                    <c:if test="${infoStatus.index > 0}">, </c:if><iais:code code="${info.schedule}"/>
-                </c:forEach>
-                </strong></p>
-            </c:forEach>
-            <br/>
-            <p>We will notify you if any changes are required.</p>
+            <p>You are <strong>${rfcFlowType}</strong></p>
+            <c:if test="${rfcFlowType eq 'NOTIFICATION' or rfcFlowType eq 'AMENDMENT'}">
+                <br/>
+                <p><strong>Submission successful</strong></p>
+                <br/>
+                <p>A confirmation email will be sent to lindatan@gmail.com, test@test.com, testing123@gmail.com.
+
+                    Your application/ request has been submitted successfully. MOH Officer will be in contact with you shortly.
+
+                    Transactional details:</p>
+                <p><strong>Approval No.</strong>${approveNo}</p>
+                <p><strong>Date</strong><%=currentDate%></p>
+            </c:if>
             <br/>
             <div class="row">
                 <div class="col-xs-12 col-md-2"></div>

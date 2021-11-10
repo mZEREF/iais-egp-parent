@@ -6,25 +6,43 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import sg.gov.moh.iais.egp.bsb.common.node.simple.ValidatableNodeValue;
 import sg.gov.moh.iais.egp.bsb.dto.ValidationResultDto;
 import sg.gov.moh.iais.egp.bsb.util.SpringReflectionUtils;
+import sg.gov.moh.iais.egp.common.annotation.RfcAttributeDesc;
 
 import javax.servlet.http.HttpServletRequest;
 
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class FacilityOperatorDto extends ValidatableNodeValue {
+
+    @RfcAttributeDesc(aliasName = "iais.bsbfe.facOperator.name")
     private String facOperator;
+
+    @RfcAttributeDesc(aliasName = "iais.bsbfe.facOperator.designeeName")
     private String designeeName;
+
+    @RfcAttributeDesc(aliasName = "iais.bsbfe.facOperator.nationality")
     private String nationality;
+
+    @RfcAttributeDesc(aliasName = "iais.bsbfe.facOperator.idType")
     private String idType;
+
+    @RfcAttributeDesc(aliasName = "iais.bsbfe.facOperator.idNumber")
     private String idNumber;
+
+    @RfcAttributeDesc(aliasName = "iais.bsbfe.facOperator.designation")
     private String designation;
+
+    @RfcAttributeDesc(aliasName = "iais.bsbfe.facOperator.contactNo")
     private String contactNo;
+
+    @RfcAttributeDesc(aliasName = "iais.bsbfe.facOperator.email")
     private String email;
+
+    @RfcAttributeDesc(aliasName = "iais.bsbfe.facOperator.employmentStartDate")
     private String employmentStartDate;
 
     @JsonIgnore
     private ValidationResultDto validationResultDto;
-
 
     @Override
     public boolean doValidation() {
@@ -44,8 +62,6 @@ public class FacilityOperatorDto extends ValidatableNodeValue {
     public void clearValidationResult() {
         this.validationResultDto = null;
     }
-
-
 
     public String getFacOperator() {
         return facOperator;
@@ -118,8 +134,6 @@ public class FacilityOperatorDto extends ValidatableNodeValue {
     public void setEmploymentStartDate(String employmentStartDate) {
         this.employmentStartDate = employmentStartDate;
     }
-
-
 
 //    ---------------------------- request -> object ----------------------------------------------
     private static final String KEY_FAC_OPERATOR = "facOperator";

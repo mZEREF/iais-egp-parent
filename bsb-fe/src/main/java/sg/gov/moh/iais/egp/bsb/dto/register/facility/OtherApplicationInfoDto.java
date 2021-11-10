@@ -30,7 +30,6 @@ public class OtherApplicationInfoDto extends ValidatableNodeValue {
         return dto;
     }
 
-
     @Override
     public boolean doValidation() {
         this.validationResultDto = (ValidationResultDto) SpringReflectionUtils.invokeBeanMethod("facRegFeignClient", "validateFacilityOtherAppInfo", new Object[]{this});

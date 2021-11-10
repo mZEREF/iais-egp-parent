@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import sg.gov.moh.iais.egp.bsb.common.node.simple.ValidatableNodeValue;
 import sg.gov.moh.iais.egp.bsb.dto.ValidationResultDto;
 import sg.gov.moh.iais.egp.bsb.util.SpringReflectionUtils;
+import sg.gov.moh.iais.egp.common.annotation.RfcAttributeDesc;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -13,19 +14,33 @@ import javax.servlet.http.HttpServletRequest;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class FacilityOfficerDto extends ValidatableNodeValue {
     private String officerEntityId;
+
+    @RfcAttributeDesc(aliasName = "iais.bsbfe.facOfficer.name")
     private String officerName;
+
+    @RfcAttributeDesc(aliasName = "iais.bsbfe.facOfficer.name")
     private String nationality;
+
+    @RfcAttributeDesc(aliasName = "iais.bsbfe.facOfficer.name")
     private String idType;
+
+    @RfcAttributeDesc(aliasName = "iais.bsbfe.facOfficer.name")
     private String idNumber;
+
+    @RfcAttributeDesc(aliasName = "iais.bsbfe.facOfficer.name")
     private String designation;
+
+    @RfcAttributeDesc(aliasName = "iais.bsbfe.facOfficer.name")
     private String contactNo;
+
+    @RfcAttributeDesc(aliasName = "iais.bsbfe.facOfficer.name")
     private String email;
+
+    @RfcAttributeDesc(aliasName = "iais.bsbfe.facOfficer.name")
     private String employmentStartDate;
 
     @JsonIgnore
     private ValidationResultDto validationResultDto;
-
-
 
     @Override
     public boolean doValidation() {

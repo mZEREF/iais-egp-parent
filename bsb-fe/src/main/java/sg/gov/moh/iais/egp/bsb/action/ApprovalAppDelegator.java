@@ -534,7 +534,7 @@ public class ApprovalAppDelegator {
 
     /* Will be removed in future, will get this from config mechanism */
     private List<DocSetting> getApprovalAppDocSettings () {
-        List<DocSetting> docSettings = new ArrayList<>();
+        List<DocSetting> docSettings = new ArrayList<>(5);
         docSettings.add(new DocSetting(DocConstants.DOC_TYPE_BIO_SAFETY_COM, "Approval/Endorsement: Biosafety Committee", true));
         docSettings.add(new DocSetting(DocConstants.DOC_TYPE_RISK_ASSESSMENT, "Risk Assessment", false));
         docSettings.add(new DocSetting(DocConstants.DOC_TYPE_STANDARD_OPERATING_PROCEDURE, "Standard Operating Procedure (SOP)", false));

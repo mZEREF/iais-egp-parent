@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import sg.gov.moh.iais.egp.bsb.common.node.simple.ValidatableNodeValue;
 import sg.gov.moh.iais.egp.bsb.dto.ValidationResultDto;
+import sg.gov.moh.iais.egp.common.annotation.RfcAttributeDesc;
 import sg.gov.moh.iais.egp.bsb.util.SpringReflectionUtils;
 
 import javax.servlet.http.HttpServletRequest;
@@ -13,14 +14,27 @@ import javax.servlet.http.HttpServletRequest;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class FacilityProfileDto extends ValidatableNodeValue {
     private String facilityEntityId;
-    private String facName;
-    private String block;
-    private String streetName;
-    private String floor;
-    private String unitNo;
-    private String postalCode;
-    private String isFacilityProtected;
 
+    @RfcAttributeDesc(aliasName = "iais.bsbfe.facProfile.name")
+    private String facName;
+
+    @RfcAttributeDesc(aliasName = "iais.bsbfe.facProfile.blkNo")
+    private String block;
+
+    @RfcAttributeDesc(aliasName = "iais.bsbfe.facProfile.streetName")
+    private String streetName;
+
+    @RfcAttributeDesc(aliasName = "iais.bsbfe.facProfile.floorNo")
+    private String floor;
+
+    @RfcAttributeDesc(aliasName = "iais.bsbfe.facProfile.unitNo")
+    private String unitNo;
+
+    @RfcAttributeDesc(aliasName = "iais.bsbfe.facProfile.postalCode")
+    private String postalCode;
+
+    @RfcAttributeDesc(aliasName = "iais.bsbfe.facProfile.isProtected")
+    private String isFacilityProtected;
 
     @JsonIgnore
     private ValidationResultDto validationResultDto;

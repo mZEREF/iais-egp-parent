@@ -7,6 +7,8 @@ import sg.gov.moh.iais.egp.bsb.common.node.simple.ValidatableNodeValue;
 import sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants;
 import sg.gov.moh.iais.egp.bsb.dto.ValidationResultDto;
 import sg.gov.moh.iais.egp.bsb.util.SpringReflectionUtils;
+import sg.gov.moh.iais.egp.common.annotation.RfcAttributeDesc;
+
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -17,6 +19,8 @@ import java.util.List;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class FacilitySelectionDto extends ValidatableNodeValue {
     private String facClassification;
+
+    @RfcAttributeDesc(aliasName = "iais.bsbfe.facProfile.type")
     private List<String> activityTypes;
 
     @JsonIgnore
