@@ -48,8 +48,8 @@ public class EmbryoTransferDelegator extends CommonDelegator {
         }
 
         List<SelectOption> transferNumSelectOption = IaisCommonUtils.genNewArrayList();
-        String[] options = new String[]{"1","2","3"};
-        for (String item : options){
+        String[] options = new String[]{"1", "2", "3"};
+        for (String item : options) {
             transferNumSelectOption.add(new SelectOption(item, item));
         }
         ParamUtil.setRequestAttr(bpc.request, "transferNumSelectOption", transferNumSelectOption);
@@ -88,7 +88,7 @@ public class EmbryoTransferDelegator extends CommonDelegator {
     }
 
     private void fromPageData(EmbryoTransferStageDto embryoTransferStageDto, HttpServletRequest request) {
-        Integer transferNum =  ParamUtil.getInt(request, "transferNum");
+        Integer transferNum = ParamUtil.getInt(request, "transferNum");
 
         String firstEmbryoAge = ParamUtil.getRequestString(request, "firstEmbryoAge");
         String firstEmbryoType = ParamUtil.getRequestString(request, "firstEmbryoType");

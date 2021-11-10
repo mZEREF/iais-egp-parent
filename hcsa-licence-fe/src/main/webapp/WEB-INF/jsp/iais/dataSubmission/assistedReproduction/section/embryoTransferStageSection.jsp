@@ -12,19 +12,23 @@
         <div class="panel-body">
             <div class="panel-main-content form-horizontal">
                 <iais:row>
-                    <iais:field width="5" value="No. Transferred" mandatory="true"/>
-                    <iais:value width="7" cssClass="col-md-7">
-                        <iais:select  cssClass="transferNumSelect" name="transferNum" options="transferNumSelectOption" value="${embryoTransferStageDto.transferNum}"></iais:select>
+                    <iais:field width="6" value="No. Transferred" mandatory="true" cssClass="col-md-6"/>
+                    <iais:value width="6" cssClass="col-md-6">
+                        <iais:select cssClass="transferNumSelect" name="transferNum" options="transferNumSelectOption"
+                                     value="${embryoTransferStageDto.transferNum}"/>
                     </iais:value>
                 </iais:row>
                 <iais:row>
-                    <iais:field width="5" value="Age of 1st Embryo Transferred" mandatory="true"/>
-                    <iais:value width="7" cssClass="col-md-7">
-                        <iais:select  name="firstEmbryoAge" firstOption="Please Select" options="firstEmbryoAgeSelectOption" value="${embryoTransferStageDto.firstEmbryoAge}"></iais:select>
+                    <iais:field width="6" value="Age of 1st Embryo Transferred" mandatory="true" cssClass="col-md-6"/>
+                    <iais:value width="6" cssClass="col-md-6">
+                        <iais:select name="firstEmbryoAge" firstOption="Please Select"
+                                     options="firstEmbryoAgeSelectOption"
+                                     value="${embryoTransferStageDto.firstEmbryoAge}"/>
                     </iais:value>
                 </iais:row>
                 <iais:row>
-                    <iais:field width="5" value="Was the 1st Embryo Transferred a fresh or thawed embryo?" mandatory="true"/>
+                    <iais:field width="6" value="Was the 1st Embryo Transferred a fresh or thawed embryo?"
+                                mandatory="true" cssClass="col-md-6"/>
                     <iais:value width="3" cssClass="col-md-3">
                         <div class="form-check">
                             <input class="form-check-input"
@@ -39,7 +43,7 @@
                                     class="check-circle"></span>Fresh Embryo</label>
                         </div>
                     </iais:value>
-                    <iais:value width="4" cssClass="col-md-4">
+                    <iais:value width="3" cssClass="col-md-3">
                         <div class="form-check">
                             <input class="form-check-input"
                                    type="radio"
@@ -53,17 +57,22 @@
                                     class="check-circle"></span>Thawed Embryo</label>
                         </div>
                     </iais:value>
-                    <span id="error_firstEmbryoType" name="iaisErrorMsg" class="error-msg col-md-7"></span>
+                    <span id="error_firstEmbryoType" name="iaisErrorMsg" class="error-msg col-md-6"></span>
                 </iais:row>
-                <div id="section2nd" <c:if test="${embryoTransferStageDto.transferNum < 2}">style="display: none;"</c:if>>
+                <div id="section2nd"
+                     <c:if test="${embryoTransferStageDto.transferNum < 2}">style="display: none;"</c:if>>
                     <iais:row>
-                        <iais:field width="5" value="Age of 2nd Embryo Transferred" mandatory="true"/>
-                        <iais:value width="7" cssClass="col-md-7">
-                            <iais:select  name="secondEmbryoAge" firstOption="Please Select" options="secondEmbryoAgeSelectOption" value="${embryoTransferStageDto.secondEmbryoAge}"></iais:select>
+                        <iais:field width="6" value="Age of 2nd Embryo Transferred" mandatory="true"
+                                    cssClass="col-md-6"/>
+                        <iais:value width="6" cssClass="col-md-6">
+                            <iais:select name="secondEmbryoAge" firstOption="Please Select"
+                                         options="secondEmbryoAgeSelectOption"
+                                         value="${embryoTransferStageDto.secondEmbryoAge}"/>
                         </iais:value>
                     </iais:row>
                     <iais:row>
-                        <iais:field width="5" value="Was the 2nd Embryo Transferred a fresh or thawed embryo?" mandatory="true"/>
+                        <iais:field width="6" value="Was the 2nd Embryo Transferred a fresh or thawed embryo?"
+                                    mandatory="true" cssClass="col-md-6"/>
                         <iais:value width="3" cssClass="col-md-3">
                             <div class="form-check">
                                 <input class="form-check-input"
@@ -78,7 +87,7 @@
                                         class="check-circle"></span>Fresh Embryo</label>
                             </div>
                         </iais:value>
-                        <iais:value width="4" cssClass="col-md-4">
+                        <iais:value width="3" cssClass="col-md-3">
                             <div class="form-check">
                                 <input class="form-check-input"
                                        type="radio"
@@ -92,18 +101,23 @@
                                         class="check-circle"></span>Thawed Embryo</label>
                             </div>
                         </iais:value>
-                        <span id="error_secondEmbryoType" name="iaisErrorMsg" class="error-msg col-md-7"></span>
+                        <span id="error_secondEmbryoType" name="iaisErrorMsg" class="error-msg col-md-6"></span>
                     </iais:row>
                 </div>
-                <div id="section3rd" <c:if test="${embryoTransferStageDto.transferNum < 3}">style="display: none;"</c:if>>
+                <div id="section3rd"
+                     <c:if test="${embryoTransferStageDto.transferNum < 3}">style="display: none;"</c:if>>
                     <iais:row>
-                        <iais:field width="5" value="Age of 3rd Embryo Transferred" mandatory="true"/>
-                        <iais:value width="7" cssClass="col-md-7">
-                            <iais:select  name="thirdEmbryoAge" firstOption="Please Select" options="thirdEmbryoAgeSelectOption" value="${embryoTransferStageDto.thirdEmbryoAge}"></iais:select>
+                        <iais:field width="6" value="Age of 3rd Embryo Transferred" mandatory="true"
+                                    cssClass="col-md-6"/>
+                        <iais:value width="6" cssClass="col-md-6">
+                            <iais:select name="thirdEmbryoAge" firstOption="Please Select"
+                                         options="thirdEmbryoAgeSelectOption"
+                                         value="${embryoTransferStageDto.thirdEmbryoAge}"/>
                         </iais:value>
                     </iais:row>
                     <iais:row>
-                        <iais:field width="5" value="Was the 3rd Embryo Transferred a fresh or thawed embryo?" mandatory="true"/>
+                        <iais:field width="6" value="Was the 3rd Embryo Transferred a fresh or thawed embryo?"
+                                    mandatory="true"  cssClass="col-md-6"/>
                         <iais:value width="3" cssClass="col-md-3">
                             <div class="form-check">
                                 <input class="form-check-input"
@@ -118,7 +132,7 @@
                                         class="check-circle"></span>Fresh Embryo</label>
                             </div>
                         </iais:value>
-                        <iais:value width="4" cssClass="col-md-4">
+                        <iais:value width="3" cssClass="col-md-3">
                             <div class="form-check">
                                 <input class="form-check-input"
                                        type="radio"
@@ -132,19 +146,21 @@
                                         class="check-circle"></span>Thawed Embryo</label>
                             </div>
                         </iais:value>
-                        <span id="error_thirdEmbryoType" name="iaisErrorMsg" class="error-msg col-md-7"></span>
+                        <span id="error_thirdEmbryoType" name="iaisErrorMsg" class="error-msg col-md-6"></span>
                     </iais:row>
                 </div>
                 <iais:row>
-                    <iais:field width="5" value="1st Date of Transfer" mandatory="true"/>
-                    <iais:value width="7" cssClass="col-md-7">
-                        <iais:datePicker id="firstTransferDate" name="firstTransferDate" dateVal="${embryoTransferStageDto.firstTransferDate}"/>
+                    <iais:field width="6" value="1st Date of Transfer" mandatory="true"  cssClass="col-md-6"/>
+                    <iais:value width="6" cssClass="col-md-6">
+                        <iais:datePicker id="firstTransferDate" name="firstTransferDate"
+                                         dateVal="${embryoTransferStageDto.firstTransferDate}"/>
                     </iais:value>
                 </iais:row>
                 <iais:row>
-                    <iais:field width="5" value="2nd Date of Transfer (if applicable)" mandatory="true"/>
-                    <iais:value width="7" cssClass="col-md-7">
-                        <iais:datePicker id="secondTransferDate" name="secondTransferDate" dateVal="${embryoTransferStageDto.secondTransferDate}"/>
+                    <iais:field width="6" value="2nd Date of Transfer (if applicable)" cssClass="col-md-6"/>
+                    <iais:value width="6" cssClass="col-md-6">
+                        <iais:datePicker id="secondTransferDate" name="secondTransferDate"
+                                         dateVal="${embryoTransferStageDto.secondTransferDate}"/>
                     </iais:value>
                 </iais:row>
             </div>
