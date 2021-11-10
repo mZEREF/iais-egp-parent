@@ -25,43 +25,7 @@
                         <c:if test="${arTreatmentSubsidiesStageDto.isThereAppeal == 'false'}">No</c:if>
                     </label>
                 </iais:row>
-                <h3>Patient's Inventory</h3>
-                <table aria-describedby="" class="table discipline-table">
-                    <thead>
-                    <tr>
-                        <th scope="col"></th>
-                        <th scope="col">Frozen Oocytes</th>
-                        <th scope="col">Thawed Oocytes</th>
-                        <th scope="col">Fresh Oocytes</th>
-                        <th scope="col">Frozen Embryos</th>
-                        <th scope="col">Thawed Embryos</th>
-                        <th scope="col">Fresh Embryos</th>
-                        <th scope="col">Frozen Sperms</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr>
-                        <th scope="col">Changes</th>
-                        <th scope="col">0</th>
-                        <th scope="col">0</th>
-                        <th scope="col">0</th>
-                        <th scope="col">0</th>
-                        <th scope="col">0</th>
-                        <th scope="col">0</th>
-                        <th scope="col">0</th>
-                    </tr>
-                    <tr>
-                        <th scope="col">Current</th>
-                        <th scope="col">0</th>
-                        <th scope="col">0</th>
-                        <th scope="col">0</th>
-                        <th scope="col">0</th>
-                        <th scope="col">0</th>
-                        <th scope="col">0</th>
-                        <th scope="col">0</th>
-                    </tr>
-                    </tbody>
-                </table>
+                <%@include file="../common/patientInventoryTable.jsp" %>
             </div>
         </div>
     </div>

@@ -11,8 +11,8 @@
         <div class="panel-body">
             <div class="panel-main-content form-horizontal">
                 <iais:row>
-                    <iais:field width="5" value="Please indicate ART Co-funding" mandatory="true"/>
-                    <iais:value width="7" cssClass="col-md-7">
+                    <iais:field width="6" value="Please indicate ART Co-funding" mandatory="true" cssClass="col-md-7"/>
+                    <iais:value width="6" cssClass="col-md-6">
                         <div class="form-check">
                             <input class="form-check-input"
                                    type="radio"
@@ -53,7 +53,7 @@
                     </iais:value>
                 </iais:row>
                 <iais:row>
-                    <iais:field width="5" value="Is there an Appeal?" mandatory="true"/>
+                    <iais:field width="6" value="Is there an Appeal?" mandatory="true" cssClass="col-md-7"/>
                     <iais:value width="3" cssClass="col-md-3">
                         <div class="form-check">
                             <input class="form-check-input"
@@ -68,7 +68,7 @@
                                     class="check-circle"></span>Yes</label>
                         </div>
                     </iais:value>
-                    <iais:value width="4" cssClass="col-md-4">
+                    <iais:value width="3" cssClass="col-md-3">
                         <div class="form-check">
                             <input class="form-check-input"
                                    type="radio"
