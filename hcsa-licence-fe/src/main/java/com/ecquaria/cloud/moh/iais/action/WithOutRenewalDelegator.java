@@ -863,6 +863,7 @@ public class WithOutRenewalDelegator {
             appSubmissionDto.setAppGrpStatus(appGrpStatus);
             appSubmissionDto.setAuditTrailDto(currentAuditTrailDto);
         }
+        NewApplicationHelper.reSetAdditionalFields(appSubmissionDtos.get(0),true,false,null);
         List<AppSubmissionDto> appSubmissionDtos3 = requestForChangeService.saveAppsForRequestForGoupAndAppChangeByList(appSubmissionDtos1);
         String notAutoGroupId = appSubmissionDtos3.get(0).getAppGrpId();
         appSubmissionListDto.setAppSubmissionDtos(appSubmissionDtos3);
