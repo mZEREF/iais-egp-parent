@@ -969,7 +969,8 @@ public class EqRequestForChangeSubmitResultChange {
                         if (!oldCheckListIds.contains(checBox.getChkLstConfId())) {
                             isAuto = false;
                             personnelEditList.add(HcsaConsts.STEP_LABORATORY_DISCIPLINES);
-                            if (!IaisCommonUtils.isEmpty(oldAppSvcRelatedInfoDtoList.getAppSvcDisciplineAllocationDtoList())) {
+                            if (!IaisCommonUtils.isEmpty(appSvcRelatedInfoDtoList.getAppSvcDisciplineAllocationDtoList())
+                                    || !IaisCommonUtils.isEmpty(oldAppSvcRelatedInfoDtoList.getAppSvcDisciplineAllocationDtoList())) {
                                 personnelEditList.add(HcsaConsts.STEP_DISCIPLINE_ALLOCATION);
                             }
                             break;
@@ -979,6 +980,12 @@ public class EqRequestForChangeSubmitResultChange {
             }
             if (!newDisciplinesDto.equals(oldDisciplinesDto)) {
 
+            }
+        } else if (!IaisCommonUtils.isEmpty(newDisciplinesDto) || !IaisCommonUtils.isEmpty(oldDisciplinesDto)) {
+            isAuto = false;
+            personnelEditList.add(HcsaConsts.STEP_LABORATORY_DISCIPLINES);
+            if (!IaisCommonUtils.isEmpty(oldAppSvcRelatedInfoDtoList.getAppSvcDisciplineAllocationDtoList())) {
+                personnelEditList.add(HcsaConsts.STEP_DISCIPLINE_ALLOCATION);
             }
         }
         // KAH
