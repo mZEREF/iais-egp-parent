@@ -1,49 +1,18 @@
 $(document).ready(function () {
-    $('#transferTypeOut').click(function () {
-        if($(this).is(':checked')){
-            $('.inFromParts').attr("style","display: block");
-            $('.outFromParts').attr("style","display: none");
-        }
-    });
-       $('#transferTypeOut').click(function () {
-           if($(this).is(':checked')) {
-               $('.outFromParts').attr("style", "display: block");
-               $('.inFromParts').attr("style", "display: none");
-           }
-
-       });
-
-/*   $('#transferTypeIn').click(function () {
+    $('#transferTypeIn').click(function () {
+        if($(this).prop('checked')) {
             $('.outFromParts').hide();
             $('.inFromParts').show();
 
+        }
     });
     $('#transferTypeOut').click(function () {
+        if($(this).prop('checked')) {
             $('.inFromParts').hide();
             $('.outFromParts').show();
-
-    });*/
-    $('#inFromSelect').change(function () {
-
-        var inFromreason= $('#inFromSelect option:selected').val();
-
-        if("AR_TIT_003"==inFromreason){
-            $('#inFromOthersParts').attr("style","display: block");
-        }else {
-            $('#inFromOthersParts').attr("style","display: none");
         }
-
     });
-    $('#outFromSelect').change(function () {
-
-        var outFromreason= $('#outFromSelect option:selected').val();
-
-        if("AR_TIT_003"==outFromreason){
-            $('#outFromOthersParts').attr("style","display: block");
-        }else {
-            $('#outFromOthersParts').attr("style","display: none");
-        }
-
-    });
+    toggleOnSelect("#transInFromHciCode",'${DataSubmissionConsts.TRANSFERRED_IN_FROM_OTHERS}', 'othersInFrom');
+    toggleOnSelect("#transOutToHciCode",'${DataSubmissionConsts.TRANSFERRED_IN_FROM_OTHERS}', 'othersOutFrom');
 
 });

@@ -1,4 +1,4 @@
-<script type="text/javascript" src="<%=webroot1%>js/dataSubmission/transferInOutStageSection.js"></script>
+<%--<script type="text/javascript" src="<%=webroot1%>js/dataSubmission/transferInOutStageSection.js"></script>--%>
 <div class="panel panel-default">
     <div class="panel-heading">
         <h4 class="panel-title">
@@ -41,6 +41,7 @@
                                     class="check-circle"></span>Transfer Out</label>
                         </div>
                     </iais:value>
+                    <span class="error-msg" name="iaisErrorMsg" id="error_transferType"></span>
                 </iais:row>
                 <iais:row>
                     <iais:field width="5" value="What was Transferred?" mandatory="true"/>
@@ -61,6 +62,7 @@
                                         class="check-square"></span>${transferred.codeValue}</label>
                             </div>
                         </c:forEach>
+                        <span class="error-msg" name="iaisErrorMsg" id="error_transferredList"></span>
                     </iais:value>
                 </iais:row>
                 <div class="oocytesParts"
@@ -128,40 +130,36 @@
                         </div>
                     </iais:value>
                 </iais:row>
-
-                <div class="inFromParts"<c:if test="${transferInOutStageDto.transferType !='in'}">style="display: none;"</c:if>>
-                    <iais:row>
-                        <iais:field width="5" value="Transferred In From" mandatory="true"/>
-                        <iais:value width="7" cssClass="col-md-7">
-                            <iais:select  cssClass="inFromSelect" name="transInFromHciCode"  codeCategory="TRANSFERRED_IN_FROM" value="${transferInOutStageDto.transInFromHciCode}" />
-                        </iais:value>
-                    </iais:row>
-                   <div class="inFromOthersParts" <c:if test="${transferInOutStageDto.transInFromHciCode !='AR_TIT_003'}">style="display: none;"</c:if>>
+                <div class="inFromParts" <c:if test="${transferInOutStageDto.transferType !='in'}">style="display: none;"</c:if>>
                         <iais:row>
+                                <iais:field width="5" value="Transferred In From" mandatory="true"/>
+                                <iais:value width="7" cssClass="col-md-7">
+                                    <iais:select  name="transInFromHciCode"  codeCategory="TRANSFERRED_IN_FROM" value="${transferInOutStageDto.transInFromHciCode}" onchange ="toggleOnSelect(this, 'AR_TIF_003', 'othersInFrom')" />
+                                </iais:value>
+                        </iais:row>
+
+                        <iais:row id="othersInFrom">
                             <iais:field width="5" value="Transferred In From (Others)" mandatory="true"/>
                             <iais:value width="7" cssClass="col-md-7">
-                                <iais:input id="othersInFrom" maxLength="20" type="text" name="transInFromOthers" value="${transferInOutStageDto.transInFromOthers}" />
+                                <iais:input  maxLength="20" type="text" name="transInFromOthers" value="${transferInOutStageDto.transInFromOthers}" />
                             </iais:value>
                         </iais:row>
-                    </div>
-                </div>
+
+               </div>
                 <div class="outFromParts" <c:if test="${transferInOutStageDto.transferType !='out'}">style="display: none;"</c:if>>
                     <iais:row>
                         <iais:field width="5" value="Transfer Out To" mandatory="true"/>
                         <iais:value width="7" cssClass="col-md-7">
-                            <iais:select  cssClass="outFromSelect" name="transOutToHciCode"  codeCategory="TRANSFERRED_IN_FROM" value="${transferInOutStageDto.transOutToHciCode}" />
+                            <iais:select  name="transOutToHciCode"  codeCategory="TRANSFERRED_IN_FROM" value="${transferInOutStageDto.transOutToHciCode}" onchange ="toggleOnSelect(this, 'AR_TIF_003', 'othersOutFrom')" />
                         </iais:value>
                     </iais:row>
-                   <div class="outFromOthersParts" <c:if test="${transferInOutStageDto.transInFromHciCode !='AR_TIT_003'}">style="display: none;"</c:if>>
-                        <iais:row>
+                        <iais:row id="othersOutFrom">
                             <iais:field width="5" value="Transfer Out To (Others)" mandatory="true"/>
                             <iais:value width="7" cssClass="col-md-7">
-                                <iais:input id="othersOutFrom" maxLength="20" type="text" name="transOutToOthers" value="${transferInOutStageDto.transOutToOthers}" />
+                                <iais:input maxLength="20" type="text" name="transOutToOthers" value="${transferInOutStageDto.transOutToOthers}" />
                             </iais:value>
                         </iais:row>
-                    </div>
                 </div>
-
                 <iais:row>
                     <iais:field width="5" value="Date of Transfer" mandatory="true"/>
                     <iais:value width="7" cssClass="col-md-7">
@@ -172,3 +170,25 @@
         </div>
     </div>
 </div>
+<script>
+    $(document).ready(function () {
+        $('#transferTypeIn').click(function () {
+            if($(this).prop('checked')) {
+                $('.outFromParts').hide();
+                $('.inFromParts').show();
+
+            }
+        });
+        $('#transferTypeOut').click(function () {
+            if($(this).prop('checked')) {
+                $('.inFromParts').hide();
+                $('.outFromParts').show();
+            }
+        });
+        toggleOnSelect("#transInFromHciCode",'${DataSubmissionConsts.TRANSFERRED_IN_FROM_OTHERS}', 'othersInFrom');
+        toggleOnSelect("#transOutToHciCode",'${DataSubmissionConsts.TRANSFERRED_IN_FROM_OTHERS}', 'othersOutFrom');
+
+    });
+
+
+</script>
