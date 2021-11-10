@@ -22,7 +22,7 @@ import javax.servlet.http.HttpServletRequest;
 
 @Delegator("endCycleDelegator")
 @Slf4j
-public class endCycleDelegator extends CommonDelegator{
+public class EndCycleDelegator extends CommonDelegator{
     @Override
     public void start(BaseProcessClass bpc) {
 
@@ -51,7 +51,7 @@ public class endCycleDelegator extends CommonDelegator{
             String cycleAbandoned = ParamUtil.getString(bpc.request, "cycleAbandoned");
             String abandonReasonSelect = ParamUtil.getRequestString(bpc.request, "abandonReasonSelect");
             String otherAbandonReason = ParamUtil.getRequestString(bpc.request, "otherAbandonReason");
-            endCycleStageDto.setCycleAbandoned(Boolean.parseBoolean(cycleAbandoned));
+            endCycleStageDto.setSubmissionId(cycleAbandoned);
             endCycleStageDto.setAbandonReason(abandonReasonSelect);
             if (otherAbandonReason != null && "ENDRA005".equals(abandonReasonSelect)) {
                 endCycleStageDto.setOtherAbandonReason(otherAbandonReason);

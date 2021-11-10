@@ -1,4 +1,4 @@
-<%--<script type="text/javascript" src="<%=webroot1%>js/dataSubmission/endSection.js"></script>--%>
+<script type="text/javascript" src="<%=webroot1%>js/dataSubmission/endSection.js"></script>
 <div class="panel panel-default">
     <div class="panel-heading">
         <h4 class="panel-title">
@@ -43,7 +43,7 @@
                         </div>
                     </iais:value>
                 </iais:row>
-                <div class="endFromParts" <c:if test="${transferInOutStageDto.transferType !='true'}">style="display: none;"</c:if>>
+                <div class="endFromParts" <c:if test="${endCycleStageDto.cycleAbandoned != true}">style="display: none;"</c:if>>
                     <iais:row>
                         <iais:field width="5" value="Reason for Abandonment" mandatory="true"/>
                         <iais:value width="7" cssClass="col-md-7">
@@ -65,7 +65,7 @@
         </div>
     </div>
 </div>
-<script type="text/javascript">
+<%--<script type="text/javascript">
     $(document).ready(function() {
         $('#abandonReasonSelect').change(function () {
 
@@ -92,4 +92,4 @@
             }
         });
     });
-</script>
+</script>--%>

@@ -31,6 +31,10 @@ public class EndCycleStageDtoValidator implements CustomizeValidator {
             errorMap.put("cycleAbandoned" ,"GENERAL_ERR0006");
         }
 
+        if (Boolean.parseBoolean(cycleAbandoned)==true) {
+            String errMsg = MessageUtil.replaceMessage("GENERAL_ERR0006", "Reason for Abandonment (Others)", "field");
+            errorMap.put("abandonReason", errMsg);
+        }
         if (!StringUtil.isEmpty(abandonReason) && "ENDRA005".equals(abandonReason)) {
             String otherAbandonReason = ParamUtil.getRequestString(httpServletRequest, "otherAbandonReason");
             if (StringUtil.isEmpty(otherAbandonReason)) {
