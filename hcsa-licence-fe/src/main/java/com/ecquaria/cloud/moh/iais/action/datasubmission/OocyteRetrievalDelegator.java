@@ -8,7 +8,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.OocyteRetrieva
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInventoryDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
-import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
@@ -97,9 +96,9 @@ public class OocyteRetrievalDelegator extends CommonDelegator {
         boolean isFromPatientTissue = "true".equals(ParamUtil.getString(request, "isFromPatientTissue"));
         boolean isFromDonor = "true".equals(ParamUtil.getString(request, "isFromDonor"));
         boolean isFromDonorTissue = "true".equals(ParamUtil.getString(request, "isFromDonorTissue"));
-        int matureRetrievedNum = getInt(request, "matureRetrievedNum");
-        int immatureRetrievedNum = getInt(request, "immatureRetrievedNum");
-        int otherRetrievedNum = getInt(request, "otherRetrievedNum");
+        int matureRetrievedNum = ParamUtil.getInt(request, "matureRetrievedNum", 0);
+        int immatureRetrievedNum = ParamUtil.getInt(request, "immatureRetrievedNum", 0);
+        int otherRetrievedNum = ParamUtil.getInt(request, "otherRetrievedNum", 0);
         boolean isOvarianSyndrome = "true".equals(ParamUtil.getString(request, "isOvarianSyndrome"));
 
         oocyteRetrievalStageDto.setIsFromPatient(isFromPatient);
@@ -110,18 +109,5 @@ public class OocyteRetrievalDelegator extends CommonDelegator {
         oocyteRetrievalStageDto.setImmatureRetrievedNum(immatureRetrievedNum);
         oocyteRetrievalStageDto.setOtherRetrievedNum(otherRetrievedNum);
         oocyteRetrievalStageDto.setIsOvarianSyndrome(isOvarianSyndrome);
-    }
-
-    private int getInt(HttpServletRequest request, String param){
-        String s = ParamUtil.getString(request, param);
-        int result = 0;
-        if (StringUtil.isNotEmpty(s)){
-            try {
-                result = Integer.parseInt(s);
-            }catch (NumberFormatException ignored){
-
-            }
-        }
-        return result;
     }
 }

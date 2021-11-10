@@ -34,7 +34,7 @@ public class OocyteRetrievalDtoValidator implements CustomizeValidator {
             Map<String, String> repMap = IaisCommonUtils.genNewHashMap(2);
             repMap.put("0", "Patient");
             repMap.put("1", "Directed Donor");
-            String errMsg = MessageUtil.replaceMessage("GENERAL_ERR0006", "Oocyte(s) was retrieved from", "field");
+            String errMsg = MessageUtil.getMessageDesc("DS_ERR008", repMap);
             errorMap.put("oocyteRetrievalFrom", errMsg);
         }
         return errorMap;
