@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.action;
 
 
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.helper.ConfigHelper;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.intranetUser.IntranetUserConstant;
@@ -13,6 +14,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.constant.UserConstants;
+import com.ecquaria.cloud.moh.iais.dto.OidcCpAuthResponDto;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.FeLoginHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
@@ -23,16 +25,22 @@ import com.ecquaria.cloudfeign.FeignException;
 import com.ncs.secureconnect.sim.common.LoginInfo;
 import com.ncs.secureconnect.sim.lite.SIMUtil4Corpass;
 import ecq.commons.exception.BaseException;
+import java.util.Map;
+import java.util.Optional;
+import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import ncs.secureconnect.sim.entities.Constants;
 import ncs.secureconnect.sim.entities.corpass.UserInfoToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.RestTemplate;
 import sop.webflow.rt.api.BaseProcessClass;
-
-import javax.servlet.http.HttpServletRequest;
-import java.util.Map;
-import java.util.Optional;
 
 @Delegator(value = "corpassLandingDelegator")
 @Slf4j
@@ -72,8 +80,8 @@ public class FECorppassLandingDelegator {
         AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_MAIN_FUNCTION,
                 AuditTrailConsts.FUNCTION_SINGPASS_CORPASS);
 
-        String uen;
-        String identityNo;
+        String uen = null;
+        String identityNo = null;
         String scp = null;
 
         if (AppConsts.YES.equals(ssoLoginFlag)) {
@@ -102,6 +110,28 @@ public class FECorppassLandingDelegator {
 
             uen = userInfoToken.getEntityId();
             identityNo  = userInfoToken.getUserIdentity();
+        } else if (FELandingDelegator.LOGIN_MODE_REAL_OIDC.equals(openTestMode)) {
+            String userInfoMsg = request.getParameter("userToken");
+            String eicCorrelationId = request.getParameter("ecquaria_correlationId");
+
+            //check the state against with the session attribute
+            String token = ConfigHelper.getString("corppass.oidc.token");
+            String postUrl = ConfigHelper.getString("corppass.oidc.postUrl");
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+            headers.set("ecquaria-correlationId", eicCorrelationId);
+            headers.set("ecquaria-authToken", token);
+
+            HttpEntity entity = new HttpEntity(headers);
+            RestTemplate restTemplate = new RestTemplate();
+            ResponseEntity<OidcCpAuthResponDto> respon = restTemplate.exchange(postUrl + userInfoMsg, HttpMethod.GET, entity, OidcCpAuthResponDto.class);
+            if (HttpStatus.OK == respon.getStatusCode()) {
+                OidcCpAuthResponDto oiRepon = respon.getBody();
+                if (oiRepon != null && oiRepon.getUserInfo() != null) {
+                    identityNo = oiRepon.getUserInfo().getNricFin();
+                    uen = oiRepon.getUserInfo().getCpUid();
+                }
+            }
         } else {
             uen = ParamUtil.getRequestString(request, UserConstants.ENTITY_ID);
             identityNo =  ParamUtil.getRequestString(request, UserConstants.CORPPASS_ID);

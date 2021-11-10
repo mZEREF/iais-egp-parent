@@ -14,7 +14,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.constant.UserConstants;
-import com.ecquaria.cloud.moh.iais.dto.OidcAuthResponDto;
+import com.ecquaria.cloud.moh.iais.dto.OidcSpAuthResponDto;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.FeLoginHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
@@ -100,10 +100,8 @@ public class FESingpassLandingDelegator {
             identityNo = oLoginInfo.getLoginID();
         } else if (FELandingDelegator.LOGIN_MODE_REAL_OIDC.equals(openTestMode)) {
             String userInfoMsg = request.getParameter("userToken");
-            String eicState = request.getParameter("eic_state");
             String eicCorrelationId = request.getParameter("ecquaria_correlationId");
 
-            String errorDescription = ParamUtil.getString(request, "error_description");
             //check the state against with the session attribute
             String token = ConfigHelper.getString("singpass.oidc.token");
             String postUrl = ConfigHelper.getString("singpass.oidc.postUrl");
@@ -114,9 +112,9 @@ public class FESingpassLandingDelegator {
 
             HttpEntity entity = new HttpEntity(headers);
             RestTemplate restTemplate = new RestTemplate();
-            ResponseEntity<OidcAuthResponDto> respon = restTemplate.exchange(postUrl + userInfoMsg, HttpMethod.GET, entity, OidcAuthResponDto.class);
+            ResponseEntity<OidcSpAuthResponDto> respon = restTemplate.exchange(postUrl + userInfoMsg, HttpMethod.GET, entity, OidcSpAuthResponDto.class);
             if (HttpStatus.OK == respon.getStatusCode()) {
-                OidcAuthResponDto oiRepon = respon.getBody();
+                OidcSpAuthResponDto oiRepon = respon.getBody();
                 if (oiRepon != null && oiRepon.getUserInfo() != null) {
                     identityNo = oiRepon.getUserInfo().getNricFin();
                 }
