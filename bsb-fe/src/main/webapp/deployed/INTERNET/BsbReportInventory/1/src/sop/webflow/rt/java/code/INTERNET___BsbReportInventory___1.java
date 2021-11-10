@@ -13,7 +13,7 @@ package sop.webflow.rt.java.code;
 import sop.webflow.rt.api.BaseProcessClass;
 import com.ecquaria.cloud.helper.EngineHelper;
 
-public class INTRANET___BsbReportInventory___1 extends BaseProcessClass {
+public class INTERNET___BsbReportInventory___1 extends BaseProcessClass {
 	private static final String DELEGATOR = "reportInventoryDelegator";
 
 	public void step1_OnStepProcess_0() throws Exception {
@@ -26,7 +26,6 @@ public class INTRANET___BsbReportInventory___1 extends BaseProcessClass {
 	// 		Prepare->OnStepProcess
 		EngineHelper.delegate(DELEGATOR, "prepare", this);
 	}
-
 
 
 	public void preSubmitFile_OnStepProcess_0() throws Exception {

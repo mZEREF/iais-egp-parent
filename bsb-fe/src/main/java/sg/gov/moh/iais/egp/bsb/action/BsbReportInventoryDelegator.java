@@ -1,12 +1,16 @@
 package sg.gov.moh.iais.egp.bsb.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import sg.gov.moh.iais.egp.bsb.constant.DocConstants;
+import sg.gov.moh.iais.egp.bsb.constant.ValidationConstants;
+import sg.gov.moh.iais.egp.bsb.dto.submission.ReportInventoryDto;
 import sg.gov.moh.iais.egp.bsb.entity.DocSetting;
 import sop.webflow.rt.api.BaseProcessClass;
 
-import java.util.ArrayList;
-import java.util.List;
+import javax.servlet.http.HttpServletRequest;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author YiMing
@@ -14,6 +18,7 @@ import java.util.List;
  **/
 @Delegator(value = "reportInventoryDelegator")
 public class BsbReportInventoryDelegator {
+    private static final String DTO_BSB_REPORT_INVENTORY = "repReportDto";
 
     /**
      * step1
@@ -26,13 +31,22 @@ public class BsbReportInventoryDelegator {
      * prepare
      * */
     public void prepare(BaseProcessClass bpc){
-
+        HttpServletRequest request = bpc.request;
+        ReportInventoryDto inventoryDto = getReportInventoryDto(request);
+        ParamUtil.setRequestAttr(request,"doSettings",getDocSettingMap());
+        //show error message
     }
 
     /**
      * preSubmitFile
      * */
     public void preSubmitFile(BaseProcessClass bpc){
+        HttpServletRequest request = bpc.request;
+        ReportInventoryDto inventoryDto = getReportInventoryDto(request);
+        inventoryDto.reqObjMapping(request);
+        //begin to validate
+        ParamUtil.setSessionAttr(request,DTO_BSB_REPORT_INVENTORY,inventoryDto);
+        ParamUtil.setRequestAttr(request, ValidationConstants.IS_VALID,ValidationConstants.YES);
 
     }
 
@@ -40,15 +54,30 @@ public class BsbReportInventoryDelegator {
      * doSubmit
      * */
     public void doSubmit(BaseProcessClass bpc){
-
+        HttpServletRequest request = bpc.request;
+        ReportInventoryDto inventoryDto = getReportInventoryDto(request);
+        //write a method to save to db
     }
 
-    /* Will be removed in future, will get this from config mechanism */
-    private List<DocSetting> getRepInventoryDocSettings () {
-        List<DocSetting> docSettings = new ArrayList<>(3);
-        docSettings.add(new DocSetting(DocConstants.DOC_TYPE_BIO_SAFETY_COORDINATOR_CERTIFICATES, "BioSafety Coordinator Certificates", true));
-        docSettings.add(new DocSetting(DocConstants.DOC_TYPE_INVENTORY_FILE, "Inventory File", false));
-        docSettings.add(new DocSetting(DocConstants.DOC_TYPE_GMAC_ENDORSEMENT, "GMAC Endorsement", false));
-        return docSettings;
+    public ReportInventoryDto getReportInventoryDto(HttpServletRequest request){
+       ReportInventoryDto reportInventoryDto = (ReportInventoryDto) ParamUtil.getSessionAttr(request,DTO_BSB_REPORT_INVENTORY);
+       return reportInventoryDto == null?getDefaultDto():reportInventoryDto;
     }
+
+    public ReportInventoryDto getDefaultDto(){
+        return new ReportInventoryDto();
+    }
+
+    /**
+     *a way to get default display in jsp
+     * getDocSettingMap
+     * @return Map<String,DocSetting>
+     * */
+    private Map<String, DocSetting> getDocSettingMap(){
+        Map<String,DocSetting> settingMap = new HashMap<>();
+        settingMap.put("report",new DocSetting(DocConstants.DOC_REPORT_UPLOAD,"report",true));
+        settingMap.put("others",new DocSetting(DocConstants.DOC_TYPE_OTHERS,"others",false));
+        return settingMap;
+    }
+
 }

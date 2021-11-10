@@ -261,6 +261,9 @@ function modifyClonedNode(node, num, separator) {
         replaceNodeAttributeSuffixNum(node, 'name', num, separator);
     }else if(node.nodeName === 'A'){
         replaceNodeAttributeSuffixNum(node,'data-upload-file',num,separator);
+    }else if(node.nodeName === 'TEXTAREA'){
+        replaceNodeAttributeSuffixNum(node,'id',num,separator);
+        replaceNodeAttributeSuffixNum(node,'name',num,separator);
     }
 }
 

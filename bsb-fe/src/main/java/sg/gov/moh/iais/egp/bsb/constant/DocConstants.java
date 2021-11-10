@@ -23,7 +23,7 @@ public class DocConstants {
     public static final String DOC_EMERGENCY_RESPONSE_SELF_AUDIT_REPORT = "emResponseSelfAuditReport";
     public static final String DOC_ANNUAL_LENTIVIRUS_REPORT = "annLentivirusReport";
     public static final String DOC_FIFTH_SCHEDULE_INVENTORY_UPDATE= "fifthSchInventoryUpdate";
-    public static final String DOC_REPORT_UPLOAD = "reportUpload";
+    public static final String DOC_REPORT_UPLOAD = "report";
     public static final String DOC_TYPE_OTHERS = "others";
 
     public static final String DOC_TYPE_RISK_ASSESSMENT = "riskAssessment";

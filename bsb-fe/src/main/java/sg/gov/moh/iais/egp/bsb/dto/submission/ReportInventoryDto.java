@@ -32,7 +32,7 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class ReportInventoryDto{
+public class ReportInventoryDto implements Serializable{
 
     @Data
     @NoArgsConstructor
@@ -82,12 +82,6 @@ public class ReportInventoryDto{
         }
     }
 
-    @Data
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class DocsMetaDto implements Serializable {
-        private Map<String, List<ReportInventoryDto.DocMeta>> metaDtoMap;
-    }
 
     /* docs already saved in DB, key is repoId */
     private Map<String, ReportInventoryDto.DocRecordInfo> savedDocMap;
@@ -111,21 +105,9 @@ public class ReportInventoryDto{
         toBeDeletedRepoIds = new HashSet<>();
     }
 
+    //should change
     public boolean doValidation() {
-        List<ReportInventoryDto.DocMeta> metaDtoList = new ArrayList<>(this.savedDocMap.size() + this.newDocMap.size());
-        this.savedDocMap.values().forEach(i -> {
-            ReportInventoryDto.DocMeta docMeta = new ReportInventoryDto.DocMeta(i.getRepoId(), i.getDocType(), i.getFilename(), i.getSize(), "reportInventory");
-            metaDtoList.add(docMeta);
-        });
-        this.newDocMap.values().forEach(i -> {
-            ReportInventoryDto.DocMeta docMeta = new ReportInventoryDto.DocMeta(i.getTmpId(), i.getDocType(), i.getFilename(), i.getSize(), "reportInventory");
-            metaDtoList.add(docMeta);
-        });
-
-        Map<String, List<ReportInventoryDto.DocMeta>> metaDtoMap = CollectionUtils.groupCollectionToMap(metaDtoList, ReportInventoryDto.DocMeta::getDocType);
-        ReportInventoryDto.DocsMetaDto docsMetaDto = new ReportInventoryDto.DocsMetaDto(metaDtoMap);
-
-        this.validationResultDto = (ValidationResultDto) SpringReflectionUtils.invokeBeanMethod("cerRegFeignClient", "validateCerPrimaryDocs", new Object[]{docsMetaDto});
+        this.validationResultDto = (ValidationResultDto) SpringReflectionUtils.invokeBeanMethod("cerRegFeignClient", "validateCerPrimaryDocs", new Object[]{this});
         return validationResultDto.isPass();
     }
 
@@ -140,55 +122,6 @@ public class ReportInventoryDto{
         this.validationResultDto = null;
     }
 
-
-    /**
-     * get a structure used to display the already saved docs
-     * we have not retrieve data of these docs yet, if user wants to download it, we call API to retrieve the data
-     * @return a map, the key is the doc type, the value is the exist doc info list
-     */
-    public Map<String, List<ReportInventoryDto.DocRecordInfo>> getExistDocTypeMap() {
-        return CollectionUtils.groupCollectionToMap(this.savedDocMap.values(), ReportInventoryDto.DocRecordInfo::getDocType);
-    }
-
-    /**
-     * get a structure used to display new selected docs
-     * these docs have not been saved into DB, if user wants to download it, we send the data from current data structure
-     * @return a map, the key is the doc type, the value is the new doc info list
-     */
-    public Map<String, List<ReportInventoryDto.NewDocInfo>> getNewDocTypeMap() {
-        return CollectionUtils.groupCollectionToMap(this.newDocMap.values(), ReportInventoryDto.NewDocInfo::getDocType);
-    }
-
-
-    public Map<String, List<ReportInventoryDto.DocMeta>> getAllDocTypeMap() {
-        Map<String, List<ReportInventoryDto.DocMeta>> data = Maps.newLinkedHashMapWithExpectedSize(DocConstants.FAC_REG_CERTIFIER_DOC_TYPE_ORDER.size());
-
-        Map<String, List<ReportInventoryDto.DocRecordInfo>> savedMap = getExistDocTypeMap();
-        Map<String, List<ReportInventoryDto.NewDocInfo>> newMap = getNewDocTypeMap();
-
-        for (String docType : DocConstants.FAC_REG_CERTIFIER_DOC_TYPE_ORDER) {
-            List<ReportInventoryDto.DocMeta> metaList = new ArrayList<>();
-            List<ReportInventoryDto.DocRecordInfo> savedFiles = savedMap.get(docType);
-            if (savedFiles != null) {
-                savedFiles.forEach(i -> {
-                    ReportInventoryDto.DocMeta docMeta = new ReportInventoryDto.DocMeta(i.getDocType(), i.getFilename(), i.getSize());
-                    metaList.add(docMeta);
-                });
-            }
-            List<ReportInventoryDto.NewDocInfo> newFiles = newMap.get(docType);
-            if (newFiles != null) {
-                newFiles.forEach(i -> {
-                    ReportInventoryDto.DocMeta docMeta = new ReportInventoryDto.DocMeta(i.getDocType(), i.getFilename(), i.getSize());
-                    metaList.add(docMeta);
-                });
-            }
-            if (!metaList.isEmpty()) {
-                data.put(docType, metaList);
-            }
-        }
-
-        return data;
-    }
 
 
     /**
@@ -230,40 +163,40 @@ public class ReportInventoryDto{
         return toBeDeletedRepoIds;
     }
 
+    public String getReportType() {
+        return reportType;
+    }
 
+    public void setReportType(String reportType) {
+        this.reportType = reportType;
+    }
 
-
-//    ---------------------------- request -> object ----------------------------------------------
+    //    ---------------------------- request -> object ----------------------------------------------
 
     private static final String MASK_PARAM = "file";
+    private static final String KEY_REPORT = "report";
+    private static final String KEY_OTHERS = "others";
 
-    private static final String KEY_DELETED_SAVED_FILES = "deleteExistFiles";
     private static final String KEY_DELETED_NEW_FILES = "deleteNewFiles";
 
     public void reqObjMapping(HttpServletRequest request) {
         MultipartHttpServletRequest mulReq = (MultipartHttpServletRequest) request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
 
-        String deleteSavedFilesString = ParamUtil.getString(mulReq, KEY_DELETED_SAVED_FILES);
-        if (log.isInfoEnabled()) {
-            log.info("deleteSavedFilesString: {}", LogUtil.escapeCrlf(deleteSavedFilesString));
-        }
-        if (StringUtils.hasLength(deleteSavedFilesString)) {
-            List<String> deleteFileRepoIds = Arrays.stream(deleteSavedFilesString.split(","))
-                    .map(f -> MaskUtil.unMaskValue(MASK_PARAM, f))
-                    .collect(Collectors.toList());
-            deleteFileRepoIds.forEach(it -> {this.savedDocMap.remove(it); toBeDeletedRepoIds.add(it);});
-        }
+        //get reportType from request
+        String repType =  ParamUtil.getString(request,"reportType");
+        this.setReportType(repType);
 
-        String deleteNewFilesString = ParamUtil.getString(mulReq, KEY_DELETED_NEW_FILES);
-        if (log.isInfoEnabled()) {
-            log.info("deleteNewFilesString: {}", LogUtil.escapeCrlf(deleteNewFilesString));
-        }
-        if (StringUtils.hasLength(deleteNewFilesString)) {
-            List<String> deleteFileTmpIds = Arrays.stream(deleteNewFilesString.split(","))
-                    .map(f -> MaskUtil.unMaskValue(MASK_PARAM, f))
-                    .collect(Collectors.toList());
-            deleteFileTmpIds.forEach(this.newDocMap::remove);
-        }
+        //when do delete
+//        String deleteNewFilesString = ParamUtil.getString(mulReq, KEY_DELETED_NEW_FILES);
+//        if (log.isInfoEnabled()) {
+//            log.info("deleteNewFilesString: {}", LogUtil.escapeCrlf(deleteNewFilesString));
+//        }
+//        if (StringUtils.hasLength(deleteNewFilesString)) {
+//            List<String> deleteFileTmpIds = Arrays.stream(deleteNewFilesString.split(","))
+//                    .map(f -> MaskUtil.unMaskValue(MASK_PARAM, f))
+//                    .collect(Collectors.toList());
+//            deleteFileTmpIds.forEach(this.newDocMap::remove);
+//        }
 
 
         // read new uploaded files
@@ -273,35 +206,43 @@ public class ReportInventoryDto{
         while (inputNameIt.hasNext()) {
             String inputName = inputNameIt.next();
             String docType = MaskUtil.unMaskValue(MASK_PARAM, inputName);
-            if (docType != null && !docType.equals(inputName)) {
-                List<MultipartFile> files = mulReq.getFiles(inputName);
-                for (MultipartFile f : files) {
-                    if (log.isInfoEnabled()) {
-                        log.info("input name: {}; filename: {}", LogUtil.escapeCrlf(inputName), LogUtil.escapeCrlf(f.getOriginalFilename()));
-                    }
-                    if (f.isEmpty()) {
-                        log.warn("File is empty, ignore it");
-                    } else {
-                        ReportInventoryDto.NewDocInfo newDocInfo = new ReportInventoryDto.NewDocInfo();
-                        String tmpId = inputName + f.getSize() + System.nanoTime();
-                        newDocInfo.setTmpId(tmpId);
-                        newDocInfo.setDocType(docType);
-                        newDocInfo.setFilename(f.getOriginalFilename());
-                        newDocInfo.setSize(f.getSize());
-                        newDocInfo.setSubmitDate(currentDate);
-                        newDocInfo.setSubmitBy(loginContext.getUserId());
-                        byte[] bytes = new byte[0];
-                        try {
-                            bytes = f.getBytes();
-                        } catch (IOException e) {
-                            log.warn("Fail to read bytes for file {}, tmpId {}", f.getOriginalFilename(), tmpId);
-                        }
-                        ByteArrayMultipartFile multipartFile = new ByteArrayMultipartFile(f.getName(), f.getOriginalFilename(), f.getContentType(), bytes);
-                        newDocInfo.setMultipartFile(multipartFile);
-                        this.newDocMap.put(tmpId, newDocInfo);
-                    }
-                }
+            if (docType != null && docType.equals(inputName) && KEY_REPORT.equals(docType)){
+            reqDocMapping(inputName,mulReq,repType,loginContext,currentDate);
+            }else if(docType != null && docType.equals(inputName) && KEY_OTHERS.equals(docType)){
+                reqDocMapping(inputName,mulReq,docType,loginContext,currentDate);
             }
         }
     }
+
+    public void reqDocMapping(String inputName,MultipartHttpServletRequest mulReq,String repType,LoginContext loginContext,Date currentDate){
+        List<MultipartFile> files = mulReq.getFiles(inputName);
+        for (MultipartFile f : files) {
+            if (log.isInfoEnabled()) {
+                log.info("input name: {}; filename: {}", LogUtil.escapeCrlf(inputName), LogUtil.escapeCrlf(f.getOriginalFilename()));
+            }
+            if (f.isEmpty()) {
+                log.warn("File is empty, ignore it");
+            } else {
+                ReportInventoryDto.NewDocInfo newDocInfo = new ReportInventoryDto.NewDocInfo();
+                String tmpId = inputName + f.getSize() + System.nanoTime();
+                newDocInfo.setTmpId(tmpId);
+                newDocInfo.setDocType(repType);
+                newDocInfo.setFilename(f.getOriginalFilename());
+                newDocInfo.setSize(f.getSize());
+                newDocInfo.setSubmitDate(currentDate);
+                newDocInfo.setSubmitBy(loginContext.getUserId());
+                byte[] bytes = new byte[0];
+                try {
+                    bytes = f.getBytes();
+                } catch (IOException e) {
+                    log.warn("Fail to read bytes for file {}, tmpId {}", f.getOriginalFilename(), tmpId);
+                }
+                ByteArrayMultipartFile multipartFile = new ByteArrayMultipartFile(f.getName(), f.getOriginalFilename(), f.getContentType(), bytes);
+                newDocInfo.setMultipartFile(multipartFile);
+                this.newDocMap.put(tmpId, newDocInfo);
+            }
+        }
+    }
+
+
 }
