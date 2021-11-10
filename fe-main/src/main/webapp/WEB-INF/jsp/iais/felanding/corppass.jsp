@@ -104,8 +104,6 @@
     </div>
     <%@include file="/WEB-INF/jsp/include/validation.jsp"%>
     <%@include file="/WEB-INF/jsp/include/utils.jsp"%>
-
-
     <script>
       function submitCorpPass() {
         var entityId = $('#entityId').val();
@@ -117,16 +115,55 @@
           Utils.submit('mainForm')
         }
       }
-
-
     </script>
+  </c:when>
+  <c:when test="${'Prod.OIDC' eq openTestMode}">
+    <webui:setLayout name="none"/>
+    <!DOCTYPE html>
+    <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+    <head>
+      <title>Corppass QRcode</title>
+      <%
+        //      String nonce = UUID.randomUUID().toString();
+//      String state = UUID.randomUUID().toString();
+//      ParamUtil.setSessionAttr(request, "qrcode_state", state);
+//      ParamUtil.setSessionAttr(request, "qrcode_nonce", nonce);
+        String qrjsUrl = ConfigHelper.getString("corppass.oidc.js.url");
+        String mockjsUrl = ConfigHelper.getString("corppass.oidc.mockserver.js.url");
+        String ndijsUrl = ConfigHelper.getString("corppass.oidc.ndi.js.url");
+        String profileName = StringUtil.escapeSecurityScript(ConfigHelper.getString("corppass.oidc.profileName"));
+        String oidcAppId = StringUtil.escapeSecurityScript(ConfigHelper.getString("corppass.oidc.appId"));
+        String clientId = StringUtil.escapeSecurityScript(ConfigHelper.getString("corppass.oidc.clientId"));
+        String redirectUrl = StringUtil.escapeSecurityScript(ConfigHelper.getString("corppass.oidc.redirectUrl"));
+        boolean mockFlag = ConfigHelper.getBoolean("oidc.mock.enable");
+//      String ndiEmbedAuthJsUrl = ConfigHelper.getString("singpass.oidc.embedAuthjs.url");
+//      request.setAttribute("ndiEmbedAuthJsUrl", ndiEmbedAuthJsUrl);
+      %>
+      <script src="<%=qrjsUrl%>"></script>
+      <% if (mockFlag) {  %>
+      <script src="<%=mockjsUrl%>"></script>
+      <% } else { %>
+      <script src="<%=ndijsUrl%>"></script>
+      <% }  %>
 
+        <%--    <script src="<%=ndiEmbedAuthJsUrl%>"></script>--%>
+      <script language="JavaScript">
+          async function init() {
+              await eic_init('qr-cp-block','<%=profileName%>','<%=clientId%>','<%=oidcAppId%>','<%=redirectUrl%>','corppass');
+          }
 
+      </script>
+    </head>
+    <body onload="init();">
+    <div id="qr-cp-block"></div>
+    </body>
+    </html>
   </c:when>
   <c:otherwise>
     <%@ page import="com.ecquaria.cloud.moh.iais.helper.FeLoginHelper" %>
     <%@ page import="com.ecquaria.cloud.helper.ConfigHelper" %>
     <%@ page import="com.ncs.secureconnect.sim.lite.SIMConfig" %>
+    <%@ page import="com.ecquaria.cloud.moh.iais.common.utils.StringUtil" %>
     <script>
       try {
         location.href=<%=SIMConfig.getInstance().getIdpCorpassInitiatedUrl()%>;
