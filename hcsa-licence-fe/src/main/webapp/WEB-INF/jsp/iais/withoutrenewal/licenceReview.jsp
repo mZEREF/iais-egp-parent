@@ -122,7 +122,7 @@
                                                                             </div>
                                                                         </c:when>
                                                                     </c:choose>
-                                                                    <c:if test="${changeRenew eq 'Y'}">
+                                                                  <%--  <c:if test="${changeRenew eq 'Y'}">
                                                                     <div class="row">
                                                                         <div class="col-md-7"  style="text-align: justify;width: 70%" >
                                                                             Please indicate the date which you would like the changes to be effective (subject to approval). If not indicated, the effective date will be the approval date of the change.
@@ -138,7 +138,7 @@
                                                                             <span class="error-msg" name="iaisErrorMsg" id="error_rfcEffectiveDate"></span>
                                                                         </div>
                                                                     </div>
-                                                                    </c:if>
+                                                                    </c:if> --%>
                                                                 </div>
                                                             </div>
                                                         </div>
