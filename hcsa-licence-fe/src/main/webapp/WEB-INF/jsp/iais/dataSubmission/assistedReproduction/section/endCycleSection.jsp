@@ -20,7 +20,7 @@
                                    name="cycleAbandoned"
                                    value="true"
                                    id="radioYes"
-                                   <c:if test="${endCycleStageDto.cycleAbandoned == true }">checked</c:if>
+                                   <c:if test="${endCycleStageDto.cycleAbandoned=='true'}">checked</c:if>
                                    aria-invalid="false">
                             <label class="form-check-label"
                                    for="radioYes"><span
@@ -35,7 +35,7 @@
                                    name="cycleAbandoned"
                                    value="false"
                                    id="radioNo"
-                                   <c:if test="${endCycleStageDto.cycleAbandoned == false }">checked</c:if>
+                                   <c:if test="${endCycleStageDto.cycleAbandoned=='false'}">checked</c:if>
                                    aria-invalid="false">
                             <label class="form-check-label"
                                    for="radioNo"><span

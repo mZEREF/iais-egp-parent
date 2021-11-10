@@ -20,7 +20,7 @@
                             No, Cycle has ended</c:if>
                     </iais:value>
                 </iais:row>
-                <div class="endFromParts" <c:if test="${endCycleStageDto.abandonReason == null}">style="display: none;"</c:if>>
+                <div <c:if test="${endCycleStageDto.abandonReason == null}">style="display: none;"</c:if>>
                     <iais:row>
                         <iais:field width="5" value="Reason for Abandonment" mandatory="false"/>
                         <iais:value width="7" cssClass="col-md-7"  display="true">
