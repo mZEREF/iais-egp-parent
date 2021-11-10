@@ -15,6 +15,15 @@ public class DocConstants {
     public static final String DOC_TYPE_EMERGENCY_RESPONSE_PLAN = "emgResponsePlan";
     public static final String DOC_TYPE_BIO_SAFETY_COM = "bsfCom";
     public static final String DOC_TYPE_FACILITY_PLAN_LAYOUT = "facPlanLayout";
+    public static final String DOC_RED_TEAMING_REPORT = "redTeamReport";
+    public static final String DOC_PNEF_INVENTORY_REPORT = "PNEFIntReport";
+    public static final String DOC_BI_ANNUAL_TOXIN_REPORT = "toxinAnnualReport";
+    public static final String DOC_PEF_INVENTORY_REPORT = "PEFInventoryReport";
+    public static final String DOC_FACILITY_SELF_INSPECTION_REPORT = "selfInspectionReport";
+    public static final String DOC_EMERGENCY_RESPONSE_SELF_AUDIT_REPORT = "emResponseSelfAuditReport";
+    public static final String DOC_ANNUAL_LENTIVIRUS_REPORT = "annLentivirusReport";
+    public static final String DOC_FIFTH_SCHEDULE_INVENTORY_UPDATE= "fifthSchInventoryUpdate";
+    public static final String DOC_REPORT_UPLOAD = "reportUpload";
     public static final String DOC_TYPE_OTHERS = "others";
 
     public static final String DOC_TYPE_RISK_ASSESSMENT = "riskAssessment";
