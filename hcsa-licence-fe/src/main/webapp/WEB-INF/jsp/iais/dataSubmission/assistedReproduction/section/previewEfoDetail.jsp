@@ -16,7 +16,7 @@
                     </span>
                 </h3>
                 <iais:row>
-                    <iais:field width="6" value="Premises where IUI is Performed" mandatory="false"/>
+                    <iais:field width="6" value="Premises where egg freezing only cycle is performed" mandatory="false"/>
                     <iais:value width="6" display="true">
                         <c:out value="${arSuperDataSubmissionDto.efoCycleStageDto.performed}"/>
                     </iais:value>
