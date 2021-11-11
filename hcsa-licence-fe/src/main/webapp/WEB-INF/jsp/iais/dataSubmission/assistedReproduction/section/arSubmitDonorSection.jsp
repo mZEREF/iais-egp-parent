@@ -45,10 +45,10 @@
                     <div id="directedDonationYes" style="${!donorSampleDto.directedDonation ? 'display: none;' : ''}">
                         <iais:row id="idNoRow" >
                             <iais:field width="5" value="Donor's ID Type" mandatory="true"/>
-                            <%--<iais:value width="7" cssClass="col-md-7">--%>
-                                <%--<iais:select name="idType" firstOption="Please Select" codeCategory="CATE_ID_DS_ID_TYPE" value="${donorSampleDto.idType}"--%>
-                                             <%--cssClass="idTypeSel"/>--%>
-                            <%--</iais:value>--%>
+                            <iais:value width="7" cssClass="col-md-7">
+                                <iais:select name="idType" firstOption="Please Select" codeCategory="CATE_ID_DS_ID_TYPE" value="${donorSampleDto.idType}"
+                                             cssClass="idTypeSel"/>
+                            </iais:value>
                         </iais:row>
                         <iais:row  >
                             <iais:field width="5" value="Donor's ID No." mandatory="true"/>
