@@ -976,17 +976,16 @@ public class EqRequestForChangeSubmitResultChange {
                             break;
                         }
                     }
+                } else if (!IaisCommonUtils.isEmpty(newCheckList) || !IaisCommonUtils.isEmpty(oldCheckList)){
+                    isAuto = false;
+                    personnelEditList.add(HcsaConsts.STEP_LABORATORY_DISCIPLINES);
+                    personnelEditList.add(HcsaConsts.STEP_DISCIPLINE_ALLOCATION);
                 }
-            }
-            if (!newDisciplinesDto.equals(oldDisciplinesDto)) {
-
             }
         } else if (!IaisCommonUtils.isEmpty(newDisciplinesDto) || !IaisCommonUtils.isEmpty(oldDisciplinesDto)) {
             isAuto = false;
             personnelEditList.add(HcsaConsts.STEP_LABORATORY_DISCIPLINES);
-            if (!IaisCommonUtils.isEmpty(oldAppSvcRelatedInfoDtoList.getAppSvcDisciplineAllocationDtoList())) {
-                personnelEditList.add(HcsaConsts.STEP_DISCIPLINE_ALLOCATION);
-            }
+            personnelEditList.add(HcsaConsts.STEP_DISCIPLINE_ALLOCATION);
         }
         // KAH
         List<AppSvcPrincipalOfficersDto> kahList = appSvcRelatedInfoDtoList.getAppSvcKeyAppointmentHolderDtoList();
