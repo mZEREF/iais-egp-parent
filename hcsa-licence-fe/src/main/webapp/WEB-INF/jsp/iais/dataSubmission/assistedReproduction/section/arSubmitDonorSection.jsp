@@ -143,15 +143,19 @@
                             <iais:input maxLength="2" type="text" name="donorAge" value="" />
                         </iais:value>
                     </iais:row>
+                    <div id ="donorAge">
+
+                    </div>
                 </div>
                 <iais:row >
-                    <iais:value width="5" cssClass="col-md-3" display="true">
-                        <a class="addDonor"   onclick="addDonor()"style="text-decoration:none;">+ Add Sample of Different Donor’s Age</a>
+                    <iais:value width="5" cssClass="col-md-5" display="true">
+                        <a class="addDonor"   onclick="addDonorAge()"style="text-decoration:none;">+ Add Sample of Different Donor’s Age</a>
                     </iais:value>
                 </iais:row>
         </div>
     </div>
 </div>
+<input type="hidden" id ="ageCount" value="1"/>
 <script  type="text/javascript">
     function showDonationYes(){
      $("#directedDonationYes").show();
@@ -160,5 +164,31 @@
     function showDonationNo(){
         $("#directedDonationNo").show();
         $("#directedDonationYes").hide();
+    }
+    function addDonorAge(){
+        var ageCount =  $("#ageCount").val();
+       $("#donorAge").append(getStr(ageCount));
+        $("#ageCount").val(Number(ageCount)+1);
+    }
+    function deleteDonorAge(index){
+        $("#donorAge"+index).remove();
+    }
+
+    function getStr(index){
+        var str = "<div class=\"form-group\" id =\"donorAge" +index +
+            "\">\n" +
+            "                            <label class=\"col-xs-5 col-md-4 control-label\"></label>\n" +
+            "                            <div class=\"col-sm-7 col-md-5 col-xs-7 col-md-7\">\n" +
+            "                                <input type=\"text\" name=\"donorAge" +
+            "\" maxlength=\"2\" autocomplete=\"off\">\n" +
+            "                                <span id=\"error_donorAge\" name=\"iaisErrorMsg\" class=\"error-msg\"></span>\n" +
+            "                            </div>\n" +
+            "                            <div class=\"col-sm-2 col-md-1 col-xs-1 col-md-1\">\n" +
+            "                                <a class=\"deleteDonor\"  onclick=\"deleteDonorAge('" +index +
+            "')\" style=\"text-decoration:none;\" href=\"javascript:void(0)\">X</a>\n" +
+            "                            </div>\n" +
+            "                            <div class=\"clear\"></div>\n" +
+            "                        </div>";
+        return str;
     }
 </script>
