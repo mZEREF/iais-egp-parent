@@ -62,4 +62,8 @@ public class INTERNET___BsbDataSubmission___1 extends BaseProcessClass {
 		EngineHelper.delegate(DELEGATOR, "doPrepareFacilitySelect", this);
 	}
 
+	public void preFacReportAndInventory_OnStepProcess_0() throws Exception {
+		// 		preFacReportAndInventory->OnStepProcess
+	}
+
 }
