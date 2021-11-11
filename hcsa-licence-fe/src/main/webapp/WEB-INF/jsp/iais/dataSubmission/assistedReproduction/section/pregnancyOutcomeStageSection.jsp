@@ -123,6 +123,7 @@
                                        for="wasSelFoeReduCarryOutUnknown"><span
                                         class="check-circle"></span>Unknown</label>
                             </div>
+                            <span id="error_wasSelFoeReduCarryOut" name="iaisErrorMsg" class="error-msg"></span>
                         </div>
                     </iais:row>
                 </div>
@@ -199,6 +200,7 @@
                                        for="birthPlaceUnknown"><span
                                         class="check-circle"></span>Unknown</label>
                             </div>
+                            <span id="error_birthPlace" name="iaisErrorMsg" class="error-msg"></span>
                         </div>
                     </iais:row>
                     <div id="localBirthPlaceDiv">
@@ -240,6 +242,7 @@
                                        for="babyDetailsUnknownNo"><span
                                         class="check-circle"></span>No</label>
                             </div>
+                            <span id="error_babyDetailsUnknown" name="iaisErrorMsg" class="error-msg"></span>
                         </div>
                     </iais:row>
                 </div>
