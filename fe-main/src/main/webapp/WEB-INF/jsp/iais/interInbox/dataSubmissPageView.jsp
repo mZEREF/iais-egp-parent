@@ -1,6 +1,13 @@
-<%@ taglib uri="http://www.ecq.com/iais" prefix="iais" %>
-<%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>
 <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
+<%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c" %>
+<%@ taglib uri="http://www.ecq.com/iais" prefix="iais" %>
+<%@ taglib uri="http://www.ecquaria.com/menu" prefix="menu" %>
+<%@ taglib uri="ecquaria/sop/egov-smc" prefix="egov-smc" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ page import="java.util.Date" %>
+<%@ page import="com.ecquaria.cloud.moh.iais.common.utils.Formatter" %>
+<%@ page import="com.ecquaria.cloud.moh.iais.common.utils.MiscUtil" %>
 <%
     //handle to the Engine APIs
     sop.webflow.rt.api.BaseProcessClass process =
@@ -8,37 +15,7 @@
 %>
 <webui:setLayout name="iais-internet"/>
 
-<%@ include file="dataSubmission/dataDashboard.jsp" %>
-<%@ include file="dataSubmission/dataList.jsp" %>
+<c:set var="tabCode" value="dss"/>
+<%@ include file="common/commonDashboard.jsp" %>
+<%@ include file="common/mainContent.jsp" %>
 <%@ include file="commonFile.jsp" %>
-<style>
-    .table-info-display {
-        margin: 20px 15px 25px 12px;
-        background: #efefef;
-        padding: 8px;
-        border-radius: 8px;
-        -moz-border-radius:8px;
-        -webkit-border-radius:8px;
-
-    }
-
-    .table-count {
-        float: left;
-        margin-top: 5px;
-    }
-    .nav {background:#transparent;}
-    .nav ul.pagination{
-        padding: 10px;
-    }
-
-    .nav ul.pagination > li{
-        padding-left: 3px;
-    }
-
-    .dashboard-gp .dashboard-tile-item .dashboard-tile h1.dashboard-count {
-        margin-left: -5px;
-    }
-</style>
-<script type="text/javascript">
-
-</script>

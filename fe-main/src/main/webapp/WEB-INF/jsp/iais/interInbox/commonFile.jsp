@@ -69,4 +69,8 @@
         }
         submit("appToAppView");
     })
+
+     function goToSubmission(){
+         window.location = "${pageContext.request.contextPath}/main-web/eservice/INTERNET/MohDataSubmissionsInbox";
+     }
 </script>

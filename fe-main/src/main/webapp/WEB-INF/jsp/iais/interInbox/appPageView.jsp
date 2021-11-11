@@ -13,8 +13,10 @@
 %>
 <webui:setLayout name="iais-internet"/>
 
-<%@ include file="app/appDashboard.jsp" %>
-<%@ include file="app/appMainContent.jsp" %>
+
+<c:set var="tabCode" value="app"/>
+<%@ include file="common/commonDashboard.jsp" %>
+<%@ include file="common/mainContent.jsp" %>
 <%@ include file="commonFile.jsp" %>
 <style>
     .table-info-display {

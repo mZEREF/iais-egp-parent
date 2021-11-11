@@ -29,16 +29,16 @@
                     <c:if test="${nextDepth == currDepth}">
                         <c:choose>
                             <c:when test="${fn:contains(item.url,'INTERNET')}">
-                                <li>          <%--NOSONAR--%>
-                                    <a href="<c:out value="${item.url}" />" onclick="clickMenu('${item.displayLabel}','appPageMenu')">
+                                <li><%--NOSONAR--%>
+                                    <a href="<c:out value="${item.url}" />" onclick="clickMenu('${item.displayLabel}','${tabCode}PageMenu')" >
                                         <egov-smc:commonLabel><c:out
                                                 value="${item.displayLabel}"/></egov-smc:commonLabel>
                                     </a>
                                 </li>
                             </c:when>
                             <c:otherwise>
-                                <li>  <%--NOSONAR--%>
-                                    <a href="#" id="${item.displayLabel}" onclick="clickMenu('${item.displayLabel}','appPageMenu')">
+                                <li> <%--NOSONAR--%>
+                                    <a href="#" id="${item.displayLabel}" onclick="clickMenu('${item.displayLabel}','${tabCode}PageMenu')">
                                         <egov-smc:commonLabel><c:out value="${item.displayLabel}"/></egov-smc:commonLabel>
                                     </a>
                                 </li>
@@ -48,8 +48,8 @@
                     <c:if test="${nextDepth < currDepth}">
                         <c:choose>
                             <c:when test="${fn:contains(item.url,'INTERNET')}">
-                                <li>   <%--NOSONAR--%>
-                                    <a href="<c:out value="${item.url}" />" onclick="clickMenu('${item.displayLabel}','appPageMenu')">
+                                <li> <%--NOSONAR--%>
+                                    <a href="<c:out value="${item.url}" />" onclick="clickMenu('${item.displayLabel}','${tabCode}PageMenu')">
                                         <egov-smc:commonLabel><c:out
                                                 value="${item.displayLabel}"/></egov-smc:commonLabel>
                                     </a>
@@ -57,11 +57,10 @@
                             </c:when>
                             <c:otherwise>
                                 <li> <%--NOSONAR--%>
-                                    <a href="#" id="${item.displayLabel}" onclick="clickMenu('${item.displayLabel}','appPageMenu')">
+                                    <a href="#" onclick="clickMenu('${item.displayLabel}','${tabCode}PageMenu')">
                                         <egov-smc:commonLabel><c:out value="${item.displayLabel}"/></egov-smc:commonLabel>
                                     </a>
                                 </li>
-
                             </c:otherwise>
                         </c:choose>
                         <%@ include file="../../interInbox/app/eServicesMenuParam.jsp" %>
@@ -71,14 +70,14 @@
                 </c:when>
                 <c:otherwise>
                 <c:if test="${nextDepth > currDepth}">
-                <li class="dropdown"><%--NOSONAR--%><a class="dropdown-toggle" data-toggle="dropdown" role="button"
+                <li class="dropdown"> <%--NOSONAR--%><a class="dropdown-toggle" data-toggle="dropdown" role="button"
                                         aria-haspopup="true" aria-expanded="false"
                                         href="javascript:;"><span>${item.displayLabel}</span></a>
                     <ol class="dropdown-menu">
                         </c:if>
                         <c:if test="${nextDepth == currDepth}">
                         <li>
-                            <a href="<c:out value="${item.url}" />" onclick="clickMenu('${item.displayLabel}','appPageMenu')">
+                            <a href="<c:out value="${item.url}" />" onclick="clickMenu('${item.displayLabel}','${tabCode}PageMenu')">
                                 <egov-smc:commonLabel><c:out
                                         value="${item.displayLabel}"/></egov-smc:commonLabel>
                             </a>

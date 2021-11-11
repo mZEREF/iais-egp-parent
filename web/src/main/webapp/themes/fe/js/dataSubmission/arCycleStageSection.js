@@ -1,5 +1,5 @@
 $(document).ready(function (){
-    toggleOnSelect("#mainIndication",'${DataSubmissionConsts.AR_MAIN_INDICATION_OTHERS}', 'mainIndicationOtherRow');
+    toggleOnSelect("#mainIndication",'AR_MI_013', 'mainIndicationOtherRow');
     toggleOnSelect("#totalPreviouslyPreviously",'21', 'totalNumberARCOtherRow');
     if($("#usedDonorOocyteRadioYes").is(':checked')){
         showUsedDonorOocyteControlClass(0);

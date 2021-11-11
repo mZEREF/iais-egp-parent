@@ -134,12 +134,13 @@
         </div>
     </div>
     <input type="hidden" value="${empty needValidatorSize ? 0 : needValidatorSize}" id="needValidatorSize" name="needValidatorSize">
+        <input type="hidden" value="${actionDsButtonShow}" id="actionDsButtonShow" name="actionDsButtonShow">
     <iais:confirm msg="DS_ERR014" needCancel="false" popupOrder="actionDsButton"  yesBtnDesc="Yes"   yesBtnCls="btn btn-secondary"  callBack="cancelBallDsButton()" />
 </form>
 <script>
 
     $(document).ready(function () {
-        if(${actionDsButtonShow == 1}){
+        if($("#actionDsButtonShow").val() == 1){
             $("#actionDsButton").show();
         }
     });

@@ -14,8 +14,9 @@
 %>
 <webui:setLayout name="iais-internet"/>
 
-<%@ include file="msg/msgDashboard.jsp" %>
-<%@ include file="msg/msgMainContent.jsp" %>
+<c:set var="tabCode" value="msg"/>
+<%@ include file="common/commonDashboard.jsp" %>
+<%@ include file="common/mainContent.jsp" %>
 <%@ include file="commonFile.jsp" %>
 <style>
     .table-info-display {
