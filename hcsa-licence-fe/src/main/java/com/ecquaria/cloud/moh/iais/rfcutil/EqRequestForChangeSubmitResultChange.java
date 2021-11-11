@@ -461,7 +461,7 @@ public class EqRequestForChangeSubmitResultChange {
         oldAppPremisesOperationalUnitDtos.add(oldDto);
         oldAppPremisesOperationalUnitDtos.addAll(oldAppGrpPremisesDto.getAppPremisesOperationalUnitDtos());
 
-        return eqOperationalUnitDtoList(appPremisesOperationalUnitDtos, oldAppPremisesOperationalUnitDtos);
+        return !eqOperationalUnitDtoList(appPremisesOperationalUnitDtos, oldAppPremisesOperationalUnitDtos);
     }
 
     public static boolean isChangeFloorUnit(List<AppGrpPremisesDto> appGrpPremisesDtoList , List<AppGrpPremisesDto> oldAppGrpPremisesDtoList){
@@ -481,7 +481,7 @@ public class EqRequestForChangeSubmitResultChange {
             oldAppPremisesOperationalUnitDtos.add(currDto);
             oldAppPremisesOperationalUnitDtos.addAll(v.getAppPremisesOperationalUnitDtos());
         });
-        return eqOperationalUnitDtoList(appPremisesOperationalUnitDtos,oldAppPremisesOperationalUnitDtos);
+        return !eqOperationalUnitDtoList(appPremisesOperationalUnitDtos,oldAppPremisesOperationalUnitDtos);
     }
 
     public static boolean eqAppSvcDisciplineAllocationDto(List<AppSvcDisciplineAllocationDto> appSvcDisciplineAllocationDtoList,List<AppSvcDisciplineAllocationDto> oldAppSvcDisciplineAllocationDtoList){
