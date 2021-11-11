@@ -46,13 +46,14 @@
                 <iais:row>
                     <iais:field width="5" value="What was Transferred?" mandatory="true"/>
                     <iais:value width="7" cssClass="col-md-7">
-                        <c:forEach items="${transferreds}" var="transferred">
+                        <c:forEach items="${transferreds}" var="transferred" varStatus="s">
                             <c:set var="transferredCode" value="${transferred.code}"/>
                             <div class="form-check col-xs-12" >
                                 <input class="form-check-input" type="checkbox"
                                        name="transferredList"
                                        value="${transferredCode}"
                                        id="transferredCheck${transferredCode}"
+                                       onchange="toggleOnCheck(this,'transferred${s.index}')"
                                 <c:forEach var="transferredObj" items="${transferInOutStageDto.transferredList}">
                                        <c:if test="${transferredObj == transferredCode}">checked</c:if>
                                 </c:forEach>
@@ -65,40 +66,25 @@
                         <span class="error-msg" name="iaisErrorMsg" id="error_transferredList"></span>
                     </iais:value>
                 </iais:row>
-                <div class="oocytesParts"
-                        <c:forEach var="transferredObj" items="${transferInOutStageDto.transferredList}">
-                            <c:if test="${transferredObj !='Oocyte(s)'}">style="display: none;"</c:if>
-                        </c:forEach>>
-                        <iais:row>
+
+                        <iais:row id="transferred0">
                             <iais:field width="5" value="No. of Oocyte(s) Transferred" mandatory="true"/>
                             <iais:value width="7" cssClass="col-md-7">
                                 <iais:input maxLength="2" type="text" name="oocyteNum" value="${transferInOutStageDto.oocyteNum}"  />
                             </iais:value>
                         </iais:row>
-                </div>
-                <div class="EmbryosParts"
-                        <c:forEach var="transferredObj" items="${transferInOutStageDto.transferredList}">
-                            <c:if test="${transferredObj !='Embryo(s)'}">style="display: none;"</c:if>
-                        </c:forEach>>
-                    <iais:row>
+                    <iais:row id="transferred1">
                         <iais:field width="5" value="No. of Embryo(s) Transferred" mandatory="true"/>
                         <iais:value width="7" cssClass="col-md-7">
                             <iais:input maxLength="2" type="text" name="embryoNum" value="${transferInOutStageDto.embryoNum}"  />
                         </iais:value>
                     </iais:row>
-                </div>
-                <div class="SpermParts"
-                        <c:forEach var="transferredObj" items="${transferInOutStageDto.transferredList}">
-                            <c:if test="${transferredObj !='Sperm'}">style="display: none;"</c:if>
-                        </c:forEach>>
-                    <iais:row>
+                    <iais:row id="transferred2">
                         <iais:field width="5" value="Vials of Sperm Transferred" mandatory="true"/>
                         <iais:value width="7" cssClass="col-md-7">
                             <iais:input maxLength="2" type="text" name="spermVialsNum" value="${transferInOutStageDto.spermVialsNum}"  />
                         </iais:value>
                     </iais:row>
-                </div>
-
                 <iais:row>
                     <iais:field width="5" value="Were the Gamete(s) or Embryo(s) from a Donor?" mandatory="true"/>
                     <iais:value width="3" cssClass="col-md-3">
@@ -185,10 +171,15 @@
                 $('.outFromParts').show();
             }
         });
-        toggleOnSelect("#transInFromHciCode",'${DataSubmissionConsts.TRANSFERRED_IN_FROM_OTHERS}', 'othersInFrom');
-        toggleOnSelect("#transOutToHciCode",'${DataSubmissionConsts.TRANSFERRED_IN_FROM_OTHERS}', 'othersOutFrom');
+        toggleOnSelect("#transInFromHciCode",'AR_TIF_003', 'othersInFrom');
+        toggleOnSelect("#transOutToHciCode",'AR_TIF_003', 'othersOutFrom');
+
+        toggleOnCheck('#transferredCheckAR_WWT_001','transferred0')
+        toggleOnCheck('#transferredCheckAR_WWT_002','transferred1')
+        toggleOnCheck('#transferredCheckAR_WWT_003','transferred2')
 
     });
+
 
 
 </script>

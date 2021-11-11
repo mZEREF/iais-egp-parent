@@ -59,36 +59,45 @@
                         </c:if>
                     </iais:value>
                 </iais:row>
-                <iais:row>
-                    <iais:field width="5" value="Transferred In From" />
-                    <iais:value width="7" cssClass="col-md-7">
-                        <iais:code code="${transferInOutStageDto.transInFromHciCode}"/>
-                    </iais:value>
-                </iais:row>
-                <iais:row>
-                    <iais:field width="5" value="Transferred In From (Others)" />
-                    <iais:value width="7" cssClass="col-md-7">
-                        <c:out value="${transferInOutStageDto.transInFromOthers}"/>
-                    </iais:value>
-                </iais:row>
-                <iais:row>
-                    <iais:field width="5" value="Transfer Out To" />
-                    <iais:value width="7" cssClass="col-md-7">
-                        <iais:code code="${transferInOutStageDto.transOutToHciCode}"/>
-                    </iais:value>
-                </iais:row>
-                <iais:row>
-                    <iais:field width="5" value="Transfer Out To (Others)" />
-                    <iais:value width="7" cssClass="col-md-7">
-                        <c:out value="${transferInOutStageDto.transOutToOthers}"/>
-                    </iais:value>
-                </iais:row>
+                <div class="inFromParts" <c:if test="${transferInOutStageDto.transferType !='in'}">style="display: none;"</c:if>>
+                    <iais:row>
+                        <iais:field width="5" value="Transferred In From" />
+                        <iais:value width="7" cssClass="col-md-7">
+                            <iais:code code="${transferInOutStageDto.transInFromHciCode}"/>
+                        </iais:value>
+                    </iais:row>
+                    <div class="inFromOthers"<c:if test="${transferInOutStageDto.transInFromHciCode != DataSubmissionConsts.TRANSFERRED_IN_FROM_OTHERS}">style="display: none;"</c:if>>
+                        <iais:row>
+                            <iais:field width="5" value="Transferred In From (Others)" />
+                            <iais:value width="7" cssClass="col-md-7">
+                                <c:out value="${transferInOutStageDto.transInFromOthers}"/>
+                            </iais:value>
+                        </iais:row>
+                    </div>
+                </div>
+                <div class="outFromParts" <c:if test="${transferInOutStageDto.transferType !='in'}">style="display: none;"</c:if>>
+                    <iais:row>
+                        <iais:field width="5" value="Transfer Out To" />
+                        <iais:value width="7" cssClass="col-md-7">
+                            <iais:code code="${transferInOutStageDto.transOutToHciCode}"/>
+                        </iais:value>
+                    </iais:row>
+                    <div class="outFromOthers"<c:if test="${transferInOutStageDto.transOutToHciCode != DataSubmissionConsts.TRANSFERRED_IN_FROM_OTHERS}">style="display: none;"</c:if>>
+                        <iais:row>
+                            <iais:field width="5" value="Transfer Out To (Others)" />
+                            <iais:value width="7" cssClass="col-md-7">
+                                <c:out value="${transferInOutStageDto.transOutToOthers}"/>
+                            </iais:value>
+                        </iais:row>
+                    </div>
+                </div>
                 <iais:row>
                     <iais:field width="5" value="Date of Transfer" />
                     <iais:value width="7" cssClass="col-md-7">
                         <c:out value="${transferInOutStageDto.transferDate}"/>
                     </iais:value>
                 </iais:row>
+                <%@include file="../common/patientInventoryTable.jsp" %>
             </div>
         </div>
     </div>
