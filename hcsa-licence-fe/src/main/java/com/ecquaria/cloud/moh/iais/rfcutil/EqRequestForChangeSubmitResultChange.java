@@ -969,10 +969,7 @@ public class EqRequestForChangeSubmitResultChange {
                         if (!oldCheckListIds.contains(checBox.getChkLstConfId())) {
                             isAuto = false;
                             personnelEditList.add(HcsaConsts.STEP_LABORATORY_DISCIPLINES);
-                            if (!IaisCommonUtils.isEmpty(appSvcRelatedInfoDtoList.getAppSvcDisciplineAllocationDtoList())
-                                    || !IaisCommonUtils.isEmpty(oldAppSvcRelatedInfoDtoList.getAppSvcDisciplineAllocationDtoList())) {
-                                personnelEditList.add(HcsaConsts.STEP_DISCIPLINE_ALLOCATION);
-                            }
+                            personnelEditList.add(HcsaConsts.STEP_DISCIPLINE_ALLOCATION);
                             break;
                         }
                     }
