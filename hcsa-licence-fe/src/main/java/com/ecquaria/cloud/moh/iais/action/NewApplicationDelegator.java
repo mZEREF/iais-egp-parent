@@ -2665,6 +2665,8 @@ public class NewApplicationDelegator {
             ParamUtil.setRequestAttr(bpc.request, "isrfiSuccess", "N");
             return;
         }
+        requestForChangeService.premisesDocToSvcDoc(appSubmissionDto);
+        requestForChangeService.premisesDocToSvcDoc(oldAppSubmissionDto);
         // change edit
         AppEditSelectDto appEditSelectDto = EqRequestForChangeSubmitResultChange.rfcChangeModuleEvaluationDto(appSubmissionDto,oldAppSubmissionDto);
         boolean isAutoRfc = appEditSelectDto.isAutoRfc();
@@ -2720,8 +2722,6 @@ public class NewApplicationDelegator {
             appSubmissionDto.setCreatAuditAppStatus(ApplicationConsts.APPLICATION_STATUS_NOT_PAYMENT);
         }
         ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
-        requestForChangeService.premisesDocToSvcDoc(appSubmissionDto);
-        requestForChangeService.premisesDocToSvcDoc(oldAppSubmissionDto);
         appSubmissionDto.setGetAppInfoFromDto(true);
         appSubmissionDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         List<AppSubmissionDto> appSubmissionDtoList = IaisCommonUtils.genNewArrayList();
