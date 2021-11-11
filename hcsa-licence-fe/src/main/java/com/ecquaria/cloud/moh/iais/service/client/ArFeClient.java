@@ -110,4 +110,11 @@ public interface ArFeClient {
     FeignResponseEntity<Date> getLastCompletedCycleStartDate(@RequestParam("patientCode") String patientCode,
             @RequestParam("hciCode") String hciCode);
 
+
+    @GetMapping(value = "/data-submission/data-submission-donor-sample", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<DonorSampleDto> getDonorSampleDto(@RequestParam(value = "idType",required = false) String idType, @RequestParam(value = "idNumber",required = false) String idNumber,
+                                                          @RequestParam(value = "donorSampleCode",required = false) String donorSampleCode,
+                                                          @RequestParam(value = "sampleFromHciCode",required = false) String sampleFromHciCode,
+                                                          @RequestParam(value = "sampleFromOthers",required = false) String sampleFromOthers);
+
 }

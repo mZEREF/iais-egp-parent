@@ -49,12 +49,16 @@
                  </c:if>
 
                  <c:if test="${!arDonorDto.directedDonation}">
-                 <iais:row cssClass="usedDonorOocyteControlClass" id="donorSampleCodeId${arDonorIndex}Row">
-                     <iais:field width="5" value="Donor Sample Code / ID" />
-                     <iais:value width="7" cssClass="col-md-7" display="true">
-                         <c:out value="${arDonorDto.donorSampleCode}" />
-                     </iais:value>
-                 </iais:row>
+
+                     <iais:row cssClass="usedDonorOocyteControlClass" id="donorSampleCodeId${arDonorIndex}Row" >
+                         <iais:field width="5" value="Donor Sample Code / ID" />
+                         <iais:value width="3" cssClass="col-md-3" display="true">
+                             <iais:code code="${arDonorDto.idType}"/>
+                         </iais:value>
+                         <iais:value width="4" cssClass="col-md-4" display="true">
+                             <c:out value="${arDonorDto.donorSampleCode}" />
+                         </iais:value>
+                     </iais:row>
 
                  <iais:row  cssClass="usedDonorOocyteControlClass" id="source${arDonorIndex}Row" style="${arDonorDto.directedDonation ? 'display: none;' : ''}">
                      <iais:field width="5" value="Source (i.e. AR Centre or Bank Name)" />

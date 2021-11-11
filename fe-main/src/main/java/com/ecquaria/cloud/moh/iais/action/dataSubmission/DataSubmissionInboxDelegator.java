@@ -102,9 +102,11 @@ public class DataSubmissionInboxDelegator {
 	public void prepare(BaseProcessClass bpc){
 		setLog("prepare");
 		HttpServletRequest request = bpc.request;
-		SearchParam searchParam = HalpSearchResultHelper.gainSearchParam(request, InboxConst.DS_PARAM, InboxDataSubmissionQueryDto.class.getName(),"CREATED_DT",SearchParam.DESCENDING,false);
-		QueryHelp.setMainSql( InboxConst.INBOX_QUERY,  InboxConst.INBOX_DS_QUERY,searchParam);
-		ParamUtil.setSessionAttr(request, InboxConst.DS_RESULT,licenceInboxClient.searchLicence(searchParam).getEntity());
+		if(StringUtil.isEmpty(ParamUtil.getString(request,ACTION_DS_BUTTON_SHOW))){
+			SearchParam searchParam = HalpSearchResultHelper.gainSearchParam(request, InboxConst.DS_PARAM, InboxDataSubmissionQueryDto.class.getName(),"CREATED_DT",SearchParam.DESCENDING,false);
+			QueryHelp.setMainSql( InboxConst.INBOX_QUERY,  InboxConst.INBOX_DS_QUERY,searchParam);
+			ParamUtil.setSessionAttr(request, InboxConst.DS_RESULT,licenceInboxClient.searchLicence(searchParam).getEntity());
+		}
 		setLog("prepare",false);
 	}
 

@@ -71,4 +71,6 @@ public interface ArDataSubmissionService {
       * @Descripation: setFreezingPatientChange
       */
     PatientInventoryDto setFreezingPatientChange(PatientInventoryDto patientInventoryDto, ArSubFreezingStageDto arSubFreezingStageDto);
+
+    DonorSampleDto getDonorSampleDto(String idType,String idNumber,String donorSampleCode,String sampleFromHciCode,String sampleFromOthers);
 }

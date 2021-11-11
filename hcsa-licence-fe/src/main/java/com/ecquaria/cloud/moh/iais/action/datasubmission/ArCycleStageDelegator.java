@@ -20,6 +20,7 @@ import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -41,11 +42,10 @@ public class ArCycleStageDelegator extends CommonDelegator {
     private final static String  CRUD_ACTION_VALUE_VALIATE_DONOR = "crud_action_value_valiate_donor";
     private final static String  PRACTITIONER_DROP_DOWN          = "practitionerDropDown";
     private final static String  EMBRYOLOGIST_DROP_DOWN          = "embryologistDropDown";
-    private final static String  DONOR_AGE_DONATION_DROP_DOWN    = "donorAgeDonationDropDown";
     private final static String  DONOR_USED_TYPES                = "donorUsedTypes";
     private final static String  DONOR_SOURSE_DROP_DOWN          = "donorSourseDropDown";
     private final static String  DONOR_SOURSE_OTHERS             = "Others";
-
+    private final static String  DONOR_SAMPLE_DROP_DOWN          = "donorSampleDropDown";
     @Autowired
     private ArDataSubmissionService arDataSubmissionService;
     @Override
@@ -57,9 +57,14 @@ public class ArCycleStageDelegator extends CommonDelegator {
         ParamUtil.setSessionAttr(request, NUMBER_ARC_PREVIOUSLY_DROP_DOWN,(Serializable) DataSubmissionHelper.getNumsSelections(21));
         ParamUtil.setSessionAttr(request, PRACTITIONER_DROP_DOWN,(Serializable) getPractitioner());
         ParamUtil.setSessionAttr(request, EMBRYOLOGIST_DROP_DOWN,(Serializable) getEmbryologist());
-        ParamUtil.setSessionAttr(request, DONOR_AGE_DONATION_DROP_DOWN,(Serializable)DataSubmissionHelper.getNumsSelections(0,50));
         ParamUtil.setSessionAttr(request, DONOR_USED_TYPES,(Serializable) MasterCodeUtil.retrieveByCategory(MasterCodeUtil.AR_DONOR_USED_TYPE));
-        ParamUtil.setSessionAttr(request, DONOR_SOURSE_DROP_DOWN,(Serializable) getSourseList());
+        ParamUtil.setSessionAttr(request, DONOR_SOURSE_DROP_DOWN,(Serializable) getSourseList(request));
+        ParamUtil.setSessionAttr(request, DONOR_SAMPLE_DROP_DOWN,(Serializable) getSampleDropDown());
+    }
+
+    @Override
+    public void prepareSwitch(BaseProcessClass bpc) {
+
     }
 
     //TODO from ar center
@@ -75,16 +80,19 @@ public class ArCycleStageDelegator extends CommonDelegator {
         return selectOptions;
     }
     //TODO from ar center
-    private List<SelectOption> getSourseList(){
-        List<SelectOption> selectOptions  = IaisCommonUtils.genNewArrayList();
-        selectOptions.add(new SelectOption("sourseTest","sourseTest"));
+    private List<SelectOption> getSourseList(HttpServletRequest request){
+        List<SelectOption> selectOptions  = DataSubmissionHelper.genPremisesOptions((Map<String, AppGrpPremisesDto>) ParamUtil.getSessionAttr(request,DataSubmissionConstant.AR_PREMISES_MAP));
         selectOptions.add(new SelectOption(DataSubmissionConsts.AR_SOURCE_OTHER,DONOR_SOURSE_OTHERS));
         return selectOptions;
     }
 
-    @Override
-    public void prepareSwitch(BaseProcessClass bpc) {
-
+    private List<SelectOption> getSampleDropDown(){
+        List<SelectOption> selectOptions  = IaisCommonUtils.genNewArrayList(4);
+        MasterCodeUtil.retrieveByCategory(MasterCodeUtil.CATE_ID_DS_ID_TYPE).stream().forEach(
+                obj -> selectOptions.add(new SelectOption(obj.getCode(),obj.getCodeValue()))
+        );
+        selectOptions.add(new SelectOption("AR_IT_005","Code"));
+        return selectOptions;
     }
 
     @Override
@@ -174,16 +182,27 @@ public class ArCycleStageDelegator extends CommonDelegator {
         int valiateArDonor = ParamUtil.getInt(request,CRUD_ACTION_VALUE_VALIATE_DONOR);
         if(valiateArDonor >-1){
             ArDonorDto arDonorDto = arDonorDtos.get(valiateArDonor);
-            //todo valiate ar centre
-            boolean passValiate = true;
-            if(passValiate){
+            DonorSampleDto donorSampleDto = arDataSubmissionService.getDonorSampleDto(arDonorDto.getIdType(),arDonorDto.getIdNumber(),
+                                                           arDonorDto.getDonorSampleCode(),arDonorDto.getSource(),arDonorDto.getOtherSource());
+            if(donorSampleDto == null){
                 Map<String, String> errorMap = IaisCommonUtils.genNewHashMap(1);
                 errorMap.put("field1","The corresponding donor");
                 errorMap.put("field2","the AR centre");
                 String dsErr =  MessageUtil.getMessageDesc("DS_ERR012",errorMap).trim();
                 errorMap.clear();
-                errorMap.put("age"+arDonorDto.getArDonorIndex(),dsErr);
+                errorMap.put("validateDonor" +(arDonorDto.isDirectedDonation() ? "Yes" : "No") +arDonorDto.getArDonorIndex(),dsErr);
                 ParamUtil.setRequestAttr(request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
+            }else {
+                arDonorDto.setRelation(donorSampleDto.getDonarRelation());
+                List<String> ages =  StringUtil.isEmpty(donorSampleDto.getAge()) ? null : Arrays.asList(donorSampleDto.getAge().split(","));
+                if(ages != null){
+                    ages.sort(String::compareTo);
+                    List<SelectOption> selectOptions = IaisCommonUtils.genNewArrayList( ages.size());
+                    ages.stream().forEach(
+                          obj-> selectOptions.add(new SelectOption(obj,obj))
+                    );
+                    arDonorDto.setAgeList(selectOptions);
+                }
             }
         }
     }
@@ -213,7 +232,7 @@ public class ArCycleStageDelegator extends CommonDelegator {
             ControllerHelper.get(request,arDonorDto,arDonorIndex);
             arDonorDto.setPleaseIndicate(ParamUtil.getStringsToString(request,"pleaseIndicate"+arDonorIndex));
             arDonorDto.setPleaseIndicateValues(ParamUtil.getListStrings(request,"pleaseIndicate"+arDonorIndex));
-            clearNoClearDataForDrDonorDto(arDonorDto);
+            clearNoClearDataForDrDonorDto(arDonorDto,request);
             setArDonorDtoByPleaseIndicate(arDonorDto);
         });
     }
@@ -238,7 +257,7 @@ public class ArCycleStageDelegator extends CommonDelegator {
         }
     }
 
-     private void clearNoClearDataForDrDonorDto(ArDonorDto arDonorDto){
+     private void clearNoClearDataForDrDonorDto(ArDonorDto arDonorDto,HttpServletRequest request){
         if(arDonorDto.isDirectedDonation()){
             arDonorDto.setDonorSampleCode(null);
             arDonorDto.setSource(null);
@@ -247,9 +266,8 @@ public class ArCycleStageDelegator extends CommonDelegator {
             arDonorDto.setIdNumber(StringUtil.getNonNull(arDonorDto.getIdNumber()));
         }else {
             arDonorDto.setPleaseIndicate(null);
-            arDonorDto.setIdNumber(null);
-            arDonorDto.setIdType(null);
             arDonorDto.setPleaseIndicateValues(null);
+            arDonorDto.setIdType(ParamUtil.getString(request,"idTypeSample"+arDonorDto.getArDonorIndex()));
             arDonorDto.setSource(StringUtil.getNonNull(arDonorDto.getSource()));
             arDonorDto.setOtherSource(StringUtil.getNonNull(arDonorDto.getOtherSource()));
             arDonorDto.setDonorSampleCode(StringUtil.getNonNull(arDonorDto.getDonorSampleCode()));
@@ -261,6 +279,7 @@ public class ArCycleStageDelegator extends CommonDelegator {
             arDonorDto.setIdType(StringUtil.getStringEmptyToNull( arDonorDto.getIdType()));
             arDonorDto.setIdNumber(StringUtil.getStringEmptyToNull( arDonorDto.getIdNumber()));
         }else {
+            arDonorDto.setIdType(StringUtil.getStringEmptyToNull(arDonorDto.getIdType()));
             arDonorDto.setSource(StringUtil.getStringEmptyToNull(arDonorDto.getSource()));
             arDonorDto.setOtherSource(StringUtil.getStringEmptyToNull(arDonorDto.getOtherSource()));
             arDonorDto.setDonorSampleCode(StringUtil.getStringEmptyToNull(arDonorDto.getDonorSampleCode()));

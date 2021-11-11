@@ -80,26 +80,43 @@
 
                  <iais:row id="idNo${arDonorIndex}Row"  style="${!arDonorDto.directedDonation ? 'display: none;' : ''}">
                      <iais:field width="5" value="ID No." mandatory="true"/>
-                     <iais:value width="3" cssClass="col-md-3">
+                     <iais:value width="2" cssClass="col-md-2">
                          <iais:select name="idType${arDonorIndex}" firstOption="Please Select" codeCategory="CATE_ID_DS_ID_TYPE" value="${arDonorDto.idType}"
                                       cssClass="idTypeSel${arDonorIndex}"/>
                      </iais:value>
-                     <iais:value width="4" cssClass="col-md-4">
+                     <iais:value width="3" cssClass="col-md-3">
                          <iais:input maxLength="20" type="text" name="idNumber${arDonorIndex}" value="${arDonorDto.idNumber}" />
+                     </iais:value>
+                     <iais:value width="2" cssClass="col-md-2" display="true">
+                         <a class="validateDonor" onclick="validateDonor('${arDonorIndex}')">
+                             Validate Donor
+                         </a>
+                         <span id="error_validateDonorYes${arDonorIndex}" name="iaisErrorMsg" class="error-msg"></span>
                      </iais:value>
                  </iais:row>
 
                  <iais:row id="donorSampleCode${arDonorIndex}Row"   style="${arDonorDto.directedDonation ? 'display: none;' : ''}">
                      <iais:field width="5" value="Donor Sample Code / ID" mandatory="true"/>
-                     <iais:value width="7" cssClass="col-md-7">
+                     <iais:value width="2" cssClass="col-md-2">
+                         <iais:select name="idTypeSample${arDonorIndex}" firstOption="Please Select" options="donorSampleDropDown" value="${arDonorDto.idType}"
+                                      cssClass="idSampleTypeSel${arDonorIndex}"/>
+                     </iais:value>
+                     <iais:value width="3" cssClass="col-md-3">
                          <iais:input maxLength="100" type="text" name="donorSampleCode${arDonorIndex}" id="donorSampleCode${arDonorIndex}" value="${arDonorDto.donorSampleCode}" />
                      </iais:value>
+                     <iais:value width="2" cssClass="col-md-2" display="true">
+                         <a class="validateDonor" onclick="validateDonor('${arDonorIndex}')">
+                             Validate Donor
+                         </a>
+                         <span id="error_validateDonorNo${arDonorIndex}" name="iaisErrorMsg" class="error-msg"></span>
+                     </iais:value>
+
                  </iais:row>
 
                  <iais:row id="source${arDonorIndex}Row" style="${arDonorDto.directedDonation ? 'display: none;' : ''}">
                      <iais:field width="5" value="Source (i.e. AR Centre or Bank Name)" mandatory="true"/>
                      <iais:value width="7" cssClass="col-md-7">
-                         <iais:select name="source${arDonorIndex}" firstOption="Please Select" options="donorSourseDropDown" value="${arDonorDto.source}"
+                         <iais:select name="source${arDonorIndex}"  options="donorSourseDropDown" value="${arDonorDto.source}"
                                       cssClass="source${arDonorIndex}" onchange=" toggleOnSelect(this,'${DataSubmissionConsts.AR_SOURCE_OTHER}', 'otherSource${arDonorIndex}Row');"/>
                      </iais:value>
                  </iais:row>
@@ -111,19 +128,16 @@
                      </iais:value>
                  </iais:row>
 
+                 <c:if test="${empty not arDonorDto.ageList}">
                  <iais:row>
                      <iais:field width="5" value="Donor's Age at Donation" mandatory="true"/>
                      <iais:value width="4" cssClass="col-md-4">
-                         <iais:select name="age${arDonorIndex}" firstOption="Please Select"  options="donorAgeDonationDropDown" value="${arDonorDto.age}"
+                         <iais:select name="age${arDonorIndex}" firstOption="Please Select"  options="${arDonorDto.ageList}" value="${arDonorDto.age}"
                                       cssClass="donorAgeDonation${arDonorIndex}"/>
                      </iais:value>
-                     <iais:value width="3" cssClass="col-md-3" display="true">
-                         <a class="validateDonor" onclick="validateDonor('${arDonorIndex}')">
-                             Validate Donor
-                         </a>
-
-                     </iais:value>
                  </iais:row>
+                 </c:if>
+
                  <h3></h3>
              </div>
         </c:forEach>
