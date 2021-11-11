@@ -56,9 +56,9 @@ public class ThawingDelegator extends CommonDelegator {
         ThawingStageDto thawingStageDto = arSuperDataSubmissionDto.getThawingStageDto();
 
         PatientInventoryDto patientInventoryDto = DataSubmissionHelper.initPatientInventoryTable(bpc.request);
-        patientInventoryDto.setChangeFrozenOocytes(thawingStageDto.getThawedOocytesNum());
+        patientInventoryDto.setChangeFrozenOocytes(-1 * thawingStageDto.getThawedOocytesNum());
         patientInventoryDto.setChangeThawedOocytes(thawingStageDto.getThawedOocytesSurvivedMatureNum());
-        patientInventoryDto.setChangeFrozenEmbryos(thawingStageDto.getThawedEmbryosNum());
+        patientInventoryDto.setChangeFrozenEmbryos(-1 * thawingStageDto.getThawedEmbryosNum());
         patientInventoryDto.setChangeThawedEmbryos(thawingStageDto.getThawedEmbryosSurvivedNum());
     }
 

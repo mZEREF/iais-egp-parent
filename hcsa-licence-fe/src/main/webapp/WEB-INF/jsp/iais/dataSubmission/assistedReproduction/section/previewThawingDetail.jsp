@@ -12,7 +12,7 @@
             <div class="panel-main-content form-horizontal "><%--min-row--%>
                 <iais:row>
                     <iais:field width="6" value="Thawing Oocyte(s) or Embryo(s)" cssClass="col-md-6"/>
-                    <iais:value width="6" cssClass="col-md-6">
+                    <iais:value width="6" cssClass="col-md-6" style="padding:0px;">
                         <c:if test="${thawingStageDto.hasOocyte}"><p class="col-12">Oocyte(s)</p></c:if>
                         <c:if test="${thawingStageDto.hasEmbryo}"><p class="col-12">Embryo(s)</p></c:if>
                     </iais:value>
