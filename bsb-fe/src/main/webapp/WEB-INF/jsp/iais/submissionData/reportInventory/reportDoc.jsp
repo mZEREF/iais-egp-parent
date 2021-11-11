@@ -1,4 +1,5 @@
 <div id="fileUploadInputDiv" style="display: none"></div>
+<input type="hidden" id="deleteNewFiles" name="deleteNewFiles" value="">
 <div class="panel panel-default">
     <div class="panel-heading"><strong>Upload Documents</strong></div>
     <div class="row form-horizontal">
@@ -24,6 +25,7 @@
 <%--                                                                 codeCategory="CATE_ID_BSB_DATA_SUBMISSION_REPORT_TYPE"--%>
 <%--                                                                 firstOption="Please Select"/>--%>
                                                           <select name="reportType" id="reportType">
+                                                              <option value="">Please Select</option>
                                                               <option value="REPTYPE01">Red Teaming Report</option>
                                                               <option value="REPTYPE02">PNEF Inventory Report</option>
                                                               <option value="REPTYPE03">Bi-annual Toxin Report</option>

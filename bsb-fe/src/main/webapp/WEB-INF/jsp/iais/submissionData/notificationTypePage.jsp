@@ -41,6 +41,7 @@
                                                 <option value="6">Notification of Transfer</option>
                                                 <option value="7">Acknowledgement of Receipt of Transfer</option>
                                                 <option value="8">Submit Facility Report and Inventory</option>
+                                                <option value="9">Submit Facility Report and Inventory</option>
                                             </select>
                                         </iais:value>
                                     </iais:row>

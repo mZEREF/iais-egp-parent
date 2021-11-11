@@ -145,5 +145,4 @@ public class BsbSubmissionCommon {
            return null;
        }
     }
-
 }

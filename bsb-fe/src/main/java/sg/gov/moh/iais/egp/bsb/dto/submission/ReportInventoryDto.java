@@ -18,6 +18,8 @@ import sg.gov.moh.iais.egp.bsb.common.multipart.ByteArrayMultipartFile;
 import sg.gov.moh.iais.egp.bsb.common.node.simple.ValidatableNodeValue;
 import sg.gov.moh.iais.egp.bsb.constant.DocConstants;
 import sg.gov.moh.iais.egp.bsb.dto.ValidationResultDto;
+import sg.gov.moh.iais.egp.bsb.dto.register.facility.PrimaryDocDto;
+import sg.gov.moh.iais.egp.bsb.entity.Facility;
 import sg.gov.moh.iais.egp.bsb.util.CollectionUtils;
 import sg.gov.moh.iais.egp.bsb.util.LogUtil;
 import sg.gov.moh.iais.egp.bsb.util.SpringReflectionUtils;
@@ -39,6 +41,7 @@ public class ReportInventoryDto implements Serializable{
     public static class DocRecordInfo implements Serializable {
         private String docEntityId;
         private String docType;
+        private String reportType;
         private String filename;
         private long size;
         private String repoId;
@@ -51,6 +54,7 @@ public class ReportInventoryDto implements Serializable{
     public static class NewDocInfo implements Serializable {
         private String tmpId;
         private String docType;
+        private String reportType;
         private String filename;
         private long size;
         private Date submitDate;
@@ -82,6 +86,23 @@ public class ReportInventoryDto implements Serializable{
         }
     }
 
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class DocsMetaDto implements Serializable {
+        private Map<String, List<DocMeta>> metaDtoMap;
+    }
+
+
+    // this dto is pass data that needed saved to db
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class SaveDocDto implements Serializable{
+        private String facId;
+        private List<ReportInventoryDto.DocRecordInfo> savedDocInfo;
+        private String reportType;
+    }
 
     /* docs already saved in DB, key is repoId */
     private Map<String, ReportInventoryDto.DocRecordInfo> savedDocMap;
@@ -90,8 +111,10 @@ public class ReportInventoryDto implements Serializable{
     /* to be deleted files (which already saved), the string is repoId, used to delete file in repo */
     private final Set<String> toBeDeletedRepoIds;
 
-    //a field record the type of report
     private String reportType;
+
+    private String declare;
+
 
 
 
@@ -107,7 +130,20 @@ public class ReportInventoryDto implements Serializable{
 
     //should change
     public boolean doValidation() {
-        this.validationResultDto = (ValidationResultDto) SpringReflectionUtils.invokeBeanMethod("cerRegFeignClient", "validateCerPrimaryDocs", new Object[]{this});
+        List<DocMeta> metaDtoList = new ArrayList<>(this.savedDocMap.size() + this.newDocMap.size());
+        this.savedDocMap.values().forEach(i -> {
+            DocMeta docMeta = new DocMeta(i.getRepoId(), i.getDocType(), i.getFilename(), i.getSize(), "facReg");
+            metaDtoList.add(docMeta);
+        });
+        this.newDocMap.values().forEach(i -> {
+            DocMeta docMeta = new DocMeta(i.getTmpId(), i.getDocType(), i.getFilename(), i.getSize(), "facReg");
+            metaDtoList.add(docMeta);
+        });
+
+        Map<String, List<DocMeta>> metaDtoMap = CollectionUtils.groupCollectionToMap(metaDtoList, DocMeta::getDocType);
+        DocsMetaDto docsMetaDto = new DocsMetaDto(metaDtoMap);
+
+        this.validationResultDto = (ValidationResultDto) SpringReflectionUtils.invokeBeanMethod("facRegFeignClient", "validateFacilityPrimaryDocs", new Object[]{docsMetaDto});
         return validationResultDto.isPass();
     }
 
@@ -122,6 +158,59 @@ public class ReportInventoryDto implements Serializable{
         this.validationResultDto = null;
     }
 
+    /**
+     * get a structure used to display the already saved docs
+     * we have not retrieve data of these docs yet, if user wants to download it, we call API to retrieve the data
+     * @return a map, the key is the doc type, the value is the exist doc info list
+     */
+    public Map<String, List<DocRecordInfo>> getExistDocTypeMap() {
+        return CollectionUtils.groupCollectionToMap(this.savedDocMap.values(), DocRecordInfo::getDocType);
+    }
+
+    /**
+     * get a structure used to display new selected docs
+     * these docs have not been saved into DB, if user wants to download it, we send the data from current data structure
+     * @return a map, the key is the doc type, the value is the new doc info list
+     */
+    public Map<String, List<NewDocInfo>> getNewDocTypeMap() {
+        return CollectionUtils.groupCollectionToMap(this.newDocMap.values(), NewDocInfo::getDocType);
+    }
+
+    /**
+     * get a structure used to display preview
+     * the returned map contains two file types
+     * the map will keep the pre-setting order of doc types
+     * @return a map, the key is the doc type, the value is the docs
+     */
+    public Map<String, List<DocMeta>> getAllDocTypeMap() {
+        Map<String, List<DocMeta>> data = Maps.newLinkedHashMapWithExpectedSize(DocConstants.FAC_REG_DOC_TYPE_ORDER.size());
+
+        Map<String, List<DocRecordInfo>> savedMap = getExistDocTypeMap();
+        Map<String, List<NewDocInfo>> newMap = getNewDocTypeMap();
+
+        for (String docType : DocConstants.FAC_REG_DOC_TYPE_ORDER) {
+            List<DocMeta> metaList = new ArrayList<>();
+            List<DocRecordInfo> savedFiles = savedMap.get(docType);
+            if (savedFiles != null) {
+                savedFiles.forEach(i -> {
+                    DocMeta docMeta = new DocMeta(i.getDocType(), i.getFilename(), i.getSize());
+                    metaList.add(docMeta);
+                });
+            }
+            List<NewDocInfo> newFiles = newMap.get(docType);
+            if (newFiles != null) {
+                newFiles.forEach(i -> {
+                    DocMeta docMeta = new DocMeta(i.getDocType(), i.getFilename(), i.getSize());
+                    metaList.add(docMeta);
+                });
+            }
+            if (!metaList.isEmpty()) {
+                data.put(docType, metaList);
+            }
+        }
+
+        return data;
+    }
 
 
     /**
@@ -171,6 +260,14 @@ public class ReportInventoryDto implements Serializable{
         this.reportType = reportType;
     }
 
+    public String getDeclare() {
+        return declare;
+    }
+
+    public void setDeclare(String declare) {
+        this.declare = declare;
+    }
+
     //    ---------------------------- request -> object ----------------------------------------------
 
     private static final String MASK_PARAM = "file";
@@ -186,17 +283,16 @@ public class ReportInventoryDto implements Serializable{
         String repType =  ParamUtil.getString(request,"reportType");
         this.setReportType(repType);
 
-        //when do delete
-//        String deleteNewFilesString = ParamUtil.getString(mulReq, KEY_DELETED_NEW_FILES);
-//        if (log.isInfoEnabled()) {
-//            log.info("deleteNewFilesString: {}", LogUtil.escapeCrlf(deleteNewFilesString));
-//        }
-//        if (StringUtils.hasLength(deleteNewFilesString)) {
-//            List<String> deleteFileTmpIds = Arrays.stream(deleteNewFilesString.split(","))
-//                    .map(f -> MaskUtil.unMaskValue(MASK_PARAM, f))
-//                    .collect(Collectors.toList());
-//            deleteFileTmpIds.forEach(this.newDocMap::remove);
-//        }
+//        when do delete
+        String deleteNewFilesString = ParamUtil.getString(mulReq, KEY_DELETED_NEW_FILES);
+        if (log.isInfoEnabled()) {
+            log.info("deleteNewFilesString: {}", LogUtil.escapeCrlf(deleteNewFilesString));
+        }
+        if (StringUtils.hasLength(deleteNewFilesString)) {
+            List<String> deleteFileTmpIds = Arrays.stream(deleteNewFilesString.split(","))
+                    .collect(Collectors.toList());
+            deleteFileTmpIds.forEach(this.newDocMap::remove);
+        }
 
 
         // read new uploaded files
@@ -205,16 +301,15 @@ public class ReportInventoryDto implements Serializable{
         LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
         while (inputNameIt.hasNext()) {
             String inputName = inputNameIt.next();
-            String docType = MaskUtil.unMaskValue(MASK_PARAM, inputName);
-            if (docType != null && docType.equals(inputName) && KEY_REPORT.equals(docType)){
-            reqDocMapping(inputName,mulReq,repType,loginContext,currentDate);
-            }else if(docType != null && docType.equals(inputName) && KEY_OTHERS.equals(docType)){
-                reqDocMapping(inputName,mulReq,docType,loginContext,currentDate);
+            if (KEY_REPORT.equals(inputName)){
+                reqDocMapping(inputName,mulReq,repType,loginContext,currentDate);
+            }else if(KEY_OTHERS.equals(inputName)){
+                reqDocMapping(inputName,mulReq,inputName,loginContext,currentDate);
             }
         }
     }
 
-    public void reqDocMapping(String inputName,MultipartHttpServletRequest mulReq,String repType,LoginContext loginContext,Date currentDate){
+    public void reqDocMapping(String inputName,MultipartHttpServletRequest mulReq,String docType,LoginContext loginContext,Date currentDate){
         List<MultipartFile> files = mulReq.getFiles(inputName);
         for (MultipartFile f : files) {
             if (log.isInfoEnabled()) {
@@ -226,7 +321,7 @@ public class ReportInventoryDto implements Serializable{
                 ReportInventoryDto.NewDocInfo newDocInfo = new ReportInventoryDto.NewDocInfo();
                 String tmpId = inputName + f.getSize() + System.nanoTime();
                 newDocInfo.setTmpId(tmpId);
-                newDocInfo.setDocType(repType);
+                newDocInfo.setDocType(docType);
                 newDocInfo.setFilename(f.getOriginalFilename());
                 newDocInfo.setSize(f.getSize());
                 newDocInfo.setSubmitDate(currentDate);

@@ -2,23 +2,47 @@ package sg.gov.moh.iais.egp.bsb.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
+import sg.gov.moh.iais.egp.bsb.client.FileRepoClient;
+import sg.gov.moh.iais.egp.bsb.client.TransferClient;
 import sg.gov.moh.iais.egp.bsb.constant.DocConstants;
 import sg.gov.moh.iais.egp.bsb.constant.ValidationConstants;
+import sg.gov.moh.iais.egp.bsb.dto.submission.FacListDto;
 import sg.gov.moh.iais.egp.bsb.dto.submission.ReportInventoryDto;
 import sg.gov.moh.iais.egp.bsb.entity.DocSetting;
+import sop.servlet.webflow.HttpHandler;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+
+import static sg.gov.moh.iais.egp.bsb.constant.DataSubmissionConstants.KEY_ACTION_TYPE;
 
 /**
  * @author YiMing
  * @version 2021/11/10 9:37
  **/
+@Slf4j
 @Delegator(value = "reportInventoryDelegator")
 public class BsbReportInventoryDelegator {
     private static final String DTO_BSB_REPORT_INVENTORY = "repReportDto";
+    public static final String KEY_FAC_LIST_DTO = "facListDto";
+    public static final String KEY_FAC_ID = "facId";
+    private static final String KEY_FACILITY_INFO = "facInfo";
+    private final BsbSubmissionCommon subCommon;
+    private final TransferClient transferClient;
+    private final FileRepoClient fileRepoClient;
+
+    public BsbReportInventoryDelegator(BsbSubmissionCommon subCommon, TransferClient transferClient, FileRepoClient fileRepoClient) {
+        this.subCommon = subCommon;
+        this.transferClient = transferClient;
+        this.fileRepoClient = fileRepoClient;
+    }
 
     /**
      * step1
@@ -28,35 +52,67 @@ public class BsbReportInventoryDelegator {
     }
 
     /**
-     * prepare
+     * preFacilityInfo
      * */
-    public void prepare(BaseProcessClass bpc){
+    public void preFacilityInfo(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
         ReportInventoryDto inventoryDto = getReportInventoryDto(request);
+        FacListDto facListDto = subCommon.getFacListDto(request);
+        ParamUtil.setSessionAttr(request,KEY_FAC_LIST_DTO,facListDto);
+        FacListDto.FacList facList = subCommon.getFacInfo(request);
+        ParamUtil.setSessionAttr(request,KEY_FACILITY_INFO,facList);
         ParamUtil.setRequestAttr(request,"doSettings",getDocSettingMap());
+        ParamUtil.setRequestAttr(request,DTO_BSB_REPORT_INVENTORY,inventoryDto);
+        //when back do data showing in page
         //show error message
     }
 
+    public void preSwitch(BaseProcessClass bpc){
+        MultipartHttpServletRequest request = (MultipartHttpServletRequest) bpc.request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
+        String actionType = request.getParameter(KEY_ACTION_TYPE);
+        ParamUtil.setSessionAttr(bpc.request, KEY_ACTION_TYPE, actionType);
+    }
+
     /**
-     * preSubmitFile
+     * preSubmitDoc
      * */
-    public void preSubmitFile(BaseProcessClass bpc){
+    public void preSubmitDoc(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
         ReportInventoryDto inventoryDto = getReportInventoryDto(request);
         inventoryDto.reqObjMapping(request);
         //begin to validate
         ParamUtil.setSessionAttr(request,DTO_BSB_REPORT_INVENTORY,inventoryDto);
         ParamUtil.setRequestAttr(request, ValidationConstants.IS_VALID,ValidationConstants.YES);
-
+        Map<String, List<ReportInventoryDto.NewDocInfo>> newFiles =  inventoryDto.getNewDocTypeMap();
+        ParamUtil.setRequestAttr(request,"newFiles", newFiles);
+        ParamUtil.setRequestAttr(request,"reportType",inventoryDto.getReportType());
     }
 
     /**
-     * doSubmit
+     * saveReport
      * */
-    public void doSubmit(BaseProcessClass bpc){
+    public void saveReport(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
         ReportInventoryDto inventoryDto = getReportInventoryDto(request);
         //write a method to save to db
+        //save file to db and get repoId
+        MultipartFile[] files = inventoryDto.getNewDocMap().values().stream().map(ReportInventoryDto.NewDocInfo::getMultipartFile).toArray(MultipartFile[]::new);
+        List<String> repoIds = fileRepoClient.saveFiles(files).getEntity();
+        //change newFile to savedFile
+        inventoryDto.newFileSaved(repoIds);
+        //put need value to SaveDocDto
+        ReportInventoryDto.SaveDocDto saveDocDto = new ReportInventoryDto.SaveDocDto();
+        saveDocDto.setReportType(inventoryDto.getReportType());
+        FacListDto.FacList facInfo = subCommon.getFacInfo(request);
+        if(facInfo != null){
+            saveDocDto.setFacId(facInfo.getFacId());
+        }else{
+            if(log.isInfoEnabled()){
+                log.info("Facility id is empty");
+            }
+        }
+        saveDocDto.setSavedDocInfo(new ArrayList<>(inventoryDto.getSavedDocMap().values()));
+        transferClient.saveNewReportAndInventory(saveDocDto);
     }
 
     public ReportInventoryDto getReportInventoryDto(HttpServletRequest request){

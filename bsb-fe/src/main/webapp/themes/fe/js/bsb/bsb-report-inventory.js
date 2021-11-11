@@ -12,6 +12,13 @@ $(function (){
         $("#mainForm").submit();
     });
 
+    //InnerFooter.jsp & notification page
+    $("#saveButton").click(function (){
+        showWaiting();
+        $("[name='action_type']").val("doSave");
+        $("#mainForm").submit();
+    });
+
     // $("#saveDraft").click(function (){
     //     showWaiting();
     //     $("[name='action_type']").val("saveDraft");
@@ -92,4 +99,28 @@ function addReloadFile() {
 function genFileInfo(fileInputEl) {
     var f = fileInputEl.files;
     return f[0].name + '(' + (f[0].size/1024).toFixed(1) + 'KB)';
+}
+
+function deleteNewFile(id) {
+    // delete delete button, reload button and download button
+    var fileDiv = document.getElementById(id + "FileDiv");
+    fileDiv.parentNode.removeChild(fileDiv);
+
+    // add id into the delete list
+    var deleteSavedInput = document.getElementById("deleteNewFiles");
+    appendInputValue(deleteSavedInput, id);
+}
+
+function appendInputValue(input, value) {
+    if (input.value) {
+        input.value = input.value + "," + value;
+    } else {
+        input.value = value;
+    }
+}
+
+
+function reloadNewFile(id, type) {
+    deleteNewFile(id);
+    $("a[data-upload-file=" + type + "]")[0].click();
 }
