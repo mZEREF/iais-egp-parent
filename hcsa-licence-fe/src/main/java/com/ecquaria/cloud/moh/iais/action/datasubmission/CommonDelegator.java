@@ -190,18 +190,20 @@ public abstract class CommonDelegator {
      * @throws
      */
     public void doSubmission(BaseProcessClass bpc) {
+        log.info(StringUtil.changeForLog("-----" + this.getClass().getSimpleName() + " Do Submission -----"));
         ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.CURRENT_PAGE_STAGE, "ack");
         submission(bpc);
         ArSuperDataSubmissionDto arSuperDataSubmission = DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
         DataSubmissionDto dataSubmissionDto = arSuperDataSubmission.getCurrentDataSubmissionDto();
-        dataSubmissionDto.setSubmissionNo(arDataSubmissionService.getSubmissionNo(dataSubmissionDto.getSubmissionType(),
-                dataSubmissionDto.getCycleStage(), arSuperDataSubmission.getLastDataSubmissionDto()));
+        CycleDto cycle = arSuperDataSubmission.getCycleDto();
+        String cycleType = cycle.getCycleType();
+        String submissionNo = arDataSubmissionService.getSubmissionNo(cycleType,
+                dataSubmissionDto.getCycleStage(), arSuperDataSubmission.getLastDataSubmissionDto());
+        dataSubmissionDto.setSubmissionNo(submissionNo);
         if (StringUtil.isEmpty(dataSubmissionDto.getStatus())) {
             dataSubmissionDto.setStatus(DataSubmissionConsts.DS_STATUS_COMPLETED);
         }
         String stage = dataSubmissionDto.getCycleStage();
-        CycleDto cycle = arSuperDataSubmission.getCycleDto();
-        String cycleType = cycle.getCycleType();
         String status = DataSubmissionConsts.DS_STATUS_ACTIVE;
         if (DataSubmissionConsts.AR_CYCLE_AR.equals(cycleType)) {
             if (DataSubmissionConsts.AR_STAGE_END_CYCLE.equals(stage)) {
@@ -231,6 +233,8 @@ public abstract class CommonDelegator {
             status = DataSubmissionConsts.DS_STATUS_COMPLETED;
         }
         cycle.setStatus(status);
+        log.info(StringUtil.changeForLog("-----Cycle Type: " + cycleType + " - Stage : " + stage
+                + " - Status: " + status + " -----"));
 
         LoginContext loginContext = DataSubmissionHelper.getLoginContext(bpc.request);
         if (loginContext != null) {

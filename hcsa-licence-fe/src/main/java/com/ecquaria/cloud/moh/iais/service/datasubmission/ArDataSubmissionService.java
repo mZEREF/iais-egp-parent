@@ -35,7 +35,7 @@ public interface ArDataSubmissionService {
 
     void deleteArSuperDataSubmissionDtoDraftByConds(String orgId, String submissionType, String hciCode);
 
-    String getSubmissionNo(String submisisonType, String cycleStage, DataSubmissionDto lastDataSubmissionDto);
+    String getSubmissionNo(String submissionType, String cycleType, DataSubmissionDto lastDataSubmissionDto);
 
     String getDraftNo(String submissionType);
 

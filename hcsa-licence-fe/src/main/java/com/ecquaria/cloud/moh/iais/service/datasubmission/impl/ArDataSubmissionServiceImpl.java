@@ -192,26 +192,22 @@ public class ArDataSubmissionServiceImpl implements ArDataSubmissionService {
     }
 
     @Override
-    public String getSubmissionNo(String submisisonType, String cycleStage, DataSubmissionDto lastDataSubmissionDto) {
+    public String getSubmissionNo(String submissionType, String cycleType,
+            DataSubmissionDto lastDataSubmissionDto) {
         String submissionNo = null;
-        int serialNo = 0;
-        if (!DataSubmissionConsts.DS_CYCLE_STAGE_PATIENT.equals(cycleStage)) {
+        if (!StringUtil.isIn(cycleType, new String[]{DataSubmissionConsts.AR_CYCLE_NON,
+                DataSubmissionConsts.DS_CYCLE_STAGE_PATIENT})) {
             if (lastDataSubmissionDto != null
-                    && submisisonType.equals(lastDataSubmissionDto.getSubmissionType())
+                    && cycleType.equals(lastDataSubmissionDto.getSubmissionType())
                     && !statuses.contains(lastDataSubmissionDto.getStatus())
                     && lastDataSubmissionDto.getSubmissionNo() != null) {
-                String[] previous = lastDataSubmissionDto.getSubmissionNo().split("-");
-                submissionNo = previous[0];
-                serialNo = Integer.parseInt(previous[1]);
+                submissionNo = lastDataSubmissionDto.getSubmissionNo();
             }
-            serialNo++;
         }
         if (StringUtil.isEmpty(submissionNo)) {
-            submissionNo = systemAdminClient.submissionID(submisisonType).getEntity();
+            submissionNo = systemAdminClient.submissionID(cycleType).getEntity();
         }
-        if (serialNo != 0) {
-            submissionNo += "-" + Formatter.formatNumber(serialNo, "00");
-        }
+        submissionNo = IaisCommonUtils.getNextSubmissionNo(submissionNo);
         log.info(StringUtil.changeForLog("The submissionNo : " + submissionNo));
         return submissionNo;
     }
