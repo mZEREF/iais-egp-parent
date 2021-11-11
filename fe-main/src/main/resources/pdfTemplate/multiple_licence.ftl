@@ -294,8 +294,6 @@
       </div>
     </div>
 
-
-    <!-- License 2 -->
     <div class="row">
       <div class="col-xs-12">
         <div class="instruction-content center-content">
