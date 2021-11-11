@@ -31,9 +31,8 @@ import static sg.gov.moh.iais.egp.bsb.constant.DataSubmissionConstants.KEY_ACTIO
 @Delegator(value = "reportInventoryDelegator")
 public class BsbReportInventoryDelegator {
     private static final String DTO_BSB_REPORT_INVENTORY = "repReportDto";
-    public static final String KEY_FAC_LIST_DTO = "facListDto";
-    public static final String KEY_FAC_ID = "facId";
-    private static final String KEY_FACILITY_INFO = "facInfo";
+    private static final String KEY_FAC_LIST_DTO = "facListDto";
+    private static final String KEY_FACILITY_INFO = "facilityInfo";
     private final BsbSubmissionCommon subCommon;
     private final TransferClient transferClient;
     private final FileRepoClient fileRepoClient;

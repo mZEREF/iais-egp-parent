@@ -26,7 +26,7 @@ import java.util.stream.Collectors;
 @Slf4j
 @Delegator("bsbSubmissionCommon")
 public class BsbSubmissionCommon {
-    private static final String KEY_FACILITY_INFO = "facInfo";
+    private static final String KEY_FACILITY_INFO = "facilityInfo";
     public static final String KEY_FAC_LIST_DTO = "facListDto";
     public static final String KEY_FAC_ID = "facId";
     private final DataSubmissionClient dataSub;

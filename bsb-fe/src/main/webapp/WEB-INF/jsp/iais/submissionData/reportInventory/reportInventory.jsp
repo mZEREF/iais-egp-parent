@@ -52,7 +52,7 @@
                                                                      data-toggle="tab">Facility Info</a>
                                         </div>
                                         <div class="swiper-slide"><a href="#tabNotBat" aria-controls="tabNotBat"
-                                                                     role="tab" data-toggle="tab">Biological Agent/Toxin</a>
+                                                                     role="tab" data-toggle="tab">Report and Inventory submission</a>
                                         </div>
                                     </div>
                                     <div class="swiper-button-prev"></div>
