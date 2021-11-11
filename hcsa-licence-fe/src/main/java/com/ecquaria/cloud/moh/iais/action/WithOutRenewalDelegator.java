@@ -99,12 +99,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 
 /**
@@ -467,8 +462,43 @@ public class WithOutRenewalDelegator {
         ParamUtil.setSessionAttr(bpc.request, "hasAppSubmit", null);
         ParamUtil.setSessionAttr(bpc.request, "txnDt", null);
         ParamUtil.setSessionAttr(bpc.request, "txnRefNo", null);
-
+        setDraftRfCData(bpc.request,draftNo,appSubmissionDtoList.get(0));
         log.info("**** the non auto renwal  end ******");
+
+    }
+
+
+    private void setDraftRfCData(HttpServletRequest request,String draftNo, AppSubmissionDto appSubmissionDto){
+        if(StringUtil.isNotEmpty(draftNo)){
+            List<AppGrpPremisesDto> appGrpPremisesDtoList1 = appSubmissionDto.getAppGrpPremisesDtoList();
+            String licenceNo = appSubmissionDto.getLicenceNo();
+            for (int i = 0; i < appGrpPremisesDtoList1.size(); i++) {
+                String hciCode = appGrpPremisesDtoList1.get(i).getHciCode();
+                String oldHciCode = appGrpPremisesDtoList1.get(i).getOldHciCode();
+                if(!StringUtil.isEmpty(oldHciCode)&&!oldHciCode.equals(hciCode)){
+                    hciCode=oldHciCode;
+                }
+                List<LicenceDto> licenceDtoByHciCode = requestForChangeService.getLicenceDtoByHciCode(hciCode,appSubmissionDto .getLicenseeId());
+                for (LicenceDto licenceDto : licenceDtoByHciCode) {
+                    if (licenceDto.getLicenceNo().equals(licenceNo)) {
+                        licenceDtoByHciCode.remove(licenceDto);
+                        break;
+                    }
+                }
+                appGrpPremisesDtoList1.get(i).setLicenceDtos(licenceDtoByHciCode);
+                request.getSession().setAttribute("selectLicence" + i, licenceDtoByHciCode);
+            }
+        }else {
+            Enumeration<?> names = request.getSession().getAttributeNames();
+            if (names != null) {
+                while (names.hasMoreElements()) {
+                    String name = (String) names.nextElement();
+                    if (name.startsWith("selectLicence")) {
+                        request.getSession().removeAttribute(name);
+                    }
+                }
+            }
+        }
     }
 
     private void loadCoMap(BaseProcessClass bpc, AppSubmissionDto appSubmissionDto) {
