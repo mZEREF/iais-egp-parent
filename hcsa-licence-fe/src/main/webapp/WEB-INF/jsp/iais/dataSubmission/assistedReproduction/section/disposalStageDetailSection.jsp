@@ -22,42 +22,42 @@
                     <iais:row>
                         <iais:field width="6" value="Immature" />
                         <iais:value width="6" cssClass="col-md-6" >
-                            <input type="text" maxlength="2" id="immature" name="immature" onkeypress="keyNumericPress()" value="${arSuperDataSubmissionDto.disposalStageDto.immature}"/>
+                            <input type="text" maxlength="2" id="immature" name="immature" onkeyup="this.value=this.value.replace(/^(-|\\+)?\\d+$/,'');" value="${arSuperDataSubmissionDto.disposalStageDto.immature}"/>
                             <span class="error-msg" name="iaisErrorMsg" id="error_immature"></span>
                         </iais:value>
                     </iais:row>
                     <iais:row>
                         <iais:field width="6" value="Abnormally Fertilised" />
                         <iais:value width="6" cssClass="col-md-6" >
-                            <input type="text" maxlength="2" id="abnormallyFertilised" name="abnormallyFertilised" onkeypress="keyNumericPress()" value="${arSuperDataSubmissionDto.disposalStageDto.abnormallyFertilised}"/>
+                            <input type="text" maxlength="2" id="abnormallyFertilised" name="abnormallyFertilised" onkeyup="this.value=this.value.replace(/^(-|\\+)?\\d+$/,'');" value="${arSuperDataSubmissionDto.disposalStageDto.abnormallyFertilised}"/>
                             <span class="error-msg" name="iaisErrorMsg" id="error_abnormallyFertilised"></span>
                         </iais:value>
                     </iais:row>
                     <iais:row>
                         <iais:field width="6" value="Unfertilised" />
                         <iais:value width="6" cssClass="col-md-6" >
-                            <input type="text" maxlength="2" id="unfertilised" name="unfertilised" onkeypress="keyNumericPress()" value="${arSuperDataSubmissionDto.disposalStageDto.unfertilised}"/>
+                            <input type="text" maxlength="2" id="unfertilised" name="unfertilised" onkeyup="this.value=this.value.replace(/^(-|\\+)?\\d+$/,'');" value="${arSuperDataSubmissionDto.disposalStageDto.unfertilised}"/>
                             <span class="error-msg" name="iaisErrorMsg" id="error_unfertilised"></span>
                         </iais:value>
                     </iais:row>
                     <iais:row>
                         <iais:field width="6" value="Atretic" />
                         <iais:value width="6" cssClass="col-md-6" >
-                            <input type="text" maxlength="2" id="atretic" name="atretic" onkeypress="keyNumericPress()" value="${arSuperDataSubmissionDto.disposalStageDto.atretic}"/>
+                            <input type="text" maxlength="2" id="atretic" name="atretic" onkeyup="this.value=this.value.replace(/^(-|\\+)?\\d+$/,'');" value="${arSuperDataSubmissionDto.disposalStageDto.atretic}"/>
                             <span class="error-msg" name="iaisErrorMsg" id="error_atretic"></span>
                         </iais:value>
                     </iais:row>
                     <iais:row>
                         <iais:field width="6" value="Damaged" />
                         <iais:value width="6" cssClass="col-md-6" >
-                            <input type="text" maxlength="2" id="damaged" name="damaged" onkeypress="keyNumericPress()" value="${arSuperDataSubmissionDto.disposalStageDto.damaged}"/>
+                            <input type="text" maxlength="2" id="damaged" name="damaged" onkeyup="this.value=this.value.replace(/^(-|\\+)?\\d+$/,'');" value="${arSuperDataSubmissionDto.disposalStageDto.damaged}"/>
                             <span class="error-msg" name="iaisErrorMsg" id="error_damaged"></span>
                         </iais:value>
                     </iais:row>
                     <iais:row>
                         <iais:field width="6" value="Lysed / Degenerated" />
                         <iais:value width="6" cssClass="col-md-6" >
-                            <input type="text" maxlength="2" id="lysedOrDegenerated" name="lysedOrDegenerated" onkeypress="keyNumericPress()" value="${arSuperDataSubmissionDto.disposalStageDto.lysedOrDegenerated}"/>
+                            <input type="text" maxlength="2" id="lysedOrDegenerated" name="lysedOrDegenerated" onkeyup="this.value=this.value.replace(/^(-|\\+)?\\d+$/,'');" value="${arSuperDataSubmissionDto.disposalStageDto.lysedOrDegenerated}"/>
                             <span class="error-msg" name="iaisErrorMsg" id="error_lysedOrDegenerated"></span>
                         </iais:value>
                     </iais:row>
@@ -68,7 +68,7 @@
                     <iais:row>
                         <iais:field width="6" value="No. of Poor Quality / Unhealthy / Abnormal Discarded" />
                         <iais:value width="6" cssClass="col-md-6" >
-                            <input type="text" maxlength="2" id="unhealthyNum" name="unhealthyNum" onkeypress="keyNumericPress()" value="${arSuperDataSubmissionDto.disposalStageDto.unhealthyNum}"/>
+                            <input type="text" maxlength="2" id="unhealthyNum" name="unhealthyNum" onkeyup="this.value=this.value.replace(/^(-|\\+)?\\d+$/,'');" value="${arSuperDataSubmissionDto.disposalStageDto.unhealthyNum}"/>
                             <span class="error-msg" name="iaisErrorMsg" id="error_unhealthyNum"></span>
                         </iais:value>
                     </iais:row>
@@ -84,7 +84,7 @@
                         </c:otherwise>
                     </c:choose>
                     <iais:value width="6" cssClass="col-md-6" >
-                        <input type="text" maxlength="2" id="otherDiscardedNum" name="otherDiscardedNum" onkeypress="keyNumericPress()" onchange="" value="${arSuperDataSubmissionDto.disposalStageDto.otherDiscardedNum}"/>
+                        <input type="text" maxlength="2" id="otherDiscardedNum" name="otherDiscardedNum" onkeyup="this.value=this.value.replace(/^(-|\\+)?\\d+$/,'');" onchange="" value="${arSuperDataSubmissionDto.disposalStageDto.otherDiscardedNum}"/>
                         <span class="error-msg" name="iaisErrorMsg" id="error_otherDiscardedNum"></span>
                     </iais:value>
                 </iais:row>

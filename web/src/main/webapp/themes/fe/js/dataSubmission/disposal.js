@@ -78,8 +78,3 @@ $(document).ready(function() {
         }
     });
 });
-
-function keyNumericPress() {
-    var keyCode = event.keyCode;
-    event.returnValue = keyCode >= 48 && keyCode <= 57;
-}
