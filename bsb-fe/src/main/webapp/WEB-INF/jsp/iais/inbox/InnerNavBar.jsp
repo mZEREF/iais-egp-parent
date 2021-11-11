@@ -15,7 +15,7 @@
         <a href="#" aria-controls="tabLic" role="tab">Certifications</a>
     </li>
     <li role="presentation" id="dataSubTab">
-        <a href="#" aria-controls="tabLic" role="tab">Data Submissions</a>
+        <a href="/bsb-fe/eservice/INTERNET/DataSubInbox" aria-controls="tabLic" role="tab">Data Submissions</a>
     </li>
     <li role="presentation" id="reportEventTab">
         <a href="#" aria-controls="tabLic" role="tab">Report Events</a>

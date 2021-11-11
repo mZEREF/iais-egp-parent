@@ -128,7 +128,7 @@
     <JavaCode defClass="" executor="" methodName="preFacReportAndInventory_OnStepProcess_0" name="preFacReportAndInventory_OnStepProcess_0" />
    </OnStepProcess>
   </AutomaticStep>
-  <InvokeStep defClass="" executor="" icon="" name="FacilityReportAndInventory" processname="BsbReportInventory" project="" version="-1" x="950" y="740">
+  <InvokeStep defClass="" executor="" icon="" name="FacilityReportAndInventory" processname="BsbReportInventorySubmit" project="" version="-1" x="950" y="740">
    <Description />
    <probepoint type="none" />
    <OnStepProcess />

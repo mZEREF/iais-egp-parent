@@ -1,9 +1,11 @@
 package sg.gov.moh.iais.egp.bsb.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
+import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
@@ -53,6 +55,7 @@ public class DataSubmissionDelegator {
         if(log.isInfoEnabled()){
             log.info("In the future this module will be used to initialize some data");
         }
+        AuditTrailHelper.auditFunction("Data Submission", "Data Submission");
     }
     /**
      * StartStep: PrepareFacilitySelect

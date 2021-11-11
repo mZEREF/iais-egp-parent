@@ -95,7 +95,7 @@
    <Description />
    <SwitchCase component="/Steps/AutomaticStep/doSorting" value="&quot;sort&quot;" />
    <SwitchCase component="/Steps/AutomaticStep/doPaging" value="&quot;page&quot;" />
-   <SwitchCase component="/Steps/AutomaticStep/doSearch" value="&quot;doSearch&quot;" />
+   <SwitchCase component="/Steps/AutomaticStep/doSearch" value="&quot;search&quot;" />
   </Switch>
  </Switches>
  <Branches />
