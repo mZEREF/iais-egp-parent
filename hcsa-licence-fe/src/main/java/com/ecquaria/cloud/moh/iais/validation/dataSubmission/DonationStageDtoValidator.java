@@ -28,22 +28,23 @@ public class DonationStageDtoValidator implements CustomizeValidator {
         DonationStageDto donationStageDto=arSuperDataSubmissionDto.getDonationStageDto();
         String errMsgErr006 = MessageUtil.getMessageDesc("GENERAL_ERR0006");
         int maxSamplesNum=100;
-
-        if(donationStageDto.getDonatedType()!=null){
-            switch (donationStageDto.getDonatedType()){
-                case DataSubmissionConsts.DONATED_TYPE_FRESH_OOCYTE:
-                    maxSamplesNum=100;
-                    break;
-                case DataSubmissionConsts.DONATED_TYPE_FROZEN_OOCYTE:
-                    maxSamplesNum=100;
-                    break;
-                case DataSubmissionConsts.DONATED_TYPE_FROZEN_EMBRYO:
-                    maxSamplesNum=100;
-                    break;
-                case DataSubmissionConsts.DONATED_TYPE_FROZEN_SPERM:
-                    maxSamplesNum=100;
-                    break;
-                default:
+        if(arSuperDataSubmissionDto.getPatientInventoryDto()!=null){
+            if(donationStageDto.getDonatedType()!=null){
+                switch (donationStageDto.getDonatedType()){
+                    case DataSubmissionConsts.DONATED_TYPE_FRESH_OOCYTE:
+                        maxSamplesNum=arSuperDataSubmissionDto.getPatientInventoryDto().getCurrentFreshOocytes();
+                        break;
+                    case DataSubmissionConsts.DONATED_TYPE_FROZEN_OOCYTE:
+                        maxSamplesNum=arSuperDataSubmissionDto.getPatientInventoryDto().getCurrentFrozenOocytes();
+                        break;
+                    case DataSubmissionConsts.DONATED_TYPE_FROZEN_EMBRYO:
+                        maxSamplesNum=arSuperDataSubmissionDto.getPatientInventoryDto().getCurrentFrozenEmbryos();
+                        break;
+                    case DataSubmissionConsts.DONATED_TYPE_FROZEN_SPERM:
+                        maxSamplesNum=arSuperDataSubmissionDto.getPatientInventoryDto().getCurrentFrozenSperms();
+                        break;
+                    default:
+                }
             }
         }
 

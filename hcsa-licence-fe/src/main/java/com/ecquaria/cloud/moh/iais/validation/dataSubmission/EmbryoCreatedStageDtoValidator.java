@@ -28,6 +28,10 @@ public class EmbryoCreatedStageDtoValidator implements CustomizeValidator {
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
         int totalThawedMax =100;
         int totalFreshMax =100;
+        if(arSuperDataSubmissionDto.getPatientInventoryDto()!=null){
+            totalThawedMax=arSuperDataSubmissionDto.getPatientInventoryDto().getCurrentThawedOocytes();
+            totalFreshMax=arSuperDataSubmissionDto.getPatientInventoryDto().getCurrentFreshOocytes();
+        }
         int totalThawedNum =0;
         int totalFreshNum =0;
 

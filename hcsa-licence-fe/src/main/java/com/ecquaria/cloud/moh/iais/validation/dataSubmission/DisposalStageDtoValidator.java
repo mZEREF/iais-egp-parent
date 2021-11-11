@@ -31,30 +31,32 @@ public class DisposalStageDtoValidator implements CustomizeValidator {
         }
         int maxSamplesNum=100;
 
-        if(disposalStageDto.getDisposedType()!=null){
-            switch (disposalStageDto.getDisposedType()){
-                case DataSubmissionConsts.DISPOSAL_TYPE_FRESH_OOCYTE:
-                    maxSamplesNum=100;
-                    break;
-                case DataSubmissionConsts.DISPOSAL_TYPE_FROZEN_OOCYTE:
-                    maxSamplesNum=100;
-                    break;
-                case DataSubmissionConsts.DISPOSAL_TYPE_THAWED_OOCYTE:
-                    maxSamplesNum=100;
-                    break;
-                case DataSubmissionConsts.DISPOSAL_TYPE_FRESH_EMBRYO:
-                    maxSamplesNum=100;
-                    break;
-                case DataSubmissionConsts.DISPOSAL_TYPE_FROZEN_EMBRYO:
-                    maxSamplesNum=100;
-                    break;
-                case DataSubmissionConsts.DISPOSAL_TYPE_THAWED_EMBRYO:
-                    maxSamplesNum=100;
-                    break;
-                case DataSubmissionConsts.DISPOSAL_TYPE_FROZEN_SPERM:
-                    maxSamplesNum=100;
-                    break;
-                default:
+        if(arSuperDataSubmissionDto.getPatientInventoryDto()!=null){
+            if(disposalStageDto.getDisposedType()!=null){
+                switch (disposalStageDto.getDisposedType()){
+                    case DataSubmissionConsts.DISPOSAL_TYPE_FRESH_OOCYTE:
+                        maxSamplesNum=arSuperDataSubmissionDto.getPatientInventoryDto().getCurrentFreshOocytes();
+                        break;
+                    case DataSubmissionConsts.DISPOSAL_TYPE_FROZEN_OOCYTE:
+                        maxSamplesNum=arSuperDataSubmissionDto.getPatientInventoryDto().getCurrentFrozenOocytes();
+                        break;
+                    case DataSubmissionConsts.DISPOSAL_TYPE_THAWED_OOCYTE:
+                        maxSamplesNum=arSuperDataSubmissionDto.getPatientInventoryDto().getCurrentThawedOocytes();
+                        break;
+                    case DataSubmissionConsts.DISPOSAL_TYPE_FRESH_EMBRYO:
+                        maxSamplesNum=arSuperDataSubmissionDto.getPatientInventoryDto().getCurrentFreshEmbryos();
+                        break;
+                    case DataSubmissionConsts.DISPOSAL_TYPE_FROZEN_EMBRYO:
+                        maxSamplesNum=arSuperDataSubmissionDto.getPatientInventoryDto().getCurrentFrozenEmbryos();
+                        break;
+                    case DataSubmissionConsts.DISPOSAL_TYPE_THAWED_EMBRYO:
+                        maxSamplesNum=arSuperDataSubmissionDto.getPatientInventoryDto().getCurrentThawedEmbryos();
+                        break;
+                    case DataSubmissionConsts.DISPOSAL_TYPE_FROZEN_SPERM:
+                        maxSamplesNum=arSuperDataSubmissionDto.getPatientInventoryDto().getCurrentFrozenSperms();
+                        break;
+                    default:
+                }
             }
         }
 

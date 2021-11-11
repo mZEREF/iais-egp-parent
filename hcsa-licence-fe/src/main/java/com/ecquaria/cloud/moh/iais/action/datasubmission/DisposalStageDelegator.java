@@ -163,9 +163,12 @@ public class DisposalStageDelegator extends CommonDelegator{
 
     @Override
     public void prepareConfim(BaseProcessClass bpc) {
-        PatientInventoryDto patientInventoryDto = new PatientInventoryDto();
         ArSuperDataSubmissionDto arSuperDataSubmissionDto= DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
         DisposalStageDto disposalStageDto=arSuperDataSubmissionDto.getDisposalStageDto();
+        PatientInventoryDto patientInventoryDto = new PatientInventoryDto();
+        if(arSuperDataSubmissionDto.getPatientInventoryDto()!=null){
+            patientInventoryDto=arSuperDataSubmissionDto.getPatientInventoryDto();
+        }
         switch (disposalStageDto.getDisposedType()){
             case DataSubmissionConsts.DISPOSAL_TYPE_FRESH_OOCYTE:
                 patientInventoryDto.setChangeFreshOocytes(-disposalStageDto.getTotalNum());

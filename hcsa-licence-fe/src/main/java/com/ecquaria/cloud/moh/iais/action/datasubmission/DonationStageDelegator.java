@@ -218,22 +218,25 @@ public class DonationStageDelegator extends CommonDelegator{
     }
     @Override
     public void prepareConfim(BaseProcessClass bpc) {
-        PatientInventoryDto patientInventoryDto = new PatientInventoryDto();
         ArSuperDataSubmissionDto arSuperDataSubmissionDto= DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
         DonationStageDto donationStageDto=arSuperDataSubmissionDto.getDonationStageDto();
+        PatientInventoryDto patientInventoryDto = new PatientInventoryDto();
+        if(arSuperDataSubmissionDto.getPatientInventoryDto()!=null){
+            patientInventoryDto=arSuperDataSubmissionDto.getPatientInventoryDto();
+        }
         switch (donationStageDto.getDonatedType()){
             case DataSubmissionConsts.DONATED_TYPE_FRESH_OOCYTE:
-                patientInventoryDto.setChangeFrozenOocytes(-donationStageDto.getTotalNum());
+                patientInventoryDto.setChangeFrozenOocytes(donationStageDto.getTotalNum());
                 break;
             case DataSubmissionConsts.DONATED_TYPE_FROZEN_OOCYTE:
-                patientInventoryDto.setChangeFrozenOocytes(-donationStageDto.getTotalNum());
+                patientInventoryDto.setChangeFrozenOocytes(donationStageDto.getTotalNum());
                 break;
 
             case DataSubmissionConsts.DONATED_TYPE_FROZEN_EMBRYO:
-                patientInventoryDto.setChangeFrozenEmbryos(-donationStageDto.getTotalNum());
+                patientInventoryDto.setChangeFrozenEmbryos(donationStageDto.getTotalNum());
                 break;
             case DataSubmissionConsts.DONATED_TYPE_FROZEN_SPERM:
-                patientInventoryDto.setChangeFrozenSperms(-donationStageDto.getTotalNum());
+                patientInventoryDto.setChangeFrozenSperms(donationStageDto.getTotalNum());
                 break;
             default:
         }
