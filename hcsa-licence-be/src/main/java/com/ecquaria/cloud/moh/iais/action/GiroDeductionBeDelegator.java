@@ -408,6 +408,15 @@ public class GiroDeductionBeDelegator {
                 signature2.date(), signature2.authorization());
         beEicGatewayClient.updateFeApplicationGroupStatus(applicationGroupDtos, signature.date(), signature.authorization(),
                 signature2.date(), signature2.authorization());
+        for (ApplicationGroupDto appGrp:applicationGroupDtos
+        ) {
+            List<ApplicationDto> applicationDtoList=applicationService.getApplicaitonsByAppGroupId(appGrp.getId());
+            for (ApplicationDto app:applicationDtoList
+            ) {
+                app.setStatus(ApplicationConsts.APPLICATION_STATUS_PENDING_PAYMENT_RESUBMIT);
+                applicationService.callEicInterApplication(app);
+            }
+        }
         ParamUtil.setSessionAttr(bpc.request,"saveRetriggerOK",AppConsts.YES);
     }
 
