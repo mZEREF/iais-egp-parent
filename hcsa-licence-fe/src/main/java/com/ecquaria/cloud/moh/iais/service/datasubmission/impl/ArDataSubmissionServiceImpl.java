@@ -193,7 +193,7 @@ public class ArDataSubmissionServiceImpl implements ArDataSubmissionService {
         if (!StringUtil.isIn(cycleType, new String[]{DataSubmissionConsts.AR_CYCLE_NON,
                 DataSubmissionConsts.DS_CYCLE_STAGE_PATIENT})) {
             if (lastDataSubmissionDto != null
-                    && cycleType.equals(lastDataSubmissionDto.getSubmissionType())
+                    && submissionType.equals(lastDataSubmissionDto.getSubmissionType())
                     && !statuses.contains(lastDataSubmissionDto.getStatus())
                     && lastDataSubmissionDto.getSubmissionNo() != null) {
                 submissionNo = lastDataSubmissionDto.getSubmissionNo();
