@@ -16,7 +16,7 @@
                         <div class="form-check">
                             <input class="form-check-input"
                                    type="radio"
-                                   name="detectedRadio"
+                                   name="pregnancyDetected"
                                    value="true"
                                    id="radioYes"
                                    aria-invalid="false">
@@ -24,13 +24,13 @@
                                    for="radioYes"><span
                                     class="check-circle"></span>Yes</label>
                         </div>
-                        <span class="error-msg" name="iaisErrorMsg" id="error_artCoFunding"></span>
+                        <span class="error-msg" name="iaisErrorMsg" id="error_pregnancyDetected"></span>
                     </iais:value>
                     <iais:value width="3" cssClass="col-md-3">
                         <div class="form-check">
                             <input class="form-check-input"
                                    type="radio"
-                                   name="detectedRadio"
+                                   name="pregnancyDetected"
                                    value="false"
                                    id="radioNo"
                                    aria-invalid="false">
@@ -38,7 +38,6 @@
                                    for="radioNo"><span
                                     class="check-circle"></span>No</label>
                         </div>
-                        <span class="error-msg" name="iaisErrorMsg" id="error_pregnancyDetected"></span>
                     </iais:value>
                 </iais:row>
             </div>
