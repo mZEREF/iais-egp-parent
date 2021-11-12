@@ -28,8 +28,8 @@ function bindAllEvent() {
     let $femaleLiveBirthNum = $('#femaleLiveBirthNum');
     $femaleLiveBirthNum.change(changeTotalLiveBirthNum);
     $femaleLiveBirthNum.change(changeBabySection);
-    bindBirthDefect();
-    bindDefectType();
+    $('.birthDefect').change(birthDefectChangeFunction);
+    $('.defectType').change(defectTypeChangeFunction);
 }
 
 function triggerAllEventOnce() {
@@ -58,22 +58,23 @@ function firstUltrasoundOrderShowChangeFunction() {
         $stillBirthNumSection.show();
     } else {
         $stillBirthNumSection.hide();
+        $stillBirthNumSection.find("input").val("");
     }
 
     if (pregnancyOutcomeVal == liveBirth && firstUltrasoundOrderShowVal != singleton) {
         $wasSelFoeReduCarryOutDiv.show();
     } else {
         $wasSelFoeReduCarryOutDiv.hide();
+        let $wasSelFoeReduCarryOutNo = $('#wasSelFoeReduCarryOutNo');
+        $wasSelFoeReduCarryOutNo.attr('checked', true);
+        $wasSelFoeReduCarryOutNo.prop('checked', true);
     }
 }
 
 function pregnancyOutcomeChangeFunction() {
     let pregnancyOutcomeVal = $('#pregnancyOutcome option:selected').val();
-    let firstUltrasoundOrderShowVal = $('#firstUltrasoundOrderShow option:selected').val();
 
     let $liveBirthNumSection = $('#liveBirthNumSection');
-    let $stillBirthNumSection = $('#stillBirthNumSection');
-    let $wasSelFoeReduCarryOutDiv = $('#wasSelFoeReduCarryOutDiv');
     let $otherPregnancyOutcomeDiv = $('#otherPregnancyOutcomeDiv');
     let $deliverySection = $('#deliverySection');
     let $deliveryDateFieldMandatory = $('#deliveryDateFieldMandatory');
@@ -88,22 +89,35 @@ function pregnancyOutcomeChangeFunction() {
         $liveBirthNumSection.hide();
         $deliveryDateFieldMandatory.hide();
         $babyDetailsUnknownFieldMandatory.hide();
-    }
 
-    if (pregnancyOutcomeVal == noLiveBirth || (pregnancyOutcomeVal == liveBirth && firstUltrasoundOrderShowVal != singleton)) {
-        $stillBirthNumSection.show();
-    } else {
-        $stillBirthNumSection.hide();
-    }
+        $liveBirthNumSection.find('input').val("");
 
-    if (pregnancyOutcomeVal == liveBirth && firstUltrasoundOrderShowVal != singleton) {
-        $wasSelFoeReduCarryOutDiv.show();
-    } else {
-        $wasSelFoeReduCarryOutDiv.hide();
+        $('#maleLiveBirthNum').trigger('change');
+        $('#femaleLiveBirthNum').trigger('change');
     }
 
     if (pregnancyOutcomeVal == unknown) {
         $deliverySection.hide();
+
+        $deliverySection.find('select').val(null)
+        $deliverySection.find('select').niceSelect('update');
+
+        let $deliveryDateUnknown = $('#deliveryDateUnknown');
+        $deliveryDateUnknown.attr('checked', false);
+        $deliveryDateUnknown.prop('checked', false);
+        $('#deliveryDate').val(null);
+
+        let $birthPlaceLocal = $('#birthPlaceLocal');
+        $birthPlaceLocal.attr('checked', true);
+        $birthPlaceLocal.prop('checked', true);
+
+        let $babyDetailsUnknownNo = $('#babyDetailsUnknownNo');
+        $babyDetailsUnknownNo.attr('checked', true);
+        $babyDetailsUnknownNo.prop('checked', true);
+
+        $("#deliveryDateUnknown").trigger('change');
+        $('input[name="birthPlace"]').trigger('change');
+        $('input[name="babyDetailsUnknown"]').trigger('change');
     } else {
         $deliverySection.show();
     }
@@ -112,7 +126,10 @@ function pregnancyOutcomeChangeFunction() {
         $otherPregnancyOutcomeDiv.show();
     } else {
         $otherPregnancyOutcomeDiv.hide();
+        $otherPregnancyOutcomeDiv.find('input').val("");
     }
+
+    firstUltrasoundOrderShowChangeFunction();
 }
 
 function birthPlaceChangeFunction() {
@@ -121,15 +138,23 @@ function birthPlaceChangeFunction() {
         $localBirthPlaceDiv.show();
     } else {
         $localBirthPlaceDiv.hide();
+        $localBirthPlaceDiv.find('input').val("");
     }
 }
 
 function babyDetailsUnknownChangeFunction() {
     let $pregnancyOutcomeStageBabySection = $('.pregnancyOutcomeStageBabySection');
-    if ($('input[name="babyDetailsUnknown"]:checked').val() == 'true') {
-        $pregnancyOutcomeStageBabySection.hide();
-    } else {
+    if ($('input[name="babyDetailsUnknown"]:checked').val() != 'true') {
         $pregnancyOutcomeStageBabySection.show();
+    } else {
+        $pregnancyOutcomeStageBabySection.hide();
+
+        $pregnancyOutcomeStageBabySection.find('select').val(null);
+        $pregnancyOutcomeStageBabySection.find('select').niceSelect('update');
+        $pregnancyOutcomeStageBabySection.find('input[value="No"]').prop('checked', true);
+        $pregnancyOutcomeStageBabySection.find('input[value="No"]').attr('checked', true);
+
+        $('.birthDefect').trigger('change');
     }
 }
 
@@ -140,6 +165,10 @@ function NICUCareBabyNumChangeFunction() {
         $careBabyNumSection.show();
     } else {
         $careBabyNumSection.hide();
+        $careBabyNumSection.find('select').val(0);
+        $careBabyNumSection.find('select').niceSelect('update');
+        $('#l2CareBabyNum').trigger('change');
+        $('#l3CareBabyNum').trigger('change');
     }
 }
 
@@ -150,6 +179,7 @@ function l2CareBabyNumChangeFunction() {
         $l2CareBabyDaysDiv.show();
     } else {
         $l2CareBabyDaysDiv.hide();
+        $l2CareBabyDaysDiv.find('input').val(0);
     }
 }
 
@@ -160,6 +190,7 @@ function l3CareBabyNumChangeFunction() {
         $l3CareBabyDaysDiv.show();
     } else {
         $l3CareBabyDaysDiv.hide();
+        $l3CareBabyDaysDiv.find('input').val(0);
     }
 }
 
@@ -167,30 +198,28 @@ function deliveryDateCheckboxChangeFunction() {
     $("#deliveryDate").attr("disabled", $("#deliveryDateUnknown").prop("checked"));
 }
 
-function bindBirthDefect() {
-    let $birthDefect = $('.birthDefect');
-    $birthDefect.unbind();
-    $birthDefect.change(function () {
-        if ($(this).closest(".form-group").find('.birthDefect:checked').val() == "Yes") {
-            $(this).closest(".form-group").next('div[name="defectTypeSectionName"]').show();
-        } else {
-            $(this).closest(".form-group").next('div[name="defectTypeSectionName"]').hide();
-        }
-    });
+function birthDefectChangeFunction() {
+    if ($(this).closest(".form-group").find('.birthDefect:checked').val() == "Yes") {
+        $(this).closest(".form-group").next('div[name="defectTypeSectionName"]').show();
+    } else {
+        $(this).closest(".form-group").next('div[name="defectTypeSectionName"]').hide();
+
+        $(this).closest(".form-group").next('div[name="defectTypeSectionName"]').find('input[type="checkbox"]').attr('checked', false);
+        $(this).closest(".form-group").next('div[name="defectTypeSectionName"]').find('input[type="checkbox"]').prop('checked', false);
+
+        $('.defectType').trigger('change');
+    }
 }
 
-function bindDefectType() {
-    let $defectType = $('.defectType');
-    $defectType.unbind();
-    $defectType.change(function () {
-        if ($(this).val() == "other") {
-            if ($(this).prop("checked")) {
-                $(this).closest(".form-group").next('div[name="otherDefectTypeDivName"]').show();
-            } else {
-                $(this).closest(".form-group").next('div[name="otherDefectTypeDivName"]').hide();
-            }
+function defectTypeChangeFunction() {
+    if ($(this).val() == "other") {
+        if ($(this).prop("checked")) {
+            $(this).closest(".form-group").next('div[name="otherDefectTypeDivName"]').show();
+        } else {
+            $(this).closest(".form-group").next('div[name="otherDefectTypeDivName"]').hide();
+            $(this).closest(".form-group").next('div[name="otherDefectTypeDivName"]').find('input').val('');
         }
-    });
+    }
 }
 
 function changeTotalLiveBirthNum() {
@@ -233,13 +262,17 @@ function addBabaSection(babyIndex, babySize) {
         success: function (data) {
             if ('200' == data.resCode) {
                 $('.NICUCareBabyNumRow').before(data.resultJson + '');
-                if (babyIndex == 0){
+                if (babyIndex == 0) {
                     $('.birthWeight').niceSelect();
-                }else {
-                    $('#pregnancyOutcomeStageBabySection'+ (babyIndex - 1)).nextAll('.pregnancyOutcomeStageBabySection').find('.birthWeight').niceSelect();
+                } else {
+                    $('#pregnancyOutcomeStageBabySection' + (babyIndex - 1)).nextAll('.pregnancyOutcomeStageBabySection').find('.birthWeight').niceSelect();
                 }
-                bindBirthDefect();
-                bindDefectType();
+                let $birthDefect = $('.birthDefect');
+                $birthDefect.unbind('change');
+                let $defectType = $('.defectType');
+                $defectType.unbind('change');
+                $birthDefect.change(birthDefectChangeFunction);
+                $defectType.change(defectTypeChangeFunction);
             }
             dismissWaiting();
         },
