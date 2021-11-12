@@ -7,11 +7,9 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSub
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PgtStageDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
-import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
-import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
@@ -21,7 +19,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -57,33 +54,12 @@ public class PgtCycleStageDelegator extends CommonDelegator{
     @Override
     public void prepareSwitch(BaseProcessClass bpc) {
         ParamUtil.setRequestAttr(bpc.request, "smallTitle", "You are submitting for <strong>Cycle Stages</strong>");
-        List<SelectOption> embryosBiopsiedLocalSelectOption= IaisCommonUtils.genNewArrayList();
-        LoginContext loginContext = DataSubmissionHelper.getLoginContext(bpc.request);
-        String licenseeId = null;
-        if (loginContext != null) {
-            licenseeId = loginContext.getLicenseeId();
-        }
-        //AR licence
-        String serviceName="";
-        List<String> svcNames = new ArrayList<>();
-        if (!StringUtil.isEmpty(serviceName)) {
-            svcNames.add(serviceName);
-        }
-        List<AppGrpPremisesDto> appGrpPremisesDtos = licenceClient.getLatestPremisesByConds(licenseeId, svcNames, false).getEntity();
-        if (appGrpPremisesDtos != null && !appGrpPremisesDtos.isEmpty()) {
-            for (AppGrpPremisesDto premises:appGrpPremisesDtos
-            ) {
-                if(StringUtil.isNotEmpty(premises.getBusinessName())){
-                    SelectOption selectOption=new SelectOption();
-                    selectOption.setValue(premises.getBusinessName());
-                    selectOption.setText(premises.getBusinessName());
-                    embryosBiopsiedLocalSelectOption.add(selectOption);
-                }
-            }
-        }
-        ParamUtil.setRequestAttr(bpc.request,"embryosBiopsiedLocalSelectOption",embryosBiopsiedLocalSelectOption);
-        List<SelectOption> biopsyLocalSelectOption= IaisCommonUtils.genNewArrayList();
 
+        List<SelectOption> embryosBiopsiedLocalSelectOption  = DataSubmissionHelper.genPremisesOptions((Map<String, AppGrpPremisesDto>) ParamUtil.getSessionAttr(bpc.request,DataSubmissionConstant.AR_PREMISES_MAP));
+        ParamUtil.setRequestAttr(bpc.request,"embryosBiopsiedLocalSelectOption",embryosBiopsiedLocalSelectOption);
+
+        List<SelectOption> biopsyLocalSelectOption= IaisCommonUtils.genNewArrayList();
+        biopsyLocalSelectOption.add(new SelectOption("embryologist","embryologist"));
         ParamUtil.setRequestAttr(bpc.request,"biopsyLocalSelectOption",biopsyLocalSelectOption);
     }
 

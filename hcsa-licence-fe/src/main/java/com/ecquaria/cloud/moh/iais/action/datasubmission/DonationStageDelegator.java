@@ -7,13 +7,11 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DonationStageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInventoryDto;
-import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
-import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
@@ -24,7 +22,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -64,36 +61,10 @@ public class DonationStageDelegator extends CommonDelegator{
         List<SelectOption> donationReasonSelectOption= MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_DONATION_REASON);
         ParamUtil.setRequestAttr(bpc.request,"donationReasonSelectOption",donationReasonSelectOption);
 
-        LoginContext loginContext = DataSubmissionHelper.getLoginContext(bpc.request);
-        String licenseeId = null;
-        if (loginContext != null) {
-            licenseeId = loginContext.getLicenseeId();
-        }
-        //AR licence
-        String serviceName="";
-        List<String> svcNames = new ArrayList<>();
-        if (!StringUtil.isEmpty(serviceName)) {
-            svcNames.add(serviceName);
-        }
-        List<AppGrpPremisesDto> appGrpPremisesDtos = licenceClient.getLatestPremisesByConds(licenseeId, svcNames, false).getEntity();
+        List<SelectOption> selectOptions  = DataSubmissionHelper.genPremisesOptions((Map<String, AppGrpPremisesDto>) ParamUtil.getSessionAttr(bpc.request,DataSubmissionConstant.AR_PREMISES_MAP));
 
-        List<SelectOption> curCenDonatedSelectOption= IaisCommonUtils.genNewArrayList();
-        List<SelectOption> insSentToCurSelectOption= IaisCommonUtils.genNewArrayList();
-
-        if (appGrpPremisesDtos != null && !appGrpPremisesDtos.isEmpty()) {
-            for (AppGrpPremisesDto premises:appGrpPremisesDtos
-            ) {
-                if(StringUtil.isNotEmpty(premises.getBusinessName())){
-                    SelectOption selectOption=new SelectOption();
-                    selectOption.setValue(premises.getBusinessName());
-                    selectOption.setText(premises.getBusinessName());
-                    curCenDonatedSelectOption.add(selectOption);
-                    insSentToCurSelectOption.add(selectOption);
-                }
-            }
-        }
-        ParamUtil.setRequestAttr(bpc.request,"curCenDonatedSelectOption",curCenDonatedSelectOption);
-        ParamUtil.setRequestAttr(bpc.request,"insSentToCurSelectOption",insSentToCurSelectOption);
+        ParamUtil.setRequestAttr(bpc.request,"curCenDonatedSelectOption",selectOptions);
+        ParamUtil.setRequestAttr(bpc.request,"insSentToCurSelectOption",selectOptions);
     }
 
 
