@@ -6,6 +6,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidator;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
+import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
@@ -43,7 +44,7 @@ public class ArSubFreezingValidator implements CustomizeValidator {
                         cryoNumValiStr = cryopreservedNum;
                     }
                     if (cryoNumValiStr.length() > 2) {
-                        errMap.put("cryopreservedNum", "DS_ERR009");
+                        errMap.put("cryopreservedNum", MessageUtil.replaceMessage("DS_ERR009", "No. Cryopreserved", "field"));
                     }
                     Pattern pattern = compile("(-?[1-9]\\d*)|0");
                     boolean hoursFlag = pattern.matcher(cryopreservedNum).matches();
