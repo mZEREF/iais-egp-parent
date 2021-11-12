@@ -38,7 +38,7 @@ public class ArTreatmentSubsidiesDelegator extends CommonDelegator {
     }
 
     @Override
-    public void doPageConfirmAction(BaseProcessClass bpc) {
+    public void prepareConfim(BaseProcessClass bpc) {
         PatientInventoryDto patientInventoryDto = DataSubmissionHelper.initPatientInventoryTable(bpc.request);
     }
 
