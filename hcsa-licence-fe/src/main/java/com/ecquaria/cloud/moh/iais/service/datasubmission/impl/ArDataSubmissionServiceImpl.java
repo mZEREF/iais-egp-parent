@@ -67,7 +67,7 @@ public class ArDataSubmissionServiceImpl implements ArDataSubmissionService {
             if (!StringUtil.isEmpty(appGrpPremisesDto.getPremisesSelect())) {
                 NewApplicationHelper.setWrkTime(appGrpPremisesDto);
                 appGrpPremisesDto.setExistingData(AppConsts.YES);
-                appGrpPremisesDtoMap.put(appGrpPremisesDto.getPremisesSelect(), appGrpPremisesDto);
+                appGrpPremisesDtoMap.put(appGrpPremisesDto.getHciCode(), appGrpPremisesDto);
             }
         }
         return appGrpPremisesDtoMap;
