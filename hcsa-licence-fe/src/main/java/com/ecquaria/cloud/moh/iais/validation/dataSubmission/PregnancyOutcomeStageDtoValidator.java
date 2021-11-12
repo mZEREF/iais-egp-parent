@@ -50,7 +50,7 @@ public class PregnancyOutcomeStageDtoValidator implements CustomizeValidator {
         if (pregnancyOutcomeStageDto.getNicuCareBabyNum() > pregnancyOutcomeStageDto.getFemaleLiveBirthNum() + pregnancyOutcomeStageDto.getMaleLiveBirthNum()) {
             errorMap.put("NICUCareBabyNum", MessageUtil.getMessageDesc("The filed cannot be greater than Total No. of Live Births"));
         }
-        if (pregnancyOutcomeStageDto.getL2CareBabyDays() + pregnancyOutcomeStageDto.getL3CareBabyDays() > pregnancyOutcomeStageDto.getNicuCareBabyNum()) {
+        if (pregnancyOutcomeStageDto.getL2CareBabyNum() + pregnancyOutcomeStageDto.getL3CareBabyNum() > pregnancyOutcomeStageDto.getNicuCareBabyNum()) {
             errorMap.put("l2CareBabyNum", MessageUtil.getMessageDesc("Total sum of No. of Baby Admitted to L2 Care and No. of Baby Admitted to L3 Care cannot be greater than Total No. of Baby Admitted to NICU Care"));
             errorMap.put("l3CareBabyNum", MessageUtil.getMessageDesc("Total sum of No. of Baby Admitted to L2 Care and No. of Baby Admitted to L3 Care cannot be greater than Total No. of Baby Admitted to NICU Care"));
         }
