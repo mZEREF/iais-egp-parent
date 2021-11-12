@@ -2552,4 +2552,33 @@ public class HalpAssessmentGuideDelegator {
         return loginContext.getOrgId();
     }
 
+    public static void setParamByField(SearchParam searchParam,String key,String value,boolean isTemplateParam,String allValue){
+        if(StringUtil.isEmpty(value) || value.equalsIgnoreCase(allValue)){
+            searchParam.removeFilter(key);
+            searchParam.removeParam(key);
+        }else {
+            searchParam.addFilter(key,value,isTemplateParam);
+        }
+    }
+
+    public static void setParamByField(SearchParam searchParam,String key,String value,boolean isTemplateParam){
+        setParamByField(searchParam,key,value,isTemplateParam,null);
+    }
+
+    public static void setParamByField(SearchParam searchParam,String key,List<String> values){
+       if(IaisCommonUtils.isEmpty(values)){
+           StringBuilder sb = new StringBuilder("(");
+           for (int i = 0; i < values.size(); i++) {
+               sb.append(":").append(key)
+                       .append(i)
+                       .append(',');
+               searchParam.addFilter(key + i, values.get(i));
+           }
+           String inSql = sb.substring(0, sb.length() - 1) + ")";
+           searchParam.addParam(key, inSql);
+       }else {
+           searchParam.removeFilter(key);
+       }
+    }
+
 }

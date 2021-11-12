@@ -8,6 +8,7 @@
 <%@ page import="java.util.Date" %>
 <%@ page import="com.ecquaria.cloud.moh.iais.common.utils.Formatter" %>
 <%@ page import="com.ecquaria.cloud.moh.iais.common.utils.MiscUtil" %>
+<%@ page import="com.ecquaria.cloud.RedirectUtil" %>
 <%
     //handle to the Engine APIs
     sop.webflow.rt.api.BaseProcessClass process =

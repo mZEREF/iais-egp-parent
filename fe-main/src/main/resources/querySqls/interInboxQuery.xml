@@ -304,7 +304,7 @@
           WHERE licence.STATUS = 'LICEST001' AND p.STATUS= 'CMSTAT001') t2  on t1.HCI_CODE = t2.HCI_CODE
           WHERE 1=1
           <#if type??> and t1.[type] = :type </#if>
-          <#if submissionNo??> and t1.SUBMISSION_NO = :submissionNo</#if>
+          <#if submissionNo??> and  CHARINDEX(:submissionNo, t1.SUBMISSION_NO) >0</#if>
           <#if status ??> and t1.STATUS = :status</#if>
         ]]>
     </sql>

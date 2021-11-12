@@ -2,12 +2,14 @@ package com.ecquaria.cloud.moh.iais.action.dataSubmission;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.action.HalpAssessmentGuideDelegator;
+import com.ecquaria.cloud.moh.iais.action.InterInboxDelegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InboxDataSubmissionQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterInboxUserDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -44,6 +46,8 @@ public class DataSubmissionInboxDelegator {
     public final  static Map<String,String>  SUBMISSIONNO_STATUS = getSubmissionNoStatus();
     @Autowired
 	private LicenceInboxClient licenceInboxClient;
+    @Autowired
+	private InterInboxDelegator interInboxDelegator;
 	/**
 	 * Step: doStart
 	 *
@@ -102,6 +106,7 @@ public class DataSubmissionInboxDelegator {
 	public void prepare(BaseProcessClass bpc){
 		setLog("prepare");
 		HttpServletRequest request = bpc.request;
+		interInboxDelegator.setNumInfoToRequest(request,(InterInboxUserDto) ParamUtil.getSessionAttr(request,InboxConst.INTER_INBOX_USER_INFO));
 		if(StringUtil.isEmpty(ParamUtil.getString(request,ACTION_DS_BUTTON_SHOW))){
 			SearchParam searchParam = HalpSearchResultHelper.gainSearchParam(request, InboxConst.DS_PARAM, InboxDataSubmissionQueryDto.class.getName(),"CREATED_DT",SearchParam.DESCENDING,false);
 			QueryHelp.setMainSql( InboxConst.INBOX_QUERY,  InboxConst.INBOX_DS_QUERY,searchParam);

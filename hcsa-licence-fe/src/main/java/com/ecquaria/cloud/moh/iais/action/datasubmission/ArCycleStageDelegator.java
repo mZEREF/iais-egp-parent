@@ -78,13 +78,13 @@ public class ArCycleStageDelegator extends CommonDelegator {
     //TODO from ar center
     private List<SelectOption> getPractitioner(){
         List<SelectOption> selectOptions  = IaisCommonUtils.genNewArrayList();
-        selectOptions.add(new SelectOption("practitioner","practitioner"));
+        selectOptions.add(new SelectOption("pt01","pt01"));
         return selectOptions;
     }
     //TODO from ar center
     private List<SelectOption> getEmbryologist(){
         List<SelectOption> selectOptions  = IaisCommonUtils.genNewArrayList();
-        selectOptions.add(new SelectOption("embryologist","embryologist"));
+        selectOptions.add(new SelectOption("et01","et01"));
         return selectOptions;
     }
     //TODO from ar center

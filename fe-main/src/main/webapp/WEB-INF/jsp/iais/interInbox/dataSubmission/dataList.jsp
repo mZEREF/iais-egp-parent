@@ -97,12 +97,12 @@
                                     </td>
                                     <td>
                                         <p class="visible-xs visible-sm table-row-title">Last Updated</p>
-                                        <p><fmt:formatDate value="${licenceQuery.lastUpdated}"
+                                        <p><fmt:formatDate value="${inboxDataSubmissionQuery.lastUpdated}"
                                                            pattern="dd/MM/yyyy"/></p>
                                     </td>
                                     <td>
                                         <p class="visible-xs visible-sm table-row-title">Submitted On</p>
-                                        <p><fmt:formatDate value="${licenceQuery.submittedOn}"
+                                        <p><fmt:formatDate value="${inboxDataSubmissionQuery.submittedOn}"
                                                            pattern="dd/MM/yyyy"/></p>
                                     </td>
                                 </tr>
@@ -137,9 +137,10 @@
     });
 
     function doClearSearch(){
-        $("#licType option:first").prop("selected", 'selected').val("");
-        $("#licStatus option:first").prop("selected", 'selected').val("");
+        $("#statusDataSubmission option:first").prop("selected", 'selected').val("");
+        $("#typeDataSubmission option:first").prop("selected", 'selected').val("");
         $("#submissionNoDataSubmission").val("");
+        $(".tab-search .current").text("All");
     }
 
     function doSearch(){
@@ -173,24 +174,46 @@
 
     function doSubmitForDataSubmission(action){
         showWaiting();
-        submit(action);
+        $("[name='crud_action_type']").val(action);
+        document.getElementById('dataForm').submit();
+        submit()
     }
 
     function cancelBallDsButton(){
         $("#actionDsButton").hide();
     }
+    function dssToMsgPage(){
+        window.location = "${pageContext.request.contextPath.concat(RedirectUtil.appendCsrfGuardToken("/eservice/INTERNET/MohInternetInbox",request))}";
+    }
+    function dssToAppPage(){
+        window.location = "${pageContext.request.contextPath.concat(RedirectUtil.appendCsrfGuardToken("/eservice/INTERNET/MohInternetInbox?initPage=initApp",request))}";
+    }
+    function dssToLicPage(){
+        window.location = "${pageContext.request.contextPath.concat(RedirectUtil.appendCsrfGuardToken("/eservice/INTERNET/MohInternetInbox?initPage=initLic",request))}";
+    }
 
 
-    $('#ds-deleteDraft').click(new function (){
-        doSubmitForDataSubmission('deleteDraft')
+    $('#ds-deleteDraft').click(function (){
+        doSubmitForDataSubmission('deleteDraft');
     });
-    $('#ds-amend').click(new function (){
-        doSubmitForDataSubmission('rfc')
+    $('#ds-amend').click(function (){
+        doSubmitForDataSubmission('rfc');
     });
-    $('#ds-withdraw').click(new function (){
-        doSubmitForDataSubmission('withdraw')}
+    $('#ds-withdraw').click(function (){
+        doSubmitForDataSubmission('withdraw');}
     );
-    $('#ds-unlock').click(new function (){
-        doSubmitForDataSubmission('unlock')}
+    $('#ds-unlock').click(function (){
+        doSubmitForDataSubmission('unlock');}
     );
+
+
+    function jumpToPagechangePage(){
+        doSubmitForDataSubmission('page');
+    }
+
+    function sortRecords(sortFieldName,sortType){
+        $("[name='crud_action_value']").val(sortFieldName);
+        $("[name='crud_action_additional']").val(sortType);
+        doSubmitForDataSubmission('sort');
+    }
 </script>

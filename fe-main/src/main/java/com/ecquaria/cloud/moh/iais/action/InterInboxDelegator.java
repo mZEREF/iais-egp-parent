@@ -1473,7 +1473,7 @@ public class InterInboxDelegator {
         }
     }
 
-    private void setNumInfoToRequest(HttpServletRequest request,InterInboxUserDto interInboxUserDto){
+    public void setNumInfoToRequest(HttpServletRequest request,InterInboxUserDto interInboxUserDto){
         if(interInboxUserDto != null) {
             Integer licActiveNum = inboxService.licActiveStatusNum(interInboxUserDto.getLicenseeId());
             Integer appDraftNum = inboxService.appDraftNum(interInboxUserDto.getLicenseeId());
