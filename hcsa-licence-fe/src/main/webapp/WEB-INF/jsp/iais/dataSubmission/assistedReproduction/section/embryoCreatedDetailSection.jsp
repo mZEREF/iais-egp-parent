@@ -15,28 +15,28 @@
                 <iais:row>
                     <iais:field width="6" value="No. Transferrable embryos created from fresh oocyte(s)" mandatory="true"/>
                     <iais:value width="6" cssClass="col-md-6" >
-                        <input type="text" maxlength="2" id="transEmbrFreshOccNum" name="transEmbrFreshOccNum" onkeyup="this.value=this.value.replace(/^(-|\\+)?\\d+$/,'');" value="${arSuperDataSubmissionDto.embryoCreatedStageDto.transEmbrFreshOccNum}"/>
+                        <input type="text" maxlength="2" id="transEmbrFreshOccNum" name="transEmbrFreshOccNum"  value="${arSuperDataSubmissionDto.embryoCreatedStageDto.transEmbrFreshOccNum}"/>
                         <span class="error-msg" name="iaisErrorMsg" id="error_transEmbrFreshOccNum"></span>
                     </iais:value>
                 </iais:row>
                 <iais:row>
                     <iais:field width="6" value="No. of Poor Quality / Unhealthy / Abnormally / Developed created from fresh oocyte(s)" mandatory="true"/>
                     <iais:value width="6" cssClass="col-md-6" >
-                        <input type="text" maxlength="2" id="poorDevFreshOccNum" name="poorDevFreshOccNum" onkeyup="this.value=this.value.replace(/^(-|\\+)?\\d+$/,'');" value="${arSuperDataSubmissionDto.embryoCreatedStageDto.poorDevFreshOccNum}"/>
+                        <input type="text" maxlength="2" id="poorDevFreshOccNum" name="poorDevFreshOccNum"  value="${arSuperDataSubmissionDto.embryoCreatedStageDto.poorDevFreshOccNum}"/>
                         <span class="error-msg" name="iaisErrorMsg" id="error_poorDevFreshOccNum"></span>
                     </iais:value>
                 </iais:row>
                 <iais:row>
                     <iais:field width="6" value="No. Transferrable embryos created from thawed oocyte(s)" mandatory="true"/>
                     <iais:value width="6" cssClass="col-md-6" >
-                        <input type="text" maxlength="2" id="transEmbrThawOccNum" name="transEmbrThawOccNum" onkeyup="this.value=this.value.replace(/^(-|\\+)?\\d+$/,'');" value="${arSuperDataSubmissionDto.embryoCreatedStageDto.transEmbrThawOccNum}"/>
+                        <input type="text" maxlength="2" id="transEmbrThawOccNum" name="transEmbrThawOccNum"  value="${arSuperDataSubmissionDto.embryoCreatedStageDto.transEmbrThawOccNum}"/>
                         <span class="error-msg" name="iaisErrorMsg" id="error_transEmbrThawOccNum"></span>
                     </iais:value>
                 </iais:row>
                 <iais:row>
                     <iais:field width="6" value="No. of Poor Quality / Unhealthy / Abnormally / Developed created from thawed oocyte(s)" mandatory="true"/>
                     <iais:value width="6" cssClass="col-md-6" >
-                        <input type="text" maxlength="2" id="poorDevThawOccNum" name="poorDevThawOccNum" onkeyup="this.value=this.value.replace(/^(-|\\+)?\\d+$/,'');" value="${arSuperDataSubmissionDto.embryoCreatedStageDto.poorDevThawOccNum}"/>
+                        <input type="text" maxlength="2" id="poorDevThawOccNum" name="poorDevThawOccNum"  value="${arSuperDataSubmissionDto.embryoCreatedStageDto.poorDevThawOccNum}"/>
                         <span class="error-msg" name="iaisErrorMsg" id="error_poorDevThawOccNum"></span>
                     </iais:value>
                 </iais:row>

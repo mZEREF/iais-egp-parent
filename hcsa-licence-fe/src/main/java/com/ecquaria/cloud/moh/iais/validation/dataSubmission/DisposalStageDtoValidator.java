@@ -63,11 +63,12 @@ public class DisposalStageDtoValidator implements CustomizeValidator {
 
 
         if(disposalStageDto.getImmature()!=null){
-            if(disposalStageDto.getImmature()>99){
+            if(disposalStageDto.getImmature()>99||disposalStageDto.getImmature()<0){
                 Map<String, String> repMap=IaisCommonUtils.genNewHashMap();
-                repMap.put("number","2");
-                repMap.put("fieldNo","This field");
-                String errMsg = MessageUtil.getMessageDesc("GENERAL_ERR0036",repMap);
+                repMap.put("minNum","0");
+                repMap.put("maxNum","99");
+            repMap.put("field","This field");
+                String errMsg = MessageUtil.getMessageDesc("DS_ERR003",repMap);
                 errorMap.put("immature", errMsg);
             }
             if(disposalStageDto.getImmature()>maxSamplesNum){
@@ -76,11 +77,12 @@ public class DisposalStageDtoValidator implements CustomizeValidator {
         }
 
         if(disposalStageDto.getAbnormallyFertilised()!=null){
-            if(disposalStageDto.getAbnormallyFertilised()>99){
+            if(disposalStageDto.getAbnormallyFertilised()>99||disposalStageDto.getAbnormallyFertilised()<0){
                 Map<String, String> repMap=IaisCommonUtils.genNewHashMap();
-                repMap.put("number","2");
-                repMap.put("fieldNo","This field");
-                String errMsg = MessageUtil.getMessageDesc("GENERAL_ERR0036",repMap);
+                repMap.put("minNum","0");
+                repMap.put("maxNum","99");
+            repMap.put("field","This field");
+                String errMsg = MessageUtil.getMessageDesc("DS_ERR003",repMap);
                 errorMap.put("abnormallyFertilised", errMsg);
             }
             if(disposalStageDto.getAbnormallyFertilised()>maxSamplesNum){
@@ -89,11 +91,12 @@ public class DisposalStageDtoValidator implements CustomizeValidator {
         }
 
         if(disposalStageDto.getUnfertilised()!=null){
-            if(disposalStageDto.getUnfertilised()>99){
+            if(disposalStageDto.getUnfertilised()>99||disposalStageDto.getUnfertilised()<0){
                 Map<String, String> repMap=IaisCommonUtils.genNewHashMap();
-                repMap.put("number","2");
-                repMap.put("fieldNo","This field");
-                String errMsg = MessageUtil.getMessageDesc("GENERAL_ERR0036",repMap);
+                repMap.put("minNum","0");
+                repMap.put("maxNum","99");
+            repMap.put("field","This field");
+                String errMsg = MessageUtil.getMessageDesc("DS_ERR003",repMap);
                 errorMap.put("unfertilised", errMsg);
             }
             if(disposalStageDto.getUnfertilised()>maxSamplesNum){
@@ -103,11 +106,12 @@ public class DisposalStageDtoValidator implements CustomizeValidator {
 
 
         if(disposalStageDto.getAtretic()!=null){
-            if(disposalStageDto.getAtretic()>99){
+            if(disposalStageDto.getAtretic()>99||disposalStageDto.getAtretic()<0){
                 Map<String, String> repMap=IaisCommonUtils.genNewHashMap();
-                repMap.put("number","2");
-                repMap.put("fieldNo","This field");
-                String errMsg = MessageUtil.getMessageDesc("GENERAL_ERR0036",repMap);
+                repMap.put("minNum","0");
+                repMap.put("maxNum","99");
+            repMap.put("field","This field");
+                String errMsg = MessageUtil.getMessageDesc("DS_ERR003",repMap);
                 errorMap.put("atretic", errMsg);
             }
             if(disposalStageDto.getAtretic()>maxSamplesNum){
@@ -116,11 +120,12 @@ public class DisposalStageDtoValidator implements CustomizeValidator {
         }
 
         if(disposalStageDto.getDamaged()!=null){
-            if(disposalStageDto.getDamaged()>99){
+            if(disposalStageDto.getDamaged()>99||disposalStageDto.getDamaged()<0){
                 Map<String, String> repMap=IaisCommonUtils.genNewHashMap();
-                repMap.put("number","2");
-                repMap.put("fieldNo","This field");
-                String errMsg = MessageUtil.getMessageDesc("GENERAL_ERR0036",repMap);
+                repMap.put("minNum","0");
+                repMap.put("maxNum","99");
+            repMap.put("field","This field");
+                String errMsg = MessageUtil.getMessageDesc("DS_ERR003",repMap);
                 errorMap.put("damaged", errMsg);
             }
             if(disposalStageDto.getDamaged()>maxSamplesNum){
@@ -129,11 +134,12 @@ public class DisposalStageDtoValidator implements CustomizeValidator {
         }
 
         if(disposalStageDto.getLysedOrDegenerated()!=null){
-            if(disposalStageDto.getLysedOrDegenerated()>99){
+            if(disposalStageDto.getLysedOrDegenerated()>99||disposalStageDto.getLysedOrDegenerated()<0){
                 Map<String, String> repMap=IaisCommonUtils.genNewHashMap();
-                repMap.put("number","2");
-                repMap.put("fieldNo","This field");
-                String errMsg = MessageUtil.getMessageDesc("GENERAL_ERR0036",repMap);
+                repMap.put("minNum","0");
+                repMap.put("maxNum","99");
+            repMap.put("field","This field");
+                String errMsg = MessageUtil.getMessageDesc("DS_ERR003",repMap);
                 errorMap.put("lysedOrDegenerated", errMsg);
             }
             if(disposalStageDto.getLysedOrDegenerated()>maxSamplesNum){
@@ -142,11 +148,12 @@ public class DisposalStageDtoValidator implements CustomizeValidator {
         }
 
         if(disposalStageDto.getUnhealthyNum()!=null){
-            if(disposalStageDto.getUnhealthyNum()>99){
+            if(disposalStageDto.getUnhealthyNum()>99||disposalStageDto.getUnhealthyNum()<0){
                 Map<String, String> repMap=IaisCommonUtils.genNewHashMap();
-                repMap.put("number","2");
-                repMap.put("fieldNo","This field");
-                String errMsg = MessageUtil.getMessageDesc("GENERAL_ERR0036",repMap);
+                repMap.put("minNum","0");
+                repMap.put("maxNum","99");
+            repMap.put("field","This field");
+                String errMsg = MessageUtil.getMessageDesc("DS_ERR003",repMap);
                 errorMap.put("unhealthyNum", errMsg);
             }
             if(disposalStageDto.getUnhealthyNum()>maxSamplesNum){
@@ -155,11 +162,12 @@ public class DisposalStageDtoValidator implements CustomizeValidator {
         }
 
         if(disposalStageDto.getOtherDiscardedNum()!=null){
-            if(disposalStageDto.getOtherDiscardedNum()>99){
+            if(disposalStageDto.getOtherDiscardedNum()>99||disposalStageDto.getOtherDiscardedNum()<0){
                 Map<String, String> repMap=IaisCommonUtils.genNewHashMap();
-                repMap.put("number","2");
-                repMap.put("fieldNo","This field");
-                String errMsg = MessageUtil.getMessageDesc("GENERAL_ERR0036",repMap);
+                repMap.put("minNum","0");
+                repMap.put("maxNum","99");
+            repMap.put("field","This field");
+                String errMsg = MessageUtil.getMessageDesc("DS_ERR003",repMap);
                 errorMap.put("otherDiscardedNum", errMsg);
             }
             if(disposalStageDto.getOtherDiscardedNum()>maxSamplesNum){

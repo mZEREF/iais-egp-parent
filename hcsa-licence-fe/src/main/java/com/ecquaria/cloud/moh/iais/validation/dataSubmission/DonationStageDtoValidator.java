@@ -49,11 +49,12 @@ public class DonationStageDtoValidator implements CustomizeValidator {
         }
 
         if(donationStageDto.getCurCenDonatedNum()!=null){
-            if(donationStageDto.getCurCenDonatedNum()>99){
+            if(donationStageDto.getCurCenDonatedNum()>99||donationStageDto.getCurCenDonatedNum()<0){
                 Map<String, String> repMap=IaisCommonUtils.genNewHashMap();
-                repMap.put("number","2");
-                repMap.put("fieldNo","This field");
-                String errMsg = MessageUtil.getMessageDesc("GENERAL_ERR0036",repMap);
+                repMap.put("minNum","0");
+                repMap.put("maxNum","99");
+            repMap.put("field","This field");
+                String errMsg = MessageUtil.getMessageDesc("DS_ERR003",repMap);
                 errorMap.put("curCenDonatedNum", errMsg);
             }
             if(donationStageDto.getCurCenDonatedNum()>maxSamplesNum){
@@ -62,11 +63,12 @@ public class DonationStageDtoValidator implements CustomizeValidator {
         }
 
         if(donationStageDto.getOtherCenDonatedNum()!=null){
-            if(donationStageDto.getOtherCenDonatedNum()>99){
+            if(donationStageDto.getOtherCenDonatedNum()>99||donationStageDto.getOtherCenDonatedNum()<0){
                 Map<String, String> repMap=IaisCommonUtils.genNewHashMap();
-                repMap.put("number","2");
-                repMap.put("fieldNo","This field");
-                String errMsg = MessageUtil.getMessageDesc("GENERAL_ERR0036",repMap);
+                repMap.put("minNum","0");
+                repMap.put("maxNum","99");
+            repMap.put("field","This field");
+                String errMsg = MessageUtil.getMessageDesc("DS_ERR003",repMap);
                 errorMap.put("otherCenDonatedNum", errMsg);
             }
             if(donationStageDto.getOtherCenDonatedNum()>maxSamplesNum){
@@ -84,11 +86,12 @@ public class DonationStageDtoValidator implements CustomizeValidator {
         }
 
         if(donationStageDto.getResDonarNum()!=null){
-            if(donationStageDto.getResDonarNum()>99){
+            if(donationStageDto.getResDonarNum()>99||donationStageDto.getResDonarNum()<0){
                 Map<String, String> repMap=IaisCommonUtils.genNewHashMap();
-                repMap.put("number","2");
-                repMap.put("fieldNo","This field");
-                String errMsg = MessageUtil.getMessageDesc("GENERAL_ERR0036",repMap);
+                repMap.put("minNum","0");
+                repMap.put("maxNum","99");
+            repMap.put("field","This field");
+                String errMsg = MessageUtil.getMessageDesc("DS_ERR003",repMap);
                 errorMap.put("resDonarNum", errMsg);
             }
             if(donationStageDto.getResDonarNum()>maxSamplesNum){
@@ -97,11 +100,12 @@ public class DonationStageDtoValidator implements CustomizeValidator {
         }
 
         if(donationStageDto.getCurCenResDonatedNum()!=null){
-            if(donationStageDto.getCurCenResDonatedNum()>99){
+            if(donationStageDto.getCurCenResDonatedNum()>99||donationStageDto.getCurCenResDonatedNum()<0){
                 Map<String, String> repMap=IaisCommonUtils.genNewHashMap();
-                repMap.put("number","2");
-                repMap.put("fieldNo","This field");
-                String errMsg = MessageUtil.getMessageDesc("GENERAL_ERR0036",repMap);
+                repMap.put("minNum","0");
+                repMap.put("maxNum","99");
+            repMap.put("field","This field");
+                String errMsg = MessageUtil.getMessageDesc("DS_ERR003",repMap);
                 errorMap.put("curCenResDonatedNum", errMsg);
             }
             if(donationStageDto.getCurCenResDonatedNum()>maxSamplesNum){
@@ -125,11 +129,12 @@ public class DonationStageDtoValidator implements CustomizeValidator {
             }
         }
         if(donationStageDto.getOtherCenResDonarNum()!=null){
-            if(donationStageDto.getOtherCenResDonarNum()>99){
+            if(donationStageDto.getOtherCenResDonarNum()>99||donationStageDto.getOtherCenResDonarNum()<0){
                 Map<String, String> repMap=IaisCommonUtils.genNewHashMap();
-                repMap.put("number","2");
-                repMap.put("fieldNo","This field");
-                String errMsg = MessageUtil.getMessageDesc("GENERAL_ERR0036",repMap);
+                repMap.put("minNum","0");
+                repMap.put("maxNum","99");
+            repMap.put("field","This field");
+                String errMsg = MessageUtil.getMessageDesc("DS_ERR003",repMap);
                 errorMap.put("otherCenResDonarNum", errMsg);
             }
             if(donationStageDto.getOtherCenResDonarNum()>maxSamplesNum){
@@ -147,11 +152,12 @@ public class DonationStageDtoValidator implements CustomizeValidator {
         }
 
         if(donationStageDto.getTrainingNum()!=null){
-            if(donationStageDto.getTrainingNum()>99){
+            if(donationStageDto.getTrainingNum()>99||donationStageDto.getTrainingNum()<0){
                 Map<String, String> repMap=IaisCommonUtils.genNewHashMap();
-                repMap.put("number","2");
-                repMap.put("fieldNo","This field");
-                String errMsg = MessageUtil.getMessageDesc("GENERAL_ERR0036",repMap);
+                repMap.put("minNum","0");
+                repMap.put("maxNum","99");
+            repMap.put("field","This field");
+                String errMsg = MessageUtil.getMessageDesc("DS_ERR003",repMap);
                 errorMap.put("trainingNum", errMsg);
             }
             if(donationStageDto.getTrainingNum()>maxSamplesNum){
