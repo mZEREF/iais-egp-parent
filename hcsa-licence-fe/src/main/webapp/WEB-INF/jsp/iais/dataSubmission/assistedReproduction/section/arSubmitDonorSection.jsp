@@ -97,7 +97,7 @@
                         <iais:row id="sampleType" >
                             <iais:field width="5" value="Sample Type" mandatory="true"/>
                             <iais:value width="7" cssClass="col-md-7">
-                                <iais:select name="sampleType" firstOption="Please Select" codeCategory="CATE_ID_DS_ID_TYPE" value="${donorSampleDto.sampleType}"
+                                <iais:select name="sampleType" firstOption="Please Select" codeCategory="WHAT_WAS_TRANSFERRED" value="${donorSampleDto.sampleType}"
                                              cssClass="sampleType"/>
                             </iais:value>
                         </iais:row>
@@ -118,15 +118,14 @@
                             <iais:row>
                             <iais:field width="5" value="Name of Bank / AR Centre where Sample is from" mandatory="true"/>
                             <iais:value width="7" cssClass="col-md-7">
-                                <iais:select name="sampleFromHciCode"  options="SampleFromHciCode" firstOption="Please Select"  value="${donorSampleDto.sampleFromHciCode}"
+                                <iais:select name="sampleFromHciCode" id ="sampleFromHciCode"  options="SampleFromHciCode" firstOption="Please Select"  value="${donorSampleDto.sampleFromHciCode}"
                                              cssClass="sampleFromOthers"/>
                             </iais:value>
                             </iais:row>
-                            <iais:row>
-                                <iais:field width="5" value="Name of Bank / AR Centre where Sample is from" mandatory="true"/>
+                            <iais:row id ="sampleFromOthers" style="display:none">
+                                <label class="col-xs-5 col-md-4 control-label"></label>
                                 <iais:value width="7" cssClass="col-md-7">
-                                    <iais:select name="sampleFromHciCode"  options="SampleFromHciCode" firstOption="Please Select"  value="${donorSampleDto.sampleFromHciCode}"
-                                                 cssClass="sampleFromOthers"/>
+                                    <iais:input maxLength="100" type="text" name="sampleFromOthers"  value="${donorSampleDto.sampleFromOthers}" />
                                 </iais:value>
                             </iais:row>
                         </div>
@@ -178,7 +177,11 @@
        $("#donorIdentityKnownId").change(function(){
            dikChange();
        });
+        $("#sampleFromHciCode").change(function(){
+            arCentreChange();
+        });
         dikChange();
+        arCentreChange();
     });
     function showDonationYes(){
      $("#directedDonationYes").show();
@@ -213,6 +216,14 @@
             "                            <div class=\"clear\"></div>\n" +
             "                        </div>";
         return str;
+    }
+
+    function arCentreChange(){
+        if($("#sampleFromHciCode").val() == 'others'){
+            $("#sampleFromOthers").show();
+        }else{
+            $("#sampleFromOthers").hide();
+        }
     }
 
     function dikChange(){
