@@ -10,9 +10,9 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesOperat
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcChargesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcChargesPageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcChckListDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcClinicalDirectorDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDisciplineAllocationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDocDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPrincipalOfficersDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcVehicleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.OperationHoursReloadDto;
@@ -24,6 +24,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class PageDataCopyUtil {
 
@@ -272,9 +273,39 @@ public class PageDataCopyUtil {
 
             list.add(primaryDocDto);
         }
-        Collections.sort(list,(s1,s2)->(s1.getMd5Code().compareTo(s2.getMd5Code())));
+        Collections.sort(list, Comparator.comparing(AppGrpPrimaryDocDto::getMd5Code));
         return list;
     }
+
+    public static List<AppSvcPersonnelDto> copySvcPersonnel (List<AppSvcPersonnelDto> appSvcPersonnelDtoList) {
+        if (appSvcPersonnelDtoList == null || appSvcPersonnelDtoList.isEmpty()) {
+            return appSvcPersonnelDtoList;
+        }
+        List<AppSvcPersonnelDto> result = IaisCommonUtils.genNewArrayList(appSvcPersonnelDtoList.size());
+        for (AppSvcPersonnelDto svcPersonnelDto : appSvcPersonnelDtoList) {
+            AppSvcPersonnelDto dto = new AppSvcPersonnelDto();
+            dto.setSalutation(StringUtil.getNonNull(svcPersonnelDto.getSalutation()));
+            dto.setPersonnelType(svcPersonnelDto.getPersonnelType());
+            if (StringUtil.isEmpty(dto.getPersonnelType())) {
+                dto.setPersonnelType(ApplicationConsts.PERSONNEL_PSN_TYPE_SVC_PERSONNEL);
+            }
+            dto.setName(svcPersonnelDto.getName());
+            dto.setDesignation(svcPersonnelDto.getDesignation());
+            dto.setOtherDesignation(svcPersonnelDto.getOtherDesignation());
+            dto.setProfRegNo(svcPersonnelDto.getProfRegNo());
+            dto.setWrkExpYear(StringUtil.getNonNull(svcPersonnelDto.getWrkExpYear()));
+            dto.setQualification(StringUtil.getNonNull(svcPersonnelDto.getQualification()));
+            result.add(dto);
+        }
+        return result.stream()
+                .sorted(Comparator.comparing(AppSvcPersonnelDto::getName)
+                        .thenComparing(AppSvcPersonnelDto::getSalutation)
+                        .thenComparing(AppSvcPersonnelDto::getPersonnelType)
+                        .thenComparing(AppSvcPersonnelDto::getQualification)
+                        .thenComparing(AppSvcPersonnelDto::getWrkExpYear))
+                .collect(Collectors.toList());
+    }
+
     public static List<AppSvcDocDto> copySvcDoc(List<AppSvcDocDto> appSvcDocDtoLit){
         List<AppSvcDocDto> appSvcDocDtos=new ArrayList<>(appSvcDocDtoLit.size());
         for(AppSvcDocDto appSvcDocDto : appSvcDocDtoLit){
@@ -290,7 +321,7 @@ public class PageDataCopyUtil {
             svcDocDto.setMd5Code(appSvcDocDto.getMd5Code());
             appSvcDocDtos.add(svcDocDto);
         }
-        Collections.sort(appSvcDocDtos,(s1,s2)->(s1.getMd5Code().compareTo(s2.getMd5Code())));
+        Collections.sort(appSvcDocDtos, Comparator.comparing(AppSvcDocDto::getMd5Code));
         return appSvcDocDtos;
     }
     public static List<AppSvcPrincipalOfficersDto> copyMedaler(List<AppSvcPrincipalOfficersDto> appSvcMedAlertPersonList) {
@@ -306,7 +337,7 @@ public class PageDataCopyUtil {
             svcPrincipalOfficersDto.setDescription(appSvcPrincipalOfficersDto.getDescription());
             list.add(svcPrincipalOfficersDto);
         }
-        list.sort((s1,s2)->(s1.getIdNo().compareTo(s2.getIdNo())));
+        list.sort(Comparator.comparing(AppSvcPrincipalOfficersDto::getIdNo));
         return list;
     }
     public static List<AppSvcPrincipalOfficersDto> copyAppSvcPo(List<AppSvcPrincipalOfficersDto> appSvcPrincipalOfficersDtoList)  {
