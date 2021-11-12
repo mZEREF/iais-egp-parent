@@ -46,6 +46,7 @@ import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.RequestForChangeService;
 import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
+import com.google.common.collect.ImmutableSet;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.util.DateUtil;
@@ -58,6 +59,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * @author zixian
@@ -79,6 +81,12 @@ public class RetriggerGiroPaymentDelegator {
     private static final String SWITCH_VALUE_PRE_PAYMENT = "prepayment";
     private static final String ISVALID_VALUE_PRE_PAYMENT = "prepayment";
     private static final String ISVALID_VALUE_TO_BANK = "tobank";
+    private static final Set<String> APP_PMT_STATUSES = ImmutableSet.of(
+            ApplicationConsts.PAYMENT_STATUS_PAY_SUCCESS,
+            ApplicationConsts.PAYMENT_STATUS_PENDING_GIRO,
+            ApplicationConsts.PAYMENT_STATUS_GIRO_PAY_SUCCESS,
+            ApplicationConsts.PAYMENT_STATUS_NO_NEED_PAYMENT
+    );
 
     public void doStart(BaseProcessClass bpc) throws CloneNotSupportedException {
         log.info(StringUtil.changeForLog("the retrigger giro doStart start ...."));
@@ -96,9 +104,10 @@ public class RetriggerGiroPaymentDelegator {
 
         List<AppGrpPremisesDto> appGrpPremisesDtos = appSubmissionDto.getAppGrpPremisesDtoList();
         List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = appSubmissionDto.getAppSvcRelatedInfoDtoList();
-        if(IaisCommonUtils.isEmpty(appGrpPremisesDtos) || IaisCommonUtils.isEmpty(appSvcRelatedInfoDtos)){
+        if(IaisCommonUtils.isEmpty(appGrpPremisesDtos) || IaisCommonUtils.isEmpty(appSvcRelatedInfoDtos)||APP_PMT_STATUSES.contains(appSubmissionDto.getPmtStatus())){
             log.debug(StringUtil.changeForLog("data error ..."));
             switch2 = SWITCH_VALUE_PRE_ACK;
+            ParamUtil.setSessionAttr(bpc.request,NewApplicationDelegator.APPSUBMISSIONDTO,appSubmissionDto);
             ParamUtil.setRequestAttr(bpc.request, SWITCH, switch2);
             ParamUtil.setRequestAttr(bpc.request,NewApplicationDelegator.ACKMESSAGE,"data error !!!");
             return;

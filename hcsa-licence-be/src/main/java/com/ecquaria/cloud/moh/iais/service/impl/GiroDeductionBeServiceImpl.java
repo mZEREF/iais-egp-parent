@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.service.impl;
 
 import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst;
 import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
@@ -28,6 +29,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -106,8 +108,13 @@ public class GiroDeductionBeServiceImpl implements GiroDeductionBeService {
                 }
             }
         }
-        //todo msg url
-        String url = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_LOGIN;
+        StringBuilder url = new StringBuilder();
+        url.append(HmacConstants.HTTPS + "://").append(systemParamConfig.getInterServerName())
+                .append(InboxConst.URL_LICENCE_WEB_MODULE+"MohRetriggerGiroPayment")
+                .append("?appGrpNo=")
+                .append(appGroupNo);
+        HashMap<String,String> mapPrem=IaisCommonUtils.genNewHashMap();
+        mapPrem.put("appGrpNo",appGroupNo);
         map.put("systemLink", url);
         ApplicationDto appDto = applicationDtos.get(0);
         String appNo = appDto.getApplicationNo();
@@ -128,6 +135,7 @@ public class GiroDeductionBeServiceImpl implements GiroDeductionBeService {
                 serviceCodes.add(serviceCode);
             }
         }
+        emailParam.setMaskParams(mapPrem);
         emailParam.setSvcCodeList(serviceCodes);
         emailParam.setSubject(subject);
         notificationHelper.sendNotification(emailParam);

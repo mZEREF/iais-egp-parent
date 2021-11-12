@@ -12,8 +12,8 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class OidcAuthUserInfoDto implements Serializable {
-    private static final long serialVersionUID = 8963372401101429297L;
+public class OidcSpAuthUserInfoDto implements Serializable {
+    private static final long serialVersionUID = 1L;
     private String nricFin;
     private String uuid;
 }

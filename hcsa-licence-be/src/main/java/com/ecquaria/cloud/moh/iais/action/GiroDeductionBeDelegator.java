@@ -2,11 +2,13 @@ package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.giro.GiroDeductionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceConfigDto;
@@ -26,11 +28,28 @@ import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.helper.SearchResultHelper;
 import com.ecquaria.cloud.moh.iais.helper.SystemParamUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
+import com.ecquaria.cloud.moh.iais.service.ApplicationService;
 import com.ecquaria.cloud.moh.iais.service.GiroDeductionBeService;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.BeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.impl.ConfigServiceImpl;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVPrinter;
+import org.apache.commons.csv.CSVRecord;
+import org.apache.http.HttpStatus;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
+import org.springframework.web.multipart.commons.CommonsMultipartFile;
+import sop.servlet.webflow.HttpHandler;
+import sop.webflow.rt.api.BaseProcessClass;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.BufferedOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -46,21 +65,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.csv.CSVFormat;
-import org.apache.commons.csv.CSVPrinter;
-import org.apache.commons.csv.CSVRecord;
-import org.apache.http.HttpStatus;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
-import org.springframework.web.multipart.commons.CommonsMultipartFile;
-import sop.servlet.webflow.HttpHandler;
-import sop.webflow.rt.api.BaseProcessClass;
 
 /**
  * @Process: MohBeGiroDeduction
@@ -83,9 +87,9 @@ public class GiroDeductionBeDelegator {
     private final static String CSV="csv";
 
     protected static final String [] STATUS={"PMT01","PMT03","PMT09"};
-/*
-    protected static final String [] PAYMENT_DEC={MasterCodeUtil.getCodeDesc("PMT01"),MasterCodeUtil.getCodeDesc("PMT03"),MasterCodeUtil.getCodeDesc("PMT09")};
-*/
+    /*
+        protected static final String [] PAYMENT_DEC={MasterCodeUtil.getCodeDesc("PMT01"),MasterCodeUtil.getCodeDesc("PMT03"),MasterCodeUtil.getCodeDesc("PMT09")};
+    */
     @Autowired
     private GiroDeductionBeDelegator(GiroDeductionBeService giroDeductionBeService){
         this.giroDeductionBeService = giroDeductionBeService;
@@ -108,6 +112,8 @@ public class GiroDeductionBeDelegator {
     private String currentDomain;
     @Autowired
     private EicRequestTrackingHelper eicRequestTrackingHelper;
+    @Autowired
+    ApplicationService applicationService;
 
     private final static String[] HEADERS = {"S/N","HCI Name", "Application No.","Transaction Reference No.","Bank Account No.","Payment Status","Payment Amount"};
     /**
@@ -348,6 +354,15 @@ public class GiroDeductionBeDelegator {
             //update group status
             List<ApplicationGroupDto> applicationGroupDtoList = applicationClient.updateBeGroupStatus(applicationGroupDtos).getEntity();
             updateFeApplicationGroupStatus(applicationGroupDtoList);
+            for (ApplicationGroupDto appGrp:applicationGroupDtoList
+            ) {
+                List<ApplicationDto> applicationDtoList=applicationService.getApplicaitonsByAppGroupId(appGrp.getId());
+                for (ApplicationDto app:applicationDtoList
+                ) {
+                    app.setStatus(ApplicationConsts.APPLICATION_STATUS_PENDING_PAYMENT_RESUBMIT);
+                    applicationService.callEicInterApplication(app);
+                }
+            }
             String general_ack021 = MessageUtil.getMessageDesc("GENERAL_ACK021");
             if(entity!=null&&entity.isEmpty()){
                 general_ack021=general_ack021.replace("{num}","0");
@@ -388,11 +403,20 @@ public class GiroDeductionBeDelegator {
         List<ApplicationGroupDto> applicationGroupDtos = giroDeductionBeService.sendMessageEmail(appGroupList);
         HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
         HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
-       /* giroDeductionClient.updateDeductionDtoSearchResultUseGroups(giroDeductionDtoList);*/
+        /* giroDeductionClient.updateDeductionDtoSearchResultUseGroups(giroDeductionDtoList);*/
         beEicGatewayClient.updateDeductionDtoSearchResultUseGroups(giroDeductionDtoList, signature.date(), signature.authorization(),
                 signature2.date(), signature2.authorization());
         beEicGatewayClient.updateFeApplicationGroupStatus(applicationGroupDtos, signature.date(), signature.authorization(),
                 signature2.date(), signature2.authorization());
+        for (ApplicationGroupDto appGrp:applicationGroupDtos
+        ) {
+            List<ApplicationDto> applicationDtoList=applicationService.getApplicaitonsByAppGroupId(appGrp.getId());
+            for (ApplicationDto app:applicationDtoList
+            ) {
+                app.setStatus(ApplicationConsts.APPLICATION_STATUS_PENDING_PAYMENT_RESUBMIT);
+                applicationService.callEicInterApplication(app);
+            }
+        }
         ParamUtil.setSessionAttr(bpc.request,"saveRetriggerOK",AppConsts.YES);
     }
 
@@ -410,7 +434,7 @@ public class GiroDeductionBeDelegator {
             rows.forEach(v->{
                 try {
                     printer.printRecord(integer.get(),v.getHciName().replace("<br>", String.valueOf((char)10)+""),v.getAppGroupNo(),v.getTxnRefNo()
-                    ,v.getAcctNo(),decryptPayment(v.getPmtStatus()),"$" + v.getAmount());
+                            ,v.getAcctNo(),decryptPayment(v.getPmtStatus()),"$" + v.getAmount());
                     integer.getAndIncrement();
                 } catch (IOException e) {
                     log.error(e.getMessage(), e);

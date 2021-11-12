@@ -205,7 +205,7 @@
     }
 
     <%String testMode = ConfigHelper.getString("moh.halp.login.test.mode", "prod");
-    if (testMode.toUpperCase().startsWith("PROD")){%>
+    if (testMode.toUpperCase().equals("PROD")){%>
     var prd = "<%=SIMConfig.getInstance().getIdpCorpassInitiatedUrl()%>";
     var prdSing = "<%=SIMConfig.getInstance().getIdpSingpassInitiatedUrl()%>";
     <%}else{%>
