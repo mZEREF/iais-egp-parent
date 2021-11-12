@@ -238,8 +238,7 @@ public class LicenceApproveBatchjob {
                         eventBusLicenceGroupDtos.setEventRefNo(evenRefNum);
                         eventBusLicenceGroupDtos.setLicenceGroupDtos(licenceGroupDtos);
                         eventBusLicenceGroupDtos.setAuditTrailDto(auditTrailDto);
-                        //step1 create Licence to BE DB
-                        licenceService.createSuperLicDto(eventBusLicenceGroupDtos);
+
 
                         //if create licence success
                         //todo:update the success application group.
@@ -253,6 +252,10 @@ public class LicenceApproveBatchjob {
                         eventApplicationGroupDto.setRollBackApplicationDto(applicationDtos);
                         eventApplicationGroupDto.setApplicationDto(updateApplicationStatusToGenerated(applicationDtos));
                         eventApplicationGroupDto.setAuditTrailDto(auditTrailDto);
+                        //step1 create Licence to BE DB
+                        eventBusLicenceGroupDtos.setApplicationDto(eventApplicationGroupDto.getApplicationDto());
+                        licenceService.createSuperLicDto(eventBusLicenceGroupDtos);
+                        //
                         applicationGroupService.updateEventApplicationGroupDto(eventApplicationGroupDto);
                         try {
                             for (ApplicationDto applicationDto:applicationDtos
