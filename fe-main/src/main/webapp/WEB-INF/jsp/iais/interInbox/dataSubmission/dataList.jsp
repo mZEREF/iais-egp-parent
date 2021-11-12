@@ -4,43 +4,34 @@
     <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
     <input type="hidden" name="crud_type_action_submission_no" id="crud_type_action_submission_no"/>
     <div class="tab-search">
-            <div class="row">
-                <div class="col-md-12">
-                    <iais:value>
-                        <label class="col-xs-3 col-md-3" for="submissionNoDataSubmission" style="text-align:left;margin-top: 1.5%">Search by submission ID</label>
-                        <div class="col-xs-9 col-md-9">
+            <div class="row d-flex">
+                <div class="col-md-4">
+                        <label class="col-xs-3 control-label" for="submissionNoDataSubmission" style="text-align:left;margin-top: 1.5%">Search by submission ID</label>
+                        <div class="col-xs-8 col-md-8">
                             <input id="submissionNoDataSubmission" name="submissionNoDataSubmission" type="text" maxlength="24"
                                    value="${param.submissionNo}">
                         </div>
-                    </iais:value>
+                    <br>
                 </div>
-            </div>
-            <div class="row" style="margin-bottom: 1.5%">
-                <div class="col-md-12">
-                    <iais:value>
-                        <label class="col-xs-3 col-md-3" for="typeDataSubmission" style="text-align:left;margin-top: 1.5%">Type</label>
-                        <div class="col-xs-9 col-md-9">
+                <div class="col-md-5">
+                        <label class="col-xs-3 control-label" for="typeDataSubmission" style="text-align:left;margin-top: 1.5%">Type</label>
+                        <div class="col-xs-8 col-md-8">
                             <iais:select name="typeDataSubmission"  codeCategory="DATA_SUBMISSION_TYPE" value="${param.type}" firstOption="All" cssClass="dataSubmissionType"/>
                         </div>
-                    </iais:value>
                 </div>
-            </div>
-            <div class="row" style="margin-bottom: 1.5%">
-                <div class="col-md-12">
-                    <iais:value>
-                        <label class="col-xs-3 col-md-3" for="statusDataSubmission" style="text-align:left;margin-top: 1.5%">Status</label>
-                        <div class="col-xs-9 col-md-9">
+                <div class="col-md-3">
+                        <label class="col-xs-3 control-label" for="statusDataSubmission" style="text-align:left;margin-top: 1.5%">Status</label>
+                        <div class="col-xs-8 col-md-8">
                             <iais:select name="statusDataSubmission" id="statusDataSubmission" codeCategory="DATA_SUBMISSION_STATUS" value="${param.status}" firstOption="All" cssClass="dataSubmissionStatus"/>
                         </div>
-                    </iais:value>
                 </div>
+            </div>
             <div class="col-md-12">
                 <div class="text-right">
                     <button type="button" class="btn btn-secondary" onclick="doClearSearch()">Clear</button>
                     <button type="button" class="btn btn-primary" onclick="doSearch()">Search</button>
                 </div>
             </div>
-        </div>
         <br> <br>
         <iais:pagination param="dataSubmissionParam" result="dataSubmissionResult"/>
     </div>
@@ -189,8 +180,16 @@
     }
 
 
-    $('#ds-deleteDraft').click(doSubmitForDataSubmission('deleteDraft'));
-    $('#ds-amend').click(doSubmitForDataSubmission('rfc'));
-    $('#ds-withdraw').click(doSubmitForDataSubmission('withdraw'));
-    $('#ds-unlock').click(doSubmitForDataSubmission('unlock'));
+    $('#ds-deleteDraft').click(new function (){
+        doSubmitForDataSubmission('deleteDraft')
+    });
+    $('#ds-amend').click(new function (){
+        doSubmitForDataSubmission('rfc')
+    });
+    $('#ds-withdraw').click(new function (){
+        doSubmitForDataSubmission('withdraw')}
+    );
+    $('#ds-unlock').click((new function (){
+        doSubmitForDataSubmission('unlock')}
+    );
 </script>
