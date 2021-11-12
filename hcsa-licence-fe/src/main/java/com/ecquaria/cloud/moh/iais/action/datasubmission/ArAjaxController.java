@@ -113,11 +113,7 @@ public class ArAjaxController {
             }
             result.put("selection", dto);
         }
-        String currCycle = dto.getLastCycle();
-        String currStage = dto.getLastStage();
-        String lastStatus = dto.getLastStatus();
-        result.put("stagHtmls", DataSubmissionHelper.genOptionHtmls(DataSubmissionHelper.getNextStageForAR(currCycle, currStage,
-                lastStatus)));
+        result.put("stagHtmls", DataSubmissionHelper.genOptionHtmls(DataSubmissionHelper.getNextStageForAR(dto)));
         result.put("stage", stage);
         return result;
     }

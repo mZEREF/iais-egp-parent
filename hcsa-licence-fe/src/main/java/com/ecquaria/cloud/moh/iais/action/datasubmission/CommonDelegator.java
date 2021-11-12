@@ -197,8 +197,8 @@ public abstract class CommonDelegator {
         DataSubmissionDto dataSubmissionDto = arSuperDataSubmission.getCurrentDataSubmissionDto();
         CycleDto cycle = arSuperDataSubmission.getCycleDto();
         String cycleType = cycle.getCycleType();
-        String submissionNo = arDataSubmissionService.getSubmissionNo(cycleType,
-                dataSubmissionDto.getCycleStage(), arSuperDataSubmission.getLastDataSubmissionDto());
+        String submissionNo = arDataSubmissionService.getSubmissionNo(dataSubmissionDto.getSubmissionType(),
+                cycleType, arSuperDataSubmission.getLastDataSubmissionDto());
         dataSubmissionDto.setSubmissionNo(submissionNo);
         if (StringUtil.isEmpty(dataSubmissionDto.getStatus())) {
             dataSubmissionDto.setStatus(DataSubmissionConsts.DS_STATUS_COMPLETED);

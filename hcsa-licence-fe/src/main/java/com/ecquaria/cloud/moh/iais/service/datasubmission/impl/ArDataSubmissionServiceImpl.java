@@ -200,7 +200,7 @@ public class ArDataSubmissionServiceImpl implements ArDataSubmissionService {
             }
         }
         if (StringUtil.isEmpty(submissionNo)) {
-            submissionNo = systemAdminClient.submissionID(cycleType).getEntity();
+            submissionNo = systemAdminClient.submissionID(submissionType).getEntity();
         }
         submissionNo = IaisCommonUtils.getNextSubmissionNo(submissionNo);
         log.info(StringUtil.changeForLog("The submissionNo : " + submissionNo));
