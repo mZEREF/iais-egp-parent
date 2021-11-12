@@ -16,7 +16,6 @@ package com.ecquaria.cloud.moh.iais.helper;
 import com.ecquaria.cloud.helper.SpringContextHelper;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.RedisNameSpaceConstant;
-import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
@@ -26,13 +25,12 @@ import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.service.client.MasterCodeClient;
-import lombok.extern.slf4j.Slf4j;
-
 import java.lang.reflect.Field;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import lombok.extern.slf4j.Slf4j;
 
 
 /**
@@ -147,6 +145,9 @@ public final class MasterCodeUtil {
 
     // Data Submission Id Type
     public static final String CATE_ID_DS_ID_TYPE = "AA1FF089-5B35-EC11-BE73-000C298D317C";
+
+    // Data Submission Donor Identity Known
+    public static final String CATE_DIK = "E8118F2B-5843-EC11-8B83-000C29FD17F9";
 
     // Nationality
     public static final String CATE_ID_NATIONALITY = "21941117-A009-4E45-AD2F-22F233EAA28D";

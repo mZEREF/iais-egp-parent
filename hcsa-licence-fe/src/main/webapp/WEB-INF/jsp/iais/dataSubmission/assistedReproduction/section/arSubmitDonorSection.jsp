@@ -102,9 +102,9 @@
                             </iais:value>
                         </iais:row>
                         <iais:row >
-                            <iais:field width="5" value="Is Donor’s Identity Known?" mandatory="true"/>
+                            <iais:field width="5" value="Is Donor's Identity Known?" mandatory="true"/>
                             <iais:value width="7" cssClass="col-md-7">
-                                <iais:select name="donorIdentityKnown" firstOption="Please Select" codeCategory="CATE_ID_DS_ID_TYPE" value="${donorSampleDto.donorIdentityKnown}"
+                                <iais:select name="donorIdentityKnown" id = "donorIdentityKnownId" firstOption="Please Select" codeCategory="CATE_DIK" value="${donorSampleDto.donorIdentityKnown}"
                                              cssClass="donorIdentityKnown"/>
                             </iais:value>
                         </iais:row>
@@ -114,7 +114,7 @@
                                 <iais:input maxLength="100" type="text" name="donorSampleCode" id="donorSampleCode" value="${donorSampleDto.donorSampleCode}" />
                             </iais:value>
                         </iais:row>
-                        <div>
+                        <div id ="donorDetail">
                             <iais:row >
                                 <iais:field width="5" value="Donor's ID Type" mandatory="true"/>
                                 <iais:value width="7" cssClass="col-md-7">
@@ -157,6 +157,12 @@
 </div>
 <input type="hidden" id ="ageCount" value="1"/>
 <script  type="text/javascript">
+    $(document).ready(function(){
+       $("#donorIdentityKnownId").change(function(){
+           dikChange();
+       });
+        dikChange();
+    });
     function showDonationYes(){
      $("#directedDonationYes").show();
      $("#directedDonationNo").hide();
@@ -190,5 +196,15 @@
             "                            <div class=\"clear\"></div>\n" +
             "                        </div>";
         return str;
+    }
+
+    function dikChange(){
+        if($("#donorIdentityKnownId").val() == 'DIK001'){
+           $("#donorDetail").show();
+           $("#donorSampleCodeRow").hide();
+        }else{
+            $("#donorDetail").hide();
+            $("#donorSampleCodeRow").show();
+        }
     }
 </script>
