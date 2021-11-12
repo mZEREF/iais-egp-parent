@@ -97,7 +97,7 @@
                         <iais:row id="sampleType" >
                             <iais:field width="5" value="Sample Type" mandatory="true"/>
                             <iais:value width="7" cssClass="col-md-7">
-                                <iais:select name="sampleType" firstOption="Please Select" codeCategory="WHAT_WAS_TRANSFERRED" value="${donorSampleDto.sampleType}"
+                                <iais:select name="sampleType" firstOption="Please Select" codeCategory="AR_DONOR_SAMPLE_TYPE" value="${donorSampleDto.sampleType}"
                                              cssClass="sampleType"/>
                             </iais:value>
                         </iais:row>
@@ -134,20 +134,20 @@
                             <iais:row >
                                 <iais:field width="5" value="Donor's ID Type" mandatory="true"/>
                                 <iais:value width="7" cssClass="col-md-7">
-                                    <iais:select name="idType" firstOption="Please Select" codeCategory="CATE_ID_DS_ID_TYPE" value="${donorSampleDto.idType}"
+                                    <iais:select name="knownIdType" firstOption="Please Select" codeCategory="CATE_ID_DS_ID_TYPE" value="${donorSampleDto.idType}"
                                                  cssClass="idTypeSel"/>
                                 </iais:value>
                             </iais:row>
                             <iais:row  >
                                 <iais:field width="5" value="Donor's ID No." mandatory="true"/>
                                 <iais:value width="7" cssClass="col-md-7">
-                                    <iais:input maxLength="20" type="text" name="idNumber" value="${donorSampleDto.idNumber}" />
+                                    <iais:input maxLength="20" type="text" name="knownIdNumber" value="${donorSampleDto.idNumber}" />
                                 </iais:value>
                             </iais:row>
                             <iais:row  >
                                 <iais:field width="5" value="Donor's Name" mandatory="true"/>
                                 <iais:value width="7" cssClass="col-md-7">
-                                    <iais:input maxLength="66" type="text" name="donorName" value="${donorSampleDto.donorName}" />
+                                    <iais:input maxLength="66" type="text" name="knownDonorName" value="${donorSampleDto.donorName}" />
                                 </iais:value>
                             </iais:row>
                         </div>

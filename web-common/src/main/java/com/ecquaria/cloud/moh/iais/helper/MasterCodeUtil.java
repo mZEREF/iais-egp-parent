@@ -186,6 +186,9 @@ public final class MasterCodeUtil {
     public static final String WHAT_WAS_TRANSFERRED = "611D5523-86AA-4018-A095-93B01D1F2A29";
     public static final String TRANSFERRED_IN_FROM = "F8AB83C2-5C6A-4480-A253-DF757BB9C8F6";
 
+    //Donor Sample Type
+    public static final String AR_DONOR_SAMPLE_TYPE = "23F8DD6B-8843-EC11-BE6B-000C29FAAE4D";
+
     //Data Submission Ar End Cycle Stage
     public static final String END_CYCLE_REASON_FOR_ABANDONMENT = "5CA671D7-1D42-412B-AABA-1F3D0919379B";
 
