@@ -12,11 +12,11 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class OidcAuthResponDto implements Serializable {
-    private static final long serialVersionUID = 4500842315163782753L;
+public class OidcSpAuthResponDto implements Serializable {
+    private static final long serialVersionUID = 1L;
     private String statusCode;
     private String authMethod;
-    private OidcAuthUserInfoDto userInfo;
+    private OidcSpAuthUserInfoDto userInfo;
     private String expiresIn;
     private String accessToken;
 }

@@ -1294,19 +1294,7 @@ public class LicenceViewServiceDelegator {
         } else if (oldAppGrpPremisesDtoList.size() < appGrpPremisesDtoList.size()) {
             creatNewPremise(oldAppGrpPremisesDtoList, appGrpPremisesDtoList);
         }
-        for (int i = 0; i < appGrpPremisesDtoList.size(); i++) {
-            List<AppPremisesOperationalUnitDto> appPremisesOperationalUnitDtos = appGrpPremisesDtoList.get(
-                    i).getAppPremisesOperationalUnitDtos();
-            List<AppPremisesOperationalUnitDto> oldAppPremisesOperationalUnitDtos = oldAppGrpPremisesDtoList.get(
-                    i).getAppPremisesOperationalUnitDtos();
-            if (appPremisesOperationalUnitDtos == null) {
-                appPremisesOperationalUnitDtos = new ArrayList<>();
-            }
-            if (oldAppPremisesOperationalUnitDtos == null) {
-                oldAppPremisesOperationalUnitDtos = new ArrayList<>();
-            }
-            creatAppPremisesOperationalUnitDto(appPremisesOperationalUnitDtos, oldAppPremisesOperationalUnitDtos);
-        }
+        dealFloorAndUnits(appGrpPremisesDtoList, oldAppGrpPremisesDtoList);
         publicPH(appGrpPremisesDtoList, oldAppGrpPremisesDtoList);
         event(appGrpPremisesDtoList, oldAppGrpPremisesDtoList);
         weekly(appGrpPremisesDtoList, oldAppGrpPremisesDtoList);
@@ -1495,6 +1483,64 @@ public class LicenceViewServiceDelegator {
         dealClinicalDirector(kahList, oldKahList);
         appSvcRelatedInfoDto.setAppSvcKeyAppointmentHolderDtoList(kahList);
         oldAppSvcRelatedInfoDto.setAppSvcKeyAppointmentHolderDtoList(oldKahList);
+    }
+
+    private void dealFloorAndUnits(List<AppGrpPremisesDto> appGrpPremisesDtoList, List<AppGrpPremisesDto> oldAppGrpPremisesDtoList) {
+        for (int i = 0; i < appGrpPremisesDtoList.size(); i++) {
+            List<AppPremisesOperationalUnitDto> appPremisesOperationalUnitDtos = getOperationalUnitDtos(appGrpPremisesDtoList.get(i));
+            List<AppPremisesOperationalUnitDto> oldAppPremisesOperationalUnitDtos =
+                    getOperationalUnitDtos(oldAppGrpPremisesDtoList.get(i));
+            oldAppPremisesOperationalUnitDtos = dealFloorAndUnit(appPremisesOperationalUnitDtos, oldAppPremisesOperationalUnitDtos);
+            reSetFloorAndUnit(appGrpPremisesDtoList.get(i), appPremisesOperationalUnitDtos);
+            reSetFloorAndUnit(oldAppGrpPremisesDtoList.get(i), oldAppPremisesOperationalUnitDtos);
+        }
+    }
+
+    private void reSetFloorAndUnit(AppGrpPremisesDto appGrpPremisesDto, List<AppPremisesOperationalUnitDto> appPremisesOperationalUnitDtos) {
+        AppPremisesOperationalUnitDto dto = appPremisesOperationalUnitDtos.get(0);
+        appGrpPremisesDto.setFloorNo(dto.getFloorNo());
+        appGrpPremisesDto.setUnitNo(dto.getUnitNo());
+        appPremisesOperationalUnitDtos.remove(0);
+        appGrpPremisesDto.setAppPremisesOperationalUnitDtos(appPremisesOperationalUnitDtos);
+    }
+
+    private List<AppPremisesOperationalUnitDto> dealFloorAndUnit(List<AppPremisesOperationalUnitDto> currDtos, List<AppPremisesOperationalUnitDto> oldDtos) {
+        int n1 = currDtos.size();
+        int n2 = oldDtos.size();
+        int index;
+        List<AppPremisesOperationalUnitDto> newList = IaisCommonUtils.genNewArrayList(Math.max(n1, n2));
+        for (int i = 0; i < n1; i++) {
+            AppPremisesOperationalUnitDto dto = currDtos.get(i);
+            index = oldDtos.indexOf(dto);
+            if (index < 0) {
+                AppPremisesOperationalUnitDto premisesOperationalUnitDto=new AppPremisesOperationalUnitDto();
+                premisesOperationalUnitDto.setFloorNo("");
+                premisesOperationalUnitDto.setUnitNo("");
+                premisesOperationalUnitDto.setPremType(dto.getPremType());
+                newList.add(premisesOperationalUnitDto);
+            } else {
+                newList.add(oldDtos.get(index));
+                oldDtos.remove(index);
+            }
+        }
+        n2 = oldDtos.size();
+        for (int i = 0; i < n2; i++) {
+            AppPremisesOperationalUnitDto premisesOperationalUnitDto=new AppPremisesOperationalUnitDto();
+            premisesOperationalUnitDto.setFloorNo("");
+            premisesOperationalUnitDto.setUnitNo("");
+            premisesOperationalUnitDto.setPremType(oldDtos.get(i).getPremType());
+            currDtos.add(premisesOperationalUnitDto);
+        }
+        return newList;
+    }
+
+    private List<AppPremisesOperationalUnitDto> getOperationalUnitDtos(AppGrpPremisesDto appGrpPremisesDto) {
+        List<AppPremisesOperationalUnitDto> operationalUnitDtos = getList(appGrpPremisesDto.getAppPremisesOperationalUnitDtos());
+        AppPremisesOperationalUnitDto currDto = new AppPremisesOperationalUnitDto();
+        currDto.setFloorNo(appGrpPremisesDto.getFloorNo());
+        currDto.setUnitNo(appGrpPremisesDto.getUnitNo());
+        operationalUnitDtos.add(0, currDto);
+        return operationalUnitDtos;
     }
 
     private void dealCharges(AppSvcChargesPageDto appSvcChargesPageDto, AppSvcChargesPageDto oldAppSvcChargesPageDto) {
@@ -2086,17 +2132,6 @@ public class LicenceViewServiceDelegator {
         }
     }
 
-    private void creatAppPremisesOperationalUnitDto(List<AppPremisesOperationalUnitDto> appPremisesOperationalUnitDto ,List<AppPremisesOperationalUnitDto> oldAppPremisesOperationalUnitDto){
-        int size = appPremisesOperationalUnitDto.size();
-        int oldSize = oldAppPremisesOperationalUnitDto.size();
-        for(int i=0;i<oldSize-size;i++){
-            AppPremisesOperationalUnitDto premisesOperationalUnitDto=new AppPremisesOperationalUnitDto();
-            premisesOperationalUnitDto.setFloorNo("");
-            premisesOperationalUnitDto.setUnitNo("");
-            premisesOperationalUnitDto.setPremType(oldAppPremisesOperationalUnitDto.get(appPremisesOperationalUnitDto.size()+i).getPremType());
-            appPremisesOperationalUnitDto.add(premisesOperationalUnitDto);
-        }
-    }
     private void creatCgo(List<AppSvcPrincipalOfficersDto> appSvcCgoDtoList,List<AppSvcPrincipalOfficersDto>oldAppSvcCgoDtoList){
         int size = appSvcCgoDtoList.size();
         int oldSize = oldAppSvcCgoDtoList.size();

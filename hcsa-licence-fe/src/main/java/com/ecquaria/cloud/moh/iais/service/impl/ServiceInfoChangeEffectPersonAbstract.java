@@ -373,10 +373,13 @@ public class ServiceInfoChangeEffectPersonAbstract implements ServiceInfoChangeE
                 return ids;
             }
             kahList.forEach(kah -> {
-                if (oldKahList.stream().noneMatch(dto -> Objects.equals(dto.getIdNo(), kah.getIdNo())
-                        && Objects.equals(dto.getIdType(), kah.getIdType())
-                        && Objects.equals(dto.getName(), kah.getName())
-                        && Objects.equals(dto.getSalutation(), kah.getSalutation()))) {
+                AppSvcPrincipalOfficersDto matched = oldKahList.stream()
+                        .filter(dto -> Objects.equals(dto.getIdNo(), kah.getIdNo()))
+                        .findAny()
+                        .orElse(null);
+                if (matched != null && !(Objects.equals(matched.getIdType(), kah.getIdType())
+                        && Objects.equals(matched.getName(), kah.getName())
+                        && Objects.equals(matched.getSalutation(), kah.getSalutation()))) {
                     ids.add(kah.getIdNo());
                 }
             });

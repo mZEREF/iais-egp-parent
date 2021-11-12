@@ -87,9 +87,9 @@ public class GiroDeductionBeDelegator {
     private final static String CSV="csv";
 
     protected static final String [] STATUS={"PMT01","PMT03","PMT09"};
-/*
-    protected static final String [] PAYMENT_DEC={MasterCodeUtil.getCodeDesc("PMT01"),MasterCodeUtil.getCodeDesc("PMT03"),MasterCodeUtil.getCodeDesc("PMT09")};
-*/
+    /*
+        protected static final String [] PAYMENT_DEC={MasterCodeUtil.getCodeDesc("PMT01"),MasterCodeUtil.getCodeDesc("PMT03"),MasterCodeUtil.getCodeDesc("PMT09")};
+    */
     @Autowired
     private GiroDeductionBeDelegator(GiroDeductionBeService giroDeductionBeService){
         this.giroDeductionBeService = giroDeductionBeService;
@@ -358,7 +358,7 @@ public class GiroDeductionBeDelegator {
             ) {
                 List<ApplicationDto> applicationDtoList=applicationService.getApplicaitonsByAppGroupId(appGrp.getId());
                 for (ApplicationDto app:applicationDtoList
-                     ) {
+                ) {
                     app.setStatus(ApplicationConsts.APPLICATION_STATUS_PENDING_PAYMENT_RESUBMIT);
                     applicationService.callEicInterApplication(app);
                 }
@@ -403,11 +403,20 @@ public class GiroDeductionBeDelegator {
         List<ApplicationGroupDto> applicationGroupDtos = giroDeductionBeService.sendMessageEmail(appGroupList);
         HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
         HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
-       /* giroDeductionClient.updateDeductionDtoSearchResultUseGroups(giroDeductionDtoList);*/
+        /* giroDeductionClient.updateDeductionDtoSearchResultUseGroups(giroDeductionDtoList);*/
         beEicGatewayClient.updateDeductionDtoSearchResultUseGroups(giroDeductionDtoList, signature.date(), signature.authorization(),
                 signature2.date(), signature2.authorization());
         beEicGatewayClient.updateFeApplicationGroupStatus(applicationGroupDtos, signature.date(), signature.authorization(),
                 signature2.date(), signature2.authorization());
+        for (ApplicationGroupDto appGrp:applicationGroupDtos
+        ) {
+            List<ApplicationDto> applicationDtoList=applicationService.getApplicaitonsByAppGroupId(appGrp.getId());
+            for (ApplicationDto app:applicationDtoList
+            ) {
+                app.setStatus(ApplicationConsts.APPLICATION_STATUS_PENDING_PAYMENT_RESUBMIT);
+                applicationService.callEicInterApplication(app);
+            }
+        }
         ParamUtil.setSessionAttr(bpc.request,"saveRetriggerOK",AppConsts.YES);
     }
 
@@ -425,7 +434,7 @@ public class GiroDeductionBeDelegator {
             rows.forEach(v->{
                 try {
                     printer.printRecord(integer.get(),v.getHciName().replace("<br>", String.valueOf((char)10)+""),v.getAppGroupNo(),v.getTxnRefNo()
-                    ,v.getAcctNo(),decryptPayment(v.getPmtStatus()),"$" + v.getAmount());
+                            ,v.getAcctNo(),decryptPayment(v.getPmtStatus()),"$" + v.getAmount());
                     integer.getAndIncrement();
                 } catch (IOException e) {
                     log.error(e.getMessage(), e);
