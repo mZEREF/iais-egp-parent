@@ -52,14 +52,12 @@ public class ArDataSubmissionServiceImpl implements ArDataSubmissionService {
 
     private static final List<String> statuses = IaisCommonUtils.getDsCycleFinalStatus();
     @Override
-    public Map<String, AppGrpPremisesDto> getAppGrpPremises(String licenseeId, String serviceName) {
+    public Map<String, AppGrpPremisesDto> getArCenterPremises(String licenseeId) {
         if (StringUtil.isEmpty(licenseeId)) {
             return IaisCommonUtils.genNewHashMap();
         }
         List<String> svcNames = new ArrayList<>();
-        if (!StringUtil.isEmpty(serviceName)) {
-            svcNames.add(serviceName);
-        }
+        //svcNames.add(serviceName);
         List<AppGrpPremisesDto> appGrpPremisesDtos = licenceClient.getLatestPremisesByConds(licenseeId, svcNames, false).getEntity();
         Map<String, AppGrpPremisesDto> appGrpPremisesDtoMap = IaisCommonUtils.genNewHashMap();
         if (appGrpPremisesDtos == null || appGrpPremisesDtos.isEmpty()) {

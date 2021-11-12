@@ -10,7 +10,7 @@ import java.util.Map;
 
 public interface ArDataSubmissionService {
 
-    Map<String, AppGrpPremisesDto> getAppGrpPremises(String licenseeId, String serviceName);
+    Map<String, AppGrpPremisesDto> getArCenterPremises(String licenseeId);
 
     CycleStageSelectionDto getCycleStageSelectionDtoByConds(String idType, String idNumber, String nationality, String orgId,
             String hciCode);

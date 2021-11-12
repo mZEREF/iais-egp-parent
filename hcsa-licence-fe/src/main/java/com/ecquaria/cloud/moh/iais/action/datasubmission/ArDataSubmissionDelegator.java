@@ -75,7 +75,7 @@ public class ArDataSubmissionDelegator {
             if (loginContext != null) {
                 licenseeId = loginContext.getLicenseeId();
             }
-            appGrpPremisesMap = arDataSubmissionService.getAppGrpPremises(licenseeId, "");
+            appGrpPremisesMap = arDataSubmissionService.getArCenterPremises(licenseeId);
             bpc.request.getSession().setAttribute(DataSubmissionConstant.AR_PREMISES_MAP, appGrpPremisesMap);
         }
         if (appGrpPremisesMap.isEmpty()) {
