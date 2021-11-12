@@ -12,22 +12,22 @@
             <div class="panel-main-content form-horizontal">
                 <iais:row>
                     <label class="col-xs-6 col-md-6 ">Please indicate ART Co-funding</label>
-                    <label class="col-xs-6 col-md-6 ">
+                    <div class="col-sm-7 col-xs-6 col-md-6">
                         <p>
                             <c:if test="${arTreatmentSubsidiesStageDto.coFunding == 'No'}">No Co-funding for this cycle</c:if>
                             <c:if test="${arTreatmentSubsidiesStageDto.coFunding == 'Fresh'}">Fresh Cycle Subsidy</c:if>
                             <c:if test="${arTreatmentSubsidiesStageDto.coFunding == 'Frozen'}">Frozen Cycle Subsidy</c:if>
                         </p>
-                    </label>
+                    </div>
                 </iais:row>
                 <iais:row>
                     <label class="col-xs-6 col-md-6 ">Is there an Appeal?</label>
-                    <label class="col-xs-6 col-md-6 ">
+                    <div class="col-sm-7 col-xs-6 col-md-6">
                         <p>
                             <c:if test="${arTreatmentSubsidiesStageDto.isThereAppeal == 'true'}">Yes</c:if>
                             <c:if test="${arTreatmentSubsidiesStageDto.isThereAppeal == 'false'}">No</c:if>
                         </p>
-                    </label>
+                    </div>
                 </iais:row>
                 <%@include file="../common/patientInventoryTable.jsp" %>
             </div>

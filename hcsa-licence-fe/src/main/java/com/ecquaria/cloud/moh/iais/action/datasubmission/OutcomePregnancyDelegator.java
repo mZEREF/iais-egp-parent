@@ -151,6 +151,7 @@ public class OutcomePregnancyDelegator extends CommonDelegator {
         Boolean babyDetailsUnknown = "true".equals(ParamUtil.getString(request, "babyDetailsUnknown"));
 
         Integer l2CareBabyNum = ParamUtil.getInt(request, "l2CareBabyNum", 0);
+        Integer nicuCareBabyNum = ParamUtil.getInt(request, "NICUCareBabyNum", 0);
         Integer l3CareBabyNum = ParamUtil.getInt(request, "l3CareBabyNum", 0);
 
         Integer l2CareBabyDays = ParamUtil.getInt(request, "l2CareBabyDays", 0);
@@ -175,6 +176,7 @@ public class OutcomePregnancyDelegator extends CommonDelegator {
         pregnancyOutcomeStageDto.setBirthPlace(birthPlace);
         pregnancyOutcomeStageDto.setLocalBirthPlace(localBirthPlace);
         pregnancyOutcomeStageDto.setBabyDetailsUnknown(babyDetailsUnknown);
+        pregnancyOutcomeStageDto.setNicuCareBabyNum(nicuCareBabyNum);
         pregnancyOutcomeStageDto.setL2CareBabyNum(l2CareBabyNum);
         pregnancyOutcomeStageDto.setL3CareBabyNum(l3CareBabyNum);
         pregnancyOutcomeStageDto.setL2CareBabyDays(l2CareBabyDays);

@@ -4,8 +4,8 @@
         <![CDATA[
             <div class="pregnancyOutcomeStageBabySection" id="pregnancyOutcomeStageBabySection${babyIndex}">
                 <div class="form-group">
-                    <label class="col-xs-5 col-md-4 control-label">Baby ${babyDisplayNum} Birth Weight</label>
-                    <div class="col-sm-7 col-md-5 col-xs-7 col-md-7">
+                    <label class="col-xs-5 col-md-6 control-label">Baby ${babyDisplayNum} Birth Weight</label>
+                    <div class="col-sm-7 col-md-6 col-xs-7 col-md-6">
                         <select class="birthWeight" name="birthWeight${babyIndex}" id="birthWeight${babyIndex}">
                               <option value="">Please Select</option>
                               ${babyWeightSelectOptions}
@@ -14,8 +14,8 @@
                 </div>
 
                 <div class="form-group">
-                    <label class="col-xs-5 col-md-4 control-label">Baby ${babyDisplayNum} Birth Defect</label>
-                    <div class="col-md-7">
+                    <label class="col-xs-5 col-md-6 control-label">Baby ${babyDisplayNum} Birth Defect</label>
+                    <div class="col-md-6">
                         <div class="form-check col-12">
                             <input class="form-check-input birthDefect"
                                    type="radio"
@@ -54,10 +54,10 @@
                 </div>
                 <div name="defectTypeSectionName" style="display:none;">
                     <div class="form-group">
-                        <label class="col-xs-5 col-md-4 control-label">Baby ${babyDisplayNum} Defect Type
+                        <label class="col-xs-5 col-md-6 control-label">Baby ${babyDisplayNum} Defect Type
                             &nbsp;<span class="mandatory">*</span>
                         </label>
-                        <div class="col-sm-7 col-md-5 col-xs-7 col-md-7">
+                        <div class="col-sm-7 col-md-6 col-xs-7 col-md-6">
                             <div class="form-check col-xs-12">
                                 <input class="form-check-input defectType" type="checkbox"
                                        name="defectType${babyIndex}"
@@ -142,10 +142,10 @@
                     </div>
                     <div name="otherDefectTypeDivName" style="display:none;">
                         <div class="form-group">
-                            <label class="col-xs-5 col-md-4 control-label">Baby ${babyDisplayNum} Defect Type (Others)
+                            <label class="col-xs-5 col-md-6 control-label">Baby ${babyDisplayNum} Defect Type (Others)
                                 &nbsp;<span class="mandatory">*</span>
                             </label>
-                            <div class="col-sm-7 col-md-5 col-xs-7 col-md-7">
+                            <div class="col-sm-7 col-md-6 col-xs-7 col-md-6">
                                 <input type="text" class="otherDefectType" id="otherDefectType${babyIndex}" name="otherDefectType${babyIndex}" maxlength="20" autocomplete="off">
                             </div>
                         </div>

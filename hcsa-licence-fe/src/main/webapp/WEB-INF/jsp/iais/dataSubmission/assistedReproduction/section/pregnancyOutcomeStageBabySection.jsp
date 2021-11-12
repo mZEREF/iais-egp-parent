@@ -6,17 +6,17 @@
     <div class="pregnancyOutcomeStageBabySection" id="pregnancyOutcomeStageBabySection${status.index}">
         <c:set var="displayNum" value="${status.index + 1}"/>
         <iais:row>
-            <iais:field width="5" value="Baby ${displayNum} Birth Weight" mandatory="true"/>
-            <iais:value width="7" cssClass="col-md-7">
+            <iais:field width="6" value="Baby ${displayNum} Birth Weight" mandatory="true" cssClass="col-md-6"/>
+            <iais:value width="6" cssClass="col-md-6">
                 <iais:select id="birthWeight${status.index}" firstOption="Please Select"
                              name="birthWeight${status.index}" options="birthWeightSelectOption"
-                             value="${pregnancyOutcomeBabyDto.birthWeight}"></iais:select>
+                             value="${pregnancyOutcomeBabyDto.birthWeight}"/>
             </iais:value>
         </iais:row>
 
         <iais:row>
-            <iais:field width="5" value="Baby ${displayNum} Birth Defect"/>
-            <div class="col-md-7">
+            <iais:field width="6" value="Baby ${displayNum} Birth Defect" cssClass="col-md-6"/>
+            <div class="col-md-6">
                 <div class="form-check col-12">
                     <input class="form-check-input birthDefect"
                            type="radio"
@@ -57,8 +57,8 @@
         </iais:row>
         <div name="defectTypeSectionName">
             <iais:row>
-                <iais:field width="5" value="Baby ${displayNum} Defect Type" mandatory="true"/>
-                <iais:value width="7" cssClass="col-md-7">
+                <iais:field width="6" value="Baby ${displayNum} Defect Type" mandatory="true" cssClass="col-md-6"/>
+                <iais:value width="6" cssClass="col-md-6">
                     <div class="form-check col-xs-12">
                         <input class="form-check-input defectType" type="checkbox"
                                name="defectType${status.index}"
@@ -152,8 +152,8 @@
             </iais:row>
             <div name="otherDefectTypeDivName">
                 <iais:row>
-                    <iais:field width="5" value="Baby ${displayNum} Defect Type (Others)" mandatory="true"/>
-                    <iais:value width="7" cssClass="col-md-7">
+                    <iais:field width="6" value="Baby ${displayNum} Defect Type (Others)" mandatory="true" cssClass="col-md-6"/>
+                    <iais:value width="6" cssClass="col-md-6">
                         <iais:input maxLength="20" type="text" cssClass="otherDefectType"
                                     name="otherDefectType${status.index}" id="otherDefectType${status.index}"
                                     value="${otherDefectType}"/>
