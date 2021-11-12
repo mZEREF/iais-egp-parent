@@ -23,46 +23,46 @@ public class FacilityCommitteeDto extends ValidatableNodeValue {
     public static class BioSafetyCommitteePersonnel implements Serializable {
         private String committeeEntityId;
 
-        @RfcAttributeDesc(aliasName = "iais.bsbfe.FacilityCommittee.name")
+        @RfcAttributeDesc(aliasName = "iais.bsbfe.facilityCommittee.name")
         private String name;
 
-        @RfcAttributeDesc(aliasName = "iais.bsbfe.FacilityCommittee.nationality")
+        @RfcAttributeDesc(aliasName = "iais.bsbfe.facilityCommittee.nationality")
         private String nationality;
 
-        @RfcAttributeDesc(aliasName = "iais.bsbfe.FacilityCommittee.idType")
+        @RfcAttributeDesc(aliasName = "iais.bsbfe.facilityCommittee.idType")
         private String idType;
 
-        @RfcAttributeDesc(aliasName = "iais.bsbfe.FacilityCommittee.idNumber")
+        @RfcAttributeDesc(aliasName = "iais.bsbfe.facilityCommittee.idNumber")
         private String idNumber;
 
-        @RfcAttributeDesc(aliasName = "iais.bsbfe.FacilityCommittee.designation")
+        @RfcAttributeDesc(aliasName = "iais.bsbfe.facilityCommittee.designation")
         private String designation;
 
-        @RfcAttributeDesc(aliasName = "iais.bsbfe.FacilityCommittee.contactNo")
+        @RfcAttributeDesc(aliasName = "iais.bsbfe.facilityCommittee.contactNo")
         private String contactNo;
 
-        @RfcAttributeDesc(aliasName = "iais.bsbfe.FacilityCommittee.email")
+        @RfcAttributeDesc(aliasName = "iais.bsbfe.facilityCommittee.email")
         private String email;
 
-        @RfcAttributeDesc(aliasName = "iais.bsbfe.FacilityCommittee.employmentStartDate")
+        @RfcAttributeDesc(aliasName = "iais.bsbfe.facilityCommittee.employmentStartDate")
         private String employmentStartDate;
 
-        @RfcAttributeDesc(aliasName = "iais.bsbfe.FacilityCommittee.expertiseArea")
+        @RfcAttributeDesc(aliasName = "iais.bsbfe.facilityCommittee.expertiseArea")
         private String expertiseArea;
 
-        @RfcAttributeDesc(aliasName = "iais.bsbfe.FacilityCommittee.role")
+        @RfcAttributeDesc(aliasName = "iais.bsbfe.facilityCommittee.role")
         private String role;
 
-        @RfcAttributeDesc(aliasName = "iais.bsbfe.FacilityCommittee.employee")
+        @RfcAttributeDesc(aliasName = "iais.bsbfe.facilityCommittee.employee")
         private String employee;
 
-        @RfcAttributeDesc(aliasName = "iais.bsbfe.FacilityCommittee.externalCompName")
+        @RfcAttributeDesc(aliasName = "iais.bsbfe.facilityCommittee.externalCompName")
         private String externalCompName;
     }
 
     private String inputMethod;
 
-    @RfcAttributeDesc(aliasName = "iais.bsbfe.FacilityCommittee.addOrDelete")
+    @RfcAttributeDesc(aliasName = "iais.bsbfe.facilityCommittee.addOrDelete")
     private List<BioSafetyCommitteePersonnel> facCommitteePersonnelList;
 
     @JsonIgnore

@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import sg.gov.moh.iais.egp.bsb.common.node.simple.ValidatableNodeValue;
 import sg.gov.moh.iais.egp.bsb.dto.ValidationResultDto;
 import sg.gov.moh.iais.egp.bsb.util.SpringReflectionUtils;
+import sg.gov.moh.iais.egp.common.annotation.RfcAttributeDesc;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
@@ -19,9 +20,16 @@ public class BiologicalAgentToxinDto extends ValidatableNodeValue {
     @Data
     @NoArgsConstructor
     public static class BATInfo implements Serializable {
+        @RfcAttributeDesc(aliasName = "iais.bsbfe.facBat.schedule")
         private String schedule;
+
+        @RfcAttributeDesc(aliasName = "iais.bsbfe.facBat.name")
         private String batName;
+
+        @RfcAttributeDesc(aliasName = "iais.bsbfe.facBat.sample.addOrDelete")
         private List<String> sampleType;
+
+        @RfcAttributeDesc(aliasName = "iais.bsbfe.facBat.sample.other")
         private String otherSampleType;
         /* The key is the sample type, the value is the entity ID related to it */
         private Map<String, String> sampleEntityIdMap;
@@ -29,7 +37,10 @@ public class BiologicalAgentToxinDto extends ValidatableNodeValue {
 
     private String activityEntityId;
     private String activityType;
+
+    @RfcAttributeDesc(aliasName = "iais.bsbfe.facBat.addOrDelete")
     private List<BATInfo> batInfos;
+
     private List<String> workType;
     private String sampleWorkDetail;
     private String procurementMode;
@@ -268,7 +279,7 @@ public class BiologicalAgentToxinDto extends ValidatableNodeValue {
             info.setBatName(ParamUtil.getString(request, KEY_PREFIX_BAT_NAME + SEPARATOR +i));
             String[] sampleTypes = ParamUtil.getStrings(request, KEY_PREFIX_SAMPLE_TYPE + SEPARATOR +i);
             if (sampleTypes != null && sampleTypes.length > 0) {
-                info.setSampleType(Arrays.asList(sampleTypes));
+                info.setSampleType(new ArrayList<>(Arrays.asList(sampleTypes)));
             } else {
                 info.setSampleType(new ArrayList<>(0));
             }

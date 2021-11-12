@@ -8,10 +8,7 @@ import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -22,6 +19,21 @@ import java.util.stream.Collectors;
 public class CompareTwoObject {
 
     private CompareTwoObject() {}
+
+    /**
+     * By default, the map(size and key) is already compared, since the activities are compared in SelectDto, there is no more comparison here.
+     * Warning: This method is only suitable for special cases, such as activity and BAT linkage.
+     */
+    public static <T> void diffMap(Map<String, T> beforeBatMap, Map<String, T> afterBatMap, List<DiffContent> diffs, Class<?>... customerClass){
+        List<String> beforeKeyList = new ArrayList<>(beforeBatMap.keySet());
+        List<String> afterKeyList = new ArrayList<>(afterBatMap.keySet());
+        //If size and key are equal, then compare; if size and key are not equal, as the diffContent information is already presented in the compare SelectDto, we will do nothing
+        if (beforeBatMap.size() == afterBatMap.size() && beforeKeyList.equals(afterKeyList)){
+            for(Map.Entry<String,T> entry : beforeBatMap.entrySet()){
+                diff(beforeBatMap.get(entry.getKey()),afterBatMap.get(entry.getKey()), diffs, customerClass);
+            }
+        }
+    }
 
     /**
      * This method is used recursively to get modify field diffs.

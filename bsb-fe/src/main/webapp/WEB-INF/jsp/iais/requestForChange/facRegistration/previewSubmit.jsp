@@ -135,60 +135,50 @@
                                                                             <div class="form-group">
                                                                                 <label class="col-xs-5 col-md-4 control-label">Name</label>
                                                                                 <div class="col-sm-6 col-md-4 col-xs-6"><p>${personnel.name}</p></div>
-                                                                                <div class="col-sm-6 col-md-4 col-xs-6"><p>${personnel.name}</p></div>
                                                                                 <div class="clear"></div>
                                                                             </div>
                                                                             <div class="form-group">
                                                                                 <label class="col-xs-5 col-md-4 control-label">NRIC/FIN</label>
-                                                                                <div class="col-sm-6 col-md-4 col-xs-6"><p>${personnel.idNumber}</p></div>
                                                                                 <div class="col-sm-6 col-md-4 col-xs-6"><p>${personnel.idNumber}</p></div>
                                                                                 <div class="clear"></div>
                                                                             </div>
                                                                             <div class="form-group">
                                                                                 <label class="col-xs-5 col-md-4 control-label">Nationality</label>
                                                                                 <div class="col-sm-6 col-md-4 col-xs-6"><p>${personnel.nationality}</p></div>
-                                                                                <div class="col-sm-6 col-md-4 col-xs-6"><p>${personnel.nationality}</p></div>
                                                                                 <div class="clear"></div>
                                                                             </div>
                                                                             <div class="form-group">
                                                                                 <label class="col-xs-5 col-md-4 control-label">Designation</label>
-                                                                                <div class="col-sm-6 col-md-4 col-xs-6"><p>${personnel.designation}</p></div>
                                                                                 <div class="col-sm-6 col-md-4 col-xs-6"><p>${personnel.designation}</p></div>
                                                                                 <div class="clear"></div>
                                                                             </div>
                                                                             <div class="form-group">
                                                                                 <label class="col-xs-5 col-md-4 control-label">Contect No.</label>
                                                                                 <div class="col-sm-6 col-md-4 col-xs-6"><p>${personnel.contactNo}</p></div>
-                                                                                <div class="col-sm-6 col-md-4 col-xs-6"><p>${personnel.contactNo}</p></div>
                                                                                 <div class="clear"></div>
                                                                             </div>
                                                                             <div class="form-group">
                                                                                 <label class="col-xs-5 col-md-4 control-label">Email Address</label>
-                                                                                <div class="col-sm-6 col-md-4 col-xs-6"><p>${personnel.email}</p></div>
                                                                                 <div class="col-sm-6 col-md-4 col-xs-6"><p>${personnel.email}</p></div>
                                                                                 <div class="clear"></div>
                                                                             </div>
                                                                             <div class="form-group">
                                                                                 <label class="col-xs-5 col-md-4 control-label">Employment Start Date</label>
                                                                                 <div class="col-sm-6 col-md-4 col-xs-6"><p>${personnel.employmentStartDate}</p></div>
-                                                                                <div class="col-sm-6 col-md-4 col-xs-6"><p>${personnel.employmentStartDate}</p></div>
                                                                                 <div class="clear"></div>
                                                                             </div>
                                                                             <div class="form-group">
                                                                                 <label class="col-xs-5 col-md-4 control-label">Employment Period</label>
-                                                                                <div class="col-sm-6 col-md-4 col-xs-6"><p>${personnel.employmentPeriod}</p></div>
                                                                                 <div class="col-sm-6 col-md-4 col-xs-6"><p>${personnel.employmentPeriod}</p></div>
                                                                                 <div class="clear"></div>
                                                                             </div>
                                                                             <div class="form-group">
                                                                                 <label class="col-xs-5 col-md-4 control-label">Security Clearance Date</label>
                                                                                 <div class="col-sm-6 col-md-4 col-xs-6"><p>${personnel.securityClearanceDate}</p></div>
-                                                                                <div class="col-sm-6 col-md-4 col-xs-6"><p>${personnel.securityClearanceDate}</p></div>
                                                                                 <div class="clear"></div>
                                                                             </div>
                                                                             <div class="form-group">
                                                                                 <label class="col-xs-5 col-md-4 control-label">Area of Work</label>
-                                                                                <div class="col-sm-6 col-md-4 col-xs-6"><p>${personnel.workArea}</p></div>
                                                                                 <div class="col-sm-6 col-md-4 col-xs-6"><p>${personnel.workArea}</p></div>
                                                                                 <div class="clear"></div>
                                                                             </div>
@@ -342,60 +332,50 @@
                                                                             <div class="form-group">
                                                                                 <label class="col-xs-5 col-md-4 control-label">Name</label>
                                                                                 <div class="col-sm-6 col-md-4 col-xs-6"><p>${personnel.name}</p></div>
-                                                                                <div class="col-sm-6 col-md-4 col-xs-6"><p>${personnel.name}</p></div>
                                                                                 <div class="clear"></div>
                                                                             </div>
                                                                             <div class="form-group">
                                                                                 <label class="col-xs-5 col-md-4 control-label">NRIC/FIN</label>
-                                                                                <div class="col-sm-6 col-md-4 col-xs-6"><p>${personnel.idNumber}</p></div>
                                                                                 <div class="col-sm-6 col-md-4 col-xs-6"><p>${personnel.idNumber}</p></div>
                                                                                 <div class="clear"></div>
                                                                             </div>
                                                                             <div class="form-group">
                                                                                 <label class="col-xs-5 col-md-4 control-label">Nationality</label>
                                                                                 <div class="col-sm-6 col-md-4 col-xs-6"><p>${personnel.nationality}</p></div>
-                                                                                <div class="col-sm-6 col-md-4 col-xs-6"><p>${personnel.nationality}</p></div>
                                                                                 <div class="clear"></div>
                                                                             </div>
                                                                             <div class="form-group">
                                                                                 <label class="col-xs-5 col-md-4 control-label">Designation</label>
-                                                                                <div class="col-sm-6 col-md-4 col-xs-6"><p>${personnel.designation}</p></div>
                                                                                 <div class="col-sm-6 col-md-4 col-xs-6"><p>${personnel.designation}</p></div>
                                                                                 <div class="clear"></div>
                                                                             </div>
                                                                             <div class="form-group">
                                                                                 <label class="col-xs-5 col-md-4 control-label">Contect No.</label>
                                                                                 <div class="col-sm-6 col-md-4 col-xs-6"><p>${personnel.contactNo}</p></div>
-                                                                                <div class="col-sm-6 col-md-4 col-xs-6"><p>${personnel.contactNo}</p></div>
                                                                                 <div class="clear"></div>
                                                                             </div>
                                                                             <div class="form-group">
                                                                                 <label class="col-xs-5 col-md-4 control-label">Email Address</label>
-                                                                                <div class="col-sm-6 col-md-4 col-xs-6"><p>${personnel.email}</p></div>
                                                                                 <div class="col-sm-6 col-md-4 col-xs-6"><p>${personnel.email}</p></div>
                                                                                 <div class="clear"></div>
                                                                             </div>
                                                                             <div class="form-group">
                                                                                 <label class="col-xs-5 col-md-4 control-label">Employment Start Date</label>
                                                                                 <div class="col-sm-6 col-md-4 col-xs-6"><p>${personnel.employmentStartDate}</p></div>
-                                                                                <div class="col-sm-6 col-md-4 col-xs-6"><p>${personnel.employmentStartDate}</p></div>
                                                                                 <div class="clear"></div>
                                                                             </div>
                                                                             <div class="form-group">
                                                                                 <label class="col-xs-5 col-md-4 control-label">Area of Expertise</label>
-                                                                                <div class="col-sm-6 col-md-4 col-xs-6"><p>${personnel.expertiseArea}</p></div>
                                                                                 <div class="col-sm-6 col-md-4 col-xs-6"><p>${personnel.expertiseArea}</p></div>
                                                                                 <div class="clear"></div>
                                                                             </div>
                                                                             <div class="form-group">
                                                                                 <label class="col-xs-5 col-md-4 control-label">Role</label>
                                                                                 <div class="col-sm-6 col-md-4 col-xs-6"><p>${personnel.role}</p></div>
-                                                                                <div class="col-sm-6 col-md-4 col-xs-6"><p>${personnel.role}</p></div>
                                                                                 <div class="clear"></div>
                                                                             </div>
                                                                             <div class="form-group">
                                                                                 <label class="col-xs-5 col-md-4 control-label">Is this person is Employee of the Company?</label>
-                                                                                <div class="col-sm-6 col-md-4 col-xs-6"><p>${personnel.employee}</p></div>
                                                                                 <div class="col-sm-6 col-md-4 col-xs-6"><p>${personnel.employee}</p></div>
                                                                                 <div class="clear"></div>
                                                                             </div>
@@ -429,12 +409,10 @@
                                                                                 <div class="form-group">
                                                                                     <label class="col-xs-5 col-md-4 control-label">Name of Biological Agent/Toxin</label>
                                                                                     <div class="col-sm-6 col-md-4 col-xs-6"><p>${info.batName}</p></div>
-                                                                                    <div class="col-sm-6 col-md-4 col-xs-6"><p>${info.batName}</p></div>
                                                                                     <div class="clear"></div>
                                                                                 </div>
                                                                                 <div class="form-group">
                                                                                     <label class="col-xs-5 col-md-4 control-label">Types of samples that will be handled</label>
-                                                                                    <div class="col-sm-6 col-md-4 col-xs-6"><p>${info.sampleType}</p></div>
                                                                                     <div class="col-sm-6 col-md-4 col-xs-6"><p>${info.sampleType}</p></div>
                                                                                     <div class="clear"></div>
                                                                                 </div>

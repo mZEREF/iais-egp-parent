@@ -53,6 +53,10 @@ public interface FacilityRegisterClient {
     @GetMapping(path = "/register/facility/application/{appId}", produces =MediaType.APPLICATION_JSON_VALUE)
     ResponseDto<FacilityRegisterDto> getFacilityRegistrationAppDataByApplicationId(@PathVariable("appId") String appId);
 
-    @GetMapping(path = "/register/facility/approval/{approvalId}", produces =MediaType.APPLICATION_JSON_VALUE)
+    /*******************RFC********************/
+    @GetMapping(path = "/register/facility/rfc/approval/{approvalId}", produces =MediaType.APPLICATION_JSON_VALUE)
     ResponseDto<FacilityRegisterDto> getFacilityRegistrationAppDataByApprovalId(@PathVariable("approvalId") String approvalId);
+
+    @PostMapping(path = "/register/facility/rfc/amendment/saveFacility", consumes = MediaType.APPLICATION_JSON_VALUE, produces =MediaType.APPLICATION_JSON_VALUE)
+    ResponseDto<String> saveAmendmentFacility(@RequestBody FacilityRegisterDto dto);
 }

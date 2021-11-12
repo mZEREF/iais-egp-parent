@@ -150,7 +150,7 @@
                                                             <td>
                                                                 <p class="visible-xs visible-sm table-row-title">Approval No.</p>
                                                                 <c:choose>
-                                                                    <c:when test="${approval.processType eq 'PROTYPE001'}">
+                                                                    <c:when test="${approval.processType eq 'PROTYPE001' and approval.status eq 'APPRSTA001'}">
                                                                         <a href="/bsb-fe/eservice/INTERNET/MohRfcViewFacRegApplication?appId=<iais:mask name='id' value='${approval.id}'/>&approveNo=${approval.approveNo}<c:if test="${approval.status eq 'APPRSTA001'}">&editId=<iais:mask name='editId' value='${approval.id}'/></c:if>"><c:out value="${approval.approveNo}"/></a>
                                                                     </c:when>
                                                                     <c:otherwise>

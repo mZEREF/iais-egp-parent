@@ -523,32 +523,31 @@ public class RfcFacilityRegistrationDelegator {
                 if (previewSubmitNode.doValidation()) {
                     previewSubmitNode.passValidation();
 
-                    // save docs
-                    SimpleNode primaryDocNode = (SimpleNode) facRegRoot.at(NODE_NAME_PRIMARY_DOC);
-                    PrimaryDocDto primaryDocDto = (PrimaryDocDto) primaryDocNode.getValue();
-                    MultipartFile[] files = primaryDocDto.getNewDocMap().values().stream().map(PrimaryDocDto.NewDocInfo::getMultipartFile).toArray(MultipartFile[]::new);
-                    List<String> repoIds = fileRepoClient.saveFiles(files).getEntity();
-                    primaryDocDto.newFileSaved(repoIds);
-
-                    // save data
                     FacilityRegisterDto finalAllDataDto = FacilityRegisterDto.from(facRegRoot);
-
                     //rfc compare to decision flowType
                     FacilityRegisterDto oldFacilityRegisterDto = (FacilityRegisterDto)ParamUtil.getSessionAttr(request, KEY_OLD_FACILITY_REGISTER_DTO);
                     DecisionFlowType flowType = new DecisionFlowTypeImpl();
                     RfcFlowType rfcFlowType = flowType.facRegFlowType(compareTwoDto(oldFacilityRegisterDto,finalAllDataDto));
                     ParamUtil.setRequestAttr(request, "rfcFlowType", rfcFlowType);
+                    if (rfcFlowType.equals(RfcFlowType.AMENDMENT) || rfcFlowType.equals(RfcFlowType.NOTIFICATION)){
+                        // save docs
+                        SimpleNode primaryDocNode = (SimpleNode) facRegRoot.at(NODE_NAME_PRIMARY_DOC);
+                        PrimaryDocDto primaryDocDto = (PrimaryDocDto) primaryDocNode.getValue();
+                        MultipartFile[] files = primaryDocDto.getNewDocMap().values().stream().map(PrimaryDocDto.NewDocInfo::getMultipartFile).toArray(MultipartFile[]::new);
+                        List<String> repoIds = fileRepoClient.saveFiles(files).getEntity();
+                        primaryDocDto.newFileSaved(repoIds);
 
-                    AuditTrailDto auditTrailDto = (AuditTrailDto) ParamUtil.getSessionAttr(request, AuditTrailConsts.SESSION_ATTR_PARAM_NAME);
-                    finalAllDataDto.setAuditTrailDto(auditTrailDto);
-                    ResponseDto<String> responseDto = facRegClient.saveNewRegisteredFacility(finalAllDataDto);
-                    log.info("save new facility response: {}", responseDto);
+                        AuditTrailDto auditTrailDto = (AuditTrailDto) ParamUtil.getSessionAttr(request, AuditTrailConsts.SESSION_ATTR_PARAM_NAME);
+                        finalAllDataDto.setAuditTrailDto(auditTrailDto);
+                        ResponseDto<String> responseDto = facRegClient.saveAmendmentFacility(finalAllDataDto);
+                        log.info("save new facility response: {}", responseDto);
 
-                    // delete docs
-                    for (String id: primaryDocDto.getToBeDeletedRepoIds()) {
-                        FileRepoDto fileRepoDto = new FileRepoDto();
-                        fileRepoDto.setId(id);
-                        fileRepoClient.removeFileById(fileRepoDto);
+                        // delete docs
+                        for (String id: primaryDocDto.getToBeDeletedRepoIds()) {
+                            FileRepoDto fileRepoDto = new FileRepoDto();
+                            fileRepoDto.setId(id);
+                            fileRepoClient.removeFileById(fileRepoDto);
+                        }
                     }
                     ParamUtil.setRequestAttr(request, KEY_ACTION_TYPE, KEY_ACTION_SUBMIT);
                 } else {
@@ -800,6 +799,7 @@ public class RfcFacilityRegistrationDelegator {
         CompareTwoObject.diff(oldFacilityRegisterDto.getFacilityAdministratorDto(), newFacilityRegisterDto.getFacilityAdministratorDto(), diffContentList, FacilityAdministratorDto.FacilityAdministratorInfo.class);
         CompareTwoObject.diff(oldFacilityRegisterDto.getFacilityOfficerDto(), newFacilityRegisterDto.getFacilityOfficerDto(), diffContentList);
         CompareTwoObject.diff(oldFacilityRegisterDto.getFacilityCommitteeDto(), newFacilityRegisterDto.getFacilityCommitteeDto(), diffContentList);
+        CompareTwoObject.diffMap(oldFacilityRegisterDto.getBiologicalAgentToxinMap(), newFacilityRegisterDto.getBiologicalAgentToxinMap(), diffContentList, BiologicalAgentToxinDto.BATInfo.class);
         //biologicalAgentToxinMap,docRecordInfos don't process
         return diffContentList;
     }

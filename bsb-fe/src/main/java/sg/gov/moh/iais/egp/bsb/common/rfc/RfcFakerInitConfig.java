@@ -17,7 +17,7 @@ public class RfcFakerInitConfig {
     private RfcFakerInitConfig(){}
 
     public static Map<String, RfcFlowType> getFacRegFlowConfig(){
-        Map<String,RfcFlowType> map = new HashMap<>(58);
+        Map<String,RfcFlowType> map = new HashMap<>(63);
         //facProfile config
         map.put("iais.bsbfe.facProfile.name",AMENDMENT);
         map.put("iais.bsbfe.facProfile.type",AMENDMENT);
@@ -68,20 +68,26 @@ public class RfcFakerInitConfig {
         map.put("iais.bsbfe.facOfficer.contactNo",NOTIFICATION);
         map.put("iais.bsbfe.facOfficer.email",NOTIFICATION);
         map.put("iais.bsbfe.facOfficer.employmentStartDate",NOTIFICATION);
-        //FacilityCommittee config
-        map.put("iais.bsbfe.FacilityCommittee.addOrDelete",AMENDMENT);
-        map.put("iais.bsbfe.FacilityCommittee.name",AMENDMENT);
-        map.put("iais.bsbfe.FacilityCommittee.nationality",NOTIFICATION);
-        map.put("iais.bsbfe.FacilityCommittee.idType",AMENDMENT);
-        map.put("iais.bsbfe.FacilityCommittee.idNumber",AMENDMENT);
-        map.put("iais.bsbfe.FacilityCommittee.designation",NOTIFICATION);
-        map.put("iais.bsbfe.FacilityCommittee.contactNo",NOTIFICATION);
-        map.put("iais.bsbfe.FacilityCommittee.email",NOTIFICATION);
-        map.put("iais.bsbfe.FacilityCommittee.employmentStartDate",NOTIFICATION);
-        map.put("iais.bsbfe.FacilityCommittee.expertiseArea",NOTIFICATION);
-        map.put("iais.bsbfe.FacilityCommittee.role",AMENDMENT);
-        map.put("iais.bsbfe.FacilityCommittee.employee",NOTIFICATION);
-        map.put("iais.bsbfe.FacilityCommittee.externalCompName",NOTIFICATION);
+        //facilityCommittee config
+        map.put("iais.bsbfe.facilityCommittee.addOrDelete",AMENDMENT);
+        map.put("iais.bsbfe.facilityCommittee.name",AMENDMENT);
+        map.put("iais.bsbfe.facilityCommittee.nationality",NOTIFICATION);
+        map.put("iais.bsbfe.facilityCommittee.idType",AMENDMENT);
+        map.put("iais.bsbfe.facilityCommittee.idNumber",AMENDMENT);
+        map.put("iais.bsbfe.facilityCommittee.designation",NOTIFICATION);
+        map.put("iais.bsbfe.facilityCommittee.contactNo",NOTIFICATION);
+        map.put("iais.bsbfe.facilityCommittee.email",NOTIFICATION);
+        map.put("iais.bsbfe.facilityCommittee.employmentStartDate",NOTIFICATION);
+        map.put("iais.bsbfe.facilityCommittee.expertiseArea",NOTIFICATION);
+        map.put("iais.bsbfe.facilityCommittee.role",AMENDMENT);
+        map.put("iais.bsbfe.facilityCommittee.employee",NOTIFICATION);
+        map.put("iais.bsbfe.facilityCommittee.externalCompName",NOTIFICATION);
+        //bat config
+        map.put("iais.bsbfe.facBat.addOrDelete",AMENDMENT);
+        map.put("iais.bsbfe.facBat.schedule",AMENDMENT);
+        map.put("iais.bsbfe.facBat.name",AMENDMENT);
+        map.put("iais.bsbfe.facBat.sample.addOrDelete",AMENDMENT);
+        map.put("iais.bsbfe.facBat.sample.other",AMENDMENT);
         return map;
     }
 
