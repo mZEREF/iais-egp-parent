@@ -156,7 +156,7 @@
                     <iais:row>
                         <iais:field width="5" value="Donor's Age when Sample was Collected" mandatory="true"/>
                         <iais:value width="7" cssClass="col-md-7">
-                            <iais:input maxLength="2" type="text" name="donorAge" value="" />
+                            <iais:input maxLength="2" type="text" name="age" value="" />
                         </iais:value>
                     </iais:row>
                     <div id ="donorAge">
@@ -205,7 +205,7 @@
             "\">\n" +
             "                            <label class=\"col-xs-5 col-md-4 control-label\"></label>\n" +
             "                            <div class=\"col-sm-7 col-md-5 col-xs-7 col-md-7\">\n" +
-            "                                <input type=\"text\" name=\"donorAge" +
+            "                                <input type=\"text\" name=\"age" +
             "\" maxlength=\"2\" autocomplete=\"off\">\n" +
             "                                <span id=\"error_donorAge\" name=\"iaisErrorMsg\" class=\"error-msg\"></span>\n" +
             "                            </div>\n" +

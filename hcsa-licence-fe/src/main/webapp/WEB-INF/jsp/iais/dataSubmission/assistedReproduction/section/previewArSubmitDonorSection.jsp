@@ -102,13 +102,13 @@
                 <iais:row>
                     <iais:field width="5" value="Donor's Age when Sample was Collected" mandatory="true"/>
                     <iais:value width="7" cssClass="col-md-7">
-                        <c:out value="${donorSampleDto.donorAge}"/>
+                        <c:out value="${donorSampleDto.age}"/>
                     </iais:value>
                 </iais:row>
                 <iais:row>
                     <label class="col-xs-5 col-md-4 control-label"></label>
                     <iais:value width="7" cssClass="col-md-7">
-                        <c:out value="${donorSampleDto.donorAge}"/>
+                        <c:out value="${donorSampleDto.age}"/>
                     </iais:value>
                 </iais:row>
             </div>
