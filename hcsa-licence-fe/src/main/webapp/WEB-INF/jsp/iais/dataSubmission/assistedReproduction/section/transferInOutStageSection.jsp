@@ -1,4 +1,4 @@
-<%--<script type="text/javascript" src="<%=webroot1%>js/dataSubmission/transferInOutStageSection.js"></script>--%>
+<script type="text/javascript" src="<%=webroot1%>js/dataSubmission/transferInOutStageSection.js"></script>
 <div class="panel panel-default">
     <div class="panel-heading">
         <h4 class="panel-title">
@@ -10,7 +10,7 @@
     <div id="patientDetails" class="panel-collapse collapse in">
         <div class="panel-body">
             <div class="panel-main-content form-horizontal">
-                <c:set var="transferInOutStageDto" value="${arSuperDataSubmissionDt.transferInOutStageDto}" />
+                <c:set var="transferInOutStageDto" value="${arSuperDataSubmissionDto.transferInOutStageDto}" />
                 <iais:row>
                     <iais:field width="5" value="Is this a Transfer In or Out?" mandatory="true"/>
                     <iais:value width="3" cssClass="col-md-3">
@@ -20,7 +20,7 @@
                                    name="transferType"
                                    value="in"
                                    id="transferTypeIn"
-                                   <c:if test="${transferInOutStageDto.transferType =='in'}">checked</c:if>
+                                   <c:if test="${transferInOutStageDto.transferType eq 'in'}">checked</c:if>
                                    aria-invalid="false">
                             <label class="form-check-label"
                                    for="transferTypeIn"><span
@@ -34,7 +34,7 @@
                                    name="transferType"
                                    value="out"
                                    id="transferTypeOut"
-                                   <c:if test="${transferInOutStageDto.transferType == 'out'}">checked</c:if>
+                                   <c:if test="${transferInOutStageDto.transferType eq 'out'}">checked</c:if>
                                    aria-invalid="false">
                             <label class="form-check-label"
                                    for="transferTypeOut"><span
@@ -66,7 +66,6 @@
                         <span class="error-msg" name="iaisErrorMsg" id="error_transferredList"></span>
                     </iais:value>
                 </iais:row>
-
                         <iais:row id="transferred0">
                             <iais:field width="5" value="No. of Oocyte(s) Transferred" mandatory="true"/>
                             <iais:value width="7" cssClass="col-md-7">
@@ -108,7 +107,7 @@
                                    name="fromDonor"
                                    value="false"
                                    id="fromDonorNo"
-                                   <c:if test="${!transferInOutStageDto.fromDonor}">checked</c:if>
+                                   <c:if test="${!transferInOutStageDto.fromDono}">checked</c:if>
                                    aria-invalid="false">
                             <label class="form-check-label"
                                    for="fromDonorNo"><span
@@ -120,26 +119,25 @@
                         <iais:row>
                                 <iais:field width="5" value="Transferred In From" mandatory="true"/>
                                 <iais:value width="7" cssClass="col-md-7">
-                                    <iais:select  name="transInFromHciCode"  codeCategory="TRANSFERRED_IN_FROM" value="${transferInOutStageDto.transInFromHciCode}" onchange ="toggleOnSelect(this, 'AR_TIF_003', 'othersInFrom')" />
+                                    <iais:select  name="transInFromHciCode" firstOption="Please Select"  codeCategory="TRANSFERRED_IN_FROM" value="${transferInOutStageDto.transInFromHciCode}" onchange ="toggleOnSelect(this, 'AR_TIF_003', 'othersInFrom')" />
                                 </iais:value>
                         </iais:row>
 
-                        <iais:row id="othersInFrom">
+                        <iais:row id="othersInFrom" style="${transferInOutStageDto.transInFromHciCode eq DataSubmissionConsts.TRANSFERRED_IN_FROM_OTHERS ? '' : 'display: none'}">
                             <iais:field width="5" value="Transferred In From (Others)" mandatory="true"/>
                             <iais:value width="7" cssClass="col-md-7">
                                 <iais:input  maxLength="20" type="text" name="transInFromOthers" value="${transferInOutStageDto.transInFromOthers}" />
                             </iais:value>
                         </iais:row>
-
-               </div>
+                </div>
                 <div class="outFromParts" <c:if test="${transferInOutStageDto.transferType !='out'}">style="display: none;"</c:if>>
                     <iais:row>
                         <iais:field width="5" value="Transfer Out To" mandatory="true"/>
                         <iais:value width="7" cssClass="col-md-7">
-                            <iais:select  name="transOutToHciCode"  codeCategory="TRANSFERRED_IN_FROM" value="${transferInOutStageDto.transOutToHciCode}" onchange ="toggleOnSelect(this, 'AR_TIF_003', 'othersOutFrom')" />
+                            <iais:select  name="transOutToHciCode"  firstOption="Please Select" codeCategory="TRANSFERRED_IN_FROM" value="${transferInOutStageDto.transOutToHciCode}" onchange ="toggleOnSelect(this, 'AR_TIF_003', 'othersOutFrom')" />
                         </iais:value>
                     </iais:row>
-                        <iais:row id="othersOutFrom">
+                        <iais:row id="othersOutFrom" style="${transferInOutStageDto.transOutToHciCode eq DataSubmissionConsts.TRANSFERRED_IN_FROM_OTHERS ? '' : 'display: none'}">
                             <iais:field width="5" value="Transfer Out To (Others)" mandatory="true"/>
                             <iais:value width="7" cssClass="col-md-7">
                                 <iais:input maxLength="20" type="text" name="transOutToOthers" value="${transferInOutStageDto.transOutToOthers}" />
@@ -156,6 +154,7 @@
         </div>
     </div>
 </div>
+<%--
 <script>
     $(document).ready(function () {
         $('#transferTypeIn').click(function () {
@@ -182,4 +181,4 @@
 
 
 
-</script>
+</script>--%>

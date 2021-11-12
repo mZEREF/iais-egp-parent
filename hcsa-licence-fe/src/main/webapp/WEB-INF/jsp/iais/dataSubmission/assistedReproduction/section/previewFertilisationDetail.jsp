@@ -87,7 +87,6 @@
                         <c:out value="${fertilisationDto.thawedOocytesZiftNum}" />
                     </iais:value>
                 </iais:row>
-                <%@include file="../common/patientInventoryTable.jsp" %>
             </div>
         </div>
     </div>

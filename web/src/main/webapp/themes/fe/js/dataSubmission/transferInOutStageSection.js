@@ -12,7 +12,11 @@ $(document).ready(function () {
             $('.outFromParts').show();
         }
     });
-    toggleOnSelect("#transInFromHciCode",'${DataSubmissionConsts.TRANSFERRED_IN_FROM_OTHERS}', 'othersInFrom');
-    toggleOnSelect("#transOutToHciCode",'${DataSubmissionConsts.TRANSFERRED_IN_FROM_OTHERS}', 'othersOutFrom');
+    toggleOnSelect("#transInFromHciCode",'AR_TIF_003', 'othersInFrom');
+    toggleOnSelect("#transOutToHciCode",'AR_TIF_003', 'othersOutFrom');
+
+    toggleOnCheck('#transferredCheckAR_WWT_001','transferred0')
+    toggleOnCheck('#transferredCheckAR_WWT_002','transferred1')
+    toggleOnCheck('#transferredCheckAR_WWT_003','transferred2')
 
 });

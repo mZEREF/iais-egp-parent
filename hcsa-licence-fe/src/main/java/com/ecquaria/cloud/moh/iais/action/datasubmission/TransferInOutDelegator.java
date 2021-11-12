@@ -52,32 +52,32 @@ public class TransferInOutDelegator extends CommonDelegator {
 
     @Override
     public void prepareSwitch(BaseProcessClass bpc) {
-
+        ParamUtil.setRequestAttr(bpc.request, "smallTitle", "You are submitting for <strong>Transfer In & Out</strong>");
+        HttpServletRequest request = bpc.request;
+        ArSuperDataSubmissionDto arSuperDataSubmissionDto = DataSubmissionHelper.getCurrentArDataSubmission(request);
+        ParamUtil.setSessionAttr(request, DataSubmissionConstant.AR_DATA_SUBMISSION, arSuperDataSubmissionDto);
     }
 
     @Override
     public void pageAction(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         ArSuperDataSubmissionDto arSuperDataSubmissionDto = DataSubmissionHelper.getCurrentArDataSubmission(request);
-
+        String[] transferredList = ParamUtil.getStrings(request,"transferredList");
         arSuperDataSubmissionDto = arSuperDataSubmissionDto  == null ? new ArSuperDataSubmissionDto() : arSuperDataSubmissionDto;
         TransferInOutStageDto transferInOutStageDto = arSuperDataSubmissionDto.getTransferInOutStageDto() == null ? new TransferInOutStageDto() : arSuperDataSubmissionDto.getTransferInOutStageDto();
-        fromPageData(transferInOutStageDto,request);
-        arSuperDataSubmissionDto.setTransferInOutStageDto(transferInOutStageDto);
-        ParamUtil.setSessionAttr(request, DataSubmissionConstant.AR_DATA_SUBMISSION, arSuperDataSubmissionDto);
-        validatePageData(request, transferInOutStageDto,"save",ACTION_TYPE_CONFIRM);
-    }
-    @Override
-    public void pageConfirmAction(BaseProcessClass bpc) {
-
-    }
-    private void fromPageData(TransferInOutStageDto transferInOutStageDto, HttpServletRequest request){
         ControllerHelper.get(request,transferInOutStageDto);
-        String[] transferredList = ParamUtil.getStrings(request,"transferredList");
         if( !IaisCommonUtils.isEmpty(transferredList)){
             transferInOutStageDto.setTransferredList(Arrays.asList(transferredList));
         }else{
             transferInOutStageDto.setTransferredList(null);
         }
+        arSuperDataSubmissionDto.setTransferInOutStageDto(transferInOutStageDto);
+        ParamUtil.setSessionAttr(request, DataSubmissionConstant.AR_DATA_SUBMISSION, arSuperDataSubmissionDto);
+        validatePageData(request, transferInOutStageDto,"save",ACTION_TYPE_CONFIRM);
+        ParamUtil.setSessionAttr(request, DataSubmissionConstant.AR_DATA_SUBMISSION, arSuperDataSubmissionDto);
+    }
+    @Override
+    public void pageConfirmAction(BaseProcessClass bpc) {
+
     }
 }

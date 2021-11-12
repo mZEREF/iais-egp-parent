@@ -1,5 +1,4 @@
-<c:set var="headingSign" value="completed"/>
-<c:set var="transferInOutStageDto" value="${arSuperDataSubmissionDt.transferInOutStageDto}" />
+
 <div class="panel panel-default">
     <div class="panel-heading ${headingSign}">
         <h4 class="panel-title">
@@ -11,14 +10,15 @@
     <div id="patientDetails" class="panel-collapse collapse in">
         <div class="panel-body">
             <div class="panel-main-content form-horizontal ">
+                <c:set var="transferInOutStageDto" value="${arSuperDataSubmissionDto.transferInOutStageDto}" />
                 <iais:row>
                     <iais:field width="5" value="Is this a Transfer In or Out?"/>
                     <iais:value width="7" cssClass="col-md-7">
-                        <c:if test="${transferInOutStageDto.transferType =='in'}">
-                            <c:out value="${transferInOutStageDto.transferType}" />
+                        <c:if test="${transferInOutStageDto.transferType eq 'in'}">
+                          <c:out value=" Transfer In"/>
                         </c:if>
-                        <c:if test="${transferInOutStageDto.transferType =='out'}">
-                            <c:out value="${transferInOutStageDto.transferType}" />
+                        <c:if test="${transferInOutStageDto.transferType eq'out'}">
+                            <c:out value=" Transfer Out"/>
                         </c:if>
                     </iais:value>
                 </iais:row>
@@ -30,6 +30,7 @@
                         </c:forEach>
                     </iais:value>
                 </iais:row>
+
                 <iais:row>
                     <iais:field width="5" value="No. of Oocyte(s) Transferred" />
                     <iais:value width="7" cssClass="col-md-7">
@@ -51,12 +52,7 @@
                 <iais:row>
                     <iais:field width="5" value="Were the Gamete(s) or Embryo(s) from a Donor?" />
                     <iais:value width="7" cssClass="col-md-7">
-                        <c:if test="${transferInOutStageDto.transferType ==true}">
-                            <c:out value="Yes"/>
-                        </c:if>
-                        <c:if test="${transferInOutStageDto.transferType ==false}">
-                            <c:out value="No"/>
-                        </c:if>
+                            <c:out value= "${transferInOutStageDto.fromDonor ? 'Yes' : 'No'}"/>
                     </iais:value>
                 </iais:row>
                 <div class="inFromParts" <c:if test="${transferInOutStageDto.transferType !='in'}">style="display: none;"</c:if>>
@@ -97,7 +93,7 @@
                         <c:out value="${transferInOutStageDto.transferDate}"/>
                     </iais:value>
                 </iais:row>
-                <%@include file="../common/patientInventoryTable.jsp" %>
+
             </div>
         </div>
     </div>

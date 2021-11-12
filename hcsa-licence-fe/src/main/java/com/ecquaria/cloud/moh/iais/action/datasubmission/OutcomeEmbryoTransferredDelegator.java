@@ -36,7 +36,7 @@ public class OutcomeEmbryoTransferredDelegator extends CommonDelegator{
 
     @Override
     public void prepareSwitch(BaseProcessClass bpc) {
-
+        ParamUtil.setRequestAttr(bpc.request, "smallTitle", "You are submitting for <strong>Outcome of Embryo Transferred Stage</strong>");
     }
     @Override
     public void preparePage(BaseProcessClass bpc) {
