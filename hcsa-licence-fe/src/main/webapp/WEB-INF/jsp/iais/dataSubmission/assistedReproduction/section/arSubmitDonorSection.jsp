@@ -108,12 +108,29 @@
                                              cssClass="donorIdentityKnown"/>
                             </iais:value>
                         </iais:row>
-                        <iais:row id="donorSampleCodeRow"   >
-                            <iais:field width="5" value="Donor Sample Code / ID" mandatory="true"/>
+                        <div id="donorSampleCodeRow" >
+                            <iais:row   >
+                                <iais:field width="5" value="Donor Sample Code / ID" mandatory="true"/>
+                                <iais:value width="7" cssClass="col-md-7">
+                                    <iais:input maxLength="100" type="text" name="donorSampleCode" id="donorSampleCode" value="${donorSampleDto.donorSampleCode}" />
+                                </iais:value>
+                            </iais:row>
+                            <iais:row>
+                            <iais:field width="5" value="Name of Bank / AR Centre where Sample is from" mandatory="true"/>
                             <iais:value width="7" cssClass="col-md-7">
-                                <iais:input maxLength="100" type="text" name="donorSampleCode" id="donorSampleCode" value="${donorSampleDto.donorSampleCode}" />
+                                <iais:select name="sampleFromHciCode"  options="SampleFromHciCode" firstOption="Please Select"  value="${donorSampleDto.sampleFromHciCode}"
+                                             cssClass="sampleFromOthers"/>
                             </iais:value>
-                        </iais:row>
+                            </iais:row>
+                            <iais:row>
+                                <iais:field width="5" value="Name of Bank / AR Centre where Sample is from" mandatory="true"/>
+                                <iais:value width="7" cssClass="col-md-7">
+                                    <iais:select name="sampleFromHciCode"  options="SampleFromHciCode" firstOption="Please Select"  value="${donorSampleDto.sampleFromHciCode}"
+                                                 cssClass="sampleFromOthers"/>
+                                </iais:value>
+                            </iais:row>
+                        </div>
+
                         <div id ="donorDetail">
                             <iais:row >
                                 <iais:field width="5" value="Donor's ID Type" mandatory="true"/>
