@@ -116,7 +116,7 @@ public class ArCycleStageDelegator extends CommonDelegator {
         }
         arCycleStageDto.setArDonorDtos(arDonorDtos);
         setCycleAgeByPatientInfoDtoAndHcicode(arCycleStageDto,arSuperDataSubmissionDto.getPatientInfoDto(),arSuperDataSubmissionDto.getAppGrpPremisesDto().getHciCode());
-        ParamUtil.setSessionAttr(request, DataSubmissionConstant.AR_DATA_SUBMISSION,arSuperDataSubmissionDto);
+        DataSubmissionHelper.setCurrentArDataSubmission(arSuperDataSubmissionDto,request);
     }
 
     private void setCycleAgeByPatientInfoDtoAndHcicode(ArCycleStageDto arCycleStageDto, PatientInfoDto patientInfoDto,String hciCode){

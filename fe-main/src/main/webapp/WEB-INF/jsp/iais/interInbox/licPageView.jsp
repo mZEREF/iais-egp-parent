@@ -19,7 +19,7 @@
 <c:set var="tabCode" value="lic"/>
 <%@ include file="common/commonDashboard.jsp" %>
 <%@ include file="common/mainContent.jsp" %>
-<%@ include file="commonFile.jsp" %>
+<%@ include file="common/commonFile.jsp" %>
 <style>
     .table-info-display {
         margin: 20px 15px 25px 12px;

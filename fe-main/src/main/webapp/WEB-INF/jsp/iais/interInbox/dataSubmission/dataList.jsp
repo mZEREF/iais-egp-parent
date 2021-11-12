@@ -128,7 +128,7 @@
         <input type="hidden" value="${actionDsButtonShow}" id="actionDsButtonShow" name="actionDsButtonShow">
     <iais:confirm msg="DS_ERR014" needCancel="false" popupOrder="actionDsButton"  yesBtnDesc="Yes"   yesBtnCls="btn btn-secondary"  callBack="cancelBallDsButton()" />
 </form>
-<script>
+<script type="application/javascript">
 
     $(document).ready(function () {
         if($("#actionDsButtonShow").val() == 1){
@@ -139,6 +139,7 @@
     function doClearSearch(){
         $("#licType option:first").prop("selected", 'selected').val("");
         $("#licStatus option:first").prop("selected", 'selected').val("");
+        $("#submissionNoDataSubmission").val("");
     }
 
     function doSearch(){
@@ -189,7 +190,7 @@
     $('#ds-withdraw').click(new function (){
         doSubmitForDataSubmission('withdraw')}
     );
-    $('#ds-unlock').click((new function (){
+    $('#ds-unlock').click(new function (){
         doSubmitForDataSubmission('unlock')}
     );
 </script>

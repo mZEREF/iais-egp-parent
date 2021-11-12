@@ -18,4 +18,4 @@
 <c:set var="tabCode" value="dss"/>
 <%@ include file="common/commonDashboard.jsp" %>
 <%@ include file="common/mainContent.jsp" %>
-<%@ include file="commonFile.jsp" %>
+<%@ include file="common/commonFile.jsp" %>
