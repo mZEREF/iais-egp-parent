@@ -314,18 +314,22 @@ public class EqRequestForChangeSubmitResultChange {
         }
         return flag;
     }
-    private static boolean eqServicePseronnel(List<AppSvcPersonnelDto> appSvcPersonnelDtoList , List<AppSvcPersonnelDto> oldAppSvcPersonnelDtoList){
-        if(appSvcPersonnelDtoList==null){
-            appSvcPersonnelDtoList=new ArrayList<>();
+
+    private static boolean eqServicePseronnel(List<AppSvcPersonnelDto> appSvcPersonnelDtoList,
+            List<AppSvcPersonnelDto> oldAppSvcPersonnelDtoList) {
+        if (appSvcPersonnelDtoList == null) {
+            appSvcPersonnelDtoList = new ArrayList<>();
         }
-        if(oldAppSvcPersonnelDtoList==null){
-            oldAppSvcPersonnelDtoList=new ArrayList<>();
+        if (oldAppSvcPersonnelDtoList == null) {
+            oldAppSvcPersonnelDtoList = new ArrayList<>();
         }
-        if(!appSvcPersonnelDtoList.equals(oldAppSvcPersonnelDtoList)){
+        if (!PageDataCopyUtil.copySvcPersonnel(appSvcPersonnelDtoList).equals(
+                PageDataCopyUtil.copySvcPersonnel(oldAppSvcPersonnelDtoList))) {
             return true;
         }
         return false;
     }
+
     private static boolean eqSvcPrincipalOfficers(List<AppSvcPrincipalOfficersDto> appSvcPrincipalOfficersDtoList, List<AppSvcPrincipalOfficersDto> oldAppSvcPrincipalOfficersDtoList) {
         if (appSvcPrincipalOfficersDtoList != null && oldAppSvcPrincipalOfficersDtoList != null) {
             List<AppSvcPrincipalOfficersDto> n = PageDataCopyUtil.copyAppSvcPo(appSvcPrincipalOfficersDtoList);
@@ -973,7 +977,7 @@ public class EqRequestForChangeSubmitResultChange {
                             break;
                         }
                     }
-                } else if (!IaisCommonUtils.isEmpty(newCheckList) || !IaisCommonUtils.isEmpty(oldCheckList)){
+                } else if (IaisCommonUtils.isEmpty(newCheckList) || !IaisCommonUtils.isEmpty(oldCheckList)){
                     isAuto = false;
                     personnelEditList.add(HcsaConsts.STEP_LABORATORY_DISCIPLINES);
                     personnelEditList.add(HcsaConsts.STEP_DISCIPLINE_ALLOCATION);
