@@ -25,17 +25,19 @@ public class EndCycleStageDtoValidator implements CustomizeValidator {
     public Map<String, String> validate(HttpServletRequest httpServletRequest) {
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
 
-        String cycleAbandoned = ParamUtil.getRequestString(httpServletRequest, "cycleAbandoned");
+        String cycleAbandoned = ParamUtil.getString(httpServletRequest, "cycleAbandoned");
         String abandonReason = ParamUtil.getRequestString(httpServletRequest, "abandonReasonSelect");
         if(cycleAbandoned ==null){
             errorMap.put("cycleAbandoned" ,"GENERAL_ERR0006");
         }
 
-        if (Boolean.parseBoolean(cycleAbandoned)==true && abandonReason == null) {
-            String errMsg = MessageUtil.replaceMessage("GENERAL_ERR0006", "Reason for Abandonment (Others)", "field");
-            errorMap.put("abandonReason", errMsg);
+        if (Boolean.valueOf(cycleAbandoned)==true) {
+            if ( abandonReason == null){
+                String errMsg = MessageUtil.replaceMessage("GENERAL_ERR0006", "Reason for Abandonment (Others)", "field");
+                errorMap.put("abandonReason", errMsg);
+            }
         }
-        if (!StringUtil.isEmpty(abandonReason) && "ENDRA005".equals(abandonReason)) {
+        if (!StringUtil.isEmpty(abandonReason) && "ENDRA005".equals(abandonReason) && Boolean.valueOf(cycleAbandoned)==true) {
             String otherAbandonReason = ParamUtil.getRequestString(httpServletRequest, "otherAbandonReason");
             if (StringUtil.isEmpty(otherAbandonReason)) {
                 String errMsg = MessageUtil.replaceMessage("GENERAL_ERR0006", "Reason for Abandonment (Others)", "field");
