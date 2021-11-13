@@ -51,10 +51,12 @@ public class INTERNET___ConsumeNotification___1 extends BaseProcessClass {
 
 	public void preFacSelect_OnStepProcess_0() throws Exception {
 		// 		preFacSelect->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "doPrepareFacilitySelect", this);
 	}
 
 	public void preSwitch0_OnStepProcess_0() throws Exception {
 		// 		preSwitch0->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "doPrepareSwitch0", this);
 	}
 
 }

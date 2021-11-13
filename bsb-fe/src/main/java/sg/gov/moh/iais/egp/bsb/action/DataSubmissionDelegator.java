@@ -57,6 +57,7 @@ public class DataSubmissionDelegator {
         }
         AuditTrailHelper.auditFunction("Data Submission", "Data Submission");
     }
+
     /**
      * StartStep: PrepareFacilitySelect
      * prepare facility list
@@ -65,11 +66,12 @@ public class DataSubmissionDelegator {
         HttpServletRequest request = bpc.request;
         selectOption(request);
     }
+
     /**
-     * StartStep: PrepareFacilitySelect
-     * get the selected facility id
+     * StartStep: PrepareSwitch0
+     * put facility id in session
      */
-    public void doPrepareDataSubmissionSelect(BaseProcessClass bpc) {
+    public void doPrepareSwitch0(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         ParamUtil.setSessionAttr(request,KEY_FAC_ID,null);
         String facId = ParamUtil.getRequestString(request,KEY_FAC_ID);

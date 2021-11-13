@@ -53,8 +53,13 @@
     </div>
     <div class="row">
         <div class="container">
-            <div class="col-xs-12 col-md-6 text-right">
-                <button class="btn btn-primary save" id="next">NEXT</button>
+            <div class="col-xs-12 col-md-6 text-left">
+                <a class="back" href="#" id="back"><em class="fa fa-angle-left"></em> Back</a>
+            </div>
+            <div class="form-group">
+                <div class="col-xs-12 col-md-6 text-right">
+                    <button class="btn btn-primary save" id="next">NEXT</button>
+                </div>
             </div>
         </div>
     </div>

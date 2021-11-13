@@ -47,6 +47,7 @@ $(function (){
     //facilitySelectPage.jsp
     $("#next").click(function (){
         showWaiting();
+        $("[name='action_type']").val("doNext");
         var optionVal = $("#facSelect option:selected").val();
         $("#facId").val(optionVal);
         $("#mainForm").submit();
