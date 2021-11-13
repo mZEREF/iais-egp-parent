@@ -12,6 +12,13 @@
     sop.webflow.rt.api.BaseProcessClass process =
             (sop.webflow.rt.api.BaseProcessClass) request.getAttribute("process");
 %>
+<c:if test="${cookie['service_bsb'].value eq 'Y'}">
+    <script>
+        $(function () {
+            document.location ="/bsb-fe/eservice/INTRANET/MohBSBInboxMsg"
+        })
+    </script>
+</c:if>
 <webui:setLayout name="iais-internet"/>
 
 <c:set var="tabCode" value="msg"/>
