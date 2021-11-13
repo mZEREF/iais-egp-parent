@@ -59,11 +59,14 @@ function addSection(amtInputName, sectionIdPrefix, headerTitlePrefix, sectionGro
     var newHeaderDiv = newSectionHeader(nextAmt, headerTitlePrefix);
     newSectionDiv.replaceChild(newHeaderDiv, newSectionDiv.firstChild);
     modifyClonedNode(newSectionDiv, nextAmt - 1, separator);
-    $("a[data-upload-file = 'upload--v--"+nextAmt+"']").prevAll().remove();
-
     var sectionGroupDiv = document.getElementById(sectionGroupId);
     sectionGroupDiv.appendChild(newSectionDiv);
     amtHiddenInput.val(nextAmt);
+    //clear button
+    var text = "upload--v--"+(nextAmt-1);
+    $($("a[data-upload-file = "+ text +"]")[0]).prevAll().remove();
+    //clear select
+    $("#notTSection--v--"+(nextAmt-1)+" .current").text("Please Select");
 }
 
 function deleteNewFile(id) {
@@ -81,6 +84,22 @@ function reloadNewFile(id) {
     var ids = id.split("--v--");
     var text = ids[0]+"--v--"+ids[1].charAt(0);
     $("a[data-upload-file=" + text + "]")[0].click();
+}
+
+function reloadFile(id) {
+    // trigger click on the input file
+    var inputEl = document.getElementById(id);
+    inputEl.click();
+}
+
+function deleteFile(id) {
+    // delete input
+    var inputEl = document.getElementById(id);
+    inputEl.parentNode.removeChild(inputEl);
+
+    // delete delete button, reload button
+    var fileDiv = document.getElementById(id + "FileDiv");
+    fileDiv.parentNode.removeChild(fileDiv);
 }
 
 function appendInputValue(input, value) {
@@ -133,13 +152,13 @@ function addReloadFile() {
         var delBtn = document.createElement("button");
         delBtn.setAttribute("type", "button");
         delBtn.setAttribute("class", "btn btn-secondary btn-sm delFileBtn");
-        delBtn.setAttribute("onclick", "deleteNewFile('" + id + "')");
+        delBtn.setAttribute("onclick", "deleteFile('" + id + "')");
         delBtn.innerText = "Delete";
 
         var reloadBtn = document.createElement("button");
         reloadBtn.setAttribute("type", "button");
         reloadBtn.setAttribute("class", "btn btn-secondary btn-sm reUploadFileBtn");
-        reloadBtn.setAttribute("onclick", "reloadNewFile('" + id + "')");
+        reloadBtn.setAttribute("onclick", "reloadFile('" + id + "')");
         reloadBtn.innerText = "Reload";
 
         fileDiv = document.createElement("div");
@@ -256,6 +275,7 @@ function modifyClonedNode(node, num, separator) {
         node.value = "";
     } else if (node.nodeName === 'DIV') {
         replaceNodeAttributeSuffixNum(node, 'id', num, separator);
+        replaceNodeAttributeSuffixNum(node, 'class', num, separator);
     } else if (node.nodeName === 'SELECT') {
         replaceNodeAttributeSuffixNum(node, 'id', num, separator);
         replaceNodeAttributeSuffixNum(node, 'name', num, separator);

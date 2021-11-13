@@ -93,7 +93,7 @@
                                                             <div class="panel-body">
                                                                 <div class="text-right app-font-size-16"><a href="#" data-step-key="approvalProfile"><em class="fa fa-pencil-square-o"></em>Edit</a>
                                                                 </div>
-                                                                <c:forEach var="tsNotList" items="${transferNot.transferNotList}" varStatus="status">
+                                                                <c:forEach var="tsNotList" items="${transferNotDto.transferNotList}" varStatus="status">
                                                                     <div class="panel-main-content form-horizontal min-row">
                                                                         <div class="form-group">
                                                                             <div class="col-10"><strong>Agents/Toxin ${status.index+1}</strong></div>
@@ -152,27 +152,27 @@
                                                                     <div>
                                                                         <div class="form-group">
                                                                             <label class="col-xs-5 col-md-4 control-label">Receiving Facility</label>
-                                                                            <div class="col-sm-7 col-md-5 col-xs-7"><p>${transferNot.receiveFacility}</p></div>
+                                                                            <div class="col-sm-7 col-md-5 col-xs-7"><p>${transferNotDto.receiveFacility}</p></div>
                                                                             <div class="clear"></div>
                                                                         </div>
                                                                         <div class="form-group">
                                                                             <label class="col-xs-5 col-md-4 control-label">Date of Expected Transfer</label>
-                                                                            <div class="col-sm-7 col-md-5 col-xs-7"><p>${transferNot.expectedTfDate}</p></div>
+                                                                            <div class="col-sm-7 col-md-5 col-xs-7"><p>${transferNotDto.expectedTfDate}</p></div>
                                                                             <div class="clear"></div>
                                                                         </div>
                                                                         <div class="form-group">
                                                                             <label class="col-xs-5 col-md-4 control-label">Expected Arrival Time at Receiving Facility</label>
-                                                                            <div class="col-sm-7 col-md-5 col-xs-7"><p>${transferNot.expArrivalTime}</p></div>
+                                                                            <div class="col-sm-7 col-md-5 col-xs-7"><p>${transferNotDto.expArrivalTime}</p></div>
                                                                             <div class="clear"></div>
                                                                         </div>
                                                                         <div class="form-group">
                                                                             <label class="col-xs-5 col-md-4 control-label">Name of Courier Service Provider</label>
-                                                                            <div class="col-sm-7 col-md-5 col-xs-7"><p>${transferNot.providerName}</p></div>
+                                                                            <div class="col-sm-7 col-md-5 col-xs-7"><p>${transferNotDto.providerName}</p></div>
                                                                             <div class="clear"></div>
                                                                         </div>
                                                                         <div class="form-group">
                                                                             <label class="col-xs-5 col-md-4 control-label">Remarks</label>
-                                                                            <div class="col-sm-7 col-md-5 col-xs-7"><p>${transferNot.remarks}</p></div>
+                                                                            <div class="col-sm-7 col-md-5 col-xs-7"><p>${transferNotDto.remarks}</p></div>
                                                                             <div class="clear"></div>
                                                                         </div>
                                                                     </div>
@@ -183,18 +183,24 @@
                                                                         <div class="clear"></div>
                                                                     </div>
                                                                     <div>
+                                                                        <div class="form-group">
+                                                                            <div class="col-10"><strong>Inventory: Biological Agents</strong></div>
+                                                                            <div class="clear"></div>
+                                                                        </div>
                                                                         <c:forEach var="doc" items="${docMeta.get('ityBat')}">
                                                                             <div class="form-group">
-                                                                                <div class="col-10"><strong>Inventory: Biological Agents</strong></div>
                                                                                 <div class="col-10"><p>${doc.filename}(${String.format("%.1f", doc.size/1024.0)}KB)</p></div>
                                                                                 <div class="col-sm-7 col-md-5 col-xs-7"><p></p></div>
                                                                                 <div class="clear"></div>
                                                                             </div>
                                                                         </c:forEach>
 
+                                                                        <div class="form-group">
+                                                                            <div class="col-10"><strong>Inventory: Toxins</strong></div>
+                                                                            <div class="clear"></div>
+                                                                        </div>
                                                                         <c:forEach var="doc" items="${docMeta.get('ityToxin')}">
                                                                             <div class="form-group">
-                                                                                <div class="col-10"><strong>Inventory: Toxins</strong></div>
                                                                                 <div class="col-10"><p>${doc.filename}(${String.format("%.1f", doc.size/1024.0)}KB)</p></div>
                                                                                 <div class="col-sm-7 col-md-5 col-xs-7"><p></p></div>
                                                                                 <div class="clear"></div>

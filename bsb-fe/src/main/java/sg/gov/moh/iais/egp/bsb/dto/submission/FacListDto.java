@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import sg.gov.moh.iais.egp.bsb.entity.Biological;
+import sg.gov.moh.iais.egp.bsb.entity.Facility;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -55,6 +56,17 @@ public class FacListDto implements Serializable{
         private String contactNo;
         private String email;
         private Date employmentStartDate;
+    }
+
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class ReceiptFacility {
+        private List<Facility> receiptFacilities;
+
+        public List<Facility> getReceiptFacilities(){
+            return new ArrayList<>(this.receiptFacilities);
+        }
     }
 
     private List<FacList> facLists;

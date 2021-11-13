@@ -23,6 +23,9 @@ public interface DataSubmissionClient {
     @GetMapping(value = "/facList/getFacList", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<FacListDto> queryAllApprovalFacList();
 
+    @GetMapping(value = "/facList/getAll", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<FacListDto.ReceiptFacility> queryAllFacility();
+
     @PostMapping(value = "/dataSubmission/saveConsumeNot", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     ResponseDto<String> saveConsumeNot(@RequestBody ConsumeNotificationDto.ConsumeNotNeedR consumeNotNeedR);
 

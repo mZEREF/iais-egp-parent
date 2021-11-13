@@ -58,21 +58,21 @@
                                                                             <div class="form-group">
                                                                                 <label class="col-xs-5 col-md-4 control-label">Facility Name</label>
                                                                                 <div class="col-sm-7 col-md-5 col-xs-7">
-<%--                                                                                    <p>${facInfo.name}</p>--%>
+                                                                                    <p>${facilityInfo.facName}</p>
                                                                                 </div>
                                                                                 <div class="clear"></div>
                                                                             </div>
                                                                             <div class="form-group">
                                                                                 <label class="col-xs-5 col-md-4 control-label">Facility Address</label>
                                                                                 <div class="col-sm-7 col-md-5 col-xs-7">
-<%--                                                                                    <p>${facInfo.address}</p>--%>
+                                                                                    <p>${facilityInfo.facAddress}</p>
                                                                                 </div>
                                                                                 <div class="clear"></div>
                                                                             </div>
                                                                             <div class="form-group">
                                                                                 <label class="col-xs-5 col-md-4 control-label">Is the facility a Protected Place?</label>
                                                                                 <div class="col-sm-7 col-md-5 col-xs-7">
-<%--                                                                                    <p>${facInfo.isProtect}</p>--%>
+                                                                                    <p>${facilityInfo.isProtected}</p>
                                                                                 </div>
                                                                                 <div class="clear"></div>
                                                                             </div>

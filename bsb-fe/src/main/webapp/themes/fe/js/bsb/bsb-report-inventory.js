@@ -27,8 +27,7 @@ $(function (){
 
     // doc upload
     $("#file-upload-report").click(function () {
-        var name = $(this).attr("data-upload-file")
-        // create input file
+        var name = $(this).attr("data-upload-file");
         var id = name + +new Date();
         var newFileInput = document.createElement("input");
         newFileInput.setAttribute("type", "file");
@@ -43,8 +42,7 @@ $(function (){
     });
 
     $("#file-upload-others").click(function () {
-        var name = $(this).attr("data-upload-file")
-        // create input file
+        var name = $(this).attr("data-upload-file");
         var id = name + +new Date();
         var newFileInput = document.createElement("input");
         newFileInput.setAttribute("type", "file");
@@ -74,13 +72,13 @@ function addReloadFile() {
         var delBtn = document.createElement("button");
         delBtn.setAttribute("type", "button");
         delBtn.setAttribute("class", "btn btn-secondary btn-sm delFileBtn");
-        delBtn.setAttribute("onclick", "deleteNewFile('" + id + "')");
+        delBtn.setAttribute("onclick", "deleteFile('" + id + "')");
         delBtn.innerText = "Delete";
 
         var reloadBtn = document.createElement("button");
         reloadBtn.setAttribute("type", "button");
         reloadBtn.setAttribute("class", "btn btn-secondary btn-sm reUploadFileBtn");
-        reloadBtn.setAttribute("onclick", "reloadNewFile('" + id + "')");
+        reloadBtn.setAttribute("onclick", "reloadFile('" + id + "')");
         reloadBtn.innerText = "Reload";
 
         fileDiv = document.createElement("div");
@@ -101,6 +99,22 @@ function genFileInfo(fileInputEl) {
     return f[0].name + '(' + (f[0].size/1024).toFixed(1) + 'KB)';
 }
 
+function deleteFile(id) {
+    // delete input
+    var inputEl = document.getElementById(id);
+    inputEl.parentNode.removeChild(inputEl);
+
+    // delete delete button, reload button
+    var fileDiv = document.getElementById(id + "FileDiv");
+    fileDiv.parentNode.removeChild(fileDiv);
+}
+
+function reloadFile(id) {
+    // trigger click on the input file
+    var inputEl = document.getElementById(id);
+    inputEl.click();
+}
+
 function deleteNewFile(id) {
     // delete delete button, reload button and download button
     var fileDiv = document.getElementById(id + "FileDiv");
@@ -110,6 +124,7 @@ function deleteNewFile(id) {
     var deleteSavedInput = document.getElementById("deleteNewFiles");
     appendInputValue(deleteSavedInput, id);
 }
+
 
 function appendInputValue(input, value) {
     if (input.value) {

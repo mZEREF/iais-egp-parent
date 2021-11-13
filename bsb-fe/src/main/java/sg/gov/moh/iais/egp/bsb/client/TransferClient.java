@@ -33,4 +33,6 @@ public interface TransferClient {
     @PostMapping(path = "/transfer/validate/report", consumes = MediaType.APPLICATION_JSON_VALUE, produces =MediaType.APPLICATION_JSON_VALUE)
     ValidationResultDto validateReportAndInventory(@RequestBody ReportInventoryDto.DocsMetaDto dto);
 
+
+
 }

@@ -32,6 +32,7 @@
                             </c:forEach>
                         </c:if>
                         <a class="btn file-upload btn-secondary" data-upload-file="upload--v--${status.index}" href="javascript:void(0);">Upload</a>
+                        <span data-err-ind="${doc.type}" class="error-msg"></span>
                     </div>
                 </div>
             </div>

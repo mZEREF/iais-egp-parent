@@ -54,7 +54,6 @@ public class ReportInventoryDto implements Serializable{
     public static class NewDocInfo implements Serializable {
         private String tmpId;
         private String docType;
-        private String reportType;
         private String filename;
         private long size;
         private Date submitDate;
@@ -91,6 +90,7 @@ public class ReportInventoryDto implements Serializable{
     @AllArgsConstructor
     public static class DocsMetaDto implements Serializable {
         private Map<String, List<DocMeta>> metaDtoMap;
+        private String reportType;
     }
 
 
@@ -130,20 +130,16 @@ public class ReportInventoryDto implements Serializable{
 
     //should change
     public boolean doValidation() {
-        List<DocMeta> metaDtoList = new ArrayList<>(this.savedDocMap.size() + this.newDocMap.size());
-        this.savedDocMap.values().forEach(i -> {
-            DocMeta docMeta = new DocMeta(i.getRepoId(), i.getDocType(), i.getFilename(), i.getSize(), "facReg");
-            metaDtoList.add(docMeta);
-        });
+        List<DocMeta> metaDtoList = new ArrayList<>(this.newDocMap.size());
         this.newDocMap.values().forEach(i -> {
-            DocMeta docMeta = new DocMeta(i.getTmpId(), i.getDocType(), i.getFilename(), i.getSize(), "facReg");
+            DocMeta docMeta = new DocMeta(i.getTmpId(), i.getDocType(), i.getFilename(), i.getSize(), "reportInventory");
             metaDtoList.add(docMeta);
         });
 
         Map<String, List<DocMeta>> metaDtoMap = CollectionUtils.groupCollectionToMap(metaDtoList, DocMeta::getDocType);
-        DocsMetaDto docsMetaDto = new DocsMetaDto(metaDtoMap);
+        DocsMetaDto docsMetaDto = new DocsMetaDto(metaDtoMap,this.reportType);
 
-        this.validationResultDto = (ValidationResultDto) SpringReflectionUtils.invokeBeanMethod("facRegFeignClient", "validateFacilityPrimaryDocs", new Object[]{docsMetaDto});
+        this.validationResultDto = (ValidationResultDto) SpringReflectionUtils.invokeBeanMethod("transferFeignClient", "validateReportAndInventory", new Object[]{docsMetaDto});
         return validationResultDto.isPass();
     }
 
@@ -188,7 +184,7 @@ public class ReportInventoryDto implements Serializable{
         Map<String, List<DocRecordInfo>> savedMap = getExistDocTypeMap();
         Map<String, List<NewDocInfo>> newMap = getNewDocTypeMap();
 
-        for (String docType : DocConstants.FAC_REG_DOC_TYPE_ORDER) {
+        for (String docType : DocConstants.DATA_SUBMISSION_REPORT_AND_INVENTORY) {
             List<DocMeta> metaList = new ArrayList<>();
             List<DocRecordInfo> savedFiles = savedMap.get(docType);
             if (savedFiles != null) {
@@ -281,15 +277,16 @@ public class ReportInventoryDto implements Serializable{
 
         //get reportType from request
         String repType =  ParamUtil.getString(request,"reportType");
-        this.setReportType(repType);
+        this.reportType = repType;
 
-//        when do delete
+       // when do delete
         String deleteNewFilesString = ParamUtil.getString(mulReq, KEY_DELETED_NEW_FILES);
         if (log.isInfoEnabled()) {
             log.info("deleteNewFilesString: {}", LogUtil.escapeCrlf(deleteNewFilesString));
         }
         if (StringUtils.hasLength(deleteNewFilesString)) {
             List<String> deleteFileTmpIds = Arrays.stream(deleteNewFilesString.split(","))
+                    .map(f -> MaskUtil.unMaskValue(MASK_PARAM, f))
                     .collect(Collectors.toList());
             deleteFileTmpIds.forEach(this.newDocMap::remove);
         }
@@ -301,10 +298,11 @@ public class ReportInventoryDto implements Serializable{
         LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
         while (inputNameIt.hasNext()) {
             String inputName = inputNameIt.next();
-            if (KEY_REPORT.equals(inputName)){
+            String docType = MaskUtil.unMaskValue(MASK_PARAM, inputName);
+            if (docType != null && !docType.equals(inputName) && KEY_REPORT.equals(docType)){
                 reqDocMapping(inputName,mulReq,repType,loginContext,currentDate);
-            }else if(KEY_OTHERS.equals(inputName)){
-                reqDocMapping(inputName,mulReq,inputName,loginContext,currentDate);
+            }else if(docType != null && !docType.equals(inputName) && KEY_OTHERS.equals(docType)){
+                reqDocMapping(inputName,mulReq,docType,loginContext,currentDate);
             }
         }
     }

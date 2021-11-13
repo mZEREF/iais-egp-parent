@@ -95,11 +95,13 @@ public class BsbTransferNotificationDelegator {
          //get value from jsp and bind value to dto
          TransferNotificationDto notificationDto = getTransferNotification(request);
          notificationDto.reqObjectMapping(request);
+         //set facId into dto
+         notificationDto.setFacId(subCommon.getFacInfo(request).getFacId());
          doValidation(notificationDto,request);
          //use to show file information
         ParamUtil.setRequestAttr(request,"doSettings",getDocSettingMap());
         ParamUtil.setRequestAttr(request,"docMeta",notificationDto.getAllDocMetaByDocType());
-         ParamUtil.setSessionAttr(request,KEY_TRANSFER_NOTIFICATION_DTO,notificationDto);
+        ParamUtil.setSessionAttr(request,KEY_TRANSFER_NOTIFICATION_DTO,notificationDto);
     }
 
     /**
