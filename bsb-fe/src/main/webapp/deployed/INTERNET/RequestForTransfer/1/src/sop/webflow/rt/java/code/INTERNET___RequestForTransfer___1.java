@@ -47,4 +47,12 @@ public class INTERNET___RequestForTransfer___1 extends BaseProcessClass {
 		// 		saveDraft->OnStepProcess
 	}
 
+	public void preFacSelect_OnStepProcess_0() throws Exception {
+		// 		preFacSelect->OnStepProcess
+	}
+
+	public void preSwitch0_OnStepProcess_0() throws Exception {
+		// 		preSwitch0->OnStepProcess
+	}
+
 }

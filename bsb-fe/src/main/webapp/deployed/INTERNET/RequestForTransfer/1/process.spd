@@ -2,7 +2,7 @@
 <Application defaultStart="/Steps/StartStep/start" dtdVersion="6.0" executable="true" majorVersion="1" minorVersion="0" name="RequestForTransfer" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" transaction="enable">
  <WebServices />
  <Steps>
-  <StartStep defClass="" executor="" icon="" name="start" x="50" y="240">
+  <StartStep defClass="" executor="" icon="" name="start" x="-340" y="240">
    <Description />
    <probepoint type="none" />
    <OnStepProcess>
@@ -37,7 +37,7 @@
     <JavaCode defClass="" executor="" methodName="saveDraft_OnStepProcess_0" name="saveDraft_OnStepProcess_0" />
    </OnStepProcess>
   </AutomaticStep>
-  <ReturnInvokeProcessStep defClass="" executor="" icon="" name="back" x="690" y="340">
+  <ReturnInvokeProcessStep defClass="" executor="" icon="" name="back" x="100" y="350">
    <Description />
    <probepoint type="none" />
    <OnStepProcess />
@@ -54,6 +54,20 @@
    <probepoint type="none" />
    <OnStepProcess>
     <JavaCode defClass="" executor="" methodName="prepareSwitch2_OnStepProcess_0" name="prepareSwitch2_OnStepProcess_0" />
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="preFacSelect" x="-240" y="240">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="preFacSelect_OnStepProcess_0" name="preFacSelect_OnStepProcess_0" />
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="preSwitch0" x="-20" y="240">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="preSwitch0_OnStepProcess_0" name="preSwitch0_OnStepProcess_0" />
    </OnStepProcess>
   </AutomaticStep>
  </Steps>
@@ -76,11 +90,17 @@
    <Description />
    <probepoint type="none" />
   </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="FacSelectPage" stageIndicator="" x="-140" y="240">
+   <OnPageLoad />
+   <OnPageSubmit />
+   <Description />
+   <probepoint type="none" />
+  </WebPage>
  </Pages>
  <Forms />
  <Links>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/prepareData" linkstyle="Rectangle" name="" sourceName="/Steps/StartStep/start" style="rectanular">
-   <position>{(70,260)(190,260)}</position>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/preFacSelect" linkstyle="Rectangle" name="" sourceName="/Steps/StartStep/start" style="rectanular">
+   <position>{(-320,260)(-220,260)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Pages/WebPage/RequestTransferPage" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/prepareData" style="rectanular">
    <position>{(190,260)(310,260)}</position>
@@ -109,8 +129,8 @@
   <SynchronousLink destinationName="/Steps/AutomaticStep/saveDraft" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch2" style="rectanular">
    <position>{(1110,260)(1210,180)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/ReturnInvokeProcessStep/back" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch1" style="rectanular">
-   <position>{(580,260)(710,360)}</position>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/preFacSelect" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch1" style="rectanular">
+   <position>{(580,260)(-211,474)(-220,260)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/prepareData" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch2" style="rectanular">
    <position>{(1110,260)(207,446)(190,260)}</position>
@@ -127,6 +147,21 @@
   <SynchronousLink destinationName="/Switches/Switch/Switch2" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/prepareSwitch2" style="rectanular">
    <position>{(990,260)(1110,260)}</position>
   </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/FacSelectPage" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/preFacSelect" style="rectanular">
+   <position>{(-220,260)(-120,260)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/preSwitch0" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/FacSelectPage" style="rectanular">
+   <position>{(-120,260)(0,260)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Switches/Switch/Switch3" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/preSwitch0" style="rectanular">
+   <position>{(0,260)(110,260)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/prepareData" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch3" style="rectanular">
+   <position>{(110,260)(190,260)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/ReturnInvokeProcessStep/back" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch3" style="rectanular">
+   <position>{(110,260)(120,370)}</position>
+  </SynchronousLink>
  </Links>
  <Conditions>
   <Condition componentIfFalse="/Steps/AutomaticStep/prepareData" componentIfTrue="/Pages/WebPage/confirmPage" defClass="" executor="" icon="" leftOperand="isValid" name="Cond1" operator="=" rightOperand="&quot;Y&quot;" x="800" y="240">
@@ -138,13 +173,18 @@
    <Description />
    <SwitchCase component="/Steps/AutomaticStep/saveAndConfirm" value="&quot;doConfirm&quot;" />
    <SwitchCase component="/Steps/AutomaticStep/saveDraft" value="&quot;saveDraft&quot;" />
-   <SwitchCase component="/Steps/ReturnInvokeProcessStep/back" value="&quot;doBack&quot;" />
+   <SwitchCase component="/Steps/AutomaticStep/preFacSelect" value="&quot;doBack&quot;" />
   </Switch>
   <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="action_type" name="Switch2" x="1090" y="240">
    <Description />
    <SwitchCase component="/Steps/AutomaticStep/save" value="&quot;doSave&quot;" />
    <SwitchCase component="/Steps/AutomaticStep/saveDraft" value="&quot;saveDraft&quot;" />
    <SwitchCase component="/Steps/AutomaticStep/prepareData" value="&quot;doBack&quot;" />
+  </Switch>
+  <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="action_type" name="Switch3" x="90" y="240">
+   <Description />
+   <SwitchCase component="/Steps/AutomaticStep/prepareData" value="&quot;doNext&quot;" />
+   <SwitchCase component="/Steps/ReturnInvokeProcessStep/back" value="&quot;doBack&quot;" />
   </Switch>
  </Switches>
  <Branches />

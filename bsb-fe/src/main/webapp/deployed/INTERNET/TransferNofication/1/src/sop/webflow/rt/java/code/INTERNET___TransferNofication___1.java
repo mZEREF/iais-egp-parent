@@ -47,4 +47,21 @@ public class INTERNET___TransferNofication___1 extends BaseProcessClass {
 	public void saveDraft_OnStepProcess_0() throws Exception {
 		// 		saveDraft->OnStepProcess
 	}
+
+	public void preFacSelect_OnStepProcess_0() throws Exception {
+		// 		preFacSelect->OnStepProcess
+	}
+
+	public void preSwitch0_OnStepProcess_0() throws Exception {
+		// 		preSwitch0->OnStepProcess
+	}
+
+	public void preOtherFacSelect_OnStepProcess_0() throws Exception {
+		// 		preOtherFacSelect->OnStepProcess
+	}
+
+	public void preSwitch_OnStepProcess_0() throws Exception {
+		// 		preSwitch->OnStepProcess
+	}
+
 }

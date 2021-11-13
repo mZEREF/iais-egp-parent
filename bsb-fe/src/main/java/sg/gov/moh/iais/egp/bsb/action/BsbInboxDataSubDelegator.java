@@ -5,6 +5,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
+import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sg.gov.moh.iais.egp.bsb.client.BsbInboxClient;
@@ -69,6 +70,11 @@ public class BsbInboxDataSubDelegator {
                 ParamUtil.setRequestAttr(request, ERROR_INFO_ERROR_MSG, resultDto.getErrorInfos().get(ERROR_INFO_ERROR_MSG));
             }
         }
+
+        List<SelectOption> typeOps = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_BSB_DATA_SUBMISSION_TYPE);
+        ParamUtil.setRequestAttr(request, "submissionTypeOps", typeOps);
+        List<SelectOption> statusOps = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_BSB_DATA_SUBMISSION_STATUS);
+        ParamUtil.setRequestAttr(request, "submissionStatusOps", statusOps);
     }
 
     public void search(BaseProcessClass bpc) {

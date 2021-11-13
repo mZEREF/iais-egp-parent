@@ -57,11 +57,6 @@ public class INTERNET___BsbDataSubmission___1 extends BaseProcessClass {
 	// 		preAckOfReceiptOfTransfer->OnStepProcess
 	}
 
-	public void prepareFacilitySelect_OnStepProcess_0() throws Exception {
-		// 		prepareFacilitySelect->OnStepProcess
-		EngineHelper.delegate(DELEGATOR, "doPrepareFacilitySelect", this);
-	}
-
 	public void preFacReportAndInventory_OnStepProcess_0() throws Exception {
 		// 		preFacReportAndInventory->OnStepProcess
 	}

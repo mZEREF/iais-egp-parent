@@ -49,4 +49,7 @@ public interface DataSubmissionClient {
 
     @PostMapping(path = "/dataSubmission/validate/recNot", consumes = MediaType.APPLICATION_JSON_VALUE, produces =MediaType.APPLICATION_JSON_VALUE)
     ValidationResultDto validateReceiptNot(@RequestBody ReceiptNotificationDto.ReceiptNotNeedR receiptNotNeedR);
+
+    @GetMapping(value = "/dataSubmission/view/{id}")
+    ResponseDto<DataSubmissionInfo> getDataSubmissionInfo(@PathVariable(name = "id") String id);
 }

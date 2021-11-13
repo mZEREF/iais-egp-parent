@@ -2,7 +2,7 @@
 <Application defaultStart="/Steps/StartStep/start" dtdVersion="6.0" executable="true" majorVersion="1" minorVersion="0" name="BsbDataSubmission" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" transaction="enable">
  <WebServices />
  <Steps>
-  <StartStep defClass="" executor="" icon="" name="start" x="-220" y="240">
+  <StartStep defClass="" executor="" icon="" name="start" x="10" y="240">
    <Description />
    <probepoint type="none" />
    <OnStepProcess>
@@ -114,13 +114,6 @@
    <OnStepProcess />
    <OnStepComplete />
   </InvokeStep>
-  <AutomaticStep defClass="" executor="" icon="" name="prepareFacilitySelect" x="-150" y="240">
-   <Description />
-   <probepoint type="none" />
-   <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="prepareFacilitySelect_OnStepProcess_0" name="prepareFacilitySelect_OnStepProcess_0" />
-   </OnStepProcess>
-  </AutomaticStep>
   <AutomaticStep defClass="" executor="" icon="" name="preFacReportAndInventory" x="760" y="740">
    <Description />
    <probepoint type="none" />
@@ -142,18 +135,9 @@
    <Description />
    <probepoint type="none" />
   </WebPage>
-  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="FacilitySelectPage" stageIndicator="" x="10" y="240">
-   <OnPageLoad />
-   <OnPageSubmit />
-   <Description />
-   <probepoint type="none" />
-  </WebPage>
  </Pages>
  <Forms />
  <Links>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/prepareFacilitySelect" linkstyle="Direct" name="" sourceName="/Steps/StartStep/start" style="oblique">
-   <position>{(-200,260)(-130,260)}</position>
-  </SynchronousLink>
   <SynchronousLink destinationName="/Pages/WebPage/DataSubmissionSelectPage" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/prepareDataSubmissionSelect" style="oblique">
    <position>{(150,260)(330,260)}</position>
   </SynchronousLink>
@@ -226,14 +210,8 @@
   <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Steps/InvokeStep/AckOfReceiptOfTransfer" style="oblique">
    <position>{(970,640)(1200,260)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Pages/WebPage/FacilitySelectPage" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/prepareFacilitySelect" style="rectanular">
-   <position>{(-130,260)(30,260)}</position>
-  </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/prepareDataSubmissionSelect" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/FacilitySelectPage" style="rectanular">
-   <position>{(30,260)(150,260)}</position>
-  </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/prepareFacilitySelect" linkstyle="Rectangle" name="" sourceName="/Merges/Merge/Merge1" style="rectanular">
-   <position>{(1200,260)(-92,839)(-130,260)}</position>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/prepareDataSubmissionSelect" linkstyle="Rectangle" name="" sourceName="/Merges/Merge/Merge1" style="rectanular">
+   <position>{(1200,260)(216,819)(150,260)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/preFacReportAndInventory" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
    <position>{(680,260)(780,760)}</position>
@@ -243,6 +221,9 @@
   </SynchronousLink>
   <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Steps/InvokeStep/FacilityReportAndInventory" style="oblique">
    <position>{(970,760)(1200,260)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/prepareDataSubmissionSelect" linkstyle="Rectangle" name="" sourceName="/Steps/StartStep/start" style="rectanular">
+   <position>{(30,260)(150,260)}</position>
   </SynchronousLink>
  </Links>
  <Conditions />
