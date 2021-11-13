@@ -27,4 +27,9 @@ public class INTERNET___MohViewApprovalPossessApplication___1 extends BaseProces
 		EngineHelper.delegate(DELEGATOR, "prepareData", this); 
 	}
 
+	public void start_OnStepProcess_0() throws Exception {
+	// 		Start->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "start", this);
+	}
+
 }

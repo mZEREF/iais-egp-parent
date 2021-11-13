@@ -91,21 +91,6 @@ public class RfcFakerInitConfig {
         return map;
     }
 
-    public static Map<String,RfcFlowType> getApprovalProssessFlowConfig(){
-        Map<String,RfcFlowType> map = new HashMap<>();
-        return map;
-    }
-
-    public static Map<String,RfcFlowType> getApprovalLargeFlowConfig(){
-        Map<String,RfcFlowType> map = new HashMap<>();
-        return map;
-    }
-
-    public static Map<String,RfcFlowType> getApprovalSprcialFlowConfig(){
-        Map<String,RfcFlowType> map = new HashMap<>();
-        return map;
-    }
-
     public static Map<String,RfcFlowType> getFacCrFlowConfig(){
         Map<String,RfcFlowType> map = new HashMap<>();
         return map;

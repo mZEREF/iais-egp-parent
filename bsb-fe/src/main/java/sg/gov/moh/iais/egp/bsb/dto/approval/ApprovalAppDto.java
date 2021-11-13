@@ -10,6 +10,7 @@ import sg.gov.moh.iais.egp.bsb.common.node.NodeGroup;
 import sg.gov.moh.iais.egp.bsb.common.node.simple.SimpleNode;
 import sg.gov.moh.iais.egp.bsb.util.CollectionUtils;
 
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.Map;
 
@@ -21,7 +22,7 @@ import static sg.gov.moh.iais.egp.bsb.constant.ApprovalAppConstants.*;
  */
 @Data
 @NoArgsConstructor
-public class ApprovalAppDto {
+public class ApprovalAppDto implements Serializable {
 
     private ActivityDto activityDto;
     private Map<String, ApprovalProfileDto> approvalProfileMap;

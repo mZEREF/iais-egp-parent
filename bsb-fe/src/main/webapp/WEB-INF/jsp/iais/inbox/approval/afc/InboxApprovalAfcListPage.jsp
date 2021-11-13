@@ -134,7 +134,14 @@
                                                         <tr>
                                                             <td>
                                                                 <p class="visible-xs visible-sm table-row-title">Approval No.</p>
-                                                                <p><c:out value="${approval.approveNo}"/></p>
+                                                                <c:choose>
+                                                                    <c:when test="${approval.processType eq 'PROTYPE005'}">
+                                                                        <a href="/bsb-fe/eservice/INTERNET/MohRfcViewCertRegApplication?appId=<iais:mask name='id' value='${approval.id}'/>&processType=<iais:mask name='processType' value='${approval.processType}'/>&approveNo=${approval.approveNo}<c:if test="${approval.status eq 'APPRSTA001'}">&editId=<iais:mask name='editId' value='${approval.id}'/></c:if>"><c:out value="${approval.approveNo}"/></a>
+                                                                    </c:when>
+                                                                    <c:otherwise>
+                                                                        <c:out value="${approval.approveNo}"/>
+                                                                    </c:otherwise>
+                                                                </c:choose>
                                                             </td>
                                                             <td>
                                                                 <p class="visible-xs visible-sm table-row-title">Process Type</p>

@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import sg.gov.moh.iais.egp.bsb.common.node.simple.ValidatableNodeValue;
 import sg.gov.moh.iais.egp.bsb.dto.ValidationResultDto;
 import sg.gov.moh.iais.egp.bsb.util.SpringReflectionUtils;
+import sg.gov.moh.iais.egp.common.annotation.RfcAttributeDesc;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
@@ -26,35 +27,81 @@ public class ApprovalProfileDto extends ValidatableNodeValue {
     public static class BATInfo implements Serializable {
         private String facilityBiologicalAgentEntityId;
 
+        @RfcAttributeDesc
         private String batId;
+
         private String batName;
+
+        @RfcAttributeDesc
         private String prodMaxVolumeLitres;
+
+        @RfcAttributeDesc
         private String lspMethod;
+
+        @RfcAttributeDesc
         private String procurementMode;
+
+        @RfcAttributeDesc
         private String facilityNameOfTransfer;
+
+        @RfcAttributeDesc
         private String expectedDateOfImport;
+
+        @RfcAttributeDesc
         private String contactPersonNameOfTransfer;
+
+        @RfcAttributeDesc
         private String impCtcPersonNo;
+
+        @RfcAttributeDesc
         private String contactPersonEmailOfTransfer;
+
+        @RfcAttributeDesc
         private String transferFacAddr1;
+
+        @RfcAttributeDesc
         private String transferFacAddr2;
+
+        @RfcAttributeDesc
         private String transferFacAddr3;
+
+        @RfcAttributeDesc
         private String transferCountry;
+
+        @RfcAttributeDesc
         private String transferCity;
+
+        @RfcAttributeDesc
         private String transferState;
+
+        @RfcAttributeDesc
         private String transferPostalCode;
+
+        @RfcAttributeDesc
         private String courierServiceProviderName;
+
+        @RfcAttributeDesc
         private String remarks;
 
+        @RfcAttributeDesc
         private String prjName;
+
+        @RfcAttributeDesc
         private String principalInvestigatorName;
+
+        @RfcAttributeDesc
         private String workActivityIntended;
+
+        @RfcAttributeDesc
         private String startDate;
+
+        @RfcAttributeDesc
         private String endDate;
 
         private String processType;
     }
 
+    @RfcAttributeDesc(aliasName = "iais.bsbfe.approvalProfile.addOrDelete")
     private List<BATInfo> batInfos;
 
     private String schedule;

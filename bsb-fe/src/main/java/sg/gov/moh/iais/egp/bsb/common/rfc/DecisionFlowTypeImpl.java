@@ -41,4 +41,13 @@ public class DecisionFlowTypeImpl implements DecisionFlowType{
         //there has modify field, but not APPROVAL type
         return RfcFlowType.NOTIFICATION;
     }
+
+    @Override
+    public RfcFlowType approvalAppFlowType(List<DiffContent> list) {
+        //all change info, return AMENDMENT
+        if (!list.isEmpty()){
+            return RfcFlowType.AMENDMENT;
+        }
+        return RfcFlowType.DONOTHING;
+    }
 }

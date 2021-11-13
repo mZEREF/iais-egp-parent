@@ -32,7 +32,7 @@ public interface ApprovalAppClient {
     ValidationResultDto validateApprovalPrimaryDocs(@RequestBody PrimaryDocDto.DocsMetaDto dto);
 
     @GetMapping(path = "/approvalApp/approvalToPossess/application/{appId}", produces =MediaType.APPLICATION_JSON_VALUE)
-    ResponseDto<ApprovalAppDto> getApprovalAppAppData(@PathVariable("appId") String appId);
+    ResponseDto<ApprovalAppDto> getApprovalAppAppDataByApplicationId(@PathVariable("appId") String appId);
 
     @GetMapping(path = "/approvalApp/approvalToPossess/facDoc/{facilityId}", produces =MediaType.APPLICATION_JSON_VALUE)
     ResponseDto<Collection<PrimaryDocDto.DocRecordInfo>> getFacDocByFacId(@PathVariable("facilityId") String facilityId);
@@ -49,4 +49,10 @@ public interface ApprovalAppClient {
     @PostMapping(path = "/approvalApp/approvalToPossess/application", consumes = MediaType.APPLICATION_JSON_VALUE, produces =MediaType.APPLICATION_JSON_VALUE)
     ResponseDto<String> saveNewApprovalApp(@RequestBody ApprovalAppDto approvalAppDto);
 
+    /*******************RFC********************/
+    @GetMapping(path = "/approvalApp/approvalToPossess/rfc/application/{approvalId}", produces =MediaType.APPLICATION_JSON_VALUE)
+    ResponseDto<ApprovalAppDto> getApprovalAppAppDataByApprovalId(@PathVariable("approvalId") String approvalId);
+
+    @PostMapping(path = "/approvalApp/approvalToPossess/rfc/amendment/saveApprovalApp", consumes = MediaType.APPLICATION_JSON_VALUE, produces =MediaType.APPLICATION_JSON_VALUE)
+    ResponseDto<String> saveAmendmentApprovalApp(@RequestBody ApprovalAppDto approvalAppDto);
 }

@@ -72,6 +72,8 @@ public class RfcFacilityRegistrationDelegator {
     private static final String ERR_MSG_NULL_NAME = "Name must not be null!";
     private static final String ERR_MSG_INVALID_ACTION = "Invalid action";
 
+    private static final String KEY_PROCESS_TYPE = "processType";
+
     //This oldFacilityRegisterDto is the original data, which is for comparison with each DTO modification before Submit(unchangeable)
     private static final String KEY_OLD_FACILITY_REGISTER_DTO = "oldFacilityRegisterDto";
 
@@ -117,6 +119,9 @@ public class RfcFacilityRegistrationDelegator {
                 throw new IaisRuntimeException("Fail to retrieve app data");
             }
         }
+        String maskedProcessType = request.getParameter(KEY_PROCESS_TYPE);
+        String processType = MaskUtil.unMaskValue(KEY_PROCESS_TYPE,maskedProcessType);
+        ParamUtil.setSessionAttr(request, KEY_PROCESS_TYPE, processType);
     }
 
     public void preCompInfo(BaseProcessClass bpc) {
@@ -800,7 +805,7 @@ public class RfcFacilityRegistrationDelegator {
         CompareTwoObject.diff(oldFacilityRegisterDto.getFacilityOfficerDto(), newFacilityRegisterDto.getFacilityOfficerDto(), diffContentList);
         CompareTwoObject.diff(oldFacilityRegisterDto.getFacilityCommitteeDto(), newFacilityRegisterDto.getFacilityCommitteeDto(), diffContentList);
         CompareTwoObject.diffMap(oldFacilityRegisterDto.getBiologicalAgentToxinMap(), newFacilityRegisterDto.getBiologicalAgentToxinMap(), diffContentList, BiologicalAgentToxinDto.BATInfo.class);
-        //biologicalAgentToxinMap,docRecordInfos don't process
+        //docRecordInfos don't process
         return diffContentList;
     }
 }

@@ -4,7 +4,9 @@ import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
+import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import sg.gov.moh.iais.egp.bsb.client.ApprovalAppClient;
 import sg.gov.moh.iais.egp.bsb.common.node.NodeGroup;
 import sg.gov.moh.iais.egp.bsb.common.node.simple.SimpleNode;
@@ -34,8 +36,13 @@ public class ViewApprovalPossessDelegator {
 
     private final ApprovalAppClient approvalAppClient;
 
+    @Autowired
     public ViewApprovalPossessDelegator(ApprovalAppClient approvalAppClient) {
         this.approvalAppClient = approvalAppClient;
+    }
+
+    public void start(BaseProcessClass bpc) { // NOSONAR
+        AuditTrailHelper.auditFunction("Approval new application", "View Application");
     }
 
     public void init(BaseProcessClass bpc) {
@@ -63,7 +70,7 @@ public class ViewApprovalPossessDelegator {
         String appId = (String) ParamUtil.getRequestAttr(request, KEY_APP_ID);
 
         // retrieve app data of approval application
-        ResponseDto<ApprovalAppDto> resultDto = approvalAppClient.getApprovalAppAppData(appId);
+        ResponseDto<ApprovalAppDto> resultDto = approvalAppClient.getApprovalAppAppDataByApplicationId(appId);
         if (resultDto.ok()) {
             NodeGroup approvalAppRoot = resultDto.getEntity().toApprovalAppRootGroup(KEY_ROOT_NODE_GROUP);
 

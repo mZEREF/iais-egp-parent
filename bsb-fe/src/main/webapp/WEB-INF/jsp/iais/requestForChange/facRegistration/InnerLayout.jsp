@@ -17,7 +17,7 @@
 
 <%@include file="/WEB-INF/jsp/iais/include/showErrorMsg.jsp"%>
 
-<%@include file="dashboard.jsp"%>
+<%@include file="../common/dashboard.jsp"%>
 
 <form method="post" id="mainForm" action="<%=process.runtime.continueURL()%>">
     <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
@@ -33,7 +33,7 @@
                         <div class="tab-content">
                             <div class="tab-pane fade in active">
                                 <%-- Main content here --%>
-                                <%@ include file="InnerFooter.jsp" %>
+                                <%@ include file="../common/InnerFooter.jsp" %>
                             </div>
                         </div>
                     </div>

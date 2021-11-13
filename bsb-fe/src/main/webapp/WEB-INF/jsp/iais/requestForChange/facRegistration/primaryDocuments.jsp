@@ -19,7 +19,7 @@
 
 <%@include file="/WEB-INF/jsp/iais/include/showErrorMsg.jsp"%>
 
-<%@include file="dashboard.jsp"%>
+<%@include file="../common/dashboard.jsp"%>
 
 <%--@elvariable id="savedFiles" type="java.util.Map<java.lang.String, java.util.List<sg.gov.moh.iais.egp.bsb.dto.register.facility.PrimaryDocDto$DocRecordInfo>>"--%>
 <%--@elvariable id="newFiles" type="java.util.Map<java.lang.String, java.util.List<sg.gov.moh.iais.egp.bsb.dto.register.facility.PrimaryDocDto$NewDocInfo>>"--%>
@@ -88,7 +88,7 @@
                                     </div>
                                 </div>
 
-                                <%@ include file="InnerFooter.jsp" %>
+                                <%@ include file="../common/InnerFooter.jsp" %>
                             </div>
                         </div>
                     </div>

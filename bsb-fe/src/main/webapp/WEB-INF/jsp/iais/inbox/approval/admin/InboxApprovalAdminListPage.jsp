@@ -150,8 +150,11 @@
                                                             <td>
                                                                 <p class="visible-xs visible-sm table-row-title">Approval No.</p>
                                                                 <c:choose>
-                                                                    <c:when test="${approval.processType eq 'PROTYPE001' and approval.status eq 'APPRSTA001'}">
-                                                                        <a href="/bsb-fe/eservice/INTERNET/MohRfcViewFacRegApplication?appId=<iais:mask name='id' value='${approval.id}'/>&approveNo=${approval.approveNo}<c:if test="${approval.status eq 'APPRSTA001'}">&editId=<iais:mask name='editId' value='${approval.id}'/></c:if>"><c:out value="${approval.approveNo}"/></a>
+                                                                    <c:when test="${approval.processType eq 'PROTYPE001'}">
+                                                                        <a href="/bsb-fe/eservice/INTERNET/MohRfcViewFacRegApplication?appId=<iais:mask name='id' value='${approval.id}'/>&processType=<iais:mask name='processType' value='${approval.processType}'/>&approveNo=${approval.approveNo}<c:if test="${approval.status eq 'APPRSTA001'}">&editId=<iais:mask name='editId' value='${approval.id}'/></c:if>"><c:out value="${approval.approveNo}"/></a>
+                                                                    </c:when>
+                                                                    <c:when test="${approval.processType eq 'PROTYPE002' or approval.processType eq 'PROTYPE003' or approval.processType eq 'PROTYPE004'}">
+                                                                        <a href="/bsb-fe/eservice/INTERNET/MohRfcViewApprovalPossessApplication?appId=<iais:mask name='id' value='${approval.id}'/>&processType=<iais:mask name='processType' value='${approval.processType}'/>&approveNo=${approval.approveNo}<c:if test="${approval.status eq 'APPRSTA001'}">&editId=<iais:mask name='editId' value='${approval.id}'/></c:if>"><c:out value="${approval.approveNo}"/></a>
                                                                     </c:when>
                                                                     <c:otherwise>
                                                                         <c:out value="${approval.approveNo}"/>

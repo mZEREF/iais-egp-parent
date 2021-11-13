@@ -7,6 +7,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import sg.gov.moh.iais.egp.bsb.common.node.simple.ValidatableNodeValue;
 import sg.gov.moh.iais.egp.bsb.dto.ValidationResultDto;
 import sg.gov.moh.iais.egp.bsb.util.SpringReflectionUtils;
+import sg.gov.moh.iais.egp.common.annotation.RfcAttributeDesc;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
@@ -19,10 +20,18 @@ import java.util.List;
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ActivityDto extends ValidatableNodeValue {
+
+    @RfcAttributeDesc
     private String facilityId;
+
     private String facilityName;
+
+    @RfcAttributeDesc
     private String activityId;
+
     private String activityType;
+
+    @RfcAttributeDesc
     private List<String> schedules;
 
     @JsonIgnore

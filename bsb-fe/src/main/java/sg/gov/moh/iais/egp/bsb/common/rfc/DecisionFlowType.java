@@ -7,4 +7,6 @@ import java.util.List;
 
 public interface DecisionFlowType {
     RfcFlowType facRegFlowType(List<DiffContent> list);
+
+    RfcFlowType approvalAppFlowType(List<DiffContent> list);
 }

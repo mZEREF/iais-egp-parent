@@ -18,7 +18,7 @@
 
 <%@include file="/WEB-INF/jsp/iais/include/showErrorMsg.jsp"%>
 
-<%@include file="dashboard.jsp"%>
+<%@include file="../common/dashboard.jsp"%>
 
 <%--@elvariable id="facAuth" type="sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityAuthoriserDto"--%>
 <form method="post" id="mainForm" action="<%=process.runtime.continueURL()%>">
@@ -202,7 +202,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <%@ include file="InnerFooter.jsp" %>
+                                <%@ include file="../common/InnerFooter.jsp" %>
                             </div>
                         </div>
                     </div>

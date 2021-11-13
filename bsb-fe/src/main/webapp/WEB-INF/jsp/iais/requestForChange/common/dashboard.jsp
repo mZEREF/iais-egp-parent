@@ -11,7 +11,7 @@
             <div class="col-xs-12">
                 <div class="dashboard-page-title">
                     <h1>Change Request</h1>
-                    <h3>You are changing for the <strong>Facility Registration</strong></h3>
+                    <h3>You are changing for the <strong><iais:code code="${processType}"></iais:code></strong></h3>
                 </div>
             </div>
         </div>

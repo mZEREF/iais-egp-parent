@@ -138,6 +138,9 @@ function readonlyPartPage() {
     $("input[type='text']").css("color", "#999");
     $("input[type='text']").css("border-color", "#ededed");
     $("input[type='text']").attr("disabled",true);
+    $("input[type='number']").css("color", "#999");
+    $("input[type='number']").css("border-color", "#ededed");
+    $("input[type='number']").attr("disabled",true);
     $("input[type='radio']").attr("disabled",true);
     $("input[type='checkbox']").attr("disabled",true);
     $("div.nice-select").addClass("disabled");
@@ -154,6 +157,9 @@ function unreadonlyPartPage() {
     $("input[type='text']").css("color", "");
     $("input[type='text']").css("border-color", "");
     $("input[type='text']").removeAttr("disabled");
+    $("input[type='number']").css("color", "");
+    $("input[type='number']").css("border-color", "");
+    $("input[type='number']").removeAttr("disabled");
     $("input[type='radio']").removeAttr("disabled");
     $("input[type='checkbox']").removeAttr("disabled");
     $("div.nice-select").removeClass("disabled");

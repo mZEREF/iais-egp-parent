@@ -8,7 +8,9 @@ import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoDto;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
+import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
@@ -45,6 +47,7 @@ import static sg.gov.moh.iais.egp.bsb.constant.ApprovalAppConstants.*;
 @Slf4j
 @Delegator("bsbApprovalAppDelegator")
 public class ApprovalAppDelegator {
+    public static final String MODULE_NAME = "New Approval Application";
     private static final String KEY_ROOT_NODE_GROUP = "approvalAppRoot";
 
     private static final String KEY_EDIT_APP_ID = "editId";
@@ -75,6 +78,7 @@ public class ApprovalAppDelegator {
     private final ApprovalAppClient approvalAppClient;
     private final FileRepoClient fileRepoClient;
 
+    @Autowired
     public ApprovalAppDelegator(ApprovalAppClient approvalAppClient, FileRepoClient fileRepoClient) {
         this.approvalAppClient = approvalAppClient;
         this.fileRepoClient = fileRepoClient;
@@ -82,7 +86,6 @@ public class ApprovalAppDelegator {
 
     public void init(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
-        request.getSession().removeAttribute(KEY_ROOT_NODE_GROUP);
         boolean newApprovalApp = true;
         // check if we are doing editing
         String maskedAppId = request.getParameter(KEY_EDIT_APP_ID);
@@ -94,7 +97,7 @@ public class ApprovalAppDelegator {
             boolean failRetrieveEditData = true;
             String appId = MaskUtil.unMaskValue(KEY_EDIT_APP_ID, maskedAppId);
             if (appId != null && !maskedAppId.equals(appId)) {
-                ResponseDto<ApprovalAppDto> resultDto = approvalAppClient.getApprovalAppAppData(appId);
+                ResponseDto<ApprovalAppDto> resultDto = approvalAppClient.getApprovalAppAppDataByApplicationId(appId);
                 if (resultDto.ok()) {
                     failRetrieveEditData = false;
                     NodeGroup approvalAppRoot = resultDto.getEntity().toApprovalAppRootGroup(KEY_ROOT_NODE_GROUP);
@@ -114,9 +117,10 @@ public class ApprovalAppDelegator {
     }
 
     public void start(BaseProcessClass bpc){
-        // do nothing now
         HttpServletRequest request = bpc.request;
-        ParamUtil.setSessionAttr(request, KEY_PROCESS_TYPE, null);
+        request.getSession().removeAttribute(KEY_ROOT_NODE_GROUP);
+        request.getSession().removeAttribute(KEY_PROCESS_TYPE);
+        AuditTrailHelper.auditFunction(MODULE_NAME, MODULE_NAME);
     }
 
     public void preCompInfo(BaseProcessClass bpc){

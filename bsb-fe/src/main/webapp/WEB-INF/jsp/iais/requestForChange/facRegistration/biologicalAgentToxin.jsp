@@ -17,7 +17,7 @@
 
 <%@include file="/WEB-INF/jsp/iais/include/showErrorMsg.jsp"%>
 
-<%@include file="dashboard.jsp"%>
+<%@include file="../common/dashboard.jsp"%>
 
 <%--@elvariable id="batInfo" type="sg.gov.moh.iais.egp.bsb.dto.register.facility.BiologicalAgentToxinDto"--%>
 <form method="post" id="mainForm" action="<%=process.runtime.continueURL()%>">
@@ -140,7 +140,7 @@
                                     </div>
                                 </div>
 
-                                <%@ include file="InnerFooter.jsp" %>
+                                <%@ include file="../common/InnerFooter.jsp" %>
                             </div>
                         </div>
                     </div>

@@ -45,7 +45,7 @@
                                                         </div>
                                                         <div id="previewBatInfo" class="panel-collapse collapse">
                                                             <div class="panel-body">
-                                                                <div class="text-right app-font-size-16"><c:if test="${not empty maskedEditId}"><a href="/bsb-fe/eservice/INTERNET/MohApprovalApplication?editId=${maskedEditId}"><em class="fa fa-pencil-square-o"></em>Edit</a></c:if></div>
+                                                                <div class="text-right app-font-size-16"><c:if test="${not empty maskedEditId}"><a href="/bsb-fe/eservice/INTERNET/MohApprovalApplication?editId=${maskedEditId}&processType=<iais:mask name='processType' value='${processType}'/>"><em class="fa fa-pencil-square-o"></em>Edit</a></c:if></div>
                                                                 <c:forEach var="approvalProfile" items="${approvalProfileList}">
                                                                     <div class="panel-main-content form-horizontal min-row">
                                                                         <div class="form-group">
@@ -193,7 +193,7 @@
                                                         </div>
                                                         <div id="previewDocs" class="panel-collapse collapse">
                                                             <div class="panel-body">
-                                                                <div class="text-right app-font-size-16"><c:if test="${not empty maskedEditId}"><a href="/bsb-fe/eservice/INTERNET/MohApprovalApplication?editId=${maskedEditId}"><em class="fa fa-pencil-square-o"></em>Edit</a></c:if></div>
+                                                                <div class="text-right app-font-size-16"><c:if test="${not empty maskedEditId}"><a href="/bsb-fe/eservice/INTERNET/MohApprovalApplication?editId=${maskedEditId}&processType=<iais:mask name='processType' value='${processType}'/>"><em class="fa fa-pencil-square-o"></em>Edit</a></c:if></div>
                                                                 <div class="panel-main-content form-horizontal min-row">
                                                                     <div class="form-group">
                                                                         <div class="col-10"><strong>Uploaded Documents</strong></div>

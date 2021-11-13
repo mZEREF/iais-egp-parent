@@ -12,7 +12,7 @@
 
 <script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-afc-facility-register.js"></script>
 
-<%@include file="dashboard.jsp"%>
+<%@include file="../common/dashboard.jsp"%>
 
 <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
     <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
