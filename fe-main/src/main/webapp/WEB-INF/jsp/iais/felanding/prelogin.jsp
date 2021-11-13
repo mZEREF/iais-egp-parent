@@ -140,6 +140,25 @@
                         </div>
                       </div>
                       <!---------------------->
+                      <div class="col-xs-12 col-lg-8" style="padding-top:15px">
+                        <div class="form-check-gp">
+                          <div class="form-check">
+                            <input class="form-check-input" id="bsb" value="bsb" name="serviceGroup" onclick="javascript:landing();" type="checkbox" aria-invalid="false">
+                            <label class="form-check-label"  for="oldSystem"><span class="check-square"></span><strong>Biosafety Branch (BSB)</strong></label>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col-xs-12 col-lg-4 text-right" style="padding-top:15px">
+                        <a data-toggle="collapse" data-target="#bsb-info" class="btn btn-secondary btn-sm" href="javascript:void(0)" onclick="$('.prelogin-content .white-content-box').css('height', 'auto');"> More Info</a>
+                      </div>
+                      <div class="col-xs-12 col-lg-12" >
+                        <div id="bsb-info" class="collapse halp-infobox"  style="height: 100px">
+                          <div class="col-xs-4 col-md-11 col-sm-4">Register New Facility</div><br>
+                          <div class="col-xs-4 col-md-11 col-sm-4">Approval for  Approval</div><br>
+                          <div class="col-xs-4 col-md-11 col-sm-4">Apply to New Facility Certifier</div>
+                        </div>
+                      </div>
+                      <!---------------------->
                     </div>
                   </div>
                   <div class="col-xs-12" style="margin-bottom: 20px;">
@@ -148,7 +167,7 @@
                   <div class="col-xs-12 col-lg-6 user-selection">
                     <h3 style="color: #3B2A85;" >For Business Users</h3>
                     <p>For corporate users with registered UEN to access and transact on behalf of their licensee.</p>
-                    <a class="btn btn-primary disabled" id="corppass" href="javascript:void(0)">Login with SingPass</a>
+                    <a class="btn btn-primary disabled" id="corppass" href="javascript:void(0)">Login with CorpPass</a>
                   </div>
                   <div class="col-xs-12 col-lg-6 user-selection">
                     <h3 style="color:#B8271E" > For Individual Users</h3>
@@ -236,6 +255,14 @@
         $('#corppass').removeAttr("onclick");
         $('#singpass').attr("href", prdSing);
         $('#singpass').removeAttr("onclick");
+    }
+
+    if ($("input[id='bsb']")[0].checked) {
+      $('#singpass').addClass("disabled");
+      $.cookie('service_bsb', 'Y');
+    }
+    else {
+      $.cookie('service_bsb', '');
     }
   }
 </script>
