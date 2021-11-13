@@ -115,14 +115,14 @@ public class SendNotificationHelper {
                 try {
                     throw new CustomerException(MSG_ERROR_STATUS, "no such status");
                 } catch (CustomerException e) {
-                    e.printStackTrace();
+                    log.error("no such status");
                 }
             }
         } else {
             try {
                 throw new CustomerException(MSG_ERROR_STATUS, "Missing object parameters");
             } catch (CustomerException e) {
-                e.printStackTrace();
+                log.error("Missing object parameters");
             }
         }
 
@@ -144,13 +144,13 @@ public class SendNotificationHelper {
             try {
                 emailSmsClient.sendEmail(emailDto, null);
             } catch (IOException e) {
-                e.printStackTrace();
+                log.error("sendEmail fail");
             }
         } else {
             try {
                 emailSmsClient.sendEmail(emailDto, notification.getAttachments());
             } catch (IOException e) {
-                e.printStackTrace();
+                log.error("sendEmail fail");
             }
         }
     }
@@ -172,7 +172,7 @@ public class SendNotificationHelper {
         try {
             emailSmsClient.sendEmail(emailDto, null);
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error("generateLetter sendEmail fail");
         }
     }
 
@@ -284,7 +284,7 @@ public class SendNotificationHelper {
                 try {
                     throw new CustomerException(MSG_ERROR_STATUS, "no such status");
                 } catch (CustomerException e) {
-                    e.printStackTrace();
+                    log.error("no such status");
                 }
         }
         notification.setContentParams(map);
@@ -314,7 +314,7 @@ public class SendNotificationHelper {
             try {
                 throw new CustomerException(MSG_ERROR_STATUS, "Object properties is null");
             } catch (CustomerException e) {
-                e.printStackTrace();
+                log.error("Object properties is null");
             }
         }
     }
