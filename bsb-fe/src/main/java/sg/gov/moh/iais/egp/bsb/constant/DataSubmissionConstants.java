@@ -5,8 +5,7 @@ package sg.gov.moh.iais.egp.bsb.constant;
  */
 
 public final class DataSubmissionConstants {
-    public DataSubmissionConstants() {
-    }
+    private DataSubmissionConstants() {}
 
     public static final String KEY_FAC_ID = "facId";
 

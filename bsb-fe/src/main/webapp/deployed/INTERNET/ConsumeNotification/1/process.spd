@@ -117,9 +117,6 @@
   <SynchronousLink destinationName="/Pages/WebPage/ackPage" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/save" style="rectanular">
    <position>{(1290,270)(1420,270)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/save" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch1" style="rectanular">
-   <position>{(1170,270)(1290,270)}</position>
-  </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/saveDraft" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
    <position>{(1170,270)(1280,180)}</position>
   </SynchronousLink>
@@ -162,6 +159,9 @@
   <SynchronousLink destinationName="/Steps/AutomaticStep/preFacSelect" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch2" style="rectanular">
    <position>{(590,270)(-174,454)(-190,270)}</position>
   </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/save" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch1" style="rectanular">
+   <position>{(1170,270)(1290,270)}</position>
+  </SynchronousLink>
  </Links>
  <Conditions>
   <Condition componentIfFalse="/Steps/AutomaticStep/prepareData" componentIfTrue="/Pages/WebPage/ConfirmPage" defClass="" executor="" icon="" leftOperand="isValid" name="Cond1" operator="=" rightOperand="&quot;Y&quot;" x="840" y="250">
@@ -171,9 +171,9 @@
  <Switches>
   <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="action_type" name="Switch1" x="1150" y="250">
    <Description />
-   <SwitchCase component="/Steps/AutomaticStep/save" value="&quot;doSave&quot;" />
    <SwitchCase component="/Steps/AutomaticStep/saveDraft" value="&quot;saveDraft&quot;" />
    <SwitchCase component="/Steps/AutomaticStep/prepareData" value="&quot;doBack&quot;" />
+   <SwitchCase component="/Steps/AutomaticStep/save" value="&quot;doSave&quot;" />
   </Switch>
   <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="action_type" name="Switch2" x="570" y="250">
    <Description />

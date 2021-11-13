@@ -155,12 +155,50 @@
                                                                             </div>
                                                                         </div>
                                                                     </div>
+
+                                                                <div class="panel-main-content form-horizontal min-row">
+                                                                    <div class="form-group">
+                                                                        <div class="col-10"><strong>Uploaded Documents</strong></div>
+                                                                        <div class="clear"></div>
+                                                                    </div>
+                                                                    <div>
+                                                                        <div class="form-group">
+                                                                            <div class="col-10"><strong>Inventory: Biological Agents</strong></div>
+                                                                            <div class="clear"></div>
+                                                                        </div>
+                                                                        <c:forEach var="doc" items="${docMeta.get('ityBat')}">
+                                                                            <div class="form-group">
+                                                                                <div class="col-10"><p>${doc.filename}(${String.format("%.1f", doc.size/1024.0)}KB)</p></div>
+                                                                                <div class="col-sm-7 col-md-5 col-xs-7"><p></p></div>
+                                                                                <div class="clear"></div>
+                                                                            </div>
+                                                                        </c:forEach>
+
+                                                                        <div class="form-group">
+                                                                            <div class="col-10"><strong>Inventory: Toxins</strong></div>
+                                                                            <div class="clear"></div>
+                                                                        </div>
+                                                                        <c:forEach var="doc" items="${docMeta.get('ityToxin')}">
+                                                                            <div class="form-group">
+                                                                                <div class="col-10"><p>${doc.filename}(${String.format("%.1f", doc.size/1024.0)}KB)</p></div>
+                                                                                <div class="col-sm-7 col-md-5 col-xs-7"><p></p></div>
+                                                                                <div class="clear"></div>
+                                                                            </div>
+                                                                        </c:forEach>
+
+                                                                        <div class="form-group">
+                                                                            <label class="col-xs-5 col-md-4 control-label">Others</label>
+                                                                            <div class="col-sm-7 col-md-5 col-xs-7"><p></p></div>
+                                                                            <div class="clear"></div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
                                                             </div>
                                                         </div>
                                                     </div>
 
                                                     <div class="panel panel-default">
-                                                        <div class="panel-heading completed">
+                                                        <div class="panel-heading">
                                                             <h4 class="panel-title">
                                                                 <a class="collapsed" data-toggle="collapse"
                                                                    href="#previewDocs">Declarations</a>
@@ -182,7 +220,6 @@
                                                             </div>
                                                         </div>
                                                     </div>
-
                                                 </div>
                                             </div>
                                         </div>

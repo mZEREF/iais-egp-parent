@@ -1,7 +1,6 @@
 package sg.gov.moh.iais.egp.bsb.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
-import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -87,6 +86,7 @@ public class DataSubmissionDelegator {
     public void prepareConsumeData(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         ParamUtil.setSessionAttr(request,KEY_FACILITY_INFO,null);
+        ParamUtil.setSessionAttr(request,KEY_CONSUME_NOTIFICATION_DTO, null);
         //
         ConsumeNotificationDto notificationDto = getConsumeNotification(request);
         //prepare facility info
@@ -121,6 +121,7 @@ public class DataSubmissionDelegator {
         //get value from jsp and bind value to dto
         ConsumeNotificationDto notificationDto = getConsumeNotification(request);
         notificationDto.reqObjectMapping(request);
+        notificationDto.setEnsure("true");
         doConsumeValidation(notificationDto,request);
         //use to show file information
         ParamUtil.setRequestAttr(request,KEY_DO_SETTINGS,getDocSettingMap());
@@ -134,6 +135,14 @@ public class DataSubmissionDelegator {
     public void saveConsumeNot(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         ConsumeNotificationDto dto = getConsumeNotification(request);
+        String ensure = ParamUtil.getString(request, KEY_PREFIX_ENSURE);
+        if (ensure == null){
+            dto.setEnsure("");
+        }else {
+            dto.setEnsure(ensure);
+        }
+        doConsumeValidation(dto,request);
+        doConsumeValidation(dto,request);
         List<ConsumeNotificationDto.ConsumptionNot> consumeNotList = dto.getConsumptionNotList();
         if(!CollectionUtils.isEmpty(consumeNotList)){
             for (ConsumeNotificationDto.ConsumptionNot not : consumeNotList) {
@@ -152,8 +161,6 @@ public class DataSubmissionDelegator {
         }else{
             log.info(KEY_EMPTY_LIST_ERROR);
         }
-        String ensure = ParamUtil.getString(request,KEY_PREFIX_ENSURE);
-        dto.setEnsure(ensure);
         ConsumeNotificationDto.ConsumeNotNeedR consumeNotNeedR = dto.getConsumeNotNeedR();
         dataSubmissionClient.saveConsumeNot(consumeNotNeedR);
     }
