@@ -89,7 +89,7 @@ public class BsbNotificationHelper {
        Map<String,Object> msgSubject = bsbEmailParam.getMsgSubject();
        Map<String,byte[]> attachments = bsbEmailParam.getAttachments();
 
-       log.info("send email msgTemplateId = "+msgTemplateId+";refId ="+refId+"; refIdType = "+refIdType);
+       log.info("send email msgTemplateId = {}, refId = {}, refIdType = {}",msgTemplateId,refId,refIdType);
 
        MsgTemplateDto msgTemplateDto;
        if(recipientType != null && !recipientType.isEmpty()){

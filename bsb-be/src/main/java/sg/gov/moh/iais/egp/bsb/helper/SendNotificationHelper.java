@@ -298,16 +298,16 @@ public class SendNotificationHelper {
     private void getReceipt(EmailDto emailDto, MsgTemplateDto msgTemplateDto, String appNo,String facId,String reqType) {
         if (msgTemplateDto != null) {
             if (msgTemplateDto.getRecipient() != null && !msgTemplateDto.getRecipient().isEmpty()) {
-                log.info("enter getReceipt TO" + appNo);
+                log.info("enter getReceipt TO {}" , appNo);
                 List<String> emailAddress = getEmailAddressByRole(msgTemplateDto.getRecipient(), appNo,facId,reqType);
                 emailDto.setReceipts(emailAddress);
             }
             if (msgTemplateDto.getCcrecipient() != null && !msgTemplateDto.getCcrecipient().isEmpty()) {
-                log.info("enter getReceipt CC" + appNo);
+                log.info("enter getReceipt CC {}" , appNo);
                 emailDto.setCcList(getEmailAddressByRole(msgTemplateDto.getCcrecipient(), appNo,facId,reqType));
             }
             if (msgTemplateDto.getBccrecipient() != null && !msgTemplateDto.getBccrecipient().isEmpty()) {
-                log.info("enter getReceipt BC" + appNo);
+                log.info("enter getReceipt BC {}" , appNo);
                 emailDto.setCcList(getEmailAddressByRole(msgTemplateDto.getBccrecipient(), appNo,facId,reqType));
             }
         } else {
