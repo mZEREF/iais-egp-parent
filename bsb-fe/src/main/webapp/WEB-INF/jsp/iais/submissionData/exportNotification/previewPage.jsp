@@ -235,29 +235,26 @@
                                                     </div>
 
                                                     <div class="panel panel-default">
-                                                        <div class="panel-heading">
+                                                        <div class="panel-heading completed">
                                                             <h4 class="panel-title">
-                                                                <a class="collapsed" data-toggle="collapse" href="#previewDocs">Declarations</a>
+                                                                <a class="collapsed" data-toggle="collapse" href="#previewDec">Declarations</a>
                                                             </h4>
                                                         </div>
-                                                        <div id="previewDocs" class="panel-collapse collapse">
+                                                        <div id="previewDec" class="panel-collapse collapse">
                                                             <div class="panel-body">
                                                                 <div class="panel-main-content form-horizontal min-row">
-                                                                    <div class="form-group ">
-                                                                        <div class="col-xs-1" style="padding: 30px 0 20px 30px;">
-                                                                            <input type="checkbox" name="ensure" id="ensure" value="Y"/>
-                                                                        </div>
-                                                                        <div class="col-xs-10 control-label">
-                                                                            <label for="ensure">I will ensure that: (a)
-                                                                                the packaging of the materials is
-                                                                                carried out in accordance with the
-                                                                                requirements stipulated in the BATA
-                                                                                Transportation Regulations, where
-                                                                                applicable; and (b) the relevant export
-                                                                                permit and/or approval(s) has been
-                                                                                obtained prior to exportation of the
-                                                                                materials</label>
-                                                                            <span data-err-ind="ensure" class="error-msg"></span>
+                                                                    <div>
+                                                                        <div class="form-group">
+                                                                            <p>I will ensure that: (a) the packaging of the materials is carried out in accordance with the requirements stipulated in the BATA Transportation Regulations, where applicable; and (b) the relevant export permit and/or approval(s) has been obtained prior to exportation of the materials</p>
+                                                                            <br/>
+                                                                            <div class="col-sm-4" style="margin-top: 8px">
+                                                                                <input type="radio" name="ensure" id="ensureT" value="yes"/>
+                                                                                <label for="ensureT">yes</label>
+                                                                            </div>
+                                                                            <div class="col-sm-4" style="margin-top: 8px">
+                                                                                <input type="radio" name="ensure" id="ensureN" value="no"/>
+                                                                                <label for="ensureN">no</label>
+                                                                            </div>
                                                                         </div>
                                                                     </div>
                                                                 </div>
