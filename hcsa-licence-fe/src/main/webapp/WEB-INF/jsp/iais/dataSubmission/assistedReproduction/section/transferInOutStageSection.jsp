@@ -1,4 +1,4 @@
-<%--<script type="text/javascript" src="<%=webroot1%>js/dataSubmission/transferInOutStageSection.js"></script>--%>
+<script type="text/javascript" src="<%=webroot1%>js/dataSubmission/transferInOutStageSection.js"></script>
 <div class="panel panel-default">
     <div class="panel-heading">
         <h4 class="panel-title">
