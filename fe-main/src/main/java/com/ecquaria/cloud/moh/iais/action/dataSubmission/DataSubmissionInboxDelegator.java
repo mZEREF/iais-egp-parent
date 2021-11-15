@@ -112,6 +112,7 @@ public class DataSubmissionInboxDelegator {
 			SearchParam searchParam = HalpSearchResultHelper.gainSearchParam(request, InboxConst.DS_PARAM, InboxDataSubmissionQueryDto.class.getName(),"CREATED_DT",SearchParam.DESCENDING,false);
 			QueryHelp.setMainSql( InboxConst.INBOX_QUERY,  InboxConst.INBOX_DS_QUERY,searchParam);
 			ParamUtil.setSessionAttr(request, InboxConst.DS_RESULT,licenceInboxClient.searchLicence(searchParam).getEntity());
+			ParamUtil.setSessionAttr(request, InboxConst.DS_PARAM,searchParam);
 		}else {
 			ParamUtil.setRequestAttr(request,ACTION_DS_BUTTON_SHOW,ParamUtil.getSessionAttr(request,ACTION_DS_BUTTON_SHOW));
 			ParamUtil.setSessionAttr(request,ACTION_DS_BUTTON_SHOW,null);
@@ -215,7 +216,7 @@ public class DataSubmissionInboxDelegator {
 		}
 		Map<String,String> params = IaisCommonUtils.genNewHashMap(2);
 		if(StringUtil.isNotEmpty(getStatusBySubmissionNo(submissionNo,DELETE_DRAFT))){
-			params.put("dsType",inboxDataSubmissionQueryDto.getType());
+			params.put("dsType",inboxDataSubmissionQueryDto.getDsType());
 			params.put("draftNo",submissionNo);
 			IaisEGPHelper.redirectUrl(response,request.getServerName(), "MohDsDraft",InboxConst.URL_LICENCE_WEB_MODULE,params);
 		}else {
@@ -280,7 +281,7 @@ public class DataSubmissionInboxDelegator {
 	 private void toShowMessage(HttpServletRequest request,String actionValue){
 	      if(showMessage(request,actionValue)){
 	      	ParamUtil.setRequestAttr(request,ACTION_DS_BUTTON_SHOW,AppConsts.YES);
-	      	ParamUtil.setSessionAttr(request,NEED_VALIDATOR_SIZE,ParamUtil.getString(request,NEED_VALIDATOR_SIZE));
+	      	ParamUtil.setRequestAttr(request,NEED_VALIDATOR_SIZE,ParamUtil.getString(request,NEED_VALIDATOR_SIZE));
 		  }
 	 }
     private  boolean showMessage(HttpServletRequest request,String actionValue){

@@ -34,8 +34,8 @@
                 </div>
             </div>
         <br> <br>
-        <iais:pagination param="dataSubmissionParam" result="dataSubmissionResult"/>
     </div>
+        <iais:pagination param="dataSubmissionParam" result="dataSubmissionResult"/>
     <div class="row">
         <div class="col-xs-12">
             <div class="table-gp">
