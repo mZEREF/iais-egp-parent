@@ -16,7 +16,7 @@ import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
-import com.ecquaria.cloud.moh.iais.service.client.LicenceClient;
+import com.ecquaria.cloud.moh.iais.service.client.ArFeClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
@@ -35,8 +35,7 @@ import java.util.Map;
 @Slf4j
 public class DonationStageDelegator extends CommonDelegator{
     @Autowired
-    private LicenceClient licenceClient;
-
+    private ArFeClient arFeClient;
     @Override
     public void start(BaseProcessClass bpc) {
         AuditTrailHelper.auditFunction("Assisted Reproduction", "Donation");
@@ -73,6 +72,9 @@ public class DonationStageDelegator extends CommonDelegator{
     @Override
     public void pageAction(BaseProcessClass bpc) {
         ArSuperDataSubmissionDto arSuperDataSubmissionDto= DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
+        PatientInventoryDto patientInventoryDto=arFeClient.patientInventoryByCode(arSuperDataSubmissionDto.getPatientInfoDto().getPatient().getPatientCode()).getEntity();
+        arSuperDataSubmissionDto.setPatientInventoryDto(patientInventoryDto);
+
         DonationStageDto donationStageDto=arSuperDataSubmissionDto.getDonationStageDto();
         HttpServletRequest request=bpc.request;
         int totalNum =0;
@@ -197,17 +199,17 @@ public class DonationStageDelegator extends CommonDelegator{
         }
         switch (donationStageDto.getDonatedType()){
             case DataSubmissionConsts.DONATED_TYPE_FRESH_OOCYTE:
-                patientInventoryDto.setChangeFrozenOocytes(donationStageDto.getTotalNum());
+                patientInventoryDto.setChangeFrozenOocytes(-donationStageDto.getTotalNum());
                 break;
             case DataSubmissionConsts.DONATED_TYPE_FROZEN_OOCYTE:
-                patientInventoryDto.setChangeFrozenOocytes(donationStageDto.getTotalNum());
+                patientInventoryDto.setChangeFrozenOocytes(-donationStageDto.getTotalNum());
                 break;
 
             case DataSubmissionConsts.DONATED_TYPE_FROZEN_EMBRYO:
-                patientInventoryDto.setChangeFrozenEmbryos(donationStageDto.getTotalNum());
+                patientInventoryDto.setChangeFrozenEmbryos(-donationStageDto.getTotalNum());
                 break;
             case DataSubmissionConsts.DONATED_TYPE_FROZEN_SPERM:
-                patientInventoryDto.setChangeFrozenSperms(donationStageDto.getTotalNum());
+                patientInventoryDto.setChangeFrozenSperms(-donationStageDto.getTotalNum());
                 break;
             default:
         }
