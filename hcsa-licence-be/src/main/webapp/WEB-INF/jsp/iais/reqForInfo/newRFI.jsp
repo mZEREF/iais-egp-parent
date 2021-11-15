@@ -103,8 +103,8 @@
                                                                     <div class="row" >
                                                                     </div>
                                                                     <div class="row" >
-                                                                        <label class="col-xs-9 col-md-3 control-label" ></label>
-                                                                        <label class="col-xs-9 col-md-6 control-label" style="text-align:center;"> <div class="infoTitIndex"> Title of Information Required <strong style="color:#ff0000;">*</strong></div></label>
+                                                                        <label class="col-xs-9 col-md-4 control-label" ></label>
+                                                                        <label class="col-xs-9 col-md-6 control-label" > <div class="infoTitIndex"> Title of Information Required <strong style="color:#ff0000;">*</strong></div></label>
                                                                     </div>
                                                                     <div class="row" >
                                                                         <label class="col-xs-9 col-md-3 control-label" ></label>
@@ -142,8 +142,8 @@
                                                                                 <div class="row" >
                                                                                 </div>
                                                                                 <div class="row" >
-                                                                                    <label class="col-xs-9 col-md-3 control-label" ></label>
-                                                                                    <label class="col-xs-9 col-md-6 control-label" style="text-align:center;"><div class="infoTitIndex"> Title of Information Required <strong style="color:#ff0000;">*</strong></div></label>
+                                                                                    <label class="col-xs-9 col-md-4 control-label" ></label>
+                                                                                    <label class="col-xs-9 col-md-6 control-label" ><div class="infoTitIndex"> Title of Information Required <strong style="color:#ff0000;">*</strong></div></label>
                                                                                 </div>
                                                                                 <div class="row" >
                                                                                     <label class="col-xs-9 col-md-3 control-label" ></label>
@@ -183,8 +183,8 @@
                                                                     <div class="row" >
                                                                     </div>
                                                                     <div class="row" >
-                                                                        <label class="col-xs-9 col-md-3 control-label" ></label>
-                                                                        <label class="col-xs-9 col-md-6 control-label" style="text-align:center;"> <div class="docTitIndex"> Title of Supporting Documents <strong style="color:#ff0000;">*</strong></div></label>
+                                                                        <label class="col-xs-9 col-md-4 control-label" ></label>
+                                                                        <label class="col-xs-9 col-md-6 control-label" > <div class="docTitIndex"> Title of Supporting Documents <strong style="color:#ff0000;">*</strong></div></label>
                                                                     </div>
                                                                     <div class="row" >
                                                                         <label class="col-xs-9 col-md-3 control-label" ></label>
@@ -223,8 +223,8 @@
                                                                                 <div class="row" >
                                                                                 </div>
                                                                                 <div class="row" >
-                                                                                    <label class="col-xs-9 col-md-3 control-label" ></label>
-                                                                                    <label class="col-xs-9 col-md-6 control-label" style="text-align:center;"><div class="docTitIndex"> Title of Supporting Documents <strong style="color:#ff0000;">*</strong></div></label>
+                                                                                    <label class="col-xs-9 col-md-4 control-label" ></label>
+                                                                                    <label class="col-xs-9 col-md-6 control-label" ><div class="docTitIndex"> Title of Supporting Documents <strong style="color:#ff0000;">*</strong></div></label>
                                                                                 </div>
                                                                                 <div class="row" >
                                                                                     <label class="col-xs-9 col-md-3 control-label" ></label>
