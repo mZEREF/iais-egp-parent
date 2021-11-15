@@ -9,4 +9,6 @@ public interface DecisionFlowType {
     RfcFlowType facRegFlowType(List<DiffContent> list);
 
     RfcFlowType approvalAppFlowType(List<DiffContent> list);
+
+    RfcFlowType facCerRegFlowType(List<DiffContent> list);
 }

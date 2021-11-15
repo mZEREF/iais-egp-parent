@@ -5,20 +5,16 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import sg.gov.moh.iais.egp.bsb.common.node.Node;
 import sg.gov.moh.iais.egp.bsb.common.node.simple.ValidatableNodeValue;
 import sg.gov.moh.iais.egp.bsb.dto.ValidationResultDto;
 import sg.gov.moh.iais.egp.bsb.util.SpringReflectionUtils;
+import sg.gov.moh.iais.egp.common.annotation.RfcAttributeDesc;
 
 import javax.servlet.http.HttpServletRequest;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-
-import static sg.gov.moh.iais.egp.bsb.constant.FacCertifierRegisterConstants.NODE_NAME_ORG_CERTIFYING_TEAM;
-
-
 
 /**
  *@author YiMing
@@ -31,26 +27,62 @@ public class CertifyingTeamDto extends ValidatableNodeValue {
     @NoArgsConstructor
     public static class CertifierTeamMember implements Serializable {
         private String memberEntityId;
+
+        @RfcAttributeDesc(aliasName = "iais.bsbfe.certifierTeamMember.name")
         private String memberName;
+
+        @RfcAttributeDesc(aliasName = "iais.bsbfe.certifierTeamMember.idType")
         private String idType;
+
+        @RfcAttributeDesc(aliasName = "iais.bsbfe.certifierTeamMember.idNo")
         private String idNo;
+
+        @RfcAttributeDesc(aliasName = "iais.bsbfe.certifierTeamMember.birthDate")
         private String birthDate;
+
+        @RfcAttributeDesc(aliasName = "iais.bsbfe.certifierTeamMember.sex")
         private String sex;
+
+        @RfcAttributeDesc(aliasName = "iais.bsbfe.certifierTeamMember.nationality")
         private String nationality;
+
+        @RfcAttributeDesc(aliasName = "iais.bsbfe.certifierTeamMember.telNo")
         private String telNo;
+
+        @RfcAttributeDesc(aliasName = "iais.bsbfe.certifierTeamMember.jobDesignation")
         private String jobDesignation;
+
+        @RfcAttributeDesc(aliasName = "iais.bsbfe.certifierTeamMember.leadCertifier")
         private String leadCertifier;
+
+        @RfcAttributeDesc(aliasName = "iais.bsbfe.certifierTeamMember.expertiseArea")
         private String expertiseArea;
+
+        @RfcAttributeDesc(aliasName = "iais.bsbfe.certifierTeamMember.certBSL3Exp")
         private String certBSL3Exp;
+
+        @RfcAttributeDesc(aliasName = "iais.bsbfe.certifierTeamMember.commBSL34Exp")
         private String commBSL34Exp;
+
+        @RfcAttributeDesc(aliasName = "iais.bsbfe.certifierTeamMember.otherBSL34Exp")
         private String otherBSL34Exp;
+
+        @RfcAttributeDesc(aliasName = "iais.bsbfe.certifierTeamMember.eduBackground")
         private String eduBackground;
+
+        @RfcAttributeDesc(aliasName = "iais.bsbfe.certifierTeamMember.proActivities")
         private String proActivities;
+
+        @RfcAttributeDesc(aliasName = "iais.bsbfe.certifierTeamMember.proRegAndCert")
         private String proRegAndCert;
+
+        @RfcAttributeDesc(aliasName = "iais.bsbfe.certifierTeamMember.facRelatedPub")
         private String facRelatedPub;
     }
 
+    @RfcAttributeDesc(aliasName = "iais.bsbfe.certifierTeamMember.addOrDelete")
     private final List<CertifierTeamMember> certifierTeamMemberList;
+
     private ValidationResultDto validationResultDto;
 
     public CertifyingTeamDto() {

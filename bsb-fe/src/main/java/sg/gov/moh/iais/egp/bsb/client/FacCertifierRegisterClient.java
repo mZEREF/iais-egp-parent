@@ -36,4 +36,11 @@ public interface FacCertifierRegisterClient {
     @GetMapping(path = "/register/faCer/application/{appId}", produces =MediaType.APPLICATION_JSON_VALUE)
     ResponseDto<FacilityCertifierRegisterDto> getCertifierRegistrationAppData(@PathVariable("appId") String appId);
 
+    /*******************RFC********************/
+
+    @PostMapping(path = "/register/faCer/rfc/amendment/saveFaCer", consumes = MediaType.APPLICATION_JSON_VALUE, produces =MediaType.APPLICATION_JSON_VALUE)
+    ResponseDto<String> saveAmendmentFacCertifier(@RequestBody FacilityCertifierRegisterDto dto);
+
+    @GetMapping(path = "/register/faCer/rfc/approval/{approvalId}", produces =MediaType.APPLICATION_JSON_VALUE)
+    ResponseDto<FacilityCertifierRegisterDto> getCertifierRegistrationAppDataByApprovalId(@PathVariable("approvalId") String approvalId);
 }

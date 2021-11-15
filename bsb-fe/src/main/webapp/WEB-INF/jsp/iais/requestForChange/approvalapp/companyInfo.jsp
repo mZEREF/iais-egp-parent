@@ -10,7 +10,7 @@
 %>
 <webui:setLayout name="iais-internet"/>
 
-<script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-afc-approval-app.js"></script>
+<script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-rfc-approval-app.js"></script>
 
 <%@include file="../common/dashboard.jsp"%>
 

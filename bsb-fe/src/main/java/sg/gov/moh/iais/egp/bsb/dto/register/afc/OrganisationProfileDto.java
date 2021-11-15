@@ -6,38 +6,70 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import sg.gov.moh.iais.egp.bsb.common.node.simple.ValidatableNodeValue;
 import sg.gov.moh.iais.egp.bsb.dto.ValidationResultDto;
 import sg.gov.moh.iais.egp.bsb.util.SpringReflectionUtils;
+import sg.gov.moh.iais.egp.common.annotation.RfcAttributeDesc;
 
 import javax.servlet.http.HttpServletRequest;
-
-
-
 
 /**
  *@author YiMing
  * @version 2021/10/15 14:16
  **/
-
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties({"name", "available", "validated", "dependNodes", "validationResultDto"})
 public class OrganisationProfileDto extends ValidatableNodeValue {
     private String facCertEntityId;
+
+    @RfcAttributeDesc(aliasName = "iais.bsbfe.organisation.name")
     private String orgName;
+
+    @RfcAttributeDesc(aliasName = "iais.bsbfe.organisation.addressType")
     private String addressType;
+
+    @RfcAttributeDesc(aliasName = "iais.bsbfe.organisation.floor")
     private String floor;
+
+    @RfcAttributeDesc(aliasName = "iais.bsbfe.organisation.unitNo")
     private String unitNo;
+
+    @RfcAttributeDesc(aliasName = "iais.bsbfe.organisation.building")
     private String building;
+
+    @RfcAttributeDesc(aliasName = "iais.bsbfe.organisation.streetName")
     private String streetName;
+
+    @RfcAttributeDesc(aliasName = "iais.bsbfe.organisation.address1")
     private String address1;
+
+    @RfcAttributeDesc(aliasName = "iais.bsbfe.organisation.address2")
     private String address2;
+
+    @RfcAttributeDesc(aliasName = "iais.bsbfe.organisation.address3")
     private String address3;
+
+    @RfcAttributeDesc(aliasName = "iais.bsbfe.organisation.postalCode")
     private String postalCode;
+
+    @RfcAttributeDesc(aliasName = "iais.bsbfe.organisation.city")
     private String city;
+
+    @RfcAttributeDesc(aliasName = "iais.bsbfe.organisation.state")
     private String state;
+
+    @RfcAttributeDesc(aliasName = "iais.bsbfe.organisation.country")
     private String country;
+
+    @RfcAttributeDesc(aliasName = "iais.bsbfe.organisation.yearEstablished")
     private String yearEstablished;
+
+    @RfcAttributeDesc(aliasName = "iais.bsbfe.organisation.email")
     private String email;
+
+    @RfcAttributeDesc(aliasName = "iais.bsbfe.organisation.contactNo")
     private String contactNo;
+
+    @RfcAttributeDesc(aliasName = "iais.bsbfe.organisation.contactPerson")
     private String contactPerson;
+
     private ValidationResultDto validationResultDto;
 
 

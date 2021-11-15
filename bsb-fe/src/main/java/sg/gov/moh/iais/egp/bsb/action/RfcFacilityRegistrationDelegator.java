@@ -73,7 +73,6 @@ public class RfcFacilityRegistrationDelegator {
     private static final String ERR_MSG_INVALID_ACTION = "Invalid action";
 
     private static final String KEY_PROCESS_TYPE = "processType";
-
     //This oldFacilityRegisterDto is the original data, which is for comparison with each DTO modification before Submit(unchangeable)
     private static final String KEY_OLD_FACILITY_REGISTER_DTO = "oldFacilityRegisterDto";
 
@@ -88,6 +87,7 @@ public class RfcFacilityRegistrationDelegator {
 
     public void start(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
+        request.getSession().removeAttribute(KEY_PROCESS_TYPE);
         request.getSession().removeAttribute(KEY_ROOT_NODE_GROUP);
         request.getSession().removeAttribute(KEY_OLD_FACILITY_REGISTER_DTO);
         AuditTrailHelper.auditFunction(MODULE_NAME, MODULE_NAME);

@@ -40,21 +40,18 @@ public class RfcViewFacilityRegistrationDelegator {
 
     public void start(BaseProcessClass bpc) { // NOSONAR
         HttpServletRequest request = bpc.request;
-        AuditTrailHelper.auditFunction("Facility Registration RFC", "View Application");
+        AuditTrailHelper.auditFunction("RFC Facility Registration", "RFC View Application");
         request.getSession().removeAttribute(KEY_APPROVE_NO);
     }
 
     public void init(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         String maskedAppId = request.getParameter(KEY_APP_ID);
-        String maskProcessType = request.getParameter(KEY_PROCESS_TYPE);
         String appId = MaskUtil.unMaskValue("id", maskedAppId);
-        String processType = MaskUtil.unMaskValue(KEY_PROCESS_TYPE,maskProcessType);
         if (maskedAppId == null || appId == null || maskedAppId.equals(appId)) {
             throw new IaisRuntimeException("Invalid App ID");
         }
         ParamUtil.setRequestAttr(request, KEY_APP_ID, appId);
-        ParamUtil.setRequestAttr(request, KEY_PROCESS_TYPE, processType);
         // check if this app is editable
         String maskedEditAppId = request.getParameter(KEY_EDIT_APP_ID);
         String editAppId = MaskUtil.unMaskValue(KEY_EDIT_APP_ID, maskedEditAppId);
@@ -62,6 +59,11 @@ public class RfcViewFacilityRegistrationDelegator {
                 !maskedEditAppId.equals(editAppId) && appId.equals(editAppId)) {
             ParamUtil.setRequestAttr(request, KEY_MASKED_EDIT_APP_ID, maskedEditAppId);
         }
+
+        //rfc dashbord processType
+        String maskProcessType = request.getParameter(KEY_PROCESS_TYPE);
+        String processType = MaskUtil.unMaskValue(KEY_PROCESS_TYPE,maskProcessType);
+        ParamUtil.setRequestAttr(request, KEY_PROCESS_TYPE, processType);
 
         //rfc approveNo
         String approveNo = request.getParameter(KEY_APPROVE_NO);

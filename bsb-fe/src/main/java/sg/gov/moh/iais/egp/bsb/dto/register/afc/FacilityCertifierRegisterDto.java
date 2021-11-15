@@ -8,11 +8,10 @@ import sg.gov.moh.iais.egp.bsb.common.node.NodeGroup;
 import sg.gov.moh.iais.egp.bsb.common.node.simple.SimpleNode;
 import sg.gov.moh.iais.egp.bsb.util.CollectionUtils;
 
+import java.io.Serializable;
 import java.util.Collection;
 
 import static sg.gov.moh.iais.egp.bsb.constant.FacCertifierRegisterConstants.*;
-import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.NODE_NAME_PRIMARY_DOC;
-
 
 /**
  * @author : YiMing
@@ -21,7 +20,7 @@ import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.NODE_NAME_PR
 
 @Data
 @Slf4j
-public class FacilityCertifierRegisterDto {
+public class FacilityCertifierRegisterDto implements Serializable {
     private String appStatus;
     private OrganisationProfileDto profileDto;
     private CertifyingTeamDto certifyingTeamDto;

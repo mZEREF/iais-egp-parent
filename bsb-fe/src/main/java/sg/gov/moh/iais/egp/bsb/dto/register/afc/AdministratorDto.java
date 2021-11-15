@@ -5,23 +5,19 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import sg.gov.moh.iais.egp.bsb.common.node.Node;
 import sg.gov.moh.iais.egp.bsb.common.node.simple.ValidatableNodeValue;
 import sg.gov.moh.iais.egp.bsb.dto.ValidationResultDto;
 import sg.gov.moh.iais.egp.bsb.util.SpringReflectionUtils;
+import sg.gov.moh.iais.egp.common.annotation.RfcAttributeDesc;
 
 import javax.servlet.http.HttpServletRequest;
 
 import java.io.Serializable;
 
-import static sg.gov.moh.iais.egp.bsb.constant.FacCertifierRegisterConstants.NODE_NAME_ORG_FAC_ADMINISTRATOR;
-
-
 /**
  *@author YiMing
  * @version 2021/10/15 14:16
  **/
-
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties({"name", "available", "validated", "dependNodes", "validationResultDto"})
 public class AdministratorDto extends ValidatableNodeValue {
@@ -29,17 +25,36 @@ public class AdministratorDto extends ValidatableNodeValue {
     @NoArgsConstructor
     public static class FacilityAdministratorInfo implements Serializable {
         private String adminEntityId;
+
+        @RfcAttributeDesc(aliasName = "iais.bsbfe.facAdmin.name")
         private String adminName;
+
+        @RfcAttributeDesc(aliasName = "iais.bsbfe.facAdmin.nationality")
         private String nationality;
+
+        @RfcAttributeDesc(aliasName = "iais.bsbfe.facAdmin.idType")
         private String idType;
+
+        @RfcAttributeDesc(aliasName = "iais.bsbfe.facAdmin.idNo")
         private String idNo;
+
+        @RfcAttributeDesc(aliasName = "iais.bsbfe.facAdmin.designation")
         private String designation;
+
+        @RfcAttributeDesc(aliasName = "iais.bsbfe.facAdmin.contactNo")
         private String contactNo;
+
+        @RfcAttributeDesc(aliasName = "iais.bsbfe.facAdmin.email")
         private String email;
+
+        @RfcAttributeDesc(aliasName = "iais.bsbfe.facAdmin.employmentStartDate")
         private String employmentStartDate;
     }
 
+    @RfcAttributeDesc
     private FacilityAdministratorInfo mainAdmin;
+
+    @RfcAttributeDesc
     private FacilityAdministratorInfo alternativeAdmin;
 
 
