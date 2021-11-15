@@ -4,26 +4,25 @@
     <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
     <input type="hidden" name="crud_type_action_submission_no" id="crud_type_action_submission_no"/>
     <div class="tab-search">
-        <c:set var="param" value="${dataSubmissionParam.params}"/>
             <div class="row d-flex">
                 <div class="col-md-4">
                         <label class="col-xs-3 control-label" for="submissionNoDataSubmission" style="text-align:left;margin-top: 1.5%">Search by submission ID</label>
                         <div class="col-xs-8 col-md-8">
                             <input id="submissionNoDataSubmission" name="submissionNoDataSubmission" type="text" maxlength="24"
-                                   value="${param.submissionNo}">
+                                   value="${param.submissionNoDataSubmission}">
                         </div>
                     <br>
                 </div>
                 <div class="col-md-5">
                         <label class="col-xs-3 control-label" for="typeDataSubmission" style="text-align:left;margin-top: 1.5%">Type</label>
                         <div class="col-xs-8 col-md-8">
-                            <iais:select name="typeDataSubmission"  codeCategory="DATA_SUBMISSION_TYPE" value="${param.type}" firstOption="All" cssClass="dataSubmissionType"/>
+                            <iais:select name="typeDataSubmission"  codeCategory="DATA_SUBMISSION_TYPE" value="${param.typeDataSubmission}" firstOption="All" cssClass="dataSubmissionType"/>
                         </div>
                 </div>
                 <div class="col-md-3">
                         <label class="col-xs-3 control-label" for="statusDataSubmission" style="text-align:left;margin-top: 1.5%">Status</label>
                         <div class="col-xs-8 col-md-8">
-                            <iais:select name="statusDataSubmission" id="statusDataSubmission" codeCategory="DATA_SUBMISSION_STATUS" value="${param.status}" firstOption="All" cssClass="dataSubmissionStatus"/>
+                            <iais:select name="statusDataSubmission" id="statusDataSubmission" codeCategory="DATA_SUBMISSION_STATUS" value="${param.statusDataSubmission}" firstOption="All" cssClass="dataSubmissionStatus"/>
                         </div>
                 </div>
             </div>

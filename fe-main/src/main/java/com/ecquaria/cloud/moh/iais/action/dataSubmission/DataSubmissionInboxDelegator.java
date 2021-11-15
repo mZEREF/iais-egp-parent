@@ -66,8 +66,7 @@ public class DataSubmissionInboxDelegator {
 	}
 
 	public void clearSession(HttpServletRequest request){
-		ParamUtil.setSessionAttr(request,ACTION_DS_BUTTON_SHOW,null);
-		ParamUtil.setSessionAttr(request,InboxConst.DS_PARAM,null);
+		ParamUtil.clearSession(request,ACTION_DS_BUTTON_SHOW,InboxConst.DS_PARAM,InboxConst.DS_RESULT);
 	}
 	private void setLog(String sepName){
 		setLog(sepName,true,null);
@@ -115,7 +114,8 @@ public class DataSubmissionInboxDelegator {
 			ParamUtil.setSessionAttr(request, InboxConst.DS_PARAM,searchParam);
 		}else {
 			ParamUtil.setRequestAttr(request,ACTION_DS_BUTTON_SHOW,ParamUtil.getSessionAttr(request,ACTION_DS_BUTTON_SHOW));
-			ParamUtil.setSessionAttr(request,ACTION_DS_BUTTON_SHOW,null);
+			ParamUtil.clearSession(request,ACTION_DS_BUTTON_SHOW);
+			ParamUtil.reSetSession(request,InboxConst.DS_PARAM,InboxConst.DS_RESULT);
 		}
 		setLog("prepare",false);
 	}
@@ -218,7 +218,7 @@ public class DataSubmissionInboxDelegator {
 		if(StringUtil.isNotEmpty(getStatusBySubmissionNo(submissionNo,DELETE_DRAFT))){
 			params.put("dsType",inboxDataSubmissionQueryDto.getDsType());
 			params.put("draftNo",submissionNo);
-			IaisEGPHelper.redirectUrl(response,request.getServerName(), "MohDsDraft",InboxConst.URL_LICENCE_WEB_MODULE,params);
+			IaisEGPHelper.redirectUrl(response,request, "MohDsDraft",InboxConst.URL_LICENCE_WEB_MODULE,params);
 		}else {
 			//todo
 		}
@@ -280,7 +280,7 @@ public class DataSubmissionInboxDelegator {
 
 	 private void toShowMessage(HttpServletRequest request,String actionValue){
 	      if(showMessage(request,actionValue)){
-	      	ParamUtil.setRequestAttr(request,ACTION_DS_BUTTON_SHOW,AppConsts.YES);
+	      	ParamUtil.setSessionAttr(request,ACTION_DS_BUTTON_SHOW,AppConsts.YES);
 	      	ParamUtil.setRequestAttr(request,NEED_VALIDATOR_SIZE,ParamUtil.getString(request,NEED_VALIDATOR_SIZE));
 		  }
 	 }

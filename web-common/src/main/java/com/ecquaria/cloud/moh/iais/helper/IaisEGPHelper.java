@@ -155,12 +155,12 @@ public final class IaisEGPHelper extends EGPHelper {
         response.sendRedirect(url);
     }
 
-    public static void redirectUrl(HttpServletResponse response,String serverName,String process,String modelName,Map<String,String> params){
+    public static void redirectUrl(HttpServletResponse response,HttpServletRequest request,String process,String modelName,Map<String,String> params){
         StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append("https://").append(serverName).append(modelName).append(process);
-        IaisEGPHelper.redirectUrl(response,stringBuilder.toString(),params);
+        stringBuilder.append("https://").append(request.getServerName()).append(modelName).append(process);
+        IaisEGPHelper.redirectUrl(response,request,stringBuilder.toString(),params);
     }
-    public static void redirectUrl(HttpServletResponse response,String url,Map<String,String> params){
+    public static void redirectUrl(HttpServletResponse response,HttpServletRequest request,String url,Map<String,String> params){
         try {
             if(IaisCommonUtils.isNotEmpty(params)){
                 StringBuilder stringBuilder = new StringBuilder();
@@ -171,7 +171,7 @@ public final class IaisEGPHelper extends EGPHelper {
                 url = stringBuilder.toString();
                 url = url.substring(0,url.length()-1);
             }
-            IaisEGPHelper.redirectUrl(response, url);
+            IaisEGPHelper.redirectUrl(response, RedirectUtil.appendCsrfGuardToken(url, request));
         } catch (IOException e) {
             log.error(e.getMessage(),e);
         }
