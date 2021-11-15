@@ -6,6 +6,8 @@ import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmission
 import com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.CycleDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -147,14 +149,14 @@ public class ArDataSubmissionDelegator {
         } else if (appGrpPremisesDto == null) {
             map.put(PREMISES, "There are no active Assisted Reproduction licences");
         }
-        ArSuperDataSubmissionDto dataSubmission = DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
-        if (reNew(dataSubmission, submissionType, submissionMethod, appGrpPremisesDto)) {
-            dataSubmission = new ArSuperDataSubmissionDto();
+        ArSuperDataSubmissionDto currentArDataSubmission = DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
+        if (reNew(currentArDataSubmission, submissionType, submissionMethod, appGrpPremisesDto)) {
+            currentArDataSubmission = new ArSuperDataSubmissionDto();
         }
         if (!map.isEmpty()) {
-            dataSubmission.setArSubmissionType(submissionType);
-            dataSubmission.setSubmissionMethod(submissionMethod);
-            dataSubmission.setAppGrpPremisesDto(appGrpPremisesDto);
+            currentArDataSubmission.setArSubmissionType(submissionType);
+            currentArDataSubmission.setSubmissionMethod(submissionMethod);
+            currentArDataSubmission.setAppGrpPremisesDto(appGrpPremisesDto);
             actionType = "invalid";
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(map));
         } else {
@@ -173,22 +175,27 @@ public class ArDataSubmissionDelegator {
                     actionType = "invalid";
                 }
             } else if ("resume".equals(actionValue)) {
-                dataSubmission = arDataSubmissionService.getArSuperDataSubmissionDtoDraftByConds(orgId, submissionType, hciCode);
-                if (dataSubmission == null) {
+                currentArDataSubmission = arDataSubmissionService.getArSuperDataSubmissionDtoDraftByConds(orgId, submissionType,
+                        hciCode);
+                if (currentArDataSubmission == null) {
                     log.warn("Can't resume data!");
-                    dataSubmission = new ArSuperDataSubmissionDto();
+                    currentArDataSubmission = new ArSuperDataSubmissionDto();
                 }
             } else if ("delete".equals(actionValue)) {
                 arDataSubmissionService.deleteArSuperDataSubmissionDtoDraftByConds(orgId, submissionType, hciCode);
             }
-            dataSubmission.setSubmissionType(DataSubmissionConsts.DS_TYPE_AR);
-            dataSubmission.setOrgId(orgId);
-            dataSubmission.setArSubmissionType(submissionType);
-            dataSubmission.setSubmissionMethod(submissionMethod);
-            dataSubmission.setAppGrpPremisesDto(appGrpPremisesDto);
-            dataSubmission.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+            currentArDataSubmission.setDsType(DataSubmissionConsts.DS_AR);
+            currentArDataSubmission.setSubmissionType(DataSubmissionConsts.DS_TYPE_NEW);
+            currentArDataSubmission.setOrgId(orgId);
+            currentArDataSubmission.setArSubmissionType(submissionType);
+            currentArDataSubmission.setSubmissionMethod(submissionMethod);
+            currentArDataSubmission.setAppGrpPremisesDto(appGrpPremisesDto);
+            currentArDataSubmission.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+            currentArDataSubmission.setCurrentDataSubmissionDto(DataSubmissionHelper.initDataSubmission(currentArDataSubmission,
+                    false));
+            currentArDataSubmission.setCycleDto(DataSubmissionHelper.initCycleDto(currentArDataSubmission, false));
         }
-        DataSubmissionHelper.setCurrentArDataSubmission(dataSubmission, bpc.request);
+        DataSubmissionHelper.setCurrentArDataSubmission(currentArDataSubmission, bpc.request);
         ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.CRUD_ACTION_TYPE_AR, actionType);
     }
 
@@ -267,7 +274,7 @@ public class ArDataSubmissionDelegator {
         StringBuilder url = new StringBuilder();
         url.append(InboxConst.URL_HTTPS)
                 .append(bpc.request.getServerName())
-                .append(InboxConst.URL_LICENCE_WEB_MODULE+"MohDataSubmission");
+                .append(InboxConst.URL_LICENCE_WEB_MODULE + "MohDataSubmission");
         String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
         IaisEGPHelper.redirectUrl(bpc.response, tokenUrl);
     }

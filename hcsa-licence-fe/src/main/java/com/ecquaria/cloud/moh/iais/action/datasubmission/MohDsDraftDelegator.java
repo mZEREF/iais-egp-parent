@@ -55,11 +55,11 @@ public class MohDsDraftDelegator {
     public void prepareData(BaseProcessClass bpc) {
         String dsType = ParamUtil.getString(bpc.request, "dsType");
         String draftNo = ParamUtil.getString(bpc.request, "draftNo");
-        log.info(StringUtil.changeForLog("------DS Type: " + dsType + " : Draft No: " + draftNo + " -----"));
+        log.info(StringUtil.changeForLog("------DS Type: " + dsType + " --- Draft No: " + draftNo + " -----"));
         String uri = "";
         if (StringUtil.isEmpty(dsType) || StringUtil.isEmpty(draftNo)) {
             uri = DEFAULT_URI;
-        } else if (DataSubmissionConsts.DS_TYPE_AR.equals(dsType)) {
+        } else if (DataSubmissionConsts.DS_AR.equals(dsType)) {
             ArSuperDataSubmissionDto dataSubmissionDto = arFeClient.getArSuperDataSubmissionDtoDraftByDraftNo(draftNo).getEntity();
             if (dataSubmissionDto == null) {
                 uri = DEFAULT_URI;

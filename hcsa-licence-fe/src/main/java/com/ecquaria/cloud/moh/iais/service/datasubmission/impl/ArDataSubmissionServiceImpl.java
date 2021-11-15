@@ -193,20 +193,24 @@ public class ArDataSubmissionServiceImpl implements ArDataSubmissionService {
     }
 
     @Override
-    public String getSubmissionNo(String submissionType, String cycleType,
+    public String getSubmissionNo(String dsType, String cycleType,
             DataSubmissionDto lastDataSubmissionDto) {
         String submissionNo = null;
-        if (!StringUtil.isIn(cycleType, new String[]{DataSubmissionConsts.AR_CYCLE_NON,
-                DataSubmissionConsts.DS_CYCLE_STAGE_PATIENT})) {
+        if (!StringUtil.isIn(cycleType, new String[]{DataSubmissionConsts.DS_CYCLE_NON,
+                DataSubmissionConsts.DS_CYCLE_PATIENT_ART,
+                DataSubmissionConsts.DS_CYCLE_DONOR_SAMPLE,
+                DataSubmissionConsts.DS_CYCLE_LDT,
+                DataSubmissionConsts.DS_CYCLE_DRP,
+                DataSubmissionConsts.DS_CYCLE_SOVENOR_INVENTORY,
+                DataSubmissionConsts.DS_CYCLE_PATIENT_DRP})) {
             if (lastDataSubmissionDto != null
-                    && submissionType.equals(lastDataSubmissionDto.getSubmissionType())
                     && !statuses.contains(lastDataSubmissionDto.getStatus())
                     && lastDataSubmissionDto.getSubmissionNo() != null) {
                 submissionNo = lastDataSubmissionDto.getSubmissionNo();
             }
         }
         if (StringUtil.isEmpty(submissionNo)) {
-            submissionNo = systemAdminClient.submissionID(submissionType).getEntity();
+            submissionNo = systemAdminClient.submissionID(dsType).getEntity();
         }
         submissionNo = IaisCommonUtils.getNextSubmissionNo(submissionNo);
         log.info(StringUtil.changeForLog("The submissionNo : " + submissionNo));
@@ -214,7 +218,7 @@ public class ArDataSubmissionServiceImpl implements ArDataSubmissionService {
     }
 
     @Override
-    public String getDraftNo(String submissionType) {
+    public String getDraftNo(String dsType) {
         return systemAdminClient.draftNumber(ApplicationConsts.DATA_SUBMISSION).getEntity();
     }
 

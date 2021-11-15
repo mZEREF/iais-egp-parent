@@ -13,7 +13,7 @@
                         </c:if>
                         <c:if test="${not empty premisesOpts && premisesOpts.size() > 1}">
                         <iais:select name="premises" options="premisesOpts" needErrorSpan="false"
-                                     value="${arSuperDataSubmissionDto.appGrpPremisesDto.premisesSelect}"/>
+                                     value="${arSuperDataSubmissionDto.appGrpPremisesDto.hciCode}"/>
                         </c:if>
                         <span class="error-msg" name="iaisErrorMsg" id="error_premises"></span>
                     </div>

@@ -43,7 +43,7 @@ public class PatientDelegator extends CommonDelegator {
     @Autowired
     private GenerateIdClient generateIdClient;
 
-    @Override
+    /*@Override
     public void start(BaseProcessClass bpc) {
         ArSuperDataSubmissionDto currentArDataSubmission = DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
         DataSubmissionDto dataSubmission = currentArDataSubmission.getCurrentDataSubmissionDto();
@@ -51,12 +51,12 @@ public class PatientDelegator extends CommonDelegator {
             dataSubmission = new DataSubmissionDto();
             currentArDataSubmission.setCurrentDataSubmissionDto(dataSubmission);
         }
-        dataSubmission.setSubmissionType(DataSubmissionConsts.DS_TYPE_AR);
+        dataSubmission.setSubmissionType(currentArDataSubmission.getSubmissionType());
         dataSubmission.setCycleStage(DataSubmissionConsts.DS_CYCLE_STAGE_PATIENT);
         dataSubmission.setStatus(DataSubmissionConsts.DS_STATUS_ACTIVE);
         currentArDataSubmission.setCycleDto(initCycleDto(currentArDataSubmission));
         DataSubmissionHelper.setCurrentArDataSubmission(currentArDataSubmission, bpc.request);
-    }
+    }*/
 
     @Override
     public void prepareSwitch(BaseProcessClass bpc) {
@@ -149,7 +149,7 @@ public class PatientDelegator extends CommonDelegator {
                 .map(premises -> premises.getHciCode())
                 .orElse("");
         cycleDto.setHciCode(hicCode);
-        cycleDto.setDsType(DataSubmissionConsts.DS_TYPE_AR);
+        cycleDto.setDsType(DataSubmissionConsts.DS_CYCLE_PATIENT_ART);
         cycleDto.setCycleType(DataSubmissionConsts.DS_CYCLE_STAGE_PATIENT);
         return cycleDto;
     }

@@ -163,7 +163,7 @@ public abstract class CommonDelegator {
         ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, currentStage);
         ArSuperDataSubmissionDto arSuperDataSubmission = DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
         if (arSuperDataSubmission != null) {
-            arSuperDataSubmission.setDraftNo(arDataSubmissionService.getDraftNo(DataSubmissionConsts.DS_TYPE_AR));
+            arSuperDataSubmission.setDraftNo(arDataSubmissionService.getDraftNo(DataSubmissionConsts.DS_AR));
             arSuperDataSubmission = arDataSubmissionService.saveDataSubmissionDraft(arSuperDataSubmission);
             DataSubmissionHelper.setCurrentArDataSubmission(arSuperDataSubmission, bpc.request);
             ParamUtil.setRequestAttr(bpc.request, "saveDraftSuccess", "success");
@@ -197,7 +197,7 @@ public abstract class CommonDelegator {
         DataSubmissionDto dataSubmissionDto = arSuperDataSubmission.getCurrentDataSubmissionDto();
         CycleDto cycle = arSuperDataSubmission.getCycleDto();
         String cycleType = cycle.getCycleType();
-        String submissionNo = arDataSubmissionService.getSubmissionNo(dataSubmissionDto.getSubmissionType(),
+        String submissionNo = arDataSubmissionService.getSubmissionNo(arSuperDataSubmission.getDsType(),
                 cycleType, arSuperDataSubmission.getLastDataSubmissionDto());
         dataSubmissionDto.setSubmissionNo(submissionNo);
         if (StringUtil.isEmpty(dataSubmissionDto.getStatus())) {
@@ -205,7 +205,7 @@ public abstract class CommonDelegator {
         }
         String stage = dataSubmissionDto.getCycleStage();
         String status = DataSubmissionConsts.DS_STATUS_ACTIVE;
-        if (DataSubmissionConsts.AR_CYCLE_AR.equals(cycleType)) {
+        if (DataSubmissionConsts.DS_CYCLE_AR.equals(cycleType)) {
             if (DataSubmissionConsts.AR_STAGE_END_CYCLE.equals(stage)) {
                 status = DataSubmissionConsts.DS_STATUS_COMPLETED_END_CYCEL;
             } else if (DataSubmissionConsts.AR_STAGE_OUTCOME_OF_EMBRYO_TRANSFERED.equals(stage)) {
@@ -218,18 +218,18 @@ public abstract class CommonDelegator {
             } else if (DataSubmissionConsts.AR_STAGE_OUTCOME_OF_PREGNANCY.equals(stage)) {
                 status = DataSubmissionConsts.DS_STATUS_COMPLETED_OUTCOME_OF_PREGNANCY;
             }
-        } else if (DataSubmissionConsts.AR_CYCLE_EFO.equals(cycleType)) {
+        } else if (DataSubmissionConsts.DS_CYCLE_EFO.equals(cycleType)) {
             if (DataSubmissionConsts.AR_STAGE_FREEZING.equals(stage)) {
                 status = DataSubmissionConsts.DS_STATUS_COMPLETE_FREEZING;
             }
-        } else if (DataSubmissionConsts.AR_CYCLE_IUI.equals(cycleType)) {
+        } else if (DataSubmissionConsts.DS_CYCLE_IUI.equals(cycleType)) {
             if (DataSubmissionConsts.AR_STAGE_OUTCOME.equals(stage)) {
                 OutcomeStageDto outcomeStageDto = arSuperDataSubmission.getOutcomeStageDto();
                 if (!outcomeStageDto.isPregnancyDetected()) {
                     status = DataSubmissionConsts.DS_STATUS_OUTCOME_NO_DETECTED;
                 }
             }
-        } else if (DataSubmissionConsts.AR_CYCLE_NON.equals(cycleType)) {
+        } else if (DataSubmissionConsts.DS_CYCLE_NON.equals(cycleType)) {
             status = DataSubmissionConsts.DS_STATUS_COMPLETED;
         }
         cycle.setStatus(status);

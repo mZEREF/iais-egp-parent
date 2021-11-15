@@ -36,7 +36,7 @@ public class SubmitDonorDelegator extends CommonDelegator {
             dataSubmission = new DataSubmissionDto();
             currentArDataSubmission.setCurrentDataSubmissionDto(dataSubmission);
         }
-        dataSubmission.setSubmissionType(DataSubmissionConsts.DS_TYPE_AR);
+        dataSubmission.setSubmissionType(currentArDataSubmission.getSubmissionType());
         dataSubmission.setCycleStage(DataSubmissionConsts.DS_CYCLE_STAGE_DONOR_SAMPLE);
         dataSubmission.setStatus(DataSubmissionConsts.DS_STATUS_ACTIVE);
         currentArDataSubmission.setCycleDto(initCycleDto(currentArDataSubmission));
@@ -89,8 +89,8 @@ public class SubmitDonorDelegator extends CommonDelegator {
                 .map(premises -> premises.getHciCode())
                 .orElse("");
         cycleDto.setHciCode(hicCode);
-        cycleDto.setDsType(DataSubmissionConsts.DS_TYPE_AR);
-        cycleDto.setCycleType(DataSubmissionConsts.DS_CYCLE_STAGE_DONOR_SAMPLE);
+        cycleDto.setDsType(DataSubmissionConsts.DS_AR);
+        cycleDto.setCycleType(DataSubmissionConsts.DS_CYCLE_DONOR_SAMPLE);
         return cycleDto;
     }
 }

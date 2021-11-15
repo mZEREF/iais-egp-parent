@@ -7,6 +7,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.CycleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.CycleStageSelectionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInventoryDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -19,6 +20,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * @Description Data Submission Helper
@@ -60,11 +62,11 @@ public final class DataSubmissionHelper {
                 currCycle + " : " + currStage + " : " + lastStatus + " -----"));
         List<String> result = IaisCommonUtils.genNewArrayList();
         if (StringUtil.isEmpty(currCycle) || IaisCommonUtils.getDsCycleFinalStatus().contains(lastStatus)
-                && !DataSubmissionConsts.AR_CYCLE_NON.equals(latestCycle)) {//3.3.2.1
+                && !DataSubmissionConsts.DS_CYCLE_NON.equals(latestCycle)) {//3.3.2.1
             result.add(DataSubmissionConsts.AR_CYCLE_AR);
             result.add(DataSubmissionConsts.AR_CYCLE_IUI);
             result.add(DataSubmissionConsts.AR_CYCLE_EFO);
-        } else if (DataSubmissionConsts.AR_CYCLE_NON.equals(latestCycle)
+        } else if (DataSubmissionConsts.DS_CYCLE_NON.equals(latestCycle)
                 || DataSubmissionConsts.AR_STAGE_END_CYCLE.equals(currStage)) {
             result.add(DataSubmissionConsts.AR_CYCLE_AR);
             result.add(DataSubmissionConsts.AR_CYCLE_IUI);
@@ -72,7 +74,7 @@ public final class DataSubmissionHelper {
             result.add(DataSubmissionConsts.AR_STAGE_DISPOSAL);
             result.add(DataSubmissionConsts.AR_STAGE_DONATION);
             result.add(DataSubmissionConsts.AR_STAGE_TRANSFER_IN_AND_OUT);
-        } else if (DataSubmissionConsts.AR_CYCLE_AR.equals(currCycle)) {
+        } else if (DataSubmissionConsts.DS_CYCLE_AR.equals(currCycle)) {
             if (DataSubmissionConsts.AR_CYCLE_AR.equals(currStage) || StringUtil.isEmpty(currStage)) {
                 result.add(DataSubmissionConsts.AR_STAGE_OOCYTE_RETRIEVAL);
                 result.add(DataSubmissionConsts.AR_STAGE_THAWING);
@@ -117,7 +119,7 @@ public final class DataSubmissionHelper {
             result.add(DataSubmissionConsts.AR_STAGE_TRANSFER_IN_AND_OUT);
             result.add(DataSubmissionConsts.AR_STAGE_AR_TREATMENT_SUBSIDIES);
             result.add(DataSubmissionConsts.AR_STAGE_END_CYCLE);
-        } else if (DataSubmissionConsts.AR_CYCLE_IUI.equals(currCycle)) {
+        } else if (DataSubmissionConsts.DS_CYCLE_IUI.equals(currCycle)) {
             if (DataSubmissionConsts.AR_CYCLE_IUI.equals(currStage) || StringUtil.isEmpty(currStage)) {
                 result.add(DataSubmissionConsts.AR_STAGE_OUTCOME);
             } else if (DataSubmissionConsts.AR_STAGE_OUTCOME.equals(currStage)) {
@@ -126,7 +128,7 @@ public final class DataSubmissionHelper {
             } else if (DataSubmissionConsts.AR_STAGE_OUTCOME_OF_PREGNANCY.equals(currStage)) {
                 result.add(DataSubmissionConsts.AR_STAGE_IUI_TREATMENT_SUBSIDIES);
             }
-        } else if (DataSubmissionConsts.AR_CYCLE_EFO.equals(currCycle)) {
+        } else if (DataSubmissionConsts.DS_CYCLE_EFO.equals(currCycle)) {
             if (DataSubmissionConsts.AR_CYCLE_EFO.equals(currStage) || StringUtil.isEmpty(currStage)) {
                 result.add(DataSubmissionConsts.AR_STAGE_OOCYTE_RETRIEVAL);
             } else if (DataSubmissionConsts.AR_STAGE_OOCYTE_RETRIEVAL.equals(currStage)
@@ -147,25 +149,68 @@ public final class DataSubmissionHelper {
         if (StringUtil.isIn(stage, new String[]{DataSubmissionConsts.AR_STAGE_TRANSFER_IN_AND_OUT,
                 DataSubmissionConsts.AR_STAGE_DONATION,
                 DataSubmissionConsts.AR_STAGE_DISPOSAL})) {
-            cycle = DataSubmissionConsts.AR_CYCLE_NON;
+            cycle = DataSubmissionConsts.DS_CYCLE_NON;
         } else if (selectionDto.isUndergoingCycle()) {
             cycle = selectionDto.getLastCycle();
             cycleId = selectionDto.getLastCycleId();
-        } else if (StringUtil.isIn(stage, new String[]{DataSubmissionConsts.AR_CYCLE_AR,
-                DataSubmissionConsts.AR_CYCLE_IUI,
-                DataSubmissionConsts.AR_CYCLE_EFO})) {
-            cycle = stage;
+        } else if (DataSubmissionConsts.AR_CYCLE_AR.equals(stage)) {
+            cycle = DataSubmissionConsts.DS_CYCLE_AR;
+        } else if (DataSubmissionConsts.AR_CYCLE_IUI.equals(stage)) {
+            cycle = DataSubmissionConsts.DS_CYCLE_IUI;
+        } else if (DataSubmissionConsts.AR_CYCLE_EFO.equals(stage)) {
+            cycle = DataSubmissionConsts.DS_CYCLE_EFO;
         } else {
-            cycle = DataSubmissionConsts.AR_CYCLE_NON;
+            cycle = DataSubmissionConsts.DS_CYCLE_NON;
         }
         CycleDto cycleDto = new CycleDto();
-        cycleDto.setDsType(DataSubmissionConsts.DS_TYPE_AR);
+        cycleDto.setDsType(DataSubmissionConsts.DS_AR);
         cycleDto.setCycleType(cycle);
         cycleDto.setPatientCode(selectionDto.getPatientCode());
         cycleDto.setHciCode(hciCode);
         cycleDto.setId(cycleId);
         cycleDto.setStatus(DataSubmissionConsts.DS_STATUS_ACTIVE);
         return cycleDto;
+    }
+
+    public static CycleDto initCycleDto(ArSuperDataSubmissionDto currentArDataSubmission, boolean reNew) {
+        CycleDto cycleDto = currentArDataSubmission.getCycleDto();
+        if (cycleDto == null || reNew) {
+            cycleDto = new CycleDto();
+        }
+        String hicCode = Optional.ofNullable(currentArDataSubmission.getAppGrpPremisesDto())
+                .map(premises -> premises.getHciCode())
+                .orElse("");
+        cycleDto.setHciCode(hicCode);
+        cycleDto.setDsType(currentArDataSubmission.getDsType());
+        String cycleType = cycleDto.getCycleType();
+        if (DataSubmissionConsts.AR_TYPE_SBT_PATIENT_INFO.equals(currentArDataSubmission.getArSubmissionType())) {
+            cycleType = DataSubmissionConsts.DS_CYCLE_PATIENT_ART;
+        } else if (DataSubmissionConsts.AR_TYPE_SBT_DONOR_SAMPLE.equals(currentArDataSubmission.getArSubmissionType())) {
+            cycleType = DataSubmissionConsts.DS_CYCLE_DONOR_SAMPLE;
+        } else if (DataSubmissionConsts.AR_TYPE_SBT_CYCLE_STAGE.equals(currentArDataSubmission.getArSubmissionType())
+                || StringUtil.isEmpty(cycleType)) {
+            cycleType = DataSubmissionConsts.DS_CYCLE_STAGE;
+        }
+        cycleDto.setCycleType(cycleType);
+        return cycleDto;
+    }
+
+    public static DataSubmissionDto initDataSubmission(ArSuperDataSubmissionDto currentArDataSubmission, boolean reNew) {
+        DataSubmissionDto dataSubmission = currentArDataSubmission.getCurrentDataSubmissionDto();
+        if (dataSubmission == null || reNew) {
+            dataSubmission = new DataSubmissionDto();
+            currentArDataSubmission.setCurrentDataSubmissionDto(dataSubmission);
+        }
+        dataSubmission.setSubmissionType(currentArDataSubmission.getSubmissionType());
+        String cycleStage = null;
+        if (DataSubmissionConsts.AR_TYPE_SBT_PATIENT_INFO.equals(currentArDataSubmission.getArSubmissionType())) {
+            cycleStage = DataSubmissionConsts.DS_CYCLE_STAGE_PATIENT;
+        } else if (DataSubmissionConsts.AR_TYPE_SBT_DONOR_SAMPLE.equals(currentArDataSubmission.getArSubmissionType())) {
+            cycleStage = DataSubmissionConsts.DS_CYCLE_STAGE_DONOR_SAMPLE;
+        }
+        dataSubmission.setCycleStage(cycleStage);
+        dataSubmission.setStatus(DataSubmissionConsts.DS_STATUS_ACTIVE);
+        return dataSubmission;
     }
 
     public static String genOptionHtmls(List<String> options) {
@@ -228,7 +273,7 @@ public final class DataSubmissionHelper {
         Map<String, String> map = IaisCommonUtils.genNewLinkedHashMap();
         if (appGrpPremisesMap != null && !appGrpPremisesMap.isEmpty()) {
             for (Map.Entry<String, AppGrpPremisesDto> entry : appGrpPremisesMap.entrySet()) {
-                map.put(entry.getKey(), entry.getValue().getPremisesSelect());
+                map.put(entry.getKey(), entry.getValue().getPremiseLabel());
             }
         }
         return genOptions(map);
