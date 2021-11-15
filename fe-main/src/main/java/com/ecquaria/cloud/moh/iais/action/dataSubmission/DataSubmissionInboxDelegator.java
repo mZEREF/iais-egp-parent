@@ -66,6 +66,7 @@ public class DataSubmissionInboxDelegator {
 	}
 
 	public void clearSession(HttpServletRequest request){
+		ParamUtil.setSessionAttr(request,ACTION_DS_BUTTON_SHOW,null);
 		ParamUtil.setSessionAttr(request,InboxConst.DS_PARAM,null);
 	}
 	private void setLog(String sepName){
@@ -107,10 +108,13 @@ public class DataSubmissionInboxDelegator {
 		setLog("prepare");
 		HttpServletRequest request = bpc.request;
 		interInboxDelegator.setNumInfoToRequest(request,(InterInboxUserDto) ParamUtil.getSessionAttr(request,InboxConst.INTER_INBOX_USER_INFO));
-		if(StringUtil.isEmpty(ParamUtil.getString(request,ACTION_DS_BUTTON_SHOW))){
+		if(StringUtil.isEmpty(ParamUtil.getSessionAttr(request,ACTION_DS_BUTTON_SHOW))){
 			SearchParam searchParam = HalpSearchResultHelper.gainSearchParam(request, InboxConst.DS_PARAM, InboxDataSubmissionQueryDto.class.getName(),"CREATED_DT",SearchParam.DESCENDING,false);
 			QueryHelp.setMainSql( InboxConst.INBOX_QUERY,  InboxConst.INBOX_DS_QUERY,searchParam);
 			ParamUtil.setSessionAttr(request, InboxConst.DS_RESULT,licenceInboxClient.searchLicence(searchParam).getEntity());
+		}else {
+			ParamUtil.setRequestAttr(request,ACTION_DS_BUTTON_SHOW,ParamUtil.getSessionAttr(request,ACTION_DS_BUTTON_SHOW));
+			ParamUtil.setSessionAttr(request,ACTION_DS_BUTTON_SHOW,null);
 		}
 		setLog("prepare",false);
 	}
@@ -276,7 +280,7 @@ public class DataSubmissionInboxDelegator {
 	 private void toShowMessage(HttpServletRequest request,String actionValue){
 	      if(showMessage(request,actionValue)){
 	      	ParamUtil.setRequestAttr(request,ACTION_DS_BUTTON_SHOW,AppConsts.YES);
-	      	ParamUtil.setRequestAttr(request,NEED_VALIDATOR_SIZE,ParamUtil.getString(request,NEED_VALIDATOR_SIZE));
+	      	ParamUtil.setSessionAttr(request,NEED_VALIDATOR_SIZE,ParamUtil.getString(request,NEED_VALIDATOR_SIZE));
 		  }
 	 }
     private  boolean showMessage(HttpServletRequest request,String actionValue){
