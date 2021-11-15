@@ -13,7 +13,7 @@
                 <iais:row>
                     <iais:field width="5" value="Outcome of Embryo Transferred" mandatory="true"/>
                     <iais:value width="7" cssClass="col-md-7">
-                        <iais:select name="transferedOutcome" codeCategory="OUTCOME_OF_EMBRYO_TRANSFERRED"
+                        <iais:select name="transferedOutcome" codeCategory="OUTCOME_OF_EMBRYO_TRANSFERRED" firstOption="Please Select"
                                      value="${embryoTransferredOutcomeStageDto.transferedOutcome}"/>
                     </iais:value>
                 </iais:row>
