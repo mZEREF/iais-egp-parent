@@ -130,7 +130,6 @@ public interface ArFeClient {
                                                           @RequestParam(value = "sampleFromHciCode",required = false) String sampleFromHciCode,
                                                           @RequestParam(value = "sampleFromOthers",required = false) String sampleFromOthers);
 
-    @GetMapping(value = "/data-submission/patient-inventory/patient-code", consumes = MediaType.APPLICATION_JSON_VALUE,
-            produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<PatientInventoryDto> patientInventoryByCode(@RequestParam("patientCode") String patientCode);
+    @GetMapping(value = "/data-submission/patient-inventory/{patientCode}", produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<PatientInventoryDto> patientInventoryByCode(@PathVariable("patientCode") String patientCode);
 }
