@@ -104,15 +104,7 @@ public class RetriggerGiroPaymentDelegator {
 
         List<AppGrpPremisesDto> appGrpPremisesDtos = appSubmissionDto.getAppGrpPremisesDtoList();
         List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = appSubmissionDto.getAppSvcRelatedInfoDtoList();
-        if(IaisCommonUtils.isEmpty(appGrpPremisesDtos) || IaisCommonUtils.isEmpty(appSvcRelatedInfoDtos)){
-            log.debug(StringUtil.changeForLog("data error ..."));
-            switch2 = SWITCH_VALUE_PRE_ACK;
-            ParamUtil.setSessionAttr(bpc.request,NewApplicationDelegator.APPSUBMISSIONDTO,appSubmissionDto);
-            ParamUtil.setRequestAttr(bpc.request, SWITCH, switch2);
-            ParamUtil.setRequestAttr(bpc.request,NewApplicationDelegator.ACKMESSAGE,"data error !!!");
-            return;
-        }
-        if(APP_PMT_STATUSES.contains(appSubmissionDto.getPmtStatus())){
+        if(IaisCommonUtils.isEmpty(appGrpPremisesDtos) || IaisCommonUtils.isEmpty(appSvcRelatedInfoDtos)||APP_PMT_STATUSES.contains(appSubmissionDto.getPmtStatus())){
             log.debug(StringUtil.changeForLog("You have already resubmitted the payment!"));
             switch2 = SWITCH_VALUE_PRE_ACK;
             ParamUtil.setSessionAttr(bpc.request,NewApplicationDelegator.APPSUBMISSIONDTO,appSubmissionDto);
