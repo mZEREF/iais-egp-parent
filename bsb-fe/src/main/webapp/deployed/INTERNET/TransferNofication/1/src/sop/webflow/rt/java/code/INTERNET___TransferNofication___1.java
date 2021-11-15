@@ -17,30 +17,21 @@ public class INTERNET___TransferNofication___1 extends BaseProcessClass {
 	private static final String DELEGATOR ="transferNotificationDelegator";
 
 	public void start_OnStepProcess_0() throws Exception {
-	// 		start->OnStepProcess
+		// 		start->OnStepProcess
 	}
 
 	public void prepareData_OnStepProcess_0() throws Exception {
-	// 		prepareData->OnStepProcess
+		// 		prepareData->OnStepProcess
 		EngineHelper.delegate(DELEGATOR, "prepareData", this);
 	}
 
-	public void prepareSwitch1_OnStepProcess_0() throws Exception {
-		// 		prepareSwitch1->OnStepProcess
-		EngineHelper.delegate(DELEGATOR, "prepareSwitch1", this);
-	}
-
 	public void saveAndPrepareConfirm_OnStepProcess_0() throws Exception {
-	// 		saveAndPrepareConfirm->OnStepProcess
+		// 		saveAndPrepareConfirm->OnStepProcess
 		EngineHelper.delegate(DELEGATOR, "saveAndPrepareConfirm", this);
 	}
 
-	public void prepareSwitch2_OnStepProcess_0() throws Exception {
-		// 		prepareSwitch2->OnStepProcess
-	}
-
 	public void save_OnStepProcess_0() throws Exception {
-	// 		save->OnStepProcess
+		// 		save->OnStepProcess
 		EngineHelper.delegate(DELEGATOR, "save", this);
 	}
 
@@ -48,20 +39,20 @@ public class INTERNET___TransferNofication___1 extends BaseProcessClass {
 		// 		saveDraft->OnStepProcess
 	}
 
+	public void prepareSwitch1_OnStepProcess_0() throws Exception {
+		// 		prepareSwitch1->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "prepareSwitch1", this);
+	}
+
+	public void prepareSwitch2_OnStepProcess_0() throws Exception {
+		// 		prepareSwitch2->OnStepProcess
+	}
+
 	public void preFacSelect_OnStepProcess_0() throws Exception {
 		// 		preFacSelect->OnStepProcess
-	}
-
-	public void preSwitch0_OnStepProcess_0() throws Exception {
-		// 		preSwitch0->OnStepProcess
-	}
-
-	public void preOtherFacSelect_OnStepProcess_0() throws Exception {
-		// 		preOtherFacSelect->OnStepProcess
 	}
 
 	public void preSwitch_OnStepProcess_0() throws Exception {
 		// 		preSwitch->OnStepProcess
 	}
-
 }

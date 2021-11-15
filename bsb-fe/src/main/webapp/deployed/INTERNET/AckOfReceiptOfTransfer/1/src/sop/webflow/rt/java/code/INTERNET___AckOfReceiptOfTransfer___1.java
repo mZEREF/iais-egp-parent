@@ -15,39 +15,31 @@ import sop.webflow.rt.api.BaseProcessClass;
 public class INTERNET___AckOfReceiptOfTransfer___1 extends BaseProcessClass {
 
 	public void start_OnStepProcess_0() throws Exception {
-	// 		start->OnStepProcess
+		// 		start->OnStepProcess
 	}
 
 	public void prepareData_OnStepProcess_0() throws Exception {
-	// 		prepareData->OnStepProcess
-	}
-
-	public void prepareSwitch1_OnStepProcess_0() throws Exception {
-		// 		prepareSwitch1->OnStepProcess
+		// 		prepareData->OnStepProcess
 	}
 
 	public void saveAndPreConfirm_OnStepProcess_0() throws Exception {
-	// 		saveAndPreConfirm->OnStepProcess
-	}
-
-	public void prepareSwitch2_OnStepProcess_0() throws Exception {
-		// 		prepareSwitch2->OnStepProcess
+		// 		saveAndPreConfirm->OnStepProcess
 	}
 
 	public void save_OnStepProcess_0() throws Exception {
-	// 		save->OnStepProcess
+		// 		save->OnStepProcess
 	}
 
 	public void saveDraft_OnStepProcess_0() throws Exception {
 		// 		saveDraft->OnStepProcess
 	}
 
-	public void preFacSelect_OnStepProcess_0() throws Exception {
-		// 		preFacSelect->OnStepProcess
+	public void prepareSwitch1_OnStepProcess_0() throws Exception {
+		// 		prepareSwitch1->OnStepProcess
 	}
 
-	public void preSwitch0_OnStepProcess_0() throws Exception {
-		// 		preSwitch0->OnStepProcess
+	public void prepareSwitch2_OnStepProcess_0() throws Exception {
+		// 		prepareSwitch2->OnStepProcess
 	}
 
 	public void preSelfFacSelect_OnStepProcess_0() throws Exception {

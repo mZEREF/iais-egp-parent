@@ -11,7 +11,7 @@
             <div class="col-xs-12">
                 <div class="dashboard-page-title">
                     <h1>New Data Submission</h1>
-                    <h3 style="font-weight: normal">You are submitting for <span style="font-weight: bold">Notification of Transfer</span></h3>
+                    <h3 style="font-weight: normal">You are submitting for <iais:code code="${submissionType}"/></h3>
                 </div>
             </div>
         </div>

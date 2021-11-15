@@ -47,10 +47,10 @@ public class DataSubmissionDelegator {
      * This module is used to initialize data
      * */
     public void start(BaseProcessClass bpc){
-        ParamUtil.setSessionAttr(bpc.request,KEY_CONSUME_NOTIFICATION_DTO,null);
-        ParamUtil.setSessionAttr(bpc.request,KEY_DISPOSAL_NOTIFICATION_DTO,null);
-        ParamUtil.setSessionAttr(bpc.request,KEY_EXPORT_NOTIFICATION_DTO,null);
-        ParamUtil.setSessionAttr(bpc.request,KEY_RECEIPT_NOTIFICATION_DTO,null);
+        ParamUtil.setSessionAttr(bpc.request,KEY_CONSUME_NOTIFICATION_DTO, null);
+        ParamUtil.setSessionAttr(bpc.request,KEY_DISPOSAL_NOTIFICATION_DTO, null);
+        ParamUtil.setSessionAttr(bpc.request,KEY_EXPORT_NOTIFICATION_DTO, null);
+        ParamUtil.setSessionAttr(bpc.request,KEY_RECEIPT_NOTIFICATION_DTO, null);
         if(log.isInfoEnabled()){
             log.info("In the future this module will be used to initialize some data");
         }
@@ -86,7 +86,7 @@ public class DataSubmissionDelegator {
     public void prepareConsumeData(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         ParamUtil.setSessionAttr(request,KEY_FACILITY_INFO,null);
-        ParamUtil.setSessionAttr(request,KEY_CONSUME_NOTIFICATION_DTO, null);
+        ParamUtil.setSessionAttr(request,KEY_SUBMISSION_TYPE,null);
         //
         ConsumeNotificationDto notificationDto = getConsumeNotification(request);
         //prepare facility info
@@ -99,6 +99,7 @@ public class DataSubmissionDelegator {
         Map<String,DocSetting> settingMap = getDocSettingMap();
         ParamUtil.setRequestAttr(request,KEY_DO_SETTINGS,settingMap);
         ParamUtil.setSessionAttr(request,KEY_CONSUME_NOTIFICATION_DTO, notificationDto);
+        ParamUtil.setSessionAttr(request,KEY_SUBMISSION_TYPE,KEY_DATA_SUBMISSION_TYPE_CONSUME);
     }
 
     /**
@@ -172,6 +173,7 @@ public class DataSubmissionDelegator {
     public void prepareDisposalData(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         ParamUtil.setSessionAttr(request,KEY_FACILITY_INFO,null);
+        ParamUtil.setSessionAttr(request,KEY_SUBMISSION_TYPE,null);
         //
         DisposalNotificationDto notificationDto = getDisposalNotification(request);
         //prepare facility info
@@ -184,6 +186,7 @@ public class DataSubmissionDelegator {
         Map<String,DocSetting> settingMap = getDocSettingMap();
         ParamUtil.setRequestAttr(request,KEY_DO_SETTINGS,settingMap);
         ParamUtil.setSessionAttr(request,KEY_DISPOSAL_NOTIFICATION_DTO, notificationDto);
+        ParamUtil.setSessionAttr(request,KEY_SUBMISSION_TYPE,KEY_DATA_SUBMISSION_TYPE_DISPOSAL);
     }
     /**
      * StartStep: prepareConfirm
@@ -237,6 +240,7 @@ public class DataSubmissionDelegator {
     public void prepareExportData(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         ParamUtil.setSessionAttr(request,KEY_FACILITY_INFO,null);
+        ParamUtil.setSessionAttr(request,KEY_SUBMISSION_TYPE,null);
         //
         ExportNotificationDto notificationDto = getExportNotification(request);
         //prepare facility info
@@ -249,6 +253,7 @@ public class DataSubmissionDelegator {
         Map<String,DocSetting> settingMap = getDocSettingMap();
         ParamUtil.setRequestAttr(request,KEY_DO_SETTINGS,settingMap);
         ParamUtil.setSessionAttr(request,KEY_EXPORT_NOTIFICATION_DTO, notificationDto);
+        ParamUtil.setSessionAttr(request,KEY_SUBMISSION_TYPE,KEY_DATA_SUBMISSION_TYPE_EXPORT);
     }
     /**
      * StartStep: prepareConfirm
@@ -302,6 +307,7 @@ public class DataSubmissionDelegator {
     public void prepareReceiveData(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         ParamUtil.setSessionAttr(request,KEY_FACILITY_INFO,null);
+        ParamUtil.setSessionAttr(request,KEY_SUBMISSION_TYPE,null);
         //
         ReceiptNotificationDto notificationDto = getReceiptNotification(request);
         //prepare facility info
@@ -314,6 +320,7 @@ public class DataSubmissionDelegator {
         Map<String,DocSetting> settingMap = getDocSettingMap();
         ParamUtil.setRequestAttr(request,KEY_DO_SETTINGS,settingMap);
         ParamUtil.setSessionAttr(request,KEY_RECEIPT_NOTIFICATION_DTO, notificationDto);
+        ParamUtil.setSessionAttr(request,KEY_SUBMISSION_TYPE,KEY_DATA_SUBMISSION_TYPE_RECEIPT);
     }
     /**
      * StartStep: prepareConfirm

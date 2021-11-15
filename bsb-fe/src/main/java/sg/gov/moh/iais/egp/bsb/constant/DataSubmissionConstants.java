@@ -59,4 +59,16 @@ public final class DataSubmissionConstants {
     public static final String KEY_SCHEDULE_TYPE = "scheduleType";
     public static final String KEY_NON_OBJECT_ERROR = "please ensure your object has value";
     public static final String KEY_EMPTY_LIST_ERROR = "you have not key your consumeList";
+    public static final String KEY_SUBMISSION_TYPE = "submissionType";
+
+    public static final String KEY_DATA_SUBMISSION_TYPE_CONSUME = "DATTYPE001";
+    public static final String KEY_DATA_SUBMISSION_TYPE_DISPOSAL = "DATTYPE002";
+    public static final String KEY_DATA_SUBMISSION_TYPE_EXPORT = "DATTYPE003";
+    public static final String KEY_DATA_SUBMISSION_TYPE_IMPORT = "DATTYPE004";
+    public static final String KEY_DATA_SUBMISSION_TYPE_TRANSFER = "DATTYPE005";
+    public static final String KEY_DATA_SUBMISSION_TYPE_RECEIPT = "DATTYPE006";
+    public static final String KEY_DATA_SUBMISSION_TYPE_RED_TEAMING_REPORT = "DATTYPE007";
+    public static final String KEY_DATA_SUBMISSION_TYPE_BAT_INVENTORY = "DATTYPE008";
+    public static final String KEY_DATA_SUBMISSION_TYPE_REQUEST_FOR_TRANSFER = "DATTYPE009";
+    public static final String KEY_DATA_SUBMISSION_ACKNOWLEDGEMENT_OF_RECEIPT_OF_TRANSFER = "DATTYPE010";
 }
