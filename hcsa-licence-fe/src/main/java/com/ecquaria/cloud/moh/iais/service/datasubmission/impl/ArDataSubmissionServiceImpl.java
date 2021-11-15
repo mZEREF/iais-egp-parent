@@ -12,6 +12,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.CycleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.CycleStageSelectionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DonorSampleDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.IuiCycleStageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInventoryDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
@@ -337,6 +338,19 @@ public class ArDataSubmissionServiceImpl implements ArDataSubmissionService {
             childNumOption.add(selectOption);
         }
         return childNumOption;
+    }
+
+    @Override
+    public ArSuperDataSubmissionDto setIuiCycleStageDtoDefaultVal(ArSuperDataSubmissionDto arSuperDataSubmission) {
+        if(arSuperDataSubmission != null) {
+            IuiCycleStageDto iuiCycleStageDto = arSuperDataSubmission.getIuiCycleStageDto();
+            if (iuiCycleStageDto == null) {
+                iuiCycleStageDto = new IuiCycleStageDto();
+            }
+
+            arSuperDataSubmission.setIuiCycleStageDto(iuiCycleStageDto);
+        }
+        return arSuperDataSubmission;
     }
 
 }

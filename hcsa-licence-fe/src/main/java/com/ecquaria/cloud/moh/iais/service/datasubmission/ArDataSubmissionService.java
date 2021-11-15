@@ -91,4 +91,13 @@ public interface ArDataSubmissionService {
      * @Descripation: getChildNumOption
      */
     List<SelectOption> getChildNumOption();
+
+    /**
+      * @author: shicheng
+      * @Date 2021/11/15
+      * @Param: arSuperDataSubmission
+      * @return: ArSuperDataSubmissionDto
+      * @Descripation: setIuiCycleStageDtoDefaultVal
+      */
+    ArSuperDataSubmissionDto setIuiCycleStageDtoDefaultVal(ArSuperDataSubmissionDto arSuperDataSubmission);
 }

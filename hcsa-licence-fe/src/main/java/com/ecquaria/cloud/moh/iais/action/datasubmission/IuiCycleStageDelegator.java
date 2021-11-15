@@ -2,16 +2,24 @@ package com.ecquaria.cloud.moh.iais.action.datasubmission;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.IuiCycleStageDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
+import com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
+import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
+import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.ArDataSubmissionService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Shicheng
@@ -34,12 +42,14 @@ public class IuiCycleStageDelegator extends CommonDelegator {
     @Override
     public void prepareSwitch(BaseProcessClass bpc) {
         ParamUtil.setRequestAttr(bpc.request, "smallTitle", "You are submitting for <strong>Cycle Stages</strong>");
+        //set SelectOption
         List<SelectOption> sourceOfSemenOption = arDataSubmissionService.getSourceOfSemenOption();
         List<SelectOption> curMarrChildNumOption = arDataSubmissionService.getChildNumOption();
         List<SelectOption> prevMarrChildNumOption = arDataSubmissionService.getChildNumOption();
         ParamUtil.setSessionAttr(bpc.request, "sourceOfSemenOption", (Serializable) sourceOfSemenOption);
         ParamUtil.setSessionAttr(bpc.request, "curMarrChildNumOption", (Serializable) curMarrChildNumOption);
         ParamUtil.setSessionAttr(bpc.request, "prevMarrChildNumOption", (Serializable) prevMarrChildNumOption);
+        //init actionType
         String actionType = ParamUtil.getRequestString(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE);
         log.info(StringUtil.changeForLog("----- Action Type: " + actionType + " -----"));
         if (StringUtil.isEmpty(actionType)) {
@@ -49,7 +59,36 @@ public class IuiCycleStageDelegator extends CommonDelegator {
     }
 
     @Override
-    public void pageAction(BaseProcessClass bpc) {
+    public void preparePage(BaseProcessClass bpc) {
+        ArSuperDataSubmissionDto arSuperDataSubmission = DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
+        //init IuiCycleStageDto The default value
+        arSuperDataSubmission = arDataSubmissionService.setIuiCycleStageDtoDefaultVal(arSuperDataSubmission);
+        ParamUtil.setSessionAttr(bpc.request, DataSubmissionConstant.AR_DATA_SUBMISSION, arSuperDataSubmission);
+    }
 
+    @Override
+    public void pageAction(BaseProcessClass bpc) {
+        ArSuperDataSubmissionDto arSuperDataSubmission = DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
+        IuiCycleStageDto iuiCycleStageDto = arSuperDataSubmission.getIuiCycleStageDto();
+        if(iuiCycleStageDto == null) {
+            iuiCycleStageDto = new IuiCycleStageDto();
+        }
+        //get form value set dto
+        iuiCycleStageDto = getIuiCycleFormValue(iuiCycleStageDto, bpc.request);
+        arSuperDataSubmission.setIuiCycleStageDto(iuiCycleStageDto);
+        ValidationResult validationResult = WebValidationHelper.validateProperty(iuiCycleStageDto, "common");
+        if (validationResult.isHasErrors()) {
+            Map<String, String> errorMap = validationResult.retrieveAll();
+            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
+            WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
+            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, CommonDelegator.ACTION_TYPE_PAGE);
+        } else {
+            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, CommonDelegator.ACTION_TYPE_CONFIRM);
+        }
+        ParamUtil.setSessionAttr(bpc.request, DataSubmissionConstant.AR_DATA_SUBMISSION, arSuperDataSubmission);
+    }
+
+    private IuiCycleStageDto getIuiCycleFormValue(IuiCycleStageDto iuiCycleStageDto, HttpServletRequest request) {
+        return iuiCycleStageDto;
     }
 }
