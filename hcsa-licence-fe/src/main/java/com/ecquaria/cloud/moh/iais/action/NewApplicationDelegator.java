@@ -2566,6 +2566,7 @@ public class NewApplicationDelegator {
     public void doRequestForChangeSubmit(BaseProcessClass bpc) throws Exception {
         //validate reject  apst050
         log.info(StringUtil.changeForLog("the do doRequestForChangeSubmit start ...."));
+        ParamUtil.setRequestAttr(bpc.request, "isrfiSuccess", "N");
         AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, APPSUBMISSIONDTO);
         AppSubmissionDto oldAppSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.OLDAPPSUBMISSIONDTO);
         HashMap<String, String> coMap = (HashMap<String, String>) bpc.request.getSession().getAttribute(NewApplicationConstant.CO_MAP);
@@ -2606,7 +2607,6 @@ public class NewApplicationDelegator {
             log.warn(StringUtil.changeForLog("Error Message: " + map));
             ParamUtil.setRequestAttr(bpc.request, "Msg", map);
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "preview");
-            ParamUtil.setRequestAttr(bpc.request, "isrfiSuccess", "N");
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(map));
             return;
         }
@@ -2621,7 +2621,6 @@ public class NewApplicationDelegator {
             NewApplicationHelper.setAudiErrMap(isRfi,appSubmissionDto.getAppType(),appealOrCesed,appSubmissionDto.getRfiAppNo(),appSubmissionDto.getLicenceNo());
             bpc.request.setAttribute("rfcPendingApplication","errorRfcPendingApplication");
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "preview");
-            ParamUtil.setRequestAttr(bpc.request, "isrfiSuccess", "N");
             return;
         }
 
@@ -2634,7 +2633,6 @@ public class NewApplicationDelegator {
             NewApplicationHelper.setAudiErrMap(isRfi,appSubmissionDto.getAppType(),errMap2,appSubmissionDto.getRfiAppNo(),appSubmissionDto.getLicenceNo());
             bpc.request.setAttribute("rfcPendingApplication","errorRfcPendingApplication");
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "preview");
-            ParamUtil.setRequestAttr(bpc.request, "isrfiSuccess", "N");
             return;
         }
         String licenceId = appSubmissionDto.getLicenceId();
@@ -2651,7 +2649,6 @@ public class NewApplicationDelegator {
                     if(!b){
                         bpc.request.setAttribute("SERVICE_CONFIG_CHANGE",rfc_err020);
                         ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "preview");
-                        ParamUtil.setRequestAttr(bpc.request, "isrfiSuccess", "N");
                         return;
                     }
                 }
@@ -2662,11 +2659,8 @@ public class NewApplicationDelegator {
         if(StringUtil.isEmpty(baseServiceId)){
             bpc.request.setAttribute("SERVICE_CONFIG_CHANGE",rfc_err020);
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "preview");
-            ParamUtil.setRequestAttr(bpc.request, "isrfiSuccess", "N");
             return;
         }
-        requestForChangeService.premisesDocToSvcDoc(appSubmissionDto);
-        requestForChangeService.premisesDocToSvcDoc(oldAppSubmissionDto);
         // change edit
         AppEditSelectDto appEditSelectDto = EqRequestForChangeSubmitResultChange.rfcChangeModuleEvaluationDto(appSubmissionDto,oldAppSubmissionDto);
         boolean isAutoRfc = appEditSelectDto.isAutoRfc();
@@ -2722,6 +2716,8 @@ public class NewApplicationDelegator {
             appSubmissionDto.setCreatAuditAppStatus(ApplicationConsts.APPLICATION_STATUS_NOT_PAYMENT);
         }
         ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
+        requestForChangeService.premisesDocToSvcDoc(appSubmissionDto);
+        requestForChangeService.premisesDocToSvcDoc(oldAppSubmissionDto);
         appSubmissionDto.setGetAppInfoFromDto(true);
         appSubmissionDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         List<AppSubmissionDto> appSubmissionDtoList = IaisCommonUtils.genNewArrayList();
@@ -2909,16 +2905,15 @@ public class NewApplicationDelegator {
         if (autoSaveAppsubmission.isEmpty() && notAutoSaveAppsubmission.isEmpty()) {
             bpc.request.setAttribute("RFC_ERROR_NO_CHANGE",MessageUtil.getMessageDesc("RFC_ERR010"));
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "preview");
-            requestForChangeService.svcDocToPresmise(appSubmissionDto);
             return;
         }
         // for next condition step
-        String isrfiSuccess = "N";
+        /*String isrfiSuccess = "N";
         ParamUtil.setRequestAttr(bpc.request, "isrfiSuccess", isrfiSuccess);
         if ("Y".equals(isrfiSuccess)) {
             AppSubmissionDto appSubmissionDto1 = getAppSubmissionDto(bpc.request);
             ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto1);
-        }
+        }*/
         log.info(StringUtil.changeForLog("the appGroupNo --> Not-auto: " + appGroupNo + " - Auto:" + autoGroupNo));
         AppDeclarationMessageDto appDeclarationMessageDto = !appEditSelectDto.isChangeHciName() ? null :
                 appSubmissionDto.getAppDeclarationMessageDto();
@@ -3125,7 +3120,16 @@ public class NewApplicationDelegator {
             appSubmissionDto.setId(null);
             appSubmissionDto.setAppGrpId(null);
             appSubmissionDto.setAppGrpNo(null);
-            requestForChangeService.svcDocToPresmise(appSubmissionDto);
+            if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())
+                    || ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appSubmissionDto.getAppType())) {
+                requestForChangeService.svcDocToPresmise(appSubmissionDto);
+                AppSubmissionDto oldAppSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request,
+                        NewApplicationDelegator.OLDAPPSUBMISSIONDTO);
+                if (oldAppSubmissionDto != null) {
+                    requestForChangeService.svcDocToPresmise(oldAppSubmissionDto);
+                    ParamUtil.setSessionAttr(bpc.request, NewApplicationDelegator.OLDAPPSUBMISSIONDTO, oldAppSubmissionDto);
+                }
+            }
         }
         ParamUtil.setSessionAttr(bpc.request,APPSUBMISSIONDTO,appSubmissionDto);
         String tranSferFlag = appSubmissionDto.getTransferFlag();
@@ -4265,8 +4269,10 @@ public class NewApplicationDelegator {
                 if (IaisCommonUtils.isEmpty(appSubmissionDto.getAppSvcRelatedInfoDtoList())) {
                     log.info(StringUtil.changeForLog("appSvcRelatedInfoDtoList is empty"));
                 }
-                if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())||ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appSubmissionDto.getAppType())){
+                if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())
+                        || ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appSubmissionDto.getAppType())) {
                     requestForChangeService.svcDocToPresmise(appSubmissionDto);
+                    requestForChangeService.svcDocToPresmise(appSubmissionDto.getOldAppSubmissionDto());
                 }
                 //set max file index into session
                 Integer maxFileIndex = appSubmissionDto.getMaxFileIndex();
