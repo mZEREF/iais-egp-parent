@@ -6,10 +6,17 @@ import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmission
 import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.*;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSubFreezingStageDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.CycleDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.CycleStageSelectionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DataSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DonorSampleDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInventoryDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.NewApplicationHelper;
 import com.ecquaria.cloud.moh.iais.service.client.ArFeClient;
 import com.ecquaria.cloud.moh.iais.service.client.FeEicGatewayClient;
@@ -303,6 +310,33 @@ public class ArDataSubmissionServiceImpl implements ArDataSubmissionService {
     public DonorSampleDto getDonorSampleDto(String idType, String idNumber, String donorSampleCode,String sampleFromHciCode,String sampleFromOthers) {
         return ((StringUtil.isEmpty(idType) || StringUtil.isEmpty(idNumber)) &&
                 (StringUtil.isEmpty(donorSampleCode) || StringUtil.isEmpty(sampleFromHciCode))) ? null : arFeClient.getDonorSampleDto(idType,idNumber,donorSampleCode,sampleFromHciCode,sampleFromOthers).getEntity();
+    }
+
+    @Override
+    public List<SelectOption> getSourceOfSemenOption() {
+        List<SelectOption> sourceOfSemenOption = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.SOURCE_OF_SEMEN);
+        if(!IaisCommonUtils.isEmpty(sourceOfSemenOption)) {
+            for(int i = 0; i < sourceOfSemenOption.size(); i++) {
+                SelectOption selectOption = sourceOfSemenOption.get(i);
+                if("AR_SOS_004".equals(selectOption.getValue())) {
+                    sourceOfSemenOption.remove(i);
+                    break;
+                }
+            }
+        }
+        return sourceOfSemenOption;
+    }
+
+    @Override
+    public List<SelectOption> getChildNumOption() {
+        List<SelectOption> childNumOption = IaisCommonUtils.genNewArrayList();
+        for(int i = 0; i <= 10; i++) {
+            SelectOption selectOption = new SelectOption();
+            selectOption.setValue(i + "");
+            selectOption.setText(i + "");
+            childNumOption.add(selectOption);
+        }
+        return childNumOption;
     }
 
 }

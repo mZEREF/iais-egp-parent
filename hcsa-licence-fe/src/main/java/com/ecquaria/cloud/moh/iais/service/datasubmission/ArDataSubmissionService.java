@@ -73,4 +73,22 @@ public interface ArDataSubmissionService {
     PatientInventoryDto setFreezingPatientChange(PatientInventoryDto patientInventoryDto, ArSubFreezingStageDto arSubFreezingStageDto);
 
     DonorSampleDto getDonorSampleDto(String idType,String idNumber,String donorSampleCode,String sampleFromHciCode,String sampleFromOthers);
+
+    /**
+      * @author: shicheng
+      * @Date 2021/11/15
+      * @Param: null
+      * @return: List<SelectOption>
+      * @Descripation: getSourceOfSemenOption
+      */
+    List<SelectOption> getSourceOfSemenOption();
+
+    /**
+     * @author: shicheng
+     * @Date 2021/11/15
+     * @Param: null
+     * @return: List<SelectOption>
+     * @Descripation: getChildNumOption
+     */
+    List<SelectOption> getChildNumOption();
 }

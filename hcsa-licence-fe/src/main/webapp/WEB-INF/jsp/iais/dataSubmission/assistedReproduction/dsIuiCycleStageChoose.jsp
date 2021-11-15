@@ -68,13 +68,13 @@
                   <iais:row>
                     <iais:field value="No. of Children with Current Marriage" mandatory="true"/>
                     <iais:value cssClass="col-md-3">
-                      <iais:select name="curMarrChildNum" options="" value="${arSuperDataSubmissionDto.iuiCycleStageDto.curMarrChildNum}"></iais:select>
+                      <iais:select name="curMarrChildNum" firstOption="Please Select" options="curMarrChildNumOption" value="${arSuperDataSubmissionDto.iuiCycleStageDto.curMarrChildNum}"></iais:select>
                     </iais:value>
                   </iais:row>
                   <iais:row>
                     <iais:field value="No. of Children with Previous Marriage" mandatory="true"/>
                     <iais:value cssClass="col-md-3">
-                      <iais:select name="prevMarrChildNum" options="" value="${arSuperDataSubmissionDto.iuiCycleStageDto.prevMarrChildNum}"></iais:select>
+                      <iais:select name="prevMarrChildNum" firstOption="Please Select" options="prevMarrChildNumOption" value="${arSuperDataSubmissionDto.iuiCycleStageDto.prevMarrChildNum}"></iais:select>
                     </iais:value>
                   </iais:row>
                   <iais:row>
