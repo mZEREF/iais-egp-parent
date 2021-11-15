@@ -72,7 +72,7 @@ public class ArCycleStageDtoValidator implements CustomizeValidator {
                         errorMap.put("donorSampleCode"+ arDonorDto.getArDonorIndex() ,"GENERAL_ERR0006");
                     }
 
-                    if(arDonorDto.validateDirectedDonationNoNotNull(arDonorDto.getIdType())){
+                    if(!arDonorDto.validateDirectedDonationNoNotNull(arDonorDto.getIdType())){
                         errorMap.put("idTypeSample"+ arDonorDto.getArDonorIndex() ,"GENERAL_ERR0006");
                     }
                   }
