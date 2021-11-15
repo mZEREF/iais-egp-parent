@@ -18,6 +18,7 @@
                                    type="radio"
                                    name="pregnancyDetected"
                                    value="true"
+                                   <c:if test="${outcomeStageDto.pregnancyDetected eq true}">checked</c:if>
                                    id="radioYes"
                                    aria-invalid="false">
                             <label class="form-check-label"
@@ -32,6 +33,7 @@
                                    type="radio"
                                    name="pregnancyDetected"
                                    value="false"
+                                   <c:if test="${outcomeStageDto.pregnancyDetected eq false}">checked</c:if>
                                    id="radioNo"
                                    aria-invalid="false">
                             <label class="form-check-label"
