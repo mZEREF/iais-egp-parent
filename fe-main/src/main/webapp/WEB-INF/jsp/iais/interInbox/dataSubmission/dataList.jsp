@@ -4,6 +4,7 @@
     <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
     <input type="hidden" name="crud_type_action_submission_no" id="crud_type_action_submission_no"/>
     <div class="tab-search">
+        <c:set var="param" value="${dataSubmissionParam.params}"/>
             <div class="row d-flex">
                 <div class="col-md-4">
                         <label class="col-xs-3 control-label" for="submissionNoDataSubmission" style="text-align:left;margin-top: 1.5%">Search by submission ID</label>
@@ -114,10 +115,11 @@
                 <div class="row" style="padding-bottom: 9%">
                     <div class="col-md-12">
                         <div class="col-md-12 text-right">
-                            <a class="btn btn-primary disabled" href="javascript:void(0);" id="ds-deleteDraft">Delete Draft</a>
-                            <a class="btn btn-primary disabled" href="javascript:void(0);" id="ds-amend">Amend</a>
-                            <a class="btn btn-primary disabled" href="javascript:void(0);" id="ds-withdraw">Withdraw</a>
-                            <a class="btn btn-primary disabled" href="javascript:void(0);" id="ds-unlock">Request to Unlock</a>
+                            <c:set var="disabledCss" value="${(empty needValidatorSize || needValidatorSize == 0) ? 'disabled' : ''}"/>
+                            <a class="btn btn-primary ${disabledCss}" href="javascript:void(0);" id="ds-deleteDraft">Delete Draft</a>
+                            <a class="btn btn-primary ${disabledCss}" href="javascript:void(0);" id="ds-amend">Amend</a>
+                            <a class="btn btn-primary ${disabledCss}" href="javascript:void(0);" id="ds-withdraw">Withdraw</a>
+                            <a class="btn btn-primary ${disabledCss}" href="javascript:void(0);" id="ds-unlock">Request to Unlock</a>
                         </div>
                     </div>
                 </div>

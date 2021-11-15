@@ -166,8 +166,10 @@ public final class IaisEGPHelper extends EGPHelper {
                 StringBuilder stringBuilder = new StringBuilder();
                 stringBuilder.append(url).append("?");
                 params.forEach((key,value) ->{
-                    stringBuilder.append(key).append("=").append(value);
+                    stringBuilder.append(key).append("=").append(value).append("&");
                 });
+                url = stringBuilder.toString();
+                url = url.substring(0,url.length()-1);
             }
             IaisEGPHelper.redirectUrl(response, url);
         } catch (IOException e) {

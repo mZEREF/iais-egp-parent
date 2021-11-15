@@ -283,18 +283,16 @@ public class DataSubmissionInboxDelegator {
 		 String sizeString = ParamUtil.getString(request,NEED_VALIDATOR_SIZE);
 		 List<String> submissionNos = ParamUtil.getListStrings(request,"submissionNo");
 		 int size = -1;
-		 if(StringUtil.isEmpty(sizeString)){
+		 if(StringUtil.isNotEmpty(sizeString)){
 			 try {
 				 size = Integer.parseInt(sizeString);
 			 } catch (Exception e) {
 				 log.error(e.getMessage(),e);
 			 }
 		 }
-
-		 if(size <= 0){
-		 	return true;
-		 }
-
+		if(size <= 0){
+			return true;
+		}
 		 if( IaisCommonUtils.isNotEmpty(submissionNos)){
 			 SearchResult<InboxDataSubmissionQueryDto> submissionQueryDtoSearchResult =(SearchResult<InboxDataSubmissionQueryDto>)ParamUtil.getSessionAttr(request, InboxConst.DS_RESULT);
 			 if(submissionQueryDtoSearchResult != null && IaisCommonUtils.isNotEmpty(submissionQueryDtoSearchResult.getRows())){
@@ -312,6 +310,7 @@ public class DataSubmissionInboxDelegator {
 					 }
 				 });
 				 actionDoInboxDataSubmissionQueryDtos(actionInboxDataSubmissionQueryDtos,actionValue,size);
+				 ParamUtil.setSessionAttr(request, InboxConst.DS_RESULT,submissionQueryDtoSearchResult);
 				 return actionInboxDataSubmissionQueryDtos.size() != size;
 			 }
 
