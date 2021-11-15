@@ -71,7 +71,7 @@
                                            name="donorRelation"
                                            value="F"
                                            id = "donorRelationF"
-                                           <c:if test="${donorSampleDto.donarRelation == 'F'}">checked</c:if>
+                                           <c:if test="${donorSampleDto.donorRelation == 'F'}">checked</c:if>
                                            aria-invalid="false">
                                     <label class="form-check-label"
                                            for="donorRelationF"><span
@@ -82,9 +82,9 @@
                                 <div class="form-check" >
                                     <input class="form-check-input" type="radio"
                                            name="donorRelation"
-                                           value="0"
+                                           value="R"
                                            id = "donorRelationR"
-                                           <c:if test="${!donorSampleDto.donarRelation == 'R'}">checked</c:if>
+                                           <c:if test="${!donorSampleDto.donorRelation == 'R'}">checked</c:if>
                                            aria-invalid="false">
                                     <label class="form-check-label"
                                            for="donorRelationR" ><span
@@ -108,7 +108,7 @@
                                              cssClass="donorIdentityKnown"/>
                             </iais:value>
                         </iais:row>
-                        <div id="donorSampleCodeRow" >
+                        <div id="donorSampleCodeRow"  style="${donorSampleDto.donorIdentityKnown =='DIK001' ? 'display: none;' : ''}">
                             <iais:row   >
                                 <iais:field width="5" value="Donor Sample Code / ID" mandatory="true"/>
                                 <iais:value width="7" cssClass="col-md-7">
@@ -130,35 +130,61 @@
                             </iais:row>
                         </div>
 
-                        <div id ="donorDetail">
+                        <div id ="donorDetail" style="${donorSampleDto.donorIdentityKnown == 'DIK001'? '' : 'display: none;'}">
                             <iais:row >
                                 <iais:field width="5" value="Donor's ID Type" mandatory="true"/>
                                 <iais:value width="7" cssClass="col-md-7">
-                                    <iais:select name="knownIdType" firstOption="Please Select" codeCategory="CATE_ID_DS_ID_TYPE" value="${donorSampleDto.idType}"
+                                    <iais:select name="knownIdType" firstOption="Please Select" codeCategory="CATE_ID_DS_ID_TYPE" value="${donorSampleDto.knownIdType}"
                                                  cssClass="idTypeSel"/>
                                 </iais:value>
                             </iais:row>
                             <iais:row  >
                                 <iais:field width="5" value="Donor's ID No." mandatory="true"/>
                                 <iais:value width="7" cssClass="col-md-7">
-                                    <iais:input maxLength="20" type="text" name="knownIdNumber" value="${donorSampleDto.idNumber}" />
+                                    <iais:input maxLength="20" type="text" name="knownIdNumber" value="${donorSampleDto.knownIdNumber}" />
                                 </iais:value>
                             </iais:row>
                             <iais:row  >
                                 <iais:field width="5" value="Donor's Name" mandatory="true"/>
                                 <iais:value width="7" cssClass="col-md-7">
-                                    <iais:input maxLength="66" type="text" name="knownDonorName" value="${donorSampleDto.donorName}" />
+                                    <iais:input maxLength="66" type="text" name="knownDonorName" value="${donorSampleDto.knownDonorName}" />
                                 </iais:value>
                             </iais:row>
                         </div>
                     </div>
 
-                    <iais:row>
-                        <iais:field width="5" value="Donor's Age when Sample was Collected" mandatory="true"/>
-                        <iais:value width="7" cssClass="col-md-7">
-                            <iais:input maxLength="2" type="text" name="age" value="" />
-                        </iais:value>
-                    </iais:row>
+                    <c:choose>
+                        <c:when test="${donorSampleDto.ages == null}">
+                            <iais:row  id = "donorAge0">
+                                <iais:field width="5" value="Donor's Age when Sample was Collected" mandatory="true"/>
+                                <iais:value width="7" cssClass="col-md-7">
+                                    <iais:input maxLength="2" type="text" name="ages" value="" />
+                                </iais:value>
+                            </iais:row>
+                        </c:when>
+                        <c:otherwise>
+                            <c:forEach items="${donorSampleDto.ages}" var="age"  begin="0" varStatus="idxStatus">
+                                <iais:row id = "donorAge${idxStatus.index}">
+                                    <label class="col-xs-5 col-md-4 control-label">
+                                        <c:if test="${idxStatus.first==true}">
+                                            Donor's Age when Sample was Collected
+                                            <span class="mandatory">*</span>
+                                        </c:if>
+                                    </label>
+                                    <iais:value width="7" cssClass="col-md-7">
+                                        <iais:input maxLength="2" type="text" name="ages" value="${age}" />
+                                    </iais:value>
+                                    <c:if test="${idxStatus.first!=true}">
+                                        <div class="col-sm-2 col-md-1 col-xs-1 col-md-1">
+                                            <a class="deleteDonor"  onclick="deleteDonorAge('${idxStatus.index}')" style="text-decoration:none;" href="javascript:void(0)">X</a>
+                                        </div>
+                                    </c:if>
+                                </iais:row>
+                            </c:forEach>
+                        </c:otherwise>
+                    </c:choose>
+
+
                     <div id ="donorAge">
 
                     </div>
@@ -171,7 +197,7 @@
         </div>
     </div>
 </div>
-<input type="hidden" id ="ageCount" value="1"/>
+<input type="hidden" id ="ageCount" value="${ageCount}"/>
 <script  type="text/javascript">
     $(document).ready(function(){
        $("#donorIdentityKnownId").change(function(){
@@ -205,7 +231,7 @@
             "\">\n" +
             "                            <label class=\"col-xs-5 col-md-4 control-label\"></label>\n" +
             "                            <div class=\"col-sm-7 col-md-5 col-xs-7 col-md-7\">\n" +
-            "                                <input type=\"text\" name=\"age" +
+            "                                <input type=\"text\" name=\"ages" +
             "\" maxlength=\"2\" autocomplete=\"off\">\n" +
             "                                <span id=\"error_donorAge\" name=\"iaisErrorMsg\" class=\"error-msg\"></span>\n" +
             "                            </div>\n" +

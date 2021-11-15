@@ -39,7 +39,7 @@
                     <iais:row>
                         <iais:field width="5" value="Donor relation to patient" mandatory="true"/>
                         <iais:value width="7" cssClass="col-md-7" display="true">
-                            <c:out value="${donorSampleDto.donarRelation == 'F' ? 'Friend' : 'Relative'}"/>
+                            <c:out value="${donorSampleDto.donorRelation == 'F' ? 'Friend' : 'Relative'}"/>
                         </iais:value>
                     </iais:row>
                 </div>
@@ -56,7 +56,7 @@
                             <iais:code code="${donorSampleDto.donorIdentityKnown}"/>
                         </iais:value>
                     </iais:row>
-                    <div id="donorSampleCodeRow" >
+                    <div id="donorSampleCodeRow" style="${donorSampleDto.donorIdentityKnown =='DIK001' ? 'display: none;' : ''}">
                         <iais:row   >
                             <iais:field width="5" value="Donor Sample Code / ID" mandatory="true"/>
                             <iais:value width="7" cssClass="col-md-7">
@@ -77,40 +77,40 @@
                         </iais:row>
                     </div>
 
-                    <div id ="donorDetail">
+                    <div id ="donorDetail" style="${donorSampleDto.donorIdentityKnown == 'DIK001'? '' : 'display: none;'}">
                         <iais:row >
                             <iais:field width="5" value="Donor's ID Type" mandatory="true"/>
                             <iais:value width="7" cssClass="col-md-7">
-                                <iais:code code="${donorSampleDto.idType}"/>
+                                <iais:code code="${donorSampleDto.knownIdType}"/>
                             </iais:value>
                         </iais:row>
                         <iais:row  >
                             <iais:field width="5" value="Donor's ID No." mandatory="true"/>
                             <iais:value width="7" cssClass="col-md-7">
-                                <c:out value="${donorSampleDto.idNumber}"/>
+                                <c:out value="${donorSampleDto.knownIdNumber}"/>
                             </iais:value>
                         </iais:row>
                         <iais:row  >
                             <iais:field width="5" value="Donor's Name" mandatory="true"/>
                             <iais:value width="7" cssClass="col-md-7">
-                                <c:out value="${donorSampleDto.donorName}"/>
+                                <c:out value="${donorSampleDto.knownDonorName}"/>
                             </iais:value>
                         </iais:row>
                     </div>
                 </div>
-
+               <c:forEach items="${donorSampleDto.ages}" var="age"  begin="0" varStatus="index">
                 <iais:row>
-                    <iais:field width="5" value="Donor's Age when Sample was Collected" mandatory="true"/>
+                    <label class="col-xs-5 col-md-4 control-label">
+                        <c:if test="${index.first==true}">
+                            Donor's Age when Sample was Collected
+                            <span class="mandatory">*</span>
+                        </c:if>
+                    </label>
                     <iais:value width="7" cssClass="col-md-7">
-                        <c:out value="${donorSampleDto.age}"/>
+                        <c:out value="${age}"/>
                     </iais:value>
                 </iais:row>
-                <iais:row>
-                    <label class="col-xs-5 col-md-4 control-label"></label>
-                    <iais:value width="7" cssClass="col-md-7">
-                        <c:out value="${donorSampleDto.age}"/>
-                    </iais:value>
-                </iais:row>
+               </c:forEach>
             </div>
         </div>
     </div>
