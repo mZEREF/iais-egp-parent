@@ -85,7 +85,7 @@ public class ArDataSubmissionDelegator {
         } else if (appGrpPremisesMap.size() == 1) {
             appGrpPremisesMap.forEach((k, v) -> {
                 bpc.request.getSession().setAttribute(DataSubmissionConstant.AR_PREMISES, v);
-                bpc.request.setAttribute("premisesLabel", DataSubmissionHelper.getPremisesLabel(v));
+                bpc.request.setAttribute("premisesLabel", v.getPremiseLabel());
             });
         } else {
             bpc.request.setAttribute("premisesOpts", DataSubmissionHelper.genPremisesOptions(appGrpPremisesMap));
