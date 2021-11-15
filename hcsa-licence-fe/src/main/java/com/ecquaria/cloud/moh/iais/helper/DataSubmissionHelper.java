@@ -51,17 +51,21 @@ public final class DataSubmissionHelper {
         String currCycle = selectionDto.getLastCycle();
         String currStage = selectionDto.getLastStage();
         String lastStatus = selectionDto.getLastStatus();
-        return DataSubmissionHelper.getNextStageForAR(currCycle, currStage, lastStatus);
+        String latestCycle = selectionDto.getLatestCycle();
+        return DataSubmissionHelper.getNextStageForAR(latestCycle, currCycle, currStage, lastStatus);
     }
 
-    public static List<String> getNextStageForAR(String currCycle, String currStage, String lastStatus) {
+    public static List<String> getNextStageForAR(String latestCycle, String currCycle, String currStage, String lastStatus) {
         log.info(StringUtil.changeForLog("----- The current cycle stage is " +
                 currCycle + " : " + currStage + " : " + lastStatus + " -----"));
         List<String> result = IaisCommonUtils.genNewArrayList();
-        if (StringUtil.isEmpty(currCycle)
-                || DataSubmissionConsts.AR_CYCLE_NON.equals(currCycle)
-                || DataSubmissionConsts.AR_STAGE_END_CYCLE.equals(currStage)
-                || IaisCommonUtils.getDsCycleFinalStatus().contains(lastStatus)) {
+        if (StringUtil.isEmpty(currCycle) || IaisCommonUtils.getDsCycleFinalStatus().contains(lastStatus)
+                && !DataSubmissionConsts.AR_CYCLE_NON.equals(latestCycle)) {//3.3.2.1
+            result.add(DataSubmissionConsts.AR_CYCLE_AR);
+            result.add(DataSubmissionConsts.AR_CYCLE_IUI);
+            result.add(DataSubmissionConsts.AR_CYCLE_EFO);
+        } else if (DataSubmissionConsts.AR_CYCLE_NON.equals(latestCycle)
+                || DataSubmissionConsts.AR_STAGE_END_CYCLE.equals(currStage)) {
             result.add(DataSubmissionConsts.AR_CYCLE_AR);
             result.add(DataSubmissionConsts.AR_CYCLE_IUI);
             result.add(DataSubmissionConsts.AR_CYCLE_EFO);
@@ -224,14 +228,10 @@ public final class DataSubmissionHelper {
         Map<String, String> map = IaisCommonUtils.genNewLinkedHashMap();
         if (appGrpPremisesMap != null && !appGrpPremisesMap.isEmpty()) {
             for (Map.Entry<String, AppGrpPremisesDto> entry : appGrpPremisesMap.entrySet()) {
-                map.put(entry.getKey(), getPremisesLabel(entry.getValue()));
+                map.put(entry.getKey(), entry.getValue().getPremisesSelect());
             }
         }
         return genOptions(map);
-    }
-
-    public static String getPremisesLabel(AppGrpPremisesDto appGrpPremisesDto) {
-        return IaisCommonUtils.getPremisesLabel(appGrpPremisesDto);
     }
 
     public static List<SelectOption> getNumsSelections(int startNum, int endNum) {
