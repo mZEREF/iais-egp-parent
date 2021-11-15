@@ -201,7 +201,7 @@ public class ArCycleStageDelegator extends CommonDelegator {
                 errorMap.put("validateDonor" +(arDonorDto.isDirectedDonation() ? "Yes" : "No") +arDonorDto.getArDonorIndex(),dsErr);
                 ParamUtil.setRequestAttr(request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
             }else {
-                arDonorDto.setRelation(donorSampleDto.getDonarRelation());
+                arDonorDto.setRelation(donorSampleDto.getDonorRelation());
                 List<String> ages =  StringUtil.isEmpty(donorSampleDto.getAge()) ? null : Arrays.asList(donorSampleDto.getAge().split(","));
                 if(ages != null){
                     ages.sort(String::compareTo);
