@@ -287,7 +287,7 @@
 
     <sql key = "dataSubmissionQuery" remarks = "Query data Submission Inter-Inbox Data by condition">
         <![CDATA[
-    SELECT t1.*,t2.BUSINESS_NAME FROM (
+     SELECT t1.*,t2.BUSINESS_NAME FROM (
            SELECT dds.ID as ID,dc.HCI_CODE HCI_CODE,dc.DS_TYPE DS_TYPE,dc.CYCLE_TYPE [type],dds.STATUS STATUS,dds.SUBMISSION_NO SUBMISSION_NO,dds.SUBMIT_DT SUBMIT_DT,dds.CREATED_DT CREATED_DT ,dds.CYCLE_STAGE  CYCLE_STAGE,dds.SUBMISSION_TYPE SUBMISSION_TYPE FROM  ds_cycle dc
            left join  ds_data_submission dds
            on dc.ID  = dds.CYCLE_ID WHERE  dds.STATUS != 'DS002'
@@ -296,7 +296,7 @@
            FROM ds_data_submission_draft ddsd WHERE STATUS = 'DS001'
            ) t1
           left join (
-          select DISTINCT p.HCI_CODE HCI_CODE,lp.BUSINESS_NAME BUSINESS_NAME FROM  premises p
+          select DISTINCT p.HCI_CODE HCI_CODE,lp.BUSINESS_NAME BUSINESS_NAME,licence.LICENSEE_ID licenseeId FROM  premises p
           left join  lic_premises lp
           on p.ID = lp.PREMISES_ID
           left join licence
@@ -306,6 +306,7 @@
           <#if type??> and t1.[type] = :type </#if>
           <#if submissionNo??> and  CHARINDEX(:submissionNo, t1.SUBMISSION_NO) >0</#if>
           <#if status ??> and t1.STATUS = :status</#if>
+           <#if licenseeId ??> and licenseeId = :licenseeId</#if>
         ]]>
     </sql>
 </sqls>

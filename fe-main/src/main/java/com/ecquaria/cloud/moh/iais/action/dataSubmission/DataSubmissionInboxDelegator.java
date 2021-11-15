@@ -106,12 +106,18 @@ public class DataSubmissionInboxDelegator {
 	public void prepare(BaseProcessClass bpc){
 		setLog("prepare");
 		HttpServletRequest request = bpc.request;
-		interInboxDelegator.setNumInfoToRequest(request,(InterInboxUserDto) ParamUtil.getSessionAttr(request,InboxConst.INTER_INBOX_USER_INFO));
+		InterInboxUserDto interInboxUserDto = (InterInboxUserDto) ParamUtil.getSessionAttr(request,InboxConst.INTER_INBOX_USER_INFO);
+		interInboxDelegator.setNumInfoToRequest(request,interInboxUserDto);
 		if(StringUtil.isEmpty(ParamUtil.getSessionAttr(request,ACTION_DS_BUTTON_SHOW))){
-			SearchParam searchParam = HalpSearchResultHelper.gainSearchParam(request, InboxConst.DS_PARAM, InboxDataSubmissionQueryDto.class.getName(),"CREATED_DT",SearchParam.DESCENDING,false);
-			QueryHelp.setMainSql( InboxConst.INBOX_QUERY,  InboxConst.INBOX_DS_QUERY,searchParam);
-			ParamUtil.setSessionAttr(request, InboxConst.DS_RESULT,licenceInboxClient.searchLicence(searchParam).getEntity());
-			ParamUtil.setSessionAttr(request, InboxConst.DS_PARAM,searchParam);
+			if(StringUtil.isNotEmpty(interInboxUserDto.getLicenseeId())){
+				SearchParam searchParam = HalpSearchResultHelper.gainSearchParam(request, InboxConst.DS_PARAM, InboxDataSubmissionQueryDto.class.getName(),"CREATED_DT",SearchParam.DESCENDING,false);
+				HalpAssessmentGuideDelegator.setParamByField(searchParam,"licenseeId",interInboxUserDto.getLicenseeId(),true);
+				QueryHelp.setMainSql( InboxConst.INBOX_QUERY,  InboxConst.INBOX_DS_QUERY,searchParam);
+				ParamUtil.setSessionAttr(request, InboxConst.DS_RESULT,licenceInboxClient.searchLicence(searchParam).getEntity());
+				ParamUtil.setSessionAttr(request, InboxConst.DS_PARAM,searchParam);
+			}else {
+				ParamUtil.clearSession(request,InboxConst.DS_PARAM,InboxConst.DS_RESULT);
+			}
 		}else {
 			ParamUtil.setRequestAttr(request,ACTION_DS_BUTTON_SHOW,ParamUtil.getSessionAttr(request,ACTION_DS_BUTTON_SHOW));
 			ParamUtil.clearSession(request,ACTION_DS_BUTTON_SHOW);
