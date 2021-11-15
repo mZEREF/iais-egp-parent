@@ -66,6 +66,8 @@ public class TransferInOutDelegator extends CommonDelegator {
         arSuperDataSubmissionDto = arSuperDataSubmissionDto  == null ? new ArSuperDataSubmissionDto() : arSuperDataSubmissionDto;
         TransferInOutStageDto transferInOutStageDto = arSuperDataSubmissionDto.getTransferInOutStageDto() == null ? new TransferInOutStageDto() : arSuperDataSubmissionDto.getTransferInOutStageDto();
         ControllerHelper.get(request,transferInOutStageDto);
+        String fromDonor = ParamUtil.getString(request,"fromDonor");
+        transferInOutStageDto.setFromDonor("true".equalsIgnoreCase(fromDonor));
         if( !IaisCommonUtils.isEmpty(transferredList)){
             transferInOutStageDto.setTransferredList(Arrays.asList(transferredList));
         }else{

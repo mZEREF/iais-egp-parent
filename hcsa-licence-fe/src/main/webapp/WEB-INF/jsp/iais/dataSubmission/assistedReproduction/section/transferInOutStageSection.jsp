@@ -1,4 +1,4 @@
-<script type="text/javascript" src="<%=webroot1%>js/dataSubmission/transferInOutStageSection.js"></script>
+<%--<script type="text/javascript" src="<%=webroot1%>js/dataSubmission/transferInOutStageSection.js"></script>--%>
 <div class="panel panel-default">
     <div class="panel-heading">
         <h4 class="panel-title">
@@ -107,7 +107,7 @@
                                    name="fromDonor"
                                    value="false"
                                    id="fromDonorNo"
-                                   <c:if test="${!transferInOutStageDto.fromDono}">checked</c:if>
+                                   <c:if test="${!transferInOutStageDto.fromDonor}">checked</c:if>
                                    aria-invalid="false">
                             <label class="form-check-label"
                                    for="fromDonorNo"><span
@@ -154,7 +154,6 @@
         </div>
     </div>
 </div>
-<%--
 <script>
     $(document).ready(function () {
         $('#transferTypeIn').click(function () {
@@ -179,6 +178,4 @@
 
     });
 
-
-
-</script>--%>
+</script>

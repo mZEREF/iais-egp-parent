@@ -30,25 +30,32 @@
                         </c:forEach>
                     </iais:value>
                 </iais:row>
-
-                <iais:row>
-                    <iais:field width="5" value="No. of Oocyte(s) Transferred" />
-                    <iais:value width="7" cssClass="col-md-7">
-                        <c:out value="${transferInOutStageDto.oocyteNum}" />
-                   </iais:value>
-                </iais:row>
-                <iais:row>
-                    <iais:field width="5" value="No. of Embryo(s) Transferred" />
-                    <iais:value width="7" cssClass="col-md-7">
-                        <c:out value="${transferInOutStageDto.embryoNum}" />
-                    </iais:value>
-                </iais:row>
-                <iais:row>
-                    <iais:field width="5" value="Vials of Sperm Transferred" />
-                    <iais:value width="7" cssClass="col-md-7">
-                        <c:out value="${transferInOutStageDto.spermVialsNum}" />
-                    </iais:value>
-                </iais:row>
+                        <c:forEach var="transferredObj" items="${transferInOutStageDto.transferredList}">
+                            <c:if test="${transferredObj =='AR_WWT_001'}">
+                             <iais:row>
+                                 <iais:field width="5" value="No. of Oocyte(s) Transferred" />
+                                 <iais:value width="7" cssClass="col-md-7">
+                                     <c:out value="${transferInOutStageDto.oocyteNum}" />
+                                 </iais:value>
+                             </iais:row>
+                            </c:if>
+                            <c:if test="${transferredObj =='AR_WWT_002'}">
+                                <iais:row>
+                                    <iais:field width="5" value="No. of Embryo(s) Transferred" />
+                                    <iais:value width="7" cssClass="col-md-7">
+                                       <c:out value="${transferInOutStageDto.embryoNum}" />
+                                    </iais:value>
+                                </iais:row>
+                            </c:if>
+                            <c:if test="${transferredObj =='AR_WWT_003'}">
+                                <iais:row>
+                                    <iais:field width="5" value="Vials of Sperm Transferred"/>
+                                    <iais:value width="7" cssClass="col-md-7">
+                                        <c:out value="${transferInOutStageDto.spermVialsNum}" />
+                                    </iais:value>
+                                </iais:row>
+                            </c:if>
+                        </c:forEach>
                 <iais:row>
                     <iais:field width="5" value="Were the Gamete(s) or Embryo(s) from a Donor?" />
                     <iais:value width="7" cssClass="col-md-7">
@@ -62,30 +69,26 @@
                             <iais:code code="${transferInOutStageDto.transInFromHciCode}"/>
                         </iais:value>
                     </iais:row>
-                    <div class="inFromOthers"<c:if test="${transferInOutStageDto.transInFromHciCode != DataSubmissionConsts.TRANSFERRED_IN_FROM_OTHERS}">style="display: none;"</c:if>>
-                        <iais:row>
+                        <iais:row style="${transferInOutStageDto.transInFromHciCode eq'AR_TIF_003' ? '' : 'display:none;'}">
                             <iais:field width="5" value="Transferred In From (Others)" />
                             <iais:value width="7" cssClass="col-md-7">
                                 <c:out value="${transferInOutStageDto.transInFromOthers}"/>
                             </iais:value>
                         </iais:row>
-                    </div>
                 </div>
-                <div class="outFromParts" <c:if test="${transferInOutStageDto.transferType !='in'}">style="display: none;"</c:if>>
+                <div class="outFromParts" <c:if test="${transferInOutStageDto.transferType !='out'}">style="display: none;"</c:if>>
                     <iais:row>
                         <iais:field width="5" value="Transfer Out To" />
                         <iais:value width="7" cssClass="col-md-7">
                             <iais:code code="${transferInOutStageDto.transOutToHciCode}"/>
                         </iais:value>
                     </iais:row>
-                    <div class="outFromOthers"<c:if test="${transferInOutStageDto.transOutToHciCode != DataSubmissionConsts.TRANSFERRED_IN_FROM_OTHERS}">style="display: none;"</c:if>>
-                        <iais:row>
+                        <iais:row style="${transferInOutStageDto.transOutToHciCode eq'AR_TIF_003' ? '' : 'display:none;'}">
                             <iais:field width="5" value="Transfer Out To (Others)" />
                             <iais:value width="7" cssClass="col-md-7">
                                 <c:out value="${transferInOutStageDto.transOutToOthers}"/>
                             </iais:value>
                         </iais:row>
-                    </div>
                 </div>
                 <iais:row>
                     <iais:field width="5" value="Date of Transfer" />
