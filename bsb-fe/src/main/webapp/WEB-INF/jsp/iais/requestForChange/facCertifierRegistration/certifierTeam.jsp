@@ -111,8 +111,8 @@
                                                                 <label for="male">Male</label>
                                                             </div>
                                                             <div class="col-sm-5" style="margin-top: 8px">
-                                                                <input type="radio" name="sex--v--${status.index}" id="femail" value="femail" <c:if test="${cer.sex eq 'femail'}">checked="checked"</c:if> />
-                                                                <label for="femail">Femail</label>
+                                                                <input type="radio" name="sex--v--${status.index}" id="female" value="female" <c:if test="${cer.sex eq 'female'}">checked="checked"</c:if> />
+                                                                <label for="female">Female</label>
                                                             </div>
                                                         </div>
                                                     </div>

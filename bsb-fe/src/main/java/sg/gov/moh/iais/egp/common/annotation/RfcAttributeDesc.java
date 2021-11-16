@@ -6,6 +6,8 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
+ * This annotation is used to compare only field
+ * that have this annotation by reflection when doing RFC function.
  * @author : LiRan
  * @date : 2021/11/8
  */
