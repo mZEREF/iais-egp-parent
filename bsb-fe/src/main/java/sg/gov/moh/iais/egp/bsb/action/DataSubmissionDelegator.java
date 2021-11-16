@@ -51,6 +51,7 @@ public class DataSubmissionDelegator {
         ParamUtil.setSessionAttr(bpc.request,KEY_DISPOSAL_NOTIFICATION_DTO, null);
         ParamUtil.setSessionAttr(bpc.request,KEY_EXPORT_NOTIFICATION_DTO, null);
         ParamUtil.setSessionAttr(bpc.request,KEY_RECEIPT_NOTIFICATION_DTO, null);
+        ParamUtil.setSessionAttr(bpc.request,KEY_FAC_ID,null);
         if(log.isInfoEnabled()){
             log.info("In the future this module will be used to initialize some data");
         }
@@ -196,6 +197,7 @@ public class DataSubmissionDelegator {
         HttpServletRequest request = bpc.request;
         DisposalNotificationDto notificationDto = getDisposalNotification(request);
         notificationDto.reqObjectMapping(request);
+        notificationDto.setEnsure("true");
         doDisposalValidation(notificationDto,request);
         //use to show file information
         ParamUtil.setRequestAttr(request,KEY_DO_SETTINGS,getDocSettingMap());
@@ -263,6 +265,7 @@ public class DataSubmissionDelegator {
         HttpServletRequest request = bpc.request;
         ExportNotificationDto notificationDto = getExportNotification(request);
         notificationDto.reqObjectMapping(request);
+        notificationDto.setEnsure("true");
         doExportValidation(notificationDto,request);
         //use to show file information
         ParamUtil.setRequestAttr(request,KEY_DO_SETTINGS,getDocSettingMap());
@@ -330,6 +333,7 @@ public class DataSubmissionDelegator {
         HttpServletRequest request = bpc.request;
         ReceiptNotificationDto notificationDto = getReceiptNotification(request);
         notificationDto.reqObjectMapping(request);
+        notificationDto.setEnsure("true");
         doReceiptValidation(notificationDto,request);
         //use to show file information
         ParamUtil.setRequestAttr(request,KEY_DO_SETTINGS,getDocSettingMap());
@@ -378,7 +382,7 @@ public class DataSubmissionDelegator {
         facLists.remove(0);
         List<SelectOption> selectModel = new ArrayList<>();
         for (FacListDto.FacList fac : facLists) {
-            selectModel.add(new SelectOption(fac.getFacId(), fac.getFacName()));
+            selectModel.add(new SelectOption(MaskUtil.maskValue("id",fac.getFacId()), fac.getFacName()));
         }
         ParamUtil.setRequestAttr(request, KEY_FAC_SELECTION, selectModel);
         //Put in session called for later operations
@@ -492,6 +496,7 @@ public class DataSubmissionDelegator {
             //this part is prepared data for facInfo show in jsp
             FacListDto.FacList facList = subCommon.getFacListById(request,facId);
             ParamUtil.setSessionAttr(request,KEY_FACILITY_INFO,facList);
+
             List<Biological> biological = facList.getBioMap().get(facId);
             subCommon.prepareSelectOption(request,KEY_SCHEDULE_TYPE,biological);
         }else{

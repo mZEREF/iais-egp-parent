@@ -45,11 +45,24 @@ function schTypeChange(obj) {
 }
 $(function (){
     //facilitySelectPage.jsp
+    $("#facNextBtn").click(function (){
+        var optionVal = $("#facSelect option:selected").val();
+        if (optionVal == "") {
+            $("#facSelectError").html("This is Mandatory");
+        }else{
+            showWaiting();
+            $("[name='action_type']").val("doNext");
+            $("#facSelectError").html("");
+            $("#facId").val(optionVal);
+            $("#mainForm").submit();
+        }
+    });
+
     $("#next").click(function (){
         showWaiting();
         $("[name='action_type']").val("doNext");
-        var optionVal = $("#facSelect option:selected").val();
-        $("#facId").val(optionVal);
+        // var optionVal = $("#facSelect option:selected").val();
+        // $("#facId").val(optionVal);
         $("#mainForm").submit();
     });
 

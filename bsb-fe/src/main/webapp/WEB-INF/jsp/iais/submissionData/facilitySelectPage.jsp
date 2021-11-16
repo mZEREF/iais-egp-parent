@@ -34,16 +34,15 @@
                                         <span class="mandatory">*</span>
                                     </div>
                                     <div class="col-sm-4 col-md-7 control-font-label">
-<%--                                        <input type="hidden" id="activityType" name="activityType" value="${activity.activityType}">--%>
                                         <select name="facSelect" id="facSelect">
+                                            <option value="">Please Select</option>
                                             <c:forEach items="${facSelection}" var="selectList">
-                                                <option value="${MaskUtil.maskValue('id',selectList.value)}">${selectList.text}</option>
+                                                <option value="${selectList.value}" <c:if test="${facId eq MaskUtil.unMaskValue('id',selectList.value)}">selected="selected"</c:if>>${selectList.text}</option>
                                             </c:forEach>
                                         </select>
-                                        <span data-err-ind="activityType" class="error-msg"></span>
+                                        <span id="facSelectError" class="error-msg"></span>
                                     </div>
                                 </div>
-
                             </div>
                         </div>
                     </div>
@@ -58,7 +57,7 @@
             </div>
             <div class="form-group">
                 <div class="col-xs-12 col-md-6 text-right">
-                    <button class="btn btn-primary save" id="next">NEXT</button>
+                    <button type="button"  class="btn btn-primary" id="facNextBtn">NEXT</button>
                 </div>
             </div>
         </div>
