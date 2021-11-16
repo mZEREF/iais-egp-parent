@@ -37,6 +37,14 @@ $(function () {
         $("#mainForm").submit();
     });
 
+    $("#clearDataSubBtn").click(function () {
+        $("#searchDataSubNo").val("");
+        $("#searchFacilityName option:first").prop("selected",'selected');
+        $("#searchType option:first").prop("selected",'selected');
+        $("#searchStatus option:first").prop("selected",'selected');
+        $("#inboxFilter .current").text("All");
+    });
+
     $("select[data-action-select]").change(function () {
         window.location = this.value;
     });

@@ -27,7 +27,7 @@
                     <%@ include file="../InnerNavBar.jsp" %>
                     <div class="tab-content">
                         <form class="" method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
-                            <div class="tab-search">
+                            <div id="inboxFilter" class="tab-search">
                                 <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
                                 <input type="hidden" name="action_type" value="">
                                 <input type="hidden" name="action_value" value="">
@@ -76,7 +76,7 @@
                                     </div>
                                 </div>
                                 <div class="row text-right text-center-mobile">
-                                    <button class="btn btn-secondary" type="reset" id="clearBtn" name="clearBtn">Clear
+                                    <button class="btn btn-secondary" type="button" id="clearDataSubBtn" name="clearBtn">Clear
                                     </button>
                                     <button class="btn btn-primary" type="button" id="searchBtn" name="searchBtn">
                                         Search
@@ -166,7 +166,7 @@
                                                                 <p><fmt:formatDate value="${item.submittedOn}" pattern="dd/MM/yyyy HH:mm:ss"/></p>
                                                             </td>
                                                             <td>
-                                                                <c:if test="${item.status eq 'DATASTA001' or item.status eq null}">
+                                                                <c:if test="${item.status ne 'DATASTA002'}">
                                                                     <p class="visible-xs visible-sm table-row-title">Actions</p>
                                                                     <select id="appAction${status.index}" name="appAction${status.index}" data-action-select="">
                                                                         <option value="#" selected="selected">Select</option>
