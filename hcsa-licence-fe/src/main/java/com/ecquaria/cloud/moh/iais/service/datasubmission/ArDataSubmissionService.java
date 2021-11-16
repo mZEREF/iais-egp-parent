@@ -100,4 +100,13 @@ public interface ArDataSubmissionService {
       * @Descripation: setIuiCycleStageDtoDefaultVal
       */
     ArSuperDataSubmissionDto setIuiCycleStageDtoDefaultVal(ArSuperDataSubmissionDto arSuperDataSubmission);
+
+    /**
+      * @author: shicheng
+      * @Date 2021/11/16
+      * @Param: numberStr
+      * @return: Integer
+      * @Descripation: stringTransferInteger
+      */
+    Integer stringTransferInteger(String numberStr);
 }

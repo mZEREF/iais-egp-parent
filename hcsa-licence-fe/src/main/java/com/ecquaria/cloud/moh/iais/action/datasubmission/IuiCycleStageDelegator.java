@@ -4,6 +4,7 @@ import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.IuiCycleStageDto;
+import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
@@ -18,6 +19,7 @@ import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -89,6 +91,26 @@ public class IuiCycleStageDelegator extends CommonDelegator {
     }
 
     private IuiCycleStageDto getIuiCycleFormValue(IuiCycleStageDto iuiCycleStageDto, HttpServletRequest request) {
+        //get form
+        String iuiCycleStartDateStr = ParamUtil.getRequestString(request, "iuiCycleStartDate");
+        String curMarrChildNumStr = ParamUtil.getRequestString(request, "curMarrChildNum");
+        String prevMarrChildNumStr = ParamUtil.getRequestString(request, "prevMarrChildNum");
+        String iuiDeliverChildNumStr = ParamUtil.getRequestString(request, "iuiDeliverChildNum");
+        String sourceOfSemenOpStr = ParamUtil.getRequestString(request, "sourceOfSemenOp");
+        String extractVialsOfSpermStr = ParamUtil.getRequestString(request, "extractVialsOfSperm");
+        String usedVialsOfSpermStr = ParamUtil.getRequestString(request, "usedVialsOfSperm");
+        //set date
+        if (!StringUtil.isEmpty(iuiCycleStartDateStr)) {
+            try {
+                Date date = Formatter.parseDate(iuiCycleStartDateStr);
+                iuiCycleStageDto.setStartDate(date);
+            } catch (Exception e) {
+                log.info("Freezing invalid cryopreservationDate");
+            }
+        }
+        //get and set Integer Number
+        Integer curMarrChildNum = arDataSubmissionService.stringTransferInteger(curMarrChildNumStr);
+        //Verify that the value is dirty data
         return iuiCycleStageDto;
     }
 }

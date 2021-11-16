@@ -380,4 +380,9 @@ public class ArDataSubmissionServiceImpl implements ArDataSubmissionService {
         return arSuperDataSubmission;
     }
 
+    @Override
+    public Integer stringTransferInteger(String numberStr) {
+        return null;
+    }
+
 }
