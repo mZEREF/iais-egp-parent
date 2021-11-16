@@ -1,9 +1,12 @@
 package sg.gov.moh.iais.egp.bsb.dto.submission;
 
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import sg.gov.moh.iais.egp.bsb.dto.ValidationResultDto;
+import sg.gov.moh.iais.egp.bsb.util.SpringReflectionUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
@@ -23,11 +26,16 @@ public class TransferRequestDto {
         private String scheduleType;
         private String batCode;
         private String expectedBatQty;
-        private String receivedQty;
+        private String expReceivedQty;
         private String meaUnit;
     }
 
     private  List<TransferList> transferLists;
+    private String facId;
+    private String receivingFacId;
+
+    @JsonIgnore
+    private ValidationResultDto validationResultDto;
 
     public TransferRequestDto() {
         transferLists = new ArrayList<>();
@@ -49,6 +57,38 @@ public class TransferRequestDto {
         this.transferLists = new ArrayList<>(transferLists);
     }
 
+    public String getFacId() {
+        return facId;
+    }
+
+    public void setFacId(String facId) {
+        this.facId = facId;
+    }
+
+    public String getReceivingFacId() {
+        return receivingFacId;
+    }
+
+    public void setReceivingFacId(String receivingFacId) {
+        this.receivingFacId = receivingFacId;
+    }
+
+    public boolean doValidation() {
+        this.validationResultDto = (ValidationResultDto) SpringReflectionUtils.invokeBeanMethod("transferFeignClient", "validateTransferNot", new Object[]{this});
+        return validationResultDto.isPass();
+    }
+
+
+    public String retrieveValidationResult() {
+        if (this.validationResultDto == null) {
+            throw new IllegalStateException("This DTO is not validated");
+        }
+        return this.validationResultDto.toErrorMsg();
+    }
+
+    public void clearValidationResult() {
+        this.validationResultDto = null;
+    }
 
     //----------------------request-->object----------------------------------
     private static final String SEPARATOR                   = "--v--";
@@ -56,7 +96,7 @@ public class TransferRequestDto {
     private static final String KEY_PREFIX_SCHEDULE_TYPE    = "scheduleType";
     private static final String KEY_PREFIX_BAT_CODE         = "batCode";
     private static final String KEY_PREFIX_EXPECTED_BAT_QTY = "expectedBatQty";
-    private static final String KEY_PREFIX_RECEIVE_QTY      = "receivedQty";
+    private static final String KEY_PREFIX_RECEIVE_QTY      = "expReceivedQty";
     private static final String KEY_PREFIX_MEASUREMENT_UNIT = "meaUnit";
 
 
@@ -73,7 +113,7 @@ public class TransferRequestDto {
             transferList.setScheduleType(ParamUtil.getString(request,KEY_PREFIX_SCHEDULE_TYPE+SEPARATOR+i));
             transferList.setBatCode(ParamUtil.getString(request,KEY_PREFIX_BAT_CODE+SEPARATOR+i));
             transferList.setExpectedBatQty(ParamUtil.getString(request,KEY_PREFIX_EXPECTED_BAT_QTY+SEPARATOR+i));
-            transferList.setReceivedQty(ParamUtil.getString(request,KEY_PREFIX_RECEIVE_QTY +SEPARATOR+i));
+            transferList.setExpReceivedQty(ParamUtil.getString(request,KEY_PREFIX_RECEIVE_QTY +SEPARATOR+i));
             transferList.setMeaUnit(ParamUtil.getString(request,KEY_PREFIX_MEASUREMENT_UNIT+SEPARATOR+i));
             addTransferLists(transferList);
         }

@@ -280,6 +280,7 @@ public class TransferNotificationDto implements Serializable {
     private static final String KEY_PREFIX_TRANSFER_QTY     = "transferQty";
     private static final String KEY_PREFIX_MEASUREMENT_UNIT = "mstUnit";
     private static final String KEY_EXPECTED_TRANSFER_DATE  = "expectedTfDate";
+    private static final String KEY_RECEIVE_FACILITY        = "receiveFacility";
     private static final String KEY_EXPECTED_ARRIVAL_TIME   = "expArrivalTime";
     private static final String KEY_PROVIDER_NAME           = "providerName";
     private static final String KEY_REMARK                  = "remarks";
@@ -325,6 +326,7 @@ public class TransferNotificationDto implements Serializable {
         this.setExpArrivalTime(ParamUtil.getString(request,KEY_EXPECTED_ARRIVAL_TIME));
         this.setProviderName(ParamUtil.getString(request,KEY_PROVIDER_NAME));
         this.setRemarks(ParamUtil.getString(request,KEY_REMARK));
+        this.setReceiveFacility(ParamUtil.getString(request,KEY_RECEIVE_FACILITY));
     }
 
     public String getDocType(String scheduleType){

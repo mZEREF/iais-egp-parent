@@ -50,9 +50,11 @@ public class INTERNET___TransferNofication___1 extends BaseProcessClass {
 
 	public void preFacSelect_OnStepProcess_0() throws Exception {
 		// 		preFacSelect->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "preFacSelect", this);
 	}
 
 	public void preSwitch_OnStepProcess_0() throws Exception {
 		// 		preSwitch->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "preSwitch", this);
 	}
 }

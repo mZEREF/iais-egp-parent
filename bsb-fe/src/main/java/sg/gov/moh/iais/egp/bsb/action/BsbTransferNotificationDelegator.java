@@ -1,13 +1,16 @@
 package sg.gov.moh.iais.egp.bsb.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.utils.LogUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
+import sg.gov.moh.iais.egp.bsb.client.DataSubmissionClient;
 import sg.gov.moh.iais.egp.bsb.client.FileRepoClient;
 import sg.gov.moh.iais.egp.bsb.client.TransferClient;
 import sg.gov.moh.iais.egp.bsb.constant.DocConstants;
@@ -21,9 +24,14 @@ import sop.servlet.webflow.HttpHandler;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static sg.gov.moh.iais.egp.bsb.constant.DataSubmissionConstants.*;
+import static sg.gov.moh.iais.egp.bsb.constant.DataSubmissionConstants.KEY_FAC_ID;
 
 /**
  * @author YiMing
@@ -39,12 +47,14 @@ public class BsbTransferNotificationDelegator {
     private final TransferClient transferClient;
     private final FileRepoClient fileRepoClient;
     private final BsbSubmissionCommon subCommon;
+    private final DataSubmissionClient submissionClient;
 
 
-    public BsbTransferNotificationDelegator(TransferClient transferClient, FileRepoClient fileRepoClient, BsbSubmissionCommon subCommon) {
+    public BsbTransferNotificationDelegator(TransferClient transferClient, FileRepoClient fileRepoClient, BsbSubmissionCommon subCommon, DataSubmissionClient submissionClient) {
         this.transferClient = transferClient;
         this.fileRepoClient = fileRepoClient;
         this.subCommon = subCommon;
+        this.submissionClient = submissionClient;
     }
 
     /**
@@ -55,6 +65,19 @@ public class BsbTransferNotificationDelegator {
         if(log.isInfoEnabled()){
             log.info("In the future this module will be used to initialize some data");
         }
+    }
+
+    public void preFacSelect(BaseProcessClass bpc){
+        HttpServletRequest request = bpc.request;
+        selectOption(request);
+    }
+
+    public void preSwitch(BaseProcessClass bpc){
+        HttpServletRequest request = bpc.request;
+        ParamUtil.setSessionAttr(request,KEY_FAC_ID,null);
+        String facId = ParamUtil.getRequestString(request,KEY_FAC_ID);
+        facId = MaskUtil.unMaskValue("id",facId);
+        ParamUtil.setSessionAttr(request,KEY_FAC_ID,facId);
     }
 
     /**
@@ -185,6 +208,24 @@ public class BsbTransferNotificationDelegator {
         settingMap.put("ityToxin",new DocSetting(DocConstants.DOC_TYPE_INVENTORY_TOXIN,"Inventory: Toxins",true));
         settingMap.put("others",new DocSetting(DocConstants.DOC_TYPE_OTHERS,"others",true));
         return settingMap;
+    }
+
+    /**
+     * This method is used to query all Facility info
+     */
+    private void selectOption(HttpServletRequest request) {
+        ParamUtil.setSessionAttr(request,KEY_FAC_LISTS,null);
+        FacListDto facListDto = submissionClient.queryAllApprovalFacList().getEntity();
+        List<FacListDto.FacList> facLists = facListDto.getFacLists();
+        //Removes the newly created object where is null
+        facLists.remove(0);
+        List<SelectOption> selectModel = new ArrayList<>();
+        for (FacListDto.FacList fac : facLists) {
+            selectModel.add(new SelectOption(fac.getFacId(), fac.getFacName()));
+        }
+        ParamUtil.setRequestAttr(request, KEY_FAC_SELECTION, selectModel);
+        //Put in session called for later operations
+        ParamUtil.setSessionAttr(request,KEY_FAC_LISTS,(Serializable) facLists);
     }
 
 }

@@ -50,6 +50,7 @@ public class PrimaryDocDto implements Serializable {
     @Data
     @NoArgsConstructor
     public static class NewDocInfo implements Serializable {
+        private String index;
         private String tmpId;
         private String docType;
         private String filename;
@@ -63,6 +64,7 @@ public class PrimaryDocDto implements Serializable {
     @NoArgsConstructor
     public static class DocMeta implements Serializable {
         private String id;
+        private String index;
         private String docType;
         private String filename;
         private long size;

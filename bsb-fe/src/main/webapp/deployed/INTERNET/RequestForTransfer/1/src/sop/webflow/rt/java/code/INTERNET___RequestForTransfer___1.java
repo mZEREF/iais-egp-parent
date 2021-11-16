@@ -29,30 +29,37 @@ public class INTERNET___RequestForTransfer___1 extends BaseProcessClass {
 
 	public void prepareSwitch1_OnStepProcess_0() throws Exception {
 		// 		prepareSwitch1->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "prepareSwitch1", this);
 	}
 
 	public void saveAndConfirm_OnStepProcess_0() throws Exception {
 	// 		saveAndConfirm->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "saveAndConfirm", this);
 	}
 
 	public void prepareSwitch2_OnStepProcess_0() throws Exception {
 		// 		prepareSwitch2->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "prepareSwitch2", this);
 	}
 
 	public void save_OnStepProcess_0() throws Exception {
 	// 		save->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "save", this);
 	}
 
 	public void saveDraft_OnStepProcess_0() throws Exception {
 		// 		saveDraft->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "save", this);
 	}
 
 	public void preFacSelect_OnStepProcess_0() throws Exception {
 		// 		preFacSelect->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "preFacSelect", this);
 	}
 
 	public void preSwitch0_OnStepProcess_0() throws Exception {
 		// 		preSwitch0->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "preSwitch0", this);
 	}
 
 }

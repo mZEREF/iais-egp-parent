@@ -58,14 +58,14 @@
                     </div>
                     <div class="form-group">
                         <div class="col-sm-5 control-label">
-                            <label for="receivedQty--v--${status.index}">Expected Quantity to Receive</label>
+                            <label for="expReceivedQty--v--${status.index}">Expected Quantity to Receive</label>
                             <span class="mandatory otherQualificationSpan">*</span>
                         </div>
                         <div class="col-sm-6 col-md-7">
-                            <input type="number" name="receivedQty--v--${status.index}" id="receivedQty--v--${status.index}" value=""
+                            <input type="number" name="expReceivedQty--v--${status.index}" id="expReceivedQty--v--${status.index}" value=""
                                    maxlength="11"
                                    οninput="this.value=this.value.replace(/\D*(\d*)(\.?)(\d{0,3})\d*/,'$1$2$3')">
-                            <span data-err-ind="receivedQty--v--${status.index}" class="error-msg"></span>
+                            <span data-err-ind="expReceivedQty--v--${status.index}" class="error-msg"></span>
                         </div>
                     </div>
                     <div class="form-group">
