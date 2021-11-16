@@ -146,4 +146,8 @@ public class ArFeClientFallback implements ArFeClient {
         return  getFeignResponseEntity(patientCode);
     }
 
+    @Override
+    public FeignResponseEntity<List<ArTreatmentSubsidiesStageDto>> getArTreatmentSubsidiesStageDtosByPatientCodeAndHciCOdeAndCycleType(String patientCode, String hciCode, String cycleType) {
+        return getFeignResponseEntity();
+    }
 }

@@ -4,15 +4,19 @@ import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.intranetUser.IntranetUserConstant;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArTreatmentSubsidiesStageDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.CycleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInventoryDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
+import com.ecquaria.cloud.moh.iais.service.client.ArFeClient;
+import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -23,6 +27,8 @@ import java.util.Map;
  */
 @Delegator("arTreatmentSubsidiesDelegator")
 public class ArTreatmentSubsidiesDelegator extends CommonDelegator {
+    @Autowired
+    private ArFeClient arFeClient;
 
     @Override
     public void preparePage(BaseProcessClass bpc) {
@@ -35,6 +41,19 @@ public class ArTreatmentSubsidiesDelegator extends CommonDelegator {
             arSuperDataSubmissionDto.setArTreatmentSubsidiesStageDto(arTreatmentSubsidiesStageDto);
             DataSubmissionHelper.setCurrentArDataSubmission(arSuperDataSubmissionDto, bpc.request);
         }
+        CycleDto cycleDto = arSuperDataSubmissionDto.getCycleDto();
+        List<ArTreatmentSubsidiesStageDto> oldArTreatmentSubsidiesStageDtos = arFeClient.getArTreatmentSubsidiesStageDtosByPatientCodeAndHciCOdeAndCycleType(cycleDto.getPatientCode(), cycleDto.getHciCode(), cycleDto.getCycleType()).getEntity();
+        int freshCount = 0;
+        int frozenCount = 0;
+        for (ArTreatmentSubsidiesStageDto arTreatmentSubsidiesStageDto1 : oldArTreatmentSubsidiesStageDtos) {
+            if ("Fresh".equals(arTreatmentSubsidiesStageDto1.getCoFunding())) {
+                freshCount++;
+            } else if ("Frozen".equals(arTreatmentSubsidiesStageDto1.getCoFunding())) {
+                frozenCount++;
+            }
+        }
+        ParamUtil.setRequestAttr(bpc.request, "freshCount", freshCount);
+        ParamUtil.setRequestAttr(bpc.request, "frozenCount", frozenCount);
     }
 
     @Override

@@ -3,6 +3,7 @@ package com.ecquaria.cloud.moh.iais.service.client;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArCycleStageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArDonorDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArTreatmentSubsidiesStageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.CycleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.CycleStageSelectionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DonorSampleDto;
@@ -125,4 +126,9 @@ public interface ArFeClient {
 
     @GetMapping(value = "/data-submission/patient-inventory/{patientCode}", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<PatientInventoryDto> patientInventoryByCode(@PathVariable("patientCode") String patientCode);
+
+    @GetMapping(value = "/ar-common/arTreatmentSubsidiesStageDtos/patientcode-hcicode-cycletype", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<ArTreatmentSubsidiesStageDto>> getArTreatmentSubsidiesStageDtosByPatientCodeAndHciCOdeAndCycleType(@RequestParam(name = "patientCode") String patientCode,
+                                                                                                                                @RequestParam(name = "hciCode") String hciCode,
+                                                                                                                                @RequestParam(name = "cycleType") String cycleType);
 }
