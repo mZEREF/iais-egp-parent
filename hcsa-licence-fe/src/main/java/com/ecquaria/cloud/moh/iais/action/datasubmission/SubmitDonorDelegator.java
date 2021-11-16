@@ -7,6 +7,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSub
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.CycleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DonorSampleDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -90,8 +91,8 @@ public class SubmitDonorDelegator extends CommonDelegator {
         if (cycleDto == null) {
             cycleDto = new CycleDto();
         }
-        String hicCode = Optional.ofNullable(currentArDataSubmission.getAppGrpPremisesDto())
-                .map(premises -> premises.getHciCode())
+        String hicCode = Optional.ofNullable(currentArDataSubmission.getPremisesDto())
+                .map(PremisesDto::getHciCode)
                 .orElse("");
         cycleDto.setHciCode(hicCode);
         cycleDto.setDsType(DataSubmissionConsts.DS_AR);

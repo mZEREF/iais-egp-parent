@@ -1,8 +1,9 @@
 package com.ecquaria.cloud.moh.iais.service.datasubmission;
 
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.*;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.*;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 
 import java.util.Date;
 import java.util.List;
@@ -10,7 +11,7 @@ import java.util.Map;
 
 public interface ArDataSubmissionService {
 
-    Map<String, AppGrpPremisesDto> getArCenterPremises(String licenseeId);
+    Map<String, PremisesDto> getArCenterPremises(String licenseeId);
 
     CycleStageSelectionDto getCycleStageSelectionDtoByConds(String idType, String idNumber, String nationality, String orgId,
             String hciCode);

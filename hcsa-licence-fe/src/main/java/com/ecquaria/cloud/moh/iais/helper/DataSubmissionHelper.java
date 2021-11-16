@@ -9,6 +9,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.CycleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.CycleStageSelectionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInventoryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -177,7 +178,7 @@ public final class DataSubmissionHelper {
         if (cycleDto == null || reNew) {
             cycleDto = new CycleDto();
         }
-        String hicCode = Optional.ofNullable(currentArDataSubmission.getAppGrpPremisesDto())
+        String hicCode = Optional.ofNullable(currentArDataSubmission.getPremisesDto())
                 .map(premises -> premises.getHciCode())
                 .orElse("");
         cycleDto.setHciCode(hicCode);
@@ -269,10 +270,10 @@ public final class DataSubmissionHelper {
         return genOptions(map, "Please Select", true);
     }
 
-    public static List<SelectOption> genPremisesOptions(Map<String, AppGrpPremisesDto> appGrpPremisesMap) {
+    public static List<SelectOption> genPremisesOptions(Map<String, PremisesDto> premisesMap) {
         Map<String, String> map = IaisCommonUtils.genNewLinkedHashMap();
-        if (appGrpPremisesMap != null && !appGrpPremisesMap.isEmpty()) {
-            for (Map.Entry<String, AppGrpPremisesDto> entry : appGrpPremisesMap.entrySet()) {
+        if (premisesMap != null && !premisesMap.isEmpty()) {
+            for (Map.Entry<String, PremisesDto> entry : premisesMap.entrySet()) {
                 map.put(entry.getKey(), entry.getValue().getPremiseLabel());
             }
         }

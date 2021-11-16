@@ -16,6 +16,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.IuiCycleStageD
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInventoryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -61,26 +62,23 @@ public class ArDataSubmissionServiceImpl implements ArDataSubmissionService {
     private LicEicClient licEicClient;
 
     private static final List<String> statuses = IaisCommonUtils.getDsCycleFinalStatus();
+
     @Override
-    public Map<String, AppGrpPremisesDto> getArCenterPremises(String licenseeId) {
+    public Map<String, PremisesDto> getArCenterPremises(String licenseeId) {
         if (StringUtil.isEmpty(licenseeId)) {
             return IaisCommonUtils.genNewHashMap();
         }
         List<String> svcNames = new ArrayList<>();
-        //svcNames.add(serviceName);
-        List<AppGrpPremisesDto> appGrpPremisesDtos = licenceClient.getLatestPremisesByConds(licenseeId, svcNames, false).getEntity();
-        Map<String, AppGrpPremisesDto> appGrpPremisesDtoMap = IaisCommonUtils.genNewHashMap();
-        if (appGrpPremisesDtos == null || appGrpPremisesDtos.isEmpty()) {
-            return appGrpPremisesDtoMap;
+        svcNames.add(DataSubmissionConsts.SVC_NAME_AR_CENTER);
+        List<PremisesDto> premisesDtos = licenceClient.getLatestPremisesByConds(licenseeId, svcNames, false).getEntity();
+        Map<String, PremisesDto> premisesDtoMap = IaisCommonUtils.genNewHashMap();
+        if (premisesDtos == null || premisesDtos.isEmpty()) {
+            return premisesDtoMap;
         }
-        for (AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtos) {
-            if (!StringUtil.isEmpty(appGrpPremisesDto.getPremisesSelect())) {
-                NewApplicationHelper.setWrkTime(appGrpPremisesDto);
-                appGrpPremisesDto.setExistingData(AppConsts.YES);
-                appGrpPremisesDtoMap.put(appGrpPremisesDto.getHciCode(), appGrpPremisesDto);
-            }
+        for (PremisesDto premisesDto : premisesDtos) {
+            premisesDtoMap.put(premisesDto.getHciCode(), premisesDto);
         }
-        return appGrpPremisesDtoMap;
+        return premisesDtoMap;
     }
 
     @Override

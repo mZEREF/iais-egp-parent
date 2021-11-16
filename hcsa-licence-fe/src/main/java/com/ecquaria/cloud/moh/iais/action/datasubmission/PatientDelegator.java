@@ -9,6 +9,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DataSubmission
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.HusbandDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInfoDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
@@ -145,8 +146,8 @@ public class PatientDelegator extends CommonDelegator {
         if (cycleDto == null) {
             cycleDto = new CycleDto();
         }
-        String hicCode = Optional.ofNullable(currentArDataSubmission.getAppGrpPremisesDto())
-                .map(premises -> premises.getHciCode())
+        String hicCode = Optional.ofNullable(currentArDataSubmission.getPremisesDto())
+                .map(PremisesDto::getHciCode)
                 .orElse("");
         cycleDto.setHciCode(hicCode);
         cycleDto.setDsType(DataSubmissionConsts.DS_CYCLE_PATIENT_ART);

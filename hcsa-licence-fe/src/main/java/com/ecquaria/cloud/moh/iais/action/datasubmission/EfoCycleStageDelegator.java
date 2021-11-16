@@ -48,7 +48,7 @@ public class EfoCycleStageDelegator extends CommonDelegator{
         }
         if(arSuperDataSubmissionDto.getEfoCycleStageDto()==null){
             arSuperDataSubmissionDto.setEfoCycleStageDto(new EfoCycleStageDto());
-            arSuperDataSubmissionDto.getEfoCycleStageDto().setPerformed(arSuperDataSubmissionDto.getAppGrpPremisesDto().getPremiseLabel());
+            arSuperDataSubmissionDto.getEfoCycleStageDto().setPerformed(arSuperDataSubmissionDto.getPremisesDto().getPremiseLabel());
         }
         Date startDate = DateUtil.parseDate(arSuperDataSubmissionDto.getPatientInfoDto().getPatient().getBirthDate(), AppConsts.DEFAULT_DATE_FORMAT);
         arSuperDataSubmissionDto.getEfoCycleStageDto().setYearNum(getYear(startDate,new Date()));

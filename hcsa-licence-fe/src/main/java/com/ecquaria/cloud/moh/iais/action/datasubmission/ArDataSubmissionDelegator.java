@@ -4,10 +4,8 @@ import com.ecquaria.cloud.RedirectUtil;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.CycleDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DataSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -71,28 +69,28 @@ public class ArDataSubmissionDelegator {
         String crud_action_type_ds = bpc.request.getParameter(DataSubmissionConstant.CRUD_TYPE);
         bpc.request.setAttribute(DataSubmissionConstant.CRUD_ACTION_TYPE_AR, crud_action_type_ds);
         ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.CURRENT_PAGE_STAGE, "ar-submission");
-        Map<String, AppGrpPremisesDto> appGrpPremisesMap =
-                (Map<String, AppGrpPremisesDto>) bpc.request.getSession().getAttribute(DataSubmissionConstant.AR_PREMISES_MAP);
-        if (appGrpPremisesMap == null || appGrpPremisesMap.isEmpty()) {
+        Map<String, PremisesDto> premisesMap =
+                (Map<String, PremisesDto>) bpc.request.getSession().getAttribute(DataSubmissionConstant.AR_PREMISES_MAP);
+        if (premisesMap == null || premisesMap.isEmpty()) {
             LoginContext loginContext = DataSubmissionHelper.getLoginContext(bpc.request);
             String licenseeId = null;
             if (loginContext != null) {
                 licenseeId = loginContext.getLicenseeId();
             }
-            appGrpPremisesMap = arDataSubmissionService.getArCenterPremises(licenseeId);
-            bpc.request.getSession().setAttribute(DataSubmissionConstant.AR_PREMISES_MAP, appGrpPremisesMap);
+            premisesMap = arDataSubmissionService.getArCenterPremises(licenseeId);
+            bpc.request.getSession().setAttribute(DataSubmissionConstant.AR_PREMISES_MAP, premisesMap);
         }
-        if (appGrpPremisesMap.isEmpty()) {
+        if (premisesMap.isEmpty()) {
             Map<String, String> map = IaisCommonUtils.genNewHashMap(2);
             map.put(PREMISES, "There are no active Assisted Reproduction licences");
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(map));
-        } else if (appGrpPremisesMap.size() == 1) {
-            appGrpPremisesMap.forEach((k, v) -> {
+        } else if (premisesMap.size() == 1) {
+            premisesMap.forEach((k, v) -> {
                 bpc.request.getSession().setAttribute(DataSubmissionConstant.AR_PREMISES, v);
                 bpc.request.setAttribute("premisesLabel", v.getPremiseLabel());
             });
         } else {
-            bpc.request.setAttribute("premisesOpts", DataSubmissionHelper.genPremisesOptions(appGrpPremisesMap));
+            bpc.request.setAttribute("premisesOpts", DataSubmissionHelper.genPremisesOptions(premisesMap));
         }
     }
 
@@ -136,36 +134,36 @@ public class ArDataSubmissionDelegator {
         // check premises
         HttpSession session = bpc.request.getSession();
         String premises = ParamUtil.getString(bpc.request, PREMISES);
-        Map<String, AppGrpPremisesDto> appGrpPremisesMap = (Map<String, AppGrpPremisesDto>) session.getAttribute(
+        Map<String, PremisesDto> premisesMap = (Map<String, PremisesDto>) session.getAttribute(
                 DataSubmissionConstant.AR_PREMISES_MAP);
-        AppGrpPremisesDto appGrpPremisesDto = (AppGrpPremisesDto) session.getAttribute(DataSubmissionConstant.AR_PREMISES);
+        PremisesDto premisesDto = (PremisesDto) session.getAttribute(DataSubmissionConstant.AR_PREMISES);
         if (!StringUtil.isEmpty(premises)) {
-            if (appGrpPremisesMap != null) {
-                appGrpPremisesDto = appGrpPremisesMap.get(premises);
+            if (premisesMap != null) {
+                premisesDto = premisesMap.get(premises);
             }
-            if (appGrpPremisesDto == null) {
+            if (premisesDto == null) {
                 map.put(PREMISES, "GENERAL_ERR0049");
             }
-        } else if (appGrpPremisesMap != null && appGrpPremisesMap.size() > 1) {
+        } else if (premisesMap != null && premisesMap.size() > 1) {
             map.put(PREMISES, "GENERAL_ERR0006");
-        } else if (appGrpPremisesDto == null) {
+        } else if (premisesDto == null) {
             map.put(PREMISES, "There are no active Assisted Reproduction licences");
         }
         ArSuperDataSubmissionDto currentArDataSubmission = DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
-        if (reNew(currentArDataSubmission, submissionType, submissionMethod, appGrpPremisesDto)) {
+        if (reNew(currentArDataSubmission, submissionType, submissionMethod, premisesDto)) {
             currentArDataSubmission = new ArSuperDataSubmissionDto();
         }
         if (!map.isEmpty()) {
             currentArDataSubmission.setArSubmissionType(submissionType);
             currentArDataSubmission.setSubmissionMethod(submissionMethod);
-            currentArDataSubmission.setAppGrpPremisesDto(appGrpPremisesDto);
+            currentArDataSubmission.setPremisesDto(premisesDto);
             actionType = "invalid";
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(map));
         } else {
             String orgId = Optional.ofNullable(DataSubmissionHelper.getLoginContext(bpc.request))
                     .map(LoginContext::getOrgId).orElse("");
-            String hciCode = Optional.ofNullable(appGrpPremisesDto)
-                    .map(AppGrpPremisesDto::getHciCode)
+            String hciCode = Optional.ofNullable(premisesDto)
+                    .map(PremisesDto::getHciCode)
                     .orElse("");
             String actionValue = ParamUtil.getString(bpc.request, IaisEGPConstant.CRUD_ACTION_VALUE);
             log.info(StringUtil.changeForLog("Action Type: " + actionValue));
@@ -191,7 +189,7 @@ public class ArDataSubmissionDelegator {
             currentArDataSubmission.setOrgId(orgId);
             currentArDataSubmission.setArSubmissionType(submissionType);
             currentArDataSubmission.setSubmissionMethod(submissionMethod);
-            currentArDataSubmission.setAppGrpPremisesDto(appGrpPremisesDto);
+            currentArDataSubmission.setPremisesDto(premisesDto);
             currentArDataSubmission.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
             currentArDataSubmission.setCurrentDataSubmissionDto(DataSubmissionHelper.initDataSubmission(currentArDataSubmission,
                     false));
@@ -202,17 +200,17 @@ public class ArDataSubmissionDelegator {
     }
 
     private boolean reNew(ArSuperDataSubmissionDto arSuperDto, String submissionType, String submissionMethod,
-            AppGrpPremisesDto appGrpPremisesDto) {
+            PremisesDto premisesDto) {
         if (arSuperDto == null
                 || !Objects.equals(submissionType, arSuperDto.getArSubmissionType())
                 || !Objects.equals(submissionMethod, arSuperDto.getSubmissionMethod())) {
             return true;
         }
-        String hciCode = Optional.ofNullable(appGrpPremisesDto)
-                .map(AppGrpPremisesDto::getHciCode)
+        String hciCode = Optional.ofNullable(premisesDto)
+                .map(PremisesDto::getHciCode)
                 .orElse("");
-        String old = Optional.ofNullable(arSuperDto.getAppGrpPremisesDto())
-                .map(AppGrpPremisesDto::getHciCode)
+        String old = Optional.ofNullable(arSuperDto.getPremisesDto())
+                .map(PremisesDto::getHciCode)
                 .orElse("");
         return !Objects.equals(hciCode, old);
     }

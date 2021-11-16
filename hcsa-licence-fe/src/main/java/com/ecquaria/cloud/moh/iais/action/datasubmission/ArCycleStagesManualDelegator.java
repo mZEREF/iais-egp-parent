@@ -2,10 +2,10 @@ package com.ecquaria.cloud.moh.iais.action.datasubmission;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.CycleStageSelectionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DataSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -162,8 +162,8 @@ public class ArCycleStagesManualDelegator {
             CycleStageSelectionDto selectionDto, HttpServletRequest request) {
         String stage = selectionDto.getStage();
         String orgId = currentArDataSubmission.getOrgId();
-        String hciCode = Optional.ofNullable(currentArDataSubmission.getAppGrpPremisesDto())
-                .map(AppGrpPremisesDto::getHciCode)
+        String hciCode = Optional.ofNullable(currentArDataSubmission.getPremisesDto())
+                .map(PremisesDto::getHciCode)
                 .orElse("");
         String actionValue = ParamUtil.getString(request, IaisEGPConstant.CRUD_ACTION_VALUE);
         log.info(StringUtil.changeForLog("Action Type: " + actionValue));
@@ -199,8 +199,8 @@ public class ArCycleStagesManualDelegator {
 
     private void handleArSuperDataSubmissionDto(ArSuperDataSubmissionDto currentArDataSubmission,
             CycleStageSelectionDto selectionDto, HttpServletRequest request) {
-        String hciCode = Optional.ofNullable(currentArDataSubmission.getAppGrpPremisesDto())
-                .map(premises -> premises.getHciCode())
+        String hciCode = Optional.ofNullable(currentArDataSubmission.getPremisesDto())
+                .map(PremisesDto::getHciCode)
                 .orElse("");
         DataSubmissionDto dataSubmission = currentArDataSubmission.getCurrentDataSubmissionDto();
         if (dataSubmission == null) {
@@ -238,7 +238,7 @@ public class ArCycleStagesManualDelegator {
         newDto.setOrgId(currentArDataSubmission.getOrgId());
         newDto.setArSubmissionType(currentArDataSubmission.getArSubmissionType());
         newDto.setSubmissionMethod(currentArDataSubmission.getSubmissionMethod());
-        newDto.setAppGrpPremisesDto(currentArDataSubmission.getAppGrpPremisesDto());
+        newDto.setPremisesDto(currentArDataSubmission.getPremisesDto());
         newDto.setSelectionDto(currentArDataSubmission.getSelectionDto());
         newDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         return newDto;

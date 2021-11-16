@@ -25,16 +25,20 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PersonnelsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesListQueryDto;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 
+import java.util.Arrays;
 import java.util.List;
 
 
+@Slf4j
 @Component
 public class LicenceInFallback implements LicenceClient {
 
-    private FeignResponseEntity getFeignResponseEntity() {
+    private FeignResponseEntity getFeignResponseEntity(Object... params) {
+        log.warn("--------Params: " + Arrays.toString(params) + "-----------");
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
@@ -174,9 +178,15 @@ public class LicenceInFallback implements LicenceClient {
     }
 
     @Override
-    public FeignResponseEntity<List<AppGrpPremisesDto>> getLatestPremisesByConds(String licenseeId, List<String> svcNames,
+    public FeignResponseEntity<List<AppGrpPremisesDto>> getLatestAppPremisesByConds(String licenseeId, List<String> svcNames,
             boolean loadAll) {
-        return null;
+        return getFeignResponseEntity(licenseeId, svcNames, loadAll);
+    }
+
+    @Override
+    public FeignResponseEntity<List<PremisesDto>> getLatestPremisesByConds(String licenseeId, List<String> svcNames,
+            boolean loadAll) {
+        return getFeignResponseEntity(licenseeId, svcNames, loadAll);
     }
 
     @Override

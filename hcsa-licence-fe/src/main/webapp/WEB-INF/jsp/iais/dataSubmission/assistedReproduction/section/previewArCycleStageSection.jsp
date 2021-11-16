@@ -18,7 +18,7 @@
                 <iais:row>
                     <iais:field width="5" value="Premises where AR is performed" />
                     <iais:value width="7" cssClass="col-md-7" display="true">
-                        <c:out value="${arSuperDataSubmissionDto.appGrpPremisesDto.premiseLabel}"/>
+                        <c:out value="${arSuperDataSubmissionDto.premisesDto.premiseLabel}"/>
                     </iais:value>
                 </iais:row>
                 <iais:row>
