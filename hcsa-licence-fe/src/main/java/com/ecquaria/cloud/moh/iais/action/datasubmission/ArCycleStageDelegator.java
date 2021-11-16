@@ -96,10 +96,10 @@ public class ArCycleStageDelegator extends CommonDelegator {
 
     private List<SelectOption> getSampleDropDown(){
         List<SelectOption> selectOptions  = IaisCommonUtils.genNewArrayList(4);
+        selectOptions.add(new SelectOption(DataSubmissionConsts.AR_ID_TYPE_CODE,"Code"));
         MasterCodeUtil.retrieveByCategory(MasterCodeUtil.CATE_ID_DS_ID_TYPE).stream().forEach(
                 obj -> selectOptions.add(new SelectOption(obj.getCode(),obj.getCodeValue()))
         );
-        selectOptions.add(new SelectOption("AR_IT_005","Code"));
         return selectOptions;
     }
 
