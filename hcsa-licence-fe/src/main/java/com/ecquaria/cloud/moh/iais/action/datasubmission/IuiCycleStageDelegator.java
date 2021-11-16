@@ -96,7 +96,7 @@ public class IuiCycleStageDelegator extends CommonDelegator {
         String curMarrChildNumStr = ParamUtil.getRequestString(request, "curMarrChildNum");
         String prevMarrChildNumStr = ParamUtil.getRequestString(request, "prevMarrChildNum");
         String iuiDeliverChildNumStr = ParamUtil.getRequestString(request, "iuiDeliverChildNum");
-        String sourceOfSemenOpStr = ParamUtil.getRequestString(request, "sourceOfSemenOp");
+        String[] sourceOfSemenOpStrs = ParamUtil.getStrings(request, "sourceOfSemenOp");
         String extractVialsOfSpermStr = ParamUtil.getRequestString(request, "extractVialsOfSperm");
         String usedVialsOfSpermStr = ParamUtil.getRequestString(request, "usedVialsOfSperm");
         //set date
@@ -105,12 +105,24 @@ public class IuiCycleStageDelegator extends CommonDelegator {
                 Date date = Formatter.parseDate(iuiCycleStartDateStr);
                 iuiCycleStageDto.setStartDate(date);
             } catch (Exception e) {
-                log.info("Freezing invalid cryopreservationDate");
+                log.info("Iui Cycle Stage invalid iuiCycleStartDate");
             }
         }
         //get and set Integer Number
         Integer curMarrChildNum = arDataSubmissionService.stringTransferInteger(curMarrChildNumStr);
-        //Verify that the value is dirty data
+        Integer prevMarrChildNum = arDataSubmissionService.stringTransferInteger(prevMarrChildNumStr);
+        Integer iuiDeliverChildNum = arDataSubmissionService.stringTransferInteger(iuiDeliverChildNumStr);
+        Integer extractVialsOfSpermNum = arDataSubmissionService.stringTransferInteger(extractVialsOfSpermStr);
+        Integer usedVialsOfSpermNum = arDataSubmissionService.stringTransferInteger(usedVialsOfSpermStr);
+
+        iuiCycleStageDto.setCurMarrChildNum(curMarrChildNum);
+        iuiCycleStageDto.setPrevMarrChildNum(prevMarrChildNum);
+        iuiCycleStageDto.setIuiDeliverChildNum(iuiDeliverChildNum);
+        iuiCycleStageDto.setExtractVialsOfSperm(extractVialsOfSpermNum);
+        iuiCycleStageDto.setUsedVialsOfSperm(usedVialsOfSpermNum);
+        //Verify SourceOfSemenOp the value is dirty data, and Set Dto
+        List<SelectOption> sourceOfSemenOption = (List<SelectOption>)ParamUtil.getSessionAttr(request, "sourceOfSemenOption");
+        List<String> sourceOfSemenList = arDataSubmissionService.checkBoxIsDirtyData(sourceOfSemenOpStrs, sourceOfSemenOption);
         return iuiCycleStageDto;
     }
 }

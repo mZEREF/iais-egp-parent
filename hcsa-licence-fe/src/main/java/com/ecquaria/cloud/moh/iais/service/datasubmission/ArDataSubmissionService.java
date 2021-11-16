@@ -109,4 +109,13 @@ public interface ArDataSubmissionService {
       * @Descripation: stringTransferInteger
       */
     Integer stringTransferInteger(String numberStr);
+
+    /**
+      * @author: shicheng
+      * @Date 2021/11/16
+      * @Param: stringArr, selectOptionList
+      * @return: List<String>
+      * @Descripation: checkBoxIsDirtyData
+      */
+    List<String> checkBoxIsDirtyData(String[] stringArr, List<SelectOption> selectOptionList);
 }

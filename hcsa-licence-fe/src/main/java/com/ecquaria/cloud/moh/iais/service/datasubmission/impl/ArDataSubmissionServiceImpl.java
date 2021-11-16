@@ -382,7 +382,30 @@ public class ArDataSubmissionServiceImpl implements ArDataSubmissionService {
 
     @Override
     public Integer stringTransferInteger(String numberStr) {
+        if (!StringUtil.isEmpty(numberStr)) {
+            try {
+                int number = Integer.parseInt(numberStr);
+                return number;
+            } catch (Exception e) {
+
+            }
+        }
         return null;
     }
 
+    @Override
+    public List<String> checkBoxIsDirtyData(String[] stringArr, List<SelectOption> selectOptionList) {
+        if(!IaisCommonUtils.isEmpty(selectOptionList)) {
+            if (stringArr != null && stringArr.length > 0) {
+                List<String> stringList = IaisCommonUtils.genNewArrayList();
+                for(SelectOption selectOption : selectOptionList) {
+                    String value = selectOption.getValue();
+                    if(!StringUtil.isEmpty(value) && stringList.contains(value)) {
+                        stringList.add(value);
+                    }
+                }
+            }
+        }
+        return null;
+    }
 }
