@@ -22,7 +22,7 @@
                 <div class="col-md-3">
                         <label class="col-xs-3 control-label" for="statusDataSubmission" style="text-align:left;margin-top: 1.5%">Status</label>
                         <div class="col-xs-8 col-md-8">
-                            <iais:select name="statusDataSubmission" id="statusDataSubmission" codeCategory="DATA_SUBMISSION_STATUS" value="${param.statusDataSubmission}" firstOption="All" cssClass="dataSubmissionStatus"/>
+                            <iais:select name="statusDataSubmission" id="statusDataSubmission" options="dsStatuses" value="${param.statusDataSubmission}" firstOption="All" cssClass="dataSubmissionStatus"/>
                         </div>
                 </div>
             </div>

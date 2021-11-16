@@ -293,7 +293,7 @@
            on dc.ID  = dds.CYCLE_ID WHERE  dds.STATUS != 'DS002'
            UNION
            SELECT ddsd.ID ID,ddsd.HCI_CODE HCI_CODE,ddsd.DS_TYPE DS_TYPE,ddsd.CYCLE_TYPE [type],ddsd.STATUS STATUS,ddsd.DRAFT_NO SUBMISSION_NO,ddsd.CREATED_DT SUBMIT_DT,ddsd.CREATED_DT CREATED_DT,ddsd.SUBMISSION_STAGE CYCLE_STAGE ,ddsd.SUBMISSION_TYPE SUBMISSION_TYPE
-           FROM ds_data_submission_draft ddsd WHERE STATUS = 'DS001'
+           FROM ds_data_submission_draft ddsd WHERE STATUS = 'DS010'
            ) t1
           left join (
           select DISTINCT p.HCI_CODE HCI_CODE,lp.BUSINESS_NAME BUSINESS_NAME,licence.LICENSEE_ID licenseeId FROM  premises p
@@ -307,6 +307,7 @@
           <#if submissionNo??> and  CHARINDEX(:submissionNo, t1.SUBMISSION_NO) >0</#if>
           <#if status ??> and t1.STATUS = :status</#if>
            <#if licenseeId ??> and licenseeId = :licenseeId</#if>
+           <#if dsType ??> and DS_TYPE in ${dsType} </#if>
         ]]>
     </sql>
 </sqls>

@@ -1,23 +1,5 @@
-<%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
-<%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>
-<%@ taglib uri="http://www.ecq.com/iais" prefix="iais"%>
-<%@ taglib uri="http://www.ecquaria.com/menu" prefix="menu" %>
-<%@ taglib uri="ecquaria/sop/egov-smc" prefix="egov-smc" %>
-<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
-<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
-<%@ page import="java.util.Date" %>
-<%@ page import="com.ecquaria.cloud.moh.iais.common.utils.Formatter" %>
-<%@ page import="com.ecquaria.cloud.moh.iais.common.utils.MiscUtil" %>
-<%@ page pageEncoding="UTF-8" contentType="text/html; charset=UTF-8" language="java"%>
-<%@ page import="com.ecquaria.cloud.RedirectUtil" %>
-<%
-    sop.webflow.rt.api.BaseProcessClass process =
-            (sop.webflow.rt.api.BaseProcessClass)request.getAttribute("process");
-%>
-<webui:setLayout name="iais-internet"/>
-
-
-<c:set var="tabCode" value="lic"/>
+<%@include file="common/commonImport.jsp"%>
+<c:set var="tabCode" value="${licTab == 1 ? 'lic' : ''}"/>
 <%@ include file="common/commonDashboard.jsp" %>
 <%@ include file="common/mainContent.jsp" %>
 <%@ include file="common/commonFile.jsp" %>

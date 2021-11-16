@@ -2555,7 +2555,9 @@ public class HalpAssessmentGuideDelegator {
     public static void setParamByField(SearchParam searchParam,String key,String value,boolean isTemplateParam,String allValue){
         if(StringUtil.isEmpty(value) || value.equalsIgnoreCase(allValue)){
             searchParam.removeFilter(key);
-            searchParam.removeParam(key);
+            if(isTemplateParam){
+                searchParam.removeParam(key);
+            }
         }else {
             searchParam.addFilter(key,value,isTemplateParam);
         }

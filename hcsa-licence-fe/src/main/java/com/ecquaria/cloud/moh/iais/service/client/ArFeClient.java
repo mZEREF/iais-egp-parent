@@ -42,15 +42,8 @@ public interface ArFeClient {
     FeignResponseEntity<ArSuperDataSubmissionDto> getArSuperDataSubmissionDto(@RequestParam(name = "patientCode") String patientCode,
             @RequestParam(name = "hciCode", required = false) String hciCode);
 
-    @PutMapping(value = "/ar-common/ar-cycle-stage/save", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<ArCycleStageDto> saveArCycleStageDto(@RequestBody ArCycleStageDto arCycleStageDto);
-
     @GetMapping(value = "/ar-common/ar-cycle-stage/id", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<ArCycleStageDto> getArCycleStageDtoById(@RequestParam(name = "id") String id);
-
-    @GetMapping(value = "/ar-common/ar-cycle-stage/submissionId", produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<List<ArCycleStageDto>> getArCycleStageDtosBySubmissionId(
-            @RequestParam(name = "submissionId") String submissionId);
 
     @PutMapping(value = "/ar-common/ar-donor/save", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<ArDonorDto> saveArDonorDto(@RequestBody ArDonorDto arDonorDto);

@@ -4,7 +4,6 @@ import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.action.HalpAssessmentGuideDelegator;
 import com.ecquaria.cloud.moh.iais.action.InterInboxDelegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
-import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
@@ -13,10 +12,8 @@ import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterInboxUserDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
-import com.ecquaria.cloud.moh.iais.helper.ControllerHelper;
-import com.ecquaria.cloud.moh.iais.helper.HalpSearchResultHelper;
-import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
-import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
+import com.ecquaria.cloud.moh.iais.dto.LoginContext;
+import com.ecquaria.cloud.moh.iais.helper.*;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceInboxClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +21,7 @@ import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
@@ -43,7 +41,8 @@ public class DataSubmissionInboxDelegator {
 	private final static  String AMENDED                ="doRFC";
 	private final static  String WITHDRAW               = "withdraw";
 	private final static  String UNLOCK                 = "unlock";
-    public final  static Map<String,String>  SUBMISSIONNO_STATUS = getSubmissionNoStatus();
+	private final static  String DS_TYPES               = "dsTypes";
+	private final static  String DS_STATUSES            = "dsStatuses";
     @Autowired
 	private LicenceInboxClient licenceInboxClient;
     @Autowired
@@ -57,16 +56,25 @@ public class DataSubmissionInboxDelegator {
 	public void doStart(BaseProcessClass bpc){
 		setLog("doStart");
 		HttpServletRequest request = bpc.request;
-		initData(request);
+		initData(request,bpc.response);
 		setLog("doStart",false);
 	}
 
-	public void initData(HttpServletRequest request){
+	public void initData(HttpServletRequest request,HttpServletResponse response){
 		clearSession(request);
+		LoginContext loginContext = AccessUtil.getLoginUser(request);
+		List<String> types = FeInboxHelper.getDsTypes(loginContext.getRoleIds());
+		if(IaisCommonUtils.isEmpty(types)){
+			log.info("----------------ds type is null ---------");
+				IaisEGPHelper.redirectUrl(response,request,"https://"+request.getServerName()+"/main-web/eservice/INTERNET/MohInternetInbox",null);
+		}else {
+			ParamUtil.setSessionAttr(request,DS_TYPES,(Serializable) types);
+		}
+		ParamUtil.setSessionAttr(request,DS_STATUSES,(Serializable) FeInboxHelper.dataSubmissionStatusOptions);
 	}
 
 	public void clearSession(HttpServletRequest request){
-		ParamUtil.clearSession(request,ACTION_DS_BUTTON_SHOW,InboxConst.DS_PARAM,InboxConst.DS_RESULT);
+		ParamUtil.clearSession(request,ACTION_DS_BUTTON_SHOW,InboxConst.DS_PARAM,InboxConst.DS_RESULT,DS_TYPES);
 	}
 	private void setLog(String sepName){
 		setLog(sepName,true,null);
@@ -112,7 +120,8 @@ public class DataSubmissionInboxDelegator {
 			if(StringUtil.isNotEmpty(interInboxUserDto.getLicenseeId())){
 				SearchParam searchParam = HalpSearchResultHelper.gainSearchParam(request, InboxConst.DS_PARAM, InboxDataSubmissionQueryDto.class.getName(),"CREATED_DT",SearchParam.DESCENDING,false);
 				HalpAssessmentGuideDelegator.setParamByField(searchParam,"licenseeId",interInboxUserDto.getLicenseeId(),true);
-				QueryHelp.setMainSql( InboxConst.INBOX_QUERY,  InboxConst.INBOX_DS_QUERY,searchParam);
+				HalpAssessmentGuideDelegator.setParamByField(searchParam,"dsType",(List<String>) ParamUtil.getSessionAttr(request,DS_TYPES));
+				QueryHelp.setMainSql( InboxConst.INBOX_QUERY, InboxConst.INBOX_DS_QUERY,searchParam);
 				ParamUtil.setSessionAttr(request, InboxConst.DS_RESULT,licenceInboxClient.searchLicence(searchParam).getEntity());
 				ParamUtil.setSessionAttr(request, InboxConst.DS_PARAM,searchParam);
 			}else {
@@ -125,7 +134,6 @@ public class DataSubmissionInboxDelegator {
 		}
 		setLog("prepare",false);
 	}
-
 
 	/**
 	 * Step: actionData
@@ -359,14 +367,9 @@ public class DataSubmissionInboxDelegator {
 			return "";
 		}
 		String prefix = actionValue.equals(DELETE_DRAFT)? submissionNo.substring(0,2) : submissionNo.substring(0,4);
-		return SUBMISSIONNO_STATUS.get(prefix);
+		return FeInboxHelper.SUBMISSIONNO_STATUS.get(prefix);
 	}
 
-	private  static Map<String,String> getSubmissionNoStatus(){
-		Map<String,String> stringStringMap = IaisCommonUtils.genNewHashMap(7);
-		//todo
-		stringStringMap.put("DS",DataSubmissionConsts.DS_STATUS_DRAFT);
-		return stringStringMap;
-	}
+
 
 }
