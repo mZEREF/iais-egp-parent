@@ -1,8 +1,10 @@
 package com.ecquaria.cloud.moh.iais.validation.dataSubmission;
 
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArCycleStageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.CycleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.IuiCycleStageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PregnancyOutcomeStageDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
@@ -64,18 +66,25 @@ public class PregnancyOutcomeStageDtoValidator implements CustomizeValidator {
             errorMap.put("l3CareBabyNum", MessageUtil.getMessageDesc("Total sum of No. of Baby Admitted to L2 Care and No. of Baby Admitted to L3 Care cannot be greater than Total No. of Baby Admitted to NICU Care"));
         }
         ArSuperDataSubmissionDto arSuperDataSubmissionDto = DataSubmissionHelper.getCurrentArDataSubmission(request);
-        ArCycleStageDto arCycleStageDto = arSuperDataSubmissionDto.getArCycleStageDto();
+        CycleDto cycle = arSuperDataSubmissionDto.getCycleDto();
+        String cycleType = "";
         Date cycleStartDate = null;
-        if (arCycleStageDto == null) {
+        if (cycle != null) {
+            cycleType = cycle.getCycleType();
+        }
+        if (DataSubmissionConsts.DS_CYCLE_AR.equals(cycleType)) {
+            ArCycleStageDto arCycleStageDto = arSuperDataSubmissionDto.getArCycleStageDto();
+            if (arCycleStageDto != null) {
+                cycleStartDate = new SimpleDateFormat(AppConsts.DEFAULT_DATE_FORMAT).parse(arCycleStageDto.getStartDate());
+            }
+        } else if (DataSubmissionConsts.DS_CYCLE_IUI.equals(cycleType)) {
             IuiCycleStageDto iuiCycleStageDto = arSuperDataSubmissionDto.getIuiCycleStageDto();
             if (iuiCycleStageDto != null) {
                 cycleStartDate = iuiCycleStageDto.getStartDate();
             }
-        } else {
-            cycleStartDate = new SimpleDateFormat(AppConsts.DEFAULT_DATE_FORMAT).parse(arCycleStageDto.getStartDate());
         }
-        if (cycleStartDate != null && pregnancyOutcomeStageDto.getDeliveryDate() != null){
-            if (pregnancyOutcomeStageDto.getDeliveryDate().before(cycleStartDate)){
+        if (cycleStartDate != null && pregnancyOutcomeStageDto.getDeliveryDate() != null) {
+            if (pregnancyOutcomeStageDto.getDeliveryDate().before(cycleStartDate)) {
                 errorMap.put("deliveryDate", "Cannot be earlier than cycle start date");
             }
         }
