@@ -310,15 +310,20 @@ public class DataSubmissionInboxDelegator {
 			 	List<InboxDataSubmissionQueryDto> inboxDataSubmissionQueryDtos = submissionQueryDtoSearchResult.getRows();
 				 List<InboxDataSubmissionQueryDto> actionInboxDataSubmissionQueryDtos  = IaisCommonUtils.genNewArrayList(inboxDataSubmissionQueryDtos.size());
 			 	inboxDataSubmissionQueryDtos.forEach( inboxDataSubmissionQueryDto -> {
+			 		boolean submissionSelect = false;
+
 					 for (String submissionNo : submissionNos) {
 						 if (submissionNo.equalsIgnoreCase(inboxDataSubmissionQueryDto.getSubmissionNo())) {
-							 inboxDataSubmissionQueryDto.setSubmissionSelect(true);
+							 submissionSelect = true;
 							  if(StringUtil.isNotEmpty(getStatusBySubmissionNo(submissionNo,actionValue))){
 								  actionInboxDataSubmissionQueryDtos.add(inboxDataSubmissionQueryDto);
 							  }
 							 break;
 						 }
 					 }
+
+					 inboxDataSubmissionQueryDto.setSubmissionSelect(submissionSelect);
+
 				 });
 				 actionDoInboxDataSubmissionQueryDtos(actionInboxDataSubmissionQueryDtos,actionValue,size);
 				 ParamUtil.setSessionAttr(request, InboxConst.DS_RESULT,submissionQueryDtoSearchResult);
