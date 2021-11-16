@@ -79,7 +79,9 @@ public class IuiCycleStageDelegator extends CommonDelegator {
         //get form value set dto
         iuiCycleStageDto = getIuiCycleFormValue(iuiCycleStageDto, bpc.request);
         arSuperDataSubmission.setIuiCycleStageDto(iuiCycleStageDto);
+        //validate
         ValidationResult validationResult = WebValidationHelper.validateProperty(iuiCycleStageDto, "common");
+        //switch
         if (validationResult.isHasErrors()) {
             Map<String, String> errorMap = validationResult.retrieveAll();
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
@@ -106,6 +108,7 @@ public class IuiCycleStageDelegator extends CommonDelegator {
                 Date date = Formatter.parseDate(iuiCycleStartDateStr);
                 iuiCycleStageDto.setStartDate(date);
             } catch (Exception e) {
+                iuiCycleStageDto.setStartDate(null);
                 log.info("Iui Cycle Stage invalid iuiCycleStartDate");
             }
         }

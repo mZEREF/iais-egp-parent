@@ -232,6 +232,7 @@ public class ArDataSubmissionServiceImpl implements ArDataSubmissionService {
                 int cryopreservedNo = Integer.parseInt(cryopreservedNum);
                 arSubFreezingStageDto.setCryopreservedNum(cryopreservedNo);
             } catch (Exception e) {
+                arSubFreezingStageDto.setCryopreservedNum(null);
                 log.info("Freezing invalid cryopreservedNum");
             }
         }
@@ -240,6 +241,7 @@ public class ArDataSubmissionServiceImpl implements ArDataSubmissionService {
                 Date date = Formatter.parseDate(cryopreservationDate);
                 arSubFreezingStageDto.setCryopreservedDate(date);
             } catch (Exception e) {
+                arSubFreezingStageDto.setCryopreservedDate(null);
                 log.info("Freezing invalid cryopreservationDate");
             }
         }

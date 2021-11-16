@@ -32,7 +32,7 @@ public class ArSubFreezingValidator implements CustomizeValidator {
                 Date cryopreservedDate = arSubFreezingStageDto.getCryopreservedDate();
                 if(cryopreservedDate != null) {
                     if(cryopreservedDate.after(new Date())) {
-                        errMap.put("cryopreservedDate", "DS_ERR010");
+                        errMap.put("cryopreservedDate", MessageUtil.replaceMessage("DS_ERR010", "Cryopreservation Date", "field"));
                     }
                 }
                 if (!StringUtil.isEmpty(cryopreservedNum)){
