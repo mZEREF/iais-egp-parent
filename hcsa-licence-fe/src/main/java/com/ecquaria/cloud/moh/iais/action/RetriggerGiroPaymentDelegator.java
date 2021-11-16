@@ -92,11 +92,13 @@ public class RetriggerGiroPaymentDelegator {
         log.info(StringUtil.changeForLog("the retrigger giro doStart start ...."));
         ParamUtil.setSessionAttr(bpc.request, NewApplicationDelegator.APPSUBMISSIONDTO, null);
         ParamUtil.setSessionAttr(bpc.request,NewApplicationDelegator.PRIMARY_DOC_CONFIG, null);
+        ParamUtil.setSessionAttr(bpc.request,NewApplicationConstant.ACK_TITLE, null);
+        ParamUtil.setSessionAttr(bpc.request, NewApplicationConstant.ACK_SMALL_TITLE, null);
         ParamUtil.setSessionAttr(bpc.request,HcsaLicenceFeConstant.DASHBOARDTITLE,"retriggerGiro");
         ParamUtil.setRequestAttr(bpc.request,HcsaLicenceFeConstant.DASHBOARDTITLE,"retriggerGiro");
         ParamUtil.setSessionAttr(bpc.request,NewApplicationDelegator.REQUESTINFORMATIONCONFIG,null);
 
-        String appGrpNo = ParamUtil.getMaskedString(bpc.request,"appGrpNo");
+        String appGrpNo = "AQ201210006925K";
         log.debug(StringUtil.changeForLog("appGrpNo:" +appGrpNo));
         //init data
         String switch2 = "topreview";
@@ -104,47 +106,27 @@ public class RetriggerGiroPaymentDelegator {
 
         List<AppGrpPremisesDto> appGrpPremisesDtos = appSubmissionDto.getAppGrpPremisesDtoList();
         List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = appSubmissionDto.getAppSvcRelatedInfoDtoList();
-        if(IaisCommonUtils.isEmpty(appGrpPremisesDtos) || IaisCommonUtils.isEmpty(appSvcRelatedInfoDtos)){
-            log.debug(StringUtil.changeForLog("data error ..."));
-            switch2 = SWITCH_VALUE_PRE_ACK;
-            ParamUtil.setSessionAttr(bpc.request,NewApplicationDelegator.APPSUBMISSIONDTO,appSubmissionDto);
-            ParamUtil.setRequestAttr(bpc.request, SWITCH, switch2);
-            ParamUtil.setRequestAttr(bpc.request,NewApplicationDelegator.ACKMESSAGE,"data error !!!");
-            return;
+        String appType = appSubmissionDto.getAppType();
+        String title= "";
+        switch (appType){
+            case ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE:title = "Amendment";
+                AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_REQUEST_FOR_CHANGE, AuditTrailConsts.FUNCTION_REQUEST_FOR_CHANGE);break;
+            case ApplicationConsts.APPLICATION_TYPE_RENEWAL:title = "Licence Renewal";
+                AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_RENEW, AuditTrailConsts.FUNCTION_RENEW);break;
+            case ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION:title = "New Licence Application";
+                AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_NEW_APPLICATION, AuditTrailConsts.FUNCTION_NEW_APPLICATION);break;
+            default:
         }
-        if(APP_PMT_STATUSES.contains(appSubmissionDto.getPmtStatus())){
+
+        if(IaisCommonUtils.isEmpty(appGrpPremisesDtos) || IaisCommonUtils.isEmpty(appSvcRelatedInfoDtos)){
             log.debug(StringUtil.changeForLog("You have already resubmitted the payment!"));
             switch2 = SWITCH_VALUE_PRE_ACK;
             ParamUtil.setSessionAttr(bpc.request,NewApplicationDelegator.APPSUBMISSIONDTO,appSubmissionDto);
             ParamUtil.setRequestAttr(bpc.request, SWITCH, switch2);
+            ParamUtil.setSessionAttr(bpc.request,NewApplicationConstant.ACK_TITLE, title);
             ParamUtil.setRequestAttr(bpc.request,NewApplicationDelegator.ACKMESSAGE,"You have already resubmitted the payment!");
             return;
         }
-        String appType = appSubmissionDto.getAppType();
-        if(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType)){
-            AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_NEW_APPLICATION, AuditTrailConsts.FUNCTION_NEW_APPLICATION);
-        }else if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType)){
-            AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_REQUEST_FOR_CHANGE, AuditTrailConsts.FUNCTION_REQUEST_FOR_CHANGE);
-        }else if(ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appType)){
-            AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_RENEW, AuditTrailConsts.FUNCTION_RENEW);
-        }
-        //appSubmissionDto.setRfiMsgId(msgId);
-        //set type for page display
-        //appSubmissionDto.setAppType(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
-        //remove page edit button
-        appSubmissionDto.setAppEditSelectDto(new AppEditSelectDto());
-
-        //set premises info
-        if (!IaisCommonUtils.isEmpty(appGrpPremisesDtos)) {
-            for (AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtos) {
-                appGrpPremisesDto = NewApplicationHelper.setWrkTime(appGrpPremisesDto);
-                List<AppPremPhOpenPeriodDto> appPremPhOpenPeriodDtos = appGrpPremisesDto.getAppPremPhOpenPeriodList();
-                //set ph name
-                NewApplicationHelper.setPhName(appPremPhOpenPeriodDtos);
-                appGrpPremisesDto.setAppPremPhOpenPeriodList(appPremPhOpenPeriodDtos);
-            }
-        }
-        String title = "";
         StringBuilder smallTitle = new StringBuilder();
         List<String> svcNames = getServiceNameList(appSubmissionDto.getAppSvcRelatedInfoDtoList());
         if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType)){
@@ -217,6 +199,32 @@ public class RetriggerGiroPaymentDelegator {
         }
         ParamUtil.setSessionAttr(bpc.request,NewApplicationConstant.ACK_TITLE, title);
         ParamUtil.setSessionAttr(bpc.request, NewApplicationConstant.ACK_SMALL_TITLE, smallTitle);
+
+        if(APP_PMT_STATUSES.contains(appSubmissionDto.getPmtStatus())){
+            log.debug(StringUtil.changeForLog("You have already resubmitted the payment!"));
+            switch2 = SWITCH_VALUE_PRE_ACK;
+            ParamUtil.setSessionAttr(bpc.request,NewApplicationDelegator.APPSUBMISSIONDTO,appSubmissionDto);
+            ParamUtil.setRequestAttr(bpc.request, SWITCH, switch2);
+            ParamUtil.setRequestAttr(bpc.request,NewApplicationDelegator.ACKMESSAGE,"You have already resubmitted the payment!");
+            return;
+        }
+        //appSubmissionDto.setRfiMsgId(msgId);
+        //set type for page display
+        //appSubmissionDto.setAppType(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
+        //remove page edit button
+        appSubmissionDto.setAppEditSelectDto(new AppEditSelectDto());
+
+        //set premises info
+        if (!IaisCommonUtils.isEmpty(appGrpPremisesDtos)) {
+            for (AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtos) {
+                appGrpPremisesDto = NewApplicationHelper.setWrkTime(appGrpPremisesDto);
+                List<AppPremPhOpenPeriodDto> appPremPhOpenPeriodDtos = appGrpPremisesDto.getAppPremPhOpenPeriodList();
+                //set ph name
+                NewApplicationHelper.setPhName(appPremPhOpenPeriodDtos);
+                appGrpPremisesDto.setAppPremPhOpenPeriodList(appPremPhOpenPeriodDtos);
+            }
+        }
+
         //set doc name
         List<HcsaSvcDocConfigDto> primaryDocConfig = null;
         List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtos = appSubmissionDto.getAppGrpPrimaryDocDtos();
