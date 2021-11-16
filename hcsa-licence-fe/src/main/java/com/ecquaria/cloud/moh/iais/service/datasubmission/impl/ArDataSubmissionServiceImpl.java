@@ -13,6 +13,8 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.CycleStageSele
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DonorSampleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.IuiCycleStageDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInventoryDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
@@ -351,7 +353,28 @@ public class ArDataSubmissionServiceImpl implements ArDataSubmissionService {
             if (iuiCycleStageDto == null) {
                 iuiCycleStageDto = new IuiCycleStageDto();
             }
-
+            //set default children Number
+            Integer curMarrChildNum = iuiCycleStageDto.getCurMarrChildNum();
+            Integer prevMarrChildNum = iuiCycleStageDto.getPrevMarrChildNum();
+            if(curMarrChildNum == null) {
+                iuiCycleStageDto.setCurMarrChildNum(0);
+            }
+            if(prevMarrChildNum == null) {
+                iuiCycleStageDto.setPrevMarrChildNum(0);
+            }
+            //set patient age show
+            PatientInfoDto patientInfoDto = arSuperDataSubmission.getPatientInfoDto();
+            if(patientInfoDto != null) {
+                PatientDto patientDto = patientInfoDto.getPatient();
+                if(patientDto != null) {
+                    List<Integer> integers = Formatter.getYearsAndDays(patientDto.getBirthDate());
+                    if (IaisCommonUtils.isNotEmpty(integers)) {
+                        int year = integers.get(0);
+                        int month = integers.get(integers.size() - 1);
+                        iuiCycleStageDto.setUserAgeShow(IaisCommonUtils.getYearsAndMonths(year, month));
+                    }
+                }
+            }
             arSuperDataSubmission.setIuiCycleStageDto(iuiCycleStageDto);
         }
         return arSuperDataSubmission;

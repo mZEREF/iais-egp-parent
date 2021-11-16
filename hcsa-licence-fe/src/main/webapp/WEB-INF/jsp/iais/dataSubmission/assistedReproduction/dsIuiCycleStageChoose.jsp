@@ -42,14 +42,14 @@
                 <div class="panel-main-content form-horizontal">
                   <h4 class="panel-title">
                     <strong>
-                      Intrauterine Insemination Cycle
+                      <c:out value="${arSuperDataSubmissionDto.patientInfoDto.patient.name}"></c:out>
                     </strong>
-                    <c:out value=""></c:out>
+                    &nbsp;<c:out value="(${arSuperDataSubmissionDto.patientInfoDto.patient.idNumber})"></c:out>
                   </h4>
                   <iais:row>
                     <iais:field value="Premises where IUI is Performed" mandatory="false"/>
-                    <iais:value width="3" cssClass="col-md-7">
-                      <c:out value="${arSuperDataSubmissionDto.appGrpPremisesDto.premiseLabel}"></c:out>
+                    <iais:value width="3" cssClass="col-xs-5 col-md-6 control-label">
+                      <span style="font-size: 16px" class="col-xs-6 col-md-6 control-label"><c:out value="${arSuperDataSubmissionDto.appGrpPremisesDto.premiseLabel}"></c:out></span>
                     </iais:value>
                   </iais:row>
                   <iais:row>
@@ -61,8 +61,8 @@
                   </iais:row>
                   <iais:row>
                     <iais:field value="Patient's Age as of This Treatment" mandatory="false"/>
-                    <iais:value cssClass="col-md-3">
-                      <c:out value=""></c:out>
+                    <iais:value cssClass="col-xs-5 col-md-6 control-label">
+                      <span style="font-size: 16px" class="col-xs-6 col-md-6 control-label"><c:out value="${arSuperDataSubmissionDto.iuiCycleStageDto.userAgeShow}"></c:out></span>
                     </iais:value>
                   </iais:row>
                   <iais:row>
