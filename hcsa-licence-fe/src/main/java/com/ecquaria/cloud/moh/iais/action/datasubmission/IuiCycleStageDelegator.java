@@ -5,6 +5,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.IuiCycleStageDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
@@ -123,6 +124,29 @@ public class IuiCycleStageDelegator extends CommonDelegator {
         //Verify SourceOfSemenOp the value is dirty data, and Set Dto
         List<SelectOption> sourceOfSemenOption = (List<SelectOption>)ParamUtil.getSessionAttr(request, "sourceOfSemenOption");
         List<String> sourceOfSemenList = arDataSubmissionService.checkBoxIsDirtyData(sourceOfSemenOpStrs, sourceOfSemenOption);
+        iuiCycleStageDto = setSourceOfSemenAllValue(iuiCycleStageDto, sourceOfSemenList);
+        return iuiCycleStageDto;
+    }
+
+    private IuiCycleStageDto setSourceOfSemenAllValue(IuiCycleStageDto iuiCycleStageDto, List<String> sourceOfSemenList) {
+        iuiCycleStageDto.setSemenSources(sourceOfSemenList);
+        if(!IaisCommonUtils.isEmpty(sourceOfSemenList)) {
+            if(sourceOfSemenList.contains("AR_SOS_003")) {
+                iuiCycleStageDto.setFromDonorFlag(true);
+            } else {
+                iuiCycleStageDto.setFromDonorFlag(false);
+            }
+            if(sourceOfSemenList.contains("AR_SOS_001")) {
+                iuiCycleStageDto.setFromHusbandFlag(true);
+            } else {
+                iuiCycleStageDto.setFromHusbandFlag(false);
+            }
+            if(sourceOfSemenList.contains("AR_SOS_002")) {
+                iuiCycleStageDto.setFromHusbandTissueFlag(true);
+            } else {
+                iuiCycleStageDto.setFromHusbandTissueFlag(false);
+            }
+        }
         return iuiCycleStageDto;
     }
 }

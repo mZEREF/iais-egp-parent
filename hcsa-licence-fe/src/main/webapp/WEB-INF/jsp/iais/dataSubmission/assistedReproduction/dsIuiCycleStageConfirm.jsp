@@ -86,7 +86,9 @@
                   <iais:row>
                     <iais:field value="Source of Semen" mandatory="false"/>
                     <iais:value cssClass="col-xs-5 col-md-6 control-label">
-                        <span style="font-size: 16px" class="col-xs-6 col-md-6 control-label"><iais:code code="${arSuperDataSubmissionDto.iuiCycleStageDto.semenSource}"/></span>
+                      <c:forEach var="${arSuperDataSubmissionDto.iuiCycleStageDto.semenSources}" items="semenSource">
+                        <span style="font-size: 16px" class="col-xs-6 col-md-6 control-label"><iais:code code="${semenSource}"/></span><br>
+                      </c:forEach>
                     </iais:value>
                   </iais:row>
                   <iais:row>
