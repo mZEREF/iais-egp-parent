@@ -13,7 +13,7 @@
 <input type="hidden" id="_contextPath" name="_contextPath" value="${pageContext.request.contextPath}"/>
 
 <c:if test="${empty title}">
-    <div class="dashboard" id="comDashboard" style="padding: 30px 0 0;">
+    <div class="dashboard" id="comDashboard" style="padding: 30px 0 0;overflow:visible">
         <div class="container" style="padding: 0 90px;">
             <div class="row d-flex">
                 <%@ include file="/WEB-INF/jsp/iais/common/dashboardDropDown.jsp" %>

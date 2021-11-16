@@ -66,6 +66,8 @@ public class ArDataSubmissionDelegator {
      * @throws
      */
     public void doPrepareARSubmission(BaseProcessClass bpc) {
+        // no title
+        bpc.request.removeAttribute("title");
         String crud_action_type_ds = bpc.request.getParameter(DataSubmissionConstant.CRUD_TYPE);
         bpc.request.setAttribute(DataSubmissionConstant.CRUD_ACTION_TYPE_AR, crud_action_type_ds);
         ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.CURRENT_PAGE_STAGE, "ar-submission");
