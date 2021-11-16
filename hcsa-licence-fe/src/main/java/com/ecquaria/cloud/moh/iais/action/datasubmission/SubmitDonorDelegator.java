@@ -10,6 +10,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DonorSampleDto
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant;
 import com.ecquaria.cloud.moh.iais.helper.ControllerHelper;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
 import java.io.Serializable;
@@ -71,6 +72,10 @@ public class SubmitDonorDelegator extends CommonDelegator {
         donorSampleDto =  ControllerHelper.get(bpc.request,donorSampleDto);
         arSuperDataSubmissionDto.setDonorSampleDto(donorSampleDto);
         DataSubmissionHelper.setCurrentArDataSubmission(arSuperDataSubmissionDto,bpc.request);
+        String actionType = ParamUtil.getString(bpc.request, DataSubmissionConstant.CRUD_TYPE);
+        if (ACTION_TYPE_CONFIRM.equals(actionType)) {
+            validatePageData(bpc.request, donorSampleDto, "save", ACTION_TYPE_CONFIRM);
+        }
         log.info(StringUtil.changeForLog("submitDonorDelegator The pageAction end ..."));
     }
 
