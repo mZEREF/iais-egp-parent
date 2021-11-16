@@ -63,6 +63,7 @@ public class EmbryoCreatedDelegator extends CommonDelegator{
             PatientInventoryDto patientInventoryDto=arFeClient.patientInventoryByCode(arSuperDataSubmissionDto.getPatientInfoDto().getPatient().getPatientCode()).getEntity();
             arSuperDataSubmissionDto.setPatientInventoryDto(patientInventoryDto);
         }catch (Exception e){
+            log.error(e.getMessage(),e);
             PatientInventoryDto patientInventoryDto=new PatientInventoryDto();
             arSuperDataSubmissionDto.setPatientInventoryDto(patientInventoryDto);
         }
