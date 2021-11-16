@@ -144,7 +144,7 @@ public class ArDataSubmissionDelegator {
             if (appGrpPremisesDto == null) {
                 map.put(PREMISES, "GENERAL_ERR0049");
             }
-        } else if (IaisCommonUtils.isNotEmpty(appGrpPremisesMap)) {
+        } else if (appGrpPremisesMap != null && appGrpPremisesMap.size() > 1) {
             map.put(PREMISES, "GENERAL_ERR0006");
         } else if (appGrpPremisesDto == null) {
             map.put(PREMISES, "There are no active Assisted Reproduction licences");

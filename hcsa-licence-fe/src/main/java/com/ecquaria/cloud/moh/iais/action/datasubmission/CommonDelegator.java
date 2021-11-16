@@ -1,6 +1,8 @@
 package com.ecquaria.cloud.moh.iais.action.datasubmission;
 
+import com.ecquaria.cloud.RedirectUtil;
 import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.CycleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DataSubmissionDto;
@@ -15,9 +17,11 @@ import com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
+import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.ArDataSubmissionService;
 
+import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -98,8 +102,17 @@ public abstract class CommonDelegator {
      * @param bpc
      * @throws
      */
-    public void doReturn(BaseProcessClass bpc) {
+    public void doReturn(BaseProcessClass bpc) throws IOException {
         returnStep(bpc);
+        ArSuperDataSubmissionDto arSuperDataSubmission = DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
+        if (arSuperDataSubmission != null && !DataSubmissionConsts.DS_TYPE_NEW.equals(arSuperDataSubmission.getSubmissionType())) {
+            StringBuilder url = new StringBuilder();
+            url.append(InboxConst.URL_HTTPS)
+                    .append(bpc.request.getServerName())
+                    .append(InboxConst.URL_MAIN_WEB_MODULE + "MohInternetInbox");
+            String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
+            IaisEGPHelper.redirectUrl(bpc.response, tokenUrl);
+        }
     }
 
     /**
