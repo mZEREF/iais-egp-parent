@@ -24,6 +24,7 @@ public class IuiCycleStageDtoValidator implements CustomizeValidator {
             IuiCycleStageDto iuiCycleStageDto = arSuperDataSubmission.getIuiCycleStageDto();
             if(iuiCycleStageDto != null) {
                 Date iuiCycleStartDate = iuiCycleStageDto.getStartDate();
+
             }
         }
         if(errMap.isEmpty()) {
