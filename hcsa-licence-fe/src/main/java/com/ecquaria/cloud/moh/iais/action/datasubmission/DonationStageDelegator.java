@@ -72,8 +72,13 @@ public class DonationStageDelegator extends CommonDelegator{
     @Override
     public void pageAction(BaseProcessClass bpc) {
         ArSuperDataSubmissionDto arSuperDataSubmissionDto= DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
-        PatientInventoryDto patientInventoryDto=arFeClient.patientInventoryByCode(arSuperDataSubmissionDto.getPatientInfoDto().getPatient().getPatientCode()).getEntity();
-        arSuperDataSubmissionDto.setPatientInventoryDto(patientInventoryDto);
+        try{
+            PatientInventoryDto patientInventoryDto=arFeClient.patientInventoryByCode(arSuperDataSubmissionDto.getPatientInfoDto().getPatient().getPatientCode()).getEntity();
+            arSuperDataSubmissionDto.setPatientInventoryDto(patientInventoryDto);
+        }catch (Exception e){
+            PatientInventoryDto patientInventoryDto=new PatientInventoryDto();
+            arSuperDataSubmissionDto.setPatientInventoryDto(patientInventoryDto);
+        }
 
         DonationStageDto donationStageDto=arSuperDataSubmissionDto.getDonationStageDto();
         HttpServletRequest request=bpc.request;

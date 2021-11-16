@@ -59,8 +59,13 @@ public class EmbryoCreatedDelegator extends CommonDelegator{
     @Override
     public void pageAction(BaseProcessClass bpc) {
         ArSuperDataSubmissionDto arSuperDataSubmissionDto= DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
-        PatientInventoryDto patientInventoryDto=arFeClient.patientInventoryByCode(arSuperDataSubmissionDto.getPatientInfoDto().getPatient().getPatientCode()).getEntity();
-        arSuperDataSubmissionDto.setPatientInventoryDto(patientInventoryDto);
+        try{
+            PatientInventoryDto patientInventoryDto=arFeClient.patientInventoryByCode(arSuperDataSubmissionDto.getPatientInfoDto().getPatient().getPatientCode()).getEntity();
+            arSuperDataSubmissionDto.setPatientInventoryDto(patientInventoryDto);
+        }catch (Exception e){
+            PatientInventoryDto patientInventoryDto=new PatientInventoryDto();
+            arSuperDataSubmissionDto.setPatientInventoryDto(patientInventoryDto);
+        }
         EmbryoCreatedStageDto embryoCreatedStageDto=arSuperDataSubmissionDto.getEmbryoCreatedStageDto();
         HttpServletRequest request=bpc.request;
         int totalNum =0;
