@@ -98,7 +98,7 @@ public class RetriggerGiroPaymentDelegator {
         ParamUtil.setRequestAttr(bpc.request,HcsaLicenceFeConstant.DASHBOARDTITLE,"retriggerGiro");
         ParamUtil.setSessionAttr(bpc.request,NewApplicationDelegator.REQUESTINFORMATIONCONFIG,null);
 
-        String appGrpNo = "AQ201210006925K";
+        String appGrpNo = ParamUtil.getMaskedString(bpc.request,"appGrpNo");
         log.debug(StringUtil.changeForLog("appGrpNo:" +appGrpNo));
         //init data
         String switch2 = "topreview";
