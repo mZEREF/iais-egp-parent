@@ -56,20 +56,15 @@ public class DataSubmissionInboxDelegator {
 	public void doStart(BaseProcessClass bpc){
 		setLog("doStart");
 		HttpServletRequest request = bpc.request;
-		initData(request,bpc.response);
+		initData(request);
 		setLog("doStart",false);
 	}
 
-	public void initData(HttpServletRequest request,HttpServletResponse response){
+	public void initData(HttpServletRequest request){
 		clearSession(request);
 		LoginContext loginContext = AccessUtil.getLoginUser(request);
-		List<String> types = FeInboxHelper.getDsTypes(loginContext.getRoleIds());
-		if(IaisCommonUtils.isEmpty(types)){
-			log.info("----------------ds type is null ---------");
-				IaisEGPHelper.redirectUrl(response,request,"https://"+request.getServerName()+"/main-web/eservice/INTERNET/MohInternetInbox",null);
-		}else {
-			ParamUtil.setSessionAttr(request,DS_TYPES,(Serializable) types);
-		}
+		List<String> types = FeInboxHelper.getDsTypes(loginContext.getPrivileges());
+		ParamUtil.setSessionAttr(request,DS_TYPES,(Serializable) types);
 		ParamUtil.setSessionAttr(request,DS_STATUSES,(Serializable) FeInboxHelper.dataSubmissionStatusOptions);
 	}
 

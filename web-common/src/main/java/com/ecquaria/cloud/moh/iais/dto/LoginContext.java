@@ -3,7 +3,10 @@ package com.ecquaria.cloud.moh.iais.dto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
+
+import com.ecquaria.cloud.privilege.Privilege;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -32,6 +35,9 @@ public class LoginContext implements Serializable {
     @Setter private String orgId;
     @Setter private String uenNo;
     @Setter private String licenseeEntityType;
+
+    @Setter
+    private List<Privilege> privileges;
 
     public LoginContext() {
         wrkGrpIds = IaisCommonUtils.genNewHashSet();

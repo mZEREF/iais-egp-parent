@@ -20,14 +20,12 @@ import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrganizationDto;
-import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
-import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
-import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
-import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.*;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.service.client.ComSystemAdminClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicenseeClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrgEicClient;
+import com.ecquaria.cloud.privilege.PrivilegeServiceClient;
 import eu.bitwalker.useragentutils.Browser;
 import eu.bitwalker.useragentutils.UserAgent;
 import eu.bitwalker.useragentutils.Version;
@@ -37,8 +35,10 @@ import java.util.Date;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.ArrayUtils;
 import sop.iwe.SessionManager;
 import sop.rbac.user.User;
+import sop.rbac.user.UserIdentifier;
 
 /**
  * AccessUtil
@@ -143,7 +143,37 @@ public class AccessUtil {
                 log.info(StringUtil.changeForLog("=====>>>>> current licensee " + JsonUtil.parseToJson(lDto)));
             }
         }
+        setLoginContextPrivilege(loginContext);
         ParamUtil.setSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER, loginContext);
+    }
+
+    public static boolean setLoginContextPrivilege(LoginContext loginContext) {
+        if(loginContext != null) {
+            if(IaisCommonUtils.isNotEmpty(loginContext.getPrivileges())){
+                return true;
+            }
+            List<String> roleIds = loginContext.getRoleIds();
+            PrivilegeServiceClient privilegeServiceClient = SpringContextHelper.getContext().getBean(PrivilegeServiceClient.class);
+            //todo delete
+            roleIds.add(RoleConsts.USER_ROLE_DS_AR);
+            if(!IaisCommonUtils.isEmpty(roleIds)) {
+                UserIdentifier userIdentifier = new UserIdentifier();
+                userIdentifier.setId(loginContext.getLoginId());
+                userIdentifier.setUserDomain("cs_hcsa");
+                String[] roleArr = roleIds.toArray(new String[roleIds.size()]);
+                //get privilege Number
+                Long[] privilegeNo = privilegeServiceClient.getAccessiblePrivilegeNos(userIdentifier, roleArr).getEntity();
+                if(privilegeNo != null && privilegeNo.length > 0) {
+                    //get Privilege
+                    long[] privilegeNoArr = ArrayUtils.toPrimitive(privilegeNo);
+                    loginContext.setPrivileges(privilegeServiceClient.getprivilegesByNos(privilegeNoArr).getEntity());
+                }
+                return true;
+            }else {
+                log.error("--------loginContext roleIds is null--------",loginContext);
+            }
+        }
+        return false;
     }
     /**
      * @description: get the login user from the session

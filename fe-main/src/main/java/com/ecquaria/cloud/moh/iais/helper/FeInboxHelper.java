@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.helper;
 import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
+import com.ecquaria.cloud.privilege.Privilege;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.Arrays;
@@ -28,16 +29,16 @@ public final class FeInboxHelper {
     }
 
 
-    public static List<String> getDsTypes(List<String> rolesIds){
-        if(IaisCommonUtils.isEmpty(rolesIds)){
+    public static List<String> getDsTypes(List<Privilege> privileges){
+        if(IaisCommonUtils.isEmpty(privileges)){
             return null;
         }
         List<String> types = IaisCommonUtils.genNewArrayList(5);
-        rolesIds.stream().forEach(role ->{
-            if(allTypes.contains(role)){
-                types.add(role);
-            }
+        privileges.stream().forEach(privilege ->{
+            // todo
         });
+         // todo
+        types.add(DataSubmissionConsts.DS_AR);
         return types;
     }
 
