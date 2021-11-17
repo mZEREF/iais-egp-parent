@@ -413,12 +413,14 @@ public class ArDataSubmissionServiceImpl implements ArDataSubmissionService {
         if(!IaisCommonUtils.isEmpty(selectOptionList)) {
             if (stringArr != null && stringArr.length > 0) {
                 List<String> stringList = IaisCommonUtils.genNewArrayList();
+                List<String> stringArrList = Arrays.asList(stringArr);
                 for(SelectOption selectOption : selectOptionList) {
                     String value = selectOption.getValue();
-                    if(!StringUtil.isEmpty(value) && stringList.contains(value)) {
+                    if(!StringUtil.isEmpty(value) && stringArrList.contains(value)) {
                         stringList.add(value);
                     }
                 }
+                return stringList;
             }
         }
         return null;
