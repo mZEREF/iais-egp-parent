@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import sg.gov.moh.iais.egp.bsb.common.node.simple.ValidatableNodeValue;
+import sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants;
 import sg.gov.moh.iais.egp.bsb.dto.ValidationResultDto;
 import sg.gov.moh.iais.egp.bsb.util.SpringReflectionUtils;
 import sg.gov.moh.iais.egp.common.annotation.RfcAttributeDesc;
@@ -264,7 +265,7 @@ public class BiologicalAgentToxinDto extends ValidatableNodeValue {
 //    ---------------------------- request -> object ----------------------------------------------
 
     private static final String SEPARATOR = "--v--";
-    private static final String KEY_SECTION_AMT = "sectionAmt";
+    private static final String KEY_SECTION_IDXES = "sectionIdx";
     private static final String KEY_PREFIX_SHCEDULE = "schedule";
     private static final String KEY_PREFIX_BAT_NAME = "batName";
     private static final String KEY_PREFIX_SAMPLE_TYPE = "sampleType";
@@ -272,19 +273,20 @@ public class BiologicalAgentToxinDto extends ValidatableNodeValue {
 
     public void reqObjMapping(HttpServletRequest request) {
         clearBatInfos();
-        int amt = ParamUtil.getInt(request, KEY_SECTION_AMT);
-        for (int i = 0; i < amt; i++) {
+        String idxes = ParamUtil.getString(request, KEY_SECTION_IDXES);
+        String[] idxArr = idxes.trim().split(" +");
+        for (String idx : idxArr) {
             BATInfo info = new BATInfo();
-            info.setSchedule(ParamUtil.getString(request, KEY_PREFIX_SHCEDULE + SEPARATOR +i));
-            info.setBatName(ParamUtil.getString(request, KEY_PREFIX_BAT_NAME + SEPARATOR +i));
-            String[] sampleTypes = ParamUtil.getStrings(request, KEY_PREFIX_SAMPLE_TYPE + SEPARATOR +i);
+            info.setSchedule(ParamUtil.getString(request, KEY_PREFIX_SHCEDULE + SEPARATOR +idx));
+            info.setBatName(ParamUtil.getString(request, KEY_PREFIX_BAT_NAME + SEPARATOR +idx));
+            String[] sampleTypes = ParamUtil.getStrings(request, KEY_PREFIX_SAMPLE_TYPE + SEPARATOR +idx);
             if (sampleTypes != null && sampleTypes.length > 0) {
                 info.setSampleType(new ArrayList<>(Arrays.asList(sampleTypes)));
             } else {
                 info.setSampleType(new ArrayList<>(0));
             }
-            if (info.getSampleType().contains("BNOTS007")) {
-                info.setOtherSampleType(ParamUtil.getString(request, KEY_PREFIX_OTHER_SAMPLE_TYPE + SEPARATOR +i));
+            if (info.getSampleType().contains(MasterCodeConstants.SAMPLE_NATURE_OTHER)) {
+                info.setOtherSampleType(ParamUtil.getString(request, KEY_PREFIX_OTHER_SAMPLE_TYPE + SEPARATOR +idx));
             }
             addBatInfo(info);
         }

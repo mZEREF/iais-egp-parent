@@ -5,6 +5,7 @@
 <%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
 <%@ taglib prefix="iais-bsb" uri="http://www.ecq.com/iais-bsb" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ page import="sg.gov.moh.iais.egp.bsb.util.TableDisplayUtil" %>
 
 <%
     sop.webflow.rt.api.BaseProcessClass process =
@@ -25,9 +26,9 @@
     <input type="hidden" name="action_type" value="">
     <input type="hidden" name="action_value" value="">
     <input type="hidden" name="action_additional" value="">
-    <input type="hidden" name="sectionAmt" value="${facAuth.facAuthPersonnelList.size()}">
+    <input type="hidden" name="sectionIdx" value="${TableDisplayUtil.indexes(facAuth.facAuthPersonnelList.size())}">
 
-    <input type="hidden" id="section_repeat_amt_input_name" value="sectionAmt" readonly disabled>
+    <input type="hidden" id="section_repeat_section_idx_name" value="sectionIdx" readonly disabled>
     <input type="hidden" id="section_repeat_section_id_prefix" value="authSection" readonly disabled>
     <input type="hidden" id="section_repeat_header_title_prefix" value="Authorised Personnel " readonly disabled>
     <input type="hidden" id="section_repeat_section_group_id" value="sectionGroup" readonly disabled>

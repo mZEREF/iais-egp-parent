@@ -129,7 +129,7 @@ public class FacilityAuthoriserDto extends ValidatableNodeValue {
 
     private static final String SEPARATOR = "--v--";
     private static final String KEY_INPUT_METHOD = "inputMethod";
-    private static final String KEY_SECTION_AMT = "sectionAmt";
+    private static final String KEY_SECTION_IDXES = "sectionIdx";
     private static final String KEY_PREFIX_NAME = "name";
     private static final String KEY_PREFIX_ID_TYPE = "idType";
     private static final String KEY_PREFIX_ID_NUMBER = "idNumber";
@@ -146,21 +146,22 @@ public class FacilityAuthoriserDto extends ValidatableNodeValue {
 
     public void reqObjMapping(HttpServletRequest request) {
         setInputMethod(ParamUtil.getString(request, KEY_INPUT_METHOD));
-        int amt = ParamUtil.getInt(request, KEY_SECTION_AMT);
+        String idxes = ParamUtil.getString(request, KEY_SECTION_IDXES);
         clearAuthPersonnel();
-        for (int i = 0; i < amt; i++) {
+        String[] idxArr = idxes.trim().split(" +");
+        for (String idx : idxArr) {
             FacilityAuthorisedPersonnel personnel = new FacilityAuthorisedPersonnel();
-            personnel.setName(ParamUtil.getString(request, KEY_PREFIX_NAME + SEPARATOR + i));
-            personnel.setIdType(ParamUtil.getString(request, KEY_PREFIX_ID_TYPE + SEPARATOR + i));
-            personnel.setIdNumber(ParamUtil.getString(request, KEY_PREFIX_ID_NUMBER + SEPARATOR + i));
-            personnel.setNationality(ParamUtil.getString(request, KEY_PREFIX_NATIONALITY + SEPARATOR + i));
-            personnel.setDesignation(ParamUtil.getString(request, KEY_PREFIX_DESIGNATION + SEPARATOR + i));
-            personnel.setContactNo(ParamUtil.getString(request, KEY_PREFIX_CONTACT_NO + SEPARATOR + i));
-            personnel.setEmail(ParamUtil.getString(request, KEY_PREFIX_EMAIL + SEPARATOR + i));
-            personnel.setEmploymentStartDate(ParamUtil.getString(request, KEY_PREFIX_EMP_START_DT + SEPARATOR + i));
-            personnel.setEmploymentPeriod(ParamUtil.getString(request, KEY_PREFIX_EMP_PERIOD + SEPARATOR + i));
-            personnel.setSecurityClearanceDate(ParamUtil.getString(request, KEY_PREFIX_SEC_CL_DT + SEPARATOR + i));
-            personnel.setWorkArea(ParamUtil.getString(request, KEY_PREFIX_WORK_AREA +SEPARATOR + i));
+            personnel.setName(ParamUtil.getString(request, KEY_PREFIX_NAME + SEPARATOR + idx));
+            personnel.setIdType(ParamUtil.getString(request, KEY_PREFIX_ID_TYPE + SEPARATOR + idx));
+            personnel.setIdNumber(ParamUtil.getString(request, KEY_PREFIX_ID_NUMBER + SEPARATOR + idx));
+            personnel.setNationality(ParamUtil.getString(request, KEY_PREFIX_NATIONALITY + SEPARATOR + idx));
+            personnel.setDesignation(ParamUtil.getString(request, KEY_PREFIX_DESIGNATION + SEPARATOR + idx));
+            personnel.setContactNo(ParamUtil.getString(request, KEY_PREFIX_CONTACT_NO + SEPARATOR + idx));
+            personnel.setEmail(ParamUtil.getString(request, KEY_PREFIX_EMAIL + SEPARATOR + idx));
+            personnel.setEmploymentStartDate(ParamUtil.getString(request, KEY_PREFIX_EMP_START_DT + SEPARATOR + idx));
+            personnel.setEmploymentPeriod(ParamUtil.getString(request, KEY_PREFIX_EMP_PERIOD + SEPARATOR + idx));
+            personnel.setSecurityClearanceDate(ParamUtil.getString(request, KEY_PREFIX_SEC_CL_DT + SEPARATOR + idx));
+            personnel.setWorkArea(ParamUtil.getString(request, KEY_PREFIX_WORK_AREA + SEPARATOR + idx));
             addAuthPersonnel(personnel);
         }
     }

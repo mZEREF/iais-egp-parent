@@ -123,7 +123,7 @@ public class FacilityCommitteeDto extends ValidatableNodeValue {
 
     private static final String SEPARATOR = "--v--";
     private static final String KEY_INPUT_METHOD = "inputMethod";
-    private static final String KEY_SECTION_AMT = "sectionAmt";
+    private static final String KEY_SECTION_IDXES = "sectionIdx";
     private static final String KEY_PREFIX_NAME = "name";
     private static final String KEY_PREFIX_ID_TYPE = "idType";
     private static final String KEY_PREFIX_ID_NUMBER = "idNumber";
@@ -139,23 +139,24 @@ public class FacilityCommitteeDto extends ValidatableNodeValue {
 
     public void reqObjMapping(HttpServletRequest request) {
         setInputMethod(ParamUtil.getString(request, KEY_INPUT_METHOD));
-        int amt = ParamUtil.getInt(request, KEY_SECTION_AMT);
+        String idxes = ParamUtil.getString(request, KEY_SECTION_IDXES);
         clearCommitteePersonnel();
-        for (int i = 0; i < amt; i++) {
+        String[] idxArr = idxes.trim().split(" +");
+        for (String idx : idxArr) {
             BioSafetyCommitteePersonnel personnel = new BioSafetyCommitteePersonnel();
-            personnel.setName(ParamUtil.getString(request, KEY_PREFIX_NAME + SEPARATOR +i));
-            personnel.setIdType(ParamUtil.getString(request, KEY_PREFIX_ID_TYPE + SEPARATOR +i));
-            personnel.setIdNumber(ParamUtil.getString(request, KEY_PREFIX_ID_NUMBER + SEPARATOR +i));
-            personnel.setNationality(ParamUtil.getString(request, KEY_PREFIX_NATIONALITY + SEPARATOR +i));
-            personnel.setDesignation(ParamUtil.getString(request, KEY_PREFIX_DESIGNATION + SEPARATOR +i));
-            personnel.setContactNo(ParamUtil.getString(request, KEY_PREFIX_CONTACT_NO + SEPARATOR +i));
-            personnel.setEmail(ParamUtil.getString(request, KEY_PREFIX_EMAIL + SEPARATOR +i));
-            personnel.setEmploymentStartDate(ParamUtil.getString(request, KEY_PREFIX_EMP_START_DT + SEPARATOR +i));
-            personnel.setExpertiseArea(ParamUtil.getString(request, KEY_PREFIX_EXPERTISE_AREA + SEPARATOR +i));
-            personnel.setRole(ParamUtil.getString(request, KEY_PREFIX_ROLE + SEPARATOR +i));
-            personnel.setEmployee(ParamUtil.getString(request, KEY_PREFIX_IS_EMPLOYEE + SEPARATOR +i));
+            personnel.setName(ParamUtil.getString(request, KEY_PREFIX_NAME + SEPARATOR +idx));
+            personnel.setIdType(ParamUtil.getString(request, KEY_PREFIX_ID_TYPE + SEPARATOR +idx));
+            personnel.setIdNumber(ParamUtil.getString(request, KEY_PREFIX_ID_NUMBER + SEPARATOR +idx));
+            personnel.setNationality(ParamUtil.getString(request, KEY_PREFIX_NATIONALITY + SEPARATOR +idx));
+            personnel.setDesignation(ParamUtil.getString(request, KEY_PREFIX_DESIGNATION + SEPARATOR +idx));
+            personnel.setContactNo(ParamUtil.getString(request, KEY_PREFIX_CONTACT_NO + SEPARATOR +idx));
+            personnel.setEmail(ParamUtil.getString(request, KEY_PREFIX_EMAIL + SEPARATOR +idx));
+            personnel.setEmploymentStartDate(ParamUtil.getString(request, KEY_PREFIX_EMP_START_DT + SEPARATOR +idx));
+            personnel.setExpertiseArea(ParamUtil.getString(request, KEY_PREFIX_EXPERTISE_AREA + SEPARATOR +idx));
+            personnel.setRole(ParamUtil.getString(request, KEY_PREFIX_ROLE + SEPARATOR +idx));
+            personnel.setEmployee(ParamUtil.getString(request, KEY_PREFIX_IS_EMPLOYEE + SEPARATOR +idx));
             if ("N".equals(personnel.getEmployee())) {
-                personnel.setExternalCompName(ParamUtil.getString(request, KEY_PREFIX_EXTERNAL_COMP_NAME + SEPARATOR +i));
+                personnel.setExternalCompName(ParamUtil.getString(request, KEY_PREFIX_EXTERNAL_COMP_NAME + SEPARATOR +idx));
             }
             addCommitteePersonnel(personnel);
         }

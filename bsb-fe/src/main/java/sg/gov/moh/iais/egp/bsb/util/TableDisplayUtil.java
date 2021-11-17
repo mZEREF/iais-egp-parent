@@ -19,4 +19,19 @@ public class TableDisplayUtil {
         facilityAddress = builder.toString();
         return facilityAddress;
     }
+
+
+    /**
+     * This method is intended for the initialization of index list in the 'add more' function.
+     * If the size is 4, the resutl is '0 1 2 3 '.
+     * @param size current section amount
+     * @return a string in the format '0 1 2 ...'
+     */
+    public static String indexes(int size) {
+        StringBuilder builder = new StringBuilder();
+        for (int i = 0; i < size; i++) {
+            builder.append(i).append(' ');
+        }
+        return builder.toString();
+    }
 }
