@@ -5,7 +5,6 @@ import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSubFreezingStageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.CycleDto;
@@ -21,7 +20,6 @@ import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
-import com.ecquaria.cloud.moh.iais.helper.NewApplicationHelper;
 import com.ecquaria.cloud.moh.iais.service.client.ArFeClient;
 import com.ecquaria.cloud.moh.iais.service.client.FeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicEicClient;
@@ -368,26 +366,27 @@ public class ArDataSubmissionServiceImpl implements ArDataSubmissionService {
             IuiCycleStageDto iuiCycleStageDto = arSuperDataSubmission.getIuiCycleStageDto();
             if (iuiCycleStageDto == null) {
                 iuiCycleStageDto = new IuiCycleStageDto();
-            }
-            //set default children Number
-            Integer curMarrChildNum = iuiCycleStageDto.getCurMarrChildNum();
-            Integer prevMarrChildNum = iuiCycleStageDto.getPrevMarrChildNum();
-            if(curMarrChildNum == null) {
-                iuiCycleStageDto.setCurMarrChildNum(0);
-            }
-            if(prevMarrChildNum == null) {
-                iuiCycleStageDto.setPrevMarrChildNum(0);
-            }
-            //set patient age show
-            PatientInfoDto patientInfoDto = arSuperDataSubmission.getPatientInfoDto();
-            if(patientInfoDto != null) {
-                PatientDto patientDto = patientInfoDto.getPatient();
-                if(patientDto != null) {
-                    List<Integer> integers = Formatter.getYearsAndDays(patientDto.getBirthDate());
-                    if (IaisCommonUtils.isNotEmpty(integers)) {
-                        int year = integers.get(0);
-                        int month = integers.get(integers.size() - 1);
-                        iuiCycleStageDto.setUserAgeShow(IaisCommonUtils.getYearsAndMonths(year, month));
+
+                //set default children Number
+                Integer curMarrChildNum = iuiCycleStageDto.getCurMarrChildNum();
+                Integer prevMarrChildNum = iuiCycleStageDto.getPrevMarrChildNum();
+                if (curMarrChildNum == null) {
+                    iuiCycleStageDto.setCurMarrChildNum(0);
+                }
+                if (prevMarrChildNum == null) {
+                    iuiCycleStageDto.setPrevMarrChildNum(0);
+                }
+                //set patient age show
+                PatientInfoDto patientInfoDto = arSuperDataSubmission.getPatientInfoDto();
+                if (patientInfoDto != null) {
+                    PatientDto patientDto = patientInfoDto.getPatient();
+                    if (patientDto != null) {
+                        List<Integer> integers = Formatter.getYearsAndDays(patientDto.getBirthDate());
+                        if (IaisCommonUtils.isNotEmpty(integers)) {
+                            int year = integers.get(0);
+                            int month = integers.get(integers.size() - 1);
+                            iuiCycleStageDto.setUserAgeShow(IaisCommonUtils.getYearsAndMonths(year, month));
+                        }
                     }
                 }
             }

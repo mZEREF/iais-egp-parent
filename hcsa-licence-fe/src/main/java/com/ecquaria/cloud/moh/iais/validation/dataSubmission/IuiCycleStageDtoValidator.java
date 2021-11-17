@@ -80,7 +80,7 @@ public class IuiCycleStageDtoValidator implements CustomizeValidator {
     private Map<String, String> validateNumberLength(Map<String, String> errMap, Integer number, String fieldName, String msgName, int length) {
         if(number != null) {
             if(number < 0) {
-                errMap.put(fieldName, "GENERAL_ERR0027");
+                errMap.put(msgName, "GENERAL_ERR0027");
             }
             if(number.toString().length() > length) {
                 errMap.put(msgName, MessageUtil.replaceMessage("DS_ERR009", fieldName, "field"));

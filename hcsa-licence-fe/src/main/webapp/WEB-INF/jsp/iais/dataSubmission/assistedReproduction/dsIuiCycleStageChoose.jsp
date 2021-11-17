@@ -40,12 +40,12 @@
             <div id="patientDetails" class="panel-collapse collapse in">
               <div class="panel-body">
                 <div class="panel-main-content form-horizontal">
-                  <h4 class="panel-title">
+                  <h3 class="panel-title">
                     <strong>
                       <c:out value="${arSuperDataSubmissionDto.patientInfoDto.patient.name}"></c:out>
                     </strong>
-                    &nbsp;<c:out value="(${arSuperDataSubmissionDto.patientInfoDto.patient.idNumber})"></c:out>
-                  </h4>
+                    <c:out value="(${arSuperDataSubmissionDto.patientInfoDto.patient.idNumber})"></c:out>
+                  </h3>
                   <iais:row>
                     <iais:field value="Premises where IUI is Performed" mandatory="false"/>
                     <iais:value width="3" cssClass="col-xs-5 col-md-6 control-label">
@@ -55,10 +55,10 @@
                     </iais:value>
                   </iais:row>
                   <iais:row>
-                    <iais:field value="Date Started" mandatory="true"/>
+                    <iais:field value="Date Started" mandatory="true" style="margin-bottom: 0px;"/>
                     <iais:value cssClass="col-md-3">
-                      <iais:datePicker id = "iuiCycleStartDate" name = "iuiCycleStartDate" dateVal="${arSuperDataSubmissionDto.iuiCycleStageDto.startDate}"></iais:datePicker>
-                      <br><span class="error-msg" name="iaisErrorMsg" id="error_startDate"></span>
+                      <iais:datePicker  id = "iuiCycleStartDate" name = "iuiCycleStartDate" dateVal="${arSuperDataSubmissionDto.iuiCycleStageDto.startDate}"></iais:datePicker>
+                      <span class="error-msg" name="iaisErrorMsg" id="error_startDate"></span>
                     </iais:value>
                   </iais:row>
                   <iais:row>
@@ -83,19 +83,34 @@
                     <iais:field value="Total No. of Children Delivered under IUI" mandatory="true"/>
                     <iais:value cssClass="col-md-3">
                       <input type="number" oninput="if(value.length>2)value=value.slice(0,2)" style="margin-bottom: 0px;" name="iuiDeliverChildNum" value="${arSuperDataSubmissionDto.iuiCycleStageDto.iuiDeliverChildNum}"/>
+                      <span class="error-msg" name="iaisErrorMsg" id="error_iuiDeliverChildNum"></span>
                     </iais:value>
                   </iais:row>
                   <iais:row>
                     <iais:field value="Source of Semen" mandatory="true"/>
                     <iais:value cssClass="col-md-3">
-                      <c:forEach var="${sourceOfSemenOption}" items="sourceOfSemen" varStatus="index">
-                        <input class="form-check-input" <c:if test="${arSuperDataSubmissionDto.iuiCycleStageDto.semenSource eq sourceOfSemen.value}">checked="checked"</c:if>
-                               type="radio" name="sourceOfSemenOp" value = "<c:out value="${sourceOfSemen.value}"/>" aria-invalid="false"
-                               id="sourceOfSemenOp${index.index}"
-                        >
-                        <label class="form-check-label" for="sourceOfSemenOp${index.index}">
-                          <span class="check-circle"></span><c:out value="${sourceOfSemen.text}"/>
-                        </label>
+                      <c:forEach var="sourceOfSemen" items="${sourceOfSemenOption}" varStatus="index">
+                        <div class="form-check" col-xs-7 style="padding-left: 0px;">
+                          <c:if test="${arSuperDataSubmissionDto.iuiCycleStageDto.semenSources == null}">
+                            <input class="form-check-input" type="checkbox" name="sourceOfSemenOp" value = "<c:out value="${sourceOfSemen.value}"/>"
+                                   aria-invalid="false" id="sourceOfSemenOp${index.index}"
+                            >
+                            <label class="form-check-label" for="sourceOfSemenOp${index.index}">
+                              <span class="check-square"></span><c:out value="${sourceOfSemen.text}"/>
+                            </label>
+                          </c:if>
+                          <c:if test="${arSuperDataSubmissionDto.iuiCycleStageDto.semenSources != null}">
+                            <input class="form-check-input" value = "<c:out value="${sourceOfSemen.value}"/>" aria-invalid="false"
+                                   type="checkbox" name="sourceOfSemenOp" id="sourceOfSemenOp${index.index}"
+                            <c:forEach items="${arSuperDataSubmissionDto.iuiCycleStageDto.semenSources}" var="checkSemen">
+                                   <c:if test="${checkSemen eq sourceOfSemen.value}">checked="checked"</c:if>
+                            </c:forEach>
+                            >
+                            <label class="form-check-label" for="sourceOfSemenOp${index.index}">
+                              <span class="check-square"></span><c:out value="${sourceOfSemen.text}"/>
+                            </label>
+                          </c:if>
+                        </div>
                       </c:forEach>
                       <span class="error-msg" name="iaisErrorMsg" id="error_semenSource"></span>
                     </iais:value>
@@ -104,12 +119,14 @@
                     <iais:field value="How many vials of sperm were extracted" mandatory="true"/>
                     <iais:value cssClass="col-md-3">
                       <input type="number" oninput="if(value.length>2)value=value.slice(0,2)" style="margin-bottom: 0px;" name="extractVialsOfSperm" value="${arSuperDataSubmissionDto.iuiCycleStageDto.extractVialsOfSperm}"/>
+                      <span class="error-msg" name="iaisErrorMsg" id="error_extractVialsOfSperm"></span>
                     </iais:value>
                   </iais:row>
                   <iais:row>
                     <iais:field value="How many vials of sperm were used in this cycle" mandatory="true"/>
                     <iais:value cssClass="col-md-3">
                       <input type="number" oninput="if(value.length>2)value=value.slice(0,2)" style="margin-bottom: 0px;" name="usedVialsOfSperm" value="${arSuperDataSubmissionDto.iuiCycleStageDto.usedVialsOfSperm}"/>
+                      <span class="error-msg" name="iaisErrorMsg" id="error_usedVialsOfSperm"></span>
                     </iais:value>
                   </iais:row>
                 </div>
