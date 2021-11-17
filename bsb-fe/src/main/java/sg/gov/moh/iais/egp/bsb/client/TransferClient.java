@@ -3,10 +3,13 @@ package sg.gov.moh.iais.egp.bsb.client;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.cloud.openfeign.FeignClientsConfiguration;
 import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
 import sg.gov.moh.iais.egp.bsb.dto.ValidationResultDto;
+import sg.gov.moh.iais.egp.bsb.dto.submission.AckTransferReceiptDto;
 import sg.gov.moh.iais.egp.bsb.dto.submission.ReportInventoryDto;
 import sg.gov.moh.iais.egp.bsb.dto.submission.TransferNotificationDto;
 import sg.gov.moh.iais.egp.bsb.dto.submission.TransferRequestDto;
@@ -36,14 +39,15 @@ public interface TransferClient {
     ValidationResultDto validateRequestTransfer(@RequestBody TransferRequestDto dto);
 
     @PostMapping(path = "/transfer/req/save", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    ResponseDto<String> saveTransferReceipt(@RequestBody TransferRequestDto dto);
-
-    @PostMapping(path = "/transfer/validate/ack", consumes = MediaType.APPLICATION_JSON_VALUE, produces =MediaType.APPLICATION_JSON_VALUE)
-    ValidationResultDto validateTransferReceipt(@RequestBody TransferRequestDto dto);
-
-    @PostMapping(path = "/transfer/ack/save", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     ResponseDto<String> saveRequestTransfer(@RequestBody TransferRequestDto dto);
 
+    @PostMapping(path = "/transfer/validate/ack", consumes = MediaType.APPLICATION_JSON_VALUE, produces =MediaType.APPLICATION_JSON_VALUE)
+    ValidationResultDto validateTransferReceipt(@RequestBody AckTransferReceiptDto.AckTransferReceiptMeta dto);
 
+    @PostMapping(path = "/transfer/ack/save", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    ResponseDto<String> saveTransferReceipt(@RequestBody AckTransferReceiptDto.AckTransferReceiptSaved dto);
+
+    @GetMapping(path = "/transfer//get/{facId}",consumes = MediaType.APPLICATION_JSON_VALUE, produces =MediaType.APPLICATION_JSON_VALUE)
+    ResponseDto<AckTransferReceiptDto> getReceiptDataSubNoMap(@PathVariable("facId") String facId);
 
 }

@@ -135,15 +135,7 @@
                             <label>Facility Name</label>
                         </div>
                         <div class="col-sm-6 col-md-7">
-                            <label>${facList.name}</label>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <div class="col-sm-5 control-label">
-                            <label>Receiving Facility</label>
-                        </div>
-                        <div class="col-sm-6 col-md-7">
-                            <label><p>${facList.name}</p></label>
+                            <label>${facilityInfo.facName}</label>
                         </div>
                     </div>
                     <div class="form-group">
@@ -152,7 +144,7 @@
                             <span class="mandatory otherQualificationSpan">*</span>
                         </div>
                         <div class="col-sm-6 col-md-7">
-                            <input type="text"  name="receiveFacility" id="receiveFacility" maxlength="66" value="${transferNotDto.expectedTfDate}"/>
+                            <input type="text"  name="receiveFacility" id="receiveFacility" maxlength="66" value="${transferNotDto.receiveFacility}"/>
                             <span data-err-ind="receiveFacility" class="error-msg"></span>
                         </div>
                     </div>

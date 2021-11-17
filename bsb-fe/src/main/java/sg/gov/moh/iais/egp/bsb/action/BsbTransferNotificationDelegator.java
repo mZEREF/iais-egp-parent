@@ -31,7 +31,6 @@ import java.util.List;
 import java.util.Map;
 
 import static sg.gov.moh.iais.egp.bsb.constant.DataSubmissionConstants.*;
-import static sg.gov.moh.iais.egp.bsb.constant.DataSubmissionConstants.KEY_FAC_ID;
 
 /**
  * @author YiMing

@@ -1,15 +1,21 @@
 <%@ page import="com.ecquaria.cloud.moh.iais.common.utils.MaskUtil" %>
-<input type="hidden" id="existFiles--v--${status.index}" name="existFiles--v--${status.index}" value="${MaskUtil.maskValue('file', item.repoIdNewString)}">
 <div id="fileUploadInputDiv" style="display: none"></div>
 <div class = "row">
     <div class="col-xs-12">
         <div id="PrimaryDocsPanel" role="tabpanel">
             <div class="document-content" style="margin: 0 auto;background-color: #F2F2F2;height: 150px">
                 <div class="document-upload-list--v--${status.index}">
-                    <c:set var="doc" value="${docSettings}"/>
-                    <c:set var="savedFiles" value="${item.savedInfos}"/>
-                    <c:set var="newFiles" value="${item.newDocInfos}"/>
-                    <h3>${doc.get(item.docType)}<c:if test="${doc.mandatory}"> <span class="mandatory otherQualificationSpan">*</span></c:if></h3>
+                    <c:set var="newFiles" value="${keyMap.get(status.index)}"/>
+                    <h3>
+                        <c:choose>
+                            <c:when test="${item.scheduleType eq 'SCHTYPE006'}">
+                                Inventory: Toxins <span class="mandatory otherQualificationSpan">*</span>
+                            </c:when>
+                            <c:otherwise>
+                                Inventory: Biological Agents <span class="mandatory otherQualificationSpan">*</span>
+                            </c:otherwise>
+                        </c:choose>
+                    </h3>
                     <div class="file-upload-gp" style="margin-left: 40px">
                         <c:if test="${newFiles ne null}">
                             <c:forEach var="info" items="${newFiles}">

@@ -1,1 +1,1 @@
-<%@include file = "/WEB-INF/jsp/iais/submissionData/ackOfReceiptOfTransferPage.jsp"%>
+<%@include file = "/WEB-INF/jsp/iais/submissionData/transferReceiptAck/transferReceipt.jsp"%>

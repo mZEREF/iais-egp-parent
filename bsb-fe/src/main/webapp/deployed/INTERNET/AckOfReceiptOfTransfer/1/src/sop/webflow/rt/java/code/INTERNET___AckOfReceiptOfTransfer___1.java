@@ -11,31 +11,40 @@
  */
 package sop.webflow.rt.java.code;
 import sop.webflow.rt.api.BaseProcessClass;
+import com.ecquaria.cloud.helper.EngineHelper;
 
 public class INTERNET___AckOfReceiptOfTransfer___1 extends BaseProcessClass {
+	private static final String DELEGATOR = "ackOfTransferReceiptDelegator";
+
 
 	public void start_OnStepProcess_0() throws Exception {
 		// 		start->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "start", this);
 	}
 
 	public void prepareData_OnStepProcess_0() throws Exception {
 		// 		prepareData->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "prepareData", this);
 	}
 
 	public void saveAndPreConfirm_OnStepProcess_0() throws Exception {
 		// 		saveAndPreConfirm->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "saveAndPreConfirm", this);
 	}
 
 	public void save_OnStepProcess_0() throws Exception {
 		// 		save->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "save", this);
 	}
 
 	public void saveDraft_OnStepProcess_0() throws Exception {
 		// 		saveDraft->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "saveDraft", this);
 	}
 
 	public void prepareSwitch1_OnStepProcess_0() throws Exception {
 		// 		prepareSwitch1->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "prepareSwitch1", this);
 	}
 
 	public void prepareSwitch2_OnStepProcess_0() throws Exception {
@@ -44,10 +53,12 @@ public class INTERNET___AckOfReceiptOfTransfer___1 extends BaseProcessClass {
 
 	public void preSelfFacSelect_OnStepProcess_0() throws Exception {
 		// 		preSelfFacSelect->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "preSelfFacSelect", this);
 	}
 
 	public void preSwitch_OnStepProcess_0() throws Exception {
 		// 		preSwitch->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "preSwitch", this);
 	}
 
 }
