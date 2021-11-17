@@ -43,6 +43,7 @@
                     <iais:field width="5" value="How many vials of sperm were used in this cycle?" mandatory="true"/>
                     <iais:value width="7" cssClass="col-md-7">
                         <iais:input maxLength="2" type="text" name="usedSpermVialsNum" value="${fertilisationDto.usedSpermVialsNum}" />
+                        <span class="error-msg" name="iaisErrorMsg" id="error_usedSpermVialsNum"></span>
                     </iais:value>
                 </iais:row>
                 <iais:row>
@@ -89,6 +90,7 @@
                     <iais:field width="5" value="No. of Fresh Oocytes Used for ZIFT" />
                     <iais:value width="7" cssClass="col-md-7">
                         <iais:input maxLength="2" type="text" name="freshOocytesZiftNum" value="${fertilisationDto.freshOocytesZiftNum}" />
+                        <span class="error-msg" name="iaisErrorMsg" id="error_freshOocytesZiftNum"></span>
                     </iais:value>
                 </iais:row>
                 <iais:row>
@@ -113,6 +115,7 @@
                     <iais:field width="5" value="No. of Thawed Oocytes Used for ZIFT" />
                     <iais:value width="7" cssClass="col-md-7">
                         <iais:input maxLength="2" type="text" name="thawedOocytesZiftNum" value="${fertilisationDto.thawedOocytesZiftNum}"  />
+                        <span class="error-msg" name="iaisErrorMsg" id="error_thawedOocytesZiftNum"></span>
                     </iais:value>
                 </iais:row>
             </div>
