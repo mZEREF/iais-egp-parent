@@ -63,7 +63,7 @@ public class DataSubmissionInboxDelegator {
 	public void initData(HttpServletRequest request){
 		clearSession(request);
 		LoginContext loginContext = AccessUtil.getLoginUser(request);
-		List<String> types = FeInboxHelper.getDsTypes(loginContext.getPrivileges());
+		List<String> types = FeInboxHelper.getDsTypes(loginContext.getRoleIds());
 		ParamUtil.setSessionAttr(request,DS_TYPES,(Serializable) types);
 		ParamUtil.setSessionAttr(request,DS_STATUSES,(Serializable) FeInboxHelper.dataSubmissionStatusOptions);
 	}

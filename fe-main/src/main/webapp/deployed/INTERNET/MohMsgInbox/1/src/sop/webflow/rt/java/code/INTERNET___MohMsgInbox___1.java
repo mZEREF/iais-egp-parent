@@ -19,12 +19,12 @@ public class INTERNET___MohMsgInbox___1 extends BaseProcessClass {
 
     public void start_OnStepProcess_0() throws Exception {
     // 		Start->OnStepProcess
-        EngineHelper.delegate(DELEGATOR, "startMsg", this);
+        EngineHelper.delegate(DELEGATOR, "start", this);
     }
 
     public void prepareMsg_OnStepProcess_0() throws Exception {
     // 		PrepareMsg->OnStepProcess
-        EngineHelper.delegate(DELEGATOR, "prepareMsg", this);
+        EngineHelper.delegate(DELEGATOR, "prepare", this);
     }
 
 }

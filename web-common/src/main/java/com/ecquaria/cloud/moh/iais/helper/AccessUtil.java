@@ -16,6 +16,7 @@ package com.ecquaria.cloud.moh.iais.helper;
 import com.ecquaria.cloud.helper.ConfigHelper;
 import com.ecquaria.cloud.helper.SpringContextHelper;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.privilege.PrivilegeConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
@@ -25,6 +26,7 @@ import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.service.client.ComSystemAdminClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicenseeClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrgEicClient;
+import com.ecquaria.cloud.privilege.Privilege;
 import com.ecquaria.cloud.privilege.PrivilegeServiceClient;
 import eu.bitwalker.useragentutils.Browser;
 import eu.bitwalker.useragentutils.UserAgent;
@@ -154,8 +156,6 @@ public class AccessUtil {
             }
             List<String> roleIds = loginContext.getRoleIds();
             PrivilegeServiceClient privilegeServiceClient = SpringContextHelper.getContext().getBean(PrivilegeServiceClient.class);
-            //todo delete
-            roleIds.add(RoleConsts.USER_ROLE_DS_AR);
             if(!IaisCommonUtils.isEmpty(roleIds)) {
                 UserIdentifier userIdentifier = new UserIdentifier();
                 userIdentifier.setId(loginContext.getLoginId());
@@ -167,6 +167,10 @@ public class AccessUtil {
                     //get Privilege
                     long[] privilegeNoArr = ArrayUtils.toPrimitive(privilegeNo);
                     loginContext.setPrivileges(privilegeServiceClient.getprivilegesByNos(privilegeNoArr).getEntity());
+                    //todo delete
+                    Privilege privilege = new Privilege();
+                    privilege.setId(PrivilegeConsts.USER_PRIVILEGE_DS_AR);
+                    loginContext.getPrivileges().add(privilege);
                 }
                 return true;
             }else {
@@ -187,8 +191,7 @@ public class AccessUtil {
         LoginContext loginContext = null;
         if(request!=null){
             loginContext = (LoginContext)ParamUtil.getSessionAttr(request,AppConsts.SESSION_ATTR_LOGIN_USER);
-        }
-        return loginContext;
+        }return loginContext;
     }
     /**
      * @description: get the login id from session

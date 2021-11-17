@@ -19,13 +19,13 @@
           String webroot = IaisEGPConstant.CSS_ROOT + IaisEGPConstant.FE_CSS_ROOT;
 %>
 <webui:setLayout name="iais-internet"/>
-<c:forEach items="${iais_Login_User_Info_Attr.roleIds}" var="role">
-    <c:if test="${role eq 'ORG_USER'}">
+<c:forEach items="${iais_Login_User_Info_Attr.privileges}" var="privilege">
+    <c:if test="${privilege.id eq 'HALP_DASHBOARD'}">
         <c:set var="msgTab" value="1"/>
         <c:set var="appTab" value="1"/>
         <c:set var="licTab" value="1"/>
     </c:if>
-    <c:if test="${role eq 'DS_AR'}">
+    <c:if test="${privilege.id eq 'HALP_MOH_DS_ART'}">
         <c:set var="msgTab" value="1"/>
         <c:set var="dssTab" value="1"/>
     </c:if>
