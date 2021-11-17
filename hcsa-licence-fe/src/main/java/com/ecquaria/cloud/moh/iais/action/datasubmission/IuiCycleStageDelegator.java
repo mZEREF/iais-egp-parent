@@ -76,19 +76,22 @@ public class IuiCycleStageDelegator extends CommonDelegator {
         if(iuiCycleStageDto == null) {
             iuiCycleStageDto = new IuiCycleStageDto();
         }
-        //get form value set dto
-        iuiCycleStageDto = getIuiCycleFormValue(iuiCycleStageDto, bpc.request);
-        arSuperDataSubmission.setIuiCycleStageDto(iuiCycleStageDto);
-        //validate
-        ValidationResult validationResult = WebValidationHelper.validateProperty(iuiCycleStageDto, "common");
-        //switch
-        if (validationResult.isHasErrors()) {
-            Map<String, String> errorMap = validationResult.retrieveAll();
-            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
-            WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
-            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, CommonDelegator.ACTION_TYPE_PAGE);
-        } else {
-            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, CommonDelegator.ACTION_TYPE_CONFIRM);
+        String actionType = ParamUtil.getRequestString(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE);
+        if(CommonDelegator.ACTION_TYPE_CONFIRM.equals(actionType)) {
+            //get form value set dto
+            iuiCycleStageDto = getIuiCycleFormValue(iuiCycleStageDto, bpc.request);
+            arSuperDataSubmission.setIuiCycleStageDto(iuiCycleStageDto);
+            //validate
+            ValidationResult validationResult = WebValidationHelper.validateProperty(iuiCycleStageDto, "common");
+            //switch
+            if (validationResult.isHasErrors()) {
+                Map<String, String> errorMap = validationResult.retrieveAll();
+                ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
+                WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
+                ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, CommonDelegator.ACTION_TYPE_PAGE);
+            } else {
+                ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, CommonDelegator.ACTION_TYPE_CONFIRM);
+            }
         }
         ParamUtil.setSessionAttr(bpc.request, DataSubmissionConstant.AR_DATA_SUBMISSION, arSuperDataSubmission);
     }
