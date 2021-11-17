@@ -1,8 +1,11 @@
 package com.ecquaria.cloud.moh.iais.service.client;
 
+import com.ecquaria.cloud.submission.client.model.SubmitReq;
 import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
+import java.util.List;
 import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 
 /**
@@ -15,4 +18,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 public interface EventBusClient {
     @PostMapping(value = "/trackCompersation")
     FeignResponseEntity<Void> trackCompersation();
+
+    @GetMapping(value = "/recordsToRecover")
+    FeignResponseEntity<List<SubmitReq>> getRequestToRecover();
 }
