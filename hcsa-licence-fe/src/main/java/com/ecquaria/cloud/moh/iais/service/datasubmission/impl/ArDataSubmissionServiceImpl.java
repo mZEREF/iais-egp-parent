@@ -196,23 +196,21 @@ public class ArDataSubmissionServiceImpl implements ArDataSubmissionService {
     public String getSubmissionNo(String dsType, String cycleType,
             DataSubmissionDto lastDataSubmissionDto) {
         String submissionNo = null;
-        if (!StringUtil.isIn(cycleType, new String[]{DataSubmissionConsts.DS_CYCLE_NON,
-                DataSubmissionConsts.DS_CYCLE_PATIENT_ART,
-                DataSubmissionConsts.DS_CYCLE_DONOR_SAMPLE,
-                DataSubmissionConsts.DS_CYCLE_LDT,
-                DataSubmissionConsts.DS_CYCLE_DRP,
-                DataSubmissionConsts.DS_CYCLE_SOVENOR_INVENTORY,
-                DataSubmissionConsts.DS_CYCLE_PATIENT_DRP})) {
-            if (lastDataSubmissionDto != null
-                    && !statuses.contains(lastDataSubmissionDto.getStatus())
-                    && lastDataSubmissionDto.getSubmissionNo() != null) {
-                submissionNo = lastDataSubmissionDto.getSubmissionNo();
-            }
+        boolean islinkableCycle = StringUtil.isIn(cycleType, new String[]{DataSubmissionConsts.DS_CYCLE_AR,
+                DataSubmissionConsts.DS_CYCLE_IUI,
+                DataSubmissionConsts.DS_CYCLE_EFO,
+                DataSubmissionConsts.DS_CYCLE_NON});
+        if (islinkableCycle && lastDataSubmissionDto != null
+                && !statuses.contains(lastDataSubmissionDto.getStatus())
+                && lastDataSubmissionDto.getSubmissionNo() != null) {
+            submissionNo = lastDataSubmissionDto.getSubmissionNo();
         }
         if (StringUtil.isEmpty(submissionNo)) {
             submissionNo = systemAdminClient.submissionID(dsType).getEntity();
         }
-        submissionNo = IaisCommonUtils.getNextSubmissionNo(submissionNo);
+        if (islinkableCycle) {
+            submissionNo = IaisCommonUtils.getNextSubmissionNo(submissionNo);
+        }
         log.info(StringUtil.changeForLog("The submissionNo : " + submissionNo));
         return submissionNo;
     }
