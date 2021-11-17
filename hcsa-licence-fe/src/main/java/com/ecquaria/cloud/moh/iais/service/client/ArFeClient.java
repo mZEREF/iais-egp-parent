@@ -116,9 +116,9 @@ public interface ArFeClient {
     FeignResponseEntity<PatientInventoryDto> patientInventoryByCode(@PathVariable("patientCode") String patientCode);
 
     @GetMapping(value = "/ar-common/arTreatmentSubsidiesStageDtos/patientcode-hcicode-cycletype", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<List<ArTreatmentSubsidiesStageDto>> getArTreatmentSubsidiesStageDtosByPatientCodeAndHciCOdeAndCycleType(@RequestParam(name = "patientCode") String patientCode,
-                                                                                                                                @RequestParam(name = "hciCode") String hciCode,
-                                                                                                                                @RequestParam(name = "cycleType") String cycleType);
+    FeignResponseEntity<List<ArTreatmentSubsidiesStageDto>> getArTreatmentSubsidiesStagesByPatientInfo(@RequestParam(name = "patientCode") String patientCode,
+                                                                                                       @RequestParam(name = "hciCode") String hciCode,
+                                                                                                       @RequestParam(name = "cycleType") String cycleType);
 
     @GetMapping(value = "/iuiTreatmentSubsidiesDtos/patientcode-hcicode-cycletype", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<IuiTreatmentSubsidiesDto>> getIuiTreatmentSubsidiesDtosByPatientCodeAndHciCOdeAndCycleType(@RequestParam(name = "patientCode") String patientCode,
