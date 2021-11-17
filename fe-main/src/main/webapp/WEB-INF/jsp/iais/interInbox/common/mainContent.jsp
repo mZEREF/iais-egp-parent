@@ -21,8 +21,9 @@
                                                                               data-toggle="tab"    ${tabCode == 'lic' ? null : 'onclick=\''.concat(tabCode).concat('ToLicPage()\'')}>Licences</a></li>
                         </c:if>
                         <c:if test="${dssTab == 1}">
-                        <li class="${tabCode == 'dss' ? 'active' : 'complete'}" role="presentation" id="dataSubTab"><a aria-controls="dataSubTab" role="tab"
-                        </c:if>                                                   data-toggle="tab"  ${tabCode == 'dss' ? null : ('onclick=\'goToSubmission()\'')}>Data Submissions</a></li>
+                        <li class="${tabCode == 'dss' ? 'active' : 'complete'}" role="presentation" id="dataSubTab">
+                            <a aria-controls="dataSubTab" role="tab" data-toggle="tab"  ${tabCode == 'dss' ? null : ('onclick=\'goToSubmission()\'')}>Data Submissions</a></li>
+                        </c:if>
                     </ul>
                     <div class="tab-nav-mobile visible-xs visible-sm">
                         <div class="swiper-wrapper" role="tablist">
