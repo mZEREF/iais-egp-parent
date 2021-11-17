@@ -49,7 +49,7 @@
                   <iais:row>
                     <iais:field value="Premises where IUI is Performed" mandatory="false"/>
                     <iais:value width="3" cssClass="col-xs-5 col-md-6 control-label">
-                      <span style="font-size: 16px" class="col-xs-6 col-md-6 control-label">
+                      <span style="font-size: 16px;padding-left: 0px;" class="col-xs-6 col-md-6 control-label">
                         <c:out value="${arSuperDataSubmissionDto.premisesDto.premiseLabel}"/>
                       </span>
                     </iais:value>
@@ -57,14 +57,14 @@
                   <iais:row>
                     <iais:field value="Date Started" mandatory="true" style="margin-bottom: 0px;"/>
                     <iais:value cssClass="col-md-3">
-                      <iais:datePicker  id = "iuiCycleStartDate" name = "iuiCycleStartDate" dateVal="${arSuperDataSubmissionDto.iuiCycleStageDto.startDate}"></iais:datePicker>
+                      <iais:datePicker id = "iuiCycleStartDate" name = "iuiCycleStartDate" dateVal="${arSuperDataSubmissionDto.iuiCycleStageDto.startDate}"></iais:datePicker>
                       <span class="error-msg" name="iaisErrorMsg" id="error_startDate"></span>
                     </iais:value>
                   </iais:row>
                   <iais:row>
                     <iais:field value="Patient's Age as of This Treatment" mandatory="false"/>
                     <iais:value cssClass="col-xs-5 col-md-6 control-label">
-                      <span style="font-size: 16px" class="col-xs-6 col-md-6 control-label"><c:out value="${arSuperDataSubmissionDto.iuiCycleStageDto.userAgeShow}"></c:out></span>
+                      <span style="font-size: 16px;padding-left: 0px;" class="col-xs-6 col-md-6 control-label"><c:out value="${arSuperDataSubmissionDto.iuiCycleStageDto.userAgeShow}"></c:out></span>
                     </iais:value>
                   </iais:row>
                   <iais:row>
