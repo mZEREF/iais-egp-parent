@@ -80,10 +80,12 @@ public class ArCycleStagesManualDelegator {
      */
     public void doPrepareStage(BaseProcessClass bpc) {
         String crudype = ParamUtil.getString(bpc.request, DataSubmissionConstant.CRUD_TYPE);
+        log.info(StringUtil.changeForLog("------Action Type: " + crudype));
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
         CycleStageSelectionDto selectionDto;
         ArSuperDataSubmissionDto currentArDataSubmission = DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
-        if (!"fromDraft".equals(crudype)) {
+        if (!StringUtil.isIn(crudype, new String[]{DataSubmissionConstant.CRUD_TYPE_FROM_DRAFT,
+                DataSubmissionConstant.CRUD_TYPE_RFC})) {
             selectionDto = getSelectionDtoFromPage(bpc.request);
             currentArDataSubmission.setSelectionDto(selectionDto);
             DataSubmissionHelper.setCurrentArDataSubmission(currentArDataSubmission, bpc.request);
@@ -115,7 +117,8 @@ public class ArCycleStagesManualDelegator {
                     dataSubmissionDto.setCycleStage(null);
                     DataSubmissionHelper.setCurrentArDataSubmission(currentArDataSubmission, bpc.request);
                 }
-            } else if ("fromDraft".equals(crudype)) {
+            } else if (StringUtil.isIn(crudype, new String[]{DataSubmissionConstant.CRUD_TYPE_FROM_DRAFT,
+                    DataSubmissionConstant.CRUD_TYPE_RFC})) {
                 stage = selectionDto.getStage();
                 if (StringUtil.isEmpty(stage)) {
                     stage = "current";
@@ -132,7 +135,7 @@ public class ArCycleStagesManualDelegator {
         String stage = "patient";
         String orgId = currentArDataSubmission.getOrgId();
         String actionValue = ParamUtil.getString(request, IaisEGPConstant.CRUD_ACTION_VALUE);
-        log.info(StringUtil.changeForLog("Action Type: " + actionValue));
+        log.info(StringUtil.changeForLog("Action Value: " + actionValue));
         if (StringUtil.isEmpty(actionValue) || "patient".equals(actionValue)) {
             ArSuperDataSubmissionDto dataSubmissionDraft = arDataSubmissionService.getArSuperDataSubmissionDtoDraftByConds(
                     orgId, DataSubmissionConsts.AR_TYPE_SBT_PATIENT_INFO, null);
@@ -166,7 +169,7 @@ public class ArCycleStagesManualDelegator {
                 .map(PremisesDto::getHciCode)
                 .orElse("");
         String actionValue = ParamUtil.getString(request, IaisEGPConstant.CRUD_ACTION_VALUE);
-        log.info(StringUtil.changeForLog("Action Type: " + actionValue));
+        log.info(StringUtil.changeForLog("Action Value: " + actionValue));
         if (StringUtil.isEmpty(actionValue)) {
             ArSuperDataSubmissionDto dataSubmissionDraft = arDataSubmissionService.getArSuperDataSubmissionDtoDraftByConds(
                     selectionDto.getPatientIdType(), selectionDto.getPatientIdNumber(), selectionDto.getPatientNationality(),

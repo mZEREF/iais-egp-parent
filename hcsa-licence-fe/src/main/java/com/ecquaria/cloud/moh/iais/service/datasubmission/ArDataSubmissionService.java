@@ -16,6 +16,8 @@ public interface ArDataSubmissionService {
     CycleStageSelectionDto getCycleStageSelectionDtoByConds(String idType, String idNumber, String nationality, String orgId,
             String hciCode);
 
+    ArSuperDataSubmissionDto getArSuperDataSubmissionDtoBySubmissionNo(String submissionNo);
+
     ArSuperDataSubmissionDto getArSuperDataSubmissionDto(String patientCode, String hciCOde);
 
     ArSuperDataSubmissionDto saveArSuperDataSubmissionDto(ArSuperDataSubmissionDto arSuperDataSubmission);
@@ -25,6 +27,8 @@ public interface ArDataSubmissionService {
     ArSuperDataSubmissionDto saveDataSubmissionDraft(ArSuperDataSubmissionDto arSuperDataSubmissionDto);
 
     ArSuperDataSubmissionDto getArSuperDataSubmissionDtoDraftById(String id);
+
+    ArSuperDataSubmissionDto getArSuperDataSubmissionDtoDraftByDraftNo(String draftNo);
 
     ArSuperDataSubmissionDto getArSuperDataSubmissionDtoDraftByConds(String idType, String idNumber, String nationality, String orgId,
             String hciCode);

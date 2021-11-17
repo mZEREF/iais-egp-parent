@@ -10,10 +10,9 @@ import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
-import com.ecquaria.cloud.moh.iais.service.client.ArFeClient;
+import com.ecquaria.cloud.moh.iais.service.datasubmission.ArDataSubmissionService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.repository.query.Param;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpSession;
@@ -30,9 +29,9 @@ import java.io.IOException;
 public class MohDsDraftDelegator {
 
     @Autowired
-    private ArFeClient arFeClient;
+    private ArDataSubmissionService arDataSubmissionService;
 
-    private static final String DEFAULT_URI = "/main-web/eservice/INTERNET/MohInternetInbox";
+    private static final String DEFAULT_URI = "/main-web/eservice/INTERNET/MohDataSubmissionsInbox";
 
     /**
      * Step: Start
@@ -60,7 +59,7 @@ public class MohDsDraftDelegator {
         if (StringUtil.isEmpty(dsType) || StringUtil.isEmpty(draftNo)) {
             uri = DEFAULT_URI;
         } else if (DataSubmissionConsts.DS_AR.equals(dsType)) {
-            ArSuperDataSubmissionDto dataSubmissionDto = arFeClient.getArSuperDataSubmissionDtoDraftByDraftNo(draftNo).getEntity();
+            ArSuperDataSubmissionDto dataSubmissionDto = arDataSubmissionService.getArSuperDataSubmissionDtoDraftByDraftNo(draftNo);
             if (dataSubmissionDto == null) {
                 uri = DEFAULT_URI;
             } else if (DataSubmissionConsts.AR_TYPE_SBT_PATIENT_INFO.equals(dataSubmissionDto.getArSubmissionType())) {
@@ -72,7 +71,7 @@ public class MohDsDraftDelegator {
                     || StringUtil.isEmpty(dataSubmissionDto.getCurrentDataSubmissionDto().getCycleStage())) {
                 uri = InboxConst.URL_LICENCE_WEB_MODULE + "MohARCycleStagesManual";
             } else {
-                uri = InboxConst.URL_LICENCE_WEB_MODULE + "MohARCycleStagesManual/PrepareStage?crud_type=fromDraft";
+                uri = InboxConst.URL_LICENCE_WEB_MODULE + "MohARCycleStagesManual/PrepareStage?crud_type=" + DataSubmissionConstant.CRUD_TYPE_FROM_DRAFT;
             }
             DataSubmissionHelper.setCurrentArDataSubmission(dataSubmissionDto, bpc.request);
         }

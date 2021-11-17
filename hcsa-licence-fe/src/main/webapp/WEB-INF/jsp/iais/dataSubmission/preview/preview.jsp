@@ -12,9 +12,7 @@
 %>
 <webui:setLayout name="iais-internet"/>
 
-<c:set var="headingSign" value="completed"/>
-
-<%@ include file="common/arHeader.jsp" %>
+<%@ include file="../assistedReproduction/common/arHeader.jsp" %>
 
 <script type="text/javascript" src="<%=webroot1%>js/dataSubmission/patientInformation.js"></script>
 
@@ -33,11 +31,17 @@
                     </div>
                 </div>
                 <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
-                    <%@include file="section/previewPatientDetail.jsp" %>
-                    <%@include file="section/previewHusbandDetail.jsp" %>
-                    <%@include file="common/arDeclaration.jsp" %>
+                    <jsp:include page="/WEB-INF/jsp/iais/dataSubmission/preview/previewAr.jsp" />
                 </div>
-                <%@include file="common/arFooter.jsp" %>
+                <div class="row">
+                    <div class="container">
+                        <div class="col-xs-12 col-md-6 text-left">
+                            <a href="/main-web/eservice/INTERNET/MohDataSubmissionsInbox">
+                                <em class="fa fa-angle-left"></em> Back
+                            </a>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

@@ -1,3 +1,6 @@
+<c:if test="${empty declaration}">
+<c:set var="declaration" value="${arSuperDataSubmissionDto.currentDataSubmissionDto.declaration}" />
+</c:if>
 <div class="panel panel-default">
     <div class="panel-heading">
         <h4 class="panel-title">

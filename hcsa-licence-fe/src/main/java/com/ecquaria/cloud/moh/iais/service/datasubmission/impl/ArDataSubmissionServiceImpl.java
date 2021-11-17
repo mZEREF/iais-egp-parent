@@ -91,6 +91,15 @@ public class ArDataSubmissionServiceImpl implements ArDataSubmissionService {
     }
 
     @Override
+    public ArSuperDataSubmissionDto getArSuperDataSubmissionDtoBySubmissionNo(String submissionNo) {
+        log.info(StringUtil.changeForLog("----- Submission No: " + submissionNo + " -----"));
+        if (StringUtil.isEmpty(submissionNo)) {
+            return null;
+        }
+        return arFeClient.getArSuperDataSubmissionDto(submissionNo).getEntity();
+    }
+
+    @Override
     public ArSuperDataSubmissionDto getArSuperDataSubmissionDto(String patientCode, String hciCOde) {
         if (StringUtil.isEmpty(patientCode)) {
             log.warn("----- No Patient Code -----");
@@ -117,6 +126,15 @@ public class ArDataSubmissionServiceImpl implements ArDataSubmissionService {
             return null;
         }
         return arFeClient.getArSuperDataSubmissionDtoDraftById(id).getEntity();
+    }
+
+    @Override
+    public ArSuperDataSubmissionDto getArSuperDataSubmissionDtoDraftByDraftNo(String draftNo) {
+        log.info(StringUtil.changeForLog("----- Draft No: " + draftNo + " -----"));
+        if (StringUtil.isEmpty(draftNo)) {
+            return null;
+        }
+        return arFeClient.getArSuperDataSubmissionDtoDraftByDraftNo(draftNo).getEntity();
     }
 
     @Override
