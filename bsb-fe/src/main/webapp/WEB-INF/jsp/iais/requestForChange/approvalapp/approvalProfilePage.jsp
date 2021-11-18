@@ -6,6 +6,7 @@
 <%@ taglib prefix="iais-bsb" uri="http://www.ecq.com/iais-bsb" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page import="com.ecquaria.cloud.moh.iais.common.utils.MaskUtil" %>
+<%@ page import="sg.gov.moh.iais.egp.bsb.util.TableDisplayUtil" %>
 
 <%
     sop.webflow.rt.api.BaseProcessClass process =
@@ -25,9 +26,9 @@
     <input type="hidden" name="action_type" value="">
     <input type="hidden" name="action_value" value="">
     <input type="hidden" name="action_additional" value="">
-    <input type="hidden" name="sectionAmt" value="${approvalProfile.batInfos.size()}">
+    <input type="hidden" name="sectionIdx" value="${TableDisplayUtil.indexes(approvalProfile.batInfos.size())}">
 
-    <input type="hidden" id="section_repeat_amt_input_name" value="sectionAmt" readonly disabled>
+    <input type="hidden" id="section_repeat_section_idx_name" value="sectionIdx" readonly disabled>
     <input type="hidden" id="section_repeat_section_id_prefix" value="approvalProfileSection" readonly disabled>
     <input type="hidden" id="section_repeat_section_group_id" value="sectionGroup" readonly disabled>
     <input type="hidden" id="section_repeat_separator" value="--v--" readonly disabled>
@@ -65,6 +66,9 @@
                                                                             </select>
                                                                             <span data-err-ind="batId--v--${status.index}" class="error-msg"></span>
                                                                         </div>
+                                                                        <c:if test="${status.index gt 0}">
+                                                                            <div class="col-sm-1"><h4 class="text-danger"><em data-current-idx="${status.index}" class="fa fa-times-circle del-size-36 cursorPointer removeBtn"></em></h4></div>
+                                                                        </c:if>
                                                                     </div>
                                                                     <c:if test="${processType eq 'PROTYPE002' or processType eq 'PROTYPE003'}">
                                                                         <div class="form-group">

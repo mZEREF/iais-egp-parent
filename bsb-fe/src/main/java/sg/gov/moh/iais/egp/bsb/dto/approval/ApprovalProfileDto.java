@@ -174,7 +174,7 @@ public class ApprovalProfileDto extends ValidatableNodeValue {
     //    ---------------------------- request -> object ----------------------------------------------
 
     private static final String SEPARATOR = "--v--";
-    private static final String KEY_SECTION_AMT = "sectionAmt";
+    private static final String KEY_SECTION_IDXES = "sectionIdx";
     private static final String KEY_PREFIX_FAC_BAT_ENTITY_ID = "facilityBiologicalAgentEntityId";
     private static final String KEY_PREFIX_BAT_ID = "batId";
     private static final String KEY_PREFIX_BAT_NAME = "batName";
@@ -206,36 +206,37 @@ public class ApprovalProfileDto extends ValidatableNodeValue {
 
     public void reqObjMapping(HttpServletRequest request) {
         clearBatInfos();
-        int amt = ParamUtil.getInt(request, KEY_SECTION_AMT);
-        for (int i = 0; i < amt; i++) {
+        String idxes = ParamUtil.getString(request, KEY_SECTION_IDXES);
+        String[] idxArr = idxes.trim().split(" +");
+        for (String idx : idxArr) {
             BATInfo info = new BATInfo();
-            String maskFacilityBiologicalAgentEntityId = ParamUtil.getString(request, KEY_PREFIX_FAC_BAT_ENTITY_ID + SEPARATOR + i);
+            String maskFacilityBiologicalAgentEntityId = ParamUtil.getString(request, KEY_PREFIX_FAC_BAT_ENTITY_ID + SEPARATOR + idx);
             String newFacilityBiologicalAgentEntityId = MaskUtil.unMaskValue(KEY_PREFIX_FAC_BAT_ENTITY_ID, maskFacilityBiologicalAgentEntityId);
             info.setFacilityBiologicalAgentEntityId(newFacilityBiologicalAgentEntityId);
-            info.setBatId(ParamUtil.getString(request, KEY_PREFIX_BAT_ID + SEPARATOR +i));
-            info.setBatName(ParamUtil.getString(request, KEY_PREFIX_BAT_NAME + SEPARATOR +i));
-            info.setProdMaxVolumeLitres(ParamUtil.getString(request, KEY_PREFIX_PROD_MAX_VOLUME_LITRES + SEPARATOR +i));
-            info.setLspMethod(ParamUtil.getString(request, KEY_PREFIX_LSP_METHOD + SEPARATOR +i));
-            info.setProcurementMode(ParamUtil.getString(request, KEY_PREFIX_PROCUREMENT_MODE + SEPARATOR +i));
-            info.setFacilityNameOfTransfer(ParamUtil.getString(request, KEY_PREFIX_FACILITY_NAME_OF_TRANSFER + SEPARATOR +i));
-            info.setExpectedDateOfImport(ParamUtil.getString(request, KEY_PREFIX_EXPECTED_DATE_OF_IMPORT + SEPARATOR +i));
-            info.setContactPersonNameOfTransfer(ParamUtil.getString(request, KEY_PREFIX_CONTACT_PERSON_NAME_OF_TRANSFER + SEPARATOR +i));
-            info.setImpCtcPersonNo(ParamUtil.getString(request, KEY_PREFIX_IMP_CTC_PERSON_NO + SEPARATOR +i));
-            info.setContactPersonEmailOfTransfer(ParamUtil.getString(request, KEY_PREFIX_CONTACT_PERSON_EMAIL_OF_TRANSFER + SEPARATOR +i));
-            info.setTransferFacAddr1(ParamUtil.getString(request, KEY_PREFIX_TRANSFER_FAC_ADDR_1 + SEPARATOR +i));
-            info.setTransferFacAddr2(ParamUtil.getString(request, KEY_PREFIX_TRANSFER_FAC_ADDR_2 + SEPARATOR +i));
-            info.setTransferFacAddr3(ParamUtil.getString(request, KEY_PREFIX_TRANSFER_FAC_ADDR_3 + SEPARATOR +i));
-            info.setTransferCountry(ParamUtil.getString(request, KEY_PREFIX_TRANSFER_COUNTRY + SEPARATOR +i));
-            info.setTransferCity(ParamUtil.getString(request, KEY_PREFIX_TRANSFER_CITY + SEPARATOR +i));
-            info.setTransferState(ParamUtil.getString(request, KEY_PREFIX_TRANSFER_STATE + SEPARATOR +i));
-            info.setTransferPostalCode(ParamUtil.getString(request, KEY_PREFIX_TRANSFER_POSTAL_CODE + SEPARATOR +i));
-            info.setCourierServiceProviderName(ParamUtil.getString(request, KEY_PREFIX_COURIER_SERVICE_PROVIDER_NAME + SEPARATOR +i));
-            info.setRemarks(ParamUtil.getString(request, KEY_PREFIX_REMARKS + SEPARATOR +i));
-            info.setPrjName(ParamUtil.getString(request, KEY_PREFIX_PRJ_NAME + SEPARATOR +i));
-            info.setPrincipalInvestigatorName(ParamUtil.getString(request, KEY_PREFIX_PRINCIPAL_INVESTIGATOR_NAME + SEPARATOR +i));
-            info.setWorkActivityIntended(ParamUtil.getString(request, KEY_PREFIX_WORK_ACTIVITY_INTENDED + SEPARATOR +i));
-            info.setStartDate(ParamUtil.getString(request, KEY_PREFIX_START_DATE + SEPARATOR +i));
-            info.setEndDate(ParamUtil.getString(request, KEY_PREFIX_END_DATE + SEPARATOR +i));
+            info.setBatId(ParamUtil.getString(request, KEY_PREFIX_BAT_ID + SEPARATOR + idx));
+            info.setBatName(ParamUtil.getString(request, KEY_PREFIX_BAT_NAME + SEPARATOR + idx));
+            info.setProdMaxVolumeLitres(ParamUtil.getString(request, KEY_PREFIX_PROD_MAX_VOLUME_LITRES + SEPARATOR + idx));
+            info.setLspMethod(ParamUtil.getString(request, KEY_PREFIX_LSP_METHOD + SEPARATOR + idx));
+            info.setProcurementMode(ParamUtil.getString(request, KEY_PREFIX_PROCUREMENT_MODE + SEPARATOR + idx));
+            info.setFacilityNameOfTransfer(ParamUtil.getString(request, KEY_PREFIX_FACILITY_NAME_OF_TRANSFER + SEPARATOR + idx));
+            info.setExpectedDateOfImport(ParamUtil.getString(request, KEY_PREFIX_EXPECTED_DATE_OF_IMPORT + SEPARATOR + idx));
+            info.setContactPersonNameOfTransfer(ParamUtil.getString(request, KEY_PREFIX_CONTACT_PERSON_NAME_OF_TRANSFER + SEPARATOR + idx));
+            info.setImpCtcPersonNo(ParamUtil.getString(request, KEY_PREFIX_IMP_CTC_PERSON_NO + SEPARATOR + idx));
+            info.setContactPersonEmailOfTransfer(ParamUtil.getString(request, KEY_PREFIX_CONTACT_PERSON_EMAIL_OF_TRANSFER + SEPARATOR + idx));
+            info.setTransferFacAddr1(ParamUtil.getString(request, KEY_PREFIX_TRANSFER_FAC_ADDR_1 + SEPARATOR + idx));
+            info.setTransferFacAddr2(ParamUtil.getString(request, KEY_PREFIX_TRANSFER_FAC_ADDR_2 + SEPARATOR + idx));
+            info.setTransferFacAddr3(ParamUtil.getString(request, KEY_PREFIX_TRANSFER_FAC_ADDR_3 + SEPARATOR + idx));
+            info.setTransferCountry(ParamUtil.getString(request, KEY_PREFIX_TRANSFER_COUNTRY + SEPARATOR + idx));
+            info.setTransferCity(ParamUtil.getString(request, KEY_PREFIX_TRANSFER_CITY + SEPARATOR + idx));
+            info.setTransferState(ParamUtil.getString(request, KEY_PREFIX_TRANSFER_STATE + SEPARATOR + idx));
+            info.setTransferPostalCode(ParamUtil.getString(request, KEY_PREFIX_TRANSFER_POSTAL_CODE + SEPARATOR + idx));
+            info.setCourierServiceProviderName(ParamUtil.getString(request, KEY_PREFIX_COURIER_SERVICE_PROVIDER_NAME + SEPARATOR + idx));
+            info.setRemarks(ParamUtil.getString(request, KEY_PREFIX_REMARKS + SEPARATOR + idx));
+            info.setPrjName(ParamUtil.getString(request, KEY_PREFIX_PRJ_NAME + SEPARATOR + idx));
+            info.setPrincipalInvestigatorName(ParamUtil.getString(request, KEY_PREFIX_PRINCIPAL_INVESTIGATOR_NAME + SEPARATOR + idx));
+            info.setWorkActivityIntended(ParamUtil.getString(request, KEY_PREFIX_WORK_ACTIVITY_INTENDED + SEPARATOR + idx));
+            info.setStartDate(ParamUtil.getString(request, KEY_PREFIX_START_DATE + SEPARATOR + idx));
+            info.setEndDate(ParamUtil.getString(request, KEY_PREFIX_END_DATE + SEPARATOR + idx));
             String newProcessType = (String) ParamUtil.getSessionAttr(request,PROCESS_TYPE);
             info.setProcessType(newProcessType);
             addBatInfo(info);
