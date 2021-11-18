@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Application defaultStart="/Steps/StartStep/Start" dtdVersion="6.0" executable="true" majorVersion="3" minorVersion="0" name="MohDataSubmission" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" transaction="enable">
+ <WebServices/>
+ <Steps>
+  <StartStep defClass="" executor="" icon="" name="Start" x="100" y="240">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="start_OnStepProcess_0" name="start_OnStepProcess_0"/>
+   </OnStepProcess>
+  </StartStep>
+  <AutomaticStep defClass="" executor="" icon="" name="PrepareDataSubmissionSelect" x="240" y="240">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="prepareDataSubmissionSelect_OnStepProcess_0" name="prepareDataSubmissionSelect_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="PrepareDataSubmission" x="640" y="240">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="prepareDataSubmission_OnStepProcess_0" name="prepareDataSubmission_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="PrepeareAR" x="980" y="60">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="prepeareAR_OnStepProcess_0" name="prepeareAR_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="PrepeareLDT" x="980" y="130">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="prepeareLDT_OnStepProcess_0" name="prepeareLDT_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="PrepeareVS" x="980" y="240">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="prepeareVS_OnStepProcess_0" name="prepeareVS_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <InvokeStep defClass="" executor="" icon="" name="AR" processname="MohARDataSubmission" project="INTERNET" version="-1" x="1140" y="60">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess/>
+   <OnStepComplete/>
+  </InvokeStep>
+  <InvokeStep defClass="" executor="" icon="" name="LDT" processname="" project="" version="" x="1140" y="130">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess/>
+   <OnStepComplete/>
+  </InvokeStep>
+  <InvokeStep defClass="" executor="" icon="" name="VS" processname="" project="" version="" x="1140" y="240">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess/>
+   <OnStepComplete/>
+  </InvokeStep>
+  <AutomaticStep defClass="" executor="" icon="" name="PrepeareDP" x="980" y="330">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="prepeareDP_OnStepProcess_0" name="prepeareDP_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="PrepeareTP" x="980" y="410">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="prepeareTP_OnStepProcess_0" name="prepeareTP_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <InvokeStep defClass="" executor="" icon="" name="DP" processname="MohDPDataSumission" project="INTERNET" version="-1" x="1140" y="330">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess/>
+   <OnStepComplete/>
+  </InvokeStep>
+  <InvokeStep defClass="" executor="" icon="" name="TP" processname="" project="" version="" x="1140" y="410">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess/>
+   <OnStepComplete/>
+  </InvokeStep>
+ </Steps>
+ <Pages>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="DataSubmissionSelectPage" stageIndicator="" x="420" y="240">
+   <OnPageLoad/>
+   <OnPageSubmit/>
+   <Description/>
+   <probepoint type="none"/>
+  </WebPage>
+ </Pages>
+ <Forms/>
+ <Links>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PrepareDataSubmissionSelect" linkstyle="Direct" name="" sourceName="/Steps/StartStep/Start" style="oblique">
+   <position>{(120,260)(260,260)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/DataSubmissionSelectPage" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/PrepareDataSubmissionSelect" style="oblique">
+   <position>{(260,260)(440,260)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PrepareDataSubmission" linkstyle="Direct" name="" sourceName="/Pages/WebPage/DataSubmissionSelectPage" style="oblique">
+   <position>{(440,260)(660,260)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Switches/Switch/Switch1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/PrepareDataSubmission" style="oblique">
+   <position>{(660,260)(880,260)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PrepeareAR" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
+   <position>{(880,260)(1000,80)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/InvokeStep/AR" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/PrepeareAR" style="oblique">
+   <position>{(1000,80)(1160,80)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Steps/InvokeStep/AR" style="oblique">
+   <position>{(1160,80)(1320,260)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PrepeareLDT" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
+   <position>{(880,260)(1000,150)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/InvokeStep/LDT" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/PrepeareLDT" style="oblique">
+   <position>{(1000,150)(1160,150)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Steps/InvokeStep/LDT" style="oblique">
+   <position>{(1160,150)(1320,260)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PrepeareVS" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
+   <position>{(880,260)(1000,260)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/InvokeStep/VS" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/PrepeareVS" style="oblique">
+   <position>{(1000,260)(1160,260)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Steps/InvokeStep/VS" style="oblique">
+   <position>{(1160,260)(1320,260)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PrepeareDP" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
+   <position>{(880,260)(1000,350)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/InvokeStep/DP" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/PrepeareDP" style="oblique">
+   <position>{(1000,350)(1160,350)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Steps/InvokeStep/DP" style="oblique">
+   <position>{(1160,350)(1320,260)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PrepeareTP" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
+   <position>{(880,260)(1000,430)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/InvokeStep/TP" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/PrepeareTP" style="oblique">
+   <position>{(1000,430)(1160,430)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Steps/InvokeStep/TP" style="oblique">
+   <position>{(1160,430)(1320,260)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PrepareDataSubmissionSelect" linkstyle="Direct" name="" sourceName="/Merges/Merge/Merge1" style="oblique">
+   <position>{(1320,260)(1315,16)(314,27)(260,260)}</position>
+  </SynchronousLink>
+ </Links>
+ <Conditions/>
+ <Switches>
+  <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="crud_action_type_ds" name="Switch1" x="860" y="240">
+   <Description/>
+   <SwitchCase component="/Steps/AutomaticStep/PrepeareAR" value="&quot;AR&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/PrepeareLDT" value="&quot;LDT&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/PrepeareVS" value="&quot;VS&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/PrepeareDP" value="&quot;DP&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/PrepeareTP" value="&quot;TP&quot;"/>
+  </Switch>
+ </Switches>
+ <Branches/>
+ <Merges>
+  <Merge defClass="" executor="" icon="" name="Merge1" type="Or" x="1300" y="240">
+   <Description/>
+  </Merge>
+ </Merges>
+ <StudioLabels/>
+ <StageIndicator/>
+ <AuthenticationRequire agent="false" authentication="false" citizen="false" counterStaff="false" workingGroup=""/>
+</Application>
