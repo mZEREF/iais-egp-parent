@@ -48,6 +48,10 @@ public class IuiTreatmentSubsidiesDelegator extends CommonDelegator {
 
     }
 
+    public void preparePage(BaseProcessClass bpc) {
+
+    }
+
     @Override
     public void prepareConfim(BaseProcessClass bpc) {
 
@@ -68,12 +72,10 @@ public class IuiTreatmentSubsidiesDelegator extends CommonDelegator {
             iuiTreatmentSubsidiesDto.setArtCoFunding(pleaseIndicateIui);
 
             arSuperDataSubmissionDto.setIuiTreatmentSubsidiesDto(iuiTreatmentSubsidiesDto);
-
             ParamUtil.setSessionAttr(bpc.request, DataSubmissionConstant.AR_DATA_SUBMISSION, arSuperDataSubmissionDto);
 
             ValidationResult validationResult = WebValidationHelper.validateProperty(iuiTreatmentSubsidiesDto, "save");
             Map<String, String> errorMap = validationResult.retrieveAll();
-
             if (!errorMap.isEmpty() || validationResult.isHasErrors()) {
                 WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
