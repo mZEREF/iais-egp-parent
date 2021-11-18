@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
+import sg.gov.moh.iais.egp.bsb.client.BsbFileClient;
 import sg.gov.moh.iais.egp.bsb.client.FacilityRegisterClient;
 import sg.gov.moh.iais.egp.bsb.client.FileRepoClient;
 import sg.gov.moh.iais.egp.bsb.common.node.Node;
@@ -24,6 +25,8 @@ import sg.gov.moh.iais.egp.bsb.common.node.Nodes;
 import sg.gov.moh.iais.egp.bsb.common.node.simple.SimpleNode;
 import sg.gov.moh.iais.egp.bsb.constant.DocConstants;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
+import sg.gov.moh.iais.egp.bsb.dto.file.FileRepoSyncDto;
+import sg.gov.moh.iais.egp.bsb.dto.file.NewFileSyncDto;
 import sg.gov.moh.iais.egp.bsb.dto.register.facility.BiologicalAgentToxinDto;
 import sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityAdministratorDto;
 import sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityAuthoriserDto;
@@ -80,11 +83,14 @@ public class FacilityRegistrationDelegator {
 
     private final FacilityRegisterClient facRegClient;
     private final FileRepoClient fileRepoClient;
+    private final BsbFileClient bsbFileClient;
 
     @Autowired
-    public FacilityRegistrationDelegator(FacilityRegisterClient facRegClient, FileRepoClient fileRepoClient) {
+    public FacilityRegistrationDelegator(FacilityRegisterClient facRegClient, FileRepoClient fileRepoClient,
+                                         BsbFileClient bsbFileClient) {
         this.facRegClient = facRegClient;
         this.fileRepoClient = fileRepoClient;
+        this.bsbFileClient = bsbFileClient;
     }
 
     public void start(BaseProcessClass bpc) {
@@ -537,9 +543,12 @@ public class FacilityRegistrationDelegator {
                     // save docs
                     SimpleNode primaryDocNode = (SimpleNode) facRegRoot.at(NODE_NAME_PRIMARY_DOC);
                     PrimaryDocDto primaryDocDto = (PrimaryDocDto) primaryDocNode.getValue();
-                    MultipartFile[] files = primaryDocDto.getNewDocMap().values().stream().map(PrimaryDocDto.NewDocInfo::getMultipartFile).toArray(MultipartFile[]::new);
-                    List<String> repoIds = fileRepoClient.saveFiles(files).getEntity();
-                    primaryDocDto.newFileSaved(repoIds);
+                    List<NewFileSyncDto> newFilesToSync = null;
+                    if (!primaryDocDto.getNewDocMap().isEmpty()) {
+                        MultipartFile[] files = primaryDocDto.getNewDocMap().values().stream().map(PrimaryDocDto.NewDocInfo::getMultipartFile).toArray(MultipartFile[]::new);
+                        List<String> repoIds = fileRepoClient.saveFiles(files).getEntity();
+                        newFilesToSync = primaryDocDto.newFileSaved(repoIds);
+                    }
 
                     // save data
                     FacilityRegisterDto finalAllDataDto = FacilityRegisterDto.from(facRegRoot);
@@ -548,11 +557,27 @@ public class FacilityRegistrationDelegator {
                     ResponseDto<String> responseDto = facRegClient.saveNewRegisteredFacility(finalAllDataDto);
                     log.info("save new facility response: {}", responseDto);
 
-                    // delete docs
-                    for (String id: primaryDocDto.getToBeDeletedRepoIds()) {
-                        FileRepoDto fileRepoDto = new FileRepoDto();
-                        fileRepoDto.setId(id);
-                        fileRepoClient.removeFileById(fileRepoDto);
+                    try {
+                        // sync files to BE file-repo (save new added files, delete useless files)
+                        if ((newFilesToSync != null && !newFilesToSync.isEmpty()) || !primaryDocDto.getToBeDeletedRepoIds().isEmpty()) {
+                            /* Ignore the failure of sync files currently.
+                             * We should add a mechanism to retry synchronization of files in the future */
+                            FileRepoSyncDto syncDto = new FileRepoSyncDto();
+                            syncDto.setNewFiles(newFilesToSync);
+                            syncDto.setToDeleteIds(new ArrayList<>(primaryDocDto.getToBeDeletedRepoIds()));
+                            bsbFileClient.saveFiles(syncDto);
+                        }
+
+                        // delete docs in FE file-repo
+                        /* Ignore the failure when try to delete FE files because this is not a big issue.
+                         * The not deleted file won't be retrieved, so it's just a waste of disk space */
+                        for (String id: primaryDocDto.getToBeDeletedRepoIds()) {
+                            FileRepoDto fileRepoDto = new FileRepoDto();
+                            fileRepoDto.setId(id);
+                            fileRepoClient.removeFileById(fileRepoDto);
+                        }
+                    } catch (Exception e) {
+                        log.error("Fail to sync files to BE", e);
                     }
 
                     ParamUtil.setRequestAttr(request, KEY_ACTION_TYPE, KEY_ACTION_SUBMIT);
