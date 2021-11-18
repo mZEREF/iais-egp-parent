@@ -16,12 +16,12 @@
   <div id="patientDetails" class="panel-collapse collapse in">
     <div class="panel-body">
       <div class="panel-main-content form-horizontal">
-        <h4 class="panel-title">
+        <h3 class="panel-title">
           <strong>
             <c:out value="${arSuperDataSubmissionDto.patientInfoDto.patient.name}"></c:out>
           </strong>
           &nbsp;<c:out value="(${arSuperDataSubmissionDto.patientInfoDto.patient.idNumber})"></c:out>
-        </h4>
+        </h3>
         <iais:row>
           <iais:field value="Premises where IUI is Performed" mandatory="false"/>
           <iais:value width="3" cssClass="col-xs-5 col-md-6 control-label">
