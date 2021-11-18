@@ -139,7 +139,7 @@ $(function () {
             // This unique class is intended for auto test framework.
             // ('unq' is just a random string used to distinguish it from already exists name)
             $(this).attr("class", "nice-select " + meta.sectionIdPrefix + meta.separator + nextIdx + "unq" + index);
-            var firstOp = $(this).find("ul.list > li:first-child");
+            var firstOp = $(this).find("ul.list > li:first");
             // we need to click twice to set the value
             firstOp.trigger('click'); firstOp.trigger('click');
         });
@@ -338,7 +338,15 @@ function addSection(idxInputName, sectionIdPrefix, headerTitlePrefix, sectionGro
         });
     });
 
-    if (sectionIdPrefix === 'authSection') {
+    /* Reset tool tip */
+    newSectionDivJqObj.find("a[data-toggle='tooltip']").each(function () {
+        var oldEL = $(this);
+        var newEl = newToolTip(oldEL);
+        oldEL.replaceWith(newEl);
+        newEl.tooltip();
+    });
+
+    if (sectionIdPrefix === 'committeeSection') {
         $("#committeeExternalCompNameDiv" + separator + nextIdx).hide();
     }
 }
@@ -448,6 +456,17 @@ function newDatePicker(oldEl) {
         newElJq.attr(this.name, this.value);
     });
     newElJq.val("");
+    return newElJq;
+}
+
+function newToolTip(oldEl) {
+    var attributes = oldEl.prop("attributes");
+    var newEl = document.createElement("a");
+    var newElJq = $(newEl);
+    $.each(attributes, function() {
+        newElJq.attr(this.name, this.value);
+    });
+    newElJq.html(oldEl.html());
     return newElJq;
 }
 

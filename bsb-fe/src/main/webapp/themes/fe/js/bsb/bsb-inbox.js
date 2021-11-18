@@ -7,12 +7,16 @@ function bsbInboxViewMsg(msgId) {
 
 
 $(function () {
+    $("#clearBtn").click(function () {
+        resetNiceSelect("#searchPanel");
+    });
+
     $("#searchMsgType").change(function () {
         showWaiting();
         $("[name='action_type']").val("search");
         $("[name='action_value']").val("msgType");
         $("#mainForm").submit();
-    })
+    });
 
 
     $("#searchAppType").change(function () {
@@ -20,7 +24,7 @@ $(function () {
         $("[name='action_type']").val("search");
         $("[name='action_value']").val("appType");
         $("#mainForm").submit();
-    })
+    });
 
 
     $("#searchSubjectBtn").click(function () {
@@ -28,7 +32,7 @@ $(function () {
         $("[name='action_type']").val("search");
         $("[name='action_value']").val("subject");
         $("#mainForm").submit();
-    })
+    });
 
 
     $("#searchBtn").click(function () {

@@ -51,7 +51,7 @@ function clearAllErrMsg() {
 
 function resetNiceSelect(selector) {
     $(selector).find("div.nice-select").each(function () {
-        var firstOp = $(this).find("ul.list > li:first-child");
+        var firstOp = $(this).find("ul.list > li:first");
         // we need to click twice to set the value
         firstOp.trigger('click'); firstOp.trigger('click');
     });

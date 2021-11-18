@@ -30,7 +30,7 @@
 
                     <div class="tab-content">
                         <form class="" method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
-                            <div class="tab-search">
+                            <div id="searchPanel" class="tab-search">
 
                                 <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
                                 <input type="hidden" name="action_type" value="">
@@ -92,11 +92,10 @@
                                     <button class="btn btn-secondary" type="reset" id="clearBtn" name="clearBtn">Clear</button>
                                     <button class="btn btn-primary" type="button" id="searchBtn" name="searchBtn">Search</button>
                                 </div>
-
-                                <%--@elvariable id="pageInfo" type="sg.gov.moh.iais.egp.bsb.dto.PageInfo"--%>
-                                <iais-bsb:Pagination size="${pageInfo.size}" pageNo="${pageInfo.pageNo + 1}" pageAmt="${pageInfo.totalPages}" totalElements="${pageInfo.totalElements}"/>
                             </div>
 
+                            <%--@elvariable id="pageInfo" type="sg.gov.moh.iais.egp.bsb.dto.PageInfo"--%>
+                            <iais-bsb:Pagination size="${pageInfo.size}" pageNo="${pageInfo.pageNo + 1}" pageAmt="${pageInfo.totalPages}" totalElements="${pageInfo.totalElements}"/>
 
                             <div class="row">
                                 <div class="col-xs-12">
