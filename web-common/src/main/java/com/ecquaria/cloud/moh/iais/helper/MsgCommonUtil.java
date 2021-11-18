@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.helper;
 
+import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeKeyApptPersonDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionEmailTemplateDto;
@@ -30,7 +31,7 @@ public class MsgCommonUtil {
 
     public void setRecriptByLicenseeId(String refId, InspectionEmailTemplateDto inspectionEmailTemplateDto){
         LicenseeDto licensee = getLicenseeById(refId);
-        if (licensee != null){
+        if (licensee != null && AppConsts.COMMON_STATUS_ACTIVE.equals(licensee.getStatus())){
             String emailAddr = licensee.getEmilAddr();
             List<String> emailList = new ArrayList<>();
             emailList.add(emailAddr);
