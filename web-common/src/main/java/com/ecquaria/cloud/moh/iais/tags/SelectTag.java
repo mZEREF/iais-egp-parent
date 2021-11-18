@@ -37,6 +37,8 @@ public class SelectTag extends DivTagSupport {
     private boolean needMask;
     private boolean needSort;
     private boolean multiSelect;
+    private List<SelectOption> optionsSelections;
+
 
     public SelectTag() {
         super();
@@ -63,6 +65,7 @@ public class SelectTag extends DivTagSupport {
         setNeedSort(false);
         setMultiSelect(false);
         setMultiValues(null);
+        setOptionsSelections(null);
     }
 
     public void setHidden(String hidden) {
@@ -138,6 +141,8 @@ public class SelectTag extends DivTagSupport {
             sos = MasterCodeUtil.retrieveOptionsByCate(codeCategory);
         } else if (!StringUtil.isEmpty(filterCode)) {
             sos = MasterCodeUtil.retrieveOptionsByFilter(filterCode);
+        }else if(IaisCommonUtils.isNotEmpty(optionsSelections)){
+            sos = optionsSelections;
         }
         if (needMask) {
             MaskUtil.maskSelectOptions(name, sos);
@@ -266,5 +271,9 @@ public class SelectTag extends DivTagSupport {
 
     public void setMultiValues(Collection<String> multiValues) {
         this.multiValues = multiValues;
+    }
+
+    public void setOptionsSelections(List<SelectOption> optionsSelections) {
+        this.optionsSelections = optionsSelections;
     }
 }

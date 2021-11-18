@@ -128,11 +128,11 @@
                      </iais:value>
                  </iais:row>
 
-                 <c:if test="${empty not arDonorDto.ageList}">
+                 <c:if test="${not empty arDonorDto.ageList}">
                  <iais:row>
                      <iais:field width="5" value="Donor's Age at Donation" mandatory="true"/>
                      <iais:value width="4" cssClass="col-md-4">
-                         <iais:select name="age${arDonorIndex}" firstOption="Please Select"  options="${arDonorDto.ageList}" value="${arDonorDto.age}"
+                         <iais:select name="age${arDonorIndex}" firstOption="Please Select"  optionsSelections="${arDonorDto.ageList}" value="${arDonorDto.age}"
                                       cssClass="donorAgeDonation${arDonorIndex}"/>
                      </iais:value>
                  </iais:row>
