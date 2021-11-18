@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Application defaultStart="/Steps/StartStep/start" dtdVersion="6.0" executable="true" majorVersion="1" minorVersion="0" name="MohOnlineEnquiryAssistedReproduction" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" transaction="enable">
+ <WebServices/>
+ <Steps>
+  <StartStep defClass="" executor="" icon="" name="start" x="100" y="100">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="start_OnStepProcess_0" name="start_OnStepProcess_0"/>
+   </OnStepProcess>
+  </StartStep>
+  <AutomaticStep defClass="" executor="" icon="" name="baseSearch" x="250" y="100">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="baseSearch_OnStepProcess_0" name="baseSearch_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="perAdvancedSearch" x="280" y="400">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="perAdvancedSearch_OnStepProcess_0" name="perAdvancedSearch_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="preViewFullDetails" x="610" y="400">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="preViewFullDetails_OnStepProcess_0" name="preViewFullDetails_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="changePagination" x="380" y="160">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="changePagination_OnStepProcess_0" name="changePagination_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="advNextStep" x="130" y="440">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="advNextStep_OnStepProcess_0" name="advNextStep_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="perStep" x="790" y="620">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="perStep_OnStepProcess_0" name="perStep_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="searchCycle" x="900" y="470">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="searchCycle_OnStepProcess_0" name="searchCycle_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="searchInventory" x="1020" y="590">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="searchInventory_OnStepProcess_0" name="searchInventory_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="perStageInfo" x="550" y="770">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="perStageInfo_OnStepProcess_0" name="perStageInfo_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+ </Steps>
+ <Pages>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="patientResultsPage" stageIndicator="" x="550" y="100">
+   <OnPageLoad/>
+   <OnPageSubmit/>
+   <Description/>
+   <probepoint type="none"/>
+  </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="advancedSearchPage" stageIndicator="" x="160" y="560">
+   <OnPageLoad/>
+   <OnPageSubmit/>
+   <Description/>
+   <probepoint type="none"/>
+  </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="viewFullDetailsPage" stageIndicator="" x="710" y="500">
+   <OnPageLoad/>
+   <OnPageSubmit/>
+   <Description/>
+   <probepoint type="none"/>
+  </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="stageInfoPage" stageIndicator="" x="480" y="620">
+   <OnPageLoad/>
+   <OnPageSubmit/>
+   <Description/>
+   <probepoint type="none"/>
+  </WebPage>
+ </Pages>
+ <Forms/>
+ <Links>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/baseSearch" linkstyle="Direct" name="" sourceName="/Steps/StartStep/start" style="oblique">
+   <position>{(120,120)(270,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/patientResultsPage" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/baseSearch" style="oblique">
+   <position>{(270,120)(570,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/perAdvancedSearch" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
+   <position>{(740,120)(300,420)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/preViewFullDetails" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
+   <position>{(740,120)(630,420)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Switches/Switch/Switch1" linkstyle="Direct" name="" sourceName="/Pages/WebPage/patientResultsPage" style="oblique">
+   <position>{(570,120)(740,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/baseSearch" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/changePagination" style="oblique">
+   <position>{(400,180)(270,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/advancedSearchPage" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/perAdvancedSearch" style="oblique">
+   <position>{(300,420)(180,580)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/viewFullDetailsPage" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/preViewFullDetails" style="oblique">
+   <position>{(630,420)(730,520)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/changePagination" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
+   <position>{(740,120)(400,180)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/advNextStep" linkstyle="Direct" name="" sourceName="/Pages/WebPage/advancedSearchPage" style="oblique">
+   <position>{(180,580)(150,460)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Switches/Switch/Switch2" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/advNextStep" style="oblique">
+   <position>{(150,460)(200,310)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/preViewFullDetails" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch2" style="oblique">
+   <position>{(200,310)(630,420)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/baseSearch" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch2" style="oblique">
+   <position>{(200,310)(270,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/perAdvancedSearch" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch4" style="oblique">
+   <position>{(870,790)(300,420)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/baseSearch" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch4" style="oblique">
+   <position>{(870,790)(270,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/perAdvancedSearch" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch2" style="oblique">
+   <position>{(200,310)(300,420)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/perStep" linkstyle="Direct" name="" sourceName="/Pages/WebPage/viewFullDetailsPage" style="oblique">
+   <position>{(730,520)(810,640)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Switches/Switch/Switch4" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/perStep" style="oblique">
+   <position>{(810,640)(870,790)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/searchCycle" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch4" style="oblique">
+   <position>{(870,790)(920,490)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/preViewFullDetails" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/searchCycle" style="rectanular">
+   <position>{(920,490)(630,420)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/searchInventory" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch4" style="oblique">
+   <position>{(870,790)(1040,610)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/preViewFullDetails" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/searchInventory" style="rectanular">
+   <position>{(1040,610)(630,420)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/perStageInfo" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch4" style="oblique">
+   <position>{(870,790)(570,790)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/stageInfoPage" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/perStageInfo" style="oblique">
+   <position>{(570,790)(500,640)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/preViewFullDetails" linkstyle="Direct" name="" sourceName="/Pages/WebPage/stageInfoPage" style="oblique">
+   <position>{(500,640)(630,420)}</position>
+  </SynchronousLink>
+ </Links>
+ <Conditions/>
+ <Switches>
+  <Switch defClass="" defaultComponent="/Steps/AutomaticStep/changePagination" executor="" icon="" leftOperand="base_action_type" name="Switch1" x="720" y="100">
+   <Description/>
+   <SwitchCase component="/Steps/AutomaticStep/perAdvancedSearch" value="&quot;advanced&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/preViewFullDetails" value="&quot;viewFull&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/changePagination" value="&quot;search&quot;"/>
+  </Switch>
+  <Switch defClass="" defaultComponent="/Steps/AutomaticStep/perAdvancedSearch" executor="" icon="" leftOperand="adv_action_type" name="Switch2" x="180" y="290">
+   <Description/>
+   <SwitchCase component="/Steps/AutomaticStep/preViewFullDetails" value="&quot;viewFull&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/baseSearch" value="&quot;back&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/perAdvancedSearch" value="&quot;search&quot;"/>
+  </Switch>
+  <Switch defClass="" defaultComponent="/Steps/AutomaticStep/searchCycle" executor="" icon="" leftOperand="crud_action_type" name="Switch4" x="850" y="770">
+   <Description/>
+   <SwitchCase component="/Steps/AutomaticStep/baseSearch" value="&quot;backBase&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/perAdvancedSearch" value="&quot;backAdv&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/searchCycle" value="&quot;searchCyc&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/searchInventory" value="&quot;searchInv&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/perStageInfo" value="&quot;perStage&quot;"/>
+  </Switch>
+ </Switches>
+ <Branches/>
+ <Merges/>
+ <StudioLabels/>
+ <StageIndicator/>
+ <AuthenticationRequire agent="false" authentication="false" citizen="false" counterStaff="false" workingGroup=""/>
+</Application>
