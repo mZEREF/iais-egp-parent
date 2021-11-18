@@ -259,7 +259,7 @@
 
     if ($("input[id='bsb']")[0].checked) {
       $('#singpass').addClass("disabled");
-      $.cookie('service_bsb', 'Y');
+      $.cookie('service_bsb', 'Y', { path: '/' });
     }
     else {
       $.cookie('service_bsb', '');
