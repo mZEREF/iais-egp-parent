@@ -3,6 +3,7 @@ package sg.gov.moh.iais.egp.bsb.dto.revocation;
 import lombok.Data;
 import sg.gov.moh.iais.egp.bsb.entity.*;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -11,8 +12,16 @@ import java.util.List;
  */
 @Data
 public class SubmitRevokeDto {
-    public Application application;
-    public Approval approval;
-    private List<FacilityBiologicalAgent> agents;
-    private List<FacilityActivity> activities;
+    private String approvalId;
+    //application
+    private String appId;
+    private String processType;
+    private String appType;
+    private String status;
+    private Date applicationDt;
+    private String applicationNo;
+    //applicationMisc
+    private String reason;
+    private String reasonContent;
+    private String remarks;
 }

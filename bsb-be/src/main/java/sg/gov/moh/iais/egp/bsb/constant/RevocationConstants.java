@@ -10,6 +10,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public final class RevocationConstants {
 
+    public static final String STAGE_PROCESSING              = "D32976A3-113D-EC11-BE73-000C298D317C";
+
     public static final String PARAM_REVOCATION_DETAIL = "revocationDetail";
     public static final String PARAM_APPLICATION_MISC_LIST = "applicationMiscList";
     public static final String PARAM_APPLICATION_SEARCH_RESULT = "applicationSearchResult";
