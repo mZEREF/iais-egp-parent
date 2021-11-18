@@ -22,7 +22,7 @@ import org.springframework.stereotype.Component;
  * @date 2021/11/17 15:29
  */
 @Component
-@JobHandler(value="feEventbusTraceCompJobHandler")
+@JobHandler(value="feEventbusTraceRecoveryJobHandler")
 @Slf4j
 public class FeEventbusTraceRecoveryJobHandler extends MohJobHandler {
     @Autowired
