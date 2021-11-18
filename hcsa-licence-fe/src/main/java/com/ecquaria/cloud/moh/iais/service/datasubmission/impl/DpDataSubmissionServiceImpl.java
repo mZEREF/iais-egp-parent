@@ -66,8 +66,12 @@ public class DpDataSubmissionServiceImpl implements DpDataSubmissionService {
     }
 
     @Override
-    public String getDraftNo(String dsType) {
-        return systemAdminClient.draftNumber(ApplicationConsts.DATA_SUBMISSION).getEntity();
+    public String getDraftNo(String dsType, String draftNo) {
+        if (StringUtil.isEmpty(draftNo)) {
+            draftNo = systemAdminClient.draftNumber(ApplicationConsts.DATA_SUBMISSION).getEntity();
+        }
+        log.info(StringUtil.changeForLog("The Draft No: " + draftNo));
+        return draftNo;
     }
 
     @Override
@@ -121,6 +125,24 @@ public class DpDataSubmissionServiceImpl implements DpDataSubmissionService {
             return;
         }
         dpFeClient.updateDataSubmissionDraftStatus(draftId, status);
+    }
+
+    @Override
+    public DpSuperDataSubmissionDto getDpSuperDataSubmissionDtoDraftByConds(String orgId, String type, String hciCode) {
+        log.info(StringUtil.changeForLog("----- Param: " + orgId + " : " + type + " : " + hciCode + " -----"));
+        if (StringUtil.isEmpty(orgId) || StringUtil.isEmpty(type) || StringUtil.isEmpty(hciCode)) {
+            return null;
+        }
+        return dpFeClient.getDpSuperDataSubmissionDtoDraftByConds(orgId, type, hciCode).getEntity();
+    }
+
+    @Override
+    public void deleteDpSuperDataSubmissionDtoDraftByConds(String orgId, String type, String hciCode) {
+        log.info(StringUtil.changeForLog("----- Param: " + orgId + " : " + type + " : " + hciCode + " -----"));
+        if (StringUtil.isEmpty(orgId) || StringUtil.isEmpty(type) || StringUtil.isEmpty(hciCode)) {
+            return;
+        }
+        dpFeClient.deleteDpSuperDataSubmissionDtoDraftByConds(orgId, type, hciCode);
     }
 
 

@@ -15,7 +15,7 @@ public interface DpDataSubmissionService {
 
     Map<String, PremisesDto> getDpCenterPremises(String licenseeId);
 
-    String getDraftNo(String dsType);
+    String getDraftNo(String dsType, String draftNo);
 
     DpSuperDataSubmissionDto saveDataSubmissionDraft(DpSuperDataSubmissionDto dpSuperDataSubmissionDto);
 
@@ -26,5 +26,9 @@ public interface DpDataSubmissionService {
     DpSuperDataSubmissionDto saveDpSuperDataSubmissionDtoToBE(DpSuperDataSubmissionDto dpSuperDataSubmissionDto);
 
     void updateDataSubmissionDraftStatus(String draftId, String status);
+
+    DpSuperDataSubmissionDto getDpSuperDataSubmissionDtoDraftByConds(String orgId, String type, String hciCode);
+
+    void deleteDpSuperDataSubmissionDtoDraftByConds(String orgId, String type, String hciCode);
 
 }

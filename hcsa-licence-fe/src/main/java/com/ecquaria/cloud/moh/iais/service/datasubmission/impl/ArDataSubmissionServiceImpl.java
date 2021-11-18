@@ -173,15 +173,15 @@ public class ArDataSubmissionServiceImpl implements ArDataSubmissionService {
     }
 
     @Override
-    public ArSuperDataSubmissionDto getArSuperDataSubmissionDtoDraftByConds(String orgId, String submissionType, String hciCode) {
-        log.info(StringUtil.changeForLog("----- Param: " + orgId + " : " + submissionType + " : " + hciCode + " -----"));
-        if (StringUtil.isEmpty(orgId) || StringUtil.isEmpty(submissionType)) {
+    public ArSuperDataSubmissionDto getArSuperDataSubmissionDtoDraftByConds(String orgId, String type, String hciCode) {
+        log.info(StringUtil.changeForLog("----- Param: " + orgId + " : " + type + " : " + hciCode + " -----"));
+        if (StringUtil.isEmpty(orgId) || StringUtil.isEmpty(type)) {
             return null;
         }
-        if (DataSubmissionConsts.AR_TYPE_SBT_PATIENT_INFO.equals(submissionType)) {
+        if (DataSubmissionConsts.AR_TYPE_SBT_PATIENT_INFO.equals(type)) {
             hciCode = null;
         }
-        return arFeClient.getArSuperDataSubmissionDtoDraftByConds(orgId, submissionType, hciCode).getEntity();
+        return arFeClient.getArSuperDataSubmissionDtoDraftByConds(orgId, type, hciCode).getEntity();
     }
 
     @Override
@@ -197,15 +197,15 @@ public class ArDataSubmissionServiceImpl implements ArDataSubmissionService {
     }
 
     @Override
-    public void deleteArSuperDataSubmissionDtoDraftByConds(String orgId, String submissionType, String hciCode) {
-        log.info("----- Delete Param: " + orgId + " : " + submissionType + " -----");
-        if (StringUtil.isEmpty(orgId) || StringUtil.isEmpty(submissionType)) {
+    public void deleteArSuperDataSubmissionDtoDraftByConds(String orgId, String type, String hciCode) {
+        log.info("----- Delete Param: " + orgId + " : " + type + " -----");
+        if (StringUtil.isEmpty(orgId) || StringUtil.isEmpty(type)) {
             return;
         }
-        if (DataSubmissionConsts.AR_TYPE_SBT_PATIENT_INFO.equals(submissionType)) {
+        if (DataSubmissionConsts.AR_TYPE_SBT_PATIENT_INFO.equals(type)) {
             hciCode = null;
         }
-        arFeClient.deleteArSuperDataSubmissionDtoDraftByConds(orgId, submissionType, hciCode);
+        arFeClient.deleteArSuperDataSubmissionDtoDraftByConds(orgId, type, hciCode);
     }
 
     @Override
@@ -227,13 +227,17 @@ public class ArDataSubmissionServiceImpl implements ArDataSubmissionService {
         if (islinkableCycle) {
             submissionNo = IaisCommonUtils.getNextSubmissionNo(submissionNo);
         }
-        log.info(StringUtil.changeForLog("The submissionNo : " + submissionNo));
+        log.info(StringUtil.changeForLog("The submissionNo: " + submissionNo));
         return submissionNo;
     }
 
     @Override
-    public String getDraftNo(String dsType) {
-        return systemAdminClient.draftNumber(ApplicationConsts.DATA_SUBMISSION).getEntity();
+    public String getDraftNo(String dsType, String draftNo) {
+        if (StringUtil.isEmpty(draftNo)) {
+            draftNo = systemAdminClient.draftNumber(ApplicationConsts.DATA_SUBMISSION).getEntity();
+        }
+        log.info(StringUtil.changeForLog("The Draft No: " + draftNo));
+        return draftNo;
     }
 
     @Override

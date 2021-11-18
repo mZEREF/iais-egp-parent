@@ -144,7 +144,7 @@ public class PatientDelegator extends CommonDelegator {
         if (cycleDto == null) {
             cycleDto = initCycleDto(currentArDataSubmission);
         }
-        cycleDto.setPatientCode(patientCode);
+        // cycleDto.setPatientCode(patientCode);
         cycleDto.setStatus(DataSubmissionConsts.DS_STATUS_ACTIVE);
         currentArDataSubmission.setCycleDto(cycleDto);
         DataSubmissionHelper.setCurrentArDataSubmission(currentArDataSubmission, request);

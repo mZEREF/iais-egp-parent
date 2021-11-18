@@ -47,3 +47,28 @@
 <iais:confirm msg="DS_MSG003" callBack="$('#noFoundDiv').modal('hide');" popupOrder="noFoundDiv"  yesBtnDesc="Close"
               cancelBtnDesc="Register Patient" cancelBtnCls="btn btn-primary" yesBtnCls="btn btn-secondary"
               cancelFunc="submit('patient', 'patient');" />
+<input type="hidden" id="showValidatePT" name="showValidatePT" value="${showValidatePT}"/>
+<iais:confirm msg="DS_MSG007" callBack="$('#validatePT').modal('hide');" popupOrder="validatePT" yesBtnDesc="Close"
+              yesBtnCls="btn btn-secondary" needCancel="false"/>
+<script>
+    $(document).ready(function() {
+        if ($('#nextBtn').length > 0) {
+            $('#nextBtn').unbind("click");
+            $('#nextBtn').click(function () {
+                showWaiting();
+                var isRetrieve = $('input[name="retrieveData"]').val();
+                if ("1" != isRetrieve) {
+                    $('#validatePT').modal('show');
+                    dismissWaiting();
+                } else {
+                    submit('confirm');
+                }
+            });
+        }
+        if ("1" == $('#showValidatePT').val()) {
+            $('#validatePT').modal('show');
+        }
+    });
+
+
+</script>

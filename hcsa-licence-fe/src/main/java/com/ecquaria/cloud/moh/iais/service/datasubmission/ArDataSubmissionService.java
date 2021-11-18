@@ -2,7 +2,6 @@ package com.ecquaria.cloud.moh.iais.service.datasubmission;
 
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.*;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.*;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 
 import java.util.Date;
@@ -42,7 +41,7 @@ public interface ArDataSubmissionService {
 
     String getSubmissionNo(String dsType, String cycleType, DataSubmissionDto lastDataSubmissionDto);
 
-    String getDraftNo(String dsType);
+    String getDraftNo(String dsType, String draftNo);
 
     /**
       * @author: shicheng

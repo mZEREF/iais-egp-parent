@@ -40,7 +40,7 @@
                     </iais:value>
                 </iais:row>
                 <iais:row cssClass="patientData">
-                    <iais:field width="5" value="Name"/>
+                    <iais:field width="5" value="Patient Name"/>
                     <iais:value width="7" cssClass="col-md-7" display="true" id="patientName">
                         ${selectionDto.patientName}
                     </iais:value>

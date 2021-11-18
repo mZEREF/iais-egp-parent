@@ -176,7 +176,7 @@ public abstract class CommonDelegator {
         ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, currentStage);
         ArSuperDataSubmissionDto arSuperDataSubmission = DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
         if (arSuperDataSubmission != null) {
-            arSuperDataSubmission.setDraftNo(arDataSubmissionService.getDraftNo(DataSubmissionConsts.DS_AR));
+            arSuperDataSubmission.setDraftNo(arDataSubmissionService.getDraftNo(DataSubmissionConsts.DS_AR, arSuperDataSubmission.getDraftNo()));
             arSuperDataSubmission = arDataSubmissionService.saveDataSubmissionDraft(arSuperDataSubmission);
             DataSubmissionHelper.setCurrentArDataSubmission(arSuperDataSubmission, bpc.request);
             ParamUtil.setRequestAttr(bpc.request, "saveDraftSuccess", "success");

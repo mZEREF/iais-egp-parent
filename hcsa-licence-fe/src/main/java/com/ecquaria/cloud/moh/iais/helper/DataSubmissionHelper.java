@@ -228,6 +228,47 @@ public final class DataSubmissionHelper {
         return dataSubmission;
     }
 
+    public static CycleDto initCycleDto(DpSuperDataSubmissionDto dpSuperDataSubmissionDto, boolean reNew) {
+        CycleDto cycleDto = dpSuperDataSubmissionDto.getCycleDto();
+        if (cycleDto == null || reNew) {
+            cycleDto = new CycleDto();
+        }
+        String hicCode = Optional.ofNullable(dpSuperDataSubmissionDto.getPremisesDto())
+                .map(premises -> premises.getHciCode())
+                .orElse("");
+        cycleDto.setHciCode(hicCode);
+        cycleDto.setDsType(dpSuperDataSubmissionDto.getDsType());
+        String cycleType = cycleDto.getCycleType();
+        if (DataSubmissionConsts.DP_TYPE_SBT_PATIENT_INFO.equals(dpSuperDataSubmissionDto.getDpSubmissionType())) {
+            cycleType = DataSubmissionConsts.DS_CYCLE_PATIENT_DRP;
+        } else if (DataSubmissionConsts.DP_TYPE_SBT_DRUG_PRESCRIBED.equals(dpSuperDataSubmissionDto.getDpSubmissionType())) {
+            cycleType = DataSubmissionConsts.DS_CYCLE_DRP;
+        } else if (DataSubmissionConsts.DP_TYPE_SBT_SOVENOR_INVENTORY.equals(dpSuperDataSubmissionDto.getDpSubmissionType())
+                || StringUtil.isEmpty(cycleType)) {
+            cycleType = DataSubmissionConsts.DS_CYCLE_SOVENOR_INVENTORY;
+        }
+        cycleDto.setCycleType(cycleType);
+        return cycleDto;
+    }
+
+    public static DataSubmissionDto initDataSubmission(DpSuperDataSubmissionDto dpSuperDataSubmissionDto, boolean reNew) {
+        DataSubmissionDto dataSubmission = dpSuperDataSubmissionDto.getDataSubmissionDto();
+        if (dataSubmission == null || reNew) {
+            dataSubmission = new DataSubmissionDto();
+            dpSuperDataSubmissionDto.setDataSubmissionDto(dataSubmission);
+        }
+        dataSubmission.setSubmissionType(dpSuperDataSubmissionDto.getSubmissionType());
+        String cycleStage = null;
+        if (DataSubmissionConsts.DP_TYPE_SBT_PATIENT_INFO.equals(dpSuperDataSubmissionDto.getDpSubmissionType())) {
+            cycleStage = DataSubmissionConsts.DS_CYCLE_STAGE_PATIENT;
+        } else if (DataSubmissionConsts.AR_TYPE_SBT_DONOR_SAMPLE.equals(dpSuperDataSubmissionDto.getDpSubmissionType())) {
+            cycleStage = DataSubmissionConsts.DS_CYCLE_STAGE_DONOR_SAMPLE;
+        }
+        dataSubmission.setCycleStage(cycleStage);
+        dataSubmission.setStatus(DataSubmissionConsts.DS_STATUS_ACTIVE);
+        return dataSubmission;
+    }
+
     public static String genOptionHtmls(List<String> options) {
         return genOptionHtmls(options, "Please Select");
     }

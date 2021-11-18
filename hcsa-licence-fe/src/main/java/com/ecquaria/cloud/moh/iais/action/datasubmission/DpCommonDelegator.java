@@ -170,7 +170,8 @@ public abstract class DpCommonDelegator {
         ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, currentStage);
         DpSuperDataSubmissionDto dpSuperDataSubmissionDto = DataSubmissionHelper.getCurrentDpDataSubmission(bpc.request);
         if (dpSuperDataSubmissionDto != null) {
-            dpSuperDataSubmissionDto.setDraftNo(dpDataSubmissionService.getDraftNo(DataSubmissionConsts.DS_DRP));
+            dpSuperDataSubmissionDto.setDraftNo(dpDataSubmissionService.getDraftNo(DataSubmissionConsts.DS_DRP,
+                    dpSuperDataSubmissionDto.getDraftNo()));
             dpSuperDataSubmissionDto = dpDataSubmissionService.saveDataSubmissionDraft(dpSuperDataSubmissionDto);
             DataSubmissionHelper.setCurrentDpDataSubmission(dpSuperDataSubmissionDto, bpc.request);
             ParamUtil.setRequestAttr(bpc.request, "saveDraftSuccess", "success");

@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.action.datasubmission;
 
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.CycleStageSelectionDto;
@@ -103,7 +104,10 @@ public class ArCycleStagesManualDelegator {
             selectionDto = currentArDataSubmission.getSelectionDto();
         }
         String stage;
-        if (!errorMap.isEmpty()) {
+        if (!errorMap.isEmpty() || !AppConsts.YES.equals(selectionDto.getRetrieveData())) {
+            if (!AppConsts.YES.equals(selectionDto.getRetrieveData())) {
+                ParamUtil.setRequestAttr(bpc.request, "showValidatePT", AppConsts.YES);
+            }
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
             stage = "current";
         } else {
@@ -301,7 +305,8 @@ public class ArCycleStagesManualDelegator {
         ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, currentStage);
         ArSuperDataSubmissionDto arSuperDataSubmission = DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
         if (arSuperDataSubmission != null) {
-            arSuperDataSubmission.setDraftNo(arDataSubmissionService.getDraftNo(DataSubmissionConsts.DS_AR));
+            arSuperDataSubmission.setDraftNo(arDataSubmissionService.getDraftNo(DataSubmissionConsts.DS_AR,
+                    arSuperDataSubmission.getDraftNo()));
             arSuperDataSubmission = arDataSubmissionService.saveDataSubmissionDraft(arSuperDataSubmission);
             DataSubmissionHelper.setCurrentArDataSubmission(arSuperDataSubmission, bpc.request);
             ParamUtil.setRequestAttr(bpc.request, "saveDraftSuccess", "success");

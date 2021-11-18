@@ -79,7 +79,7 @@ public interface ArFeClient {
     @GetMapping(value = "/data-submission/draft-ar-data-submission/special", produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<ArSuperDataSubmissionDto> getArSuperDataSubmissionDtoDraftByConds(@RequestParam(name = "orgId") String orgId,
-            @RequestParam(name = "submissionType") String submissionType,
+            @RequestParam(name = "type") String type,
             @RequestParam(name = "hciCode", required = false) String hciCode);
 
     @PostMapping(value = "/data-submission/draft-ar-data-submission/cycle", produces = MediaType.APPLICATION_JSON_VALUE,
@@ -90,7 +90,7 @@ public interface ArFeClient {
 
     @DeleteMapping(value = "/data-submission/draft-ar-data-submission/special", consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<Void> deleteArSuperDataSubmissionDtoDraftByConds(@RequestParam(name = "orgId") String orgId,
-            @RequestParam(name = "submissionType") String submissionType,
+            @RequestParam(name = "type") String type,
             @RequestParam(name = "hciCode", required = false) String hciCode);
 
     @PostMapping(value = "/data-submission/cycle/patientcode-hcicode-cycletype-stauses", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)

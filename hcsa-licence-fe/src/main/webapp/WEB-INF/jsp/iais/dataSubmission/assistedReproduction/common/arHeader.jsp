@@ -35,7 +35,7 @@
                     <div class="dashboard-page-title">
                         <h1>${title}</h1>
                         <c:if test="${not empty smallTitle}">
-                            <p>${smallTitle}</p>
+                            <p style="font-size: 25px;">${smallTitle}</p>
                         </c:if>
                     </div>
                 </div>

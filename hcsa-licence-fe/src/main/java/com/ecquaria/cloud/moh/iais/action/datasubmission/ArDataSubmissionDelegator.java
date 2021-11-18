@@ -95,7 +95,7 @@ public class ArDataSubmissionDelegator {
     }
 
     /**
-     * StartStep: PreparePIM
+     * StartStep: PrepareAR
      *
      * @param bpc
      * @throws
