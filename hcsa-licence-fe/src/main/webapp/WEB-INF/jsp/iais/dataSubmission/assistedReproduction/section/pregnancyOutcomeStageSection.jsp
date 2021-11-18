@@ -16,7 +16,7 @@
                                 cssClass="col-md-6"/>
                     <iais:value width="6" cssClass="col-md-6">
                         <iais:select name="firstUltrasoundOrderShow" firstOption="Please Select"
-                                     id="firstUltrasoundOrderShow" options="firstUltrasoundOrderShowSelectOption"
+                                     id="firstUltrasoundOrderShow" codeCategory="CATE_ID_ORDER_IN_ULTRASOUND"
                                      value="${pregnancyOutcomeStageDto.firstUltrasoundOrderShow}"/>
                     </iais:value>
                 </iais:row>
@@ -24,7 +24,7 @@
                     <iais:field width="6" value="Outcome of Pregnancy" mandatory="true" cssClass="col-md-6"/>
                     <iais:value width="6" cssClass="col-md-6">
                         <iais:select name="pregnancyOutcome" firstOption="Please Select" id="pregnancyOutcome"
-                                     options="pregnancyOutcomeSelectOption"
+                                     codeCategory="CATE_ID_OUTCOME_OFPREGNANCY"
                                      value="${pregnancyOutcomeStageDto.pregnancyOutcome}"/>
                     </iais:value>
                 </iais:row>
@@ -134,7 +134,7 @@
                         <iais:field width="6" value="Mode of Delivery" cssClass="col-md-6"/>
                         <iais:value width="6" cssClass="col-md-6">
                             <iais:select name="deliveryMode" firstOption="Please Select"
-                                         options="deliveryModeSelectOption"
+                                         codeCategory="CATE_ID_MODE_OF_DELIVERY"
                                          value="${pregnancyOutcomeStageDto.deliveryMode}"/>
                         </iais:value>
                     </iais:row>
@@ -255,7 +255,7 @@
                     <iais:field width="6" value="Total No. of Baby Admitted to NICU Care"
                                 cssClass="col-md-6"/>
                     <iais:value width="6" cssClass="col-md-6">
-                        <iais:select name="NICUCareBabyNum" id="NICUCareBabyNum" options="NICUCareBabyNumSelectOption"
+                        <iais:select name="NICUCareBabyNum" id="NICUCareBabyNum" options="transferNumSelectOption"
                                      value="${pregnancyOutcomeStageDto.nicuCareBabyNum}"/>
                     </iais:value>
                 </iais:row>
@@ -264,7 +264,7 @@
                         <iais:field width="6" value="No. of Baby Admitted to L2 Care"
                                     cssClass="col-md-6"/>
                         <iais:value width="6" cssClass="col-md-6">
-                            <iais:select name="l2CareBabyNum" id="l2CareBabyNum" options="l2CareBabyNumSelectOption"
+                            <iais:select name="l2CareBabyNum" id="l2CareBabyNum" options="transferNumSelectOption"
                                          value="${pregnancyOutcomeStageDto.l2CareBabyNum}"/>
                         </iais:value>
                     </iais:row>
@@ -272,7 +272,7 @@
                         <iais:field width="6" value="No. of Baby Admitted to L3 Care"
                                     cssClass="col-md-6"/>
                         <iais:value width="6" cssClass="col-md-6">
-                            <iais:select name="l3CareBabyNum" id="l3CareBabyNum" options="l3CareBabyNumSelectOption"
+                            <iais:select name="l3CareBabyNum" id="l3CareBabyNum" options="transferNumSelectOption"
                                          value="${pregnancyOutcomeStageDto.l3CareBabyNum}"/>
                         </iais:value>
                     </iais:row>
