@@ -701,8 +701,10 @@ public class NotificationHelper {
 			}
 			if (!IaisCommonUtils.isEmpty(userList)) {
 				for (OrgUserDto u : userList) {
-					if (!StringUtil.isEmpty(u.getEmail())&&(recipientUserId==null||u.getId().equals(recipientUserId))) {
-						mobile.add(u.getMobileNo());
+					if(AppConsts.COMMON_STATUS_ACTIVE.equals(u.getStatus())) {
+						if (!StringUtil.isEmpty(u.getEmail()) && (recipientUserId == null || u.getId().equals(recipientUserId))) {
+							mobile.add(u.getMobileNo());
+						}
 					}
 				}
 			}
@@ -777,8 +779,10 @@ public class NotificationHelper {
 		}
 		if (!IaisCommonUtils.isEmpty(userList)) {
 			for (OrgUserDto u : userList) {
-				if (!StringUtil.isEmpty(u.getEmail())&&(recipientUserId==null||u.getId().equals(recipientUserId))) {
-					mobile.add(u.getMobileNo());
+				if(AppConsts.COMMON_STATUS_ACTIVE.equals(u.getStatus())) {
+					if (!StringUtil.isEmpty(u.getEmail()) && (recipientUserId == null || u.getId().equals(recipientUserId))) {
+						mobile.add(u.getMobileNo());
+					}
 				}
 			}
 		}
@@ -797,8 +801,10 @@ public class NotificationHelper {
 		for (String role : roles) {
 			if (RECEIPT_ROLE_LICENSEE.equals(role)) {
 				OrgUserDto orgUserDto = taskOrganizationClient.getUserById(applicantId.getSubmitBy()).getEntity();
-				if(orgUserDto != null && !StringUtil.isEmpty(orgUserDto.getMobileNo())){
-					mobile.add(orgUserDto.getMobileNo());
+				if(orgUserDto != null && AppConsts.COMMON_STATUS_ACTIVE.equals(orgUserDto.getStatus())){
+					if(!StringUtil.isEmpty(orgUserDto.getMobileNo())) {
+						mobile.add(orgUserDto.getMobileNo());
+					}
 				}
 			}
 			if (RECEIPT_ROLE_TRANSFEREE_LICENSEE.equals(role)) {
@@ -1005,10 +1011,12 @@ public class NotificationHelper {
 
 		int index = officerNameMap.size();
 		for (OrgUserDto u : orgUserList) {
-			if (!StringUtil.isEmpty(u.getEmail())&&(recipientUserId==null||u.getId().equals(recipientUserId))) {
-				officerNameMap.put(String.valueOf(index), u.getDisplayName());
-				emailAddressMap.put(String.valueOf(index), u.getEmail());
-				index++;
+			if(AppConsts.COMMON_STATUS_ACTIVE.equals(u.getStatus())) {
+				if (!StringUtil.isEmpty(u.getEmail()) && (recipientUserId == null || u.getId().equals(recipientUserId))) {
+					officerNameMap.put(String.valueOf(index), u.getDisplayName());
+					emailAddressMap.put(String.valueOf(index), u.getEmail());
+					index++;
+				}
 			}
 		}
 
@@ -1088,10 +1096,12 @@ public class NotificationHelper {
 			}
 			int index = officerNameMap.size();
 			for (OrgUserDto u : userList) {
-				if (!StringUtil.isEmpty(u.getEmail())&&(recipientUserId==null||u.getId().equals(recipientUserId))) {
-					officerNameMap.put(index + "", u.getDisplayName());
-					emailAddressMap.put(index + "", u.getEmail());
-					index++;
+				if(AppConsts.COMMON_STATUS_ACTIVE.equals(u.getStatus())) {
+					if (!StringUtil.isEmpty(u.getEmail()) && (recipientUserId == null || u.getId().equals(recipientUserId))) {
+						officerNameMap.put(index + "", u.getDisplayName());
+						emailAddressMap.put(index + "", u.getEmail());
+						index++;
+					}
 				}
 			}
 			inspectionEmailTemplateDto.setOfficerNameMap(officerNameMap);
@@ -1138,10 +1148,12 @@ public class NotificationHelper {
 				}
 				int index = officerNameMap.size();
 				for (OrgUserDto u : userList) {
-					if (!StringUtil.isEmpty(u.getEmail())&&(recipientUserId==null||u.getId().equals(recipientUserId))) {
-						officerNameMap.put(index + "", u.getDisplayName());
-						emailAddressMap.put(index + "", u.getEmail());
-						index++;
+					if(AppConsts.COMMON_STATUS_ACTIVE.equals(u.getStatus())) {
+						if (!StringUtil.isEmpty(u.getEmail()) && (recipientUserId == null || u.getId().equals(recipientUserId))) {
+							officerNameMap.put(index + "", u.getDisplayName());
+							emailAddressMap.put(index + "", u.getEmail());
+							index++;
+						}
 					}
 				}
 				inspectionEmailTemplateDto.setOfficerNameMap(officerNameMap);
