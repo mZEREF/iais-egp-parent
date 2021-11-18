@@ -1,5 +1,6 @@
 package sg.gov.moh.iais.egp.bsb.dto.revocation;
 
+import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import lombok.Data;
 import sg.gov.moh.iais.egp.bsb.entity.*;
 
@@ -24,4 +25,6 @@ public class SubmitRevokeDto {
     private String reason;
     private String reasonContent;
     private String remarks;
+    //
+    private String loginUser;
 }

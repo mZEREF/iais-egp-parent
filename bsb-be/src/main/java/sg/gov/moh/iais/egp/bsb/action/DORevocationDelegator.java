@@ -293,8 +293,10 @@ public class DORevocationDelegator {
         String reason = ParamUtil.getString(request, RevocationConstants.PARAM_REASON);
         String remarks = ParamUtil.getString(request, RevocationConstants.PARAM_DOREMARKS);
         String flag = (String) ParamUtil.getSessionAttr(request, RevocationConstants.FLAG);
-        ResponseDto<SubmitRevokeDto> result = null;
         SubmitRevokeDto submitRevokeDto = new SubmitRevokeDto();
+        //get user name
+        LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
+        submitRevokeDto.setLoginUser(loginContext.getUserName());
         if (flag.equals(RevocationConstants.FAC)) {
             Approval approval = (Approval) ParamUtil.getSessionAttr(request, RevocationConstants.APPROVAL);
             String processType = approval.getProcessType();
@@ -306,31 +308,14 @@ public class DORevocationDelegator {
             submitRevokeDto.setApplicationDt(new Date());
             submitRevokeDto.setRemarks(remarks);
             submitRevokeDto.setApprovalId(approval.getId());
-
-            result = revocationClient.saveRevokeApplication(submitRevokeDto);
-
+            revocationClient.saveRevokeApplication(submitRevokeDto);
         }
         if (flag.equals(RevocationConstants.APP)) {
             Application application = (Application) ParamUtil.getSessionAttr(request, RevocationConstants.PARAM_APPLICATION);
             submitRevokeDto.setStatus(RevocationConstants.PARAM_APPLICATION_STATUS_PENDING_AO);
             submitRevokeDto.setApplicationDt(new Date());
             submitRevokeDto.setAppId(application.getId());
-            result = revocationClient.saveRevokeApplication(submitRevokeDto);
-        }
-        //get user name
-        LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
-        assert result != null;
-        if (result.ok()) {
-            String applicationNo = result.getEntity().getApplicationNo();
-            RoutingHistory historyDto = new RoutingHistory();
-            historyDto.setAppStatus(RevocationConstants.PARAM_APPLICATION_STATUS_PENDING_AO);
-            historyDto.setActionBy(loginContext.getUserName());
-            historyDto.setInternalRemarks(remarks);
-            historyDto.setApplicationNo(applicationNo);
-            RoutingStage routingStage = new RoutingStage();
-            routingStage.setId(STAGE_PROCESSING);
-            historyDto.setRoutingStage(routingStage);
-            revocationClient.saveHistory(historyDto);
+            revocationClient.saveRevokeApplication(submitRevokeDto);
         }
     }
 
