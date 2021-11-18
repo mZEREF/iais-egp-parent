@@ -19,7 +19,7 @@
                 <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
                     <%@include file="section/previewFertilisationDetail.jsp" %>
                     <%@include file="common/arDeclaration.jsp" %>
-                </div>s
+                </div>
                 <%@include file="common/arFooter.jsp" %>
             </div>
         </div>
