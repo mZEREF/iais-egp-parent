@@ -2,7 +2,7 @@
 <%@ taglib uri="http://www.ecq.com/iais" prefix="iais" %>
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>
 
-<c:set var="headingSign" value="completed"/>
+<%--<c:set var="headingSign" value="completed"/>--%>
 
 <c:set var="cycleType" value="${arSuperDataSubmissionDto.cycleDto.cycleType}"/>
 <c:set var="cycleStage" value="${arSuperDataSubmissionDto.currentDataSubmissionDto.cycleStage}"/>
@@ -14,6 +14,9 @@
         <%-- AR Patient--%>
         <%@include file="../assistedReproduction/section/previewPatientDetail.jsp" %>
         <%@include file="../assistedReproduction/section/previewHusbandDetail.jsp" %>
+        <c:if test="${arSuperDataSubmissionDto.submissionType eq 'DSTY_005'}">
+            <%@include file="../assistedReproduction/section/patientAmendment.jsp" %>
+        </c:if>
     </c:when>
     <c:when test="${cycleType == 'DSCL_003'}">
         <%@include file="../assistedReproduction/section/previewDonorSection.jsp" %>
@@ -95,4 +98,6 @@
         <%@include file="../assistedReproduction/section/previewTransferInOutStageDetail.jsp" %>
     </c:when>
 </c:choose>
+<c:if test="${arSuperDataSubmissionDto.submissionType ne 'DSTY_005'}">
 <%@include file="../assistedReproduction/common/arDeclaration.jsp" %>
+</c:if>

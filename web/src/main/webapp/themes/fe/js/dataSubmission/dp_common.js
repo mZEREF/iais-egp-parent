@@ -26,7 +26,7 @@ $(document).ready(function() {
     }
 
     if ($('#saveDraftBtn').length > 0) {
-        if ('ar-submission' == currPage) {
+        if ('ar-submission' == currPage || 'page' == currPage) {
             $('#saveDraftBtn').remove();
         } else {
             $('#saveDraftBtn').click(function () {
@@ -43,8 +43,6 @@ $(document).ready(function() {
             $('#nextBtn').html('Preview');
         } else if ('ar-submission' == currPage){
             $('#nextBtn').html('Proceed');
-        } else if ('cycle-stage-selection' == currPage){
-            $('#nextBtn').html('Next');
         }
         $('#nextBtn').click(function () {
             showWaiting();

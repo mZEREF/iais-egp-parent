@@ -7,7 +7,7 @@
 <%--<c:set var="title" value="New Assisted Reproduction Submission" />
 <c:set var="smallTitle" value="You are submitting for <string>Cycle Stages</strong>" />--%>
 
-<script type="text/javascript" src="<%=webroot1%>js/dataSubmission/ar_common.js"></script>
+<script type="text/javascript" src="<%=webroot1%>js/dataSubmission/dp_common.js"></script>
 
 <input type="hidden" name="ar_page" value="${currentPageStage}"/>
 <input type="hidden" id="_contextPath" name="_contextPath" value="${pageContext.request.contextPath}"/>

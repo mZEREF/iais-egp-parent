@@ -196,6 +196,10 @@ public final class MasterCodeUtil {
     public static final String DATA_SUBMISSION_TYPE           = "6E7A2098-3C1C-4292-89E5-71C345A98028";
     //Data Submission Status
     public static final String DATA_SUBMISSION_STATUS          = "55fdea54-f29d-4a33-a7e2-184c4cdb8581";
+
+    //Reason for Patient Amendment
+    public static final String DATA_SUBMISSION_PATIENT_AMENDMENT = "E92D33E5-6B47-EC11-BE6B-000C29FAAE4D";
+
     /**
      * @description: refresh the master codes into cache
      *

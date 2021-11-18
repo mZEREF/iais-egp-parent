@@ -23,4 +23,8 @@ public class DataSubmissionConstant {
     public static String AR_PREMISES_MAP                    = "AR_PREMISES_MAP";
     public static String AR_PREMISES                        = "AR_PREMISES";
     public static String AR_PATIENT                         = "AR_PATIENT";
+
+    public static String DP_DATA_SUBMISSION                 = "dpSuperDataSubmissionDto";
+    public static String DP_PREMISES_MAP                    = "DP_PREMISES_MAP";
+    public static String DP_PREMISES                        = "DP_PREMISES";
 }

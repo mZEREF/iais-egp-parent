@@ -51,7 +51,7 @@
                 <div class="form-group" style="<c:if test="${patient.ethnicGroup ne 'ETHG005'}">display:none</c:if>">
                     <iais:field width="5" value="Ethnic Group (Others)"/>
                     <iais:value width="7" display="true">
-                        <iais:code code="${patient.ethnicGroupOther}" />
+                        <c:out value="${patient.ethnicGroupOther}" />
                     </iais:value>
                 </div>
                 <div id="previousData" <c:if test="${patient.previousIdentification}">style="display:none"</c:if> >

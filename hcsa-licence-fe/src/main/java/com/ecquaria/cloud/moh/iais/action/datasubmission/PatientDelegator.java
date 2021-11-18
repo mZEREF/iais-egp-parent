@@ -72,7 +72,8 @@ public class PatientDelegator extends CommonDelegator {
         if (ACTION_TYPE_DRAFT.equals(actionType)) {
             // validatePageForDraft(patientInfo.getPatient(), bpc.request);
         } else {
-            validatePageData(bpc.request, patientInfo, "save", ACTION_TYPE_CONFIRM);
+            String profile = DataSubmissionConsts.DS_TYPE_RFC.equals(patientInfo.getSubmissionType()) ? "rfc" : "save";
+            validatePageData(bpc.request, patientInfo, profile, ACTION_TYPE_CONFIRM);
         }
     }
 
@@ -128,7 +129,16 @@ public class PatientDelegator extends CommonDelegator {
             husband.setEthnicGroup("");
         }
         patientInfo.setHusband(husband);
+        String amendReason = ParamUtil.getString(request, "amendReason");
+        String amendReasonOther = ParamUtil.getString(request, "amendReasonOther");
+        patientInfo.setAmendReason(StringUtil.getNonNull(amendReason));
+        patientInfo.setAmendReasonOther(StringUtil.getNonNull(amendReasonOther));
+        patientInfo.setSubmissionType(currentArDataSubmission.getSubmissionType());
         currentArDataSubmission.setPatientInfoDto(patientInfo);
+
+        DataSubmissionDto dataSubmission = currentArDataSubmission.getCurrentDataSubmissionDto();
+        dataSubmission.setAmendReason(amendReason);
+        dataSubmission.setAmendReasonOther(amendReasonOther);
         // ret-set cycle dto
         CycleDto cycleDto = currentArDataSubmission.getCycleDto();
         if (cycleDto == null) {

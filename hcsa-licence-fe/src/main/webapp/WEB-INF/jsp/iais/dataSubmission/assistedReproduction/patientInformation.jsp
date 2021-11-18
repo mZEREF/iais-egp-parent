@@ -16,6 +16,7 @@
 <c:set var="patient" value="${patientInfoDto.patient}" />
 <c:set var="previous" value="${patientInfoDto.previous}" />
 <c:set var="husband" value="${patientInfoDto.husband}" />
+<c:set var="dataSubmission" value="${arSuperDataSubmissionDto.currentDataSubmissionDto}" />
 
 <%@ include file="common/arHeader.jsp" %>
 
@@ -29,6 +30,9 @@
                 <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
                     <%@include file="section/patientDetailSection.jsp" %>
                     <%@include file="section/husbandDetailSection.jsp" %>
+                    <c:if test="${arSuperDataSubmissionDto.submissionType eq 'DSTY_005'}">
+                        <%@include file="section/patientAmendment.jsp" %>
+                    </c:if>
                 </div>
                 <%@include file="common/arFooter.jsp" %>
             </div>
