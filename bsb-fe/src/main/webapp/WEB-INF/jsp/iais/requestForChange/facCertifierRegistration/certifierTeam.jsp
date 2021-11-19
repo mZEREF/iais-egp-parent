@@ -5,6 +5,7 @@
 <%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
 <%@ taglib prefix="iais-bsb" uri="http://www.ecq.com/iais-bsb" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ page import="sg.gov.moh.iais.egp.bsb.util.TableDisplayUtil" %>
 
 <%
     sop.webflow.rt.api.BaseProcessClass process =
@@ -24,9 +25,9 @@
     <input type="hidden" name="action_type" value="">
     <input type="hidden" name="action_value" value="">
     <input type="hidden" name="action_additional" value="">
-    <input type="hidden" name="sectionAmt" value="${orgCerTeam.certifierTeamMemberList.size()}">
+    <input type="hidden" name="sectionIdx" value="${TableDisplayUtil.indexes(orgCerTeam.certifierTeamMemberList.size())}">
 
-    <input type="hidden" id="section_repeat_amt_input_name" value="sectionAmt" readonly disabled>
+    <input type="hidden" id="section_repeat_section_idx_name" value="sectionIdx" readonly disabled>
     <input type="hidden" id="section_repeat_section_id_prefix" value="cerTeamSection" readonly disabled>
     <input type="hidden" id="section_repeat_header_title_prefix" value="Certifying Team Member " readonly disabled>
     <input type="hidden" id="section_repeat_section_group_id" value="sectionGroup" readonly disabled>
@@ -45,7 +46,6 @@
 
                                     <div class="form-horizontal">
                                         <h3 class="col-12" style="border-bottom: 1px solid black">Certifying Team Member
-                                            <a class="btn-tooltip styleguide-tooltip" href="javascript:void(0);" data-toggle="tooltip" data-html="true" title="" data-original-title="<p>The Facility Administrator/Alternate Facility Administrator is responsible to ensure that the list of authorised personnel is always kept up to date i.e. prompt submission of updates to include newly authorized personnel or to remove personnel who are no longer authorized to access the facility.</p>">i</a>
                                         </h3>
 
                                         <div id="sectionGroup">
