@@ -35,11 +35,9 @@ function isHidden() {
         if (schedule !== 'SCHTYPE006' && schedule !== '') {
             $("#agentFifth--v--" + i).hide();
             $("#agentEpFifth--v--" + i).show();
-            $("#toxinDoc--v--" + i).hide();
         } else if (schedule === "SCHTYPE006") {
             $("#agentEpFifth--v--" + i).hide();
             $("#agentFifth--v--" + i).show();
-            $("#toxinDoc--v--" + i).show();
         }
     }
 }
@@ -54,7 +52,7 @@ function addSection(idxInputName, sectionIdPrefix, headerTitlePrefix, sectionGro
 
     var section0 = $("#" + sectionIdPrefix + separator + "0");
     if (currentAmt === 1) {
-        if (sectionIdPrefix === 'notTSection') {
+        if (sectionIdPrefix === 'notTSection' || sectionIdPrefix === 'conSection' || sectionIdPrefix === 'disSection' || sectionIdPrefix === 'expSection' || sectionIdPrefix === 'recSection') {
             var headerDiv = newSectionHeader(1, 0, headerTitlePrefix);
             section0[0].insertBefore(headerDiv, section0[0].firstChild);
         } else {
@@ -173,7 +171,7 @@ function removeSection(idx, idxInputName, sectionIdPrefix, titlePrefix, sectionG
     idxInput.val(idxArr.join(" "));
 
     if (nextAmt === 1) {
-        if (sectionIdPrefix === 'notTSection') {
+        if (sectionIdPrefix === 'notTSection' || sectionIdPrefix === 'conSection' || sectionIdPrefix === 'disSection' || sectionIdPrefix === 'expSection' || sectionIdPrefix === 'recSection') {
             var notSection0 = document.getElementById(sectionIdPrefix + separator + "0");
             notSection0.removeChild(notSection0.children[0]);
         } else {

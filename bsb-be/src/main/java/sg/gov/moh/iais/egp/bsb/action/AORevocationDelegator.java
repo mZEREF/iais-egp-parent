@@ -7,7 +7,6 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.*;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 import sg.gov.moh.iais.egp.bsb.client.DocClient;
 import sg.gov.moh.iais.egp.bsb.constant.RevocationConstants;
@@ -29,17 +28,14 @@ import java.util.*;
 @Slf4j
 @Delegator(value = "AORevocationDelegator")
 public class AORevocationDelegator {
-    @Autowired
-    private RevocationClient revocationClient;
-    @Autowired
-    private DocClient docClient;
+    private final RevocationClient revocationClient;
+    private final DocClient docClient;
 
-    /**
-     * StartStep: startStep
-     *
-     * @param bpc
-     * @throws IllegalAccessException
-     */
+    public AORevocationDelegator(RevocationClient revocationClient, DocClient docClient) {
+        this.revocationClient = revocationClient;
+        this.docClient = docClient;
+    }
+
     public void start(BaseProcessClass bpc) throws IllegalAccessException {
         AuditTrailHelper.auditFunction(RevocationConstants.MODULE_REVOCATION, RevocationConstants.FUNCTION_REVOCATION);
         HttpServletRequest request = bpc.request;
@@ -49,9 +45,8 @@ public class AORevocationDelegator {
     }
 
     /**
-     * AutoStep: prepareData
-     *
-     * @param bpc
+     * Temporarily disabled
+     * enter from task list
      */
     public void prepareTaskListData(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
@@ -64,17 +59,6 @@ public class AORevocationDelegator {
         if (searchResult.ok()) {
             ParamUtil.setRequestAttr(request, RevocationConstants.KEY_APPLICATION_PAGE_INFO, searchResult.getEntity().getPageInfo());
             List<Application> applications = searchResult.getEntity().getTasks();
-            //get facilityId
-//            for (Application application : applications) {
-//                application.getFacility().setFacilityAddress(JoinAddress.joinAddress(application));
-//                FacilityActivity activity = revocationClient.getFacilityActivityByApplicationId(application.getId()).getEntity();
-//                if (activity!=null) {
-//                    application.getFacility().setActiveType(activity.getActivityType());
-//                    List<FacilitySchedule> facilityScheduleList = activity.getFacilitySchedules();
-//                    String bioNames = JoinParamUtil.joinBiologicalName(facilityScheduleList, processClient);
-//                    application.setBiologicalName(bioNames);
-//                }
-//            }
             ParamUtil.setRequestAttr(request, RevocationConstants.KEY_APPLICATION_DATA_LIST, applications);
         } else {
             log.warn("get revocation application API doesn't return ok, the response is {}", searchResult);
@@ -85,9 +69,7 @@ public class AORevocationDelegator {
     }
 
     /**
-     * AutoStep: doSearch
-     *
-     * @param bpc
+     * Temporarily disabled
      */
     public void doSearch(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
@@ -121,9 +103,7 @@ public class AORevocationDelegator {
     }
 
     /**
-     * AutoStep: doPaging
-     *
-     * @param bpc
+     * Temporarily disabled
      */
     public void page(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
@@ -147,9 +127,7 @@ public class AORevocationDelegator {
     }
 
     /**
-     * AutoStep: doSorting
-     *
-     * @param bpc
+     * Temporarily disabled
      */
     public void sort(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
@@ -160,11 +138,6 @@ public class AORevocationDelegator {
         ParamUtil.setSessionAttr(request, RevocationConstants.PARAM_APPLICATION_SEARCH, searchDto);
     }
 
-    /**
-     * AutoStep: prepareData
-     *
-     * @param bpc
-     */
     public void prepareData(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         ParamUtil.setSessionAttr(request, RevocationConstants.PARAM_APPLICATION, null);
@@ -210,13 +183,12 @@ public class AORevocationDelegator {
             }
         }
 
-
         //get history list
         List<RoutingHistory> historyDtoList = revocationClient.getAllHistory().getEntity();
         ParamUtil.setRequestAttr(request, RevocationConstants.PARAM_PROCESSING_HISTORY,historyDtoList);
 
         AuditDocDto auditDocDto = new AuditDocDto();
-        if (!StringUtils.isEmpty(facility.getId())) {
+        if (StringUtils.hasLength(facility.getId())) {
             List<FacilityDoc> facilityDocList = docClient.getFacilityDocByFacId(facility.getId()).getEntity();
             List<FacilityDoc> docList = new ArrayList<>();
             for (FacilityDoc facilityDoc : facilityDocList) {
@@ -225,8 +197,6 @@ public class AORevocationDelegator {
                 docList.add(facilityDoc);
             }
             auditDocDto.setFacilityDocs(docList);
-        }
-        if (!StringUtils.isEmpty(facility.getId())) {
             ParamUtil.setSessionAttr(request, RevocationConstants.FACILITY, facility);
         }
         approval.setFacility(facility);
@@ -238,83 +208,28 @@ public class AORevocationDelegator {
         ParamUtil.setSessionAttr(request, RevocationConstants.BACK, RevocationConstants.REVOCATION_TASK_LIST);
     }
 
-    /**
-     * AutoStep: approve
-     *
-     * @param bpc
-     */
     public void approve(BaseProcessClass bpc) {
-        AODecisionDto aoDecisionDto = before(bpc);
-        revocationClient.updateApplicationStatusById(aoDecisionDto.getApplication().getId(),RevocationConstants.PARAM_APPLICATION_STATUS_APPROVED);
-        revocationClient.updateApprovalStatusById(aoDecisionDto.getApproval().getId(),RevocationConstants.PARAM_APPROVAL_STATUS_REVOKED,"approve");
-        revocationClient.saveApplicationMisc(aoDecisionDto.getMisc());
-        aoDecisionDto.getHistory().setAppStatus(RevocationConstants.PARAM_APPLICATION_STATUS_APPROVED);
-        revocationClient.saveHistory(aoDecisionDto.getHistory());
-
-//        Facility facility = aoDecisionDto.getApproval().getFacility();
-//        //send notification
-//        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-//        String date=dateFormat.format(new Date());
-//        String address = TableDisplayUtil.getOneLineAddress(facility.getBlkNo(), facility.getStreetName(), facility.getFloorNo(),
-//                facility.getUnitNo(), facility.getPostalCode());
-//
-//        BsbEmailParam bsbEmailParam = new BsbEmailParam();
-//        bsbEmailParam.setMsgTemplateId(MSG_TEMPLATE_REVOCATION_USER_APPROVED);
-//        bsbEmailParam.setRefId(aoDecisionDto.getApplication().getApplicationNo());
-//        bsbEmailParam.setRefIdType("appNo");
-//        bsbEmailParam.setQueryCode("1");
-//        bsbEmailParam.setReqRefNum("1");
-//        Map<String,Object> map = new HashMap<>();
-//        map.put("applicationNo", aoDecisionDto.getApplication().getApplicationNo());
-//        map.put("FacilityAddress",address);
-//        map.put("FacilityName",aoDecisionDto.getApplication().getFacility().getFacilityName());
-//        map.put("Date",date);
-//        map.put("Reason",aoDecisionDto.getMisc().getReasonContent());
-//        Map<String,Object> subMap = new HashMap<>();
-//        subMap.put("applicationNo", aoDecisionDto.getApplication().getApplicationNo());
-//        bsbEmailParam.setMsgSubject(subMap);
-//        bsbEmailParam.setMsgContent(map);
-//        bsbNotificationHelper.sendNotification(bsbEmailParam);
+        SubmitRevokeDto submitRevokeDto = before(bpc);
+        submitRevokeDto.setStatus(RevocationConstants.PARAM_APPLICATION_STATUS_APPROVED);
+        revocationClient.updateRevokeApplication(submitRevokeDto);
     }
 
-    /**
-     * AutoStep: reject
-     *
-     * @param bpc
-     */
     public void reject(BaseProcessClass bpc) {
-        AODecisionDto aoDecisionDto = before(bpc);
-        revocationClient.updateApplicationStatusById(aoDecisionDto.getApplication().getId(),RevocationConstants.PARAM_APPLICATION_STATUS_REJECTED);
-        revocationClient.updateApprovalStatusById(aoDecisionDto.getApproval().getId(),RevocationConstants.PARAM_APPROVAL_STATUS_REVOKED,"reject");
-        revocationClient.saveApplicationMisc(aoDecisionDto.getMisc());
-        aoDecisionDto.getHistory().setAppStatus(RevocationConstants.PARAM_APPLICATION_STATUS_REJECTED);
-        revocationClient.saveHistory(aoDecisionDto.getHistory());
+        SubmitRevokeDto submitRevokeDto = before(bpc);
+        submitRevokeDto.setStatus(RevocationConstants.PARAM_APPLICATION_STATUS_REJECTED);
+        revocationClient.updateRevokeApplication(submitRevokeDto);
     }
 
-    /**
-     * AutoStep: routeback
-     *
-     * @param bpc
-     */
     public void routebackToDO(BaseProcessClass bpc) {
-        AODecisionDto aoDecisionDto = before(bpc);
-        revocationClient.updateApplicationStatusById(aoDecisionDto.getApplication().getId(),RevocationConstants.PARAM_APPLICATION_STATUS_PENDING_DO);
-        revocationClient.saveApplicationMisc(aoDecisionDto.getMisc());
-        aoDecisionDto.getHistory().setAppStatus(RevocationConstants.PARAM_APPLICATION_STATUS_PENDING_DO);
-        revocationClient.saveHistory(aoDecisionDto.getHistory());
+        SubmitRevokeDto submitRevokeDto = before(bpc);
+        submitRevokeDto.setStatus(RevocationConstants.PARAM_APPLICATION_STATUS_PENDING_DO);
+        revocationClient.updateRevokeApplication(submitRevokeDto);
     }
 
-    /**
-     * AutoStep: routeToHM
-     *
-     * @param bpc
-     */
     public void routeToHM(BaseProcessClass bpc) {
-        AODecisionDto aoDecisionDto = before(bpc);
-        revocationClient.updateApplicationStatusById(aoDecisionDto.getApplication().getId(),RevocationConstants.PARAM_APPLICATION_STATUS_PENDING_HM);
-        revocationClient.saveApplicationMisc(aoDecisionDto.getMisc());
-        aoDecisionDto.getHistory().setAppStatus(RevocationConstants.PARAM_APPLICATION_STATUS_PENDING_HM);
-        revocationClient.saveHistory(aoDecisionDto.getHistory());
+        SubmitRevokeDto submitRevokeDto = before(bpc);
+        submitRevokeDto.setStatus(RevocationConstants.PARAM_APPLICATION_STATUS_PENDING_HM);
+        revocationClient.updateRevokeApplication(submitRevokeDto);
     }
 
     private ApprovalOfficerQueryDto getSearchDto(HttpServletRequest request) {
@@ -329,8 +244,9 @@ public class AORevocationDelegator {
         return dto;
     }
 
-    private AODecisionDto before(BaseProcessClass bpc) {
+    private SubmitRevokeDto before(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
+        SubmitRevokeDto submitRevokeDto = new SubmitRevokeDto();
         Application application = (Application)ParamUtil.getSessionAttr(request, RevocationConstants.PARAM_APPLICATION);
         Approval approval = (Approval) ParamUtil.getSessionAttr(request, RevocationConstants.APPROVAL);
 
@@ -345,32 +261,18 @@ public class AORevocationDelegator {
             sb.append(c);
         }
         boolean contains = reason.contains(sb.toString());
-
-        ApplicationMisc misc = new ApplicationMisc();
-        Application newApp = new Application();
-        newApp.setId(application.getId());
-        misc.setRemarks(remarks);
-        if (!contains){
-            misc.setReason(RevocationConstants.PARAM_REASON_TYPE_AO);
-            misc.setReasonContent(reason);
-        }
-        misc.setApplication(newApp);
-
         //get user name
+        if (!contains){
+            submitRevokeDto.setReason(RevocationConstants.PARAM_REASON_TYPE_AO);
+            submitRevokeDto.setReasonContent(reason);
+        }
         LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
-        RoutingHistory history=new RoutingHistory();
-        history.setActionBy(loginContext.getUserName());
-        history.setInternalRemarks(remarks);
-        history.setApplicationNo(application.getApplicationNo());
-
-        //Deposit the temporary DTO
-        AODecisionDto aoDecisionDto=new AODecisionDto();
-        aoDecisionDto.setApplication(application);
-        aoDecisionDto.setMisc(misc);
-        aoDecisionDto.setHistory(history);
-        aoDecisionDto.setApproval(approval);
-
-        return aoDecisionDto;
+        submitRevokeDto.setLoginUser(loginContext.getUserName());
+        submitRevokeDto.setRemarks(remarks);
+        submitRevokeDto.setAppId(application.getId());
+        submitRevokeDto.setApprovalId(approval.getId());
+        submitRevokeDto.setProcessType(application.getProcessType());
+        return submitRevokeDto;
     }
 
 }

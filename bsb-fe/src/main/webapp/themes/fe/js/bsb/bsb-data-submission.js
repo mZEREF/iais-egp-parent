@@ -6,15 +6,12 @@ function schTypeChange(obj) {
         if (schedule !== 'SCHTYPE006' && schedule !== '') {
             $("#agentFifth" + meta.separator + num).hide();
             $("#agentEpFifth" + meta.separator + num).show();
-            $("#toxinDoc" + meta.separator + num).hide();
         } else if (schedule === "SCHTYPE006") {
             $("#agentEpFifth" + meta.separator + num).hide();
             $("#agentFifth" + meta.separator + num).show();
-            $("#toxinDoc" + meta.separator + num).show();
         } else {
             $("#agentEpFifth" + meta.separator + num).hide();
             $("#agentFifth" + meta.separator + num).hide();
-            $("#toxinDoc" + meta.separator + num).hide();
         }
         if (schedule === 'Please Select' || schedule === '') {
             $("#bat" + meta.separator + num).html("<option value=\"\">Please select<\/option>");

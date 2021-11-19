@@ -141,7 +141,7 @@
                                                                         <a href="/bsb-fe/eservice/INTERNET/ViewBATInventory?submissionId=<iais:mask name='id' value='${item.id}'/>"/><c:out value="${item.submissionNo}"/></a>
                                                                     </c:when>
                                                                     <c:otherwise>
-                                                                        <%--DATTYPE004 future to do--%>
+                                                                        <%--DATTYPE004,DATTYPE009,DATTYPE010 future to do--%>
                                                                         <c:out value="${item.submissionNo}"/>
                                                                     </c:otherwise>
                                                                 </c:choose>

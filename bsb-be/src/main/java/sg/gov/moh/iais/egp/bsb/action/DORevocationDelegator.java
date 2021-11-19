@@ -58,9 +58,6 @@ public class DORevocationDelegator {
 
     /**
      * StartStep: startStep
-     *
-     * @param bpc
-     * @throws IllegalAccessException
      */
     public void start(BaseProcessClass bpc) throws IllegalAccessException {
         AuditTrailHelper.auditFunction(RevocationConstants.MODULE_REVOCATION, RevocationConstants.FUNCTION_REVOCATION);
@@ -71,8 +68,9 @@ public class DORevocationDelegator {
 
     /**
      * AutoStep: prepareData
-     *
-     * @param bpc
+     * Temporarily disabled
+     * enter from Biosafety enquiry
+     * approval list
      */
     public void prepareFacilityListData(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
@@ -112,8 +110,7 @@ public class DORevocationDelegator {
 
     /**
      * AutoStep: doSearch
-     *
-     * @param bpc
+     * Temporarily disabled
      */
     public void doSearch(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
@@ -134,8 +131,7 @@ public class DORevocationDelegator {
 
     /**
      * AutoStep: doPaging
-     *
-     * @param bpc
+     * Temporarily disabled
      */
     public void page(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
@@ -160,8 +156,7 @@ public class DORevocationDelegator {
 
     /**
      * AutoStep: doSorting
-     *
-     * @param bpc
+     * Temporarily disabled
      */
     public void sort(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
@@ -174,8 +169,6 @@ public class DORevocationDelegator {
 
     /**
      * AutoStep: prepareData
-     *
-     * @param bpc
      */
     public void prepareData(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
@@ -284,8 +277,6 @@ public class DORevocationDelegator {
 
     /**
      * AutoStep: doCreate
-     *
-     * @param bpc
      */
     public void save(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
@@ -321,8 +312,6 @@ public class DORevocationDelegator {
 
     /**
      * AutoStep: updateNum
-     *
-     * @param bpc
      */
     public void updateInventory(BaseProcessClass bpc) {
         //TODO update inventory method
