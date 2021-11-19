@@ -71,7 +71,7 @@ public class ArAjaxController {
         } else {
             LoginContext loginContext = DataSubmissionHelper.getLoginContext(request);
             String orgId = Optional.ofNullable(loginContext).map(LoginContext::getOrgId).orElse("");
-            PatientDto db = patientService.getPatientDto(idType, idNo, nationality, orgId);
+            PatientDto db = patientService.getArPatientDto(idType, idNo, nationality, orgId);
             result.put("patient", db);
         }
         return result;

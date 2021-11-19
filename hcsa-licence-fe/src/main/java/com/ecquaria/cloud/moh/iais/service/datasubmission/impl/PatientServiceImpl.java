@@ -22,12 +22,12 @@ public class PatientServiceImpl implements PatientService {
     private ArFeClient arFeClient;
 
     @Override
-    public PatientDto getPatientDto(String idType, String idNumber, String nationality, String orgId) {
+    public PatientDto getArPatientDto(String idType, String idNumber, String nationality, String orgId) {
         if (StringUtil.isEmpty(idType) || StringUtil.isEmpty(idNumber) || StringUtil.isEmpty(nationality)
                 || StringUtil.isEmpty(orgId)) {
             return null;
         }
-        return arFeClient.getPatientDto(idType, idNumber, nationality, orgId, DataSubmissionConsts.DS_CYCLE_STAGE_PATIENT).getEntity();
+        return arFeClient.getPatientDto(idType, idNumber, nationality, orgId).getEntity();
     }
 
 }
