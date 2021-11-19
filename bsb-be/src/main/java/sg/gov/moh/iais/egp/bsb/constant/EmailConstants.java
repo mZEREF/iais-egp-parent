@@ -6,6 +6,8 @@ package sg.gov.moh.iais.egp.bsb.constant;
  * DESCRIPTION: TODO
  **/
 public class EmailConstants {
+    private EmailConstants() {}
+
     //delivery mode
     public static final String TEMPLETE_DELIVERY_MODE_EMAIL = "DEMD001";
     public static final String TEMPLETE_DELIVERY_MODE_SMS = "DEMD002";

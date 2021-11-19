@@ -1,11 +1,16 @@
 package sg.gov.moh.iais.egp.bsb.entity;
 
-import com.ecquaria.cloud.moh.iais.common.base.BaseEntity;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
+import sg.gov.moh.iais.egp.bsb.common.BaseEntity;
+
 import java.util.List;
 
 
 @Data
+@EqualsAndHashCode(callSuper = true)
+@ToString(callSuper = true)
 public class FacilityActivity extends BaseEntity {
 
     private String id;

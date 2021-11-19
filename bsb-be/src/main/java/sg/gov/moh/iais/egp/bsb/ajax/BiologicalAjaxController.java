@@ -7,8 +7,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import sg.gov.moh.iais.egp.bsb.client.BiosafetyEnquiryClient;
 import sg.gov.moh.iais.egp.bsb.dto.enquiry.BiologicalDto;
@@ -29,7 +29,7 @@ public class BiologicalAjaxController {
     @Autowired
     private BiosafetyEnquiryClient biosafetyEnquiryClient;
 
-    @RequestMapping(value = "bio.do", method = RequestMethod.POST)
+    @PostMapping(value = "bio.do")
     public @ResponseBody
     Map<String, Object> queryBiologicalBySchedule(HttpServletRequest request) {
         Map<String, Object> jsonMap = IaisCommonUtils.genNewHashMap();

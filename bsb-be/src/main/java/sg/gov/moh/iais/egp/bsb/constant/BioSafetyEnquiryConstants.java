@@ -6,6 +6,8 @@ package sg.gov.moh.iais.egp.bsb.constant;
  * DESCRIPTION: TODO
  **/
 public class BioSafetyEnquiryConstants {
+    private BioSafetyEnquiryConstants() {}
+
     public static final String PARAM_APPLICATION_INFO_SEARCH = "appInfoSearchParam";
     public static final String PARAM_APPLICATION_INFO_RESULT = "appInfoSearchResult";
     public static final String PARAM_FACILITY_INFO_SEARCH = "facInfoSearchParam";

@@ -1,11 +1,13 @@
 package sg.gov.moh.iais.egp.bsb.entity;
 
 import lombok.Data;
+
+import java.io.Serializable;
 import java.util.Date;
 
 
 @Data
-public class BsbInbox {
+public class BsbInbox implements Serializable {
     private long id;
 
     private String userId;

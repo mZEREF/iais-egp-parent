@@ -1,11 +1,7 @@
 package sg.gov.moh.iais.egp.bsb.dto.revocation;
 
-import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import lombok.Data;
-import sg.gov.moh.iais.egp.bsb.entity.*;
-
 import java.util.Date;
-import java.util.List;
 
 /**
  * @author Zhu Tangtang

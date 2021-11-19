@@ -6,7 +6,8 @@ import org.springframework.util.StringUtils;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.SimpleTagSupport;
 
-// todo: This tag need to be enhanced in future
+
+/* This tag may be improved in the future */
 public class PaginationTag extends SimpleTagSupport {
     private static final String FREQUENT_LI_START =  "<li><a href=\"#\" onclick=\"";
     private static final String FREQUENT_END_TAG = "');\">";

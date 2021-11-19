@@ -6,6 +6,8 @@ package sg.gov.moh.iais.egp.bsb.constant;
  * DESCRIPTION: TODO
  **/
 public class UserRoleConstants {
+    private UserRoleConstants() {}
+
     public static final String USER_ROLE_DO                  = "DO";
     public static final String USER_ROLE_AO1                 = "AO1";
     public static final String USER_ROLE_AO2                 = "AO2";

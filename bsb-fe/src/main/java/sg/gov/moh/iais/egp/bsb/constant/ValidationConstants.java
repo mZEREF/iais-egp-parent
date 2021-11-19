@@ -5,6 +5,7 @@ package sg.gov.moh.iais.egp.bsb.constant;
  * @version 2021/11/4 19:21
  **/
 public class ValidationConstants {
+    private ValidationConstants() {}
 
     public static final String KEY_SHOW_ERROR_SWITCH = "needShowValidationError";
     public static final String YES = "Y";

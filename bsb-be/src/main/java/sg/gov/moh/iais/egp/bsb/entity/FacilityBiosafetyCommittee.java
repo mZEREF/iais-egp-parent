@@ -1,20 +1,16 @@
 package sg.gov.moh.iais.egp.bsb.entity;
 
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonView;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
 import lombok.ToString;
-import org.hibernate.annotations.GenericGenerator;
 import sg.gov.moh.iais.egp.bsb.common.BaseEntity;
-
-import javax.persistence.*;
 import java.util.Date;
+
 
 @Data
 @EqualsAndHashCode(callSuper = true)
+@ToString(callSuper = true)
 public class FacilityBiosafetyCommittee extends BaseEntity {
 
   private String id;

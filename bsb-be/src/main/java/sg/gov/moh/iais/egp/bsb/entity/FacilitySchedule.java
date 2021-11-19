@@ -1,8 +1,6 @@
 package sg.gov.moh.iais.egp.bsb.entity;
 
 import lombok.Data;
-import lombok.EqualsAndHashCode;
-
 import java.io.Serializable;
 import java.util.List;
 

@@ -8,7 +8,7 @@ import sg.gov.moh.iais.egp.bsb.common.BaseEntity;
 
 
 @Data
-@EqualsAndHashCode(callSuper = false)
+@EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
 public class RoutingHistory extends BaseEntity {
 

@@ -5,6 +5,7 @@ package sg.gov.moh.iais.egp.bsb.constant;
  * @date : 2021/8/11
  */
 public class ApprovalApplicationConstants {
+    private ApprovalApplicationConstants() {}
 
     public static final String MODULE_SYSTEM_CONFIG = "System Configuration";
     public static final String FUNCTION_ERROR_MESSAGES_MANAGEMENT = "Approval Application";

@@ -5,6 +5,8 @@ package sg.gov.moh.iais.egp.bsb.constant;
  * @version 2021/10/15 14:16
  **/
 public class FacCertifierRegisterConstants {
+    private FacCertifierRegisterConstants() {}
+
     public static final String NODE_NAME_COMPANY_INFO = "compInfo";
     public static final String NODE_NAME_ORGANISATION_INFO = "orgInfo";
     public static final String NODE_NAME_FAC_PRIMARY_DOCUMENT = "primaryDoc";

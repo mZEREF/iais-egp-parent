@@ -1,23 +1,13 @@
 package sg.gov.moh.iais.egp.bsb.dto.audit;
 
-import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
-import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
-import com.ecquaria.cloud.moh.iais.common.dto.application.AppSupDocDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremiseMiscDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremisesSpecialDocDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.*;
-import com.ecquaria.cloud.moh.iais.common.dto.inspection.LicPremisesAuditDto;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import sg.gov.moh.iais.egp.bsb.dto.PagingAndSortingDto;
 import sg.gov.moh.iais.egp.bsb.entity.FacilityDoc;
-
 import java.io.Serializable;
-import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author Zhu Tangtang

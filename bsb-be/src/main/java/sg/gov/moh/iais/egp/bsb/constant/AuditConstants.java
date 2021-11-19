@@ -1,14 +1,12 @@
 package sg.gov.moh.iais.egp.bsb.constant;
 
-import lombok.NoArgsConstructor;
 
 /**
  * @author Zhu Tangtang
  * @date 2021/7/6 15:04
  */
-
-@NoArgsConstructor
 public final class AuditConstants {
+    private AuditConstants() {}
 
     public static final String PARAM_AUDIT_SEARCH = "auditSearch";
     public static final String PARAM_AUDIT_TYPE = "auditType";

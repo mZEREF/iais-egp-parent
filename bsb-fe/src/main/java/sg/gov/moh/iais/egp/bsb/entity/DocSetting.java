@@ -7,13 +7,14 @@ import sg.gov.moh.iais.egp.bsb.constant.DocConstants;
 import sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants;
 
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class DocSetting {
+public class DocSetting implements Serializable {
     private String type;
     private String typeDisplay;
     private boolean mandatory;

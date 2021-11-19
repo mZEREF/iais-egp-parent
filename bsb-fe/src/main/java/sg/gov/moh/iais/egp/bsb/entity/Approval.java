@@ -2,10 +2,11 @@ package sg.gov.moh.iais.egp.bsb.entity;
 
 import lombok.Data;
 
+import java.io.Serializable;
 import java.util.Date;
 
 @Data
-public class Approval {
+public class Approval implements Serializable {
     private String id;
     private String processType;
     private String approveNo;

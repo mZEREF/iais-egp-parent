@@ -19,8 +19,7 @@ import java.util.List;
 @FeignClient(name = "FILE-REPOSITORY", configuration = {FeignConfiguration.class},
         fallback = FileRepoClientFallback.class)
 public interface FileRepoClient {
-    @RequestMapping(method = RequestMethod.POST, produces =  MediaType.APPLICATION_JSON_VALUE ,
-            consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(produces =  MediaType.APPLICATION_JSON_VALUE , consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     FeignResponseEntity<String> saveFiles(@RequestPart("selectedFile") MultipartFile file,
                                           @RequestParam("filerepoInfo") String fileRepoInfo);
     @GetMapping(value = "/{guid}")

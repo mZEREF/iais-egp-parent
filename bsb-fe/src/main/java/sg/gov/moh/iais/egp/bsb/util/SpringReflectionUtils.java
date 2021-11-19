@@ -25,7 +25,7 @@ public class SpringReflectionUtils implements ApplicationContextAware {
 
     public static Object invokeBeanMethod(String componentName, String methodName, Object[] params) {
         Object bean = getBean(componentName);
-        Class[] paramClass = null;
+        Class<?>[] paramClass = null;
         if (params != null) {
             int len = params.length;
             paramClass = new Class[len];
