@@ -2,8 +2,6 @@ package sg.gov.moh.iais.egp.bsb.dto.file;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
-
-import java.io.Serializable;
 import java.util.List;
 
 
@@ -15,7 +13,7 @@ import java.util.List;
  */
 @Data
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class FileRepoSyncDto implements Serializable {
+public class FileRepoSyncDto {
     private List<NewFileSyncDto> newFiles;
     private List<String> toDeleteIds;
 }

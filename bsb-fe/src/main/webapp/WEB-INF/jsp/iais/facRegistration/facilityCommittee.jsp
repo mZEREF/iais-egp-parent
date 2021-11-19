@@ -194,7 +194,7 @@
                                                                 <label for="notAnEmployee--v--${status.index}">No</label>
                                                                 <input type="radio" name="employee--v--${status.index}" id="notAnEmployee--v--${status.index}" data-custom-ind="committeePersonnelIsEmployee" value="N" <c:if test="${personnel.employee eq 'N'}">checked="checked"</c:if> />
                                                             </div>
-                                                            <span data-err-ind="postalCode" class="error-msg"></span>
+                                                            <span data-err-ind="employee--v--${status.index}" class="error-msg"></span>
                                                         </div>
                                                     </div>
                                                     <div class="form-group" id="committeeExternalCompNameDiv--v--${status.index}" <c:if test="${personnel.employee ne 'N'}">style="display: none"</c:if>>
