@@ -237,7 +237,7 @@ public class RfcApprovalAppDelegator {
         if (needShowError == Boolean.TRUE) {
             ParamUtil.setRequestAttr(request, KEY_VALIDATION_ERRORS, approvalProfileDto.retrieveValidationResult());
         }
-        Nodes.needValidation(approvalAppRoot,NODE_NAME_APPROVAL_PROFILE);
+        Nodes.needValidation(approvalAppRoot,currentNodePath);
         ParamUtil.setRequestAttr(request, NODE_NAME_APPROVAL_PROFILE, approvalProfileDto);
 
         NodeGroup approvalProfileGroup = (NodeGroup) approvalAppRoot.at(NODE_NAME_APPROVAL_PROFILE);
