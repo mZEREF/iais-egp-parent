@@ -16,42 +16,20 @@
                 <iais:row>
                     <iais:field width="6" value="Please indicate ART Co-funding" mandatory="true" cssClass="col-md-6"/>
                     <iais:value width="6" cssClass="col-md-6">
-                        <div class="form-check">
-                            <input class="form-check-input"
-                                   type="radio"
-                                   name="coFunding"
-                                   value="No"
-                                   id="coFundingNo"
-                                   <c:if test="${arTreatmentSubsidiesStageDto.coFunding == 'No'}">checked</c:if>
-                                   aria-invalid="false">
-                            <label class="form-check-label"
-                                   for="coFundingNo"><span
-                                    class="check-circle"></span>No Co-funding for this cycle</label>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input"
-                                   type="radio"
-                                   name="coFunding"
-                                   value="Fresh"
-                                   id="coFundingFresh"
-                                   <c:if test="${arTreatmentSubsidiesStageDto.coFunding == 'Fresh'}">checked</c:if>
-                                   aria-invalid="false">
-                            <label class="form-check-label"
-                                   for="coFundingFresh"><span
-                                    class="check-circle"></span>Fresh Cycle Subsidy</label>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input"
-                                   type="radio"
-                                   name="coFunding"
-                                   value="Frozen"
-                                   id="coFundingFrozen"
-                                   <c:if test="${arTreatmentSubsidiesStageDto.coFunding == 'Frozen'}">checked</c:if>
-                                   aria-invalid="false">
-                            <label class="form-check-label"
-                                   for="coFundingFrozen"><span
-                                    class="check-circle"></span>Frozen Cycle Subsidy</label>
-                        </div>
+                        <c:forEach var="artCoFundingItem" items="${artCoFundingOptions}" varStatus="defectTypeStatus">
+                            <div class="form-check">
+                                <input class="form-check-input"
+                                       type="radio"
+                                       name="coFunding"
+                                       value="${artCoFundingItem.value}"
+                                       id="coFunding${artCoFundingItem.value}"
+                                       <c:if test="${arTreatmentSubsidiesStageDto.coFunding == artCoFundingItem.value}">checked</c:if>
+                                       aria-invalid="false">
+                                <label class="form-check-label"
+                                       for="coFunding${artCoFundingItem.value}"><span
+                                        class="check-circle"></span>${artCoFundingItem.text}</label>
+                            </div>
+                        </c:forEach>
                         <span id="error_coFunding" name="iaisErrorMsg" class="error-msg"></span>
                     </iais:value>
                 </iais:row>

@@ -93,7 +93,7 @@ public final class MasterCodeUtil {
     public static final String CATE_ID_BABY_BIRTH_WEIGHT           = "6A3AD422-C5B8-44BB-A62F-A69CF558C006";
     public static final String CATE_ID_POS_BIRTH_PLACE             = "1AFFD970-9BEA-4E9D-97C7-CDA2CC4EC2B5";
     public static final String CATE_ID_POS_BABY_DEFECT             = "9FE7AEAE-C970-4177-B708-F72AE6899483";
-
+    public static final String CATE_ID_ATS_ART_CO_FUNDING             = "8ED4B2DA-F459-4AF1-8012-97890C975121";
 
     public static final String CATE_ID_SYSTEM_PARAMETER_MODULE          = "1D3F6F1A-5334-EA11-BE7D-000C29F371DC";
     public static final String CATE_ID_SYSTEM_PARAMETER_TYPE            = "364C7AFB-5234-EA11-BE7D-000C29F371DC";

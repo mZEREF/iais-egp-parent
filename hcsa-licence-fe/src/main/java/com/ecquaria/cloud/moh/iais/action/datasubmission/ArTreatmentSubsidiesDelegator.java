@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.action.datasubmission;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.intranetUser.IntranetUserConstant;
+import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArTreatmentSubsidiesStageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.CycleDto;
@@ -10,6 +11,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
+import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.client.ArFeClient;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,14 +43,18 @@ public class ArTreatmentSubsidiesDelegator extends CommonDelegator {
             arSuperDataSubmissionDto.setArTreatmentSubsidiesStageDto(arTreatmentSubsidiesStageDto);
             DataSubmissionHelper.setCurrentArDataSubmission(arSuperDataSubmissionDto, bpc.request);
         }
+
+        List<SelectOption> artCoFundingOptions = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_ATS_ART_CO_FUNDING);
+        ParamUtil.setRequestAttr(bpc.request, "artCoFundingOptions", artCoFundingOptions);
+
         CycleDto cycleDto = arSuperDataSubmissionDto.getCycleDto();
         List<ArTreatmentSubsidiesStageDto> oldArTreatmentSubsidiesStageDtos = arFeClient.getArTreatmentSubsidiesStagesByPatientInfo(cycleDto.getPatientCode(), cycleDto.getHciCode(), cycleDto.getCycleType()).getEntity();
         int freshCount = 0;
         int frozenCount = 0;
         for (ArTreatmentSubsidiesStageDto arTreatmentSubsidiesStageDto1 : oldArTreatmentSubsidiesStageDtos) {
-            if ("Fresh".equals(arTreatmentSubsidiesStageDto1.getCoFunding())) {
+            if ("ATSACF002".equals(arTreatmentSubsidiesStageDto1.getCoFunding())) {
                 freshCount++;
-            } else if ("Frozen".equals(arTreatmentSubsidiesStageDto1.getCoFunding())) {
+            } else if ("ATSACF003".equals(arTreatmentSubsidiesStageDto1.getCoFunding())) {
                 frozenCount++;
             }
         }
