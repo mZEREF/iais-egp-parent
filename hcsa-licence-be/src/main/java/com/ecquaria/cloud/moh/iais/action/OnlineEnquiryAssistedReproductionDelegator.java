@@ -16,6 +16,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
 import com.ecquaria.cloud.moh.iais.helper.FilterParameter;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
+import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.helper.SearchResultHelper;
 import com.ecquaria.cloud.moh.iais.helper.SystemParamUtil;
@@ -316,7 +317,17 @@ public class OnlineEnquiryAssistedReproductionDelegator {
         }
         QueryHelp.setMainSql("onlineEnquiry","searchSubmissionByAssistedReproduction",submissionParam);
         SearchResult<AssistedReproductionEnquirySubResultsDto> submissionResult = assistedReproductionService.searchSubmissionByParam(submissionParam);
-
+        if(IaisCommonUtils.isNotEmpty(submissionResult.getRows())){
+            for (AssistedReproductionEnquirySubResultsDto subResultsDto:submissionResult.getRows()
+                 ) {
+                switch (subResultsDto.getSubmissionType()){
+                    case "AR_TP001":subResultsDto.setSubmissionType("Patient Information");break;
+                    case "AR_TP002":subResultsDto.setSubmissionType("Cycle Stages");break;
+                    case "AR_TP003":subResultsDto.setSubmissionType("Donor Samples");break;
+                    default:subResultsDto.setSubmissionType(MasterCodeUtil.getCodeDesc(subResultsDto.getSubmissionType()));
+                }
+            }
+        }
         ParamUtil.setRequestAttr(request,"submissionParam",submissionParam);
         ParamUtil.setRequestAttr(request,"submissionResult",submissionResult);
 

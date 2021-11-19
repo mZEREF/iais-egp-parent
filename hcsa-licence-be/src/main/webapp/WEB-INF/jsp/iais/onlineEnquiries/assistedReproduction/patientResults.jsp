@@ -302,7 +302,7 @@
                                                                 <a href="#">${submission.submissionIdNo}</a>
                                                             </td>
                                                             <td>
-                                                                <iais:code code="${submission.submissionType}"/>
+                                                                <c:out value="${submission.submissionType}"/>
                                                             </td>
                                                             <td>
                                                                 <iais:code code="${submission.submissionSubtype}"/>
