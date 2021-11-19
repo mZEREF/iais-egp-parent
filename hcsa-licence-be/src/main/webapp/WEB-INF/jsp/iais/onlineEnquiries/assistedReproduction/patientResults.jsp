@@ -148,45 +148,45 @@
 
                     </div>
 
-                    <div id="patientResult" <c:if test="${ assistedReproductionEnquiryFilterDto.searchBy !='1' }">style="display: none"</c:if>>
+                    <div id="patientResultDisplay" <c:if test="${ assistedReproductionEnquiryFilterDto.searchBy !='1' }">style="display: none"</c:if>>
                         <div class="col-xs-12">
                             <div class="components">
 
-                                <iais:pagination param="SearchParam" result="SearchResult"/>
+                                <iais:pagination param="patientParam" result="patientResult"/>
                                 <div class="table-responsive">
                                     <div class="table-gp">
                                         <table aria-describedby="" class="table">
                                             <thead>
                                             <tr >
                                                 <iais:sortableHeader needSort="false"
-                                                                     field="APPLICATION_NO"
+                                                                     field="BUSINESS_NAME"
                                                                      value="AR Centre"/>
                                                 <iais:sortableHeader needSort="false"
-                                                                     field="APP_TYPE"
+                                                                     field="NAME"
                                                                      value="Patient Name"/>
                                                 <iais:sortableHeader needSort="false"
-                                                                     field="LICENCE_NO"
+                                                                     field="ID_TYPE"
                                                                      value="Patient ID Type"/>
                                                 <iais:sortableHeader needSort="false"
-                                                                     field="HCI_CODE"
+                                                                     field="ID_NUMBER"
                                                                      value="Patient ID No"/>
                                                 <iais:sortableHeader needSort="false"
-                                                                     field="HCI_NAME"
+                                                                     field="DATE_OF_BIRTH"
                                                                      value="Patient Date of Birth"/>
                                                 <iais:sortableHeader needSort="false"
-                                                                     field="HCI_ADDRESS"
+                                                                     field="NATIONALITY"
                                                                      value="Patient Nationality"/>
                                                 <iais:sortableHeader needSort="false"
-                                                                     field="UEN_NO"
+                                                                     field="CREATED_DT"
                                                                      value="Cycle Start Date"/>
                                                 <iais:sortableHeader needSort="false"
-                                                                     field="LICENSEE_NAME"
+                                                                     field=""
                                                                      value="Action"/>
                                             </tr>
                                             </thead>
                                             <tbody class="form-horizontal">
                                             <c:choose>
-                                                <c:when test="${empty SearchResult.rows}">
+                                                <c:when test="${empty patientResult.rows}">
                                                     <tr>
                                                         <td colspan="15">
                                                             <iais:message key="GENERAL_ACK018"
@@ -195,34 +195,43 @@
                                                     </tr>
                                                 </c:when>
                                                 <c:otherwise>
-                                                    <c:forEach var="pool"
-                                                               items="${SearchResult.rows}"
+                                                    <c:forEach var="patient"
+                                                               items="${patientResult.rows}"
                                                                varStatus="status">
                                                         <tr>
 
                                                             <td>
-
+                                                                <c:out value="${patient.arCentre}"/>
                                                             </td>
                                                             <td>
-
+                                                                <c:out value="${patient.patientName}"/>
                                                             </td>
                                                             <td>
-
+                                                                <iais:code code="${patient.patientIdType}"/>
                                                             </td>
                                                             <td>
-
+                                                                <c:out value="${patient.patientIdNo}"/>
                                                             </td>
                                                             <td>
-
+                                                                <fmt:formatDate
+                                                                        value="${patient.patientDateBirth}"
+                                                                        pattern="${AppConsts.DEFAULT_DATE_FORMAT}"/>
                                                             </td>
                                                             <td>
-
+                                                                <c:out value="${patient.patientNationality}"/>
                                                             </td>
                                                             <td>
-
+                                                                <fmt:formatDate
+                                                                        value="${patient.cycleStartDate}"
+                                                                        pattern="${AppConsts.DEFAULT_DATE_FORMAT}"/>
                                                             </td>
                                                             <td>
-
+                                                                <button type="button" class="btn btn-default btn-sm">
+                                                                    Quick View
+                                                                </button>
+                                                                <button type="button" class="btn btn-default btn-sm">
+                                                                    View Full Details
+                                                                </button>
                                                             </td>
                                                         </tr>
                                                     </c:forEach>
@@ -243,36 +252,36 @@
                     </div>
 
 
-                    <div id="submissionResult" <c:if test="${ assistedReproductionEnquiryFilterDto.searchBy !='0' }">style="display: none"</c:if>>
+                    <div id="submissionResultDisplay" <c:if test="${ assistedReproductionEnquiryFilterDto.searchBy !='0' }">style="display: none"</c:if>>
                         <div class="col-xs-12">
                             <div class="components">
 
-                                <iais:pagination param="SearchParam" result="SearchResult"/>
+                                <iais:pagination param="submissionParam" result="submissionResult"/>
                                 <div class="table-responsive">
                                     <div class="table-gp">
                                         <table aria-describedby="" class="table">
                                             <thead>
                                             <tr >
                                                 <iais:sortableHeader needSort="false"
-                                                                     field="APPLICATION_NO"
+                                                                     field="BUSINESS_NAME"
                                                                      value="AR Centre"/>
                                                 <iais:sortableHeader needSort="false"
-                                                                     field="APP_TYPE"
+                                                                     field="SUBMISSION_NO"
                                                                      value="Submission ID"/>
                                                 <iais:sortableHeader needSort="false"
-                                                                     field="LICENCE_NO"
+                                                                     field="SUBMISSION_TYPE"
                                                                      value="Submission Type"/>
                                                 <iais:sortableHeader needSort="false"
-                                                                     field="HCI_CODE"
+                                                                     field="CYCLE_STAGE"
                                                                      value="Submission Subtype"/>
                                                 <iais:sortableHeader needSort="false"
-                                                                     field="HCI_NAME"
+                                                                     field="SUBMIT_DT"
                                                                      value="Submission Date"/>
                                             </tr>
                                             </thead>
                                             <tbody class="form-horizontal">
                                             <c:choose>
-                                                <c:when test="${empty SearchResult.rows}">
+                                                <c:when test="${empty submissionResult.rows}">
                                                     <tr>
                                                         <td colspan="15">
                                                             <iais:message key="GENERAL_ACK018"
@@ -281,25 +290,27 @@
                                                     </tr>
                                                 </c:when>
                                                 <c:otherwise>
-                                                    <c:forEach var="pool"
-                                                               items="${SearchResult.rows}"
+                                                    <c:forEach var="submission"
+                                                               items="${submissionResult.rows}"
                                                                varStatus="status">
                                                         <tr>
 
                                                             <td>
-
+                                                                <c:out value="${submission.arCentre}"/>
                                                             </td>
                                                             <td>
-
+                                                                <a href="#">${submission.submissionIdNo}</a>
                                                             </td>
                                                             <td>
-
+                                                                <iais:code code="${submission.submissionType}"/>
                                                             </td>
                                                             <td>
-
+                                                                <iais:code code="${submission.submissionSubtype}"/>
                                                             </td>
                                                             <td>
-
+                                                                <fmt:formatDate
+                                                                        value="${submission.submissionDate}"
+                                                                        pattern="${AppConsts.DEFAULT_DATE_FORMAT}"/>
                                                             </td>
 
                                                         </tr>
@@ -329,28 +340,28 @@
         $('#searchByPatient').change(function () {
             if($(this).is(':checked')){
                 $('#patientInformationFilter').attr("style","display: block");
-                $('#patientResult').attr("style","display: block");
+                $('#patientResultDisplay').attr("style","display: block");
                 $('#submissionFilter').attr("style","display: none");
-                $('#submissionResult').attr("style","display: none");
+                $('#submissionResultDisplay').attr("style","display: none");
             }else {
                 $('#patientInformationFilter').attr("style","display: none");
-                $('#patientResult').attr("style","display: none");
+                $('#patientResultDisplay').attr("style","display: none");
                 $('#submissionFilter').attr("style","display: block");
-                $('#submissionResult').attr("style","display: block");
+                $('#submissionResultDisplay').attr("style","display: block");
             }
         });
 
         $('#searchBySubmission').change(function () {
             if($(this).is(':checked')){
                 $('#patientInformationFilter').attr("style","display: none");
-                $('#patientResult').attr("style","display: none");
+                $('#patientResultDisplay').attr("style","display: none");
                 $('#submissionFilter').attr("style","display: block");
-                $('#submissionResult').attr("style","display: block");
+                $('#submissionResultDisplay').attr("style","display: block");
             }else {
                 $('#patientInformationFilter').attr("style","display: block");
-                $('#patientResult').attr("style","display: block");
+                $('#patientResultDisplay').attr("style","display: block");
                 $('#submissionFilter').attr("style","display: none");
-                $('#submissionResult').attr("style","display: none");
+                $('#submissionResultDisplay').attr("style","display: none");
             }
         });
 

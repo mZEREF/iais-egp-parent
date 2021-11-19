@@ -4,6 +4,7 @@ import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
+import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.AssistedReproductionEnquiryFilterDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.AssistedReproductionEnquiryResultsDto;
@@ -18,6 +19,7 @@ import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.helper.SearchResultHelper;
 import com.ecquaria.cloud.moh.iais.helper.SystemParamUtil;
+import com.ecquaria.cloud.moh.iais.service.AssistedReproductionService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
@@ -41,7 +43,7 @@ public class OnlineEnquiryAssistedReproductionDelegator {
 
     FilterParameter patientParameter = new FilterParameter.Builder()
             .clz(AssistedReproductionEnquiryResultsDto.class)
-            .searchAttr("patientSearch")
+            .searchAttr("patientParam")
             .resultAttr("patientResult")
             .sortField("id").sortType(SearchParam.ASCENDING).pageNo(1).pageSize(pageSize).build();
 
@@ -53,6 +55,9 @@ public class OnlineEnquiryAssistedReproductionDelegator {
 
     @Autowired
     private SystemParamConfig systemParamConfig;
+
+    @Autowired
+    private AssistedReproductionService assistedReproductionService;
 
     public void start(BaseProcessClass bpc){
         AssistedReproductionEnquiryFilterDto assistedReproductionEnquiryFilterDto=new AssistedReproductionEnquiryFilterDto();
@@ -279,13 +284,13 @@ public class OnlineEnquiryAssistedReproductionDelegator {
         ParamUtil.setRequestAttr(bpc.request,"submissionTypeOptions",submissionTypeOptions);
 
         HttpServletRequest request = bpc.request;
-        Map<String,Object> filter= IaisCommonUtils.genNewHashMap();
+        Map<String,Object> patientFilter= IaisCommonUtils.genNewHashMap();
 
         AssistedReproductionEnquiryFilterDto arFilterDto= setAssistedReproductionEnquiryFilterDto(request);
 //        if(licenceNo!=null) {
 //            filter.put("licenceNo", licenceNo);
 //        }
-        patientParameter.setFilters(filter);
+        patientParameter.setFilters(patientFilter);
         SearchParam patientParam = SearchResultHelper.getSearchParam(request, patientParameter,true);
         CrudHelper.doPaging(patientParam,bpc.request);
         String sortFieldName = ParamUtil.getString(request,"crud_action_value");
@@ -295,11 +300,14 @@ public class OnlineEnquiryAssistedReproductionDelegator {
             patientParameter.setSortField(sortFieldName);
         }
         QueryHelp.setMainSql("onlineEnquiry","searchPatientByAssistedReproduction",patientParam);
-        //SearchResult<GiroAccountInfoQueryDto> giroAccountResult = giroAccountService.searchGiroInfoByParam(giroAccountParam);
 
+        SearchResult<AssistedReproductionEnquiryResultsDto> patientResult = assistedReproductionService.searchPatientByParam(patientParam);
+        ParamUtil.setRequestAttr(request,"patientResult",patientResult);
+        ParamUtil.setRequestAttr(request,"patientParam",patientParam);
 
+        Map<String,Object> submissionFilter= IaisCommonUtils.genNewHashMap();
 
-        submissionParameter.setFilters(filter);
+        submissionParameter.setFilters(submissionFilter);
         SearchParam submissionParam = SearchResultHelper.getSearchParam(request, submissionParameter,true);
         CrudHelper.doPaging(submissionParam,bpc.request);
         if(!StringUtil.isEmpty(sortFieldName)&&!StringUtil.isEmpty(sortType)){
@@ -307,9 +315,10 @@ public class OnlineEnquiryAssistedReproductionDelegator {
             submissionParameter.setSortField(sortFieldName);
         }
         QueryHelp.setMainSql("onlineEnquiry","searchSubmissionByAssistedReproduction",submissionParam);
-        //SearchResult<GiroAccountInfoQueryDto> giroAccountResult = giroAccountService.searchGiroInfoByParam(giroAccountParam);
+        SearchResult<AssistedReproductionEnquirySubResultsDto> submissionResult = assistedReproductionService.searchSubmissionByParam(submissionParam);
 
-
+        ParamUtil.setRequestAttr(request,"submissionParam",submissionParam);
+        ParamUtil.setRequestAttr(request,"submissionResult",submissionResult);
 
 
     }

@@ -1214,45 +1214,45 @@
                     </div>
                     <br>
 
-                    <div class="row" id="patientResult">
+                    <div  id="patientResult">
                         <div class="col-xs-12">
                             <div class="components">
 
-                                <iais:pagination param="SearchParam" result="SearchResult"/>
+                                <iais:pagination param="patientParam" result="patientResult"/>
                                 <div class="table-responsive">
                                     <div class="table-gp">
                                         <table aria-describedby="" class="table">
                                             <thead>
                                             <tr >
                                                 <iais:sortableHeader needSort="false"
-                                                                     field="APPLICATION_NO"
+                                                                     field="BUSINESS_NAME"
                                                                      value="AR Centre"/>
                                                 <iais:sortableHeader needSort="false"
-                                                                     field="APP_TYPE"
+                                                                     field="NAME"
                                                                      value="Patient Name"/>
                                                 <iais:sortableHeader needSort="false"
-                                                                     field="LICENCE_NO"
+                                                                     field="ID_TYPE"
                                                                      value="Patient ID Type"/>
                                                 <iais:sortableHeader needSort="false"
-                                                                     field="HCI_CODE"
+                                                                     field="ID_NUMBER"
                                                                      value="Patient ID No"/>
                                                 <iais:sortableHeader needSort="false"
-                                                                     field="HCI_NAME"
+                                                                     field="DATE_OF_BIRTH"
                                                                      value="Patient Date of Birth"/>
                                                 <iais:sortableHeader needSort="false"
-                                                                     field="HCI_ADDRESS"
+                                                                     field="NATIONALITY"
                                                                      value="Patient Nationality"/>
                                                 <iais:sortableHeader needSort="false"
-                                                                     field="UEN_NO"
+                                                                     field="CREATED_DT"
                                                                      value="Cycle Start Date"/>
                                                 <iais:sortableHeader needSort="false"
-                                                                     field="LICENSEE_NAME"
+                                                                     field=""
                                                                      value="Action"/>
                                             </tr>
                                             </thead>
                                             <tbody class="form-horizontal">
                                             <c:choose>
-                                                <c:when test="${empty SearchResult.rows}">
+                                                <c:when test="${empty patientResult.rows}">
                                                     <tr>
                                                         <td colspan="15">
                                                             <iais:message key="GENERAL_ACK018"
@@ -1261,34 +1261,40 @@
                                                     </tr>
                                                 </c:when>
                                                 <c:otherwise>
-                                                    <c:forEach var="pool"
-                                                               items="${SearchResult.rows}"
+                                                    <c:forEach var="patient"
+                                                               items="${patientResult.rows}"
                                                                varStatus="status">
                                                         <tr>
 
                                                             <td>
-
+                                                                <c:out value="${patient.arCentre}"/>
                                                             </td>
                                                             <td>
-
+                                                                <c:out value="${patient.patientName}"/>
                                                             </td>
                                                             <td>
-
+                                                                <iais:code code="${patient.patientIdType}"/>
                                                             </td>
                                                             <td>
-
+                                                                <c:out value="${patient.patientIdNo}"/>
                                                             </td>
                                                             <td>
-
+                                                                <fmt:formatDate
+                                                                        value="${patient.patientDateBirth}"
+                                                                        pattern="${AppConsts.DEFAULT_DATE_FORMAT}"/>
                                                             </td>
                                                             <td>
-
+                                                                <c:out value="${patient.patientNationality}"/>
                                                             </td>
                                                             <td>
-
+                                                                <fmt:formatDate
+                                                                        value="${patient.cycleStartDate}"
+                                                                        pattern="${AppConsts.DEFAULT_DATE_FORMAT}"/>
                                                             </td>
                                                             <td>
-
+                                                                <button type="button" class="btn btn-default btn-sm">
+                                                                    View Full Details
+                                                                </button>
                                                             </td>
                                                         </tr>
                                                     </c:forEach>
