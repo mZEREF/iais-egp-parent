@@ -1,6 +1,6 @@
 var liveBirth = "OUTOPRE001";
 var noLiveBirth = "OUTOPRE002";
-var unknown = "OUTOPRE003";
+var outcome_unknown = "OUTOPRE003";
 var others = "OUTOPRE004";
 
 var singleton = "OSIOU001";
@@ -96,7 +96,7 @@ function pregnancyOutcomeChangeFunction() {
         $('#femaleLiveBirthNum').trigger('change');
     }
 
-    if (pregnancyOutcomeVal == unknown) {
+    if (pregnancyOutcomeVal == outcome_unknown) {
         $deliverySection.hide();
 
         $deliverySection.find('select').val(null)
@@ -195,7 +195,17 @@ function l3CareBabyNumChangeFunction() {
 }
 
 function deliveryDateCheckboxChangeFunction() {
-    $("#deliveryDate").attr("disabled", $("#deliveryDateUnknown").prop("checked"));
+    let $deliveryDate = $("#deliveryDate");
+    let $deliveryDateUnknown = $("#deliveryDateUnknown");
+    $deliveryDate.attr("disabled", $deliveryDateUnknown.prop("checked"));
+    if ($deliveryDateUnknown.prop("checked")) {
+        $deliveryDate.css("border-color", "rgb(237, 237, 237)");
+        $deliveryDate.css("color", "rgb(153, 153, 153)");
+        $deliveryDate.prop("value",null);
+    } else {
+        $deliveryDate.css("border-color", "");
+        $deliveryDate.css("color", "");
+    }
 }
 
 function birthDefectChangeFunction() {

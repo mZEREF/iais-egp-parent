@@ -92,7 +92,7 @@
                     </iais:row>
                 </div>
                 <div id="deliverySection"
-                     <c:if test="${pregnancyOutcomeStageDto.firstUltrasoundOrderShow == 'OSIOU005'}">style="display:none;"</c:if>>
+                     <c:if test="${pregnancyOutcomeStageDto.pregnancyOutcome == 'OUTOPRE003'}">style="display:none;"</c:if>>
                     <iais:row>
                         <iais:field width="6" value="Mode of Delivery"
                                     cssClass="col-md-6"/>
@@ -116,7 +116,6 @@
                                     cssClass="col-md-6"/>
                         <iais:value width="6" cssClass="col-md-6">
                             <iais:code code="${pregnancyOutcomeStageDto.birthPlace}"/>
-                            <c:out value="${pregnancyOutcomeStageDto.birthPlace}"/>
                         </iais:value>
                     </iais:row>
                     <div id="localBirthPlaceDiv"
