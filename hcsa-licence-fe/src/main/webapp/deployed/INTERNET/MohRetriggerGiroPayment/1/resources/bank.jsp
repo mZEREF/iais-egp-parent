@@ -1,1 +1,0 @@
-<%@include file="/WEB-INF/jsp/iais/retriggerGiroPayment/bank.jsp"%>

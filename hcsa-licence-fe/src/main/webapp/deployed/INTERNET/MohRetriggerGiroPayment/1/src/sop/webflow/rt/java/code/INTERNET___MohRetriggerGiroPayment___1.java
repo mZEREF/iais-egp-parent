@@ -10,18 +10,18 @@
  * reasons.
  */
 package sop.webflow.rt.java.code;
-import sop.webflow.rt.api.BaseProcessClass;
 import com.ecquaria.cloud.helper.EngineHelper;
+import sop.webflow.rt.api.BaseProcessClass;
 
 public class INTERNET___MohRetriggerGiroPayment___1 extends BaseProcessClass {
 
 	private static final String DELEGATOR ="MohRetriggerGiroPaymentDelegator";
-
-	public void jumpBlank_OnStepProcess_0 () throws Exception {
+	
+	public void jumpBlank_OnStepProcess_0 () throws Exception { 
 		EngineHelper.delegate(DELEGATOR, "jumpBank", this);
 	}
 
-	public void doPayment_OnStepProcess_0 () throws Exception {
+	public void doPayment_OnStepProcess_0 () throws Exception { 
 		EngineHelper.delegate(DELEGATOR, "doPayment", this);
 	}
 
@@ -30,18 +30,23 @@ public class INTERNET___MohRetriggerGiroPayment___1 extends BaseProcessClass {
 	}
 
 	public void prepreview_OnStepProcess_0() throws Exception {
-		// 		prepreview->OnStepProcess
+	// 		prepreview->OnStepProcess
 		EngineHelper.delegate(DELEGATOR, "prepreview", this);
 	}
 
 	public void prePayment_OnStepProcess_0() throws Exception {
-		// 		prePayment->OnStepProcess
+	// 		prePayment->OnStepProcess
 		EngineHelper.delegate(DELEGATOR, "prePayment", this);
 	}
 
 	public void preAck_OnStepProcess_0() throws Exception {
-		// 		preAck->OnStepProcess
+	// 		preAck->OnStepProcess
 		EngineHelper.delegate(DELEGATOR, "preAck", this);
+	}
+
+	public void tobank_OnStepProcess_0() throws Exception {
+		EngineHelper.delegate(DELEGATOR, "tobank", this);
+	// 		tobank->OnStepProcess
 	}
 
 }

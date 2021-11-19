@@ -107,11 +107,6 @@ public class INTERNET___MohRfcPermisesList___1 extends BaseProcessClass {
         EngineHelper.delegate(DELEGATOR, "dashboard", this);
     }
 
-	public void doPayValidate_OnStepProcess_0() throws Exception {
-	// 		doPayValidate->OnStepProcess
-		EngineHelper.delegate(DELEGATOR, "doPayValidate", this);
-	}
-
  
 
 }

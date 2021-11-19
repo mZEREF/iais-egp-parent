@@ -138,12 +138,6 @@
    <Description/>
    <probepoint type="none"/>
   </WebPage>
-  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="bank" stageIndicator="" x="980" y="160">
-   <OnPageLoad/>
-   <OnPageSubmit/>
-   <Description/>
-   <probepoint type="none"/>
-  </WebPage>
  </Pages>
  <Forms/>
  <Links>
@@ -228,9 +222,6 @@
   <SynchronousLink destinationName="/Merges/Merge/Merge2" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/doLicenceReview" style="oblique">
    <position>{(908,92)(1210,200)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Pages/WebPage/bank" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/doPayment" style="oblique">
-   <position>{(908,164)(1000,180)}</position>
-  </SynchronousLink>
   <SynchronousLink destinationName="/Merges/Merge/Merge2" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/doAcknowledgement" style="oblique">
    <position>{(872,248)(1210,200)}</position>
   </SynchronousLink>
@@ -242,9 +233,6 @@
   </SynchronousLink>
   <SynchronousLink destinationName="/Switches/Switch/Switch2" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/toPrepareData" style="oblique">
    <position>{(430,360)(272,116)}</position>
-  </SynchronousLink>
-  <SynchronousLink destinationName="/Merges/Merge/Merge2" linkstyle="Direct" name="" sourceName="/Pages/WebPage/bank" style="oblique">
-   <position>{(1000,180)(1210,200)}</position>
   </SynchronousLink>
  </Links>
  <Conditions/>
