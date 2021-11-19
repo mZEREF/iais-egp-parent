@@ -212,7 +212,7 @@ public class ArDataSubmissionServiceImpl implements ArDataSubmissionService {
     }
 
     @Override
-    public String getSubmissionNo(CycleStageSelectionDto selectionDto) {
+    public String getSubmissionNo(CycleStageSelectionDto selectionDto, String dsType) {
         String submissionNo = null;
         boolean islinkableCycle = false;
         boolean isNonCycle = false;
@@ -233,7 +233,7 @@ public class ArDataSubmissionServiceImpl implements ArDataSubmissionService {
             }
         }
         if (StringUtil.isEmpty(submissionNo)) {
-            submissionNo = systemAdminClient.submissionID(selectionDto.getDsType()).getEntity();
+            submissionNo = systemAdminClient.submissionID(dsType).getEntity();
         }
         if (islinkableCycle || isNonCycle) {
             submissionNo = IaisCommonUtils.getNextSubmissionNo(submissionNo);

@@ -53,7 +53,7 @@ public class DpDataSubmissionServiceImpl implements DpDataSubmissionService {
             return IaisCommonUtils.genNewHashMap();
         }
         List<String> svcNames = new ArrayList<>();
-        svcNames.add(DataSubmissionConsts.SVC_NAME_AR_CENTER);
+        //svcNames.add(DataSubmissionConsts.SVC_NAME_AR_CENTER);
         List<PremisesDto> premisesDtos = licenceClient.getLatestPremisesByConds(licenseeId, svcNames, false).getEntity();
         Map<String, PremisesDto> premisesDtoMap = IaisCommonUtils.genNewHashMap();
         if (premisesDtos == null || premisesDtos.isEmpty()) {

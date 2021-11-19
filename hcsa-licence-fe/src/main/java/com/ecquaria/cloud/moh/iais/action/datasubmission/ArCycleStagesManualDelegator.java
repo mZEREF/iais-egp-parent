@@ -1,9 +1,12 @@
 package com.ecquaria.cloud.moh.iais.action.datasubmission;
 
+import com.ecquaria.cloud.RedirectUtil;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.CycleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.CycleStageSelectionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
@@ -23,6 +26,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -226,9 +230,9 @@ public class ArCycleStagesManualDelegator {
             log.info("-----Retieve ArSuperDataSubmissionDto from DB-----");
             selectionDto = newDto.getSelectionDto();
             selectionDto.setStage(stage);
+            CycleDto cycleDto = DataSubmissionHelper.genCycleDto(selectionDto, currentArDataSubmission.getSvcName(), hciCode);
+            currentArDataSubmission.setCycleDto(cycleDto);
             currentArDataSubmission.setSelectionDto(selectionDto);
-            currentArDataSubmission.setCycleDto(DataSubmissionHelper.genCycleDto(selectionDto,
-                    DataSubmissionConsts.SVC_NAME_AR_CENTER, hciCode));
             currentArDataSubmission.setPatientInfoDto(newDto.getPatientInfoDto());
         } else {
             String msg = "No ArSuperDataSubmissionDto found from DB - " + selectionDto.getPatientCode() + " : " + hciCode;
@@ -272,8 +276,14 @@ public class ArCycleStagesManualDelegator {
      * @param bpc
      * @throws
      */
-    public void doBack(BaseProcessClass bpc) {
+    public void doBack(BaseProcessClass bpc) throws IOException {
         log.info("----- Back -----");
+        StringBuilder url = new StringBuilder();
+        url.append(InboxConst.URL_HTTPS)
+                .append(bpc.request.getServerName())
+                .append(InboxConst.URL_LICENCE_WEB_MODULE + "MohARDataSubmission");
+        String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
+        IaisEGPHelper.redirectUrl(bpc.response, tokenUrl);
     }
 
     /**

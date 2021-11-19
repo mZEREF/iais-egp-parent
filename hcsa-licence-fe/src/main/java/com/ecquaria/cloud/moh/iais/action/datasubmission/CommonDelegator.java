@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.action.datasubmission;
 
 import com.ecquaria.cloud.RedirectUtil;
+import com.ecquaria.cloud.moh.iais.action.WithOutRenewalDelegator;
 import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
@@ -19,6 +20,7 @@ import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
+import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.ArDataSubmissionService;
 
@@ -79,7 +81,12 @@ public abstract class CommonDelegator {
     public void doPrepareSwitch(BaseProcessClass bpc) {
         log.info(StringUtil.changeForLog("-----" + this.getClass().getSimpleName() + " Prepare Switch -----"));
         ParamUtil.setRequestAttr(bpc.request, "title", "New Assisted Reproduction Submission");
-        //ParamUtil.setRequestAttr(bpc.request, "smallTitle", "You are submitting for <strong>Patient Information</strong>");
+        ArSuperDataSubmissionDto currentArDataSubmission = DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
+        String stage = Optional.ofNullable(currentArDataSubmission.getSelectionDto())
+                .map(CycleStageSelectionDto::getStage)
+                .orElse("Cycle Stages");
+        stage = MasterCodeUtil.getCodeDesc(stage);
+        ParamUtil.setRequestAttr(bpc.request, "smallTitle", "You are submitting for <strong>" + stage + "</strong>");
         String actionType = (String) ParamUtil.getRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE);
         log.info(StringUtil.changeForLog("----- Action Type: " + actionType + " -----"));
         if (StringUtil.isEmpty(actionType)) {
@@ -211,7 +218,8 @@ public abstract class CommonDelegator {
         CycleDto cycle = arSuperDataSubmission.getCycleDto();
         String cycleType = cycle.getCycleType();
         if (StringUtil.isEmpty(dataSubmissionDto.getSubmissionNo())) {
-            String submissionNo = arDataSubmissionService.getSubmissionNo(arSuperDataSubmission.getSelectionDto());
+            String submissionNo = arDataSubmissionService.getSubmissionNo(arSuperDataSubmission.getSelectionDto(),
+                    DataSubmissionConsts.DS_AR);
             dataSubmissionDto.setSubmissionNo(submissionNo);
         }
         if (DataSubmissionConsts.DS_APP_TYPE_RFC.equals(dataSubmissionDto.getAppType())) {
@@ -252,6 +260,7 @@ public abstract class CommonDelegator {
             status = DataSubmissionConsts.DS_STATUS_ACTIVE;
         }
         cycle.setStatus(status);
+        arSuperDataSubmission.setCycleDto(cycle);
         log.info(StringUtil.changeForLog("-----Cycle Type: " + cycleType + " - Stage : " + stage
                 + " - Status: " + status + " -----"));
 
@@ -271,6 +280,8 @@ public abstract class CommonDelegator {
                     DataSubmissionConsts.DS_STATUS_INACTIVE);
         }
         ParamUtil.setSessionAttr(bpc.request, DataSubmissionConstant.AR_DATA_SUBMISSION, arSuperDataSubmission);
+        ParamUtil.setRequestAttr(bpc.request, "emailAddress", DataSubmissionHelper.getLicenseeEmailAddrs(bpc.request));
+        ParamUtil.setRequestAttr(bpc.request, "submittedBy", DataSubmissionHelper.getLoginContext(bpc.request).getUserName());
     }
 
     /**

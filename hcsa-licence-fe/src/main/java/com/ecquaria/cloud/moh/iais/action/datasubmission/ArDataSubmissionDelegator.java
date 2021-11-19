@@ -162,9 +162,7 @@ public class ArDataSubmissionDelegator {
         } else {
             String orgId = Optional.ofNullable(DataSubmissionHelper.getLoginContext(bpc.request))
                     .map(LoginContext::getOrgId).orElse("");
-            String hciCode = Optional.ofNullable(premisesDto)
-                    .map(PremisesDto::getHciCode)
-                    .orElse("");
+            String hciCode = premisesDto.getHciCode();
             String actionValue = ParamUtil.getString(bpc.request, IaisEGPConstant.CRUD_ACTION_VALUE);
             log.info(StringUtil.changeForLog("Action Type: " + actionValue));
             if (StringUtil.isEmpty(actionValue)) {

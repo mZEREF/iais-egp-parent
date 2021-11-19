@@ -180,6 +180,7 @@ public final class DataSubmissionHelper {
         if (cycleDto == null) {
             cycleDto = new CycleDto();
         }
+        selectionDto.setCycle(cycle);
         cycleDto.setDsType(DataSubmissionConsts.DS_AR);
         cycleDto.setCycleType(cycle);
         cycleDto.setPatientCode(selectionDto.getPatientCode());
@@ -219,7 +220,6 @@ public final class DataSubmissionHelper {
         DataSubmissionDto dataSubmission = currentArDataSubmission.getDataSubmissionDto();
         if (dataSubmission == null || reNew) {
             dataSubmission = new DataSubmissionDto();
-            currentArDataSubmission.setDataSubmissionDto(dataSubmission);
         }
         dataSubmission.setSubmissionType(currentArDataSubmission.getSubmissionType());
         String cycleStage = null;
@@ -378,6 +378,27 @@ public final class DataSubmissionHelper {
         PatientInventoryDto patientInventoryDto = new PatientInventoryDto();
         ParamUtil.setRequestAttr(request, "patientInventoryDto", patientInventoryDto);
         return patientInventoryDto;
+    }
+
+    public static String getLicenseeEmailAddrs(HttpServletRequest request) {
+        LoginContext loginContext = getLoginContext(request);
+        List<String> emailAddresses = IaisEGPHelper.getLicenseeEmailAddrs(loginContext.getLicenseeId());
+        StringBuilder emailAddress = new StringBuilder();
+        if (emailAddresses.isEmpty()) {
+            return emailAddress.toString();
+        }
+        if (emailAddresses.size() == 1) {
+            emailAddress.append(emailAddresses.get(0));
+        } else {
+            for (int i = 0; i < emailAddresses.size(); i++) {
+                if (i == emailAddresses.size() - 1) {
+                    emailAddress.append(emailAddresses.get(i));
+                } else {
+                    emailAddress.append(emailAddresses.get(i)).append(", ");
+                }
+            }
+        }
+        return emailAddress.toString();
     }
 
 }
