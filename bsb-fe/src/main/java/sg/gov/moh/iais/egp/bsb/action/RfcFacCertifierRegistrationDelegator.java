@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
+import sg.gov.moh.iais.egp.bsb.client.BsbFileClient;
 import sg.gov.moh.iais.egp.bsb.client.FacCertifierRegisterClient;
 import sg.gov.moh.iais.egp.bsb.client.FileRepoClient;
 import sg.gov.moh.iais.egp.bsb.common.node.Node;
@@ -78,10 +79,16 @@ public class RfcFacCertifierRegistrationDelegator {
     private static final String ERR_MSG_NULL_NAME = "Name must not be null!";
     private static final String ERR_MSG_INVALID_ACTION = "Invalid action";
 
+    private final FacCertifierRegisterClient facCertifierRegisterClient;
+    private final FileRepoClient fileRepoClient;
+    private final BsbFileClient bsbFileClient;
+
     @Autowired
-    private FacCertifierRegisterClient facCertifierRegisterClient;
-    @Autowired
-    private FileRepoClient fileRepoClient;
+    public RfcFacCertifierRegistrationDelegator(FacCertifierRegisterClient facCertifierRegisterClient, FileRepoClient fileRepoClient, BsbFileClient bsbFileClient) {
+        this.facCertifierRegisterClient = facCertifierRegisterClient;
+        this.fileRepoClient = fileRepoClient;
+        this.bsbFileClient = bsbFileClient;
+    }
 
     public void start(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
