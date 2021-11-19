@@ -184,7 +184,7 @@
                                                    name="IVM"
                                                    value="1"
                                                    id="IVMYes"
-                                                   <c:if test="${ assistedReproductionEnquiryFilterDto.IVM ==1 }">checked</c:if>
+                                                   <c:if test="${ assistedReproductionEnquiryFilterDto.IVM =='1' }">checked</c:if>
                                                    aria-invalid="false">
                                             <label class="form-check-label"
                                                    for="IVMYes"><span
@@ -195,7 +195,7 @@
                                         <div class="form-check">
                                             <input class="form-check-input" type="radio"
                                                    name="IVM" value="0" id="IVMNo"
-                                                   <c:if test="${assistedReproductionEnquiryFilterDto.IVM == 0}">checked</c:if>
+                                                   <c:if test="${assistedReproductionEnquiryFilterDto.IVM == '0'}">checked</c:if>
                                                    aria-invalid="false">
                                             <label class="form-check-label"
                                                    for="IVMNo"><span
@@ -211,7 +211,7 @@
                                                 <input class="form-check-input"
                                                        type="checkbox"
                                                        name="freshCycleNatural" id="freshCycleNatural"
-                                                       <c:if test="${ assistedReproductionEnquiryFilterDto.freshCycleNatural ==1 }">checked</c:if>
+                                                       <c:if test="${ assistedReproductionEnquiryFilterDto.freshCycleNatural =='on'  }">checked</c:if>
                                                        aria-invalid="false">
                                                 <label class="form-check-label"
                                                        for="freshCycleNatural"><span
@@ -222,7 +222,7 @@
                                             <div class="form-check">
                                                 <input class="form-check-input" type="checkbox"
                                                        name="freshCycleSimulated"  id="freshCycleSimulated"
-                                                       <c:if test="${assistedReproductionEnquiryFilterDto.freshCycleSimulated == 0}">checked</c:if>
+                                                       <c:if test="${assistedReproductionEnquiryFilterDto.freshCycleSimulated == 'on' }">checked</c:if>
                                                        aria-invalid="false">
                                                 <label class="form-check-label"
                                                        for="freshCycleSimulated"><span
@@ -233,7 +233,7 @@
                                             <div class="form-check">
                                                 <input class="form-check-input" type="checkbox"
                                                        name="frozenOocyteCycle"  id="frozenOocyteCycle"
-                                                       <c:if test="${assistedReproductionEnquiryFilterDto.frozenOocyteCycle == 0}">checked</c:if>
+                                                       <c:if test="${assistedReproductionEnquiryFilterDto.frozenOocyteCycle == 'on' }">checked</c:if>
                                                        aria-invalid="false">
                                                 <label class="form-check-label"
                                                        for="frozenOocyteCycle"><span
@@ -244,7 +244,7 @@
                                             <div class="form-check">
                                                 <input class="form-check-input" type="checkbox"
                                                        name="frozenEmbryoCycle"  id="frozenEmbryoCycle"
-                                                       <c:if test="${assistedReproductionEnquiryFilterDto.frozenEmbryoCycle == 0}">checked</c:if>
+                                                       <c:if test="${assistedReproductionEnquiryFilterDto.frozenEmbryoCycle == 'on' }">checked</c:if>
                                                        aria-invalid="false">
                                                 <label class="form-check-label"
                                                        for="frozenEmbryoCycle"><span
@@ -271,7 +271,7 @@
                                                    type="radio"
                                                    name="abandonedCycle" id="abandonedCycleYes"
                                                    value="1"
-                                                   <c:if test="${ assistedReproductionEnquiryFilterDto.abandonedCycle ==1 }">checked</c:if>
+                                                   <c:if test="${ assistedReproductionEnquiryFilterDto.abandonedCycle =='1' }">checked</c:if>
                                                    aria-invalid="false">
                                             <label class="form-check-label"
                                                    for="abandonedCycleYes"><span
@@ -282,7 +282,7 @@
                                         <div class="form-check">
                                             <input class="form-check-input" type="radio"
                                                    name="abandonedCycle" value="0" id="abandonedCycleNo"
-                                                   <c:if test="${assistedReproductionEnquiryFilterDto.abandonedCycle == 0}">checked</c:if>
+                                                   <c:if test="${assistedReproductionEnquiryFilterDto.abandonedCycle == '0'}">checked</c:if>
                                                    aria-invalid="false">
                                             <label class="form-check-label"
                                                    for="abandonedCycleNo"><span
@@ -307,7 +307,7 @@
                                                    type="radio"
                                                    name="donorGameteUsed" id="donorGameteUsedYes"
                                                    value="1"
-                                                   <c:if test="${ assistedReproductionEnquiryFilterDto.donorGameteUsed ==1 }">checked</c:if>
+                                                   <c:if test="${ assistedReproductionEnquiryFilterDto.donorGameteUsed =='1' }">checked</c:if>
                                                    aria-invalid="false">
                                             <label class="form-check-label"
                                                    for="donorGameteUsedYes"><span
@@ -318,7 +318,7 @@
                                         <div class="form-check">
                                             <input class="form-check-input" type="radio"
                                                    name="donorGameteUsed" value="0" id="donorGameteUsedNo"
-                                                   <c:if test="${assistedReproductionEnquiryFilterDto.donorGameteUsed == 0}">checked</c:if>
+                                                   <c:if test="${assistedReproductionEnquiryFilterDto.donorGameteUsed == '0'}">checked</c:if>
                                                    aria-invalid="false">
                                             <label class="form-check-label"
                                                    for="donorGameteUsedNo"><span
@@ -366,7 +366,7 @@
                                                    type="radio"
                                                    name="embryosStoredBeyond" id="embryosStoredBeyondTrue"
                                                    value="1"
-                                                   <c:if test="${ assistedReproductionEnquiryFilterDto.embryosStoredBeyond ==1 }">checked</c:if>
+                                                   <c:if test="${ assistedReproductionEnquiryFilterDto.embryosStoredBeyond =='1' }">checked</c:if>
                                                    aria-invalid="false">
                                             <label class="form-check-label"
                                                    for="embryosStoredBeyondTrue"><span
@@ -377,7 +377,7 @@
                                         <div class="form-check">
                                             <input class="form-check-input" type="radio"
                                                    name="embryosStoredBeyond" value="0" id="embryosStoredBeyondFalse"
-                                                   <c:if test="${assistedReproductionEnquiryFilterDto.embryosStoredBeyond == 0}">checked</c:if>
+                                                   <c:if test="${assistedReproductionEnquiryFilterDto.embryosStoredBeyond == '0'}">checked</c:if>
                                                    aria-invalid="false">
                                             <label class="form-check-label"
                                                    for="embryosStoredBeyondFalse"><span
@@ -408,7 +408,7 @@
                                                 <input class="form-check-input"
                                                        type="checkbox"
                                                        name="GIFT" id="GIFT"
-                                                       <c:if test="${ assistedReproductionEnquiryFilterDto.GIFT ==1 }">checked</c:if>
+                                                       <c:if test="${ assistedReproductionEnquiryFilterDto.GIFT =='on'  }">checked</c:if>
                                                        aria-invalid="false">
                                                 <label class="form-check-label"
                                                        for="GIFT"><span
@@ -419,7 +419,7 @@
                                             <div class="form-check">
                                                 <input class="form-check-input" type="checkbox"
                                                        name="ICSI" id="ICSI"
-                                                       <c:if test="${assistedReproductionEnquiryFilterDto.ICSI == 0}">checked</c:if>
+                                                       <c:if test="${assistedReproductionEnquiryFilterDto.ICSI == 'on' }">checked</c:if>
                                                        aria-invalid="false">
                                                 <label class="form-check-label"
                                                        for="ICSI"><span
@@ -430,7 +430,7 @@
                                             <div class="form-check">
                                                 <input class="form-check-input" type="checkbox"
                                                        name="ZIFT" id="ZIFT"
-                                                       <c:if test="${assistedReproductionEnquiryFilterDto.ZIFT == 0}">checked</c:if>
+                                                       <c:if test="${assistedReproductionEnquiryFilterDto.ZIFT == 'on' }">checked</c:if>
                                                        aria-invalid="false">
                                                 <label class="form-check-label"
                                                        for="ZIFT"><span
@@ -441,7 +441,7 @@
                                             <div class="form-check">
                                                 <input class="form-check-input" type="checkbox"
                                                        name="IVF" id="IVF"
-                                                       <c:if test="${assistedReproductionEnquiryFilterDto.IVF == 0}">checked</c:if>
+                                                       <c:if test="${assistedReproductionEnquiryFilterDto.IVF == 'on' }">checked</c:if>
                                                        aria-invalid="false">
                                                 <label class="form-check-label"
                                                        for="IVF"><span
@@ -467,7 +467,7 @@
                                                 <input class="form-check-input"
                                                        type="checkbox"
                                                        name="embryosTransferredNum0" id="embryosTransferredNum0"
-                                                       <c:if test="${ assistedReproductionEnquiryFilterDto.embryosTransferredNum ==0 }">checked</c:if>
+                                                       <c:if test="${ assistedReproductionEnquiryFilterDto.embryosTransferredNum0 =='on' }">checked</c:if>
                                                        aria-invalid="false">
                                                 <label class="form-check-label"
                                                        for="embryosTransferredNum0"><span
@@ -478,7 +478,7 @@
                                             <div class="form-check">
                                                 <input class="form-check-input" type="checkbox"
                                                        name="embryosTransferredNum1"  id="embryosTransferredNum1"
-                                                       <c:if test="${assistedReproductionEnquiryFilterDto.embryosTransferredNum1 == 0}">checked</c:if>
+                                                       <c:if test="${assistedReproductionEnquiryFilterDto.embryosTransferredNum1 == 'on' }">checked</c:if>
                                                        aria-invalid="false">
                                                 <label class="form-check-label"
                                                        for="embryosTransferredNum1"><span
@@ -500,7 +500,7 @@
                                             <div class="form-check">
                                                 <input class="form-check-input" type="checkbox"
                                                        name="embryosTransferredNum3" id="embryosTransferredNum3"
-                                                       <c:if test="${assistedReproductionEnquiryFilterDto.embryosTransferredNum3 == 0}">checked</c:if>
+                                                       <c:if test="${assistedReproductionEnquiryFilterDto.embryosTransferredNum3 == 'on' }">checked</c:if>
                                                        aria-invalid="false">
                                                 <label class="form-check-label"
                                                        for="embryosTransferredNum3"><span
@@ -511,7 +511,7 @@
                                             <div class="form-check">
                                                 <input class="form-check-input" type="checkbox"
                                                        name="embryosTransferredNumMax" id="embryosTransferredNumMax"
-                                                       <c:if test="${assistedReproductionEnquiryFilterDto.embryosTransferredNumMax == 0}">checked</c:if>
+                                                       <c:if test="${assistedReproductionEnquiryFilterDto.embryosTransferredNumMax == 'on' }">checked</c:if>
                                                        aria-invalid="false">
                                                 <label class="form-check-label"
                                                        for="embryosTransferredNumMax"><span
@@ -529,7 +529,7 @@
                                                 <input class="form-check-input"
                                                        type="checkbox"
                                                        name="ageEmbryosNum1" id="ageEmbryosNum1"
-                                                       <c:if test="${ assistedReproductionEnquiryFilterDto.ageEmbryosNum1 ==1 }">checked</c:if>
+                                                       <c:if test="${ assistedReproductionEnquiryFilterDto.ageEmbryosNum1 =='on'  }">checked</c:if>
                                                        aria-invalid="false">
                                                 <label class="form-check-label"
                                                        for="ageEmbryosNum1"><span
@@ -541,7 +541,7 @@
                                                 <input class="form-check-input"
                                                        type="checkbox"
                                                        name="ageEmbryosNum4" id="ageEmbryosNum4"
-                                                       <c:if test="${ assistedReproductionEnquiryFilterDto.ageEmbryosNum2 ==1 }">checked</c:if>
+                                                       <c:if test="${ assistedReproductionEnquiryFilterDto.ageEmbryosNum2 =='on'  }">checked</c:if>
                                                        aria-invalid="false">
                                                 <label class="form-check-label"
                                                        for="ageEmbryosNum4"><span
@@ -553,7 +553,7 @@
                                                 <input class="form-check-input"
                                                        type="checkbox"
                                                        name="ageEmbryosNum2" id="ageEmbryosNum2"
-                                                       <c:if test="${ assistedReproductionEnquiryFilterDto.ageEmbryosNum2 ==1 }">checked</c:if>
+                                                       <c:if test="${ assistedReproductionEnquiryFilterDto.ageEmbryosNum2 =='on'  }">checked</c:if>
                                                        aria-invalid="false">
                                                 <label class="form-check-label"
                                                        for="ageEmbryosNum2"><span
@@ -565,7 +565,7 @@
                                                 <input class="form-check-input"
                                                        type="checkbox"
                                                        name="ageEmbryosNum5" id="ageEmbryosNum5"
-                                                       <c:if test="${ assistedReproductionEnquiryFilterDto.ageEmbryosNum5 ==1 }">checked</c:if>
+                                                       <c:if test="${ assistedReproductionEnquiryFilterDto.ageEmbryosNum5 =='on'  }">checked</c:if>
                                                        aria-invalid="false">
                                                 <label class="form-check-label"
                                                        for="ageEmbryosNum5"><span
@@ -577,7 +577,7 @@
                                                 <input class="form-check-input"
                                                        type="checkbox"
                                                        name="ageEmbryosNum3" id="ageEmbryosNum3"
-                                                       <c:if test="${ assistedReproductionEnquiryFilterDto.ageEmbryosNum3 ==1 }">checked</c:if>
+                                                       <c:if test="${ assistedReproductionEnquiryFilterDto.ageEmbryosNum3 =='on'  }">checked</c:if>
                                                        aria-invalid="false">
                                                 <label class="form-check-label"
                                                        for="ageEmbryosNum3"><span
@@ -589,7 +589,7 @@
                                                 <input class="form-check-input"
                                                        type="checkbox" id="ageEmbryosNum6"
                                                        name="ageEmbryosNum6"
-                                                       <c:if test="${ assistedReproductionEnquiryFilterDto.ageEmbryosNum6 ==1 }">checked</c:if>
+                                                       <c:if test="${ assistedReproductionEnquiryFilterDto.ageEmbryosNum6 =='on'  }">checked</c:if>
                                                        aria-invalid="false">
                                                 <label class="form-check-label"
                                                        for="ageEmbryosNum6"><span
@@ -607,7 +607,7 @@
                                                 <input class="form-check-input"
                                                        type="checkbox" id="clinicalPregnancy"
                                                        name="clinicalPregnancy"
-                                                       <c:if test="${ assistedReproductionEnquiryFilterDto.clinicalPregnancy ==1 }">checked</c:if>
+                                                       <c:if test="${ assistedReproductionEnquiryFilterDto.clinicalPregnancy =='on'  }">checked</c:if>
                                                        aria-invalid="false">
                                                 <label class="form-check-label"
                                                        for="clinicalPregnancy"><span
@@ -618,7 +618,7 @@
                                             <div class="form-check">
                                                 <input class="form-check-input" type="checkbox"
                                                        name="ectopicPregnancy" id="ectopicPregnancy"
-                                                       <c:if test="${assistedReproductionEnquiryFilterDto.ectopicPregnancy == 0}">checked</c:if>
+                                                       <c:if test="${assistedReproductionEnquiryFilterDto.ectopicPregnancy == 'on' }">checked</c:if>
                                                        aria-invalid="false">
                                                 <label class="form-check-label"
                                                        for="ectopicPregnancy"><span
@@ -629,7 +629,7 @@
                                             <div class="form-check">
                                                 <input class="form-check-input" type="checkbox"
                                                        name="implantationDocumented" id="implantationDocumented"
-                                                       <c:if test="${assistedReproductionEnquiryFilterDto.implantationDocumented == 0}">checked</c:if>
+                                                       <c:if test="${assistedReproductionEnquiryFilterDto.implantationDocumented == 'on' }">checked</c:if>
                                                        aria-invalid="false">
                                                 <label class="form-check-label"
                                                        for="implantationDocumented"><span
@@ -640,7 +640,7 @@
                                             <div class="form-check">
                                                 <input class="form-check-input" type="checkbox"
                                                        name="noPregnancy" id="noPregnancy"
-                                                       <c:if test="${assistedReproductionEnquiryFilterDto.noPregnancy == 0}">checked</c:if>
+                                                       <c:if test="${assistedReproductionEnquiryFilterDto.noPregnancy == 'on' }">checked</c:if>
                                                        aria-invalid="false">
                                                 <label class="form-check-label"
                                                        for="noPregnancy"><span
@@ -651,7 +651,7 @@
                                             <div class="form-check">
                                                 <input class="form-check-input" type="checkbox"
                                                        name="unknown" id="unknown"
-                                                       <c:if test="${assistedReproductionEnquiryFilterDto.unknown == 0}">checked</c:if>
+                                                       <c:if test="${assistedReproductionEnquiryFilterDto.unknown == 'on' }">checked</c:if>
                                                        aria-invalid="false">
                                                 <label class="form-check-label"
                                                        for="unknown"><span
@@ -669,7 +669,7 @@
                                                 <input class="form-check-input"
                                                        type="checkbox"
                                                        name="birthEventsTotal0" id="birthEventsTotal0"
-                                                       <c:if test="${ assistedReproductionEnquiryFilterDto.birthEventsTotal0 ==1 }">checked</c:if>
+                                                       <c:if test="${ assistedReproductionEnquiryFilterDto.birthEventsTotal0 =='on'  }">checked</c:if>
                                                        aria-invalid="false">
                                                 <label class="form-check-label"
                                                        for="birthEventsTotal0"><span
@@ -680,7 +680,7 @@
                                             <div class="form-check">
                                                 <input class="form-check-input" type="checkbox"
                                                        name="birthEventsTotal1" id="birthEventsTotal1"
-                                                       <c:if test="${assistedReproductionEnquiryFilterDto.birthEventsTotal1 == 0}">checked</c:if>
+                                                       <c:if test="${assistedReproductionEnquiryFilterDto.birthEventsTotal1 == 'on' }">checked</c:if>
                                                        aria-invalid="false">
                                                 <label class="form-check-label"
                                                        for="birthEventsTotal1"><span
@@ -691,7 +691,7 @@
                                             <div class="form-check">
                                                 <input class="form-check-input" type="checkbox"
                                                        name="birthEventsTotal2" id="birthEventsTotal2"
-                                                       <c:if test="${assistedReproductionEnquiryFilterDto.birthEventsTotal2 == 0}">checked</c:if>
+                                                       <c:if test="${assistedReproductionEnquiryFilterDto.birthEventsTotal2 == 'on' }">checked</c:if>
                                                        aria-invalid="false">
                                                 <label class="form-check-label"
                                                        for="birthEventsTotal2"><span
@@ -702,7 +702,7 @@
                                             <div class="form-check">
                                                 <input class="form-check-input" type="checkbox"
                                                        name="birthEventsTotal3" id="birthEventsTotal3"
-                                                       <c:if test="${assistedReproductionEnquiryFilterDto.birthEventsTotal3 == 0}">checked</c:if>
+                                                       <c:if test="${assistedReproductionEnquiryFilterDto.birthEventsTotal3 == 'on' }">checked</c:if>
                                                        aria-invalid="false">
                                                 <label class="form-check-label"
                                                        for="birthEventsTotal3"><span
@@ -713,7 +713,7 @@
                                             <div class="form-check">
                                                 <input class="form-check-input" type="checkbox"
                                                        name="birthEventsTotalMax" id="birthEventsTotalMax"
-                                                       <c:if test="${assistedReproductionEnquiryFilterDto.birthEventsTotalMax == 0}">checked</c:if>
+                                                       <c:if test="${assistedReproductionEnquiryFilterDto.birthEventsTotalMax == 'on' }">checked</c:if>
                                                        aria-invalid="false">
                                                 <label class="form-check-label"
                                                        for="birthEventsTotalMax"><span
@@ -750,8 +750,8 @@
                                             <input class="form-check-input"
                                                    type="radio"
                                                    name="patientART" id="patientARTYes"
-                                                   value="1"
-                                                   <c:if test="${ assistedReproductionEnquiryFilterDto.patientART ==1 }">checked</c:if>
+                                                   value="0"
+                                                   <c:if test="${ assistedReproductionEnquiryFilterDto.patientART =='0' }">checked</c:if>
                                                    aria-invalid="false">
                                             <label class="form-check-label"
                                                    for="patientARTYes"><span
@@ -764,7 +764,7 @@
                                                    type="radio"
                                                    name="patientART" id="patientARTNo"
                                                    value="1"
-                                                   <c:if test="${ assistedReproductionEnquiryFilterDto.patientART ==1 }">checked</c:if>
+                                                   <c:if test="${ assistedReproductionEnquiryFilterDto.patientART =='1' }">checked</c:if>
                                                    aria-invalid="false">
                                             <label class="form-check-label"
                                                    for="patientARTNo"><span
@@ -776,8 +776,8 @@
                                             <input class="form-check-input"
                                                    type="radio"
                                                    name="patientART" id="patientARTNotApplicable"
-                                                   value="1"
-                                                   <c:if test="${ assistedReproductionEnquiryFilterDto.patientART ==1 }">checked</c:if>
+                                                   value="2"
+                                                   <c:if test="${ assistedReproductionEnquiryFilterDto.patientART =='2' }">checked</c:if>
                                                    aria-invalid="false">
                                             <label class="form-check-label"
                                                    for="patientARTNotApplicable"><span
@@ -793,8 +793,8 @@
                                             <input class="form-check-input"
                                                    type="radio"
                                                    name="patientIUI" id="patientIUIYes"
-                                                   value="1"
-                                                   <c:if test="${ assistedReproductionEnquiryFilterDto.patientIUI ==1 }">checked</c:if>
+                                                   value="0"
+                                                   <c:if test="${ assistedReproductionEnquiryFilterDto.patientIUI =='0' }">checked</c:if>
                                                    aria-invalid="false">
                                             <label class="form-check-label"
                                                    for="patientIUIYes"><span
@@ -807,7 +807,7 @@
                                                    type="radio"
                                                    name="patientIUI" id="patientIUINo"
                                                    value="1"
-                                                   <c:if test="${ assistedReproductionEnquiryFilterDto.patientIUI ==1 }">checked</c:if>
+                                                   <c:if test="${ assistedReproductionEnquiryFilterDto.patientIUI =='1' }">checked</c:if>
                                                    aria-invalid="false">
                                             <label class="form-check-label"
                                                    for="patientIUINo"><span
@@ -819,8 +819,8 @@
                                             <input class="form-check-input"
                                                    type="radio"
                                                    name="patientIUI" id="patientIUINotApplicable"
-                                                   value="1"
-                                                   <c:if test="${ assistedReproductionEnquiryFilterDto.patientIUI ==1 }">checked</c:if>
+                                                   value="2"
+                                                   <c:if test="${ assistedReproductionEnquiryFilterDto.patientIUI =='2' }">checked</c:if>
                                                    aria-invalid="false">
                                             <label class="form-check-label"
                                                    for="patientIUINotApplicable"><span
@@ -836,8 +836,8 @@
                                             <input class="form-check-input"
                                                    type="radio"
                                                    name="patientPGT" id="patientPGTYes"
-                                                   value="1"
-                                                   <c:if test="${ assistedReproductionEnquiryFilterDto.patientPGT ==1 }">checked</c:if>
+                                                   value="0"
+                                                   <c:if test="${ assistedReproductionEnquiryFilterDto.patientPGT =='0 '}">checked</c:if>
                                                    aria-invalid="false">
                                             <label class="form-check-label"
                                                    for="patientPGTYes"><span
@@ -850,7 +850,7 @@
                                                    type="radio"
                                                    name="patientPGT" id="patientPGTNo"
                                                    value="1"
-                                                   <c:if test="${ assistedReproductionEnquiryFilterDto.patientPGT ==1 }">checked</c:if>
+                                                   <c:if test="${ assistedReproductionEnquiryFilterDto.patientPGT =='1' }">checked</c:if>
                                                    aria-invalid="false">
                                             <label class="form-check-label"
                                                    for="patientPGTNo"><span
@@ -862,8 +862,8 @@
                                             <input class="form-check-input"
                                                    type="radio"
                                                    name="patientPGT" id="patientPGTNotApplicable"
-                                                   value="1"
-                                                   <c:if test="${ assistedReproductionEnquiryFilterDto.patientPGT ==1 }">checked</c:if>
+                                                   value="2"
+                                                   <c:if test="${ assistedReproductionEnquiryFilterDto.patientPGT =='2' }">checked</c:if>
                                                    aria-invalid="false">
                                             <label class="form-check-label"
                                                    for="patientPGTNotApplicable"><span
@@ -888,8 +888,7 @@
                                                 <input class="form-check-input"
                                                        type="checkbox"
                                                        name="disposalTypeFreshOocyte" id="disposalTypeFreshOocyte"
-                                                       value="1"
-                                                       <c:if test="${ assistedReproductionEnquiryFilterDto.disposalTypeFreshOocyte ==1 }">checked</c:if>
+                                                       <c:if test="${ assistedReproductionEnquiryFilterDto.disposalTypeFreshOocyte =='on'  }">checked</c:if>
                                                        aria-invalid="false">
                                                 <label class="form-check-label"
                                                        for="disposalTypeFreshOocyte"><span
@@ -901,8 +900,7 @@
                                                 <input class="form-check-input"
                                                        type="checkbox"
                                                        name="disposalTypeFrozenOocyte" id="disposalTypeFrozenOocyte"
-                                                       value="1"
-                                                       <c:if test="${ assistedReproductionEnquiryFilterDto.disposalTypeFrozenOocyte ==1 }">checked</c:if>
+                                                       <c:if test="${ assistedReproductionEnquiryFilterDto.disposalTypeFrozenOocyte =='on'  }">checked</c:if>
                                                        aria-invalid="false">
                                                 <label class="form-check-label"
                                                        for="disposalTypeFrozenOocyte"><span
@@ -914,8 +912,7 @@
                                                 <input class="form-check-input"
                                                        type="checkbox"
                                                        name="disposalTypeFreshEmbryo" id="disposalTypeFreshEmbryo"
-                                                       value="1"
-                                                       <c:if test="${ assistedReproductionEnquiryFilterDto.disposalTypeFreshEmbryo ==1 }">checked</c:if>
+                                                       <c:if test="${ assistedReproductionEnquiryFilterDto.disposalTypeFreshEmbryo =='on'  }">checked</c:if>
                                                        aria-invalid="false">
                                                 <label class="form-check-label"
                                                        for="disposalTypeFreshEmbryo"><span
@@ -927,8 +924,7 @@
                                                 <input class="form-check-input"
                                                        type="checkbox"
                                                        name="disposalTypeFrozenEmbryo" id="disposalTypeFrozenEmbryo"
-                                                       value="1"
-                                                       <c:if test="${ assistedReproductionEnquiryFilterDto.disposalTypeFrozenEmbryo ==1 }">checked</c:if>
+                                                       <c:if test="${ assistedReproductionEnquiryFilterDto.disposalTypeFrozenEmbryo =='on'  }">checked</c:if>
                                                        aria-invalid="false">
                                                 <label class="form-check-label"
                                                        for="disposalTypeFrozenEmbryo"><span
@@ -940,8 +936,7 @@
                                                 <input class="form-check-input"
                                                        type="checkbox"
                                                        name="disposalTypeThawedEmbryo" id="disposalTypeThawedEmbryo"
-                                                       value="1"
-                                                       <c:if test="${ assistedReproductionEnquiryFilterDto.disposalTypeThawedEmbryo ==1 }">checked</c:if>
+                                                       <c:if test="${ assistedReproductionEnquiryFilterDto.disposalTypeThawedEmbryo =='on'  }">checked</c:if>
                                                        aria-invalid="false">
                                                 <label class="form-check-label"
                                                        for="disposalTypeThawedEmbryo"><span
@@ -984,7 +979,7 @@
                                                    type="radio"
                                                    name="transferInOrOut" id="transferIn"
                                                    value="1"
-                                                   <c:if test="${ assistedReproductionEnquiryFilterDto.transferInOrOut ==1 }">checked</c:if>
+                                                   <c:if test="${ assistedReproductionEnquiryFilterDto.transferInOrOut =='1' }">checked</c:if>
                                                    aria-invalid="false">
                                             <label class="form-check-label"
                                                    for="transferIn"><span
@@ -995,7 +990,7 @@
                                         <div class="form-check">
                                             <input class="form-check-input" type="radio"
                                                    name="transferInOrOut" value="0" id="transferOut"
-                                                   <c:if test="${assistedReproductionEnquiryFilterDto.transferInOrOut == 0}">checked</c:if>
+                                                   <c:if test="${assistedReproductionEnquiryFilterDto.transferInOrOut == '0'}">checked</c:if>
                                                    aria-invalid="false">
                                             <label class="form-check-label"
                                                    for="transferOut"><span
@@ -1012,8 +1007,7 @@
                                                 <input class="form-check-input"
                                                        type="checkbox"
                                                        name="transferredOocyte" id="transferredOocyte"
-                                                       value="1"
-                                                       <c:if test="${ assistedReproductionEnquiryFilterDto.transferredOocyte ==1 }">checked</c:if>
+                                                       <c:if test="${ assistedReproductionEnquiryFilterDto.transferredOocyte =='on'  }">checked</c:if>
                                                        aria-invalid="false">
                                                 <label class="form-check-label"
                                                        for="transferredOocyte"><span
@@ -1025,8 +1019,7 @@
                                                 <input class="form-check-input"
                                                        type="checkbox"
                                                        name="transferredEmbryo" id="transferredEmbryo"
-                                                       value="1"
-                                                       <c:if test="${ assistedReproductionEnquiryFilterDto.transferredEmbryo ==1 }">checked</c:if>
+                                                       <c:if test="${ assistedReproductionEnquiryFilterDto.transferredEmbryo =='on'  }">checked</c:if>
                                                        aria-invalid="false">
                                                 <label class="form-check-label"
                                                        for="transferredEmbryo"><span
@@ -1038,8 +1031,7 @@
                                                 <input class="form-check-input"
                                                        type="checkbox"
                                                        name="transferredSperm" id="transferredSperm"
-                                                       value="1"
-                                                       <c:if test="${ assistedReproductionEnquiryFilterDto.transferredSperm ==1 }">checked</c:if>
+                                                       <c:if test="${ assistedReproductionEnquiryFilterDto.transferredSperm =='on' }">checked</c:if>
                                                        aria-invalid="false">
                                                 <label class="form-check-label"
                                                        for="transferredSperm"><span
@@ -1091,7 +1083,7 @@
                                                    type="radio"
                                                    name="PGT" id="PGTYes"
                                                    value="1"
-                                                   <c:if test="${ assistedReproductionEnquiryFilterDto.PGT ==1 }">checked</c:if>
+                                                   <c:if test="${ assistedReproductionEnquiryFilterDto.PGT =='1' }">checked</c:if>
                                                    aria-invalid="false">
                                             <label class="form-check-label"
                                                    for="PGTYes"><span
@@ -1102,7 +1094,7 @@
                                         <div class="form-check">
                                             <input class="form-check-input" type="radio"
                                                    name="PGT" value="0" id="PGTNo"
-                                                   <c:if test="${assistedReproductionEnquiryFilterDto.PGT == 0}">checked</c:if>
+                                                   <c:if test="${assistedReproductionEnquiryFilterDto.PGT == '0'}">checked</c:if>
                                                    aria-invalid="false">
                                             <label class="form-check-label"
                                                    for="PGTNo"><span
@@ -1119,8 +1111,7 @@
                                                 <input class="form-check-input"
                                                        type="checkbox"
                                                        name="pgtM" id="pgtM"
-                                                       value="1"
-                                                       <c:if test="${ assistedReproductionEnquiryFilterDto.pgtM ==1 }">checked</c:if>
+                                                       <c:if test="${ assistedReproductionEnquiryFilterDto.pgtM =='on'  }">checked</c:if>
                                                        aria-invalid="false">
                                                 <label class="form-check-label"
                                                        for="pgtM"><span
@@ -1132,8 +1123,7 @@
                                                 <input class="form-check-input"
                                                        type="checkbox" id="pgtSr"
                                                        name="pgtSr"
-                                                       value="1"
-                                                       <c:if test="${ assistedReproductionEnquiryFilterDto.pgtSr ==1 }">checked</c:if>
+                                                       <c:if test="${ assistedReproductionEnquiryFilterDto.pgtSr =='on'  }">checked</c:if>
                                                        aria-invalid="false">
                                                 <label class="form-check-label"
                                                        for="pgtSr"><span
@@ -1145,8 +1135,7 @@
                                                 <input class="form-check-input"
                                                        type="checkbox"
                                                        name="pgtA" id="pgtA"
-                                                       value="1"
-                                                       <c:if test="${ assistedReproductionEnquiryFilterDto.pgtA ==1 }">checked</c:if>
+                                                       <c:if test="${ assistedReproductionEnquiryFilterDto.pgtA =='on' }">checked</c:if>
                                                        aria-invalid="false">
                                                 <label class="form-check-label"
                                                        for="pgtA"><span
@@ -1158,8 +1147,7 @@
                                                 <input class="form-check-input"
                                                        type="checkbox"
                                                        name="ptt" id="ptt"
-                                                       value="1"
-                                                       <c:if test="${ assistedReproductionEnquiryFilterDto.ptt ==1 }">checked</c:if>
+                                                       <c:if test="${ assistedReproductionEnquiryFilterDto.ptt =='on' }">checked</c:if>
                                                        aria-invalid="false">
                                                 <label class="form-check-label"
                                                        for="ptt"><span
@@ -1172,8 +1160,7 @@
                                                 <input class="form-check-input"
                                                        type="checkbox"
                                                        name="pgtOthers" id="pgtOthers"
-                                                       value="1"
-                                                       <c:if test="${ assistedReproductionEnquiryFilterDto.pgtOthers ==1 }">checked</c:if>
+                                                       <c:if test="${ assistedReproductionEnquiryFilterDto.pgtOthers =='on' }">checked</c:if>
                                                        aria-invalid="false">
                                                 <label class="form-check-label"
                                                        for="pgtOthers"><span
@@ -1191,7 +1178,7 @@
                                                    type="radio"
                                                    name="pgtDisease" id="pgtDiseaseYes"
                                                    value="1"
-                                                   <c:if test="${ assistedReproductionEnquiryFilterDto.pgtDisease ==1 }">checked</c:if>
+                                                   <c:if test="${ assistedReproductionEnquiryFilterDto.pgtDisease =='1' }">checked</c:if>
                                                    aria-invalid="false">
                                             <label class="form-check-label"
                                                    for="pgtDiseaseYes"><span
@@ -1202,7 +1189,7 @@
                                         <div class="form-check">
                                             <input class="form-check-input" type="radio"
                                                    name="pgtDisease" value="0" id="pgtDiseaseNo"
-                                                   <c:if test="${assistedReproductionEnquiryFilterDto.pgtDisease == 0}">checked</c:if>
+                                                   <c:if test="${assistedReproductionEnquiryFilterDto.pgtDisease == '0'}">checked</c:if>
                                                    aria-invalid="false">
                                             <label class="form-check-label"
                                                    for="pgtDiseaseNo"><span

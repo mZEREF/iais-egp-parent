@@ -148,7 +148,7 @@
 
                     </div>
 
-                    <div class="row" id="patientResult" <c:if test="${ assistedReproductionEnquiryFilterDto.searchBy !=1 }">style="display: none"</c:if>>
+                    <div id="patientResult" <c:if test="${ assistedReproductionEnquiryFilterDto.searchBy !='1' }">style="display: none"</c:if>>
                         <div class="col-xs-12">
                             <div class="components">
 
@@ -243,7 +243,7 @@
                     </div>
 
 
-                    <div class="row" id="submissionResult" <c:if test="${ assistedReproductionEnquiryFilterDto.searchBy !=1 }">style="display: none"</c:if>>
+                    <div id="submissionResult" <c:if test="${ assistedReproductionEnquiryFilterDto.searchBy !='0' }">style="display: none"</c:if>>
                         <div class="col-xs-12">
                             <div class="components">
 
