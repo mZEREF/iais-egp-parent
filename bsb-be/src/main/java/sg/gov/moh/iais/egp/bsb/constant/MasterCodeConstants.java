@@ -2,9 +2,7 @@ package sg.gov.moh.iais.egp.bsb.constant;
 
 import com.google.common.collect.Sets;
 
-import java.util.Arrays;
 import java.util.Collections;
-import java.util.List;
 import java.util.Set;
 
 public class MasterCodeConstants {
@@ -12,18 +10,6 @@ public class MasterCodeConstants {
 
     public static final String YES = "Y";
     public static final String NO = "N";
-
-
-    public static final String FIRST_SCHEDULE_PART_I = "SCHTYPE001";
-    public static final String FIRST_SCHEDULE_PART_II = "SCHTYPE002";
-    public static final String SECOND_SCHEDULE = "SCHTYPE003";
-    public static final String THIRD_SCHEDULE = "SCHTYPE004";
-    public static final String FOURTH_SCHEDULE = "SCHTYPE005";
-    public static final String FIFTH_SCHEDULE = "SCHTYPE006";
-
-    public static final List<String> BIOLOGICAL_AGENT_SCHEDULE_TYPE_ALL = Collections.unmodifiableList(Arrays.asList(
-            FIRST_SCHEDULE_PART_I,FIRST_SCHEDULE_PART_II,SECOND_SCHEDULE,
-            THIRD_SCHEDULE,FOURTH_SCHEDULE,FIFTH_SCHEDULE));
 
     public static final String APP_TYPE_NEW = "BSBAPTY001";
     public static final String APP_TYPE_RENEW = "BSBAPTY002";
@@ -64,7 +50,8 @@ public class MasterCodeConstants {
     public static final Set<String> INSPECTION_APP_STATUS;
 
     static {
-        Set<String> commonQueryAppStatus = Sets.newLinkedHashSetWithExpectedSize(10);
+        Set<String> commonQueryAppStatus = Sets.newLinkedHashSetWithExpectedSize(9);
+        // BE don't add 'Draft', because BE DB don't save it
         commonQueryAppStatus.add(APP_STATUS_PEND_DO);
         commonQueryAppStatus.add(APP_STATUS_PEND_AO);
         commonQueryAppStatus.add(APP_STATUS_PEND_HM);
@@ -74,7 +61,6 @@ public class MasterCodeConstants {
         commonQueryAppStatus.add(APP_STATUS_REJECTED);
         commonQueryAppStatus.add(APP_STATUS_APPROVED);
         commonQueryAppStatus.add(APP_STATUS_REGISTERED);
-        commonQueryAppStatus.add(APP_STATUS_DRAFT);
         COMMON_QUERY_APP_STATUS = Collections.unmodifiableSet(commonQueryAppStatus);
 
         Set<String> inspectionAppStatus = Sets.newHashSetWithExpectedSize(15);

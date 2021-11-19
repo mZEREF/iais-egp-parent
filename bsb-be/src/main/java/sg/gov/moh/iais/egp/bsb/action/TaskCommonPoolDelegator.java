@@ -233,6 +233,10 @@ public class TaskCommonPoolDelegator {
     private static TaskListSearchDto bindModel(HttpServletRequest request, TaskListSearchDto dto) {
         dto.setSearchAppNo(request.getParameter("searchAppNo"));
         dto.setSearchAppType(request.getParameter("searchAppType"));
+        /* This is because we share the search dto with task list module,
+         * When user open the common pool and task list at the same time, we set these columns to avoid error */
+        dto.setUserId(null);
+        dto.setSearchAppStatus(null);
         return dto;
     }
 }

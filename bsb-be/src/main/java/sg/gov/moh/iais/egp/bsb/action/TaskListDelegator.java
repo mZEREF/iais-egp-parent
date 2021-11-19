@@ -13,6 +13,7 @@ import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sg.gov.moh.iais.egp.bsb.client.BsbTaskClient;
+import sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants;
 import sg.gov.moh.iais.egp.bsb.dto.PageInfo;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
 import sg.gov.moh.iais.egp.bsb.dto.task.TaskListSearchDto;
@@ -89,7 +90,7 @@ public class TaskListDelegator {
 
         LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         ParamUtil.setRequestAttr(request, KEY_CUR_ROLE, loginContext.getCurRoleId());
-        List<SelectOption> appTypeOps = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_BSB_APP_TYPE);
+        List<SelectOption> appTypeOps = MasterCodeUtil.retrieveOptionsByCodes(MasterCodeConstants.COMMON_QUERY_APP_STATUS.toArray(new String[0]));
         ParamUtil.setRequestAttr(request, "appTypeOps", appTypeOps);
         List<SelectOption> appStatusTypeOps = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_BSB_APP_STATUS);
         ParamUtil.setRequestAttr(request, "appStatusOps", appStatusTypeOps);
@@ -164,6 +165,12 @@ public class TaskListDelegator {
         dto.setSearchAppNo(request.getParameter("searchAppNo"));
         dto.setSearchAppType(request.getParameter("searchAppType"));
         dto.setSearchAppStatus(request.getParameter("searchAppStatus"));
+        /* This is because we share the search dto with task pool module,
+         * When user open the common pool and task list at the same time, we set these columns to avoid error */
+        if (dto.getUserId() == null) {
+            LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
+            dto.setUserId(loginContext.getUserId());
+        }
         return dto;
     }
 }

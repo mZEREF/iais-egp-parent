@@ -83,7 +83,7 @@
                         <thead>
                         <tr>
                             <iais:sortableHeader needSort="false" field="" value="S/N"/>
-                            <iais:sortableHeader needSort="false" field="" value=""/>
+                            <%--<iais:sortableHeader needSort="false" field="" value=""/>--%>
                             <iais:sortableHeader needSort="false" field="applicationNo" value="Application No."/>
                             <iais:sortableHeader needSort="false" field="processType" value="Process Type"/>
                             <iais:sortableHeader needSort="false" field="appType" value="Application Type"/>
@@ -108,10 +108,10 @@
                                             <p class="visible-xs visible-sm table-row-title">S/N</p>
                                             <p>${(status.index + 1) + (pageInfo.pageNo) * pageInfo.size}</p>
                                         </td>
-                                        <td>
+                                        <%--<td>
                                             <p class="visible-xs visible-sm table-row-title">Check</p>
                                             <p><input type="checkbox" name="pickTaskIds" value="${maskedTaskId}"/></p>
-                                        </td>
+                                        </td>--%>
                                         <td>
                                             <p class="visible-xs visible-sm table-row-title">Application No.</p>
                                             <p><c:out value="${entity.application.applicationNo}"/></p>
@@ -138,9 +138,9 @@
                             </c:otherwise>
                         </c:choose>
                     </table>
-                    <div style="text-align:right;">
+                    <%--<div style="text-align:right;">
                         <button type="button" class="btn btn-primary" onclick="pickUpMultiTask()">Pick Up</button>
-                    </div>
+                    </div>--%>
                 </div>
                 <iais-bsb:Pagination size="${pageInfo.size}" pageNo="${pageInfo.pageNo + 1}" pageAmt="${pageInfo.totalPages}" totalElements="${pageInfo.totalElements}"/>
             </div>
