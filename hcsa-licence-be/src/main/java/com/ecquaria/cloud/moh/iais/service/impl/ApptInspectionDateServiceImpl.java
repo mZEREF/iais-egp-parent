@@ -640,11 +640,16 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
         String urlId = apptInspectionDateDto.getTaskDto().getRefNo();
         List<String> appPremCorrIds = apptInspectionDateDto.getRefNo();
         //end hour - 1, because the function save all start hour
+        //AppointmentDto appointmentDtoSave = officersReSchedulingService.subtractEndHourByApptDto(apptInspectionDateDto.getSpecificApptDto());
+        //get AppointmentDto
+        AppointmentDto appointmentDtoSave = apptInspectionDateDto.getSpecificApptDto();
+        //save and return apptRefNo
         List<String> confirmRefNo = IaisCommonUtils.genNewArrayList();
-        AppointmentDto appointmentDtoSave = officersReSchedulingService.subtractEndHourByApptDto(apptInspectionDateDto.getSpecificApptDto());
         String apptRefNo = appointmentClient.saveManualUserCalendar(appointmentDtoSave).getEntity();
         confirmRefNo.add(apptRefNo);
+        //generate appList for email
         List<ApplicationDto> applicationDtos = IaisCommonUtils.genNewArrayList();
+        //save data
         for(String appPremCorrId : appPremCorrIds) {
             ApplicationDto applicationDto = inspectionTaskClient.getApplicationByCorreId(appPremCorrId).getEntity();
             applicationDtos.add(applicationDto);
