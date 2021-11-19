@@ -5,6 +5,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmission
 import com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.CycleDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.CycleStageSelectionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.EmbryoTransferredOutcomeStageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.OutcomeStageDto;
@@ -105,7 +106,7 @@ public abstract class CommonDelegator {
     public void doReturn(BaseProcessClass bpc) throws IOException {
         returnStep(bpc);
         ArSuperDataSubmissionDto arSuperDataSubmission = DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
-        if (arSuperDataSubmission != null && !DataSubmissionConsts.DS_TYPE_NEW.equals(arSuperDataSubmission.getSubmissionType())) {
+        if (arSuperDataSubmission != null && !DataSubmissionConsts.DS_APP_TYPE_NEW.equals(arSuperDataSubmission.getAppType())) {
             StringBuilder url = new StringBuilder();
             url.append(InboxConst.URL_HTTPS)
                     .append(bpc.request.getServerName())
@@ -176,7 +177,8 @@ public abstract class CommonDelegator {
         ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, currentStage);
         ArSuperDataSubmissionDto arSuperDataSubmission = DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
         if (arSuperDataSubmission != null) {
-            arSuperDataSubmission.setDraftNo(arDataSubmissionService.getDraftNo(DataSubmissionConsts.DS_AR, arSuperDataSubmission.getDraftNo()));
+            arSuperDataSubmission.setDraftNo(
+                    arDataSubmissionService.getDraftNo(DataSubmissionConsts.DS_AR, arSuperDataSubmission.getDraftNo()));
             arSuperDataSubmission = arDataSubmissionService.saveDataSubmissionDraft(arSuperDataSubmission);
             DataSubmissionHelper.setCurrentArDataSubmission(arSuperDataSubmission, bpc.request);
             ParamUtil.setRequestAttr(bpc.request, "saveDraftSuccess", "success");
@@ -194,8 +196,6 @@ public abstract class CommonDelegator {
      */
     public void draft(BaseProcessClass bpc) {}
 
-    ;
-
     /**
      * StartStep: Submission
      *
@@ -207,17 +207,20 @@ public abstract class CommonDelegator {
         ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.CURRENT_PAGE_STAGE, "ack");
         submission(bpc);
         ArSuperDataSubmissionDto arSuperDataSubmission = DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
-        DataSubmissionDto dataSubmissionDto = arSuperDataSubmission.getCurrentDataSubmissionDto();
+        DataSubmissionDto dataSubmissionDto = arSuperDataSubmission.getDataSubmissionDto();
         CycleDto cycle = arSuperDataSubmission.getCycleDto();
         String cycleType = cycle.getCycleType();
-        String submissionNo = arDataSubmissionService.getSubmissionNo(arSuperDataSubmission.getDsType(),
-                cycleType, arSuperDataSubmission.getLastDataSubmissionDto());
-        dataSubmissionDto.setSubmissionNo(submissionNo);
-        if (StringUtil.isEmpty(dataSubmissionDto.getStatus())) {
+        if (StringUtil.isEmpty(dataSubmissionDto.getSubmissionNo())) {
+            String submissionNo = arDataSubmissionService.getSubmissionNo(arSuperDataSubmission.getSelectionDto());
+            dataSubmissionDto.setSubmissionNo(submissionNo);
+        }
+        if (DataSubmissionConsts.DS_APP_TYPE_RFC.equals(dataSubmissionDto.getAppType())) {
+            dataSubmissionDto.setStatus(DataSubmissionConsts.DS_STATUS_AMENDED);
+        } else if (StringUtil.isEmpty(dataSubmissionDto.getStatus())) {
             dataSubmissionDto.setStatus(DataSubmissionConsts.DS_STATUS_COMPLETED);
         }
         String stage = dataSubmissionDto.getCycleStage();
-        String status = DataSubmissionConsts.DS_STATUS_ACTIVE;
+        String status = cycle.getStatus();
         if (DataSubmissionConsts.DS_CYCLE_AR.equals(cycleType)) {
             if (DataSubmissionConsts.AR_STAGE_END_CYCLE.equals(stage)) {
                 status = DataSubmissionConsts.DS_STATUS_COMPLETED_END_CYCEL;
@@ -244,6 +247,9 @@ public abstract class CommonDelegator {
             }
         } else if (DataSubmissionConsts.DS_CYCLE_NON.equals(cycleType)) {
             status = DataSubmissionConsts.DS_STATUS_COMPLETED;
+        }
+        if (StringUtil.isEmpty(status)) {
+            status = DataSubmissionConsts.DS_STATUS_ACTIVE;
         }
         cycle.setStatus(status);
         log.info(StringUtil.changeForLog("-----Cycle Type: " + cycleType + " - Stage : " + stage
@@ -315,7 +321,7 @@ public abstract class CommonDelegator {
         // declaration
         String declaration = ParamUtil.getString(bpc.request, "declaration");
         ArSuperDataSubmissionDto arSuperDataSubmission = DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
-        DataSubmissionDto dataSubmissionDto = arSuperDataSubmission.getCurrentDataSubmissionDto();
+        DataSubmissionDto dataSubmissionDto = arSuperDataSubmission.getDataSubmissionDto();
         dataSubmissionDto.setDeclaration(declaration);
         DataSubmissionHelper.setCurrentArDataSubmission(arSuperDataSubmission, bpc.request);
         // others
@@ -334,7 +340,7 @@ public abstract class CommonDelegator {
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap(1);
         String actionType = ParamUtil.getString(bpc.request, DataSubmissionConstant.CRUD_TYPE);
         ArSuperDataSubmissionDto arSuperDataSubmission = DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
-        if (DataSubmissionConsts.DS_TYPE_NEW.equals(arSuperDataSubmission.getSubmissionType())
+        if (DataSubmissionConsts.DS_APP_TYPE_NEW.equals(arSuperDataSubmission.getAppType())
                 && ACTION_TYPE_SUBMISSION.equals(actionType) && StringUtil.isEmpty(declaration)) {
             errorMap.put("declaration", "GENERAL_ERR0006");
         }

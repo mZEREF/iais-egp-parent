@@ -19,6 +19,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.service.client.ArFeClient;
 import com.ecquaria.cloud.moh.iais.service.client.FeEicGatewayClient;
@@ -74,7 +75,8 @@ public class ArDataSubmissionServiceImpl implements ArDataSubmissionService {
             return premisesDtoMap;
         }
         for (PremisesDto premisesDto : premisesDtos) {
-            premisesDtoMap.put(premisesDto.getHciCode(), premisesDto);
+            premisesDtoMap.put(DataSubmissionHelper.getPremisesMapKey(premisesDto, DataSubmissionConsts.DS_AR),
+                    premisesDto);
         }
         return premisesDtoMap;
     }
@@ -82,7 +84,8 @@ public class ArDataSubmissionServiceImpl implements ArDataSubmissionService {
     @Override
     public CycleStageSelectionDto getCycleStageSelectionDtoByConds(String idType, String idNumber, String nationality, String orgId,
             String hciCode) {
-        if (StringUtil.isEmpty(idType) || StringUtil.isEmpty(idNumber) || StringUtil.isEmpty(nationality) || StringUtil.isEmpty(orgId)) {
+        if (StringUtil.isEmpty(idType) || StringUtil.isEmpty(idNumber) || StringUtil.isEmpty(nationality) || StringUtil.isEmpty(
+                orgId)) {
             return null;
         }
         return arFeClient.getCycleStageSelectionDtoByConds(idType, idNumber, nationality, orgId, hciCode).getEntity();
@@ -141,7 +144,7 @@ public class ArDataSubmissionServiceImpl implements ArDataSubmissionService {
         arSuperDataSubmission.setFe(false);
         arSuperDataSubmission = saveBeArSuperDataSubmissionDto(arSuperDataSubmission);
 
-        DataSubmissionDto dataSubmission = arSuperDataSubmission.getCurrentDataSubmissionDto();
+        DataSubmissionDto dataSubmission = arSuperDataSubmission.getDataSubmissionDto();
         String refNo = dataSubmission.getSubmissionNo() + dataSubmission.getVersion();
         log.info(StringUtil.changeForLog(" the saveArSuperDataSubmissionDtoToBE refNo is -->:" + refNo));
         EicRequestTrackingDto eicRequestTrackingDto = licEicClient.getPendingRecordByReferenceNumber(refNo).getEntity();
@@ -173,15 +176,15 @@ public class ArDataSubmissionServiceImpl implements ArDataSubmissionService {
     }
 
     @Override
-    public ArSuperDataSubmissionDto getArSuperDataSubmissionDtoDraftByConds(String orgId, String type, String hciCode) {
-        log.info(StringUtil.changeForLog("----- Param: " + orgId + " : " + type + " : " + hciCode + " -----"));
-        if (StringUtil.isEmpty(orgId) || StringUtil.isEmpty(type)) {
+    public ArSuperDataSubmissionDto getArSuperDataSubmissionDtoDraftByConds(String orgId, String submissionType, String hciCode) {
+        log.info(StringUtil.changeForLog("----- Param: " + orgId + " : " + submissionType + " : " + hciCode + " -----"));
+        if (StringUtil.isEmpty(orgId) || StringUtil.isEmpty(submissionType)) {
             return null;
         }
-        if (DataSubmissionConsts.AR_TYPE_SBT_PATIENT_INFO.equals(type)) {
+        if (DataSubmissionConsts.AR_TYPE_SBT_PATIENT_INFO.equals(submissionType)) {
             hciCode = null;
         }
-        return arFeClient.getArSuperDataSubmissionDtoDraftByConds(orgId, type, hciCode).getEntity();
+        return arFeClient.getArSuperDataSubmissionDtoDraftByConds(orgId, submissionType, hciCode).getEntity();
     }
 
     @Override
@@ -197,34 +200,42 @@ public class ArDataSubmissionServiceImpl implements ArDataSubmissionService {
     }
 
     @Override
-    public void deleteArSuperDataSubmissionDtoDraftByConds(String orgId, String type, String hciCode) {
-        log.info("----- Delete Param: " + orgId + " : " + type + " -----");
-        if (StringUtil.isEmpty(orgId) || StringUtil.isEmpty(type)) {
+    public void deleteArSuperDataSubmissionDtoDraftByConds(String orgId, String submissionType, String hciCode) {
+        log.info("----- Delete Param: " + orgId + " : " + submissionType + " -----");
+        if (StringUtil.isEmpty(orgId) || StringUtil.isEmpty(submissionType)) {
             return;
         }
-        if (DataSubmissionConsts.AR_TYPE_SBT_PATIENT_INFO.equals(type)) {
+        if (DataSubmissionConsts.AR_TYPE_SBT_PATIENT_INFO.equals(submissionType)) {
             hciCode = null;
         }
-        arFeClient.deleteArSuperDataSubmissionDtoDraftByConds(orgId, type, hciCode);
+        arFeClient.deleteArSuperDataSubmissionDtoDraftByConds(orgId, submissionType, hciCode);
     }
 
     @Override
-    public String getSubmissionNo(String dsType, String cycleType,
-            DataSubmissionDto lastDataSubmissionDto) {
+    public String getSubmissionNo(CycleStageSelectionDto selectionDto) {
         String submissionNo = null;
-        boolean islinkableCycle = StringUtil.isIn(cycleType, new String[]{DataSubmissionConsts.DS_CYCLE_AR,
-                DataSubmissionConsts.DS_CYCLE_IUI,
-                DataSubmissionConsts.DS_CYCLE_EFO,
-                DataSubmissionConsts.DS_CYCLE_NON});
-        if (islinkableCycle && lastDataSubmissionDto != null
-                && !statuses.contains(lastDataSubmissionDto.getStatus())
-                && lastDataSubmissionDto.getSubmissionNo() != null) {
-            submissionNo = lastDataSubmissionDto.getSubmissionNo();
+        boolean islinkableCycle = false;
+        boolean isNonCycle = false;
+        if (selectionDto != null) {
+            islinkableCycle = StringUtil.isIn(selectionDto.getCycle(), new String[]{
+                    DataSubmissionConsts.DS_CYCLE_AR,
+                    DataSubmissionConsts.DS_CYCLE_IUI,
+                    DataSubmissionConsts.DS_CYCLE_EFO});
+            isNonCycle = DataSubmissionConsts.DS_CYCLE_NON.equals(selectionDto.getCycle());
+            if (islinkableCycle && selectionDto.getLastCycleDto() != null
+                    && !statuses.contains(selectionDto.getLastCycleDto().getStatus())
+                    && selectionDto.getLastDataSubmission() != null) {
+                submissionNo = selectionDto.getLastDataSubmission().getSubmissionNo();
+            } else if (isNonCycle && selectionDto.getLastCycleDto() != null
+                    && DataSubmissionConsts.DS_CYCLE_NON.equals(selectionDto.getLatestCycleDto().getCycleType())
+                    && selectionDto.getLatestDataSubmission() != null) {
+                submissionNo = selectionDto.getLatestDataSubmission().getSubmissionNo();
+            }
         }
         if (StringUtil.isEmpty(submissionNo)) {
-            submissionNo = systemAdminClient.submissionID(dsType).getEntity();
+            submissionNo = systemAdminClient.submissionID(selectionDto.getDsType()).getEntity();
         }
-        if (islinkableCycle) {
+        if (islinkableCycle || isNonCycle) {
             submissionNo = IaisCommonUtils.getNextSubmissionNo(submissionNo);
         }
         log.info(StringUtil.changeForLog("The submissionNo: " + submissionNo));
@@ -265,19 +276,20 @@ public class ArDataSubmissionServiceImpl implements ArDataSubmissionService {
     }
 
     @Override
-    public ArSubFreezingStageDto checkValueIsDirtyData(String freeCryoRadio, ArSubFreezingStageDto arSubFreezingStageDto, List<SelectOption> freeCryoOptions) {
-        if(!IaisCommonUtils.isEmpty(freeCryoOptions)) {
+    public ArSubFreezingStageDto checkValueIsDirtyData(String freeCryoRadio, ArSubFreezingStageDto arSubFreezingStageDto,
+            List<SelectOption> freeCryoOptions) {
+        if (!IaisCommonUtils.isEmpty(freeCryoOptions)) {
             boolean codeValueFlag = false;
-            for(SelectOption selectOption : freeCryoOptions) {
-                if(selectOption != null) {
+            for (SelectOption selectOption : freeCryoOptions) {
+                if (selectOption != null) {
                     String codeValue = selectOption.getValue();
-                    if(!StringUtil.isEmpty(codeValue) && codeValue.equals(freeCryoRadio)) {
+                    if (!StringUtil.isEmpty(codeValue) && codeValue.equals(freeCryoRadio)) {
                         codeValueFlag = true;
                         break;
                     }
                 }
             }
-            if(codeValueFlag) {
+            if (codeValueFlag) {
                 arSubFreezingStageDto.setCryopreservedType(freeCryoRadio);
             } else {
                 arSubFreezingStageDto.setCryopreservedType(null);
@@ -287,7 +299,8 @@ public class ArDataSubmissionServiceImpl implements ArDataSubmissionService {
     }
 
     @Override
-    public List<CycleDto> getByPatientCodeAndHciCodeAndCycleTypeAndStatuses(String patientCode, String hciCode, String cycleType, String ... status) {
+    public List<CycleDto> getByPatientCodeAndHciCodeAndCycleTypeAndStatuses(String patientCode, String hciCode, String cycleType,
+            String... status) {
         CycleDto cycleDto = new CycleDto();
         cycleDto.setPatientCode(patientCode);
         cycleDto.setHciCode(hciCode);
@@ -315,16 +328,17 @@ public class ArDataSubmissionServiceImpl implements ArDataSubmissionService {
     }
 
     @Override
-    public PatientInventoryDto setFreezingPatientChange(PatientInventoryDto patientInventoryDto, ArSubFreezingStageDto arSubFreezingStageDto) {
-        if(patientInventoryDto != null && arSubFreezingStageDto != null) {
+    public PatientInventoryDto setFreezingPatientChange(PatientInventoryDto patientInventoryDto,
+            ArSubFreezingStageDto arSubFreezingStageDto) {
+        if (patientInventoryDto != null && arSubFreezingStageDto != null) {
             String cryopreservedType = arSubFreezingStageDto.getCryopreservedType();
-            if(DataSubmissionConsts.FREEZING_CRYOPRESERVED_FRESH_OOCYTE.equals(cryopreservedType)) {
+            if (DataSubmissionConsts.FREEZING_CRYOPRESERVED_FRESH_OOCYTE.equals(cryopreservedType)) {
                 patientInventoryDto.setChangeFreshOocytes(arSubFreezingStageDto.getCryopreservedNum());
-            } else if(DataSubmissionConsts.FREEZING_CRYOPRESERVED_FRESH_EMBRYO.equals(cryopreservedType)) {
+            } else if (DataSubmissionConsts.FREEZING_CRYOPRESERVED_FRESH_EMBRYO.equals(cryopreservedType)) {
                 patientInventoryDto.setChangeFreshEmbryos(arSubFreezingStageDto.getCryopreservedNum());
-            } else if(DataSubmissionConsts.FREEZING_CRYOPRESERVED_THAWED_OOCYTE.equals(cryopreservedType)) {
+            } else if (DataSubmissionConsts.FREEZING_CRYOPRESERVED_THAWED_OOCYTE.equals(cryopreservedType)) {
                 patientInventoryDto.setChangeThawedOocytes(arSubFreezingStageDto.getCryopreservedNum());
-            } else if(DataSubmissionConsts.FREEZING_CRYOPRESERVED_THAWED_EMBRYO.equals(cryopreservedType)) {
+            } else if (DataSubmissionConsts.FREEZING_CRYOPRESERVED_THAWED_EMBRYO.equals(cryopreservedType)) {
                 patientInventoryDto.setChangeThawedEmbryos(arSubFreezingStageDto.getCryopreservedNum());
             }
         }
@@ -332,18 +346,20 @@ public class ArDataSubmissionServiceImpl implements ArDataSubmissionService {
     }
 
     @Override
-    public DonorSampleDto getDonorSampleDto(String idType, String idNumber, String donorSampleCode,String sampleFromHciCode,String sampleFromOthers) {
+    public DonorSampleDto getDonorSampleDto(String idType, String idNumber, String donorSampleCode, String sampleFromHciCode,
+            String sampleFromOthers) {
         return ((StringUtil.isEmpty(idType) || StringUtil.isEmpty(idNumber)) &&
-                (StringUtil.isEmpty(donorSampleCode) || StringUtil.isEmpty(sampleFromHciCode))) ? null : arFeClient.getDonorSampleDto(idType,idNumber,donorSampleCode,sampleFromHciCode,sampleFromOthers).getEntity();
+                (StringUtil.isEmpty(donorSampleCode) || StringUtil.isEmpty(sampleFromHciCode))) ? null : arFeClient.getDonorSampleDto(
+                idType, idNumber, donorSampleCode, sampleFromHciCode, sampleFromOthers).getEntity();
     }
 
     @Override
     public List<SelectOption> getSourceOfSemenOption() {
         List<SelectOption> sourceOfSemenOption = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.SOURCE_OF_SEMEN);
-        if(!IaisCommonUtils.isEmpty(sourceOfSemenOption)) {
-            for(int i = 0; i < sourceOfSemenOption.size(); i++) {
+        if (!IaisCommonUtils.isEmpty(sourceOfSemenOption)) {
+            for (int i = 0; i < sourceOfSemenOption.size(); i++) {
                 SelectOption selectOption = sourceOfSemenOption.get(i);
-                if("AR_SOS_004".equals(selectOption.getValue())) {
+                if ("AR_SOS_004".equals(selectOption.getValue())) {
                     sourceOfSemenOption.remove(i);
                     break;
                 }
@@ -355,7 +371,7 @@ public class ArDataSubmissionServiceImpl implements ArDataSubmissionService {
     @Override
     public List<SelectOption> getChildNumOption() {
         List<SelectOption> childNumOption = IaisCommonUtils.genNewArrayList();
-        for(int i = 0; i <= 10; i++) {
+        for (int i = 0; i <= 10; i++) {
             SelectOption selectOption = new SelectOption();
             selectOption.setValue(i + "");
             selectOption.setText(i + "");
@@ -366,7 +382,7 @@ public class ArDataSubmissionServiceImpl implements ArDataSubmissionService {
 
     @Override
     public ArSuperDataSubmissionDto setIuiCycleStageDtoDefaultVal(ArSuperDataSubmissionDto arSuperDataSubmission) {
-        if(arSuperDataSubmission != null) {
+        if (arSuperDataSubmission != null) {
             IuiCycleStageDto iuiCycleStageDto = arSuperDataSubmission.getIuiCycleStageDto();
             if (iuiCycleStageDto == null) {
                 iuiCycleStageDto = new IuiCycleStageDto();
@@ -414,13 +430,13 @@ public class ArDataSubmissionServiceImpl implements ArDataSubmissionService {
 
     @Override
     public List<String> checkBoxIsDirtyData(String[] stringArr, List<SelectOption> selectOptionList) {
-        if(!IaisCommonUtils.isEmpty(selectOptionList)) {
+        if (!IaisCommonUtils.isEmpty(selectOptionList)) {
             if (stringArr != null && stringArr.length > 0) {
                 List<String> stringList = IaisCommonUtils.genNewArrayList();
                 List<String> stringArrList = Arrays.asList(stringArr);
-                for(SelectOption selectOption : selectOptionList) {
+                for (SelectOption selectOption : selectOptionList) {
                     String value = selectOption.getValue();
-                    if(!StringUtil.isEmpty(value) && stringArrList.contains(value)) {
+                    if (!StringUtil.isEmpty(value) && stringArrList.contains(value)) {
                         stringList.add(value);
                     }
                 }
@@ -429,4 +445,5 @@ public class ArDataSubmissionServiceImpl implements ArDataSubmissionService {
         }
         return null;
     }
+
 }

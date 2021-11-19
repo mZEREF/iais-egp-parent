@@ -16,7 +16,7 @@
 <c:set var="patient" value="${patientInfoDto.patient}" />
 <c:set var="previous" value="${patientInfoDto.previous}" />
 <c:set var="husband" value="${patientInfoDto.husband}" />
-<c:set var="dataSubmission" value="${arSuperDataSubmissionDto.currentDataSubmissionDto}" />
+<c:set var="dataSubmission" value="${arSuperDataSubmissionDto.dataSubmissionDto}" />
 
 <%@ include file="common/arHeader.jsp" %>
 

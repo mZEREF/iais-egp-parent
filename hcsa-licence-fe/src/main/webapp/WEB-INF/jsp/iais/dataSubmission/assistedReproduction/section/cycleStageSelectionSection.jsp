@@ -13,23 +13,23 @@
             <div class="panel-main-content form-horizontal">
                 <iais:row>
                     <iais:field width="5" value="Patient ID No." mandatory="true"/>
-                    <iais:value width="3" cssClass="col-md-3">
+                    <iais:value width="2" cssClass="col-md-2">
                         <iais:select name="patientIdType" firstOption="Please Select" codeCategory="CATE_ID_DS_ID_TYPE"
                                      value="${selectionDto.patientIdType}" cssClass="idTypeSel" onchange="clearFields('.patientData')"/>
                     </iais:value>
-                    <iais:value width="4" cssClass="col-md-4">
+                    <iais:value width="3" cssClass="col-md-3">
                         <iais:input maxLength="20" type="text" name="patientIdNumber" value="${selectionDto.patientIdNumber}"
                                     onchange="clearFields('.patientData')"/>
                     </iais:value>
                 </iais:row>
                 <iais:row>
                     <iais:field width="5" value="Patient Nationality" mandatory="true"/>
-                    <iais:value width="4" cssClass="col-md-4">
+                    <iais:value width="5" cssClass="col-md-5">
                         <iais:select name="patientNationality" firstOption="Please Select" codeCategory="CATE_ID_NATIONALITY"
                                      value="${selectionDto.patientNationality}" cssClass="nationalitySel"
                                      onchange="clearFields('.patientData')"/>
                     </iais:value>
-                    <iais:value width="3" cssClass="col-md-3 patientData" display="true" id="retrieveDataDiv">
+                    <iais:value width="2" cssClass="col-md-3 patientData" display="true" id="retrieveDataDiv">
                         <a class="retrieveIdentification" onclick="retrieveValidatePatient()">
                             Validate Patient
                         </a>

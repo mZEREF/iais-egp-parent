@@ -2,7 +2,7 @@
 <c:set var="patient" value="${patientInfoDto.patient}" />
 <c:set var="previous" value="${patientInfoDto.previous}" />
 <c:set var="husband" value="${patientInfoDto.husband}" />
-<c:set var="declaration" value="${arSuperDataSubmissionDto.currentDataSubmissionDto.declaration}" />
+<c:set var="declaration" value="${arSuperDataSubmissionDto.dataSubmissionDto.declaration}" />
 
 <div class="main-content">
     <div class="container center-content">

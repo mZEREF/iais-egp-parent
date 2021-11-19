@@ -44,21 +44,6 @@ public class PatientDelegator extends CommonDelegator {
     @Autowired
     private GenerateIdClient generateIdClient;
 
-    /*@Override
-    public void start(BaseProcessClass bpc) {
-        ArSuperDataSubmissionDto currentArDataSubmission = DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
-        DataSubmissionDto dataSubmission = currentArDataSubmission.getCurrentDataSubmissionDto();
-        if (dataSubmission == null) {
-            dataSubmission = new DataSubmissionDto();
-            currentArDataSubmission.setCurrentDataSubmissionDto(dataSubmission);
-        }
-        dataSubmission.setSubmissionType(currentArDataSubmission.getSubmissionType());
-        dataSubmission.setCycleStage(DataSubmissionConsts.DS_CYCLE_STAGE_PATIENT);
-        dataSubmission.setStatus(DataSubmissionConsts.DS_STATUS_ACTIVE);
-        currentArDataSubmission.setCycleDto(initCycleDto(currentArDataSubmission));
-        DataSubmissionHelper.setCurrentArDataSubmission(currentArDataSubmission, bpc.request);
-    }*/
-
     @Override
     public void prepareSwitch(BaseProcessClass bpc) {
         ParamUtil.setRequestAttr(bpc.request, "smallTitle", "You are submitting for <strong>Patient Information</strong>");
@@ -72,7 +57,7 @@ public class PatientDelegator extends CommonDelegator {
         if (ACTION_TYPE_DRAFT.equals(actionType)) {
             // validatePageForDraft(patientInfo.getPatient(), bpc.request);
         } else {
-            String profile = DataSubmissionConsts.DS_TYPE_RFC.equals(patientInfo.getSubmissionType()) ? "rfc" : "save";
+            String profile = DataSubmissionConsts.DS_APP_TYPE_RFC.equals(patientInfo.getAppType()) ? "rfc" : "save";
             validatePageData(bpc.request, patientInfo, profile, ACTION_TYPE_CONFIRM);
         }
     }
@@ -133,10 +118,10 @@ public class PatientDelegator extends CommonDelegator {
         String amendReasonOther = ParamUtil.getString(request, "amendReasonOther");
         patientInfo.setAmendReason(StringUtil.getNonNull(amendReason));
         patientInfo.setAmendReasonOther(StringUtil.getNonNull(amendReasonOther));
-        patientInfo.setSubmissionType(currentArDataSubmission.getSubmissionType());
+        patientInfo.setAppType(currentArDataSubmission.getAppType());
         currentArDataSubmission.setPatientInfoDto(patientInfo);
 
-        DataSubmissionDto dataSubmission = currentArDataSubmission.getCurrentDataSubmissionDto();
+        DataSubmissionDto dataSubmission = currentArDataSubmission.getDataSubmissionDto();
         dataSubmission.setAmendReason(amendReason);
         dataSubmission.setAmendReasonOther(amendReasonOther);
         // ret-set cycle dto

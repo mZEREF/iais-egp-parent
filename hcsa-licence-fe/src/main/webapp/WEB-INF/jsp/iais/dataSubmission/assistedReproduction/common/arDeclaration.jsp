@@ -1,5 +1,5 @@
 <c:if test="${empty declaration}">
-<c:set var="declaration" value="${arSuperDataSubmissionDto.currentDataSubmissionDto.declaration}" />
+<c:set var="declaration" value="${arSuperDataSubmissionDto.dataSubmissionDto.declaration}" />
 </c:if>
 <div class="panel panel-default">
     <div class="panel-heading">

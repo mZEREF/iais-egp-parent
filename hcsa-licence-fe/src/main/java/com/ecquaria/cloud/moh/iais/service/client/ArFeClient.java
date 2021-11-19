@@ -16,7 +16,7 @@ public interface ArFeClient {
     @GetMapping(value = "/ar-common/patient/idnumber-nationality", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<PatientDto> getPatientDto(@RequestParam(name = "idType") String idType,
             @RequestParam(name = "idNumber") String idNumber, @RequestParam(name = "nationality") String nationality,
-            @RequestParam(name = "orgId") String orgId);
+            @RequestParam(name = "orgId") String orgId, @RequestParam(name = "patientType")String patientType);
 
     @GetMapping(value = "/data-submission/cycle-stage-selection", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<CycleStageSelectionDto> getCycleStageSelectionDtoByConds(@RequestParam(name = "idType") String idType,
@@ -79,7 +79,7 @@ public interface ArFeClient {
     @GetMapping(value = "/data-submission/draft-ar-data-submission/special", produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<ArSuperDataSubmissionDto> getArSuperDataSubmissionDtoDraftByConds(@RequestParam(name = "orgId") String orgId,
-            @RequestParam(name = "type") String type,
+            @RequestParam(name = "submissionType") String submissionType,
             @RequestParam(name = "hciCode", required = false) String hciCode);
 
     @PostMapping(value = "/data-submission/draft-ar-data-submission/cycle", produces = MediaType.APPLICATION_JSON_VALUE,
@@ -90,7 +90,7 @@ public interface ArFeClient {
 
     @DeleteMapping(value = "/data-submission/draft-ar-data-submission/special", consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<Void> deleteArSuperDataSubmissionDtoDraftByConds(@RequestParam(name = "orgId") String orgId,
-            @RequestParam(name = "type") String type,
+            @RequestParam(name = "submissionType") String submissionType,
             @RequestParam(name = "hciCode", required = false) String hciCode);
 
     @PostMapping(value = "/data-submission/cycle/patientcode-hcicode-cycletype-stauses", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)

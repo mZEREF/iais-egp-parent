@@ -157,17 +157,17 @@ public final class DataSubmissionHelper {
         return result;
     }
 
-    public static CycleDto genCycleDto(CycleStageSelectionDto selectionDto, String hciCode) {
+    public static CycleDto genCycleDto(CycleStageSelectionDto selectionDto, String serviceName, String hciCode) {
         String stage = selectionDto.getStage();
         String cycle;
-        String cycleId = null;
+        CycleDto cycleDto = null;
         if (StringUtil.isIn(stage, new String[]{DataSubmissionConsts.AR_STAGE_TRANSFER_IN_AND_OUT,
                 DataSubmissionConsts.AR_STAGE_DONATION,
                 DataSubmissionConsts.AR_STAGE_DISPOSAL})) {
             cycle = DataSubmissionConsts.DS_CYCLE_NON;
         } else if (selectionDto.isUndergoingCycle()) {
-            cycle = selectionDto.getLastCycle();
-            cycleId = selectionDto.getLastCycleId();
+            cycleDto = selectionDto.getLastCycleDto();
+            cycle = cycleDto.getCycleType();
         } else if (DataSubmissionConsts.AR_CYCLE_AR.equals(stage)) {
             cycle = DataSubmissionConsts.DS_CYCLE_AR;
         } else if (DataSubmissionConsts.AR_CYCLE_IUI.equals(stage)) {
@@ -177,13 +177,17 @@ public final class DataSubmissionHelper {
         } else {
             cycle = DataSubmissionConsts.DS_CYCLE_NON;
         }
-        CycleDto cycleDto = new CycleDto();
+        if (cycleDto == null) {
+            cycleDto = new CycleDto();
+        }
         cycleDto.setDsType(DataSubmissionConsts.DS_AR);
         cycleDto.setCycleType(cycle);
         cycleDto.setPatientCode(selectionDto.getPatientCode());
+        cycleDto.setSvcName(serviceName);
         cycleDto.setHciCode(hciCode);
-        cycleDto.setId(cycleId);
-        cycleDto.setStatus(DataSubmissionConsts.DS_STATUS_ACTIVE);
+        if (StringUtil.isEmpty(cycleDto.getStatus())) {
+            cycleDto.setStatus(DataSubmissionConsts.DS_STATUS_ACTIVE);
+        }
         return cycleDto;
     }
 
@@ -192,39 +196,42 @@ public final class DataSubmissionHelper {
         if (cycleDto == null || reNew) {
             cycleDto = new CycleDto();
         }
-        String hicCode = Optional.ofNullable(currentArDataSubmission.getPremisesDto())
-                .map(premises -> premises.getHciCode())
-                .orElse("");
-        cycleDto.setHciCode(hicCode);
-        cycleDto.setDsType(currentArDataSubmission.getDsType());
+        cycleDto.setSvcName(currentArDataSubmission.getSvcName());
+        cycleDto.setHciCode(currentArDataSubmission.getHciCode());
+        cycleDto.setDsType(DataSubmissionConsts.DS_AR);
         String cycleType = cycleDto.getCycleType();
-        if (DataSubmissionConsts.AR_TYPE_SBT_PATIENT_INFO.equals(currentArDataSubmission.getArSubmissionType())) {
+        if (DataSubmissionConsts.AR_TYPE_SBT_PATIENT_INFO.equals(currentArDataSubmission.getSubmissionType())) {
             cycleType = DataSubmissionConsts.DS_CYCLE_PATIENT_ART;
-        } else if (DataSubmissionConsts.AR_TYPE_SBT_DONOR_SAMPLE.equals(currentArDataSubmission.getArSubmissionType())) {
+        } else if (DataSubmissionConsts.AR_TYPE_SBT_DONOR_SAMPLE.equals(currentArDataSubmission.getSubmissionType())) {
             cycleType = DataSubmissionConsts.DS_CYCLE_DONOR_SAMPLE;
-        } else if (DataSubmissionConsts.AR_TYPE_SBT_CYCLE_STAGE.equals(currentArDataSubmission.getArSubmissionType())
+        } else if (DataSubmissionConsts.AR_TYPE_SBT_CYCLE_STAGE.equals(currentArDataSubmission.getSubmissionType())
                 || StringUtil.isEmpty(cycleType)) {
             cycleType = DataSubmissionConsts.DS_CYCLE_STAGE;
         }
         cycleDto.setCycleType(cycleType);
+        if (StringUtil.isEmpty(cycleDto.getStatus())) {
+            cycleDto.setStatus(DataSubmissionConsts.DS_STATUS_ACTIVE);
+        }
         return cycleDto;
     }
 
     public static DataSubmissionDto initDataSubmission(ArSuperDataSubmissionDto currentArDataSubmission, boolean reNew) {
-        DataSubmissionDto dataSubmission = currentArDataSubmission.getCurrentDataSubmissionDto();
+        DataSubmissionDto dataSubmission = currentArDataSubmission.getDataSubmissionDto();
         if (dataSubmission == null || reNew) {
             dataSubmission = new DataSubmissionDto();
-            currentArDataSubmission.setCurrentDataSubmissionDto(dataSubmission);
+            currentArDataSubmission.setDataSubmissionDto(dataSubmission);
         }
         dataSubmission.setSubmissionType(currentArDataSubmission.getSubmissionType());
         String cycleStage = null;
-        if (DataSubmissionConsts.AR_TYPE_SBT_PATIENT_INFO.equals(currentArDataSubmission.getArSubmissionType())) {
+        if (DataSubmissionConsts.AR_TYPE_SBT_PATIENT_INFO.equals(currentArDataSubmission.getSubmissionType())) {
             cycleStage = DataSubmissionConsts.DS_CYCLE_STAGE_PATIENT;
-        } else if (DataSubmissionConsts.AR_TYPE_SBT_DONOR_SAMPLE.equals(currentArDataSubmission.getArSubmissionType())) {
+        } else if (DataSubmissionConsts.AR_TYPE_SBT_DONOR_SAMPLE.equals(currentArDataSubmission.getSubmissionType())) {
             cycleStage = DataSubmissionConsts.DS_CYCLE_STAGE_DONOR_SAMPLE;
         }
         dataSubmission.setCycleStage(cycleStage);
-        dataSubmission.setStatus(DataSubmissionConsts.DS_STATUS_ACTIVE);
+        if (StringUtil.isEmpty(dataSubmission.getStatus())) {
+            dataSubmission.setStatus(DataSubmissionConsts.DS_STATUS_ACTIVE);
+        }
         return dataSubmission;
     }
 
@@ -237,13 +244,13 @@ public final class DataSubmissionHelper {
                 .map(premises -> premises.getHciCode())
                 .orElse("");
         cycleDto.setHciCode(hicCode);
-        cycleDto.setDsType(dpSuperDataSubmissionDto.getDsType());
+        cycleDto.setDsType(DataSubmissionConsts.DS_DRP);
         String cycleType = cycleDto.getCycleType();
-        if (DataSubmissionConsts.DP_TYPE_SBT_PATIENT_INFO.equals(dpSuperDataSubmissionDto.getDpSubmissionType())) {
+        if (DataSubmissionConsts.DP_TYPE_SBT_PATIENT_INFO.equals(dpSuperDataSubmissionDto.getSubmissionType())) {
             cycleType = DataSubmissionConsts.DS_CYCLE_PATIENT_DRP;
-        } else if (DataSubmissionConsts.DP_TYPE_SBT_DRUG_PRESCRIBED.equals(dpSuperDataSubmissionDto.getDpSubmissionType())) {
+        } else if (DataSubmissionConsts.DP_TYPE_SBT_DRUG_PRESCRIBED.equals(dpSuperDataSubmissionDto.getSubmissionType())) {
             cycleType = DataSubmissionConsts.DS_CYCLE_DRP;
-        } else if (DataSubmissionConsts.DP_TYPE_SBT_SOVENOR_INVENTORY.equals(dpSuperDataSubmissionDto.getDpSubmissionType())
+        } else if (DataSubmissionConsts.DP_TYPE_SBT_SOVENOR_INVENTORY.equals(dpSuperDataSubmissionDto.getSubmissionType())
                 || StringUtil.isEmpty(cycleType)) {
             cycleType = DataSubmissionConsts.DS_CYCLE_SOVENOR_INVENTORY;
         }
@@ -259,9 +266,9 @@ public final class DataSubmissionHelper {
         }
         dataSubmission.setSubmissionType(dpSuperDataSubmissionDto.getSubmissionType());
         String cycleStage = null;
-        if (DataSubmissionConsts.DP_TYPE_SBT_PATIENT_INFO.equals(dpSuperDataSubmissionDto.getDpSubmissionType())) {
+        if (DataSubmissionConsts.DP_TYPE_SBT_PATIENT_INFO.equals(dpSuperDataSubmissionDto.getSubmissionType())) {
             cycleStage = DataSubmissionConsts.DS_CYCLE_STAGE_PATIENT;
-        } else if (DataSubmissionConsts.AR_TYPE_SBT_DONOR_SAMPLE.equals(dpSuperDataSubmissionDto.getDpSubmissionType())) {
+        } else if (DataSubmissionConsts.AR_TYPE_SBT_DONOR_SAMPLE.equals(dpSuperDataSubmissionDto.getSubmissionType())) {
             cycleStage = DataSubmissionConsts.DS_CYCLE_STAGE_DONOR_SAMPLE;
         }
         dataSubmission.setCycleStage(cycleStage);
@@ -323,6 +330,19 @@ public final class DataSubmissionHelper {
 
     public static List<SelectOption> genOptions(Map<String, String> map) {
         return genOptions(map, "Please Select", true);
+    }
+
+    public static String getPremisesMapKey(PremisesDto premisesDto) {
+        return getPremisesMapKey(premisesDto, null);
+    }
+
+    public static String getPremisesMapKey(PremisesDto premisesDto, String dsType) {
+        String key = premisesDto.getHciCode();
+        if (!DataSubmissionConsts.DS_AR.equals(dsType)) {
+            key += ":" + premisesDto.getSvcName();
+            key = StringUtil.obscured(key);
+        }
+        return key;
     }
 
     public static List<SelectOption> genPremisesOptions(Map<String, PremisesDto> premisesMap) {

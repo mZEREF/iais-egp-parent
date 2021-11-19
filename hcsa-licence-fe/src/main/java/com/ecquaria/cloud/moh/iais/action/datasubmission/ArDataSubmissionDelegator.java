@@ -154,7 +154,7 @@ public class ArDataSubmissionDelegator {
             currentArDataSubmission = new ArSuperDataSubmissionDto();
         }
         if (!map.isEmpty()) {
-            currentArDataSubmission.setArSubmissionType(submissionType);
+            currentArDataSubmission.setSubmissionType(submissionType);
             currentArDataSubmission.setSubmissionMethod(submissionMethod);
             currentArDataSubmission.setPremisesDto(premisesDto);
             actionType = "invalid";
@@ -184,14 +184,13 @@ public class ArDataSubmissionDelegator {
             } else if ("delete".equals(actionValue)) {
                 arDataSubmissionService.deleteArSuperDataSubmissionDtoDraftByConds(orgId, submissionType, hciCode);
             }
-            currentArDataSubmission.setDsType(DataSubmissionConsts.DS_AR);
-            currentArDataSubmission.setSubmissionType(DataSubmissionConsts.DS_TYPE_NEW);
+            currentArDataSubmission.setAppType(DataSubmissionConsts.DS_APP_TYPE_NEW);
             currentArDataSubmission.setOrgId(orgId);
-            currentArDataSubmission.setArSubmissionType(submissionType);
+            currentArDataSubmission.setSubmissionType(submissionType);
             currentArDataSubmission.setSubmissionMethod(submissionMethod);
             currentArDataSubmission.setPremisesDto(premisesDto);
             currentArDataSubmission.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-            currentArDataSubmission.setCurrentDataSubmissionDto(DataSubmissionHelper.initDataSubmission(currentArDataSubmission,
+            currentArDataSubmission.setDataSubmissionDto(DataSubmissionHelper.initDataSubmission(currentArDataSubmission,
                     false));
             currentArDataSubmission.setCycleDto(DataSubmissionHelper.initCycleDto(currentArDataSubmission, false));
         }
@@ -202,7 +201,7 @@ public class ArDataSubmissionDelegator {
     private boolean reNew(ArSuperDataSubmissionDto arSuperDto, String submissionType, String submissionMethod,
             PremisesDto premisesDto) {
         if (arSuperDto == null
-                || !Objects.equals(submissionType, arSuperDto.getArSubmissionType())
+                || !Objects.equals(submissionType, arSuperDto.getSubmissionType())
                 || !Objects.equals(submissionMethod, arSuperDto.getSubmissionMethod())) {
             return true;
         }

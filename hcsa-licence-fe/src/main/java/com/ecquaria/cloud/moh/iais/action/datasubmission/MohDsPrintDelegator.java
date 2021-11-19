@@ -47,7 +47,7 @@ public class MohDsPrintDelegator {
         if ("patient".equals(printflag)) {
             String declaration = ParamUtil.getString(request, "declaration");
             ArSuperDataSubmissionDto arSuperDataSubmission = DataSubmissionHelper.getCurrentArDataSubmission(request);
-            DataSubmissionDto dataSubmissionDto = arSuperDataSubmission.getCurrentDataSubmissionDto();
+            DataSubmissionDto dataSubmissionDto = arSuperDataSubmission.getDataSubmissionDto();
             dataSubmissionDto.setDeclaration(declaration);
             DataSubmissionHelper.setCurrentArDataSubmission(arSuperDataSubmission, request);
         }

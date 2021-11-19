@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.service.datasubmission.impl;
 
+import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientDto;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.service.client.ArFeClient;
@@ -26,7 +27,7 @@ public class PatientServiceImpl implements PatientService {
                 || StringUtil.isEmpty(orgId)) {
             return null;
         }
-        return arFeClient.getPatientDto(idType, idNumber, nationality, orgId).getEntity();
+        return arFeClient.getPatientDto(idType, idNumber, nationality, orgId, DataSubmissionConsts.DS_CYCLE_STAGE_PATIENT).getEntity();
     }
 
 }

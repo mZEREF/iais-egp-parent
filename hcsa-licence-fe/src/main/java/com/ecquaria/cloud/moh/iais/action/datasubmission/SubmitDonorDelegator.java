@@ -30,20 +30,6 @@ import sop.webflow.rt.api.BaseProcessClass;
 @Slf4j
 public class SubmitDonorDelegator extends CommonDelegator {
     private final static String  SAMPLE_FROM_HCICODE          =  "SampleFromHciCode";
-    @Override
-    public void start(BaseProcessClass bpc) {
-        ArSuperDataSubmissionDto currentArDataSubmission = DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
-        DataSubmissionDto dataSubmission = currentArDataSubmission.getCurrentDataSubmissionDto();
-        if (dataSubmission == null) {
-            dataSubmission = new DataSubmissionDto();
-            currentArDataSubmission.setCurrentDataSubmissionDto(dataSubmission);
-        }
-        dataSubmission.setSubmissionType(currentArDataSubmission.getSubmissionType());
-        dataSubmission.setCycleStage(DataSubmissionConsts.DS_CYCLE_STAGE_DONOR_SAMPLE);
-        dataSubmission.setStatus(DataSubmissionConsts.DS_STATUS_ACTIVE);
-        currentArDataSubmission.setCycleDto(initCycleDto(currentArDataSubmission));
-        DataSubmissionHelper.setCurrentArDataSubmission(currentArDataSubmission, bpc.request);
-    }
 
     @Override
     public void prepareSwitch(BaseProcessClass bpc) {

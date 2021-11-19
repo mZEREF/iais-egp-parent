@@ -39,7 +39,7 @@ public interface ArDataSubmissionService {
 
     void deleteArSuperDataSubmissionDtoDraftByConds(String orgId, String submissionType, String hciCode);
 
-    String getSubmissionNo(String dsType, String cycleType, DataSubmissionDto lastDataSubmissionDto);
+    String getSubmissionNo(CycleStageSelectionDto selectionDto);
 
     String getDraftNo(String dsType, String draftNo);
 
@@ -122,4 +122,5 @@ public interface ArDataSubmissionService {
       * @Descripation: checkBoxIsDirtyData
       */
     List<String> checkBoxIsDirtyData(String[] stringArr, List<SelectOption> selectOptionList);
+
 }

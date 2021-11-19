@@ -62,13 +62,13 @@ public class MohDsDraftDelegator {
             ArSuperDataSubmissionDto dataSubmissionDto = arDataSubmissionService.getArSuperDataSubmissionDtoDraftByDraftNo(draftNo);
             if (dataSubmissionDto == null) {
                 uri = DEFAULT_URI;
-            } else if (DataSubmissionConsts.AR_TYPE_SBT_PATIENT_INFO.equals(dataSubmissionDto.getArSubmissionType())) {
+            } else if (DataSubmissionConsts.AR_TYPE_SBT_PATIENT_INFO.equals(dataSubmissionDto.getSubmissionType())) {
                 dataSubmissionDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
                 uri = InboxConst.URL_LICENCE_WEB_MODULE + "MohARPatientInformationManual";
-            } else if (DataSubmissionConsts.AR_TYPE_SBT_DONOR_SAMPLE.equals(dataSubmissionDto.getArSubmissionType())) {
+            } else if (DataSubmissionConsts.AR_TYPE_SBT_DONOR_SAMPLE.equals(dataSubmissionDto.getSubmissionType())) {
                 uri = InboxConst.URL_LICENCE_WEB_MODULE + "MohARSubmitDonor";
-            } else if (dataSubmissionDto.getCurrentDataSubmissionDto() == null
-                    || StringUtil.isEmpty(dataSubmissionDto.getCurrentDataSubmissionDto().getCycleStage())) {
+            } else if (dataSubmissionDto.getDataSubmissionDto() == null
+                    || StringUtil.isEmpty(dataSubmissionDto.getDataSubmissionDto().getCycleStage())) {
                 uri = InboxConst.URL_LICENCE_WEB_MODULE + "MohARCycleStagesManual";
             } else {
                 uri = InboxConst.URL_LICENCE_WEB_MODULE + "MohARCycleStagesManual/PrepareStage?crud_type=" + DataSubmissionConstant.CRUD_TYPE_FROM_DRAFT;
