@@ -223,16 +223,7 @@ public class WithOutRenewalDelegator {
         if (StringUtil.isEmpty(draftNo)) {
             appSubmissionDtoList = outRenewalService.getAppSubmissionDtos(licenceIDList);
             if (!IaisCommonUtils.isEmpty(appSubmissionDtoList) && appSubmissionDtoList.size() == 1) {
-                log.info(StringUtil.changeForLog("appSubmissionDtoList size:" + appSubmissionDtoList.size()));
-                appSubmissionDtoList.get(0).setOneLicDoRenew(true);
-                //set max file index into session
-                Integer maxFileIndex = appSubmissionDtoList.get(0).getMaxFileIndex();
-                if(maxFileIndex == null){
-                    maxFileIndex = 0;
-                }else{
-                    maxFileIndex ++;
-                }
-                ParamUtil.setSessionAttr(bpc.request,HcsaFileAjaxController.GLOBAL_MAX_INDEX_SESSION_ATTR,maxFileIndex);
+                setMaxFileIndexIntoSession(bpc.request, appSubmissionDtoList.get(0));
             }
             log.info("can not find licence id for without renewal");
             ParamUtil.setSessionAttr(bpc.request, "backUrl", "initLic");
@@ -240,21 +231,16 @@ public class WithOutRenewalDelegator {
             AppSubmissionDto appSubmissionDtoDraft = serviceConfigService.getAppSubmissionDtoDraft(draftNo);
             appSubmissionService.initDeclarationFiles(appSubmissionDtoDraft.getAppDeclarationDocDtos(),appSubmissionDtoDraft.getAppType(),bpc.request);
             requestForChangeService.svcDocToPresmise(appSubmissionDtoDraft);
-            ParamUtil.setSessionAttr(bpc.request, LOADING_DRAFT, "test");
-            appSubmissionDtoDraft.setOneLicDoRenew(true);
+            ParamUtil.setSessionAttr(bpc.request, LOADING_DRAFT, AppConsts.YES);
+            setMaxFileIndexIntoSession(bpc.request,appSubmissionDtoDraft);
             appSubmissionDtoList.add(appSubmissionDtoDraft);
-            licenceIDList = new ArrayList<>(1);
-            licenceIDList.add(appSubmissionDtoDraft.getLicenceId());
             ParamUtil.setSessionAttr(bpc.request, "backUrl", "initApp");
             loadCoMap(bpc, appSubmissionDtoDraft);
-            //set max file index into session
-            Integer maxFileIndex = appSubmissionDtoDraft.getMaxFileIndex();
-            if(maxFileIndex == null){
-                maxFileIndex = 0;
-            }else{
-                maxFileIndex ++;
-            }
-            ParamUtil.setSessionAttr(bpc.request,HcsaFileAjaxController.GLOBAL_MAX_INDEX_SESSION_ATTR,maxFileIndex);
+            licenceIDList = new ArrayList<>(1);
+            licenceIDList.add(appSubmissionDtoDraft.getLicenceId());
+            List<AppSubmissionDto> submissionDtos = outRenewalService.getAppSubmissionDtos(licenceIDList);
+            appSubmissionDtoDraft.setOldRenewAppSubmissionDto(setMaxFileIndexIntoSession(bpc.request,submissionDtos.get(0)));
+            setDraftRfCData(bpc.request,draftNo,appSubmissionDtoDraft.getOldRenewAppSubmissionDto());
         }
 
         //get licensee ID
@@ -462,11 +448,22 @@ public class WithOutRenewalDelegator {
         ParamUtil.setSessionAttr(bpc.request, "hasAppSubmit", null);
         ParamUtil.setSessionAttr(bpc.request, "txnDt", null);
         ParamUtil.setSessionAttr(bpc.request, "txnRefNo", null);
-        setDraftRfCData(bpc.request,draftNo,appSubmissionDtoList.get(0));
         log.info("**** the non auto renwal  end ******");
 
     }
 
+    private  AppSubmissionDto setMaxFileIndexIntoSession(HttpServletRequest request, AppSubmissionDto appSubmissionDto){
+        appSubmissionDto.setOneLicDoRenew(true);
+        //set max file index into session
+        Integer maxFileIndex = appSubmissionDto.getMaxFileIndex();
+        if(maxFileIndex == null){
+            maxFileIndex = 0;
+        }else{
+            maxFileIndex ++;
+        }
+        ParamUtil.setSessionAttr(request,HcsaFileAjaxController.GLOBAL_MAX_INDEX_SESSION_ATTR,maxFileIndex);
+        return appSubmissionDto;
+    }
 
     private void setDraftRfCData(HttpServletRequest request,String draftNo, AppSubmissionDto appSubmissionDto){
         if(StringUtil.isNotEmpty(draftNo)){
@@ -745,6 +742,9 @@ public class WithOutRenewalDelegator {
         List<AppSubmissionDto> appSubmissionDtos = renewDto.getAppSubmissionDtos();
         List<AppFeeDetailsDto> appFeeDetailsDto = IaisCommonUtils.genNewArrayList();
         boolean needDec = true;
+
+        log.info(StringUtil.changeForLog("----------preparePayment renew old : " +JsonUtil.parseToJson(oldAppSubmissionDto)));
+        log.info(StringUtil.changeForLog("----------preparePayment renew : " +JsonUtil.parseToJson(appSubmissionDtos.get(0))));
 
         AppEditSelectDto appEditSelectDto = EqRequestForChangeSubmitResultChange.rfcChangeModuleEvaluationDto( appSubmissionDtos.get(0),oldAppSubmissionDto);
 
