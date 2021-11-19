@@ -61,7 +61,7 @@ public class SubmitDonorDelegator extends CommonDelegator {
         DataSubmissionHelper.setCurrentArDataSubmission(arSuperDataSubmissionDto,bpc.request);
         String actionType = ParamUtil.getString(bpc.request, DataSubmissionConstant.CRUD_TYPE);
         if (ACTION_TYPE_CONFIRM.equals(actionType)) {
-           // validatePageData(bpc.request, donorSampleDto, "save", ACTION_TYPE_CONFIRM);
+            validatePageData(bpc.request, donorSampleDto, "save", ACTION_TYPE_CONFIRM);
         }
         log.info(StringUtil.changeForLog("submitDonorDelegator The pageAction end ..."));
     }

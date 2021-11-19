@@ -40,6 +40,7 @@
                                        for="directedDonationRadioNo" ><span
                                         class="check-circle"></span>No</label>
                             </div>
+                            <span id="error_directedDonation" name="iaisErrorMsg" class="error-msg"></span>
                         </iais:value>
                     </iais:row>
                     <div id="directedDonationYes" style="${!donorSampleDto.directedDonation ? 'display: none;' : ''}">
@@ -77,6 +78,7 @@
                                            for="donorRelationF"><span
                                             class="check-circle"></span>Friend</label>
                                 </div>
+                                <span id="error_donorRelation" name="iaisErrorMsg" class="error-msg"></span>
                             </iais:value>
                             <iais:value width="3" cssClass="col-md-3">
                                 <div class="form-check" >
@@ -159,6 +161,7 @@
                                 <iais:field width="5" value="Donor's Age when Sample was Collected" mandatory="true"/>
                                 <iais:value width="7" cssClass="col-md-7">
                                     <iais:input maxLength="2" type="text" name="ages" value="" />
+                                    <span id="error_ages0" name="iaisErrorMsg" class="error-msg"></span>
                                 </iais:value>
                             </iais:row>
                         </c:when>
@@ -173,6 +176,7 @@
                                     </label>
                                     <iais:value width="7" cssClass="col-md-7">
                                         <iais:input maxLength="2" type="text" name="ages" value="${age}" />
+                                        <span id="error_ages${idxStatus.index}" name="iaisErrorMsg" class="error-msg"></span>
                                     </iais:value>
                                     <c:if test="${idxStatus.first!=true}">
                                         <div class="col-sm-2 col-md-1 col-xs-1 col-md-1">
