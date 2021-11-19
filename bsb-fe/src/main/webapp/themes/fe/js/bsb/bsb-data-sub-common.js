@@ -42,6 +42,20 @@ function isHidden() {
     }
 }
 
+function isHidden2(i) {
+    var schedule = $("#scheduleType--v--"+i).val();
+    if (schedule !== 'SCHTYPE006' && schedule !== '') {
+        $("#agentFifth--v--" + i).hide();
+        $("#agentEpFifth--v--" + i).show();
+    } else if (schedule === "SCHTYPE006") {
+        $("#agentEpFifth--v--" + i).hide();
+        $("#agentFifth--v--" + i).show();
+    } else {
+        $("#agentFifth--v--" + i).hide();
+        $("#agentEpFifth--v--" + i).hide();
+    }
+}
+
 function addSection(idxInputName, sectionIdPrefix, headerTitlePrefix, sectionGroupId, separator) {
     var idxInput = $("input[name=" + idxInputName +"]");
     var curIdxes = idxInput.val();
@@ -69,7 +83,7 @@ function addSection(idxInputName, sectionIdPrefix, headerTitlePrefix, sectionGro
     sectionGroupDiv.appendChild(newSectionDiv);
     appendSSInputVal(idxInput[0], nextIdx);
 
-    var text = "upload--v--"+(currentAmt+1);
+    var text = "upload--v--"+(currentAmt);
     $($("a[data-upload-file = "+ text +"]")[0]).prevAll().remove();
 
     /* Reset select to first option */
@@ -98,6 +112,8 @@ function addSection(idxInputName, sectionIdPrefix, headerTitlePrefix, sectionGro
             orientation:'bottom'
         });
     });
+
+    isHidden2(currentAmt);
 }
 
 /* add or remove num in title for the first section */

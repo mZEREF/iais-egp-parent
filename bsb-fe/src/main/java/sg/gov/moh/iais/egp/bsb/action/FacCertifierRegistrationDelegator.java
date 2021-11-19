@@ -130,7 +130,7 @@ public class FacCertifierRegistrationDelegator {
         if (needShowError == Boolean.TRUE) {
             ParamUtil.setRequestAttr(request, KEY_VALIDATION_ERRORS, orgProfileDto.retrieveValidationResult());
         }
-        orgProfileNode.needValidation();
+        Nodes.needValidation(facRegRoot,currentNodePath);
         ParamUtil.setRequestAttr(request, KEY_COUNTRY_OPTIONS, tmpCountryOps());
         ParamUtil.setRequestAttr(request, NODE_NAME_ORG_PROFILE, orgProfileDto);
     }
@@ -145,7 +145,7 @@ public class FacCertifierRegistrationDelegator {
         if (needShowError == Boolean.TRUE) {
             ParamUtil.setRequestAttr(request, KEY_VALIDATION_ERRORS, administratorDto.retrieveValidationResult());
         }
-        administratorNode.needValidation();
+        Nodes.needValidation(facRegRoot,currentNodePath);
         ParamUtil.setRequestAttr(request, KEY_NATIONALITY_OPTIONS, tmpNationalityOps());
         ParamUtil.setRequestAttr(request, NODE_NAME_ORG_FAC_ADMINISTRATOR, administratorDto);
     }
@@ -160,9 +160,9 @@ public class FacCertifierRegistrationDelegator {
         if (needShowError == Boolean.TRUE) {
             ParamUtil.setRequestAttr(request, KEY_VALIDATION_ERRORS, certifyingTeamDto.retrieveValidationResult());
         }
-        certifyingTeamNode.needValidation();
         ParamUtil.setRequestAttr(request, KEY_POSITION_OPTIONS, tmpPositionOps());
         ParamUtil.setRequestAttr(request, KEY_NATIONALITY_OPTIONS, tmpNationalityOps());
+        Nodes.needValidation(facRegRoot,currentNodePath);
         ParamUtil.setRequestAttr(request, NODE_NAME_ORG_CERTIFYING_TEAM, certifyingTeamDto);
     }
 
@@ -175,7 +175,7 @@ public class FacCertifierRegistrationDelegator {
         if (needShowError == Boolean.TRUE) {
             ParamUtil.setRequestAttr(request, KEY_VALIDATION_ERRORS, primaryDocDto.retrieveValidationResult());
         }
-        primaryDocNode.needValidation();
+        Nodes.needValidation(facRegRoot,NODE_NAME_FAC_PRIMARY_DOCUMENT);
 
         ParamUtil.setRequestAttr(request, "docSettings", getFacRegDocSettings());
 
@@ -194,7 +194,7 @@ public class FacCertifierRegistrationDelegator {
         if (needShowError == Boolean.TRUE) {
             ParamUtil.setRequestAttr(request, KEY_VALIDATION_ERRORS, previewSubmitDto.retrieveValidationResult());
         }
-        previewSubmitNode.needValidation();
+        Nodes.needValidation(facRegRoot,NODE_NAME_CER_PREVIEW_SUBMIT);
         ParamUtil.setRequestAttr(request, NODE_NAME_CER_PREVIEW_SUBMIT, previewSubmitDto);
 
         ParamUtil.setRequestAttr(request, NODE_NAME_ORG_PROFILE, ((SimpleNode) facRegRoot.at(NODE_NAME_ORGANISATION_INFO + facRegRoot.getPathSeparator() + NODE_NAME_ORG_PROFILE)).getValue());

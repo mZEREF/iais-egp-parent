@@ -4,7 +4,6 @@ import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import lombok.extern.slf4j.Slf4j;
 import sg.gov.moh.iais.egp.bsb.constant.DocConstants;
-import sg.gov.moh.iais.egp.bsb.dto.register.afc.PrimaryDocDto;
 import sg.gov.moh.iais.egp.bsb.dto.submission.TransferRequestDto;
 import sg.gov.moh.iais.egp.bsb.entity.DocSetting;
 import sop.webflow.rt.api.BaseProcessClass;
@@ -32,6 +31,18 @@ public class BsbRequestForTransferDelegator {
         }
     }
 
+    public void preFacSelect(BaseProcessClass bpc){
+
+    }
+
+    public void preSwitch0(BaseProcessClass bpc){
+
+    }
+
+    public void prepareSwitch1(BaseProcessClass bpc){
+
+    }
+
     /**
      * prepareData
      * this module is used to prepare facility info and biological agent/toxin
@@ -40,6 +51,14 @@ public class BsbRequestForTransferDelegator {
         HttpServletRequest request = bpc.request;
         ParamUtil.setRequestAttr(request,"doSettings",getDocSettingMap());
         ParamUtil.setRequestAttr(request,"transferReq",new TransferRequestDto());
+    }
+
+    public void saveAndConfirm(BaseProcessClass bpc){
+        HttpServletRequest request = bpc.request;
+    }
+
+    public void save(BaseProcessClass bpc){
+        HttpServletRequest request = bpc.request;
     }
 
 
