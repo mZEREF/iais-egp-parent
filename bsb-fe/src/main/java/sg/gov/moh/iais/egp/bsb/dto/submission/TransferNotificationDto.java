@@ -272,7 +272,7 @@ public class TransferNotificationDto implements Serializable {
 
     //----------------------request-->object----------------------------------
     private static final String SEPARATOR                   = "--v--";
-    private static final String KEY_SECTION_AMT             = "sectionAmt";
+    private static final String KEY_SECTION_IDXES           = "sectionIdx";
     private static final String KEY_PREFIX_SCHEDULE_TYPE    = "scheduleType";
     private static final String KEY_PREFIX_BAT_CODE         = "batCode";
     private static final String KEY_PREFIX_BAT_QTY          = "transferType";
@@ -294,20 +294,20 @@ public class TransferNotificationDto implements Serializable {
      * get value from request
      * */
     public void reqObjectMapping(HttpServletRequest request){
-        int amt = ParamUtil.getInt(request,KEY_SECTION_AMT);
+        String idxes = ParamUtil.getString(request, KEY_SECTION_IDXES);
         clearTransferNotList();
-
-        for (int i = 0; i < amt; i++) {
+        String[] idxArr = idxes.trim().split(" +");
+        for (String idx : idxArr) {
             TransferNot transferNot = new TransferNot();
-            String scheduleType = ParamUtil.getString(request,KEY_PREFIX_SCHEDULE_TYPE+SEPARATOR+i);
+            String scheduleType = ParamUtil.getString(request,KEY_PREFIX_SCHEDULE_TYPE+SEPARATOR+idx);
             transferNot.setScheduleType(scheduleType);
-            transferNot.setBatCode(ParamUtil.getString(request,KEY_PREFIX_BAT_CODE+SEPARATOR+i));
-            transferNot.setTransferType(ParamUtil.getString(request,KEY_PREFIX_BAT_QTY+SEPARATOR+i));
-            transferNot.setBatQty(ParamUtil.getString(request,KEY_PREFIX_TRANSFER_TYPE +SEPARATOR+i));
-            transferNot.setTransferQty(ParamUtil.getString(request,KEY_PREFIX_TRANSFER_QTY+SEPARATOR+i));
-            transferNot.setMstUnit(ParamUtil.getString(request,KEY_PREFIX_MEASUREMENT_UNIT+SEPARATOR+i));
+            transferNot.setBatCode(ParamUtil.getString(request,KEY_PREFIX_BAT_CODE+SEPARATOR+idx));
+            transferNot.setTransferType(ParamUtil.getString(request,KEY_PREFIX_BAT_QTY+SEPARATOR+idx));
+            transferNot.setBatQty(ParamUtil.getString(request,KEY_PREFIX_TRANSFER_TYPE +SEPARATOR+idx));
+            transferNot.setTransferQty(ParamUtil.getString(request,KEY_PREFIX_TRANSFER_QTY+SEPARATOR+idx));
+            transferNot.setMstUnit(ParamUtil.getString(request,KEY_PREFIX_MEASUREMENT_UNIT+SEPARATOR+idx));
             PrimaryDocDto primaryDocDto = new PrimaryDocDto();
-            primaryDocDto.reqObjMapping(request,getDocType(scheduleType),String.valueOf(i));
+            primaryDocDto.reqObjMapping(request,getDocType(scheduleType),String.valueOf(idx));
             transferNot.setPrimaryDocDto(primaryDocDto);
             transferNot.setDocType(getDocType(scheduleType));
 

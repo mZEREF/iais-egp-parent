@@ -277,20 +277,20 @@ public class ExportNotificationDto implements Serializable{
      * get value from request
      * */
     public void reqObjectMapping(HttpServletRequest request){
-        int amt = ParamUtil.getInt(request,KEY_SECTION_AMT);
+        String idxes = ParamUtil.getString(request, KEY_SECTION_IDXES);
         clearExportLists();
-
-        for (int i = 0; i < amt; i++) {
+        String[] idxArr = idxes.trim().split(" +");
+        for (String idx : idxArr) {
             ExportNot exportNot = new ExportNot();
-            String scheduleType = ParamUtil.getString(request, KEY_PREFIX_SCHEDULE_TYPE + SEPARATOR + i);
+            String scheduleType = ParamUtil.getString(request, KEY_PREFIX_SCHEDULE_TYPE + SEPARATOR +idx);
             exportNot.setScheduleType(scheduleType);
-            exportNot.setBat(ParamUtil.getString(request,KEY_PREFIX_BAT+ SEPARATOR+i));
-            exportNot.setTransferType(ParamUtil.getString(request,KEY_PREFIX_TRANSFER_TYPE+ SEPARATOR+i));
-            exportNot.setTransferQty(ParamUtil.getString(request,KEY_PREFIX_TRANSFER_QTY + SEPARATOR+i));
-            exportNot.setMeaUnit(ParamUtil.getString(request, KEY_PREFIX_MEASUREMENT_UNIT+ SEPARATOR+i));
+            exportNot.setBat(ParamUtil.getString(request,KEY_PREFIX_BAT+ SEPARATOR+idx));
+            exportNot.setTransferType(ParamUtil.getString(request,KEY_PREFIX_TRANSFER_TYPE+ SEPARATOR+idx));
+            exportNot.setTransferQty(ParamUtil.getString(request,KEY_PREFIX_TRANSFER_QTY + SEPARATOR+idx));
+            exportNot.setMeaUnit(ParamUtil.getString(request, KEY_PREFIX_MEASUREMENT_UNIT+ SEPARATOR+idx));
 
             PrimaryDocDto primaryDocDto = new PrimaryDocDto();
-            primaryDocDto.reqObjMapping(request,getDocType(scheduleType),String.valueOf(i));
+            primaryDocDto.reqObjMapping(request,getDocType(scheduleType),String.valueOf(idx));
             exportNot.setPrimaryDocDto(primaryDocDto);
             exportNot.setDocType(getDocType(scheduleType));
             //joint repoId exist

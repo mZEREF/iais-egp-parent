@@ -222,19 +222,20 @@ public class ConsumeNotificationDto implements Serializable {
      * get value from request
      * */
     public void reqObjectMapping(HttpServletRequest request){
-        int amt = ParamUtil.getInt(request, KEY_SECTION_AMT);
+        String idxes = ParamUtil.getString(request, KEY_SECTION_IDXES);
         clearConsumptionNotList();
-        for (int i = 0; i < amt; i++) {
+        String[] idxArr = idxes.trim().split(" +");
+        for (String idx : idxArr) {
             ConsumptionNot consumptionNot = new ConsumptionNot();
-            String scheduleType = ParamUtil.getString(request, KEY_PREFIX_SCHEDULE_TYPE + SEPARATOR + i);
+            String scheduleType = ParamUtil.getString(request, KEY_PREFIX_SCHEDULE_TYPE + SEPARATOR +idx);
             consumptionNot.setScheduleType(scheduleType);
-            consumptionNot.setBat(ParamUtil.getString(request,KEY_PREFIX_BAT+SEPARATOR+i));
-            consumptionNot.setConsumeType(ParamUtil.getString(request,KEY_PREFIX_CONSUME_TYPE+SEPARATOR+i));
-            consumptionNot.setConsumedQty(ParamUtil.getString(request,KEY_PREFIX_CONSUME_QTY +SEPARATOR+i));
-            consumptionNot.setMeaUnit(ParamUtil.getString(request,KEY_PREFIX_MEASUREMENT_UNIT+SEPARATOR+i));
+            consumptionNot.setBat(ParamUtil.getString(request,KEY_PREFIX_BAT+SEPARATOR+idx));
+            consumptionNot.setConsumeType(ParamUtil.getString(request,KEY_PREFIX_CONSUME_TYPE+SEPARATOR+idx));
+            consumptionNot.setConsumedQty(ParamUtil.getString(request,KEY_PREFIX_CONSUME_QTY +SEPARATOR+idx));
+            consumptionNot.setMeaUnit(ParamUtil.getString(request,KEY_PREFIX_MEASUREMENT_UNIT+SEPARATOR+idx));
 
             PrimaryDocDto primaryDocDto = new PrimaryDocDto();
-            primaryDocDto.reqObjMapping(request,getDocType(scheduleType),String.valueOf(i));
+            primaryDocDto.reqObjMapping(request,getDocType(scheduleType),String.valueOf(idx));
             consumptionNot.setPrimaryDocDto(primaryDocDto);
             consumptionNot.setDocType(getDocType(scheduleType));
             //joint repoId exist

@@ -92,7 +92,7 @@ public class TransferRequestDto {
 
     //----------------------request-->object----------------------------------
     private static final String SEPARATOR                   = "--v--";
-    private static final String KEY_SECTION_AMT             = "sectionAmt";
+    private static final String KEY_SECTION_IDXES           = "sectionIdx";
     private static final String KEY_PREFIX_SCHEDULE_TYPE    = "scheduleType";
     private static final String KEY_PREFIX_BAT_CODE         = "batCode";
     private static final String KEY_PREFIX_EXPECTED_BAT_QTY = "expectedBatQty";
@@ -105,16 +105,16 @@ public class TransferRequestDto {
      * get value from request
      * */
     public void reqObjectMapping(HttpServletRequest request){
-        int amt = ParamUtil.getInt(request,KEY_SECTION_AMT);
+        String idxes = ParamUtil.getString(request, KEY_SECTION_IDXES);
         clearTransferLists();
-
-        for (int i = 0; i < amt; i++) {
+        String[] idxArr = idxes.trim().split(" +");
+        for (String idx : idxArr) {
             TransferList transferList = new TransferList();
-            transferList.setScheduleType(ParamUtil.getString(request,KEY_PREFIX_SCHEDULE_TYPE+SEPARATOR+i));
-            transferList.setBatCode(ParamUtil.getString(request,KEY_PREFIX_BAT_CODE+SEPARATOR+i));
-            transferList.setExpectedBatQty(ParamUtil.getString(request,KEY_PREFIX_EXPECTED_BAT_QTY+SEPARATOR+i));
-            transferList.setExpReceivedQty(ParamUtil.getString(request,KEY_PREFIX_RECEIVE_QTY +SEPARATOR+i));
-            transferList.setMeaUnit(ParamUtil.getString(request,KEY_PREFIX_MEASUREMENT_UNIT+SEPARATOR+i));
+            transferList.setScheduleType(ParamUtil.getString(request,KEY_PREFIX_SCHEDULE_TYPE+SEPARATOR+idx));
+            transferList.setBatCode(ParamUtil.getString(request,KEY_PREFIX_BAT_CODE+SEPARATOR+idx));
+            transferList.setExpectedBatQty(ParamUtil.getString(request,KEY_PREFIX_EXPECTED_BAT_QTY+SEPARATOR+idx));
+            transferList.setExpReceivedQty(ParamUtil.getString(request,KEY_PREFIX_RECEIVE_QTY +SEPARATOR+idx));
+            transferList.setMeaUnit(ParamUtil.getString(request,KEY_PREFIX_MEASUREMENT_UNIT+SEPARATOR+idx));
             addTransferLists(transferList);
         }
 

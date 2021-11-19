@@ -223,20 +223,21 @@ public class DisposalNotificationDto implements Serializable{
      * get value from request
      * */
     public void reqObjectMapping(HttpServletRequest request){
-        int amt = ParamUtil.getInt(request,KEY_SECTION_AMT);
+        String idxes = ParamUtil.getString(request, KEY_SECTION_IDXES);
         clearDisposalLists();
-        for (int i = 0; i < amt; i++) {
+        String[] idxArr = idxes.trim().split(" +");
+        for (String idx : idxArr) {
             DisposalNot disposalNot = new DisposalNot();
-            String scheduleType = ParamUtil.getString(request, KEY_PREFIX_SCHEDULE_TYPE + SEPARATOR + i);
+            String scheduleType = ParamUtil.getString(request, KEY_PREFIX_SCHEDULE_TYPE + SEPARATOR +idx);
             disposalNot.setScheduleType(scheduleType);
-            disposalNot.setBat(ParamUtil.getString(request,KEY_PREFIX_BAT+SEPARATOR+i));
-            disposalNot.setDisposedQty(ParamUtil.getString(request,KEY_PREFIX_DISPOSE_QTY+SEPARATOR+i));
-            disposalNot.setMeaUnit(ParamUtil.getString(request,KEY_PREFIX_MEASUREMENT_UNIT+ SEPARATOR+i));
-            disposalNot.setDestructMethod(ParamUtil.getString(request,KEY_PREFIX_DESTRUCT_METHOD+SEPARATOR+i));
-            disposalNot.setDestructDetails(ParamUtil.getString(request,KEY_PREFIX_DESTRUCT_DETAILS+SEPARATOR+i));
+            disposalNot.setBat(ParamUtil.getString(request,KEY_PREFIX_BAT+SEPARATOR+idx));
+            disposalNot.setDisposedQty(ParamUtil.getString(request,KEY_PREFIX_DISPOSE_QTY+SEPARATOR+idx));
+            disposalNot.setMeaUnit(ParamUtil.getString(request,KEY_PREFIX_MEASUREMENT_UNIT+ SEPARATOR+idx));
+            disposalNot.setDestructMethod(ParamUtil.getString(request,KEY_PREFIX_DESTRUCT_METHOD+SEPARATOR+idx));
+            disposalNot.setDestructDetails(ParamUtil.getString(request,KEY_PREFIX_DESTRUCT_DETAILS+SEPARATOR+idx));
 
             PrimaryDocDto primaryDocDto = new PrimaryDocDto();
-            primaryDocDto.reqObjMapping(request,getDocType(scheduleType),String.valueOf(i));
+            primaryDocDto.reqObjMapping(request,getDocType(scheduleType),String.valueOf(idx));
             disposalNot.setPrimaryDocDto(primaryDocDto);
             disposalNot.setDocType(getDocType(scheduleType));
             //joint repoId exist

@@ -330,18 +330,18 @@ public class ReceiptNotificationDto implements Serializable{
      * get value from request
      * */
     public void reqObjectMapping(HttpServletRequest request){
-        int amt = ParamUtil.getInt(request,KEY_SECTION_AMT);
         clearReceiptLists();
-
-        for (int i = 0; i < amt; i++) {
+        String idxes = ParamUtil.getString(request, KEY_SECTION_IDXES);
+        String[] idxArr = idxes.trim().split(" +");
+        for (String idx : idxArr) {
             ReceiptNot receiptNot = new ReceiptNot();
-            String scheduleType = ParamUtil.getString(request, KEY_PREFIX_SCHEDULE_TYPE + SEPARATOR + i);
+            String scheduleType = ParamUtil.getString(request, KEY_PREFIX_SCHEDULE_TYPE + SEPARATOR +idx);
             receiptNot.setScheduleType(scheduleType);
-            receiptNot.setBat(ParamUtil.getString(request,KEY_PREFIX_BAT+SEPARATOR+i));
-            receiptNot.setReceiveQty(ParamUtil.getString(request,KEY_PREFIX_RECEIVE_QTY+SEPARATOR+i));
-            receiptNot.setMeaUnit(ParamUtil.getString(request,KEY_PREFIX_MEASUREMENT_UNIT+SEPARATOR+i));
+            receiptNot.setBat(ParamUtil.getString(request,KEY_PREFIX_BAT+SEPARATOR+idx));
+            receiptNot.setReceiveQty(ParamUtil.getString(request,KEY_PREFIX_RECEIVE_QTY+SEPARATOR+idx));
+            receiptNot.setMeaUnit(ParamUtil.getString(request,KEY_PREFIX_MEASUREMENT_UNIT+SEPARATOR+idx));
             PrimaryDocDto primaryDocDto = new PrimaryDocDto();
-            primaryDocDto.reqObjMapping(request,getDocType(scheduleType),String.valueOf(i));
+            primaryDocDto.reqObjMapping(request,getDocType(scheduleType),String.valueOf(idx));
             receiptNot.setPrimaryDocDto(primaryDocDto);
             receiptNot.setDocType(getDocType(scheduleType));
             //joint repoId exist

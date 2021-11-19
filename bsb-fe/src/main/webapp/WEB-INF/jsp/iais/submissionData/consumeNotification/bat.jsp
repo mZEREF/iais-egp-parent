@@ -1,7 +1,8 @@
-<input type="hidden" name="sectionAmt" value="${consumeNotification.consumptionNotList.size()}">
+<%@ page import="sg.gov.moh.iais.egp.bsb.util.TableDisplayUtil" %>
+<input type="hidden" name="sectionIdx" value="${TableDisplayUtil.indexes(consumeNotification.consumptionNotList.size())}">
 
-<input type="hidden" id="section_repeat_amt_input_name" value="sectionAmt" readonly disabled>
-<input type="hidden" id="section_repeat_section_id_prefix" value="conSection" readonly disabled>
+<input type="hidden" id="section_repeat_section_idx_name" value="sectionIdx" readonly disabled>
+<input type="hidden" id="section_repeat_section_id_prefix" value="notTSection" readonly disabled>
 <input type="hidden" id="section_repeat_header_title_prefix" value="Agent / Toxin " readonly disabled>
 <input type="hidden" id="section_repeat_section_group_id" value="sectionGroup" readonly disabled>
 <input type="hidden" id="section_repeat_separator" value="--v--" readonly disabled>

@@ -220,7 +220,7 @@ public class BsbTransferNotificationDelegator {
         facLists.remove(0);
         List<SelectOption> selectModel = new ArrayList<>();
         for (FacListDto.FacList fac : facLists) {
-            selectModel.add(new SelectOption(fac.getFacId(), fac.getFacName()));
+            selectModel.add(new SelectOption(MaskUtil.maskValue("id",fac.getFacId()), fac.getFacName()));
         }
         ParamUtil.setRequestAttr(request, KEY_FAC_SELECTION, selectModel);
         //Put in session called for later operations

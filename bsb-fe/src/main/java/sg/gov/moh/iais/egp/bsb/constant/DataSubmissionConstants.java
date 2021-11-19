@@ -10,7 +10,7 @@ public final class DataSubmissionConstants {
     public static final String KEY_FAC_ID = "facId";
 
     public static final String SEPARATOR                   = "--v--";
-    public static final String KEY_SECTION_AMT             = "sectionAmt";
+    public static final String KEY_SECTION_IDXES          = "sectionIdx";
     public static final String KEY_PREFIX_SCHEDULE_TYPE    = "scheduleType";
     public static final String KEY_PREFIX_BAT         = "bat";
     public static final String KEY_PREFIX_CONSUME_TYPE = "consumeType";
