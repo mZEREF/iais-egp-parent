@@ -2719,7 +2719,8 @@ public class NewApplicationDelegator {
         requestForChangeService.premisesDocToSvcDoc(appSubmissionDto);
         requestForChangeService.premisesDocToSvcDoc(oldAppSubmissionDto);
         appSubmissionDto.setGetAppInfoFromDto(true);
-        appSubmissionDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+        AuditTrailDto auditTrailDto = IaisEGPHelper.getCurrentAuditTrailDto();
+        appSubmissionDto.setAuditTrailDto(auditTrailDto);
         List<AppSubmissionDto> appSubmissionDtoList = IaisCommonUtils.genNewArrayList();
         List<AppSubmissionDto> autoSaveAppsubmission = IaisCommonUtils.genNewArrayList();
         List<AppSubmissionDto> notAutoSaveAppsubmission = IaisCommonUtils.genNewArrayList();
@@ -2781,7 +2782,10 @@ public class NewApplicationDelegator {
             if (!isValid) {
                 return;
             }
-            appSubmissionDto.setOneLicDoRenew(true);
+            // 74809
+            // control to save draft in event bus (AppSubmisionServiceImpl.createApplicationDataByGroup)
+            // for rfc, we don't use this to handle draft
+            //appSubmissionDto.setOneLicDoRenew(true);
             if (appSubmissionDto.isGroupLic()) {
                 List<AppGrpPremisesDto> appGrpPremisesDtos = groupLicecePresmiseChange(appGrpPremisesDtoList,
                         oldAppGrpPremisesDtoList);
@@ -2932,6 +2936,8 @@ public class NewApplicationDelegator {
         Long notAutoTime = System.currentTimeMillis();
         autoAppSubmissionListDto.setEventRefNo(autoTime.toString());
         notAutoAppSubmissionListDto.setEventRefNo(notAutoTime.toString());
+        autoAppSubmissionListDto.setAuditTrailDto(auditTrailDto);
+        notAutoAppSubmissionListDto.setAuditTrailDto(auditTrailDto);
         List<AppSubmissionDto> ackPageAppSubmissionDto=new ArrayList<>(2);
         List<String> svcNameSet = new ArrayList<>();
         String notAutoGroupId = null;
@@ -2939,7 +2945,6 @@ public class NewApplicationDelegator {
         if (!notAutoSaveAppsubmission.isEmpty()) {
             // save submission (notAUto data)
             String appGrpStatus = autoSaveAppsubmission.isEmpty() ? ApplicationConsts.APPLICATION_GROUP_STATUS_SUBMITED : ApplicationConsts.APPLICATION_GROUP_STATUS_PENDING_AUTO;
-            notAutoSaveAppsubmission.get(0).setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
             notAutoSaveAppsubmission.parallelStream().forEach(dto -> {
                 dto.setEffectiveDateStr(effectiveDateStr);
                 dto.setEffectiveDate(effectiveDate);
@@ -2973,7 +2978,6 @@ public class NewApplicationDelegator {
         }
         if (!autoSaveAppsubmission.isEmpty()) {
             // save submission (auto data)
-            autoSaveAppsubmission.get(0).setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
             autoSaveAppsubmission.parallelStream().forEach(dto -> {
                 dto.setEffectiveDateStr(effectiveDateStr);
                 dto.setEffectiveDate(effectiveDate);
