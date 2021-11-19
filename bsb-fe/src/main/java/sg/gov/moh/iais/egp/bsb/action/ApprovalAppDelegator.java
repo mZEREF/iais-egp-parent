@@ -168,7 +168,7 @@ public class ApprovalAppDelegator {
         if (needShowError == Boolean.TRUE) {
             ParamUtil.setRequestAttr(request, KEY_VALIDATION_ERRORS, activityDto.retrieveValidationResult());
         }
-        activityNode.needValidation();
+        Nodes.needValidation(approvalAppRoot, NODE_NAME_ACTIVITY);
         ParamUtil.setRequestAttr(request, NODE_NAME_ACTIVITY, activityDto);
     }
 
@@ -225,7 +225,7 @@ public class ApprovalAppDelegator {
         if (needShowError == Boolean.TRUE) {
             ParamUtil.setRequestAttr(request, KEY_VALIDATION_ERRORS, approvalProfileDto.retrieveValidationResult());
         }
-        approvalProfileNode.needValidation();
+        Nodes.needValidation(approvalAppRoot,NODE_NAME_APPROVAL_PROFILE);
         ParamUtil.setRequestAttr(request, NODE_NAME_APPROVAL_PROFILE, approvalProfileDto);
 
         NodeGroup approvalProfileGroup = (NodeGroup) approvalAppRoot.at(NODE_NAME_APPROVAL_PROFILE);
@@ -270,7 +270,7 @@ public class ApprovalAppDelegator {
         if (needShowError == Boolean.TRUE) {
             ParamUtil.setRequestAttr(request, KEY_VALIDATION_ERRORS, primaryDocDto.retrieveValidationResult());
         }
-        primaryDocNode.needValidation();
+        Nodes.needValidation(approvalAppRoot, NODE_NAME_PRIMARY_DOC);
 
         ParamUtil.setRequestAttr(request, "docSettings", getApprovalAppDocSettings());
 
@@ -394,14 +394,14 @@ public class ApprovalAppDelegator {
         NodeGroup approvalProfileNodeGroup = initApprovalProfileNodeGroup(new Node[]{activityNode});
         SimpleNode primaryDocNode = new SimpleNode(new PrimaryDocDto(),NODE_NAME_PRIMARY_DOC,new Node[]{activityNode,approvalProfileNodeGroup});
         Node previewSubmitNode = new Node(NODE_NAME_PREVIEW_SUBMIT,new Node[]{activityNode,approvalProfileNodeGroup,primaryDocNode});
-        NodeGroup build = new NodeGroup.Builder().name(name)
+
+        return new NodeGroup.Builder().name(name)
                 .addNode(companyInfoNode)
                 .addNode(activityNode)
                 .addNode(approvalProfileNodeGroup)
                 .addNode(primaryDocNode)
                 .addNode(previewSubmitNode)
                 .build();
-        return build;
     }
 
     public static NodeGroup initApprovalProfileNodeGroup(Node[] dependNodes) {

@@ -175,7 +175,7 @@ public class RfcApprovalAppDelegator {
         if (needShowError == Boolean.TRUE) {
             ParamUtil.setRequestAttr(request, KEY_VALIDATION_ERRORS, activityDto.retrieveValidationResult());
         }
-        activityNode.needValidation();
+        Nodes.needValidation(approvalAppRoot, NODE_NAME_ACTIVITY);
         ParamUtil.setRequestAttr(request, NODE_NAME_ACTIVITY, activityDto);
     }
 
@@ -232,7 +232,7 @@ public class RfcApprovalAppDelegator {
         if (needShowError == Boolean.TRUE) {
             ParamUtil.setRequestAttr(request, KEY_VALIDATION_ERRORS, approvalProfileDto.retrieveValidationResult());
         }
-        approvalProfileNode.needValidation();
+        Nodes.needValidation(approvalAppRoot,NODE_NAME_APPROVAL_PROFILE);
         ParamUtil.setRequestAttr(request, NODE_NAME_APPROVAL_PROFILE, approvalProfileDto);
 
         NodeGroup approvalProfileGroup = (NodeGroup) approvalAppRoot.at(NODE_NAME_APPROVAL_PROFILE);
@@ -277,7 +277,7 @@ public class RfcApprovalAppDelegator {
         if (needShowError == Boolean.TRUE) {
             ParamUtil.setRequestAttr(request, KEY_VALIDATION_ERRORS, primaryDocDto.retrieveValidationResult());
         }
-        primaryDocNode.needValidation();
+        Nodes.needValidation(approvalAppRoot, NODE_NAME_PRIMARY_DOC);
 
         ParamUtil.setRequestAttr(request, "docSettings", getApprovalAppDocSettings());
 

@@ -150,7 +150,7 @@ public class RfcFacilityRegistrationDelegator {
         if (needShowError == Boolean.TRUE) {
             ParamUtil.setRequestAttr(request, KEY_VALIDATION_ERRORS, selectionDto.retrieveValidationResult());
         }
-        facSelectionNode.needValidation();
+        Nodes.needValidation(facRegRoot, NODE_NAME_FAC_SELECTION);
         ParamUtil.setRequestAttr(request, NODE_NAME_FAC_SELECTION, selectionDto);
     }
 
@@ -185,7 +185,7 @@ public class RfcFacilityRegistrationDelegator {
         if (needShowError == Boolean.TRUE) {
             ParamUtil.setRequestAttr(request, KEY_VALIDATION_ERRORS, facProfileDto.retrieveValidationResult());
         }
-        facProfileNode.needValidation();
+        Nodes.needValidation(facRegRoot, currentNodePath);
         ParamUtil.setRequestAttr(request, NODE_NAME_FAC_PROFILE, facProfileDto);
     }
 
@@ -219,7 +219,7 @@ public class RfcFacilityRegistrationDelegator {
         if (needShowError == Boolean.TRUE) {
             ParamUtil.setRequestAttr(request, KEY_VALIDATION_ERRORS, facOpDto.retrieveValidationResult());
         }
-        facOpNode.needValidation();
+        Nodes.needValidation(facRegRoot, currentNodePath);
         ParamUtil.setRequestAttr(request, NODE_NAME_FAC_OPERATOR, facOpDto);
 
         ParamUtil.setRequestAttr(request, KEY_NATIONALITY_OPTIONS, tmpNationalityOps());
@@ -252,7 +252,7 @@ public class RfcFacilityRegistrationDelegator {
         if (needShowError == Boolean.TRUE) {
             ParamUtil.setRequestAttr(request, KEY_VALIDATION_ERRORS, facAuthDto.retrieveValidationResult());
         }
-        facAuthNode.needValidation();
+        Nodes.needValidation(facRegRoot, currentNodePath);
         ParamUtil.setRequestAttr(request, NODE_NAME_FAC_AUTH, facAuthDto);
 
         ParamUtil.setRequestAttr(request, KEY_NATIONALITY_OPTIONS, tmpNationalityOps());
@@ -285,7 +285,7 @@ public class RfcFacilityRegistrationDelegator {
         if (needShowError == Boolean.TRUE) {
             ParamUtil.setRequestAttr(request, KEY_VALIDATION_ERRORS, facAdminDto.retrieveValidationResult());
         }
-        facAdminNode.needValidation();
+        Nodes.needValidation(facRegRoot, currentNodePath);
         ParamUtil.setRequestAttr(request, NODE_NAME_FAC_ADMIN, facAdminDto);
 
         ParamUtil.setRequestAttr(request, KEY_NATIONALITY_OPTIONS, tmpNationalityOps());
@@ -318,7 +318,7 @@ public class RfcFacilityRegistrationDelegator {
         if (needShowError == Boolean.TRUE) {
             ParamUtil.setRequestAttr(request, KEY_VALIDATION_ERRORS, facOfficerDto.retrieveValidationResult());
         }
-        facOfficerNode.needValidation();
+        Nodes.needValidation(facRegRoot, currentNodePath);
         ParamUtil.setRequestAttr(request, NODE_NAME_FAC_OFFICER, facOfficerDto);
 
         ParamUtil.setRequestAttr(request, KEY_NATIONALITY_OPTIONS, tmpNationalityOps());
@@ -351,7 +351,7 @@ public class RfcFacilityRegistrationDelegator {
         if (needShowError == Boolean.TRUE) {
             ParamUtil.setRequestAttr(request, KEY_VALIDATION_ERRORS, facCommitteeDto.retrieveValidationResult());
         }
-        facCommitteeNode.needValidation();
+        Nodes.needValidation(facRegRoot, currentNodePath);
         ParamUtil.setRequestAttr(request, NODE_NAME_FAC_COMMITTEE, facCommitteeDto);
 
         ParamUtil.setRequestAttr(request, KEY_NATIONALITY_OPTIONS, tmpNationalityOps());
@@ -385,7 +385,7 @@ public class RfcFacilityRegistrationDelegator {
         if (needShowError == Boolean.TRUE) {
             ParamUtil.setRequestAttr(request, KEY_VALIDATION_ERRORS, batDto.retrieveValidationResult());
         }
-        batNode.needValidation();
+        Nodes.needValidation(facRegRoot, currentNodePath);
         ParamUtil.setRequestAttr(request, NODE_NAME_FAC_BAT_INFO, batDto);
 
         NodeGroup batGroup = (NodeGroup) facRegRoot.at(NODE_NAME_FAC_BAT_INFO);
@@ -429,7 +429,7 @@ public class RfcFacilityRegistrationDelegator {
         if (needShowError == Boolean.TRUE) {
             ParamUtil.setRequestAttr(request, KEY_VALIDATION_ERRORS, otherAppInfoDto.retrieveValidationResult());
         }
-        otherAppInfoNode.needValidation();
+        Nodes.needValidation(facRegRoot, NODE_NAME_OTHER_INFO);
         ParamUtil.setRequestAttr(request, NODE_NAME_OTHER_INFO, otherAppInfoDto);
     }
 
@@ -458,7 +458,7 @@ public class RfcFacilityRegistrationDelegator {
         if (needShowError == Boolean.TRUE) {
             ParamUtil.setRequestAttr(request, KEY_VALIDATION_ERRORS, primaryDocDto.retrieveValidationResult());
         }
-        primaryDocNode.needValidation();
+        Nodes.needValidation(facRegRoot, NODE_NAME_PRIMARY_DOC);
 
         ParamUtil.setRequestAttr(request, "docSettings", getFacRegDocSettings());
 
@@ -493,7 +493,7 @@ public class RfcFacilityRegistrationDelegator {
         if (needShowError == Boolean.TRUE) {
             ParamUtil.setRequestAttr(request, KEY_VALIDATION_ERRORS, previewSubmitDto.retrieveValidationResult());
         }
-        previewSubmitNode.needValidation();
+        Nodes.needValidation(facRegRoot, NODE_NAME_PREVIEW_SUBMIT);
         ParamUtil.setRequestAttr(request, NODE_NAME_PREVIEW_SUBMIT, previewSubmitDto);
 
         ParamUtil.setRequestAttr(request, NODE_NAME_FAC_PROFILE, ((SimpleNode)facRegRoot.at(NODE_NAME_FAC_INFO + facRegRoot.getPathSeparator() + NODE_NAME_FAC_PROFILE)).getValue());
