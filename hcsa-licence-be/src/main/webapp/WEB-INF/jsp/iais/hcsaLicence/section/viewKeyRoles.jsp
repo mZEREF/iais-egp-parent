@@ -120,10 +120,10 @@
                     </div>
                     <div class="col-md-6">
                         <div class="col-md-6">
-                            <span class="newVal " attr="${newLicenceDto.unitNo}"><c:out value="${newLicenceDto.unitNo}"/></span>
+                            <span class="newVal " attr="${newLicenceDto.blkNo}"><c:out value="${newLicenceDto.blkNo}"/></span>
                         </div>
                         <div class="col-md-6">
-                            <span class="oldVal " attr="${oldLicenceDto.unitNo}" style="display: none"><c:out value="${oldLicenceDto.unitNo}"/></span>
+                            <span class="oldVal " attr="${oldLicenceDto.blkNo}" style="display: none"><c:out value="${oldLicenceDto.blkNo}"/></span>
                         </div>
                     </div>
                 </div>

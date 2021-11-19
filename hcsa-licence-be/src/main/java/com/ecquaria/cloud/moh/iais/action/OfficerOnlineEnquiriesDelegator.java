@@ -254,6 +254,7 @@ public class OfficerOnlineEnquiriesDelegator {
         Map<String,Boolean> licIds= cessationBeService.listResultCeased(licenceIds);
 
         for(ReqForInfoSearchListDto rfi:reqForInfoSearchListDtos){
+            rfi.setIsCessation(2);
             try {
                 if(rfi.getLicenceId()!=null){
                     LicenceDto licenceDto = hcsaLicenceClient.getLicDtoById(rfi.getLicenceId()).getEntity();
