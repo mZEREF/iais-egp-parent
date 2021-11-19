@@ -4,12 +4,12 @@ import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DpSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
 import com.ecquaria.cloud.moh.iais.service.client.FeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicEicClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceClient;
@@ -60,7 +60,7 @@ public class DpDataSubmissionServiceImpl implements DpDataSubmissionService {
             return premisesDtoMap;
         }
         for (PremisesDto premisesDto : premisesDtos) {
-            premisesDtoMap.put(premisesDto.getHciCode(), premisesDto);
+            premisesDtoMap.put(DataSubmissionHelper.getPremisesMapKey(premisesDto), premisesDto);
         }
         return premisesDtoMap;
     }
@@ -128,21 +128,21 @@ public class DpDataSubmissionServiceImpl implements DpDataSubmissionService {
     }
 
     @Override
-    public DpSuperDataSubmissionDto getDpSuperDataSubmissionDtoDraftByConds(String orgId, String type, String hciCode) {
-        log.info(StringUtil.changeForLog("----- Param: " + orgId + " : " + type + " : " + hciCode + " -----"));
-        if (StringUtil.isEmpty(orgId) || StringUtil.isEmpty(type) || StringUtil.isEmpty(hciCode)) {
+    public DpSuperDataSubmissionDto getDpSuperDataSubmissionDtoDraftByConds(String orgId, String submissionType, String hciCode) {
+        log.info(StringUtil.changeForLog("----- Param: " + orgId + " : " + submissionType + " : " + hciCode + " -----"));
+        if (StringUtil.isEmpty(orgId) || StringUtil.isEmpty(submissionType) || StringUtil.isEmpty(hciCode)) {
             return null;
         }
-        return dpFeClient.getDpSuperDataSubmissionDtoDraftByConds(orgId, type, hciCode).getEntity();
+        return dpFeClient.getDpSuperDataSubmissionDtoDraftByConds(orgId, submissionType, hciCode).getEntity();
     }
 
     @Override
-    public void deleteDpSuperDataSubmissionDtoDraftByConds(String orgId, String type, String hciCode) {
-        log.info(StringUtil.changeForLog("----- Param: " + orgId + " : " + type + " : " + hciCode + " -----"));
-        if (StringUtil.isEmpty(orgId) || StringUtil.isEmpty(type) || StringUtil.isEmpty(hciCode)) {
+    public void deleteDpSuperDataSubmissionDtoDraftByConds(String orgId, String submissionType, String hciCode) {
+        log.info(StringUtil.changeForLog("----- Param: " + orgId + " : " + submissionType + " : " + hciCode + " -----"));
+        if (StringUtil.isEmpty(orgId) || StringUtil.isEmpty(submissionType) || StringUtil.isEmpty(hciCode)) {
             return;
         }
-        dpFeClient.deleteDpSuperDataSubmissionDtoDraftByConds(orgId, type, hciCode);
+        dpFeClient.deleteDpSuperDataSubmissionDtoDraftByConds(orgId, submissionType, hciCode);
     }
 
 

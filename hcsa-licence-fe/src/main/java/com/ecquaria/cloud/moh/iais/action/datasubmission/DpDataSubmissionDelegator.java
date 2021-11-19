@@ -137,7 +137,7 @@ public class DpDataSubmissionDelegator {
             dpSuperDataSubmissionDto = new DpSuperDataSubmissionDto();
         }
         if (!map.isEmpty()) {
-            dpSuperDataSubmissionDto.setDpSubmissionType(submissionType);
+            dpSuperDataSubmissionDto.setSubmissionType(submissionType);
             dpSuperDataSubmissionDto.setPremisesDto(premisesDto);
             actionType = "invalid";
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(map));
@@ -166,10 +166,9 @@ public class DpDataSubmissionDelegator {
             } else if ("delete".equals(actionValue)) {
                 dpDataSubmissionService.deleteDpSuperDataSubmissionDtoDraftByConds(orgId, submissionType, hciCode);
             }
-            dpSuperDataSubmissionDto.setDsType(DataSubmissionConsts.DS_AR);
-            dpSuperDataSubmissionDto.setSubmissionType(DataSubmissionConsts.DS_TYPE_NEW);
+            dpSuperDataSubmissionDto.setAppType(DataSubmissionConsts.DS_APP_TYPE_NEW);
             dpSuperDataSubmissionDto.setOrgId(orgId);
-            dpSuperDataSubmissionDto.setDpSubmissionType(submissionType);
+            dpSuperDataSubmissionDto.setSubmissionType(submissionType);
             dpSuperDataSubmissionDto.setPremisesDto(premisesDto);
             dpSuperDataSubmissionDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
             dpSuperDataSubmissionDto.setDataSubmissionDto(DataSubmissionHelper.initDataSubmission(dpSuperDataSubmissionDto,
@@ -182,7 +181,7 @@ public class DpDataSubmissionDelegator {
 
     private boolean reNew(DpSuperDataSubmissionDto dpSuperDto, String submissionType, PremisesDto premisesDto) {
         if (dpSuperDto == null
-                || !Objects.equals(submissionType, dpSuperDto.getDpSubmissionType())) {
+                || !Objects.equals(submissionType, dpSuperDto.getSubmissionType())) {
             return true;
         }
         String hciCode = Optional.ofNullable(premisesDto)

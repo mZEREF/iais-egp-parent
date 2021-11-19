@@ -37,11 +37,11 @@ public interface DpFeClient {
 
     @GetMapping(value = "/data-submission/dp-data-submission/{orgId}", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<DpSuperDataSubmissionDto> getDpSuperDataSubmissionDtoDraftByConds(@PathVariable("orgId") String orgId,
-            @RequestParam("type") String type, @RequestParam("hciCode") String hciCode);
+            @RequestParam("submissionType") String submissionType, @RequestParam("hciCode") String hciCode);
 
     @DeleteMapping(value = "/data-submission/draft-dp-data-submission/special", consumes = MediaType.APPLICATION_JSON_VALUE)
     void deleteDpSuperDataSubmissionDtoDraftByConds(@RequestParam(name = "orgId") String orgId,
-            @RequestParam(name = "type") String type,
+            @RequestParam(name = "submissionType") String submissionType,
             @RequestParam(name = "hciCode") String hciCode);
 
     @DeleteMapping(value = "/data-submission/draft/{draftId}", consumes = MediaType.APPLICATION_JSON_VALUE)

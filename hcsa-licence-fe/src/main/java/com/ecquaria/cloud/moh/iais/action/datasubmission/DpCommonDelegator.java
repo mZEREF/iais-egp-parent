@@ -99,7 +99,7 @@ public abstract class DpCommonDelegator {
     public void doReturn(BaseProcessClass bpc) throws IOException {
         returnStep(bpc);
         DpSuperDataSubmissionDto dpSuperDataSubmissionDto = DataSubmissionHelper.getCurrentDpDataSubmission(bpc.request);
-        if (dpSuperDataSubmissionDto != null && !DataSubmissionConsts.DS_TYPE_NEW.equals(dpSuperDataSubmissionDto.getSubmissionType())) {
+        if (dpSuperDataSubmissionDto != null && !DataSubmissionConsts.DS_APP_TYPE_NEW.equals(dpSuperDataSubmissionDto.getAppType())) {
             StringBuilder url = new StringBuilder();
             url.append(InboxConst.URL_HTTPS)
                     .append(bpc.request.getServerName())
@@ -205,8 +205,10 @@ public abstract class DpCommonDelegator {
         DataSubmissionDto dataSubmissionDto = dpSuperDataSubmissionDto.getDataSubmissionDto();
         CycleDto cycle = dpSuperDataSubmissionDto.getCycleDto();
         String cycleType = cycle.getCycleType();
-        String submissionNo = dpDataSubmissionService.getSubmissionNo(dpSuperDataSubmissionDto.getDsType());
-        dataSubmissionDto.setSubmissionNo(submissionNo);
+        if (StringUtil.isEmpty(dataSubmissionDto.getSubmissionNo())) {
+            String submissionNo = dpDataSubmissionService.getSubmissionNo(DataSubmissionConsts.DS_DRP);
+            dataSubmissionDto.setSubmissionNo(submissionNo);
+        }
         if (StringUtil.isEmpty(dataSubmissionDto.getStatus())) {
             dataSubmissionDto.setStatus(DataSubmissionConsts.DS_STATUS_COMPLETED);
         }
