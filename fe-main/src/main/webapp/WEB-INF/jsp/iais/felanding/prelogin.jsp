@@ -262,7 +262,7 @@
       $.cookie('service_bsb', 'Y', { path: '/' });
     }
     else {
-      $.cookie('service_bsb', '');
+      $.cookie('service_bsb', '', { path: '/' });
     }
   }
 </script>
