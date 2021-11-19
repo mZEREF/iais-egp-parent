@@ -2394,7 +2394,10 @@ public class HcsaApplicationDelegator {
         //when reject, app type is renew rfc, save licence app correlation
         broadcastService.saveEventBeLicenseDto(appStatus, applicationDto, submissionId, evenRefNum, bpc.process);
         //0062460 update FE  application status.
-        applicationService.updateFEApplicaiton(broadcastApplicationDto.getApplicationDto());
+        //0075066 there is not application in the FE for the cession
+        if(!ApplicationConsts.APPLICATION_TYPE_CESSATION.equals(applicationType)){
+            applicationService.updateFEApplicaiton(broadcastApplicationDto.getApplicationDto());
+        }
         ParamUtil.setSessionAttr(bpc.request, "applicationViewDto", applicationViewDto);
 
         //appeal save return fee
