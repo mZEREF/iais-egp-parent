@@ -99,10 +99,7 @@ public class ArAjaxController {
         } else {
             LoginContext loginContext = DataSubmissionHelper.getLoginContext(request);
             String orgId = Optional.ofNullable(loginContext).map(LoginContext::getOrgId).orElse("");
-            String hicCode = Optional.ofNullable(DataSubmissionHelper.getCurrentArDataSubmission(request))
-                    .map(ds -> ds.getPremisesDto())
-                    .map(PremisesDto::getHciCode)
-                    .orElse("");
+            String hicCode = DataSubmissionHelper.getCurrentArDataSubmission(request).getHciCode();
             CycleStageSelectionDto dbDto = arDataSubmissionService.getCycleStageSelectionDtoByConds(idType, idNo, nationality, orgId,
                     hicCode);
             if (dbDto != null) {

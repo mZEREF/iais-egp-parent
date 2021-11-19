@@ -240,10 +240,7 @@ public final class DataSubmissionHelper {
         if (cycleDto == null || reNew) {
             cycleDto = new CycleDto();
         }
-        String hicCode = Optional.ofNullable(dpSuperDataSubmissionDto.getPremisesDto())
-                .map(premises -> premises.getHciCode())
-                .orElse("");
-        cycleDto.setHciCode(hicCode);
+        cycleDto.setHciCode(dpSuperDataSubmissionDto.getHciCode());
         cycleDto.setDsType(DataSubmissionConsts.DS_DRP);
         String cycleType = cycleDto.getCycleType();
         if (DataSubmissionConsts.DP_TYPE_SBT_PATIENT_INFO.equals(dpSuperDataSubmissionDto.getSubmissionType())) {

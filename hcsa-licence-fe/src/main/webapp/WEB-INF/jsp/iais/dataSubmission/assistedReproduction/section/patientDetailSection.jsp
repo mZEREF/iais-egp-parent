@@ -32,17 +32,17 @@
                     <h3>Patient's Previous Identification</h3>
                     <iais:row>
                         <iais:field width="5" value="ID No." mandatory="true"/>
-                        <iais:value width="3" cssClass="col-md-2">
+                        <iais:value width="3" cssClass="col-md-3">
                             <iais:select name="preIdType" firstOption="Please Select" codeCategory="CATE_ID_DS_ID_TYPE"
                                          value="${previous.idType}" cssClass="idTypeSel"/>
                         </iais:value>
-                        <iais:value width="4" cssClass="col-md-3">
+                        <iais:value width="4" cssClass="col-md-4">
                             <iais:input maxLength="20" type="text" name="preIdNumber" value="${previous.idNumber}" />
                         </iais:value>
                     </iais:row>
                     <iais:row>
                         <iais:field width="5" value="Nationality" mandatory="true"/>
-                        <iais:value width="5" cssClass="col-md-5">
+                        <iais:value width="4" cssClass="col-md-4">
                             <iais:select name="preNationality" firstOption="Please Select" codeCategory="CATE_ID_NATIONALITY"
                                          value="${previous.nationality}" cssClass="preNationalitySel"/>
                         </iais:value>

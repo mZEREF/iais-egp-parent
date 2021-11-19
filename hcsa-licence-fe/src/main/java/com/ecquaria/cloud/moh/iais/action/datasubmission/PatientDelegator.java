@@ -97,7 +97,7 @@ public class PatientDelegator extends CommonDelegator {
             patientInfo.setRetrievePrevious(AppConsts.YES.equals(retrievePrevious));
             PatientDto previous = ControllerHelper.get(request, PatientDto.class, "pre", "");
             if (patientInfo.isRetrievePrevious()) {
-                PatientDto db = patientService.getPatientDto(previous.getIdType(), previous.getIdNumber(), previous.getNationality(),
+                PatientDto db = patientService.getArPatientDto(previous.getIdType(), previous.getIdNumber(), previous.getNationality(),
                         patient.getOrgId());
                 if (db != null && !StringUtil.isEmpty(db.getId())) {
                     previous = db;
@@ -141,10 +141,7 @@ public class PatientDelegator extends CommonDelegator {
         if (cycleDto == null) {
             cycleDto = new CycleDto();
         }
-        String hicCode = Optional.ofNullable(currentArDataSubmission.getPremisesDto())
-                .map(PremisesDto::getHciCode)
-                .orElse("");
-        cycleDto.setHciCode(hicCode);
+        cycleDto.setHciCode(currentArDataSubmission.getHciCode());
         cycleDto.setDsType(DataSubmissionConsts.DS_CYCLE_PATIENT_ART);
         cycleDto.setCycleType(DataSubmissionConsts.DS_CYCLE_STAGE_PATIENT);
         return cycleDto;
