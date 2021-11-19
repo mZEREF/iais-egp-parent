@@ -12,6 +12,7 @@ public class Nodes {
 
     private static final String ERR_MSG_NULL_GROUP = "Node group must not be null!";
     private static final String ERR_MSG_EMPTY_PATH = "Path must not be empty!";
+    private static final String ERR_MSG_INVALID_PATH = "Invalid node path!";
 
 
 
@@ -62,6 +63,26 @@ public class Nodes {
         return previousNodeName == null ? null : Nodes.expandNode(root, previousNodeName);
     }
 
+    /**
+     * When we jump back to a node, the data in that node needs validation.
+     * So we set validated to false to all nodes in that path.
+     * @param root the root node group related to the node path
+     * @param currentNodePath the node we jumped to and needs validation
+     */
+    public static void needValidation(NodeGroup root, String currentNodePath) {
+        Assert.notNull(root, ERR_MSG_NULL_GROUP);
+        Assert.hasLength(currentNodePath, ERR_MSG_EMPTY_PATH);
+
+        String[] pathParts = currentNodePath.split(root.getPathSeparator(), 2);
+        if (pathParts.length >  1) {
+            NodeGroup subGroup = (NodeGroup) root.getNode(pathParts[0]);
+            subGroup.needValidation();
+            needValidation(subGroup, pathParts[1]);
+        } else {
+            Node currentNode = root.at(currentNodePath);
+            currentNode.needValidation();
+        }
+    }
 
     /**
      * Set status of node to validated, check the node group contains it at the same time
@@ -73,7 +94,7 @@ public class Nodes {
         Assert.hasLength(currentNodePath, ERR_MSG_EMPTY_PATH);
 
         Node currentNode = root.at(currentNodePath);
-        Assert.notNull(currentNode, "Invalid node path!");
+        Assert.notNull(currentNode, ERR_MSG_INVALID_PATH);
 
         currentNode.passValidation();
 
