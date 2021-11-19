@@ -43,7 +43,7 @@ public class OutcomePregnancyDelegator extends CommonDelegator {
         if (pregnancyOutcomeStageDto == null) {
             pregnancyOutcomeStageDto = new PregnancyOutcomeStageDto();
             pregnancyOutcomeStageDto.setBabyDetailsUnknown(false);
-            pregnancyOutcomeStageDto.setBirthPlace("Local Birth");
+            pregnancyOutcomeStageDto.setBirthPlace("POSBP001");
             pregnancyOutcomeStageDto.setWasSelFoeReduCarryOut(1);
             pregnancyOutcomeStageDto.setL2CareBabyNum(0);
             pregnancyOutcomeStageDto.setL3CareBabyNum(0);
@@ -51,8 +51,11 @@ public class OutcomePregnancyDelegator extends CommonDelegator {
             DataSubmissionHelper.setCurrentArDataSubmission(arSuperDataSubmissionDto, bpc.request);
         }
 
-        List<SelectOption> transferNumSelectOption = DataSubmissionHelper.getNumsSelections(0,6);
+        List<SelectOption> transferNumSelectOption = DataSubmissionHelper.getNumsSelections(0, 6);
         ParamUtil.setRequestAttr(bpc.request, "transferNumSelectOption", transferNumSelectOption);
+
+        List<SelectOption> defectTypeOptions = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_POS_BABY_DEFECT);
+        ParamUtil.setRequestAttr(bpc.request, "defectTypeOptions", defectTypeOptions);
 
         initBabyDefect(arSuperDataSubmissionDto.getPregnancyOutcomeStageDto(), bpc.request);
     }
@@ -97,7 +100,7 @@ public class OutcomePregnancyDelegator extends CommonDelegator {
                 otherDefectTypes.add("");
                 for (PregnancyOutcomeBabyDefectDto pregnancyOutcomeBabyDefectDto : pregnancyOutcomeBabyDto.getPregnancyOutcomeBabyDefectDtos()) {
                     defectTypes.add(pregnancyOutcomeBabyDefectDto.getDefectType());
-                    if ("other".equals(pregnancyOutcomeBabyDefectDto.getDefectType())) {
+                    if ("POSBDT008".equals(pregnancyOutcomeBabyDefectDto.getDefectType())) {
                         otherDefectTypes.set(i, pregnancyOutcomeBabyDefectDto.getOtherDefectType());
                     }
                 }
@@ -183,7 +186,7 @@ public class OutcomePregnancyDelegator extends CommonDelegator {
                 for (String defectType : defectTypes) {
                     PregnancyOutcomeBabyDefectDto pregnancyOutcomeBabyDefectDto = new PregnancyOutcomeBabyDefectDto();
                     pregnancyOutcomeBabyDefectDto.setDefectType(defectType);
-                    if ("other".equals(defectType)) {
+                    if ("POSBDT008".equals(defectType)) {
                         pregnancyOutcomeBabyDefectDto.setOtherDefectType(otherDefectType);
                     }
                     pregnancyOutcomeBabyDefectDtos.add(pregnancyOutcomeBabyDefectDto);

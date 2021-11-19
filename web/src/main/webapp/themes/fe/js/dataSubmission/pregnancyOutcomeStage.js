@@ -134,7 +134,7 @@ function pregnancyOutcomeChangeFunction() {
 
 function birthPlaceChangeFunction() {
     let $localBirthPlaceDiv = $('#localBirthPlaceDiv');
-    if ($('input[name="birthPlace"]:checked').val() == "Local Birth") {
+    if ($('input[name="birthPlace"]:checked').val() == "POSBP001") {
         $localBirthPlaceDiv.show();
     } else {
         $localBirthPlaceDiv.hide();
@@ -212,7 +212,7 @@ function birthDefectChangeFunction() {
 }
 
 function defectTypeChangeFunction() {
-    if ($(this).val() == "other") {
+    if ($(this).val() == "POSBDT008") {
         if ($(this).prop("checked")) {
             $(this).closest(".form-group").next('div[name="otherDefectTypeDivName"]').show();
         } else {

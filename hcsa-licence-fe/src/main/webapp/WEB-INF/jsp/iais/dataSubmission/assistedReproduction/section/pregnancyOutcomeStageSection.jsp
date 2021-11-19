@@ -170,9 +170,9 @@
                                 <input class="form-check-input"
                                        type="radio"
                                        name="birthPlace"
-                                       value="Local Birth"
+                                       value="POSBP001"
                                        id="birthPlaceLocal"
-                                       <c:if test="${pregnancyOutcomeStageDto.birthPlace == 'Local Birth'}">checked</c:if>
+                                       <c:if test="${pregnancyOutcomeStageDto.birthPlace == 'POSBP001'}">checked</c:if>
                                        aria-invalid="false">
                                 <label class="form-check-label"
                                        for="birthPlaceLocal"><span
@@ -182,9 +182,9 @@
                                 <input class="form-check-input"
                                        type="radio"
                                        name="birthPlace"
-                                       value="Overseas Birth"
+                                       value="POSBP002"
                                        id="birthPlaceOverseas"
-                                       <c:if test="${pregnancyOutcomeStageDto.birthPlace == 'Overseas Birth'}">checked</c:if>
+                                       <c:if test="${pregnancyOutcomeStageDto.birthPlace == 'POSBP002'}">checked</c:if>
                                        aria-invalid="false">
                                 <label class="form-check-label"
                                        for="birthPlaceOverseas"><span
@@ -194,9 +194,9 @@
                                 <input class="form-check-input"
                                        type="radio"
                                        name="birthPlace"
-                                       value="Unknown"
+                                       value="POSBP003"
                                        id="birthPlaceUnknown"
-                                       <c:if test="${pregnancyOutcomeStageDto.birthPlace == 'Unknown'}">checked</c:if>
+                                       <c:if test="${pregnancyOutcomeStageDto.birthPlace == 'POSBP003'}">checked</c:if>
                                        aria-invalid="false">
                                 <label class="form-check-label"
                                        for="birthPlaceUnknown"><span

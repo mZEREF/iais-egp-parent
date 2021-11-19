@@ -61,81 +61,81 @@
                             <div class="form-check col-xs-12">
                                 <input class="form-check-input defectType" type="checkbox"
                                        name="defectType${babyIndex}"
-                                       value="CA"
-                                       id="defectType${babyIndex}CA"
+                                       value="POSBDT001"
+                                       id="defectType${babyIndex}POSBDT001"
                                        aria-invalid="false">
                                 <label class="form-check-label"
-                                       for="defectType${babyIndex}CA"><span
+                                       for="defectType${babyIndex}POSBDT001"><span
                                         class="check-square"></span>Chromosomal Anomalies</label>
                             </div>
                             <div class="form-check col-xs-12">
                                 <input class="form-check-input defectType" type="checkbox"
                                        name="defectType${babyIndex}"
-                                       value="HA"
-                                       id="defectType${babyIndex}HA"
+                                       value="POSBDT002"
+                                       id="defectType${babyIndex}POSBDT002"
                                        aria-invalid="false">
                                 <label class="form-check-label"
-                                       for="defectType${babyIndex}HA"><span
+                                       for="defectType${babyIndex}POSBDT002"><span
                                         class="check-square"></span>Heart Anomalies</label>
                             </div>
                             <div class="form-check col-xs-12">
                                 <input class="form-check-input defectType" type="checkbox"
                                        name="defectType${babyIndex}"
-                                       value="MA"
-                                       id="defectType${babyIndex}MA"
+                                       value="POSBDT003"
+                                       id="defectType${babyIndex}POSBDT003"
                                        aria-invalid="false">
                                 <label class="form-check-label"
-                                       for="defectType${babyIndex}MA"><span
+                                       for="defectType${babyIndex}POSBDT003"><span
                                         class="check-square"></span>Musculoskeletal Anomalies</label>
                             </div>
                             <div class="form-check col-xs-12">
                                 <input class="form-check-input defectType" type="checkbox"
                                        name="defectType${babyIndex}"
-                                       value="NSA"
-                                       id="defectType${babyIndex}NSA"
+                                       value="POSBDT004"
+                                       id="defectType${babyIndex}POSBDT004"
                                        aria-invalid="false">
                                 <label class="form-check-label"
-                                       for="defectType${babyIndex}NSA"><span
+                                       for="defectType${babyIndex}POSBDT004"><span
                                         class="check-square"></span>Nervous System Anomalies</label>
                             </div>
                             <div class="form-check col-xs-12">
                                 <input class="form-check-input defectType" type="checkbox"
                                        name="defectType${babyIndex}"
-                                       value="OFA"
-                                       id="defectType${babyIndex}OFA"
+                                       value="POSBDT005"
+                                       id="defectType${babyIndex}POSBDT005"
                                        aria-invalid="false">
                                 <label class="form-check-label"
-                                       for="defectType${babyIndex}OFA"><span
+                                       for="defectType${babyIndex}POSBDT005"><span
                                         class="check-square"></span>Other Fetal Anomalies</label>
                             </div>
                             <div class="form-check col-xs-12">
                                 <input class="form-check-input defectType" type="checkbox"
                                        name="defectType${babyIndex}"
-                                       value="RSA"
-                                       id="defectType${babyIndex}RSA"
+                                       value="POSBDT006"
+                                       id="defectType${babyIndex}POSBDT006"
                                        aria-invalid="false">
                                 <label class="form-check-label"
-                                       for="defectType${babyIndex}RSA"><span
+                                       for="defectType${babyIndex}POSBDT006"><span
                                         class="check-square"></span>Respiratory System Anomalies</label>
                             </div>
                             <div class="form-check col-xs-12">
                                 <input class="form-check-input defectType" type="checkbox"
                                        name="defectType${babyIndex}"
-                                       value="USA"
-                                       id="defectType${babyIndex}USA"
+                                       value="POSBDT007"
+                                       id="defectType${babyIndex}POSBDT007"
                                        aria-invalid="false">
                                 <label class="form-check-label"
-                                       for="defectType${babyIndex}USA"><span
+                                       for="defectType${babyIndex}POSBDT007"><span
                                         class="check-square"></span>Urinary System Anomalies</label>
                             </div>
                             <div class="form-check col-xs-12">
                                 <input class="form-check-input defectType" type="checkbox"
                                        name="defectType${babyIndex}"
-                                       value="other"
-                                       id="defectType${babyIndex}Other"
+                                       value="POSBDT008"
+                                       id="defectType${babyIndex}POSBDT008"
                                        aria-invalid="false">
                                 <label class="form-check-label"
-                                       for="defectType${babyIndex}Other"><span
+                                       for="defectType${babyIndex}POSBDT008"><span
                                         class="check-square"></span>Others</label>
                             </div>
                         </div>

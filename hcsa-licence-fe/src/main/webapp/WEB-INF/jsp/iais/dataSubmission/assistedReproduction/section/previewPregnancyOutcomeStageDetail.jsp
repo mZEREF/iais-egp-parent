@@ -83,10 +83,10 @@
                     <iais:row>
                         <iais:field width="6" value="Was Selective foetal Reduction Carried Out?" cssClass="col-md-6"/>
                         <iais:value width="6" cssClass="col-md-6">
-                            <p class="col-12">
+                            <p class="col-12" style="padding: 0px;">
                                 <c:if test="${pregnancyOutcomeStageDto.wasSelFoeReduCarryOut == 0}">Yes</c:if>
                                 <c:if test="${pregnancyOutcomeStageDto.wasSelFoeReduCarryOut == 1}">No</c:if>
-                                <c:if test="${pregnancyOutcomeStageDto.wasSelFoeReduCarryOut == 0}">Unknown</c:if>
+                                <c:if test="${pregnancyOutcomeStageDto.wasSelFoeReduCarryOut == 2}">Unknown</c:if>
                             </p>
                         </iais:value>
                     </iais:row>
@@ -115,11 +115,12 @@
                         <iais:field width="6" value="Place of Birth"
                                     cssClass="col-md-6"/>
                         <iais:value width="6" cssClass="col-md-6">
+                            <iais:code code="${pregnancyOutcomeStageDto.birthPlace}"/>
                             <c:out value="${pregnancyOutcomeStageDto.birthPlace}"/>
                         </iais:value>
                     </iais:row>
                     <div id="localBirthPlaceDiv"
-                         <c:if test="${pregnancyOutcomeStageDto.birthPlace != 'Local Birth'}">style="display:none;"</c:if>>
+                         <c:if test="${pregnancyOutcomeStageDto.birthPlace != 'POSBP001'}">style="display:none;"</c:if>>
                         <iais:row>
                             <iais:field width="6" value="Place of Local Birth"
                                         cssClass="col-md-6"/>
