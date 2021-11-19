@@ -261,7 +261,7 @@ public class LicenceExpiredBatchJob {
                     updateLicenceDtos.add(interimLicDto);
                     interimLicDto = hcsaLicenceClient.getLicDtoById(interimLicDto.getOriginLicenceId()).getEntity();
                 }
-                //send email
+               /* //send email
                 String licenceDtoId = licenceDto.getId();
                 String svcName = licenceDto.getSvcName();
                 String licenceNo = licenceDto.getLicenceNo();
@@ -325,7 +325,7 @@ public class LicenceExpiredBatchJob {
                 msgParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_LICENCE_END_DATE_MSG);
                 msgParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
                 msgParam.setRefId(licenceDto.getId());
-                notificationHelper.sendNotification(msgParam);
+                notificationHelper.sendNotification(msgParam);*/
                 //cessationBeService.sendEmail(LICENCEENDDATE, date, svcName, licenceDtoId, licenseeId, licenceNo);
             } catch (Exception e) {
                 log.error(e.getMessage(), e);

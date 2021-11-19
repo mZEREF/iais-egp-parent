@@ -1,6 +1,8 @@
 package com.ecquaria.cloud.moh.iais.service.client;
 
+import com.ecquaria.cloud.submission.client.model.SubmitReq;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
+import java.util.List;
 import org.springframework.http.HttpHeaders;
 
 /**
@@ -12,6 +14,14 @@ import org.springframework.http.HttpHeaders;
 public class EventBusClientClientFallBack implements EventBusClient{
     @Override
     public FeignResponseEntity<Void> trackCompersation() {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    @Override
+    public FeignResponseEntity<List<SubmitReq>> getRequestToRecover() {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);

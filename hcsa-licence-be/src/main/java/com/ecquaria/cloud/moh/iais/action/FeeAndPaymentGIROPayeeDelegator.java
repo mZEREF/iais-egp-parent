@@ -98,7 +98,6 @@ public class FeeAndPaymentGIROPayeeDelegator {
         ParamUtil.setSessionAttr(request,"uen",null);
         ParamUtil.setSessionAttr(request,"licenceNo",null);
         ParamUtil.setSessionAttr(request,"uenNo",null);
-        ParamUtil.setSessionAttr(request,"hciSession",null);
         ParamUtil.setSessionAttr(request,"giroAcctFileDto",null);
         ParamUtil.setSessionAttr(request,"licenceNoSer",null);
         ParamUtil.setSessionAttr(request,"licenseeName",null);
@@ -112,6 +111,7 @@ public class FeeAndPaymentGIROPayeeDelegator {
     }
     public void prePayeeResult(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
+        ParamUtil.setSessionAttr(request,"hciSession",null);
         String uen= ParamUtil.getString(request,"uen");
         String licensee =ParamUtil.getString(request,"licensee");
         String licenceNo =ParamUtil.getString(request,"licenceNo");

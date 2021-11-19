@@ -52,6 +52,14 @@
             <artifactId>servicewrapper</artifactId>
         </dependency>
         <dependency>
+            <groupId>com.ncs.secureconnect</groupId>
+            <artifactId>sim-lite</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.ncs.secureconnect</groupId>
+            <artifactId>sim-entities</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.xhtmlrenderer</groupId>
             <artifactId>flying-saucer-pdf</artifactId>
             <exclusions>
