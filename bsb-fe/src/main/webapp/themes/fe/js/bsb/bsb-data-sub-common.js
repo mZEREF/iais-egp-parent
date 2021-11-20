@@ -100,6 +100,9 @@ function addSection(idxInputName, sectionIdPrefix, headerTitlePrefix, sectionGro
     newSectionDivJqObj.find(":radio:checked").prop("checked", false);
     newSectionDivJqObj.find(":checkbox:checked").prop("checked", false);
 
+    /* Reset textarea */
+    newSectionDivJqObj.find("textarea").val("");
+
     /* Set date picker */
     newSectionDivJqObj.find(".date_picker").each(function () {
         var oldEL = $(this);
