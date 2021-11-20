@@ -8,6 +8,7 @@ import org.springframework.util.Assert;
 import sg.gov.moh.iais.egp.bsb.common.node.Node;
 import sg.gov.moh.iais.egp.bsb.common.node.NodeGroup;
 import sg.gov.moh.iais.egp.bsb.common.node.simple.SimpleNode;
+import sg.gov.moh.iais.egp.bsb.dto.file.DocRecordInfo;
 import sg.gov.moh.iais.egp.bsb.util.CollectionUtils;
 
 import java.io.Serializable;
@@ -26,7 +27,7 @@ public class ApprovalAppDto implements Serializable {
 
     private ActivityDto activityDto;
     private Map<String, ApprovalProfileDto> approvalProfileMap;
-    private Collection<PrimaryDocDto.DocRecordInfo> docRecordInfos;
+    private Collection<DocRecordInfo> docRecordInfos;
 
     private AuditTrailDto auditTrailDto;
 
@@ -67,7 +68,7 @@ public class ApprovalAppDto implements Serializable {
 
         Node companyInfoDto = new Node(NODE_NAME_COMPANY_INFO, new Node[0]);
         PrimaryDocDto primaryDocDto = new PrimaryDocDto();
-        primaryDocDto.setSavedDocMap(CollectionUtils.uniqueIndexMap(docRecordInfos, PrimaryDocDto.DocRecordInfo::getRepoId));
+        primaryDocDto.setSavedDocMap(CollectionUtils.uniqueIndexMap(docRecordInfos, DocRecordInfo::getRepoId));
         SimpleNode primaryDocNode = new SimpleNode(primaryDocDto, NODE_NAME_PRIMARY_DOC, new Node[]{activityNode,approvalProfileNodeGroup});
         Node previewSubmitNode = new Node(NODE_NAME_PREVIEW_SUBMIT, new Node[]{activityNode,approvalProfileNodeGroup,primaryDocNode});
         return new NodeGroup.Builder().name(name)

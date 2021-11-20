@@ -9,6 +9,7 @@ import sg.gov.moh.iais.egp.bsb.common.node.Node;
 import sg.gov.moh.iais.egp.bsb.common.node.NodeGroup;
 import sg.gov.moh.iais.egp.bsb.common.node.simple.SimpleNode;
 import sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants;
+import sg.gov.moh.iais.egp.bsb.dto.file.DocRecordInfo;
 import sg.gov.moh.iais.egp.bsb.util.CollectionUtils;
 
 import java.io.Serializable;
@@ -28,7 +29,7 @@ public class FacilityRegisterDto implements Serializable{
     private FacilityOfficerDto facilityOfficerDto;
     private FacilityCommitteeDto facilityCommitteeDto;
     private Map<String, BiologicalAgentToxinDto> biologicalAgentToxinMap;
-    private Collection<PrimaryDocDto.DocRecordInfo> docRecordInfos;
+    private Collection<DocRecordInfo> docRecordInfos;
     private PreviewSubmitDto previewSubmitDto;
     private AuditTrailDto auditTrailDto;
 
@@ -96,7 +97,7 @@ public class FacilityRegisterDto implements Serializable{
         Node companyInfoDto = new Node(FacRegisterConstants.NODE_NAME_COMPANY_INFO, new Node[0]);
         SimpleNode otherAppInfoNode = new SimpleNode(OtherApplicationInfoDto.getAllCheckedInstance(), NODE_NAME_OTHER_INFO, new Node[]{facSelectionNode, facInfoNodeGroup, batInfoNodeGroup});
         PrimaryDocDto primaryDocDto = new PrimaryDocDto();
-        primaryDocDto.setSavedDocMap(CollectionUtils.uniqueIndexMap(docRecordInfos, PrimaryDocDto.DocRecordInfo::getRepoId));
+        primaryDocDto.setSavedDocMap(CollectionUtils.uniqueIndexMap(docRecordInfos, DocRecordInfo::getRepoId));
         SimpleNode primaryDocNode = new SimpleNode(primaryDocDto, NODE_NAME_PRIMARY_DOC, new Node[]{facSelectionNode, facInfoNodeGroup, batInfoNodeGroup, otherAppInfoNode});
         SimpleNode previewSubmitNode = new SimpleNode(previewSubmitDto, NODE_NAME_PREVIEW_SUBMIT, new Node[]{facSelectionNode, facInfoNodeGroup, batInfoNodeGroup, otherAppInfoNode, primaryDocNode});
         return new NodeGroup.Builder().name(name)

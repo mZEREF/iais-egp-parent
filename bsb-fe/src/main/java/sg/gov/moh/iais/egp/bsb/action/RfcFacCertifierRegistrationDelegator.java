@@ -13,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
-import sg.gov.moh.iais.egp.bsb.client.BsbFileClient;
 import sg.gov.moh.iais.egp.bsb.client.FacCertifierRegisterClient;
 import sg.gov.moh.iais.egp.bsb.client.FileRepoClient;
 import sg.gov.moh.iais.egp.bsb.common.node.Node;
@@ -26,6 +25,8 @@ import sg.gov.moh.iais.egp.bsb.common.rfc.DecisionFlowTypeImpl;
 import sg.gov.moh.iais.egp.bsb.constant.DocConstants;
 import sg.gov.moh.iais.egp.bsb.constant.RfcFlowType;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
+import sg.gov.moh.iais.egp.bsb.dto.file.DocRecordInfo;
+import sg.gov.moh.iais.egp.bsb.dto.file.NewDocInfo;
 import sg.gov.moh.iais.egp.bsb.dto.register.afc.*;
 import sg.gov.moh.iais.egp.bsb.dto.rfc.DiffContent;
 import sg.gov.moh.iais.egp.bsb.entity.DocSetting;
@@ -81,13 +82,11 @@ public class RfcFacCertifierRegistrationDelegator {
 
     private final FacCertifierRegisterClient facCertifierRegisterClient;
     private final FileRepoClient fileRepoClient;
-    private final BsbFileClient bsbFileClient;
 
     @Autowired
-    public RfcFacCertifierRegistrationDelegator(FacCertifierRegisterClient facCertifierRegisterClient, FileRepoClient fileRepoClient, BsbFileClient bsbFileClient) {
+    public RfcFacCertifierRegistrationDelegator(FacCertifierRegisterClient facCertifierRegisterClient, FileRepoClient fileRepoClient) {
         this.facCertifierRegisterClient = facCertifierRegisterClient;
         this.fileRepoClient = fileRepoClient;
-        this.bsbFileClient = bsbFileClient;
     }
 
     public void start(BaseProcessClass bpc) {
@@ -200,8 +199,8 @@ public class RfcFacCertifierRegistrationDelegator {
 
         ParamUtil.setRequestAttr(request, "docSettings", getFacRegDocSettings());
 
-        Map<String, List<PrimaryDocDto.DocRecordInfo>> savedFiles = primaryDocDto.getExistDocTypeMap();
-        Map<String, List<PrimaryDocDto.NewDocInfo>> newFiles = primaryDocDto.getNewDocTypeMap();
+        Map<String, List<DocRecordInfo>> savedFiles = primaryDocDto.getExistDocTypeMap();
+        Map<String, List<NewDocInfo>> newFiles = primaryDocDto.getNewDocTypeMap();
         ParamUtil.setRequestAttr(request, "savedFiles", savedFiles);
         ParamUtil.setRequestAttr(request, "newFiles", newFiles);
     }
@@ -328,7 +327,7 @@ public class RfcFacCertifierRegistrationDelegator {
                         //upload document
                         SimpleNode primaryDocNode = (SimpleNode) facRegRoot.at(NODE_NAME_FAC_PRIMARY_DOCUMENT);
                         PrimaryDocDto primaryDocDto = (PrimaryDocDto) primaryDocNode.getValue();
-                        MultipartFile[] files = primaryDocDto.getNewDocMap().values().stream().map(PrimaryDocDto.NewDocInfo::getMultipartFile).toArray(MultipartFile[]::new);
+                        MultipartFile[] files = primaryDocDto.getNewDocMap().values().stream().map(NewDocInfo::getMultipartFile).toArray(MultipartFile[]::new);
                         List<String> repoIds = fileRepoClient.saveFiles(files).getEntity();
                         primaryDocDto.newFileSaved(repoIds);
 

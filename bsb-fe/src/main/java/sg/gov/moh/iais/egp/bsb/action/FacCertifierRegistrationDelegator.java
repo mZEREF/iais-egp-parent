@@ -20,6 +20,8 @@ import sg.gov.moh.iais.egp.bsb.common.node.Nodes;
 import sg.gov.moh.iais.egp.bsb.common.node.simple.SimpleNode;
 import sg.gov.moh.iais.egp.bsb.constant.DocConstants;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
+import sg.gov.moh.iais.egp.bsb.dto.file.DocRecordInfo;
+import sg.gov.moh.iais.egp.bsb.dto.file.NewDocInfo;
 import sg.gov.moh.iais.egp.bsb.dto.register.afc.*;
 import sg.gov.moh.iais.egp.bsb.entity.DocSetting;
 import sg.gov.moh.iais.egp.bsb.util.LogUtil;
@@ -179,8 +181,8 @@ public class FacCertifierRegistrationDelegator {
 
         ParamUtil.setRequestAttr(request, "docSettings", getFacRegDocSettings());
 
-        Map<String, List<PrimaryDocDto.DocRecordInfo>> savedFiles = primaryDocDto.getExistDocTypeMap();
-        Map<String, List<PrimaryDocDto.NewDocInfo>> newFiles = primaryDocDto.getNewDocTypeMap();
+        Map<String, List<DocRecordInfo>> savedFiles = primaryDocDto.getExistDocTypeMap();
+        Map<String, List<NewDocInfo>> newFiles = primaryDocDto.getNewDocTypeMap();
         ParamUtil.setRequestAttr(request, "savedFiles", savedFiles);
         ParamUtil.setRequestAttr(request, "newFiles", newFiles);
     }
@@ -300,7 +302,7 @@ public class FacCertifierRegistrationDelegator {
                     //upload document
                     SimpleNode primaryDocNode = (SimpleNode) facRegRoot.at(NODE_NAME_FAC_PRIMARY_DOCUMENT);
                     PrimaryDocDto primaryDocDto = (PrimaryDocDto) primaryDocNode.getValue();
-                    MultipartFile[] files = primaryDocDto.getNewDocMap().values().stream().map(PrimaryDocDto.NewDocInfo::getMultipartFile).toArray(MultipartFile[]::new);
+                    MultipartFile[] files = primaryDocDto.getNewDocMap().values().stream().map(NewDocInfo::getMultipartFile).toArray(MultipartFile[]::new);
                     List<String> repoIds = fileRepoClient.saveFiles(files).getEntity();
                     primaryDocDto.newFileSaved(repoIds);
 

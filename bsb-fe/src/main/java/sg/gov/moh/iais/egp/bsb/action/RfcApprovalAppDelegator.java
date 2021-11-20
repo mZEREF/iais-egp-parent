@@ -28,7 +28,9 @@ import sg.gov.moh.iais.egp.bsb.constant.DocConstants;
 import sg.gov.moh.iais.egp.bsb.constant.RfcFlowType;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
 import sg.gov.moh.iais.egp.bsb.dto.approval.*;
+import sg.gov.moh.iais.egp.bsb.dto.file.DocRecordInfo;
 import sg.gov.moh.iais.egp.bsb.dto.file.FileRepoSyncDto;
+import sg.gov.moh.iais.egp.bsb.dto.file.NewDocInfo;
 import sg.gov.moh.iais.egp.bsb.dto.file.NewFileSyncDto;
 import sg.gov.moh.iais.egp.bsb.dto.rfc.DiffContent;
 import sg.gov.moh.iais.egp.bsb.entity.Biological;
@@ -208,9 +210,9 @@ public class RfcApprovalAppDelegator {
             NodeGroup approvalProfileGroup = (NodeGroup) approvalAppRoot.getNode(NODE_NAME_APPROVAL_PROFILE);
             changeApprovalProfileNodeGroup(approvalProfileGroup, activityDto);
             //get primaryDocDto(facility registration upload doc) by current facilityId
-            Collection<PrimaryDocDto.DocRecordInfo> docRecordInfos = approvalAppClient.getFacDocByFacId(activityDto.getFacilityId()).getEntity();
+            Collection<DocRecordInfo> docRecordInfos = approvalAppClient.getFacDocByFacId(activityDto.getFacilityId()).getEntity();
             PrimaryDocDto registrationPrimaryDocDto = new PrimaryDocDto();
-            registrationPrimaryDocDto.setSavedDocMap(CollectionUtils.uniqueIndexMap(docRecordInfos, PrimaryDocDto.DocRecordInfo::getRepoId));
+            registrationPrimaryDocDto.setSavedDocMap(CollectionUtils.uniqueIndexMap(docRecordInfos, DocRecordInfo::getRepoId));
             //get new primaryDocNode
             NodeGroup approvalProfileNodeGroup = (NodeGroup) approvalAppRoot.at(NODE_NAME_APPROVAL_PROFILE);
             SimpleNode primaryDocNode = new SimpleNode(registrationPrimaryDocDto, NODE_NAME_PRIMARY_DOC, new Node[]{activityNode,approvalProfileNodeGroup});
@@ -287,8 +289,8 @@ public class RfcApprovalAppDelegator {
 
         ParamUtil.setRequestAttr(request, "docSettings", getApprovalAppDocSettings());
 
-        Map<String, List<PrimaryDocDto.DocRecordInfo>> savedFiles = primaryDocDto.getExistDocTypeMap();
-        Map<String, List<PrimaryDocDto.NewDocInfo>> newFiles = primaryDocDto.getNewDocTypeMap();
+        Map<String, List<DocRecordInfo>> savedFiles = primaryDocDto.getExistDocTypeMap();
+        Map<String, List<NewDocInfo>> newFiles = primaryDocDto.getNewDocTypeMap();
         ParamUtil.setRequestAttr(request, "savedFiles", savedFiles);
         ParamUtil.setRequestAttr(request, "newFiles", newFiles);
     }
@@ -342,7 +344,7 @@ public class RfcApprovalAppDelegator {
                     PrimaryDocDto primaryDocDto = (PrimaryDocDto) primaryDocNode.getValue();
                     List<NewFileSyncDto> newFilesToSync = null;
                     if (!primaryDocDto.getNewDocMap().isEmpty()) {
-                        MultipartFile[] files = primaryDocDto.getNewDocMap().values().stream().map(PrimaryDocDto.NewDocInfo::getMultipartFile).toArray(MultipartFile[]::new);
+                        MultipartFile[] files = primaryDocDto.getNewDocMap().values().stream().map(NewDocInfo::getMultipartFile).toArray(MultipartFile[]::new);
                         List<String> repoIds = fileRepoClient.saveFiles(files).getEntity();
                         newFilesToSync = primaryDocDto.newFileSaved(repoIds);
                     }

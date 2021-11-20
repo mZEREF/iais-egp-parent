@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
 import sg.gov.moh.iais.egp.bsb.dto.ValidationResultDto;
 import sg.gov.moh.iais.egp.bsb.dto.approval.*;
+import sg.gov.moh.iais.egp.bsb.dto.file.DocRecordInfo;
 import sg.gov.moh.iais.egp.bsb.entity.Biological;
 import sg.gov.moh.iais.egp.bsb.entity.Facility;
 import sg.gov.moh.iais.egp.bsb.entity.FacilityActivity;
@@ -35,7 +36,7 @@ public interface ApprovalAppClient {
     ResponseDto<ApprovalAppDto> getApprovalAppAppDataByApplicationId(@PathVariable("appId") String appId);
 
     @GetMapping(path = "/approvalApp/approvalToPossess/facDoc/{facilityId}", produces =MediaType.APPLICATION_JSON_VALUE)
-    ResponseDto<Collection<PrimaryDocDto.DocRecordInfo>> getFacDocByFacId(@PathVariable("facilityId") String facilityId);
+    ResponseDto<Collection<DocRecordInfo>> getFacDocByFacId(@PathVariable("facilityId") String facilityId);
 
     @GetMapping(path = "/approvalApp/approvalToPossess/getAllApprovalFac", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<Facility>> getAllMainActApprovalFac();

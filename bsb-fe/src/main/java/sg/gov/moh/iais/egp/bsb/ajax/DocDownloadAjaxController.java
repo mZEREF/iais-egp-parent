@@ -18,7 +18,7 @@ import sg.gov.moh.iais.egp.bsb.common.node.NodeGroup;
 import sg.gov.moh.iais.egp.bsb.common.node.simple.SimpleNode;
 import sg.gov.moh.iais.egp.bsb.constant.FacCertifierRegisterConstants;
 import sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants;
-import sg.gov.moh.iais.egp.bsb.dto.register.afc.FacilityCertifierRegisterDto;
+import sg.gov.moh.iais.egp.bsb.dto.file.DocRecordInfo;
 import sg.gov.moh.iais.egp.bsb.dto.register.facility.PrimaryDocDto;
 import sg.gov.moh.iais.egp.bsb.dto.submission.TransferNotificationDto;
 import sg.gov.moh.iais.egp.bsb.util.LogUtil;
@@ -148,7 +148,7 @@ public class DocDownloadAjaxController {
         NodeGroup facRegRoot = (NodeGroup) ParamUtil.getSessionAttr(request, FacilityRegistrationDelegator.KEY_ROOT_NODE_GROUP);
         SimpleNode primaryDocNode = (SimpleNode) facRegRoot.at(FacRegisterConstants.NODE_NAME_PRIMARY_DOC);
         PrimaryDocDto primaryDocDto = (PrimaryDocDto) primaryDocNode.getValue();
-        PrimaryDocDto.DocRecordInfo info = primaryDocDto.getSavedDocMap().get(id);
+        DocRecordInfo info = primaryDocDto.getSavedDocMap().get(id);
         if (info == null) {
             throw new IllegalStateException("Can not get the record for the repo id");
         }
@@ -177,8 +177,8 @@ public class DocDownloadAjaxController {
      */
     private MultipartFile facRegCertGetSavedFile(HttpServletRequest request, String id) {
         SimpleNode primaryDocNode = getSimpleNode(request,FacCertifierRegisterConstants.NODE_NAME_FAC_PRIMARY_DOCUMENT,FacCertifierRegistrationDelegator.KEY_ROOT_NODE_GROUP);
-        sg.gov.moh.iais.egp.bsb.dto.register.afc.PrimaryDocDto primaryDocDto = (sg.gov.moh.iais.egp.bsb.dto.register.afc.PrimaryDocDto) primaryDocNode.getValue();
-        sg.gov.moh.iais.egp.bsb.dto.register.afc.PrimaryDocDto.DocRecordInfo info = primaryDocDto.getSavedDocMap().get(id);
+        PrimaryDocDto primaryDocDto = (PrimaryDocDto) primaryDocNode.getValue();
+        DocRecordInfo info = primaryDocDto.getSavedDocMap().get(id);
         if (info == null) {
             throw new IllegalStateException("Can not get the record for the repo id");
         }

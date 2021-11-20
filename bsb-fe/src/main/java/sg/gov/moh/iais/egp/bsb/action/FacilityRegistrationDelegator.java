@@ -25,7 +25,9 @@ import sg.gov.moh.iais.egp.bsb.common.node.Nodes;
 import sg.gov.moh.iais.egp.bsb.common.node.simple.SimpleNode;
 import sg.gov.moh.iais.egp.bsb.constant.DocConstants;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
+import sg.gov.moh.iais.egp.bsb.dto.file.DocRecordInfo;
 import sg.gov.moh.iais.egp.bsb.dto.file.FileRepoSyncDto;
+import sg.gov.moh.iais.egp.bsb.dto.file.NewDocInfo;
 import sg.gov.moh.iais.egp.bsb.dto.file.NewFileSyncDto;
 import sg.gov.moh.iais.egp.bsb.dto.register.facility.BiologicalAgentToxinDto;
 import sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityAdministratorDto;
@@ -474,8 +476,8 @@ public class FacilityRegistrationDelegator {
 
         ParamUtil.setRequestAttr(request, "docSettings", getFacRegDocSettings());
 
-        Map<String, List<PrimaryDocDto.DocRecordInfo>> savedFiles = primaryDocDto.getExistDocTypeMap();
-        Map<String, List<PrimaryDocDto.NewDocInfo>> newFiles = primaryDocDto.getNewDocTypeMap();
+        Map<String, List<DocRecordInfo>> savedFiles = primaryDocDto.getExistDocTypeMap();
+        Map<String, List<NewDocInfo>> newFiles = primaryDocDto.getNewDocTypeMap();
         ParamUtil.setRequestAttr(request, "savedFiles", savedFiles);
         ParamUtil.setRequestAttr(request, "newFiles", newFiles);
     }
@@ -545,7 +547,7 @@ public class FacilityRegistrationDelegator {
                     PrimaryDocDto primaryDocDto = (PrimaryDocDto) primaryDocNode.getValue();
                     List<NewFileSyncDto> newFilesToSync = null;
                     if (!primaryDocDto.getNewDocMap().isEmpty()) {
-                        MultipartFile[] files = primaryDocDto.getNewDocMap().values().stream().map(PrimaryDocDto.NewDocInfo::getMultipartFile).toArray(MultipartFile[]::new);
+                        MultipartFile[] files = primaryDocDto.getNewDocMap().values().stream().map(NewDocInfo::getMultipartFile).toArray(MultipartFile[]::new);
                         List<String> repoIds = fileRepoClient.saveFiles(files).getEntity();
                         newFilesToSync = primaryDocDto.newFileSaved(repoIds);
                     }

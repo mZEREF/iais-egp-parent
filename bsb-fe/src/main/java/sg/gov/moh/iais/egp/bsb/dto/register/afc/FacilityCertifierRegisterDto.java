@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import sg.gov.moh.iais.egp.bsb.common.node.Node;
 import sg.gov.moh.iais.egp.bsb.common.node.NodeGroup;
 import sg.gov.moh.iais.egp.bsb.common.node.simple.SimpleNode;
+import sg.gov.moh.iais.egp.bsb.dto.file.DocRecordInfo;
 import sg.gov.moh.iais.egp.bsb.util.CollectionUtils;
 
 import java.io.Serializable;
@@ -25,7 +26,7 @@ public class FacilityCertifierRegisterDto implements Serializable {
     private OrganisationProfileDto profileDto;
     private CertifyingTeamDto certifyingTeamDto;
     private AdministratorDto administratorDto;
-    private Collection<PrimaryDocDto.DocRecordInfo> docRecordInfos;
+    private Collection<DocRecordInfo> docRecordInfos;
     private PreviewSubmitDto previewSubmitDto;
     private AuditTrailDto auditTrailDto;
 
@@ -54,7 +55,7 @@ public class FacilityCertifierRegisterDto implements Serializable {
 
         Node companyInfoDto = new Node(NODE_NAME_COMPANY_INFO, new Node[0]);
         PrimaryDocDto primaryDocDto = new PrimaryDocDto();
-        primaryDocDto.setSavedDocMap(CollectionUtils.uniqueIndexMap(docRecordInfos,PrimaryDocDto.DocRecordInfo::getRepoId));
+        primaryDocDto.setSavedDocMap(CollectionUtils.uniqueIndexMap(docRecordInfos, DocRecordInfo::getRepoId));
         SimpleNode primaryDocNode = new SimpleNode(primaryDocDto,NODE_NAME_FAC_PRIMARY_DOCUMENT,new Node[]{facCertInfoGroup});
         SimpleNode previewSubmitNode = new SimpleNode(previewSubmitDto,NODE_NAME_CER_PREVIEW_SUBMIT,new Node[]{facCertInfoGroup,primaryDocNode});
         return new NodeGroup.Builder().name(name)
