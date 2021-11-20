@@ -50,15 +50,10 @@
                                             <c:forEach var="items" items="${inventoryResult}" varStatus="status">
                                                 <tr name="basicData">
                                                     <td><c:out  value="${status.index + 1}"/></td>
-                                                    <td><c:out  value="${items.facilitySchedule.facility.facilityName}"/></td>
-                                                    <td><c:out value="${items.bioName}"></c:out></td>
+                                                    <td></td>
+                                                    <td></td>
                                                     <td>15000.000</td>
                                                     <td>
-                                                        <c:if test="${items.facilitySchedule.facility.isProtected == 'Y'}">
-                                                            <c:out value="yes"/>
-                                                        </c:if>  <c:if test="${items.facilitySchedule.facility.isProtected == 'N'}">
-                                                        <c:out value="no"/>
-                                                    </c:if>
                                                     </td>
                                                     <td>Export</td>
                                                     <td><a onclick="javascript:doHisInfo()">Transaction 01</a></td>
@@ -111,7 +106,7 @@
                                                 <c:forEach var="items" items="${inventoryResult}" varStatus="status">
                                                     <tr name="basicData">
                                                         <td><c:out  value="${status.index + 1}"/></td>
-                                                        <td><c:out value="${items.bioName}"></c:out></td>
+                                                        <td></td>
                                                         <td>BBC</td>
                                                         <td>NPA</td>
                                                         <td>complete</td>

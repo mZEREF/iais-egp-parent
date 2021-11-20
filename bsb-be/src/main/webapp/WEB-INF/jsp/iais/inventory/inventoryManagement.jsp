@@ -1,8 +1,6 @@
 <%@ page import="com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant" %>
-<%@ page import="com.ecquaria.cloud.moh.iais.common.utils.MaskUtil" %>
 <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c" %>
-<%@ page import="com.ecquaria.cloud.moh.iais.common.constant.AppConsts" %>
 <%@ page import="static sg.gov.moh.iais.egp.bsb.constant.GlobalConstants.WEB_ROOT" %>
 <%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
 <%@ taglib uri="http://www.ecq.com/iais-bsb" prefix="iais-bsb" %>
@@ -135,9 +133,3 @@
         </div>
     </form>
 </div>
-<%@include file="/WEB-INF/jsp/include/utils.jsp" %>
-<script type="text/javascript">
-
-
-
-</script>
