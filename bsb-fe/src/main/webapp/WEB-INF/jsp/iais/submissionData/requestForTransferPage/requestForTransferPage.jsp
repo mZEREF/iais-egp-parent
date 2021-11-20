@@ -23,10 +23,11 @@
     <input type="hidden" name="action_type" value="">
     <input type="hidden" name="action_value" value="">
     <input type="hidden" name="action_additional" value="">
-    <div class="main-content">
-    <div class="row">
-        <div class="col-lg-12 col-xs-12">
-            <div class="center-content">
+    <%--<div class="main-content">--%>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12 col-xs-12">
+                <%--<div class="center-content">--%>
                 <div class="internet-content">
                     <iais:body>
                         <div class="col-xs-12">
@@ -46,12 +47,14 @@
                                 </ul>
                                 <div class="tab-nav-mobile visible-xs visible-sm">
                                     <div class="swiper-wrapper" role="tablist">
-                                        <div class="swiper-slide"><a href="#tabFacInfo" aria-controls="tabFacInfo"
+                                        <div class="swiper-slide"><a href="#tabFacInfo"
+                                                                     aria-controls="tabFacInfo"
                                                                      role="tab"
                                                                      data-toggle="tab">Facility Info</a>
                                         </div>
                                         <div class="swiper-slide"><a href="#tabBat" aria-controls="tabBat"
-                                                                     role="tab" data-toggle="tab">Biological Agent/Toxin</a>
+                                                                     role="tab" data-toggle="tab">Biological
+                                            Agent/Toxin</a>
                                         </div>
                                     </div>
                                     <div class="swiper-button-prev"></div>
@@ -69,10 +72,11 @@
                         </div>
                     </iais:body>
                 </div>
+                <%--</div>--%>
             </div>
         </div>
     </div>
-</div>
+    <%--</div>--%>
     <div class="row" style="margin-bottom: 20px">
         <div class="container">
             <div class="col-xs-12 col-md-6 text-left">
@@ -84,4 +88,4 @@
         </div>
     </div>
 </form>
-<%@include file="/WEB-INF/jsp/include/validation.jsp"%>
+<%@include file="/WEB-INF/jsp/include/validation.jsp" %>
