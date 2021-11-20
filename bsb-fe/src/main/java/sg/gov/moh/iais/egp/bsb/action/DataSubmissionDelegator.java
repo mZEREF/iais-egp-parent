@@ -47,15 +47,22 @@ public class DataSubmissionDelegator {
      * This module is used to initialize data
      * */
     public void start(BaseProcessClass bpc){
-        ParamUtil.setSessionAttr(bpc.request,KEY_CONSUME_NOTIFICATION_DTO, null);
-        ParamUtil.setSessionAttr(bpc.request,KEY_DISPOSAL_NOTIFICATION_DTO, null);
-        ParamUtil.setSessionAttr(bpc.request,KEY_EXPORT_NOTIFICATION_DTO, null);
-        ParamUtil.setSessionAttr(bpc.request,KEY_RECEIPT_NOTIFICATION_DTO, null);
-        ParamUtil.setSessionAttr(bpc.request,KEY_FAC_ID,null);
+        HttpServletRequest request = bpc.request;
+        ParamUtil.setSessionAttr(request,KEY_CONSUME_NOTIFICATION_DTO, null);
+        ParamUtil.setSessionAttr(request,KEY_DISPOSAL_NOTIFICATION_DTO, null);
+        ParamUtil.setSessionAttr(request,KEY_EXPORT_NOTIFICATION_DTO, null);
+        ParamUtil.setSessionAttr(request,KEY_RECEIPT_NOTIFICATION_DTO, null);
+        ParamUtil.setSessionAttr(request,KEY_SUBMISSION_TYPE,null);
+        ParamUtil.setSessionAttr(request,KEY_FAC_ID,null);
         if(log.isInfoEnabled()){
             log.info("In the future this module will be used to initialize some data");
         }
         AuditTrailHelper.auditFunction("Data Submission", "Data Submission");
+    }
+
+    public void prepareNotificationTypeSelect(BaseProcessClass bpc) {
+        HttpServletRequest request = bpc.request;
+        ParamUtil.setSessionAttr(request,KEY_SUBMISSION_TYPE,null);
     }
 
     /**

@@ -11,7 +11,9 @@
             <div class="col-xs-12">
                 <div class="dashboard-page-title">
                     <h1>New Data Submission</h1>
-                    <h3 style="font-weight: normal">You are submitting for <iais:code code="${submissionType}"/></h3>
+                    <c:if test="${submissionType ne null}">
+                        <h3 style="font-weight: normal">You are submitting for <iais:code code="${submissionType}"/></h3>
+                    </c:if>
                 </div>
             </div>
         </div>

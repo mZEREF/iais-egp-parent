@@ -13,7 +13,10 @@
     String webroot1 = IaisEGPConstant.CSS_ROOT + IaisEGPConstant.FE_CSS_ROOT;
 %>
 <webui:setLayout name="iais-internet"/>
+
 <script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-data-submission.js"></script>
+
+<%@include file="dashboard.jsp" %>
 <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
     <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
     <input type="hidden" name="action_type" value="">
@@ -55,8 +58,13 @@
     </div>
     <div class="row">
         <div class="container">
-            <div class="col-xs-12 col-md-6 text-right">
-                <button class="btn btn-primary save" id="nextBtn">NEXT</button>
+            <div class="col-xs-12 col-md-6 text-left">
+                <a class="back" href="/bsb-fe/eservice/INTERNET/MohBSBInboxMsg"><em class="fa fa-angle-left"></em> Back</a>
+            </div>
+            <div class="form-group">
+                <div class="col-xs-12 col-md-6 text-right">
+                    <button class="btn btn-primary save" id="nextBtn">NEXT</button>
+                </div>
             </div>
         </div>
     </div>

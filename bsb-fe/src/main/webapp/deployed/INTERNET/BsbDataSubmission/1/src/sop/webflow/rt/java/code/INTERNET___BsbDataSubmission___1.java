@@ -18,11 +18,12 @@ public class INTERNET___BsbDataSubmission___1 extends BaseProcessClass {
 
 	public void start_OnStepProcess_0() throws Exception {
 	// 		start->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "start", this);
 	}
 
 	public void prepareDataSubmissionSelect_OnStepProcess_0() throws Exception {
 	// 		prepareDataSubmissionSelect->OnStepProcess
-//		EngineHelper.delegate(DELEGATOR, "doPrepareDataSubmissionSelect", this);
+		EngineHelper.delegate(DELEGATOR, "prepareNotificationTypeSelect", this);
 	}
 
 	public void prepareSwitch_OnStepProcess_0() throws Exception {
