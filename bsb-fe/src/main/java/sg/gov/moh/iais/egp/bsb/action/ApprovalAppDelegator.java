@@ -113,8 +113,7 @@ public class ApprovalAppDelegator {
                 throw new IaisRuntimeException("Fail to retrieve app data");
             }
         }
-        String maskedProcessType = request.getParameter(KEY_PROCESS_TYPE);
-        String processType = MaskUtil.unMaskValue(KEY_PROCESS_TYPE,maskedProcessType);
+        String processType = request.getParameter(KEY_PROCESS_TYPE);
         ParamUtil.setSessionAttr(request, KEY_PROCESS_TYPE, processType);
         if (newApprovalApp) {
             ParamUtil.setSessionAttr(request, KEY_ROOT_NODE_GROUP, getApprovalAppRoot(request));
@@ -149,6 +148,7 @@ public class ApprovalAppDelegator {
         HttpServletRequest request = bpc.request;
         List<Facility> facilityList = approvalAppClient.getAllMainActApprovalFac().getEntity();
         List<SelectOption> facilityIdList = new ArrayList<>(facilityList.size());
+        facilityIdList.add(new SelectOption("Please Select","Please Select"));
         List<FacilityActivitySelectDto> facilityActivitySelectDtoList = new ArrayList<>();
         if (!facilityList.isEmpty()){
             for (Facility fac : facilityList) {

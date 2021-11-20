@@ -54,13 +54,14 @@
                         <div class="col-sm-4 col-md-7 control-font-label">
                             <input type="hidden" id="activityType" name="activityType" value="${activity.activityType}">
                             <select name="activityId" id="activityId">
+                                <option>Please Select</option>
                                 <c:forEach items="${activityIdSelectDto}" var="selectDto">
                                     <c:forEach items="${selectDto.activityIdList}" var="selectList">
                                         <option value="${MaskUtil.maskValue('activityId',selectList.value)}" <c:if test="${activity.activityId eq selectList.value}">selected="selected"</c:if>><iais:code code="${selectList.text}"></iais:code></option>
                                     </c:forEach>
                                 </c:forEach>
                             </select>
-                            <span data-err-ind="activityType" class="error-msg"></span>
+                            <span data-err-ind="activityId" class="error-msg"></span>
                         </div>
                     </div>
                     <div class=" form-group form-horizontal formgap">

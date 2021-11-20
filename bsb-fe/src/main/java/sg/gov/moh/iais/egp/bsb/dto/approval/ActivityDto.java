@@ -128,8 +128,12 @@ public class ActivityDto extends ValidatableNodeValue {
         String newFacilityName = ParamUtil.getString(request,KEY_ACTIVITY_FACILITY_NAME);
         String maskActivityId = ParamUtil.getString(request,KEY_ACTIVITY_ACTIVITY_ID);
         String newActivityType = ParamUtil.getString(request,KEY_ACTIVITY_ACTIVITY_TYPE);
-        String newFacilityId = MaskUtil.unMaskValue(KEY_ACTIVITY_FACILITY_ID,maskFacilityId);
-        String newActivityId = MaskUtil.unMaskValue(KEY_ACTIVITY_ACTIVITY_ID,maskActivityId);
+        String newFacilityId = "";
+        String newActivityId = "";
+        if (!maskFacilityId.equals("Please Select") && !maskActivityId.equals("Please Select")){
+            newFacilityId = MaskUtil.unMaskValue(KEY_ACTIVITY_FACILITY_ID,maskFacilityId);
+            newActivityId = MaskUtil.unMaskValue(KEY_ACTIVITY_ACTIVITY_ID,maskActivityId);
+        }
         this.setFacilityId(newFacilityId);
         this.setFacilityName(newFacilityName);
         this.setActivityId(newActivityId);

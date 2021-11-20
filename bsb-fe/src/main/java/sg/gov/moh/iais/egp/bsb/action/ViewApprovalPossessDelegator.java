@@ -48,9 +48,8 @@ public class ViewApprovalPossessDelegator {
     public void init(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         String maskedAppId = request.getParameter(KEY_APP_ID);
-        String maskProcessType = request.getParameter(KEY_PROCESS_TYPE);
+        String processType = request.getParameter(KEY_PROCESS_TYPE);
         String appId = MaskUtil.unMaskValue("id", maskedAppId);
-        String processType = MaskUtil.unMaskValue(KEY_PROCESS_TYPE,maskProcessType);
         if (maskedAppId == null || appId == null || maskedAppId.equals(appId)) {
             throw new IaisRuntimeException("Invalid App ID");
         }

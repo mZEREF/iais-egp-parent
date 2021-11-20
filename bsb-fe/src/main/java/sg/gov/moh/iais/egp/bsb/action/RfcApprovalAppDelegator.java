@@ -156,6 +156,7 @@ public class RfcApprovalAppDelegator {
         HttpServletRequest request = bpc.request;
         List<Facility> facilityList = approvalAppClient.getAllMainActApprovalFac().getEntity();
         List<SelectOption> facilityIdList = new ArrayList<>(facilityList.size());
+        facilityIdList.add(new SelectOption("Please Select","Please Select"));
         List<FacilityActivitySelectDto> facilityActivitySelectDtoList = new ArrayList<>();
         if (!facilityList.isEmpty()){
             for (Facility fac : facilityList) {
