@@ -19,6 +19,8 @@ import sg.gov.moh.iais.egp.bsb.common.node.simple.ValidatableNodeValue;
 import sg.gov.moh.iais.egp.bsb.constant.DocConstants;
 import sg.gov.moh.iais.egp.bsb.dto.ValidationResultDto;
 import sg.gov.moh.iais.egp.bsb.dto.file.DocMeta;
+import sg.gov.moh.iais.egp.bsb.dto.file.DocRecordInfo;
+import sg.gov.moh.iais.egp.bsb.dto.file.NewDocInfo;
 import sg.gov.moh.iais.egp.bsb.dto.file.NewFileSyncDto;
 import sg.gov.moh.iais.egp.bsb.util.CollectionUtils;
 import sg.gov.moh.iais.egp.bsb.util.LogUtil;
@@ -35,30 +37,6 @@ import java.util.stream.Collectors;
 @Slf4j
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class PrimaryDocDto extends ValidatableNodeValue {
-    @Data
-    @NoArgsConstructor
-    public static class DocRecordInfo implements Serializable {
-        private String docEntityId;
-        private String docType;
-        private String filename;
-        private long size;
-        private String repoId;
-        private Date submitDate;
-        private String submitBy;
-    }
-
-    @Data
-    @NoArgsConstructor
-    public static class NewDocInfo implements Serializable {
-        private String tmpId;
-        private String docType;
-        private String filename;
-        private long size;
-        private Date submitDate;
-        private String submitBy;
-        private ByteArrayMultipartFile multipartFile;
-    }
-
     @Data
     @NoArgsConstructor
     @AllArgsConstructor

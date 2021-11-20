@@ -19,6 +19,8 @@ import sg.gov.moh.iais.egp.bsb.common.node.simple.ValidatableNodeValue;
 import sg.gov.moh.iais.egp.bsb.constant.DocConstants;
 import sg.gov.moh.iais.egp.bsb.dto.ValidationResultDto;
 import sg.gov.moh.iais.egp.bsb.dto.file.DocMeta;
+import sg.gov.moh.iais.egp.bsb.dto.file.DocRecordInfo;
+import sg.gov.moh.iais.egp.bsb.dto.file.NewDocInfo;
 import sg.gov.moh.iais.egp.bsb.util.CollectionUtils;
 import sg.gov.moh.iais.egp.bsb.util.LogUtil;
 import sg.gov.moh.iais.egp.bsb.util.SpringReflectionUtils;
@@ -34,31 +36,6 @@ import java.util.stream.Collectors;
 @Slf4j
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class PrimaryDocDto extends ValidatableNodeValue {
-
-    @Data
-    @NoArgsConstructor
-    public static class DocRecordInfo implements Serializable {
-        private String docEntityId;
-        private String docType;
-        private String filename;
-        private long size;
-        private String repoId;
-        private Date submitDate;
-        private String submitBy;
-    }
-
-    @Data
-    @NoArgsConstructor
-    public static class NewDocInfo implements Serializable {
-        private String tmpId;
-        private String docType;
-        private String filename;
-        private long size;
-        private Date submitDate;
-        private String submitBy;
-        private ByteArrayMultipartFile multipartFile;
-    }
-
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
@@ -67,9 +44,9 @@ public class PrimaryDocDto extends ValidatableNodeValue {
     }
 
     /* docs already saved in DB, key is repoId */
-    private Map<String, PrimaryDocDto.DocRecordInfo> savedDocMap;
+    private Map<String, DocRecordInfo> savedDocMap;
     /* docs new uploaded, key is tmpId */
-    private final Map<String, PrimaryDocDto.NewDocInfo> newDocMap;
+    private final Map<String, NewDocInfo> newDocMap;
     /* to be deleted files (which already saved), the string is repoId, used to delete file in repo */
     private final Set<String> toBeDeletedRepoIds;
 
@@ -123,8 +100,8 @@ public class PrimaryDocDto extends ValidatableNodeValue {
      * we have not retrieve data of these docs yet, if user wants to download it, we call API to retrieve the data
      * @return a map, the key is the doc type, the value is the exist doc info list
      */
-    public Map<String, List<PrimaryDocDto.DocRecordInfo>> getExistDocTypeMap() {
-        return CollectionUtils.groupCollectionToMap(this.savedDocMap.values(), PrimaryDocDto.DocRecordInfo::getDocType);
+    public Map<String, List<DocRecordInfo>> getExistDocTypeMap() {
+        return CollectionUtils.groupCollectionToMap(this.savedDocMap.values(), DocRecordInfo::getDocType);
     }
 
     /**
@@ -132,27 +109,27 @@ public class PrimaryDocDto extends ValidatableNodeValue {
      * these docs have not been saved into DB, if user wants to download it, we send the data from current data structure
      * @return a map, the key is the doc type, the value is the new doc info list
      */
-    public Map<String, List<PrimaryDocDto.NewDocInfo>> getNewDocTypeMap() {
-        return CollectionUtils.groupCollectionToMap(this.newDocMap.values(), PrimaryDocDto.NewDocInfo::getDocType);
+    public Map<String, List<NewDocInfo>> getNewDocTypeMap() {
+        return CollectionUtils.groupCollectionToMap(this.newDocMap.values(), NewDocInfo::getDocType);
     }
 
 
     public Map<String, List<DocMeta>> getAllDocTypeMap() {
         Map<String, List<DocMeta>> data = Maps.newLinkedHashMapWithExpectedSize(DocConstants.FAC_REG_CERTIFIER_DOC_TYPE_ORDER.size());
 
-        Map<String, List<PrimaryDocDto.DocRecordInfo>> savedMap = getExistDocTypeMap();
-        Map<String, List<PrimaryDocDto.NewDocInfo>> newMap = getNewDocTypeMap();
+        Map<String, List<DocRecordInfo>> savedMap = getExistDocTypeMap();
+        Map<String, List<NewDocInfo>> newMap = getNewDocTypeMap();
 
         for (String docType : DocConstants.FAC_REG_CERTIFIER_DOC_TYPE_ORDER) {
             List<DocMeta> metaList = new ArrayList<>();
-            List<PrimaryDocDto.DocRecordInfo> savedFiles = savedMap.get(docType);
+            List<DocRecordInfo> savedFiles = savedMap.get(docType);
             if (savedFiles != null) {
                 savedFiles.forEach(i -> {
                     DocMeta docMeta = new DocMeta(i.getDocType(), i.getFilename(), i.getSize());
                     metaList.add(docMeta);
                 });
             }
-            List<PrimaryDocDto.NewDocInfo> newFiles = newMap.get(docType);
+            List<NewDocInfo> newFiles = newMap.get(docType);
             if (newFiles != null) {
                 newFiles.forEach(i -> {
                     DocMeta docMeta = new DocMeta(i.getDocType(), i.getFilename(), i.getSize());
@@ -176,11 +153,11 @@ public class PrimaryDocDto extends ValidatableNodeValue {
      */
     public void newFileSaved(List<String> repoIds) {
         Iterator<String> repoIdIt = repoIds.iterator();
-        Iterator<PrimaryDocDto.NewDocInfo> newDocIt = newDocMap.values().iterator();
+        Iterator<NewDocInfo> newDocIt = newDocMap.values().iterator();
         while (repoIdIt.hasNext() && newDocIt.hasNext()) {
             String repoId = repoIdIt.next();
-            PrimaryDocDto.NewDocInfo newDocInfo = newDocIt.next();
-            PrimaryDocDto.DocRecordInfo docRecordInfo = new PrimaryDocDto.DocRecordInfo();
+            NewDocInfo newDocInfo = newDocIt.next();
+            DocRecordInfo docRecordInfo = new DocRecordInfo();
             docRecordInfo.setDocType(newDocInfo.getDocType());
             docRecordInfo.setFilename(newDocInfo.getFilename());
             docRecordInfo.setSize(newDocInfo.getSize());
@@ -191,15 +168,15 @@ public class PrimaryDocDto extends ValidatableNodeValue {
         }
     }
 
-    public Map<String, PrimaryDocDto.DocRecordInfo> getSavedDocMap() {
+    public Map<String, DocRecordInfo> getSavedDocMap() {
         return savedDocMap;
     }
 
-    public void setSavedDocMap(Map<String, PrimaryDocDto.DocRecordInfo> savedDocMap) {
+    public void setSavedDocMap(Map<String, DocRecordInfo> savedDocMap) {
         this.savedDocMap = savedDocMap;
     }
 
-    public Map<String,PrimaryDocDto.NewDocInfo> getNewDocMap() {
+    public Map<String,NewDocInfo> getNewDocMap() {
         return newDocMap;
     }
 
@@ -259,7 +236,7 @@ public class PrimaryDocDto extends ValidatableNodeValue {
                     if (f.isEmpty()) {
                         log.warn("File is empty, ignore it");
                     } else {
-                        PrimaryDocDto.NewDocInfo newDocInfo = new PrimaryDocDto.NewDocInfo();
+                        NewDocInfo newDocInfo = new NewDocInfo();
                         String tmpId = inputName + f.getSize() + System.nanoTime();
                         newDocInfo.setTmpId(tmpId);
                         newDocInfo.setDocType(docType);
