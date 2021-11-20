@@ -90,9 +90,9 @@ public class TaskListDelegator {
 
         LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         ParamUtil.setRequestAttr(request, KEY_CUR_ROLE, loginContext.getCurRoleId());
-        List<SelectOption> appTypeOps = MasterCodeUtil.retrieveOptionsByCodes(MasterCodeConstants.COMMON_QUERY_APP_STATUS.toArray(new String[0]));
+        List<SelectOption> appTypeOps = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_BSB_APP_TYPE);
         ParamUtil.setRequestAttr(request, "appTypeOps", appTypeOps);
-        List<SelectOption> appStatusTypeOps = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_BSB_APP_STATUS);
+        List<SelectOption> appStatusTypeOps = MasterCodeUtil.retrieveOptionsByCodes(MasterCodeConstants.COMMON_QUERY_APP_STATUS.toArray(new String[0]));
         ParamUtil.setRequestAttr(request, "appStatusOps", appStatusTypeOps);
     }
 
