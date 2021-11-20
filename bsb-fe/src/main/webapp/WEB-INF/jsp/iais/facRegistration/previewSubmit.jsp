@@ -514,9 +514,37 @@
                                     </div>
                                 </div>
 
-                                <%@ include file="InnerFooter.jsp" %>
+                                <div class="application-tab-footer">
+                                    <div class="row">
+                                        <div class="col-xs-12 col-sm-6 ">
+                                            <a class="back" id="back" href="#"><em class="fa fa-angle-left"></em> Back</a>
+                                        </div>
+                                        <div class="col-xs-12 col-sm-6">
+                                            <div class="button-group">
+                                                <a class="btn btn-secondary" id="saveDraft" >Save as Draft</a>
+                                                <a class="btn btn-primary next" id="submit" >Next</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
+
+                        <div class="modal fade" id="submitDeclareModal" role="dialog" aria-labelledby="myModalLabel">
+                            <div class="modal-dialog modal-dialog-centered" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-body">
+                                        <div class="row">
+                                            <div class="col-md-12"><span style="font-size: 2rem">Please check the declaration box</span></div>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary btn-md" data-dismiss="modal">Close</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                     </div>
                 </div>
             </div>

@@ -16,6 +16,16 @@ $(function () {
     $("a[data-step-key]").click(jumpToStep);
     $("li.tracker-item[data-step-key]").click(jumpToStep);
 
+    $("#submit").click(function () {
+        if ($("#declare").is(':checked')) {
+            showWaiting();
+            $("input[name='action_type']").val("jump");
+            $("input[name='action_value']").val("next");
+            $("#mainForm").submit();
+        } else {
+            $("#submitDeclareModal").modal('show');
+        }
+    });
 
     // doc upload
     $("a[data-upload-file]").click(function () {
