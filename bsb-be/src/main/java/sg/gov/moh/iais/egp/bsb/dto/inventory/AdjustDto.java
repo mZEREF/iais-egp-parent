@@ -3,9 +3,8 @@ package sg.gov.moh.iais.egp.bsb.dto.inventory;
 import lombok.Data;
 
 /**
- * AUTHOR: YiMing
- * DATE:2021/8/31 13:48
- * DESCRIPTION: TODO
+ *@author YiMing
+ * @version 2021/10/15 14:16
  **/
 @Data
 public class AdjustDto {

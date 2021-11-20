@@ -8,10 +8,10 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * AUTHOR: YiMing
- * DATE:2021/8/31 13:37
- * DESCRIPTION: TODO
+ *@author YiMing
+ * @version 2021/10/15 14:16
  **/
+
 @Data
 public class InventoryDto extends PagingAndSortingDto implements Serializable {
 

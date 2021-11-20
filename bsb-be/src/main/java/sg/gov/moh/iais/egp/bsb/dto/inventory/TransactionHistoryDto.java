@@ -7,11 +7,9 @@ import java.math.BigDecimal;
 import java.util.Date;
 
 /**
- * AUTHOR: YiMing
- * DATE:2021/7/26 18:17
- * DESCRIPTION: TODO
+ *@author YiMing
+ * @version 2021/10/15 14:16
  **/
-
 @Data
 public class TransactionHistoryDto implements Serializable {
     private static final long serialVersionUID = 1L;

@@ -428,7 +428,7 @@ public class FacCertifierRegistrationDelegator {
         Node companyInfoDto = new Node(NODE_NAME_COMPANY_INFO, new Node[0]);
         NodeGroup orgInfoNodeGroup = newOrgInfoNodeGroup(new Node[0]);
         SimpleNode primaryDocNode = new SimpleNode(new PrimaryDocDto(),NODE_NAME_FAC_PRIMARY_DOCUMENT,new Node[]{orgInfoNodeGroup});
-        SimpleNode previewSubmitNode = new SimpleNode(new PreviewSubmitDto(),NODE_NAME_FAC_PRIMARY_DOCUMENT,new Node[]{orgInfoNodeGroup,primaryDocNode});
+        SimpleNode previewSubmitNode = new SimpleNode(new PreviewSubmitDto(),NODE_NAME_CER_PREVIEW_SUBMIT,new Node[]{orgInfoNodeGroup,primaryDocNode});
         return new NodeGroup.Builder().name(name)
                 .addNode(companyInfoDto)
                 .addNode(orgInfoNodeGroup)
