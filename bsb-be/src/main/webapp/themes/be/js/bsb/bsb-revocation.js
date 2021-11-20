@@ -37,9 +37,8 @@ $(function () {
     });
 
     $("#clearBtn").click(function () {
-        $("#facilityClassification option:first").prop("selected",'selected');
-        $("#facilityType option:first").prop("selected",'selected');
-        $("#facilityName option:first").prop("selected",'selected');
+        $("#approvalStatus option:first").prop("selected",'selected');
+        $("#approvalNo").val("");
         $("#beInboxFilter .current").text("Please Select");
     });
     // DO submit revocation

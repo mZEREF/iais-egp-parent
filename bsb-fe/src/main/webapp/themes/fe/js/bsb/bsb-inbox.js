@@ -52,4 +52,10 @@ $(function () {
     $("select[data-action-select]").change(function () {
         window.location = this.value;
     });
+
+    $("#viewSubmission").click(function (){
+        showWaiting();
+        $("[name='action_type']").val("search");
+        $("#mainForm").submit();
+    });
 });

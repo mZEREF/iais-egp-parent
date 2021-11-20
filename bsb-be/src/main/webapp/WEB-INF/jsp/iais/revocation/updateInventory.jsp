@@ -73,7 +73,8 @@
                         <div class="row">
                             <div class="col-xs-12 col-sm-6">
                                 <c:if test="${back eq 'revocationFacility'}">
-                                    <a class="back" id="back" href="#"><em class="fa fa-angle-left"></em> Back</a>
+<%--                                    <a class="back" id="back" href="#"><em class="fa fa-angle-left"></em> Back</a>--%>
+                                    <a class="back" href="/bsb-be/eservice/INTRANET/FacilityList"><em class="fa fa-angle-left"></em>Back</a>
                                 </c:if>
                                 <c:if test="${back eq 'revocationTaskList'}">
                                     <a class="back" href="/bsb-be/eservice/INTRANET/MohBsbTaskList"><em class="fa fa-angle-left"></em>Back</a>

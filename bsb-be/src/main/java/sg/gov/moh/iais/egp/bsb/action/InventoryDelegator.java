@@ -128,11 +128,11 @@ public class InventoryDelegator {
          ParamUtil.setRequestAttr(request,PARAM_INVENTORY_PARAM,inventoryDto);
          ParamUtil.setRequestAttr(request, KEY_PAGE_INFO, inventoryAgentResultDto.getPageInfo());
      }else if("date".equals(count)){
-         InventoryDtResultDto inventoryDtResultDto = inventoryClient.findInventoryByDt(inventoryDto).getEntity();
-         List<FacilityBiologicalAgent> facilityBiologicalAgents = inventoryDtResultDto.getBsbDt();
-         ParamUtil.setRequestAttr(request,PARAM_INVENTORY_RESULT,facilityBiologicalAgents);
-         ParamUtil.setRequestAttr(request,PARAM_INVENTORY_PARAM,inventoryDto);
-         ParamUtil.setRequestAttr(request, KEY_PAGE_INFO, inventoryDtResultDto.getPageInfo());
+//         InventoryDtResultDto inventoryDtResultDto = inventoryClient.findInventoryByDt(inventoryDto).getEntity();
+//         List<FacilityBiologicalAgent> facilityBiologicalAgents = inventoryDtResultDto.getBsbDt();
+//         ParamUtil.setRequestAttr(request,PARAM_INVENTORY_RESULT,facilityBiologicalAgents);
+//         ParamUtil.setRequestAttr(request,PARAM_INVENTORY_PARAM,inventoryDto);
+//         ParamUtil.setRequestAttr(request, KEY_PAGE_INFO, inventoryDtResultDto.getPageInfo());
      }
 
     }

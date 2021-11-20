@@ -32,7 +32,7 @@ public class ViewDataSubmissionDelegator {
         String maskedSubmissionId = request.getParameter(KEY_SUBMISSION_ID);
         String submissionId = MaskUtil.unMaskValue("id", maskedSubmissionId);
         if (maskedSubmissionId == null || submissionId == null || maskedSubmissionId.equals(submissionId)) {
-            throw new IaisRuntimeException("Invalid App ID");
+            throw new IaisRuntimeException("Invalid Submission ID");
         }
         ParamUtil.setRequestAttr(request, KEY_SUBMISSION_ID, submissionId);
     }

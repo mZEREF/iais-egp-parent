@@ -120,7 +120,7 @@
                                                                 <p class="visible-xs visible-sm table-row-title">Submission ID</p>
                                                                 <c:choose>
                                                                     <c:when test="${item.type eq 'DATTYPE001'}">
-                                                                        <a href="/bsb-fe/eservice/INTERNET/ViewConsumeNotification?submissionId=<iais:mask name='id' value='${item.id}'/>"/><c:out value="${item.submissionNo}"/></a>
+                                                                        <a id="viewSubmission" href="/bsb-fe/eservice/INTERNET/ViewConsumeNotification?submissionId=<iais:mask name='id' value='${item.id}'/>"/><c:out value="${item.submissionNo}"/></a>
                                                                     </c:when>
                                                                     <c:when test="${item.type eq 'DATTYPE002'}">
                                                                         <a href="/bsb-fe/eservice/INTERNET/ViewDisposalNotification?submissionId=<iais:mask name='id' value='${item.id}'/>"/><c:out value="${item.submissionNo}"/></a>

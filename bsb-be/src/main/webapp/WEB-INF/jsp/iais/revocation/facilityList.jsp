@@ -34,31 +34,19 @@
                             <p></p>
                             <div id="beInboxFilter" class="collapse intranet-content">
                                 <iais:row>
-                                    <iais:field value="Facility Name"/>
+                                    <iais:field value="Approval Status"/>
                                     <iais:value width="18">
-                                        <iais:select name="facilityName" id="facilityName"
-                                                     value="${facilitySearch.facilityName}"
-                                                     options="facilityName"
+                                        <iais:select name="approvalStatus" id="approvalStatus"
+                                                     value="${facilitySearch.approvalStatus}"
+                                                     codeCategory="CATE_ID_BSB_APPROVAL_STATUS"
                                                      firstOption="Please Select"/>
                                     </iais:value>
                                 </iais:row>
 
                                 <iais:row>
-                                    <iais:field value="Facility classification"/>
+                                    <iais:field value="Approval No"/>
                                     <iais:value width="18">
-                                        <iais:select name="facilityClassification" id="facilityClassification"
-                                                     value="${facilitySearch.facilityClassification}"
-                                                     codeCategory="CATE_ID_BSB_FAC_CLASSIFICATION"
-                                                     firstOption="Please Select"/>
-                                    </iais:value>
-                                </iais:row>
-
-                                <iais:row>
-                                    <iais:field value="Active Type"/>
-                                    <iais:value width="18">
-                                        <iais:select name="facilityType" id="facilityType"
-                                                     value="${facilitySearch.activeType}"
-                                                     codeCategory="CATE_ID_BSB_ACTIVE_TYPE" firstOption="Please Select"/>
+                                        <input type="text" name="approvalNo" id="approvalNo" value="${facilitySearch.approvalNo}">
                                     </iais:value>
                                 </iais:row>
 
@@ -83,41 +71,60 @@
                             <table class="table application-group" style="border-collapse:collapse;">
                                 <thead>
                                 <tr>
-                                    <iais:sortableHeader needSort="false" field="" value="S/N" isFE="false"/>
-                                    <iais:sortableHeader needSort="false" field="" value="Active Approval No." isFE="false"/>
-                                    <iais:sortableHeader needSort="false" field="" value="Facility Name/Address" isFE="false"/>
-                                    <iais:sortableHeader needSort="false" field="" value="Facility Classification" isFE="false"/>
-                                    <iais:sortableHeader needSort="false" field="" value="Process type" isFE="false"/>
-                                    <iais:sortableHeader needSort="false" field="" value="Agents/Toxins" isFE="false"/>
-                                    <iais:sortableHeader needSort="false" field="" value="Approved Date(dd/mm/yyyy)" isFE="false"/>
-                                    <iais:sortableHeader needSort="false" field="" value="Status" isFE="false"/>
-                                    <iais:sortableHeader needSort="false" field="" value="Action" isFE="false"/>
+                                    <iais:sortableHeader needSort="false" field="" value="S/N"/>
+                                    <iais:sortableHeader needSort="false" field="Approval No" value="Approval No"/>
+                                    <iais:sortableHeader needSort="false" field="Approval Type" value="Approval Type"/>
+                                    <iais:sortableHeader needSort="false" field="Approval Status" value="Approval Status"/>
+                                    <iais:sortableHeader needSort="false" field="Facility Classification" value="Facility Classification"/>
+                                    <iais:sortableHeader needSort="false" field="Facility Type" value="Facility Type"/>
+                                    <iais:sortableHeader needSort="false" field="Facility Name" value="Facility Name"/>
+                                    <iais:sortableHeader needSort="false" field="Facility Address" value="Facility Address"/>
+                                    <iais:sortableHeader needSort="false" field="Facility Status" value="Facility Status"/>
+                                    <iais:sortableHeader needSort="false" field="" value="action"/>
                                 </tr>
                                 </thead>
-                                <c:forEach var="item" items="${dataList}" varStatus="status">
-                                    <c:set var="auditIndex" value="${(status.index + 1) + (pageInfo.pageNo) * pageInfo.size}"></c:set>
-                                    <tr style="display: table-row;">
-                                        <td>${(status.index + 1) + (pageInfo.pageNo) * pageInfo.size}</td>
-                                        <td>${item.approveNo}</td>
-                                        <td>${item.facility.facilityName}/${item.facility.facilityAddress}</td>
-                                        <td><iais:code code="${item.facility.facilityClassification}"></iais:code></td>
-                                        <td><iais:code code="${item.processType}"></iais:code></td>
-                                        <td></td>
-                                        <td><fmt:formatDate value="${item.approvalDate}" pattern="dd/MM/yyyy"/></td>
-                                        <td><iais:code code="${item.status}"></iais:code></td>
-                                        <td>
-                                            <p><a id="doRevoke" onclick="doRevoke('<iais:mask name="approvalId" value="${item.id}"/>','fac')">Revoke</a></p>
-                                        </td>
-                                    </tr>
-                                </c:forEach>
+                                <tbody class="form-horizontal">
+                                <c:choose>
+                                    <c:when test="${empty dataList}">
+                                        <tr>
+                                            <td colspan="6">
+                                                <iais:message key="GENERAL_ACK018" escape="true"/>
+                                            </td>
+                                        </tr>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <c:forEach var="items" items="${dataList}" varStatus="status">
+                                            <tr>
+                                                <td><c:out value="${status.index + 1}"/></td>
+                                                <td><c:out value="${items.apprNo}"/></td>
+                                                <td><iais:code code="${items.type}"/></td>
+                                                <td><iais:code code="${items.status}"/></td>
+                                                <td><iais:code code="${items.facClassification}"/></td>
+                                                <td><iais:code code="${items.facType}"/></td>
+                                                <td><iais:code code="${items.facName}"/></td>
+                                                <td><c:out value="${items.facAddress}"/></td>
+                                                <td><iais:code code="${items.facStatus}"/></td>
+                                                <td>
+                                                    <c:choose>
+                                                        <c:when test="${items.status eq 'APPRSTA001' or items.status eq 'APPRSTA004'}">
+                                                            <a href="/bsb-be/eservicecontinue/INTRANET/MohDOSubmitRevocation?approvalId=<iais:mask name='id' value='${items.id}'/>&OWASP_CSRFTOKEN=null&from=fac">revoke</a>
+                                                        </c:when>
+                                                        <c:otherwise>
+
+                                                        </c:otherwise>
+                                                    </c:choose>
+                                                </td>
+                                            </tr>
+                                        </c:forEach>
+                                    </c:otherwise>
+                                </c:choose>
+                                </tbody>
                             </table>
-                                <%--                            <a style="float:left;padding-top: 1.1%;" class="back" id="back" href="#"><em class="fa fa-angle-left"></em> Back</a>--%>
                         </div>
                     </iais:body>
                 </div>
             </div>
         </div>
-        <input name="approvalId" id="approvalId" value="" hidden>
         <input name="from" id="from" value="" hidden>
     </form>
 </div>

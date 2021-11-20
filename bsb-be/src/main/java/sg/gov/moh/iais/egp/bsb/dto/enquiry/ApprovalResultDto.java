@@ -22,6 +22,7 @@ public class ApprovalResultDto {
     @Data
     public static class ApprovalInfo {
         private String id;
+        private String apprNo;
         private String type;
         private String status;
         private String facClassification;

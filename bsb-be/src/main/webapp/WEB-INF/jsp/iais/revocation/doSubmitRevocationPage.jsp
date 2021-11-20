@@ -125,7 +125,7 @@
                                                                         </iais:row>
                                                                     </div>
                                                                 </iais:section>
-                                                                <a style="float:left;padding-top: 1.1%;" class="back" id="backFromProcess" href="#"><em class="fa fa-angle-left"></em> Back</a>
+                                                                <a class="back" href="/bsb-be/eservice/INTRANET/FacilityList"><em class="fa fa-angle-left"></em>Back</a>
                                                                 <div align="right">
                                                                     <button name="submitBtn1" id="submitButton1"
                                                                             type="button" class="btn btn-primary">

@@ -38,8 +38,7 @@
                             </iais:value>
                         </iais:row>
                         <iais:row>
-                            <iais:field value="Facility Classification" width="15"
-                                        required="false"/>
+                            <iais:field value="Facility Classification" width="15" required="false"/>
                             <iais:value width="10">
                                 <c:forEach var="item" items="${facilityList}" varStatus="status">
                                     <c:choose>
@@ -54,8 +53,7 @@
                             </iais:value>
                         </iais:row>
                         <iais:row>
-                            <iais:field value="Activity Type" width="15"
-                                        required="false"/>
+                            <iais:field value="Activity Type" width="15" required="false"/>
                             <iais:value width="10">
                                 <c:forEach var="item" items="${facilityList}">
                                     <c:forEach var="facility" items="${item.facilityActivities}" varStatus="status">

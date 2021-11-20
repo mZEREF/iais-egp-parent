@@ -62,17 +62,17 @@
                                     </iais:value>
                                 </iais:row>
 
-                                <iais:row>
-                                    <iais:field value="Audit Type" required="true"/>
-                                    <iais:value width="18">
-                                        <iais:select name="auditType" id="auditType"
-                                                     value="${auditSearch.auditType}"
-                                                     codeCategory="CATE_ID_BSB_AUDIT_TYPE" firstOption="All"/>
-                                        <span id="error_auditType"
-                                              name="iaisErrorMsg"
-                                              class="error-msg"></span>
-                                    </iais:value>
-                                </iais:row>
+<%--                                <iais:row>--%>
+<%--                                    <iais:field value="Audit Type"/>--%>
+<%--                                    <iais:value width="18">--%>
+<%--                                        <iais:select name="auditType" id="auditType"--%>
+<%--                                                     value="${auditSearch.auditType}"--%>
+<%--                                                     codeCategory="CATE_ID_BSB_AUDIT_TYPE" firstOption="All"/>--%>
+<%--                                        <span id="error_auditType"--%>
+<%--                                              name="iaisErrorMsg"--%>
+<%--                                              class="error-msg"></span>--%>
+<%--                                    </iais:value>--%>
+<%--                                </iais:row>--%>
 
 <%--                                <iais:row>--%>
 <%--                                    <iais:field value="Audit Window Period" required="false"/>--%>
