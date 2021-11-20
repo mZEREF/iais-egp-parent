@@ -18,6 +18,7 @@ import sg.gov.moh.iais.egp.bsb.common.multipart.ByteArrayMultipartFile;
 import sg.gov.moh.iais.egp.bsb.common.node.simple.ValidatableNodeValue;
 import sg.gov.moh.iais.egp.bsb.constant.DocConstants;
 import sg.gov.moh.iais.egp.bsb.dto.ValidationResultDto;
+import sg.gov.moh.iais.egp.bsb.dto.file.DocMeta;
 import sg.gov.moh.iais.egp.bsb.dto.file.NewFileSyncDto;
 import sg.gov.moh.iais.egp.bsb.util.CollectionUtils;
 import sg.gov.moh.iais.egp.bsb.util.LogUtil;
@@ -59,30 +60,6 @@ public class PrimaryDocDto extends ValidatableNodeValue {
         private Date submitDate;
         private String submitBy;
         private ByteArrayMultipartFile multipartFile;
-    }
-
-    @Data
-    @NoArgsConstructor
-    public static class DocMeta implements Serializable {
-        private String id;
-        private String docType;
-        private String filename;
-        private long size;
-        private String module;
-
-        public DocMeta(String docType, String filename, long size) {
-            this.docType = docType;
-            this.filename = filename;
-            this.size = size;
-        }
-
-        public DocMeta(String id, String docType, String filename, long size, String module) {
-            this.id = id;
-            this.docType = docType;
-            this.filename = filename;
-            this.size = size;
-            this.module = module;
-        }
     }
 
     @Data

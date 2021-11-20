@@ -18,6 +18,7 @@ import sg.gov.moh.iais.egp.bsb.common.multipart.ByteArrayMultipartFile;
 import sg.gov.moh.iais.egp.bsb.common.node.simple.ValidatableNodeValue;
 import sg.gov.moh.iais.egp.bsb.constant.DocConstants;
 import sg.gov.moh.iais.egp.bsb.dto.ValidationResultDto;
+import sg.gov.moh.iais.egp.bsb.dto.file.DocMeta;
 import sg.gov.moh.iais.egp.bsb.util.CollectionUtils;
 import sg.gov.moh.iais.egp.bsb.util.LogUtil;
 import sg.gov.moh.iais.egp.bsb.util.SpringReflectionUtils;
@@ -60,33 +61,9 @@ public class PrimaryDocDto extends ValidatableNodeValue {
 
     @Data
     @NoArgsConstructor
-    public static class DocMeta implements Serializable {
-        private String id;
-        private String docType;
-        private String filename;
-        private long size;
-        private String module;
-
-        public DocMeta(String docType, String filename, long size) {
-            this.docType = docType;
-            this.filename = filename;
-            this.size = size;
-        }
-
-        public DocMeta(String id, String docType, String filename, long size, String module) {
-            this.id = id;
-            this.docType = docType;
-            this.filename = filename;
-            this.size = size;
-            this.module = module;
-        }
-    }
-
-    @Data
-    @NoArgsConstructor
     @AllArgsConstructor
     public static class DocsMetaDto implements Serializable {
-        private Map<String, List<PrimaryDocDto.DocMeta>> metaDtoMap;
+        private Map<String, List<DocMeta>> metaDtoMap;
     }
 
     /* docs already saved in DB, key is repoId */
@@ -110,18 +87,18 @@ public class PrimaryDocDto extends ValidatableNodeValue {
 
     @Override
     public boolean doValidation() {
-        List<PrimaryDocDto.DocMeta> metaDtoList = new ArrayList<>(this.savedDocMap.size() + this.newDocMap.size());
+        List<DocMeta> metaDtoList = new ArrayList<>(this.savedDocMap.size() + this.newDocMap.size());
         this.savedDocMap.values().forEach(i -> {
-            PrimaryDocDto.DocMeta docMeta = new PrimaryDocDto.DocMeta(i.getRepoId(), i.getDocType(), i.getFilename(), i.getSize(), "cerReg");
+            DocMeta docMeta = new DocMeta(i.getRepoId(), i.getDocType(), i.getFilename(), i.getSize(), "cerReg");
             metaDtoList.add(docMeta);
         });
         this.newDocMap.values().forEach(i -> {
-            PrimaryDocDto.DocMeta docMeta = new PrimaryDocDto.DocMeta(i.getTmpId(), i.getDocType(), i.getFilename(), i.getSize(), "cerReg");
+            DocMeta docMeta = new DocMeta(i.getTmpId(), i.getDocType(), i.getFilename(), i.getSize(), "cerReg");
             metaDtoList.add(docMeta);
         });
 
-        Map<String, List<PrimaryDocDto.DocMeta>> metaDtoMap = CollectionUtils.groupCollectionToMap(metaDtoList, PrimaryDocDto.DocMeta::getDocType);
-        PrimaryDocDto.DocsMetaDto docsMetaDto = new PrimaryDocDto.DocsMetaDto(metaDtoMap);
+        Map<String, List<DocMeta>> metaDtoMap = CollectionUtils.groupCollectionToMap(metaDtoList, DocMeta::getDocType);
+        DocsMetaDto docsMetaDto = new DocsMetaDto(metaDtoMap);
 
         this.validationResultDto = (ValidationResultDto) SpringReflectionUtils.invokeBeanMethod("cerRegFeignClient", "validateCerPrimaryDocs", new Object[]{docsMetaDto});
         return validationResultDto.isPass();
@@ -160,25 +137,25 @@ public class PrimaryDocDto extends ValidatableNodeValue {
     }
 
 
-    public Map<String, List<PrimaryDocDto.DocMeta>> getAllDocTypeMap() {
-        Map<String, List<PrimaryDocDto.DocMeta>> data = Maps.newLinkedHashMapWithExpectedSize(DocConstants.FAC_REG_CERTIFIER_DOC_TYPE_ORDER.size());
+    public Map<String, List<DocMeta>> getAllDocTypeMap() {
+        Map<String, List<DocMeta>> data = Maps.newLinkedHashMapWithExpectedSize(DocConstants.FAC_REG_CERTIFIER_DOC_TYPE_ORDER.size());
 
         Map<String, List<PrimaryDocDto.DocRecordInfo>> savedMap = getExistDocTypeMap();
         Map<String, List<PrimaryDocDto.NewDocInfo>> newMap = getNewDocTypeMap();
 
         for (String docType : DocConstants.FAC_REG_CERTIFIER_DOC_TYPE_ORDER) {
-            List<PrimaryDocDto.DocMeta> metaList = new ArrayList<>();
+            List<DocMeta> metaList = new ArrayList<>();
             List<PrimaryDocDto.DocRecordInfo> savedFiles = savedMap.get(docType);
             if (savedFiles != null) {
                 savedFiles.forEach(i -> {
-                    PrimaryDocDto.DocMeta docMeta = new PrimaryDocDto.DocMeta(i.getDocType(), i.getFilename(), i.getSize());
+                    DocMeta docMeta = new DocMeta(i.getDocType(), i.getFilename(), i.getSize());
                     metaList.add(docMeta);
                 });
             }
             List<PrimaryDocDto.NewDocInfo> newFiles = newMap.get(docType);
             if (newFiles != null) {
                 newFiles.forEach(i -> {
-                    PrimaryDocDto.DocMeta docMeta = new PrimaryDocDto.DocMeta(i.getDocType(), i.getFilename(), i.getSize());
+                    DocMeta docMeta = new DocMeta(i.getDocType(), i.getFilename(), i.getSize());
                     metaList.add(docMeta);
                 });
             }

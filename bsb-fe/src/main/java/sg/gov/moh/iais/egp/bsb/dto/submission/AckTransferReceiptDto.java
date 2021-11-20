@@ -14,6 +14,7 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import sg.gov.moh.iais.egp.bsb.common.multipart.ByteArrayMultipartFile;
 import sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants;
 import sg.gov.moh.iais.egp.bsb.dto.ValidationResultDto;
+import sg.gov.moh.iais.egp.bsb.dto.file.DocMeta;
 import sg.gov.moh.iais.egp.bsb.util.LogUtil;
 import sg.gov.moh.iais.egp.bsb.util.SpringReflectionUtils;
 import sop.servlet.webflow.HttpHandler;
@@ -73,7 +74,7 @@ public class AckTransferReceiptDto implements Serializable {
     @Data
     public static class AckTransferReceiptMeta implements Serializable {
         private List<AckReceiptBat>  ackReceiptBats;
-        private List<PrimaryDocDto.DocMeta> metas;
+        private List<DocMeta> metas;
         private String actualReceiptDate;
         private String actualReceiptTime;
     }
@@ -251,9 +252,9 @@ public class AckTransferReceiptDto implements Serializable {
         meta.setAckReceiptBats(bats);
         meta.setActualReceiptDate(actualReceiptDate);
         meta.setActualReceiptTime(actualReceiptTime);
-        List<PrimaryDocDto.DocMeta> metaDtoList = new ArrayList<>(this.newDocInfoMap.size());
+        List<DocMeta> metaDtoList = new ArrayList<>(this.newDocInfoMap.size());
         this.newDocInfoMap.values().forEach(i -> {
-            PrimaryDocDto.DocMeta docMeta = new PrimaryDocDto.DocMeta(i.getTmpId(), i.getDocType(), i.getFilename(), i.getSize(), "dataSub");
+            DocMeta docMeta = new DocMeta(i.getTmpId(), i.getDocType(), i.getFilename(), i.getSize(), "dataSub");
             metaDtoList.add(docMeta);
         });
         meta.setMetas(metaDtoList);

@@ -10,6 +10,7 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 import sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants;
 import sg.gov.moh.iais.egp.bsb.dto.ValidationResultDto;
+import sg.gov.moh.iais.egp.bsb.dto.file.DocMeta;
 import sg.gov.moh.iais.egp.bsb.util.SpringReflectionUtils;
 
 import javax.servlet.http.HttpServletRequest;
@@ -41,7 +42,7 @@ public class ConsumeNotificationDto implements Serializable {
 
         private List<PrimaryDocDto.DocRecordInfo> savedInfos;
 
-        private List<PrimaryDocDto.DocMeta> docMetas;
+        private List<DocMeta> docMetas;
 
         @JsonIgnore
         private List<PrimaryDocDto.NewDocInfo> newDocInfos;
@@ -64,7 +65,7 @@ public class ConsumeNotificationDto implements Serializable {
             this.savedInfos = new ArrayList<>(docRecordInfos);
         }
 
-        public void setDocMetas(List<PrimaryDocDto.DocMeta> docMetas){
+        public void setDocMetas(List<DocMeta> docMetas){
             this.docMetas = new ArrayList<>(docMetas);
         }
 
@@ -100,7 +101,7 @@ public class ConsumeNotificationDto implements Serializable {
         private String consumedQty;
         private String meaUnit;
         private List<PrimaryDocDto.DocRecordInfo> savedInfos;
-        private List<PrimaryDocDto.DocMeta> docMetas;
+        private List<DocMeta> docMetas;
     }
 
     @Data
@@ -172,11 +173,11 @@ public class ConsumeNotificationDto implements Serializable {
     /**
      * This method is for JSP shows and contains all file information sorted by type
      * getAllDocMetaByDocType
-     * @return Map<String,List<PrimaryDocDto.DocMeta>>
+     * @return Map<String,List<DocMeta>>
      * */
-    public Map<String,List<PrimaryDocDto.DocMeta>> getAllDocMetaByDocType(){
-        List<PrimaryDocDto.DocMeta> docMetas = this.consumptionNotList.stream().flatMap(i->i.getDocMetas().stream()).collect(Collectors.toList());
-        return sg.gov.moh.iais.egp.bsb.util.CollectionUtils.groupCollectionToMap(docMetas,PrimaryDocDto.DocMeta::getDocType);
+    public Map<String,List<DocMeta>> getAllDocMetaByDocType(){
+        List<DocMeta> docMetas = this.consumptionNotList.stream().flatMap(i->i.getDocMetas().stream()).collect(Collectors.toList());
+        return sg.gov.moh.iais.egp.bsb.util.CollectionUtils.groupCollectionToMap(docMetas,DocMeta::getDocType);
     }
 
     /**

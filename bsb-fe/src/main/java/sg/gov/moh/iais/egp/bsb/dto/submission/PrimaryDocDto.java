@@ -15,6 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import sg.gov.moh.iais.egp.bsb.common.multipart.ByteArrayMultipartFile;
 import sg.gov.moh.iais.egp.bsb.dto.ValidationResultDto;
+import sg.gov.moh.iais.egp.bsb.dto.file.DocMeta;
 import sg.gov.moh.iais.egp.bsb.util.LogUtil;
 import sop.servlet.webflow.HttpHandler;
 
@@ -62,31 +63,6 @@ public class PrimaryDocDto implements Serializable {
 
     @Data
     @NoArgsConstructor
-    public static class DocMeta implements Serializable {
-        private String id;
-        private String index;
-        private String docType;
-        private String filename;
-        private long size;
-        private String module;
-
-        public DocMeta(String docType, String filename, long size) {
-            this.docType = docType;
-            this.filename = filename;
-            this.size = size;
-        }
-
-        public DocMeta(String id, String docType, String filename, long size, String module) {
-            this.id = id;
-            this.docType = docType;
-            this.filename = filename;
-            this.size = size;
-            this.module = module;
-        }
-    }
-
-    @Data
-    @NoArgsConstructor
     @AllArgsConstructor
     public static class DocsMetaDto implements Serializable {
         private Map<String, List<DocMeta>> metaDtoMap;
@@ -129,11 +105,11 @@ public class PrimaryDocDto implements Serializable {
 
 
     //----------------------validate------------------------------------
-    public List<PrimaryDocDto.DocMeta> doValidation() {
-        List<PrimaryDocDto.DocMeta> metaDtoList = new ArrayList<>(this.savedDocMap.size() + this.newDocMap.size());
+    public List<DocMeta> doValidation() {
+        List<DocMeta> metaDtoList = new ArrayList<>(this.savedDocMap.size() + this.newDocMap.size());
 
         this.newDocMap.values().forEach(i -> {
-            PrimaryDocDto.DocMeta docMeta = new PrimaryDocDto.DocMeta(i.getTmpId(), i.getDocType(), i.getFilename(), i.getSize(), "dataSub");
+            DocMeta docMeta = new DocMeta(i.getTmpId(), i.getDocType(), i.getFilename(), i.getSize(), "dataSub");
             metaDtoList.add(docMeta);
         });
         return metaDtoList;
