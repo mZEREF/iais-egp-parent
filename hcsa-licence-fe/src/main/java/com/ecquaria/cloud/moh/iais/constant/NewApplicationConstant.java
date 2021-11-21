@@ -28,8 +28,18 @@ public class NewApplicationConstant {
     public static final String ACK_TITLE = "title";
     public static final String ACK_SMALL_TITLE = "smallTitle";
 
-    public static final String TITLE_MODE_OF_SVCDLVY = ApplicationConsts.TITLE_MODE_OF_SVCDLVY;
+    public static final String TITLE_LICENSEE                           = "Licensee Details";
+    public static final String TITLE_MODE_OF_SVCDLVY                    = ApplicationConsts.TITLE_MODE_OF_SVCDLVY;
+    public static final String TITLE_DOCUMENT                           = "Primary Documents";
+    public static final String TITLE_SVCINFO                            = "Service-Related Information";
 
-    public static final String CO_MAP = "coMap";
+    public static final String CO_MAP                                   = "coMap";
 
+    public static final String SECTION_LICENSEE                         = "licensee";
+    public static final String SECTION_PREMISES                         = "premises";
+    public static final String SECTION_DOCUMENT                         = "document";
+    public static final String SECTION_SVCINFO                          = "information";
+    public static final String SECTION_PREVIEW                          = "previewli";
+
+    public static final String SHOW_OTHER_ERROR                         = "showOtherError";
 }
