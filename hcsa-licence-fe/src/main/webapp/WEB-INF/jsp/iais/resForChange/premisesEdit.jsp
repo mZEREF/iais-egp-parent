@@ -116,6 +116,9 @@
       </div>
     </div>
   </div>--%>
+  <iais:confirm msg="${showOtherError}" callBack="$('#showOtherError').modal('hide');" popupOrder="showOtherError"
+                needCancel="false" needEscapHtml="false"/>
+  <input type="hidden" value="${not empty showOtherError ? '1' : ''}" id="showOtherErrorCheck">
   <iais:confirm msg="${RFC_ERROR_NO_CHANGE}" callBack="cancel()"  needCancel="false" popupOrder="rfc_ERROR"></iais:confirm>
   <iais:confirm msg="${SERVICE_CONFIG_CHANGE}" callBack="cancel()"  needCancel="false" popupOrder="SERVICE_CONFIG_CHANGE"></iais:confirm>
   <iais:confirm msg="${postalCodeAckMsg}" needCancel="false" callBack="postalCodeCon()" popupOrder="postalCodePop" yesBtnDesc="" needEscapHtml="false" needFungDuoJi="false"></iais:confirm>
@@ -142,6 +145,9 @@
         }
         if($('#hciNameUsedInput').val()=='hciNameUsed'){
             $('#hciNameUsed').modal('show');
+        }
+        if($('#showOtherErrorCheck').val()!=''){
+            $('#showOtherError').modal('show');
         }
         init = 0;
         <!--for reload -->

@@ -103,6 +103,47 @@ import sop.util.DateUtil;
 @Slf4j
 public class NewApplicationHelper {
 
+    private static Map<String, String> PSN_STEP_MAP;
+    private static Map<String, String> NAME_MAP;
+
+    static {
+        PSN_STEP_MAP = IaisCommonUtils.genNewHashMap();
+        PSN_STEP_MAP.put(ApplicationConsts.PERSONNEL_PSN_TYPE_PO, HcsaConsts.STEP_PRINCIPAL_OFFICERS);
+        PSN_STEP_MAP.put(ApplicationConsts.PERSONNEL_PSN_TYPE_DPO, HcsaConsts.STEP_PRINCIPAL_OFFICERS);
+        PSN_STEP_MAP.put(ApplicationConsts.PERSONNEL_PSN_TYPE_CGO, HcsaConsts.STEP_CLINICAL_GOVERNANCE_OFFICERS);
+        PSN_STEP_MAP.put(ApplicationConsts.PERSONNEL_PSN_TYPE_SVC_PERSONNEL, HcsaConsts.STEP_SERVICE_PERSONNEL);
+        PSN_STEP_MAP.put(ApplicationConsts.PERSONNEL_PSN_TYPE_MAP, HcsaConsts.STEP_MEDALERT_PERSON);
+        PSN_STEP_MAP.put(ApplicationConsts.PERSONNEL_CLINICAL_DIRECTOR, HcsaConsts.STEP_CLINICAL_DIRECTOR);
+        PSN_STEP_MAP.put(ApplicationConsts.PERSONNEL_VEHICLES, HcsaConsts.STEP_VEHICLES);
+        PSN_STEP_MAP.put(ApplicationConsts.PERSONNEL_CHARGES, HcsaConsts.STEP_CHARGES);
+        PSN_STEP_MAP.put(ApplicationConsts.PERSONNEL_CHARGES_OTHER, HcsaConsts.STEP_CHARGES);
+        PSN_STEP_MAP.put(ApplicationConsts.PERSONNEL_PSN_SVC_SECTION_LEADER, HcsaConsts.STEP_SECTION_LEADER);
+        PSN_STEP_MAP.put(ApplicationConsts.PERSONNEL_PSN_KAH, HcsaConsts.STEP_KEY_APPOINTMENT_HOLDER);
+        PSN_STEP_MAP = Collections.unmodifiableMap(PSN_STEP_MAP);
+
+        NAME_MAP = IaisCommonUtils.genNewHashMap();
+        NAME_MAP.put(ApplicationConsts.PERSONNEL_PSN_TYPE_PO, HcsaConsts.CLINICAL_GOVERNANCE_OFFICER);
+        NAME_MAP.put(ApplicationConsts.PERSONNEL_PSN_TYPE_DPO, HcsaConsts.NOMINEE);
+        NAME_MAP.put(ApplicationConsts.PERSONNEL_PSN_TYPE_CGO, HcsaConsts.CLINICAL_GOVERNANCE_OFFICER);
+        NAME_MAP.put(ApplicationConsts.PERSONNEL_PSN_TYPE_SVC_PERSONNEL, HcsaConsts.SERVICE_PERSONNEL);
+        NAME_MAP.put(ApplicationConsts.PERSONNEL_PSN_TYPE_MAP, HcsaConsts.MEDALERT_PERSON);
+        NAME_MAP.put(ApplicationConsts.PERSONNEL_CLINICAL_DIRECTOR, HcsaConsts.CLINICAL_DIRECTOR);
+        NAME_MAP.put(ApplicationConsts.PERSONNEL_VEHICLES, HcsaConsts.VEHICLE);
+        NAME_MAP.put(ApplicationConsts.PERSONNEL_CHARGES, "General Conveyance Charges");
+        NAME_MAP.put(ApplicationConsts.PERSONNEL_CHARGES_OTHER, "Medical Equipment and Other Charges");
+        NAME_MAP.put(ApplicationConsts.PERSONNEL_PSN_SVC_SECTION_LEADER, HcsaConsts.SECTION_LEADER);
+        NAME_MAP.put(ApplicationConsts.PERSONNEL_PSN_KAH, HcsaConsts.KEY_APPOINTMENT_HOLDER);
+        NAME_MAP = Collections.unmodifiableMap(NAME_MAP);
+    }
+
+    public static String getStep(String personType) {
+        return PSN_STEP_MAP.get(personType);
+    }
+
+    public static String getName(String personType) {
+        return NAME_MAP.get(personType);
+    }
+
     public static void reSetAdditionalFields(AppSubmissionDto appSubmissionDto, AppEditSelectDto appEditSelectDto) {
         reSetAdditionalFields(appSubmissionDto, appEditSelectDto, null);
     }
@@ -317,7 +358,7 @@ public class NewApplicationHelper {
                 String idNo = appSvcCgoList.get(i).getIdNo();
                 boolean licPerson = appSvcCgoList.get(i).isLicPerson();
                 String idTypeNoKey = "idTypeNo"+i;
-                errMap = doPsnCommValidate(errMap,idTyp,idNo,licPerson,licPersonMap,idTypeNoKey,svcCode);
+                errMap = doPsnCommValidate(errMap, idTyp, idNo, licPerson, licPersonMap, idTypeNoKey);
                 boolean newErr0006 = StringUtil.isEmpty(errMap.get(idTypeNoKey));
 //                String idTypeNoErr = errMap.get(idTypeNoKey);
 //                if(!StringUtil.isEmpty(idTypeNoErr)){
@@ -566,7 +607,7 @@ public class NewApplicationHelper {
                     String idType = poDto.get(i).getIdType();
                     boolean licPerson = poDto.get(i).isLicPerson();
                     String poIdTypeNoKey = "poIdTypeNo" + i;
-                    oneErrorMap = doPsnCommValidate(oneErrorMap,idType,idNo,licPerson,licPersonMap,poIdTypeNoKey,svcCode);
+                    oneErrorMap = doPsnCommValidate(oneErrorMap, idType, idNo, licPerson, licPersonMap, poIdTypeNoKey);
                     boolean newErr0006 = StringUtil.isEmpty(oneErrorMap.get(poIdTypeNoKey));
 //                    String idTypeNoErr = oneErrorMap.get(poIdTypeNoKey);
 //                    if(!StringUtil.isEmpty(idTypeNoErr)){
@@ -688,7 +729,7 @@ public class NewApplicationHelper {
 
                 boolean licPerson = poDto.get(i).isLicPerson();
                 String dpoIdTypeNoKey = "dpoIdTypeNo"+dpoIndex;
-                oneErrorMap = doPsnCommValidate(oneErrorMap,idType,idNo,licPerson,licPersonMap,dpoIdTypeNoKey,svcCode);
+                oneErrorMap = doPsnCommValidate(oneErrorMap, idType, idNo, licPerson, licPersonMap, dpoIdTypeNoKey);
                 boolean newErr0006 = StringUtil.isEmpty(oneErrorMap.get(dpoIdTypeNoKey));
 //                if(!StringUtil.isEmpty(idTypeNoErr)){
 //                    continue;
@@ -1114,7 +1155,7 @@ public class NewApplicationHelper {
                 String idNo = medAlertPsnDtos.get(i).getIdNo();
                 boolean licPerson = medAlertPsnDtos.get(i).isLicPerson();
                 String idTypeNoKey = "idTypeNo"+i;
-                errMap = doPsnCommValidate(errMap,idTyp,idNo,licPerson,licPersonMap,idTypeNoKey,svcCode);
+                errMap = doPsnCommValidate(errMap, idTyp, idNo, licPerson, licPersonMap, idTypeNoKey);
                 boolean newErr0006 = StringUtil.isEmpty(errMap.get(idTypeNoKey));
 //                String idTypeNoErr = errMap.get(idTypeNoKey);
 //                if(!StringUtil.isEmpty(idTypeNoErr)){
@@ -1230,7 +1271,7 @@ public class NewApplicationHelper {
                 String idNo = appSvcKeyAppointmentHolder.getIdNo();
                 boolean licPerson = appSvcKeyAppointmentHolder.isLicPerson();
                 String idTypeNoKey = "idTypeNo" + i;
-                errMap = doPsnCommValidate(errMap, idTyp, idNo, licPerson, licPersonMap, idTypeNoKey, svcCode);
+                errMap = doPsnCommValidate(errMap, idTyp, idNo, licPerson, licPersonMap, idTypeNoKey);
                 boolean newErr0006 = StringUtil.isEmpty(errMap.get(idTypeNoKey));
                 StringBuilder stringBuilder1=new StringBuilder();
 
@@ -3677,25 +3718,29 @@ public class NewApplicationHelper {
         return text;
     }
 
-    private static Map<String,String> doPsnCommValidate(Map<String,String> errMap,String idType,String idNo,boolean licPerson,Map<String,AppSvcPersonAndExtDto> licPersonMap,String errKey,String svcCode){
-        if(needPsnCommValidate() && !StringUtil.isEmpty(idType) && !StringUtil.isEmpty(idNo) && !licPerson){
+    private static Map<String, String> doPsnCommValidate(Map<String, String> errMap, String idType, String idNo, boolean licPerson,
+            Map<String, AppSvcPersonAndExtDto> licPersonMap, String errKey) {
+        if (needPsnCommValidate() && licPersonMap != null && !StringUtil.isEmpty(idType) && !StringUtil.isEmpty(idNo) && !licPerson) {
             String personKey = NewApplicationHelper.getPersonKey(idType, idNo);
             AppSvcPersonAndExtDto appSvcPersonAndExtDto = licPersonMap.get(personKey);
-            if(appSvcPersonAndExtDto != null){
+            if (appSvcPersonAndExtDto != null) {
                 String errMsg = MessageUtil.getMessageDesc("NEW_ERR0006");
-                errMsg = errMsg.replace("{ID No.}",idNo);
-                errMap.put(errKey,errMsg);
+                errMsg = errMsg.replace("{ID No.}", idNo);
+                errMap.put(errKey, errMsg);
             }
         }
         return errMap;
     }
 
-    private static boolean needPsnCommValidate(){
+    private static boolean needPsnCommValidate() {
         HttpServletRequest request = MiscUtil.getCurrentRequest();
-        AppSubmissionDto appSubmissionDto = (AppSubmissionDto)ParamUtil.getSessionAttr(request, NewApplicationDelegator.APPSUBMISSIONDTO);
+        if (request == null) {
+            return false;
+        }
+        AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(request,
+                NewApplicationDelegator.APPSUBMISSIONDTO);
         return appSubmissionDto != null && ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appSubmissionDto.getAppType());
     }
-
 
     private static AppSvcChckListDto getSvcChckListDtoByConfigId(String configId,List<AppSvcChckListDto> appSvcChckListDtos){
         AppSvcChckListDto  result = null;
@@ -4440,4 +4485,52 @@ public class NewApplicationHelper {
         }
         return appGrpPremisesDtoList;
     }
+
+    public static String getErrorMsg(Map<AppSubmissionDto, List<String>> errorListMap) {
+        if (errorListMap == null || errorListMap.isEmpty()) {
+            return "";
+        }
+        StringBuilder msg = new StringBuilder(errorListMap.size() * 64);
+        msg.append("There are some affected malformed licences: ");
+        for (Map.Entry<AppSubmissionDto, List<String>> entry : errorListMap.entrySet()) {
+            msg.append("<br/>&nbsp;&nbsp;").append(entry.getKey().getLicenceNo()).append(" - [");
+            handleTabHames(entry.getValue(), msg);
+            msg.append("], ");
+        }
+        msg.deleteCharAt(msg.length() - 2);
+        msg.deleteCharAt(msg.length() - 1);
+        msg.append(". ");
+        msg.append("<br/><br/>Please check them before you submitting them again.");
+
+        return msg.toString();
+    }
+
+    private static void handleTabHames(List<String> errorList, StringBuilder msg) {
+        if (errorList.contains(NewApplicationConstant.SECTION_LICENSEE)) {
+            msg.append(NewApplicationConstant.TITLE_LICENSEE).append(", ");
+        }
+        if (errorList.contains(NewApplicationConstant.SECTION_PREMISES)) {
+            msg.append(NewApplicationConstant.TITLE_MODE_OF_SVCDLVY).append(", ");
+        }
+        if (errorList.contains(NewApplicationConstant.SECTION_DOCUMENT)) {
+            msg.append(NewApplicationConstant.TITLE_DOCUMENT).append(", ");
+        }
+        if (errorList.contains(NewApplicationConstant.SECTION_SVCINFO)) {
+            msg.append(NewApplicationConstant.TITLE_SVCINFO);
+            String s = handleStepHames(errorList);
+            if (!StringUtil.isEmpty(s)) {
+                msg.append(" (").append(s).append(")");
+            }
+            msg.append(", ");
+        }
+        msg.deleteCharAt(msg.length() - 2);
+        msg.deleteCharAt(msg.length() - 1);
+    }
+    private static String handleStepHames(List<String> errorList) {
+        return errorList.stream()
+                .filter(s -> s.contains(":"))
+                .map(s -> s.substring(s.indexOf(":") + 1))
+                .collect(Collectors.joining(", "));
+    }
+
 }
