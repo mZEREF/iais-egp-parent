@@ -63,15 +63,14 @@ public class DonorSampleDtoValidator implements CustomizeValidator {
                 map.put("ages"+i,"GENERAL_ERR0002");
             }else if(age.length()>2){
                 map.put("ages"+i,"GENERAL_ERR0041");
-            }
-            String sampleType = donorSampleDto.getSampleType();
-            log.info(StringUtil.changeForLog("The sampleType is -->:"+sampleType));
-            if(StringUtil.isEmpty(map.get("ages"+i))&&!donorSampleDto.isDirectedDonation()){
+            }else if(!donorSampleDto.isDirectedDonation()){
+                String sampleType = donorSampleDto.getSampleType();
+                log.info(StringUtil.changeForLog("The sampleType is -->:"+sampleType));
                 int ageInt = Integer.valueOf(age);
                 if(DataSubmissionConsts.DONOR_SAMPLE_TYPE_SPERM.equals(sampleType)){
-                  if(ageInt<=21 || ageInt>=40 ){
-                      map.put("ages"+i,"DS_ERR044");
-                  }
+                    if(ageInt<=21 || ageInt>=40 ){
+                        map.put("ages"+i,"DS_ERR044");
+                    }
                 }else if(DataSubmissionConsts.DONOR_SAMPLE_TYPE_OOCYTE.equals(sampleType)
                         ||DataSubmissionConsts.DONOR_SAMPLE_TYPE_EMBRYO.equals(sampleType)){
                     if(ageInt<=21 || ageInt>=35 ){
