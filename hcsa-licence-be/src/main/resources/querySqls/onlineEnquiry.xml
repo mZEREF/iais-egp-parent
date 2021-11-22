@@ -79,7 +79,7 @@
                 join hcsal.dbo.ds_cycle dc on dc.ID =dds.CYCLE_ID
                 join hcsal.dbo.premises p on dc.HCI_CODE =p.HCI_CODE
                 JOIN hcsal.dbo.lic_premises lp on lp.PREMISES_ID =p.ID
-                ;
+
 
          ]]>
       </sql>
@@ -92,7 +92,7 @@
                 join hcsal.dbo.ds_cycle dc on dc.PATIENT_CODE =dpi.PATIENT_CODE
                 join hcsal.dbo.premises p on dc.HCI_CODE =p.HCI_CODE
                 JOIN hcsal.dbo.lic_premises lp on lp.PREMISES_ID =p.ID
-                ;
+
 
         ]]>
      </sql>

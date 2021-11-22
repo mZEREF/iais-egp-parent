@@ -24,7 +24,7 @@
                 </iais:row>
                 <div id="pgtOthersDisplay" <c:if test="${ arSuperDataSubmissionDto.pgtStageDto.isOtherPgt !=1 }">style="display: none"</c:if>>
                     <iais:row>
-                        <iais:field width="6" value="Others" />
+                        <iais:field width="6" value="Others" style="font-size: 2.0rem;" />
                     </iais:row>
                     <iais:row>
                         <iais:field width="6" value="Other Types of Genetic Testing" />
@@ -35,7 +35,7 @@
                 </div>
                 <div id="pgtMDisplay" <c:if test="${ arSuperDataSubmissionDto.pgtStageDto.isPgtM !=1 }">style="display: none"</c:if> >
                     <iais:row>
-                        <iais:field width="6" value="PGT-M" />
+                        <iais:field width="6" value="PGT-M" style="font-size: 2.0rem;" />
                     </iais:row>
                     <iais:row>
                         <iais:field width="6" value="PGT-M Performed" />
@@ -62,7 +62,7 @@
                 </div>
                 <div id="pgtSrDisplay" <c:if test="${ arSuperDataSubmissionDto.pgtStageDto.isPgtSr !=1 }">style="display: none"</c:if> >
                     <iais:row>
-                        <iais:field width="6" value="PGT-SR" />
+                        <iais:field width="6" value="PGT-SR" style="font-size: 2.0rem;" />
                     </iais:row>
                     <iais:row>
                         <iais:field width="6" value="What Condition and Structural Rearrangement was PGT-SR Performed?"/>
@@ -73,7 +73,7 @@
                 </div>
                 <div id="pgtADisplay" <c:if test="${ arSuperDataSubmissionDto.pgtStageDto.isPgtA !=1 }">style="display: none"</c:if> >
                     <iais:row>
-                        <iais:field width="6" value="PGT-A" />
+                        <iais:field width="6" value="PGT-A" style="font-size: 2.0rem;" />
                     </iais:row>
                     <iais:row>
                         <iais:field width="6" value="PGT-A Performed Because of"/>
@@ -100,7 +100,7 @@
                 </div>
                 <div id="pttDisplay" <c:if test="${ arSuperDataSubmissionDto.pgtStageDto.isPtt !=1 }">style="display: none"</c:if> >
                     <iais:row>
-                        <iais:field width="6" value="PTT" />
+                        <iais:field width="6" value="PTT" style="font-size: 2.0rem;" />
                     </iais:row>
                     <iais:row>
                         <iais:field width="6" value="What Condition was PTT Perfomed to Detect"/>

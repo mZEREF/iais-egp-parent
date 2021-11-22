@@ -1284,7 +1284,7 @@
                                                                         pattern="${AppConsts.DEFAULT_DATE_FORMAT}"/>
                                                             </td>
                                                             <td>
-                                                                <c:out value="${patient.patientNationality}"/>
+                                                                <iais:code code="${patient.patientNationality}"/>
                                                             </td>
                                                             <td>
                                                                 <fmt:formatDate
