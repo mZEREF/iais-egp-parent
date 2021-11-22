@@ -12,7 +12,7 @@
             <div class="panel-main-content form-horizontal">
                 <c:set var="endCycleStageDto" value="${arSuperDataSubmissionDto.endCycleStageDto}" />
                 <iais:row>
-                    <iais:field width="6" value="Is it Medically Indicated?" mandatory="true"/>
+                    <iais:field width="6" value="Is Current Cycle Abandoned?" mandatory="true"/>
                     <iais:value width="3" cssClass="col-md-3">
                         <div class="form-check">
                             <input class="form-check-input"
@@ -20,7 +20,7 @@
                                    name="cycleAbandoned"
                                    value="true"
                                    id="radioYes"
-                                   <c:if test="${endCycleStageDto.cycleAbandoned eq true}">checked</c:if>
+                                   <c:if test="${endCycleStageDto.cycleAbandoned}">checked</c:if>
                                    aria-invalid="false">
                             <label class="form-check-label"
                                    for="radioYes"><span
@@ -35,7 +35,7 @@
                                    name="cycleAbandoned"
                                    value="false"
                                    id="radioNo"
-                                   <c:if test="${endCycleStageDto.cycleAbandoned eq false}">checked</c:if>
+                                   <c:if test="${endCycleStageDto.cycleAbandoned=='false'}">checked</c:if>
                                    aria-invalid="false">
                             <label class="form-check-label"
                                    for="radioNo"><span
@@ -55,7 +55,7 @@
                         <iais:row>
                             <iais:field width="5" value="Reason for Abandonment (Others)" mandatory="true"/>
                             <iais:value width="7" cssClass="col-md-7">
-                                <iais:input maxLength="20" type="text" name="otherAbandonReason" value="${endCycleStageDto.otherAbandonReason}" />
+                                <iais:input type="text" name="otherAbandonReason" value="${endCycleStageDto.otherAbandonReason}" />
                                 <span class="error-msg" name="iaisErrorMsg" id="error_otherAbandonReason"></span>
                             </iais:value>
                         </iais:row>
@@ -65,31 +65,3 @@
         </div>
     </div>
 </div>
-<%--<script type="text/javascript">
-    $(document).ready(function() {
-        $('#abandonReasonSelect').change(function () {
-
-            var abandonReason= $('#abandonReasonSelect option:selected').val();
-
-            if(abandonReason == "ENDRA005"){
-                $('#otherAbandonReason').attr("style","display: block");
-            }else {
-                $('#otherAbandonReason').attr("style","display: none");
-            }
-        });
-    });
-
-    $(document).ready(function () {
-        $('#radioYes').click(function () {
-            if($(this).prop('checked')){
-                $('.endFromParts').show();
-            }
-        });
-
-        $('#radioNo').click(function () {
-            if($(this).prop('checked')){
-                $('.endFromParts').hide();
-            }
-        });
-    });
-</script>--%>

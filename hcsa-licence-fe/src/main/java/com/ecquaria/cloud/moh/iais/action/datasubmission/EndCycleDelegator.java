@@ -3,6 +3,7 @@ package com.ecquaria.cloud.moh.iais.action.datasubmission;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.EndCycleStageDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInventoryDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
@@ -36,6 +37,8 @@ public class EndCycleDelegator extends CommonDelegator{
     }
     @Override
     public void preparePage(BaseProcessClass bpc) {
+        log.info(StringUtil.changeForLog("crud_action_type is ======>"+ParamUtil.getRequestString(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE)));
+        ParamUtil.setRequestAttr(bpc.request, "smallTitle", "You are submitting for <strong>Cycle Stage</strong>");
         ArSuperDataSubmissionDto arSuperDataSubmissionDto = DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
         ParamUtil.setSessionAttr(bpc.request, DataSubmissionConstant.AR_DATA_SUBMISSION, arSuperDataSubmissionDto);
     }
@@ -44,6 +47,7 @@ public class EndCycleDelegator extends CommonDelegator{
     public void prepareConfim(BaseProcessClass bpc) {
         log.info(StringUtil.changeForLog("crud_action_type is ======>"+ParamUtil.getRequestString(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE)));
         ParamUtil.setRequestAttr(bpc.request, "smallTitle", "You are submitting for <strong>Cycle Stage</strong>");
+        PatientInventoryDto patientInventoryDto = DataSubmissionHelper.initPatientInventoryTable(bpc.request);
     }
 
     @Override
@@ -59,7 +63,13 @@ public class EndCycleDelegator extends CommonDelegator{
             String cycleAbandoned = ParamUtil.getString(bpc.request, "cycleAbandoned");
             String abandonReasonSelect = ParamUtil.getRequestString(bpc.request, "abandonReasonSelect");
             String otherAbandonReason = ParamUtil.getRequestString(bpc.request, "otherAbandonReason");
-            endCycleStageDto.setCycleAbandoned(Boolean.valueOf(cycleAbandoned));
+            Boolean cycleAbandonedb = null;
+            if ("true".equals(cycleAbandoned)){
+                cycleAbandonedb = true;
+            }else if ("false".equals(cycleAbandoned)){
+                cycleAbandonedb = false;
+            }
+            endCycleStageDto.setCycleAbandoned(cycleAbandonedb);
             endCycleStageDto.setAbandonReason(abandonReasonSelect);
             if (otherAbandonReason != null && "ENDRA005".equals(abandonReasonSelect)) {
                 endCycleStageDto.setOtherAbandonReason(otherAbandonReason);
