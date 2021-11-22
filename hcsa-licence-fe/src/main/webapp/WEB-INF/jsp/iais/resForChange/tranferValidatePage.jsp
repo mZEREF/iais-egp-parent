@@ -241,6 +241,9 @@
   <%@ include file="../appeal/FeFileCallAjax.jsp" %>
 </form>
 
+<iais:confirm msg="${showOtherError}" callBack="$('#showOtherError').modal('hide');" popupOrder="showOtherError"
+              needCancel="false" needEscapHtml="false"/>
+<input type="hidden" value="${not empty showOtherError ? '1' : ''}" id="showOtherErrorCheck">
 
 
 
@@ -251,6 +254,9 @@
                 $(this).prop("checked",true);
             }
         });
+        if($('#showOtherErrorCheck').val()!=''){
+            $('#showOtherError').modal('show');
+        }
     });
     $("#Next").click(function () {
         showWaiting();
