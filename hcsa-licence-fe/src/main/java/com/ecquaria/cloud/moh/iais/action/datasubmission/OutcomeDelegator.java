@@ -3,6 +3,7 @@ package com.ecquaria.cloud.moh.iais.action.datasubmission;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.OutcomeStageDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInventoryDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
@@ -48,6 +49,7 @@ public class OutcomeDelegator extends CommonDelegator{
     public void prepareConfim(BaseProcessClass bpc) {
         log.info(StringUtil.changeForLog("crud_action_type is ======>"+ParamUtil.getRequestString(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE)));
         ParamUtil.setRequestAttr(bpc.request, "smallTitle", "You are submitting for <strong>Cycle Stage</strong>");
+        PatientInventoryDto patientInventoryDto = DataSubmissionHelper.initPatientInventoryTable(bpc.request);
     }
 
     @Override
@@ -61,7 +63,13 @@ public class OutcomeDelegator extends CommonDelegator{
         String actionType = ParamUtil.getRequestString(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE);
         if (CommonDelegator.ACTION_TYPE_CONFIRM.equals(actionType)) {
             String pregnancyDetected = ParamUtil.getString(bpc.request, "pregnancyDetected");
-            outcomeStageDto.setPregnancyDetected(Boolean.valueOf(pregnancyDetected));
+            Boolean pregnancyDetectedb = null;
+            if ("true".equals(pregnancyDetectedb)){
+                pregnancyDetectedb = true;
+            }else if ("false".equals(pregnancyDetectedb)){
+                pregnancyDetectedb = false;
+            }
+            outcomeStageDto.setPregnancyDetected(pregnancyDetectedb);
 
             arSuperDataSubmissionDto.setOutcomeStageDto(outcomeStageDto);
             ParamUtil.setSessionAttr(bpc.request, DataSubmissionConstant.AR_DATA_SUBMISSION, arSuperDataSubmissionDto);
