@@ -34,7 +34,7 @@
                     </iais:value>
                 </iais:row>
                 <iais:row>
-                    <iais:field width="6" value="Which AR Centre was Gamete(s)/Embryo(s) Donated to?" id="isCurCenDonatedField" mandatory="false"/>
+                    <iais:field width="6" value="Which AR Centre was Gamete(s) / Embryo(s) Donated to?" id="isCurCenDonatedField" mandatory="false"/>
                     <iais:value width="6" cssClass="col-md-6">
                         <select name="isCurCenDonated" id="isCurCenDonated">
                             <option value="" <c:if test="${empty arSuperDataSubmissionDto.donationStageDto.isCurCenDonated}">selected="selected"</c:if>>Please Select</option>

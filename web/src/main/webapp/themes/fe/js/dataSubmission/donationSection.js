@@ -14,9 +14,9 @@ $(document).ready(function () {
         $('#totalNum').html(totalNum);
 
         if(Number(curCenDonatedNum)>0){
-            $('#isCurCenDonatedField').html('Which AR Centre was Gamete(s)/Embryo(s) Donated to? <span class="mandatory">*</span>')
+            $('#isCurCenDonatedField').html('Which AR Centre was Gamete(s) / Embryo(s) Donated to? <span class="mandatory">*</span>')
         }else {
-            $('#isCurCenDonatedField').html('Which AR Centre was Gamete(s)/Embryo(s) Donated to?')
+            $('#isCurCenDonatedField').html('Which AR Centre was Gamete(s) / Embryo(s) Donated to?')
         }
 
         if(Number(resDonarNum)>0||Number(curCenResDonatedNum)>0){
