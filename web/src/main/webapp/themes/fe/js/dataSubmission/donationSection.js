@@ -56,9 +56,9 @@ $(document).ready(function () {
         }
     });
 
-    $('#isInsSentToCurField').change(function () {
+    $('#isInsSentToCur').change(function () {
 
-        var reason= $('#isInsSentToCurField option:selected').val();
+        var reason= $('#isInsSentToCur option:selected').val();
 
         if("Others"==reason){
             $('#insSentToOtherCenDisplay').attr("style","display: block");

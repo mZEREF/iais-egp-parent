@@ -36,7 +36,7 @@
                 </iais:row>
                 <div id="otherDonatedCenDisplay" <c:if test="${arSuperDataSubmissionDto.donationStageDto.isCurCenDonated!='Others'}">style="display: none"</c:if>>
                     <iais:row>
-                        <iais:field width="6" value="Other Centre where Embryos were Biospied At" />
+                        <iais:field width="6" value="Other Overseas / Local Centres" />
                         <iais:value width="6" display="true">
                             <c:out value="${arSuperDataSubmissionDto.donationStageDto.otherDonatedCen}"/>
                         </iais:value>
@@ -92,7 +92,7 @@
                 </iais:row>
                 <div id="insSentToOtherCenDisplay" <c:if test="${arSuperDataSubmissionDto.donationStageDto.isInsSentToCur!='Others'}">style="display: none"</c:if>>
                     <iais:row>
-                        <iais:field width="6" value="Other Type of Research Donated for" />
+                        <iais:field width="6" value="Other AR Centre / Institution Sent to (If not listed)" />
                         <iais:value width="6" display="true">
                             <c:out value="${arSuperDataSubmissionDto.donationStageDto.insSentToOtherCen}"/>
                         </iais:value>
@@ -112,7 +112,7 @@
                 </iais:row>
                 <div id="otherDonationReasonDisplay" <c:if test="${arSuperDataSubmissionDto.donationStageDto.donationReason!='DONRES004'}">style="display: none"</c:if>>
                     <iais:row>
-                        <iais:field width="6" value="Other Type of Research Donated for" />
+                        <iais:field width="6" value="Other Reasons" />
                         <iais:value width="6" display="true">
                             <c:out value="${arSuperDataSubmissionDto.donationStageDto.otherDonationReason}"/>
                         </iais:value>

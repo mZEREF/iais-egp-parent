@@ -48,7 +48,7 @@
                 </iais:row>
                 <div id="otherDonatedCenDisplay" <c:if test="${arSuperDataSubmissionDto.donationStageDto.isCurCenDonated!='Others'}">style="display: none"</c:if>>
                     <iais:row>
-                        <iais:field width="6" value="Other Centre where Embryos were Biospied At" mandatory="true"/>
+                        <iais:field width="6" value="Other Overseas / Local Centres" mandatory="true"/>
                         <iais:value width="6" cssClass="col-md-6">
                             <input type="text" maxlength="100"   name="otherDonatedCen" value="${arSuperDataSubmissionDto.donationStageDto.otherDonatedCen}" >
                             <span class="error-msg" name="iaisErrorMsg" id="error_otherDonatedCen"></span>
@@ -150,7 +150,7 @@
                 </iais:row>
                 <div id="insSentToOtherCenDisplay" <c:if test="${arSuperDataSubmissionDto.donationStageDto.isInsSentToCur!='Others'}">style="display: none"</c:if>>
                     <iais:row>
-                        <iais:field width="6" value="Other Type of Research Donated for" mandatory="true"/>
+                        <iais:field width="6" value="Other AR Centre / Institution Sent to (If not listed)" mandatory="true"/>
                         <iais:value width="6" cssClass="col-md-6">
                             <input type="text" maxlength="100"   name="insSentToOtherCen" value="${arSuperDataSubmissionDto.donationStageDto.insSentToOtherCen}" >
                             <span class="error-msg" name="iaisErrorMsg" id="error_insSentToOtherCen"></span>
@@ -176,7 +176,7 @@
                 </iais:row>
                 <div id="otherDonationReasonDisplay" <c:if test="${arSuperDataSubmissionDto.donationStageDto.donationReason!='DONRES004'}">style="display: none"</c:if>>
                     <iais:row>
-                        <iais:field width="6" value="Other Type of Research Donated for" mandatory="true"/>
+                        <iais:field width="6" value="Other Reasons" mandatory="true"/>
                         <iais:value width="6" cssClass="col-md-6">
                             <input type="text" maxlength="20"   name="otherDonationReason" value="${arSuperDataSubmissionDto.donationStageDto.otherDonationReason}" >
                             <span class="error-msg" name="iaisErrorMsg" id="error_otherDonationReason"></span>
