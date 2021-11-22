@@ -1,3 +1,5 @@
+<input type="hidden" name="crud_action_value_ar_stage" id="crud_action_value_ar_stage" value="-2"/>
+<input type="hidden" name="crud_action_value_valiate_donor" id="crud_action_value_valiate_donor" value="-1"/>
 <div class="panel panel-default usedDonorOocyteControlClass">
      <div class="panel-heading">
          <h4  class="panel-title" >
@@ -6,10 +8,8 @@
           </a>
        </h4>
     </div>
-
      <div id="donorDtoDetails" class="panel-collapse collapse in">
          <div class="panel-body">
-         <c:set var="donorDtos" value="${arCycleStageDto.donorDtos}"/>
              <input type="hidden" name="crud_action_value_donor_size" id="crud_action_value_donor_size" value="${donorDtos.size()}"/>
          <c:forEach items="${donorDtos}" var="donorDto">
              <c:set var="arDonorIndex" value="${donorDto.arDonorIndex}"/>

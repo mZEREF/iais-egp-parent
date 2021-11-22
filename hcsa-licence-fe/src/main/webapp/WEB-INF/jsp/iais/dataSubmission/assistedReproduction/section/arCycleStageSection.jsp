@@ -1,6 +1,4 @@
 <div class="panel panel-default">
-    <input type="hidden" name="crud_action_value_ar_stage" id="crud_action_value_ar_stage" value="-2"/>
-    <input type="hidden" name="crud_action_value_valiate_donor" id="crud_action_value_valiate_donor" value="-1"/>
     <div class="panel-heading">
         <h4 class="panel-title"  >
             <a href="#arStageDetails" data-toggle="collapse">
@@ -251,7 +249,5 @@
         </div>
     </div>
 </div>
+<c:set var="donorDtos" value="${arCycleStageDto.donorDtos}"/>
 <%@include file="donorSection.jsp"%>
-<script  type="text/javascript">
-
-</script>

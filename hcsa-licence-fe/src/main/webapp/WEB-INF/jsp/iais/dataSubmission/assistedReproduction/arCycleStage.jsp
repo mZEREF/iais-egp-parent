@@ -12,6 +12,7 @@
 
 <%@ include file="common/arHeader.jsp" %>
 <script type="text/javascript" src="<%=webroot1%>js/dataSubmission/arCycleStageSection.js"></script>
+<script type="text/javascript" src="<%=webroot1%>js/dataSubmission/donor_common.js"></script>
 <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
     <div class="main-content">
         <div class="container center-content">
