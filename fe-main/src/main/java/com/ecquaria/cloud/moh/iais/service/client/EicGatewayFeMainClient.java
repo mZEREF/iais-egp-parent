@@ -93,7 +93,7 @@ public class EicGatewayFeMainClient {
         HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
         Map<String, Object> params = IaisCommonUtils.genNewHashMap();
         params.put("uen", uen);
-        return IaisEGPHelper.callEicGatewayWithParam(gateWayUrl + "/v1/svc-sync-acra/{uen}", HttpMethod.PUT, params,
+        return IaisEGPHelper.callEicGatewayWithParam(gateWayUrl + "/v1/svc-sync-acra/{uen}", HttpMethod.POST, params,
                 MediaType.APPLICATION_JSON, signature.date(), signature.authorization(),
                 signature2.date(), signature2.authorization(), GenerateUENDto.class);
     }
