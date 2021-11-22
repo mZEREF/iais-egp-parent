@@ -323,28 +323,37 @@ public class ApplicationServiceImpl implements ApplicationService {
     @Override
     public ApplicationDto updateFEApplicaiton(ApplicationDto applicationDto) {
         log.info(StringUtil.changeForLog("The updateFEApplicaiton start ..."));
-        String moduleName = currentApp + "-" + currentDomain;
-        EicRequestTrackingDto dto = new EicRequestTrackingDto();
-        dto.setStatus(AppConsts.EIC_STATUS_PENDING_PROCESSING);
-        dto.setActionClsName(this.getClass().getName());
-        dto.setActionMethod("callEicInterApplication");
-        dto.setDtoClsName(applicationDto.getClass().getName());
-        dto.setDtoObject(JsonUtil.parseToJson(applicationDto));
-        String refNo = String.valueOf(System.currentTimeMillis());
-        log.info(StringUtil.changeForLog("The updateFEApplicaiton refNo is  -- >:"+refNo));
-        dto.setRefNo(refNo);
-        dto.setModuleName(moduleName);
-        eicClient.saveEicTrack(dto);
-        callEicInterApplication(applicationDto);
-        dto = eicClient.getPendingRecordByReferenceNumber(refNo).getEntity();
-        Date now = new Date();
-        dto.setProcessNum(1);
-        dto.setFirstActionAt(now);
-        dto.setLastActionAt(now);
-        dto.setStatus(AppConsts.EIC_STATUS_PROCESSING_COMPLETE);
-        List<EicRequestTrackingDto> list = IaisCommonUtils.genNewArrayList(1);
-        list.add(dto);
-        eicClient.updateStatus(list);
+        //0075066 there is not application in the FE for the cession
+        try{
+            if(!ApplicationConsts.APPLICATION_TYPE_CESSATION.equals(applicationDto.getApplicationType())){
+                String moduleName = currentApp + "-" + currentDomain;
+                EicRequestTrackingDto dto = new EicRequestTrackingDto();
+                dto.setStatus(AppConsts.EIC_STATUS_PENDING_PROCESSING);
+                dto.setActionClsName(this.getClass().getName());
+                dto.setActionMethod("callEicInterApplication");
+                dto.setDtoClsName(applicationDto.getClass().getName());
+                dto.setDtoObject(JsonUtil.parseToJson(applicationDto));
+                String refNo = String.valueOf(System.currentTimeMillis());
+                log.info(StringUtil.changeForLog("The updateFEApplicaiton refNo is  -- >:"+refNo));
+                dto.setRefNo(refNo);
+                dto.setModuleName(moduleName);
+                eicClient.saveEicTrack(dto);
+                callEicInterApplication(applicationDto);
+                dto = eicClient.getPendingRecordByReferenceNumber(refNo).getEntity();
+                Date now = new Date();
+                dto.setProcessNum(1);
+                dto.setFirstActionAt(now);
+                dto.setLastActionAt(now);
+                dto.setStatus(AppConsts.EIC_STATUS_PROCESSING_COMPLETE);
+                List<EicRequestTrackingDto> list = IaisCommonUtils.genNewArrayList(1);
+                list.add(dto);
+                eicClient.updateStatus(list);
+            }else{
+                log.info(StringUtil.changeForLog("The cession application ..."));
+            }
+        }catch (Exception e){
+            log.error(e.getMessage(),e);
+        }
         log.info(StringUtil.changeForLog("The updateFEApplicaiton end ..."));
         return applicationDto;
     }
