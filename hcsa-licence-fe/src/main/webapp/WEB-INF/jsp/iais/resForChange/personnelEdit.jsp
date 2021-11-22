@@ -493,6 +493,9 @@
         </div>
     </div>
 </form>
+<iais:confirm msg="${showOtherError}" callBack="$('#showOtherError').modal('hide');" popupOrder="showOtherError"
+              needCancel="false" needEscapHtml="false"/>
+<input type="hidden" value="${not empty showOtherError ? '1' : ''}" id="showOtherErrorCheck">
 <script>
 
     $('.needDisableI').css('border-color', '#ededed');
@@ -502,6 +505,9 @@
         $('#ackMessageEdit').modal('hide');
     }
     $(document).ready(function () {
+        if($('#showOtherErrorCheck').val()!=''){
+            $('#showOtherError').modal('show');
+        }
         var flag=false;
         $('.designationSel').each(function (){
             if($(this).val()=='DES999'){

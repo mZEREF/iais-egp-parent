@@ -896,6 +896,10 @@ public class NewApplicationDelegator {
             }
         }
         boolean isRfi = NewApplicationHelper.checkIsRfi(bpc.request);
+        if (ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appSubmissionDto.getAppType())
+                || ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())) {
+            requestForChangeService.svcDocToPresmise(appSubmissionDto);
+        }
         List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtos = appSubmissionDto.getAppGrpPrimaryDocDtos();
         List<HcsaSvcDocConfigDto> primaryDocConfig = (List<HcsaSvcDocConfigDto>) ParamUtil.getSessionAttr(bpc.request,PRIMARY_DOC_CONFIG);
         if(IaisCommonUtils.isEmpty(primaryDocConfig)){
@@ -2566,6 +2570,7 @@ public class NewApplicationDelegator {
     public void doRequestForChangeSubmit(BaseProcessClass bpc) throws Exception {
         //validate reject  apst050
         log.info(StringUtil.changeForLog("the do doRequestForChangeSubmit start ...."));
+        ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "preview");
         ParamUtil.setRequestAttr(bpc.request, "isrfiSuccess", "N");
         AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, APPSUBMISSIONDTO);
         AppSubmissionDto oldAppSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.OLDAPPSUBMISSIONDTO);
@@ -2606,7 +2611,6 @@ public class NewApplicationDelegator {
             //set audit
             log.warn(StringUtil.changeForLog("Error Message: " + map));
             ParamUtil.setRequestAttr(bpc.request, "Msg", map);
-            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "preview");
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(map));
             return;
         }
@@ -2620,7 +2624,6 @@ public class NewApplicationDelegator {
             appealOrCesed.put("appealOrCesed",String.valueOf(otherOperation));
             NewApplicationHelper.setAudiErrMap(isRfi,appSubmissionDto.getAppType(),appealOrCesed,appSubmissionDto.getRfiAppNo(),appSubmissionDto.getLicenceNo());
             bpc.request.setAttribute("rfcPendingApplication","errorRfcPendingApplication");
-            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "preview");
             return;
         }
 
@@ -2632,7 +2635,6 @@ public class NewApplicationDelegator {
             errMap2.put("licenceHadSubmit",String.valueOf(licHadSubmit));
             NewApplicationHelper.setAudiErrMap(isRfi,appSubmissionDto.getAppType(),errMap2,appSubmissionDto.getRfiAppNo(),appSubmissionDto.getLicenceNo());
             bpc.request.setAttribute("rfcPendingApplication","errorRfcPendingApplication");
-            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "preview");
             return;
         }
         String licenceId = appSubmissionDto.getLicenceId();
@@ -2648,7 +2650,6 @@ public class NewApplicationDelegator {
                     boolean b = requestForChangeService.serviceConfigIsChange(serviceIds, premisesType);
                     if(!b){
                         bpc.request.setAttribute("SERVICE_CONFIG_CHANGE",rfc_err020);
-                        ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "preview");
                         return;
                     }
                 }
@@ -2658,7 +2659,6 @@ public class NewApplicationDelegator {
         String baseServiceId = appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0).getBaseServiceId();
         if(StringUtil.isEmpty(baseServiceId)){
             bpc.request.setAttribute("SERVICE_CONFIG_CHANGE",rfc_err020);
-            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "preview");
             return;
         }
         // change edit
@@ -2721,6 +2721,7 @@ public class NewApplicationDelegator {
         appSubmissionDto.setGetAppInfoFromDto(true);
         AuditTrailDto auditTrailDto = IaisEGPHelper.getCurrentAuditTrailDto();
         appSubmissionDto.setAuditTrailDto(auditTrailDto);
+        Map<AppSubmissionDto, List<String>> errorListMap = IaisCommonUtils.genNewHashMap();
         List<AppSubmissionDto> appSubmissionDtoList = IaisCommonUtils.genNewArrayList();
         List<AppSubmissionDto> autoSaveAppsubmission = IaisCommonUtils.genNewArrayList();
         List<AppSubmissionDto> notAutoSaveAppsubmission = IaisCommonUtils.genNewArrayList();
@@ -2781,6 +2782,18 @@ public class NewApplicationDelegator {
                     draftNo, groupNo, changeSelectDto, appSubmissionDtos, bpc.request);
             if (!isValid) {
                 return;
+            } else {
+                // validate the related app submissions
+                for (AppSubmissionDto dto : appSubmissionDtos) {
+                    List<String> errorList = appSubmissionService.doPreviewSubmitValidate(null, dto, false);
+                    if (!errorList.isEmpty()) {
+                        errorListMap.put(dto, errorList);
+                    }
+                }
+                if (!errorListMap.isEmpty()) {
+                    bpc.request.setAttribute(NewApplicationConstant.SHOW_OTHER_ERROR, NewApplicationHelper.getErrorMsg(errorListMap));
+                    return;
+                }
             }
             // 74809
             // control to save draft in event bus (AppSubmisionServiceImpl.createApplicationDataByGroup)
@@ -2837,6 +2850,17 @@ public class NewApplicationDelegator {
                     break;
                 }
             }
+            // validate the related app submissions
+            for (AppSubmissionDto dto : licenseeAffectedList) {
+                List<String> errorList = appSubmissionService.doPreviewSubmitValidate(null, dto, false);
+                if (!errorList.isEmpty()) {
+                    errorListMap.put(dto, errorList);
+                }
+            }
+            if (!errorListMap.isEmpty()) {
+                bpc.request.setAttribute(NewApplicationConstant.SHOW_OTHER_ERROR, NewApplicationHelper.getErrorMsg(errorListMap));
+                return;
+            }
             licenseeAffectedList.stream().forEach(dto -> {
                 dto.setSubLicenseeDto(MiscUtil.transferEntityDto(appSubmissionDto.getSubLicenseeDto(), SubLicenseeDto.class));
                 AppEditSelectDto changeSelectDto = new AppEditSelectDto();
@@ -2864,6 +2888,17 @@ public class NewApplicationDelegator {
             LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
             String licenseeId = loginContext.getLicenseeId();
             List<AppSubmissionDto> personAppSubmissionList = serviceInfoChangeEffectPersonForRFC.personContact(licenseeId, appSubmissionDto, oldAppSubmissionDto);
+            // validate the related app submissions
+            for (AppSubmissionDto dto : personAppSubmissionList) {
+                List<String> errorList = appSubmissionService.doPreviewSubmitValidate(null, dto, false);
+                if (!errorList.isEmpty()) {
+                    errorListMap.put(dto, errorList);
+                }
+            }
+            if (!errorListMap.isEmpty()) {
+                bpc.request.setAttribute(NewApplicationConstant.SHOW_OTHER_ERROR, NewApplicationHelper.getErrorMsg(errorListMap));
+                return;
+            }
             //sync other application
             personAppSubmissionList.stream().forEach(dto -> dto.setAppGrpNo(groupNo));
             NewApplicationHelper.addToAuto(personAppSubmissionList, autoSaveAppsubmission);
@@ -2908,7 +2943,6 @@ public class NewApplicationDelegator {
         // check whether the data has been changed or not
         if (autoSaveAppsubmission.isEmpty() && notAutoSaveAppsubmission.isEmpty()) {
             bpc.request.setAttribute("RFC_ERROR_NO_CHANGE",MessageUtil.getMessageDesc("RFC_ERR010"));
-            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "preview");
             return;
         }
         // for next condition step
@@ -3019,6 +3053,7 @@ public class NewApplicationDelegator {
 
         appSubmissionService.doSaveDraft(appSubmissionDto);
         ParamUtil.setSessionAttr(bpc.request,APPSUBMISSIONDTO,appSubmissionDto);
+        ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "payment");
         log.info(StringUtil.changeForLog("the do doRequestForChangeSubmit start ...."));
     }
 

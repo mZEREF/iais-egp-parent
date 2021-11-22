@@ -58,10 +58,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
-import com.ecquaria.cloud.moh.iais.constant.HcsaLicenceFeConstant;
-import com.ecquaria.cloud.moh.iais.constant.HmacConstants;
-import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
-import com.ecquaria.cloud.moh.iais.constant.RfcConst;
+import com.ecquaria.cloud.moh.iais.constant.*;
 import com.ecquaria.cloud.moh.iais.dto.EmailParam;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
@@ -223,16 +220,7 @@ public class WithOutRenewalDelegator {
         if (StringUtil.isEmpty(draftNo)) {
             appSubmissionDtoList = outRenewalService.getAppSubmissionDtos(licenceIDList);
             if (!IaisCommonUtils.isEmpty(appSubmissionDtoList) && appSubmissionDtoList.size() == 1) {
-                log.info(StringUtil.changeForLog("appSubmissionDtoList size:" + appSubmissionDtoList.size()));
-                appSubmissionDtoList.get(0).setOneLicDoRenew(true);
-                //set max file index into session
-                Integer maxFileIndex = appSubmissionDtoList.get(0).getMaxFileIndex();
-                if(maxFileIndex == null){
-                    maxFileIndex = 0;
-                }else{
-                    maxFileIndex ++;
-                }
-                ParamUtil.setSessionAttr(bpc.request,HcsaFileAjaxController.GLOBAL_MAX_INDEX_SESSION_ATTR,maxFileIndex);
+                setMaxFileIndexIntoSession(bpc.request, appSubmissionDtoList.get(0));
             }
             log.info("can not find licence id for without renewal");
             ParamUtil.setSessionAttr(bpc.request, "backUrl", "initLic");
@@ -240,21 +228,16 @@ public class WithOutRenewalDelegator {
             AppSubmissionDto appSubmissionDtoDraft = serviceConfigService.getAppSubmissionDtoDraft(draftNo);
             appSubmissionService.initDeclarationFiles(appSubmissionDtoDraft.getAppDeclarationDocDtos(),appSubmissionDtoDraft.getAppType(),bpc.request);
             requestForChangeService.svcDocToPresmise(appSubmissionDtoDraft);
-            ParamUtil.setSessionAttr(bpc.request, LOADING_DRAFT, "test");
-            appSubmissionDtoDraft.setOneLicDoRenew(true);
+            ParamUtil.setSessionAttr(bpc.request, LOADING_DRAFT, AppConsts.YES);
+            setMaxFileIndexIntoSession(bpc.request,appSubmissionDtoDraft);
             appSubmissionDtoList.add(appSubmissionDtoDraft);
-            licenceIDList = new ArrayList<>(1);
-            licenceIDList.add(appSubmissionDtoDraft.getLicenceId());
             ParamUtil.setSessionAttr(bpc.request, "backUrl", "initApp");
             loadCoMap(bpc, appSubmissionDtoDraft);
-            //set max file index into session
-            Integer maxFileIndex = appSubmissionDtoDraft.getMaxFileIndex();
-            if(maxFileIndex == null){
-                maxFileIndex = 0;
-            }else{
-                maxFileIndex ++;
-            }
-            ParamUtil.setSessionAttr(bpc.request,HcsaFileAjaxController.GLOBAL_MAX_INDEX_SESSION_ATTR,maxFileIndex);
+            licenceIDList = new ArrayList<>(1);
+            licenceIDList.add(appSubmissionDtoDraft.getLicenceId());
+            List<AppSubmissionDto> submissionDtos = outRenewalService.getAppSubmissionDtos(licenceIDList);
+            appSubmissionDtoDraft.setOldRenewAppSubmissionDto(setMaxFileIndexIntoSession(bpc.request,submissionDtos.get(0)));
+            setDraftRfCData(bpc.request,draftNo,appSubmissionDtoDraft.getOldRenewAppSubmissionDto());
         }
 
         //get licensee ID
@@ -462,11 +445,22 @@ public class WithOutRenewalDelegator {
         ParamUtil.setSessionAttr(bpc.request, "hasAppSubmit", null);
         ParamUtil.setSessionAttr(bpc.request, "txnDt", null);
         ParamUtil.setSessionAttr(bpc.request, "txnRefNo", null);
-        setDraftRfCData(bpc.request,draftNo,appSubmissionDtoList.get(0));
         log.info("**** the non auto renwal  end ******");
 
     }
 
+    private  AppSubmissionDto setMaxFileIndexIntoSession(HttpServletRequest request, AppSubmissionDto appSubmissionDto){
+        appSubmissionDto.setOneLicDoRenew(true);
+        //set max file index into session
+        Integer maxFileIndex = appSubmissionDto.getMaxFileIndex();
+        if(maxFileIndex == null){
+            maxFileIndex = 0;
+        }else{
+            maxFileIndex ++;
+        }
+        ParamUtil.setSessionAttr(request,HcsaFileAjaxController.GLOBAL_MAX_INDEX_SESSION_ATTR,maxFileIndex);
+        return appSubmissionDto;
+    }
 
     private void setDraftRfCData(HttpServletRequest request,String draftNo, AppSubmissionDto appSubmissionDto){
         if(StringUtil.isNotEmpty(draftNo)){
@@ -755,7 +749,6 @@ public class WithOutRenewalDelegator {
         //app submit
          String licenseeId  = getLicenseeIdByLoginInfo(bpc.request);
 
-        List<AppGrpPremisesDto> oldAppSubmissionDtoAppGrpPremisesDtoList = oldAppSubmissionDto.getAppGrpPremisesDtoList();
         List<AppSubmissionDto> rfcAppSubmissionDtos = IaisCommonUtils.genNewArrayList();
         List<AppSubmissionDto> autoAppSubmissionDtos = IaisCommonUtils.genNewArrayList();
         List<AppSubmissionDto> noAutoAppSubmissionDtos = IaisCommonUtils.genNewArrayList();
@@ -776,38 +769,7 @@ public class WithOutRenewalDelegator {
         String autoGrpNo = appSubmissionService.getGroupNo(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
 
         if(appSubmissionDtos.size() == 1){
-            AppSubmissionDto appSubmissionDto = appSubmissionDtos.get(0);
-            // create rfc data
-            List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
-                if(appGrpPremisesDtoList != null){
-                    if (appEditSelectDto.isPremisesEdit()) {
-                        for (int i = 0; i < appGrpPremisesDtoList.size(); i++) {
-                            setRfcHciNameChanged(appGrpPremisesDtoList,oldAppSubmissionDtoAppGrpPremisesDtoList,i);
-                            List<LicenceDto> licenceDtos = (List<LicenceDto>) bpc.request.getSession().getAttribute("selectLicence" + i);
-                            if (licenceDtos != null) {
-                                for (LicenceDto licenceDto : licenceDtos) {
-                                    AppSubmissionDto appSubmissionDtoByLicenceId = requestForChangeService.getAppSubmissionDtoByLicenceId(licenceDto.getId());
-                                    setRfcPremisesSubmissionDto(appSubmissionDtoByLicenceId,licenseeId,appGrpPremisesDtoList,appSubmissionDto,i,MiscUtil.transferEntityDto(appEditSelectDto,AppEditSelectDto.class));
-                                    if (appSubmissionDtoByLicenceId.isAutoRfc()) {
-                                        autoAppSubmissionDtos.add(appSubmissionDtoByLicenceId);
-                                    } else {
-                                        noAutoAppSubmissionDtos.add(appSubmissionDtoByLicenceId);
-                                    }
-                                }
-                            }
-                        }
-                    }
-
-                    if(appEditSelectDto.isLicenseeEdit()){
-                        //gen lic change rfc
-                        NewApplicationHelper.addToAuto(getAutoChangeLicAppSubmissions(oldAppSubmissionDto,autoGrpNo,appSubmissionDto), autoAppSubmissionDtos);
-                    }
-
-                    if(appEditSelectDto.isServiceEdit()){
-                        List<AppSubmissionDto> personAppSubmissionList = serviceInfoChangeEffectPersonForRFC.personContact(licenseeId, appSubmissionDtos.get(0), oldAppSubmissionDto);
-                        NewApplicationHelper.addToAuto(personAppSubmissionList, autoAppSubmissionDtos);
-                    }
-                }
+            validateOtherSubDto(bpc.request,false,autoGrpNo,licenseeId,appSubmissionDtos.get(0),appEditSelectDto,autoAppSubmissionDtos,noAutoAppSubmissionDtos,oldAppSubmissionDto);
         }else if(appSubmissionDtos.size() > 1){
             needDec = false;
             moreAppSubmissionDtoAction(appSubmissionDtos);
@@ -1554,8 +1516,81 @@ public class WithOutRenewalDelegator {
         }
         //go page3
         ParamUtil.setRequestAttr(bpc.request, PAGE_SWITCH, PAGE3);
+        validateOtherSubDto(bpc.request,renewDto,oldAppSubmissionDto);
     }
 
+    private void validateOtherSubDto(HttpServletRequest request, RenewDto renewDto, AppSubmissionDto oldAppSubmissionDto) throws Exception {
+        if(renewDto.getAppSubmissionDtos().size() == 1){
+            AppSubmissionDto appSubmissionDto = renewDto.getAppSubmissionDtos().get(0);
+            AppEditSelectDto appEditSelectDto = EqRequestForChangeSubmitResultChange.rfcChangeModuleEvaluationDto(appSubmissionDto,oldAppSubmissionDto);
+            NewApplicationHelper.reSetAdditionalFields(appSubmissionDto,appEditSelectDto);
+            validateOtherSubDto(request,true,appSubmissionService.getGroupNo(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE),getLicenseeIdByLoginInfo(request),appSubmissionDto,appEditSelectDto,IaisCommonUtils.genNewArrayList(),IaisCommonUtils.genNewArrayList(),oldAppSubmissionDto);
+        }else {
+            validateOtherSubDto(request,renewDto.getAppSubmissionDtos());
+        }
+    }
+
+    private void validateOtherSubDto(HttpServletRequest request,boolean goToPrePay,String autoGrpNo,String licenseeId,
+                                        AppSubmissionDto appSubmissionDto, AppEditSelectDto appEditSelectDto,
+                                        List<AppSubmissionDto> autoAppSubmissionDtos,List<AppSubmissionDto> noAutoAppSubmissionDtos,
+                                        AppSubmissionDto oldAppSubmissionDto
+                                        ) throws Exception {
+        // create rfc data
+        List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
+        if(appGrpPremisesDtoList != null){
+            if (appEditSelectDto.isPremisesEdit()) {
+                for (int i = 0; i < appGrpPremisesDtoList.size(); i++) {
+                    setRfcHciNameChanged(appGrpPremisesDtoList,oldAppSubmissionDto.getAppGrpPremisesDtoList(),i);
+                    List<LicenceDto> licenceDtos = (List<LicenceDto>) request.getSession().getAttribute("selectLicence" + i);
+                    if (licenceDtos != null) {
+                        for (LicenceDto licenceDto : licenceDtos) {
+                            AppSubmissionDto appSubmissionDtoByLicenceId = requestForChangeService.getAppSubmissionDtoByLicenceId(licenceDto.getId());
+                            setRfcPremisesSubmissionDto(appSubmissionDtoByLicenceId,licenseeId,appGrpPremisesDtoList,appSubmissionDto,i,MiscUtil.transferEntityDto(appEditSelectDto,AppEditSelectDto.class));
+                            if (appSubmissionDtoByLicenceId.isAutoRfc()) {
+                                autoAppSubmissionDtos.add(appSubmissionDtoByLicenceId);
+                            } else {
+                                noAutoAppSubmissionDtos.add(appSubmissionDtoByLicenceId);
+                            }
+                        }
+                    }
+                }
+            }
+
+            if(appEditSelectDto.isLicenseeEdit()){
+                //gen lic change rfc
+                NewApplicationHelper.addToAuto(getAutoChangeLicAppSubmissions(oldAppSubmissionDto,autoGrpNo,appSubmissionDto), autoAppSubmissionDtos);
+            }
+
+            if(appEditSelectDto.isServiceEdit()){
+                List<AppSubmissionDto> personAppSubmissionList = serviceInfoChangeEffectPersonForRFC.personContact(licenseeId,appSubmissionDto, oldAppSubmissionDto);
+                NewApplicationHelper.addToAuto(personAppSubmissionList, autoAppSubmissionDtos);
+            }
+
+            if(goToPrePay){
+                autoAppSubmissionDtos.add(appSubmissionDto);
+                autoAppSubmissionDtos.addAll(noAutoAppSubmissionDtos);
+                validateOtherSubDto(request,autoAppSubmissionDtos);
+            }
+
+        }
+    }
+
+    private void validateOtherSubDto(HttpServletRequest request,List<AppSubmissionDto> appSubmissionDtos){
+
+         Map<AppSubmissionDto, List<String>>  errorListMap = IaisCommonUtils.genNewHashMap();
+         for (AppSubmissionDto dto : appSubmissionDtos) {
+            List<String> errorList = appSubmissionService.doPreviewSubmitValidate(null, dto, false);
+            if (!errorList.isEmpty()) {
+                errorListMap.put(dto, errorList);
+            }
+        }
+
+        if (!errorListMap.isEmpty()) {
+            ParamUtil.setRequestAttr(request,NewApplicationConstant.SHOW_OTHER_ERROR,NewApplicationHelper.getErrorMsg(errorListMap));
+            ParamUtil.setRequestAttr(request, PAGE_SWITCH, PAGE2);
+        }
+
+    }
     private boolean goGolicenceReview(HttpServletRequest request,AppSubmissionDto appSubmissionDto, List<AppGrpPremisesDto> appGrpPremisesDtoList,String rfc_err020){
         String licenceId = appSubmissionDto.getLicenceId();
         LicenceDto licenceById = requestForChangeService.getLicenceDtoIncludeMigrated(licenceId);

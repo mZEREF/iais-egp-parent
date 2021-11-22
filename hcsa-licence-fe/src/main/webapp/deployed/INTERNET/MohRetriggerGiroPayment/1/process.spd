@@ -44,6 +44,13 @@
     <JavaCode defClass="" executor="" methodName="preAck_OnStepProcess_0" name="preAck_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="tobank" x="650" y="440">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="tobank_OnStepProcess_0" name="tobank_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
  </Steps>
  <Pages>
   <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="previewPage" stageIndicator="" x="380" y="100">
@@ -58,12 +65,6 @@
    <Description/>
    <probepoint type="none"/>
   </WebPage>
-  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="bank" stageIndicator="" x="770" y="440">
-   <OnPageLoad/>
-   <OnPageSubmit/>
-   <Description/>
-   <probepoint type="none"/>
-  </WebPage>
   <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="ackPage" stageIndicator="" x="1050" y="650">
    <OnPageLoad/>
    <OnPageSubmit/>
@@ -73,9 +74,6 @@
  </Pages>
  <Forms/>
  <Links>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/doPayment" linkstyle="Direct" name="" sourceName="/Pages/WebPage/bank" style="oblique">
-   <position>{(790,460)(930,460)}</position>
-  </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/prepreview" linkstyle="Rectangle" name="" sourceName="/Steps/StartStep/dostart" style="rectanular">
    <position>{(60,120)(190,120)}</position>
   </SynchronousLink>
@@ -96,9 +94,6 @@
   </SynchronousLink>
   <SynchronousLink destinationName="/Pages/WebPage/ackPage" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/preAck" style="rectanular">
    <position>{(1070,570)(1070,670)}</position>
-  </SynchronousLink>
-  <SynchronousLink destinationName="/Pages/WebPage/bank" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch2" style="rectanular">
-   <position>{(670,360)(671,423)(790,460)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Switches/Switch/Switch2" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/jumpBank" style="rectanular">
    <position>{(660,240)(670,360)}</position>
@@ -121,6 +116,9 @@
   <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
    <position>{(1060,460)(860,70)}</position>
   </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/tobank" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch2" style="oblique">
+   <position>{(670,360)(695,490)}</position>
+  </SynchronousLink>
  </Links>
  <Conditions/>
  <Switches>
@@ -129,10 +127,10 @@
    <SwitchCase component="/Steps/AutomaticStep/preAck" value="&quot;preack&quot;"/>
    <SwitchCase component="/Merges/Merge/Merge1" value="&quot;prepayment&quot;"/>
   </Switch>
-  <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="isValid" name="Switch2" x="650" y="340">
+  <Switch defClass="" defaultComponent="/Merges/Merge/Merge1" executor="" icon="" leftOperand="isValid" name="Switch2" x="650" y="340">
    <Description/>
-   <SwitchCase component="/Pages/WebPage/bank" value="&quot;tobank&quot;"/>
    <SwitchCase component="/Merges/Merge/Merge1" value="&quot;prepayment&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/tobank" value="&quot;tobank&quot;"/>
   </Switch>
   <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="switch" name="Switch3" x="290" y="100">
    <Description/>

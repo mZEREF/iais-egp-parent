@@ -526,8 +526,9 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                 boolean needValidate = false;
 
                 if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType) || ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appType)) {
-                    String oldPremSel = oldAppSubmissionDto.getAppGrpPremisesDtoList().get(0).getPremisesSelect();
-                    if (!StringUtil.isEmpty(oldPremSel) && oldPremSel.equals(premisesSelect)) {
+                    String oldPremSel = oldAppSubmissionDto == null ? "-1" :
+                            oldAppSubmissionDto.getAppGrpPremisesDtoList().get(0).getPremisesSelect();
+                    if ("-1".equals(oldPremSel) || !StringUtil.isEmpty(oldPremSel) && oldPremSel.equals(premisesSelect)) {
                         needValidate = true;
                     }
                 }
