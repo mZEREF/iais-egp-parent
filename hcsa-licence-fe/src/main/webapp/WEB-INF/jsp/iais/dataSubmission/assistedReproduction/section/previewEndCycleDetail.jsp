@@ -34,7 +34,9 @@
                         </iais:row>
                     </div>
                 </div>
+                <%@include file="../common/patientInventoryTable.jsp" %>
             </div>
         </div>
     </div>
 </div>
+
