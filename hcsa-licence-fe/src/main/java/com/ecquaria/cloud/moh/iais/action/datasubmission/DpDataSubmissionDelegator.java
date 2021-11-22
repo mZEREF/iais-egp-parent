@@ -44,7 +44,7 @@ public class DpDataSubmissionDelegator {
      * @throws
      */
     public void doStart(BaseProcessClass bpc) {
-        log.info("----- Assisted Reproduction Submission Start -----");
+        log.info("----- Drug Practices Submission Start -----");
         HttpSession session = bpc.request.getSession();
         session.removeAttribute(DataSubmissionConstant.DP_PREMISES_MAP);
         session.removeAttribute(DataSubmissionConstant.DP_PREMISES);
@@ -58,6 +58,7 @@ public class DpDataSubmissionDelegator {
      * @throws
      */
     public void doPrepareSubmission(BaseProcessClass bpc) {
+        log.info("----- Drug Practices Prepare Submission -----");
         // no title
         bpc.request.removeAttribute("title");
         String crud_action_type_ds = bpc.request.getParameter(DataSubmissionConstant.CRUD_TYPE);
@@ -95,6 +96,7 @@ public class DpDataSubmissionDelegator {
      * @throws
      */
     public void doPrepareDP(BaseProcessClass bpc) {
+        log.info("----- Do Drug Practices Submission -----");
         String crudype = ParamUtil.getString(bpc.request, DataSubmissionConstant.CRUD_TYPE);
         if (StringUtil.isIn(crudype, new String[]{"back", "return"})) {
             ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.CRUD_ACTION_TYPE_DP, "back");
