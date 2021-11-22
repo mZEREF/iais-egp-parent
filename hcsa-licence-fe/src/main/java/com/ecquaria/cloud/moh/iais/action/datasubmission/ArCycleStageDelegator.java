@@ -25,7 +25,6 @@ import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.ArDataSubmissionService;
 import java.io.Serializable;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
@@ -202,7 +201,7 @@ public class ArCycleStageDelegator extends CommonDelegator {
                 ParamUtil.setRequestAttr(request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
             }else {
                 arDonorDto.setRelation(donorSampleDto.getDonorRelation());
-                List<String> ages =  StringUtil.isEmpty(donorSampleDto.getAge()) ? null : Arrays.asList(donorSampleDto.getAge().split(","));
+                /*List<String> ages =  StringUtil.isEmpty(donorSampleDto.getAge()) ? null : Arrays.asList(donorSampleDto.getAge().split(","));
                 if(ages != null){
                     ages.sort(String::compareTo);
                     List<SelectOption> selectOptions = IaisCommonUtils.genNewArrayList( ages.size());
@@ -210,7 +209,7 @@ public class ArCycleStageDelegator extends CommonDelegator {
                           obj-> selectOptions.add(new SelectOption(obj,obj))
                     );
                     arDonorDto.setAgeList(selectOptions);
-                }
+                }*/
             }
         }
     }
