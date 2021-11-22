@@ -52,21 +52,6 @@ public class ArFeClientFallback implements ArFeClient {
     }
 
     @Override
-    public FeignResponseEntity<ArDonorDto> saveArDonorDto(ArDonorDto arDonorDto) {
-        return getFeignResponseEntity();
-    }
-
-    @Override
-    public FeignResponseEntity<ArDonorDto> getArDonorDtoById(String id) {
-        return getFeignResponseEntity();
-    }
-
-    @Override
-    public FeignResponseEntity<List<ArDonorDto>> getArDonorDtosByCycleStageId(String cycleStageId) {
-        return getFeignResponseEntity();
-    }
-
-    @Override
     public FeignResponseEntity<FertilisationDto> saveFertilisationDto(FertilisationDto fertilisationDto) {
         return getFeignResponseEntity();
     }

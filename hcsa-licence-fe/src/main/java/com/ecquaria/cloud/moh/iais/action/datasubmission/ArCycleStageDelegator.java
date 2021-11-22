@@ -3,13 +3,7 @@ package com.ecquaria.cloud.moh.iais.action.datasubmission;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArCycleStageDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArDonorDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.CycleDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DonorSampleDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInfoDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.*;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
@@ -112,16 +106,16 @@ public class ArCycleStageDelegator extends CommonDelegator {
         HttpServletRequest request = bpc.request;
         ArSuperDataSubmissionDto arSuperDataSubmissionDto = DataSubmissionHelper.getCurrentArDataSubmission(request);
         ArCycleStageDto arCycleStageDto = arSuperDataSubmissionDto.getArCycleStageDto();
-        List<ArDonorDto> arDonorDtos = arSuperDataSubmissionDto.getArDonorDtos();
+        List<DonorDto> arDonorDtos = arCycleStageDto.getDonorDtos();
         if(arCycleStageDto == null){
             arCycleStageDto = new ArCycleStageDto();
             arSuperDataSubmissionDto.setArCycleStageDto(arCycleStageDto);
         }
         if(IaisCommonUtils.isEmpty(arDonorDtos)){
             arDonorDtos = IaisCommonUtils.genNewArrayList();
-            arSuperDataSubmissionDto.setArDonorDtos(arDonorDtos);
+
         }
-        arCycleStageDto.setArDonorDtos(arDonorDtos);
+        arCycleStageDto.setDonorDtos(arDonorDtos);
         setCycleAgeByPatientInfoDtoAndHcicode(arCycleStageDto,arSuperDataSubmissionDto.getPatientInfoDto(),arSuperDataSubmissionDto.getPremisesDto().getHciCode());
         DataSubmissionHelper.setCurrentArDataSubmission(arSuperDataSubmissionDto,request);
     }
@@ -149,13 +143,13 @@ public class ArCycleStageDelegator extends CommonDelegator {
         ArCycleStageDto arCycleStageDto = arSuperDataSubmissionDto.getArCycleStageDto();
         setArCycleStageDtoByPage(request,arCycleStageDto);
         DataSubmissionHelper.setCurrentArDataSubmission(arSuperDataSubmissionDto,request);
-        validatePageDataHaveValidationProperty(request,arCycleStageDto,"save",arCycleStageDto.getArDonorDtos(),getByArCycleStageDto(arCycleStageDto), ACTION_TYPE_CONFIRM);
-        arCycleStageDto.getArDonorDtos().forEach(arDonorDto -> setEmptyDataForNullDrDonorDto(arDonorDto));
-        actionArDonorDtos(request,arCycleStageDto.getArDonorDtos());
-        valiateDonorDtos(request,arCycleStageDto.getArDonorDtos());
+        validatePageDataHaveValidationProperty(request,arCycleStageDto,"save",arCycleStageDto.getDonorDtos(),getByArCycleStageDto(arCycleStageDto), ACTION_TYPE_CONFIRM);
+        arCycleStageDto.getDonorDtos().forEach(arDonorDto -> setEmptyDataForNullDrDonorDto(arDonorDto));
+        actionArDonorDtos(request,arCycleStageDto.getDonorDtos());
+        valiateDonorDtos(request,arCycleStageDto.getDonorDtos());
         DataSubmissionHelper.setCurrentArDataSubmission(arSuperDataSubmissionDto,request);
     }
-    private void actionArDonorDtos(HttpServletRequest request,List<ArDonorDto> arDonorDtos){
+    private void actionArDonorDtos(HttpServletRequest request,List<DonorDto> arDonorDtos){
         int actionArDonor = ParamUtil.getInt(request,CRUD_ACTION_VALUE_AR_STAGE);
         //actionArDonor default =-3;
         if(actionArDonor == -1){
@@ -178,17 +172,17 @@ public class ArCycleStageDelegator extends CommonDelegator {
         }
     }
 
-    private ArDonorDto getInitArDonorDto(int arDonorIndex){
-        ArDonorDto arDonorDto = new ArDonorDto();
+    private DonorDto getInitArDonorDto(int arDonorIndex){
+        DonorDto arDonorDto = new DonorDto();
         arDonorDto.setDirectedDonation(true);
         arDonorDto.setArDonorIndex(arDonorIndex);
         return arDonorDto;
     }
 
-    private void valiateDonorDtos(HttpServletRequest request,List<ArDonorDto> arDonorDtos){
+    private void valiateDonorDtos(HttpServletRequest request,List<DonorDto> arDonorDtos){
         int valiateArDonor = ParamUtil.getInt(request,CRUD_ACTION_VALUE_VALIATE_DONOR);
         if(valiateArDonor >-1){
-            ArDonorDto arDonorDto = arDonorDtos.get(valiateArDonor);
+            DonorDto arDonorDto = arDonorDtos.get(valiateArDonor);
             DonorSampleDto donorSampleDto = arDataSubmissionService.getDonorSampleDto(arDonorDto.getIdType(),arDonorDto.getIdNumber(),
                                                            arDonorDto.getDonorSampleCode(),arDonorDto.getSource(),arDonorDto.getOtherSource());
             if(donorSampleDto == null){
@@ -201,15 +195,18 @@ public class ArCycleStageDelegator extends CommonDelegator {
                 ParamUtil.setRequestAttr(request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
             }else {
                 arDonorDto.setRelation(donorSampleDto.getDonorRelation());
-                /*List<String> ages =  StringUtil.isEmpty(donorSampleDto.getAge()) ? null : Arrays.asList(donorSampleDto.getAge().split(","));
-                if(ages != null){
-                    ages.sort(String::compareTo);
+                List<DonorSampleAgeDto> ages = donorSampleDto.getDonorSampleAgeDtos();
+                arDonorDto.setDonorSampleAgeDtos(ages);
+                if(IaisCommonUtils.isNotEmpty(ages)){
                     List<SelectOption> selectOptions = IaisCommonUtils.genNewArrayList( ages.size());
                     ages.stream().forEach(
-                          obj-> selectOptions.add(new SelectOption(obj,obj))
+                          obj-> {
+                              String key = String.valueOf(obj.getAge());
+                              selectOptions.add(new SelectOption(key,key));
+                          }
                     );
                     arDonorDto.setAgeList(selectOptions);
-                }*/
+                }
             }
         }
     }
@@ -217,8 +214,8 @@ public class ArCycleStageDelegator extends CommonDelegator {
 
     private Map<Object,ValidationProperty> getByArCycleStageDto(ArCycleStageDto arCycleStageDto){
         Map<Object,ValidationProperty> validationPropertyList = IaisCommonUtils.genNewHashMap();
-        if(IaisCommonUtils.isNotEmpty(arCycleStageDto.getArDonorDtos())){
-            arCycleStageDto.getArDonorDtos().forEach( arDonorDto -> {
+        if(IaisCommonUtils.isNotEmpty(arCycleStageDto.getDonorDtos())){
+            arCycleStageDto.getDonorDtos().forEach( arDonorDto -> {
                 validationPropertyList.put(arDonorDto,new ValidationProperty(arDonorDto.getArDonorIndex(),null,String.valueOf(arDonorDto.getArDonorIndex())));
                     }
             );
@@ -233,7 +230,7 @@ public class ArCycleStageDelegator extends CommonDelegator {
         arCycleStageDto.setOtherIndication(ParamUtil.getStringsToString(request,"otherIndication"));
         arCycleStageDto.setOtherIndicationValues(ParamUtil.getListStrings(request,"otherIndication"));
         setArCycleStageByCurrentARTreatmentValues(arCycleStageDto);
-        List<ArDonorDto> arDonorDtos = arCycleStageDto.getArDonorDtos();
+        List<DonorDto> arDonorDtos = arCycleStageDto.getDonorDtos();
         arDonorDtos.forEach(arDonorDto -> {
             String arDonorIndex = String.valueOf(arDonorDto.getArDonorIndex());
             ControllerHelper.get(request,arDonorDto,arDonorIndex);
@@ -254,7 +251,7 @@ public class ArCycleStageDelegator extends CommonDelegator {
         }
     }
 
-    private void setArDonorDtoByPleaseIndicate(ArDonorDto arDonorDto){
+    private void setArDonorDtoByPleaseIndicate(DonorDto arDonorDto){
         if(StringUtil.isNotEmpty(arDonorDto.getPleaseIndicate())){
             String pleaseIndicate = arDonorDto.getPleaseIndicate();
             arDonorDto.setDonorIndicateEmbryo(pleaseIndicate.contains(DataSubmissionConsts.AR_DONOR_USED_TYPE_DONORS_EMBRYO_USED));
@@ -264,7 +261,7 @@ public class ArCycleStageDelegator extends CommonDelegator {
         }
     }
 
-     private void clearNoClearDataForDrDonorDto(ArDonorDto arDonorDto,HttpServletRequest request){
+     private void clearNoClearDataForDrDonorDto(DonorDto arDonorDto,HttpServletRequest request){
         if(arDonorDto.isDirectedDonation()){
             arDonorDto.setDonorSampleCode(null);
             arDonorDto.setSource(null);
@@ -281,15 +278,24 @@ public class ArCycleStageDelegator extends CommonDelegator {
         }
      }
 
-    private void setEmptyDataForNullDrDonorDto(ArDonorDto arDonorDto){
+    private void setEmptyDataForNullDrDonorDto(DonorDto arDonorDto){
+        arDonorDto.setIdType(StringUtil.getStringEmptyToNull( arDonorDto.getIdType()));
         if(arDonorDto.isDirectedDonation()){
-            arDonorDto.setIdType(StringUtil.getStringEmptyToNull( arDonorDto.getIdType()));
             arDonorDto.setIdNumber(StringUtil.getStringEmptyToNull( arDonorDto.getIdNumber()));
         }else {
-            arDonorDto.setIdType(StringUtil.getStringEmptyToNull(arDonorDto.getIdType()));
             arDonorDto.setSource(StringUtil.getStringEmptyToNull(arDonorDto.getSource()));
             arDonorDto.setOtherSource(StringUtil.getStringEmptyToNull(arDonorDto.getOtherSource()));
             arDonorDto.setDonorSampleCode(StringUtil.getStringEmptyToNull(arDonorDto.getDonorSampleCode()));
+        }
+        if( arDonorDto.getAge() != null){
+            arDonorDto.getDonorSampleAgeDtos().stream().forEach( donorSampleAgeDto -> {
+                if(donorSampleAgeDto.getAge() == arDonorDto.getAge()){
+                    donorSampleAgeDto.setStatus(DataSubmissionConsts.DONOR_AGE_STATUS_USED);
+                }else {
+                    donorSampleAgeDto.setStatus(DataSubmissionConsts.DONOR_AGE_STATUS_INACTIVE);
+                }
+            }
+            );
         }
     }
 

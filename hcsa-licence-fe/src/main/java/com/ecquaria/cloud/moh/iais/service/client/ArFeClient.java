@@ -34,15 +34,6 @@ public interface ArFeClient {
     @GetMapping(value = "/ar-common/ar-cycle-stage/id", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<ArCycleStageDto> getArCycleStageDtoById(@RequestParam(name = "id") String id);
 
-    @PutMapping(value = "/ar-common/ar-donor/save", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<ArDonorDto> saveArDonorDto(@RequestBody ArDonorDto arDonorDto);
-
-    @GetMapping(value = "/ar-common/ar-donor/id", produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<ArDonorDto> getArDonorDtoById(@RequestParam(name = "id") String id);
-
-    @GetMapping(value = "/ar-common/ar-donor/cycleStageId", produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<List<ArDonorDto>> getArDonorDtosByCycleStageId(@RequestParam(name = "cycleStageId") String cycleStageId);
-
     @PutMapping(value = "/ar-common/fertilisation/save", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<FertilisationDto> saveFertilisationDto(@RequestBody FertilisationDto fertilisationDto);
 

@@ -2,8 +2,8 @@ package com.ecquaria.cloud.moh.iais.validation.dataSubmission;
 
 import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArCycleStageDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArDonorDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DonorDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.SgNoValidator;
@@ -14,7 +14,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -55,7 +54,7 @@ public class ArCycleStageDtoValidator implements CustomizeValidator {
             errorMap.put("deliveredThroughChildren", MessageUtil.getMessageDesc("DS_ERR011",stringStringMap).trim());
         }
 
-        List<ArDonorDto> arDonorDtos = arCycleStageDto.getArDonorDtos();
+        List<DonorDto> arDonorDtos = arCycleStageDto.getDonorDtos();
         arDonorDtos.forEach( arDonorDto -> {
                     if(arCycleStageDto.isUsedDonorOocyte() && arDonorDto.getAge() == null){
                         errorMap.put("age"+ arDonorDto.getArDonorIndex() ,"GENERAL_ERR0006");

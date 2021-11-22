@@ -1,1 +1,1 @@
-<%@include file="/WEB-INF/jsp/iais/dataSubmission/assistedReproduction/dsIuiCycleStageChoose.jsp"%>
+<%@include file="/WEB-INF/jsp/iais/dataSubmission/assistedReproduction/iuiCycleStage.jsp"%>
