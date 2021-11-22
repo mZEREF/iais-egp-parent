@@ -3,8 +3,10 @@ package com.ecquaria.cloud.moh.iais.action.datasubmission;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.FertilisationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInventoryDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant;
 import com.ecquaria.cloud.moh.iais.helper.ControllerHelper;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
@@ -54,11 +56,27 @@ public class FertilisationDelegator extends CommonDelegator{
         HttpServletRequest request = bpc.request;
         ArSuperDataSubmissionDto arSuperDataSubmissionDto = DataSubmissionHelper.getCurrentArDataSubmission(request);
         ParamUtil.setSessionAttr(request, DataSubmissionConstant.AR_DATA_SUBMISSION, arSuperDataSubmissionDto);
+
     }
 
     @Override
     public void prepareConfim(BaseProcessClass bpc) {
+        ArSuperDataSubmissionDto arSuperDataSubmissionDto = DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
+        FertilisationDto fertilisationDto = arSuperDataSubmissionDto.getFertilisationDto();
+        int FreshOocytesInseminatedNum = IaisCommonUtils.getIntByNum(fertilisationDto.getFreshOocytesInseminatedNum(),0);
+        int FreshOocytesMicroInjectedNum=IaisCommonUtils.getIntByNum(fertilisationDto.getFreshOocytesMicroInjectedNum(),0);
+        int FreshOocytesGiftNum=IaisCommonUtils.getIntByNum(fertilisationDto.getFreshOocytesGiftNum(),0);
+        int FreshOocytesZiftNu=IaisCommonUtils.getIntByNum(fertilisationDto.getFreshOocytesZiftNum(),0);
+        int ThawedOocytesInseminatedNum= IaisCommonUtils.getIntByNum(fertilisationDto.getThawedOocytesInseminatedNum(),0);
+        int ThawedOocytesMicroinjectedNum= IaisCommonUtils.getIntByNum(fertilisationDto.getThawedOocytesMicroinjectedNum(),0);
+        int ThawedOocytesGiftNum=IaisCommonUtils.getIntByNum(fertilisationDto.getThawedOocytesGiftNum(),0);
+        int ThawedOocytesZiftNum=IaisCommonUtils.getIntByNum(fertilisationDto.getThawedOocytesZiftNum(),0);
+        PatientInventoryDto patientInventoryDto = DataSubmissionHelper.initPatientInventoryTable(bpc.request);
 
+        int changeFreshOocytes =FreshOocytesInseminatedNum+ FreshOocytesMicroInjectedNum+FreshOocytesGiftNum+FreshOocytesZiftNu;
+        int changeThawedOocytes = ThawedOocytesInseminatedNum+ThawedOocytesMicroinjectedNum+ThawedOocytesGiftNum+ThawedOocytesZiftNum;
+        patientInventoryDto.setChangeFreshOocytes(-1*changeFreshOocytes);
+        patientInventoryDto.setChangeThawedOocytes(-1*changeThawedOocytes);
     }
 
     @Override

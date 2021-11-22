@@ -31,9 +31,7 @@ public class FertilisationDtoValidator implements CustomizeValidator {
         FertilisationDto fertilisationDto = arSuperDataSubmissionDto.getFertilisationDto();
         List<String> atuList = fertilisationDto.getAtuList();
         List<String> sosList = fertilisationDto.getSosList();
-        Integer extractedSpermVialsNum = Integer.valueOf(fertilisationDto.getExtractedSpermVialsNum());
-        Integer usedSpermVialsNum =Integer.valueOf(fertilisationDto.getUsedSpermVialsNum());
-       int patientFrozen = 100;
+        int patientFrozen = 100;
         int thawedMaxNum = 100;
         int freshMaxNum = 100;
         if(arSuperDataSubmissionDto.getPatientInventoryDto() != null){
@@ -107,15 +105,20 @@ public class FertilisationDtoValidator implements CustomizeValidator {
         if(totalFreshSum>freshMaxNum){
             errorMap.put("freshOocytesZiftNum", errMsgFresh);
         }
+        if (StringUtil.isNotEmpty(fertilisationDto.getExtractedSpermVialsNum()) ||StringUtil.isNotEmpty(fertilisationDto.getUsedSpermVialsNum())){
+            Integer extractedSpermVialsNum = Integer.valueOf(fertilisationDto.getExtractedSpermVialsNum());
+            Integer usedSpermVialsNum =Integer.valueOf(fertilisationDto.getUsedSpermVialsNum());
 
-       if(usedSpermVialsNum != null && usedSpermVialsNum >= 0) {
-            if(extractedSpermVialsNum != null) {
-                int FrozenSumNum = patientFrozen + extractedSpermVialsNum;
-                if(usedSpermVialsNum > FrozenSumNum) {
-                    errorMap.put("usedSpermVialsNum", "Cannot be greater than 'How many vials of sperm were extracted?' + frozen sperm tagged to patient");
+            if(usedSpermVialsNum != null && usedSpermVialsNum >= 0) {
+                if(extractedSpermVialsNum != null) {
+                    int FrozenSumNum = patientFrozen + extractedSpermVialsNum;
+                    if(usedSpermVialsNum > FrozenSumNum) {
+                        errorMap.put("usedSpermVialsNum", "Cannot be greater than 'How many vials of sperm were extracted?' + frozen sperm tagged to patient");
+                    }
                 }
             }
         }
+
         return  errorMap;
     }
 }
