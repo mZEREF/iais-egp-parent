@@ -74,9 +74,9 @@ public class MohDsActionDelegator {
         String dsType = ParamUtil.getString(bpc.request, "dsType");
         String submissionNo = ParamUtil.getString(bpc.request, "submissionNo");
         if (DataSubmissionConsts.DS_AR.equals(dsType)) {
-            ArSuperDataSubmissionDto dataSubmissionDto = arDataSubmissionService.getArSuperDataSubmissionDtoBySubmissionNo(
+            ArSuperDataSubmissionDto arSuper = arDataSubmissionService.getArSuperDataSubmissionDtoBySubmissionNo(
                     submissionNo);
-            DataSubmissionHelper.setCurrentArDataSubmission(dataSubmissionDto, bpc.request);
+            DataSubmissionHelper.setCurrentArDataSubmission(arSuper, bpc.request);
         } else {
             ParamUtil.setRequestAttr(bpc.request, "isValid", "N");
         }
@@ -95,26 +95,29 @@ public class MohDsActionDelegator {
         if (StringUtil.isEmpty(dsType) || StringUtil.isEmpty(submissionNo)) {
             uri = DEFAULT_URI;
         } else if (DataSubmissionConsts.DS_AR.equals(dsType)) {
-            ArSuperDataSubmissionDto dataSubmissionDto = arDataSubmissionService.getArSuperDataSubmissionDtoBySubmissionNo(
+            ArSuperDataSubmissionDto arSuper = arDataSubmissionService.getArSuperDataSubmissionDtoBySubmissionNo(
                     submissionNo);
-            if (dataSubmissionDto == null) {
+            if (arSuper == null) {
                 uri = DEFAULT_URI;
             } else {
-                dataSubmissionDto.setAppType(DataSubmissionConsts.DS_APP_TYPE_RFC);
-                if (DataSubmissionConsts.AR_TYPE_SBT_PATIENT_INFO.equals(dataSubmissionDto.getSubmissionType())) {
-                    dataSubmissionDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+                arSuper.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+                arSuper.setAppType(DataSubmissionConsts.DS_APP_TYPE_RFC);
+                if (arSuper.getDataSubmissionDto() != null) {
+                    arSuper.getDataSubmissionDto().setAppType(DataSubmissionConsts.DS_APP_TYPE_RFC);
+                }
+                if (DataSubmissionConsts.AR_TYPE_SBT_PATIENT_INFO.equals(arSuper.getSubmissionType())) {
                     uri = InboxConst.URL_LICENCE_WEB_MODULE + "MohARPatientInformationManual";
-                } else if (DataSubmissionConsts.AR_TYPE_SBT_DONOR_SAMPLE.equals(dataSubmissionDto.getSubmissionType())) {
+                } else if (DataSubmissionConsts.AR_TYPE_SBT_DONOR_SAMPLE.equals(arSuper.getSubmissionType())) {
                     uri = InboxConst.URL_LICENCE_WEB_MODULE + "MohARSubmitDonor";
-                } else if (dataSubmissionDto.getDataSubmissionDto() == null
-                        || StringUtil.isEmpty(dataSubmissionDto.getDataSubmissionDto().getCycleStage())) {
+                } else if (arSuper.getDataSubmissionDto() == null
+                        || StringUtil.isEmpty(arSuper.getDataSubmissionDto().getCycleStage())) {
                     uri = DEFAULT_URI;
                 } else {
                     uri = InboxConst.URL_LICENCE_WEB_MODULE + "MohARCycleStagesManual/PrepareStage?crud_type="
                             + DataSubmissionConstant.CRUD_TYPE_RFC;
                 }
             }
-            DataSubmissionHelper.setCurrentArDataSubmission(dataSubmissionDto, bpc.request);
+            DataSubmissionHelper.setCurrentArDataSubmission(arSuper, bpc.request);
         }
         ParamUtil.setRequestAttr(bpc.request, "uri", uri);
     }

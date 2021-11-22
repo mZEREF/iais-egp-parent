@@ -229,6 +229,7 @@ public final class DataSubmissionHelper {
             cycleStage = DataSubmissionConsts.DS_CYCLE_STAGE_DONOR_SAMPLE;
         }
         dataSubmission.setCycleStage(cycleStage);
+        dataSubmission.setAppType(currentArDataSubmission.getAppType());
         if (StringUtil.isEmpty(dataSubmission.getStatus())) {
             dataSubmission.setStatus(DataSubmissionConsts.DS_STATUS_ACTIVE);
         }
@@ -270,6 +271,7 @@ public final class DataSubmissionHelper {
         }
         dataSubmission.setCycleStage(cycleStage);
         dataSubmission.setStatus(DataSubmissionConsts.DS_STATUS_ACTIVE);
+        dataSubmission.setAppType(dpSuperDataSubmissionDto.getAppType());
         return dataSubmission;
     }
 

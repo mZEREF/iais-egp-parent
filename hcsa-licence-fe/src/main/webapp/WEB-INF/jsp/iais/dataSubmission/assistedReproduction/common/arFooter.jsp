@@ -12,8 +12,9 @@
     </div>
 </div>
 <input type="hidden" id="saveDraftSuccess" value="${saveDraftSuccess}">
-<iais:confirm msg="This application has been saved successfully" callBack="cancelDraft();" popupOrder="saveDraft" yesBtnDesc="continue"
-              cancelBtnDesc="exit to inbox" cancelBtnCls="btn btn-primary" yesBtnCls="btn btn-secondary" cancelFunc="jumpToInbox()" />
+<iais:confirm msg="This application has been saved successfully" callBack="cancelDraft();" popupOrder="saveDraft"
+              yesBtnDesc="continue" cancelBtnDesc="exit to inbox" cancelBtnCls="btn btn-primary"
+              yesBtnCls="btn btn-secondary" cancelFunc="jumpToInbox()" needFungDuoJi="false"/>
 <%-- validation --%>
 <%@ include file="/WEB-INF/jsp/include/validation.jsp" %>
 <%@ include file="formHidden.jsp" %>

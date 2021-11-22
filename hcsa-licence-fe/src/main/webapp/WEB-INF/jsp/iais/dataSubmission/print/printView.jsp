@@ -43,9 +43,7 @@
                 <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
                     <c:choose>
                     <c:when test="${printflag == 'PTART'}">
-                        <%@include file="/WEB-INF/jsp/iais/dataSubmission/assistedReproduction/section/previewPatientDetail.jsp" %>
-                        <%@include file="/WEB-INF/jsp/iais/dataSubmission/assistedReproduction/section/previewHusbandDetail.jsp" %>
-                        <%@include file="/WEB-INF/jsp/iais/dataSubmission/assistedReproduction/common/arDeclaration.jsp" %>
+                        <%@include file="/WEB-INF/jsp/iais/dataSubmission/print/printPatientAR.jsp" %>
                     </c:when>
                     <c:when test="${printflag == 'ART'}">
                         <jsp:include page="/WEB-INF/jsp/iais/dataSubmission/print/printAR.jsp" />
