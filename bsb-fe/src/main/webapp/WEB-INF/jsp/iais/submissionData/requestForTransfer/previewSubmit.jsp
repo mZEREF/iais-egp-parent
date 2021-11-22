@@ -93,7 +93,7 @@
                                                             <div class="panel-body">
                                                                 <div class="text-right app-font-size-16"><a href="#" data-step-key="approvalProfile"><em class="fa fa-pencil-square-o"></em>Edit</a>
                                                                 </div>
-                                                                <c:forEach var="tsNotList" items="${transferNotDto.transferNotList}" varStatus="status">
+                                                                <c:forEach var="item" items="${transferLists}" varStatus="status">
                                                                     <div class="panel-main-content form-horizontal min-row">
                                                                         <div class="form-group">
                                                                             <div class="col-10"><strong>Agents/Toxin ${status.index+1}</strong></div>
@@ -101,42 +101,32 @@
                                                                         </div>
                                                                             <div>
                                                                                 <div class="form-group">
-                                                                                    <label class="col-xs-5 col-md-4 control-label">Transfer Code</label>
-                                                                                    <div class="col-sm-7 col-md-5 col-xs-7"><p></p></div>
-                                                                                    <div class="clear"></div>
-                                                                                </div>
-                                                                                <div class="form-group">
                                                                                     <label class="col-xs-5 col-md-4 control-label">Schedule Type</label>
-                                                                                    <div class="col-sm-7 col-md-5 col-xs-7"><p>${tsNotList.scheduleType}</p></div>
+                                                                                    <div class="col-sm-7 col-md-5 col-xs-7"><p>${item.scheduleType}</p></div>
                                                                                     <div class="clear"></div>
                                                                                 </div>
                                                                                 <div class="form-group">
                                                                                     <label class="col-xs-5 col-md-4 control-label">Biological Agent/Toxin</label>
-                                                                                    <div class="col-sm-7 col-md-5 col-xs-7"><p>${tsNotList.batCode}</p></div>
+                                                                                    <div class="col-sm-7 col-md-5 col-xs-7"><p>${item.batCode}</p></div>
                                                                                     <div class="clear"></div>
                                                                                 </div>
                                                                                 <c:choose>
-                                                                                    <c:when test="${tsNotList.scheduleType eq 'SCHTYPE006'}">
+                                                                                    <c:when test="${item.scheduleType ne 'SCHTYPE006'}">
                                                                                         <div class="form-group">
-                                                                                            <label class="col-xs-5 col-md-4 control-label">Quantity to Transfer</label>
-                                                                                            <div class="col-sm-7 col-md-5 col-xs-7"><p>${tsNotList.transferQty}</p></div>
-                                                                                            <div class="clear"></div>
-                                                                                        </div>
-                                                                                        <div class="form-group">
-                                                                                            <label class="col-xs-5 col-md-4 control-label">Unit of Measurement</label>
-                                                                                            <div class="col-sm-7 col-md-5 col-xs-7"><p>${tsNotList.mstUnit}</p></div>
+                                                                                            <label class="col-xs-5 col-md-4 control-label">Expected Quantity of Biological Agent</label>
+                                                                                            <div class="col-sm-7 col-md-5 col-xs-7"><p>${item.expectedBatQty}</p></div>
                                                                                             <div class="clear"></div>
                                                                                         </div>
                                                                                     </c:when>
                                                                                     <c:otherwise>
                                                                                         <div class="form-group">
-                                                                                            <label class="col-xs-5 col-md-4 control-label">Type of Transfer</label>
-                                                                                            <div class="col-sm-7 col-md-5 col-xs-7"><p>${tsNotList.transferType}</p></div>
+                                                                                            <label class="col-xs-5 col-md-4 control-label">Expected Quantity to Receive</label>
+                                                                                            <div class="col-sm-7 col-md-5 col-xs-7"><p>${item.expReceivedQty}</p></div>
                                                                                             <div class="clear"></div>
                                                                                         </div>
                                                                                         <div class="form-group">
-                                                                                            <label class="col-xs-5 col-md-4 control-label">Quantity of Biological Agent</label>
-                                                                                            <div class="col-sm-7 col-md-5 col-xs-7"><p>${tsNotList.batQty}</p></div>
+                                                                                            <label class="col-xs-5 col-md-4 control-label">Unit of Measurement</label>
+                                                                                            <div class="col-sm-7 col-md-5 col-xs-7"><p>${item.meaUnit}</p></div>
                                                                                             <div class="clear"></div>
                                                                                         </div>
                                                                                     </c:otherwise>
@@ -151,97 +141,9 @@
                                                                     </div>
                                                                     <div>
                                                                         <div class="form-group">
-                                                                            <label class="col-xs-5 col-md-4 control-label">Receiving Facility</label>
-                                                                            <div class="col-sm-7 col-md-5 col-xs-7"><p>${transferNotDto.receiveFacility}</p></div>
+                                                                            <label class="col-xs-5 col-md-4 control-label">Transferring Facility</label>
+                                                                            <div class="col-sm-7 col-md-5 col-xs-7"><p>${facilityInfo.facName}</p></div>
                                                                             <div class="clear"></div>
-                                                                        </div>
-                                                                        <div class="form-group">
-                                                                            <label class="col-xs-5 col-md-4 control-label">Date of Expected Transfer</label>
-                                                                            <div class="col-sm-7 col-md-5 col-xs-7"><p>${transferNotDto.expectedTfDate}</p></div>
-                                                                            <div class="clear"></div>
-                                                                        </div>
-                                                                        <div class="form-group">
-                                                                            <label class="col-xs-5 col-md-4 control-label">Expected Arrival Time at Receiving Facility</label>
-                                                                            <div class="col-sm-7 col-md-5 col-xs-7"><p>${transferNotDto.expArrivalTime}</p></div>
-                                                                            <div class="clear"></div>
-                                                                        </div>
-                                                                        <div class="form-group">
-                                                                            <label class="col-xs-5 col-md-4 control-label">Name of Courier Service Provider</label>
-                                                                            <div class="col-sm-7 col-md-5 col-xs-7"><p>${transferNotDto.providerName}</p></div>
-                                                                            <div class="clear"></div>
-                                                                        </div>
-                                                                        <div class="form-group">
-                                                                            <label class="col-xs-5 col-md-4 control-label">Remarks</label>
-                                                                            <div class="col-sm-7 col-md-5 col-xs-7"><p>${transferNotDto.remarks}</p></div>
-                                                                            <div class="clear"></div>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="panel-main-content form-horizontal min-row">
-                                                                    <div class="form-group">
-                                                                        <div class="col-10"><strong>Uploaded Documents</strong></div>
-                                                                        <div class="clear"></div>
-                                                                    </div>
-                                                                    <div>
-                                                                        <div class="form-group">
-                                                                            <div class="col-10"><strong>Inventory: Biological Agents</strong></div>
-                                                                            <div class="clear"></div>
-                                                                        </div>
-                                                                        <c:forEach var="doc" items="${docMeta.get('ityBat')}">
-                                                                            <div class="form-group">
-                                                                                <div class="col-10"><p>${doc.filename}(${String.format("%.1f", doc.size/1024.0)}KB)</p></div>
-                                                                                <div class="col-sm-7 col-md-5 col-xs-7"><p></p></div>
-                                                                                <div class="clear"></div>
-                                                                            </div>
-                                                                        </c:forEach>
-
-                                                                        <div class="form-group">
-                                                                            <div class="col-10"><strong>Inventory: Toxins</strong></div>
-                                                                            <div class="clear"></div>
-                                                                        </div>
-                                                                        <c:forEach var="doc" items="${docMeta.get('ityToxin')}">
-                                                                            <div class="form-group">
-                                                                                <div class="col-10"><p>${doc.filename}(${String.format("%.1f", doc.size/1024.0)}KB)</p></div>
-                                                                                <div class="col-sm-7 col-md-5 col-xs-7"><p></p></div>
-                                                                                <div class="clear"></div>
-                                                                            </div>
-                                                                        </c:forEach>
-
-                                                                        <div class="form-group">
-                                                                            <label class="col-xs-5 col-md-4 control-label">Others</label>
-                                                                            <div class="col-sm-7 col-md-5 col-xs-7"><p></p></div>
-                                                                            <div class="clear"></div>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-
-                                                    <div class="panel panel-default">
-                                                        <div class="panel-heading completed">
-                                                            <h4 class="panel-title">
-                                                                <a class="collapsed" data-toggle="collapse" href="#previewDec">Declarations</a>
-                                                            </h4>
-                                                        </div>
-                                                        <div id="previewDec" class="panel-collapse collapse">
-                                                            <div class="panel-body">
-                                                                <div class="text-right app-font-size-16"><a href="#"><em
-                                                                        class="fa fa-pencil-square-o"></em>Edit</a>
-                                                                </div>
-                                                                <div class="panel-main-content form-horizontal min-row">
-                                                                    <div>
-                                                                        <div class="form-group">
-                                                                            <p>I will ensure to the best of my ability that the packaging of the materials and the transfer, is carried out in accordance with the requirements stipulated in the BATA Transportation Regulations</p>
-                                                                            <br/>
-                                                                            <div class="col-sm-4" style="margin-top: 8px">
-                                                                                <input type="radio" name="declare" id="declareT" value="yes"/>
-                                                                                <label for="declareT">yes</label>
-                                                                            </div>
-                                                                            <div class="col-sm-4" style="margin-top: 8px">
-                                                                                <input type="radio" name="declare" id="declareN" value="no"/>
-                                                                                <label for="declareN">no</label>
-                                                                            </div>
                                                                         </div>
                                                                     </div>
                                                                 </div>

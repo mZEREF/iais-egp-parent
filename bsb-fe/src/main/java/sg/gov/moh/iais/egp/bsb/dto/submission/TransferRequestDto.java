@@ -19,7 +19,7 @@ import java.util.List;
  **/
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class TransferRequestDto {
+public class TransferRequestDto implements Serializable {
     @Data
     @NoArgsConstructor
     public static class TransferList implements Serializable {
@@ -74,7 +74,7 @@ public class TransferRequestDto {
     }
 
     public boolean doValidation() {
-        this.validationResultDto = (ValidationResultDto) SpringReflectionUtils.invokeBeanMethod("transferFeignClient", "validateTransferNot", new Object[]{this});
+        this.validationResultDto = (ValidationResultDto) SpringReflectionUtils.invokeBeanMethod("transferFeignClient", "validateRequestTransfer", new Object[]{this});
         return validationResultDto.isPass();
     }
 
