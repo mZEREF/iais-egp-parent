@@ -107,9 +107,6 @@
                                        for="isPgtMDsld"><span
                                         class="check-square"></span>To detect Sex-linked Disease</label>
                             </div>
-                        </iais:value>
-                        <iais:field width="6" value="" />
-                        <iais:value width="6" cssClass="col-md-6">
                             <div class="form-check">
                                 <input class="form-check-input"
                                        type="checkbox"
@@ -121,9 +118,6 @@
                                        for="isPgtMWithHla"><span
                                         class="check-square"></span>Together with HLA Matching</label>
                             </div>
-                        </iais:value>
-                        <iais:field width="6" value="" />
-                        <iais:value width="6" cssClass="col-md-6">
                             <div class="form-check">
                                 <input class="form-check-input"
                                        type="checkbox"
@@ -188,9 +182,6 @@
                                        for="isPgtAAma"><span
                                         class="check-square"></span>Advanced Maternal Age</label>
                             </div>
-                        </iais:value>
-                        <iais:field width="6" value="" />
-                        <iais:value width="6" cssClass="col-md-6">
                             <div class="form-check">
                                 <input class="form-check-input"
                                        type="checkbox"
@@ -202,9 +193,6 @@
                                        for="isPgtATomrif"><span
                                         class="check-square"></span>Two Or More Recurrent Implantation Failure</label>
                             </div>
-                        </iais:value>
-                        <iais:field width="6" value="" />
-                        <iais:value width="6" cssClass="col-md-6">
                             <div class="form-check">
                                 <input class="form-check-input"
                                        type="checkbox"
@@ -217,7 +205,6 @@
                                         class="check-square"></span>Two Or More Repeated Pregnancy Losses</label>
                             </div>
                             <span class="error-msg" name="iaisErrorMsg" id="error_PerformedBecause"></span>
-
                         </iais:value>
                     </iais:row>
                     <iais:row>

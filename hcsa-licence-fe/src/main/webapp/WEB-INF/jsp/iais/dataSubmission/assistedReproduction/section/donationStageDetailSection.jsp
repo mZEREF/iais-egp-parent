@@ -93,8 +93,6 @@
                                    for="isCurCenResTypeHescr"><span
                                     class="check-square"></span>Human Embryonic Stem Cell Research</label>
                         </div>
-                    </iais:value>
-                    <iais:value width="6" cssClass="col-md-6">
                         <div class="form-check">
                             <input class="form-check-input"
                                    type="checkbox"
@@ -106,9 +104,6 @@
                                    for="isCurCenResTypeRrar"><span
                                     class="check-square"></span>Research Related to Assisted Reproduction</label>
                         </div>
-                    </iais:value>
-                    <iais:field width="6" value="" />
-                    <iais:value width="6" cssClass="col-md-6">
                         <div class="form-check">
                             <input class="form-check-input"
                                    type="checkbox"
