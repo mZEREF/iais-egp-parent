@@ -1128,7 +1128,7 @@ public class RequestForChangeDelegator {
             error.put("uenError", msgGenError006);
         }else{
             try{
-                feEicGatewayClient.getUenInfo(uen);
+                //feEicGatewayClient.getUenInfo(uen);
             }catch (Throwable e){
              log.error(StringUtil.changeForLog("The gent uen info throw exception"+e.getMessage()));
             }
