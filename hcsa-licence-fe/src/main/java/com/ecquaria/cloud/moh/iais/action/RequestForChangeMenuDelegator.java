@@ -729,6 +729,19 @@ public class RequestForChangeMenuDelegator {
             }
         }
         List<AppSubmissionDto> appSubmissionDtos = requestForChangeService.getAppSubmissionDtoByLicenceIds(licenceIds);
+        // validate the related app submissions
+        Map<AppSubmissionDto, List<String>> errorListMap = IaisCommonUtils.genNewHashMap();
+        for (AppSubmissionDto dto : appSubmissionDtos) {
+            List<String> errorList = appSubmissionService.doPreviewSubmitValidate(null, dto, false);
+            if (!errorList.isEmpty()) {
+                errorListMap.put(dto, errorList);
+            }
+        }
+        if (!errorListMap.isEmpty()) {
+            bpc.request.setAttribute(NewApplicationConstant.SHOW_OTHER_ERROR, NewApplicationHelper.getErrorMsg(errorListMap));
+            ParamUtil.setRequestAttr(bpc.request, "action_type", "valid");
+            return;
+        }
         String appGroupNo = requestForChangeService.getApplicationGroupNumber(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
         String draftNo = appSubmissionService.getDraftNo(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
         AppEditSelectDto appEditSelectDto = new AppEditSelectDto();
@@ -1509,6 +1522,7 @@ public class RequestForChangeMenuDelegator {
 
     public void doSubmit(BaseProcessClass bpc) throws Exception {
         log.debug(StringUtil.changeForLog("the do doSubmit start ...."));
+        ParamUtil.setRequestAttr(bpc.request, RfcConst.SWITCH_VALUE, "loading");
         List<LicenceDto> selectLicence = (List<LicenceDto>) bpc.request.getSession().getAttribute("licenceDtoList");
         AppSubmissionDto oldAppSubmissionDtoappSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, "oldAppSubmissionDto");
         AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, RfcConst.APPSUBMISSIONDTO);
@@ -1529,7 +1543,7 @@ public class RequestForChangeMenuDelegator {
                     for (AppGrpPremisesDto appGrpPremisesDto : oldAppSubmissionDtoappSubmissionDtoAppGrpPremisesDtoList) {
                         boolean configIsChange = requestForChangeService.serviceConfigIsChange(serviceIds, appGrpPremisesDto.getPremisesType());
                         if (!configIsChange) {
-                            ParamUtil.setRequestAttr(bpc.request, RfcConst.SWITCH_VALUE, "loading");
+
                             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE, "prePremisesEdit");
                             bpc.request.setAttribute("SERVICE_CONFIG_CHANGE", MessageUtil.replaceMessage("RFC_ERR020", string.getSvcName(), "ServiceName"));
                             return;
@@ -1538,14 +1552,12 @@ public class RequestForChangeMenuDelegator {
                 }
                 List<ApplicationDto> applicationDtos = requestForChangeService.getAppByLicIdAndExcludeNew(string.getId());
                 if (!IaisCommonUtils.isEmpty(applicationDtos)) {
-                    ParamUtil.setRequestAttr(bpc.request, RfcConst.SWITCH_VALUE, "loading");
                     ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE, "prePremisesEdit");
                     bpc.request.setAttribute("rfcPendingApplication", "errorRfcPendingApplication");
                     return;
                 }
                 boolean b = requestForChangeService.baseSpecLicenceRelation(string);
                 if(!b){
-                    ParamUtil.setRequestAttr(bpc.request, RfcConst.SWITCH_VALUE, "loading");
                     ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE, "prePremisesEdit");
                     bpc.request.setAttribute("rfcPendingApplication", "errorRfcPendingApplication");
                     return;
@@ -1556,10 +1568,8 @@ public class RequestForChangeMenuDelegator {
         boolean eqGrpPremises = EqRequestForChangeSubmitResultChange.isChangeGrpPremises(appGrpPremisesDtoList1,
                 oldAppSubmissionDtoappSubmissionDtoAppGrpPremisesDtoList);
         if (!eqGrpPremises) {
-            ParamUtil.setRequestAttr(bpc.request, RfcConst.SWITCH_VALUE, "loading");
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE, "prePremisesEdit");
             bpc.request.setAttribute("RFC_ERROR_NO_CHANGE", "RFC_ERR015");
-
             return;
         }
         String licenceId = appSubmissionDto.getLicenceId();
@@ -1613,7 +1623,19 @@ public class RequestForChangeMenuDelegator {
                     total, null, appGroupNo, appEditSelectDto, appSubmissionDtos, bpc.request);
             log.info(StringUtil.changeForLog("The affected data is valid - " + isValid));
         }
-        ParamUtil.setRequestAttr(bpc.request, RfcConst.SWITCH_VALUE, "loading");
+        // validate the related app submissions
+        Map<AppSubmissionDto, List<String>> errorListMap = IaisCommonUtils.genNewHashMap();
+        for (AppSubmissionDto dto : appSubmissionDtos) {
+            List<String> errorList = appSubmissionService.doPreviewSubmitValidate(null, dto, false);
+            if (!errorList.isEmpty()) {
+                errorListMap.put(dto, errorList);
+            }
+        }
+        if (!errorListMap.isEmpty()) {
+            bpc.request.setAttribute(NewApplicationConstant.SHOW_OTHER_ERROR, NewApplicationHelper.getErrorMsg(errorListMap));
+            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE, "prePremisesEdit");
+            return;
+        }
         String submissionId = generateIdClient.getSeqId().getEntity();
         AppSubmissionListDto appSubmissionListDto = new AppSubmissionListDto();
         Long l = System.currentTimeMillis();

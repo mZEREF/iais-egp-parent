@@ -1159,13 +1159,13 @@ public class ClinicalLaboratoryDelegator {
         List<AppSvcRelatedInfoDto> dto = appSubmissionDto.getAppSvcRelatedInfoDtoList();
         Map<String, String> map = new HashMap<>();
         ServiceStepDto serviceStepDto = new ServiceStepDto();
+        Map<String, AppSvcPersonAndExtDto> licPersonMap = null;
+        if (ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appSubmissionDto.getAppType())) {
+                licPersonMap = (Map<String, AppSvcPersonAndExtDto>) ParamUtil.getSessionAttr(
+                bpc.request, NewApplicationDelegator.LICPERSONSELECTMAP);
+        }
         for (int i = 0; i < dto.size(); i++) {
-            String serviceId = dto.get(i).getServiceId();
-            List<HcsaServiceStepSchemeDto> hcsaServiceStepSchemeDtos = serviceConfigService.getHcsaServiceStepSchemesByServiceId(serviceId);
-            serviceStepDto.setHcsaServiceStepSchemeDtos(hcsaServiceStepSchemeDtos);
-            List<HcsaSvcPersonnelDto> currentSvcAllPsnConfig = serviceConfigService.getSvcAllPsnConfig(hcsaServiceStepSchemeDtos, serviceId);
-            map = appSubmissionService.doCheckBox(bpc, sB, hcsaServiceStepSchemeDtos, currentSvcAllPsnConfig, dto.get(i), dto,
-                    appSubmissionDto.getAppGrpPremisesDtoList());
+            map = appSubmissionService.doCheckBox(dto.get(i), appSubmissionDto, licPersonMap);
         }
         if (!StringUtil.isEmpty(sB.toString())) {
             map.put("error", "error");
