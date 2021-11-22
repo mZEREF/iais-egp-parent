@@ -27,6 +27,34 @@ public class ThawingStageDtoValidator implements CustomizeValidator {
             String errMsg = MessageUtil.replaceMessage("GENERAL_ERR0006", "Thawing Oocyte(s) or Embryo(s)", "field");
             errorMap.put("thawings", errMsg);
         }
+        if (thawingStageDto.getHasEmbryo()){
+            if (thawingStageDto.getThawedEmbryosSurvivedNum() < 0){
+                String errMsg = MessageUtil.replaceMessage("GENERAL_ERR0006", "No. of Embryos Survived after Thawing", "field");
+                errorMap.put("thawedEmbryosSurvivedNum", errMsg);
+            }
+            if (thawingStageDto.getThawedEmbryosNum() < 0){
+                String errMsg = MessageUtil.replaceMessage("GENERAL_ERR0006", "No. of Embryos Thawed", "field");
+                errorMap.put("thawedEmbryosNum", errMsg);
+            }
+        }
+        if (thawingStageDto.getHasOocyte()){
+            if (thawingStageDto.getThawedOocytesNum() < 0){
+                String errMsg = MessageUtil.replaceMessage("GENERAL_ERR0006", "No. of Oocytes Thawed", "field");
+                errorMap.put("thawedOocytesNum", errMsg);
+            }
+            if (thawingStageDto.getThawedOocytesSurvivedMatureNum() < 0){
+                String errMsg = MessageUtil.replaceMessage("GENERAL_ERR0006", "No. of Oocytes Survived after Thawing (Mature)", "field");
+                errorMap.put("thawedOocytesSurvivedMatureNum", errMsg);
+            }
+            if (thawingStageDto.getThawedOocytesSurvivedImmatureNum() < 0){
+                String errMsg = MessageUtil.replaceMessage("GENERAL_ERR0006", "No. of Oocytes Survived after Thawing (Immature)", "field");
+                errorMap.put("thawedOocytesSurvivedImmatureNum", errMsg);
+            }
+            if (thawingStageDto.getThawedOocytesSurvivedOtherNum() < 0){
+                String errMsg = MessageUtil.replaceMessage("GENERAL_ERR0006", "No. of Oocytes Survived after Thawing (Others)", "field");
+                errorMap.put("thawedOocytesSurvivedOtherNum", errMsg);
+            }
+        }
         ArSuperDataSubmissionDto arSuperDataSubmissionDto = DataSubmissionHelper.getCurrentArDataSubmission(request);
         PatientInventoryDto patientInventoryDto = arSuperDataSubmissionDto.getPatientInventoryDto();
         if (patientInventoryDto != null) {

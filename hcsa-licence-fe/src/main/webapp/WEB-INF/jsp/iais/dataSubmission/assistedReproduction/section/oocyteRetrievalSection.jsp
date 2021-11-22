@@ -65,21 +65,21 @@
                     <iais:field width="6" value="No. Retrieved (Mature)" cssClass="col-md-6"/>
                     <iais:value width="6" cssClass="col-md-6">
                         <iais:input maxLength="2" type="text" name="matureRetrievedNum" id="matureRetrievedNum"
-                                    value="${oocyteRetrievalStageDto.matureRetrievedNum}"/>
+                                    value="${oocyteRetrievalStageDto.matureRetrievedNum>=0?oocyteRetrievalStageDto.matureRetrievedNum:''}"/>
                     </iais:value>
                 </iais:row>
                 <iais:row>
                     <iais:field width="6" value="No. Retrieved (Immature)" cssClass="col-md-6"/>
                     <iais:value width="6" cssClass="col-md-6">
                         <iais:input maxLength="2" type="text" name="immatureRetrievedNum" id="immatureRetrievedNum"
-                                    value="${oocyteRetrievalStageDto.immatureRetrievedNum}"/>
+                                    value="${oocyteRetrievalStageDto.immatureRetrievedNum>=0?oocyteRetrievalStageDto.immatureRetrievedNum:''}"/>
                     </iais:value>
                 </iais:row>
                 <iais:row>
                     <iais:field width="6" value="No. Retrieved (Others)" cssClass="col-md-6"/>
                     <iais:value width="6" cssClass="col-md-6">
                         <iais:input maxLength="2" type="text" name="otherRetrievedNum" id="otherRetrievedNum"
-                                    value="${oocyteRetrievalStageDto.otherRetrievedNum}"/>
+                                    value="${oocyteRetrievalStageDto.otherRetrievedNum>=0?oocyteRetrievalStageDto.otherRetrievedNum:''}"/>
                     </iais:value>
                 </iais:row>
                 <iais:row>

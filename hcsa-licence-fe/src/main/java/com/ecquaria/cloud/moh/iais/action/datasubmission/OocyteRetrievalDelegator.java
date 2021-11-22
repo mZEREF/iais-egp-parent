@@ -40,9 +40,6 @@ public class OocyteRetrievalDelegator extends CommonDelegator {
         OocyteRetrievalStageDto oocyteRetrievalStageDto = arSuperDataSubmissionDto.getOocyteRetrievalStageDto();
         if (oocyteRetrievalStageDto == null) {
             oocyteRetrievalStageDto = new OocyteRetrievalStageDto();
-            oocyteRetrievalStageDto.setMatureRetrievedNum(0);
-            oocyteRetrievalStageDto.setImmatureRetrievedNum(0);
-            oocyteRetrievalStageDto.setOtherRetrievedNum(0);
             arSuperDataSubmissionDto.setOocyteRetrievalStageDto(oocyteRetrievalStageDto);
             List<ArDonorDto> arDonorDtoList = arSuperDataSubmissionDto.getArDonorDtos();
             if (IaisCommonUtils.isNotEmpty(arDonorDtoList)) {

@@ -4,7 +4,7 @@ $(document).ready(function () {
             $('.oocytesParts').show();
         } else {
             $('.oocytesParts').hide();
-            $('.oocytesParts').find("input").val(0);
+            $('.oocytesParts').find("input").val("");
         }
     });
 
@@ -13,7 +13,7 @@ $(document).ready(function () {
             $('.embryosParts').show();
         } else {
             $('.embryosParts').hide();
-            $('.embryosParts').find("input").val(0);
+            $('.embryosParts').find("input").val("");
         }
     });
 });
