@@ -90,6 +90,7 @@ public class PatientDelegator extends CommonDelegator {
                 .map(dto -> dto.getPatientCode())
                 .orElseGet(() -> generateIdClient.getSeqId().getEntity());
         patient.setPatientCode(patientCode);
+        patient.setPatientType(DataSubmissionConsts.DS_PATIENT_ART);
         patientInfo.setPatient(patient);
         // check previous
         if (patient.isPreviousIdentification()) {

@@ -55,7 +55,12 @@
                         </table>
                     </div>
                 </div>
-                <div class="col-xs-12 col-sm-12 margin-bottom-10">
+                <div class="col-xs-12 col-md-2 text-left">
+                    <a style="padding-left: 5px;" class="back" href="/main-web/eservice/INTERNET/MohDataSubmissionsInbox">
+                        <em class="fa fa-angle-left">&nbsp;</em> Back
+                    </a>
+                </div>
+                <div class="col-xs-12 col-md-10 margin-bottom-10">
                     <div class="text-right">
                         <a class="btn btn-secondary" href="/hcsa-licence-web/eservice/INTERNET/MohARDataSubmission">Start Another Submission</a>
                         <a class="btn btn-primary" href="/main-web/eservice/INTERNET/MohInternetInbox">Go to DashBoard</a>
