@@ -55,25 +55,25 @@ $(document).ready(function() {
             case "DISPTY001":
             case "DISPTY002":
             case "DISPTY003":
-                $('#otherDiscardedNumField').html('Type of Research for Which Donated');
+                $('#otherDiscardedNumField').html('Discarded for Other Reasons');
                 $('#oocyteDisplay').attr("style","display: block");
                 $('#embryoDisplay').attr("style","display: none");
                 break;
             case "DISPTY004":
             case "DISPTY005":
             case "DISPTY006":
-                $('#otherDiscardedNumField').html('Type of Research for Which Donated');
+                $('#otherDiscardedNumField').html('Discarded for Other Reasons');
                 $('#embryoDisplay').attr("style","display: block");
                 $('#oocyteDisplay').attr("style","display: none");
                 break;
             case "DISPTY007":
                 $('#oocyteDisplay').attr("style","display: none");
                 $('#embryoDisplay').attr("style","display: none");
-                $('#otherDiscardedNumField').html('Type of Research for Which Donated <span class="mandatory">*</span>');break;
+                $('#otherDiscardedNumField').html('Discarded for Other Reasons <span class="mandatory">*</span>');break;
             default:
                 $('#oocyteDisplay').attr("style","display: none");
                 $('#embryoDisplay').attr("style","display: none");
-                $('#otherDiscardedNumField').html('Type of Research for Which Donated');
+                $('#otherDiscardedNumField').html('Discarded for Other Reasons');
 
         }
     });
