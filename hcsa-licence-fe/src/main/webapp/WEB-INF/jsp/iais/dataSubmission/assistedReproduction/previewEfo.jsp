@@ -14,7 +14,11 @@
     <div class="main-content">
         <div class="container center-content">
             <div class="col-xs-12">
-                <h3>Preview & Submit</h3>
+                <div class="row form-group" style="border-bottom: 1px solid #D1D1D1;">
+                    <div class="col-xs-12 col-md-10">
+                        <strong style="font-size: 2rem;">Preview & Submit</strong>
+                    </div>
+                </div>
                 <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
                     <%@include file="section/previewEfoDetail.jsp" %>
                     <%@include file="common/arDeclaration.jsp" %>
