@@ -1,7 +1,7 @@
 <%@ page import="com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant" %>
 <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
-<%@ taglib uri="http://www.ecq.com/iais" prefix="iais" %>
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>
+
 <%
     //handle to the Engine APIs
     sop.webflow.rt.api.BaseProcessClass process =
@@ -32,5 +32,28 @@
 </style>
 
 <form method="post" id="mainForm" action=<%=continueURL%>>
-    <%@include file="assistedReproduction/printPatientInformation.jsp" %>
+    <div class="main-content">
+        <div class="container center-content">
+            <div class="col-xs-12">
+                <div class="row">
+                    <div class="col-xs-12 col-md-10">
+                        <%--<h3>Preview</h3>--%>
+                    </div>
+                </div>
+                <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                    <c:choose>
+                    <c:when test="${printflag == 'PTART'}">
+                        <%@include file="/WEB-INF/jsp/iais/dataSubmission/assistedReproduction/section/previewPatientDetail.jsp" %>
+                        <%@include file="/WEB-INF/jsp/iais/dataSubmission/assistedReproduction/section/previewHusbandDetail.jsp" %>
+                        <%@include file="/WEB-INF/jsp/iais/dataSubmission/assistedReproduction/common/arDeclaration.jsp" %>
+                    </c:when>
+                    <c:when test="${printflag == 'ART'}">
+                        <jsp:include page="/WEB-INF/jsp/iais/dataSubmission/print/printAR.jsp" />
+                    </c:when>
+                    </c:choose>
+
+                </div>
+            </div>
+        </div>
+    </div>
 </form>

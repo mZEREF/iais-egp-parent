@@ -28,4 +28,7 @@ public class DataSubmissionConstant {
     public static String DP_DATA_SUBMISSION                 = "dpSuperDataSubmissionDto";
     public static String DP_PREMISES_MAP                    = "DP_PREMISES_MAP";
     public static String DP_PREMISES                        = "DP_PREMISES";
+
+    public static String DS_TITLE_NEW                       = "New Data Submission";
+    public static String DS_TITLE_RFC                       = "Amendment";
 }

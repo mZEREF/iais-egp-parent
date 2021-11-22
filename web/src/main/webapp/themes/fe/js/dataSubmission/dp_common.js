@@ -111,7 +111,7 @@ function printData() {
             }
         });
     }
-};
+}
 /*
 function getDataForPrinting(){
     // init data

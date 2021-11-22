@@ -401,4 +401,24 @@ public final class DataSubmissionHelper {
         return emailAddress.toString();
     }
 
+    public static String getMainTitle(ArSuperDataSubmissionDto currentSuper) {
+        return getMainTitle(currentSuper != null ? currentSuper.getAppType() :  null);
+    }
+
+    public static String getMainTitle(DpSuperDataSubmissionDto currentSuper) {
+        return getMainTitle(currentSuper != null ? currentSuper.getAppType() :  null);
+    }
+
+    public static String getMainTitle(String type) {
+        String title;
+        switch (type) {
+            case DataSubmissionConsts.DS_APP_TYPE_RFC:
+                title = DataSubmissionConstant.DS_TITLE_RFC;
+                break;
+            default:
+                title = DataSubmissionConstant.DS_TITLE_NEW;
+        }
+        return title;
+    }
+
 }

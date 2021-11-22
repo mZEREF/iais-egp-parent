@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.validation.dataSubmission;
 
 import com.ecquaria.cloud.job.executor.util.SpringHelper;
+import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.CycleStageSelectionDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
@@ -44,6 +45,11 @@ public class CycleStageSelectionValidator implements CustomizeValidator {
                     }
                 } catch (Exception e) {
                     log.info(StringUtil.changeForLog(e.getMessage()), e);
+                }
+            }
+            if (AppConsts.YES.equals(selectionDto.getRetrieveData())) {
+                if (StringUtil.isEmpty(selectionDto.getStage())) {
+                    errorMsg.put("stage", MessageUtil.getMessageDesc("GENERAL_ERR0006"));
                 }
             }
         }

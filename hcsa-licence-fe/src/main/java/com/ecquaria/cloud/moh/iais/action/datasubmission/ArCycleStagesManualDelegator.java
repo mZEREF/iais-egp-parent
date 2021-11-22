@@ -17,6 +17,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
+import com.ecquaria.cloud.moh.iais.helper.ControllerHelper;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
@@ -73,7 +74,7 @@ public class ArCycleStagesManualDelegator {
         bpc.request.setAttribute("stage_options", DataSubmissionHelper.genOptions(nextStages));
 
         ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.CURRENT_PAGE_STAGE, "cycle-stage-selection");
-        ParamUtil.setRequestAttr(bpc.request, "title", "New Assisted Reproduction Submission");
+        ParamUtil.setRequestAttr(bpc.request, "title", DataSubmissionHelper.getMainTitle(currentArDataSubmission));
         ParamUtil.setRequestAttr(bpc.request, "smallTitle", "You are submitting for <strong>Cycle Stages</strong>");
     }
 
@@ -89,7 +90,7 @@ public class ArCycleStagesManualDelegator {
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
         CycleStageSelectionDto selectionDto;
         ArSuperDataSubmissionDto currentArDataSubmission = DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
-        if (!StringUtil.isIn(crudype, new String[]{DataSubmissionConstant.CRUD_TYPE_FROM_DRAFT,
+        if (!StringUtil.isIn(crudype, new String[]{DataSubmissionConstant.CRUD_TYPE_FROM_DRAFT, "patient",
                 DataSubmissionConstant.CRUD_TYPE_RFC})) {
             selectionDto = getSelectionDtoFromPage(bpc.request);
             currentArDataSubmission.setSelectionDto(selectionDto);
@@ -104,14 +105,20 @@ public class ArCycleStagesManualDelegator {
             if (result != null) {
                 errorMap.putAll(result.retrieveAll());
             }
+
+            if (errorMap.isEmpty() && !AppConsts.YES.equals(selectionDto.getRetrieveData())) {
+                errorMap.put("showValidatePT", AppConsts.YES);
+                ParamUtil.setRequestAttr(bpc.request, "showValidatePT", AppConsts.YES);
+            }
+            if (AppConsts.YES.equals(selectionDto.getRetrieveData()) && StringUtil.isEmpty(selectionDto.getPatientName())) {
+                errorMap.put("showNoFoundMd", AppConsts.YES);
+                ParamUtil.setRequestAttr(bpc.request, "showNoFoundMd", AppConsts.YES);
+            }
         } else {
             selectionDto = currentArDataSubmission.getSelectionDto();
         }
         String stage;
-        if (!errorMap.isEmpty() || !AppConsts.YES.equals(selectionDto.getRetrieveData())) {
-            if (!AppConsts.YES.equals(selectionDto.getRetrieveData())) {
-                ParamUtil.setRequestAttr(bpc.request, "showValidatePT", AppConsts.YES);
-            }
+        if (!errorMap.isEmpty()) {
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
             stage = "current";
         } else {
@@ -257,16 +264,8 @@ public class ArCycleStagesManualDelegator {
     }
 
     private CycleStageSelectionDto getSelectionDtoFromPage(HttpServletRequest request) {
-        CycleStageSelectionDto selectionDto = new CycleStageSelectionDto();
-        selectionDto.setPatientIdType(ParamUtil.getString(request, "patientIdType"));
-        selectionDto.setPatientIdNumber(ParamUtil.getString(request, "patientIdNumber"));
-        selectionDto.setPatientNationality(ParamUtil.getString(request, "patientNationality"));
-        selectionDto.setPatientCode(ParamUtil.getString(request, "patientCode"));
-        selectionDto.setRetrieveData(StringUtil.getNonNull(ParamUtil.getString(request, "retrieveData")));
-        selectionDto.setPatientName(StringUtil.getNonNull(ParamUtil.getString(request, "patientName")));
+        CycleStageSelectionDto selectionDto = ControllerHelper.get(request, CycleStageSelectionDto.class);
         selectionDto.setUndergoingCycle("1".equals(ParamUtil.getString(request, "undergoingCycle")));
-        selectionDto.setLastStage(ParamUtil.getString(request, "lastStage"));
-        selectionDto.setStage(ParamUtil.getString(request, "stage"));
         return selectionDto;
     }
 
@@ -281,7 +280,7 @@ public class ArCycleStagesManualDelegator {
         StringBuilder url = new StringBuilder();
         url.append(InboxConst.URL_HTTPS)
                 .append(bpc.request.getServerName())
-                .append(InboxConst.URL_LICENCE_WEB_MODULE + "MohARDataSubmission");
+                .append(InboxConst.URL_LICENCE_WEB_MODULE + "MohARDataSubmission/PrepareARSubmission");
         String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
         IaisEGPHelper.redirectUrl(bpc.response, tokenUrl);
     }

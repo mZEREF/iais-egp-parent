@@ -1,12 +1,12 @@
 <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
 <%@ taglib uri="http://www.ecq.com/iais" prefix="iais" %>
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
 <%--<c:set var="headingSign" value="completed"/>--%>
 
 <c:set var="cycleType" value="${arSuperDataSubmissionDto.cycleDto.cycleType}"/>
 <c:set var="cycleStage" value="${arSuperDataSubmissionDto.dataSubmissionDto.cycleStage}"/>
-
 <c:set var="declaration" value="${arSuperDataSubmissionDto.dataSubmissionDto.declaration}" />
 
 <c:choose>
@@ -99,5 +99,5 @@
     </c:when>
 </c:choose>
 <c:if test="${arSuperDataSubmissionDto.submissionType ne 'DSTY_005'}">
-<%@include file="../assistedReproduction/common/arDeclaration.jsp" %>
+    <%@include file="../assistedReproduction/common/arDeclaration.jsp" %>
 </c:if>

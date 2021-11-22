@@ -30,10 +30,10 @@
 <c:if test="${hasDraft && arSuperDataSubmissionDto.arSubmissionType eq 'AR_TP001'}">
   <iais:confirm msg="DS_MSG001" callBack="submit('confirm', 'resume');" popupOrder="_draftModal"  yesBtnDesc="Continue"
                 cancelBtnCls="btn btn-primary" yesBtnCls="btn btn-secondary"
-                cancelBtnDesc="Delete" cancelFunc="submit('confirm', 'delete')" />
+                cancelBtnDesc="Delete" cancelFunc="submit('confirm', 'delete')" needFungDuoJi="false"/>
 </c:if>
 <c:if test="${hasDraft && arSuperDataSubmissionDto.arSubmissionType eq 'AR_TP002'}">
   <iais:confirm msg="DS_MSG002" callBack="submit('confirm', 'resume');" popupOrder="_draftModal"  yesBtnDesc="Continue"
                 cancelBtnCls="btn btn-primary" yesBtnCls="btn btn-secondary"
-                cancelBtnDesc="Delete" cancelFunc="submit('confirm', 'delete');" />
+                cancelBtnDesc="Delete" cancelFunc="submit('confirm', 'delete');" needFungDuoJi="false"/>
 </c:if>

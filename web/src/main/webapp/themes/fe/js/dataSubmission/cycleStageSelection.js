@@ -1,3 +1,20 @@
+$(document).ready(function() {
+    if ("1" == $('#showValidatePT').val()) {
+        $('#validatePT').modal('show');
+    } else if ("1" == $('#showValidatePT').val()) {
+        $('#noFoundDiv').modal('show');
+    }
+});
+
+function clearSelection(){
+    clearErrorMsg();
+    $('#patientName').find('p').text('');
+    $('#undergoingCycleCycle').find('p').text('');
+    $('#lastStage').find('p').text('');
+    clearFields('.selectionHidden');
+    clearFields('#stage');
+}
+
 function retrieveValidatePatient() {
     showWaiting();
     var idType = $('#patientIdType').val();
@@ -20,14 +37,7 @@ function validatePatientCallback(data){
     $('#stage').niceSelect("update");
     // check
     if (isEmpty(data) || isEmpty(data.selection) || isEmpty(data.selection.patientName) || !isEmpty(data.errorMsg)) {
-        $('[name="retrieveData"]').val('0');
-        $('[name="patientCode"]').val('');
-        $('#patientName').find('p').text('');
-        clearFields('#patientNameHidden');
-        $('#undergoingCycleCycle').find('p').text('');
-        clearFields('#undergoingCycleHidden');
-        $('#lastStage').find('p').text('');
-        clearFields('#lastStageHidden');
+        clearSelection();
         if (!isEmpty(data.errorMsg)) {
             doValidationParse(data.errorMsg);
         } else {
@@ -35,10 +45,7 @@ function validatePatientCallback(data){
         }
         return;
     }
-    $('[name="retrieveData"]').val('1');
-    $('[name="patientCode"]').val(data.selection.patientCode);
     $('#patientName').find('p').text(data.selection.patientName);
-    $('#patientNameHidden').val(data.selection.patientName);
     if (data.selection.undergoingCycle) {
         $('#undergoingCycleCycle').find('p').text('Yes');
         $('#undergoingCycleHidden').val('1');
@@ -46,10 +53,12 @@ function validatePatientCallback(data){
         $('#undergoingCycleCycle').find('p').text('No');
         $('#undergoingCycleHidden').val('0');
     }
-    if (isEmpty(data.selection.lastStageDesc)) {
-        $('#lastStage').find('p').text('-');
-    } else {
-        $('#lastStage').find('p').text(data.selection.lastStageDesc);
-    }
+    $('#lastStage').find('p').text(data.selection.lastStageDesc);
+    $('[name="retrieveData"]').val('1');
+    $('[name="patientCode"]').val(data.selection.patientCode);
+    $('#patientNameHidden').val(data.selection.patientName);
+    $('#lastCycleHidden').val(data.selection.lastCycle);
     $('#lastStageHidden').val(data.selection.lastStage);
+    $('#latestCycleHidden').val(data.selection.latestCycle);
+    $('#lastStatusHidden').val(data.selection.lastStatus);
 }

@@ -45,6 +45,9 @@ public class MohDsActionDelegator {
         session.removeAttribute(DataSubmissionConstant.AR_PREMISES_MAP);
         session.removeAttribute(DataSubmissionConstant.AR_PREMISES);
         session.removeAttribute(DataSubmissionConstant.AR_DATA_SUBMISSION);
+        session.removeAttribute(DataSubmissionConstant.DP_PREMISES_MAP);
+        session.removeAttribute(DataSubmissionConstant.DP_PREMISES);
+        session.removeAttribute(DataSubmissionConstant.DP_DATA_SUBMISSION);
     }
 
     /**
@@ -67,7 +70,7 @@ public class MohDsActionDelegator {
      * @param bpc
      */
     public void preparePreview(BaseProcessClass bpc) {
-        ParamUtil.setRequestAttr(bpc.request, "title", "Assisted Reproduction Submission");
+        ParamUtil.setRequestAttr(bpc.request, "isValid", "Y");
         String dsType = ParamUtil.getString(bpc.request, "dsType");
         String submissionNo = ParamUtil.getString(bpc.request, "submissionNo");
         if (DataSubmissionConsts.DS_AR.equals(dsType)) {
@@ -77,6 +80,7 @@ public class MohDsActionDelegator {
         } else {
             ParamUtil.setRequestAttr(bpc.request, "isValid", "N");
         }
+        ParamUtil.setRequestAttr(bpc.request, "dsType", dsType);
     }
 
     /**

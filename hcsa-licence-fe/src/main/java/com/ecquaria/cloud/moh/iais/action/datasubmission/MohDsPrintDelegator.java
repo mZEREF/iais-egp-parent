@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.action.datasubmission;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -35,6 +36,7 @@ public class MohDsPrintDelegator {
     public void prepareData(BaseProcessClass bpc) {
         log.info(StringUtil.changeForLog("--- Print prepareData ---"));
         String printflag = ParamUtil.getString(bpc.request, PRINT_FLAG);
+        ParamUtil.setRequestAttr(bpc.request, PRINT_FLAG, printflag);
         log.info(StringUtil.changeForLog("--- Print flag: " + printflag + " ---"));
     }
 
@@ -44,7 +46,7 @@ public class MohDsPrintDelegator {
         log.info(StringUtil.changeForLog("--- Print init data ---"));
         String printflag = ParamUtil.getString(request, PRINT_FLAG);
         log.info(StringUtil.changeForLog("--- Print flag: " + printflag + " ---"));
-        if ("patient".equals(printflag)) {
+        if (DataSubmissionConsts.DS_PATIENT_ART.equals(printflag)) {
             String declaration = ParamUtil.getString(request, "declaration");
             ArSuperDataSubmissionDto arSuperDataSubmission = DataSubmissionHelper.getCurrentArDataSubmission(request);
             DataSubmissionDto dataSubmissionDto = arSuperDataSubmission.getDataSubmissionDto();
