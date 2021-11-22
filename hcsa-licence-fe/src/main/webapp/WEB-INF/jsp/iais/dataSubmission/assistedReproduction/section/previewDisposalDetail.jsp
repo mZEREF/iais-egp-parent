@@ -3,7 +3,7 @@
     <div class="panel-heading completed ">
         <h4 class="panel-title">
             <a class="collapsed" data-toggle="collapse" href="#">
-                disposal
+                Disposal
             </a>
         </h4>
     </div>

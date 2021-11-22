@@ -4,7 +4,7 @@
     <div class="panel-heading">
         <h4 class="panel-title">
             <strong>
-                disposal
+                Disposal
             </strong>
         </h4>
     </div>
