@@ -996,6 +996,7 @@ public class ApplicationServiceImpl implements ApplicationService {
         smsParam.setSubject(subject);
         smsParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_005_CLARIFICATION_SMS);
         smsParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_APP);
+        smsParam.setRecipientType(recipientRole);
         notificationHelper.sendNotification(smsParam);
         log.info(StringUtil.changeForLog("the sendRfcClarificationEmail end ..."));
     }
