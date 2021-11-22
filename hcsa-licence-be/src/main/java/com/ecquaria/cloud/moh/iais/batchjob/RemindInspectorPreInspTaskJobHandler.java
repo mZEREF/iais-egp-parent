@@ -136,7 +136,7 @@ public class RemindInspectorPreInspTaskJobHandler extends IJobHandler {
         List<String> leads = organizationClient.getInspectionLead(workGrpId).getEntity();
         if (!StringUtil.isEmpty(userId)) {
             OrgUserDto orgUserDto = organizationClient.retrieveOrgUserAccountById(userId).getEntity();
-            if (orgUserDto != null) {
+            if (orgUserDto != null && AppConsts.COMMON_STATUS_ACTIVE.equals(orgUserDto.getStatus())) {
                 sendSms(orgUserDto, taskDto);
             }
         }
@@ -144,7 +144,7 @@ public class RemindInspectorPreInspTaskJobHandler extends IJobHandler {
             for (String lead : leads) {
                 if (!StringUtil.isEmpty(lead) && !lead.equals(userId)) {
                     OrgUserDto orgUserDtoLead = organizationClient.retrieveOrgUserAccountById(lead).getEntity();
-                    if (orgUserDtoLead != null) {
+                    if (orgUserDtoLead != null && AppConsts.COMMON_STATUS_ACTIVE.equals(orgUserDtoLead.getStatus())) {
                         sendSms(orgUserDtoLead, taskDto);
                     }
                 }
@@ -162,7 +162,7 @@ public class RemindInspectorPreInspTaskJobHandler extends IJobHandler {
             if (msgTemplateDto != null) {
                 if (!StringUtil.isEmpty(userId)) {
                     OrgUserDto orgUserDto = organizationClient.retrieveOrgUserAccountById(userId).getEntity();
-                    if (orgUserDto != null) {
+                    if (orgUserDto != null && AppConsts.COMMON_STATUS_ACTIVE.equals(orgUserDto.getStatus())) {
                         sendEmail(orgUserDto, msgTemplateDto, taskDto, templateMap);
                     }
                 }
@@ -170,7 +170,7 @@ public class RemindInspectorPreInspTaskJobHandler extends IJobHandler {
                     for (String lead : leads) {
                         if (!StringUtil.isEmpty(lead) && !lead.equals(userId)) {
                             OrgUserDto orgUserDtoLead = organizationClient.retrieveOrgUserAccountById(lead).getEntity();
-                            if (orgUserDtoLead != null) {
+                            if (orgUserDtoLead != null && AppConsts.COMMON_STATUS_ACTIVE.equals(orgUserDtoLead.getStatus())) {
                                 sendEmail(orgUserDtoLead, msgTemplateDto, taskDto, templateMap);
                             }
                         }

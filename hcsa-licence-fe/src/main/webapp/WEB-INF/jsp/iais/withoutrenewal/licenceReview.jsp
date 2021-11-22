@@ -196,6 +196,9 @@
     <input type="hidden" id="SERVICE_CONFIG_HAVE_CHANGE" value="${SERVICE_CONFIG_CHANGE}">
     <%@include file="/WEB-INF/jsp/include/validation.jsp" %>
 </form>
+<iais:confirm msg="${showOtherError}" callBack="$('#showOtherError').modal('hide');" popupOrder="showOtherError"
+              needCancel="false" needEscapHtml="false"/>
+<input type="hidden" value="${not empty showOtherError ? '1' : ''}" id="showOtherErrorCheck">
 <script>
 
     $(document).ready(function () {
@@ -207,6 +210,9 @@
         }
         if($('#SERVICE_CONFIG_HAVE_CHANGE').val()!=''){
             $('#SERVICE_CONFIG_CHANGE').modal('show');
+        }
+        if($('#showOtherErrorCheck').val()!=''){
+            $('#showOtherError').modal('show');
         }
     });
 

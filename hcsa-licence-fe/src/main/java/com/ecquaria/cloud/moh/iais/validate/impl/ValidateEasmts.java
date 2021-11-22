@@ -201,8 +201,10 @@ public class ValidateEasmts extends AbstractValidate implements ValidateFlow {
             }
         } else if (newTypeFlag && hciFlag && rfi && clickEdit) {
             //new rfi
-            if (!IaisCommonUtils.isEmpty(premisesHciList) && !oldPremiseHciList.contains(currentHci)) {
-                checkHciIsSame(appGrpPremisesDto,premisesHciList,map,"premisesHci" + index);
+            if (!IaisCommonUtils.isEmpty(premisesHciList)
+                    && !IaisCommonUtils.isEmpty(oldPremiseHciList)
+                    && !oldPremiseHciList.contains(currentHci)) {
+                checkHciIsSame(appGrpPremisesDto, premisesHciList, map, "premisesHci" + index);
             }
         }
         if (hciFlag) {

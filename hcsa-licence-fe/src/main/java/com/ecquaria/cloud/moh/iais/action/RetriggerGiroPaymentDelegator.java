@@ -490,6 +490,10 @@ public class RetriggerGiroPaymentDelegator {
         log.info(StringUtil.changeForLog("the jumpBank end ...."));
     }
 
+    public void tobank(BaseProcessClass bpc){
+
+    }
+
     public void doPayment(BaseProcessClass bpc) {
         log.info(StringUtil.changeForLog("the doPayment start ...."));
         String switch2 = SWITCH_VALUE_PRE_PAYMENT;

@@ -259,12 +259,6 @@
    <Description/>
    <probepoint type="none"/>
   </WebPage>
-  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="bank" stageIndicator="" x="620" y="520">
-   <OnPageLoad/>
-   <OnPageSubmit/>
-   <Description/>
-   <probepoint type="none"/>
-  </WebPage>
   <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="paymentFailed" stageIndicator="" x="1220" y="290">
    <OnPageLoad/>
    <OnPageSubmit/>
@@ -370,9 +364,6 @@
   <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/doSubmit" style="oblique">
    <position>{(1160,310)(1170,900)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/doPayment" linkstyle="Direct" name="" sourceName="/Pages/WebPage/bank" style="oblique">
-   <position>{(640,540)(780,540)}</position>
-  </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/PrepareErrorAck" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch1" style="rectanular">
    <position>{(370,160)(369,45)(431,-41)(480,-40)}</position>
   </SynchronousLink>
@@ -435,9 +426,6 @@
   </SynchronousLink>
   <SynchronousLink destinationName="/Pages/WebPage/inboxToView" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/InboxToPreview" style="rectanular">
    <position>{(480,700)(630,700)}</position>
-  </SynchronousLink>
-  <SynchronousLink destinationName="/Pages/WebPage/bank" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/jumpBank" style="oblique">
-   <position>{(490,540)(640,540)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Pages/WebPage/paymentFailed" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch2" style="oblique">
    <position>{(990,170)(1240,310)}</position>
