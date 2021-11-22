@@ -24,12 +24,6 @@
                                                              field="Biological Agent/Toxin"
                                                              value="Biological Agent/Toxin"/>
                                         <iais:sortableHeader needSort="false"
-                                                             field="Quantity of Toxin in Possession"
-                                                             value="Quantity of Toxin in Possession"/>
-                                        <iais:sortableHeader needSort="false"
-                                                             field="Physical Possession of Biological Agent"
-                                                             value="Physical Possession of Biological Agent"/>
-                                        <iais:sortableHeader needSort="false"
                                                              field="Type of Transaction"
                                                              value="Type of Transaction"/>
                                         <iais:sortableHeader needSort="false"
@@ -42,20 +36,18 @@
                                         <c:when test="${empty inventoryResult}">
                                             <tr>
                                                 <td colspan="6">
-                                                    <iais:message key="GENERAL_ACK018" escape="true"></iais:message>
+                                                    <iais:message key="GENERAL_ACK018" escape="true"/>
                                                 </td>
                                             </tr>
                                         </c:when>
                                         <c:otherwise>
-                                            <c:forEach var="items" items="${inventoryResult}" varStatus="status">
+                                            <c:forEach var="item" items="${inventoryResult}" varStatus="status">
+                                                <c:set var="bio" value="${bioIdMap.get(item.biologicalId)}"></c:set>
                                                 <tr name="basicData">
                                                     <td><c:out  value="${status.index + 1}"/></td>
-                                                    <td></td>
-                                                    <td></td>
-                                                    <td>15000.000</td>
-                                                    <td>
-                                                    </td>
-                                                    <td>Export</td>
+                                                    <td><iais:code code="${item.dataSubmission.facility.facilityName}"/></td>
+                                                    <td>${bio.name}</td>
+                                                    <td>${item.dataSubmission.type}</td>
                                                     <td><a onclick="javascript:doHisInfo()">Transaction 01</a></td>
                                                 </tr>
                                             </c:forEach>
@@ -98,19 +90,20 @@
                                             <c:when test="${empty inventoryResult}">
                                                 <tr>
                                                     <td colspan="6">
-                                                        <iais:message key="GENERAL_ACK018" escape="true"></iais:message>
+                                                        <iais:message key="GENERAL_ACK018" escape="true"/>
                                                     </td>
                                                 </tr>
                                             </c:when>
                                             <c:otherwise>
-                                                <c:forEach var="items" items="${inventoryResult}" varStatus="status">
+                                                <c:forEach var="item" items="${inventoryResult}" varStatus="status">
+                                                    <c:set var="bio" value="${bioIdMap.get(item.biologicalId)}"></c:set>
                                                     <tr name="basicData">
                                                         <td><c:out  value="${status.index + 1}"/></td>
-                                                        <td></td>
-                                                        <td>BBC</td>
-                                                        <td>NPA</td>
-                                                        <td>complete</td>
-                                                        <td>06/18/2021</td>
+                                                        <td>${bio.name}</td>
+                                                        <td>${item.dataSubmission.facility.id}</td>
+                                                        <td>${item.dataSubmission.facilityReceiving}</td>
+                                                        <td>${item.dataSubmission.type}</td>
+                                                        <td>${item.dataSubmission.actualArrivalDate}</td>
                                                         <td>active</td>
                                                         <td><a onclick="javascript:doHisInfo()">Transaction 01</a></td>
                                                     </tr>

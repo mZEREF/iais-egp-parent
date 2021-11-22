@@ -44,7 +44,7 @@
                             <iais:row>
                                 <iais:field value="Biological Agent/Toxin"/>
                                 <div class="col-sm-7 col-md-4 col-xs-10">
-                                    <iais:select name="biologicalAgent" options="biologicalAgent" value="${inventoryParam.biologicalAgent}" firstOption="Please Select"></iais:select>
+                                    <iais:select name="bioName" options="bioName" value="${inventoryParam.bioName}" firstOption="Please Select"></iais:select>
                                 </div>
                             </iais:row>
                             <iais:row>
@@ -109,7 +109,7 @@
                                 <iais:row>
                                     <iais:field value="Name of Biological Agent/Toxin"/>
                                     <div class="col-sm-7 col-md-4 col-xs-10">
-                                        <iais:select name="biologicalAgent" options="biologicalAgent" value="${inventoryParam.biologicalAgent}" firstOption="Please Select"></iais:select>
+                                        <iais:select name="bioName" options="bioName" value="${inventoryParam.bioName}" firstOption="Please Select"></iais:select>
                                     </div>
                                 </iais:row>
                             </iais:section>

@@ -62,15 +62,14 @@
                                     <input id="transactionDateChk" type="radio"
                                            name="searchChk" value="date"
                                            <c:if test="${count=='date'}">checked</c:if> />
-                                    <label for="transactionDateChk">&nbsp; Search by Transaction Date</label>
+                                    <label for="transactionDateChk">&nbsp;Search by Transaction Date</label>
                                 </iais:value>
                             </iais:row>
                             <iais:row id="selectSearchChkMsg" style="display: none">
-                                <div class="row" height="1"
+                                <div class="row"
                                      style="font-size: 1.6rem; color: #D22727; padding-left: 20px"
                                      id="selectSearchChkMsg">
-                                    <iais:message key="OEN_ERR004"
-                                                  escape="flase"></iais:message>
+                                    <iais:message key="OEN_ERR004" escape="flase"/>
                                 </div>
                             </iais:row>
                             <div class="col-xs-12 col-md-12">
@@ -95,7 +94,6 @@
         </div>
     </form>
 </div>
-<%@include file="/WEB-INF/jsp/include/utils.jsp" %>
 <script type="text/javascript">
 
 

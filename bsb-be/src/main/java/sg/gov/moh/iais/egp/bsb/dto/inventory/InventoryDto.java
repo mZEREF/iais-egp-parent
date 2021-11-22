@@ -1,10 +1,10 @@
 package sg.gov.moh.iais.egp.bsb.dto.inventory;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import sg.gov.moh.iais.egp.bsb.dto.PagingAndSortingDto;
 
 import java.io.Serializable;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -12,18 +12,19 @@ import java.util.List;
  * @version 2021/10/15 14:16
  **/
 
+@EqualsAndHashCode(callSuper = true)
 @Data
 public class InventoryDto extends PagingAndSortingDto implements Serializable {
 
     private String scheduleType;
 
-    private String biologicalAgent;
+    private String bioName;
 
     private String transactionType;
 
-    private Date transactionDtFrom;
+    private String transactionDtFrom;
 
-    private Date transactionDtTo;
+    private String transactionDtTo;
 
     private List<String> facilityName;
 
@@ -34,13 +35,15 @@ public class InventoryDto extends PagingAndSortingDto implements Serializable {
 
     public  void clearAllFields(){
      scheduleType = "";
-     biologicalAgent= "";
+     bioName= "";
      transactionType = "";
-     transactionDtFrom = null;
-     transactionDtTo = null;
+     transactionDtFrom = "";
+     transactionDtTo = "";
      facilityName = null;
      sendFacility = "";
      recFacility = "";
     }
+
+
 
 }
