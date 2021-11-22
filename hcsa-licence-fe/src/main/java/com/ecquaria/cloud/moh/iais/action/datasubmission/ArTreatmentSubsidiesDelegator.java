@@ -38,7 +38,7 @@ public class ArTreatmentSubsidiesDelegator extends CommonDelegator {
         ArTreatmentSubsidiesStageDto arTreatmentSubsidiesStageDto = arSuperDataSubmissionDto.getArTreatmentSubsidiesStageDto();
         if (arTreatmentSubsidiesStageDto == null) {
             arTreatmentSubsidiesStageDto = new ArTreatmentSubsidiesStageDto();
-            arTreatmentSubsidiesStageDto.setCoFunding("No");
+            arTreatmentSubsidiesStageDto.setCoFunding("ATSACF001");
             arTreatmentSubsidiesStageDto.setIsThereAppeal(false);
             arSuperDataSubmissionDto.setArTreatmentSubsidiesStageDto(arTreatmentSubsidiesStageDto);
             DataSubmissionHelper.setCurrentArDataSubmission(arSuperDataSubmissionDto, bpc.request);
