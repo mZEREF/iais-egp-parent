@@ -67,8 +67,10 @@ public class MohProcessingDelegator {
         //first log in,get facilityActivity from db
         if (submitDetailsDto == null){
             String appId = MaskUtil.unMaskValue("id", ParamUtil.getString(request,ProcessContants.PARAM_APP_ID));
+            String taskId = MaskUtil.unMaskValue("taskId", ParamUtil.getString(request,ProcessContants.PARAM_TASK_ID));
             //get submitDetailsDto
             submitDetailsDto = processClient.getSubmitDetailsByAppId(appId).getEntity();
+            submitDetailsDto.setTaskId(taskId);
             setField(submitDetailsDto);
             ParamUtil.setSessionAttr(request, ProcessContants.SUBMITDETAILS_ATTR, submitDetailsDto);
             //uploadDocuments need facility
@@ -307,6 +309,7 @@ public class MohProcessingDelegator {
         //application info
         String applicationNo = submitDetailsDto.getFacilityActivity().getApplication().getApplicationNo();
         String applicationId = submitDetailsDto.getFacilityActivity().getApplication().getId();
+        String taskId = submitDetailsDto.getTaskId();
         //history info
         LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
         String processingDecision = ParamUtil.getString(request, ProcessContants.PROCESSING_DECISION);
@@ -327,6 +330,7 @@ public class MohProcessingDelegator {
         String processType = submitDetailsDto.getProcessType();
         //set field value
         MohProcessDto mohProcessDto = new MohProcessDto();
+        mohProcessDto.setTaskId(taskId);
         mohProcessDto.setRiskLevel(riskLevel);
         mohProcessDto.setRiskLevelComments(commentsOnRiskLevelAssessment);
         mohProcessDto.setErpReportDt(erpReport);
@@ -366,8 +370,8 @@ public class MohProcessingDelegator {
         submitDetailsDto.setFacilityAddress(facilityAddress);
         submitDetailsDto.setApplicationDt(application.getApplicationDt());
         submitDetailsDto.setApplicationStatus(appStatus);
-        List<RoutingHistory> historyDtoList = processClient.getRoutingHistoriesByApplicationNo(applicationNo).getEntity();
-        submitDetailsDto.setRoutingHistories(historyDtoList);
+        /*List<RoutingHistory> historyDtoList = processClient.getRoutingHistoriesByApplicationNo(applicationNo).getEntity();
+        submitDetailsDto.setRoutingHistories(historyDtoList);*/
         String reason = "";
         if (appStatus.equals(ProcessContants.APPLICATION_STATUS_2)){
             reason =  ProcessContants.APPLICATION_STATUS_1;

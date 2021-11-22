@@ -12,6 +12,7 @@ import java.util.Date;
  */
 @Data
 public class MohProcessDto {
+    private String taskId;
 
     private String applicationId;
 

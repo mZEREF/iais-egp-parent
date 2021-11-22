@@ -17,6 +17,8 @@ import java.util.List;
 @Data
 public class SubmitDetailsDto implements Serializable {
 
+    private String taskId;
+
     private String applicationNo;
 
     private String applicationType;
@@ -37,7 +39,7 @@ public class SubmitDetailsDto implements Serializable {
 
     private List<Biological> biologicals;
 
-    private List<RoutingHistory> routingHistories;
+    /*private List<RoutingHistory> routingHistories;*/
 
     /**
      * This is used to display the last misc of the previous person

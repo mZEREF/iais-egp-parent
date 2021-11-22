@@ -27,6 +27,7 @@ public class ProcessContants {
     public static final String FINAL_REMARKS = "finalRemarks";
 
     public static final String PARAM_APP_ID = "appId";
+    public static final String PARAM_TASK_ID = "taskId";
 
     public static final String APPLICATION_STATUS_1 = "BSBAPST001";
     public static final String APPLICATION_STATUS_2 = "BSBAPST002";
