@@ -292,8 +292,6 @@ public abstract class CommonDelegator {
      */
     public void submission(BaseProcessClass bpc) {}
 
-    ;
-
     /**
      * StartStep: PageAction
      *
