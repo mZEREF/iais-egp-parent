@@ -252,7 +252,7 @@
                         </div>
 
                     </iais:row>
-                    <div id="AbnormalDisplay" style="display: none">
+                    <div id="AbnormalDisplay" <c:if test="${ arSuperDataSubmissionDto.pgtStageDto.pgtAResult !='Abnormal' }">style="display: none"</c:if> >
                         <iais:row>
                             <iais:field width="6" value="What Abnormal Condition was Found for the PGT-A Test?" mandatory="true"/>
                             <iais:value width="6" cssClass="col-md-6">
