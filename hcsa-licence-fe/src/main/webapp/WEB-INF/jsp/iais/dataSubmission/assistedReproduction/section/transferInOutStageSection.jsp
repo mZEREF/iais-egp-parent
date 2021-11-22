@@ -150,10 +150,13 @@
                         <iais:datePicker id="transferDate" name="transferDate" value="${transferInOutStageDto.transferDate}"/>
                     </iais:value>
                 </iais:row>
+                <%@include file="../common/patientInventoryTable.jsp" %>
             </div>
+
         </div>
     </div>
 </div>
+<%--
 <script>
     $(document).ready(function () {
         $('#transferTypeIn').click(function () {
@@ -179,3 +182,4 @@
     });
 
 </script>
+--%>
