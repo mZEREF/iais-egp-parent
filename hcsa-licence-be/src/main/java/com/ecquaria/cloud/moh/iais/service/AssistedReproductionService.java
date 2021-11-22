@@ -11,7 +11,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.AssistedReprod
  * @author junyu
  * @date 2021/11/19
  */
-public interface AssistedReproductionService {
+public interface AssistedReproductionService{
 
     SearchResult<AssistedReproductionEnquiryResultsDto> searchPatientByParam(SearchParam searchParam);
 

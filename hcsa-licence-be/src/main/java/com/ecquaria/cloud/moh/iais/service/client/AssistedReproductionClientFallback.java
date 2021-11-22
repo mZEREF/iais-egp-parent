@@ -15,7 +15,7 @@ import org.springframework.http.HttpHeaders;
  * @author junyu
  * @date 2021/11/19
  */
-public class AssistedReproductionClientFallback implements AssistedReproductionClient {
+public class AssistedReproductionClientFallback implements AssistedReproductionClient{
     @Override
     public FeignResponseEntity<SearchResult<AssistedReproductionEnquiryResultsDto>> searchPatientByParam(SearchParam searchParam) {
         FeignResponseEntity entity = new FeignResponseEntity<>();

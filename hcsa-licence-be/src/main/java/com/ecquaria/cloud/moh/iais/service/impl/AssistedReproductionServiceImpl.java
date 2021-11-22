@@ -18,7 +18,7 @@ import org.springframework.stereotype.Service;
  */
 @Slf4j
 @Service
-public class AssistedReproductionServiceImpl implements AssistedReproductionService {
+public class AssistedReproductionServiceImpl implements AssistedReproductionService{
 
     @Autowired
     AssistedReproductionClient assistedReproductionClient;
