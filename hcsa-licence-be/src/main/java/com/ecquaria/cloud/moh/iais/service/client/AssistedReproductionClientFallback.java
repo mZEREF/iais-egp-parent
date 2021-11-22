@@ -1,4 +1,4 @@
-﻿package com.ecquaria.cloud.moh.iais.service.client;
+package com.ecquaria.cloud.moh.iais.service.client;
 
 
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
