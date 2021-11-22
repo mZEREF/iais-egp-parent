@@ -40,22 +40,24 @@ public class PgtStageDtoValidator implements CustomizeValidator {
                 errorMap.put("pgt_m_performed", errMsgErr006);
             }
 
-            if(StringUtil.isEmpty(pgtStageDto.getPgtMRefNo())){
-                errorMap.put("pgt_m_ref_no", errMsgErr006);
-            }else  if(pgtStageDto.getPgtMRefNo().length()==19) {
-                String PGT_M_REF_NO="MHXX:0X/0X-XX(XXXX)";
-                for (int i=0;i<19;i++
-                     ) {
-                    char vad=PGT_M_REF_NO.charAt(i);
-                    char refNo=pgtStageDto.getPgtMRefNo().charAt(i);
-                    if(vad=='X'){
-                    }else if(vad!=refNo){
-                        errorMap.put("pgt_m_ref_no", MessageUtil.getMessageDesc("SYSPAM_ERROR0008"));
+            if(pgtStageDto.getIsPgtMDsld()!=null&&pgtStageDto.getIsPgtMDsld()==1){
+                if(StringUtil.isEmpty(pgtStageDto.getPgtMRefNo())){
+                    errorMap.put("pgt_m_ref_no", errMsgErr006);
+                }else  if(pgtStageDto.getPgtMRefNo().length()==19) {
+                    String PGT_M_REF_NO="MHXX:0X/0X-XX(XXXX)";
+                    for (int i=0;i<19;i++
+                    ) {
+                        char vad=PGT_M_REF_NO.charAt(i);
+                        char refNo=pgtStageDto.getPgtMRefNo().charAt(i);
+                        if(vad!='X'&&vad!=refNo){
+                            errorMap.put("pgt_m_ref_no", MessageUtil.getMessageDesc("SYSPAM_ERROR0008"));
+                        }
                     }
+                }else {
+                    errorMap.put("pgt_m_ref_no", MessageUtil.getMessageDesc("SYSPAM_ERROR0008"));
                 }
-            }else {
-                errorMap.put("pgt_m_ref_no", MessageUtil.getMessageDesc("SYSPAM_ERROR0008"));
             }
+
             if(StringUtil.isEmpty(pgtStageDto.getPgtMCondition())){
                 errorMap.put("PgtMCondition", errMsgErr006);
             }else  if(pgtStageDto.getPgtMCondition().length()>20){

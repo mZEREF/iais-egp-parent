@@ -15,6 +15,14 @@ $(document).ready(function () {
         }
     });
 
+    $('#isPgtMDsld').change(function () {
+        if($(this).is(':checked')){
+            $('#pgtMRefNoDisplay').attr("style","display: block");
+        }else {
+            $('#pgtMRefNoDisplay').attr("style","display: none");
+        }
+    });
+
     $('#isPgtSr').change(function () {
         if($(this).is(':checked')){
             $('#pgtSrDisplay').attr("style","display: block");

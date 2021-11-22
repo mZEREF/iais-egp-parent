@@ -138,13 +138,16 @@
                             <span class="error-msg" name="iaisErrorMsg" id="error_pgt_m_performed"></span>
                         </iais:value>
                     </iais:row>
-                    <iais:row>
-                        <iais:field width="6" value="PGT-M Appeal Reference No." mandatory="true"/>
-                        <iais:value width="6" cssClass="col-md-6">
-                            <input type="text" maxlength="19"   name="pgtMRefNo" value="${arSuperDataSubmissionDto.pgtStageDto.pgtMRefNo}" >
-                            <span class="error-msg" name="iaisErrorMsg" id="error_pgt_m_ref_no"></span>
-                        </iais:value>
-                    </iais:row>
+                    <div id="pgtMRefNoDisplay" <c:if test="${ arSuperDataSubmissionDto.pgtStageDto.isPgtMDsld !=1 }">style="display: none"</c:if>>
+                        <iais:row>
+                            <iais:field width="6" value="PGT-M Appeal Reference No." mandatory="true"/>
+                            <iais:value width="6" cssClass="col-md-6">
+                                <input type="text" maxlength="19"   name="pgtMRefNo" value="${arSuperDataSubmissionDto.pgtStageDto.pgtMRefNo}" >
+                                <span class="error-msg" name="iaisErrorMsg" id="error_pgt_m_ref_no"></span>
+                            </iais:value>
+                        </iais:row>
+                    </div>
+
                     <iais:row>
                         <iais:field width="6" value="What Condition was PGT-M Performed to Detect?" mandatory="true"/>
                         <iais:value width="6" cssClass="col-md-6">

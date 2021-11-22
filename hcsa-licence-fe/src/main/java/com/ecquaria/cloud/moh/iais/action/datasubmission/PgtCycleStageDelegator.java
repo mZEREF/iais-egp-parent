@@ -94,7 +94,10 @@ public class PgtCycleStageDelegator extends CommonDelegator{
             String isPgtMDsld =  ParamUtil.getString(request, "isPgtMDsld");
             if("on".equals(isPgtMDsld)){
                 pgtStageDto.setIsPgtMDsld(1);
+                String pgtMRefNo = ParamUtil.getString(request, "pgtMRefNo");
+                pgtStageDto.setPgtMRefNo(pgtMRefNo);
             }
+
             String isPgtMWithHla =  ParamUtil.getString(request, "isPgtMWithHla");
             if("on".equals(isPgtMWithHla)){
                 pgtStageDto.setIsPgtMWithHla(1);
@@ -103,8 +106,7 @@ public class PgtCycleStageDelegator extends CommonDelegator{
             if("on".equals(isPgtMNon)){
                 pgtStageDto.setIsPgtMNon(1);
             }
-            String pgtMRefNo = ParamUtil.getString(request, "pgtMRefNo");
-            pgtStageDto.setPgtMRefNo(pgtMRefNo);
+
             String pgtMCondition = ParamUtil.getString(request, "pgtMCondition");
             pgtStageDto.setPgtMCondition(pgtMCondition);
         }

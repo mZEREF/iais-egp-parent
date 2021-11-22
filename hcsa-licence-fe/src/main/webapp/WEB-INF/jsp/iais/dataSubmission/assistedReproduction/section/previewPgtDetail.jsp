@@ -46,13 +46,15 @@
                         </iais:value>
 
                     </iais:row>
+                    <div id="pgtMRefNoDisplay" <c:if test="${ arSuperDataSubmissionDto.pgtStageDto.isPgtMDsld !=1 }">style="display: none"</c:if>>
+                        <iais:row>
+                            <iais:field width="6" value="PGT-M Appeal Reference No." />
+                            <iais:value width="6" display="true">
+                                <c:out value="${arSuperDataSubmissionDto.pgtStageDto.pgtMRefNo}"/>
+                            </iais:value>
+                        </iais:row>
+                    </div>
 
-                    <iais:row>
-                        <iais:field width="6" value="PGT-M Appeal Reference No." />
-                        <iais:value width="6" display="true">
-                            <c:out value="${arSuperDataSubmissionDto.pgtStageDto.pgtMRefNo}"/>
-                        </iais:value>
-                    </iais:row>
                     <iais:row>
                         <iais:field width="6" value="What Condition was PGT-M Performed to Detect?"/>
                         <iais:value width="6" display="true">
