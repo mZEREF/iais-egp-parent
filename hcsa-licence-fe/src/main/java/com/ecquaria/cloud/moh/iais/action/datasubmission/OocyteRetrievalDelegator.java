@@ -2,8 +2,10 @@ package com.ecquaria.cloud.moh.iais.action.datasubmission;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.intranetUser.IntranetUserConstant;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArCycleStageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArDonorDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DonorDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.OocyteRetrievalStageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInventoryDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
@@ -41,10 +43,11 @@ public class OocyteRetrievalDelegator extends CommonDelegator {
         if (oocyteRetrievalStageDto == null) {
             oocyteRetrievalStageDto = new OocyteRetrievalStageDto();
             arSuperDataSubmissionDto.setOocyteRetrievalStageDto(oocyteRetrievalStageDto);
-            List<ArDonorDto> arDonorDtoList = arSuperDataSubmissionDto.getArDonorDtos();
+            ArCycleStageDto arCycleStageDto = arSuperDataSubmissionDto.getArCycleStageDto();
+            List<DonorDto> arDonorDtoList = arCycleStageDto.getDonorDtos();
             if (IaisCommonUtils.isNotEmpty(arDonorDtoList)) {
-                for (ArDonorDto arDonorDto : arDonorDtoList) {
-                    if (arDonorDto.isDirectedDonation()) {
+                for (DonorDto donorDto : arDonorDtoList) {
+                    if (donorDto.isDirectedDonation()) {
                         oocyteRetrievalStageDto.setIsFromDonor(true);
                         break;
                     }
