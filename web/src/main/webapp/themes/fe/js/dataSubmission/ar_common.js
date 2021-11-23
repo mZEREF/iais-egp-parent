@@ -1,6 +1,9 @@
 $(document).ready(function() {
     if($('#saveDraftSuccess').val()=='success' && $('#saveDraft').length > 0){
         $('#saveDraft').modal('show');
+        setTimeout(function() {
+            $('#saveDraftSuccess').val('');
+        }, 2000);
     }
     // draft modal
     var $draft = $("#_draftModal");
