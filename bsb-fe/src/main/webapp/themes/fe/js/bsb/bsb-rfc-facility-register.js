@@ -52,6 +52,8 @@ $(function () {
     var lspfActivityTypesDiv = $("#lspfTypes");
     var rfActivityTypesDiv = $("#rfTypes");
     $("#bsl3Radio").change(function () {
+        $("input[type='checkbox']").removeAttr("checked");
+        $("input[value='ACTVITY001']").attr("checked", true);
         bsl3ActivityTypesDiv.show();
         bsl4ActivityTypesDiv.hide();
         ufActivityTypesDiv.hide();
@@ -59,6 +61,8 @@ $(function () {
         rfActivityTypesDiv.hide();
     });
     $("#bsl4Radio").change(function () {
+        $("input[type='checkbox']").removeAttr("checked");
+        $("input[value='ACTVITY001']").attr("checked", true);
         bsl3ActivityTypesDiv.hide();
         bsl4ActivityTypesDiv.show();
         ufActivityTypesDiv.hide();
@@ -66,6 +70,8 @@ $(function () {
         rfActivityTypesDiv.hide();
     });
     $("#ufRadio").change(function () {
+        $("input[type='checkbox']").removeAttr("checked");
+        $("input[value='ACTVITY002']").attr("checked", true);
         bsl3ActivityTypesDiv.hide();
         bsl4ActivityTypesDiv.hide();
         ufActivityTypesDiv.show();
@@ -73,6 +79,8 @@ $(function () {
         rfActivityTypesDiv.hide();
     });
     $("#lspfRadio").change(function () {
+        $("input[type='checkbox']").removeAttr("checked");
+        $("input[value='ACTVITY005']").attr("checked", true);
         bsl3ActivityTypesDiv.hide();
         bsl4ActivityTypesDiv.hide();
         ufActivityTypesDiv.hide();
@@ -80,6 +88,8 @@ $(function () {
         rfActivityTypesDiv.hide();
     });
     $("#rfRadio").change(function () {
+        $("input[type='checkbox']").removeAttr("checked");
+        $("input[value='ACTVITY008']").attr("checked", true);
         bsl3ActivityTypesDiv.hide();
         bsl4ActivityTypesDiv.hide();
         ufActivityTypesDiv.hide();
