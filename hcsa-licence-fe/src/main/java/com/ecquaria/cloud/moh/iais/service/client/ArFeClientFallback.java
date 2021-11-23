@@ -132,7 +132,7 @@ public class ArFeClientFallback implements ArFeClient {
     }
 
     @Override
-    public FeignResponseEntity<PatientInventoryDto> patientInventoryByCode(String patientCode) {
+    public FeignResponseEntity<PatientInventoryDto> patientInventoryByCode(String patientCode,String hciCode) {
         return  getFeignResponseEntity(patientCode);
     }
 

@@ -103,8 +103,8 @@ public interface ArFeClient {
                                                           @RequestParam(value = "sampleFromHciCode",required = false) String sampleFromHciCode,
                                                           @RequestParam(value = "sampleFromOthers",required = false) String sampleFromOthers);
 
-    @GetMapping(value = "/data-submission/patient-inventory/{patientCode}", produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<PatientInventoryDto> patientInventoryByCode(@PathVariable("patientCode") String patientCode);
+    @GetMapping(value = "/data-submission/patient-inventory/{patientCode}/{hciCode}", produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<PatientInventoryDto> patientInventoryByCode(@PathVariable("patientCode") String patientCode,@PathVariable("hciCode") String hciCode);
 
     @GetMapping(value = "/ar-common/arTreatmentSubsidiesStageDtos/patientcode-hcicode-cycletype", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<ArTreatmentSubsidiesStageDto>> getArTreatmentSubsidiesStagesByPatientInfo(@RequestParam(name = "patientCode") String patientCode,

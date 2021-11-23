@@ -61,7 +61,9 @@ public class DisposalStageDelegator extends CommonDelegator{
     public void pageAction(BaseProcessClass bpc) {
         ArSuperDataSubmissionDto arSuperDataSubmissionDto= DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
         try{
-            PatientInventoryDto patientInventoryDto=arFeClient.patientInventoryByCode(arSuperDataSubmissionDto.getPatientInfoDto().getPatient().getPatientCode()).getEntity();
+            String patientCode=arSuperDataSubmissionDto.getPatientInfoDto().getPatient().getPatientCode();
+            String hciCode=arSuperDataSubmissionDto.getPremisesDto().getHciCode();
+            PatientInventoryDto patientInventoryDto=arFeClient.patientInventoryByCode(patientCode,hciCode).getEntity();
             arSuperDataSubmissionDto.setPatientInventoryDto(patientInventoryDto);
         }catch (Exception e){
             log.error(e.getMessage(),e);
