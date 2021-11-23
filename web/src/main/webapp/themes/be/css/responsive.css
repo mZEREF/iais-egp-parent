@@ -100,7 +100,7 @@
   .mer-name { float: left !important;}
     /*Bank*/
   .detailLeftCol {width:40%}
-  .detailLeftCol2 {font-size:11px !important;}
+  .detailLeftCol2, {font-size:11px !important;}
   .agreement { font-size:12px !important;}
   .containerbank {padding-right: 10px !important;padding-left: 5px !important;margin-right: auto; margin-left: auto;}
   /*Popup*/
@@ -221,8 +221,8 @@ and (orientation : portrait) {
     .navbar-nav .open .dropdown-menu > li > a,
     .navbar-nav .open .dropdown-menu .dropdown-header { padding: 5px 15px 5px 25px; }
     .navbar-nav .open .dropdown-menu > li > a {line-height: 30px;}
-    /*.navbar-nav .open .dropdown-menu > li > a:hover,
-    .navbar-nav .open .dropdown-menu > li > a:focus {background-a a one;}*/
+    .navbar-nav .open .dropdown-menu > li > a:hover,
+    .navbar-nav .open .dropdown-menu > li > a:focus {background-a a one;}
     /*Form fix 4 buttons*/
     .form-group-four .btn {margin-right: 0;clear: both;width:100%;}
     /*2 columns table layout*/
