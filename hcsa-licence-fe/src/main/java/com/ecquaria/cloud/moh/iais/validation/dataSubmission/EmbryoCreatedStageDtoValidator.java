@@ -40,52 +40,59 @@ public class EmbryoCreatedStageDtoValidator implements CustomizeValidator {
             String errMsg = MessageUtil.replaceMessage("GENERAL_ERR0006","This field", "field");
             errorMap.put("othersReason", errMsg);
         }else if(embryoCreatedStageDto.getTransEmbrFreshOccNum()>99||embryoCreatedStageDto.getTransEmbrFreshOccNum()<0){
-            totalFreshNum+=embryoCreatedStageDto.getTransEmbrFreshOccNum();
+
             Map<String, String> repMap=IaisCommonUtils.genNewHashMap();
             repMap.put("minNum","0");
             repMap.put("maxNum","99");
             repMap.put("field","This field");
             String errMsg = MessageUtil.getMessageDesc("DS_ERR003",repMap);
             errorMap.put("transEmbrFreshOccNum", errMsg);
+        }else {
+            totalFreshNum+=embryoCreatedStageDto.getTransEmbrFreshOccNum();
         }
 
         if (embryoCreatedStageDto.getPoorDevFreshOccNum()==null) {
             String errMsg = MessageUtil.replaceMessage("GENERAL_ERR0006","This field", "field");
             errorMap.put("poorDevFreshOccNum", errMsg);
         }else if(embryoCreatedStageDto.getPoorDevFreshOccNum()>99||embryoCreatedStageDto.getPoorDevFreshOccNum()<0){
-            totalFreshNum+=embryoCreatedStageDto.getPoorDevFreshOccNum();
+
             Map<String, String> repMap=IaisCommonUtils.genNewHashMap();
             repMap.put("minNum","0");
             repMap.put("maxNum","99");
             repMap.put("field","This field");
             String errMsg = MessageUtil.getMessageDesc("DS_ERR003",repMap);
             errorMap.put("poorDevFreshOccNum", errMsg);
+        }else {
+            totalFreshNum+=embryoCreatedStageDto.getPoorDevFreshOccNum();
         }
 
         if (embryoCreatedStageDto.getTransEmbrThawOccNum() == null) {
             String errMsg = MessageUtil.replaceMessage("GENERAL_ERR0006","This field", "field");
             errorMap.put("transEmbrThawOccNum", errMsg);
         }else if(embryoCreatedStageDto.getTransEmbrThawOccNum()>99||embryoCreatedStageDto.getTransEmbrThawOccNum()<0){
-            totalThawedNum+=embryoCreatedStageDto.getTransEmbrThawOccNum();
             Map<String, String> repMap=IaisCommonUtils.genNewHashMap();
             repMap.put("minNum","0");
             repMap.put("maxNum","99");
             repMap.put("field","This field");
             String errMsg = MessageUtil.getMessageDesc("DS_ERR003",repMap);
             errorMap.put("transEmbrThawOccNum", errMsg);
+        }else {
+            totalThawedNum+=embryoCreatedStageDto.getTransEmbrThawOccNum();
         }
 
         if (embryoCreatedStageDto.getPoorDevThawOccNum() == null) {
             String errMsg = MessageUtil.replaceMessage("GENERAL_ERR0006","This field", "field");
             errorMap.put("poorDevThawOccNum", errMsg);
         }else if(embryoCreatedStageDto.getPoorDevThawOccNum()>99||embryoCreatedStageDto.getPoorDevThawOccNum()<0){
-            totalThawedNum+=embryoCreatedStageDto.getPoorDevThawOccNum();
+
             Map<String, String> repMap=IaisCommonUtils.genNewHashMap();
             repMap.put("minNum","0");
             repMap.put("maxNum","99");
             repMap.put("field","This field");
             String errMsg = MessageUtil.getMessageDesc("DS_ERR003",repMap);
             errorMap.put("poorDevThawOccNum", errMsg);
+        }else {
+            totalThawedNum+=embryoCreatedStageDto.getPoorDevThawOccNum();
         }
 
         String errMsgFresh = "Total sum of data item 1, 2 cannot be greater than number of fresh oocytes tagged to patient";
