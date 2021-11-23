@@ -22,7 +22,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.mastercode.MasterCodeView;
 import com.ecquaria.cloud.moh.iais.common.helper.RedisCacheHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
-import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.service.client.MasterCodeClient;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
@@ -104,6 +103,7 @@ public final class MasterCodeUtil {
     public static final String CATE_ID_BANK_NAME                        = "137A214B-8611-EA11-BE78-874C29D29DB0";
 
 
+    public static final String CATE_ID_NATIONALITY                      = "21941117-A009-4E45-AD2F-22F233EAA28D";
     //charges
     public static final String CATE_ID_GENERAL_CONVEYANCE_CHARGES_TYPE                  = "D4F72703-47A3-EB11-8B7F-000C29FD17F9";
     public static final String CATE_ID_MEDICAL_EQUIPMENT_AND_OTHER_CHARGES_CATEGORY     = "E6C7DED1-D5A3-EB11-8B7F-000C29FD17F9";

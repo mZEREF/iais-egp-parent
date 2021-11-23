@@ -6,6 +6,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoDto;
+import com.ecquaria.cloud.moh.iais.common.dto.mastercode.MasterCodeView;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -14,6 +15,7 @@ import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.Assert;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 import sg.gov.moh.iais.egp.bsb.client.BsbFileClient;
@@ -792,7 +794,14 @@ public class RfcFacilityRegistrationDelegator {
 
     /* Will be removed in future, will get this from master code */
     private static List<SelectOption> tmpNationalityOps() {
-        return Arrays.asList(new SelectOption("SG", "Singaporean"), new SelectOption("AFG", "Afghan"));
+        List<MasterCodeView> views = MasterCodeUtil.retrieveByCategory(MasterCodeUtil.CATE_ID_NATIONALITY);
+        List<SelectOption> ops = new ArrayList<>(views.size());
+        if(!CollectionUtils.isEmpty(views)){
+            for (MasterCodeView view : views) {
+                ops.add(new SelectOption(view.getCode(), view.getCodeValue()));
+            }
+        }
+        return ops;
     }
 
     /* Will be removed in future, will get this from master code */
