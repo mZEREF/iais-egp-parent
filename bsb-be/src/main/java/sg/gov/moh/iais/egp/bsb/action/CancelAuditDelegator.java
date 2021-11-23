@@ -22,6 +22,9 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import static sg.gov.moh.iais.egp.bsb.constant.AuditConstants.KEY_AUDIT_DATA_LIST;
+import static sg.gov.moh.iais.egp.bsb.constant.AuditConstants.KEY_AUDIT_PAGE_INFO;
+
 /**
  * @author Zhu Tangtang
  */
@@ -65,9 +68,9 @@ public class CancelAuditDelegator {
         ResponseDto<FacilityQueryResultDto> searchResult = auditClientBE.queryFacility(searchDto);
 
         if (searchResult.ok()) {
-            ParamUtil.setRequestAttr(request, AuditConstants.KEY_AUDIT_PAGE_INFO, searchResult.getEntity().getPageInfo());
-            List<FacilityActivity> audits = searchResult.getEntity().getTasks();
-            ParamUtil.setRequestAttr(request, AuditConstants.KEY_AUDIT_DATA_LIST, audits);
+            ParamUtil.setRequestAttr(request, KEY_AUDIT_PAGE_INFO, searchResult.getEntity().getPageInfo());
+            List<FacilityQueryResultDto.FacInfo> facInfos = searchResult.getEntity().getTasks();
+            ParamUtil.setSessionAttr(request, KEY_AUDIT_DATA_LIST, (Serializable) facInfos);
         } else {
             log.warn("get audit API doesn't return ok, the response is {}", searchResult);
             ParamUtil.setRequestAttr(request, AuditConstants.KEY_AUDIT_PAGE_INFO, PageInfo.emptyPageInfo(searchDto));

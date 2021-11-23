@@ -62,24 +62,24 @@
                                     </iais:value>
                                 </iais:row>
 
-<%--                                <iais:row>--%>
-<%--                                    <iais:field value="Audit Type"/>--%>
-<%--                                    <iais:value width="18">--%>
-<%--                                        <iais:select name="auditType" id="auditType"--%>
-<%--                                                     value="${auditSearch.auditType}"--%>
-<%--                                                     codeCategory="CATE_ID_BSB_AUDIT_TYPE" firstOption="All"/>--%>
-<%--                                        <span id="error_auditType"--%>
-<%--                                              name="iaisErrorMsg"--%>
-<%--                                              class="error-msg"></span>--%>
-<%--                                    </iais:value>--%>
-<%--                                </iais:row>--%>
+                                <iais:row>
+                                    <iais:field value="Audit Type"/>
+                                    <iais:value width="18">
+                                        <iais:select name="auditType" id="auditType"
+                                                     value="${auditSearch.auditType}"
+                                                     codeCategory="CATE_ID_BSB_AUDIT_TYPE" firstOption="All"/>
+                                        <span id="error_auditType"
+                                              name="iaisErrorMsg"
+                                              class="error-msg"></span>
+                                    </iais:value>
+                                </iais:row>
 
-<%--                                <iais:row>--%>
-<%--                                    <iais:field value="Audit Window Period" required="false"/>--%>
-<%--                                    <iais:value width="18">--%>
-<%--                                        <p><c:out value="1/1/${year} - 31/12/${year}"></c:out></p>--%>
-<%--                                    </iais:value>--%>
-<%--                                </iais:row>--%>
+                                <iais:row>
+                                    <iais:field value="Audit Window Period" required="false"/>
+                                    <iais:value width="18">
+                                        <p><c:out value="1/1/${year} - 31/12/${year}"></c:out></p>
+                                    </iais:value>
+                                </iais:row>
 
                                 <iais:action style="text-align:right;">
                                     <button class="btn btn-secondary" type="button" id="clearBtn" name="clearBtn">
@@ -103,63 +103,28 @@
                                 <thead>
                                 <tr>
                                     <iais:sortableHeader needSort="false" field="" value=" " isFE="false"/>
-                                    <iais:sortableHeader needSort="true" field="" value="Facility Name" isFE="false"/>
-                                    <iais:sortableHeader needSort="true" field="" value="Facility Classification" isFE="false"/>
+                                    <iais:sortableHeader needSort="false" field="facility.facilityName" value="Facility Name" isFE="false"/>
+                                    <iais:sortableHeader needSort="false" field="facility.facilityClassification" value="Facility Classification" isFE="false"/>
                                     <iais:sortableHeader needSort="false" field="" value="Activity type" isFE="false"/>
-                                    <iais:sortableHeader needSort="true" field="" value="Date of Last Audit" isFE="false"/>
-                                    <iais:sortableHeader needSort="true" field="" value="Audit Type" isFE="false"/>
-                                    <iais:sortableHeader needSort="true" field="" value="Scenario Category" isFE="false"/>
-                                    <iais:sortableHeader needSort="true" field="" value="Audit Outcome" isFE="false"/>
+                                    <iais:sortableHeader needSort="false" field="auditDt" value="Date of Last Audit" isFE="false"/>
+                                    <iais:sortableHeader needSort="false" field="auditType" value="Audit Type" isFE="false"/>
+                                    <iais:sortableHeader needSort="false" field="" value="Scenario Category" isFE="false"/>
+                                    <iais:sortableHeader needSort="false" field="" value="Audit Outcome" isFE="false"/>
                                 </tr>
                                 </thead>
-                                    <%--@elvariable id="dataList" type="java.util.List<sg.gov.moh.iais.egp.bsb.entity.Application>"--%>
+                                    <%--@elvariable id="dataList" type="java.util.List<sg.gov.moh.iais.egp.bsb.dto.audit.FacilityQueryResultDto.FacInfo>"--%>
                                 <c:forEach var="item" items="${dataList}" varStatus="status">
                                     <c:set var="auditIndex" value="${(status.index + 1) + (pageInfo.pageNo) * pageInfo.size}"></c:set>
                                     <tr style="display: table-row;">
 <%--                                        <input type="hidden" name="auditId" value="<iais:mask name='auditId' value='${item.id}'/>">--%>
-                                        <td><input name="facId" type="checkbox" id="auditId${auditIndex}" value="<iais:mask name='facId' value='${item.facility.id}'/>"></td>
-                                        <td width="12%">${item.facility.facilityName}</td>
-                                        <td width="15%"><iais:code code="${item.facility.facilityClassification}"></iais:code></td>
-                                        <td width="30%"><iais:code code="${item.activityType}"></iais:code></td>
-                                        <td>
-<%--                                            <fmt:formatDate value='${item.approval.modifiedAt}' pattern='dd/MM/yyyy'/>--%>
-                                        </td>
-                                        <td>
-                                            <c:forEach var="audit" items="${item.approval.facilityAudits}" varStatus="status">
-                                                <c:choose>
-                                                    <c:when test="${status.last}">
-                                                        <iais:code code="${audit.auditType}"></iais:code>
-                                                    </c:when>
-                                                    <c:otherwise>
-                                                        <iais:code code="${audit.auditType}"></iais:code>,
-                                                    </c:otherwise>
-                                                </c:choose>
-                                            </c:forEach>
-                                        </td>
-                                        <td>
-                                            <c:forEach var="audit" items="${item.approval.facilityAudits}" varStatus="status">
-                                                <c:choose>
-                                                    <c:when test="${status.last}">
-                                                        <iais:code code="${audit.scenarioCategory}"></iais:code>
-                                                    </c:when>
-                                                    <c:otherwise>
-                                                        <iais:code code="${audit.scenarioCategory}"></iais:code>,
-                                                    </c:otherwise>
-                                                </c:choose>
-                                            </c:forEach>
-                                        </td>
-                                        <td>
-                                            <c:forEach var="audit" items="${item.approval.facilityAudits}" varStatus="status">
-                                                <c:choose>
-                                                    <c:when test="${status.last}">
-                                                        <c:out value="${audit.auditOutcome}"/>
-                                                    </c:when>
-                                                    <c:otherwise>
-                                                        <c:out value="${audit.auditOutcome}"/>,
-                                                    </c:otherwise>
-                                                </c:choose>
-                                            </c:forEach>
-                                        </td>
+                                        <td><input name="facId" type="checkbox" id="auditId${auditIndex}" value="<iais:mask name='facId' value='${item.facId}'/>"></td>
+                                        <td>${item.facName}</td>
+                                        <td><iais:code code="${item.facClassification}"/></td>
+                                        <td><iais:code code="${item.activityType}"/></td>
+                                        <td><fmt:formatDate value='${item.lastAuditDate}' pattern='dd/MM/yyyy'/></td>
+                                        <td><iais:code code="${item.auditType}"/></td>
+                                        <td><iais:code code="${item.scenarioCategory}"/></td>
+                                        <td><c:out value="${item.auditOutcome}"/></td>
                                     </tr>
                                 </c:forEach>
                             </table>

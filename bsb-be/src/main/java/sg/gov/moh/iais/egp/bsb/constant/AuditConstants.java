@@ -62,4 +62,7 @@ public final class AuditConstants {
     public static final String PARAM_AUDIT_STATUS_PENDING_AO = "AUDITST005";
     public static final String PARAM_AUDIT_STATUS_SUSPENDED = "AUDITST006";
     public static final String PARAM_AUDIT_STATUS_CANCELLED = "AUDITST007";
+
+    public static final String SEPARATOR                   = "--v--";
+    public static final String KEY_SECTION_IDXES          = "sectionIdx";
 }

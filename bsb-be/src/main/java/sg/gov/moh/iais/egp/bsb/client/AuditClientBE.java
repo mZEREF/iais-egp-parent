@@ -8,7 +8,6 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
 import sg.gov.moh.iais.egp.bsb.dto.audit.AuditQueryDto;
-import sg.gov.moh.iais.egp.bsb.dto.audit.AuditQueryResultDto;
 import sg.gov.moh.iais.egp.bsb.dto.audit.FacilityQueryResultDto;
 import sg.gov.moh.iais.egp.bsb.entity.*;
 
@@ -23,9 +22,6 @@ public interface AuditClientBE {
 
     @GetMapping(value = "/bsb-audit/queryFacility", consumes = MediaType.APPLICATION_JSON_VALUE, produces =MediaType.APPLICATION_JSON_VALUE)
     ResponseDto<FacilityQueryResultDto> queryFacility(@SpringQueryMap AuditQueryDto queryDto);
-
-    @GetMapping(value = "/bsb-audit/getCancelAuditList", consumes = MediaType.APPLICATION_JSON_VALUE, produces =MediaType.APPLICATION_JSON_VALUE)
-    ResponseDto<AuditQueryResultDto> getCancelAuditList(@SpringQueryMap AuditQueryDto queryDto);
 
     @GetMapping(path = "/bsb-audit/getFacilityById")
     FeignResponseEntity<Facility> getFacilityById(@RequestParam("id") String id);

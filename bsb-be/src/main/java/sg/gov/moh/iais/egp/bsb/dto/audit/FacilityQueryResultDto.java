@@ -2,8 +2,9 @@ package sg.gov.moh.iais.egp.bsb.dto.audit;
 
 import lombok.Data;
 import sg.gov.moh.iais.egp.bsb.dto.PageInfo;
-import sg.gov.moh.iais.egp.bsb.entity.FacilityActivity;
 
+import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -13,5 +14,19 @@ import java.util.List;
 @Data
 public class FacilityQueryResultDto {
     private PageInfo pageInfo;
-    private List<FacilityActivity> tasks;
+    private List<FacInfo> tasks;
+
+    @Data
+    public static class FacInfo implements Serializable{
+        private String facId;
+        private String approvalId;
+        private String facName;
+        private String facClassification;
+        private String activityType;
+        private Date lastAuditDate;
+        private String auditType;
+        private String scenarioCategory;
+        private String auditOutcome;
+        private String cancelReason;
+    }
 }

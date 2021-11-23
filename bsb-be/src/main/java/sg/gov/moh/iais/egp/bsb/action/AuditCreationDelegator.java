@@ -3,11 +3,11 @@ package sg.gov.moh.iais.egp.bsb.action;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
-import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 import sg.gov.moh.iais.egp.bsb.client.AuditClientBE;
 import sg.gov.moh.iais.egp.bsb.client.BiosafetyEnquiryClient;
@@ -21,10 +21,9 @@ import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
+
+import static sg.gov.moh.iais.egp.bsb.constant.AuditConstants.*;
 
 /**
  * @author Zhu Tangtang
@@ -49,174 +48,132 @@ public class AuditCreationDelegator {
     @Autowired
     private BiosafetyEnquiryClient biosafetyEnquiryClient;
 
-    /**
-     * StartStep: startStep
-     *
-     * @param bpc
-     * @throws IllegalAccessException
-     */
     public void start(BaseProcessClass bpc) throws IllegalAccessException {
-        AuditTrailHelper.auditFunction(AuditConstants.MODULE_AUDIT, AuditConstants.FUNCTION_AUDIT);
+        AuditTrailHelper.auditFunction(MODULE_AUDIT, FUNCTION_AUDIT);
         HttpServletRequest request = bpc.request;
         IaisEGPHelper.clearSessionAttr(request, AuditConstants.class);
-        ParamUtil.setSessionAttr(request, AuditConstants.PARAM_AUDIT_SEARCH, null);
+        ParamUtil.setSessionAttr(request, PARAM_AUDIT_SEARCH, null);
     }
 
     /**
      * AuditListCreationList
-     * AutoStep: prepareData
-     *
-     * @param bpc
      */
     public void prepareAuditListData(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
-        ParamUtil.setSessionAttr(request,AuditConstants.PARAM_YEAR,null);
+        ParamUtil.setSessionAttr(request, PARAM_YEAR, null);
+        ParamUtil.setSessionAttr(request, KEY_AUDIT_DATA_LIST, null);
         selectOption(request);
         // get search DTO
-        AuditQueryDto searchDto=getSearchDto(request);
-        searchDto.setFrom(AuditConstants.PARAM_CREATE_AUDIT);
-        ParamUtil.setSessionAttr(request, AuditConstants.PARAM_AUDIT_SEARCH, searchDto);
+        AuditQueryDto searchDto = getSearchDto(request);
+        searchDto.setFrom(PARAM_CREATE_AUDIT);
+        ParamUtil.setSessionAttr(request, PARAM_AUDIT_SEARCH, searchDto);
         // call API to get searched data
         ResponseDto<FacilityQueryResultDto> searchResult = auditClientBE.queryFacility(searchDto);
 
         if (searchResult.ok()) {
-            ParamUtil.setRequestAttr(request, AuditConstants.KEY_AUDIT_PAGE_INFO, searchResult.getEntity().getPageInfo());
-            List<FacilityActivity> audits = searchResult.getEntity().getTasks();
-            ParamUtil.setRequestAttr(request, AuditConstants.KEY_AUDIT_DATA_LIST, audits);
+            ParamUtil.setRequestAttr(request, KEY_AUDIT_PAGE_INFO, searchResult.getEntity().getPageInfo());
+            List<FacilityQueryResultDto.FacInfo> facInfos = searchResult.getEntity().getTasks();
+            ParamUtil.setSessionAttr(request, KEY_AUDIT_DATA_LIST, (Serializable) facInfos);
         } else {
             log.warn("get audit API doesn't return ok, the response is {}", searchResult);
-            ParamUtil.setRequestAttr(request, AuditConstants.KEY_AUDIT_PAGE_INFO, PageInfo.emptyPageInfo(searchDto));
-            ParamUtil.setRequestAttr(request, AuditConstants.KEY_AUDIT_DATA_LIST, new ArrayList<>());
+            ParamUtil.setRequestAttr(request, KEY_AUDIT_PAGE_INFO, PageInfo.emptyPageInfo(searchDto));
+            ParamUtil.setRequestAttr(request, KEY_AUDIT_DATA_LIST, new ArrayList<>());
         }
 
         Calendar cd = Calendar.getInstance();
         int year = cd.get(Calendar.YEAR);
-        ParamUtil.setSessionAttr(request,AuditConstants.PARAM_YEAR,year);
+        ParamUtil.setSessionAttr(request, PARAM_YEAR, year);
 
     }
 
-    /**
-     * AutoStep: doSearch
-     *
-     * @param bpc
-     */
     public void doSearch(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
-        ParamUtil.setSessionAttr(request, AuditConstants.PARAM_AUDIT_SEARCH, null);
+        ParamUtil.setSessionAttr(request, PARAM_AUDIT_SEARCH, null);
         AuditQueryDto searchDto = getSearchDto(request);
         searchDto.clearAllFields();
-        String facilityName = ParamUtil.getString(request, AuditConstants.PARAM_FACILITY_NAME);
-        String facilityClassification = ParamUtil.getString(request, AuditConstants.PARAM_FACILITY_CLASSIFICATION);
-        String facilityType = ParamUtil.getString(request, AuditConstants.PARAM_FACILITY_TYPE);
-        String auditType = ParamUtil.getString(request, AuditConstants.PARAM_AUDIT_TYPE);
+        String facilityName = ParamUtil.getString(request, PARAM_FACILITY_NAME);
+        String facilityClassification = ParamUtil.getString(request, PARAM_FACILITY_CLASSIFICATION);
+        String facilityType = ParamUtil.getString(request, PARAM_FACILITY_TYPE);
+        String auditType = ParamUtil.getString(request, PARAM_AUDIT_TYPE);
 
         searchDto.setFacilityName(facilityName);
         searchDto.setFacilityClassification(facilityClassification);
         searchDto.setActiveType(facilityType);
         searchDto.setAuditType(auditType);
-        ParamUtil.setSessionAttr(request, AuditConstants.PARAM_AUDIT_SEARCH, searchDto);
+        ParamUtil.setSessionAttr(request, PARAM_AUDIT_SEARCH, searchDto);
     }
 
-    /**
-     * CreateAuditList
-     * AutoStep: prepareData
-     *
-     * @param bpc
-     */
     public void prepareData(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
-        ParamUtil.setSessionAttr(request, AuditConstants.FACILITY_LIST, null);
-        String[] facIds = ParamUtil.getMaskedStrings(request, AuditConstants.FACILITY_ID);
-        List<String> facList=new ArrayList<>();
+        ParamUtil.setSessionAttr(request, FACILITY_LIST, null);
+        String[] facIds = ParamUtil.getMaskedStrings(request, FACILITY_ID);
+
+        List<FacilityQueryResultDto.FacInfo> facilityList = (List<FacilityQueryResultDto.FacInfo>) ParamUtil.getSessionAttr(request, KEY_AUDIT_DATA_LIST);
+        Map<String, FacilityQueryResultDto.FacInfo> facInfoMap = new HashMap<>(facilityList.size());
+        for (FacilityQueryResultDto.FacInfo facInfo : facilityList) {
+            facInfoMap.put(facInfo.getFacId(), facInfo);
+        }
         for (String facId : facIds) {
-            if (StringUtil.isNotEmpty(facId)){
-                facList.add(facId);
+            if (facInfoMap.containsKey(facId)) {
+                facilityList.clear();
+                facilityList.add(facInfoMap.get(facId));
             }
         }
-        List<String> list = repeatListWayTwo(facList);
-        List<Facility> facilityList=new ArrayList<>();
-        for (String fId : list) {
-            Facility facility = auditClientBE.getFacilityById(fId).getEntity();
-            List<FacilityActivity> activityList = auditClientBE.getFacilityActivityByFacilityId(fId).getEntity();
-            if (!activityList.isEmpty()) {
-                facility.setFacilityActivities(activityList);
-            }
-            facilityList.add(facility);
-        }
-        ParamUtil.setSessionAttr(request, AuditConstants.FACILITY_LIST, (Serializable) facilityList);
+        ParamUtil.setSessionAttr(request, FACILITY_LIST, (Serializable) facilityList);
     }
 
-    /**
-     * CreateAuditList
-     * AutoStep: prepareData
-     *
-     * @param bpc
-     */
     public void doCreate(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         FacilityAudit facilityAudit = new FacilityAudit();
-        List<Facility> facilityList = (List<Facility>)ParamUtil.getSessionAttr(request, AuditConstants.FACILITY_LIST);
-        String auditType = ParamUtil.getRequestString(request,AuditConstants.PARAM_AUDIT_TYPE);
-        String remarks = ParamUtil.getRequestString(request,AuditConstants.PARAM_REMARKS);
-        facilityAudit.setAuditType(auditType);
-        facilityAudit.setStatus("AUDITST001");
-        facilityAudit.setRemarks(remarks);
-        if (!facilityList.isEmpty()){
-            for (Facility facility : facilityList) {
-                String mainActivity = getMainActivity(facility.getFacilityClassification());
-                List<FacilityActivity> facilityActivities = facility.getFacilityActivities();
-                for (FacilityActivity facilityActivity : facilityActivities) {
-                    if (facilityActivity.getActivityType().equals(mainActivity)){
-                        facilityAudit.setApproval(facilityActivity.getApproval());
-                    }
-                }
+        List<FacilityQueryResultDto.FacInfo> facilityList = (List<FacilityQueryResultDto.FacInfo>) ParamUtil.getSessionAttr(request, KEY_AUDIT_DATA_LIST);
+
+        if (!CollectionUtils.isEmpty(facilityList)) {
+            for (int i = 0; i < facilityList.size(); i++) {
+                String auditType = ParamUtil.getRequestString(request, PARAM_AUDIT_TYPE + SEPARATOR + i);
+                String remarks = ParamUtil.getRequestString(request, PARAM_REMARKS + SEPARATOR + i);
+                facilityAudit.setAuditType(auditType);
+                facilityAudit.setStatus("AUDITST001");
+                facilityAudit.setRemarks(remarks);
+                Approval approval = new Approval();
+                approval.setId(facilityList.get(i).getApprovalId());
+                facilityAudit.setApproval(approval);
                 auditClientBE.saveFacilityAudit(facilityAudit);
             }
         }
     }
 
-    /**
-     * AutoStep: page
-     *
-     * @param bpc
-     */
     public void page(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         AuditQueryDto searchDto = getSearchDto(request);
-        String actionValue = ParamUtil.getString(request, AuditConstants.KEY_ACTION_VALUE);
+        String actionValue = ParamUtil.getString(request, KEY_ACTION_VALUE);
         switch (actionValue) {
             case "changeSize":
-                int pageSize = ParamUtil.getInt(request, AuditConstants.KEY_PAGE_SIZE);
+                int pageSize = ParamUtil.getInt(request, KEY_PAGE_SIZE);
                 searchDto.setPage(0);
                 searchDto.setSize(pageSize);
                 break;
             case "changePage":
-                int pageNo = ParamUtil.getInt(request, AuditConstants.KEY_PAGE_NO);
+                int pageNo = ParamUtil.getInt(request, KEY_PAGE_NO);
                 searchDto.setPage(pageNo - 1);
                 break;
             default:
                 log.warn("page, action_value is invalid: {}", actionValue);
                 break;
         }
-        ParamUtil.setSessionAttr(request, AuditConstants.PARAM_AUDIT_SEARCH, searchDto);
+        ParamUtil.setSessionAttr(request, PARAM_AUDIT_SEARCH, searchDto);
     }
 
-    /**
-     * AutoStep: sort
-     *
-     * @param bpc
-     */
     public void sort(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         AuditQueryDto searchDto = getSearchDto(request);
-        String field = ParamUtil.getString(request, AuditConstants.KEY_ACTION_VALUE);
-        String sortType = ParamUtil.getString(request, AuditConstants.KEY_ACTION_ADDT);
+        String field = ParamUtil.getString(request, KEY_ACTION_VALUE);
+        String sortType = ParamUtil.getString(request, KEY_ACTION_ADDT);
         searchDto.changeSort(field, sortType);
-        ParamUtil.setSessionAttr(request, AuditConstants.PARAM_AUDIT_SEARCH, searchDto);
+        ParamUtil.setSessionAttr(request, PARAM_AUDIT_SEARCH, searchDto);
     }
 
     private AuditQueryDto getSearchDto(HttpServletRequest request) {
-        AuditQueryDto searchDto = (AuditQueryDto) ParamUtil.getSessionAttr(request, AuditConstants.PARAM_AUDIT_SEARCH);
+        AuditQueryDto searchDto = (AuditQueryDto) ParamUtil.getSessionAttr(request, PARAM_AUDIT_SEARCH);
         return searchDto == null ? getDefaultSearchDto() : searchDto;
     }
 
@@ -227,26 +184,26 @@ public class AuditCreationDelegator {
         return dto;
     }
 
-    public void selectOption(HttpServletRequest request){
+    public void selectOption(HttpServletRequest request) {
         List<String> facNames = biosafetyEnquiryClient.queryDistinctFN().getEntity();
         List<SelectOption> selectModel = new ArrayList<>();
         for (String facName : facNames) {
-            selectModel.add(new SelectOption(facName,facName));
+            selectModel.add(new SelectOption(facName, facName));
         }
-        ParamUtil.setRequestAttr(request, AuditConstants.PARAM_FACILITY_NAME, selectModel);
+        ParamUtil.setRequestAttr(request, PARAM_FACILITY_NAME, selectModel);
     }
 
-    public static List<String> repeatListWayTwo(List<String> list){
+    public static List<String> deduplication(List<String> list) {
         HashSet<String> set = new HashSet<>(list);
         list.clear();
         list.addAll(set);
         return list;
     }
 
-    public String getMainActivity(String facClass){
+    public String getMainActivity(String facClass) {
         String mainActivity = "";
-        if(StringUtils.hasLength(facClass)){
-            switch (facClass){
+        if (StringUtils.hasLength(facClass)) {
+            switch (facClass) {
                 case FACILITY_CLASSIFICATION_2:
                 case FACILITY_CLASSIFICATION_1:
                     mainActivity = ACTIVITY_TYPE_1;
