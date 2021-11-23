@@ -12,7 +12,7 @@
             <div class="panel-main-content form-horizontal ">
                 <iais:row>
                     <iais:field width="6" value="Oocyte(s) was retrieved from?" cssClass="col-md-6"/>
-                    <iais:value width="6" cssClass="col-md-6">
+                    <iais:value width="6" cssClass="col-md-6" display="true">
                         <c:if test="${oocyteRetrievalStageDto.isFromPatient}"><p>Patient</p></c:if>
                         <c:if test="${oocyteRetrievalStageDto.isFromPatientTissue}"><p>Patient's Ovarian
                             Tissue</p></c:if>
@@ -23,31 +23,31 @@
                 </iais:row>
                 <iais:row>
                     <iais:field width="6" value="No. Retrieved (Mature)" cssClass="col-md-6"/>
-                    <iais:value width="6" cssClass="col-md-6">
+                    <iais:value width="6" cssClass="col-md-6" display="true">
                         <c:out value="${oocyteRetrievalStageDto.matureRetrievedNum}"/>
                     </iais:value>
                 </iais:row>
                 <iais:row>
                     <iais:field width="6" value="No. Retrieved (Immature)" cssClass="col-md-6"/>
-                    <iais:value width="6" cssClass="col-md-6">
+                    <iais:value width="6" cssClass="col-md-6" display="true">
                         <c:out value="${oocyteRetrievalStageDto.immatureRetrievedNum}"/>
                     </iais:value>
                 </iais:row>
                 <iais:row>
                     <iais:field width="6" value="No. Retrieved (Others)" cssClass="col-md-6"/>
-                    <iais:value width="6" cssClass="col-md-6">
+                    <iais:value width="6" cssClass="col-md-6" display="true">
                         <c:out value="${oocyteRetrievalStageDto.otherRetrievedNum}"/>
                     </iais:value>
                 </iais:row>
                 <iais:row>
                     <iais:field width="6" value="No. Retrieved (Total)" cssClass="col-md-6"/>
-                    <iais:value width="6" cssClass="col-md-6">
+                    <iais:value width="6" cssClass="col-md-6" display="true">
                         <c:out value="${totalRetrievedNum}"/>
                     </iais:value>
                 </iais:row>
                 <iais:row>
                     <iais:field width="6" value="Severe Ovarian Hyperstimulation Syndrome" cssClass="col-md-6"/>
-                    <iais:value width="6" cssClass="col-md-6">
+                    <iais:value width="6" cssClass="col-md-6" display="true">
                         <c:if test="${oocyteRetrievalStageDto.isOvarianSyndrome}">Yes</c:if>
                         <c:if test="${not oocyteRetrievalStageDto.isOvarianSyndrome}">No</c:if>
                     </iais:value>

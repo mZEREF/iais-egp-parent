@@ -13,8 +13,8 @@
             <div class="panel-main-content form-horizontal">
                 <iais:row>
                     <iais:field width="6" value="Oocyte(s) was retrieved from?" mandatory="true" cssClass="col-md-6"/>
-                    <iais:value width="6" style="padding: 0px;" cssClass="col-md-6">
-                        <div class="form-check col-xs-12">
+                    <iais:value width="6" cssClass="col-md-6">
+                        <div class="form-check col-xs-12" style="padding: 0px;">
                             <input class="form-check-input" type="checkbox"
                                    name="isFromPatient"
                                    value="true"
@@ -25,7 +25,7 @@
                                    for="isFromPatient"><span
                                     class="check-square"></span>Patient</label>
                         </div>
-                        <div class="form-check col-xs-12">
+                        <div class="form-check col-xs-12" style="padding: 0px;">
                             <input class="form-check-input" type="checkbox"
                                    name="isFromPatientTissue"
                                    value="true"
@@ -36,7 +36,7 @@
                                    for="isFromPatientTissue"><span
                                     class="check-square"></span>Patient's Ovarian Tissue</label>
                         </div>
-                        <div class="form-check col-xs-12">
+                        <div class="form-check col-xs-12" style="padding: 0px;">
                             <input class="form-check-input" type="checkbox"
                                    name="isFromDonor"
                                    value="true"
@@ -47,7 +47,7 @@
                                    for="isFromDonor"><span
                                     class="check-square"></span>Directed Donor</label>
                         </div>
-                        <div class="form-check col-xs-12">
+                        <div class="form-check col-xs-12" style="padding: 0px;">
                             <input class="form-check-input" type="checkbox"
                                    name="isFromDonorTissue"
                                    value="true"
@@ -65,21 +65,21 @@
                     <iais:field width="6" value="No. Retrieved (Mature)" cssClass="col-md-6"/>
                     <iais:value width="6" cssClass="col-md-6">
                         <iais:input maxLength="2" type="text" name="matureRetrievedNum" id="matureRetrievedNum"
-                                    value="${oocyteRetrievalStageDto.matureRetrievedNum>=0?oocyteRetrievalStageDto.matureRetrievedNum:''}"/>
+                                    value="${oocyteRetrievalStageDto.matureRetrievedNum}"/>
                     </iais:value>
                 </iais:row>
                 <iais:row>
                     <iais:field width="6" value="No. Retrieved (Immature)" cssClass="col-md-6"/>
                     <iais:value width="6" cssClass="col-md-6">
                         <iais:input maxLength="2" type="text" name="immatureRetrievedNum" id="immatureRetrievedNum"
-                                    value="${oocyteRetrievalStageDto.immatureRetrievedNum>=0?oocyteRetrievalStageDto.immatureRetrievedNum:''}"/>
+                                    value="${oocyteRetrievalStageDto.immatureRetrievedNum}"/>
                     </iais:value>
                 </iais:row>
                 <iais:row>
                     <iais:field width="6" value="No. Retrieved (Others)" cssClass="col-md-6"/>
                     <iais:value width="6" cssClass="col-md-6">
                         <iais:input maxLength="2" type="text" name="otherRetrievedNum" id="otherRetrievedNum"
-                                    value="${oocyteRetrievalStageDto.otherRetrievedNum>=0?oocyteRetrievalStageDto.otherRetrievedNum:''}"/>
+                                    value="${oocyteRetrievalStageDto.otherRetrievedNum}"/>
                     </iais:value>
                 </iais:row>
                 <iais:row>
@@ -96,7 +96,7 @@
                            title="&lt;p&gt;<iais:message key="DS_ACK001"/>&lt;/p&gt;">i</a>
                     </label>
                     <iais:value width="3" cssClass="col-md-3">
-                        <div class="form-check">
+                        <div class="form-check" style="padding: 0px;">
                             <input class="form-check-input"
                                    type="radio"
                                    name="isOvarianSyndrome"

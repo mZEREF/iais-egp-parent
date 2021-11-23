@@ -92,9 +92,9 @@ public class OocyteRetrievalDelegator extends CommonDelegator {
         boolean isFromPatientTissue = "true".equals(ParamUtil.getString(request, "isFromPatientTissue"));
         boolean isFromDonor = "true".equals(ParamUtil.getString(request, "isFromDonor"));
         boolean isFromDonorTissue = "true".equals(ParamUtil.getString(request, "isFromDonorTissue"));
-        int matureRetrievedNum = ParamUtil.getInt(request, "matureRetrievedNum", 0);
-        int immatureRetrievedNum = ParamUtil.getInt(request, "immatureRetrievedNum", 0);
-        int otherRetrievedNum = ParamUtil.getInt(request, "otherRetrievedNum", 0);
+        String matureRetrievedNum = ParamUtil.getString(request, "matureRetrievedNum");
+        String immatureRetrievedNum = ParamUtil.getString(request, "immatureRetrievedNum");
+        String otherRetrievedNum = ParamUtil.getString(request, "otherRetrievedNum");
         boolean isOvarianSyndrome = "true".equals(ParamUtil.getString(request, "isOvarianSyndrome"));
 
         oocyteRetrievalStageDto.setIsFromPatient(isFromPatient);
