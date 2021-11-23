@@ -11,21 +11,21 @@
         <div class="panel-body">
             <div class="panel-main-content form-horizontal">
                 <iais:row>
-                    <label class="col-xs-6 col-md-6 ">Please indicate ART Co-funding</label>
-                    <div class="col-sm-7 col-xs-6 col-md-6">
-                        <p>
+                    <iais:field width="6" value="Please indicate ART Co-funding" cssClass="col-md-6"/>
+                    <iais:value width="6" cssClass="col-md-6">
+                        <label class="col-xs-6 control-label col-md-6">
                             <iais:code code="${arTreatmentSubsidiesStageDto.coFunding}"/>
-                        </p>
-                    </div>
+                        </label>
+                    </iais:value>
                 </iais:row>
-                <iais:row>
-                    <label class="col-xs-6 col-md-6 ">Is there an Appeal?</label>
-                    <div class="col-sm-7 col-xs-6 col-md-6">
-                        <p>
-                            ${arTreatmentSubsidiesStageDto.isThereAppeal?"Yes":"No"}
-                        </p>
-                    </div>
-                </iais:row>
+                <c:if test="${isDisplayAppeal}">
+                    <iais:row>
+                        <iais:field width="6" value="Is there an Appeal?" cssClass="col-md-6"/>
+                        <iais:value width="6" cssClass="col-md-6">
+                            <c:out value="${arTreatmentSubsidiesStageDto.isThereAppeal?'Yes':'No'}"/>
+                        </iais:value>
+                    </iais:row>
+                </c:if>
                 <%@include file="../common/patientInventoryTable.jsp" %>
             </div>
         </div>
