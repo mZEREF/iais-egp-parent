@@ -367,12 +367,13 @@ public final class DataSubmissionHelper {
         return getNumsSelections(0, endNum);
     }
 
-    public static String getPatientAgeMessage() {
+    public static String getPatientAgeMessage(String person) {
         String age1 = MasterCodeUtil.getCodeDesc("PT_AGE_001");
         String age2 = MasterCodeUtil.getCodeDesc("PT_AGE_002");
         Map<String, String> repMap = IaisCommonUtils.genNewHashMap(2);
         repMap.put("0", age1);
         repMap.put("1", age2);
+        repMap.put("2", person);
         return MessageUtil.getMessageDesc("DS_MSG005", repMap);
     }
 

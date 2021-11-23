@@ -123,6 +123,7 @@ public class ArAjaxController {
     Map<String, Object> checkPatientAge(HttpServletRequest request) throws Exception {
         String birthDate = ParamUtil.getString(request, "birthDate");
         Map<String, Object> result = IaisCommonUtils.genNewHashMap(3);
+        result.put("modalId", ParamUtil.getString(request, "modalId"));
         if (StringUtil.isEmpty(birthDate) || !CommonValidator.isDate(birthDate) || Formatter.compareDateByDay(birthDate) > 0) {
             return result;
         }
