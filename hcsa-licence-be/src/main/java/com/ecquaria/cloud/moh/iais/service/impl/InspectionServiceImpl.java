@@ -18,6 +18,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcStageWorkingGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionSubPoolQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionTaskPoolListDto;
+import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.HcsaTaskAssignDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.*;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
@@ -491,6 +492,18 @@ public class InspectionServiceImpl implements InspectionService {
             }
             return commonPool;
         }
+    }
+
+    @Override
+    public HcsaTaskAssignDto getHcsaTaskAssignDtoByAppGrp(List<String> appGroupIds) {
+        if(!IaisCommonUtils.isEmpty(appGroupIds)) {
+            HcsaTaskAssignDto hcsaTaskAssignDto = new HcsaTaskAssignDto();
+            if(hcsaTaskAssignDto != null) {
+
+            }
+            return hcsaTaskAssignDto;
+        }
+        return null;
     }
 
     private String getMemberNameByUserId(String userId) {

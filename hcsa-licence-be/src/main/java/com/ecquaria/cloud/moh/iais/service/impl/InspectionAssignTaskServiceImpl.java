@@ -533,6 +533,21 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
         return comPoolAck;
     }
 
+    @Override
+    public List<String> getComPoolAppGrpIdByResult(SearchResult<InspectionCommonPoolQueryDto> searchResult) {
+        if(searchResult != null && !IaisCommonUtils.isEmpty(searchResult.getRows())) {
+            List<String> appGrpIds = IaisCommonUtils.genNewArrayList();
+            List<InspectionCommonPoolQueryDto> inspectionCommonPoolQueryDtos = searchResult.getRows();
+            for(InspectionCommonPoolQueryDto inspectionCommonPoolQueryDto : inspectionCommonPoolQueryDtos) {
+                if(inspectionCommonPoolQueryDto != null) {
+                    appGrpIds.add(inspectionCommonPoolQueryDto.getId());
+                }
+            }
+            return appGrpIds;
+        }
+        return null;
+    }
+
     private String generateComPoolAck(List<String> appNoFailList) {
         if(!IaisCommonUtils.isEmpty(appNoFailList)) {
             Collections.sort(appNoFailList);

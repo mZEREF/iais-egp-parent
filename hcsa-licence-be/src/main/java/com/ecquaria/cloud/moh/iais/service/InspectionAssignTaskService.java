@@ -209,4 +209,13 @@ public interface InspectionAssignTaskService {
       * @Descripation: assign Multiple Task By AppNos
       */
     String assignMultTaskByAppNos(String[] appNoChecks, LoginContext loginContext, List<TaskDto> commPools);
+
+    /**
+      * @author: shicheng
+      * @Date 2021/11/22
+      * @Param: SearchResult<InspectionCommonPoolQueryDto> searchResult
+      * @return: List<String>
+      * @Descripation: getComPoolAppGrpIdByResult
+      */
+    List<String> getComPoolAppGrpIdByResult(SearchResult<InspectionCommonPoolQueryDto> searchResult);
 }
