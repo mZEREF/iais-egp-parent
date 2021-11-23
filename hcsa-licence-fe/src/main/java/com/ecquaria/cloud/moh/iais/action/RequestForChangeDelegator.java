@@ -55,7 +55,7 @@ import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.LicenceViewService;
 import com.ecquaria.cloud.moh.iais.service.RequestForChangeService;
 import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
-import com.ecquaria.cloud.moh.iais.service.client.FeEicGatewayClient;
+import com.ecquaria.cloud.moh.iais.service.client.LicenseeClient;
 import com.ecquaria.cloud.moh.iais.utils.SingeFileUtil;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import java.io.File;
@@ -104,7 +104,7 @@ public class RequestForChangeDelegator {
     private SystemParamConfig systemParamConfig;
 
     @Autowired
-    private FeEicGatewayClient feEicGatewayClient;
+    private LicenseeClient licenseeClient;
 
     @Autowired
     private LicenceViewService licenceViewService;
@@ -1115,6 +1115,7 @@ public class RequestForChangeDelegator {
         return isSelect;
     }
 
+
     private  Map<String,String> doValidateEmpty(String uen,String[] selectCheakboxs,String email,String subLicensee){
         Map<String,String> error = IaisCommonUtils.genNewHashMap();
         if(selectCheakboxs == null || selectCheakboxs.length == 0){
@@ -1128,7 +1129,7 @@ public class RequestForChangeDelegator {
             error.put("uenError", msgGenError006);
         }else{
             try{
-                //feEicGatewayClient.getUenInfo(uen);
+                licenseeClient.getEntityByUEN(uen);
             }catch (Throwable e){
              log.error(StringUtil.changeForLog("The gent uen info throw exception"+e.getMessage()));
             }
