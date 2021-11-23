@@ -89,12 +89,12 @@ public class ArCycleStagesManualDelegator {
         log.info(StringUtil.changeForLog("------Action Type: " + crudype));
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
         CycleStageSelectionDto selectionDto;
-        ArSuperDataSubmissionDto currentArDataSubmission = DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
+        ArSuperDataSubmissionDto currentSuper = DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
         if (!StringUtil.isIn(crudype, new String[]{DataSubmissionConstant.CRUD_TYPE_FROM_DRAFT, "patient",
                 DataSubmissionConstant.CRUD_TYPE_RFC})) {
             selectionDto = getSelectionDtoFromPage(bpc.request);
-            currentArDataSubmission.setSelectionDto(selectionDto);
-            DataSubmissionHelper.setCurrentArDataSubmission(currentArDataSubmission, bpc.request);
+            currentSuper.setSelectionDto(selectionDto);
+            DataSubmissionHelper.setCurrentArDataSubmission(currentSuper, bpc.request);
             if (StringUtil.isIn(crudype, new String[]{"return", "back"})) {
                 ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.CRUD_ACTION_TYPE_CT, "back");
                 return;
@@ -115,7 +115,7 @@ public class ArCycleStagesManualDelegator {
                 ParamUtil.setRequestAttr(bpc.request, "showNoFoundMd", AppConsts.YES);
             }
         } else {
-            selectionDto = currentArDataSubmission.getSelectionDto();
+            selectionDto = currentSuper.getSelectionDto();
         }
         String stage;
         if (!errorMap.isEmpty()) {
@@ -123,15 +123,18 @@ public class ArCycleStagesManualDelegator {
             stage = "current";
         } else {
             if ("patient".equals(crudype)) {
-                stage = checkPatient(currentArDataSubmission, bpc.request);
+                stage = checkPatient(currentSuper, bpc.request);
             } else if ("draft".equals(crudype)) {
                 stage = "draft";
                 // re-set cycle stage
-                DataSubmissionDto dataSubmissionDto = currentArDataSubmission.getDataSubmissionDto();
+                DataSubmissionDto dataSubmissionDto = currentSuper.getDataSubmissionDto();
                 if (dataSubmissionDto != null) {
+                    // To reNew super data submission
                     dataSubmissionDto.setCycleStage(null);
-                    DataSubmissionHelper.setCurrentArDataSubmission(currentArDataSubmission, bpc.request);
                 }
+                currentSuper.setCycleDto(DataSubmissionHelper.initCycleDto(selectionDto, currentSuper.getSvcName(),
+                        currentSuper.getHciCode()));
+                DataSubmissionHelper.setCurrentArDataSubmission(currentSuper, bpc.request);
             } else if (StringUtil.isIn(crudype, new String[]{DataSubmissionConstant.CRUD_TYPE_FROM_DRAFT,
                     DataSubmissionConstant.CRUD_TYPE_RFC})) {
                 stage = selectionDto.getStage();
@@ -139,7 +142,7 @@ public class ArCycleStagesManualDelegator {
                     stage = "current";
                 }
             } else {
-                stage = checkCycleStage(currentArDataSubmission, selectionDto, bpc.request);
+                stage = checkCycleStage(currentSuper, selectionDto, bpc.request);
             }
         }
         log.info(StringUtil.changeForLog("Stage: " + stage));
@@ -215,50 +218,48 @@ public class ArCycleStagesManualDelegator {
         return stage;
     }
 
-    private void handleArSuperDataSubmissionDto(ArSuperDataSubmissionDto currentArDataSubmission,
-            CycleStageSelectionDto selectionDto, HttpServletRequest request) {
-        String hciCode = Optional.ofNullable(currentArDataSubmission.getPremisesDto())
-                .map(PremisesDto::getHciCode)
-                .orElse("");
-        DataSubmissionDto dataSubmission = currentArDataSubmission.getDataSubmissionDto();
+    private void handleArSuperDataSubmissionDto(ArSuperDataSubmissionDto currentSuper, CycleStageSelectionDto selectionDto,
+            HttpServletRequest request) {
+        String hciCode = currentSuper.getHciCode();
+        DataSubmissionDto dataSubmission = currentSuper.getDataSubmissionDto();
         if (dataSubmission == null) {
             dataSubmission = new DataSubmissionDto();
         }
-        dataSubmission.setSubmissionType(currentArDataSubmission.getSubmissionType());
+        dataSubmission.setSubmissionType(currentSuper.getSubmissionType());
         String stage = selectionDto.getStage();
         if (!Objects.equals(stage, dataSubmission.getCycleStage())) {
-            currentArDataSubmission = reNew(currentArDataSubmission);
+            currentSuper = reNew(currentSuper);
         }
         dataSubmission.setCycleStage(stage);
-        currentArDataSubmission.setDataSubmissionDto(dataSubmission);
+        currentSuper.setDataSubmissionDto(dataSubmission);
         ArSuperDataSubmissionDto newDto = arDataSubmissionService.getArSuperDataSubmissionDto(selectionDto.getPatientCode(),
                 hciCode);
         if (newDto != null) {
             log.info("-----Retieve ArSuperDataSubmissionDto from DB-----");
             selectionDto = newDto.getSelectionDto();
             selectionDto.setStage(stage);
-            CycleDto cycleDto = DataSubmissionHelper.genCycleDto(selectionDto, currentArDataSubmission.getSvcName(), hciCode);
-            currentArDataSubmission.setCycleDto(cycleDto);
-            currentArDataSubmission.setSelectionDto(selectionDto);
-            currentArDataSubmission.setPatientInfoDto(newDto.getPatientInfoDto());
+            CycleDto cycleDto = DataSubmissionHelper.initCycleDto(selectionDto, currentSuper.getSvcName(), hciCode);
+            currentSuper.setCycleDto(cycleDto);
+            currentSuper.setSelectionDto(selectionDto);
+            currentSuper.setPatientInfoDto(newDto.getPatientInfoDto());
         } else {
             String msg = "No ArSuperDataSubmissionDto found from DB - " + selectionDto.getPatientCode() + " : " + hciCode;
             log.warn(StringUtil.changeForLog("-----" + msg + "-----"));
             throw new IaisRuntimeException(msg);
         }
-        DataSubmissionHelper.setCurrentArDataSubmission(currentArDataSubmission, request);
+        DataSubmissionHelper.setCurrentArDataSubmission(currentSuper, request);
     }
 
-    private ArSuperDataSubmissionDto reNew(ArSuperDataSubmissionDto currentArDataSubmission) {
+    private ArSuperDataSubmissionDto reNew(ArSuperDataSubmissionDto currentSuper) {
         ArSuperDataSubmissionDto newDto = new ArSuperDataSubmissionDto();
         newDto.setAppType(DataSubmissionConsts.DS_APP_TYPE_NEW);
-        newDto.setOrgId(currentArDataSubmission.getOrgId());
-        newDto.setSubmissionType(currentArDataSubmission.getSubmissionType());
-        newDto.setSubmissionMethod(currentArDataSubmission.getSubmissionMethod());
-        newDto.setPremisesDto(currentArDataSubmission.getPremisesDto());
-        newDto.setSelectionDto(currentArDataSubmission.getSelectionDto());
-        newDto.setDraftId(currentArDataSubmission.getDraftId());
-        newDto.setDraftNo(currentArDataSubmission.getDraftNo());
+        newDto.setOrgId(currentSuper.getOrgId());
+        newDto.setSubmissionType(currentSuper.getSubmissionType());
+        newDto.setSubmissionMethod(currentSuper.getSubmissionMethod());
+        newDto.setPremisesDto(currentSuper.getPremisesDto());
+        newDto.setSelectionDto(currentSuper.getSelectionDto());
+        newDto.setDraftId(currentSuper.getDraftId());
+        newDto.setDraftNo(currentSuper.getDraftNo());
         newDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         return newDto;
     }

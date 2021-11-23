@@ -155,7 +155,7 @@ public final class DataSubmissionHelper {
         return result;
     }
 
-    public static CycleDto genCycleDto(CycleStageSelectionDto selectionDto, String serviceName, String hciCode) {
+    public static CycleDto initCycleDto(CycleStageSelectionDto selectionDto, String serviceName, String hciCode) {
         String stage = selectionDto.getStage();
         String cycle;
         CycleDto cycleDto = null;
