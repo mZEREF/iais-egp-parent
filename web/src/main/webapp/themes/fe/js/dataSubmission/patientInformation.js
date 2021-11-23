@@ -55,15 +55,3 @@ function previousPatientCallback(data) {
     $('#preName').find('p').text(data.patient.name);
     $('#preBirthDate').find('p').text(data.patient.birthDate);
 }
-
-function getDataForPrinting() {
-    var declaration = $('input[name="declaration"]:checked').val();
-    if (isEmpty(declaration)) {
-        return null;
-    }
-    var printflag = $('#printflag').val();
-    if (isEmpty(printflag)) {
-        printflag = '';
-    }
-    return {declaration: declaration, printflag: printflag};
-}

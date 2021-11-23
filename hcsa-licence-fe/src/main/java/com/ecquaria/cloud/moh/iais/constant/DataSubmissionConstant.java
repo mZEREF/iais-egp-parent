@@ -31,4 +31,6 @@ public class DataSubmissionConstant {
 
     public static String DS_TITLE_NEW                       = "New Data Submission";
     public static String DS_TITLE_RFC                       = "Amendment";
+
+    public static String PRINT_FLAG                         = "printflag";
 }

@@ -114,8 +114,15 @@ function printData() {
         });
     }
 };
-/*
-function getDataForPrinting(){
-    // init data
+
+function getDataForPrinting() {
+    var declaration = $('input[name="declaration"]:checked').val();
+    if (isEmpty(declaration)) {
+        return null;
+    }
+    var printflag = $('#printflag').val();
+    if (isEmpty(printflag)) {
+        printflag = '';
+    }
+    return {declaration: declaration, printflag: printflag};
 }
-*/

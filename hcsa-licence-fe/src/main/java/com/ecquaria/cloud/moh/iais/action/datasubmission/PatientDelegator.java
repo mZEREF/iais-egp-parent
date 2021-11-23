@@ -148,4 +148,9 @@ public class PatientDelegator extends CommonDelegator {
         return cycleDto;
     }
 
+    @Override
+    public void prepareConfim(BaseProcessClass bpc) {
+        ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.PRINT_FLAG, DataSubmissionConsts.DS_PATIENT_ART);
+    }
+
 }
