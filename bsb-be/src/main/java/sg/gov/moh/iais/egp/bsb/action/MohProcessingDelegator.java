@@ -67,7 +67,8 @@ public class MohProcessingDelegator {
         //first log in,get facilityActivity from db
         if (submitDetailsDto == null){
             String appId = MaskUtil.unMaskValue("id", ParamUtil.getString(request,ProcessContants.PARAM_APP_ID));
-            String taskId = MaskUtil.unMaskValue("taskId", ParamUtil.getString(request,ProcessContants.PARAM_TASK_ID));
+            String maskTaskId = ParamUtil.getString(request,ProcessContants.PARAM_TASK_ID);
+            String taskId = MaskUtil.unMaskValue("id", maskTaskId);
             //get submitDetailsDto
             submitDetailsDto = processClient.getSubmitDetailsByAppId(appId).getEntity();
             submitDetailsDto.setTaskId(taskId);
