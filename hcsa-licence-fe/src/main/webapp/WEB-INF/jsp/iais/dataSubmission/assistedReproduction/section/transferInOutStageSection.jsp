@@ -11,6 +11,11 @@
         <div class="panel-body">
             <div class="panel-main-content form-horizontal">
                 <c:set var="transferInOutStageDto" value="${arSuperDataSubmissionDto.transferInOutStageDto}" />
+                <h3>
+                    <label ><c:out value="${arSuperDataSubmissionDto.patientInfoDto.patient.name}"/></label>
+                    <span style="font-weight:normal"><c:out value="(${arSuperDataSubmissionDto.patientInfoDto.patient.idNumber})"/>
+                    </span>
+                </h3>
                 <iais:row>
                     <iais:field width="5" value="Is this a Transfer In or Out?" mandatory="true"/>
                     <iais:value width="3" cssClass="col-md-3">
@@ -126,7 +131,7 @@
                         <iais:row id="othersInFrom" style="${transferInOutStageDto.transInFromHciCode eq DataSubmissionConsts.TRANSFERRED_IN_FROM_OTHERS ? '' : 'display: none'}">
                             <iais:field width="5" value="Transferred In From (Others)" mandatory="true"/>
                             <iais:value width="7" cssClass="col-md-7">
-                                <iais:input  maxLength="20" type="text" name="transInFromOthers" value="${transferInOutStageDto.transInFromOthers}" />
+                                <iais:input  maxLength="100" type="text" name="transInFromOthers" value="${transferInOutStageDto.transInFromOthers}" />
                             </iais:value>
                         </iais:row>
                 </div>
@@ -150,7 +155,6 @@
                         <iais:datePicker id="transferDate" name="transferDate" value="${transferInOutStageDto.transferDate}"/>
                     </iais:value>
                 </iais:row>
-                <%@include file="../common/patientInventoryTable.jsp" %>
             </div>
 
         </div>

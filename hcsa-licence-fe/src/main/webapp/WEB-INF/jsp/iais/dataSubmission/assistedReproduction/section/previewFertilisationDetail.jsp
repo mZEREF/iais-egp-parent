@@ -11,6 +11,11 @@
     <div id="patientDetails" class="panel-collapse collapse in">
         <div class="panel-body">
             <div class="panel-main-content form-horizontal ">
+                <h3>
+                    <label ><c:out value="${arSuperDataSubmissionDto.patientInfoDto.patient.name}"/></label>
+                    <span style="font-weight:normal"><c:out value="(${arSuperDataSubmissionDto.patientInfoDto.patient.idNumber})"/>
+                    </span>
+                </h3>
                 <iais:row>
                     <iais:field width="5" value="Source of Semen"/>
                     <iais:value width="7" cssClass="col-md-7">

@@ -10,6 +10,11 @@
         <div class="panel-body">
             <div class="panel-main-content form-horizontal">
                 <c:set var="fertilisationDto" value="${arSuperDataSubmissionDto.fertilisationDto}" />
+                <h3>
+                    <label ><c:out value="${arSuperDataSubmissionDto.patientInfoDto.patient.name}"/></label>
+                    <span style="font-weight:normal"><c:out value="(${arSuperDataSubmissionDto.patientInfoDto.patient.idNumber})"/>
+                    </span>
+                </h3>
                 <iais:row>
                     <iais:field width="5" value="Source of Semen" mandatory="true"/>
                     <iais:value width="7" cssClass="col-md-7">

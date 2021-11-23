@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.action.datasubmission;
 
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.FertilisationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInventoryDto;
@@ -12,11 +13,13 @@ import com.ecquaria.cloud.moh.iais.helper.ControllerHelper;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.xerces.xs.StringList;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
 import java.util.Arrays;
+import java.util.List;
 
 @Delegator("transferInOutDelegator")
 @Slf4j
@@ -43,7 +46,28 @@ public class TransferInOutDelegator extends CommonDelegator {
 
     @Override
     public void prepareConfim(BaseProcessClass bpc) {
+        ArSuperDataSubmissionDto arSuperDataSubmissionDto = DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
+        TransferInOutStageDto transferInOutStageDto = arSuperDataSubmissionDto.getTransferInOutStageDto();
         PatientInventoryDto patientInventoryDto = DataSubmissionHelper.initPatientInventoryTable(bpc.request);
+        List<String> transferredList = transferInOutStageDto.getTransferredList();
+        for (String transferred : transferredList){
+            if(transferred.equals(DataSubmissionConsts.WHAT_WAS_TRANSFERRED_OOCYTES)){
+                if(transferInOutStageDto.getOocyteNum() !=null){
+                    patientInventoryDto.setChangeFrozenOocytes(transferInOutStageDto.getOocyteNum());
+                }
+            }
+            if(transferred.equals(DataSubmissionConsts.WHAT_WAS_TRANSFERRED_EMBRYOS)){
+                if(transferInOutStageDto.getEmbryoNum() !=null){
+                    patientInventoryDto.setChangeFrozenEmbryos(transferInOutStageDto.getEmbryoNum());
+                }
+            }
+            if(transferred.equals(DataSubmissionConsts.WHAT_WAS_TRANSFERRED_SPERM)){
+                if(transferInOutStageDto.getSpermVialsNum() !=null){
+                    patientInventoryDto.setChangeFrozenSperms(transferInOutStageDto.getSpermVialsNum());
+                }
+            }
+        }
+
     }
 
     @Override

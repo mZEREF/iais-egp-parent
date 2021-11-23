@@ -11,6 +11,11 @@
         <div class="panel-body">
             <div class="panel-main-content form-horizontal ">
                 <c:set var="transferInOutStageDto" value="${arSuperDataSubmissionDto.transferInOutStageDto}" />
+                <h3>
+                    <label ><c:out value="${arSuperDataSubmissionDto.patientInfoDto.patient.name}"/></label>
+                    <span style="font-weight:normal"><c:out value="(${arSuperDataSubmissionDto.patientInfoDto.patient.idNumber})"/>
+                    </span>
+                </h3>
                 <iais:row>
                     <iais:field width="5" value="Is this a Transfer In or Out?"/>
                     <iais:value width="7" cssClass="col-md-7">
@@ -96,7 +101,7 @@
                         <c:out value="${transferInOutStageDto.transferDate}"/>
                     </iais:value>
                 </iais:row>
-
+                <%@include file="../common/patientInventoryTable.jsp" %>
             </div>
         </div>
     </div>
