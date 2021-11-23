@@ -57,12 +57,17 @@ public class DonorSampleDtoValidator implements CustomizeValidator {
         for(int i =0 ;i<ages.length;i++){
             String age = ages[i];
             log.info(StringUtil.changeForLog("The age is -->:"+age));
+            boolean repetition = isRepetition(age,ages);
+            //empty
             if(StringUtil.isEmpty(age)){
                 map.put("ages"+i,"GENERAL_ERR0006");
+            //Number
             }else if(!StringUtil.isNumber(age)){
                 map.put("ages"+i,"GENERAL_ERR0002");
+            //length
             }else if(age.length()>2){
                 map.put("ages"+i,"GENERAL_ERR0041");
+            //donor sample
             }else if(!donorSampleDto.isDirectedDonation()){
                 String sampleType = donorSampleDto.getSampleType();
                 log.info(StringUtil.changeForLog("The sampleType is -->:"+sampleType));
@@ -77,10 +82,34 @@ public class DonorSampleDtoValidator implements CustomizeValidator {
                         map.put("ages"+i,"DS_ERR045");
                     }
                 }
+             //Repetition
+            }else if(repetition){
+                    map.put("ages"+i,"DS_ERR046");
+             //
+            }else{
+
             }
         }
 
         log.info(StringUtil.changeForLog("The DonorSampleDtoValidator end ..."));
         return map;
     }
+    private boolean isRepetition(String age,String[] ages){
+        boolean result = false;
+        if(StringUtil.isNotEmpty(age) && ages != null && ages.length >1){
+           int count = 0;
+           for(String everyAge:ages){
+               if(age.equals(everyAge)){
+                  count ++;
+               }
+           }
+           if(count >1){
+               result = true;
+           }
+           log.info(StringUtil.changeForLog("The count is -->:"+count));
+        }
+        log.info(StringUtil.changeForLog("The isRepetition result is -->:"+result));
+        return result;
+    }
+
 }
