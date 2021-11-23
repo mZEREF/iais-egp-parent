@@ -158,6 +158,7 @@ public final class DataSubmissionHelper {
     public static CycleDto initCycleDto(CycleStageSelectionDto selectionDto, String serviceName, String hciCode) {
         String stage = selectionDto.getStage();
         String cycle;
+        String cycleId = null;
         CycleDto cycleDto = null;
         if (StringUtil.isIn(stage, new String[]{DataSubmissionConsts.AR_STAGE_TRANSFER_IN_AND_OUT,
                 DataSubmissionConsts.AR_STAGE_DONATION,
@@ -166,6 +167,7 @@ public final class DataSubmissionHelper {
         } else if (selectionDto.isUndergoingCycle()) {
             cycleDto = selectionDto.getLastCycleDto();
             cycle = cycleDto.getCycleType();
+            cycleId = cycleDto.getId();
         } else if (DataSubmissionConsts.AR_CYCLE_AR.equals(stage)) {
             cycle = DataSubmissionConsts.DS_CYCLE_AR;
         } else if (DataSubmissionConsts.AR_CYCLE_IUI.equals(stage)) {
@@ -179,11 +181,12 @@ public final class DataSubmissionHelper {
             cycleDto = new CycleDto();
         }
         selectionDto.setCycle(cycle);
-        cycleDto.setDsType(DataSubmissionConsts.DS_AR);
+        cycleDto.setId(cycleId);
         cycleDto.setCycleType(cycle);
         cycleDto.setPatientCode(selectionDto.getPatientCode());
         cycleDto.setSvcName(serviceName);
         cycleDto.setHciCode(hciCode);
+        cycleDto.setDsType(DataSubmissionConsts.DS_AR);
         if (StringUtil.isEmpty(cycleDto.getStatus())) {
             cycleDto.setStatus(DataSubmissionConsts.DS_STATUS_ACTIVE);
         }
