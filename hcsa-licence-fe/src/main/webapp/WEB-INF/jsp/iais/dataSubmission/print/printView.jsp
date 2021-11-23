@@ -32,10 +32,15 @@
 
     @media all and (min-width: 429px) {
         label.control-label {
-            width: 40% !important;
+            width: 40%;
         }
+
         div.col-sm-7 {
-            width: 60% !important;
+            width: 60%;
+        }
+
+        .col-md-3 {
+            width: 30%;
         }
     }
 </style>
