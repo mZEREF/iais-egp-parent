@@ -23,6 +23,7 @@ public class MasterCodeTag extends DivTagSupport {
     private boolean empty;
     private boolean viewEmptyStr;
     private boolean needLowerCase;
+    private boolean needEscapHtml;
 
     public MasterCodeTag() {
         super();
@@ -44,6 +45,7 @@ public class MasterCodeTag extends DivTagSupport {
         }
         setEmpty(false);
         setViewEmptyStr(false);
+        setNeedEscapHtml(true);
     }
 
     // Releases any resources we may have (or inherit)
@@ -63,8 +65,11 @@ public class MasterCodeTag extends DivTagSupport {
             description = code;
         if(!StringUtil.isEmpty(description) && needLowerCase)
             description = description.toLowerCase();
+        if (needEscapHtml) {
+            description = StringUtil.viewNonNullHtml(description);
+        }
         try {
-            pageContext.getOut().print(StringUtil.viewNonNullHtml(description));
+            pageContext.getOut().print(description);
         } catch (IOException e) {
             log.error(e.getMessage(), e);
             throw new JspException(e);
@@ -86,4 +91,7 @@ public class MasterCodeTag extends DivTagSupport {
         this.viewEmptyStr = viewEmptyStr;
     }
     public void setNeedLowerCase(boolean needLowerCase){this.needLowerCase = needLowerCase;}
+    public void setNeedEscapHtml(boolean needEscapHtml) {
+        this.needEscapHtml = needEscapHtml;
+    }
 }
