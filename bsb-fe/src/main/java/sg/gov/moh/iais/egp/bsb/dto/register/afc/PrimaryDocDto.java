@@ -21,6 +21,7 @@ import sg.gov.moh.iais.egp.bsb.dto.ValidationResultDto;
 import sg.gov.moh.iais.egp.bsb.dto.file.DocMeta;
 import sg.gov.moh.iais.egp.bsb.dto.file.DocRecordInfo;
 import sg.gov.moh.iais.egp.bsb.dto.file.NewDocInfo;
+import sg.gov.moh.iais.egp.bsb.dto.file.NewFileSyncDto;
 import sg.gov.moh.iais.egp.bsb.util.CollectionUtils;
 import sg.gov.moh.iais.egp.bsb.util.LogUtil;
 import sg.gov.moh.iais.egp.bsb.util.SpringReflectionUtils;
@@ -146,14 +147,20 @@ public class PrimaryDocDto extends ValidatableNodeValue {
 
 
     /**
-     * This file is called when new uploaded files are saved and we get the repo Ids
+     * This method will put new added files to the important data structure which is used to update the FacilityDoc.
+     * This file is called when new uploaded files are saved and we get the repo Ids.
      * ATTENTION!!!
      * This method is dangerous! The relationship between the ids and the files in this dto is fragile!
      * We rely on the order is not changed! So we use a LinkedHashMap to save our data.
+     * <p>
+     * This method will generate id-bytes pairs at the same time, the result will be used to sync files to BE.
+     * @return a list of file data to be synchronized to BE
      */
-    public void newFileSaved(List<String> repoIds) {
+    public List<NewFileSyncDto> newFileSaved(List<String> repoIds) {
         Iterator<String> repoIdIt = repoIds.iterator();
         Iterator<NewDocInfo> newDocIt = newDocMap.values().iterator();
+
+        List<NewFileSyncDto> newFileSyncDtoList = new ArrayList<>(repoIds.size());
         while (repoIdIt.hasNext() && newDocIt.hasNext()) {
             String repoId = repoIdIt.next();
             NewDocInfo newDocInfo = newDocIt.next();
@@ -165,7 +172,13 @@ public class PrimaryDocDto extends ValidatableNodeValue {
             docRecordInfo.setSubmitBy(newDocInfo.getSubmitBy());
             docRecordInfo.setSubmitDate(newDocInfo.getSubmitDate());
             savedDocMap.put(repoId, docRecordInfo);
+
+            NewFileSyncDto newFileSyncDto = new NewFileSyncDto();
+            newFileSyncDto.setId(repoId);
+            newFileSyncDto.setData(newDocInfo.getMultipartFile().getBytes());
+            newFileSyncDtoList.add(newFileSyncDto);
         }
+        return newFileSyncDtoList;
     }
 
     public Map<String, DocRecordInfo> getSavedDocMap() {

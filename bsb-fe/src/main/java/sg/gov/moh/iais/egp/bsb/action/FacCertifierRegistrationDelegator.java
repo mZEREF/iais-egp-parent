@@ -4,17 +4,18 @@ import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
+import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.mastercode.MasterCodeView;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
+import sg.gov.moh.iais.egp.bsb.client.BsbFileClient;
 import sg.gov.moh.iais.egp.bsb.client.FacCertifierRegisterClient;
 import sg.gov.moh.iais.egp.bsb.client.FileRepoClient;
 import sg.gov.moh.iais.egp.bsb.common.node.Node;
@@ -24,7 +25,9 @@ import sg.gov.moh.iais.egp.bsb.common.node.simple.SimpleNode;
 import sg.gov.moh.iais.egp.bsb.constant.DocConstants;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
 import sg.gov.moh.iais.egp.bsb.dto.file.DocRecordInfo;
+import sg.gov.moh.iais.egp.bsb.dto.file.FileRepoSyncDto;
 import sg.gov.moh.iais.egp.bsb.dto.file.NewDocInfo;
+import sg.gov.moh.iais.egp.bsb.dto.file.NewFileSyncDto;
 import sg.gov.moh.iais.egp.bsb.dto.register.afc.*;
 import sg.gov.moh.iais.egp.bsb.entity.DocSetting;
 import sg.gov.moh.iais.egp.bsb.util.LogUtil;
@@ -79,10 +82,16 @@ public class FacCertifierRegistrationDelegator {
     private static final String ERR_MSG_NULL_NAME = "Name must not be null!";
     private static final String ERR_MSG_INVALID_ACTION = "Invalid action";
 
-    @Autowired
-    private FacCertifierRegisterClient facCertifierRegisterClient;
-    @Autowired
-    private FileRepoClient fileRepoClient;
+
+    private final FacCertifierRegisterClient facCertifierRegisterClient;
+    private final FileRepoClient fileRepoClient;
+    private final BsbFileClient bsbFileClient;
+
+    public FacCertifierRegistrationDelegator(FacCertifierRegisterClient facCertifierRegisterClient, FileRepoClient fileRepoClient, BsbFileClient bsbFileClient) {
+        this.facCertifierRegisterClient = facCertifierRegisterClient;
+        this.fileRepoClient = fileRepoClient;
+        this.bsbFileClient = bsbFileClient;
+    }
 
 
     public void init(BaseProcessClass bpc) {
@@ -305,10 +314,12 @@ public class FacCertifierRegistrationDelegator {
                     //upload document
                     SimpleNode primaryDocNode = (SimpleNode) facRegRoot.at(NODE_NAME_FAC_PRIMARY_DOCUMENT);
                     PrimaryDocDto primaryDocDto = (PrimaryDocDto) primaryDocNode.getValue();
-                    MultipartFile[] files = primaryDocDto.getNewDocMap().values().stream().map(NewDocInfo::getMultipartFile).toArray(MultipartFile[]::new);
-                    List<String> repoIds = fileRepoClient.saveFiles(files).getEntity();
-                    primaryDocDto.newFileSaved(repoIds);
-
+                    List<NewFileSyncDto> newFilesToSync = null;
+                    if (!primaryDocDto.getNewDocMap().isEmpty()) {
+                        MultipartFile[] files = primaryDocDto.getNewDocMap().values().stream().map(NewDocInfo::getMultipartFile).toArray(MultipartFile[]::new);
+                        List<String> repoIds = fileRepoClient.saveFiles(files).getEntity();
+                        newFilesToSync = primaryDocDto.newFileSaved(repoIds);
+                    }
 
                     // save data
                     FacilityCertifierRegisterDto finalAllDataDto = FacilityCertifierRegisterDto.from(facRegRoot);
@@ -317,6 +328,29 @@ public class FacCertifierRegistrationDelegator {
                     finalAllDataDto.setAppStatus("BSBAPST001");
                     ResponseDto<String> responseDto = facCertifierRegisterClient.saveNewRegisteredFacCertifier(finalAllDataDto);
                     log.info("save new facility response: {}", responseDto);
+
+                    try {
+                        // sync files to BE file-repo (save new added files, delete useless files)
+                        if ((newFilesToSync != null && !newFilesToSync.isEmpty()) || !primaryDocDto.getToBeDeletedRepoIds().isEmpty()) {
+                            /* Ignore the failure of sync files currently.
+                             * We should add a mechanism to retry synchronization of files in the future */
+                            FileRepoSyncDto syncDto = new FileRepoSyncDto();
+                            syncDto.setNewFiles(newFilesToSync);
+                            syncDto.setToDeleteIds(new ArrayList<>(primaryDocDto.getToBeDeletedRepoIds()));
+                            bsbFileClient.saveFiles(syncDto);
+                        }
+
+                        // delete docs in FE file-repo
+                        /* Ignore the failure when try to delete FE files because this is not a big issue.
+                         * The not deleted file won't be retrieved, so it's just a waste of disk space */
+                        for (String id: primaryDocDto.getToBeDeletedRepoIds()) {
+                            FileRepoDto fileRepoDto = new FileRepoDto();
+                            fileRepoDto.setId(id);
+                            fileRepoClient.removeFileById(fileRepoDto);
+                        }
+                    } catch (Exception e) {
+                        log.error("Fail to sync files to BE", e);
+                    }
 
                     ParamUtil.setRequestAttr(request, KEY_ACTION_TYPE, KEY_ACTION_SUBMIT);
                 } else {
