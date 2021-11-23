@@ -9,7 +9,6 @@
 
      <div id="donorDtoDetails" class="panel-collapse collapse in">
          <div class="panel-body">
-         <c:set var="donorDtos" value="${arCycleStageDto.donorDtos}"/>
          <c:forEach items="${donorDtos}" var="donorDto">
              <c:set var="arDonorIndex" value="${donorDto.arDonorIndex}"/>
              <div class="panel-main-content form-horizontal">

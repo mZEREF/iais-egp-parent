@@ -1,26 +1,19 @@
-<%--
-  Created by IntelliJ IDEA.
-  User: ShiCheng_Xu
-  Date: 2021/11/17
-  Time: 9:47
-  To change this template use File | Settings | File Templates.
---%>
+<c:set var="headingSign" value="completed"/>
 <div class="panel panel-default">
-  <div class="panel-heading">
-    <h4 class="panel-title">
-      <strong>
-        Intrauterine Insemination Cycle
-      </strong>
-    </h4>
-  </div>
-  <div id="patientDetails" class="panel-collapse collapse in">
+    <div class="panel-heading ${headingSign}">
+      <h4 class="panel-title" >
+        <a href="#viewIuiCycleStage" data-toggle="collapse" >
+          Intrauterine Insemination Cycle
+        </a>
+      </h4>
+    </div>
+  <div id="viewIuiCycleStage" class="panel-collapse collapse in">
     <div class="panel-body">
       <div class="panel-main-content form-horizontal">
-        <h3 class="panel-title">
-          <strong>
-            <c:out value="${arSuperDataSubmissionDto.patientInfoDto.patient.name}"></c:out>
-          </strong>
-          &nbsp;<c:out value="(${arSuperDataSubmissionDto.patientInfoDto.patient.idNumber})"></c:out>
+        <c:set var="iuiCycleStageDto" value="${arSuperDataSubmissionDto.iuiCycleStageDto}" />
+        <c:set var="patientDto" value="${arSuperDataSubmissionDto.patientInfoDto.patient}" />
+        <h3>
+          <p><label style="font-family:'Arial Negreta', 'Arial Normal', 'Arial';font-weight:700;"><c:out value="${patientDto.name}"/>&nbsp</label><label style="font-family:'Arial Normal', 'Arial';font-weight:400;">${empty patientDto.idNumber ? "" : "("}<c:out value="${patientDto.idNumber}"/>${empty patientDto.idNumber ? "" : ")"} </label></p>
         </h3>
         <iais:row>
           <iais:field value="Premises where IUI is Performed" mandatory="false"/>
@@ -37,31 +30,31 @@
         <iais:row>
           <iais:field value="Patient's Age as of This Treatment" mandatory="false"/>
           <iais:value cssClass="col-xs-5 col-md-6 control-label">
-            <span style="font-size: 16px" class="col-xs-6 col-md-6 control-label"><c:out value="${arSuperDataSubmissionDto.iuiCycleStageDto.userAgeShow}"></c:out></span>
+            <span style="font-size: 16px" class="col-xs-6 col-md-6 control-label"><c:out value="${iuiCycleStageDto.userAgeShow}"></c:out></span>
           </iais:value>
         </iais:row>
         <iais:row>
           <iais:field value="No. of Children with Current Marriage" mandatory="false"/>
           <iais:value cssClass="col-xs-5 col-md-6 control-label">
-            <span style="font-size: 16px" class="col-xs-6 col-md-6 control-label"><c:out value="${arSuperDataSubmissionDto.iuiCycleStageDto.curMarrChildNum}"/></span>
+            <span style="font-size: 16px" class="col-xs-6 col-md-6 control-label"><c:out value="${iuiCycleStageDto.curMarrChildNum}"/></span>
           </iais:value>
         </iais:row>
         <iais:row>
           <iais:field value="No. of Children with Previous Marriage" mandatory="false"/>
           <iais:value cssClass="col-xs-5 col-md-6 control-label">
-            <span style="font-size: 16px" class="col-xs-6 col-md-6 control-label"><c:out value="${arSuperDataSubmissionDto.iuiCycleStageDto.prevMarrChildNum}"/></span>
+            <span style="font-size: 16px" class="col-xs-6 col-md-6 control-label"><c:out value="${iuiCycleStageDto.prevMarrChildNum}"/></span>
           </iais:value>
         </iais:row>
         <iais:row>
           <iais:field value="Total No. of Children Delivered under IUI" mandatory="false"/>
           <iais:value cssClass="col-xs-5 col-md-6 control-label">
-            <span style="font-size: 16px" class="col-xs-6 col-md-6 control-label"><c:out value="${arSuperDataSubmissionDto.iuiCycleStageDto.iuiDeliverChildNum}"/></span>
+            <span style="font-size: 16px" class="col-xs-6 col-md-6 control-label"><c:out value="${iuiCycleStageDto.iuiDeliverChildNum}"/></span>
           </iais:value>
         </iais:row>
         <iais:row>
           <iais:field value="Source of Semen" mandatory="false"/>
           <iais:value cssClass="col-xs-5 col-md-6 control-label">
-            <c:forEach var="semenSource" items="${arSuperDataSubmissionDto.iuiCycleStageDto.semenSources}">
+            <c:forEach var="semenSource" items="${iuiCycleStageDto.semenSources}">
               <span style="font-size: 16px" class="col-xs-6 col-md-6 control-label"><iais:code code="${semenSource}"/></span>
               <br>
               <br>
@@ -71,16 +64,18 @@
         <iais:row>
           <iais:field value="How many vials of sperm were extracted" mandatory="false"/>
           <iais:value cssClass="col-xs-5 col-md-6 control-label">
-            <span style="font-size: 16px" class="col-xs-6 col-md-6 control-label"><c:out value="${arSuperDataSubmissionDto.iuiCycleStageDto.extractVialsOfSperm}"/></span>
+            <span style="font-size: 16px" class="col-xs-6 col-md-6 control-label"><c:out value="${iuiCycleStageDto.extractVialsOfSperm}"/></span>
           </iais:value>
         </iais:row>
         <iais:row>
           <iais:field value="How many vials of sperm were used in this cycle" mandatory="false"/>
           <iais:value cssClass="col-xs-5 col-md-6 control-label">
-            <span style="font-size: 16px" class="col-xs-6 col-md-6 control-label"><c:out value="${arSuperDataSubmissionDto.iuiCycleStageDto.usedVialsOfSperm}"/></span>
+            <span style="font-size: 16px" class="col-xs-6 col-md-6 control-label"><c:out value="${iuiCycleStageDto.usedVialsOfSperm}"/></span>
           </iais:value>
         </iais:row>
       </div>
     </div>
   </div>
 </div>
+<c:set var="donorDtos" value="${iuiCycleStageDto.donorDtos}"/>
+<%@include file="previewDonorSection.jsp"%>

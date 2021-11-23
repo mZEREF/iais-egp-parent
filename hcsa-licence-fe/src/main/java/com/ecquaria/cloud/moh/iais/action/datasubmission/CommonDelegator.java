@@ -3,6 +3,7 @@ package com.ecquaria.cloud.moh.iais.action.datasubmission;
 import com.ecquaria.cloud.RedirectUtil;
 import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst;
+import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.*;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -12,10 +13,7 @@ import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
-import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
-import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
-import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
-import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
+import com.ecquaria.cloud.moh.iais.helper.*;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.ArDataSubmissionService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,7 +40,8 @@ public abstract class CommonDelegator {
     protected static final String ACTION_TYPE_CONFIRM = "confirm";
     protected static final String ACTION_TYPE_DRAFT = "draft";
     protected static final String ACTION_TYPE_SUBMISSION = "submission";
-
+    private final static String  CRUD_ACTION_VALUE_AR_STAGE      = "crud_action_value_ar_stage";
+    private final static String  CRUD_ACTION_VALUE_VALIATE_DONOR = "crud_action_value_valiate_donor";
     @Autowired
     private ArDataSubmissionService arDataSubmissionService;
 
@@ -422,6 +421,146 @@ public abstract class CommonDelegator {
 
     private boolean needValidate(HttpServletRequest request, String... actionType) {
         return StringUtil.isIn(ParamUtil.getString(request, DataSubmissionConstant.CRUD_TYPE), actionType);
+    }
+
+    protected void actionArDonorDtos(HttpServletRequest request,List<DonorDto> arDonorDtos){
+        int actionArDonor = ParamUtil.getInt(request,CRUD_ACTION_VALUE_AR_STAGE);
+        //actionArDonor default =-3;
+        if(actionArDonor == -1){
+            //add
+            for (int i = 0; i < arDonorDtos.size(); i++) {
+                arDonorDtos.get(i).setArDonorIndex(i);
+            }
+            arDonorDtos.add(getInitArDonorDto(arDonorDtos.size()));
+        }else if(actionArDonor >-1 ){
+            //delete
+            arDonorDtos.remove(actionArDonor);
+            for (int i = 0; i < arDonorDtos.size(); i++) {
+                arDonorDtos.get(i).setArDonorIndex(i);
+            }
+        }else if(actionArDonor == -3){
+            arDonorDtos.clear();
+        }else if(actionArDonor == -4){
+            arDonorDtos.clear();
+            arDonorDtos.add(getInitArDonorDto(0));
+        }
+    }
+
+    private DonorDto getInitArDonorDto(int arDonorIndex){
+        DonorDto arDonorDto = new DonorDto();
+        arDonorDto.setDirectedDonation(true);
+        arDonorDto.setArDonorIndex(arDonorIndex);
+        return arDonorDto;
+    }
+
+    protected void valiateDonorDtos(HttpServletRequest request,List<DonorDto> arDonorDtos){
+        int valiateArDonor = ParamUtil.getInt(request,CRUD_ACTION_VALUE_VALIATE_DONOR);
+        if(valiateArDonor >-1){
+            DonorDto arDonorDto = arDonorDtos.get(valiateArDonor);
+            DonorSampleDto donorSampleDto = arDataSubmissionService.getDonorSampleDto(arDonorDto.getIdType(),arDonorDto.getIdNumber(),
+                    arDonorDto.getDonorSampleCode(),arDonorDto.getSource(),arDonorDto.getOtherSource());
+            if(donorSampleDto == null){
+                Map<String, String> errorMap = IaisCommonUtils.genNewHashMap(1);
+                errorMap.put("field1","The corresponding donor");
+                errorMap.put("field2","the AR centre");
+                String dsErr =  MessageUtil.getMessageDesc("DS_ERR012",errorMap).trim();
+                errorMap.clear();
+                errorMap.put("validateDonor" +(arDonorDto.isDirectedDonation() ? "Yes" : "No") +arDonorDto.getArDonorIndex(),dsErr);
+                ParamUtil.setRequestAttr(request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
+            }else {
+                arDonorDto.setRelation(donorSampleDto.getDonorRelation());
+                List<DonorSampleAgeDto> ages = donorSampleDto.getDonorSampleAgeDtos();
+                arDonorDto.setDonorSampleAgeDtos(ages);
+                arDonorDto.setDonorSampleId(donorSampleDto.getId());
+                if(IaisCommonUtils.isNotEmpty(ages)){
+                    List<SelectOption> selectOptions = IaisCommonUtils.genNewArrayList( ages.size());
+                    ages.stream().forEach(
+                            obj-> selectOptions.add(new SelectOption(obj.getId(),String.valueOf(obj.getAge())))
+                    );
+                    arDonorDto.setAgeList(selectOptions);
+                }
+            }
+        }
+    }
+
+    protected void clearNoClearDataForDrDonorDto(DonorDto arDonorDto,HttpServletRequest request){
+        if(arDonorDto.isDirectedDonation()){
+            arDonorDto.setDonorSampleCode(null);
+            arDonorDto.setSource(null);
+            arDonorDto.setOtherSource(null);
+            arDonorDto.setIdType(StringUtil.getNonNull(arDonorDto.getIdType()));
+            arDonorDto.setIdNumber(StringUtil.getNonNull(arDonorDto.getIdNumber()));
+        }else {
+            arDonorDto.setPleaseIndicate(null);
+            arDonorDto.setPleaseIndicateValues(null);
+            arDonorDto.setIdType(ParamUtil.getString(request,"idTypeSample"+arDonorDto.getArDonorIndex()));
+            arDonorDto.setSource(StringUtil.getNonNull(arDonorDto.getSource()));
+            arDonorDto.setOtherSource(StringUtil.getNonNull(arDonorDto.getOtherSource()));
+            arDonorDto.setDonorSampleCode(StringUtil.getNonNull(arDonorDto.getDonorSampleCode()));
+        }
+    }
+
+     protected void setEmptyDataForNullDrDonorDto(DonorDto arDonorDto){
+        arDonorDto.setIdType(StringUtil.getStringEmptyToNull( arDonorDto.getIdType()));
+        if(arDonorDto.isDirectedDonation()){
+            arDonorDto.setIdNumber(StringUtil.getStringEmptyToNull( arDonorDto.getIdNumber()));
+        }else {
+            arDonorDto.setSource(StringUtil.getStringEmptyToNull(arDonorDto.getSource()));
+            arDonorDto.setOtherSource(StringUtil.getStringEmptyToNull(arDonorDto.getOtherSource()));
+            arDonorDto.setDonorSampleCode(StringUtil.getStringEmptyToNull(arDonorDto.getDonorSampleCode()));
+        }
+
+        if( StringUtil.isNotEmpty(arDonorDto.getAge())){
+            arDonorDto.getDonorSampleAgeDtos().stream().forEach( donorSampleAgeDto -> {
+                        if(donorSampleAgeDto.getId().equalsIgnoreCase( arDonorDto.getAge())){
+                            arDonorDto.setAgeId(arDonorDto.getAge());
+                            donorSampleAgeDto.setStatus(DataSubmissionConsts.DONOR_AGE_STATUS_USED);
+                        }else {
+                            donorSampleAgeDto.setStatus(DataSubmissionConsts.DONOR_AGE_STATUS_INACTIVE);
+                        }
+                    }
+            );
+        }else {
+            arDonorDto.setAgeId(null);
+        }
+    }
+
+    protected Map<Object,ValidationProperty> getByArCycleStageDto(List<DonorDto> donorDtos){
+        Map<Object,ValidationProperty> validationPropertyList = IaisCommonUtils.genNewHashMap();
+        if(IaisCommonUtils.isNotEmpty(donorDtos)){
+            donorDtos.forEach( arDonorDto -> {
+                        validationPropertyList.put(arDonorDto,new ValidationProperty(arDonorDto.getArDonorIndex(),null,String.valueOf(arDonorDto.getArDonorIndex())));
+                    }
+            );
+        }
+        return validationPropertyList;
+    }
+
+    protected void setDonorDtos(HttpServletRequest request, List<DonorDto> arDonorDtos,boolean needPleaseIndicate){
+        if(IaisCommonUtils.isNotEmpty(arDonorDtos)){
+            arDonorDtos.forEach(arDonorDto -> {
+                String arDonorIndex = String.valueOf(arDonorDto.getArDonorIndex());
+                ControllerHelper.get(request,arDonorDto,arDonorIndex);
+                if(needPleaseIndicate){
+                arDonorDto.setPleaseIndicate(ParamUtil.getStringsToString(request,"pleaseIndicate"+arDonorIndex));
+                arDonorDto.setPleaseIndicateValues(ParamUtil.getListStrings(request,"pleaseIndicate"+arDonorIndex));
+                }
+                clearNoClearDataForDrDonorDto(arDonorDto,request);
+                if(needPleaseIndicate){
+                    setArDonorDtoByPleaseIndicate(arDonorDto);
+                }
+            });
+        }
+    }
+
+    private void setArDonorDtoByPleaseIndicate(DonorDto arDonorDto){
+        if(StringUtil.isNotEmpty(arDonorDto.getPleaseIndicate())){
+            String pleaseIndicate = arDonorDto.getPleaseIndicate();
+            arDonorDto.setDonorIndicateEmbryo(pleaseIndicate.contains(DataSubmissionConsts.AR_DONOR_USED_TYPE_DONORS_EMBRYO_USED));
+            arDonorDto.setDonorIndicateFresh(pleaseIndicate.contains(DataSubmissionConsts.AR_DONOR_USED_TYPE_DONORS_FRESH_OOCYTE));
+            arDonorDto.setDonorIndicateFrozen(pleaseIndicate.contains(DataSubmissionConsts.AR_DONOR_USED_TYPE_DONORS_FROZEN_OOCYTE_USED));
+            arDonorDto.setDonorIndicateSperm(pleaseIndicate.contains(DataSubmissionConsts.AR_DONOR_USED_TYPE_DONORS_SPERMS_USED));
+        }
     }
 
 }

@@ -62,25 +62,16 @@
                     <iais:value cssClass="col-md-3">
                       <c:forEach var="sourceOfSemen" items="${sourceOfSemenOption}" varStatus="index">
                         <div class="form-check" col-xs-7 style="padding-left: 0px;">
-                          <c:if test="${iuiCycleStageDto.semenSources == null}">
-                            <input class="form-check-input" type="checkbox" name="sourceOfSemenOp" value = "<c:out value="${sourceOfSemen.value}"/>"
-                                   aria-invalid="false" id="sourceOfSemenOp${index.index}"
-                            >
-                            <label class="form-check-label" for="sourceOfSemenOp${index.index}">
-                              <span class="check-square"></span><c:out value="${sourceOfSemen.text}"/>
-                            </label>
-                          </c:if>
-                          <c:if test="${iuiCycleStageDto.semenSources != null}">
-                            <input class="form-check-input" value = "<c:out value="${sourceOfSemen.value}"/>" aria-invalid="false"
-                                   type="checkbox" name="sourceOfSemenOp" id="sourceOfSemenOp${index.index}"
+                          <c:set var="value" value="${sourceOfSemen.value}"></c:set>
+                            <input class="form-check-input" value = "<c:out value="${value}"/>" aria-invalid="false"
+                                   type="checkbox" name="sourceOfSemenOp" id="sourceOfSemenOp${value}" <c:if test="${value == DataSubmissionConsts.AR_SOURCE_OF_SEMEN_DONOR}"> onclick="showDonorArea('sourceOfSemenOpAR_SOS_003')" </c:if>
                             <c:forEach items="${iuiCycleStageDto.semenSources}" var="checkSemen">
-                                   <c:if test="${checkSemen eq sourceOfSemen.value}">checked="checked"</c:if>
-                            </c:forEach>
-                            >
-                            <label class="form-check-label" for="sourceOfSemenOp${index.index}">
+                                   <c:if test="${checkSemen eq value}">checked</c:if>
+                            </c:forEach> >
+                            <label class="form-check-label" for="sourceOfSemenOp${value}">
                               <span class="check-square"></span><c:out value="${sourceOfSemen.text}"/>
                             </label>
-                          </c:if>
+
                         </div>
                       </c:forEach>
                       <span class="error-msg" name="iaisErrorMsg" id="error_semenSource"></span>

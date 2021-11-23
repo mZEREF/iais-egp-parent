@@ -166,4 +166,5 @@
         </div>
     </div>
 </div>
+<c:set var="donorDtos" value="${arCycleStageDto.donorDtos}"/>
 <%@include file="previewDonorSection.jsp"%>

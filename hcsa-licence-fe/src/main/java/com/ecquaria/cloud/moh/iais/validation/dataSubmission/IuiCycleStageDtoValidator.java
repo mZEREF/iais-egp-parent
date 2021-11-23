@@ -70,6 +70,7 @@ public class IuiCycleStageDtoValidator implements CustomizeValidator {
                     }
                 }
             }
+            DonorValidator.validateDonors(iuiCycleStageDto.getDonorDtos(),errMap,iuiCycleStageDto.isFromDonorFlag());
         }
         if(errMap.isEmpty()) {
             return null;

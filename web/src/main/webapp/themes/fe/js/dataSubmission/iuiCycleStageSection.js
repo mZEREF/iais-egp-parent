@@ -1,10 +1,13 @@
 $(document).ready(function (){
-    if($("#usedDonorOocyteRadioYes").is(':checked')){
+    showDonorArea("sourceOfSemenOpAR_SOS_003");
+});
+
+
+function showDonorArea(id){
+    if($('#'+id).is(':checked')){
         showUsedDonorOocyteControlClass(0);
     }else {
         hideUsedDonorOocyteControlClass(0);
     }
-
-});
-
+}
 

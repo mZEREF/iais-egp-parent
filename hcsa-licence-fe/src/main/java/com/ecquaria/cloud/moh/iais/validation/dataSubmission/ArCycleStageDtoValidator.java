@@ -53,35 +53,7 @@ public class ArCycleStageDtoValidator implements CustomizeValidator {
             stringStringMap.put("field3","No. of Children with Previous Marriage");
             errorMap.put("deliveredThroughChildren", MessageUtil.getMessageDesc("DS_ERR011",stringStringMap).trim());
         }
-
-        List<DonorDto> arDonorDtos = arCycleStageDto.getDonorDtos();
-        arDonorDtos.forEach( arDonorDto -> {
-                    if(arCycleStageDto.isUsedDonorOocyte() && arDonorDto.getAge() == null){
-                        errorMap.put("age"+ arDonorDto.getArDonorIndex() ,"GENERAL_ERR0006");
-                    }
-
-                    if(!arDonorDto.validateDirectedDonationYesNotNull(arDonorDto.getIdNumber())){
-                        errorMap.put("idNumber"+ arDonorDto.getArDonorIndex() ,"GENERAL_ERR0006");
-                    }
-
-                    if(!arDonorDto.validateSourceOtherNotNull(arDonorDto.getOtherSource())){
-                        errorMap.put("otherSource"+ arDonorDto.getArDonorIndex() ,"GENERAL_ERR0006");
-                    }
-
-                    if(!arDonorDto.validateDirectedDonationNoNotNull(arDonorDto.getDonorSampleCode())){
-                        errorMap.put("donorSampleCode"+ arDonorDto.getArDonorIndex() ,"GENERAL_ERR0006");
-                    }
-
-                    if(!arDonorDto.validateDirectedDonationNoNotNull(arDonorDto.getIdType())){
-                        errorMap.put("idTypeSample"+ arDonorDto.getArDonorIndex() ,"GENERAL_ERR0006");
-                    }else if(arDonorDto.validateDirectedDonationNoNotNull(arDonorDto.getIdType()) &&
-                            StringUtil.isNotEmpty(arDonorDto.getDonorSampleCode())
-                            && !SgNoValidator.validateIdNoForDataSubmission(arDonorDto.getIdType(),arDonorDto.getDonorSampleCode())){
-                        errorMap.put("donorSampleCode"+ arDonorDto.getArDonorIndex() ,"RFC_ERR0012");
-                    }
-                  }
-                );
-
+        DonorValidator.validateDonors(arCycleStageDto.getDonorDtos(),errorMap,arCycleStageDto.isUsedDonorOocyte());
         return errorMap;
     }
 

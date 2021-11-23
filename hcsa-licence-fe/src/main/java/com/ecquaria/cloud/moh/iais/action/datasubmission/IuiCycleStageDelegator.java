@@ -1,18 +1,17 @@
 package com.ecquaria.cloud.moh.iais.action.datasubmission;
 
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DonorDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.IuiCycleStageDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
-import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
-import com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
-import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.ArDataSubmissionService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +21,6 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author Shicheng
@@ -37,63 +35,46 @@ public class IuiCycleStageDelegator extends CommonDelegator {
 
     @Override
     public void start(BaseProcessClass bpc) {
-        ParamUtil.setSessionAttr(bpc.request, "sourceOfSemenOption", null);
-        ParamUtil.setSessionAttr(bpc.request, "curMarrChildNumOption", null);
-        ParamUtil.setSessionAttr(bpc.request, "prevMarrChildNumOption", null);
+        //set SelectOption
+        ParamUtil.setSessionAttr(bpc.request, "sourceOfSemenOption", (Serializable) arDataSubmissionService.getSourceOfSemenOption());
+        ParamUtil.setSessionAttr(bpc.request, "curMarrChildNumOption", (Serializable)  arDataSubmissionService.getChildNumOption());
+        ParamUtil.setSessionAttr(bpc.request, "prevMarrChildNumOption", (Serializable) arDataSubmissionService.getChildNumOption());
     }
 
     @Override
     public void prepareSwitch(BaseProcessClass bpc) {
-        ParamUtil.setRequestAttr(bpc.request, "smallTitle", "You are submitting for <strong>Cycle Stages</strong>");
-        //set SelectOption
-        List<SelectOption> sourceOfSemenOption = arDataSubmissionService.getSourceOfSemenOption();
-        List<SelectOption> curMarrChildNumOption = arDataSubmissionService.getChildNumOption();
-        List<SelectOption> prevMarrChildNumOption = arDataSubmissionService.getChildNumOption();
-        ParamUtil.setSessionAttr(bpc.request, "sourceOfSemenOption", (Serializable) sourceOfSemenOption);
-        ParamUtil.setSessionAttr(bpc.request, "curMarrChildNumOption", (Serializable) curMarrChildNumOption);
-        ParamUtil.setSessionAttr(bpc.request, "prevMarrChildNumOption", (Serializable) prevMarrChildNumOption);
         //init actionType
         String actionType = ParamUtil.getRequestString(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE);
         log.info(StringUtil.changeForLog("----- Action Type: " + actionType + " -----"));
         if (StringUtil.isEmpty(actionType)) {
-            actionType = ACTION_TYPE_PAGE;
-            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, actionType);
+            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, ACTION_TYPE_PAGE);
         }
     }
 
     @Override
     public void preparePage(BaseProcessClass bpc) {
-        ArSuperDataSubmissionDto arSuperDataSubmission = DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
+        HttpServletRequest request = bpc.request;
+        ArSuperDataSubmissionDto arSuperDataSubmission = DataSubmissionHelper.getCurrentArDataSubmission(request);
         //init IuiCycleStageDto The default value
-        arSuperDataSubmission = arDataSubmissionService.setIuiCycleStageDtoDefaultVal(arSuperDataSubmission);
-        ParamUtil.setSessionAttr(bpc.request, DataSubmissionConstant.AR_DATA_SUBMISSION, arSuperDataSubmission);
+        DataSubmissionHelper.setCurrentArDataSubmission(arDataSubmissionService.setIuiCycleStageDtoDefaultVal(arSuperDataSubmission),request);
     }
 
     @Override
     public void pageAction(BaseProcessClass bpc) {
-        ArSuperDataSubmissionDto arSuperDataSubmission = DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
+        HttpServletRequest request = bpc.request;
+        ArSuperDataSubmissionDto arSuperDataSubmission = DataSubmissionHelper.getCurrentArDataSubmission(request);
         IuiCycleStageDto iuiCycleStageDto = arSuperDataSubmission.getIuiCycleStageDto();
         if(iuiCycleStageDto == null) {
             iuiCycleStageDto = new IuiCycleStageDto();
         }
-        String actionType = ParamUtil.getRequestString(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE);
-        if(CommonDelegator.ACTION_TYPE_CONFIRM.equals(actionType)) {
-            //get form value set dto
-            iuiCycleStageDto = getIuiCycleFormValue(iuiCycleStageDto, bpc.request);
-            arSuperDataSubmission.setIuiCycleStageDto(iuiCycleStageDto);
-            //validate
-            ValidationResult validationResult = WebValidationHelper.validateProperty(iuiCycleStageDto, "common");
-            //switch
-            if (validationResult.isHasErrors()) {
-                Map<String, String> errorMap = validationResult.retrieveAll();
-                ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
-                WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
-                ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, CommonDelegator.ACTION_TYPE_PAGE);
-            } else {
-                ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, CommonDelegator.ACTION_TYPE_CONFIRM);
-            }
-        }
-        ParamUtil.setSessionAttr(bpc.request, DataSubmissionConstant.AR_DATA_SUBMISSION, arSuperDataSubmission);
+        iuiCycleStageDto = getIuiCycleFormValue(iuiCycleStageDto,request);
+        arSuperDataSubmission.setIuiCycleStageDto(iuiCycleStageDto);
+        DataSubmissionHelper.setCurrentArDataSubmission( arSuperDataSubmission,request);
+        List<DonorDto> donorDtos = iuiCycleStageDto.getDonorDtos();
+        validatePageDataHaveValidationProperty(request,iuiCycleStageDto,"common",donorDtos,getByArCycleStageDto(donorDtos), ACTION_TYPE_CONFIRM);
+        actionArDonorDtos(request,donorDtos);
+        valiateDonorDtos(request,donorDtos);
+        DataSubmissionHelper.setCurrentArDataSubmission(arSuperDataSubmission,request);
     }
 
     private IuiCycleStageDto getIuiCycleFormValue(IuiCycleStageDto iuiCycleStageDto, HttpServletRequest request) {
@@ -131,27 +112,16 @@ public class IuiCycleStageDelegator extends CommonDelegator {
         List<SelectOption> sourceOfSemenOption = (List<SelectOption>)ParamUtil.getSessionAttr(request, "sourceOfSemenOption");
         List<String> sourceOfSemenList = arDataSubmissionService.checkBoxIsDirtyData(sourceOfSemenOpStrs, sourceOfSemenOption);
         iuiCycleStageDto = setSourceOfSemenAllValue(iuiCycleStageDto, sourceOfSemenList);
+        setDonorDtos(request,iuiCycleStageDto.getDonorDtos(),false);
         return iuiCycleStageDto;
     }
 
     private IuiCycleStageDto setSourceOfSemenAllValue(IuiCycleStageDto iuiCycleStageDto, List<String> sourceOfSemenList) {
         iuiCycleStageDto.setSemenSources(sourceOfSemenList);
         if(!IaisCommonUtils.isEmpty(sourceOfSemenList)) {
-            if(sourceOfSemenList.contains("AR_SOS_003")) {
-                iuiCycleStageDto.setFromDonorFlag(true);
-            } else {
-                iuiCycleStageDto.setFromDonorFlag(false);
-            }
-            if(sourceOfSemenList.contains("AR_SOS_001")) {
-                iuiCycleStageDto.setFromHusbandFlag(true);
-            } else {
-                iuiCycleStageDto.setFromHusbandFlag(false);
-            }
-            if(sourceOfSemenList.contains("AR_SOS_002")) {
-                iuiCycleStageDto.setFromHusbandTissueFlag(true);
-            } else {
-                iuiCycleStageDto.setFromHusbandTissueFlag(false);
-            }
+            iuiCycleStageDto.setFromDonorFlag(sourceOfSemenList.contains(DataSubmissionConsts.AR_SOURCE_OF_SEMEN_DONOR));
+            iuiCycleStageDto.setFromHusbandFlag(sourceOfSemenList.contains(DataSubmissionConsts.AR_SOURCE_OF_SEMEN_HUSBAND));
+            iuiCycleStageDto.setFromHusbandTissueFlag(sourceOfSemenList.contains(DataSubmissionConsts.AR_SOURCE_OF_H_SEMEN_TESTICULAR));
         }
         return iuiCycleStageDto;
     }
