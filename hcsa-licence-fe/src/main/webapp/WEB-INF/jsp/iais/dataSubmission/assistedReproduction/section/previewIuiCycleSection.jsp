@@ -17,60 +17,58 @@
         </h3>
         <iais:row>
           <iais:field value="Premises where IUI is Performed" mandatory="false"/>
-          <iais:value width="3" cssClass="col-xs-5 col-md-6 control-label">
-            <span style="font-size: 16px" class="col-xs-6 col-md-6 control-label"><c:out value="${arSuperDataSubmissionDto.premisesDto.premiseLabel}"></c:out></span>
+          <iais:value width="7" cssClass="col-md-7" display="true" >
+         <c:out value="${arSuperDataSubmissionDto.premisesDto.premiseLabel}"></c:out>
           </iais:value>
         </iais:row>
         <iais:row>
           <iais:field value="Date Started" mandatory="false"/>
-          <iais:value cssClass="col-xs-5 col-md-6 control-label">
-            <span style="font-size: 16px" class="col-xs-6 col-md-6 control-label"><fmt:formatDate value='${arSuperDataSubmissionDto.iuiCycleStageDto.startDate}' pattern='dd/MM/yyyy' /></span>
+          <iais:value  width="7" cssClass="col-md-7" display="true" >
+          <fmt:formatDate value='${arSuperDataSubmissionDto.iuiCycleStageDto.startDate}' pattern='dd/MM/yyyy' />
           </iais:value>
         </iais:row>
         <iais:row>
-          <iais:field value="Patient's Age as of This Treatment" mandatory="false"/>
-          <iais:value cssClass="col-xs-5 col-md-6 control-label">
-            <span style="font-size: 16px" class="col-xs-6 col-md-6 control-label"><c:out value="${iuiCycleStageDto.userAgeShow}"></c:out></span>
+          <iais:field value="Patient's Age as of This Treatment" />
+          <iais:value  width="7" cssClass="col-md-7" display="true">
+           <c:out value="${iuiCycleStageDto.userAgeShow}"></c:out>
           </iais:value>
         </iais:row>
         <iais:row>
           <iais:field value="No. of Children with Current Marriage" mandatory="false"/>
-          <iais:value cssClass="col-xs-5 col-md-6 control-label">
-            <span style="font-size: 16px" class="col-xs-6 col-md-6 control-label"><c:out value="${iuiCycleStageDto.curMarrChildNum}"/></span>
+          <iais:value width="7" cssClass="col-md-7"  display="true">
+           <c:out value="${iuiCycleStageDto.curMarrChildNum}"/>
           </iais:value>
         </iais:row>
         <iais:row>
           <iais:field value="No. of Children with Previous Marriage" mandatory="false"/>
-          <iais:value cssClass="col-xs-5 col-md-6 control-label">
-            <span style="font-size: 16px" class="col-xs-6 col-md-6 control-label"><c:out value="${iuiCycleStageDto.prevMarrChildNum}"/></span>
+          <iais:value width="7" cssClass="col-md-7"  display="true">
+         <c:out value="${iuiCycleStageDto.prevMarrChildNum}"/>
           </iais:value>
         </iais:row>
         <iais:row>
           <iais:field value="Total No. of Children Delivered under IUI" mandatory="false"/>
-          <iais:value cssClass="col-xs-5 col-md-6 control-label">
-            <span style="font-size: 16px" class="col-xs-6 col-md-6 control-label"><c:out value="${iuiCycleStageDto.iuiDeliverChildNum}"/></span>
+          <iais:value width="7" cssClass="col-md-7"  display="true">
+           <c:out value="${iuiCycleStageDto.iuiDeliverChildNum}"/>
           </iais:value>
         </iais:row>
         <iais:row>
           <iais:field value="Source of Semen" mandatory="false"/>
-          <iais:value cssClass="col-xs-5 col-md-6 control-label">
-            <c:forEach var="semenSource" items="${iuiCycleStageDto.semenSources}">
-              <span style="font-size: 16px" class="col-xs-6 col-md-6 control-label"><iais:code code="${semenSource}"/></span>
-              <br>
-              <br>
+          <iais:value width="7" cssClass="col-md-7"  display="true">
+            <c:forEach items="${iuiCycleStageDto.semenSources}" var="semenSources" varStatus="status">
+              <c:if test="${status.index != 0}"><br></c:if> <iais:code code="${semenSources}"/>
             </c:forEach>
           </iais:value>
         </iais:row>
         <iais:row>
           <iais:field value="How many vials of sperm were extracted" mandatory="false"/>
-          <iais:value cssClass="col-xs-5 col-md-6 control-label">
-            <span style="font-size: 16px" class="col-xs-6 col-md-6 control-label"><c:out value="${iuiCycleStageDto.extractVialsOfSperm}"/></span>
+          <iais:value width="7" cssClass="col-md-7"  display="true">
+          <c:out value="${iuiCycleStageDto.extractVialsOfSperm}"/>
           </iais:value>
         </iais:row>
         <iais:row>
           <iais:field value="How many vials of sperm were used in this cycle" mandatory="false"/>
-          <iais:value cssClass="col-xs-5 col-md-6 control-label">
-            <span style="font-size: 16px" class="col-xs-6 col-md-6 control-label"><c:out value="${iuiCycleStageDto.usedVialsOfSperm}"/></span>
+          <iais:value width="7" cssClass="col-md-7"  display="true" >
+          <c:out value="${iuiCycleStageDto.usedVialsOfSperm}"/>
           </iais:value>
         </iais:row>
       </div>

@@ -409,6 +409,7 @@ public class ArDataSubmissionServiceImpl implements ArDataSubmissionService {
                         }
                     }
                 }
+              iuiCycleStageDto.setDonorDtos(IaisCommonUtils.genNewArrayList());
             }
             arSuperDataSubmission.setIuiCycleStageDto(iuiCycleStageDto);
         }

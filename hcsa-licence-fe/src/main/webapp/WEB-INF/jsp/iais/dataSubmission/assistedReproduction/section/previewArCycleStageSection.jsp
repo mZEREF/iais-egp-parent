@@ -82,53 +82,43 @@
 
                 <iais:row>
                     <iais:field width="5" value="No. of Children from Current Marriage" />
-                    <iais:value width="7" cssClass="col-md-7">
                         <iais:value width="7" cssClass="col-md-7" display="true">
                             <c:out value="${arCycleStageDto.currentMarriageChildren}"/>
-                        </iais:value>
                     </iais:value>
                 </iais:row>
 
                 <iais:row>
                     <iais:field width="5" value="No. of Children from Previous Marriage" />
-                    <iais:value width="7" cssClass="col-md-7">
                         <iais:value width="7" cssClass="col-md-7" display="true">
                             <c:out value="${arCycleStageDto.previousMarriageChildren}"/>
                         </iais:value>
-                    </iais:value>
                 </iais:row>
 
                 <iais:row>
                     <iais:field width="5" value="No. of Children conceived through AR" />
-                    <iais:value width="7" cssClass="col-md-7">
                         <iais:value width="7" cssClass="col-md-7" display="true">
                             <c:out value="${arCycleStageDto.deliveredThroughChildren}"/>
                         </iais:value>
-                    </iais:value>
                 </iais:row>
 
                 <iais:row>
-                    <iais:field width="5" value="No. of Children conceived through AR" />
-                    <iais:value width="7" cssClass="col-md-7">
+                    <iais:field width="5" value="Total No. of AR cycles previously undergone by patient" />
                         <iais:value width="7" cssClass="col-md-7" display="true">
                             <c:out value="${arCycleStageDto.totalPreviouslyPreviously}"/>
                         </iais:value>
-                    </iais:value>
                 </iais:row>
 
                 <iais:row id="totalNumberARCOtherRow" style="${ arCycleStageDto.totalPreviouslyPreviously == 21 ? '' : 'display: none'}">
-                    <iais:field width="5" value="Number of Cycles undergone Overseas" />
+                    <iais:field width="5" value="No. of Cycles undergone Overseas" />
                     <iais:value width="7" cssClass="col-md-7" display="true">
                         <c:out value="${arCycleStageDto.cyclesUndergoneOverseas}"/>
                     </iais:value>
                 </iais:row>
                 <iais:row>
-                    <iais:field width="5" value="Number of Cycles undergone Locally" />
-                    <iais:value width="7" cssClass="col-md-7">
+                    <iais:field width="5" value="No. of Cycles undergone Locally" />
                         <iais:value width="7" cssClass="col-md-7" display="true">
                             <c:out value="${arCycleStageDto.numberOfCyclesUndergoneLocally}"/>
                         </iais:value>
-                    </iais:value>
                 </iais:row>
 
                 <iais:row>
@@ -140,20 +130,16 @@
 
                 <iais:row>
                     <iais:field width="5" value="AR Practitioner" />
-                    <iais:value width="7" cssClass="col-md-7">
                         <iais:value width="7" cssClass="col-md-7" display="true">
                             <c:out value="${arCycleStageDto.practitioner}"/>
                         </iais:value>
-                    </iais:value>
                 </iais:row>
 
                 <iais:row>
                     <iais:field width="5" value="Embryologist" />
-                    <iais:value width="7" cssClass="col-md-7">
                         <iais:value width="7" cssClass="col-md-7" display="true">
                             <c:out value="${arCycleStageDto.embryologist}"/>
                         </iais:value>
-                    </iais:value>
                 </iais:row>
 
                 <iais:row>

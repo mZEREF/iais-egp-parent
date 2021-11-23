@@ -36,9 +36,12 @@ public class IuiCycleStageDelegator extends CommonDelegator {
     @Override
     public void start(BaseProcessClass bpc) {
         //set SelectOption
-        ParamUtil.setSessionAttr(bpc.request, "sourceOfSemenOption", (Serializable) arDataSubmissionService.getSourceOfSemenOption());
-        ParamUtil.setSessionAttr(bpc.request, "curMarrChildNumOption", (Serializable)  arDataSubmissionService.getChildNumOption());
-        ParamUtil.setSessionAttr(bpc.request, "prevMarrChildNumOption", (Serializable) arDataSubmissionService.getChildNumOption());
+        HttpServletRequest request = bpc.request;
+        ParamUtil.setSessionAttr(request, "sourceOfSemenOption", (Serializable) arDataSubmissionService.getSourceOfSemenOption());
+        ParamUtil.setSessionAttr(request, "curMarrChildNumOption", (Serializable)  arDataSubmissionService.getChildNumOption());
+        ParamUtil.setSessionAttr(request, "prevMarrChildNumOption", (Serializable) arDataSubmissionService.getChildNumOption());
+        ParamUtil.setSessionAttr(request, DONOR_SOURSE_DROP_DOWN,(Serializable) getSourseList(request));
+        ParamUtil.setSessionAttr(request, DONOR_SAMPLE_DROP_DOWN,(Serializable) getSampleDropDown());
     }
 
     @Override
@@ -74,6 +77,7 @@ public class IuiCycleStageDelegator extends CommonDelegator {
         validatePageDataHaveValidationProperty(request,iuiCycleStageDto,"common",donorDtos,getByArCycleStageDto(donorDtos), ACTION_TYPE_CONFIRM);
         actionArDonorDtos(request,donorDtos);
         valiateDonorDtos(request,donorDtos);
+        donorDtos.forEach(arDonorDto -> setEmptyDataForNullDrDonorDto(arDonorDto));
         DataSubmissionHelper.setCurrentArDataSubmission(arSuperDataSubmission,request);
     }
 

@@ -42,7 +42,6 @@ function showDonor(index){
     $("#idNo"+index+"Row").show();
 }
 function hideDonor(index){
-    $("#deleteDonor"+index).hide();
     $("#source"+index+"Row").show();
     $("#donorSampleCode"+index+"Row").show();
     $("#idNo"+index+"Row").hide();
@@ -64,4 +63,23 @@ function hideUsedDonorOocyteControlClass(flag){
     }else {
         $(".usedDonorOocyteControlClass").hide();
     }
+}
+
+function removeAges(index){
+    $("#relation"+index+"Row").hide();
+    $("#age"+index+"Row").hide();
+    $("#age"+index).val("");
+    $("#resetDonor"+index).val("1");
+}
+
+function sourceChange(own,value,row,index){
+    toggleOnSelect(own,value,row);
+    removeAges(index);
+}
+
+function repeatDonorSampleAge(index){
+   if($("#sameDonorSampleIndexs"+index).val() != ""){
+       $("#crud_action_value_action_age").val(index);
+       sumbitPage(-5);
+   }
 }

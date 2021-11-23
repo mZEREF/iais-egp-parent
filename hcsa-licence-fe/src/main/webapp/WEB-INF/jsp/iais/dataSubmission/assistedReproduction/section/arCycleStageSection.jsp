@@ -115,54 +115,44 @@
                 </iais:row>
 
                 <iais:row>
-                    <iais:field width="5" value="No. of Children from Current Marriage" mandatory="false"/>
-                    <iais:value width="7" cssClass="col-md-7">
+                    <iais:field width="5" value="No. of Children from Current Marriage" mandatory="true"/>
                         <iais:value width="7" cssClass="col-md-7">
                             <iais:select name="currentMarriageChildren" options="noChildrenDropDown" firstOption="Please Select" value="${arCycleStageDto.currentMarriageChildren}"/>
                         </iais:value>
-                    </iais:value>
                 </iais:row>
 
                 <iais:row>
                     <iais:field width="5" value="No. of Children from Previous Marriage" mandatory="false"/>
-                    <iais:value width="7" cssClass="col-md-7">
                         <iais:value width="7" cssClass="col-md-7">
                             <iais:select name="previousMarriageChildren" options="noChildrenDropDown" firstOption="Please Select" value="${arCycleStageDto.previousMarriageChildren}"/>
                         </iais:value>
-                    </iais:value>
                 </iais:row>
 
                 <iais:row>
-                    <iais:field width="5" value="No. of Children conceived through AR" mandatory="false"/>
-                    <iais:value width="7" cssClass="col-md-7">
+                    <iais:field width="5" value="No. of Children conceived through AR" mandatory="true"/>
                         <iais:value width="7" cssClass="col-md-7">
                             <iais:select name="deliveredThroughChildren" options="noChildrenDropDown" firstOption="Please Select" value="${arCycleStageDto.deliveredThroughChildren}"/>
                         </iais:value>
-                    </iais:value>
                 </iais:row>
 
                 <iais:row>
-                    <iais:field width="5" value="Total Number of AR cycles previously undergone by patient" mandatory="false"/>
-                    <iais:value width="7" cssClass="col-md-7">
+                    <iais:field width="5" value="Total Number of AR cycles previously undergone by patient" mandatory="true"/>
                         <iais:value width="7" cssClass="col-md-7">
                             <iais:select name="totalPreviouslyPreviously" options="numberArcPreviouslyDropDown" firstOption="Please Select" value="${arCycleStageDto.totalPreviouslyPreviously}"  onchange ="toggleOnSelect(this, '21', 'totalNumberARCOtherRow')"/>
                         </iais:value>
-                    </iais:value>
                 </iais:row>
 
                 <iais:row id="totalNumberARCOtherRow">
-                    <iais:field width="5" value="Number of Cycles undergone Overseas" mandatory="true"/>
+                    <iais:field width="5" value="No. of Cycles undergone Overseas" mandatory="true"/>
                     <iais:value width="7" cssClass="col-md-7">
                         <iais:input maxLength="2" type="text" name="cyclesUndergoneOverseas" id="cyclesUndergoneOverseas" value="${arCycleStageDto.cyclesUndergoneOverseas}" />
                     </iais:value>
                 </iais:row>
                 <iais:row>
-                    <iais:field width="5" value="Number of Cycles undergone Locally" mandatory="false"/>
-                    <iais:value width="7" cssClass="col-md-7">
-                        <iais:value width="7" cssClass="col-md-7">
+                    <iais:field width="5" value="No. of Cycles undergone Locally" mandatory="false"/>
+                        <iais:value width="7" cssClass="col-md-7" display="true" >
                            <c:out value="${arCycleStageDto.numberOfCyclesUndergoneLocally}"/>
                         </iais:value>
-                    </iais:value>
                 </iais:row>
 
                 <iais:row>
@@ -199,20 +189,16 @@
 
                 <iais:row>
                     <iais:field width="5" value="AR Practitioner" mandatory="true"/>
-                    <iais:value width="7" cssClass="col-md-7">
                         <iais:value width="7" cssClass="col-md-7">
                             <iais:select name="practitioner" options="practitionerDropDown" firstOption="Please Select" value="${arCycleStageDto.practitioner}"/>
-                        </iais:value>
                     </iais:value>
                 </iais:row>
 
                 <iais:row>
                     <iais:field width="5" value="Embryologist" mandatory="false"/>
-                    <iais:value width="7" cssClass="col-md-7">
                         <iais:value width="7" cssClass="col-md-7">
                             <iais:select name="embryologist" options="embryologistDropDown" firstOption="Please Select" value="${arCycleStageDto.embryologist}"/>
                         </iais:value>
-                    </iais:value>
                 </iais:row>
 
                 <iais:row>
@@ -249,5 +235,6 @@
         </div>
     </div>
 </div>
+<c:set var="donorFrom" value="ar"/>
 <c:set var="donorDtos" value="${arCycleStageDto.donorDtos}"/>
 <%@include file="donorSection.jsp"%>

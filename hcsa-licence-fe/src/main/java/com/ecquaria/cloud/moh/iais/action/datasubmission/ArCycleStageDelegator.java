@@ -38,9 +38,7 @@ public class ArCycleStageDelegator extends CommonDelegator {
     private final static String  PRACTITIONER_DROP_DOWN          = "practitionerDropDown";
     private final static String  EMBRYOLOGIST_DROP_DOWN          = "embryologistDropDown";
     private final static String  DONOR_USED_TYPES                = "donorUsedTypes";
-    private final static String  DONOR_SOURSE_DROP_DOWN          = "donorSourseDropDown";
-    private final static String  DONOR_SOURSE_OTHERS             = "Others";
-    private final static String  DONOR_SAMPLE_DROP_DOWN          = "donorSampleDropDown";
+
     @Autowired
     private ArDataSubmissionService arDataSubmissionService;
     @Override
@@ -76,21 +74,7 @@ public class ArCycleStageDelegator extends CommonDelegator {
         selectOptions.add(new SelectOption("et01","et01"));
         return selectOptions;
     }
-    //TODO from ar center
-    private List<SelectOption> getSourseList(HttpServletRequest request){
-        List<SelectOption> selectOptions  = DataSubmissionHelper.genPremisesOptions((Map<String, PremisesDto>) ParamUtil.getSessionAttr(request,DataSubmissionConstant.AR_PREMISES_MAP));
-        selectOptions.add(new SelectOption(DataSubmissionConsts.AR_SOURCE_OTHER,DONOR_SOURSE_OTHERS));
-        return selectOptions;
-    }
 
-    private List<SelectOption> getSampleDropDown(){
-        List<SelectOption> selectOptions  = IaisCommonUtils.genNewArrayList(4);
-        selectOptions.add(new SelectOption(DataSubmissionConsts.AR_ID_TYPE_CODE,"Code"));
-        MasterCodeUtil.retrieveByCategory(MasterCodeUtil.CATE_ID_DS_ID_TYPE).stream().forEach(
-                obj -> selectOptions.add(new SelectOption(obj.getCode(),obj.getCodeValue()))
-        );
-        return selectOptions;
-    }
 
     @Override
     public void returnStep(BaseProcessClass bpc) {
@@ -102,14 +86,15 @@ public class ArCycleStageDelegator extends CommonDelegator {
         HttpServletRequest request = bpc.request;
         ArSuperDataSubmissionDto arSuperDataSubmissionDto = DataSubmissionHelper.getCurrentArDataSubmission(request);
         ArCycleStageDto arCycleStageDto = arSuperDataSubmissionDto.getArCycleStageDto();
-        List<DonorDto> arDonorDtos = arCycleStageDto.getDonorDtos();
+        List<DonorDto> arDonorDtos = null;
         if(arCycleStageDto == null){
             arCycleStageDto = new ArCycleStageDto();
             arSuperDataSubmissionDto.setArCycleStageDto(arCycleStageDto);
+        }else {
+            arDonorDtos = arCycleStageDto.getDonorDtos();
         }
         if(IaisCommonUtils.isEmpty(arDonorDtos)){
             arDonorDtos = IaisCommonUtils.genNewArrayList();
-
         }
         arCycleStageDto.setDonorDtos(arDonorDtos);
         setCycleAgeByPatientInfoDtoAndHcicode(arCycleStageDto,arSuperDataSubmissionDto.getPatientInfoDto(),arSuperDataSubmissionDto.getPremisesDto().getHciCode());
@@ -140,9 +125,10 @@ public class ArCycleStageDelegator extends CommonDelegator {
         setArCycleStageDtoByPage(request,arCycleStageDto);
         DataSubmissionHelper.setCurrentArDataSubmission(arSuperDataSubmissionDto,request);
         validatePageDataHaveValidationProperty(request,arCycleStageDto,"save",arCycleStageDto.getDonorDtos(),getByArCycleStageDto(arCycleStageDto.getDonorDtos()), ACTION_TYPE_CONFIRM);
-        arCycleStageDto.getDonorDtos().forEach(arDonorDto -> setEmptyDataForNullDrDonorDto(arDonorDto));
-        actionArDonorDtos(request,arCycleStageDto.getDonorDtos());
-        valiateDonorDtos(request,arCycleStageDto.getDonorDtos());
+        List<DonorDto> donorDtos = arCycleStageDto.getDonorDtos();
+        actionArDonorDtos(request,donorDtos);
+        valiateDonorDtos(request,donorDtos);
+        donorDtos.forEach(arDonorDto -> setEmptyDataForNullDrDonorDto(arDonorDto));
         DataSubmissionHelper.setCurrentArDataSubmission(arSuperDataSubmissionDto,request);
     }
 

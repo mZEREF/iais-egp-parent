@@ -1,10 +1,12 @@
 package com.ecquaria.cloud.moh.iais.action.datasubmission;
 
 import com.ecquaria.cloud.RedirectUtil;
+import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.*;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -21,10 +23,7 @@ import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * CommonDelegator
@@ -42,6 +41,11 @@ public abstract class CommonDelegator {
     protected static final String ACTION_TYPE_SUBMISSION = "submission";
     private final static String  CRUD_ACTION_VALUE_AR_STAGE      = "crud_action_value_ar_stage";
     private final static String  CRUD_ACTION_VALUE_VALIATE_DONOR = "crud_action_value_valiate_donor";
+    private final static String  CRUD_ACTION_VALUE_AR_STAGE_ACTION_AGE      = "crud_action_value_action_age";
+    protected final static String  DONOR_SOURSE_OTHERS             = "Others";
+    protected final static String  DONOR_SAMPLE_DROP_DOWN          = "donorSampleDropDown";
+    protected final static String  DONOR_SOURSE_DROP_DOWN          = "donorSourseDropDown";
+
     @Autowired
     private ArDataSubmissionService arDataSubmissionService;
 
@@ -445,8 +449,71 @@ public abstract class CommonDelegator {
         }else if(actionArDonor == -4){
             arDonorDtos.clear();
             arDonorDtos.add(getInitArDonorDto(0));
+        }else if(actionArDonor == -5){
+            //clearOtherAge
+            clearDonorAgesSelect(ParamUtil.getInt(request,CRUD_ACTION_VALUE_AR_STAGE_ACTION_AGE),arDonorDtos);
         }
     }
+
+    private void clearDonorAgesSelect(int actionArDonor,List<DonorDto> arDonorDtos){
+        if( actionArDonor != -1){
+            DonorDto donorDto = arDonorDtos.get(actionArDonor);
+            if(StringUtil.isNotEmpty(donorDto.getSameDonorSampleIndexs())){
+                String[] indexs = donorDto.getSameDonorSampleIndexs().split(",");
+                boolean clearOwn = false;
+                for (String index:indexs) {
+                    int indexInt = Integer.parseInt(index);
+                    if( indexInt != actionArDonor){
+                        DonorDto donorDtoEff = arDonorDtos.get(indexInt);
+                        if(donorDto.getSameDonorSampleIndexs().equalsIgnoreCase(donorDtoEff.getSameDonorSampleIndexs())){
+                            if(StringUtil.isNotEmpty(donorDto.getAge())){
+                                reSetAgeList(donorDtoEff,donorDto.getAge(),DataSubmissionConsts.DONOR_AGE_STATUS_USED);
+                                if(StringUtil.isNotEmpty(donorDto.getAgeId()) && !donorDto.getAgeId().equalsIgnoreCase(donorDto.getAge())){
+                                    reSetAgeList(donorDtoEff,donorDto.getAgeId(),DataSubmissionConsts.DONOR_AGE_STATUS_ACTIVE);
+                                    if(!clearOwn){
+                                        clearOwn = true;
+                                        reSetAgeList(donorDto,donorDto.getAgeId(),DataSubmissionConsts.DONOR_AGE_STATUS_ACTIVE);
+                                    }
+                                }
+                                setAgeList(donorDtoEff);
+                                setAgeList(donorDto);
+                            }else if(!clearOwn && StringUtil.isNotEmpty(donorDto.getAgeId())){
+                                clearOwn = true;
+                                reSetAgeList(donorDto,donorDto.getAgeId(),DataSubmissionConsts.DONOR_AGE_STATUS_ACTIVE);
+                                setAgeList(donorDto);
+                            }
+
+                        }else {
+                            clearDonorAges(donorDtoEff);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private void reSetAgeList(DonorDto arDonorDto,String ageId,String status){
+        arDonorDto.getDonorSampleAgeDtos().stream().forEach(age->{
+            if(ageId.equalsIgnoreCase(age.getId())){
+                age.setStatus(status);
+            }
+        });
+
+    }
+
+    private void setAgeList(DonorDto arDonorDto){
+        if(IaisCommonUtils.isNotEmpty(arDonorDto.getAgeList())){
+            arDonorDto.getAgeList().clear();
+        }
+        List<SelectOption> ageList = IaisCommonUtils.genNewArrayList();
+        arDonorDto.getDonorSampleAgeDtos().stream().forEach(obj->{
+           if(DataSubmissionConsts.DONOR_AGE_STATUS_ACTIVE.equalsIgnoreCase(obj.getStatus())){
+               ageList.add(new SelectOption(obj.getId(),String.valueOf(obj.getAge())));
+           }
+        });
+        arDonorDto.setAgeList(ageList);
+    }
+
 
     private DonorDto getInitArDonorDto(int arDonorIndex){
         DonorDto arDonorDto = new DonorDto();
@@ -462,7 +529,7 @@ public abstract class CommonDelegator {
             DonorSampleDto donorSampleDto = arDataSubmissionService.getDonorSampleDto(arDonorDto.getIdType(),arDonorDto.getIdNumber(),
                     arDonorDto.getDonorSampleCode(),arDonorDto.getSource(),arDonorDto.getOtherSource());
             if(donorSampleDto == null){
-                Map<String, String> errorMap = IaisCommonUtils.genNewHashMap(1);
+                Map<String, String> errorMap = IaisCommonUtils.genNewHashMap(2);
                 errorMap.put("field1","The corresponding donor");
                 errorMap.put("field2","the AR centre");
                 String dsErr =  MessageUtil.getMessageDesc("DS_ERR012",errorMap).trim();
@@ -475,16 +542,55 @@ public abstract class CommonDelegator {
                 arDonorDto.setDonorSampleAgeDtos(ages);
                 arDonorDto.setDonorSampleId(donorSampleDto.getId());
                 if(IaisCommonUtils.isNotEmpty(ages)){
-                    List<SelectOption> selectOptions = IaisCommonUtils.genNewArrayList( ages.size());
-                    ages.stream().forEach(
-                            obj-> selectOptions.add(new SelectOption(obj.getId(),String.valueOf(obj.getAge())))
-                    );
-                    arDonorDto.setAgeList(selectOptions);
+                    getDonorSampleAgeDtos(arDonorDtos,ages);
+                    if(IaisCommonUtils.isNotEmpty(ages)){
+                        arDonorDto.setResetDonor(AppConsts.NO);
+                        List<SelectOption> selectOptions = IaisCommonUtils.genNewArrayList( ages.size());
+                        ages.stream().forEach(
+                                obj-> selectOptions.add(new SelectOption(obj.getId(),String.valueOf(obj.getAge())))
+                        );
+                        arDonorDto.setAgeList(selectOptions);
+                    }
                 }
             }
         }
     }
 
+    private  List<DonorSampleAgeDto> getDonorSampleAgeDtos(List<DonorDto> arDonorDtos,List<DonorSampleAgeDto> ages) {
+        StringBuilder stringBuilder = new StringBuilder();
+        Map<String,String> stringIntegerMap = IaisCommonUtils.genNewHashMap();
+        arDonorDtos.stream().forEach( arDonorDto-> {
+            if(IaisCommonUtils.isNotEmpty(arDonorDto.getDonorSampleAgeDtos()) && StringUtil.isNotEmpty(arDonorDto.getDonorSampleId())){
+                String value = stringIntegerMap.get(arDonorDto.getDonorSampleId());
+                 if(StringUtil.isNotEmpty(value)){
+                     stringIntegerMap.put(arDonorDto.getDonorSampleId(),value+arDonorDto.getArDonorIndex()+",");
+                 }else {
+                     stringIntegerMap.put(arDonorDto.getDonorSampleId(),arDonorDto.getArDonorIndex()+",");
+                 }
+                arDonorDto.getDonorSampleAgeDtos().stream().forEach( age -> {
+                    if(DataSubmissionConsts.DONOR_AGE_STATUS_USED.equalsIgnoreCase(age.getStatus())){
+                        stringBuilder.append(age).append(",");
+                    }
+                });
+            }
+        });
+
+        if(IaisCommonUtils.isNotEmpty(stringIntegerMap)){
+            arDonorDtos.stream().forEach( arDonorDto-> arDonorDto.setSameDonorSampleIndexs( stringIntegerMap.get(arDonorDto.getDonorSampleId())));
+        }
+
+        String values = stringBuilder.toString();
+        if(StringUtil.isNotEmpty(values)){
+            Iterator<DonorSampleAgeDto> iterator =  ages.listIterator();
+            while (iterator.hasNext()){
+                DonorSampleAgeDto donorSampleAgeDto = iterator.next();
+                if(values.contains(donorSampleAgeDto.getId())){
+                    iterator.remove();
+                }
+            }
+        }
+       return ages;
+    }
     protected void clearNoClearDataForDrDonorDto(DonorDto arDonorDto,HttpServletRequest request){
         if(arDonorDto.isDirectedDonation()){
             arDonorDto.setDonorSampleCode(null);
@@ -500,6 +606,20 @@ public abstract class CommonDelegator {
             arDonorDto.setOtherSource(StringUtil.getNonNull(arDonorDto.getOtherSource()));
             arDonorDto.setDonorSampleCode(StringUtil.getNonNull(arDonorDto.getDonorSampleCode()));
         }
+
+        if(!AppConsts.NO.equalsIgnoreCase(arDonorDto.getResetDonor())){
+            clearDonorAges(arDonorDto);
+        }
+    }
+
+    private void clearDonorAges(DonorDto arDonorDto){
+        arDonorDto.setAgeId(null);
+        arDonorDto.setDonorSampleId(null);
+        arDonorDto.setAgeList(null);
+        arDonorDto.setAge(null);
+        arDonorDto.setRelation(null);
+        arDonorDto.setDonorSampleAgeDtos(null);
+        arDonorDto.setSameDonorSampleIndexs(null);
     }
 
      protected void setEmptyDataForNullDrDonorDto(DonorDto arDonorDto){
@@ -565,4 +685,19 @@ public abstract class CommonDelegator {
         }
     }
 
+    //TODO from ar center
+    protected List<SelectOption> getSourseList(HttpServletRequest request){
+        List<SelectOption> selectOptions  = DataSubmissionHelper.genPremisesOptions((Map<String, PremisesDto>) ParamUtil.getSessionAttr(request,DataSubmissionConstant.AR_PREMISES_MAP));
+        selectOptions.add(new SelectOption(DataSubmissionConsts.AR_SOURCE_OTHER,DONOR_SOURSE_OTHERS));
+        return selectOptions;
+    }
+
+    protected List<SelectOption> getSampleDropDown(){
+        List<SelectOption> selectOptions  = IaisCommonUtils.genNewArrayList(4);
+        selectOptions.add(new SelectOption(DataSubmissionConsts.AR_ID_TYPE_CODE,"Code"));
+        MasterCodeUtil.retrieveByCategory(MasterCodeUtil.CATE_ID_DS_ID_TYPE).stream().forEach(
+                obj -> selectOptions.add(new SelectOption(obj.getCode(),obj.getCodeValue()))
+        );
+        return selectOptions;
+    }
 }
