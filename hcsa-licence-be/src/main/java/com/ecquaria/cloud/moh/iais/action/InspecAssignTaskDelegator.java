@@ -39,6 +39,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.Serializable;
 import java.text.ParseException;
@@ -140,6 +141,7 @@ public class InspecAssignTaskDelegator {
                 String workGroupId = SqlHelper.constructInCondition("T7.WRK_GRP_ID", workGroupIdsSize);
                 searchParam.addParam("workGroup_list", workGroupId);
             }
+            //set role filter
             String curRoleId;
             if(loginContext != null && !StringUtil.isEmpty(loginContext.getCurRoleId())){
                 curRoleId = loginContext.getCurRoleId();
@@ -151,6 +153,11 @@ public class InspecAssignTaskDelegator {
             QueryHelp.setMainSql("inspectionQuery", "assignCommonTask",searchParam);
             searchResult = inspectionAssignTaskService.getSearchResultByParam(searchParam);
             searchResult = inspectionAssignTaskService.getAddressByResult(searchResult);
+            //set all address data map for filter address
+            List<String> appGroupIds = inspectionAssignTaskService.getComPoolAppGrpIdByResult(searchResult);
+            HcsaTaskAssignDto hcsaTaskAssignDto = inspectionService.getHcsaTaskAssignDtoByAppGrp(appGroupIds);
+
+            ParamUtil.setSessionAttr(bpc.request, "hcsaTaskAssignDto", hcsaTaskAssignDto);
             ParamUtil.setSessionAttr(bpc.request, "commPools", (Serializable) commPools);
             ParamUtil.setSessionAttr(bpc.request, "groupRoleFieldDto", groupRoleFieldDto);
             ParamUtil.setSessionAttr(bpc.request, "commonPoolRoleIds", (Serializable) commonPoolRoleIds);
@@ -459,12 +466,21 @@ public class InspecAssignTaskDelegator {
         }
         if(!StringUtil.isEmpty(hci_address)){
             searchParam.addFilter("hci_address", hci_address,true);
+            //filter unit no for group
+            searchParam = filterUnitNoForGroup(searchParam, hci_address, bpc.request);
         }
         ParamUtil.setSessionAttr(bpc.request, "cPoolSearchParam", searchParam);
         ParamUtil.setSessionAttr(bpc.request, "sub_date2", sub_date2);
         ParamUtil.setSessionAttr(bpc.request, "commPools", (Serializable) commPools);
         ParamUtil.setSessionAttr(bpc.request, "groupRoleFieldDto", groupRoleFieldDto);
         ParamUtil.setSessionAttr(bpc.request, "poolRoleCheckDto", poolRoleCheckDto);
+    }
+
+    private SearchParam filterUnitNoForGroup(SearchParam searchParam, String hci_address, HttpServletRequest request) {
+        HcsaTaskAssignDto hcsaTaskAssignDto = (HcsaTaskAssignDto)ParamUtil.getSessionAttr(request, "hcsaTaskAssignDto");
+        searchParam = inspectionAssignTaskService.setAppGrpIdsByUnitNos(searchParam, hci_address, hcsaTaskAssignDto, "T5.ID", "appGroup_list");
+
+        return searchParam;
     }
 
     private String getCheckRoleIdByMap(String roleIdCheck, Map<String, String> roleMap) {

@@ -15,6 +15,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.inbox.PoolRoleCheckDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.ComPoolAjaxQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspecTaskCreAndAssDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionCommonPoolQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.HcsaTaskAssignDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.GroupRoleFieldDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
@@ -218,4 +219,13 @@ public interface InspectionAssignTaskService {
       * @Descripation: getComPoolAppGrpIdByResult
       */
     List<String> getComPoolAppGrpIdByResult(SearchResult<InspectionCommonPoolQueryDto> searchResult);
+
+    /**
+      * @author: shicheng
+      * @Date 2021/11/23
+      * @Param: searchParam, hci_address, hcsaTaskAssignDto, fieldName, filterName
+      * @return: SearchParam
+      * @Descripation: setAppGrpIdsByUnitNos
+      */
+    SearchParam setAppGrpIdsByUnitNos(SearchParam searchParam, String hci_address, HcsaTaskAssignDto hcsaTaskAssignDto, String fieldName, String filterName);
 }

@@ -41,6 +41,7 @@
              and T7.TASK_TYPE in ('TASKTYPE01','TASKTYPE02')
             ) T5
             WHERE 1 = 1
+            <#if appGroup_list??> and ${appGroup_list} </#if>
             <#if application_no??> and charindex(:application_no, T5.APPLICATION_NO) >0 </#if>
             <#if application_type??> and T5.APP_TYPE = :application_type</#if>
             <#if hci_code??> and charindex(:hci_code, T5.HCI_CODE) >0 </#if>
@@ -452,6 +453,7 @@
                     JOIN APP_GRP_PREMISES T3 ON T3.ID = T2.APP_GRP_PREM_ID
                     JOIN APPLICATION_GROUP T4 ON T4.ID = T1.APP_GRP_ID
                     <#if appCorrId_list??> and ${appCorrId_list} </#if>
+                    <#if appPremId_list??> and ${appPremId_list} </#if>
                 ) T5
             WHERE 1 = 1
             <#if groupNo??> and T5.GROUP_NO = :groupNo</#if>

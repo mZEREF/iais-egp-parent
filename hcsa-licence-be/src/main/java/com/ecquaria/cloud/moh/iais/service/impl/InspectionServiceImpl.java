@@ -76,6 +76,9 @@ public class InspectionServiceImpl implements InspectionService {
     @Autowired
     private HcsaLicenceClient hcsaLicenceClient;
 
+    @Autowired
+    private AppPremisesCorrClient appPremisesCorrClient;
+
     @Override
     public List<SelectOption> getAppTypeOption() {
         List<SelectOption> appTypeOption = MasterCodeUtil.retrieveOptionsByCodes(new String[]{
@@ -497,10 +500,7 @@ public class InspectionServiceImpl implements InspectionService {
     @Override
     public HcsaTaskAssignDto getHcsaTaskAssignDtoByAppGrp(List<String> appGroupIds) {
         if(!IaisCommonUtils.isEmpty(appGroupIds)) {
-            HcsaTaskAssignDto hcsaTaskAssignDto = new HcsaTaskAssignDto();
-            if(hcsaTaskAssignDto != null) {
-
-            }
+            HcsaTaskAssignDto hcsaTaskAssignDto = appPremisesCorrClient.getUnitNoAndAddressByAppGrpIds(appGroupIds).getEntity();
             return hcsaTaskAssignDto;
         }
         return null;

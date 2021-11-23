@@ -43,6 +43,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.inspection.AppInspectionStatusDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.ComPoolAjaxQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspecTaskCreAndAssDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionCommonPoolQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.HcsaTaskAssignDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.GroupRoleFieldDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.WorkingGroupDto;
@@ -64,6 +65,7 @@ import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
+import com.ecquaria.cloud.moh.iais.helper.SqlHelper;
 import com.ecquaria.cloud.moh.iais.service.ApplicationService;
 import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
 import com.ecquaria.cloud.moh.iais.service.InspectionAssignTaskService;
@@ -546,6 +548,35 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
             return appGrpIds;
         }
         return null;
+    }
+
+    @Override
+    public SearchParam setAppGrpIdsByUnitNos(SearchParam searchParam, String hci_address, HcsaTaskAssignDto hcsaTaskAssignDto,
+                                             String fieldName, String filterName) {
+        if(hcsaTaskAssignDto != null) {
+            Map<String, String> appGroupAllUnitNoStrMap = hcsaTaskAssignDto.getAppGroupAllUnitNoStrMap();
+            List<String> appGrpIds = IaisCommonUtils.genNewArrayList();
+            for (Map.Entry<String, String> map : appGroupAllUnitNoStrMap.entrySet()) {
+                String address = map.getValue();
+                if (address.contains(hci_address)) {
+                    appGrpIds.add(map.getKey());
+                }
+            }
+
+            int appGrpIdsSize = 0;
+            if(!IaisCommonUtils.isEmpty(appGrpIds)) {
+                appGrpIdsSize = appGrpIds.size();
+                String appGroupId = SqlHelper.constructInCondition(fieldName, appGrpIdsSize);
+                searchParam.addParam(filterName, appGroupId);
+                for (int i = 0; i < appGrpIds.size(); i++) {
+                    searchParam.addFilter(fieldName + i, appGrpIds.get(i));
+                }
+            } else {
+                String appGroupId = SqlHelper.constructInCondition(fieldName, appGrpIdsSize);
+                searchParam.addParam(filterName, appGroupId);
+            }
+        }
+        return searchParam;
     }
 
     private String generateComPoolAck(List<String> appNoFailList) {
