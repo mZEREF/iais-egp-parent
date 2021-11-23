@@ -124,7 +124,9 @@ function modifyClonedNode(node, num, separator) {
     } else if (node.nodeName === 'INPUT') {
         replaceNodeAttributeSuffixNum(node, 'id', num, separator);
         replaceNodeAttributeSuffixNum(node, 'name', num, separator);
-        node.value = "";
+        if(node.type !== 'radio' && node.type !== 'checkbox'){
+            node.value = "";
+        }
     } else if (node.nodeName === 'DIV') {
         replaceNodeAttributeSuffixNum(node, 'id', num, separator);
     } else if (node.nodeName === 'SELECT') {

@@ -196,6 +196,13 @@ function addSection(idxInputName, sectionIdPrefix, headerTitlePrefix, sectionGro
     newSectionDivJqObj.find(":radio:checked").prop("checked", false);
     newSectionDivJqObj.find(":checkbox:checked").prop("checked", false);
 
+    var comm = $("#common"+separator+nextIdx);
+    if(comm.val() === 'common'){
+        $(comm).parent().parent().parent().next().show();
+    }else{
+        $(comm).parent().parent().parent().next().hide();
+    }
+
     /* Set date picker */
     newSectionDivJqObj.find(".date_picker").each(function () {
         var oldEL = $(this);
@@ -420,7 +427,9 @@ function modifyClonedNode(node, idx, separator) {
     } else if (node.nodeName === 'INPUT') {
         replaceNodeAttributeSuffixNum(node, 'id', idx, separator);
         replaceNodeAttributeSuffixNum(node, 'name', idx, separator);
-        node.value = "";
+        if(node.type !== 'radio' && node.type !== 'checkbox'){
+            node.value = "";
+        }
     } else if (node.nodeName === 'DIV') {
         replaceNodeAttributeSuffixNum(node, 'id', idx, separator);
     } else if (node.nodeName === 'SELECT') {
@@ -429,7 +438,7 @@ function modifyClonedNode(node, idx, separator) {
     } else if (node.nodeName === 'TEXTAREA') {
         replaceNodeAttributeSuffixNum(node, 'id', idx, separator);
         replaceNodeAttributeSuffixNum(node, 'name', idx, separator);
-        node.innerText = "";
+        node.value = "";
     }
 
 }
