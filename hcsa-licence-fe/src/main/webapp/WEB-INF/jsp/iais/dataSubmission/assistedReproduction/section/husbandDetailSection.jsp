@@ -16,3 +16,6 @@
         </div>
     </div>
 </div>
+<iais:confirm msg="${hbdAgeMsg}" callBack="$('#hbdAgeMsgDiv').modal('hide');" popupOrder="hbdAgeMsgDiv" needCancel="false"
+              yesBtnCls="btn btn-secondary" yesBtnDesc="Close"
+              needFungDuoJi="false" />

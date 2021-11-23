@@ -1,13 +1,13 @@
 $(document).ready(function() {
-    $('input[name="birthDateHbd"]').on('blur, change', function () {
+    $('input[name="birthDateHbd"]').on('blur', function () {
         checkAge($(this).val(), 'hbdAgeMsgDiv');
     });
-    $('input[name="birthDateHbd"]').trigger('change');
+    $('input[name="birthDateHbd"]').trigger('blur');
 
-    $('input[name="birthDate"]').on('blur, change', function () {
+    $('input[name="birthDate"]').on('blur', function () {
         checkAge($(this).val(), 'ageMsgDiv');
     });
-    $('input[name="birthDate"]').trigger('change');
+    $('input[name="birthDate"]').trigger('blur');
 });
 
 function checkAge(birthDate, modalId) {
