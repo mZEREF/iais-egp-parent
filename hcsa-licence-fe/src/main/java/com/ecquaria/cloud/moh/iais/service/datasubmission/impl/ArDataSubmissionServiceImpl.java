@@ -446,4 +446,17 @@ public class ArDataSubmissionServiceImpl implements ArDataSubmissionService {
         return null;
     }
 
+    @Override
+    public ArSuperDataSubmissionDto setFreeStageDtoDefaultVal(ArSuperDataSubmissionDto arSuperDataSubmission) {
+        if (arSuperDataSubmission != null) {
+            ArSubFreezingStageDto arSubFreezingStageDto = arSuperDataSubmission.getArSubFreezingStageDto();
+            if(arSubFreezingStageDto == null) {
+                arSubFreezingStageDto = new ArSubFreezingStageDto();
+                arSubFreezingStageDto.setCryopreservedType(DataSubmissionConsts.FREEZING_CRYOPRESERVED_FRESH_OOCYTE);
+                arSuperDataSubmission.setArSubFreezingStageDto(arSubFreezingStageDto);
+            }
+        }
+        return arSuperDataSubmission;
+    }
+
 }

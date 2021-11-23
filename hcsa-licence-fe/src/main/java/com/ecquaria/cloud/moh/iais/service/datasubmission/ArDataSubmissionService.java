@@ -123,4 +123,5 @@ public interface ArDataSubmissionService {
       */
     List<String> checkBoxIsDirtyData(String[] stringArr, List<SelectOption> selectOptionList);
 
+    ArSuperDataSubmissionDto setFreeStageDtoDefaultVal(ArSuperDataSubmissionDto arSuperDataSubmission);
 }

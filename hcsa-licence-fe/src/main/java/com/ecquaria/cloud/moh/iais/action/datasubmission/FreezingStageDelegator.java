@@ -18,6 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
@@ -49,6 +50,14 @@ public class FreezingStageDelegator extends CommonDelegator {
             actionType = ACTION_TYPE_PAGE;
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, actionType);
         }
+    }
+
+    @Override
+    public void preparePage(BaseProcessClass bpc) {
+        HttpServletRequest request = bpc.request;
+        ArSuperDataSubmissionDto arSuperDataSubmission = DataSubmissionHelper.getCurrentArDataSubmission(request);
+        //init FreeStageDto The default value
+        DataSubmissionHelper.setCurrentArDataSubmission(arDataSubmissionService.setFreeStageDtoDefaultVal(arSuperDataSubmission), request);
     }
 
     @Override
