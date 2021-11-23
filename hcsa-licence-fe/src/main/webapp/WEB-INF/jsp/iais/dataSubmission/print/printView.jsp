@@ -30,19 +30,11 @@
         left: 48%;
     }
 
-    .form-group {
-        max-width: 100%;
-        position: relative;
-        width: 100%;
-        padding-right: 10px;
-        padding-left: 10px;
-        clear:both;
-    }
     @media all and (min-width: 429px) {
         label.control-label {
             width: 40% !important;
         }
-        div.col-sm-7.col-md-5.col-xs-7 {
+        div.col-sm-7 {
             width: 60% !important;
         }
     }
