@@ -1,9 +1,10 @@
 package com.ecquaria.cloud.moh.iais.validation.dataSubmission;
 
+import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSubFreezingStageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInventoryDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
-import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidator;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
@@ -11,9 +12,6 @@ import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
 import java.util.Map;
-import java.util.regex.Pattern;
-
-import static java.util.regex.Pattern.compile;
 
 /**
  * @author Shicheng
@@ -28,28 +26,35 @@ public class ArSubFreezingValidator implements CustomizeValidator {
         if(arSuperDataSubmission != null) {
             ArSubFreezingStageDto arSubFreezingStageDto = arSuperDataSubmission.getArSubFreezingStageDto();
             if(arSubFreezingStageDto != null) {
-                String cryopreservedNum = arSubFreezingStageDto.getCryopreservedNum() + "";
+                Integer cryopreservedNum = arSubFreezingStageDto.getCryopreservedNum();
                 Date cryopreservedDate = arSubFreezingStageDto.getCryopreservedDate();
                 if(cryopreservedDate != null) {
                     if(cryopreservedDate.after(new Date())) {
                         errMap.put("cryopreservedDate", MessageUtil.replaceMessage("DS_ERR010", "Cryopreservation Date", "field"));
                     }
                 }
-                if (!StringUtil.isEmpty(cryopreservedNum)){
-                    String cryoNumValiStr;
-                    String firstStr = cryopreservedNum.substring(0,1);
-                    if("-".equals(firstStr)) {
-                        cryoNumValiStr = cryopreservedNum.substring(1);
-                    } else {
-                        cryoNumValiStr = cryopreservedNum;
+                if (cryopreservedNum != null){
+                    //Cannot be greater than number of fresh oocytes or fresh embryos under patient's inventory currently
+                    PatientInventoryDto patientInventoryDto = arSuperDataSubmission.getPatientInventoryDto();
+                    String cryopreservedType = arSubFreezingStageDto.getCryopreservedType();
+                    int oocytesOrEmbryos = 0;
+                    if(patientInventoryDto != null) {
+                        if (DataSubmissionConsts.FREEZING_CRYOPRESERVED_FRESH_OOCYTE.equals(cryopreservedType)) {
+                            oocytesOrEmbryos = patientInventoryDto.getCurrentFreshOocytes();
+                        } else if (DataSubmissionConsts.FREEZING_CRYOPRESERVED_FRESH_EMBRYO.equals(cryopreservedType)) {
+                            oocytesOrEmbryos = patientInventoryDto.getCurrentFreshEmbryos();
+                        } else if (DataSubmissionConsts.FREEZING_CRYOPRESERVED_THAWED_OOCYTE.equals(cryopreservedType)) {
+                            oocytesOrEmbryos = patientInventoryDto.getCurrentThawedOocytes();
+                        } else if (DataSubmissionConsts.FREEZING_CRYOPRESERVED_THAWED_EMBRYO.equals(cryopreservedType)) {
+                            oocytesOrEmbryos = patientInventoryDto.getCurrentThawedEmbryos();
+                        }
                     }
-                    if (cryoNumValiStr.length() > 2) {
+                    if(cryopreservedNum <= 0) {
+                        errMap.put("cryopreservedNum", "GENERAL_ERR0027");
+                    } else if (cryopreservedNum > 99) {
                         errMap.put("cryopreservedNum", MessageUtil.replaceMessage("DS_ERR009", "No. Cryopreserved", "field"));
-                    }
-                    Pattern pattern = compile("(-?[1-9]\\d*)|0");
-                    boolean hoursFlag = pattern.matcher(cryopreservedNum).matches();
-                    if (!hoursFlag) {
-                        errMap.put("cryopreservedNum", "GENERAL_ERR0002");
+                    } else if(cryopreservedNum > oocytesOrEmbryos) {
+                        errMap.put("cryopreservedNum", "DS_ERR015");
                     }
                 }
             }
