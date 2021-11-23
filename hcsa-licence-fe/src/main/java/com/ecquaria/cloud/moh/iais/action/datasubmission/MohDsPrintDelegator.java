@@ -2,7 +2,6 @@ package com.ecquaria.cloud.moh.iais.action.datasubmission;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
-import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -45,8 +44,8 @@ public class MohDsPrintDelegator {
         log.info(StringUtil.changeForLog("--- Print init data ---"));
         String printflag = ParamUtil.getString(request, DataSubmissionConstant.PRINT_FLAG);
         log.info(StringUtil.changeForLog("--- Print flag: " + printflag + " ---"));
-        if (StringUtil.isIn(printflag, new String[]{DataSubmissionConsts.DS_PATIENT_ART,
-                DataSubmissionConsts.DS_AR})) {
+        if (StringUtil.isIn(printflag, new String[]{DataSubmissionConstant.PRINT_FLAG_PTART,
+                DataSubmissionConstant.PRINT_FLAG_ART})) {
             String declaration = ParamUtil.getString(request, "declaration");
             ArSuperDataSubmissionDto arSuperDataSubmission = DataSubmissionHelper.getCurrentArDataSubmission(request);
             DataSubmissionDto dataSubmissionDto = arSuperDataSubmission.getDataSubmissionDto();

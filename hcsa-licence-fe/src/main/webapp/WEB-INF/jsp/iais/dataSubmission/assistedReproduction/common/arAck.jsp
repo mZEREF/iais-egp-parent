@@ -14,7 +14,7 @@
         margin-bottom: 30px;
     }
 
-    .ack-font-16{
+    .ack-font-16 {
         font-size: 16px;
     }
 </style>
@@ -28,6 +28,11 @@
     <div class="main-content">
         <div class="container center-content">
             <div style="margin-top:-30px;">
+                <div class="col-xs-12 text-right">
+                    <p class="print ack-font-16">
+                        <a onclick="printData()" href="javascript:void(0);"> <em class="fa fa-print"></em>Print</a>
+                    </p>
+                </div>
                 <label class="col-xs-12" style="font-size: 20px">Submission successful</label>
                 <p class="col-xs-12 margin-btm">- <strong><iais:code code="${arSuperDataSubmissionDto.submissionType}"/></strong></p>
                 <div class="ack-font-16">

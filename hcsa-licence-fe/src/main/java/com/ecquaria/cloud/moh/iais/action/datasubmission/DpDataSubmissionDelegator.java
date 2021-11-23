@@ -1,7 +1,9 @@
 package com.ecquaria.cloud.moh.iais.action.datasubmission;
 
+import com.ecquaria.cloud.RedirectUtil;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DpSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
@@ -20,6 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpSession;
+import java.io.IOException;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -61,8 +64,8 @@ public class DpDataSubmissionDelegator {
         log.info("----- Drug Practices Prepare Submission -----");
         // no title
         bpc.request.removeAttribute("title");
-        String crud_action_type_ds = bpc.request.getParameter(DataSubmissionConstant.CRUD_TYPE);
-        bpc.request.setAttribute(DataSubmissionConstant.CRUD_ACTION_TYPE_DP, crud_action_type_ds);
+        String crudype = bpc.request.getParameter(DataSubmissionConstant.CRUD_TYPE);
+        bpc.request.setAttribute(DataSubmissionConstant.CRUD_ACTION_TYPE_DP, crudype);
         ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.CURRENT_PAGE_STAGE, "dp-submission");
         Map<String, PremisesDto> premisesMap =
                 (Map<String, PremisesDto>) bpc.request.getSession().getAttribute(DataSubmissionConstant.DP_PREMISES_MAP);
@@ -99,7 +102,7 @@ public class DpDataSubmissionDelegator {
         log.info("----- Do Drug Practices Submission -----");
         String crudype = ParamUtil.getString(bpc.request, DataSubmissionConstant.CRUD_TYPE);
         if (StringUtil.isIn(crudype, new String[]{"back", "return"})) {
-            ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.CRUD_ACTION_TYPE_DP, "back");
+            ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.CRUD_ACTION_TYPE_DP, "return");
             return;
         }
         String submissionType = ParamUtil.getString(bpc.request, "submissionType");
@@ -113,8 +116,6 @@ public class DpDataSubmissionDelegator {
             actionType = "dp";
         } else if (DataSubmissionConsts.DP_TYPE_SBT_SOVENOR_INVENTORY.equals(submissionType)) {
             actionType = "di";
-        } else {
-            actionType = "back";
         }
         // check premises
         HttpSession session = bpc.request.getSession();
@@ -141,7 +142,7 @@ public class DpDataSubmissionDelegator {
         if (!map.isEmpty()) {
             dpSuperDataSubmissionDto.setSubmissionType(submissionType);
             dpSuperDataSubmissionDto.setPremisesDto(premisesDto);
-            actionType = "invalid";
+            actionType = "back";
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(map));
         } else {
             String orgId = Optional.ofNullable(DataSubmissionHelper.getLoginContext(bpc.request))
@@ -156,7 +157,7 @@ public class DpDataSubmissionDelegator {
                         orgId, submissionType, hciCode);
                 if (dataSubmissionDraft != null) {
                     ParamUtil.setRequestAttr(bpc.request, "hasDraft", true);
-                    actionType = "invalid";
+                    actionType = "back";
                 }
             } else if ("resume".equals(actionValue)) {
                 dpSuperDataSubmissionDto = dpDataSubmissionService.getDpSuperDataSubmissionDtoDraftByConds(
@@ -178,6 +179,10 @@ public class DpDataSubmissionDelegator {
             dpSuperDataSubmissionDto.setCycleDto(DataSubmissionHelper.initCycleDto(dpSuperDataSubmissionDto, false));
         }
         DataSubmissionHelper.setCurrentDpDataSubmission(dpSuperDataSubmissionDto, bpc.request);
+        if (StringUtil.isEmpty(actionType)) {
+            actionType = "back";
+        }
+        log.info(StringUtil.changeForLog("----- Action Type: " + actionType + " -----"));
         ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.CRUD_ACTION_TYPE_DP, actionType);
     }
 
@@ -223,7 +228,13 @@ public class DpDataSubmissionDelegator {
      * Step: PrepareReturn
      * @param bpc
      */
-    public void prepareReturn(BaseProcessClass bpc) {
-        log.info("----- PrepareReturn -----");
+    public void prepareReturn(BaseProcessClass bpc) throws IOException {
+        log.info("----- Prepare Return -----");
+        StringBuilder url = new StringBuilder();
+        url.append(InboxConst.URL_HTTPS)
+                .append(bpc.request.getServerName())
+                .append(InboxConst.URL_LICENCE_WEB_MODULE + "MohDataSubmission");
+        String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
+        IaisEGPHelper.redirectUrl(bpc.response, tokenUrl);
     }
 }

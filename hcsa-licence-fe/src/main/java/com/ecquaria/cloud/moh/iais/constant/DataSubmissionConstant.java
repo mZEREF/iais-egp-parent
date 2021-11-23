@@ -19,6 +19,9 @@ public class DataSubmissionConstant {
     public static String CRUD_TYPE_RFC                      = "rfc";
 
     public static String CURRENT_PAGE_STAGE                 = "currentPageStage";
+    public static String PAGE_STAGE_PAGE                    = "page";
+    public static String PAGE_STAGE_PREVIEW                 = "preview";
+    public static String PAGE_STAGE_ACK                     = "ack";
 
     public static String AR_DATA_SUBMISSION                 = "arSuperDataSubmissionDto";
     public static String AR_PREMISES_MAP                    = "AR_PREMISES_MAP";
@@ -33,4 +36,10 @@ public class DataSubmissionConstant {
     public static String DS_TITLE_RFC                       = "Amendment";
 
     public static String PRINT_FLAG                         = "printflag";
+    public static String PRINT_FLAG_PTART                   = "PTART";
+    public static String PRINT_FLAG_PTDRP                   = "PTDRP";
+    public static String PRINT_FLAG_ART                     = "ART";
+    public static String PRINT_FLAG_DRP                     = "DRP";
+    public static String PRINT_FLAG_ACKART                  = "ACKART";
+    public static String PRINT_FLAG_ACKDRP                  = "ACKDRP";
 }

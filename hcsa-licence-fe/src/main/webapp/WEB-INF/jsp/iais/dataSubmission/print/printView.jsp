@@ -48,6 +48,11 @@
 <form method="post" id="mainForm" action=<%=continueURL%>>
     <div class="main-content">
         <div class="container center-content">
+            <c:choose>
+            <c:when test="${printflag == 'ACKART'}">
+                <%@include file="/WEB-INF/jsp/iais/dataSubmission/print/printAckAR.jsp" %>
+            </c:when>
+            <c:otherwise>
             <div class="col-xs-12">
                 <div class="row">
                     <div class="col-xs-12 col-md-10">
@@ -66,6 +71,8 @@
 
                 </div>
             </div>
+            </c:otherwise>
+            </c:choose>
         </div>
     </div>
 </form>
