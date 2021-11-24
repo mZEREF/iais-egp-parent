@@ -13,8 +13,8 @@
             <div class="panel-main-content form-horizontal">
                 <iais:row>
                     <iais:field width="6" value="Thawing Oocyte(s) or Embryo(s)" mandatory="true" cssClass="col-md-6"/>
-                    <iais:value width="3" cssClass="col-md-3">
-                        <div class="form-check col-xs-12" style="padding: 0px;">
+                    <iais:value width="6" cssClass="col-md-6">
+                        <div class="form-check col-xs-12 col-md-6" style="padding: 0px;">
                             <input class="form-check-input" type="checkbox"
                                    name="hasOocyte"
                                    value="true"
@@ -25,9 +25,7 @@
                                    for="hasOocyte"><span
                                     class="check-square"></span>Oocyte(s)</label>
                         </div>
-                    </iais:value>
-                    <iais:value width="3" cssClass="col-md-3">
-                        <div class="form-check col-xs-12">
+                        <div class="form-check col-xs-12 col-md-6">
                             <input class="form-check-input" type="checkbox"
                                    name="hasEmbryo"
                                    value="true"
@@ -38,8 +36,9 @@
                                    for="hasEmbryo"><span
                                     class="check-square"></span>Embryo(s)</label>
                         </div>
+                        <span id="error_thawings" name="iaisErrorMsg" class="error-msg col-md-12"
+                              style="padding: 0px;"></span>
                     </iais:value>
-                    <span id="error_thawings" name="iaisErrorMsg" class="error-msg col-md-6"></span>
                 </iais:row>
                 <div class="oocytesParts" <c:if test="${!thawingStageDto.hasOocyte}">style="display: none;"</c:if>>
                     <iais:row>
