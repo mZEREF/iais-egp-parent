@@ -56,7 +56,7 @@ public class FertilisationDtoValidator implements CustomizeValidator {
                     }
                     if (atuList.contains(DataSubmissionConsts.AR_TECHNIQUES_USED_ICSI)){
                         if (StringUtil.isEmpty(fertilisationDto.getFreshOocytesMicroInjectedNum())){
-                            errorMap.put("freshOocytesMicroinjectedNum","GENERAL_ERR0006");
+                            errorMap.put("freshOocytesMicroInjectedNum","GENERAL_ERR0006");
                         }else if(!StringUtil.isEmpty(fertilisationDto.getFreshOocytesMicroInjectedNum())){
                             totalFreshSum+=Integer.valueOf(fertilisationDto.getFreshOocytesMicroInjectedNum());
                         }
