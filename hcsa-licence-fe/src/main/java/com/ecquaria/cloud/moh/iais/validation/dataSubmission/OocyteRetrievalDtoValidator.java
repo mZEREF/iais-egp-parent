@@ -25,13 +25,16 @@ public class OocyteRetrievalDtoValidator implements CustomizeValidator {
     public Map<String, String> validate(Object obj, String profile, HttpServletRequest request) {
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
         OocyteRetrievalStageDto oocyteRetrievalStageDto = (OocyteRetrievalStageDto) obj;
-        if (!StringUtil.isNumber(oocyteRetrievalStageDto.getMatureRetrievedNum())) {
+        if (StringUtil.isNotEmpty(oocyteRetrievalStageDto.getMatureRetrievedNum()) &&
+                (!StringUtil.isNumber(oocyteRetrievalStageDto.getMatureRetrievedNum()))) {
             errorMap.put("matureRetrievedNum", MessageUtil.getMessageDesc("GENERAL_ERR0002"));
         }
-        if (!StringUtil.isNumber(oocyteRetrievalStageDto.getImmatureRetrievedNum())) {
+        if (StringUtil.isNotEmpty(oocyteRetrievalStageDto.getImmatureRetrievedNum()) &&
+                (!StringUtil.isNumber(oocyteRetrievalStageDto.getImmatureRetrievedNum()))) {
             errorMap.put("immatureRetrievedNum", MessageUtil.getMessageDesc("GENERAL_ERR0002"));
         }
-        if (!StringUtil.isNumber(oocyteRetrievalStageDto.getOtherRetrievedNum())) {
+        if (StringUtil.isNotEmpty(oocyteRetrievalStageDto.getOtherRetrievedNum()) &&
+                (!StringUtil.isNumber(oocyteRetrievalStageDto.getOtherRetrievedNum()))) {
             errorMap.put("otherRetrievedNum", MessageUtil.getMessageDesc("GENERAL_ERR0002"));
         }
         if (!(oocyteRetrievalStageDto.getIsFromPatient() || oocyteRetrievalStageDto.getIsFromPatientTissue()
