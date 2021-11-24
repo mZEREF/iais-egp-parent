@@ -182,9 +182,11 @@ public class LicenseeCompanyDelegate {
         LoginContext loginContext= (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         List<LicenseeDto> licenseesDto = orgUserManageService.getLicenseeByOrgId(loginContext.getOrgId());
         LicenseeDto licenseeDto = licenseesDto.get(0);
-        licenseeDto.setOfficeTelNo(ParamUtil.getString(bpc.request, "officeTelNo"));
-        licenseeDto.setEmilAddr(ParamUtil.getString(bpc.request, "officeEmail"));
-
+        String curdType = ParamUtil.getString(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE);
+        if("refresh".equals(curdType)){
+            licenseeDto.setOfficeTelNo(ParamUtil.getString(bpc.request, "officeTelNo"));
+            licenseeDto.setEmilAddr(ParamUtil.getString(bpc.request, "officeEmail"));
+        }
         licenseeDto.setUenNo(loginContext.getUenNo());
         //OrganizationDto organizationDto= orgUserManageService.getOrganizationById(loginContext.getOrgId());
         List<LicenseeKeyApptPersonDto> licenseeKeyApptPersonDto = orgUserManageService.getPersonById(loginContext.getLicenseeId());
