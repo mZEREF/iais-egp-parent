@@ -40,9 +40,14 @@
                 </c:if>
 
                  <iais:row >
-                     <iais:field width="5" value="Donor" mandatory="true"/>
-                     <iais:value width="7" cssClass="col-md-7" label="true">
-                         <c:out value="${donorDto.arDonorIndex+1}"/>
+                     <iais:field width="5" value="Donor ${donorDto.arDonorIndex+1}" />
+                     <iais:value width="5" cssClass="col-md-5" display="true"/>
+                     <iais:value width="2" cssClass="col-md-2" display="true">
+                         <c:if test="${donorDto.arDonorIndex >0}">
+                             <h4 class="text-danger">
+                                 <em class="fa fa-times-circle del-size-36 removeBtn cursorPointer" class="deleteDonor" id="deleteDonor${arDonorIndex}" onclick="deleteDonor('${arDonorIndex}')"></em>
+                             </h4>
+                         </c:if>
                      </iais:value>
                  </iais:row>
 
@@ -75,9 +80,7 @@
                                      class="check-circle"></span>No</label>
                          </div>
                      </iais:value>
-                     <iais:value width="1" cssClass="col-md-1">
-                         <a  class="deleteDonor" id="deleteDonor${arDonorIndex}" onclick="deleteDonor('${arDonorIndex}')"style="text-decoration:none;">X</a>
-                     </iais:value>
+
                  </iais:row>
 
                  <iais:row id="idNo${arDonorIndex}Row"  style="${!donorDto.directedDonation ? 'display: none;' : ''}">

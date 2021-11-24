@@ -22,9 +22,8 @@
                 </iais:row>
 
                  <iais:row>
-                     <iais:field width="5" value="Donor" />
+                     <iais:field width="5" value="Donor ${donorDto.arDonorIndex+1}" />
                      <iais:value width="7" cssClass="col-md-7" display="true">
-                         <c:out value="${donorDto.arDonorIndex+1}"/>
                      </iais:value>
                  </iais:row>
 
@@ -37,11 +36,14 @@
 
                  <c:if test="${donorDto.directedDonation}">
                      <iais:row cssClass="usedDonorOocyteControlClass yesUsedDonorOocyteControl">
-                         <iais:field width="5" value="ID No." />
-                         <iais:value width="3" cssClass="col-md-3" display="true">
+                         <iais:field width="5" value="ID Type" />
+                         <iais:value width="7" cssClass="col-md-7" display="true">
                              <iais:code code="${donorDto.idType}"/>
                          </iais:value>
-                         <iais:value width="4" cssClass="col-md-4" display="true">
+                     </iais:row>
+                     <iais:row cssClass="usedDonorOocyteControlClass yesUsedDonorOocyteControl">
+                         <iais:field width="5" value="ID No." />
+                         <iais:value width="7" cssClass="col-md-7" display="true">
                              <c:out value="${donorDto.idNumber}" />
                          </iais:value>
                      </iais:row>
