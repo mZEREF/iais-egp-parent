@@ -143,7 +143,13 @@
                         <label class="col-xs-5 col-md-6 control-label">Date of Delivery&nbsp;
                             <span id="deliveryDateFieldMandatory" class="mandatory">*</span>
                         </label>
-                        <div class="col-md-6">
+                        <iais:value width="3" cssClass="col-md-3">
+                        <div class="col-12" style="padding: 0px">
+                            <iais:datePicker id="deliveryDate" name="deliveryDate"
+                                             dateVal="${pregnancyOutcomeStageDto.deliveryDate}"/>
+                        </div>
+                        </iais:value>
+                        <iais:value width="3" cssClass="col-md-3">
                             <div class="form-check col-12" style="padding: 0px">
                                 <input class="form-check-input"
                                        type="checkbox"
@@ -156,11 +162,7 @@
                                        for="deliveryDateUnknown"><span
                                         class="check-square"></span>Unknown</label>
                             </div>
-                            <div class="col-12" style="padding: 0px">
-                                <iais:datePicker id="deliveryDate" name="deliveryDate"
-                                                 dateVal="${pregnancyOutcomeStageDto.deliveryDate}"/>
-                            </div>
-                        </div>
+                        </iais:value>
                     </iais:row>
 
                     <iais:row>
