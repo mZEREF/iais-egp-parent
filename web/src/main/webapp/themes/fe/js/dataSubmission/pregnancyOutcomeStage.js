@@ -96,7 +96,7 @@ function pregnancyOutcomeChangeFunction() {
         $('#femaleLiveBirthNum').trigger('change');
     }
 
-    if (pregnancyOutcomeVal == outcome_unknown) {
+    if (pregnancyOutcomeVal == outcome_unknown ||  (!pregnancyOutcomeVal)) {
         $deliverySection.hide();
 
         $deliverySection.find('select').val(null)
@@ -179,7 +179,7 @@ function l2CareBabyNumChangeFunction() {
         $l2CareBabyDaysDiv.show();
     } else {
         $l2CareBabyDaysDiv.hide();
-        $l2CareBabyDaysDiv.find('input').val(0);
+        $l2CareBabyDaysDiv.find('input').val("");
     }
 }
 
@@ -190,7 +190,7 @@ function l3CareBabyNumChangeFunction() {
         $l3CareBabyDaysDiv.show();
     } else {
         $l3CareBabyDaysDiv.hide();
-        $l3CareBabyDaysDiv.find('input').val(0);
+        $l3CareBabyDaysDiv.find('input').val("");
     }
 }
 

@@ -10,6 +10,8 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PregnancyOutco
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PregnancyOutcomeStageDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.common.validation.CommonValidator;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
@@ -45,8 +47,6 @@ public class OutcomePregnancyDelegator extends CommonDelegator {
             pregnancyOutcomeStageDto.setBabyDetailsUnknown(false);
             pregnancyOutcomeStageDto.setBirthPlace("POSBP001");
             pregnancyOutcomeStageDto.setWasSelFoeReduCarryOut(1);
-            pregnancyOutcomeStageDto.setL2CareBabyNum(0);
-            pregnancyOutcomeStageDto.setL3CareBabyNum(0);
             arSuperDataSubmissionDto.setPregnancyOutcomeStageDto(pregnancyOutcomeStageDto);
             DataSubmissionHelper.setCurrentArDataSubmission(arSuperDataSubmissionDto, bpc.request);
         }
@@ -116,12 +116,12 @@ public class OutcomePregnancyDelegator extends CommonDelegator {
         String pregnancyOutcome = ParamUtil.getString(request, "pregnancyOutcome");
         String otherPregnancyOutcome = ParamUtil.getString(request, "otherPregnancyOutcome");
 
-        Integer maleLiveBirthNum = ParamUtil.getInt(request, "maleLiveBirthNum", 0);
-        Integer femaleLiveBirthNum = ParamUtil.getInt(request, "femaleLiveBirthNum", 0);
+        String maleLiveBirthNum = ParamUtil.getString(request, "maleLiveBirthNum");
+        String femaleLiveBirthNum = ParamUtil.getString(request, "femaleLiveBirthNum");
 
-        Integer stillBirthNum = ParamUtil.getInt(request, "stillBirthNum", 0);
-        Integer spontAbortNum = ParamUtil.getInt(request, "spontAbortNum", 0);
-        Integer intraUterDeathNum = ParamUtil.getInt(request, "intraUterDeathNum", 0);
+        String stillBirthNum = ParamUtil.getString(request, "stillBirthNum");
+        String spontAbortNum = ParamUtil.getString(request, "spontAbortNum");
+        String intraUterDeathNum = ParamUtil.getString(request, "intraUterDeathNum");
 
         Integer wasSelFoeReduCarryOut = ParamUtil.getInt(request, "wasSelFoeReduCarryOut", 1);
 
@@ -139,10 +139,17 @@ public class OutcomePregnancyDelegator extends CommonDelegator {
         Integer nicuCareBabyNum = ParamUtil.getInt(request, "NICUCareBabyNum", 0);
         Integer l3CareBabyNum = ParamUtil.getInt(request, "l3CareBabyNum", 0);
 
-        Integer l2CareBabyDays = ParamUtil.getInt(request, "l2CareBabyDays", 0);
-        Integer l3CareBabyDays = ParamUtil.getInt(request, "l3CareBabyDays", 0);
+        String l2CareBabyDays = ParamUtil.getString(request, "l2CareBabyDays");
+        String l3CareBabyDays = ParamUtil.getString(request, "l3CareBabyDays");
 
-        int totalLiveBirthNum = maleLiveBirthNum + femaleLiveBirthNum;
+        int totalLiveBirthNum = 0;
+        if (StringUtil.isNotEmpty(maleLiveBirthNum) && CommonValidator.isPositiveInteger(maleLiveBirthNum)) {
+            totalLiveBirthNum += Integer.parseInt(maleLiveBirthNum);
+        }
+
+        if (StringUtil.isNotEmpty(femaleLiveBirthNum) && CommonValidator.isPositiveInteger(femaleLiveBirthNum)) {
+            totalLiveBirthNum += Integer.parseInt(femaleLiveBirthNum);
+        }
 
         List<PregnancyOutcomeBabyDto> pregnancyOutcomeBabyDtos = genPrenancyOUtcomeBabyDtos(request, totalLiveBirthNum);
 
