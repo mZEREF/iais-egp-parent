@@ -921,8 +921,10 @@ public class EqRequestForChangeSubmitResultChange {
         AppSvcRelatedInfoDto oldAppSvcRelatedInfoDtoList = oldAppSubmissionDto.getAppSvcRelatedInfoDtoList().get(0);
         List<String> personnelEditList = IaisCommonUtils.genNewArrayList();
         // PO & DPO
-        List<AppSvcPrincipalOfficersDto> newAppSvcPrincipalOfficersDto = appSvcRelatedInfoDtoList.getAppSvcPrincipalOfficersDtoList();
-        List<AppSvcPrincipalOfficersDto> oldAppSvcPrincipalOfficersDto = oldAppSvcRelatedInfoDtoList.getAppSvcPrincipalOfficersDtoList();
+        List<AppSvcPrincipalOfficersDto> newAppSvcPrincipalOfficersDto =
+                getList(appSvcRelatedInfoDtoList.getAppSvcPrincipalOfficersDtoList());
+        List<AppSvcPrincipalOfficersDto> oldAppSvcPrincipalOfficersDto =
+                getList(oldAppSvcRelatedInfoDtoList.getAppSvcPrincipalOfficersDtoList());
         if (newAppSvcPrincipalOfficersDto.size() > oldAppSvcPrincipalOfficersDto.size()) {
             isAuto = false;
         }
@@ -958,55 +960,49 @@ public class EqRequestForChangeSubmitResultChange {
             personnelEditList.add(ApplicationConsts.PERSONNEL_PSN_TYPE_DPO);
         }
         // CGO
-        List<AppSvcPrincipalOfficersDto> newAppSvcCgoDto = appSvcRelatedInfoDtoList.getAppSvcCgoDtoList();
-        List<AppSvcPrincipalOfficersDto> oldAppSvcCgoDto = oldAppSvcRelatedInfoDtoList.getAppSvcCgoDtoList();
+        List<AppSvcPrincipalOfficersDto> newAppSvcCgoDto = getList(appSvcRelatedInfoDtoList.getAppSvcCgoDtoList());
+        List<AppSvcPrincipalOfficersDto> oldAppSvcCgoDto = getList(oldAppSvcRelatedInfoDtoList.getAppSvcCgoDtoList());
         List<String> newIdNos = IaisCommonUtils.genNewArrayList();
         List<String> oldIdNos = IaisCommonUtils.genNewArrayList();
-        if (!IaisCommonUtils.isEmpty(newAppSvcCgoDto) && !IaisCommonUtils.isEmpty(oldAppSvcCgoDto)) {
-            for (AppSvcPrincipalOfficersDto item : newAppSvcCgoDto) {
-                newIdNos.add(item.getIdNo());
-            }
-            for (AppSvcPrincipalOfficersDto item : oldAppSvcCgoDto) {
-                oldIdNos.add(item.getIdNo());
-            }
-            if (!newIdNos.equals(oldIdNos)) {
-                isAuto = false;
-                personnelEditList.add(HcsaConsts.STEP_CLINICAL_GOVERNANCE_OFFICERS);
-            }
+        for (AppSvcPrincipalOfficersDto item : newAppSvcCgoDto) {
+            newIdNos.add(item.getIdNo());
+        }
+        for (AppSvcPrincipalOfficersDto item : oldAppSvcCgoDto) {
+            oldIdNos.add(item.getIdNo());
+        }
+        if (!newIdNos.equals(oldIdNos)) {
+            isAuto = false;
+            personnelEditList.add(HcsaConsts.STEP_CLINICAL_GOVERNANCE_OFFICERS);
         }
         // CD
-        List<AppSvcPrincipalOfficersDto> newAppSvcCdDto = appSvcRelatedInfoDtoList.getAppSvcClinicalDirectorDtoList();
-        List<AppSvcPrincipalOfficersDto> oldAppSvcCdDto = oldAppSvcRelatedInfoDtoList.getAppSvcClinicalDirectorDtoList();
+        List<AppSvcPrincipalOfficersDto> newAppSvcCdDto = getList(appSvcRelatedInfoDtoList.getAppSvcClinicalDirectorDtoList());
+        List<AppSvcPrincipalOfficersDto> oldAppSvcCdDto = getList(oldAppSvcRelatedInfoDtoList.getAppSvcClinicalDirectorDtoList());
         newIdNos = IaisCommonUtils.genNewArrayList();
         oldIdNos = IaisCommonUtils.genNewArrayList();
-        if (!IaisCommonUtils.isEmpty(newAppSvcCdDto) && !IaisCommonUtils.isEmpty(oldAppSvcCdDto)) {
-            for (AppSvcPrincipalOfficersDto item : newAppSvcCdDto) {
-                newIdNos.add(item.getIdNo());
-            }
-            for (AppSvcPrincipalOfficersDto item : oldAppSvcCdDto) {
-                oldIdNos.add(item.getIdNo());
-            }
-            if (!newIdNos.equals(oldIdNos)) {
-                isAuto = false;
-                personnelEditList.add(HcsaConsts.STEP_CLINICAL_DIRECTOR);
-            }
+        for (AppSvcPrincipalOfficersDto item : newAppSvcCdDto) {
+            newIdNos.add(item.getIdNo());
+        }
+        for (AppSvcPrincipalOfficersDto item : oldAppSvcCdDto) {
+            oldIdNos.add(item.getIdNo());
+        }
+        if (!newIdNos.equals(oldIdNos)) {
+            isAuto = false;
+            personnelEditList.add(HcsaConsts.STEP_CLINICAL_DIRECTOR);
         }
         // MAP
-        List<AppSvcPrincipalOfficersDto> newAppSvcMapDto = appSvcRelatedInfoDtoList.getAppSvcMedAlertPersonList();
-        List<AppSvcPrincipalOfficersDto> oldAppSvcMapDto = oldAppSvcRelatedInfoDtoList.getAppSvcMedAlertPersonList();
+        List<AppSvcPrincipalOfficersDto> newAppSvcMapDto = getList(appSvcRelatedInfoDtoList.getAppSvcMedAlertPersonList());
+        List<AppSvcPrincipalOfficersDto> oldAppSvcMapDto = getList(oldAppSvcRelatedInfoDtoList.getAppSvcMedAlertPersonList());
         newIdNos = IaisCommonUtils.genNewArrayList();
         oldIdNos = IaisCommonUtils.genNewArrayList();
-        if (!IaisCommonUtils.isEmpty(newAppSvcMapDto) && !IaisCommonUtils.isEmpty(oldAppSvcMapDto)) {
-            for (AppSvcPrincipalOfficersDto item : newAppSvcMapDto) {
-                newIdNos.add(item.getIdNo());
-            }
-            for (AppSvcPrincipalOfficersDto item : oldAppSvcMapDto) {
-                oldIdNos.add(item.getIdNo());
-            }
-            if (!newIdNos.equals(oldIdNos)) {
-                isAuto = false;
-                personnelEditList.add(HcsaConsts.STEP_MEDALERT_PERSON);
-            }
+        for (AppSvcPrincipalOfficersDto item : newAppSvcMapDto) {
+            newIdNos.add(item.getIdNo());
+        }
+        for (AppSvcPrincipalOfficersDto item : oldAppSvcMapDto) {
+            oldIdNos.add(item.getIdNo());
+        }
+        if (!newIdNos.equals(oldIdNos)) {
+            isAuto = false;
+            personnelEditList.add(HcsaConsts.STEP_MEDALERT_PERSON);
         }
         // disciplines
         List<AppSvcLaboratoryDisciplinesDto> newDisciplinesDto = appSvcRelatedInfoDtoList.getAppSvcLaboratoryDisciplinesDtoList();
@@ -1042,25 +1038,30 @@ public class EqRequestForChangeSubmitResultChange {
             personnelEditList.add(HcsaConsts.STEP_DISCIPLINE_ALLOCATION);
         }
         // KAH
-        List<AppSvcPrincipalOfficersDto> kahList = appSvcRelatedInfoDtoList.getAppSvcKeyAppointmentHolderDtoList();
-        List<AppSvcPrincipalOfficersDto> oldKahList = oldAppSvcRelatedInfoDtoList.getAppSvcKeyAppointmentHolderDtoList();
+        List<AppSvcPrincipalOfficersDto> kahList = getList(appSvcRelatedInfoDtoList.getAppSvcKeyAppointmentHolderDtoList());
+        List<AppSvcPrincipalOfficersDto> oldKahList = getList(oldAppSvcRelatedInfoDtoList.getAppSvcKeyAppointmentHolderDtoList());
         List<String> newKahIdNos = IaisCommonUtils.genNewArrayList();
         List<String> oldKahIdNos = IaisCommonUtils.genNewArrayList();
-        if (!IaisCommonUtils.isEmpty(kahList) && !IaisCommonUtils.isEmpty(oldKahList)) {
-            for (AppSvcPrincipalOfficersDto item : kahList) {
-                newKahIdNos.add(item.getIdNo());
-            }
-            for (AppSvcPrincipalOfficersDto item : oldKahList) {
-                oldKahIdNos.add(item.getIdNo());
-            }
-            if (!newKahIdNos.equals(oldKahIdNos)) {
-                isAuto = false;
-                personnelEditList.add(HcsaConsts.STEP_KEY_APPOINTMENT_HOLDER);
-            }
+        for (AppSvcPrincipalOfficersDto item : kahList) {
+            newKahIdNos.add(item.getIdNo());
+        }
+        for (AppSvcPrincipalOfficersDto item : oldKahList) {
+            oldKahIdNos.add(item.getIdNo());
+        }
+        if (!newKahIdNos.equals(oldKahIdNos)) {
+            isAuto = false;
+            personnelEditList.add(HcsaConsts.STEP_KEY_APPOINTMENT_HOLDER);
         }
         appEditSelectDto.setPersonnelEditList(personnelEditList);
         appSubmissionDto.setAppEditSelectDto(appEditSelectDto);
         return isAuto;
+    }
+
+    private static <T> List<T> getList(List<T> sourceList) {
+        if (sourceList == null) {
+            return IaisCommonUtils.genNewArrayList(0);
+        }
+        return sourceList;
     }
 
     private static AppSvcLaboratoryDisciplinesDto getDisciplinesDto(List<AppSvcLaboratoryDisciplinesDto> disciplinesDto, String hciName) {
