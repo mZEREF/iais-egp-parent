@@ -16,6 +16,7 @@ import sg.gov.moh.iais.egp.bsb.dto.PageInfo;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
 import sg.gov.moh.iais.egp.bsb.dto.audit.AuditQueryDto;
 import sg.gov.moh.iais.egp.bsb.dto.audit.FacilityQueryResultDto;
+import sg.gov.moh.iais.egp.bsb.dto.audit.SaveAuditDto;
 import sg.gov.moh.iais.egp.bsb.entity.*;
 import sop.webflow.rt.api.BaseProcessClass;
 
@@ -124,20 +125,22 @@ public class AuditCreationDelegator {
 
     public void doCreate(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
-        FacilityAudit facilityAudit = new FacilityAudit();
         List<FacilityQueryResultDto.FacInfo> facilityList = (List<FacilityQueryResultDto.FacInfo>) ParamUtil.getSessionAttr(request, KEY_AUDIT_DATA_LIST);
 
+        List<SaveAuditDto> auditDtos = new ArrayList<>(facilityList.size());
         if (!CollectionUtils.isEmpty(facilityList)) {
             for (int i = 0; i < facilityList.size(); i++) {
                 String auditType = ParamUtil.getRequestString(request, PARAM_AUDIT_TYPE + SEPARATOR + i);
                 String remarks = ParamUtil.getRequestString(request, PARAM_REMARKS + SEPARATOR + i);
-                facilityAudit.setAuditType(auditType);
-                facilityAudit.setStatus("AUDITST001");
-                facilityAudit.setRemarks(remarks);
-                Approval approval = new Approval();
-                approval.setId(facilityList.get(i).getApprovalId());
-                facilityAudit.setApproval(approval);
-                auditClientBE.saveFacilityAudit(facilityAudit);
+                //
+                SaveAuditDto dto = new SaveAuditDto();
+                dto.setAuditType(auditType);
+                dto.setRemarks(remarks);
+                dto.setStatus("AUDITST001");
+                dto.setApprovalId(facilityList.get(i).getApprovalId());
+                dto.setProcessType(facilityList.get(i).getProcessType());
+                auditDtos.add(dto);
+                auditClientBE.saveFacilityAudit(auditDtos);
             }
         }
     }

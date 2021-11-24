@@ -20,6 +20,7 @@ public class FacilityQueryResultDto {
     public static class FacInfo implements Serializable{
         private String facId;
         private String approvalId;
+        private String processType;
         private String facName;
         private String facClassification;
         private String activityType;

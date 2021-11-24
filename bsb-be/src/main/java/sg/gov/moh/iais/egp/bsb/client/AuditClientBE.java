@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
 import sg.gov.moh.iais.egp.bsb.dto.audit.AuditQueryDto;
 import sg.gov.moh.iais.egp.bsb.dto.audit.FacilityQueryResultDto;
+import sg.gov.moh.iais.egp.bsb.dto.audit.SaveAuditDto;
 import sg.gov.moh.iais.egp.bsb.entity.*;
 
 import java.util.List;
@@ -27,7 +28,7 @@ public interface AuditClientBE {
     FeignResponseEntity<Facility> getFacilityById(@RequestParam("id") String id);
 
     @PostMapping(path = "/bsb-audit/save",consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<FacilityAudit> saveFacilityAudit(@RequestBody FacilityAudit facilityAudit);
+    ResponseDto<String> saveFacilityAudit(@RequestBody List<SaveAuditDto> auditDtos);
 
     @GetMapping(path = "/bsb-audit/{id}",consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<FacilityAudit> getFacilityAuditById(@PathVariable(name = "id") String id);
