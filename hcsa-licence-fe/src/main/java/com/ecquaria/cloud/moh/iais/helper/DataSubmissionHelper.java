@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.helper;
 
+import com.ecquaria.cloud.moh.iais.common.annotation.ExcelProperty;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
@@ -10,14 +11,21 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DataSubmission
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DpSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInventoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
+import com.ecquaria.cloud.moh.iais.common.dto.mastercode.MasterCodeView;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant;
+import com.ecquaria.cloud.moh.iais.dto.FileErrorMsg;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
+import com.ecquaria.cloud.moh.iais.dto.PatientInfoExcelDto;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.poi.ss.formula.functions.T;
 
 import javax.servlet.http.HttpServletRequest;
+import java.lang.reflect.Field;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -406,11 +414,11 @@ public final class DataSubmissionHelper {
     }
 
     public static String getMainTitle(ArSuperDataSubmissionDto currentSuper) {
-        return getMainTitle(currentSuper != null ? currentSuper.getAppType() :  null);
+        return getMainTitle(currentSuper != null ? currentSuper.getAppType() : null);
     }
 
     public static String getMainTitle(DpSuperDataSubmissionDto currentSuper) {
-        return getMainTitle(currentSuper != null ? currentSuper.getAppType() :  null);
+        return getMainTitle(currentSuper != null ? currentSuper.getAppType() : null);
     }
 
     public static String getMainTitle(String type) {
@@ -423,6 +431,60 @@ public final class DataSubmissionHelper {
                 title = DataSubmissionConstant.DS_TITLE_NEW;
         }
         return title;
+    }
+
+    public static String getCode(String codeValue, List<MasterCodeView> masterCodes) {
+        if (masterCodes == null || StringUtil.isEmpty(codeValue)) {
+            return null;
+        }
+        return masterCodes.stream()
+                .filter(dto -> codeValue.equals(dto.getCodeValue()))
+                .map(MasterCodeView::getCode)
+                .findAny()
+                .orElse(null);
+    }
+
+    public static <T> List<FileErrorMsg> validateExcelList(List<T> objList, String profile) {
+        return validateExcelList(objList, profile, 2, null);
+    }
+
+    public static <T> List<FileErrorMsg> validateExcelList(List<T> objList, String profile, int startRow, Map<String, String> fieldCellMap) {
+        if (objList == null || objList.isEmpty()) {
+            return IaisCommonUtils.genNewArrayList(0);
+        }
+        List<FileErrorMsg> result = IaisCommonUtils.genNewArrayList();
+        int row = startRow;
+        if (fieldCellMap == null) {
+            fieldCellMap = getFieldCellMap(objList.get(0).getClass());
+        }
+        for (T t : objList) {
+            ValidationResult validationResult = WebValidationHelper.validateProperty(t, profile);
+            if (validationResult.isHasErrors()) {
+                result.addAll(getExcelErrorMsgs(row, validationResult.retrieveAll(), fieldCellMap));
+            }
+        }
+        return result;
+    }
+
+    public static List<FileErrorMsg> getExcelErrorMsgs(int row, Map<String, String> errorMap, Map<String, String> fieldCellMap) {
+        List<FileErrorMsg> errorMsgs = IaisCommonUtils.genNewArrayList(errorMap.size());
+        errorMap.forEach((k, v) -> errorMsgs.add(new FileErrorMsg(row, fieldCellMap.get(k), v)));
+        return errorMsgs;
+    }
+
+    public static Map<String, String> getFieldCellMap(Class<?> clazz) {
+        Map<String, String> map = IaisCommonUtils.genNewHashMap();
+        if (clazz == null) {
+            return map;
+        }
+        Field[] fields = clazz.getDeclaredFields();
+        for (Field field : fields) {
+            if (field.isAnnotationPresent(ExcelProperty.class)) {
+                ExcelProperty excelProperty = field.getAnnotation(ExcelProperty.class);
+                map.put(field.getName(), excelProperty.cellName());
+            }
+        }
+        return map;
     }
 
 }
