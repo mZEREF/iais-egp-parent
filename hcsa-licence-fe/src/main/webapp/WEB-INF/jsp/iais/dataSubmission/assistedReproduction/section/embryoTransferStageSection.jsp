@@ -30,7 +30,7 @@
                     <iais:field width="6" value="Was the 1st Embryo Transferred a fresh or thawed embryo?"
                                 mandatory="true" cssClass="col-md-6"/>
                     <iais:value width="3" cssClass="col-md-3">
-                        <div class="form-check">
+                        <div class="form-check" style="padding: 0px;">
                             <input class="form-check-input"
                                    type="radio"
                                    name="firstEmbryoType"
@@ -74,7 +74,7 @@
                         <iais:field width="6" value="Was the 2nd Embryo Transferred a fresh or thawed embryo?"
                                     mandatory="true" cssClass="col-md-6"/>
                         <iais:value width="3" cssClass="col-md-3">
-                            <div class="form-check">
+                            <div class="form-check" style="padding: 0px;">
                                 <input class="form-check-input"
                                        type="radio"
                                        name="secondEmbryoType"
@@ -119,7 +119,7 @@
                         <iais:field width="6" value="Was the 3rd Embryo Transferred a fresh or thawed embryo?"
                                     mandatory="true"  cssClass="col-md-6"/>
                         <iais:value width="3" cssClass="col-md-3">
-                            <div class="form-check">
+                            <div class="form-check" style="padding: 0px;">
                                 <input class="form-check-input"
                                        type="radio"
                                        name="thirdEmbryoType"
