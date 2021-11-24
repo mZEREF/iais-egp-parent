@@ -18,69 +18,95 @@
                 </h3>
                 <iais:row>
                     <iais:field width="6" value="Types of Preimplantation Genetic Testing" mandatory="true"/>
-                    <iais:value width="3" cssClass="col-md-3">
-                        <div class="form-check">
-                            <input class="form-check-input"
-                                   type="checkbox"
-                                   name="isPgtM"
-                                   id="isPgtM"
-                                   <c:if test="${ arSuperDataSubmissionDto.pgtStageDto.isPgtM ==1 }">checked</c:if>
-                                   aria-invalid="false">
-                            <label class="form-check-label"
-                                   for="isPgtM"><span
-                                    class="check-square"></span>PGT-M</label>
-                        </div>
-                    </iais:value>
-                    <iais:value width="3" cssClass="col-md-3">
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox"
-                                   name="isPgtSr" id="isPgtSr"
-                                   <c:if test="${arSuperDataSubmissionDto.pgtStageDto.isPgtSr == 1}">checked</c:if>
-                                   aria-invalid="false">
-                            <label class="form-check-label"
-                                   for="isPgtSr"><span
-                                    class="check-square"></span>PGT-SR</label>
-                        </div>
-                    </iais:value>
-                    <iais:value width="3" cssClass="col-md-3">
-                        <div class="form-check">
-                            <input class="form-check-input"
-                                   type="checkbox"
-                                   name="isPgtA"
-                                   id="isPgtA"
-                                   <c:if test="${ arSuperDataSubmissionDto.pgtStageDto.isPgtA ==1 }">checked</c:if>
-                                   aria-invalid="false">
-                            <label class="form-check-label"
-                                   for="isPgtA"><span
-                                    class="check-square"></span>PGT-A</label>
-                        </div>
-                    </iais:value>
-                    <iais:value width="3" cssClass="col-md-3">
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox"
-                                   name="isPtt" id="isPtt"
-                                   <c:if test="${arSuperDataSubmissionDto.pgtStageDto.isPtt == 1}">checked</c:if>
-                                   aria-invalid="false">
-                            <label class="form-check-label"
-                                   for="isPtt"><span
-                                    class="check-square"></span>PTT</label>
-                        </div>
-                    </iais:value>
-                    <iais:field width="6" value="" />
-                    <iais:value width="3" cssClass="col-md-3">
-                        <div class="form-check">
-                            <input class="form-check-input"
-                                   type="checkbox"
-                                   name="isOtherPgt"
-                                   id="isOtherPgt"
-                                   <c:if test="${  arSuperDataSubmissionDto.pgtStageDto.isOtherPgt ==1 }">checked</c:if>
-                                   aria-invalid="false">
-                            <label class="form-check-label"
-                                   for="isOtherPgt"><span
-                                    class="check-square"></span>Others</label>
-                        </div>
-                        <span class="error-msg" name="iaisErrorMsg" id="error_pgt_type"></span>
-                    </iais:value>
+                    <div class="col-md-6">
+                        <iais:value width="6" cssClass="col-md-6">
+                            <div class="form-check">
+                                <input class="form-check-input"
+                                       type="checkbox"
+                                       name="isPgtMCom"
+                                       id="isPgtMCom"
+                                       <c:if test="${ arSuperDataSubmissionDto.pgtStageDto.isPgtMCom ==1 }">checked</c:if>
+                                       aria-invalid="false">
+                                <label class="form-check-label"
+                                       for="isPgtMCom"><span
+                                        class="check-square"></span>PGT-M Work-up (Common)</label>
+                            </div>
+                        </iais:value>
+                        <iais:value width="6" cssClass="col-md-6">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox"
+                                       name="isPgtMRare" id="isPgtMRare"
+                                       <c:if test="${arSuperDataSubmissionDto.pgtStageDto.isPgtMRare == 1}">checked</c:if>
+                                       aria-invalid="false">
+                                <label class="form-check-label"
+                                       for="isPgtMRare"><span
+                                        class="check-square"></span>PGT-M Work-up (Rare)</label>
+                            </div>
+                        </iais:value>
+                        <iais:value width="6" cssClass="col-md-6">
+                            <div class="form-check">
+                                <input class="form-check-input"
+                                       type="checkbox"
+                                       name="isPgtMEbt"
+                                       id="isPgtMEbt"
+                                       <c:if test="${ arSuperDataSubmissionDto.pgtStageDto.isPgtMEbt ==1 }">checked</c:if>
+                                       aria-invalid="false">
+                                <label class="form-check-label"
+                                       for="isPgtMEbt"><span
+                                        class="check-square"></span>PGT-M Embryo Biopsy + Testing</label>
+                            </div>
+                        </iais:value>
+                        <iais:value width="6" cssClass="col-md-6">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox"
+                                       name="isPgtSr" id="isPgtSr"
+                                       <c:if test="${arSuperDataSubmissionDto.pgtStageDto.isPgtSr == 1}">checked</c:if>
+                                       aria-invalid="false">
+                                <label class="form-check-label"
+                                       for="isPgtSr"><span
+                                        class="check-square"></span>PGT-SR Embryo Biopsy + Testing</label>
+                            </div>
+                        </iais:value>
+                        <iais:value width="6" cssClass="col-md-6">
+                            <div class="form-check">
+                                <input class="form-check-input"
+                                       type="checkbox"
+                                       name="isPgtA"
+                                       id="isPgtA"
+                                       <c:if test="${ arSuperDataSubmissionDto.pgtStageDto.isPgtA ==1 }">checked</c:if>
+                                       aria-invalid="false">
+                                <label class="form-check-label"
+                                       for="isPgtA"><span
+                                        class="check-square"></span>PGT-A</label>
+                            </div>
+                        </iais:value>
+                        <iais:value width="6" cssClass="col-md-6">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox"
+                                       name="isPtt" id="isPtt"
+                                       <c:if test="${arSuperDataSubmissionDto.pgtStageDto.isPtt == 1}">checked</c:if>
+                                       aria-invalid="false">
+                                <label class="form-check-label"
+                                       for="isPtt"><span
+                                        class="check-square"></span>PTT</label>
+                            </div>
+                        </iais:value>
+                        <iais:value width="6" cssClass="col-md-6">
+                            <div class="form-check">
+                                <input class="form-check-input"
+                                       type="checkbox"
+                                       name="isOtherPgt"
+                                       id="isOtherPgt"
+                                       <c:if test="${  arSuperDataSubmissionDto.pgtStageDto.isOtherPgt ==1 }">checked</c:if>
+                                       aria-invalid="false">
+                                <label class="form-check-label"
+                                       for="isOtherPgt"><span
+                                        class="check-square"></span>Others</label>
+                            </div>
+                            <span class="error-msg" name="iaisErrorMsg" id="error_pgt_type"></span>
+                        </iais:value>
+                    </div>
+
                 </iais:row>
                 <div id="pgtOthersDisplay" <c:if test="${ arSuperDataSubmissionDto.pgtStageDto.isOtherPgt !=1 }">style="display: none"</c:if>>
                     <iais:row>
@@ -94,7 +120,7 @@
                         </iais:value>
                     </iais:row>
                 </div>
-                <div id="pgtMDisplay" <c:if test="${ arSuperDataSubmissionDto.pgtStageDto.isPgtM !=1 }">style="display: none"</c:if> >
+                <div id="pgtMDisplay" <c:if test="${ arSuperDataSubmissionDto.pgtStageDto.isPgtMCom !=1 || arSuperDataSubmissionDto.pgtStageDto.isPgtMRare !=1 || arSuperDataSubmissionDto.pgtStageDto.isPgtMEbt !=1 }">style="display: none"</c:if> >
                     <iais:row>
                         <iais:field width="6" value="PGT-M" style="font-size: 2.0rem;" />
                     </iais:row>

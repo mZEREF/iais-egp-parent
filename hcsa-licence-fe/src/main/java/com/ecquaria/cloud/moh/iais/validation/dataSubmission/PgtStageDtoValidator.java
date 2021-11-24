@@ -31,11 +31,11 @@ public class PgtStageDtoValidator implements CustomizeValidator {
         PgtStageDto pgtStageDto=arSuperDataSubmissionDto.getPgtStageDto();
         String errMsgErr006 = MessageUtil.getMessageDesc("GENERAL_ERR0006");
 
-        if(pgtStageDto.getIsPgtA()+pgtStageDto.getIsOtherPgt()+pgtStageDto.getIsPgtM()+pgtStageDto.getIsPtt()+pgtStageDto.getIsPgtSr()==0){
+        if(pgtStageDto.getIsPgtA()+pgtStageDto.getIsOtherPgt()+pgtStageDto.getIsPgtMRare()+pgtStageDto.getIsPgtMCom()+pgtStageDto.getIsPgtMEbt()+pgtStageDto.getIsPtt()+pgtStageDto.getIsPgtSr()==0){
             errorMap.put("pgt_type", errMsgErr006);
         }
 
-        if( pgtStageDto.getIsPgtM()==1){
+        if( pgtStageDto.getIsPgtMCom()+pgtStageDto.getIsPgtMRare()+pgtStageDto.getIsPgtMEbt()>0){
             if(pgtStageDto.getIsPgtMWithHla()+pgtStageDto.getIsPgtMDsld()+pgtStageDto.getIsPgtMNon()==0){
                 errorMap.put("pgt_m_performed", errMsgErr006);
             }

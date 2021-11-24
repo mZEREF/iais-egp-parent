@@ -7,8 +7,22 @@ $(document).ready(function () {
         }
     });
 
-    $('#isPgtM').change(function () {
-        if($(this).is(':checked')){
+    $('#isPgtMCom').change(function () {
+        if($('#isPgtMEbt').is(':checked')||$('#isPgtMRare').is(':checked')||$('#isPgtMCom').is(':checked')){
+            $('#pgtMDisplay').attr("style","display: block");
+        }else {
+            $('#pgtMDisplay').attr("style","display: none");
+        }
+    });
+    $('#isPgtMRare').change(function () {
+        if($('#isPgtMEbt').is(':checked')||$('#isPgtMRare').is(':checked')||$('#isPgtMCom').is(':checked')){
+            $('#pgtMDisplay').attr("style","display: block");
+        }else {
+            $('#pgtMDisplay').attr("style","display: none");
+        }
+    });
+    $('#isPgtMEbt').change(function () {
+        if($('#isPgtMEbt').is(':checked')||$('#isPgtMRare').is(':checked')||$('#isPgtMCom').is(':checked')){
             $('#pgtMDisplay').attr("style","display: block");
         }else {
             $('#pgtMDisplay').attr("style","display: none");

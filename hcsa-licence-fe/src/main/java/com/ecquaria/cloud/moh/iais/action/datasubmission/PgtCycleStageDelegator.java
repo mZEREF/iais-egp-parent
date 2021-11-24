@@ -47,6 +47,7 @@ public class PgtCycleStageDelegator extends CommonDelegator{
             arSuperDataSubmissionDto.setPgtStageDto(new PgtStageDto());
             arSuperDataSubmissionDto.getPgtStageDto().setIsPgtMNon(1);
             arSuperDataSubmissionDto.getPgtStageDto().setIsPgtCoFunding(0);
+            arSuperDataSubmissionDto.getPgtStageDto().setIsThereAppeal(0);
         }
 
         ParamUtil.setSessionAttr(bpc.request, DataSubmissionConstant.AR_DATA_SUBMISSION,arSuperDataSubmissionDto);
@@ -80,7 +81,9 @@ public class PgtCycleStageDelegator extends CommonDelegator{
             arSuperDataSubmissionDto.setPatientInventoryDto(patientInventoryDto);
         }
         PgtStageDto pgtStageDto=arSuperDataSubmissionDto.getPgtStageDto();
-        pgtStageDto.setIsPgtM(0);
+        pgtStageDto.setIsPgtMCom(0);
+        pgtStageDto.setIsPgtMRare(0);
+        pgtStageDto.setIsPgtMEbt(0);
         pgtStageDto.setIsPgtSr(0);
         pgtStageDto.setIsPgtA(0);
         pgtStageDto.setIsPtt(0);
@@ -93,15 +96,25 @@ public class PgtCycleStageDelegator extends CommonDelegator{
         pgtStageDto.setIsPgtATomrpl(0);
 
         HttpServletRequest request=bpc.request;
-        String isPgtM =  ParamUtil.getString(request, "isPgtM");
+        String isPgtMCom =  ParamUtil.getString(request, "isPgtM");
+        String isPgtMRare =  ParamUtil.getString(request, "isPgtM");
+        String isPgtMEbt =  ParamUtil.getString(request, "isPgtM");
         String isPgtSr =  ParamUtil.getString(request, "isPgtSr");
         String isPgtA =  ParamUtil.getString(request, "isPgtA");
         String isPtt =  ParamUtil.getString(request, "isPtt");
         String isOtherPgt =  ParamUtil.getString(request, "isOtherPgt");
+        if("on".equals(isPgtMCom)){
+            pgtStageDto.setIsPgtMCom(1);
+        }
+        if("on".equals(isPgtMRare)){
+            pgtStageDto.setIsPgtMRare(1);
+        }
+        if("on".equals(isPgtMEbt)){
+            pgtStageDto.setIsPgtMEbt(1);
+        }
 
+        if( "on".equals(isPgtMCom)||"on".equals(isPgtMRare)||"on".equals(isPgtMEbt)){
 
-        if( "on".equals(isPgtM)){
-            pgtStageDto.setIsPgtM(1);
             String isPgtMDsld =  ParamUtil.getString(request, "isPgtMDsld");
             if("on".equals(isPgtMDsld)){
                 pgtStageDto.setIsPgtMDsld(1);
@@ -121,6 +134,7 @@ public class PgtCycleStageDelegator extends CommonDelegator{
             String pgtMCondition = ParamUtil.getString(request, "pgtMCondition");
             pgtStageDto.setPgtMCondition(pgtMCondition);
         }
+
         if("on".equals(isPgtSr)){
             pgtStageDto.setIsPgtSr(1);
             String pgtSrCondition = ParamUtil.getString(request, "pgtSrCondition");
