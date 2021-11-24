@@ -5,10 +5,12 @@ import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoDto;
+import com.ecquaria.cloud.moh.iais.common.dto.mastercode.MasterCodeView;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
+import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.Assert;
@@ -79,6 +81,8 @@ public class ApprovalAppDelegator {
 
     private static final String FACILITY_ID_SELECT = "facilityIdSelect";
     private static final String ACTIVITY_ID_SELECT_DTO = "activityIdSelectDto";
+
+    private static final String KEY_COUNTRY_OPTIONS = "countryOps";
 
     private final ApprovalAppClient approvalAppClient;
     private final FileRepoClient fileRepoClient;
@@ -249,6 +253,7 @@ public class ApprovalAppDelegator {
             }
         }
         ParamUtil.setRequestAttr(request, "batIdOps", batIdOps);
+        ParamUtil.setRequestAttr(request, KEY_COUNTRY_OPTIONS, tmpCountryOps());
     }
 
     public void handleApprovalProfile(BaseProcessClass bpc){
@@ -583,4 +588,15 @@ public class ApprovalAppDelegator {
         return approvalProfileList;
     }
 
+    /* Will be removed in future, will get this from master code */
+    private static List<SelectOption> tmpCountryOps() {
+        List<MasterCodeView> views = MasterCodeUtil.retrieveByCategory(MasterCodeUtil.CATE_ID_NATIONALITY);
+        List<SelectOption> ops = new ArrayList<>(views.size());
+        if(!org.springframework.util.CollectionUtils.isEmpty(views)){
+            for (MasterCodeView view : views) {
+                ops.add(new SelectOption(view.getCode(), view.getCodeValue()));
+            }
+        }
+        return ops;
+    }
 }

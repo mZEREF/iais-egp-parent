@@ -76,7 +76,7 @@
                                                                                 <span class="mandatory otherQualificationSpan">*</span>
                                                                             </div>
                                                                             <div class="col-sm-6">
-                                                                                <input maxLength="10" type="number" name="prodMaxVolumeLitres--v--${status.index}" id="prodMaxVolumeLitres--v--${status.index}" value="${info.prodMaxVolumeLitres}">
+                                                                                <input oninput="if(value.length>10) value=value.slice(0,10)" type="number" name="prodMaxVolumeLitres--v--${status.index}" id="prodMaxVolumeLitres--v--${status.index}" value="${info.prodMaxVolumeLitres}">
                                                                                 <span data-err-ind="prodMaxVolumeLitres--v--${status.index}" class="error-msg"></span>
                                                                             </div>
                                                                         </div>
@@ -97,10 +97,14 @@
                                                                             <span class="mandatory otherQualificationSpan">*</span>
                                                                         </div>
                                                                         <div class="col-sm-6">
-                                                                            <select name="procurementMode--v--${status.index}" id="procurementMode--v--${status.index}">
-                                                                                <option value="BMOP001" <c:if test="${info.procurementMode eq 'BMOP001'}">selected="selected"</c:if>>Local Transfer</option>
-                                                                                <option value="BMOP002" <c:if test="${info.procurementMode eq 'BMOP002'}">selected="selected"</c:if>>Import</option>
-                                                                            </select>
+                                                                            <div class="col-sm-6 col-md-3" style="margin-top: 8px">
+                                                                                <label for="localMode--v--${status.index}">Local</label>
+                                                                                <input type="radio" name="procurementMode--v--${status.index}" id="localMode--v--${status.index}" value="BMOP001" <c:if test="${info.procurementMode eq 'BMOP001'}">checked="checked"</c:if> />
+                                                                            </div>
+                                                                            <div class="col-sm-6 col-md-3" style="margin-top: 8px">
+                                                                                <label for="importMode--v--${status.index}">Import</label>
+                                                                                <input type="radio" name="procurementMode--v--${status.index}" id="importMode--v--${status.index}" value="BMOP002" <c:if test="${info.procurementMode eq 'BMOP002'}">checked="checked"</c:if> />
+                                                                            </div>
                                                                             <span data-err-ind="procurementMode--v--${status.index}" class="error-msg"></span>
                                                                         </div>
                                                                     </div>
@@ -188,8 +192,9 @@
                                                                             </div>
                                                                             <div class="col-sm-6">
                                                                                 <select name="transferCountry--v--${status.index}" id="transferCountry--v--${status.index}">
-                                                                                    <option value="COUNTRY001" <c:if test="${info.transferCountry eq 'COUNTRY001'}">selected="selected"</c:if>>Singapore</option>
-                                                                                    <option value="COUNTRY002" <c:if test="${info.transferCountry eq 'COUNTRY002'}">selected="selected"</c:if>>Others</option>
+                                                                                    <c:forEach items="${countryOps}" var="country">
+                                                                                        <option value="${country.value}" <c:if test="${info.transferCountry eq country.value}">selected="selected"</c:if>>${country.text}</option>
+                                                                                    </c:forEach>
                                                                                 </select>
                                                                                 <span data-err-ind="transferCountry--v--${status.index}" class="error-msg"></span>
                                                                             </div>
