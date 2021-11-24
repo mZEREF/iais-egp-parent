@@ -5,7 +5,6 @@ import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmission
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.CycleDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DonorSampleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
@@ -14,10 +13,12 @@ import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant;
 import com.ecquaria.cloud.moh.iais.helper.ControllerHelper;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
+import com.ecquaria.cloud.moh.iais.service.client.GenerateIdClient;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
 
 /**
@@ -47,7 +48,8 @@ public class SubmitDonorDelegator extends CommonDelegator {
             bpc.request.setAttribute("ageCount",donorSampleDto.getAges().length);
         }
     }
-
+    @Autowired
+    private GenerateIdClient generateIdClient;
     @Override
     public void pageAction(BaseProcessClass bpc) {
         log.info(StringUtil.changeForLog("submitDonorDelegator The pageAction start ..."));
@@ -57,6 +59,8 @@ public class SubmitDonorDelegator extends CommonDelegator {
             donorSampleDto =  new DonorSampleDto();
         }
         donorSampleDto =  ControllerHelper.get(bpc.request,donorSampleDto);
+        //// TODO: if exit set the old eles generate new
+        donorSampleDto.setSampleKey(generateIdClient.getSeqId().getEntity());
         arSuperDataSubmissionDto.setDonorSampleDto(donorSampleDto);
         DataSubmissionHelper.setCurrentArDataSubmission(arSuperDataSubmissionDto,bpc.request);
         String actionType = ParamUtil.getString(bpc.request, DataSubmissionConstant.CRUD_TYPE);
