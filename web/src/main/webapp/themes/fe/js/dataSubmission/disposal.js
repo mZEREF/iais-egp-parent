@@ -1,5 +1,5 @@
 $(document).ready(function() {
-    $('input[type="text"]').blur(function () {
+    $('input[type="number"]').blur(function () {
 
         var immature = $('#immature').val();
         var abnormallyFertilised = $('#abnormallyFertilised').val();

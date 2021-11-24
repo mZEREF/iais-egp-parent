@@ -1,6 +1,6 @@
 $(document).ready(function () {
 
-    $('input[type="text"]').blur(function () {
+    $('input[type="number"]').blur(function () {
 
         var transEmbrFreshOccNum = $('#transEmbrFreshOccNum').val();
         var poorDevFreshOccNum = $('#poorDevFreshOccNum').val();
