@@ -27,42 +27,42 @@
                     <iais:row>
                         <iais:field width="6" value="Immature" />
                         <iais:value width="6" cssClass="col-md-6" >
-                            <input type="text" maxlength="2" id="immature" name="immature"  value="${arSuperDataSubmissionDto.disposalStageDto.immature}"/>
+                            <input type="number" oninput="if(value.length>2)value=value.slice(0,2)" style="margin-bottom: 0px;" id="immature" name="immature"  value="${arSuperDataSubmissionDto.disposalStageDto.immature}"/>
                             <span class="error-msg" name="iaisErrorMsg" id="error_immature"></span>
                         </iais:value>
                     </iais:row>
                     <iais:row>
                         <iais:field width="6" value="Abnormally Fertilised" />
                         <iais:value width="6" cssClass="col-md-6" >
-                            <input type="text" maxlength="2" id="abnormallyFertilised" name="abnormallyFertilised"  value="${arSuperDataSubmissionDto.disposalStageDto.abnormallyFertilised}"/>
+                            <input type="number" oninput="if(value.length>2)value=value.slice(0,2)" style="margin-bottom: 0px;" id="abnormallyFertilised" name="abnormallyFertilised"  value="${arSuperDataSubmissionDto.disposalStageDto.abnormallyFertilised}"/>
                             <span class="error-msg" name="iaisErrorMsg" id="error_abnormallyFertilised"></span>
                         </iais:value>
                     </iais:row>
                     <iais:row>
                         <iais:field width="6" value="Unfertilised" />
                         <iais:value width="6" cssClass="col-md-6" >
-                            <input type="text" maxlength="2" id="unfertilised" name="unfertilised"  value="${arSuperDataSubmissionDto.disposalStageDto.unfertilised}"/>
+                            <input type="number" oninput="if(value.length>2)value=value.slice(0,2)" style="margin-bottom: 0px;" id="unfertilised" name="unfertilised"  value="${arSuperDataSubmissionDto.disposalStageDto.unfertilised}"/>
                             <span class="error-msg" name="iaisErrorMsg" id="error_unfertilised"></span>
                         </iais:value>
                     </iais:row>
                     <iais:row>
                         <iais:field width="6" value="Atretic" />
                         <iais:value width="6" cssClass="col-md-6" >
-                            <input type="text" maxlength="2" id="atretic" name="atretic"  value="${arSuperDataSubmissionDto.disposalStageDto.atretic}"/>
+                            <input type="number" oninput="if(value.length>2)value=value.slice(0,2)" style="margin-bottom: 0px;" id="atretic" name="atretic"  value="${arSuperDataSubmissionDto.disposalStageDto.atretic}"/>
                             <span class="error-msg" name="iaisErrorMsg" id="error_atretic"></span>
                         </iais:value>
                     </iais:row>
                     <iais:row>
                         <iais:field width="6" value="Damaged" />
                         <iais:value width="6" cssClass="col-md-6" >
-                            <input type="text" maxlength="2" id="damaged" name="damaged"  value="${arSuperDataSubmissionDto.disposalStageDto.damaged}"/>
+                            <input type="number" oninput="if(value.length>2)value=value.slice(0,2)" style="margin-bottom: 0px;" id="damaged" name="damaged"  value="${arSuperDataSubmissionDto.disposalStageDto.damaged}"/>
                             <span class="error-msg" name="iaisErrorMsg" id="error_damaged"></span>
                         </iais:value>
                     </iais:row>
                     <iais:row>
                         <iais:field width="6" value="Lysed / Degenerated" />
                         <iais:value width="6" cssClass="col-md-6" >
-                            <input type="text" maxlength="2" id="lysedOrDegenerated" name="lysedOrDegenerated"  value="${arSuperDataSubmissionDto.disposalStageDto.lysedOrDegenerated}"/>
+                            <input type="number" oninput="if(value.length>2)value=value.slice(0,2)" style="margin-bottom: 0px;" id="lysedOrDegenerated" name="lysedOrDegenerated"  value="${arSuperDataSubmissionDto.disposalStageDto.lysedOrDegenerated}"/>
                             <span class="error-msg" name="iaisErrorMsg" id="error_lysedOrDegenerated"></span>
                         </iais:value>
                     </iais:row>
@@ -73,7 +73,7 @@
                     <iais:row>
                         <iais:field width="6" value="No. of Poor Quality / Unhealthy / Abnormal Discarded" />
                         <iais:value width="6" cssClass="col-md-6" >
-                            <input type="text" maxlength="2" id="unhealthyNum" name="unhealthyNum"  value="${arSuperDataSubmissionDto.disposalStageDto.unhealthyNum}"/>
+                            <input type="number" oninput="if(value.length>2)value=value.slice(0,2)" style="margin-bottom: 0px;" id="unhealthyNum" name="unhealthyNum"  value="${arSuperDataSubmissionDto.disposalStageDto.unhealthyNum}"/>
                             <span class="error-msg" name="iaisErrorMsg" id="error_unhealthyNum"></span>
                         </iais:value>
                     </iais:row>
@@ -89,7 +89,7 @@
                         </c:otherwise>
                     </c:choose>
                     <iais:value width="6" cssClass="col-md-6" >
-                        <input type="text" maxlength="2" id="otherDiscardedNum" name="otherDiscardedNum"  onchange="" value="${arSuperDataSubmissionDto.disposalStageDto.otherDiscardedNum}"/>
+                        <input type="number" oninput="if(value.length>2)value=value.slice(0,2)" style="margin-bottom: 0px;" id="otherDiscardedNum" name="otherDiscardedNum"  onchange="" value="${arSuperDataSubmissionDto.disposalStageDto.otherDiscardedNum}"/>
                         <span class="error-msg" name="iaisErrorMsg" id="error_otherDiscardedNum"></span>
                     </iais:value>
                 </iais:row>
