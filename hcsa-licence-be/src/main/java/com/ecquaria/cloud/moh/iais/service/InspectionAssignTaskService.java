@@ -228,4 +228,6 @@ public interface InspectionAssignTaskService {
       * @Descripation: setAppGrpIdsByUnitNos
       */
     SearchParam setAppGrpIdsByUnitNos(SearchParam searchParam, String hci_address, HcsaTaskAssignDto hcsaTaskAssignDto, String fieldName, String filterName);
+
+    SearchParam setAppPremisesIdsByUnitNos(SearchParam searchParam, String hci_address, HcsaTaskAssignDto hcsaTaskAssignDto, String fieldName, String filterName);
 }

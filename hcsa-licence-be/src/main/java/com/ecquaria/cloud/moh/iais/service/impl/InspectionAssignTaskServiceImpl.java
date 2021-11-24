@@ -579,6 +579,35 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
         return searchParam;
     }
 
+    @Override
+    public SearchParam setAppPremisesIdsByUnitNos(SearchParam searchParam, String hci_address, HcsaTaskAssignDto hcsaTaskAssignDto,
+                                                  String fieldName, String filterName) {
+        if(hcsaTaskAssignDto != null) {
+            Map<String, String> appPremisesAllUnitNoStrMap = hcsaTaskAssignDto.getAppPremisesAllUnitNoStrMap();
+            List<String> appPremisesIds = IaisCommonUtils.genNewArrayList();
+            for (Map.Entry<String, String> map : appPremisesAllUnitNoStrMap.entrySet()) {
+                String address = map.getValue();
+                if (address.contains(hci_address)) {
+                    appPremisesIds.add(map.getKey());
+                }
+            }
+
+            int appPremisesIdsSize = 0;
+            if(!IaisCommonUtils.isEmpty(appPremisesIds)) {
+                appPremisesIdsSize = appPremisesIds.size();
+                String appGroupId = SqlHelper.constructInCondition(fieldName, appPremisesIdsSize);
+                searchParam.addParam(filterName, appGroupId);
+                for (int i = 0; i < appPremisesIds.size(); i++) {
+                    searchParam.addFilter(fieldName + i, appPremisesIds.get(i));
+                }
+            } else {
+                String appPremisesId = SqlHelper.constructInCondition(fieldName, appPremisesIdsSize);
+                searchParam.addParam(filterName, appPremisesId);
+            }
+        }
+        return searchParam;
+    }
+
     private String generateComPoolAck(List<String> appNoFailList) {
         if(!IaisCommonUtils.isEmpty(appNoFailList)) {
             Collections.sort(appNoFailList);

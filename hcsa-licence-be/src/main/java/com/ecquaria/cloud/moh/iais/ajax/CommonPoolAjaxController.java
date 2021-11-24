@@ -183,7 +183,7 @@ public class CommonPoolAjaxController {
                     searchParam.addFilter("hci_name", hci_name, true);
                 }
                 if(!StringUtil.isEmpty(hci_address)) {
-                    searchParam = inspectionAssignTaskService.setAppGrpIdsByUnitNos(searchParam, hci_address, hcsaTaskAssignDto, "T5.APP_PREM_ID", "appPremId_list");
+                    searchParam = inspectionAssignTaskService.setAppPremisesIdsByUnitNos(searchParam, hci_address, hcsaTaskAssignDto, "T5.APP_PREM_ID", "appPremId_list");
                 }
             }
         }
