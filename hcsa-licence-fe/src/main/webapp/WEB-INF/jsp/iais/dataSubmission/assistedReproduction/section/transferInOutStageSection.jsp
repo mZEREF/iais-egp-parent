@@ -17,7 +17,7 @@
                     </span>
                 </h3>
                 <iais:row>
-                    <iais:field width="5" value="Is this a Transfer In or Out?" mandatory="true"/>
+                    <iais:field width="6" value="Is this a Transfer In or Out?" mandatory="true"/>
                     <iais:value width="3" cssClass="col-md-3">
                         <div class="form-check">
                             <input class="form-check-input"
@@ -31,8 +31,10 @@
                                    for="transferTypeIn"><span
                                     class="check-circle"></span>Transfer In</label>
                         </div>
+                        <span class="error-msg" name="iaisErrorMsg" id="error_transferType"></span>
                     </iais:value>
-                    <iais:value width="4" cssClass="col-md-4">
+
+                    <iais:value width="3" cssClass="col-md-3">
                         <div class="form-check">
                             <input class="form-check-input"
                                    type="radio"
@@ -45,9 +47,10 @@
                                    for="transferTypeOut"><span
                                     class="check-circle"></span>Transfer Out</label>
                         </div>
+
                     </iais:value>
-                    <span class="error-msg" name="iaisErrorMsg" id="error_transferType"></span>
                 </iais:row>
+
                 <iais:row>
                     <iais:field width="5" value="What was Transferred?" mandatory="true"/>
                     <iais:value width="7" cssClass="col-md-7">
