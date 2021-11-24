@@ -55,7 +55,11 @@ public class IuiCycleStageDtoValidator implements CustomizeValidator {
                     if((curMarrChildNum != null && curMarrChildNum >= 0) && (prevMarrChildNum != null && prevMarrChildNum >= 0)) {
                         int allChildren = curMarrChildNum + prevMarrChildNum;
                         if(0 <= iuiDeliverChildNum && iuiDeliverChildNum > allChildren) {
-                            errMap.put("iuiDeliverChildNum", "Cannot be greater than 'No. of Children with Current Marriage' + 'No. of Children with Previous Marriage'");
+                            Map<String,String> stringStringMap = IaisCommonUtils.genNewHashMap(3);
+                            stringStringMap.put("field1","");
+                            stringStringMap.put("field2","No. of Children with Current Marriage");
+                            stringStringMap.put("field3","No. of Children with Previous Marriage");
+                            errMap.put("iuiDeliverChildNum", MessageUtil.getMessageDesc("DS_ERR011",stringStringMap).trim());
                         }
                     }
                 }
@@ -65,7 +69,11 @@ public class IuiCycleStageDtoValidator implements CustomizeValidator {
                     if(extractVialsOfSpermNum != null) {
                         int allFrozen = patientFrozen + extractVialsOfSpermNum;
                         if(usedVialsOfSpermNum > allFrozen) {
-                            errMap.put("usedVialsOfSperm", "Cannot be greater than 'How many vials of sperm were extracted?' + frozen sperm tagged to patient");
+                            Map<String,String> stringStringMap = IaisCommonUtils.genNewHashMap(3);
+                            stringStringMap.put("field1","");
+                            stringStringMap.put("field2","Cannot be greater than 'How many vials of sperm were extracted?");
+                            stringStringMap.put("field3","frozen sperm tagged to patient");
+                            errMap.put("usedVialsOfSperm", MessageUtil.getMessageDesc("DS_ERR011",stringStringMap).trim());
                         }
                     }
                 }

@@ -145,7 +145,7 @@
                 <iais:row id="totalNumberARCOtherRow">
                     <iais:field width="5" value="No. of Cycles undergone Overseas" mandatory="true"/>
                     <iais:value width="7" cssClass="col-md-7">
-                        <iais:input maxLength="2" type="text" name="cyclesUndergoneOverseas" id="cyclesUndergoneOverseas" value="${arCycleStageDto.cyclesUndergoneOverseas}" />
+                        <iais:input maxLength="2" type="number" name="cyclesUndergoneOverseas" onInput="if(value.length>2)value=value.slice(0,2)" id="cyclesUndergoneOverseas" value="${arCycleStageDto.cyclesUndergoneOverseas}" />
                     </iais:value>
                 </iais:row>
                 <iais:row>
@@ -184,7 +184,9 @@
                                     class="check-circle"></span>No</label>
                         </div>
                     </iais:value>
+                    <iais:value width="7" cssClass="col-md-7">
                     <span id="error_enhancedCounselling" name="iaisErrorMsg" class="error-msg"></span>
+                    </iais:value>
                 </iais:row>
 
                 <iais:row>

@@ -4,7 +4,6 @@ import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.*;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -16,7 +15,6 @@ import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.ArDataSubmissionService;
 import java.io.Serializable;
 import java.util.List;
-import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +28,7 @@ import sop.webflow.rt.api.BaseProcessClass;
  */
 @Delegator("arCycleStageDelegator")
 @Slf4j
-public class ArCycleStageDelegator extends CommonDelegator {
+public class ArCycleStageDelegator extends DonorCommonDelegator{
 
     private final static String  CURRENT_AR_TREATMENT_SESSION    = "currentArTreatments";
     private final static String  NO_CHILDREN_DROP_DOWN           = "noChildrenDropDown";

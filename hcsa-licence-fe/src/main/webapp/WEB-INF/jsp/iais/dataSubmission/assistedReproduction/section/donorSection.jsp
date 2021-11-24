@@ -104,7 +104,7 @@
                                       cssClass="idSampleTypeSel${arDonorIndex}" onchange="removeAges('${arDonorIndex}')"/>
                      </iais:value>
                      <iais:value width="3" cssClass="col-md-3">
-                         <iais:input maxLength="100" type="text" name="donorSampleCode${arDonorIndex}" id="donorSampleCode${arDonorIndex}" value="${donorDto.donorSampleCode}" onchange="removeAges('${arDonorIndex}')" />
+                         <iais:input maxLength="20" type="text" name="donorSampleCode${arDonorIndex}" id="donorSampleCode${arDonorIndex}" value="${donorDto.donorSampleCode}" onchange="removeAges('${arDonorIndex}')" />
                      </iais:value>
                      <iais:value width="2" cssClass="col-md-2" display="true">
                          <a class="validateDonor" onclick="validateDonor('${arDonorIndex}')">
@@ -144,12 +144,11 @@
                      <iais:field width="5" value="Donor's Age at Donation" mandatory="true"/>
                      <iais:value width="4" cssClass="col-md-4">
                          <iais:select name="age${arDonorIndex}" firstOption="Please Select"  optionsSelections="${donorDto.ageList}" value="${donorDto.age}"
-                                      cssClass="donorAgeDonation${arDonorIndex}" onchange="repeatDonorSampleAge('${arDonorIndex}')"/>
+                                      cssClass="donorAgeDonation${arDonorIndex}"/>
                      </iais:value>
                  </iais:row>
                  </c:if>
                  <input type="hidden" name="resetDonor${arDonorIndex}" id="resetDonor${arDonorIndex}" value="${donorDto.resetDonor}"/>
-                 <input type="hidden" name="sameDonorSampleIndexs${arDonorIndex}" id="sameDonorSampleIndexs${arDonorIndex}" value="${empty donorDto.sameDonorSampleIndexs ? '' : donorDto.sameDonorSampleIndexs}"/>
                  <h3></h3>
              </div>
         </c:forEach>

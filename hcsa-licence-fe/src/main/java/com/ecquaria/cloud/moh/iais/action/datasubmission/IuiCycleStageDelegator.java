@@ -28,7 +28,7 @@ import java.util.List;
  **/
 @Delegator("iuiCycleStageDelegator")
 @Slf4j
-public class IuiCycleStageDelegator extends CommonDelegator {
+public class IuiCycleStageDelegator extends DonorCommonDelegator {
 
     @Autowired
     private ArDataSubmissionService arDataSubmissionService;

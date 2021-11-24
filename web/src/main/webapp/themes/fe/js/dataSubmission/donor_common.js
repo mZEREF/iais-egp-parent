@@ -77,9 +77,3 @@ function sourceChange(own,value,row,index){
     removeAges(index);
 }
 
-function repeatDonorSampleAge(index){
-   if($("#sameDonorSampleIndexs"+index).val() != ""){
-       $("#crud_action_value_action_age").val(index);
-       sumbitPage(-5);
-   }
-}

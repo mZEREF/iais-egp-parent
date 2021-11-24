@@ -24,7 +24,7 @@ public class InputTag extends DivTagSupport{
     private String placeholder;
     private boolean needErrorSpan;
     private boolean needDisabled;
-
+    private String onInput;
     public InputTag() {
         super();
         cleanFields();
@@ -48,6 +48,7 @@ public class InputTag extends DivTagSupport{
         setNeedErrorSpan(true);
         setNeedDisabled(false);
         setPlaceholder(null);
+        setOnInput(null);
     }
 
     @Override
@@ -95,6 +96,10 @@ public class InputTag extends DivTagSupport{
         }
         if (!StringUtil.isEmpty(onchange)) {
             html.append(" onchange=\"").append(onchange).append('\"');
+        }
+
+        if (!StringUtil.isEmpty(onInput)) {
+            html.append(" onInput=\"").append(onInput).append('\"');
         }
         html.append('>');
 
@@ -152,6 +157,9 @@ public class InputTag extends DivTagSupport{
     }
     public void setPlaceholder(String placeholder) {
         this.placeholder = placeholder;
+    }
+    public void setOnInput(String onInput) {
+        this.onInput = onInput;
     }
 
 }

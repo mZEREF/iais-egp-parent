@@ -26,7 +26,9 @@
                                onclick="toggleOnCheck(this, 'previousData', true)">
                         <label class="form-check-label" ><span class="check-circle"></span>No</label>
                     </div>
-                    <span class="error-msg col-md-7" name="iaisErrorMsg" id="error_previousIdentification"></span>
+                    <iais:value width="7" cssClass="col-md-7">
+                        <span id="error_enhancedCounselling" name="iaisErrorMsg" class="error-msg"></span>
+                    </iais:value>
                 </iais:row>
                 <div id="previousData" <c:if test="${!patient.previousIdentification}">style="display:none"</c:if> >
                     <h3>Patient's Previous Identification</h3>

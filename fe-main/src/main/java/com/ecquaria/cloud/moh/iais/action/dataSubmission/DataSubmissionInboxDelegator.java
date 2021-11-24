@@ -229,7 +229,10 @@ public class DataSubmissionInboxDelegator {
 			params.put("draftNo",submissionNo);
 			IaisEGPHelper.redirectUrl(response,request, "MohDsDraft",InboxConst.URL_LICENCE_WEB_MODULE,params);
 		}else {
-			//todo
+			params.put("dsType",inboxDataSubmissionQueryDto.getDsType());
+			params.put("type","preview");
+			params.put("submissionNo",submissionNo);
+			IaisEGPHelper.redirectUrl(response,request, "MohDsAction",InboxConst.URL_LICENCE_WEB_MODULE,params);
 		}
 		setLog("view",false);
 	}
