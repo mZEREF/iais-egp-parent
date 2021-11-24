@@ -2,6 +2,7 @@ package sg.gov.moh.iais.egp.bsb.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
+import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoDto;
 import com.ecquaria.cloud.moh.iais.common.utils.LogUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -10,11 +11,14 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
+import sg.gov.moh.iais.egp.bsb.client.BsbFileClient;
 import sg.gov.moh.iais.egp.bsb.client.DataSubmissionClient;
 import sg.gov.moh.iais.egp.bsb.client.FileRepoClient;
 import sg.gov.moh.iais.egp.bsb.client.TransferClient;
 import sg.gov.moh.iais.egp.bsb.constant.DocConstants;
 import sg.gov.moh.iais.egp.bsb.constant.ValidationConstants;
+import sg.gov.moh.iais.egp.bsb.dto.file.FileRepoSyncDto;
+import sg.gov.moh.iais.egp.bsb.dto.file.NewFileSyncDto;
 import sg.gov.moh.iais.egp.bsb.dto.submission.FacListDto;
 import sg.gov.moh.iais.egp.bsb.dto.submission.PrimaryDocDto;
 import sg.gov.moh.iais.egp.bsb.dto.submission.TransferNotificationDto;
@@ -47,13 +51,15 @@ public class BsbTransferNotificationDelegator {
     private final FileRepoClient fileRepoClient;
     private final BsbSubmissionCommon subCommon;
     private final DataSubmissionClient submissionClient;
+    private final BsbFileClient bsbFileClient;
 
 
-    public BsbTransferNotificationDelegator(TransferClient transferClient, FileRepoClient fileRepoClient, BsbSubmissionCommon subCommon, DataSubmissionClient submissionClient) {
+    public BsbTransferNotificationDelegator(TransferClient transferClient, FileRepoClient fileRepoClient, BsbSubmissionCommon subCommon, DataSubmissionClient submissionClient, BsbFileClient bsbFileClient) {
         this.transferClient = transferClient;
         this.fileRepoClient = fileRepoClient;
         this.subCommon = subCommon;
         this.submissionClient = submissionClient;
+        this.bsbFileClient = bsbFileClient;
     }
 
     /**
@@ -145,6 +151,7 @@ public class BsbTransferNotificationDelegator {
          HttpServletRequest request = bpc.request;
          TransferNotificationDto notificationDto = getTransferNotification(request);
          List<TransferNotificationDto.TransferNot> transferNotList = notificationDto.getTransferNotList();
+         List<NewFileSyncDto> newFilesToSync = new ArrayList<>();
          if(!CollectionUtils.isEmpty(transferNotList)){
              for (TransferNotificationDto.TransferNot not : transferNotList) {
                  PrimaryDocDto primaryDocDto = not.getPrimaryDocDto();
@@ -152,7 +159,7 @@ public class BsbTransferNotificationDelegator {
                      //complete simple save file to db and save data to dto for show in jsp
                      MultipartFile[] files = primaryDocDto.getNewDocMap().values().stream().map(PrimaryDocDto.NewDocInfo::getMultipartFile).toArray(MultipartFile[]::new);
                      List<String> repoIds = fileRepoClient.saveFiles(files).getEntity();
-                     primaryDocDto.newFileSaved(repoIds);
+                     newFilesToSync.addAll(primaryDocDto.newFileSaved(repoIds));
                      //newFile change to saved File and save info to db
                      not.setSavedInfos(primaryDocDto.getExistDocTypeList());
                  }else{
@@ -166,6 +173,18 @@ public class BsbTransferNotificationDelegator {
          notificationDto.setEnsure(ensure);
          TransferNotificationDto.TransferNotNeedR transferNotNeedR = notificationDto.getTransferNotNeedR();
          transferClient.saveNewTransferNot(transferNotNeedR);
+        try {
+            // sync files to BE file-repo (save new added files, delete useless files)
+            if (!newFilesToSync.isEmpty()) {
+                /* Ignore the failure of sync files currently.
+                 * We should add a mechanism to retry synchronization of files in the future */
+                FileRepoSyncDto syncDto = new FileRepoSyncDto();
+                syncDto.setNewFiles(newFilesToSync);
+                bsbFileClient.saveFiles(syncDto);
+            }
+        } catch (Exception e) {
+            log.error("Fail to sync files to BE", e);
+        }
     }
 
     /**

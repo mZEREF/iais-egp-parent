@@ -66,7 +66,7 @@ function addSection(idxInputName, sectionIdPrefix, headerTitlePrefix, sectionGro
 
     var section0 = $("#" + sectionIdPrefix + separator + "0");
     if (currentAmt === 1) {
-        if (sectionIdPrefix === 'notTSection' || sectionIdPrefix === 'conSection' || sectionIdPrefix === 'disSection' || sectionIdPrefix === 'expSection' || sectionIdPrefix === 'recSection') {
+        if (sectionIdPrefix === 'notTSection' || sectionIdPrefix === 'conSection' || sectionIdPrefix === 'disSection' || sectionIdPrefix === 'expSection' || sectionIdPrefix === 'recSection' || sectionIdPrefix === "reqTSection") {
             var headerDiv = newSectionHeader(1, 0, headerTitlePrefix);
             section0[0].insertBefore(headerDiv, section0[0].firstChild);
         } else {
@@ -190,7 +190,7 @@ function removeSection(idx, idxInputName, sectionIdPrefix, titlePrefix, sectionG
     idxInput.val(idxArr.join(" "));
 
     if (nextAmt === 1) {
-        if (sectionIdPrefix === 'notTSection' || sectionIdPrefix === 'conSection' || sectionIdPrefix === 'disSection' || sectionIdPrefix === 'expSection' || sectionIdPrefix === 'recSection') {
+        if (sectionIdPrefix === 'notTSection' || sectionIdPrefix === 'conSection' || sectionIdPrefix === 'disSection' || sectionIdPrefix === 'expSection' || sectionIdPrefix === 'recSection' || sectionIdPrefix === "reqTSection") {
             var notSection0 = document.getElementById(sectionIdPrefix + separator + "0");
             notSection0.removeChild(notSection0.children[0]);
         } else {

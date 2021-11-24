@@ -54,7 +54,9 @@ public class BiologicalAjaxController {
             log.info(StringUtil.changeForLog("ajax biologicalList "+biologicalList));
             List<String> strings = new ArrayList<>();
             for (Biological b : biologicalList) {
-                strings.add(b.getName());
+                if(b.getSchedule().equals(schedule)){
+                    strings.add(b.getName());
+                }
             }
             jsonMap.put("result", "success");
             jsonMap.put("queryResult",strings);

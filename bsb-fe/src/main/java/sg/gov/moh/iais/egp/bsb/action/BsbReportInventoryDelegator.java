@@ -1,29 +1,38 @@
 package sg.gov.moh.iais.egp.bsb.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
+import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
+import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
+import com.ecquaria.cloud.submission.client.wrapper.SubmissionClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
+import sg.gov.moh.iais.egp.bsb.client.BsbFileClient;
+import sg.gov.moh.iais.egp.bsb.client.DataSubmissionClient;
 import sg.gov.moh.iais.egp.bsb.client.FileRepoClient;
 import sg.gov.moh.iais.egp.bsb.client.TransferClient;
 import sg.gov.moh.iais.egp.bsb.constant.DocConstants;
 import sg.gov.moh.iais.egp.bsb.constant.ValidationConstants;
+import sg.gov.moh.iais.egp.bsb.dto.file.FileRepoSyncDto;
+import sg.gov.moh.iais.egp.bsb.dto.file.NewFileSyncDto;
 import sg.gov.moh.iais.egp.bsb.dto.submission.FacListDto;
 import sg.gov.moh.iais.egp.bsb.dto.submission.ReportInventoryDto;
-import sg.gov.moh.iais.egp.bsb.dto.submission.TransferNotificationDto;
 import sg.gov.moh.iais.egp.bsb.entity.DocSetting;
 import sop.servlet.webflow.HttpHandler;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static sg.gov.moh.iais.egp.bsb.constant.DataSubmissionConstants.KEY_ACTION_TYPE;
+import static sg.gov.moh.iais.egp.bsb.constant.DataSubmissionConstants.*;
+import static sg.gov.moh.iais.egp.bsb.constant.DataSubmissionConstants.KEY_FAC_LISTS;
 
 /**
  * @author YiMing
@@ -38,18 +47,37 @@ public class BsbReportInventoryDelegator {
     private final BsbSubmissionCommon subCommon;
     private final TransferClient transferClient;
     private final FileRepoClient fileRepoClient;
+    private final BsbFileClient bsbFileClient;
+    private final DataSubmissionClient submissionClient;
 
-    public BsbReportInventoryDelegator(BsbSubmissionCommon subCommon, TransferClient transferClient, FileRepoClient fileRepoClient) {
+    public BsbReportInventoryDelegator(BsbSubmissionCommon subCommon, TransferClient transferClient, FileRepoClient fileRepoClient, BsbFileClient bsbFileClient, DataSubmissionClient submissionClient) {
         this.subCommon = subCommon;
         this.transferClient = transferClient;
         this.fileRepoClient = fileRepoClient;
+        this.bsbFileClient = bsbFileClient;
+        this.submissionClient = submissionClient;
     }
 
 
     public void step1(BaseProcessClass bpc){
-
+        HttpServletRequest request = bpc.request;
+        ParamUtil.setSessionAttr(request,KEY_FACILITY_INFO, null);
+        AuditTrailHelper.auditFunction("Data Submission", "Data Submission");
     }
 
+
+    public void preSelfFacSelect(BaseProcessClass bpc){
+        HttpServletRequest request = bpc.request;
+        selectOption(request);
+    }
+
+    public void preSwitch0(BaseProcessClass bpc){
+        HttpServletRequest request = bpc.request;
+        ParamUtil.setSessionAttr(request,KEY_FAC_ID,null);
+        String facId = ParamUtil.getRequestString(request,KEY_FAC_ID);
+        facId = MaskUtil.unMaskValue("id",facId);
+        ParamUtil.setSessionAttr(request,KEY_FAC_ID,facId);
+    }
 
     public void preFacilityInfo(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
@@ -101,10 +129,13 @@ public class BsbReportInventoryDelegator {
         ReportInventoryDto inventoryDto = getReportInventoryDto(request);
         //write a method to save to db
         //save file to db and get repoId
-        MultipartFile[] files = inventoryDto.getNewDocMap().values().stream().map(ReportInventoryDto.NewDocInfo::getMultipartFile).toArray(MultipartFile[]::new);
-        List<String> repoIds = fileRepoClient.saveFiles(files).getEntity();
-        //change newFile to savedFile
-        inventoryDto.newFileSaved(repoIds);
+        List<NewFileSyncDto> newFilesToSync = null;
+        if (!inventoryDto.getNewDocMap().isEmpty()) {
+            MultipartFile[] files = inventoryDto.getNewDocMap().values().stream().map(ReportInventoryDto.NewDocInfo::getMultipartFile).toArray(MultipartFile[]::new);
+            List<String> repoIds = fileRepoClient.saveFiles(files).getEntity();
+            //change newFile to savedFile
+            newFilesToSync = inventoryDto.newFileSaved(repoIds);
+        }
         //put need value to SaveDocDto
         ReportInventoryDto.SaveDocDto saveDocDto = new ReportInventoryDto.SaveDocDto();
         saveDocDto.setReportType(inventoryDto.getReportType());
@@ -118,6 +149,19 @@ public class BsbReportInventoryDelegator {
         }
         saveDocDto.setSavedDocInfo(new ArrayList<>(inventoryDto.getSavedDocMap().values()));
         transferClient.saveNewReportAndInventory(saveDocDto);
+
+        try {
+            // sync files to BE file-repo (save new added files, delete useless files)
+            if (newFilesToSync!= null && !newFilesToSync.isEmpty()) {
+                /* Ignore the failure of sync files currently.
+                 * We should add a mechanism to retry synchronization of files in the future */
+                FileRepoSyncDto syncDto = new FileRepoSyncDto();
+                syncDto.setNewFiles(newFilesToSync);
+                bsbFileClient.saveFiles(syncDto);
+            }
+        } catch (Exception e) {
+            log.error("Fail to sync files to BE", e);
+        }
     }
 
     public ReportInventoryDto getReportInventoryDto(HttpServletRequest request){
@@ -152,6 +196,24 @@ public class BsbReportInventoryDelegator {
             ParamUtil.setRequestAttr(request, ValidationConstants.IS_VALID,ValidationConstants.NO);
             ParamUtil.setRequestAttr(request,ValidationConstants.KEY_SHOW_ERROR_SWITCH,Boolean.TRUE);
         }
+    }
+
+    /**
+     * This method is used to query all Facility info
+     */
+    private void selectOption(HttpServletRequest request) {
+        ParamUtil.setSessionAttr(request,KEY_FAC_LISTS,null);
+        FacListDto facListDto = submissionClient.queryAllApprovalFacList().getEntity();
+        List<FacListDto.FacList> facLists = facListDto.getFacLists();
+        //Removes the newly created object where is null
+        facLists.remove(0);
+        List<SelectOption> selectModel = new ArrayList<>();
+        for (FacListDto.FacList fac : facLists) {
+            selectModel.add(new SelectOption(MaskUtil.maskValue("id",fac.getFacId()), fac.getFacName()));
+        }
+        ParamUtil.setRequestAttr(request, KEY_FAC_SELECTION, selectModel);
+        //Put in session called for later operations
+        ParamUtil.setSessionAttr(request,KEY_FAC_LISTS,(Serializable) facLists);
     }
 
 }

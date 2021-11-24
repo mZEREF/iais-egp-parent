@@ -19,6 +19,9 @@ import sg.gov.moh.iais.egp.bsb.common.node.simple.ValidatableNodeValue;
 import sg.gov.moh.iais.egp.bsb.constant.DocConstants;
 import sg.gov.moh.iais.egp.bsb.dto.ValidationResultDto;
 import sg.gov.moh.iais.egp.bsb.dto.file.DocMeta;
+import sg.gov.moh.iais.egp.bsb.dto.file.DocRecordInfo;
+import sg.gov.moh.iais.egp.bsb.dto.file.NewDocInfo;
+import sg.gov.moh.iais.egp.bsb.dto.file.NewFileSyncDto;
 import sg.gov.moh.iais.egp.bsb.dto.register.facility.PrimaryDocDto;
 import sg.gov.moh.iais.egp.bsb.entity.Facility;
 import sg.gov.moh.iais.egp.bsb.util.CollectionUtils;
@@ -187,18 +190,24 @@ public class ReportInventoryDto implements Serializable{
 
 
     /**
-     * This file is called when new uploaded files are saved and we get the repo Ids
+     * This method will put new added files to the important data structure which is used to update the FacilityDoc.
+     * This file is called when new uploaded files are saved and we get the repo Ids.
      * ATTENTION!!!
      * This method is dangerous! The relationship between the ids and the files in this dto is fragile!
      * We rely on the order is not changed! So we use a LinkedHashMap to save our data.
+     * <p>
+     * This method will generate id-bytes pairs at the same time, the result will be used to sync files to BE.
+     * @return a list of file data to be synchronized to BE
      */
-    public void newFileSaved(List<String> repoIds) {
+    public List<NewFileSyncDto> newFileSaved(List<String> repoIds) {
         Iterator<String> repoIdIt = repoIds.iterator();
-        Iterator<ReportInventoryDto.NewDocInfo> newDocIt = newDocMap.values().iterator();
+        Iterator<NewDocInfo> newDocIt = newDocMap.values().iterator();
+
+        List<NewFileSyncDto> newFileSyncDtoList = new ArrayList<>(repoIds.size());
         while (repoIdIt.hasNext() && newDocIt.hasNext()) {
             String repoId = repoIdIt.next();
-            ReportInventoryDto.NewDocInfo newDocInfo = newDocIt.next();
-            ReportInventoryDto.DocRecordInfo docRecordInfo = new ReportInventoryDto.DocRecordInfo();
+            NewDocInfo newDocInfo = newDocIt.next();
+            DocRecordInfo docRecordInfo = new DocRecordInfo();
             docRecordInfo.setDocType(newDocInfo.getDocType());
             docRecordInfo.setFilename(newDocInfo.getFilename());
             docRecordInfo.setSize(newDocInfo.getSize());
@@ -206,8 +215,15 @@ public class ReportInventoryDto implements Serializable{
             docRecordInfo.setSubmitBy(newDocInfo.getSubmitBy());
             docRecordInfo.setSubmitDate(newDocInfo.getSubmitDate());
             savedDocMap.put(repoId, docRecordInfo);
+
+            NewFileSyncDto newFileSyncDto = new NewFileSyncDto();
+            newFileSyncDto.setId(repoId);
+            newFileSyncDto.setData(newDocInfo.getMultipartFile().getBytes());
+            newFileSyncDtoList.add(newFileSyncDto);
         }
+        return newFileSyncDtoList;
     }
+
 
     public Map<String, ReportInventoryDto.DocRecordInfo> getSavedDocMap() {
         return savedDocMap;

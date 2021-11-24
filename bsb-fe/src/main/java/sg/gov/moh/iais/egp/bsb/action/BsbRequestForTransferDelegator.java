@@ -15,6 +15,7 @@ import sg.gov.moh.iais.egp.bsb.dto.submission.AckTransferReceiptDto;
 import sg.gov.moh.iais.egp.bsb.dto.submission.FacListDto;
 import sg.gov.moh.iais.egp.bsb.dto.submission.TransferNotificationDto;
 import sg.gov.moh.iais.egp.bsb.dto.submission.TransferRequestDto;
+import sg.gov.moh.iais.egp.bsb.entity.Biological;
 import sg.gov.moh.iais.egp.bsb.entity.DocSetting;
 import sop.webflow.rt.api.BaseProcessClass;
 
@@ -92,6 +93,7 @@ public class BsbRequestForTransferDelegator {
         ParamUtil.setRequestAttr(request,"transferReq",dto);
         FacListDto.FacList facList = subCommon.getFacInfo(request);
         ParamUtil.setSessionAttr(request,KEY_FACILITY_INFO,facList);
+        subCommon.prepareSelectOption(request,"scheduleType",subCommon.getBiologicalById(request));
         Boolean needShowError = (Boolean) ParamUtil.getRequestAttr(request,ValidationConstants.KEY_SHOW_ERROR_SWITCH);
         if(Boolean.TRUE.equals(needShowError)){
             ParamUtil.setRequestAttr(request,ValidationConstants.KEY_VALIDATION_ERRORS,dto.retrieveValidationResult());
@@ -101,7 +103,7 @@ public class BsbRequestForTransferDelegator {
     public void saveAndConfirm(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
         TransferRequestDto dto = getTransferRequest(request);
-        dto.reqObjectMapping(request);
+        dto.reqObjectMapping(request,subCommon);
         ParamUtil.setSessionAttr(request,KEY_TRANSFER_REQUEST_DTO,dto);
         doValidation(dto,request);
         ParamUtil.setRequestAttr(request,"transferLists",dto.getTransferLists());

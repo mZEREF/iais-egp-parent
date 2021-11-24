@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import sg.gov.moh.iais.egp.bsb.action.BsbSubmissionCommon;
 import sg.gov.moh.iais.egp.bsb.dto.ValidationResultDto;
 import sg.gov.moh.iais.egp.bsb.util.SpringReflectionUtils;
 
@@ -104,7 +105,7 @@ public class TransferRequestDto implements Serializable {
      * reqObjectMapping
      * get value from request
      * */
-    public void reqObjectMapping(HttpServletRequest request){
+    public void reqObjectMapping(HttpServletRequest request, BsbSubmissionCommon common){
         String idxes = ParamUtil.getString(request, KEY_SECTION_IDXES);
         clearTransferLists();
         String[] idxArr = idxes.trim().split(" +");
@@ -117,7 +118,7 @@ public class TransferRequestDto implements Serializable {
             transferList.setMeaUnit(ParamUtil.getString(request,KEY_PREFIX_MEASUREMENT_UNIT+SEPARATOR+idx));
             addTransferLists(transferList);
         }
-
+        this.facId = common.getFacInfo(request).getFacId();
     }
 
 }

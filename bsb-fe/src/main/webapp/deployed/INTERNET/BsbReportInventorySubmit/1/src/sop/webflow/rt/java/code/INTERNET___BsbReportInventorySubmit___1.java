@@ -46,5 +46,15 @@ public class INTERNET___BsbReportInventorySubmit___1 extends BaseProcessClass {
 		EngineHelper.delegate(DELEGATOR, "preSwitch", this);
 	}
 
+	public void preSelfFacSelect_OnStepProcess_0() throws Exception {
+		// 		preSelfFacSelect->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "preSelfFacSelect", this);
+	}
+
+	public void preSwitch0_OnStepProcess_0() throws Exception {
+		// 		preSwitch0->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "preSwitch0", this);
+	}
+
 
 }

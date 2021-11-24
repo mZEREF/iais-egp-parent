@@ -10,10 +10,13 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
+import sg.gov.moh.iais.egp.bsb.client.BsbFileClient;
 import sg.gov.moh.iais.egp.bsb.client.DataSubmissionClient;
 import sg.gov.moh.iais.egp.bsb.client.FileRepoClient;
 import sg.gov.moh.iais.egp.bsb.client.TransferClient;
 import sg.gov.moh.iais.egp.bsb.constant.ValidationConstants;
+import sg.gov.moh.iais.egp.bsb.dto.file.FileRepoSyncDto;
+import sg.gov.moh.iais.egp.bsb.dto.file.NewFileSyncDto;
 import sg.gov.moh.iais.egp.bsb.dto.submission.AckTransferReceiptDto;
 import sg.gov.moh.iais.egp.bsb.dto.submission.FacListDto;
 import sg.gov.moh.iais.egp.bsb.dto.submission.PrimaryDocDto;
@@ -40,6 +43,7 @@ public class AckOfReceiptOfTransferDelegator {
     private final BsbSubmissionCommon subCommon;
     private final FileRepoClient fileRepoClient;
     private final TransferClient transferClient;
+    private final BsbFileClient bsbFileClient;
     public static final String KEY_FAC_ID = "facId";
     public static final String KEY_DATA_SUB_NO = "dataSubNo";
     private static final String ACK_TRANSFER_RECEIPT = "receiptSavedMap";
@@ -48,11 +52,12 @@ public class AckOfReceiptOfTransferDelegator {
     private static final String RECEIPT_SAVED  = "receiptSaved";
 
 
-    public AckOfReceiptOfTransferDelegator(DataSubmissionClient dataSubmissionClient, BsbSubmissionCommon subCommon, FileRepoClient fileRepoClient, TransferClient transferClient) {
+    public AckOfReceiptOfTransferDelegator(DataSubmissionClient dataSubmissionClient, BsbSubmissionCommon subCommon, FileRepoClient fileRepoClient, TransferClient transferClient, BsbFileClient bsbFileClient) {
         this.dataSubmissionClient = dataSubmissionClient;
         this.subCommon = subCommon;
         this.fileRepoClient = fileRepoClient;
         this.transferClient = transferClient;
+        this.bsbFileClient = bsbFileClient;
     }
 
     public void start(BaseProcessClass bpc){
@@ -99,12 +104,13 @@ public class AckOfReceiptOfTransferDelegator {
         AckTransferReceiptDto.AckTransferReceiptSaved saved = getTransferReceiptSaved(request);
 
         Map<String,PrimaryDocDto.NewDocInfo> infoMap = ackTransferReceiptDto.getNewDocInfoMap();
+        List<NewFileSyncDto> newFilesToSync = null;
         if(CollectionUtils.isEmpty(infoMap)){
             log.info("must be should you have committed you file");
         }else{
             MultipartFile[] files = infoMap.values().stream().map(PrimaryDocDto.NewDocInfo::getMultipartFile).toArray(MultipartFile[]::new);
             List<String> repoIds = fileRepoClient.saveFiles(files).getEntity();
-            ackTransferReceiptDto.newFileSaved(repoIds);
+            newFilesToSync = ackTransferReceiptDto.newFileSaved(repoIds);
             saved.setDocRecordInfos(new ArrayList<>(ackTransferReceiptDto.getSavedDocMap().values()));
         }
         //complete simple save file to db and save data to dto for show in jsp
@@ -112,6 +118,18 @@ public class AckOfReceiptOfTransferDelegator {
         saved.setEnsure(ensure);
         ackTransferReceiptDto.setAckTransferReceiptSaved(saved);
         transferClient.saveTransferReceipt(saved);
+        try {
+            // sync files to BE file-repo (save new added files, delete useless files)
+            if (newFilesToSync!= null && !newFilesToSync.isEmpty()) {
+                /* Ignore the failure of sync files currently.
+                 * We should add a mechanism to retry synchronization of files in the future */
+                FileRepoSyncDto syncDto = new FileRepoSyncDto();
+                syncDto.setNewFiles(newFilesToSync);
+                bsbFileClient.saveFiles(syncDto);
+            }
+        } catch (Exception e) {
+            log.error("Fail to sync files to BE", e);
+        }
         ParamUtil.setSessionAttr(request,ACK_TRANSFER_RECEIPT_DTO,ackTransferReceiptDto);
         ParamUtil.setSessionAttr(request,RECEIPT_SAVED,saved);
     }

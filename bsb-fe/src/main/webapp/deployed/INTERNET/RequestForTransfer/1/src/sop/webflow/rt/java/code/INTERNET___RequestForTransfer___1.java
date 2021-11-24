@@ -39,7 +39,6 @@ public class INTERNET___RequestForTransfer___1 extends BaseProcessClass {
 
 	public void prepareSwitch2_OnStepProcess_0() throws Exception {
 		// 		prepareSwitch2->OnStepProcess
-		EngineHelper.delegate(DELEGATOR, "prepareSwitch2", this);
 	}
 
 	public void save_OnStepProcess_0() throws Exception {
