@@ -8,7 +8,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DonationStageD
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInventoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
-import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
@@ -85,95 +84,10 @@ public class DonationStageDelegator extends CommonDelegator{
 
         DonationStageDto donationStageDto=arSuperDataSubmissionDto.getDonationStageDto();
         HttpServletRequest request=bpc.request;
-        int totalNum =0;
-        Integer curCenDonatedNum =  null;
-        try {
-            curCenDonatedNum =  ParamUtil.getInt(request, "curCenDonatedNum");
-            totalNum+=curCenDonatedNum;
-        }catch (Exception e){
-            log.error("no int");
-        }
-        Integer otherCenDonatedNum = null;
-        try {
-            otherCenDonatedNum = ParamUtil.getInt(request, "otherCenDonatedNum");
-            totalNum+=otherCenDonatedNum;
-        }catch (Exception e){
-            log.error("no int");
-        }
-        Integer resDonarNum = null;
-        try {
-            resDonarNum =  ParamUtil.getInt(request, "resDonarNum");
-            totalNum+=resDonarNum;
-        }catch (Exception e){
-            log.error("no int");
-        }
-        Integer curCenResDonatedNum = null;
-        try {
-            curCenResDonatedNum =  ParamUtil.getInt(request, "curCenResDonatedNum");
-            totalNum+=curCenResDonatedNum;
-        }catch (Exception e){
-            log.error("no int");
-        }
-        Integer otherCenResDonarNum = null;
-        try {
-            otherCenResDonarNum =  ParamUtil.getInt(request, "otherCenResDonarNum");
-            totalNum+=otherCenResDonarNum;
-        }catch (Exception e){
-            log.error("no int");
-        }
-        Integer trainingNum = null;
-        try {
-            trainingNum =  ParamUtil.getInt(request, "trainingNum");
-            totalNum+=trainingNum;
-        }catch (Exception e){
-            log.error("no int");
-        }
-        donationStageDto.setCurCenDonatedNum(curCenDonatedNum);
-        donationStageDto.setOtherCenDonatedNum(otherCenDonatedNum);
-        donationStageDto.setResDonarNum(resDonarNum);
-        donationStageDto.setCurCenResDonatedNum(curCenResDonatedNum);
-        donationStageDto.setOtherCenResDonarNum(otherCenResDonarNum);
-        donationStageDto.setTrainingNum(trainingNum);
-        donationStageDto.setTotalNum(totalNum);
-        donationStageDto.setIsCurCenResTypeHescr(0);
-        donationStageDto.setIsCurCenResTypeRrar(0);
-        donationStageDto.setIsCurCenResTypeOther(0);
         String donatedType=ParamUtil.getString(request,"donatedType");
         donationStageDto.setDonatedType(donatedType);
-        String isCurCenDonated=ParamUtil.getString(request,"isCurCenDonated");
-        donationStageDto.setIsCurCenDonated(isCurCenDonated);
-        if("Others".equals(isCurCenDonated)){
-            String otherDonatedCen=ParamUtil.getString(request,"otherDonatedCen");
-            donationStageDto.setOtherDonatedCen(otherDonatedCen);
-        }
-        if(StringUtil.isNotEmpty(isCurCenDonated)&&!"Others".equals(isCurCenDonated)){
-            String directedDonorId=ParamUtil.getString(request,"directedDonorId");
-            donationStageDto.setDirectedDonorId(directedDonorId);
-        }
-        String isCurCenResTypeHescr=ParamUtil.getString(request,"isCurCenResTypeHescr");
-        if("on".equals(isCurCenResTypeHescr)){
-            donationStageDto.setIsCurCenResTypeHescr(1);
-        }
-
-
-        String isCurCenResTypeRrar=ParamUtil.getString(request,"isCurCenResTypeRrar");
-        if("on".equals(isCurCenResTypeRrar)){
-            donationStageDto.setIsCurCenResTypeRrar(1);
-        }
-        String isCurCenResTypeOther=ParamUtil.getString(request,"isCurCenResTypeOther");
-        if("on".equals(isCurCenResTypeOther)){
-            donationStageDto.setIsCurCenResTypeOther(1);
-            String curCenOtherResType=ParamUtil.getString(request,"curCenOtherResType");
-            donationStageDto.setCurCenOtherResType(curCenOtherResType);
-
-        }
-        String isInsSentToCur=ParamUtil.getString(request,"isInsSentToCur");
-        donationStageDto.setIsInsSentToCur(isInsSentToCur);
-        if("Others".equals(isInsSentToCur)){
-            String insSentToOtherCen=ParamUtil.getString(request,"insSentToOtherCen");
-            donationStageDto.setInsSentToOtherCen(insSentToOtherCen);
-
-        }
+        String donatedCentre=ParamUtil.getString(request,"donatedCentre");
+        donationStageDto.setDonatedCentre(donatedCentre);
         String donationReason=ParamUtil.getString(request,"donationReason");
         donationStageDto.setDonationReason(donationReason);
         if(DataSubmissionConsts.DONATION_REASON_OTHERS.equals(donationReason)){
@@ -181,15 +95,82 @@ public class DonationStageDelegator extends CommonDelegator{
             donationStageDto.setOtherDonationReason(otherDonationReason);
         }
 
+        int totalNum =0;
+        donationStageDto.setDonatedForResearch(0);
+        donationStageDto.setDonatedForTraining(0);
+        donationStageDto.setDonatedForTreatment(0);
+
+        String donatedForResearch=ParamUtil.getString(request,"donatedForResearch");
+        if("on".equals(donatedForResearch)){
+            donationStageDto.setDonatedForResearch(1);
+            Integer donResForTreatNum =  null;
+            try {
+                donResForTreatNum =  ParamUtil.getInt(request, "donResForTreatNum");
+                donationStageDto.setDonResForTreatNum(donResForTreatNum);
+                totalNum+=donResForTreatNum;
+            }catch (Exception e){
+                log.error("no int");
+            }
+            Integer donResForCurCenNotTreatNum =  null;
+            try {
+                donResForCurCenNotTreatNum =  ParamUtil.getInt(request, "donResForCurCenNotTreatNum");
+                donationStageDto.setDonResForCurCenNotTreatNum(donResForCurCenNotTreatNum);
+                totalNum+=donResForCurCenNotTreatNum;
+            }catch (Exception e){
+                log.error("no int");
+            }
+            String donatedForResearchHescr=ParamUtil.getString(request,"donatedForResearchHescr");
+            if("on".equals(donatedForResearchHescr)){
+                donationStageDto.setDonatedForResearchHescr(1);
+            }
+            String donatedForResearchRrar=ParamUtil.getString(request,"donatedForResearchRrar");
+            if("on".equals(donatedForResearchRrar)){
+                donationStageDto.setDonatedForResearchRrar(1);
+            }
+
+            String donatedForResearchOther=ParamUtil.getString(request,"donatedForResearchOther");
+            if("on".equals(donatedForResearchOther)){
+                donationStageDto.setDonatedForResearchOther(1);
+                String donatedForResearchOtherType=ParamUtil.getString(request,"donatedForResearchOtherType");
+                donationStageDto.setDonatedForResearchOtherType(donatedForResearchOtherType);
+            }
+
+        }
+        String donatedForTraining=ParamUtil.getString(request,"donatedForTraining");
+        if("on".equals(donatedForTraining)){
+            donationStageDto.setDonatedForTraining(1);
+            Integer trainingNum = null;
+            try {
+                trainingNum = ParamUtil.getInt(request, "trainingNum");
+                donationStageDto.setTrainingNum(trainingNum);
+                totalNum+=trainingNum;
+            }catch (Exception e){
+                log.error("no int");
+            }
+            Integer treatNum = null;
+            try {
+                treatNum =  ParamUtil.getInt(request, "treatNum");
+                donationStageDto.setTreatNum(treatNum);
+                totalNum+=treatNum;
+            }catch (Exception e){
+                log.error("no int");
+            }
+        }
+        String donatedForTreatment=ParamUtil.getString(request,"donatedForTreatment");
+        if("on".equals(donatedForTreatment)){
+            donationStageDto.setDonatedForTreatment(1);
+        }
+
+        donationStageDto.setTotalNum(totalNum);
+
+        String donatedRecipientNum=ParamUtil.getString(request,"donatedRecipientNum");
+        donationStageDto.setDonatedRecipientNum(donatedRecipientNum);
+
         DataSubmissionHelper.setCurrentArDataSubmission(arSuperDataSubmissionDto,bpc.request);
         String actionType=ParamUtil.getRequestString(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE);
         if("confirm".equals(actionType)){
             ValidationResult validationResult = WebValidationHelper.validateProperty(donationStageDto, "save");
             Map<String, String> errorMap = validationResult.retrieveAll();
-            if(StringUtil.isNotEmpty(donationStageDto.getDirectedDonorId())){
-                //ID must be a registered patient in the receiving AR Centre
-                donationStageDto.getIsCurCenDonated();
-            }
             if (!errorMap.isEmpty() || validationResult.isHasErrors()) {
                 WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));

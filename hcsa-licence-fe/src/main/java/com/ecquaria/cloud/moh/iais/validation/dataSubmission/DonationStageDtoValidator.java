@@ -47,123 +47,74 @@ public class DonationStageDtoValidator implements CustomizeValidator {
                 }
             }
         }
-
-        if(donationStageDto.getCurCenDonatedNum()!=null){
-            if(donationStageDto.getCurCenDonatedNum()>99||donationStageDto.getCurCenDonatedNum()<0){
-                Map<String, String> repMap=IaisCommonUtils.genNewHashMap();
-                repMap.put("minNum","0");
-                repMap.put("maxNum","99");
-            repMap.put("field","This field");
-                String errMsg = MessageUtil.getMessageDesc("DS_ERR003",repMap);
-                errorMap.put("curCenDonatedNum", errMsg);
-            }
-            if(donationStageDto.getCurCenDonatedNum()>maxSamplesNum){
-                errorMap.put("curCenDonatedNum", "Cannot be greater than number of samples under patient");
-            }
+        if(donationStageDto.getDonatedForResearch()+donationStageDto.getDonatedForTraining()+donationStageDto.getDonatedForTreatment()==0){
+            errorMap.put("curCenResType", errMsgErr006);
         }
-
-        if(donationStageDto.getOtherCenDonatedNum()!=null){
-            if(donationStageDto.getOtherCenDonatedNum()>99||donationStageDto.getOtherCenDonatedNum()<0){
-                Map<String, String> repMap=IaisCommonUtils.genNewHashMap();
-                repMap.put("minNum","0");
-                repMap.put("maxNum","99");
-            repMap.put("field","This field");
-                String errMsg = MessageUtil.getMessageDesc("DS_ERR003",repMap);
-                errorMap.put("otherCenDonatedNum", errMsg);
-            }
-            if(donationStageDto.getOtherCenDonatedNum()>maxSamplesNum){
-                errorMap.put("otherCenDonatedNum", "Cannot be greater than number of samples under patient");
-            }
-            if(donationStageDto.getOtherCenDonatedNum()>0){
-                if(donationStageDto.getIsCurCenDonated()==null){
-                    errorMap.put("isCurCenDonated", errMsgErr006);
-                }else if("Others".equals(donationStageDto.getIsCurCenDonated())){
-                    if(StringUtil.isEmpty(donationStageDto.getOtherCenDonatedNum())){
-                        errorMap.put("otherDonatedCen", errMsgErr006);
-                    }
+        if(donationStageDto.getDonatedForResearch()==1){
+            if(donationStageDto.getDonResForTreatNum()!=null){
+                if(donationStageDto.getDonResForTreatNum()>99||donationStageDto.getDonResForTreatNum()<0){
+                    Map<String, String> repMap=IaisCommonUtils.genNewHashMap();
+                    repMap.put("minNum","0");
+                    repMap.put("maxNum","99");
+                    repMap.put("field","This field");
+                    String errMsg = MessageUtil.getMessageDesc("DS_ERR003",repMap);
+                    errorMap.put("donResForTreatNum", errMsg);
+                }
+                if(donationStageDto.getDonResForTreatNum()>maxSamplesNum){
+                    errorMap.put("donResForTreatNum", "Cannot be greater than number of samples under patient");
                 }
             }
-        }
-
-        if(donationStageDto.getResDonarNum()!=null){
-            if(donationStageDto.getResDonarNum()>99||donationStageDto.getResDonarNum()<0){
-                Map<String, String> repMap=IaisCommonUtils.genNewHashMap();
-                repMap.put("minNum","0");
-                repMap.put("maxNum","99");
-            repMap.put("field","This field");
-                String errMsg = MessageUtil.getMessageDesc("DS_ERR003",repMap);
-                errorMap.put("resDonarNum", errMsg);
-            }
-            if(donationStageDto.getResDonarNum()>maxSamplesNum){
-                errorMap.put("resDonarNum", "Cannot be greater than number of samples under patient");
-            }
-        }
-
-        if(donationStageDto.getCurCenResDonatedNum()!=null){
-            if(donationStageDto.getCurCenResDonatedNum()>99||donationStageDto.getCurCenResDonatedNum()<0){
-                Map<String, String> repMap=IaisCommonUtils.genNewHashMap();
-                repMap.put("minNum","0");
-                repMap.put("maxNum","99");
-            repMap.put("field","This field");
-                String errMsg = MessageUtil.getMessageDesc("DS_ERR003",repMap);
-                errorMap.put("curCenResDonatedNum", errMsg);
-            }
-            if(donationStageDto.getCurCenResDonatedNum()>maxSamplesNum){
-                errorMap.put("curCenResDonatedNum", "Cannot be greater than number of samples under patient");
-            }
-        }
-
-        if(donationStageDto.getResDonarNum()!=null&&donationStageDto.getResDonarNum()>0){
-            if(donationStageDto.getIsCurCenResTypeHescr()+donationStageDto.getIsCurCenResTypeRrar()+donationStageDto.getIsCurCenResTypeOther()==0){
-                errorMap.put("curCenResType", errMsgErr006);
-            }
-        }
-        if(donationStageDto.getCurCenResDonatedNum()!=null&&donationStageDto.getCurCenResDonatedNum()>0){
-            if(donationStageDto.getIsCurCenResTypeHescr()+donationStageDto.getIsCurCenResTypeRrar()+donationStageDto.getIsCurCenResTypeOther()==0){
-                errorMap.put("curCenResType", errMsgErr006);
-            }
-        }
-        if(donationStageDto.getIsCurCenResTypeOther()==1){
-            if(StringUtil.isEmpty(donationStageDto.getCurCenOtherResType())){
-                errorMap.put("curCenOtherResType", errMsgErr006);
-            }
-        }
-        if(donationStageDto.getOtherCenResDonarNum()!=null){
-            if(donationStageDto.getOtherCenResDonarNum()>99||donationStageDto.getOtherCenResDonarNum()<0){
-                Map<String, String> repMap=IaisCommonUtils.genNewHashMap();
-                repMap.put("minNum","0");
-                repMap.put("maxNum","99");
-            repMap.put("field","This field");
-                String errMsg = MessageUtil.getMessageDesc("DS_ERR003",repMap);
-                errorMap.put("otherCenResDonarNum", errMsg);
-            }
-            if(donationStageDto.getOtherCenResDonarNum()>maxSamplesNum){
-                errorMap.put("otherCenResDonarNum", "Cannot be greater than number of samples under patient");
-            }
-            if(donationStageDto.getOtherCenResDonarNum()>0){
-                if(donationStageDto.getIsInsSentToCur()==null){
-                    errorMap.put("isInsSentToCur", errMsgErr006);
-                }else if("Others".equals(donationStageDto.getIsInsSentToCur())){
-                    if(StringUtil.isEmpty(donationStageDto.getInsSentToOtherCen())){
-                        errorMap.put("insSentToOtherCen", errMsgErr006);
-                    }
+            if(donationStageDto.getDonResForCurCenNotTreatNum()!=null){
+                if(donationStageDto.getDonResForCurCenNotTreatNum()>99||donationStageDto.getDonResForCurCenNotTreatNum()<0){
+                    Map<String, String> repMap=IaisCommonUtils.genNewHashMap();
+                    repMap.put("minNum","0");
+                    repMap.put("maxNum","99");
+                    repMap.put("field","This field");
+                    String errMsg = MessageUtil.getMessageDesc("DS_ERR003",repMap);
+                    errorMap.put("donResForCurCenNotTreatNum", errMsg);
+                }
+                if(donationStageDto.getDonResForCurCenNotTreatNum()>maxSamplesNum){
+                    errorMap.put("donResForCurCenNotTreatNum", "Cannot be greater than number of samples under patient");
                 }
             }
+
+            if(donationStageDto.getDonatedForResearchHescr()+donationStageDto.getDonatedForResearchRrar()+donationStageDto.getDonatedForResearchOther()==0){
+                errorMap.put("curCenResType", errMsgErr006);
+            }
+
         }
 
-        if(donationStageDto.getTrainingNum()!=null){
-            if(donationStageDto.getTrainingNum()>99||donationStageDto.getTrainingNum()<0){
-                Map<String, String> repMap=IaisCommonUtils.genNewHashMap();
-                repMap.put("minNum","0");
-                repMap.put("maxNum","99");
-            repMap.put("field","This field");
-                String errMsg = MessageUtil.getMessageDesc("DS_ERR003",repMap);
-                errorMap.put("trainingNum", errMsg);
+        if(donationStageDto.getDonatedForTraining()==1){
+            if(donationStageDto.getTrainingNum()!=null){
+                if(donationStageDto.getTrainingNum()>99||donationStageDto.getTrainingNum()<0){
+                    Map<String, String> repMap=IaisCommonUtils.genNewHashMap();
+                    repMap.put("minNum","0");
+                    repMap.put("maxNum","99");
+                    repMap.put("field","This field");
+                    String errMsg = MessageUtil.getMessageDesc("DS_ERR003",repMap);
+                    errorMap.put("trainingNum", errMsg);
+                }
+                if(donationStageDto.getTrainingNum()>maxSamplesNum){
+                    errorMap.put("trainingNum", "Cannot be greater than number of samples under patient");
+                }
             }
-            if(donationStageDto.getTrainingNum()>maxSamplesNum){
-                errorMap.put("trainingNum", "Cannot be greater than number of samples under patient");
+            if(donationStageDto.getTreatNum()!=null){
+                if(donationStageDto.getTreatNum()>99||donationStageDto.getTreatNum()<0){
+                    Map<String, String> repMap=IaisCommonUtils.genNewHashMap();
+                    repMap.put("minNum","0");
+                    repMap.put("maxNum","99");
+                    repMap.put("field","This field");
+                    String errMsg = MessageUtil.getMessageDesc("DS_ERR003",repMap);
+                    errorMap.put("treatNum", errMsg);
+                }
+                if(donationStageDto.getTreatNum()>maxSamplesNum){
+                    errorMap.put("treatNum", "Cannot be greater than number of samples under patient");
+                }
+            }else {
+                errorMap.put("treatNum", errMsgErr006);
             }
         }
+
 
         if(StringUtil.isEmpty(donationStageDto.getDonationReason())){
             errorMap.put("donationReason", errMsgErr006);
