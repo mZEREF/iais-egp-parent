@@ -50,12 +50,28 @@ public class ThawingDelegator extends CommonDelegator {
 
         PatientInventoryDto patientInventoryDto = DataSubmissionHelper.initPatientInventoryTable(bpc.request);
         if (thawingStageDto.getHasOocyte()) {
-            patientInventoryDto.setChangeFrozenOocytes(-1 * thawingStageDto.getThawedOocytesNum());
-            patientInventoryDto.setChangeThawedOocytes(thawingStageDto.getThawedOocytesSurvivedMatureNum());
+            patientInventoryDto.setChangeFrozenOocytes(-1 * Integer.parseInt(thawingStageDto.getThawedOocytesNum()));
+            patientInventoryDto.setChangeThawedOocytes(Integer.parseInt(thawingStageDto.getThawedOocytesSurvivedMatureNum()));
         }
         if (thawingStageDto.getHasEmbryo()) {
-            patientInventoryDto.setChangeFrozenEmbryos(-1 * thawingStageDto.getThawedEmbryosNum());
-            patientInventoryDto.setChangeThawedEmbryos(thawingStageDto.getThawedEmbryosSurvivedNum());
+            patientInventoryDto.setChangeFrozenEmbryos(-1 * Integer.parseInt(thawingStageDto.getThawedEmbryosNum()));
+            patientInventoryDto.setChangeThawedEmbryos(Integer.parseInt(thawingStageDto.getThawedEmbryosSurvivedNum()));
+        }
+    }
+
+    @Override
+    public void submission(BaseProcessClass bpc) {
+        ArSuperDataSubmissionDto arSuperDataSubmissionDto = DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
+        ThawingStageDto thawingStageDto = arSuperDataSubmissionDto.getThawingStageDto();
+        if (!thawingStageDto.getHasOocyte()) {
+            thawingStageDto.setThawedOocytesNum("-1");
+            thawingStageDto.setThawedOocytesSurvivedImmatureNum("-1");
+            thawingStageDto.setThawedOocytesSurvivedMatureNum("-1");
+            thawingStageDto.setThawedOocytesSurvivedOtherNum("-1");
+        }
+        if (!thawingStageDto.getHasEmbryo()) {
+            thawingStageDto.setThawedEmbryosNum("-1");
+            thawingStageDto.setThawedEmbryosSurvivedNum("-1");
         }
     }
 
@@ -85,12 +101,12 @@ public class ThawingDelegator extends CommonDelegator {
     private void fromPageData(ThawingStageDto thawingStageDto, HttpServletRequest request) {
         boolean hasOocyte = "true".equals(ParamUtil.getString(request, "hasOocyte"));
         boolean hasEmbryo = "true".equals(ParamUtil.getString(request, "hasEmbryo"));
-        int thawedOocytesNum = ParamUtil.getInt(request, "thawedOocytesNum", -1);
-        int thawedOocytesSurvivedMatureNum = ParamUtil.getInt(request, "thawedOocytesSurvivedMatureNum", -1);
-        int thawedOocytesSurvivedImmatureNum = ParamUtil.getInt(request, "thawedOocytesSurvivedImmatureNum", -1);
-        int thawedOocytesSurvivedOtherNum = ParamUtil.getInt(request, "thawedOocytesSurvivedOtherNum", -1);
-        int thawedEmbryosNum = ParamUtil.getInt(request, "thawedEmbryosNum", -1);
-        int thawedEmbryosSurvivedNum = ParamUtil.getInt(request, "thawedEmbryosSurvivedNum", -1);
+        String thawedOocytesNum = ParamUtil.getString(request, "thawedOocytesNum");
+        String thawedOocytesSurvivedMatureNum = ParamUtil.getString(request, "thawedOocytesSurvivedMatureNum");
+        String thawedOocytesSurvivedImmatureNum = ParamUtil.getString(request, "thawedOocytesSurvivedImmatureNum");
+        String thawedOocytesSurvivedOtherNum = ParamUtil.getString(request, "thawedOocytesSurvivedOtherNum");
+        String thawedEmbryosNum = ParamUtil.getString(request, "thawedEmbryosNum");
+        String thawedEmbryosSurvivedNum = ParamUtil.getString(request, "thawedEmbryosSurvivedNum");
 
         thawingStageDto.setHasOocyte(hasOocyte);
         thawingStageDto.setHasEmbryo(hasEmbryo);
