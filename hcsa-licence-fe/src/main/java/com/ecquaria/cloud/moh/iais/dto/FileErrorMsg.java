@@ -21,7 +21,7 @@ public class FileErrorMsg implements Serializable {
 
     private int row;
 
-    private String filedName;
+    private String fieldName;
 
     private String message;
 
@@ -29,6 +29,12 @@ public class FileErrorMsg implements Serializable {
 
     public FileErrorMsg() {
         arguments = new HashMap<>();
+    }
+
+    public FileErrorMsg(int row, String fieldName, String message) {
+        this.row = row;
+        this.fieldName = fieldName;
+        this.message = message;
     }
 
     public FileErrorMsg addMsgArgs(String placeHolder, String replaceVal) {
