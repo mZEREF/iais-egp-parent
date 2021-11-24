@@ -18,9 +18,9 @@ $(document).ready(function () {
         }
     });
 
-    $('input[type="text"]').change(function () {
+    $('input[type="number"]').change(function () {
         var totalNum = 0;
-        $('input[type="text"]').each(function () {
+        $('input[type="number"]').each(function () {
             let val = $(this).val();
             if (val) {
                 var intNum = parseInt(val);
