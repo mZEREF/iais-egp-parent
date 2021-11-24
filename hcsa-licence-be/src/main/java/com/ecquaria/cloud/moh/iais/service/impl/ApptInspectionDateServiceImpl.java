@@ -33,6 +33,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcStageWorkingGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AppInspectionStatusDto;
+import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.HcsaTaskAssignDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.WorkingGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
@@ -55,6 +56,7 @@ import com.ecquaria.cloud.moh.iais.service.ApplicationService;
 import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
 import com.ecquaria.cloud.moh.iais.service.ApptInspectionDateService;
 import com.ecquaria.cloud.moh.iais.service.InspectionAssignTaskService;
+import com.ecquaria.cloud.moh.iais.service.InspectionService;
 import com.ecquaria.cloud.moh.iais.service.OfficersReSchedulingService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
 import com.ecquaria.cloud.moh.iais.service.client.AppEicClient;
@@ -145,6 +147,9 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
 
     @Autowired
     private EicRequestTrackingHelper eicRequestTrackingHelper;
+
+    @Autowired
+    private InspectionService inspectionService;
 
     @Value("${iais.hmac.keyId}")
     private String keyId;
@@ -1239,7 +1244,10 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
         String todayDate = Formatter.formatDateTime(inspecDate, "dd/MM/yyyy");
         String todayTime = Formatter.formatDateTime(inspecDate, "HH:mm:ss");
         AppGrpPremisesDto appGrpPremisesDto = getEmailAppGrpPremisesByCorrId(appPremCorrId);
-        String address = inspectionAssignTaskService.getAddress(appGrpPremisesDto);
+        List<String> appGroupIds = IaisCommonUtils.genNewArrayList();
+        appGroupIds.add(applicationGroupDto.getId());
+        HcsaTaskAssignDto hcsaTaskAssignDto = inspectionService.getHcsaTaskAssignDtoByAppGrp(appGroupIds);
+        String address = inspectionAssignTaskService.getAddress(appGrpPremisesDto, hcsaTaskAssignDto);
         String hciName = appGrpPremisesDto.getHciName();
         String hciCode = appGrpPremisesDto.getHciCode();
         if(StringUtil.isEmpty(hciName)){

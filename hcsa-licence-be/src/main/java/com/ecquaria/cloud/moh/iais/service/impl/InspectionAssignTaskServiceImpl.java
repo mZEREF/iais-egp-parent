@@ -200,7 +200,7 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
 
     @Override
     public InspecTaskCreAndAssDto getInspecTaskCreAndAssDto(String appCorrelationId, List<TaskDto> commPools, LoginContext loginContext,
-                                                            InspecTaskCreAndAssDto inspecTaskCreAndAssDto) {
+                                                            InspecTaskCreAndAssDto inspecTaskCreAndAssDto, HcsaTaskAssignDto hcsaTaskAssignDto) {
         List<OrgUserDto> orgUserDtos = IaisCommonUtils.genNewArrayList();
         String workGroupId = "";
         for (TaskDto tDto : commPools) {
@@ -214,7 +214,7 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
 
         ApplicationDto applicationDto = searchByAppCorrId(appCorrelationId).getApplicationDto();
         AppGrpPremisesDto appGrpPremisesDto = getAppGrpPremisesDtoByAppGroId(appCorrelationId);
-        String address = getAddress(appGrpPremisesDto);
+        String address = getAddress(appGrpPremisesDto, hcsaTaskAssignDto);
         HcsaServiceDto hcsaServiceDto = getHcsaServiceDtoByServiceId(applicationDto.getServiceId());
         ApplicationGroupDto applicationGroupDto = getApplicationGroupDtoByAppGroId(applicationDto.getAppGrpId());
 
@@ -1510,16 +1510,20 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
     }
 
     @Override
-    public String getAddress(AppGrpPremisesDto appGrpPremisesDto) {
+    public String getAddress(AppGrpPremisesDto appGrpPremisesDto, HcsaTaskAssignDto hcsaTaskAssignDto) {
         String result = "";
         if (ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(appGrpPremisesDto.getPremisesType()) ||
                 ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(appGrpPremisesDto.getPremisesType()) ||
                 ApplicationConsts.PREMISES_TYPE_OFF_SITE.equals(appGrpPremisesDto.getPremisesType()) ||
                 ApplicationConsts.PREMISES_TYPE_EAS_MTS_CONVEYANCE.equals(appGrpPremisesDto.getPremisesType())) {
-            result = MiscUtil.getAddress(appGrpPremisesDto.getBlkNo(), appGrpPremisesDto.getStreetName(), appGrpPremisesDto.getBuildingName(),
-                    appGrpPremisesDto.getFloorNo(), appGrpPremisesDto.getUnitNo(), appGrpPremisesDto.getPostalCode());
+            if(hcsaTaskAssignDto != null && hcsaTaskAssignDto.getAppPremisesAllUnitNoStrMap() != null) {
+                Map<String, String> appPremisesAllUnitNoStrMap = hcsaTaskAssignDto.getAppPremisesAllUnitNoStrMap();
+                result = appPremisesAllUnitNoStrMap.get(appGrpPremisesDto.getId());
+            } else {
+                result = MiscUtil.getAddressForApp(appGrpPremisesDto.getBlkNo(), appGrpPremisesDto.getStreetName(), appGrpPremisesDto.getBuildingName(),
+                        appGrpPremisesDto.getFloorNo(), appGrpPremisesDto.getUnitNo(), appGrpPremisesDto.getPostalCode(), null);
+            }
         }
-
         return result;
     }
 

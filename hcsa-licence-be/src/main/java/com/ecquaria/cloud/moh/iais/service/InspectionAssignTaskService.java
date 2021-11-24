@@ -49,11 +49,11 @@ public interface InspectionAssignTaskService {
     /**
      * @author: shicheng
      * @Date 2019/11/23
-     * @Param: appCorrelationId, commPools, loginContext
+     * @Param: appCorrelationId, commPools, loginContext, hcsaTaskAssignDto
      * @return: InspecTaskCreAndAssQueryDto
      * @Descripation: Gets a single Common Pool of information for allocation
      */
-    InspecTaskCreAndAssDto getInspecTaskCreAndAssDto(String appCorrelationId, List<TaskDto> commPools, LoginContext loginContext, InspecTaskCreAndAssDto inspecTaskCreAndAssDto);
+    InspecTaskCreAndAssDto getInspecTaskCreAndAssDto(String appCorrelationId, List<TaskDto> commPools, LoginContext loginContext, InspecTaskCreAndAssDto inspecTaskCreAndAssDto, HcsaTaskAssignDto hcsaTaskAssignDto);
 
     /**
      * @author: shicheng
@@ -149,11 +149,11 @@ public interface InspectionAssignTaskService {
     /**
      * @author: shicheng
      * @Date 2020/3/19
-     * @Param: appGrpPremisesDto
+     * @Param: appGrpPremisesDto, appPremisesOperationalUnitDtos
      * @return: String
      * @Descripation: getAddress
      */
-    String getAddress(AppGrpPremisesDto appGrpPremisesDto);
+    String getAddress(AppGrpPremisesDto appGrpPremisesDto, HcsaTaskAssignDto hcsaTaskAssignDto);
 
     /**
      * @author: shicheng

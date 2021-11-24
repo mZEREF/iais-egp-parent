@@ -185,7 +185,7 @@ public interface InspectionService {
       * @return: 
       * @Descripation: 
       */
-    SearchResult<SuperPoolTaskQueryDto> getSecondSearchOtherData(SearchResult<SuperPoolTaskQueryDto> searchResult);
+    SearchResult<SuperPoolTaskQueryDto> getSecondSearchOtherData(SearchResult<SuperPoolTaskQueryDto> searchResult, HcsaTaskAssignDto hcsaTaskAssignDto);
 
     /**
       * @author: shicheng
@@ -225,4 +225,6 @@ public interface InspectionService {
       * @Descripation: getHcsaTaskAssignDtoByAppGrp
       */
     HcsaTaskAssignDto getHcsaTaskAssignDtoByAppGrp(List<String> appGroupIds);
+
+    List<String> getSuperPoolAppGrpIdByResult(SearchResult<InspectionSubPoolQueryDto> searchResult);
 }
