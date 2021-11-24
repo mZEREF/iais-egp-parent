@@ -76,8 +76,8 @@ public class EventBusHelper {
         log.info(StringUtil.changeForLog("Call Operation ==>" + operation));
         SubmitReq req = new SubmitReq();
         req.setSubmissionId(submissionId);
-        req.setProject(projectName);
-        req.setProcess(processName);
+        req.setProject(StringUtil.isEmpty(projectName) ? "IAIS" : projectName);
+        req.setProcess(StringUtil.isEmpty(processName) ? "Batchjob" : processName);
         req.setSopUrl(sopUrl);
         req.setStep("eventBusSubmit");
         if (needCallback) {
