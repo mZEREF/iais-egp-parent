@@ -41,13 +41,15 @@
                 <iais:row>
                     <iais:field width="5" value="How many vials of sperm were extracted?" mandatory="true"/>
                     <iais:value width="7" cssClass="col-md-7">
-                        <iais:input maxLength="2" type="text" name="extractedSpermVialsNum" value="${fertilisationDto.extractedSpermVialsNum}"  />
+                        <input type="number" oninput="if(value.length>2)value=value.slice(0,2)" style="margin-bottom: 0px;"
+                               name="extractedSpermVialsNum" value="${fertilisationDto.extractedSpermVialsNum}"/>
                     </iais:value>
                 </iais:row>
                 <iais:row>
                     <iais:field width="5" value="How many vials of sperm were used in this cycle?" mandatory="true"/>
                     <iais:value width="7" cssClass="col-md-7">
-                        <iais:input maxLength="2" type="text" name="usedSpermVialsNum" value="${fertilisationDto.usedSpermVialsNum}" />
+                        <input type="number" oninput="if(value.length>2)value=value.slice(0,2)" style="margin-bottom: 0px;"
+                               name="usedSpermVialsNum" value="${fertilisationDto.usedSpermVialsNum}"/>
                         <span class="error-msg" name="iaisErrorMsg" id="error_usedSpermVialsNum"></span>
                     </iais:value>
                 </iais:row>
@@ -76,50 +78,58 @@
                 <iais:row>
                     <iais:field width="5" value="No. of Fresh Oocytes Inseminated" mandatory="true" />
                     <iais:value width="7" cssClass="col-md-7">
-                        <iais:input maxLength="2" type="text" name="freshOocytesInseminatedNum" value="${fertilisationDto.freshOocytesInseminatedNum}" />
+                        <input type="number" oninput="if(value.length>2)value=value.slice(0,2)" style="margin-bottom: 0px;"
+                               name="freshOocytesInseminatedNum" value="${fertilisationDto.freshOocytesInseminatedNum}"/>
                     </iais:value>
                 </iais:row>
                 <iais:row>
                     <iais:field width="5" value="No. of Fresh Oocytes Microinjected" mandatory="true"/>
                     <iais:value width="7" cssClass="col-md-7">
-                        <iais:input maxLength="2" type="text" name="freshOocytesMicroInjectedNum" value="${fertilisationDto.freshOocytesMicroInjectedNum}" />
+                        <input type="number" oninput="if(value.length>2)value=value.slice(0,2)" style="margin-bottom: 0px;"
+                               name="freshOocytesMicroInjectedNum" value="${fertilisationDto.freshOocytesMicroInjectedNum}"/>
                     </iais:value>
                 </iais:row>
                 <iais:row>
                     <iais:field width="5" value="No. of Fresh Oocytes Used for GIFT" mandatory="true"/>
                     <iais:value width="7" cssClass="col-md-7">
-                        <iais:input maxLength="2" type="text" name="freshOocytesGiftNum" value="${fertilisationDto.freshOocytesGiftNum}" />
+                        <input type="number" oninput="if(value.length>2)value=value.slice(0,2)" style="margin-bottom: 0px;"
+                               name="freshOocytesGiftNum" value="${fertilisationDto.freshOocytesGiftNum}"/>
                     </iais:value>
                 </iais:row>
                 <iais:row>
                     <iais:field width="5" value="No. of Fresh Oocytes Used for ZIFT" mandatory="true"/>
                     <iais:value width="7" cssClass="col-md-7">
-                        <iais:input maxLength="2" type="text" name="freshOocytesZiftNum" value="${fertilisationDto.freshOocytesZiftNum}" />
+                        <input type="number" oninput="if(value.length>2)value=value.slice(0,2)" style="margin-bottom: 0px;"
+                               name="freshOocytesZiftNum" value="${fertilisationDto.freshOocytesZiftNum}"/>
                         <span class="error-msg" name="iaisErrorMsg" id="error_freshOocytesZiftNum"></span>
                     </iais:value>
                 </iais:row>
                 <iais:row>
                     <iais:field width="5" value="No. of Thawed Oocytes Inseminated" mandatory="true"/>
                     <iais:value width="7" cssClass="col-md-7">
-                        <iais:input maxLength="2" type="text" name="thawedOocytesInseminatedNum" value="${fertilisationDto.thawedOocytesInseminatedNum}"  />
+                        <input type="number" oninput="if(value.length>2)value=value.slice(0,2)" style="margin-bottom: 0px;"
+                               name="thawedOocytesInseminatedNum" value="${fertilisationDto.thawedOocytesInseminatedNum}"/>
                     </iais:value>
                 </iais:row>
                 <iais:row>
                     <iais:field width="5" value="No. of Thawed Oocytes Microinjected" mandatory="true" />
                     <iais:value width="7" cssClass="col-md-7">
-                        <iais:input maxLength="2" type="text" name="thawedOocytesMicroinjectedNum"  value="${fertilisationDto.thawedOocytesMicroinjectedNum}" />
+                        <input type="number" oninput="if(value.length>2)value=value.slice(0,2)" style="margin-bottom: 0px;"
+                               name="thawedOocytesMicroinjectedNum" value="${fertilisationDto.thawedOocytesMicroinjectedNum}"/>
                     </iais:value>
                 </iais:row>
                 <iais:row>
                     <iais:field width="5" value="No. of Thawed Oocytes Used for GIFT" mandatory="true" />
                     <iais:value width="7" cssClass="col-md-7">
-                        <iais:input maxLength="2" type="text" name="thawedOocytesGiftNum" value="${fertilisationDto.thawedOocytesGiftNum}"  />
+                        <input type="number" oninput="if(value.length>2)value=value.slice(0,2)" style="margin-bottom: 0px;"
+                               name="thawedOocytesGiftNum" value="${fertilisationDto.thawedOocytesGiftNum}"/>
                     </iais:value>
                 </iais:row>
                 <iais:row>
                     <iais:field width="5" value="No. of Thawed Oocytes Used for ZIFT"  mandatory="true"/>
                     <iais:value width="7" cssClass="col-md-7">
-                        <iais:input maxLength="2" type="text" name="thawedOocytesZiftNum" value="${fertilisationDto.thawedOocytesZiftNum}"  />
+                        <input type="number" oninput="if(value.length>2)value=value.slice(0,2)" style="margin-bottom: 0px;"
+                               name="thawedOocytesZiftNum" value="${fertilisationDto.thawedOocytesZiftNum}"/>
                         <span class="error-msg" name="iaisErrorMsg" id="error_thawedOocytesZiftNum"></span>
                     </iais:value>
                 </iais:row>

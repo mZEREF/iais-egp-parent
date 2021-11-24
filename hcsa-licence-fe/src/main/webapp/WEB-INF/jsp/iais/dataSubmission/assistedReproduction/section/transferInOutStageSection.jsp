@@ -74,19 +74,22 @@
                         <iais:row id="transferred0">
                             <iais:field width="5" value="No. of Oocyte(s) Transferred" mandatory="true"/>
                             <iais:value width="7" cssClass="col-md-7">
-                                <iais:input maxLength="2" type="text" name="oocyteNum" value="${transferInOutStageDto.oocyteNum}"  />
+                                <input type="number" oninput="if(value.length>2)value=value.slice(0,2)" style="margin-bottom: 0px;"
+                                       name="oocyteNum" value="${transferInOutStageDto.oocyteNum}"/>
                             </iais:value>
                         </iais:row>
                     <iais:row id="transferred1">
                         <iais:field width="5" value="No. of Embryo(s) Transferred" mandatory="true"/>
                         <iais:value width="7" cssClass="col-md-7">
-                            <iais:input maxLength="2" type="text" name="embryoNum" value="${transferInOutStageDto.embryoNum}"  />
+                            <input type="number" oninput="if(value.length>2)value=value.slice(0,2)" style="margin-bottom: 0px;"
+                                   name="embryoNum" value="${transferInOutStageDto.embryoNum}"/>
                         </iais:value>
                     </iais:row>
                     <iais:row id="transferred2">
                         <iais:field width="5" value="Vials of Sperm Transferred" mandatory="true"/>
                         <iais:value width="7" cssClass="col-md-7">
-                            <iais:input maxLength="2" type="text" name="spermVialsNum" value="${transferInOutStageDto.spermVialsNum}"  />
+                            <input type="number" oninput="if(value.length>2)value=value.slice(0,2)" style="margin-bottom: 0px;"
+                                   name="spermVialsNum" value="${transferInOutStageDto.spermVialsNum}"/>
                         </iais:value>
                     </iais:row>
                 <iais:row>
