@@ -475,7 +475,7 @@
                                                 <label for="remarks">Remarks</label>
                                             </div>
                                             <div class="col-sm-6 col-md-7">
-                                                <textarea class="col-xs-12" name="remarks" id="remarks" rows="5"><c:out value="${previewSubmit.remarks}"/></textarea>
+                                                <textarea maxLength="1000" class="col-xs-12" name="remarks" id="remarks" rows="5"><c:out value="${previewSubmit.remarks}"/></textarea>
                                                 <span data-err-ind="remarks" class="error-msg"></span>
                                             </div>
                                         </div>
@@ -498,7 +498,7 @@
                                                 <label for="reason">Reasons to Choose This AFC</label>
                                             </div>
                                             <div class="col-sm-6 col-md-7">
-                                                <textarea class="col-xs-12" name="reason" id="reason" rows="2"><c:out value="${previewSubmit.reason}"/></textarea>
+                                                <textarea maxLength="500" class="col-xs-12" name="reason" id="reason" rows="2"><c:out value="${previewSubmit.reason}"/></textarea>
                                                 <span data-err-ind="reason" class="error-msg"></span>
                                             </div>
                                         </div>

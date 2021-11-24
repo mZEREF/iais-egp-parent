@@ -81,7 +81,7 @@
                                                             <span class="mandatory otherQualificationSpan">*</span>
                                                         </div>
                                                         <div class="col-sm-6 col-md-7">
-                                                            <input type="text" autocomplete="off" name="name--v--${status.index}" id="name--v--${status.index}" value='<c:out value="${personnel.name}"/>'/>
+                                                            <input maxLength="132" type="text" autocomplete="off" name="name--v--${status.index}" id="name--v--${status.index}" value='<c:out value="${personnel.name}"/>'/>
                                                             <span data-err-ind="name--v--${status.index}" class="error-msg"></span>
                                                         </div>
                                                     </div>
@@ -99,7 +99,7 @@
                                                             <span data-err-ind="idType--v--${status.index}" class="error-msg"></span>
                                                         </div>
                                                         <div class="col-sm-3 col-md-4">
-                                                            <input type="text" autocomplete="off" name="idNumber--v--${status.index}" id="idNumber--v--${status.index}" value='<c:out value="${personnel.idNumber}"/>'/>
+                                                            <input maxLength="9" type="text" autocomplete="off" name="idNumber--v--${status.index}" id="idNumber--v--${status.index}" value='<c:out value="${personnel.idNumber}"/>'/>
                                                             <span data-err-ind="idNumber--v--${status.index}" class="error-msg"></span>
                                                         </div>
                                                     </div>
@@ -123,7 +123,7 @@
                                                             <span class="mandatory otherQualificationSpan">*</span>
                                                         </div>
                                                         <div class="col-sm-6 col-md-7">
-                                                            <input type="text" autocomplete="off" name="designation--v--${status.index}" id="designation--v--${status.index}" value='<c:out value="${personnel.designation}"/>'/>
+                                                            <input maxLength="66" type="text" autocomplete="off" name="designation--v--${status.index}" id="designation--v--${status.index}" value='<c:out value="${personnel.designation}"/>'/>
                                                             <span data-err-ind="designation--v--${status.index}" class="error-msg"></span>
                                                         </div>
                                                     </div>
@@ -133,7 +133,7 @@
                                                             <span class="mandatory otherQualificationSpan">*</span>
                                                         </div>
                                                         <div class="col-sm-6 col-md-7">
-                                                            <input type="text" autocomplete="off" name="contactNo--v--${status.index}" id="contactNo--v--${status.index}" value='<c:out value="${personnel.contactNo}"/>'/>
+                                                            <input maxLength="20" type="text" autocomplete="off" name="contactNo--v--${status.index}" id="contactNo--v--${status.index}" value='<c:out value="${personnel.contactNo}"/>'/>
                                                             <span data-err-ind="contactNo--v--${status.index}" class="error-msg"></span>
                                                         </div>
                                                     </div>
@@ -143,7 +143,7 @@
                                                             <span class="mandatory otherQualificationSpan">*</span>
                                                         </div>
                                                         <div class="col-sm-6 col-md-7">
-                                                            <input type="text" autocomplete="off" name="email--v--${status.index}" id="email--v--${status.index}" value='<c:out value="${personnel.email}"/>'/>
+                                                            <input maxLength="66" type="text" autocomplete="off" name="email--v--${status.index}" id="email--v--${status.index}" value='<c:out value="${personnel.email}"/>'/>
                                                             <span data-err-ind="email--v--${status.index}" class="error-msg"></span>
                                                         </div>
                                                     </div>
@@ -163,7 +163,7 @@
                                                             <span class="mandatory otherQualificationSpan">*</span>
                                                         </div>
                                                         <div class="col-sm-6 col-md-7">
-                                                            <input type="text" autocomplete="off" name="expertiseArea--v--${status.index}" id="expertiseArea--v--${status.index}" value='<c:out value="${personnel.expertiseArea}"/>'/>
+                                                            <input maxLength="100" type="text" autocomplete="off" name="expertiseArea--v--${status.index}" id="expertiseArea--v--${status.index}" value='<c:out value="${personnel.expertiseArea}"/>'/>
                                                             <span data-err-ind="expertiseArea--v--${status.index}" class="error-msg"></span>
                                                         </div>
                                                     </div>

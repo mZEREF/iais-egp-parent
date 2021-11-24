@@ -63,7 +63,7 @@
                                                 <span class="mandatory otherQualificationSpan">*</span>
                                             </div>
                                             <div class="col-sm-6 col-md-7">
-                                                <input type="text" autocomplete="off" name="operatorName" id="operatorName" value='<c:out value="${facOperator.designeeName}"/>'/>
+                                                <input maxLength="60" type="text" autocomplete="off" name="operatorName" id="operatorName" value='<c:out value="${facOperator.designeeName}"/>'/>
                                                 <span data-err-ind="designeeName" class="error-msg"></span>
                                             </div>
                                         </div>
@@ -81,7 +81,7 @@
                                                 <span data-err-ind="idType" class="error-msg"></span>
                                             </div>
                                             <div class="col-sm-3 col-md-4">
-                                                <input type="text" autocomplete="off" name="idNumber" id="idNumber" value='<c:out value="${facOperator.idNumber}"/>'/>
+                                                <input maxLength="9" type="text" autocomplete="off" name="idNumber" id="idNumber" value='<c:out value="${facOperator.idNumber}"/>'/>
                                                 <span data-err-ind="idNumber" class="error-msg"></span>
                                             </div>
                                         </div>
@@ -105,7 +105,7 @@
                                                 <span class="mandatory otherQualificationSpan">*</span>
                                             </div>
                                             <div class="col-sm-6 col-md-7">
-                                                <input type="text" autocomplete="off" name="designation" id="designation" value='<c:out value="${facOperator.designation}"/>'/>
+                                                <input maxLength="66" type="text" autocomplete="off" name="designation" id="designation" value='<c:out value="${facOperator.designation}"/>'/>
                                                 <span data-err-ind="designation" class="error-msg"></span>
                                             </div>
                                         </div>
@@ -115,7 +115,7 @@
                                                 <span class="mandatory otherQualificationSpan">*</span>
                                             </div>
                                             <div class="col-sm-6 col-md-7">
-                                                <input type="text" autocomplete="off" name="contactNo" id="contactNo" value='<c:out value="${facOperator.contactNo}"/>'/>
+                                                <input maxLength="20" type="text" autocomplete="off" name="contactNo" id="contactNo" value='<c:out value="${facOperator.contactNo}"/>'/>
                                                 <span data-err-ind="contactNo" class="error-msg"></span>
                                             </div>
                                         </div>
@@ -125,7 +125,7 @@
                                                 <span class="mandatory otherQualificationSpan">*</span>
                                             </div>
                                             <div class="col-sm-6 col-md-7">
-                                                <input type="text" autocomplete="off" name="email" id="email" value='<c:out value="${facOperator.email}"/>'/>
+                                                <input maxLength="66" type="text" autocomplete="off" name="email" id="email" value='<c:out value="${facOperator.email}"/>'/>
                                                 <span data-err-ind="email" class="error-msg"></span>
                                             </div>
                                         </div>

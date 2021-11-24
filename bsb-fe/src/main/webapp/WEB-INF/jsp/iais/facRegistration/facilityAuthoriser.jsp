@@ -83,7 +83,7 @@
                                                         <span class="mandatory otherQualificationSpan">*</span>
                                                     </div>
                                                     <div class="col-sm-6 col-md-7">
-                                                        <input type="text" autocomplete="off" name="name--v--${status.index}" id="name--v--${status.index}" value='<c:out value="${auth.name}"/>'/>
+                                                        <input maxLength="132" type="text" autocomplete="off" name="name--v--${status.index}" id="name--v--${status.index}" value='<c:out value="${auth.name}"/>'/>
                                                         <span data-err-ind="name--v--${status.index}" class="error-msg"></span>
                                                     </div>
                                                 </div>
@@ -101,7 +101,7 @@
                                                         <span data-err-ind="idType--v--${status.index}" class="error-msg"></span>
                                                     </div>
                                                     <div class="col-sm-3 col-md-4">
-                                                        <input type="text" autocomplete="off" name="idNumber--v--${status.index}" id="idNumber--v--${status.index}" value='<c:out value="${auth.idNumber}"/>'/>
+                                                        <input maxLength="9" type="text" autocomplete="off" name="idNumber--v--${status.index}" id="idNumber--v--${status.index}" value='<c:out value="${auth.idNumber}"/>'/>
                                                         <span data-err-ind="idNumber--v--${status.index}" class="error-msg"></span>
                                                     </div>
                                                 </div>
@@ -125,7 +125,7 @@
                                                         <span class="mandatory otherQualificationSpan">*</span>
                                                     </div>
                                                     <div class="col-sm-6 col-md-7">
-                                                        <input type="text" autocomplete="off" name="designation--v--${status.index}" id="designation--v--${status.index}" value='<c:out value="${auth.designation}"/>'/>
+                                                        <input maxLength="66" type="text" autocomplete="off" name="designation--v--${status.index}" id="designation--v--${status.index}" value='<c:out value="${auth.designation}"/>'/>
                                                         <span data-err-ind="designation--v--${status.index}" class="error-msg"></span>
                                                     </div>
                                                 </div>
@@ -135,7 +135,7 @@
                                                         <span class="mandatory otherQualificationSpan">*</span>
                                                     </div>
                                                     <div class="col-sm-6 col-md-7">
-                                                        <input type="text" autocomplete="off" name="contactNo--v--${status.index}" id="contactNo--v--${status.index}" value='<c:out value="${auth.contactNo}"/>'/>
+                                                        <input maxLength="20" type="text" autocomplete="off" name="contactNo--v--${status.index}" id="contactNo--v--${status.index}" value='<c:out value="${auth.contactNo}"/>'/>
                                                         <span data-err-ind="contactNo--v--${status.index}" class="error-msg"></span>
                                                     </div>
                                                 </div>
@@ -145,7 +145,7 @@
                                                         <span class="mandatory otherQualificationSpan">*</span>
                                                     </div>
                                                     <div class="col-sm-6 col-md-7">
-                                                        <input type="text" autocomplete="off" name="email--v--${status.index}" id="email--v--${status.index}" value='<c:out value="${auth.email}"/>'/>
+                                                        <input maxLength="66" type="text" autocomplete="off" name="email--v--${status.index}" id="email--v--${status.index}" value='<c:out value="${auth.email}"/>'/>
                                                         <span data-err-ind="email--v--${status.index}" class="error-msg"></span>
                                                     </div>
                                                 </div>
@@ -164,7 +164,7 @@
                                                         <label for="employmentPeriod--v--${status.index}">Employment Period</label>
                                                     </div>
                                                     <div class="col-sm-6 col-md-7">
-                                                        <input type="text" autocomplete="off" name="employmentPeriod--v--${status.index}" id="employmentPeriod--v--${status.index}" value='<c:out value="${auth.employmentPeriod}"/>'/>
+                                                        <input maxLength="2" type="text" autocomplete="off" name="employmentPeriod--v--${status.index}" id="employmentPeriod--v--${status.index}" value='<c:out value="${auth.employmentPeriod}"/>'/>
                                                         <span data-err-ind="employmentPeriod--v--${status.index}" class="error-msg"></span>
                                                     </div>
                                                 </div>
@@ -187,7 +187,7 @@
                                                         <span class="mandatory otherQualificationSpan">*</span>
                                                     </div>
                                                     <div class="col-sm-6 col-md-7">
-                                                        <input type="text" autocomplete="off" name="workArea--v--${status.index}" id="workArea--v--${status.index}" value='<c:out value="${auth.workArea}"/>'/>
+                                                        <input maxLength="100" type="text" autocomplete="off" name="workArea--v--${status.index}" id="workArea--v--${status.index}" value='<c:out value="${auth.workArea}"/>'/>
                                                         <span data-err-ind="workArea--v--${status.index}" class="error-msg"></span>
                                                     </div>
                                                 </div>

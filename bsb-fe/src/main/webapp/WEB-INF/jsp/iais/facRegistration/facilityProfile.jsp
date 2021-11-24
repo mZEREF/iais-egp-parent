@@ -45,7 +45,7 @@
                                                 <span class="mandatory otherQualificationSpan">*</span>
                                             </div>
                                             <div class="col-sm-6 col-md-7">
-                                                <input type="text" autocomplete="off" name="facName" id="facName" value='<c:out value="${facProfile.facName}"/>'/>
+                                                <input maxLength="250" type="text" autocomplete="off" name="facName" id="facName" value='<c:out value="${facProfile.facName}"/>'/>
                                                 <span data-err-ind="facName" class="error-msg"></span>
                                             </div>
                                         </div>
@@ -66,7 +66,7 @@
                                                 <span class="mandatory otherQualificationSpan">*</span>
                                             </div>
                                             <div class="col-sm-6 col-md-7">
-                                                <input type="text" autocomplete="off" name="block" id="block" value='<c:out value="${facProfile.block}"/>'/>
+                                                <input maxLength="10" type="text" autocomplete="off" name="block" id="block" value='<c:out value="${facProfile.block}"/>'/>
                                                 <span data-err-ind="block" class="error-msg"></span>
                                             </div>
                                         </div>
@@ -77,7 +77,7 @@
                                                 <span class="mandatory otherQualificationSpan">*</span>
                                             </div>
                                             <div class="col-sm-6 col-md-7">
-                                                <input type="text" autocomplete="off" name="streetName" id="streetName" value='<c:out value="${facProfile.streetName}"/>'/>
+                                                <input maxLength="32" type="text" autocomplete="off" name="streetName" id="streetName" value='<c:out value="${facProfile.streetName}"/>'/>
                                                 <span data-err-ind="streetName" class="error-msg"></span>
                                             </div>
                                         </div>
@@ -88,14 +88,14 @@
                                                 <span class="mandatory otherQualificationSpan">*</span>
                                             </div>
                                             <div class="col-sm-2">
-                                                <input type="text" autocomplete="off" name="floor" id="floor" value='<c:out value="${facProfile.floor}"/>'/>
+                                                <input maxLength="4" type="text" autocomplete="off" name="floor" id="floor" value='<c:out value="${facProfile.floor}"/>'/>
                                                 <span data-err-ind="floor" class="error-msg"></span>
                                             </div>
                                             <div class="hidden-xs col-sm-1" style="text-align: center">
                                                 <p>-</p>
                                             </div>
                                             <div class="col-sm-3 col-md-4">
-                                                <input type="text" autocomplete="off" name="unitNo" id="unitNo" value='<c:out value="${facProfile.unitNo}"/>'/>
+                                                <input maxLength="4" type="text" autocomplete="off" name="unitNo" id="unitNo" value='<c:out value="${facProfile.unitNo}"/>'/>
                                                 <span data-err-ind="unitNo" class="error-msg"></span>
                                             </div>
                                         </div>
@@ -106,7 +106,7 @@
                                                 <span class="mandatory otherQualificationSpan">*</span>
                                             </div>
                                             <div class="col-sm-6 col-md-7">
-                                                <input type="text" autocomplete="off" name="postalCode" id="postalCode" value='<c:out value="${facProfile.postalCode}"/>'/>
+                                                <input maxLength="6" type="text" autocomplete="off" name="postalCode" id="postalCode" value='<c:out value="${facProfile.postalCode}"/>'/>
                                                 <span data-err-ind="postalCode" class="error-msg"></span>
                                             </div>
                                         </div>
