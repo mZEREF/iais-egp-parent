@@ -4,13 +4,17 @@
     <div class="panel-heading">
         <h4 class="panel-title">
             <strong>
-                AR Treatment Subsidies
+                AR Treatment Co-funding
             </strong>
         </h4>
     </div>
     <div id="patientDetails" class="panel-collapse collapse in">
         <div class="panel-body">
             <div class="panel-main-content form-horizontal">
+                <c:set var="patientDto" value="${arSuperDataSubmissionDto.patientInfoDto.patient}" />
+                <h3>
+                    <p><label style="font-family:'Arial Negreta', 'Arial Normal', 'Arial';font-weight:700;"><c:out value="${patientDto.name}"/>&nbsp</label><label style="font-family:'Arial Normal', 'Arial';font-weight:400;">${empty patientDto.idNumber ? "" : "("}<c:out value="${patientDto.idNumber}"/>${empty patientDto.idNumber ? "" : ")"} </label></p>
+                </h3>
                 <input name="freshCount" type="hidden" value="${freshCount}"/>
                 <input name="frozenCount" type="hidden" value="${frozenCount}"/>
                 <iais:row>
