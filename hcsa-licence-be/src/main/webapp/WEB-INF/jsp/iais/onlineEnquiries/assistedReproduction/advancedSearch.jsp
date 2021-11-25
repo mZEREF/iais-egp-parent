@@ -1111,7 +1111,7 @@
                                                 <input class="form-check-input"
                                                        type="checkbox"
                                                        name="pgtMCom" id="pgtMCom"
-                                                       <c:if test="${ assistedReproductionEnquiryFilterDto.pgtM =='on'  }">checked</c:if>
+                                                       <c:if test="${ assistedReproductionEnquiryFilterDto.pgtMCom =='on'  }">checked</c:if>
                                                        aria-invalid="false">
                                                 <label class="form-check-label"
                                                        for="pgtMCom"><span
@@ -1123,7 +1123,7 @@
                                                 <input class="form-check-input"
                                                        type="checkbox"
                                                        name="pgtMRare" id="pgtMRare"
-                                                       <c:if test="${ assistedReproductionEnquiryFilterDto.pgtM =='on'  }">checked</c:if>
+                                                       <c:if test="${ assistedReproductionEnquiryFilterDto.pgtMRare =='on'  }">checked</c:if>
                                                        aria-invalid="false">
                                                 <label class="form-check-label"
                                                        for="pgtMRare"><span
@@ -1135,7 +1135,7 @@
                                                 <input class="form-check-input"
                                                        type="checkbox"
                                                        name="pgtMEbt" id="pgtMEbt"
-                                                       <c:if test="${ assistedReproductionEnquiryFilterDto.pgtM =='on'  }">checked</c:if>
+                                                       <c:if test="${ assistedReproductionEnquiryFilterDto.pgtMEbt =='on'  }">checked</c:if>
                                                        aria-invalid="false">
                                                 <label class="form-check-label"
                                                        for="pgtMEbt"><span

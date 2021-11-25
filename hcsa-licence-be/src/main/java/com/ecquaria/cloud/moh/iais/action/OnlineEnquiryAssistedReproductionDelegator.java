@@ -259,8 +259,12 @@ public class OnlineEnquiryAssistedReproductionDelegator {
 
         String PGT=ParamUtil.getString(request,"PGT");
         arFilterDto.setPGT(PGT);
-        String pgtM=ParamUtil.getString(request,"pgtM");
-        arFilterDto.setPgtM(pgtM);
+        String pgtMCom=ParamUtil.getString(request,"pgtMCom");
+        arFilterDto.setPgtMCom(pgtMCom);
+        String pgtMRare=ParamUtil.getString(request,"pgtMRare");
+        arFilterDto.setPgtMRare(pgtMRare);
+        String pgtMEbt=ParamUtil.getString(request,"pgtMEbt");
+        arFilterDto.setPgtMEbt(pgtMEbt);
         String pgtSr=ParamUtil.getString(request,"pgtSr");
         arFilterDto.setPgtSr(pgtSr);
         String pgtA=ParamUtil.getString(request,"pgtA");
