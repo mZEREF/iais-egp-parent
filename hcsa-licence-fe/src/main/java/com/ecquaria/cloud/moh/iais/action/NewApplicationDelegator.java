@@ -4864,21 +4864,29 @@ public class NewApplicationDelegator {
     }
 
 
-    private void genPrimaryDoc(Map<String, File> fileMap,String docKey,HcsaSvcDocConfigDto hcsaSvcDocConfigDto,
-                                      Map<String,File> saveFileMap,List<AppGrpPrimaryDocDto> currDocDtoList,List<AppGrpPrimaryDocDto> newAppGrpPrimaryDocDtoList,
-                                      String premVal,String premType,boolean isRfi,List<AppGrpPrimaryDocDto> oldPrimaryDotList,String appGrpId,String appNo,String appType,String dupForPrem){
-        if(fileMap != null){
-            fileMap.forEach((k,v)->{
+    private void genPrimaryDoc(Map<String, File> fileMap, String docKey, HcsaSvcDocConfigDto hcsaSvcDocConfigDto,
+            Map<String, File> saveFileMap, List<AppGrpPrimaryDocDto> currDocDtoList,
+            List<AppGrpPrimaryDocDto> newAppGrpPrimaryDocDtoList,
+            String premVal, String premType, boolean isRfi, List<AppGrpPrimaryDocDto> oldPrimaryDotList, String appGrpId, String appNo,
+            String appType, String dupForPrem) {
+        if (fileMap != null) {
+            Set<Integer> nums = IaisCommonUtils.genNewHashSet();
+            for (Map.Entry<String, File> entry : fileMap.entrySet()) {
+                String k = entry.getKey();
+                File v = entry.getValue();
                 int index = k.indexOf(docKey);
-                String seqNumStr = k.substring(index+docKey.length());
+                String seqNumStr = k.substring(index + docKey.length());
                 int seqNum = -1;
-                try{
+                try {
                     seqNum = Integer.parseInt(seqNumStr);
-                }catch (Exception e){
+                } catch (Exception e) {
                     log.error(StringUtil.changeForLog("doc seq num can not parse to int"));
                 }
+                while (!nums.add(seqNum)) {
+                    seqNum++;
+                }
                 AppGrpPrimaryDocDto primaryDocDto = new AppGrpPrimaryDocDto();
-                if(v != null){
+                if (v != null) {
                     primaryDocDto.setSvcComDocId(hcsaSvcDocConfigDto.getId());
                     primaryDocDto.setSvcComDocName(hcsaSvcDocConfigDto.getDocTitle());
                     primaryDocDto.setDocName(v.getName());
@@ -4891,46 +4899,56 @@ public class NewApplicationDelegator {
                     primaryDocDto.setPremisessName(premVal);
                     primaryDocDto.setPremisessType(premType);
                     primaryDocDto.setSeqNum(seqNum);
-                    primaryDocDto.setVersion(getAppGrpPrimaryDocVersion(hcsaSvcDocConfigDto.getId(),oldPrimaryDotList,isRfi,md5Code,appGrpId,appNo,appType,seqNum,dupForPrem));
-                    saveFileMap.put(premVal+hcsaSvcDocConfigDto.getId()+seqNum,v);
-                }else{
-                    primaryDocDto = getAppGrpPrimaryDocByConfigIdAndSeqNum(currDocDtoList,hcsaSvcDocConfigDto.getId(),seqNum,premVal,premType);
+                    primaryDocDto.setVersion(
+                            getAppGrpPrimaryDocVersion(hcsaSvcDocConfigDto.getId(), oldPrimaryDotList, isRfi, md5Code, appGrpId, appNo,
+                                    appType, seqNum, dupForPrem));
+                    saveFileMap.put(premVal + hcsaSvcDocConfigDto.getId() + seqNum, v);
+                } else {
+                    primaryDocDto = getAppGrpPrimaryDocByConfigIdAndSeqNum(currDocDtoList, hcsaSvcDocConfigDto.getId(), seqNum,
+                            premVal, premType);
                 }
                 //the data is retrieved from the DTO a second time
-                fileMap.put(k,null);
-                if(primaryDocDto != null){
+                fileMap.put(k, null);
+                if (primaryDocDto != null) {
                     newAppGrpPrimaryDocDtoList.add(primaryDocDto);
-                }
-            });
-        }
-    }
-    private void saveFileAndSetFileId(List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtoList,Map<String,File> saveFileMap){
-        Map<String,File> passValidateFileMap = IaisCommonUtils.genNewHashMap();
-        for (AppGrpPrimaryDocDto primaryDocDto : appGrpPrimaryDocDtoList) {
-            if(primaryDocDto.isPassValidate()){
-                String premIndex = "";
-                if(!StringUtil.isEmpty(primaryDocDto.getPremisessName())){
-                    premIndex = primaryDocDto.getPremisessName();
-                }
-                String fileMapKey = premIndex + primaryDocDto.getSvcComDocId() + primaryDocDto.getSeqNum();
-                File file = saveFileMap.get(fileMapKey);
-                if(file != null){
-                    passValidateFileMap.put(fileMapKey,file);
                 }
             }
         }
-        if(passValidateFileMap.size() > 0){
-            List<File> fileList = new ArrayList<>(passValidateFileMap.values());
-            List<String> fileRepoIdList = appSubmissionService.saveFileList(fileList);
-            int i = 0;
-            for(AppGrpPrimaryDocDto appGrpPrimaryDocDto:appGrpPrimaryDocDtoList){
-                String premIndexNo = appGrpPrimaryDocDto.getPremisessName();
-                if(StringUtil.isEmpty(premIndexNo)){
+    }
+
+    private void saveFileAndSetFileId(List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtoList,Map<String,File> saveFileMap) {
+        Map<String, File> passValidateFileMap = IaisCommonUtils.genNewLinkedHashMap();
+        for (AppGrpPrimaryDocDto primaryDocDto : appGrpPrimaryDocDtoList) {
+            if (primaryDocDto.isPassValidate()) {
+                String premIndexNo = primaryDocDto.getPremisessName();
+                if (StringUtil.isEmpty(premIndexNo)) {
                     premIndexNo = "";
                 }
-                String saveFileMapKey = premIndexNo+appGrpPrimaryDocDto.getSvcComDocId()+appGrpPrimaryDocDto.getSeqNum();
+                String fileMapKey = premIndexNo + primaryDocDto.getSvcComDocId() + primaryDocDto.getSeqNum();
+                File file = saveFileMap.get(fileMapKey);
+                if (file != null) {
+                    passValidateFileMap.put(fileMapKey, file);
+                }
+            }
+        }
+        log.info("Primary Doc size: " + appGrpPrimaryDocDtoList.size());
+        if (saveFileMap.size() != appGrpPrimaryDocDtoList.size()) {
+            log.info("Save file size: " + saveFileMap.size());
+        }
+        if (passValidateFileMap.size() > 0) {
+            List<File> fileList = new ArrayList<>(passValidateFileMap.values());
+            List<String> fileRepoIdList = appSubmissionService.saveFileList(fileList);
+            int fileRepo = fileRepoIdList.size();
+            log.info("File Repo size: " + fileRepo);
+            int i = 0;
+            for (AppGrpPrimaryDocDto appGrpPrimaryDocDto : appGrpPrimaryDocDtoList) {
+                String premIndexNo = appGrpPrimaryDocDto.getPremisessName();
+                if (StringUtil.isEmpty(premIndexNo)) {
+                    premIndexNo = "";
+                }
+                String saveFileMapKey = premIndexNo + appGrpPrimaryDocDto.getSvcComDocId() + appGrpPrimaryDocDto.getSeqNum();
                 File file = saveFileMap.get(saveFileMapKey);
-                if(file != null){
+                if (file != null) {
                     appGrpPrimaryDocDto.setFileRepoId(fileRepoIdList.get(i));
                     i++;
                 }
