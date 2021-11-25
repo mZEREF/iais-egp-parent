@@ -87,13 +87,13 @@ public class FECorppassLandingDelegator {
         if (AppConsts.YES.equals(ssoLoginFlag)) {
             identityNo = (String) request.getAttribute("ssoNric");
             uen = (String) request.getAttribute("ssoUen");
-        } else if (FELandingDelegator.LOGIN_MODE_REAL.equals(openTestMode)
-                || FELandingDelegator.LOGIN_MODE_REAL_OIDC.equals(openTestMode)) {
+        } else if (FELandingDelegator.LOGIN_MODE_REAL.equals(openTestMode)) {
             String samlArt = ParamUtil.getString(request, Constants.SAML_ART);
             LoginInfo loginInfo = SIMUtil4Corpass.doCorpPassArtifactResolution(request, samlArt);
 
             if (loginInfo == null) {
                 log.info("<== oLoginInfo is empty ==>");
+                ParamUtil.setRequestAttr(request, UserConstants.ACCOUNT_EXISTS_VALIDATE_FLAG, "N");
                 return;
             }
 
@@ -103,6 +103,7 @@ public class FECorppassLandingDelegator {
 
             if (userInfoToken == null) {
                 log.info("<== userInfoToken is empty ==>");
+                ParamUtil.setRequestAttr(request, UserConstants.ACCOUNT_EXISTS_VALIDATE_FLAG, "N");
                 return;
             }
 
