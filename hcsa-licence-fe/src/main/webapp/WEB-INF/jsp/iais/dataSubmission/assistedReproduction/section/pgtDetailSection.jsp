@@ -29,7 +29,7 @@
                                        aria-invalid="false">
                                 <label class="form-check-label"
                                        for="isPgtMCom"><span
-                                        class="check-square"></span>PGT-M Work-up (Common)</label>
+                                        class="check-square"></span><iais:code code="PGTTP001"/></label>
                             </div>
                         </iais:value>
                         <iais:value width="6" cssClass="col-md-6">
@@ -40,7 +40,7 @@
                                        aria-invalid="false">
                                 <label class="form-check-label"
                                        for="isPgtMRare"><span
-                                        class="check-square"></span>PGT-M Work-up (Rare)</label>
+                                        class="check-square"></span><iais:code code="PGTTP002"/></label>
                             </div>
                         </iais:value>
                         <iais:value width="6" cssClass="col-md-6">
@@ -53,7 +53,7 @@
                                        aria-invalid="false">
                                 <label class="form-check-label"
                                        for="isPgtMEbt"><span
-                                        class="check-square"></span>PGT-M Embryo Biopsy + Testing</label>
+                                        class="check-square"></span><iais:code code="PGTTP003"/></label>
                             </div>
                         </iais:value>
                         <iais:value width="6" cssClass="col-md-6">
@@ -64,7 +64,7 @@
                                        aria-invalid="false">
                                 <label class="form-check-label"
                                        for="isPgtSr"><span
-                                        class="check-square"></span>PGT-SR Embryo Biopsy + Testing</label>
+                                        class="check-square"></span><iais:code code="PGTTP004"/></label>
                             </div>
                         </iais:value>
                         <iais:value width="6" cssClass="col-md-6">
@@ -77,7 +77,7 @@
                                        aria-invalid="false">
                                 <label class="form-check-label"
                                        for="isPgtA"><span
-                                        class="check-square"></span>PGT-A</label>
+                                        class="check-square"></span><iais:code code="PGTTP005"/></label>
                             </div>
                         </iais:value>
                         <iais:value width="6" cssClass="col-md-6">
@@ -88,7 +88,7 @@
                                        aria-invalid="false">
                                 <label class="form-check-label"
                                        for="isPtt"><span
-                                        class="check-square"></span>PTT</label>
+                                        class="check-square"></span><iais:code code="PGTTP006"/></label>
                             </div>
                         </iais:value>
                         <iais:value width="6" cssClass="col-md-6">
@@ -101,7 +101,7 @@
                                        aria-invalid="false">
                                 <label class="form-check-label"
                                        for="isOtherPgt"><span
-                                        class="check-square"></span>Others</label>
+                                        class="check-square"></span><iais:code code="PGTTP007"/></label>
                             </div>
                             <span class="error-msg" name="iaisErrorMsg" id="error_pgt_type"></span>
                         </iais:value>
