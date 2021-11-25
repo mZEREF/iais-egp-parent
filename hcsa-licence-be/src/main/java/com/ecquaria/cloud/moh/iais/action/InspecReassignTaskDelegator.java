@@ -17,6 +17,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterMessageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.PoolRoleCheckDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionSubPoolQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionTaskPoolListDto;
+import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.HcsaTaskAssignDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.GroupRoleFieldDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.SuperPoolTaskQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.UserGroupCorrelationDto;
@@ -26,7 +27,15 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
-import com.ecquaria.cloud.moh.iais.helper.*;
+import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
+import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
+import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
+import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
+import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
+import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
+import com.ecquaria.cloud.moh.iais.helper.SqlHelper;
+import com.ecquaria.cloud.moh.iais.helper.SystemParamUtil;
+import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
 import com.ecquaria.cloud.moh.iais.service.InboxMsgService;
 import com.ecquaria.cloud.moh.iais.service.InspectionAssignTaskService;
@@ -40,7 +49,10 @@ import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author weilu
@@ -106,6 +118,7 @@ public class InspecReassignTaskDelegator {
         ParamUtil.setSessionAttr(bpc.request, "isLeader", Boolean.FALSE);
         ParamUtil.setSessionAttr(bpc.request, "taskDtos", null);
         ParamUtil.setSessionAttr(bpc.request, "reassignFilterAppNo", null);
+        ParamUtil.setSessionAttr(bpc.request, "hcsaTaskAssignDto", null);
     }
 
     /**
@@ -178,8 +191,12 @@ public class InspecReassignTaskDelegator {
             QueryHelp.setMainSql("inspectionQuery", "reassignPoolSearch", searchParam);
             searchResult = inspectionService.getSupPoolByParam(searchParam);
             searchResult = inspectionService.getGroupLeadName(searchResult, loginContext);
+            //set all address data map for filter address
+            List<String> appGroupIds = inspectionService.getSuperPoolAppGrpIdByResult(searchResult);
+            HcsaTaskAssignDto hcsaTaskAssignDto = inspectionService.getHcsaTaskAssignDtoByAppGrp(appGroupIds);
             List<InspectionSubPoolQueryDto> reassignPool = searchResult.getRows();
             List<TaskDto> taskDtos = getSupervisorPoolByGroupWordId(workGroupIds, loginContext);
+            ParamUtil.setSessionAttr(bpc.request, "hcsaTaskAssignDto", hcsaTaskAssignDto);
             ParamUtil.setSessionAttr(bpc.request, "taskDtos", (Serializable) taskDtos);
             ParamUtil.setSessionAttr(bpc.request, "superPool", (Serializable) reassignPool);
             ParamUtil.setSessionAttr(bpc.request, "appTypeOption", (Serializable) appTypeOption);
@@ -318,9 +335,6 @@ public class InspecReassignTaskDelegator {
         }
         if (!StringUtil.isEmpty(application_no)) {
             searchParam.addFilter("application_no", application_no, true);
-            ParamUtil.setSessionAttr(bpc.request, "reassignFilterAppNo", application_no);
-        } else {
-            ParamUtil.setSessionAttr(bpc.request, "reassignFilterAppNo", null);
         }
         if (!StringUtil.isEmpty(application_type)) {
             searchParam.addFilter("application_type", application_type, true);
@@ -336,9 +350,18 @@ public class InspecReassignTaskDelegator {
         }
         if (!StringUtil.isEmpty(hci_address)) {
             searchParam.addFilter("hci_address", hci_address, true);
+            //filter unit no for group
+            searchParam = filterUnitNoForGroup(searchParam, hci_address, bpc.request);
         }
         ParamUtil.setSessionAttr(bpc.request, "supTaskSearchParam", searchParam);
         ParamUtil.setSessionAttr(bpc.request, "groupRoleFieldDto", groupRoleFieldDto);
+    }
+
+    private SearchParam filterUnitNoForGroup(SearchParam searchParam, String hci_address, HttpServletRequest request) {
+        HcsaTaskAssignDto hcsaTaskAssignDto = (HcsaTaskAssignDto)ParamUtil.getSessionAttr(request, "hcsaTaskAssignDto");
+        searchParam = inspectionAssignTaskService.setAppGrpIdsByUnitNos(searchParam, hci_address, hcsaTaskAssignDto, "T5.ID", "appGroup_list");
+
+        return searchParam;
     }
 
     private List<TaskDto> getSupervisorPoolByGroupWordId(List<String> workGroupIds, LoginContext loginContext) {
@@ -411,7 +434,10 @@ public class InspecReassignTaskDelegator {
         QueryHelp.setMainSql("inspectionQuery", "reassignPoolSearch", searchParam);
         SearchResult<InspectionSubPoolQueryDto> searchResult = inspectionService.getSupPoolByParam(searchParam);
         searchResult = inspectionService.getGroupLeadName(searchResult, loginContext);
-
+        //set all address data map for filter address
+        List<String> appGroupIds = inspectionService.getSuperPoolAppGrpIdByResult(searchResult);
+        HcsaTaskAssignDto hcsaTaskAssignDto = inspectionService.getHcsaTaskAssignDtoByAppGrp(appGroupIds);
+        ParamUtil.setSessionAttr(bpc.request, "hcsaTaskAssignDto", hcsaTaskAssignDto);
         ParamUtil.setSessionAttr(bpc.request, "supTaskSearchParam", searchParam);
         ParamUtil.setSessionAttr(bpc.request, "supTaskSearchResult", searchResult);
     }

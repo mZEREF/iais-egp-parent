@@ -106,7 +106,6 @@ public class InspectionSearchDelegator {
         ParamUtil.setSessionAttr(bpc.request, "superPoolRoleIds", null);
         ParamUtil.setSessionAttr(bpc.request, "assignMap", null);
         ParamUtil.setSessionAttr(bpc.request, "commonPoolStatus", null);
-        ParamUtil.setSessionAttr(bpc.request, "reassignFilterAppNo", null);
         ParamUtil.setSessionAttr(bpc.request, "hcsaTaskAssignDto", null);
     }
 
@@ -304,9 +303,6 @@ public class InspectionSearchDelegator {
         }
         if(!StringUtil.isEmpty(application_no)){
             searchParam.addFilter("application_no", application_no,true);
-            ParamUtil.setSessionAttr(bpc.request, "reassignFilterAppNo", application_no);
-        } else {
-            ParamUtil.setSessionAttr(bpc.request, "reassignFilterAppNo", null);
         }
         if(!StringUtil.isEmpty(application_type)){
             searchParam.addFilter("application_type", application_type,true);
