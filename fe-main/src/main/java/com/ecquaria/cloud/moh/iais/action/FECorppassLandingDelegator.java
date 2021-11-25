@@ -94,6 +94,8 @@ public class FECorppassLandingDelegator {
 
             if (loginInfo == null) {
                 log.info("<== oLoginInfo is empty ==>");
+                ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG , "Invalid Login.");
+                ParamUtil.setRequestAttr(request, UserConstants.ACCOUNT_EXISTS_VALIDATE_FLAG, "N");
                 return;
             }
 
@@ -103,6 +105,8 @@ public class FECorppassLandingDelegator {
 
             if (userInfoToken == null) {
                 log.info("<== userInfoToken is empty ==>");
+                ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG , "Invalid Login.");
+                ParamUtil.setRequestAttr(request, UserConstants.ACCOUNT_EXISTS_VALIDATE_FLAG, "N");
                 return;
             }
 
