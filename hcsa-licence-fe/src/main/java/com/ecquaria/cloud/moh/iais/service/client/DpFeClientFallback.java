@@ -1,11 +1,13 @@
 package com.ecquaria.cloud.moh.iais.service.client;
 
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DpSuperDataSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PgtStageDto;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * @Description DpFeClientFallback
@@ -58,6 +60,11 @@ public class DpFeClientFallback implements DpFeClient{
     public FeignResponseEntity<DpSuperDataSubmissionDto> getDpSuperDataSubmissionDtoDraftByConds(String orgId, String type,
             String hciCode) {
         return getFeignResponseEntity(orgId, type, hciCode);
+    }
+
+    @Override
+    public FeignResponseEntity<List<PgtStageDto>> listPgtStageByPatientCode(String patientCode) {
+        return getFeignResponseEntity(patientCode);
     }
 
     @Override

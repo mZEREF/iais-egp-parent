@@ -326,6 +326,39 @@
                         <span class="error-msg" name="iaisErrorMsg" id="error_isPgtCoFunding"></span>
                     </div>
                 </iais:row>
+                <div <c:if test="${ count<6 }">style="display: none"</c:if>>
+                    <iais:row>
+                        <iais:field width="6" value="Is there an Appeal?" mandatory="true"/>
+                        <div class="col-md-6">
+                            <iais:value width="3" cssClass="col-md-3">
+                                <div class="form-check">
+                                    <input class="form-check-input"
+                                           type="radio"
+                                           name="isThereAppeal"
+                                           value="1"
+                                           id="appealYes"
+                                           <c:if test="${ arSuperDataSubmissionDto.pgtStageDto.isThereAppeal ==1 }">checked</c:if>
+                                           aria-invalid="false">
+                                    <label class="form-check-label"
+                                           for="appealYes"><span
+                                            class="check-circle"></span>Yes</label>
+                                </div>
+                            </iais:value>
+                            <iais:value width="3" cssClass="col-md-3">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio"
+                                           name="isThereAppeal" value="0" id="appealNo"
+                                           <c:if test="${arSuperDataSubmissionDto.pgtStageDto.isThereAppeal == 0}">checked</c:if>
+                                           aria-invalid="false">
+                                    <label class="form-check-label"
+                                           for="appealNo"><span
+                                            class="check-circle"></span>No</label>
+                                </div>
+                            </iais:value>
+                            <span class="error-msg" name="iaisErrorMsg" id="error_isThereAppeal"></span>
+                        </div>
+                    </iais:row>
+                </div>
 
                 <iais:row>
                     <iais:field width="6" value="Embryos were Biospied At" mandatory="true"/>

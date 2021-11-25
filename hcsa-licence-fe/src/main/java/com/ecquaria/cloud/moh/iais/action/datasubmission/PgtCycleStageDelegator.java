@@ -15,6 +15,7 @@ import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.client.ArFeClient;
+import com.ecquaria.cloud.moh.iais.service.client.DpFeClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
@@ -35,6 +36,9 @@ public class PgtCycleStageDelegator extends CommonDelegator{
 
     @Autowired
     private ArFeClient arFeClient;
+    @Autowired
+    private DpFeClient dpFeClient;
+
     @Override
     public void start(BaseProcessClass bpc) {
         AuditTrailHelper.auditFunction("Assisted Reproduction", "Preimplantation Genetic Testing");
@@ -49,6 +53,25 @@ public class PgtCycleStageDelegator extends CommonDelegator{
             arSuperDataSubmissionDto.getPgtStageDto().setIsPgtCoFunding(0);
             arSuperDataSubmissionDto.getPgtStageDto().setIsThereAppeal(0);
         }
+        String patientCode=arSuperDataSubmissionDto.getPatientInfoDto().getPatient().getPatientCode();
+
+        List<PgtStageDto> oldPgtList=dpFeClient.listPgtStageByPatientCode(patientCode).getEntity();
+        int count =0;
+        int countNo =0;
+        if(oldPgtList!=null){
+            for (PgtStageDto pgt:oldPgtList
+                 ) {
+                if(pgt.getIsPgtMEbt()+pgt.getIsPgtMCom()+pgt.getIsPgtMRare()+pgt.getIsPgtSr()>0){
+                    if(pgt.getIsThereAppeal()==0){
+                        countNo++;
+                    }
+                    count++;
+                }
+
+            }
+        }
+        ParamUtil.setSessionAttr(bpc.request, "count",count);
+        ParamUtil.setSessionAttr(bpc.request, "countNo",countNo);
 
         ParamUtil.setSessionAttr(bpc.request, DataSubmissionConstant.AR_DATA_SUBMISSION,arSuperDataSubmissionDto);
     }
@@ -199,7 +222,16 @@ public class PgtCycleStageDelegator extends CommonDelegator{
             String otherBiopsyAddr = ParamUtil.getString(request, "otherBiopsyAddr");
             pgtStageDto.setOtherBiopsyAddr(otherBiopsyAddr);
         }
-
+        int count = (int) ParamUtil.getSessionAttr(request,"count");
+        if(count>=6){
+            String isThereAppeal = ParamUtil.getString(request, "isThereAppeal");
+            if("0".equals(isThereAppeal)){
+                pgtStageDto.setIsThereAppeal(0);
+            }
+            if("1".equals(isThereAppeal)){
+                pgtStageDto.setIsThereAppeal(1);
+            }
+        }
         DataSubmissionHelper.setCurrentArDataSubmission(arSuperDataSubmissionDto,bpc.request);
         String actionType=ParamUtil.getRequestString(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE);
         if("confirm".equals(actionType)){

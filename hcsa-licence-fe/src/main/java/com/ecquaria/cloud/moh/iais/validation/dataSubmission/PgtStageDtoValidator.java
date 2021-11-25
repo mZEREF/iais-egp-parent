@@ -3,6 +3,7 @@ package com.ecquaria.cloud.moh.iais.validation.dataSubmission;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PgtStageDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
+import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidator;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
@@ -30,7 +31,11 @@ public class PgtStageDtoValidator implements CustomizeValidator {
         ArSuperDataSubmissionDto arSuperDataSubmissionDto= DataSubmissionHelper.getCurrentArDataSubmission(request);
         PgtStageDto pgtStageDto=arSuperDataSubmissionDto.getPgtStageDto();
         String errMsgErr006 = MessageUtil.getMessageDesc("GENERAL_ERR0006");
+        int countNo = (int) ParamUtil.getSessionAttr(request,"countNo");
 
+        if(countNo>=6&&pgtStageDto.getIsThereAppeal()==0){
+            errorMap.put("isThereAppeal", "Disallow submission if patient's total PGT-M/SR co-funded cycles entered in the system is ≥6 and option selected for 'Is there an Appeal?' is 'No'");
+        }
         if(pgtStageDto.getIsPgtA()+pgtStageDto.getIsOtherPgt()+pgtStageDto.getIsPgtMRare()+pgtStageDto.getIsPgtMCom()+pgtStageDto.getIsPgtMEbt()+pgtStageDto.getIsPtt()+pgtStageDto.getIsPgtSr()==0){
             errorMap.put("pgt_type", errMsgErr006);
         }
