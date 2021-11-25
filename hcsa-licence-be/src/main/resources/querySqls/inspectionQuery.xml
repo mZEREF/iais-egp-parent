@@ -140,6 +140,7 @@
              and T7.TASK_STATUS in ('TSTATUS001','TSTATUS002')
             ) T5
             WHERE 1 = 1
+            <#if appGroup_list??> and ${appGroup_list} </#if>
             <#if application_no??> and charindex(:application_no, T5.APPLICATION_NO) >0 </#if>
             <#if taskUserId??> and T5.USER_ID = :taskUserId </#if>
             <#if application_type??> and T5.APP_TYPE = :application_type</#if>
@@ -208,6 +209,7 @@
              <#if taskUserId??> and T7.USER_ID = :taskUserId </#if>
             ) T5
             WHERE 1 = 1
+            <#if appGroup_list??> and ${appGroup_list} </#if>
             <#if application_no??> and charindex(:application_no, T5.APPLICATION_NO) >0 </#if>
             <#if application_type??> and T5.APP_TYPE = :application_type</#if>
             <#if application_status??> and T5.STATUS = :application_status</#if>
@@ -234,8 +236,7 @@
             <#if hci_code??> and charindex(:hci_code, T4.HCI_CODE) >0 </#if>
             <#if application_type??> and T3.APP_TYPE = :application_type</#if>
             <#if application_status??> and ${application_status}</#if>
-            <#if userId??> and T1.USER_ID = :userId </#if>
-            <#if commonPoolStatus??> and T1.USER_ID is NULL</#if>
+            <#if taskUserId??> and T1.USER_ID = :taskUserId </#if>
         ]]>
     </sql>
 

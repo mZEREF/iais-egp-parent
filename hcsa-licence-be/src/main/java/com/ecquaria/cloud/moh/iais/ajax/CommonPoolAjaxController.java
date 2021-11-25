@@ -291,10 +291,10 @@ public class CommonPoolAjaxController {
         Map<String, Object> jsonMap = IaisCommonUtils.genNewHashMap();
         //get session data
         String appGroupId = MaskUtil.unMaskValue("appGroupId", request.getParameter("groupId"));
-        String systemPoolFilterAppNo = (String) ParamUtil.getSessionAttr(request, "systemPoolFilterAppNo");
         LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
         Map<String, SuperPoolTaskQueryDto> assignMap = (Map<String, SuperPoolTaskQueryDto>) ParamUtil.getSessionAttr(request, "assignMap");
         HcsaTaskAssignDto hcsaTaskAssignDto = (HcsaTaskAssignDto)ParamUtil.getSessionAttr(request, "hcsaTaskAssignDto");
+        SearchParam searchParamGroup = (SearchParam) ParamUtil.getSessionAttr(request, "systemSearchParam");
         if(!StringUtil.isEmpty(appGroupId)) {
             //get userId
             String userId = loginContext.getUserId();
@@ -309,6 +309,9 @@ public class CommonPoolAjaxController {
             searchParam.setPageSize(10);
             searchParam.setPageNo(1);
             searchParam.setSort("REF_NO", SearchParam.ASCENDING);
+            //set filter common
+            searchParam = setFilterByAppGrpParamAndNo(searchParamGroup, null, searchParam, hcsaTaskAssignDto, "T3.STATUS", "T4.ID","appPremId_list");
+
             //set filters
             if (!IaisCommonUtils.isEmpty(appCorrId_list)) {
                 String appPremCorrId = SqlHelper.constructInCondition("T1.REF_NO", appCorrId_list.size());
@@ -317,7 +320,6 @@ public class CommonPoolAjaxController {
                     searchParam.addFilter("T1.REF_NO" + i, appCorrId_list.get(i));
                 }
             }
-
             StringBuilder sb2 = new StringBuilder("(");
             for (int i = 0; i < status.size(); i++) {
                 sb2.append(":tStatus").append(i).append(',');
@@ -329,9 +331,6 @@ public class CommonPoolAjaxController {
             }
             if(!StringUtil.isEmpty(userId)){
                 searchParam.addFilter("userId", userId,true);
-            }
-            if(!StringUtil.isEmpty(systemPoolFilterAppNo)){
-                searchParam.addFilter("systemPoolFilterAppNo", systemPoolFilterAppNo,true);
             }
             //do search
             QueryHelp.setMainSql("inspectionQuery", "systemPoolDropdown", searchParam);

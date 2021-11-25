@@ -379,6 +379,21 @@ public class SystemSearchAssignPoolServiceImpl implements SystemSearchAssignPool
         return stageId;
     }
 
+    @Override
+    public List<String> getSystemPoolAppGrpIdByResult(SearchResult<SystemAssignSearchQueryDto> searchResult) {
+        if(searchResult != null && !IaisCommonUtils.isEmpty(searchResult.getRows())) {
+            List<String> appGrpIds = IaisCommonUtils.genNewArrayList();
+            List<SystemAssignSearchQueryDto> systemAssignSearchQueryDtos = searchResult.getRows();
+            for(SystemAssignSearchQueryDto systemAssignSearchQueryDto : systemAssignSearchQueryDtos) {
+                if(systemAssignSearchQueryDto != null) {
+                    appGrpIds.add(systemAssignSearchQueryDto.getId());
+                }
+            }
+            return appGrpIds;
+        }
+        return null;
+    }
+
     private TaskDto setOtherDataByOldTask(TaskDto createTask, TaskDto taskDto) {
         createTask.setId(null);
         createTask.setTaskStatus(TaskConsts.TASK_STATUS_PENDING);
