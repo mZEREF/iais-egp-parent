@@ -18,10 +18,59 @@
                 </h3>
                 <iais:row>
                     <iais:field width="6" value="What was Donated?" mandatory="true"/>
-                    <iais:value width="6" cssClass="col-md-6">
-                        <iais:select  name="donatedType" firstOption="Please Select" options="donatedTypeSelectOption" value="${arSuperDataSubmissionDto.donationStageDto.donatedType}"></iais:select>
+                    <div class="col-md-6">
+                        <iais:value width="6" cssClass="col-md-6">
+                            <div class="form-check">
+                                <input class="form-check-input"
+                                       type="radio"
+                                       name="donatedType"
+                                       value="DONTY001"
+                                       id="donatedType1"
+                                       <c:if test="${ arSuperDataSubmissionDto.pgtStageDto.pgtAResult =='DONTY001' }">checked</c:if>
+                                       aria-invalid="false">
+                                <label class="form-check-label"
+                                       for="donatedType1"><span
+                                        class="check-circle"></span><iais:code code="DONTY001"/></label>
+                            </div>
+                        </iais:value>
+                        <iais:value width="6" cssClass="col-md-6">
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio"
+                                       name="donatedType" value="DONTY002" id="donatedType2"
+                                       <c:if test="${arSuperDataSubmissionDto.pgtStageDto.pgtAResult == 'DONTY002'}">checked</c:if>
+                                       aria-invalid="false">
+                                <label class="form-check-label"
+                                       for="donatedType2"><span
+                                        class="check-circle"></span><iais:code code="DONTY002"/></label>
+                            </div>
+                        </iais:value>
+                        <iais:value width="6" cssClass="col-md-6">
+                            <div class="form-check">
+                                <input class="form-check-input"
+                                       type="radio"
+                                       name="donatedType"
+                                       value="DONTY003"
+                                       id="donatedType3"
+                                       <c:if test="${ arSuperDataSubmissionDto.pgtStageDto.pgtAResult =='DONTY003' }">checked</c:if>
+                                       aria-invalid="false">
+                                <label class="form-check-label"
+                                       for="donatedType3"><span
+                                        class="check-circle"></span><iais:code code="DONTY003"/></label>
+                            </div>
+                        </iais:value>
+                        <iais:value width="6" cssClass="col-md-6">
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio"
+                                       name="donatedType" value="DONTY004" id="donatedType4"
+                                       <c:if test="${arSuperDataSubmissionDto.pgtStageDto.pgtAResult == 'DONTY004'}">checked</c:if>
+                                       aria-invalid="false">
+                                <label class="form-check-label"
+                                       for="donatedType4"><span
+                                        class="check-circle"></span><iais:code code="DONTY004"/></label>
+                            </div>
+                        </iais:value>
                         <span class="error-msg" name="iaisErrorMsg" id="error_donatedType"></span>
-                    </iais:value>
+                    </div>
                 </iais:row>
                 <iais:row>
                     <iais:field width="6" value="Which AR Centre was Gamete(s) / Embryo(s) Donated to?" id="donatedCentreField" mandatory="true"/>
@@ -57,7 +106,7 @@
                 <iais:row>
                     <iais:field width="6" value="Donated For" mandatory="true"/>
                     <div class="col-md-6">
-                        <iais:value width="6" cssClass="col-md-6">
+                        <iais:value width="12" cssClass="col-md-12">
                             <div class="form-check">
                                 <input class="form-check-input"
                                        type="checkbox"
@@ -70,7 +119,7 @@
                                         class="check-square"></span>Research</label>
                             </div>
                         </iais:value>
-                        <iais:value width="6" cssClass="col-md-6">
+                        <iais:value width="12" cssClass="col-md-12">
                             <div class="form-check">
                                 <input class="form-check-input" type="checkbox"
                                        name="donatedForTraining" id="donatedForTraining"
@@ -81,7 +130,7 @@
                                         class="check-square"></span>Training</label>
                             </div>
                         </iais:value>
-                        <iais:value width="6" cssClass="col-md-6">
+                        <iais:value width="12" cssClass="col-md-12">
                             <div class="form-check">
                                 <input class="form-check-input"
                                        type="checkbox"
@@ -94,6 +143,7 @@
                                         class="check-square"></span>Treatment</label>
                             </div>
                         </iais:value>
+                        <span class="error-msg" name="iaisErrorMsg" id="error_donatedFor"></span>
                     </div>
 
                 </iais:row>

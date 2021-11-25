@@ -48,7 +48,7 @@ public class DonationStageDtoValidator implements CustomizeValidator {
             }
         }
         if(donationStageDto.getDonatedForResearch()+donationStageDto.getDonatedForTraining()+donationStageDto.getDonatedForTreatment()==0){
-            errorMap.put("curCenResType", errMsgErr006);
+            errorMap.put("donatedFor", errMsgErr006);
         }
         if(donationStageDto.getDonatedForResearch()==1){
             if(donationStageDto.getDonResForTreatNum()!=null){
