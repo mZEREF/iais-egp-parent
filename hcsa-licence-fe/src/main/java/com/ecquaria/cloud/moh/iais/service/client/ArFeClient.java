@@ -115,4 +115,6 @@ public interface ArFeClient {
     FeignResponseEntity<List<IuiTreatmentSubsidiesDto>> getIuiTreatmentSubsidiesDtosByPhc(@RequestParam(name = "patientCode") String patientCode,
                                                                                                                           @RequestParam(name = "hciCode") String hciCode,
                                                                                                                           @RequestParam(name = "cycleType") String cycleType);
+    @GetMapping(value = "/data-submission/donorSampleAges/{sampleCode}", produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<DonorSampleAgeDto>> getDonorSampleAgeDtoBySampleKey(@PathVariable("sampleCode") String sampleCode) ;
 }

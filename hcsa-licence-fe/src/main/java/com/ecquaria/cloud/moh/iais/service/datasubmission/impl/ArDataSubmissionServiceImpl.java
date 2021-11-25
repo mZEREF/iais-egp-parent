@@ -10,6 +10,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSub
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.CycleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.CycleStageSelectionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DataSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DonorSampleAgeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DonorSampleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.IuiCycleStageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientDto;
@@ -458,6 +459,11 @@ public class ArDataSubmissionServiceImpl implements ArDataSubmissionService {
             }
         }
         return arSuperDataSubmission;
+    }
+
+    @Override
+    public List<DonorSampleAgeDto> getDonorSampleAgeDtoBySampleKey(String sampleKey) {
+        return arFeClient.getDonorSampleAgeDtoBySampleKey(sampleKey).getEntity();
     }
 
 }
