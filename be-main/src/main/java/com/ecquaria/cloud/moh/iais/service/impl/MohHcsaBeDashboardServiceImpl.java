@@ -30,6 +30,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.DashReplyQueryDt
 import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.DashStageCircleKpiDto;
 import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.DashWaitApproveQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.DashWorkTeamQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.HcsaTaskAssignDto;
 import com.ecquaria.cloud.moh.iais.common.dto.mastercode.MasterCodeView;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.WorkingGroupDto;
@@ -1364,6 +1365,178 @@ public class MohHcsaBeDashboardServiceImpl implements MohHcsaBeDashboardService 
             reportResultDto.setNc(false);
         }
         saveReportResult(reportResultDto);
+    }
+
+    @Override
+    public List<String> getAssignMeAppGrpIdByResult(SearchResult<DashAssignMeQueryDto> searchResult) {
+        if(searchResult != null && !IaisCommonUtils.isEmpty(searchResult.getRows())) {
+            List<String> appGrpIds = IaisCommonUtils.genNewArrayList();
+            List<DashAssignMeQueryDto> dashAssignMeQueryDtos = searchResult.getRows();
+            for(DashAssignMeQueryDto dashAssignMeQueryDto : dashAssignMeQueryDtos) {
+                if(dashAssignMeQueryDto != null) {
+                    appGrpIds.add(dashAssignMeQueryDto.getId());
+                }
+            }
+            return appGrpIds;
+        }
+        return null;
+    }
+
+    @Override
+    public List<String> getComPoolAppGrpIdByResult(SearchResult<DashComPoolQueryDto> searchResult) {
+        if(searchResult != null && !IaisCommonUtils.isEmpty(searchResult.getRows())) {
+            List<String> appGrpIds = IaisCommonUtils.genNewArrayList();
+            List<DashComPoolQueryDto> dashComPoolQueryDtos = searchResult.getRows();
+            for(DashComPoolQueryDto dashComPoolQueryDto : dashComPoolQueryDtos) {
+                if(dashComPoolQueryDto != null) {
+                    appGrpIds.add(dashComPoolQueryDto.getId());
+                }
+            }
+            return appGrpIds;
+        }
+        return null;
+    }
+
+    @Override
+    public List<String> getKpiPoolAppGrpIdByResult(SearchResult<DashKpiPoolQuery> searchResult) {
+        if(searchResult != null && !IaisCommonUtils.isEmpty(searchResult.getRows())) {
+            List<String> appGrpIds = IaisCommonUtils.genNewArrayList();
+            List<DashKpiPoolQuery> dashKpiPoolQueries = searchResult.getRows();
+            for(DashKpiPoolQuery dashKpiPoolQuery : dashKpiPoolQueries) {
+                if(dashKpiPoolQuery != null) {
+                    appGrpIds.add(dashKpiPoolQuery.getId());
+                }
+            }
+            return appGrpIds;
+        }
+        return null;
+    }
+
+    @Override
+    public List<String> getSuperPoolAppGrpIdByResult(SearchResult<DashWorkTeamQueryDto> searchResult) {
+        if(searchResult != null && !IaisCommonUtils.isEmpty(searchResult.getRows())) {
+            List<String> appGrpIds = IaisCommonUtils.genNewArrayList();
+            List<DashWorkTeamQueryDto> dashWorkTeamQueryDtos = searchResult.getRows();
+            for(DashWorkTeamQueryDto dashWorkTeamQueryDto : dashWorkTeamQueryDtos) {
+                if(dashWorkTeamQueryDto != null) {
+                    appGrpIds.add(dashWorkTeamQueryDto.getId());
+                }
+            }
+            return appGrpIds;
+        }
+        return null;
+    }
+
+    @Override
+    public List<String> getReplyAppGrpIdByResult(SearchResult<DashReplyQueryDto> searchResult) {
+        if(searchResult != null && !IaisCommonUtils.isEmpty(searchResult.getRows())) {
+            List<String> appGrpIds = IaisCommonUtils.genNewArrayList();
+            List<DashReplyQueryDto> dashReplyQueryDtos = searchResult.getRows();
+            for(DashReplyQueryDto dashReplyQueryDto : dashReplyQueryDtos) {
+                if(dashReplyQueryDto != null) {
+                    appGrpIds.add(dashReplyQueryDto.getId());
+                }
+            }
+            return appGrpIds;
+        }
+        return null;
+    }
+
+    @Override
+    public List<String> getWaitApproveAppGrpIdByResult(SearchResult<DashWaitApproveQueryDto> searchResult) {
+        if(searchResult != null && !IaisCommonUtils.isEmpty(searchResult.getRows())) {
+            List<String> appGrpIds = IaisCommonUtils.genNewArrayList();
+            List<DashWaitApproveQueryDto> dashWaitApproveQueryDtos = searchResult.getRows();
+            for(DashWaitApproveQueryDto dashWaitApproveQueryDto : dashWaitApproveQueryDtos) {
+                if(dashWaitApproveQueryDto != null) {
+                    appGrpIds.add(dashWaitApproveQueryDto.getId());
+                }
+            }
+            return appGrpIds;
+        }
+        return null;
+    }
+
+    @Override
+    public List<String> getRenewAppGrpIdByResult(SearchResult<DashRenewQueryDto> searchResult) {
+        if(searchResult != null && !IaisCommonUtils.isEmpty(searchResult.getRows())) {
+            List<String> appGrpIds = IaisCommonUtils.genNewArrayList();
+            List<DashRenewQueryDto> dashRenewQueryDtos = searchResult.getRows();
+            for(DashRenewQueryDto dashRenewQueryDto : dashRenewQueryDtos) {
+                if(dashRenewQueryDto != null) {
+                    appGrpIds.add(dashRenewQueryDto.getId());
+                }
+            }
+            return appGrpIds;
+        }
+        return null;
+    }
+
+    @Override
+    public HcsaTaskAssignDto getHcsaTaskAssignDtoByAppGrp(List<String> appGroupIds) {
+        if(!IaisCommonUtils.isEmpty(appGroupIds)) {
+            HcsaTaskAssignDto hcsaTaskAssignDto = applicationMainClient.getUnitNoAndAddressByAppGrpIds(appGroupIds).getEntity();
+            return hcsaTaskAssignDto;
+        }
+        return null;
+    }
+
+    @Override
+    public SearchParam setAppGrpIdsByUnitNos(SearchParam searchParam, String hci_address, HcsaTaskAssignDto hcsaTaskAssignDto,
+                                             String fieldName, String filterName) {
+        if(hcsaTaskAssignDto != null) {
+            Map<String, String> appGroupAllUnitNoStrMap = hcsaTaskAssignDto.getAppGroupAllUnitNoStrMap();
+            List<String> appGrpIds = IaisCommonUtils.genNewArrayList();
+            for (Map.Entry<String, String> map : appGroupAllUnitNoStrMap.entrySet()) {
+                String address = map.getValue();
+                if (address.contains(hci_address)) {
+                    appGrpIds.add(map.getKey());
+                }
+            }
+
+            int appGrpIdsSize = 0;
+            if(!IaisCommonUtils.isEmpty(appGrpIds)) {
+                appGrpIdsSize = appGrpIds.size();
+                String appGroupId = SqlHelper.constructInCondition(fieldName, appGrpIdsSize);
+                searchParam.addParam(filterName, appGroupId);
+                for (int i = 0; i < appGrpIds.size(); i++) {
+                    searchParam.addFilter(fieldName + i, appGrpIds.get(i));
+                }
+            } else {
+                String appGroupId = SqlHelper.constructInCondition(fieldName, appGrpIdsSize);
+                searchParam.addParam(filterName, appGroupId);
+            }
+        }
+        return searchParam;
+    }
+
+    @Override
+    public SearchParam setAppPremisesIdsByUnitNos(SearchParam searchParam, String hci_address, HcsaTaskAssignDto hcsaTaskAssignDto,
+                                                  String fieldName, String filterName) {
+        if(hcsaTaskAssignDto != null) {
+            Map<String, String> appPremisesAllUnitNoStrMap = hcsaTaskAssignDto.getAppPremisesAllUnitNoStrMap();
+            List<String> appPremisesIds = IaisCommonUtils.genNewArrayList();
+            for (Map.Entry<String, String> map : appPremisesAllUnitNoStrMap.entrySet()) {
+                String address = map.getValue();
+                if (address.contains(hci_address)) {
+                    appPremisesIds.add(map.getKey());
+                }
+            }
+
+            int appPremisesIdsSize = 0;
+            if(!IaisCommonUtils.isEmpty(appPremisesIds)) {
+                appPremisesIdsSize = appPremisesIds.size();
+                String appGroupId = SqlHelper.constructInCondition(fieldName, appPremisesIdsSize);
+                searchParam.addParam(filterName, appGroupId);
+                for (int i = 0; i < appPremisesIds.size(); i++) {
+                    searchParam.addFilter(fieldName + i, appPremisesIds.get(i));
+                }
+            } else {
+                String appPremisesId = SqlHelper.constructInCondition(fieldName, appPremisesIdsSize);
+                searchParam.addParam(filterName, appPremisesId);
+            }
+        }
+        return searchParam;
     }
 
     private void saveReportResult(ReportResultDto reportResultDto) {
