@@ -1875,7 +1875,7 @@ public class LicenceViewServiceDelegator {
             }else if(oldSize < size){
                 for(int i=0;i<size-oldSize;i++){
                     AppSvcPersonnelDto appSvcPersonnelDto = new AppSvcPersonnelDto();
-                    appSvcPersonnelDto.setPersonnelType(oldAppSvcPersonnelDtoList.get(oldSize+i).getPersonnelType());
+                    appSvcPersonnelDto.setPersonnelType(appSvcPersonnelDtoList.get(oldSize+i).getPersonnelType());
                     appSvcPersonnelDto.setDesignation("");
                     appSvcPersonnelDto.setName("");
                     appSvcPersonnelDto.setProfRegNo("");
