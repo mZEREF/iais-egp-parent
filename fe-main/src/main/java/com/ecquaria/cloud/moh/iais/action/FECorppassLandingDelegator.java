@@ -104,6 +104,7 @@ public class FECorppassLandingDelegator {
             if (userInfoToken == null) {
                 log.info("<== userInfoToken is empty ==>");
                 ParamUtil.setRequestAttr(request, UserConstants.ACCOUNT_EXISTS_VALIDATE_FLAG, "N");
+                ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG , "Invalid Login.");
                 return;
             }
 
