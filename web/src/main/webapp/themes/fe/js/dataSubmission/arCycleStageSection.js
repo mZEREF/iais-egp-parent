@@ -26,3 +26,17 @@ function mutualExclusionCheckBox(key1,key2){
         $(key2).attr("disabled",false);
     }
 }
+
+function doEnhancedCounsellingMandatory(key){
+    if(key == 'false'){
+        if($("#cyclesUndergoneOverseas").val() != '') {
+            let value= parseInt($("#cyclesUndergoneOverseas").val());
+            if(value > 10){
+                $("#enhancedCounsellingTitle").find('.mandatory').remove();
+                $("#enhancedCounsellingTitle").append('<span class="mandatory">*</span>');
+            }else{
+                $("#enhancedCounsellingTitle").find('.mandatory').remove();
+            }
+        }
+    }
+}

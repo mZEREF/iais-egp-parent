@@ -11,6 +11,8 @@
             <div class="panel-main-content form-horizontal">
                 <c:set var="arCycleStageDto" value="${arSuperDataSubmissionDto.arCycleStageDto}" />
                 <c:set var="patientDto" value="${arSuperDataSubmissionDto.patientInfoDto.patient}" />
+                <c:set var="enhancedCounsellingMandatory" value="${
+                (arCycleStageDto.cycleAgeYear > 45 || arCycleStageDto.cycleAgeYear ==45 && arCycleStageDto.cycleAgeMonth>0 ) ? 'true' : 'false'}" />
                 <h3>
                     <p><label style="font-family:'Arial Negreta', 'Arial Normal', 'Arial';font-weight:700;"><c:out value="${patientDto.name}"/>&nbsp</label><label style="font-family:'Arial Normal', 'Arial';font-weight:400;">${empty patientDto.idNumber ? "" : "("}<c:out value="${patientDto.idNumber}"/>${empty patientDto.idNumber ? "" : ")"} </label></p>
                 </h3>
@@ -142,7 +144,12 @@
                 </iais:row>
 
                 <iais:row>
-                    <iais:field width="5" value="Total No. of AR cycles previously undergone by patient" mandatory="true"/>
+                    <label class="col-xs-4 col-md-4 control-label">Total No. of AR cycles previously undergone by patient <span class="mandatory">*</span>
+                        <a class="btn-tooltip styleguide-tooltip" data-toggle="tooltip" data-html="true" href="javascript:void(0);"
+                           title='<iais:message key="RFC_LET001"></iais:message>'
+                           style="z-index: 10"
+                           data-original-title="">i</a>
+                    </label>
                         <iais:value width="7" cssClass="col-md-7">
                             <iais:select name="totalPreviouslyPreviously" options="numberArcPreviouslyDropDown" firstOption="Please Select" value="${arCycleStageDto.totalPreviouslyPreviously}"  onchange ="toggleOnSelect(this, '21', 'totalNumberARCOtherRow')"/>
                         </iais:value>
@@ -151,7 +158,8 @@
                 <iais:row id="totalNumberARCOtherRow">
                     <iais:field width="5" value="No. of Cycles undergone Overseas" mandatory="true"/>
                     <iais:value width="7" cssClass="col-md-7">
-                        <iais:input maxLength="2" type="number" name="cyclesUndergoneOverseas" onInput="if(value.length>2)value=value.slice(0,2)" id="cyclesUndergoneOverseas" value="${arCycleStageDto.cyclesUndergoneOverseas}" />
+                        <iais:input maxLength="2" type="number" name="cyclesUndergoneOverseas" onInput="if(value.length>2)value=value.slice(0,2)" id="cyclesUndergoneOverseas" value="${arCycleStageDto.cyclesUndergoneOverseas}"
+                                    onchange="doEnhancedCounsellingMandatory('${enhancedCounsellingMandatory}')"/>
                     </iais:value>
                 </iais:row>
                 <iais:row>
@@ -162,7 +170,8 @@
                 </iais:row>
 
                 <iais:row>
-                    <iais:field width="5" value="Enhanced Counselling" id="enhancedCounsellingTitle" mandatory="${(arCycleStageDto.cycleAgeYear > 45 || arCycleStageDto.cycleAgeYear ==45 && arCycleStageDto.cycleAgeMonth>0 ) ? 'true' : 'false'}"/>
+                    <iais:field width="5" value="Enhanced Counselling" id="enhancedCounsellingTitle" mandatory="${enhancedCounsellingMandatory == 'true' ? enhancedCounsellingMandatory :
+                      (!empty arCycleStageDto.cyclesUndergoneOverseas &&  arCycleStageDto.cyclesUndergoneOverseas >10  ? 'true' : 'false')}"/>
                     <iais:value width="3" cssClass="col-md-3">
                         <div class="form-check" style="padding-left: 0px;">
                             <input class="form-check-input"

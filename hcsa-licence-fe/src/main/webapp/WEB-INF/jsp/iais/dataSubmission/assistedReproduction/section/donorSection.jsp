@@ -54,7 +54,7 @@
                  <iais:row>
                      <iais:field width="5" value="Is this a Directed Donation?" mandatory="true"/>
                      <iais:value width="3" cssClass="col-md-3">
-                         <div class="form-check" onclick="showDonor('${arDonorIndex}')">
+                         <div class="form-check" style="padding-left: 0px;" onclick="showDonor('${arDonorIndex}')">
                              <input class="form-check-input"
                                     type="radio"
                                     name="directedDonation${arDonorIndex}"
@@ -68,7 +68,7 @@
                          </div>
                      </iais:value>
                      <iais:value width="3" cssClass="col-md-3">
-                         <div class="form-check" onclick="hideDonor('${arDonorIndex}')">
+                         <div class="form-check" style="padding-left: 0px;" onclick="hideDonor('${arDonorIndex}')">
                              <input class="form-check-input" type="radio"
                                     name="directedDonation${arDonorIndex}"
                                     value="0"

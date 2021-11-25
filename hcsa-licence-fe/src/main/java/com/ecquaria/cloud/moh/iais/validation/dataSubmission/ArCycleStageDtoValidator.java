@@ -36,9 +36,13 @@ public class ArCycleStageDtoValidator implements CustomizeValidator {
             errorMap.put("cyclesUndergoneOverseas" ,"GENERAL_ERR0006");
         }
 
-        if(StringUtil.getNonNull(arCycleStageDto.getOtherIndication()).contains(DataSubmissionConsts.AR_OTHER_INDICATION_OTHERS)
+        if(arCycleStageDto.validateOtherIndicationOthersMandatory()
                 && StringUtil.isEmpty(arCycleStageDto.getOtherIndicationOthers())){
             errorMap.put("otherIndicationOthers" ,"GENERAL_ERR0006");
+        }
+
+        if(arCycleStageDto.validateMainIndicationOtherMandatory() && StringUtil.isEmpty(arCycleStageDto.getMainIndicationOthers())){
+            errorMap.put("mainIndicationOthers" ,"GENERAL_ERR0006");
         }
 
         if( !arCycleStageDto.validateEnhancedCounselling(arCycleStageDto.getEnhancedCounselling())){
