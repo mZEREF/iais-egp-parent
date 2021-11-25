@@ -1,20 +1,27 @@
 <script type="text/javascript" src="<%=webroot1%>js/dataSubmission/oocyteRectrievalSection.js"></script>
 <c:set var="oocyteRetrievalStageDto" value="${arSuperDataSubmissionDto.oocyteRetrievalStageDto}"/>
 <div class="panel panel-default">
-    <div class="panel-heading">
+    <div class="panel-heading" style="padding-left: 90px;">
         <h4 class="panel-title">
             <strong>
                 Oocyte Retrieval
             </strong>
         </h4>
     </div>
-    <div id="patientDetails" class="panel-collapse collapse in">
+    <div id="cycleDetails" class="panel-collapse collapse in">
         <div class="panel-body">
             <div class="panel-main-content form-horizontal">
-                <c:set var="patientDto" value="${arSuperDataSubmissionDto.patientInfoDto.patient}" />
-                <h3>
-                    <p><label style="font-family:'Arial Negreta', 'Arial Normal', 'Arial';font-weight:700;"><c:out value="${patientDto.name}"/>&nbsp</label><label style="font-family:'Arial Normal', 'Arial';font-weight:400;">${empty patientDto.idNumber ? "" : "("}<c:out value="${patientDto.idNumber}"/>${empty patientDto.idNumber ? "" : ")"} </label></p>
-                </h3>
+                <c:set var="patientDto" value="${arSuperDataSubmissionDto.patientInfoDto.patient}"/>
+                <p>
+                    <label style="font-family:'Arial Negreta', 'Arial Normal', 'Arial';font-weight:700;font-size: 2.2rem;">
+                        <c:out value="${patientDto.name}"/>&nbsp
+                    </label>
+                    <label style="font-family:'Arial Normal', 'Arial';font-weight:400;">${empty patientDto.idNumber ? "" : "("}
+                        <c:out value="${patientDto.idNumber}"/>
+                        ${empty patientDto.idNumber ? "" : ")"}
+                    </label>
+                </p>
+                <hr/>
                 <iais:row>
                     <iais:field width="6" value="Oocyte(s) was retrieved from?" mandatory="true" cssClass="col-md-6"/>
                     <iais:value width="6" cssClass="col-md-6">

@@ -30,7 +30,7 @@
         <h3>Please key in the cycle information below.</h3>
         <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
           <div class="panel panel-default">
-            <div class="panel-heading">
+            <div class="panel-heading" style="padding-left: 90px;">
               <h4 class="panel-title">
                 <strong>
                   Freezing
@@ -40,17 +40,26 @@
             <div id="patientDetails" class="panel-collapse collapse in">
               <div class="panel-body">
                 <div class="panel-main-content form-horizontal">
-                  <c:set var="patientDto" value="${arSuperDataSubmissionDto.patientInfoDto.patient}" />
-                  <h3>
-                    <p><label style="font-family:'Arial Negreta', 'Arial Normal', 'Arial';font-weight:700;"><c:out value="${patientDto.name}"/>&nbsp</label><label style="font-family:'Arial Normal', 'Arial';font-weight:400;">${empty patientDto.idNumber ? "" : "("}<c:out value="${patientDto.idNumber}"/>${empty patientDto.idNumber ? "" : ")"} </label></p>
-                  </h3>
+                  <c:set var="patientDto" value="${arSuperDataSubmissionDto.patientInfoDto.patient}"/>
+                  <p>
+                    <label style="font-family:'Arial Negreta', 'Arial Normal', 'Arial';font-weight:700;font-size: 2.2rem;">
+                      <c:out value="${patientDto.name}"/>&nbsp
+                    </label>
+                    <label style="font-family:'Arial Normal', 'Arial';font-weight:400;">${empty patientDto.idNumber ? "" : "("}
+                      <c:out value="${patientDto.idNumber}"/>
+                      ${empty patientDto.idNumber ? "" : ")"}
+                    </label>
+                  </p>
+                  <hr/>
                   <iais:row>
                     <iais:field value="What was cryopreserved?" mandatory="true"/>
                     <iais:value width="3" cssClass="col-md-7">
                       <c:forEach items="${arFreeCryoOptions}" var="freeCryo" varStatus="index">
                         <div class="form-check" col-xs-7 style="padding-left: 0px;">
-                          <input class="form-check-input" <c:if test="${arSuperDataSubmissionDto.arSubFreezingStageDto.cryopreservedType eq freeCryo.value}">checked="checked"</c:if>
-                                 type="radio" name="freeCryoRadio" value = "<c:out value="${freeCryo.value}"/>" aria-invalid="false"
+                          <input class="form-check-input"
+                                 <c:if test="${arSuperDataSubmissionDto.arSubFreezingStageDto.cryopreservedType eq freeCryo.value}">checked="checked"</c:if>
+                                 type="radio" name="freeCryoRadio" value="<c:out value="${freeCryo.value}"/>"
+                                 aria-invalid="false"
                                  id="freeCryopreserved${index.index}"
                           >
                           <label class="form-check-label" for="freeCryopreserved${index.index}">

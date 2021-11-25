@@ -17,9 +17,16 @@
     <div class="panel-body">
       <div class="panel-main-content form-horizontal">
         <c:set var="patientDto" value="${arSuperDataSubmissionDto.patientInfoDto.patient}" />
-        <h3>
-          <p><label style="font-family:'Arial Negreta', 'Arial Normal', 'Arial';font-weight:700;"><c:out value="${patientDto.name}"/>&nbsp</label><label style="font-family:'Arial Normal', 'Arial';font-weight:400;">${empty patientDto.idNumber ? "" : "("}<c:out value="${patientDto.idNumber}"/>${empty patientDto.idNumber ? "" : ")"} </label></p>
-        </h3>
+        <p>
+          <label style="font-family:'Arial Negreta', 'Arial Normal', 'Arial';font-weight:700;font-size: 2.2rem;">
+            <c:out value="${patientDto.name}"/>&nbsp
+          </label>
+          <label style="font-family:'Arial Normal', 'Arial';font-weight:400;">${empty patientDto.idNumber ? "" : "("}
+            <c:out value="${patientDto.idNumber}"/>
+            ${empty patientDto.idNumber ? "" : ")"}
+          </label>
+        </p>
+        <hr/>
         <iais:row>
           <iais:field value="What was cryopreserved?"/>
           <iais:value cssClass="col-xs-5 col-md-6 control-label">
