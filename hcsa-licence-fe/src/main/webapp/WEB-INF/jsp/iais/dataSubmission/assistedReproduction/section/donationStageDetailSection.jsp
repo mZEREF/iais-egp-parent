@@ -26,7 +26,7 @@
                                        name="donatedType"
                                        value="DONTY001"
                                        id="donatedType1"
-                                       <c:if test="${ arSuperDataSubmissionDto.pgtStageDto.pgtAResult =='DONTY001' }">checked</c:if>
+                                       <c:if test="${ arSuperDataSubmissionDto.donationStageDto.donatedType =='DONTY001' }">checked</c:if>
                                        aria-invalid="false">
                                 <label class="form-check-label"
                                        for="donatedType1"><span
@@ -37,7 +37,7 @@
                             <div class="form-check">
                                 <input class="form-check-input" type="radio"
                                        name="donatedType" value="DONTY002" id="donatedType2"
-                                       <c:if test="${arSuperDataSubmissionDto.pgtStageDto.pgtAResult == 'DONTY002'}">checked</c:if>
+                                       <c:if test="${arSuperDataSubmissionDto.donationStageDto.donatedType == 'DONTY002'}">checked</c:if>
                                        aria-invalid="false">
                                 <label class="form-check-label"
                                        for="donatedType2"><span
@@ -51,7 +51,7 @@
                                        name="donatedType"
                                        value="DONTY003"
                                        id="donatedType3"
-                                       <c:if test="${ arSuperDataSubmissionDto.pgtStageDto.pgtAResult =='DONTY003' }">checked</c:if>
+                                       <c:if test="${ arSuperDataSubmissionDto.donationStageDto.donatedType =='DONTY003' }">checked</c:if>
                                        aria-invalid="false">
                                 <label class="form-check-label"
                                        for="donatedType3"><span
@@ -62,7 +62,7 @@
                             <div class="form-check">
                                 <input class="form-check-input" type="radio"
                                        name="donatedType" value="DONTY004" id="donatedType4"
-                                       <c:if test="${arSuperDataSubmissionDto.pgtStageDto.pgtAResult == 'DONTY004'}">checked</c:if>
+                                       <c:if test="${arSuperDataSubmissionDto.donationStageDto.donatedType == 'DONTY004'}">checked</c:if>
                                        aria-invalid="false">
                                 <label class="form-check-label"
                                        for="donatedType4"><span
@@ -207,7 +207,7 @@
                         <iais:row>
                             <iais:field width="6" value="Other Type of Research Donated for" />
                             <iais:value width="6" cssClass="col-md-6">
-                                <input type="text" maxlength="19"   name="donatedForResearchOtherType" value="${arSuperDataSubmissionDto.pgtStageDto.donatedForResearchOtherType}" >
+                                <input type="text" maxlength="19"   name="donatedForResearchOtherType" value="${arSuperDataSubmissionDto.donationStageDto.donatedForResearchOtherType}" >
                                 <span class="error-msg" name="iaisErrorMsg" id="error_donatedForResearchOtherType"></span>
                             </iais:value>
                         </iais:row>
