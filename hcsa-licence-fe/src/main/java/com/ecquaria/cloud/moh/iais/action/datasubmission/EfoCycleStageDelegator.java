@@ -6,6 +6,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmission
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.EfoCycleStageDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInventoryDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
@@ -15,7 +16,9 @@ import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
+import com.ecquaria.cloud.moh.iais.service.client.ArFeClient;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import sop.util.DateUtil;
 import sop.webflow.rt.api.BaseProcessClass;
 
@@ -37,6 +40,8 @@ import java.util.Map;
 @Delegator("efoCycleStageDelegator")
 @Slf4j
 public class EfoCycleStageDelegator extends CommonDelegator{
+    @Autowired
+    private ArFeClient arFeClient;
 
     @Override
     public void start(BaseProcessClass bpc) {
@@ -70,6 +75,16 @@ public class EfoCycleStageDelegator extends CommonDelegator{
     @Override
     public void pageAction(BaseProcessClass bpc) {
         ArSuperDataSubmissionDto arSuperDataSubmissionDto= DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
+        try{
+            String patientCode=arSuperDataSubmissionDto.getPatientInfoDto().getPatient().getPatientCode();
+            String hciCode=arSuperDataSubmissionDto.getPremisesDto().getHciCode();
+            PatientInventoryDto patientInventoryDto=arFeClient.patientInventoryByCode(patientCode,hciCode).getEntity();
+            arSuperDataSubmissionDto.setPatientInventoryDto(patientInventoryDto);
+        }catch (Exception e){
+            log.error(e.getMessage(),e);
+            PatientInventoryDto patientInventoryDto=new PatientInventoryDto();
+            arSuperDataSubmissionDto.setPatientInventoryDto(patientInventoryDto);
+        }
         EfoCycleStageDto efoCycleStageDto=arSuperDataSubmissionDto.getEfoCycleStageDto();
         HttpServletRequest request=bpc.request;
         String othersReason = ParamUtil.getRequestString(request, "othersReason");
@@ -121,5 +136,16 @@ public class EfoCycleStageDelegator extends CommonDelegator{
         }
 
         return result;
+    }
+
+    @Override
+    public void prepareConfim(BaseProcessClass bpc) {
+        ArSuperDataSubmissionDto arSuperDataSubmissionDto= DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
+        PatientInventoryDto patientInventoryDto = new PatientInventoryDto();
+        if(arSuperDataSubmissionDto.getPatientInventoryDto()!=null){
+            patientInventoryDto=arSuperDataSubmissionDto.getPatientInventoryDto();
+        }
+
+        ParamUtil.setRequestAttr(bpc.request, "patientInventoryDto", patientInventoryDto);
     }
 }
