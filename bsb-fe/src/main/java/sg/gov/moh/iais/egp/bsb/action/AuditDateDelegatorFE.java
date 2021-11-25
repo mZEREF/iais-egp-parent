@@ -21,7 +21,6 @@ import sop.webflow.rt.api.BaseProcessClass;
 import javax.servlet.http.HttpServletRequest;
 import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -38,12 +37,6 @@ public class AuditDateDelegatorFE {
         this.auditClient = auditClient;
     }
 
-    /**
-     * StartStep: startStep
-     *
-     * @param bpc
-     * @throws IllegalAccessException
-     */
     public void start(BaseProcessClass bpc) throws IllegalAccessException {
         AuditTrailHelper.auditFunction(AuditConstants.MODULE_AUDIT, AuditConstants.FUNCTION_AUDIT);
         HttpServletRequest request = bpc.request;
@@ -53,9 +46,6 @@ public class AuditDateDelegatorFE {
 
     /**
      * OngoingAuditList
-     * AutoStep: prepareData
-     *
-     * @param bpc
      */
     public void prepareAuditListData(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
@@ -80,17 +70,8 @@ public class AuditDateDelegatorFE {
             ParamUtil.setRequestAttr(request, AuditConstants.KEY_AUDIT_PAGE_INFO, PageInfo.emptyPageInfo(searchDto));
             ParamUtil.setRequestAttr(request, AuditConstants.KEY_AUDIT_DATA_LIST, new ArrayList<>());
         }
-
-        Calendar cd = Calendar.getInstance();
-        int year = cd.get(Calendar.YEAR);
-        ParamUtil.setSessionAttr(request,AuditConstants.PARAM_YEAR,year);
     }
 
-    /**
-     * AutoStep: doSearch
-     *
-     * @param bpc
-     */
     public void doSearch(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         ParamUtil.setSessionAttr(request, AuditConstants.PARAM_AUDIT_SEARCH, null);
@@ -108,11 +89,6 @@ public class AuditDateDelegatorFE {
         ParamUtil.setSessionAttr(request, AuditConstants.PARAM_AUDIT_SEARCH, searchDto);
     }
 
-    /**
-     * AutoStep: prepareData
-     *
-     * @param bpc
-     */
     public void prepareSpecifyDtData(BaseProcessClass bpc) throws ParseException {
         HttpServletRequest request = bpc.request;
         ParamUtil.setSessionAttr(request, AuditConstants.FACILITY_AUDIT, null);
@@ -121,24 +97,19 @@ public class AuditDateDelegatorFE {
         FacilityAudit audit = new FacilityAudit();
         audit.setId(auditId);
 
-        Date auditDate = null;
         if (StringUtil.isNotEmpty(auditDt)) {
-            auditDate = Formatter.parseDate(auditDt);
+            Date auditDate = Formatter.parseDate(auditDt);
             audit.setAuditDt(auditDate);
         }
         ParamUtil.setSessionAttr(request, AuditConstants.FACILITY_AUDIT, audit);
     }
 
     /**
-     * AutoStep: submit
      * specifyDt
      * changeDt
-     *
-     * @param bpc
      */
     public void specifyAndChangeDt(BaseProcessClass bpc) throws ParseException {
         HttpServletRequest request = bpc.request;
-
         FacilityAudit facilityAudit = (FacilityAudit) ParamUtil.getSessionAttr(request, AuditConstants.FACILITY_AUDIT);
         String remarks = ParamUtil.getRequestString(request, AuditConstants.PARAM_REMARKS);
         String reason = ParamUtil.getString(request,AuditConstants.PARAM_REASON_FOR_CHANGE);
@@ -148,19 +119,13 @@ public class AuditDateDelegatorFE {
         audit.setId(facilityAudit.getId());
         audit.setRemarks(remarks);
         audit.setChangeReason(reason);
-        Date requestAuditDt = null;
         if (StringUtil.isNotEmpty(auditDate)) {
-            requestAuditDt = Formatter.parseDate(auditDate);
+            Date requestAuditDt = Formatter.parseDate(auditDate);
             audit.setAuditDt(requestAuditDt);
         }
         auditClient.specifyAndChangeAuditDt(audit);
     }
 
-    /**
-     * AutoStep: page
-     *
-     * @param bpc
-     */
     public void page(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         AuditQueryDto searchDto = getSearchDto(request);
@@ -182,11 +147,6 @@ public class AuditDateDelegatorFE {
         ParamUtil.setSessionAttr(request, AuditConstants.PARAM_AUDIT_SEARCH, searchDto);
     }
 
-    /**
-     * AutoStep: sort
-     *
-     * @param bpc
-     */
     public void sort(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         AuditQueryDto searchDto = getSearchDto(request);

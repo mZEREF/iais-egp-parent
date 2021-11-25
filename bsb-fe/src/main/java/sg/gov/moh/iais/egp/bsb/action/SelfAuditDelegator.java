@@ -34,12 +34,6 @@ public class SelfAuditDelegator {
         this.docClient = docClient;
     }
 
-    /**
-     * StartStep: startStep
-     *
-     * @param bpc
-     * @throws IllegalAccessException
-     */
     public void start(BaseProcessClass bpc) throws IllegalAccessException {
         AuditTrailHelper.auditFunction(AuditConstants.MODULE_AUDIT, AuditConstants.FUNCTION_AUDIT);
         HttpServletRequest request = bpc.request;
@@ -47,11 +41,6 @@ public class SelfAuditDelegator {
         ParamUtil.setSessionAttr(request, AuditConstants.PARAM_AUDIT_SEARCH, null);
     }
 
-    /**
-     * AutoStep: prepareData
-     *
-     * @param bpc
-     */
     public void prepareFacilitySelfAuditData(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         ParamUtil.setSessionAttr(request,AuditConstants.FACILITY,null);
@@ -69,7 +58,6 @@ public class SelfAuditDelegator {
         List<FacilityDoc> facilityDocList = docClient.getFacilityDocByFacId(facility.getId()).getEntity();
         List<FacilityDoc> docList = new ArrayList<>();
         for (FacilityDoc facilityDoc : facilityDocList) {
-            //todo You can only get the current user name
             String submitByName = IaisEGPHelper.getCurrentAuditTrailDto().getMohUserId();
             facilityDoc.setSubmitByName(submitByName);
             docList.add(facilityDoc);
@@ -82,11 +70,6 @@ public class SelfAuditDelegator {
         ParamUtil.setSessionAttr(request,AuditConstants.AUDIT_DOC_DTO, auditDocDto);
     }
 
-    /**
-     * AutoStep: submit
-     *
-     * @param bpc
-     */
     public void submitSelfAuditReport(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         String auditId = ParamUtil.getMaskedString(request, AuditConstants.AUDIT_ID);

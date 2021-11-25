@@ -33,26 +33,6 @@
                             </div>
                             <p></p>
                             <div id="beInboxFilter" class="collapse intranet-content">
-<%--                                <iais:row>--%>
-<%--                                    <iais:field value="Facility Name"/>--%>
-<%--                                    <iais:value width="18">--%>
-<%--                                        <iais:select name="facilityName" id="facilityName"--%>
-<%--                                                     value="${auditSearch.facilityName}"--%>
-<%--                                                     options="facilityName"--%>
-<%--                                                     firstOption="Please Select"/>--%>
-<%--                                    </iais:value>--%>
-<%--                                </iais:row>--%>
-
-<%--                                <iais:row>--%>
-<%--                                    <iais:field value="Facility classification"/>--%>
-<%--                                    <iais:value width="18">--%>
-<%--                                        <iais:select name="facilityClassification" id="facilityClassification"--%>
-<%--                                                     value="${auditSearch.facilityClassification}"--%>
-<%--                                                     codeCategory="CATE_ID_BSB_FAC_CLASSIFICATION"--%>
-<%--                                                     firstOption="Please Select"/>--%>
-<%--                                    </iais:value>--%>
-<%--                                </iais:row>--%>
-
                                 <iais:row>
                                     <iais:field value="Audit Type"/>
                                     <iais:value width="18">
@@ -64,13 +44,6 @@
                                               class="error-msg"></span>
                                     </iais:value>
                                 </iais:row>
-
-<%--                                <iais:row>--%>
-<%--                                    <iais:field value="Audit Window Period" required="false"/>--%>
-<%--                                    <iais:value width="18">--%>
-<%--                                        <p style="font-size: large"><c:out value="1/1/${year} - 31/12/${year}"></c:out></p>--%>
-<%--                                    </iais:value>--%>
-<%--                                </iais:row>--%>
 
                                 <iais:action style="text-align:right;">
                                     <button class="btn btn-secondary" type="button" id="clearBtn" name="clearBtn">
@@ -111,21 +84,23 @@
                                         <td><fmt:formatDate value='${item.auditDt}' pattern='dd/MM/yyyy'/></td>
                                         <c:choose>
                                             <c:when test="${item.status eq 'AUDITST003' or item.status eq 'AUDITST007' or item.auditType eq 'AUDITTY002' or item.auditType eq 'AUDITTY003'}">
-                                                <td width="13%">
+                                                <td>
                                                 </td>
                                             </c:when>
                                             <c:otherwise>
-                                                <td width="13%">
+                                                <td>
                                                     <p><a id="specifyDt" onclick="doSpecifyDt('<iais:mask name="auditId" value="${item.id}"/>')">Specify audit date</a></p>
                                                     <p><a id="changeDt" onclick="dochangeDt('<iais:mask name="auditId" value="${item.id}"/>')">Change audit date</a></p>
-                                                    <p><a id="facSelfAudit" onclick="submitReport('<iais:mask name="auditId" value="${item.id}"/>')">Facility self audit</a></p>
+<%--                                                    <p><a id="facSelfAudit" onclick="submitReport('<iais:mask name="auditId" value="${item.id}"/>')">Facility self audit</a></p>--%>
                                                 </td>
                                             </c:otherwise>
                                         </c:choose>
                                     </tr>
                                 </c:forEach>
                             </table>
-<%--                            <a style="float:left;padding-top: 1.1%;" class="back" id="back" href="#"><em class="fa fa-angle-left"></em> Back</a>--%>
+                            <div class="col-xs-12 col-md-3">
+                                <a class="back" href="/bsb-fe/eservice/INTERNET/MohBSBInboxMsg"><em class="fa fa-angle-left"></em> Back</a>
+                            </div>
                         </div>
                     </iais:body>
                 </div>

@@ -38,6 +38,7 @@ public class AuditConstants {
 
     public static final String FACILITY = "facility";
     public static final String FACILITY_AUDIT = "facilityAudit";
+    public static final String CHANGED_FACILITY_AUDIT = "changedAudit";
     public static final String FACILITY_AUDIT_APP = "facilityAuditAPP";
     public static final String AUDIT_ID = "auditId";
     public static final String LAST_AUDIT_DATE = "lastAuditDt";
