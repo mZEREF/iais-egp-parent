@@ -119,6 +119,10 @@ public class DonationStageDelegator extends CommonDelegator{
             }catch (Exception e){
                 log.error("no int");
             }
+            donationStageDto.setDonatedForResearchHescr(0);
+            donationStageDto.setDonatedForResearchRrar(0);
+            donationStageDto.setDonatedForResearchOther(0);
+
             String donatedForResearchHescr=ParamUtil.getString(request,"donatedForResearchHescr");
             if("on".equals(donatedForResearchHescr)){
                 donationStageDto.setDonatedForResearchHescr(1);
