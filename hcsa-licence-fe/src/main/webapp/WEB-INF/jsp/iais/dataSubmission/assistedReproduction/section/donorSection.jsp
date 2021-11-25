@@ -21,7 +21,7 @@
                     <iais:value width="7" cssClass="col-md-7">
                         <c:forEach items="${donorUsedTypes}" var="donorUsedType">
                             <c:set var="donorUsedTypeCode" value="${donorUsedType.code}"/>
-                            <div class="form-check col-xs-7" >
+                            <div class="form-check col-xs-7"  style="padding-left: 0px;">
                                 <input class="form-check-input" type="checkbox"
                                        name="pleaseIndicate${arDonorIndex}"
                                        value="${donorUsedTypeCode}"

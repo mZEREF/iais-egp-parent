@@ -63,8 +63,8 @@
 
                 <iais:row>
                     <iais:field width="5" value="In-Vitro Maturation" mandatory="false"/>
-                    <iais:value width="3" cssClass="col-md-3">
-                        <div class="form-check">
+                    <iais:value width="3" cssClass="col-md-3" >
+                        <div class="form-check" style="padding-left: 0px;" >
                             <input class="form-check-input"
                                    type="radio"
                                    name="inVitroMaturation"
@@ -77,8 +77,8 @@
                                     class="check-circle"></span>Yes</label>
                         </div>
                     </iais:value>
-                    <iais:value width="4" cssClass="col-md-4">
-                        <div class="form-check">
+                    <iais:value width="4" cssClass="col-md-4" >
+                        <div class="form-check" style="padding-left: 0px;">
                             <input class="form-check-input" type="radio"
                                    name="inVitroMaturation"
                                    value="0"
@@ -97,19 +97,25 @@
                     <iais:value width="7" cssClass="col-md-7">
                             <c:forEach items="${currentArTreatments}" var="currentArTreatment">
                                 <c:set var="currentArTreatmentCode" value="${currentArTreatment.code}"/>
-                                <div class="form-check col-xs-12" >
+                                <div class="form-check col-xs-7"  style="padding-left: 0px;">
                                     <input class="form-check-input" type="checkbox"
                                            name="currentArTreatment"
                                            value="${currentArTreatmentCode}"
                                            id="currentArTreatmentCheck${currentArTreatmentCode}"
                                            <c:if test="${StringUtil.stringContain(arCycleStageDto.currentArTreatment,currentArTreatmentCode)}">checked</c:if>
-                                           aria-invalid="false">
+                                           aria-invalid="false"    <c:if test="${currentArTreatmentCode eq DataSubmissionConsts.CURRENT_AR_TREATMENT_FRESH_CYCLE_NATURAL
+                                           || currentArTreatmentCode eq DataSubmissionConsts.CURRENT_AR_TREATMENT_FRESH_CYCLE_STIMULATED}">
+                                            onchange="doInactiveCurrentArTreatment('${currentArTreatmentCode}')"
+                                    </c:if> >
                                     <label class="form-check-label"
                                            for="currentArTreatmentCheck${currentArTreatmentCode}"><span
                                             class="check-square"></span>
                                         <c:out value="${currentArTreatment.codeValue}"/></label>
                                 </div>
                             </c:forEach>
+                    </iais:value>
+                    <iais:value width="4" cssClass="col-md-4"/>
+                    <iais:value width="3" cssClass="col-md-3">
                         <span id="error_currentArTreatment" name="iaisErrorMsg" class="error-msg"></span>
                     </iais:value>
                 </iais:row>
@@ -136,7 +142,7 @@
                 </iais:row>
 
                 <iais:row>
-                    <iais:field width="5" value="Total Number of AR cycles previously undergone by patient" mandatory="true"/>
+                    <iais:field width="5" value="Total No. of AR cycles previously undergone by patient" mandatory="true"/>
                         <iais:value width="7" cssClass="col-md-7">
                             <iais:select name="totalPreviouslyPreviously" options="numberArcPreviouslyDropDown" firstOption="Please Select" value="${arCycleStageDto.totalPreviouslyPreviously}"  onchange ="toggleOnSelect(this, '21', 'totalNumberARCOtherRow')"/>
                         </iais:value>
@@ -156,9 +162,9 @@
                 </iais:row>
 
                 <iais:row>
-                    <iais:field width="5" value="Enhanced Counselling" mandatory="false"/>
+                    <iais:field width="5" value="Enhanced Counselling" id="enhancedCounsellingTitle" mandatory="${(arCycleStageDto.cycleAgeYear > 45 || arCycleStageDto.cycleAgeYear ==45 && arCycleStageDto.cycleAgeMonth>0 ) ? 'true' : 'false'}"/>
                     <iais:value width="3" cssClass="col-md-3">
-                        <div class="form-check">
+                        <div class="form-check" style="padding-left: 0px;">
                             <input class="form-check-input"
                                    type="radio"
                                    name="enhancedCounselling"
@@ -172,7 +178,7 @@
                         </div>
                     </iais:value>
                     <iais:value width="4" cssClass="col-md-4">
-                        <div class="form-check">
+                        <div class="form-check" style="padding-left: 0px;">
                             <input class="form-check-input" type="radio"
                                    name="enhancedCounselling"
                                    value="0"
@@ -184,7 +190,8 @@
                                     class="check-circle"></span>No</label>
                         </div>
                     </iais:value>
-                    <iais:value width="7" cssClass="col-md-7">
+                    <iais:value width="4" cssClass="col-md-4"/>
+                    <iais:value width="3" cssClass="col-md-3">
                     <span id="error_enhancedCounselling" name="iaisErrorMsg" class="error-msg"></span>
                     </iais:value>
                 </iais:row>
@@ -205,8 +212,8 @@
 
                 <iais:row>
                     <iais:field width="5" value="Was a donor's Oocyte(s)/Embryo(s)/Sperms used in this cycle?" mandatory="true"/>
-                    <iais:value width="3" cssClass="col-md-3">
-                        <div class="form-check" onclick="">
+                    <iais:value width="3" cssClass="col-md-3" >
+                        <div class="form-check" style="padding-left: 0px;">
                             <input class="form-check-input"
                                    type="radio"
                                    name="usedDonorOocyte"
@@ -219,8 +226,8 @@
                                     class="check-circle"></span>Yes</label>
                         </div>
                     </iais:value>
-                    <iais:value width="4" cssClass="col-md-4">
-                        <div class="form-check">
+                    <iais:value width="4" cssClass="col-md-4" >
+                        <div class="form-check" style="padding-left: 0px;">
                             <input class="form-check-input" type="radio"
                                    name="usedDonorOocyte"
                                    value="0"

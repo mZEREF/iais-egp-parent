@@ -26,6 +26,7 @@
                                onclick="toggleOnCheck(this, 'previousData', true)">
                         <label class="form-check-label" ><span class="check-circle"></span>No</label>
                     </div>
+                    <iais:value width="5"/>
                     <iais:value width="7" cssClass="col-md-7">
                         <span id="error_enhancedCounselling" name="iaisErrorMsg" class="error-msg"></span>
                     </iais:value>

@@ -4,34 +4,6 @@
 <%@ include file="common/commonDashboard.jsp" %>
 <%@ include file="common/mainContent.jsp" %>
 <%@ include file="common/commonFile.jsp" %>
-<style>
-    .table-info-display {
-        margin: 20px 15px 25px 12px;
-        background: #efefef;
-        padding: 8px;
-        border-radius: 8px;
-        -moz-border-radius: 8px;
-        -webkit-border-radius: 8px;
-
-    }
-
-    .table-count {
-        float: left;
-        margin-top: 5px;
-    }
-    .nav {background:#transparent;}
-    .nav ul.pagination {
-        padding: 10px;
-    }
-
-    .nav ul.pagination > li {
-        padding-left: 3px;
-    }
-
-    .dashboard-gp .dashboard-tile-item .dashboard-tile h1.dashboard-count {
-        margin-left: -5px;
-    }
-</style>
 <script type="text/javascript">
     $(function () {
         if ('${archiveResult}') {

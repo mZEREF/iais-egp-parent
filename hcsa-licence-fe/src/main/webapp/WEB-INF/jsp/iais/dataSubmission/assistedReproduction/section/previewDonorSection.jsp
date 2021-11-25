@@ -78,12 +78,26 @@
                  </c:if>
                  </c:if>
 
+                 <c:if test="${not empty donorDto.relation}">
+                     <iais:row id="relation${arDonorIndex}Row">
+                         <iais:field width="5" value="Donor relation to patient" />
+                         <iais:value width="7" cssClass="col-md-7" label="true">
+                             <iais:code code="${donorDto.relation}"/>
+                         </iais:value>
+                     </iais:row>
+                 </c:if>
+                 <c:if test="${not empty donorDto.ageList}">
                  <iais:row cssClass="usedDonorOocyteControlClass yesUsedDonorOocyteControl">
                      <iais:field width="5" value="Donor's Age at Donation" />
                      <iais:value width="7" cssClass="col-md-7" display="true">
-                         <c:out value="${donorDto.age}" />
+                         <c:forEach items="${donorDto.ageList}" var="age">
+                             <c:if test="${age.value == donorDto.age}">
+                                 <c:out value="${age.text}" />
+                             </c:if>
+                         </c:forEach>
                      </iais:value>
                  </iais:row>
+                 </c:if>
                  <h3></h3>
              </div>
         </c:forEach>

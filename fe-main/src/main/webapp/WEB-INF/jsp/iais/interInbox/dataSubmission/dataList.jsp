@@ -5,15 +5,15 @@
     <input type="hidden" name="crud_type_action_submission_no" id="crud_type_action_submission_no"/>
     <div class="tab-search">
             <div class="row d-flex">
-                <div class="col-md-4">
-                        <label class="col-xs-3 control-label" for="submissionNoDataSubmission" style="text-align:left;margin-top: 1.5%">Search by submission ID</label>
-                        <div class="col-xs-8 col-md-8">
+                <div class="col-md-5">
+                        <label class="col-xs-5 control-label" for="submissionNoDataSubmission" style="text-align:left;margin-top: 1.5%">Search by submission ID</label>
+                        <div class="col-xs-7 col-md-7">
                             <input id="submissionNoDataSubmission" name="submissionNoDataSubmission" type="text" maxlength="24"
                                    value="${param.submissionNoDataSubmission}">
                         </div>
                     <br>
                 </div>
-                <div class="col-md-5">
+                <div class="col-md-4">
                         <label class="col-xs-3 control-label" for="typeDataSubmission" style="text-align:left;margin-top: 1.5%">Type</label>
                         <div class="col-xs-8 col-md-8">
                             <iais:select name="typeDataSubmission"  codeCategory="DATA_SUBMISSION_TYPE" value="${param.typeDataSubmission}" firstOption="All" cssClass="dataSubmissionType"/>
@@ -33,8 +33,8 @@
                 </div>
             </div>
         <br> <br>
-    </div>
         <iais:pagination param="dataSubmissionParam" result="dataSubmissionResult"/>
+    </div>
     <div class="row">
         <div class="col-xs-12">
             <div class="table-gp">
@@ -128,6 +128,7 @@
     <input type="hidden" value="${empty needValidatorSize ? 0 : needValidatorSize}" id="needValidatorSize" name="needValidatorSize">
         <input type="hidden" value="${actionDsButtonShow}" id="actionDsButtonShow" name="actionDsButtonShow">
     <iais:confirm msg="DS_ERR014" needCancel="false" popupOrder="actionDsButton"  yesBtnDesc="Yes"   yesBtnCls="btn btn-secondary"  callBack="cancelBallDsButton()" />
+        <iais:confirm msg="NEW_ACK002" needFungDuoJi="false" popupOrder="deleteDraftModal" callBack="delDraftCancelBtn()"  cancelFunc="delDraftYesBtn()" cancelBtnDesc="OK" yesBtnDesc="Cancel" cancelBtnCls="btn btn-primary" yesBtnCls="btn btn-secondary"  />
 </form>
 <script type="application/javascript">
 
@@ -195,7 +196,7 @@
 
 
     $('#ds-deleteDraft').click(function (){
-        doSubmitForDataSubmission('deleteDraft');
+        $("#deleteDraftModal").show();
     });
     $('#ds-amend').click(function (){
         doSubmitForDataSubmission('rfc');
@@ -208,6 +209,12 @@
     );
 
 
+    function delDraftCancelBtn(){
+        $("#deleteDraftModal").hide();
+    }
+    function  delDraftYesBtn(){
+        doSubmitForDataSubmission('deleteDraft');
+    }
     function jumpToPagechangePage(){
         doSubmitForDataSubmission('page');
     }
