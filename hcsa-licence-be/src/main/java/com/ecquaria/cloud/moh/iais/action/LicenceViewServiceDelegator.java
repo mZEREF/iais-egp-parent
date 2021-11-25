@@ -2571,7 +2571,7 @@ public class LicenceViewServiceDelegator {
                 } else if (oldWeeklyDtoList.size() > weeklyDtoList.size()) {
                     int k = weeklyDtoList.size();
                     for (int j = 0; j < oldWeeklyDtoList.size() - weeklyDtoList.size(); j++) {
-                        operationHoursReloadDtoList.add(genOperationHoursReloadDto(weeklyDtoList.get(k++)));
+                        operationHoursReloadDtoList.add(genOperationHoursReloadDto(oldWeeklyDtoList.get(k++)));
                     }
                     weeklyDtoList.addAll(operationHoursReloadDtoList);
                 }
