@@ -1894,7 +1894,7 @@ public class LicenceViewServiceDelegator {
         }
     }
     private void appSvcPersonnelDtoList( List<AppSvcPersonnelDto> appSvcPersonnelDtoList,List<AppSvcPersonnelDto> oldAppSvcPersonnelDtoList ){
-        if (IaisCommonUtils.isEmpty(appSvcPersonnelDtoList) && oldAppSvcPersonnelDtoList != null) {
+        if (IaisCommonUtils.isEmpty(appSvcPersonnelDtoList) &&  IaisCommonUtils.isNotEmpty(oldAppSvcPersonnelDtoList)) {
             appSvcPersonnelDtoList = new ArrayList<>(oldAppSvcPersonnelDtoList.size());
             for (int i = 0; i < oldAppSvcPersonnelDtoList.size(); i++) {
                 AppSvcPersonnelDto appSvcPersonnelDto = new AppSvcPersonnelDto();
@@ -1905,7 +1905,7 @@ public class LicenceViewServiceDelegator {
                 appSvcPersonnelDto.setQualification("");
                 appSvcPersonnelDtoList.add(appSvcPersonnelDto);
             }
-        } else if (appSvcPersonnelDtoList != null && oldAppSvcPersonnelDtoList != null) {
+        } else if (IaisCommonUtils.isNotEmpty(appSvcPersonnelDtoList) &&  IaisCommonUtils.isNotEmpty(oldAppSvcPersonnelDtoList)) {
             int size = appSvcPersonnelDtoList.size();
             int oldSize = oldAppSvcPersonnelDtoList.size();
             if( size < oldSize ){
