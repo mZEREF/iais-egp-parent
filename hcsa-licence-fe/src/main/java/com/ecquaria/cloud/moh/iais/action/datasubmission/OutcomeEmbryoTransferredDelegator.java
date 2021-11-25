@@ -7,6 +7,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.FertilisationD
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInventoryDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
@@ -40,7 +41,10 @@ public class OutcomeEmbryoTransferredDelegator extends CommonDelegator{
 
     @Override
     public void prepareSwitch(BaseProcessClass bpc) {
-        ParamUtil.setRequestAttr(bpc.request, "smallTitle", "You are submitting for <strong>Outcome of Embryo Transferred Stage</strong>");
+        ParamUtil.setRequestAttr(bpc.request, "smallTitle", "You are submitting for <strong>Cycle Stages</strong>");
+        HttpServletRequest request = bpc.request;
+        ArSuperDataSubmissionDto arSuperDataSubmissionDto = DataSubmissionHelper.getCurrentArDataSubmission(request);
+        ParamUtil.setSessionAttr(request, DataSubmissionConstant.AR_DATA_SUBMISSION, arSuperDataSubmissionDto);
     }
     @Override
     public void preparePage(BaseProcessClass bpc) {
@@ -52,16 +56,10 @@ public class OutcomeEmbryoTransferredDelegator extends CommonDelegator{
     public void prepareConfim(BaseProcessClass bpc) {
         PatientInventoryDto patientInventoryDto = DataSubmissionHelper.initPatientInventoryTable(bpc.request);
     }
-
-    @Override
-    public void draft(BaseProcessClass bpc) {
-
-    }
     @Override
     public void submission(BaseProcessClass bpc) {
 
     }
-
     @Override
     public void pageAction(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
@@ -70,16 +68,13 @@ public class OutcomeEmbryoTransferredDelegator extends CommonDelegator{
         arSuperDataSubmissionDto = arSuperDataSubmissionDto  == null ? new ArSuperDataSubmissionDto() : arSuperDataSubmissionDto;
         EmbryoTransferredOutcomeStageDto embryoTransferredOutcomeStageDto =
                 arSuperDataSubmissionDto.getEmbryoTransferredOutcomeStageDto() == null ? new EmbryoTransferredOutcomeStageDto() : arSuperDataSubmissionDto.getEmbryoTransferredOutcomeStageDto();
-
+        ControllerHelper.get(request,embryoTransferredOutcomeStageDto);
         String transferedOutcome = ParamUtil.getRequestString(request, "transferedOutcome");
         embryoTransferredOutcomeStageDto.setTransferedOutcome(transferedOutcome);
         arSuperDataSubmissionDto.setEmbryoTransferredOutcomeStageDto(embryoTransferredOutcomeStageDto);
         ParamUtil.setSessionAttr(request, DataSubmissionConstant.AR_DATA_SUBMISSION, arSuperDataSubmissionDto);
         validatePageData(request, embryoTransferredOutcomeStageDto,"save",ACTION_TYPE_CONFIRM);
-    }
-    @Override
-    public void pageConfirmAction(BaseProcessClass bpc) {
-
+        ParamUtil.setSessionAttr(request, DataSubmissionConstant.AR_DATA_SUBMISSION, arSuperDataSubmissionDto);
     }
 
 }
