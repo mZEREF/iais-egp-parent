@@ -96,9 +96,9 @@ public class PgtCycleStageDelegator extends CommonDelegator{
         pgtStageDto.setIsPgtATomrpl(0);
 
         HttpServletRequest request=bpc.request;
-        String isPgtMCom =  ParamUtil.getString(request, "isPgtM");
-        String isPgtMRare =  ParamUtil.getString(request, "isPgtM");
-        String isPgtMEbt =  ParamUtil.getString(request, "isPgtM");
+        String isPgtMCom =  ParamUtil.getString(request, "isPgtMCom");
+        String isPgtMRare =  ParamUtil.getString(request, "isPgtMRare");
+        String isPgtMEbt =  ParamUtil.getString(request, "isPgtMEbt");
         String isPgtSr =  ParamUtil.getString(request, "isPgtSr");
         String isPgtA =  ParamUtil.getString(request, "isPgtA");
         String isPtt =  ParamUtil.getString(request, "isPtt");

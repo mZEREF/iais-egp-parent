@@ -128,13 +128,13 @@
 
                             <div class="col-xs-12 col-md-12">
                                 <iais:action style="text-align:right;">
-                                    <button type="button" class="btn btn-secondary" type="button"
+                                    <button type="button" class="btn btn-secondary"
                                             onclick="javascript:doClear();">Clear
                                     </button>
-                                    <button type="button" class="btn btn-primary" type="button"
+                                    <button type="button" class="btn btn-primary"
                                             onclick="javascript:doSearch();">Search
                                     </button>
-                                    <button type="button" class="btn btn-primary" type="button"
+                                    <button type="button" class="btn btn-primary"
                                             onclick="javascript:doAdvancedSearch();">Advanced Search
                                     </button>
                                 </iais:action>

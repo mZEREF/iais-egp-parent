@@ -215,7 +215,7 @@
                                                        aria-invalid="false">
                                                 <label class="form-check-label"
                                                        for="freshCycleNatural"><span
-                                                        class="check-square"></span>Fresh Cycle (Natural)</label>
+                                                        class="check-square"></span><iais:code code="AR_CAT_001"/></label>
                                             </div>
                                         </iais:value>
                                         <iais:value width="6" cssClass="col-md-12">
@@ -226,7 +226,7 @@
                                                        aria-invalid="false">
                                                 <label class="form-check-label"
                                                        for="freshCycleSimulated"><span
-                                                        class="check-square"></span>Fresh Cycle (Simulated)</label>
+                                                        class="check-square"></span><iais:code code="AR_CAT_002"/></label>
                                             </div>
                                         </iais:value>
                                         <iais:value width="6" cssClass="col-md-12">
@@ -237,7 +237,7 @@
                                                        aria-invalid="false">
                                                 <label class="form-check-label"
                                                        for="frozenOocyteCycle"><span
-                                                        class="check-square"></span>Frozen Oocyte Cycle</label>
+                                                        class="check-square"></span><iais:code code="AR_CAT_003"/></label>
                                             </div>
                                         </iais:value>
                                         <iais:value width="6" cssClass="col-md-12">
@@ -248,7 +248,7 @@
                                                        aria-invalid="false">
                                                 <label class="form-check-label"
                                                        for="frozenEmbryoCycle"><span
-                                                        class="check-square"></span>Frozen Embryo Cycle</label>
+                                                        class="check-square"></span><iais:code code="AR_CAT_004"/></label>
                                             </div>
                                         </iais:value>
                                     </div>
@@ -412,7 +412,7 @@
                                                        aria-invalid="false">
                                                 <label class="form-check-label"
                                                        for="GIFT"><span
-                                                        class="check-square"></span>GIFT</label>
+                                                        class="check-square"></span><iais:code code="AR_ATU_003"/></label>
                                             </div>
                                         </iais:value>
                                         <iais:value width="6" cssClass="col-md-12">
@@ -423,7 +423,7 @@
                                                        aria-invalid="false">
                                                 <label class="form-check-label"
                                                        for="ICSI"><span
-                                                        class="check-square"></span>ICSI</label>
+                                                        class="check-square"></span><iais:code code="AR_ATU_002"/></label>
                                             </div>
                                         </iais:value>
                                         <iais:value width="6" cssClass="col-md-12">
@@ -434,7 +434,7 @@
                                                        aria-invalid="false">
                                                 <label class="form-check-label"
                                                        for="ZIFT"><span
-                                                        class="check-square"></span>ZIFT</label>
+                                                        class="check-square"></span><iais:code code="AR_ATU_004"/></label>
                                             </div>
                                         </iais:value>
                                         <iais:value width="6" cssClass="col-md-12">
@@ -445,7 +445,7 @@
                                                        aria-invalid="false">
                                                 <label class="form-check-label"
                                                        for="IVF"><span
-                                                        class="check-square"></span>IVF</label>
+                                                        class="check-square"></span><iais:code code="AR_ATU_001"/></label>
                                             </div>
                                         </iais:value>
                                     </div>
@@ -533,7 +533,7 @@
                                                        aria-invalid="false">
                                                 <label class="form-check-label"
                                                        for="ageEmbryosNum1"><span
-                                                        class="check-square"></span>Day 1</label>
+                                                        class="check-square"></span><iais:code code="AOFET001"/></label>
                                             </div>
                                         </iais:value>
                                         <iais:value width="6" cssClass="col-md-6">
@@ -545,7 +545,7 @@
                                                        aria-invalid="false">
                                                 <label class="form-check-label"
                                                        for="ageEmbryosNum4"><span
-                                                        class="check-square"></span>Day 4</label>
+                                                        class="check-square"></span><iais:code code="AOFET004"/></label>
                                             </div>
                                         </iais:value>
                                         <iais:value width="6" cssClass="col-md-6">
@@ -557,7 +557,7 @@
                                                        aria-invalid="false">
                                                 <label class="form-check-label"
                                                        for="ageEmbryosNum2"><span
-                                                        class="check-square"></span>Day 2</label>
+                                                        class="check-square"></span><iais:code code="AOFET002"/></label>
                                             </div>
                                         </iais:value>
                                         <iais:value width="6" cssClass="col-md-6">
@@ -569,7 +569,7 @@
                                                        aria-invalid="false">
                                                 <label class="form-check-label"
                                                        for="ageEmbryosNum5"><span
-                                                        class="check-square"></span>Day 5</label>
+                                                        class="check-square"></span><iais:code code="AOFET005"/></label>
                                             </div>
                                         </iais:value>
                                         <iais:value width="6" cssClass="col-md-6">
@@ -581,7 +581,7 @@
                                                        aria-invalid="false">
                                                 <label class="form-check-label"
                                                        for="ageEmbryosNum3"><span
-                                                        class="check-square"></span>Day 3</label>
+                                                        class="check-square"></span><iais:code code="AOFET003"/></label>
                                             </div>
                                         </iais:value>
                                         <iais:value width="6" cssClass="col-md-6">
@@ -593,7 +593,7 @@
                                                        aria-invalid="false">
                                                 <label class="form-check-label"
                                                        for="ageEmbryosNum6"><span
-                                                        class="check-square"></span>Day 6 and above</label>
+                                                        class="check-square"></span><iais:code code="AOFET006"/></label>
                                             </div>
                                         </iais:value>
                                     </div>
@@ -1011,7 +1011,7 @@
                                                        aria-invalid="false">
                                                 <label class="form-check-label"
                                                        for="transferredOocyte"><span
-                                                        class="check-square"></span>Oocyte(s)</label>
+                                                        class="check-square"></span><iais:code code="AR_WWT_001"/></label>
                                             </div>
                                         </iais:value>
                                         <iais:value  cssClass="col-md-12">
@@ -1023,7 +1023,7 @@
                                                        aria-invalid="false">
                                                 <label class="form-check-label"
                                                        for="transferredEmbryo"><span
-                                                        class="check-square"></span>Embryo(s)</label>
+                                                        class="check-square"></span><iais:code code="AR_WWT_002"/></label>
                                             </div>
                                         </iais:value>
                                         <iais:value  cssClass="col-md-12">
@@ -1035,7 +1035,7 @@
                                                        aria-invalid="false">
                                                 <label class="form-check-label"
                                                        for="transferredSperm"><span
-                                                        class="check-square"></span>Sperm</label>
+                                                        class="check-square"></span><iais:code code="AR_WWT_003"/></label>
                                             </div>
                                         </iais:value>
                                     </div>
@@ -1110,12 +1110,36 @@
                                             <div class="form-check">
                                                 <input class="form-check-input"
                                                        type="checkbox"
-                                                       name="pgtM" id="pgtM"
+                                                       name="pgtMCom" id="pgtMCom"
                                                        <c:if test="${ assistedReproductionEnquiryFilterDto.pgtM =='on'  }">checked</c:if>
                                                        aria-invalid="false">
                                                 <label class="form-check-label"
-                                                       for="pgtM"><span
-                                                        class="check-square"></span>PGT-M</label>
+                                                       for="pgtMCom"><span
+                                                        class="check-square"></span><iais:code code="PGTTP001"/></label>
+                                            </div>
+                                        </iais:value>
+                                        <iais:value  cssClass="col-md-12">
+                                            <div class="form-check">
+                                                <input class="form-check-input"
+                                                       type="checkbox"
+                                                       name="pgtMRare" id="pgtMRare"
+                                                       <c:if test="${ assistedReproductionEnquiryFilterDto.pgtM =='on'  }">checked</c:if>
+                                                       aria-invalid="false">
+                                                <label class="form-check-label"
+                                                       for="pgtMRare"><span
+                                                        class="check-square"></span><iais:code code="PGTTP002"/></label>
+                                            </div>
+                                        </iais:value>
+                                        <iais:value  cssClass="col-md-12">
+                                            <div class="form-check">
+                                                <input class="form-check-input"
+                                                       type="checkbox"
+                                                       name="pgtMEbt" id="pgtMEbt"
+                                                       <c:if test="${ assistedReproductionEnquiryFilterDto.pgtM =='on'  }">checked</c:if>
+                                                       aria-invalid="false">
+                                                <label class="form-check-label"
+                                                       for="pgtMEbt"><span
+                                                        class="check-square"></span><iais:code code="PGTTP003"/></label>
                                             </div>
                                         </iais:value>
                                         <iais:value  cssClass="col-md-12">
@@ -1127,7 +1151,7 @@
                                                        aria-invalid="false">
                                                 <label class="form-check-label"
                                                        for="pgtSr"><span
-                                                        class="check-square"></span>PGT-SR</label>
+                                                        class="check-square"></span><iais:code code="PGTTP004"/></label>
                                             </div>
                                         </iais:value>
                                         <iais:value  cssClass="col-md-12">
@@ -1139,7 +1163,7 @@
                                                        aria-invalid="false">
                                                 <label class="form-check-label"
                                                        for="pgtA"><span
-                                                        class="check-square"></span>PGT-A</label>
+                                                        class="check-square"></span><iais:code code="PGTTP005"/></label>
                                             </div>
                                         </iais:value>
                                         <iais:value  cssClass="col-md-12">
@@ -1151,7 +1175,7 @@
                                                        aria-invalid="false">
                                                 <label class="form-check-label"
                                                        for="ptt"><span
-                                                        class="check-square"></span>PTT</label>
+                                                        class="check-square"></span><iais:code code="PGTTP006"/></label>
                                             </div>
 
                                         </iais:value>
@@ -1164,7 +1188,7 @@
                                                        aria-invalid="false">
                                                 <label class="form-check-label"
                                                        for="pgtOthers"><span
-                                                        class="check-square"></span>Others</label>
+                                                        class="check-square"></span><iais:code code="PGTTP007"/></label>
                                             </div>
                                         </iais:value>
                                     </div>
@@ -1202,10 +1226,10 @@
 
                             <div class="col-xs-12 col-md-12">
                                 <iais:action style="text-align:right;">
-                                    <button type="button" class="btn btn-secondary" type="button"
+                                    <button type="button" class="btn btn-secondary"
                                             onclick="javascript:doClear();">Clear
                                     </button>
-                                    <button type="button" class="btn btn-primary" type="button"
+                                    <button type="button" class="btn btn-primary"
                                             onclick="javascript:doSearch();">Search
                                     </button>
                                 </iais:action>
