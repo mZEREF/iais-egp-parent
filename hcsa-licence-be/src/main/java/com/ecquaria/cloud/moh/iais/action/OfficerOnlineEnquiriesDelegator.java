@@ -914,7 +914,7 @@ public class OfficerOnlineEnquiriesDelegator {
             String id = ParamUtil.getMaskedString(request, IaisEGPConstant.CRUD_ACTION_VALUE);
             ParamUtil.setSessionAttr(request,"id",id);
         }catch (Exception e){
-            log.error("no Masked id", e);
+            log.info("no Masked id");
         }
         String count=ParamUtil.getString(request,"searchChk");
         if(count==null){
