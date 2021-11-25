@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.service.client;
 
+import com.ecquaria.cloud.moh.iais.common.dto.IaisApiResult;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.*;
 import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
@@ -46,8 +47,7 @@ public interface ArFeClient {
 
     @PostMapping(value = "/ar-common/ar-data-submission", produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<ArSuperDataSubmissionDto> saveArSuperDataSubmissionDto(
-            @RequestBody ArSuperDataSubmissionDto arSuperDataSubmissionDto);
+    FeignResponseEntity<List<ArSuperDataSubmissionDto>> saveArSuperDataSubmissionDtoList(@RequestBody List<ArSuperDataSubmissionDto> arSuperList);
 
     @PostMapping(value = "/data-submission/draft", produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = MediaType.APPLICATION_JSON_VALUE)

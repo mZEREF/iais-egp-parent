@@ -76,9 +76,9 @@ public class ArFeClientFallback implements ArFeClient {
     }
 
     @Override
-    public FeignResponseEntity<ArSuperDataSubmissionDto> saveArSuperDataSubmissionDto(
-            ArSuperDataSubmissionDto arSuperDataSubmissionDto) {
-        return getFeignResponseEntity();
+    public FeignResponseEntity<List<ArSuperDataSubmissionDto>> saveArSuperDataSubmissionDtoList(
+            List<ArSuperDataSubmissionDto> arSuperList) {
+        return getFeignResponseEntity(arSuperList.size());
     }
 
     @Override

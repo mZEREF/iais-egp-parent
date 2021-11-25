@@ -23,6 +23,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.service.client.ArFeClient;
+import com.ecquaria.cloud.moh.iais.service.client.ComFileRepoClient;
 import com.ecquaria.cloud.moh.iais.service.client.FeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicEicClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceClient;
@@ -32,8 +33,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -60,6 +63,9 @@ public class ArDataSubmissionServiceImpl implements ArDataSubmissionService {
 
     @Autowired
     private LicEicClient licEicClient;
+
+    @Autowired
+    private ComFileRepoClient comFileRepoClient;
 
     private static final List<String> statuses = IaisCommonUtils.getDsCycleFinalStatus();
 
@@ -111,12 +117,6 @@ public class ArDataSubmissionServiceImpl implements ArDataSubmissionService {
     }
 
     @Override
-    public ArSuperDataSubmissionDto saveArSuperDataSubmissionDto(ArSuperDataSubmissionDto arSuperDataSubmission) {
-        log.info(StringUtil.changeForLog("do the saveArSuperDataSubmissionDto ..."));
-        return arFeClient.saveArSuperDataSubmissionDto(arSuperDataSubmission).getEntity();
-    }
-
-    @Override
     public ArSuperDataSubmissionDto saveDataSubmissionDraft(ArSuperDataSubmissionDto arSuperDataSubmissionDto) {
         return arFeClient.doUpdateDataSubmissionDraft(arSuperDataSubmissionDto).getEntity();
     }
@@ -140,14 +140,58 @@ public class ArDataSubmissionServiceImpl implements ArDataSubmissionService {
     }
 
     @Override
-    public ArSuperDataSubmissionDto saveArSuperDataSubmissionDtoToBE(ArSuperDataSubmissionDto arSuperDataSubmission) {
-        log.info(StringUtil.changeForLog(" the saveArSuperDataSubmissionDtoToBE start ..."));
-        arSuperDataSubmission.setFe(false);
-        arSuperDataSubmission = saveBeArSuperDataSubmissionDto(arSuperDataSubmission);
+    public ArSuperDataSubmissionDto saveArSuperDataSubmissionDto(ArSuperDataSubmissionDto arSuperDataSubmission) {
+        log.info(StringUtil.changeForLog("do the saveArSuperDataSubmissionDto ..."));
+        if (arSuperDataSubmission == null) {
+            log.warn(StringUtil.changeForLog("---No data to be saved---"));
+            return arSuperDataSubmission;
+        }
+        List<ArSuperDataSubmissionDto> dtos = saveArSuperDataSubmissionDtoList(
+                Collections.singletonList(arSuperDataSubmission));
+        if (dtos == null || dtos.isEmpty()) {
+            return null;
+        }
+        return dtos.get(0);
+    }
 
-        DataSubmissionDto dataSubmission = arSuperDataSubmission.getDataSubmissionDto();
+    @Override
+    public ArSuperDataSubmissionDto saveArSuperDataSubmissionDtoToBE(ArSuperDataSubmissionDto arSuperDataSubmission) {
+        log.info(StringUtil.changeForLog("do the saveArSuperDataSubmissionDtoToBE ..."));
+        if (arSuperDataSubmission == null) {
+            log.warn(StringUtil.changeForLog("---No data to be saved---"));
+            return arSuperDataSubmission;
+        }
+        List<ArSuperDataSubmissionDto> dtos = saveArSuperDataSubmissionDtoListToBE(
+                Collections.singletonList(arSuperDataSubmission));
+        if (dtos == null || dtos.isEmpty()) {
+            return null;
+        }
+        return dtos.get(0);
+    }
+
+    @Override
+    public List<ArSuperDataSubmissionDto> saveArSuperDataSubmissionDtoList(List<ArSuperDataSubmissionDto> arSuperList) {
+        log.info(StringUtil.changeForLog("do the saveArSuperDataSubmissionDtos ..."));
+        if (IaisCommonUtils.isEmpty(arSuperList)) {
+            log.warn(StringUtil.changeForLog("---No data to be saved---"));
+            return arSuperList;
+        }
+        return arFeClient.saveArSuperDataSubmissionDtoList(arSuperList).getEntity();
+    }
+
+    @Override
+    public List<ArSuperDataSubmissionDto> saveArSuperDataSubmissionDtoListToBE(List<ArSuperDataSubmissionDto> arSuperList) {
+        log.info(StringUtil.changeForLog(" the saveArSuperDataSubmissionDtoListToBE start ..."));
+        if (IaisCommonUtils.isEmpty(arSuperList)) {
+            log.warn(StringUtil.changeForLog("---No data to be saved---"));
+            return arSuperList;
+        }
+        arSuperList.forEach(dto -> dto.setFe(false));
+        arSuperList = saveBeArSuperDataSubmissionDtoList(arSuperList);
+
+        DataSubmissionDto dataSubmission = arSuperList.get(0).getDataSubmissionDto();
         String refNo = dataSubmission.getSubmissionNo() + dataSubmission.getVersion();
-        log.info(StringUtil.changeForLog(" the saveArSuperDataSubmissionDtoToBE refNo is -->:" + refNo));
+        log.info(StringUtil.changeForLog(" the saveArSuperDataSubmissionDtoListToBE refNo is -->:" + refNo));
         EicRequestTrackingDto eicRequestTrackingDto = licEicClient.getPendingRecordByReferenceNumber(refNo).getEntity();
         if (eicRequestTrackingDto != null) {
             eicRequestTrackingDto.setProcessNum(eicRequestTrackingDto.getProcessNum() + 1);
@@ -156,12 +200,12 @@ public class ArDataSubmissionServiceImpl implements ArDataSubmissionService {
         } else {
             log.warn(StringUtil.changeForLog(" do not have the eicRequestTrackingDto for this  refNo -->:" + refNo));
         }
-        log.info(StringUtil.changeForLog(" the saveArSuperDataSubmissionDtoToBE end ..."));
-        return arSuperDataSubmission;
+        log.info(StringUtil.changeForLog(" the saveArSuperDataSubmissionDtoListToBE end ..."));
+        return arSuperList;
     }
 
-    public ArSuperDataSubmissionDto saveBeArSuperDataSubmissionDto(ArSuperDataSubmissionDto arSuperDataSubmission) {
-        return feEicGatewayClient.saveBeArSuperDataSubmissionDto(arSuperDataSubmission).getEntity();
+    private List<ArSuperDataSubmissionDto> saveBeArSuperDataSubmissionDtoList(List<ArSuperDataSubmissionDto> arSuperList) {
+        return feEicGatewayClient.saveBeArSuperDataSubmissionDtoList(arSuperList).getEntity();
     }
 
     @Override
@@ -464,6 +508,15 @@ public class ArDataSubmissionServiceImpl implements ArDataSubmissionService {
     @Override
     public List<DonorSampleAgeDto> getDonorSampleAgeDtoBySampleKey(String sampleKey) {
         return arFeClient.getDonorSampleAgeDtoBySampleKey(sampleKey).getEntity();
+    }
+
+    @Override
+    public List<String> saveFileRepo(List<File> files) {
+        if (IaisCommonUtils.isEmpty(files)) {
+            log.info(StringUtil.changeForLog("------ No file to be saved to file report server -----"));
+            return IaisCommonUtils.genNewArrayList(0);
+        }
+        return comFileRepoClient.saveFileRepo(files);
     }
 
 }

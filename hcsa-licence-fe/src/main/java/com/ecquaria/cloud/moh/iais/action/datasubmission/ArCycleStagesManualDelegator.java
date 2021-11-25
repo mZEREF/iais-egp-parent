@@ -228,7 +228,7 @@ public class ArCycleStagesManualDelegator {
         dataSubmission.setSubmissionType(currentSuper.getSubmissionType());
         String stage = selectionDto.getStage();
         if (!Objects.equals(stage, dataSubmission.getCycleStage())) {
-            currentSuper = reNew(currentSuper);
+            currentSuper = DataSubmissionHelper.reNew(currentSuper);
         }
         dataSubmission.setCycleStage(stage);
         currentSuper.setDataSubmissionDto(dataSubmission);
@@ -248,20 +248,6 @@ public class ArCycleStagesManualDelegator {
             throw new IaisRuntimeException(msg);
         }
         DataSubmissionHelper.setCurrentArDataSubmission(currentSuper, request);
-    }
-
-    private ArSuperDataSubmissionDto reNew(ArSuperDataSubmissionDto currentSuper) {
-        ArSuperDataSubmissionDto newDto = new ArSuperDataSubmissionDto();
-        newDto.setAppType(DataSubmissionConsts.DS_APP_TYPE_NEW);
-        newDto.setOrgId(currentSuper.getOrgId());
-        newDto.setSubmissionType(currentSuper.getSubmissionType());
-        newDto.setSubmissionMethod(currentSuper.getSubmissionMethod());
-        newDto.setPremisesDto(currentSuper.getPremisesDto());
-        newDto.setSelectionDto(currentSuper.getSelectionDto());
-        newDto.setDraftId(currentSuper.getDraftId());
-        newDto.setDraftNo(currentSuper.getDraftNo());
-        newDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-        return newDto;
     }
 
     private CycleStageSelectionDto getSelectionDtoFromPage(HttpServletRequest request) {

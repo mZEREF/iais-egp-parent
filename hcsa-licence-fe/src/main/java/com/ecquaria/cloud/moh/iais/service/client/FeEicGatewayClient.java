@@ -106,14 +106,6 @@ public class FeEicGatewayClient {
                 MediaType.APPLICATION_JSON, date, authorization, dateSec, authorizationSec, String.class);
     }
 
-    public FeignResponseEntity<ArSuperDataSubmissionDto> saveBeArSuperDataSubmissionDto(ArSuperDataSubmissionDto arSuperDataSubmission) {
-        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
-        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
-        return IaisEGPHelper.callEicGatewayWithBody(gateWayUrl + "/v1/data-submission-sync", HttpMethod.POST, arSuperDataSubmission,
-                MediaType.APPLICATION_JSON, signature.date(), signature.authorization(),
-                signature2.date(), signature2.authorization(), ArSuperDataSubmissionDto.class);
-    }
-
     public FeignResponseEntity<AppPremisesRecommendationDto> getBeAppPremisesRecommendationByIdAndType(Map<String, Object> params) {
         HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
         HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
@@ -304,6 +296,14 @@ public class FeEicGatewayClient {
                 dpSuperDataSubmissionDto,
                 MediaType.APPLICATION_JSON, signature.date(), signature.authorization(),
                 signature2.date(), signature2.authorization(), DpSuperDataSubmissionDto.class);
+    }
+
+    public FeignResponseEntity<List> saveBeArSuperDataSubmissionDtoList(List<ArSuperDataSubmissionDto> arSuperList) {
+        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
+        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
+        return IaisEGPHelper.callEicGatewayWithBodyForList(gateWayUrl + "/v1/data-submission-sync", HttpMethod.POST,
+                arSuperList, MediaType.APPLICATION_JSON, signature.date(), signature.authorization(),
+                signature2.date(), signature2.authorization(), ArSuperDataSubmissionDto.class);
     }
 
 }

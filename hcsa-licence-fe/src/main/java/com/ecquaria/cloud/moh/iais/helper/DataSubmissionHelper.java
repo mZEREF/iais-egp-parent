@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.helper;
 
+import com.ecquaria.cloud.job.executor.util.SpringHelper;
 import com.ecquaria.cloud.moh.iais.common.annotation.ExcelProperty;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
@@ -19,11 +20,14 @@ import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant;
 import com.ecquaria.cloud.moh.iais.dto.FileErrorMsg;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
+import com.ecquaria.cloud.moh.iais.service.datasubmission.ArDataSubmissionService;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.File;
 import java.lang.reflect.Field;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -49,6 +53,26 @@ public final class DataSubmissionHelper {
 
     public static void setCurrentArDataSubmission(ArSuperDataSubmissionDto arSuperDataSubmissionDto, HttpServletRequest request) {
         ParamUtil.setSessionAttr(request, DataSubmissionConstant.AR_DATA_SUBMISSION, arSuperDataSubmissionDto);
+    }
+
+    public static ArSuperDataSubmissionDto reNew(ArSuperDataSubmissionDto currentSuper) {
+        ArSuperDataSubmissionDto newDto = new ArSuperDataSubmissionDto();
+        newDto.setAppType(currentSuper.getAppType());
+        newDto.setOrgId(currentSuper.getOrgId());
+        newDto.setSubmissionType(currentSuper.getSubmissionType());
+        newDto.setSubmissionMethod(currentSuper.getSubmissionMethod());
+        newDto.setPremisesDto(currentSuper.getPremisesDto());
+        newDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+        newDto.setPatientInfoDto(currentSuper.getPatientInfoDto());
+        DataSubmissionDto dataSubmissionDto = DataSubmissionHelper.initDataSubmission(newDto, true);
+        if (DataSubmissionConsts.DS_APP_TYPE_RFC.equals(dataSubmissionDto.getAppType())) {
+            dataSubmissionDto.setStatus(DataSubmissionConsts.DS_STATUS_AMENDED);
+        } else if (StringUtil.isEmpty(dataSubmissionDto.getStatus())) {
+            dataSubmissionDto.setStatus(DataSubmissionConsts.DS_STATUS_COMPLETED);
+        }
+        newDto.setDataSubmissionDto(dataSubmissionDto);
+        newDto.setCycleDto(DataSubmissionHelper.initCycleDto(newDto, true));
+        return newDto;
     }
 
     public static DpSuperDataSubmissionDto getCurrentDpDataSubmission(HttpServletRequest request) {
@@ -432,20 +456,58 @@ public final class DataSubmissionHelper {
 
     public static String getCode(String codeValue, List<MasterCodeView> masterCodes) {
         if (masterCodes == null || StringUtil.isEmpty(codeValue)) {
-            return null;
+            return "";
         }
         return masterCodes.stream()
                 .filter(dto -> codeValue.equals(dto.getCodeValue()))
                 .map(MasterCodeView::getCode)
                 .findAny()
-                .orElse(null);
+                .orElse("");
     }
 
-    public static <T> List<FileErrorMsg> validateExcelList(List<T> objList, String profile) {
+    private boolean validateCodeValue(String codeValue, List<MasterCodeView> masterCodes) {
+        if (StringUtil.isEmpty(codeValue)) {
+            return true;
+        }
+        return masterCodes.stream().anyMatch(dto -> codeValue.equals(dto.getCodeValue()));
+    }
+
+    public static Map<String, String> validateFile(String sessionName, HttpServletRequest request) {
+        return validateFile(sessionName, "uploadFileError", request);
+    }
+
+    public static Map<String, String> validateFile(String sessionName, String showErrorField, HttpServletRequest request) {
+        Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
+        Map<String, File> fileMap = (Map<String, File>) ParamUtil.getSessionAttr(request, sessionName);
+        if (fileMap == null || fileMap.isEmpty()) {
+            errorMap.put(showErrorField, "GENERAL_ERR0006");
+        } else {
+            // only one
+            Iterator<Map.Entry<String, File>> iterator = fileMap.entrySet().iterator();
+            if (!iterator.hasNext()) {
+                errorMap.put(showErrorField, "GENERAL_ERR0020");
+            } else {
+                Map.Entry<String, File> next = iterator.next();
+                File file = next.getValue();
+                long length = file.length();
+                if (length == 0) {
+                    errorMap.put(showErrorField, "MCUPERR004");
+                }
+            }
+        }
+        return errorMap;
+    }
+
+    /*public static <T> List<FileErrorMsg> validateExcelList(List<T> objList, String profile) {
+        return validateExcelList(objList, profile, 2, null);
+    }*/
+
+    public static <T> List<FileErrorMsg> validateExcelList(List<T> objList, String profile, Map<String, String> fieldCellMap) {
         return validateExcelList(objList, profile, 2, null);
     }
 
-    public static <T> List<FileErrorMsg> validateExcelList(List<T> objList, String profile, int startRow, Map<String, String> fieldCellMap) {
+    public static <T> List<FileErrorMsg> validateExcelList(List<T> objList, String profile, int startRow,
+            Map<String, String> fieldCellMap) {
         if (objList == null || objList.isEmpty()) {
             return IaisCommonUtils.genNewArrayList(0);
         }
@@ -464,6 +526,9 @@ public final class DataSubmissionHelper {
     }
 
     public static List<FileErrorMsg> getExcelErrorMsgs(int row, Map<String, String> errorMap, Map<String, String> fieldCellMap) {
+        if (fieldCellMap == null || fieldCellMap.isEmpty()) {
+            return IaisCommonUtils.genNewArrayList(0);
+        }
         List<FileErrorMsg> errorMsgs = IaisCommonUtils.genNewArrayList(errorMap.size());
         errorMap.forEach((k, v) -> errorMsgs.add(new FileErrorMsg(row, fieldCellMap.get(k), v)));
         return errorMsgs;

@@ -2,6 +2,8 @@
 <input type="hidden" name="uploadFormId" id="uploadFormId" value="">
 <input type="hidden" name="fileAppendId" id="fileAppendId" value="">
 <input type="hidden" name="reloadIndex" id="reloadIndex" value="-1">
+<input type="hidden" name="_needReUpload" id="_needReUpload"  value="1">
+<input type="hidden" name="_fileType" id="_fileType" value="${String.valueOf(ConfigHelper.getString("iais.system.upload.file.type", ''))}">
 <input type="hidden" name="needGlobalMaxIndex" id="needGlobalMaxIndex" value="0">
 <input type="hidden" name="fileMaxSize" id="fileMaxSize" value="${String.valueOf(ConfigHelper.getInt("iais.system.upload.file.limit", 10))}">
 <input type="hidden" id="fileMaxMBMessage" name="fileMaxMBMessage" value="<iais:message key="GENERAL_ERR0019" propertiesKey="iais.system.upload.file.limit" replaceName="sizeMax" />">
@@ -49,7 +51,7 @@
         $("#uploadFormId").val(idForm);
         var form = new FormData($("#"+idForm)[0]);
         var maxFileSize = $("#fileMaxSize").val();
-        var rslt = validateFileSizeMaxOrEmpty(maxFileSize,'selectedFile');
+        var rslt = validateFileSizeMaxOrEmpty(maxFileSize, fileAppendId);
         //alert('rslt:'+rslt);
         if (rslt == 'N') {
           $("#error_"+fileAppendId+"Error").html($("#fileMaxMBMessage").val());
@@ -74,11 +76,11 @@
                             $("#reloadIndex").val(-1);
                             $("#"+fileAppendId+"Div"+reloadIndex+"Copy").after(data.description);
                             deleteFileFeDiv(fileAppendId+"Div"+reloadIndex+"Copy");
-                        }else {
+                        } else {
                             $("#"+fileAppendId+"ShowId").append(data.description);
                         }
                         $("#error_"+fileAppendId+"Error").html("");
-                            cloneUploadFile();
+                        cloneUploadFile();
                     }else {
                         $("#error_"+fileAppendId+"Error").html(data.description);
                     }

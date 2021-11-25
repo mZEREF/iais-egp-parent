@@ -115,7 +115,7 @@ public class ArDataSubmissionDelegator {
         } else if (DataSubmissionConsts.AR_TYPE_SBT_PATIENT_INFO.equals(submissionType)) {
             if (DataSubmissionConsts.DS_METHOD_MANUAL_ENTRY.equals(submissionMethod)) {
                 actionType = "pim";
-            } else if (DataSubmissionConsts.DS_METHOD_MANUAL_ENTRY.equals(submissionMethod)) {
+            } else if (DataSubmissionConsts.DS_METHOD_FILE_UPLOAD.equals(submissionMethod)) {
                 actionType = "pif";
             } else {
                 map.put("submissionMethod", "GENERAL_ERR0006");
@@ -123,7 +123,7 @@ public class ArDataSubmissionDelegator {
         } else if (DataSubmissionConsts.AR_TYPE_SBT_CYCLE_STAGE.equals(submissionType)) {
             if (DataSubmissionConsts.DS_METHOD_MANUAL_ENTRY.equals(submissionMethod)) {
                 actionType = "csm";
-            } else if (DataSubmissionConsts.DS_METHOD_MANUAL_ENTRY.equals(submissionMethod)) {
+            } else if (DataSubmissionConsts.DS_METHOD_FILE_UPLOAD.equals(submissionMethod)) {
                 actionType = "csf";
             } else {
                 map.put("submissionMethod", "GENERAL_ERR0006");
@@ -149,14 +149,15 @@ public class ArDataSubmissionDelegator {
         } else if (premisesDto == null) {
             map.put(PREMISES, "There are no active Assisted Reproduction licences");
         }
-        ArSuperDataSubmissionDto currentArDataSubmission = DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
-        if (reNew(currentArDataSubmission, submissionType, submissionMethod, premisesDto)) {
-            currentArDataSubmission = new ArSuperDataSubmissionDto();
+        ArSuperDataSubmissionDto currentSuper = DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
+        boolean reNew = isNeedReNew(currentSuper, submissionType, submissionMethod, premisesDto);
+        if (reNew) {
+            currentSuper = new ArSuperDataSubmissionDto();
         }
         if (!map.isEmpty()) {
-            currentArDataSubmission.setSubmissionType(submissionType);
-            currentArDataSubmission.setSubmissionMethod(submissionMethod);
-            currentArDataSubmission.setPremisesDto(premisesDto);
+            currentSuper.setSubmissionType(submissionType);
+            currentSuper.setSubmissionMethod(submissionMethod);
+            currentSuper.setPremisesDto(premisesDto);
             actionType = "invalid";
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(map));
         } else {
@@ -173,30 +174,31 @@ public class ArDataSubmissionDelegator {
                     actionType = "invalid";
                 }
             } else if ("resume".equals(actionValue)) {
-                currentArDataSubmission = arDataSubmissionService.getArSuperDataSubmissionDtoDraftByConds(orgId, submissionType,
+                currentSuper = arDataSubmissionService.getArSuperDataSubmissionDtoDraftByConds(orgId, submissionType,
                         hciCode);
-                if (currentArDataSubmission == null) {
+                if (currentSuper == null) {
                     log.warn("Can't resume data!");
-                    currentArDataSubmission = new ArSuperDataSubmissionDto();
+                    currentSuper = new ArSuperDataSubmissionDto();
+                } else {
+                    reNew = false;
                 }
             } else if ("delete".equals(actionValue)) {
                 arDataSubmissionService.deleteArSuperDataSubmissionDtoDraftByConds(orgId, submissionType, hciCode);
             }
-            currentArDataSubmission.setAppType(DataSubmissionConsts.DS_APP_TYPE_NEW);
-            currentArDataSubmission.setOrgId(orgId);
-            currentArDataSubmission.setSubmissionType(submissionType);
-            currentArDataSubmission.setSubmissionMethod(submissionMethod);
-            currentArDataSubmission.setPremisesDto(premisesDto);
-            currentArDataSubmission.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-            currentArDataSubmission.setDataSubmissionDto(DataSubmissionHelper.initDataSubmission(currentArDataSubmission,
-                    false));
-            currentArDataSubmission.setCycleDto(DataSubmissionHelper.initCycleDto(currentArDataSubmission, false));
+            currentSuper.setAppType(DataSubmissionConsts.DS_APP_TYPE_NEW);
+            currentSuper.setOrgId(orgId);
+            currentSuper.setSubmissionType(submissionType);
+            currentSuper.setSubmissionMethod(submissionMethod);
+            currentSuper.setPremisesDto(premisesDto);
+            currentSuper.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+            currentSuper.setDataSubmissionDto(DataSubmissionHelper.initDataSubmission(currentSuper, reNew));
+            currentSuper.setCycleDto(DataSubmissionHelper.initCycleDto(currentSuper, reNew));
         }
-        DataSubmissionHelper.setCurrentArDataSubmission(currentArDataSubmission, bpc.request);
+        DataSubmissionHelper.setCurrentArDataSubmission(currentSuper, bpc.request);
         ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.CRUD_ACTION_TYPE_AR, actionType);
     }
 
-    private boolean reNew(ArSuperDataSubmissionDto arSuperDto, String submissionType, String submissionMethod,
+    private boolean isNeedReNew(ArSuperDataSubmissionDto arSuperDto, String submissionType, String submissionMethod,
             PremisesDto premisesDto) {
         if (arSuperDto == null
                 || !Objects.equals(submissionType, arSuperDto.getSubmissionType())
@@ -206,10 +208,7 @@ public class ArDataSubmissionDelegator {
         String hciCode = Optional.ofNullable(premisesDto)
                 .map(PremisesDto::getHciCode)
                 .orElse("");
-        String old = Optional.ofNullable(arSuperDto.getPremisesDto())
-                .map(PremisesDto::getHciCode)
-                .orElse("");
-        return !Objects.equals(hciCode, old);
+        return !Objects.equals(hciCode, arSuperDto.getHciCode());
     }
 
     /**

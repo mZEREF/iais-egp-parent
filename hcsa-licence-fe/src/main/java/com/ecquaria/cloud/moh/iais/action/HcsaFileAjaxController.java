@@ -75,7 +75,14 @@ public class HcsaFileAjaxController {
             size = (Integer) ParamUtil.getSessionAttr(request,SEESION_FILES_MAP_AJAX
                     + fileAppendId + SEESION_FILES_MAP_AJAX_MAX_INDEX);
         }
-        String errorMessage = getErrorMessage(selectedFile);
+        String needReUpload = ParamUtil.getString(request, "_needReUpload");
+        String fileType = ParamUtil.getString(request, "_fileType");
+        String fileMaxSize = ParamUtil.getString(request, "fileMaxSize");
+        int maxSize = 0;
+        if (StringUtil.isDigit(fileMaxSize)) {
+            maxSize = Integer.parseInt(fileMaxSize);
+        }
+        String errorMessage = getErrorMessage(selectedFile, fileType, maxSize);
         MessageDto messageCode = new MessageDto();
          if(!StringUtil.isEmpty(errorMessage)){
              messageCode.setMsgType("N");
@@ -117,9 +124,12 @@ public class HcsaFileAjaxController {
         String deleteButtonString = "      <button type=\"button\" class=\"btn btn-secondary btn-sm\"\n" +
                 "                                                    onclick=\"javascript:deleteFileFeAjax('replaceForDelete',indexReplace);\">\n" +
                 "                                                Delete</button>";
-        String reUploadButtonString="  <button type=\"button\" class=\"btn btn-secondary btn-sm\"\n" +
-                "                                                    onclick=\"javascript:reUploadFileFeAjax('replaceForUpload',indexReplace,'replaceForUploadForm');\">\n" +
-                "                                               ReUpload</button>";
+        String reUploadButtonString = "";
+        if (!AppConsts.NO.equals(needReUpload)) {
+            reUploadButtonString = "  <button type=\"button\" class=\"btn btn-secondary btn-sm\"\n" +
+                    "                                                    onclick=\"javascript:reUploadFileFeAjax('replaceForUpload',indexReplace,'replaceForUploadForm');\">\n" +
+                    "                                               ReUpload</button>";
+        }
         if(selectedFile != null) {
             String originalFileName = selectedFile.getOriginalFilename();
             if(originalFileName != null) {
@@ -147,13 +157,17 @@ public class HcsaFileAjaxController {
         return JsonUtil.toJson(messageCode);
     }
 
-    private  String getErrorMessage(MultipartFile selectedFile){
+    private String getErrorMessage(MultipartFile selectedFile, String fileTypesString, int maxSize) {
         if(selectedFile.isEmpty()){
             return MessageUtil.getMessageDesc("GENERAL_ACK018");
         }
-        int maxSize = systemParamConfig.getUploadFileLimit();
-        String fileTypesString = FileUtils.getStringFromSystemConfigString(systemParamConfig.getUploadFileType());
-        List<String> fileTypes = Arrays.asList(fileTypesString.split(","));
+        if (maxSize <= 0) {
+            maxSize = systemParamConfig.getUploadFileLimit();
+        }
+        if (StringUtil.isEmpty(fileTypesString)) {
+            fileTypesString = systemParamConfig.getUploadFileType();
+        }
+        List<String> fileTypes = Arrays.asList(fileTypesString.split("\\s*,\\s*"));
         Map<String, Boolean> booleanMap = ValidationUtils.validateFile(selectedFile,fileTypes,(maxSize * 1024 *1024l));
         Boolean fileSize = booleanMap.get("fileSize");
         Boolean fileType = booleanMap.get("fileType");

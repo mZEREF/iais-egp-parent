@@ -32,12 +32,13 @@ public class FileErrorMsg implements Serializable {
     }
 
     public FileErrorMsg(int row, String fieldName, String message) {
+        this();
         this.row = row;
         this.fieldName = fieldName;
         this.message = message;
     }
 
-    public FileErrorMsg addMsgArgs(String placeHolder, String replaceVal) {
+    public FileErrorMsg addMsgArg(String placeHolder, String replaceVal) {
         arguments.put(Objects.requireNonNull(placeHolder), Objects.requireNonNull(replaceVal));
         return this;
     }

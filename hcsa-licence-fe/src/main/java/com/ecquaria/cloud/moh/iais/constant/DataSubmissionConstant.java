@@ -42,4 +42,6 @@ public class DataSubmissionConstant {
     public static String PRINT_FLAG_DRP                     = "DRP";
     public static String PRINT_FLAG_ACKART                  = "ACKART";
     public static String PRINT_FLAG_ACKDRP                  = "ACKDRP";
+
+    public static String FILE_ITEM_ERROR_MSGS               = "fileItemErrorMsgs";
 }

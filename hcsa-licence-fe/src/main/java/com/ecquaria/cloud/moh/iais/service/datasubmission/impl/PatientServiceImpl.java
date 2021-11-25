@@ -23,6 +23,8 @@ public class PatientServiceImpl implements PatientService {
 
     @Override
     public PatientDto getArPatientDto(String idType, String idNumber, String nationality, String orgId) {
+        log.info(StringUtil.changeForLog("----- Param: " + orgId + " : " + idType
+                + " : " + idNumber + " : " + nationality + " -----"));
         if (StringUtil.isEmpty(idType) || StringUtil.isEmpty(idNumber) || StringUtil.isEmpty(nationality)
                 || StringUtil.isEmpty(orgId)) {
             return null;
