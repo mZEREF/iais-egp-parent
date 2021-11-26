@@ -39,6 +39,7 @@
                 <#if dashRoleId??> and T7.role_id = :dashRoleId </#if>
             ) T5
             WHERE 1 = 1
+            <#if appGroup_list??> and ${appGroup_list} </#if>
             <#if application_no??> and charindex(:application_no, T5.APPLICATION_NO) >0 </#if>
             <#if application_type??> and T5.APP_TYPE = :application_type</#if>
             <#if application_status??> and ${application_status}</#if>
@@ -141,6 +142,7 @@
                 and T7.USER_ID is NULL
             ) T5
             WHERE 1 = 1
+            <#if appGroup_list??> and ${appGroup_list} </#if>
             <#if application_no??> and charindex(:application_no, T5.APPLICATION_NO) >0 </#if>
             <#if application_type??> and T5.APP_TYPE = :application_type</#if>
             <#if hci_code??> and charindex(:hci_code, T5.HCI_CODE) >0 </#if>
@@ -210,6 +212,7 @@
             FROM APP_GRP_EXCEEDING_DAY_VIEW T1
             JOIN TASKVIEW T7 ON T7.REF_NO = T1.CORREID
             WHERE 1 = 1
+            <#if appGroup_list??> and ${appGroup_list} </#if>
             <#if workGroup_list??> and ${workGroup_list} </#if>
             <#if dashRoleId??> and T7.ROLE_ID = :dashRoleId </#if>
             <#if dashRoleIdList??> and ${dashRoleIdList} </#if>
@@ -254,6 +257,7 @@
             FROM TASK_WAITING_APPROVAL_APP_GRP_VIEW T7
             LEFT JOIN TASKVIEW T1 ON T1.REF_NO = T7.CORRID and T1.TASK_STATUS in ('TSTATUS001','TSTATUS002')
             WHERE 1 = 1
+            <#if appGroup_list??> and ${appGroup_list} </#if>
             <#if workGroup_list??> and ${workGroup_list} </#if>
             <#if dashRoleId??> and T7.ROLE_ID = :dashRoleId</#if>
             <#if dashRoleIdList??> and ${dashRoleIdList} </#if>
@@ -297,6 +301,7 @@
             SELECT DISTINCT T7.ID, T7.GROUP_NO, T7.PMT_STATUS, T7.APP_TYPE, T7.SUBMIT_DT, T7.COU
             FROM TASK_WAITING_APPLICANT_REPLY_GRP_VIEW T7
             WHERE 1 = 1
+            <#if appGroup_list??> and ${appGroup_list} </#if>
             <#if workGroup_list??> and ${workGroup_list} </#if>
             <#if dashRoleId??> and T7.ROLE_ID = :dashRoleId</#if>
             <#if dashRoleIdList??> and ${dashRoleIdList} </#if>
@@ -340,6 +345,7 @@
             FROM TASK_RENEWAL_EXPIRY_GRP_VIEW T1
             LEFT JOIN TASKVIEW T7 ON T7.REF_NO = T1.CORRID and T7.TASK_STATUS in ('TSTATUS001','TSTATUS002')
             WHERE 1 = 1
+            <#if appGroup_list??> and ${appGroup_list} </#if>
             <#if workGroup_list??> and ${workGroup_list} </#if>
             <#if dashRoleId??> and T7.ROLE_ID = :dashRoleId </#if>
             <#if dashRoleIdList??> and ${dashRoleIdList} </#if>
@@ -422,6 +428,7 @@
              and T7.TASK_STATUS in ('TSTATUS001','TSTATUS002')
             ) T5
             WHERE 1 = 1
+            <#if appGroup_list??> and ${appGroup_list} </#if>
             <#if application_no??> and charindex(:application_no, T5.APPLICATION_NO) >0 </#if>
             <#if application_type??> and T5.APP_TYPE = :application_type</#if>
             <#if application_status??> and ${application_status}</#if>
