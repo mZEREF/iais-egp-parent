@@ -113,8 +113,10 @@
                                                                         <c:forEach var="file" items="${fileList}" varStatus="fileStat">
                                                                             <c:if test="${not empty file.docName }">
                                                                                 <p class="fileList">
-                                                                                    <a href="${pageContext.request.contextPath}/file-repo?filerepo=fileRo0&fileRo0=<iais:mask name="fileRo0" value="${file.fileRepoId}"/>&fileRepoName=${file.docName}">${file.docName}</a>
-                                                                                    &emsp;<button type="button" class="btn btn-secondary btn-sm" onclick="writeMessageDeleteFile('${file.id}','${configIndex}')">Delete</button><input hidden name='fileSize' value='${file.docSize}'/></p>
+                                                                                    <iais:downloadLink fileRepoIdName="fileRo0" fileRepoId="${file.fileRepoId}" docName="${file.docName}"/>
+                                                                                    &emsp;<button type="button" class="btn btn-secondary btn-sm" onclick="writeMessageDeleteFile('${file.id}','${configIndex}')">Delete</button>
+                                                                                    <input hidden name='fileSize' value='${file.docSize}'/>
+                                                                                </p>
                                                                             </c:if>
                                                                         </c:forEach>
                                                                     </div>

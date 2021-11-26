@@ -141,7 +141,8 @@ public class TemplatesDelegator {
     public void editTemplate(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
         String msgId = ParamUtil.getString(request,SystemAdminBaseConstants.CRUD_ACTION_VALUE);
-        if (!msgId.isEmpty()){
+        log.info(StringUtil.changeForLog("msgId ===:"+msgId));
+        if (StringUtil.isNotEmpty(msgId)){
             MsgTemplateDto msgTemplateDto = templatesService.getMsgTemplate(msgId);
             String messageType = msgTemplateDto.getMessageType();
             String deliveryMode = msgTemplateDto.getDeliveryMode();
@@ -196,6 +197,10 @@ public class TemplatesDelegator {
             return;
         }
         MsgTemplateDto msgTemplateDto = (MsgTemplateDto) ParamUtil.getSessionAttr(request, MsgTemplateConstants.MSG_TEMPLATE_DTO);
+        if(msgTemplateDto==null){
+            ParamUtil.setRequestAttr(request, SystemAdminBaseConstants.ISVALID, SystemAdminBaseConstants.YES);
+            return;
+        }
         msgTemplateDto.setProcess("test");
         getValueFromPage(msgTemplateDto, request);
         ValidationResult validationResult =WebValidationHelper.validateProperty(msgTemplateDto, "edit");

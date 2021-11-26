@@ -4428,10 +4428,12 @@ public class NewApplicationHelper {
             AppSubmissionService appSubmissionService = SpringContextHelper.getContext().getBean(AppSubmissionService.class);
             dto = appSubmissionService.retrievePrsInfo(profRegNo);
         }
-        if (dto == null || StringUtil.isEmpty(dto.getRegno()) || StringUtil.isEmpty(dto.getName())) {
-            isValid = false;
+        if (dto == null) {
+            return true;
         }
-        if (dto != null && dto.isHasException()) {
+        if ("-1".equals(dto.getStatusCode()) || "-2".equals(dto.getStatusCode())) {
+            isValid = false;
+        } else if (dto.isHasException()) {
             isValid = false;
             if (request != null) {
                 request.setAttribute(ClinicalLaboratoryDelegator.PRS_SERVICE_DOWN, ClinicalLaboratoryDelegator.PRS_SERVICE_DOWN);
@@ -4526,6 +4528,7 @@ public class NewApplicationHelper {
         msg.deleteCharAt(msg.length() - 2);
         msg.deleteCharAt(msg.length() - 1);
     }
+
     private static String handleStepHames(List<String> errorList) {
         return errorList.stream()
                 .filter(s -> s.contains(":"))

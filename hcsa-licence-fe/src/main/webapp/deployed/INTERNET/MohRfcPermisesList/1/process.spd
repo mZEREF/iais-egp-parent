@@ -72,7 +72,7 @@
     <JavaCode defClass="" executor="" methodName="jumpBlank_OnStepProcess_0" name="jumpBlank_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="doPayment" x="600" y="480">
+  <AutomaticStep defClass="" executor="" icon="" name="doPayment" x="540" y="430">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
@@ -201,7 +201,7 @@
    <position>{(300,370)(440,370)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/ControlSwitch" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/doPayment" style="oblique">
-   <position>{(620,500)(716,433)(730,240)}</position>
+   <position>{(560,450)(716,433)(730,240)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/preparePayment" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch3" style="oblique">
    <position>{(210,250)(300,370)}</position>

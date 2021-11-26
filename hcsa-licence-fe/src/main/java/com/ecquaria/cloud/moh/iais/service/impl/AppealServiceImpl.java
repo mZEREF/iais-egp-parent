@@ -38,7 +38,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceStepSchemeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
-import com.ecquaria.cloud.moh.iais.common.dto.prs.ProfessionalParameterDto;
 import com.ecquaria.cloud.moh.iais.common.dto.prs.ProfessionalResponseDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
@@ -61,6 +60,7 @@ import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
+import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.AppealService;
 import com.ecquaria.cloud.moh.iais.service.RequestForChangeService;
 import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
@@ -91,7 +91,6 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -129,8 +128,6 @@ public class AppealServiceImpl implements AppealService {
 
     @Value("${iais.email.sender}")
     private String mailSender;
-    @Value("${moh.halp.prs.enable}")
-    private String prsFlag;
 
     @Autowired
     private SystemParamConfig systemParamConfig;
@@ -159,6 +156,9 @@ public class AppealServiceImpl implements AppealService {
     private Environment env;
     @Autowired
     private ComFileRepoClient comFileRepoClient;
+    @Autowired
+    private AppSubmissionService appSubmissionService;
+
     @Override
     public String submitData(HttpServletRequest request) {
         String appealingFor = (String) request.getSession().getAttribute(APPEALING_FOR);
@@ -719,58 +719,7 @@ public class AppealServiceImpl implements AppealService {
 
     @Override
     public ProfessionalResponseDto prsFlag(String regNo) {
-        ProfessionalResponseDto professionalResponseDto=new ProfessionalResponseDto();
-
-            if("Y".equals(prsFlag)){
-                ProfessionalParameterDto professionalParameterDto =new ProfessionalParameterDto();
-                List<String> prgNos=new ArrayList<>(1);
-                prgNos.add(regNo);
-                professionalParameterDto.setRegNo(prgNos);
-                professionalParameterDto.setClientId("22222");
-                SimpleDateFormat simpleDateFormat=new SimpleDateFormat("yyyyMMddHHmmssSSS");
-                String format = simpleDateFormat.format(new Date());
-                professionalParameterDto.setTimestamp(format);
-                professionalParameterDto.setSignature("2222");
-                HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
-                HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
-                try {
-                    List<ProfessionalResponseDto> professionalResponseDtos = feEicGatewayClient.getProfessionalDetail(professionalParameterDto, signature.date(), signature.authorization(),
-                            signature2.date(), signature2.authorization()).getEntity();
-                    if(!professionalResponseDtos.isEmpty()){
-                        StringBuilder sb = new StringBuilder();
-                        professionalResponseDto = professionalResponseDtos.get(0);
-                        List<String> specialty = professionalResponseDto.getSpecialty();
-                        List<String> qualification = professionalResponseDto.getQualification();
-                        List<String> subspecialty = professionalResponseDto.getSubspecialty();
-                        if(IaisCommonUtils.isEmpty(specialty)){
-                            return professionalResponseDto;
-                        }
-                        if (!IaisCommonUtils.isEmpty(qualification)) {
-                            String s = qualification.get(0);
-                            if(!StringUtil.isEmpty(s)){
-                                sb.append(s);
-                            }
-                        }
-                        if (!IaisCommonUtils.isEmpty(subspecialty)) {
-                            String s = subspecialty.get(0);
-                            if(!StringUtil.isEmpty(s)){
-                                sb.append(s);
-                            }
-                        }
-                        String s = sb.toString();
-                        qualification.clear();
-                        qualification.add(s);
-                        log.debug(StringUtil.changeForLog("the prgNo is null ...."));
-                        return professionalResponseDto;
-                    }
-                }catch (Throwable e){
-                    return professionalResponseDto;
-                }
-
-            }
-            return professionalResponseDto;
-
-
+        return appSubmissionService.retrievePrsInfo(regNo);
     }
 
     @Override
@@ -925,8 +874,8 @@ public class AppealServiceImpl implements AppealService {
             appSvcCgoDto.setEmailAddr(emailAddress[i]);
             appSvcCgoDto.setIndexNo(indexNo);
             appSvcCgoDto.setOtherQualification(otherQualifications[i]);
-            if("Y".equals(prsFlag)){
-                ProfessionalResponseDto professionalResponseDto = prsFlag(professionRegoNo[i]);
+            ProfessionalResponseDto professionalResponseDto = prsFlag(professionRegoNo[i]);
+            if(professionalResponseDto != null){
                 List<String> qualification = professionalResponseDto.getQualification();
                 if(qualification!=null&&!qualification.isEmpty()){
                     appSvcCgoDto.setQualification(qualification.get(0));
@@ -1102,32 +1051,19 @@ public class AppealServiceImpl implements AppealService {
 /*
                             map.put("professionRegoNo" + i, MessageUtil.replaceMessage("GENERAL_ERR0006","Professional Regn. No.  ","field"));
 */
-                        }else {
-                            if("Y".equals(prsFlag)){
-                                ProfessionalParameterDto professionalParameterDto = new ProfessionalParameterDto();
-                                List<String> prgNos = IaisCommonUtils.genNewArrayList();
-                                prgNos.add(professionRegoNo);
-                                professionalParameterDto.setRegNo(prgNos);
-                                professionalParameterDto.setClientId("22222");
-                                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMddHHmmssSSS");
-                                String format = simpleDateFormat.format(new Date());
-                                professionalParameterDto.setTimestamp(format);
-                                professionalParameterDto.setSignature("2222");
-                                HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
-                                HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
-                                try{
-                                    List<ProfessionalResponseDto> professionalResponseDtos = feEicGatewayClient.getProfessionalDetail(professionalParameterDto, signature.date(), signature.authorization(),
-                                            signature2.date(), signature2.authorization()).getEntity();
-                                    if(!IaisCommonUtils.isEmpty(professionalResponseDtos)){
-                                        List<String> specialty = professionalResponseDtos.get(0).getSpecialty();
-                                        if(IaisCommonUtils.isEmpty(specialty)){
-                                            map.put("professionRegoNo" + i, "GENERAL_ERR0042");
-                                        }
+                        } else {
+                            ProfessionalResponseDto professionalResponseDto = prsFlag(professionRegoNo);
+                            if (professionalResponseDto != null) {
+                                if (professionalResponseDto.isHasException()) {
+                                    map.put("professionRegoNo" + i, "GENERAL_ERR0048");
+                                } else if ("401".equals(professionalResponseDto.getStatusCode())) {
+                                    map.put("professionRegoNo" + i, "GENERAL_ERR0054");
+                                } else {
+                                    List<String> specialty = professionalResponseDto.getSpecialty();
+                                    if (IaisCommonUtils.isEmpty(specialty)) {
+                                        map.put("professionRegoNo" + i, "GENERAL_ERR0042");
                                     }
-                                }catch (Throwable e){
-                                    request.setAttribute("PRS_SERVICE_DOWN","PRS_SERVICE_DOWN");
                                 }
-
                             }
                         }
 

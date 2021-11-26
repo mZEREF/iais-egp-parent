@@ -367,7 +367,11 @@
     <div class="modal-content">
       <div class="modal-body" >
         <div class="row">
-          <div class="col-md-12"><span style="font-size: 2rem;"><%=MessageUtil.getMessageDesc("GENERAL_ERR0048")%></span></div>
+          <div class="col-md-12">
+            <span style="font-size: 2rem;" id="prsErrorMsg">
+              <%=MessageUtil.getMessageDesc("GENERAL_ERR0048")%>
+            </span>
+          </div>
         </div>
       </div>
       <div class="row " style="margin-top: 5%;margin-bottom: 5%">
@@ -509,12 +513,20 @@
     function aaa(obj){
         var val = $(obj).val();
         $.getJSON("${pageContext.request.contextPath}/regNo-prs",{"regNo":val},function (data) {
-            if(data.regno==null){
+            if (isEmpty(data)) {
+                console.log("The return data is null for PRS");
+            } else if('-1' == data.statusCode || '-2' == data.statusCode) {
+                $('#prsErrorMsg').html('<iais:message key="GENERAL_ERR0042" escape="false" />');
                 $('#PRS_SERVICE_DOWN').modal('show');
-            }else {
+            } else if (data.hasException) {
+                $('#prsErrorMsg').html('<iais:message key="GENERAL_ERR0048" escape="false" />');
+                $('#PRS_SERVICE_DOWN').modal('show');
+            } else if ('401' == data.statusCode) {
+                $('#prsErrorMsg').html('<iais:message key="GENERAL_ERR0054" escape="false" />');
+                $('#PRS_SERVICE_DOWN').modal('show');
+            } else {
                 loadings(data,obj);
             }
-
         });
     };
     const loadings = function (data,obj) {
@@ -602,17 +614,24 @@
             'data': jsonData,
             'type': 'GET',
             'success': function (data) {
-                if(data.regno == null){
+                if (isEmpty(data)) {
+                    console.log("The return data is null for PRS");
+                } else if('-1' == data.statusCode || '-2' == data.statusCode) {
+                    $('#prsErrorMsg').html('<iais:message key="GENERAL_ERR0042" escape="false" />');
                     $('#PRS_SERVICE_DOWN').modal('show');
                     clearPrsInfo($loadingContent);
-                    return;
-                }
-                if(data.name == null){
-                    //prgNo is incorrect
+                } else if (data.hasException) {
+                    $('#prsErrorMsg').html('<iais:message key="GENERAL_ERR0048" escape="false" />');
+                    $('#PRS_SERVICE_DOWN').modal('show');
                     clearPrsInfo($loadingContent);
-                    return;
+                } else if ('401' == data.statusCode) {
+                    $('#prsErrorMsg').html('<iais:message key="GENERAL_ERR0054" escape="false" />');
+                    $('#PRS_SERVICE_DOWN').modal('show');
+                    clearPrsInfo($loadingContent);
+                } else {
+                    loadingData(data,$loadingContent);
                 }
-                loadingData(data,$loadingContent);
+                dismissWaiting();
             },
             'error': function () {
                 //

@@ -18,7 +18,7 @@
                             ${svcDoc.docName}
                         </c:when>
                         <c:otherwise>
-                            <a href="${pageContext.request.contextPath}/file-repo?filerepo=fileRo${status.index}&fileRo${status.index}=<iais:mask name="fileRo${status.index}" value="${svcDoc.fileRepoId}"/>&fileRepoName=${svcDoc.docName}" title="Download" class="downloadFile">${svcDoc.docName}</a>
+                            <iais:downloadLink fileRepoIdName="fileRo${status.index}" fileRepoId="${svcDoc.fileRepoId}" docName="${svcDoc.docName}"/>
                         </c:otherwise>
                     </c:choose> (${svcDoc.docSize} KB)
                 </span>

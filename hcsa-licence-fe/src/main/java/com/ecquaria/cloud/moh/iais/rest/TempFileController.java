@@ -39,6 +39,7 @@ public class TempFileController {
             @ApiParam(name = "folderName", required = true)
             @RequestParam("folderName") String folderName) {
         File folder = MiscUtil.generateFolderInTempFolder(folderName);
+        fileName = StringUtil.clarify(fileName);
         File file = MiscUtil.generateFile(folder, fileName);
         try (OutputStream fos = Files.newOutputStream(file.toPath())) {
             log.info(StringUtil.changeForLog("The file pathName ==> " + file.getCanonicalPath()));

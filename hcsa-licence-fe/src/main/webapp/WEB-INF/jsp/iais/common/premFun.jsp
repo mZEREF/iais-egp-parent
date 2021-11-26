@@ -4,7 +4,7 @@
             var checkedType = $(this).val();
             var $premSelect = $(this).closest('div.premContent');
             var $premSelctDivEle = $(this).closest('div.premisesTypeDiv');
-            clearFields('.premSelect');
+            clearFields($premSelect.find('.premSelect'));
             if('ONSITE'==checkedType){
                 //reset indexNo for clear
                 // $premSelect.find('.premisesIndexNo').val('');

@@ -871,9 +871,11 @@ public class ApplicationServiceImpl implements ApplicationService {
     @Override
     public boolean isWithdrawReturnFee(String appNo,String appGrpId) {
         boolean result = false;
-        AppReturnFeeDto appReturnFeeDto = applicationClient.getReturnFeeByAppNo(appNo,ApplicationConsts.APPLICATION_RETURN_FEE_TYPE_WITHDRAW).getEntity();
-        ApplicationGroupDto applicationGroupDto=applicationClient.getAppById(appGrpId).getEntity();
-        if (appReturnFeeDto == null&&!(applicationGroupDto.getPayMethod().equals(ApplicationConsts.PAYMENT_METHOD_NAME_GIRO)&&applicationGroupDto.getPmtStatus().equals(ApplicationConsts.PAYMENT_STATUS_PENDING_GIRO))){
+        AppReturnFeeDto appReturnFeeDto = applicationClient.getReturnFeeByAppNo(appNo, ApplicationConsts.APPLICATION_RETURN_FEE_TYPE_WITHDRAW).getEntity();
+        ApplicationGroupDto applicationGroupDto = applicationClient.getAppById(appGrpId).getEntity();
+        if (appReturnFeeDto == null && !(applicationGroupDto != null &&
+                ApplicationConsts.PAYMENT_METHOD_NAME_GIRO.equals(applicationGroupDto.getPayMethod()) &&
+                ApplicationConsts.PAYMENT_STATUS_PENDING_GIRO.equals(applicationGroupDto.getPmtStatus()))) {
             result = true;
         }
         return result;
@@ -996,6 +998,7 @@ public class ApplicationServiceImpl implements ApplicationService {
         smsParam.setSubject(subject);
         smsParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_005_CLARIFICATION_SMS);
         smsParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_APP);
+        smsParam.setRecipientType(recipientRole);
         notificationHelper.sendNotification(smsParam);
         log.info(StringUtil.changeForLog("the sendRfcClarificationEmail end ..."));
     }

@@ -17,6 +17,8 @@ public interface OrgUserManageService {
 
     OrganizationDto getOrganizationById(String id);
 
+    void updateCompLicensee(String orgId, String telNo, String emailAddr);
+
     FeUserDto getUserAccount(String userId);
 
     FeUserDto editUserAccount(FeUserDto feUserDto);
