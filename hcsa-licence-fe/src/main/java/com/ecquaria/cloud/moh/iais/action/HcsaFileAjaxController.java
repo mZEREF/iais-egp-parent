@@ -19,6 +19,8 @@ import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.Serializable;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -217,7 +219,7 @@ public class HcsaFileAjaxController {
                     if(fileData != null){
                         try {
                             response.addHeader("Content-Disposition", "attachment;filename=\""
-                                    +  file.getName() + "\"");
+                                    +  URLEncoder.encode(file.getName(), StandardCharsets.UTF_8.toString()) + "\"");
                             response.addHeader("Content-Length", "" + fileData.length);
                             response.setContentType("application/x-octet-stream");
                         }catch (Exception e){
