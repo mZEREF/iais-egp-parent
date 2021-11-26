@@ -28,11 +28,9 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceStep
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSubtypeOrSubsumedDto;
-import com.ecquaria.cloud.moh.iais.common.dto.prs.ProfessionalParameterDto;
 import com.ecquaria.cloud.moh.iais.common.dto.prs.ProfessionalResponseDto;
 import com.ecquaria.cloud.moh.iais.common.dto.prs.RegistrationDto;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
-import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.CopyUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
@@ -45,11 +43,11 @@ import com.ecquaria.cloud.moh.iais.constant.NewApplicationConstant;
 import com.ecquaria.cloud.moh.iais.constant.RfcConst;
 import com.ecquaria.cloud.moh.iais.dto.ServiceStepDto;
 import com.ecquaria.cloud.moh.iais.helper.FileUtils;
+import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.NewApplicationHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
-import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
 import com.ecquaria.cloud.moh.iais.service.WithOutRenewalService;
@@ -75,7 +73,6 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -4222,7 +4219,7 @@ public class ClinicalLaboratoryDelegator {
                     appSvcKeyAppointmentHolderDto.setAssignSelect(assignSel);
                 } else {
                     appSvcKeyAppointmentHolderDto.setAssignSelect(NewApplicationHelper.getAssignSelect(idType, idNo,
-                            IaisEGPConstant.ASSIGN_SELECT_ADD_NEW));
+                            "-1"));
                 }
                 AppPsnEditDto appPsnEditDto = appSvcKeyAppointmentHolderDto.getPsnEditDto();
                 if (appPsnEditDto == null) {
@@ -4231,16 +4228,16 @@ public class ClinicalLaboratoryDelegator {
                 }
                 boolean partEdit = AppConsts.YES.equals(isPartEdit) && !StringUtil.isEmpty(indexNo);
                 boolean isNewOfficer = IaisEGPConstant.ASSIGN_SELECT_ADD_NEW.equals(assignSel) || !appSvcKeyAppointmentHolderDto.isLicPerson();
-                if (canSetValue(appPsnEditDto.isSalutation(), isNewOfficer, partEdit)) {
+                if (isNewOfficer && (appPsnEditDto.isSalutation() || partEdit)) {
                     appSvcKeyAppointmentHolderDto.setSalutation(salutation);
                 }
-                if (canSetValue(appPsnEditDto.isName(), isNewOfficer, partEdit)) {
+                if (isNewOfficer && (appPsnEditDto.isName() || partEdit)) {
                     appSvcKeyAppointmentHolderDto.setName(name);
                 }
-                if (canSetValue(appPsnEditDto.isIdType(), isNewOfficer, partEdit)) {
+                if (isNewOfficer && (appPsnEditDto.isIdType() || partEdit)) {
                     appSvcKeyAppointmentHolderDto.setIdType(idType);
                 }
-                if (canSetValue(appPsnEditDto.isIdNo(), isNewOfficer, partEdit)) {
+                if (isNewOfficer && (appPsnEditDto.isIdNo() || partEdit)) {
                     appSvcKeyAppointmentHolderDto.setIdNo(idNo);
                 }
                 if (StringUtil.isEmpty(indexNo)) {
@@ -4249,9 +4246,11 @@ public class ClinicalLaboratoryDelegator {
                     appSvcKeyAppointmentHolderDto.setIndexNo(indexNo);
                 }
             }
-            if(appSvcKeyAppointmentHolderDto != null){
-                appSvcKeyAppointmentHolderDtoList.add(appSvcKeyAppointmentHolderDto);
+            if (appSvcKeyAppointmentHolderDto == null) {
+                appSvcKeyAppointmentHolderDto = new AppSvcPrincipalOfficersDto();
+                appSvcKeyAppointmentHolderDto.setIndexNo(UUID.randomUUID().toString());
             }
+            appSvcKeyAppointmentHolderDtoList.add(appSvcKeyAppointmentHolderDto);
         }
         return appSvcKeyAppointmentHolderDtoList;
     }
