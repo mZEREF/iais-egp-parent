@@ -2,10 +2,12 @@ package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.RedirectUtil;
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.helper.ConfigHelper;
 import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.acra.AcraConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.organization.OrganizationConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
@@ -244,6 +246,7 @@ public class RequestForChangeDelegator {
         request.getSession().removeAttribute("renewDto");
         request.getSession().removeAttribute("declaration_page_is");
         request.getSession().removeAttribute("viewPrint");
+        appSubmissionService.clearSession(request);
     }
     /**
      *
@@ -1129,7 +1132,10 @@ public class RequestForChangeDelegator {
             error.put("uenError", msgGenError006);
         }else{
             try{
-                licenseeClient.getEntityByUEN(uen);
+                String acra = ConfigHelper.getString("moh.halp.acra.enable","");
+                if(AcraConsts.YES.equals(acra)){
+                    licenseeClient.getEntityByUEN(uen);
+                }
             }catch (Throwable e){
              log.error(StringUtil.changeForLog("The gent uen info throw exception"+e.getMessage()));
             }
