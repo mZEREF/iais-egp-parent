@@ -1758,7 +1758,7 @@ public class RequestForChangeMenuDelegator {
         log.debug(StringUtil.changeForLog("the do doRequestForInformationSubmit end ...."));
     }
 
-    public void doPayValidate(BaseProcessClass bpc) throws Exception {
+    public void doPayValidate(BaseProcessClass bpc) {
         log.info(StringUtil.changeForLog("do doPayValidate start ..."));
         List<AppSubmissionDto> appSubmissionDtos = (List<AppSubmissionDto>) ParamUtil.getSessionAttr(bpc.request, "appSubmissionDtos");
         AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, RfcConst.APPSUBMISSIONDTO);

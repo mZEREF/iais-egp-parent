@@ -118,6 +118,17 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
     }
 
     @Override
+    public void updateCompLicensee(String orgId, String telNo, String emailAddr) {
+        List<LicenseeDto> list = feAdminClient.getLicenseeByOrgId(orgId).getEntity();
+        if (!IaisCommonUtils.isEmpty(list)) {
+            LicenseeDto ld = list.get(0);
+            ld.setEmilAddr(emailAddr);
+            ld.setOfficeTelNo(telNo);
+            feAdminClient.updateLicence(ld);
+        }
+    }
+
+    @Override
     public OrgUserRoleDto addUserRole(OrgUserRoleDto orgUserRoleDto){
         return feUserClient.addUserRole(orgUserRoleDto).getEntity();
     }

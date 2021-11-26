@@ -110,7 +110,7 @@ public class SubmitInspectionDateImpl implements SubmitInspectionDate {
         return c.getTime();
     }
 
-    private void savePrefStatDateAndEndDateToBe(ApplicationGroupDto applicationGroupDto){
+    public void savePrefStatDateAndEndDateToBe(ApplicationGroupDto applicationGroupDto){
         feEicGatewayClient.saveAppGroupSysnEic(applicationGroupDto);
     }
 

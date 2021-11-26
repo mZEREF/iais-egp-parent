@@ -21,7 +21,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.application.AppSvcPersonAndExtDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppDeclarationDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppDeclarationMessageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGroupMiscDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesEntityDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPrimaryDocDto;
@@ -60,7 +59,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.PreOrPostInspectionRes
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceStepSchemeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfigDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSubtypeOrSubsumedDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterInboxUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterMessageDto;
@@ -82,7 +80,6 @@ import com.ecquaria.cloud.moh.iais.constant.RfcConst;
 import com.ecquaria.cloud.moh.iais.dto.AppSelectSvcDto;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.dto.PmtReturnUrlDto;
-import com.ecquaria.cloud.moh.iais.dto.ServiceStepDto;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.EventBusHelper;
 import com.ecquaria.cloud.moh.iais.helper.FileUtils;
@@ -2712,7 +2709,7 @@ public class NewApplicationDelegator {
         appSubmissionService.setRiskToDto(appSubmissionDto);
         // set status
         appSubmissionDto.setCreateAuditPayStatus(ApplicationConsts.PAYMENT_STATUS_PENDING_PAYMENT);
-        if (MiscUtil.doubleEquals(0.0, amount)) {
+        if (MiscUtil.doubleEquals(0.0, currentAmount)) {
             appSubmissionDto.setCreatAuditAppStatus(ApplicationConsts.APPLICATION_STATUS_NOT_PAYMENT);
         }
         ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
@@ -3380,17 +3377,21 @@ public class NewApplicationDelegator {
     public void jumpBank(BaseProcessClass bpc) throws IOException {
         log.info(StringUtil.changeForLog("the do jumpBank start ...."));
         String payMethod = ParamUtil.getString(bpc.request, "payMethod");
-        String noNeedPayment = bpc.request.getParameter("noNeedPayment");
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
+        String appGrpId = appSubmissionDto.getAppGrpId();
         log.info(StringUtil.changeForLog("The AppGrpNo: " + appSubmissionDto.getAppGrpNo() + "; payment method: "
-                + appSubmissionDto.getPaymentMethod() + "; the amount: " + appSubmissionDto.getAmount()));
+                + appSubmissionDto.getPaymentMethod() + "; the amount: " + appSubmissionDto.getAmount()
+                + " - " + appSubmissionDto.getAppGrpId()));
+        List<String> ids = new ArrayList<>();
         //68099
         List<AppSubmissionDto> ackPageAppSubmissionDto = (List<AppSubmissionDto>) ParamUtil.getSessionAttr(bpc.request, ACK_APP_SUBMISSIONS);
         if(!IaisCommonUtils.isEmpty(ackPageAppSubmissionDto)){
             for(AppSubmissionDto appSubmissionDto1:ackPageAppSubmissionDto){
                 if(!MiscUtil.doubleEquals(appSubmissionDto1.getAmount(), 0.0)){
                     appSubmissionDto1.setPaymentMethod(payMethod);
-                }else {
+                } else {
+                    log.info("--- " + appSubmissionDto1.getAppGrpNo() + " : " + appSubmissionDto1.getAppGrpId() + " ---");
+                    ids.add(appSubmissionDto1.getAppGrpId());
                     ApplicationGroupDto appGrp = new ApplicationGroupDto();
                     appGrp.setId(appSubmissionDto1.getAppGrpId());
                     appGrp.setPmtStatus(ApplicationConsts.PAYMENT_STATUS_NO_NEED_PAYMENT);
@@ -3402,15 +3403,16 @@ public class NewApplicationDelegator {
         }
         Double totalAmount = appSubmissionDto.getAmount();
         if (MiscUtil.doubleEquals(totalAmount, 0.0)) {
-            String appGrpId = appSubmissionDto.getAppGrpId();
-            ApplicationGroupDto appGrp = new ApplicationGroupDto();
-            appGrp.setId(appGrpId);
-            appGrp.setPmtStatus(ApplicationConsts.PAYMENT_STATUS_NO_NEED_PAYMENT);
-            appGrp.setPayMethod(payMethod);
-            serviceConfigService.updatePaymentStatus(appGrp);
-            if (ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appSubmissionDto.getAppType())) {
-                LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
-                appSubmissionService.sendEmailAndSMSAndMessage(appSubmissionDto, loginContext.getUserName());
+            if (StringUtil.isNotEmpty(appGrpId) && !ids.contains(appGrpId)) {
+                ApplicationGroupDto appGrp = new ApplicationGroupDto();
+                appGrp.setId(appGrpId);
+                appGrp.setPmtStatus(ApplicationConsts.PAYMENT_STATUS_NO_NEED_PAYMENT);
+                appGrp.setPayMethod(payMethod);
+                serviceConfigService.updatePaymentStatus(appGrp);
+                if (ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appSubmissionDto.getAppType())) {
+                    LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
+                    appSubmissionService.sendEmailAndSMSAndMessage(appSubmissionDto, loginContext.getUserName());
+                }
             }
 
             StringBuilder url = new StringBuilder();
@@ -3450,7 +3452,6 @@ public class NewApplicationDelegator {
             } catch (Exception e) {
                 log.info(StringUtil.changeForLog(e.getMessage()), e);
             }
-            return;
         } else if (ApplicationConsts.PAYMENT_METHOD_NAME_GIRO.equals(payMethod)) {
             //send email
             try {
@@ -3470,7 +3471,6 @@ public class NewApplicationDelegator {
             } catch (Exception e) {
                 log.error(StringUtil.changeForLog("send email error ...."));
             }
-            String appGrpId = appSubmissionDto.getAppGrpId();
             ApplicationGroupDto appGrp = new ApplicationGroupDto();
             appGrp.setId(appGrpId);
             appGrp.setPmtStatus(serviceConfigService.giroPaymentXmlUpdateByGrpNo(appSubmissionDto).getPmtStatus());
@@ -4866,21 +4866,29 @@ public class NewApplicationDelegator {
     }
 
 
-    private void genPrimaryDoc(Map<String, File> fileMap,String docKey,HcsaSvcDocConfigDto hcsaSvcDocConfigDto,
-                                      Map<String,File> saveFileMap,List<AppGrpPrimaryDocDto> currDocDtoList,List<AppGrpPrimaryDocDto> newAppGrpPrimaryDocDtoList,
-                                      String premVal,String premType,boolean isRfi,List<AppGrpPrimaryDocDto> oldPrimaryDotList,String appGrpId,String appNo,String appType,String dupForPrem){
-        if(fileMap != null){
-            fileMap.forEach((k,v)->{
+    private void genPrimaryDoc(Map<String, File> fileMap, String docKey, HcsaSvcDocConfigDto hcsaSvcDocConfigDto,
+            Map<String, File> saveFileMap, List<AppGrpPrimaryDocDto> currDocDtoList,
+            List<AppGrpPrimaryDocDto> newAppGrpPrimaryDocDtoList,
+            String premVal, String premType, boolean isRfi, List<AppGrpPrimaryDocDto> oldPrimaryDotList, String appGrpId, String appNo,
+            String appType, String dupForPrem) {
+        if (fileMap != null) {
+            Set<Integer> nums = IaisCommonUtils.genNewHashSet();
+            for (Map.Entry<String, File> entry : fileMap.entrySet()) {
+                String k = entry.getKey();
+                File v = entry.getValue();
                 int index = k.indexOf(docKey);
-                String seqNumStr = k.substring(index+docKey.length());
+                String seqNumStr = k.substring(index + docKey.length());
                 int seqNum = -1;
-                try{
+                try {
                     seqNum = Integer.parseInt(seqNumStr);
-                }catch (Exception e){
+                } catch (Exception e) {
                     log.error(StringUtil.changeForLog("doc seq num can not parse to int"));
                 }
+                while (!nums.add(seqNum)) {
+                    seqNum++;
+                }
                 AppGrpPrimaryDocDto primaryDocDto = new AppGrpPrimaryDocDto();
-                if(v != null){
+                if (v != null) {
                     primaryDocDto.setSvcComDocId(hcsaSvcDocConfigDto.getId());
                     primaryDocDto.setSvcComDocName(hcsaSvcDocConfigDto.getDocTitle());
                     primaryDocDto.setDocName(v.getName());
@@ -4893,46 +4901,56 @@ public class NewApplicationDelegator {
                     primaryDocDto.setPremisessName(premVal);
                     primaryDocDto.setPremisessType(premType);
                     primaryDocDto.setSeqNum(seqNum);
-                    primaryDocDto.setVersion(getAppGrpPrimaryDocVersion(hcsaSvcDocConfigDto.getId(),oldPrimaryDotList,isRfi,md5Code,appGrpId,appNo,appType,seqNum,dupForPrem));
-                    saveFileMap.put(premVal+hcsaSvcDocConfigDto.getId()+seqNum,v);
-                }else{
-                    primaryDocDto = getAppGrpPrimaryDocByConfigIdAndSeqNum(currDocDtoList,hcsaSvcDocConfigDto.getId(),seqNum,premVal,premType);
+                    primaryDocDto.setVersion(
+                            getAppGrpPrimaryDocVersion(hcsaSvcDocConfigDto.getId(), oldPrimaryDotList, isRfi, md5Code, appGrpId, appNo,
+                                    appType, seqNum, dupForPrem));
+                    saveFileMap.put(premVal + hcsaSvcDocConfigDto.getId() + seqNum, v);
+                } else {
+                    primaryDocDto = getAppGrpPrimaryDocByConfigIdAndSeqNum(currDocDtoList, hcsaSvcDocConfigDto.getId(), seqNum,
+                            premVal, premType);
                 }
                 //the data is retrieved from the DTO a second time
-                fileMap.put(k,null);
-                if(primaryDocDto != null){
+                fileMap.put(k, null);
+                if (primaryDocDto != null) {
                     newAppGrpPrimaryDocDtoList.add(primaryDocDto);
-                }
-            });
-        }
-    }
-    private void saveFileAndSetFileId(List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtoList,Map<String,File> saveFileMap){
-        Map<String,File> passValidateFileMap = IaisCommonUtils.genNewHashMap();
-        for (AppGrpPrimaryDocDto primaryDocDto : appGrpPrimaryDocDtoList) {
-            if(primaryDocDto.isPassValidate()){
-                String premIndex = "";
-                if(!StringUtil.isEmpty(primaryDocDto.getPremisessName())){
-                    premIndex = primaryDocDto.getPremisessName();
-                }
-                String fileMapKey = premIndex + primaryDocDto.getSvcComDocId() + primaryDocDto.getSeqNum();
-                File file = saveFileMap.get(fileMapKey);
-                if(file != null){
-                    passValidateFileMap.put(fileMapKey,file);
                 }
             }
         }
-        if(passValidateFileMap.size() > 0){
-            List<File> fileList = new ArrayList<>(passValidateFileMap.values());
-            List<String> fileRepoIdList = appSubmissionService.saveFileList(fileList);
-            int i = 0;
-            for(AppGrpPrimaryDocDto appGrpPrimaryDocDto:appGrpPrimaryDocDtoList){
-                String premIndexNo = appGrpPrimaryDocDto.getPremisessName();
-                if(StringUtil.isEmpty(premIndexNo)){
+    }
+
+    private void saveFileAndSetFileId(List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtoList,Map<String,File> saveFileMap) {
+        Map<String, File> passValidateFileMap = IaisCommonUtils.genNewLinkedHashMap();
+        for (AppGrpPrimaryDocDto primaryDocDto : appGrpPrimaryDocDtoList) {
+            if (primaryDocDto.isPassValidate()) {
+                String premIndexNo = primaryDocDto.getPremisessName();
+                if (StringUtil.isEmpty(premIndexNo)) {
                     premIndexNo = "";
                 }
-                String saveFileMapKey = premIndexNo+appGrpPrimaryDocDto.getSvcComDocId()+appGrpPrimaryDocDto.getSeqNum();
+                String fileMapKey = premIndexNo + primaryDocDto.getSvcComDocId() + primaryDocDto.getSeqNum();
+                File file = saveFileMap.get(fileMapKey);
+                if (file != null) {
+                    passValidateFileMap.put(fileMapKey, file);
+                }
+            }
+        }
+        log.info("Primary Doc size: " + appGrpPrimaryDocDtoList.size());
+        if (saveFileMap.size() != appGrpPrimaryDocDtoList.size()) {
+            log.info("Save file size: " + saveFileMap.size());
+        }
+        if (passValidateFileMap.size() > 0) {
+            List<File> fileList = new ArrayList<>(passValidateFileMap.values());
+            List<String> fileRepoIdList = appSubmissionService.saveFileList(fileList);
+            int fileRepo = fileRepoIdList.size();
+            log.info("File Repo size: " + fileRepo);
+            int i = 0;
+            for (AppGrpPrimaryDocDto appGrpPrimaryDocDto : appGrpPrimaryDocDtoList) {
+                String premIndexNo = appGrpPrimaryDocDto.getPremisessName();
+                if (StringUtil.isEmpty(premIndexNo)) {
+                    premIndexNo = "";
+                }
+                String saveFileMapKey = premIndexNo + appGrpPrimaryDocDto.getSvcComDocId() + appGrpPrimaryDocDto.getSeqNum();
                 File file = saveFileMap.get(saveFileMapKey);
-                if(file != null){
+                if (file != null) {
                     appGrpPrimaryDocDto.setFileRepoId(fileRepoIdList.get(i));
                     i++;
                 }

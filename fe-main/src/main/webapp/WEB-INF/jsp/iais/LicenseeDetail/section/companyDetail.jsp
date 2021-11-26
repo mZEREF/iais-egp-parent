@@ -80,15 +80,15 @@
                     </iais:value>
                 </iais:row>
                 <iais:row>
-                    <iais:field width="5" value="Office Telephone No."/>
+                    <iais:field width="5" value="Office Telephone No." mandatory="true"/>
                     <iais:value width="7" display="true">
-                        <c:out value="${licensee.officeTelNo}" />
+                        <iais:input maxLength="8" type="text" name="officeTelNo" id="officeTelNo" value="${licensee.officeTelNo}"/>
                     </iais:value>
                 </iais:row>
                 <iais:row>
-                    <iais:field width="5" value="Office Email Address"/>
+                    <iais:field width="5" value="Office Email Address" mandatory="true"/>
                     <iais:value width="7" display="true">
-                        <c:out value="${licensee.emilAddr}" />
+                        <iais:input maxLength="320" type="text" name="officeEmail" id="officeEmail" value="${licensee.emilAddr}"/>
                     </iais:value>
                 </iais:row>
             </div>
@@ -99,3 +99,4 @@
         </div>
     </div>
 </div>
+<%@ include file="/WEB-INF/jsp/include/validation.jsp" %>
