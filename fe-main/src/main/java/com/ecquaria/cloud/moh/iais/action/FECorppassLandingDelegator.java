@@ -89,7 +89,14 @@ public class FECorppassLandingDelegator {
             uen = (String) request.getAttribute("ssoUen");
         } else if (FELandingDelegator.LOGIN_MODE_REAL.equals(openTestMode)) {
             String samlArt = ParamUtil.getString(request, Constants.SAML_ART);
-            LoginInfo loginInfo = SIMUtil4Corpass.doCorpPassArtifactResolution(request, samlArt);
+            LoginInfo loginInfo = null;
+            try {
+                loginInfo = SIMUtil4Corpass.doCorpPassArtifactResolution(request, samlArt);
+            } catch (Exception e) {
+                ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG , "Invalid Login.");
+                ParamUtil.setRequestAttr(request, UserConstants.ACCOUNT_EXISTS_VALIDATE_FLAG, "N");
+                return;
+            }
 
             if (loginInfo == null) {
                 log.info("<== oLoginInfo is empty ==>");
