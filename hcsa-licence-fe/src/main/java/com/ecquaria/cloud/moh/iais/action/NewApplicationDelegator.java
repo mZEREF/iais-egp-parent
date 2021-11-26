@@ -2708,7 +2708,7 @@ public class NewApplicationDelegator {
         appSubmissionService.setRiskToDto(appSubmissionDto);
         // set status
         appSubmissionDto.setCreateAuditPayStatus(ApplicationConsts.PAYMENT_STATUS_PENDING_PAYMENT);
-        if (MiscUtil.doubleEquals(0.0, amount)) {
+        if (MiscUtil.doubleEquals(0.0, currentAmount)) {
             appSubmissionDto.setCreatAuditAppStatus(ApplicationConsts.APPLICATION_STATUS_NOT_PAYMENT);
         }
         ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
