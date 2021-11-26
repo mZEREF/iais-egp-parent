@@ -87,7 +87,7 @@ public class HcsaFileAjaxController {
         File toFile = null;
         String tempFolder = null;
         try{
-            String toFileName = StringUtil.obscured(FilenameUtils.getName(selectedFile.getOriginalFilename()));
+            String toFileName = FilenameUtils.getName(selectedFile.getOriginalFilename());
             if(reloadIndex == -1){
                 ParamUtil.setSessionAttr(request,SEESION_FILES_MAP_AJAX+fileAppendId+SEESION_FILES_MAP_AJAX_MAX_INDEX,size+1);
                 if (needMaxGlobal) {
@@ -217,7 +217,7 @@ public class HcsaFileAjaxController {
                     if(fileData != null){
                         try {
                             response.addHeader("Content-Disposition", "attachment;filename=\""
-                                    +  StringUtil.clarify(file.getName()) + "\"");
+                                    +  file.getName() + "\"");
                             response.addHeader("Content-Length", "" + fileData.length);
                             response.setContentType("application/x-octet-stream");
                         }catch (Exception e){
@@ -268,17 +268,18 @@ public class HcsaFileAjaxController {
                     MultiValueMap<String, Object> multipartRequest = new LinkedMultiValueMap<>();
                     HttpHeaders fileHeader = new HttpHeaders();
                     byte[] content = selectedFile.getBytes();
+                    String fileName = StringUtil.obscured(toFile.getName());
                     ByteArrayResource fileContentAsResource = new ByteArrayResource(content) {
                         @Override
                         public String getFilename() {
-                            return toFile.getName();
+                            return fileName;
                         }
                     };
                     HttpEntity<ByteArrayResource> fileEnt = new HttpEntity<>(fileContentAsResource, fileHeader);
                     multipartRequest.add("selectedFile", fileEnt);
                     HttpHeaders jsonHeader = new HttpHeaders();
                     jsonHeader.setContentType(MediaType.APPLICATION_JSON);
-                    HttpEntity<String> jsonPart = new HttpEntity<>(toFile.getName(), jsonHeader);
+                    HttpEntity<String> jsonPart = new HttpEntity<>(fileName, jsonHeader);
                     multipartRequest.add("fileName", jsonPart);
                     jsonHeader = new HttpHeaders();
                     jsonHeader.setContentType(MediaType.APPLICATION_JSON);
