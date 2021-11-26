@@ -3382,13 +3382,16 @@ public class NewApplicationDelegator {
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
         log.info(StringUtil.changeForLog("The AppGrpNo: " + appSubmissionDto.getAppGrpNo() + "; payment method: "
                 + appSubmissionDto.getPaymentMethod() + "; the amount: " + appSubmissionDto.getAmount()));
+        List<String> ids = new ArrayList<>();
         //68099
         List<AppSubmissionDto> ackPageAppSubmissionDto = (List<AppSubmissionDto>) ParamUtil.getSessionAttr(bpc.request, ACK_APP_SUBMISSIONS);
         if(!IaisCommonUtils.isEmpty(ackPageAppSubmissionDto)){
             for(AppSubmissionDto appSubmissionDto1:ackPageAppSubmissionDto){
                 if(!MiscUtil.doubleEquals(appSubmissionDto1.getAmount(), 0.0)){
                     appSubmissionDto1.setPaymentMethod(payMethod);
-                }else {
+                } else {
+                    log.info("--- " + appSubmissionDto1.getAppGrpNo() + " ---");
+                    ids.add(appSubmissionDto1.getAppGrpId());
                     ApplicationGroupDto appGrp = new ApplicationGroupDto();
                     appGrp.setId(appSubmissionDto1.getAppGrpId());
                     appGrp.setPmtStatus(ApplicationConsts.PAYMENT_STATUS_NO_NEED_PAYMENT);
@@ -3398,17 +3401,22 @@ public class NewApplicationDelegator {
             }
             ParamUtil.setSessionAttr(bpc.request,ACK_APP_SUBMISSIONS, (Serializable) ackPageAppSubmissionDto);
         }
+        String appGrpId = appSubmissionDto.getAppGrpId();
+        if (StringUtil.isEmpty(appGrpId)) {
+            log.warn("---No App Group Id found!---");
+        }
         Double totalAmount = appSubmissionDto.getAmount();
         if (MiscUtil.doubleEquals(totalAmount, 0.0)) {
-            String appGrpId = appSubmissionDto.getAppGrpId();
-            ApplicationGroupDto appGrp = new ApplicationGroupDto();
-            appGrp.setId(appGrpId);
-            appGrp.setPmtStatus(ApplicationConsts.PAYMENT_STATUS_NO_NEED_PAYMENT);
-            appGrp.setPayMethod(payMethod);
-            serviceConfigService.updatePaymentStatus(appGrp);
-            if (ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appSubmissionDto.getAppType())) {
-                LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
-                appSubmissionService.sendEmailAndSMSAndMessage(appSubmissionDto, loginContext.getUserName());
+            if (!ids.contains(appGrpId)) {
+                ApplicationGroupDto appGrp = new ApplicationGroupDto();
+                appGrp.setId(appGrpId);
+                appGrp.setPmtStatus(ApplicationConsts.PAYMENT_STATUS_NO_NEED_PAYMENT);
+                appGrp.setPayMethod(payMethod);
+                serviceConfigService.updatePaymentStatus(appGrp);
+                if (ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appSubmissionDto.getAppType())) {
+                    LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
+                    appSubmissionService.sendEmailAndSMSAndMessage(appSubmissionDto, loginContext.getUserName());
+                }
             }
 
             StringBuilder url = new StringBuilder();
@@ -3448,7 +3456,6 @@ public class NewApplicationDelegator {
             } catch (Exception e) {
                 log.info(StringUtil.changeForLog(e.getMessage()), e);
             }
-            return;
         } else if (ApplicationConsts.PAYMENT_METHOD_NAME_GIRO.equals(payMethod)) {
             //send email
             try {
@@ -3468,7 +3475,6 @@ public class NewApplicationDelegator {
             } catch (Exception e) {
                 log.error(StringUtil.changeForLog("send email error ...."));
             }
-            String appGrpId = appSubmissionDto.getAppGrpId();
             ApplicationGroupDto appGrp = new ApplicationGroupDto();
             appGrp.setId(appGrpId);
             appGrp.setPmtStatus(serviceConfigService.giroPaymentXmlUpdateByGrpNo(appSubmissionDto).getPmtStatus());
