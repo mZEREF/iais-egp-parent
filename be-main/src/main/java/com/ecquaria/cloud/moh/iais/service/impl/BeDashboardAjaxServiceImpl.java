@@ -119,7 +119,7 @@ public class BeDashboardAjaxServiceImpl implements BeDashboardAjaxService {
                 searchParam.addFilter("dashFilterAppNo", dashFilterAppNo,true);
             }
             //filter page conditions
-            searchParam = filterPageConditions(searchParam, searchParamGroup, null, null, hcsaTaskAssignDto);
+            searchParam = filterPageConditions(searchParam, searchParamGroup, null, null, hcsaTaskAssignDto, "T5.APP_PREM_ID");
             //filter work groups
             mohHcsaBeDashboardService.setPoolScopeByCurRoleId(searchParam, loginContext, actionValue, workGroupIds);
             //search
@@ -164,7 +164,7 @@ public class BeDashboardAjaxServiceImpl implements BeDashboardAjaxService {
                 searchParam.addFilter("dashFilterAppNo", dashFilterAppNo,true);
             }
             //filter page conditions
-            searchParam = filterPageConditions(searchParam, searchParamGroup, "T1.STATUS", dashAppStatus, hcsaTaskAssignDto);
+            searchParam = filterPageConditions(searchParam, searchParamGroup, "T1.STATUS", dashAppStatus, hcsaTaskAssignDto, "T5.APP_PREM_ID");
             //filter work groups
             mohHcsaBeDashboardService.setPoolScopeByCurRoleId(searchParam, loginContext, switchAction, workGroupIds);
             //search
@@ -220,7 +220,7 @@ public class BeDashboardAjaxServiceImpl implements BeDashboardAjaxService {
                 }
             }
             //filter page conditions
-            searchParam = filterPageConditions(searchParam, searchParamGroup, "T5.STATUS", dashAppStatus, hcsaTaskAssignDto);
+            searchParam = filterPageConditions(searchParam, searchParamGroup, "T5.STATUS", dashAppStatus, hcsaTaskAssignDto, "T5.APP_PREM_ID");
             //search
             QueryHelp.setMainSql("intraDashboardQuery", "dashAssignMeAjax", searchParam);
             SearchResult<DashAssignMeAjaxQueryDto> ajaxResult = getAssignMeAjaxResultByParam(searchParam);
@@ -266,7 +266,7 @@ public class BeDashboardAjaxServiceImpl implements BeDashboardAjaxService {
                 searchParam.addFilter("dashCommonPoolStatus", dashCommonPoolStatus,true);
             }
             //filter page conditions
-            searchParam = filterPageConditions(searchParam, searchParamGroup, "T5.STATUS", dashAppStatus, hcsaTaskAssignDto);
+            searchParam = filterPageConditions(searchParam, searchParamGroup, "T5.STATUS", dashAppStatus, hcsaTaskAssignDto, "T5.APP_PREM_ID");
             //filter work groups
             mohHcsaBeDashboardService.setPoolScopeByCurRoleId(searchParam, loginContext, switchAction, workGroupIds);
             //search
@@ -316,7 +316,7 @@ public class BeDashboardAjaxServiceImpl implements BeDashboardAjaxService {
             }
 
             //filter page conditions
-            searchParam = filterPageConditions(searchParam, searchParamGroup, "T1.STATUS", dashAppStatus, hcsaTaskAssignDto);
+            searchParam = filterPageConditions(searchParam, searchParamGroup, "T1.STATUS", dashAppStatus, hcsaTaskAssignDto, "T5.APP_PREM_ID");
             //filter work groups
             mohHcsaBeDashboardService.setPoolScopeByCurRoleId(searchParam, loginContext, switchAction, workGroupIds);
             //search
@@ -361,7 +361,7 @@ public class BeDashboardAjaxServiceImpl implements BeDashboardAjaxService {
                 searchParam.addFilter("dashFilterAppNo", dashFilterAppNo,true);
             }
             //filter page conditions
-            searchParam = filterPageConditions(searchParam, searchParamGroup, null, null, hcsaTaskAssignDto);
+            searchParam = filterPageConditions(searchParam, searchParamGroup, null, null, hcsaTaskAssignDto, "T5.APP_PREM_ID");
             //filter work groups
             mohHcsaBeDashboardService.setPoolScopeByCurRoleId(searchParam, loginContext, switchAction, workGroupIds);
             //search
@@ -408,7 +408,7 @@ public class BeDashboardAjaxServiceImpl implements BeDashboardAjaxService {
                 searchParam.addFilter("dashFilterAppNo", dashFilterAppNo,true);
             }
             //filter page conditions
-            searchParam = filterPageConditions(searchParam, searchParamGroup, "T7.STATUS", dashAppStatus, hcsaTaskAssignDto);
+            searchParam = filterPageConditions(searchParam, searchParamGroup, "T7.STATUS", dashAppStatus, hcsaTaskAssignDto, "T5.APP_PREM_ID");
             //filter work groups
             mohHcsaBeDashboardService.setPoolScopeByCurRoleId(searchParam, loginContext, switchAction, workGroupIds);
             //search
@@ -624,7 +624,7 @@ public class BeDashboardAjaxServiceImpl implements BeDashboardAjaxService {
     }
 
     private SearchParam filterPageConditions(SearchParam searchParam, SearchParam searchParamGroup, String appStatusKey, String application_status,
-                                             HcsaTaskAssignDto hcsaTaskAssignDto) {
+                                             HcsaTaskAssignDto hcsaTaskAssignDto, String fieldName) {
         if(searchParamGroup != null) {
             Map<String, Object> filters = searchParamGroup.getFilters();
             if(filters != null) {
@@ -651,6 +651,7 @@ public class BeDashboardAjaxServiceImpl implements BeDashboardAjaxService {
                 }
                 if(!StringUtil.isEmpty(hci_address)) {
                     searchParam.addFilter("hci_address", hci_address, true);
+                    searchParam = mohHcsaBeDashboardService.setAppPremisesIdsByUnitNos(searchParam, hci_address, hcsaTaskAssignDto, fieldName, "appPremId_list");
                 }
             }
         }

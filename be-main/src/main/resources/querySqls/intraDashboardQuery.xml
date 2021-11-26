@@ -89,6 +89,7 @@
                 <#if dashRoleId??> and T7.role_id = :dashRoleId </#if>
             ) T5
             WHERE 1 = 1
+            <#if appPremId_list??> and ${appPremId_list} </#if>
             <#if dashFilterAppNo??> and charindex(:dashFilterAppNo, T5.APPLICATION_NO) >0 </#if>
             <#if application_type??> and T5.APP_TYPE = :application_type</#if>
             <#if application_status??> and ${application_status}</#if>
@@ -188,6 +189,7 @@
             JOIN TASKVIEW T7 ON T7.REF_NO = T5.ID and T7.USER_ID is NULL
             WHERE 1 = 1
             and T7.TASK_STATUS in ('TSTATUS001','TSTATUS002')
+            <#if appPremId_list??> and ${appPremId_list} </#if>
             <#if dashFilterAppNo??> and charindex(:dashFilterAppNo, T5.APPLICATION_NO) >0 </#if>
             <#if groupNo??> and T5.GROUP_NO = :groupNo</#if>
             <#if dashRoleId??> and T7.ROLE_ID = :dashRoleId</#if>
@@ -229,6 +231,7 @@
             FROM APP_EXCEEDING_DAY_VIEW T1
             JOIN TASKVIEW T7 ON T7.REF_NO = T1.ID and T7.TASK_STATUS in ('TSTATUS001','TSTATUS002')
             WHERE 1 = 1
+            <#if appPremId_list??> and ${appPremId_list} </#if>
             <#if dashFilterAppNo??> and charindex(:dashFilterAppNo, T1.APPLICATION_NO) >0 </#if>
             <#if workGroup_list??> and ${workGroup_list} </#if>
             <#if groupNo??> and T1.GROUP_NO = :groupNo</#if>
@@ -273,6 +276,7 @@
                       and T1.TASK_STATUS in ('TSTATUS001','TSTATUS002')
                       <#if appCorrId_list??> and ${appCorrId_list} </#if>
             WHERE 1 = 1
+            <#if appPremId_list??> and ${appPremId_list} </#if>
             <#if dashFilterAppNo??> and charindex(:dashFilterAppNo, T7.APPLICATION_NO) >0 </#if>
             <#if workGroup_list??> and ${workGroup_list} </#if>
             <#if groupNo??> and T7.GROUP_NO = :groupNo</#if>
@@ -313,6 +317,7 @@
             FROM TASK_WAITING_APPLICANT_REPLY_APP_VIEW T7
             LEFT JOIN TASKVIEW T1 ON T1.REF_NO = T7.ID and T1.TASK_STATUS in ('TSTATUS001','TSTATUS002')
             WHERE 1 = 1
+            <#if appPremId_list??> and ${appPremId_list} </#if>
             <#if dashFilterAppNo??> and charindex(:dashFilterAppNo, T7.APPLICATION_NO) >0 </#if>
             <#if workGroup_list??> and ${workGroup_list} </#if>
             <#if groupNo??> and T7.GROUP_NO = :groupNo</#if>
@@ -358,6 +363,7 @@
                       and T7.TASK_STATUS in ('TSTATUS001','TSTATUS002')
                       <#if appCorrId_list??> and ${appCorrId_list} </#if>
             WHERE 1 = 1
+            <#if appPremId_list??> and ${appPremId_list} </#if>
             <#if dashFilterAppNo??> and charindex(:dashFilterAppNo, T1.APPLICATION_NO) >0 </#if>
             <#if workGroup_list??> and ${workGroup_list} </#if>
             <#if groupNo??> and T1.GROUP_NO = :groupNo</#if>
@@ -472,6 +478,7 @@
                 <#if dashRoleIdList??> and ${dashRoleIdList} </#if>
             ) T5
             WHERE 1 = 1
+            <#if appPremId_list??> and ${appPremId_list} </#if>
             <#if dashFilterAppNo??> and charindex(:dashFilterAppNo, T5.APPLICATION_NO) >0 </#if>
             <#if application_type??> and T5.APP_TYPE = :application_type</#if>
             <#if application_status??> and ${application_status}</#if>
