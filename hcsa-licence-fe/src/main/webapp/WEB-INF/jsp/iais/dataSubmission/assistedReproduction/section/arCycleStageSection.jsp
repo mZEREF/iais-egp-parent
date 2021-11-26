@@ -146,7 +146,7 @@
                 <iais:row>
                     <label class="col-xs-4 col-md-4 control-label">Total No. of AR cycles previously undergone by patient <span class="mandatory">*</span>
                         <a class="btn-tooltip styleguide-tooltip" data-toggle="tooltip" data-html="true" href="javascript:void(0);"
-                           title='<iais:message key="RFC_LET001"></iais:message>'
+                           title='<iais:message key="DS_ACK002"></iais:message>'
                            style="z-index: 10"
                            data-original-title="">i</a>
                     </label>

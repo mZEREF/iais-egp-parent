@@ -24,13 +24,13 @@
                 <iais:row>
                     <iais:field width="5" value="Date Started" />
                     <iais:value width="7" cssClass="col-md-7" display="true">
-                    <p><c:out value="${arCycleStageDto.startDate}" /></p>
+                    <c:out value="${arCycleStageDto.startDate}" />
                     </iais:value>
                 </iais:row>
                 <iais:row>
                     <iais:field width="5" value="Patient's Age as of This Cycle" />
                     <iais:value width="7" cssClass="col-md-7" display="true">
-                   <p><c:out value="${arCycleStageDto.cycleAge}"/></p>
+                   <c:out value="${arCycleStageDto.cycleAge}"/>
                     </iais:value>
                 </iais:row>
 
@@ -102,7 +102,12 @@
                 </iais:row>
 
                 <iais:row>
-                    <iais:field width="5" value="Total No. of AR cycles previously undergone by patient" />
+                    <label class="col-xs-4 col-md-4 control-label">Total No. of AR cycles previously undergone by patient
+                        <a class="btn-tooltip styleguide-tooltip" data-toggle="tooltip" data-html="true" href="javascript:void(0);"
+                           title='<iais:message key="DS_ACK002"></iais:message>'
+                           style="z-index: 10"
+                           data-original-title="">i</a>
+                    </label>
                         <iais:value width="7" cssClass="col-md-7" display="true">
                             <c:out value="${arCycleStageDto.totalPreviouslyPreviously}"/>
                         </iais:value>
