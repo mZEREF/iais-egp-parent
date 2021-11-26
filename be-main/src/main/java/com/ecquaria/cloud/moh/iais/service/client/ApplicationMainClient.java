@@ -104,6 +104,6 @@ public interface ApplicationMainClient {
             consumes = {MediaType.APPLICATION_JSON_VALUE})
     FeignResponseEntity<AppPremPreInspectionNcDto> getAppNcByAppCorrId(@PathVariable(value ="appCorrId" ) String appCorrId);
 
-    @GetMapping(value = "/Iais-applicatio-be/app-grp/all-address-pool",produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/app-grp/all-address-pool",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<HcsaTaskAssignDto> getUnitNoAndAddressByAppGrpIds(@RequestBody List<String> appGroupIds);
 }

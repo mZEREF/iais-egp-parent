@@ -40,7 +40,7 @@ public interface AppPremisesCorrClient {
     @GetMapping(value = "/application-number-grp-premiese/{appPremcorrId}",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<AppInsRepDto> appGrpPremises(@PathVariable("appPremcorrId") String appPremcorrId);
 
-    @GetMapping(value = "/Iais-applicatio-be/app-grp/all-address-pool",produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/app-grp/all-address-pool",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<HcsaTaskAssignDto> getUnitNoAndAddressByAppGrpIds(@RequestBody List<String> appGroupIds);
 
 }
