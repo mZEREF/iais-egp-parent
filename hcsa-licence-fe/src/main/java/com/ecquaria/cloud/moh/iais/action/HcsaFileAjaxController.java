@@ -14,7 +14,18 @@ import com.ecquaria.cloud.moh.iais.helper.FileUtils;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.systeminfo.ServicesSysteminfo;
 import com.ecquaria.sz.commons.util.JsonUtil;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.Serializable;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpEntity;
@@ -30,17 +41,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.Serializable;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
 
 /**
  * @author wangyu
@@ -87,17 +87,18 @@ public class HcsaFileAjaxController {
          File toFile = null;
          String tempFolder = null;
          try{
+             String toFileName = StringUtil.obscured(FilenameUtils.getName(selectedFile.getOriginalFilename()));
              if(reloadIndex == -1){
                  ParamUtil.setSessionAttr(request,SEESION_FILES_MAP_AJAX+fileAppendId+SEESION_FILES_MAP_AJAX_MAX_INDEX,size+1);
                  if (needMaxGlobal) {
                      ParamUtil.setSessionAttr(request, GLOBAL_MAX_INDEX_SESSION_ATTR, size + 1);
                  }
                  tempFolder = request.getSession().getId() + fileAppendId + size;
-                 toFile = FileUtils.multipartFileToFile(selectedFile, tempFolder);
+                 toFile = FileUtils.multipartFileToFile(selectedFile, tempFolder, toFileName);
                  map.put(fileAppendId + size, toFile);
              }else {
                  tempFolder = request.getSession().getId() + fileAppendId + reloadIndex;
-                 toFile = FileUtils.multipartFileToFile(selectedFile, tempFolder);
+                 toFile = FileUtils.multipartFileToFile(selectedFile, tempFolder, toFileName);
                  map.put(fileAppendId + reloadIndex, toFile);
                  size = reloadIndex;
              }
