@@ -25,12 +25,13 @@ import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.service.client.MasterCodeClient;
+import lombok.extern.slf4j.Slf4j;
+
 import java.lang.reflect.Field;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import lombok.extern.slf4j.Slf4j;
 
 
 /**
@@ -205,6 +206,11 @@ public final class MasterCodeUtil {
 
     //Reason for Patient Amendment
     public static final String DATA_SUBMISSION_PATIENT_AMENDMENT = "E92D33E5-6B47-EC11-BE6B-000C29FAAE4D";
+
+    //Dp Drug Prescribed or Dispensed
+    public static final String DP_DRUG_PRESCRIBED_OR_DISPENSED      ="E3B7DD31-CA12-4B18-B434-0B30BAA60E55";
+    public static final String DP_MEDICATION                        ="8B29293A-DDF6-460A-AE10-731196AFBB47";
+    public static final String DP_FREQUENCY                         ="2C288EBF-12D5-4D5F-9A1A-EAC6EEBDE127";
 
     /**
      * @description: refresh the master codes into cache
