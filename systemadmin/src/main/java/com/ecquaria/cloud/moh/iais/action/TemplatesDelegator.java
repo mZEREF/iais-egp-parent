@@ -196,6 +196,10 @@ public class TemplatesDelegator {
             return;
         }
         MsgTemplateDto msgTemplateDto = (MsgTemplateDto) ParamUtil.getSessionAttr(request, MsgTemplateConstants.MSG_TEMPLATE_DTO);
+        if(msgTemplateDto==null){
+            ParamUtil.setRequestAttr(request, SystemAdminBaseConstants.ISVALID, SystemAdminBaseConstants.YES);
+            return;
+        }
         msgTemplateDto.setProcess("test");
         getValueFromPage(msgTemplateDto, request);
         ValidationResult validationResult =WebValidationHelper.validateProperty(msgTemplateDto, "edit");
