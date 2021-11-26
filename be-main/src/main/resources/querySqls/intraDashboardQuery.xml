@@ -45,7 +45,6 @@
             <#if application_status??> and ${application_status}</#if>
             <#if hci_code??> and charindex(:hci_code, T5.HCI_CODE) >0 </#if>
             <#if hci_name??> and charindex(:hci_name, T5.HCI_NAME) >0 </#if>
-            <#if hci_address??> and charindex(:hci_address, T5.address) >0 </#if>
         ]]>
     </sql>
 

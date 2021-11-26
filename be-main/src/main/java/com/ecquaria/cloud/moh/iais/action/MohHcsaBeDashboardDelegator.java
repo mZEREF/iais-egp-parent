@@ -624,9 +624,11 @@ public class MohHcsaBeDashboardDelegator {
             searchParam.addFilter("hci_name", hci_name, true);
         }
         if(!StringUtil.isEmpty(hci_address)){
-            searchParam.addFilter("hci_address", hci_address, true);
             //filter unit no for group
             searchParam = filterUnitNoForGroup(searchParam, hci_address, request, appGroupIdFieldName);
+            ParamUtil.setSessionAttr(request, "dashHciAddress", hci_address);
+        } else {
+            ParamUtil.setSessionAttr(request, "dashHciAddress", null);
         }
         //licence expire days
         if(BeDashboardConstant.SWITCH_ACTION_RE_RENEW.equals(actionValue)) {
@@ -993,6 +995,7 @@ public class MohHcsaBeDashboardDelegator {
             searchParam.setPageSize(pageSize);
             searchParam.setPageNo(1);
             searchParam.setSort("SUBMIT_DT", SearchParam.ASCENDING);
+            ParamUtil.setSessionAttr(bpc.request, "dashHciAddress", null);
         }
         return searchParam;
     }
