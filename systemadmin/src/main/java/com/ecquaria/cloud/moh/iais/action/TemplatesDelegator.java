@@ -141,7 +141,8 @@ public class TemplatesDelegator {
     public void editTemplate(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
         String msgId = ParamUtil.getString(request,SystemAdminBaseConstants.CRUD_ACTION_VALUE);
-        if (!msgId.isEmpty()){
+        log.info(StringUtil.changeForLog("msgId ===:"+msgId));
+        if (StringUtil.isNotEmpty(msgId)){
             MsgTemplateDto msgTemplateDto = templatesService.getMsgTemplate(msgId);
             String messageType = msgTemplateDto.getMessageType();
             String deliveryMode = msgTemplateDto.getDeliveryMode();
