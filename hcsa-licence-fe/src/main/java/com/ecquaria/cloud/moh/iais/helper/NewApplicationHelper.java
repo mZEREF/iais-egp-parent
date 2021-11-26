@@ -4526,6 +4526,7 @@ public class NewApplicationHelper {
         msg.deleteCharAt(msg.length() - 2);
         msg.deleteCharAt(msg.length() - 1);
     }
+
     private static String handleStepHames(List<String> errorList) {
         return errorList.stream()
                 .filter(s -> s.contains(":"))
