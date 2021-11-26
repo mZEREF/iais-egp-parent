@@ -569,7 +569,7 @@ public class WithOutRenewalDelegator {
             appSubmissionService.updateDraftStatus( appSubmissionDtos.get(0).getDraftNo(),AppConsts.COMMON_STATUS_ACTIVE);
         }
         String err24 = MessageUtil.getMessageDesc("NEW_ERR0024");
-        String pay = IaisCommonUtils.isEmpty(appSubmissionDtos) ? "" : appSubmissionDtos.get(0).getPaymentMethod();
+        String pay = IaisCommonUtils.isEmpty(appSubmissionDtos) ? "" :  StringUtil.getNonNull(appSubmissionDtos.get(0).getPaymentMethod());
         if (!StringUtil.isEmpty(result)) {
             log.info(StringUtil.changeForLog("payment result:" + result));
             String pmtRefNo = ParamUtil.getMaskedString(bpc.request, "reqRefNo");
