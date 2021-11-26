@@ -1506,6 +1506,10 @@ public class MohHcsaBeDashboardServiceImpl implements MohHcsaBeDashboardService 
                 String appGroupId = SqlHelper.constructInCondition(fieldName, appGrpIdsSize);
                 searchParam.addParam(filterName, appGroupId);
             }
+        } else {
+            //if hcsaTaskAssignDto is null, so there is no result in this filter, but also set this filter
+            String appGroupId = SqlHelper.constructInCondition(fieldName, 0);
+            searchParam.addParam(filterName, appGroupId);
         }
         return searchParam;
     }
