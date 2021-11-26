@@ -1,5 +1,6 @@
 <%@ page import="com.ecquaria.cloud.moh.iais.common.utils.Formatter" %>
 <%@ page import="java.util.Date" %>
+<%@ page import="com.ecquaria.cloud.moh.iais.constant.UrlConfig" %>
 <!-- MOH-IAIS -->
 
 <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
@@ -43,7 +44,8 @@
 
                   <p class="text-muted"><strong>Error Ticket ID:</strong> ST<%=System.currentTimeMillis()%></p>
                   <p class="text-muted"><strong>Date/Time:</strong> <%=Formatter.formatDateTime(new Date(),Formatter.DETAIL_DATE_REPORT)%></p>
-                  <p>For system support and assistance, please screenshot this page and email to <a href="mailto:helpdesk@equaria.gov.sg">helpdesk@equaria.gov.sg</a>.</p>
+                <p>For system support and assistance, please kindly screenshot the entire window along with the provision of your company's UEN, licence number and contact details<br/>and reach out to <a href="mailto:helpdesk@equaria.gov.sg">helpdesk@equaria.gov.sg</a>.</p>
+                  <p class="text-muted">Click <a href="<%=UrlConfig.getInstance().getInternetInbox()%>">here</a> to go back</p>
               </div>
             </div>
             <!------------------------->
