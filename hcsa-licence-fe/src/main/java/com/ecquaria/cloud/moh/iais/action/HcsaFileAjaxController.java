@@ -216,7 +216,8 @@ public class HcsaFileAjaxController {
                     byte[] fileData = FileUtils.readFileToByteArray(file);
                     if(fileData != null){
                         try {
-                            response.addHeader("Content-Disposition", "attachment;filename=\"" +  file.getName()+"\"");
+                            response.addHeader("Content-Disposition", "attachment;filename=\""
+                                    +  StringUtil.clarify(file.getName()) + "\"");
                             response.addHeader("Content-Length", "" + fileData.length);
                             response.setContentType("application/x-octet-stream");
                         }catch (Exception e){
