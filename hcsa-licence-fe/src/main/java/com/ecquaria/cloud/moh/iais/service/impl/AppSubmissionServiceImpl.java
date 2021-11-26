@@ -118,6 +118,7 @@ import com.ecquaria.cloud.moh.iais.validate.serviceInfo.ValidateCharges;
 import com.ecquaria.cloud.moh.iais.validate.serviceInfo.ValidateClincalDirector;
 import com.ecquaria.cloud.moh.iais.validate.serviceInfo.ValidateVehicle;
 import com.ecquaria.cloud.submission.client.model.SubmitResp;
+import com.ecquaria.cloudfeign.FeignResponseEntity;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -417,37 +418,75 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
     }
 
     @Override
-    public ProfessionalResponseDto retrievePrsInfo(String profRegNo){
-        log.debug(StringUtil.changeForLog("retrieve prs info start ..."));
-        log.info(StringUtil.changeForLog("prof Reg No is " + profRegNo + " - PRS flag is " + prsFlag));
+    public ProfessionalResponseDto retrievePrsInfo(String profRegNo) {
+        log.info(StringUtil.changeForLog("Prof Reg No is " + profRegNo + " - PRS flag is " + prsFlag));
         ProfessionalResponseDto professionalResponseDto = null;
-        if ("Y".equals(prsFlag) && !StringUtil.isEmpty(profRegNo)) {
-            List<String> prgNos = IaisCommonUtils.genNewArrayList();
-            prgNos.add(profRegNo);
-            ProfessionalParameterDto professionalParameterDto =new ProfessionalParameterDto();
-            professionalParameterDto.setRegNo(prgNos);
-            professionalParameterDto.setClientId("22222");
-            SimpleDateFormat simpleDateFormat=new SimpleDateFormat("yyyyMMddHHmmssSSS");
-            String format = simpleDateFormat.format(new Date());
-            professionalParameterDto.setTimestamp(format);
-            professionalParameterDto.setSignature("2222");
-            HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
-            HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
-            try {
-                List<ProfessionalResponseDto> professionalResponseDtos = feEicGatewayClient.getProfessionalDetail(professionalParameterDto, signature.date(), signature.authorization(),
-                        signature2.date(), signature2.authorization()).getEntity();
-                if(professionalResponseDtos != null && professionalResponseDtos.size() > 0){
-                    professionalResponseDto = professionalResponseDtos.get(0);
-                }
-                log.info(StringUtil.changeForLog("ProfessionalResponseDto: " + JsonUtil.parseToJson(professionalResponseDto)));
-            } catch (Exception e) {
+        if ("Y".equals(prsFlag)) {
+            if (StringUtil.isEmpty(profRegNo)) {
                 professionalResponseDto = new ProfessionalResponseDto();
-                professionalResponseDto.setHasException(true);
-                log.info(StringUtil.changeForLog("retrieve prs info start ..."));
-                log.error(StringUtil.changeForLog(e.getMessage()), e);
+            } else {
+                List<String> prgNos = IaisCommonUtils.genNewArrayList();
+                prgNos.add(profRegNo);
+                ProfessionalParameterDto professionalParameterDto = new ProfessionalParameterDto();
+                professionalParameterDto.setRegNo(prgNos);
+                professionalParameterDto.setClientId("22222");
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMddHHmmssSSS");
+                String format = simpleDateFormat.format(new Date());
+                professionalParameterDto.setTimestamp(format);
+                professionalParameterDto.setSignature("2222");
+                HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
+                HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
+                try {
+                    FeignResponseEntity<List> entity = feEicGatewayClient.getProfessionalDetail(professionalParameterDto,
+                            signature.date(), signature.authorization(),
+                            signature2.date(), signature2.authorization());
+                    if ("401".equals(entity.getStatusCode())) {
+                        professionalResponseDto = new ProfessionalResponseDto();
+                        professionalResponseDto.setStatusCode("401");
+                    } else {
+                        List<ProfessionalResponseDto> professionalResponseDtos = entity.getEntity();
+                        if (professionalResponseDtos != null && professionalResponseDtos.size() > 0) {
+                            professionalResponseDto = professionalResponseDtos.get(0);
+                            List<String> qualification = professionalResponseDto.getQualification();
+                            List<String> subspecialty = professionalResponseDto.getSubspecialty();
+                            StringBuilder sb = new StringBuilder();
+                            if (!IaisCommonUtils.isEmpty(qualification)) {
+                                String s = qualification.get(0);
+                                if (!StringUtil.isEmpty(s)) {
+                                    sb.append(s);
+                                }
+                            }
+                            if (!IaisCommonUtils.isEmpty(subspecialty)) {
+                                String s = subspecialty.get(0);
+                                if (!StringUtil.isEmpty(s)) {
+                                    sb.append(s);
+                                }
+                            }
+                            String s = sb.toString();
+                            if (qualification == null) {
+                                qualification = IaisCommonUtils.genNewArrayList(1);
+                            } else {
+                                qualification.clear();
+                            }
+                            qualification.add(s);
+                            professionalResponseDto.setQualification(qualification);
+                        }
+                        if (professionalResponseDto == null) {
+                            professionalResponseDto = new ProfessionalResponseDto();
+                            professionalResponseDto.setStatusCode("-1");
+                        } else if (StringUtil.isEmpty(professionalResponseDto.getName())) {
+                            professionalResponseDto.setStatusCode("-2");
+                        }
+                    }
+                } catch (Exception e) {
+                    professionalResponseDto = new ProfessionalResponseDto();
+                    professionalResponseDto.setHasException(true);
+                    log.info(StringUtil.changeForLog("retrieve prs info start ..."));
+                    log.error(StringUtil.changeForLog(e.getMessage()), e);
+                }
             }
         }
-        log.debug(StringUtil.changeForLog("retrieve prs res dto end ..."));
+        log.info(StringUtil.changeForLog("ProfessionalResponseDto: " + JsonUtil.parseToJson(professionalResponseDto)));
         return professionalResponseDto;
     }
 

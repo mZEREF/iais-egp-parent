@@ -79,6 +79,7 @@
         //Binding method
         $('#Back').click(function(){
             showWaiting();
+            $("[name='nextStep']").val('back');
             if(${serviceStepDto.isStepFirst()}){
                 if(${serviceStepDto.isServiceFirst()}){
                     <c:choose>

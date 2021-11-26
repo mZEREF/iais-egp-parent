@@ -1197,6 +1197,7 @@ public class ClinicalLaboratoryDelegator {
         if (requestInformationConfig != null) {
             isRfi = true;
         }
+        String actionType = bpc.request.getParameter("nextStep");
         Map<String, String> errList = IaisCommonUtils.genNewHashMap();
         Map<String,AppSvcPersonAndExtDto> personMap = (Map<String, AppSvcPersonAndExtDto>) ParamUtil.getSessionAttr(bpc.request,NewApplicationDelegator.PERSONSELECTMAP);
         Map<String,AppSvcPersonAndExtDto> licPersonMap = (Map<String, AppSvcPersonAndExtDto>) ParamUtil.getSessionAttr(bpc.request,NewApplicationDelegator.LICPERSONSELECTMAP);
@@ -1219,22 +1220,24 @@ public class ClinicalLaboratoryDelegator {
                     String subSpecialtyStr = "";
                     String qualificationStr = "";
                     if (professionalResponseDto != null) {
-                        String name = professionalResponseDto.getName();
-                        if (professionalResponseDto.isHasException() || StringUtil.isEmpty(professionalResponseDto.getRegno())
-                                || StringUtil.isEmpty(name)) {
+                        if (professionalResponseDto.isHasException() || StringUtil.isNotEmpty(professionalResponseDto.getStatusCode())) {
                             log.debug(StringUtil.changeForLog("prs svc down ..."));
-                            if (professionalResponseDto.isHasException()) {
-                                bpc.request.setAttribute(PRS_SERVICE_DOWN, PRS_SERVICE_DOWN);
-                                errList.put(PRS_SERVICE_DOWN, PRS_SERVICE_DOWN);
-                            } else if (StringUtil.isEmpty(name)) {
-                                log.debug(StringUtil.changeForLog("prs server can not found match data ..."));
-                                errList.put("professionRegoNo" + i, "GENERAL_ERR0042");
+                            if (StringUtil.isEmpty(actionType) || "next".equals(actionType)) {
+                                if (professionalResponseDto.isHasException()) {
+                                    bpc.request.setAttribute(PRS_SERVICE_DOWN, PRS_SERVICE_DOWN);
+                                    errList.put(PRS_SERVICE_DOWN, PRS_SERVICE_DOWN);
+                                } else if ("401".equals(professionalResponseDto.getStatusCode())) {
+                                    errList.put("professionRegoNo" + i, "GENERAL_ERR0054");
+                                } else {
+                                    errList.put("professionRegoNo" + i, "GENERAL_ERR0042");
+                                }
                             }
                             appSvcCgoDto.setSpeciality(specialtyStr);
                             appSvcCgoDto.setSubSpeciality(subSpecialtyStr);
                             appSvcCgoDto.setQualification(qualificationStr);
                             continue;
                         }
+                        String name = professionalResponseDto.getName();
                         boolean needLoadName =
                                 !appSvcCgoDto.isLicPerson() && ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType);
                         if(needLoadName){
@@ -1301,8 +1304,7 @@ public class ClinicalLaboratoryDelegator {
             }
             setAppSvcRelatedInfoMap(bpc.request, currentSvcId, currentSvcRelatedDto);
         }
-        String crud_action_additional = bpc.request.getParameter("nextStep");
-        if ("next".equals(crud_action_additional)) {
+        if ("next".equals(actionType)) {
             Map<String, String> map = NewApplicationHelper.doValidateGovernanceOfficers(appSvcCgoDtoList, licPersonMap, svcCode);
             //validate mandatory count
             int psnLength = 0;
@@ -2255,6 +2257,7 @@ public class ClinicalLaboratoryDelegator {
         if (requestInformationConfig != null) {
             isRfi = true;
         }
+        String actionType = ParamUtil.getRequestString(bpc.request, "nextStep");
         boolean isGetDataFromPage = NewApplicationHelper.isGetDataFromPage(appSubmissionDto, ApplicationConsts.REQUEST_FOR_CHANGE_TYPE_SERVICE_INFORMATION, isEdit, isRfi);
         log.debug(StringUtil.changeForLog("isGetDataFromPage:" + isGetDataFromPage));
         Map<String,String> map=new HashMap<>(17);
@@ -2281,15 +2284,16 @@ public class ClinicalLaboratoryDelegator {
                                 !appSvcPsnDto.isLicPerson() && ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType);
                         String name = professionalResponseDto.getName();
                         log.info(StringUtil.changeForLog("Need Load Name: " + needLoadName + "; PRS Name: " + name));
-                        if (professionalResponseDto.isHasException() || StringUtil.isEmpty(professionalResponseDto.getRegno())
-                                || StringUtil.isEmpty(name)) {
-                            log.debug(StringUtil.changeForLog("prs svc down ..."));
-                            if (professionalResponseDto.isHasException()) {
-                                bpc.request.setAttribute(PRS_SERVICE_DOWN, PRS_SERVICE_DOWN);
-                                map.put(PRS_SERVICE_DOWN, PRS_SERVICE_DOWN);
-                            } else if (StringUtil.isEmpty(name)) {
-                                log.debug(StringUtil.changeForLog("prs server can not found match data ..."));
-                                map.put("profRegNo" + i, "GENERAL_ERR0042");
+                        if (professionalResponseDto.isHasException() || StringUtil.isNotEmpty(professionalResponseDto.getStatusCode())) {
+                            if (StringUtil.isEmpty(actionType) || "next".equals(actionType)) {
+                                if (professionalResponseDto.isHasException()) {
+                                    bpc.request.setAttribute(PRS_SERVICE_DOWN, PRS_SERVICE_DOWN);
+                                    map.put(PRS_SERVICE_DOWN, PRS_SERVICE_DOWN);
+                                } else if ("401".equals(professionalResponseDto.getStatusCode())) {
+                                    map.put("profRegNo" + i, "GENERAL_ERR0054");
+                                } else {
+                                    map.put("profRegNo" + i, "GENERAL_ERR0042");
+                                }
                             }
                             setClinicalDirectorPrsInfo(appSvcPsnDto, specialtyStr, specialtyGetDateStr, typeOfCurrRegi,
                                     currRegiDateStr, praCerEndDateStr, typeOfRegister);
@@ -2331,9 +2335,8 @@ public class ClinicalLaboratoryDelegator {
             setAppSvcRelatedInfoMap(bpc.request, currSvcId, currSvcInfoDto, appSubmissionDto);
             log.debug(StringUtil.changeForLog("cycle cd dto to retrieve prs info end ..."));
         }
-        String crud_action_type = ParamUtil.getRequestString(bpc.request, "nextStep");
         String currSvcCode = (String) ParamUtil.getSessionAttr(bpc.request,NewApplicationDelegator.CURRENTSVCCODE);
-        if("next".equals(crud_action_type)){
+        if("next".equals(actionType)){
             validateClincalDirector.doValidateClincalDirector(map,currSvcInfoDto.getAppSvcClinicalDirectorDtoList(), currSvcCode);
         }
         if (!map.isEmpty()) {
@@ -5023,20 +5026,19 @@ public class ClinicalLaboratoryDelegator {
                     if (professionalResponseDto == null) {
                         continue;
                     }
-                    String name = professionalResponseDto.getName();
-                    if (professionalResponseDto.isHasException() || StringUtil.isEmpty(professionalResponseDto.getRegno())
-                            || StringUtil.isEmpty(name)) {
+                    if (professionalResponseDto.isHasException() || StringUtil.isNotEmpty(professionalResponseDto.getStatusCode())) {
                         log.debug(StringUtil.changeForLog("prs svc down ..."));
                         if (professionalResponseDto.isHasException()) {
                             request.setAttribute(PRS_SERVICE_DOWN, PRS_SERVICE_DOWN);
                             errorMap.put(PRS_SERVICE_DOWN, PRS_SERVICE_DOWN);
-                        } else if (StringUtil.isEmpty(name)) {
-                            log.debug(StringUtil.changeForLog("prs server can not found match data ..."));
+                        } else if ("401".equals(professionalResponseDto.getStatusCode())) {
+                            errorMap.put("regnNo" + i, "GENERAL_ERR0054");
+                        } else {
                             errorMap.put("regnNo" + i, "GENERAL_ERR0042");
                         }
-                    } else {
-                        appSvcPersonnelDto.setName(name);
+                        continue;
                     }
+                    appSvcPersonnelDto.setName(professionalResponseDto.getName());
                 }
             }
         }
