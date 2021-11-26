@@ -620,14 +620,6 @@ public class WithOutRenewalDelegator {
             }
         }
 
-        if(StringUtil.isEmpty(pay) && StringUtil.isEmpty(result)){
-            log.info( StringUtil.changeForLog("--------------appSubmissionDtos is empty. renew dto is " + JsonUtil.parseToJson(renewDto))+".payment is null -----------------------");
-            StringBuilder url = new StringBuilder(10);
-            url.append("https://").append(bpc.request.getServerName()).append("/main-web/eservice/INTERNET/MohInternetInbox");
-            String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
-            IaisEGPHelper.redirectUrl(bpc.response, tokenUrl);
-        }
-
         if(!IaisCommonUtils.isEmpty(appSubmissionDtos)) {
             for (AppSubmissionDto appSubmissionDto : appSubmissionDtos) {
                 List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
