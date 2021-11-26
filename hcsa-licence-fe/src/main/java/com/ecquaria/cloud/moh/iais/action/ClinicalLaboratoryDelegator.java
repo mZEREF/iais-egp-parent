@@ -461,6 +461,10 @@ public class ClinicalLaboratoryDelegator {
                         .filter(dto -> indexNo.equals(dto.getIndexNo()))
                         .findAny()
                         .ifPresent(dto -> sectionLeaderList.add(dto));
+            }else {
+                AppSvcPersonnelDto sectionLeader = new AppSvcPersonnelDto();
+                sectionLeader.setIndexNo(UUID.randomUUID().toString());
+                sectionLeaderList.add(sectionLeader);
             }
         }
         log.info(StringUtil.changeForLog("The Section Leader length: " + slLength + "; size: " + sectionLeaderList.size()));

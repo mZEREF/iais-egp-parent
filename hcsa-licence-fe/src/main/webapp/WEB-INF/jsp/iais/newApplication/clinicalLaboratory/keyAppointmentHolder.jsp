@@ -252,6 +252,7 @@
             console.log(".svcPsnEdit:click")
             var $currContent = $(this).closest('div.keyAppointmentHolderContent');
             $currContent.find('input.isPartEdit').val('1');
+            $currContent.find('select.assignSel').val('newOfficer');
             $currContent.find('.edit-content').addClass('hidden');
             $currContent.find('input[type="text"]').prop('disabled', false);
             $currContent.find('div.nice-select').removeClass('disabled');
