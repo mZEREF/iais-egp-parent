@@ -1,4 +1,3 @@
-<%@ page import="com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts" %>
 <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c" %>
 <%@ taglib uri="http://www.ecq.com/iais" prefix="iais" %>
@@ -142,10 +141,11 @@
                                                                                     <iais:value width="10">
                                                                                         <p>
                                                                                             <input class="form-check-input" id="chooseInspection"
-                                                                                                   type="checkbox" name="chooseInspection" aria-invalid="false" <c:if test="${chooseInspectionChecked == 'Y'}">checked</c:if> value="Y">
+                                                                                                   type="checkbox" name="chooseInspection" aria-invalid="false" <c:if test="${chooseInspectionChecked == 'Y'}">checked</c:if> value="Y">URLEncoder.encode(serListDto.appPremisesSpecialDocDto.docName,StandardCharsets.UTF_8.toString())
                                                                                             <label class="form-check-label" for="chooseInspection"><span class="check-square"></span></label>
                                                                                             <c:if test="${!empty AppLastInsGroup.fileReportIdForViewLastReport}">
-                                                                                                <a hidden href="${pageContext.request.contextPath}/file-repo?filerepo=fileRo&fileRo=<iais:mask name="fileRo"  value="${AppLastInsGroup.fileReportIdForViewLastReport}"/>&fileRepoName=${AppLastInsGroup.reportName}"
+                                                                                                <a hidden
+                                                                                                   href="${pageContext.request.contextPath}/file-repo?filerepo=fileRo&fileRo=<iais:mask name="fileRo"  value="${AppLastInsGroup.fileReportIdForViewLastReport}"/>&fileRepoName=${URLEncoder.encode(AppLastInsGroup.reportName,StandardCharsets.UTF_8.toString())}"
                                                                                                    title="Download" class="downloadFile"><span id="${AppLastInsGroup.fileReportIdForViewLastReport}Down">trueDown</span></a>
                                                                                             </c:if>
                                                                                         </p>

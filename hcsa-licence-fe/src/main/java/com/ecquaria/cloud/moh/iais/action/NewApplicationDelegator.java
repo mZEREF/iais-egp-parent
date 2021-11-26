@@ -3378,10 +3378,11 @@ public class NewApplicationDelegator {
     public void jumpBank(BaseProcessClass bpc) throws IOException {
         log.info(StringUtil.changeForLog("the do jumpBank start ...."));
         String payMethod = ParamUtil.getString(bpc.request, "payMethod");
-        String noNeedPayment = bpc.request.getParameter("noNeedPayment");
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
+        String appGrpId = appSubmissionDto.getAppGrpId();
         log.info(StringUtil.changeForLog("The AppGrpNo: " + appSubmissionDto.getAppGrpNo() + "; payment method: "
-                + appSubmissionDto.getPaymentMethod() + "; the amount: " + appSubmissionDto.getAmount()));
+                + appSubmissionDto.getPaymentMethod() + "; the amount: " + appSubmissionDto.getAmount()
+                + " - " + appSubmissionDto.getAppGrpId()));
         List<String> ids = new ArrayList<>();
         //68099
         List<AppSubmissionDto> ackPageAppSubmissionDto = (List<AppSubmissionDto>) ParamUtil.getSessionAttr(bpc.request, ACK_APP_SUBMISSIONS);
@@ -3390,7 +3391,7 @@ public class NewApplicationDelegator {
                 if(!MiscUtil.doubleEquals(appSubmissionDto1.getAmount(), 0.0)){
                     appSubmissionDto1.setPaymentMethod(payMethod);
                 } else {
-                    log.info("--- " + appSubmissionDto1.getAppGrpNo() + " ---");
+                    log.info("--- " + appSubmissionDto1.getAppGrpNo() + " : " + appSubmissionDto1.getAppGrpId() + " ---");
                     ids.add(appSubmissionDto1.getAppGrpId());
                     ApplicationGroupDto appGrp = new ApplicationGroupDto();
                     appGrp.setId(appSubmissionDto1.getAppGrpId());
@@ -3401,13 +3402,9 @@ public class NewApplicationDelegator {
             }
             ParamUtil.setSessionAttr(bpc.request,ACK_APP_SUBMISSIONS, (Serializable) ackPageAppSubmissionDto);
         }
-        String appGrpId = appSubmissionDto.getAppGrpId();
-        if (StringUtil.isEmpty(appGrpId)) {
-            log.warn("---No App Group Id found!---");
-        }
         Double totalAmount = appSubmissionDto.getAmount();
         if (MiscUtil.doubleEquals(totalAmount, 0.0)) {
-            if (!ids.contains(appGrpId)) {
+            if (StringUtil.isNotEmpty(appGrpId) && !ids.contains(appGrpId)) {
                 ApplicationGroupDto appGrp = new ApplicationGroupDto();
                 appGrp.setId(appGrpId);
                 appGrp.setPmtStatus(ApplicationConsts.PAYMENT_STATUS_NO_NEED_PAYMENT);

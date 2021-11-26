@@ -170,11 +170,9 @@
                                                 <c:forEach items="${withdrawPageShowFiles}" var="withdrawPageShowFile"
                                                            varStatus="ind">
                                                   <div id="${withdrawPageShowFile.fileMapId}">
-                                                      <span name="fileName"
-                                                            style="font-size: 14px;color: #2199E8;text-align: center">
-                                                      <a href="${pageContext.request.contextPath}/file-repo?filerepo=fileRo0&fileRo0=<iais:mask name="fileRo0" value="${withdrawPageShowFile.fileUploadUrl}"/>&fileRepoName=${withdrawPageShowFile.fileName}"
-                                                         title="Download"
-                                                         class="downloadFile">${withdrawPageShowFile.fileName}</a></span>
+                                                      <span name="fileName" style="font-size: 14px;color: #2199E8;text-align: center">
+                                                          <iais:downloadLink fileRepoIdName="fileRo0" fileRepoId="${withdrawPageShowFile.fileUploadUrl}" docName="${withdrawPageShowFile.fileName}"/>
+                                                      </span>
                                                       <span class="error-msg" name="iaisErrorMsg"
                                                             id="file${ind.index}"></span>
                                                       <span class="error-msg" name="iaisErrorMsg"

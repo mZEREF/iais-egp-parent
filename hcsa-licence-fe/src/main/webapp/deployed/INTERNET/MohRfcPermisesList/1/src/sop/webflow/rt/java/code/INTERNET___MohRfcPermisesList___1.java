@@ -52,7 +52,7 @@ public class INTERNET___MohRfcPermisesList___1 extends BaseProcessClass {
 
 	public void prepareAckPage_OnStepProcess_0 () throws Exception { 
 		// 		PrepareAckPage->OnStepProcess
-		EngineHelper.delegate(DELEGATOR, "PrepareAckPage", this);
+		EngineHelper.delegate(DELEGATOR, "prepareAckPage", this);
 	}
 
 	public void jumpBlank_OnStepProcess_0() throws Exception {
@@ -105,6 +105,11 @@ public class INTERNET___MohRfcPermisesList___1 extends BaseProcessClass {
     public void dashboard_OnStepProcess_0() throws Exception {
     // 		dashboard->OnStepProcess
         EngineHelper.delegate(DELEGATOR, "dashboard", this);
+    }
+
+    public void doPayValidate_OnStepProcess_0() throws Exception {
+    // 		doPayValidate->OnStepProcess
+        EngineHelper.delegate(DELEGATOR, "doPayValidate", this);
     }
 
  
