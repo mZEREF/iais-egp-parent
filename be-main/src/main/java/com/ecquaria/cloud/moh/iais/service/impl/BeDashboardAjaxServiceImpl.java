@@ -25,6 +25,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.DashRenewAjaxQue
 import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.DashReplyAjaxQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.DashWaitApproveAjaxQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.DashWorkTeamAjaxQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.HcsaTaskAssignDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
@@ -94,7 +95,8 @@ public class BeDashboardAjaxServiceImpl implements BeDashboardAjaxService {
     private AppPremisesRoutingHistoryMainClient appPremisesRoutingHistoryMainClient;
 
     @Override
-    public Map<String, Object> getCommonDropdownResult(String groupNo, LoginContext loginContext, Map<String, Object> map, SearchParam searchParamGroup, String actionValue, String dashFilterAppNo) {
+    public Map<String, Object> getCommonDropdownResult(String groupNo, LoginContext loginContext, Map<String, Object> map, SearchParam searchParamGroup,
+                                                       String actionValue, String dashFilterAppNo, HcsaTaskAssignDto hcsaTaskAssignDto) {
         SearchParam searchParam = new SearchParam(DashComPoolAjaxQueryDto.class.getName());
         searchParam.setPageNo(1);
         searchParam.setSort("APPLICATION_NO", SearchParam.ASCENDING);
@@ -117,14 +119,14 @@ public class BeDashboardAjaxServiceImpl implements BeDashboardAjaxService {
                 searchParam.addFilter("dashFilterAppNo", dashFilterAppNo,true);
             }
             //filter page conditions
-            searchParam = filterPageConditions(searchParam, searchParamGroup, null, null);
+            searchParam = filterPageConditions(searchParam, searchParamGroup, null, null, hcsaTaskAssignDto);
             //filter work groups
             mohHcsaBeDashboardService.setPoolScopeByCurRoleId(searchParam, loginContext, actionValue, workGroupIds);
             //search
             QueryHelp.setMainSql("intraDashboardQuery", "dashCommonTaskAjax", searchParam);
             SearchResult<DashComPoolAjaxQueryDto> ajaxResult = getCommonAjaxResultByParam(searchParam);
             //set other data
-            setComPoolAjaxDataToShow(ajaxResult.getRows());
+            setComPoolAjaxDataToShow(ajaxResult.getRows(), hcsaTaskAssignDto);
             map.put("result", "Success");
             map.put("ajaxResult", ajaxResult);
         } else {
@@ -138,7 +140,8 @@ public class BeDashboardAjaxServiceImpl implements BeDashboardAjaxService {
     }
 
     @Override
-    public Map<String, Object> getKpiDropdownResult(String groupNo, LoginContext loginContext, Map<String, Object> map, SearchParam searchParamGroup, String switchAction, String dashFilterAppNo, String dashAppStatus) {
+    public Map<String, Object> getKpiDropdownResult(String groupNo, LoginContext loginContext, Map<String, Object> map, SearchParam searchParamGroup,
+                                                    String switchAction, String dashFilterAppNo, String dashAppStatus, HcsaTaskAssignDto hcsaTaskAssignDto) {
         SearchParam searchParam = new SearchParam(DashKpiPoolAjaxQuery.class.getName());
         searchParam.setPageNo(1);
         searchParam.setSort("APPLICATION_NO", SearchParam.ASCENDING);
@@ -161,14 +164,14 @@ public class BeDashboardAjaxServiceImpl implements BeDashboardAjaxService {
                 searchParam.addFilter("dashFilterAppNo", dashFilterAppNo,true);
             }
             //filter page conditions
-            searchParam = filterPageConditions(searchParam, searchParamGroup, "T1.STATUS", dashAppStatus);
+            searchParam = filterPageConditions(searchParam, searchParamGroup, "T1.STATUS", dashAppStatus, hcsaTaskAssignDto);
             //filter work groups
             mohHcsaBeDashboardService.setPoolScopeByCurRoleId(searchParam, loginContext, switchAction, workGroupIds);
             //search
             QueryHelp.setMainSql("intraDashboardQuery", "dashKpiTaskAjax", searchParam);
             SearchResult<DashKpiPoolAjaxQuery> ajaxResult = getKpiAjaxResultByParam(searchParam);
             //set other data
-            setKpiPoolAjaxDataToShow(ajaxResult.getRows());
+            setKpiPoolAjaxDataToShow(ajaxResult.getRows(), hcsaTaskAssignDto);
             map.put("result", "Success");
             map.put("ajaxResult", ajaxResult);
         } else {
@@ -182,7 +185,8 @@ public class BeDashboardAjaxServiceImpl implements BeDashboardAjaxService {
     }
 
     @Override
-    public Map<String, Object> getAssignMeDropdownResult(String groupNo, LoginContext loginContext, Map<String, Object> map, SearchParam searchParamGroup, String dashFilterAppNo, String dashAppStatus) {
+    public Map<String, Object> getAssignMeDropdownResult(String groupNo, LoginContext loginContext, Map<String, Object> map, SearchParam searchParamGroup,
+                                                         String dashFilterAppNo, String dashAppStatus, HcsaTaskAssignDto hcsaTaskAssignDto) {
         SearchParam searchParam = new SearchParam(DashAssignMeAjaxQueryDto.class.getName());
         searchParam.setPageNo(1);
         searchParam.setSort("APPLICATION_NO", SearchParam.ASCENDING);
@@ -216,12 +220,12 @@ public class BeDashboardAjaxServiceImpl implements BeDashboardAjaxService {
                 }
             }
             //filter page conditions
-            searchParam = filterPageConditions(searchParam, searchParamGroup, "T5.STATUS", dashAppStatus);
+            searchParam = filterPageConditions(searchParam, searchParamGroup, "T5.STATUS", dashAppStatus, hcsaTaskAssignDto);
             //search
             QueryHelp.setMainSql("intraDashboardQuery", "dashAssignMeAjax", searchParam);
             SearchResult<DashAssignMeAjaxQueryDto> ajaxResult = getAssignMeAjaxResultByParam(searchParam);
             //set other data
-            setAssignMeAjaxDataToShow(ajaxResult.getRows());
+            setAssignMeAjaxDataToShow(ajaxResult.getRows(), hcsaTaskAssignDto);
             map.put("result", "Success");
             map.put("ajaxResult", ajaxResult);
         } else {
@@ -235,7 +239,7 @@ public class BeDashboardAjaxServiceImpl implements BeDashboardAjaxService {
 
     @Override
     public Map<String, Object> getWorkTeamDropdownResult(String groupNo, LoginContext loginContext, Map<String, Object> map, SearchParam searchParamGroup, String switchAction,
-                                                         String dashFilterAppNo, String dashCommonPoolStatus, String dashAppStatus) {
+                                                         String dashFilterAppNo, String dashCommonPoolStatus, String dashAppStatus, HcsaTaskAssignDto hcsaTaskAssignDto) {
         SearchParam searchParam = new SearchParam(DashWorkTeamAjaxQueryDto.class.getName());
         searchParam.setPageNo(1);
         searchParam.setSort("APPLICATION_NO", SearchParam.ASCENDING);
@@ -262,14 +266,14 @@ public class BeDashboardAjaxServiceImpl implements BeDashboardAjaxService {
                 searchParam.addFilter("dashCommonPoolStatus", dashCommonPoolStatus,true);
             }
             //filter page conditions
-            searchParam = filterPageConditions(searchParam, searchParamGroup, "T5.STATUS", dashAppStatus);
+            searchParam = filterPageConditions(searchParam, searchParamGroup, "T5.STATUS", dashAppStatus, hcsaTaskAssignDto);
             //filter work groups
             mohHcsaBeDashboardService.setPoolScopeByCurRoleId(searchParam, loginContext, switchAction, workGroupIds);
             //search
             QueryHelp.setMainSql("intraDashboardQuery", "dashSupervisorAjax", searchParam);
             SearchResult<DashWorkTeamAjaxQueryDto> ajaxResult = getWorkTeamAjaxResultByParam(searchParam);
             //set other data
-            setWorkTeamAjaxDataToShow(ajaxResult.getRows());
+            setWorkTeamAjaxDataToShow(ajaxResult.getRows(), hcsaTaskAssignDto);
             map.put("result", "Success");
             map.put("ajaxResult", ajaxResult);
         } else {
@@ -284,7 +288,7 @@ public class BeDashboardAjaxServiceImpl implements BeDashboardAjaxService {
 
     @Override
     public Map<String, Object> getRenewDropdownResult(String groupNo, LoginContext loginContext, Map<String, Object> map, SearchParam searchParamGroup,
-                                                      String switchAction, String dashFilterAppNo, String dashAppStatus) {
+                                                      String switchAction, String dashFilterAppNo, String dashAppStatus, HcsaTaskAssignDto hcsaTaskAssignDto) {
         SearchParam searchParam = new SearchParam(DashRenewAjaxQueryDto.class.getName());
         searchParam.setPageNo(1);
         searchParam.setSort("APPLICATION_NO", SearchParam.ASCENDING);
@@ -312,14 +316,14 @@ public class BeDashboardAjaxServiceImpl implements BeDashboardAjaxService {
             }
 
             //filter page conditions
-            searchParam = filterPageConditions(searchParam, searchParamGroup, "T1.STATUS", dashAppStatus);
+            searchParam = filterPageConditions(searchParam, searchParamGroup, "T1.STATUS", dashAppStatus, hcsaTaskAssignDto);
             //filter work groups
             mohHcsaBeDashboardService.setPoolScopeByCurRoleId(searchParam, loginContext, switchAction, workGroupIds);
             //search
             QueryHelp.setMainSql("intraDashboardQuery", "dashAppRenewAjax", searchParam);
             SearchResult<DashRenewAjaxQueryDto> ajaxResult = getRenewAjaxResultByParam(searchParam);
             //set other data
-            setRenewAjaxDataToShow(ajaxResult.getRows());
+            setRenewAjaxDataToShow(ajaxResult.getRows(), hcsaTaskAssignDto);
             map.put("result", "Success");
             map.put("ajaxResult", ajaxResult);
         } else {
@@ -333,7 +337,8 @@ public class BeDashboardAjaxServiceImpl implements BeDashboardAjaxService {
     }
 
     @Override
-    public Map<String, Object> getReplyDropdownResult(String groupNo, LoginContext loginContext, Map<String, Object> map, SearchParam searchParamGroup, String switchAction, String dashFilterAppNo) {
+    public Map<String, Object> getReplyDropdownResult(String groupNo, LoginContext loginContext, Map<String, Object> map, SearchParam searchParamGroup,
+                                                      String switchAction, String dashFilterAppNo, HcsaTaskAssignDto hcsaTaskAssignDto) {
         SearchParam searchParam = new SearchParam(DashReplyAjaxQueryDto.class.getName());
         searchParam.setPageNo(1);
         searchParam.setSort("APPLICATION_NO", SearchParam.ASCENDING);
@@ -356,14 +361,14 @@ public class BeDashboardAjaxServiceImpl implements BeDashboardAjaxService {
                 searchParam.addFilter("dashFilterAppNo", dashFilterAppNo,true);
             }
             //filter page conditions
-            searchParam = filterPageConditions(searchParam, searchParamGroup, null, null);
+            searchParam = filterPageConditions(searchParam, searchParamGroup, null, null, hcsaTaskAssignDto);
             //filter work groups
             mohHcsaBeDashboardService.setPoolScopeByCurRoleId(searchParam, loginContext, switchAction, workGroupIds);
             //search
             QueryHelp.setMainSql("intraDashboardQuery", "dashAppReplyAjax", searchParam);
             SearchResult<DashReplyAjaxQueryDto> ajaxResult = getReplyAjaxResultByParam(searchParam);
             //set other data
-            setReplyAjaxDataToShow(ajaxResult.getRows());
+            setReplyAjaxDataToShow(ajaxResult.getRows(), hcsaTaskAssignDto);
             map.put("result", "Success");
             map.put("ajaxResult", ajaxResult);
         } else {
@@ -378,7 +383,7 @@ public class BeDashboardAjaxServiceImpl implements BeDashboardAjaxService {
 
     @Override
     public Map<String, Object> getWaitApproveDropResult(String groupNo, LoginContext loginContext, Map<String, Object> map, SearchParam searchParamGroup,
-                                                        String switchAction, String dashFilterAppNo, String dashAppStatus) {
+                                                        String switchAction, String dashFilterAppNo, String dashAppStatus, HcsaTaskAssignDto hcsaTaskAssignDto) {
         SearchParam searchParam = new SearchParam(DashWaitApproveAjaxQueryDto.class.getName());
         int pageSize=SystemParamUtil.getDefaultPageSize();
         searchParam.setPageSize(pageSize);
@@ -403,14 +408,14 @@ public class BeDashboardAjaxServiceImpl implements BeDashboardAjaxService {
                 searchParam.addFilter("dashFilterAppNo", dashFilterAppNo,true);
             }
             //filter page conditions
-            searchParam = filterPageConditions(searchParam, searchParamGroup, "T7.STATUS", dashAppStatus);
+            searchParam = filterPageConditions(searchParam, searchParamGroup, "T7.STATUS", dashAppStatus, hcsaTaskAssignDto);
             //filter work groups
             mohHcsaBeDashboardService.setPoolScopeByCurRoleId(searchParam, loginContext, switchAction, workGroupIds);
             //search
             QueryHelp.setMainSql("intraDashboardQuery", "dashWaitApproveAjax", searchParam);
             SearchResult<DashWaitApproveAjaxQueryDto> ajaxResult = getWaitAjaxResultByParam(searchParam);
             //set other data
-            setWaitApproveAjaxDataToShow(ajaxResult.getRows());
+            setWaitApproveAjaxDataToShow(ajaxResult.getRows(), hcsaTaskAssignDto);
             map.put("result", "Success");
             map.put("ajaxResult", ajaxResult);
         } else {
@@ -423,12 +428,12 @@ public class BeDashboardAjaxServiceImpl implements BeDashboardAjaxService {
         return map;
     }
 
-    private List<DashWaitApproveAjaxQueryDto> setWaitApproveAjaxDataToShow(List<DashWaitApproveAjaxQueryDto> dashWaitApproveAjaxQueryDtos) {
+    private List<DashWaitApproveAjaxQueryDto> setWaitApproveAjaxDataToShow(List<DashWaitApproveAjaxQueryDto> dashWaitApproveAjaxQueryDtos, HcsaTaskAssignDto hcsaTaskAssignDto) {
         if(!IaisCommonUtils.isEmpty(dashWaitApproveAjaxQueryDtos)){
             for(DashWaitApproveAjaxQueryDto dashWaitApproveAjaxQueryDto : dashWaitApproveAjaxQueryDtos){
                 //get hciName / address
                 AppGrpPremisesDto appGrpPremisesDto = inspectionMainAssignTaskService.getAppGrpPremisesDtoByAppCorrId(dashWaitApproveAjaxQueryDto.getId());
-                String address = inspectionMainAssignTaskService.getAddress(appGrpPremisesDto);
+                String address = inspectionMainAssignTaskService.getAddress(appGrpPremisesDto, hcsaTaskAssignDto);
                 if(!StringUtil.isEmpty(appGrpPremisesDto.getHciName())) {
                     dashWaitApproveAjaxQueryDto.setHciAddress(StringUtil.viewHtml(appGrpPremisesDto.getHciName() + " / " + address));
                 } else {
@@ -462,12 +467,12 @@ public class BeDashboardAjaxServiceImpl implements BeDashboardAjaxService {
         return dashWaitApproveAjaxQueryDtos;
     }
 
-    private List<DashReplyAjaxQueryDto> setReplyAjaxDataToShow(List<DashReplyAjaxQueryDto> dashReplyAjaxQueryDtos) {
+    private List<DashReplyAjaxQueryDto> setReplyAjaxDataToShow(List<DashReplyAjaxQueryDto> dashReplyAjaxQueryDtos, HcsaTaskAssignDto hcsaTaskAssignDto) {
         if(!IaisCommonUtils.isEmpty(dashReplyAjaxQueryDtos)){
             for(DashReplyAjaxQueryDto dashReplyAjaxQueryDto : dashReplyAjaxQueryDtos){
                 //get hciName / address
                 AppGrpPremisesDto appGrpPremisesDto = inspectionMainAssignTaskService.getAppGrpPremisesDtoByAppCorrId(dashReplyAjaxQueryDto.getId());
-                String address = inspectionMainAssignTaskService.getAddress(appGrpPremisesDto);
+                String address = inspectionMainAssignTaskService.getAddress(appGrpPremisesDto, hcsaTaskAssignDto);
                 if(!StringUtil.isEmpty(appGrpPremisesDto.getHciName())) {
                     dashReplyAjaxQueryDto.setHciAddress(StringUtil.viewHtml(appGrpPremisesDto.getHciName() + " / " + address));
                 } else {
@@ -501,12 +506,12 @@ public class BeDashboardAjaxServiceImpl implements BeDashboardAjaxService {
         return dashReplyAjaxQueryDtos;
     }
 
-    private List<DashRenewAjaxQueryDto> setRenewAjaxDataToShow(List<DashRenewAjaxQueryDto> dashRenewAjaxQueryDtos) {
+    private List<DashRenewAjaxQueryDto> setRenewAjaxDataToShow(List<DashRenewAjaxQueryDto> dashRenewAjaxQueryDtos, HcsaTaskAssignDto hcsaTaskAssignDto) {
         if(!IaisCommonUtils.isEmpty(dashRenewAjaxQueryDtos)){
             for(DashRenewAjaxQueryDto dashRenewAjaxQueryDto : dashRenewAjaxQueryDtos){
                 //get hciName / address
                 AppGrpPremisesDto appGrpPremisesDto = inspectionMainAssignTaskService.getAppGrpPremisesDtoByAppCorrId(dashRenewAjaxQueryDto.getId());
-                String address = inspectionMainAssignTaskService.getAddress(appGrpPremisesDto);
+                String address = inspectionMainAssignTaskService.getAddress(appGrpPremisesDto, hcsaTaskAssignDto);
                 if(!StringUtil.isEmpty(appGrpPremisesDto.getHciName())) {
                     dashRenewAjaxQueryDto.setHciAddress(StringUtil.viewHtml(appGrpPremisesDto.getHciName() + " / " + address));
                 } else {
@@ -540,12 +545,12 @@ public class BeDashboardAjaxServiceImpl implements BeDashboardAjaxService {
         return dashRenewAjaxQueryDtos;
     }
 
-    private List<DashWorkTeamAjaxQueryDto> setWorkTeamAjaxDataToShow(List<DashWorkTeamAjaxQueryDto> dashWorkTeamAjaxQueryDtos) {
+    private List<DashWorkTeamAjaxQueryDto> setWorkTeamAjaxDataToShow(List<DashWorkTeamAjaxQueryDto> dashWorkTeamAjaxQueryDtos, HcsaTaskAssignDto hcsaTaskAssignDto) {
         if(!IaisCommonUtils.isEmpty(dashWorkTeamAjaxQueryDtos)){
             for(DashWorkTeamAjaxQueryDto dashWorkTeamAjaxQueryDto : dashWorkTeamAjaxQueryDtos){
                 //get hciName / address
                 AppGrpPremisesDto appGrpPremisesDto = inspectionMainAssignTaskService.getAppGrpPremisesDtoByAppCorrId(dashWorkTeamAjaxQueryDto.getId());
-                String address = inspectionMainAssignTaskService.getAddress(appGrpPremisesDto);
+                String address = inspectionMainAssignTaskService.getAddress(appGrpPremisesDto, hcsaTaskAssignDto);
                 if(!StringUtil.isEmpty(appGrpPremisesDto.getHciName())) {
                     dashWorkTeamAjaxQueryDto.setHciAddress(StringUtil.viewHtml(appGrpPremisesDto.getHciName() + " / " + address));
                 } else {
@@ -579,12 +584,12 @@ public class BeDashboardAjaxServiceImpl implements BeDashboardAjaxService {
         return dashWorkTeamAjaxQueryDtos;
     }
 
-    private List<DashAssignMeAjaxQueryDto> setAssignMeAjaxDataToShow(List<DashAssignMeAjaxQueryDto> dashAssignMeAjaxQueryDtos) {
+    private List<DashAssignMeAjaxQueryDto> setAssignMeAjaxDataToShow(List<DashAssignMeAjaxQueryDto> dashAssignMeAjaxQueryDtos, HcsaTaskAssignDto hcsaTaskAssignDto) {
         if(!IaisCommonUtils.isEmpty(dashAssignMeAjaxQueryDtos)){
             for(DashAssignMeAjaxQueryDto dashAssignMeAjaxQueryDto : dashAssignMeAjaxQueryDtos){
                 //get hciName / address
                 AppGrpPremisesDto appGrpPremisesDto = inspectionMainAssignTaskService.getAppGrpPremisesDtoByAppCorrId(dashAssignMeAjaxQueryDto.getId());
-                String address = inspectionMainAssignTaskService.getAddress(appGrpPremisesDto);
+                String address = inspectionMainAssignTaskService.getAddress(appGrpPremisesDto, hcsaTaskAssignDto);
                 if(!StringUtil.isEmpty(appGrpPremisesDto.getHciName())) {
                     dashAssignMeAjaxQueryDto.setHciAddress(StringUtil.viewHtml(appGrpPremisesDto.getHciName() + " / " + address));
                 } else {
@@ -618,7 +623,8 @@ public class BeDashboardAjaxServiceImpl implements BeDashboardAjaxService {
         return dashAssignMeAjaxQueryDtos;
     }
 
-    private SearchParam filterPageConditions(SearchParam searchParam, SearchParam searchParamGroup, String appStatusKey, String application_status) {
+    private SearchParam filterPageConditions(SearchParam searchParam, SearchParam searchParamGroup, String appStatusKey, String application_status,
+                                             HcsaTaskAssignDto hcsaTaskAssignDto) {
         if(searchParamGroup != null) {
             Map<String, Object> filters = searchParamGroup.getFilters();
             if(filters != null) {
@@ -651,12 +657,12 @@ public class BeDashboardAjaxServiceImpl implements BeDashboardAjaxService {
         return searchParam;
     }
 
-    private List<DashKpiPoolAjaxQuery> setKpiPoolAjaxDataToShow(List<DashKpiPoolAjaxQuery> dashKpiPoolAjaxQueryList) {
+    private List<DashKpiPoolAjaxQuery> setKpiPoolAjaxDataToShow(List<DashKpiPoolAjaxQuery> dashKpiPoolAjaxQueryList, HcsaTaskAssignDto hcsaTaskAssignDto) {
         if(!IaisCommonUtils.isEmpty(dashKpiPoolAjaxQueryList)){
             for(DashKpiPoolAjaxQuery dashKpiPoolAjaxQuery : dashKpiPoolAjaxQueryList){
                 //get hciName / address
                 AppGrpPremisesDto appGrpPremisesDto = inspectionMainAssignTaskService.getAppGrpPremisesDtoByAppCorrId(dashKpiPoolAjaxQuery.getId());
-                String address = inspectionMainAssignTaskService.getAddress(appGrpPremisesDto);
+                String address = inspectionMainAssignTaskService.getAddress(appGrpPremisesDto, hcsaTaskAssignDto);
                 if(!StringUtil.isEmpty(appGrpPremisesDto.getHciName())) {
                     dashKpiPoolAjaxQuery.setHciAddress(StringUtil.viewHtml(appGrpPremisesDto.getHciName() + " / " + address));
                 } else {
@@ -690,12 +696,12 @@ public class BeDashboardAjaxServiceImpl implements BeDashboardAjaxService {
         return dashKpiPoolAjaxQueryList;
     }
 
-    private List<DashComPoolAjaxQueryDto> setComPoolAjaxDataToShow(List<DashComPoolAjaxQueryDto> dashComPoolAjaxQueryDtos) {
+    private List<DashComPoolAjaxQueryDto> setComPoolAjaxDataToShow(List<DashComPoolAjaxQueryDto> dashComPoolAjaxQueryDtos, HcsaTaskAssignDto hcsaTaskAssignDto) {
         if(!IaisCommonUtils.isEmpty(dashComPoolAjaxQueryDtos)){
             for(DashComPoolAjaxQueryDto dashComPoolAjaxQueryDto : dashComPoolAjaxQueryDtos){
                 //get hciName / address
                 AppGrpPremisesDto appGrpPremisesDto = inspectionMainAssignTaskService.getAppGrpPremisesDtoByAppCorrId(dashComPoolAjaxQueryDto.getId());
-                String address = inspectionMainAssignTaskService.getAddress(appGrpPremisesDto);
+                String address = inspectionMainAssignTaskService.getAddress(appGrpPremisesDto, hcsaTaskAssignDto);
                 if(!StringUtil.isEmpty(appGrpPremisesDto.getHciName())) {
                     dashComPoolAjaxQueryDto.setHciAddress(StringUtil.viewHtml(appGrpPremisesDto.getHciName() + " / " + address));
                 } else {

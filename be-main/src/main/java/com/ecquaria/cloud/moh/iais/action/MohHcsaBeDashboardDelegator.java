@@ -666,6 +666,7 @@ public class MohHcsaBeDashboardDelegator {
         log.info(StringUtil.changeForLog("the hcsaBeDashboardComAssign start ...."));
         String taskId = getDashTaskIdByBpc(bpc);
         if(!StringUtil.isEmpty(taskId)) {
+            HcsaTaskAssignDto hcsaTaskAssignDto = (HcsaTaskAssignDto)ParamUtil.getSessionAttr(bpc.request, "hcsaTaskAssignDto");
             LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
             ParamUtil.setSessionAttr(bpc.request, "inspecTaskCreAndAssDto", null);
             ParamUtil.setSessionAttr(bpc.request, "applicationViewDto", null);
@@ -685,7 +686,7 @@ public class MohHcsaBeDashboardDelegator {
                 }
                 //set fastTrackFlag
                 inspecTaskCreAndAssDto = inspectionMainAssignTaskService.setFastTrackFlag(inspecTaskCreAndAssDto, applicationDto);
-                inspecTaskCreAndAssDto = inspectionMainAssignTaskService.getInspecTaskCreAndAssDto(applicationDto, loginContext, inspecTaskCreAndAssDto);
+                inspecTaskCreAndAssDto = inspectionMainAssignTaskService.getInspecTaskCreAndAssDto(applicationDto, loginContext, inspecTaskCreAndAssDto, hcsaTaskAssignDto);
                 //set Edit Hours Flag
                 inspecTaskCreAndAssDto = inspectionMainAssignTaskService.setEditHoursFlagByAppAndUser(inspecTaskCreAndAssDto, applicationDto);
                 ParamUtil.setSessionAttr(bpc.request, "inspecTaskCreAndAssDto", inspecTaskCreAndAssDto);
