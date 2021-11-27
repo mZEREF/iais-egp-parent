@@ -1239,7 +1239,7 @@ public class RequestForChangeMenuDelegator {
      * @param bpc
      * @Decription prepareAckPage
      */
-    public void PrepareAckPage(BaseProcessClass bpc) {
+    public void prepareAckPage(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("the do prepareAckPage start ...."));
         Date createDate = (Date) ParamUtil.getSessionAttr(bpc.request, "createDate");
         List<AppSubmissionDto> appSubmissionDtos = (List<AppSubmissionDto>) ParamUtil.getSessionAttr(bpc.request, "appSubmissionDtos");
@@ -1261,7 +1261,6 @@ public class RequestForChangeMenuDelegator {
         ParamUtil.setSessionAttr(bpc.request, "emailAddress", emailAddress);
         log.debug(StringUtil.changeForLog("the do prepareAckPage end ...."));
     }
-
 
     public void selectLicence(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("the do selectLicence start ...."));
