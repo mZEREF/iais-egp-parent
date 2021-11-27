@@ -54,8 +54,8 @@ public class IrregularExcelWriterUtil {
                 int row = entry.getKey();
                 Row sheetRow = sheet.getRow(row);
 
-                if (sheetRow == null){
-                    continue;
+                if (sheetRow == null) {
+                    sheetRow = sheet.createRow(row);
                 }
 
                 List<Integer> cellIndex = entry.getValue();

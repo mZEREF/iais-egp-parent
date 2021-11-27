@@ -1,6 +1,7 @@
 <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
 <%@ taglib uri="http://www.ecq.com/iais" prefix="iais" %>
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%
     //handle to the Engine APIs
     sop.webflow.rt.api.BaseProcessClass process =
@@ -18,9 +19,11 @@
 <c:set var="husband" value="${patientInfoDto.husband}" />
 <c:set var="dataSubmission" value="${arSuperDataSubmissionDto.dataSubmissionDto}" />
 
-<%@ include file="common/arHeader.jsp" %>
+<c:set var="hasError" value="${not empty errorMsg}" />
+<c:set var="itemSize" value="${not empty fileItemSize ? fileItemSize : 0}" />
+<c:set var="hasItems" value="${not empty PATIENT_INFO_LIST ? 1 : 0}" />
 
-<script type="text/javascript" src="<%=webroot1%>js/dataSubmission/patientInformation.js"></script>
+<%@ include file="common/arHeader.jsp" %>
 
 <form method="post" id="mainForm" action=<%=continueURL%>>
     <div class="main-content">
@@ -37,7 +40,7 @@
                                 <p>Acceptable file formats are XLSX, CSV.</p>
                             </li>
                             <li>
-                                <p>You may download the template by clicking <a href="/ds/ar/patient-info-file">here</a>.</p>
+                                <p>You may download the template by clicking <a href="${pageContext.request.contextPath}/ds/ar/patient-info-file" >here</a>.</p>
                             </li>
                             <li>
                                 <p><iais:message key="GENERAL_ERR0052" params="maxCountMap" /></p>
@@ -47,12 +50,16 @@
                             </li>
                         </ul>
                     </div>
-                    <div class="file-upload-gp">
-                        <h4>Patient Information (<span id="itemSize">0</span> records uploaded)</h4>
+                    <div class="file-upload-gp" style="background-color: rgba(242, 242, 242, 1);padding: 20px;">
+                        <h3 style="font-size: 16px;">
+                            Patient Information
+                            (<span id="itemSize"><fmt:formatNumber value="${itemSize}" pattern="#,##0"/></span>
+                            records uploaded)
+                        </h3>
                         <%--<h4>Patient Information (1,000 records uploaded)</h4>--%>
                         <c:if test="${not empty fileItemErrorMsgs}">
                         <div class="col-xs-12 col-sm-12 margin-btm table-responsive">
-                            <div class="error-msg">There are invalid record(s) in the file. Please rectify them and reupload the file</div>
+                            <span class="error-msg">There are invalid record(s) in the file. Please rectify them and reupload the file</span>
                             <table aria-describedby="" class="table">
                                 <thead>
                                 <tr>
@@ -62,7 +69,7 @@
                                 </tr>
                                 </thead>
                                 <tbody>
-                                <c:forEach var="item" items="fileItemErrorMsgs">
+                                <c:forEach var="item" items="${fileItemErrorMsgs}">
                                 <tr>
                                     <td>${item.row}</td>
                                     <td>${item.fieldName}</td>
@@ -74,15 +81,12 @@
                         </div>
                         </c:if>
                         <div name="uploadFileShowId" id="uploadFileShowId">
-                            <c:if test="${not empty pageShowFileDto}">
+                            <c:if test="${not empty pageShowFileDto && !hasError}">
                             <div id="${pageShowFileDto.fileMapId}">
                                 <span name="fileName" style="font-size: 14px;color: #2199E8;text-align: center">
-                                <a href="${pageContext.request.contextPath}/file-repo?filerepo=fileRo0&fileRo0=<iais:mask name="fileRo0" value="${pageShowFileDto.fileUploadUrl}"/>&fileRepoName=${pageShowFileDto.fileName}"
-                                   title="Download" class="downloadFile">${pageShowFileDto.fileName}</a>
+                                    <iais:downloadLink fileRepoIdName="fileRo0" fileRepoId="${pageShowFileDto.fileUploadUrl}" docName="${pageShowFileDto.fileName}"/>
                                 </span>
-                                <%--<span class="error-msg" name="iaisErrorMsg" id="file"></span>--%>
                                 <button type="button" class="btn btn-secondary btn-sm" onclick="javascript:deleteFileFeAjax('selected${sec}File',${pageShowFileDto.index});">Delete</button>
-                                <%--<button type="button" class="btn btn-secondary btn-sm" onclick="javascript:reUploadFileFeAjax('selected${sec}File',${pageShowFileDto.index},'mainForm');">ReUpload</button>--%>
                             </div>
                             </c:if>
                         </div>
@@ -93,16 +97,18 @@
                                onclick="fileClicked(event)"
                                onchange="ajaxCallUploadForMax('mainForm', 'uploadFile', false);"/>
                         <a class="btn btn-file-upload btn-secondary" onclick="clearFlagValueFEFile()">Upload</a>
+                        <input type="hidden" id="hasItems" name="hasItems" value="${hasItems}" />
                     </div>
                     <span id="error_uploadFileError" name="iaisErrorMsg" class="error-msg"></span>
                 </div>
+                <br/><br/>
                 <%@include file="common/arFooter.jsp" %>
             </div>
         </div>
     </div>
-    <%--<input type="hidden" name="fileMaxSize" id="fileMaxSize" value="${String.valueOf(ConfigHelper.getInt("iais.system.upload.file.limit", 10))}">--%>
     <%@ include file="../../appeal/FeFileCallAjax.jsp" %>
 </form>
+<script type="text/javascript" src="<%=webroot1%>js/dataSubmission/patientInfoUpload.js"></script>
 <script type="text/javascript">
     $(document).ready(function () {
         $('#_needReUpload').val(0);
@@ -113,93 +119,15 @@
         var fileId= '#uploadFile';
         $(fileId).after( $( fileId).clone().val(""));
         $(fileId).remove();
-    }
-   /* function ajaxCallUploadForMax(idForm, fileAppendId, uploadFileShowId) {
-        showWaiting();
-        /!**
-        * <input type="hidden" name="uploadFormId" id="uploadFormId" value="">
-<input type="hidden" name="fileAppendId" id="fileAppendId" value="">
-<input type="hidden" name="reloadIndex" id="reloadIndex" value="-1">
-<input type="hidden" name="needGlobalMaxIndex" id="needGlobalMaxIndex" value="0">
-<input type="hidden" name="fileMaxSize" id="fileMaxSize" value="${String.valueOf(ConfigHelper.getInt("iais.system.upload.file.limit", 10))}">
-<input type="hidden" id="fileMaxMBMessage" name="fileMaxMBMessage" value="<iais:message key="GENERAL_ERR0019" propertiesKey="iais.system.upload.file.limit" replaceName="sizeMax" />">
-
-        * *!/
-        var $form = $("#"+idForm);
-        if ($form.find('#_fileAppendId').length <= 0) {
-            $form.append('<input type="hidden" name="_fileAppendId" id="_fileAppendId" value="">');
+        var $btns = $('#uploadFileShowId').find('button');
+        if ($btns.length >= 2) {
+            $btns.not(':last').trigger('click');
         }
-        $form.find('#_fileAppendId').val(fileAppendId);
-        if ($form.find('#_uploadFileShowId').length <= 0) {
-            $form.append('<input type="hidden" name="_uploadFileShowId" id="_uploadFileShowId" value="">');
-        }
-        if (isEmpty(uploadFileShowId)) {
-            uploadFileShowId = fileAppendId + 'ShowId';
-        }
-        $form.find('#_uploadFileShowId').val(uploadFileShowId);
-        var form = new FormData($("#"+idForm)[0]);
-        var maxFileSize = $("#fileMaxSize").val();
-        var rslt = validateFileSizeMaxOrEmpty(maxFileSize, fileAppendId);
-        //alert('rslt:'+rslt);
-        if (rslt == 'N') {
-            $("#error_"+fileAppendId+"Error").html($("#fileMaxMBMessage").val());
-            clearFlagValueFEFile();
-        } else if (rslt == 'E') {
-            clearFlagValueFEFile();
-        } else {
-            $.ajax({
-                type:"post",
-                url:"${pageContext.request.contextPath}/ajax-upload-file?stamp="+new Date().getTime(),
-                data: form,
-                async:true,
-                dataType: "json",
-                processData: false,
-                contentType: false,
-                success: function (data) {
-                    if(data != null && data.description != null){
-                        if( data.msgType == "Y"){
-                            if(reloadIndex != -1){
-                                $("#"+fileAppendId+"Div"+reloadIndex).after("<Div id = '" +fileAppendId+"Div"+reloadIndex+"Copy' ></Div>");
-                                deleteFileFeDiv(fileAppendId+"Div"+reloadIndex);
-                                $("#reloadIndex").val(-1);
-                                $("#"+fileAppendId+"Div"+reloadIndex+"Copy").after(data.description);
-                                deleteFileFeDiv(fileAppendId+"Div"+reloadIndex+"Copy");
-                            }else {
-                                $("#"+fileAppendId+"ShowId").append(data.description);
-                            }
-                            $("#error_"+fileAppendId+"Error").html("");
-                            cloneUploadFile();
-                        }else {
-                            $("#error_"+fileAppendId+"Error").html(data.description);
-                        }
-                    }
-                    dismissWaiting();
-                },
-                error: function (msg) {
-                    //alert("error");
-                    dismissWaiting();
-                }
-            });
-        }
+        $('#hasItems').val('0');
     }
 
-    function validateFileSizeMaxOrEmpty(maxSize,selectedFileId) {
-        if (isNaN(maxSize)) {
-            return 'Y';
-        }
-        var fileId= '#'+selectedFileId;
-        var fileV = $(fileId).val();
-        var file = $(fileId).get(0).files[0];
-        if(fileV == null || fileV == "" ||file==null|| file==undefined){
-            return "E";
-        }
-        var fileSize = (Math.round(file.size * 100 / (1024 * 1024)) / 100).toString();
-        fileSize = parseInt(fileSize);
-        if(fileSize>= parseInt(maxSize)){
-            $(fileId).after($(fileId).clone().val(""));
-            $(fileId).remove();
-            return "N";
-        }
-        return "Y";
-    }*/
+    function deleteFileFeAjax(id,fileIndex) {
+        $('#hasItems').val('0');
+        callAjaxDeleteFile(id,fileIndex);
+    }
 </script>

@@ -11,7 +11,7 @@ import java.io.Serializable;
  * @Auther chenlei on 11/24/2021.
  */
 @Data
-@ExcelSheetProperty(sheetName = "PATIENT_INFO", sheetAt = 0, startRowIndex = 1)
+@ExcelSheetProperty(sheetName = "PATIENT_INFO", sheetAt = 0, startRowIndex = 0)
 public class PatientInfoExcelDto implements Serializable {
 
     @ExcelProperty(cellIndex = 0, cellName = "PATIENT_NAME", readOnly = true)

@@ -503,7 +503,7 @@ public final class DataSubmissionHelper {
     }*/
 
     public static <T> List<FileErrorMsg> validateExcelList(List<T> objList, String profile, Map<String, String> fieldCellMap) {
-        return validateExcelList(objList, profile, 2, null);
+        return validateExcelList(objList, profile, 2, fieldCellMap);
     }
 
     public static <T> List<FileErrorMsg> validateExcelList(List<T> objList, String profile, int startRow,
@@ -526,12 +526,16 @@ public final class DataSubmissionHelper {
     }
 
     public static List<FileErrorMsg> getExcelErrorMsgs(int row, Map<String, String> errorMap, Map<String, String> fieldCellMap) {
-        if (fieldCellMap == null || fieldCellMap.isEmpty()) {
-            return IaisCommonUtils.genNewArrayList(0);
-        }
         List<FileErrorMsg> errorMsgs = IaisCommonUtils.genNewArrayList(errorMap.size());
-        errorMap.forEach((k, v) -> errorMsgs.add(new FileErrorMsg(row, fieldCellMap.get(k), v)));
+        errorMap.forEach((k, v) -> errorMsgs.add(new FileErrorMsg(row, getFieldCell(k, fieldCellMap), v)));
         return errorMsgs;
+    }
+
+    private static String getFieldCell(String k, Map<String, String> fieldCellMap) {
+        if (fieldCellMap == null || fieldCellMap.isEmpty()) {
+            return k;
+        }
+        return fieldCellMap.getOrDefault(k, k);
     }
 
     public static Map<String, String> getFieldCellMap(Class<?> clazz) {

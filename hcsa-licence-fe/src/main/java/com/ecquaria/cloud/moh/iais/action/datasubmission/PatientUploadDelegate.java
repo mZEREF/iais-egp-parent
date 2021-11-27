@@ -9,6 +9,7 @@ package com.ecquaria.cloud.moh.iais.action.datasubmission;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.action.HcsaFileAjaxController;
+import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DataSubmissionDto;
@@ -85,8 +86,13 @@ public class PatientUploadDelegate {
      */
     public void doStart(BaseProcessClass bpc) {
         log.info(StringUtil.changeForLog("-----PatientUploadDelegate Start -----"));
-        HttpSession session = bpc.request.getSession();
+        clearSession(bpc.request);
+    }
+
+    private void clearSession(HttpServletRequest request) {
+        HttpSession session = request.getSession();
         session.removeAttribute(SEESION_FILES_MAP_AJAX);
+        session.removeAttribute(PATIENT_INFO_LIST);
     }
 
     /**
@@ -114,7 +120,7 @@ public class PatientUploadDelegate {
     public void preparePage(BaseProcessClass bpc) {
         log.info(StringUtil.changeForLog("----- PreparePage -----"));
         Map<String, String> maxCountMap = IaisCommonUtils.genNewHashMap(1);
-        maxCountMap.put("maxCount", Formatter.formatNumber(MAX_ITEM_COUNT));
+        maxCountMap.put("maxCount", Formatter.formatNumber(MAX_ITEM_COUNT, "#,##0"));
         ParamUtil.setRequestAttr(bpc.request, "maxCountMap", maxCountMap);
     }
 
@@ -131,40 +137,59 @@ public class PatientUploadDelegate {
             bpc.request.getSession().removeAttribute(SEESION_FILES_MAP_AJAX);
             return;
         }
-        Entry<String, File> fileEntry = getFileEntry(bpc.request);
-        PageShowFileDto pageShowFileDto = getPageShowFileDto(fileEntry);
-        ParamUtil.setRequestAttr(bpc.request, "pageShowFileDto", pageShowFileDto);
-        Map<String, String> errorMap = DataSubmissionHelper.validateFile(SEESION_FILES_MAP_AJAX, bpc.request);
-        List<PatientInfoDto> patientInfoList = null;
-        if (errorMap.isEmpty()) {
-            List<PatientInfoExcelDto> patientInfoExcelDtoList = getPatientInfoExcelDtoList(fileEntry);
-            int size = patientInfoExcelDtoList.size();
-            if (size > MAX_ITEM_COUNT) {
-                errorMap.put("uploadFileError", MessageUtil.replaceMessage("GENERAL_ERR0052",
-                        Formatter.formatNumber(MAX_ITEM_COUNT), "maxCountMap"));
-            } else {
-                String orgId = DataSubmissionHelper.getLoginContext(bpc.request).getOrgId();
-                patientInfoList = getPatientInfoList(patientInfoExcelDtoList, orgId);
-                Map<String, String> fieldCellMap = DataSubmissionHelper.getFieldCellMap(PatientInfoExcelDto.class);
-                List<FileErrorMsg> errorMsgs = DataSubmissionHelper.validateExcelList(patientInfoList, "file", fieldCellMap);
-                List<PatientDto> patientDtos = patientInfoList.stream().map(PatientInfoDto::getPatient).collect(Collectors.toList());
-                for (int i = 1; i < size; i++) {
-                    if (duplicate(patientDtos.get(i), patientDtos.subList(0, i))) {
-                        errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("idNumber"), "GENERAL_ERR0053"));
+        int fileItemSize = 0;
+        Map<String, String> errorMap = null;
+        boolean hasItems = AppConsts.YES.equals(ParamUtil.getString(bpc.request, "hasItems"));
+        log.info(StringUtil.changeForLog("---- Has Items: " + hasItems + " ----"));
+        List<PatientInfoDto> patientInfoList = (List<PatientInfoDto>) bpc.request.getSession().getAttribute(PATIENT_INFO_LIST);
+        if (patientInfoList == null || !hasItems) {
+            Entry<String, File> fileEntry = getFileEntry(bpc.request);
+            PageShowFileDto pageShowFileDto = getPageShowFileDto(fileEntry);
+            ParamUtil.setRequestAttr(bpc.request, "pageShowFileDto", pageShowFileDto);
+            errorMap = DataSubmissionHelper.validateFile(SEESION_FILES_MAP_AJAX, bpc.request);
+            if (errorMap.isEmpty()) {
+                List<PatientInfoExcelDto> patientInfoExcelDtoList = getPatientInfoExcelDtoList(fileEntry);
+                fileItemSize = patientInfoExcelDtoList.size();
+                if (fileItemSize == 0) {
+                    errorMap.put("uploadFileError", "PRF_ERR006");
+                } else if (fileItemSize > MAX_ITEM_COUNT) {
+                    errorMap.put("uploadFileError", MessageUtil.replaceMessage("GENERAL_ERR0052",
+                            Formatter.formatNumber(MAX_ITEM_COUNT, "#,##0"), "maxCountMap"));
+                } else {
+                    String orgId = DataSubmissionHelper.getLoginContext(bpc.request).getOrgId();
+                    patientInfoList = getPatientInfoList(patientInfoExcelDtoList, orgId);
+                    Map<String, String> fieldCellMap = DataSubmissionHelper.getFieldCellMap(PatientInfoExcelDto.class);
+                    List<FileErrorMsg> errorMsgs = DataSubmissionHelper.validateExcelList(patientInfoList, "file", fieldCellMap);
+                    List<PatientDto> patientDtos = patientInfoList.stream().map(PatientInfoDto::getPatient).collect(
+                            Collectors.toList());
+                    for (int i = 1; i < fileItemSize; i++) {
+                        if (duplicate(patientDtos.get(i), patientDtos.subList(0, i))) {
+                            errorMsgs.add(new FileErrorMsg(i, fieldCellMap.get("idNumber"), "GENERAL_ERR0053"));
+                        }
+                    }
+                    if (!errorMsgs.isEmpty()) {
+                        Collections.sort(errorMsgs, Comparator.comparing(FileErrorMsg::getRow));
+                        ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.FILE_ITEM_ERROR_MSGS, errorMsgs);
+                        errorMap.put("itemError", "itemError");
                     }
                 }
-                Collections.sort(errorMsgs, Comparator.comparing(FileErrorMsg::getRow));
-                ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.FILE_ITEM_ERROR_MSGS, errorMsgs);
-                errorMap.put("itemError", "itemError");
             }
-        }
-        if (!errorMap.isEmpty()) {
             crudype = "page";
-            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
         } else {
-            bpc.request.setAttribute(PATIENT_INFO_LIST, patientInfoList);
             crudype = "submission";
         }
+        if (errorMap != null && !errorMap.isEmpty()) {
+            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
+            clearSession(bpc.request);
+        } else {
+            if (patientInfoList != null) {
+                fileItemSize = patientInfoList.size();
+            }
+            bpc.request.getSession().setAttribute(PATIENT_INFO_LIST, patientInfoList);
+        }
+        log.info(StringUtil.changeForLog("---- File Item Size: " + fileItemSize + " ----"));
+        ParamUtil.setRequestAttr(bpc.request, "fileItemSize", fileItemSize);
+        log.info(StringUtil.changeForLog("---- Action Type: " + crudype + " ----"));
         ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, crudype);
     }
 
@@ -218,6 +243,7 @@ public class PatientUploadDelegate {
             husbandDto.setEthnicGroup(DataSubmissionHelper.getCode(patientInfoExcelDto.getEthnicGroupHbd(), groups));
             husbandDto.setEthnicGroupOther(patientInfoExcelDto.getEthnicGroupOtherHbd());
             dto.setHusband(husbandDto);
+            result.add(dto);
         }
         return result;
     }
@@ -281,7 +307,7 @@ public class PatientUploadDelegate {
      */
     public void doSubmission(BaseProcessClass bpc) {
         log.info(StringUtil.changeForLog("----- Submission -----"));
-        List<PatientInfoDto> patientInfoList = (List<PatientInfoDto>) bpc.request.getAttribute(PATIENT_INFO_LIST);
+        List<PatientInfoDto> patientInfoList = (List<PatientInfoDto>) bpc.request.getSession().getAttribute(PATIENT_INFO_LIST);
         if (patientInfoList == null || patientInfoList.isEmpty()) {
             log.warn(StringUtil.changeForLog("----- No Data to be submitted -----"));
             return;

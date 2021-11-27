@@ -29,6 +29,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import static org.apache.poi.ss.usermodel.CellType.STRING;
 
@@ -107,7 +108,7 @@ public final class ExcelReader {
         List<List<String>> result = IaisCommonUtils.genNewArrayList();
         for (int i =  startCellIndex + 1; i <= rowCount; i++) {
             Row row = sheet.getRow(i);
-            if (row == null || row.getCell(0) == null ){
+            if (isEmpty(row, realCellCount)){
                 continue;
             }
 
@@ -118,6 +119,13 @@ public final class ExcelReader {
             result.add(cellResult);
         }
         return result;
+    }
+
+    private static boolean isEmpty(Row row, int realCellCount) {
+        if (row == null) {
+            return true;
+        }
+        return IntStream.range(0, realCellCount).noneMatch(i -> StringUtil.isNotEmpty(getCellValue(row.getCell(i))));
     }
 
     @SuppressWarnings("resource")
