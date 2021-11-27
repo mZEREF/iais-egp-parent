@@ -28,6 +28,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesEnt
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPrimaryDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionRequestInformationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcBusinessDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcChargesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcChargesPageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcChckListDto;
@@ -43,7 +44,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupD
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationSubDraftDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.RenewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.SubLicenseeDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcBusinessDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.AmendmentFeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.FeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.HcsaFeeBundleItemDto;
@@ -145,7 +145,6 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 /**
  * AppSubmisionServiceImpl
@@ -2442,17 +2441,20 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
         Map<String, String> previewAndSubmitMap = IaisCommonUtils.genNewHashMap();
         //
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
-        AppSubmissionDto oldAppSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.OLDAPPSUBMISSIONDTO);
-        previewAndSubmitMap = doPreviewSubmitValidate(previewAndSubmitMap,appSubmissionDto,oldAppSubmissionDto,bpc);
+        AppSubmissionDto oldAppSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request,
+                NewApplicationDelegator.OLDAPPSUBMISSIONDTO);
+        previewAndSubmitMap = doPreviewSubmitValidate(previewAndSubmitMap, appSubmissionDto, oldAppSubmissionDto, bpc);
         return previewAndSubmitMap;
     }
 
     @Override
-    public Map<String, String> doPreviewSubmitValidate(Map<String, String> previewAndSubmitMap, AppSubmissionDto appSubmissionDto, AppSubmissionDto oldAppSubmissionDto,BaseProcessClass bpc) {
+    public Map<String, String> doPreviewSubmitValidate(Map<String, String> previewAndSubmitMap, AppSubmissionDto appSubmissionDto,
+            AppSubmissionDto oldAppSubmissionDto, BaseProcessClass bpc) {
+        StringBuilder errorSvcConfig = new StringBuilder();
         boolean isRfi = NewApplicationHelper.checkIsRfi(bpc.request);
         List<String> premisesHciList = (List<String>) ParamUtil.getSessionAttr(bpc.request, NewApplicationConstant.PREMISES_HCI_LIST);
         List<String> errorList = doPreviewSubmitValidate(previewAndSubmitMap, appSubmissionDto, oldAppSubmissionDto,
-                premisesHciList, isRfi);
+                premisesHciList, isRfi, errorSvcConfig);
         HashMap<String, String> coMap = (HashMap<String, String>) bpc.request.getSession().getAttribute("coMap");
         if (errorList.contains(NewApplicationConstant.SECTION_LICENSEE)) {
             coMap.put(NewApplicationConstant.SECTION_LICENSEE, "");
@@ -2474,19 +2476,19 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
         } else {
             coMap.put(NewApplicationConstant.SECTION_SVCINFO, NewApplicationConstant.SECTION_SVCINFO);
         }
-        bpc.request.getSession().setAttribute(NewApplicationConstant.CO_MAP, coMap);
-        bpc.request.getSession().setAttribute("serviceConfig", errorList.stream().collect(Collectors.joining(",")));
+        ParamUtil.setSessionAttr(bpc.request, NewApplicationConstant.CO_MAP, coMap);
+        ParamUtil.setSessionAttr(bpc.request, "serviceConfig", errorSvcConfig);
         return previewAndSubmitMap;
     }
 
     @Override
     public List<String> doPreviewSubmitValidate(Map<String, String> errorMap, AppSubmissionDto appSubmissionDto,
             boolean isRfi) {
-        return doPreviewSubmitValidate(errorMap, appSubmissionDto, null, null, isRfi);
+        return doPreviewSubmitValidate(errorMap, appSubmissionDto, null, null, isRfi, null);
     }
 
     private List<String> doPreviewSubmitValidate(Map<String, String> errorMap, AppSubmissionDto appSubmissionDto,
-            AppSubmissionDto oldAppSubmissionDto,List<String> premisesHciList, boolean isRfi) {
+            AppSubmissionDto oldAppSubmissionDto, List<String> premisesHciList, boolean isRfi, StringBuilder errorSvcConfig) {
         List<String> errorList = IaisCommonUtils.genNewArrayList();
         if (appSubmissionDto == null) {
             return errorList;
@@ -2516,18 +2518,24 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
             Map<String, String> map = doCheckBox(currSvcInfoDto, appSubmissionDto, null, errorList);
             if (!map.isEmpty()) {
                 errorMap.putAll(map);
-                errorList.add(NewApplicationConstant.SECTION_SVCINFO);
+                if (!errorList.contains(NewApplicationConstant.SECTION_SVCINFO)) {
+                    errorList.add(NewApplicationConstant.SECTION_SVCINFO);
+                }
+                if (errorSvcConfig != null) {
+                    errorSvcConfig.append(currSvcInfoDto.getServiceId());
+                }
             }
         }
         // primary document
         Map<String, String> documentMap = IaisCommonUtils.genNewHashMap();
-        documentValid(appSubmissionDto, documentMap,false);
+        documentValid(appSubmissionDto, documentMap, false);
         doCommomDocument(appSubmissionDto, documentMap, isRfi);
         if (!documentMap.isEmpty()) {
             errorMap.putAll(documentMap);
             errorList.add(NewApplicationConstant.SECTION_DOCUMENT);
         }
-        NewApplicationHelper.setAudiErrMap(isRfi,appSubmissionDto.getAppType(),errorMap,appSubmissionDto.getRfiAppNo(),appSubmissionDto.getLicenceNo());
+        NewApplicationHelper.setAudiErrMap(isRfi, appSubmissionDto.getAppType(), errorMap, appSubmissionDto.getRfiAppNo(),
+                appSubmissionDto.getLicenceNo());
         log.info(StringUtil.changeForLog("Error Message for App Submission Validation: " + errorMap));
         log.info(StringUtil.changeForLog("Error List for App Submission Validation: " + errorList));
         return errorList;

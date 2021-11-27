@@ -1156,23 +1156,24 @@ public class ClinicalLaboratoryDelegator {
     }
 
     private Map<String, String> isAllChecked(BaseProcessClass bpc, AppSubmissionDto appSubmissionDto) {
-        StringBuilder sB = new StringBuilder();
+        StringBuilder errorSvcConfig = new StringBuilder();
         List<AppSvcRelatedInfoDto> dto = appSubmissionDto.getAppSvcRelatedInfoDtoList();
-        Map<String, String> map = new HashMap<>();
-        ServiceStepDto serviceStepDto = new ServiceStepDto();
+        Map<String, String> errorMap = new HashMap<>();
         Map<String, AppSvcPersonAndExtDto> licPersonMap = null;
         if (ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appSubmissionDto.getAppType())) {
-                licPersonMap = (Map<String, AppSvcPersonAndExtDto>) ParamUtil.getSessionAttr(
-                bpc.request, NewApplicationDelegator.LICPERSONSELECTMAP);
+            licPersonMap = (Map<String, AppSvcPersonAndExtDto>) ParamUtil.getSessionAttr(bpc.request,
+                    NewApplicationDelegator.LICPERSONSELECTMAP);
         }
         for (int i = 0; i < dto.size(); i++) {
-            map = appSubmissionService.doCheckBox(dto.get(i), appSubmissionDto, licPersonMap);
+            AppSvcRelatedInfoDto currSvcInfoDto = dto.get(i);
+            Map<String, String> map = appSubmissionService.doCheckBox(currSvcInfoDto, appSubmissionDto, licPersonMap);
+            if (!map.isEmpty()) {
+                errorMap.putAll(map);
+                errorSvcConfig.append(currSvcInfoDto.getServiceId());
+            }
         }
-        if (!StringUtil.isEmpty(sB.toString())) {
-            map.put("error", "error");
-        }
-        bpc.request.getSession().setAttribute("serviceConfig", sB.toString());
-        return map;
+        ParamUtil.setSessionAttr(bpc.request, "serviceConfig", errorSvcConfig);
+        return errorMap;
     }
 
     /**
