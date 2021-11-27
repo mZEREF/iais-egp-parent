@@ -116,8 +116,8 @@ public class LicenseeCompanyDelegate {
                     //Update info
                     if (IaisCommonUtils.isEmpty(errMap)) {
                         OrganizationDto organizationDto = orgUserManageService.getOrganizationById(organizationId);
-                        orgUserManageService.refreshLicensee(organizationDto.getUenNo()); // EDH
                         orgUserManageService.updateCompLicensee(loginContext.getOrgId(), officeTelNo, officeEmail);
+                        orgUserManageService.refreshLicensee(organizationDto.getUenNo()); // EDH
                     } else {
                         WebValidationHelper.saveAuditTrailForNoUseResult(errMap);
                         ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG,
