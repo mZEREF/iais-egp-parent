@@ -2473,13 +2473,20 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
             coMap.put(NewApplicationConstant.SECTION_SVCINFO, NewApplicationConstant.SECTION_SVCINFO);
         }
         ParamUtil.setSessionAttr(bpc.request, NewApplicationConstant.CO_MAP, coMap);
-        ParamUtil.setSessionAttr(bpc.request, "serviceConfig", errorSvcConfig);
+        ParamUtil.setSessionAttr(bpc.request, "serviceConfig", errorSvcConfig.toString());
         return previewAndSubmitMap;
     }
 
     @Override
     public List<String> doPreviewSubmitValidate(Map<String, String> errorMap, AppSubmissionDto appSubmissionDto,
             boolean isRfi) {
+        List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
+        if (!IaisCommonUtils.isEmpty(appGrpPremisesDtoList)) {
+            for (AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtoList) {
+                NewApplicationHelper.setWrkTime(appGrpPremisesDto);
+            }
+            appSubmissionDto.setAppGrpPremisesDtoList(appGrpPremisesDtoList);
+        }
         return doPreviewSubmitValidate(errorMap, appSubmissionDto, null, null, isRfi, null);
     }
 

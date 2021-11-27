@@ -1172,7 +1172,7 @@ public class ClinicalLaboratoryDelegator {
                 errorSvcConfig.append(currSvcInfoDto.getServiceId());
             }
         }
-        ParamUtil.setSessionAttr(bpc.request, "serviceConfig", errorSvcConfig);
+        ParamUtil.setSessionAttr(bpc.request, "serviceConfig", errorSvcConfig.toString());
         return errorMap;
     }
 

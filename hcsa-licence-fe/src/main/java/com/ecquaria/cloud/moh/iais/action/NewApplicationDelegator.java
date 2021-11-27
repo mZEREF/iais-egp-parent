@@ -3432,7 +3432,7 @@ public class NewApplicationDelegator {
             try {
                 //inspectionDateSendNewApplicationPaymentOnlineEmail(appSubmissionDto, bpc);
             } catch (Exception e) {
-                log.error(StringUtil.changeForLog("send email error ...."));
+                log.error(StringUtil.changeForLog("send email error ...." + e.getMessage()), e);
             }
             String amount = String.valueOf(appSubmissionDto.getAmount());
             Map<String, String> fieldMap = new HashMap<String, String>();
@@ -3469,7 +3469,7 @@ public class NewApplicationDelegator {
                     requestForChangeService.sendRfcSubmittedEmail(ackPageAppSubmissionDto, ackPageAppSubmissionDto.get(0).getPaymentMethod());
                 }
             } catch (Exception e) {
-                log.error(StringUtil.changeForLog("send email error ...."));
+                log.error(StringUtil.changeForLog("send email error ...." + e.getMessage()), e);
             }
             ApplicationGroupDto appGrp = new ApplicationGroupDto();
             appGrp.setId(appGrpId);
@@ -3488,7 +3488,7 @@ public class NewApplicationDelegator {
             }*/
             ParamUtil.setRequestAttr(bpc.request, "PmtStatus", ApplicationConsts.PAYMENT_METHOD_NAME_GIRO);
             ParamUtil.setSessionAttr(bpc.request, "txnRefNo", giroTranNo);
-            //todo change
+            // change
             StringBuilder url = new StringBuilder();
             url.append("https://")
                     .append(bpc.request.getServerName())
