@@ -142,6 +142,79 @@ public class PageDataCopyUtil {
         copy.setAppPremPhOpenPeriodList(appPremPhOpenPeriodDtos);
         return copy;
     }
+
+    public static AppGrpPremisesDto copyAppGrpPremisesDtoForAutoField(AppGrpPremisesDto appGrpPremisesDto) {
+        AppGrpPremisesDto copy = new AppGrpPremisesDto();
+        copy.setPremisesType(appGrpPremisesDto.getPremisesType());
+        if (ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(appGrpPremisesDto.getPremisesType())) {
+            copy.setEasMtsPubEmail(appGrpPremisesDto.getEasMtsPubEmail());
+            copy.setOnsiteStartMM(appGrpPremisesDto.getOnsiteStartMM());
+            copy.setOnsiteEndMM(appGrpPremisesDto.getOnsiteEndMM());
+            copy.setOnsiteStartHH(appGrpPremisesDto.getOnsiteStartHH());
+            copy.setOnsiteEndHH(appGrpPremisesDto.getOnsiteEndHH());
+
+            copy.setOffTelNo(appGrpPremisesDto.getOffTelNo());
+            copy.setLocateWithOthers(appGrpPremisesDto.getLocateWithOthers());
+            copy.setScdfRefNo(appGrpPremisesDto.getScdfRefNo());
+            copy.setCertIssuedDt(appGrpPremisesDto.getCertIssuedDt());
+            if (StringUtil.isEmpty(appGrpPremisesDto.getCertIssuedDtStr())) {
+                copy.setCertIssuedDtStr(null);
+            } else {
+                copy.setCertIssuedDtStr(appGrpPremisesDto.getCertIssuedDtStr());
+            }
+        } else if (ApplicationConsts.PREMISES_TYPE_OFF_SITE.equals(appGrpPremisesDto.getPremisesType())) {
+            copy.setOffSiteStartHH(appGrpPremisesDto.getOffSiteStartHH());
+            copy.setOffSiteStartMM(appGrpPremisesDto.getOffSiteStartMM());
+            copy.setOffSiteEndHH(appGrpPremisesDto.getOffSiteEndHH());
+            copy.setOffSiteEndMM(appGrpPremisesDto.getOffSiteEndMM());
+
+            copy.setOffSiteHciName(appGrpPremisesDto.getOffSiteHciName());
+
+            copy.setOffSiteEmail(appGrpPremisesDto.getOffSiteEmail());
+        } else if (ApplicationConsts.PREMISES_TYPE_EAS_MTS_CONVEYANCE.equals(appGrpPremisesDto.getPremisesType())) {
+            //EASMTS
+            copy.setEasMtsUseOnly(appGrpPremisesDto.getEasMtsUseOnly());
+            copy.setEasMtsPubEmail(appGrpPremisesDto.getEasMtsPubEmail());
+            copy.setEasMtsPubHotline(appGrpPremisesDto.getEasMtsPubHotline());
+            copy.setEasMtsCoLocation(appGrpPremisesDto.getEasMtsCoLocation());
+        } else {
+            copy.setConStartHH(appGrpPremisesDto.getConStartHH());
+            copy.setConStartMM(appGrpPremisesDto.getConStartMM());
+            copy.setConEndHH(appGrpPremisesDto.getConEndHH());
+            copy.setConEndMM(appGrpPremisesDto.getConEndMM());
+
+            copy.setConveyanceVehicleNo(appGrpPremisesDto.getConveyanceVehicleNo());
+            copy.setConveyanceHciName(appGrpPremisesDto.getConveyanceHciName());
+
+            copy.setConveyanceEmail(appGrpPremisesDto.getConveyanceEmail());
+        }
+        List<AppPremPhOpenPeriodDto> appPremPhOpenPeriodList = appGrpPremisesDto.getAppPremPhOpenPeriodList();
+        List<AppPremPhOpenPeriodDto> appPremPhOpenPeriodDtos = new ArrayList<>();
+        if (appPremPhOpenPeriodList != null) {
+            for (AppPremPhOpenPeriodDto appPremPhOpenPeriodDto : appPremPhOpenPeriodList) {
+                AppPremPhOpenPeriodDto premPhOpenPeriodDto = new AppPremPhOpenPeriodDto();
+                premPhOpenPeriodDto.setConvEndToMM(appPremPhOpenPeriodDto.getConvEndToMM());
+                premPhOpenPeriodDto.setConvEndToHH(appPremPhOpenPeriodDto.getConvEndToHH());
+                premPhOpenPeriodDto.setConvStartFromHH(appPremPhOpenPeriodDto.getConvStartFromHH());
+                premPhOpenPeriodDto.setConvStartFromMM(appPremPhOpenPeriodDto.getConvStartFromMM());
+                premPhOpenPeriodDto.setOnsiteStartFromMM(appPremPhOpenPeriodDto.getOnsiteStartFromMM());
+                premPhOpenPeriodDto.setOnsiteStartFromHH(appPremPhOpenPeriodDto.getOnsiteStartFromHH());
+                premPhOpenPeriodDto.setOnsiteEndToHH(appPremPhOpenPeriodDto.getOnsiteEndToHH());
+                premPhOpenPeriodDto.setOnsiteEndToMM(appPremPhOpenPeriodDto.getOnsiteEndToMM());
+                premPhOpenPeriodDto.setPhDate(appPremPhOpenPeriodDto.getPhDate());
+                premPhOpenPeriodDto.setPhDateStr(appPremPhOpenPeriodDto.getPhDateStr());
+                premPhOpenPeriodDto.setStartFrom(appPremPhOpenPeriodDto.getStartFrom());
+                premPhOpenPeriodDto.setEndTo(appPremPhOpenPeriodDto.getEndTo());
+                appPremPhOpenPeriodDtos.add(premPhOpenPeriodDto);
+            }
+        }
+        copy.setEventDtoList(copyEvent(appGrpPremisesDto.getEventDtoList()));
+        copy.setWeeklyDtoList(copyOperationHoursReloadDto(appGrpPremisesDto.getWeeklyDtoList()));
+        copy.setPhDtoList(copyOperationHoursReloadDto(appGrpPremisesDto.getPhDtoList()));
+        copy.setAppPremPhOpenPeriodList(appPremPhOpenPeriodDtos);
+        return copy;
+    }
+
     public static List<OperationHoursReloadDto> copyOperationHoursReloadDto(List<OperationHoursReloadDto> list){
         if(list==null){
             return new ArrayList<>();
