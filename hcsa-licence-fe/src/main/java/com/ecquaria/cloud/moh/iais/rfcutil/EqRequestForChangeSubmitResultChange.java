@@ -73,10 +73,6 @@ public class EqRequestForChangeSubmitResultChange {
                 isChanged = true;
                 break;
             }
-            if (!appGrpPremisesDto.getAddressWithoutFU().equals(oldAppGrpPremisesDto.getAddressWithoutFU())) {
-                isChanged = true;
-                break;
-            }
             if (isChangeFloorUnit(appGrpPremisesDto, oldAppGrpPremisesDto)) {
                 isChanged = true;
                 break;
