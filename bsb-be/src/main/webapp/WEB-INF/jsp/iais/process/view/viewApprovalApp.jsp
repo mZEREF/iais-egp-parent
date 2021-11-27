@@ -1,29 +1,4 @@
-<%@ page import="static sg.gov.moh.iais.egp.bsb.constant.GlobalConstants.WEB_ROOT"%>
-<%@ taglib prefix="webui" uri="http://www.ecquaria.com/webui" %>
-<%@ taglib prefix="ias" uri="http://www.ecq.com/iais" %>
-<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
-<%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
-<%@ taglib prefix="iais-bsb" uri="http://www.ecq.com/iais-bsb" %>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
-<%
-    sop.webflow.rt.api.BaseProcessClass process =
-            (sop.webflow.rt.api.BaseProcessClass) request.getAttribute("process");
-%>
-<webui:setLayout name="iais-internet"/>
-
-<script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-common.js"></script>
-<script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-approval-app.js"></script>
-
-<%@include file="/WEB-INF/jsp/iais/include/showErrorMsg.jsp"%>
-
-<%@include file="dashboard.jsp"%>
-
-<form method="post" id="mainForm" action="<%=process.runtime.continueURL()%>">
-    <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
-    <input type="hidden" name="action_type" value="">
-    <input type="hidden" name="action_value" value="">
-    <input type="hidden" name="action_additional" value="">
     <div class="main-content">
         <div class="container">
             <div class="row">
@@ -44,7 +19,6 @@
                                                         </div>
                                                         <div id="previewBatInfo" class="panel-collapse collapse">
                                                             <div class="panel-body">
-                                                                <div class="text-right app-font-size-16"><c:if test="${not empty maskedEditId}"><a href="/bsb-fe/eservice/INTERNET/MohApprovalApplication?editId=${maskedEditId}&processType=${processType}>"><em class="fa fa-pencil-square-o"></em>Edit</a></c:if></div>
                                                                 <c:forEach var="approvalProfile" items="${approvalProfileList}">
                                                                     <div class="panel-main-content form-horizontal min-row">
                                                                         <div class="form-group">
@@ -192,7 +166,6 @@
                                                         </div>
                                                         <div id="previewDocs" class="panel-collapse collapse">
                                                             <div class="panel-body">
-                                                                <div class="text-right app-font-size-16"><c:if test="${not empty maskedEditId}"><a href="/bsb-fe/eservice/INTERNET/MohApprovalApplication?editId=${maskedEditId}&processType=${processType}"><em class="fa fa-pencil-square-o"></em>Edit</a></c:if></div>
                                                                 <div class="panel-main-content form-horizontal min-row">
                                                                     <div class="form-group">
                                                                         <div class="col-10"><strong>Uploaded Documents</strong></div>
@@ -211,10 +184,6 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-xs-12">
-                    <a class="back" href="/bsb-fe/eservice/INTERNET/MohBSBInboxApp"><em class="fa fa-angle-left"></em> Back</a>
-                </div>
             </div>
         </div>
     </div>
-</form>

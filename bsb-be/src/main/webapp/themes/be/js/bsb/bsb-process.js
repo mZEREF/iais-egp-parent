@@ -21,23 +21,6 @@ $(function () {
     $("#submitButton").click(function () {
         $('#mainForm').submit();
     })
-    $("#back").click(function (){
-        showWaiting();
-        $("[name='crud_action_type']").val("back");
-        $('#mainForm').submit();
-    })
-    $("#backFromDoc").click(function (){
-        $('#doInfo').click();
-    })
-    $("#inspectionOrCertificationBack").click(function (){
-        $('#doDocument').click();
-    })
-    $("#contentBack").click(function (){
-        $('#doInspectionOrCertification').click();
-    })
-    $("#processBack").click(function (){
-        $('#doContent').click();
-    })
 })
 function validate(){
     var ifProcess = $("#ifProcess").val();
