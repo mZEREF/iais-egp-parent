@@ -95,7 +95,6 @@
             <#if application_status??> and ${application_status}</#if>
             <#if hci_code??> and charindex(:hci_code, T5.HCI_CODE) >0 </#if>
             <#if hci_name??> and charindex(:hci_name, T5.HCI_NAME) >0 </#if>
-            <#if hci_address??> and charindex(:hci_address, T5.address) >0 </#if>
         ]]>
     </sql>
 
@@ -146,7 +145,6 @@
             <#if application_type??> and T5.APP_TYPE = :application_type</#if>
             <#if hci_code??> and charindex(:hci_code, T5.HCI_CODE) >0 </#if>
             <#if hci_name??> and charindex(:hci_name, T5.HCI_NAME) >0 </#if>
-            <#if hci_address??> and charindex(:hci_address, T5.PREMISE) >0 </#if>
         ]]>
     </sql>
 
@@ -200,7 +198,6 @@
             <#if application_type??> and T5.APP_TYPE = :application_type</#if>
             <#if hci_code??> and charindex(:hci_code, T5.HCI_CODE) >0 </#if>
             <#if hci_name??> and charindex(:hci_name, T5.HCI_NAME) >0 </#if>
-            <#if hci_address??> and charindex(:hci_address, T5.address) >0 </#if>
             GROUP BY T5.ID
         ]]>
     </sql>
@@ -222,7 +219,6 @@
             <#if application_status??> and ${application_status}</#if>
             <#if hci_code??> and charindex(:hci_code, T1.HCI_CODE) >0 </#if>
             <#if hci_name??> and charindex(:hci_name, T1.HCI_NAME) >0 </#if>
-            <#if hci_address??> and charindex(:hci_address, T1.address) >0 </#if>
         ]]>
     </sql>
 
@@ -245,7 +241,6 @@
             <#if application_status??> and ${application_status}</#if>
             <#if hci_code??> and charindex(:hci_code, T1.HCI_CODE) >0 </#if>
             <#if hci_name??> and charindex(:hci_name, T1.HCI_NAME) >0 </#if>
-            <#if hci_address??> and charindex(:hci_address, T1.address) >0 </#if>
             GROUP BY T1.ID
         ]]>
     </sql>
@@ -266,7 +261,6 @@
             <#if application_status??> and ${application_status}</#if>
             <#if hci_code??> and charindex(:hci_code, T7.HCI_CODE) >0 </#if>
             <#if hci_name??> and charindex(:hci_name, T7.HCI_NAME) >0 </#if>
-            <#if hci_address??> and charindex(:hci_address, T7.address) >0 </#if>
         ]]>
     </sql>
 
@@ -290,7 +284,6 @@
             <#if application_status??> and ${application_status}</#if>
             <#if hci_code??> and charindex(:hci_code, T7.HCI_CODE) >0 </#if>
             <#if hci_name??> and charindex(:hci_name, T7.HCI_NAME) >0 </#if>
-            <#if hci_address??> and charindex(:hci_address, T7.address) >0 </#if>
             GROUP BY T7.ID
         ]]>
     </sql>
@@ -310,7 +303,6 @@
             <#if application_status??> and T7.STATUS = :application_status</#if>
             <#if hci_code??> and charindex(:hci_code, T7.HCI_CODE) >0 </#if>
             <#if hci_name??> and charindex(:hci_name, T7.HCI_NAME) >0 </#if>
-            <#if hci_address??> and charindex(:hci_address, T7.address) >0 </#if>
         ]]>
     </sql>
 
@@ -333,7 +325,6 @@
             <#if application_status??> and T7.STATUS = :application_status</#if>
             <#if hci_code??> and charindex(:hci_code, T7.HCI_CODE) >0 </#if>
             <#if hci_name??> and charindex(:hci_name, T7.HCI_NAME) >0 </#if>
-            <#if hci_address??> and charindex(:hci_address, T7.address) >0 </#if>
             GROUP BY T7.ID
         ]]>
     </sql>
@@ -355,7 +346,6 @@
             <#if application_status??> and ${application_status}</#if>
             <#if hci_code??> and charindex(:hci_code, T1.HCI_CODE) >0 </#if>
             <#if hci_name??> and charindex(:hci_name, T1.HCI_NAME) >0 </#if>
-            <#if hci_address??> and charindex(:hci_address, T1.address) >0 </#if>
         ]]>
     </sql>
 
@@ -380,7 +370,6 @@
             <#if application_status??> and ${application_status}</#if>
             <#if hci_code??> and charindex(:hci_code, T1.HCI_CODE) >0 </#if>
             <#if hci_name??> and charindex(:hci_name, T1.HCI_NAME) >0 </#if>
-            <#if hci_address??> and charindex(:hci_address, T1.address) >0 </#if>
             GROUP BY T1.ID
         ]]>
     </sql>
@@ -434,7 +423,6 @@
             <#if dashCommonPoolStatus??> and T5.USER_ID is NULL</#if>
             <#if hci_code??> and charindex(:hci_code, T5.HCI_CODE) >0 </#if>
             <#if hci_name??> and charindex(:hci_name, T5.HCI_NAME) >0 </#if>
-            <#if hci_address??> and charindex(:hci_address, T5.PREMISE) >0 </#if>
         ]]>
     </sql>
 
