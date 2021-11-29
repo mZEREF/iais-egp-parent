@@ -145,6 +145,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 /**
  * AppSubmisionServiceImpl
@@ -448,27 +449,14 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                             professionalResponseDto = professionalResponseDtos.get(0);
                             List<String> qualification = professionalResponseDto.getQualification();
                             List<String> subspecialty = professionalResponseDto.getSubspecialty();
-                            StringBuilder sb = new StringBuilder();
-                            if (!IaisCommonUtils.isEmpty(qualification)) {
-                                String s = qualification.get(0);
-                                if (!StringUtil.isEmpty(s)) {
-                                    sb.append(s);
-                                }
+                            if (qualification != null && qualification.size() > 1) {
+                                professionalResponseDto.setQualification(Collections.singletonList(qualification.stream()
+                                        .collect(Collectors.joining(","))));
                             }
-                            if (!IaisCommonUtils.isEmpty(subspecialty)) {
-                                String s = subspecialty.get(0);
-                                if (!StringUtil.isEmpty(s)) {
-                                    sb.append(s);
-                                }
+                            if (subspecialty != null && subspecialty.size() > 1) {
+                                professionalResponseDto.setSubspecialty(Collections.singletonList(subspecialty.stream()
+                                        .collect(Collectors.joining(","))));
                             }
-                            String s = sb.toString();
-                            if (qualification == null) {
-                                qualification = IaisCommonUtils.genNewArrayList(1);
-                            } else {
-                                qualification.clear();
-                            }
-                            qualification.add(s);
-                            professionalResponseDto.setQualification(qualification);
                         }
                         if (professionalResponseDto == null) {
                             professionalResponseDto = new ProfessionalResponseDto();

@@ -1258,26 +1258,13 @@ public class ClinicalLaboratoryDelegator {
                         appSvcCgoDto.setSpeciality(specialtyStr);
 
                         List<String> subSpecialtyList = professionalResponseDto.getSubspecialty();
-                        if(!IaisCommonUtils.isEmpty(subSpecialtyList)){
-                            List<String> notNullList = IaisCommonUtils.genNewArrayList();
-                            for(String value:subSpecialtyList){
-                                if(!StringUtil.isEmpty(value)){
-                                    notNullList.add(value);
-                                }
-                            }
-                            subSpecialtyStr = String.join(",",notNullList);
+                        if (subSpecialtyList != null && !subSpecialtyList.isEmpty()) {
+                            subSpecialtyStr = subSpecialtyList.get(0);
                         }
                         appSvcCgoDto.setSubSpeciality(subSpecialtyStr);
-
                         List<String> qualificationList = professionalResponseDto.getQualification();
-                        if(!IaisCommonUtils.isEmpty(qualificationList)){
-                            List<String> notNullList = IaisCommonUtils.genNewArrayList();
-                            for(String value:qualificationList){
-                                if(!StringUtil.isEmpty(value)){
-                                    notNullList.add(value);
-                                }
-                            }
-                            qualificationStr = String.join(",",notNullList);
+                        if (!IaisCommonUtils.isEmpty(qualificationList)) {
+                            qualificationStr = qualificationList.get(0);
                         }
                         appSvcCgoDto.setQualification(qualificationStr);
                     }else{
