@@ -250,11 +250,8 @@ public class MohHcsaBeDashboardDelegator {
             QueryHelp.setMainSql("intraDashboardQuery", "dashAssignMe", searchParam);
             SearchResult<DashAssignMeQueryDto> searchResult = mohHcsaBeDashboardService.getDashAssignMeResult(searchParam);
             searchResult = mohHcsaBeDashboardService.getDashAssignMeOtherData(searchResult);
-            //set all address data map for filter address
-            List<String> appGroupIds = mohHcsaBeDashboardService.getAssignMeAppGrpIdByResult(searchResult);
-            HcsaTaskAssignDto hcsaTaskAssignDto = mohHcsaBeDashboardService.getHcsaTaskAssignDtoByAppGrp(appGroupIds);
+
             //set session
-            ParamUtil.setSessionAttr(bpc.request, "hcsaTaskAssignDto", hcsaTaskAssignDto);
             ParamUtil.setSessionAttr(bpc.request, "appStatusOption", (Serializable) appStatusOption);
             ParamUtil.setSessionAttr(bpc.request, "dashSearchParam", searchParam);
             ParamUtil.setSessionAttr(bpc.request, "dashSearchResult", searchResult);

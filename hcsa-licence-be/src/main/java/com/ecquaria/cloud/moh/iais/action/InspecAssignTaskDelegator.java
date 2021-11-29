@@ -154,11 +154,7 @@ public class InspecAssignTaskDelegator {
             QueryHelp.setMainSql("inspectionQuery", "assignCommonTask",searchParam);
             searchResult = inspectionAssignTaskService.getSearchResultByParam(searchParam);
             searchResult = inspectionAssignTaskService.getAddressByResult(searchResult);
-            //set all address data map for filter address
-            List<String> appGroupIds = inspectionAssignTaskService.getComPoolAppGrpIdByResult(searchResult);
-            HcsaTaskAssignDto hcsaTaskAssignDto = inspectionService.getHcsaTaskAssignDtoByAppGrp(appGroupIds);
 
-            ParamUtil.setSessionAttr(bpc.request, "hcsaTaskAssignDto", hcsaTaskAssignDto);
             ParamUtil.setSessionAttr(bpc.request, "commPools", (Serializable) commPools);
             ParamUtil.setSessionAttr(bpc.request, "groupRoleFieldDto", groupRoleFieldDto);
             ParamUtil.setSessionAttr(bpc.request, "commonPoolRoleIds", (Serializable) commonPoolRoleIds);

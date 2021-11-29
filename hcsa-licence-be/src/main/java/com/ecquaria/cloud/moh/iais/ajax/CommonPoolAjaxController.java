@@ -77,6 +77,7 @@ public class CommonPoolAjaxController {
         String groupNo = MaskUtil.unMaskValue("appGroupNo", request.getParameter("groupNo"));
         HcsaTaskAssignDto hcsaTaskAssignDto = (HcsaTaskAssignDto)ParamUtil.getSessionAttr(request, "hcsaTaskAssignDto");
         LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
+        String hci_address = (String)ParamUtil.getSessionAttr(request, "comPoolHciAddress");
         SearchParam searchParamGroup = (SearchParam) ParamUtil.getSessionAttr(request, "cPoolSearchParam");
         //get task by user workGroupId
         List<TaskDto> commPools = inspectionAssignTaskService.getCommPoolByGroupWordId(loginContext);
@@ -98,7 +99,8 @@ public class CommonPoolAjaxController {
                 searchParam.addFilter("T2.ID" + i, appCorrId_list.get(i));
             }
             //other filter
-            searchParam = setFilterByAppGrpParamAndNo(searchParamGroup, groupNo, searchParam, hcsaTaskAssignDto, null, "T5.APP_PREM_ID", "appPremId_list");
+            searchParam = setFilterByAppGrpParamAndNo(searchParamGroup, groupNo, searchParam, hcsaTaskAssignDto, null,
+                    "T5.APP_PREM_ID", "appPremId_list", hci_address);
             //get search result
             QueryHelp.setMainSql("inspectionQuery", "commonPoolAjax", searchParam);
             SearchResult<ComPoolAjaxQueryDto> ajaxResult = inspectionAssignTaskService.getAjaxResultByParam(searchParam);
@@ -151,7 +153,7 @@ public class CommonPoolAjaxController {
     }
 
     private SearchParam setFilterByAppGrpParamAndNo(SearchParam searchParamGroup, String groupNo, SearchParam searchParam, HcsaTaskAssignDto hcsaTaskAssignDto,
-                                                    String appStatusKey, String fieldName, String filterName) {
+                                                    String appStatusKey, String fieldName, String filterName, String hci_address) {
         //filter app Grp No
         if(!StringUtil.isEmpty(groupNo)) {
             searchParam.addFilter("groupNo", groupNo, true);
@@ -165,7 +167,6 @@ public class CommonPoolAjaxController {
                 String application_type = (String)filters.get("application_type");
                 String hci_code = (String)filters.get("hci_code");
                 String hci_name = (String)filters.get("hci_name");
-                String hci_address = (String)filters.get("hci_address");
                 String application_status = (String)filters.get("application_status");
 
                 //set filter value
@@ -222,6 +223,7 @@ public class CommonPoolAjaxController {
         String commonPoolStatus = (String) ParamUtil.getSessionAttr(request, "commonPoolStatus");
         HcsaTaskAssignDto hcsaTaskAssignDto = (HcsaTaskAssignDto)ParamUtil.getSessionAttr(request, "hcsaTaskAssignDto");
         SearchParam searchParamGroup = (SearchParam) ParamUtil.getSessionAttr(request, "supTaskSearchParam");
+        String hci_address = (String)ParamUtil.getSessionAttr(request, "superPoolHciAddress");
         if(!IaisCommonUtils.isEmpty(workGroupIds) && !StringUtil.isEmpty(appGroupId)) {
             List<AppPremisesCorrelationDto> appPremisesCorrelationDtos = applicationClient.getPremCorrDtoByAppGroupId(appGroupId).getEntity();
             //filter list
@@ -235,7 +237,8 @@ public class CommonPoolAjaxController {
             searchParam.setPageNo(1);
             searchParam.setSort("REF_NO", SearchParam.ASCENDING);
             //set filter common
-            searchParam = setFilterByAppGrpParamAndNo(searchParamGroup, null, searchParam, hcsaTaskAssignDto, "T3.STATUS", "T4.ID","appPremId_list");
+            searchParam = setFilterByAppGrpParamAndNo(searchParamGroup, null, searchParam, hcsaTaskAssignDto, "T3.STATUS",
+                    "T4.ID","appPremId_list", hci_address);
 
             if (!IaisCommonUtils.isEmpty(appCorrId_list)) {
                 String appPremCorrId = SqlHelper.constructInCondition("T1.REF_NO", appCorrId_list.size());
@@ -295,6 +298,7 @@ public class CommonPoolAjaxController {
         Map<String, SuperPoolTaskQueryDto> assignMap = (Map<String, SuperPoolTaskQueryDto>) ParamUtil.getSessionAttr(request, "assignMap");
         HcsaTaskAssignDto hcsaTaskAssignDto = (HcsaTaskAssignDto)ParamUtil.getSessionAttr(request, "hcsaTaskAssignDto");
         SearchParam searchParamGroup = (SearchParam) ParamUtil.getSessionAttr(request, "systemSearchParam");
+        String hci_address = (String)ParamUtil.getSessionAttr(request, "systemPoolHciAddress");
         if(!StringUtil.isEmpty(appGroupId)) {
             //get userId
             String userId = loginContext.getUserId();
@@ -310,7 +314,8 @@ public class CommonPoolAjaxController {
             searchParam.setPageNo(1);
             searchParam.setSort("REF_NO", SearchParam.ASCENDING);
             //set filter common
-            searchParam = setFilterByAppGrpParamAndNo(searchParamGroup, null, searchParam, hcsaTaskAssignDto, "T3.STATUS", "T4.ID","appPremId_list");
+            searchParam = setFilterByAppGrpParamAndNo(searchParamGroup, null, searchParam, hcsaTaskAssignDto, "T3.STATUS",
+                    "T4.ID","appPremId_list", hci_address);
 
             //set filters
             if (!IaisCommonUtils.isEmpty(appCorrId_list)) {
@@ -359,7 +364,7 @@ public class CommonPoolAjaxController {
         String commonPoolStatus = (String) ParamUtil.getSessionAttr(request, "commonPoolStatus");
         HcsaTaskAssignDto hcsaTaskAssignDto = (HcsaTaskAssignDto)ParamUtil.getSessionAttr(request, "hcsaTaskAssignDto");
         SearchParam searchParamGroup = (SearchParam) ParamUtil.getSessionAttr(request, "supTaskSearchParam");
-
+        String hci_address = (String)ParamUtil.getSessionAttr(request, "reAssignPoolHciAddress");
         if(!IaisCommonUtils.isEmpty(workGroupIds) && !StringUtil.isEmpty(appGroupId)) {
             List<AppPremisesCorrelationDto> appPremisesCorrelationDtos = applicationClient.getPremCorrDtoByAppGroupId(appGroupId).getEntity();
             //filter list
@@ -373,7 +378,8 @@ public class CommonPoolAjaxController {
             searchParam.setPageNo(1);
             searchParam.setSort("REF_NO", SearchParam.ASCENDING);
             //set filter common
-            searchParam = setFilterByAppGrpParamAndNo(searchParamGroup, null, searchParam, hcsaTaskAssignDto, "T3.STATUS", "T4.ID","appPremId_list");
+            searchParam = setFilterByAppGrpParamAndNo(searchParamGroup, null, searchParam, hcsaTaskAssignDto, "T3.STATUS",
+                    "T4.ID","appPremId_list", hci_address);
 
             //set filters
             if (!IaisCommonUtils.isEmpty(appCorrId_list)) {
