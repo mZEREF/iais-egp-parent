@@ -43,6 +43,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.organization.WorkingGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.mask.MaskAttackException;
+import com.ecquaria.cloud.moh.iais.common.utils.CopyUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -76,7 +77,6 @@ import com.ecquaria.cloud.moh.iais.service.client.OrganizationMainClient;
 import com.ecquaria.cloudfeign.FeignException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import sop.util.CopyUtil;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
@@ -897,122 +897,186 @@ public class MohHcsaBeDashboardDelegator {
             ParamUtil.setRequestAttr(bpc.request, "dashActionValue", dashActionValue);
 
         } else if(!StringUtil.isEmpty(dashSwitchActionValue) && MessageDigest.isEqual(dashSwitchActionValue.getBytes(StandardCharsets.UTF_8),BeDashboardConstant.SWITCH_ACTION_COMMON.getBytes(StandardCharsets.UTF_8))) {
-            QueryHelp.setMainSql("intraDashboardQuery", "dashCommonTask", searchParam);
-            SearchResult<DashComPoolQueryDto> searchResult = mohHcsaBeDashboardService.getDashComPoolResult(searchParam);
-            //set all address data map for filter address
-            List<String> appGroupIds = mohHcsaBeDashboardService.getComPoolAppGrpIdByResult(searchResult);
-            HcsaTaskAssignDto hcsaTaskAssignDto = mohHcsaBeDashboardService.getHcsaTaskAssignDtoByAppGrp(appGroupIds);
+            SearchResult<DashComPoolQueryDto> searchResult;
             if(!StringUtil.isEmpty(hci_address)) {
+                //copy SearchParam for searchAllParam
+                SearchParam searchAllParam = (SearchParam) CopyUtil.copyMutableObject(searchParam);
+                searchAllParam.setPageSize(-1);
+                //get all appGroupIds
+                QueryHelp.setMainSql("intraDashboardQuery", "dashCommonTask", searchAllParam);
+                searchResult = mohHcsaBeDashboardService.getDashComPoolResult(searchAllParam);
+                //set all address data map for filter address
+                List<String> appGroupIds = mohHcsaBeDashboardService.getComPoolAppGrpIdByResult(searchResult);
+                HcsaTaskAssignDto hcsaTaskAssignDto = mohHcsaBeDashboardService.getHcsaTaskAssignDtoByAppGrp(appGroupIds);
                 //filter unit no for group
                 searchParam = mohHcsaBeDashboardService.setAppGrpIdsByUnitNos(searchParam, hci_address, hcsaTaskAssignDto, "T5.ID", "appGroup_list");
                 QueryHelp.setMainSql("intraDashboardQuery", "dashCommonTask", searchParam);
                 searchResult = mohHcsaBeDashboardService.getDashComPoolResult(searchParam);
+                //set hcsaTaskAssignDto in session
+                ParamUtil.setSessionAttr(bpc.request, "hcsaTaskAssignDto", hcsaTaskAssignDto);
+            } else {
+                QueryHelp.setMainSql("intraDashboardQuery", "dashCommonTask", searchParam);
+                searchResult = mohHcsaBeDashboardService.getDashComPoolResult(searchParam);
+                //clear hcsaTaskAssignDto in session
+                ParamUtil.setSessionAttr(bpc.request, "hcsaTaskAssignDto", null);
             }
             searchResult = mohHcsaBeDashboardService.getDashComPoolOtherData(searchResult);
             //set session
-            ParamUtil.setSessionAttr(bpc.request, "hcsaTaskAssignDto", hcsaTaskAssignDto);
             ParamUtil.setSessionAttr(bpc.request, "dashSearchResult", searchResult);
 
         } else if(!StringUtil.isEmpty(dashSwitchActionValue) && MessageDigest.isEqual(dashSwitchActionValue.getBytes(StandardCharsets.UTF_8),BeDashboardConstant.SWITCH_ACTION_KPI.getBytes(StandardCharsets.UTF_8))) {
-            QueryHelp.setMainSql("intraDashboardQuery", "dashKpiTask", searchParam);
-            SearchResult<DashKpiPoolQuery> searchResult = mohHcsaBeDashboardService.getDashKpiPoolResult(searchParam);
-            //set all address data map for filter address
-            List<String> appGroupIds = mohHcsaBeDashboardService.getKpiPoolAppGrpIdByResult(searchResult);
-            HcsaTaskAssignDto hcsaTaskAssignDto = mohHcsaBeDashboardService.getHcsaTaskAssignDtoByAppGrp(appGroupIds);
+            SearchResult<DashKpiPoolQuery> searchResult;
             if(!StringUtil.isEmpty(hci_address)) {
+                //copy SearchParam for searchAllParam
+                SearchParam searchAllParam = (SearchParam) CopyUtil.copyMutableObject(searchParam);
+                searchAllParam.setPageSize(-1);
+                //get all appGroupIds
+                QueryHelp.setMainSql("intraDashboardQuery", "dashKpiTask", searchAllParam);
+                searchResult = mohHcsaBeDashboardService.getDashKpiPoolResult(searchAllParam);
+                //set all address data map for filter address
+                List<String> appGroupIds = mohHcsaBeDashboardService.getKpiPoolAppGrpIdByResult(searchResult);
+                HcsaTaskAssignDto hcsaTaskAssignDto = mohHcsaBeDashboardService.getHcsaTaskAssignDtoByAppGrp(appGroupIds);
                 //filter unit no for group
                 searchParam = mohHcsaBeDashboardService.setAppGrpIdsByUnitNos(searchParam, hci_address, hcsaTaskAssignDto, "T1.ID", "appGroup_list");
+                QueryHelp.setMainSql("intraDashboardQuery", "dashKpiTask", searchParam);
+                searchResult = mohHcsaBeDashboardService.getDashKpiPoolResult(searchParam);
+                ParamUtil.setSessionAttr(bpc.request, "hcsaTaskAssignDto", hcsaTaskAssignDto);
+            } else {
                 QueryHelp.setMainSql("intraDashboardQuery", "dashKpiTask", searchParam);
                 searchResult = mohHcsaBeDashboardService.getDashKpiPoolResult(searchParam);
             }
             searchResult = mohHcsaBeDashboardService.getDashKpiPoolOtherData(searchResult);
             //set session
-            ParamUtil.setSessionAttr(bpc.request, "hcsaTaskAssignDto", hcsaTaskAssignDto);
             ParamUtil.setSessionAttr(bpc.request, "dashSearchResult", searchResult);
 
         } else if(!StringUtil.isEmpty(dashSwitchActionValue) && MessageDigest.isEqual(dashSwitchActionValue.getBytes(StandardCharsets.UTF_8),BeDashboardConstant.SWITCH_ACTION_ASSIGN_ME.getBytes(StandardCharsets.UTF_8))) {
-            QueryHelp.setMainSql("intraDashboardQuery", "dashAssignMe", searchParam);
-            SearchResult<DashAssignMeQueryDto> searchResult = mohHcsaBeDashboardService.getDashAssignMeResult(searchParam);
-            //set all address data map for filter address
-            List<String> appGroupIds = mohHcsaBeDashboardService.getAssignMeAppGrpIdByResult(searchResult);
-            HcsaTaskAssignDto hcsaTaskAssignDto = mohHcsaBeDashboardService.getHcsaTaskAssignDtoByAppGrp(appGroupIds);
+            SearchResult<DashAssignMeQueryDto> searchResult;
             if(!StringUtil.isEmpty(hci_address)) {
+                //copy SearchParam for searchAllParam
+                SearchParam searchAllParam = (SearchParam) CopyUtil.copyMutableObject(searchParam);
+                searchAllParam.setPageSize(-1);
+                //get all appGroupIds
+                QueryHelp.setMainSql("intraDashboardQuery", "dashAssignMe", searchAllParam);
+                searchResult = mohHcsaBeDashboardService.getDashAssignMeResult(searchAllParam);
+                //set all address data map for filter address
+                List<String> appGroupIds = mohHcsaBeDashboardService.getAssignMeAppGrpIdByResult(searchResult);
+                HcsaTaskAssignDto hcsaTaskAssignDto = mohHcsaBeDashboardService.getHcsaTaskAssignDtoByAppGrp(appGroupIds);
                 //filter unit no for group
                 searchParam = mohHcsaBeDashboardService.setAppGrpIdsByUnitNos(searchParam, hci_address, hcsaTaskAssignDto, "T5.ID", "appGroup_list");
                 QueryHelp.setMainSql("intraDashboardQuery", "dashAssignMe", searchParam);
                 searchResult = mohHcsaBeDashboardService.getDashAssignMeResult(searchParam);
+                ParamUtil.setSessionAttr(bpc.request, "hcsaTaskAssignDto", hcsaTaskAssignDto);
+            } else {
+                QueryHelp.setMainSql("intraDashboardQuery", "dashAssignMe", searchParam);
+                searchResult = mohHcsaBeDashboardService.getDashAssignMeResult(searchParam);
+                ParamUtil.setSessionAttr(bpc.request, "hcsaTaskAssignDto", null);
             }
             searchResult = mohHcsaBeDashboardService.getDashAssignMeOtherData(searchResult);
             //set session
-            ParamUtil.setSessionAttr(bpc.request, "hcsaTaskAssignDto", hcsaTaskAssignDto);
             ParamUtil.setSessionAttr(bpc.request, "dashSearchResult", searchResult);
 
         } else if(!StringUtil.isEmpty(dashSwitchActionValue) && MessageDigest.isEqual(dashSwitchActionValue.getBytes(StandardCharsets.UTF_8),BeDashboardConstant.SWITCH_ACTION_GROUP.getBytes(StandardCharsets.UTF_8))) {
-            QueryHelp.setMainSql("intraDashboardQuery", "dashSupervisorTask", searchParam);
-            SearchResult<DashWorkTeamQueryDto> searchResult = mohHcsaBeDashboardService.getDashWorkTeamResult(searchParam);
-            //set all address data map for filter address
-            List<String> appGroupIds = mohHcsaBeDashboardService.getSuperPoolAppGrpIdByResult(searchResult);
-            HcsaTaskAssignDto hcsaTaskAssignDto = mohHcsaBeDashboardService.getHcsaTaskAssignDtoByAppGrp(appGroupIds);
+            SearchResult<DashWorkTeamQueryDto> searchResult;
             if(!StringUtil.isEmpty(hci_address)) {
+                //copy SearchParam for searchAllParam
+                SearchParam searchAllParam = (SearchParam) CopyUtil.copyMutableObject(searchParam);
+                searchAllParam.setPageSize(-1);
+                //get all appGroupIds
+                QueryHelp.setMainSql("intraDashboardQuery", "dashSupervisorTask", searchAllParam);
+                searchResult = mohHcsaBeDashboardService.getDashWorkTeamResult(searchAllParam);
+                //set all address data map for filter address
+                List<String> appGroupIds = mohHcsaBeDashboardService.getSuperPoolAppGrpIdByResult(searchResult);
+                HcsaTaskAssignDto hcsaTaskAssignDto = mohHcsaBeDashboardService.getHcsaTaskAssignDtoByAppGrp(appGroupIds);
                 //filter unit no for group
                 searchParam = mohHcsaBeDashboardService.setAppGrpIdsByUnitNos(searchParam, hci_address, hcsaTaskAssignDto, "T5.ID", "appGroup_list");
                 QueryHelp.setMainSql("intraDashboardQuery", "dashSupervisorTask", searchParam);
                 searchResult = mohHcsaBeDashboardService.getDashWorkTeamResult(searchParam);
+                ParamUtil.setSessionAttr(bpc.request, "hcsaTaskAssignDto", hcsaTaskAssignDto);
+            } else {
+                QueryHelp.setMainSql("intraDashboardQuery", "dashSupervisorTask", searchParam);
+                searchResult = mohHcsaBeDashboardService.getDashWorkTeamResult(searchParam);
+                ParamUtil.setSessionAttr(bpc.request, "hcsaTaskAssignDto", null);
             }
             searchResult = mohHcsaBeDashboardService.getDashWorkTeamOtherData(searchResult);
             //set session
-            ParamUtil.setSessionAttr(bpc.request, "hcsaTaskAssignDto", hcsaTaskAssignDto);
             ParamUtil.setSessionAttr(bpc.request, "dashSearchResult", searchResult);
 
         } else if(!StringUtil.isEmpty(dashSwitchActionValue) && MessageDigest.isEqual(dashSwitchActionValue.getBytes(StandardCharsets.UTF_8),BeDashboardConstant.SWITCH_ACTION_REPLY.getBytes(StandardCharsets.UTF_8))) {
-            QueryHelp.setMainSql("intraDashboardQuery", "dashAppReplyTask", searchParam);
-            SearchResult<DashReplyQueryDto> searchResult = mohHcsaBeDashboardService.getDashReplyResult(searchParam);
-            //set all address data map for filter address
-            List<String> appGroupIds = mohHcsaBeDashboardService.getReplyAppGrpIdByResult(searchResult);
-            HcsaTaskAssignDto hcsaTaskAssignDto = mohHcsaBeDashboardService.getHcsaTaskAssignDtoByAppGrp(appGroupIds);
+            SearchResult<DashReplyQueryDto> searchResult;
             if(!StringUtil.isEmpty(hci_address)) {
+                //copy SearchParam for searchAllParam
+                SearchParam searchAllParam = (SearchParam) CopyUtil.copyMutableObject(searchParam);
+                searchAllParam.setPageSize(-1);
+                //get all appGroupIds
+                QueryHelp.setMainSql("intraDashboardQuery", "dashAppReplyTask", searchAllParam);
+                searchResult = mohHcsaBeDashboardService.getDashReplyResult(searchAllParam);
+                //set all address data map for filter address
+                List<String> appGroupIds = mohHcsaBeDashboardService.getReplyAppGrpIdByResult(searchResult);
+                HcsaTaskAssignDto hcsaTaskAssignDto = mohHcsaBeDashboardService.getHcsaTaskAssignDtoByAppGrp(appGroupIds);
                 //filter unit no for group
                 searchParam = mohHcsaBeDashboardService.setAppGrpIdsByUnitNos(searchParam, hci_address, hcsaTaskAssignDto, "T7.ID", "appGroup_list");
                 QueryHelp.setMainSql("intraDashboardQuery", "dashAppReplyTask", searchParam);
                 searchResult = mohHcsaBeDashboardService.getDashReplyResult(searchParam);
+                ParamUtil.setSessionAttr(bpc.request, "hcsaTaskAssignDto", hcsaTaskAssignDto);
+            } else {
+                QueryHelp.setMainSql("intraDashboardQuery", "dashAppReplyTask", searchParam);
+                searchResult = mohHcsaBeDashboardService.getDashReplyResult(searchParam);
+                ParamUtil.setSessionAttr(bpc.request, "hcsaTaskAssignDto", null);
             }
             searchResult = mohHcsaBeDashboardService.getDashReplyOtherData(searchResult);
             //set session
-            ParamUtil.setSessionAttr(bpc.request, "hcsaTaskAssignDto", hcsaTaskAssignDto);
             ParamUtil.setSessionAttr(bpc.request, "dashSearchResult", searchResult);
 
         } else if(!StringUtil.isEmpty(dashSwitchActionValue) && MessageDigest.isEqual(dashSwitchActionValue.getBytes(StandardCharsets.UTF_8),BeDashboardConstant.SWITCH_ACTION_WAIT.getBytes(StandardCharsets.UTF_8))) {
-            QueryHelp.setMainSql("intraDashboardQuery", "dashWaitApproveTask", searchParam);
-            SearchResult<DashWaitApproveQueryDto> searchResult = mohHcsaBeDashboardService.getDashWaitApproveResult(searchParam);
-            //set all address data map for filter address
-            List<String> appGroupIds = mohHcsaBeDashboardService.getWaitApproveAppGrpIdByResult(searchResult);
-            HcsaTaskAssignDto hcsaTaskAssignDto = mohHcsaBeDashboardService.getHcsaTaskAssignDtoByAppGrp(appGroupIds);
+            SearchResult<DashWaitApproveQueryDto> searchResult;
             if(!StringUtil.isEmpty(hci_address)) {
+                //copy SearchParam for searchAllParam
+                SearchParam searchAllParam = (SearchParam) CopyUtil.copyMutableObject(searchParam);
+                searchAllParam.setPageSize(-1);
+                //get all appGroupIds
+                QueryHelp.setMainSql("intraDashboardQuery", "dashWaitApproveTask", searchAllParam);
+                searchResult = mohHcsaBeDashboardService.getDashWaitApproveResult(searchAllParam);
+                //set all address data map for filter address
+                List<String> appGroupIds = mohHcsaBeDashboardService.getWaitApproveAppGrpIdByResult(searchResult);
+                HcsaTaskAssignDto hcsaTaskAssignDto = mohHcsaBeDashboardService.getHcsaTaskAssignDtoByAppGrp(appGroupIds);
                 //filter unit no for group
                 searchParam = mohHcsaBeDashboardService.setAppGrpIdsByUnitNos(searchParam, hci_address, hcsaTaskAssignDto, "T7.ID", "appGroup_list");
                 QueryHelp.setMainSql("intraDashboardQuery", "dashWaitApproveTask", searchParam);
                 searchResult = mohHcsaBeDashboardService.getDashWaitApproveResult(searchParam);
+                ParamUtil.setSessionAttr(bpc.request, "hcsaTaskAssignDto", hcsaTaskAssignDto);
+            } else {
+                QueryHelp.setMainSql("intraDashboardQuery", "dashWaitApproveTask", searchParam);
+                searchResult = mohHcsaBeDashboardService.getDashWaitApproveResult(searchParam);
+                ParamUtil.setSessionAttr(bpc.request, "hcsaTaskAssignDto", null);
             }
             searchResult = mohHcsaBeDashboardService.getDashWaitApproveOtherData(searchResult);
             //set session
-            ParamUtil.setSessionAttr(bpc.request, "hcsaTaskAssignDto", hcsaTaskAssignDto);
             ParamUtil.setSessionAttr(bpc.request, "dashSearchResult", searchResult);
 
         } else if(!StringUtil.isEmpty(dashSwitchActionValue) && MessageDigest.isEqual(dashSwitchActionValue.getBytes(StandardCharsets.UTF_8),BeDashboardConstant.SWITCH_ACTION_RE_RENEW.getBytes(StandardCharsets.UTF_8))) {
-            QueryHelp.setMainSql("intraDashboardQuery", "dashAppRenewTask", searchParam);
-            SearchResult<DashRenewQueryDto> searchResult = mohHcsaBeDashboardService.getDashRenewResult(searchParam);
-            //set all address data map for filter address
-            List<String> appGroupIds = mohHcsaBeDashboardService.getRenewAppGrpIdByResult(searchResult);
-            HcsaTaskAssignDto hcsaTaskAssignDto = mohHcsaBeDashboardService.getHcsaTaskAssignDtoByAppGrp(appGroupIds);
+            SearchResult<DashRenewQueryDto> searchResult;
             if(!StringUtil.isEmpty(hci_address)) {
+                //copy SearchParam for searchAllParam
+                SearchParam searchAllParam = (SearchParam) CopyUtil.copyMutableObject(searchParam);
+                searchAllParam.setPageSize(-1);
+                //get all appGroupIds
+                QueryHelp.setMainSql("intraDashboardQuery", "dashAppRenewTask", searchAllParam);
+                searchResult = mohHcsaBeDashboardService.getDashRenewResult(searchAllParam);
+                //set all address data map for filter address
+                List<String> appGroupIds = mohHcsaBeDashboardService.getRenewAppGrpIdByResult(searchResult);
+                HcsaTaskAssignDto hcsaTaskAssignDto = mohHcsaBeDashboardService.getHcsaTaskAssignDtoByAppGrp(appGroupIds);
                 //filter unit no for group
                 searchParam = mohHcsaBeDashboardService.setAppGrpIdsByUnitNos(searchParam, hci_address, hcsaTaskAssignDto, "T1.ID", "appGroup_list");
                 QueryHelp.setMainSql("intraDashboardQuery", "dashAppRenewTask", searchParam);
                 searchResult = mohHcsaBeDashboardService.getDashRenewResult(searchParam);
+                ParamUtil.setSessionAttr(bpc.request, "hcsaTaskAssignDto", hcsaTaskAssignDto);
+            } else {
+                QueryHelp.setMainSql("intraDashboardQuery", "dashAppRenewTask", searchParam);
+                searchResult = mohHcsaBeDashboardService.getDashRenewResult(searchParam);
+                ParamUtil.setSessionAttr(bpc.request, "hcsaTaskAssignDto", null);
             }
             searchResult = mohHcsaBeDashboardService.getDashRenewOtherData(searchResult);
             //set session
-            ParamUtil.setSessionAttr(bpc.request, "hcsaTaskAssignDto", hcsaTaskAssignDto);
             ParamUtil.setSessionAttr(bpc.request, "dashSearchResult", searchResult);
         }
 
