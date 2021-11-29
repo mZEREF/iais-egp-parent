@@ -56,12 +56,12 @@
                                             </div>
                                             <div class="col-sm-6 col-md-7">
                                                 <div class="col-sm-5" style="margin-top: 8px">
-                                                    <label for="inputMethodUpload">Yes</label>
                                                     <input type="radio" name="inputMethod" id="inputMethodUpload" value="upload" <c:if test="${facAuth.inputMethod eq 'upload'}">checked="checked"</c:if> />
+                                                    <label for="inputMethodUpload">Upload</label>
                                                 </div>
                                                 <div class="col-sm-5" style="margin-top: 8px">
-                                                    <label for="inputMethodManual">No</label>
                                                     <input type="radio" name="inputMethod" id="inputMethodManual" value="manual" <c:if test="${facAuth.inputMethod eq 'manual'}">checked="checked"</c:if> />
+                                                    <label for="inputMethodManual">Manual</label>
                                                 </div>
                                             </div>
                                         </div>
