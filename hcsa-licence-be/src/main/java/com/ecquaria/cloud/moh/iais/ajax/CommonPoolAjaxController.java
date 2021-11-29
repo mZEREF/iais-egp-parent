@@ -100,7 +100,7 @@ public class CommonPoolAjaxController {
             }
             //other filter
             searchParam = setFilterByAppGrpParamAndNo(searchParamGroup, groupNo, searchParam, hcsaTaskAssignDto, null,
-                    "T5.APP_PREM_ID", "appPremId_list", hci_address);
+                    "T3.ID", "appPremId_list", hci_address);
             //get search result
             QueryHelp.setMainSql("inspectionQuery", "commonPoolAjax", searchParam);
             SearchResult<ComPoolAjaxQueryDto> ajaxResult = inspectionAssignTaskService.getAjaxResultByParam(searchParam);
