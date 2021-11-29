@@ -10,12 +10,14 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+import sg.gov.moh.iais.egp.bsb.action.ApprovalAppDelegator;
 import sg.gov.moh.iais.egp.bsb.action.FacCertifierRegistrationDelegator;
 import sg.gov.moh.iais.egp.bsb.action.FacilityRegistrationDelegator;
 import sg.gov.moh.iais.egp.bsb.client.FileRepoClient;
 import sg.gov.moh.iais.egp.bsb.common.multipart.ByteArrayMultipartFile;
 import sg.gov.moh.iais.egp.bsb.common.node.NodeGroup;
 import sg.gov.moh.iais.egp.bsb.common.node.simple.SimpleNode;
+import sg.gov.moh.iais.egp.bsb.constant.ApprovalAppConstants;
 import sg.gov.moh.iais.egp.bsb.constant.FacCertifierRegisterConstants;
 import sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants;
 import sg.gov.moh.iais.egp.bsb.dto.file.DocRecordInfo;
@@ -37,6 +39,7 @@ import java.util.function.UnaryOperator;
 @RequestMapping(path = "/ajax/doc/download")
 @Slf4j
 public class DocDownloadAjaxController {
+    private static final String ERROR_MESSAGE_RECORD_INFO_NULL = "Can not get the record for the repo id";
     private final FileRepoClient fileRepoClient;
 
     @Autowired
@@ -123,7 +126,15 @@ public class DocDownloadAjaxController {
         downloadFile(request, response, maskedTmpId, this::unmaskFileId, this::dataSubGetNewFile);
     }
 
+    @GetMapping("/approvalApp/new/{id}")
+    public void downloadApprovalNotSavedFile(@PathVariable("id") String maskedTmpId, HttpServletRequest request, HttpServletResponse response) {
+        downloadFile(request, response, maskedTmpId, this::unmaskFileId, this::approvalAppGetNewFile);
+    }
 
+    @GetMapping("/approvalApp/repo/{id}")
+    public void downloadApprovalSavedFile(@PathVariable("id") String maskedRepoId, HttpServletRequest request, HttpServletResponse response) {
+        downloadFile(request, response, maskedRepoId, this::unmaskFileId, this::approvalAppGetSavedFile);
+    }
 
 
 
@@ -161,7 +172,34 @@ public class DocDownloadAjaxController {
         PrimaryDocDto primaryDocDto = (PrimaryDocDto) primaryDocNode.getValue();
         DocRecordInfo info = primaryDocDto.getSavedDocMap().get(id);
         if (info == null) {
-            throw new IllegalStateException("Can not get the record for the repo id");
+            throw new IllegalStateException(ERROR_MESSAGE_RECORD_INFO_NULL);
+        }
+        byte[] content = fileRepoClient.getFileFormDataBase(id).getEntity();
+        return new ByteArrayMultipartFile(null, info.getFilename(), null, content);
+    }
+
+    /**
+     * Approval app get the new doc file object
+     * @param id key of the newDocMap in the PrimaryDocDto
+     */
+    private MultipartFile approvalAppGetNewFile(HttpServletRequest request, String id) {
+        NodeGroup approvalAppRoot = (NodeGroup) ParamUtil.getSessionAttr(request, ApprovalAppDelegator.KEY_ROOT_NODE_GROUP);
+        SimpleNode primaryDocNode = (SimpleNode) approvalAppRoot.at(ApprovalAppConstants.NODE_NAME_PRIMARY_DOC);
+        sg.gov.moh.iais.egp.bsb.dto.approval.PrimaryDocDto primaryDocDto = (sg.gov.moh.iais.egp.bsb.dto.approval.PrimaryDocDto) primaryDocNode.getValue();
+        return primaryDocDto.getNewDocMap().get(id).getMultipartFile();
+    }
+
+    /**
+     * Approval app get the saved doc file data
+     * @param id key of the savedDocMap in the PrimaryDocDto
+     */
+    private MultipartFile approvalAppGetSavedFile(HttpServletRequest request, String id) {
+        NodeGroup approvalAppRoot = (NodeGroup) ParamUtil.getSessionAttr(request, ApprovalAppDelegator.KEY_ROOT_NODE_GROUP);
+        SimpleNode primaryDocNode = (SimpleNode) approvalAppRoot.at(ApprovalAppConstants.NODE_NAME_PRIMARY_DOC);
+        sg.gov.moh.iais.egp.bsb.dto.approval.PrimaryDocDto primaryDocDto = (sg.gov.moh.iais.egp.bsb.dto.approval.PrimaryDocDto) primaryDocNode.getValue();
+        DocRecordInfo info = primaryDocDto.getSavedDocMap().get(id);
+        if (info == null) {
+            throw new IllegalStateException(ERROR_MESSAGE_RECORD_INFO_NULL);
         }
         byte[] content = fileRepoClient.getFileFormDataBase(id).getEntity();
         return new ByteArrayMultipartFile(null, info.getFilename(), null, content);
@@ -191,7 +229,7 @@ public class DocDownloadAjaxController {
         PrimaryDocDto primaryDocDto = (PrimaryDocDto) primaryDocNode.getValue();
         DocRecordInfo info = primaryDocDto.getSavedDocMap().get(id);
         if (info == null) {
-            throw new IllegalStateException("Can not get the record for the repo id");
+            throw new IllegalStateException(ERROR_MESSAGE_RECORD_INFO_NULL);
         }
         byte[] content = fileRepoClient.getFileFormDataBase(id).getEntity();
         return new ByteArrayMultipartFile(null, info.getFilename(), null, content);

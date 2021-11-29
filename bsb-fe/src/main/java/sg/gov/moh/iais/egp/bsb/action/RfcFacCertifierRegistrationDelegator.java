@@ -230,7 +230,11 @@ public class RfcFacCertifierRegistrationDelegator {
         ParamUtil.setRequestAttr(request, NODE_NAME_ORG_CERTIFYING_TEAM, ((SimpleNode) facRegRoot.at(NODE_NAME_ORGANISATION_INFO + facRegRoot.getPathSeparator() + NODE_NAME_ORG_CERTIFYING_TEAM)).getValue());
         ParamUtil.setRequestAttr(request, NODE_NAME_ORG_FAC_ADMINISTRATOR, ((SimpleNode) facRegRoot.at(NODE_NAME_ORGANISATION_INFO + facRegRoot.getPathSeparator() + NODE_NAME_ORG_FAC_ADMINISTRATOR)).getValue());
         ParamUtil.setRequestAttr(request, "docSettings", getFacRegDocSettings());
-        ParamUtil.setRequestAttr(request, NODE_NAME_FAC_PRIMARY_DOCUMENT, ((PrimaryDocDto)((SimpleNode)facRegRoot.at(NODE_NAME_FAC_PRIMARY_DOCUMENT)).getValue()).getAllDocTypeMap());
+        PrimaryDocDto primaryDocDto = (PrimaryDocDto) ((SimpleNode)facRegRoot.at(NODE_NAME_FAC_PRIMARY_DOCUMENT)).getValue();
+        Map<String, List<DocRecordInfo>> savedFiles = primaryDocDto.getExistDocTypeMap();
+        Map<String, List<NewDocInfo>> newFiles = primaryDocDto.getNewDocTypeMap();
+        ParamUtil.setRequestAttr(request, "savedFiles", savedFiles);
+        ParamUtil.setRequestAttr(request, "newFiles", newFiles);
     }
 
     public void doCompInfo(BaseProcessClass bpc){

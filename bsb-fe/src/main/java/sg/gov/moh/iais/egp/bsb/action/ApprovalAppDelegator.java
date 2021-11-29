@@ -55,7 +55,7 @@ import static sg.gov.moh.iais.egp.bsb.constant.ApprovalAppConstants.*;
 @Delegator("bsbApprovalAppDelegator")
 public class ApprovalAppDelegator {
     public static final String MODULE_NAME = "New Approval Application";
-    private static final String KEY_ROOT_NODE_GROUP = "approvalAppRoot";
+    public static final String KEY_ROOT_NODE_GROUP = "approvalAppRoot";
 
     private static final String KEY_EDIT_APP_ID = "editId";
     private static final String KEY_PROCESS_TYPE = "processType";
@@ -317,7 +317,11 @@ public class ApprovalAppDelegator {
         ParamUtil.setRequestAttr(request, "approvalProfileList", batList);
 
         ParamUtil.setRequestAttr(request, "docSettings", getApprovalAppDocSettings());
-        ParamUtil.setRequestAttr(request, NODE_NAME_PRIMARY_DOC, ((PrimaryDocDto)((SimpleNode)approvalAppRoot.at(NODE_NAME_PRIMARY_DOC)).getValue()).getAllDocTypeMap());
+        PrimaryDocDto primaryDocDto = (PrimaryDocDto) ((SimpleNode)approvalAppRoot.at(NODE_NAME_PRIMARY_DOC)).getValue();
+        Map<String, List<DocRecordInfo>> savedFiles = primaryDocDto.getExistDocTypeMap();
+        Map<String, List<NewDocInfo>> newFiles = primaryDocDto.getNewDocTypeMap();
+        ParamUtil.setRequestAttr(request, "savedFiles", savedFiles);
+        ParamUtil.setRequestAttr(request, "newFiles", newFiles);
     }
 
     public void handlePreviewSubmit(BaseProcessClass bpc) {

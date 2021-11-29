@@ -289,7 +289,7 @@ function reloadNewFile(id, type) {
     $("a[data-upload-file=" + type + "]")[0].click();
 }
 
-function downloadFile(cond, id, type, filename) {
+function downloadFile(cond, id) {
     var url;
     if (cond === 'saved') {
         url = "/bsb-fe/ajax/doc/download/facReg/repo/" + id;
@@ -297,30 +297,7 @@ function downloadFile(cond, id, type, filename) {
         url = "/bsb-fe/ajax/doc/download/facReg/new/" + id;
     }
 
-    if (url) {
-        $.ajax({
-            type: "GET",
-            url: url,
-            async: true,
-            responseType: "blob",
-            success: function(content) {
-                expDownload(content, filename);
-            },
-            error: function () {
-                $("span[data-err-ind='" + type + "']").innerText = "Fail to download the file";
-            }
-        });
-    }
-}
-
-function expDownload(content, filename) {
-    var a = document.createElement("a");
-    var blob = new Blob([content]);
-    a.href = window.URL.createObjectURL(blob);
-    a.target = "_parent";
-    a.download = filename;
-    a.click();
-    a.remove();
+    window.open(url);
 }
 
 function genFileInfo(fileInputEl) {

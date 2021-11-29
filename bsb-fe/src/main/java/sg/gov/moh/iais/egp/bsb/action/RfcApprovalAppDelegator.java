@@ -325,7 +325,11 @@ public class RfcApprovalAppDelegator {
         ParamUtil.setRequestAttr(request, "approvalProfileList", batList);
 
         ParamUtil.setRequestAttr(request, "docSettings", getApprovalAppDocSettings());
-        ParamUtil.setRequestAttr(request, NODE_NAME_PRIMARY_DOC, ((PrimaryDocDto)((SimpleNode)approvalAppRoot.at(NODE_NAME_PRIMARY_DOC)).getValue()).getAllDocTypeMap());
+        PrimaryDocDto primaryDocDto = (PrimaryDocDto) ((SimpleNode)approvalAppRoot.at(NODE_NAME_PRIMARY_DOC)).getValue();
+        Map<String, List<DocRecordInfo>> savedFiles = primaryDocDto.getExistDocTypeMap();
+        Map<String, List<NewDocInfo>> newFiles = primaryDocDto.getNewDocTypeMap();
+        ParamUtil.setRequestAttr(request, "savedFiles", savedFiles);
+        ParamUtil.setRequestAttr(request, "newFiles", newFiles);
     }
 
     public void handlePreviewSubmit(BaseProcessClass bpc) {
