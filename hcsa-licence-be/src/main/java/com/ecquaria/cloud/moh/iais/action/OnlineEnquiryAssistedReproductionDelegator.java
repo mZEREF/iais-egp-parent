@@ -21,8 +21,11 @@ import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.helper.SearchResultHelper;
 import com.ecquaria.cloud.moh.iais.helper.SystemParamUtil;
 import com.ecquaria.cloud.moh.iais.service.AssistedReproductionService;
+import com.ecquaria.cloud.moh.iais.sql.SqlMap;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
@@ -380,5 +383,34 @@ public class OnlineEnquiryAssistedReproductionDelegator {
 
     public void searchInventory(BaseProcessClass bpc){
 
+    }
+
+
+    @GetMapping(value = "/ar-quick-view")
+    public @ResponseBody
+    String viewArQuick(HttpServletRequest request){
+        log.debug(StringUtil.changeForLog("the genPublicHolidayHtml start ...."));
+        String submissionIdNo = ParamUtil.getString(request,"submissionIdNo");
+
+        if(submissionIdNo==null){
+            return "";
+        }
+        String sql = SqlMap.INSTANCE.getSql("onlineEnquiry", "ar-quick-view").getSqlStr();
+
+
+        sql=sql.replaceAll("IUICyclesNumber","1");
+        sql=sql.replaceAll("FreshCyclesNumber","1");
+        sql=sql.replaceAll("FrozenCyclesNumber","1");
+        sql=sql.replaceAll("PGTCyclesNumber","1");
+
+        sql=sql.replaceAll("FreshOocytesNumber","1");
+        sql=sql.replaceAll("FrozenOocytesNumber","1");
+        sql=sql.replaceAll("FreshEmbryosNumber","1");
+        sql=sql.replaceAll("FrozenEmbryosNumber","1");
+        sql=sql.replaceAll("FrozenSpermsNumber","1");
+
+        sql=sql.replaceAll("patientId","1");
+
+        return sql;
     }
 }

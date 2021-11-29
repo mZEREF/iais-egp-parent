@@ -226,7 +226,7 @@
                                                                         pattern="${AppConsts.DEFAULT_DATE_FORMAT}"/>
                                                             </td>
                                                             <td>
-                                                                <button type="button" class="btn btn-default btn-sm">
+                                                                <button  href="#newappModal"  onclick="quickView('${patient.patientId}')" data-toggle="modal" data-target="#newappModal" type="button" class=" btn btn-default btn-sm">
                                                                     Quick View
                                                                 </button>
                                                                 <button type="button" class="btn btn-default btn-sm">
@@ -239,6 +239,20 @@
                                             </c:choose>
                                             </tbody>
                                         </table>
+                                        <div id="newappModal" class="modal fade" tabindex="-1" role="dialog" style="top:10px">
+                                            <div class="col-md-8"  role="document" style="float:right ">
+                                                <div class="modal-content">
+                                                    <div class="row">
+                                                        <div class="col-md-1" >
+                                                            <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true"><</span></button>
+                                                        </div>
+                                                        <div class="col-md-11 " >
+                                                            <div class="quickBodyDiv"></div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
 
                                 </div>
@@ -299,7 +313,8 @@
                                                                 <c:out value="${submission.arCentre}"/>
                                                             </td>
                                                             <td>
-                                                                <a href="#">${submission.submissionIdNo}</a>
+                                                                <a href="#" onclick="fullDetailsView('${submission.submissionIdNo}')">${submission.submissionIdNo}
+                                                                </a>
                                                             </td>
                                                             <td>
                                                                 <c:out value="${submission.submissionType}"/>
@@ -336,6 +351,7 @@
 <%@include file="/WEB-INF/jsp/include/utils.jsp" %>
 <script type="text/javascript">
     $(document).ready(function () {
+        quickView();
 
         $('#searchByPatient').change(function () {
             if($(this).is(':checked')){
@@ -414,5 +430,34 @@
         submit('search');
     }
 
+    var quickView = function (submissionIdNo) {
 
+        var jsonData={
+            'submissionIdNo': submissionIdNo
+        };
+        $.ajax({
+            'url':'${pageContext.request.contextPath}/ar-quick-view',
+            'dataType':'text',
+            'data':jsonData,
+            'type':'GET',
+            'success':function (data) {
+                if(data == null){
+                    return;
+                }
+                $('.quickBodyDiv').html(data);
+
+
+            },
+            'error':function () {
+            }
+        });
+    }
+
+    var fullDetailsView = function (submissionIdNo) {
+
+        showWaiting();
+        $("[name='crud_action_value']").val(submissionIdNo);
+        $("[name='base_action_type']").val('viewFull');
+        $('#mainForm').submit();
+    }
 </script>
