@@ -84,9 +84,15 @@
                     </iais:value>
                 </iais:row>
                 <iais:row>
-                    <iais:field width="5" value="Race" />
+                    <iais:field width="5" value="Ethnic Group" />
                     <iais:value width="7" cssClass="col-md-7">
-                        <iais:code code="${patientDto.race}" />
+                        <iais:code code="${patientDto.ethnicGroup}" />
+                    </iais:value>
+                </iais:row>
+                <iais:row style="${patientDto.ethnicGroup eq 'ETHG005' ? '' : 'display: none'}">
+                    <iais:field width="5" value="Ethnic Group (Others)" />
+                    <iais:value width="7" cssClass="col-md-7">
+                        <c:out value="${patientDto.ethnicGroupOther}"/>
                     </iais:value>
                 </iais:row>
                 <iais:row>

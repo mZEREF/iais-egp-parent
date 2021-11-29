@@ -42,7 +42,8 @@
                 <iais:row>
                     <iais:field width="5" value="Postal Code" mandatory="true"/>
                     <iais:value width="7" cssClass="col-md-4">
-                        <iais:input maxLength="6" type="text" name="postalCode" value="${patientDto.postalCode}" />
+                        <input type="number" oninput="if(value.length>6)value=value.slice(0,6)" style="margin-bottom: 0px;"
+                               name="postalCode" value="${patientDto.postalCode}"/>
                     </iais:value>
                 </iais:row>
                 <iais:row>
@@ -95,7 +96,9 @@
                                    for="genderMale"><span
                                     class="check-circle"></span>Male</label>
                         </div>
+                        <span class="error-msg" name="iaisErrorMsg" id="error_gender"></span>
                     </iais:value>
+
                     <iais:value width="4" cssClass="col-md-4">
                         <div class="form-check">
                             <input class="form-check-input"
@@ -112,23 +115,37 @@
                     </iais:value>
                 </iais:row>
                 <iais:row>
-                    <iais:field width="5" value="Race" mandatory="false"/>
+                    <iais:field width="5" value="Ethnic Group" mandatory="false"/>
                     <iais:value width="7" cssClass="col-md-4">
-                        <iais:select name="race" firstOption="Please Select" codeCategory="CATE_ID_ETHNIC_GROUP"
-                                     value="${patientDto.race}" />
+                        <iais:select name="ethnicGroup" firstOption="Please Select" codeCategory="CATE_ID_ETHNIC_GROUP"
+                                     value="${patientDto.ethnicGroup}" onchange ="toggleOnSelect(this, 'ETHG005', 'ethnicOthers')" />
+                    </iais:value>
+                </iais:row>
+                <iais:row id="ethnicOthers" style="${patientDto.ethnicGroup eq 'ETHG005' ? '' : 'display: none'}">
+                    <iais:field value="Ethnic Group (Others)" width="5"/>
+                    <iais:value width="7">
+                        <iais:input maxLength="20" type="text" name="ethnicGroupOther" id="ethnicGroupOther" value="${patientDto.ethnicGroupOther}"/>
                     </iais:value>
                 </iais:row>
                 <iais:row>
                     <iais:field value="Mobile No" width="5"/>
                     <iais:value width="7">
-                        <iais:input maxLength="8" type="text" name="mobileNo" id="mobileNo" value="${patientDto.mobileNo}"/>
+                        <%--<iais:input maxLength="8" type="text" name="mobileNo" id="mobileNo" value="${patientDto.mobileNo}"/>--%>
+                        <input type="number" oninput="if(value.length>8)value=value.slice(0,8)" style="margin-bottom: 0px;"
+                               name="mobileNo" value="${patientDto.mobileNo}"/>
+                        <span class="error-msg" name="iaisErrorMsg" id="error_mobileNo"></span>
                     </iais:value>
+
                 </iais:row>
                 <iais:row>
                     <iais:field value="Home Telephone No" width="5"/>
                     <iais:value width="7">
-                        <iais:input maxLength="8" type="text" name="homeTelNo" id="homeTelNo" value="${patientDto.homeTelNo}"/>
+                        <%--<iais:input maxLength="8" type="text" name="homeTelNo" id="homeTelNo" value="${patientDto.homeTelNo}"/>--%>
+                        <input type="number" oninput="if(value.length>8)value=value.slice(0,8)" style="margin-bottom: 0px;"
+                               name="homeTelNo" value="${patientDto.homeTelNo}"/>
+                        <span class="error-msg" name="iaisErrorMsg" id="error_homeTelNo"></span>
                     </iais:value>
+
                 </iais:row>
                 <iais:row>
                     <iais:field value="Email Address" mandatory="true" width="11"/>
@@ -140,3 +157,9 @@
         </div>
     </div>
 </div>
+<script>
+    $(document).ready(function () {
+        toggleOnSelect("#ethnicGroup",'ETHG005', 'ethnicOthers');
+    });
+
+</script>
