@@ -255,7 +255,17 @@ public class PgtCycleStageDelegator extends CommonDelegator{
         if(arSuperDataSubmissionDto.getPatientInventoryDto()!=null){
             patientInventoryDto=arSuperDataSubmissionDto.getPatientInventoryDto();
         }
-
         ParamUtil.setRequestAttr(bpc.request, "patientInventoryDto", patientInventoryDto);
+        String hciCode=arSuperDataSubmissionDto.getPgtStageDto().getIsEmbryosBiopsiedLocal();
+        String value=arSuperDataSubmissionDto.getPgtStageDto().getIsEmbryosBiopsiedLocal();
+        List<SelectOption> embryosBiopsiedLocalSelectOption  = DataSubmissionHelper.genPremisesOptions((Map<String, PremisesDto>) ParamUtil.getSessionAttr(bpc.request,DataSubmissionConstant.AR_PREMISES_MAP));
+        for (SelectOption so:embryosBiopsiedLocalSelectOption
+             ) {
+            if(so.getValue().equals(hciCode)){
+                value=so.getText();
+            }
+        }
+        ParamUtil.setRequestAttr(bpc.request, "embryosBiospied", value);
+
     }
 }

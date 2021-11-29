@@ -149,7 +149,7 @@
                     <iais:row>
                         <iais:field width="6" value="Other Centre where Embryos were Biospied At"/>
                         <iais:value width="6" display="true">
-                            <c:out value="${arSuperDataSubmissionDto.pgtStageDto.otherEmbryosBiopsiedAddr}"/>
+                            <c:out value="${embryosBiospied}"/>
                         </iais:value>
                     </iais:row>
                 </div>

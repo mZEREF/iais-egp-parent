@@ -62,7 +62,6 @@ public class DonationStageDelegator extends CommonDelegator{
         List<SelectOption> selectOptions  = DataSubmissionHelper.genPremisesOptions((Map<String, PremisesDto>) ParamUtil.getSessionAttr(bpc.request,DataSubmissionConstant.AR_PREMISES_MAP));
 
         ParamUtil.setRequestAttr(bpc.request,"curCenDonatedSelectOption",selectOptions);
-        ParamUtil.setRequestAttr(bpc.request,"insSentToCurSelectOption",selectOptions);
     }
 
 
@@ -207,6 +206,17 @@ public class DonationStageDelegator extends CommonDelegator{
             default:
         }
         ParamUtil.setRequestAttr(bpc.request, "patientInventoryDto", patientInventoryDto);
+
+        List<SelectOption> selectOptions  = DataSubmissionHelper.genPremisesOptions((Map<String, PremisesDto>) ParamUtil.getSessionAttr(bpc.request,DataSubmissionConstant.AR_PREMISES_MAP));
+        String hciCode=donationStageDto.getDonatedCentre();
+        String value=donationStageDto.getDonatedCentre();
+        for (SelectOption so:selectOptions
+        ) {
+            if(so.getValue().equals(hciCode)){
+                value=so.getText();
+            }
+        }
+        ParamUtil.setRequestAttr(bpc.request, "donatedCentre", value);
     }
 
 }
