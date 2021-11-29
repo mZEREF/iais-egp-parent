@@ -4361,10 +4361,13 @@ public class NewApplicationHelper {
         if (blacklist == null || StringUtil.isEmpty(blacklist) || StringUtil.isEmpty(name)) {
             return map;
         }
-        String[] s = blacklist.split(" ");
+        String[] s = blacklist.split("[ ]+");
+        name = name.toUpperCase(AppConsts.DFT_LOCALE);
+        String[] target = name.split("[ ]+");
         for (int index = 0; index < s.length; index++) {
-            if (name.toUpperCase().contains(s[index].toUpperCase())) {
-                map.put(name.toUpperCase().indexOf(s[index].toUpperCase()), s[index]);
+            String t = s[index].toUpperCase();
+            if (Arrays.stream(target).parallel().anyMatch(x -> x.equals(t))) {
+                map.put(name.indexOf(t), s[index]);
             }
         }
         return map;
