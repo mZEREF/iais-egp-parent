@@ -5026,6 +5026,7 @@ public class ClinicalLaboratoryDelegator {
                         }
                         continue;
                     }
+                    appSvcPersonnelDto.setName(professionalResponseDto.getName());
                 }
             }
         }

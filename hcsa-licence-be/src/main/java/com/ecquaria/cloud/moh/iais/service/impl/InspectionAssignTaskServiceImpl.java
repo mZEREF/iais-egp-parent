@@ -43,6 +43,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.inspection.AppInspectionStatusDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.ComPoolAjaxQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspecTaskCreAndAssDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionCommonPoolQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.HcsaTaskAssignDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.GroupRoleFieldDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.WorkingGroupDto;
@@ -64,6 +65,7 @@ import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
+import com.ecquaria.cloud.moh.iais.helper.SqlHelper;
 import com.ecquaria.cloud.moh.iais.service.ApplicationService;
 import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
 import com.ecquaria.cloud.moh.iais.service.InspectionAssignTaskService;
@@ -198,7 +200,7 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
 
     @Override
     public InspecTaskCreAndAssDto getInspecTaskCreAndAssDto(String appCorrelationId, List<TaskDto> commPools, LoginContext loginContext,
-                                                            InspecTaskCreAndAssDto inspecTaskCreAndAssDto) {
+                                                            InspecTaskCreAndAssDto inspecTaskCreAndAssDto, HcsaTaskAssignDto hcsaTaskAssignDto) {
         List<OrgUserDto> orgUserDtos = IaisCommonUtils.genNewArrayList();
         String workGroupId = "";
         for (TaskDto tDto : commPools) {
@@ -212,7 +214,7 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
 
         ApplicationDto applicationDto = searchByAppCorrId(appCorrelationId).getApplicationDto();
         AppGrpPremisesDto appGrpPremisesDto = getAppGrpPremisesDtoByAppGroId(appCorrelationId);
-        String address = getAddress(appGrpPremisesDto);
+        String address = getAddress(appGrpPremisesDto, hcsaTaskAssignDto);
         HcsaServiceDto hcsaServiceDto = getHcsaServiceDtoByServiceId(applicationDto.getServiceId());
         ApplicationGroupDto applicationGroupDto = getApplicationGroupDtoByAppGroId(applicationDto.getAppGrpId());
 
@@ -531,6 +533,79 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
         //jsp show ack
         String comPoolAck = generateComPoolAck(appNoFailList);
         return comPoolAck;
+    }
+
+    @Override
+    public List<String> getComPoolAppGrpIdByResult(SearchResult<InspectionCommonPoolQueryDto> searchResult) {
+        if(searchResult != null && !IaisCommonUtils.isEmpty(searchResult.getRows())) {
+            List<String> appGrpIds = IaisCommonUtils.genNewArrayList();
+            List<InspectionCommonPoolQueryDto> inspectionCommonPoolQueryDtos = searchResult.getRows();
+            for(InspectionCommonPoolQueryDto inspectionCommonPoolQueryDto : inspectionCommonPoolQueryDtos) {
+                if(inspectionCommonPoolQueryDto != null) {
+                    appGrpIds.add(inspectionCommonPoolQueryDto.getId());
+                }
+            }
+            return appGrpIds;
+        }
+        return null;
+    }
+
+    @Override
+    public SearchParam setAppGrpIdsByUnitNos(SearchParam searchParam, String hci_address, HcsaTaskAssignDto hcsaTaskAssignDto,
+                                             String fieldName, String filterName) {
+        if(hcsaTaskAssignDto != null) {
+            Map<String, String> appGroupAllUnitNoStrMap = hcsaTaskAssignDto.getAppGroupAllUnitNoStrMap();
+            List<String> appGrpIds = IaisCommonUtils.genNewArrayList();
+            for (Map.Entry<String, String> map : appGroupAllUnitNoStrMap.entrySet()) {
+                String address = map.getValue();
+                if (address.contains(hci_address)) {
+                    appGrpIds.add(map.getKey());
+                }
+            }
+
+            int appGrpIdsSize = 0;
+            if(!IaisCommonUtils.isEmpty(appGrpIds)) {
+                appGrpIdsSize = appGrpIds.size();
+                String appGroupId = SqlHelper.constructInCondition(fieldName, appGrpIdsSize);
+                searchParam.addParam(filterName, appGroupId);
+                for (int i = 0; i < appGrpIds.size(); i++) {
+                    searchParam.addFilter(fieldName + i, appGrpIds.get(i));
+                }
+            } else {
+                String appGroupId = SqlHelper.constructInCondition(fieldName, appGrpIdsSize);
+                searchParam.addParam(filterName, appGroupId);
+            }
+        }
+        return searchParam;
+    }
+
+    @Override
+    public SearchParam setAppPremisesIdsByUnitNos(SearchParam searchParam, String hci_address, HcsaTaskAssignDto hcsaTaskAssignDto,
+                                                  String fieldName, String filterName) {
+        if(hcsaTaskAssignDto != null) {
+            Map<String, String> appPremisesAllUnitNoStrMap = hcsaTaskAssignDto.getAppPremisesAllUnitNoStrMap();
+            List<String> appPremisesIds = IaisCommonUtils.genNewArrayList();
+            for (Map.Entry<String, String> map : appPremisesAllUnitNoStrMap.entrySet()) {
+                String address = map.getValue();
+                if (address.contains(hci_address)) {
+                    appPremisesIds.add(map.getKey());
+                }
+            }
+
+            int appPremisesIdsSize = 0;
+            if(!IaisCommonUtils.isEmpty(appPremisesIds)) {
+                appPremisesIdsSize = appPremisesIds.size();
+                String appGroupId = SqlHelper.constructInCondition(fieldName, appPremisesIdsSize);
+                searchParam.addParam(filterName, appGroupId);
+                for (int i = 0; i < appPremisesIds.size(); i++) {
+                    searchParam.addFilter(fieldName + i, appPremisesIds.get(i));
+                }
+            } else {
+                String appPremisesId = SqlHelper.constructInCondition(fieldName, appPremisesIdsSize);
+                searchParam.addParam(filterName, appPremisesId);
+            }
+        }
+        return searchParam;
     }
 
     private String generateComPoolAck(List<String> appNoFailList) {
@@ -1464,16 +1539,20 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
     }
 
     @Override
-    public String getAddress(AppGrpPremisesDto appGrpPremisesDto) {
+    public String getAddress(AppGrpPremisesDto appGrpPremisesDto, HcsaTaskAssignDto hcsaTaskAssignDto) {
         String result = "";
         if (ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(appGrpPremisesDto.getPremisesType()) ||
                 ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(appGrpPremisesDto.getPremisesType()) ||
                 ApplicationConsts.PREMISES_TYPE_OFF_SITE.equals(appGrpPremisesDto.getPremisesType()) ||
                 ApplicationConsts.PREMISES_TYPE_EAS_MTS_CONVEYANCE.equals(appGrpPremisesDto.getPremisesType())) {
-            result = MiscUtil.getAddress(appGrpPremisesDto.getBlkNo(), appGrpPremisesDto.getStreetName(), appGrpPremisesDto.getBuildingName(),
-                    appGrpPremisesDto.getFloorNo(), appGrpPremisesDto.getUnitNo(), appGrpPremisesDto.getPostalCode());
+            if(hcsaTaskAssignDto != null && hcsaTaskAssignDto.getAppPremisesAllUnitNoStrMap() != null) {
+                Map<String, String> appPremisesAllUnitNoStrMap = hcsaTaskAssignDto.getAppPremisesAllUnitNoStrMap();
+                result = appPremisesAllUnitNoStrMap.get(appGrpPremisesDto.getId());
+            } else {
+                result = MiscUtil.getAddressForApp(appGrpPremisesDto.getBlkNo(), appGrpPremisesDto.getStreetName(), appGrpPremisesDto.getBuildingName(),
+                        appGrpPremisesDto.getFloorNo(), appGrpPremisesDto.getUnitNo(), appGrpPremisesDto.getPostalCode(), null);
+            }
         }
-
         return result;
     }
 

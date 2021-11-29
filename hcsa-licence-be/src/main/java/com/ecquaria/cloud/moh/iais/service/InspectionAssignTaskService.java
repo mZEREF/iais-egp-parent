@@ -15,6 +15,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.inbox.PoolRoleCheckDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.ComPoolAjaxQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspecTaskCreAndAssDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionCommonPoolQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.HcsaTaskAssignDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.GroupRoleFieldDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
@@ -48,11 +49,11 @@ public interface InspectionAssignTaskService {
     /**
      * @author: shicheng
      * @Date 2019/11/23
-     * @Param: appCorrelationId, commPools, loginContext
+     * @Param: appCorrelationId, commPools, loginContext, hcsaTaskAssignDto
      * @return: InspecTaskCreAndAssQueryDto
      * @Descripation: Gets a single Common Pool of information for allocation
      */
-    InspecTaskCreAndAssDto getInspecTaskCreAndAssDto(String appCorrelationId, List<TaskDto> commPools, LoginContext loginContext, InspecTaskCreAndAssDto inspecTaskCreAndAssDto);
+    InspecTaskCreAndAssDto getInspecTaskCreAndAssDto(String appCorrelationId, List<TaskDto> commPools, LoginContext loginContext, InspecTaskCreAndAssDto inspecTaskCreAndAssDto, HcsaTaskAssignDto hcsaTaskAssignDto);
 
     /**
      * @author: shicheng
@@ -148,11 +149,11 @@ public interface InspectionAssignTaskService {
     /**
      * @author: shicheng
      * @Date 2020/3/19
-     * @Param: appGrpPremisesDto
+     * @Param: appGrpPremisesDto, appPremisesOperationalUnitDtos
      * @return: String
      * @Descripation: getAddress
      */
-    String getAddress(AppGrpPremisesDto appGrpPremisesDto);
+    String getAddress(AppGrpPremisesDto appGrpPremisesDto, HcsaTaskAssignDto hcsaTaskAssignDto);
 
     /**
      * @author: shicheng
@@ -209,4 +210,24 @@ public interface InspectionAssignTaskService {
       * @Descripation: assign Multiple Task By AppNos
       */
     String assignMultTaskByAppNos(String[] appNoChecks, LoginContext loginContext, List<TaskDto> commPools);
+
+    /**
+      * @author: shicheng
+      * @Date 2021/11/22
+      * @Param: SearchResult<InspectionCommonPoolQueryDto> searchResult
+      * @return: List<String>
+      * @Descripation: getComPoolAppGrpIdByResult
+      */
+    List<String> getComPoolAppGrpIdByResult(SearchResult<InspectionCommonPoolQueryDto> searchResult);
+
+    /**
+      * @author: shicheng
+      * @Date 2021/11/23
+      * @Param: searchParam, hci_address, hcsaTaskAssignDto, fieldName, filterName
+      * @return: SearchParam
+      * @Descripation: setAppGrpIdsByUnitNos
+      */
+    SearchParam setAppGrpIdsByUnitNos(SearchParam searchParam, String hci_address, HcsaTaskAssignDto hcsaTaskAssignDto, String fieldName, String filterName);
+
+    SearchParam setAppPremisesIdsByUnitNos(SearchParam searchParam, String hci_address, HcsaTaskAssignDto hcsaTaskAssignDto, String fieldName, String filterName);
 }

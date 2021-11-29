@@ -17,6 +17,7 @@
         <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
             <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
             <input type="hidden" name="iaisErrorFlag" id="iaisErrorFlag"/>
+            <input type="hidden" name="rfiCheckErrorMsg" id="rfiCheckErrorMsg" value="<iais:message key="PRF_ERR012" escape="true"></iais:message>"/>
             <input type="hidden" name="crud_action_additional" id="crud_action_additional"/>
             <input type="hidden" name="interalFileId" id="interalFileId"/>
             <input type="hidden" name="dateTimeShow" value="${recomInDateOnlyShow}"/>
@@ -625,7 +626,8 @@
         if (selectValue == "PROCRFI" && ${!isAppealType && !isWithDrawal &&!isCessation}) {
             var rfiSelectValue = $('#rfiSelectValue').val();
             if(rfiSelectValue == null || rfiSelectValue == ''){
-                $('#error_nextStage').html("Please select at least 1 section to unlock");
+                let rfiCheckErrorMsg = $("#rfiCheckErrorMsg").val();
+                $('#error_nextStage').html(rfiCheckErrorMsg);
                 return false;
             }else{
                 $('#error_nextStage').html("");

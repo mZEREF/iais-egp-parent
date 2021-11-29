@@ -117,4 +117,6 @@ public interface SystemSearchAssignPoolService {
       * @Descripation: getSysCurStageId
       */
     String getSysCurStageId(GroupRoleFieldDto groupRoleFieldDto);
+
+    List<String> getSystemPoolAppGrpIdByResult(SearchResult<SystemAssignSearchQueryDto> searchResult);
 }

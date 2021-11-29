@@ -69,7 +69,7 @@ public class EqRequestForChangeSubmitResultChange {
                 isChanged = true;
                 break;
             }
-            if (!appGrpPremisesDto.getAddress().equals(oldAppGrpPremisesDto.getAddress())) {
+            if (!appGrpPremisesDto.getAddressWithoutFU().equals(oldAppGrpPremisesDto.getAddressWithoutFU())) {
                 isChanged = true;
                 break;
             }
@@ -753,7 +753,7 @@ public class EqRequestForChangeSubmitResultChange {
             for (int i = 0; i < length; i++) {
                 AppGrpPremisesDto appGrpPremisesDto = appGrpPremisesDtos.get(0);
                 AppGrpPremisesDto oldAppGrpPremisesDto = oldAppGrpPremisesDtos.get(0);
-                if (!appGrpPremisesDto.getAddress().equals(oldAppGrpPremisesDto.getAddress())) {
+                if (!appGrpPremisesDto.getAddressWithoutFU().equals(oldAppGrpPremisesDto.getAddressWithoutFU())) {
                     return false;
                 }
             }

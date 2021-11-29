@@ -1218,7 +1218,8 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
         SubmitResp submitResp = eventBusHelper.submitAsyncRequest(appSubmissionRequestInformationDto,
                 generateIdClient.getSeqId().getEntity(),
                 EventBusConsts.SERVICE_NAME_APPSUBMIT, EventBusConsts.OPERATION_REQUEST_RFC_RENEW_INFORMATION_SUBMIT,
-                appSubmissionRequestInformationDto.getEventRefNo(), process);
+                appSubmissionRequestInformationDto.getEventRefNo(), "Submit RFC Renew Application",
+                appSubmissionRequestInformationDto.getAppSubmissionDto().getAppGrpId());
         AppSubmissionDto appSubmissionDto = appSubmissionRequestInformationDto.getAppSubmissionDto();
         return appSubmissionDto;
     }
@@ -1914,7 +1915,8 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
         SubmitResp submitResp = eventBusHelper.submitAsyncRequest(appSubmissionRequestInformationDto,
                 generateIdClient.getSeqId().getEntity(),
                 EventBusConsts.SERVICE_NAME_APPSUBMIT, EventBusConsts.OPERATION_REQUEST_INFORMATION,
-                appSubmissionRequestInformationDto.getEventRefNo(), process);
+                appSubmissionRequestInformationDto.getEventRefNo(), "Submit Application",
+                appSubmissionRequestInformationDto.getAppSubmissionDto().getAppGrpId());
     }
 
     private void premisesListInformationEventBus(AppSubmissionRequestInformationDto appSubmissionRequestInformationDto,
@@ -1924,7 +1926,8 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                 generateIdClient.getSeqId().getEntity(),
                 EventBusConsts.SERVICE_NAME_APPSUBMIT,
                 EventBusConsts.OPERATION_REQUEST_INFORMATION,
-                appSubmissionRequestInformationDto.getEventRefNo(), process);
+                appSubmissionRequestInformationDto.getEventRefNo(), "Submit Application Premises List",
+                appSubmissionRequestInformationDto.getAppSubmissionDto().getAppGrpId());
     }
 
     private  void eventBus(AppSubmissionDto appSubmissionDto, Process process){
@@ -1934,7 +1937,8 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
         SubmitResp submitResp = eventBusHelper.submitAsyncRequest(appSubmissionDto, generateIdClient.getSeqId().getEntity(),
                 EventBusConsts.SERVICE_NAME_APPSUBMIT,
                 EventBusConsts.OPERATION_NEW_APP_SUBMIT,
-                appSubmissionDto.getEventRefNo(), process);
+                appSubmissionDto.getEventRefNo(), "Submit Application",
+                appSubmissionDto.getAppGrpId());
     }
 
     @Override
