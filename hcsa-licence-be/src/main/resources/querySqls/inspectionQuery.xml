@@ -47,7 +47,6 @@
             <#if hci_code??> and charindex(:hci_code, T5.HCI_CODE) >0 </#if>
             <#if hci_name??> and charindex(:hci_name, T5.HCI_NAME) >0 </#if>
             <#if sub_date??> and T5.SUBMIT_DT >= :sub_date</#if>
-            <#if hci_address??> and charindex(:hci_address, T5.PREMISE) >0 </#if>
         ]]>
     </sql>
 
@@ -97,7 +96,6 @@
             <#if commonPoolStatus??> and T5.USER_ID is NULL</#if>
             <#if hci_code??> and charindex(:hci_code, T5.HCI_CODE) >0 </#if>
             <#if hci_name??> and charindex(:hci_name, T5.HCI_NAME) >0 </#if>
-            <#if hci_address??> and charindex(:hci_address, T5.PREMISE) >0 </#if>
         ]]>
     </sql>
 
@@ -147,7 +145,6 @@
             <#if application_status??> and T5.STATUS = :application_status</#if>
             <#if hci_code??> and charindex(:hci_code, T5.HCI_CODE) >0 </#if>
             <#if hci_name??> and charindex(:hci_name, T5.HCI_NAME) >0 </#if>
-            <#if hci_address??> and charindex(:hci_address, T5.PREMISE) >0 </#if>
         ]]>
     </sql>
 
@@ -215,7 +212,6 @@
             <#if application_status??> and T5.STATUS = :application_status</#if>
             <#if hci_code??> and charindex(:hci_code, T5.HCI_CODE) >0 </#if>
             <#if hci_name??> and charindex(:hci_name, T5.HCI_NAME) >0 </#if>
-            <#if hci_address??> and charindex(:hci_address, T5.PREMISE) >0 </#if>
         ]]>
     </sql>
 
