@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.helper;
 
+import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -13,6 +14,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import javax.servlet.http.HttpServletRequest;
@@ -31,6 +33,7 @@ import org.springframework.web.multipart.MultipartFile;
 public final class FileUtils {
     private static String DATE_FORMATTER = "yyyymmddhhmmsssss";
     public static final String EXCEL_TYPE_XSSF			= "xlsx";
+    public static final String CSV_TYPE			        = "csv";
 
     private FileUtils(){
         throw new IaisRuntimeException("FileUtils structure error.");
@@ -104,6 +107,10 @@ public final class FileUtils {
         return fileName + "-" + jointText;
     }
 
+    public static <T> List<T> transformCsvToJavaBean(final File file, final Class<T> clz) {
+        return SimpleCsvReader.readToBean(file, clz);
+    }
+
     public static <T> List<T> transformToJavaBean(final File file, final Class<?> clz) throws Exception {
         List<?> objects = ExcelReader.readerToBean(file, clz);
         return (List<T>) objects;
@@ -158,13 +165,19 @@ public final class FileUtils {
         }
         return false;
     }
-
-    public static boolean isExcel(String originalFileName){
-        if (originalFileName.endsWith("." + EXCEL_TYPE_XSSF)){
-            return true;
+    
+    public static boolean isExcel(String originalFileName) {
+        if (StringUtil.isEmpty(originalFileName)) {
+            return false;
         }
+        return originalFileName.toLowerCase(AppConsts.DFT_LOCALE).endsWith("." + EXCEL_TYPE_XSSF);
+    }
 
-        return false;
+    public static boolean isCsv(String originalFileName) {
+        if (StringUtil.isEmpty(originalFileName)) {
+            return false;
+        }
+        return originalFileName.toLowerCase(AppConsts.DFT_LOCALE).endsWith("." + CSV_TYPE);
     }
 
     public static String[] fileTypeToArray(String str){

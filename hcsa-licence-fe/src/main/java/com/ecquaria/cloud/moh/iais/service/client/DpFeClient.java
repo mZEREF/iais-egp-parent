@@ -38,7 +38,7 @@ public interface DpFeClient {
 
     @GetMapping(value = "/data-submission/dp-data-submission/{orgId}", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<DpSuperDataSubmissionDto> getDpSuperDataSubmissionDtoDraftByConds(@PathVariable("orgId") String orgId,
-            @RequestParam("submissionType") String submissionType, @RequestParam("hciCode") String hciCode);
+            @RequestParam("submissionType") String submissionType, @RequestParam("svcName") String svcName, @RequestParam("hciCode") String hciCode);
 
     @GetMapping(value = "/data-submission//pgt-stage/{patientCode}", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<PgtStageDto>> listPgtStageByPatientCode(@PathVariable("patientCode") String patientCode) ;

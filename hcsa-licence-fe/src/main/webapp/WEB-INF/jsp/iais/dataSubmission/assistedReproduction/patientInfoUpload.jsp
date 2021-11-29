@@ -124,10 +124,12 @@
             $btns.not(':last').trigger('click');
         }
         $('#hasItems').val('0');
+        $('#itemSize').html('0');
     }
 
     function deleteFileFeAjax(id,fileIndex) {
         $('#hasItems').val('0');
+        $('#itemSize').html('0');
         callAjaxDeleteFile(id,fileIndex);
     }
 </script>

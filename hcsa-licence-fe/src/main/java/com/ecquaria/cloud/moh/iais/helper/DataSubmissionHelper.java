@@ -493,6 +493,10 @@ public final class DataSubmissionHelper {
                 if (length == 0) {
                     errorMap.put(showErrorField, "MCUPERR004");
                 }
+                String filename = file.getName();
+                if (!FileUtils.isCsv(filename) && !FileUtils.isExcel(filename)) {
+
+                }
             }
         }
         return errorMap;

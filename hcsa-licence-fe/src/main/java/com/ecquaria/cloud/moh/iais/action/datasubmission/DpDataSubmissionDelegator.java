@@ -4,7 +4,6 @@ import com.ecquaria.cloud.RedirectUtil;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DpSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
@@ -147,21 +146,20 @@ public class DpDataSubmissionDelegator {
         } else {
             String orgId = Optional.ofNullable(DataSubmissionHelper.getLoginContext(bpc.request))
                     .map(LoginContext::getOrgId).orElse("");
-            String hciCode = Optional.ofNullable(premisesDto)
-                    .map(PremisesDto::getHciCode)
-                    .orElse("");
+            String hciCode = premisesDto.getHciCode();
+            String svcName = premisesDto.getSvcName();
             String actionValue = ParamUtil.getString(bpc.request, IaisEGPConstant.CRUD_ACTION_VALUE);
             log.info(StringUtil.changeForLog("Action Type: " + actionValue));
             if (StringUtil.isEmpty(actionValue)) {
                 DpSuperDataSubmissionDto dataSubmissionDraft = dpDataSubmissionService.getDpSuperDataSubmissionDtoDraftByConds(
-                        orgId, submissionType, hciCode);
+                        orgId, submissionType, svcName, hciCode);
                 if (dataSubmissionDraft != null) {
                     ParamUtil.setRequestAttr(bpc.request, "hasDraft", true);
                     actionType = "back";
                 }
             } else if ("resume".equals(actionValue)) {
                 dpSuperDataSubmissionDto = dpDataSubmissionService.getDpSuperDataSubmissionDtoDraftByConds(
-                        orgId, submissionType, hciCode);
+                        orgId, submissionType, svcName, hciCode);
                 if (dpSuperDataSubmissionDto == null) {
                     log.warn("Can't resume data!");
                     dpSuperDataSubmissionDto = new DpSuperDataSubmissionDto();

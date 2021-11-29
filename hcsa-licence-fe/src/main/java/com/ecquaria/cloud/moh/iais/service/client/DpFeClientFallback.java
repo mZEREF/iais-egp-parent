@@ -58,8 +58,8 @@ public class DpFeClientFallback implements DpFeClient{
 
     @Override
     public FeignResponseEntity<DpSuperDataSubmissionDto> getDpSuperDataSubmissionDtoDraftByConds(String orgId, String type,
-            String hciCode) {
-        return getFeignResponseEntity(orgId, type, hciCode);
+            String svcName, String hciCode) {
+        return getFeignResponseEntity(orgId, type, svcName, hciCode);
     }
 
     @Override

@@ -1,7 +1,5 @@
 package com.ecquaria.cloud.moh.iais.service.datasubmission;
 
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DpSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 
@@ -27,7 +25,8 @@ public interface DpDataSubmissionService {
 
     void updateDataSubmissionDraftStatus(String draftId, String status);
 
-    DpSuperDataSubmissionDto getDpSuperDataSubmissionDtoDraftByConds(String orgId, String submissionType, String hciCode);
+    DpSuperDataSubmissionDto getDpSuperDataSubmissionDtoDraftByConds(String orgId, String submissionType, String svcName,
+            String hciCode);
 
     void deleteDpSuperDataSubmissionDtoDraftByConds(String orgId, String submissionType, String hciCode);
 

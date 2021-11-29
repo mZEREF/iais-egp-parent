@@ -122,10 +122,10 @@ public final class ExcelReader {
     }
 
     private static boolean isEmpty(Row row, int realCellCount) {
-        if (row == null) {
+        if (row == null || row.toString().isEmpty()) {
             return true;
         }
-        return IntStream.range(0, realCellCount).noneMatch(i -> StringUtil.isNotEmpty(getCellValue(row.getCell(i))));
+        return IntStream.range(0, realCellCount).parallel().noneMatch(i -> StringUtil.isNotEmpty(getCellValue(row.getCell(i))));
     }
 
     @SuppressWarnings("resource")

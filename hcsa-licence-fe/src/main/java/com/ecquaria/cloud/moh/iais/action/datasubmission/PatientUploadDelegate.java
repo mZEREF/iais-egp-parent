@@ -70,7 +70,7 @@ public class PatientUploadDelegate {
 
     private static final String PATIENT_INFO_LIST = "PATIENT_INFO_LIST";
     private static final String FILE_APPEND = "uploadFile";
-    private static final int MAX_ITEM_COUNT = 10000;
+    private static final int MAX_ITEM_COUNT = 1;//todo test 10000
     private static final String SEESION_FILES_MAP_AJAX = HcsaFileAjaxController.SEESION_FILES_MAP_AJAX + FILE_APPEND;
 
     @Autowired
@@ -154,7 +154,7 @@ public class PatientUploadDelegate {
                     errorMap.put("uploadFileError", "PRF_ERR006");
                 } else if (fileItemSize > MAX_ITEM_COUNT) {
                     errorMap.put("uploadFileError", MessageUtil.replaceMessage("GENERAL_ERR0052",
-                            Formatter.formatNumber(MAX_ITEM_COUNT, "#,##0"), "maxCountMap"));
+                            Formatter.formatNumber(MAX_ITEM_COUNT, "#,##0"), "maxCount"));
                 } else {
                     String orgId = DataSubmissionHelper.getLoginContext(bpc.request).getOrgId();
                     patientInfoList = getPatientInfoList(patientInfoExcelDtoList, orgId);
@@ -253,7 +253,12 @@ public class PatientUploadDelegate {
             return IaisCommonUtils.genNewArrayList(0);
         }
         try {
-            return FileUtils.transformToJavaBean(fileEntry.getValue(), PatientInfoExcelDto.class);
+            File file = fileEntry.getValue();
+            if (FileUtils.isExcel(file.getName())) {
+                return FileUtils.transformToJavaBean(fileEntry.getValue(), PatientInfoExcelDto.class);
+            } else if (FileUtils.isCsv(file.getName())) {
+                return FileUtils.transformCsvToJavaBean(fileEntry.getValue(), PatientInfoExcelDto.class);
+            }
         } catch (Exception e) {
             log.error(StringUtil.changeForLog(e.getMessage()), e);
         }
