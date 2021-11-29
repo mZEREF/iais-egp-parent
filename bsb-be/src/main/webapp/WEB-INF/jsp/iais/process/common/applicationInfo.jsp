@@ -112,15 +112,25 @@
         </div>
     </div>
 </div>
-<c:if test="${submitDetailsDto.processType eq 'PROTYPE001'}">
-    <%@include file="/WEB-INF/jsp/iais/process/view/viewFacReg.jsp" %>
-</c:if>
-<c:if test="${submitDetailsDto.processType eq 'PROTYPE002' or submitDetailsDto.processType eq 'PROTYPE003' or submitDetailsDto.processType eq 'PROTYPE004'}">
-    <%@include file="/WEB-INF/jsp/iais/process/view/viewApprovalApp.jsp" %>
-</c:if>
-<c:if test="${submitDetailsDto.processType eq 'PROTYPE005'}">
-    <%@include file="/WEB-INF/jsp/iais/process/view/viewFacRegCer.jsp" %>
-</c:if>
+<div>&nbsp</div>
+<div align="center">
+<a href="javascript:void(0);">
+    <button id="viewAppBtn" type="button" class="btn btn-primary">
+        View Application
+    </button>
+</a>
+</div>
+<div id="viewAppDiv">
+    <c:if test="${submitDetailsDto.processType eq 'PROTYPE001'}">
+        <%@include file="/WEB-INF/jsp/iais/process/view/viewFacReg.jsp" %>
+    </c:if>
+    <c:if test="${submitDetailsDto.processType eq 'PROTYPE002' or submitDetailsDto.processType eq 'PROTYPE003' or submitDetailsDto.processType eq 'PROTYPE004'}">
+        <%@include file="/WEB-INF/jsp/iais/process/view/viewApprovalApp.jsp" %>
+    </c:if>
+    <c:if test="${submitDetailsDto.processType eq 'PROTYPE005'}">
+        <%@include file="/WEB-INF/jsp/iais/process/view/viewFacRegCer.jsp" %>
+    </c:if>
+</div>
 <div align="left">
     <a style="float:left;padding-top: 1.1%;" class="back" id="back" href="/bsb-be/eservicecontinue/INTRANET/MohBsbTaskList"><em class="fa fa-angle-left"></em> Back</a>
 </div>
