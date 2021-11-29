@@ -25,4 +25,26 @@ public class ApplicationMisc extends BaseEntity {
     private String reasonContent;
 
     private String remarks;
+
+    private String finalRemarks;
+
+    private String riskLevel;
+
+    private String riskLevelComments;
+
+    private Date erpReportDt;
+
+    private Date redTeamingReportDt;
+
+    private Date lentivirusReportDt;
+
+    private Date internalInspectionReportDt;
+
+    private Date validityStartDt;
+
+    private Date validityEndDt;
+
+    private String selectedAfc;
+
+    private String processDecision;
 }

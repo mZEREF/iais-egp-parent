@@ -45,4 +45,6 @@ public class ApplicationMisc extends BaseEntity {
     private Date validityEndDt;
 
     private String selectedAfc;
+
+    private String processDecision;
 }

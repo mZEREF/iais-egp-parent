@@ -52,4 +52,6 @@ public class ApplicationMiscDto extends BaseEntityDto {
     private Date validityEndDt;
 
     private String selectedAfc;
+
+    private String processDecision;
 }
