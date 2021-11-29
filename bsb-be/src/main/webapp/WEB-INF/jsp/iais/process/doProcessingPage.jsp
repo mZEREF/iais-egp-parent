@@ -123,7 +123,14 @@
                                                                             </iais:value>
                                                                         </iais:row>
                                                                     </div>
-                                                                    <p>Select Approving Officer</p>ais:row>
+                                                                    <div>
+                                                                        <iais:row>
+                                                                            <iais:field value="Select Approving Officer" required="false"/>
+                                                                            <iais:value width="10">
+                                                                                <select name="selectApprovingOfficer" id="selectApprovingOfficer"></select>
+                                                                                <span data-err-ind="selectApprovingOfficer" class="error-msg" ></span>
+                                                                            </iais:value>
+                                                                        </iais:row>
                                                                     </div>
                                                                     <div>
                                                                         <iais:row>
@@ -143,7 +150,12 @@
                                                                             </iais:value>
                                                                         </iais:row>
                                                                     </div>
-                                                                    <p>Selected Approved Facility Certifier</p>
+                                                                    <div>
+                                                                        <iais:row>
+                                                                            <iais:field value="Selected Approved Facility Certifier" required="false"></iais:field>
+                                                                            <iais:value width="10"><p>${lastAOApplicationMisc.selectedAfc}</p></iais:value>
+                                                                        </iais:row>
+                                                                    </div>
                                                                     <div>
                                                                         <iais:row>
                                                                             <iais:field value="Validity Start Date" required="true"></iais:field>
@@ -162,7 +174,21 @@
                                                                             </iais:value>
                                                                         </iais:row>
                                                                     </div>
-                                                                    <p>Final Remarks</p>
+                                                                    <div>
+                                                                        <iais:row>
+                                                                            <iais:field value="Final Remarks" required="false"></iais:field>
+                                                                            <iais:value width="10">
+                                                                                <div class="form-check">
+                                                                                    <input type="radio" class="form-check-input" name="finalRemarks" id="finalRemarksYes" <c:if test="${mohProcessDto.finalRemarks eq 'yes'}">checked="checked"</c:if> value="yes"/>
+                                                                                    <label for="finalRemarksYes" class="form-check-label"><span class="check-square"></span>Yes</label>
+                                                                                </div>
+                                                                                <div class="form-check">
+                                                                                    <input type="radio" class="form-check-input" name="finalRemarks" id="finalRemarksNo" <c:if test="${mohProcessDto.finalRemarks eq 'no'}">checked="checked"</c:if> value="no"/>
+                                                                                    <label for="finalRemarksNo" class="form-check-label"><span class="check-square"></span>No</label>
+                                                                                </div>
+                                                                            </iais:value>
+                                                                        </iais:row>
+                                                                    </div>
                                                                 </iais:section>
                                                                 <div align="right">
                                                                     <button name="submitButton" id="submitButton" type="button" class="btn btn-primary">Submit</button>

@@ -35,6 +35,7 @@ import static sg.gov.moh.iais.egp.bsb.constant.ProcessContants.*;
 @Slf4j
 public class MohDOScreeningDelegator {
     private static final String FUNCTION_NAME = "DO Screening";
+    private static final String PROCESS_FLOW = "DOScreening";
 
     private final ProcessClient processClient;
 
@@ -49,6 +50,9 @@ public class MohDOScreeningDelegator {
         request.getSession().removeAttribute(KEY_MOH_PROCESS_DTO);
         request.getSession().removeAttribute(KEY_BAT_LIST);
         request.getSession().removeAttribute(KEY_APPROVAL_PROFILE_LIST);
+        request.getSession().removeAttribute(LAST_DO_APPLICATION_MISC);
+        request.getSession().removeAttribute(LAST_AO_APPLICATION_MISC);
+        request.getSession().removeAttribute(LAST_HM_APPLICATION_MISC);
         AuditTrailHelper.auditFunction(MODULE_NAME, FUNCTION_NAME);
     }
 
@@ -73,7 +77,7 @@ public class MohDOScreeningDelegator {
                     setBatList(request, submitDetailsDto);
 
                     MohProcessDto mohProcessDto = new MohProcessDto();
-                    mohProcessDto.setProcessFlow(PROCESS_FLOW_DOSCREENING);
+                    mohProcessDto.setProcessFlow(PROCESS_FLOW);
                     mohProcessDto.setProcessType(submitDetailsDto.getProcessType());
                     mohProcessDto.setAppId(appId);
                     mohProcessDto.setTaskId(taskId);

@@ -74,10 +74,30 @@
                                                             <div class="table-gp" id="beInboxFilter">
                                                                 <iais:section title="">
                                                                     <div>&nbsp</div>
-                                                                    <p>DO Remarks</p>
-                                                                    <p>Risk Level of the Biological Agent/Toxin</p>
-                                                                    <p>Comments on Risk Level Assessment</p>
-                                                                    <p>DO Recommendation</p>
+                                                                    <div>
+                                                                        <iais:row>
+                                                                            <iais:field value="DO Remarks" required="false"></iais:field>
+                                                                            <iais:value width="10"><p>${lastDOApplicationMisc.remarks}</p></iais:value>
+                                                                        </iais:row>
+                                                                    </div>
+                                                                    <div>
+                                                                        <iais:row>
+                                                                            <iais:field value="Risk Level of the Biological Agent/Toxin" required="false"></iais:field>
+                                                                            <iais:value width="10"><p>${lastDOApplicationMisc.riskLevel}</p></iais:value>
+                                                                        </iais:row>
+                                                                    </div>
+                                                                    <div>
+                                                                        <iais:row>
+                                                                            <iais:field value="Comments on Risk Level Assessment" required="false"></iais:field>
+                                                                            <iais:value width="10"><p>${lastDOApplicationMisc.riskLevelComments}</p></iais:value>
+                                                                        </iais:row>
+                                                                    </div>
+                                                                    <div>
+                                                                        <iais:row>
+                                                                            <iais:field value="DO Recommendation" required="false"></iais:field>
+                                                                            <iais:value width="10"><p></p></iais:value>
+                                                                        </iais:row>
+                                                                    </div>
                                                                     <div>
                                                                         <iais:row>
                                                                             <iais:field value="Remarks" required="false" width="12"/>
@@ -123,7 +143,12 @@
                                                                             </iais:value>
                                                                         </iais:row>
                                                                     </div>
-                                                                    <p>Selected Approved Facility Certifier</p>
+                                                                    <div>
+                                                                        <iais:row>
+                                                                            <iais:field value="Selected Approved Facility Certifier" required="false"></iais:field>
+                                                                            <iais:value width="10"><p>${lastDOApplicationMisc.selectedAfc}</p></iais:value>
+                                                                        </iais:row>
+                                                                    </div>
                                                                     <div>
                                                                         <iais:row>
                                                                             <iais:field value="Validity Start Date" required="true"></iais:field>
@@ -142,7 +167,21 @@
                                                                             </iais:value>
                                                                         </iais:row>
                                                                     </div>
-                                                                    <p>Final Remarks</p>
+                                                                    <div>
+                                                                        <iais:row>
+                                                                            <iais:field value="Final Remarks" required="false"></iais:field>
+                                                                            <iais:value width="10">
+                                                                                <div class="form-check">
+                                                                                    <input type="radio" class="form-check-input" name="finalRemarks" id="finalRemarksYes" <c:if test="${mohProcessDto.finalRemarks eq 'yes'}">checked="checked"</c:if> value="yes"/>
+                                                                                    <label for="finalRemarksYes" class="form-check-label"><span class="check-square"></span>Yes</label>
+                                                                                </div>
+                                                                                <div class="form-check">
+                                                                                    <input type="radio" class="form-check-input" name="finalRemarks" id="finalRemarksNo" <c:if test="${mohProcessDto.finalRemarks eq 'no'}">checked="checked"</c:if> value="no"/>
+                                                                                    <label for="finalRemarksNo" class="form-check-label"><span class="check-square"></span>No</label>
+                                                                                </div>
+                                                                            </iais:value>
+                                                                        </iais:row>
+                                                                    </div>
                                                                 </iais:section>
                                                                 <div align="right">
                                                                     <button name="submitButton" id="submitButton" type="button" class="btn btn-primary">Submit</button>

@@ -1,14 +1,15 @@
 package sg.gov.moh.iais.egp.bsb.dto.process;
 
 import lombok.Data;
+import sg.gov.moh.iais.egp.bsb.dto.entity.ApplicationMiscDto;
 import sg.gov.moh.iais.egp.bsb.dto.process.afc.FacilityCertifierRegisterDto;
 import sg.gov.moh.iais.egp.bsb.dto.process.approval.ApprovalAppDto;
 import sg.gov.moh.iais.egp.bsb.dto.process.facility.FacilityRegisterDto;
-import sg.gov.moh.iais.egp.bsb.entity.ApplicationMisc;
 import sg.gov.moh.iais.egp.bsb.entity.Biological;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Map;
 
 @Data
 public class SubmitDetailsDto implements Serializable {
@@ -40,6 +41,6 @@ public class SubmitDetailsDto implements Serializable {
     private FacilityRegisterDto facilityRegisterDto;
     private ApprovalAppDto approvalAppDto;
     private FacilityCertifierRegisterDto facilityCertifierRegisterDto;
-    //list applicationMisc
-    private List<ApplicationMisc> applicationMiscList;
+    //the last ao,do,hm applicationMisc
+    private Map<String, ApplicationMiscDto> applicationMiscDtoMap;
 }

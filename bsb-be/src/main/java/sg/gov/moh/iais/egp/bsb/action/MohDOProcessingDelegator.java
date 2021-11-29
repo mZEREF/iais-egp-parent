@@ -28,6 +28,7 @@ import static sg.gov.moh.iais.egp.bsb.constant.ProcessContants.*;
 @Slf4j
 public class MohDOProcessingDelegator {
     private static final String FUNCTION_NAME = "DO Processing";
+    private static final String PROCESS_FLOW = "DOProcessing";
 
     private final ProcessClient processClient;
 
@@ -42,6 +43,9 @@ public class MohDOProcessingDelegator {
         request.getSession().removeAttribute(KEY_MOH_PROCESS_DTO);
         request.getSession().removeAttribute(KEY_BAT_LIST);
         request.getSession().removeAttribute(KEY_APPROVAL_PROFILE_LIST);
+        request.getSession().removeAttribute(LAST_DO_APPLICATION_MISC);
+        request.getSession().removeAttribute(LAST_AO_APPLICATION_MISC);
+        request.getSession().removeAttribute(LAST_HM_APPLICATION_MISC);
         AuditTrailHelper.auditFunction(MODULE_NAME, FUNCTION_NAME);
     }
 
@@ -65,8 +69,10 @@ public class MohDOProcessingDelegator {
                     ParamUtil.setSessionAttr(request, KEY_SUBMIT_DETAILS_DTO, submitDetailsDto);
                     MohDOScreeningDelegator.setBatList(request, submitDetailsDto);
 
+                    ParamUtil.setSessionAttr(request, LAST_AO_APPLICATION_MISC, submitDetailsDto.getApplicationMiscDtoMap().get("AO"));
+
                     MohProcessDto mohProcessDto = new MohProcessDto();
-                    mohProcessDto.setProcessFlow(PROCESS_FLOW_DOPROCESSING);
+                    mohProcessDto.setProcessFlow(PROCESS_FLOW);
                     mohProcessDto.setProcessType(submitDetailsDto.getProcessType());
                     mohProcessDto.setAppId(appId);
                     mohProcessDto.setTaskId(taskId);

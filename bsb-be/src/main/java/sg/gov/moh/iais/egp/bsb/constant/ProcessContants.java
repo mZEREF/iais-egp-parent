@@ -11,13 +11,6 @@ public class ProcessContants {
     public static final String CRUD_ACTION_TYPE_PROCESS = "process";
     public static final String CRUD_ACTION_TYPE_PREPARE = "prepare";
 
-    public static final String PROCESS_FLOW_DOSCREENING = "DOScreening";
-    public static final String PROCESS_FLOW_AOSCREENING = "AOScreening";
-    public static final String PROCESS_FLOW_HMSCREENING = "HMScreening";
-    public static final String PROCESS_FLOW_DOPROCESSING = "DOProcessing";
-    public static final String PROCESS_FLOW_AOPROCESSING = "AOProcessing";
-    public static final String PROCESS_FLOW_HMPROCESSING = "HMProcessing";
-
     public static final String DECISION_DO_SCREENED_BY_DO = "MOHPRO001";
     public static final String DECISION_DO_REQUEST_FOR_INFORMATION = "MOHPRO002";
     public static final String DECISION_DO_REJECT = "MOHPRO003";
@@ -50,4 +43,8 @@ public class ProcessContants {
     public static final String ERR_MSG_FAIL_LOAD_SUBMIT_DETAILS = "Fail to load submitDetails";
 
     public static final String MODULE_NAME = "Moh Process";
+
+    public static final String LAST_DO_APPLICATION_MISC = "lastDOApplicationMisc";
+    public static final String LAST_AO_APPLICATION_MISC = "lastAOApplicationMisc";
+    public static final String LAST_HM_APPLICATION_MISC = "lastHMApplicationMisc";
 }

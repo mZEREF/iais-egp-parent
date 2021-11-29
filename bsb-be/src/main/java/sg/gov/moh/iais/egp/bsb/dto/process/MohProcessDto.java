@@ -61,6 +61,7 @@ public class MohProcessDto implements Serializable {
     private static final String KEY_SELECTED_AFC = "selectedAfc";
     private static final String KEY_VALIDITY_START_DATE = "validityStartDt";
     private static final String KEY_VALIDITY_END_DATE = "validityEndDt";
+    private static final String KEY_FINAL_REMARKS = "finalRemarks";
 
     public void reqObjMapping(HttpServletRequest request) {
         this.setRemarks(ParamUtil.getString(request, KEY_REMARKS));
@@ -74,5 +75,6 @@ public class MohProcessDto implements Serializable {
         this.setSelectedAfc(ParamUtil.getString(request, KEY_SELECTED_AFC));
         this.setValidityStartDt(ParamUtil.getString(request, KEY_VALIDITY_START_DATE));
         this.setValidityEndDt(ParamUtil.getString(request, KEY_VALIDITY_END_DATE));
+        this.setFinalRemarks(ParamUtil.getString(request,KEY_FINAL_REMARKS));
     }
 }

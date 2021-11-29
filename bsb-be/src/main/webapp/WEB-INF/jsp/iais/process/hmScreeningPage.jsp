@@ -74,11 +74,36 @@
                                                             <div class="table-gp" id="beInboxFilter">
                                                                 <iais:section title="">
                                                                     <div>&nbsp</div>
-                                                                    <p>Risk Level of the Biological Agent/Toxin</p>
-                                                                    <p>Comments on Risk Level Assessment</p>
-                                                                    <p>DO Recommendation</p>
-                                                                    <p>AO Review Decision</p>
-                                                                    <p>AO Remarks</p>
+                                                                    <div>
+                                                                        <iais:row>
+                                                                            <iais:field value="Risk Level of the Biological Agent/Toxin" required="false"></iais:field>
+                                                                            <iais:value width="10"><p>${lastDOApplicationMisc.riskLevel}</p></iais:value>
+                                                                        </iais:row>
+                                                                    </div>
+                                                                    <div>
+                                                                        <iais:row>
+                                                                            <iais:field value="Comments on Risk Level Assessment" required="false"></iais:field>
+                                                                            <iais:value width="10"><p>${lastDOApplicationMisc.riskLevelComments}</p></iais:value>
+                                                                        </iais:row>
+                                                                    </div>
+                                                                    <div>
+                                                                        <iais:row>
+                                                                            <iais:field value="DO Recommendation" required="false"></iais:field>
+                                                                            <iais:value width="10"><p></p></iais:value>
+                                                                        </iais:row>
+                                                                    </div>
+                                                                    <div>
+                                                                        <iais:row>
+                                                                            <iais:field value="AO Review Decision" required="false"></iais:field>
+                                                                            <iais:value width="10"><p></p></iais:value>
+                                                                        </iais:row>
+                                                                    </div>
+                                                                    <div>
+                                                                        <iais:row>
+                                                                            <iais:field value="AO Remarks" required="false"></iais:field>
+                                                                            <iais:value width="10"><p>${lastAOApplicationMisc.remarks}</p></iais:value>
+                                                                        </iais:row>
+                                                                    </div>
                                                                     <div>
                                                                         <iais:row>
                                                                             <iais:field value="Remarks" required="false" width="12"/>
@@ -104,8 +129,18 @@
                                                                             </iais:value>
                                                                         </iais:row>
                                                                     </div>
-                                                                    <p>Validity Start Date</p>
-                                                                    <p>Validity End Date</p>
+                                                                    <div>
+                                                                        <iais:row>
+                                                                            <iais:field value="Validity Start Date" required="false"></iais:field>
+                                                                            <iais:value width="10"><p>${lastAOApplicationMisc.validityStartDt}</p></iais:value>
+                                                                        </iais:row>
+                                                                    </div>
+                                                                    <div>
+                                                                        <iais:row>
+                                                                            <iais:field value="Validity End Date" required="false"></iais:field>
+                                                                            <iais:value width="10"><p>${lastAOApplicationMisc.validityEndDt}</p></iais:value>
+                                                                        </iais:row>
+                                                                    </div>
                                                                 </iais:section>
                                                                 <div align="right">
                                                                     <button name="finalAssessmentBtn" id="finalAssessmentButton" type="button" class="btn btn-primary">Final Assessment</button>
