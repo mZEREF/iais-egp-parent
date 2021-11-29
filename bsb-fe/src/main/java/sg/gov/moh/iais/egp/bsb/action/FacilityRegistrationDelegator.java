@@ -524,7 +524,11 @@ public class FacilityRegistrationDelegator {
         ParamUtil.setRequestAttr(request, "batList", batList);
 
         ParamUtil.setRequestAttr(request, "docSettings", getFacRegDocSettings());
-        ParamUtil.setRequestAttr(request, NODE_NAME_PRIMARY_DOC, ((PrimaryDocDto)((SimpleNode)facRegRoot.at(NODE_NAME_PRIMARY_DOC)).getValue()).getAllDocTypeMap());
+        PrimaryDocDto primaryDocDto = (PrimaryDocDto) ((SimpleNode)facRegRoot.at(NODE_NAME_PRIMARY_DOC)).getValue();
+        Map<String, List<DocRecordInfo>> savedFiles = primaryDocDto.getExistDocTypeMap();
+        Map<String, List<NewDocInfo>> newFiles = primaryDocDto.getNewDocTypeMap();
+        ParamUtil.setRequestAttr(request, "savedFiles", savedFiles);
+        ParamUtil.setRequestAttr(request, "newFiles", newFiles);
 
         List<SelectOption> approvedFacCertifierOps = new ArrayList<>(0);
         ParamUtil.setRequestAttr(request, "approvedFacCertifierOps", approvedFacCertifierOps);

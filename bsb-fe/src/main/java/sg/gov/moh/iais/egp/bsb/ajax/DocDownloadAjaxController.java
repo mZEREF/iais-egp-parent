@@ -27,6 +27,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.function.BiFunction;
 import java.util.function.UnaryOperator;
 
@@ -73,16 +75,25 @@ public class DocDownloadAjaxController {
         } catch (Exception e) {
             log.error("Fail to download file", e);
         } finally {
+            OutputStream ops = null;
             try {
-                response.addHeader("Content-Disposition", "attachment;filename=\"" + filename + "\"");
+                response.addHeader("Content-Disposition", "attachment;filename=\"" + URLEncoder.encode(filename, StandardCharsets.UTF_8.name()) + "\"");
                 response.addHeader("Content-Length", "" + length);
                 response.setContentType("application/x-octet-stream");
-                OutputStream ops = response.getOutputStream();
+                ops = response.getOutputStream();
                 ops.write(data);
-                ops.close();
                 ops.flush();
+                ops.close();
             } catch (IOException e) {
                 log.error("Fail to write file to response", e);
+            } finally {
+                if (ops != null) {
+                    try {
+                        ops.close();
+                    } catch (IOException e) {
+                        log.error("Fail to close response output stream", e);
+                    }
+                }
             }
         }
     }
