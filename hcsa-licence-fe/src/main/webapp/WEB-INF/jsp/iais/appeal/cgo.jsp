@@ -616,6 +616,7 @@
             'success': function (data) {
                 if (isEmpty(data)) {
                     console.log("The return data is null for PRS");
+                    clearPrsInfo($loadingContent);
                 } else if('-1' == data.statusCode || '-2' == data.statusCode) {
                     $('#prsErrorMsg').html('<iais:message key="GENERAL_ERR0042" escape="false" />');
                     $('#PRS_SERVICE_DOWN').modal('show');

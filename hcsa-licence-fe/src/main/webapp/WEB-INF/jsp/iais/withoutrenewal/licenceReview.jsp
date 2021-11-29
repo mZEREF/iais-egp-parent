@@ -294,7 +294,7 @@
 
     $("#print-review").click(function () {
        // window.print();
-        var url ='${pageContext.request.contextPath}<%=RedirectUtil.appendCsrfGuardToken("/eservice/INTERNET/MohFePrintView/1/?appType=APTY004",request)%>';
+        var url ='${pageContext.request.contextPath}<%=RedirectUtil.appendCsrfGuardToken("/eservice/INTERNET/MohFePrintView/1/?appType=APTY004&serviceNameMiss=Y",request)%>';
         var txt = '';
         $(':checked, textarea','#declarations').each(function(){
             txt += '&' + $(this).attr('name') + '=' + $(this).val();

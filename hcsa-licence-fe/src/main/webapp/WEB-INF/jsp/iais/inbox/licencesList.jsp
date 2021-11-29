@@ -91,7 +91,7 @@
                         </td>
                         <td>
                             <p class="visible-xs visible-sm table-row-title">Type</p>
-                            <p>Tissue Banking</p>
+                            <p>Cord Blood Banking</p>
                         </td>
                         <td>
                             <p class="visible-xs visible-sm table-row-title">Status</p>
