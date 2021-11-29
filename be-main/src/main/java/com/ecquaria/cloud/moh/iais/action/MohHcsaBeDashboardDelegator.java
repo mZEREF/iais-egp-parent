@@ -179,6 +179,7 @@ public class MohHcsaBeDashboardDelegator {
             }
             ParamUtil.setSessionAttr(bpc.request, "inspecTaskCreAndAssDto", null);
         }
+        ParamUtil.setSessionAttr(bpc.request, "dashHciAddress", null);
         ParamUtil.setSessionAttr(bpc.request, "hcsaTaskAssignDto", null);
     }
 

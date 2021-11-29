@@ -19,6 +19,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.organization.GroupRoleFieldDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.mask.MaskAttackException;
+import com.ecquaria.cloud.moh.iais.common.utils.CopyUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -39,7 +40,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
 
-import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.Serializable;
 import java.text.ParseException;
@@ -104,6 +104,7 @@ public class InspecAssignTaskDelegator {
         ParamUtil.setSessionAttr(bpc.request, "sub_date2", null);
         ParamUtil.setSessionAttr(bpc.request, "poolRoleCheckDto", null);
         ParamUtil.setSessionAttr(bpc.request, "commonPoolRoleIds", null);
+        ParamUtil.setSessionAttr(bpc.request, "comPoolHciAddress", null);
         ParamUtil.setSessionAttr(bpc.request, "hcsaTaskAssignDto", null);
     }
 
@@ -466,22 +467,15 @@ public class InspecAssignTaskDelegator {
             searchParam.addFilter("sub_date",sub_date,true);
         }
         if(!StringUtil.isEmpty(hci_address)){
-            searchParam.addFilter("hci_address", hci_address,true);
-            //filter unit no for group
-            searchParam = filterUnitNoForGroup(searchParam, hci_address, bpc.request);
+            ParamUtil.setSessionAttr(bpc.request, "comPoolHciAddress", hci_address);
+        } else {
+            ParamUtil.setSessionAttr(bpc.request, "comPoolHciAddress", null);
         }
         ParamUtil.setSessionAttr(bpc.request, "cPoolSearchParam", searchParam);
         ParamUtil.setSessionAttr(bpc.request, "sub_date2", sub_date2);
         ParamUtil.setSessionAttr(bpc.request, "commPools", (Serializable) commPools);
         ParamUtil.setSessionAttr(bpc.request, "groupRoleFieldDto", groupRoleFieldDto);
         ParamUtil.setSessionAttr(bpc.request, "poolRoleCheckDto", poolRoleCheckDto);
-    }
-
-    private SearchParam filterUnitNoForGroup(SearchParam searchParam, String hci_address, HttpServletRequest request) {
-        HcsaTaskAssignDto hcsaTaskAssignDto = (HcsaTaskAssignDto)ParamUtil.getSessionAttr(request, "hcsaTaskAssignDto");
-        searchParam = inspectionAssignTaskService.setAppGrpIdsByUnitNos(searchParam, hci_address, hcsaTaskAssignDto, "T5.ID", "appGroup_list");
-
-        return searchParam;
     }
 
     private String getCheckRoleIdByMap(String roleIdCheck, Map<String, String> roleMap) {
@@ -530,13 +524,32 @@ public class InspecAssignTaskDelegator {
     public void inspectionAllotTaskInspectorQuery2(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the inspectionAllotTaskInspectorQuery2 start ...."));
         SearchParam searchParam = getSearchParam(bpc);
-        QueryHelp.setMainSql("inspectionQuery", "assignCommonTask",searchParam);
-        SearchResult<InspectionCommonPoolQueryDto> searchResult = inspectionAssignTaskService.getSearchResultByParam(searchParam);
+        //address for second search
+        String hci_address = (String)ParamUtil.getSessionAttr(bpc.request, "comPoolHciAddress");
+        SearchResult<InspectionCommonPoolQueryDto> searchResult;
+        if(StringUtil.isEmpty(hci_address)) {
+            QueryHelp.setMainSql("inspectionQuery", "assignCommonTask",searchParam);
+            searchResult = inspectionAssignTaskService.getSearchResultByParam(searchParam);
+            ParamUtil.setSessionAttr(bpc.request, "hcsaTaskAssignDto", null);
+        } else {
+            //copy SearchParam for searchAllParam
+            SearchParam searchAllParam = (SearchParam) CopyUtil.copyMutableObject(searchParam);
+            searchAllParam.setPageSize(-1);
+            //get all appGroupIds
+            QueryHelp.setMainSql("inspectionQuery", "assignCommonTask",searchAllParam);
+            searchResult = inspectionAssignTaskService.getSearchResultByParam(searchAllParam);
+            //set all address data map for filter address
+            List<String> appGroupIds = inspectionAssignTaskService.getComPoolAppGrpIdByResult(searchResult);
+            HcsaTaskAssignDto hcsaTaskAssignDto = inspectionService.getHcsaTaskAssignDtoByAppGrp(appGroupIds);
+            //filter unit no for group
+            searchParam = inspectionAssignTaskService.setAppGrpIdsByUnitNos(searchParam, hci_address, hcsaTaskAssignDto, "T5.ID", "appGroup_list");
+            QueryHelp.setMainSql("inspectionQuery", "assignCommonTask",searchParam);
+            searchResult = inspectionAssignTaskService.getSearchResultByParam(searchParam);
+            ParamUtil.setSessionAttr(bpc.request, "hcsaTaskAssignDto", hcsaTaskAssignDto);
+        }
         searchResult = inspectionAssignTaskService.getAddressByResult(searchResult);
-        List<String> appGroupIds = inspectionAssignTaskService.getComPoolAppGrpIdByResult(searchResult);
-        HcsaTaskAssignDto hcsaTaskAssignDto = inspectionService.getHcsaTaskAssignDtoByAppGrp(appGroupIds);
+
         ParamUtil.setSessionAttr(bpc.request, "cPoolSearchParam", searchParam);
         ParamUtil.setSessionAttr(bpc.request, "cPoolSearchResult", searchResult);
-        ParamUtil.setSessionAttr(bpc.request, "hcsaTaskAssignDto", hcsaTaskAssignDto);
     }
 }
