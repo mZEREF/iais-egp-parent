@@ -52,7 +52,7 @@
                 <iais:row>
                     <iais:field width="5" value="Other Indication" mandatory="false"/>
                     <iais:value width="7" cssClass="col-md-7">
-                        <iais:select name="otherIndication" multiSelect="true"  codeCategory="AR_OTHER_INDICATION"  multiValues="${arCycleStageDto.otherIndicationValues}"/>
+                        <iais:select name="otherIndication" multiSelect="true"  codeCategory="AR_OTHER_INDICATION"  multiValues="${arCycleStageDto.otherIndicationValues}" onchange="toggleOnCheck('#otherIndication_12','otherIndicationOthersRow')"/>
                     </iais:value>
                 </iais:row>
 
