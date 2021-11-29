@@ -25,6 +25,7 @@ public final class FeInboxHelper {
         Map<String,String> stringStringMap = IaisCommonUtils.genNewHashMap(7);
         //todo
         stringStringMap.put("DS",DataSubmissionConsts.DS_STATUS_DRAFT);
+        stringStringMap.put("ART",DataSubmissionConsts.DS_STATUS_ACTIVE);
         return stringStringMap;
     }
 

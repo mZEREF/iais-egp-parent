@@ -156,13 +156,17 @@
             size--;
         }
         $("#needValidatorSize").val(size);
-        if(size > 0){
+        if(size == 1){
             $('#ds-deleteDraft').removeClass("disabled");
             $('#ds-amend').removeClass("disabled");
             $('#ds-withdraw').removeClass("disabled");
             $('#ds-unlock').removeClass("disabled");
-        }else {
+        }else if (size <= 0) {
             $('#ds-deleteDraft').addClass("disabled");
+            $('#ds-amend').addClass("disabled");
+            $('#ds-withdraw').addClass("disabled");
+            $('#ds-unlock').addClass("disabled");
+        }else if(size>1){
             $('#ds-amend').addClass("disabled");
             $('#ds-withdraw').addClass("disabled");
             $('#ds-unlock').addClass("disabled");
