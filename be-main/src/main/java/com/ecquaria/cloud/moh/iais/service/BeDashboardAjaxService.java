@@ -32,7 +32,7 @@ public interface BeDashboardAjaxService {
       * @Descripation: Common Pool Dropdown
       */
     Map<String, Object> getCommonDropdownResult(String groupNo, LoginContext loginContext, Map<String, Object> map, SearchParam searchParamGroup,
-                                                String actionValue, String dashFilterAppNo, HcsaTaskAssignDto hcsaTaskAssignDto);
+                                                String actionValue, String dashFilterAppNo, HcsaTaskAssignDto hcsaTaskAssignDto, String hci_address);
 
     /**
       * @author: shicheng
@@ -42,7 +42,8 @@ public interface BeDashboardAjaxService {
       * @Descripation: Kpi Pool Dropdown
       */
     Map<String, Object> getKpiDropdownResult(String groupNo, LoginContext loginContext, Map<String, Object> map, SearchParam searchParamGroup,
-                                             String switchAction, String dashFilterAppNo, String dashAppStatus, HcsaTaskAssignDto hcsaTaskAssignDto);
+                                             String switchAction, String dashFilterAppNo, String dashAppStatus, HcsaTaskAssignDto hcsaTaskAssignDto,
+                                             String hci_address);
 
     /**
       * @author: shicheng
@@ -52,7 +53,7 @@ public interface BeDashboardAjaxService {
       * @Descripation: Task Assign To Me Drop down Result
       */
     Map<String, Object> getAssignMeDropdownResult(String groupNo, LoginContext loginContext, Map<String, Object> map, SearchParam searchParamGroup,
-                                                  String dashFilterAppNo, String dashAppStatus, HcsaTaskAssignDto hcsaTaskAssignDto);
+                                                  String dashFilterAppNo, String dashAppStatus, HcsaTaskAssignDto hcsaTaskAssignDto, String hci_address);
 
     /**
       * @author: shicheng
@@ -63,7 +64,7 @@ public interface BeDashboardAjaxService {
       */
     Map<String, Object> getWorkTeamDropdownResult(String groupNo, LoginContext loginContext, Map<String, Object> map, SearchParam searchParamGroup,
                                                   String switchAction, String dashFilterAppNo, String dashCommonPoolStatus, String dashAppStatus,
-                                                  HcsaTaskAssignDto hcsaTaskAssignDto);
+                                                  HcsaTaskAssignDto hcsaTaskAssignDto, String hci_address);
 
     /**
       * @author: shicheng
@@ -73,7 +74,8 @@ public interface BeDashboardAjaxService {
       * @Descripation: getRenewDropdownResult
       */
     Map<String, Object> getRenewDropdownResult(String groupNo, LoginContext loginContext, Map<String, Object> map, SearchParam searchParamGroup,
-                                               String switchAction, String dashFilterAppNo, String dashAppStatus, HcsaTaskAssignDto hcsaTaskAssignDto);
+                                               String switchAction, String dashFilterAppNo, String dashAppStatus, HcsaTaskAssignDto hcsaTaskAssignDto,
+                                               String hci_address);
 
     /**
       * @author: shicheng
@@ -83,7 +85,7 @@ public interface BeDashboardAjaxService {
       * @Descripation: getReplyDropdownResult
       */
     Map<String, Object> getReplyDropdownResult(String groupNo, LoginContext loginContext, Map<String, Object> map, SearchParam searchParamGroup,
-                                               String switchAction, String dashFilterAppNo, HcsaTaskAssignDto hcsaTaskAssignDto);
+                                               String switchAction, String dashFilterAppNo, HcsaTaskAssignDto hcsaTaskAssignDto, String hci_address);
 
     /**
       * @author: shicheng
@@ -93,7 +95,8 @@ public interface BeDashboardAjaxService {
       * @Descripation: getWaitApproveDropResult
       */
     Map<String, Object> getWaitApproveDropResult(String groupNo, LoginContext loginContext, Map<String, Object> map, SearchParam searchParamGroup,
-                                                 String switchAction, String dashFilterAppNo, String dashAppStatus, HcsaTaskAssignDto hcsaTaskAssignDto);
+                                                 String switchAction, String dashFilterAppNo, String dashAppStatus, HcsaTaskAssignDto hcsaTaskAssignDto,
+                                                 String hci_address);
 
     /**
       * @author: shicheng
