@@ -13,6 +13,7 @@
 %>
 <webui:setLayout name="iais-internet"/>
 
+<link href="<%=WEB_ROOT%>/css/bsb/bsb-common.css" rel="stylesheet"/>
 <script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-common.js"></script>
 <script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-facility-register.js"></script>
 
@@ -46,7 +47,7 @@
                                     <%@include file="subStepNavTab.jsp"%>
 
                                     <div class="form-horizontal">
-                                        <h3 class="col-12" style="border-bottom: 1px solid black">Biosafety Committee</h3>
+                                        <h3 class="col-12 pl-0" style="border-bottom: 1px solid black">Biosafety Committee</h3>
 
                                         <div class="form-group ">
                                             <div class="col-sm-5 control-label">
@@ -183,7 +184,7 @@
                                                     </div>
                                                     <div class="form-group ">
                                                         <div class="col-sm-5 control-label">
-                                                            <label>Is this person is Employee of the Company ?</label>
+                                                            <label>Is this person is Employee of the Company?</label>
                                                         </div>
                                                         <div class="col-sm-6 col-md-7">
                                                             <div class="col-sm-4 col-md-2" style="margin-top: 8px">

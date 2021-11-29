@@ -12,6 +12,7 @@
 %>
 <webui:setLayout name="iais-internet"/>
 
+<link href="<%=WEB_ROOT%>/css/bsb/bsb-common.css" rel="stylesheet"/>
 <script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-common.js"></script>
 <script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-rfc-facility-register.js"></script>
 
@@ -37,7 +38,7 @@
 
                                     <div class="form-horizontal">
                                         <div class="text-right app-font-size-16"><a id="edit" href="javascript:void(0)"><em class="fa fa-pencil-square-o"></em>Edit</a></div>
-                                        <h3 class="col-12" style="border-bottom: 1px solid black">Facility Profile</h3>
+                                        <h3 class="col-12 pl-0" style="border-bottom: 1px solid black">Facility Profile</h3>
                                         <%--@elvariable id="facProfile" type="sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityProfileDto"--%>
 
                                         <div class="form-group ">
@@ -53,10 +54,10 @@
 
                                         <div class="form-group ">
                                             <div class="col-sm-5 control-label">
-                                                <label>Facility Address:</label>
+                                                <label style="font-weight: bold">Facility Address:</label>
                                             </div>
                                             <div class="col-sm-6 col-md-7">
-                                                <button type="button" id="facAddr" class="btn btn-secondary" style="margin-bottom: 15px">Retrieve Address</button>
+                                                <button type="button" id="facAddr" class="btn btn-secondary" style="margin-bottom: 15px; width: 100%; text-transform: none">Retrieve Address</button>
                                                 <span data-err-ind="facAddr" class="error-msg"></span>
                                             </div>
                                         </div>

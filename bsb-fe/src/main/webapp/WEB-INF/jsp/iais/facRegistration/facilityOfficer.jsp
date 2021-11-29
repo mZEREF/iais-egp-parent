@@ -12,6 +12,7 @@
 %>
 <webui:setLayout name="iais-internet"/>
 
+<link href="<%=WEB_ROOT%>/css/bsb/bsb-common.css" rel="stylesheet"/>
 <script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-common.js"></script>
 <script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-facility-register.js"></script>
 
@@ -37,7 +38,7 @@
 
                                     <div class="form-horizontal">
                                         <%--@elvariable id="facOfficer" type="sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityOfficerDto"--%>
-                                        <h3 class="col-12" style="border-bottom: 1px solid black">Facility Officer</h3>
+                                        <h3 class="col-12 pl-0" style="border-bottom: 1px solid black">Facility Officer</h3>
 
                                             <div class="form-group ">
                                                 <div class="col-sm-5 control-label">

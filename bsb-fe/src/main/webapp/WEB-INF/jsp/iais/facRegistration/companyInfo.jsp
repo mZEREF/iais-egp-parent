@@ -10,6 +10,7 @@
 %>
 <webui:setLayout name="iais-internet"/>
 
+<link href="<%=WEB_ROOT%>/css/bsb/bsb-common.css" rel="stylesheet"/>
 <script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-facility-register.js"></script>
 
 <%@include file="dashboard.jsp"%>
@@ -19,15 +20,10 @@
     <input type="hidden" name="action_type" value="">
     <input type="hidden" name="action_value" value="">
     <div class="container">
-        <div class="row col-xs-12 col-sm-12">
-            <div class="dashboard-page-title" style="border-bottom: 1px solid black;">
-                <h1>Application for New Facility Registration</h1>
-            </div>
-        </div>
         <div class="component-gp col-xs-12 col-sm-11 col-md-10 col-lg-8">
             <br/>
             <div class="col-xs-12 col-sm-12" style="background-color: rgba(242, 242, 242, 1); padding: 20px 30px 10px 30px; border-radius: 15px;">
-                <p class="assessment-title" style="border-bottom: 1px solid black;">Licensable Healthcare Services</p>
+                <p class="assessment-title" style="border-bottom: 1px solid black; font-weight: bold">Company Info</p>
                 <div class="col-xs-12 col-md-5">
                     <ul>
                         <li>UEN Number:</li>
@@ -51,7 +47,7 @@
             </div>
             <br/>
             <div class="col-xs-12 col-sm-12">
-                <p class="assessment-title" style="border-bottom: 1px solid black;">Before You Begin</p>
+                <p class="assessment-title" style="border-bottom: 1px solid black; font-weight: bold">Before You Begin</p>
                 <div>
                     <ul>
                         <li>In the next page, you will select the classification of the facility which you intend to register and

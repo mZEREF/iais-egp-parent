@@ -13,6 +13,7 @@
 %>
 <webui:setLayout name="iais-internet"/>
 
+<link href="<%=WEB_ROOT%>/css/bsb/bsb-common.css" rel="stylesheet"/>
 <script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-common.js"></script>
 <script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-facility-certifier-register.js"></script>
 
@@ -46,8 +47,7 @@
                                     <%@include file="subStepNavTab.jsp"%>
 
                                     <div class="form-horizontal">
-                                        <h3 class="col-12" style="border-bottom: 1px solid black">Certifying Team Member
-                                        </h3>
+                                        <h3 class="col-12 pl-0" style="border-bottom: 1px solid black">Certifying Team Member</h3>
 
                                         <div id="sectionGroup">
                                         <c:forEach var="cer" items="${orgCerTeam.certifierTeamMemberList}" varStatus="status">

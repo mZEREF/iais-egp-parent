@@ -10,7 +10,8 @@
 %>
 <webui:setLayout name="iais-internet"/>
 
-<script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-facility-certifier-register.js"></script>
+<link href="<%=WEB_ROOT%>/css/bsb/bsb-common.css" rel="stylesheet"/>
+<script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-facility-register.js"></script>
 
 <%@include file="dashboard.jsp"%>
 
@@ -19,16 +20,10 @@
     <input type="hidden" name="action_type" value="">
     <input type="hidden" name="action_value" value="">
     <div class="container" style="margin:0 auto">
-        <div class="row col-xs-12 col-sm-12">
-            <div class="dashboard-page-title">
-                <h2>SERVICES SELECTED</h2>
-            </div>
-            <ul><li style="font-size:16px">New Facility Certifier</li></ul>
-        </div>
         <div class="component-gp col-xs-12 col-sm-11 col-md-10 col-lg-8">
             <br/>
             <div class="col-xs-12 col-sm-12" style="background-color: rgba(242, 242, 242, 1); padding: 20px 30px 10px 30px; border-radius: 15px;">
-                <p class="assessment-title" style="border-bottom: 1px solid black;font-size:18px;font-weight: 700">Licensable Healthcare Services</p>
+                <p class="assessment-title" style="border-bottom: 1px solid black;font-size:18px;font-weight: bold">Company Info</p>
                 <div class="col-xs-12 col-md-5">
                     <ul>
                         <li>UEN Number:</li>
@@ -52,7 +47,7 @@
             </div>
             <br/>
             <div class="col-xs-12 col-sm-12" style="margin-top: 20px">
-                <p class="assessment-title" style="border-bottom: 1px solid black;font-size:18px;font-weight: 700;margin-bottom: 20px;padding-bottom: 20px">Before You Begin</p>
+                <p class="assessment-title" style="border-bottom: 1px solid black;font-size:18px;font-weight: bold;margin-bottom: 20px;padding-bottom: 20px">Before You Begin</p>
                 <div>
                     <ul>
                         <li>This form will take approximately 10 mins to complete. You may save your progress at any

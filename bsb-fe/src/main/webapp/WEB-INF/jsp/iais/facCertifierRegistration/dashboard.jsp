@@ -10,7 +10,7 @@
         <div class="row">
             <div class="col-xs-12">
                 <div class="dashboard-page-title">
-                    <h1>New Application</h1>
+                    <h1>New Facility Certifier</h1>
                 </div>
             </div>
         </div>

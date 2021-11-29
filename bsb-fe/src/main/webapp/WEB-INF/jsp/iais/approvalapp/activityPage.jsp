@@ -13,6 +13,7 @@
 %>
 <webui:setLayout name="iais-internet"/>
 
+<link href="<%=WEB_ROOT%>/css/bsb/bsb-common.css" rel="stylesheet"/>
 <script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-common.js"></script>
 <script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-approval-app.js"></script>
 
@@ -27,7 +28,7 @@
     <input type="hidden" name="action_additional" value="">
 
     <div class="container">
-        <div class="component-gp col-xs-12 col-sm-11 col-md-10 col-lg-8" style="margin-top:0px">
+        <div class="component-gp col-xs-12 col-sm-11 col-md-10 col-lg-8" style="margin-top:0">
             <div class="row">
                 <div class="col-xs-12 col-md-10">
                     <div class="form-group form-horizontal formgap">
