@@ -64,6 +64,7 @@ public class FePrintViewDelegator {
         if(LICENCE_VIEW.equals(licenceView)){
             request.setAttribute(LICENCE_VIEW,LICENCE_VIEW);
         }
+        ParamUtil.setRequestAttr(request,"serviceNameMiss",ParamUtil.getRequestString(request,"serviceNameMiss"));
         if(StringUtil.isEmpty(appType)){
             AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(request, NewApplicationDelegator.APPSUBMISSIONDTO);
             if (appSubmissionDto != null) {

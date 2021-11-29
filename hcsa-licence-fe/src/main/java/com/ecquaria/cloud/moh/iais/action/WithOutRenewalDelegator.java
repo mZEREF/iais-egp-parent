@@ -237,7 +237,7 @@ public class WithOutRenewalDelegator {
             licenceIDList.add(appSubmissionDtoDraft.getLicenceId());
             List<AppSubmissionDto> submissionDtos = outRenewalService.getAppSubmissionDtos(licenceIDList);
             appSubmissionDtoDraft.setOldRenewAppSubmissionDto(setMaxFileIndexIntoSession(bpc.request,submissionDtos.get(0)));
-            setDraftRfCData(bpc.request,draftNo,appSubmissionDtoDraft.getOldRenewAppSubmissionDto());
+            setDraftRfCData(bpc.request,draftNo,appSubmissionDtoDraft);
         }
 
         //get licensee ID
@@ -464,24 +464,7 @@ public class WithOutRenewalDelegator {
 
     private void setDraftRfCData(HttpServletRequest request,String draftNo, AppSubmissionDto appSubmissionDto){
         if(StringUtil.isNotEmpty(draftNo)){
-            List<AppGrpPremisesDto> appGrpPremisesDtoList1 = appSubmissionDto.getAppGrpPremisesDtoList();
-            String licenceNo = appSubmissionDto.getLicenceNo();
-            for (int i = 0; i < appGrpPremisesDtoList1.size(); i++) {
-                String hciCode = appGrpPremisesDtoList1.get(i).getHciCode();
-                String oldHciCode = appGrpPremisesDtoList1.get(i).getOldHciCode();
-                if(!StringUtil.isEmpty(oldHciCode)&&!oldHciCode.equals(hciCode)){
-                    hciCode=oldHciCode;
-                }
-                List<LicenceDto> licenceDtoByHciCode = requestForChangeService.getLicenceDtoByHciCode(hciCode,appSubmissionDto .getLicenseeId());
-                for (LicenceDto licenceDto : licenceDtoByHciCode) {
-                    if (licenceDto.getLicenceNo().equals(licenceNo)) {
-                        licenceDtoByHciCode.remove(licenceDto);
-                        break;
-                    }
-                }
-                appGrpPremisesDtoList1.get(i).setLicenceDtos(licenceDtoByHciCode);
-                request.getSession().setAttribute("selectLicence" + i, licenceDtoByHciCode);
-            }
+            newApplicationDelegator.setSelectLicence(appSubmissionDto,request);
         }else {
             Enumeration<?> names = request.getSession().getAttributeNames();
             if (names != null) {
@@ -1557,15 +1540,21 @@ public class WithOutRenewalDelegator {
                 }
             }
 
+            log.info(StringUtil.changeForLog("---- premisesEdit autoAppSubmissionDtos size :" + autoAppSubmissionDtos.size()));
+
             if(appEditSelectDto.isLicenseeEdit()){
                 //gen lic change rfc
                 NewApplicationHelper.addToAuto(getAutoChangeLicAppSubmissions(oldAppSubmissionDto,autoGrpNo,appSubmissionDto), autoAppSubmissionDtos);
             }
 
+            log.info(StringUtil.changeForLog("---- licenseeEdit autoAppSubmissionDtos size :" + autoAppSubmissionDtos.size()));
+
             if(appEditSelectDto.isServiceEdit()){
                 List<AppSubmissionDto> personAppSubmissionList = serviceInfoChangeEffectPersonForRFC.personContact(licenseeId,appSubmissionDto, oldAppSubmissionDto);
                 NewApplicationHelper.addToAuto(personAppSubmissionList, autoAppSubmissionDtos);
             }
+
+            log.info(StringUtil.changeForLog("---- serviceEdit autoAppSubmissionDtos size :" + autoAppSubmissionDtos.size()));
 
             if(goToPrePay){
                 autoAppSubmissionDtos.add(appSubmissionDto);
