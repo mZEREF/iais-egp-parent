@@ -5,10 +5,13 @@ import com.ecquaria.cloudfeign.FeignResponseEntity;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.cloud.openfeign.SpringQueryMap;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
 import sg.gov.moh.iais.egp.bsb.dto.audit.AuditQueryDto;
 import sg.gov.moh.iais.egp.bsb.dto.audit.FacilityQueryResultDto;
+import sg.gov.moh.iais.egp.bsb.dto.audit.OfficerProcessAuditDto;
 import sg.gov.moh.iais.egp.bsb.dto.audit.SaveAuditDto;
 import sg.gov.moh.iais.egp.bsb.entity.*;
 
@@ -54,6 +57,9 @@ public interface AuditClientBE {
     @GetMapping(value = "/bsb-facilityActivity/queryActivityByFacId")
     FeignResponseEntity<List<FacilityActivity>> getFacilityActivityByFacilityId(@RequestParam("facId") String facilityId);
 
-    @GetMapping(path = "/fac_info/facName")
-    FeignResponseEntity<List<String>> queryDistinctFN();
+    @GetMapping(value = "/bsb-audit/getOfficerProcessDataByAppId", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    ResponseDto<OfficerProcessAuditDto> getOfficerProcessDataByAppId(@RequestParam("appId") String appId);
+
+    @PostMapping(value = "/bsb-audit/officerProcessAuditDt", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<Void> officerProcessAuditDt(@RequestBody OfficerProcessAuditDto dto);
 }

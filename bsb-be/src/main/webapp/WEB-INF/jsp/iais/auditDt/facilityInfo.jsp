@@ -7,27 +7,27 @@
                     <tbody>
                         <tr>
                             <td class="col-xs-6" align="right">Facility Name</td>
-                            <td style="padding-left : 20px"><c:out value="${facility.facilityName}"/></td>
+                            <td style="padding-left : 20px"><c:out value="${processData.facName}"/></td>
                         </tr>
                         <tr>
                             <td align="right">Facility Address</td>
-                            <td style="padding-left : 20px"><c:out value="${facility.facilityAddress}"/></td>
+                            <td style="padding-left : 20px"><c:out value="${processData.facAddress}"/></td>
                         </tr>
                         <tr>
                             <td align="right">Facility Classification</td>
-                            <td style="padding-left : 20px"><iais:code code="${facility.facilityClassification}"></iais:code></td>
-                        </tr>
-<%--                        <tr>--%>
-<%--                            <td align="right">Facility Type</td>--%>
-<%--                            <td style="padding-left : 20px"><iais:code code="${facility.facilityType}"></iais:code></td>--%>
-<%--                        </tr>--%>
-                        <tr>
-                            <td align="right">Approval</td>
-                            <td style="padding-left : 20px"><c:out value="${facility.approval}"/></td>
+                            <td style="padding-left : 20px"><c:out value="${processData.facClassification}"/></td>
                         </tr>
                         <tr>
-                            <td align="right">Approval Status</td>
-                            <td style="padding-left : 20px"><iais:code code="${facility.approvalStatus}"></iais:code></td>
+                            <td align="right">Facility Type</td>
+                            <td style="padding-left : 20px"><c:out value="${processData.activityType}"/></td>
+                        </tr>
+                        <tr>
+                            <td align="right">Audit Type</td>
+                            <td style="padding-left : 20px"><c:out value="${processData.auditType}"/></td>
+                        </tr>
+                        <tr>
+                            <td align="right">Audit Date</td>
+                            <td style="padding-left : 20px"><fmt:formatDate value='${processData.auditDate}' pattern='dd/MM/yyyy'/></td>
                         </tr>
                     </tbody>
                 </table>
@@ -36,5 +36,5 @@
     </div>
 </div>
 <div align="left">
-    <a class="back" id="back" name="back" href="#"><em class="fa fa-angle-left"></em>Back</a>
+    <a class="back" href="/bsb-be/eservicecontinue/INTRANET/MohBsbTaskList"><em class="fa fa-angle-left"></em>Back</a>
 </div>

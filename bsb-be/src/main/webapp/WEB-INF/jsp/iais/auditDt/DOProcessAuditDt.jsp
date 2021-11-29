@@ -68,41 +68,30 @@
                                                         <div class="col-xs-12">
                                                             <div class="table-gp">
                                                                 <iais:section title="">
-                                                                    <%--                                                                    <c:forEach var="item" items="${revocationDetail}">--%>
-                                                                    <input name="applicationId" id="applicationId"
-                                                                           value="" hidden>
                                                                     <div>
                                                                         <iais:row>
-                                                                            <iais:field value="Request Audit Date"
-                                                                                        required="false"/>
+                                                                            <iais:field value="Request Audit Date" required="false"/>
                                                                             <iais:value width="10">
-                                                                                <p><fmt:formatDate
-                                                                                        value='${facilityAuditAPP.requestAuditDt}'
-                                                                                        pattern='dd/MM/yyyy'/></p>
+                                                                                <p><fmt:formatDate value='${processData.requestAuditDate}' pattern='dd/MM/yyyy'/></p>
                                                                             </iais:value>
                                                                         </iais:row>
                                                                     </div>
-                                                                    <%--                                                                    </c:forEach>--%>
-                                                                    <c:if test="${(facilityAuditAPP.facilityAudit.changeReason!=null && facilityAuditAPP.facilityAudit.changeReason!='')}">
+                                                                    <c:if test="${(processData.changeReason!=null && processData.changeReason!='')}">
                                                                         <div>
                                                                             <iais:row>
-                                                                                <iais:field
-                                                                                        value="Reason for Change Audit Date"
-                                                                                        required="false" width="12"/>
+                                                                                <iais:field value="Reason for Change Audit Date" required="false" width="12"/>
                                                                                 <iais:value width="10">
-                                                                                    <p>${facilityAuditAPP.facilityAudit.changeReason}</p>
+                                                                                    <p><c:out value="${processData.changeReason}"/></p>
                                                                                 </iais:value>
                                                                             </iais:row>
                                                                         </div>
                                                                     </c:if>
-                                                                    <c:if test="${(facilityAuditAPP.facilityAudit.remarks!=null && facilityAuditAPP.facilityAudit.remarks!='')}">
+                                                                    <c:if test="${(processData.remarks!=null && processData.remarks!='')}">
                                                                         <div>
                                                                             <iais:row>
-                                                                                <iais:field
-                                                                                        value="Facility Admin's Remark"
-                                                                                        required="false"/>
+                                                                                <iais:field value="Facility Admin's Remark" required="false"/>
                                                                                 <iais:value width="10">
-                                                                                    <p>${facilityAuditAPP.facilityAudit.remarks}</p>
+                                                                                    <p><c:out value="${processData.remarks}"/></p>
                                                                                 </iais:value>
                                                                             </iais:row>
                                                                         </div>
@@ -110,9 +99,7 @@
                                                                     <div id="rejectReason">
                                                                         <iais:row>
                                                                             <%--Required if decision is reject--%>
-                                                                            <iais:field value="Reason for rejection"
-                                                                                        required="true"
-                                                                                        width="12"/>
+                                                                            <iais:field value="Reason for rejection" required="true" width="12"/>
                                                                             <iais:value width="10">
                                                                                 <div class="input-group">
                                                                                     <div class="ax_default text_area">
@@ -131,9 +118,7 @@
                                                                     </div>
                                                                     <div>
                                                                         <iais:row>
-                                                                            <div><iais:field value="Remarks"
-                                                                                             required="false"
-                                                                                             width="12"/></div>
+                                                                            <div><iais:field value="Remarks" required="false" width="12"/></div>
                                                                             <iais:value width="10">
                                                                                 <div class="input-group">
                                                                                     <div class="ax_default text_area">
@@ -149,8 +134,7 @@
                                                                     </div>
                                                                     <div id="processingDecision">
                                                                         <iais:row>
-                                                                            <iais:field value="Processing Decision"
-                                                                                        required="true"/>
+                                                                            <iais:field value="Processing Decision" required="true"/>
                                                                             <iais:value width="10">
                                                                                 <iais:select name="decision"
                                                                                              id="decision"
@@ -163,14 +147,9 @@
                                                                         </iais:row>
                                                                     </div>
                                                                 </iais:section>
-                                                                <a style="float:left;padding-top: 1.1%;" class="back"
-                                                                   id="backFromProcessAuditDt" href="#"><em
-                                                                        class="fa fa-angle-left"></em> Back</a>
+                                                                <a style="float:left;padding-top: 1.1%;" class="back" href="/bsb-be/eservicecontinue/INTRANET/MohBsbTaskList"><em class="fa fa-angle-left"></em> Back</a>
                                                                 <div align="right">
-                                                                    <button name="submitBtn" id="submitButton"
-                                                                            type="button" class="btn btn-primary">
-                                                                        Submit
-                                                                    </button>
+                                                                    <button name="submitBtn" id="submitButton" type="button" class="btn btn-primary">Submit</button>
                                                                 </div>
                                                                 <div>&nbsp;</div>
                                                             </div>

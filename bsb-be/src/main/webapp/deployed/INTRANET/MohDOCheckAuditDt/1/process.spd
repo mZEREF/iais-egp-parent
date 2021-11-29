@@ -83,7 +83,7 @@
  <Switches>
   <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="action_type" name="Switch1" x="660" y="100">
    <Description />
-   <SwitchCase component="/Steps/AutomaticStep/verified" value="&quot;doVerified&quot;" />
+   <SwitchCase component="/Steps/AutomaticStep/verified" value="&quot;doApprove&quot;" />
    <SwitchCase component="/Steps/AutomaticStep/reject" value="&quot;doReject&quot;" />
   </Switch>
  </Switches>

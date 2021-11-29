@@ -29,6 +29,7 @@ public final class AuditConstants {
 
     public static final String KEY_AUDIT_PAGE_INFO = "pageInfo";
     public static final String KEY_AUDIT_DATA_LIST = "dataList";
+    public static final String KEY_OFFICER_PROCESS_DATA = "processData";
     public static final String KEY_ACTION_VALUE = "action_value";
     public static final String KEY_ACTION_ADDT = "action_additional";
 
@@ -65,4 +66,7 @@ public final class AuditConstants {
 
     public static final String SEPARATOR                   = "--v--";
     public static final String KEY_SECTION_IDXES          = "sectionIdx";
+
+    public static final String KEY_APP_ID = "appId";
+    public static final String KEY_TASK_ID = "taskId";
 }
