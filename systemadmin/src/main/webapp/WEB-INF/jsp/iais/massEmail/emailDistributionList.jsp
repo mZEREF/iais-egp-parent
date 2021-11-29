@@ -41,7 +41,7 @@
                                 <iais:field value="Service"/>
                                 <iais:value>
                                     <iais:value width="10">
-                                        <iais:select name="service" id="service" options="serviceSelection"
+                                        <iais:select name="service" id="service" options="serviceSelection" needSort="true"
                                                      firstOption="Please Select"  value="${service}"></iais:select>
                                     </iais:value>
                                 </iais:value>
