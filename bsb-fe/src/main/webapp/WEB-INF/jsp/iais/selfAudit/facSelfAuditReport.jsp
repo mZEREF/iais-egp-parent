@@ -61,7 +61,7 @@
                                         </div>
                                         <div class="tab-content">
                                             <div class="tab-pane active" id="tabInfo" role="tabpanel">
-                                                <%@include file="../auditDt/facilityInfo.jsp" %>
+                                                <%@include file="facilityInfo.jsp" %>
                                             </div>
                                             <div class="tab-pane" id="tabDocuments" role="tabpanel">
                                                 <%@include file="../doDocument/tabDocuments.jsp" %>
@@ -86,7 +86,7 @@
                                                                         <iais:row>
                                                                             <div><iais:field value="Audit type" required="false" width="12"/></div>
                                                                             <iais:value width="10">
-                                                                                <p><iais:code code="${facilityAudit.auditType}"></iais:code></p>
+                                                                                <p><c:out value="${selfAudit.auditType}"/></p>
                                                                             </iais:value>
                                                                         </iais:row>
                                                                     </div>
@@ -94,7 +94,7 @@
                                                                         <iais:row>
                                                                             <iais:field value="Audit Date" required="false"/>
                                                                             <iais:value width="10">
-                                                                                <p><fmt:formatDate value='${facilityAudit.auditDt}' pattern='dd/MM/yyyy'/></p>
+                                                                                <p><fmt:formatDate value='${selfAudit.auditDate}' pattern='dd/MM/yyyy'/></p>
                                                                             </iais:value>
                                                                         </iais:row>
                                                                     </div>

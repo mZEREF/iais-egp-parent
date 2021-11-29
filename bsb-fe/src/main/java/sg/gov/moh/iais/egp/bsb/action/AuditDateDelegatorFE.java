@@ -9,6 +9,7 @@ import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.StringUtils;
 import sg.gov.moh.iais.egp.bsb.client.AuditClient;
 import sg.gov.moh.iais.egp.bsb.constant.AuditConstants;
 import sg.gov.moh.iais.egp.bsb.dto.PageInfo;
@@ -97,7 +98,7 @@ public class AuditDateDelegatorFE {
         FacilityAudit audit = new FacilityAudit();
         audit.setId(auditId);
 
-        if (StringUtil.isNotEmpty(auditDt)) {
+        if (StringUtils.hasLength(auditDt)) {
             Date auditDate = Formatter.parseDate(auditDt);
             audit.setAuditDt(auditDate);
         }

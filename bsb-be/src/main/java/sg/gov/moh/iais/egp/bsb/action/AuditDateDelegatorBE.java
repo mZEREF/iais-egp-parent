@@ -49,7 +49,6 @@ public class AuditDateDelegatorBE {
      */
     public void prepareDOAndAOReviewData(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
-        ParamUtil.setSessionAttr(request, FACILITY_AUDIT_APP, null);
         //get needed data by appId(contain:audit,auditApp,Facility)
         String maskedAppId = ParamUtil.getString(request, KEY_APP_ID);
         String maskedTaskId = ParamUtil.getString(request, KEY_TASK_ID);

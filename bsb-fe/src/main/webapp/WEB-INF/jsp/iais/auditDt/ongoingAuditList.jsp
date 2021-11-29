@@ -91,7 +91,7 @@
                                                 <td>
                                                     <p><a id="specifyDt" onclick="doSpecifyDt('<iais:mask name="auditId" value="${item.id}"/>')">Specify audit date</a></p>
                                                     <p><a id="changeDt" onclick="dochangeDt('<iais:mask name="auditId" value="${item.id}"/>')">Change audit date</a></p>
-<%--                                                    <p><a id="facSelfAudit" onclick="submitReport('<iais:mask name="auditId" value="${item.id}"/>')">Facility self audit</a></p>--%>
+                                                    <p><a id="facSelfAudit" onclick="submitReport('<iais:mask name="auditId" value="${item.id}"/>')">Facility self audit</a></p>
                                                 </td>
                                             </c:otherwise>
                                         </c:choose>

@@ -103,6 +103,7 @@
                 <%--                            </tr>--%>
                 <%--                        </c:when>--%>
                 <%--                        <c:otherwise>--%>
+                <c:if test="${auditDocDto.facilityDocs ne null}">
                 <c:forEach items="${auditDocDto.facilityDocs}" var="appSupDocDto" varStatus="status">
                     <%--                                                <c:if test="${applicationViewDto.applicationDto.applicationType != ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK || (applicationViewDto.applicationDto.applicationType == ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK && interalFile.appDocType != ApplicationConsts.APP_DOC_TYPE_SELF_DEC_FORM)}">--%>
                     <tr>
@@ -144,6 +145,7 @@
                     </tr>
                     <%--                                                </c:if>--%>
                 </c:forEach>
+                </c:if>
                 <%--                        </c:otherwise>--%>
                 <%--                    </c:choose>--%>
 

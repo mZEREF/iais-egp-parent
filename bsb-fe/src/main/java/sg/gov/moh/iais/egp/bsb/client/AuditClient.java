@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
 import sg.gov.moh.iais.egp.bsb.dto.audit.AuditQueryDto;
 import sg.gov.moh.iais.egp.bsb.dto.audit.AuditQueryResultDto;
+import sg.gov.moh.iais.egp.bsb.dto.audit.FacilitySubmitSelfAuditDto;
 import sg.gov.moh.iais.egp.bsb.entity.*;
 
 import java.util.List;
@@ -35,4 +36,11 @@ public interface AuditClient {
 
     @GetMapping(value = "/bsb-audit/facName")
     FeignResponseEntity<List<String>> queryDistinctFN();
+
+    @GetMapping(value = "/bsb-audit/getSelfAuditDataByAuditId", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    ResponseDto<FacilitySubmitSelfAuditDto> getSelfAuditDataByAuditId(@RequestParam("auditId") String auditId);
+
+    @PostMapping(value = "/bsb-audit/facilitySelfAudit", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<Void> facilitySubmitSelfAudit(@RequestBody FacilitySubmitSelfAuditDto dto);
+
 }
