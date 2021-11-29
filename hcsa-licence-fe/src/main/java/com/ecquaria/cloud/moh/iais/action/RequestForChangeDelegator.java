@@ -42,7 +42,6 @@ import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.ValidationUtils;
 import com.ecquaria.cloud.moh.iais.constant.HcsaLicenceFeConstant;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
-import com.ecquaria.cloud.moh.iais.constant.NewApplicationConstant;
 import com.ecquaria.cloud.moh.iais.constant.RfcConst;
 import com.ecquaria.cloud.moh.iais.dto.AjaxResDto;
 import com.ecquaria.cloud.moh.iais.dto.PageShowFileDto;
@@ -597,15 +596,15 @@ public class RequestForChangeDelegator {
         AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request,RfcConst.RFCAPPSUBMISSIONDTO);
         ParamUtil.setRequestAttr(bpc.request,RfcConst.APPSUBMISSIONDTO,appSubmissionDto);
 
-        Map<AppSubmissionDto,List<String>> errorListMap = IaisCommonUtils.genNewHashMap();
-        List<String> errorList = appSubmissionService.doPreviewSubmitValidate(null, appSubmissionDto, false);
-        if (!errorList.isEmpty()) {
-            errorListMap.put(appSubmissionDto, errorList);
-        }
-        if (!errorListMap.isEmpty()) {
-            bpc.request.setAttribute(NewApplicationConstant.SHOW_OTHER_ERROR, NewApplicationHelper.getErrorMsg(errorListMap));
-            error.put(NewApplicationConstant.SHOW_OTHER_ERROR,"The data is incomplete.");
-        }
+//        Map<AppSubmissionDto,List<String>> errorListMap = IaisCommonUtils.genNewHashMap();
+//        List<String> errorList = appSubmissionService.doPreviewSubmitValidate(null, appSubmissionDto, false);
+//        if (!errorList.isEmpty()) {
+//            errorListMap.put(appSubmissionDto, errorList);
+//        }
+//        if (!errorListMap.isEmpty()) {
+//            bpc.request.setAttribute(NewApplicationConstant.SHOW_OTHER_ERROR, NewApplicationHelper.getErrorMsg(errorListMap));
+//            error.put(NewApplicationConstant.SHOW_OTHER_ERROR,"The data is incomplete.");
+//        }
         if(!error.isEmpty()){
             ParamUtil.setRequestAttr(bpc.request,"errorMsg" , WebValidationHelper.generateJsonStr(error));
             ParamUtil.setRequestAttr(bpc.request,"UEN",uen);
