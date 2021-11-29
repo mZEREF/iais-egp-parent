@@ -3833,6 +3833,8 @@ public class NewApplicationDelegator {
                     }else{
                         appGrpPremisesDto.setRfiCanEdit(false);
                     }
+                    List<LicenceDto> attribute = (List<LicenceDto>) request.getSession().getAttribute("selectLicence" + i);
+                    appGrpPremisesDto.setLicenceDtos(attribute);
                     appGrpPremisesDtoList.add(appGrpPremisesDto);
                     continue;
                 }
@@ -3852,7 +3854,8 @@ public class NewApplicationDelegator {
                     }
                 }
             }
-
+            List<LicenceDto> attribute = (List<LicenceDto>) request.getSession().getAttribute("selectLicence" + i);
+            appGrpPremisesDto.setLicenceDtos(attribute);
             //get value for session , this is the subtype's checkbox
             appGrpPremisesDto.setPremisesIndexNo(premIndexNo);
             // set premise type
