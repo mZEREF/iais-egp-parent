@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.validation.dataSubmission;
 
+import com.ecquaria.cloud.helper.SpringContextHelper;
 import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DonorSampleAgeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DonorSampleDto;
@@ -14,7 +15,6 @@ import java.util.List;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * DonorSampleDtoValidator
@@ -24,13 +24,13 @@ import org.springframework.beans.factory.annotation.Autowired;
  */
 @Slf4j
 public class DonorSampleDtoValidator implements CustomizeValidator {
-    @Autowired
-    private GenerateIdClient generateIdClient;
-    @Autowired
-    private ArDataSubmissionService arDataSubmissionService;
+
+
     @Override
     public Map<String, String> validate(Object obj, String profile, HttpServletRequest request) {
         log.info(StringUtil.changeForLog("The DonorSampleDtoValidator start ..."));
+        GenerateIdClient generateIdClient = SpringContextHelper.getContext().getBean(GenerateIdClient .class);
+        ArDataSubmissionService arDataSubmissionService = SpringContextHelper.getContext().getBean(ArDataSubmissionService .class);
         Map<String, String> map = IaisCommonUtils.genNewHashMap();
         DonorSampleDto donorSampleDto = (DonorSampleDto)obj;
         ValidationResult result = null;
