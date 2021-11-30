@@ -18,9 +18,11 @@ public class MohProcessDto implements Serializable {
     private String processFlow;
     //decision final how to process
     private String processType;
+
     private String taskId;
     private String appId;
 
+    //moh process data
     private String remarks;
     private String riskLevel;
     private String riskLevelComments;

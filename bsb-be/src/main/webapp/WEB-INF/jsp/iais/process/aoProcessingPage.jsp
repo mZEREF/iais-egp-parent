@@ -83,7 +83,7 @@
                                                                     <div>
                                                                         <iais:row>
                                                                             <iais:field value="Risk Level of the Biological Agent/Toxin" required="false"></iais:field>
-                                                                            <iais:value width="10"><p>${lastDOApplicationMisc.riskLevel}</p></iais:value>
+                                                                            <iais:value width="10"><p><iais:code code="${lastDOApplicationMisc.riskLevel}"></iais:code></p></iais:value>
                                                                         </iais:row>
                                                                     </div>
                                                                     <div>
@@ -95,7 +95,7 @@
                                                                     <div>
                                                                         <iais:row>
                                                                             <iais:field value="DO Recommendation" required="false"></iais:field>
-                                                                            <iais:value width="10"><p></p></iais:value>
+                                                                            <iais:value width="10"><p><iais:code code="${lastDOApplicationMisc.processDecision}"></iais:code></p></iais:value>
                                                                         </iais:row>
                                                                     </div>
                                                                     <div>

@@ -89,13 +89,13 @@
                                                                     <div>
                                                                         <iais:row>
                                                                             <iais:field value="DO Recommendation" required="false"></iais:field>
-                                                                            <iais:value width="10"><p></p></iais:value>
+                                                                            <iais:value width="10"><p><iais:code code="${lastDOApplicationMisc.processDecision}"></iais:code></p></iais:value>
                                                                         </iais:row>
                                                                     </div>
                                                                     <div>
                                                                         <iais:row>
                                                                             <iais:field value="AO Review Decision" required="false"></iais:field>
-                                                                            <iais:value width="10"><p></p></iais:value>
+                                                                            <iais:value width="10"><p><iais:code code="${lastAOApplicationMisc.processDecision}"></iais:code></p></iais:value>
                                                                         </iais:row>
                                                                     </div>
                                                                     <div>
@@ -132,13 +132,13 @@
                                                                     <div>
                                                                         <iais:row>
                                                                             <iais:field value="Validity Start Date" required="false"></iais:field>
-                                                                            <iais:value width="10"><p>${lastAOApplicationMisc.validityStartDt}</p></iais:value>
+                                                                            <iais:value width="10"><p><fmt:formatDate value='${lastAOApplicationMisc.validityStartDt}' pattern='dd/MM/yyyy'/></p></iais:value>
                                                                         </iais:row>
                                                                     </div>
                                                                     <div>
                                                                         <iais:row>
                                                                             <iais:field value="Validity End Date" required="false"></iais:field>
-                                                                            <iais:value width="10"><p>${lastAOApplicationMisc.validityEndDt}</p></iais:value>
+                                                                            <iais:value width="10"><p><fmt:formatDate value='${lastAOApplicationMisc.validityEndDt}' pattern='dd/MM/yyyy'/></p></iais:value>
                                                                         </iais:row>
                                                                     </div>
                                                                 </iais:section>
