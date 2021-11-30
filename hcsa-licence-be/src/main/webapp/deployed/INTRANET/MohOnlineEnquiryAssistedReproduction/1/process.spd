@@ -176,6 +176,9 @@
   <SynchronousLink destinationName="/Steps/AutomaticStep/preViewFullDetails" linkstyle="Direct" name="" sourceName="/Pages/WebPage/stageInfoPage" style="oblique">
    <position>{(500,640)(630,420)}</position>
   </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/perStageInfo" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch1" style="rectanular">
+   <position>{(740,120)(570,790)}</position>
+  </SynchronousLink>
  </Links>
  <Conditions/>
  <Switches>
@@ -184,6 +187,7 @@
    <SwitchCase component="/Steps/AutomaticStep/perAdvancedSearch" value="&quot;advanced&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/preViewFullDetails" value="&quot;viewFull&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/changePagination" value="&quot;search&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/perStageInfo" value="&quot;viewStage&quot;"/>
   </Switch>
   <Switch defClass="" defaultComponent="/Steps/AutomaticStep/perAdvancedSearch" executor="" icon="" leftOperand="adv_action_type" name="Switch2" x="180" y="290">
    <Description/>
