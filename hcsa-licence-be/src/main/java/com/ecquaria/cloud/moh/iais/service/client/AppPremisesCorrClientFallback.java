@@ -69,5 +69,4 @@ public class AppPremisesCorrClientFallback implements AppPremisesCorrClient{
         entity.setHeaders(headers);
         return entity;
     }
-
 }

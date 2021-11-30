@@ -17,6 +17,8 @@ import com.ecquaria.cloud.moh.iais.service.KpiAndReminderService;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import com.ecquaria.cloud.moh.iais.service.impl.KpiAndReminderServiceImpl;
+import java.io.Serializable;
+import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -43,7 +45,6 @@ public class KpiAndReminderDelegator {
     private KpiAndReminderService kpiAndReminderService;
     @Autowired
     private HcsaConfigClient hcsaConfigClient;
-    private  OrgUserDto entity;
     @Autowired
     private OrganizationClient organizationClient;
     public void  start(BaseProcessClass bpc){
@@ -69,15 +70,15 @@ public class KpiAndReminderDelegator {
     public void prepareData(BaseProcessClass bpc){
     log.info("-------------start prepareData  KpiAndReminderDelegator--------------");
 
-        List<HcsaSvcRoutingStageDto> entity = hcsaConfigClient.getAllHcsaSvcRoutingStage().getEntity();
-        for(HcsaSvcRoutingStageDto every:entity){
+        List<HcsaSvcRoutingStageDto> hcsaSvcRoutingStageDtos = hcsaConfigClient.getAllHcsaSvcRoutingStage().getEntity();
+        for(HcsaSvcRoutingStageDto every:hcsaSvcRoutingStageDtos){
             String stageCode = every.getStageCode();
             if("INS".equals(stageCode)){
-                entity.remove(every);
+                hcsaSvcRoutingStageDtos.remove(every);
                 break;
             }
         }
-        for(HcsaSvcRoutingStageDto every:entity){
+        for(HcsaSvcRoutingStageDto every:hcsaSvcRoutingStageDtos){
             String stageCode = every.getStageCode();
             if("ASO".equals(stageCode)){
                 every.setStageName("Admin Screening Process");
@@ -94,16 +95,16 @@ public class KpiAndReminderDelegator {
             }
         }
 
-        bpc.request.getSession().setAttribute("hcsaSvcRoutingStageDtos",entity);
+        ParamUtil.setSessionAttr(bpc.request, "hcsaSvcRoutingStageDtos" , (Serializable) hcsaSvcRoutingStageDtos);
         Date date=new Date();
         String format = new SimpleDateFormat(AppConsts.DEFAULT_DATE_FORMAT, Locale.ENGLISH).format(date);
-        bpc.request.getSession().setAttribute("date",format);
+        ParamUtil.setSessionAttr(bpc.request, "date",format);
         LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr( bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         String userId = loginContext.getUserId();
-        this.entity = organizationClient.retrieveOrgUserAccountById(userId).getEntity();
-        bpc.request.getSession().setAttribute("entity", this.entity.getDisplayName());
+        OrgUserDto orgUserDto = organizationClient.retrieveOrgUserAccountById(userId).getEntity();
+        ParamUtil.setRequestAttr(bpc.request,"orgUserName", orgUserDto.getDisplayName());
         kpiAndReminderService.getKpiAndReminder(bpc.request);
-
+        ParamUtil.setSessionAttr(bpc.request, "orgUserDtoAttr", orgUserDto);
     }
 
 
@@ -118,7 +119,7 @@ public class KpiAndReminderDelegator {
 
     @GetMapping(value = "/kpi-reminder-result")
     @ResponseBody
-    public Map kpiAndRe(String service, String module){
+    public Map kpiAndRe(HttpServletRequest request, String service, String module){
         Map map =new HashMap();
         HcsaSvcKpiDto hcsaSvcKpiDto = kpiAndReminderService.searchKpi( module,service);
         Map<String, Integer> stageIdKpi = hcsaSvcKpiDto.getStageIdKpi();
@@ -136,12 +137,13 @@ public class KpiAndReminderDelegator {
             }
         }else {
             Integer remThreshold = hcsaSvcKpiDto.getRemThreshold();
-            String displayName = entity.getDisplayName();
+            OrgUserDto orgUserDto = (OrgUserDto) ParamUtil.getSessionAttr(request, "orgUserDtoAttr");
+            String displayName = orgUserDto.getDisplayName();
 
             map.put("remThreshold",remThreshold);
-            map.put("entity",entity.getDisplayName());
+            map.put("entity",orgUserDto.getDisplayName());
             if(StringUtil.isEmpty(displayName)){
-                map.put("entity",entity.getUserId());
+                map.put("entity",orgUserDto.getUserId());
             }
         }
 

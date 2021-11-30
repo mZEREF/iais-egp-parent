@@ -231,7 +231,7 @@ public class KpiAndReminderServiceImpl implements KpiAndReminderService {
         request.getSession().removeAttribute("service");
         request.getSession().removeAttribute("reminderThreshold");
         request.getSession().removeAttribute("date");
-        request.getSession().removeAttribute("entity");
+        request.getSession().removeAttribute("orgUserDtoAttr");
         List<HcsaSvcRoutingStageDto> hcsaSvcRoutingStageDtos = (List<HcsaSvcRoutingStageDto>)request.getSession().getAttribute("hcsaSvcRoutingStageDtos");
         if(hcsaSvcRoutingStageDtos!=null){
             for(HcsaSvcRoutingStageDto every:hcsaSvcRoutingStageDtos){

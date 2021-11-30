@@ -4798,7 +4798,7 @@ public class ClinicalLaboratoryDelegator {
     }
 
     private void saveSvcFileAndSetFileId(List<AppSvcDocDto> appSvcDocDtos, Map<String,File> saveFileMap){
-        Map<String,File> passValidateFileMap = IaisCommonUtils.genNewHashMap();
+        Map<String,File> passValidateFileMap = IaisCommonUtils.genNewLinkedHashMap();
         for (AppSvcDocDto appSvcDocDto : appSvcDocDtos) {
             if(appSvcDocDto.isPassValidate()){
                 String premIndexNo = "";
