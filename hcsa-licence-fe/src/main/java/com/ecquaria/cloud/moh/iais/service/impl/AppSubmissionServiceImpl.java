@@ -145,6 +145,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 /**
  * AppSubmisionServiceImpl
@@ -420,69 +421,52 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
     public ProfessionalResponseDto retrievePrsInfo(String profRegNo) {
         log.info(StringUtil.changeForLog("Prof Reg No is " + profRegNo + " - PRS flag is " + prsFlag));
         ProfessionalResponseDto professionalResponseDto = null;
-        if ("Y".equals(prsFlag)) {
-            if (StringUtil.isEmpty(profRegNo)) {
-                professionalResponseDto = new ProfessionalResponseDto();
-            } else {
-                List<String> prgNos = IaisCommonUtils.genNewArrayList();
-                prgNos.add(profRegNo);
-                ProfessionalParameterDto professionalParameterDto = new ProfessionalParameterDto();
-                professionalParameterDto.setRegNo(prgNos);
-                professionalParameterDto.setClientId("22222");
-                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMddHHmmssSSS");
-                String format = simpleDateFormat.format(new Date());
-                professionalParameterDto.setTimestamp(format);
-                professionalParameterDto.setSignature("2222");
-                HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
-                HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
-                try {
-                    FeignResponseEntity<List> entity = feEicGatewayClient.getProfessionalDetail(professionalParameterDto,
-                            signature.date(), signature.authorization(),
-                            signature2.date(), signature2.authorization());
-                    if ("401".equals(entity.getStatusCode())) {
-                        professionalResponseDto = new ProfessionalResponseDto();
-                        professionalResponseDto.setStatusCode("401");
-                    } else {
-                        List<ProfessionalResponseDto> professionalResponseDtos = entity.getEntity();
-                        if (professionalResponseDtos != null && professionalResponseDtos.size() > 0) {
-                            professionalResponseDto = professionalResponseDtos.get(0);
-                            List<String> qualification = professionalResponseDto.getQualification();
-                            List<String> subspecialty = professionalResponseDto.getSubspecialty();
-                            StringBuilder sb = new StringBuilder();
-                            if (!IaisCommonUtils.isEmpty(qualification)) {
-                                String s = qualification.get(0);
-                                if (!StringUtil.isEmpty(s)) {
-                                    sb.append(s);
-                                }
-                            }
-                            if (!IaisCommonUtils.isEmpty(subspecialty)) {
-                                String s = subspecialty.get(0);
-                                if (!StringUtil.isEmpty(s)) {
-                                    sb.append(s);
-                                }
-                            }
-                            String s = sb.toString();
-                            if (qualification == null) {
-                                qualification = IaisCommonUtils.genNewArrayList(1);
-                            } else {
-                                qualification.clear();
-                            }
-                            qualification.add(s);
-                            professionalResponseDto.setQualification(qualification);
+        if ("Y".equals(prsFlag) && !StringUtil.isEmpty(profRegNo)) {
+            List<String> prgNos = IaisCommonUtils.genNewArrayList();
+            prgNos.add(profRegNo);
+            ProfessionalParameterDto professionalParameterDto = new ProfessionalParameterDto();
+            professionalParameterDto.setRegNo(prgNos);
+            professionalParameterDto.setClientId("22222");
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMddHHmmssSSS");
+            String format = simpleDateFormat.format(new Date());
+            professionalParameterDto.setTimestamp(format);
+            professionalParameterDto.setSignature("2222");
+            HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
+            HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
+            try {
+                FeignResponseEntity<List> entity = feEicGatewayClient.getProfessionalDetail(professionalParameterDto,
+                        signature.date(), signature.authorization(),
+                        signature2.date(), signature2.authorization());
+                if ("401".equals(entity.getStatusCode())) {
+                    professionalResponseDto = new ProfessionalResponseDto();
+                    professionalResponseDto.setStatusCode("401");
+                } else {
+                    List<ProfessionalResponseDto> professionalResponseDtos = entity.getEntity();
+                    if (professionalResponseDtos != null && professionalResponseDtos.size() > 0) {
+                        professionalResponseDto = professionalResponseDtos.get(0);
+                        List<String> qualification = professionalResponseDto.getQualification();
+                        List<String> subspecialty = professionalResponseDto.getSubspecialty();
+                        if (qualification != null && qualification.size() > 1) {
+                            professionalResponseDto.setQualification(Collections.singletonList(qualification.stream()
+                                    .collect(Collectors.joining(","))));
                         }
-                        if (professionalResponseDto == null) {
-                            professionalResponseDto = new ProfessionalResponseDto();
-                            professionalResponseDto.setStatusCode("-1");
-                        } else if (StringUtil.isEmpty(professionalResponseDto.getName())) {
-                            professionalResponseDto.setStatusCode("-2");
+                        if (subspecialty != null && subspecialty.size() > 1) {
+                            professionalResponseDto.setSubspecialty(Collections.singletonList(subspecialty.stream()
+                                    .collect(Collectors.joining(","))));
                         }
                     }
-                } catch (Exception e) {
-                    professionalResponseDto = new ProfessionalResponseDto();
-                    professionalResponseDto.setHasException(true);
-                    log.info(StringUtil.changeForLog("retrieve prs info start ..."));
-                    log.error(StringUtil.changeForLog(e.getMessage()), e);
+                    if (professionalResponseDto == null) {
+                        professionalResponseDto = new ProfessionalResponseDto();
+                        professionalResponseDto.setStatusCode("-1");
+                    } else if (StringUtil.isEmpty(professionalResponseDto.getName())) {
+                        professionalResponseDto.setStatusCode("-2");
+                    }
                 }
+            } catch (Exception e) {
+                professionalResponseDto = new ProfessionalResponseDto();
+                professionalResponseDto.setHasException(true);
+                log.info(StringUtil.changeForLog("retrieve prs info start ..."));
+                log.error(StringUtil.changeForLog(e.getMessage()), e);
             }
         }
         log.info(StringUtil.changeForLog("ProfessionalResponseDto: " + JsonUtil.parseToJson(professionalResponseDto)));
@@ -2480,14 +2464,15 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
     @Override
     public List<String> doPreviewSubmitValidate(Map<String, String> errorMap, AppSubmissionDto appSubmissionDto,
             boolean isRfi) {
-        List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
-        if (!IaisCommonUtils.isEmpty(appGrpPremisesDtoList)) {
-            for (AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtoList) {
-                NewApplicationHelper.setWrkTime(appGrpPremisesDto);
-            }
-            appSubmissionDto.setAppGrpPremisesDtoList(appGrpPremisesDtoList);
-        }
-        return doPreviewSubmitValidate(errorMap, appSubmissionDto, null, null, isRfi, null);
+//        List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
+//        if (!IaisCommonUtils.isEmpty(appGrpPremisesDtoList)) {
+//            for (AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtoList) {
+//                NewApplicationHelper.setWrkTime(appGrpPremisesDto);
+//            }
+//            appSubmissionDto.setAppGrpPremisesDtoList(appGrpPremisesDtoList);
+//        }
+//        return doPreviewSubmitValidate(errorMap, appSubmissionDto, null, null, isRfi, null);
+        return IaisCommonUtils.genNewArrayList();
     }
 
     private List<String> doPreviewSubmitValidate(Map<String, String> errorMap, AppSubmissionDto appSubmissionDto,

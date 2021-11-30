@@ -708,24 +708,7 @@ public class NewApplicationDelegator {
                 }
             }
 
-            List<AppGrpPremisesDto> appGrpPremisesDtoList1 = appSubmissionDto.getAppGrpPremisesDtoList();
-            String licenceNo = appSubmissionDto.getLicenceNo();
-            for (int i = 0; i < appGrpPremisesDtoList1.size(); i++) {
-                String hciCode = appGrpPremisesDtoList1.get(i).getHciCode();
-                String oldHciCode = appGrpPremisesDtoList1.get(i).getOldHciCode();
-                if(!StringUtil.isEmpty(oldHciCode)&&!oldHciCode.equals(hciCode)){
-                    hciCode=oldHciCode;
-                }
-                List<LicenceDto> licenceDtoByHciCode = requestForChangeService.getLicenceDtoByHciCode(hciCode, licenseeId);
-                for (LicenceDto licenceDto : licenceDtoByHciCode) {
-                    if (licenceDto.getLicenceNo().equals(licenceNo)) {
-                        licenceDtoByHciCode.remove(licenceDto);
-                        break;
-                    }
-                }
-                appGrpPremisesDtoList1.get(i).setLicenceDtos(licenceDtoByHciCode);
-                bpc.request.getSession().setAttribute("selectLicence" + i, licenceDtoByHciCode);
-            }
+            setSelectLicence(appSubmissionDto,bpc.request);
         }
         ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
         List<SelectOption> weeklyOpList = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_DAY_NAMES);
@@ -771,6 +754,29 @@ public class NewApplicationDelegator {
         }
     }
 
+    public  void setSelectLicence(AppSubmissionDto appSubmissionDto,HttpServletRequest request){
+        List<AppGrpPremisesDto> appGrpPremisesDtoList1 = appSubmissionDto.getAppGrpPremisesDtoList();
+        String licenceNo = appSubmissionDto.getLicenceNo();
+        for (int i = 0; i < appGrpPremisesDtoList1.size(); i++) {
+            String hciCode = appGrpPremisesDtoList1.get(i).getHciCode();
+            String oldHciCode = appGrpPremisesDtoList1.get(i).getOldHciCode();
+            if(!StringUtil.isEmpty(oldHciCode)&&!oldHciCode.equals(hciCode)){
+                hciCode=oldHciCode;
+            }
+            List<LicenceDto> licenceDtoByHciCode = requestForChangeService.getLicenceDtoByHciCode(hciCode,appSubmissionDto .getLicenseeId());
+            for (LicenceDto licenceDto : licenceDtoByHciCode) {
+                if (licenceDto.getLicenceNo().equals(licenceNo)) {
+                    licenceDtoByHciCode.remove(licenceDto);
+                    break;
+                }
+            }
+
+            licenceDtoByHciCode.forEach( licenceDto -> log.info(StringUtil.changeForLog("-------------- licenceDto licenceNo : " + licenceDto.getLicenceNo())));
+
+            appGrpPremisesDtoList1.get(i).setLicenceDtos(licenceDtoByHciCode);
+            request.getSession().setAttribute("selectLicence" + i, licenceDtoByHciCode);
+        }
+    }
     /**
      * StartStep: PrepareDocuments
      *
