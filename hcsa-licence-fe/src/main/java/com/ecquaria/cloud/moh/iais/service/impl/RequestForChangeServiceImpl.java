@@ -719,17 +719,12 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                                 }
                             }
                             String floorNoErr = errorMap.get("floorNo" + i);
-                            if (StringUtil.isEmpty(floorNoErr) && !StringUtil.isEmpty(floorNo)) {
+                            if (StringUtil.isEmpty(floorNoErr) && !StringUtil.isEmpty(floorNo) && floorNo.length() == 1) {
                                 Pattern pattern = compile("[0-9]*");
                                 boolean noFlag = pattern.matcher(floorNo).matches();
                                 if (noFlag) {
-                                    int floorNum = Integer.parseInt(floorNo);
-                                    if (10 > floorNum) {
-                                        floorNo = "0" + floorNum;
-                                        appGrpPremisesDtoList.get(i).setFloorNo(floorNo);
-                                    }
+                                    appGrpPremisesDtoList.get(i).setFloorNo("0" + floorNo);
                                 }
-
                             }
                             if (!empty && !empty1 && !empty2) {
                                 StringBuilder sb=new StringBuilder();
@@ -965,17 +960,12 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                             }
                             String floorNoErr = errorMap.get("conveyanceFloorNo" + i);
                             String floorNo = appGrpPremisesDtoList.get(i).getConveyanceFloorNo();
-                            if (StringUtil.isEmpty(floorNoErr) && !StringUtil.isEmpty(floorNo)) {
+                            if (StringUtil.isEmpty(floorNoErr) && !StringUtil.isEmpty(floorNo) && floorNo.length() == 1) {
                                 Pattern pattern = compile("[0-9]*");
                                 boolean noFlag = pattern.matcher(floorNo).matches();
                                 if (noFlag) {
-                                    int floorNum = Integer.parseInt(floorNo);
-                                    if (10 > floorNum) {
-                                        floorNo = "0" + floorNum;
-                                        appGrpPremisesDtoList.get(i).setConveyanceFloorNo(floorNo);
-                                    }
+                                    appGrpPremisesDtoList.get(i).setConveyanceFloorNo("0" + floorNo);
                                 }
-
                             }
                             if (!empty && !empty1 && !empty2) {
                                 StringBuilder sb=new StringBuilder();
@@ -1211,17 +1201,12 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                             }
                             String floorNoErr = errorMap.get("offSiteFloorNo" + i);
                             String floorNo = appGrpPremisesDtoList.get(i).getOffSiteFloorNo();
-                            if (StringUtil.isEmpty(floorNoErr) && !StringUtil.isEmpty(floorNo)) {
+                            if (StringUtil.isEmpty(floorNoErr) && !StringUtil.isEmpty(floorNo) && floorNo.length() == 1) {
                                 Pattern pattern = compile("[0-9]*");
                                 boolean noFlag = pattern.matcher(floorNo).matches();
                                 if (noFlag) {
-                                    int floorNum = Integer.parseInt(floorNo);
-                                    if (10 > floorNum) {
-                                        floorNo = "0" + floorNum;
-                                        appGrpPremisesDtoList.get(i).setOffSiteFloorNo(floorNo);
-                                    }
+                                    appGrpPremisesDtoList.get(i).setOffSiteFloorNo("0" + floorNo);
                                 }
-
                             }
                             if (!empty && !empty1 && !empty2) {
                                 StringBuilder sb=new StringBuilder();
@@ -2265,15 +2250,11 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                 }
 
                 String floorNoErr = errorMap.get(floorErrName + opLength);
-                if (StringUtil.isEmpty(floorNoErr) && !StringUtil.isEmpty(floorNo)) {
+                if (StringUtil.isEmpty(floorNoErr) && !StringUtil.isEmpty(floorNo) && floorNo.length() == 1) {
                     Pattern pattern = compile("[0-9]*");
                     boolean noFlag = pattern.matcher(floorNo).matches();
                     if (noFlag) {
-                        int floorNum = Integer.parseInt(floorNo);
-                        if (10 > floorNum) {
-                            floorNo = "0" + floorNum;
-                            operationalUnitDto.setFloorNo(floorNo);
-                        }
+                        operationalUnitDto.setFloorNo("0" + floorNo);
                     }
                 }
                 if(flag){
