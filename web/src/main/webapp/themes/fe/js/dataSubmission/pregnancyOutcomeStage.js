@@ -61,7 +61,7 @@ function firstUltrasoundOrderShowChangeFunction() {
         $stillBirthNumSection.find("input").val("");
     }
 
-    if (pregnancyOutcomeVal == liveBirth && firstUltrasoundOrderShowVal != singleton) {
+    if (firstUltrasoundOrderShowVal != singleton) {
         $wasSelFoeReduCarryOutDiv.show();
     } else {
         $wasSelFoeReduCarryOutDiv.hide();
@@ -249,13 +249,24 @@ function changeBabySection() {
     let currentBabySize = $('div[name="defectTypeSectionName"]').length;
     let babySize = parseInt($('#totalLiveBirthNum').html());
     if (babySize > currentBabySize) {
-        addBabaSection(currentBabySize,babySize - currentBabySize);
-    }else if (babySize < currentBabySize){
-        if (babySize == 0){
+        addBabaSection(currentBabySize, babySize - currentBabySize);
+    } else if (babySize < currentBabySize) {
+        if (babySize == 0) {
             $('.pregnancyOutcomeStageBabySection').remove();
-        }else {
-            $('#pregnancyOutcomeStageBabySection'+ (babySize - 1)).nextAll('.pregnancyOutcomeStageBabySection').remove()
+        } else {
+            $('#pregnancyOutcomeStageBabySection' + (babySize - 1)).nextAll('.pregnancyOutcomeStageBabySection').remove()
         }
+    }
+
+    //75742
+    let $babyDetailsPageDiv = $('.babyDetailsPageDiv');
+    if (babySize > 0) {
+        $babyDetailsPageDiv.show();
+    } else {
+        $babyDetailsPageDiv.hide();
+        let $NICUCareBabyNum = $('#NICUCareBabyNum');
+        $NICUCareBabyNum.val(0)
+        $NICUCareBabyNum.trigger('change');
     }
 }
 

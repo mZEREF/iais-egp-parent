@@ -277,7 +277,7 @@
     </div>
 </div>
 
-<div class="panel panel-default">
+<div class="panel panel-default babyDetailsPageDiv">
     <div class="panel-heading" style="padding-left: 90px;">
         <h4 class="panel-title">
             <strong>
@@ -285,7 +285,7 @@
             </strong>
         </h4>
     </div>
-    <div id="donorDtoDetails" class="panel-collapse collapse in">
+    <div class="panel-collapse collapse in">
         <div class="panel-body">
             <div class="panel-main-content form-horizontal">
                 <%@include file="pregnancyOutcomeStageBabySection.jsp" %>
