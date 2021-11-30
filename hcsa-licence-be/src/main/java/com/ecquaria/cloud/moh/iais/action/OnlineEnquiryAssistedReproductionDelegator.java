@@ -30,6 +30,7 @@ import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
 import java.text.ParseException;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -92,6 +93,12 @@ public class OnlineEnquiryAssistedReproductionDelegator {
         arFilterDto.setPatientName(patientName);
         String patientIdType=ParamUtil.getString(request,"patientIdType");
         arFilterDto.setPatientIdType(patientIdType);
+        String[] patientIdTypeList=ParamUtil.getStrings(request,"patientIdTypeList");
+        if(patientIdTypeList != null){
+            List<String> selectValList = Arrays.asList(patientIdTypeList);
+            arFilterDto.setPatientIdTypeList(selectValList);
+        }
+        arFilterDto.setPatientIdType(patientIdType);
         String patientIdNumber=ParamUtil.getString(request,"patientIdNumber");
         arFilterDto.setPatientIdNumber(patientIdNumber);
         String submissionId=ParamUtil.getString(request,"submissionId");
@@ -132,9 +139,11 @@ public class OnlineEnquiryAssistedReproductionDelegator {
         String arOrIuiCycle=ParamUtil.getString(request,"arOrIuiCycle");
         arFilterDto.setArOrIuiCycle(arOrIuiCycle);
         //more
-        String indicationArCycle=ParamUtil.getString(request,"indicationArCycle");
-        arFilterDto.setIndicationArCycle(indicationArCycle);
-
+        String[] indicationArCycle=ParamUtil.getStrings(request,"indicationArCycle");
+        if(indicationArCycle != null){
+            List<String> selectValList = Arrays.asList(indicationArCycle);
+            arFilterDto.setIndicationArCycleList(selectValList);
+        }
         String IVM=ParamUtil.getString(request,"IVM");
         arFilterDto.setIVM(IVM);
         String freshCycleNatural=ParamUtil.getString(request,"freshCycleNatural");

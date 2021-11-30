@@ -171,9 +171,9 @@
                                 </iais:row>
                                 <iais:row>
                                     <iais:field width="4" value="Main Indication of AR Cycle"/>
-                                    <iais:value width="6" cssClass="col-md-6"  >
-                                        <iais:multipleSelect name="indicationArCycle" selectValue="${assistedReproductionEnquiryFilterDto.indicationArCycle}" options="roleSelection"></iais:multipleSelect>
-                                    </iais:value>
+                                    <div class="col-md-6 multi-select col-xs-6">
+                                        <iais:select name="indicationArCycle" id="indicationArCycle" multiValues="${assistedReproductionEnquiryFilterDto.indicationArCycleList}" options="roleSelection"  multiSelect="true"/>
+                                    </div>
                                 </iais:row>
                                 <iais:row>
                                     <iais:field width="4" value="IVM" />
@@ -771,19 +771,6 @@
                                                     class="check-circle"></span>No</label>
                                         </div>
                                     </iais:value>
-                                    <iais:value width="2" cssClass="col-md-2">
-                                        <div class="form-check">
-                                            <input class="form-check-input"
-                                                   type="radio"
-                                                   name="patientART" id="patientARTNotApplicable"
-                                                   value="2"
-                                                   <c:if test="${ assistedReproductionEnquiryFilterDto.patientART =='2' }">checked</c:if>
-                                                   aria-invalid="false">
-                                            <label class="form-check-label"
-                                                   for="patientARTNotApplicable"><span
-                                                    class="check-circle"></span>Not Applicable</label>
-                                        </div>
-                                    </iais:value>
                                 </iais:row>
                                 <iais:row>
                                     <iais:field width="4" value="Is patient on IUI co-funding?" />
@@ -814,19 +801,6 @@
                                                     class="check-circle"></span>No</label>
                                         </div>
                                     </iais:value>
-                                    <iais:value width="2" cssClass="col-md-2">
-                                        <div class="form-check">
-                                            <input class="form-check-input"
-                                                   type="radio"
-                                                   name="patientIUI" id="patientIUINotApplicable"
-                                                   value="2"
-                                                   <c:if test="${ assistedReproductionEnquiryFilterDto.patientIUI =='2' }">checked</c:if>
-                                                   aria-invalid="false">
-                                            <label class="form-check-label"
-                                                   for="patientIUINotApplicable"><span
-                                                    class="check-circle"></span>Not Applicable</label>
-                                        </div>
-                                    </iais:value>
                                 </iais:row>
                                 <iais:row>
                                     <iais:field width="4" value="Is patient on PGT co-funding?" />
@@ -855,19 +829,6 @@
                                             <label class="form-check-label"
                                                    for="patientPGTNo"><span
                                                     class="check-circle"></span>No</label>
-                                        </div>
-                                    </iais:value>
-                                    <iais:value width="2" cssClass="col-md-2">
-                                        <div class="form-check">
-                                            <input class="form-check-input"
-                                                   type="radio"
-                                                   name="patientPGT" id="patientPGTNotApplicable"
-                                                   value="2"
-                                                   <c:if test="${ assistedReproductionEnquiryFilterDto.patientPGT =='2' }">checked</c:if>
-                                                   aria-invalid="false">
-                                            <label class="form-check-label"
-                                                   for="patientPGTNotApplicable"><span
-                                                    class="check-circle"></span>Not Applicable</label>
                                         </div>
                                     </iais:value>
                                 </iais:row>

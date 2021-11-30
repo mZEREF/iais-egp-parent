@@ -79,10 +79,9 @@
                                 </iais:row>
                                 <iais:row>
                                     <iais:field width="4" value="Patient ID Type"/>
-                                    <iais:value width="4" cssClass="col-md-4"  >
-                                        <iais:select name="patientIdType" id="patientIdType" firstOption="Please Select" codeCategory="CATE_ID_DS_ID_TYPE"
-                                                     value="${assistedReproductionEnquiryFilterDto.patientIdType}" cssClass="idTypeSel" />
-                                    </iais:value>
+                                    <div class="col-md-4 multi-select col-xs-4">
+                                        <iais:select name="patientIdTypeList"  multiValues="${assistedReproductionEnquiryFilterDto.patientIdTypeList}" codeCategory="CATE_ID_DS_ID_TYPE"  multiSelect="true"/>
+                                    </div>
                                 </iais:row>
                                 <iais:row>
                                     <iais:field width="4" value="Patient ID No."/>
