@@ -56,6 +56,7 @@
                             <iais:value width="7" cssClass="col-md-7">
                                 <iais:input maxLength="20" type="text" name="idNumber" value="${donorSampleDto.idNumber}" />
                             </iais:value>
+                            <span id="error_directedDonationYesDonorLive" name="iaisErrorMsg" class="error-msg"></span>
                         </iais:row>
                         <iais:row  >
                             <iais:field width="5" value="Donor's Name" mandatory="true"/>
@@ -116,6 +117,7 @@
                                 <iais:value width="7" cssClass="col-md-7">
                                     <iais:input maxLength="100" type="text" name="donorSampleCode" id="donorSampleCode" value="${donorSampleDto.donorSampleCode}" />
                                 </iais:value>
+                                <span id="error_donorSampleCodeRowDonorLive" name="iaisErrorMsg" class="error-msg"></span>
                             </iais:row>
                             <iais:row>
                             <iais:field width="5" value="Name of Bank / AR Centre where Sample is from" mandatory="true"/>
@@ -145,6 +147,7 @@
                                 <iais:value width="7" cssClass="col-md-7">
                                     <iais:input maxLength="20" type="text" name="knownIdNumber" value="${donorSampleDto.knownIdNumber}" />
                                 </iais:value>
+                                <span id="error_donorDetailDonorLive" name="iaisErrorMsg" class="error-msg"></span>
                             </iais:row>
                             <iais:row  >
                                 <iais:field width="5" value="Donor's Name" mandatory="true"/>

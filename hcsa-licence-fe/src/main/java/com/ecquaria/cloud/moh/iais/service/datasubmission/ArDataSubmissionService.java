@@ -9,7 +9,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DonorSampleAge
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DonorSampleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInventoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
-
 import java.io.File;
 import java.util.Date;
 import java.util.List;
@@ -137,6 +136,8 @@ public interface ArDataSubmissionService {
     ArSuperDataSubmissionDto setFreeStageDtoDefaultVal(ArSuperDataSubmissionDto arSuperDataSubmission);
 
     List<DonorSampleAgeDto> getDonorSampleAgeDtoBySampleKey(String sampleKey);
+
+    List<DonorSampleDto> getDonorSampleDtoBySampleKey(String sampleKey);
 
     List<String> saveFileRepo(List<File> files);
 }

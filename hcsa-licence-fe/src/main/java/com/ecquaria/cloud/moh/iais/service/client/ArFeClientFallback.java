@@ -158,4 +158,8 @@ public class ArFeClientFallback implements ArFeClient {
     public FeignResponseEntity<List<DonorSampleAgeDto>> getDonorSampleAgeDtoBySampleKey(String sampleCode) {
         return getFeignResponseEntity();
     }
+    @Override
+    public FeignResponseEntity<List<DonorSampleDto>> getDonorSampleDtoBySampleKey(String sampleKey) {
+        return getFeignResponseEntity();
+    }
 }

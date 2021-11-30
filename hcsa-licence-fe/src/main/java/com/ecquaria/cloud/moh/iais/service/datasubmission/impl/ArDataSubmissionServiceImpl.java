@@ -511,6 +511,11 @@ public class ArDataSubmissionServiceImpl implements ArDataSubmissionService {
     }
 
     @Override
+    public List<DonorSampleDto> getDonorSampleDtoBySampleKey(String sampleKey) {
+        return arFeClient.getDonorSampleDtoBySampleKey(sampleKey).getEntity();
+    }
+
+    @Override
     public List<String> saveFileRepo(List<File> files) {
         if (IaisCommonUtils.isEmpty(files)) {
             log.info(StringUtil.changeForLog("------ No file to be saved to file report server -----"));

@@ -48,14 +48,26 @@ public class DonorSampleDtoValidator implements CustomizeValidator {
                     ,donorSampleDto.getDonorSampleCode()
                     ,donorSampleDto.getSampleFromHciCode()
                     ,donorSampleDto.getSampleFromOthers());
-            if(donorSampleDtoFromDb != null){
-                List<DonorSampleAgeDto> donorSampleAgeDtos =  arDataSubmissionService.getDonorSampleAgeDtoBySampleKey(sampleKey);
-                donorSampleDtoFromDb.setDonorSampleAgeDtos(donorSampleAgeDtos);
-            }
+
         }else{
+            List<DonorSampleDto> donorSampleDtos =  arDataSubmissionService.getDonorSampleDtoBySampleKey(sampleKey);
+            if(IaisCommonUtils.isNotEmpty(donorSampleDtos)){
+                donorSampleDtoFromDb = donorSampleDtos.get(0);
+            }
+        }
+        if(donorSampleDtoFromDb != null){
+            List<DonorSampleAgeDto> donorSampleAgeDtos =  arDataSubmissionService.getDonorSampleAgeDtoBySampleKey(sampleKey);
+            donorSampleDtoFromDb.setDonorSampleAgeDtos(donorSampleAgeDtos);
+        }else{
+            log.info(StringUtil.changeForLog("Generated a ned samplekey"));
             donorSampleDto.setSampleKey(generateIdClient.getSeqId().getEntity());
         }
-
+        //countLive
+        if(countLive(donorSampleDtoFromDb) >3){
+            map.put("directedDonationYesDonorLive","DS_ERR053");
+            map.put("donorSampleCodeRowDonorLive","DS_ERR053");
+            map.put("donorDetailDonorLive","DS_ERR053");
+        }
         if(donorSampleDto.isDirectedDonation()){
              result = WebValidationHelper.validateProperty(donorSampleDto, "directedDonationY");
         }else{
@@ -113,15 +125,28 @@ public class DonorSampleDtoValidator implements CustomizeValidator {
                 }
              //Repetition
             }else if(repetition){
-                    map.put("ages"+i,"DS_ERR046");
-             //
-            }else{
-
+                map.put("ages"+i,"DS_ERR046");
             }
         }
 
         log.info(StringUtil.changeForLog("The DonorSampleDtoValidator end ..."));
         return map;
+    }
+    private int countLive(DonorSampleDto donorSampleDtoFromDb ){
+        int result = 0;
+        if(donorSampleDtoFromDb != null){
+            List<DonorSampleAgeDto> donorSampleAgeDtos = donorSampleDtoFromDb.getDonorSampleAgeDtos();
+            if(IaisCommonUtils.isNotEmpty(donorSampleAgeDtos)){
+                for(DonorSampleAgeDto donorSampleAgeDto : donorSampleAgeDtos){
+                    if(DataSubmissionConsts.DONOR_AGE_STATUS_LIVE_BIRTH.equals(donorSampleAgeDto.getStatus())){
+                        result ++;
+                    }
+                }
+            }
+        }
+
+        return result;
+
     }
     private boolean isRepetition(String age,String[] ages,DonorSampleDto donorSampleDto){
         boolean result = false;
