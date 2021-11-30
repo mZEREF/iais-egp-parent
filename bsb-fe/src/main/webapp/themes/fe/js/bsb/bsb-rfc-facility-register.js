@@ -46,12 +46,14 @@ $(function () {
 
 
     // facility classification radio button changes
+    var activityTypeP = $("#activityTypeP");
     var bsl3ActivityTypesDiv = $("#bsl3Types");
     var bsl4ActivityTypesDiv = $("#bsl4Types");
     var ufActivityTypesDiv = $("#ufTypes");
     var lspfActivityTypesDiv = $("#lspfTypes");
     var rfActivityTypesDiv = $("#rfTypes");
     $("#bsl3Radio").change(function () {
+        activityTypeP.show();
         $("input[type='checkbox']").removeAttr("checked");
         $("input[value='ACTVITY001']").attr("checked", true);
         bsl3ActivityTypesDiv.show();
@@ -61,6 +63,7 @@ $(function () {
         rfActivityTypesDiv.hide();
     });
     $("#bsl4Radio").change(function () {
+        activityTypeP.show();
         $("input[type='checkbox']").removeAttr("checked");
         $("input[value='ACTVITY001']").attr("checked", true);
         bsl3ActivityTypesDiv.hide();
@@ -70,6 +73,7 @@ $(function () {
         rfActivityTypesDiv.hide();
     });
     $("#ufRadio").change(function () {
+        activityTypeP.show();
         $("input[type='checkbox']").removeAttr("checked");
         $("input[value='ACTVITY002']").attr("checked", true);
         bsl3ActivityTypesDiv.hide();
@@ -79,6 +83,7 @@ $(function () {
         rfActivityTypesDiv.hide();
     });
     $("#lspfRadio").change(function () {
+        activityTypeP.show();
         $("input[type='checkbox']").removeAttr("checked");
         $("input[value='ACTVITY005']").attr("checked", true);
         bsl3ActivityTypesDiv.hide();
@@ -88,6 +93,7 @@ $(function () {
         rfActivityTypesDiv.hide();
     });
     $("#rfRadio").change(function () {
+        activityTypeP.show();
         $("input[type='checkbox']").removeAttr("checked");
         $("input[value='ACTVITY008']").attr("checked", true);
         bsl3ActivityTypesDiv.hide();
