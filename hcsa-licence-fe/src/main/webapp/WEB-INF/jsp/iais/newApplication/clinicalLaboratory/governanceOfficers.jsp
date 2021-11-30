@@ -716,8 +716,21 @@
         }
 
         //$('input[name="professionRegoNo"]').trigger('blur');
+        updateOtherQualificationMandatory();//75823
         init = 1;
     });
+
+    function updateOtherQualificationMandatory(){
+        $('table.assignContent').each(function () {
+            var prgNo = $(this).find('input[name="professionRegoNo"]').val();
+            var specialty = $(this).find('label.specialty-label').html();
+            if(prgNo != undefined && specialty != undefined){
+                if(prgNo.trim().length == 0 || specialty.trim().length == 0){
+                    $(this).find('span.otherQualificationSpan').html('*');
+                }
+            }
+        })
+    }
 
     var profRegNoBlur = function () {
         $('input[name="professionRegoNo"]').unbind('blur');
