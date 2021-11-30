@@ -56,27 +56,27 @@
                         <div class="form-check-gp">
                             <div class="form-check">
                                 <input type="radio" class="form-check-input" name="facClassification" id="bsl3Radio" <c:if test="${serviceSelection.facClassification eq 'FACCLA001'}">checked="checked"</c:if> value="FACCLA001"/>
-                                <label for="bsl3Radio" class="form-check-label"><span class="check-square"></span>Certified High Containment (BSL-3) Facility</label>
+                                <label for="bsl3Radio" class="form-check-label"><span class="check-circle"></span>Certified High Containment (BSL-3) Facility</label>
                             </div>
                             <div class="form-check">
                                 <input type="radio" class="form-check-input" name="facClassification" id="bsl4Radio" <c:if test="${serviceSelection.facClassification eq 'FACCLA002'}">checked="checked"</c:if> value="FACCLA002"/>
-                                <label for="bsl4Radio" class="form-check-label"><span class="check-square"></span>Certified Maximum Containment (BSL-4) Facility</label>
+                                <label for="bsl4Radio" class="form-check-label"><span class="check-circle"></span>Certified Maximum Containment (BSL-4) Facility</label>
                             </div>
                             <div class="form-check">
                                 <input type="radio" class="form-check-input" name="facClassification" id="ufRadio" <c:if test="${serviceSelection.facClassification eq 'FACCLA003'}">checked="checked"</c:if> value="FACCLA003"/>
-                                <label for="ufRadio" class="form-check-label"><span class="check-square"></span>Uncertified Facility</label>
+                                <label for="ufRadio" class="form-check-label"><span class="check-circle"></span>Uncertified Facility</label>
                             </div>
                             <div class="form-check">
                                 <input type="radio" class="form-check-input" name="facClassification" id="lspfRadio" <c:if test="${serviceSelection.facClassification eq 'FACCLA004'}">checked="checked"</c:if> value="FACCLA004"/>
-                                <label for="lspfRadio" class="form-check-label"><span class="check-square"></span>Biomanufacturing (Large-Scale Production) Facility</label>
+                                <label for="lspfRadio" class="form-check-label"><span class="check-circle"></span>Biomanufacturing (Large-Scale Production) Facility</label>
                             </div>
                             <div class="form-check">
                                 <input type="radio" class="form-check-input" name="facClassification" id="rfRadio" <c:if test="${serviceSelection.facClassification eq 'FACCLA005'}">checked="checked"</c:if> value="FACCLA005"/>
-                                <label for="rfRadio" class="form-check-label"><span class="check-square"></span>Registered Facility</label>
+                                <label for="rfRadio" class="form-check-label"><span class="check-circle"></span>Registered Facility</label>
                             </div>
                         </div>
 
-                        <p class="assessment-title">Activity Type</p>
+                        <p id="activityTypeP" class="assessment-title" style="display: none">Activity Type</p>
                         <div id="bsl3Types" <c:if test="${serviceSelection.facClassification ne 'FACCLA001'}">style="display: none"</c:if>>
                             <div class="form-check">
                                 <input type="checkbox" class="form-check-input" name="bsl3ActviTypes" id="bsl3fssba" <c:if test="${serviceSelection.facClassification eq 'FACCLA001' and serviceSelection.activityTypes.contains('ACTVITY001')}">checked="checked"</c:if> value="ACTVITY001"/>
