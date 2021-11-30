@@ -755,6 +755,7 @@ public class NewApplicationDelegator {
 
     public  void setSelectLicence(AppSubmissionDto appSubmissionDto,HttpServletRequest request){
         List<AppGrpPremisesDto> appGrpPremisesDtoList1 = appSubmissionDto.getAppGrpPremisesDtoList();
+        log.info(StringUtil.changeForLog("----------setSelectLicence : appGrpPremisesDtoList " + JsonUtil.parseToJson(appGrpPremisesDtoList1)));
         String licenceNo = appSubmissionDto.getLicenceNo();
         for (int i = 0; i < appGrpPremisesDtoList1.size(); i++) {
             String hciCode = appGrpPremisesDtoList1.get(i).getHciCode();
