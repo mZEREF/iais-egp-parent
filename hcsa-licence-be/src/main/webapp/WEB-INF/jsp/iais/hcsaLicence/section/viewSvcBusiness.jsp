@@ -9,7 +9,9 @@
             <div class="row">
                 <div class="col-xs-12">
                 <c:forEach var="businessDto" items="${currentPreviewSvcInfo.appSvcBusinessDtoList}" varStatus="status">
+                    <c:set var="oldBusiness" value="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcBusinessDtoList[status.index]}"/>
                     <div class="col-xs-12">
+                        <span class="newVal " attr="${businessDto.premType}:${businessDto.premAddress}">
                         <strong >
                             <c:choose>
                                 <c:when test="${'ONSITE' == businessDto.premType}">
@@ -27,6 +29,28 @@
                             </c:choose>
                         </strong>
                         : ${businessDto.premAddress}
+                        </span>
+                    </div>
+                    <div class="col-xs-12">
+                        <span class="oldVal " style="display: none" attr="${oldBusiness.premType}:${oldBusiness.premAddress}">
+                        <strong >
+                            <c:choose>
+                                <c:when test="${'ONSITE' == oldBusiness.premType}">
+                                    <c:out value="Premises"/>
+                                </c:when>
+                                <c:when test="${'CONVEYANCE' == oldBusiness.premType}">
+                                    <c:out value="Conveyance"/>
+                                </c:when>
+                                <c:when test="${'OFFSITE'  == oldBusiness.premType}">
+                                    <c:out value="Off-site"/>
+                                </c:when>
+                                <c:when test="${'EASMTS'  == oldBusiness.premType}">
+                                    <c:out value="Conveyance"/>
+                                </c:when>
+                            </c:choose>
+                        </strong>
+                        : ${oldBusiness.premAddress}
+                        </span>
                     </div>
                     <span class="col-xs-6"></span>
                     <table  class="col-xs-12" aria-describedby="">
@@ -46,8 +70,8 @@
                                     </span>
                                 </div>
                                 <div class="col-xs-6">
-                                    <span class="oldVal " style="display: none" attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcBusinessDtoList[status.index].businessName}">
-                                        <c:out value="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcBusinessDtoList[status.index].businessName}"></c:out>
+                                    <span class="oldVal " style="display: none" attr="${oldBusiness.businessName}">
+                                        <c:out value="${oldBusiness.businessName}"></c:out>
                                     </span>
                                 </div>
                             </td>

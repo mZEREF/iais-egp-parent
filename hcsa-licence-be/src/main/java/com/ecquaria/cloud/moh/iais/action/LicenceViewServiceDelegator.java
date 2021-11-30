@@ -1508,30 +1508,39 @@ public class LicenceViewServiceDelegator {
         int n1 = currDtos.size();
         int n2 = oldDtos.size();
         int index;
-        List<AppPremisesOperationalUnitDto> newList = IaisCommonUtils.genNewArrayList(Math.max(n1, n2));
+        List<AppPremisesOperationalUnitDto> newOldList = IaisCommonUtils.genNewArrayList(Math.max(n1, n2));
         for (int i = 0; i < n1; i++) {
             AppPremisesOperationalUnitDto dto = currDtos.get(i);
             index = oldDtos.indexOf(dto);
             if (index < 0) {
-                AppPremisesOperationalUnitDto premisesOperationalUnitDto=new AppPremisesOperationalUnitDto();
+                AppPremisesOperationalUnitDto premisesOperationalUnitDto = new AppPremisesOperationalUnitDto();
                 premisesOperationalUnitDto.setFloorNo("");
                 premisesOperationalUnitDto.setUnitNo("");
                 premisesOperationalUnitDto.setPremType(dto.getPremType());
-                newList.add(premisesOperationalUnitDto);
+                newOldList.add(premisesOperationalUnitDto);
             } else {
-                newList.add(oldDtos.get(index));
+                newOldList.add(oldDtos.get(index));
                 oldDtos.remove(index);
+            }
+        }
+        for (int i = 0; i < n1; i++) {
+            AppPremisesOperationalUnitDto dto = newOldList.get(i);
+            if ("".equals(dto.getFloorNo()) && "".equals(dto.getUnitNo()) && !oldDtos.isEmpty()) {
+                newOldList.set(i, oldDtos.get(0));
+                oldDtos.remove(i);
             }
         }
         n2 = oldDtos.size();
         for (int i = 0; i < n2; i++) {
-            AppPremisesOperationalUnitDto premisesOperationalUnitDto=new AppPremisesOperationalUnitDto();
+            AppPremisesOperationalUnitDto oldDto = oldDtos.get(i);
+            AppPremisesOperationalUnitDto premisesOperationalUnitDto = new AppPremisesOperationalUnitDto();
             premisesOperationalUnitDto.setFloorNo("");
             premisesOperationalUnitDto.setUnitNo("");
-            premisesOperationalUnitDto.setPremType(oldDtos.get(i).getPremType());
+            premisesOperationalUnitDto.setPremType(oldDto.getPremType());
             currDtos.add(premisesOperationalUnitDto);
+            newOldList.add(oldDto);
         }
-        return newList;
+        return newOldList;
     }
 
     private List<AppPremisesOperationalUnitDto> getOperationalUnitDtos(AppGrpPremisesDto appGrpPremisesDto) {
