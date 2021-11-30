@@ -114,11 +114,12 @@
                 <div class="row" style="padding-bottom: 9%">
                     <div class="col-md-12">
                         <div class="col-md-12 text-right">
-                            <c:set var="disabledCss" value="${(empty needValidatorSize || needValidatorSize == 0) ? 'disabled' : ''}"/>
-                            <a class="btn btn-primary ${disabledCss}" href="javascript:void(0);" id="ds-deleteDraft">Delete Draft</a>
-                            <a class="btn btn-primary ${disabledCss}" href="javascript:void(0);" id="ds-amend">Amend</a>
-                            <a class="btn btn-primary ${disabledCss}" href="javascript:void(0);" id="ds-withdraw">Withdraw</a>
-                            <a class="btn btn-primary ${disabledCss}" href="javascript:void(0);" id="ds-unlock">Request to Unlock</a>
+                            <c:set var="disabledCssDraft" value="${(empty needValidatorSize || needValidatorSize == 0) ? 'disabled' : ''}"/>
+                            <c:set var="disabledCssNoDraft" value="${((empty needValidatorSize || needValidatorSize == 0) || (!empty needValidatorSize && needValidatorSize> 1)) ? 'disabled' : ''}"/>
+                            <a class="btn btn-primary ${disabledCssDraft}" href="javascript:void(0);" id="ds-deleteDraft">Delete Draft</a>
+                            <a class="btn btn-primary ${disabledCssNoDraft}" href="javascript:void(0);" id="ds-amend">Amend</a>
+                            <a class="btn btn-primary ${disabledCssNoDraft}" href="javascript:void(0);" id="ds-withdraw">Withdraw</a>
+                            <a class="btn btn-primary ${disabledCssNoDraft}" href="javascript:void(0);" id="ds-unlock">Request to Unlock</a>
                         </div>
                     </div>
                 </div>
