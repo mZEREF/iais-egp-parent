@@ -1500,10 +1500,10 @@ public class WithOutRenewalDelegator {
         }
         //go page3
         ParamUtil.setRequestAttr(bpc.request, PAGE_SWITCH, PAGE3);
-        validateOtherSubDto(bpc.request,renewDto,oldAppSubmissionDto);
+       // validateOtherSubDto(bpc.request,renewDto,oldAppSubmissionDto);
     }
 
-    private void validateOtherSubDto(HttpServletRequest request, RenewDto renewDto, AppSubmissionDto oldAppSubmissionDto) throws Exception {
+   /* private void validateOtherSubDto(HttpServletRequest request, RenewDto renewDto, AppSubmissionDto oldAppSubmissionDto) throws Exception {
         if(renewDto.getAppSubmissionDtos().size() == 1){
             AppSubmissionDto appSubmissionDto = renewDto.getAppSubmissionDtos().get(0);
             AppEditSelectDto appEditSelectDto = EqRequestForChangeSubmitResultChange.rfcChangeModuleEvaluationDto(appSubmissionDto,oldAppSubmissionDto);
@@ -1512,7 +1512,7 @@ public class WithOutRenewalDelegator {
         }else {
             validateOtherSubDto(request,renewDto.getAppSubmissionDtos());
         }
-    }
+    }*/
 
     private void validateOtherSubDto(HttpServletRequest request,boolean goToPrePay,String autoGrpNo,String licenseeId,
                                         AppSubmissionDto appSubmissionDto, AppEditSelectDto appEditSelectDto,
