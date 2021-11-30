@@ -24,11 +24,12 @@ public class DataSubmissionConstant {
     public static String PAGE_STAGE_ACK                     = "ack";
 
     public static String AR_DATA_SUBMISSION                 = "arSuperDataSubmissionDto";
+    public static String AR_OLD_DATA_SUBMISSION             = "arOldSuperDataSubmissionDto";
     public static String AR_PREMISES_MAP                    = "AR_PREMISES_MAP";
     public static String AR_PREMISES                        = "AR_PREMISES";
-    public static String AR_PATIENT                         = "AR_PATIENT";
 
     public static String DP_DATA_SUBMISSION                 = "dpSuperDataSubmissionDto";
+    public static String DP_OLD_DATA_SUBMISSION             = "dpOldSuperDataSubmissionDto";
     public static String DP_PREMISES_MAP                    = "DP_PREMISES_MAP";
     public static String DP_PREMISES                        = "DP_PREMISES";
 

@@ -47,10 +47,7 @@ public class DpDataSubmissionDelegator {
      */
     public void doStart(BaseProcessClass bpc) {
         log.info("----- Drug Practices Submission Start -----");
-        HttpSession session = bpc.request.getSession();
-        session.removeAttribute(DataSubmissionConstant.DP_PREMISES_MAP);
-        session.removeAttribute(DataSubmissionConstant.DP_PREMISES);
-        session.removeAttribute(DataSubmissionConstant.DP_DATA_SUBMISSION);
+        DataSubmissionHelper.clearSession(bpc.request);
     }
 
     /**

@@ -51,10 +51,7 @@ public class ArDataSubmissionDelegator {
      */
     public void doStart(BaseProcessClass bpc) {
         log.info("----- Assisted Reproduction Submission Start -----");
-        HttpSession session = bpc.request.getSession();
-        session.removeAttribute(DataSubmissionConstant.AR_PREMISES_MAP);
-        session.removeAttribute(DataSubmissionConstant.AR_PREMISES);
-        session.removeAttribute(DataSubmissionConstant.AR_DATA_SUBMISSION);
+        DataSubmissionHelper.clearSession(bpc.request);
     }
 
     /**
