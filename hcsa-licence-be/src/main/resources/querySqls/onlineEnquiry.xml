@@ -39,12 +39,19 @@
                , case t2.floor_no
                   when null then null
                   when '' then null
-              else ' # '+t2.floor_no end
+              else ' #'+t2.floor_no end
                , case t2.unit_no
                   when null then null
                   when '' then null
-              else '-'+t2.unit_no end
-               , case t2.postal_code
+              else '-'+t2.unit_no end,
+                SUBSTRING ((
+		        SELECT ',#' + pou.FLOOR_NO +'-'+pou.UNIT_NO
+				        FROM premises_operational_unit pou
+				        WHERE pou.PREMISES_ID =t2.ID
+				        FOR XML path('')
+		    ), 1, 1000)
+               ,
+               case t2.postal_code
                   when null then null
                   when '' then null
               else ', '+t2.postal_code end
