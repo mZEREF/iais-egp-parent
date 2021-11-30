@@ -4017,16 +4017,17 @@ public class NewApplicationDelegator {
                 }
 
 
-                if(opLength > 0){
-                    for(int j=0;j<opLength;j++){
+                if (opLength > 0) {
+                    for (int j = 0; j < opLength; j++) {
                         AppPremisesOperationalUnitDto operationalUnitDto = new AppPremisesOperationalUnitDto();
                         String opFloorNoName = premValue[i] + "onSiteFloorNo" + j;
                         String opUnitNoName = premValue[i] + "onSiteUnitNo" + j;
 
-                        String opFloorNo = ParamUtil.getString(request,opFloorNoName);
-                        String opUnitNo = ParamUtil.getString(request,opUnitNoName);
+                        String opFloorNo = ParamUtil.getString(request, opFloorNoName);
+                        String opUnitNo = ParamUtil.getString(request, opUnitNoName);
                         operationalUnitDto.setFloorNo(opFloorNo);
                         operationalUnitDto.setUnitNo(opUnitNo);
+                        operationalUnitDto.setSeqNum(j);
                         appPremisesOperationalUnitDtos.add(operationalUnitDto);
                     }
                 }
@@ -4128,16 +4129,17 @@ public class NewApplicationDelegator {
                         eventList.add(appPremEventPeriodDto);
                     }
                 }
-                if(opLength > 0){
-                    for(int j=0;j<opLength;j++){
+                if (opLength > 0) {
+                    for (int j = 0; j < opLength; j++) {
                         AppPremisesOperationalUnitDto operationalUnitDto = new AppPremisesOperationalUnitDto();
                         String opFloorNoName = premValue[i] + "conveyanceFloorNo" + j;
                         String opUnitNoName = premValue[i] + "conveyanceUnitNo" + j;
 
-                        String opFloorNo = ParamUtil.getString(request,opFloorNoName);
-                        String opUnitNo = ParamUtil.getString(request,opUnitNoName);
+                        String opFloorNo = ParamUtil.getString(request, opFloorNoName);
+                        String opUnitNo = ParamUtil.getString(request, opUnitNoName);
                         operationalUnitDto.setFloorNo(opFloorNo);
                         operationalUnitDto.setUnitNo(opUnitNo);
+                        operationalUnitDto.setSeqNum(j);
                         appPremisesOperationalUnitDtos.add(operationalUnitDto);
                     }
                 }
@@ -4235,16 +4237,17 @@ public class NewApplicationDelegator {
                         eventList.add(appPremEventPeriodDto);
                     }
                 }
-                if(opLength > 0){
-                    for(int j=0;j<opLength;j++){
+                if (opLength > 0) {
+                    for (int j = 0; j < opLength; j++) {
                         AppPremisesOperationalUnitDto operationalUnitDto = new AppPremisesOperationalUnitDto();
                         String opFloorNoName = premValue[i] + "offSiteFloorNo" + j;
                         String opUnitNoName = premValue[i] + "offSiteUnitNo" + j;
 
-                        String opFloorNo = ParamUtil.getString(request,opFloorNoName);
-                        String opUnitNo = ParamUtil.getString(request,opUnitNoName);
+                        String opFloorNo = ParamUtil.getString(request, opFloorNoName);
+                        String opUnitNo = ParamUtil.getString(request, opUnitNoName);
                         operationalUnitDto.setFloorNo(opFloorNo);
                         operationalUnitDto.setUnitNo(opUnitNo);
+                        operationalUnitDto.setSeqNum(j);
                         appPremisesOperationalUnitDtos.add(operationalUnitDto);
                     }
                 }
@@ -4272,16 +4275,17 @@ public class NewApplicationDelegator {
                 appGrpPremisesDto.setEasMtsUseOnly(easMtsUseOnly);
                 appGrpPremisesDto.setEasMtsPubEmail(easMtsPubEmail);
                 appGrpPremisesDto.setEasMtsPubHotline(easMtsPubHotline);
-                if(opLength > 0){
-                    for(int j=0;j<opLength;j++){
+                if (opLength > 0) {
+                    for (int j = 0; j < opLength; j++) {
                         AppPremisesOperationalUnitDto operationalUnitDto = new AppPremisesOperationalUnitDto();
                         String opFloorNoName = premValue[i] + "easMtsFloorNo" + j;
                         String opUnitNoName = premValue[i] + "easMtsUnitNo" + j;
 
-                        String opFloorNo = ParamUtil.getString(request,opFloorNoName);
-                        String opUnitNo = ParamUtil.getString(request,opUnitNoName);
+                        String opFloorNo = ParamUtil.getString(request, opFloorNoName);
+                        String opUnitNo = ParamUtil.getString(request, opUnitNoName);
                         operationalUnitDto.setFloorNo(opFloorNo);
                         operationalUnitDto.setUnitNo(opUnitNo);
+                        operationalUnitDto.setSeqNum(j);
                         appPremisesOperationalUnitDtos.add(operationalUnitDto);
                     }
                 }
