@@ -2,7 +2,7 @@ package sg.gov.moh.iais.egp.bsb.dto.process.facility;
 
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
-import sg.gov.moh.iais.egp.bsb.dto.process.DocRecordInfo;
+import sg.gov.moh.iais.egp.bsb.dto.file.DocRecordInfo;
 
 import java.io.Serializable;
 import java.util.Collection;

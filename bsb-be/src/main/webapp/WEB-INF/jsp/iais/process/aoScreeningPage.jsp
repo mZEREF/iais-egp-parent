@@ -10,6 +10,7 @@
 <webui:setLayout name="iais-intranet"/>
 <script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-common.js"></script>
 <script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-process.js"></script>
+<script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-file.js"></script>
 <div class="dashboard">
     <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
         <input type="hidden" name="ifProcess" id="ifProcess" value="${mohProcess}">
@@ -56,7 +57,7 @@
                                                 <%@include file="/WEB-INF/jsp/iais/process/common/applicationInfo.jsp" %>
                                             </div>
                                             <div class="tab-pane" id="tabDocuments" role="tabpanel">
-                                                <%@include file="/WEB-INF/jsp/iais/doDocument/tabDocuments.jsp"%>
+                                                <%@include file="/WEB-INF/jsp/iais/process/common/tabDocuments.jsp"%>
                                             </div>
                                             <div class="tab-pane" id="tabDynamicContent" role="tabpanel">
                                                 <%@include file="/WEB-INF/jsp/iais/process/common/dynamicContent.jsp" %>
