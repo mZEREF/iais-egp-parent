@@ -77,6 +77,6 @@
 
     function sumbitPage(donorAction){
         $("#actionValue").val(donorAction);
-        submit("prepage");
+        submit("page");
     }
 </script>
