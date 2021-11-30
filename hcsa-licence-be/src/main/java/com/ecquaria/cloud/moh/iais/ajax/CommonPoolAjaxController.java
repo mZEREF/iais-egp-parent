@@ -237,8 +237,8 @@ public class CommonPoolAjaxController {
             searchParam.setPageNo(1);
             searchParam.setSort("REF_NO", SearchParam.ASCENDING);
             //set filter common
-            searchParam = setFilterByAppGrpParamAndNo(searchParamGroup, null, searchParam, hcsaTaskAssignDto, "T3.STATUS",
-                    "T4.ID","appPremId_list", hci_address);
+            searchParam = setFilterByAppGrpParamAndNo(searchParamGroup, null, searchParam, hcsaTaskAssignDto, "T1.APP_STATUS",
+                    "T1.APP_GRP_PREM_ID","appPremId_list", hci_address);
 
             if (!IaisCommonUtils.isEmpty(appCorrId_list)) {
                 String appPremCorrId = SqlHelper.constructInCondition("T1.REF_NO", appCorrId_list.size());
@@ -314,8 +314,8 @@ public class CommonPoolAjaxController {
             searchParam.setPageNo(1);
             searchParam.setSort("REF_NO", SearchParam.ASCENDING);
             //set filter common
-            searchParam = setFilterByAppGrpParamAndNo(searchParamGroup, null, searchParam, hcsaTaskAssignDto, "T3.STATUS",
-                    "T4.ID","appPremId_list", hci_address);
+            searchParam = setFilterByAppGrpParamAndNo(searchParamGroup, null, searchParam, hcsaTaskAssignDto, "T1.APP_STATUS",
+                    "T1.APP_GRP_PREM_ID","appPremId_list", hci_address);
 
             //set filters
             if (!IaisCommonUtils.isEmpty(appCorrId_list)) {
@@ -339,7 +339,7 @@ public class CommonPoolAjaxController {
             }
             //do search
             QueryHelp.setMainSql("inspectionQuery", "systemPoolDropdown", searchParam);
-            SearchResult<SuperPoolTaskQueryDto> searchResult = systemSearchAssignPoolService.getSystemPoolSecondByParam(searchParam);
+            SearchResult<SuperPoolTaskQueryDto> searchResult = inspectionService.getSupPoolSecondByParam(searchParam);;
             searchResult = inspectionService.getSecondSearchOtherData(searchResult, hcsaTaskAssignDto);
             jsonMap.put("ajaxResult", searchResult);
             jsonMap.put("result", "Success");
@@ -378,8 +378,8 @@ public class CommonPoolAjaxController {
             searchParam.setPageNo(1);
             searchParam.setSort("REF_NO", SearchParam.ASCENDING);
             //set filter common
-            searchParam = setFilterByAppGrpParamAndNo(searchParamGroup, null, searchParam, hcsaTaskAssignDto, "T3.STATUS",
-                    "T4.ID","appPremId_list", hci_address);
+            searchParam = setFilterByAppGrpParamAndNo(searchParamGroup, null, searchParam, hcsaTaskAssignDto, "T1.APP_STATUS",
+                    "T1.APP_GRP_PREM_ID","appPremId_list", hci_address);
 
             //set filters
             if (!IaisCommonUtils.isEmpty(appCorrId_list)) {
@@ -418,7 +418,7 @@ public class CommonPoolAjaxController {
             }
             //do search
             QueryHelp.setMainSql("inspectionQuery", "supervisorPoolDropdown", searchParam);
-            SearchResult<SuperPoolTaskQueryDto> searchResult = inspectionService.getSupPoolSecondByParam(searchParam);
+            SearchResult<SuperPoolTaskQueryDto> searchResult = inspectionService.getSupPoolSecondByParam(searchParam);;
             searchResult = inspectionService.getSecondSearchOtherData(searchResult, hcsaTaskAssignDto);
             jsonMap.put("ajaxResult", searchResult);
             jsonMap.put("result", "Success");

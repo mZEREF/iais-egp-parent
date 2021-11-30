@@ -51,6 +51,7 @@ import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
 import com.ecquaria.cloud.moh.iais.service.client.InspectionTaskClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
+import com.ecquaria.cloud.moh.iais.service.client.ReportBeViewTaskAssignClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -105,6 +106,9 @@ public class InspectionServiceImpl implements InspectionService {
 
     @Autowired
     private AppPremisesCorrClient appPremisesCorrClient;
+
+    @Autowired
+    private ReportBeViewTaskAssignClient reportBeViewTaskAssignClient;
 
     @Override
     public List<SelectOption> getAppTypeOption() {
@@ -306,7 +310,7 @@ public class InspectionServiceImpl implements InspectionService {
     @Override
     @SearchTrack(catalog = "inspectionQuery", key = "supervisorPoolDropdown")
     public SearchResult<SuperPoolTaskQueryDto> getSupPoolSecondByParam(SearchParam searchParam) {
-        return organizationClient.supervisorSecondSearch(searchParam).getEntity();
+        return reportBeViewTaskAssignClient.searchSuperDropPoolResult(searchParam).getEntity();
     }
 
     @Override
