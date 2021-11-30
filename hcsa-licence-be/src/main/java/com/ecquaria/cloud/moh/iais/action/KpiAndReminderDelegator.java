@@ -17,6 +17,7 @@ import com.ecquaria.cloud.moh.iais.service.KpiAndReminderService;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import com.ecquaria.cloud.moh.iais.service.impl.KpiAndReminderServiceImpl;
+import java.io.Serializable;
 import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -94,7 +95,7 @@ public class KpiAndReminderDelegator {
             }
         }
 
-        ParamUtil.setSessionAttr(bpc.request, "hcsaSvcRoutingStageDtos" ,hcsaSvcRoutingStageDtos);
+        ParamUtil.setSessionAttr(bpc.request, "hcsaSvcRoutingStageDtos" , (Serializable) hcsaSvcRoutingStageDtos);
         Date date=new Date();
         String format = new SimpleDateFormat(AppConsts.DEFAULT_DATE_FORMAT, Locale.ENGLISH).format(date);
         ParamUtil.setSessionAttr(bpc.request, "date",format);
