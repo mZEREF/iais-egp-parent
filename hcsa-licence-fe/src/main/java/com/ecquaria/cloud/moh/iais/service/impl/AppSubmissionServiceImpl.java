@@ -2464,14 +2464,15 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
     @Override
     public List<String> doPreviewSubmitValidate(Map<String, String> errorMap, AppSubmissionDto appSubmissionDto,
             boolean isRfi) {
-        List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
-        if (!IaisCommonUtils.isEmpty(appGrpPremisesDtoList)) {
-            for (AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtoList) {
-                NewApplicationHelper.setWrkTime(appGrpPremisesDto);
-            }
-            appSubmissionDto.setAppGrpPremisesDtoList(appGrpPremisesDtoList);
-        }
-        return doPreviewSubmitValidate(errorMap, appSubmissionDto, null, null, isRfi, null);
+//        List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
+//        if (!IaisCommonUtils.isEmpty(appGrpPremisesDtoList)) {
+//            for (AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtoList) {
+//                NewApplicationHelper.setWrkTime(appGrpPremisesDto);
+//            }
+//            appSubmissionDto.setAppGrpPremisesDtoList(appGrpPremisesDtoList);
+//        }
+//        return doPreviewSubmitValidate(errorMap, appSubmissionDto, null, null, isRfi, null);
+        return IaisCommonUtils.genNewArrayList();
     }
 
     private List<String> doPreviewSubmitValidate(Map<String, String> errorMap, AppSubmissionDto appSubmissionDto,
