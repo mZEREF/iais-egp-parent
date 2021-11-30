@@ -32,12 +32,12 @@ public class INTRANET___AOProcessCancelAudit___1 extends BaseProcessClass {
 
 	public void doApprove_OnStepProcess_0() throws Exception {
 	// 		doApprove->OnStepProcess
-		EngineHelper.delegate(DELEGATOR, "aoApprovalAuditDate", this);
+		EngineHelper.delegate(DELEGATOR, "aoApproveCancel", this);
 	}
 
 	public void doReject_OnStepProcess_0() throws Exception {
 	// 		doReject->OnStepProcess
-		EngineHelper.delegate(DELEGATOR, "aoRejectAuditDate", this);
+		EngineHelper.delegate(DELEGATOR, "aoRejectCancel", this);
 	}
 
 }

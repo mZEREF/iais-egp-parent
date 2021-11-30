@@ -25,9 +25,11 @@ public class FacilityQueryResultDto {
         private String facClassification;
         private String activityType;
         private Date lastAuditDate;
+        private Date auditDate;
         private String auditType;
         private String scenarioCategory;
         private String auditOutcome;
         private String cancelReason;
+        private String auditId;
     }
 }

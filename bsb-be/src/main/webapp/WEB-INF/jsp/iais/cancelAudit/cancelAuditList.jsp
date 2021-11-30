@@ -26,8 +26,7 @@
                             <div class="row">
                                 <div class="col-xs-10 col-md-12">
                                     <div class="components">
-                                        <a class="btn btn-secondary" data-toggle="collapse" name="filterBtn"
-                                           data-target="#beInboxFilter">Filter</a>
+                                        <a class="btn btn-secondary" data-toggle="collapse" name="filterBtn" data-target="#beInboxFilter">Filter</a>
                                     </div>
                                 </div>
                             </div>
@@ -96,24 +95,23 @@
                                 <thead>
                                 <tr>
                                     <iais:sortableHeader needSort="false" field="" value=" " isFE="false"/>
-                                    <iais:sortableHeader needSort="true" field="facility.facilityName" value="Facility Name" isFE="false"/>
-                                    <iais:sortableHeader needSort="true" field="facility.facilityClassification" value="Facility Classification" isFE="false"/>
+                                    <iais:sortableHeader needSort="false" field="facility.facilityName" value="Facility Name" isFE="false"/>
+                                    <iais:sortableHeader needSort="false" field="facility.facilityClassification" value="Facility Classification" isFE="false"/>
                                     <iais:sortableHeader needSort="false" field="facility.facilityType" value="Activity type" isFE="false"/>
-                                    <iais:sortableHeader needSort="true" field="auditDt" value="Audit Date" isFE="false"/>
-                                    <iais:sortableHeader needSort="true" field="auditType" value="Audit Type" isFE="false"/>
-                                    <iais:sortableHeader needSort="true" field="cancelReason" value="Cancellation Reasons" isFE="false"/>
+                                    <iais:sortableHeader needSort="false" field="auditDt" value="Audit Date" isFE="false"/>
+                                    <iais:sortableHeader needSort="false" field="auditType" value="Audit Type" isFE="false"/>
+                                    <iais:sortableHeader needSort="false" field="cancelReason" value="Cancellation Reasons" isFE="false"/>
                                 </tr>
                                 </thead>
                                     <%--@elvariable id="dataList" type="java.util.List<sg.gov.moh.iais.egp.bsb.dto.audit.FacilityQueryResultDto.FacInfo>"--%>
                                 <c:forEach var="item" items="${dataList}" varStatus="status">
                                     <c:set var="auditIndex" value="${(status.index + 1) + (pageInfo.pageNo) * pageInfo.size}"></c:set>
                                     <tr style="display: table-row;">
-                                            <%--                                        <input type="hidden" name="auditId" value="<iais:mask name='auditId' value='${item.id}'/>">--%>
-                                        <td><input name="facId" type="checkbox" id="auditId${auditIndex}" value="<iais:mask name='facId' value='${item.facId}'/>"></td>
+                                        <td><input name="auditId" type="checkbox" id="auditId${auditIndex}" value="<iais:mask name='auditId' value='${item.auditId}'/>"></td>
                                         <td>${item.facName}</td>
                                         <td><iais:code code="${item.facClassification}"/></td>
                                         <td><iais:code code="${item.activityType}"/></td>
-                                        <td><fmt:formatDate value='${item.lastAuditDate}' pattern='dd/MM/yyyy'/></td>
+                                        <td><fmt:formatDate value='${item.auditDate}' pattern='dd/MM/yyyy'/></td>
                                         <td><iais:code code="${item.auditType}"/></td>
                                         <td><c:out value="${item.cancelReason}"/></td>
                                     </tr>

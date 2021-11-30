@@ -2,24 +2,26 @@ package sg.gov.moh.iais.egp.bsb.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
+import com.ecquaria.cloud.moh.iais.common.utils.LogUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
-import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sg.gov.moh.iais.egp.bsb.client.AuditClientBE;
-import sg.gov.moh.iais.egp.bsb.client.DocClient;
 import sg.gov.moh.iais.egp.bsb.constant.AuditConstants;
-import sg.gov.moh.iais.egp.bsb.dto.audit.AuditDocDto;
+import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
+import sg.gov.moh.iais.egp.bsb.dto.audit.OfficerProcessAuditDto;
 import sg.gov.moh.iais.egp.bsb.entity.*;
-import sg.gov.moh.iais.egp.bsb.util.TableDisplayUtil;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
-import java.util.List;
+
+import static sg.gov.moh.iais.egp.bsb.constant.AuditConstants.*;
+import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.*;
 
 /**
  * @author Zhu Tangtang
@@ -31,222 +33,115 @@ public class SelfAuditDelegator {
     @Autowired
     private AuditClientBE auditClientBE;
 
-    @Autowired
-    private DocClient docClient;
-
-    /**
-     * StartStep: startStep
-     *
-     */
     public void start(BaseProcessClass bpc) throws IllegalAccessException {
-        AuditTrailHelper.auditFunction(AuditConstants.MODULE_AUDIT, AuditConstants.FUNCTION_AUDIT);
+        AuditTrailHelper.auditFunction(MODULE_AUDIT, FUNCTION_AUDIT);
         HttpServletRequest request = bpc.request;
         IaisEGPHelper.clearSessionAttr(request, AuditConstants.class);
-        ParamUtil.setSessionAttr(request, AuditConstants.PARAM_AUDIT_SEARCH, null);
+        ParamUtil.setSessionAttr(request, PARAM_AUDIT_SEARCH, null);
     }
 
-    /**
-     * AutoStep: prepareData
-     *
-     */
-    public void prepareFacilitySelfAuditData(BaseProcessClass bpc) {
-        HttpServletRequest request = bpc.request;
-        ParamUtil.setSessionAttr(request,AuditConstants.FACILITY,null);
-        ParamUtil.setSessionAttr(request,AuditConstants.AUDIT_DOC_DTO, null);
-        ParamUtil.setSessionAttr(request,AuditConstants.AUDIT_DOC_DTO, null);
-
-        String auditId = ParamUtil.getMaskedString(request, AuditConstants.AUDIT_ID);
-        FacilityAudit facilityAudit = auditClientBE.getFacilityAuditById(auditId).getEntity();
-
-        Facility facility = facilityAudit.getFacility();
-        String facilityAddress = TableDisplayUtil.getOneLineAddress(facility.getBlkNo(),
-                facility.getStreetName(),facility.getFloorNo(),facility.getUnitNo(),facility.getPostalCode());
-        facility.setFacilityAddress(facilityAddress);
-
-        //get doc
-        List<FacilityDoc> facilityDocList = docClient.getFacilityDocByFacId(facility.getId()).getEntity();
-        List<FacilityDoc> docList = new ArrayList<>();
-        for (FacilityDoc facilityDoc : facilityDocList) {
-            //todo You can only get the current user name
-            String submitByName = IaisEGPHelper.getCurrentAuditTrailDto().getMohUserId();
-            facilityDoc.setSubmitByName(submitByName);
-            docList.add(facilityDoc);
-        }
-        AuditDocDto auditDocDto = new AuditDocDto();
-        auditDocDto.setFacilityDocs(docList);
-
-        ParamUtil.setSessionAttr(request,AuditConstants.FACILITY,facility);
-        ParamUtil.setRequestAttr(request, AuditConstants.FACILITY_AUDIT, facilityAudit);
-        ParamUtil.setSessionAttr(request,AuditConstants.AUDIT_DOC_DTO, auditDocDto);
-    }
-
-    /**
-     * AutoStep: submit
-     *
-     */
-    public void submitSelfAuditReport(BaseProcessClass bpc) {
-        HttpServletRequest request = bpc.request;
-        String auditId = ParamUtil.getMaskedString(request, AuditConstants.AUDIT_ID);
-        String scenarioCategory = ParamUtil.getRequestString(request,AuditConstants.PARAM_SCENARIO_CATEGORY);
-        FacilityAudit audit = new FacilityAudit();
-        audit.setScenarioCategory(scenarioCategory);
-        audit.setId(auditId);
-        audit.setStatus(AuditConstants.PARAM_AUDIT_STATUS_PENDING_DO);
-        auditClientBE.updateAudit(audit).getEntity();
-    }
-
-    /**
-     * AutoStep: prepareData
-     *
-     * @param bpc
-     */
     public void prepareProcessSelfAuditData(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
-        ParamUtil.setSessionAttr(request,AuditConstants.FACILITY,null);
-        ParamUtil.setSessionAttr(request,AuditConstants.AUDIT_DOC_DTO, null);
-
-        String auditAppId = "2228B667-3815-EC11-BE6E-000C298D317C";
-        FacilityAuditApp facilityAuditApp = auditClientBE.getFacilityAuditAppById(auditAppId).getEntity();
-        FacilityAudit facilityAudit = auditClientBE.getFacilityAuditById(facilityAuditApp.getFacilityAudit().getId()).getEntity();
-        facilityAuditApp.setFacilityAudit(facilityAudit);
-
-        Facility facility = facilityAudit.getFacility();
-        String facilityAddress = TableDisplayUtil.getOneLineAddress(facility.getBlkNo(),
-                facility.getStreetName(),facility.getFloorNo(),facility.getUnitNo(),facility.getPostalCode());
-        facility.setFacilityAddress(facilityAddress);
-
-        List<FacilityDoc> facilityDocList = docClient.getFacilityDocByFacId(facility.getId()).getEntity();
-        List<FacilityDoc> docList = new ArrayList<>();
-        for (FacilityDoc facilityDoc : facilityDocList) {
-            //todo You can only get the current user name
-            String submitByName = IaisEGPHelper.getCurrentAuditTrailDto().getMohUserId();
-            facilityDoc.setSubmitByName(submitByName);
-            docList.add(facilityDoc);
+        //get needed data by appId(contain:audit,auditApp,Facility)
+        String maskedAppId = ParamUtil.getString(request, KEY_APP_ID);
+        String maskedTaskId = ParamUtil.getString(request, KEY_TASK_ID);
+        if (log.isInfoEnabled()) {
+            log.info("masked application id: [{}]", LogUtil.escapeCrlf(maskedAppId));
+            log.info("masked task id: [{}]", LogUtil.escapeCrlf(maskedTaskId));
         }
-        AuditDocDto auditDocDto = new AuditDocDto();
-        auditDocDto.setFacilityDocs(docList);
+        String appId = MaskUtil.unMaskValue("id", maskedAppId);
+        String taskId = MaskUtil.unMaskValue("id", maskedTaskId);
+        if (appId == null || appId.equals(maskedAppId)) {
+            throw new IaisRuntimeException("Invalid masked application ID");
+        }
+        if (taskId == null || taskId.equals(maskedTaskId)) {
+            throw new IaisRuntimeException("Invalid masked task ID");
+        }
 
-        List<FacilityAuditAppHistory> histories = auditClientBE.getAllHistoryByAuditAppId(facilityAuditApp.getId()).getEntity();
-
-        ParamUtil.setSessionAttr(request,AuditConstants.FACILITY,facility);
-        ParamUtil.setRequestAttr(request, AuditConstants.FACILITY_AUDIT_APP, facilityAuditApp);
-        ParamUtil.setSessionAttr(request,AuditConstants.AUDIT_DOC_DTO, auditDocDto);
-        ParamUtil.setRequestAttr(request,AuditConstants.PARAM_HISTORY,histories);
+        ResponseDto<OfficerProcessAuditDto> responseDto = auditClientBE.getOfficerProcessDataByAppId(appId);
+        if (responseDto.ok()) {
+            OfficerProcessAuditDto dto = responseDto.getEntity();
+            dto.setTaskId(taskId);
+            ParamUtil.setSessionAttr(request, KEY_OFFICER_PROCESS_DATA, dto);
+        } else {
+            log.warn("get audit API doesn't return ok, the response is {}", responseDto);
+            ParamUtil.setRequestAttr(request, KEY_OFFICER_PROCESS_DATA, new OfficerProcessAuditDto());
+        }
     }
 
-    /**
-     * audit app status change to AUDITST005
-     * @param bpc
-     */
     public void doVerified(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
-        FacilityAuditApp auditApp = before(request);
-        auditApp.setStatus(AuditConstants.PARAM_AUDIT_STATUS_PENDING_AO);
-        auditClientBE.processAuditDate(auditApp).getEntity();
-        FacilityAuditAppHistory auditAppHistory = abHistory(request);
-        auditAppHistory.setAppStatus(auditApp.getStatus());
-        auditClientBE.saveHistory(auditAppHistory);
+        String decision = ParamUtil.getRequestString(request,PARAM_DECISION);
+        OfficerProcessAuditDto dto = bindParam(request);
+        dto.setProcessDecision(decision);
+        dto.setDoDecision(decision);
+        dto.setAuditAppStatus(PARAM_AUDIT_STATUS_PENDING_AO);
+        dto.setAppStatus(APP_STATUS_PEND_AO);
+        auditClientBE.officerProcessSelfAudit(dto);
     }
 
-    /**
-     * audit app status change to AUDITST002
-     * @param bpc
-     */
     public void doRequestForInformation(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
-        FacilityAuditApp auditApp = before(request);
-        auditApp.setStatus(AuditConstants.PARAM_AUDIT_STATUS_PENDING_APPLICANT_INPUT);
-        auditClientBE.processAuditDate(auditApp);
-        FacilityAuditAppHistory auditAppHistory = abHistory(request);
-        auditAppHistory.setAppStatus(auditApp.getStatus());
-        auditClientBE.saveHistory(auditAppHistory);
+        String decision = ParamUtil.getRequestString(request,PARAM_DECISION);
+        OfficerProcessAuditDto dto = bindParam(request);
+        dto.setProcessDecision(decision);
+        dto.setDoDecision(decision);
+        dto.setAuditStatus(PARAM_AUDIT_STATUS_PENDING_APPLICANT_INPUT);
+        dto.setAuditAppStatus(PARAM_AUDIT_STATUS_PENDING_APPLICANT_INPUT);
+        dto.setAppStatus(APP_STATUS_PEND_INPUT);
+        auditClientBE.officerProcessSelfAudit(dto);
     }
 
-    /**
-     * audit app status change to AUDITST005
-     * @param bpc
-     */
     public void doReject(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
-        FacilityAuditApp auditApp = before(request);
-        auditApp.setStatus(AuditConstants.PARAM_AUDIT_STATUS_PENDING_AO);
-        auditClientBE.processAuditDate(auditApp);
-        FacilityAuditAppHistory auditAppHistory = abHistory(request);
-        auditAppHistory.setAppStatus(auditApp.getStatus());
-        auditClientBE.saveHistory(auditAppHistory);
+        String decision = ParamUtil.getRequestString(request,PARAM_DECISION);
+        OfficerProcessAuditDto dto = bindParam(request);
+        dto.setProcessDecision(decision);
+        dto.setDoDecision(decision);
+        dto.setAuditAppStatus(PARAM_AUDIT_STATUS_PENDING_AO);
+        dto.setAppStatus(APP_STATUS_PEND_AO);
+        auditClientBE.officerProcessSelfAudit(dto);
     }
 
-    /**
-     * audit app status change to AUDITST004
-     * @param bpc
-     */
     public void aoInternalClarifications(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
-        FacilityAuditApp auditApp = before(request);
-        auditApp.setStatus(AuditConstants.PARAM_AUDIT_STATUS_PENDING_DO);
-        auditApp.getFacilityAudit().setStatus(AuditConstants.PARAM_AUDIT_STATUS_PENDING_DO);
-        auditClientBE.processAuditDate(auditApp);
-        FacilityAuditAppHistory auditAppHistory = abHistory(request);
-        auditAppHistory.setAppStatus(auditApp.getStatus());
-        auditClientBE.saveHistory(auditAppHistory);
+        String decision = ParamUtil.getRequestString(request,PARAM_DECISION);
+        OfficerProcessAuditDto dto = bindParam(request);
+        dto.setProcessDecision(decision);
+        dto.setAuditStatus(PARAM_AUDIT_STATUS_PENDING_DO);
+        dto.setAuditAppStatus(PARAM_AUDIT_STATUS_PENDING_DO);
+        dto.setAppStatus(APP_STATUS_PEND_DO);
+        auditClientBE.officerProcessSelfAudit(dto);
     }
 
-    /**
-     * audit app status change to AUDITST003
-     * @param bpc
-     */
     public void aoApproved(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
-        FacilityAuditApp auditApp = before(request);
-        auditApp.setStatus(AuditConstants.PARAM_AUDIT_STATUS_COMPLETED);
-        auditApp.getFacilityAudit().setStatus(AuditConstants.PARAM_AUDIT_STATUS_COMPLETED);
-        auditClientBE.processAuditDate(auditApp);
-        FacilityAuditAppHistory auditAppHistory = abHistory(request);
-        auditAppHistory.setAppStatus(auditApp.getStatus());
-        auditClientBE.saveHistory(auditAppHistory);
+        String decision = ParamUtil.getRequestString(request,PARAM_DECISION);
+        OfficerProcessAuditDto dto = bindParam(request);
+        dto.setProcessDecision(decision);
+        dto.setAuditStatus(PARAM_AUDIT_STATUS_COMPLETED);
+        dto.setAuditAppStatus(PARAM_AUDIT_STATUS_COMPLETED);
+        dto.setAppStatus(APP_STATUS_APPROVED);
+        auditClientBE.officerProcessSelfAudit(dto);
     }
 
-
-    private FacilityAuditApp before(HttpServletRequest request){
-        String auditAppId = ParamUtil.getMaskedString(request,AuditConstants.AUDIT_APP_ID);
-        String auditOutCome = ParamUtil.getRequestString(request,AuditConstants.AUDIT_OUTCOME);
-        String remark = ParamUtil.getRequestString(request,AuditConstants.PARAM_REMARKS);
-        String aoRemark = ParamUtil.getRequestString(request,AuditConstants.AO_REMARKS);
-        String finalRemark = ParamUtil.getRequestString(request,AuditConstants.FINAL_REMARK);//on or null
-        String decision = ParamUtil.getRequestString(request,AuditConstants.PARAM_DECISION);
-
-        FacilityAudit audit = new FacilityAudit();
-        FacilityAuditApp auditApp = new FacilityAuditApp();
-        auditApp.setId(auditAppId);
-        auditApp.setDoRemarks(remark);
-        auditApp.setAoRemarks(aoRemark);
-        auditApp.setDoDecision(decision);
-        audit.setAuditOutcome(auditOutCome);
-        audit.setRemarks(aoRemark);
-        if (finalRemark==null) {
-            audit.setFinalRemarks("No");
-        }else {
-            audit.setFinalRemarks("Yes");
-        }
-        auditApp.setFacilityAudit(audit);
-        return auditApp;
-    }
-
-    private FacilityAuditAppHistory abHistory(HttpServletRequest request){
-        FacilityAuditApp auditApp = before(request);
+    private OfficerProcessAuditDto bindParam(HttpServletRequest request){
+        OfficerProcessAuditDto dto = (OfficerProcessAuditDto)ParamUtil.getSessionAttr(request, KEY_OFFICER_PROCESS_DATA);
         LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
-        FacilityAuditAppHistory auditAppHistory = new FacilityAuditAppHistory();
-        auditAppHistory.setActionBy(loginContext.getUserName());
-        auditAppHistory.setProcessDecision(auditApp.getDoDecision());
-        auditAppHistory.setAuditAppId(auditApp.getId());
-        if (StringUtil.isNotEmpty(auditApp.getDoRemarks())) {
-            auditAppHistory.setInternalRemarks(auditApp.getDoRemarks());
-        }
-        if (StringUtil.isNotEmpty(auditApp.getAoRemarks())) {
-            auditAppHistory.setInternalRemarks(auditApp.getAoRemarks());
-        }
+        String auditOutCome = ParamUtil.getRequestString(request,AUDIT_OUTCOME);
+        String remark = ParamUtil.getRequestString(request,PARAM_REMARKS);
+        String aoRemark = ParamUtil.getRequestString(request,AO_REMARKS);
+        String finalRemark = ParamUtil.getRequestString(request,FINAL_REMARK);//on or null
 
-        return auditAppHistory;
+        dto.setAuditOutCome(auditOutCome);
+        dto.setDoRemarks(remark);
+        dto.setAoRemarks(aoRemark);
+        if (finalRemark==null) {
+            dto.setFinalRemarks("No");
+        }else {
+            dto.setFinalRemarks("Yes");
+        }
+        dto.setActionBy(loginContext.getUserName());
+        return dto;
     }
-
 }

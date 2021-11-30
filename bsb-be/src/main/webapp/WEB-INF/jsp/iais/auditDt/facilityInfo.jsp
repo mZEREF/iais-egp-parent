@@ -5,6 +5,7 @@
             <div class="table-gp">
                 <table class="table table-bordered" style="margin-bottom: 0">
                     <tbody>
+                    <%--@elvariable id="processData" type="sg.gov.moh.iais.egp.bsb.dto.audit.OfficerProcessAuditDto"--%>
                         <tr>
                             <td class="col-xs-6" align="right">Facility Name</td>
                             <td style="padding-left : 20px"><c:out value="${processData.facName}"/></td>

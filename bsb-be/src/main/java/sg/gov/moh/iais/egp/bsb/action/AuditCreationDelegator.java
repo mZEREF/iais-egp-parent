@@ -114,9 +114,10 @@ public class AuditCreationDelegator {
         for (FacilityQueryResultDto.FacInfo facInfo : facilityList) {
             facInfoMap.put(facInfo.getFacId(), facInfo);
         }
+        //
+        facilityList.clear();
         for (String facId : facIds) {
             if (facInfoMap.containsKey(facId)) {
-                facilityList.clear();
                 facilityList.add(facInfoMap.get(facId));
             }
         }

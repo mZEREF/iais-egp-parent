@@ -22,55 +22,30 @@
                         <div class="bg-title">
                             <h2>Cancel Audit</h2>
                         </div>
+                        <%--@elvariable id="processData" type="sg.gov.moh.iais.egp.bsb.dto.audit.OfficerProcessAuditDto"--%>
                         <iais:row>
                             <iais:field value="Facility Name" width="15" required="false"/>
-                            <iais:value width="10">
-                                <c:out value="${facilityAuditAPP.facilityAudit.facility.facilityName}"></c:out>
-                            </iais:value>
-                        </iais:row>
-
-                        <iais:row>
-                            <iais:field value="Facility Classification" width="15" required="false"/>
-                            <iais:value width="10">
-                                <iais:code code="${facilityAuditAPP.facilityAudit.facility.facilityClassification}"></iais:code>
-                            </iais:value>
+                            <iais:value width="10"><c:out value="${processData.facName}"/></iais:value>
                         </iais:row>
 
                         <iais:row>
                             <iais:field value="Activity Type" width="15" required="false"/>
-                            <iais:value width="10">
-                                <c:forEach var="activity" items="${facilityAuditAPP.facilityAudit.facility.facilityActivities}" varStatus="status">
-                                    <c:choose>
-                                        <c:when test="${status.last}">
-                                            <iais:code code="${activity.activityType}"></iais:code>
-                                        </c:when>
-                                        <c:otherwise>
-                                            <iais:code code="${activity.activityType}"></iais:code>,
-                                        </c:otherwise>
-                                    </c:choose>
-                                </c:forEach>
-                            </iais:value>
+                            <iais:value width="10"><iais:code code="${processData.activityType}"/></iais:value>
                         </iais:row>
 
                         <iais:row>
                             <iais:field value="Audit Date" width="15" required="false"/>
-                            <iais:value width="10">
-                                <fmt:formatDate value="${facilityAuditAPP.facilityAudit.auditDt}" pattern="dd/MM/yyyy"></fmt:formatDate>
-                            </iais:value>
+                            <iais:value width="10"><fmt:formatDate value="${processData.auditDate}" pattern="dd/MM/yyyy"/></iais:value>
                         </iais:row>
 
                         <iais:row>
                             <iais:field value="Audit Type" width="15" required="false"/>
-                            <iais:value width="10">
-                                <iais:code code="${facilityAuditAPP.facilityAudit.auditType}"></iais:code>
-                            </iais:value>
+                            <iais:value width="10"><iais:code code="${processData.auditType}"/></iais:value>
                         </iais:row>
 
                         <iais:row>
                             <iais:field value="Duty Officer Cancellation Reasons" width="15" required="false"/>
-                            <iais:value width="10">
-                                <c:out value="${facilityAuditAPP.facilityAudit.cancelReason}"></c:out>
-                            </iais:value>
+                            <iais:value width="10"><c:out value="${processData.cancelReason}"/></iais:value>
                         </iais:row>
 
                         <div id="processingDecision">
@@ -91,7 +66,7 @@
 
                         <div class="row">
                             <div class="col-xs-12 col-sm-6">
-                                <a class="back" id="back" href="#"><em class="fa fa-angle-left"></em> Back</a>
+                                <a class="back" href="/bsb-be/eservicecontinue/INTRANET/MohBsbTaskList"><em class="fa fa-angle-left"></em> Back</a>
                             </div>
                             <div align="right">
                                 <button name="submitBtn3" id="AOProcessCancelAudit" type="button" class="btn btn-primary">
@@ -104,5 +79,4 @@
             </div>
         </div>
     </form>
-    <%@include file="/WEB-INF/jsp/include/validation.jsp" %>
 </div>
