@@ -439,39 +439,56 @@ public class UploadFileServiceImpl implements UploadFileService {
                 Set<String> appSvcPremisesScopeIds=IaisCommonUtils.genNewHashSet();
 
                 ApplicationListFileDto applicationListFileDto=new ApplicationListFileDto();
-                List<ApplicationGroupDto> groupDtos=IaisCommonUtils.genNewArrayList();
-                List<ApplicationDto> applicationDtos=IaisCommonUtils.genNewArrayList();
-                List<AppGrpPremisesEntityDto> appGrpPremisesDtos=IaisCommonUtils.genNewArrayList();
-                List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtos=IaisCommonUtils.genNewArrayList();
-                List<AppPremisesCorrelationDto> appPremisesCorrelationDtos=IaisCommonUtils.genNewArrayList();
-                List<AppSvcPremisesScopeDto> appSvcPremisesScopeDtos=IaisCommonUtils.genNewArrayList();
-                List<AppGrpPersonnelDto> appGrpPersonnelDtos=IaisCommonUtils.genNewArrayList();
-                List<AppGrpPersonnelExtDto> appGrpPersonnelExtDtos=IaisCommonUtils.genNewArrayList();
-                List<AppSvcKeyPersonnelDto> appSvcKeyPersonnelDtos=IaisCommonUtils.genNewArrayList();
-                List<AppSvcPremisesScopeAllocationDto> appSvcPremisesScopeAllocationDtos=IaisCommonUtils.genNewArrayList();
-                List<AppSvcPersonnelDto >  appSvcPersonnelDtos=IaisCommonUtils.genNewArrayList();
-                List<AppPremisesSelfDeclChklDto> appPremisesSelfDeclChklDtos=IaisCommonUtils.genNewArrayList();
-                List<AppSvcDocDto> appSvcDocDtos=IaisCommonUtils.genNewArrayList();
+                Set<ApplicationGroupDto> groupDtos=IaisCommonUtils.genNewHashSet();
+                Set<ApplicationDto> applicationDtos=IaisCommonUtils.genNewHashSet();
+                Set<AppGrpPremisesEntityDto> appGrpPremisesDtos=IaisCommonUtils.genNewHashSet();
+                Set<AppGrpPrimaryDocDto> appGrpPrimaryDocDtos=IaisCommonUtils.genNewHashSet();
+                Set<AppPremisesCorrelationDto> appPremisesCorrelationDtos=IaisCommonUtils.genNewHashSet();
+                List<AppPremisesCorrelationDto> appPremisesCorrelationDtoList=IaisCommonUtils.genNewArrayList();
+                Set<AppSvcPremisesScopeDto> appSvcPremisesScopeDtos=IaisCommonUtils.genNewHashSet();
+                List<AppSvcPremisesScopeDto> appSvcPremisesScopeDtoList=IaisCommonUtils.genNewArrayList();
+                Set<AppGrpPersonnelDto> appGrpPersonnelDtos=IaisCommonUtils.genNewHashSet();
+                List<AppGrpPersonnelDto> appGrpPersonnelDtoList=IaisCommonUtils.genNewArrayList();
+                Set<AppGrpPersonnelExtDto> appGrpPersonnelExtDtos=IaisCommonUtils.genNewHashSet();
+                List<AppGrpPersonnelExtDto> appGrpPersonnelExtDtoList=IaisCommonUtils.genNewArrayList();
+                Set<AppSvcKeyPersonnelDto> appSvcKeyPersonnelDtos=IaisCommonUtils.genNewHashSet();
+                List<AppSvcKeyPersonnelDto> appSvcKeyPersonnelDtoList=IaisCommonUtils.genNewArrayList();
+                Set<AppSvcPremisesScopeAllocationDto> appSvcPremisesScopeAllocationDtos=IaisCommonUtils.genNewHashSet();
+                List<AppSvcPremisesScopeAllocationDto> appSvcPremisesScopeAllocationDtoList=IaisCommonUtils.genNewArrayList();
+                Set<AppSvcPersonnelDto >  appSvcPersonnelDtos=IaisCommonUtils.genNewHashSet();
+                List<AppSvcPersonnelDto >  appSvcPersonnelDtoList=IaisCommonUtils.genNewArrayList();
+                Set<AppPremisesSelfDeclChklDto> appPremisesSelfDeclChklDtos=IaisCommonUtils.genNewHashSet();
+                List<AppPremisesSelfDeclChklDto> appPremisesSelfDeclChklDtoList=IaisCommonUtils.genNewArrayList();
+                Set<AppSvcDocDto> appSvcDocDtos=IaisCommonUtils.genNewHashSet();
+                List<AppSvcDocDto> appSvcDocDtoList=IaisCommonUtils.genNewArrayList();
                 List<AppPremPhOpenPeriodDto> appPremPhOpenPeriodDtoList=IaisCommonUtils.genNewArrayList();
                 Set<AppPremPhOpenPeriodDto> appPremPhOpenPeriodDtoSet=new HashSet<>(16);
 
                 List<AppPremiseMiscDto> appPremiseMiscDtoList=IaisCommonUtils.genNewArrayList();
-                List<AppPremisesSpecialDocDto> appPremisesSpecialDocDtoList=IaisCommonUtils.genNewArrayList();
+                Set<AppPremisesSpecialDocDto> appPremisesSpecialDocDtoList=IaisCommonUtils.genNewHashSet();
+                List<AppPremisesSpecialDocDto> appPremisesSpecialDocDtoList1=IaisCommonUtils.genNewArrayList();
+
                 List<AppPremEventPeriodDto > appPremEventPeriodDtoList=IaisCommonUtils.genNewArrayList();
                 Set<AppPremEventPeriodDto> appPremEventPeriodDtoSet=new HashSet<>(16);
 
                 List<AppPremOpenPeriodDto> appPremOpenPeriodDtoList=IaisCommonUtils.genNewArrayList();
                 Set<AppPremOpenPeriodDto> appPremOpenPeriodDtoSet=new HashSet<>(16);
 
-                List<AppEditSelectDto> appEditSelectDtos=IaisCommonUtils.genNewArrayList();
-                List<AppGroupMiscDto> appGroupMiscDtos=IaisCommonUtils.genNewArrayList();
-                List<AppFeeDetailsDto> appFeeDetailsDtos =IaisCommonUtils.genNewArrayList();
+                Set<AppEditSelectDto> appEditSelectDtos=IaisCommonUtils.genNewHashSet();
+                List<AppEditSelectDto> appEditSelectDtoList=IaisCommonUtils.genNewArrayList();
+                Set<AppGroupMiscDto> appGroupMiscDtos=IaisCommonUtils.genNewHashSet();
+                List<AppGroupMiscDto> appGroupMiscDtoList=IaisCommonUtils.genNewArrayList();
+                Set<AppFeeDetailsDto> appFeeDetailsDtos =IaisCommonUtils.genNewHashSet();
+                List<AppFeeDetailsDto> appFeeDetailsDtoList =IaisCommonUtils.genNewArrayList();
                 List<AppPremisesOperationalUnitDto> appPremisesOperationalUnitDtoList=IaisCommonUtils.genNewArrayList();
                 Set<AppPremisesOperationalUnitDto> appPremisesOperationalUnitDtoSet=IaisCommonUtils.genNewHashSet();
 
-                List<AppSvcChargesDto> appSvcChargesDtoList=new ArrayList<>(10);
-                List<AppSvcVehicleDto> appSvcVehicleDtoList=new ArrayList<>(10);
-                List<AppSvcClinicalDirectorDto> appSvcClinicalDirectorDtoList=new ArrayList<>(10);
+                Set<AppSvcChargesDto> appSvcChargesDtoList=IaisCommonUtils.genNewHashSet();
+                List<AppSvcChargesDto> appSvcChargesDtoList1=IaisCommonUtils.genNewArrayList();
+                Set<AppSvcVehicleDto> appSvcVehicleDtoList=IaisCommonUtils.genNewHashSet();
+                List<AppSvcVehicleDto> appSvcVehicleDtoList1=IaisCommonUtils.genNewArrayList();
+                Set<AppSvcClinicalDirectorDto> appSvcClinicalDirectorDtoSet=IaisCommonUtils.genNewHashSet();
+                List<AppSvcClinicalDirectorDto> appSvcClinicalDirectorDtoList=IaisCommonUtils.genNewArrayList();
                 List<AppDeclarationMessageDto> appDeclarationMessageDtos=new ArrayList<>(10);
                 List<AppDeclarationDocDto> appDeclarationDocDtoList=new ArrayList<>(10);
                 List<AppSubLicenseeCorrelationDto> appSubLicenseeCorrelationDtoList= IaisCommonUtils.genNewArrayList();
@@ -623,6 +640,12 @@ public class UploadFileServiceImpl implements UploadFileService {
                                         appSvcChargesDtoList.add(appSvcChargesDto);
                                     }
                                 }
+                                for (AppSvcClinicalDirectorDto appSvcClinicalDirectorDto:appSvcClinicalDirectors
+                                     ) {
+                                    if(appSvcClinicalDirectorDto.getAppPremCorreId().equals(premisesCorrelationDtoId)){
+                                        appSvcClinicalDirectorDtoSet.add(appSvcClinicalDirectorDto);
+                                    }
+                                }
                             }
                         }
 
@@ -690,37 +713,58 @@ public class UploadFileServiceImpl implements UploadFileService {
 
                     }
                 }
-
-                applicationListFileDto.setApplicationGroup(groupDtos);
-                applicationListFileDto.setApplication( applicationDtos);
-                applicationListFileDto.setAppGrpPremises(appGrpPremisesDtos);
-                applicationListFileDto.setAppGrpPrimaryDoc (appGrpPrimaryDocDtos);
+                List<ApplicationGroupDto> applicationGroupDtoList=IaisCommonUtils.genNewArrayList();
+                applicationGroupDtoList.addAll(groupDtos);
+                applicationListFileDto.setApplicationGroup(applicationGroupDtoList);
+                List<ApplicationDto> applicationDtoList=IaisCommonUtils.genNewArrayList();
+                applicationDtoList.addAll(applicationDtos);
+                applicationListFileDto.setApplication( applicationDtoList);
+                List<AppGrpPremisesEntityDto> appGrpPremisesEntityDtoList=IaisCommonUtils.genNewArrayList();
+                appGrpPremisesEntityDtoList.addAll(appGrpPremisesDtos);
+                applicationListFileDto.setAppGrpPremises(appGrpPremisesEntityDtoList);
+                List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtoList=IaisCommonUtils.genNewArrayList();
+                appGrpPrimaryDocDtoList.addAll(appGrpPrimaryDocDtos);
+                applicationListFileDto.setAppGrpPrimaryDoc (appGrpPrimaryDocDtoList);
                 appPremisesOperationalUnitDtoList.addAll(appPremisesOperationalUnitDtoSet);
                 appPremEventPeriodDtoList.addAll(appPremEventPeriodDtoSet);
                 appPremOpenPeriodDtoList.addAll(appPremOpenPeriodDtoSet);
                 appPremPhOpenPeriodDtoList.addAll(appPremPhOpenPeriodDtoSet);
-
                 applicationListFileDto.setAppPremPhOpenPeriods(appPremPhOpenPeriodDtoList);
-
-                applicationListFileDto.setAppPremisesCorrelation (appPremisesCorrelationDtos);
-                applicationListFileDto.setAppSvcPremisesScope  (appSvcPremisesScopeDtos);
-                applicationListFileDto.setAppGrpPersonnel (appGrpPersonnelDtos);
-                applicationListFileDto.setAppGrpPersonnelExt (appGrpPersonnelExtDtos);
-                applicationListFileDto.setAppSvcKeyPersonnel (appSvcKeyPersonnelDtos);
-                applicationListFileDto.setAppSvcPremisesScopeAllocation (appSvcPremisesScopeAllocationDtos);
-                applicationListFileDto.setAppSvcPersonnel (appSvcPersonnelDtos);
-                applicationListFileDto.setAppPremisesSelfDeclChklEntity(appPremisesSelfDeclChklDtos);
-                applicationListFileDto.setAppSvcDoc(appSvcDocDtos);
+                appPremisesCorrelationDtoList.addAll(appPremisesCorrelationDtos);
+                applicationListFileDto.setAppPremisesCorrelation (appPremisesCorrelationDtoList);
+                appSvcPremisesScopeDtoList.addAll(appSvcPremisesScopeDtos);
+                applicationListFileDto.setAppSvcPremisesScope  (appSvcPremisesScopeDtoList);
+                appGrpPersonnelDtoList.addAll(appGrpPersonnelDtos);
+                applicationListFileDto.setAppGrpPersonnel (appGrpPersonnelDtoList);
+                appGrpPersonnelExtDtoList.addAll(appGrpPersonnelExtDtos);
+                applicationListFileDto.setAppGrpPersonnelExt (appGrpPersonnelExtDtoList);
+                appSvcKeyPersonnelDtoList.addAll(appSvcKeyPersonnelDtos);
+                applicationListFileDto.setAppSvcKeyPersonnel (appSvcKeyPersonnelDtoList);
+                appSvcPremisesScopeAllocationDtoList.addAll(appSvcPremisesScopeAllocationDtos);
+                applicationListFileDto.setAppSvcPremisesScopeAllocation (appSvcPremisesScopeAllocationDtoList);
+                appSvcPersonnelDtoList.addAll(appSvcPersonnelDtos);
+                applicationListFileDto.setAppSvcPersonnel (appSvcPersonnelDtoList);
+                appPremisesSelfDeclChklDtoList.addAll(appPremisesSelfDeclChklDtos);
+                applicationListFileDto.setAppPremisesSelfDeclChklEntity(appPremisesSelfDeclChklDtoList);
+                appSvcDocDtoList.addAll(appSvcDocDtos);
+                applicationListFileDto.setAppSvcDoc(appSvcDocDtoList);
                 applicationListFileDto.setAppPremiseMiscEntities(appPremiseMiscDtoList);
-                applicationListFileDto.setAppPremisesSpecialDocEntities(appPremisesSpecialDocDtoList);
-                applicationListFileDto.setAppEditSelects(appEditSelectDtos);
-                applicationListFileDto.setAppGroupMiscs(appGroupMiscDtos);
-                applicationListFileDto.setAppFeeDetails(appFeeDetailsDtos);
+                appPremisesSpecialDocDtoList1.addAll(appPremisesSpecialDocDtoList);
+                applicationListFileDto.setAppPremisesSpecialDocEntities(appPremisesSpecialDocDtoList1);
+                appEditSelectDtoList.addAll(appEditSelectDtos);
+                applicationListFileDto.setAppEditSelects(appEditSelectDtoList);
+                appGroupMiscDtoList.addAll(appGroupMiscDtos);
+                applicationListFileDto.setAppGroupMiscs(appGroupMiscDtoList);
+                appFeeDetailsDtoList.addAll(appFeeDetailsDtos);
+                applicationListFileDto.setAppFeeDetails(appFeeDetailsDtoList);
                 applicationListFileDto.setAppPremisesOperationalUnits(appPremisesOperationalUnitDtoList);
                 applicationListFileDto.setAppPremEventPeriods(appPremEventPeriodDtoList);
                 applicationListFileDto.setAppPremOpenPeriods(appPremOpenPeriodDtoList);
-                applicationListFileDto.setAppSvcVehicles(appSvcVehicleDtoList);
-                applicationListFileDto.setAppSvcChargesPages(appSvcChargesDtoList);
+                appSvcVehicleDtoList1.addAll(appSvcVehicleDtoList);
+                applicationListFileDto.setAppSvcVehicles(appSvcVehicleDtoList1);
+                appSvcChargesDtoList1.addAll(appSvcChargesDtoList);
+                applicationListFileDto.setAppSvcChargesPages(appSvcChargesDtoList1);
+                appSvcClinicalDirectorDtoList.addAll(appSvcClinicalDirectorDtoSet);
                 applicationListFileDto.setAppSvcClinicalDirectors(appSvcClinicalDirectorDtoList);
                 applicationListFileDto.setAppDeclarationMessages(appDeclarationMessageDtos);
                 applicationListFileDto.setAppDeclarationDocs(appDeclarationDocDtoList);
