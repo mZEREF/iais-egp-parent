@@ -108,7 +108,7 @@
         <div class="form-group">
           <label class="col-xs-12  col-sm-1  col-md-4 control-label">Created By:</label>
           <div class="col-xs-8 col-sm-6 col-md-5">
-            <input style="display: none" value="${entity}" name="createBy" >
+            <input style="display: none" value="${orgUserName}" name="createBy" >
             <p>Charlie Tan</p>
 
           </div>
