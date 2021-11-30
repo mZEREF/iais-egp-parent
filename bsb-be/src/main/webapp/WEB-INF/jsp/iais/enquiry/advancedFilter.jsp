@@ -51,13 +51,13 @@
                     <iais:row>
                         <iais:field value="Facility Expiry Date From"/>
                         <div class="col-sm-7 col-md-4 col-xs-10">
-                            <iais:datePicker name="facilityExpiryDateFrom" dateVal="${facInfoSearchParam.facilityExpiryDateFrom}"></iais:datePicker>
+                            <iais:datePicker name="facilityExpiryDateFrom" dateVal="${facInfoSearchParam.facilityExpiryDateFrom}"/>
                         </div >
                     </iais:row>
                     <iais:row>
                         <iais:field value="Facility Expiry Date To"/>
                         <div class="col-sm-7 col-md-4 col-xs-10">
-                            <iais:datePicker name="facilityExpiryDateTo" dateVal="${facInfoSearchParam.facilityExpiryDateTo}"></iais:datePicker>
+                            <iais:datePicker name="facilityExpiryDateTo" dateVal="${facInfoSearchParam.facilityExpiryDateTo}"/>
                             <span id="error_facilityExpiryDateTo" name="iaisErrorMsg" class="error-msg"></span>
                         </div >
                     </iais:row>
@@ -173,13 +173,13 @@
                     <iais:row>
                         <iais:field value="Approval Submission Date From"/>
                         <div class="col-sm-7 col-md-4 col-xs-10">
-                            <iais:datePicker name="approvalSubmissionDateFrom" dateVal="${approvalSearchParam.approvalSubmissionDateFrom}"></iais:datePicker>
+                            <iais:datePicker name="approvalSubmissionDateFrom" dateVal="${approvalSearchParam.approvalSubmissionDateFrom}"/>
                         </div >
                     </iais:row>
                     <iais:row>
                         <iais:field value="Approval Submission Date To"/>
                         <div class="col-sm-7 col-md-4 col-xs-10">
-                            <iais:datePicker name="approvalSubmissionDateTo" dateVal="${approvalSearchParam.approvalSubmissionDateTo}"></iais:datePicker>
+                            <iais:datePicker name="approvalSubmissionDateTo" dateVal="${approvalSearchParam.approvalSubmissionDateTo}"/>
                             <span id="error_approvalSubmissionDateTo" name="iaisErrorMsg" class="error-msg"></span>
                         </div >
                     </iais:row>
@@ -328,7 +328,7 @@
                     <iais:row>
                         <iais:field value="Organisation Name"/>
                         <div class="col-sm-7 col-md-4 col-xs-10">
-                            <iais:select name="organisationName" options="organisationName" firstOption="Please Select" value="${approvedSearchParam.organisationName}"/>
+                            <iais:select name="organisationName" options="orgName" firstOption="Please Select" value="${approvedSearchParam.organisationName}"/>
                         </div>
                     </iais:row>
                     <iais:row>

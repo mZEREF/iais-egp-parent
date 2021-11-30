@@ -8,14 +8,12 @@ import lombok.Setter;
 import java.io.Serializable;
 
 /**
- * AUTHOR: YiMing
- * DATE:2021/7/26 15:51
- * DESCRIPTION: TODO
+ *@author YiMing
+ * @version 2021/10/15 14:16
  **/
-
 @Getter
 @Setter
-@ExcelSheetProperty(sheetName = "ApprovalInformation")
+@ExcelSheetProperty(sheetName = "Approval Information")
 public class ApprovalInfoDto implements Serializable {
 
     @ExcelProperty(cellIndex = 1, cellName = "Application Type")

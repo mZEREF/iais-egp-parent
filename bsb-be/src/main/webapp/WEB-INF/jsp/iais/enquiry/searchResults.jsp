@@ -209,6 +209,9 @@
                                                      field="Approval Type"
                                                      value="Approval Type"/>
                                 <iais:sortableHeader needSort="false"
+                                                     field="Approval No"
+                                                     value="Approval No"/>
+                                <iais:sortableHeader needSort="false"
                                                      field="Approval Status"
                                                      value="Approval Status"/>
                                 <iais:sortableHeader needSort="false"
@@ -256,6 +259,7 @@
                                     <c:forEach var="items" items="${approvalSearchResult}" varStatus="status">
                                         <tr name="basicData">
                                             <td><c:out value="${status.index + 1}"/></td>
+                                            <td><iais:code code="${items.apprNo}"/></td>
                                             <td><iais:code code="${items.type}"/></td>
                                             <td><iais:code code="${items.status}"/></td>
                                             <td><iais:code code="${items.facClassification}"/></td>
@@ -315,7 +319,7 @@
                                 <c:when test="${empty approvedSearchResult}">
                                     <tr>
                                         <td colspan="6">
-                                            <iais:message key="GENERAL_ACK018" escape="true"></iais:message>
+                                            <iais:message key="GENERAL_ACK018" escape="true"/>
                                         </td>
                                     </tr>
                                 </c:when>
@@ -324,11 +328,7 @@
                                         <tr name="basicData">
                                             <td><c:out value="${status.index + 1}"/></td>
                                             <td><c:out value = "${items.orgName}"/></td>
-                                            <td><c:out value="${items.streetName}"/>
-                                                <c:out value="${items.building}"/>
-                                                <c:out value="${items.floorNo}"/>
-                                                <c:out value="${items.unitNo}"/>
-                                                <c:out value="${items.postalCode}"/></td>
+                                            <td><c:out value = "${items.address}"/><</td>
                                             <td><iais:code code="${items.approval.status}"/></td>
                                             <td><c:out value="${items.adminName}"/></td>
                                             <td><fmt:formatDate value='${items.approval.approvalDate}'

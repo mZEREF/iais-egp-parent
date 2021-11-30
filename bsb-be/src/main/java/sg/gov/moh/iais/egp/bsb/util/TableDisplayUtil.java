@@ -1,6 +1,12 @@
 package sg.gov.moh.iais.egp.bsb.util;
 
 
+import org.springframework.util.CollectionUtils;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
+
 public class TableDisplayUtil {
     private TableDisplayUtil() {}
 
@@ -19,4 +25,26 @@ public class TableDisplayUtil {
         facilityAddress = builder.toString();
         return facilityAddress;
     }
+
+    public static String getOneLineBiologicalName(List<String> bioNames){
+        if(CollectionUtils.isEmpty(bioNames)){
+            return null;
+        }
+        return String.join(",", bioNames);
+    }
+
+    public static String getOneLineRiskLevel(List<String> riskLevels){
+        if(CollectionUtils.isEmpty(riskLevels)){
+            return null;
+        }
+        return String.join(",", riskLevels);
+    }
+
+    public static String getOneLineAdmin(List<String> admins){
+        if(CollectionUtils.isEmpty(admins)){
+            return null;
+        }
+        return String.join(",", admins);
+    }
+
 }

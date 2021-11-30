@@ -26,6 +26,9 @@ public interface BiosafetyEnquiryClient {
     @GetMapping(path = "/bio_info/bioName")
     FeignResponseEntity<List<String>> queryDistinctFA();
 
+    @GetMapping(path = "/fac_info/orgName")
+    FeignResponseEntity<List<String>> queryDistinctOrgName();
+
     @GetMapping(path = "/fac_info/approval")
     FeignResponseEntity<List<String>> queryDistinctApproval();
 
@@ -45,7 +48,7 @@ public interface BiosafetyEnquiryClient {
     ResponseDto<FacilityResultDto> getFac(@RequestBody  EnquiryDto dto);
 
     @GetMapping(value = "/approval_info/app", consumes = MediaType.APPLICATION_JSON_VALUE, produces =MediaType.APPLICATION_JSON_VALUE)
-    ResponseDto<ApprovalResultDto> getApproval(@RequestBody  EnquiryDto dto);
+    ResponseDto<ApprovalResultDto> getApproval(@RequestBody EnquiryDto dto);
 
     @GetMapping(value = "/afc_info/afc", consumes = MediaType.APPLICATION_JSON_VALUE, produces =MediaType.APPLICATION_JSON_VALUE)
     ResponseDto<ApprovedFacilityCerResultDto> getAFC(@RequestBody  EnquiryDto dto);

@@ -71,7 +71,7 @@ public class EnquiryDto extends PagingAndSortingDto implements Serializable {
 
     private String approvedFacilityCertifier;
 
-    private String natureOfTheSample;
+    private String[] natureOfTheSample;
 
     private List<String> natureOfTheSamples;
 
@@ -129,7 +129,8 @@ public class EnquiryDto extends PagingAndSortingDto implements Serializable {
         biosafetyCommitteePersonnel = "";
         facilityStatus = "";
         approvedFacilityCertifier = "";
-        natureOfTheSample = "";
+        natureOfTheSample = null;
+        natureOfTheSamples = null;
         approvalType = "";
         approvalSubmissionDateFrom = null;
         approvalSubmissionDateTo = null;

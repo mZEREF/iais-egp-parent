@@ -62,4 +62,6 @@ public class FacilityCertifierReg extends BaseEntity {
 
 	private String adminName;
 
+	private String address;
+
 }

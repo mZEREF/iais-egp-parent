@@ -1,9 +1,8 @@
 package sg.gov.moh.iais.egp.bsb.constant;
 
 /**
- * AUTHOR: YiMing
- * DATE:2021/7/29 16:33
- * DESCRIPTION: TODO
+ *@author YiMing
+ * @version 2021/10/15 14:16
  **/
 public class BioSafetyEnquiryConstants {
     private BioSafetyEnquiryConstants() {}
@@ -23,10 +22,7 @@ public class BioSafetyEnquiryConstants {
     public static final String KEY_DOWNLOAD = "download";
 
     //url
-    public static final String URL_APPLICATION_INFO_FILE = "Application-information-file";
-    public static final String URL_FACILITY_INFO_FILE = "Facility-information-file";
-    public static final String URL_APPROVAL_INFO_FILE = "Approval-information-file";
-    public static final String URL_APPROVED_CERTIFIER_INFO_FILE = "Approved-certifier-information-file";
+    public static final String URL_BIO_SAFETY_INFO_FILE = "bioSafety-information-file";
 
 
 

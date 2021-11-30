@@ -12,8 +12,9 @@ import java.util.List;
  **/
 
 @Data
-public class ApplicationResultDto {
-    private PageInfo pageInfo;
+public class ApplicationResultDto{
+    private  PageInfo pageInfo;
 
     private List<ApplicationInfoDto> bsbApp;
+
 }
