@@ -22,7 +22,6 @@
                             <iais:body >
                                 <div class="col-xs-12">
                                     <div class="tab-gp dashboard-tab">
-                                        <br><br><br>
                                         <ul class="nav nav-tabs hidden-xs hidden-sm" role="tablist">
                                             <li class="<c:if test="${empty preInspReport }">active</c:if><c:if test="${not empty preInspReport }">complete</c:if>" role="presentation">
                                                 <a href="#tabPatientInfo" aria-controls="tabPatientInfo" role="tab" data-toggle="tab">Patient Information</a></li>
@@ -55,13 +54,13 @@
                                             <div class="tab-pane" id="tabHusbandInfo" role="tabpanel">
                                                 <%@include file="husbandInfo.jsp" %>
                                             </div>
-                                            <div class="tab-pane" id="tabInventory" role="tabpanel">
+                                            <div class="tab-pane <c:if test="${preInspReport == '1'}">active</c:if>"  id="tabInventory" role="tabpanel">
                                                 <%@include file="inventory.jsp" %>
                                             </div>
                                             <div class="tab-pane" id="tabCoFundingHistory" role="tabpanel">
                                                 <%@include file="coFundingHistory.jsp" %>
                                             </div>
-                                            <div class="tab-pane <c:if test="${preInspReport == '1'}">active</c:if>" id="tabCycleStage" role="tabpanel">
+                                            <div class="tab-pane <c:if test="${preInspReport == '2'}">active</c:if>" id="tabCycleStage" role="tabpanel">
                                                 <%@include file="cycleStage.jsp" %>
                                             </div>
 

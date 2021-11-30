@@ -114,8 +114,6 @@ public class OnlineEnquiryAssistedReproductionDelegator {
         Date submissionDateTo= Formatter.parseDate(ParamUtil.getString(request, "submissionDateTo"));
         arFilterDto.setSubmissionDateTo(submissionDateTo);
 
-        String acknowledgementNo=ParamUtil.getString(request,"acknowledgementNo");
-        arFilterDto.setAcknowledgementNo(acknowledgementNo);
         String patientAgeNumberFrom=ParamUtil.getString(request,"patientAgeNumberFrom");
         arFilterDto.setPatientAgeNumberFrom(patientAgeNumberFrom);
         String patientAgeNumberTo=ParamUtil.getString(request,"patientAgeNumberTo");
@@ -138,12 +136,7 @@ public class OnlineEnquiryAssistedReproductionDelegator {
         arFilterDto.setCycleStagesDateTo(cycleStagesDateTo);
         String arOrIuiCycle=ParamUtil.getString(request,"arOrIuiCycle");
         arFilterDto.setArOrIuiCycle(arOrIuiCycle);
-        //more
-        String[] indicationArCycle=ParamUtil.getStrings(request,"indicationArCycle");
-        if(indicationArCycle != null){
-            List<String> selectValList = Arrays.asList(indicationArCycle);
-            arFilterDto.setIndicationArCycleList(selectValList);
-        }
+
         String IVM=ParamUtil.getString(request,"IVM");
         arFilterDto.setIVM(IVM);
         String freshCycleNatural=ParamUtil.getString(request,"freshCycleNatural");
@@ -164,8 +157,7 @@ public class OnlineEnquiryAssistedReproductionDelegator {
         arFilterDto.setDonorGameteUsed(donorGameteUsed);
         String donorName=ParamUtil.getString(request,"donorName");
         arFilterDto.setDonorName(donorName);
-        String donorIdType=ParamUtil.getString(request,"donorIdType");
-        arFilterDto.setDonorIdType(donorIdType);
+
         String donorIdNumber=ParamUtil.getString(request,"donorIdNumber");
         arFilterDto.setDonorIdNumber(donorIdNumber);
         String removedFromStorage=ParamUtil.getString(request,"removedFromStorage");
@@ -182,8 +174,7 @@ public class OnlineEnquiryAssistedReproductionDelegator {
         arFilterDto.setZIFT(ZIFT);
         String IVF=ParamUtil.getString(request,"IVF");
         arFilterDto.setIVF(IVF);
-        String embryosTransferredNum0=ParamUtil.getString(request,"embryosTransferredNum0");
-        arFilterDto.setEmbryosTransferredNum0(embryosTransferredNum0);
+
         String embryosTransferredNum1=ParamUtil.getString(request,"embryosTransferredNum1");
         arFilterDto.setEmbryosTransferredNum1(embryosTransferredNum1);
         String embryosTransferredNum2=ParamUtil.getString(request,"embryosTransferredNum2");
