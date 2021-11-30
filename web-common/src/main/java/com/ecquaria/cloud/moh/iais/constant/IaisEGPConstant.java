@@ -41,7 +41,7 @@ public class IaisEGPConstant {
 
     public static final String OFFICE_TELNO_MATCH                  = "^[3|6][0-9]{7}$";
 
-
+    public static final String SESSION_NAME_ROLES                  = "SESSION_NAME_ROLES";
 
 
 }

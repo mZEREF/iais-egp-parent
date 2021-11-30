@@ -1,5 +1,7 @@
 <%@ page import="com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts" %>
 <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
+<%@ page import="com.ecquaria.cloud.moh.iais.common.utils.StringUtil" %>
+<%@ page import="com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts" %>
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c" %>
 <%@ taglib uri="http://www.ecq.com/iais" prefix="iais" %>
 <%
@@ -56,6 +58,25 @@
                                                 <div class="col-md-3" style="padding-left: 0px;">
                                                     <span style="padding-left: 15px;" class="error-msg" name="errorMsg" id="error_userRole"></span>
                                                 </div>
+                                            </iais:row>
+                                            <iais:row>
+                                                <iais:field value="Assign Role" width="5" required="true" />
+                                                 <c:forEach var="role" items="${SESSION_NAME_ROLES}">
+                                                         <c:set var="value" value="${role.value}"/>
+                                                         <c:set var="rolees" value="${empty inter_user_attr.rolees ? RoleConsts.USER_ROLE_ORG_USER : inter_user_attr.rolees}"/>
+                                                         <div class="form-check col-xs-7"  style="padding-left: 0px;">
+                                                             <input class="form-check-input" type="checkbox"
+                                                                    name="assignRole"
+                                                                    value="${value}"
+                                                                    id="role${value}"
+                                                                    <c:if test="${StringUtil.stringContain(rolees,value)}">checked</c:if>
+                                                                    aria-invalid="false" >
+                                                             <label class="form-check-label"
+                                                                    for="role${value}"><span
+                                                                     class="check-square"></span>
+                                                                 <c:out value="${role.text}"/></label>
+                                                         </div>
+                                                 </c:forEach>
                                             </iais:row>
                                             <p></p>
                                             <iais:row>

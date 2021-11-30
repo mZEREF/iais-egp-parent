@@ -314,4 +314,9 @@ public class LicenceInboxFallback implements LicenceInboxClient {
     public FeignResponseEntity<Void> deleteArSuperDataSubmissionDtoDraftByDraftNo(String draftNo) {
         return getEntity();
     }
+
+    @Override
+    public FeignResponseEntity<List<LicenceDto>> getActiveLicencesByLicenseeId(String licenseeId) {
+        return getEntity();
+    }
 }
