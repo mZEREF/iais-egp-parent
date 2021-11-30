@@ -237,7 +237,9 @@ public class WithOutRenewalDelegator {
             licenceIDList.add(appSubmissionDtoDraft.getLicenceId());
             List<AppSubmissionDto> submissionDtos = outRenewalService.getAppSubmissionDtos(licenceIDList);
             appSubmissionDtoDraft.setOldRenewAppSubmissionDto(setMaxFileIndexIntoSession(bpc.request,submissionDtos.get(0)));
+            log.info("---------run setDraftRfCData start------------");
             setDraftRfCData(bpc.request,draftNo,appSubmissionDtoDraft);
+            log.info("---------run setDraftRfCData end------------");
         }
 
         //get licensee ID
@@ -464,6 +466,7 @@ public class WithOutRenewalDelegator {
 
     private void setDraftRfCData(HttpServletRequest request,String draftNo, AppSubmissionDto appSubmissionDto){
         if(StringUtil.isNotEmpty(draftNo)){
+            appSubmissionDto.setLicenseeId(getLicenseeIdByLoginInfo(request));
             newApplicationDelegator.setSelectLicence(appSubmissionDto,request);
         }else {
             Enumeration<?> names = request.getSession().getAttributeNames();

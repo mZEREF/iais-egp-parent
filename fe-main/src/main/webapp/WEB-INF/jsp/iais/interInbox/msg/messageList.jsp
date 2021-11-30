@@ -20,7 +20,7 @@
                 <label class="col-md-3 control-label" for="inboxService" style="margin-top:3%;">Service</label>
                 <div class="col-md-8">
                     <%String inboxService = request.getParameter("inboxService");%>
-                    <iais:select name="inboxService" id="inboxService" options="inboxServiceSelect" value="${param.inboxService}" firstOption="All" cssClass="inboxService"/>
+                    <iais:select name="inboxService" id="inboxService" options="inboxServiceSelect" value="${param.inboxService}" firstOption="All" cssClass="inboxService" needSort="true"/>
                 </div>
             </div>
             <div class="col-md-3">

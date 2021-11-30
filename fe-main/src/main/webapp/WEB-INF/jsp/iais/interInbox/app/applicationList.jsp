@@ -30,7 +30,7 @@
                             Type:</label>
                         <div class="col-xs-12 col-md-8">
                             <iais:select name="appServiceType" id="appServiceType" cssClass="appServiceType"
-                                         options="appServiceType" firstOption="All" value="${param.appServiceType}"/>
+                                         options="appServiceType" firstOption="All" value="${param.appServiceType}" needSort="true"/>
                         </div>
                     </iais:value>
                 </div>
