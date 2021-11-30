@@ -48,7 +48,7 @@
                  <select name="service"  id="service">
                    <option value="" >Please Select</option>
                    <c:forEach items="${hcsaServiceDtos}" var="hcsaServiceDto">
-                     <option value="${hcsaServiceDto.svcCode}"   <c:if test="${service==hcsaServiceDto.svcCode}">selected="selected" </c:if>>${hcsaServiceDto.svcDesc}</option>
+                     <option value="${hcsaServiceDto.svcCode}"   <c:if test="${service==hcsaServiceDto.svcCode}">selected="selected" </c:if>>${hcsaServiceDto.svcName}</option>
                    </c:forEach>
                  </select>
                  <span name="iaisErrorMsg" id="error_service" class="error-msg"></span>
