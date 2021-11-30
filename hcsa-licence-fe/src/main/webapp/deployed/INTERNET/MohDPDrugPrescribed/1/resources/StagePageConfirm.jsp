@@ -1,1 +1,0 @@
-<%@include file="/WEB-INF/jsp/iais/dataSubmission/drugPractices/previewDrugPrescribedDispensed.jsp"%>
