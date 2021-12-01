@@ -64,7 +64,7 @@
                                                  <c:forEach var="role" items="${SESSION_NAME_ROLES}">
                                                          <c:set var="value" value="${role.value}"/>
                                                          <c:set var="roles" value="${inter_user_attr.roles}"/>
-                                                         <div class="form-check col-xs-7"  style="padding-left: 0px;">
+                                                         <div class="form-check col-xs-7">
                                                              <input class="form-check-input" type="checkbox"
                                                                     name="roles"
                                                                     value="${value}"
