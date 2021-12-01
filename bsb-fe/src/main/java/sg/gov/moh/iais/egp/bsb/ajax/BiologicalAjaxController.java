@@ -18,10 +18,7 @@ import sg.gov.moh.iais.egp.bsb.dto.submission.FacListDto;
 import sg.gov.moh.iais.egp.bsb.entity.Biological;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  *@author YiMing
@@ -58,8 +55,9 @@ public class BiologicalAjaxController {
                     strings.add(b.getName());
                 }
             }
+            Set<String> stringSet = new HashSet<>(strings);
             jsonMap.put("result", "success");
-            jsonMap.put("queryResult",strings);
+            jsonMap.put("queryResult",stringSet);
         } else {
             jsonMap.put("result", "Fail");
         }

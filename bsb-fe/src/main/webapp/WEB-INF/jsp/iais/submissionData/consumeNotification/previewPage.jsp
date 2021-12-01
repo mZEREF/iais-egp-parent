@@ -1,5 +1,4 @@
 <%@ page import="static sg.gov.moh.iais.egp.bsb.constant.GlobalConstants.WEB_ROOT" %>
-<%@ page import="sg.gov.moh.iais.egp.bsb.util.TableDisplayUtil" %>
 <%@ taglib prefix="webui" uri="http://www.ecquaria.com/webui" %>
 <%@ taglib prefix="ias" uri="http://www.ecq.com/iais" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
@@ -7,6 +6,7 @@
 <%@ taglib prefix="iais-bsb" uri="http://www.ecq.com/iais-bsb" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page import="java.lang.String" %>
+<%@ page import="com.ecquaria.cloud.moh.iais.common.utils.MaskUtil" %>
 
 <%
     sop.webflow.rt.api.BaseProcessClass process =
@@ -167,8 +167,9 @@
                                                                             <div class="clear"></div>
                                                                         </div>
                                                                         <c:forEach var="doc" items="${docMeta.get('ityBat')}">
+                                                                            <c:set var="tmpId" value="${MaskUtil.maskValue('file', doc.id)}"/>
                                                                             <div class="form-group">
-                                                                                <div class="col-10"><p>${doc.filename}(${String.format("%.1f", doc.size/1024.0)}KB)</p></div>
+                                                                                <div class="col-10"><p><a href="javascript:void(0)" onclick="downloadFile('new', '${tmpId}')">${doc.filename}</a>(${String.format("%.1f", doc.size/1024.0)}KB)</p></div>
                                                                                 <div class="col-sm-7 col-md-5 col-xs-7"><p></p></div>
                                                                                 <div class="clear"></div>
                                                                             </div>
@@ -179,8 +180,9 @@
                                                                             <div class="clear"></div>
                                                                         </div>
                                                                         <c:forEach var="doc" items="${docMeta.get('ityToxin')}">
+                                                                            <c:set var="tmpId" value="${MaskUtil.maskValue('file', doc.id)}"/>
                                                                             <div class="form-group">
-                                                                                <div class="col-10"><p>${doc.filename}(${String.format("%.1f", doc.size/1024.0)}KB)</p></div>
+                                                                                <div class="col-10"><p><a href="javascript:void(0)" onclick="downloadFile('new', '${tmpId}')">${doc.filename}</a>(${String.format("%.1f", doc.size/1024.0)}KB)</p></div>
                                                                                 <div class="col-sm-7 col-md-5 col-xs-7"><p></p></div>
                                                                                 <div class="clear"></div>
                                                                             </div>

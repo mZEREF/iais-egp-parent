@@ -14,11 +14,13 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import sg.gov.moh.iais.egp.bsb.common.multipart.ByteArrayMultipartFile;
+import sg.gov.moh.iais.egp.bsb.constant.DocConstants;
 import sg.gov.moh.iais.egp.bsb.dto.ValidationResultDto;
 import sg.gov.moh.iais.egp.bsb.dto.file.DocMeta;
 import sg.gov.moh.iais.egp.bsb.dto.file.DocRecordInfo;
 import sg.gov.moh.iais.egp.bsb.dto.file.NewDocInfo;
 import sg.gov.moh.iais.egp.bsb.dto.file.NewFileSyncDto;
+import sg.gov.moh.iais.egp.bsb.util.CollectionUtils;
 import sg.gov.moh.iais.egp.bsb.util.LogUtil;
 import sop.servlet.webflow.HttpHandler;
 
@@ -95,7 +97,6 @@ public class PrimaryDocDto implements Serializable {
     public List<PrimaryDocDto.DocRecordInfo> getExistDocTypeList(){
         return new ArrayList<>(savedDocMap.values());
     }
-
 
 
     /**
@@ -187,8 +188,7 @@ public class PrimaryDocDto implements Serializable {
     private static final String SEPARATOR               = "--v--";
     private static final String KEY_DELETED_NEW_FILES   = "deleteNewFiles";
 
-    public void reqObjMapping(HttpServletRequest request,String docType,String amt){
-        MultipartHttpServletRequest mulReq = (MultipartHttpServletRequest) request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
+    public void reqObjMapping(MultipartHttpServletRequest mulReq,HttpServletRequest request,String docType,String amt){
         //delete new files
         deleteNewFiles(mulReq);
 
@@ -198,40 +198,38 @@ public class PrimaryDocDto implements Serializable {
         LoginContext loginContext = (LoginContext) com.ecquaria.cloud.moh.iais.common.utils.ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
         while (inputNameIt.hasNext()) {
             String inputName = inputNameIt.next();
-            if (StringUtils.hasLength(inputName) && inputName.split(SEPARATOR)[1].equals(amt)) {
-            List<MultipartFile> files = mulReq.getFiles(inputName);
-            for (MultipartFile f : files) {
-                if (log.isInfoEnabled()) {
-                    log.info("input name: {}; filename: {}", LogUtil.escapeCrlf(inputName), LogUtil.escapeCrlf(f.getOriginalFilename()));
+            if(StringUtils.hasLength(inputName)){
+                String[] indexs = inputName.split(SEPARATOR);
+                String index = null;
+                if(indexs.length>=2){
+                    index = inputName.split(SEPARATOR)[1];
                 }
-                if (f.isEmpty()) {
-                    log.warn("File is empty, ignore it");
-                } else {
-                    NewDocInfo newDocInfo = new NewDocInfo();
-                    String tmpId = inputName + f.getSize() + System.nanoTime();
-                    newDocInfo.setTmpId(tmpId);
-                    newDocInfo.setDocType(docType);
-                    newDocInfo.setFilename(f.getOriginalFilename());
-                    newDocInfo.setSize(f.getSize());
-                    newDocInfo.setSubmitDate(currentDate);
-                    newDocInfo.setSubmitBy(loginContext.getUserId());
-                    byte[] bytes = new byte[0];
-                    try {
-                        bytes = f.getBytes();
-                    } catch (IOException e) {
-                        log.warn("Fail to read bytes for file {}, tmpId {}", f.getOriginalFilename(), tmpId);
-                    }
-                    ByteArrayMultipartFile multipartFile = new ByteArrayMultipartFile(f.getName(), f.getOriginalFilename(), f.getContentType(), bytes);
-                    newDocInfo.setMultipartFile(multipartFile);
-                    this.newDocMap.put(tmpId, newDocInfo);
+                if(StringUtils.hasLength(index) && index.equals(amt)){
+                    //upload document toxins and bats
+                    List<MultipartFile> files = mulReq.getFiles(inputName);
+                    filedNewFiles(files,inputName,docType,currentDate,loginContext);
                 }
             }
         }
+    }
+
+    public void reqOtherMapping(MultipartHttpServletRequest mulReq,HttpServletRequest request,String docType){
+
+        // read new uploaded files
+        Iterator<String> inputNameIt = mulReq.getFileNames();
+        Date currentDate = new Date();
+        LoginContext loginContext = (LoginContext) com.ecquaria.cloud.moh.iais.common.utils.ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
+        while (inputNameIt.hasNext()) {
+            String inputName = inputNameIt.next();
+            if(StringUtils.hasLength(inputName) && docType.equals(inputName)){
+                //upload other document
+                List<MultipartFile> files = mulReq.getFiles(inputName);
+                filedNewFiles(files,inputName, DocConstants.DOC_TYPE_OTHERS,currentDate,loginContext);
+            }
         }
     }
 
-
-    public void deleteNewFiles(MultipartHttpServletRequest mulReq){
+    private void deleteNewFiles(MultipartHttpServletRequest mulReq){
         String deleteNewFilesString = ParamUtil.getString(mulReq, KEY_DELETED_NEW_FILES);
         if (log.isInfoEnabled()) {
             log.info("deleteNewFilesString: {}", LogUtil.escapeCrlf(deleteNewFilesString));
@@ -242,6 +240,40 @@ public class PrimaryDocDto implements Serializable {
                     .collect(Collectors.toList());
             deleteFileTmpIds.forEach(this.newDocMap::remove);
         }
+    }
+
+    private void filedNewFiles(List<MultipartFile> files,String inputName,String docType,Date currentDate,LoginContext loginContext){
+        for (MultipartFile f : files) {
+            if (log.isInfoEnabled()) {
+                log.info("input name: {}; filename: {}", LogUtil.escapeCrlf(inputName), LogUtil.escapeCrlf(f.getOriginalFilename()));
+            }
+            if (f.isEmpty()) {
+                log.warn("File is empty, ignore it");
+            } else {
+                String tmpId = inputName + f.getSize() + System.nanoTime();
+                this.newDocMap.put(tmpId, filedOneNewFiles(tmpId,f,docType,currentDate,loginContext));
+            }
+        }
+    }
+
+    private NewDocInfo filedOneNewFiles(String inputName,MultipartFile f,String docType,Date currentDate,LoginContext loginContext){
+        NewDocInfo newDocInfo = new NewDocInfo();
+        String tmpId = inputName + f.getSize() + System.nanoTime();
+        newDocInfo.setTmpId(tmpId);
+        newDocInfo.setDocType(docType);
+        newDocInfo.setFilename(f.getOriginalFilename());
+        newDocInfo.setSize(f.getSize());
+        newDocInfo.setSubmitDate(currentDate);
+        newDocInfo.setSubmitBy(loginContext.getUserId());
+        byte[] bytes = new byte[0];
+        try {
+            bytes = f.getBytes();
+        } catch (IOException e) {
+            log.warn("Fail to read bytes for file {}, tmpId {}", f.getOriginalFilename(), tmpId);
+        }
+        ByteArrayMultipartFile multipartFile = new ByteArrayMultipartFile(f.getName(), f.getOriginalFilename(), f.getContentType(), bytes);
+        newDocInfo.setMultipartFile(multipartFile);
+        return newDocInfo;
     }
 
 }

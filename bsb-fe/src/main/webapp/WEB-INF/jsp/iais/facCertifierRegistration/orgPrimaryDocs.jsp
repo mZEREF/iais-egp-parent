@@ -56,10 +56,10 @@
                                                             <c:forEach var="info" items="${savedFiles.get(doc.type)}">
                                                                 <c:set var="tmpId" value="${MaskUtil.maskValue('file', info.repoId)}"/>
                                                                 <div id="${tmpId}FileDiv">
-                                                                    <span id="${tmpId}Span">${info.filename}(${String.format("%.1f", info.size/1024.0)}KB)</span><button
-                                                                        type="button" class="btn btn-secondary btn-sm" onclick="deleteSavedFile('${tmpId}')">Delete</button><button
-                                                                        type="button" class="btn btn-secondary btn-sm" onclick="reloadSavedFile('${tmpId}', '${maskDocType}')">Reload</button><button
-                                                                        type="button" class="btn btn-secondary btn-sm" onclick="downloadFile('saved', '${tmpId}')">Download</button>
+                                                                    <span id="${tmpId}Span">${info.filename}(${String.format("%.1f", info.size/1024.0)}KB)</span>
+                                                                    <button type="button" class="btn btn-secondary btn-sm" onclick="deleteSavedFile('${tmpId}')">Delete</button>
+                                                                    <button type="button" class="btn btn-secondary btn-sm" onclick="reloadSavedFile('${tmpId}', '${maskDocType}')">Reload</button>
+                                                                    <button type="button" class="btn btn-secondary btn-sm" onclick="downloadFile('saved', '${tmpId}')">Download</button>
                                                                     <span data-err-ind="${info.repoId}" class="error-msg"></span>
                                                                 </div>
                                                             </c:forEach>
@@ -71,7 +71,7 @@
                                                                     <span id="${tmpId}Span">${info.filename}(${String.format("%.1f", info.size/1024.0)}KB)</span>
                                                                     <button type="button" class="btn btn-secondary btn-sm" onclick="deleteNewFile('${tmpId}')">Delete</button>
                                                                     <button type="button" class="btn btn-secondary btn-sm" onclick="reloadNewFile('${tmpId}', '${maskDocType}')">Reload</button>
-                                                                    type="button" class="btn btn-secondary btn-sm" onclick="downloadFile('new', '${tmpId}')">Download</button>
+                                                                    <button type="button" class="btn btn-secondary btn-sm" onclick="downloadFile('new', '${tmpId}')">Download</button>
                                                                     <span data-err-ind="${info.tmpId}" class="error-msg"></span>
                                                                 </div>
                                                             </c:forEach>

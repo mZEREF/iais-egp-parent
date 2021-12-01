@@ -6,6 +6,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoDto;
 import com.ecquaria.cloud.moh.iais.common.utils.LogUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
+import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
@@ -17,6 +18,7 @@ import sg.gov.moh.iais.egp.bsb.client.FileRepoClient;
 import sg.gov.moh.iais.egp.bsb.client.TransferClient;
 import sg.gov.moh.iais.egp.bsb.constant.DocConstants;
 import sg.gov.moh.iais.egp.bsb.constant.ValidationConstants;
+import sg.gov.moh.iais.egp.bsb.dto.file.DocMeta;
 import sg.gov.moh.iais.egp.bsb.dto.file.FileRepoSyncDto;
 import sg.gov.moh.iais.egp.bsb.dto.file.NewFileSyncDto;
 import sg.gov.moh.iais.egp.bsb.dto.submission.FacListDto;
@@ -67,9 +69,11 @@ public class BsbTransferNotificationDelegator {
      * This module is used to initialize data
      * */
     public void start(BaseProcessClass bpc){
-        if(log.isInfoEnabled()){
-            log.info("In the future this module will be used to initialize some data");
-        }
+        HttpServletRequest request = bpc.request;
+        ParamUtil.setSessionAttr(request,KEY_FACILITY_INFO, null);
+        ParamUtil.setSessionAttr(request,KEY_TRANSFER_NOTIFICATION_DTO, null);
+        ParamUtil.setSessionAttr(request,KEY_FAC_ID,null);
+        AuditTrailHelper.auditFunction("Data Submission", "Data Submission");
     }
 
     public void preFacSelect(BaseProcessClass bpc){
@@ -150,32 +154,21 @@ public class BsbTransferNotificationDelegator {
     public void save(BaseProcessClass bpc){
          HttpServletRequest request = bpc.request;
          TransferNotificationDto notificationDto = getTransferNotification(request);
-         List<TransferNotificationDto.TransferNot> transferNotList = notificationDto.getTransferNotList();
-         List<NewFileSyncDto> newFilesToSync = new ArrayList<>();
-         if(!CollectionUtils.isEmpty(transferNotList)){
-             for (TransferNotificationDto.TransferNot not : transferNotList) {
-                 PrimaryDocDto primaryDocDto = not.getPrimaryDocDto();
-                 if(primaryDocDto != null){
-                     //complete simple save file to db and save data to dto for show in jsp
-                     MultipartFile[] files = primaryDocDto.getNewDocMap().values().stream().map(PrimaryDocDto.NewDocInfo::getMultipartFile).toArray(MultipartFile[]::new);
-                     List<String> repoIds = fileRepoClient.saveFiles(files).getEntity();
-                     newFilesToSync.addAll(primaryDocDto.newFileSaved(repoIds));
-                     //newFile change to saved File and save info to db
-                     not.setSavedInfos(primaryDocDto.getExistDocTypeList());
-                 }else{
-                     log.info("please ensure your object has value");
-                 }
-             }
-         }else{
-             log.info("you have not key your transferList");
+        List<NewFileSyncDto> newFilesToSync = null;
+         if(!notificationDto.getAllNewDocInfos().isEmpty()){
+             //complete simple save file to db and save data to dto for show in jsp
+             MultipartFile[] files = notificationDto.getAllNewDocInfos().values().stream().map(PrimaryDocDto.NewDocInfo::getMultipartFile).toArray(MultipartFile[]::new);
+             List<String> repoIds = fileRepoClient.saveFiles(files).getEntity();
+             newFilesToSync = new ArrayList<>(notificationDto.newFileSaved(repoIds));
          }
+
          String ensure = ParamUtil.getString(request,"ensure");
          notificationDto.setEnsure(ensure);
          TransferNotificationDto.TransferNotNeedR transferNotNeedR = notificationDto.getTransferNotNeedR();
          transferClient.saveNewTransferNot(transferNotNeedR);
         try {
             // sync files to BE file-repo (save new added files, delete useless files)
-            if (!newFilesToSync.isEmpty()) {
+            if (newFilesToSync != null && !newFilesToSync.isEmpty()) {
                 /* Ignore the failure of sync files currently.
                  * We should add a mechanism to retry synchronization of files in the future */
                 FileRepoSyncDto syncDto = new FileRepoSyncDto();
@@ -224,7 +217,7 @@ public class BsbTransferNotificationDelegator {
         Map<String,DocSetting> settingMap = new HashMap<>();
         settingMap.put("ityBat",new DocSetting(DocConstants.DOC_TYPE_INVENTORY_AGENT,"Inventory: Biological Agents",true));
         settingMap.put("ityToxin",new DocSetting(DocConstants.DOC_TYPE_INVENTORY_TOXIN,"Inventory: Toxins",true));
-        settingMap.put("others",new DocSetting(DocConstants.DOC_TYPE_OTHERS,"others",true));
+        settingMap.put("others",new DocSetting(DocConstants.DOC_TYPE_OTHERS,"Others",true));
         return settingMap;
     }
 

@@ -187,6 +187,9 @@
                            <textarea id="remarks" style="width: 100%;margin-bottom: 15px;" rows="6" name="remarks" maxlength="500">${transferNotDto.remarks}</textarea>
                         </div>
                     </div>
+                    <div class = "form-group" id="others">
+                        <%@include file="../common/docOtherCondition.jsp" %>
+                    </div>
                 </div>
             </div>
         </div>

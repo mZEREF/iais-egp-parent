@@ -8,10 +8,12 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 import sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants;
 import sg.gov.moh.iais.egp.bsb.dto.ValidationResultDto;
 import sg.gov.moh.iais.egp.bsb.dto.file.DocMeta;
 import sg.gov.moh.iais.egp.bsb.util.SpringReflectionUtils;
+import sop.servlet.webflow.HttpHandler;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
@@ -285,7 +287,7 @@ public class ReceiptNotificationDto implements Serializable{
      * */
     public Map<String,PrimaryDocDto.NewDocInfo> getAllNewDocInfo(){
         Map<String,PrimaryDocDto.NewDocInfo> newRecordMap = new HashMap<>();
-        if(CollectionUtils.isEmpty(this.receiptNotList)){
+        if(!CollectionUtils.isEmpty(this.receiptNotList)){
             List<PrimaryDocDto.NewDocInfo> newDocInfos = receiptNotList.stream().flatMap(i->i.getNewDocInfos().stream()).collect(Collectors.toList());
             newRecordMap = newDocInfos.stream().collect(Collectors.toMap(PrimaryDocDto.NewDocInfo::getTmpId, Function.identity()));
         }
@@ -332,6 +334,7 @@ public class ReceiptNotificationDto implements Serializable{
      * */
     public void reqObjectMapping(HttpServletRequest request){
         clearReceiptLists();
+        MultipartHttpServletRequest mulReq = (MultipartHttpServletRequest) request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
         String idxes = ParamUtil.getString(request, KEY_SECTION_IDXES);
         String[] idxArr = idxes.trim().split(" +");
         for (String idx : idxArr) {
@@ -342,7 +345,7 @@ public class ReceiptNotificationDto implements Serializable{
             receiptNot.setReceiveQty(ParamUtil.getString(request,KEY_PREFIX_RECEIVE_QTY+SEPARATOR+idx));
             receiptNot.setMeaUnit(ParamUtil.getString(request,KEY_PREFIX_MEASUREMENT_UNIT+SEPARATOR+idx));
             PrimaryDocDto primaryDocDto = new PrimaryDocDto();
-            primaryDocDto.reqObjMapping(request,getDocType(scheduleType),String.valueOf(idx));
+            primaryDocDto.reqObjMapping(mulReq,request,getDocType(scheduleType),String.valueOf(idx));
             receiptNot.setPrimaryDocDto(primaryDocDto);
             receiptNot.setDocType(getDocType(scheduleType));
             //joint repoId exist

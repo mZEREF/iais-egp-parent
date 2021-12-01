@@ -22,7 +22,7 @@ import sg.gov.moh.iais.egp.bsb.constant.FacCertifierRegisterConstants;
 import sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants;
 import sg.gov.moh.iais.egp.bsb.dto.file.DocRecordInfo;
 import sg.gov.moh.iais.egp.bsb.dto.register.facility.PrimaryDocDto;
-import sg.gov.moh.iais.egp.bsb.dto.submission.TransferNotificationDto;
+import sg.gov.moh.iais.egp.bsb.dto.submission.*;
 import sg.gov.moh.iais.egp.bsb.util.LogUtil;
 
 import javax.servlet.http.HttpServletRequest;
@@ -33,6 +33,9 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.function.BiFunction;
 import java.util.function.UnaryOperator;
+
+import static sg.gov.moh.iais.egp.bsb.constant.DataSubmissionConstants.*;
+import static sg.gov.moh.iais.egp.bsb.constant.DataSubmissionConstants.KEY_RECEIPT_NOTIFICATION_DTO;
 
 
 @RestController
@@ -217,7 +220,24 @@ public class DocDownloadAjaxController {
 
     private MultipartFile dataSubGetNewFile(HttpServletRequest request, String id) {
         TransferNotificationDto transferNotificationDto = (TransferNotificationDto) ParamUtil.getSessionAttr(request,"transferNotDto");
-        return transferNotificationDto.getAllNewDocInfo().get(id).getMultipartFile();
+        ConsumeNotificationDto consumeNotificationDto = (ConsumeNotificationDto) ParamUtil.getSessionAttr(request,KEY_CONSUME_NOTIFICATION_DTO);
+        DisposalNotificationDto disposalNotificationDto = (DisposalNotificationDto) ParamUtil.getSessionAttr(request,KEY_DISPOSAL_NOTIFICATION_DTO);
+        ExportNotificationDto exportNotificationDto = (ExportNotificationDto) ParamUtil.getSessionAttr(request,KEY_EXPORT_NOTIFICATION_DTO);
+        ReceiptNotificationDto receiptNotificationDto = (ReceiptNotificationDto) ParamUtil.getSessionAttr(request,KEY_RECEIPT_NOTIFICATION_DTO);
+
+        if(transferNotificationDto != null){
+            return transferNotificationDto.getAllNewDocInfos().get(id).getMultipartFile();
+        } else if(consumeNotificationDto != null){
+            return consumeNotificationDto.getAllNewDocInfo().get(id).getMultipartFile();
+        } else if(disposalNotificationDto != null){
+            return disposalNotificationDto.getAllNewDocInfo().get(id).getMultipartFile();
+        } else if(exportNotificationDto != null){
+            return exportNotificationDto.getAllNewDocInfo().get(id).getMultipartFile();
+        } else if(receiptNotificationDto != null){
+            return receiptNotificationDto.getAllNewDocInfo().get(id).getMultipartFile();
+        } else{
+            return null;
+        }
     }
 
     /**

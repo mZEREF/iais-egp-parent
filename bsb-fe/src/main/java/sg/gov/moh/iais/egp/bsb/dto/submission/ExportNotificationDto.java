@@ -8,10 +8,12 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 import sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants;
 import sg.gov.moh.iais.egp.bsb.dto.ValidationResultDto;
 import sg.gov.moh.iais.egp.bsb.dto.file.DocMeta;
 import sg.gov.moh.iais.egp.bsb.util.SpringReflectionUtils;
+import sop.servlet.webflow.HttpHandler;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
@@ -237,7 +239,7 @@ public class ExportNotificationDto implements Serializable{
      * */
     public Map<String,PrimaryDocDto.NewDocInfo> getAllNewDocInfo(){
         Map<String,PrimaryDocDto.NewDocInfo> newRecordMap = new HashMap<>();
-        if(CollectionUtils.isEmpty(this.exportNotList)){
+        if(!CollectionUtils.isEmpty(this.exportNotList)){
             List<PrimaryDocDto.NewDocInfo> newDocInfos = exportNotList.stream().flatMap(i->i.getNewDocInfos().stream()).collect(Collectors.toList());
             newRecordMap = newDocInfos.stream().collect(Collectors.toMap(PrimaryDocDto.NewDocInfo::getTmpId, Function.identity()));
         }
@@ -278,6 +280,7 @@ public class ExportNotificationDto implements Serializable{
      * get value from request
      * */
     public void reqObjectMapping(HttpServletRequest request){
+        MultipartHttpServletRequest mulReq = (MultipartHttpServletRequest) request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
         String idxes = ParamUtil.getString(request, KEY_SECTION_IDXES);
         clearExportLists();
         String[] idxArr = idxes.trim().split(" +");
@@ -291,7 +294,7 @@ public class ExportNotificationDto implements Serializable{
             exportNot.setMeaUnit(ParamUtil.getString(request, KEY_PREFIX_MEASUREMENT_UNIT+ SEPARATOR+idx));
 
             PrimaryDocDto primaryDocDto = new PrimaryDocDto();
-            primaryDocDto.reqObjMapping(request,getDocType(scheduleType),String.valueOf(idx));
+            primaryDocDto.reqObjMapping(mulReq,request,getDocType(scheduleType),String.valueOf(idx));
             exportNot.setPrimaryDocDto(primaryDocDto);
             exportNot.setDocType(getDocType(scheduleType));
             //joint repoId exist

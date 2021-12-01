@@ -23,6 +23,8 @@ $(function () {
         newFileInput.click();
     });
 
+
+
 });
 
 function isHidden() {
@@ -277,34 +279,11 @@ function genFileInfo(fileInputEl) {
     return f[0].name + '(' + (f[0].size/1024).toFixed(1) + 'KB)';
 }
 
-function downloadFile(cond, id, filename) {
+function downloadFile(cond, id) {
     var url = "/bsb-fe/ajax/doc/download/dataSub/new/" + id;
-
-    if (url) {
-        $.ajax({
-            type: "GET",
-            url: url,
-            async: true,
-            responseType: "blob",
-            success: function(content) {
-                expDownload(content, filename);
-            },
-            error: function () {
-                $("span[data-err-ind='" + type + "']").innerText = "Fail to download the file";
-            }
-        });
-    }
+    window.open(url);
 }
 
-function expDownload(content, filename) {
-    var a = document.createElement("a");
-    var blob = new Blob([content]);
-    a.href = window.URL.createObjectURL(blob);
-    a.target = "_parent";
-    a.download = filename;
-    a.click();
-    a.remove();
-}
 
 //---------- START kinda common func ----------
 function updateInputAmt(hiddenInputName, changeAmt) {

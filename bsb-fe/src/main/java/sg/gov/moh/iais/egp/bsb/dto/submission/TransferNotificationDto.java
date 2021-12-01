@@ -3,15 +3,19 @@ package sg.gov.moh.iais.egp.bsb.dto.submission;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.google.common.collect.Maps;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 import sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants;
 import sg.gov.moh.iais.egp.bsb.dto.ValidationResultDto;
 import sg.gov.moh.iais.egp.bsb.dto.file.DocMeta;
+import sg.gov.moh.iais.egp.bsb.dto.file.NewFileSyncDto;
 import sg.gov.moh.iais.egp.bsb.util.SpringReflectionUtils;
+import sop.servlet.webflow.HttpHandler;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
@@ -37,13 +41,6 @@ public class TransferNotificationDto implements Serializable {
         private String mstUnit;
 
         @JsonIgnore
-        private PrimaryDocDto primaryDocDto;
-
-        private List<PrimaryDocDto.DocRecordInfo> savedInfos;
-
-        private List<DocMeta> docMetas;
-
-        @JsonIgnore
         private List<PrimaryDocDto.NewDocInfo> newDocInfos;
         @JsonIgnore
         private String docType;
@@ -51,21 +48,7 @@ public class TransferNotificationDto implements Serializable {
         private String repoIdNewString;
 
         public TransferNot() {
-            this.docMetas = new ArrayList<>();
-            this.savedInfos = new ArrayList<>();
             this.newDocInfos = new ArrayList<>();
-        }
-
-        public List<PrimaryDocDto.DocRecordInfo> getSavedInfos(){
-            return new ArrayList<>(this.savedInfos);
-        }
-
-        public void setSavedInfos(List<PrimaryDocDto.DocRecordInfo> docRecordInfos){
-            this.savedInfos = new ArrayList<>(docRecordInfos);
-        }
-
-        public void setDocMetas(List<DocMeta> docMetas){
-            this.docMetas = new ArrayList<>(docMetas);
         }
 
         public List<PrimaryDocDto.NewDocInfo> getNewInfos(){
@@ -85,6 +68,10 @@ public class TransferNotificationDto implements Serializable {
     private String ensure;
 
     private List<TransferNot> transferNotList;
+    private List<PrimaryDocDto.NewDocInfo> otherNewInfos;
+    private Map<String, PrimaryDocDto.NewDocInfo> allNewDocInfos;
+    private Map<String,PrimaryDocDto.DocRecordInfo> savedDocInfos;
+    private List<DocMeta> docMetaInfos;
 
     @JsonIgnore
     private ValidationResultDto validationResultDto;
@@ -93,6 +80,13 @@ public class TransferNotificationDto implements Serializable {
         //Initialize the transferNotList
         transferNotList = new ArrayList<>();
         transferNotList.add(new TransferNot());
+
+        docMetaInfos = new ArrayList<>();
+
+        otherNewInfos = new ArrayList<>();
+
+        allNewDocInfos = new LinkedHashMap<>();
+        savedDocInfos = new LinkedHashMap<>();
     }
 
     @Data
@@ -105,8 +99,6 @@ public class TransferNotificationDto implements Serializable {
         private String batQty;
         private String transferQty;
         private String mstUnit;
-        private List<PrimaryDocDto.DocRecordInfo> savedInfos;
-        private List<DocMeta> docMetas;
     }
 
     @Data
@@ -120,6 +112,8 @@ public class TransferNotificationDto implements Serializable {
         private String providerName;
         private String remarks;
         private String ensure;
+        private List<PrimaryDocDto.DocRecordInfo> docInfos;
+        private List<DocMeta> docMetas;
     }
 
 
@@ -196,18 +190,59 @@ public class TransferNotificationDto implements Serializable {
         this.transferNotList = new ArrayList<>(transferLists);
     }
 
+    public List<PrimaryDocDto.NewDocInfo> getOtherNewInfos() {
+        return new ArrayList<>(this.otherNewInfos);
+    }
+
+    public void setOtherNewInfos(List<PrimaryDocDto.NewDocInfo> otherNewInfos) {
+        this.otherNewInfos = new ArrayList<>(otherNewInfos);
+    }
+
+    public Map<String, PrimaryDocDto.NewDocInfo> getAllNewDocInfos() {
+        return allNewDocInfos;
+    }
+
+    public void setAllNewDocInfos(Map<String, PrimaryDocDto.NewDocInfo> allNewDocInfos) {
+        this.allNewDocInfos = allNewDocInfos;
+    }
+
+    public List<DocMeta> getDocMetaInfos() {
+        return docMetaInfos;
+    }
+
+    public void setDocMetaInfos(List<DocMeta> docMetaInfos) {
+        this.docMetaInfos = docMetaInfos;
+    }
+
+    public void addDocMetaInfos(DocMeta docMeta){
+        this.docMetaInfos.add(docMeta);
+    }
+
+    public Map<String, PrimaryDocDto.DocRecordInfo> getSavedDocInfos() {
+        return savedDocInfos;
+    }
+
+    public void setSavedDocInfos(Map<String, PrimaryDocDto.DocRecordInfo> savedDocInfos) {
+        this.savedDocInfos = savedDocInfos;
+    }
+
     /**
      * This method is for downloading and contains all file information sorted by tmpId
      *getAllNewDocInfo
-     * @return Map<String,PrimaryDocDto.NewDocInfo>
      * */
-    public Map<String,PrimaryDocDto.NewDocInfo> getAllNewDocInfo(){
-        Map<String,PrimaryDocDto.NewDocInfo> newRecordMap = new HashMap<>();
-        if(CollectionUtils.isEmpty(this.transferNotList)){
+    public void fillAllNewDocInfo(){
+        if(!CollectionUtils.isEmpty(this.transferNotList)){
            List<PrimaryDocDto.NewDocInfo> newDocInfos = transferNotList.stream().flatMap(i->i.getNewDocInfos().stream()).collect(Collectors.toList());
-           newRecordMap = newDocInfos.stream().collect(Collectors.toMap(PrimaryDocDto.NewDocInfo::getTmpId, Function.identity()));
+           newDocInfos.addAll(this.otherNewInfos);
+           this.allNewDocInfos = newDocInfos.stream().collect(Collectors.toMap(PrimaryDocDto.NewDocInfo::getTmpId, Function.identity()));
         }
-        return newRecordMap;
+    }
+
+    public void getDocMetaInfoFromNew(){
+        this.allNewDocInfos.values().forEach(i -> {
+            DocMeta docMeta = new DocMeta(i.getTmpId(), i.getDocType(), i.getFilename(), i.getSize(), "dataSub");
+            addDocMetaInfos(docMeta);
+        });
     }
 
     /**
@@ -216,6 +251,7 @@ public class TransferNotificationDto implements Serializable {
      * @return TransferNotNeedR
      * */
     public TransferNotNeedR getTransferNotNeedR(){
+        //get doc need validation
         List<TransferNotNeed> transferNotNeeds = transferNotList.stream().map(t->{
             TransferNotNeed transferNotNeed = new TransferNotNeed();
             transferNotNeed.setScheduleType(t.getScheduleType());
@@ -224,8 +260,6 @@ public class TransferNotificationDto implements Serializable {
             transferNotNeed.setTransferQty(t.getTransferQty());
             transferNotNeed.setBatQty(t.getBatQty());
             transferNotNeed.setMstUnit(t.getMstUnit());
-            transferNotNeed.setDocMetas(t.getDocMetas());
-            transferNotNeed.setSavedInfos(t.getSavedInfos());
             return transferNotNeed; }).collect(Collectors.toList());
         TransferNotNeedR transferNotNeedR = new TransferNotNeedR();
         transferNotNeedR.setNeedList(transferNotNeeds);
@@ -236,7 +270,44 @@ public class TransferNotificationDto implements Serializable {
         transferNotNeedR.setProviderName(this.providerName);
         transferNotNeedR.setExpArrivalTime(this.expArrivalTime);
         transferNotNeedR.setReceiveFacility(this.receiveFacility);
+        transferNotNeedR.setDocInfos(new ArrayList<>(savedDocInfos.values()));
+        transferNotNeedR.setDocMetas(this.docMetaInfos);
         return transferNotNeedR;
+    }
+
+    /**
+     * This method will put new added files to the important data structure which is used to update the FacilityDoc.
+     * This file is called when new uploaded files are saved and we get the repo Ids.
+     * ATTENTION!!!
+     * This method is dangerous! The relationship between the ids and the files in this dto is fragile!
+     * We rely on the order is not changed! So we use a LinkedHashMap to save our data.
+     * <p>
+     * This method will generate id-bytes pairs at the same time, the result will be used to sync files to BE.
+     * @return a list of file data to be synchronized to BE
+     */
+    public List<NewFileSyncDto> newFileSaved(List<String> repoIds) {
+        Iterator<String> repoIdIt = repoIds.iterator();
+        Iterator<PrimaryDocDto.NewDocInfo> newDocIt = allNewDocInfos.values().iterator();
+
+        List<NewFileSyncDto> newFileSyncDtoList = new ArrayList<>(repoIds.size());
+        while (repoIdIt.hasNext() && newDocIt.hasNext()) {
+            String repoId = repoIdIt.next();
+            PrimaryDocDto.NewDocInfo newDocInfo = newDocIt.next();
+            PrimaryDocDto.DocRecordInfo docRecordInfo = new PrimaryDocDto.DocRecordInfo();
+            docRecordInfo.setDocType(newDocInfo.getDocType());
+            docRecordInfo.setFilename(newDocInfo.getFilename());
+            docRecordInfo.setSize(newDocInfo.getSize());
+            docRecordInfo.setRepoId(repoId);
+            docRecordInfo.setSubmitBy(newDocInfo.getSubmitBy());
+            docRecordInfo.setSubmitDate(newDocInfo.getSubmitDate());
+            savedDocInfos.put(repoId, docRecordInfo);
+
+            NewFileSyncDto newFileSyncDto = new NewFileSyncDto();
+            newFileSyncDto.setId(repoId);
+            newFileSyncDto.setData(newDocInfo.getMultipartFile().getBytes());
+            newFileSyncDtoList.add(newFileSyncDto);
+        }
+        return newFileSyncDtoList;
     }
 
     //------------------------------------------Validation---------------------------------------------
@@ -266,9 +337,10 @@ public class TransferNotificationDto implements Serializable {
      * @return Map<String,List<DocMeta>>
      * */
     public Map<String,List<DocMeta>> getAllDocMetaByDocType(){
-        List<DocMeta> docMetas = this.transferNotList.stream().flatMap(i->i.getDocMetas().stream()).collect(Collectors.toList());
-        return sg.gov.moh.iais.egp.bsb.util.CollectionUtils.groupCollectionToMap(docMetas,DocMeta::getDocType);
+        return sg.gov.moh.iais.egp.bsb.util.CollectionUtils.groupCollectionToMap(docMetaInfos,DocMeta::getDocType);
     }
+
+
 
 
     //----------------------request-->object----------------------------------
@@ -295,6 +367,7 @@ public class TransferNotificationDto implements Serializable {
      * get value from request
      * */
     public void reqObjectMapping(HttpServletRequest request){
+        MultipartHttpServletRequest mulReq = (MultipartHttpServletRequest) request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
         String idxes = ParamUtil.getString(request, KEY_SECTION_IDXES);
         clearTransferNotList();
         String[] idxArr = idxes.trim().split(" +");
@@ -308,8 +381,7 @@ public class TransferNotificationDto implements Serializable {
             transferNot.setTransferQty(ParamUtil.getString(request,KEY_PREFIX_TRANSFER_QTY+SEPARATOR+idx));
             transferNot.setMstUnit(ParamUtil.getString(request,KEY_PREFIX_MEASUREMENT_UNIT+SEPARATOR+idx));
             PrimaryDocDto primaryDocDto = new PrimaryDocDto();
-            primaryDocDto.reqObjMapping(request,getDocType(scheduleType),String.valueOf(idx));
-            transferNot.setPrimaryDocDto(primaryDocDto);
+            primaryDocDto.reqObjMapping(mulReq,request,getDocType(scheduleType),String.valueOf(idx));
             transferNot.setDocType(getDocType(scheduleType));
 
             //joint repoId exist
@@ -320,9 +392,15 @@ public class TransferNotificationDto implements Serializable {
             transferNot.setNewDocInfos(primaryDocDto.getNewDocTypeList());
 
             //set need Validation value
-            transferNot.setDocMetas(primaryDocDto.doValidation());
             addTransferNotList(transferNot);
         }
+        PrimaryDocDto primaryDocDto = new PrimaryDocDto();
+        primaryDocDto.reqOtherMapping(mulReq,request,"others");
+        this.setOtherNewInfos(primaryDocDto.getNewDocTypeList());
+        //get all new doc
+        fillAllNewDocInfo();
+        //get all
+        getDocMetaInfoFromNew();
         this.setExpectedTfDate(ParamUtil.getString(request,KEY_EXPECTED_TRANSFER_DATE));
         this.setExpArrivalTime(ParamUtil.getString(request,KEY_EXPECTED_ARRIVAL_TIME));
         this.setProviderName(ParamUtil.getString(request,KEY_PROVIDER_NAME));
