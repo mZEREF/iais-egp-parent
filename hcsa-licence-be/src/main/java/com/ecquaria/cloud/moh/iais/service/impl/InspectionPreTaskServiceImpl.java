@@ -677,11 +677,13 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
                     String actionUserId = appPremisesRoutingHistoryDto.getActionby();
                     if(!StringUtil.isEmpty(actionUserId)) {
                         OrgUserDto orgUserDto = organizationClient.retrieveOrgUserAccountById(actionUserId).getEntity();
-                        SelectOption selectOption = new SelectOption(index + "", orgUserDto.getDisplayName() + " (" + appPremisesRoutingHistoryDto.getRoleId() + ")");
-                        preInspRbOption.add(selectOption);
-                        userIdMap.put(index + "", actionUserId);
-                        roleIdMap.put(index + "", appPremisesRoutingHistoryDto.getRoleId());
-                        index++;
+                        if(orgUserDto != null) {
+                            SelectOption selectOption = new SelectOption(index + "", orgUserDto.getDisplayName() + " (" + appPremisesRoutingHistoryDto.getRoleId() + ")");
+                            preInspRbOption.add(selectOption);
+                            userIdMap.put(index + "", actionUserId);
+                            roleIdMap.put(index + "", appPremisesRoutingHistoryDto.getRoleId());
+                            index++;
+                        }
                     }
                 }
             }
