@@ -147,19 +147,8 @@ public abstract class AbstractValidate implements Validate {
                     String general_err0041=NewApplicationHelper.repLength("Unit No.","5");
                     errorMap.put(unitErrName + opLength, general_err0041);
                 }
-
                 String floorNoErr = errorMap.get(floorErrName + opLength);
-                if (StringUtil.isEmpty(floorNoErr) && !StringUtil.isEmpty(floorNo)) {
-                    Pattern pattern = compile("[0-9]*");
-                    boolean noFlag = pattern.matcher(floorNo).matches();
-                    if (noFlag) {
-                        int floorNum = Integer.parseInt(floorNo);
-                        if (10 > floorNum) {
-                            floorNo = "0" + floorNum;
-                            operationalUnitDto.setFloorNo(floorNo);
-                        }
-                    }
-                }
+                operationalUnitDto.setFloorNo(NewApplicationHelper.handleFloorNo(floorNo, floorNoErr));
                 if(flag){
                     if(!StringUtil.isEmpty(operationalUnitDto.getFloorNo()) && !StringUtil.isEmpty(operationalUnitDto.getUnitNo())){
                         String floorUnitStr = operationalUnitDto.getFloorNo() + operationalUnitDto.getUnitNo();
