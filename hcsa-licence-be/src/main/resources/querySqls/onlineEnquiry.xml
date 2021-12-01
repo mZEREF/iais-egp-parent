@@ -48,6 +48,7 @@
 		        SELECT ',#' + pou.FLOOR_NO +'-'+pou.UNIT_NO
 				        FROM premises_operational_unit pou
 				        WHERE pou.PREMISES_ID =t2.ID
+				        ORDER BY SEQ_NUM ASC
 				        FOR XML path('')
 		    ), 1, 1000)
                ,

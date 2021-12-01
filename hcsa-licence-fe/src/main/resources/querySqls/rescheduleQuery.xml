@@ -35,6 +35,7 @@
 		        SELECT ',#' + pou.FLOOR_NO +'-'+pou.UNIT_NO
 				        FROM app_premises_operational_unit pou
 				        WHERE pou.PREMISES_ID =T3.ID
+				        ORDER BY SEQ_NUM ASC
 				        FOR XML path('')
 		    ), 1, 1000)
                ,case T3.POSTAL_CODE
