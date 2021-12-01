@@ -174,8 +174,13 @@ public class AdhocWriteMultipartFileAjaxController {
                     CSRF= (String) ParamUtil.getSessionAttr(request,"replaceCsrf");
                 }
                 String urls="/hcsa-licence-web/download-rfi-file?configIndex="+configIndex+"&filerepo=fileRo"+i+"&OWASP_CSRFTOKEN=replaceCsrf"+"&fileRo"+i+"="+ MaskUtil.maskValue("fileRo"+i,temp.getId()) +"&fileRepoName="+URLEncoder.encode(temp.getDocName(), StandardCharsets.UTF_8.toString());
+                if(StringUtil.isEmpty(CSRF)){
+                    urls="/hcsa-licence-web/download-rfi-file?configIndex="+configIndex+"&filerepo=fileRo"+i+"&fileRo"+i+"="+ MaskUtil.maskValue("fileRo"+i,temp.getId()) +"&fileRepoName="+URLEncoder.encode(temp.getDocName(), StandardCharsets.UTF_8.toString());
+                }else {
+                    urls=urls.replace("replaceCsrf",CSRF);
+                }
                 String box = "<p class='fileList'>" +
-                        "<a href=\""+urls.replace("replaceCsrf",CSRF)+"\">"+temp.getDocName()+"</a>" +
+                        "<a href=\""+urls+"\">"+temp.getDocName()+"</a>" +
                         "&emsp;<button name='fileDeleteButton' value='" +
                         temp.getDocSize() +
                         "' " +
@@ -208,7 +213,7 @@ public class AdhocWriteMultipartFileAjaxController {
         BlastManagementDto blastManagementDto = (BlastManagementDto) ParamUtil.getSessionAttr(request,"rfiFileDto"+configIndex);
         if(blastManagementDto != null&&blastManagementDto.getAttachmentDtos()!=null){
             for (AttachmentDto att:blastManagementDto.getAttachmentDtos()
-                 ) {
+            ) {
                 if(att.getId().equals(fileRepoId)){
                     byte[] fileData =att.getData();
                     if(fileData != null){
