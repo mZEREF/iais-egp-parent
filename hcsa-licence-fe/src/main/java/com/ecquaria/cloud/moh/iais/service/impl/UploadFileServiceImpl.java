@@ -640,10 +640,12 @@ public class UploadFileServiceImpl implements UploadFileService {
                                         appSvcChargesDtoList.add(appSvcChargesDto);
                                     }
                                 }
-                                for (AppSvcClinicalDirectorDto appSvcClinicalDirectorDto:appSvcClinicalDirectors
-                                ) {
-                                    if(appSvcClinicalDirectorDto.getAppPremCorreId().equals(premisesCorrelationDtoId)){
-                                        appSvcClinicalDirectorDtoSet.add(appSvcClinicalDirectorDto);
+                                if(appSvcClinicalDirectors!=null){
+                                    for (AppSvcClinicalDirectorDto appSvcClinicalDirectorDto:appSvcClinicalDirectors
+                                    ) {
+                                        if(appSvcClinicalDirectorDto.getAppPremCorreId().equals(premisesCorrelationDtoId)){
+                                            appSvcClinicalDirectorDtoSet.add(appSvcClinicalDirectorDto);
+                                        }
                                     }
                                 }
                             }
