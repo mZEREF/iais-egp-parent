@@ -20,11 +20,7 @@ import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.constant.UserConstants;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
-import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
-import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
-import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
-import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
-import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
+import com.ecquaria.cloud.moh.iais.helper.*;
 import com.ecquaria.cloud.moh.iais.model.MyinfoUtil;
 import com.ecquaria.cloud.moh.iais.service.OrgUserManageService;
 import lombok.extern.slf4j.Slf4j;
@@ -163,34 +159,29 @@ public class FeAdminManageDelegate {
      * @throws
      */
     public void editValidation(BaseProcessClass bpc) {
-        String action = ParamUtil.getString(bpc.request,"action");
+        HttpServletRequest request = bpc.request;
+        String action = ParamUtil.getString(request,"action");
         if("cancel".equals(action)){
-            LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
+            LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
             if(loginContext.getRoleIds().contains(RoleConsts.USER_ROLE_ORG_ADMIN)){
-                ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE, "success");
+                ParamUtil.setRequestAttr(request,IaisEGPConstant.CRUD_ACTION_TYPE, "success");
             }else{
-                ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE, "inbox");
+                ParamUtil.setRequestAttr(request,IaisEGPConstant.CRUD_ACTION_TYPE, "inbox");
             }
 
         }else if("clearInfo".equalsIgnoreCase(action)) {
-          clearInfo(bpc.request);
+          clearInfo(request);
         }
         else if ("save".equalsIgnoreCase(action)) {
             log.debug(StringUtil.changeForLog("*******************insertDatabase end"));
-            String name = ParamUtil.getString(bpc.request,"name");
-            String salutation = ParamUtil.getString(bpc.request,"salutation");
-            String idType = ParamUtil.getString(bpc.request,"idType");
-            String idNo = StringUtil.toUpperCase(ParamUtil.getString(bpc.request,"idNo"));
-            String designation = ParamUtil.getString(bpc.request,"designation");
-            String designationOther = ParamUtil.getString(bpc.request,"designationOther");
-            String mobileNo = ParamUtil.getString(bpc.request,"mobileNo");
-            String officeNo = ParamUtil.getString(bpc.request,"officeNo");
-            String email = ParamUtil.getString(bpc.request,"email");
-            String active = ParamUtil.getString(bpc.request,"active");
-            String role = ParamUtil.getString(bpc.request,"role");
-
-            ParamUtil.setRequestAttr(bpc.request, UserConstants.IS_NEED_VALIDATE_FIELD, IaisEGPConstant.YES);
-            FeUserDto feUserDto = (FeUserDto) ParamUtil.getSessionAttr(bpc.request, UserConstants.SESSION_USER_DTO);
+            String name = ParamUtil.getString(request,"name");
+            String idNo = StringUtil.toUpperCase(ParamUtil.getString(request,"idNo"));
+            String active = ParamUtil.getString(request,"active");
+            String role   = ParamUtil.getString(request,"role");
+            String roles = ParamUtil.getStringsToString(request, "roles");
+            ParamUtil.setRequestAttr(request, UserConstants.IS_NEED_VALIDATE_FIELD, IaisEGPConstant.YES);
+            FeUserDto feUserDto = (FeUserDto) ParamUtil.getSessionAttr(request, UserConstants.SESSION_USER_DTO);
+            ControllerHelper.get(request,feUserDto);
             if(feUserDto.isCorpPass()){
                 feUserDto.setUserId(feUserDto.getUenNo() + "_" + idNo);
             }else{
@@ -198,17 +189,12 @@ public class FeAdminManageDelegate {
             }
             feUserDto.setIdType(IaisEGPHelper.checkIdentityNoType(idNo));
             feUserDto.setIdentityNo(idNo);
-            if(AppConsts.YES.equalsIgnoreCase(ParamUtil.getString(bpc.request,"loadMyInfoData"))){
-                ParamUtil.setRequestAttr(bpc.request,MyinfoUtil.IS_LOAD_MYINFO_DATA,AppConsts.YES);
+            feUserDto.setRoles(roles);
+            if(AppConsts.YES.equalsIgnoreCase(ParamUtil.getString(request,"loadMyInfoData"))){
+                ParamUtil.setRequestAttr(request,MyinfoUtil.IS_LOAD_MYINFO_DATA,AppConsts.YES);
             }else {
                 feUserDto.setDisplayName(name);
             }
-            feUserDto.setSalutation(salutation);
-            feUserDto.setDesignation(designation);
-            feUserDto.setDesignationOther(designationOther);
-            feUserDto.setMobileNo(mobileNo);
-            feUserDto.setOfficeTelNo(officeNo);
-            feUserDto.setEmail(email);
             feUserDto.setUserDomain(AppConsts.USER_DOMAIN_INTERNET);
             feUserDto.setAvailable(Boolean.TRUE);
 
@@ -219,28 +205,24 @@ public class FeAdminManageDelegate {
                 }else{
                     feUserDto.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
                 }
-                if("admin".equals(role)){
-                    feUserDto.setUserRole(RoleConsts.USER_ROLE_ORG_ADMIN);
-                }else{
-                    feUserDto.setUserRole(RoleConsts.USER_ROLE_ORG_USER);
-                }
+                feUserDto.setUserRole(role);
             }else{
                 feUserDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
-                feUserDto.setUserRole(RoleConsts.USER_ROLE_ORG_USER);
+                feUserDto.setUserRole(role);
             }
 
-            ParamUtil.setSessionAttr(bpc.request, UserConstants.SESSION_USER_DTO, feUserDto);
+            ParamUtil.setSessionAttr(request, UserConstants.SESSION_USER_DTO, feUserDto);
             ValidationResult validationResult = WebValidationHelper.validateProperty(feUserDto, "edit");
 
             if (validationResult.isHasErrors()){
                 log.debug("****************Error");
                 Map<String,String> errorMap = validationResult.retrieveAll();
                 WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
-                ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ERRORMSG,WebValidationHelper.generateJsonStr(errorMap));
-                ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE, "back");
+                ParamUtil.setRequestAttr(request, IntranetUserConstant.ERRORMSG,WebValidationHelper.generateJsonStr(errorMap));
+                ParamUtil.setRequestAttr(request,IaisEGPConstant.CRUD_ACTION_TYPE, "back");
             }else{
                 LicenseeDto licenseeDto = orgUserManageService.getLicenseeById(loginContext.getLicenseeId());
-                MyInfoDto myInfoDto = (MyInfoDto) ParamUtil.getSessionAttr(bpc.request,MyinfoUtil.MYINFODTO_REFRESH +loginContext.getNricNum());
+                MyInfoDto myInfoDto = (MyInfoDto) ParamUtil.getSessionAttr(request,MyinfoUtil.MYINFODTO_REFRESH +loginContext.getNricNum());
                 boolean needRefersh = myInfoDto != null && !myInfoDto.isServiceDown();
                 boolean licenseeHave = licenseeDto!=null && licenseeDto.getLicenseeIndividualDto() != null;
                 if (!needRefersh) {
@@ -254,16 +236,16 @@ public class FeAdminManageDelegate {
                 successMap.put("save","suceess");
                 orgUserManageService.saveMyinfoDataByFeUserDtoAndLicenseeDto(licenseeDto,feUserDto,myInfoDto,false);
                 if(licenseeHave){
-                    ParamUtil.setSessionAttr(bpc.request, UserConstants.SESSION_USER_DTO, orgUserManageService.getFeUserAccountByNricAndType(licenseeDto.getLicenseeIndividualDto().getIdNo(), licenseeDto.getLicenseeIndividualDto().getIdType(), feUserDto.getUenNo()));
+                    ParamUtil.setSessionAttr(request, UserConstants.SESSION_USER_DTO, orgUserManageService.getFeUserAccountByNricAndType(licenseeDto.getLicenseeIndividualDto().getIdNo(), licenseeDto.getLicenseeIndividualDto().getIdType(), feUserDto.getUenNo()));
                 }
                 if(loginContext.getRoleIds().contains(RoleConsts.USER_ROLE_ORG_ADMIN)) {
-                    ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "success");
+                    ParamUtil.setRequestAttr(request, IaisEGPConstant.CRUD_ACTION_TYPE, "success");
                 }else{
-                    ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "inbox");
+                    ParamUtil.setRequestAttr(request, IaisEGPConstant.CRUD_ACTION_TYPE, "inbox");
                 }
             }
         }else {
-            repalceFeUserDtoByMyinfo(bpc.request);
+            repalceFeUserDtoByMyinfo(request);
         }
     }
 

@@ -145,8 +145,9 @@ public final class IaisEGPHelper extends EGPHelper {
     private static final String PRS_CLIENT_ID             = "a0900db88fa94ee49d8566fd3ca414f3";
 
 
-    private static final Map<String,String> SVC_ROLE_MAP = getSvcRoleMap();
-    private static final Map<String,SelectOption> ROLE_ROLE_ROLE_NAME_MAP = getRoleRoleRoleNameMap();
+    private static  Map<String,String> SVC_ROLE_MAP = getSvcRoleMap();
+    private static  Map<String,SelectOption> ROLE_ROLE_ROLE_NAME_MAP = getRoleRoleRoleNameMap();
+    private static  List<String> ROLES = IaisCommonUtils.genNewArrayList(3);
     /**
      * @author: Shicheng on 2021/07/16 15:03
      */
@@ -957,6 +958,7 @@ public final class IaisEGPHelper extends EGPHelper {
         Map<String,SelectOption> stringStringMap = IaisCommonUtils.genNewHashMap(2);
         stringStringMap.put(RoleConsts.USER_ROLE_DS_AR,new SelectOption(RoleConsts.USER_ROLE_DS_AR,RoleConsts.SHOW_USER_ROLE_DS_AR));
         stringStringMap.put(RoleConsts.USER_ROLE_ORG_USER,new SelectOption(RoleConsts.USER_ROLE_ORG_USER,RoleConsts.SHOW_USER_ROLE_ORG_USER));
+        stringStringMap.put(RoleConsts.USER_ROLE_ORG_ADMIN,new SelectOption(RoleConsts.USER_ROLE_ORG_ADMIN,RoleConsts.SHOW_USER_ROLE_ORG_ADMIN));
         return stringStringMap;
     }
     public static List<SelectOption> getRoleSelection(List<String> svcNames) {
@@ -973,5 +975,11 @@ public final class IaisEGPHelper extends EGPHelper {
         });
         selectOptions.sort(SelectOption::compareTo);
         return selectOptions;
+    }
+
+    public static List<String> getRoles(){
+        ROLES.clear();
+        ROLES.addAll(ROLE_ROLE_ROLE_NAME_MAP.keySet());
+        return ROLES;
     }
 }

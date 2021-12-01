@@ -324,11 +324,9 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
                 clientUser.setAccountStatus(accountStatus);
                 //prevent history simple pwd throw 500
                 clientUser.setPassword(pwd);
-
                 userClient.updateClientUser(clientUser);
                 //delete egp role
-                feMainRbacClient.deleteUerRoleIds(AppConsts.HALP_EGP_DOMAIN,feUserDto.getUserId(),RoleConsts.USER_ROLE_ORG_ADMIN);
-                feMainRbacClient.deleteUerRoleIds(AppConsts.HALP_EGP_DOMAIN,feUserDto.getUserId(),RoleConsts.USER_ROLE_ORG_USER);
+                IaisEGPHelper.getRoles().stream().forEach( role -> feMainRbacClient.deleteUerRoleIds(AppConsts.HALP_EGP_DOMAIN,feUserDto.getUserId(),RoleConsts.USER_ROLE_ORG_ADMIN));
             } else {
                 clientUser = MiscUtil.transferEntityDto(feUserDto, ClientUser.class);
                 clientUser.setUserDomain(AppConsts.HALP_EGP_DOMAIN);
@@ -368,16 +366,17 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
                 //assign role
                 feMainRbacClient.createUerRoleIds(egpUserRole).getEntity();
 
-                //corppass
-                if (RoleConsts.USER_ROLE_ORG_ADMIN.equalsIgnoreCase(roleName) &&
-                        feUserDto.isCorpPass()){
-                    EgpUserRoleDto role = new EgpUserRoleDto();
-                    role.setUserId(feUserDto.getUserId());
-                    role.setUserDomain(AppConsts.HALP_EGP_DOMAIN);
-                    role.setPermission("A");
-                    role.setRoleId(RoleConsts.USER_ROLE_ORG_USER);
-                    //assign role
-                    feMainRbacClient.createUerRoleIds(role).getEntity();
+                if(StringUtil.isNotEmpty(feUserDto.getRoles())){
+                    List<String> roles = Arrays.asList(feUserDto.getRoles().split("#"));
+                    roles.stream().forEach(o ->{
+                        EgpUserRoleDto role = new EgpUserRoleDto();
+                        role.setUserId(feUserDto.getUserId());
+                        role.setUserDomain(AppConsts.HALP_EGP_DOMAIN);
+                        role.setPermission("A");
+                        role.setRoleId(o);
+                        //assign role
+                        feMainRbacClient.createUerRoleIds(role).getEntity();
+                    });
                 }
             }
 
