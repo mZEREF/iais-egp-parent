@@ -193,7 +193,7 @@ public class ClientReschedulingDelegator {
                     apptViewDto.setAppId(reschApptGrpPremsQueryDto.getId());
                     apptViewDto.setAppCorrId(reschApptGrpPremsQueryDto.getAppCorrId());
                     apptViewDto.setLicenseeId(reschApptGrpPremsQueryDto.getLicenseeId());
-                    apptViewDto.setAddress(MiscUtil.getAddress(reschApptGrpPremsQueryDto.getBlkNo(),reschApptGrpPremsQueryDto.getStreetName(),reschApptGrpPremsQueryDto.getBuildingName(),reschApptGrpPremsQueryDto.getFloorNo(),reschApptGrpPremsQueryDto.getUnitNo(),reschApptGrpPremsQueryDto.getPostalCode()));
+                    apptViewDto.setAddress(reschApptGrpPremsQueryDto.getAddress());
                     apptViewDto.setInspStartDate(reschApptGrpPremsQueryDto.getRecomInDate());
                     apptViewDto.setHciCode(reschApptGrpPremsQueryDto.getHciCode());
                     apptViewDto.setHciName(reschApptGrpPremsQueryDto.getHciName());
