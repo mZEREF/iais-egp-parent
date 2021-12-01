@@ -2,7 +2,22 @@ package com.ecquaria.cloud.moh.iais.rfcutil;
 
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.*;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPrimaryDocDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesOperationalUnitDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcBusinessDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcChargesPageDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcChckListDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDisciplineAllocationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDocDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcLaboratoryDisciplinesDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPersonnelDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPrincipalOfficersDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcVehicleDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.SubLicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceStepSchemeDto;
 import com.ecquaria.cloud.moh.iais.common.utils.CopyUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
@@ -60,8 +75,7 @@ public class EqRequestForChangeSubmitResultChange {
         for (int i = 0; i < n1; i++) {
             AppGrpPremisesDto appGrpPremisesDto = appGrpPremisesDtoList.get(i);
             AppGrpPremisesDto oldAppGrpPremisesDto = oldAppGrpPremisesDtoList.get(i);
-            if (!PageDataCopyUtil.copyAppGrpPremisesDtoForAutoField(appGrpPremisesDto).equals(
-                    PageDataCopyUtil.copyAppGrpPremisesDtoForAutoField(oldAppGrpPremisesDto))) {
+            if (isChangeGrpPremisesAutoFields(appGrpPremisesDto, oldAppGrpPremisesDto)) {
                 isChanged = true;
                 break;
             }
@@ -82,7 +96,31 @@ public class EqRequestForChangeSubmitResultChange {
         return isChanged;
     }
 
-    public static List<AppGrpPremisesDto> generateDtosForAutoFields(List<AppGrpPremisesDto> appGrpPremisesDtoList,
+    public static boolean isChangeGrpPremisesAutoFields(List<AppGrpPremisesDto> appGrpPremisesDtoList,
+            List<AppGrpPremisesDto> oldAppGrpPremisesDtoList) {
+        if (appGrpPremisesDtoList == null || oldAppGrpPremisesDtoList == null) {
+            return false;
+        }
+        int n1 = appGrpPremisesDtoList.size();
+        int n2 = oldAppGrpPremisesDtoList.size();
+        if (n1 != n2) {
+            return true;
+        }
+        boolean isChanged = false;
+        for (int i = 0; i < n1; i++) {
+            AppGrpPremisesDto appGrpPremisesDto = appGrpPremisesDtoList.get(i);
+            AppGrpPremisesDto oldAppGrpPremisesDto = oldAppGrpPremisesDtoList.get(i);
+            isChanged = isChangeGrpPremisesAutoFields(appGrpPremisesDto, oldAppGrpPremisesDto);
+        }
+        return isChanged;
+    }
+
+    public static boolean isChangeGrpPremisesAutoFields(AppGrpPremisesDto appGrpPremisesDto, AppGrpPremisesDto oldAppGrpPremisesDto) {
+        return !PageDataCopyUtil.copyAppGrpPremisesDtoForAutoField(appGrpPremisesDto).equals(
+                PageDataCopyUtil.copyAppGrpPremisesDtoForAutoField(oldAppGrpPremisesDto));
+    }
+
+    /*public static List<AppGrpPremisesDto> generateDtosForAutoFields(List<AppGrpPremisesDto> appGrpPremisesDtoList,
             List<AppGrpPremisesDto> oldAppGrpPremisesDtoList, AppEditSelectDto appEditSelectDto) {
         if (appGrpPremisesDtoList == null || appGrpPremisesDtoList.isEmpty() || oldAppGrpPremisesDtoList == null || oldAppGrpPremisesDtoList.isEmpty()) {
             return null;
@@ -148,7 +186,7 @@ public class EqRequestForChangeSubmitResultChange {
             result.add(copy);
         }
         return result;
-    }
+    }*/
 
     public static boolean eqServiceChange(List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList, List<AppSvcRelatedInfoDto> oldAppSvcRelatedInfoDtoList) throws Exception {
         return eqServiceChange(appSvcRelatedInfoDtoList, oldAppSvcRelatedInfoDtoList, null);
@@ -436,8 +474,10 @@ public class EqRequestForChangeSubmitResultChange {
         if (n1 != n2) {
             return false;
         }
-        for (AppPremisesOperationalUnitDto dto : appPremisesOperationalUnitDtoList) {
-            if (!oldAppSubmissionDtoAppGrpPremisesDtoList.contains(dto)) {
+        for (AppPremisesOperationalUnitDto originalDto : appPremisesOperationalUnitDtoList) {
+            if (!oldAppSubmissionDtoAppGrpPremisesDtoList.parallelStream()
+                    .anyMatch(dto -> Objects.equals(dto.getUnitNo(), originalDto.getUnitNo())
+                            && Objects.equals(dto.getFloorNo(), originalDto.getFloorNo()))) {
                 return false;
             }
         }
@@ -455,42 +495,55 @@ public class EqRequestForChangeSubmitResultChange {
             return true;
         }
         List<AppPremisesOperationalUnitDto> appPremisesOperationalUnitDtos = new ArrayList<>();
-        AppPremisesOperationalUnitDto currDto = new AppPremisesOperationalUnitDto();
-        currDto.setFloorNo(appGrpPremisesDto.getFloorNo());
-        currDto.setUnitNo(appGrpPremisesDto.getUnitNo());
-        appPremisesOperationalUnitDtos.add(currDto);
+        appPremisesOperationalUnitDtos.add(getFirstOpeUnitDto(appGrpPremisesDto));
         appPremisesOperationalUnitDtos.addAll(appGrpPremisesDto.getAppPremisesOperationalUnitDtos());
 
         List<AppPremisesOperationalUnitDto> oldAppPremisesOperationalUnitDtos = new ArrayList<>();
-        AppPremisesOperationalUnitDto oldDto = new AppPremisesOperationalUnitDto();
-        oldDto.setFloorNo(oldAppGrpPremisesDto.getFloorNo());
-        oldDto.setUnitNo(oldAppGrpPremisesDto.getUnitNo());
-        oldAppPremisesOperationalUnitDtos.add(oldDto);
+        oldAppPremisesOperationalUnitDtos.add(getFirstOpeUnitDto(oldAppGrpPremisesDto));
         oldAppPremisesOperationalUnitDtos.addAll(oldAppGrpPremisesDto.getAppPremisesOperationalUnitDtos());
 
         return !eqOperationalUnitDtoList(appPremisesOperationalUnitDtos, oldAppPremisesOperationalUnitDtos);
     }
 
+    private static AppPremisesOperationalUnitDto getFirstOpeUnitDto(AppGrpPremisesDto appGrpPremisesDto) {
+        AppPremisesOperationalUnitDto currDto = new AppPremisesOperationalUnitDto();
+        String premisesType = appGrpPremisesDto.getPremisesType();
+        String floorNo = null;
+        String unitNo = null;
+        if (ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(premisesType)) {
+            floorNo = appGrpPremisesDto.getConveyanceFloorNo();
+            unitNo = appGrpPremisesDto.getConveyanceUnitNo();
+        } else if (ApplicationConsts.PREMISES_TYPE_OFF_SITE.equals(premisesType)) {
+            floorNo = appGrpPremisesDto.getOffSiteFloorNo();
+            unitNo = appGrpPremisesDto.getOffSiteUnitNo();
+        } else if (ApplicationConsts.PREMISES_TYPE_EAS_MTS_CONVEYANCE.equals(premisesType)) {
+            floorNo = appGrpPremisesDto.getEasMtsFloorNo();
+            unitNo = appGrpPremisesDto.getEasMtsUnitNo();
+        }
+        if (StringUtil.isEmpty(floorNo) || StringUtil.isEmpty(unitNo)) {
+            floorNo = appGrpPremisesDto.getFloorNo();
+            unitNo = appGrpPremisesDto.getUnitNo();
+        }
+        currDto.setFloorNo(floorNo);
+        currDto.setUnitNo(unitNo);
+        return currDto;
+    }
+
     public static boolean isChangeFloorUnit(List<AppGrpPremisesDto> appGrpPremisesDtoList , List<AppGrpPremisesDto> oldAppGrpPremisesDtoList){
         List<AppPremisesOperationalUnitDto> appPremisesOperationalUnitDtos=new ArrayList<>(10);
         appGrpPremisesDtoList.forEach((v)->{
-            AppPremisesOperationalUnitDto currDto = new AppPremisesOperationalUnitDto();
-            currDto.setFloorNo(v.getFloorNo());
-            currDto.setUnitNo(v.getUnitNo());
-            appPremisesOperationalUnitDtos.add(currDto);
+            appPremisesOperationalUnitDtos.add(getFirstOpeUnitDto(v));
             appPremisesOperationalUnitDtos.addAll(v.getAppPremisesOperationalUnitDtos());
         });
         List<AppPremisesOperationalUnitDto> oldAppPremisesOperationalUnitDtos=new ArrayList<>(10);
         oldAppGrpPremisesDtoList.forEach((v)->{
-            AppPremisesOperationalUnitDto currDto = new AppPremisesOperationalUnitDto();
-            currDto.setFloorNo(v.getFloorNo());
-            currDto.setUnitNo(v.getUnitNo());
-            oldAppPremisesOperationalUnitDtos.add(currDto);
+            oldAppPremisesOperationalUnitDtos.add(getFirstOpeUnitDto(v));
             oldAppPremisesOperationalUnitDtos.addAll(v.getAppPremisesOperationalUnitDtos());
         });
         return !eqOperationalUnitDtoList(appPremisesOperationalUnitDtos,oldAppPremisesOperationalUnitDtos);
     }
 
+    /*
     public static boolean eqAppSvcDisciplineAllocationDto(List<AppSvcDisciplineAllocationDto> appSvcDisciplineAllocationDtoList,List<AppSvcDisciplineAllocationDto> oldAppSvcDisciplineAllocationDtoList){
         List<AppSvcDisciplineAllocationDto> list = PageDataCopyUtil.copyAppSvcDisciplineAllocationDto(appSvcDisciplineAllocationDtoList);
         List<AppSvcDisciplineAllocationDto> list1 = PageDataCopyUtil.copyAppSvcDisciplineAllocationDto(oldAppSvcDisciplineAllocationDtoList);
@@ -623,14 +676,14 @@ public class EqRequestForChangeSubmitResultChange {
                 }
             }
         }
-        /*
+        *//*
         AppSvcChargesPageDto appSvcChargesPageDto = appSvcRelatedInfoDto.getAppSvcChargesPageDto();
         AppSvcChargesPageDto oldAppSvcChargesPageDto = oldAppSvcRelatedInfoDto.getAppSvcChargesPageDto();
         boolean compareAppSvcChargesPage = compareAppSvcChargesPage(appSvcChargesPageDto, oldAppSvcChargesPageDto);
         if(compareAppSvcChargesPage){
            return compareAppSvcChargesPage;
         }
-        */
+        *//*
         List<AppSvcPrincipalOfficersDto> appSvcClinicalDirectorDtoList = appSvcRelatedInfoDto.getAppSvcClinicalDirectorDtoList();
         List<AppSvcPrincipalOfficersDto> oldAppSvcClinicalDirectorDtoList = oldAppSvcRelatedInfoDto.getAppSvcClinicalDirectorDtoList();
         if(oldAppSvcClinicalDirectorDtoList!=null){
@@ -703,7 +756,8 @@ public class EqRequestForChangeSubmitResultChange {
             }
         }
         return false;
-    }
+    }*/
+
     public static boolean compareHciName(AppGrpPremisesDto premisesListQueryDto, AppGrpPremisesDto appGrpPremisesDto) {
         String newHciName = NewApplicationHelper.getHciName(appGrpPremisesDto);
         String oldHciName = NewApplicationHelper.getHciName(premisesListQueryDto);
@@ -894,7 +948,7 @@ public class EqRequestForChangeSubmitResultChange {
          *
          * */
         if (appGrpPremisesDtoList != null && !grpPremiseIsChange) {
-            grpPremiseIsChange = isChangeGrpPremises(appGrpPremisesDtoList,oldAppGrpPremisesDtoList);
+            grpPremiseIsChange = isChangeGrpPremisesAutoFields(appGrpPremisesDtoList, oldAppGrpPremisesDtoList);
         }
         List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList = appSubmissionDto.getAppSvcRelatedInfoDtoList();
         List<AppSvcRelatedInfoDto> oldAppSvcRelatedInfoDtoList = oldAppSubmissionDto.getAppSvcRelatedInfoDtoList();
