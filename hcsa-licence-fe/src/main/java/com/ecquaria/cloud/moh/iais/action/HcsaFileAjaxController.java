@@ -219,9 +219,8 @@ public class HcsaFileAjaxController {
                     if(fileData != null){
                         try {
                             String fileName = URLEncoder.encode(file.getName(), StandardCharsets.UTF_8.toString());
-                            log.info("Down load file name ==> {}", fileName);
                             response.addHeader("Content-Disposition", "attachment;filename=\""
-                                    +  fileName + "\"");
+                                    +  fileName.replaceAll("\\+", "%20") + "\"");
                             response.addHeader("Content-Length", "" + fileData.length);
                             response.setContentType("application/x-octet-stream");
                         }catch (Exception e){
