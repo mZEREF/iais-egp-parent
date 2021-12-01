@@ -1260,30 +1260,20 @@ public class NewApplicationDelegator {
             //set value into AppSubmissionDto
             appSubmissionDto.setAppGrpPrimaryDocDtos(newAppGrpPrimaryDocDtoList);
         }
-
-        String crud_action_values = ParamUtil.getRequestString(bpc.request, IaisEGPConstant.CRUD_ACTION_VALUE);
-        if (!"saveDraft".equals(crud_action_values)) {
-            List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtos = appSubmissionService.documentValid(bpc.request, errorMap,true);
-            doIsCommom(bpc.request, errorMap);
-            saveFileAndSetFileId(appGrpPrimaryDocDtos,saveFileMap);
-            appSubmissionDto.setAppGrpPrimaryDocDtos(appGrpPrimaryDocDtos);
-            // check CO Map
-            HashMap<String, String> coMap = (HashMap<String, String>) bpc.request.getSession().getAttribute(NewApplicationConstant.CO_MAP);
-            if (errorMap.isEmpty()) {
-                coMap.put("document", "document");
-            } else {
-                coMap.put("document", "");
-            }
-            bpc.request.getSession().setAttribute(NewApplicationConstant.CO_MAP, coMap);
-        } else {
-            List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtos = appSubmissionDto.getAppGrpPrimaryDocDtos();
-            saveFileAndSetFileId(appGrpPrimaryDocDtos,saveFileMap);
-            appSubmissionDto.setAppGrpPrimaryDocDtos(appGrpPrimaryDocDtos);
-        }
+        List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtos = appSubmissionService.documentValid(bpc.request, errorMap,true);
+        doIsCommom(bpc.request, errorMap);
+        saveFileAndSetFileId(appGrpPrimaryDocDtos,saveFileMap);
+        appSubmissionDto.setAppGrpPrimaryDocDtos(appGrpPrimaryDocDtos);
         ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
-
-        boolean isNeedShowValidation = !"back".equals(crud_action_values);
-        if (errorMap.size() > 0 && isNeedShowValidation) {
+        // check CO Map
+        HashMap<String, String> coMap = (HashMap<String, String>) bpc.request.getSession().getAttribute(NewApplicationConstant.CO_MAP);
+        if (errorMap.isEmpty()) {
+            coMap.put("document", "document");
+        } else {
+            coMap.put("document", "");
+        }
+        String actionValue = ParamUtil.getRequestString(bpc.request, IaisEGPConstant.CRUD_ACTION_VALUE);
+        if (errorMap.size() > 0 && !"back".equals(actionValue)) {
             //set audit
             bpc.request.setAttribute("errormapIs", "error");
             NewApplicationHelper.setAudiErrMap(isRfi,appSubmissionDto.getAppType(),errorMap,appSubmissionDto.getRfiAppNo(),appSubmissionDto.getLicenceNo());
@@ -1291,9 +1281,7 @@ public class NewApplicationDelegator {
             ParamUtil.setSessionAttr(bpc.request, APPGRPPRIMARYDOCERRMSGMAP, (Serializable) errorMap);
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "documents");
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_VALUE, "documents");
-            return;
         }
-
         log.info(StringUtil.changeForLog("the do doDocument end ...."));
     }
 
