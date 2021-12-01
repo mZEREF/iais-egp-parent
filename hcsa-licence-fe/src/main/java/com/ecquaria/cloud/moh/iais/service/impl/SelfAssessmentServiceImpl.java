@@ -270,8 +270,8 @@ public class SelfAssessmentServiceImpl implements SelfAssessmentService {
                     if (Optional.ofNullable(appGrpPremisesList).isPresent()){
                         AppGrpPremisesDto appGrpPremises = appGrpPremisesList.get(0);
                         if (Optional.ofNullable(appGrpPremises).isPresent()){
-                            String address = IaisEGPHelper.getAddress(appGrpPremises.getBlkNo(), appGrpPremises.getStreetName(), appGrpPremises.getBuildingName(),
-                                    appGrpPremises.getFloorNo(), appGrpPremises.getUnitNo(), appGrpPremises.getPostalCode());
+                            String address = MiscUtil.getAddressForApp(appGrpPremises.getBlkNo(), appGrpPremises.getStreetName(), appGrpPremises.getBuildingName(),
+                                    appGrpPremises.getFloorNo(), appGrpPremises.getUnitNo(), appGrpPremises.getPostalCode(),appGrpPremises.getAppPremisesOperationalUnitDtos());
                             templateContent.put("hciName", appGrpPremises.getHciName());
                             templateContent.put("hciCode", appGrpPremises.getHciCode());
                             templateContent.put("hciAddress", address);
