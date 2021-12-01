@@ -148,8 +148,8 @@ public class SelfAssessmentServiceImpl implements SelfAssessmentService {
                 String corrId = correlation.getId();
                 String appGrpPremId = correlation.getAppGrpPremId();
                 AppGrpPremisesEntityDto appGrpPremises = applicationFeClient.getAppGrpPremise(appGrpPremId).getEntity();
-                String address = MiscUtil.getAddress(appGrpPremises.getBlkNo(), appGrpPremises.getStreetName(), appGrpPremises.getBuildingName(),
-                        appGrpPremises.getFloorNo(), appGrpPremises.getUnitNo(), appGrpPremises.getPostalCode());
+                String address = MiscUtil.getAddressForApp(appGrpPremises.getBlkNo(), appGrpPremises.getStreetName(), appGrpPremises.getBuildingName(),
+                        appGrpPremises.getFloorNo(), appGrpPremises.getUnitNo(), appGrpPremises.getPostalCode(),appGrpPremises.getAppPremisesOperationalUnitDtos());
 
                 SelfAssessment selfAssessment = new SelfAssessment();
                 selfAssessment.setSvcId(svcId);
