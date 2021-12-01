@@ -68,6 +68,11 @@ import com.ecquaria.cloud.moh.iais.dto.PersonFieldDto;
 import com.ecquaria.cloud.moh.iais.dto.PmtReturnUrlDto;
 import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceClient;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.multipart.commons.CommonsMultipartFile;
+import sop.util.DateUtil;
+
+import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
@@ -86,12 +91,10 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-import javax.servlet.http.HttpServletRequest;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.web.multipart.commons.CommonsMultipartFile;
-import sop.util.DateUtil;
+
+import static java.util.regex.Pattern.compile;
 
 /**
  * NewApplicationHelper
@@ -4537,6 +4540,38 @@ public class NewApplicationHelper {
                 .filter(s -> s.contains(":"))
                 .map(s -> s.substring(s.indexOf(":") + 1))
                 .collect(Collectors.joining(", "));
+    }
+
+    /**
+     * Handle floor no
+     *
+     * @param floorNo
+     * @param floorNoErr
+     * @return
+     */
+    public static String handleFloorNo(String floorNo, String floorNoErr) {
+        if (StringUtil.isEmpty(floorNoErr)) {
+            return handleFloorNo(floorNo);
+        }
+        return floorNo;
+    }
+
+    /**
+     * Handle floor no
+     *
+     * @param floorNo
+     * @return
+     */
+    public static String handleFloorNo(String floorNo) {
+        String newFloorNo = floorNo;
+        if (!StringUtil.isEmpty(floorNo) && floorNo.length() == 1) {
+            Pattern pattern = compile("[0-9]*");
+            boolean noFlag = pattern.matcher(floorNo).matches();
+            if (noFlag) {
+                newFloorNo = "0" + floorNo;
+            }
+        }
+        return newFloorNo;
     }
 
 }

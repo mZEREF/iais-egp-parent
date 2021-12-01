@@ -719,13 +719,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                                 }
                             }
                             String floorNoErr = errorMap.get("floorNo" + i);
-                            if (StringUtil.isEmpty(floorNoErr) && !StringUtil.isEmpty(floorNo) && floorNo.length() == 1) {
-                                Pattern pattern = compile("[0-9]*");
-                                boolean noFlag = pattern.matcher(floorNo).matches();
-                                if (noFlag) {
-                                    appGrpPremisesDtoList.get(i).setFloorNo("0" + floorNo);
-                                }
-                            }
+                            appGrpPremisesDtoList.get(i).setFloorNo(NewApplicationHelper.handleFloorNo(floorNo, floorNoErr));
                             if (!empty && !empty1 && !empty2) {
                                 StringBuilder sb=new StringBuilder();
                                 sb.append(appGrpPremisesDtoList.get(i).getFloorNo())
@@ -960,13 +954,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                             }
                             String floorNoErr = errorMap.get("conveyanceFloorNo" + i);
                             String floorNo = appGrpPremisesDtoList.get(i).getConveyanceFloorNo();
-                            if (StringUtil.isEmpty(floorNoErr) && !StringUtil.isEmpty(floorNo) && floorNo.length() == 1) {
-                                Pattern pattern = compile("[0-9]*");
-                                boolean noFlag = pattern.matcher(floorNo).matches();
-                                if (noFlag) {
-                                    appGrpPremisesDtoList.get(i).setConveyanceFloorNo("0" + floorNo);
-                                }
-                            }
+                            appGrpPremisesDtoList.get(i).setConveyanceFloorNo(NewApplicationHelper.handleFloorNo(floorNo, floorNoErr));
                             if (!empty && !empty1 && !empty2) {
                                 StringBuilder sb=new StringBuilder();
                                 sb.append(appGrpPremisesDtoList.get(i).getConveyanceFloorNo())
@@ -1201,13 +1189,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                             }
                             String floorNoErr = errorMap.get("offSiteFloorNo" + i);
                             String floorNo = appGrpPremisesDtoList.get(i).getOffSiteFloorNo();
-                            if (StringUtil.isEmpty(floorNoErr) && !StringUtil.isEmpty(floorNo) && floorNo.length() == 1) {
-                                Pattern pattern = compile("[0-9]*");
-                                boolean noFlag = pattern.matcher(floorNo).matches();
-                                if (noFlag) {
-                                    appGrpPremisesDtoList.get(i).setOffSiteFloorNo("0" + floorNo);
-                                }
-                            }
+                            appGrpPremisesDtoList.get(i).setOffSiteFloorNo(NewApplicationHelper.handleFloorNo(floorNo, floorNoErr));
                             if (!empty && !empty1 && !empty2) {
                                 StringBuilder sb=new StringBuilder();
                                 sb.append(appGrpPremisesDtoList.get(i).getOffSiteFloorNo())
@@ -2248,15 +2230,8 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                     String general_err0041=NewApplicationHelper.repLength("Unit No.","5");
                     errorMap.put(unitErrName + opLength, general_err0041);
                 }
-
                 String floorNoErr = errorMap.get(floorErrName + opLength);
-                if (StringUtil.isEmpty(floorNoErr) && !StringUtil.isEmpty(floorNo) && floorNo.length() == 1) {
-                    Pattern pattern = compile("[0-9]*");
-                    boolean noFlag = pattern.matcher(floorNo).matches();
-                    if (noFlag) {
-                        operationalUnitDto.setFloorNo("0" + floorNo);
-                    }
-                }
+                operationalUnitDto.setFloorNo(NewApplicationHelper.handleFloorNo(floorNo, floorNoErr));
                 if(flag){
                     if(!StringUtil.isEmpty(operationalUnitDto.getFloorNo()) && !StringUtil.isEmpty(operationalUnitDto.getUnitNo())){
                         String floorUnitStr = operationalUnitDto.getFloorNo() + operationalUnitDto.getUnitNo();

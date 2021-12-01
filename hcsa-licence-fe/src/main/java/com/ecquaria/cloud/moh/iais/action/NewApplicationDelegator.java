@@ -1260,30 +1260,20 @@ public class NewApplicationDelegator {
             //set value into AppSubmissionDto
             appSubmissionDto.setAppGrpPrimaryDocDtos(newAppGrpPrimaryDocDtoList);
         }
-
-        String crud_action_values = ParamUtil.getRequestString(bpc.request, IaisEGPConstant.CRUD_ACTION_VALUE);
-        if (!"saveDraft".equals(crud_action_values)) {
-            List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtos = appSubmissionService.documentValid(bpc.request, errorMap,true);
-            doIsCommom(bpc.request, errorMap);
-            saveFileAndSetFileId(appGrpPrimaryDocDtos,saveFileMap);
-            appSubmissionDto.setAppGrpPrimaryDocDtos(appGrpPrimaryDocDtos);
-            // check CO Map
-            HashMap<String, String> coMap = (HashMap<String, String>) bpc.request.getSession().getAttribute(NewApplicationConstant.CO_MAP);
-            if (errorMap.isEmpty()) {
-                coMap.put("document", "document");
-            } else {
-                coMap.put("document", "");
-            }
-            bpc.request.getSession().setAttribute(NewApplicationConstant.CO_MAP, coMap);
-        } else {
-            List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtos = appSubmissionDto.getAppGrpPrimaryDocDtos();
-            saveFileAndSetFileId(appGrpPrimaryDocDtos,saveFileMap);
-            appSubmissionDto.setAppGrpPrimaryDocDtos(appGrpPrimaryDocDtos);
-        }
+        List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtos = appSubmissionService.documentValid(bpc.request, errorMap,true);
+        doIsCommom(bpc.request, errorMap);
+        saveFileAndSetFileId(appGrpPrimaryDocDtos,saveFileMap);
+        appSubmissionDto.setAppGrpPrimaryDocDtos(appGrpPrimaryDocDtos);
         ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
-
-        boolean isNeedShowValidation = !"back".equals(crud_action_values);
-        if (errorMap.size() > 0 && isNeedShowValidation) {
+        // check CO Map
+        HashMap<String, String> coMap = (HashMap<String, String>) bpc.request.getSession().getAttribute(NewApplicationConstant.CO_MAP);
+        if (errorMap.isEmpty()) {
+            coMap.put("document", "document");
+        } else {
+            coMap.put("document", "");
+        }
+        String actionValue = ParamUtil.getRequestString(bpc.request, IaisEGPConstant.CRUD_ACTION_VALUE);
+        if (errorMap.size() > 0 && !"back".equals(actionValue)) {
             //set audit
             bpc.request.setAttribute("errormapIs", "error");
             NewApplicationHelper.setAudiErrMap(isRfi,appSubmissionDto.getAppType(),errorMap,appSubmissionDto.getRfiAppNo(),appSubmissionDto.getLicenceNo());
@@ -1291,9 +1281,7 @@ public class NewApplicationDelegator {
             ParamUtil.setSessionAttr(bpc.request, APPGRPPRIMARYDOCERRMSGMAP, (Serializable) errorMap);
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "documents");
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_VALUE, "documents");
-            return;
         }
-
         log.info(StringUtil.changeForLog("the do doDocument end ...."));
     }
 
@@ -4015,23 +4003,8 @@ public class NewApplicationDelegator {
                         eventList.add(appPremEventPeriodDto);
                     }
                 }
-
-
-                if (opLength > 0) {
-                    for (int j = 0; j < opLength; j++) {
-                        AppPremisesOperationalUnitDto operationalUnitDto = new AppPremisesOperationalUnitDto();
-                        String opFloorNoName = premValue[i] + "onSiteFloorNo" + j;
-                        String opUnitNoName = premValue[i] + "onSiteUnitNo" + j;
-
-                        String opFloorNo = ParamUtil.getString(request, opFloorNoName);
-                        String opUnitNo = ParamUtil.getString(request, opUnitNoName);
-                        operationalUnitDto.setFloorNo(opFloorNo);
-                        operationalUnitDto.setUnitNo(opUnitNo);
-                        operationalUnitDto.setSeqNum(j);
-                        appPremisesOperationalUnitDtos.add(operationalUnitDto);
-                    }
-                }
-
+                addFloorNoAndUnitNo(premValue[i], "onSiteFloorNo", "onSiteUnitNo", opLength,
+                        appPremisesOperationalUnitDtos, request);
             } else if (ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(premisesType[i])) {
 
                 appGrpPremisesDto.setConveyanceHciName(conveyanceHciName[i]);
@@ -4129,20 +4102,8 @@ public class NewApplicationDelegator {
                         eventList.add(appPremEventPeriodDto);
                     }
                 }
-                if (opLength > 0) {
-                    for (int j = 0; j < opLength; j++) {
-                        AppPremisesOperationalUnitDto operationalUnitDto = new AppPremisesOperationalUnitDto();
-                        String opFloorNoName = premValue[i] + "conveyanceFloorNo" + j;
-                        String opUnitNoName = premValue[i] + "conveyanceUnitNo" + j;
-
-                        String opFloorNo = ParamUtil.getString(request, opFloorNoName);
-                        String opUnitNo = ParamUtil.getString(request, opUnitNoName);
-                        operationalUnitDto.setFloorNo(opFloorNo);
-                        operationalUnitDto.setUnitNo(opUnitNo);
-                        operationalUnitDto.setSeqNum(j);
-                        appPremisesOperationalUnitDtos.add(operationalUnitDto);
-                    }
-                }
+                addFloorNoAndUnitNo(premValue[i], "conveyanceFloorNo", "conveyanceUnitNo", opLength,
+                        appPremisesOperationalUnitDtos, request);
             } else if (ApplicationConsts.PREMISES_TYPE_OFF_SITE.equals(premisesType[i])) {
                 appGrpPremisesDto.setOffSiteHciName(offSiteHciName[i]);
                 appGrpPremisesDto.setPremisesSelect(offSitePremisesSelect[i]);
@@ -4237,20 +4198,8 @@ public class NewApplicationDelegator {
                         eventList.add(appPremEventPeriodDto);
                     }
                 }
-                if (opLength > 0) {
-                    for (int j = 0; j < opLength; j++) {
-                        AppPremisesOperationalUnitDto operationalUnitDto = new AppPremisesOperationalUnitDto();
-                        String opFloorNoName = premValue[i] + "offSiteFloorNo" + j;
-                        String opUnitNoName = premValue[i] + "offSiteUnitNo" + j;
-
-                        String opFloorNo = ParamUtil.getString(request, opFloorNoName);
-                        String opUnitNo = ParamUtil.getString(request, opUnitNoName);
-                        operationalUnitDto.setFloorNo(opFloorNo);
-                        operationalUnitDto.setUnitNo(opUnitNo);
-                        operationalUnitDto.setSeqNum(j);
-                        appPremisesOperationalUnitDtos.add(operationalUnitDto);
-                    }
-                }
+                addFloorNoAndUnitNo(premValue[i], "offSiteFloorNo", "offSiteUnitNo", opLength,
+                        appPremisesOperationalUnitDtos, request);
             }else if(ApplicationConsts.PREMISES_TYPE_EAS_MTS_CONVEYANCE.equals(premisesType[i])){
                 String easMtsHciName = ParamUtil.getString(request, "easMtsHciName");
                 String easMtsPostalCode = ParamUtil.getString(request, "easMtsPostalCode");
@@ -4275,21 +4224,8 @@ public class NewApplicationDelegator {
                 appGrpPremisesDto.setEasMtsUseOnly(easMtsUseOnly);
                 appGrpPremisesDto.setEasMtsPubEmail(easMtsPubEmail);
                 appGrpPremisesDto.setEasMtsPubHotline(easMtsPubHotline);
-                if (opLength > 0) {
-                    for (int j = 0; j < opLength; j++) {
-                        AppPremisesOperationalUnitDto operationalUnitDto = new AppPremisesOperationalUnitDto();
-                        String opFloorNoName = premValue[i] + "easMtsFloorNo" + j;
-                        String opUnitNoName = premValue[i] + "easMtsUnitNo" + j;
-
-                        String opFloorNo = ParamUtil.getString(request, opFloorNoName);
-                        String opUnitNo = ParamUtil.getString(request, opUnitNoName);
-                        operationalUnitDto.setFloorNo(opFloorNo);
-                        operationalUnitDto.setUnitNo(opUnitNo);
-                        operationalUnitDto.setSeqNum(j);
-                        appPremisesOperationalUnitDtos.add(operationalUnitDto);
-                    }
-                }
-
+                addFloorNoAndUnitNo(premValue[i], "easMtsFloorNo", "easMtsUnitNo", opLength,
+                        appPremisesOperationalUnitDtos, request);
             }
             //appGrpPremisesDto.setAppPremPhOpenPeriodList(appPremPhOpenPeriods);
             appGrpPremisesDto.setAppPremisesOperationalUnitDtos(appPremisesOperationalUnitDtos);
@@ -4304,6 +4240,26 @@ public class NewApplicationDelegator {
             NewApplicationHelper.setPremEditStatus(appGrpPremisesDtoList, getAppGrpPremisesDtos(appSubmissionDto.getOldAppSubmissionDto()));
         }
         return appGrpPremisesDtoList;
+    }
+
+    private static void addFloorNoAndUnitNo(String prefix, String floorNoName, String unitNoNmae, int opLength,
+            List<AppPremisesOperationalUnitDto> appPremisesOperationalUnitDtos, HttpServletRequest request) {
+        log.info(StringUtil.changeForLog("The length of additional floor and unit: " + opLength));
+        if (opLength <= 0) {
+            return;
+        }
+        for (int j = 0; j < opLength; j++) {
+            String opFloorNo = ParamUtil.getString(request, prefix + floorNoName + j);
+            String opUnitNo = ParamUtil.getString(request, prefix + unitNoNmae + j);
+            if (StringUtil.isEmpty(opFloorNo) && StringUtil.isEmpty(opUnitNo)) {
+                continue;
+            }
+            AppPremisesOperationalUnitDto operationalUnitDto = new AppPremisesOperationalUnitDto();
+            operationalUnitDto.setFloorNo(opFloorNo);
+            operationalUnitDto.setUnitNo(opUnitNo);
+            operationalUnitDto.setSeqNum(j);
+            appPremisesOperationalUnitDtos.add(operationalUnitDto);
+        }
     }
 
     private void loadingDraft(BaseProcessClass bpc, String draftNo) {

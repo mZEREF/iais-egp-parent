@@ -93,6 +93,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.TreeSet;
@@ -1519,20 +1520,19 @@ public class LicenceViewServiceDelegator {
             List<AppPremisesOperationalUnitDto> oldOpeUnitDtos) {
         int n1 = currOpeUnitDtos.size();
         int n2 = oldOpeUnitDtos.size();
-        int index;
         List<AppPremisesOperationalUnitDto> newOldList = IaisCommonUtils.genNewArrayList(Math.max(n1, n2));
         for (int i = 0; i < n1; i++) {
             AppPremisesOperationalUnitDto dto = currOpeUnitDtos.get(i);
-            index = oldOpeUnitDtos.indexOf(dto);
-            if (index < 0) {
+            AppPremisesOperationalUnitDto opeUnitDto = getNewOpeUnitDto(dto, oldOpeUnitDtos);
+            if (opeUnitDto == null) {
                 AppPremisesOperationalUnitDto premisesOperationalUnitDto = new AppPremisesOperationalUnitDto();
                 premisesOperationalUnitDto.setFloorNo("");
                 premisesOperationalUnitDto.setUnitNo("");
                 premisesOperationalUnitDto.setPremType(dto.getPremType());
                 newOldList.add(premisesOperationalUnitDto);
             } else {
-                newOldList.add(oldOpeUnitDtos.get(index));
-                oldOpeUnitDtos.remove(index);
+                newOldList.add(opeUnitDto);
+                oldOpeUnitDtos.remove(opeUnitDto);
             }
         }
         for (int i = 0; i < n1; i++) {
@@ -1553,6 +1553,15 @@ public class LicenceViewServiceDelegator {
             newOldList.add(oldDto);
         }
         return newOldList;
+    }
+
+    private AppPremisesOperationalUnitDto getNewOpeUnitDto(AppPremisesOperationalUnitDto originalDto,
+            List<AppPremisesOperationalUnitDto> opeUnitDtos) {
+        return opeUnitDtos.parallelStream()
+                .filter(dto -> Objects.equals(dto.getUnitNo(), originalDto.getUnitNo())
+                        && Objects.equals(dto.getFloorNo(), originalDto.getFloorNo()))
+                .findAny()
+                .orElse(null);
     }
 
     private List<AppPremisesOperationalUnitDto> getOperationalUnitDtos(AppGrpPremisesDto appGrpPremisesDto) {
