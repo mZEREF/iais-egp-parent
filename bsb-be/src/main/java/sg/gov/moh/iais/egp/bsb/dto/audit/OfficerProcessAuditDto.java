@@ -4,6 +4,7 @@ import lombok.Data;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 /**
  * @author Zhu Tangtang
@@ -22,6 +23,9 @@ public class OfficerProcessAuditDto implements Serializable {
     private Date auditDate;
     private String auditId;
     private String auditStatus;
+    private String auditOutCome;
+    private String finalRemarks;
+    private String cancelReason;
     //audit app
     private Date requestAuditDate;
     private String doReason;
@@ -35,4 +39,17 @@ public class OfficerProcessAuditDto implements Serializable {
     private String taskId;
     //application
     private String appStatus;
+    //audit app history
+    private String actionBy;
+    private String processDecision;
+
+    private List<ProcessHistoryDto> historyDtos;
+
+    @Data
+    public static class ProcessHistoryDto implements Serializable{
+        private String userName;
+        private String statusUpdate;
+        private String remarks;
+        private Date lastUpdated;
+    }
 }

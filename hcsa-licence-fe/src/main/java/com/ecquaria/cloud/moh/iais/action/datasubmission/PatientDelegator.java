@@ -9,16 +9,12 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DataSubmission
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.HusbandDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInfoDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
-import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant;
-import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.ControllerHelper;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
-import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.client.GenerateIdClient;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.PatientService;
 import lombok.extern.slf4j.Slf4j;
@@ -26,9 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.Map;
 import java.util.Optional;
-import java.util.UUID;
 
 /**
  * Process: MohARPatientInformationManual
@@ -62,6 +56,7 @@ public class PatientDelegator extends CommonDelegator {
         } else {
             String profile = DataSubmissionConsts.DS_APP_TYPE_RFC.equals(patientInfo.getAppType()) ? "rfc" : "save";
             validatePageData(bpc.request, patientInfo, profile, ACTION_TYPE_CONFIRM);
+            // check whether user change any data
         }
     }
 
@@ -74,7 +69,7 @@ public class PatientDelegator extends CommonDelegator {
         PatientDto patient = patientInfo.getPatient();
         if (patient == null) {
             patient = new PatientDto();
-        } else {
+        } else if (DataSubmissionConsts.DS_APP_TYPE_NEW.equals(currentArDataSubmission.getAppType())) {
             patient.setId(null);
         }
         ControllerHelper.get(request, patient);

@@ -74,7 +74,7 @@
 
     <sql key = "searchSubmissionByAssistedReproduction" remarks="search submission by Assisted Reproduction">
         <![CDATA[
-            SELECT dds.ID, dds.SUBMISSION_NO, dds.SUBMISSION_TYPE, dds.CYCLE_STAGE, dds.SUBMIT_DT ,lp.BUSINESS_NAME ,dc.PATIENT_CODE
+            SELECT distinct dds.ID, dds.SUBMISSION_NO, dds.SUBMISSION_TYPE, dds.CYCLE_STAGE, dds.SUBMIT_DT ,lp.BUSINESS_NAME ,dc.PATIENT_CODE
                 FROM hcsal.dbo.ds_data_submission dds
                 join hcsal.dbo.ds_cycle dc on dc.ID =dds.CYCLE_ID
                 join hcsal.dbo.premises p on dc.HCI_CODE =p.HCI_CODE
@@ -87,7 +87,7 @@
 
     <sql key = "searchPatientByAssistedReproduction" remarks="search patient by Assisted Reproduction">
         <![CDATA[
-           SELECT dpi.ID, dpi.NAME, dpi.ID_TYPE, dpi.ID_NUMBER, dpi.DATE_OF_BIRTH, dpi.NATIONALITY,dpi.CREATED_DT ,lp.BUSINESS_NAME,dpi.PATIENT_CODE
+           SELECT distinct dpi.ID, dpi.NAME, dpi.ID_TYPE, dpi.ID_NUMBER, dpi.DATE_OF_BIRTH, dpi.NATIONALITY,dpi.CREATED_DT ,null BUSINESS_NAME,dpi.PATIENT_CODE
                 FROM hcsal.dbo.ds_patient_information dpi
                 join hcsal.dbo.ds_cycle dc on dc.PATIENT_CODE =dpi.PATIENT_CODE
                 join hcsal.dbo.premises p on dc.HCI_CODE =p.HCI_CODE

@@ -139,4 +139,6 @@ public interface LicenceInboxClient {
     @DeleteMapping(value = "/data-submission/draft-data-submission", consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<Void> deleteArSuperDataSubmissionDtoDraftByDraftNo(@RequestParam("draftNo") String draftNo);
 
+    @GetMapping(value = "/lic-common/lic-licenseeId",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<LicenceDto>> getActiveLicencesByLicenseeId(@RequestParam("licenseeId") String licenseeId);
 }

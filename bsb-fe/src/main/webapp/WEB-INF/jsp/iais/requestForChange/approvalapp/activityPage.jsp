@@ -37,7 +37,7 @@
                             <label class="control-label control-set-font control-font-label">Facility Name</label>
                             <span class="mandatory">*</span>
                         </div>
-                        <div class="col-sm-4 col-md-7 control-font-label">
+                        <div class="col-sm-4 col-md-7 control-font-label" style="z-index: 30">
                             <input type="hidden" id="facilityName" name="facilityName" value="${activity.facilityName}">
                             <select name="facilityId" id="facilityId">
                                 <c:forEach items="${facilityIdSelect}" var="facSelect">
@@ -52,7 +52,7 @@
                             <label class="control-label control-set-font control-font-label">Activity Type</label>
                             <span class="mandatory">*</span>
                         </div>
-                        <div class="col-sm-4 col-md-7 control-font-label">
+                        <div class="col-sm-4 col-md-7 control-font-label" style="z-index: 20;">
                             <input type="hidden" id="activityType" name="activityType" value="${activity.activityType}">
                             <select name="activityId" id="activityId">
                                 <option>Please Select</option>
@@ -69,7 +69,7 @@
                         <div class="col-sm-4 control-label formtext ">
                             <label class="control-label control-set-font control-font-label">Schedule</label>
                         </div>
-                        <div class="col-sm-4 col-md-7 control-font-label">
+                        <div class="col-sm-4 col-md-7 control-font-label" style="z-index: 10;">
                             <div class="form-check">
                                 <input type="checkbox" class="form-check-input" name="schedules" id="schedule1" <c:if test="${activity.schedules.contains('SCHTYPE001')}">checked="checked"</c:if> value="SCHTYPE001"/>
                                 <label for="schedule1" class="form-check-label"><span class="check-square"></span>First Schedule Part I</label>

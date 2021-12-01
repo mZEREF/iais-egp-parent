@@ -32,7 +32,7 @@
                                 <input type="hidden" name="action_type" value="">
                                 <input type="hidden" name="action_value" value="">
                                 <input type="hidden" name="action_additional" value="">
-                                <%--@elvariable id="inboxAppSearchDto" type="sg.gov.moh.iais.egp.bsb.dto.inbox.InboxAppSearchDto"--%>
+                                <%--@elvariable id="inboxDataSubmissionSearchDto" type="sg.gov.moh.iais.egp.bsb.dto.inbox.InboxDataSubSearchDto"--%>
                                 <div class="row">
                                     <label for="searchDataSubNo" class="col-sm-3 col-md-2 control-label">Submission ID:</label>
                                     <div class="col-sm-7 col-md-5">
@@ -44,7 +44,7 @@
                                     <div class="col-sm-7 col-md-5">
                                         <select name="searchFacilityName" id="searchFacilityName">
                                             <option value='<c:out value=""/>' <c:if test="${inboxDataSubmissionSearchDto.searchFacName eq ''}">selected="selected"</c:if>>All</option>
-                                            <%--@elvariable id="submissionTypeOps" type="java.util.List<com.ecquaria.cloud.moh.iais.common.dto.SelectOption>"--%>
+                                            <%--@elvariable id="facilityName" type="java.util.List<com.ecquaria.cloud.moh.iais.common.dto.SelectOption>"--%>
                                             <c:forEach var="facNameItem" items="${facilityName}">
                                                 <option value='<c:out value="${facNameItem.value}"/>' <c:if test="${inboxDataSubmissionSearchDto.searchFacName eq facNameItem.value}">selected="selected"</c:if> ><c:out value="${facNameItem.text}"/></option>
                                             </c:forEach>

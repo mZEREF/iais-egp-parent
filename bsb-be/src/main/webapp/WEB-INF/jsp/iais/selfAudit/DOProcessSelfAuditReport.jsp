@@ -80,15 +80,13 @@
                                                     <div class="row">
                                                         <div class="col-xs-12">
                                                             <div class="table-gp">
+                                                                    <%--@elvariable id="processData" type="sg.gov.moh.iais.egp.bsb.dto.audit.OfficerProcessAuditDto"--%>
                                                                 <iais:section title="">
-                                                                    <input name="auditAppId" id="auditAppId"
-                                                                           value="<iais:mask name="auditAppId" value="${facilityAuditAPP.id}"></iais:mask> " hidden>
                                                                     <div>
                                                                         <iais:row>
-                                                                            <iais:field value="Current Status"
-                                                                                        required="false"/>
+                                                                            <iais:field value="Current Status" required="false"/>
                                                                             <iais:value width="10">
-                                                                                <p><iais:code code="${facilityAuditAPP.facilityAudit.status}"></iais:code></p>
+                                                                                <p><c:out value="${processData.auditStatus}"/></p>
                                                                             </iais:value>
                                                                         </iais:row>
                                                                     </div>
@@ -96,11 +94,7 @@
                                                                         <iais:row>
                                                                             <iais:field value="Audit Outcome" width="15" required="false"/>
                                                                             <iais:value width="10">
-                                                                                <textarea id="auditOutcome"
-                                                                                          name="auditOutcome"
-                                                                                          cols="70"
-                                                                                          rows="5"
-                                                                                          maxlength="300"></textarea>
+                                                                                <textarea id="auditOutcome" name="auditOutcome" cols="70" rows="5" maxlength="300"></textarea>
                                                                             </iais:value>
                                                                         </iais:row>
                                                                     </div>

@@ -42,18 +42,6 @@
                                 </iais:row>
                                 <hr>
                                 <iais:row>
-                                    <iais:field width="4" value="Submission ID"/>
-                                    <iais:value width="6" cssClass="col-md-6"  >
-                                        <input type="text" maxlength="20" id="submissionId"  name="submissionId" value="${assistedReproductionEnquiryFilterDto.submissionId}" >
-                                    </iais:value>
-                                </iais:row>
-                                <iais:row>
-                                    <iais:field width="4" value="Acknowledgement No."/>
-                                    <iais:value width="6" cssClass="col-md-6"  >
-                                        <input type="text" maxlength="20" id="acknowledgementNo"  name="acknowledgementNo" value="${assistedReproductionEnquiryFilterDto.acknowledgementNo}" >
-                                    </iais:value>
-                                </iais:row>
-                                <iais:row>
                                     <iais:field width="4" value="Patient Name"/>
                                     <iais:value width="6" cssClass="col-md-6" >
                                         <input type="text" maxlength="20" id="patientName"  name="patientName" value="${assistedReproductionEnquiryFilterDto.patientName}" >
@@ -79,6 +67,30 @@
                                     </iais:value>
                                     <iais:value width="3" cssClass="col-md-3">
                                         <input type="text" maxlength="20" id="patientAgeNumberTo"  name="patientAgeNumberTo" value="${assistedReproductionEnquiryFilterDto.patientAgeNumberTo}" >
+                                    </iais:value>
+                                </iais:row>
+                            </div>
+        <%--                            Details of Submission--%>
+                            <div class="col-xs-10 col-md-10">
+                                <iais:row>
+                                    <iais:field width="4" value="Details of Submission" />
+                                </iais:row>
+                                <hr>
+                                <iais:row>
+                                    <iais:field width="4" value="Submission ID"/>
+                                    <iais:value width="6" cssClass="col-md-6"  >
+                                        <input type="text" maxlength="20" id="submissionId"  name="submissionId" value="${assistedReproductionEnquiryFilterDto.submissionId}" >
+                                    </iais:value>
+                                </iais:row>
+
+
+                                <iais:row>
+                                    <iais:field width="4" value="Submission Date"/>
+                                    <iais:value width="3" cssClass="col-md-3">
+                                        <input type="text" maxlength="20" id="submissionDateFrom"  name="submissionDateFrom" value="${assistedReproductionEnquiryFilterDto.submissionDateFrom}" >
+                                    </iais:value>
+                                    <iais:value width="3" cssClass="col-md-3">
+                                        <input type="text" maxlength="20" id="submissionDateTo"  name="submissionDateTo" value="${assistedReproductionEnquiryFilterDto.submissionDateTo}" >
                                     </iais:value>
                                 </iais:row>
                             </div>
@@ -167,12 +179,6 @@
                                     <iais:value width="6" cssClass="col-md-6"  >
                                         <iais:select name="arOrIuiCycle" id="arOrIuiCycle" firstOption="Please Select" codeCategory="CATE_ID_DS_ID_TYPE"
                                                      value="${assistedReproductionEnquiryFilterDto.arOrIuiCycle}" cssClass="idTypeSel" />
-                                    </iais:value>
-                                </iais:row>
-                                <iais:row>
-                                    <iais:field width="4" value="Main Indication of AR Cycle"/>
-                                    <iais:value width="6" cssClass="col-md-6"  >
-                                        <iais:multipleSelect name="indicationArCycle" selectValue="${assistedReproductionEnquiryFilterDto.indicationArCycle}" options="roleSelection"></iais:multipleSelect>
                                     </iais:value>
                                 </iais:row>
                                 <iais:row>
@@ -332,13 +338,7 @@
                                         <input type="text" maxlength="20" id="donorName"  name="donorName" value="${assistedReproductionEnquiryFilterDto.donorName}" >
                                     </iais:value>
                                 </iais:row>
-                                <iais:row>
-                                    <iais:field width="4" value="Donor's ID Type"/>
-                                    <iais:value width="6" cssClass="col-md-6"  >
-                                        <iais:select name="donorIdType" id="donorIdType" firstOption="Please Select" codeCategory="CATE_ID_DS_ID_TYPE"
-                                                     value="${assistedReproductionEnquiryFilterDto.donorIdType}" cssClass="idTypeSel" />
-                                    </iais:value>
-                                </iais:row>
+
                                 <iais:row>
                                     <iais:field width="4" value="Donor's ID No."/>
                                     <iais:value width="6" cssClass="col-md-6"  >
@@ -462,18 +462,7 @@
                                 <iais:row>
                                     <iais:field width="4" value="No. of Embryos Transferred" />
                                     <div class="col-md-6">
-                                        <iais:value width="2" cssClass="col-md-2">
-                                            <div class="form-check">
-                                                <input class="form-check-input"
-                                                       type="checkbox"
-                                                       name="embryosTransferredNum0" id="embryosTransferredNum0"
-                                                       <c:if test="${ assistedReproductionEnquiryFilterDto.embryosTransferredNum0 =='on' }">checked</c:if>
-                                                       aria-invalid="false">
-                                                <label class="form-check-label"
-                                                       for="embryosTransferredNum0"><span
-                                                        class="check-square"></span>0</label>
-                                            </div>
-                                        </iais:value>
+
                                         <iais:value width="2" cssClass="col-md-2">
                                             <div class="form-check">
                                                 <input class="form-check-input" type="checkbox"
@@ -515,7 +504,7 @@
                                                        aria-invalid="false">
                                                 <label class="form-check-label"
                                                        for="embryosTransferredNumMax"><span
-                                                        class="check-square"></span>>3</label>
+                                                        class="check-square"></span>More than 3</label>
                                             </div>
                                         </iais:value>
                                     </div>
@@ -771,19 +760,6 @@
                                                     class="check-circle"></span>No</label>
                                         </div>
                                     </iais:value>
-                                    <iais:value width="2" cssClass="col-md-2">
-                                        <div class="form-check">
-                                            <input class="form-check-input"
-                                                   type="radio"
-                                                   name="patientART" id="patientARTNotApplicable"
-                                                   value="2"
-                                                   <c:if test="${ assistedReproductionEnquiryFilterDto.patientART =='2' }">checked</c:if>
-                                                   aria-invalid="false">
-                                            <label class="form-check-label"
-                                                   for="patientARTNotApplicable"><span
-                                                    class="check-circle"></span>Not Applicable</label>
-                                        </div>
-                                    </iais:value>
                                 </iais:row>
                                 <iais:row>
                                     <iais:field width="4" value="Is patient on IUI co-funding?" />
@@ -814,19 +790,6 @@
                                                     class="check-circle"></span>No</label>
                                         </div>
                                     </iais:value>
-                                    <iais:value width="2" cssClass="col-md-2">
-                                        <div class="form-check">
-                                            <input class="form-check-input"
-                                                   type="radio"
-                                                   name="patientIUI" id="patientIUINotApplicable"
-                                                   value="2"
-                                                   <c:if test="${ assistedReproductionEnquiryFilterDto.patientIUI =='2' }">checked</c:if>
-                                                   aria-invalid="false">
-                                            <label class="form-check-label"
-                                                   for="patientIUINotApplicable"><span
-                                                    class="check-circle"></span>Not Applicable</label>
-                                        </div>
-                                    </iais:value>
                                 </iais:row>
                                 <iais:row>
                                     <iais:field width="4" value="Is patient on PGT co-funding?" />
@@ -855,19 +818,6 @@
                                             <label class="form-check-label"
                                                    for="patientPGTNo"><span
                                                     class="check-circle"></span>No</label>
-                                        </div>
-                                    </iais:value>
-                                    <iais:value width="2" cssClass="col-md-2">
-                                        <div class="form-check">
-                                            <input class="form-check-input"
-                                                   type="radio"
-                                                   name="patientPGT" id="patientPGTNotApplicable"
-                                                   value="2"
-                                                   <c:if test="${ assistedReproductionEnquiryFilterDto.patientPGT =='2' }">checked</c:if>
-                                                   aria-invalid="false">
-                                            <label class="form-check-label"
-                                                   for="patientPGTNotApplicable"><span
-                                                    class="check-circle"></span>Not Applicable</label>
                                         </div>
                                     </iais:value>
                                 </iais:row>

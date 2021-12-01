@@ -22,7 +22,7 @@
                         </div>
                         <div align="left">
                             <span>
-                                <a href="#" id="backFromAckPage"><em class="fa fa-angle-left"></em> Back</a>
+                                <a href="/bsb-be/eservicecontinue/INTRANET/MohBsbTaskList"><em class="fa fa-angle-left"></em> Back</a>
                             </span>
                         </div>
                     </div>

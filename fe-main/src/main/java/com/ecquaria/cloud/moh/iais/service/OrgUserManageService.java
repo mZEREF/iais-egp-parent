@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.service;
 
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
+import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeKeyApptPersonDto;
 import com.ecquaria.cloud.moh.iais.common.dto.myinfo.MyInfoDto;
@@ -79,4 +80,6 @@ public interface OrgUserManageService {
       * @Descripation: getActiveUserAndRoleFlag
       */
     String getActiveUserAndRoleFlag(FeUserDto userSession);
+
+    List<SelectOption> getRoleSelection(String licenseeId);
 }

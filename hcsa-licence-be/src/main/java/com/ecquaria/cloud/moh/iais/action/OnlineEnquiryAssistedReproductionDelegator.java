@@ -30,6 +30,7 @@ import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
 import java.text.ParseException;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -92,6 +93,12 @@ public class OnlineEnquiryAssistedReproductionDelegator {
         arFilterDto.setPatientName(patientName);
         String patientIdType=ParamUtil.getString(request,"patientIdType");
         arFilterDto.setPatientIdType(patientIdType);
+        String[] patientIdTypeList=ParamUtil.getStrings(request,"patientIdTypeList");
+        if(patientIdTypeList != null){
+            List<String> selectValList = Arrays.asList(patientIdTypeList);
+            arFilterDto.setPatientIdTypeList(selectValList);
+        }
+        arFilterDto.setPatientIdType(patientIdType);
         String patientIdNumber=ParamUtil.getString(request,"patientIdNumber");
         arFilterDto.setPatientIdNumber(patientIdNumber);
         String submissionId=ParamUtil.getString(request,"submissionId");
@@ -107,8 +114,6 @@ public class OnlineEnquiryAssistedReproductionDelegator {
         Date submissionDateTo= Formatter.parseDate(ParamUtil.getString(request, "submissionDateTo"));
         arFilterDto.setSubmissionDateTo(submissionDateTo);
 
-        String acknowledgementNo=ParamUtil.getString(request,"acknowledgementNo");
-        arFilterDto.setAcknowledgementNo(acknowledgementNo);
         String patientAgeNumberFrom=ParamUtil.getString(request,"patientAgeNumberFrom");
         arFilterDto.setPatientAgeNumberFrom(patientAgeNumberFrom);
         String patientAgeNumberTo=ParamUtil.getString(request,"patientAgeNumberTo");
@@ -131,9 +136,6 @@ public class OnlineEnquiryAssistedReproductionDelegator {
         arFilterDto.setCycleStagesDateTo(cycleStagesDateTo);
         String arOrIuiCycle=ParamUtil.getString(request,"arOrIuiCycle");
         arFilterDto.setArOrIuiCycle(arOrIuiCycle);
-        //more
-        String indicationArCycle=ParamUtil.getString(request,"indicationArCycle");
-        arFilterDto.setIndicationArCycle(indicationArCycle);
 
         String IVM=ParamUtil.getString(request,"IVM");
         arFilterDto.setIVM(IVM);
@@ -155,8 +157,7 @@ public class OnlineEnquiryAssistedReproductionDelegator {
         arFilterDto.setDonorGameteUsed(donorGameteUsed);
         String donorName=ParamUtil.getString(request,"donorName");
         arFilterDto.setDonorName(donorName);
-        String donorIdType=ParamUtil.getString(request,"donorIdType");
-        arFilterDto.setDonorIdType(donorIdType);
+
         String donorIdNumber=ParamUtil.getString(request,"donorIdNumber");
         arFilterDto.setDonorIdNumber(donorIdNumber);
         String removedFromStorage=ParamUtil.getString(request,"removedFromStorage");
@@ -173,8 +174,7 @@ public class OnlineEnquiryAssistedReproductionDelegator {
         arFilterDto.setZIFT(ZIFT);
         String IVF=ParamUtil.getString(request,"IVF");
         arFilterDto.setIVF(IVF);
-        String embryosTransferredNum0=ParamUtil.getString(request,"embryosTransferredNum0");
-        arFilterDto.setEmbryosTransferredNum0(embryosTransferredNum0);
+
         String embryosTransferredNum1=ParamUtil.getString(request,"embryosTransferredNum1");
         arFilterDto.setEmbryosTransferredNum1(embryosTransferredNum1);
         String embryosTransferredNum2=ParamUtil.getString(request,"embryosTransferredNum2");

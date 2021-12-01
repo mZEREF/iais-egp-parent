@@ -1,6 +1,5 @@
 package com.ecquaria.cloud.moh.iais.helper;
 
-import com.ecquaria.cloud.job.executor.util.SpringHelper;
 import com.ecquaria.cloud.moh.iais.common.annotation.ExcelProperty;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
@@ -20,10 +19,10 @@ import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant;
 import com.ecquaria.cloud.moh.iais.dto.FileErrorMsg;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
-import com.ecquaria.cloud.moh.iais.service.datasubmission.ArDataSubmissionService;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.io.File;
 import java.lang.reflect.Field;
 import java.util.Collections;
@@ -38,6 +37,18 @@ import java.util.Map;
 @Slf4j
 public final class DataSubmissionHelper {
 
+    public static void clearSession(HttpServletRequest request) {
+        HttpSession session = request.getSession();
+        session.removeAttribute(DataSubmissionConstant.AR_DATA_SUBMISSION);
+        session.removeAttribute(DataSubmissionConstant.AR_OLD_DATA_SUBMISSION);
+        session.removeAttribute(DataSubmissionConstant.AR_PREMISES_MAP);
+        session.removeAttribute(DataSubmissionConstant.AR_PREMISES);
+        session.removeAttribute(DataSubmissionConstant.DP_DATA_SUBMISSION);
+        session.removeAttribute(DataSubmissionConstant.DP_OLD_DATA_SUBMISSION);
+        session.removeAttribute(DataSubmissionConstant.DP_PREMISES_MAP);
+        session.removeAttribute(DataSubmissionConstant.DP_PREMISES);
+    }
+
     public static LoginContext getLoginContext(HttpServletRequest request) {
         return (LoginContext) ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
     }
@@ -47,6 +58,15 @@ public final class DataSubmissionHelper {
                 DataSubmissionConstant.AR_DATA_SUBMISSION);
         if (arSuperDataSubmissionDto == null) {
             log.info("------------------------------------AR_SUPER_DATA_SUBMISSION_DTO is null-----------------");
+        }
+        return arSuperDataSubmissionDto;
+    }
+
+    public static ArSuperDataSubmissionDto getOldArDataSubmission(HttpServletRequest request) {
+        ArSuperDataSubmissionDto arSuperDataSubmissionDto = (ArSuperDataSubmissionDto) ParamUtil.getSessionAttr(request,
+                DataSubmissionConstant.AR_OLD_DATA_SUBMISSION);
+        if (arSuperDataSubmissionDto == null) {
+            log.info("------------------------------------AR_OLD_DATA_SUBMISSION is null-----------------");
         }
         return arSuperDataSubmissionDto;
     }

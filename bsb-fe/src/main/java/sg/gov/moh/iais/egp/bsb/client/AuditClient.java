@@ -25,14 +25,8 @@ public interface AuditClient {
     @GetMapping(value = "/bsb-audit/getFacilityByApproval")
     FeignResponseEntity<Facility> getFacilityByApproval(@RequestParam("approvalId") String approvalId,@RequestParam("processType") String processType);
 
-    @GetMapping(path = "/bsb-audit/{id}",consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<FacilityAudit> getFacilityAuditById(@PathVariable(name = "id") String id);
-
     @PostMapping(value = "/bsb-audit/specifyAndChangeAuditDt",consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<Void> specifyAndChangeAuditDt(@RequestBody FacilityAudit facilityAudit);
-
-    @PostMapping(value = "/bsb-audit/saveSelfAuditReport", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<FacilityAuditApp> saveSelfAuditReport(@RequestBody FacilityAudit facilityAudit);
 
     @GetMapping(value = "/bsb-audit/facName")
     FeignResponseEntity<List<String>> queryDistinctFN();

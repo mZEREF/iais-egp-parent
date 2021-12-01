@@ -22,73 +22,32 @@
                         <div class="bg-title">
                             <h2>Cancel Audit</h2>
                         </div>
-                        <iais:row>
-                            <iais:field value="Facility Name" width="15" required="false"/>
-                            <iais:value width="10">
-                                <c:forEach var="item" items="${auditList}" varStatus="status">
-                                    <c:choose>
-                                        <c:when test="${status.last}">
-                                            ${item.facility.facilityName}
-                                        </c:when>
-                                        <c:otherwise>
-                                            ${item.facility.facilityName},
-                                        </c:otherwise>
-                                    </c:choose>
-                                </c:forEach>
-                            </iais:value>
-                        </iais:row>
-
-                        <iais:row>
-                            <iais:field value="Activity Type" width="15" required="false"/>
-                            <iais:value width="10">
-                                <c:forEach var="item" items="${auditList}">
-                                    <c:forEach var="activity" items="${item.facility.facilityActivities}" varStatus="status">
-                                        <c:choose>
-                                            <c:when test="${status.last}">
-                                                <iais:code code="${activity.activityType}"></iais:code>
-                                            </c:when>
-                                            <c:otherwise>
-                                                <iais:code code="${activity.activityType}"></iais:code>,
-                                            </c:otherwise>
-                                        </c:choose>
-                                    </c:forEach>;
-                                    <br/>
-                                </c:forEach>
-                            </iais:value>
-                        </iais:row>
-
-                        <iais:row>
-                            <iais:field value="Audit Date" width="15" required="false"/>
-                            <iais:value width="10">
-                                <c:forEach var="item" items="${auditList}" varStatus="status">
-                                    <c:choose>
-                                        <c:when test="${status.last}">
-                                            <fmt:formatDate value="${item.auditDt}" pattern="dd/MM/yyyy"></fmt:formatDate>
-                                        </c:when>
-                                        <c:otherwise>
-                                            <fmt:formatDate value="${item.auditDt}" pattern="dd/MM/yyyy"></fmt:formatDate>,
-                                        </c:otherwise>
-                                    </c:choose>
-                                </c:forEach>
-                            </iais:value>
-                        </iais:row>
-
-                        <iais:row>
-                            <iais:field value="Audit Type" width="15" required="false"/>
-                            <iais:value width="10">
-                                <c:forEach var="item" items="${auditList}" varStatus="status">
-                                    <c:choose>
-                                        <c:when test="${status.last}">
-                                            <iais:code code="${item.auditType}"></iais:code>
-                                        </c:when>
-                                        <c:otherwise>
-                                            <iais:code code="${item.auditType}"></iais:code>,
-                                        </c:otherwise>
-                                    </c:choose>
-                                </c:forEach>
-                            </iais:value>
-                        </iais:row>
-
+                        <%--@elvariable id="auditList" type="java.util.List<sg.gov.moh.iais.egp.bsb.dto.audit.FacilityQueryResultDto.FacInfo>"--%>
+                        <c:forEach var="item" items="${auditList}" varStatus="status">
+                            <section id="conSection--v--${status.index}">
+                                <c:if test="${auditList.size() > 1}">
+                                    <div class="form-group">
+                                        <h3 class="col-xs-9 col-sm-10 col-md-11" style="border-bottom: 1px solid black">Facility ${status.index + 1}</h3>
+                                    </div>
+                                </c:if>
+                                <iais:row>
+                                    <iais:field value="Facility Name" width="15" required="false"/>
+                                    <iais:value width="10">${item.facName}</iais:value>
+                                </iais:row>
+                                <iais:row>
+                                    <iais:field value="Activity Type" width="15" required="false"/>
+                                    <iais:value width="10"><iais:code code="${item.activityType}"/></iais:value>
+                                </iais:row>
+                                <iais:row>
+                                    <iais:field value="Audit Date" width="15" required="false"/>
+                                    <iais:value width="10"><fmt:formatDate value="${item.auditDate}" pattern="dd/MM/yyyy"/></iais:value>
+                                </iais:row>
+                                <iais:row>
+                                    <iais:field value="Audit Type" width="15" required="false"/>
+                                    <iais:value width="10"><iais:code code="${item.auditType}"/></iais:value>
+                                </iais:row>
+                            </section>
+                        </c:forEach>
                         <iais:row>
                             <iais:field value="Cancellation Reasons" width="15" required="true"/>
                             <iais:value width="10">
@@ -102,10 +61,9 @@
                                       class="error-msg"></span>
                             </iais:value>
                         </iais:row>
-
                         <div class="row">
                             <div class="col-xs-12 col-sm-6">
-                                <a class="back" id="back" href="#"><em class="fa fa-angle-left"></em> Back</a>
+                                <a class="back" href="/bsb-be/eservicecontinue/INTRANET/AuditCancellationList"><em class="fa fa-angle-left"></em> Back</a>
                             </div>
                             <div align="right">
                                 <button name="submitBtn3" id="submitCancelAudit" type="button" class="btn btn-primary">
@@ -118,5 +76,4 @@
             </div>
         </div>
     </form>
-    <%@include file="/WEB-INF/jsp/include/validation.jsp" %>
 </div>

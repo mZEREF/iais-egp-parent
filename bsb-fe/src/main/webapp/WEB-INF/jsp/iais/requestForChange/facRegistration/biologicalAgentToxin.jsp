@@ -58,7 +58,7 @@
                                                                             <label for="schedule--v--${status.index}">Schedule</label>
                                                                             <span class="mandatory otherQualificationSpan">*</span>
                                                                         </div>
-                                                                        <div class="col-sm-6">
+                                                                        <div class="col-sm-6" style="z-index: 30;">
                                                                             <select name="schedule--v--${status.index}" id="schedule--v--${status.index}">
                                                                                 <c:forEach items="${ScheduleOps}" var="schedule">
                                                                                     <option value="${schedule.value}" <c:if test="${info.schedule eq schedule.value}">selected="selected"</c:if>>${schedule.text}</option>
@@ -75,7 +75,7 @@
                                                                             <label for="batName--v--${status.index}">Name of Biological Agent/Toxin</label>
                                                                             <span class="mandatory otherQualificationSpan">*</span>
                                                                         </div>
-                                                                        <div class="col-sm-6">
+                                                                        <div class="col-sm-6" style="z-index: 20;">
                                                                             <select name="batName--v--${status.index}" id="batName--v--${status.index}">
                                                                                 <c:forEach items="${batNameOps}" var="name">
                                                                                     <option value="${name.value}" <c:if test="${info.batName eq name.value}">selected="selected"</c:if>>${name.text}</option>
@@ -89,7 +89,7 @@
                                                                             <label>Types of samples that will be handled</label>
                                                                             <span class="mandatory otherQualificationSpan">*</span>
                                                                         </div>
-                                                                        <div class="col-sm-6">
+                                                                        <div class="col-sm-6" style="z-index: 10;">
                                                                             <div class="self-assessment-checkbox-gp">
                                                                                 <div class="form-check">
                                                                                     <input type="checkbox" class="form-check-input" name="sampleType--v--${status.index}" id="sampleCultureIsolate--v--${status.index}" <c:if test="${info.sampleType.contains('BNOTS001')}">checked="checked"</c:if> value="BNOTS001"/>

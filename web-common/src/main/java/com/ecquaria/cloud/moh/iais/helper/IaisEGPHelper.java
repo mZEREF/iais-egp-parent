@@ -20,6 +20,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ProcessFileTrackConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.organization.OrganizationConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
@@ -51,12 +52,7 @@ import java.lang.reflect.Method;
 import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -148,6 +144,9 @@ public final class IaisEGPHelper extends EGPHelper {
 
     private static final String PRS_CLIENT_ID             = "a0900db88fa94ee49d8566fd3ca414f3";
 
+
+    private static final Map<String,String> SVC_ROLE_MAP = getSvcRoleMap();
+    private static final Map<String,SelectOption> ROLE_ROLE_ROLE_NAME_MAP = getRoleRoleRoleNameMap();
     /**
      * @author: Shicheng on 2021/07/16 15:03
      */
@@ -946,5 +945,33 @@ public final class IaisEGPHelper extends EGPHelper {
     public static String generateDummyVehicleNum(int index) {
         String timeStr = String.valueOf(System.currentTimeMillis()) + index;
         return timeStr.substring(timeStr.length() - 10);
+    }
+
+
+    private  static  Map<String,String> getSvcRoleMap(){
+        Map<String,String> stringStringMap = IaisCommonUtils.genNewHashMap(8);
+        stringStringMap.put(AppServicesConsts.SERVICE_NAME_AR_CENTER,RoleConsts.USER_ROLE_DS_AR);
+        return stringStringMap;
+    }
+    private  static  Map<String,SelectOption> getRoleRoleRoleNameMap(){
+        Map<String,SelectOption> stringStringMap = IaisCommonUtils.genNewHashMap(2);
+        stringStringMap.put(RoleConsts.USER_ROLE_DS_AR,new SelectOption(RoleConsts.USER_ROLE_DS_AR,RoleConsts.SHOW_USER_ROLE_DS_AR));
+        stringStringMap.put(RoleConsts.USER_ROLE_ORG_USER,new SelectOption(RoleConsts.USER_ROLE_ORG_USER,RoleConsts.SHOW_USER_ROLE_ORG_USER));
+        return stringStringMap;
+    }
+    public static List<SelectOption> getRoleSelection(List<String> svcNames) {
+        List<SelectOption> selectOptions = IaisCommonUtils.genNewArrayList();
+        selectOptions.add(ROLE_ROLE_ROLE_NAME_MAP.get(RoleConsts.USER_ROLE_ORG_USER));
+       if(IaisCommonUtils.isEmpty(svcNames) && IaisCommonUtils.isEmpty(SVC_ROLE_MAP)){
+           return selectOptions;
+       }
+        svcNames.stream().forEach( o-> {
+            String value = SVC_ROLE_MAP.get(o);
+            if(StringUtil.isNotEmpty(value)){
+                selectOptions.add(ROLE_ROLE_ROLE_NAME_MAP.get(value));
+            }
+        });
+        selectOptions.sort(SelectOption::compareTo);
+        return selectOptions;
     }
 }

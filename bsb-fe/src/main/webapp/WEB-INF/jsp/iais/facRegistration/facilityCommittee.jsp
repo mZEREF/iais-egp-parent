@@ -51,16 +51,16 @@
 
                                         <div class="form-group ">
                                             <div class="col-sm-5 control-label">
-                                                <label>Input Method</label>
+                                                <label>Multiple Uploading</label>
                                             </div>
                                             <div class="col-sm-6 col-md-7">
                                                 <div class="col-sm-5" style="margin-top: 8px">
                                                     <input type="radio" name="inputMethod" id="inputMethodUpload" value="upload" <c:if test="${facCommittee.inputMethod eq 'upload'}">checked="checked"</c:if> />
-                                                    <label for="inputMethodUpload">Upload</label>
+                                                    <label for="inputMethodUpload">Yes</label>
                                                 </div>
                                                 <div class="col-sm-5" style="margin-top: 8px">
                                                     <input type="radio" name="inputMethod" id="inputMethodManual" value="manual" <c:if test="${facCommittee.inputMethod eq 'manual'}">checked="checked"</c:if> />
-                                                    <label for="inputMethodManual">Manual</label>
+                                                    <label for="inputMethodManual">No</label>
                                                 </div>
                                             </div>
                                         </div>

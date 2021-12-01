@@ -32,6 +32,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
@@ -57,6 +58,7 @@ public class FeAdminManageDelegate {
     public void doStart(BaseProcessClass bpc){
         log.debug("****doStart Process ****");
         AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_USER_MANAGEMENT, AuditTrailConsts.FUNCTION_USER_MANAGEMENT);
+        ParamUtil.clearSession(bpc.request,IaisEGPConstant.SESSION_NAME_ROLES);
         myInfoAjax.setVerifyTakenAndAuthoriseApiUrl(bpc.request,"MohFeAdminUserManagement/Edit");
     }
 
@@ -99,6 +101,7 @@ public class FeAdminManageDelegate {
                 }
             });
             CrudHelper.doPaging(searchParam,bpc.request);
+            ParamUtil.setSessionAttr(bpc.request, IaisEGPConstant.SESSION_NAME_ROLES,(Serializable) orgUserManageService.getRoleSelection(loginContext.getLicenseeId()));
             ParamUtil.setRequestAttr(bpc.request, "feAdmin",feUserQueryDtoList);
             ParamUtil.setRequestAttr(bpc.request, "feAdminSearchParam",searchParam);
             ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.ISVALID, AppConsts.TRUE);

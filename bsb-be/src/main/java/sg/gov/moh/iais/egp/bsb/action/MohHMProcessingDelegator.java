@@ -46,6 +46,7 @@ public class MohHMProcessingDelegator {
         request.getSession().removeAttribute(LAST_DO_APPLICATION_MISC);
         request.getSession().removeAttribute(LAST_AO_APPLICATION_MISC);
         request.getSession().removeAttribute(LAST_HM_APPLICATION_MISC);
+        request.getSession().removeAttribute("primaryDocDto");
         AuditTrailHelper.auditFunction(MODULE_NAME, FUNCTION_NAME);
     }
 
@@ -78,6 +79,9 @@ public class MohHMProcessingDelegator {
                     mohProcessDto.setAppId(appId);
                     mohProcessDto.setTaskId(taskId);
                     ParamUtil.setSessionAttr(request, KEY_MOH_PROCESS_DTO, mohProcessDto);
+
+                    //prepare doc
+                    MohDOScreeningDelegator.setApplicantDoc(request,submitDetailsDto);
                 }
             }
             if (failLoadSubmitDetailsData) {

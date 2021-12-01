@@ -497,7 +497,7 @@
                                                 <label for="approvedFacCertifier">Select Approved Facility Certifier</label>
                                                 <span class="mandatory otherQualificationSpan">*</span>
                                             </div>
-                                            <div class="col-sm-6 col-md-7">
+                                            <div class="col-sm-6 col-md-7" style="z-index: 20">
                                                 <select name="approvedFacCertifier" id="approvedFacCertifier">
                                                     <c:forEach items="${approvedFacCertifierOps}" var="certifier">
                                                         <option value="${certifier.value}" <c:if test="${previewSubmit.approvedFacCertifier eq certifier.value}">selected="selected"</c:if>>${certifier.text}</option>
@@ -515,7 +515,7 @@
                                                 <span data-err-ind="reason" class="error-msg"></span>
                                             </div>
                                         </div>
-                                        <div class="form-group ">
+                                        <div class="form-group " style="z-index: 10">
                                             <div class="col-xs-1" style="padding: 30px 0 20px 30px;">
                                                 <input type="checkbox" name="declare" id="declare" value="Y" <c:if test="${previewSubmit.declare eq 'Y'}">checked="checked"</c:if> />
                                             </div>

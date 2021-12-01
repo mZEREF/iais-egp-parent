@@ -15,6 +15,8 @@ import sop.webflow.rt.api.BaseProcessClass;
 
 public class INTERNET___MohDPDataSumission___1 extends BaseProcessClass {
     
+    private static final long serialVersionUID = 1L;
+    
     private static final String DELEGATOR = "dpDataSubmissionDelegator";
 
     public void start_OnStepProcess_0() throws Exception {

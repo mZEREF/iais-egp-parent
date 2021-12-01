@@ -16,22 +16,25 @@
                 </tr>
                 </thead>
                 <tbody>
-                <c:forEach items="${history}" var="history">
-                    <tr>
-                        <td>
-                            <p><iais:code code="${history.actionBy}"></iais:code></p>
-                        </td>
-                        <td>
-                            <p><iais:code code="${history.appStatus}"></iais:code></p>
-                        </td>
-                        <td>
-                            <p><c:out value="${history.internalRemarks}"></c:out></p>
-                        </td>
-                        <td>
-                            <p><fmt:formatDate value='${history.modifiedAt}' pattern='dd/MM/yyyy HH:mm:ss'/></p>
-                        </td>
-                    </tr>
-                </c:forEach>
+                <%--@elvariable id="processData" type="sg.gov.moh.iais.egp.bsb.dto.audit.OfficerProcessAuditDto"--%>
+                <c:if test="${processData.historyDtos ne null}">
+                    <c:forEach items="${processData.historyDtos}" var="history">
+                        <tr>
+                            <td>
+                                <p><iais:code code="${history.userName}"/></p>
+                            </td>
+                            <td>
+                                <p><iais:code code="${history.statusUpdate}"/></p>
+                            </td>
+                            <td>
+                                <p><c:out value="${history.remarks}"/></p>
+                            </td>
+                            <td>
+                                <p><fmt:formatDate value='${history.lastUpdated}' pattern='dd/MM/yyyy HH:mm:ss'/></p>
+                            </td>
+                        </tr>
+                    </c:forEach>
+                </c:if>
                 </tbody>
             </table>
         </div>

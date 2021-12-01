@@ -79,10 +79,9 @@
                                 </iais:row>
                                 <iais:row>
                                     <iais:field width="4" value="Patient ID Type"/>
-                                    <iais:value width="4" cssClass="col-md-4"  >
-                                        <iais:select name="patientIdType" id="patientIdType" firstOption="Please Select" codeCategory="CATE_ID_DS_ID_TYPE"
-                                                     value="${assistedReproductionEnquiryFilterDto.patientIdType}" cssClass="idTypeSel" />
-                                    </iais:value>
+                                    <div class="col-md-4 multi-select col-xs-4">
+                                        <iais:select name="patientIdTypeList"  multiValues="${assistedReproductionEnquiryFilterDto.patientIdTypeList}" codeCategory="CATE_ID_DS_ID_TYPE"  multiSelect="true"/>
+                                    </div>
                                 </iais:row>
                                 <iais:row>
                                     <iais:field width="4" value="Patient ID No."/>
@@ -155,12 +154,10 @@
                                 <iais:pagination param="patientParam" result="patientResult"/>
                                 <div class="table-responsive">
                                     <div class="table-gp">
-                                        <table aria-describedby="" class="table">
+                                        <table aria-describedby="" class="table application-group" style="border-collapse:collapse;">
                                             <thead>
                                             <tr >
-                                                <iais:sortableHeader needSort="false"
-                                                                     field="BUSINESS_NAME"
-                                                                     value="AR Centre"/>
+
                                                 <iais:sortableHeader needSort="false"
                                                                      field="NAME"
                                                                      value="Patient Name"/>
@@ -176,9 +173,7 @@
                                                 <iais:sortableHeader needSort="false"
                                                                      field="NATIONALITY"
                                                                      value="Patient Nationality"/>
-                                                <iais:sortableHeader needSort="false"
-                                                                     field="CREATED_DT"
-                                                                     value="Cycle Start Date"/>
+
                                                 <iais:sortableHeader needSort="false"
                                                                      field=""
                                                                      value="Action"/>
@@ -198,38 +193,36 @@
                                                     <c:forEach var="patient"
                                                                items="${patientResult.rows}"
                                                                varStatus="status">
-                                                        <tr>
+                                                        <tr id="advfilter${(status.index + 1) + (patientParam.pageNo - 1) * patientParam.pageSize}">
 
-                                                            <td>
-                                                                <c:out value="${patient.arCentre}"/>
+                                                            <td style="vertical-align:middle;">
+
+                                                                <p style="width: 165px;"><c:out value="${patient.patientName}"/>
+                                                                    <a href="javascript:void(0);" class="accordion-toggle  collapsed" style="float: right" data-toggle="collapse" data-target="#dropdown${(status.index + 1) + (patientParam.pageNo - 1) * patientParam.pageSize}" onclick="getPatientByPatientId('${patient.patientId}','${(status.index + 1) + (patientParam.pageNo - 1) * patientParam.pageSize}')">
+                                                                    </a>
+                                                                </p>
                                                             </td>
-                                                            <td>
-                                                                <c:out value="${patient.patientName}"/>
-                                                            </td>
-                                                            <td>
+                                                            <td style="vertical-align:middle;">
                                                                 <iais:code code="${patient.patientIdType}"/>
                                                             </td>
-                                                            <td>
+                                                            <td style="vertical-align:middle;">
                                                                 <c:out value="${patient.patientIdNo}"/>
                                                             </td>
-                                                            <td>
+                                                            <td style="vertical-align:middle;">
                                                                 <fmt:formatDate
                                                                         value="${patient.patientDateBirth}"
                                                                         pattern="${AppConsts.DEFAULT_DATE_FORMAT}"/>
                                                             </td>
-                                                            <td>
+                                                            <td style="vertical-align:middle;">
                                                                 <iais:code code="${patient.patientNationality}"/>
                                                             </td>
-                                                            <td>
-                                                                <fmt:formatDate
-                                                                        value="${patient.cycleStartDate}"
-                                                                        pattern="${AppConsts.DEFAULT_DATE_FORMAT}"/>
-                                                            </td>
-                                                            <td>
+
+                                                            <td >
                                                                 <button  href="#newappModal"  onclick="quickView('${patient.patientId}')" data-toggle="modal" data-target="#newappModal" type="button" class=" btn btn-default btn-sm">
                                                                     Quick View
                                                                 </button>
-                                                                <button type="button" class="btn btn-default btn-sm">
+                                                                <br>
+                                                                <button type="button" onclick="fullDetailsView('${patient.patientId}')" class="btn btn-default btn-sm">
                                                                     View Full Details
                                                                 </button>
                                                             </td>
@@ -350,6 +343,8 @@
 </div>
 <%@include file="/WEB-INF/jsp/include/utils.jsp" %>
 <script type="text/javascript">
+    var dividajaxlist = [];
+
     $(document).ready(function () {
         quickView();
 
@@ -395,6 +390,73 @@
     })
 
 
+    var getPatientByPatientId = function (applicationGroupId, divid) {
+        if (!isInArray(dividajaxlist,divid)) {
+            groupAjax(applicationGroupId, divid);
+        } else {
+            var display = $('#advfilterson' + divid).css('display');
+            if (display == 'none') {
+                $('#advfilterson' + divid).show();
+            } else {
+                $('#advfilterson' + divid).hide();
+            }
+        }
+    };
+    function isInArray(arr,value){
+        for(var i = 0; i < arr.length; i++){
+            if(value === arr[i]){
+                return true;
+            }
+        }
+        return false;
+    };
+    var groupAjax = function (applicationGroupId, divid) {
+        dividajaxlist.push(divid);
+        $.post(
+            '/hcsa-licence-web/hcsa/intranet/ar/patientDetail.do',
+            {patientId: applicationGroupId},
+            function (data) {
+                let result = data.result;
+                if('Success' == result) {
+                    let res = data.ajaxResult;
+                    let html = '<tr style="background-color: #F3F3F3;" class="p" id="advfilterson' + divid + '">' +
+                        '<td colspan="7" class="hiddenRow">' +
+                        '<div class="accordian-body p-3 collapse in" id="dropdown' + divid + '" >' +
+                        '<table class="table application-item" style="background-color: #F3F3F3;" >' +
+                        '<thead>' +
+                        '<tr>';
+
+
+                    html += '<th width="10%">AR/IUI/EFO</th>' +
+                        '<th width="20%">AR Treatment Cycle Type</th>' +
+                        '<th width="25%">AR Centre</th>' +
+                        '<th width="15%">Cycle Start Date</th>' +
+                        '<th width="20%">Co-funding Claimed</th>' +
+                        '<th width="15%">Status</th>'  +
+                        '</tr>' +
+                        '</thead>' +
+                        '<tbody>';
+                    for (let i = 0; i < 0; i++) {
+                        var color = "black";
+
+                        html += '<tr style = "color : ' + color + ';">';
+
+                        html += '<td><p class="visible-xs visible-sm table-row-title">AR/IUI/EFO</p><p>' + res.rows[i].appTypeStrShow + '<p></td>' +
+                            '<td><p class="visible-xs visible-sm table-row-title">AR Treatment Cycle Type</p><p>' + res.rows[i].serviceName + '<p></td>' +
+                            '<td><p class="visible-xs visible-sm table-row-title">AR Centre</p><p>' + res.rows[i].serviceName + '<p></td>';
+                        html += '<td><p class="visible-xs visible-sm table-row-title">Cycle Start Date</p><p><a href="#" onclick="javascript:fullStagesView(' + "'" + res.rows[i].id + "'" + ');">' + res.rows[i].applicationNo + '</a></p></td>';
+
+                        html += '</p></td>' +
+                            '<td><p class="visible-xs visible-sm table-row-title">Co-funding Claimed</p><p>' + res.rows[i].slaDays + '</p></td>' +
+                            '<td><p class="visible-xs visible-sm table-row-title">Status</p><p>' + res.rows[i].tolalSlaDays + '</p></td>' +
+                            '</tr>';
+                    }
+                    html += '</tbody></table></div></td></tr>';
+                    $('#advfilter' + divid).after(html);
+                }
+            }
+        )
+    };
 
     function doClear() {
         $('input[type="text"]').val("");
@@ -458,6 +520,14 @@
         showWaiting();
         $("[name='crud_action_value']").val(submissionIdNo);
         $("[name='base_action_type']").val('viewFull');
+        $('#mainForm').submit();
+    }
+
+    var fullStagesView = function (submissionIdNo) {
+
+        showWaiting();
+        $("[name='crud_action_value']").val(submissionIdNo);
+        $("[name='base_action_type']").val('viewStage');
         $('#mainForm').submit();
     }
 </script>

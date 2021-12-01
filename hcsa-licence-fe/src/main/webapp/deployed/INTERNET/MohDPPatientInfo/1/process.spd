@@ -5,7 +5,9 @@
   <AutomaticStep defClass="" executor="" icon="" name="PageAction" x="704" y="180">
    <Description/>
    <probepoint type="none"/>
-   <OnStepProcess/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="pageAction_OnStepProcess_0" name="pageAction_OnStepProcess_0"/>
+   </OnStepProcess>
   </AutomaticStep>
   <AutomaticStep defClass="" executor="" icon="" name="Submission" x="454" y="570">
    <Description/>
@@ -36,27 +38,37 @@
   <AutomaticStep defClass="" executor="" icon="" name="PrepareReturn" x="454" y="70">
    <Description/>
    <probepoint type="none"/>
-   <OnStepProcess/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="prepareReturn_OnStepProcess_0" name="prepareReturn_OnStepProcess_0"/>
+   </OnStepProcess>
   </AutomaticStep>
   <AutomaticStep defClass="" executor="" icon="" name="Draft" x="524" y="440">
    <Description/>
    <probepoint type="none"/>
-   <OnStepProcess/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="draft_OnStepProcess_0" name="draft_OnStepProcess_0"/>
+   </OnStepProcess>
   </AutomaticStep>
   <AutomaticStep defClass="" executor="" icon="" name="PrepareConfim" x="494" y="310">
    <Description/>
    <probepoint type="none"/>
-   <OnStepProcess/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="prepareConfim_OnStepProcess_0" name="prepareConfim_OnStepProcess_0"/>
+   </OnStepProcess>
   </AutomaticStep>
   <AutomaticStep defClass="" executor="" icon="" name="PageConfimAction" x="734" y="300">
    <Description/>
    <probepoint type="none"/>
-   <OnStepProcess/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="pageConfimAction_OnStepProcess_0" name="pageConfimAction_OnStepProcess_0"/>
+   </OnStepProcess>
   </AutomaticStep>
   <AutomaticStep defClass="" executor="" icon="" name="PreparePage" x="484" y="180">
    <Description/>
    <probepoint type="none"/>
-   <OnStepProcess/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="preparePage_OnStepProcess_0" name="preparePage_OnStepProcess_0"/>
+   </OnStepProcess>
   </AutomaticStep>
  </Steps>
  <Pages>
@@ -141,8 +153,8 @@
   <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="crud_action_type" name="Switch1" x="274" y="270">
    <Description/>
    <SwitchCase component="/Steps/AutomaticStep/PrepareReturn" value="&quot;return&quot;"/>
-   <SwitchCase component="/Steps/AutomaticStep/PreparePage" value="&quot;preparePage&quot;"/>
-   <SwitchCase component="/Steps/AutomaticStep/PrepareConfim" value="&quot;prepareConfim&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/PreparePage" value="&quot;page&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/PrepareConfim" value="&quot;confirm&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/Draft" value="&quot;draft&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/Submission" value="&quot;submission&quot;"/>
   </Switch>

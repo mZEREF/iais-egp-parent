@@ -5,6 +5,7 @@ import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.utils.CopyUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant;
@@ -15,7 +16,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
 
-import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
 /**
@@ -41,13 +41,7 @@ public class MohDsActionDelegator {
      */
     public void doStart(BaseProcessClass bpc) {
         log.info("------- MohDsActionDelegator Start ------------");
-        HttpSession session = bpc.request.getSession();
-        session.removeAttribute(DataSubmissionConstant.AR_PREMISES_MAP);
-        session.removeAttribute(DataSubmissionConstant.AR_PREMISES);
-        session.removeAttribute(DataSubmissionConstant.AR_DATA_SUBMISSION);
-        session.removeAttribute(DataSubmissionConstant.DP_PREMISES_MAP);
-        session.removeAttribute(DataSubmissionConstant.DP_PREMISES);
-        session.removeAttribute(DataSubmissionConstant.DP_DATA_SUBMISSION);
+        DataSubmissionHelper.clearSession(bpc.request);
     }
 
     /**
@@ -100,6 +94,8 @@ public class MohDsActionDelegator {
             if (arSuper == null) {
                 uri = DEFAULT_URI;
             } else {
+                ParamUtil.setSessionAttr(bpc.request, DataSubmissionConstant.AR_OLD_DATA_SUBMISSION,
+                        CopyUtil.copyMutableObject(arSuper));
                 arSuper.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
                 arSuper.setAppType(DataSubmissionConsts.DS_APP_TYPE_RFC);
                 if (arSuper.getDataSubmissionDto() != null) {
