@@ -75,12 +75,17 @@
     <sql key = "searchSubmissionByAssistedReproduction" remarks="search submission by Assisted Reproduction">
         <![CDATA[
             SELECT distinct dds.ID, dds.SUBMISSION_NO, dds.SUBMISSION_TYPE, dds.CYCLE_STAGE, dds.SUBMIT_DT ,lp.BUSINESS_NAME ,dc.PATIENT_CODE
-                FROM hcsal.dbo.ds_data_submission dds
-                join hcsal.dbo.ds_cycle dc on dc.ID =dds.CYCLE_ID
-                join hcsal.dbo.premises p on dc.HCI_CODE =p.HCI_CODE
-                JOIN hcsal.dbo.lic_premises lp on lp.PREMISES_ID =p.ID
+                FROM ds_data_submission dds
+                join ds_cycle dc on dc.ID =dds.CYCLE_ID
+                join premises p on dc.HCI_CODE =p.HCI_CODE
+                JOIN lic_premises lp on lp.PREMISES_ID =p.ID
 
-
+                where 1=1
+            <#if arCentre??> AND  charindex(:arCentre, lp.BUSINESS_NAME) >0</#if>
+            <#if submissionId??> AND  charindex(:submissionId, dds.SUBMISSION_NO) >0</#if>
+            <#if submissionType??> AND  charindex(:submissionType, dds.SUBMISSION_TYPE) >0</#if>
+            <#if submission_start_date??> AND dds.SUBMIT_DT >= convert(date,:submission_start_date)</#if>
+            <#if submission_to_date??> AND dds.SUBMIT_DT <= convert(date,:submission_to_date)</#if>
          ]]>
       </sql>
 
@@ -88,14 +93,69 @@
     <sql key = "searchPatientByAssistedReproduction" remarks="search patient by Assisted Reproduction">
         <![CDATA[
            SELECT distinct dpi.ID, dpi.NAME, dpi.ID_TYPE, dpi.ID_NUMBER, dpi.DATE_OF_BIRTH, dpi.NATIONALITY,dpi.CREATED_DT ,null BUSINESS_NAME,dpi.PATIENT_CODE
-                FROM hcsal.dbo.ds_patient_information dpi
-                join hcsal.dbo.ds_cycle dc on dc.PATIENT_CODE =dpi.PATIENT_CODE
-                join hcsal.dbo.premises p on dc.HCI_CODE =p.HCI_CODE
-                JOIN hcsal.dbo.lic_premises lp on lp.PREMISES_ID =p.ID
-
+                FROM ds_patient_information dpi
+                join ds_cycle dc on dc.PATIENT_CODE =dpi.PATIENT_CODE
+                join premises p on dc.HCI_CODE =p.HCI_CODE
+                JOIN lic_premises lp on lp.PREMISES_ID =p.ID
+                where 1=1
+            <#if arCentre??> AND  charindex(:arCentre, lp.BUSINESS_NAME) >0</#if>
+            <#if patientName??> AND  charindex(:patientName, dpi.NAME) >0</#if>
+            <#if patientIdNumber??> AND  charindex(:patientIdNumber, dpi.ID_NUMBER) >0</#if>
+            <#if patient_id_types??> AND  ${patient_id_types}</#if>
 
         ]]>
      </sql>
+
+
+    <sql key = "advancedSearchPatientByAssistedReproduction" remarks="Advanced Search patient by Assisted Reproduction">
+        <![CDATA[
+           SELECT distinct dpi.ID, dpi.NAME, dpi.ID_TYPE, dpi.ID_NUMBER, dpi.DATE_OF_BIRTH, dpi.NATIONALITY,dpi.CREATED_DT ,lp.BUSINESS_NAME,dpi.PATIENT_CODE
+                FROM ds_patient_information dpi
+                join ds_cycle dc on dc.PATIENT_CODE =dpi.PATIENT_CODE
+                join premises p on dc.HCI_CODE =p.HCI_CODE
+                JOIN lic_premises lp on lp.PREMISES_ID =p.ID
+                join ds_data_submission dds on dds.CYCLE_ID=dc.ID
+                left join ds_husband dh on api.ID= dh.PATIENT_ID
+                left join ds_ar_cycle_stage dacs on dacs.SUBMISSION_ID=dds.ID
+                left join ds_end_cycle_stage decs on decs.SUBMISSION_ID=dds.ID
+                left join ds_donor_sample donor on donor.SUBMISSION_ID=dds.ID
+                where 1=1
+                <#if patientName??> AND  charindex(:patientName, dpi.NAME) >0</#if>
+                <#if patientIdType??> AND  charindex(:patientIdType, dpi.ID_TYPE) >0</#if>
+                <#if patientIdNumber??> AND  charindex(:patientIdNumber, dpi.ID_NUMBER) >0</#if>
+                <#if patientAgeDateFrom??> AND dpi.DATE_OF_BIRTH >= convert(date,:patientAgeDateFrom)</#if>
+                <#if patientAgeDateTo??> AND dpi.DATE_OF_BIRTH <= convert(date,:patientAgeDateTo)</#if>
+                <#if submissionId??> AND  charindex(:submissionId, dds.SUBMISSION_NO) >0</#if>
+                <#if submission_start_date??> AND dds.SUBMIT_DT >= convert(date,:submission_start_date)</#if>
+                <#if submission_to_date??> AND dds.SUBMIT_DT <= convert(date,:submission_to_date)</#if>
+
+                <#if husbandName??> AND  charindex(:husbandName, dh.NAME) >0</#if>
+                <#if husbandIdType??> AND  charindex(:husbandIdType, dh.ID_TYPE) >0</#if>
+                <#if husbandIdNumber??> AND  charindex(:husbandIdNumber, dh.ID_NUMBER) >0</#if>
+
+                <#if arCentre??> AND  charindex(:arCentre, lp.BUSINESS_NAME) >0</#if>
+                <#if embryologist??> AND  charindex(:embryologist, dacs.EMBRYOLOGIST) >0</#if>
+                <#if arPractitioner??> AND  charindex(:arPractitioner, dacs.PRACTITIONER) >0</#if>
+
+                <#if cycleStagesStatus??> AND  charindex(:cycleStagesStatus, dc.STATUS) >0</#if>
+                <#if cycleStagesDateFrom??> AND dc.CREATED_DT >= convert(date,:cycleStagesDateFrom)</#if>
+                <#if cycleStagesDateTo??> AND dc.CREATED_DT <= convert(date,:cycleStagesDateTo)</#if>
+                <#if arOrIui??> AND  charindex(:arOrIui, dc.DS_TYPE) >0</#if>
+                <#if ivm??> AND  :ivm = dacs.IN_VITRO_MATURATION </#if>
+                <#if cart_fcn??> AND  :cart_fcn = dacs.TREATMENT_FRESH_NATURAL </#if>
+                <#if cart_fcs??> AND  :cart_fcs = dacs.TREATMENT_FRESH_STIMULATED </#if>
+                <#if cart_foc??> AND  :cart_foc = dacs.TREATMENT_FROZEN_OOCYTE </#if>
+                <#if cart_foe??> AND  :cart_foe = dacs.TREATMENT_FROZEN_EMBRYO </#if>
+                <#if freshCycleNumFrom??> AND  :freshCycleNumFrom <= dacs.TOTAL_PREVIOUSLY_PREVIOUSLY </#if>
+                <#if freshCycleNumTo??> AND  :freshCycleNumTo >= dacs.TOTAL_PREVIOUSLY_PREVIOUSLY </#if>
+                <#if abandonedCycle??> AND  :abandonedCycle = decs.IS_CYCLE_ABANDONED </#if>
+
+                <#if donorName??> AND  charindex(:donorName, donor.DONOR_NAME) >0</#if>
+                <#if donorIdNumber??> AND  charindex(:donorIdNumber, donor.ID_NUMBER) >0</#if>
+
+
+        ]]>
+    </sql>
 
 
     <sql key = "ar-quick-view" remarks="search patient by Assisted Reproduction quick view">
