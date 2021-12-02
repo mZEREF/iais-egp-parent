@@ -32,7 +32,7 @@
                   else '-'+T3.UNIT_NO end
                ,
                SUBSTRING ((
-		        SELECT ',#' + pou.FLOOR_NO +'-'+pou.UNIT_NO
+		        SELECT ', #' + pou.FLOOR_NO +'-'+pou.UNIT_NO
 				        FROM app_premises_operational_unit pou
 				        WHERE pou.PREMISES_ID =T3.ID
 				        ORDER BY SEQ_NUM ASC

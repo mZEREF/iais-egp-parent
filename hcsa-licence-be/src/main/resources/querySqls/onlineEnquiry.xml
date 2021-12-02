@@ -45,7 +45,7 @@
                   when '' then null
               else '-'+t2.unit_no end,
                 SUBSTRING ((
-		        SELECT ',#' + pou.FLOOR_NO +'-'+pou.UNIT_NO
+		        SELECT ', #' + pou.FLOOR_NO +'-'+pou.UNIT_NO
 				        FROM premises_operational_unit pou
 				        WHERE pou.PREMISES_ID =t2.ID
 				        ORDER BY SEQ_NUM ASC
