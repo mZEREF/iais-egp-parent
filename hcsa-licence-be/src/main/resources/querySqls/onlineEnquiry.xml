@@ -115,7 +115,7 @@
                 join premises p on dc.HCI_CODE =p.HCI_CODE
                 JOIN lic_premises lp on lp.PREMISES_ID =p.ID
                 join ds_data_submission dds on dds.CYCLE_ID=dc.ID
-                left join ds_husband dh on api.ID= dh.PATIENT_ID
+                left join ds_husband dh on dpi.ID= dh.PATIENT_ID
                 left join ds_ar_cycle_stage dacs on dacs.SUBMISSION_ID=dds.ID
                 left join ds_end_cycle_stage decs on decs.SUBMISSION_ID=dds.ID
                 left join ds_donor_sample donor on donor.SUBMISSION_ID=dds.ID

@@ -287,185 +287,177 @@ public class OnlineEnquiryAssistedReproductionDelegator {
         return arFilterDto;
     }
 
-    private void setQueryFilter(SearchParam searchParam,AssistedReproductionEnquiryFilterDto arDto,FilterParameter filterParameter){
+    private void setQueryFilter(AssistedReproductionEnquiryFilterDto arDto,FilterParameter filterParameter,int sqf){
         Map<String,Object> filter=IaisCommonUtils.genNewHashMap();
         if(arDto.getArCentre()!=null) {
             filter.put("arCentre", arDto.getArCentre());
         }
-        if(arDto.getPatientName()!=null){
-            filter.put("patientName", arDto.getPatientName());
-        }
+        if(sqf==0||sqf==2){
+            if(arDto.getPatientName()!=null){
+                filter.put("patientName", arDto.getPatientName());
+            }
 
-        if(arDto.getPatientIdNumber()!=null){
-            filter.put("patientIdNumber",arDto.getPatientIdNumber());
+            if(arDto.getPatientIdNumber()!=null){
+                filter.put("patientIdNumber",arDto.getPatientIdNumber());
+            }
         }
+        if(sqf==1||sqf==2){
+            if(arDto.getSubmissionId()!=null){
+                filter.put("submissionId",arDto.getSubmissionId());
+            }
 
-        if(arDto.getSubmissionId()!=null){
-            filter.put("submissionId",arDto.getSubmissionId());
+            if(arDto.getSubmissionType()!=null){
+                filter.put("submissionType",arDto.getSubmissionType());
+                if(arDto.getSubmissionType().equals(DataSubmissionConsts.AR_TYPE_SBT_CYCLE_STAGE)){
+                    if(sqf==2&&arDto.getCycleStage()!=null){
+                        filter.put("cycleStage",arDto.getCycleStage());
+                    }
+                }
+            }
+            if(arDto.getSubmissionDateFrom()!=null){
+                String submissionDateFrom = Formatter.formatDateTime(arDto.getSubmissionDateFrom(),
+                        SystemAdminBaseConstants.DATE_FORMAT);
+                filter.put("submission_start_date", submissionDateFrom);
+            }
+
+            if(arDto.getSubmissionDateTo()!=null){
+                String submissionDateTo = Formatter.formatDateTime(arDto.getSubmissionDateTo(),
+                        SystemAdminBaseConstants.DATE_FORMAT);
+                filter.put("submission_to_date", submissionDateTo);
+            }
         }
+        if(sqf==2){
+            if(arDto.getPatientIdType()!=null){
+                filter.put("patientIdType", arDto.getPatientIdType());
+            }
 
-        if(arDto.getSubmissionType()!=null){
-            filter.put("submissionType",arDto.getSubmissionType());
-            if(arDto.getSubmissionType().equals(DataSubmissionConsts.AR_TYPE_SBT_CYCLE_STAGE)){
-                if(arDto.getCycleStage()!=null){
-                    filter.put("cycleStage",arDto.getCycleStage());
+            if(arDto.getPatientAgeNumberFrom()!=null){
+                try {
+                    int ageFrom=Integer.parseInt(arDto.getPatientAgeNumberFrom());
+                    Calendar calendar=Calendar.getInstance();
+                    calendar.add(Calendar.YEAR, -ageFrom);
+                    String ageDateFrom = Formatter.formatDateTime(calendar.getTime(),
+                            SystemAdminBaseConstants.DATE_FORMAT);
+                    filter.put("patientAgeDateFrom", ageDateFrom);
+                }catch (Exception e){
+                    log.error("Patient age not int");
+                }
+            }
+
+            if(arDto.getPatientAgeNumberTo()!=null){
+                try {
+                    int ageTo=Integer.parseInt(arDto.getPatientAgeNumberTo());
+                    Calendar calendar=Calendar.getInstance();
+                    calendar.add(Calendar.YEAR, -ageTo);
+                    String ageDateTo = Formatter.formatDateTime(calendar.getTime(),
+                            SystemAdminBaseConstants.DATE_FORMAT);
+                    filter.put("patientAgeDateTo", ageDateTo);
+                }catch (Exception e){
+                    log.error("Patient age not int");
+                }
+            }
+
+
+            if(arDto.getHusbandName()!=null){
+                filter.put("husbandName", arDto.getHusbandName());
+            }
+            if(arDto.getHusbandIdType()!=null){
+                filter.put("husbandIdType", arDto.getHusbandIdType());
+            }
+            if(arDto.getHusbandIdNumber()!=null){
+                filter.put("husbandIdNumber",arDto.getHusbandIdNumber());
+            }
+
+            if(arDto.getEmbryologist()!=null){
+                filter.put("embryologist",arDto.getEmbryologist());
+            }
+            if(arDto.getEmbryologist()!=null){
+                filter.put("arPractitioner",arDto.getArPractitioner());
+            }
+
+            if(arDto.getCycleStagesStatus()!=null){
+                filter.put("cycleStagesStatus",arDto.getCycleStagesStatus());
+            }
+            if(arDto.getCycleStagesDateFrom()!=null){
+                String cycleStagesDateFrom = Formatter.formatDateTime(arDto.getCycleStagesDateFrom(),
+                        SystemAdminBaseConstants.DATE_FORMAT);
+                filter.put("cycleStagesDateFrom", cycleStagesDateFrom);
+            }
+            if(arDto.getCycleStagesDateTo()!=null){
+                String cycleStagesDateTo = Formatter.formatDateTime(arDto.getCycleStagesDateTo(),
+                        SystemAdminBaseConstants.DATE_FORMAT);
+                filter.put("cycleStagesDateTo", cycleStagesDateTo);
+            }
+            if(arDto.getArOrIuiCycle()!=null){
+                filter.put("arOrIui",arDto.getArOrIuiCycle());
+            }
+            if(arDto.getIVM()!=null){//bit
+                filter.put("ivm",Integer.parseInt(arDto.getIVM()));
+            }
+            if(arDto.getFreshCycleNatural()!=null&& "on".equals(arDto.getFreshCycleNatural())){
+                filter.put("cart_fcn",1);
+            }
+            if(arDto.getFreshCycleSimulated()!=null&& "on".equals(arDto.getFreshCycleSimulated())){
+                filter.put("cart_fcs",1);
+            }
+            if(arDto.getFrozenOocyteCycle()!=null&& "on".equals(arDto.getFrozenOocyteCycle())){
+                filter.put("cart_foc",1);
+            }
+            if(arDto.getFrozenEmbryoCycle()!=null&& "on".equals(arDto.getFrozenEmbryoCycle())){
+                filter.put("cart_foe",1);
+            }
+//TOTAL_PREVIOUSLY_PREVIOUSLY freshCycleNumFrom
+            if(arDto.getFreshCycleNumFrom()!=null){
+                try {
+                    int totPreFreFrom=Integer.parseInt(arDto.getFreshCycleNumFrom());
+                    filter.put("freshCycleNumFrom", totPreFreFrom);
+                }catch (Exception e){
+                    log.error("Total No. of AR cycles previously undergone by patient not int");
+                }
+            }
+
+            if(arDto.getFreshCycleNumTo()!=null){
+                try {
+                    int totPreFreTo=Integer.parseInt(arDto.getFreshCycleNumTo());
+                    filter.put("freshCycleNumTo", totPreFreTo);
+                }catch (Exception e){
+                    log.error("Total No. of AR cycles previously undergone by patient not int");
+                }
+            }
+
+            if(arDto.getAbandonedCycle()!=null){//bit
+                filter.put("abandonedCycle",Integer.parseInt(arDto.getAbandonedCycle()));
+            }
+
+            if(arDto.getDonorGameteUsed()!=null){//not found
+                filter.put("donorGameteUsed",Integer.parseInt(arDto.getDonorGameteUsed()));
+            }
+            if(arDto.getDonorName()!=null){
+                filter.put("donorName", arDto.getDonorName());
+            }
+            if(arDto.getDonorIdNumber()!=null){
+                filter.put("donorIdNumber",arDto.getDonorIdNumber());
+            }
+            if(arDto.getRemovedFromStorage()!=null){//not found
+                filter.put("removedFromStorage", arDto.getRemovedFromStorage());
+            }
+            if(arDto.getEmbryosStoredBeyond()!=null){//not found
+                filter.put("embryosStoredBeyond",Integer.parseInt(arDto.getEmbryosStoredBeyond()));
+            }
+            if(arDto.getSourceSemen()!=null){
+                if("Donor".equals(arDto.getSourceSemen())){
+                    filter.put("FROM_DONOR",1);
+                    filter.put("FROM_DONOR_TISSUE",1);
+                }
+                if("Husband".equals(arDto.getSourceSemen())){
+                    filter.put("FROM_HUSBAND",1);
+                    filter.put("FROM_HUSBAND_TISSUE",1);
                 }
             }
         }
-        if(arDto.getSubmissionDateFrom()!=null){
-            String submissionDateFrom = Formatter.formatDateTime(arDto.getSubmissionDateFrom(),
-                    SystemAdminBaseConstants.DATE_FORMAT);
-            filter.put("submission_start_date", submissionDateFrom);
-        }
 
-        if(arDto.getSubmissionDateTo()!=null){
-            String submissionDateTo = Formatter.formatDateTime(arDto.getSubmissionDateTo(),
-                    SystemAdminBaseConstants.DATE_FORMAT);
-            filter.put("submission_to_date", submissionDateTo);
-        }
-
-        if(arDto.getPatientIdType()!=null){
-            filter.put("patientIdType", arDto.getPatientIdType());
-        }
-
-        if(arDto.getPatientAgeNumberFrom()!=null){
-            try {
-                int ageFrom=Integer.parseInt(arDto.getPatientAgeNumberFrom());
-                Calendar calendar=Calendar.getInstance();
-                calendar.add(Calendar.YEAR, -ageFrom);
-                String ageDateFrom = Formatter.formatDateTime(calendar.getTime(),
-                        SystemAdminBaseConstants.DATE_FORMAT);
-                filter.put("patientAgeDateFrom", ageDateFrom);
-            }catch (Exception e){
-                log.error("Patient age not int");
-            }
-        }
-
-        if(arDto.getPatientAgeNumberTo()!=null){
-            try {
-                int ageTo=Integer.parseInt(arDto.getPatientAgeNumberTo());
-                Calendar calendar=Calendar.getInstance();
-                calendar.add(Calendar.YEAR, -ageTo);
-                String ageDateTo = Formatter.formatDateTime(calendar.getTime(),
-                        SystemAdminBaseConstants.DATE_FORMAT);
-                filter.put("patientAgeDateTo", ageDateTo);
-            }catch (Exception e){
-                log.error("Patient age not int");
-            }
-        }
-
-
-        if(arDto.getHusbandName()!=null){
-            filter.put("husbandName", arDto.getHusbandName());
-        }
-        if(arDto.getHusbandIdType()!=null){
-            filter.put("husbandIdType", arDto.getHusbandIdType());
-        }
-        if(arDto.getHusbandIdNumber()!=null){
-            filter.put("husbandIdNumber",arDto.getHusbandIdNumber());
-        }
-
-        if(arDto.getEmbryologist()!=null){
-            filter.put("embryologist",arDto.getEmbryologist());
-        }
-        if(arDto.getEmbryologist()!=null){
-            filter.put("arPractitioner",arDto.getArPractitioner());
-        }
-
-        if(arDto.getCycleStagesStatus()!=null){
-            filter.put("cycleStagesStatus",arDto.getCycleStagesStatus());
-        }
-        if(arDto.getCycleStagesDateFrom()!=null){
-            String cycleStagesDateFrom = Formatter.formatDateTime(arDto.getCycleStagesDateFrom(),
-                    SystemAdminBaseConstants.DATE_FORMAT);
-            filter.put("cycleStagesDateFrom", cycleStagesDateFrom);
-        }
-        if(arDto.getCycleStagesDateTo()!=null){
-            String cycleStagesDateTo = Formatter.formatDateTime(arDto.getCycleStagesDateTo(),
-                    SystemAdminBaseConstants.DATE_FORMAT);
-            filter.put("cycleStagesDateTo", cycleStagesDateTo);
-        }
-        if(arDto.getArOrIuiCycle()!=null){
-            filter.put("arOrIui",arDto.getArOrIuiCycle());
-        }
-        if(arDto.getIVM()!=null){//bit
-            filter.put("ivm",Integer.parseInt(arDto.getIVM()));
-        }
-        if(arDto.getFreshCycleNatural()!=null&& "on".equals(arDto.getFreshCycleNatural())){
-            filter.put("cart_fcn",1);
-        }
-        if(arDto.getFreshCycleSimulated()!=null&& "on".equals(arDto.getFreshCycleSimulated())){
-            filter.put("cart_fcs",1);
-        }
-        if(arDto.getFrozenOocyteCycle()!=null&& "on".equals(arDto.getFrozenOocyteCycle())){
-            filter.put("cart_foc",1);
-        }
-        if(arDto.getFrozenEmbryoCycle()!=null&& "on".equals(arDto.getFrozenEmbryoCycle())){
-            filter.put("cart_foe",1);
-        }
-//TOTAL_PREVIOUSLY_PREVIOUSLY freshCycleNumFrom
-        if(arDto.getFreshCycleNumFrom()!=null){
-            try {
-                int totPreFreFrom=Integer.parseInt(arDto.getFreshCycleNumFrom());
-                filter.put("freshCycleNumFrom", totPreFreFrom);
-            }catch (Exception e){
-                log.error("Total No. of AR cycles previously undergone by patient not int");
-            }
-        }
-
-        if(arDto.getFreshCycleNumTo()!=null){
-            try {
-                int totPreFreTo=Integer.parseInt(arDto.getFreshCycleNumTo());
-                filter.put("freshCycleNumTo", totPreFreTo);
-            }catch (Exception e){
-                log.error("Total No. of AR cycles previously undergone by patient not int");
-            }
-        }
-
-        if(arDto.getAbandonedCycle()!=null){//bit
-            filter.put("abandonedCycle",Integer.parseInt(arDto.getAbandonedCycle()));
-        }
-
-        if(arDto.getDonorGameteUsed()!=null){//not found
-            filter.put("donorGameteUsed",Integer.parseInt(arDto.getDonorGameteUsed()));
-        }
-        if(arDto.getDonorName()!=null){
-            filter.put("donorName", arDto.getDonorName());
-        }
-        if(arDto.getDonorIdNumber()!=null){
-            filter.put("donorIdNumber",arDto.getDonorIdNumber());
-        }
-        if(arDto.getRemovedFromStorage()!=null){//not found
-            filter.put("removedFromStorage", arDto.getRemovedFromStorage());
-        }
-        if(arDto.getEmbryosStoredBeyond()!=null){//not found
-            filter.put("embryosStoredBeyond",Integer.parseInt(arDto.getEmbryosStoredBeyond()));
-        }
-        if(arDto.getSourceSemen()!=null){
-            if("Donor".equals(arDto.getSourceSemen())){
-                filter.put("FROM_DONOR",1);
-                filter.put("FROM_DONOR_TISSUE",1);
-            }
-            if("Husband".equals(arDto.getSourceSemen())){
-                filter.put("FROM_HUSBAND",1);
-                filter.put("FROM_HUSBAND_TISSUE",1);
-            }
-        }
         filterParameter.setFilters(filter);
-        if ( filter.size()>0) {
-            for (Map.Entry<String, Object> entry : filter.entrySet()) {
-                String mapKey = entry.getKey();
-                Object mapValue = entry.getValue();
-                searchParam.addFilter(mapKey, mapValue,true);
-            }
-        }
-        if(IaisCommonUtils.isNotEmpty(arDto.getPatientIdTypeList())){
-            String patientIdTypeListStr = SqlHelper.constructInCondition("dpi.ID_TYPE", arDto.getPatientIdTypeList().size());
-            searchParam.addParam("patient_id_types", patientIdTypeListStr);
-            for(int i = 0; i < arDto.getPatientIdTypeList().size(); i++){
-                searchParam.addFilter("dpi.ID_TYPE" + i, arDto.getPatientIdTypeList().get(i));
-            }
-        }
+
     }
     public void baseSearch(BaseProcessClass bpc)throws ParseException{
         List<SelectOption> submissionTypeOptions= IaisCommonUtils.genNewArrayList();
@@ -483,10 +475,18 @@ public class OnlineEnquiryAssistedReproductionDelegator {
             patientParameter.setSortType(sortType);
             patientParameter.setSortField(sortFieldName);
         }
-        SearchParam patientParam = SearchResultHelper.getSearchParam(request, patientParameter,true);
-        CrudHelper.doPaging(patientParam,bpc.request);
 
-        setQueryFilter(patientParam,arFilterDto,patientParameter);
+        setQueryFilter(arFilterDto,patientParameter,0);
+        SearchParam patientParam = SearchResultHelper.getSearchParam(request, patientParameter,true);
+
+        if(IaisCommonUtils.isNotEmpty(arFilterDto.getPatientIdTypeList())){
+            String patientIdTypeListStr = SqlHelper.constructInCondition("dpi.ID_TYPE", arFilterDto.getPatientIdTypeList().size());
+            patientParam.addParam("patient_id_types", patientIdTypeListStr);
+            for(int i = 0; i < arFilterDto.getPatientIdTypeList().size(); i++){
+                patientParam.addFilter("dpi.ID_TYPE" + i, arFilterDto.getPatientIdTypeList().get(i));
+            }
+        }
+        CrudHelper.doPaging(patientParam,bpc.request);
 
         QueryHelp.setMainSql("onlineEnquiry","searchPatientByAssistedReproduction",patientParam);
 
@@ -497,9 +497,9 @@ public class OnlineEnquiryAssistedReproductionDelegator {
             submissionParameter.setSortType(sortType);
             submissionParameter.setSortField(sortFieldName);
         }
+        setQueryFilter(arFilterDto,submissionParameter,1);
         SearchParam submissionParam = SearchResultHelper.getSearchParam(request, submissionParameter,true);
         CrudHelper.doPaging(submissionParam,bpc.request);
-        setQueryFilter(submissionParam,arFilterDto,submissionParameter);
         QueryHelp.setMainSql("onlineEnquiry","searchSubmissionByAssistedReproduction",submissionParam);
         SearchResult<AssistedReproductionEnquirySubResultsDto> submissionResult = assistedReproductionService.searchSubmissionByParam(submissionParam);
         if(IaisCommonUtils.isNotEmpty(submissionResult.getRows())){
@@ -535,19 +535,19 @@ public class OnlineEnquiryAssistedReproductionDelegator {
         sourceSemenOptions.add(new SelectOption("Donor","Donor"));
         sourceSemenOptions.add(new SelectOption("Husband","Husband"));
         ParamUtil.setRequestAttr(bpc.request,"sourceSemenOptions",sourceSemenOptions);
-
-
         AssistedReproductionEnquiryFilterDto arFilterDto= setAssistedReproductionEnquiryFilterDto(request);
-        SearchParam patientParam = SearchResultHelper.getSearchParam(request, patientParameter,true);
-        CrudHelper.doPaging(patientParam,bpc.request);
 
-        setQueryFilter(patientParam,arFilterDto,patientParameter);
+        setQueryFilter(arFilterDto,patientParameter,2);
         String sortFieldName = ParamUtil.getString(request,"crud_action_value");
         String sortType = ParamUtil.getString(request,"crud_action_additional");
         if(!StringUtil.isEmpty(sortFieldName)&&!StringUtil.isEmpty(sortType)){
             patientParameter.setSortType(sortType);
             patientParameter.setSortField(sortFieldName);
         }
+
+        SearchParam patientParam = SearchResultHelper.getSearchParam(request, patientParameter,true);
+        CrudHelper.doPaging(patientParam,bpc.request);
+
         QueryHelp.setMainSql("onlineEnquiry","advancedSearchPatientByAssistedReproduction",patientParam);
         SearchResult<AssistedReproductionEnquiryResultsDto> patientResult = assistedReproductionService.searchPatientByParam(patientParam);
         ParamUtil.setRequestAttr(request,"patientResult",patientResult);

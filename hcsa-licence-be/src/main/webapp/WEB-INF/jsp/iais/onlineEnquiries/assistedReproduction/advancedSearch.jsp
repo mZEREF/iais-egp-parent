@@ -177,7 +177,7 @@
                                 <iais:row>
                                     <iais:field width="4" value="AR / IUI Cycle"/>
                                     <iais:value width="6" cssClass="col-md-6"  >
-                                        <iais:select name="arOrIuiCycle" id="arOrIuiCycle" firstOption="Please Select" optionsSelections="aRorIUICycleOptions"
+                                        <iais:select name="arOrIuiCycle" id="arOrIuiCycle" firstOption="Please Select" options="aRorIUICycleOptions"
                                                      value="${assistedReproductionEnquiryFilterDto.arOrIuiCycle}" cssClass="idTypeSel" />
                                     </iais:value>
                                 </iais:row>
@@ -396,7 +396,7 @@
                                 <iais:row>
                                     <iais:field width="4" value="Source of Semen"/>
                                     <iais:value width="6" cssClass="col-md-6"  >
-                                        <iais:select name="sourceSemen" id="sourceSemen" firstOption="Please Select" optionsSelections="sourceSemenOptions"
+                                        <iais:select name="sourceSemen" id="sourceSemen" firstOption="Please Select" options="sourceSemenOptions"
                                                      value="${assistedReproductionEnquiryFilterDto.sourceSemen}" cssClass="idTypeSel" />
                                     </iais:value>
                                 </iais:row>
