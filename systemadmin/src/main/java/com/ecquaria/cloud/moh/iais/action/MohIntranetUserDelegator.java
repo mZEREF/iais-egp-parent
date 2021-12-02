@@ -139,7 +139,7 @@ public class MohIntranetUserDelegator {
     public void preUpdateSelfInfo(BaseProcessClass bpc) {
         AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_MAIN_FUNCTION, AuditTrailConsts.FUNCTION_PERSONAL_PROFILE);
         LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
-        OrgUserDto intranetUserById = intranetUserService.findIntranetUserByUserId(loginContext.getUserId());
+        OrgUserDto intranetUserById = intranetUserService.findIntranetUserById(loginContext.getUserId());
         ParamUtil.setSessionAttr(bpc.request, IntranetUserConstant.INTRANET_USER_DTO_ATTR, intranetUserById);
         ParamUtil.setRequestAttr(bpc.request,"PERSONAL_PROFILE", Boolean.TRUE);
         List<SelectOption> statusOptions = getStatusOption();
@@ -233,7 +233,7 @@ public class MohIntranetUserDelegator {
         ParamUtil.setSessionAttr(bpc.request, "statusOptions", (Serializable) statusOptions);
         OrgUserDto orgUserDto = (OrgUserDto) ParamUtil.getSessionAttr(bpc.request, IntranetUserConstant.INTRANET_USER_DTO_ATTR);
         if (id != null && orgUserDto == null) {
-            OrgUserDto intranetUserById = intranetUserService.findIntranetUserByUserId(id);
+            OrgUserDto intranetUserById = intranetUserService.findIntranetUserById(id);
             ParamUtil.setSessionAttr(bpc.request, IntranetUserConstant.INTRANET_USER_DTO_ATTR, intranetUserById);
         }
     }
@@ -300,7 +300,7 @@ public class MohIntranetUserDelegator {
     public void doDelete(BaseProcessClass bpc) {
         MultipartHttpServletRequest request = (MultipartHttpServletRequest) bpc.request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
         String id = ParamUtil.getMaskedString(bpc.request, "maskUserId");
-        OrgUserDto orgUserDto = intranetUserService.findIntranetUserByUserId(id);
+        OrgUserDto orgUserDto = intranetUserService.findIntranetUserById(id);
         String userId = orgUserDto.getUserId();
         ClientUser clientUser = intranetUserService.getUserByIdentifier(userId, AppConsts.HALP_EGP_DOMAIN);
         if (clientUser != null && clientUser.isFirstTimeLoginNo()) {
@@ -482,7 +482,7 @@ public class MohIntranetUserDelegator {
         ParamUtil.setSessionAttr(bpc.request, "orgUserRoleDtos", (Serializable) existRoleIds);
 
         if (userAccId != null) {
-            OrgUserDto orgUserDto = intranetUserService.findIntranetUserByUserId(userAccId);
+            OrgUserDto orgUserDto = intranetUserService.findIntranetUserById(userAccId);
             String userId = orgUserDto.getUserId();
             ParamUtil.setRequestAttr(bpc.request, "userIdName", userId);
             ParamUtil.setSessionAttr(bpc.request, IntranetUserConstant.INTRANET_USER_DTO_ATTR, orgUserDto);
