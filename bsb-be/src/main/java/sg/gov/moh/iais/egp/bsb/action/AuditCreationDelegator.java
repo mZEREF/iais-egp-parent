@@ -6,12 +6,11 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
-import org.springframework.util.StringUtils;
 import sg.gov.moh.iais.egp.bsb.client.AuditClientBE;
 import sg.gov.moh.iais.egp.bsb.client.BiosafetyEnquiryClient;
 import sg.gov.moh.iais.egp.bsb.constant.AuditConstants;
+import sg.gov.moh.iais.egp.bsb.constant.ValidationConstants;
 import sg.gov.moh.iais.egp.bsb.dto.PageInfo;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
 import sg.gov.moh.iais.egp.bsb.dto.audit.AuditQueryDto;
@@ -33,27 +32,20 @@ import static sg.gov.moh.iais.egp.bsb.constant.AuditConstants.*;
 @Delegator(value = "auditCreationDelegator")
 public class AuditCreationDelegator {
 
-    private static final String FACILITY_CLASSIFICATION_1 = "FACCLA001";
-    private static final String FACILITY_CLASSIFICATION_2 = "FACCLA002";
-    private static final String FACILITY_CLASSIFICATION_3 = "FACCLA003";
-    private static final String FACILITY_CLASSIFICATION_4 = "FACCLA004";
-    private static final String FACILITY_CLASSIFICATION_5 = "FACCLA005";
+    private final AuditClientBE auditClientBE;
+    private final BiosafetyEnquiryClient biosafetyEnquiryClient;
 
-    private static final String ACTIVITY_TYPE_1 = "ACTVITY001";
-    private static final String ACTIVITY_TYPE_2 = "ACTVITY002";
-    private static final String ACTIVITY_TYPE_5 = "ACTVITY005";
-    private static final String ACTIVITY_TYPE_8 = "ACTVITY008";
-
-    @Autowired
-    private AuditClientBE auditClientBE;
-    @Autowired
-    private BiosafetyEnquiryClient biosafetyEnquiryClient;
+    public AuditCreationDelegator(AuditClientBE auditClientBE, BiosafetyEnquiryClient biosafetyEnquiryClient) {
+        this.auditClientBE = auditClientBE;
+        this.biosafetyEnquiryClient = biosafetyEnquiryClient;
+    }
 
     public void start(BaseProcessClass bpc) throws IllegalAccessException {
         AuditTrailHelper.auditFunction(MODULE_AUDIT, FUNCTION_AUDIT);
         HttpServletRequest request = bpc.request;
         IaisEGPHelper.clearSessionAttr(request, AuditConstants.class);
         ParamUtil.setSessionAttr(request, PARAM_AUDIT_SEARCH, null);
+        ParamUtil.setSessionAttr(request,KEY_MANUAL_AUDIT,null);
     }
 
     /**
@@ -108,42 +100,64 @@ public class AuditCreationDelegator {
         HttpServletRequest request = bpc.request;
         ParamUtil.setSessionAttr(request, FACILITY_LIST, null);
         String[] facIds = ParamUtil.getMaskedStrings(request, FACILITY_ID);
-
+        if (facIds==null){
+            facIds = (String[])ParamUtil.getSessionAttr(request,"facIds");
+        }
+        SaveAuditDto dto = getSaveAuditDto(request);
+        Boolean needShowError = (Boolean) ParamUtil.getRequestAttr(request,ValidationConstants.KEY_SHOW_ERROR_SWITCH);
+        if(Boolean.TRUE.equals(needShowError)){
+            ParamUtil.setRequestAttr(request,ValidationConstants.KEY_VALIDATION_ERRORS,dto.retrieveValidationResult());
+        }
         List<FacilityQueryResultDto.FacInfo> facilityList = (List<FacilityQueryResultDto.FacInfo>) ParamUtil.getSessionAttr(request, KEY_AUDIT_DATA_LIST);
         Map<String, FacilityQueryResultDto.FacInfo> facInfoMap = new HashMap<>(facilityList.size());
         for (FacilityQueryResultDto.FacInfo facInfo : facilityList) {
             facInfoMap.put(facInfo.getFacId(), facInfo);
         }
-        //
         facilityList.clear();
         for (String facId : facIds) {
             if (facInfoMap.containsKey(facId)) {
                 facilityList.add(facInfoMap.get(facId));
             }
         }
-        ParamUtil.setSessionAttr(request, FACILITY_LIST, (Serializable) facilityList);
+        //fill the known data
+        if (CollectionUtils.isEmpty(dto.getSaveAudits())){
+            List<SaveAuditDto.SaveAudit> saveAudits = new ArrayList<>(0);
+            for (FacilityQueryResultDto.FacInfo facInfo : facilityList) {
+                SaveAuditDto.SaveAudit saveAudit = new SaveAuditDto.SaveAudit();
+                saveAudit.setActivityType(facInfo.getActivityType());
+                saveAudit.setFacClassification(facInfo.getFacClassification());
+                saveAudit.setFacName(facInfo.getFacName());
+                saveAudit.setApprovalId(facInfo.getApprovalId());
+                saveAudit.setProcessType(facInfo.getProcessType());
+                saveAudits.add(saveAudit);
+            }
+            dto.setSaveAudits(saveAudits);
+        }
+
+        ParamUtil.setSessionAttr(request,"facIds",facIds);
+        ParamUtil.setSessionAttr(request,KEY_MANUAL_AUDIT,dto);
+    }
+
+    public void preConfirm(BaseProcessClass bpc){
+        HttpServletRequest request = bpc.request;
+        SaveAuditDto dto1 = getSaveAuditDto(request);
+        List<SaveAuditDto.SaveAudit> saveAudits1 = dto1.getSaveAudits();
+        if (!CollectionUtils.isEmpty(saveAudits1)) {
+            for (int i = 0; i < saveAudits1.size(); i++) {
+                SaveAuditDto.SaveAudit saveAudit = saveAudits1.get(i);
+                saveAudit.setAuditType(ParamUtil.getRequestString(request, PARAM_AUDIT_TYPE + SEPARATOR + i));
+                saveAudit.setRemarks(ParamUtil.getRequestString(request, PARAM_REMARKS + SEPARATOR + i));
+                saveAudit.setStatus(PARAM_AUDIT_STATUS_PENDING_TASK_ASSIGNMENT);
+            }
+        }
+        doValidation(dto1,request);
+        ParamUtil.setSessionAttr(request,KEY_MANUAL_AUDIT,dto1);
     }
 
     public void doCreate(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
-        List<FacilityQueryResultDto.FacInfo> facilityList = (List<FacilityQueryResultDto.FacInfo>) ParamUtil.getSessionAttr(request, KEY_AUDIT_DATA_LIST);
-
-        List<SaveAuditDto> auditDtos = new ArrayList<>(facilityList.size());
-        if (!CollectionUtils.isEmpty(facilityList)) {
-            for (int i = 0; i < facilityList.size(); i++) {
-                String auditType = ParamUtil.getRequestString(request, PARAM_AUDIT_TYPE + SEPARATOR + i);
-                String remarks = ParamUtil.getRequestString(request, PARAM_REMARKS + SEPARATOR + i);
-                //
-                SaveAuditDto dto = new SaveAuditDto();
-                dto.setAuditType(auditType);
-                dto.setRemarks(remarks);
-                dto.setStatus("AUDITST001");
-                dto.setApprovalId(facilityList.get(i).getApprovalId());
-                dto.setProcessType(facilityList.get(i).getProcessType());
-                auditDtos.add(dto);
-                auditClientBE.saveFacilityAudit(auditDtos);
-            }
-        }
+        SaveAuditDto dto = (SaveAuditDto)ParamUtil.getSessionAttr(request,KEY_MANUAL_AUDIT);
+        auditClientBE.saveFacilityAudit(dto);
     }
 
     public void page(BaseProcessClass bpc) {
@@ -188,6 +202,15 @@ public class AuditCreationDelegator {
         return dto;
     }
 
+    private SaveAuditDto getSaveAuditDto(HttpServletRequest request) {
+        SaveAuditDto auditDto = (SaveAuditDto) ParamUtil.getSessionAttr(request, KEY_MANUAL_AUDIT);
+        return auditDto == null ? getDefaultSaveAuditDto() : auditDto;
+    }
+
+    private SaveAuditDto getDefaultSaveAuditDto() {
+        return new SaveAuditDto();
+    }
+
     public void selectOption(HttpServletRequest request) {
         List<String> facNames = biosafetyEnquiryClient.queryDistinctFN().getEntity();
         List<SelectOption> selectModel = new ArrayList<>();
@@ -197,36 +220,17 @@ public class AuditCreationDelegator {
         ParamUtil.setRequestAttr(request, PARAM_FACILITY_NAME, selectModel);
     }
 
-    public static List<String> deduplication(List<String> list) {
-        HashSet<String> set = new HashSet<>(list);
-        list.clear();
-        list.addAll(set);
-        return list;
-    }
-
-    public String getMainActivity(String facClass) {
-        String mainActivity = "";
-        if (StringUtils.hasLength(facClass)) {
-            switch (facClass) {
-                case FACILITY_CLASSIFICATION_2:
-                case FACILITY_CLASSIFICATION_1:
-                    mainActivity = ACTIVITY_TYPE_1;
-                    break;
-                case FACILITY_CLASSIFICATION_3:
-                    mainActivity = ACTIVITY_TYPE_2;
-                    break;
-                case FACILITY_CLASSIFICATION_4:
-                    mainActivity = ACTIVITY_TYPE_5;
-                    break;
-                case FACILITY_CLASSIFICATION_5:
-                    mainActivity = ACTIVITY_TYPE_8;
-                    break;
-                default:
-                    log.info("no such facility classification type");
-                    break;
-            }
+    /**
+     * just a method to do simple valid,maybe update in the future
+     * doValidation
+     * */
+    private void doValidation(SaveAuditDto dto,HttpServletRequest request){
+        if(dto.doValidation()){
+            ParamUtil.setRequestAttr(request, ValidationConstants.IS_VALID,ValidationConstants.YES);
+        }else{
+            ParamUtil.setRequestAttr(request, ValidationConstants.IS_VALID,ValidationConstants.NO);
+            ParamUtil.setRequestAttr(request,ValidationConstants.KEY_SHOW_ERROR_SWITCH,Boolean.TRUE);
         }
-        return mainActivity;
     }
 
 }

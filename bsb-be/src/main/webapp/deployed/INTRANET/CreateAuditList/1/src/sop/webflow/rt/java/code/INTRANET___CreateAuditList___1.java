@@ -17,22 +17,19 @@ public class INTRANET___CreateAuditList___1 extends BaseProcessClass {
 	private static final String DELEGATOR ="auditCreationDelegator";
 
 	public void start_OnStepProcess_0() throws Exception {
-	// 		start->OnStepProcess
 		EngineHelper.delegate(DELEGATOR, "start", this);
 	}
 
 	public void prepareData_OnStepProcess_0() throws Exception {
-	// 		prepareData->OnStepProcess
 		EngineHelper.delegate(DELEGATOR, "prepareData", this);
 	}
 
-	public void prepareSwitch_OnStepProcess_0() throws Exception {
-	// 		prepareSwitch->OnStepProcess
+	public void submit_OnStepProcess_0() throws Exception {
+		EngineHelper.delegate(DELEGATOR, "doCreate", this);
 	}
 
-	public void submit_OnStepProcess_0() throws Exception {
-	// 		submit->OnStepProcess
-		EngineHelper.delegate(DELEGATOR, "doCreate", this);
+	public void preConfirm_OnStepProcess_0() throws Exception {
+		EngineHelper.delegate(DELEGATOR, "preConfirm", this);
 	}
 
 }

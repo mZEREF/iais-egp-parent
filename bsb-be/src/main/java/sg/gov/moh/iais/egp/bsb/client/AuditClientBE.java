@@ -7,6 +7,7 @@ import org.springframework.cloud.openfeign.SpringQueryMap;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
+import sg.gov.moh.iais.egp.bsb.dto.ValidationResultDto;
 import sg.gov.moh.iais.egp.bsb.dto.audit.AuditQueryDto;
 import sg.gov.moh.iais.egp.bsb.dto.audit.FacilityQueryResultDto;
 import sg.gov.moh.iais.egp.bsb.dto.audit.OfficerProcessAuditDto;
@@ -18,14 +19,14 @@ import java.util.List;
 /**
  * @author Zhu Tangtang
  */
-@FeignClient(name = "bsb-be-api", configuration = FeignConfiguration.class)
+@FeignClient(name = "bsb-be-api", configuration = FeignConfiguration.class, contextId = "auditBE")
 public interface AuditClientBE {
 
     @GetMapping(value = "/bsb-audit/queryFacility", consumes = MediaType.APPLICATION_JSON_VALUE, produces =MediaType.APPLICATION_JSON_VALUE)
     ResponseDto<FacilityQueryResultDto> queryFacility(@SpringQueryMap AuditQueryDto queryDto);
 
     @PostMapping(path = "/bsb-audit/save",consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    ResponseDto<String> saveFacilityAudit(@RequestBody List<SaveAuditDto> auditDtos);
+    ResponseDto<String> saveFacilityAudit(@RequestBody SaveAuditDto auditDto);
 
     @GetMapping(path = "/bsb-audit/{id}",consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<FacilityAudit> getFacilityAuditById(@PathVariable(name = "id") String id);
@@ -59,4 +60,7 @@ public interface AuditClientBE {
 
     @PostMapping(value = "/bsb-audit/officerCancelAudit", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<Void> officerCancelAudit(@RequestBody OfficerProcessAuditDto dto);
+
+    @PostMapping(path = "/bsb-audit/validate/manual", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    ValidationResultDto validateManualAudit(@RequestBody SaveAuditDto dto);
 }

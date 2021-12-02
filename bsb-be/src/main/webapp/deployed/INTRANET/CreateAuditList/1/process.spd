@@ -16,23 +16,18 @@
     <JavaCode defClass="" executor="" methodName="prepareData_OnStepProcess_0" name="prepareData_OnStepProcess_0" />
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="prepareSwitch" x="480" y="100">
-   <Description />
-   <probepoint type="none" />
-   <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="prepareSwitch_OnStepProcess_0" name="prepareSwitch_OnStepProcess_0" />
-   </OnStepProcess>
-  </AutomaticStep>
-  <ReturnInvokeProcessStep defClass="" executor="" icon="" name="back" x="540" y="250">
-   <Description />
-   <probepoint type="none" />
-   <OnStepProcess />
-  </ReturnInvokeProcessStep>
-  <AutomaticStep defClass="" executor="" icon="" name="submit" x="740" y="250">
+  <AutomaticStep defClass="" executor="" icon="" name="submit" x="770" y="320">
    <Description />
    <probepoint type="none" />
    <OnStepProcess>
     <JavaCode defClass="" executor="" methodName="submit_OnStepProcess_0" name="submit_OnStepProcess_0" />
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="preConfirm" x="480" y="100">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="preConfirm_OnStepProcess_0" name="preConfirm_OnStepProcess_0" />
    </OnStepProcess>
   </AutomaticStep>
  </Steps>
@@ -43,7 +38,13 @@
    <Description />
    <probepoint type="none" />
   </WebPage>
-  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="AckCreateAuditListPage" stageIndicator="" x="600" y="410">
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="AckCreateAuditListPage" stageIndicator="" x="730" y="480">
+   <OnPageLoad />
+   <OnPageSubmit />
+   <Description />
+   <probepoint type="none" />
+  </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="ConfirmPage" stageIndicator="" x="750" y="100">
    <OnPageLoad />
    <OnPageSubmit />
    <Description />
@@ -58,31 +59,41 @@
   <SynchronousLink destinationName="/Pages/WebPage/AuditInformationPage" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/prepareData" style="oblique">
    <position>{(210,120)(320,120)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/prepareSwitch" linkstyle="Direct" name="" sourceName="/Pages/WebPage/AuditInformationPage" style="oblique">
+  <SynchronousLink destinationName="/Pages/WebPage/AckCreateAuditListPage" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/submit" style="rectanular">
+   <position>{(790,340)(750,500)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/prepareData" linkstyle="Rectangle" name="" sourceName="/Conditions/Condition/Cond1" style="rectanular">
+   <position>{(670,120)(227,216)(210,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/ConfirmPage" linkstyle="Rectangle" name="" sourceName="/Conditions/Condition/Cond1" style="rectanular">
+   <position>{(670,120)(770,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/preConfirm" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/AuditInformationPage" style="rectanular">
    <position>{(320,120)(500,120)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Switches/Switch/Switch1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/prepareSwitch" style="oblique">
-   <position>{(500,120)(650,120)}</position>
+  <SynchronousLink destinationName="/Switches/Switch/Switch1" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/ConfirmPage" style="rectanular">
+   <position>{(770,120)(790,220)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/ReturnInvokeProcessStep/back" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
-   <position>{(650,120)(560,270)}</position>
+  <SynchronousLink destinationName="/Conditions/Condition/Cond1" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/preConfirm" style="rectanular">
+   <position>{(500,120)(670,120)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/submit" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
-   <position>{(650,120)(760,270)}</position>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/submit" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch1" style="rectanular">
+   <position>{(790,220)(790,340)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Pages/WebPage/AckCreateAuditListPage" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/submit" style="oblique">
-   <position>{(760,270)(620,430)}</position>
-  </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/ReturnInvokeProcessStep/back" linkstyle="Direct" name="" sourceName="/Pages/WebPage/AckCreateAuditListPage" style="oblique">
-   <position>{(620,430)(560,270)}</position>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/prepareData" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch1" style="rectanular">
+   <position>{(790,220)(226,221)(210,120)}</position>
   </SynchronousLink>
  </Links>
- <Conditions />
- <Switches>
-  <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="action_type" name="Switch1" x="630" y="100">
+ <Conditions>
+  <Condition componentIfFalse="/Steps/AutomaticStep/prepareData" componentIfTrue="/Pages/WebPage/ConfirmPage" defClass="" executor="" icon="" leftOperand="isValid" name="Cond1" operator="=" rightOperand="&quot;Y&quot;" x="650" y="100">
    <Description />
-   <SwitchCase component="/Steps/ReturnInvokeProcessStep/back" value="&quot;doBack&quot;" />
+  </Condition>
+ </Conditions>
+ <Switches>
+  <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="action_type" name="Switch1" x="770" y="200">
+   <Description />
    <SwitchCase component="/Steps/AutomaticStep/submit" value="&quot;doSubmit&quot;" />
+   <SwitchCase component="/Steps/AutomaticStep/prepareData" value="&quot;doBack&quot;" />
   </Switch>
  </Switches>
  <Branches />

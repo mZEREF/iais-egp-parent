@@ -70,6 +70,8 @@ public final class AuditConstants {
     public static final String KEY_APP_ID = "appId";
     public static final String KEY_TASK_ID = "taskId";
 
+    public static final String KEY_MANUAL_AUDIT = "saveAuditDto";
+
     public static final String BACK_URL = "backUrl";
     public static final String BACK_URL_TASK_LIST = "/bsb-be/eservicecontinue/INTRANET/MohBsbTaskList";
     public static final String BACK_URL_CANCEL_LIST = "/bsb-be/eservicecontinue/INTRANET/AuditCancellationList";

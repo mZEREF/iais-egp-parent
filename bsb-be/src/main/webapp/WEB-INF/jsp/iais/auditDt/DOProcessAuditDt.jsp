@@ -9,6 +9,7 @@
 %>
 <webui:setLayout name="iais-intranet"/>
 <script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-audit.js"></script>
+<%@include file="/WEB-INF/jsp/iais/include/showErrorMsg.jsp" %>
 <div class="dashboard">
     <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
         <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
@@ -169,4 +170,3 @@
         </div>
     </form>
 </div>
-<%@include file="/WEB-INF/jsp/include/validation.jsp" %>

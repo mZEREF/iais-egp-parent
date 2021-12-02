@@ -53,16 +53,15 @@ $(function () {
         // $("#auditType .current").text("All");
     });
 
+    $("#nextBtn").click(function () {
+        showWaiting();
+        $("#mainForm").submit();
+    });
+
     $("#submitAudit").click(function () {
-        var optionValue = $("#auditType option:selected").val();
-        if (optionValue == "Please Select" || optionValue == "") {
-            $("#error_auditType").html("This is Mandatory");
-        }else {
-            showWaiting();
-            $("#error_auditType").html("");
-            $("[name='action_type']").val("doSubmit");
-            $("#mainForm").submit();
-        }
+        showWaiting();
+        $("[name='action_type']").val("doSubmit");
+        $("#mainForm").submit();
     });
 
     //specify And Change Date
