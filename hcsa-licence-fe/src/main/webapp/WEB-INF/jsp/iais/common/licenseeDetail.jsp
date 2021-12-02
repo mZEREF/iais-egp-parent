@@ -4,6 +4,9 @@
 
 <c:set var="isRfi" value="${requestInformationConfig != null}" />
 <c:set var="isNew" value="${'APTY002' == AppSubmissionDto.appType}" />
+<c:set var="isRFC" value="${'APTY005' == AppSubmissionDto.appType}" />
+<c:set var="showClaimFields"
+       value="${isRFC && !isRfi && (dto.licenseeType eq soloType || dto.licenseeType eq individualType)}" />
 
 <div class="form-horizontal licenseeContent">
     <iais:row>
@@ -20,7 +23,7 @@
         </iais:value>
     </iais:row>
 
-    <c:if test="${subLicenseeDto.licenseeType ne soloType}">
+    <c:if test="${dto.licenseeType ne soloType}">
         <c:if test="${isNew}">
             <iais:row cssClass="assignSelectRow">
                 <iais:field width="5" value="Add/Assign a licensee" cssClass="assignSelectLabel"/>
@@ -43,10 +46,25 @@
         <%-- License Detail Content --%>
         <%@include file="licenseeDetailContent.jsp"%>
     </c:if>
-    <c:if test="${subLicenseeDto.licenseeType eq soloType}">
-        <iais:input cssClass="not-clear" type="hidden" name="licenseeType" value="${soloType}"/>
+    <c:if test="${dto.licenseeType eq soloType}">
+        <iais:input cssClass="not-clear" type="hidden" name="licenseeType" id="licenseeType" value="${soloType}"/>
     </c:if>
     <%@include file="previewLicenseeCom.jsp"%>
+    <c:if test="${showClaimFields}">
+        <iais:row cssClass="claimFeilds">
+            <iais:field value="UEN of your Corporate Entity" mandatory="false" width="5"/>
+            <iais:value width="7" cssClass="col-md-7">
+                <iais:input maxLength="2000" type="text" name="claimUenNo" id="claimUenNo" value="${dto.claimUenNo}"/>
+            </iais:value>
+        </iais:row>
+        <iais:row cssClass="claimFeilds">
+            <iais:field value="Name of your Corporate Entity" mandatory="false" width="5"/>
+            <iais:value width="7" cssClass="col-md-7">
+                <iais:input maxLength="2000" type="text" name="claimCompanyName" id="claimCompanyName"
+                            value="${dto.claimCompanyName}"/>
+            </iais:value>
+        </iais:row>
+    </c:if>
 </div>
 
 <iais:confirm msg="NEW_ACK016" needCancel="false" callBack="$('#postalCodePop').modal('hide');"
@@ -103,6 +121,7 @@
         if ($('#licenseeType').length > 0) {
             type = $('#licenseeType').val();
         }
+        console.log("Type: " + type);
         $('.assignSelectLabel .mandatory').remove();
         if (type == '${companyType}') {
             $('.company-no').removeClass('hidden');
@@ -123,9 +142,11 @@
             $('.licensee-com').hide();
             $('.licensee-detail').show();
             $('.assignSelectLabel').append('<span class="mandatory">*</span>');
-        } else if (type == '-1' || type == '${soloType}') {
+        } else if (type == '-1') {
             $('.licensee-com').show();
             $('.editDiv').remove();
+        } else if (type == '${soloType}') {
+            $('.licensee-com').show();
         } else {
             $('.company-no').addClass('hidden');
             $('.ind-no').addClass('hidden');
@@ -149,6 +170,9 @@
         $('.retrieveAddr').removeClass('hidden');
         disableContent('div.ind-no');
         disableContent('#licenseeName');
+        </c:if>
+        <c:if test="${showClaimFields}">
+        unDisableContent('div.claimFeilds');
         </c:if>
         initLicenseePage();
         $(this).closest('div').hide();
@@ -292,6 +316,16 @@
         // init licensee type
         $('#licenseeType').val('${individualType}');
         $('#licenseeType').niceSelect('update');
+    }
+
+    function checkAddressManatory() {
+        var addrType = $('#addrType').val();
+        $('.blkNoLabel .mandatory').remove();
+        $('.floorUnitLabel .mandatory').remove();
+        if ('ADDTY001' == addrType) {
+            $('.blkNoLabel').append('<span class="mandatory">*</span>');
+            $('.floorUnitLabel').append('<span class="mandatory">*</span>');
+        }
     }
 
 </script>

@@ -87,6 +87,7 @@ public interface AppSubmissionService {
      boolean checkRenewalStatus(String licenceId);
      AppSubmissionDto getExistBaseSvcInfo(List<String> licenceIds);
     void transform(AppSubmissionDto appSubmissionDto,String licenseeId) throws Exception;
+    void transform(AppSubmissionDto appSubmissionDto,String licenseeId, String appGroupNo) throws Exception;
     void saveAppsubmission(AppSubmissionDto appSubmissionDto );
     void setDraftNo(AppSubmissionDto appSubmissionDto);
     void  saveAppGrpMisc(AppGroupMiscDto appGroupMiscDto);

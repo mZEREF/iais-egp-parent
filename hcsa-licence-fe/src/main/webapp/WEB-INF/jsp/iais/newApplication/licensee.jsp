@@ -98,7 +98,7 @@
         }
 
         <c:if test="${(!AppSubmissionDto.needEditController && readOnly) || AppSubmissionDto.needEditController}">
-            disableContent('div.licensee-detail');
+            disableContent('div.licenseeContent');
         </c:if>
     });
 
