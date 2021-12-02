@@ -1268,10 +1268,11 @@ public class NewApplicationDelegator {
         // check CO Map
         HashMap<String, String> coMap = (HashMap<String, String>) bpc.request.getSession().getAttribute(NewApplicationConstant.CO_MAP);
         if (errorMap.isEmpty()) {
-            coMap.put("document", "document");
+            coMap.put(NewApplicationConstant.SECTION_DOCUMENT, "document");
         } else {
-            coMap.put("document", "");
+            coMap.put(NewApplicationConstant.SECTION_DOCUMENT, "");
         }
+        bpc.request.getSession().setAttribute(NewApplicationConstant.CO_MAP, coMap);
         String actionValue = ParamUtil.getRequestString(bpc.request, IaisEGPConstant.CRUD_ACTION_VALUE);
         if (errorMap.size() > 0 && !"back".equals(actionValue)) {
             //set audit
