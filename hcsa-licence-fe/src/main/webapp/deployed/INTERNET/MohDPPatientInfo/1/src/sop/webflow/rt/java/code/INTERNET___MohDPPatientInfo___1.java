@@ -22,11 +22,11 @@ public class INTERNET___MohDPPatientInfo___1 extends BaseProcessClass {
 	// 		Start->OnStepProcess
 		EngineHelper.delegate(DELEGATOR, "doStart", this);
 	}
-	
+
 	public void prepareSwitch_OnStepProcess_0() throws Exception {
-		// 		PrepareSwitch->OnStepProcess
+	// 		PrepareSwitch->OnStepProcess
 		EngineHelper.delegate(DELEGATOR, "doPrepareSwitch", this);
-		}
+	}
 
 	public void prepareReturn_OnStepProcess_0() throws Exception {
 	// 		PrepareReturn->OnStepProcess
@@ -58,8 +58,8 @@ public class INTERNET___MohDPPatientInfo___1 extends BaseProcessClass {
 		EngineHelper.delegate(DELEGATOR, "doPageAction", this);
 	}
 
-	public void pageConfimAction_OnStepProcess_0() throws Exception {
-	// 		PageConfimAction->OnStepProcess
+	public void pageConfirmAction_OnStepProcess_0() throws Exception {
+	// 		PageConfirmAction->OnStepProcess
 		EngineHelper.delegate(DELEGATOR, "doPageConfirmAction", this);
 	}
 

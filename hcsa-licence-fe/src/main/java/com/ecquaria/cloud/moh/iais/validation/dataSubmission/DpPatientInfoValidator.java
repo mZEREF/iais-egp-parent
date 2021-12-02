@@ -9,6 +9,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.CommonValidator;
 import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidator;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
+import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -43,7 +44,7 @@ public class DpPatientInfoValidator implements CustomizeValidator {
             }
         }
         if(!StringUtil.isEmpty(patientDto.getAddrType())){
-            if(patientDto.getIdType().equals(DataSubmissionConsts.DP_PATIENTINFO_ADDRESS_TYPE_APT_BLK)){
+            if(patientDto.getAddrType().equals(DataSubmissionConsts.DP_PATIENTINFO_ADDRESS_TYPE_APT_BLK)){
                 if(StringUtil.isEmpty(patientDto.getBlkNo())){
                     errorMap.put("blkNo", "GENERAL_ERR0006");
                 }
@@ -57,26 +58,25 @@ public class DpPatientInfoValidator implements CustomizeValidator {
         }
         if(!StringUtil.isEmpty(birthDate)){
             try {
-                if(!(CommonValidator.isDate(birthDate) && Formatter.compareDateByDay(birthDate) >0)){
-                    errorMap.put("birthDate", "DS_ERR001");
+                if(CommonValidator.isDate(birthDate) && Formatter.compareDateByDay(birthDate) >0){
+                    errorMap.put("birthDate", MessageUtil.replaceMessage("DS_ERR001", "Date of Birth", "field"));
                 }
             }catch (Exception e){
                 e.printStackTrace();
             }
         }
+        String postalCode = patientDto.getPostalCode();
         String mobileNo = patientDto.getMobileNo();
-        String homeTelNo = patientDto.getHomeTelNo();
-        String reg1 = "/^[8|9][0-9]{7}$/";
-        String reg2 = "/^6[0-9]{7}$/";
-        if(!mobileNo.matches(reg1)){
-            String errorMsg = "Must start with 8 or 9";
-            errorMap.put("mobileNo", errorMsg);
+        String homeTelNo  =patientDto.getHomeTelNo();
+        if(StringUtil.isNotEmpty(mobileNo) && !StringUtil.isNumber(mobileNo)){
+            errorMap.put("mobileNo", "GENERAL_ERR0002");
         }
-        if(!homeTelNo.matches(reg2)){
-            String errorMsg = "Must start with 6";
-            errorMap.put("homeTelNo", errorMsg);
+        if(StringUtil.isNotEmpty(postalCode) && !StringUtil.isNumber(postalCode)){
+            errorMap.put("postalCode", "GENERAL_ERR0002");
         }
-
+        if(StringUtil.isNotEmpty(homeTelNo) && !StringUtil.isNumber(homeTelNo)){
+            errorMap.put("homeTelNo", "GENERAL_ERR0002");
+        }
         return errorMap;
     }
 }

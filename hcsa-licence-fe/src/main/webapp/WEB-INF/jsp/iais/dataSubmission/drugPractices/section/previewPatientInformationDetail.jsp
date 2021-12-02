@@ -61,7 +61,7 @@
                 <iais:row>
                     <iais:field width="5" value="Floor No. / Unit No." />
                     <iais:value width="7" cssClass="col-md-7">
-                        <c:out value="${patientDto.floorNo}"/><p>-</p><c:out value="${patientDto.unitNo}"/>
+                        <c:out value="${patientDto.floorNo}-${patientDto.unitNo}"/>
                     </iais:value>
                 </iais:row>
                 <iais:row>

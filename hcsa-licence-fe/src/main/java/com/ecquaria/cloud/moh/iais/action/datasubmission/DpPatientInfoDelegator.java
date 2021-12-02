@@ -50,10 +50,9 @@ public class DpPatientInfoDelegator extends DpCommonDelegator {
         }
         dpSuperDataSubmissionDto.setPatientDto(patientDto);
         ParamUtil.setSessionAttr(bpc.request, DataSubmissionConstant.DP_DATA_SUBMISSION, dpSuperDataSubmissionDto);
-        validatePageData(request, patientDto,"save",ACTION_TYPE_CONFIRM);
+        validatePageData(request, patientDto,"DRP",ACTION_TYPE_CONFIRM);
     }
     @Override
     public void prepareConfim(BaseProcessClass bpc) {
-        ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.PRINT_FLAG, DataSubmissionConsts.DS_PATIENT_ART);
     }
 }
