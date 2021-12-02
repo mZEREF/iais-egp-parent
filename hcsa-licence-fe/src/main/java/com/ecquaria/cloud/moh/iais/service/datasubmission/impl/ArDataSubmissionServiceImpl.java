@@ -524,4 +524,12 @@ public class ArDataSubmissionServiceImpl implements ArDataSubmissionService {
         return comFileRepoClient.saveFileRepo(files);
     }
 
+    @Override
+    public PatientInventoryDto getPatientInventory(String patientCode, String HciCode) {
+        if (StringUtil.isEmpty(patientCode) || StringUtil.isEmpty(HciCode)){
+            log.info(StringUtil.changeForLog("------ No patient code or hci code -----"));
+            return new PatientInventoryDto();
+        }
+        return arFeClient.patientInventoryByCode(patientCode, HciCode).getEntity();
+    }
 }

@@ -242,6 +242,7 @@ public class ArCycleStagesManualDelegator {
             currentSuper.setCycleDto(cycleDto);
             currentSuper.setSelectionDto(selectionDto);
             currentSuper.setPatientInfoDto(newDto.getPatientInfoDto());
+            currentSuper.setPatientInventoryDto(newDto.getPatientInventoryDto());
         } else {
             String msg = "No ArSuperDataSubmissionDto found from DB - " + selectionDto.getPatientCode() + " : " + hciCode;
             log.warn(StringUtil.changeForLog("-----" + msg + "-----"));

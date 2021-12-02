@@ -22,6 +22,7 @@
                     </label>
                 </p>
                 <hr/>
+                <span id="error_embryoTransferPage" name="iaisErrorMsg" class="error-msg col-md-6"></span>
                 <iais:row>
                     <iais:field width="6" value="No. Transferred" mandatory="true" cssClass="col-md-6"/>
                     <iais:value width="6" cssClass="col-md-6">

@@ -4,6 +4,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArCycleStageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.EmbryoTransferStageDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInventoryDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidator;
@@ -56,6 +57,16 @@ public class EmbryoTransferStageDtoValidator implements CustomizeValidator {
             }
             if (embryoTransferStageDto.getSecondTransferDate().before(new SimpleDateFormat(AppConsts.DEFAULT_DATE_FORMAT).parse(arCycleStageDto.getStartDate()))) {
                 errorMap.put("secondTransferDate", "Cannot be earlier than cycle start date");
+            }
+        }
+
+        PatientInventoryDto patientInventoryDto = arSuperDataSubmissionDto.getPatientInventoryDto();
+        if (patientInventoryDto != null) {
+            if (patientInventoryDto.getCurrentFreshOocytes() > 0
+                    || patientInventoryDto.getCurrentThawedOocytes() > 0
+                    || patientInventoryDto.getCurrentFreshEmbryos() > 0
+                    || patientInventoryDto.getCurrentThawedEmbryos() > 0) {
+                errorMap.put("embryoTransferPage", "Balance of fresh oocytes, thawed oocytes, fresh embryos and thawed embryos must be zero");
             }
         }
         return errorMap;

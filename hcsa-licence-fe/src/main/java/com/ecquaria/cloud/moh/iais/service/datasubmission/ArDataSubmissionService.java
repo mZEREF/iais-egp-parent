@@ -140,4 +140,6 @@ public interface ArDataSubmissionService {
     List<DonorSampleDto> getDonorSampleDtoBySampleKey(String sampleKey);
 
     List<String> saveFileRepo(List<File> files);
+
+    PatientInventoryDto getPatientInventory(String patientCode, String HciCode);
 }
