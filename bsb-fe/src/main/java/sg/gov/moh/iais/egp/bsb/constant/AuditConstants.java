@@ -13,9 +13,7 @@ public class AuditConstants {
     public static final String PARAM_AUDIT_DATE = "auditDate";
 
     public static final String PARAM_REMARKS = "remark";
-    public static final String PARAM_REASON = "reason";
-    public static final String PARAM_DECISION = "decision";
-    public static final String PARAM_REASON_FOR_CHANGE = "reasonForChange";
+    public static final String PARAM_REASON_FOR_CHANGE = "changeReason";
 
     public static final String PARAM_FACILITY_NAME = "facilityName";
     public static final String PARAM_FACILITY_CLASSIFICATION = "facilityClassification";
@@ -32,27 +30,18 @@ public class AuditConstants {
     public static final String KEY_PAGE_SIZE = "pageJumpNoPageSize";
     public static final String KEY_PAGE_NO = "pageJumpNoTextchangePage";
 
-    public static final String FACILITY_ID = "facId";
-    public static final String FACILITY_LIST = "facilityList";
-    public static final String AUDIT_LIST = "auditList";
-
-    public static final String FACILITY = "facility";
     public static final String FACILITY_AUDIT = "facilityAudit";
     public static final String SELF_AUDIT_DATA = "selfAudit";
-    public static final String CHANGED_FACILITY_AUDIT = "changedAudit";
-    public static final String FACILITY_AUDIT_APP = "facilityAuditAPP";
     public static final String AUDIT_ID = "auditId";
     public static final String LAST_AUDIT_DATE = "lastAuditDt";
     public static final String PARAM_SCENARIO_CATEGORY = "scenarioCategory";
 
-    public static final String AUDIT_APP_ID = "auditAppId";
-    public static final String AUDIT_DOC_DTO = "auditDocDto";
-    public static final String AUDIT_OUTCOME = "auditOutcome";
-    public static final String FINAL_REMARK = "finalRemark";
-    public static final String AO_REMARKS = "aoRemark";
-    public static final String PARAM_HISTORY = "history";
-
     public static final String PARAM_YEAR = "year";
+
+    public static final String PARAM_AUDIT_DTO = "auditDto";
+    public static final String PARAM_CHANGE_DT = "changeDt";
+    public static final String PARAM_SPECIFY_DT = "specifyDt";
+    public static final String PARAM_MODULE_TYPE = "moduleType";
 
     public static final String PARAM_AUDIT_STATUS_PENDING_TASK_ASSIGNMENT = "AUDITST001";
     public static final String PARAM_AUDIT_STATUS_PENDING_APPLICANT_INPUT = "AUDITST002";

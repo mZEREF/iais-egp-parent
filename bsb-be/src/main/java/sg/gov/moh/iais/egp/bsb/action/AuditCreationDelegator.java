@@ -16,7 +16,6 @@ import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
 import sg.gov.moh.iais.egp.bsb.dto.audit.AuditQueryDto;
 import sg.gov.moh.iais.egp.bsb.dto.audit.FacilityQueryResultDto;
 import sg.gov.moh.iais.egp.bsb.dto.audit.SaveAuditDto;
-import sg.gov.moh.iais.egp.bsb.entity.*;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
@@ -140,18 +139,18 @@ public class AuditCreationDelegator {
 
     public void preConfirm(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
-        SaveAuditDto dto1 = getSaveAuditDto(request);
-        List<SaveAuditDto.SaveAudit> saveAudits1 = dto1.getSaveAudits();
-        if (!CollectionUtils.isEmpty(saveAudits1)) {
-            for (int i = 0; i < saveAudits1.size(); i++) {
-                SaveAuditDto.SaveAudit saveAudit = saveAudits1.get(i);
+        SaveAuditDto dto = getSaveAuditDto(request);
+        List<SaveAuditDto.SaveAudit> saveAudits = dto.getSaveAudits();
+        if (!CollectionUtils.isEmpty(saveAudits)) {
+            for (int i = 0; i < saveAudits.size(); i++) {
+                SaveAuditDto.SaveAudit saveAudit = saveAudits.get(i);
                 saveAudit.setAuditType(ParamUtil.getRequestString(request, PARAM_AUDIT_TYPE + SEPARATOR + i));
                 saveAudit.setRemarks(ParamUtil.getRequestString(request, PARAM_REMARKS + SEPARATOR + i));
                 saveAudit.setStatus(PARAM_AUDIT_STATUS_PENDING_TASK_ASSIGNMENT);
             }
         }
-        doValidation(dto1,request);
-        ParamUtil.setSessionAttr(request,KEY_MANUAL_AUDIT,dto1);
+        doValidation(dto,request);
+        ParamUtil.setSessionAttr(request,KEY_MANUAL_AUDIT,dto);
     }
 
     public void doCreate(BaseProcessClass bpc) {

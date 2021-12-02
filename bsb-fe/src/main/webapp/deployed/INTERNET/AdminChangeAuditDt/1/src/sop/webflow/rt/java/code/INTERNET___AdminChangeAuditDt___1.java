@@ -17,22 +17,19 @@ public class INTERNET___AdminChangeAuditDt___1 extends BaseProcessClass {
 	private static final String DELEGATOR = "auditDateDelegatorFE";
 
 	public void step1_OnStepProcess_0() throws Exception {
-	// 		Step1->OnStepProcess
 		EngineHelper.delegate(DELEGATOR, "start", this);
 	}
 
 	public void submit_OnStepProcess_0() throws Exception {
-	// 		submit->OnStepProcess
 		EngineHelper.delegate(DELEGATOR, "specifyAndChangeDt", this);
 	}
 
 	public void prepareData_OnStepProcess_0() throws Exception {
-	// 		prepareData->OnStepProcess
 		EngineHelper.delegate(DELEGATOR, "prepareSpecifyDtData", this);
 	}
 
-	public void prepareSwitch_OnStepProcess_0() throws Exception {
-	// 		prepareSwitch->OnStepProcess
+	public void preConfirm_OnStepProcess_0() throws Exception {
+		EngineHelper.delegate(DELEGATOR, "preConfirm", this);
 	}
 
 }

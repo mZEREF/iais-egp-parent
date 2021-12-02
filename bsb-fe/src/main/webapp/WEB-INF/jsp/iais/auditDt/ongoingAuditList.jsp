@@ -89,8 +89,8 @@
                                             </c:when>
                                             <c:otherwise>
                                                 <td>
-                                                    <p><a id="specifyDt" onclick="doSpecifyDt('<iais:mask name="auditId" value="${item.id}"/>')">Specify audit date</a></p>
-                                                    <p><a id="changeDt" onclick="dochangeDt('<iais:mask name="auditId" value="${item.id}"/>')">Change audit date</a></p>
+                                                    <p><a id="specifyDt" onclick="doSpecifyDt('<iais:mask name="auditId" value="${item.id}"/>','specifyDt')">Specify audit date</a></p>
+                                                    <p><a id="changeDt" onclick="doChangeDt('<iais:mask name="auditId" value="${item.id}"/>','changeDt')">Change audit date</a></p>
                                                     <p><a id="facSelfAudit" onclick="submitReport('<iais:mask name="auditId" value="${item.id}"/>')">Facility self audit</a></p>
                                                 </td>
                                             </c:otherwise>
@@ -107,5 +107,6 @@
             </div>
         </div>
         <input name="auditId" id="auditId" value="" hidden>
+        <input name="moduleType" id="moduleType" value="" hidden>
     </form>
 </div>

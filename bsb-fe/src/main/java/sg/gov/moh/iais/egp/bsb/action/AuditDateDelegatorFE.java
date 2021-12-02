@@ -4,7 +4,6 @@ import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
-import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import lombok.extern.slf4j.Slf4j;
@@ -12,10 +11,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 import sg.gov.moh.iais.egp.bsb.client.AuditClient;
 import sg.gov.moh.iais.egp.bsb.constant.AuditConstants;
+import sg.gov.moh.iais.egp.bsb.constant.ValidationConstants;
 import sg.gov.moh.iais.egp.bsb.dto.PageInfo;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
 import sg.gov.moh.iais.egp.bsb.dto.audit.AuditQueryDto;
 import sg.gov.moh.iais.egp.bsb.dto.audit.AuditQueryResultDto;
+import sg.gov.moh.iais.egp.bsb.dto.audit.FacilitySubmitSelfAuditDto;
 import sg.gov.moh.iais.egp.bsb.entity.*;
 import sop.webflow.rt.api.BaseProcessClass;
 
@@ -43,6 +44,7 @@ public class AuditDateDelegatorFE {
         HttpServletRequest request = bpc.request;
         IaisEGPHelper.clearSessionAttr(request, AuditConstants.class);
         ParamUtil.setSessionAttr(request, AuditConstants.PARAM_AUDIT_SEARCH, null);
+        ParamUtil.setSessionAttr(request, AuditConstants.PARAM_AUDIT_DTO, null);
     }
 
     /**
@@ -95,36 +97,50 @@ public class AuditDateDelegatorFE {
         ParamUtil.setSessionAttr(request, AuditConstants.FACILITY_AUDIT, null);
         String auditId = ParamUtil.getMaskedString(request, AuditConstants.AUDIT_ID);
         String auditDt = ParamUtil.getString(request,AuditConstants.LAST_AUDIT_DATE);
-        FacilityAudit audit = new FacilityAudit();
-        audit.setId(auditId);
+        String module = ParamUtil.getString(request,AuditConstants.PARAM_MODULE_TYPE);
 
-        if (StringUtils.hasLength(auditDt)) {
-            Date auditDate = Formatter.parseDate(auditDt);
-            audit.setAuditDt(auditDate);
+        FacilitySubmitSelfAuditDto auditDto = getAuditDto(request);
+        Boolean needShowError = (Boolean) ParamUtil.getRequestAttr(request,ValidationConstants.KEY_SHOW_ERROR_SWITCH);
+        if(Boolean.TRUE.equals(needShowError)){
+            ParamUtil.setRequestAttr(request,ValidationConstants.KEY_VALIDATION_ERRORS,auditDto.retrieveValidationResult());
         }
-        ParamUtil.setSessionAttr(request, AuditConstants.FACILITY_AUDIT, audit);
+        if (!StringUtils.hasLength(auditDto.getAuditId())) {
+            auditDto.setAuditId(auditId);
+            auditDto.setModule(module);
+            if (StringUtils.hasLength(auditDt)) {
+                Date auditDate = Formatter.parseDate(auditDt);
+                auditDto.setLastAuditDate(auditDate);
+            }
+        }
+        ParamUtil.setSessionAttr(request, AuditConstants.PARAM_AUDIT_DTO, auditDto);
+    }
+
+    public void preConfirm(BaseProcessClass bpc) throws ParseException {
+        HttpServletRequest request = bpc.request;
+        FacilitySubmitSelfAuditDto dto = getAuditDto(request);
+
+        String remarks = ParamUtil.getRequestString(request, AuditConstants.PARAM_REMARKS);
+        String reason = ParamUtil.getString(request,AuditConstants.PARAM_REASON_FOR_CHANGE);
+        String auditDate = ParamUtil.getRequestString(request, AuditConstants.PARAM_AUDIT_DATE);
+
+        dto.setRemarks(remarks);
+        dto.setChangeReason(reason);
+        if (StringUtils.hasLength(auditDate)) {
+            Date requestAuditDt = Formatter.parseDate(auditDate);
+            dto.setAuditDate(requestAuditDt);
+        }
+        doValidation(dto,request);
+        ParamUtil.setSessionAttr(request, AuditConstants.PARAM_AUDIT_DTO, dto);
     }
 
     /**
      * specifyDt
      * changeDt
      */
-    public void specifyAndChangeDt(BaseProcessClass bpc) throws ParseException {
+    public void specifyAndChangeDt(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
-        FacilityAudit facilityAudit = (FacilityAudit) ParamUtil.getSessionAttr(request, AuditConstants.FACILITY_AUDIT);
-        String remarks = ParamUtil.getRequestString(request, AuditConstants.PARAM_REMARKS);
-        String reason = ParamUtil.getString(request,AuditConstants.PARAM_REASON_FOR_CHANGE);
-        String auditDate = ParamUtil.getRequestString(request, AuditConstants.PARAM_AUDIT_DATE);
-
-        FacilityAudit audit = new FacilityAudit();
-        audit.setId(facilityAudit.getId());
-        audit.setRemarks(remarks);
-        audit.setChangeReason(reason);
-        if (StringUtil.isNotEmpty(auditDate)) {
-            Date requestAuditDt = Formatter.parseDate(auditDate);
-            audit.setAuditDt(requestAuditDt);
-        }
-        auditClient.specifyAndChangeAuditDt(audit);
+        FacilitySubmitSelfAuditDto dto = (FacilitySubmitSelfAuditDto)ParamUtil.getSessionAttr(request, AuditConstants.PARAM_AUDIT_DTO);
+        auditClient.specifyAndChangeAuditDt(dto);
     }
 
     public void page(BaseProcessClass bpc) {
@@ -169,6 +185,15 @@ public class AuditDateDelegatorFE {
         return dto;
     }
 
+    private FacilitySubmitSelfAuditDto getAuditDto(HttpServletRequest request) {
+        FacilitySubmitSelfAuditDto auditDto = (FacilitySubmitSelfAuditDto) ParamUtil.getSessionAttr(request, AuditConstants.PARAM_AUDIT_DTO);
+        return auditDto == null ? getDefaultAuditDto() : auditDto;
+    }
+
+    private FacilitySubmitSelfAuditDto getDefaultAuditDto() {
+        return new FacilitySubmitSelfAuditDto();
+    }
+
     public void selectOption(HttpServletRequest request) {
         List<String> facNames = auditClient.queryDistinctFN().getEntity();
         List<SelectOption> selectModel = new ArrayList<>();
@@ -176,6 +201,19 @@ public class AuditDateDelegatorFE {
             selectModel.add(new SelectOption(facName, facName));
         }
         ParamUtil.setRequestAttr(request, AuditConstants.PARAM_FACILITY_NAME, selectModel);
+    }
+
+    /**
+     * just a method to do simple valid,maybe update in the future
+     * doValidation
+     * */
+    private void doValidation(FacilitySubmitSelfAuditDto dto,HttpServletRequest request){
+        if(dto.doValidation()){
+            ParamUtil.setRequestAttr(request, ValidationConstants.IS_VALID,ValidationConstants.YES);
+        }else{
+            ParamUtil.setRequestAttr(request, ValidationConstants.IS_VALID,ValidationConstants.NO);
+            ParamUtil.setRequestAttr(request,ValidationConstants.KEY_SHOW_ERROR_SWITCH,Boolean.TRUE);
+        }
     }
 
 }

@@ -7,6 +7,7 @@ import org.springframework.cloud.openfeign.SpringQueryMap;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
+import sg.gov.moh.iais.egp.bsb.dto.ValidationResultDto;
 import sg.gov.moh.iais.egp.bsb.dto.audit.AuditQueryDto;
 import sg.gov.moh.iais.egp.bsb.dto.audit.AuditQueryResultDto;
 import sg.gov.moh.iais.egp.bsb.dto.audit.FacilitySubmitSelfAuditDto;
@@ -17,7 +18,7 @@ import java.util.List;
 /**
  * @author Zhu Tangtang
  */
-@FeignClient(name = "bsb-fe-api", configuration = FeignConfiguration.class)
+@FeignClient(name = "bsb-fe-api", configuration = FeignConfiguration.class, contextId = "audit")
 public interface AuditClient {
     @GetMapping(value = "/bsb-audit/getAllAudit", consumes = MediaType.APPLICATION_JSON_VALUE, produces =MediaType.APPLICATION_JSON_VALUE)
     ResponseDto<AuditQueryResultDto> getAllAudit(@SpringQueryMap AuditQueryDto queryDto);
@@ -26,7 +27,7 @@ public interface AuditClient {
     FeignResponseEntity<Facility> getFacilityByApproval(@RequestParam("approvalId") String approvalId,@RequestParam("processType") String processType);
 
     @PostMapping(value = "/bsb-audit/specifyAndChangeAuditDt",consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<Void> specifyAndChangeAuditDt(@RequestBody FacilityAudit facilityAudit);
+    FeignResponseEntity<Void> specifyAndChangeAuditDt(@RequestBody FacilitySubmitSelfAuditDto dto);
 
     @GetMapping(value = "/bsb-audit/facName")
     FeignResponseEntity<List<String>> queryDistinctFN();
@@ -36,5 +37,8 @@ public interface AuditClient {
 
     @PostMapping(value = "/bsb-audit/facilitySelfAudit", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<Void> facilitySubmitSelfAudit(@RequestBody FacilitySubmitSelfAuditDto dto);
+
+    @PostMapping(path = "/bsb-audit/validate/auditDt", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    ValidationResultDto validateAuditDt(@RequestBody FacilitySubmitSelfAuditDto dto);
 
 }

@@ -1,14 +1,16 @@
 //audit date
-function doSpecifyDt(id){
+function doSpecifyDt(id,type){
     showWaiting();
     $("#auditId").val(id);
+    $("#moduleType").val(type);
     $("[name='action_type']").val("specifyDt");
     $("#mainForm").submit();
 }
 
-function dochangeDt(id){
+function doChangeDt(id,type){
     showWaiting();
     $("#auditId").val(id);
+    $("#moduleType").val(type);
     $("[name='action_type']").val("changeDt");
     $("#mainForm").submit();
 }
@@ -65,30 +67,15 @@ $(function () {
     });
 
     //specify And Change Date
-    $("#submitChangeAuditDt").click(function (){
+    $("#submitBtn").click(function (){
+        showWaiting();
         $("[name='action_type']").val("doSubmit");
-        var auditDate = $("#auditDate").val();
-        var reason = $("#reasonForChange").val();
-        if (auditDate==null || auditDate == ""){
-            $("#auditDateError").html("This is Mandatory");
-        }else if (reason==null||reason==""){
-            $("#auditDateError").html("");
-            $("#reasonError").html("This is Mandatory");
-        }else{
-            showWaiting();
-            $("#mainForm").submit();
-        }
+        $("#mainForm").submit();
     });
 
-    $("#submitSpecifyAuditDt").click(function (){
-        $("[name='action_type']").val("doSubmit");
-        var auditDate = $("#auditDate").val();
-        if (auditDate==null || auditDate == ""){
-            $("#auditDateError").html("This is Mandatory");
-        }else{
-            showWaiting();
-            $("#mainForm").submit();
-        }
+    $("#nextBtn").click(function (){
+        showWaiting();
+        $("#mainForm").submit();
     });
     //AO And DO Process Audit Date
     $("#rejectReason").hide();

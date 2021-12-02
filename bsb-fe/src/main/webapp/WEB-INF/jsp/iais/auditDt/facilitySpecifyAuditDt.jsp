@@ -9,6 +9,8 @@
 %>
 <webui:setLayout name="iais-intranet"/>
 <script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-audit.js"></script>
+<script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-common.js"></script>
+<%@include file="/WEB-INF/jsp/iais/include/showErrorMsg.jsp" %>
 <div class="main-content">
     <form class="form-horizontal" id="mainForm" method="post" action=<%=process.runtime.continueURL()%>>
         <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
@@ -25,8 +27,8 @@
                         <iais:row>
                             <iais:field value="Audit Date" width="15" required="true"/>
                             <iais:value width="10">
-                                <iais:datePicker id="auditDate" name="auditDate" dateVal=""></iais:datePicker>
-                                <span id="auditDateError" name="iaisErrorMsg" class="error-msg"></span>
+                                <iais:datePicker id="auditDate" name="auditDate" dateVal="${auditDto.auditDate}"></iais:datePicker>
+                                <span data-err-ind="auditDate" class="error-msg"></span>
                             </iais:value>
                         </iais:row>
 
@@ -37,16 +39,16 @@
                                           name="remark"
                                           cols="70"
                                           rows="7"
-                                          maxlength="500"></textarea>
+                                          maxlength="500">${auditDto.remarks}</textarea>
                             </iais:value>
                         </iais:row>
 
                         <div class="row">
                             <div class="col-xs-12 col-sm-6">
-                                <a class="back" id="back" href="#"><em class="fa fa-angle-left"></em> Back</a>
+                                <a class="back" href="/bsb-fe/eservice/INTERNET/OngoingAuditList"><em class="fa fa-angle-left"></em> Back</a>
                             </div>
                             <div align="right">
-                                <button name="submitBtn" id="submitSpecifyAuditDt" type="button" class="btn btn-primary">
+                                <button id="nextBtn" type="button" class="btn btn-primary">
                                     Submit
                                 </button>
                             </div>

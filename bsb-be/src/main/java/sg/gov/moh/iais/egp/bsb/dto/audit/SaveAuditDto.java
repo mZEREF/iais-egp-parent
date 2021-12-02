@@ -7,7 +7,6 @@ import sg.gov.moh.iais.egp.bsb.dto.ValidationResultDto;
 import sg.gov.moh.iais.egp.bsb.util.SpringReflectionUtils;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -36,11 +35,6 @@ public class SaveAuditDto implements Serializable {
 
     @JsonIgnore
     private ValidationResultDto validationResultDto;
-
-//    public SaveAuditDto() {
-//        saveAudits = new ArrayList<>();
-//        saveAudits.add(new SaveAudit());
-//    }
 
     // validate
     public boolean doValidation() {
