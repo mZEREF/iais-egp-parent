@@ -27,21 +27,21 @@
                         </p>
                         <div class="form-check">
                             <input class="form-check-input" id="DP_TP001" type="radio" name="submissionType" value="DP_TP001"
-                                   <c:if test="${dpSuperDataSubmissionDto.dpSubmissionType eq 'DP_TP001'}">checked</c:if>/>
+                                   <c:if test="${dpSuperDataSubmissionDto.submissionType eq 'DP_TP001'}">checked</c:if>/>
                             <label class="form-check-label" for="DP_TP001">
                                 <span class="check-circle"></span><iais:code code="DP_TP001"/>
                             </label>
                         </div>
                         <div class="form-check">
                             <input class="form-check-input" id="DP_TP002" type="radio" name="submissionType" value="DP_TP002"
-                                   <c:if test="${arSuperDataSubmissionDto.arSubmissionType eq 'DP_TP002'}">checked</c:if>/>
+                                   <c:if test="${dpSuperDataSubmissionDto.submissionType eq 'DP_TP002'}">checked</c:if>/>
                             <label class="form-check-label" for="DP_TP002">
                                 <span class="check-circle"></span><iais:code code="DP_TP002"/>
                             </label>
                         </div>
                         <div class="form-check">
                             <input class="form-check-input" id="DP_TP003" type="radio" name="submissionType" value="DP_TP003"
-                                   <c:if test="${arSuperDataSubmissionDto.arSubmissionType eq 'DP_TP003'}">checked</c:if>/>
+                                   <c:if test="${dpSuperDataSubmissionDto.submissionType eq 'DP_TP003'}">checked</c:if>/>
                             <label class="form-check-label" for="DP_TP003">
                                 <span class="check-circle"></span><iais:code code="DP_TP003"/>
                             </label>
