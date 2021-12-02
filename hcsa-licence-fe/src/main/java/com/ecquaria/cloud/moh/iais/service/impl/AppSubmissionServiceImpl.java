@@ -2061,10 +2061,17 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
     }
 
     @Override
-    public void transform(AppSubmissionDto appSubmissionDto, String licenseeId) throws Exception{
+    public void transform(AppSubmissionDto appSubmissionDto, String licenseeId) throws Exception {
+        transform(appSubmissionDto, licenseeId, null);
+    }
+
+    @Override
+    public void transform(AppSubmissionDto appSubmissionDto, String licenseeId, String appGroupNo) throws Exception {
         Double amount = 0.0;
         AuditTrailDto internet = AuditTrailHelper.getCurrentAuditTrailDto();
-        String grpNo = systemAdminClient.applicationNumber(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE).getEntity();
+        if (StringUtil.isEmpty(appGroupNo)) {
+            appGroupNo = systemAdminClient.applicationNumber(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE).getEntity();
+        }
         List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList = appSubmissionDto.getAppSvcRelatedInfoDtoList();
         for(AppSvcRelatedInfoDto appSvcRelatedInfoDto : appSvcRelatedInfoDtoList){
             String serviceName = appSvcRelatedInfoDto.getServiceName();
@@ -2090,7 +2097,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
             }
         }
         requestForChangeService.svcDocToPresmise(appSubmissionDto);
-        appSubmissionDto.setAppGrpNo(grpNo);
+        appSubmissionDto.setAppGrpNo(appGroupNo);
         appSubmissionDto.setFromBe(false);
         appSubmissionDto.setAppType(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
         requestForChangeService.changeDocToNewVersion(appSubmissionDto);
@@ -3122,23 +3129,25 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
 
     @Override
     public void setPreviewDta(AppSubmissionDto appSubmissionDto, BaseProcessClass bpc) throws CloneNotSupportedException {
-        if(appSubmissionDto != null){
+        if (appSubmissionDto != null) {
             List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = appSubmissionDto.getAppSvcRelatedInfoDtoList();
-            if(!IaisCommonUtils.isEmpty(appSvcRelatedInfoDtos)){
-                String svcId = (String) ParamUtil.getSessionAttr(bpc.request,"SvcId");
+            if (!IaisCommonUtils.isEmpty(appSvcRelatedInfoDtos)) {
+                String svcId = (String) ParamUtil.getSessionAttr(bpc.request, "SvcId");
                 ParamUtil.setRequestAttr(bpc.request, "currentPreviewSvcInfo", appSvcRelatedInfoDtos.get(0));
-                Map<String,List<AppSvcDisciplineAllocationDto>> reloadDisciplineAllocationMap= appSubmissionService.getDisciplineAllocationDtoList(appSubmissionDto,svcId);
+                Map<String, List<AppSvcDisciplineAllocationDto>> reloadDisciplineAllocationMap = appSubmissionService
+                        .getDisciplineAllocationDtoList(appSubmissionDto, svcId);
                 ParamUtil.setRequestAttr(bpc.request, "reloadDisciplineAllocationMap", (Serializable) reloadDisciplineAllocationMap);
                 //PO/DPO
-                if(!IaisCommonUtils.isEmpty(appSvcRelatedInfoDtos)){
-                    NewApplicationHelper.setPreviewPo(appSvcRelatedInfoDtos.get(0),bpc.request);
+                if (!IaisCommonUtils.isEmpty(appSvcRelatedInfoDtos)) {
+                    NewApplicationHelper.setPreviewPo(appSvcRelatedInfoDtos.get(0), bpc.request);
                 }
             }
             AppEditSelectDto appEditSelectDto = new AppEditSelectDto();
             boolean licenseeEdit = Optional.ofNullable(appSubmissionDto.getSubLicenseeDto())
                     .map(SubLicenseeDto::getLicenseeType)
-                    .filter(licenseeType -> StringUtil.isEmpty(licenseeType) ||
-                            OrganizationConstants.LICENSEE_SUB_TYPE_INDIVIDUAL.equals(licenseeType))
+                    .filter(licenseeType -> StringUtil.isEmpty(licenseeType)
+                            || OrganizationConstants.LICENSEE_SUB_TYPE_INDIVIDUAL.equals(licenseeType)
+                            || OrganizationConstants.LICENSEE_SUB_TYPE_SOLO.equals(licenseeType))
                     .isPresent();
             appEditSelectDto.setLicenseeEdit(licenseeEdit);
             appEditSelectDto.setPremisesEdit(true);

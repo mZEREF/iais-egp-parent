@@ -2429,7 +2429,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
         // set draft no
         appSubmissionDto.setDraftNo(draftNo);
         try {
-            appSubmissionService.transform(appSubmissionDto, licence.getLicenseeId());
+            appSubmissionService.transform(appSubmissionDto, licence.getLicenseeId(), appGroupNo);
         } catch (Exception e) {
             log.warn(StringUtil.changeForLog(e.getMessage()), e);
         }
@@ -2453,8 +2453,6 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                 return false;
             }
         }
-
-        appSubmissionDto.setAppGrpNo(appGroupNo);
         PreOrPostInspectionResultDto preOrPostInspectionResultDto = appSubmissionService.judgeIsPreInspection(
                 appSubmissionDto);
         if (preOrPostInspectionResultDto == null) {
