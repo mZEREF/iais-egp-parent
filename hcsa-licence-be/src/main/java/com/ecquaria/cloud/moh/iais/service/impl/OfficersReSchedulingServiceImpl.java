@@ -955,7 +955,7 @@ public class OfficersReSchedulingServiceImpl implements OfficersReSchedulingServ
         emailMap.put("time", Formatter.formatTime(new Date()));
         emailMap.put("HCI_Name", appGrpPremisesEntityDto.getHciName());
         emailMap.put("HCI_Code", appGrpPremisesEntityDto.getHciCode());
-        String add = MiscUtil.getAddress(appGrpPremisesEntityDto.getBlkNo(),appGrpPremisesEntityDto.getStreetName(),appGrpPremisesEntityDto.getBuildingName(),appGrpPremisesEntityDto.getFloorNo(),appGrpPremisesEntityDto.getUnitNo(),appGrpPremisesEntityDto.getPostalCode());
+        String add = MiscUtil.getAddressForApp(appGrpPremisesEntityDto.getBlkNo(),appGrpPremisesEntityDto.getStreetName(),appGrpPremisesEntityDto.getBuildingName(),appGrpPremisesEntityDto.getFloorNo(),appGrpPremisesEntityDto.getUnitNo(),appGrpPremisesEntityDto.getPostalCode(),appGrpPremisesEntityDto.getAppPremisesOperationalUnitDtos());
         emailMap.put("premises_address", add);
         emailMap.put("MOH_AGENCY_NAM_GROUP","<b>"+AppConsts.MOH_AGENCY_NAM_GROUP+"</b>");
         emailMap.put("MOH_AGENCY_NAME", "<b>"+AppConsts.MOH_AGENCY_NAME+"</b>");

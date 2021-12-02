@@ -416,7 +416,9 @@ public class LicenceServiceImpl implements LicenceService {
                                         //judge licence is singlepass
                                         Map<String, Object> templateContent = IaisCommonUtils.genNewHashMap();
                                         templateContent.put("HCI_Name", premisesDto.getHciName());
-                                        String address = MiscUtil.getAddress(premisesDto.getBlkNo(),premisesDto.getStreetName(),premisesDto.getBuildingName(),premisesDto.getFloorNo(),premisesDto.getUnitNo(),premisesDto.getPostalCode());
+                                        String address = MiscUtil.getAddress(premisesDto.getBlkNo(),premisesDto.getStreetName(),
+                                                premisesDto.getBuildingName(),premisesDto.getFloorNo(),premisesDto.getUnitNo(),premisesDto.getPostalCode(),
+                                                premisesDto.getPremisesOperationalUnitDtos());
                                         templateContent.put("HCI_Address", address);
                                         log.info(StringUtil.changeForLog("HCI_Address = " + address));
                                         templateContent.put("UEN_No", uenNo);

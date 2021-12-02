@@ -54,8 +54,9 @@ public final class BeSelfChecklistHelper {
             FeignResponseEntity<AppGrpPremisesDto> fetchPremisesResult = inspectionTaskClient.getAppGrpPremisesDtoByAppGroId(corrId);
             if (HttpStatus.SC_OK == fetchPremisesResult.getStatusCode()){
                 AppGrpPremisesDto appGrpPremises = fetchPremisesResult.getEntity();
-                String address = MiscUtil.getAddress(appGrpPremises.getBlkNo(), appGrpPremises.getStreetName(),
-                        appGrpPremises.getBuildingName(), appGrpPremises.getFloorNo(), appGrpPremises.getUnitNo(), appGrpPremises.getPostalCode());
+                String address = MiscUtil.getAddressForApp(appGrpPremises.getBlkNo(), appGrpPremises.getStreetName(),
+                        appGrpPremises.getBuildingName(), appGrpPremises.getFloorNo(), appGrpPremises.getUnitNo(), appGrpPremises.getPostalCode()
+                        ,appGrpPremises.getAppPremisesOperationalUnitDtos());
                 selfAssessment.setPremises(address);
             }
 

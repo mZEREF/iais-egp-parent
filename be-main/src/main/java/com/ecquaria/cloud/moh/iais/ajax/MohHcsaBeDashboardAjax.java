@@ -651,7 +651,7 @@ public class MohHcsaBeDashboardAjax {
             String floorNo = appGrpPremisesEntityDto.getFloorNo();
             String unitNo = appGrpPremisesEntityDto.getUnitNo();
             String postalCode = appGrpPremisesEntityDto.getPostalCode();
-            String hciAddress = MiscUtil.getAddress(blkNo, streetName, buildingName, floorNo, unitNo, postalCode);
+            String hciAddress = MiscUtil.getAddressForApp(blkNo, streetName, buildingName, floorNo, unitNo, postalCode,appGrpPremisesEntityDto.getAppPremisesOperationalUnitDtos());
             AppCessHciDto appCessHciDto = new AppCessHciDto();
             String hciName = appGrpPremisesEntityDto.getHciName();
             String hciCode = appGrpPremisesEntityDto.getHciCode();
@@ -748,7 +748,7 @@ public class MohHcsaBeDashboardAjax {
             String floorNo = premisesDto.getFloorNo();
             String unitNo = premisesDto.getUnitNo();
             String postalCode = premisesDto.getPostalCode();
-            String hciAddress = MiscUtil.getAddress(blkNo, streetName, buildingName, floorNo, unitNo, postalCode);
+            String hciAddress = MiscUtil.getAddress(blkNo, streetName, buildingName, floorNo, unitNo, postalCode,premisesDto.getPremisesOperationalUnitDtos());
             premisesDto.setHciAddress(hciAddress);
         }
         return premisesDto;
