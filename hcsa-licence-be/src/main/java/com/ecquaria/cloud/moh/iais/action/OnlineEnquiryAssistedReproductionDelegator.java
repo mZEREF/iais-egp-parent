@@ -454,6 +454,18 @@ public class OnlineEnquiryAssistedReproductionDelegator {
                     filter.put("FROM_HUSBAND_TISSUE",1);
                 }
             }
+            if(arDto.getGIFT()!=null&& "on".equals(arDto.getGIFT())){
+                filter.put("cart_fcn",1);
+            }
+            if(arDto.getFreshCycleSimulated()!=null&& "on".equals(arDto.getFreshCycleSimulated())){
+                filter.put("cart_fcs",1);
+            }
+            if(arDto.getFrozenOocyteCycle()!=null&& "on".equals(arDto.getFrozenOocyteCycle())){
+                filter.put("cart_foc",1);
+            }
+            if(arDto.getFrozenEmbryoCycle()!=null&& "on".equals(arDto.getFrozenEmbryoCycle())){
+                filter.put("cart_foe",1);
+            }
         }
 
         filterParameter.setFilters(filter);
