@@ -643,7 +643,7 @@ public class NewApplicationDelegator {
             licenseeId = loginContext.getLicenseeId();
         }
 
-        //premise select
+        //premise select select options
         NewApplicationHelper.setPremSelect(bpc.request, licAppGrpPremisesDtoMap);
         ParamUtil.setSessionAttr(bpc.request, LICAPPGRPPREMISESDTOMAP, (Serializable) licAppGrpPremisesDtoMap);
         //addressType
@@ -1221,7 +1221,6 @@ public class NewApplicationDelegator {
         ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_VALUE, crudActionValue);
         ParamUtil.setRequestAttr(bpc.request, crud_action_additional, crud_action_additional);
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
-        Map<String, CommonsMultipartFile> commonsMultipartFileMap = IaisCommonUtils.genNewHashMap();
         List<AppGrpPrimaryDocDto> newAppGrpPrimaryDocDtoList = IaisCommonUtils.genNewArrayList();
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
         AppSubmissionDto oldSubmissionDto = NewApplicationHelper.getOldSubmissionDto(bpc.request,appSubmissionDto.getAppType());
@@ -1283,10 +1282,11 @@ public class NewApplicationDelegator {
         // check CO Map
         HashMap<String, String> coMap = (HashMap<String, String>) bpc.request.getSession().getAttribute(NewApplicationConstant.CO_MAP);
         if (errorMap.isEmpty()) {
-            coMap.put("document", "document");
+            coMap.put(NewApplicationConstant.SECTION_DOCUMENT, "document");
         } else {
-            coMap.put("document", "");
+            coMap.put(NewApplicationConstant.SECTION_DOCUMENT, "");
         }
+        bpc.request.getSession().setAttribute(NewApplicationConstant.CO_MAP, coMap);
         String actionValue = ParamUtil.getRequestString(bpc.request, IaisEGPConstant.CRUD_ACTION_VALUE);
         if (errorMap.size() > 0 && !"back".equals(actionValue)) {
             //set audit
@@ -4945,7 +4945,7 @@ public class NewApplicationDelegator {
                     premIndexNo = "";
                 }
                 String saveFileMapKey = premIndexNo + appGrpPrimaryDocDto.getSvcComDocId() + appGrpPrimaryDocDto.getSeqNum();
-                File file = saveFileMap.get(saveFileMapKey);
+                File file = passValidateFileMap.get(saveFileMapKey);
                 if (file != null) {
                     appGrpPrimaryDocDto.setFileRepoId(fileRepoIdList.get(i));
                     i++;

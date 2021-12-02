@@ -1013,6 +1013,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
         List<PageShowFileDto> pageDtos = IaisCommonUtils.genNewArrayList();
         List<File> files = IaisCommonUtils.genNewArrayList();
         List<AppDeclarationDocDto> docDtos = IaisCommonUtils.genNewArrayList();
+        List<AppDeclarationDocDto> oldDocDtos = IaisCommonUtils.genNewArrayList();
         SingeFileUtil singeFileUtil = SingeFileUtil.getInstance();
         fileMap.forEach((s, file) -> {
             // the current uploaed files
@@ -1056,7 +1057,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                     docDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
                     docDto.setSeqNum(Integer.valueOf(index));
                     docDto.setVersion(Optional.ofNullable(pageShowFileDto.getVersion()).orElseGet(() -> 1));
-                    docDtos.add(docDto);
+                    oldDocDtos.add(docDto);
                     pageDtos.add(pageShowFileDto);
                 }
             }
@@ -1081,6 +1082,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                 }
             }
         }
+        docDtos.addAll(oldDocDtos);
         return docDtos;
     }
 

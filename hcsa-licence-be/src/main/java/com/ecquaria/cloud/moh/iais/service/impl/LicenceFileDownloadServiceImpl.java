@@ -723,7 +723,9 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                             emailMap.put("hci_name", premisesDto.getHciName());
                             emailMap.put("submission_date", Formatter.formatDate(k.getSubmitDt()));
                             emailMap.put("licensee_name", licenseeDto.getName());
-                            String address = MiscUtil.getAddress(premisesDto.getBlkNo(),premisesDto.getStreetName(),premisesDto.getBuildingName(),premisesDto.getFloorNo(),premisesDto.getUnitNo(),premisesDto.getPostalCode());
+                            String address = MiscUtil.getAddressForApp(premisesDto.getBlkNo(),premisesDto.getStreetName()
+                                    ,premisesDto.getBuildingName(),premisesDto.getFloorNo(),premisesDto.getUnitNo(),premisesDto.getPostalCode()
+                                    ,premisesDto.getAppPremisesOperationalUnitDtos());
                             emailMap.put("address", address);
                             if(!application.getStatus().equals(ApplicationConsts.APPLICATION_STATUS_LICENCE_GENERATED)){
                                 emailMap.put("already", "already");
