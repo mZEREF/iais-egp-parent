@@ -33,7 +33,7 @@
             <iais:row>
                 <iais:field value="Service Name"/>
                 <iais:value width="8">
-                    <iais:select name="svcName" options="activeHCIServiceNames" multiSelect="true" multiValues="${auditSystemPotentialDtoForSearch.svcNameSelectList}" needSort="true/>
+                    <iais:select name="svcName" options="activeHCIServiceNames" multiSelect="true" multiValues="${auditSystemPotentialDtoForSearch.svcNameSelectList}" needSort="true" />
                 </iais:value>
             </iais:row>
 
