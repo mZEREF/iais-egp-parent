@@ -13,6 +13,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant;
 import com.ecquaria.cloud.moh.iais.helper.ControllerHelper;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
+import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Optional;
@@ -33,6 +34,8 @@ public class SubmitDonorDelegator extends CommonDelegator {
     @Override
     public void prepareSwitch(BaseProcessClass bpc) {
         ParamUtil.setSessionAttr(bpc.request, SAMPLE_FROM_HCICODE,(Serializable) getSampleFromHciCode());
+        String stage = MasterCodeUtil.getCodeDesc(DataSubmissionConsts.DS_CYCLE_STAGE_DONOR_SAMPLE);
+        ParamUtil.setRequestAttr(bpc.request, "smallTitle", "You are submitting for <strong>" + stage + "</strong>");
     }
 
 
