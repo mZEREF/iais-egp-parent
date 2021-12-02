@@ -391,8 +391,8 @@ public class NotificationHelper {
 					boolean jobRemindFlag = false;
 					//send other address
 					if (!IaisCommonUtils.isEmpty(emailDto.getReceipts()) ||
-						!IaisCommonUtils.isEmpty(emailDto.getCcList()) ||
-						!IaisCommonUtils.isEmpty(emailDto.getBccList())) {
+							!IaisCommonUtils.isEmpty(emailDto.getCcList()) ||
+							!IaisCommonUtils.isEmpty(emailDto.getBccList())) {
 						if (AppConsts.DOMAIN_INTERNET.equalsIgnoreCase(currentDomain)) {
 							String gatewayUrl = env.getProperty("iais.inter.gateway.url");
 							HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);

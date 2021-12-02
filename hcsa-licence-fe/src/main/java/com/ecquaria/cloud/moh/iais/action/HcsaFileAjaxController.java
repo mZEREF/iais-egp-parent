@@ -73,7 +73,7 @@ public class HcsaFileAjaxController {
         }
         if (map == null) {
             map = IaisCommonUtils.genNewHashMap();
-         } else if (size <= 0) {
+        } else if (size <= 0) {
             size = (Integer) ParamUtil.getSessionAttr(request,SEESION_FILES_MAP_AJAX
                     + fileAppendId + SEESION_FILES_MAP_AJAX_MAX_INDEX);
         }
@@ -105,12 +105,12 @@ public class HcsaFileAjaxController {
                  size = reloadIndex;
              }
 
-         }catch (Exception e){
-             log.error(e.getMessage(),e);
-             log.info("----------change MultipartFile to file  falie-----------------");
-             return "";
-         }
-         // Save File to other nodes
+        }catch (Exception e){
+            log.error(e.getMessage(),e);
+            log.info("----------change MultipartFile to file  falie-----------------");
+            return "";
+        }
+        // Save File to other nodes
         saveFileToOtherNodes(selectedFile, toFile, tempFolder);
 
         ParamUtil.setSessionAttr(request,SEESION_FILES_MAP_AJAX+fileAppendId,(Serializable)map);
@@ -188,12 +188,12 @@ public class HcsaFileAjaxController {
         String fileAppendId = ParamUtil.getString(request,"fileAppendId");
         String index  = ParamUtil.getString(request,"fileIndex");
         if( !StringUtil.isEmpty(fileAppendId) && !StringUtil.isEmpty(index)){
-        Map<String, File> map = (Map<String, File>) ParamUtil.getSessionAttr(request,SEESION_FILES_MAP_AJAX + fileAppendId);
-        if( !IaisCommonUtils.isEmpty(map)) {
+            Map<String, File> map = (Map<String, File>) ParamUtil.getSessionAttr(request,SEESION_FILES_MAP_AJAX + fileAppendId);
+            if( !IaisCommonUtils.isEmpty(map)) {
                 log.info(StringUtil.changeForLog("------ fileAppendId : " +fileAppendId +"-----------"));
                 log.info(StringUtil.changeForLog("------ fileAppendIndex : " +index +"-----------"));
                 map.remove(fileAppendId+index);
-            ParamUtil.setSessionAttr(request,SEESION_FILES_MAP_AJAX+fileAppendId,(Serializable)map);
+                ParamUtil.setSessionAttr(request,SEESION_FILES_MAP_AJAX+fileAppendId,(Serializable)map);
             }
         }
         log.info("-----------deleteFeCallFile end------------");

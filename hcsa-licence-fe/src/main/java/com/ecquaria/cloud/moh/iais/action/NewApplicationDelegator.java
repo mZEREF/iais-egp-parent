@@ -348,6 +348,8 @@ public class NewApplicationDelegator {
         }
         SubLicenseeDto orgLicensee = appSubmissionService.getSubLicenseeByLicenseeId(loginContext.getLicenseeId(),
                 loginContext.getUenNo());
+        orgLicensee.setClaimUenNo(subLicenseeDto.getClaimUenNo());
+        orgLicensee.setClaimCompanyName(subLicenseeDto.getClaimCompanyName());
         if (OrganizationConstants.LICENSEE_SUB_TYPE_COMPANY.equals(subLicenseeDto.getLicenseeType())
                 || OrganizationConstants.LICENSEE_SUB_TYPE_SOLO.equals(orgLicensee.getLicenseeType())) {
             subLicenseeDto = (SubLicenseeDto) CopyUtil.copyMutableObject(orgLicensee);
@@ -439,6 +441,7 @@ public class NewApplicationDelegator {
                 }
             }
         }
+        ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
     }
 
     private SubLicenseeDto getSubLicenseeDtoFromPage(HttpServletRequest request) {
@@ -497,6 +500,17 @@ public class NewApplicationDelegator {
                 dto.setUenNo(loginContext.getUenNo());
             }
         }
+        if (StringUtil.isEmpty(licenseeType)) {
+            licenseeType = dto.getLicenseeType();
+        }
+        if (OrganizationConstants.LICENSEE_SUB_TYPE_INDIVIDUAL.equals(licenseeType)
+                || OrganizationConstants.LICENSEE_SUB_TYPE_SOLO.equals(licenseeType)) {
+            String claimUenNo = ParamUtil.getString(request, "claimUenNo");
+            String claimCompanyName = ParamUtil.getString(request, "claimCompanyName");
+            dto.setClaimUenNo(claimUenNo);
+            dto.setClaimCompanyName(claimCompanyName);
+        }
+
         return dto;
     }
 
@@ -2825,6 +2839,7 @@ public class NewApplicationDelegator {
         }
         log.info(StringUtil.changeForLog("isAutoPremises: " + isAutoPremises));
 
+        boolean addClaimed = false;
         // check app submissions affected by sub licensee
         if (appEditSelectDto.isLicenseeEdit()) {
             autoGroupNo = getRfcGroupNo(autoGroupNo);
@@ -2866,6 +2881,10 @@ public class NewApplicationDelegator {
                 autoChangeSelectDto.setLicenseeEdit(true);
                 appEditSelectDto.setLicenseeEdit(false);
             }
+        } else {
+            SubLicenseeDto subLicenseeDto = appSubmissionDto.getSubLicenseeDto();
+            addClaimed = StringUtil.isNotEmpty(subLicenseeDto.getClaimUenNo())
+                    || StringUtil.isNotEmpty(subLicenseeDto.getClaimCompanyName());
         }
         // Primary Doc
         // re-set change edit select dto
@@ -2931,6 +2950,13 @@ public class NewApplicationDelegator {
             NewApplicationHelper.reSetAdditionalFields(autoAppSubmissionDto, autoChangeSelectDto, autoGroupNo);
             autoAppSubmissionDto.setChangeSelectDto(autoChangeSelectDto);
             autoSaveAppsubmission.add(0, autoAppSubmissionDto);
+        }
+        String autoGroupStatus = ApplicationConsts.APPLICATION_GROUP_STATUS_SUBMITED;
+        if (autoSaveAppsubmission.isEmpty() && notAutoSaveAppsubmission.isEmpty() && addClaimed) {
+            autoGroupStatus = ApplicationConsts.APPLICATION_GROUP_STATUS_ADDITIONAL_CLAIM;
+            appSubmissionDto.setCreatAuditAppStatus(ApplicationConsts.APPLICATION_STATUS_LICENCE_GENERATED);
+            NewApplicationHelper.reSetAdditionalFields(appSubmissionDto, false, true, appSubmissionDto.getAppGrpNo());
+            autoSaveAppsubmission.add(appSubmissionDto);
         }
         // check whether the data has been changed or not
         if (autoSaveAppsubmission.isEmpty() && notAutoSaveAppsubmission.isEmpty()) {
@@ -3003,6 +3029,7 @@ public class NewApplicationDelegator {
             appSubmissionDtoList.addAll(appSubmissionDtos1);
             appSubmissionDto.setAppGrpId(notAutoGroupId);
         }
+        final String newAutoGrpStatus = autoGroupStatus;
         if (!autoSaveAppsubmission.isEmpty()) {
             // save submission (auto data)
             autoSaveAppsubmission.parallelStream().forEach(dto -> {
@@ -3010,7 +3037,7 @@ public class NewApplicationDelegator {
                 dto.setEffectiveDate(effectiveDate);
                 dto.setAppDeclarationMessageDto(appDeclarationMessageDto);
                 dto.setAppDeclarationDocDtos(appDeclarationDocDtos);
-                dto.setAppGrpStatus(ApplicationConsts.APPLICATION_GROUP_STATUS_SUBMITED);
+                dto.setAppGrpStatus(newAutoGrpStatus);
             });
             // save application, group, declaration
             List<AppSubmissionDto> appSubmissionDtos1 = requestForChangeService.saveAppsForRequestForGoupAndAppChangeByList(autoSaveAppsubmission);
