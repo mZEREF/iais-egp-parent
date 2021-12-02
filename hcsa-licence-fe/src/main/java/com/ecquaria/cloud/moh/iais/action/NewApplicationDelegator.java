@@ -542,6 +542,7 @@ public class NewApplicationDelegator {
         log.info(StringUtil.changeForLog("the do preparePremises start ...."));
         NewApplicationHelper.setTimeList(bpc.request);
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
+        boolean isRfi = NewApplicationHelper.checkIsRfi(bpc.request);
         //get svcCode to get svcId
         List<HcsaServiceDto> hcsaServiceDtoList = (List<HcsaServiceDto>) ParamUtil.getSessionAttr(bpc.request, AppServicesConsts.HCSASERVICEDTOLIST);
         List<HcsaServiceDto> rfiHcsaService = (List<HcsaServiceDto>) ParamUtil.getSessionAttr(bpc.request, "rfiHcsaService");
@@ -616,7 +617,7 @@ public class NewApplicationDelegator {
                         }
                     }
                 }
-                if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType) || ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appType)){
+                if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType) || ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appType) || isRfi){
 
                 }else {
                     licAppGrpPremisesDtoMap = newLicAppGrpPremisesDtoMap;
@@ -4385,8 +4386,8 @@ public class NewApplicationDelegator {
             AppSubmissionDto appSubmissionDto = appSubmissionService.getAppSubmissionDtoByAppNo(appNo);
             if (appSubmissionDto != null) {
                 appSubmissionDto.setAmountStr("N/A");
+                rfiLoadingCheckImplForRenew.checkPremiseInfo(bpc.request,appSubmissionDto,appNo);
                 if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType()) || ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appSubmissionDto.getAppType())) {
-                    rfiLoadingCheckImplForRenew.checkPremiseInfo(bpc.request,appSubmissionDto,appNo);
                     requestForChangeService.svcDocToPresmise(appSubmissionDto);
                 }else {
                   /*  rfiLoadingExc.checkPremiseInfo(appSubmissionDto,appNo);*/
