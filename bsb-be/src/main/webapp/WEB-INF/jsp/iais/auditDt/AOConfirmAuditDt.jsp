@@ -9,15 +9,13 @@
 %>
 <webui:setLayout name="iais-intranet"/>
 <script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-audit.js"></script>
-<script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-common.js"></script>
-<%@include file="/WEB-INF/jsp/iais/include/showErrorMsg.jsp" %>
 <div class="dashboard">
     <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
         <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
         <input type="hidden" name="action_type" value="">
         <input type="hidden" name="action_value" value="">
         <input type="hidden" name="action_additional" value="">
-        <input type="hidden" name="moduleType" value="aoProcessAuditDt">
+        <input type="hidden" name="decision" id="decision" value="${processData.aoDecision}">
         <div class="main-content">
             <div class="container">
                 <div class="row">
@@ -132,16 +130,7 @@
                                                                                 <%--Required if decision is reject--%>
                                                                                 <iais:field value="AO Reason for rejection" required="true" width="12"/>
                                                                                 <iais:value width="10">
-                                                                                    <div class="input-group">
-                                                                                        <div class="ax_default text_area">
-                                                                                        <textarea id="aoReason"
-                                                                                                  name="aoReason"
-                                                                                                  cols="70"
-                                                                                                  rows="7"
-                                                                                                  maxlength="300">${processData.aoReason}</textarea>
-                                                                                            <span data-err-ind="aoReason" class="error-msg"></span>
-                                                                                        </div>
-                                                                                    </div>
+                                                                                    <p><c:out value="${processData.aoReason}"/></p>
                                                                                 </iais:value>
                                                                             </iais:row>
                                                                         </div>
@@ -149,35 +138,22 @@
                                                                             <iais:row>
                                                                                 <iais:field value="AO Remarks" required="false" width="12"/>
                                                                                 <iais:value width="10">
-                                                                                    <div class="input-group">
-                                                                                        <div class="ax_default text_area">
-                                                                                        <textarea id="aoRemarks"
-                                                                                                  name="aoRemarks"
-                                                                                                  cols="70"
-                                                                                                  rows="7"
-                                                                                                  maxlength="300">${processData.aoRemarks}</textarea>
-                                                                                        </div>
-                                                                                    </div>
+                                                                                    <p><c:out value="${processData.aoRemarks}"/></p>
                                                                                 </iais:value>
                                                                             </iais:row>
                                                                         </div>
                                                                         <div id="processingDecision">
                                                                             <iais:row>
-                                                                                <iais:field value="Processing Decision" required="true"/>
+                                                                                <iais:field value="Processing Decision" required="false"/>
                                                                                 <iais:value width="10">
-                                                                                    <iais:select name="aoDecision"
-                                                                                                 id="aoDecision"
-                                                                                                 value="${processData.aoDecision}"
-                                                                                                 codeCategory="CATE_ID_BSB_CHANGE_DATE_AO"
-                                                                                                 firstOption="Please Select"/>
-                                                                                    <span data-err-ind="aoDecision" class="error-msg"></span>
+                                                                                    <p><iais:code code="${processData.aoDecision}"/></p>
                                                                                 </iais:value>
                                                                             </iais:row>
                                                                         </div>
                                                                     </iais:section>
-                                                                    <a style="float:left;padding-top: 1.1%;" class="back" href="/bsb-be/eservicecontinue/INTRANET/MohBsbTaskList"><em class="fa fa-angle-left"></em> Back</a>
+                                                                    <a style="float:left;padding-top: 1.1%;" class="back" id="back" href="#"><em class="fa fa-angle-left"></em> Back</a>
                                                                     <div align="right">
-                                                                        <button name="nextBtn" id="nextBtn" type="button" class="btn btn-primary">Submit</button>
+                                                                        <button name="submitButton" id="submitButton" type="button" class="btn btn-primary">Submit</button>
                                                                     </div>
                                                                     <div>&nbsp;</div>
                                                                 </div>

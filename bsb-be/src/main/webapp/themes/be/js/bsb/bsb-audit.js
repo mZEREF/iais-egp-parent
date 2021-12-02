@@ -1,54 +1,83 @@
 //audit date
-function doSpecifyDt(id){
+function doSpecifyDt(id) {
     showWaiting();
     $("#auditId").val(id);
     $("[name='action_type']").val("specifyDt");
     $("#mainForm").submit();
 }
 
-function dochangeDt(id){
+function dochangeDt(id) {
     showWaiting();
     $("#auditId").val(id);
     $("[name='action_type']").val("changeDt");
     $("#mainForm").submit();
 }
 
-function submitReport(id){
+function submitReport(id) {
     showWaiting();
     $("#auditId").val(id);
     $("[name='action_type']").val("doSelfAudit");
     $("#mainForm").submit();
 }
 
+function decisionChange(obj) {
+    var id = $(obj).attr("id");
+    var option = $("#" + id).val();
+    if (option == "AUDTDO002" || option == "AUDTAO002") {
+        $("#rejectReason").show();
+    } else {
+        $("#rejectReason").hide();
+    }
+}
+
+function isHidden() {
+    var option1 = $("#doDecision").val();
+    var option2 = $("#aoDecision").val();
+    if (option1 != null || option1 != "") {
+        if (option1 == "AUDTDO002") {
+            $("#rejectReason").show();
+        } else {
+            $("#rejectReason").hide();
+        }
+    }else if (option2 != null || option2 != ""){
+        if (option == "AUDTAO002") {
+            $("#rejectReason").show();
+        } else {
+            $("#rejectReason").hide();
+        }
+    }
+}
+
 $(function () {
+    isHidden();
     //Manual Audit Creation List
-    $("#createList").click(function (){
+    $("#createList").click(function () {
         $("[name='action_type']").val("createList");
         if ($("input:checkbox:checked").length > 0) {
             showWaiting();
             $("#mainForm").submit();
-        }else{
+        } else {
             alert("Select at least one audit task for confirmation");
         }
     });
 
-    $("#searchBtn").click(function (){
+    $("#searchBtn").click(function () {
         // var optionValue = $("#auditType option:selected").val();
         // if (optionValue == "Please Select" || optionValue == "") {
         //     $("#error_auditType").html("This is Mandatory");
         // }else {
-            showWaiting();
-            $("#error_auditType").html("");
-            $("[name='action_type']").val("doSearch");
-            $("#mainForm").submit();
+        showWaiting();
+        $("#error_auditType").html("");
+        $("[name='action_type']").val("doSearch");
+        $("#mainForm").submit();
         // }
     });
 
     $("#clearBtn").click(function () {
-        $("#facilityClassification option:first").prop("selected",'selected');
-        $("#facilityType option:first").prop("selected",'selected');
-        $("#auditType option:first").prop("selected",'selected');
-        $("#facilityName option:first").prop("selected",'selected');
+        $("#facilityClassification option:first").prop("selected", 'selected');
+        $("#facilityType option:first").prop("selected", 'selected');
+        $("#auditType option:first").prop("selected", 'selected');
+        $("#facilityName option:first").prop("selected", 'selected');
         $("#beInboxFilter .current").text("All");
         // $("#auditType .current").text("All");
     });
@@ -65,81 +94,60 @@ $(function () {
     });
 
     //specify And Change Date
-    $("#submitChangeAuditDt").click(function (){
+    $("#submitChangeAuditDt").click(function () {
         $("[name='action_type']").val("doSubmit");
         var auditDate = $("#auditDate").val();
         var reason = $("#reasonForChange").val();
-        if (auditDate==null || auditDate == ""){
+        if (auditDate == null || auditDate == "") {
             $("#auditDateError").html("This is Mandatory");
-        }else if (reason==null||reason==""){
+        } else if (reason == null || reason == "") {
             $("#auditDateError").html("");
             $("#reasonError").html("This is Mandatory");
-        }else{
+        } else {
             showWaiting();
             $("#mainForm").submit();
         }
     });
 
-    $("#submitSpecifyAuditDt").click(function (){
+    $("#submitSpecifyAuditDt").click(function () {
         $("[name='action_type']").val("doSubmit");
         var auditDate = $("#auditDate").val();
-        if (auditDate==null || auditDate == ""){
+        if (auditDate == null || auditDate == "") {
             $("#auditDateError").html("This is Mandatory");
-        }else{
+        } else {
             showWaiting();
             $("#mainForm").submit();
         }
     });
     //AO And DO Process Audit Date
-    $("#rejectReason").hide();
-    $("#decision").change(function (){
-        var optionValue1 = $("#decision option:selected").val();
-        if (optionValue1 == "AUDTAO002" || optionValue1 == "AUDTDO002") {
-            $("#rejectReason").show();
-        }else{
-            $("#rejectReason").hide();
-        }
-    })
     $("#submitButton").click(function () {
-        var optionValue = $("#decision option:selected").val();
+        var optionValue = $("#decision").val();
         if (optionValue == "AUDTAO001" || optionValue == "AUDTDO001") {
-            $("#error_decision").html("");
             showWaiting();
             $("[name='action_type']").val("doApprove");
             $("#mainForm").submit();
         }
         if (optionValue == "AUDTAO002" || optionValue == "AUDTDO002") {
-            var reasonValue = $("#reason").val();
-            if (reasonValue == "" || reasonValue == null) {
-                $("#error_decision").html("");
-                $("#error_reason").html("This is Mandatory");
-            } else {
-                $("#error_decision").html("");
-                $("#error_reason").html("");
                 showWaiting();
                 $("[name='action_type']").val("doReject");
                 $("#mainForm").submit();
-            }
-        }
-        if (optionValue == "Please Select" || optionValue == "") {
-            $("#error_decision").html("This is Mandatory");
         }
     })
 
     //self-audit
-    $("#submitReportButton").click(function (){
+    $("#submitReportButton").click(function () {
         $("[name='action_type']").val("doSubmit");
         var optionValue = $("#scenarioCategory option:selected").val();
         if (optionValue == "Please Select" || optionValue == "") {
             $("#error_scenarioCategory").html("This is Mandatory");
-        }else {
+        } else {
             showWaiting();
             $("#mainForm").submit();
         }
     })
 
     //DO decision self-audit
-    $("#doProcessButton").click(function (){
+    $("#doProcessButton").click(function () {
         var optionValue = $("#decision option:selected").val();
         if (optionValue == "DOAUDO001") {
             showWaiting();
@@ -162,7 +170,7 @@ $(function () {
     })
 
     //AO decision self-audit
-    $("#aoProcessButton").click(function (){
+    $("#aoProcessButton").click(function () {
         var optionValue = $("#decision option:selected").val();
         if (optionValue == "DOAUAO001") {
             showWaiting();
@@ -180,21 +188,21 @@ $(function () {
     })
 
     //cancel audit
-    $("#doCancel").click(function (){
+    $("#doCancel").click(function () {
         $("[name='action_type']").val("doCancel");
         if ($("input:checkbox:checked").length > 0) {
             showWaiting();
             $("#mainForm").submit();
-        }else{
+        } else {
             alert("Select at least one audit task for confirmation");
         }
     });
 
-    $("#submitCancelAudit").click(function (){
+    $("#submitCancelAudit").click(function () {
         var cancellationReasons = $("#reasons").val();
-        if (cancellationReasons == null || cancellationReasons == ""){
+        if (cancellationReasons == null || cancellationReasons == "") {
             $("#error_reasons").html("This is Mandatory");
-        }else{
+        } else {
             showWaiting();
             $("[name='action_type']").val("doSubmit");
             $("#mainForm").submit();
@@ -210,10 +218,10 @@ $(function () {
             $("#mainForm").submit();
         }
         if (optionValue == "AUDTAO002") {
-                $("#error_decision").html("");
-                showWaiting();
-                $("[name='action_type']").val("doReject");
-                $("#mainForm").submit();
+            $("#error_decision").html("");
+            showWaiting();
+            $("[name='action_type']").val("doReject");
+            $("#mainForm").submit();
         }
         if (optionValue == "Please Select" || optionValue == "") {
             $("#error_decision").html("This is Mandatory");
@@ -221,30 +229,30 @@ $(function () {
     })
 
     //back
-    $("#back").click(function (){
+    $("#back").click(function () {
         showWaiting();
         $("[name='action_type']").val("doBack");
         $("#mainForm").submit();
     });
 
-    $("#backFromAckPage").click(function (){
+    $("#backFromAckPage").click(function () {
         showWaiting();
         $("#mainForm").submit();
     });
 
-    $("#backFromDoc").click(function (){
+    $("#backFromDoc").click(function () {
         $('#documenta').removeClass("active");
         $('#infoa').click();
         $('#infoa').addClass("active");
     })
 
-    $("#backFromProcess").click(function (){
+    $("#backFromProcess").click(function () {
         $('#processa').removeClass("active");
         $('#documenta').click();
         $('#documenta').addClass("active");
     })
 
-    $("#backFromProcessAuditDt").click(function (){
+    $("#backFromProcessAuditDt").click(function () {
         $('#processa').removeClass("active");
         $('#infoa').click();
         $('#infoa').addClass("active");

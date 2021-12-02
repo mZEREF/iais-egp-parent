@@ -72,6 +72,17 @@ public final class AuditConstants {
 
     public static final String KEY_MANUAL_AUDIT = "saveAuditDto";
 
+    public static final String PARAM_DO_REMARKS = "doRemarks";
+    public static final String PARAM_DO_REASON = "doReason";
+    public static final String PARAM_DO_DECISION = "doDecision";
+    public static final String PARAM_AO_REMARKS = "aoRemarks";
+    public static final String PARAM_AO_REASON = "aoReason";
+    public static final String PARAM_AO_DECISION = "aoDecision";
+
+    public static final String PARAM_DO_AUDIT_DT = "doProcessAuditDt";
+    public static final String PARAM_AO_AUDIT_DT = "aoProcessAuditDt";
+    public static final String PARAM_MODULE_TYPE = "moduleType";
+
     public static final String BACK_URL = "backUrl";
     public static final String BACK_URL_TASK_LIST = "/bsb-be/eservicecontinue/INTRANET/MohBsbTaskList";
     public static final String BACK_URL_CANCEL_LIST = "/bsb-be/eservicecontinue/INTRANET/AuditCancellationList";

@@ -17,27 +17,23 @@ public class INTRANET___MohDOCheckAuditDt___1 extends BaseProcessClass {
 	private static final String DELEGATOR = "auditDateDelegator";
 
 	public void start_OnStepProcess_0() throws Exception {
-	// 		start->OnStepProcess
 		EngineHelper.delegate(DELEGATOR, "start", this);
 	}
 
 	public void prepareData_OnStepProcess_0() throws Exception {
-	// 		prepareData->OnStepProcess
 		EngineHelper.delegate(DELEGATOR, "prepareDOAndAOReviewData", this);
 	}
 
-	public void prepareSwitch_OnStepProcess_0() throws Exception {
-	// 		prepareSwitch->OnStepProcess
-	}
-
 	public void verified_OnStepProcess_0() throws Exception {
-	// 		verified->OnStepProcess
 		EngineHelper.delegate(DELEGATOR, "doVerifiedAuditDate", this);
 	}
 
 	public void reject_OnStepProcess_0() throws Exception {
-	// 		reject->OnStepProcess
 		EngineHelper.delegate(DELEGATOR, "doRejectAuditDate", this);
+	}
+
+	public void preConfirm_OnStepProcess_0() throws Exception {
+		EngineHelper.delegate(DELEGATOR, "preConfirm", this);
 	}
 
 }

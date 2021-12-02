@@ -1,6 +1,9 @@
 package sg.gov.moh.iais.egp.bsb.dto.audit;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
+import sg.gov.moh.iais.egp.bsb.dto.ValidationResultDto;
+import sg.gov.moh.iais.egp.bsb.util.SpringReflectionUtils;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -35,6 +38,7 @@ public class OfficerProcessAuditDto implements Serializable {
     private String auditAppStatus;
     private String aoReason;
     private String aoRemarks;
+    private String aoDecision;
     //task
     private String taskId;
     //application
@@ -42,6 +46,8 @@ public class OfficerProcessAuditDto implements Serializable {
     //audit app history
     private String actionBy;
     private String processDecision;
+
+    private String module;
 
     private List<ProcessHistoryDto> historyDtos;
 
@@ -51,5 +57,25 @@ public class OfficerProcessAuditDto implements Serializable {
         private String statusUpdate;
         private String remarks;
         private Date lastUpdated;
+    }
+
+    @JsonIgnore
+    private ValidationResultDto validationResultDto;
+
+    // validate
+    public boolean doValidation() {
+        this.validationResultDto = (ValidationResultDto) SpringReflectionUtils.invokeBeanMethod("auditBEFeignClient", "validateOfficerAuditDt", new Object[]{this});
+        return validationResultDto.isPass();
+    }
+
+    public String retrieveValidationResult() {
+        if (this.validationResultDto == null) {
+            throw new IllegalStateException("This DTO is not validated");
+        }
+        return this.validationResultDto.toErrorMsg();
+    }
+
+    public void clearValidationResult() {
+        this.validationResultDto = null;
     }
 }
