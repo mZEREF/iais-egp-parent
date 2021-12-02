@@ -129,22 +129,22 @@ public class UploadFileServiceImpl implements UploadFileService {
         String groupId="";
         String s = "";
         try{
-          s = FileUtil.genMd5FileChecksum(str.getBytes(StandardCharsets.UTF_8));
+            s = FileUtil.genMd5FileChecksum(str.getBytes(StandardCharsets.UTF_8));
         }catch (Exception e){
             log.error(e.getMessage(),e);
         }
 
         if(!applicationGroup.isEmpty()){
-             groupId = applicationGroup.get(0).getId();
+            groupId = applicationGroup.get(0).getId();
         }
         File file = MiscUtil.generateFile(sharedPath+ AppServicesConsts.FILE_NAME+File.separator+groupId, s+AppServicesConsts.FILE_FORMAT);
         try (OutputStream fileOutputStream  = newOutputStream(file.toPath());) {
-             if(!file.exists()){
-                 boolean newFile = file.createNewFile();
-                 if(newFile){
-                     log.info("***newFile createNewFile***");
-                 }
-             }
+            if(!file.exists()){
+                boolean newFile = file.createNewFile();
+                if(newFile){
+                    log.info("***newFile createNewFile***");
+                }
+            }
             fileOutputStream.write(str.getBytes(StandardCharsets.UTF_8));
         } catch (Exception e) {
             log.error(e.getMessage(),e);
@@ -162,17 +162,17 @@ public class UploadFileServiceImpl implements UploadFileService {
 
     @Override
     public String  changeStatus(ApplicationListFileDto applicationListDto, Map<String,List<String>> map) {
-            List<ApplicationGroupDto> applicationGroup = applicationListDto.getApplicationGroup();
+        List<ApplicationGroupDto> applicationGroup = applicationListDto.getApplicationGroup();
 
-            List<String> groupIds=IaisCommonUtils.genNewArrayList();
+        List<String> groupIds=IaisCommonUtils.genNewArrayList();
 
-            for(ApplicationGroupDto every:applicationGroup){
-                String id = every.getId();
-                groupIds.add(id)  ;
-            }
+        for(ApplicationGroupDto every:applicationGroup){
+            String id = every.getId();
+            groupIds.add(id)  ;
+        }
 
-            map.put("groupIds",groupIds);
-            applicationFeClient.updateStatus(map).getEntity();
+        map.put("groupIds",groupIds);
+        applicationFeClient.updateStatus(map).getEntity();
 
 
         return "";
@@ -184,10 +184,10 @@ public class UploadFileServiceImpl implements UploadFileService {
         return compress;
     }
     /*****************compress*********/
-/*
-*
-*
-* file id */
+    /*
+     *
+     *
+     * file id */
     private void appSvcDoc( List<AppSvcDocDto> appSvcDoc, List<AppGrpPrimaryDocDto> appGrpPrimaryDoc,List<AppPremisesSpecialDocDto> appPremisesSpecialDocEntities,String groupId) throws Exception{
         //if path is not exists create path
         String path = sharedPath+ AppServicesConsts.FILE_NAME+File.separator+groupId+File.separator+"files";
@@ -205,7 +205,7 @@ public class UploadFileServiceImpl implements UploadFileService {
             getFileRep(every.getFileRepoId(),every.getDocName(),groupId);
         }
     }
-/*--------*/
+    /*--------*/
     private void appDeclarationDocs(List<AppDeclarationDocDto> appDeclarationDocs,String groupId) throws Exception{
         String path = sharedPath+ AppServicesConsts.FILE_NAME+File.separator+groupId+File.separator+"files";
         File fileRepPath = MiscUtil.generateFile(path);
@@ -257,7 +257,7 @@ public class UploadFileServiceImpl implements UploadFileService {
             }
         } else {
             try (
-                BufferedInputStream bis = new BufferedInputStream( Files.newInputStream(file.toPath()))) {
+                    BufferedInputStream bis = new BufferedInputStream( Files.newInputStream(file.toPath()))) {
                 zos.putNextEntry(new ZipEntry(file.getPath().substring(file.getPath().indexOf(AppServicesConsts.FILE_NAME))));
                 int count ;
                 byte [] b =new byte[1024];
@@ -286,43 +286,43 @@ public class UploadFileServiceImpl implements UploadFileService {
         String soPath = sharedOutPath;
         File zipFile = MiscUtil.generateFile(soPath);
         if(zipFile.isDirectory()){
-           File[] files = zipFile.listFiles((dir, name) -> {
-               if (name.endsWith(fileNamesss+".zip")) {
-                   return true;
-               }
-               return false;
-           });
-           for(File file:files){
-               try (InputStream is= Files.newInputStream(file.toPath());
-                    ByteArrayOutputStream by=new ByteArrayOutputStream();){
-                   int count=0;
-                   byte [] size=new byte[1024];
-                   count=is.read(size);
-                   while(count!=-1){
-                       by.write(size,0,count);
-                       count= is.read(size);
-                   }
+            File[] files = zipFile.listFiles((dir, name) -> {
+                if (name.endsWith(fileNamesss+".zip")) {
+                    return true;
+                }
+                return false;
+            });
+            for(File file:files){
+                try (InputStream is= Files.newInputStream(file.toPath());
+                     ByteArrayOutputStream by=new ByteArrayOutputStream();){
+                    int count=0;
+                    byte [] size=new byte[1024];
+                    count=is.read(size);
+                    while(count!=-1){
+                        by.write(size,0,count);
+                        count= is.read(size);
+                    }
 
-                   byte[] bytes = by.toByteArray();
-                   String s = FileUtil.genMd5FileChecksum(bytes);
-                   File curFile = MiscUtil.generateFile(sharedOutPath, s + ".zip");
-                   boolean b = file.renameTo(curFile);
-                   if(b){
-                       log.info(StringUtil.changeForLog("----------- new zip file name is"+outFolder+s+".zip"));
-                   }
-                   String string = eicGateway(s + AppServicesConsts.ZIP_NAME, s + AppServicesConsts.ZIP_NAME, groupId);
-           /*        String s1 = saveFileName(s+AppServicesConsts.ZIP_NAME,AppServicesConsts.BACKUPS + File.separator+s+AppServicesConsts.ZIP_NAME,groupId);*/
-                   log.info(StringUtil.changeForLog("----"+string));
-                   if(!string.equals("SUCCESS")){
-                       MiscUtil.deleteFile(curFile);
-                       flag=false;
-                       break;
-                   }
-               } catch (IOException e) {
-                   log.error(e.getMessage(),e);
-                   throw new IaisRuntimeException(e);
-               }
-           }
+                    byte[] bytes = by.toByteArray();
+                    String s = FileUtil.genMd5FileChecksum(bytes);
+                    File curFile = MiscUtil.generateFile(sharedOutPath, s + ".zip");
+                    boolean b = file.renameTo(curFile);
+                    if(b){
+                        log.info(StringUtil.changeForLog("----------- new zip file name is"+outFolder+s+".zip"));
+                    }
+                    String string = eicGateway(s + AppServicesConsts.ZIP_NAME, s + AppServicesConsts.ZIP_NAME, groupId);
+                    /*        String s1 = saveFileName(s+AppServicesConsts.ZIP_NAME,AppServicesConsts.BACKUPS + File.separator+s+AppServicesConsts.ZIP_NAME,groupId);*/
+                    log.info(StringUtil.changeForLog("----"+string));
+                    if(!string.equals("SUCCESS")){
+                        MiscUtil.deleteFile(curFile);
+                        flag=false;
+                        break;
+                    }
+                } catch (IOException e) {
+                    log.error(e.getMessage(),e);
+                    throw new IaisRuntimeException(e);
+                }
+            }
         }
         return flag;
     }
@@ -786,7 +786,7 @@ public class UploadFileServiceImpl implements UploadFileService {
             List<ApplicationGroupDto> applicationGroup = applicationListFileDto.getApplicationGroup();
             if(applicationGroup.isEmpty()){
                 log.info("************* this grp is empty**************");
-              return;
+                return;
             }
             String groupId = applicationGroup.get(0).getId();
             //delete old grp history (that the document is blank before zip)

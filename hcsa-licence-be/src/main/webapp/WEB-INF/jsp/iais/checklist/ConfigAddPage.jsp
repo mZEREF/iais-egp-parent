@@ -49,7 +49,7 @@
                     <iais:field value="Service" id="serviceNameField"></iais:field>
                     <div class="col-md-5">
                         <iais:select name="svcName" id="svcName" options="checklist_svc_name_select" firstOption="Please Select"
-                                     value="${svcName}"></iais:select>
+                                     needSort="true" value="${svcName}"></iais:select>
                     </div>
                 </div>
 

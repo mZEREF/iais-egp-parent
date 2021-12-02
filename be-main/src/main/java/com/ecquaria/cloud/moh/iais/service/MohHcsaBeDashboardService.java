@@ -16,6 +16,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.DashReplyQueryDt
 import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.DashStageCircleKpiDto;
 import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.DashWaitApproveQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.DashWorkTeamQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.HcsaTaskAssignDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 
@@ -202,4 +203,24 @@ public interface MohHcsaBeDashboardService {
     String getPrivilegeFlagByRole(LoginContext loginContext);
 
     void createReportResult(TaskDto taskDto, ApplicationViewDto applicationViewDto,String userId);
+
+    List<String> getAssignMeAppGrpIdByResult(SearchResult<DashAssignMeQueryDto> searchResult);
+
+    List<String> getComPoolAppGrpIdByResult(SearchResult<DashComPoolQueryDto> searchResult);
+
+    List<String> getKpiPoolAppGrpIdByResult(SearchResult<DashKpiPoolQuery> searchResult);
+
+    List<String> getSuperPoolAppGrpIdByResult(SearchResult<DashWorkTeamQueryDto> searchResult);
+
+    List<String> getReplyAppGrpIdByResult(SearchResult<DashReplyQueryDto> searchResult);
+
+    List<String> getWaitApproveAppGrpIdByResult(SearchResult<DashWaitApproveQueryDto> searchResult);
+
+    List<String> getRenewAppGrpIdByResult(SearchResult<DashRenewQueryDto> searchResult);
+
+    HcsaTaskAssignDto getHcsaTaskAssignDtoByAppGrp(List<String> appGroupIds);
+
+    SearchParam setAppGrpIdsByUnitNos(SearchParam searchParam, String hci_address, HcsaTaskAssignDto hcsaTaskAssignDto, String appGroupIdFieldName, String appGroup_list);
+
+    SearchParam setAppPremisesIdsByUnitNos(SearchParam searchParam, String hci_address, HcsaTaskAssignDto hcsaTaskAssignDto, String fieldName, String filterName);
 }

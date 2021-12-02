@@ -21,7 +21,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.application.AppSvcPersonAndExtDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppDeclarationDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppDeclarationMessageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGroupMiscDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesEntityDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPrimaryDocDto;
@@ -60,7 +59,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.PreOrPostInspectionRes
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceStepSchemeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfigDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSubtypeOrSubsumedDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterInboxUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterMessageDto;
@@ -82,7 +80,6 @@ import com.ecquaria.cloud.moh.iais.constant.RfcConst;
 import com.ecquaria.cloud.moh.iais.dto.AppSelectSvcDto;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.dto.PmtReturnUrlDto;
-import com.ecquaria.cloud.moh.iais.dto.ServiceStepDto;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.EventBusHelper;
 import com.ecquaria.cloud.moh.iais.helper.FileUtils;
@@ -112,20 +109,6 @@ import com.ecquaria.cloud.moh.iais.utils.DealSessionUtil;
 import com.ecquaria.cloud.moh.iais.utils.SingeFileUtil;
 import com.ecquaria.cloud.moh.iais.validate.declarationsValidate.DeclarationsUtil;
 import com.ecquaria.sz.commons.util.MsgUtil;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.env.Environment;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
-import org.springframework.web.multipart.commons.CommonsMultipartFile;
-import sop.servlet.webflow.HttpHandler;
-import sop.util.DateUtil;
-import sop.webflow.rt.api.BaseProcessClass;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
@@ -147,6 +130,19 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.env.Environment;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
+import org.springframework.web.multipart.commons.CommonsMultipartFile;
+import sop.servlet.webflow.HttpHandler;
+import sop.util.DateUtil;
+import sop.webflow.rt.api.BaseProcessClass;
 
 /**
  * egator
@@ -352,6 +348,8 @@ public class NewApplicationDelegator {
         }
         SubLicenseeDto orgLicensee = appSubmissionService.getSubLicenseeByLicenseeId(loginContext.getLicenseeId(),
                 loginContext.getUenNo());
+        orgLicensee.setClaimUenNo(subLicenseeDto.getClaimUenNo());
+        orgLicensee.setClaimCompanyName(subLicenseeDto.getClaimCompanyName());
         if (OrganizationConstants.LICENSEE_SUB_TYPE_COMPANY.equals(subLicenseeDto.getLicenseeType())
                 || OrganizationConstants.LICENSEE_SUB_TYPE_SOLO.equals(orgLicensee.getLicenseeType())) {
             subLicenseeDto = (SubLicenseeDto) CopyUtil.copyMutableObject(orgLicensee);
@@ -443,6 +441,7 @@ public class NewApplicationDelegator {
                 }
             }
         }
+        ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
     }
 
     private SubLicenseeDto getSubLicenseeDtoFromPage(HttpServletRequest request) {
@@ -501,6 +500,17 @@ public class NewApplicationDelegator {
                 dto.setUenNo(loginContext.getUenNo());
             }
         }
+        if (StringUtil.isEmpty(licenseeType)) {
+            licenseeType = dto.getLicenseeType();
+        }
+        if (OrganizationConstants.LICENSEE_SUB_TYPE_INDIVIDUAL.equals(licenseeType)
+                || OrganizationConstants.LICENSEE_SUB_TYPE_SOLO.equals(licenseeType)) {
+            String claimUenNo = ParamUtil.getString(request, "claimUenNo");
+            String claimCompanyName = ParamUtil.getString(request, "claimCompanyName");
+            dto.setClaimUenNo(claimUenNo);
+            dto.setClaimCompanyName(claimCompanyName);
+        }
+
         return dto;
     }
 
@@ -546,6 +556,7 @@ public class NewApplicationDelegator {
         log.info(StringUtil.changeForLog("the do preparePremises start ...."));
         NewApplicationHelper.setTimeList(bpc.request);
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
+        boolean isRfi = NewApplicationHelper.checkIsRfi(bpc.request);
         //get svcCode to get svcId
         List<HcsaServiceDto> hcsaServiceDtoList = (List<HcsaServiceDto>) ParamUtil.getSessionAttr(bpc.request, AppServicesConsts.HCSASERVICEDTOLIST);
         List<HcsaServiceDto> rfiHcsaService = (List<HcsaServiceDto>) ParamUtil.getSessionAttr(bpc.request, "rfiHcsaService");
@@ -620,7 +631,7 @@ public class NewApplicationDelegator {
                         }
                     }
                 }
-                if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType) || ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appType)){
+                if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType) || ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appType) || isRfi){
 
                 }else {
                     licAppGrpPremisesDtoMap = newLicAppGrpPremisesDtoMap;
@@ -632,7 +643,7 @@ public class NewApplicationDelegator {
             licenseeId = loginContext.getLicenseeId();
         }
 
-        //premise select
+        //premise select select options
         NewApplicationHelper.setPremSelect(bpc.request, licAppGrpPremisesDtoMap);
         ParamUtil.setSessionAttr(bpc.request, LICAPPGRPPREMISESDTOMAP, (Serializable) licAppGrpPremisesDtoMap);
         //addressType
@@ -711,24 +722,7 @@ public class NewApplicationDelegator {
                 }
             }
 
-            List<AppGrpPremisesDto> appGrpPremisesDtoList1 = appSubmissionDto.getAppGrpPremisesDtoList();
-            String licenceNo = appSubmissionDto.getLicenceNo();
-            for (int i = 0; i < appGrpPremisesDtoList1.size(); i++) {
-                String hciCode = appGrpPremisesDtoList1.get(i).getHciCode();
-                String oldHciCode = appGrpPremisesDtoList1.get(i).getOldHciCode();
-                if(!StringUtil.isEmpty(oldHciCode)&&!oldHciCode.equals(hciCode)){
-                    hciCode=oldHciCode;
-                }
-                List<LicenceDto> licenceDtoByHciCode = requestForChangeService.getLicenceDtoByHciCode(hciCode, licenseeId);
-                for (LicenceDto licenceDto : licenceDtoByHciCode) {
-                    if (licenceDto.getLicenceNo().equals(licenceNo)) {
-                        licenceDtoByHciCode.remove(licenceDto);
-                        break;
-                    }
-                }
-                appGrpPremisesDtoList1.get(i).setLicenceDtos(licenceDtoByHciCode);
-                bpc.request.getSession().setAttribute("selectLicence" + i, licenceDtoByHciCode);
-            }
+            setSelectLicence(appSubmissionDto,bpc.request);
         }
         ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
         List<SelectOption> weeklyOpList = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_DAY_NAMES);
@@ -774,6 +768,30 @@ public class NewApplicationDelegator {
         }
     }
 
+    public  void setSelectLicence(AppSubmissionDto appSubmissionDto,HttpServletRequest request){
+        List<AppGrpPremisesDto> appGrpPremisesDtoList1 = appSubmissionDto.getAppGrpPremisesDtoList();
+        log.info(StringUtil.changeForLog("----------setSelectLicence : appGrpPremisesDtoList " + JsonUtil.parseToJson(appGrpPremisesDtoList1)));
+        String licenceNo = appSubmissionDto.getLicenceNo();
+        for (int i = 0; i < appGrpPremisesDtoList1.size(); i++) {
+            String hciCode = appGrpPremisesDtoList1.get(i).getHciCode();
+            String oldHciCode = appGrpPremisesDtoList1.get(i).getOldHciCode();
+            if(!StringUtil.isEmpty(oldHciCode)&&!oldHciCode.equals(hciCode)){
+                hciCode=oldHciCode;
+            }
+            List<LicenceDto> licenceDtoByHciCode = requestForChangeService.getLicenceDtoByHciCode(hciCode,appSubmissionDto .getLicenseeId());
+            for (LicenceDto licenceDto : licenceDtoByHciCode) {
+                if (licenceDto.getLicenceNo().equals(licenceNo)) {
+                    licenceDtoByHciCode.remove(licenceDto);
+                    break;
+                }
+            }
+
+            licenceDtoByHciCode.forEach( licenceDto -> log.info(StringUtil.changeForLog("-------------- licenceDto licenceNo : " + licenceDto.getLicenceNo())));
+
+            appGrpPremisesDtoList1.get(i).setLicenceDtos(licenceDtoByHciCode);
+            request.getSession().setAttribute("selectLicence" + i, licenceDtoByHciCode);
+        }
+    }
     /**
      * StartStep: PrepareDocuments
      *
@@ -1203,7 +1221,6 @@ public class NewApplicationDelegator {
         ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_VALUE, crudActionValue);
         ParamUtil.setRequestAttr(bpc.request, crud_action_additional, crud_action_additional);
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
-        Map<String, CommonsMultipartFile> commonsMultipartFileMap = IaisCommonUtils.genNewHashMap();
         List<AppGrpPrimaryDocDto> newAppGrpPrimaryDocDtoList = IaisCommonUtils.genNewArrayList();
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
         AppSubmissionDto oldSubmissionDto = NewApplicationHelper.getOldSubmissionDto(bpc.request,appSubmissionDto.getAppType());
@@ -1257,30 +1274,21 @@ public class NewApplicationDelegator {
             //set value into AppSubmissionDto
             appSubmissionDto.setAppGrpPrimaryDocDtos(newAppGrpPrimaryDocDtoList);
         }
-
-        String crud_action_values = ParamUtil.getRequestString(bpc.request, IaisEGPConstant.CRUD_ACTION_VALUE);
-        if (!"saveDraft".equals(crud_action_values)) {
-            List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtos = appSubmissionService.documentValid(bpc.request, errorMap,true);
-            doIsCommom(bpc.request, errorMap);
-            saveFileAndSetFileId(appGrpPrimaryDocDtos,saveFileMap);
-            appSubmissionDto.setAppGrpPrimaryDocDtos(appGrpPrimaryDocDtos);
-            // check CO Map
-            HashMap<String, String> coMap = (HashMap<String, String>) bpc.request.getSession().getAttribute(NewApplicationConstant.CO_MAP);
-            if (errorMap.isEmpty()) {
-                coMap.put("document", "document");
-            } else {
-                coMap.put("document", "");
-            }
-            bpc.request.getSession().setAttribute(NewApplicationConstant.CO_MAP, coMap);
-        } else {
-            List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtos = appSubmissionDto.getAppGrpPrimaryDocDtos();
-            saveFileAndSetFileId(appGrpPrimaryDocDtos,saveFileMap);
-            appSubmissionDto.setAppGrpPrimaryDocDtos(appGrpPrimaryDocDtos);
-        }
+        List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtos = appSubmissionService.documentValid(bpc.request, errorMap,true);
+        doIsCommom(bpc.request, errorMap);
+        saveFileAndSetFileId(appGrpPrimaryDocDtos,saveFileMap);
+        appSubmissionDto.setAppGrpPrimaryDocDtos(appGrpPrimaryDocDtos);
         ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
-
-        boolean isNeedShowValidation = !"back".equals(crud_action_values);
-        if (errorMap.size() > 0 && isNeedShowValidation) {
+        // check CO Map
+        HashMap<String, String> coMap = (HashMap<String, String>) bpc.request.getSession().getAttribute(NewApplicationConstant.CO_MAP);
+        if (errorMap.isEmpty()) {
+            coMap.put(NewApplicationConstant.SECTION_DOCUMENT, "document");
+        } else {
+            coMap.put(NewApplicationConstant.SECTION_DOCUMENT, "");
+        }
+        bpc.request.getSession().setAttribute(NewApplicationConstant.CO_MAP, coMap);
+        String actionValue = ParamUtil.getRequestString(bpc.request, IaisEGPConstant.CRUD_ACTION_VALUE);
+        if (errorMap.size() > 0 && !"back".equals(actionValue)) {
             //set audit
             bpc.request.setAttribute("errormapIs", "error");
             NewApplicationHelper.setAudiErrMap(isRfi,appSubmissionDto.getAppType(),errorMap,appSubmissionDto.getRfiAppNo(),appSubmissionDto.getLicenceNo());
@@ -1288,9 +1296,7 @@ public class NewApplicationDelegator {
             ParamUtil.setSessionAttr(bpc.request, APPGRPPRIMARYDOCERRMSGMAP, (Serializable) errorMap);
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "documents");
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_VALUE, "documents");
-            return;
         }
-
         log.info(StringUtil.changeForLog("the do doDocument end ...."));
     }
 
@@ -1862,7 +1868,7 @@ public class NewApplicationDelegator {
                     String floorNo = appGrpPremisesEntityDto.getFloorNo();
                     String unitNo = appGrpPremisesEntityDto.getUnitNo();
                     String postalCode = appGrpPremisesEntityDto.getPostalCode();
-                    String hciAddress = MiscUtil.getAddress(blkNo, streetName, buildingName, floorNo, unitNo, postalCode);
+                    String hciAddress = MiscUtil.getAddressForApp(blkNo, streetName, buildingName, floorNo, unitNo, postalCode,appGrpPremisesEntityDto.getAppPremisesOperationalUnitDtos());
                     AppCessHciDto appCessHciDto = new AppCessHciDto();
                     String hciName = appGrpPremisesEntityDto.getHciName();
                     String hciCode = appGrpPremisesEntityDto.getHciCode();
@@ -2712,7 +2718,7 @@ public class NewApplicationDelegator {
         appSubmissionService.setRiskToDto(appSubmissionDto);
         // set status
         appSubmissionDto.setCreateAuditPayStatus(ApplicationConsts.PAYMENT_STATUS_PENDING_PAYMENT);
-        if (MiscUtil.doubleEquals(0.0, amount)) {
+        if (MiscUtil.doubleEquals(0.0, currentAmount)) {
             appSubmissionDto.setCreatAuditAppStatus(ApplicationConsts.APPLICATION_STATUS_NOT_PAYMENT);
         }
         ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
@@ -2833,6 +2839,7 @@ public class NewApplicationDelegator {
         }
         log.info(StringUtil.changeForLog("isAutoPremises: " + isAutoPremises));
 
+        boolean addClaimed = false;
         // check app submissions affected by sub licensee
         if (appEditSelectDto.isLicenseeEdit()) {
             autoGroupNo = getRfcGroupNo(autoGroupNo);
@@ -2861,7 +2868,7 @@ public class NewApplicationDelegator {
                 bpc.request.setAttribute(NewApplicationConstant.SHOW_OTHER_ERROR, NewApplicationHelper.getErrorMsg(errorListMap));
                 return;
             }
-            licenseeAffectedList.stream().forEach(dto -> {
+            licenseeAffectedList.parallelStream().forEach(dto -> {
                 dto.setSubLicenseeDto(MiscUtil.transferEntityDto(appSubmissionDto.getSubLicenseeDto(), SubLicenseeDto.class));
                 AppEditSelectDto changeSelectDto = new AppEditSelectDto();
                 changeSelectDto.setLicenseeEdit(true);
@@ -2874,6 +2881,10 @@ public class NewApplicationDelegator {
                 autoChangeSelectDto.setLicenseeEdit(true);
                 appEditSelectDto.setLicenseeEdit(false);
             }
+        } else {
+            SubLicenseeDto subLicenseeDto = appSubmissionDto.getSubLicenseeDto();
+            addClaimed = StringUtil.isNotEmpty(subLicenseeDto.getClaimUenNo())
+                    || StringUtil.isNotEmpty(subLicenseeDto.getClaimCompanyName());
         }
         // Primary Doc
         // re-set change edit select dto
@@ -2940,6 +2951,13 @@ public class NewApplicationDelegator {
             autoAppSubmissionDto.setChangeSelectDto(autoChangeSelectDto);
             autoSaveAppsubmission.add(0, autoAppSubmissionDto);
         }
+        String autoGroupStatus = ApplicationConsts.APPLICATION_GROUP_STATUS_SUBMITED;
+        if (autoSaveAppsubmission.isEmpty() && notAutoSaveAppsubmission.isEmpty() && addClaimed) {
+            autoGroupStatus = ApplicationConsts.APPLICATION_GROUP_STATUS_ADDITIONAL_CLAIM;
+            appSubmissionDto.setCreatAuditAppStatus(ApplicationConsts.APPLICATION_STATUS_LICENCE_GENERATED);
+            NewApplicationHelper.reSetAdditionalFields(appSubmissionDto, false, true, appSubmissionDto.getAppGrpNo());
+            autoSaveAppsubmission.add(appSubmissionDto);
+        }
         // check whether the data has been changed or not
         if (autoSaveAppsubmission.isEmpty() && notAutoSaveAppsubmission.isEmpty()) {
             bpc.request.setAttribute("RFC_ERROR_NO_CHANGE",MessageUtil.getMessageDesc("RFC_ERR010"));
@@ -2992,7 +3010,8 @@ public class NewApplicationDelegator {
             // save other data via event bus
             notAutoAppSubmissionListDto.setAppSubmissionDtos(appSubmissionDtos1);
             eventBusHelper.submitAsyncRequest(notAutoAppSubmissionListDto, notAuto, EventBusConsts.SERVICE_NAME_APPSUBMIT,
-                    EventBusConsts.OPERATION_REQUEST_INFORMATION_SUBMIT, notAutoTime.toString(), bpc.process);
+                    EventBusConsts.OPERATION_REQUEST_INFORMATION_SUBMIT, notAutoTime.toString(),
+                    "RFC Non-Auto Approve Submit", notAutoGroupId);
             appSubmissionDtos1.get(0).getAppSvcRelatedInfoDtoList().get(0).setGroupNo(appSubmissionDtos1.get(0).getAppGrpNo());
             Double ackPageAmount = 0.0;
             for (AppSubmissionDto appSubmissionDto1 : notAutoSaveAppsubmission) {
@@ -3010,6 +3029,7 @@ public class NewApplicationDelegator {
             appSubmissionDtoList.addAll(appSubmissionDtos1);
             appSubmissionDto.setAppGrpId(notAutoGroupId);
         }
+        final String newAutoGrpStatus = autoGroupStatus;
         if (!autoSaveAppsubmission.isEmpty()) {
             // save submission (auto data)
             autoSaveAppsubmission.parallelStream().forEach(dto -> {
@@ -3017,7 +3037,7 @@ public class NewApplicationDelegator {
                 dto.setEffectiveDate(effectiveDate);
                 dto.setAppDeclarationMessageDto(appDeclarationMessageDto);
                 dto.setAppDeclarationDocDtos(appDeclarationDocDtos);
-                dto.setAppGrpStatus(ApplicationConsts.APPLICATION_GROUP_STATUS_SUBMITED);
+                dto.setAppGrpStatus(newAutoGrpStatus);
             });
             // save application, group, declaration
             List<AppSubmissionDto> appSubmissionDtos1 = requestForChangeService.saveAppsForRequestForGoupAndAppChangeByList(autoSaveAppsubmission);
@@ -3025,7 +3045,8 @@ public class NewApplicationDelegator {
             // save other data via event bus
             autoAppSubmissionListDto.setAppSubmissionDtos(appSubmissionDtos1);
             eventBusHelper.submitAsyncRequest(autoAppSubmissionListDto, auto, EventBusConsts.SERVICE_NAME_APPSUBMIT,
-                    EventBusConsts.OPERATION_REQUEST_INFORMATION_SUBMIT, autoTime.toString(), bpc.process);
+                    EventBusConsts.OPERATION_REQUEST_INFORMATION_SUBMIT, autoTime.toString(),
+                    "RFC Auto Approve Submit", autoGroupId);
             appSubmissionDtos1.get(0).getAppSvcRelatedInfoDtoList().get(0).setGroupNo(appSubmissionDtos1.get(0).getAppGrpNo());
             double t = 0.0;
             for (AppSubmissionDto appSubmissionDto1 : autoSaveAppsubmission) {
@@ -3380,17 +3401,21 @@ public class NewApplicationDelegator {
     public void jumpBank(BaseProcessClass bpc) throws IOException {
         log.info(StringUtil.changeForLog("the do jumpBank start ...."));
         String payMethod = ParamUtil.getString(bpc.request, "payMethod");
-        String noNeedPayment = bpc.request.getParameter("noNeedPayment");
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
+        String appGrpId = appSubmissionDto.getAppGrpId();
         log.info(StringUtil.changeForLog("The AppGrpNo: " + appSubmissionDto.getAppGrpNo() + "; payment method: "
-                + appSubmissionDto.getPaymentMethod() + "; the amount: " + appSubmissionDto.getAmount()));
+                + appSubmissionDto.getPaymentMethod() + "; the amount: " + appSubmissionDto.getAmount()
+                + " - " + appSubmissionDto.getAppGrpId()));
+        List<String> ids = new ArrayList<>();
         //68099
         List<AppSubmissionDto> ackPageAppSubmissionDto = (List<AppSubmissionDto>) ParamUtil.getSessionAttr(bpc.request, ACK_APP_SUBMISSIONS);
         if(!IaisCommonUtils.isEmpty(ackPageAppSubmissionDto)){
             for(AppSubmissionDto appSubmissionDto1:ackPageAppSubmissionDto){
                 if(!MiscUtil.doubleEquals(appSubmissionDto1.getAmount(), 0.0)){
                     appSubmissionDto1.setPaymentMethod(payMethod);
-                }else {
+                } else {
+                    log.info("--- " + appSubmissionDto1.getAppGrpNo() + " : " + appSubmissionDto1.getAppGrpId() + " ---");
+                    ids.add(appSubmissionDto1.getAppGrpId());
                     ApplicationGroupDto appGrp = new ApplicationGroupDto();
                     appGrp.setId(appSubmissionDto1.getAppGrpId());
                     appGrp.setPmtStatus(ApplicationConsts.PAYMENT_STATUS_NO_NEED_PAYMENT);
@@ -3402,15 +3427,16 @@ public class NewApplicationDelegator {
         }
         Double totalAmount = appSubmissionDto.getAmount();
         if (MiscUtil.doubleEquals(totalAmount, 0.0)) {
-            String appGrpId = appSubmissionDto.getAppGrpId();
-            ApplicationGroupDto appGrp = new ApplicationGroupDto();
-            appGrp.setId(appGrpId);
-            appGrp.setPmtStatus(ApplicationConsts.PAYMENT_STATUS_NO_NEED_PAYMENT);
-            appGrp.setPayMethod(payMethod);
-            serviceConfigService.updatePaymentStatus(appGrp);
-            if (ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appSubmissionDto.getAppType())) {
-                LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
-                appSubmissionService.sendEmailAndSMSAndMessage(appSubmissionDto, loginContext.getUserName());
+            if (StringUtil.isNotEmpty(appGrpId) && !ids.contains(appGrpId)) {
+                ApplicationGroupDto appGrp = new ApplicationGroupDto();
+                appGrp.setId(appGrpId);
+                appGrp.setPmtStatus(ApplicationConsts.PAYMENT_STATUS_NO_NEED_PAYMENT);
+                appGrp.setPayMethod(payMethod);
+                serviceConfigService.updatePaymentStatus(appGrp);
+                if (ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appSubmissionDto.getAppType())) {
+                    LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
+                    appSubmissionService.sendEmailAndSMSAndMessage(appSubmissionDto, loginContext.getUserName());
+                }
             }
 
             StringBuilder url = new StringBuilder();
@@ -3430,7 +3456,7 @@ public class NewApplicationDelegator {
             try {
                 //inspectionDateSendNewApplicationPaymentOnlineEmail(appSubmissionDto, bpc);
             } catch (Exception e) {
-                log.error(StringUtil.changeForLog("send email error ...."));
+                log.error(StringUtil.changeForLog("send email error ...." + e.getMessage()), e);
             }
             String amount = String.valueOf(appSubmissionDto.getAmount());
             Map<String, String> fieldMap = new HashMap<String, String>();
@@ -3450,7 +3476,6 @@ public class NewApplicationDelegator {
             } catch (Exception e) {
                 log.info(StringUtil.changeForLog(e.getMessage()), e);
             }
-            return;
         } else if (ApplicationConsts.PAYMENT_METHOD_NAME_GIRO.equals(payMethod)) {
             //send email
             try {
@@ -3468,9 +3493,8 @@ public class NewApplicationDelegator {
                     requestForChangeService.sendRfcSubmittedEmail(ackPageAppSubmissionDto, ackPageAppSubmissionDto.get(0).getPaymentMethod());
                 }
             } catch (Exception e) {
-                log.error(StringUtil.changeForLog("send email error ...."));
+                log.error(StringUtil.changeForLog("send email error ...." + e.getMessage()), e);
             }
-            String appGrpId = appSubmissionDto.getAppGrpId();
             ApplicationGroupDto appGrp = new ApplicationGroupDto();
             appGrp.setId(appGrpId);
             appGrp.setPmtStatus(serviceConfigService.giroPaymentXmlUpdateByGrpNo(appSubmissionDto).getPmtStatus());
@@ -3488,7 +3512,7 @@ public class NewApplicationDelegator {
             }*/
             ParamUtil.setRequestAttr(bpc.request, "PmtStatus", ApplicationConsts.PAYMENT_METHOD_NAME_GIRO);
             ParamUtil.setSessionAttr(bpc.request, "txnRefNo", giroTranNo);
-            //todo change
+            // change
             StringBuilder url = new StringBuilder();
             url.append("https://")
                     .append(bpc.request.getServerName())
@@ -4007,22 +4031,8 @@ public class NewApplicationDelegator {
                         eventList.add(appPremEventPeriodDto);
                     }
                 }
-
-
-                if(opLength > 0){
-                    for(int j=0;j<opLength;j++){
-                        AppPremisesOperationalUnitDto operationalUnitDto = new AppPremisesOperationalUnitDto();
-                        String opFloorNoName = premValue[i] + "onSiteFloorNo" + j;
-                        String opUnitNoName = premValue[i] + "onSiteUnitNo" + j;
-
-                        String opFloorNo = ParamUtil.getString(request,opFloorNoName);
-                        String opUnitNo = ParamUtil.getString(request,opUnitNoName);
-                        operationalUnitDto.setFloorNo(opFloorNo);
-                        operationalUnitDto.setUnitNo(opUnitNo);
-                        appPremisesOperationalUnitDtos.add(operationalUnitDto);
-                    }
-                }
-
+                addFloorNoAndUnitNo(premValue[i], "onSiteFloorNo", "onSiteUnitNo", opLength,
+                        appPremisesOperationalUnitDtos, request);
             } else if (ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(premisesType[i])) {
 
                 appGrpPremisesDto.setConveyanceHciName(conveyanceHciName[i]);
@@ -4120,19 +4130,8 @@ public class NewApplicationDelegator {
                         eventList.add(appPremEventPeriodDto);
                     }
                 }
-                if(opLength > 0){
-                    for(int j=0;j<opLength;j++){
-                        AppPremisesOperationalUnitDto operationalUnitDto = new AppPremisesOperationalUnitDto();
-                        String opFloorNoName = premValue[i] + "conveyanceFloorNo" + j;
-                        String opUnitNoName = premValue[i] + "conveyanceUnitNo" + j;
-
-                        String opFloorNo = ParamUtil.getString(request,opFloorNoName);
-                        String opUnitNo = ParamUtil.getString(request,opUnitNoName);
-                        operationalUnitDto.setFloorNo(opFloorNo);
-                        operationalUnitDto.setUnitNo(opUnitNo);
-                        appPremisesOperationalUnitDtos.add(operationalUnitDto);
-                    }
-                }
+                addFloorNoAndUnitNo(premValue[i], "conveyanceFloorNo", "conveyanceUnitNo", opLength,
+                        appPremisesOperationalUnitDtos, request);
             } else if (ApplicationConsts.PREMISES_TYPE_OFF_SITE.equals(premisesType[i])) {
                 appGrpPremisesDto.setOffSiteHciName(offSiteHciName[i]);
                 appGrpPremisesDto.setPremisesSelect(offSitePremisesSelect[i]);
@@ -4227,19 +4226,8 @@ public class NewApplicationDelegator {
                         eventList.add(appPremEventPeriodDto);
                     }
                 }
-                if(opLength > 0){
-                    for(int j=0;j<opLength;j++){
-                        AppPremisesOperationalUnitDto operationalUnitDto = new AppPremisesOperationalUnitDto();
-                        String opFloorNoName = premValue[i] + "offSiteFloorNo" + j;
-                        String opUnitNoName = premValue[i] + "offSiteUnitNo" + j;
-
-                        String opFloorNo = ParamUtil.getString(request,opFloorNoName);
-                        String opUnitNo = ParamUtil.getString(request,opUnitNoName);
-                        operationalUnitDto.setFloorNo(opFloorNo);
-                        operationalUnitDto.setUnitNo(opUnitNo);
-                        appPremisesOperationalUnitDtos.add(operationalUnitDto);
-                    }
-                }
+                addFloorNoAndUnitNo(premValue[i], "offSiteFloorNo", "offSiteUnitNo", opLength,
+                        appPremisesOperationalUnitDtos, request);
             }else if(ApplicationConsts.PREMISES_TYPE_EAS_MTS_CONVEYANCE.equals(premisesType[i])){
                 String easMtsHciName = ParamUtil.getString(request, "easMtsHciName");
                 String easMtsPostalCode = ParamUtil.getString(request, "easMtsPostalCode");
@@ -4264,20 +4252,8 @@ public class NewApplicationDelegator {
                 appGrpPremisesDto.setEasMtsUseOnly(easMtsUseOnly);
                 appGrpPremisesDto.setEasMtsPubEmail(easMtsPubEmail);
                 appGrpPremisesDto.setEasMtsPubHotline(easMtsPubHotline);
-                if(opLength > 0){
-                    for(int j=0;j<opLength;j++){
-                        AppPremisesOperationalUnitDto operationalUnitDto = new AppPremisesOperationalUnitDto();
-                        String opFloorNoName = premValue[i] + "easMtsFloorNo" + j;
-                        String opUnitNoName = premValue[i] + "easMtsUnitNo" + j;
-
-                        String opFloorNo = ParamUtil.getString(request,opFloorNoName);
-                        String opUnitNo = ParamUtil.getString(request,opUnitNoName);
-                        operationalUnitDto.setFloorNo(opFloorNo);
-                        operationalUnitDto.setUnitNo(opUnitNo);
-                        appPremisesOperationalUnitDtos.add(operationalUnitDto);
-                    }
-                }
-
+                addFloorNoAndUnitNo(premValue[i], "easMtsFloorNo", "easMtsUnitNo", opLength,
+                        appPremisesOperationalUnitDtos, request);
             }
             //appGrpPremisesDto.setAppPremPhOpenPeriodList(appPremPhOpenPeriods);
             appGrpPremisesDto.setAppPremisesOperationalUnitDtos(appPremisesOperationalUnitDtos);
@@ -4292,6 +4268,26 @@ public class NewApplicationDelegator {
             NewApplicationHelper.setPremEditStatus(appGrpPremisesDtoList, getAppGrpPremisesDtos(appSubmissionDto.getOldAppSubmissionDto()));
         }
         return appGrpPremisesDtoList;
+    }
+
+    private static void addFloorNoAndUnitNo(String prefix, String floorNoName, String unitNoNmae, int opLength,
+            List<AppPremisesOperationalUnitDto> appPremisesOperationalUnitDtos, HttpServletRequest request) {
+        log.info(StringUtil.changeForLog("The length of additional floor and unit: " + opLength));
+        if (opLength <= 0) {
+            return;
+        }
+        for (int j = 0; j < opLength; j++) {
+            String opFloorNo = ParamUtil.getString(request, prefix + floorNoName + j);
+            String opUnitNo = ParamUtil.getString(request, prefix + unitNoNmae + j);
+            if (StringUtil.isEmpty(opFloorNo) && StringUtil.isEmpty(opUnitNo)) {
+                continue;
+            }
+            AppPremisesOperationalUnitDto operationalUnitDto = new AppPremisesOperationalUnitDto();
+            operationalUnitDto.setFloorNo(opFloorNo);
+            operationalUnitDto.setUnitNo(opUnitNo);
+            operationalUnitDto.setSeqNum(j);
+            appPremisesOperationalUnitDtos.add(operationalUnitDto);
+        }
     }
 
     private void loadingDraft(BaseProcessClass bpc, String draftNo) {
@@ -4417,8 +4413,8 @@ public class NewApplicationDelegator {
             AppSubmissionDto appSubmissionDto = appSubmissionService.getAppSubmissionDtoByAppNo(appNo);
             if (appSubmissionDto != null) {
                 appSubmissionDto.setAmountStr("N/A");
+                rfiLoadingCheckImplForRenew.checkPremiseInfo(bpc.request,appSubmissionDto,appNo);
                 if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType()) || ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appSubmissionDto.getAppType())) {
-                    rfiLoadingCheckImplForRenew.checkPremiseInfo(bpc.request,appSubmissionDto,appNo);
                     requestForChangeService.svcDocToPresmise(appSubmissionDto);
                 }else {
                   /*  rfiLoadingExc.checkPremiseInfo(appSubmissionDto,appNo);*/
@@ -4866,21 +4862,29 @@ public class NewApplicationDelegator {
     }
 
 
-    private void genPrimaryDoc(Map<String, File> fileMap,String docKey,HcsaSvcDocConfigDto hcsaSvcDocConfigDto,
-                                      Map<String,File> saveFileMap,List<AppGrpPrimaryDocDto> currDocDtoList,List<AppGrpPrimaryDocDto> newAppGrpPrimaryDocDtoList,
-                                      String premVal,String premType,boolean isRfi,List<AppGrpPrimaryDocDto> oldPrimaryDotList,String appGrpId,String appNo,String appType,String dupForPrem){
-        if(fileMap != null){
-            fileMap.forEach((k,v)->{
+    private void genPrimaryDoc(Map<String, File> fileMap, String docKey, HcsaSvcDocConfigDto hcsaSvcDocConfigDto,
+            Map<String, File> saveFileMap, List<AppGrpPrimaryDocDto> currDocDtoList,
+            List<AppGrpPrimaryDocDto> newAppGrpPrimaryDocDtoList,
+            String premVal, String premType, boolean isRfi, List<AppGrpPrimaryDocDto> oldPrimaryDotList, String appGrpId, String appNo,
+            String appType, String dupForPrem) {
+        if (fileMap != null) {
+            Set<Integer> nums = IaisCommonUtils.genNewHashSet();
+            for (Map.Entry<String, File> entry : fileMap.entrySet()) {
+                String k = entry.getKey();
+                File v = entry.getValue();
                 int index = k.indexOf(docKey);
-                String seqNumStr = k.substring(index+docKey.length());
+                String seqNumStr = k.substring(index + docKey.length());
                 int seqNum = -1;
-                try{
+                try {
                     seqNum = Integer.parseInt(seqNumStr);
-                }catch (Exception e){
+                } catch (Exception e) {
                     log.error(StringUtil.changeForLog("doc seq num can not parse to int"));
                 }
+                while (!nums.add(seqNum)) {
+                    seqNum++;
+                }
                 AppGrpPrimaryDocDto primaryDocDto = new AppGrpPrimaryDocDto();
-                if(v != null){
+                if (v != null) {
                     primaryDocDto.setSvcComDocId(hcsaSvcDocConfigDto.getId());
                     primaryDocDto.setSvcComDocName(hcsaSvcDocConfigDto.getDocTitle());
                     primaryDocDto.setDocName(v.getName());
@@ -4893,46 +4897,56 @@ public class NewApplicationDelegator {
                     primaryDocDto.setPremisessName(premVal);
                     primaryDocDto.setPremisessType(premType);
                     primaryDocDto.setSeqNum(seqNum);
-                    primaryDocDto.setVersion(getAppGrpPrimaryDocVersion(hcsaSvcDocConfigDto.getId(),oldPrimaryDotList,isRfi,md5Code,appGrpId,appNo,appType,seqNum,dupForPrem));
-                    saveFileMap.put(premVal+hcsaSvcDocConfigDto.getId()+seqNum,v);
-                }else{
-                    primaryDocDto = getAppGrpPrimaryDocByConfigIdAndSeqNum(currDocDtoList,hcsaSvcDocConfigDto.getId(),seqNum,premVal,premType);
+                    primaryDocDto.setVersion(
+                            getAppGrpPrimaryDocVersion(hcsaSvcDocConfigDto.getId(), oldPrimaryDotList, isRfi, md5Code, appGrpId, appNo,
+                                    appType, seqNum, dupForPrem));
+                    saveFileMap.put(premVal + hcsaSvcDocConfigDto.getId() + seqNum, v);
+                } else {
+                    primaryDocDto = getAppGrpPrimaryDocByConfigIdAndSeqNum(currDocDtoList, hcsaSvcDocConfigDto.getId(), seqNum,
+                            premVal, premType);
                 }
                 //the data is retrieved from the DTO a second time
-                fileMap.put(k,null);
-                if(primaryDocDto != null){
+                fileMap.put(k, null);
+                if (primaryDocDto != null) {
                     newAppGrpPrimaryDocDtoList.add(primaryDocDto);
-                }
-            });
-        }
-    }
-    private void saveFileAndSetFileId(List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtoList,Map<String,File> saveFileMap){
-        Map<String,File> passValidateFileMap = IaisCommonUtils.genNewHashMap();
-        for (AppGrpPrimaryDocDto primaryDocDto : appGrpPrimaryDocDtoList) {
-            if(primaryDocDto.isPassValidate()){
-                String premIndex = "";
-                if(!StringUtil.isEmpty(primaryDocDto.getPremisessName())){
-                    premIndex = primaryDocDto.getPremisessName();
-                }
-                String fileMapKey = premIndex + primaryDocDto.getSvcComDocId() + primaryDocDto.getSeqNum();
-                File file = saveFileMap.get(fileMapKey);
-                if(file != null){
-                    passValidateFileMap.put(fileMapKey,file);
                 }
             }
         }
-        if(passValidateFileMap.size() > 0){
-            List<File> fileList = new ArrayList<>(passValidateFileMap.values());
-            List<String> fileRepoIdList = appSubmissionService.saveFileList(fileList);
-            int i = 0;
-            for(AppGrpPrimaryDocDto appGrpPrimaryDocDto:appGrpPrimaryDocDtoList){
-                String premIndexNo = appGrpPrimaryDocDto.getPremisessName();
-                if(StringUtil.isEmpty(premIndexNo)){
+    }
+
+    private void saveFileAndSetFileId(List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtoList,Map<String,File> saveFileMap) {
+        Map<String, File> passValidateFileMap = IaisCommonUtils.genNewLinkedHashMap();
+        for (AppGrpPrimaryDocDto primaryDocDto : appGrpPrimaryDocDtoList) {
+            if (primaryDocDto.isPassValidate()) {
+                String premIndexNo = primaryDocDto.getPremisessName();
+                if (StringUtil.isEmpty(premIndexNo)) {
                     premIndexNo = "";
                 }
-                String saveFileMapKey = premIndexNo+appGrpPrimaryDocDto.getSvcComDocId()+appGrpPrimaryDocDto.getSeqNum();
-                File file = saveFileMap.get(saveFileMapKey);
-                if(file != null){
+                String fileMapKey = premIndexNo + primaryDocDto.getSvcComDocId() + primaryDocDto.getSeqNum();
+                File file = saveFileMap.get(fileMapKey);
+                if (file != null) {
+                    passValidateFileMap.put(fileMapKey, file);
+                }
+            }
+        }
+        log.info("Primary Doc size: " + appGrpPrimaryDocDtoList.size());
+        if (saveFileMap.size() != appGrpPrimaryDocDtoList.size()) {
+            log.info("Save file size: " + saveFileMap.size());
+        }
+        if (passValidateFileMap.size() > 0) {
+            List<File> fileList = new ArrayList<>(passValidateFileMap.values());
+            List<String> fileRepoIdList = appSubmissionService.saveFileList(fileList);
+            int fileRepo = fileRepoIdList.size();
+            log.info("File Repo size: " + fileRepo);
+            int i = 0;
+            for (AppGrpPrimaryDocDto appGrpPrimaryDocDto : appGrpPrimaryDocDtoList) {
+                String premIndexNo = appGrpPrimaryDocDto.getPremisessName();
+                if (StringUtil.isEmpty(premIndexNo)) {
+                    premIndexNo = "";
+                }
+                String saveFileMapKey = premIndexNo + appGrpPrimaryDocDto.getSvcComDocId() + appGrpPrimaryDocDto.getSeqNum();
+                File file = passValidateFileMap.get(saveFileMapKey);
+                if (file != null) {
                     appGrpPrimaryDocDto.setFileRepoId(fileRepoIdList.get(i));
                     i++;
                 }

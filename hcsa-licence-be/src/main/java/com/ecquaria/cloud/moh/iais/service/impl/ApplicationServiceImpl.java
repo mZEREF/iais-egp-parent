@@ -871,9 +871,11 @@ public class ApplicationServiceImpl implements ApplicationService {
     @Override
     public boolean isWithdrawReturnFee(String appNo,String appGrpId) {
         boolean result = false;
-        AppReturnFeeDto appReturnFeeDto = applicationClient.getReturnFeeByAppNo(appNo,ApplicationConsts.APPLICATION_RETURN_FEE_TYPE_WITHDRAW).getEntity();
-        ApplicationGroupDto applicationGroupDto=applicationClient.getAppById(appGrpId).getEntity();
-        if (appReturnFeeDto == null&&!(applicationGroupDto.getPayMethod().equals(ApplicationConsts.PAYMENT_METHOD_NAME_GIRO)&&applicationGroupDto.getPmtStatus().equals(ApplicationConsts.PAYMENT_STATUS_PENDING_GIRO))){
+        AppReturnFeeDto appReturnFeeDto = applicationClient.getReturnFeeByAppNo(appNo, ApplicationConsts.APPLICATION_RETURN_FEE_TYPE_WITHDRAW).getEntity();
+        ApplicationGroupDto applicationGroupDto = applicationClient.getAppById(appGrpId).getEntity();
+        if (appReturnFeeDto == null && !(applicationGroupDto != null &&
+                ApplicationConsts.PAYMENT_METHOD_NAME_GIRO.equals(applicationGroupDto.getPayMethod()) &&
+                ApplicationConsts.PAYMENT_STATUS_PENDING_GIRO.equals(applicationGroupDto.getPmtStatus()))) {
             result = true;
         }
         return result;

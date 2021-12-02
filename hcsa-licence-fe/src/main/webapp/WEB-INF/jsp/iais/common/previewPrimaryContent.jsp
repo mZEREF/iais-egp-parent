@@ -16,7 +16,7 @@
                         ${appGrpPrimaryDocDto.docName}
                     </c:when>
                     <c:otherwise>
-                        <a href="${pageContext.request.contextPath}/file-repo?filerepo=fileRo${docStat.index}&fileRo${docStat.index}=<iais:mask name="fileRo${docStat.index}" value="${appGrpPrimaryDocDto.fileRepoId}"/>&fileRepoName=${appGrpPrimaryDocDto.docName}" title="Download" class="downloadFile">${appGrpPrimaryDocDto.docName}</a>
+                        <iais:downloadLink fileRepoIdName="fileRo${docStat.index}" fileRepoId="${appGrpPrimaryDocDto.fileRepoId}" docName="${appGrpPrimaryDocDto.docName}"/>
                     </c:otherwise>
                 </c:choose> (${appGrpPrimaryDocDto.docSize} KB)
             </span>

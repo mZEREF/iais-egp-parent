@@ -428,8 +428,8 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
         String applicationType = applicationViewDto.getApplicationDto().getApplicationType();
         for (PremisesDto appGrpPremise:licPremisesDto
         ) {
-            String adderss = MiscUtil.getAddress(appGrpPremise.getUnitNo(), appGrpPremise.getStreetName()
-                    ,appGrpPremise.getBuildingName(),appGrpPremise.getFloorNo(),appGrpPremise.getUnitNo(),appGrpPremise.getPostalCode());
+            String adderss = MiscUtil.getAddressForApp(appGrpPremise.getUnitNo(), appGrpPremise.getStreetName()
+                    ,appGrpPremise.getBuildingName(),appGrpPremise.getFloorNo(),appGrpPremise.getUnitNo(),appGrpPremise.getPostalCode(),null);
             if(adderss.equals(appInsRepDto.getHciAddress())){
                 inspectionReportDto.setHciCode(appGrpPremise.getHciCode());
             }

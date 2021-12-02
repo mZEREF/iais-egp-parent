@@ -36,6 +36,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.inspection.AppInspectionStatusDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionFillCheckListDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionHistoryShowDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionPreTaskDto;
+import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.HcsaTaskAssignDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
@@ -54,6 +55,7 @@ import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
 import com.ecquaria.cloud.moh.iais.service.FillupChklistService;
 import com.ecquaria.cloud.moh.iais.service.InspectionAssignTaskService;
 import com.ecquaria.cloud.moh.iais.service.InspectionPreTaskService;
+import com.ecquaria.cloud.moh.iais.service.InspectionService;
 import com.ecquaria.cloud.moh.iais.service.LicenseeService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
 import com.ecquaria.cloud.moh.iais.service.client.AppInspectionStatusClient;
@@ -103,6 +105,9 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
 
     @Autowired
     private LicenseeService licenseeService;
+
+    @Autowired
+    private InspectionService inspectionService;
 
     @Autowired
     private NotificationHelper notificationHelper;
@@ -617,7 +622,10 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
                         //get history Hci_code
                         String hciCode = getHciCodeByAppPremCorrId(taskRefNo);
                         String hciName = appGrpPremisesDto.getHciName();
-                        String address = inspectionAssignTaskService.getAddress(appGrpPremisesDto);
+                        List<String> appGroupIds = IaisCommonUtils.genNewArrayList();
+                        appGroupIds.add(applicationDto.getAppGrpId());
+                        HcsaTaskAssignDto hcsaTaskAssignDto = inspectionService.getHcsaTaskAssignDtoByAppGrp(appGroupIds);
+                        String address = inspectionAssignTaskService.getAddress(appGrpPremisesDto, hcsaTaskAssignDto);
                         inspectionHistoryShowDto.setHciCode(hciCode);
                         if (StringUtil.isEmpty(hciName)) {
                             inspectionHistoryShowDto.setHciNameAddress(address);
@@ -669,11 +677,13 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
                     String actionUserId = appPremisesRoutingHistoryDto.getActionby();
                     if(!StringUtil.isEmpty(actionUserId)) {
                         OrgUserDto orgUserDto = organizationClient.retrieveOrgUserAccountById(actionUserId).getEntity();
-                        SelectOption selectOption = new SelectOption(index + "", orgUserDto.getDisplayName() + " (" + appPremisesRoutingHistoryDto.getRoleId() + ")");
-                        preInspRbOption.add(selectOption);
-                        userIdMap.put(index + "", actionUserId);
-                        roleIdMap.put(index + "", appPremisesRoutingHistoryDto.getRoleId());
-                        index++;
+                        if(orgUserDto != null) {
+                            SelectOption selectOption = new SelectOption(index + "", orgUserDto.getDisplayName() + " (" + appPremisesRoutingHistoryDto.getRoleId() + ")");
+                            preInspRbOption.add(selectOption);
+                            userIdMap.put(index + "", actionUserId);
+                            roleIdMap.put(index + "", appPremisesRoutingHistoryDto.getRoleId());
+                            index++;
+                        }
                     }
                 }
             }

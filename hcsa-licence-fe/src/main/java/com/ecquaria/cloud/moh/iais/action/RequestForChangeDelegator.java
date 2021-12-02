@@ -2,10 +2,12 @@ package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.RedirectUtil;
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.helper.ConfigHelper;
 import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.acra.AcraConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.organization.OrganizationConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
@@ -40,7 +42,6 @@ import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.ValidationUtils;
 import com.ecquaria.cloud.moh.iais.constant.HcsaLicenceFeConstant;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
-import com.ecquaria.cloud.moh.iais.constant.NewApplicationConstant;
 import com.ecquaria.cloud.moh.iais.constant.RfcConst;
 import com.ecquaria.cloud.moh.iais.dto.AjaxResDto;
 import com.ecquaria.cloud.moh.iais.dto.PageShowFileDto;
@@ -55,7 +56,7 @@ import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.LicenceViewService;
 import com.ecquaria.cloud.moh.iais.service.RequestForChangeService;
 import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
-import com.ecquaria.cloud.moh.iais.service.client.FeEicGatewayClient;
+import com.ecquaria.cloud.moh.iais.service.client.LicenseeClient;
 import com.ecquaria.cloud.moh.iais.utils.SingeFileUtil;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import java.io.File;
@@ -104,7 +105,7 @@ public class RequestForChangeDelegator {
     private SystemParamConfig systemParamConfig;
 
     @Autowired
-    private FeEicGatewayClient feEicGatewayClient;
+    private LicenseeClient licenseeClient;
 
     @Autowired
     private LicenceViewService licenceViewService;
@@ -244,6 +245,7 @@ public class RequestForChangeDelegator {
         request.getSession().removeAttribute("renewDto");
         request.getSession().removeAttribute("declaration_page_is");
         request.getSession().removeAttribute("viewPrint");
+        appSubmissionService.clearSession(request);
     }
     /**
      *
@@ -594,15 +596,15 @@ public class RequestForChangeDelegator {
         AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request,RfcConst.RFCAPPSUBMISSIONDTO);
         ParamUtil.setRequestAttr(bpc.request,RfcConst.APPSUBMISSIONDTO,appSubmissionDto);
 
-        Map<AppSubmissionDto,List<String>> errorListMap = IaisCommonUtils.genNewHashMap();
-        List<String> errorList = appSubmissionService.doPreviewSubmitValidate(null, appSubmissionDto, false);
-        if (!errorList.isEmpty()) {
-            errorListMap.put(appSubmissionDto, errorList);
-        }
-        if (!errorListMap.isEmpty()) {
-            bpc.request.setAttribute(NewApplicationConstant.SHOW_OTHER_ERROR, NewApplicationHelper.getErrorMsg(errorListMap));
-            error.put(NewApplicationConstant.SHOW_OTHER_ERROR,"The data is incomplete.");
-        }
+//        Map<AppSubmissionDto,List<String>> errorListMap = IaisCommonUtils.genNewHashMap();
+//        List<String> errorList = appSubmissionService.doPreviewSubmitValidate(null, appSubmissionDto, false);
+//        if (!errorList.isEmpty()) {
+//            errorListMap.put(appSubmissionDto, errorList);
+//        }
+//        if (!errorListMap.isEmpty()) {
+//            bpc.request.setAttribute(NewApplicationConstant.SHOW_OTHER_ERROR, NewApplicationHelper.getErrorMsg(errorListMap));
+//            error.put(NewApplicationConstant.SHOW_OTHER_ERROR,"The data is incomplete.");
+//        }
         if(!error.isEmpty()){
             ParamUtil.setRequestAttr(bpc.request,"errorMsg" , WebValidationHelper.generateJsonStr(error));
             ParamUtil.setRequestAttr(bpc.request,"UEN",uen);
@@ -1115,6 +1117,7 @@ public class RequestForChangeDelegator {
         return isSelect;
     }
 
+
     private  Map<String,String> doValidateEmpty(String uen,String[] selectCheakboxs,String email,String subLicensee){
         Map<String,String> error = IaisCommonUtils.genNewHashMap();
         if(selectCheakboxs == null || selectCheakboxs.length == 0){
@@ -1128,7 +1131,10 @@ public class RequestForChangeDelegator {
             error.put("uenError", msgGenError006);
         }else{
             try{
-                feEicGatewayClient.getUenInfo(uen);
+                String acra = ConfigHelper.getString("moh.halp.acra.enable","");
+                if(AcraConsts.YES.equals(acra)){
+                    licenseeClient.getEntityByUEN(uen);
+                }
             }catch (Throwable e){
              log.error(StringUtil.changeForLog("The gent uen info throw exception"+e.getMessage()));
             }

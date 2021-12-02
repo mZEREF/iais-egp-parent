@@ -11,6 +11,8 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.ComPoolAjaxQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.HcsaTaskAssignDto;
+import com.ecquaria.cloud.moh.iais.common.dto.mastercode.MasterCodeView;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.GroupRoleFieldDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.SuperPoolTaskQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
@@ -73,31 +75,42 @@ public class CommonPoolAjaxController {
     @RequestMapping(value = "common.do", method = RequestMethod.POST)
     public @ResponseBody Map<String, Object> appGroup(HttpServletRequest request) {
         String groupNo = MaskUtil.unMaskValue("appGroupNo", request.getParameter("groupNo"));
+        HcsaTaskAssignDto hcsaTaskAssignDto = (HcsaTaskAssignDto)ParamUtil.getSessionAttr(request, "hcsaTaskAssignDto");
         LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
+        String hci_address = (String)ParamUtil.getSessionAttr(request, "comPoolHciAddress");
+        SearchParam searchParamGroup = (SearchParam) ParamUtil.getSessionAttr(request, "cPoolSearchParam");
         //get task by user workGroupId
         List<TaskDto> commPools = inspectionAssignTaskService.getCommPoolByGroupWordId(loginContext);
         Map<String, Object> map = IaisCommonUtils.genNewHashMap();
         if(!StringUtil.isEmpty(groupNo)){
+            //create new searchParam
             SearchParam searchParam = new SearchParam(ComPoolAjaxQueryDto.class.getName());
             searchParam.setPageSize(10);
             searchParam.setPageNo(1);
             searchParam.setSort("APPLICATION_NO", SearchParam.ASCENDING);
-            searchParam.addFilter("groupNo", groupNo, true);
+            //appCorrIdTaskIdMap
             setMapTaskId(request, commPools);
+            //set filter
             List<String> appCorrId_list = inspectionAssignTaskService.getAppCorrIdListByPool(commPools);
+            //filter appCorrId_list
             String appPremCorrId = SqlHelper.constructInCondition("T2.ID", appCorrId_list.size());
             searchParam.addParam("appCorrId_list", appPremCorrId);
             for(int i = 0; i < appCorrId_list.size(); i++){
                 searchParam.addFilter("T2.ID" + i, appCorrId_list.get(i));
             }
+            //other filter
+            searchParam = setFilterByAppGrpParamAndNo(searchParamGroup, groupNo, searchParam, hcsaTaskAssignDto, null,
+                    "T3.ID", "appPremId_list", hci_address);
+            //get search result
             QueryHelp.setMainSql("inspectionQuery", "commonPoolAjax", searchParam);
             SearchResult<ComPoolAjaxQueryDto> ajaxResult = inspectionAssignTaskService.getAjaxResultByParam(searchParam);
+            //set other data
             List<ComPoolAjaxQueryDto> comPoolAjaxQueryDtos = ajaxResult.getRows();
             if(!IaisCommonUtils.isEmpty(comPoolAjaxQueryDtos)){
                 for(ComPoolAjaxQueryDto comPoolAjaxQueryDto : comPoolAjaxQueryDtos){
                     //get hciName / address
                     AppGrpPremisesDto appGrpPremisesDto = inspectionAssignTaskService.getAppGrpPremisesDtoByAppGroId(comPoolAjaxQueryDto.getId());
-                    String address = inspectionAssignTaskService.getAddress(appGrpPremisesDto);
+                    String address = inspectionAssignTaskService.getAddress(appGrpPremisesDto, hcsaTaskAssignDto);
                     if(!StringUtil.isEmpty(appGrpPremisesDto.getHciName())) {
                         comPoolAjaxQueryDto.setHciAddress(StringUtil.viewHtml(appGrpPremisesDto.getHciName() + " / " + address));
                     } else {
@@ -130,12 +143,72 @@ public class CommonPoolAjaxController {
                     }
                 }
             }
+            //set js key and value for sub show
             map.put("result", "Success");
             map.put("ajaxResult", ajaxResult);
         } else {
             map.put("result", "Fail");
         }
         return map;
+    }
+
+    private SearchParam setFilterByAppGrpParamAndNo(SearchParam searchParamGroup, String groupNo, SearchParam searchParam, HcsaTaskAssignDto hcsaTaskAssignDto,
+                                                    String appStatusKey, String fieldName, String filterName, String hci_address) {
+        //filter app Grp No
+        if(!StringUtil.isEmpty(groupNo)) {
+            searchParam.addFilter("groupNo", groupNo, true);
+        }
+
+        if(searchParamGroup != null) {
+            Map<String, Object> filters = searchParamGroup.getFilters();
+            if(filters != null) {
+                //get Group filter value
+                String application_no = (String)filters.get("application_no");
+                String application_type = (String)filters.get("application_type");
+                String hci_code = (String)filters.get("hci_code");
+                String hci_name = (String)filters.get("hci_name");
+                String application_status = (String)filters.get("application_status");
+
+                //set filter value
+                if(!StringUtil.isEmpty(application_no)) {
+                    searchParam.addFilter("application_no", application_no, true);
+                }
+                if(!StringUtil.isEmpty(application_type)) {
+                    searchParam.addFilter("application_type", application_type, true);
+                }
+                if(!StringUtil.isEmpty(application_status)) {
+                    List<String> appStatus = getSearchAppStatus(application_status);
+                    String appStatusStr = SqlHelper.constructInCondition(appStatusKey, appStatus.size());
+                    searchParam.addParam("application_status", appStatusStr);
+                    for(int i = 0; i < appStatus.size(); i++) {
+                        searchParam.addFilter(appStatusKey + i, appStatus.get(i));
+                    }
+                }
+                if(!StringUtil.isEmpty(hci_code)) {
+                    searchParam.addFilter("hci_code", hci_code, true);
+                }
+                if(!StringUtil.isEmpty(hci_name)) {
+                    searchParam.addFilter("hci_name", hci_name, true);
+                }
+                if(!StringUtil.isEmpty(hci_address)) {
+                    searchParam = inspectionAssignTaskService.setAppPremisesIdsByUnitNos(searchParam, hci_address, hcsaTaskAssignDto,
+                            fieldName, filterName);
+                }
+            }
+        }
+        return searchParam;
+    }
+
+    public List<String> getSearchAppStatus(String application_status) {
+        List<String> appStatus = IaisCommonUtils.genNewArrayList();
+        List<MasterCodeView> masterCodeViews = MasterCodeUtil.retrieveByCategory(MasterCodeUtil.CATE_ID_APP_STATUS);
+        String codeValue = MasterCodeUtil.getCodeDesc(application_status);
+        for (MasterCodeView masterCodeView : masterCodeViews) {
+            if(masterCodeView != null && codeValue.equals(masterCodeView.getCodeValue())){
+                appStatus.add(masterCodeView.getCode());
+            }
+        }
+        return appStatus;
     }
 
     @RequestMapping(value = "supervisor.do", method = RequestMethod.POST)
@@ -147,7 +220,10 @@ public class CommonPoolAjaxController {
         List<String> workGroupIds = (List<String>) ParamUtil.getSessionAttr(request, "workGroupIds");
         Map<String, SuperPoolTaskQueryDto> assignMap = (Map<String, SuperPoolTaskQueryDto>) ParamUtil.getSessionAttr(request, "assignMap");
         String userId = (String) ParamUtil.getSessionAttr(request, "memberId");
-        String reassignFilterAppNo = (String) ParamUtil.getSessionAttr(request, "reassignFilterAppNo");
+        String commonPoolStatus = (String) ParamUtil.getSessionAttr(request, "commonPoolStatus");
+        HcsaTaskAssignDto hcsaTaskAssignDto = (HcsaTaskAssignDto)ParamUtil.getSessionAttr(request, "hcsaTaskAssignDto");
+        SearchParam searchParamGroup = (SearchParam) ParamUtil.getSessionAttr(request, "supTaskSearchParam");
+        String hci_address = (String)ParamUtil.getSessionAttr(request, "superPoolHciAddress");
         if(!IaisCommonUtils.isEmpty(workGroupIds) && !StringUtil.isEmpty(appGroupId)) {
             List<AppPremisesCorrelationDto> appPremisesCorrelationDtos = applicationClient.getPremCorrDtoByAppGroupId(appGroupId).getEntity();
             //filter list
@@ -160,7 +236,10 @@ public class CommonPoolAjaxController {
             searchParam.setPageSize(10);
             searchParam.setPageNo(1);
             searchParam.setSort("REF_NO", SearchParam.ASCENDING);
-            //set filters
+            //set filter common
+            searchParam = setFilterByAppGrpParamAndNo(searchParamGroup, null, searchParam, hcsaTaskAssignDto, "T1.APP_STATUS",
+                    "T1.APP_GRP_PREM_ID","appPremId_list", hci_address);
+
             if (!IaisCommonUtils.isEmpty(appCorrId_list)) {
                 String appPremCorrId = SqlHelper.constructInCondition("T1.REF_NO", appCorrId_list.size());
                 searchParam.addParam("appCorrId_list", appPremCorrId);
@@ -188,16 +267,16 @@ public class CommonPoolAjaxController {
             for (int i = 0; i < workGroupIds.size(); i++) {
                 searchParam.addFilter("workId" + i, workGroupIds.get(i));
             }
+            //user's task and common
             if(!StringUtil.isEmpty(userId)){
                 searchParam.addFilter("userId", userId,true);
-            }
-            if(!StringUtil.isEmpty(reassignFilterAppNo)){
-                searchParam.addFilter("reassignFilterAppNo", reassignFilterAppNo,true);
+            } else if(!StringUtil.isEmpty(commonPoolStatus)){
+                searchParam.addFilter("commonPoolStatus", commonPoolStatus,true);
             }
             //do search
             QueryHelp.setMainSql("inspectionQuery", "supervisorPoolDropdown", searchParam);
             SearchResult<SuperPoolTaskQueryDto> searchResult = inspectionService.getSupPoolSecondByParam(searchParam);
-            searchResult = inspectionService.getSecondSearchOtherData(searchResult);
+            searchResult = inspectionService.getSecondSearchOtherData(searchResult, hcsaTaskAssignDto);
             jsonMap.put("ajaxResult", searchResult);
             jsonMap.put("result", "Success");
             assignMap = setTaskIdAndDataMap(assignMap, searchResult);
@@ -215,9 +294,11 @@ public class CommonPoolAjaxController {
         Map<String, Object> jsonMap = IaisCommonUtils.genNewHashMap();
         //get session data
         String appGroupId = MaskUtil.unMaskValue("appGroupId", request.getParameter("groupId"));
-        String systemPoolFilterAppNo = (String) ParamUtil.getSessionAttr(request, "systemPoolFilterAppNo");
         LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
         Map<String, SuperPoolTaskQueryDto> assignMap = (Map<String, SuperPoolTaskQueryDto>) ParamUtil.getSessionAttr(request, "assignMap");
+        HcsaTaskAssignDto hcsaTaskAssignDto = (HcsaTaskAssignDto)ParamUtil.getSessionAttr(request, "hcsaTaskAssignDto");
+        SearchParam searchParamGroup = (SearchParam) ParamUtil.getSessionAttr(request, "systemSearchParam");
+        String hci_address = (String)ParamUtil.getSessionAttr(request, "systemPoolHciAddress");
         if(!StringUtil.isEmpty(appGroupId)) {
             //get userId
             String userId = loginContext.getUserId();
@@ -232,6 +313,10 @@ public class CommonPoolAjaxController {
             searchParam.setPageSize(10);
             searchParam.setPageNo(1);
             searchParam.setSort("REF_NO", SearchParam.ASCENDING);
+            //set filter common
+            searchParam = setFilterByAppGrpParamAndNo(searchParamGroup, null, searchParam, hcsaTaskAssignDto, "T1.APP_STATUS",
+                    "T1.APP_GRP_PREM_ID","appPremId_list", hci_address);
+
             //set filters
             if (!IaisCommonUtils.isEmpty(appCorrId_list)) {
                 String appPremCorrId = SqlHelper.constructInCondition("T1.REF_NO", appCorrId_list.size());
@@ -240,7 +325,6 @@ public class CommonPoolAjaxController {
                     searchParam.addFilter("T1.REF_NO" + i, appCorrId_list.get(i));
                 }
             }
-
             StringBuilder sb2 = new StringBuilder("(");
             for (int i = 0; i < status.size(); i++) {
                 sb2.append(":tStatus").append(i).append(',');
@@ -253,13 +337,10 @@ public class CommonPoolAjaxController {
             if(!StringUtil.isEmpty(userId)){
                 searchParam.addFilter("userId", userId,true);
             }
-            if(!StringUtil.isEmpty(systemPoolFilterAppNo)){
-                searchParam.addFilter("systemPoolFilterAppNo", systemPoolFilterAppNo,true);
-            }
             //do search
             QueryHelp.setMainSql("inspectionQuery", "systemPoolDropdown", searchParam);
-            SearchResult<SuperPoolTaskQueryDto> searchResult = systemSearchAssignPoolService.getSystemPoolSecondByParam(searchParam);
-            searchResult = inspectionService.getSecondSearchOtherData(searchResult);
+            SearchResult<SuperPoolTaskQueryDto> searchResult = inspectionService.getSupPoolSecondByParam(searchParam);;
+            searchResult = inspectionService.getSecondSearchOtherData(searchResult, hcsaTaskAssignDto);
             jsonMap.put("ajaxResult", searchResult);
             jsonMap.put("result", "Success");
             assignMap = setTaskIdAndDataMap(assignMap, searchResult);
@@ -280,7 +361,10 @@ public class CommonPoolAjaxController {
         List<String> workGroupIds = (List<String>) ParamUtil.getSessionAttr(request, "workGroupIds");
         Map<String, SuperPoolTaskQueryDto> assignMap = (Map<String, SuperPoolTaskQueryDto>) ParamUtil.getSessionAttr(request, "assignMap");
         String userId = (String) ParamUtil.getSessionAttr(request, "memberId");
-        String reassignFilterAppNo = (String) ParamUtil.getSessionAttr(request, "reassignFilterAppNo");
+        String commonPoolStatus = (String) ParamUtil.getSessionAttr(request, "commonPoolStatus");
+        HcsaTaskAssignDto hcsaTaskAssignDto = (HcsaTaskAssignDto)ParamUtil.getSessionAttr(request, "hcsaTaskAssignDto");
+        SearchParam searchParamGroup = (SearchParam) ParamUtil.getSessionAttr(request, "supTaskSearchParam");
+        String hci_address = (String)ParamUtil.getSessionAttr(request, "reAssignPoolHciAddress");
         if(!IaisCommonUtils.isEmpty(workGroupIds) && !StringUtil.isEmpty(appGroupId)) {
             List<AppPremisesCorrelationDto> appPremisesCorrelationDtos = applicationClient.getPremCorrDtoByAppGroupId(appGroupId).getEntity();
             //filter list
@@ -293,8 +377,11 @@ public class CommonPoolAjaxController {
             searchParam.setPageSize(10);
             searchParam.setPageNo(1);
             searchParam.setSort("REF_NO", SearchParam.ASCENDING);
+            //set filter common
+            searchParam = setFilterByAppGrpParamAndNo(searchParamGroup, null, searchParam, hcsaTaskAssignDto, "T1.APP_STATUS",
+                    "T1.APP_GRP_PREM_ID","appPremId_list", hci_address);
+
             //set filters
-            StringBuilder sb = new StringBuilder("(");
             if (!IaisCommonUtils.isEmpty(appCorrId_list)) {
                 String appPremCorrId = SqlHelper.constructInCondition("T1.REF_NO", appCorrId_list.size());
                 searchParam.addParam("appCorrId_list", appPremCorrId);
@@ -322,16 +409,17 @@ public class CommonPoolAjaxController {
             for (int i = 0; i < workGroupIds.size(); i++) {
                 searchParam.addFilter("workId" + i, workGroupIds.get(i));
             }
+
+            //user's pool or common pool
             if(!StringUtil.isEmpty(userId)){
                 searchParam.addFilter("userId", userId,true);
-            }
-            if(!StringUtil.isEmpty(reassignFilterAppNo)){
-                searchParam.addFilter("reassignFilterAppNo", reassignFilterAppNo,true);
+            } else if(!StringUtil.isEmpty(commonPoolStatus)){
+                searchParam.addFilter("commonPoolStatus", commonPoolStatus,true);
             }
             //do search
             QueryHelp.setMainSql("inspectionQuery", "supervisorPoolDropdown", searchParam);
-            SearchResult<SuperPoolTaskQueryDto> searchResult = inspectionService.getSupPoolSecondByParam(searchParam);
-            searchResult = inspectionService.getSecondSearchOtherData(searchResult);
+            SearchResult<SuperPoolTaskQueryDto> searchResult = inspectionService.getSupPoolSecondByParam(searchParam);;
+            searchResult = inspectionService.getSecondSearchOtherData(searchResult, hcsaTaskAssignDto);
             jsonMap.put("ajaxResult", searchResult);
             jsonMap.put("result", "Success");
             assignMap = setTaskIdAndDataMap(assignMap, searchResult);

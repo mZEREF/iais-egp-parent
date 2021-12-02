@@ -14,7 +14,20 @@ import com.ecquaria.cloud.moh.iais.helper.FileUtils;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.systeminfo.ServicesSysteminfo;
 import com.ecquaria.sz.commons.util.JsonUtil;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.Serializable;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpEntity;
@@ -30,17 +43,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.Serializable;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
 
 /**
  * @author wangyu
@@ -71,7 +73,7 @@ public class HcsaFileAjaxController {
         }
         if (map == null) {
             map = IaisCommonUtils.genNewHashMap();
-         } else if (size <= 0) {
+        } else if (size <= 0) {
             size = (Integer) ParamUtil.getSessionAttr(request,SEESION_FILES_MAP_AJAX
                     + fileAppendId + SEESION_FILES_MAP_AJAX_MAX_INDEX);
         }
@@ -94,27 +96,28 @@ public class HcsaFileAjaxController {
          File toFile = null;
          String tempFolder = null;
          try{
+             String toFileName = FilenameUtils.getName(selectedFile.getOriginalFilename());
              if(reloadIndex == -1){
                  ParamUtil.setSessionAttr(request,SEESION_FILES_MAP_AJAX+fileAppendId+SEESION_FILES_MAP_AJAX_MAX_INDEX,size+1);
                  if (needMaxGlobal) {
                      ParamUtil.setSessionAttr(request, GLOBAL_MAX_INDEX_SESSION_ATTR, size + 1);
                  }
                  tempFolder = request.getSession().getId() + fileAppendId + size;
-                 toFile = FileUtils.multipartFileToFile(selectedFile, tempFolder);
+                 toFile = FileUtils.multipartFileToFile(selectedFile, tempFolder, toFileName);
                  map.put(fileAppendId + size, toFile);
              }else {
                  tempFolder = request.getSession().getId() + fileAppendId + reloadIndex;
-                 toFile = FileUtils.multipartFileToFile(selectedFile, tempFolder);
+                 toFile = FileUtils.multipartFileToFile(selectedFile, tempFolder, toFileName);
                  map.put(fileAppendId + reloadIndex, toFile);
                  size = reloadIndex;
              }
 
-         }catch (Exception e){
-             log.error(e.getMessage(),e);
-             log.info("----------change MultipartFile to file  falie-----------------");
-             return "";
-         }
-         // Save File to other nodes
+        }catch (Exception e){
+            log.error(e.getMessage(),e);
+            log.info("----------change MultipartFile to file  falie-----------------");
+            return "";
+        }
+        // Save File to other nodes
         saveFileToOtherNodes(selectedFile, toFile, tempFolder);
 
         ParamUtil.setSessionAttr(request,SEESION_FILES_MAP_AJAX+fileAppendId,(Serializable)map);
@@ -199,12 +202,12 @@ public class HcsaFileAjaxController {
         String fileAppendId = ParamUtil.getString(request,"fileAppendId");
         String index  = ParamUtil.getString(request,"fileIndex");
         if( !StringUtil.isEmpty(fileAppendId) && !StringUtil.isEmpty(index)){
-        Map<String, File> map = (Map<String, File>) ParamUtil.getSessionAttr(request,SEESION_FILES_MAP_AJAX + fileAppendId);
-        if( !IaisCommonUtils.isEmpty(map)) {
+            Map<String, File> map = (Map<String, File>) ParamUtil.getSessionAttr(request,SEESION_FILES_MAP_AJAX + fileAppendId);
+            if( !IaisCommonUtils.isEmpty(map)) {
                 log.info(StringUtil.changeForLog("------ fileAppendId : " +fileAppendId +"-----------"));
                 log.info(StringUtil.changeForLog("------ fileAppendIndex : " +index +"-----------"));
                 map.remove(fileAppendId+index);
-            ParamUtil.setSessionAttr(request,SEESION_FILES_MAP_AJAX+fileAppendId,(Serializable)map);
+                ParamUtil.setSessionAttr(request,SEESION_FILES_MAP_AJAX+fileAppendId,(Serializable)map);
             }
         }
         log.info("-----------deleteFeCallFile end------------");
@@ -229,7 +232,9 @@ public class HcsaFileAjaxController {
                     byte[] fileData = FileUtils.readFileToByteArray(file);
                     if(fileData != null){
                         try {
-                            response.addHeader("Content-Disposition", "attachment;filename=\"" +  file.getName()+"\"");
+                            String fileName = URLEncoder.encode(file.getName(), StandardCharsets.UTF_8.toString());
+                            response.addHeader("Content-Disposition", "attachment;filename=\""
+                                    +  fileName.replaceAll("\\+", "%20") + "\"");
                             response.addHeader("Content-Length", "" + fileData.length);
                             response.setContentType("application/x-octet-stream");
                         }catch (Exception e){
@@ -280,17 +285,18 @@ public class HcsaFileAjaxController {
                     MultiValueMap<String, Object> multipartRequest = new LinkedMultiValueMap<>();
                     HttpHeaders fileHeader = new HttpHeaders();
                     byte[] content = selectedFile.getBytes();
+                    String fileName = StringUtil.obscured(toFile.getName());
                     ByteArrayResource fileContentAsResource = new ByteArrayResource(content) {
                         @Override
                         public String getFilename() {
-                            return toFile.getName();
+                            return fileName;
                         }
                     };
                     HttpEntity<ByteArrayResource> fileEnt = new HttpEntity<>(fileContentAsResource, fileHeader);
                     multipartRequest.add("selectedFile", fileEnt);
                     HttpHeaders jsonHeader = new HttpHeaders();
                     jsonHeader.setContentType(MediaType.APPLICATION_JSON);
-                    HttpEntity<String> jsonPart = new HttpEntity<>(toFile.getName(), jsonHeader);
+                    HttpEntity<String> jsonPart = new HttpEntity<>(fileName, jsonHeader);
                     multipartRequest.add("fileName", jsonPart);
                     jsonHeader = new HttpHeaders();
                     jsonHeader.setContentType(MediaType.APPLICATION_JSON);

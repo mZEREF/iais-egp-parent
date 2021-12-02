@@ -17,6 +17,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecomm
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
+import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.HcsaTaskAssignDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
@@ -29,6 +30,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.service.InspectionAssignTaskService;
+import com.ecquaria.cloud.moh.iais.service.InspectionService;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.EmailClient;
 import com.ecquaria.cloud.moh.iais.service.client.FillUpCheckListGetAppClient;
@@ -85,6 +87,9 @@ public class RemindInspectorPreInspTaskJobHandler extends IJobHandler {
 
     @Autowired
     private MsgTemplateClient msgTemplateClient;
+
+    @Autowired
+    private InspectionService inspectionService;
 
     @Override
     public ReturnT<String> execute(String s) throws Exception {
@@ -279,7 +284,10 @@ public class RemindInspectorPreInspTaskJobHandler extends IJobHandler {
     private Map<String, Object> getEmailField(ApplicationDto applicationDto, AppPremisesCorrelationDto appPremisesCorrelationDto) {
         Map<String, Object> templateMap = IaisCommonUtils.genNewHashMap();
         AppGrpPremisesDto appGrpPremisesDto = inspectionAssignTaskService.getAppGrpPremisesDtoByAppGroId(appPremisesCorrelationDto.getId());
-        String address = inspectionAssignTaskService.getAddress(appGrpPremisesDto);
+        List<String> appGroupIds = IaisCommonUtils.genNewArrayList();
+        appGroupIds.add(applicationDto.getAppGrpId());
+        HcsaTaskAssignDto hcsaTaskAssignDto = inspectionService.getHcsaTaskAssignDtoByAppGrp(appGroupIds);
+        String address = inspectionAssignTaskService.getAddress(appGrpPremisesDto, hcsaTaskAssignDto);
         String hciName = appGrpPremisesDto.getHciName();
         String hciCode = appGrpPremisesDto.getHciCode();
         if(StringUtil.isEmpty(hciName)){

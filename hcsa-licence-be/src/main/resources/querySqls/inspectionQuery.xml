@@ -41,12 +41,12 @@
              and T7.TASK_TYPE in ('TASKTYPE01','TASKTYPE02')
             ) T5
             WHERE 1 = 1
+            <#if appGroup_list??> and ${appGroup_list} </#if>
             <#if application_no??> and charindex(:application_no, T5.APPLICATION_NO) >0 </#if>
             <#if application_type??> and T5.APP_TYPE = :application_type</#if>
             <#if hci_code??> and charindex(:hci_code, T5.HCI_CODE) >0 </#if>
             <#if hci_name??> and charindex(:hci_name, T5.HCI_NAME) >0 </#if>
             <#if sub_date??> and T5.SUBMIT_DT >= :sub_date</#if>
-            <#if hci_address??> and charindex(:hci_address, T5.PREMISE) >0 </#if>
         ]]>
     </sql>
 
@@ -88,6 +88,7 @@
              and T7.TASK_STATUS in ('TSTATUS001','TSTATUS002')
             ) T5
             WHERE 1 = 1
+            <#if appGroup_list??> and ${appGroup_list} </#if>
             <#if application_no??> and charindex(:application_no, T5.APPLICATION_NO) >0 </#if>
             <#if taskUserId??> and T5.USER_ID = :taskUserId </#if>
             <#if application_type??> and T5.APP_TYPE = :application_type</#if>
@@ -95,7 +96,6 @@
             <#if commonPoolStatus??> and T5.USER_ID is NULL</#if>
             <#if hci_code??> and charindex(:hci_code, T5.HCI_CODE) >0 </#if>
             <#if hci_name??> and charindex(:hci_name, T5.HCI_NAME) >0 </#if>
-            <#if hci_address??> and charindex(:hci_address, T5.PREMISE) >0 </#if>
         ]]>
     </sql>
 
@@ -138,26 +138,32 @@
              and T7.TASK_STATUS in ('TSTATUS001','TSTATUS002')
             ) T5
             WHERE 1 = 1
+            <#if appGroup_list??> and ${appGroup_list} </#if>
             <#if application_no??> and charindex(:application_no, T5.APPLICATION_NO) >0 </#if>
             <#if taskUserId??> and T5.USER_ID = :taskUserId </#if>
             <#if application_type??> and T5.APP_TYPE = :application_type</#if>
             <#if application_status??> and T5.STATUS = :application_status</#if>
             <#if hci_code??> and charindex(:hci_code, T5.HCI_CODE) >0 </#if>
             <#if hci_name??> and charindex(:hci_name, T5.HCI_NAME) >0 </#if>
-            <#if hci_address??> and charindex(:hci_address, T5.PREMISE) >0 </#if>
         ]]>
     </sql>
 
     <sql key = "supervisorPoolDropdown" remarks = "Leader Assign Task For Members Dropdown">
         <![CDATA[
             SELECT DISTINCT T1.ID, T1.REF_NO, T1.USER_ID, T1.TASK_TYPE, T1.WRK_GRP_ID
-            FROM TASK T1
+            FROM SUPERVISOR_POOL_DROP_VIEW T1
             WHERE 1 = 1
             <#if appCorrId_list??> and ${appCorrId_list} </#if>
+            <#if appPremId_list??> and ${appPremId_list} </#if>
             <#if taskStatus??> and T1.TASK_STATUS IN ${taskStatus} </#if>
             <#if workGroupId??> and CONVERT(NVARCHAR(36), T1.WRK_GRP_ID) IN ${workGroupId} </#if>
+            <#if application_no??> and charindex(:application_no, T1.APPLICATION_NO) >0 </#if>
+            <#if hci_name??> and charindex(:hci_name, T1.HCI_NAME) >0 </#if>
+            <#if hci_code??> and charindex(:hci_code, T1.HCI_CODE) >0 </#if>
+            <#if application_type??> and T1.APP_TYPE = :application_type</#if>
+            <#if application_status??> and ${application_status}</#if>
             <#if userId??> and T1.USER_ID = :userId </#if>
-            <#if reassignFilterAppNo??> and charindex(:reassignFilterAppNo, T1.APPLICATION_NO) >0 </#if>
+            <#if commonPoolStatus??> and T1.USER_ID is NULL</#if>
         ]]>
     </sql>
 
@@ -197,24 +203,30 @@
              <#if taskUserId??> and T7.USER_ID = :taskUserId </#if>
             ) T5
             WHERE 1 = 1
+            <#if appGroup_list??> and ${appGroup_list} </#if>
             <#if application_no??> and charindex(:application_no, T5.APPLICATION_NO) >0 </#if>
             <#if application_type??> and T5.APP_TYPE = :application_type</#if>
             <#if application_status??> and T5.STATUS = :application_status</#if>
             <#if hci_code??> and charindex(:hci_code, T5.HCI_CODE) >0 </#if>
             <#if hci_name??> and charindex(:hci_name, T5.HCI_NAME) >0 </#if>
-            <#if hci_address??> and charindex(:hci_address, T5.PREMISE) >0 </#if>
         ]]>
     </sql>
 
     <sql key = "systemPoolDropdown" remarks = "System User Assign Task For Members Dropdown">
         <![CDATA[
             SELECT DISTINCT T1.ID, T1.REF_NO, T1.USER_ID, T1.TASK_TYPE, T1.WRK_GRP_ID
-            FROM TASK T1
+            FROM SUPERVISOR_POOL_DROP_VIEW T1
             WHERE 1 = 1
             <#if appCorrId_list??> and ${appCorrId_list} </#if>
+            <#if appPremId_list??> and ${appPremId_list} </#if>
             <#if taskStatus??> and T1.TASK_STATUS IN ${taskStatus} </#if>
+            <#if workGroupId??> and CONVERT(NVARCHAR(36), T1.WRK_GRP_ID) IN ${workGroupId} </#if>
+            <#if application_no??> and charindex(:application_no, T1.APPLICATION_NO) >0 </#if>
+            <#if hci_name??> and charindex(:hci_name, T1.HCI_NAME) >0 </#if>
+            <#if hci_code??> and charindex(:hci_code, T1.HCI_CODE) >0 </#if>
+            <#if application_type??> and T1.APP_TYPE = :application_type</#if>
+            <#if application_status??> and ${application_status}</#if>
             <#if userId??> and T1.USER_ID = :userId </#if>
-            <#if systemPoolFilterAppNo??> and charindex(:systemPoolFilterAppNo, T1.APPLICATION_NO) >0 </#if>
         ]]>
     </sql>
 
@@ -446,15 +458,21 @@
             SELECT DISTINCT T5.ID, T5.APP_PREM_ID, T5.APPLICATION_NO, T5.SERVICE_ID, T5.STATUS, T5.HCI_CODE
             FROM
                 (
-                    SELECT DISTINCT T3.ID as APP_PREM_ID, T1.APPLICATION_NO, T1.SERVICE_ID, T1.STATUS, T3.HCI_CODE, T2.ID, T4.GROUP_NO, T1.APP_TYPE
+                    SELECT DISTINCT T3.ID as APP_PREM_ID, T1.APPLICATION_NO, T1.SERVICE_ID, T1.STATUS, T3.HCI_CODE, T2.ID,
+                                    T4.GROUP_NO, T1.APP_TYPE, T3.HCI_NAME
                     FROM APPLICATION T1
                     JOIN APP_PREMISES_CORRELATION T2 ON T2.APPLICATION_ID = T1.ID and T1.STATUS not in ('APST009','APST045')
                     JOIN APP_GRP_PREMISES T3 ON T3.ID = T2.APP_GRP_PREM_ID
                     JOIN APPLICATION_GROUP T4 ON T4.ID = T1.APP_GRP_ID
                     <#if appCorrId_list??> and ${appCorrId_list} </#if>
+                    <#if appPremId_list??> and ${appPremId_list} </#if>
+                    <#if hci_name??> and charindex(:hci_name, T3.HCI_NAME) >0 </#if>
+                    <#if hci_code??> and charindex(:hci_code, T3.HCI_CODE) >0 </#if>
+                    <#if application_type??> and T1.APP_TYPE = :application_type</#if>
                 ) T5
             WHERE 1 = 1
             <#if groupNo??> and T5.GROUP_NO = :groupNo</#if>
+            <#if application_no??> and charindex(:application_no, T5.APPLICATION_NO) >0 </#if>
         ]]>
     </sql>
     <sql key="reschedulingSearch"  remarks="Moh Officers Search Premises to Rescheduling">

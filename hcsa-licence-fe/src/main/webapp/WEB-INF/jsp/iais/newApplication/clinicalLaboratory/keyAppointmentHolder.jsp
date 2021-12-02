@@ -25,7 +25,7 @@
         <p style="font-weight: 600;font-size: 2.2rem">Key Appointment Holder</p>
         <hr>
         <p><iais:message key="NEW_ACK029"/></p>
-
+        <p><span class="error-msg" name="iaisErrorMsg" id="error_psnMandatory"></span></p>
         <c:choose>
             <c:when test="${empty AppSvcKeyAppointmentHolderDtoList && keyAppointmentHolderConfigDto.mandatoryCount > 1}">
                 <c:set var="pageLength" value="${keyAppointmentHolderConfigDto.mandatoryCount}"/>
@@ -46,7 +46,7 @@
             <c:set var="index" value="${keyAppointmentHolderStatus.index}" />
             <c:set var="AppSvcKeyAppointmentHolderDto" value="${AppSvcKeyAppointmentHolderDtoList[index]}"/>
             <div class="keyAppointmentHolderContent">
-                <input type="hidden" class="isPartEdit" name="isPartEdit${index}" value="0"/>
+                <input type="hidden" class="isPartEdit" name="isPartEdit${index}" value="${!isRfi && AppSubmissionDto.appType == 'APTY002'? '1' : '0'}"/>
                 <input type="hidden" class="indexNo" name="indexNo${index}" value="${AppSvcKeyAppointmentHolderDto.indexNo}"/>
 
                 <div class="row">
@@ -233,10 +233,10 @@
                 success: function (data) {
                     if ('200' == data.resCode) {
                         $('.addKeyAppointmentHolderDiv').before(data.resultJson+'');
+                        $('#isEditHiddenVal').val('1');
                         removeKeyAppointmentHolder();
                         refreshKeyAppointmentHolder();
                         assignSel();
-                        $('#isEditHiddenVal').val('1');
                     }
                     dismissWaiting();
                 },
@@ -252,6 +252,7 @@
             console.log(".svcPsnEdit:click")
             var $currContent = $(this).closest('div.keyAppointmentHolderContent');
             $currContent.find('input.isPartEdit').val('1');
+            $currContent.find('select.assignSel').val('newOfficer');
             $currContent.find('.edit-content').addClass('hidden');
             $currContent.find('input[type="text"]').prop('disabled', false);
             $currContent.find('div.nice-select').removeClass('disabled');
@@ -293,7 +294,7 @@
     function refreshKeyAppointmentHolder() {
         console.log("refreshKeyAppointmentHolder start")
         var $content = $('div.keyAppointmentHolderContent');
-        refreshIndex($content);
+        myRefreshIndex($content);
         var keyAppointmentHolderLength = $content.length;
         $('input[name="keyAppointmentHolderLength"]').val(keyAppointmentHolderLength);
         $content.each(function (k,v) {
@@ -311,11 +312,11 @@
         var kahLength = $content.length;
         $('input[name="keyAppointmentHolderLength"]').val(kahLength);
         console.info("length: " + kahLength);
-        var isEdit =  $('#isEditHiddenVal').val();
         $content.each(function (index,v) {
+            let isPartEdit = $(v).find(".isPartEdit").val();
             if (index < '${keyAppointmentHolderConfigDto.mandatoryCount}') {
                 $(v).find('.removeKeyAppointmentHolderBtn').remove();
-            } else if ('1' == isEdit) {
+            } else if ('1' == isPartEdit) {
                 $(v).find('.removeKeyAppointmentHolderBtn').show();
             } else {
                 $(v).find('.removeKeyAppointmentHolderBtn').hide();
@@ -400,4 +401,42 @@
         }
         console.log("fillKahForm end")
     };
+
+    function myRefreshIndex(targetSelector) {
+        if (isEmpty(targetSelector)) {
+            return;
+        }
+        if ($(targetSelector).length == 0) {
+            return;
+        }
+        $(targetSelector).each(function (k,v) {
+            var $ele = $(v);
+            var $selector = $ele.find(':input');
+            if ($selector.length == 0) {
+                $ele.text(k + 1);
+                return;
+            }
+            $selector.each(function () {
+                var type = this.type, tag = this.tagName.toLowerCase(), $input = $(this);
+                var orgName = $input.attr('name');
+                var orgId = $input.attr('id');
+                if (isEmpty(orgName)) {
+                    orgName = orgId;
+                }
+                if (isEmpty(orgName)) {
+                    return;
+                }
+                var result = /([a-zA-Z_]*)/g.exec(orgName);
+                var name = !isEmpty(result) && result.length > 0 ? result[0] : orgName;
+                $input.prop('name', name + k);
+                if (orgName == orgId) {
+                    $input.prop('id', name + k);
+                }
+                var $errorSpan = $ele.find('span[name="iaisErrorMsg"][id="error_'+ orgName +'"]');
+                if ($errorSpan.length > 0) {
+                    $errorSpan.prop('id', 'error_' + name + k);
+                }
+            });
+        });
+    }
 </script>

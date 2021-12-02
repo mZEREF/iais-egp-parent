@@ -132,6 +132,7 @@
             $('input.holdCerByEMS:checked').each(function () {
                 $(this).closest('div').find('label span.check-circle').addClass('radio-disabled');
             });
+            refreshRemoveBtn();
         }
         // init
         $('div.clinicalDirectorContent').each(function () {
@@ -351,6 +352,7 @@
                 var needControlName = isNeedControlName(assignSelectVal, licPerson, appType);
                 prsCallBackFuns.setEdit($currContent, 'disabled', false, needControlName);
             }
+            refreshRemoveBtn();
             /*if(needControlName){
                 var prgNo = $currContent.find('input.profRegNo').val();
                 if(!isEmpty(prgNo)){
@@ -622,5 +624,22 @@
         } else{
             currContEle.find('div.other-designation').addClass('hidden');
         }
+    }
+
+    function refreshRemoveBtn() {
+        var $content = $('div.clinicalDirectorContent');
+        var cdLength = $content.length;
+        $('input[name="cdLength"]').val(cdLength);
+        console.info("length: " + cdLength);
+        $content.each(function (index,v) {
+            let isPartEdit = $(v).find(".isPartEdit").val();
+            if (index < '${clinicalDirectorConfig.mandatoryCount}') {
+                $(v).find('.removeClinicalDirectorBtn').remove();
+            } else if ('1' == isPartEdit) {
+                $(v).find('.removeClinicalDirectorBtn').show();
+            } else {
+                $(v).find('.removeClinicalDirectorBtn').hide();
+            }
+        });
     }
 </script>

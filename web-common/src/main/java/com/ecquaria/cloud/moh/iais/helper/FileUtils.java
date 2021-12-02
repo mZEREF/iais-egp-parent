@@ -64,13 +64,18 @@ public final class FileUtils {
     }
 
     public static File multipartFileToFile(final MultipartFile file, String tempFolder) throws Exception {
+        return multipartFileToFile(file, tempFolder, null);
+    }
+
+    public static File multipartFileToFile(final MultipartFile file, String tempFolder, String fileName) throws Exception {
 
         if (file == null || file.isEmpty()) {
             throw new IaisRuntimeException("MultipartFile is null.");
         } else {
             InputStream ins = file.getInputStream();
             File sessFolder = MiscUtil.generateFolderInTempFolder("ajaxUpload" + tempFolder);
-            File toFile = MiscUtil.generateFile(sessFolder, FilenameUtils.getName(file.getOriginalFilename()));
+            File toFile = MiscUtil.generateFile(sessFolder,
+                    StringUtil.isEmpty(fileName) ? FilenameUtils.getName(file.getOriginalFilename()) : fileName);
             copyInputStreamToFile(ins, toFile);
             return toFile;
         }

@@ -12,27 +12,30 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeKeyApptPerson
 import com.ecquaria.cloud.moh.iais.common.dto.myinfo.MyInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.FeUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrganizationDto;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.common.validation.CommonValidator;
+import com.ecquaria.cloud.moh.iais.common.validation.ValidationUtils;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.constant.UserConstants;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
+import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.model.MyinfoUtil;
 import com.ecquaria.cloud.moh.iais.service.OrgUserManageService;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceInboxClient;
 import com.ecquaria.cloud.moh.iais.validation.SoloEditValidator;
+import java.util.List;
+import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
-
-import javax.servlet.http.HttpServletRequest;
-import java.util.List;
-import java.util.Map;
 
 /**
  * licenseeCompanyDelegate
@@ -96,8 +99,30 @@ public class LicenseeCompanyDelegate {
             if("refresh".equals(curdType)){
                 if(OrganizationConstants.LICENSEE_TYPE_CORPPASS.equals(licenseeDto.getLicenseeType())) {
                     String organizationId = loginContext.getOrgId();
-                    OrganizationDto organizationDto = orgUserManageService.getOrganizationById(organizationId);
-                    orgUserManageService.refreshLicensee(organizationDto.getUenNo()); // EDH
+                    String officeTelNo = ParamUtil.getString(bpc.request, "officeTelNo");
+                    String officeEmail = ParamUtil.getString(bpc.request, "officeEmail");
+                    //Do validation
+                    Map<String, String> errMap = IaisCommonUtils.genNewHashMap();
+                    if (StringUtil.isEmpty(officeTelNo)) {
+                        errMap.put("officeTelNo", MessageUtil.getMessageDesc("GENERAL_ERR0006"));
+                    } else if (!CommonValidator.isTelephoneNo(officeTelNo)) {
+                        errMap.put("officeTelNo", MessageUtil.getMessageDesc("GENERAL_ERR0015"));
+                    }
+                    if (StringUtil.isEmpty(officeEmail)) {
+                        errMap.put("officeEmail", MessageUtil.getMessageDesc("GENERAL_ERR0006"));
+                    } else if (!ValidationUtils.isEmail(officeEmail)) {
+                        errMap.put("officeEmail", MessageUtil.getMessageDesc("GENERAL_ERR0014"));
+                    }
+                    //Update info
+                    if (IaisCommonUtils.isEmpty(errMap)) {
+                        OrganizationDto organizationDto = orgUserManageService.getOrganizationById(organizationId);
+                        orgUserManageService.updateCompLicensee(loginContext.getOrgId(), officeTelNo, officeEmail);
+                        orgUserManageService.refreshLicensee(organizationDto.getUenNo()); // EDH
+                    } else {
+                        WebValidationHelper.saveAuditTrailForNoUseResult(errMap);
+                        ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG,
+                                WebValidationHelper.generateJsonStr(errMap));
+                    }
                 }else{
                     String actionStep = ParamUtil.getString(bpc.request,"saveDataSolo");
                     if("saveDataSolo".equalsIgnoreCase(actionStep)){
@@ -157,6 +182,11 @@ public class LicenseeCompanyDelegate {
         LoginContext loginContext= (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         List<LicenseeDto> licenseesDto = orgUserManageService.getLicenseeByOrgId(loginContext.getOrgId());
         LicenseeDto licenseeDto = licenseesDto.get(0);
+        String curdType = ParamUtil.getString(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE);
+        if("refresh".equals(curdType)){
+            licenseeDto.setOfficeTelNo(ParamUtil.getString(bpc.request, "officeTelNo"));
+            licenseeDto.setEmilAddr(ParamUtil.getString(bpc.request, "officeEmail"));
+        }
         licenseeDto.setUenNo(loginContext.getUenNo());
         //OrganizationDto organizationDto= orgUserManageService.getOrganizationById(loginContext.getOrgId());
         List<LicenseeKeyApptPersonDto> licenseeKeyApptPersonDto = orgUserManageService.getPersonById(loginContext.getLicenseeId());

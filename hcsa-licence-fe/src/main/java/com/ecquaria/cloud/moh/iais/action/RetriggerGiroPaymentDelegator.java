@@ -567,12 +567,8 @@ public class RetriggerGiroPaymentDelegator {
             if(!IaisCommonUtils.isEmpty(appSubmissionDtoList)){
                 AppSubmissionDto targetDto = (AppSubmissionDto) CopyUtil.copyMutableObject(appSubmissionDtoList.get(0));
                 targetDto.setPaymentMethod(paymentMethod);
-                double totalAmount = 0;
-                for(AppSubmissionDto appSubmissionDto1:appSubmissionDtoList){
-                    totalAmount = totalAmount + 100;
-                }
-                targetDto.setAmount(totalAmount);
-                targetDto.setAmountStr(Formatter.formatterMoney(totalAmount));
+                targetDto.setAmount((double) (100 * appSubmissionDtoList.size()));
+                targetDto.setAmountStr(Formatter.formatterMoney(targetDto.getAmount()));
                 oneSubmsonDtoList.add(targetDto);
             }
             bpc.request.getSession().setAttribute("ackPageAppSubmissionDto",oneSubmsonDtoList);
@@ -652,7 +648,7 @@ public class RetriggerGiroPaymentDelegator {
 
     private List<String> sortSvcNameList(List<String> svcNames){
         if(svcNames != null && svcNames.size() > 1){
-            Collections.sort(svcNames,(s1,s2)->s1.compareTo(s2));
+            Collections.sort(svcNames, String::compareTo);
         }
         return svcNames;
     }

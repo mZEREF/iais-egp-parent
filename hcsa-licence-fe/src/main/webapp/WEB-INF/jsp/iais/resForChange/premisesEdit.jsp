@@ -211,13 +211,16 @@
         $('#SERVICE_CONFIG_CHANGE').modal('hide');
     }
     $('#previewAndSub').click(function () {
+        showWaiting();
         doSubmitForm('prePayment','', '');
     });
 
     $('#back').click(function () {
+        showWaiting();
         doBack('prePremisesList');
     });
     function exitAndSave() {
+        showWaiting();
         doSubmitForm('prePayment','', 'exitSaveDraft');
     }
     function readonlyPartPage($Ele) {

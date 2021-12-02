@@ -818,17 +818,7 @@ public class NewApplicationAjaxController {
     ProfessionalResponseDto getPrgNoInfo(HttpServletRequest request) {
         log.debug(StringUtil.changeForLog("the prgNo start ...."));
         String professionRegoNo = ParamUtil.getString(request, "prgNo");
-        ProfessionalResponseDto professionalResponseDto = null;
-        if (StringUtil.isEmpty(professionRegoNo)) {
-            log.debug(StringUtil.changeForLog("the prgNo is null ...."));
-            return professionalResponseDto;
-        }
-        log.debug("prs server flag {}",prsFlag);
-        if("Y".equals(prsFlag)){
-            professionalResponseDto = appSubmissionService.retrievePrsInfo(professionRegoNo);
-        }
-        log.debug(StringUtil.changeForLog("the prgNo end ...."));
-        return professionalResponseDto;
+        return appSubmissionService.retrievePrsInfo(professionRegoNo);
     }
 
 

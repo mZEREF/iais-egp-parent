@@ -36,7 +36,7 @@
                             <c:out value="${file.docName}"/>
                         </c:when>
                         <c:otherwise>
-                            <a class="<c:if test="${!isClickEdit}">disabled</c:if>" href="${pageContext.request.contextPath}/file-repo?filerepo=fileRo${v.index}&fileRo${v.index}=<iais:mask name="fileRo${v.index}" value="${file.fileRepoId}"/>&fileRepoName=${file.docName}">${file.docName}</a>
+                            <iais:downloadLink fileRepoIdName="fileRo${v.index}" fileRepoId="${file.fileRepoId}" docName="${file.docName}"/>
                         </c:otherwise>
                     </c:choose>
                     <button type="button" class="btn btn-secondary btn-sm delFileBtn" onclick="javascript:deleteFileFeAjax('${configIndex}',${file.seqNum});">

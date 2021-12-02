@@ -12,13 +12,24 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.*;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesEntityDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcStageWorkingGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionSubPoolQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionTaskPoolListDto;
-import com.ecquaria.cloud.moh.iais.common.dto.organization.*;
+import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.HcsaTaskAssignDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.GroupRoleFieldDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.SuperPoolTaskQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.UserGroupCorrelationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.WorkingGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
@@ -27,13 +38,31 @@ import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
-import com.ecquaria.cloud.moh.iais.service.*;
-import com.ecquaria.cloud.moh.iais.service.client.*;
+import com.ecquaria.cloud.moh.iais.service.ApplicationService;
+import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
+import com.ecquaria.cloud.moh.iais.service.InspectionAssignTaskService;
+import com.ecquaria.cloud.moh.iais.service.InspectionService;
+import com.ecquaria.cloud.moh.iais.service.TaskService;
+import com.ecquaria.cloud.moh.iais.service.client.AppPremisesCorrClient;
+import com.ecquaria.cloud.moh.iais.service.client.AppPremisesRoutingHistoryClient;
+import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
+import com.ecquaria.cloud.moh.iais.service.client.FillUpCheckListGetAppClient;
+import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
+import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
+import com.ecquaria.cloud.moh.iais.service.client.InspectionTaskClient;
+import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
+import com.ecquaria.cloud.moh.iais.service.client.ReportBeViewTaskAssignClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * @author Shicheng
@@ -74,6 +103,12 @@ public class InspectionServiceImpl implements InspectionService {
 
     @Autowired
     private HcsaLicenceClient hcsaLicenceClient;
+
+    @Autowired
+    private AppPremisesCorrClient appPremisesCorrClient;
+
+    @Autowired
+    private ReportBeViewTaskAssignClient reportBeViewTaskAssignClient;
 
     @Override
     public List<SelectOption> getAppTypeOption() {
@@ -275,11 +310,11 @@ public class InspectionServiceImpl implements InspectionService {
     @Override
     @SearchTrack(catalog = "inspectionQuery", key = "supervisorPoolDropdown")
     public SearchResult<SuperPoolTaskQueryDto> getSupPoolSecondByParam(SearchParam searchParam) {
-        return organizationClient.supervisorSecondSearch(searchParam).getEntity();
+        return reportBeViewTaskAssignClient.searchSuperDropPoolResult(searchParam).getEntity();
     }
 
     @Override
-    public SearchResult<SuperPoolTaskQueryDto> getSecondSearchOtherData(SearchResult<SuperPoolTaskQueryDto> searchResult) {
+    public SearchResult<SuperPoolTaskQueryDto> getSecondSearchOtherData(SearchResult<SuperPoolTaskQueryDto> searchResult, HcsaTaskAssignDto hcsaTaskAssignDto) {
         List<SuperPoolTaskQueryDto> superPoolTaskQueryDtos = searchResult.getRows();
         if(!IaisCommonUtils.isEmpty(superPoolTaskQueryDtos)) {
             for (SuperPoolTaskQueryDto superPoolTaskQueryDto : superPoolTaskQueryDtos) {
@@ -299,7 +334,7 @@ public class InspectionServiceImpl implements InspectionService {
                 }
                 //get HCI data
                 AppGrpPremisesDto appGrpPremisesDto = inspectionAssignTaskService.getAppGrpPremisesDtoByAppGroId(superPoolTaskQueryDto.getTaskRefNo());
-                String address = inspectionAssignTaskService.getAddress(appGrpPremisesDto);
+                String address = inspectionAssignTaskService.getAddress(appGrpPremisesDto, hcsaTaskAssignDto);
                 superPoolTaskQueryDto.setHciCode(appGrpPremisesDto.getHciCode());
                 if(!StringUtil.isEmpty(appGrpPremisesDto.getHciName())) {
                     superPoolTaskQueryDto.setHciAddress(StringUtil.viewHtml(appGrpPremisesDto.getHciName() + " / " + address));
@@ -493,6 +528,30 @@ public class InspectionServiceImpl implements InspectionService {
         }
     }
 
+    @Override
+    public HcsaTaskAssignDto getHcsaTaskAssignDtoByAppGrp(List<String> appGroupIds) {
+        if(!IaisCommonUtils.isEmpty(appGroupIds)) {
+            HcsaTaskAssignDto hcsaTaskAssignDto = appPremisesCorrClient.getUnitNoAndAddressByAppGrpIds(appGroupIds).getEntity();
+            return hcsaTaskAssignDto;
+        }
+        return null;
+    }
+
+    @Override
+    public List<String> getSuperPoolAppGrpIdByResult(SearchResult<InspectionSubPoolQueryDto> searchResult) {
+        if(searchResult != null && !IaisCommonUtils.isEmpty(searchResult.getRows())) {
+            List<String> appGrpIds = IaisCommonUtils.genNewArrayList();
+            List<InspectionSubPoolQueryDto> inspectionSubPoolQueryDtos = searchResult.getRows();
+            for(InspectionSubPoolQueryDto inspectionSubPoolQueryDto : inspectionSubPoolQueryDtos) {
+                if(inspectionSubPoolQueryDto != null) {
+                    appGrpIds.add(inspectionSubPoolQueryDto.getId());
+                }
+            }
+            return appGrpIds;
+        }
+        return null;
+    }
+
     private String getMemberNameByUserId(String userId) {
         String memberName = HcsaConsts.HCSA_PREMISES_HCI_NULL;
         if(!StringUtil.isEmpty(userId)) {
@@ -570,7 +629,7 @@ public class InspectionServiceImpl implements InspectionService {
 
     @Override
     public String assignTaskForInspectors(InspectionTaskPoolListDto inspectionTaskPoolListDto, List<TaskDto> commPools, String internalRemarks,
-                                        ApplicationDto applicationDto, TaskDto taskDto, ApplicationViewDto applicationViewDto) {
+                                          ApplicationDto applicationDto, TaskDto taskDto, ApplicationViewDto applicationViewDto) {
         List<SelectOption> inspectorCheckList = inspectionTaskPoolListDto.getInspectorCheck();
         List<ApplicationDto> applicationDtos = IaisCommonUtils.genNewArrayList();
         applicationDtos.add(applicationDto);

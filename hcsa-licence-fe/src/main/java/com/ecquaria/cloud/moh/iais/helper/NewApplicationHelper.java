@@ -68,6 +68,11 @@ import com.ecquaria.cloud.moh.iais.dto.PersonFieldDto;
 import com.ecquaria.cloud.moh.iais.dto.PmtReturnUrlDto;
 import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceClient;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.multipart.commons.CommonsMultipartFile;
+import sop.util.DateUtil;
+
+import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
@@ -86,12 +91,10 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-import javax.servlet.http.HttpServletRequest;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.web.multipart.commons.CommonsMultipartFile;
-import sop.util.DateUtil;
+
+import static java.util.regex.Pattern.compile;
 
 /**
  * NewApplicationHelper
@@ -4361,10 +4364,13 @@ public class NewApplicationHelper {
         if (blacklist == null || StringUtil.isEmpty(blacklist) || StringUtil.isEmpty(name)) {
             return map;
         }
-        String[] s = blacklist.split(" ");
+        String[] s = blacklist.split("[ ]+");
+        name = name.toUpperCase(AppConsts.DFT_LOCALE);
+        String[] target = name.split("[ ]+");
         for (int index = 0; index < s.length; index++) {
-            if (name.toUpperCase().contains(s[index].toUpperCase())) {
-                map.put(name.toUpperCase().indexOf(s[index].toUpperCase()), s[index]);
+            String t = s[index].toUpperCase();
+            if (Arrays.stream(target).parallel().anyMatch(x -> x.equals(t))) {
+                map.put(name.indexOf(t), s[index]);
             }
         }
         return map;
@@ -4428,10 +4434,12 @@ public class NewApplicationHelper {
             AppSubmissionService appSubmissionService = SpringContextHelper.getContext().getBean(AppSubmissionService.class);
             dto = appSubmissionService.retrievePrsInfo(profRegNo);
         }
-        if (dto == null || StringUtil.isEmpty(dto.getRegno()) || StringUtil.isEmpty(dto.getName())) {
-            isValid = false;
+        if (dto == null) {
+            return true;
         }
-        if (dto != null && dto.isHasException()) {
+        if ("-1".equals(dto.getStatusCode()) || "-2".equals(dto.getStatusCode())) {
+            isValid = false;
+        } else if (dto.isHasException()) {
             isValid = false;
             if (request != null) {
                 request.setAttribute(ClinicalLaboratoryDelegator.PRS_SERVICE_DOWN, ClinicalLaboratoryDelegator.PRS_SERVICE_DOWN);
@@ -4526,11 +4534,44 @@ public class NewApplicationHelper {
         msg.deleteCharAt(msg.length() - 2);
         msg.deleteCharAt(msg.length() - 1);
     }
+
     private static String handleStepHames(List<String> errorList) {
         return errorList.stream()
                 .filter(s -> s.contains(":"))
                 .map(s -> s.substring(s.indexOf(":") + 1))
                 .collect(Collectors.joining(", "));
+    }
+
+    /**
+     * Handle floor no
+     *
+     * @param floorNo
+     * @param floorNoErr
+     * @return
+     */
+    public static String handleFloorNo(String floorNo, String floorNoErr) {
+        if (StringUtil.isEmpty(floorNoErr)) {
+            return handleFloorNo(floorNo);
+        }
+        return floorNo;
+    }
+
+    /**
+     * Handle floor no
+     *
+     * @param floorNo
+     * @return
+     */
+    public static String handleFloorNo(String floorNo) {
+        String newFloorNo = floorNo;
+        if (!StringUtil.isEmpty(floorNo) && floorNo.length() == 1) {
+            Pattern pattern = compile("[0-9]*");
+            boolean noFlag = pattern.matcher(floorNo).matches();
+            if (noFlag) {
+                newFloorNo = "0" + floorNo;
+            }
+        }
+        return newFloorNo;
     }
 
 }

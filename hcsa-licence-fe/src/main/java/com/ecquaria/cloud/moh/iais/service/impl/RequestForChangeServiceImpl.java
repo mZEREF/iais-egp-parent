@@ -719,18 +719,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                                 }
                             }
                             String floorNoErr = errorMap.get("floorNo" + i);
-                            if (StringUtil.isEmpty(floorNoErr) && !StringUtil.isEmpty(floorNo)) {
-                                Pattern pattern = compile("[0-9]*");
-                                boolean noFlag = pattern.matcher(floorNo).matches();
-                                if (noFlag) {
-                                    int floorNum = Integer.parseInt(floorNo);
-                                    if (10 > floorNum) {
-                                        floorNo = "0" + floorNum;
-                                        appGrpPremisesDtoList.get(i).setFloorNo(floorNo);
-                                    }
-                                }
-
-                            }
+                            appGrpPremisesDtoList.get(i).setFloorNo(NewApplicationHelper.handleFloorNo(floorNo, floorNoErr));
                             if (!empty && !empty1 && !empty2) {
                                 StringBuilder sb=new StringBuilder();
                                 sb.append(appGrpPremisesDtoList.get(i).getFloorNo())
@@ -965,18 +954,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                             }
                             String floorNoErr = errorMap.get("conveyanceFloorNo" + i);
                             String floorNo = appGrpPremisesDtoList.get(i).getConveyanceFloorNo();
-                            if (StringUtil.isEmpty(floorNoErr) && !StringUtil.isEmpty(floorNo)) {
-                                Pattern pattern = compile("[0-9]*");
-                                boolean noFlag = pattern.matcher(floorNo).matches();
-                                if (noFlag) {
-                                    int floorNum = Integer.parseInt(floorNo);
-                                    if (10 > floorNum) {
-                                        floorNo = "0" + floorNum;
-                                        appGrpPremisesDtoList.get(i).setConveyanceFloorNo(floorNo);
-                                    }
-                                }
-
-                            }
+                            appGrpPremisesDtoList.get(i).setConveyanceFloorNo(NewApplicationHelper.handleFloorNo(floorNo, floorNoErr));
                             if (!empty && !empty1 && !empty2) {
                                 StringBuilder sb=new StringBuilder();
                                 sb.append(appGrpPremisesDtoList.get(i).getConveyanceFloorNo())
@@ -1211,18 +1189,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                             }
                             String floorNoErr = errorMap.get("offSiteFloorNo" + i);
                             String floorNo = appGrpPremisesDtoList.get(i).getOffSiteFloorNo();
-                            if (StringUtil.isEmpty(floorNoErr) && !StringUtil.isEmpty(floorNo)) {
-                                Pattern pattern = compile("[0-9]*");
-                                boolean noFlag = pattern.matcher(floorNo).matches();
-                                if (noFlag) {
-                                    int floorNum = Integer.parseInt(floorNo);
-                                    if (10 > floorNum) {
-                                        floorNo = "0" + floorNum;
-                                        appGrpPremisesDtoList.get(i).setOffSiteFloorNo(floorNo);
-                                    }
-                                }
-
-                            }
+                            appGrpPremisesDtoList.get(i).setOffSiteFloorNo(NewApplicationHelper.handleFloorNo(floorNo, floorNoErr));
                             if (!empty && !empty1 && !empty2) {
                                 StringBuilder sb=new StringBuilder();
                                 sb.append(appGrpPremisesDtoList.get(i).getOffSiteFloorNo())
@@ -2263,19 +2230,8 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                     String general_err0041=NewApplicationHelper.repLength("Unit No.","5");
                     errorMap.put(unitErrName + opLength, general_err0041);
                 }
-
                 String floorNoErr = errorMap.get(floorErrName + opLength);
-                if (StringUtil.isEmpty(floorNoErr) && !StringUtil.isEmpty(floorNo)) {
-                    Pattern pattern = compile("[0-9]*");
-                    boolean noFlag = pattern.matcher(floorNo).matches();
-                    if (noFlag) {
-                        int floorNum = Integer.parseInt(floorNo);
-                        if (10 > floorNum) {
-                            floorNo = "0" + floorNum;
-                            operationalUnitDto.setFloorNo(floorNo);
-                        }
-                    }
-                }
+                operationalUnitDto.setFloorNo(NewApplicationHelper.handleFloorNo(floorNo, floorNoErr));
                 if(flag){
                     if(!StringUtil.isEmpty(operationalUnitDto.getFloorNo()) && !StringUtil.isEmpty(operationalUnitDto.getUnitNo())){
                         String floorUnitStr = operationalUnitDto.getFloorNo() + operationalUnitDto.getUnitNo();
@@ -2473,7 +2429,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
         // set draft no
         appSubmissionDto.setDraftNo(draftNo);
         try {
-            appSubmissionService.transform(appSubmissionDto, licence.getLicenseeId());
+            appSubmissionService.transform(appSubmissionDto, licence.getLicenseeId(), appGroupNo);
         } catch (Exception e) {
             log.warn(StringUtil.changeForLog(e.getMessage()), e);
         }
@@ -2497,8 +2453,6 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                 return false;
             }
         }
-
-        appSubmissionDto.setAppGrpNo(appGroupNo);
         PreOrPostInspectionResultDto preOrPostInspectionResultDto = appSubmissionService.judgeIsPreInspection(
                 appSubmissionDto);
         if (preOrPostInspectionResultDto == null) {

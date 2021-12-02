@@ -31,7 +31,7 @@
                     <h4>The blood donation centre and/or mobile donation drive is/are under the supervision of</h4>
                   </c:when>
                   <c:when test="${'TSB' ==currentSvcCode}">
-                    <strong style="font-size: 20px;">Laboratory Director (Tissue Banking - Cord Blood)</strong>
+                    <strong style="font-size: 20px;">Laboratory Director (Cord Blood Banking Service)</strong>
                     <h4><iais:message key="NEW_ACK023"/></h4>
                   </c:when>
                   <c:when test="${'NMI' ==currentSvcCode}">
@@ -312,7 +312,11 @@
     <div class="modal-content">
       <div class="modal-body" >
         <div class="row">
-          <div class="col-md-12"><span style="font-size: 2rem;"><%=MessageUtil.getMessageDesc("GENERAL_ERR0048")%></span></div>
+          <div class="col-md-12">
+            <span style="font-size: 2rem;" id="prsErrorMsg">
+              <iais:message key="GENERAL_ERR0048" escape="false" />
+            </span>
+          </div>
         </div>
       </div>
       <div class="row " style="margin-top: 5%;margin-bottom: 5%">
@@ -633,34 +637,21 @@
       'success': function (data) {
         if (isEmpty(data)) {
           console.log("The return data is null for PRS");
-          clearPrsInfo($loadingContent);
-          dismissWaiting();
-          return;
-        }
-        if (data.hasException) {
-          console.log("An exception for PRS");
+        } else if('-1' == data.statusCode || '-2' == data.statusCode) {
+          $('#prsErrorMsg').val('<iais:message key="GENERAL_ERR0042" escape="false" />');
           $('#PRS_SERVICE_DOWN').modal('show');
           clearPrsInfo($loadingContent);
-          //able to edit name
-          inputCancelReadonly($loadingContent.find('input[name="name"]'));
-          dismissWaiting();
-          return;
-        }
-        if(data.regno==null){
+        } else if (data.hasException) {
+          $('#prsErrorMsg').val('<iais:message key="GENERAL_ERR0048" escape="false" />');
+          $('#PRS_SERVICE_DOWN').modal('show');
           clearPrsInfo($loadingContent);
-          // $('#PRS_SERVICE_DOWN').modal('show');
-          //able to edit name
-          // inputCancelReadonly($loadingContent.find('input[name="name"]'));
-          console.log('return regno is empty ...');
-          dismissWaiting();
-          return;
-        }
-        if (data.name == null) {
+        } else if ('401' == data.statusCode) {
+          $('#prsErrorMsg').val('<iais:message key="GENERAL_ERR0054" escape="false" />');
+          $('#PRS_SERVICE_DOWN').modal('show');
           clearPrsInfo($loadingContent);
-          dismissWaiting();
-          return;
+        } else {
+          loadingSp(data,obj);
         }
-        loadingSp(data,obj);
         dismissWaiting();
       },
       'error': function () {
