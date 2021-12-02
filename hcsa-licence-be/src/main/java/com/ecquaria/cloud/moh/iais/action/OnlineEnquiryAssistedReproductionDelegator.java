@@ -233,12 +233,16 @@ public class OnlineEnquiryAssistedReproductionDelegator {
         arFilterDto.setDisposalTypeFreshOocyte(disposalTypeFreshOocyte);
         String disposalTypeFrozenOocyte=ParamUtil.getString(request,"disposalTypeFrozenOocyte");
         arFilterDto.setDisposalTypeFrozenOocyte(disposalTypeFrozenOocyte);
+        String disposalTypeThawedOocyte=ParamUtil.getString(request,"disposalTypeThawedOocyte");
+        arFilterDto.setDisposalTypeThawedOocyte(disposalTypeThawedOocyte);
         String disposalTypeFreshEmbryo=ParamUtil.getString(request,"disposalTypeFreshEmbryo");
         arFilterDto.setDisposalTypeFreshEmbryo(disposalTypeFreshEmbryo);
         String disposalTypeFrozenEmbryo=ParamUtil.getString(request,"disposalTypeFrozenEmbryo");
         arFilterDto.setDisposalTypeFrozenEmbryo(disposalTypeFrozenEmbryo);
         String disposalTypeThawedEmbryo=ParamUtil.getString(request,"disposalTypeThawedEmbryo");
         arFilterDto.setDisposalTypeThawedEmbryo(disposalTypeThawedEmbryo);
+        String disposalTypeFrozenSperm=ParamUtil.getString(request,"disposalTypeFrozenSperm");
+        arFilterDto.setDisposalTypeFrozenSperm(disposalTypeFrozenSperm);
         String disposedTotalNumber=ParamUtil.getString(request,"disposedTotalNumber");
         arFilterDto.setDisposedTotalNumber(disposedTotalNumber);
         Date disposalDateFrom= Formatter.parseDate(ParamUtil.getString(request, "disposalDateFrom"));
@@ -455,17 +459,185 @@ public class OnlineEnquiryAssistedReproductionDelegator {
                 }
             }
             if(arDto.getGIFT()!=null&& "on".equals(arDto.getGIFT())){
-                filter.put("cart_fcn",1);
+                filter.put("gift",1);
             }
-            if(arDto.getFreshCycleSimulated()!=null&& "on".equals(arDto.getFreshCycleSimulated())){
-                filter.put("cart_fcs",1);
+            if(arDto.getICSI()!=null&& "on".equals(arDto.getICSI())){
+                filter.put("icsi",1);
             }
-            if(arDto.getFrozenOocyteCycle()!=null&& "on".equals(arDto.getFrozenOocyteCycle())){
-                filter.put("cart_foc",1);
+            if(arDto.getZIFT()!=null&& "on".equals(arDto.getZIFT())){
+                filter.put("zift",1);
             }
-            if(arDto.getFrozenEmbryoCycle()!=null&& "on".equals(arDto.getFrozenEmbryoCycle())){
-                filter.put("cart_foe",1);
+            if(arDto.getIVF()!=null&& "on".equals(arDto.getIVF())){
+                filter.put("ivf",1);
             }
+            List<Integer> embryosTransferredNums=IaisCommonUtils.genNewArrayList();
+
+            if(arDto.getEmbryosTransferredNum1()!=null&& "on".equals(arDto.getEmbryosTransferredNum1())){
+                embryosTransferredNums.add(1);
+            }
+            if(arDto.getEmbryosTransferredNum2()!=null&& "on".equals(arDto.getEmbryosTransferredNum2())){
+                embryosTransferredNums.add(2);
+            }
+            if(arDto.getEmbryosTransferredNum3()!=null&& "on".equals(arDto.getEmbryosTransferredNum3())){
+                embryosTransferredNums.add(3);
+            }
+            if(arDto.getEmbryosTransferredNumMax()!=null&& "on".equals(arDto.getEmbryosTransferredNumMax())){
+                for (int i=4;i<30;i++){
+                    embryosTransferredNums.add(i);
+                }
+            }
+            if(IaisCommonUtils.isNotEmpty(embryosTransferredNums)){
+                filter.put("embTransNums",embryosTransferredNums);
+            }
+
+
+            List<String> ageEmbryosNums=IaisCommonUtils.genNewArrayList();
+
+            if(arDto.getAgeEmbryosNum1()!=null&& "on".equals(arDto.getAgeEmbryosNum1())){
+                ageEmbryosNums.add("AOFET001");
+            }
+            if(arDto.getAgeEmbryosNum2()!=null&& "on".equals(arDto.getAgeEmbryosNum2())){
+                ageEmbryosNums.add("AOFET002");
+            }
+            if(arDto.getAgeEmbryosNum3()!=null&& "on".equals(arDto.getAgeEmbryosNum3())){
+                ageEmbryosNums.add("AOFET003");
+            }
+            if(arDto.getAgeEmbryosNum4()!=null&& "on".equals(arDto.getAgeEmbryosNum4())){
+                ageEmbryosNums.add("AOFET004");
+            }
+            if(arDto.getAgeEmbryosNum5()!=null&& "on".equals(arDto.getAgeEmbryosNum5())){
+                ageEmbryosNums.add("AOFET005");
+            }
+            if(arDto.getAgeEmbryosNum6()!=null&& "on".equals(arDto.getAgeEmbryosNum6())){
+                ageEmbryosNums.add("AOFET006");
+
+            }
+            if(IaisCommonUtils.isNotEmpty(ageEmbryosNums)){
+                filter.put("ageEmbryosNums",ageEmbryosNums);
+            }
+
+            List<String> outcomeEmbryoTransferreds=IaisCommonUtils.genNewArrayList();
+
+            if(arDto.getClinicalPregnancy()!=null&& "on".equals(arDto.getClinicalPregnancy())){
+                outcomeEmbryoTransferreds.add(DataSubmissionConsts.OUTCOME_OF_EMBRYO_TRANSFERRED_CLINICAL_PREGNANCY);
+            }
+            if(arDto.getEctopicPregnancy()!=null&& "on".equals(arDto.getEctopicPregnancy())){
+                outcomeEmbryoTransferreds.add(DataSubmissionConsts.OUTCOME_OF_EMBRYO_TRANSFERRED_ECTOPIC_PREGNANCY);
+            }
+            if(arDto.getImplantationDocumented()!=null&& "on".equals(arDto.getImplantationDocumented())){
+                outcomeEmbryoTransferreds.add(DataSubmissionConsts.OUTCOME_OF_EMBRYO_TRANSFERRED_IMPLANTATION_DETECTED);
+            }
+            if(arDto.getNoPregnancy()!=null&& "on".equals(arDto.getNoPregnancy())){
+                outcomeEmbryoTransferreds.add(DataSubmissionConsts.OUTCOME_OF_EMBRYO_TRANSFERRED_NO_PREGNANCY_DETECTED);
+            }
+            if(arDto.getUnknown()!=null&& "on".equals(arDto.getUnknown())){
+                outcomeEmbryoTransferreds.add(DataSubmissionConsts.OUTCOME_OF_EMBRYO_TRANSFERRED_UNKNOWN);
+            }
+
+            if(IaisCommonUtils.isNotEmpty(outcomeEmbryoTransferreds)){
+                filter.put("outcomeEmbryoTransferreds",outcomeEmbryoTransferreds);
+            }
+
+            List<Integer> birthEventsTotalList=IaisCommonUtils.genNewArrayList();
+
+            if(arDto.getBirthEventsTotal0()!=null&& "on".equals(arDto.getBirthEventsTotal0())){
+                birthEventsTotalList.add(0);
+            }
+            if(arDto.getBirthEventsTotal1()!=null&& "on".equals(arDto.getBirthEventsTotal1())){
+                birthEventsTotalList.add(1);
+            }
+            if(arDto.getBirthEventsTotal2()!=null&& "on".equals(arDto.getBirthEventsTotal2())){
+                birthEventsTotalList.add(2);
+            }
+            if(arDto.getBirthEventsTotal3()!=null&& "on".equals(arDto.getBirthEventsTotal3())){
+                birthEventsTotalList.add(3);
+            }
+            if(arDto.getBirthEventsTotalMax()!=null&& "on".equals(arDto.getEmbryosTransferredNumMax())){
+                for (int i=4;i<30;i++){
+                    birthEventsTotalList.add(i);
+                }
+            }
+            if(IaisCommonUtils.isNotEmpty(birthEventsTotalList)){
+                filter.put("birthEventsTotalList",birthEventsTotalList);
+            }
+
+            if(arDto.getDeliveryDateFrom()!=null){
+                String deliveryDateFrom = Formatter.formatDateTime(arDto.getDeliveryDateFrom(),
+                        SystemAdminBaseConstants.DATE_FORMAT);
+                filter.put("deliveryDateFrom", deliveryDateFrom);
+            }
+
+            if(arDto.getDeliveryDateTo()!=null){
+                String deliveryDateTo = Formatter.formatDateTime(arDto.getDeliveryDateTo(),
+                        SystemAdminBaseConstants.DATE_FORMAT);
+                filter.put("deliveryDateTo", deliveryDateTo);
+            }
+
+            if(arDto.getPatientART()!=null){//bit
+                filter.put("patientART",Integer.parseInt(arDto.getPatientART()));
+            }
+            if(arDto.getPatientIUI()!=null){//bit
+                filter.put("patientIUI",Integer.parseInt(arDto.getPatientIUI()));
+            }
+            if(arDto.getPatientPGT()!=null){//bit
+                filter.put("patientPGT",Integer.parseInt(arDto.getPatientPGT()));
+            }
+
+            List<String> disposalTypeList=IaisCommonUtils.genNewArrayList();
+
+            if(arDto.getDisposalTypeFreshOocyte()!=null&& "on".equals(arDto.getDisposalTypeFreshOocyte())){
+                disposalTypeList.add(DataSubmissionConsts.DISPOSAL_TYPE_FRESH_OOCYTE);
+            }
+            if(arDto.getDisposalTypeFrozenOocyte()!=null&& "on".equals(arDto.getDisposalTypeFrozenOocyte())){
+                disposalTypeList.add(DataSubmissionConsts.DISPOSAL_TYPE_FROZEN_OOCYTE);
+            }
+            if(arDto.getDisposalTypeThawedOocyte()!=null&& "on".equals(arDto.getDisposalTypeThawedOocyte())){
+                disposalTypeList.add(DataSubmissionConsts.DISPOSAL_TYPE_THAWED_OOCYTE);
+            }
+            if(arDto.getDisposalTypeFreshEmbryo()!=null&& "on".equals(arDto.getDisposalTypeFreshEmbryo())){
+                disposalTypeList.add(DataSubmissionConsts.DISPOSAL_TYPE_FRESH_EMBRYO);
+            }
+            if(arDto.getDisposalTypeFrozenEmbryo()!=null&& "on".equals(arDto.getDisposalTypeFrozenEmbryo())){
+                disposalTypeList.add(DataSubmissionConsts.DISPOSAL_TYPE_FROZEN_EMBRYO);
+            }
+            if(arDto.getDisposalTypeThawedEmbryo()!=null&& "on".equals(arDto.getDisposalTypeThawedEmbryo())){
+                disposalTypeList.add(DataSubmissionConsts.DISPOSAL_TYPE_THAWED_EMBRYO);
+            }
+            if(arDto.getDisposalTypeFrozenSperm()!=null&& "on".equals(arDto.getDisposalTypeFrozenSperm())){
+                disposalTypeList.add(DataSubmissionConsts.DISPOSAL_TYPE_FROZEN_SPERM);
+            }
+            if(IaisCommonUtils.isNotEmpty(disposalTypeList)){
+                filter.put("disposalTypeList",disposalTypeList);
+            }
+            if(arDto.getDisposedTotalNumber()!=null){
+                try {
+                    int disposedTotalNumber=Integer.parseInt(arDto.getDisposedTotalNumber());
+                    filter.put("disposedTotalNumber", disposedTotalNumber);
+                }catch (Exception e){
+                    log.error("Total No. Disposed Of not int");
+                }
+            }
+
+            if(arDto.getDisposalDateFrom()!=null){
+                String disposalDateFrom = Formatter.formatDateTime(arDto.getDisposalDateFrom(),
+                        SystemAdminBaseConstants.DATE_FORMAT);
+                filter.put("disposalDateFrom", disposalDateFrom);
+            }
+
+            if(arDto.getDisposalDateTo()!=null){
+                String disposalDateTo = Formatter.formatDateTime(arDto.getDisposalDateTo(),
+                        SystemAdminBaseConstants.DATE_FORMAT);
+                filter.put("disposalDateTo", disposalDateTo);
+            }
+            if(arDto.getTransferInOrOut()!=null){
+                if("0".equals(arDto.getTransferInOrOut())){
+                    filter.put("transferInOrOut", "in");
+                }
+                if("1".equals(arDto.getTransferInOrOut())){
+                    filter.put("transferInOrOut", "out");
+                }
+            }
+
         }
 
         filterParameter.setFilters(filter);

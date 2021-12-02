@@ -119,6 +119,14 @@
                 left join ds_ar_cycle_stage dacs on dacs.SUBMISSION_ID=dds.ID
                 left join ds_end_cycle_stage decs on decs.SUBMISSION_ID=dds.ID
                 left join ds_donor_sample donor on donor.SUBMISSION_ID=dds.ID
+                left join ds_fertilisation_stage dfs on dfs.SUBMISSION_ID=dds.ID
+                left join ds_embryo_transferred_outcome_stage detos on detos.SUBMISSION_ID=dds.ID
+                left join ds_pregnancy_outcome_stage dpos on dpos.SUBMISSION_ID=dds.ID
+                left join ds_ar_treatment_subsidies_stage datss on datss.SUBMISSION_ID=dds.ID
+                left join ds_pgt_stage dps on dps.SUBMISSION_ID=dds.ID
+                left join ds_iui_treatment_subsidies_stage ditss on ditss.SUBMISSION_ID=dds.ID
+                left join ds_disposal_stage ddiss on ddiss.SUBMISSION_ID=dds.ID
+                left join ds_transfer_in_out_stage dtios on dtios.SUBMISSION_ID=dds.ID
                 where 1=1
                 <#if patientName??> AND  charindex(:patientName, dpi.NAME) >0</#if>
                 <#if patientIdType??> AND  charindex(:patientIdType, dpi.ID_TYPE) >0</#if>
@@ -152,6 +160,28 @@
 
                 <#if donorName??> AND  charindex(:donorName, donor.DONOR_NAME) >0</#if>
                 <#if donorIdNumber??> AND  charindex(:donorIdNumber, donor.ID_NUMBER) >0</#if>
+                <#if FROM_DONOR??> AND  :FROM_DONOR = dfs.IS_FROM_DONOR </#if>
+                <#if FROM_DONOR_TISSUE??> AND  :FROM_DONOR_TISSUE = dfs.IS_FROM_DONOR_TISSUE </#if>
+                <#if FROM_HUSBAND??> AND  :FROM_HUSBAND = dfs.IS_FROM_HUSBAND </#if>
+                <#if FROM_HUSBAND_TISSUE??> AND  :FROM_HUSBAND_TISSUE = dfs.IS_FROM_HUSBAND_TISSUE </#if>
+                <#if gift??> AND  :gift = dfs.IS_GIFT_USED </#if>
+                <#if icsi??> AND  :icsi = dfs.IS_ICSI_USED </#if>
+                <#if zift??> AND  :zift = dfs.IS_ZIFT_USED </#if>
+                <#if ivf??> AND  :ivf = dfs.IS_IVF_USED </#if>
+                <#if embTransNums??> AND dfs.TRANSFER_NUM in( :embTransNums)</#if>
+                <#if ageEmbryosNums??> AND (dfs.FIRST_EMBRYO_AGE in( :ageEmbryosNums) or dfs.SECOND_EMBRYO_AGE in( :ageEmbryosNums) or dfs.THIRD_EMBRYO_AGE in( :ageEmbryosNums)) </#if>
+                <#if outcomeEmbryoTransferreds??> AND detos.TRANSFERED_OUTCOME in( :outcomeEmbryoTransferreds) </#if>
+                <#if birthEventsTotalList??> AND (dpos.MALE_LIVE_BIRTH_NUM+dpos.FEMALE_LIVE_BIRTH_NUM) in( :birthEventsTotalList) </#if>
+                <#if deliveryDateFrom??> AND dpos.DELIVERY_DATE >= convert(date,:deliveryDateFrom)</#if>
+                <#if deliveryDateTo??> AND dpos.DELIVERY_DATE <= convert(date,:deliveryDateTo)</#if>
+                <#if patientART??> AND  :patientART = datss.ART_CO_FUNDING </#if>
+                <#if patientIUI??> AND  :patientIUI = ditss.IUI_CO_FUNDING </#if>
+                <#if patientPGT??> AND  :patientPGT = dps.IS_PGT_CONFUNDING </#if>
+                <#if disposalTypeList??> AND ddiss.DISPOSED_TYPE in( :disposalTypeList)</#if>
+                <#if disposedTotalNumber??> AND (ddiss.IMMATURE+ddiss.ABNORMALLY_FERTILISED+ddiss.UNFERTILISED+ddiss.ATRETIC+ddiss.DAMAGED+ddiss.LYSED_OR_DEGENERATED+ddiss.UNHEALTHY_NUM+ddiss.OTHER_DISCARDED_NUM) = :disposedTotalNumber</#if>
+                <#if disposalDateFrom??> AND ddiss.CREATED_DT >= convert(date,:disposalDateFrom)</#if>
+                <#if disposalDateTo??> AND ddiss.CREATED_DT <= convert(date,:disposalDateTo)</#if>
+                <#if transferInOrOut??> AND  :transferInOrOut = dtios.TRANSFER_TYPE </#if>
 
 
         ]]>

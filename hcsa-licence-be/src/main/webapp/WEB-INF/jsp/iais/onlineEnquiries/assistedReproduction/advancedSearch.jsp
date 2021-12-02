@@ -861,6 +861,18 @@
                                             <div class="form-check">
                                                 <input class="form-check-input"
                                                        type="checkbox"
+                                                       name="disposalTypeThawedOocyte" id="disposalTypeThawedOocyte"
+                                                       <c:if test="${ assistedReproductionEnquiryFilterDto.disposalTypeThawedOocyte =='on'  }">checked</c:if>
+                                                       aria-invalid="false">
+                                                <label class="form-check-label"
+                                                       for="disposalTypeThawedOocyte"><span
+                                                        class="check-square"></span>Thawed Oocyte(s)</label>
+                                            </div>
+                                        </iais:value>
+                                        <iais:value  cssClass="col-md-12">
+                                            <div class="form-check">
+                                                <input class="form-check-input"
+                                                       type="checkbox"
                                                        name="disposalTypeFreshEmbryo" id="disposalTypeFreshEmbryo"
                                                        <c:if test="${ assistedReproductionEnquiryFilterDto.disposalTypeFreshEmbryo =='on'  }">checked</c:if>
                                                        aria-invalid="false">
@@ -893,13 +905,25 @@
                                                         class="check-square"></span>Thawed Embryo(s)</label>
                                             </div>
                                         </iais:value>
+                                        <iais:value  cssClass="col-md-12">
+                                            <div class="form-check">
+                                                <input class="form-check-input"
+                                                       type="checkbox"
+                                                       name="disposalTypeFrozenSperm" id="disposalTypeFrozenSperm"
+                                                       <c:if test="${ assistedReproductionEnquiryFilterDto.disposalTypeFrozenSperm =='on'  }">checked</c:if>
+                                                       aria-invalid="false">
+                                                <label class="form-check-label"
+                                                       for="disposalTypeFrozenSperm"><span
+                                                        class="check-square"></span>Frozen Sperm</label>
+                                            </div>
+                                        </iais:value>
                                     </div>
                                 </iais:row>
 
                                 <iais:row>
                                     <iais:field width="4" value="Total No. Disposed Of"/>
                                     <iais:value width="6" cssClass="col-md-6"  >
-                                        <input type="text"  id="disposedTotalNumber"  name="disposedTotalNumber" value="${assistedReproductionEnquiryFilterDto.disposedTotalNumber}" >
+                                        <input type="number" oninput="if(value.length>2)value=value.slice(0,2)" style="margin-bottom: 0px;" id="disposedTotalNumber"  name="disposedTotalNumber" value="${assistedReproductionEnquiryFilterDto.disposedTotalNumber}" >
                                     </iais:value>
                                 </iais:row>
 
