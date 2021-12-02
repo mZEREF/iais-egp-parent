@@ -1207,7 +1207,6 @@ public class NewApplicationDelegator {
         ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_VALUE, crudActionValue);
         ParamUtil.setRequestAttr(bpc.request, crud_action_additional, crud_action_additional);
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
-        Map<String, CommonsMultipartFile> commonsMultipartFileMap = IaisCommonUtils.genNewHashMap();
         List<AppGrpPrimaryDocDto> newAppGrpPrimaryDocDtoList = IaisCommonUtils.genNewArrayList();
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
         AppSubmissionDto oldSubmissionDto = NewApplicationHelper.getOldSubmissionDto(bpc.request,appSubmissionDto.getAppType());
@@ -2853,7 +2852,7 @@ public class NewApplicationDelegator {
                 bpc.request.setAttribute(NewApplicationConstant.SHOW_OTHER_ERROR, NewApplicationHelper.getErrorMsg(errorListMap));
                 return;
             }
-            licenseeAffectedList.stream().forEach(dto -> {
+            licenseeAffectedList.parallelStream().forEach(dto -> {
                 dto.setSubLicenseeDto(MiscUtil.transferEntityDto(appSubmissionDto.getSubLicenseeDto(), SubLicenseeDto.class));
                 AppEditSelectDto changeSelectDto = new AppEditSelectDto();
                 changeSelectDto.setLicenseeEdit(true);
@@ -4918,7 +4917,7 @@ public class NewApplicationDelegator {
                     premIndexNo = "";
                 }
                 String saveFileMapKey = premIndexNo + appGrpPrimaryDocDto.getSvcComDocId() + appGrpPrimaryDocDto.getSeqNum();
-                File file = saveFileMap.get(saveFileMapKey);
+                File file = passValidateFileMap.get(saveFileMapKey);
                 if (file != null) {
                     appGrpPrimaryDocDto.setFileRepoId(fileRepoIdList.get(i));
                     i++;
