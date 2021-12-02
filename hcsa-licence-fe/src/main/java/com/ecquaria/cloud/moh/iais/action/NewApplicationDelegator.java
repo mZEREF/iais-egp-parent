@@ -628,7 +628,7 @@ public class NewApplicationDelegator {
             licenseeId = loginContext.getLicenseeId();
         }
 
-        //premise select
+        //premise select select options
         NewApplicationHelper.setPremSelect(bpc.request, licAppGrpPremisesDtoMap);
         ParamUtil.setSessionAttr(bpc.request, LICAPPGRPPREMISESDTOMAP, (Serializable) licAppGrpPremisesDtoMap);
         //addressType

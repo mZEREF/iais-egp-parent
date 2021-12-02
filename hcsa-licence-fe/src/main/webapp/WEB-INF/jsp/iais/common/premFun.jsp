@@ -282,7 +282,7 @@
                                 $(this).find('input.floorNo').val(opData.floorNo);
                                 $(this).find('input.unitNo').val(opData.unitNo);
                             });
-                            var length =  $currForm.find('div.operationDiv').length;
+                            var length = $currForm.find('div.operationDiv').length;
                             console.log('Floor and Unit (premSelect): ' + length);
                             $premContent.find('.opLength').val(length);
 
@@ -1329,7 +1329,7 @@
                     if(data.resCode == 200){
                         // console.log(data.resultJson)
                         $currPremForm.find('div.addOpDiv').before(data.resultJson+'');
-                        var length =  $currPremForm.find('div.operationDiv').length;
+                        var length = $currPremForm.find('div.operationDiv').length;
                         console.log('Floor and Unit (addOperational): ' + length);
                         $premContentEle.find('.opLength').val(length);
 
@@ -1367,7 +1367,7 @@
                 $(this).find('input.floorNo').attr("name",premValue+premTypeVal+'FloorNo'+k);
                 $(this).find('input.unitNo').attr("name",premValue+premTypeVal+'UnitNo'+k);
             });
-            var length =  $currPremForm.find('div.operationDiv').length;
+            var length = $currPremForm.find('div.operationDiv').length;
             console.log('Floor and Unit (operationDel): ' + length);
             $premContentEle.find('.opLength').val(length);
         });
