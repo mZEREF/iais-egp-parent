@@ -49,7 +49,7 @@ public class ArSubFreezingValidator implements CustomizeValidator {
                             oocytesOrEmbryos = patientInventoryDto.getCurrentThawedEmbryos();
                         }
                     }
-                    if(cryopreservedNum <= 0) {
+                    if(cryopreservedNum < 0) {
                         errMap.put("cryopreservedNum", "GENERAL_ERR0027");
                     } else if (cryopreservedNum > 99) {
                         errMap.put("cryopreservedNum", MessageUtil.replaceMessage("DS_ERR009", "No. Cryopreserved", "field"));
