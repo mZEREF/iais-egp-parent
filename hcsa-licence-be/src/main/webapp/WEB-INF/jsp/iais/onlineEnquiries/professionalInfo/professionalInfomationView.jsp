@@ -98,7 +98,7 @@
                 <td>
                     <label class="col-xs-0 col-md-5 control-label">Service Name</label>
                     <div class="col-sm-7 col-md-5 col-xs-6">
-                        <iais:select name="serviceName" id="serviceName" options="svcNameSelect"
+                        <iais:select name="serviceName" id="serviceName" options="svcNameSelect" needSort="true"
                                      firstOption="Please Select" value="${param.serviceName}"></iais:select>
                         <span id="error_serviceName" name="iaisErrorMsg" class="error-msg"></span>
                     </div>

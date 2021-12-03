@@ -1013,6 +1013,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
         List<PageShowFileDto> pageDtos = IaisCommonUtils.genNewArrayList();
         List<File> files = IaisCommonUtils.genNewArrayList();
         List<AppDeclarationDocDto> docDtos = IaisCommonUtils.genNewArrayList();
+        List<AppDeclarationDocDto> oldDocDtos = IaisCommonUtils.genNewArrayList();
         SingeFileUtil singeFileUtil = SingeFileUtil.getInstance();
         fileMap.forEach((s, file) -> {
             // the current uploaed files
@@ -1056,7 +1057,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                     docDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
                     docDto.setSeqNum(Integer.valueOf(index));
                     docDto.setVersion(Optional.ofNullable(pageShowFileDto.getVersion()).orElseGet(() -> 1));
-                    docDtos.add(docDto);
+                    oldDocDtos.add(docDto);
                     pageDtos.add(pageShowFileDto);
                 }
             }
@@ -1081,6 +1082,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                 }
             }
         }
+        docDtos.addAll(oldDocDtos);
         return docDtos;
     }
 
@@ -1218,7 +1220,8 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
         SubmitResp submitResp = eventBusHelper.submitAsyncRequest(appSubmissionRequestInformationDto,
                 generateIdClient.getSeqId().getEntity(),
                 EventBusConsts.SERVICE_NAME_APPSUBMIT, EventBusConsts.OPERATION_REQUEST_RFC_RENEW_INFORMATION_SUBMIT,
-                appSubmissionRequestInformationDto.getEventRefNo(), process);
+                appSubmissionRequestInformationDto.getEventRefNo(), "Submit RFC Renew Application",
+                appSubmissionRequestInformationDto.getAppSubmissionDto().getAppGrpId());
         AppSubmissionDto appSubmissionDto = appSubmissionRequestInformationDto.getAppSubmissionDto();
         return appSubmissionDto;
     }
@@ -1914,7 +1917,8 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
         SubmitResp submitResp = eventBusHelper.submitAsyncRequest(appSubmissionRequestInformationDto,
                 generateIdClient.getSeqId().getEntity(),
                 EventBusConsts.SERVICE_NAME_APPSUBMIT, EventBusConsts.OPERATION_REQUEST_INFORMATION,
-                appSubmissionRequestInformationDto.getEventRefNo(), process);
+                appSubmissionRequestInformationDto.getEventRefNo(), "Submit Application",
+                appSubmissionRequestInformationDto.getAppSubmissionDto().getAppGrpId());
     }
 
     private void premisesListInformationEventBus(AppSubmissionRequestInformationDto appSubmissionRequestInformationDto,
@@ -1924,7 +1928,8 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                 generateIdClient.getSeqId().getEntity(),
                 EventBusConsts.SERVICE_NAME_APPSUBMIT,
                 EventBusConsts.OPERATION_REQUEST_INFORMATION,
-                appSubmissionRequestInformationDto.getEventRefNo(), process);
+                appSubmissionRequestInformationDto.getEventRefNo(), "Submit Application Premises List",
+                appSubmissionRequestInformationDto.getAppSubmissionDto().getAppGrpId());
     }
 
     private  void eventBus(AppSubmissionDto appSubmissionDto, Process process){
@@ -1934,7 +1939,8 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
         SubmitResp submitResp = eventBusHelper.submitAsyncRequest(appSubmissionDto, generateIdClient.getSeqId().getEntity(),
                 EventBusConsts.SERVICE_NAME_APPSUBMIT,
                 EventBusConsts.OPERATION_NEW_APP_SUBMIT,
-                appSubmissionDto.getEventRefNo(), process);
+                appSubmissionDto.getEventRefNo(), "Submit Application",
+                appSubmissionDto.getAppGrpId());
     }
 
     @Override
@@ -2471,15 +2477,15 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
     @Override
     public List<String> doPreviewSubmitValidate(Map<String, String> errorMap, AppSubmissionDto appSubmissionDto,
             boolean isRfi) {
-//        List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
-//        if (!IaisCommonUtils.isEmpty(appGrpPremisesDtoList)) {
-//            for (AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtoList) {
-//                NewApplicationHelper.setWrkTime(appGrpPremisesDto);
-//            }
-//            appSubmissionDto.setAppGrpPremisesDtoList(appGrpPremisesDtoList);
-//        }
-//        return doPreviewSubmitValidate(errorMap, appSubmissionDto, null, null, isRfi, null);
-        return IaisCommonUtils.genNewArrayList();
+        return IaisCommonUtils.genNewArrayList(0);
+        /*List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
+        if (!IaisCommonUtils.isEmpty(appGrpPremisesDtoList)) {
+            for (AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtoList) {
+                NewApplicationHelper.setWrkTime(appGrpPremisesDto);
+            }
+            appSubmissionDto.setAppGrpPremisesDtoList(appGrpPremisesDtoList);
+        }
+        return doPreviewSubmitValidate(errorMap, appSubmissionDto, null, null, isRfi, null);*/
     }
 
     private List<String> doPreviewSubmitValidate(Map<String, String> errorMap, AppSubmissionDto appSubmissionDto,

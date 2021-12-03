@@ -462,7 +462,7 @@ public class MohIntranetUserDelegator {
         }
 
         for (Map.Entry<String, String> e :alreadyAssignRoleOptionFull.entrySet()
-             ) {
+        ) {
             assignRoleOptionFull.remove(e.getKey());
         }
         ParamUtil.setRequestAttr(bpc.request, "assignRoleOption", sortByValue(assignRoleOptionFull));//Professional Screening  - Nursing Home
@@ -691,7 +691,7 @@ public class MohIntranetUserDelegator {
             //add group
             List<UserGroupCorrelationDto> userGroupCorrelationDtos = IaisCommonUtils.genNewArrayList();
             for (OrgUserRoleDto role:orgUserRoleDtoList
-                 ) {
+            ) {
                 switch (role.getRoleName()){
                     case RoleConsts.USER_ROLE_AO1:
                         groupAo1Ids.forEach((groupId, isLeader) -> {

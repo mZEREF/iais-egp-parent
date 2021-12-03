@@ -125,7 +125,11 @@ public class ValidateVehicle implements ValidateFlow {
     private String getValue(AppSvcVehicleDto asv, String name) {
         String val = null;
         if (VEHICLE_NAME.equals(name)) {
-            val = asv.getVehicleName();
+            if (asv.isDummyVehNum()){
+                val = asv.getVehicleName();
+            }else {
+                val = asv.getVehicleNum();
+            }
         } else if (CHASSIS_NAME.equals(name)) {
             val = asv.getChassisNum();
         } else if (ENGINE_NAME.equals(name)) {

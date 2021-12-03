@@ -18,6 +18,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigExce
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcStageWorkingGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterMessageDto;
+import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.HcsaTaskAssignDto;
 import com.ecquaria.cloud.moh.iais.common.dto.message.ErrorMsgContent;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
@@ -29,6 +30,7 @@ import com.ecquaria.cloud.moh.iais.constant.ChecklistConstant;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.service.InboxMsgService;
 import com.ecquaria.cloud.moh.iais.service.InspectionAssignTaskService;
+import com.ecquaria.cloud.moh.iais.service.InspectionService;
 import com.ecquaria.cloud.moh.iais.service.LicenseeService;
 import com.ecquaria.cloud.moh.iais.service.client.EmailClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
@@ -213,6 +215,7 @@ public final class ChecklistHelper {
 
     public static void sendModifiedChecklistEmailToAOStage(ApplicationViewDto appViewDto, String mailSender){
         InspectionAssignTaskService inspectionAssignTaskService = SpringContextHelper.getContext().getBean(InspectionAssignTaskService.class);
+        InspectionService inspectionService = SpringContextHelper.getContext().getBean(InspectionService.class);
         NotificationHelper notificationHelper = SpringContextHelper.getContext().getBean(NotificationHelper.class);
         EmailClient emailClient = SpringContextHelper.getContext().getBean(EmailClient.class);
         HcsaConfigClient hcsaConfigClient = SpringContextHelper.getContext().getBean(HcsaConfigClient.class);
@@ -236,7 +239,10 @@ public final class ChecklistHelper {
         String refNum = applicationDto.getApplicationNo();
 
         AppGrpPremisesDto appGrpPremisesDto = inspectionAssignTaskService.getAppGrpPremisesDtoByAppGroId(appPremisesCorrelationId);
-        String address = inspectionAssignTaskService.getAddress(appGrpPremisesDto);
+        List<String> appGroupIds = IaisCommonUtils.genNewArrayList();
+        appGroupIds.add(applicationDto.getAppGrpId());
+        HcsaTaskAssignDto hcsaTaskAssignDto = inspectionService.getHcsaTaskAssignDtoByAppGrp(appGroupIds);
+        String address = inspectionAssignTaskService.getAddress(appGrpPremisesDto, hcsaTaskAssignDto);
         String hciName = "-";
         String hciCode = "-";
         String svcName = "-";

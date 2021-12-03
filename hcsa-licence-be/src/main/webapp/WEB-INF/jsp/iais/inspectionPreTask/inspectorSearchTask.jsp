@@ -94,7 +94,7 @@
                       <iais:row>
                         <iais:field value="HCI Address"/>
                         <iais:value width="18">
-                          <input type="text" name="hci_address" value="${supTaskSearchParam.filters['hci_address']}" />
+                          <input type="text" name="hci_address" value="${superPoolHciAddress}" />
                         </iais:value>
                       </iais:row>
                       <iais:row>

@@ -277,12 +277,14 @@
                             }
                             $currForm.find('div.addOpDiv').before(data.operationHtml);
 
-
                             $currForm.find('div.operationDivGroup div.operationDiv').each(function (k) {
                                 var opData = data.appPremisesOperationalUnitDtos[k];
                                 $(this).find('input.floorNo').val(opData.floorNo);
                                 $(this).find('input.unitNo').val(opData.unitNo);
                             });
+                            var length = $currForm.find('div.operationDiv').length;
+                            console.log('Floor and Unit (premSelect): ' + length);
+                            $premContent.find('.opLength').val(length);
 
                             var allDayTime = "0";
                             //weekly
@@ -662,9 +664,9 @@
             premContent.find('span.multi-select-button').css('color','');
             premContent.find('.multi-select-container input[type="checkbox"]').prop('disabled',false);
 
-            console.log(premContent.find('.weeklyDiv').length);
-            console.log(premContent.find('.pubHolidayDiv').length);
-            console.log(premContent.find('.eventDiv').length);
+            console.log(premContent.find('.weeklyDiv').length
+                + ' : ' + premContent.find('.pubHolidayDiv').length
+                + ' : ' + premContent.find('.eventDiv').length);
             var premDivName = "";
             if ("ONSITE" == premType) {
                 premDivName = 'new-premise-form-on-site';
@@ -1327,7 +1329,8 @@
                     if(data.resCode == 200){
                         // console.log(data.resultJson)
                         $currPremForm.find('div.addOpDiv').before(data.resultJson+'');
-                        var length =  $currPremForm.find('div.operationDiv').length;
+                        var length = $currPremForm.find('div.operationDiv').length;
+                        console.log('Floor and Unit (addOperational): ' + length);
                         $premContentEle.find('.opLength').val(length);
 
                         operationDel();
@@ -1364,7 +1367,8 @@
                 $(this).find('input.floorNo').attr("name",premValue+premTypeVal+'FloorNo'+k);
                 $(this).find('input.unitNo').attr("name",premValue+premTypeVal+'UnitNo'+k);
             });
-            var length =  $currPremForm.find('div.operationDiv').length;
+            var length = $currPremForm.find('div.operationDiv').length;
+            console.log('Floor and Unit (operationDel): ' + length);
             $premContentEle.find('.opLength').val(length);
         });
     }

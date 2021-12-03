@@ -237,7 +237,9 @@ public class WithOutRenewalDelegator {
             licenceIDList.add(appSubmissionDtoDraft.getLicenceId());
             List<AppSubmissionDto> submissionDtos = outRenewalService.getAppSubmissionDtos(licenceIDList);
             appSubmissionDtoDraft.setOldRenewAppSubmissionDto(setMaxFileIndexIntoSession(bpc.request,submissionDtos.get(0)));
+            log.info("---------run setDraftRfCData start------------");
             setDraftRfCData(bpc.request,draftNo,appSubmissionDtoDraft);
+            log.info("---------run setDraftRfCData end------------");
         }
 
         //get licensee ID
@@ -464,6 +466,7 @@ public class WithOutRenewalDelegator {
 
     private void setDraftRfCData(HttpServletRequest request,String draftNo, AppSubmissionDto appSubmissionDto){
         if(StringUtil.isNotEmpty(draftNo)){
+            appSubmissionDto.setLicenseeId(getLicenseeIdByLoginInfo(request));
             newApplicationDelegator.setSelectLicence(appSubmissionDto,request);
         }else {
             Enumeration<?> names = request.getSession().getAttributeNames();
@@ -1026,30 +1029,10 @@ public class WithOutRenewalDelegator {
 
     private void setRfcPremisesSubmissionDto(AppSubmissionDto appSubmissionDtoByLicenceId,String licenseeId, List<AppGrpPremisesDto> appGrpPremisesDtoList, AppSubmissionDto appSubmissionDto,int i,AppEditSelectDto rfcAppEditSelectDto) throws Exception {
         initRfcSubmissionDto(appSubmissionDtoByLicenceId,licenseeId);
-        String address = appGrpPremisesDtoList.get(i).getAddress();
-        List<AppPremisesOperationalUnitDto> appPremisesOperationalUnitDtos1 = appGrpPremisesDtoList.get(i).getAppPremisesOperationalUnitDtos();
         String premisesIndexNo = appSubmissionDtoByLicenceId.getAppGrpPremisesDtoList().get(0).getPremisesIndexNo();
-        boolean equalsAddress;
-        boolean flag;
-        boolean eqUnitDto;
-        int hciNameChange;
-        String oldAddress = appSubmissionDtoByLicenceId.getAppGrpPremisesDtoList().get(0).getAddress();
-        equalsAddress = oldAddress.equals(address);
-        boolean eqHciNameChange = EqRequestForChangeSubmitResultChange.eqHciNameChange(appSubmissionDtoByLicenceId.getAppGrpPremisesDtoList().get(0), appSubmissionDto.getAppGrpPremisesDtoList().get(i));
-        hciNameChange=appSubmissionDtoByLicenceId.getAppGrpPremisesDtoList().get(0).getHciNameChanged();
-        if(eqHciNameChange){
-            hciNameChange=0;
-        }
-        boolean b = EqRequestForChangeSubmitResultChange.compareHciName(appSubmissionDtoByLicenceId.getAppGrpPremisesDtoList().get(0), appSubmissionDto.getAppGrpPremisesDtoList().get(i));
-        List<AppPremisesOperationalUnitDto> appPremisesOperationalUnitDtos = appSubmissionDtoByLicenceId.getAppGrpPremisesDtoList().get(0).getAppPremisesOperationalUnitDtos();
-        eqUnitDto = EqRequestForChangeSubmitResultChange.eqOperationalUnitDtoList(appPremisesOperationalUnitDtos1, appPremisesOperationalUnitDtos);
-
-        if( equalsAddress && b && !eqUnitDto){
-            flag=true;
-        }else {
-            flag=false;
-        }
-
+        boolean flag = EqRequestForChangeSubmitResultChange.isChangeGrpPremises(Arrays.asList(appSubmissionDtoByLicenceId.getAppGrpPremisesDtoList().get(0)),Arrays.asList(appSubmissionDto.getAppGrpPremisesDtoList().get(i)));
+        int hciNameChange = EqRequestForChangeSubmitResultChange.eqHciNameChange(appSubmissionDtoByLicenceId.getAppGrpPremisesDtoList().get(0), appSubmissionDto.getAppGrpPremisesDtoList().get(i)) ?
+                0 : appSubmissionDtoByLicenceId.getAppGrpPremisesDtoList().get(0).getHciNameChanged();
         setPremisesEditAndReSetAppGrpPremisesDto(appSubmissionDtoByLicenceId,appGrpPremisesDtoList.get(i),flag,rfcAppEditSelectDto.isPremisesEdit());
         appSubmissionDtoByLicenceId.getAppGrpPremisesDtoList().get(0).setPremisesIndexNo(premisesIndexNo);
         appSubmissionDtoByLicenceId.getAppGrpPremisesDtoList().get(0).setHciNameChanged(hciNameChange);
@@ -1159,7 +1142,7 @@ public class WithOutRenewalDelegator {
                     appSubmissionDto.setIsBundledFee(1);
                     isBundledFee=true;
                 }
-                if(hcsaServiceDto.getSvcCode().equals(AppServicesConsts.SERVICE_CODE_NUCLEAR_MEDICINE_ASSAY)||hcsaServiceDto.getSvcCode().equals(AppServicesConsts.SERVICE_CODE_NUCLEAR_MEDICINE_IMAGING)){
+                if(hcsaServiceDto.getSvcType().equals(ApplicationConsts.SERVICE_CONFIG_TYPE_SUBSUMED)){
                     appSubmissionDto.setIsSpecifiedFee(1);
                 }
             }catch (Exception e){

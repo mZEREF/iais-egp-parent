@@ -79,31 +79,31 @@ public class HcsaFileAjaxController {
         }
         String errorMessage = getErrorMessage(selectedFile);
         MessageDto messageCode = new MessageDto();
-        if(!StringUtil.isEmpty(errorMessage)){
-            messageCode.setMsgType("N");
-            messageCode.setDescription(errorMessage);
-            return JsonUtil.toJson(messageCode);
-        }else {
-            messageCode.setMsgType("Y");
-        }
-        File toFile = null;
-        String tempFolder = null;
-        try{
-            String toFileName = FilenameUtils.getName(selectedFile.getOriginalFilename());
-            if(reloadIndex == -1){
-                ParamUtil.setSessionAttr(request,SEESION_FILES_MAP_AJAX+fileAppendId+SEESION_FILES_MAP_AJAX_MAX_INDEX,size+1);
-                if (needMaxGlobal) {
-                    ParamUtil.setSessionAttr(request, GLOBAL_MAX_INDEX_SESSION_ATTR, size + 1);
-                }
-                tempFolder = request.getSession().getId() + fileAppendId + size;
-                toFile = FileUtils.multipartFileToFile(selectedFile, tempFolder, toFileName);
-                map.put(fileAppendId + size, toFile);
-            }else {
-                tempFolder = request.getSession().getId() + fileAppendId + reloadIndex;
-                toFile = FileUtils.multipartFileToFile(selectedFile, tempFolder, toFileName);
-                map.put(fileAppendId + reloadIndex, toFile);
-                size = reloadIndex;
-            }
+         if(!StringUtil.isEmpty(errorMessage)){
+             messageCode.setMsgType("N");
+             messageCode.setDescription(errorMessage);
+             return JsonUtil.toJson(messageCode);
+         }else {
+             messageCode.setMsgType("Y");
+         }
+         File toFile = null;
+         String tempFolder = null;
+         try{
+             String toFileName = FilenameUtils.getName(selectedFile.getOriginalFilename());
+             if(reloadIndex == -1){
+                 ParamUtil.setSessionAttr(request,SEESION_FILES_MAP_AJAX+fileAppendId+SEESION_FILES_MAP_AJAX_MAX_INDEX,size+1);
+                 if (needMaxGlobal) {
+                     ParamUtil.setSessionAttr(request, GLOBAL_MAX_INDEX_SESSION_ATTR, size + 1);
+                 }
+                 tempFolder = request.getSession().getId() + fileAppendId + size;
+                 toFile = FileUtils.multipartFileToFile(selectedFile, tempFolder, toFileName);
+                 map.put(fileAppendId + size, toFile);
+             }else {
+                 tempFolder = request.getSession().getId() + fileAppendId + reloadIndex;
+                 toFile = FileUtils.multipartFileToFile(selectedFile, tempFolder, toFileName);
+                 map.put(fileAppendId + reloadIndex, toFile);
+                 size = reloadIndex;
+             }
 
         }catch (Exception e){
             log.error(e.getMessage(),e);
@@ -218,8 +218,9 @@ public class HcsaFileAjaxController {
                     byte[] fileData = FileUtils.readFileToByteArray(file);
                     if(fileData != null){
                         try {
+                            String fileName = URLEncoder.encode(file.getName(), StandardCharsets.UTF_8.toString());
                             response.addHeader("Content-Disposition", "attachment;filename=\""
-                                    +  URLEncoder.encode(file.getName(), StandardCharsets.UTF_8.toString()) + "\"");
+                                    +  fileName.replaceAll("\\+", "%20") + "\"");
                             response.addHeader("Content-Length", "" + fileData.length);
                             response.setContentType("application/x-octet-stream");
                         }catch (Exception e){

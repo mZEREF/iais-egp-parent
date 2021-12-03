@@ -32,7 +32,7 @@
 
                 <div class="col-md-7 col-xs-7 text-right">
                     <c:if test="${index - clinicalDirectorConfig.mandatoryCount >=0}">
-                        <div class="">
+                        <div class="removeClinicalDirectorBtn">
                             <h4 class="text-danger">
                                 <em class="fa fa-times-circle del-size-36 removeBtn cursorPointer"></em>
                             </h4>
