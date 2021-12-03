@@ -57,12 +57,10 @@ public class DonorSampleDtoValidator implements CustomizeValidator {
         }
         if(donorSampleDtoFromDb != null){
             sampleKey = donorSampleDtoFromDb.getSampleKey();
-        }
-        if(StringUtil.isNotEmpty(sampleKey)){
             List<DonorSampleAgeDto> donorSampleAgeDtos =  arDataSubmissionService.getDonorSampleAgeDtoBySampleKey(sampleKey);
             donorSampleDtoFromDb.setDonorSampleAgeDtos(donorSampleAgeDtos);
-            donorSampleDto.setSampleKey(sampleKey);
-        }else{
+        }
+        if(StringUtil.isEmpty(sampleKey)){
             log.info(StringUtil.changeForLog("Generated a ned samplekey"));
             donorSampleDto.setSampleKey(generateIdClient.getSeqId().getEntity());
         }
@@ -102,7 +100,6 @@ public class DonorSampleDtoValidator implements CustomizeValidator {
         for(int i =0 ;i<ages.length;i++){
             String age = ages[i];
             log.info(StringUtil.changeForLog("The age is -->:"+age));
-            boolean repetition = isRepetition(age,ages,donorSampleDtoFromDb);
             //empty
             if(StringUtil.isEmpty(age)){
                 map.put("ages"+i,"GENERAL_ERR0006");
@@ -118,17 +115,18 @@ public class DonorSampleDtoValidator implements CustomizeValidator {
                 log.info(StringUtil.changeForLog("The sampleType is -->:"+sampleType));
                 int ageInt = Integer.valueOf(age);
                 if(DataSubmissionConsts.DONOR_SAMPLE_TYPE_SPERM.equals(sampleType)){
-                    if(ageInt<=21 || ageInt>=40 ){
+                    if(ageInt<21 || ageInt>40 ){
                         map.put("ages"+i,"DS_ERR044");
                     }
                 }else if(DataSubmissionConsts.DONOR_SAMPLE_TYPE_OOCYTE.equals(sampleType)
                         ||DataSubmissionConsts.DONOR_SAMPLE_TYPE_EMBRYO.equals(sampleType)){
-                    if(ageInt<=21 || ageInt>=35 ){
+                    if(ageInt<21 || ageInt>35 ){
                         map.put("ages"+i,"DS_ERR045");
                     }
                 }
-             //Repetition
-            }else if(repetition){
+            }
+            //Repetition
+            if(IaisCommonUtils.isEmpty(map)&&isRepetition(age,ages,donorSampleDtoFromDb)){
                 map.put("ages"+i,"DS_ERR046");
             }
         }
@@ -170,7 +168,7 @@ public class DonorSampleDtoValidator implements CustomizeValidator {
             List<DonorSampleAgeDto> donorSampleAgeDtos = donorSampleDto.getDonorSampleAgeDtos();
             if(IaisCommonUtils.isNotEmpty(donorSampleAgeDtos)){
                 for(DonorSampleAgeDto donorSampleAgeDto : donorSampleAgeDtos){
-                    if(Integer.parseInt(age) == donorSampleAgeDto.getAge()){
+                    if(StringUtil.isNotEmpty(age) && Integer.parseInt(age) == donorSampleAgeDto.getAge()){
                         result = true;
                         log.info(StringUtil.changeForLog("The isRepetition exit in the old DonorSampleAgeDto"));
                         break;

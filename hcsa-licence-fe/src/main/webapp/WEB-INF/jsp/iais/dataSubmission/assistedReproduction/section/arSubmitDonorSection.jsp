@@ -73,7 +73,7 @@
                                            name="donorRelation"
                                            value="F"
                                            id = "donorRelationF"
-                                           <c:if test="${donorSampleDto.donorRelation == 'F'}">checked</c:if>
+                                           <c:if test="${donorSampleDto.donorRelation eq 'F'}">checked</c:if>
                                            aria-invalid="false">
                                     <label class="form-check-label"
                                            for="donorRelationF"><span
@@ -87,7 +87,7 @@
                                            name="donorRelation"
                                            value="R"
                                            id = "donorRelationR"
-                                           <c:if test="${!donorSampleDto.donorRelation == 'R'}">checked</c:if>
+                                           <c:if test="${donorSampleDto.donorRelation eq 'R'}">checked</c:if>
                                            aria-invalid="false">
                                     <label class="form-check-label"
                                            for="donorRelationR" ><span
