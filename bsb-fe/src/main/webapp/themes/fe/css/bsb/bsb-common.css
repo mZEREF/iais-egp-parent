@@ -34,6 +34,16 @@ label {
 .push-float-field-xs, .push-float-field-sm, .push-float-field-md, .push-float-field-lg {
 }
 
+.gap{
+    margin-top: 20px;
+}
+
+.box-shadow{
+    background-color: rgba(255, 255, 255, 1);
+    border-radius: 15px;
+    box-shadow: 0 0 15px #00000059;
+}
+
 @media screen and (max-width: 768px) {
     .push-float-field-xs {
         margin-bottom: 44px;
