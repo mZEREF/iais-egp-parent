@@ -98,23 +98,28 @@ public abstract class DonorCommonDelegator extends CommonDelegator{
             }else {
                 Map<String, String> errorMap = IaisCommonUtils.genNewHashMap(1);
                 arDonorDtos.forEach( donorDto -> {
-                    if(donorSampleDto.getId().equalsIgnoreCase(donorDto.getDonorSampleId())){
+                    if(donorSampleDto.getSampleKey().equalsIgnoreCase(donorDto.getDonorSampleKey())){
                             errorMap.put("validateDonor" +(arDonorDto.isDirectedDonation() ? "Yes" : "No") +arDonorDto.getArDonorIndex(), MessageUtil.replaceMessage("DS_ERR016","This donor ","field"));
+                        setDonorDtoByDonorSampleDto(donorDto,donorSampleDto);
                     }
                 });
                 if(errorMap.isEmpty()){
-                    arDonorDto.setRelation(donorSampleDto.getDonorRelation());
-                    List<DonorSampleAgeDto> ages = donorSampleDto.getDonorSampleAgeDtos();
-                    arDonorDto.setDonorSampleAgeDtos(ages);
-                    arDonorDto.setDonorSampleId(donorSampleDto.getId());
-                    if(IaisCommonUtils.isNotEmpty(ages)){
-                        arDonorDto.setResetDonor(AppConsts.NO);
-                        setAgeList(arDonorDto);
-                    }
+                    setDonorDtoByDonorSampleDto(arDonorDto,donorSampleDto);
                 }else {
                     ParamUtil.setRequestAttr(request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
                 }
             }
+        }
+    }
+
+    private void setDonorDtoByDonorSampleDto(DonorDto arDonorDto, DonorSampleDto donorSampleDto){
+        arDonorDto.setRelation(donorSampleDto.getDonorRelation());
+        List<DonorSampleAgeDto> ages = donorSampleDto.getDonorSampleAgeDtos();
+        arDonorDto.setDonorSampleAgeDtos(ages);
+        arDonorDto.setDonorSampleKey(donorSampleDto.getSampleKey());
+        if(IaisCommonUtils.isNotEmpty(ages)){
+            arDonorDto.setResetDonor(AppConsts.NO);
+            setAgeList(arDonorDto);
         }
     }
 
@@ -141,7 +146,7 @@ public abstract class DonorCommonDelegator extends CommonDelegator{
 
     private void clearDonorAges(DonorDto arDonorDto){
         arDonorDto.setAgeId(null);
-        arDonorDto.setDonorSampleId(null);
+        arDonorDto.setDonorSampleKey(null);
         arDonorDto.setAgeList(null);
         arDonorDto.setAge(null);
         arDonorDto.setRelation(null);
