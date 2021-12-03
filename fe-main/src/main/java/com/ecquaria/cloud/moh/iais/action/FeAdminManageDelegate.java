@@ -183,14 +183,18 @@ public class FeAdminManageDelegate {
             String officeNo = ParamUtil.getString(bpc.request,"officeNo");
             ParamUtil.setRequestAttr(request, UserConstants.IS_NEED_VALIDATE_FIELD, IaisEGPConstant.YES);
             FeUserDto feUserDto = (FeUserDto) ParamUtil.getSessionAttr(request, UserConstants.SESSION_USER_DTO);
+            String id = feUserDto.getId();
             ControllerHelper.get(request,feUserDto);
-            if(feUserDto.isCorpPass()){
-                feUserDto.setUserId(feUserDto.getUenNo() + "_" + idNo);
-            }else{
-                feUserDto.setUserId(idNo);
+            if(StringUtil.isEmpty(id)){
+                if(feUserDto.isCorpPass()){
+                    feUserDto.setUserId(feUserDto.getUenNo() + "_" + idNo);
+                }else{
+                    feUserDto.setUserId(idNo);
+                }
+                feUserDto.setIdType(IaisEGPHelper.checkIdentityNoType(idNo));
+                feUserDto.setIdentityNo(idNo);
             }
-            feUserDto.setIdType(IaisEGPHelper.checkIdentityNoType(idNo));
-            feUserDto.setIdentityNo(idNo);
+            feUserDto.setId(id);
             feUserDto.setRoles(roles);
             feUserDto.setOfficeTelNo(officeNo);
             if(AppConsts.YES.equalsIgnoreCase(ParamUtil.getString(request,"loadMyInfoData"))){
