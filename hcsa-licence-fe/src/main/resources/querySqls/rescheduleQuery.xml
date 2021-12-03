@@ -9,34 +9,7 @@
                 T2.id APP_CORR_ID,T4.ID APP_GRP_ID,
                 T3.HCI_CODE,T3.HCI_NAME,T3.VEHICLE_NO,T3.ID APP_GRP_PREM_ID,
                 T3.BLK_NO, T3.FLOOR_NO, T3.UNIT_NO, T3.STREET_NAME, T3.BUILDING_NAME,T3.POSTAL_CODE,
-                CONCAT(case T3.HCI_NAME
-                  when null then null
-                  when '' then null
-                  else ' '+T3.HCI_NAME end ,
-                  case T3.HCI_NAME
-                  when null then null
-                  when '' then null
-                  else ' '+T3.BLK_NO end ,
-                case T3.FLOOR_NO
-                  when null then null
-                  when '' then null
-                  else ' # '+T3.FLOOR_NO end
-               , case T3.UNIT_NO
-                  when null then null
-                  when '' then null
-                  else '-'+T3.UNIT_NO end
-               , case T3.POSTAL_CODE
-                  when null then null
-                  when '' then null
-                  else ', '+T3.POSTAL_CODE end,
-                case T3.PREM_TYPE
-                  when null then null
-                  when '' then null
-                  else ', '+T3.PREM_TYPE end,
-                case T3.VEHICLE_NO
-                  when null then null
-                  when '' then null
-                  else ', '+T3.VEHICLE_NO end) PREMISES_ADDRESS,
+                null PREMISES_ADDRESS,
                 CONCAT(case T3.BLK_NO
                   when null then null
                   when '' then null
@@ -57,7 +30,15 @@
                   when null then null
                   when '' then null
                   else '-'+T3.UNIT_NO end
-               , case T3.POSTAL_CODE
+               ,
+               SUBSTRING ((
+		        SELECT ', #' + pou.FLOOR_NO +'-'+pou.UNIT_NO
+				        FROM app_premises_operational_unit pou
+				        WHERE pou.PREMISES_ID =T3.ID
+				        ORDER BY SEQ_NUM ASC
+				        FOR XML path('')
+		    ), 1, 1000)
+               ,case T3.POSTAL_CODE
                   when null then null
                   when '' then null
                   else ', '+T3.POSTAL_CODE end

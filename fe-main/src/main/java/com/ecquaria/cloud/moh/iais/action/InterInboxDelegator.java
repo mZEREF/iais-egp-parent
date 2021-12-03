@@ -383,7 +383,7 @@ public class InterInboxDelegator {
             List<String> addressList = IaisCommonUtils.genNewArrayList();
             for (PremisesDto premisesDto:premisesDtoList
                  ) {
-                addressList.add(MiscUtil.getAddress(premisesDto.getBlkNo(),premisesDto.getStreetName(),premisesDto.getBuildingName(),premisesDto.getFloorNo(),premisesDto.getUnitNo(),premisesDto.getPostalCode()));
+                addressList.add(MiscUtil.getAddress(premisesDto.getBlkNo(),premisesDto.getStreetName(),premisesDto.getBuildingName(),premisesDto.getFloorNo(),premisesDto.getUnitNo(),premisesDto.getPostalCode(),premisesDto.getPremisesOperationalUnitDtos()));
                 h.setPremisesDtoList(addressList);
             }
         });

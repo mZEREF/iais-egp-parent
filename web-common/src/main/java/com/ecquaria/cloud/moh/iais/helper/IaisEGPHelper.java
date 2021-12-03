@@ -770,10 +770,10 @@ public final class IaisEGPHelper extends EGPHelper {
         return order;
     }
 
-    public static String getAddress(String blkNo, String streetName, String builderName, String floorNo, String unitNo, String postalCode){
-        return  MiscUtil.getAddress(blkNo, streetName, builderName,
-                floorNo, unitNo, postalCode);
-    }
+//    public static String getAddress(String blkNo, String streetName, String builderName, String floorNo, String unitNo, String postalCode){
+//        return  MiscUtil.getAddress(blkNo, streetName, builderName,
+//                floorNo, unitNo, postalCode);
+//    }
 
     public static String checkIdentityNoType(String identityNo){
         String upper = identityNo.toUpperCase();

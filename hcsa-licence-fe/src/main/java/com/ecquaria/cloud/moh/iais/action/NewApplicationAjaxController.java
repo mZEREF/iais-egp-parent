@@ -670,16 +670,16 @@ public class NewApplicationAjaxController {
             if (!IaisCommonUtils.isEmpty(appPremPhOpenPeriodDtos)) {
                 NewApplicationHelper.setPhName(appPremPhOpenPeriodDtos);
             }
-
+            // floor and unit
             List<AppPremisesOperationalUnitDto> operationalUnitDtos = appGrpPremisesDto.getAppPremisesOperationalUnitDtos();
-            if(!IaisCommonUtils.isEmpty(operationalUnitDtos)){
+            if (!IaisCommonUtils.isEmpty(operationalUnitDtos)) {
                 StringBuilder operationHtml = new StringBuilder();
                 String sql = SqlMap.INSTANCE.getSql("premises", "premises-operational").getSqlStr();
-                sql = sql.replace("${premType}", "remark");
-                sql = sql.replace("${premIndex}", "");
-                sql = sql.replace("${opCount}", "");
-                for(AppPremisesOperationalUnitDto operationalUnitDto:operationalUnitDtos){
-                    operationHtml.append(sql);
+                sql = sql.replace("${premType}", premisesType);
+                sql = sql.replace("${premIndex}", premiseIndex);
+                int size = operationalUnitDtos.size();
+                for (int i = 0; i < size; i++) {
+                    operationHtml.append(sql.replace("${opCount}", Integer.toString(i)));
                 }
                 appGrpPremisesDto.setOperationHtml(operationHtml.toString());
             }

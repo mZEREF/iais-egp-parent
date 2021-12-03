@@ -146,8 +146,9 @@ public class AcraNotifySingPassJobHandler extends IJobHandler {
                 if (Optional.ofNullable(appGrpPremisesEntity).isPresent()){
                     Map<String, Object> templateContent = IaisCommonUtils.genNewHashMap();
                     templateContent.put("HCI_Name", appGrpPremisesEntity.getHciName());
-                    String address = MiscUtil.getAddress(appGrpPremisesEntity.getBlkNo(),appGrpPremisesEntity.getStreetName(),
-                            appGrpPremisesEntity.getBuildingName(),appGrpPremisesEntity.getFloorNo(),appGrpPremisesEntity.getUnitNo(),appGrpPremisesEntity.getPostalCode());
+                    String address = MiscUtil.getAddressForApp(appGrpPremisesEntity.getBlkNo(),appGrpPremisesEntity.getStreetName(),
+                            appGrpPremisesEntity.getBuildingName(),appGrpPremisesEntity.getFloorNo(),appGrpPremisesEntity.getUnitNo(),appGrpPremisesEntity.getPostalCode()
+                            ,appGrpPremisesEntity.getAppPremisesOperationalUnitDtos());
                     templateContent.put("HCI_Address", address);
                     log.info(StringUtil.changeForLog("HCI_Address = " + address));
                     templateContent.put("UEN_No", uen);

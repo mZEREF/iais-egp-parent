@@ -46,23 +46,39 @@ public class EventBusHelper {
                 , waitTime, process, true);
     }
 
+    public SubmitResp submitAsyncRequest(Object dto, String submissionId, String service, String operation,
+                                         String eventRefNo, String projectName, String processName) {
+        return submitRequest(dto, submissionId, service, operation, eventRefNo, false, 0,
+                projectName, processName, callBackUrl, true);
+    }
+
     private SubmitResp submitRequest(Object dto, String submissionId, String service, String operation,
-                                 String eventRefNo, boolean wait, int waitTime, Process process, boolean needCallback) {
+                                     String eventRefNo, boolean wait, int waitTime, Process process, boolean needCallback) {
+        String projectName = "IAIS";
+        String processName = "Batchjob";
+        String sopUrl = callBackUrl;
+        if (process != null) {
+            projectName = process.getCurrentProject();
+            processName = process.getCurrentProcessName();
+            sopUrl = process.continueURL();
+        }
+
+        return submitRequest(dto, submissionId, service, operation, eventRefNo, wait, waitTime, projectName,
+                processName, sopUrl, needCallback);
+    }
+
+    private SubmitResp submitRequest(Object dto, String submissionId, String service, String operation,
+                                 String eventRefNo, boolean wait, int waitTime,
+                                 String projectName, String processName, String sopUrl, boolean needCallback) {
         log.info("<=== Start to call Event bus ===>");
         log.info(StringUtil.changeForLog("Call Submission Id ==>" + submissionId));
         log.info(StringUtil.changeForLog("Call Service ==>" + service));
         log.info(StringUtil.changeForLog("Call Operation ==>" + operation));
         SubmitReq req = new SubmitReq();
         req.setSubmissionId(submissionId);
-        if (process != null) {
-            req.setProject(process.getCurrentProject());
-            req.setProcess(process.getCurrentProcessName());
-            req.setSopUrl(process.continueURL());
-        } else {
-            req.setProject("IAIS");
-            req.setProcess("Batchjob");
-            req.setSopUrl(callBackUrl);
-        }
+        req.setProject(StringUtil.isEmpty(projectName) ? "IAIS" : projectName);
+        req.setProcess(StringUtil.isEmpty(processName) ? "Batchjob" : processName);
+        req.setSopUrl(sopUrl);
         req.setStep("eventBusSubmit");
         if (needCallback) {
             req.setCallbackUrl(callBackUrl);

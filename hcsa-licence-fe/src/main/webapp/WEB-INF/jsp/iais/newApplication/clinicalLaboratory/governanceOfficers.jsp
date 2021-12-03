@@ -704,20 +704,36 @@
             }
         } else if (('APTY005' == appType || 'APTY004' == appType) && '0' == rfiObj) {
             disabledPage();
+            refreshRemoveBtn();
         } else {
             //rfi
-
+            refreshRemoveBtn();
         }
         doEdit();
         //ajac();
         //init end
-        if($("#errorMapIs").val()=='error'){
-            $('.edit').trigger('click');
-        }
+
+        //75807
+        // if($("#errorMapIs").val()=='error'){
+        //     $('.edit').trigger('click');
+        // }
 
         //$('input[name="professionRegoNo"]').trigger('blur');
+        updateOtherQualificationMandatory();//75823
         init = 1;
     });
+
+    function updateOtherQualificationMandatory(){
+        $('table.assignContent').each(function () {
+            var prgNo = $(this).find('input[name="professionRegoNo"]').val();
+            var specialty = $(this).find('label.specialty-label').html();
+            if(prgNo != undefined && specialty != undefined){
+                if(prgNo.trim().length == 0 || specialty.trim().length == 0){
+                    $(this).find('span.otherQualificationSpan').html('*');
+                }
+            }
+        })
+    }
 
     var profRegNoBlur = function () {
         $('input[name="professionRegoNo"]').unbind('blur');
@@ -881,6 +897,7 @@
                     inputReadonly($contentEle.find('input[name="name"]'));
                 }
             }
+            refreshRemoveBtn();
         });
     };
 
@@ -928,5 +945,19 @@
     };
     function cancel() {
         $('#PRS_SERVICE_DOWN').modal('hide');
+    }
+
+    function refreshRemoveBtn() {
+        var $content = $('div.cgo-content');
+        $content.each(function (index,v) {
+            let isPartEdit = $(v).find('input[name="isPartEdit"]').val();
+            if (index < '${HcsaSvcPersonnel.mandatoryCount}') {
+                $(v).find('.removeBtn').remove();
+            } else if ('1' == isPartEdit) {
+                $(v).find('.removeBtn').show();
+            } else {
+                $(v).find('.removeBtn').hide();
+            }
+        });
     }
 </script>

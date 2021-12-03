@@ -248,9 +248,14 @@ public class ProfessionalInformationDelegator {
 
 		//TODO phase 1 value
 		return svcNames.stream().filter(i ->
-				i.getSvcCode().equals(AppServicesConsts.SERVICE_CODE_CLINICAL_LABORATORY) || i.getSvcCode().equals(AppServicesConsts.SERVICE_CODE_TISSUE_BANKING)
+				i.getSvcCode().equals(AppServicesConsts.SERVICE_CODE_CLINICAL_LABORATORY)
+						|| i.getSvcCode().equals(AppServicesConsts.SERVICE_CODE_TISSUE_BANKING)
 						|| i.getSvcCode().equals(AppServicesConsts.SERVICE_CODE_RADIOLOGICAL_SERVICES)
-						|| i.getSvcCode().equals(AppServicesConsts.SERVICE_CODE_NUCLEAR_MEDICINE_ASSAY) || i.getSvcCode().equals(AppServicesConsts.SERVICE_CODE_BLOOD_BANKING) || i.getSvcCode().equals(AppServicesConsts.SERVICE_CODE_NUCLEAR_MEDICINE_IMAGING)
+						|| i.getSvcCode().equals(AppServicesConsts.SERVICE_CODE_NUCLEAR_MEDICINE_ASSAY)
+						|| i.getSvcCode().equals(AppServicesConsts.SERVICE_CODE_BLOOD_BANKING)
+						|| i.getSvcCode().equals(AppServicesConsts.SERVICE_CODE_NUCLEAR_MEDICINE_IMAGING)
+						|| i.getSvcCode().equals(AppServicesConsts.SERVICE_CODE_MEDICAL_TRANSPORT_SERVICE)
+						|| i.getSvcCode().equals(AppServicesConsts.SERVICE_CODE_EMERGENCY_AMBULANCE_SERVICE)
 		).collect(Collectors.toList());
 	}
 

@@ -21,7 +21,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
-import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.EmailParam;
@@ -165,7 +164,7 @@ public class ClientReschedulingDelegator {
                 for (ReschApptGrpPremsQueryDto reschApptGrpPremsQueryDto : rows) {
                     ApptViewDto apptViewDto=new ApptViewDto();
                     List<String> svcIds=IaisCommonUtils.genNewArrayList();
-                    String viewCorrId=reschApptGrpPremsQueryDto.getAppGrpId()+reschApptGrpPremsQueryDto.getPremisesAddress();
+                    String viewCorrId=reschApptGrpPremsQueryDto.getAppGrpId()+reschApptGrpPremsQueryDto.getHciCode();
                     if("1".equals(reschApptGrpPremsQueryDto.getFastTracking())){
                         viewCorrId=viewCorrId+reschApptGrpPremsQueryDto.getId();
                     }
@@ -193,7 +192,7 @@ public class ClientReschedulingDelegator {
                     apptViewDto.setAppId(reschApptGrpPremsQueryDto.getId());
                     apptViewDto.setAppCorrId(reschApptGrpPremsQueryDto.getAppCorrId());
                     apptViewDto.setLicenseeId(reschApptGrpPremsQueryDto.getLicenseeId());
-                    apptViewDto.setAddress(MiscUtil.getAddress(reschApptGrpPremsQueryDto.getBlkNo(),reschApptGrpPremsQueryDto.getStreetName(),reschApptGrpPremsQueryDto.getBuildingName(),reschApptGrpPremsQueryDto.getFloorNo(),reschApptGrpPremsQueryDto.getUnitNo(),reschApptGrpPremsQueryDto.getPostalCode()));
+                    apptViewDto.setAddress(reschApptGrpPremsQueryDto.getAddress());
                     apptViewDto.setInspStartDate(reschApptGrpPremsQueryDto.getRecomInDate());
                     apptViewDto.setHciCode(reschApptGrpPremsQueryDto.getHciCode());
                     apptViewDto.setHciName(reschApptGrpPremsQueryDto.getHciName());

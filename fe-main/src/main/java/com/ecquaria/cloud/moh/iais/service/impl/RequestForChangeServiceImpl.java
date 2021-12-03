@@ -14,6 +14,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PersonnlAssessQueryDt
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesListQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.SelfPremisesListQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.FeUserDto;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.service.RequestForChangeService;
 import com.ecquaria.cloud.moh.iais.service.client.AppInboxClient;
@@ -62,7 +63,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
         appSubmissionDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         //save appGrp and app
         appSubmissionDto = applicationClient.saveAppsForRequestForChange(appSubmissionDto).getEntity();
-//asynchronous save the other data.
+        //asynchronous save the other data.
         //eventBus(appSubmissionDto, process);
         return appSubmissionDto;
     }
@@ -75,7 +76,23 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
     @Override
     @SearchTrack(catalog = "interInboxQuery", key = "queryPremises")
     public SearchResult<SelfPremisesListQueryDto> searchPreInfo(SearchParam searchParam) {
-        return licenceClient.searchResultPremises(searchParam).getEntity();
+        SearchResult<SelfPremisesListQueryDto> result = licenceClient.searchResultPremises(searchParam).getEntity();
+        if (result == null || result.getRows() == null) {
+            return result;
+        }
+        result.getRows().stream().forEach(h -> {
+            List<String> addressList = IaisCommonUtils.genNewArrayList();
+            addressList.add(h.getAddress());
+            h.setPremisesDtoList(addressList);
+            /*List<PremisesDto> premisesDtoList = inboxService.getPremisesByLicId(h.getLicenceId());
+            List<String> addressList = IaisCommonUtils.genNewArrayList();
+            for (PremisesDto premisesDto:premisesDtoList
+            ) {
+                addressList.add(MiscUtil.getAddress(premisesDto.getBlkNo(),premisesDto.getStreetName(),premisesDto.getBuildingName(),premisesDto.getFloorNo(),premisesDto.getUnitNo(),premisesDto.getPostalCode()));
+                h.setPremisesDtoList(addressList);
+            }*/
+        });
+        return result;
     }
 
     @Override

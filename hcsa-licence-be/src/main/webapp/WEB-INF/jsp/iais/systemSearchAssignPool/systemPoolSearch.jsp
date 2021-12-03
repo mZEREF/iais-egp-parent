@@ -81,7 +81,7 @@
                     <iais:row>
                       <iais:field value="HCI Address"/>
                       <iais:value width="18">
-                        <input type="text" name="hci_address" value="${systemSearchParam.filters['hci_address']}" />
+                        <input type="text" name="hci_address" value="${systemPoolHciAddress}" />
                       </iais:value>
                     </iais:row>
                     <iais:action style="text-align:right;">

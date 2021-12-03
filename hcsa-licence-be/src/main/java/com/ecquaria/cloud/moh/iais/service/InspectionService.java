@@ -8,6 +8,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionSubPoolQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionTaskPoolListDto;
+import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.HcsaTaskAssignDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.GroupRoleFieldDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.SuperPoolTaskQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
@@ -184,7 +185,7 @@ public interface InspectionService {
       * @return: 
       * @Descripation: 
       */
-    SearchResult<SuperPoolTaskQueryDto> getSecondSearchOtherData(SearchResult<SuperPoolTaskQueryDto> searchResult);
+    SearchResult<SuperPoolTaskQueryDto> getSecondSearchOtherData(SearchResult<SuperPoolTaskQueryDto> searchResult, HcsaTaskAssignDto hcsaTaskAssignDto);
 
     /**
       * @author: shicheng
@@ -215,4 +216,15 @@ public interface InspectionService {
       * @Descripation: filter Common Pool Task
       */
     List<TaskDto> filterCommonPoolTask(List<TaskDto> superPool);
+
+    /**
+      * @author: shicheng
+      * @Date 2021/11/22
+      * @Param: appGroupIds
+      * @return: HcsaTaskAssignDto
+      * @Descripation: getHcsaTaskAssignDtoByAppGrp
+      */
+    HcsaTaskAssignDto getHcsaTaskAssignDtoByAppGrp(List<String> appGroupIds);
+
+    List<String> getSuperPoolAppGrpIdByResult(SearchResult<InspectionSubPoolQueryDto> searchResult);
 }

@@ -39,12 +39,12 @@
                 <#if dashRoleId??> and T7.role_id = :dashRoleId </#if>
             ) T5
             WHERE 1 = 1
+            <#if appGroup_list??> and ${appGroup_list} </#if>
             <#if application_no??> and charindex(:application_no, T5.APPLICATION_NO) >0 </#if>
             <#if application_type??> and T5.APP_TYPE = :application_type</#if>
             <#if application_status??> and ${application_status}</#if>
             <#if hci_code??> and charindex(:hci_code, T5.HCI_CODE) >0 </#if>
             <#if hci_name??> and charindex(:hci_name, T5.HCI_NAME) >0 </#if>
-            <#if hci_address??> and charindex(:hci_address, T5.address) >0 </#if>
         ]]>
     </sql>
 
@@ -89,12 +89,12 @@
                 <#if dashRoleId??> and T7.role_id = :dashRoleId </#if>
             ) T5
             WHERE 1 = 1
+            <#if appPremId_list??> and ${appPremId_list} </#if>
             <#if dashFilterAppNo??> and charindex(:dashFilterAppNo, T5.APPLICATION_NO) >0 </#if>
             <#if application_type??> and T5.APP_TYPE = :application_type</#if>
             <#if application_status??> and ${application_status}</#if>
             <#if hci_code??> and charindex(:hci_code, T5.HCI_CODE) >0 </#if>
             <#if hci_name??> and charindex(:hci_name, T5.HCI_NAME) >0 </#if>
-            <#if hci_address??> and charindex(:hci_address, T5.address) >0 </#if>
         ]]>
     </sql>
 
@@ -140,11 +140,11 @@
                 and T7.USER_ID is NULL
             ) T5
             WHERE 1 = 1
+            <#if appGroup_list??> and ${appGroup_list} </#if>
             <#if application_no??> and charindex(:application_no, T5.APPLICATION_NO) >0 </#if>
             <#if application_type??> and T5.APP_TYPE = :application_type</#if>
             <#if hci_code??> and charindex(:hci_code, T5.HCI_CODE) >0 </#if>
             <#if hci_name??> and charindex(:hci_name, T5.HCI_NAME) >0 </#if>
-            <#if hci_address??> and charindex(:hci_address, T5.PREMISE) >0 </#if>
         ]]>
     </sql>
 
@@ -188,6 +188,7 @@
             JOIN TASKVIEW T7 ON T7.REF_NO = T5.ID and T7.USER_ID is NULL
             WHERE 1 = 1
             and T7.TASK_STATUS in ('TSTATUS001','TSTATUS002')
+            <#if appPremId_list??> and ${appPremId_list} </#if>
             <#if dashFilterAppNo??> and charindex(:dashFilterAppNo, T5.APPLICATION_NO) >0 </#if>
             <#if groupNo??> and T5.GROUP_NO = :groupNo</#if>
             <#if dashRoleId??> and T7.ROLE_ID = :dashRoleId</#if>
@@ -197,7 +198,6 @@
             <#if application_type??> and T5.APP_TYPE = :application_type</#if>
             <#if hci_code??> and charindex(:hci_code, T5.HCI_CODE) >0 </#if>
             <#if hci_name??> and charindex(:hci_name, T5.HCI_NAME) >0 </#if>
-            <#if hci_address??> and charindex(:hci_address, T5.address) >0 </#if>
             GROUP BY T5.ID
         ]]>
     </sql>
@@ -208,6 +208,7 @@
             FROM APP_GRP_EXCEEDING_DAY_VIEW T1
             JOIN TASKVIEW T7 ON T7.REF_NO = T1.CORREID
             WHERE 1 = 1
+            <#if appGroup_list??> and ${appGroup_list} </#if>
             <#if workGroup_list??> and ${workGroup_list} </#if>
             <#if dashRoleId??> and T7.ROLE_ID = :dashRoleId </#if>
             <#if dashRoleIdList??> and ${dashRoleIdList} </#if>
@@ -218,7 +219,6 @@
             <#if application_status??> and ${application_status}</#if>
             <#if hci_code??> and charindex(:hci_code, T1.HCI_CODE) >0 </#if>
             <#if hci_name??> and charindex(:hci_name, T1.HCI_NAME) >0 </#if>
-            <#if hci_address??> and charindex(:hci_address, T1.address) >0 </#if>
         ]]>
     </sql>
 
@@ -229,6 +229,7 @@
             FROM APP_EXCEEDING_DAY_VIEW T1
             JOIN TASKVIEW T7 ON T7.REF_NO = T1.ID and T7.TASK_STATUS in ('TSTATUS001','TSTATUS002')
             WHERE 1 = 1
+            <#if appPremId_list??> and ${appPremId_list} </#if>
             <#if dashFilterAppNo??> and charindex(:dashFilterAppNo, T1.APPLICATION_NO) >0 </#if>
             <#if workGroup_list??> and ${workGroup_list} </#if>
             <#if groupNo??> and T1.GROUP_NO = :groupNo</#if>
@@ -240,7 +241,6 @@
             <#if application_status??> and ${application_status}</#if>
             <#if hci_code??> and charindex(:hci_code, T1.HCI_CODE) >0 </#if>
             <#if hci_name??> and charindex(:hci_name, T1.HCI_NAME) >0 </#if>
-            <#if hci_address??> and charindex(:hci_address, T1.address) >0 </#if>
             GROUP BY T1.ID
         ]]>
     </sql>
@@ -251,6 +251,7 @@
             FROM TASK_WAITING_APPROVAL_APP_GRP_VIEW T7
             LEFT JOIN TASKVIEW T1 ON T1.REF_NO = T7.CORRID and T1.TASK_STATUS in ('TSTATUS001','TSTATUS002')
             WHERE 1 = 1
+            <#if appGroup_list??> and ${appGroup_list} </#if>
             <#if workGroup_list??> and ${workGroup_list} </#if>
             <#if dashRoleId??> and T7.ROLE_ID = :dashRoleId</#if>
             <#if dashRoleIdList??> and ${dashRoleIdList} </#if>
@@ -260,7 +261,6 @@
             <#if application_status??> and ${application_status}</#if>
             <#if hci_code??> and charindex(:hci_code, T7.HCI_CODE) >0 </#if>
             <#if hci_name??> and charindex(:hci_name, T7.HCI_NAME) >0 </#if>
-            <#if hci_address??> and charindex(:hci_address, T7.address) >0 </#if>
         ]]>
     </sql>
 
@@ -273,6 +273,7 @@
                       and T1.TASK_STATUS in ('TSTATUS001','TSTATUS002')
                       <#if appCorrId_list??> and ${appCorrId_list} </#if>
             WHERE 1 = 1
+            <#if appPremId_list??> and ${appPremId_list} </#if>
             <#if dashFilterAppNo??> and charindex(:dashFilterAppNo, T7.APPLICATION_NO) >0 </#if>
             <#if workGroup_list??> and ${workGroup_list} </#if>
             <#if groupNo??> and T7.GROUP_NO = :groupNo</#if>
@@ -283,7 +284,6 @@
             <#if application_status??> and ${application_status}</#if>
             <#if hci_code??> and charindex(:hci_code, T7.HCI_CODE) >0 </#if>
             <#if hci_name??> and charindex(:hci_name, T7.HCI_NAME) >0 </#if>
-            <#if hci_address??> and charindex(:hci_address, T7.address) >0 </#if>
             GROUP BY T7.ID
         ]]>
     </sql>
@@ -293,6 +293,7 @@
             SELECT DISTINCT T7.ID, T7.GROUP_NO, T7.PMT_STATUS, T7.APP_TYPE, T7.SUBMIT_DT, T7.COU
             FROM TASK_WAITING_APPLICANT_REPLY_GRP_VIEW T7
             WHERE 1 = 1
+            <#if appGroup_list??> and ${appGroup_list} </#if>
             <#if workGroup_list??> and ${workGroup_list} </#if>
             <#if dashRoleId??> and T7.ROLE_ID = :dashRoleId</#if>
             <#if dashRoleIdList??> and ${dashRoleIdList} </#if>
@@ -302,7 +303,6 @@
             <#if application_status??> and T7.STATUS = :application_status</#if>
             <#if hci_code??> and charindex(:hci_code, T7.HCI_CODE) >0 </#if>
             <#if hci_name??> and charindex(:hci_name, T7.HCI_NAME) >0 </#if>
-            <#if hci_address??> and charindex(:hci_address, T7.address) >0 </#if>
         ]]>
     </sql>
 
@@ -313,6 +313,7 @@
             FROM TASK_WAITING_APPLICANT_REPLY_APP_VIEW T7
             LEFT JOIN TASKVIEW T1 ON T1.REF_NO = T7.ID and T1.TASK_STATUS in ('TSTATUS001','TSTATUS002')
             WHERE 1 = 1
+            <#if appPremId_list??> and ${appPremId_list} </#if>
             <#if dashFilterAppNo??> and charindex(:dashFilterAppNo, T7.APPLICATION_NO) >0 </#if>
             <#if workGroup_list??> and ${workGroup_list} </#if>
             <#if groupNo??> and T7.GROUP_NO = :groupNo</#if>
@@ -324,7 +325,6 @@
             <#if application_status??> and T7.STATUS = :application_status</#if>
             <#if hci_code??> and charindex(:hci_code, T7.HCI_CODE) >0 </#if>
             <#if hci_name??> and charindex(:hci_name, T7.HCI_NAME) >0 </#if>
-            <#if hci_address??> and charindex(:hci_address, T7.address) >0 </#if>
             GROUP BY T7.ID
         ]]>
     </sql>
@@ -335,6 +335,7 @@
             FROM TASK_RENEWAL_EXPIRY_GRP_VIEW T1
             LEFT JOIN TASKVIEW T7 ON T7.REF_NO = T1.CORRID and T7.TASK_STATUS in ('TSTATUS001','TSTATUS002')
             WHERE 1 = 1
+            <#if appGroup_list??> and ${appGroup_list} </#if>
             <#if workGroup_list??> and ${workGroup_list} </#if>
             <#if dashRoleId??> and T7.ROLE_ID = :dashRoleId </#if>
             <#if dashRoleIdList??> and ${dashRoleIdList} </#if>
@@ -345,7 +346,6 @@
             <#if application_status??> and ${application_status}</#if>
             <#if hci_code??> and charindex(:hci_code, T1.HCI_CODE) >0 </#if>
             <#if hci_name??> and charindex(:hci_name, T1.HCI_NAME) >0 </#if>
-            <#if hci_address??> and charindex(:hci_address, T1.address) >0 </#if>
         ]]>
     </sql>
 
@@ -358,6 +358,7 @@
                       and T7.TASK_STATUS in ('TSTATUS001','TSTATUS002')
                       <#if appCorrId_list??> and ${appCorrId_list} </#if>
             WHERE 1 = 1
+            <#if appPremId_list??> and ${appPremId_list} </#if>
             <#if dashFilterAppNo??> and charindex(:dashFilterAppNo, T1.APPLICATION_NO) >0 </#if>
             <#if workGroup_list??> and ${workGroup_list} </#if>
             <#if groupNo??> and T1.GROUP_NO = :groupNo</#if>
@@ -369,7 +370,6 @@
             <#if application_status??> and ${application_status}</#if>
             <#if hci_code??> and charindex(:hci_code, T1.HCI_CODE) >0 </#if>
             <#if hci_name??> and charindex(:hci_name, T1.HCI_NAME) >0 </#if>
-            <#if hci_address??> and charindex(:hci_address, T1.address) >0 </#if>
             GROUP BY T1.ID
         ]]>
     </sql>
@@ -416,13 +416,13 @@
              and T7.TASK_STATUS in ('TSTATUS001','TSTATUS002')
             ) T5
             WHERE 1 = 1
+            <#if appGroup_list??> and ${appGroup_list} </#if>
             <#if application_no??> and charindex(:application_no, T5.APPLICATION_NO) >0 </#if>
             <#if application_type??> and T5.APP_TYPE = :application_type</#if>
             <#if application_status??> and ${application_status}</#if>
             <#if dashCommonPoolStatus??> and T5.USER_ID is NULL</#if>
             <#if hci_code??> and charindex(:hci_code, T5.HCI_CODE) >0 </#if>
             <#if hci_name??> and charindex(:hci_name, T5.HCI_NAME) >0 </#if>
-            <#if hci_address??> and charindex(:hci_address, T5.PREMISE) >0 </#if>
         ]]>
     </sql>
 
@@ -472,12 +472,12 @@
                 <#if dashRoleIdList??> and ${dashRoleIdList} </#if>
             ) T5
             WHERE 1 = 1
+            <#if appPremId_list??> and ${appPremId_list} </#if>
             <#if dashFilterAppNo??> and charindex(:dashFilterAppNo, T5.APPLICATION_NO) >0 </#if>
             <#if application_type??> and T5.APP_TYPE = :application_type</#if>
             <#if application_status??> and ${application_status}</#if>
             <#if hci_code??> and charindex(:hci_code, T5.HCI_CODE) >0 </#if>
             <#if hci_name??> and charindex(:hci_name, T5.HCI_NAME) >0 </#if>
-            <#if hci_address??> and charindex(:hci_address, T5.address) >0 </#if>
             GROUP BY T5.ID
         ]]>
     </sql>

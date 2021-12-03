@@ -86,6 +86,7 @@ import java.io.Serializable;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -252,7 +253,7 @@ public class RequestForChangeMenuDelegator {
             for (LicenceDto licenceDto : licenceDtoByHciCode) {
                 stringBuilder.append(licenceDto.getSvcName()).append(", ");
             }
-            premisesListQueryDto.setSvcId(stringBuilder.toString().substring(0, stringBuilder.toString().lastIndexOf(',')));
+            premisesListQueryDto.setSvcId(stringBuilder.substring(0, stringBuilder.toString().lastIndexOf(',')));
         }
         if (rows.isEmpty()) {
             bpc.request.setAttribute("ACK018", MessageUtil.getMessageDesc("GENERAL_ACK018"));
@@ -282,7 +283,7 @@ public class RequestForChangeMenuDelegator {
         list.add(conveyance);
         list.add(onsite);
         list.add(EASMTSsiet);
-        list.sort((s1,s2)->(s1.getText().compareTo(s2.getText())));
+        list.sort(Comparator.comparing(SelectOption::getText));
     }
 
 
@@ -1592,19 +1593,17 @@ public class RequestForChangeMenuDelegator {
         appEditSelectDto.setPremisesEdit(true);
 
         //amount
-        boolean isSame = compareLocation(premisesListQueryDto, appSubmissionDto.getAppGrpPremisesDtoList().get(0));
-        boolean b = compareHciName(premisesListQueryDto, appSubmissionDto.getAppGrpPremisesDtoList().get(0));
+        boolean eqHciNameChange = !compareHciName(premisesListQueryDto, appSubmissionDto.getAppGrpPremisesDtoList().get(0));
+        boolean changeInLocation = compareLocation(premisesListQueryDto, appSubmissionDto.getAppGrpPremisesDtoList().get(0));
+        boolean eqAddFloorNo = EqRequestForChangeSubmitResultChange.isChangeFloorUnit(appSubmissionDto,
+                oldAppSubmissionDtoappSubmissionDto);
         AmendmentFeeDto amendmentFeeDto = new AmendmentFeeDto();
         amendmentFeeDto.setChangeInLicensee(Boolean.FALSE);
-        amendmentFeeDto.setChangeInHCIName(!b);
-        amendmentFeeDto.setChangeInLocation(!isSame);
-        boolean eqAddFloorNo = EqRequestForChangeSubmitResultChange.isChangeFloorUnit(appSubmissionDto, oldAppSubmissionDtoappSubmissionDto);
-        if (eqAddFloorNo) {
-            amendmentFeeDto.setChangeInLocation(Boolean.TRUE);
-        }
+        amendmentFeeDto.setChangeInHCIName(eqHciNameChange);
+        amendmentFeeDto.setChangeInLocation(changeInLocation || eqAddFloorNo);
         // check app edit select dto
-        appEditSelectDto.setChangeHciName(!b);
-        appEditSelectDto.setChangeInLocation(!isSame);
+        appEditSelectDto.setChangeHciName(eqHciNameChange);
+        appEditSelectDto.setChangeInLocation(changeInLocation);
         appEditSelectDto.setChangeAddFloorUnit(eqAddFloorNo);
         log.info(StringUtil.changeForLog("The App Edit Select Dto - " + JsonUtil.parseToJson(appEditSelectDto)));
         NewApplicationHelper.reSetAdditionalFields(appSubmissionDto, appEditSelectDto);
@@ -1673,16 +1672,6 @@ public class RequestForChangeMenuDelegator {
 
     }
 
-    private AmendmentFeeDto getAmendmentFeeDto(AppSubmissionDto appSubmissionDto, AppSubmissionDto oldAppSubmissionDto) {
-        AmendmentFeeDto amendmentFeeDto = new AmendmentFeeDto();
-        boolean changeHciName = compareHciName(appSubmissionDto.getAppGrpPremisesDtoList(), oldAppSubmissionDto.getAppGrpPremisesDtoList());
-        boolean changeLocation = compareLocation(appSubmissionDto.getAppGrpPremisesDtoList(), oldAppSubmissionDto.getAppGrpPremisesDtoList());
-        amendmentFeeDto.setChangeInLicensee(Boolean.FALSE);
-        amendmentFeeDto.setChangeInHCIName(!changeHciName);
-        amendmentFeeDto.setChangeInLocation(!changeLocation);
-        return amendmentFeeDto;
-    }
-
     private boolean compareHciName(List<AppGrpPremisesDto> appGrpPremisesDtos, List<AppGrpPremisesDto> oldAppGrpPremisesDtos) {
         int length = appGrpPremisesDtos.size();
         int oldLength = oldAppGrpPremisesDtos.size();
@@ -1707,23 +1696,6 @@ public class RequestForChangeMenuDelegator {
             hciName = appGrpPremisesDto.getConveyanceVehicleNo();
         }
         return hciName;
-    }
-
-
-    private boolean compareLocation(List<AppGrpPremisesDto> appGrpPremisesDtos, List<AppGrpPremisesDto> oldAppGrpPremisesDtos) {
-        int length = appGrpPremisesDtos.size();
-        int oldLength = oldAppGrpPremisesDtos.size();
-        if (length == oldLength) {
-            for (int i = 0; i < length; i++) {
-                AppGrpPremisesDto appGrpPremisesDto = appGrpPremisesDtos.get(0);
-                AppGrpPremisesDto oldAppGrpPremisesDto = oldAppGrpPremisesDtos.get(0);
-                if (!appGrpPremisesDto.getAddress().equals(oldAppGrpPremisesDto.getAddress())) {
-                    return false;
-                }
-            }
-        }
-        //is same
-        return true;
     }
 
     /**
@@ -1910,8 +1882,8 @@ public class RequestForChangeMenuDelegator {
     }
 
     private boolean compareLocation(PremisesListQueryDto premisesListQueryDto, AppGrpPremisesDto appGrpPremisesDto) {
-        String oldAddress = premisesListQueryDto.getAddress();
-        String newAddress = appGrpPremisesDto.getAddress();
+        String oldAddress = premisesListQueryDto.getAddressWithoutFU();
+        String newAddress = appGrpPremisesDto.getAddressWithoutFU();
         if (!oldAddress.equals(newAddress)) {
             return false;
         }

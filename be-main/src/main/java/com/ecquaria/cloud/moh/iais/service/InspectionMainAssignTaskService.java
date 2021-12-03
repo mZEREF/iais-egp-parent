@@ -5,6 +5,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspecTaskCreAndAssDto;
+import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.HcsaTaskAssignDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.GroupRoleFieldDto;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 
@@ -30,11 +31,11 @@ public interface InspectionMainAssignTaskService {
     /**
      * @author: shicheng
      * @Date 2020/3/19
-     * @Param: appGrpPremisesDto
+     * @Param: appGrpPremisesDtom, hcsaTaskAssignDto
      * @return: String
      * @Descripation: getAddress
      */
-    String getAddress(AppGrpPremisesDto appGrpPremisesDto);
+    String getAddress(AppGrpPremisesDto appGrpPremisesDto, HcsaTaskAssignDto hcsaTaskAssignDto);
 
     /**
       * @author: shicheng
@@ -48,11 +49,12 @@ public interface InspectionMainAssignTaskService {
     /**
       * @author: shicheng
       * @Date 2021/4/20
-      * @Param: applicationDto, loginContext, inspecTaskCreAndAssDto
+      * @Param: applicationDto, loginContext, inspecTaskCreAndAssDto, hcsaTaskAssignDto
       * @return: InspecTaskCreAndAssDto
       * @Descripation: getInspecTaskCreAndAssDto
       */
-    InspecTaskCreAndAssDto getInspecTaskCreAndAssDto(ApplicationDto applicationDto, LoginContext loginContext, InspecTaskCreAndAssDto inspecTaskCreAndAssDto);
+    InspecTaskCreAndAssDto getInspecTaskCreAndAssDto(ApplicationDto applicationDto, LoginContext loginContext, InspecTaskCreAndAssDto inspecTaskCreAndAssDto,
+                                                     HcsaTaskAssignDto hcsaTaskAssignDto);
 
     /**
       * @author: shicheng

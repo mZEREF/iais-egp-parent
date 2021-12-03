@@ -295,9 +295,9 @@ public class HcsaApplicationDelegator {
     private void dealWithDoc(ApplicationViewDto applicationViewDto){
         List<AppSupDocDto> appSupDocDtoList = applicationViewDto.getAppSupDocDtoList();
         if(appSupDocDtoList!=null){
-           for(AppSupDocDto v : appSupDocDtoList){
+            for(AppSupDocDto v : appSupDocDtoList){
 
-           }
+            }
         }
     }
     /**
@@ -418,7 +418,7 @@ public class HcsaApplicationDelegator {
                     appPremisesRecommendationDto.setRecomInNumber(0);
                     appPremisesRecommendationDto.setRecomType(InspectionConstants.RECOM_TYPE_INSEPCTION_REPORT);
                     if (isAppealType || isWithdrawal || isCessation || isRequestForChange) {
-    //                    appPremisesRecommendationDto.setRecomDecision("reject");
+                        //                    appPremisesRecommendationDto.setRecomDecision("reject");
                         appPremisesRecommendationDto.setRecomDecision(InspectionReportConstants.RFC_REJECTED);
                     }
                     appPremisesRecommendationDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
@@ -437,7 +437,7 @@ public class HcsaApplicationDelegator {
                     appPremisesRecommendationDto.setRecomType(InspectionConstants.RECOM_TYPE_INSEPCTION_REPORT);
                     appPremisesRecommendationDto.setRecomDecision(InspectionReportConstants.APPROVED);
                     if (isAppealType || isWithdrawal || isCessation || isRequestForChange) {
-    //                    appPremisesRecommendationDto.setRecomDecision("approve");
+                        //                    appPremisesRecommendationDto.setRecomDecision("approve");
                         appPremisesRecommendationDto.setRecomDecision(InspectionReportConstants.RFC_APPROVED);
                     }
                     if ("other".equals(recommendationStr)) {
@@ -456,7 +456,7 @@ public class HcsaApplicationDelegator {
                             saveRecommenFlag = false;
                         }
                         if (isAppealType) {
-    //                        appPremisesRecommendationDto.setRecomDecision("approve");
+                            //                        appPremisesRecommendationDto.setRecomDecision("approve");
                             appPremisesRecommendationDto.setRecomDecision(InspectionReportConstants.RFC_APPROVED);
                             if (isLateFeeAppealType) {
                                 String returnFee = ParamUtil.getString(bpc.request, "returnFee");
@@ -2371,13 +2371,13 @@ public class HcsaApplicationDelegator {
         }
         //if Giro payment fail
         if (ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(applicationType) ||
-            ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(applicationType) ||
-            ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationType)
+                ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(applicationType) ||
+                ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationType)
         ) {
             if (ApplicationConsts.APPLICATION_STATUS_APPROVED.equals(appStatus)) {
                 if (ApplicationConsts.PAYMENT_STATUS_GIRO_PAY_FAIL.equals(appGroupDtoView.getPmtStatus()) ||
-                    ApplicationConsts.PAYMENT_STATUS_GIRO_PAY_FAIL_REMIND_OK.equals(appGroupDtoView.getPmtStatus()) ||
-                    ApplicationConsts.PAYMENT_STATUS_PENDING_GIRO.equals(appGroupDtoView.getPmtStatus())) {
+                        ApplicationConsts.PAYMENT_STATUS_GIRO_PAY_FAIL_REMIND_OK.equals(appGroupDtoView.getPmtStatus()) ||
+                        ApplicationConsts.PAYMENT_STATUS_PENDING_GIRO.equals(appGroupDtoView.getPmtStatus())) {
                     broadcastApplicationDto.getApplicationDto().setStatus(ApplicationConsts.APPLICATION_STATUS_GIRO_PAYMENT_FAIL);
                 } else if (ApplicationConsts.PAYMENT_STATUS_GIRO_RETRIGGER.equals(appGroupDtoView.getPmtStatus())) {
                     broadcastApplicationDto.getApplicationDto().setStatus(ApplicationConsts.APPLICATION_STATUS_PENDING_PAYMENT_RESUBMIT);
@@ -2404,7 +2404,7 @@ public class HcsaApplicationDelegator {
         if (withdrawApplicationDto != null) {
             /**
              * Send Withdrawal Application Email
-       14      */
+             14      */
             if (ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL.equals(withdrawApplicationDto.getApplicationType())) {
                 boolean isCharity = false;
                 String applicantName = "";
@@ -2926,7 +2926,7 @@ public class HcsaApplicationDelegator {
                     (!RoleConsts.USER_ROLE_AO3.equals(roleId)) &&
                     (!RoleConsts.USER_ROLE_ASO.equals(roleId)) &&
                     (!RoleConsts.USER_ROLE_PSO.equals(roleId))
-                    ) {
+            ) {
                 TaskUrl = TaskConsts.TASK_PROCESS_URL_INSPECTION_REPORT;
             }
             subStageId = HcsaConsts.ROUTING_STAGE_POT;
@@ -3335,7 +3335,7 @@ public class HcsaApplicationDelegator {
 
                 if(applicationViewDto.getApplicationDto() != null && fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(applicationViewDto.getApplicationDto().getAppPremisesCorrelationId(),InspectionConstants.RECOM_TYPE_INSEPCTION_DATE).getEntity()!= null){
                     if(RoleConsts.USER_ROLE_AO1.equalsIgnoreCase(loginContext.getCurRoleId()) || RoleConsts.USER_ROLE_AO2.equalsIgnoreCase(loginContext.getCurRoleId()) ||  RoleConsts.USER_ROLE_AO3.equalsIgnoreCase(loginContext.getCurRoleId())){
-                       return;
+                        return;
                     }
                     if( RoleConsts.USER_ROLE_INSPECTIOR.equalsIgnoreCase(loginContext.getCurRoleId())){
                         applicationViewDto.setShowTcu(true);
@@ -3416,7 +3416,7 @@ public class HcsaApplicationDelegator {
             String floorNo = appGrpPremisesEntityDto.getFloorNo();
             String unitNo = appGrpPremisesEntityDto.getUnitNo();
             String postalCode = appGrpPremisesEntityDto.getPostalCode();
-            String hciAddress = MiscUtil.getAddress(blkNo, streetName, buildingName, floorNo, unitNo, postalCode);
+            String hciAddress = MiscUtil.getAddressForApp(blkNo, streetName, buildingName, floorNo, unitNo, postalCode,appGrpPremisesEntityDto.getAppPremisesOperationalUnitDtos());
             AppCessHciDto appCessHciDto = new AppCessHciDto();
             String hciName = appGrpPremisesEntityDto.getHciName();
             String hciCode = appGrpPremisesEntityDto.getHciCode();
@@ -3897,11 +3897,13 @@ public class HcsaApplicationDelegator {
                 String userId = appPremisesRoutingHistoryDto.getActionby();
                 String wrkGrpId = appPremisesRoutingHistoryDto.getWrkGrpId();
                 OrgUserDto user = applicationViewService.getUserById(userId);
-                String actionBy = user.getDisplayName();
-                rollBackMap.put(actionBy + " (" + displayName + ")", appPremisesRoutingHistoryDto.getStageId() + "," + wrkGrpId + "," + userId + "," + appPremisesRoutingHistoryDto.getRoleId());
-                String maskRollBackValue = MaskUtil.maskValue("rollBack", appPremisesRoutingHistoryDto.getStageId() + "," + wrkGrpId + "," + userId + "," + appPremisesRoutingHistoryDto.getRoleId());
-                SelectOption selectOption = new SelectOption(maskRollBackValue, actionBy + " (" + displayName + ")");
-                rollBackStage.add(selectOption);
+                if(user != null) {
+                    String actionBy = user.getDisplayName();
+                    rollBackMap.put(actionBy + " (" + displayName + ")", appPremisesRoutingHistoryDto.getStageId() + "," + wrkGrpId + "," + userId + "," + appPremisesRoutingHistoryDto.getRoleId());
+                    String maskRollBackValue = MaskUtil.maskValue("rollBack", appPremisesRoutingHistoryDto.getStageId() + "," + wrkGrpId + "," + userId + "," + appPremisesRoutingHistoryDto.getRoleId());
+                    SelectOption selectOption = new SelectOption(maskRollBackValue, actionBy + " (" + displayName + ")");
+                    rollBackStage.add(selectOption);
+                }
             }
         } else {
             log.debug(StringUtil.changeForLog("the do prepareData do not have the rollback history"));

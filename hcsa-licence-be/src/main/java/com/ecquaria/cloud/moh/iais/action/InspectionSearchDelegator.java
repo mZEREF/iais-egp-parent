@@ -14,10 +14,12 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.PoolRoleCheckDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionSubPoolQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionTaskPoolListDto;
+import com.ecquaria.cloud.moh.iais.common.dto.intranetDashboard.HcsaTaskAssignDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.GroupRoleFieldDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.SuperPoolTaskQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.mask.MaskAttackException;
+import com.ecquaria.cloud.moh.iais.common.utils.CopyUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -104,7 +106,8 @@ public class InspectionSearchDelegator {
         ParamUtil.setSessionAttr(bpc.request, "superPoolRoleIds", null);
         ParamUtil.setSessionAttr(bpc.request, "assignMap", null);
         ParamUtil.setSessionAttr(bpc.request, "commonPoolStatus", null);
-        ParamUtil.setSessionAttr(bpc.request, "reassignFilterAppNo", null);
+        ParamUtil.setSessionAttr(bpc.request, "hcsaTaskAssignDto", null);
+        ParamUtil.setSessionAttr(bpc.request, "superPoolHciAddress", null);
     }
 
     /**
@@ -166,6 +169,7 @@ public class InspectionSearchDelegator {
                 QueryHelp.setMainSql("inspectionQuery", "supervisorPoolSearch", searchParam);
                 searchResult = inspectionService.getSupPoolByParam(searchParam);
                 searchResult = inspectionService.getGroupLeadName(searchResult, loginContext);
+
                 ParamUtil.setSessionAttr(bpc.request, "superPool", (Serializable) superPool);
                 ParamUtil.setSessionAttr(bpc.request, "appTypeOption", (Serializable) appTypeOption);
                 ParamUtil.setSessionAttr(bpc.request, "appStatusOption", (Serializable) appStatusOption);
@@ -297,9 +301,6 @@ public class InspectionSearchDelegator {
         }
         if(!StringUtil.isEmpty(application_no)){
             searchParam.addFilter("application_no", application_no,true);
-            ParamUtil.setSessionAttr(bpc.request, "reassignFilterAppNo", application_no);
-        } else {
-            ParamUtil.setSessionAttr(bpc.request, "reassignFilterAppNo", null);
         }
         if(!StringUtil.isEmpty(application_type)){
             searchParam.addFilter("application_type", application_type,true);
@@ -311,7 +312,9 @@ public class InspectionSearchDelegator {
             searchParam.addFilter("hci_name", hci_name,true);
         }
         if(!StringUtil.isEmpty(hci_address)){
-            searchParam.addFilter("hci_address", hci_address,true);
+            ParamUtil.setSessionAttr(bpc.request, "superPoolHciAddress", hci_address);
+        } else {
+            ParamUtil.setSessionAttr(bpc.request, "superPoolHciAddress", null);
         }
         List<SelectOption> appStatusOption = inspectionService.getAppStatusOption(loginContext, AppConsts.SUPERVISOR_POOL);
         ParamUtil.setSessionAttr(bpc.request, "appStatusOption", (Serializable) appStatusOption);
@@ -397,9 +400,29 @@ public class InspectionSearchDelegator {
     public void inspectionSupSearchQuery1(BaseProcessClass bpc){
         log.info(StringUtil.changeForLog("the inspectionSupSearchQuery1 start ...."));
         SearchParam searchParam = getSearchParam(bpc);
+        String hci_address = (String)ParamUtil.getSessionAttr(bpc.request, "superPoolHciAddress");
         LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
-        QueryHelp.setMainSql("inspectionQuery", "supervisorPoolSearch",searchParam);
-        SearchResult<InspectionSubPoolQueryDto> searchResult = inspectionService.getSupPoolByParam(searchParam);
+        SearchResult<InspectionSubPoolQueryDto> searchResult;
+        if(StringUtil.isEmpty(hci_address)) {
+            QueryHelp.setMainSql("inspectionQuery", "supervisorPoolSearch", searchParam);
+            searchResult = inspectionService.getSupPoolByParam(searchParam);
+            ParamUtil.setSessionAttr(bpc.request, "hcsaTaskAssignDto", null);
+        } else {
+            //copy SearchParam for searchAllParam
+            SearchParam searchAllParam = (SearchParam) CopyUtil.copyMutableObject(searchParam);
+            searchAllParam.setPageSize(-1);
+            //get all appGroupIds
+            QueryHelp.setMainSql("inspectionQuery", "supervisorPoolSearch",searchAllParam);
+            searchResult = inspectionService.getSupPoolByParam(searchAllParam);
+            //set all address data map for filter address
+            List<String> appGroupIds = inspectionService.getSuperPoolAppGrpIdByResult(searchResult);
+            HcsaTaskAssignDto hcsaTaskAssignDto = inspectionService.getHcsaTaskAssignDtoByAppGrp(appGroupIds);
+            //filter unit no for group
+            searchParam = inspectionAssignTaskService.setAppGrpIdsByUnitNos(searchParam, hci_address, hcsaTaskAssignDto, "T5.ID", "appGroup_list");
+            QueryHelp.setMainSql("inspectionQuery", "supervisorPoolSearch", searchParam);
+            searchResult = inspectionService.getSupPoolByParam(searchParam);
+            ParamUtil.setSessionAttr(bpc.request, "hcsaTaskAssignDto", hcsaTaskAssignDto);
+        }
         searchResult = inspectionService.getGroupLeadName(searchResult, loginContext);
 
         ParamUtil.setSessionAttr(bpc.request, "supTaskSearchParam", searchParam);
