@@ -40,4 +40,8 @@ public class INTRANET___AOProcessCancelAudit___1 extends BaseProcessClass {
 		EngineHelper.delegate(DELEGATOR, "aoRejectCancel", this);
 	}
 
+	public void preConfirm_OnStepProcess_0() throws Exception {
+		// 		preConfirm->OnStepProcess
+	}
+
 }

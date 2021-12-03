@@ -33,18 +33,10 @@ function decisionChange(obj) {
 function isHidden() {
     var option1 = $("#doDecision").val();
     var option2 = $("#aoDecision").val();
-    if (option1 != null || option1 != "") {
-        if (option1 == "AUDTDO002") {
-            $("#rejectReason").show();
-        } else {
-            $("#rejectReason").hide();
-        }
-    }else if (option2 != null || option2 != ""){
-        if (option == "AUDTAO002") {
-            $("#rejectReason").show();
-        } else {
-            $("#rejectReason").hide();
-        }
+    if (option1 == "AUDTDO002" || option2 == "AUDTAO002") {
+        $("#rejectReason").show();
+    } else {
+        $("#rejectReason").hide();
     }
 }
 
@@ -128,9 +120,9 @@ $(function () {
             $("#mainForm").submit();
         }
         if (optionValue == "AUDTAO002" || optionValue == "AUDTDO002") {
-                showWaiting();
-                $("[name='action_type']").val("doReject");
-                $("#mainForm").submit();
+            showWaiting();
+            $("[name='action_type']").val("doReject");
+            $("#mainForm").submit();
         }
     })
 
@@ -148,7 +140,7 @@ $(function () {
 
     //DO decision self-audit
     $("#doProcessButton").click(function () {
-        var optionValue = $("#decision option:selected").val();
+        var optionValue = $("#decision").val();
         if (optionValue == "DOAUDO001") {
             showWaiting();
             $("[name='action_type']").val("doVerified");
@@ -164,9 +156,6 @@ $(function () {
             $("[name='action_type']").val("doReject");
             $("#mainForm").submit();
         }
-        if (optionValue == "Please Select" || optionValue == "") {
-            $("#error_decision").html("This is Mandatory");
-        }
     })
 
     //AO decision self-audit
@@ -181,9 +170,6 @@ $(function () {
             showWaiting();
             $("[name='action_type']").val("doRouteBack");
             $("#mainForm").submit();
-        }
-        if (optionValue == "Please Select" || optionValue == "") {
-            $("#error_decision").html("This is Mandatory");
         }
     })
 

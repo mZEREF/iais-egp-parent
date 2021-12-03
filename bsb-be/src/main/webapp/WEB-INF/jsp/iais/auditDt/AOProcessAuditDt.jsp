@@ -166,7 +166,7 @@
                                                                                 <iais:field value="Processing Decision" required="true"/>
                                                                                 <iais:value width="10">
                                                                                     <iais:select name="aoDecision"
-                                                                                                 id="aoDecision"
+                                                                                                 id="aoDecision" onchange="decisionChange(this)"
                                                                                                  value="${processData.aoDecision}"
                                                                                                  codeCategory="CATE_ID_BSB_CHANGE_DATE_AO"
                                                                                                  firstOption="Please Select"/>

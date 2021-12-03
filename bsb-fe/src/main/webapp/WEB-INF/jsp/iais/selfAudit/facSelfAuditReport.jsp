@@ -9,6 +9,8 @@
 %>
 <webui:setLayout name="iais-intranet"/>
 <script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-audit.js"></script>
+<script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-common.js"></script>
+<%@include file="/WEB-INF/jsp/iais/include/showErrorMsg.jsp" %>
 <div class="dashboard">
     <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
         <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
@@ -29,8 +31,7 @@
                                                    id="infoa"
                                                    aria-controls="tabInfo"
                                                    role="tab"
-                                                   data-toggle="tab">Info</a>
-                                            </li>
+                                                   data-toggle="tab">Info</a></li>
                                             <li class="complete" id="document" role="presentation">
                                                 <a href="#tabDocuments"
                                                    id="documenta"
@@ -49,12 +50,10 @@
                                                                              data-toggle="tab">Info</a></div>
                                                 <div class="swiper-slide"><a href="#tabDocuments" id="doDocument"
                                                                              aria-controls="tabDocuments"
-                                                                             role="tab" data-toggle="tab">Documents</a>
-                                                </div>
+                                                                             role="tab" data-toggle="tab">Documents</a></div>
                                                 <div class="swiper-slide"><a href="#tabProcessing" id="doProcess"
                                                                              aria-controls="tabProcessing"
-                                                                             role="tab" data-toggle="tab">Processing</a>
-                                                </div>
+                                                                             role="tab" data-toggle="tab">Processing</a></div>
                                             </div>
                                             <div class="swiper-button-prev"></div>
                                             <div class="swiper-button-next"></div>
@@ -70,13 +69,10 @@
                                                 <span id="error_document" name="iaisErrorMsg" class="error-msg"></span>
                                                 <br/><br/>
                                                 <div class="alert alert-info" role="alert">
-                                                    <strong>
-                                                        <h4>Submit Self-Audit Report</h4>
-                                                    </strong>
+                                                    <strong><h4>Submit Self-Audit Report</h4></strong>
                                                 </div>
                                                 <form method="post" action=<%=process.runtime.continueURL()%>>
-                                                    <input type="hidden" name="sopEngineTabRef"
-                                                           value="<%=process.rtStatus.getTabRef()%>">
+                                                    <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
                                                     <div class="row">
                                                         <div class="col-xs-12">
                                                             <div class="table-gp">
@@ -100,26 +96,21 @@
                                                                     </div>
                                                                     <div>
                                                                         <iais:row>
-                                                                            <iais:field value="Scenario Category"
-                                                                                        required="true"/>
+                                                                            <iais:field value="Scenario Category" required="true"/>
                                                                             <iais:value width="10">
                                                                                 <iais:select name="scenarioCategory"
                                                                                              id="scenarioCategory"
+                                                                                             value="${selfAudit.scenarioCategory}"
                                                                                              codeCategory="CATE_ID_BSB_SCENARIO_CATEGORY"
                                                                                              firstOption="Please Select"/>
-                                                                                <span id="error_scenarioCategory"
-                                                                                      name="iaisErrorMsg"
-                                                                                      class="error-msg"></span>
+                                                                                <span data-err-ind="scenarioCategory" class="error-msg"></span>
                                                                             </iais:value>
                                                                         </iais:row>
                                                                     </div>
                                                                 </iais:section>
-                                                                <a style="float:left;padding-top: 1.1%;" class="back" id="backFromProcess" href="#"><em class="fa fa-angle-left"></em> Back</a>
+                                                                <a style="float:left;padding-top: 1.1%;" class="back" href="/bsb-fe/eservice/INTERNET/OngoingAuditList"><em class="fa fa-angle-left"></em> Back</a>
                                                                 <div align="right">
-                                                                    <button name="submitBtn" id="submitReportButton"
-                                                                            type="button" class="btn btn-primary">
-                                                                        Submit
-                                                                    </button>
+                                                                    <button name="nextBtn" id="nextBtn" type="button" class="btn btn-primary">Submit</button>
                                                                 </div>
                                                                 <div>&nbsp;</div>
                                                             </div>
@@ -138,5 +129,4 @@
         </div>
     </form>
 </div>
-<%@include file="/WEB-INF/jsp/include/validation.jsp" %>
 <%@include file="../doDocument/uploadFile.jsp" %>

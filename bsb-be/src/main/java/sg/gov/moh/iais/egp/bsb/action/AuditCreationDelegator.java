@@ -5,6 +5,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
+import com.google.common.collect.Maps;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.CollectionUtils;
 import sg.gov.moh.iais.egp.bsb.client.AuditClientBE;
@@ -108,14 +109,15 @@ public class AuditCreationDelegator {
             ParamUtil.setRequestAttr(request,ValidationConstants.KEY_VALIDATION_ERRORS,dto.retrieveValidationResult());
         }
         List<FacilityQueryResultDto.FacInfo> facilityList = (List<FacilityQueryResultDto.FacInfo>) ParamUtil.getSessionAttr(request, KEY_AUDIT_DATA_LIST);
-        Map<String, FacilityQueryResultDto.FacInfo> facInfoMap = new HashMap<>(facilityList.size());
+        Map<String, FacilityQueryResultDto.FacInfo> facInfoMap = Maps.newHashMapWithExpectedSize(facilityList.size());
         for (FacilityQueryResultDto.FacInfo facInfo : facilityList) {
             facInfoMap.put(facInfo.getFacId(), facInfo);
         }
         facilityList.clear();
         for (String facId : facIds) {
-            if (facInfoMap.containsKey(facId)) {
-                facilityList.add(facInfoMap.get(facId));
+            FacilityQueryResultDto.FacInfo facInfo = facInfoMap.get(facId);
+            if (facInfo != null) {
+                facilityList.add(facInfo);
             }
         }
         //fill the known data
@@ -212,7 +214,7 @@ public class AuditCreationDelegator {
 
     public void selectOption(HttpServletRequest request) {
         List<String> facNames = biosafetyEnquiryClient.queryDistinctFN().getEntity();
-        List<SelectOption> selectModel = new ArrayList<>();
+        List<SelectOption> selectModel = new ArrayList<>(facNames.size());
         for (String facName : facNames) {
             selectModel.add(new SelectOption(facName, facName));
         }

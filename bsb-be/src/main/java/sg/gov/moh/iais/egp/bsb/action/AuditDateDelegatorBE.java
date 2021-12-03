@@ -14,9 +14,7 @@ import sg.gov.moh.iais.egp.bsb.client.AuditClientBE;
 import sg.gov.moh.iais.egp.bsb.constant.AuditConstants;
 import sg.gov.moh.iais.egp.bsb.constant.ValidationConstants;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
-import sg.gov.moh.iais.egp.bsb.dto.audit.AuditQueryDto;
 import sg.gov.moh.iais.egp.bsb.dto.audit.OfficerProcessAuditDto;
-import sg.gov.moh.iais.egp.bsb.dto.audit.SaveAuditDto;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
@@ -101,9 +99,11 @@ public class AuditDateDelegatorBE {
         String moduleType = ParamUtil.getRequestString(request,PARAM_MODULE_TYPE);
 
         OfficerProcessAuditDto dto = getProcessDto(request);
-        dto.setDoRemarks(doRemark);
-        dto.setDoReason(doReason);
-        dto.setDoDecision(doDecision);
+        if (!StringUtils.hasLength(dto.getDoDecision())){
+            dto.setDoRemarks(doRemark);
+            dto.setDoReason(doReason);
+            dto.setDoDecision(doDecision);
+        }
         dto.setAoRemarks(aoRemark);
         dto.setAoReason(aoReason);
         dto.setAoDecision(aoDecision);

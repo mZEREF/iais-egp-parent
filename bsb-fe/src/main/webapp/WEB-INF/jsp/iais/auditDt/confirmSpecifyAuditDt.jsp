@@ -37,13 +37,9 @@
                         </iais:row>
 
                         <div class="row">
-                            <div class="col-xs-12 col-sm-6">
-                                <a class="back" id="back" href="#"><em class="fa fa-angle-left"></em> Back</a>
-                            </div>
+                            <div class="col-xs-12 col-sm-6"><a class="back" id="back" href="#"><em class="fa fa-angle-left"></em> Back</a></div>
                             <div align="right">
-                                <button name="submitBtn" id="submitBtn" type="button" class="btn btn-primary">
-                                    Submit
-                                </button>
+                                <button name="submitBtn" id="submitBtn" type="button" class="btn btn-primary">Submit</button>
                             </div>
                         </div>
                     </div>

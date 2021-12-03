@@ -17,32 +17,30 @@ public class INTRANET___DOProcessSelfAudit___1 extends BaseProcessClass {
 	private static final String DELEGATOR ="selfAuditDelegator";
 
 	public void start_OnStepProcess_0() throws Exception {
-	// 		start->OnStepProcess
 		EngineHelper.delegate(DELEGATOR, "start", this);
 	}
 
 	public void prepareData_OnStepProcess_0() throws Exception {
-	// 		prepareData->OnStepProcess
 		EngineHelper.delegate(DELEGATOR, "prepareProcessSelfAuditData", this);
 	}
 
 	public void prepareSwitch_OnStepProcess_0() throws Exception {
-	// 		prepareSwitch->OnStepProcess
 	}
 
 	public void verified_OnStepProcess_0() throws Exception {
-	// 		verified->OnStepProcess
 		EngineHelper.delegate(DELEGATOR, "doVerified", this);
 	}
 
 	public void reject_OnStepProcess_0() throws Exception {
-	// 		reject->OnStepProcess
 		EngineHelper.delegate(DELEGATOR, "doReject", this);
 	}
 
 	public void requestInformation_OnStepProcess_0() throws Exception {
-	// 		requestInformation->OnStepProcess
 		EngineHelper.delegate(DELEGATOR, "doRequestForInformation", this);
+	}
+
+	public void preConfirm_OnStepProcess_0() throws Exception {
+		EngineHelper.delegate(DELEGATOR, "preConfirm", this);
 	}
 
 }

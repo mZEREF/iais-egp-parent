@@ -1,8 +1,8 @@
 <div class="modal fade" id="uploadDoc" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-    <input type="hidden" id="fileMaxSize" name="fileMaxSize" value="${auditDocDto.systemMaxFileSize}">
-    <input type="hidden" id="fileUploadType" name="fileUploadType" value="${auditDocDto.systemFileType}">
-    <input type="hidden" id="fileMaxLengthMessage" name="fileMaxLengthMessage" value="<iais:message key="GENERAL_ERR0022"/>">
-    <input type="hidden" id="fileMaxMBMessage" name="fileMaxMBMessage" value="<iais:message key="GENERAL_ERR0019" propertiesKey="iais.system.upload.file.limit" replaceName="sizeMax" />">
+    <input type="hidden" id="fileMaxSize" name="fileMaxSize" value="">
+    <input type="hidden" id="fileUploadType" name="fileUploadType" value="">
+<%--    <input type="hidden" id="fileMaxLengthMessage" name="fileMaxLengthMessage" value="<iais:message key="GENERAL_ERR0022"/>">--%>
+<%--    <input type="hidden" id="fileMaxMBMessage" name="fileMaxMBMessage" value="<iais:message key="GENERAL_ERR0019" propertiesKey="iais.system.upload.file.limit" replaceName="sizeMax" />">--%>
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -16,7 +16,7 @@
                         <div class="form-group">
                             <label class="col-xs-12 col-md-4 control-label">Document</label>
                             <div class="col-xs-8 col-sm-8 col-md-8">
-                                <p><input type="text" maxlength="50" id="fileRemark" name="fileRemark" value="${fileRemarkString}"></p>
+                                <p><input type="text" maxlength="50" id="fileRemark" name="fileRemark" value=""></p>
                                 <br /> <small class="error" ><span id ="fileRemarkShow" style="color: #D22727; font-size: 1.6rem"></span></small>
                             </div>
                         </div>

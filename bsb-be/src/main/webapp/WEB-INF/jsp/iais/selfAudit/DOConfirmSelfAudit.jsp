@@ -9,15 +9,13 @@
 %>
 <webui:setLayout name="iais-intranet"/>
 <script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-audit.js"></script>
-<script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-common.js"></script>
-<%@include file="/WEB-INF/jsp/iais/include/showErrorMsg.jsp" %>
 <div class="dashboard">
     <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
         <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
         <input type="hidden" name="action_type" value="">
         <input type="hidden" name="action_value" value="">
         <input type="hidden" name="action_additional" value="">
-        <input type="hidden" name="moduleType" value="doProcessSelfAudit">
+        <input type="hidden" name="decision" id="decision" value="${processData.doDecision}">
         <div class="main-content">
             <div class="row">
                 <div class="col-lg-12 col-xs-12">
@@ -94,7 +92,7 @@
                                                                         <iais:row>
                                                                             <iais:field value="Audit Outcome" width="15" required="false"/>
                                                                             <iais:value width="10">
-                                                                                <textarea id="auditOutcome" name="auditOutcome" cols="70" rows="5" maxlength="300">${processData.auditOutCome}</textarea>
+                                                                                <p><c:out value="${processData.auditOutCome}"/></p>
                                                                             </iais:value>
                                                                         </iais:row>
                                                                     </div>
@@ -102,11 +100,7 @@
                                                                         <iais:row>
                                                                             <iais:field value="Remarks" width="15" required="false"/>
                                                                             <iais:value width="10">
-                                                                                <textarea id="doRemarks"
-                                                                                          name="doRemarks"
-                                                                                          cols="70"
-                                                                                          rows="5"
-                                                                                          maxlength="300">${processData.doRemarks}</textarea>
+                                                                                <p><c:out value="${processData.doRemarks}"/></p>
                                                                             </iais:value>
                                                                         </iais:row>
                                                                     </div>
@@ -114,7 +108,7 @@
                                                                         <iais:row>
                                                                             <iais:field value="Final Remarks" width="15" required="false"/>
                                                                             <iais:value width="10">
-                                                                                <input name="finalRemark" id="finalRemark" type="checkbox" <c:if test="${processData.finalRemarks eq 'Yes'}">checked="checked"</c:if>>
+                                                                                <p><input name="finalRemark" id="finalRemark" type="checkbox" <c:if test="${processData.finalRemarks eq 'Yes'}">checked="checked"</c:if> disabled></p>
                                                                             </iais:value>
                                                                         </iais:row>
                                                                     </div>
@@ -122,26 +116,20 @@
                                                                         <iais:row>
                                                                             <iais:field value="Processing Decision" required="true"/>
                                                                             <iais:value width="10">
-                                                                                <iais:select name="doDecision"
-                                                                                             id="doDecision"
-                                                                                             codeCategory="CATE_ID_BSB_DO_AUDIT_DO"
-                                                                                             value="${processData.doDecision}"
-                                                                                             firstOption="Please Select"/>
-                                                                                <span data-err-ind="doDecision" class="error-msg"></span>
+                                                                                <p><iais:code code="${processData.doDecision}"/></p>
                                                                             </iais:value>
                                                                         </iais:row>
                                                                     </div>
                                                                 </iais:section>
-                                                                <a style="float:left;padding-top: 1.1%;" class="back" href="/bsb-be/eservicecontinue/INTRANET/MohBsbTaskList"><em class="fa fa-angle-left"></em> Back</a>
+                                                                <a style="float:left;padding-top: 1.1%;" class="back" id="back" href="#"><em class="fa fa-angle-left"></em> Back</a>
                                                                 <div align="right">
-                                                                    <button name="nextBtn" id="nextBtn" type="button" class="btn btn-primary">Submit</button>
+                                                                    <button name="doProcessButton" id="doProcessButton" type="button" class="btn btn-primary">Submit</button>
                                                                 </div>
                                                                 <div>&nbsp;</div>
                                                             </div>
                                                         </div>
                                                     </div>
                                                 </form>
-                                                <%@include file="processHistory.jsp" %>
                                             </div>
                                         </div>
                                     </div>

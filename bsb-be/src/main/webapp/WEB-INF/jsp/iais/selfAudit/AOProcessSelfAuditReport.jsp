@@ -9,12 +9,15 @@
 %>
 <webui:setLayout name="iais-intranet"/>
 <script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-audit.js"></script>
+<script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-common.js"></script>
+<%@include file="/WEB-INF/jsp/iais/include/showErrorMsg.jsp" %>
 <div class="dashboard">
     <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
         <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
         <input type="hidden" name="action_type" value="">
         <input type="hidden" name="action_value" value="">
         <input type="hidden" name="action_additional" value="">
+        <input type="hidden" name="moduleType" value="aoProcessSelfAudit">
         <div class="main-content">
             <div class="row">
                 <div class="col-lg-12 col-xs-12">
@@ -29,8 +32,7 @@
                                                    id="infoa"
                                                    aria-controls="tabInfo"
                                                    role="tab"
-                                                   data-toggle="tab">Info</a>
-                                            </li>
+                                                   data-toggle="tab">Info</a></li>
                                             <li class="complete" id="document" role="presentation">
                                                 <a href="#tabDocuments"
                                                    id="documenta"
@@ -49,12 +51,10 @@
                                                                              data-toggle="tab">Info</a></div>
                                                 <div class="swiper-slide"><a href="#tabDocuments" id="doDocument"
                                                                              aria-controls="tabDocuments"
-                                                                             role="tab" data-toggle="tab">Documents</a>
-                                                </div>
+                                                                             role="tab" data-toggle="tab">Documents</a></div>
                                                 <div class="swiper-slide"><a href="#tabProcessing" id="doProcess"
                                                                              aria-controls="tabProcessing"
-                                                                             role="tab" data-toggle="tab">Processing</a>
-                                                </div>
+                                                                             role="tab" data-toggle="tab">Processing</a></div>
                                             </div>
                                             <div class="swiper-button-prev"></div>
                                             <div class="swiper-button-next"></div>
@@ -84,8 +84,7 @@
                                                                 <iais:section title="">
                                                                     <div>
                                                                         <iais:row>
-                                                                            <iais:field value="Current Status"
-                                                                                        required="false"/>
+                                                                            <iais:field value="Current Status" required="false"/>
                                                                             <iais:value width="10">
                                                                                 <p><c:out value="${processData.auditStatus}"/></p>
                                                                             </iais:value>
@@ -108,7 +107,7 @@
                                                                                           name="auditOutcome"
                                                                                           cols="70"
                                                                                           rows="5"
-                                                                                          maxlength="300"></textarea>
+                                                                                          maxlength="300">${processData.auditOutCome}</textarea>
                                                                             </iais:value>
                                                                         </iais:row>
                                                                     </div>
@@ -116,48 +115,40 @@
                                                                         <iais:row>
                                                                             <iais:field value="AO Remarks" width="15" required="false"/>
                                                                             <iais:value width="10">
-                                                                                <textarea id="remark"
-                                                                                name="aoRemark"
-                                                                                cols="70"
-                                                                                rows="5"
-                                                                                maxlength="300"></textarea>
+                                                                                <textarea id="aoRemarks"
+                                                                                          name="aoRemarks"
+                                                                                          cols="70"
+                                                                                          rows="5"
+                                                                                          maxlength="300">${processData.aoRemarks}</textarea>
                                                                             </iais:value>
                                                                         </iais:row>
                                                                     </div>
-
                                                                     <div>
                                                                         <iais:row>
                                                                             <iais:field value="Final Remarks" width="15" required="false"/>
                                                                             <iais:value width="10">
-                                                                                <input name="finalRemark" id="finalRemark" type="checkbox">
+                                                                                <input name="finalRemark" id="finalRemark" type="checkbox" <c:if test="${processData.finalRemarks eq 'Yes'}">checked="checked"</c:if>>
                                                                             </iais:value>
                                                                         </iais:row>
                                                                     </div>
 
                                                                     <div id="processingDecision">
                                                                         <iais:row>
-                                                                            <iais:field value="Processing Decision"
-                                                                                        required="true"/>
+                                                                            <iais:field value="Processing Decision" required="true"/>
                                                                             <iais:value width="10">
-                                                                                <iais:select name="decision"
-                                                                                             id="decision"
+                                                                                <iais:select name="aoDecision"
+                                                                                             id="aoDecision"
+                                                                                             value="${processData.aoDecision}"
                                                                                              codeCategory="CATE_ID_BSB_DO_AUDIT_AO"
                                                                                              firstOption="Please Select"/>
-                                                                                <span id="error_scenarioCategory"
-                                                                                      name="iaisErrorMsg"
-                                                                                      class="error-msg"></span>
+                                                                                <span data-err-ind="aoDecision" class="error-msg"></span>
                                                                             </iais:value>
                                                                         </iais:row>
                                                                     </div>
                                                                 </iais:section>
-                                                                <a style="float:left;padding-top: 1.1%;" class="back"
-                                                                   id="backFromProcess" href="#"><em
-                                                                        class="fa fa-angle-left"></em> Back</a>
+                                                                <a style="float:left;padding-top: 1.1%;" class="back" href="/bsb-be/eservicecontinue/INTRANET/MohBsbTaskList"><em class="fa fa-angle-left"></em> Back</a>
                                                                 <div align="right">
-                                                                    <button name="submitBtn" id="aoProcessButton"
-                                                                            type="button" class="btn btn-primary">
-                                                                        Submit
-                                                                    </button>
+                                                                    <button name="nextBtn" id="nextBtn" type="button" class="btn btn-primary">Submit</button>
                                                                 </div>
                                                                 <div>&nbsp;</div>
                                                             </div>
@@ -177,5 +168,4 @@
         </div>
     </form>
 </div>
-<%@include file="/WEB-INF/jsp/include/validation.jsp" %>
 <%@include file="../doDocument/uploadFile.jsp" %>

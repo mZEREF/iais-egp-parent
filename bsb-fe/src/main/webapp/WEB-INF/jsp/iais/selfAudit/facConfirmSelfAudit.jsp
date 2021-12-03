@@ -9,15 +9,12 @@
 %>
 <webui:setLayout name="iais-intranet"/>
 <script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-audit.js"></script>
-<script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-common.js"></script>
-<%@include file="/WEB-INF/jsp/iais/include/showErrorMsg.jsp" %>
 <div class="dashboard">
     <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
         <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
         <input type="hidden" name="action_type" value="">
         <input type="hidden" name="action_value" value="">
         <input type="hidden" name="action_additional" value="">
-        <input type="hidden" name="moduleType" value="doProcessSelfAudit">
         <div class="main-content">
             <div class="row">
                 <div class="col-lg-12 col-xs-12">
@@ -61,7 +58,7 @@
                                         </div>
                                         <div class="tab-content">
                                             <div class="tab-pane active" id="tabInfo" role="tabpanel">
-                                                <%@include file="../auditDt/facilityInfo.jsp" %>
+                                                <%@include file="facilityInfo.jsp" %>
                                             </div>
                                             <div class="tab-pane" id="tabDocuments" role="tabpanel">
                                                 <%@include file="../doDocument/tabDocuments.jsp" %>
@@ -70,78 +67,50 @@
                                                 <span id="error_document" name="iaisErrorMsg" class="error-msg"></span>
                                                 <br/><br/>
                                                 <div class="alert alert-info" role="alert">
-                                                    <strong>
-                                                        <h4>Process Status Update</h4>
-                                                    </strong>
+                                                    <strong><h4>Submit Self-Audit Report</h4></strong>
                                                 </div>
                                                 <form method="post" action=<%=process.runtime.continueURL()%>>
-                                                    <input type="hidden" name="sopEngineTabRef"
-                                                           value="<%=process.rtStatus.getTabRef()%>">
+                                                    <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
                                                     <div class="row">
                                                         <div class="col-xs-12">
                                                             <div class="table-gp">
-                                                                    <%--@elvariable id="processData" type="sg.gov.moh.iais.egp.bsb.dto.audit.OfficerProcessAuditDto"--%>
                                                                 <iais:section title="">
+                                                                    <input name="auditId" id="auditId" value="<iais:mask name="auditId" value="${facilityAudit.id}"></iais:mask>" hidden>
                                                                     <div>
                                                                         <iais:row>
-                                                                            <iais:field value="Current Status" required="false"/>
+                                                                            <div><iais:field value="Audit type" required="false" width="12"/></div>
                                                                             <iais:value width="10">
-                                                                                <p><c:out value="${processData.auditStatus}"/></p>
+                                                                                <p><c:out value="${selfAudit.auditType}"/></p>
                                                                             </iais:value>
                                                                         </iais:row>
                                                                     </div>
                                                                     <div>
                                                                         <iais:row>
-                                                                            <iais:field value="Audit Outcome" width="15" required="false"/>
+                                                                            <iais:field value="Audit Date" required="false"/>
                                                                             <iais:value width="10">
-                                                                                <textarea id="auditOutcome" name="auditOutcome" cols="70" rows="5" maxlength="300">${processData.auditOutCome}</textarea>
+                                                                                <p><fmt:formatDate value='${selfAudit.auditDate}' pattern='dd/MM/yyyy'/></p>
                                                                             </iais:value>
                                                                         </iais:row>
                                                                     </div>
                                                                     <div>
                                                                         <iais:row>
-                                                                            <iais:field value="Remarks" width="15" required="false"/>
+                                                                            <iais:field value="Scenario Category"
+                                                                                        required="true"/>
                                                                             <iais:value width="10">
-                                                                                <textarea id="doRemarks"
-                                                                                          name="doRemarks"
-                                                                                          cols="70"
-                                                                                          rows="5"
-                                                                                          maxlength="300">${processData.doRemarks}</textarea>
-                                                                            </iais:value>
-                                                                        </iais:row>
-                                                                    </div>
-                                                                    <div>
-                                                                        <iais:row>
-                                                                            <iais:field value="Final Remarks" width="15" required="false"/>
-                                                                            <iais:value width="10">
-                                                                                <input name="finalRemark" id="finalRemark" type="checkbox" <c:if test="${processData.finalRemarks eq 'Yes'}">checked="checked"</c:if>>
-                                                                            </iais:value>
-                                                                        </iais:row>
-                                                                    </div>
-                                                                    <div id="processingDecision">
-                                                                        <iais:row>
-                                                                            <iais:field value="Processing Decision" required="true"/>
-                                                                            <iais:value width="10">
-                                                                                <iais:select name="doDecision"
-                                                                                             id="doDecision"
-                                                                                             codeCategory="CATE_ID_BSB_DO_AUDIT_DO"
-                                                                                             value="${processData.doDecision}"
-                                                                                             firstOption="Please Select"/>
-                                                                                <span data-err-ind="doDecision" class="error-msg"></span>
+                                                                                <p><iais:code code="${selfAudit.scenarioCategory}"/></p>
                                                                             </iais:value>
                                                                         </iais:row>
                                                                     </div>
                                                                 </iais:section>
-                                                                <a style="float:left;padding-top: 1.1%;" class="back" href="/bsb-be/eservicecontinue/INTRANET/MohBsbTaskList"><em class="fa fa-angle-left"></em> Back</a>
+                                                                <a style="float:left;padding-top: 1.1%;" class="back" id="back" href="#"><em class="fa fa-angle-left"></em> Back</a>
                                                                 <div align="right">
-                                                                    <button name="nextBtn" id="nextBtn" type="button" class="btn btn-primary">Submit</button>
+                                                                    <button name="submitBtn" id="submitBtn" type="button" class="btn btn-primary">Submit</button>
                                                                 </div>
                                                                 <div>&nbsp;</div>
                                                             </div>
                                                         </div>
                                                     </div>
                                                 </form>
-                                                <%@include file="processHistory.jsp" %>
                                             </div>
                                         </div>
                                     </div>
@@ -154,4 +123,5 @@
         </div>
     </form>
 </div>
+<%@include file="/WEB-INF/jsp/include/validation.jsp" %>
 <%@include file="../doDocument/uploadFile.jsp" %>

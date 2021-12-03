@@ -35,4 +35,7 @@ public class INTRANET___ReviewCancelAudit___1 extends BaseProcessClass {
 		EngineHelper.delegate(DELEGATOR, "doSubmitCancelAudit", this);
 	}
 
+	public void preConfirm_OnStepProcess_0() throws Exception {
+		// 		preConfirm->OnStepProcess
+	}
 }
