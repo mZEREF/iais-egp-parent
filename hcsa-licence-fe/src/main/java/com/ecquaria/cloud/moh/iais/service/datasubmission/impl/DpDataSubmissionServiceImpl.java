@@ -76,7 +76,7 @@ public class DpDataSubmissionServiceImpl implements DpDataSubmissionService {
     @Override
     public DpSuperDataSubmissionDto saveDataSubmissionDraft(DpSuperDataSubmissionDto dpSuperDataSubmissionDto) {
         log.info(StringUtil.changeForLog("do the saveArSuperDataSubmissionDto ..."));
-        return dpFeClient.saveDpSuperDataSubmissionDto(dpSuperDataSubmissionDto).getEntity();
+        return dpFeClient.doUpdateDataSubmissionDraft(dpSuperDataSubmissionDto).getEntity();
     }
 
     @Override
