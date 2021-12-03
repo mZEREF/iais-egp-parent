@@ -302,6 +302,9 @@ public final class DataSubmissionHelper {
                 || StringUtil.isEmpty(cycleType)) {
             cycleType = DataSubmissionConsts.DS_CYCLE_SOVENOR_INVENTORY;
         }
+        if (StringUtil.isEmpty(cycleDto.getStatus())) {
+            cycleDto.setStatus(DataSubmissionConsts.DS_STATUS_ACTIVE);
+        }
         cycleDto.setCycleType(cycleType);
         return cycleDto;
     }
