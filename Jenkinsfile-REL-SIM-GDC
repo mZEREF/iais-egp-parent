@@ -490,7 +490,7 @@ def dependencyCheck() {
 
         // Note that we using the installed tool instead of going the Docker container route.
         // This is because, integration to Jenkins would be handled by the plugin.
-        dependencycheck additionalArguments: cliArgs.join(" "), odcInstallation: '5.3.2'
+        dependencycheck additionalArguments: cliArgs.join(" "), odcInstallation: 'latest'
         dependencyCheckPublisher pattern: 'dependency-check-report.xml', unstableTotalCritical: 13, unstableTotalHigh: 34, unstableTotalMedium: 119, unstableTotalLow: 10
 
         archiveArtifacts 'dependency-check-report.html'
