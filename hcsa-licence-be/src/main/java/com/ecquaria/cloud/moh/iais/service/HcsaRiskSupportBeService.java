@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.service;
 
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.*;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 
 import java.util.List;
 
@@ -17,4 +18,5 @@ public interface HcsaRiskSupportBeService{
     void sysnRiskSaveEic(int httpStatus,HcsaRiskFeSupportDto supportDto);
     boolean versionSameForRisk(String version,String dbVersion);
     boolean versionSameForRisk(Integer version,Integer dbVersion);
+    List<HcsaServiceDto>  getNameSortHcsaServiceDtos();
 }

@@ -6,7 +6,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.HcsaRiskFeSupportDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.HcsaRiskLicenceTenureDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.LicenceTenShowDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.SubLicenceTenureDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -38,9 +37,7 @@ public class HcsaRiskLicenceTenureSericeImpl implements HcsaRiskLicenceTenureSer
 
     @Override
     public LicenceTenShowDto getTenShowDto() {
-        List<HcsaServiceDto> serviceDtoList = hcsaConfigClient.getActiveServices().getEntity();
-        LicenceTenShowDto showDto =  hcsaConfigClient.getLicenceTenureShow(serviceDtoList).getEntity();
-        return showDto;
+        return hcsaConfigClient.getLicenceTenureShow(hcsaRiskSupportBeService.getNameSortHcsaServiceDtos()).getEntity();
     }
 
     @Override
