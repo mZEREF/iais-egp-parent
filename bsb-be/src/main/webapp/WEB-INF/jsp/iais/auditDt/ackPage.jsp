@@ -9,7 +9,6 @@
 <script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-audit.js"></script>
 <div>
     <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
-        <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
         <div class="main-content">
             <div class="row">
                 <div class="col-lg-12 col-xs-12">
@@ -31,4 +30,3 @@
         </div>
     </form>
 </div>
-<%@include file="/WEB-INF/jsp/include/utils.jsp" %>

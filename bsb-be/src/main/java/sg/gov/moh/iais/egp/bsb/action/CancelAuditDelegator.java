@@ -12,14 +12,16 @@ import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.google.common.collect.Maps;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 import sg.gov.moh.iais.egp.bsb.client.AuditClientBE;
 import sg.gov.moh.iais.egp.bsb.client.BiosafetyEnquiryClient;
 import sg.gov.moh.iais.egp.bsb.constant.AuditConstants;
+import sg.gov.moh.iais.egp.bsb.constant.ValidationConstants;
 import sg.gov.moh.iais.egp.bsb.dto.PageInfo;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
-import sg.gov.moh.iais.egp.bsb.dto.audit.AuditQueryDto;
-import sg.gov.moh.iais.egp.bsb.dto.audit.FacilityQueryResultDto;
-import sg.gov.moh.iais.egp.bsb.dto.audit.OfficerProcessAuditDto;
+import sg.gov.moh.iais.egp.bsb.dto.audit.*;
+import sg.gov.moh.iais.egp.bsb.entity.*;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
@@ -48,6 +50,9 @@ public class CancelAuditDelegator {
         HttpServletRequest request = bpc.request;
         IaisEGPHelper.clearSessionAttr(request, AuditConstants.class);
         ParamUtil.setSessionAttr(request, PARAM_AUDIT_SEARCH, null);
+        ParamUtil.setSessionAttr(request,KEY_CANCEL_AUDIT,null);
+        ParamUtil.setSessionAttr(request, KEY_OFFICER_PROCESS_DATA, null);
+        ParamUtil.setSessionAttr(request,PARAM_CANCEL_REASON,null);
     }
 
     public void prepareCancelAuditListData(BaseProcessClass bpc) {
@@ -98,76 +103,128 @@ public class CancelAuditDelegator {
         HttpServletRequest request = bpc.request;
         ParamUtil.setSessionAttr(request, AUDIT_LIST, null);
         String[] auditIds = ParamUtil.getMaskedStrings(request, AUDIT_ID);
+        if (auditIds==null){
+            auditIds = (String[])ParamUtil.getSessionAttr(request,"auditIds");
+        }
+        CancelAuditDto dto = getCancelAuditDto(request);
+        Boolean needShowError = (Boolean) ParamUtil.getRequestAttr(request,ValidationConstants.KEY_SHOW_ERROR_SWITCH);
+        if(Boolean.TRUE.equals(needShowError)){
+            ParamUtil.setRequestAttr(request,ValidationConstants.KEY_VALIDATION_ERRORS,dto.retrieveValidationResult());
+        }
         List<FacilityQueryResultDto.FacInfo> facInfos = (List<FacilityQueryResultDto.FacInfo>)ParamUtil.getSessionAttr(request, KEY_AUDIT_DATA_LIST);
         Map<String, FacilityQueryResultDto.FacInfo> facInfoMap = Maps.newHashMapWithExpectedSize(facInfos.size());
         for (FacilityQueryResultDto.FacInfo facInfo : facInfos) {
             facInfoMap.put(facInfo.getAuditId(), facInfo);
         }
-        //
         facInfos.clear();
-        for (String auditId : auditIds) {
-            FacilityQueryResultDto.FacInfo facInfo = facInfoMap.get(auditId);
+        for (String facId : auditIds) {
+            FacilityQueryResultDto.FacInfo facInfo = facInfoMap.get(facId);
             if (facInfo != null) {
                 facInfos.add(facInfo);
             }
         }
-        ParamUtil.setSessionAttr(request, AUDIT_LIST, (Serializable) facInfos);
+        //fill the known data
+        if (CollectionUtils.isEmpty(dto.getAuditDtos())){
+            List<OfficerProcessAuditDto> auditDtos = new ArrayList<>(0);
+            for (FacilityQueryResultDto.FacInfo facInfo : facInfos) {
+                OfficerProcessAuditDto processAuditDto = new OfficerProcessAuditDto();
+                processAuditDto.setAuditType(facInfo.getAuditType());
+                processAuditDto.setFacName(facInfo.getFacName());
+                processAuditDto.setActivityType(facInfo.getActivityType());
+                processAuditDto.setAuditDate(facInfo.getAuditDate());
+                processAuditDto.setAuditId(facInfo.getAuditId());
+                auditDtos.add(processAuditDto);
+            }
+            dto.setAuditDtos(auditDtos);
+        }
+        ParamUtil.setSessionAttr(request,"auditIds",auditIds);
+        ParamUtil.setSessionAttr(request,KEY_CANCEL_AUDIT,dto);
+    }
+
+    public void preDOConfirm(BaseProcessClass bpc){
+        HttpServletRequest request = bpc.request;
+        LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
+        String cancelReason = ParamUtil.getRequestString(request, PARAM_CANCEL_REASON);
+        CancelAuditDto cancelAuditDto = getCancelAuditDto(request);
+        List<OfficerProcessAuditDto> auditDtos = cancelAuditDto.getAuditDtos();
+        if (!CollectionUtils.isEmpty(auditDtos)) {
+            for (OfficerProcessAuditDto processAuditDto : auditDtos) {
+                processAuditDto.setCancelReason(cancelReason);
+                processAuditDto.setAuditAppStatus(PARAM_AUDIT_STATUS_PENDING_AO);
+                processAuditDto.setAppStatus(APP_STATUS_PEND_AO);
+                processAuditDto.setActionBy(loginContext.getUserName());
+                processAuditDto.setModule("doCancel");
+            }
+        }
+        doValidation(cancelAuditDto,request);
+        ParamUtil.setSessionAttr(request,KEY_CANCEL_AUDIT,cancelAuditDto);
+        ParamUtil.setSessionAttr(request,PARAM_CANCEL_REASON,cancelReason);
     }
 
     public void doSubmitCancelAudit(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
-        LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
-        List<FacilityQueryResultDto.FacInfo> facInfos = (List<FacilityQueryResultDto.FacInfo>) ParamUtil.getSessionAttr(request, AUDIT_LIST);
-        OfficerProcessAuditDto dto = new OfficerProcessAuditDto();
-        String cancelReason = ParamUtil.getRequestString(request, PARAM_REASON);
-        for (FacilityQueryResultDto.FacInfo facInfo : facInfos) {
-            dto.setAuditId(facInfo.getAuditId());
-            dto.setCancelReason(cancelReason);
-            dto.setAuditAppStatus(PARAM_AUDIT_STATUS_PENDING_AO);
-            dto.setAppStatus(APP_STATUS_PEND_AO);
-            dto.setActionBy(loginContext.getUserName());
-            auditClientBE.officerCancelAudit(dto);
-        }
+        CancelAuditDto dto = getCancelAuditDto(request);
+        auditClientBE.doCancelAudit(dto);
         ParamUtil.setRequestAttr(request,BACK_URL,BACK_URL_CANCEL_LIST);
     }
 
     public void prepareAOCancelAuditData(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
-        //get needed data by appId(contain:audit,auditApp,Facility)
-        String maskedAppId = ParamUtil.getString(request, KEY_APP_ID);
-        String maskedTaskId = ParamUtil.getString(request, KEY_TASK_ID);
-        if (log.isInfoEnabled()) {
-            log.info("masked application id: [{}]", LogUtil.escapeCrlf(maskedAppId));
-            log.info("masked task id: [{}]", LogUtil.escapeCrlf(maskedTaskId));
+        OfficerProcessAuditDto dto = getProcessDto(request);
+        Boolean needShowError = (Boolean) ParamUtil.getRequestAttr(request, ValidationConstants.KEY_SHOW_ERROR_SWITCH);
+        if(Boolean.TRUE.equals(needShowError)){
+            ParamUtil.setRequestAttr(request,ValidationConstants.KEY_VALIDATION_ERRORS,dto.retrieveValidationResult());
         }
-        String appId = MaskUtil.unMaskValue("id", maskedAppId);
-        String taskId = MaskUtil.unMaskValue("id", maskedTaskId);
-        if (appId == null || appId.equals(maskedAppId)) {
-            throw new IaisRuntimeException("Invalid masked application ID");
-        }
-        if (taskId == null || taskId.equals(maskedTaskId)) {
-            throw new IaisRuntimeException("Invalid masked task ID");
-        }
+        //Check if it is the first time you have entered this method
+        if (!StringUtils.hasLength(dto.getTaskId())) {
+            //get needed data by appId(contain:audit,auditApp,Facility)
+            String maskedAppId = ParamUtil.getString(request, KEY_APP_ID);
+            String maskedTaskId = ParamUtil.getString(request, KEY_TASK_ID);
+            if (log.isInfoEnabled()) {
+                log.info("masked application id: [{}]", LogUtil.escapeCrlf(maskedAppId));
+                log.info("masked task id: [{}]", LogUtil.escapeCrlf(maskedTaskId));
+            }
+            String appId = MaskUtil.unMaskValue("id", maskedAppId);
+            String taskId = MaskUtil.unMaskValue("id", maskedTaskId);
+            if (appId == null || appId.equals(maskedAppId)) {
+                throw new IaisRuntimeException("Invalid masked application ID");
+            }
+            if (taskId == null || taskId.equals(maskedTaskId)) {
+                throw new IaisRuntimeException("Invalid masked task ID");
+            }
 
-        ResponseDto<OfficerProcessAuditDto> responseDto = auditClientBE.getOfficerProcessDataByAppId(appId);
-        if (responseDto.ok()) {
-            OfficerProcessAuditDto dto = responseDto.getEntity();
-            dto.setTaskId(taskId);
-            ParamUtil.setSessionAttr(request, KEY_OFFICER_PROCESS_DATA, dto);
-        } else {
-            log.warn("get audit API doesn't return ok, the response is {}", responseDto);
-            ParamUtil.setRequestAttr(request, KEY_OFFICER_PROCESS_DATA, new OfficerProcessAuditDto());
+            ResponseDto<OfficerProcessAuditDto> responseDto = auditClientBE.getOfficerProcessDataByAppId(appId);
+            if (responseDto.ok()) {
+                dto = responseDto.getEntity();
+                dto.setTaskId(taskId);
+                ParamUtil.setSessionAttr(request, KEY_OFFICER_PROCESS_DATA, dto);
+            } else {
+                log.warn("get audit API doesn't return ok, the response is {}", responseDto);
+                ParamUtil.setRequestAttr(request, KEY_OFFICER_PROCESS_DATA, new OfficerProcessAuditDto());
+            }
         }
+        ParamUtil.setSessionAttr(request, KEY_OFFICER_PROCESS_DATA, dto);
+    }
+
+    public void preAOConfirm(BaseProcessClass bpc) {
+        HttpServletRequest request = bpc.request;
+        LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
+        String aoDecision = ParamUtil.getRequestString(request,PARAM_AO_DECISION);
+        OfficerProcessAuditDto dto = getProcessDto(request);
+        //
+        dto.setActionBy(loginContext.getUserName());
+        dto.setAoDecision(aoDecision);
+        dto.setModule("aoCancel");
+        doValidation(dto,request);
+        ParamUtil.setSessionAttr(request, KEY_OFFICER_PROCESS_DATA, dto);
     }
 
     public void aoApproveCancel(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
-        LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
-        OfficerProcessAuditDto dto = (OfficerProcessAuditDto)ParamUtil.getSessionAttr(request, KEY_OFFICER_PROCESS_DATA);
+        OfficerProcessAuditDto dto = getProcessDto(request);
         dto.setAuditStatus(PARAM_AUDIT_STATUS_CANCELLED);
         dto.setAuditAppStatus(PARAM_AUDIT_STATUS_CANCELLED);
         dto.setAppStatus(APP_STATUS_APPROVED);
-        dto.setActionBy(loginContext.getUserName());
         auditClientBE.officerCancelAudit(dto);
         //
         ParamUtil.setRequestAttr(request,BACK_URL,BACK_URL_TASK_LIST);
@@ -175,11 +232,10 @@ public class CancelAuditDelegator {
 
     public void aoRejectCancel(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
-        LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
-        OfficerProcessAuditDto dto = (OfficerProcessAuditDto)ParamUtil.getSessionAttr(request, KEY_OFFICER_PROCESS_DATA);
+        OfficerProcessAuditDto dto = getProcessDto(request);
         dto.setAuditAppStatus(PARAM_AUDIT_STATUS_CANCELLED);
         dto.setAppStatus(APP_STATUS_REJECTED);
-        dto.setActionBy(loginContext.getUserName());
+        auditClientBE.officerCancelAudit(dto);
         //
         ParamUtil.setRequestAttr(request,BACK_URL,BACK_URL_TASK_LIST);
     }
@@ -226,13 +282,57 @@ public class CancelAuditDelegator {
         return dto;
     }
 
+    private CancelAuditDto getCancelAuditDto(HttpServletRequest request) {
+        CancelAuditDto auditDto = (CancelAuditDto) ParamUtil.getSessionAttr(request, KEY_CANCEL_AUDIT);
+        return auditDto == null ? getDefaultSaveAuditDto() : auditDto;
+    }
+
+    private CancelAuditDto getDefaultSaveAuditDto() {
+        return new CancelAuditDto();
+    }
+
+    private OfficerProcessAuditDto getProcessDto(HttpServletRequest request) {
+        OfficerProcessAuditDto searchDto = (OfficerProcessAuditDto) ParamUtil.getSessionAttr(request, KEY_OFFICER_PROCESS_DATA);
+        return searchDto == null ? getDefaultProcessDto() : searchDto;
+    }
+
+    private OfficerProcessAuditDto getDefaultProcessDto() {
+        return new OfficerProcessAuditDto();
+    }
+
     public void selectOption(HttpServletRequest request) {
         List<String> facNames = biosafetyEnquiryClient.queryDistinctFN().getEntity();
-        List<SelectOption> selectModel = new ArrayList<>(facNames.size());
+        List<SelectOption> selectModel = new ArrayList<>();
         for (String facName : facNames) {
             selectModel.add(new SelectOption(facName, facName));
         }
         ParamUtil.setRequestAttr(request, PARAM_FACILITY_NAME, selectModel);
+    }
+
+    /**
+     * just a method to do simple valid,maybe update in the future
+     * doValidation
+     * */
+    private void doValidation(CancelAuditDto dto, HttpServletRequest request){
+        if(dto.doValidation()){
+            ParamUtil.setRequestAttr(request, ValidationConstants.IS_VALID,ValidationConstants.YES);
+        }else{
+            ParamUtil.setRequestAttr(request, ValidationConstants.IS_VALID,ValidationConstants.NO);
+            ParamUtil.setRequestAttr(request,ValidationConstants.KEY_SHOW_ERROR_SWITCH,Boolean.TRUE);
+        }
+    }
+
+    /**
+     * just a method to do simple valid,maybe update in the future
+     * doValidation
+     * */
+    private void doValidation(OfficerProcessAuditDto dto, HttpServletRequest request){
+        if(dto.doValidation()){
+            ParamUtil.setRequestAttr(request, ValidationConstants.IS_VALID,ValidationConstants.YES);
+        }else{
+            ParamUtil.setRequestAttr(request, ValidationConstants.IS_VALID,ValidationConstants.NO);
+            ParamUtil.setRequestAttr(request,ValidationConstants.KEY_SHOW_ERROR_SWITCH,Boolean.TRUE);
+        }
     }
 
 }

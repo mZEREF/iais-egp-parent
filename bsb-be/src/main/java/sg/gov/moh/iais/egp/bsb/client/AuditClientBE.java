@@ -8,10 +8,7 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
 import sg.gov.moh.iais.egp.bsb.dto.ValidationResultDto;
-import sg.gov.moh.iais.egp.bsb.dto.audit.AuditQueryDto;
-import sg.gov.moh.iais.egp.bsb.dto.audit.FacilityQueryResultDto;
-import sg.gov.moh.iais.egp.bsb.dto.audit.OfficerProcessAuditDto;
-import sg.gov.moh.iais.egp.bsb.dto.audit.SaveAuditDto;
+import sg.gov.moh.iais.egp.bsb.dto.audit.*;
 import sg.gov.moh.iais.egp.bsb.entity.*;
 
 import java.util.List;
@@ -58,9 +55,15 @@ public interface AuditClientBE {
     @PostMapping(value = "/bsb-audit/officerCancelAudit", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<Void> officerCancelAudit(@RequestBody OfficerProcessAuditDto dto);
 
+    @PostMapping(value = "/bsb-audit/doCancelAudit", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<Void> doCancelAudit(@RequestBody CancelAuditDto dto);
+
     @PostMapping(path = "/bsb-audit/validate/manual", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     ValidationResultDto validateManualAudit(@RequestBody SaveAuditDto dto);
 
     @PostMapping(path = "/bsb-audit/validate/auditDt", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     ValidationResultDto validateOfficerAuditDt(@RequestBody OfficerProcessAuditDto dto);
+
+    @PostMapping(path = "/bsb-audit/validate/doCancel", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    ValidationResultDto validateDOCancelAudit(@RequestBody CancelAuditDto dto);
 }

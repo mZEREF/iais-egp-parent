@@ -82,7 +82,7 @@
                                                                         <iais:row>
                                                                             <div><iais:field value="Audit type" required="false" width="12"/></div>
                                                                             <iais:value width="10">
-                                                                                <p><c:out value="${selfAudit.auditType}"/></p>
+                                                                                <p><iais:code code="${selfAudit.auditType}"/></p>
                                                                             </iais:value>
                                                                         </iais:row>
                                                                     </div>

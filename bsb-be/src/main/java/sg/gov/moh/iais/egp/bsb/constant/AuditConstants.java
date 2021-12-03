@@ -71,6 +71,7 @@ public final class AuditConstants {
     public static final String KEY_TASK_ID = "taskId";
 
     public static final String KEY_MANUAL_AUDIT = "saveAuditDto";
+    public static final String KEY_CANCEL_AUDIT = "cancelAuditDto";
 
     public static final String PARAM_DO_REMARKS = "doRemarks";
     public static final String PARAM_DO_REASON = "doReason";
@@ -78,6 +79,7 @@ public final class AuditConstants {
     public static final String PARAM_AO_REMARKS = "aoRemarks";
     public static final String PARAM_AO_REASON = "aoReason";
     public static final String PARAM_AO_DECISION = "aoDecision";
+    public static final String PARAM_CANCEL_REASON = "cancelReason";
 
     public static final String PARAM_DO_AUDIT_DT = "doProcessAuditDt";
     public static final String PARAM_AO_AUDIT_DT = "aoProcessAuditDt";

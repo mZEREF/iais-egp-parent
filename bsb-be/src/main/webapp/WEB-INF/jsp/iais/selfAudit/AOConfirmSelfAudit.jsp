@@ -82,7 +82,7 @@
                                                                         <iais:row>
                                                                             <iais:field value="Current Status" required="false"/>
                                                                             <iais:value width="10">
-                                                                                <p><c:out value="${processData.auditStatus}"/></p>
+                                                                                <p><iais:code code="${processData.auditStatus}"/></p>
                                                                             </iais:value>
                                                                         </iais:row>
                                                                     </div>

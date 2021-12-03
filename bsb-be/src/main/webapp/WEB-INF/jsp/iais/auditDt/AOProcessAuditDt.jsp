@@ -122,7 +122,7 @@
                                                                             <iais:row>
                                                                                 <iais:field value="DO Decision" required="false" width="12"/>
                                                                                 <iais:value width="10">
-                                                                                    <p><c:out value="${processData.doDecision}"/></p>
+                                                                                    <p><iais:code code="${processData.doDecision}"/></p>
                                                                                 </iais:value>
                                                                             </iais:row>
                                                                         </div>

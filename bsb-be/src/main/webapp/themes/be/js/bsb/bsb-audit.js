@@ -160,7 +160,7 @@ $(function () {
 
     //AO decision self-audit
     $("#aoProcessButton").click(function () {
-        var optionValue = $("#decision option:selected").val();
+        var optionValue = $("#decision").val();
         if (optionValue == "DOAUAO001") {
             showWaiting();
             $("[name='action_type']").val("doApproved");
@@ -185,32 +185,22 @@ $(function () {
     });
 
     $("#submitCancelAudit").click(function () {
-        var cancellationReasons = $("#reasons").val();
-        if (cancellationReasons == null || cancellationReasons == "") {
-            $("#error_reasons").html("This is Mandatory");
-        } else {
-            showWaiting();
-            $("[name='action_type']").val("doSubmit");
-            $("#mainForm").submit();
-        }
+        showWaiting();
+        $("[name='action_type']").val("doSubmit");
+        $("#mainForm").submit();
     });
 
     $("#AOProcessCancelAudit").click(function () {
-        var optionValue = $("#decision option:selected").val();
+        var optionValue = $("#decision").val();
         if (optionValue == "AUDTAO001") {
-            $("#error_decision").html("");
             showWaiting();
             $("[name='action_type']").val("doApprove");
             $("#mainForm").submit();
         }
         if (optionValue == "AUDTAO002") {
-            $("#error_decision").html("");
             showWaiting();
             $("[name='action_type']").val("doReject");
             $("#mainForm").submit();
-        }
-        if (optionValue == "Please Select" || optionValue == "") {
-            $("#error_decision").html("This is Mandatory");
         }
     })
 

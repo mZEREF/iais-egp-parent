@@ -9,14 +9,13 @@
 %>
 <webui:setLayout name="iais-intranet"/>
 <script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-audit.js"></script>
-<script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-common.js"></script>
-<%@include file="/WEB-INF/jsp/iais/include/showErrorMsg.jsp" %>
 <div class="main-content">
     <form class="form-horizontal" id="mainForm" method="post" action=<%=process.runtime.continueURL()%>>
         <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
         <input type="hidden" name="action_type" value="">
         <input type="hidden" name="action_value" value="">
         <input type="hidden" name="action_additional" value="">
+        <input type="hidden" name="decision" id="decision" value="${processData.aoDecision}">
         <div class="row">
             <div class="col-lg-12 col-xs-12">
                 <div class="center-content">
@@ -49,27 +48,20 @@
                             <iais:field value="Duty Officer Cancellation Reasons" width="15" required="false"/>
                             <iais:value width="10"><c:out value="${processData.cancelReason}"/></iais:value>
                         </iais:row>
-
                         <div id="processingDecision">
                             <iais:row>
-                                <iais:field value="Processing Decision" required="true"/>
+                                <iais:field value="Processing Decision" required="false"/>
                                 <iais:value width="10">
-                                    <iais:select name="aoDecision"
-                                                 id="aoDecision"
-                                                 value="${processData.aoDecision}"
-                                                 codeCategory="CATE_ID_BSB_CHANGE_DATE_AO"
-                                                 firstOption="Please Select"/>
-                                    <span data-err-ind="aoDecision" class="error-msg"></span>
+                                    <iais:code code="${processData.aoDecision}"/>
                                 </iais:value>
                             </iais:row>
                         </div>
-
                         <div class="row">
                             <div class="col-xs-12 col-sm-6">
-                                <a class="back" href="/bsb-be/eservicecontinue/INTRANET/MohBsbTaskList"><em class="fa fa-angle-left"></em> Back</a>
+                                <a class="back" id="back" href="#"><em class="fa fa-angle-left"></em> Back</a>
                             </div>
                             <div align="right">
-                                <button name="nextBtn" id="nextBtn" type="button" class="btn btn-primary">
+                                <button id="AOProcessCancelAudit" type="button" class="btn btn-primary">
                                     Submit
                                 </button>
                             </div>

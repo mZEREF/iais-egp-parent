@@ -19,7 +19,7 @@
                         </tr>
                         <tr>
                             <td align="right">Facility Classification</td>
-                            <td style="padding-left : 20px"><c:out value="${processData.facClassification}"/></td>
+                            <td style="padding-left : 20px"><iais:code code="${processData.facClassification}"/></td>
                         </tr>
                         <tr>
                             <td align="right">Facility Type</td>
@@ -27,7 +27,7 @@
                         </tr>
                         <tr>
                             <td align="right">Audit Type</td>
-                            <td style="padding-left : 20px"><c:out value="${processData.auditType}"/></td>
+                            <td style="padding-left : 20px"><iais:code code="${processData.auditType}"/></td>
                         </tr>
                         <tr>
                             <td align="right">Audit Date</td>

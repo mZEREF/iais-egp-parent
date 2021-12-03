@@ -18,7 +18,7 @@
                         </tr>
                         <tr>
                             <td align="right">Facility Classification</td>
-                            <td style="padding-left : 20px"><c:out value="${selfAudit.facClassification}"/></td>
+                            <td style="padding-left : 20px"><iais:code code="${selfAudit.facClassification}"/></td>
                         </tr>
                         <tr>
                             <td align="right">Facility Type</td>
@@ -26,7 +26,7 @@
                         </tr>
                         <tr>
                             <td align="right">Audit Type</td>
-                            <td style="padding-left : 20px"><c:out value="${selfAudit.auditType}"/></td>
+                            <td style="padding-left : 20px"><iais:code code="${selfAudit.auditType}"/></td>
                         </tr>
                         <tr>
                             <td align="right">Audit Date</td>
