@@ -61,7 +61,7 @@ function firstUltrasoundOrderShowChangeFunction() {
         $stillBirthNumSection.find("input").val("");
     }
 
-    if (firstUltrasoundOrderShowVal != singleton) {
+    if (firstUltrasoundOrderShowVal != singleton && firstUltrasoundOrderShowVal) {
         $wasSelFoeReduCarryOutDiv.show();
     } else {
         $wasSelFoeReduCarryOutDiv.hide();
