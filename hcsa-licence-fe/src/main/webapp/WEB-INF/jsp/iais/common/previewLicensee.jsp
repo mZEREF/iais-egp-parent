@@ -11,10 +11,6 @@
     </c:choose>
 </c:if>
 
-<c:set var="isRfi" value="${requestInformationConfig != null}" />
-<c:set var="isRFC" value="${'APTY005' == AppSubmissionDto.appType}" />
-<c:set var="showClaimFields"
-       value="${isRFC && !isRfi && (subLicenseeDto.licenseeType eq 'LICT002' || subLicenseeDto.licenseeType eq 'LICTSUB002')}" />
 <div class="panel panel-default">
     <div class="panel-heading ${headingSign}">
         <h4 class="panel-title">
@@ -45,7 +41,6 @@
                 </c:if>
 
                 <%@include file="previewLicenseeCom.jsp"%>
-
                 <c:if test="${showClaimFields}">
                     <iais:row>
                         <iais:field width="5" value="UEN of your Corporate Entity"/>

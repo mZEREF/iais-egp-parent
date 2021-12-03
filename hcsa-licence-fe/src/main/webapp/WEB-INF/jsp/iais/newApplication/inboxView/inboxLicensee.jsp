@@ -1,6 +1,10 @@
 <c:set var="soloType" value="LICT002" />
 <c:set var="subLicenseeDto" value="${AppSubmissionDto.subLicenseeDto}"/>
 
+<c:set var="isRFC" value="${'APTY005' == AppSubmissionDto.appType}" />
+<c:set var="specialSubLic" value="${subLicenseeDto.licenseeType eq 'LICT002' || subLicenseeDto.licenseeType eq 'LICTSUB002'}" />
+<c:set var="showClaimFields" value="${isRFC && specialSubLic}" />
+
 <div class="panel panel-default">
     <div class="panel-heading">
         <h4 class="panel-title">
@@ -27,6 +31,20 @@
                 </c:if>
 
                 <%@include file="/WEB-INF/jsp/iais/common/previewLicenseeCom.jsp"%>
+                <c:if test="${showClaimFields}">
+                    <iais:row>
+                        <iais:field width="5" value="UEN of your Corporate Entity"/>
+                        <iais:value width="7" display="true">
+                            <c:out value="${subLicenseeDto.claimUenNo}" />
+                        </iais:value>
+                    </iais:row>
+                    <iais:row>
+                        <iais:field width="5" value="Name of your Corporate Entity"/>
+                        <iais:value width="7" display="true">
+                            <c:out value="${subLicenseeDto.claimCompanyName}" />
+                        </iais:value>
+                    </iais:row>
+                </c:if>
             </div>
         </div>
     </div>

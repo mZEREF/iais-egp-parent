@@ -12,6 +12,10 @@
 <c:set var="isRfi" value="${not empty requestInformationConfig}"/>
 <c:set var="isHciNameChange" value="${RFC_eqHciNameChange == 'RFC_eqHciNameChange'}"/>
 
+<c:set var="isRFC" value="${'APTY005' == AppSubmissionDto.appType}" />
+<c:set var="specialSubLic" value="${subLicenseeDto.licenseeType eq 'LICT002' || subLicenseeDto.licenseeType eq 'LICTSUB002'}" />
+<c:set var="showClaimFields" value="${isRFC && !isRfi && specialSubLic}" scope="request"/>
+
 <%@ include file="./dashboard.jsp" %>
 <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
     <input type="hidden" name="crud_action_type_tab" value="">
