@@ -4,8 +4,11 @@
     <div class="row">
         <div class="col-xs-12">
             <div class="table-gp">
-                <table class="table table-bordered" style="margin-bottom: 0">
+                <table aria-describedby="" class="table table-bordered" style="margin-bottom: 0">
                     <tbody>
+                    <tr>
+                        <th scope="col"></th>
+                    </tr>
                     <tr>
                         <td class="col-xs-6" align="right">Application No.</td>
                         <td class="col-xs-6" style="padding-left : 20px">${submitDetailsDto.applicationNo}</td>
@@ -50,8 +53,11 @@
     <div class="row">
         <div class="col-xs-12">
             <div class="table-gp">
-                <table class="table table-bordered" style="margin-bottom: 0">
+                <table aria-describedby="" class="table table-bordered" style="margin-bottom: 0">
                     <tbody>
+                    <tr>
+                        <th scope="col"></th>
+                    </tr>
                     <tr>
                         <td class="col-xs-6" align="right">Facility/Organisation Name</td>
                         <td class="col-xs-6" style="padding-left : 20px">${submitDetailsDto.facilityOrOrganisationName}</td>
@@ -84,12 +90,12 @@
     <div class="row">
         <div class="col-xs-12">
             <div class="table-gp">
-                <table class="table table-bordered" style="margin-bottom: 0">
+                <table aria-describedby="" class="table table-bordered" style="margin-bottom: 0">
                     <thead>
                     <tr>
-                        <th style="text-align:center;width:5%" align="center">S/N</th>
-                        <th style="text-align:center;">Schedule</th>
-                        <th style="text-align:center;">Biological Agent / Toxin</th>
+                        <th scope="col" style="text-align:center;width:5%" align="center">S/N</th>
+                        <th scope="col" style="text-align:center;">Schedule</th>
+                        <th scope="col" style="text-align:center;">Biological Agent / Toxin</th>
                     </tr>
                     </thead>
                     <tbody style="text-align:center;">

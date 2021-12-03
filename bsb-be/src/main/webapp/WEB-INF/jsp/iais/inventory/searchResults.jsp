@@ -12,8 +12,11 @@
                         <div class="table-responsive">
                             <div class="table-gp">
                                 <c:if test="${count == 'agent'}">
-                                <table class="table">
+                                <table aria-describedby="" class="table">
                                     <thead>
+                                    <tr>
+                                        <th scope="col"></th>
+                                    </tr>
                                     <tr align="center">
                                         <iais:sortableHeader needSort="false" field=""
                                                              value="S/N"/>
@@ -57,8 +60,11 @@
                                 </table>
                                 </c:if>
                                 <c:if test="${count == 'date'}">
-                                    <table class="table">
+                                    <table aria-describedby="" class="table">
                                         <thead>
+                                        <tr>
+                                            <th scope="col"></th>
+                                        </tr>
                                         <tr align="center">
                                             <iais:sortableHeader needSort="false" field=""
                                                                  value="S/N"/>

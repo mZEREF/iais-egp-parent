@@ -10,8 +10,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.StringUtils;
 import sg.gov.moh.iais.egp.bsb.client.DocClient;
 import sg.gov.moh.iais.egp.bsb.constant.RevocationConstants;
-import sg.gov.moh.iais.egp.bsb.dto.PageInfo;
-import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
 import sg.gov.moh.iais.egp.bsb.dto.audit.AuditDocDto;
 import sg.gov.moh.iais.egp.bsb.dto.revocation.*;
 import sg.gov.moh.iais.egp.bsb.client.RevocationClient;
@@ -96,7 +94,7 @@ public class AORevocationDelegator {
         AuditDocDto auditDocDto = new AuditDocDto();
         if (StringUtils.hasLength(facility.getId())) {
             List<FacilityDoc> facilityDocList = docClient.getFacilityDocByFacId(facility.getId()).getEntity();
-            List<FacilityDoc> docList = new ArrayList<>();
+            List<FacilityDoc> docList = new ArrayList<>(facilityDocList.size());
             for (FacilityDoc facilityDoc : facilityDocList) {
                 String submitByName = IaisEGPHelper.getCurrentAuditTrailDto().getMohUserId();
                 facilityDoc.setSubmitByName(submitByName);
@@ -136,18 +134,6 @@ public class AORevocationDelegator {
         SubmitRevokeDto submitRevokeDto = before(bpc);
         submitRevokeDto.setStatus(RevocationConstants.PARAM_APPLICATION_STATUS_PENDING_HM);
         revocationClient.updateRevokeApplication(submitRevokeDto);
-    }
-
-    private ApprovalOfficerQueryDto getSearchDto(HttpServletRequest request) {
-        ApprovalOfficerQueryDto searchDto = (ApprovalOfficerQueryDto) ParamUtil.getSessionAttr(request, RevocationConstants.PARAM_APPLICATION_SEARCH);
-        return searchDto == null ? getDefaultSearchDto() : searchDto;
-    }
-
-    private ApprovalOfficerQueryDto getDefaultSearchDto() {
-        ApprovalOfficerQueryDto dto = new ApprovalOfficerQueryDto();
-        dto.clearAllFields();
-        dto.defaultPaging();
-        return dto;
     }
 
     private SubmitRevokeDto before(BaseProcessClass bpc) {

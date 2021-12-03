@@ -45,8 +45,11 @@
                                                     <div class="row">
                                                         <div class="col-xs-12" style="height: 100%">
                                                             <div class="table-gp">
-                                                                <table class="table table-bordered">
+                                                                <table aria-describedby="" class="table table-bordered">
                                                                     <tbody>
+                                                                    <tr>
+                                                                        <th scope="col"></th>
+                                                                    </tr>
                                                                     <tr>
                                                                         <td class="col-xs-6" align="right">S/N</td>
                                                                         <td class="col-xs-6" style="padding-left: 15px;">1</td>
@@ -198,8 +201,11 @@
                                                                                      result="SearchResult"/>
                                                                     <div class="table-responsive">
                                                                     <div class="table-gp">
-                                                                        <table class="table">
+                                                                        <table aria-describedby="" class="table">
                                                                             <thead>
+                                                                            <tr>
+                                                                                <th scope="col"></th>
+                                                                            </tr>
                                                                             <tr align="center">
                                                                                 <iais:sortableHeader needSort="false"
                                                                                                      field="S/N"

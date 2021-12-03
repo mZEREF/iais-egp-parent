@@ -10,6 +10,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
+import com.google.common.collect.Maps;
 import lombok.extern.slf4j.Slf4j;
 import sg.gov.moh.iais.egp.bsb.client.AuditClientBE;
 import sg.gov.moh.iais.egp.bsb.client.BiosafetyEnquiryClient;
@@ -19,7 +20,6 @@ import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
 import sg.gov.moh.iais.egp.bsb.dto.audit.AuditQueryDto;
 import sg.gov.moh.iais.egp.bsb.dto.audit.FacilityQueryResultDto;
 import sg.gov.moh.iais.egp.bsb.dto.audit.OfficerProcessAuditDto;
-import sg.gov.moh.iais.egp.bsb.entity.*;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
@@ -99,15 +99,16 @@ public class CancelAuditDelegator {
         ParamUtil.setSessionAttr(request, AUDIT_LIST, null);
         String[] auditIds = ParamUtil.getMaskedStrings(request, AUDIT_ID);
         List<FacilityQueryResultDto.FacInfo> facInfos = (List<FacilityQueryResultDto.FacInfo>)ParamUtil.getSessionAttr(request, KEY_AUDIT_DATA_LIST);
-        Map<String, FacilityQueryResultDto.FacInfo> facInfoMap = new HashMap<>(facInfos.size());
+        Map<String, FacilityQueryResultDto.FacInfo> facInfoMap = Maps.newHashMapWithExpectedSize(facInfos.size());
         for (FacilityQueryResultDto.FacInfo facInfo : facInfos) {
             facInfoMap.put(facInfo.getAuditId(), facInfo);
         }
         //
         facInfos.clear();
         for (String auditId : auditIds) {
-            if (facInfoMap.containsKey(auditId)) {
-                facInfos.add(facInfoMap.get(auditId));
+            FacilityQueryResultDto.FacInfo facInfo = facInfoMap.get(auditId);
+            if (facInfo != null) {
+                facInfos.add(facInfo);
             }
         }
         ParamUtil.setSessionAttr(request, AUDIT_LIST, (Serializable) facInfos);
@@ -227,7 +228,7 @@ public class CancelAuditDelegator {
 
     public void selectOption(HttpServletRequest request) {
         List<String> facNames = biosafetyEnquiryClient.queryDistinctFN().getEntity();
-        List<SelectOption> selectModel = new ArrayList<>();
+        List<SelectOption> selectModel = new ArrayList<>(facNames.size());
         for (String facName : facNames) {
             selectModel.add(new SelectOption(facName, facName));
         }

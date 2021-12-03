@@ -11,12 +11,12 @@
                 <div class="text">
                     <p><h4><strong><span>Inspection/Certification Checklist</span></strong></h4></p>
                 </div>
-                <table class="table table-bordered" style="margin-bottom: 0">
+                <table aria-describedby="" class="table table-bordered" style="margin-bottom: 0">
                     <thead>
                     <tr>
-                        <th style="text-align:center;width:5%" align="center"><p>S/N</p></th>
-                        <th style="text-align:center;"><p>Checklist</p></th>
-                        <th style="text-align:center;"><p>Inspection Date</p></th>
+                        <th scope="col" style="text-align:center;width:5%" align="center"><p>S/N</p></th>
+                        <th scope="col" style="text-align:center;"><p>Checklist</p></th>
+                        <th scope="col" style="text-align:center;"><p>Inspection Date</p></th>
                     </tr>
                     </thead>
                     <tbody style="text-align:center;">
@@ -46,14 +46,14 @@
                 <div class="text">
                     <p><h4><strong><span>Inspection/Certification Findings</span></strong></h4></p>
                 </div>
-                <table class="table table-bordered" style="margin-bottom: 0">
+                <table aria-describedby="" class="table table-bordered" style="margin-bottom: 0">
                     <thead>
                     <tr>
-                        <th style="text-align:center;width:5%" align="center"><p></p>S/N</th>
-                        <th style="text-align:center;"><p>Checklist Question</p></th>
-                        <th style="text-align:center;"><p>Type</p></th>
-                        <th style="text-align:center;"><p>Deadline</p></th>
-                        <th style="text-align:center;"><p>Rectified</p></th>
+                        <th scope="col" style="text-align:center;width:5%" align="center"><p></p>S/N</th>
+                        <th scope="col" style="text-align:center;"><p>Checklist Question</p></th>
+                        <th scope="col" style="text-align:center;"><p>Type</p></th>
+                        <th scope="col" style="text-align:center;"><p>Deadline</p></th>
+                        <th scope="col" style="text-align:center;"><p>Rectified</p></th>
                     </tr>
                     </thead>
                     <tbody style="text-align:center;">
@@ -77,11 +77,11 @@
                 <div class="text">
                     <p><h4><strong><span>Inspection/Certification Report and Documents</span></strong></h4></p>
                 </div>
-                <table class="table table-bordered" style="margin-bottom: 0">
+                <table aria-describedby="" class="table table-bordered" style="margin-bottom: 0">
                     <thead>
                     <tr>
-                        <th style="text-align:center;width:5%" align="center"><p>S/N</p></th>
-                        <th style="text-align:center;"><p>File Name</p></th>
+                        <th scope="col" style="text-align:center;width:5%" align="center"><p>S/N</p></th>
+                        <th scope="col" style="text-align:center;"><p>File Name</p></th>
                     </tr>
                     </thead>
                     <tbody style="text-align:center;">

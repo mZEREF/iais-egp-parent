@@ -3,8 +3,11 @@
     <div class="row">
         <div class="col-xs-12">
             <div class="table-gp">
-                <table class="table table-bordered" style="margin-bottom: 0">
+                <table aria-describedby="" class="table table-bordered" style="margin-bottom: 0">
                     <tbody>
+                        <tr>
+                            <th scope="col"></th>
+                        </tr>
                         <tr>
                             <td class="col-xs-6" align="right">Facility Name</td>
                             <td style="padding-left : 20px"><c:out value="${selfAudit.facName}"/></td>

@@ -14,12 +14,12 @@
             <table aria-describedby="" class="table">
                 <thead>
                 <tr>
-                    <th width="20%">Document</th>
-                    <th width="20%">File</th>
-                    <th width="15%">Size</th>
+                    <th scope="col" width="20%">Document</th>
+                    <th scope="col" width="20%">File</th>
+                    <th scope="col" width="15%">Size</th>
                     <%--                    <th width="20%">Version</th>--%>
-                    <th width="20%">Submitted By</th>
-                    <th width="25%">Date Submitted</th>
+                    <th scope="col" width="20%">Submitted By</th>
+                    <th scope="col" width="25%">Date Submitted</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -84,12 +84,12 @@
             <table aria-describedby="" class="table">
                 <thead>
                 <tr>
-                    <th width="20%">Document</th>
-                    <th width="20%">File</th>
-                    <th width="10%">Size</th>
-                    <th width="20%">Submitted By</th>
-                    <th width="20%">Date Submitted</th>
-                    <th width="10%">Action</th>
+                    <th scope="col" width="20%">Document</th>
+                    <th scope="col" width="20%">File</th>
+                    <th scope="col" width="10%">Size</th>
+                    <th scope="col" width="20%">Submitted By</th>
+                    <th scope="col" width="20%">Date Submitted</th>
+                    <th scope="col" width="10%">Action</th>
                 </tr>
                 </thead>
                 <tbody id="tbodyFileListId">
