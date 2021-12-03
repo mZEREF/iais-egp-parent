@@ -90,10 +90,11 @@
                             <div class="row">
                                 <div class="col-xs-12">
                                     <div class="table-gp">
-                                        <table class="table">
+                                        <table aria-describedby="" class="table">
                                             <thead>
                                             <tr>
                                                 <%-- need to use new tag in future --%>
+                                                <th scope="col" style="display: none"></th>
                                                 <iais:sortableHeader needSort="true" field="submissionNo" value="Submission ID" isFE="true" style="width: 15%"/>
                                                 <iais:sortableHeader needSort="true" field="type" value="Type" isFE="true" style="width: 18%"/>
                                                 <iais:sortableHeader needSort="true" field="status" value="Status" isFE="true" style="width: 15%"/>

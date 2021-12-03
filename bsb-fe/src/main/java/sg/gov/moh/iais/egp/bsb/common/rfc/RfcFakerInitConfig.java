@@ -1,8 +1,8 @@
 package sg.gov.moh.iais.egp.bsb.common.rfc;
 
+import com.google.common.collect.Maps;
 import sg.gov.moh.iais.egp.bsb.constant.RfcFlowType;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import static sg.gov.moh.iais.egp.bsb.constant.RfcFlowType.*;
@@ -17,7 +17,7 @@ public class RfcFakerInitConfig {
     private RfcFakerInitConfig(){}
 
     public static Map<String, RfcFlowType> getFacRegFlowConfig(){
-        Map<String,RfcFlowType> map = new HashMap<>(63);
+        Map<String,RfcFlowType> map = Maps.newHashMapWithExpectedSize(63);
         //facProfile config
         map.put("iais.bsbfe.facProfile.name",AMENDMENT);
         map.put("iais.bsbfe.facProfile.type",AMENDMENT);
@@ -97,7 +97,7 @@ public class RfcFakerInitConfig {
     }
 
     public static Map<String,RfcFlowType> getFacCerRegFlowConfig(){
-        Map<String,RfcFlowType> map = new HashMap<>();
+        Map<String,RfcFlowType> map = Maps.newHashMapWithExpectedSize(43);
         //organisation config
         map.put("iais.bsbfe.organisation.name",AMENDMENT);
         map.put("iais.bsbfe.organisation.yearEstablished",AMENDMENT);

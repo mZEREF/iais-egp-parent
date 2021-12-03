@@ -4,9 +4,12 @@
     <div class="row">
         <div class="col-xs-12">
             <div class="table-gp">
-                <table class="table table-bordered" style="margin-bottom: 0">
+                <table aria-describedby="" class="table table-bordered" style="margin-bottom: 0">
                     <tbody>
                         <input type="text" value="<iais:mask name="facilityId" value="${approval.id}"/>" name="facilityId" hidden/>
+                        <tr>
+                            <th scope="col"></th>
+                        </tr>
                         <tr>
                             <td align="right">Active Approval No. to be revoked</td>
                             <td style="padding-left : 20px"><c:out value="${approval.approveNo}"/></td>

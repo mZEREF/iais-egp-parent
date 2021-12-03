@@ -336,7 +336,7 @@ public class RfcFacCertifierRegistrationDelegator {
                     DecisionFlowType flowType = new DecisionFlowTypeImpl();
                     RfcFlowType rfcFlowType = flowType.facCerRegFlowType(compareTwoDto(oldFacilityCertifierRegisterDto,finalAllDataDto));
                     ParamUtil.setRequestAttr(request, "rfcFlowType", rfcFlowType);
-                    if (rfcFlowType.equals(RfcFlowType.AMENDMENT) || rfcFlowType.equals(RfcFlowType.NOTIFICATION)){
+                    if (rfcFlowType == RfcFlowType.AMENDMENT || rfcFlowType == RfcFlowType.NOTIFICATION){
                         //upload document
                         SimpleNode primaryDocNode = (SimpleNode) facRegRoot.at(NODE_NAME_FAC_PRIMARY_DOCUMENT);
                         PrimaryDocDto primaryDocDto = (PrimaryDocDto) primaryDocNode.getValue();

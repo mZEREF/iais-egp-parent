@@ -33,7 +33,7 @@ public class DecisionFlowTypeImpl implements DecisionFlowType{
                 //config map don't contains modify field, throw exception, remark field
                 log.error("config map don't contains modify field {}", field);
                 throw new IaisRuntimeException("config map don't contains modify field");
-            }else if(flowTypeValue.equals(RfcFlowType.AMENDMENT)){
+            }else if(flowTypeValue == RfcFlowType.AMENDMENT){
                 //as long as there is a type of APPROVAL, return APPROVAL directly
                 return RfcFlowType.AMENDMENT;
             }
@@ -70,7 +70,7 @@ public class DecisionFlowTypeImpl implements DecisionFlowType{
                 //config map don't contains modify field, throw exception, remark field
                 log.error("config map don't contains modify field {}", field);
                 throw new IaisRuntimeException("config map don't contains modify field");
-            }else if(flowTypeValue.equals(RfcFlowType.AMENDMENT)){
+            }else if(flowTypeValue == RfcFlowType.AMENDMENT){
                 //as long as there is a type of APPROVAL, return APPROVAL directly
                 return RfcFlowType.AMENDMENT;
             }

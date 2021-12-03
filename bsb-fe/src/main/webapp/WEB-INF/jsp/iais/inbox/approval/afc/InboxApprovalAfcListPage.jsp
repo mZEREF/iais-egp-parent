@@ -103,10 +103,11 @@
                             <div class="row">
                                 <div class="col-xs-12">
                                     <div class="table-gp">
-                                        <table class="table">
+                                        <table aria-describedby="" class="table">
                                             <thead>
                                             <tr>
                                                 <%-- need to use new tag in future --%>
+                                                <th scope="col" style="display: none"></th>
                                                 <iais:sortableHeader needSort="true" field="approveNo" value="Approval No." isFE="true" style="width:12%"/>
                                                 <iais:sortableHeader needSort="false" field="processType" value="Process Type" isFE="true" style="width:12%"/>
                                                 <iais:sortableHeader needSort="true" field="status" value="Status" isFE="true" style="width:10%"/>

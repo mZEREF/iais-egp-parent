@@ -546,7 +546,7 @@ public class RfcFacilityRegistrationDelegator {
                     DecisionFlowType flowType = new DecisionFlowTypeImpl();
                     RfcFlowType rfcFlowType = flowType.facRegFlowType(compareTwoDto(oldFacilityRegisterDto,finalAllDataDto));
                     ParamUtil.setRequestAttr(request, "rfcFlowType", rfcFlowType);
-                    if (rfcFlowType.equals(RfcFlowType.AMENDMENT) || rfcFlowType.equals(RfcFlowType.NOTIFICATION)){
+                    if (rfcFlowType == RfcFlowType.AMENDMENT || rfcFlowType == RfcFlowType.NOTIFICATION){
                         // save docs
                         SimpleNode primaryDocNode = (SimpleNode) facRegRoot.at(NODE_NAME_PRIMARY_DOC);
                         PrimaryDocDto primaryDocDto = (PrimaryDocDto) primaryDocNode.getValue();

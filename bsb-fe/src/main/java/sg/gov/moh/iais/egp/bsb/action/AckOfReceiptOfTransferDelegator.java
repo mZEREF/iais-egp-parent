@@ -135,8 +135,7 @@ public class AckOfReceiptOfTransferDelegator {
     }
 
     public void saveDraft(BaseProcessClass bpc){
-        log.info("this model will do in the future ");
-
+        // this model will do in the future
     }
 
     public void prepareSwitch1(BaseProcessClass bpc){
@@ -178,7 +177,7 @@ public class AckOfReceiptOfTransferDelegator {
         List<FacListDto.FacList> facLists = facListDto.getFacLists();
         //Removes the newly created object where is null
         facLists.remove(0);
-        List<SelectOption> selectModel = new ArrayList<>();
+        List<SelectOption> selectModel = new ArrayList<>(facLists.size());
         for (FacListDto.FacList fac : facLists) {
             selectModel.add(new SelectOption(fac.getFacId(), fac.getFacName()));
         }

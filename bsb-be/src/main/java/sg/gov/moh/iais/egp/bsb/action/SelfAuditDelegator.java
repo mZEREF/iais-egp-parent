@@ -10,14 +10,12 @@ import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 import sg.gov.moh.iais.egp.bsb.client.AuditClientBE;
 import sg.gov.moh.iais.egp.bsb.constant.AuditConstants;
 import sg.gov.moh.iais.egp.bsb.constant.ValidationConstants;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
 import sg.gov.moh.iais.egp.bsb.dto.audit.OfficerProcessAuditDto;
-import sg.gov.moh.iais.egp.bsb.entity.*;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
@@ -32,8 +30,11 @@ import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.*;
 @Delegator(value = "selfAuditDelegator")
 public class SelfAuditDelegator {
 
-    @Autowired
-    private AuditClientBE auditClientBE;
+    private final AuditClientBE auditClientBE;
+
+    public SelfAuditDelegator(AuditClientBE auditClientBE) {
+        this.auditClientBE = auditClientBE;
+    }
 
     public void start(BaseProcessClass bpc) throws IllegalAccessException {
         AuditTrailHelper.auditFunction(MODULE_AUDIT, FUNCTION_AUDIT);

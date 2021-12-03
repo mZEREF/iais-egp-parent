@@ -68,9 +68,10 @@
                         <%--@elvariable id="pageInfo" type="sg.gov.moh.iais.egp.bsb.dto.PageInfo"--%>
                         <iais-bsb:Pagination size="${pageInfo.size}" pageNo="${pageInfo.pageNo + 1}" pageAmt="${pageInfo.totalPages}" totalElements="${pageInfo.totalElements}"/>
                         <div class="table-gp">
-                            <table class="table application-group" style="border-collapse:collapse;">
+                            <table aria-describedby="" class="table application-group" style="border-collapse:collapse;">
                                 <thead>
                                 <tr>
+                                    <th scope="col" style="display: none"></th>
                                     <iais:sortableHeader needSort="false" field="" value="S/N"/>
                                     <iais:sortableHeader needSort="false" field="Approval No" value="Approval No"/>
                                     <iais:sortableHeader needSort="false" field="Approval Type" value="Approval Type"/>

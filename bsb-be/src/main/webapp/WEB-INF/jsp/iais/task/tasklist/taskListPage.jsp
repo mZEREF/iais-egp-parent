@@ -87,6 +87,7 @@
                     <table aria-describedby="" class="table application-group" style="border-collapse:collapse;">
                         <thead>
                         <tr>
+                            <th scope="col" style="display: none"></th>
                             <iais:sortableHeader needSort="false" field="" value="S/N"/>
                             <iais:sortableHeader needSort="false" field="applicationNo" value="Application No."/>
                             <iais:sortableHeader needSort="false" field="processType" value="Process Type"/>

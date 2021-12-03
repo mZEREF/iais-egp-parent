@@ -347,7 +347,7 @@ public class RfcApprovalAppDelegator {
                 DecisionFlowType flowType = new DecisionFlowTypeImpl();
                 RfcFlowType rfcFlowType = flowType.approvalAppFlowType(compareTwoDto(oldApprovalAppDto,finalAllDataDto));
                 ParamUtil.setRequestAttr(request, "rfcFlowType", rfcFlowType);
-                if (rfcFlowType.equals(RfcFlowType.AMENDMENT)){
+                if (rfcFlowType == RfcFlowType.AMENDMENT){
                     // save docs
                     SimpleNode primaryDocNode = (SimpleNode) approvalAppRoot.at(NODE_NAME_PRIMARY_DOC);
                     PrimaryDocDto primaryDocDto = (PrimaryDocDto) primaryDocNode.getValue();
