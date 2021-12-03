@@ -1,125 +1,157 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Application defaultStart="/Steps/StartStep/start" dtdVersion="6.0" executable="true" majorVersion="1" minorVersion="0" name="MohAOProcessingRevocation" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" transaction="enable">
- <WebServices/>
+ <WebServices />
  <Steps>
   <StartStep defClass="" executor="" icon="" name="start" x="-20" y="100">
-   <Description/>
-   <probepoint type="none"/>
+   <Description />
+   <probepoint type="none" />
    <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="start_OnStepProcess_0" name="start_OnStepProcess_0"/>
+    <JavaCode defClass="" executor="" methodName="start_OnStepProcess_0" name="start_OnStepProcess_0" />
    </OnStepProcess>
   </StartStep>
-  <AutomaticStep defClass="" executor="" icon="" name="Approve" x="610" y="350">
-   <Description/>
-   <probepoint type="none"/>
+  <AutomaticStep defClass="" executor="" icon="" name="Approve" x="1070" y="230">
+   <Description />
+   <probepoint type="none" />
    <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="approve_OnStepProcess_0" name="approve_OnStepProcess_0"/>
+    <JavaCode defClass="" executor="" methodName="approve_OnStepProcess_0" name="approve_OnStepProcess_0" />
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="Reject" x="500" y="350">
-   <Description/>
-   <probepoint type="none"/>
+  <AutomaticStep defClass="" executor="" icon="" name="Reject" x="960" y="230">
+   <Description />
+   <probepoint type="none" />
    <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="reject_OnStepProcess_0" name="reject_OnStepProcess_0"/>
+    <JavaCode defClass="" executor="" methodName="reject_OnStepProcess_0" name="reject_OnStepProcess_0" />
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="Routeback" x="370" y="350">
-   <Description/>
-   <probepoint type="none"/>
+  <AutomaticStep defClass="" executor="" icon="" name="Routeback" x="830" y="230">
+   <Description />
+   <probepoint type="none" />
    <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="routeback_OnStepProcess_0" name="routeback_OnStepProcess_0"/>
+    <JavaCode defClass="" executor="" methodName="routeback_OnStepProcess_0" name="routeback_OnStepProcess_0" />
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="RouteToHM" x="240" y="350">
-   <Description/>
-   <probepoint type="none"/>
+  <AutomaticStep defClass="" executor="" icon="" name="RouteToHM" x="700" y="230">
+   <Description />
+   <probepoint type="none" />
    <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="routeToHM_OnStepProcess_0" name="routeToHM_OnStepProcess_0"/>
+    <JavaCode defClass="" executor="" methodName="routeToHM_OnStepProcess_0" name="routeToHM_OnStepProcess_0" />
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="prepareData" x="120" y="100">
-   <Description/>
-   <probepoint type="none"/>
+  <AutomaticStep defClass="" executor="" icon="" name="prepareData" x="60" y="100">
+   <Description />
+   <probepoint type="none" />
    <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="prepareData_OnStepProcess_0" name="prepareData_OnStepProcess_0"/>
+    <JavaCode defClass="" executor="" methodName="prepareData_OnStepProcess_0" name="prepareData_OnStepProcess_0" />
    </OnStepProcess>
   </AutomaticStep>
-  <ReturnInvokeProcessStep defClass="" executor="" icon="" name="Back" x="120" y="350">
-   <Description/>
-   <probepoint type="none"/>
-   <OnStepProcess/>
-  </ReturnInvokeProcessStep>
+  <AutomaticStep defClass="" executor="" icon="" name="preConfirm" x="300" y="100">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="preConfirm_OnStepProcess_0" name="preConfirm_OnStepProcess_0" />
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="preSwitch" x="660" y="100">
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="preSwitch_OnStepProcess_0" name="preSwitch_OnStepProcess_0" />
+   </OnStepProcess>
+  </AutomaticStep>
  </Steps>
  <Pages>
-  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="viewRevocationDetail" stageIndicator="" x="280" y="100">
-   <OnPageLoad/>
-   <OnPageSubmit/>
-   <Description/>
-   <probepoint type="none"/>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="viewRevocationDetail" stageIndicator="" x="160" y="100">
+   <OnPageLoad />
+   <OnPageSubmit />
+   <Description />
+   <probepoint type="none" />
   </WebPage>
-  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="ViewFormAck" stageIndicator="" x="420" y="490">
-   <OnPageLoad/>
-   <OnPageSubmit/>
-   <Description/>
-   <probepoint type="none"/>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="ViewFormAck" stageIndicator="" x="880" y="370">
+   <OnPageLoad />
+   <OnPageSubmit />
+   <Description />
+   <probepoint type="none" />
+  </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="ConfirmPage" stageIndicator="" x="530" y="100">
+   <OnPageLoad />
+   <OnPageSubmit />
+   <Description />
+   <probepoint type="none" />
   </WebPage>
  </Pages>
- <Forms/>
+ <Forms />
  <Links>
-  <SynchronousLink destinationName="/Switches/Switch/action" linkstyle="Direct" name="" sourceName="/Pages/WebPage/viewRevocationDetail" style="oblique">
-   <position>{(300,120)(340,240)}</position>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/preConfirm" linkstyle="Direct" name="" sourceName="/Pages/WebPage/viewRevocationDetail" style="oblique">
+   <position>{(180,120)(320,120)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/RouteToHM" linkstyle="Direct" name="" sourceName="/Switches/Switch/action" style="oblique">
-   <position>{(340,240)(260,370)}</position>
+   <position>{(800,120)(720,250)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/Routeback" linkstyle="Direct" name="" sourceName="/Switches/Switch/action" style="oblique">
-   <position>{(340,240)(390,370)}</position>
+   <position>{(800,120)(850,250)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/Reject" linkstyle="Direct" name="" sourceName="/Switches/Switch/action" style="oblique">
-   <position>{(340,240)(520,370)}</position>
+   <position>{(800,120)(980,250)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/Approve" linkstyle="Direct" name="" sourceName="/Switches/Switch/action" style="oblique">
-   <position>{(340,240)(630,370)}</position>
+   <position>{(800,120)(1090,250)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Pages/WebPage/ViewFormAck" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/Approve" style="oblique">
-   <position>{(630,370)(440,510)}</position>
+   <position>{(1090,250)(900,390)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Pages/WebPage/ViewFormAck" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/Reject" style="oblique">
-   <position>{(520,370)(440,510)}</position>
+   <position>{(980,250)(900,390)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Pages/WebPage/ViewFormAck" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/Routeback" style="oblique">
-   <position>{(390,370)(440,510)}</position>
+   <position>{(850,250)(900,390)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Pages/WebPage/ViewFormAck" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/RouteToHM" style="oblique">
-   <position>{(260,370)(440,510)}</position>
+   <position>{(720,250)(900,390)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/prepareData" linkstyle="Direct" name="" sourceName="/Steps/StartStep/start" style="oblique">
-   <position>{(0,120)(140,120)}</position>
+   <position>{(0,120)(80,120)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Pages/WebPage/viewRevocationDetail" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/prepareData" style="rectanular">
-   <position>{(140,120)(300,120)}</position>
+  <SynchronousLink destinationName="/Pages/WebPage/viewRevocationDetail" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/prepareData" style="oblique">
+   <position>{(80,120)(180,120)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/ReturnInvokeProcessStep/Back" linkstyle="Direct" name="" sourceName="/Switches/Switch/action" style="oblique">
-   <position>{(340,240)(140,370)}</position>
+  <SynchronousLink destinationName="/Conditions/Condition/Cond1" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/preConfirm" style="rectanular">
+   <position>{(320,120)(440,120)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/ReturnInvokeProcessStep/Back" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/ViewFormAck" style="rectanular">
-   <position>{(440,510)(140,508)(140,370)}</position>
+  <SynchronousLink destinationName="/Pages/WebPage/ConfirmPage" linkstyle="Rectangle" name="" sourceName="/Conditions/Condition/Cond1" style="rectanular">
+   <position>{(440,120)(550,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/preSwitch" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/ConfirmPage" style="rectanular">
+   <position>{(550,120)(680,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Switches/Switch/action" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/preSwitch" style="rectanular">
+   <position>{(680,120)(800,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/prepareData" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/action" style="rectanular">
+   <position>{(800,120)(96,32)(80,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/prepareData" linkstyle="Rectangle" name="" sourceName="/Conditions/Condition/Cond1" style="rectanular">
+   <position>{(440,120)(96,59)(80,120)}</position>
   </SynchronousLink>
  </Links>
- <Conditions/>
+ <Conditions>
+  <Condition componentIfFalse="/Steps/AutomaticStep/prepareData" componentIfTrue="/Pages/WebPage/ConfirmPage" defClass="" executor="" icon="" leftOperand="isValid" name="Cond1" operator="=" rightOperand="&quot;Y&quot;" x="420" y="100">
+   <Description />
+  </Condition>
+ </Conditions>
  <Switches>
-  <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="crud_action_type" name="action" x="320" y="220">
-   <Description/>
-   <SwitchCase component="/Steps/AutomaticStep/RouteToHM" value="&quot;submit&quot;"/>
-   <SwitchCase component="/Steps/AutomaticStep/Routeback" value="&quot;routeBack&quot;"/>
-   <SwitchCase component="/Steps/AutomaticStep/Reject" value="&quot;reject&quot;"/>
-   <SwitchCase component="/Steps/AutomaticStep/Approve" value="&quot;approve&quot;"/>
-   <SwitchCase component="/Steps/ReturnInvokeProcessStep/Back" value="&quot;doBack&quot;"/>
+  <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="action_type" name="action" x="780" y="100">
+   <Description />
+   <SwitchCase component="/Steps/AutomaticStep/RouteToHM" value="&quot;submit&quot;" />
+   <SwitchCase component="/Steps/AutomaticStep/Routeback" value="&quot;routeBack&quot;" />
+   <SwitchCase component="/Steps/AutomaticStep/Reject" value="&quot;reject&quot;" />
+   <SwitchCase component="/Steps/AutomaticStep/Approve" value="&quot;approve&quot;" />
+   <SwitchCase component="/Steps/AutomaticStep/prepareData" value="&quot;doBack&quot;" />
   </Switch>
  </Switches>
- <Branches/>
- <Merges/>
- <StudioLabels/>
- <StageIndicator/>
- <AuthenticationRequire agent="false" authentication="false" citizen="false" counterStaff="false" workingGroup=""/>
+ <Branches />
+ <Merges />
+ <StudioLabels />
+ <StageIndicator />
+ <AuthenticationRequire agent="false" authentication="false" citizen="false" counterStaff="false" workingGroup="" />
 </Application>
+

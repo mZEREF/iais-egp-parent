@@ -33,8 +33,12 @@ public class INTRANET___MohDOSubmitRevocation___1 extends BaseProcessClass {
 		EngineHelper.delegate(DELEGATOR, "save", this);
 	}
 
-	public void back_OnStepProcess_0() throws Exception {
-		// 		back->OnStepProcess
+	public void preConfirm_OnStepProcess_0() throws Exception {
+		// 		preConfirm->OnStepProcess
+	}
+
+	public void preSwitch_OnStepProcess_0() throws Exception {
+		// 		preSwitch->OnStepProcess
 	}
 
 }

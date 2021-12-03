@@ -9,9 +9,6 @@ import org.springframework.web.bind.annotation.*;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
 import sg.gov.moh.iais.egp.bsb.dto.ValidationResultDto;
 import sg.gov.moh.iais.egp.bsb.dto.audit.*;
-import sg.gov.moh.iais.egp.bsb.entity.*;
-
-import java.util.List;
 
 /**
  * @author Zhu Tangtang
@@ -24,24 +21,6 @@ public interface AuditClientBE {
 
     @PostMapping(path = "/bsb-audit/save",consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     ResponseDto<String> saveFacilityAudit(@RequestBody SaveAuditDto auditDto);
-
-    @GetMapping(path = "/bsb-audit/{id}",consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<FacilityAudit> getFacilityAuditById(@PathVariable(name = "id") String id);
-
-    @GetMapping(value = "/bsb-audit/getFacilityAuditAppById",consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<FacilityAuditApp> getFacilityAuditAppById(@RequestParam("id") String id);
-
-    @PostMapping(value = "/bsb-auditHistory/saveHistory", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<FacilityAuditAppHistory> saveHistory(@RequestBody FacilityAuditAppHistory history);
-
-    @GetMapping(value = "/bsb-auditHistory/getAllHistory", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<List<FacilityAuditAppHistory>> getAllHistory();
-
-    @GetMapping(value = "/bsb-auditHistory/getAllHistoryByAuditAppId", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<List<FacilityAuditAppHistory>> getAllHistoryByAuditAppId(@RequestParam("auditAppId") String auditAppId);
-
-    @GetMapping(value = "/bsb-facilityActivity/queryActivityByFacId")
-    FeignResponseEntity<List<FacilityActivity>> getFacilityActivityByFacilityId(@RequestParam("facId") String facilityId);
 
     @GetMapping(value = "/bsb-audit/getOfficerProcessDataByAppId", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     ResponseDto<OfficerProcessAuditDto> getOfficerProcessDataByAppId(@RequestParam("appId") String appId);
