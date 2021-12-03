@@ -64,7 +64,7 @@
                                 <iais:value width="4" cssClass="col-md-4">
                                     <select name="arCentre" id="arCentre">
                                         <option value="" <c:if test="${empty assistedReproductionEnquiryFilterDto.arCentre}">selected="selected"</c:if>>Please Select</option>
-                                        <c:forEach items="${embryosBiopsiedLocalSelectOption}" var="selectOption">
+                                        <c:forEach items="${arCentreSelectOption}" var="selectOption">
                                             <option value="${selectOption.value}" <c:if test="${assistedReproductionEnquiryFilterDto.arCentre ==selectOption.value}">selected="selected"</c:if>>${selectOption.text}</option>
                                         </c:forEach>
                                     </select>

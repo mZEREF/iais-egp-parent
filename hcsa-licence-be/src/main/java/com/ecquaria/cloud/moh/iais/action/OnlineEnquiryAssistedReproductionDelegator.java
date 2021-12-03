@@ -293,7 +293,7 @@ public class OnlineEnquiryAssistedReproductionDelegator {
 
     private void setQueryFilter(AssistedReproductionEnquiryFilterDto arDto,FilterParameter filterParameter,int sqf){
         Map<String,Object> filter=IaisCommonUtils.genNewHashMap();
-        if(arDto.getArCentre()!=null) {
+        if(arDto.getArCentre()!=null) {//todo xml sql
             filter.put("arCentre", arDto.getArCentre());
         }
         if(sqf==0||sqf==2){
@@ -637,19 +637,98 @@ public class OnlineEnquiryAssistedReproductionDelegator {
                     filter.put("transferInOrOut", "out");
                 }
             }
+            if(arDto.getTransferredOocyte()!=null&& "on".equals(arDto.getTransferredOocyte())
+                    ||arDto.getTransferredEmbryo()!=null&& "on".equals(arDto.getTransferredEmbryo())
+                    ||arDto.getTransferredSperm()!=null&& "on".equals(arDto.getTransferredSperm())){
+                filter.put("transferredOocyte",0);
+                filter.put("transferredEmbryo",0);
+                filter.put("transferredSperm",0);
+                filter.put("transferredList",0);
+            }
+            if(arDto.getTransferredOocyte()!=null&& "on".equals(arDto.getTransferredOocyte())){
+                filter.put("transferredOocyte",1);
+            }
+            if(arDto.getTransferredEmbryo()!=null&& "on".equals(arDto.getTransferredEmbryo())){
+                filter.put("transferredEmbryo",1);
+            }
+            if(arDto.getTransferredSperm()!=null&& "on".equals(arDto.getTransferredSperm())){
+                filter.put("transferredSperm",1);
+            }
+            if(StringUtil.isNotEmpty(arDto.getTransferredInFrom())) {//todo xml sql
+                filter.put("transferredInFrom", arDto.getTransferredInFrom());
+            }
+            if(StringUtil.isNotEmpty(arDto.getTransferOutTo())) {//todo xml sql
+                filter.put("transferOutTo", arDto.getTransferOutTo());
+            }
 
+            if(arDto.getTransferDateFrom()!=null){
+                String transferDateFrom = Formatter.formatDateTime(arDto.getTransferDateFrom(),
+                        SystemAdminBaseConstants.DATE_FORMAT);
+                filter.put("transferDateFrom", transferDateFrom);
+            }
+
+            if(arDto.getTransferDateTo()!=null){
+                String transferDateTo = Formatter.formatDateTime(arDto.getTransferDateTo(),
+                        SystemAdminBaseConstants.DATE_FORMAT);
+                filter.put("transferDateTo", transferDateTo);
+            }
+            if(arDto.getPGT()!=null){
+                if(arDto.getPGT().equals("1")){
+                    filter.put("pgtNo", 1);
+
+                }
+                if(arDto.getPGT().equals("0")){
+                    filter.put("pgtYes", 1);
+
+                }
+            }
+
+            if(arDto.getPgtMCom()!=null&& "on".equals(arDto.getPgtMCom())){
+                filter.put("pgtMCom", 1);
+            }
+            if(arDto.getPgtMRare()!=null&& "on".equals(arDto.getPgtMRare())){
+                filter.put("pgtMRare", 1);
+            }
+            if(arDto.getPgtMEbt()!=null&& "on".equals(arDto.getPgtMEbt())){
+                filter.put("pgtMEbt", 1);
+            }
+            if(arDto.getPgtSr()!=null&& "on".equals(arDto.getPgtSr())){
+                filter.put("pgtSr", 1);
+            }
+            if(arDto.getPgtA()!=null&& "on".equals(arDto.getPgtA())){
+                filter.put("pgtA", 1);
+            }
+            if(arDto.getPtt()!=null&& "on".equals(arDto.getPtt())){
+                filter.put("ptt", 1);
+            }
+            if(arDto.getPgtOthers()!=null&& "on".equals(arDto.getPgtOthers())){
+                filter.put("pgtOthers", 1);
+            }
+
+            if(arDto.getPgtDisease()!=null){
+                if(arDto.getPgtDisease().equals("1")){
+                    filter.put("PGT_M_DSLD", 1);
+
+                }
+                if(arDto.getPgtDisease().equals("0")){
+                    filter.put("PGT_M_DSLD", 0);
+
+                }
+            }
         }
 
         filterParameter.setFilters(filter);
 
     }
+
     public void baseSearch(BaseProcessClass bpc)throws ParseException{
         List<SelectOption> submissionTypeOptions= IaisCommonUtils.genNewArrayList();
         submissionTypeOptions.add(new SelectOption("AR_TP001","Patient Information"));
         submissionTypeOptions.add(new SelectOption("AR_TP002","Cycle Stages"));
         submissionTypeOptions.add(new SelectOption("AR_TP003","Donor Samples"));
         ParamUtil.setRequestAttr(bpc.request,"submissionTypeOptions",submissionTypeOptions);
-
+        List<SelectOption> arCentreSelectOption  = IaisCommonUtils.genNewArrayList();
+        ParamUtil.setRequestAttr(bpc.request,"arCentreSelectOption",arCentreSelectOption);
         HttpServletRequest request = bpc.request;
 
         AssistedReproductionEnquiryFilterDto arFilterDto= setAssistedReproductionEnquiryFilterDto(request);
@@ -702,12 +781,15 @@ public class OnlineEnquiryAssistedReproductionDelegator {
 
 
     }
+
     public void changePagination(BaseProcessClass bpc){
 
     }
+
     public void advNextStep(BaseProcessClass bpc){
 
     }
+
     public void perAdvancedSearch(BaseProcessClass bpc) throws ParseException {
         HttpServletRequest request = bpc.request;
 
@@ -719,6 +801,9 @@ public class OnlineEnquiryAssistedReproductionDelegator {
         sourceSemenOptions.add(new SelectOption("Donor","Donor"));
         sourceSemenOptions.add(new SelectOption("Husband","Husband"));
         ParamUtil.setRequestAttr(bpc.request,"sourceSemenOptions",sourceSemenOptions);
+        List<SelectOption> arCentreSelectOption  = IaisCommonUtils.genNewArrayList();
+        ParamUtil.setRequestAttr(bpc.request,"arCentreSelectOption",arCentreSelectOption);
+
         AssistedReproductionEnquiryFilterDto arFilterDto= setAssistedReproductionEnquiryFilterDto(request);
 
         setQueryFilter(arFilterDto,patientParameter,2);

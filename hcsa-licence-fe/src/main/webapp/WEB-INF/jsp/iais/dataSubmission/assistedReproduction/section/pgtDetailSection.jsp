@@ -364,7 +364,6 @@
                     <iais:field width="6" value="Embryos were Biospied At" mandatory="true"/>
                     <iais:value width="6" cssClass="col-md-6">
                         <select name="isEmbryosBiopsiedLocal" id="isEmbryosBiopsiedLocal">
-                            <option value="" <c:if test="${empty arSuperDataSubmissionDto.pgtStageDto.isEmbryosBiopsiedLocal}">selected="selected"</c:if>>Please Select</option>
                             <c:forEach items="${embryosBiopsiedLocalSelectOption}" var="selectOption">
                                 <option value="${selectOption.value}" <c:if test="${arSuperDataSubmissionDto.pgtStageDto.isEmbryosBiopsiedLocal ==selectOption.value}">selected="selected"</c:if>>${selectOption.text}</option>
                             </c:forEach>
