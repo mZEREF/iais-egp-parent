@@ -23,6 +23,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGroupMiscDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppInsRepDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesOperationalUnitDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcKeyPersonnelDto;
@@ -1203,6 +1204,9 @@ public class AppealServiceImpl implements AppealService {
         if(!StringUtil.isEmpty(premisess)){
             AppGrpPremisesDto appGrpPremisesDto = MiscUtil.transferEntityDto(premisess.get(0), AppGrpPremisesDto.class);
             appGrpPremisesDto.setOffTelNo(premisess.get(0).getHciContactNo());
+            if(IaisCommonUtils.isNotEmpty(premisess.get(0).getPremisesOperationalUnitDtos())){
+                appGrpPremisesDto.setAppPremisesOperationalUnitDtos(MiscUtil.transferEntityDtos(premisess.get(0).getPremisesOperationalUnitDtos(), AppPremisesOperationalUnitDto.class));
+            }
             premisesDtos.add(appGrpPremisesDto);
         }
         //appealPageDto
