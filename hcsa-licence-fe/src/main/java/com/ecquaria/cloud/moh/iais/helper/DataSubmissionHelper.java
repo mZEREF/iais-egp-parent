@@ -479,7 +479,7 @@ public final class DataSubmissionHelper {
 
     public static String getCode(String codeValue, List<MasterCodeView> masterCodes) {
         if (masterCodes == null || StringUtil.isEmpty(codeValue)) {
-            return "";
+            return null;
         }
         return masterCodes.stream()
                 .filter(dto -> codeValue.equals(dto.getCodeValue()))

@@ -56,9 +56,8 @@
                             (<span id="itemSize"><fmt:formatNumber value="${itemSize}" pattern="#,##0"/></span>
                             records uploaded)
                         </h3>
-                        <%--<h4>Patient Information (1,000 records uploaded)</h4>--%>
                         <c:if test="${not empty fileItemErrorMsgs}">
-                        <div class="col-xs-12 col-sm-12 margin-btm table-responsive">
+                        <div class="col-xs-12 col-sm-12 margin-btm table-responsive itemErrorTableDiv">
                             <span class="error-msg">There are invalid record(s) in the file. Please rectify them and reupload the file</span>
                             <table aria-describedby="" class="table">
                                 <thead>
@@ -119,6 +118,7 @@
         var fileId= '#uploadFile';
         $(fileId).after( $( fileId).clone().val(""));
         $(fileId).remove();
+        $('.itemErrorTableDiv').remove();
         var $btns = $('#uploadFileShowId').find('button');
         if ($btns.length >= 2) {
             $btns.not(':last').trigger('click');

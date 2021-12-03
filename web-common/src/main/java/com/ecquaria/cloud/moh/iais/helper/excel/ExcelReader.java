@@ -45,6 +45,10 @@ public final class ExcelReader {
     private ExcelReader(){}
 
     public static <T> List<T> readerToBean(final File file, final Class<?> clz) throws Exception {
+        return readerToBean(file, clz, false);
+    }
+
+    public static <T> List<T> readerToBean(final File file, final Class<?> clz, boolean defaultValueNull) throws Exception {
         if (file == null || !file.exists()){
             throw new IaisRuntimeException("Please check excel source is exists");
         }
@@ -74,7 +78,7 @@ public final class ExcelReader {
 
         List<List<String>> result = sequentialParse(sheet, startCellIndex);
 
-        return (List<T>) result.stream().map(x -> setField(clz, x)).collect(Collectors.toList());
+        return (List<T>) result.stream().map(x -> setField(clz, x, defaultValueNull)).collect(Collectors.toList());
     }
 
     public static List<String> readerToList(final File file, int sheetAt, Map<Integer, List<Integer>> matrix) throws Exception {
@@ -149,7 +153,7 @@ public final class ExcelReader {
         }
     }
 
-    private static Object setField(final Class<?> clazz, final List<String> rowData) {
+    private static Object setField(final Class<?> clazz, final List<String> rowData, boolean defaultValueNull) {
         try {
             Object obj = clazz.newInstance();
             Field[] fields = clazz.getDeclaredFields();
@@ -159,7 +163,7 @@ public final class ExcelReader {
                     ExcelProperty excelProperty = field.getAnnotation(ExcelProperty.class);
                     int index = excelProperty.cellIndex();
                     String format = excelProperty.format();
-                    Object value = getFieldValue(field, rowData.get(index), format);
+                    Object value = getFieldValue(field, rowData.get(index), format, defaultValueNull);
                     Method setMed = null;
                     try {
                         setMed = clazz.getMethod("set" + StringUtil.capitalize(field.getName()), field.getType());
@@ -211,7 +215,7 @@ public final class ExcelReader {
         return cellValue.trim();
     }
 
-    private static Object getFieldValue(final Field field, final String value, final String pattern) {
+    private static Object getFieldValue(final Field field, final String value, final String pattern, boolean defaultValueNull) {
         Class<?> typeClass = field.getType();
         Object val;
         if (typeClass == Integer.class || typeClass == int.class) {
@@ -235,7 +239,7 @@ public final class ExcelReader {
                     .orElseThrow(IllegalArgumentException::new)
                     .getValue();
         } else {
-            val = value;
+            val = defaultValueNull ? StringUtil.getStringEmptyToNull(value) : value;
         }
         return val;
     }

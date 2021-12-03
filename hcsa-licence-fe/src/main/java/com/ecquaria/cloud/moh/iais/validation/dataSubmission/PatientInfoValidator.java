@@ -134,13 +134,13 @@ public class PatientInfoValidator implements CustomizeValidator {
                 map.put("ethnicGroup", ERR_MSG_INVALID_DATA);
             }
             if ("".equals(husband.getIdType())) {
-                map.put("idType", ERR_MSG_INVALID_DATA);
+                map.put("idTypeHbd", ERR_MSG_INVALID_DATA);
             }
             if ("".equals(husband.getNationality())) {
-                map.put("nationality", ERR_MSG_INVALID_DATA);
+                map.put("nationalityHbd", ERR_MSG_INVALID_DATA);
             }
             if ("".equals(husband.getEthnicGroup())) {
-                map.put("ethnicGroup", ERR_MSG_INVALID_DATA);
+                map.put("ethnicGroupHbd", ERR_MSG_INVALID_DATA);
             }
         }
         return map;

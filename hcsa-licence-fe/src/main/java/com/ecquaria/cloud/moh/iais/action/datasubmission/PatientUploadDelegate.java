@@ -214,6 +214,7 @@ public class PatientUploadDelegate {
         for (PatientInfoExcelDto patientInfoExcelDto : patientInfoExcelDtoList) {
             PatientInfoDto dto = new PatientInfoDto();
             PatientDto patient = MiscUtil.transferEntityDto(patientInfoExcelDto, PatientDto.class);
+            patient.setBirthDate(IaisCommonUtils.handleDate(patient.getBirthDate()));
             patient.setIdType(DataSubmissionHelper.getCode(patientInfoExcelDto.getIdType(), idTypes));
             patient.setNationality(DataSubmissionHelper.getCode(patientInfoExcelDto.getNationality(), nationalities));
             patient.setEthnicGroup(DataSubmissionHelper.getCode(patientInfoExcelDto.getEthnicGroup(), groups));
@@ -239,6 +240,7 @@ public class PatientUploadDelegate {
             husbandDto.setIdType(DataSubmissionHelper.getCode(patientInfoExcelDto.getIdTypeHbd(), idTypes));
             husbandDto.setIdNumber(patientInfoExcelDto.getIdNumberHbd());
             husbandDto.setNationality(DataSubmissionHelper.getCode(patientInfoExcelDto.getNationalityHbd(), nationalities));
+            husbandDto.setBirthDate(IaisCommonUtils.handleDate(patientInfoExcelDto.getBirthDayHbd()));
             husbandDto.setBirthDate(patientInfoExcelDto.getBirthDayHbd());
             husbandDto.setEthnicGroup(DataSubmissionHelper.getCode(patientInfoExcelDto.getEthnicGroupHbd(), groups));
             husbandDto.setEthnicGroupOther(patientInfoExcelDto.getEthnicGroupOtherHbd());
@@ -255,9 +257,9 @@ public class PatientUploadDelegate {
         try {
             File file = fileEntry.getValue();
             if (FileUtils.isExcel(file.getName())) {
-                return FileUtils.transformToJavaBean(fileEntry.getValue(), PatientInfoExcelDto.class);
+                return FileUtils.transformToJavaBean(fileEntry.getValue(), PatientInfoExcelDto.class, true);
             } else if (FileUtils.isCsv(file.getName())) {
-                return FileUtils.transformCsvToJavaBean(fileEntry.getValue(), PatientInfoExcelDto.class);
+                return FileUtils.transformCsvToJavaBean(fileEntry.getValue(), PatientInfoExcelDto.class, true);
             }
         } catch (Exception e) {
             log.error(StringUtil.changeForLog(e.getMessage()), e);
