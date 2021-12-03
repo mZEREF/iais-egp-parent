@@ -1,9 +1,12 @@
 package com.ecquaria.cloud.moh.iais.validation.dataSubmission;
 
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInventoryDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidator;
+import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -48,6 +51,16 @@ public class EndCycleStageDtoValidator implements CustomizeValidator {
                 repMap.put("fieldNo", "Reason for Abandonment (Others)");
                 String errMsg = MessageUtil.getMessageDesc("GENERAL_ERR0041", repMap);
                 errorMap.put("otherAbandonReason", errMsg);
+            }
+        }
+        ArSuperDataSubmissionDto arSuperDataSubmissionDto = DataSubmissionHelper.getCurrentArDataSubmission(httpServletRequest);
+        PatientInventoryDto patientInventoryDto = arSuperDataSubmissionDto.getPatientInventoryDto();
+        if (patientInventoryDto != null) {
+            if (patientInventoryDto.getCurrentFreshOocytes() > 0
+                    || patientInventoryDto.getCurrentThawedOocytes() > 0
+                    || patientInventoryDto.getCurrentFreshEmbryos() > 0
+                    || patientInventoryDto.getCurrentThawedEmbryos() > 0) {
+                errorMap.put("endCyclePage", "Balance of fresh oocytes, thawed oocytes, fresh embryos and thawed embryos must be zero");
             }
         }
         return errorMap;
