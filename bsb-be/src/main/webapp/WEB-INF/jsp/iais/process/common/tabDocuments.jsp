@@ -26,12 +26,14 @@
                     <c:forEach var="docTypes" items="${docTypes}">
                         <c:forEach var="info" items="${savedFiles.get(docTypes)}">
                             <c:set var="tmpId" value="${MaskUtil.maskValue('file', info.repoId)}"/>
-                            <td>${info.filename}</td>
-                            <td>${info.docType}</td>
-                            <td><p><a href="javascript:void(0)" onclick="downloadFile('saved', '${tmpId}')">${info.filename}</a></p></td>
-                            <td>${String.format("%.1f", info.size/1024.0)}KB</td>
-                            <td>${info.submitBy}</td>
-                            <td><fmt:formatDate value='${info.submitDate}' pattern='dd/MM/yyyy'/></td>
+                            <tr>
+                                <td>${info.filename}</td>
+                                <td>${info.docType}</td>
+                                <td><p><a href="javascript:void(0)" onclick="downloadFile('saved', '${tmpId}')">${info.filename}</a></p></td>
+                                <td>${String.format("%.1f", info.size/1024.0)}KB</td>
+                                <td>${info.submitBy}</td>
+                                <td><fmt:formatDate value='${info.submitDate}' pattern='dd/MM/yyyy'/></td>
+                            </tr>
                         </c:forEach>
                     </c:forEach>
                 </c:if>
