@@ -58,7 +58,7 @@ public class OnlineEnquiryAssistedReproductionDelegator {
             .resultAttr("patientResult")
             .sortField("id").sortType(SearchParam.ASCENDING).pageNo(1).pageSize(pageSize).build();
     FilterParameter patientAdvParameter = new FilterParameter.Builder()
-            .clz(AssistedReproductionEnquiryResultsDto.class)
+            .clz(AssistedReproductionAdvEnquiryResultsDto.class)
             .searchAttr("patientAdvParam")
             .resultAttr("patientAdvResult")
             .sortField("id").sortType(SearchParam.ASCENDING).pageNo(1).pageSize(pageSize).build();
