@@ -100,7 +100,7 @@
 
     <sql key = "searchPatientByAssistedReproduction" remarks="search patient by Assisted Reproduction">
         <![CDATA[
-           SELECT distinct dpi.ID, dpi.NAME, dpi.ID_TYPE, dpi.ID_NUMBER, dpi.DATE_OF_BIRTH, dpi.NATIONALITY,dpi.CREATED_DT ,null BUSINESS_NAME,dpi.PATIENT_CODE
+           SELECT distinct dpi.ID, dpi.NAME, dpi.ID_TYPE, dpi.ID_NUMBER, dpi.DATE_OF_BIRTH, dpi.NATIONALITY,null CREATED_DT ,null BUSINESS_NAME,dpi.PATIENT_CODE
                 FROM ds_patient_information dpi
                 join ds_cycle dc on dc.PATIENT_CODE =dpi.PATIENT_CODE
                 join premises p on dc.HCI_CODE =p.HCI_CODE
@@ -114,6 +114,40 @@
         ]]>
      </sql>
 
+
+    <sql key = "searchPatientAjaxByAssistedReproduction" remarks="search patient ajax by Assisted Reproduction">
+        <![CDATA[
+           SELECT distinct ajax.* FROM (
+            SELECT dc.ID ,dpi.ID patient_id, 'AR' DS_TYPE ,dacs.TREATMENT_FRESH_NATURAL ,dacs.TREATMENT_FRESH_STIMULATED ,dacs.TREATMENT_FROZEN_EMBRYO ,dacs.TREATMENT_FROZEN_OOCYTE ,dc.HCI_CODE, lp.BUSINESS_NAME ,dacs.CREATED_DT ,dc.STATUS
+                FROM ds_cycle dc
+                join ds_patient_information dpi on dpi.PATIENT_CODE =dc.PATIENT_CODE
+                join ds_data_submission dds on dds.CYCLE_ID = dc.ID
+                join ds_ar_cycle_stage dacs on dacs.SUBMISSION_ID =dds.ID
+                join premises p on dc.HCI_CODE =p.HCI_CODE
+                JOIN lic_premises lp on lp.PREMISES_ID =p.ID
+
+                UNION ALL
+                SELECT dc.ID,dpi.ID patient_id,'IUI' DS_TYPE ,null TREATMENT_FRESH_NATURAL ,null TREATMENT_FRESH_STIMULATED ,null TREATMENT_FROZEN_EMBRYO ,null TREATMENT_FROZEN_OOCYTE ,dc.HCI_CODE, lp.BUSINESS_NAME ,dics.CREATED_DT ,dc.STATUS
+                FROM ds_cycle dc
+                join ds_patient_information dpi on dpi.PATIENT_CODE =dc.PATIENT_CODE
+                join ds_data_submission dds on dds.CYCLE_ID = dc.ID
+                join ds_iui_cycle_stage dics on dics.SUBMISSION_ID =dds.ID
+                join premises p on dc.HCI_CODE =p.HCI_CODE
+                JOIN lic_premises lp on lp.PREMISES_ID =p.ID
+                UNION ALL
+                SELECT dc.ID,dpi.ID patient_id,'EFO' DS_TYPE ,null TREATMENT_FRESH_NATURAL ,null TREATMENT_FRESH_STIMULATED ,null TREATMENT_FROZEN_EMBRYO ,null TREATMENT_FROZEN_OOCYTE ,dc.HCI_CODE, lp.BUSINESS_NAME ,decs.CREATED_DT ,dc.STATUS
+                FROM ds_cycle dc
+                join ds_patient_information dpi on dpi.PATIENT_CODE =dc.PATIENT_CODE
+                join ds_data_submission dds on dds.CYCLE_ID = dc.ID
+                join ds_efo_cycle_stage decs  on decs.SUBMISSION_ID =dds.ID
+                join premises p on dc.HCI_CODE =p.HCI_CODE
+                JOIN lic_premises lp on lp.PREMISES_ID =p.ID
+            ) ajax
+            where 1=1
+            <#if patientId??> AND  :patientId = ajax.patient_id</#if>
+
+        ]]>
+    </sql>
 
     <sql key = "advancedSearchPatientByAssistedReproduction" remarks="Advanced Search patient by Assisted Reproduction">
         <![CDATA[

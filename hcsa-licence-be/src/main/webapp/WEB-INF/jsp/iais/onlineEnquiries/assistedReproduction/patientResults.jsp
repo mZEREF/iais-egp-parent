@@ -436,19 +436,19 @@
                         '</tr>' +
                         '</thead>' +
                         '<tbody>';
-                    for (let i = 0; i < 0; i++) {
+                    for (let i = 0; i < res.rowCount; i++) {
                         var color = "black";
 
                         html += '<tr style = "color : ' + color + ';">';
 
-                        html += '<td><p class="visible-xs visible-sm table-row-title">AR/IUI/EFO</p><p>' + res.rows[i].appTypeStrShow + '<p></td>' +
-                            '<td><p class="visible-xs visible-sm table-row-title">AR Treatment Cycle Type</p><p>' + res.rows[i].serviceName + '<p></td>' +
-                            '<td><p class="visible-xs visible-sm table-row-title">AR Centre</p><p>' + res.rows[i].serviceName + '<p></td>';
-                        html += '<td><p class="visible-xs visible-sm table-row-title">Cycle Start Date</p><p><a href="#" onclick="javascript:fullStagesView(' + "'" + res.rows[i].id + "'" + ');">' + res.rows[i].applicationNo + '</a></p></td>';
+                        html += '<td><p class="visible-xs visible-sm table-row-title">AR/IUI/EFO</p><p>' + res.rows[i].dsType + '<p></td>' +
+                            '<td><p class="visible-xs visible-sm table-row-title">AR Treatment Cycle Type</p><p>' + res.rows[i].arTreatment + '<p></td>' +
+                            '<td><p class="visible-xs visible-sm table-row-title">AR Centre</p><p>' + res.rows[i].arCentre + '<p></td>';
+                        html += '<td><p class="visible-xs visible-sm table-row-title">Cycle Start Date</p><p><a href="#" onclick="javascript:fullStagesView(' + "'" + res.rows[i].id + "'" + ');">' + res.rows[i].cycleStartDateStr + '</a></p></td>';
 
                         html += '</p></td>' +
-                            '<td><p class="visible-xs visible-sm table-row-title">Co-funding Claimed</p><p>' + res.rows[i].slaDays + '</p></td>' +
-                            '<td><p class="visible-xs visible-sm table-row-title">Status</p><p>' + res.rows[i].tolalSlaDays + '</p></td>' +
+                            '<td><p class="visible-xs visible-sm table-row-title">Co-funding Claimed</p><p>' + res.rows[i].coFunding + '</p></td>' +
+                            '<td><p class="visible-xs visible-sm table-row-title">Status</p><p>' + res.rows[i].status + '</p></td>' +
                             '</tr>';
                     }
                     html += '</tbody></table></div></td></tr>';

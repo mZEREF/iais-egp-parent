@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.service.client;
 
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.AssistedReproductionEnquiryAjaxPatientResultsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.AssistedReproductionEnquiryResultsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.AssistedReproductionEnquirySubResultsDto;
 import com.ecquaria.cloudfeign.FeignConfiguration;
@@ -23,6 +24,11 @@ public interface AssistedReproductionClient {
     @PostMapping(value = "/ar-common/ar-search-patient-param", produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<SearchResult<AssistedReproductionEnquiryResultsDto>> searchPatientByParam(
+            @RequestBody SearchParam searchParam);
+
+    @PostMapping(value = "/ar-common/ar-search-patient-ajax-param", produces = MediaType.APPLICATION_JSON_VALUE,
+            consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<SearchResult<AssistedReproductionEnquiryAjaxPatientResultsDto>> searchPatientAjaxByParam(
             @RequestBody SearchParam searchParam);
 
     @PostMapping(value = "/ar-common/ar-search-submission-param", produces = MediaType.APPLICATION_JSON_VALUE,
