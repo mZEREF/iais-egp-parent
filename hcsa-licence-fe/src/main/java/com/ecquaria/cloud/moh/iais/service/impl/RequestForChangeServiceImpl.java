@@ -93,10 +93,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-
-import static java.util.regex.Pattern.compile;
 
 /****
  *
@@ -440,6 +437,29 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
     }
 
     @Override
+    public List<LicenceDto> getLicenceDtoByHciCode(String licenseeId, AppGrpPremisesDto appGrpPremisesDto, String... excludeNos) {
+        if (StringUtil.isEmpty(licenseeId) || appGrpPremisesDto == null) {
+            return IaisCommonUtils.genNewArrayList(0);
+        }
+        String hciCode = appGrpPremisesDto.getHciCode();
+        String oldHciCode = appGrpPremisesDto.getOldHciCode();
+        if (!StringUtil.isEmpty(oldHciCode) && !oldHciCode.equals(hciCode)) {
+            hciCode = oldHciCode;
+        }
+        log.info(StringUtil.changeForLog("Hci code: " + hciCode + " - Licensee: " + licenseeId));
+        List<LicenceDto> licenceDtos = getLicenceDtoByHciCode(hciCode, licenseeId);
+        if (licenceDtos == null) {
+            return IaisCommonUtils.genNewArrayList(0);
+        }
+        List<LicenceDto> licenceDtoList = licenceDtos.stream()
+                .filter(dto -> !StringUtil.isIn(dto.getLicenceNo(), excludeNos))
+                .collect(Collectors.toList());
+        licenceDtoList.forEach(
+                licenceDto -> log.info(StringUtil.changeForLog("--- licenceDto licenceNo : " + licenceDto.getLicenceNo())));
+        return licenceDtoList;
+    }
+
+    @Override
     public String sendNotification(EmailDto email) {
         HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
         HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
@@ -489,7 +509,6 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
 
     @Override
     public Boolean isOtherOperation(String licenceId) {
-
         return applicationFeClient.isLiscenceAppealOrCessation(licenceId).getEntity();
     }
 
@@ -2364,19 +2383,6 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
             return true;
         }
         for (LicenceDto licence : selectLicence) {
-            HcsaServiceDto activeHcsaServiceDtoByName = serviceConfigService.getActiveHcsaServiceDtoByName(licence.getSvcName());
-            List<String> serviceIds = IaisCommonUtils.genNewArrayList();
-            serviceIds.add(activeHcsaServiceDtoByName.getId());
-            boolean configIsChange = serviceConfigIsChange(serviceIds, appGrpPremisesDto.getPremisesType());
-            String errorSvcMsg = MessageUtil.getMessageDesc("RFC_ERR020").replace("{ServiceName}", licence.getSvcName());
-            if (!configIsChange) {
-                log.info(StringUtil.changeForLog("Config is changed - " + errorSvcMsg));
-                request.setAttribute("SERVICE_CONFIG_CHANGE", errorSvcMsg);
-                ParamUtil.setRequestAttr(request, IaisEGPConstant.CRUD_ACTION_TYPE, "preview");
-                ParamUtil.setRequestAttr(request, "isrfiSuccess", "N");
-                return false;
-            }
-
             AppSubmissionDto appSubmissionDtoByLicenceId = getAppSubmissionDtoByLicenceId(licence.getId());
             // Premises
             boolean groupLic = appSubmissionDtoByLicenceId.isGroupLic();
@@ -2424,7 +2430,11 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
             licence = licenceClient.getLicBylicId(appSubmissionDto.getLicenceId()).getEntity();
         }
         if (licence == null) {
-            return true;
+            log.info("Invalid Licence");
+            if (request != null) {
+                request.setAttribute("rfcInvalidLic", MessageUtil.getMessageDesc("RFC_ERR024"));
+            }
+            return false;
         }
         // set draft no
         appSubmissionDto.setDraftNo(draftNo);
@@ -2439,17 +2449,6 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
             if (StringUtil.isEmpty(baseServiceId1)) {
                 log.info(StringUtil.changeForLog("BaseService is null - " + errorSvcMsg));
                 request.setAttribute("SERVICE_CONFIG_CHANGE", errorSvcMsg);
-                return false;
-            }
-            Boolean changeOtherOperation = isOtherOperation(licence.getId());
-            if (!changeOtherOperation) {
-                log.info(StringUtil.changeForLog("errorRfcPendingApplication"));
-                request.setAttribute("rfcPendingApplication", "errorRfcPendingApplication");
-                return false;
-            }
-            List<ApplicationDto> changeApplicationDtos = getAppByLicIdAndExcludeNew(licence.getId());
-            if (!IaisCommonUtils.isEmpty(changeApplicationDtos)) {
-                request.setAttribute("rfcPendingApplication", "errorRfcPendingApplication");
                 return false;
             }
         }
