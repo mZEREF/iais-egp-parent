@@ -2433,9 +2433,8 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
     public Map<String, String> doPreviewAndSumbit(BaseProcessClass bpc) {
         Map<String, String> previewAndSubmitMap = IaisCommonUtils.genNewHashMap();
         //
-        AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
-        AppSubmissionDto oldAppSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request,
-                NewApplicationDelegator.OLDAPPSUBMISSIONDTO);
+        AppSubmissionDto appSubmissionDto = NewApplicationHelper.getAppSubmissionDto(bpc.request);
+        AppSubmissionDto oldAppSubmissionDto = NewApplicationHelper.getOldAppSubmissionDto(bpc.request);
         previewAndSubmitMap = doPreviewSubmitValidate(previewAndSubmitMap, appSubmissionDto, oldAppSubmissionDto, bpc);
         return previewAndSubmitMap;
     }
@@ -2546,7 +2545,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
     public Map<String, List<HcsaSvcPersonnelDto>> getAllSvcAllPsnConfig(HttpServletRequest request) {
         Map<String, List<HcsaSvcPersonnelDto>> svcAllPsnConfig = (Map<String, List<HcsaSvcPersonnelDto>>) ParamUtil.getSessionAttr(request, NewApplicationDelegator.SERVICEALLPSNCONFIGMAP);
         if (svcAllPsnConfig == null) {
-            AppSubmissionDto appSubmissionDto = getAppSubmissionDto(request);
+            AppSubmissionDto appSubmissionDto = NewApplicationHelper.getAppSubmissionDto(request);
             List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = appSubmissionDto.getAppSvcRelatedInfoDtoList();
             List<String> svcIds = IaisCommonUtils.genNewArrayList();
             for (AppSvcRelatedInfoDto appSvcRelatedInfoDto : appSvcRelatedInfoDtos) {
@@ -2846,7 +2845,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
     @Override
     public List<AppGrpPrimaryDocDto> documentValid(HttpServletRequest request, Map<String, String> errorMap,boolean setIsPassValidate) {
         log.info(StringUtil.changeForLog("the do doValidatePremiss start ...."));
-        AppSubmissionDto appSubmissionDto = getAppSubmissionDto(request);
+        AppSubmissionDto appSubmissionDto = NewApplicationHelper.getAppSubmissionDto(request);
         return documentValid(appSubmissionDto, errorMap, setIsPassValidate);
     }
 
@@ -3615,7 +3614,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
     }
 
     private void doCommomDocument(HttpServletRequest request, Map<String, String> documentMap) {
-        AppSubmissionDto appSubmissionDto = getAppSubmissionDto(request);
+        AppSubmissionDto appSubmissionDto = NewApplicationHelper.getAppSubmissionDto(request);
 
         List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtoList = appSubmissionDto.getAppGrpPrimaryDocDtos();
         List<HcsaSvcDocConfigDto> commonHcsaSvcDocConfigList = (List<HcsaSvcDocConfigDto>) request.getSession().getAttribute(NewApplicationDelegator.COMMONHCSASVCDOCCONFIGDTO);
@@ -3788,15 +3787,6 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
             }
         }
 
-    }
-
-    private static AppSubmissionDto getAppSubmissionDto(HttpServletRequest request) {
-        AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(request, NewApplicationDelegator.APPSUBMISSIONDTO);
-        if (appSubmissionDto == null) {
-            log.info(StringUtil.changeForLog("appSubmissionDto is empty "));
-            appSubmissionDto = new AppSubmissionDto();
-        }
-        return appSubmissionDto;
     }
 
     private void turnId(List<HcsaSvcSubtypeOrSubsumedDto> hcsaSvcSubtypeOrSubsumedDtos, Map<String, HcsaSvcSubtypeOrSubsumedDto> allCheckListMap) {

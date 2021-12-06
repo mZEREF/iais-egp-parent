@@ -147,6 +147,49 @@ public class NewApplicationHelper {
         return NAME_MAP.get(personType);
     }
 
+    public static LoginContext getLoginContext(HttpServletRequest request) {
+        return (LoginContext) ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
+    }
+
+    public static AppSubmissionDto getAppSubmissionDto(HttpServletRequest request) {
+        AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(request,
+                NewApplicationDelegator.APPSUBMISSIONDTO);
+        if (appSubmissionDto == null) {
+            log.info(StringUtil.changeForLog("appSubmissionDto is empty "));
+            appSubmissionDto = new AppSubmissionDto();
+            setOldAppSubmissionDto(appSubmissionDto, request);
+        }
+        return appSubmissionDto;
+    }
+
+    public static void setAppSubmissionDto(AppSubmissionDto oldAppSubmissionDto, HttpServletRequest request) {
+        ParamUtil.setSessionAttr(request, NewApplicationDelegator.APPSUBMISSIONDTO, oldAppSubmissionDto);
+    }
+
+    public static AppSubmissionDto getOldAppSubmissionDto(HttpServletRequest request) {
+        return getOldAppSubmissionDto(false, request);
+    }
+
+    public static AppSubmissionDto getOldAppSubmissionDto(boolean onlySession, HttpServletRequest request) {
+        AppSubmissionDto oldAppSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(request,
+                NewApplicationDelegator.OLDAPPSUBMISSIONDTO);
+        if (!onlySession && oldAppSubmissionDto == null) {
+            log.info(StringUtil.changeForLog("OldAppSubmissionDto is empty from Session"));
+            AppSubmissionDto appSubmissionDto = getAppSubmissionDto(request);
+            oldAppSubmissionDto = appSubmissionDto.getOldAppSubmissionDto();
+            if (oldAppSubmissionDto != null) {
+                setOldAppSubmissionDto(oldAppSubmissionDto, request);
+            } else {
+                log.info(StringUtil.changeForLog("No OldAppSubmissionDto Found!"));
+            }
+        }
+        return oldAppSubmissionDto;
+    }
+
+    public static void setOldAppSubmissionDto(AppSubmissionDto oldAppSubmissionDto, HttpServletRequest request) {
+        ParamUtil.setSessionAttr(request, NewApplicationDelegator.OLDAPPSUBMISSIONDTO, oldAppSubmissionDto);
+    }
+
     public static void reSetAdditionalFields(AppSubmissionDto appSubmissionDto, AppEditSelectDto appEditSelectDto) {
         reSetAdditionalFields(appSubmissionDto, appEditSelectDto, null);
     }
@@ -570,11 +613,11 @@ public class NewApplicationHelper {
         if(appSubmissionDto != null){
             if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())
                     ||ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appSubmissionDto.getAppType())
-                    || rfi != null){
+                    || rfi != null) {
                 AppSubmissionDto oldAppSubmissionDto = (AppSubmissionDto) CopyUtil.copyMutableObject(appSubmissionDto);
-                Object sessionAttr = ParamUtil.getSessionAttr(request, NewApplicationDelegator.OLDAPPSUBMISSIONDTO);
-                if(sessionAttr==null){
-                    ParamUtil.setSessionAttr(request,NewApplicationDelegator.OLDAPPSUBMISSIONDTO,oldAppSubmissionDto);
+                AppSubmissionDto sessionAttr = getOldAppSubmissionDto(true, request);
+                if (sessionAttr == null) {
+                    setOldAppSubmissionDto(oldAppSubmissionDto, request);
                 }
             }
         }
@@ -2487,11 +2530,11 @@ public class NewApplicationHelper {
         boolean isRfi = NewApplicationHelper.checkIsRfi(request);
         AppSubmissionDto appSubmissionDto  = null;
         if(isRfi){
-            appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(request,NewApplicationDelegator.OLDAPPSUBMISSIONDTO);
+            appSubmissionDto = getOldAppSubmissionDto(request);
         }else if(ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appType)){
             appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(request,"oldRenewAppSubmissionDto");
         }else if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType) || ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType)){
-            appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(request,NewApplicationDelegator.OLDAPPSUBMISSIONDTO);
+            appSubmissionDto = getOldAppSubmissionDto(request);;
         }
         if(appSubmissionDto == null){
             appSubmissionDto = new AppSubmissionDto();
