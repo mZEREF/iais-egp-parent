@@ -115,7 +115,7 @@
                                                         <p>The following is a non-exhaustive list of supporting documents that the facility is required to provide for the application. Some of these may not be available at point of application submission but must be provided subsequently, when available. Please note that incomplete submissions may result in delays to processing or rejection of the application.</p>
                                                         <span>Supporting Documents</span>
                                                         <br/><span>1. Facility Administrative Oversight Plan.
-                                                        <a class="btn-tooltip styleguide-tooltip" href="javascript:void(0);" data-toggle="tooltip" data-html="true" title="" data-original-title="<p>Information regarding the Facility Administrative Oversight Plan can be found on the <a href='javascript:void(0)' style='text-decoration: none'>MOH Biosafety website</a></p>">i</a>
+                                                        <a class="btn-tooltip styleguide-tooltip" href="javascript:void(0);" data-toggle="tooltip" data-html="true" title="" data-original-title="<p>Information regarding the Facility Administrative Oversight Plan can be found on the <a href='https://www.moh.gov.sg/biosafety' style='text-decoration: none'>MOH Biosafety website</a></p>">i</a>
                                                         </span>
                                                         <br/><span>2. Documentation of successful facility certification.</span>
                                                         <br/><span>3. Documentation of successful completion of the required biosafety training for the Biosafety Coordinator.</span>
