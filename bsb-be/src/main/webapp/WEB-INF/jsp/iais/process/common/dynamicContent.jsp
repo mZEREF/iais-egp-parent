@@ -28,6 +28,10 @@
             </iais:value>
         </iais:row>
     </div>
+    <div align="center">
+        <button name="preview" id="preview" type="button" class="btn btn-primary">Preview</button>
+        <button name="reload" id="reload" type="button" class="btn btn-primary">Reload</button>
+    </div>
 </iais:section>
 <script src="<%=webroot%>js/tinymce/tinymce.min.js"></script>
 <script src="<%=webroot%>js/initTinyMce.js"></script>
@@ -51,7 +55,7 @@
                 ' alignright alignjustify | bullist numlist outdent indent |' +
                 ' removeformat | help',
             height: 500,
-            width: 800
+            width: 700
         });
     }
 </script>
