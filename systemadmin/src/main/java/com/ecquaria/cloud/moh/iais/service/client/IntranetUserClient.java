@@ -128,4 +128,7 @@ public interface IntranetUserClient {
 
     @PutMapping(value = "/iais-task/workloadCalculation",produces = MediaType.APPLICATION_JSON_VALUE,consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<Boolean> workloadCalculation(@RequestBody WorkloadCalculationDto workloadCalculationDto);
+
+    @GetMapping(value = "/iais-orguser-be/organization/uen-status", produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<OrganizationDto> getByUenNoAndStatus(@RequestParam("uenNo")String uenNo, @RequestParam("status")String status);
 }

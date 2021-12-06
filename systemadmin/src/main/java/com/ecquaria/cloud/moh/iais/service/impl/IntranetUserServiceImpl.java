@@ -7,6 +7,8 @@ import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
+import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.EgpUserRoleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.FeUserDto;
@@ -24,6 +26,7 @@ import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.service.IntranetUserService;
 import com.ecquaria.cloud.moh.iais.service.client.EgpUserClient;
+import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
 import com.ecquaria.cloud.moh.iais.service.client.IntranetUserClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import com.ecquaria.cloud.role.Role;
@@ -57,6 +60,8 @@ public class IntranetUserServiceImpl implements IntranetUserService {
     private EgpUserClient egpUserClient;
     @Autowired
     private OrganizationClient organizationClient;
+    @Autowired
+    private HcsaLicenceClient hcsaLicenceClient;
     private static final Set<String> notWorkGrp = ImmutableSet.of(
             "BROADCAST",
             "REGULATORY_ANALYTICS",
@@ -601,12 +606,29 @@ public class IntranetUserServiceImpl implements IntranetUserService {
     }
 
     @Override
-    public List<OrganizationDto> getUenList() {
-        return intranetUserClient.getUenList().getEntity();
+    public OrganizationDto getByUenNoAndStatus(String uen,String status) {
+        return intranetUserClient.getByUenNoAndStatus(uen, status).getEntity();
     }
 
     @Override
     public Boolean workloadCalculation(WorkloadCalculationDto workloadCalculationDto) {
         return intranetUserClient.workloadCalculation(workloadCalculationDto).getEntity();
+    }
+
+    @Override
+    public List<SelectOption> getRoleSelection(String licenseeId) {
+        if(StringUtil.isEmpty(licenseeId)){
+            return IaisEGPHelper.getRoleSelection(IaisCommonUtils.genNewArrayList());
+        }
+        List<LicenceDto> licenceDtos = hcsaLicenceClient.getActiveLicencesByLicenseeId(licenseeId).getEntity();
+        List<String> strings = IaisCommonUtils.genNewArrayList();
+        if(IaisCommonUtils.isNotEmpty(licenceDtos)){
+            licenceDtos.stream().forEach(licenceDto ->{
+                if(!strings.contains(licenceDto.getSvcName())){
+                    strings.add(licenceDto.getSvcName());
+                }
+            } );
+        }
+        return IaisEGPHelper.getRoleSelection(strings);
     }
 }

@@ -685,7 +685,11 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
         List<LicenceDto> licenceDtos = licenceClient.getActiveLicencesByLicenseeId(licenseeId).getEntity();
         List<String> strings = IaisCommonUtils.genNewArrayList();
         if(IaisCommonUtils.isNotEmpty(licenceDtos)){
-            licenceDtos.stream().forEach(licenceDto -> strings.add(licenceDto.getSvcName()));
+            licenceDtos.stream().forEach(licenceDto ->{
+                if(!strings.contains(licenceDto.getSvcName())){
+                    strings.add(licenceDto.getSvcName());
+                }
+            } );
         }
         return IaisEGPHelper.getRoleSelection(strings);
     }

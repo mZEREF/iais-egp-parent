@@ -3,6 +3,7 @@ package com.ecquaria.cloud.moh.iais.service;
 import com.ecquaria.cloud.client.rbac.ClientUser;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
+import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.EgpUserRoleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.FeUserDto;
@@ -87,7 +88,9 @@ public interface IntranetUserService {
       */
     List<EgpUserRoleDto> importRoleXml(File xmlFile) throws DocumentException, SAXException;
 
-    List<OrganizationDto> getUenList();
+    OrganizationDto getByUenNoAndStatus(String uen,String status);
 
     Boolean workloadCalculation(WorkloadCalculationDto workloadCalculationDto);
+
+    List<SelectOption> getRoleSelection(String licenseeId);
 }

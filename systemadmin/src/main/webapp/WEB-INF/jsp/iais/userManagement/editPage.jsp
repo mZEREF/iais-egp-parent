@@ -2,6 +2,7 @@
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>
 <%@ taglib uri="http://www.ecq.com/iais" prefix="iais"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ page import="com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts" %>
 <%
     sop.webflow.rt.api.BaseProcessClass process =
             (sop.webflow.rt.api.BaseProcessClass)request.getAttribute("process");
@@ -120,11 +121,11 @@
                         <iais:row  style="margin-bottom:0px">
                             <iais:field value="Is Administrator" id="userRole" width="12"/>
                             <div class="col-md-3" style="padding-left: 0px;">
-                                <div class="col-md-1"><input type="radio" style="margin-top: 19px" value="admin" name="role" <c:if test="${inter_user_attr.userRole=='ORG_ADMIN'}">checked</c:if>></div>
+                                <div class="col-md-1"><input type="radio" style="margin-top: 19px" value="${RoleConsts.USER_ROLE_ORG_ADMIN}" name="role" <c:if test="${inter_user_attr.userRole== RoleConsts.USER_ROLE_ORG_ADMIN}">checked</c:if>></div>
                                 <label class="col-md-2 control-label" >Yes</label>
                             </div>
                             <div class="col-md-3" style="padding-left: 0px;">
-                                <div class="col-md-1"><input type="radio" style="margin-top: 19px" value="user" name="role" <c:if test="${inter_user_attr.userRole!='ORG_ADMIN'}">checked</c:if>></div>
+                                <div class="col-md-1"><input type="radio" style="margin-top: 19px" value="user" name="role" <c:if test="${inter_user_attr.userRole!= RoleConsts.USER_ROLE_ORG_ADMIN}">checked</c:if>></div>
                                 <label class="col-md-2 control-label" >No</label>
                             </div>
                             <br>
@@ -132,6 +133,29 @@
                             <div class="col-md-3" style="padding-left: 0px;">
                                 <span style="padding-left: 15px;" class="error-msg" name="errorMsg" id="error_userRole"></span>
                             </div>
+                        </iais:row>
+                        <iais:row>
+                            <iais:field value="Assign Role" width="5" required="true" />
+                            <c:forEach var="role" items="${SESSION_NAME_ROLES}">
+                                <c:set var="value" value="${role.value}"/>
+                                <c:set var="roles" value="${inter_user_attr.roles}"/>
+                                <div class="form-check col-xs-7">
+                                    <input class="form-check-input" type="checkbox"
+                                           name="roles"
+                                           value="${value}"
+                                           id="role${value}"
+                                           <c:if test="${StringUtil.stringContain(roles,value)}">checked</c:if>
+                                           aria-invalid="false" >
+                                    <label class="form-check-label"
+                                           for="role${value}"><span
+                                            class="check-square"></span>
+                                        <c:out value="${role.text}"/></label>
+                                </div>
+                            </c:forEach>
+                            <iais:value width="4" cssClass="col-md-4"/>
+                            <iais:value width="3" cssClass="col-md-3">
+                                <span id="error_roles" name="iaisErrorMsg" class="error-msg"></span>
+                            </iais:value>
                         </iais:row>
                         <p></p>
                         <iais:row>
