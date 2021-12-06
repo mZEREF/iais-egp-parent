@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.helper;
 
 import com.ecquaria.cloud.helper.ConfigHelper;
 import com.ecquaria.cloud.helper.SpringContextHelper;
+import com.ecquaria.cloud.job.executor.util.SpringHelper;
 import com.ecquaria.cloud.moh.iais.action.ClinicalLaboratoryDelegator;
 import com.ecquaria.cloud.moh.iais.action.HcsaFileAjaxController;
 import com.ecquaria.cloud.moh.iais.action.NewApplicationDelegator;
@@ -67,6 +68,7 @@ import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.dto.PersonFieldDto;
 import com.ecquaria.cloud.moh.iais.dto.PmtReturnUrlDto;
 import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
+import com.ecquaria.cloud.moh.iais.service.RequestForChangeService;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
@@ -4615,6 +4617,105 @@ public class NewApplicationHelper {
             }
         }
         return newFloorNo;
+    }
+
+    public static boolean validateLicences(List<LicenceDto> licenceDtos, AppGrpPremisesDto appGrpPremisesDto,
+            HttpServletRequest request) {
+        if (licenceDtos == null || licenceDtos.isEmpty() || licenceDtos.get(0) == null) {
+            return true;
+        }
+        long start = System.currentTimeMillis();
+        String licenseeId = licenceDtos.get(0).getLicenseeId();
+        RequestForChangeService requestForChangeService = SpringHelper.getBean(RequestForChangeService.class);
+        List<LicenceDto> licenceDtoByHciCode = requestForChangeService.getLicenceDtoByHciCode(licenseeId, appGrpPremisesDto);
+        if (appGrpPremisesDto != null && IaisCommonUtils.isEmpty(licenceDtoByHciCode)) {
+            request.setAttribute("rfcInvalidLic", MessageUtil.getMessageDesc("RFC_ERR024"));
+            return false;
+        }
+        if (licenceDtoByHciCode != null && !licenceDtoByHciCode.isEmpty()) {
+            boolean allMatch = licenceDtos.parallelStream()
+                    .allMatch(dto -> licenceDtoByHciCode.parallelStream()
+                            .anyMatch(obj -> Objects.equals(obj.getId(), dto.getId())));
+            log.info(StringUtil.changeForLog("##### Time 1: " + (System.currentTimeMillis() - start) + " ###"));
+            if (!allMatch) {
+                request.setAttribute("rfcInvalidLic", MessageUtil.getMessageDesc("RFC_ERR024"));
+                return false;
+            }
+        }
+        /**
+         *  check whether there is another operation for the original licence
+         */
+        boolean errorMatch = licenceDtos.parallelStream()
+                .anyMatch(licence -> {
+                    List<ApplicationDto> appByLicIdAndExcludeNew = requestForChangeService.getAppByLicIdAndExcludeNew(licence.getId());
+                    boolean invalid = IaisCommonUtils.isNotEmpty(appByLicIdAndExcludeNew)
+                            || !requestForChangeService.isOtherOperation(licence.getId());
+                    if (invalid) {
+                        log.info(StringUtil.changeForLog("Invalid Licence - " + licence.getLicenceNo()));
+                    }
+                    return invalid;
+                });
+        log.info(StringUtil.changeForLog("##### Time 2: " + (System.currentTimeMillis() - start) + " ###"));
+        if (errorMatch) {
+            request.setAttribute("rfcPendingApplication", "errorRfcPendingApplication");
+            return false;
+        }
+        String presmiseType = appGrpPremisesDto != null ? appGrpPremisesDto.getPremisesType() : null;
+        if (StringUtil.isEmpty(presmiseType)) {
+            return true;
+        }
+        Optional<LicenceDto> invalidAny = licenceDtos.parallelStream()
+                .filter(licence -> !validateRelatedApps(licence.getId(), requestForChangeService, request))
+                .findAny();
+        log.info(StringUtil.changeForLog("##### Time 3: " + (System.currentTimeMillis() - start) + " ###"));
+        if (invalidAny.isPresent()) {
+            String errorSvcMsg = MessageUtil.getMessageDesc("RFC_ERR020").replace("{ServiceName}", invalidAny.get().getSvcName());
+            log.info(StringUtil.changeForLog("Config is changed - " + errorSvcMsg));
+            request.setAttribute("SERVICE_CONFIG_CHANGE", errorSvcMsg);
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * check whether there is another operation for the original licence
+     *
+     * @param licenceId
+     * @param requestForChangeService
+     * @param request
+     * @return
+     */
+    private static boolean validateRelatedApps(String licenceId, RequestForChangeService requestForChangeService,
+            HttpServletRequest request) {
+        List<ApplicationDto> appByLicIdAndExcludeNew = requestForChangeService.getAppByLicIdAndExcludeNew(licenceId);
+        boolean invalid = IaisCommonUtils.isNotEmpty(appByLicIdAndExcludeNew)
+                || !requestForChangeService.isOtherOperation(licenceId);
+        if (invalid) {
+            log.info(StringUtil.changeForLog("Invalid Licence - " + licenceId));
+            request.setAttribute("rfcPendingApplication", "errorRfcPendingApplication");
+            return false;
+        }
+        return true;
+    }
+
+    public static boolean validateLicences(String licenceId, HttpServletRequest request) {
+        LicenceClient licenceClient = SpringHelper.getBean(LicenceClient.class);
+        LicenceDto licenceDto = licenceClient.getLicBylicId(licenceId).getEntity();
+        if (licenceDto == null) {
+            log.warn(StringUtil.changeForLog("Invalid selected Licence - " + licenceId));
+            request.setAttribute("rfcInvalidLic", MessageUtil.getMessageDesc("RFC_ERR024"));
+            return false;
+        }
+        RequestForChangeService requestForChangeService = SpringHelper.getBean(RequestForChangeService.class);
+        return validateRelatedApps(licenceId, requestForChangeService, request);
+    }
+
+    public static boolean validateLicences(List<AppSubmissionDto> appSubmissionDtos, HttpServletRequest request) {
+        if (appSubmissionDtos == null || appSubmissionDtos.isEmpty()) {
+            return true;
+        }
+        return !appSubmissionDtos.parallelStream()
+                .anyMatch(dto -> !validateLicences(dto.getLicenceId(), request));
     }
 
 }

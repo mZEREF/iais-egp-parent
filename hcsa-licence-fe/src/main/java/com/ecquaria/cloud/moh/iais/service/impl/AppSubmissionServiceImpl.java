@@ -145,6 +145,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 /**
@@ -1244,6 +1245,15 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
     public AppSubmissionDto doSaveDraft(AppSubmissionDto appSubmissionDto) {
         appSubmissionDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         return applicationFeClient.saveDraft(appSubmissionDto).getEntity();
+    }
+
+    @Override
+    public void updateDrafts(List<String> licenceIds, String excludeDraftNo) {
+        log.info(StringUtil.changeForLog("Licence Ids: " + licenceIds + " - excludeDraftNo: " + excludeDraftNo));
+        if (IaisCommonUtils.isEmpty(licenceIds) || StringUtil.isEmpty(excludeDraftNo)) {
+            return;
+        }
+        CompletableFuture.runAsync(() ->applicationFeClient.updateDrafts(licenceIds, excludeDraftNo));
     }
 
     @Override

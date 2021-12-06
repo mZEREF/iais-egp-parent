@@ -63,7 +63,9 @@ public interface AppSubmissionService {
 
     List<ApplicationDto> listApplicationByGroupId(String groupId);
 
-     AppSubmissionDto doSaveDraft(AppSubmissionDto appSubmissionDto);
+    AppSubmissionDto doSaveDraft(AppSubmissionDto appSubmissionDto);
+
+    void updateDrafts(List<String> licenceIds, String draftNo);
 
      String getDraftNo(String appType);
      String getGroupNo(String appType);

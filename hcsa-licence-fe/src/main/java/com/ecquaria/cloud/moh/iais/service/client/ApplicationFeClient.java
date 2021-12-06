@@ -102,6 +102,9 @@ public interface ApplicationFeClient {
             produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<AppSubmissionDto> saveDraft(@RequestBody AppSubmissionDto appSubmissionDto );
 
+    @PostMapping(path = "/iais-submission/draft/special", consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<Void> updateDrafts(@RequestBody List<String> licenceIds, @RequestParam("excludeDraftNo") String excludeDraftNo);
+
     @PostMapping(path = "/iais-submission", consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<AppSubmissionDto> saveSubmision(@RequestBody AppSubmissionDto appSubmissionDto);
 
@@ -405,4 +408,5 @@ public interface ApplicationFeClient {
 
     @PutMapping(value="/iais-application/inactive-declaration-message", consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<String> inActiveDeclaration(@RequestBody AppSubmissionDto appSubmissionDto);
+
 }
