@@ -3799,6 +3799,11 @@ public class NewApplicationDelegator {
                     .map(dto -> Optional.ofNullable(dto.getOldHciCode()).orElse(dto.getHciCode()))
                     .findAny()
                     .orElse(null);
+            List<LicenceDto> licenceDtos = appSubmissionDto.getAppGrpPremisesDtoList().stream()
+                    .filter(dto -> Objects.equals(finalPremINdexNo, dto.getPremisesIndexNo()))
+                    .map(AppGrpPremisesDto::getLicenceDtos)
+                    .findAny()
+                    .orElse(null);
             log.info(StringUtil.changeForLog("--- Old Hci Code: " + oldHciCode));
             String appType = appSubmissionDto.getAppType();
             boolean newApp = requestInformationConfig == null && ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType);
@@ -3815,6 +3820,7 @@ public class NewApplicationDelegator {
                         //get value for jsp page
                         appGrpPremisesDto.setPremisesIndexNo(premIndexNo);
                         appGrpPremisesDto.setOldHciCode(oldHciCode);
+                        appGrpPremisesDto.setLicenceDtos(licenceDtos);
                         appGrpPremisesDtoList.add(appGrpPremisesDto);
                     }
                     continue;
@@ -3829,6 +3835,7 @@ public class NewApplicationDelegator {
                         }
                     }
                     appGrpPremisesDto.setOldHciCode(oldHciCode);
+                    appGrpPremisesDto.setLicenceDtos(licenceDtos);
                     appGrpPremisesDtoList.add(appGrpPremisesDto);
                     continue;
                 }
@@ -3843,6 +3850,7 @@ public class NewApplicationDelegator {
                         appGrpPremisesDto.setRfiCanEdit(false);
                     }
                     appGrpPremisesDto.setOldHciCode(oldHciCode);
+                    appGrpPremisesDto.setLicenceDtos(licenceDtos);
                     appGrpPremisesDtoList.add(appGrpPremisesDto);
                     continue;
                 }
@@ -3863,6 +3871,7 @@ public class NewApplicationDelegator {
                 }
             }
             appGrpPremisesDto.setOldHciCode(oldHciCode);
+            appGrpPremisesDto.setLicenceDtos(licenceDtos);
             //get value for session , this is the subtype's checkbox
             appGrpPremisesDto.setPremisesIndexNo(premIndexNo);
             // set premise type
