@@ -1,4 +1,4 @@
-package sg.gov.moh.iais.egp.bsb.dto.report.notification;
+package sg.gov.moh.iais.egp.bsb.dto.file;
 
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
@@ -18,10 +18,7 @@ import sg.gov.moh.iais.egp.bsb.common.multipart.ByteArrayMultipartFile;
 import sg.gov.moh.iais.egp.bsb.common.node.simple.ValidatableNodeValue;
 import sg.gov.moh.iais.egp.bsb.constant.DocConstants;
 import sg.gov.moh.iais.egp.bsb.dto.ValidationResultDto;
-import sg.gov.moh.iais.egp.bsb.dto.file.DocMeta;
-import sg.gov.moh.iais.egp.bsb.dto.file.DocRecordInfo;
-import sg.gov.moh.iais.egp.bsb.dto.file.NewDocInfo;
-import sg.gov.moh.iais.egp.bsb.dto.file.NewFileSyncDto;
+import sg.gov.moh.iais.egp.bsb.dto.register.facility.PrimaryDocDto;
 import sg.gov.moh.iais.egp.bsb.util.CollectionUtils;
 import sg.gov.moh.iais.egp.bsb.util.LogUtil;
 import sg.gov.moh.iais.egp.bsb.util.SpringReflectionUtils;
@@ -33,13 +30,10 @@ import java.io.Serializable;
 import java.util.*;
 import java.util.stream.Collectors;
 
-/**
- * @author YiMing
- * @version 2021/12/2 14:24
- **/
+
 @Slf4j
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class PrimaryDocDto extends ValidatableNodeValue {
+public class CommonDocDto extends ValidatableNodeValue {
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
@@ -60,7 +54,7 @@ public class PrimaryDocDto extends ValidatableNodeValue {
     private ValidationResultDto validationResultDto;
 
 
-    public PrimaryDocDto() {
+    public CommonDocDto() {
         savedDocMap = new LinkedHashMap<>();
         newDocMap = new LinkedHashMap<>();
         toBeDeletedRepoIds = new HashSet<>();
@@ -83,8 +77,7 @@ public class PrimaryDocDto extends ValidatableNodeValue {
     public void clearValidationResult() {
         this.validationResultDto = null;
     }
-
-
+    
 
 
     /**
@@ -231,7 +224,7 @@ public class PrimaryDocDto extends ValidatableNodeValue {
         // read new uploaded files
         Iterator<String> inputNameIt = mulReq.getFileNames();
         Date currentDate = new Date();
-        LoginContext loginContext = (LoginContext) com.ecquaria.cloud.moh.iais.common.utils.ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
+        LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
         while (inputNameIt.hasNext()) {
             String inputName = inputNameIt.next();
             String docType = MaskUtil.unMaskValue(MASK_PARAM, inputName);

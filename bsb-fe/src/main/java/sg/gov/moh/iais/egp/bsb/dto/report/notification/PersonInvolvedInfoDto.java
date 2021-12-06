@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.util.CollectionUtils;
 import sg.gov.moh.iais.egp.bsb.common.node.simple.ValidatableNodeValue;
 import sg.gov.moh.iais.egp.bsb.dto.ValidationResultDto;
 
@@ -80,6 +81,11 @@ public class PersonInvolvedInfoDto extends ValidatableNodeValue {
         personInvolvedList.clear();
     }
 
+    public void addPersonInvolvedList(PersonInvolved personInvolved){
+        personInvolvedList.add(personInvolved);
+    }
+
+
     private static final String SEPARATOR = "--v--";
     private static final String KEY_SECTION_IDXES = "sectionIdx";
     private static final String KEY_INVOLVED_PERSON_NAME = "name";
@@ -112,6 +118,7 @@ public class PersonInvolvedInfoDto extends ValidatableNodeValue {
             personInvolved.setHospitalName(ParamUtil.getString(request,KEY_HOSPITAL_NAME+SEPARATOR+idx));
             personInvolved.setMedicalPerson(ParamUtil.getString(request,KEY_MEDICAL_DESCRIPTION+SEPARATOR+idx));
             personInvolved.setMedicalFollowUp(ParamUtil.getString(request,KEY_MEDICAL_FOLLOW_UP+SEPARATOR+idx));
+            addPersonInvolvedList(personInvolved);
         }
     }
 

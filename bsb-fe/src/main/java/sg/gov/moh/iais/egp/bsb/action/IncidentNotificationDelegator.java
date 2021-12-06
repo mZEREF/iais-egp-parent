@@ -1,6 +1,7 @@
 package sg.gov.moh.iais.egp.bsb.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
@@ -42,6 +43,8 @@ public class IncidentNotificationDelegator {
     private static final String ERR_MSG_INVALID_ACTION = "Invalid action";
     private static final String KEY_SHOW_ERROR_SWITCH = "needShowValidationError";
     private static final String KEY_VALIDATION_ERRORS = "errorMsg";
+    private static final String PARAM_SELECT_OCCURRENCE_HH_OPTIONS = "occurHHOps";
+    private static final String PARAM_SELECT_OCCURRENCE_MM_OPTIONS = "occurMMOps";
 
     public void start(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
@@ -82,7 +85,6 @@ public class IncidentNotificationDelegator {
         }
         Nodes.needValidation(incidentNotRoot, NODE_NAME_INCIDENT_INFO);
         ParamUtil.setRequestAttr(request, NODE_NAME_INCIDENT_INFO, incidentInfoDto);
-
     }
 
     public void handleIncidentInfo(BaseProcessClass bpc){
@@ -111,7 +113,8 @@ public class IncidentNotificationDelegator {
         }
         Nodes.needValidation(incidentNotRoot, NODE_NAME_PERSON_REPORTING_INFO);
         ParamUtil.setRequestAttr(request, NODE_NAME_PERSON_REPORTING_INFO, personReportingDto);
-
+        ParamUtil.setRequestAttr(request,PARAM_SELECT_OCCURRENCE_HH_OPTIONS,tempOccurrenceHHOps());
+        ParamUtil.setRequestAttr(request,PARAM_SELECT_OCCURRENCE_MM_OPTIONS,tempOccurrenceMMOps());
     }
 
     public void handlePersonReportingInfo(BaseProcessClass bpc){
@@ -324,14 +327,14 @@ public class IncidentNotificationDelegator {
         SimpleNode reportingPersonNode = new SimpleNode(new PersonReportingDto(), NODE_NAME_PERSON_REPORTING_INFO, new Node[0]);
         SimpleNode involvedPersonNode = new SimpleNode(new PersonInvolvedInfoDto(), NODE_NAME_PERSON_INVOLVED_INFO, new Node[0]);
         SimpleNode documentNode = new SimpleNode(new PrimaryDocDto(), NODE_NAME_DOCUMENTS, new Node[0]);
-        Node companyInfoNode = new Node(NODE_NAME_PREVIEW_SUBMIT, new Node[]{incidentNode,reportingPersonNode,involvedPersonNode,documentNode});
+        Node previewSubmitNode = new Node(NODE_NAME_PREVIEW_SUBMIT, new Node[]{incidentNode,reportingPersonNode,involvedPersonNode,documentNode});
 
         return new NodeGroup.Builder().name(name)
                 .addNode(incidentNode)
                 .addNode(reportingPersonNode)
                 .addNode(involvedPersonNode)
                 .addNode(documentNode)
-                .addNode(companyInfoNode)
+                .addNode(previewSubmitNode)
                 .build();
     }
 
@@ -342,5 +345,23 @@ public class IncidentNotificationDelegator {
         docSettings.add(new DocSetting(DocConstants.DOC_INCIDENT_ACTION_REPORT, "Incident Action Report", false));
         docSettings.add(new DocSetting(DocConstants.DOC_TYPE_OTHERS, "Others", false));
         return docSettings;
+    }
+
+    public static List<SelectOption> tempOccurrenceHHOps(){
+        List<SelectOption> occurrenceHHOps = new ArrayList<>(24);
+        for (int i = 1; i <= 24; i++) {
+            String val = i/10 == 0 ?"0"+i:String.valueOf(i);
+            occurrenceHHOps.add(new SelectOption(val,val));
+        }
+        return occurrenceHHOps;
+    }
+
+    public static List<SelectOption> tempOccurrenceMMOps(){
+        List<SelectOption> occurrenceMMops = new ArrayList<>(60);
+        for (int i = 1; i <= 60 ; i++) {
+            String val = i/10 == 0 ?"0"+i:String.valueOf(i);
+            occurrenceMMops.add(new SelectOption(val,val));
+        }
+        return occurrenceMMops;
     }
 }

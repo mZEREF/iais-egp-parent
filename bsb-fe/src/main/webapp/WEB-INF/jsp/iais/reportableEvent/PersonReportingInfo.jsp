@@ -153,13 +153,35 @@
                                                                 </div>
                                                                 <div class="form-group">
                                                                     <div class="col-sm-5 control-label">
-                                                                        <label for="occurrenceTime">Time of Occurrence</label>
+                                                                        <label>Time of Occurrence</label>
                                                                     </div>
                                                                     <div class="col-sm-6 col-md-7">
-                                                                        <input type="time"  name="occurrenceTime" id="occurrenceTime"/>
+                                                                        <div class="col-md-10 col-lg-5 col-9">
+                                                                            <select id="occurrenceTimeH" name="occurrenceTimeH">
+                                                                                <option value="">--</option>
+                                                                                <c:forEach var="item" items="${occurHHOps}">
+                                                                                    <option value="${item.value}">${item.text}</option>
+                                                                                </c:forEach>
+                                                                            </select>
+                                                                        </div>
+                                                                        <div class="col-md-2 col-lg-1 col-3 label-padding">
+                                                                            <label for="occurrenceTimeH">(HH)</label>
+                                                                        </div>
+                                                                        <div class="col-md-10 col-lg-5 col-9">
+                                                                            <select id="occurrenceTimeM" name="occurrenceTimeH">
+                                                                                <option value="">--</option>
+                                                                                <c:forEach var="item" items="${occurMMOps}">
+                                                                                    <option value="${item.value}">${item.text}</option>
+                                                                                </c:forEach>
+                                                                            </select>
+                                                                        </div>
+                                                                        <div class="col-md-2 col-lg-1 col-3 label-padding">
+                                                                            <label for="occurrenceTimeM">(MM)</label>
+                                                                        </div>
                                                                         <span data-err-ind="occurrenceTime" class="error-msg"></span>
                                                                     </div>
                                                                 </div>
+
                                                                 <div class="form-group">
                                                                     <div class="col-sm-5 control-label">
                                                                         <label for="location">Location</label>
@@ -169,6 +191,7 @@
                                                                         <span data-err-ind="location" class="error-msg"></span>
                                                                     </div>
                                                                 </div>
+
                                                                 <div class="form-group">
                                                                     <div class="col-sm-5 control-label">
                                                                         <label for="batName">Name of Agent or Toxin Involved</label>
@@ -180,15 +203,18 @@
                                                                         <span data-err-ind="batName" class="error-msg"></span>
                                                                     </div>
                                                                 </div>
+
                                                                 <div class="form-group">
                                                                     <div class="col-sm-5 control-label">
-                                                                        <label for="incidentDesc">Name of Agent or Toxin Involved</label>
+                                                                        <label for="incidentDesc">Description of Incident</label>
+                                                                        <a class="btn-tooltip styleguide-tooltip" href="javascript:void(0);" data-toggle="tooltip" data-html="true" title="" data-original-title="<p>Note:The driver of hte conveyance must have a valid Hazardous Materials Transport Driver Permit</p>">i</a>
                                                                     </div>
                                                                     <div class="col-sm-6 col-md-7">
                                                                         <textarea id="incidentDesc" rows="6" name="incidentDesc" maxlength="500"></textarea>
                                                                         <span data-err-ind="incidentDesc" class="error-msg"></span>
                                                                     </div>
                                                                 </div>
+
                                                                 <div class="form-group">
                                                                     <div class="col-sm-5 control-label">
                                                                         <label>Any possibility of BA/Toxin released beyond the containment facility?</label>
@@ -205,7 +231,8 @@
                                                                         <span data-err-ind="batReleasePossibility" class="error-msg"></span>
                                                                     </div>
                                                                 </div>
-                                                                <div id="releasePossibleY">
+
+                                                                <div id="releasePossibleY" style="display: none">
                                                                     <div class="form-group">
                                                                         <div class="col-sm-5 control-label">
                                                                             <label for="releaseExtent">Extent of release</label>
@@ -225,6 +252,7 @@
                                                                         </div>
                                                                     </div>
                                                                 </div>
+
                                                                 <div class="form-group">
                                                                     <div class="col-sm-5 control-label">
                                                                         <label>Was any personnel involved in the incident?</label>
