@@ -5,7 +5,6 @@ import com.ecquaria.cloud.moh.iais.common.constant.risk.RiskConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.HcsaRiskFeSupportDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.HcsaRiskWeightageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.HcsaRiskWeightageShowDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -36,9 +35,7 @@ public class HcsaRiskWeightageServiceImpl implements HcsaRiskWeightageService {
 
     @Override
     public HcsaRiskWeightageShowDto getWeightage() {
-        List<HcsaServiceDto> serviceDtoList =  hcsaConfigClient.getActiveServices().getEntity();
-        HcsaRiskWeightageShowDto showDto = hcsaConfigClient.getWeightageShow(serviceDtoList).getEntity();
-        return showDto;
+        return hcsaConfigClient.getWeightageShow(hcsaRiskSupportBeService.getNameSortHcsaServiceDtos()).getEntity();
     }
 
     @Override
