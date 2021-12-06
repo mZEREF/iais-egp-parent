@@ -5,6 +5,7 @@
 <%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
 <%@ taglib prefix="iais-bsb" uri="http://www.ecq.com/iais-bsb" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ page import="sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants" %>
 
 <%
     sop.webflow.rt.api.BaseProcessClass process =
@@ -76,7 +77,7 @@
                             </div>
                         </div>
 
-                        <p id="activityTypeP" class="assessment-title" style="display: none">Activity Type</p>
+                        <p id="activityTypeP" class="assessment-title" <c:if test="${!MasterCodeConstants.VALID_FAC_CLASSIFICATION.contains(serviceSelection.facClassification)}">style="display: none"</c:if>>Activity Type</p>
                         <div id="bsl3Types" <c:if test="${serviceSelection.facClassification ne 'FACCLA001'}">style="display: none"</c:if>>
                             <div class="form-check">
                                 <input type="checkbox" class="form-check-input" name="bsl3ActviTypes" id="bsl3fssba" <c:if test="${serviceSelection.facClassification eq 'FACCLA001' and serviceSelection.activityTypes.contains('ACTVITY001')}">checked="checked"</c:if> value="ACTVITY001"/>

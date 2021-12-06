@@ -117,6 +117,17 @@ public class MasterCodeConstants {
     public static final String FAC_CLASSIFICATION_UF = "FACCLA003";
     public static final String FAC_CLASSIFICATION_LSPF = "FACCLA004";
     public static final String FAC_CLASSIFICATION_RF = "FACCLA005";
+    public static final Set<String> VALID_FAC_CLASSIFICATION;
+
+    static {
+        Set<String> facClassification = Sets.newHashSetWithExpectedSize(5);
+        facClassification.add(FAC_CLASSIFICATION_BSL3);
+        facClassification.add(FAC_CLASSIFICATION_BSL4);
+        facClassification.add(FAC_CLASSIFICATION_UF);
+        facClassification.add(FAC_CLASSIFICATION_LSPF);
+        facClassification.add(FAC_CLASSIFICATION_RF);
+        VALID_FAC_CLASSIFICATION = Collections.unmodifiableSet(facClassification);
+    }
 
     public static final String ACTIVI_FIRST_SECOND_SCHEDULE_BA = "ACTVITY001";
     public static final String ACTIVI_FIRST_SCHEDULE_BA = "ACTVITY002";
