@@ -226,7 +226,7 @@
                                                                                 <span class="mandatory otherQualificationSpan">*</span>
                                                                             </div>
                                                                             <div class="col-sm-6">
-                                                                                <input maxLength="15" type="text" name="transferPostalCode--v--${status.index}" id="transferPostalCode--v--${status.index}" value="${info.transferPostalCode}">
+                                                                                <input maxLength="15" type="text" name="transferPostalCode--v--${status.index}" id="transferPostalCode--v--${status.index}" value="${info.transferPostalCode}" oninput="value=value.replace(/[^\d]/g,'')">
                                                                                 <span data-err-ind="transferPostalCode--v--${status.index}" class="error-msg"></span>
                                                                             </div>
                                                                         </div>

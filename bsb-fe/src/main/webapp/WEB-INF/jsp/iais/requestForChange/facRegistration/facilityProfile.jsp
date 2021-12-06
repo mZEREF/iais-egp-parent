@@ -108,7 +108,7 @@
                                                 <span class="mandatory otherQualificationSpan">*</span>
                                             </div>
                                             <div class="col-sm-6 col-md-7">
-                                                <input maxLength="6" type="text" autocomplete="off" name="postalCode" id="postalCode" value='<c:out value="${facProfile.postalCode}"/>'/>
+                                                <input maxLength="6" type="text" autocomplete="off" name="postalCode" id="postalCode" value='<c:out value="${facProfile.postalCode}"/>' oninput="value=value.replace(/[^\d]/g,'')"/>
                                                 <span data-err-ind="postalCode" class="error-msg"></span>
                                             </div>
                                         </div>
