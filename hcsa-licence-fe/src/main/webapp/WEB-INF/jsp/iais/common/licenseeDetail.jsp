@@ -24,7 +24,7 @@
     </iais:row>
     <c:if test="${showClaimFields}">
         <label>If you intend to transfer this licence to your corporate entity, please provide the UEN no. and Name of your Corporate Entity below:</label>
-        <br>
+        <br><br>
         <iais:row cssClass="claimFeilds">
             <iais:field value="UEN of your Corporate Entity" mandatory="false" width="5"/>
             <iais:value width="7" cssClass="col-md-7">
