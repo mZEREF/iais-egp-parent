@@ -158,16 +158,16 @@
                                             <thead>
                                             <tr >
 
-                                                <iais:sortableHeader needSort="false"
+                                                <iais:sortableHeader needSort="true"
                                                                      field="NAME"
                                                                      value="Patient Name"/>
                                                 <iais:sortableHeader needSort="false"
                                                                      field="ID_TYPE"
                                                                      value="Patient ID Type"/>
-                                                <iais:sortableHeader needSort="false"
+                                                <iais:sortableHeader needSort="true"
                                                                      field="ID_NUMBER"
                                                                      value="Patient ID No"/>
-                                                <iais:sortableHeader needSort="false"
+                                                <iais:sortableHeader needSort="true"
                                                                      field="DATE_OF_BIRTH"
                                                                      value="Patient Date of Birth"/>
                                                 <iais:sortableHeader needSort="false"
@@ -269,10 +269,10 @@
                                         <table aria-describedby="" class="table">
                                             <thead>
                                             <tr >
-                                                <iais:sortableHeader needSort="false"
+                                                <iais:sortableHeader needSort="true"
                                                                      field="BUSINESS_NAME"
                                                                      value="AR Centre"/>
-                                                <iais:sortableHeader needSort="false"
+                                                <iais:sortableHeader needSort="true"
                                                                      field="SUBMISSION_NO"
                                                                      value="Submission ID"/>
                                                 <iais:sortableHeader needSort="false"
@@ -281,7 +281,7 @@
                                                 <iais:sortableHeader needSort="false"
                                                                      field="CYCLE_STAGE"
                                                                      value="Submission Subtype"/>
-                                                <iais:sortableHeader needSort="false"
+                                                <iais:sortableHeader needSort="true"
                                                                      field="SUBMIT_DT"
                                                                      value="Submission Date"/>
                                             </tr>
@@ -489,7 +489,7 @@
         $("[name='crud_action_value']").val(sortFieldName);
         $("[name='crud_action_additional']").val(sortType);
         $("[name='base_action_type']").val('search');
-        submit('search');
+        $('#mainForm').submit();
     }
 
     var quickView = function (submissionIdNo) {

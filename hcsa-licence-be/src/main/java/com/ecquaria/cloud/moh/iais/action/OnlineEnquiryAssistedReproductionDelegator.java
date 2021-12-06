@@ -24,6 +24,7 @@ import com.ecquaria.cloud.moh.iais.helper.SqlHelper;
 import com.ecquaria.cloud.moh.iais.helper.SystemParamUtil;
 import com.ecquaria.cloud.moh.iais.service.AssistedReproductionService;
 import com.ecquaria.cloud.moh.iais.sql.SqlMap;
+import com.google.common.collect.ImmutableSet;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -37,6 +38,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * OnlineEnquiryAssistedReproductionDelegator
@@ -61,6 +63,12 @@ public class OnlineEnquiryAssistedReproductionDelegator {
             .resultAttr("submissionResult")
             .sortField("id").sortType(SearchParam.ASCENDING).pageNo(1).pageSize(pageSize).build();
 
+    private static final Set<String> patientSortFieldNames = ImmutableSet.of(
+            "NAME", "ID_NUMBER","DATE_OF_BIRTH"
+    );
+    private static final Set<String> submissionSortFieldNames = ImmutableSet.of(
+            "BUSINESS_NAME", "SUBMISSION_NO", "SUBMIT_DT"
+    );
     @Autowired
     private SystemParamConfig systemParamConfig;
 
@@ -735,8 +743,10 @@ public class OnlineEnquiryAssistedReproductionDelegator {
         String sortFieldName = ParamUtil.getString(request,"crud_action_value");
         String sortType = ParamUtil.getString(request,"crud_action_additional");
         if(!StringUtil.isEmpty(sortFieldName)&&!StringUtil.isEmpty(sortType)){
-            patientParameter.setSortType(sortType);
-            patientParameter.setSortField(sortFieldName);
+            if(patientSortFieldNames.contains(sortFieldName)){
+                patientParameter.setSortType(sortType);
+                patientParameter.setSortField(sortFieldName);
+            }
         }
 
         setQueryFilter(arFilterDto,patientParameter,0);
@@ -757,8 +767,10 @@ public class OnlineEnquiryAssistedReproductionDelegator {
         ParamUtil.setRequestAttr(request,"patientResult",patientResult);
         ParamUtil.setRequestAttr(request,"patientParam",patientParam);
         if(!StringUtil.isEmpty(sortFieldName)&&!StringUtil.isEmpty(sortType)){
-            submissionParameter.setSortType(sortType);
-            submissionParameter.setSortField(sortFieldName);
+            if(submissionSortFieldNames.contains(sortFieldName)){
+                submissionParameter.setSortType(sortType);
+                submissionParameter.setSortField(sortFieldName);
+            }
         }
         setQueryFilter(arFilterDto,submissionParameter,1);
         SearchParam submissionParam = SearchResultHelper.getSearchParam(request, submissionParameter,true);

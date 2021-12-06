@@ -87,10 +87,10 @@
                                 <iais:row>
                                     <iais:field width="4" value="Submission Date"/>
                                     <iais:value width="3" cssClass="col-md-3">
-                                        <input type="text"  id="submissionDateFrom"  name="submissionDateFrom" value="${assistedReproductionEnquiryFilterDto.submissionDateFrom}" >
+                                        <iais:datePicker id="submissionDateFrom" name="submissionDateFrom" dateVal="${assistedReproductionEnquiryFilterDto.submissionDateFrom}"/>
                                     </iais:value>
                                     <iais:value width="3" cssClass="col-md-3">
-                                        <input type="text"  id="submissionDateTo"  name="submissionDateTo" value="${assistedReproductionEnquiryFilterDto.submissionDateTo}" >
+                                        <iais:datePicker id="submissionDateTo" name="submissionDateTo" dateVal="${assistedReproductionEnquiryFilterDto.submissionDateTo}"/>
                                     </iais:value>
                                 </iais:row>
                             </div>
@@ -168,10 +168,10 @@
                                 <iais:row>
                                     <iais:field width="4" value="Cycle Start Date"/>
                                     <iais:value width="3" cssClass="col-md-3">
-                                        <iais:datePicker id="cycleStagesDateFrom" name="cycleStagesDateFrom" dateVal="${cycleStagesDateFrom}"/>
+                                        <iais:datePicker id="cycleStagesDateFrom" name="cycleStagesDateFrom" dateVal="${assistedReproductionEnquiryFilterDto.cycleStagesDateFrom}"/>
                                     </iais:value>
                                     <iais:value width="3" cssClass="col-md-3">
-                                        <iais:datePicker id="cycleStagesDateTo" name="cycleStagesDateTo" dateVal="${cycleStagesDateTo}"/>
+                                        <iais:datePicker id="cycleStagesDateTo" name="cycleStagesDateTo" dateVal="${assistedReproductionEnquiryFilterDto.cycleStagesDateTo}"/>
                                     </iais:value>
                                 </iais:row>
                                 <iais:row>
@@ -716,10 +716,10 @@
                                 <iais:row>
                                     <iais:field width="4" value="Date of Delivery"/>
                                     <iais:value width="3" cssClass="col-md-3">
-                                        <iais:datePicker id="deliveryDateFrom" name="deliveryDateFrom" dateVal="${deliveryDateFrom}"/>
+                                        <iais:datePicker id="deliveryDateFrom" name="deliveryDateFrom" dateVal="${assistedReproductionEnquiryFilterDto.deliveryDateFrom}"/>
                                     </iais:value>
                                     <iais:value width="3" cssClass="col-md-3">
-                                        <iais:datePicker id="deliveryDateTo" name="deliveryDateTo" dateVal="${deliveryDateTo}"/>
+                                        <iais:datePicker id="deliveryDateTo" name="deliveryDateTo" dateVal="${assistedReproductionEnquiryFilterDto.deliveryDateTo}"/>
                                     </iais:value>
                                 </iais:row>
 
@@ -1222,25 +1222,25 @@
                                         <table aria-describedby="" class="table">
                                             <thead>
                                             <tr >
-                                                <iais:sortableHeader needSort="false"
+                                                <iais:sortableHeader needSort="true"
                                                                      field="BUSINESS_NAME"
                                                                      value="AR Centre"/>
-                                                <iais:sortableHeader needSort="false"
+                                                <iais:sortableHeader needSort="true"
                                                                      field="NAME"
                                                                      value="Patient Name"/>
                                                 <iais:sortableHeader needSort="false"
                                                                      field="ID_TYPE"
                                                                      value="Patient ID Type"/>
-                                                <iais:sortableHeader needSort="false"
+                                                <iais:sortableHeader needSort="true"
                                                                      field="ID_NUMBER"
                                                                      value="Patient ID No"/>
-                                                <iais:sortableHeader needSort="false"
+                                                <iais:sortableHeader needSort="true"
                                                                      field="DATE_OF_BIRTH"
                                                                      value="Patient Date of Birth"/>
                                                 <iais:sortableHeader needSort="false"
                                                                      field="NATIONALITY"
                                                                      value="Patient Nationality"/>
-                                                <iais:sortableHeader needSort="false"
+                                                <iais:sortableHeader needSort="true"
                                                                      field="CREATED_DT"
                                                                      value="Cycle Start Date"/>
                                                 <iais:sortableHeader needSort="false"
@@ -1349,7 +1349,7 @@
         $("[name='crud_action_value']").val(sortFieldName);
         $("[name='crud_action_additional']").val(sortType);
         $("[name='adv_action_type']").val('search');
-        submit('search');
+        $('#mainForm').submit();
     }
 
 
