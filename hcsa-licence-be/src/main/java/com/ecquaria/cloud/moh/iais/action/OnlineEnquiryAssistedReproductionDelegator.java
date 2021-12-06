@@ -581,14 +581,31 @@ public class OnlineEnquiryAssistedReproductionDelegator {
                 filter.put("deliveryDateTo", deliveryDateTo);
             }
 
-            if(arDto.getPatientART()!=null){//bit
-                filter.put("patientART",Integer.parseInt(arDto.getPatientART()));
+            if(arDto.getPatientART()!=null){
+                if("1".equals(arDto.getPatientART())){
+                    filter.put("patientArtYes",1);
+                }
+                if("0".equals(arDto.getPatientART())){
+                    filter.put("patientArtNo",1);
+                }
             }
-            if(arDto.getPatientIUI()!=null){//bit
-                filter.put("patientIUI",Integer.parseInt(arDto.getPatientIUI()));
+            if(arDto.getPatientIUI()!=null){
+                if("1".equals(arDto.getPatientIUI())){
+                    filter.put("patientIuiYes",1);
+
+                }
+                if("0".equals(arDto.getPatientIUI())){
+                    filter.put("patientIuiNo",1);
+                }
             }
-            if(arDto.getPatientPGT()!=null){//bit
-                filter.put("patientPGT",Integer.parseInt(arDto.getPatientPGT()));
+            if(arDto.getPatientPGT()!=null){
+                if("1".equals(arDto.getPatientPGT())){
+                    filter.put("patientPgtYes",1);
+
+                }
+                if("0".equals(arDto.getPatientPGT())){
+                    filter.put("patientPgtNo",1);
+                }
             }
 
             List<String> disposalTypeList=IaisCommonUtils.genNewArrayList();

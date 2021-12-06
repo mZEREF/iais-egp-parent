@@ -216,9 +216,12 @@
                 <#if birthEventsTotalList??> AND (dpos.MALE_LIVE_BIRTH_NUM+dpos.FEMALE_LIVE_BIRTH_NUM) in( :birthEventsTotalList) </#if>
                 <#if deliveryDateFrom??> AND dpos.DELIVERY_DATE >= convert(date,:deliveryDateFrom)</#if>
                 <#if deliveryDateTo??> AND dpos.DELIVERY_DATE <= convert(date,:deliveryDateTo)</#if>
-                <#if patientART??> AND  :patientART = datss.ART_CO_FUNDING </#if>
-                <#if patientIUI??> AND  :patientIUI = ditss.IUI_CO_FUNDING </#if>
-                <#if patientPGT??> AND  :patientPGT = dps.IS_PGT_CONFUNDING </#if>
+                <#if patientArtYes??> AND  'ATSACF002' = datss.ART_CO_FUNDING or 'ATSACF003' = datss.ART_CO_FUNDING </#if>
+                <#if patientArtNo??> AND  'ATSACF001' = datss.ART_CO_FUNDING </#if>
+                <#if patientIuiYes??> AND  'PICF002' = ditss.IUI_CO_FUNDING </#if>
+                <#if patientIuiNo??> AND  'PICF001' = ditss.IUI_CO_FUNDING </#if>
+                <#if patientPgtYes??> AND  1 = ditss.IUI_CO_FUNDING </#if>
+                <#if patientPgtNo??> AND  0 = dps.IS_PGT_CONFUNDING </#if>
                 <#if disposalTypeList??> AND ddiss.DISPOSED_TYPE in( :disposalTypeList)</#if>
                 <#if disposedTotalNumber??> AND (ddiss.IMMATURE+ddiss.ABNORMALLY_FERTILISED+ddiss.UNFERTILISED+ddiss.ATRETIC+ddiss.DAMAGED+ddiss.LYSED_OR_DEGENERATED+ddiss.UNHEALTHY_NUM+ddiss.OTHER_DISCARDED_NUM) = :disposedTotalNumber</#if>
                 <#if disposalDateFrom??> AND ddiss.CREATED_DT >= convert(date,:disposalDateFrom)</#if>

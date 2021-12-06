@@ -30,7 +30,7 @@ import java.util.Map;
 @Slf4j
 @Controller
 @RequestMapping("/hcsa/intranet/ar")
-public class OnlinArAjaxController {
+public class OnlineArAjaxController {
     @Autowired
     private AssistedReproductionService assistedReproductionService;
 
@@ -80,13 +80,13 @@ public class OnlinArAjaxController {
                     arTreatment=arTreatment+ MasterCodeUtil.getCodeDesc(DataSubmissionConsts.CURRENT_AR_TREATMENT_FROZEN_OOCYTE_CYCLE);
                 }
                 if(StringUtil.isNotEmpty(ajax.getArCoFunding())){
-                    coFunding=coFunding+ajax.getArCoFunding();
+                    coFunding=coFunding+MasterCodeUtil.getCodeDesc(ajax.getArCoFunding());
                 }
                 if(StringUtil.isNotEmpty(ajax.getIuiCoFunding())){
                     if(!"".equals(coFunding)){
                         coFunding=coFunding+',';
                     }
-                    coFunding=coFunding+ajax.getIuiCoFunding();
+                    coFunding=coFunding+MasterCodeUtil.getCodeDesc(ajax.getIuiCoFunding());
 
                 }
                 if(StringUtil.isNotEmpty(ajax.getPgtCoFunding())){
