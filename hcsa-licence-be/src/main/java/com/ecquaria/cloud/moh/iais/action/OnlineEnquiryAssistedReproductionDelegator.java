@@ -7,6 +7,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.SystemAdminBaseCo
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.AssistedReproductionAdvEnquiryResultsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.AssistedReproductionEnquiryFilterDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.AssistedReproductionEnquiryResultsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.AssistedReproductionEnquirySubResultsDto;
@@ -56,7 +57,11 @@ public class OnlineEnquiryAssistedReproductionDelegator {
             .searchAttr("patientParam")
             .resultAttr("patientResult")
             .sortField("id").sortType(SearchParam.ASCENDING).pageNo(1).pageSize(pageSize).build();
-
+    FilterParameter patientAdvParameter = new FilterParameter.Builder()
+            .clz(AssistedReproductionEnquiryResultsDto.class)
+            .searchAttr("patientAdvParam")
+            .resultAttr("patientAdvResult")
+            .sortField("id").sortType(SearchParam.ASCENDING).pageNo(1).pageSize(pageSize).build();
     FilterParameter submissionParameter = new FilterParameter.Builder()
             .clz(AssistedReproductionEnquirySubResultsDto.class)
             .searchAttr("submissionParam")
@@ -88,6 +93,8 @@ public class OnlineEnquiryAssistedReproductionDelegator {
         submissionParameter.setPageNo(1);
         patientParameter.setPageNo(1);
         patientParameter.setPageSize(pageSize);
+        patientAdvParameter.setPageNo(1);
+        patientAdvParameter.setPageSize(pageSize);
 
     }
 
@@ -782,7 +789,7 @@ public class OnlineEnquiryAssistedReproductionDelegator {
 
         SearchResult<AssistedReproductionEnquiryResultsDto> patientResult = assistedReproductionService.searchPatientByParam(patientParam);
         ParamUtil.setRequestAttr(request,"patientResult",patientResult);
-        ParamUtil.setRequestAttr(request,"patientParam",patientParam);
+        ParamUtil.setSessionAttr(request,"patientParam",patientParam);
         if(!StringUtil.isEmpty(sortFieldName)&&!StringUtil.isEmpty(sortType)){
             if(submissionSortFieldNames.contains(sortFieldName)){
                 submissionParameter.setSortType(sortType);
@@ -805,7 +812,7 @@ public class OnlineEnquiryAssistedReproductionDelegator {
                 }
             }
         }
-        ParamUtil.setRequestAttr(request,"submissionParam",submissionParam);
+        ParamUtil.setSessionAttr(request,"submissionParam",submissionParam);
         ParamUtil.setRequestAttr(request,"submissionResult",submissionResult);
 
 
@@ -835,21 +842,21 @@ public class OnlineEnquiryAssistedReproductionDelegator {
 
         AssistedReproductionEnquiryFilterDto arFilterDto= setAssistedReproductionEnquiryFilterDto(request);
 
-        setQueryFilter(arFilterDto,patientParameter,2);
+        setQueryFilter(arFilterDto,patientAdvParameter,2);
         String sortFieldName = ParamUtil.getString(request,"crud_action_value");
         String sortType = ParamUtil.getString(request,"crud_action_additional");
         if(!StringUtil.isEmpty(sortFieldName)&&!StringUtil.isEmpty(sortType)){
-            patientParameter.setSortType(sortType);
-            patientParameter.setSortField(sortFieldName);
+            patientAdvParameter.setSortType(sortType);
+            patientAdvParameter.setSortField(sortFieldName);
         }
 
-        SearchParam patientParam = SearchResultHelper.getSearchParam(request, patientParameter,true);
+        SearchParam patientParam = SearchResultHelper.getSearchParam(request, patientAdvParameter,true);
         CrudHelper.doPaging(patientParam,bpc.request);
 
         QueryHelp.setMainSql("onlineEnquiry","advancedSearchPatientByAssistedReproduction",patientParam);
-        SearchResult<AssistedReproductionEnquiryResultsDto> patientResult = assistedReproductionService.searchPatientByParam(patientParam);
-        ParamUtil.setRequestAttr(request,"patientResult",patientResult);
-        ParamUtil.setRequestAttr(request,"patientParam",patientParam);
+        SearchResult<AssistedReproductionAdvEnquiryResultsDto> patientResult = assistedReproductionService.searchPatientAdvByParam(patientParam);
+        ParamUtil.setRequestAttr(request,"patientAdvResult",patientResult);
+        ParamUtil.setSessionAttr(request,"patientAdvParam",patientParam);
     }
     public void preViewFullDetails(BaseProcessClass bpc){
 

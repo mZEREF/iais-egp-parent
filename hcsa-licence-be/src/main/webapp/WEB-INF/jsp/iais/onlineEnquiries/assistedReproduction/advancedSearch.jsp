@@ -1212,11 +1212,10 @@
                     </div>
                     <br>
 
-                    <div  id="patientResult">
                         <div class="col-xs-12">
                             <div class="components">
 
-                                <iais:pagination param="patientParam" result="patientResult"/>
+                                <iais:pagination param="patientAdvParam" result="patientAdvResult"/>
                                 <div class="table-responsive">
                                     <div class="table-gp">
                                         <table aria-describedby="" class="table">
@@ -1250,7 +1249,7 @@
                                             </thead>
                                             <tbody class="form-horizontal">
                                             <c:choose>
-                                                <c:when test="${empty patientResult.rows}">
+                                                <c:when test="${empty patientAdvResult.rows}">
                                                     <tr>
                                                         <td colspan="15">
                                                             <iais:message key="GENERAL_ACK018"
@@ -1260,7 +1259,7 @@
                                                 </c:when>
                                                 <c:otherwise>
                                                     <c:forEach var="patient"
-                                                               items="${patientResult.rows}"
+                                                               items="${patientAdvResult.rows}"
                                                                varStatus="status">
                                                         <tr>
 
@@ -1306,11 +1305,10 @@
 
                                 <iais:action style="text-align:right;">
                                     <a class="btn btn-secondary"
-                                       href="${pageContext.request.contextPath}/officer-online-enquiries-information-file">Download</a>
+                                       href="${pageContext.request.contextPath}/hcsa/intranet/ar/PatientInfo-Adv-SearchResults-DownloadS">Download</a>
                                 </iais:action>
                             </div>
                         </div>
-                    </div>
 
                 </div>
             </div>

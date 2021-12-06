@@ -252,7 +252,7 @@
 
                                 <iais:action style="text-align:right;">
                                     <a class="btn btn-secondary"
-                                       href="${pageContext.request.contextPath}/officer-online-enquiries-information-file">Download</a>
+                                       href="${pageContext.request.contextPath}/hcsa/intranet/ar/PatientInfo-SearchResults-DownloadS">Download</a>
                                 </iais:action>
                             </div>
                         </div>
@@ -330,7 +330,10 @@
                                     </div>
 
                                 </div>
-
+                                <iais:action style="text-align:right;">
+                                    <a class="btn btn-secondary"
+                                       href="${pageContext.request.contextPath}/hcsa/intranet/ar/SubmissionID-SearchResults-Download">Download</a>
+                                </iais:action>
                             </div>
                         </div>
                     </div>
