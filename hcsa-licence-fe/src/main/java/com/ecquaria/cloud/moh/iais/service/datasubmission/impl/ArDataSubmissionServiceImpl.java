@@ -10,6 +10,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSub
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.CycleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.CycleStageSelectionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DataSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DonorDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DonorSampleAgeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DonorSampleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.IuiCycleStageDto;
@@ -531,5 +532,14 @@ public class ArDataSubmissionServiceImpl implements ArDataSubmissionService {
             return new PatientInventoryDto();
         }
         return arFeClient.patientInventoryByCode(patientCode, HciCode).getEntity();
+    }
+
+    @Override
+    public List<DonorDto> getAllDonorDtoByCycleId(String cycleId) {
+        if (StringUtil.isEmpty(cycleId) || StringUtil.isEmpty(cycleId)){
+            log.info(StringUtil.changeForLog("------ No cycle Id -----"));
+            return IaisCommonUtils.genNewArrayList(0);
+        }
+        return arFeClient.getAllDonorDtoByCycleId(cycleId).getEntity();
     }
 }

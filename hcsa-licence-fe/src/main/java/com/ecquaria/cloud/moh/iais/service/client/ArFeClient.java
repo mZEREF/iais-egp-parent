@@ -6,6 +6,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArTreatmentSub
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.CycleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.CycleStageSelectionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DataSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DonorDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DonorSampleAgeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DonorSampleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.FertilisationDto;
@@ -14,8 +15,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInventoryDto;
 import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
-import java.util.Date;
-import java.util.List;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -25,6 +24,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import java.util.Date;
+import java.util.List;
 
 @FeignClient(name = "hcsa-licence", configuration = FeignConfiguration.class, fallback = ArFeClientFallback.class)
 public interface ArFeClient {
@@ -128,15 +130,19 @@ public interface ArFeClient {
 
     @GetMapping(value = "/ar-common/iuiTreatmentSubsidiesDtos/patientcode-hcicode-cycletype", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<IuiTreatmentSubsidiesDto>> getIuiTreatmentSubsidiesDtosByPhc(@RequestParam(name = "patientCode") String patientCode,
-                                                                                                                          @RequestParam(name = "hciCode") String hciCode,
-                                                                                                                          @RequestParam(name = "cycleType") String cycleType);
+                                                                                          @RequestParam(name = "hciCode") String hciCode,
+                                                                                          @RequestParam(name = "cycleType") String cycleType);
+
     @GetMapping(value = "/data-submission/donorSampleAges/{sampleCode}", produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<List<DonorSampleAgeDto>> getDonorSampleAgeDtoBySampleKey(@PathVariable("sampleCode") String sampleCode) ;
+    FeignResponseEntity<List<DonorSampleAgeDto>> getDonorSampleAgeDtoBySampleKey(@PathVariable("sampleCode") String sampleCode);
 
     @GetMapping(value = "/data-submission//donorSamples/{sampleKey}", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<DonorSampleDto>> getDonorSampleDtoBySampleKey(@PathVariable("sampleKey") String sampleKey);
 
 
-    @GetMapping(value = "/data-submission/cycle-id",produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/data-submission/cycle-id", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<DataSubmissionDto>> getAllDataSubmissionByCycleId(@RequestParam("cycleId") String cycleId);
+
+    @GetMapping(value = "/ar-common/cycle-donor-dto-list-by-cycle-id", produces = MediaType.APPLICATION_JSON_VALUE)
+    public FeignResponseEntity<List<DonorDto>> getAllDonorDtoByCycleId(@RequestParam(name = "cycleId") String cycleId);
 }

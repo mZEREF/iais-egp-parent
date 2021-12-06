@@ -62,7 +62,7 @@ public class OutcomePregnancyDelegator extends CommonDelegator {
 
     @Override
     public void prepareConfim(BaseProcessClass bpc) {
-        DataSubmissionHelper.initPatientInventoryTable(bpc.request);
+        DataSubmissionHelper.getCurrentPatientInventory(bpc.request);
         ArSuperDataSubmissionDto arSuperDataSubmissionDto = DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
         initBabyDefect(arSuperDataSubmissionDto.getPregnancyOutcomeStageDto(), bpc.request);
     }

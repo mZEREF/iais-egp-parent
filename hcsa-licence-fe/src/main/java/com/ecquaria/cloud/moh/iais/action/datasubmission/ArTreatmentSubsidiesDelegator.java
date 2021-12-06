@@ -72,8 +72,6 @@ public class ArTreatmentSubsidiesDelegator extends CommonDelegator {
         boolean isDisplayAppeal = ("ATSACF002".equals(coFunding) && freshCount >= 3) ||
                 ("ATSACF003".equals(coFunding) && frozenCount >= 3);
         ParamUtil.setRequestAttr(bpc.request, "isDisplayAppeal",isDisplayAppeal);
-
-        PatientInventoryDto patientInventoryDto = DataSubmissionHelper.initPatientInventoryTable(bpc.request);
     }
 
     @Override

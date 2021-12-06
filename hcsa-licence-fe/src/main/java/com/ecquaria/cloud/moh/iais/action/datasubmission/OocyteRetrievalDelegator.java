@@ -3,6 +3,7 @@ package com.ecquaria.cloud.moh.iais.action.datasubmission;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.intranetUser.IntranetUserConstant;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DonorDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.OocyteRetrievalStageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInventoryDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
@@ -10,10 +11,13 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
+import com.ecquaria.cloud.moh.iais.service.datasubmission.ArDataSubmissionService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -27,6 +31,9 @@ import java.util.Map;
 @Slf4j
 public class OocyteRetrievalDelegator extends CommonDelegator {
 
+    @Autowired
+    ArDataSubmissionService arDataSubmissionService;
+
     @Override
     public void prepareSwitch(BaseProcessClass bpc) {
         ParamUtil.setRequestAttr(bpc.request, "smallTitle", "You are submitting for <strong>Oocyte Retrieval Stage</strong>");
@@ -39,16 +46,15 @@ public class OocyteRetrievalDelegator extends CommonDelegator {
         if (oocyteRetrievalStageDto == null) {
             oocyteRetrievalStageDto = new OocyteRetrievalStageDto();
             arSuperDataSubmissionDto.setOocyteRetrievalStageDto(oocyteRetrievalStageDto);
-//            ArCycleStageDto arCycleStageDto = arSuperDataSubmissionDto.getArCycleStageDto();
-//            List<DonorDto> arDonorDtoList = arCycleStageDto.getDonorDtos();
-//            if (IaisCommonUtils.isNotEmpty(arDonorDtoList)) {
-//                for (DonorDto donorDto : arDonorDtoList) {
-//                    if (donorDto.isDirectedDonation()) {
-//                        oocyteRetrievalStageDto.setIsFromDonor(true);
-//                        break;
-//                    }
-//                }
-//            }
+            List<DonorDto> arDonorDtoList = arDataSubmissionService.getAllDonorDtoByCycleId(arSuperDataSubmissionDto.getCycleDto().getId());
+            if (IaisCommonUtils.isNotEmpty(arDonorDtoList)) {
+                for (DonorDto donorDto : arDonorDtoList) {
+                    if (donorDto.isDirectedDonation()) {
+                        oocyteRetrievalStageDto.setIsFromDonor(true);
+                        break;
+                    }
+                }
+            }
             DataSubmissionHelper.setCurrentArDataSubmission(arSuperDataSubmissionDto, bpc.request);
         }
         ParamUtil.setRequestAttr(bpc.request, "totalRetrievedNum", oocyteRetrievalStageDto.getTotalNum());
@@ -60,7 +66,7 @@ public class OocyteRetrievalDelegator extends CommonDelegator {
         OocyteRetrievalStageDto oocyteRetrievalStageDto = arSuperDataSubmissionDto.getOocyteRetrievalStageDto();
         int totalNum = oocyteRetrievalStageDto.getTotalNum();
         ParamUtil.setRequestAttr(bpc.request, "totalRetrievedNum", totalNum);
-        PatientInventoryDto patientInventoryDto = DataSubmissionHelper.initPatientInventoryTable(bpc.request);
+        PatientInventoryDto patientInventoryDto = DataSubmissionHelper.getCurrentPatientInventory(bpc.request);
         patientInventoryDto.setChangeFreshOocytes(totalNum);
     }
 

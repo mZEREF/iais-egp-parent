@@ -65,11 +65,6 @@ public class EmbryoTransferDelegator extends CommonDelegator {
     }
 
     @Override
-    public void prepareConfim(BaseProcessClass bpc) {
-        DataSubmissionHelper.initPatientInventoryTable(bpc.request);
-    }
-
-    @Override
     public void pageAction(BaseProcessClass bpc) {
         ArSuperDataSubmissionDto arSuperDataSubmissionDto = DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
         EmbryoTransferStageDto embryoTransferStageDto = arSuperDataSubmissionDto.getEmbryoTransferStageDto();

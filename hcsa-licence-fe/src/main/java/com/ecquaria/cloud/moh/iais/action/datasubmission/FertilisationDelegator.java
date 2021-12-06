@@ -6,7 +6,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.FertilisationD
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInventoryDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
-import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant;
 import com.ecquaria.cloud.moh.iais.helper.ControllerHelper;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
@@ -18,7 +17,6 @@ import sop.webflow.rt.api.BaseProcessClass;
 import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
 import java.util.Arrays;
-import java.util.Map;
 
 /**
  * FertilisationDelegator
@@ -71,7 +69,7 @@ public class FertilisationDelegator extends CommonDelegator{
         int ThawedOocytesMicroinjectedNum= IaisCommonUtils.getIntByNum(fertilisationDto.getThawedOocytesMicroinjectedNum(),0);
         int ThawedOocytesGiftNum=IaisCommonUtils.getIntByNum(fertilisationDto.getThawedOocytesGiftNum(),0);
         int ThawedOocytesZiftNum=IaisCommonUtils.getIntByNum(fertilisationDto.getThawedOocytesZiftNum(),0);
-        PatientInventoryDto patientInventoryDto = DataSubmissionHelper.initPatientInventoryTable(bpc.request);
+        PatientInventoryDto patientInventoryDto = DataSubmissionHelper.getCurrentPatientInventory(bpc.request);
 
         int changeFreshOocytes =FreshOocytesInseminatedNum+ FreshOocytesMicroInjectedNum+FreshOocytesGiftNum+FreshOocytesZiftNu;
         int changeThawedOocytes = ThawedOocytesInseminatedNum+ThawedOocytesMicroinjectedNum+ThawedOocytesGiftNum+ThawedOocytesZiftNum;
