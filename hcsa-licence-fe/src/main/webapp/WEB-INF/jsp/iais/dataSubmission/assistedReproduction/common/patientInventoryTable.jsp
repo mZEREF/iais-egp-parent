@@ -1,5 +1,6 @@
 <%@ page import="com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInventoryDto" %>
-<% PatientInventoryDto patientInventoryDto = (PatientInventoryDto) request.getAttribute("patientInventoryDto");%>
+<%@ page import="com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper" %>
+<% PatientInventoryDto patientInventoryDto = DataSubmissionHelper.getCurrentPatientInventory(request);%>
 <h3>Patient's Inventory</h3>
 <table aria-describedby="" class="table discipline-table">
   <thead>
