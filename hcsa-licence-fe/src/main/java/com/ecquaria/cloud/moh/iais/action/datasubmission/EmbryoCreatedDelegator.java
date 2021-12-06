@@ -134,7 +134,5 @@ public class EmbryoCreatedDelegator extends CommonDelegator{
 //        patientInventoryDto.setChangeThawedOocytes(-embryoCreatedStageDto.getPoorDevThawOccNum()-embryoCreatedStageDto.getTransEmbrThawOccNum());
 
         patientInventoryDto.setChangeFreshEmbryos(embryoCreatedStageDto.getTotalNum());
-
-        ParamUtil.setRequestAttr(bpc.request, "patientInventoryDto", patientInventoryDto);
     }
 }

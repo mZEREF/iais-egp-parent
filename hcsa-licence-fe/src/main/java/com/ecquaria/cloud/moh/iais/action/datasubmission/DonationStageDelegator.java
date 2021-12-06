@@ -205,7 +205,6 @@ public class DonationStageDelegator extends CommonDelegator{
                 break;
             default:
         }
-        ParamUtil.setRequestAttr(bpc.request, "patientInventoryDto", patientInventoryDto);
 
         List<SelectOption> selectOptions  = DataSubmissionHelper.genPremisesOptions((Map<String, PremisesDto>) ParamUtil.getSessionAttr(bpc.request,DataSubmissionConstant.AR_PREMISES_MAP));
         String hciCode=donationStageDto.getDonatedCentre();

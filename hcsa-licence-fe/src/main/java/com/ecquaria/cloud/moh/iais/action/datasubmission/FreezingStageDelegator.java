@@ -90,8 +90,7 @@ public class FreezingStageDelegator extends CommonDelegator {
                     ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, CommonDelegator.ACTION_TYPE_PAGE);
                 } else {
                     PatientInventoryDto patientInventoryDto = arSuperDataSubmission.getPatientInventoryDto();
-                    patientInventoryDto = arDataSubmissionService.setFreezingPatientChange(patientInventoryDto, arSubFreezingStageDto);
-                    ParamUtil.setRequestAttr(bpc.request, "patientInventoryDto", patientInventoryDto);
+                    arDataSubmissionService.setFreezingPatientChange(patientInventoryDto, arSubFreezingStageDto);
                     ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, CommonDelegator.ACTION_TYPE_CONFIRM);
                 }
             }

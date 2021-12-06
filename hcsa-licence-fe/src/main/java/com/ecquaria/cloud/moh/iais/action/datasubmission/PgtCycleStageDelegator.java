@@ -251,11 +251,6 @@ public class PgtCycleStageDelegator extends CommonDelegator{
     @Override
     public void prepareConfim(BaseProcessClass bpc) {
         ArSuperDataSubmissionDto arSuperDataSubmissionDto= DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
-        PatientInventoryDto patientInventoryDto = new PatientInventoryDto();
-        if(arSuperDataSubmissionDto.getPatientInventoryDto()!=null){
-            patientInventoryDto=arSuperDataSubmissionDto.getPatientInventoryDto();
-        }
-        ParamUtil.setRequestAttr(bpc.request, "patientInventoryDto", patientInventoryDto);
         String hciCode=arSuperDataSubmissionDto.getPgtStageDto().getIsEmbryosBiopsiedLocal();
         String value=arSuperDataSubmissionDto.getPgtStageDto().getIsEmbryosBiopsiedLocal();
         List<SelectOption> embryosBiopsiedLocalSelectOption  = DataSubmissionHelper.genPremisesOptions((Map<String, PremisesDto>) ParamUtil.getSessionAttr(bpc.request,DataSubmissionConstant.AR_PREMISES_MAP));

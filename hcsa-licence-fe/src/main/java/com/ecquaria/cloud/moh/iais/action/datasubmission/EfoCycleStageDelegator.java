@@ -145,7 +145,5 @@ public class EfoCycleStageDelegator extends CommonDelegator{
         if(arSuperDataSubmissionDto.getPatientInventoryDto()!=null){
             patientInventoryDto=arSuperDataSubmissionDto.getPatientInventoryDto();
         }
-
-        ParamUtil.setRequestAttr(bpc.request, "patientInventoryDto", patientInventoryDto);
     }
 }

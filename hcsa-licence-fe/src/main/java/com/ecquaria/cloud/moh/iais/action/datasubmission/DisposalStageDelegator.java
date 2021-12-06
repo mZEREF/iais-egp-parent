@@ -209,7 +209,5 @@ public class DisposalStageDelegator extends CommonDelegator{
                 break;
             default:
         }
-
-        ParamUtil.setRequestAttr(bpc.request, "patientInventoryDto", patientInventoryDto);
     }
 }
