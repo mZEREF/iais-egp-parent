@@ -22,7 +22,24 @@
             </c:if>
         </iais:value>
     </iais:row>
-
+    <c:if test="${showClaimFields}">
+        <label>If you intend to transfer this licence to your corporate entity, please provide the UEN no. and Name of your Corporate Entity below:</label>
+        <br>
+        <iais:row cssClass="claimFeilds">
+            <iais:field value="UEN of your Corporate Entity" mandatory="false" width="5"/>
+            <iais:value width="7" cssClass="col-md-7">
+                <iais:input maxLength="2000" type="text" name="claimUenNo" id="claimUenNo" value="${dto.claimUenNo}"/>
+            </iais:value>
+        </iais:row>
+        <iais:row cssClass="claimFeilds">
+            <iais:field value="Name of your Corporate Entity" mandatory="false" width="5"/>
+            <iais:value width="7" cssClass="col-md-7">
+                <iais:input maxLength="2000" type="text" name="claimCompanyName" id="claimCompanyName"
+                            value="${dto.claimCompanyName}"/>
+            </iais:value>
+        </iais:row>
+        <hr>
+    </c:if>
     <c:if test="${dto.licenseeType ne soloType}">
         <c:if test="${isNew}">
             <iais:row cssClass="assignSelectRow">
@@ -50,21 +67,6 @@
         <iais:input cssClass="not-clear" type="hidden" name="licenseeType" id="licenseeType" value="${soloType}"/>
     </c:if>
     <%@include file="previewLicenseeCom.jsp"%>
-    <c:if test="${showClaimFields}">
-        <iais:row cssClass="claimFeilds">
-            <iais:field value="UEN of your Corporate Entity" mandatory="false" width="5"/>
-            <iais:value width="7" cssClass="col-md-7">
-                <iais:input maxLength="2000" type="text" name="claimUenNo" id="claimUenNo" value="${dto.claimUenNo}"/>
-            </iais:value>
-        </iais:row>
-        <iais:row cssClass="claimFeilds">
-            <iais:field value="Name of your Corporate Entity" mandatory="false" width="5"/>
-            <iais:value width="7" cssClass="col-md-7">
-                <iais:input maxLength="2000" type="text" name="claimCompanyName" id="claimCompanyName"
-                            value="${dto.claimCompanyName}"/>
-            </iais:value>
-        </iais:row>
-    </c:if>
 </div>
 
 <iais:confirm msg="NEW_ACK016" needCancel="false" callBack="$('#postalCodePop').modal('hide');"
