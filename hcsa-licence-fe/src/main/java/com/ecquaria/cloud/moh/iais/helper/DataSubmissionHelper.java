@@ -430,10 +430,8 @@ public final class DataSubmissionHelper {
         return MessageUtil.getMessageDesc("DS_MSG005", repMap);
     }
 
-    public static PatientInventoryDto initPatientInventoryTable(HttpServletRequest request) {
-        PatientInventoryDto patientInventoryDto = new PatientInventoryDto();
-        ParamUtil.setRequestAttr(request, "patientInventoryDto", patientInventoryDto);
-        return patientInventoryDto;
+    public static PatientInventoryDto getCurrentPatientInventory(HttpServletRequest request) {
+        return getCurrentArDataSubmission(request).getPatientInventoryDto();
     }
 
     public static String getLicenseeEmailAddrs(HttpServletRequest request) {
