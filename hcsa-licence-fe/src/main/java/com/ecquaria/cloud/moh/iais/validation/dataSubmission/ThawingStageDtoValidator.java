@@ -1,9 +1,13 @@
 package com.ecquaria.cloud.moh.iais.validation.dataSubmission;
 
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInventoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ThawingStageDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.common.validation.CommonValidator;
 import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidator;
+import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 
 import javax.servlet.http.HttpServletRequest;
@@ -65,25 +69,35 @@ public class ThawingStageDtoValidator implements CustomizeValidator {
                 errorMap.put("thawedOocytesSurvivedOtherNum", MessageUtil.getMessageDesc("GENERAL_ERR0002"));
             }
         }
-        //TODO base PatientInventory validate
-//        ArSuperDataSubmissionDto arSuperDataSubmissionDto = DataSubmissionHelper.getCurrentArDataSubmission(request);
-//        PatientInventoryDto patientInventoryDto = arSuperDataSubmissionDto.getPatientInventoryDto();
-//        if (patientInventoryDto != null) {
-//            if (thawingStageDto.getThawedOocytesNum() > patientInventoryDto.getCurrentFrozenOocytes()) {
-//                errorMap.put("thawedOocytesNum", "No. of Oocytes Thawed cannot be greater than total number of frozen oocytes tagged patient");
-//            }
-//            if (thawingStageDto.getThawedEmbryosNum() > patientInventoryDto.getCurrentFrozenEmbryos()) {
-//                errorMap.put("thawedEmbryosNum", "No. of Embryos Thawed cannot be greater than total number of frozen embryos tagged patient");
-//            }
-//        }
-//
-//        if ((thawingStageDto.getThawedOocytesSurvivedMatureNum() + thawingStageDto.getThawedOocytesSurvivedImmatureNum()
-//                + thawingStageDto.getThawedOocytesSurvivedOtherNum()) > thawingStageDto.getThawedOocytesNum()) {
-//            errorMap.put("thawedOocytesNum", "Total sum of Thawing (Mature),Thawing (Immature),Thawing (Others) cannot be greater than No. Thawed");
-//        }
-//        if (thawingStageDto.getThawedEmbryosSurvivedNum() > thawingStageDto.getThawedEmbryosNum()) {
-//            errorMap.put("thawedEmbryosNum", "Survived Thawing cannot be greater than No. Embryo");
-//        }
+        ArSuperDataSubmissionDto arSuperDataSubmissionDto = DataSubmissionHelper.getCurrentArDataSubmission(request);
+        PatientInventoryDto patientInventoryDto = arSuperDataSubmissionDto.getPatientInventoryDto();
+
+        int thawedOocytesNumInt = toInt(thawingStageDto.getThawedOocytesNum());
+        int hawedEmbryosNumInt = toInt(thawingStageDto.getThawedEmbryosNum());
+        int thawedOocytesSurvivedMatureNumInt = toInt(thawingStageDto.getThawedOocytesSurvivedMatureNum());
+        int thawedOocytesSurvivedImmatureNumInt = toInt(thawingStageDto.getThawedOocytesSurvivedImmatureNum());
+        int thawedOocytesSurvivedOtherNumInt = toInt(thawingStageDto.getThawedOocytesSurvivedOtherNum());
+        int thawedEmbryosSurvivedNumInt = toInt(thawingStageDto.getThawedEmbryosSurvivedNum());
+        if (patientInventoryDto != null) {
+            if (thawedOocytesNumInt > patientInventoryDto.getCurrentFrozenOocytes()) {
+                errorMap.put("thawedOocytesNum", "No. of Oocytes Thawed cannot be greater than total number of frozen oocytes tagged patient");
+            }
+            if (hawedEmbryosNumInt > patientInventoryDto.getCurrentFrozenEmbryos()) {
+                errorMap.put("thawedEmbryosNum", "No. of Embryos Thawed cannot be greater than total number of frozen embryos tagged patient");
+            }
+        }
+
+        if ((thawedOocytesSurvivedMatureNumInt + thawedOocytesSurvivedImmatureNumInt
+                + thawedOocytesSurvivedOtherNumInt) > thawedOocytesNumInt) {
+            errorMap.put("thawedOocytesNum", "Total sum of Thawing (Mature),Thawing (Immature),Thawing (Others) cannot be greater than No. Thawed");
+        }
+        if (thawedEmbryosSurvivedNumInt > hawedEmbryosNumInt) {
+            errorMap.put("thawedEmbryosNum", "Survived Thawing cannot be greater than No. Embryo");
+        }
         return errorMap;
+    }
+
+    private int toInt(String str){
+        return StringUtil.isNotEmpty(str) && CommonValidator.isPositiveInteger(str)?Integer.parseInt(str):0;
     }
 }
