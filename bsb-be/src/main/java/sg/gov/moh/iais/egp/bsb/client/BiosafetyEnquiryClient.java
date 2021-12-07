@@ -29,9 +29,6 @@ public interface BiosafetyEnquiryClient {
     @GetMapping(path = "/fac_info/orgName")
     FeignResponseEntity<List<String>> queryDistinctOrgName();
 
-    @GetMapping(path = "/fac_info/approval")
-    FeignResponseEntity<List<String>> queryDistinctApproval();
-
     @GetMapping(path = "/app_info/{applicationNo}")
     ResponseDto<ApplicationResultDto> queryApplicationByAppNo(@PathVariable(name = "applicationNo") String applicationNo);
 
