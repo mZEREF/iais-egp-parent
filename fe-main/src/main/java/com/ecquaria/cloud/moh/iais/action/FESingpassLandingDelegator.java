@@ -14,6 +14,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.constant.UserConstants;
+import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.dto.OidcSpAuthResponDto;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.FeLoginHelper;
@@ -23,6 +24,8 @@ import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.model.MyinfoUtil;
 import com.ecquaria.cloud.moh.iais.service.OrgUserManageService;
 import com.ecquaria.cloud.moh.iais.validation.SoloEditValidator;
+import com.ecquaria.cloud.usersession.UserSession;
+import com.ecquaria.cloud.usersession.UserSessionUtil;
 import com.ecquaria.cloudfeign.FeignException;
 import com.ncs.secureconnect.sim.common.LoginInfo;
 import com.ncs.secureconnect.sim.lite.SIMUtil;
@@ -41,6 +44,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
+import sop.webflow.process5.ProcessCacheHelper;
 import sop.webflow.rt.api.BaseProcessClass;
 
 @Delegator(value = "singpassLandingDelegator")
@@ -78,6 +82,19 @@ public class FESingpassLandingDelegator {
      * @throws
      */
     public void singpassCallBack(BaseProcessClass bpc){
+        //Check user login status
+        ParamUtil.setSessionAttr(bpc.request, IaisEGPConstant.SESSION_ENTRANCE, null);
+        LoginContext lc = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
+        String sessionId = UserSessionUtil.getLoginSessionID(bpc.request.getSession());
+        UserSession us = ProcessCacheHelper.getUserSessionFromCache(sessionId);
+        if (us != null && lc != null && "Active".equals(us.getStatus())
+                && AppConsts.DOMAIN_INTERNET.equalsIgnoreCase(lc.getUserDomain())){
+            StringBuilder url = new StringBuilder();
+            url.append("https://").append(bpc.request.getServerName())
+                    .append("/main-web/eservice/INTERNET/MohInternetInbox");
+            IaisEGPHelper.sendRedirect(bpc.request, bpc.response, url.toString());
+        }
+
         HttpServletRequest request = bpc.request;
         String ssoLoginFlag = (String) request.getAttribute("ssoLoginFlag");
         log.info(StringUtil.changeForLog("SingPass Login service [singpassCallBack] START ...."));
