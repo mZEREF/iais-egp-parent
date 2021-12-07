@@ -3046,6 +3046,7 @@ public class NewApplicationDelegator {
         List<String> licenceIds = appSubmissionDtoList.parallelStream()
                 .map(dto -> dto.getLicenceId())
                 .collect(Collectors.toList());
+
         appSubmissionService.updateDrafts(NewApplicationHelper.getLicenseeId(bpc.request), licenceIds, draftNo);
         ParamUtil.setSessionAttr(bpc.request,APPSUBMISSIONDTO,appSubmissionDto);
         ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "payment");

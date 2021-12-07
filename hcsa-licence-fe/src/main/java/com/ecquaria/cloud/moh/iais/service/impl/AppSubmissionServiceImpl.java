@@ -1254,7 +1254,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
             return;
         }
         CompletableFuture.runAsync(() ->applicationFeClient.updateDrafts(licenseeId, licenceIds, excludeDraftNo));
-    }
+
 
     @Override
     public String getDraftNo(String appType) {
