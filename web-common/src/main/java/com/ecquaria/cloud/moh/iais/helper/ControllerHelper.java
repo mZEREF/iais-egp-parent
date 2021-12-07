@@ -8,7 +8,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.ReflectionUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.ArrayUtils;
-import org.apache.log4j.Logger;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import javax.servlet.http.HttpServletRequest;
 import java.lang.reflect.Field;
@@ -119,7 +119,11 @@ public final class ControllerHelper {
             return true;
         }
 
-        return request.getParameterMap() == null ? false : request.getParameterMap().keySet().contains(name);
+        return isFieldExist((MultipartHttpServletRequest)request.getAttribute("sop6.multipart.req"),name) || isFieldExist(request,name);
+    }
+
+    private static boolean isFieldExist(HttpServletRequest request,String name){
+        return request != null && request.getParameterMap() != null && request.getParameterMap().keySet().contains(name);
     }
 
     private static Object getValue(HttpServletRequest request, String shortName, String id, Field field) {

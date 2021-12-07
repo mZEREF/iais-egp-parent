@@ -61,22 +61,20 @@
                         <iais:row>
                             <iais:field value="Name" width="12" required="true"/>
                             <iais:value width="12">
-                                <iais:input type="text" name="name" id="name" maxLength="66" value="${inter_user_attr.displayName}"/>
-                                <span class="error-msg" name="errorMsg" id="error_displayName"></span>
+                                <iais:input type="text" name="name" maxLength="66" value="${inter_user_attr.displayName}"/>
                             </iais:value>
                         </iais:row>
                         <iais:row>
                             <iais:field value="Salutation" width="12" required="true"/>
                             <iais:value width="12">
-                                <iais:select cssClass="Salutation" name="salutation" id="salutation" value="${inter_user_attr.salutation}"
+                                <iais:select cssClass="Salutation" name="salutation" value="${inter_user_attr.salutation}"
                                              codeCategory="CATE_ID_SALUTATION"  firstOption="Please Select" />
-                                <span class="error-msg" name="errorMsg" id="error_salutation"></span>
                             </iais:value>
                         </iais:row>
                         <iais:row cssClass="solo">
                             <iais:field value="ID Type" width="12" required="true"/>
                             <iais:value width="12">
-                                <iais:select name="idType" id="idType" value="${inter_user_attr.idType}"
+                                <iais:select name="idType"  value="${inter_user_attr.idType}"
                                              codeCategory="CATE_ID_ID_TYPE" firstOption="Please Select"/>
                                 <span class="error-msg" name="errorMsg" id="error_idType"></span>
                             </iais:value>
@@ -101,8 +99,7 @@
                         <iais:row>
                             <iais:field value="Mobile No" width="12" required="true"/>
                             <iais:value width="12">
-                                <iais:input type="text" name="mobileNo" id="mobileNo" maxLength="8" value="${inter_user_attr.mobileNo}" />
-                                <span class="error-msg" name="errorMsg" id="error_mobileNo"></span>
+                                <iais:input type="text" name="mobileNo"  maxLength="8" value="${inter_user_attr.mobileNo}" />
                             </iais:value>
                         </iais:row>
                         <iais:row>
@@ -220,7 +217,7 @@
                     $('.oneClearRoleCheckbox').remove();
                     clearCheckBoxArea();
                     var s = '';
-                  for(var i in data){
+                  for(let i =0 ; i< data.length; i++){
                     s += '<div class="form-check col-xs-7 ';
                     if(data[i].value =='ORG_USER'){
                         s+= ' oneClearRoleCheckbox" >'

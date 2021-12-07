@@ -354,8 +354,8 @@ public class FeUserManagement {
 
     @RequestMapping(value = "/checkUenAndRoleData", method = RequestMethod.POST)
     @ResponseBody
-    public String checkUenAndRoleData(HttpServletRequest request){
-        return JsonUtil.parseToJson(checkUenAndRoleSelectOptions(ParamUtil.getString(request,"uenNo")));
+    public List<SelectOption> checkUenAndRoleData(HttpServletRequest request){
+        return checkUenAndRoleSelectOptions(ParamUtil.getString(request,"uenNo"));
     }
 
     public   List<SelectOption> checkUenAndRoleSelectOptions(String uenNo){
