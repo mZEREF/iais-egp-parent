@@ -111,9 +111,7 @@
                                                                             <iais:field value="DO Remarks" required="false"/>
                                                                             <iais:value width="10">
                                                                                 <p>
-                                                                                    <c:forEach var="miscs"
-                                                                                               items="${applicationMiscList}"
-                                                                                               varStatus="status">
+                                                                                    <c:forEach var="miscs" items="${applicationMiscList}" varStatus="status">
                                                                                         <c:if test="${miscs.remarks eq null or miscs.remarks eq ''}"></c:if>
                                                                                         <c:if test="${miscs.remarks != null and miscs.remarks != ''}">
                                                                                             <c:choose>

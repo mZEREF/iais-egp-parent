@@ -77,45 +77,41 @@
                                                     <div class="row">
                                                         <div class="col-xs-12">
                                                             <div class="table-gp">
-                                                                <div>
-                                                                    <iais:row>
-                                                                        <iais:field value="Reason for Revocation" required="true" width="12"/>
-                                                                        <iais:value width="10">
-                                                                            <div class="input-group">
-                                                                                <div class="ax_default text_area">
-                                                                                        <textarea id="reason"
-                                                                                                  name="reason"
-                                                                                                  cols="70"
-                                                                                                  rows="7"
-                                                                                                  maxlength="500"></textarea>
-                                                                                    <span data-err-ind="reason"
-                                                                                          id="error_reason"
-                                                                                          name="iaisErrorMsg"
-                                                                                          class="error-msg"></span>
-                                                                                </div>
-                                                                            </div>
-                                                                        </iais:value>
-                                                                    </iais:row>
-                                                                </div>
-                                                                <div>
-                                                                    <iais:row>
-                                                                        <iais:field value="Remarks" required="false" width="12"/>
-                                                                        <iais:value width="10">
-                                                                            <div class="input-group">
-                                                                                <div class="ax_default text_area">
-                                                                                        <textarea id="remark"
-                                                                                                  name="DORemarks"
-                                                                                                  cols="70"
-                                                                                                  rows="7"
-                                                                                                  maxlength="500"></textarea>
-                                                                                </div>
-                                                                            </div>
-                                                                        </iais:value>
-                                                                    </iais:row>
-                                                                </div>
-                                                                <a class="back" href="/bsb-be/eservice/INTRANET/FacilityList"><em class="fa fa-angle-left"></em>Back</a>
+                                                                <iais:section title="">
+                                                                    <div>
+                                                                        <iais:row>
+                                                                            <iais:field value="Reason for Revocation" required="true" width="12"/>
+                                                                            <iais:value width="10">
+                                                                                <textarea id="reason"
+                                                                                          name="reason"
+                                                                                          cols="70"
+                                                                                          rows="7"
+                                                                                          maxlength="500"></textarea>
+                                                                                <span data-err-ind="reasonContent" class="error-msg"></span>
+                                                                            </iais:value>
+                                                                        </iais:row>
+                                                                    </div>
+                                                                    <div>
+                                                                        <iais:row>
+                                                                            <iais:field value="Remarks" required="false" width="12"/>
+                                                                            <iais:value width="10">
+                                                                                <textarea id="remark"
+                                                                                          name="DORemarks"
+                                                                                          cols="70"
+                                                                                          rows="7"
+                                                                                          maxlength="500"></textarea>
+                                                                            </iais:value>
+                                                                        </iais:row>
+                                                                    </div>
+                                                                </iais:section>
+                                                                <c:if test="${back eq 'revocationFacility'}">
+                                                                    <a class="back" href="/bsb-be/eservice/INTRANET/FacilityList"><em class="fa fa-angle-left"></em>Back</a>
+                                                                </c:if>
+                                                                <c:if test="${back eq 'revocationTaskList'}">
+                                                                    <a class="back" href="/bsb-be/eservice/INTRANET/MohBsbTaskList"><em class="fa fa-angle-left"></em>Back</a>
+                                                                </c:if>
                                                                 <div align="right">
-                                                                    <button name="submitBtn1" id="submitButton1" type="button" class="btn btn-primary">Submit</button>
+                                                                    <button name="nextBtn" id="nextBtn" type="button" class="btn btn-primary">Submit</button>
                                                                 </div>
                                                             </div>
                                                         </div>

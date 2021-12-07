@@ -7,6 +7,7 @@ import org.springframework.cloud.openfeign.SpringQueryMap;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
+import sg.gov.moh.iais.egp.bsb.dto.ValidationResultDto;
 import sg.gov.moh.iais.egp.bsb.dto.revocation.*;
 import sg.gov.moh.iais.egp.bsb.entity.*;
 
@@ -16,7 +17,7 @@ import java.util.List;
  *author: Zhu Tangtang
  */
 
-@FeignClient(name = "bsb-be-api", configuration = FeignConfiguration.class)
+@FeignClient(name = "bsb-be-api", configuration = FeignConfiguration.class, contextId = "revoke")
 public interface RevocationClient {
 
     @GetMapping(path = "/bsb-application/{id}")
@@ -39,4 +40,13 @@ public interface RevocationClient {
 
     @GetMapping(value = "/bsb-application/getApprovalById/{id}")
     FeignResponseEntity<Approval> getApprovalById(@PathVariable(name = "id") String id);
+
+    @GetMapping(value = "/bsb-application/getApprovalById/approvalId")
+    FeignResponseEntity<SubmitRevokeDto> getSubmitRevokeDtoByApprovalId(@RequestParam("approvalId") String id);
+
+    @GetMapping(value = "/bsb-application/getApprovalById/applicationId")
+    FeignResponseEntity<SubmitRevokeDto> getSubmitRevokeDtoByAppId(@RequestParam("applicationId") String id);
+
+    @PostMapping(path = "/bsb-application/validate/revoke", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    ValidationResultDto validateRevoke(@RequestBody SubmitRevokeDto dto);
 }

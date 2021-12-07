@@ -47,21 +47,9 @@ $(function () {
         $('#remark').val("");
     });
 
-    $("#submitButton1").click(function () {
-        var reasonValue = $("#reason").val();
-        var isUpload = $("#have").val();
-        if (reasonValue == "" || reasonValue == null) {
-            $("#error_reason").html("Please enter the reason");
-        }else{
-            // if (isUpload!=null) {
-                $("#error_reason").html("");
-                showWaiting();
-                $("[name='action_type']").val("doSubmit");
-                $("#mainForm").submit();
-            // }else {
-            //     alert("Please upload file");
-            // }
-        }
+    $("#nextBtn").click(function () {
+        showWaiting();
+        $("#mainForm").submit();
     });
 
     // revocationList
@@ -107,28 +95,29 @@ $(function () {
         $("#mainForm").submit();
     });
 
+    $("#submitRevoke").click(function (){
+        showWaiting();
+        $("[name='action_type']").val("doSubmit");
+        $("#mainForm").submit();
+    });
+
     //AO process revocation application
     $("#submitButton").click(function () {
         var optionValue = $("#decision option:selected").val();
+        showWaiting();
         if (optionValue == "BSBAOPD001") {
-            showWaiting();
-            SOP.Crud.cfxSubmit("mainForm", "approve");
+            $("[name='action_type']").val("approve");
         }
         if (optionValue == "BSBAOPD002") {
-            showWaiting();
-            SOP.Crud.cfxSubmit("mainForm", "reject");
+            $("[name='action_type']").val("reject");
         }
         if (optionValue == "BSBAOPD003") {
-            showWaiting();
-            SOP.Crud.cfxSubmit("mainForm", "routeBack");
+            $("[name='action_type']").val("routeBack");
         }
         if (optionValue == "BSBAOPD004") {
-            showWaiting();
-            SOP.Crud.cfxSubmit("mainForm", "submit");
+            $("[name='action_type']").val("submit");
         }
-        if (optionValue == "Please Select" || optionValue == "") {
-            $("#error_decision").html("Please select valid options!");
-        }
+        $("#mainForm").submit();
     });
 
     //back

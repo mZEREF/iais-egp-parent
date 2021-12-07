@@ -42,6 +42,10 @@ public class AORevocationDelegator {
         ParamUtil.setSessionAttr(request, RevocationConstants.PARAM_REVOCATION_DETAIL, null);
     }
 
+    public void preConfirm(BaseProcessClass bpc) {
+        HttpServletRequest request = bpc.request;
+    }
+
     public void prepareData(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         ParamUtil.setSessionAttr(request, RevocationConstants.PARAM_APPLICATION, null);
