@@ -40,12 +40,17 @@
         </iais:row>
         <hr>
     </c:if>
+    <c:if test="${canEdit}">
+        <label>If your licensee remains the same, please confirm the licensee information below and update any changes if necessary</label>
+        <br><br>
+    </c:if>
     <c:if test="${dto.licenseeType ne soloType}">
         <c:if test="${isNew}">
             <iais:row cssClass="assignSelectRow">
                 <iais:field width="5" value="Add/Assign a licensee" cssClass="assignSelectLabel"/>
                 <iais:value width="7" cssClass="col-md-7">
-                    <iais:select name="assignSelect" options="LICENSEE_OPTIONS" value="${dto.assignSelect}" cssClass="assignSel"/>
+                    <iais:select name="assignSelect" options="LICENSEE_OPTIONS" value="${dto.assignSelect}"
+                                 cssClass="assignSel"/>
                 </iais:value>
             </iais:row>
         </c:if>

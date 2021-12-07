@@ -1253,8 +1253,8 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
         if (StringUtil.isEmpty(licenseeId) || IaisCommonUtils.isEmpty(licenceIds) || StringUtil.isEmpty(excludeDraftNo)) {
             return;
         }
-        CompletableFuture.runAsync(() ->applicationFeClient.updateDrafts(licenseeId, licenceIds, excludeDraftNo));
-
+        CompletableFuture.runAsync(() -> applicationFeClient.updateDrafts(licenseeId, licenceIds, excludeDraftNo));
+    }
 
     @Override
     public String getDraftNo(String appType) {
