@@ -137,10 +137,10 @@
                         </iais:row>
                         <iais:row>
                             <iais:field value="Assign Role" width="5" required="true" id="assignRoleTitle" />
-                            <c:forEach var="role" items="${SESSION_NAME_ROLES}" varStatus="status">
+                            <c:forEach var="role" items="${SESSION_NAME_ROLES}" >
                                 <c:set var="value" value="${role.value}"/>
                                 <c:set var="roles" value="${inter_user_attr.roles}"/>
-                                <div class="form-check col-xs-7  ${status.index == 0 ? 'oneClearRoleCheckbox' : 'clearRoleCheckbox'}">
+                                <div class="form-check col-xs-7  ${value eq RoleConsts.USER_ROLE_ORG_USER ? 'oneClearRoleCheckbox' : 'clearRoleCheckbox'}">
                                     <input class="form-check-input" type="checkbox"
                                            name="roles"
                                            value="${value}"
@@ -222,7 +222,7 @@
                     var s = '';
                   for(var i in data){
                     s += '<div class="form-check col-xs-7 ';
-                    if(i ==0){
+                    if(data[i].value =='ORG_USER'){
                         s+= ' oneClearRoleCheckbox" >'
                     }else {
                         s+= ' clearRoleCheckbox" > ';
