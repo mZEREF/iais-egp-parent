@@ -536,7 +536,7 @@ public class ArDataSubmissionServiceImpl implements ArDataSubmissionService {
 
     @Override
     public List<DonorDto> getAllDonorDtoByCycleId(String cycleId) {
-        if (StringUtil.isEmpty(cycleId) || StringUtil.isEmpty(cycleId)){
+        if (StringUtil.isEmpty(cycleId)){
             log.info(StringUtil.changeForLog("------ No cycle Id -----"));
             return IaisCommonUtils.genNewArrayList(0);
         }
