@@ -16,7 +16,7 @@
                         <iais:field value="Application No."/>
                         <div class="col-sm-7 col-md-4 col-xs-10">
 
-                            <input type="text" maxlength="20" style=" font-weight:normal;" name="application_no" value="${SearchParam.filters['appNo']}" />
+                            <input type="text" maxlength="20" style=" font-weight:normal;" class="application_no" name="application_no" value="${SearchParam.filters['appNo']}" />
 
                         </div>
                     </iais:row>
@@ -24,7 +24,7 @@
                         <iais:field value="Application Type"/>
                         <div class="col-sm-7 col-md-4 col-xs-10">
                             <div id="application_type">
-                                <iais:select name="application_type" options="appTypeOption" firstOption="Please Select" value="${SearchParam.filters['appType']}" ></iais:select>
+                                <iais:select name="application_type" cssClass="application_type" options="appTypeOption" firstOption="Please Select" value="${SearchParam.filters['appType']}" ></iais:select>
                             </div>
                         </div >
                     </iais:row>
@@ -32,7 +32,7 @@
                         <iais:field value="Application Status"/>
                         <div class="col-sm-7 col-md-4 col-xs-10">
                             <div id="application_status">
-                                <iais:select name="application_status" options="appStatusOption" firstOption="Please Select" value="${SearchParam.filters['appStatus']}" ></iais:select>
+                                <iais:select name="application_status" cssClass="application_status" options="appStatusOption" firstOption="Please Select" value="${SearchParam.filters['appStatus']}" ></iais:select>
                             </div>
                         </div >
                     </iais:row>
@@ -54,7 +54,7 @@
                         <iais:field value="Licence No."/>
                         <div class="col-sm-7 col-md-4 col-xs-10">
 
-                            <input type="text" maxlength="24" style=" font-weight:normal;" name="licence_no" value="${SearchParam.filters['licence_no']}" />
+                            <input type="text" maxlength="24" style=" font-weight:normal;" name="licence_no" class="licence_no" value="${SearchParam.filters['licence_no']}" />
 
                         </div >
                     </iais:row>
