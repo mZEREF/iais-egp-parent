@@ -2,12 +2,10 @@ package com.ecquaria.cloud.moh.iais.action.datasubmission;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
-import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.CycleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DonorSampleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
-import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant;
@@ -15,7 +13,6 @@ import com.ecquaria.cloud.moh.iais.helper.ControllerHelper;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import java.io.Serializable;
-import java.util.List;
 import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import sop.webflow.rt.api.BaseProcessClass;
@@ -33,7 +30,7 @@ public class SubmitDonorDelegator extends CommonDelegator {
 
     @Override
     public void prepareSwitch(BaseProcessClass bpc) {
-        ParamUtil.setSessionAttr(bpc.request, SAMPLE_FROM_HCICODE,(Serializable) getSampleFromHciCode());
+        ParamUtil.setSessionAttr(bpc.request, SAMPLE_FROM_HCICODE,(Serializable) getSourseList(bpc.request));
         String stage = MasterCodeUtil.getCodeDesc(DataSubmissionConsts.DS_CYCLE_STAGE_DONOR_SAMPLE);
         ParamUtil.setRequestAttr(bpc.request, "smallTitle", "You are submitting for <strong>" + stage + "</strong>");
     }
@@ -67,12 +64,6 @@ public class SubmitDonorDelegator extends CommonDelegator {
         log.info(StringUtil.changeForLog("submitDonorDelegator The pageAction end ..."));
     }
 
-    //TODO from ar center
-    private List<SelectOption> getSampleFromHciCode(){
-        List<SelectOption> selectOptions  = IaisCommonUtils.genNewArrayList();
-        selectOptions.add(new SelectOption("others","Others"));
-        return selectOptions;
-    }
     private CycleDto initCycleDto(ArSuperDataSubmissionDto currentArDataSubmission) {
         CycleDto cycleDto = currentArDataSubmission.getCycleDto();
         if (cycleDto == null) {
