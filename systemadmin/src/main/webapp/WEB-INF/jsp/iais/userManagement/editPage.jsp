@@ -217,7 +217,7 @@
                 "${pageContext.request.contextPath}/checkUenAndRoleData",
                 data,
                 function (data) {
-                    $('.oneClearRoleCheckbox').empty();
+                    $('.oneClearRoleCheckbox').remove();
                     clearCheckBoxArea();
                     var s = '';
                   for(var i in data){
@@ -241,7 +241,7 @@
                     s+= data[i].text;
                     s+='</label>';
                   }
-                    $('#assignRoleTitle').append(s);
+                    $('#assignRoleTitle').after(s);
                    dismissWaiting();
                 }
             )
@@ -249,7 +249,7 @@
     }
 
     function clearCheckBoxArea(){
-        $('.clearRoleCheckbox').empty();
+        $('.clearRoleCheckbox').remove();
     }
 
 
