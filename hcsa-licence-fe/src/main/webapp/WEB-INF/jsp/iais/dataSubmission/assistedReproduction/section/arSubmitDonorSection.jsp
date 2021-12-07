@@ -122,7 +122,7 @@
                             <iais:row>
                             <iais:field width="5" value="Name of Bank / AR Centre where Sample is from" mandatory="true"/>
                             <iais:value width="7" cssClass="col-md-7">
-                                <iais:select name="sampleFromHciCode" id ="sampleFromHciCode"  options="SampleFromHciCode" firstOption="Please Select"  value="${donorSampleDto.sampleFromHciCode}"
+                                <iais:select name="sampleFromHciCode" id ="sampleFromHciCode"  options="SampleFromHciCode"   value="${donorSampleDto.sampleFromHciCode}"
                                              cssClass="sampleFromOthers"/>
                             </iais:value>
                             </iais:row>
@@ -252,7 +252,7 @@
     }
 
     function arCentreChange(){
-        if($("#sampleFromHciCode").val().ecq(<%=DataSubmissionConsts.AR_SOURCE_OTHER%>)){
+        if($("#sampleFromHciCode").val()== 'AR_SC_001'){
             $("#sampleFromOthers").show();
         }else{
             $("#sampleFromOthers").hide();

@@ -58,7 +58,7 @@
                     </iais:row>
                     <div id="donorSampleCodeRow" style="${donorSampleDto.donorIdentityKnown =='DIK001' ? 'display: none;' : ''}">
                         <iais:row   >
-                            <iais:field width="5" value="Donor Sample Code / ID" mandatory="true"/>
+                            <iais:field width="5" value="Donor Sample Code" mandatory="true"/>
                             <iais:value width="7" cssClass="col-md-7">
                                 <c:out value="${donorSampleDto.donorSampleCode}"/>
                             </iais:value>

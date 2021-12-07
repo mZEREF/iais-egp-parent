@@ -78,12 +78,12 @@ public class DonorSampleDtoValidator implements CustomizeValidator {
             String donorIdentityKnown = donorSampleDto.getDonorIdentityKnown();
             if(DataSubmissionConsts.DONOR_IDENTITY_KNOWN.equals(donorIdentityKnown)){
                 donorIdentityKnownResult = WebValidationHelper.validateProperty(donorSampleDto, "donorIdentityKnown");
+            }else{
+                donorIdentityKnownResult = WebValidationHelper.validateProperty(donorSampleDto, "donorIdentityAnonymous");
                 String sampleFromHciCode = donorSampleDto.getSampleFromHciCode();
                 if(DataSubmissionConsts.AR_SOURCE_OTHER.equals(sampleFromHciCode)){
                     sampleFromOthersResult = WebValidationHelper.validateProperty(donorSampleDto, "sampleFromOthers");
                 }
-            }else{
-                donorIdentityKnownResult = WebValidationHelper.validateProperty(donorSampleDto, "donorIdentityAnonymous");
             }
         }
         if (result != null) {
