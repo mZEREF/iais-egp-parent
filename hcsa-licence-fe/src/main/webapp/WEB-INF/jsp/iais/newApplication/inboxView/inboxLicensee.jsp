@@ -32,7 +32,6 @@
                         </iais:value>
                     </iais:row>
                 </c:if>
-
                 <c:if test="${subLicenseeDto.licenseeType ne soloType}">
                     <iais:row>
                         <iais:field width="5" value="Licensee Type"/>
