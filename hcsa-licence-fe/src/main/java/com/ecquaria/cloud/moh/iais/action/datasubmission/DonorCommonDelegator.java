@@ -27,7 +27,6 @@ import java.util.Map;
 public abstract class DonorCommonDelegator extends CommonDelegator{
     private final static String  CRUD_ACTION_VALUE_AR_STAGE      = "crud_action_value_ar_stage";
     private final static String  CRUD_ACTION_VALUE_VALIATE_DONOR = "crud_action_value_valiate_donor";
-    protected final static String  DONOR_SOURSE_OTHERS             = "Others";
     protected final static String  DONOR_SAMPLE_DROP_DOWN          = "donorSampleDropDown";
     protected final static String  DONOR_SOURSE_DROP_DOWN          = "donorSourseDropDown";
 
@@ -220,12 +219,7 @@ public abstract class DonorCommonDelegator extends CommonDelegator{
         }
     }
 
-    //TODO from ar center
-    protected List<SelectOption> getSourseList(HttpServletRequest request){
-        List<SelectOption> selectOptions  = DataSubmissionHelper.genPremisesOptions((Map<String, PremisesDto>) ParamUtil.getSessionAttr(request, DataSubmissionConstant.AR_PREMISES_MAP));
-        selectOptions.add(new SelectOption(DataSubmissionConsts.AR_SOURCE_OTHER,DONOR_SOURSE_OTHERS));
-        return selectOptions;
-    }
+
 
     protected List<SelectOption> getSampleDropDown(){
         List<SelectOption> selectOptions  = IaisCommonUtils.genNewArrayList(4);

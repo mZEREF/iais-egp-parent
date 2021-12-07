@@ -3,7 +3,9 @@ package com.ecquaria.cloud.moh.iais.action.datasubmission;
 import com.ecquaria.cloud.RedirectUtil;
 import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst;
+import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.*;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -36,7 +38,7 @@ public abstract class CommonDelegator {
     protected static final String ACTION_TYPE_CONFIRM = "confirm";
     protected static final String ACTION_TYPE_DRAFT = "draft";
     protected static final String ACTION_TYPE_SUBMISSION = "submission";
-
+    protected final static String  DONOR_SOURSE_OTHERS    = "Others";
     @Autowired
     private ArDataSubmissionService arDataSubmissionService;
 
@@ -418,6 +420,13 @@ public abstract class CommonDelegator {
 
     private boolean needValidate(HttpServletRequest request, String... actionType) {
         return StringUtil.isIn(ParamUtil.getString(request, DataSubmissionConstant.CRUD_TYPE), actionType);
+    }
+
+    //TODO from ar center
+    protected final List<SelectOption> getSourseList(HttpServletRequest request){
+        List<SelectOption> selectOptions  = DataSubmissionHelper.genPremisesOptions((Map<String, PremisesDto>) ParamUtil.getSessionAttr(request, DataSubmissionConstant.AR_PREMISES_MAP));
+        selectOptions.add(new SelectOption(DataSubmissionConsts.AR_SOURCE_OTHER,DONOR_SOURSE_OTHERS));
+        return selectOptions;
     }
 
 }

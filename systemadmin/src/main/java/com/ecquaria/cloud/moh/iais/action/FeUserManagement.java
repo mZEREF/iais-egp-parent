@@ -34,10 +34,8 @@ import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import sop.webflow.rt.api.BaseProcessClass;
 
@@ -354,10 +352,10 @@ public class FeUserManagement {
         return searchParam;
     }
 
-    @RequestMapping(value = "/checkUenAndRoleData",consumes = MediaType.APPLICATION_JSON_VALUE, method = RequestMethod.POST)
+    @RequestMapping(value = "/checkUenAndRoleData", method = RequestMethod.POST)
     @ResponseBody
-    public String checkUenAndRoleData(@RequestParam("uenNo")String uenNo){
-        return JsonUtil.parseToJson(checkUenAndRoleSelectOptions(uenNo));
+    public String checkUenAndRoleData(HttpServletRequest request){
+        return JsonUtil.parseToJson(checkUenAndRoleSelectOptions(ParamUtil.getString(request,"uenNo")));
     }
 
     public   List<SelectOption> checkUenAndRoleSelectOptions(String uenNo){
