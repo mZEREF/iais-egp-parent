@@ -9,14 +9,14 @@
         <iais:row>
             <iais:field width="6" value="Baby ${displayNum} Birth Weight"
                         cssClass="col-md-6"/>
-            <iais:value width="5" cssClass="col-md-6">
+            <iais:value width="5" cssClass="col-md-6" display="true">
                 <iais:code code="${pregnancyOutcomeBabyDto.birthWeight}"/>
             </iais:value>
         </iais:row>
         <iais:row>
             <iais:field width="6" value="Baby ${displayNum} Birth Defect"
                         cssClass="col-md-6"/>
-            <iais:value width="5" cssClass="col-md-6">
+            <iais:value width="5" cssClass="col-md-6" display="true">
                 <c:out value="${pregnancyOutcomeBabyDto.birthDefect}"/>
             </iais:value>
         </iais:row>
@@ -42,7 +42,7 @@
                 <iais:row>
                     <iais:field width="6" value="Baby ${displayNum} Defect Type (Others)" mandatory="true"
                                 cssClass="col-md-6"/>
-                    <iais:value width="5" cssClass="col-md-6">
+                    <iais:value width="5" cssClass="col-md-6" display="true">
                         <c:out value="${otherDefectType}"/>
                     </iais:value>
                 </iais:row>
