@@ -2,12 +2,12 @@
     <div class="panel-heading">
         <h4 class="panel-title">
             <strong>
-                Outcome
+                Outcome of IUI Cycle
             </strong>
         </h4>
     </div>
     <div id="patientDetails" class="panel-collapse collapse in">
-        <div class="panel-body">
+        <div class="panel-body" style="padding-left: 50px">
             <div class="panel-main-content form-horizontal">
                 <c:set var="outcomeStageDto" value="${arSuperDataSubmissionDto.outcomeStageDto}" />
                 <h3>
