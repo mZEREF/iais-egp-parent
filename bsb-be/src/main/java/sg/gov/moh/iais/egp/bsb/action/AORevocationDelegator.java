@@ -9,15 +9,13 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.*;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
-import sg.gov.moh.iais.egp.bsb.client.DocClient;
 import sg.gov.moh.iais.egp.bsb.constant.RevocationConstants;
 import sg.gov.moh.iais.egp.bsb.constant.ValidationConstants;
-import sg.gov.moh.iais.egp.bsb.dto.audit.AuditDocDto;
+import sg.gov.moh.iais.egp.bsb.dto.file.DocRecordInfo;
+import sg.gov.moh.iais.egp.bsb.dto.file.PrimaryDocDto;
 import sg.gov.moh.iais.egp.bsb.dto.revocation.*;
 import sg.gov.moh.iais.egp.bsb.client.RevocationClient;
-import sg.gov.moh.iais.egp.bsb.entity.*;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
@@ -34,11 +32,9 @@ import static sg.gov.moh.iais.egp.bsb.constant.RevocationConstants.*;
 @Delegator(value = "AORevocationDelegator")
 public class AORevocationDelegator {
     private final RevocationClient revocationClient;
-    private final DocClient docClient;
 
-    public AORevocationDelegator(RevocationClient revocationClient, DocClient docClient) {
+    public AORevocationDelegator(RevocationClient revocationClient) {
         this.revocationClient = revocationClient;
-        this.docClient = docClient;
     }
 
     public void start(BaseProcessClass bpc) throws IllegalAccessException {
@@ -54,6 +50,7 @@ public class AORevocationDelegator {
         HttpServletRequest request = bpc.request;
         ParamUtil.setSessionAttr(request, BACK, null);
         ParamUtil.setSessionAttr(request, AUDIT_DOC_DTO, null);
+        ParamUtil.setSessionAttr(request, KEY_CAN_UPLOAD, "N");
 
         SubmitRevokeDto revokeDto = getRevokeDto(request);
         Boolean needShowError = (Boolean) ParamUtil.getRequestAttr(request, ValidationConstants.KEY_SHOW_ERROR_SWITCH);
@@ -77,17 +74,8 @@ public class AORevocationDelegator {
             }
             revokeDto = revocationClient.getSubmitRevokeDtoByAppId(appId).getEntity();
             revokeDto.setTaskId(taskId);
-            AuditDocDto auditDocDto = new AuditDocDto();
-            List<FacilityDoc> facilityDocList = docClient.getFacilityDocByFacId(revokeDto.getFacId()).getEntity();
-            if (!CollectionUtils.isEmpty(facilityDocList)) {
-                for (FacilityDoc facilityDoc : facilityDocList) {
-                    String submitByName = IaisEGPHelper.getCurrentAuditTrailDto().getMohUserId();
-                    facilityDoc.setSubmitByName(submitByName);
-                }
-            }
-            auditDocDto.setFacilityDocs(facilityDocList);
-            ParamUtil.setSessionAttr(request, AUDIT_DOC_DTO, auditDocDto);
         }
+        setRevocationDoc(request,revokeDto);
         ParamUtil.setSessionAttr(request, BACK, REVOCATION_TASK_LIST);
         ParamUtil.setSessionAttr(request, PARAM_REVOKE_DTO, revokeDto);
     }
@@ -169,6 +157,16 @@ public class AORevocationDelegator {
             ParamUtil.setRequestAttr(request, ValidationConstants.IS_VALID, ValidationConstants.NO);
             ParamUtil.setRequestAttr(request, ValidationConstants.KEY_SHOW_ERROR_SWITCH, Boolean.TRUE);
         }
+    }
+
+    public static void setRevocationDoc(HttpServletRequest request, SubmitRevokeDto revokeDto) {
+        PrimaryDocDto primaryDocDto = new PrimaryDocDto();
+        primaryDocDto.setSavedDocMap(sg.gov.moh.iais.egp.bsb.util.CollectionUtils.uniqueIndexMap(revokeDto.getDocRecordInfos(), DocRecordInfo::getRepoId));
+        Map<String, List<DocRecordInfo>> saveFiles = primaryDocDto.getExistDocTypeMap();
+        Set<String> docTypes = saveFiles.keySet();
+        ParamUtil.setRequestAttr(request, "docTypes", docTypes);
+        ParamUtil.setRequestAttr(request, "savedFiles", saveFiles);
+        ParamUtil.setSessionAttr(request, "primaryDocDto", primaryDocDto);
     }
 
 }

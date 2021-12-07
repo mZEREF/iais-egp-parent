@@ -10,23 +10,21 @@ import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 import sg.gov.moh.iais.egp.bsb.client.*;
 import sg.gov.moh.iais.egp.bsb.constant.RevocationConstants;
 import sg.gov.moh.iais.egp.bsb.constant.ValidationConstants;
 import sg.gov.moh.iais.egp.bsb.dto.PageInfo;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
-import sg.gov.moh.iais.egp.bsb.dto.audit.AuditDocDto;
 import sg.gov.moh.iais.egp.bsb.dto.enquiry.ApprovalResultDto;
 import sg.gov.moh.iais.egp.bsb.dto.enquiry.EnquiryDto;
 import sg.gov.moh.iais.egp.bsb.dto.revocation.SubmitRevokeDto;
-import sg.gov.moh.iais.egp.bsb.entity.*;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 
+import static sg.gov.moh.iais.egp.bsb.action.AORevocationDelegator.setRevocationDoc;
 import static sg.gov.moh.iais.egp.bsb.constant.AuditConstants.KEY_APP_ID;
 import static sg.gov.moh.iais.egp.bsb.constant.AuditConstants.KEY_TASK_ID;
 import static sg.gov.moh.iais.egp.bsb.constant.RevocationConstants.*;
@@ -39,12 +37,10 @@ import static sg.gov.moh.iais.egp.bsb.constant.RevocationConstants.*;
 public class DORevocationDelegator {
     private final RevocationClient revocationClient;
     private final BiosafetyEnquiryClient biosafetyEnquiryClient;
-    private final DocClient docClient;
 
-    public DORevocationDelegator(RevocationClient revocationClient, BiosafetyEnquiryClient biosafetyEnquiryClient, DocClient docClient) {
+    public DORevocationDelegator(RevocationClient revocationClient, BiosafetyEnquiryClient biosafetyEnquiryClient) {
         this.revocationClient = revocationClient;
         this.biosafetyEnquiryClient = biosafetyEnquiryClient;
-        this.docClient = docClient;
     }
 
     /**
@@ -160,7 +156,7 @@ public class DORevocationDelegator {
         HttpServletRequest request = bpc.request;
         ParamUtil.setSessionAttr(request, FLAG, null);
         ParamUtil.setSessionAttr(request, BACK, null);
-        ParamUtil.setSessionAttr(request, AUDIT_DOC_DTO, null);
+        ParamUtil.setSessionAttr(request, KEY_CAN_UPLOAD, "Y");
 
         String from = ParamUtil.getRequestString(request, FROM);
         SubmitRevokeDto revokeDto = getRevokeDto(request);
@@ -193,21 +189,11 @@ public class DORevocationDelegator {
                 }
                 revokeDto = revocationClient.getSubmitRevokeDtoByAppId(appId).getEntity();
                 revokeDto.setTaskId(taskId);
-                AuditDocDto auditDocDto = new AuditDocDto();
-                List<FacilityDoc> facilityDocList = docClient.getFacilityDocByFacId(revokeDto.getFacId()).getEntity();
-                if (!CollectionUtils.isEmpty(facilityDocList)) {
-                    for (FacilityDoc facilityDoc : facilityDocList) {
-                        String submitByName = IaisEGPHelper.getCurrentAuditTrailDto().getMohUserId();
-                        facilityDoc.setSubmitByName(submitByName);
-                    }
-                }
-                auditDocDto.setFacilityDocs(facilityDocList);
-
-                ParamUtil.setSessionAttr(request, AUDIT_DOC_DTO, auditDocDto);
                 ParamUtil.setSessionAttr(request, FLAG, APP);
                 ParamUtil.setSessionAttr(request, BACK, REVOCATION_TASK_LIST);
             }
         }
+        setRevocationDoc(request,revokeDto);
         ParamUtil.setSessionAttr(request, PARAM_REVOKE_DTO, revokeDto);
     }
 

@@ -1,1 +1,1 @@
-<%@include file="/WEB-INF/jsp/iais/selfAudit/AOConfirmSelfAudit.jsp"%>
+<%@include file="/WEB-INF/jsp/iais/selfAudit/aoConfirmPage.jsp"%>

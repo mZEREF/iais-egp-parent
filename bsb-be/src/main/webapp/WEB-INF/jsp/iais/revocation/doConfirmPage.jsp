@@ -135,6 +135,14 @@
                                                                         <div>
                                                                             <div class="form-group">
                                                                                 <div class="col-10"><strong>Internal</strong>
+                                                                                    <c:if test="${savedFiles ne null}">
+                                                                                        <c:forEach var="docTypes" items="${docTypes}">
+                                                                                            <c:forEach var="info" items="${savedFiles.get(docTypes)}">
+                                                                                                <c:set var="tmpId" value="${MaskUtil.maskValue('file', info.repoId)}"/>
+                                                                                                <p><a href="javascript:void(0)" onclick="downloadFile('saved', '${tmpId}')">${info.filename}</a> ${String.format("%.1f", info.size/1024.0)}KB</p>
+                                                                                            </c:forEach>
+                                                                                        </c:forEach>
+                                                                                    </c:if>
                                                                                 </div>
                                                                                 <div class="clear"></div>
                                                                             </div>

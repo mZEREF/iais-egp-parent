@@ -3,9 +3,11 @@ package sg.gov.moh.iais.egp.bsb.dto.revocation;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import sg.gov.moh.iais.egp.bsb.dto.ValidationResultDto;
+import sg.gov.moh.iais.egp.bsb.dto.file.DocRecordInfo;
 import sg.gov.moh.iais.egp.bsb.util.SpringReflectionUtils;
 
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.Date;
 
 /**
@@ -43,6 +45,7 @@ public class SubmitRevokeDto implements Serializable {
     private String loginUser;
     private String module;
     private String taskId;
+    private Collection<DocRecordInfo> docRecordInfos;
 
     @JsonIgnore
     private ValidationResultDto validationResultDto;

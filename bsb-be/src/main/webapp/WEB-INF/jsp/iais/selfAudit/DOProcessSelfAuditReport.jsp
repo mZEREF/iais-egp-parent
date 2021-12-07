@@ -64,7 +64,7 @@
                                                 <%@include file="../auditDt/facilityInfo.jsp" %>
                                             </div>
                                             <div class="tab-pane" id="tabDocuments" role="tabpanel">
-                                                <%@include file="../doDocument/tabDocuments.jsp" %>
+                                                <%@include file="../revocation/tabDocuments.jsp" %>
                                             </div>
                                             <div class="tab-pane" id="tabProcessing" role="tabpanel">
                                                 <span id="error_document" name="iaisErrorMsg" class="error-msg"></span>

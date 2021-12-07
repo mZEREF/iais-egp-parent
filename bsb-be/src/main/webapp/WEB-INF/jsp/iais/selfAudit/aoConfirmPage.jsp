@@ -5,23 +5,20 @@
 <%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
 <%@ taglib prefix="iais-bsb" uri="http://www.ecq.com/iais-bsb" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ page import="java.lang.String" %>
-<%@ page import="com.ecquaria.cloud.moh.iais.common.utils.MaskUtil" %>
-
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%
     sop.webflow.rt.api.BaseProcessClass process =
             (sop.webflow.rt.api.BaseProcessClass) request.getAttribute("process");
 %>
-
 <webui:setLayout name="iais-intranet"/>
-<script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-revocation.js"></script>
+<script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-audit.js"></script>
 <div class="dashboard">
     <form method="post" id="mainForm" action="<%=process.runtime.continueURL()%>">
         <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
         <input type="hidden" name="action_type" value="">
         <input type="hidden" name="action_value" value="">
         <input type="hidden" name="action_additional" value="">
-        <input type="hidden" id="aoDecision" value="${revokeDto.aoDecision}">
+        <input type="hidden" name="decision" id="decision" value="${processData.aoDecision}">
         <div class="main-content">
             <div class="container">
                 <div class="row">
@@ -48,52 +45,46 @@
                                                                             <div class="clear"></div>
                                                                         </div>
                                                                         <div>
-                                                                            <div class="form-group">
-                                                                                <label class="col-xs-5 col-md-4 control-label">Active Approval No. to be revoked</label>
-                                                                                <div class="col-sm-7 col-md-5 col-xs-7">
-                                                                                    <p><c:out value="${revokeDto.approvalNo}"/></p>
-                                                                                </div>
-                                                                                <div class="clear"></div>
-                                                                            </div>
+                                                                            <%--@elvariable id="processData" type="sg.gov.moh.iais.egp.bsb.dto.audit.OfficerProcessAuditDto"--%>
                                                                             <div class="form-group">
                                                                                 <label class="col-xs-5 col-md-4 control-label">Facility Name</label>
                                                                                 <div class="col-sm-7 col-md-5 col-xs-7">
-                                                                                    <p><c:out value="${revokeDto.facName}"/></p>
+                                                                                    <p><c:out value="${processData.facName}"/></p>
                                                                                 </div>
                                                                                 <div class="clear"></div>
                                                                             </div>
                                                                             <div class="form-group">
                                                                                 <label class="col-xs-5 col-md-4 control-label">Facility Address</label>
                                                                                 <div class="col-sm-7 col-md-5 col-xs-7">
-                                                                                    <p><c:out value="${revokeDto.facAddress}"/></p>
+                                                                                    <p><c:out value="${processData.facAddress}"/></p>
                                                                                 </div>
                                                                                 <div class="clear"></div>
                                                                             </div>
                                                                             <div class="form-group">
                                                                                 <label class="col-xs-5 col-md-4 control-label">Facility Classification</label>
                                                                                 <div class="col-sm-7 col-md-5 col-xs-7">
-                                                                                    <p><iais:code code="${revokeDto.facClassification}"/></p>
+                                                                                    <p><iais:code code="${processData.facClassification}"/></p>
                                                                                 </div>
                                                                                 <div class="clear"></div>
                                                                             </div>
                                                                             <div class="form-group">
                                                                                 <label class="col-xs-5 col-md-4 control-label">Activity Type</label>
                                                                                 <div class="col-sm-7 col-md-5 col-xs-7">
-                                                                                    <p><iais:code code="${revokeDto.activityType}"/></p>
+                                                                                    <p><iais:code code="${processData.activityType}"/></p>
                                                                                 </div>
                                                                                 <div class="clear"></div>
                                                                             </div>
                                                                             <div class="form-group">
-                                                                                <label class="col-xs-5 col-md-4 control-label">Approval</label>
+                                                                                <label class="col-xs-5 col-md-4 control-label">Audit Type</label>
                                                                                 <div class="col-sm-7 col-md-5 col-xs-7">
-                                                                                    <p></p>
+                                                                                    <p><iais:code code="${processData.auditType}"/></p>
                                                                                 </div>
                                                                                 <div class="clear"></div>
                                                                             </div>
                                                                             <div class="form-group">
-                                                                                <label class="col-xs-5 col-md-4 control-label">Approval Status</label>
+                                                                                <label class="col-xs-5 col-md-4 control-label">Audit Date</label>
                                                                                 <div class="col-sm-7 col-md-5 col-xs-7">
-                                                                                    <p><iais:code code="${revokeDto.approvalStatus}"/></p>
+                                                                                    <p><fmt:formatDate value='${processData.auditDate}' pattern='dd/MM/yyyy'/></p>
                                                                                 </div>
                                                                                 <div class="clear"></div>
                                                                             </div>
@@ -115,35 +106,42 @@
                                                                         <div class="form-group">
                                                                             <label class="col-xs-5 col-md-4 control-label">Current Status</label>
                                                                             <div class="col-sm-7 col-md-5 col-xs-7">
-                                                                                <p><iais:code code="${revokeDto.approvalStatus}"/></p>
+                                                                                <p><iais:code code="${processData.auditStatus}"/></p>
                                                                             </div>
                                                                             <div class="clear"></div>
                                                                         </div>
                                                                         <div class="form-group">
-                                                                            <label class="col-xs-5 col-md-4 control-label">Reason for Revocation</label>
+                                                                            <label class="col-xs-5 col-md-4 control-label">DO remarks</label>
                                                                             <div class="col-sm-7 col-md-5 col-xs-7">
-                                                                                <p><c:out value="${revokeDto.reasonContent}"/></p>
+                                                                                <p><c:out value="${processData.aoRemarks}"/></p>
                                                                             </div>
                                                                             <div class="clear"></div>
                                                                         </div>
                                                                         <div class="form-group">
-                                                                            <label class="col-xs-5 col-md-4 control-label">DO Remarks</label>
+                                                                            <label class="col-xs-5 col-md-4 control-label">Audit Outcome</label>
                                                                             <div class="col-sm-7 col-md-5 col-xs-7">
-                                                                                <p><c:out value="${revokeDto.doRemarks}"/></p>
+                                                                                <p><c:out value="${processData.auditOutCome}"/></p>
                                                                             </div>
                                                                             <div class="clear"></div>
                                                                         </div>
                                                                         <div class="form-group">
                                                                             <label class="col-xs-5 col-md-4 control-label">AO Remarks</label>
                                                                             <div class="col-sm-7 col-md-5 col-xs-7">
-                                                                                <p><c:out value="${revokeDto.aoRemarks}"/></p>
+                                                                                <p><c:out value="${processData.aoRemarks}"/></p>
+                                                                            </div>
+                                                                            <div class="clear"></div>
+                                                                        </div>
+                                                                        <div class="form-group">
+                                                                            <label class="col-xs-5 col-md-4 control-label">Final Remarks</label>
+                                                                            <div class="col-sm-7 col-md-5 col-xs-7">
+                                                                                <input name="finalRemark" id="finalRemark" type="checkbox" <c:if test="${processData.finalRemarks eq 'Yes'}">checked="checked"</c:if> disabled>
                                                                             </div>
                                                                             <div class="clear"></div>
                                                                         </div>
                                                                         <div class="form-group">
                                                                             <label class="col-xs-5 col-md-4 control-label">Processing Decision</label>
                                                                             <div class="col-sm-7 col-md-5 col-xs-7">
-                                                                                <p><iais:code code="${revokeDto.aoDecision}"/></p>
+                                                                                <p><iais:code code="${processData.aoDecision}"/></p>
                                                                             </div>
                                                                             <div class="clear"></div>
                                                                         </div>
@@ -157,6 +155,12 @@
                                                                         <div>
                                                                             <div class="form-group">
                                                                                 <div class="col-10"><strong>Internal</strong>
+                                                                                </div>
+                                                                                <div class="clear"></div>
+                                                                            </div>
+
+                                                                            <div class="form-group">
+                                                                                <div class="col-10"><strong>Others</strong>
                                                                                     <c:if test="${savedFiles ne null}">
                                                                                         <c:forEach var="docTypes" items="${docTypes}">
                                                                                             <c:forEach var="info" items="${savedFiles.get(docTypes)}">
@@ -165,13 +169,6 @@
                                                                                             </c:forEach>
                                                                                         </c:forEach>
                                                                                     </c:if>
-                                                                                </div>
-                                                                                <div class="clear"></div>
-                                                                            </div>
-
-                                                                            <div class="form-group">
-                                                                                <label class="col-xs-5 col-md-4 control-label">Others</label>
-                                                                                <div class="col-sm-7 col-md-5 col-xs-7"><p></p>
                                                                                 </div>
                                                                                 <div class="clear"></div>
                                                                             </div>
@@ -188,7 +185,7 @@
                                 </div>
                                 <a style="float:left;padding-top: 1.1%;" class="back" id="back" href="#"><em class="fa fa-angle-left"></em> Back</a>
                                 <div align="right">
-                                    <button name="submitButton" id="submitButton" type="button" class="btn btn-primary">Submit</button>
+                                    <button name="aoProcessButton" id="aoProcessButton" type="button" class="btn btn-primary">Submit</button>
                                 </div>
                                 <div>&nbsp;</div>
                             </div>

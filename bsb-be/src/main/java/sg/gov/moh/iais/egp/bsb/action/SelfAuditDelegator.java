@@ -16,9 +16,15 @@ import sg.gov.moh.iais.egp.bsb.constant.AuditConstants;
 import sg.gov.moh.iais.egp.bsb.constant.ValidationConstants;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
 import sg.gov.moh.iais.egp.bsb.dto.audit.OfficerProcessAuditDto;
+import sg.gov.moh.iais.egp.bsb.dto.file.DocRecordInfo;
+import sg.gov.moh.iais.egp.bsb.dto.file.PrimaryDocDto;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
+
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import static sg.gov.moh.iais.egp.bsb.constant.AuditConstants.*;
 import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.*;
@@ -78,6 +84,7 @@ public class SelfAuditDelegator {
                 ParamUtil.setRequestAttr(request, KEY_OFFICER_PROCESS_DATA, new OfficerProcessAuditDto());
             }
         }
+        setSelfAuditDoc(request,dto);
         ParamUtil.setSessionAttr(request, KEY_OFFICER_PROCESS_DATA, dto);
     }
 
@@ -177,5 +184,15 @@ public class SelfAuditDelegator {
             ParamUtil.setRequestAttr(request, ValidationConstants.IS_VALID,ValidationConstants.NO);
             ParamUtil.setRequestAttr(request,ValidationConstants.KEY_SHOW_ERROR_SWITCH,Boolean.TRUE);
         }
+    }
+
+    public static void setSelfAuditDoc(HttpServletRequest request, OfficerProcessAuditDto auditDto) {
+        PrimaryDocDto primaryDocDto = new PrimaryDocDto();
+        primaryDocDto.setSavedDocMap(sg.gov.moh.iais.egp.bsb.util.CollectionUtils.uniqueIndexMap(auditDto.getDocRecordInfos(), DocRecordInfo::getRepoId));
+        Map<String, List<DocRecordInfo>> saveFiles = primaryDocDto.getExistDocTypeMap();
+        Set<String> docTypes = saveFiles.keySet();
+        ParamUtil.setRequestAttr(request, "docTypes", docTypes);
+        ParamUtil.setRequestAttr(request, "savedFiles", saveFiles);
+        ParamUtil.setSessionAttr(request, "primaryDocDto", primaryDocDto);
     }
 }

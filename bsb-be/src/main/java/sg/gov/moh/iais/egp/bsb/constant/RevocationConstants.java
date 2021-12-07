@@ -49,6 +49,7 @@ public final class RevocationConstants {
     public static final String KEY_PAGE_SIZE = "pageJumpNoPageSize";
     public static final String KEY_PAGE_NO = "pageJumpNoTextchangePage";
     public static final String AUDIT_DOC_DTO = "auditDocDto";
+    public static final String KEY_CAN_UPLOAD = "canUpload";
 
     public static final String FLAG = "flag";
     public static final String BACK = "back";

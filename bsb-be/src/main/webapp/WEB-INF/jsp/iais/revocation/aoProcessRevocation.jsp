@@ -64,10 +64,9 @@
                                                 <%@include file="revocationDetailInfo.jsp" %>
                                             </div>
                                             <div class="tab-pane" id="tabDocuments" role="tabpanel">
-                                                <%@include file="../doDocument/tabDocuments.jsp" %>
+                                                <%@include file="tabDocuments.jsp" %>
                                             </div>
                                             <div class="tab-pane" id="tabProcessing" role="tabpanel">
-                                                <span id="error_document" name="iaisErrorMsg" class="error-msg"></span>
                                                 <br/><br/>
                                                 <div class="alert alert-info" role="alert">
                                                     <strong><h4>Processing Status Update</h4></strong>
