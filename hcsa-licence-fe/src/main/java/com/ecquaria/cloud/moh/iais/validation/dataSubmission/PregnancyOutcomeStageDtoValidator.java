@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.validation.dataSubmission;
 
+import com.ecquaria.cloud.helper.SpringContextHelper;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArCycleStageDto;
@@ -12,6 +13,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidator;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
+import com.ecquaria.cloud.moh.iais.service.datasubmission.ArDataSubmissionService;
 import lombok.SneakyThrows;
 
 import javax.servlet.http.HttpServletRequest;
@@ -100,24 +102,10 @@ public class PregnancyOutcomeStageDtoValidator implements CustomizeValidator {
         }
         ArSuperDataSubmissionDto arSuperDataSubmissionDto = DataSubmissionHelper.getCurrentArDataSubmission(request);
         CycleDto cycle = arSuperDataSubmissionDto.getCycleDto();
-        String cycleType = "";
-        Date cycleStartDate = null;
-        if (cycle != null) {
-            cycleType = cycle.getCycleType();
-        }
-        if (DataSubmissionConsts.DS_CYCLE_AR.equals(cycleType)) {
-            ArCycleStageDto arCycleStageDto = arSuperDataSubmissionDto.getArCycleStageDto();
-            if (arCycleStageDto != null) {
-                cycleStartDate = new SimpleDateFormat(AppConsts.DEFAULT_DATE_FORMAT).parse(arCycleStageDto.getStartDate());
-            }
-        } else if (DataSubmissionConsts.DS_CYCLE_IUI.equals(cycleType)) {
-            IuiCycleStageDto iuiCycleStageDto = arSuperDataSubmissionDto.getIuiCycleStageDto();
-            if (iuiCycleStageDto != null) {
-                cycleStartDate = iuiCycleStageDto.getStartDate();
-            }
-        }
-        if (cycleStartDate != null && pregnancyOutcomeStageDto.getDeliveryDate() != null) {
-            if (pregnancyOutcomeStageDto.getDeliveryDate().before(cycleStartDate)) {
+        ArDataSubmissionService arDataSubmissionService = SpringContextHelper.getContext().getBean(ArDataSubmissionService.class);
+        Date startDate = arDataSubmissionService.getCycleStartDate(cycle.getId());
+        if (startDate != null && pregnancyOutcomeStageDto.getDeliveryDate() != null) {
+            if (pregnancyOutcomeStageDto.getDeliveryDate().before(startDate)) {
                 errorMap.put("deliveryDate", "Cannot be earlier than cycle start date");
             }
         }
