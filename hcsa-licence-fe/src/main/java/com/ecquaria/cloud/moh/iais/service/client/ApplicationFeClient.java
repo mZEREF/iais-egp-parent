@@ -410,4 +410,7 @@ public interface ApplicationFeClient {
     @PutMapping(value="/iais-application/inactive-declaration-message", consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<String> inActiveDeclaration(@RequestBody AppSubmissionDto appSubmissionDto);
 
+    @GetMapping(value = "/iais-submission/active-pending-premises/{licenseeId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<AppGrpPremisesDto>> getActivePendingPremises(@PathVariable("licenseeId") String licenseeId);
+
 }

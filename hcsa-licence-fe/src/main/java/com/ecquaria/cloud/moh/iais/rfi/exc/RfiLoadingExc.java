@@ -8,6 +8,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfo
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
+import com.ecquaria.cloud.moh.iais.helper.NewApplicationHelper;
 import com.ecquaria.cloud.moh.iais.rfi.RfiLoadingCheck;
 import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationFeClient;
@@ -78,9 +79,7 @@ public class RfiLoadingExc implements RfiLoadingCheck {
                 premisesIndexNo = appGrpPremisesDto.getPremisesIndexNo();
                 //70309
                 if ("newPremise".equals(appGrpPremisesDto.getPremisesSelect())) {
-                    String premisesKey = appGrpPremisesDto.getHciCode() + IaisCommonUtils.genPremisesKey(appGrpPremisesDto.getPostalCode(),
-                            appGrpPremisesDto.getBlkNo(), appGrpPremisesDto.getFloorNo(), appGrpPremisesDto.getUnitNo()) + appGrpPremisesDto.getPremisesType();
-                    appGrpPremisesDto.setPremisesSelect(premisesKey);
+                    appGrpPremisesDto.setPremisesSelect(NewApplicationHelper.getPremisesKey(appGrpPremisesDto));
                     List<AppGrpPremisesDto> applicationAppGrpPremisesDtoList = (List<AppGrpPremisesDto>) ParamUtil.getSessionAttr(request, NewApplicationDelegator.RFC_APP_GRP_PREMISES_DTO_LIST);
                     if (IaisCommonUtils.isEmpty(applicationAppGrpPremisesDtoList)){
                         applicationAppGrpPremisesDtoList = IaisCommonUtils.genNewArrayList();

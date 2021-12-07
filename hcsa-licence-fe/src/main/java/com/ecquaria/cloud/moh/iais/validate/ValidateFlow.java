@@ -24,6 +24,6 @@ public interface ValidateFlow {
    default void doValidateClincalDirector(Map<String,String>map,List<AppSvcPrincipalOfficersDto> appSvcClinicalDirectorDtos,String serviceCode){};
 
    default void doValidateCharges(Map<String,String> map, AppSvcChargesPageDto appSvcClinicalDirectorDto){};
-   default void doValidatePremises(Map<String,String> map,String type,Integer index,String licenseeId, AppGrpPremisesDto appGrpPremisesDto, boolean needAppendMsg ,boolean rfi, List<String> premisesHciList,List<String> oldPremiseHciList){throw new IllegalArgumentException();};
+   default void doValidatePremises(Map<String,String> map,String type,Integer index,String licenseeId, AppGrpPremisesDto appGrpPremisesDto, boolean needAppendMsg ,boolean rfi){throw new IllegalArgumentException();};
 }
 

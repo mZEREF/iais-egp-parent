@@ -144,20 +144,6 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
     }
 
     @Override
-    public Map<String,AppGrpPremisesDto> getAppGrpPremisesDtoByLoginId(String loginId) {
-        List<AppGrpPremisesDto> appGrpPremisesDtos = licenceClient.getDistinctPremisesByLicenseeId(loginId, "").getEntity();
-        Map<String,AppGrpPremisesDto> appGrpPremisesDtoMap = IaisCommonUtils.genNewHashMap();
-        for(AppGrpPremisesDto appGrpPremisesDto:appGrpPremisesDtos){
-            if(!StringUtil.isEmpty(appGrpPremisesDto.getPremisesSelect())){
-                NewApplicationHelper.setWrkTime(appGrpPremisesDto);
-                appGrpPremisesDto.setExistingData(AppConsts.YES);
-                appGrpPremisesDtoMap.put(appGrpPremisesDto.getPremisesSelect(),appGrpPremisesDto);
-            }
-        }
-        return appGrpPremisesDtoMap;
-    }
-
-    @Override
     public String saveFileToRepo(MultipartFile file) throws IOException {
         //move file
         FileRepoDto fileRepoDto = new FileRepoDto();

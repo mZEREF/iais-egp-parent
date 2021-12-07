@@ -661,7 +661,7 @@ public class NewApplicationAjaxController {
         if (StringUtil.isEmpty(premIndexNo) || StringUtil.isEmpty(premisesType) || StringUtil.isEmpty(premiseIndex)) {
             return null;
         }
-        Map<String, AppGrpPremisesDto> licAppGrpPremisesDtoMap = (Map<String, AppGrpPremisesDto>) ParamUtil.getSessionAttr(request, NewApplicationDelegator.LICAPPGRPPREMISESDTOMAP);
+        Map<String, AppGrpPremisesDto> licAppGrpPremisesDtoMap = (Map<String, AppGrpPremisesDto>) ParamUtil.getSessionAttr(request, NewApplicationDelegator.LIC_PREMISES_MAP);
         AppGrpPremisesDto appGrpPremisesDto = licAppGrpPremisesDtoMap.get(premIndexNo);
         appGrpPremisesDto = NewApplicationHelper.setWrkTime(appGrpPremisesDto);
         //set dayName
@@ -751,7 +751,7 @@ public class NewApplicationAjaxController {
         }
 
         licAppGrpPremisesDtoMap.put(premIndexNo, appGrpPremisesDto);
-        ParamUtil.setSessionAttr(request, NewApplicationDelegator.LICAPPGRPPREMISESDTOMAP, (Serializable) licAppGrpPremisesDtoMap);
+        ParamUtil.setSessionAttr(request, NewApplicationDelegator.LIC_PREMISES_MAP, (Serializable) licAppGrpPremisesDtoMap);
         log.debug(StringUtil.changeForLog("the getLicPremisesInfo end ...."));
         //for rfc new  renew choose other address ,if no this cannot choose other address from page
         AppSubmissionDto oldAppSubmissionDto = (AppSubmissionDto) request.getSession().getAttribute("oldAppSubmissionDto");

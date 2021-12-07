@@ -55,10 +55,20 @@ import java.util.Map;
  * @date 11/9/2019
  */
 public interface AppSubmissionService {
-     AppSubmissionDto submit(AppSubmissionDto appSubmissionDto, Process process);
-     AppSubmissionDto submitRequestInformation(AppSubmissionRequestInformationDto appSubmissionRequestInformationDto, Process process);
-     AppSubmissionDto submitRequestRfcRenewInformation(AppSubmissionRequestInformationDto appSubmissionRequestInformationDto, Process process);
-     AppSubmissionDto submitPremisesListRequestInformation(AppSubmissionRequestInformationDto appSubmissionRequestInformationDto, Process process);
+
+    AppSubmissionDto submit(AppSubmissionDto appSubmissionDto, Process process);
+
+    AppSubmissionDto submitRequestInformation(AppSubmissionRequestInformationDto appSubmissionRequestInformationDto, Process process);
+
+    AppSubmissionDto submitRequestRfcRenewInformation(AppSubmissionRequestInformationDto appSubmissionRequestInformationDto,
+            Process process);
+
+    AppSubmissionDto submitPremisesListRequestInformation(AppSubmissionRequestInformationDto appSubmissionRequestInformationDto,
+            Process process);
+
+    Map<String, AppGrpPremisesDto> getLicencePremisesDtoMap(String licenseeId);
+
+    Map<String, AppGrpPremisesDto> getActivePendingPremisesMap(String licenseeId);
 
     List<ApplicationDto> listApplicationByGroupId(String groupId);
 
@@ -129,7 +139,7 @@ public interface AppSubmissionService {
     void changeSvcScopeIdByConfigName(List<HcsaSvcSubtypeOrSubsumedDto> newConfigInfo,AppSubmissionDto appSubmissionDto) throws CloneNotSupportedException;
     HashMap<String,List<AppSvcDisciplineAllocationDto>> getDisciplineAllocationDtoList(AppSubmissionDto appSubmissionDto, String svcId) throws CloneNotSupportedException;
     void setPreviewDta(AppSubmissionDto appSubmissionDto,BaseProcessClass bpc) throws CloneNotSupportedException;
-     void sendEmailForGiroFailAndSMSAndMessage(ApplicationGroupDto applicationGroupDto);
+    void sendEmailForGiroFailAndSMSAndMessage(ApplicationGroupDto applicationGroupDto);
     List<LicAppCorrelationDto> getLicDtoByLicId(String licId);
     ApplicationDto getAppById(String appId);
     List<MenuLicenceDto> setPremAdditionalInfo(List<MenuLicenceDto> menuLicenceDtos);
@@ -167,4 +177,5 @@ public interface AppSubmissionService {
             AppSvcRelatedInfoDto currentSvcDto);
 
     void saveAutoRFCLinkAppGroupMisc(String notAutoGroupId,String autoGroupId);
+
 }

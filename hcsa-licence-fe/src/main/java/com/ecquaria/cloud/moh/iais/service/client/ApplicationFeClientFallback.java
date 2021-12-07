@@ -1043,4 +1043,10 @@ public class ApplicationFeClientFallback implements ApplicationFeClient {
         entity.setHeaders(headers);
         return entity;
     }
+
+    @Override
+    public FeignResponseEntity<List<AppGrpPremisesDto>> getActivePendingPremises(String licenseeId) {
+        return getFeignResponseEntity(licenseeId);
+    }
+
 }
