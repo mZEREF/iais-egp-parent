@@ -36,7 +36,7 @@
                                 <c:when test="${'Create'.equals(feusertitle)}">
                                     <iais:field value="UEN" width="12" required="true"/>
                                     <iais:value width="12">
-                                        <input name="uenNo" id="uenNo" type="text" value="${inter_user_attr.uenNo}" />
+                                        <input name="uenNo" id="uenNo" type="text" value="${inter_user_attr.uenNo}" maxlength="20" onblur="checkUen(this.value)" />
                                         <span class="error-msg" name="errorMsg" id="error_uenNo"></span>
                                     </iais:value>
                                 </c:when>
@@ -136,11 +136,11 @@
                             </div>
                         </iais:row>
                         <iais:row>
-                            <iais:field value="Assign Role" width="5" required="true" />
-                            <c:forEach var="role" items="${SESSION_NAME_ROLES}">
+                            <iais:field value="Assign Role" width="5" required="true" id="assignRoleTitle" />
+                            <c:forEach var="role" items="${SESSION_NAME_ROLES}" varStatus="status">
                                 <c:set var="value" value="${role.value}"/>
                                 <c:set var="roles" value="${inter_user_attr.roles}"/>
-                                <div class="form-check col-xs-7">
+                                <div class="form-check col-xs-7  ${status.index == 0 ? 'oneClearRoleCheckbox' : 'clearRoleCheckbox'}">
                                     <input class="form-check-input" type="checkbox"
                                            name="roles"
                                            value="${value}"
@@ -206,5 +206,54 @@
         var mainPoolForm = document.getElementById('mainForm');
         mainPoolForm.submit();
     }
+
+    function checkUen(value){
+        if(value == null || value == '' || value.length < 5){
+            clearCheckBoxArea();
+        }else {
+            showWaiting();
+            var data = {"uenNo":value};
+            $.post(
+                "${pageContext.request.contextPath}/checkUenAndRoleData",
+                data,
+                function (data) {
+                    $('.oneClearRoleCheckbox').empty();
+                    clearCheckBoxArea();
+                    var s = '';
+                  for(var i in data){
+                    s += '<div class="form-check col-xs-7 ';
+                    if(i ==0){
+                        s+= ' oneClearRoleCheckbox" >'
+                    }else {
+                        s+= ' clearRoleCheckbox" > ';
+                    }
+                    s+= '<input class="form-check-input" type="checkbox" name="roles" value="';
+                    s+= data[i].value;
+                    s+= '" id="role';
+                    s+= data[i].value;
+                    s+= '"';
+                    s+= 'aria-invalid="false" >';
+                    s+= '   <label class="form-check-label"'
+                    s+= '  for="role';
+                    s+=data[i].value;
+                    s+='">';
+                    s+= ' <span class="check-square"></span>';
+                    s+= data[i].text;
+                    s+='</label>';
+                  }
+                    $('#assignRoleTitle').append(s);
+                   dismissWaiting();
+                }
+            )
+        }
+    }
+
+    function clearCheckBoxArea(){
+        $('.clearRoleCheckbox').empty();
+    }
+
+
+
+
 
 </script>

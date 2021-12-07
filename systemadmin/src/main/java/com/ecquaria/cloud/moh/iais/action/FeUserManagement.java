@@ -34,6 +34,11 @@ import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import sop.webflow.rt.api.BaseProcessClass;
 
 @Delegator(value = "feUserManagement")
@@ -163,7 +168,12 @@ public class FeUserManagement {
 
     public void create(BaseProcessClass bpc){
         ParamUtil.setSessionAttr(bpc.request,"feusertitle", "Create");
-        ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.SESSION_NAME_ROLES,(Serializable) intranetUserService.getRoleSelection(null));
+        FeUserDto feUserDto = (FeUserDto) ParamUtil.getSessionAttr(bpc.request, FeUserConstants.SESSION_USER_DTO);
+        if(feUserDto != null && feUserDto.getId() == null){
+            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.SESSION_NAME_ROLES,(Serializable) checkUenAndRoleSelectOptions(feUserDto.getUenNo()));
+        }else {
+            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.SESSION_NAME_ROLES,(Serializable) intranetUserService.getRoleSelection(null));
+        }
     }
 
     public void validation(BaseProcessClass bpc){
@@ -344,4 +354,23 @@ public class FeUserManagement {
         return searchParam;
     }
 
+    @RequestMapping(value = "/checkUenAndRoleData", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, method = RequestMethod.POST)
+    @ResponseBody
+    public String checkUenAndRoleData(@RequestParam("uenNo")String uenNo){
+        return JsonUtil.parseToJson(checkUenAndRoleSelectOptions(null));
+    }
+
+    public   List<SelectOption> checkUenAndRoleSelectOptions(String uenNo){
+        if(StringUtil.isEmpty(uenNo) || uenNo.length()<5){
+            return intranetUserService.getRoleSelection(null);
+        }
+        OrganizationDto organizationDto = intranetUserService.getByUenNoAndStatus(uenNo,AppConsts.COMMON_STATUS_ACTIVE);
+        if(organizationDto == null){
+            return  intranetUserService.getRoleSelection(null);
+        }
+        if(organizationDto.getLicenseeDto() == null){
+            return  intranetUserService.getRoleSelection(null);
+        }
+        return intranetUserService.getRoleSelection(organizationDto.getLicenseeDto().getId());
+    }
 }
