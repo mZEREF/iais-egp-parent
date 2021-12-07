@@ -357,7 +357,7 @@ public class FeUserManagement {
     @RequestMapping(value = "/checkUenAndRoleData", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, method = RequestMethod.POST)
     @ResponseBody
     public String checkUenAndRoleData(@RequestParam("uenNo")String uenNo){
-        return JsonUtil.parseToJson(checkUenAndRoleSelectOptions(null));
+        return JsonUtil.parseToJson(checkUenAndRoleSelectOptions(uenNo));
     }
 
     public   List<SelectOption> checkUenAndRoleSelectOptions(String uenNo){
