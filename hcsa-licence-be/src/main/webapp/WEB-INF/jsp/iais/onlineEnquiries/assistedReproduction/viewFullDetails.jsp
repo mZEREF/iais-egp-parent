@@ -80,12 +80,12 @@
     function doReportSearch(appPremCorrId){
         showWaiting();
         $("[name='crud_action_value']").val(appPremCorrId);
-        $("[name='base_action_type']").val('preStage');
+        $("[name='crud_action_type']").val('preStage');
         $('#mainForm').submit();
     }
     function doBack(){
         showWaiting();
-        $("[name='base_action_type']").val('back');
+        $("[name='crud_action_type']").val('back');
         $('#mainForm').submit();
     }
 

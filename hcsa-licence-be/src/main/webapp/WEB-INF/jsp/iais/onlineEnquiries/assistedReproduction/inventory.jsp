@@ -1,79 +1,53 @@
 <div class="arQuickView">
-    <div class="row">Co-funding History</div>
-    <hr>
-    <div class="row">
-        <div class="col-md-6">
-            Total No. of Co-funded IUI Cycles
-        </div>
-        <div class="col-md-6">
-            IUICyclesNumber
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-6">
-            Total No. of Co-funded ART Fresh Cycles
-        </div>
-        <div class="col-md-6">
-            FreshCyclesNumber
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-6">
-            Total No. of Co-funded ART Frozen Cycles
-        </div>
-        <div class="col-md-6">
-            FrozenCyclesNumber
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-6">
-            Total No. of Co-funded PGT Cycles
-        </div>
-        <div class="col-md-6">
-            PGTCyclesNumber
-        </div>
-    </div>
-    <hr>
-    <div class="row">Total Inventory</div>
-    <hr>
-    <div class="row">
-        <div class="col-md-6">
-            Fresh Oocytes
-        </div>
-        <div class="col-md-6">
-            FreshOocytesNumber
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-6">
-            Frozen Oocytes
-        </div>
-        <div class="col-md-6">
-            FrozenOocytesNumber
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-6">
-            Fresh Embryos
-        </div>
-        <div class="col-md-6">
-            FreshEmbryosNumber
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-6">
-            Frozen Embryos
-        </div>
-        <div class="col-md-6">
-            FrozenEmbryosNumber
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-6">
-            Frozen Sperms
-        </div>
-        <div class="col-md-6">
-            FrozenSpermsNumber
-        </div>
+
+    <div class="table-gp">
+        <table aria-describedby="" class="table">
+            <thead>
+            <tr >
+                <th scope="col">AR Centre</th>
+                <th scope="col">Frozen Oocytes</th>
+                <th scope="col">Thawed Oocytes</th>
+                <th scope="col">Fresh Oocytes</th>
+                <th scope="col">Frozen Embryos</th>
+                <th scope="col">Thawed Embryos</th>
+                <th scope="col">Fresh Embryos</th>
+                <th scope="col">Frozen Sperms</th>
+            </tr>
+            </thead>
+            <tbody class="form-horizontal">
+            <c:forEach var="patientInventory"
+                       items="${patientInventoryDtos}"
+                       varStatus="status">
+                <tr>
+
+                    <td style="vertical-align:middle;">
+                        <c:out value="${patientInventory.key}"/>
+                    </td>
+                    <td style="vertical-align:middle;">
+                        <c:out value="${patientInventory.value.currentFrozenOocytes}"/>
+                    </td>
+                    <td style="vertical-align:middle;">
+                        <c:out value="${patientInventory.value.currentThawedOocytes}"/>
+                    </td>
+                    <td style="vertical-align:middle;">
+                        <c:out value="${patientInventory.value.currentFreshOocytes}"/>
+                    </td>
+                    <td style="vertical-align:middle;">
+                        <c:out value="${patientInventory.value.currentFrozenEmbryos}"/>
+                    </td>
+                    <td style="vertical-align:middle;">
+                        <c:out value="${patientInventory.value.currentThawedEmbryos}"/>
+                    </td>
+                    <td style="vertical-align:middle;">
+                        <c:out value="${patientInventory.value.currentFreshEmbryos}"/>
+                    </td>
+                    <td style="vertical-align:middle;">
+                        <c:out value="${patientInventory.value.currentFrozenSperms}"/>
+                    </td>
+
+                </tr>
+            </c:forEach>
+            </tbody>
+        </table>
     </div>
 </div>

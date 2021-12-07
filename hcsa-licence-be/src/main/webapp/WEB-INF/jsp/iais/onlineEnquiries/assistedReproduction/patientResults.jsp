@@ -222,7 +222,7 @@
                                                                     Quick View
                                                                 </button>
                                                                 <br>
-                                                                <button type="button" onclick="fullDetailsView('${patient.patientId}')" class="btn btn-default btn-sm">
+                                                                <button type="button" onclick="fullDetailsView('${patient.patientCode}')" class="btn btn-default btn-sm">
                                                                     View Full Details
                                                                 </button>
                                                             </td>
@@ -306,7 +306,7 @@
                                                                 <c:out value="${submission.arCentre}"/>
                                                             </td>
                                                             <td>
-                                                                <a href="#" onclick="fullDetailsView('${submission.submissionIdNo}')">${submission.submissionIdNo}
+                                                                <a href="#" onclick="fullDetailsViewBySubId('${submission.submissionIdNo}')">${submission.submissionIdNo}
                                                                 </a>
                                                             </td>
                                                             <td>
@@ -518,10 +518,20 @@
         });
     }
 
-    var fullDetailsView = function (submissionIdNo) {
+    var fullDetailsView = function (patientCode) {
 
         showWaiting();
-        $("[name='crud_action_value']").val(submissionIdNo);
+        $("[name='crud_action_additional']").val('patient');
+        $("[name='crud_action_value']").val(patientCode);
+        $("[name='base_action_type']").val('viewFull');
+        $('#mainForm').submit();
+    }
+
+    var fullDetailsViewBySubId = function (submissionId) {
+
+        showWaiting();
+        $("[name='crud_action_additional']").val('submission');
+        $("[name='crud_action_value']").val(submissionId);
         $("[name='base_action_type']").val('viewFull');
         $('#mainForm').submit();
     }

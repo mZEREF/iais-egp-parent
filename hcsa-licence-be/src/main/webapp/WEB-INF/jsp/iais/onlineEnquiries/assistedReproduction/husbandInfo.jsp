@@ -1,79 +1,119 @@
 <div class="arQuickView">
-    <div class="row">Co-funding History</div>
+    <div class="row">
+        <div class="col-md-12">
+            Current Identity
+        </div>
+    </div>
+
+    <div class="table-gp">
+        <table aria-describedby="" class="table">
+            <thead>
+            <tr >
+
+                <iais:sortableHeader needSort="false"
+                                     field="NAME"
+                                     value="Name"/>
+                <iais:sortableHeader needSort="false"
+                                     field="ID_TYPE"
+                                     value="ID Type"/>
+                <iais:sortableHeader needSort="false"
+                                     field="ID_NUMBER"
+                                     value="ID No"/>
+                <iais:sortableHeader needSort="false"
+                                     field="DATE_OF_BIRTH"
+                                     value="Date of Birth"/>
+                <iais:sortableHeader needSort="false"
+                                     field="NATIONALITY"
+                                     value="Nationality"/>
+            </tr>
+            </thead>
+            <tbody class="form-horizontal">
+            <tr>
+
+                <td style="vertical-align:middle;">
+
+                    <p style="width: 165px;"><c:out value="${patientInfoDto.husband.name}"/>
+                    </p>
+                </td>
+                <td style="vertical-align:middle;">
+                    <iais:code code="${patientInfoDto.husband.idType}"/>
+                </td>
+                <td style="vertical-align:middle;">
+                    <c:out value="${patientInfoDto.husband.idNumber}"/>
+                </td>
+                <td style="vertical-align:middle;">
+                    <c:out value="${patientInfoDto.husband.birthDate}"/>
+                </td>
+                <td style="vertical-align:middle;">
+                    <iais:code code="${patientInfoDto.husband.nationality}"/>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <br>
+    <div class="row">
+        <div class="col-md-12">
+            Previous Identities
+        </div>
+    </div>
     <hr>
-    <div class="row">
-        <div class="col-md-6">
-            Total No. of Co-funded IUI Cycles
-        </div>
-        <div class="col-md-6">
-            IUICyclesNumber
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-6">
-            Total No. of Co-funded ART Fresh Cycles
-        </div>
-        <div class="col-md-6">
-            FreshCyclesNumber
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-6">
-            Total No. of Co-funded ART Frozen Cycles
-        </div>
-        <div class="col-md-6">
-            FrozenCyclesNumber
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-6">
-            Total No. of Co-funded PGT Cycles
-        </div>
-        <div class="col-md-6">
-            PGTCyclesNumber
-        </div>
-    </div>
-    <hr>
-    <div class="row">Total Inventory</div>
-    <hr>
-    <div class="row">
-        <div class="col-md-6">
-            Fresh Oocytes
-        </div>
-        <div class="col-md-6">
-            FreshOocytesNumber
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-6">
-            Frozen Oocytes
-        </div>
-        <div class="col-md-6">
-            FrozenOocytesNumber
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-6">
-            Fresh Embryos
-        </div>
-        <div class="col-md-6">
-            FreshEmbryosNumber
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-6">
-            Frozen Embryos
-        </div>
-        <div class="col-md-6">
-            FrozenEmbryosNumber
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-6">
-            Frozen Sperms
-        </div>
-        <div class="col-md-6">
-            FrozenSpermsNumber
-        </div>
+    <div class="table-gp">
+        <table aria-describedby="" class="table">
+            <thead>
+            <tr >
+
+                <iais:sortableHeader needSort="false"
+                                     field="NAME"
+                                     value="Name"/>
+                <iais:sortableHeader needSort="false"
+                                     field="ID_TYPE"
+                                     value="ID Type"/>
+                <iais:sortableHeader needSort="false"
+                                     field="ID_NUMBER"
+                                     value="ID No"/>
+                <iais:sortableHeader needSort="false"
+                                     field="DATE_OF_BIRTH"
+                                     value="Date of Birth"/>
+                <iais:sortableHeader needSort="false"
+                                     field="NATIONALITY"
+                                     value="Nationality"/>
+            </tr>
+            </thead>
+            <tbody class="form-horizontal">
+            <c:choose>
+                <c:when test="${empty patientInfoDto}">
+                    <tr>
+                        <td colspan="15">
+                            <iais:message key="GENERAL_ACK018"
+                                          escape="true"/>
+                        </td>
+                    </tr>
+                </c:when>
+                <c:otherwise>
+                    <tr>
+
+                        <td style="vertical-align:middle;">
+
+                            <p style="width: 165px;"><c:out value="${patientInfoDto.previousHusband.name}"/>
+                            </p>
+                        </td>
+                        <td style="vertical-align:middle;">
+                            <iais:code code="${patientInfoDto.previousHusband.idType}"/>
+                        </td>
+                        <td style="vertical-align:middle;">
+                            <c:out value="${patientInfoDto.previousHusband.idNumber}"/>
+                        </td>
+                        <td style="vertical-align:middle;">
+                            <c:out value="${patientInfoDto.previousHusband.birthDate}"/>
+                        </td>
+                        <td style="vertical-align:middle;">
+                            <iais:code code="${patientInfoDto.previousHusband.nationality}"/>
+                        </td>
+                    </tr>
+                </c:otherwise>
+            </c:choose>
+            </tbody>
+        </table>
     </div>
 </div>

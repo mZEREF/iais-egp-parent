@@ -2,12 +2,16 @@ package com.ecquaria.cloud.moh.iais.service.impl;
 
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.AssistedReproductionAdvEnquiryResultsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.AssistedReproductionEnquiryAjaxPatientResultsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.AssistedReproductionEnquiryResultsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.AssistedReproductionEnquirySubResultsDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInfoDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInventoryDto;
 import com.ecquaria.cloud.moh.iais.service.AssistedReproductionService;
 import com.ecquaria.cloud.moh.iais.service.client.AssistedReproductionClient;
+import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,7 +27,10 @@ import org.springframework.stereotype.Service;
 public class AssistedReproductionServiceImpl implements AssistedReproductionService{
 
     @Autowired
-    AssistedReproductionClient assistedReproductionClient;
+    private AssistedReproductionClient assistedReproductionClient;
+
+    @Autowired
+    private HcsaLicenceClient licenceClient;
 
     @Override
     public SearchResult<AssistedReproductionEnquiryResultsDto> searchPatientByParam(SearchParam searchParam) {
@@ -44,4 +51,21 @@ public class AssistedReproductionServiceImpl implements AssistedReproductionServ
     public SearchResult<AssistedReproductionAdvEnquiryResultsDto> searchPatientAdvByParam(SearchParam searchParam) {
         return assistedReproductionClient.searchPatientAdvByParam(searchParam).getEntity();
     }
+
+    @Override
+    public PatientInfoDto patientInfoDtoByPatientCode(String patientCode) {
+        return licenceClient.patientInfoDtoByPatientCode(patientCode).getEntity();
+    }
+
+    @Override
+    public ArSuperDataSubmissionDto getArSuperDataSubmissionDto(String submissionNo) {
+        return licenceClient.getArSuperDataSubmissionDto(submissionNo).getEntity();
+    }
+
+    @Override
+    public PatientInventoryDto patientInventoryByCode(String patientCode, String hciCode) {
+        return licenceClient.patientInventoryByCode(patientCode,hciCode).getEntity();
+    }
+
+
 }

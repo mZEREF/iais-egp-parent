@@ -3,14 +3,19 @@ package com.ecquaria.cloud.moh.iais.action;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.SystemAdminBaseConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.AssistedReproductionAdvEnquiryResultsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.AssistedReproductionEnquiryFilterDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.AssistedReproductionEnquiryResultsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.AssistedReproductionEnquirySubResultsDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInfoDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInventoryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -33,6 +38,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.Serializable;
 import java.text.ParseException;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -859,6 +865,45 @@ public class OnlineEnquiryAssistedReproductionDelegator {
         ParamUtil.setSessionAttr(request,"patientAdvParam",patientParam);
     }
     public void preViewFullDetails(BaseProcessClass bpc){
+        HttpServletRequest request=bpc.request;
+        String additional=ParamUtil.getRequestString(request, InboxConst.CRUD_ACTION_ADDITIONAL);
+        String key=ParamUtil.getRequestString(request, InboxConst.CRUD_ACTION_VALUE);
+        PatientInfoDto patientInfoDto=null;
+        ArSuperDataSubmissionDto arSuperDataSubmissionDto=null;
+        if(StringUtil.isNotEmpty(additional)){
+            if("patient".equals(additional)){
+                patientInfoDto=assistedReproductionService.patientInfoDtoByPatientCode(key);
+                arSuperDataSubmissionDto= assistedReproductionService.getArSuperDataSubmissionDto(patientInfoDto.getPatient().getSubmissionId());
+
+            }
+            if("submission".equals(additional)){
+                arSuperDataSubmissionDto= assistedReproductionService.getArSuperDataSubmissionDto(key);
+                patientInfoDto=assistedReproductionService.patientInfoDtoByPatientCode(arSuperDataSubmissionDto.getPatientInfoDto().getPatient().getPatientCode());
+
+            }
+        }
+        if(patientInfoDto!=null){
+            ParamUtil.setSessionAttr(request,"patientInfoDto",patientInfoDto);
+
+            Map<String,PatientInventoryDto> patientInventoryDtos=IaisCommonUtils.genNewHashMap();
+            for (PremisesDto premisesDto:patientInfoDto.getPatient().getArCentres()
+                 ) {
+                try {
+                    PatientInventoryDto patientInventoryDto=assistedReproductionService.patientInventoryByCode(patientInfoDto.getPatient().getPatientCode(),premisesDto.getHciCode());
+                    patientInventoryDtos.put(premisesDto.getAddress(),patientInventoryDto);
+                }catch (Exception e){
+                    log.error(e.getMessage(),e);
+                }
+
+            }
+            ParamUtil.setSessionAttr(request,"patientInventoryDtos", (Serializable) patientInventoryDtos);
+
+        }
+        if(arSuperDataSubmissionDto!=null){
+            ParamUtil.setSessionAttr(request,"arSuperDataSubmissionDto",arSuperDataSubmissionDto);
+        }
+
+
 
     }
     public void searchCycle(BaseProcessClass bpc){

@@ -1289,7 +1289,7 @@
                                                                         pattern="${AppConsts.DEFAULT_DATE_FORMAT}"/>
                                                             </td>
                                                             <td>
-                                                                <button type="button" class="btn btn-default btn-sm">
+                                                                <button type="button" onclick="fullDetailsView('${patient.patientCode}')" class="btn btn-default btn-sm">
                                                                     View Full Details
                                                                 </button>
                                                             </td>
@@ -1351,7 +1351,14 @@
     }
 
 
+    var fullDetailsView = function (patientCode) {
 
+        showWaiting();
+        $("[name='crud_action_additional']").val('patient');
+        $("[name='crud_action_value']").val(patientCode);
+        $("[name='adv_action_type']").val('viewFull');
+        $('#mainForm').submit();
+    }
 
 
 
