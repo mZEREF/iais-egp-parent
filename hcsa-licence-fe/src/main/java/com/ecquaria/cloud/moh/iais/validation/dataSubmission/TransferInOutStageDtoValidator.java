@@ -25,6 +25,9 @@ public class TransferInOutStageDtoValidator implements CustomizeValidator {
         ArSuperDataSubmissionDto arSuperDataSubmissionDto = (ArSuperDataSubmissionDto) ParamUtil.getSessionAttr(request, DataSubmissionConstant.AR_DATA_SUBMISSION);
         TransferInOutStageDto transferInOutStageDto = arSuperDataSubmissionDto.getTransferInOutStageDto();
         List<String> transferredList = transferInOutStageDto.getTransferredList();
+        String oocyteNum  = ParamUtil.getRequestString(request,"oocyteNum");
+        String embryoNum  = ParamUtil.getRequestString(request,"embryoNum");
+        String spermVialsNum  = ParamUtil.getRequestString(request,"spermVialsNum");
         String transferType = transferInOutStageDto.getTransferType();
         if(IaisCommonUtils.isEmpty(transferredList)){
             errorMap.put("transferredList","GENERAL_ERR0006");
@@ -72,6 +75,15 @@ public class TransferInOutStageDtoValidator implements CustomizeValidator {
                    }
                }
            }
+        }
+        if(!StringUtil.isEmpty(oocyteNum)&&!StringUtil.isNumber(oocyteNum)){
+            errorMap.put("oocyteNum", "GENERAL_ERR0002");
+        }
+        if(!StringUtil.isEmpty(embryoNum)&&!StringUtil.isNumber(embryoNum)){
+            errorMap.put("embryoNum", "GENERAL_ERR0002");
+        }
+        if(!StringUtil.isEmpty(spermVialsNum)&&!StringUtil.isNumber(spermVialsNum)){
+            errorMap.put("spermVialsNum", "GENERAL_ERR0002");
         }
         return errorMap;
     }

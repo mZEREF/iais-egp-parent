@@ -31,11 +31,6 @@ public class TransferInOutDelegator extends CommonDelegator {
     }
 
     @Override
-    public void returnStep(BaseProcessClass bpc) {
-
-    }
-
-    @Override
     public void preparePage(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         ArSuperDataSubmissionDto arSuperDataSubmissionDto = DataSubmissionHelper.getCurrentArDataSubmission(request);
@@ -69,11 +64,6 @@ public class TransferInOutDelegator extends CommonDelegator {
     }
 
     @Override
-    public void submission(BaseProcessClass bpc) {
-
-    }
-
-    @Override
     public void prepareSwitch(BaseProcessClass bpc) {
         ParamUtil.setRequestAttr(bpc.request, "smallTitle", "You are submitting for <strong>Cycle Stages</strong>");
         HttpServletRequest request = bpc.request;
@@ -100,9 +90,5 @@ public class TransferInOutDelegator extends CommonDelegator {
         ParamUtil.setSessionAttr(request, DataSubmissionConstant.AR_DATA_SUBMISSION, arSuperDataSubmissionDto);
         validatePageData(request, transferInOutStageDto,"save",ACTION_TYPE_CONFIRM);
         ParamUtil.setSessionAttr(request, DataSubmissionConstant.AR_DATA_SUBMISSION, arSuperDataSubmissionDto);
-    }
-    @Override
-    public void pageConfirmAction(BaseProcessClass bpc) {
-
     }
 }

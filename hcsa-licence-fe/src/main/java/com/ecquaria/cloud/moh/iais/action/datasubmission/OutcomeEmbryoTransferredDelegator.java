@@ -49,10 +49,6 @@ public class OutcomeEmbryoTransferredDelegator extends CommonDelegator{
         PatientInventoryDto patientInventoryDto = DataSubmissionHelper.getCurrentPatientInventory(bpc.request);
     }
     @Override
-    public void submission(BaseProcessClass bpc) {
-
-    }
-    @Override
     public void pageAction(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         ArSuperDataSubmissionDto arSuperDataSubmissionDto = DataSubmissionHelper.getCurrentArDataSubmission(request);

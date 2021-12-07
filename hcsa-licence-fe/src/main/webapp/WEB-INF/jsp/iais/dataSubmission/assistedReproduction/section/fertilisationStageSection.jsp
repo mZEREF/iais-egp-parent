@@ -80,6 +80,7 @@
                     <iais:value width="7" cssClass="col-md-7">
                         <input type="number" oninput="if(value.length>2)value=value.slice(0,2)" style="margin-bottom: 0px;"
                                name="freshOocytesInseminatedNum" value="${fertilisationDto.freshOocytesInseminatedNum}"/>
+                        <span class="error-msg" name="iaisErrorMsg" id="error_freshOocytesInseminatedNum"></span>
                     </iais:value>
                 </iais:row>
                 <iais:row>
@@ -87,6 +88,7 @@
                     <iais:value width="7" cssClass="col-md-7">
                         <input type="number" oninput="if(value.length>2)value=value.slice(0,2)" style="margin-bottom: 0px;"
                                name="freshOocytesMicroInjectedNum" value="${fertilisationDto.freshOocytesMicroInjectedNum}"/>
+                        <span class="error-msg" name="iaisErrorMsg" id="error_freshOocytesMicroInjectedNum"></span>
                     </iais:value>
                 </iais:row>
                 <iais:row>
@@ -94,6 +96,7 @@
                     <iais:value width="7" cssClass="col-md-7">
                         <input type="number" oninput="if(value.length>2)value=value.slice(0,2)" style="margin-bottom: 0px;"
                                name="freshOocytesGiftNum" value="${fertilisationDto.freshOocytesGiftNum}"/>
+                        <span class="error-msg" name="iaisErrorMsg" id="error_freshOocytesGiftNum"></span>
                     </iais:value>
                 </iais:row>
                 <iais:row>
@@ -109,6 +112,7 @@
                     <iais:value width="7" cssClass="col-md-7">
                         <input type="number" oninput="if(value.length>2)value=value.slice(0,2)" style="margin-bottom: 0px;"
                                name="thawedOocytesInseminatedNum" value="${fertilisationDto.thawedOocytesInseminatedNum}"/>
+                        <span class="error-msg" name="iaisErrorMsg" id="error_thawedOocytesInseminatedNum"></span>
                     </iais:value>
                 </iais:row>
                 <iais:row>
@@ -116,6 +120,7 @@
                     <iais:value width="7" cssClass="col-md-7">
                         <input type="number" oninput="if(value.length>2)value=value.slice(0,2)" style="margin-bottom: 0px;"
                                name="thawedOocytesMicroinjectedNum" value="${fertilisationDto.thawedOocytesMicroinjectedNum}"/>
+                        <span class="error-msg" name="iaisErrorMsg" id="error_thawedOocytesMicroinjectedNum"></span>
                     </iais:value>
                 </iais:row>
                 <iais:row>
@@ -123,6 +128,7 @@
                     <iais:value width="7" cssClass="col-md-7">
                         <input type="number" oninput="if(value.length>2)value=value.slice(0,2)" style="margin-bottom: 0px;"
                                name="thawedOocytesGiftNum" value="${fertilisationDto.thawedOocytesGiftNum}"/>
+                        <span class="error-msg" name="iaisErrorMsg" id="error_thawedOocytesGiftNum"></span>
                     </iais:value>
                 </iais:row>
                 <iais:row>

@@ -18,7 +18,7 @@
                 </h3>
                 <iais:row>
                     <iais:field width="5" value="Outcome of Embryo Transferred"/>
-                    <iais:value width="7" cssClass="col-md-7"  label="true">
+                    <iais:value width="7" cssClass="col-md-7"  label="true" style="padding-top: 13px;">
                         <iais:code code="${embryoTransferredOutcomeStageDto.transferedOutcome}"/>
                     </iais:value>
                 </iais:row>

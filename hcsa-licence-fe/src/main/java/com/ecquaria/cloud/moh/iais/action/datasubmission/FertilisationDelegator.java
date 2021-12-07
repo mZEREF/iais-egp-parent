@@ -44,10 +44,6 @@ public class FertilisationDelegator extends CommonDelegator{
         ParamUtil.setRequestAttr(bpc.request, "smallTitle", "You are submitting for <strong>Cycle Stages</strong>");
     }
 
-    @Override
-    public void returnStep(BaseProcessClass bpc) {
-
-    }
 
     @Override
     public void preparePage(BaseProcessClass bpc) {
@@ -78,16 +74,6 @@ public class FertilisationDelegator extends CommonDelegator{
     }
 
     @Override
-    public void draft(BaseProcessClass bpc) {
-
-    }
-
-    @Override
-    public void submission(BaseProcessClass bpc) {
-
-    }
-
-    @Override
     public void pageAction(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         String[] sourceOfSemen = ParamUtil.getStrings(request,"sourceOfSemen");
@@ -111,9 +97,5 @@ public class FertilisationDelegator extends CommonDelegator{
         arSuperDataSubmissionDto.setFertilisationDto(fertilisationDto);
         ParamUtil.setSessionAttr(bpc.request, DataSubmissionConstant.AR_DATA_SUBMISSION, arSuperDataSubmissionDto);
         validatePageData(request, fertilisationDto,"save",ACTION_TYPE_CONFIRM);
-    }
-    @Override
-    public void pageConfirmAction(BaseProcessClass bpc) {
-
     }
 }

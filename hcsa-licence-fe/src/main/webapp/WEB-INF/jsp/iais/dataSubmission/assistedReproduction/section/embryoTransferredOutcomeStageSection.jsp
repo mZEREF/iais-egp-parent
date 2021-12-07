@@ -7,7 +7,7 @@
         </h4>
     </div>
     <div id="patientDetails" class="panel-collapse collapse in">
-        <div class="panel-body">
+        <div class="panel-body" style="padding-left: 45px;">
             <div class="panel-main-content form-horizontal">
                 <c:set var="embryoTransferredOutcomeStageDto" value="${arSuperDataSubmissionDto.embryoTransferredOutcomeStageDto}"/>
                 <h3>
