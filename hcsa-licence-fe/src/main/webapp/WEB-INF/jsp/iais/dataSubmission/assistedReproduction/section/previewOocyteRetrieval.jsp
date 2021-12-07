@@ -18,7 +18,7 @@
                 </h3>
                 <iais:row>
                     <iais:field width="6" value="Oocyte(s) was retrieved from?" cssClass="col-md-6"/>
-                    <iais:value width="6" cssClass="col-md-6" display="true">
+                    <iais:value width="6" cssClass="col-md-6">
                         <c:if test="${oocyteRetrievalStageDto.isFromPatient}"><p>Patient</p></c:if>
                         <c:if test="${oocyteRetrievalStageDto.isFromPatientTissue}"><p>Patient's Ovarian
                             Tissue</p></c:if>
