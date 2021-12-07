@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.service.client;
 
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DpSuperDataSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PgtStageDto;
 import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
@@ -54,4 +55,8 @@ public interface DpFeClient {
     @GetMapping(value = "/dp-common/dp-data-submission/{submissionNo}", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<DpSuperDataSubmissionDto> getDpSuperDataSubmissionDto(@PathVariable("submissionNo") String submissionNo);
 
+    @GetMapping(value = "/dp-common/patient/idnumber-nationality", produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<PatientDto> getDpPatientDto(@RequestParam(name = "idType") String idType,
+                                                  @RequestParam(name = "idNumber") String idNumber, @RequestParam(name = "nationality") String nationality,
+                                                  @RequestParam(name = "orgId") String orgId);
 }
