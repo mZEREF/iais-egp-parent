@@ -145,4 +145,6 @@ public interface ArDataSubmissionService {
     PatientInventoryDto getPatientInventory(String patientCode, String HciCode);
 
     List<DonorDto> getAllDonorDtoByCycleId(String cycleId);
+
+    Date getCycleStartDate(String cycleId);
 }

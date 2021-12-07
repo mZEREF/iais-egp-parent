@@ -174,4 +174,9 @@ public class ArFeClientFallback implements ArFeClient {
     public FeignResponseEntity<List<DonorDto>> getAllDonorDtoByCycleId(String cycleId) {
         return getFeignResponseEntity();
     }
+
+    @Override
+    public FeignResponseEntity<Date> getCycleStartDate(String cycleId) {
+        return getFeignResponseEntity();
+    }
 }

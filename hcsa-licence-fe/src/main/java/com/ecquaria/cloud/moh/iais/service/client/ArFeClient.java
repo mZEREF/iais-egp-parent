@@ -145,4 +145,7 @@ public interface ArFeClient {
 
     @GetMapping(value = "/ar-common/cycle-donor-dto-list-by-cycle-id", produces = MediaType.APPLICATION_JSON_VALUE)
     public FeignResponseEntity<List<DonorDto>> getAllDonorDtoByCycleId(@RequestParam(name = "cycleId") String cycleId);
+
+    @GetMapping(value = "/ar-common/cycle-start-date-by-cycle-id", produces = MediaType.APPLICATION_JSON_VALUE)
+    public FeignResponseEntity<Date> getCycleStartDate(@RequestParam(name = "cycleId") String cycleId);
 }

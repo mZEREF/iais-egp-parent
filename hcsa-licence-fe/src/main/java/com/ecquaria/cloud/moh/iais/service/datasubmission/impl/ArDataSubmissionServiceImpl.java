@@ -542,4 +542,13 @@ public class ArDataSubmissionServiceImpl implements ArDataSubmissionService {
         }
         return arFeClient.getAllDonorDtoByCycleId(cycleId).getEntity();
     }
+
+    @Override
+    public Date getCycleStartDate(String cycleId) {
+        if (StringUtil.isEmpty(cycleId)){
+            log.info(StringUtil.changeForLog("------ No cycle Id -----"));
+            return null;
+        }
+        return arFeClient.getCycleStartDate(cycleId).getEntity();
+    }
 }
