@@ -115,7 +115,7 @@
                             <iais:row   >
                                 <iais:field width="5" value="Donor Sample Code" mandatory="true"/>
                                 <iais:value width="7" cssClass="col-md-7">
-                                    <iais:input maxLength="100" type="text" name="donorSampleCode" id="donorSampleCode" value="${donorSampleDto.donorSampleCode}" />
+                                    <iais:input maxLength="20" type="text" name="donorSampleCode" id="donorSampleCode" value="${donorSampleDto.donorSampleCode}" />
                                 </iais:value>
                                 <span id="error_donorSampleCodeRowDonorLive" name="iaisErrorMsg" class="error-msg"></span>
                             </iais:row>
