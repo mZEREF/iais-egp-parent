@@ -52,7 +52,7 @@
                  <c:if test="${!donorDto.directedDonation}">
 
                      <iais:row cssClass="usedDonorOocyteControlClass" id="donorSampleCodeId${arDonorIndex}Row" >
-                         <iais:field width="5" value="Donor Sample Code / ID" />
+                         <iais:field width="5" value="Donor Sample Code" />
                          <iais:value width="3" cssClass="col-md-3" display="true">
                              <iais:code code="${donorDto.idType}"/>
                          </iais:value>
