@@ -93,6 +93,8 @@ public class FESingpassLandingDelegator {
             url.append("https://").append(bpc.request.getServerName())
                     .append("/main-web/eservice/INTERNET/MohInternetInbox");
             IaisEGPHelper.sendRedirect(bpc.request, bpc.response, url.toString());
+
+            return;
         }
 
         HttpServletRequest request = bpc.request;
