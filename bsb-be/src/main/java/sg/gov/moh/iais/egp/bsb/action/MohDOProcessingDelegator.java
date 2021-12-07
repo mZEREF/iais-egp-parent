@@ -2,7 +2,6 @@ package sg.gov.moh.iais.egp.bsb.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
-import com.ecquaria.cloud.moh.iais.common.utils.LogUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
@@ -56,8 +55,8 @@ public class MohDOProcessingDelegator {
         String maskedTaskId = request.getParameter(KEY_TASK_ID);
         if (StringUtils.hasLength(maskedAppId) && StringUtils.hasLength(maskedTaskId)){
             if (log.isInfoEnabled()) {
-                log.info("masked app ID: {}", LogUtil.escapeCrlf(maskedAppId));
-                log.info("masked task ID: {}", LogUtil.escapeCrlf(maskedTaskId));
+                log.info("masked app ID: {}", org.apache.commons.lang.StringUtils.normalizeSpace(maskedAppId));
+                log.info("masked task ID: {}", org.apache.commons.lang.StringUtils.normalizeSpace(maskedTaskId));
             }
             boolean failLoadSubmitDetailsData = true;
             String appId = MaskUtil.unMaskValue(KEY_ID, maskedAppId);
