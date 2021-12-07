@@ -153,6 +153,28 @@ public class NewApplicationHelper {
         return (LoginContext) ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
     }
 
+    public static String getLicenseeId(HttpServletRequest request) {
+        LoginContext loginContext = getLoginContext(request);
+        String licenseeId = "";
+        if (loginContext != null) {
+            licenseeId = loginContext.getLicenseeId();
+        }
+        return licenseeId;
+    }
+
+    public static String getLicenseeId(List<AppSubmissionDto> appSubmissionDtos) {
+        String licenseeId = "";
+        if (!IaisCommonUtils.isEmpty(appSubmissionDtos)) {
+            for (AppSubmissionDto appSubmissionDto : appSubmissionDtos) {
+                licenseeId = appSubmissionDto.getLicenseeId();
+                if (!StringUtil.isEmpty(licenseeId)) {
+                    break;
+                }
+            }
+        }
+        return licenseeId;
+    }
+
     public static AppSubmissionDto getAppSubmissionDto(HttpServletRequest request) {
         AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(request,
                 NewApplicationDelegator.APPSUBMISSIONDTO);
@@ -2467,15 +2489,6 @@ public class NewApplicationHelper {
         return isCharity;
     }
 
-    public static String getLicenseeId(HttpServletRequest request){
-        LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
-        String licenseeId = "";
-        if(loginContext != null){
-            licenseeId = loginContext.getLicenseeId();
-        }
-        return licenseeId;
-    }
-
     public static List<SelectOption> getGiroAccOptions(List<GiroAccountInfoDto> giroAccountInfoDtos) {
         List<SelectOption> selectOptionList = IaisCommonUtils.genNewArrayList();
         if (!IaisCommonUtils.isEmpty(giroAccountInfoDtos)) {
@@ -2658,20 +2671,6 @@ public class NewApplicationHelper {
         appGrpPrimaryDocDto.setSeqNum(-1);
         return appGrpPrimaryDocDto;
     }
-
-    public static String getLicenseeId(List<AppSubmissionDto> appSubmissionDtos){
-        String licenseeId = "";
-        if(!IaisCommonUtils.isEmpty(appSubmissionDtos)){
-            for(AppSubmissionDto appSubmissionDto:appSubmissionDtos){
-                licenseeId = appSubmissionDto.getLicenseeId();
-                if(!StringUtil.isEmpty(licenseeId)){
-                    break;
-                }
-            }
-        }
-        return licenseeId;
-    }
-
 
     public static void removePremiseEmptyAlignInfo(AppSubmissionDto appSubmissionDto){
         log.debug(StringUtil.changeForLog("remove Premise Empty Align Info start ..."));

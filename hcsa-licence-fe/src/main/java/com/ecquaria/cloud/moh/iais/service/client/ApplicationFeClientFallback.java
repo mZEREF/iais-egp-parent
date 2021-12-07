@@ -40,9 +40,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.withdrawn.WithdrawnDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.ProcessFileTrackDto;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
-import com.mysql.cj.log.Log;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.poi.ss.formula.functions.T;
 import org.springframework.http.HttpHeaders;
 
 import java.util.Arrays;
@@ -419,7 +417,7 @@ public class ApplicationFeClientFallback implements ApplicationFeClient {
     }
 
     @Override
-    public FeignResponseEntity<Void> updateDrafts(List<String> licenceIds, String excludeDraftNo) {
+    public FeignResponseEntity<Void> updateDrafts(String licenseeId, List<String> licenceIds, String excludeDraftNo) {
         return getFeignResponseEntity(licenceIds, excludeDraftNo);
     }
 

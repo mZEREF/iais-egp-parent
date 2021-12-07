@@ -1248,12 +1248,12 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
     }
 
     @Override
-    public void updateDrafts(List<String> licenceIds, String excludeDraftNo) {
-        log.info(StringUtil.changeForLog("Licence Ids: " + licenceIds + " - excludeDraftNo: " + excludeDraftNo));
-        if (IaisCommonUtils.isEmpty(licenceIds) || StringUtil.isEmpty(excludeDraftNo)) {
+    public void updateDrafts(String licenseeId, List<String> licenceIds, String excludeDraftNo) {
+        log.info(StringUtil.changeForLog("Licensee Id: " + licenseeId + "Licence Ids: " + licenceIds + " - excludeDraftNo: " + excludeDraftNo));
+        if (StringUtil.isEmpty(licenseeId) || IaisCommonUtils.isEmpty(licenceIds) || StringUtil.isEmpty(excludeDraftNo)) {
             return;
         }
-        CompletableFuture.runAsync(() ->applicationFeClient.updateDrafts(licenceIds, excludeDraftNo));
+        CompletableFuture.runAsync(() ->applicationFeClient.updateDrafts(licenseeId, licenceIds, excludeDraftNo));
     }
 
     @Override

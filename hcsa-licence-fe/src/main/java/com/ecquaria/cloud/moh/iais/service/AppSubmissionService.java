@@ -30,7 +30,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.MenuLicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.PreOrPostInspectionResultDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceStepSchemeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSubtypeOrSubsumedDto;
@@ -65,7 +64,7 @@ public interface AppSubmissionService {
 
     AppSubmissionDto doSaveDraft(AppSubmissionDto appSubmissionDto);
 
-    void updateDrafts(List<String> licenceIds, String draftNo);
+    void updateDrafts(String licenseeId, List<String> licenceIds, String draftNo);
 
      String getDraftNo(String appType);
      String getGroupNo(String appType);
