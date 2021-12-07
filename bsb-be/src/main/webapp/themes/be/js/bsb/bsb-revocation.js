@@ -1,12 +1,3 @@
-//DO submit revocation process entrance
-// function doProcess(fac){
-//     showWaiting();
-    // $("#appId").val(id);
-    // $("#from").val(fac);
-    // $("[name='action_type']").val("doProcess");
-    // $("#mainForm").submit();
-// }
-
 function doRevoke(id,fac){
     showWaiting();
     $("#approvalId").val(id);
@@ -89,12 +80,6 @@ $(function () {
         $("#clearSelect .current").text("Please Select");
     });
 
-    $("#submitButton3").click(function () {
-        showWaiting();
-        $("[name='action_type']").val("doUpdate");
-        $("#mainForm").submit();
-    });
-
     $("#submitRevoke").click(function (){
         showWaiting();
         $("[name='action_type']").val("doSubmit");
@@ -103,8 +88,8 @@ $(function () {
 
     //AO process revocation application
     $("#submitButton").click(function () {
-        var optionValue = $("#decision option:selected").val();
         showWaiting();
+        var optionValue = $("#aoDecision").val();
         if (optionValue == "BSBAOPD001") {
             $("[name='action_type']").val("approve");
         }
@@ -120,39 +105,9 @@ $(function () {
         $("#mainForm").submit();
     });
 
-    //back
-    $("#backToTask").click(function (){
-        showWaiting();
-        SOP.Crud.cfxSubmit("mainForm", "doBack");
-    });
-
-    $("#backToSubmit2").click(function (){
-        showWaiting();
-        $("[name='action_type']").val("doBack");
-        $("#mainForm").submit();
-    });
-
-    //back from ackPage
-    $("#backFromAckPage").click(function (){
-        showWaiting();
-        $("#mainForm").submit();
-    });
-
     $("#back").click(function (){
         showWaiting();
         $("[name='action_type']").val("doBack");
         $("#mainForm").submit();
-    })
-
-    $("#backFromDoc").click(function (){
-        $('#documenta').removeClass("active");
-        $('#infoa').click();
-        $('#infoa').addClass("active");
-    })
-
-    $("#backFromProcess").click(function (){
-        $('#processa').removeClass("active");
-        $('#documenta').click();
-        $('#documenta').addClass("active");
     })
 });

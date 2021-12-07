@@ -2,14 +2,16 @@ package sg.gov.moh.iais.egp.bsb.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
+import com.ecquaria.cloud.moh.iais.common.utils.LogUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
-import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 import sg.gov.moh.iais.egp.bsb.client.*;
 import sg.gov.moh.iais.egp.bsb.constant.RevocationConstants;
 import sg.gov.moh.iais.egp.bsb.constant.ValidationConstants;
@@ -25,6 +27,8 @@ import sop.webflow.rt.api.BaseProcessClass;
 import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 
+import static sg.gov.moh.iais.egp.bsb.constant.AuditConstants.KEY_APP_ID;
+import static sg.gov.moh.iais.egp.bsb.constant.AuditConstants.KEY_TASK_ID;
 import static sg.gov.moh.iais.egp.bsb.constant.RevocationConstants.*;
 
 /**
@@ -140,11 +144,13 @@ public class DORevocationDelegator {
         HttpServletRequest request = bpc.request;
         String from = ParamUtil.getRequestString(request, FROM);
         String maskedApprovalId = ParamUtil.getRequestString(request, PARAM_APPROVAL_ID);
-        String maskedAppId = ParamUtil.getRequestString(request, PARAM_APP_ID);
+        String maskedAppId = ParamUtil.getRequestString(request, KEY_APP_ID);
+        String maskedTaskId = ParamUtil.getString(request, KEY_TASK_ID);
 
         ParamUtil.setSessionAttr(request, FROM, from);
         ParamUtil.setSessionAttr(request, PARAM_APPROVAL_ID, maskedApprovalId);
-        ParamUtil.setSessionAttr(request, PARAM_APP_ID, maskedAppId);
+        ParamUtil.setSessionAttr(request, KEY_APP_ID, maskedAppId);
+        ParamUtil.setSessionAttr(request, KEY_TASK_ID, maskedTaskId);
     }
 
     /**
@@ -162,7 +168,7 @@ public class DORevocationDelegator {
         if (Boolean.TRUE.equals(needShowError)) {
             ParamUtil.setRequestAttr(request, ValidationConstants.KEY_VALIDATION_ERRORS, revokeDto.retrieveValidationResult());
         }
-        if (StringUtil.isNotEmpty(from)) {
+        if (!StringUtils.hasLength(revokeDto.getModule())) {
             if (from.equals(FAC)) {
                 String approvalId = ParamUtil.getRequestString(request, PARAM_APPROVAL_ID);
                 approvalId = MaskUtil.unMaskValue("id", approvalId);
@@ -171,9 +177,22 @@ public class DORevocationDelegator {
                 ParamUtil.setSessionAttr(request, BACK, REVOCATION_FACILITY);
             }
             if (from.equals(APP)) {
-                String appId = ParamUtil.getRequestString(request, PARAM_APP_ID);
-                appId = MaskUtil.unMaskValue("id", appId);
+                String maskedAppId = ParamUtil.getString(request, KEY_APP_ID);
+                String maskedTaskId = ParamUtil.getString(request, KEY_TASK_ID);
+                if (log.isInfoEnabled()) {
+                    log.info("masked application id: [{}]", LogUtil.escapeCrlf(maskedAppId));
+                    log.info("masked task id: [{}]", LogUtil.escapeCrlf(maskedTaskId));
+                }
+                String appId = MaskUtil.unMaskValue("id", maskedAppId);
+                String taskId = MaskUtil.unMaskValue("id", maskedTaskId);
+                if (appId == null || appId.equals(maskedAppId)) {
+                    throw new IaisRuntimeException("Invalid masked application ID");
+                }
+                if (taskId == null || taskId.equals(maskedTaskId)) {
+                    throw new IaisRuntimeException("Invalid masked task ID");
+                }
                 revokeDto = revocationClient.getSubmitRevokeDtoByAppId(appId).getEntity();
+                revokeDto.setTaskId(taskId);
                 AuditDocDto auditDocDto = new AuditDocDto();
                 List<FacilityDoc> facilityDocList = docClient.getFacilityDocByFacId(revokeDto.getFacId()).getEntity();
                 if (!CollectionUtils.isEmpty(facilityDocList)) {
@@ -196,7 +215,7 @@ public class DORevocationDelegator {
         HttpServletRequest request = bpc.request;
 
         String reason = ParamUtil.getString(request, PARAM_REASON);
-        String remarks = ParamUtil.getString(request, PARAM_DOREMARKS);
+        String remarks = ParamUtil.getString(request, PARAM_DO_REMARKS);
         String flag = (String) ParamUtil.getSessionAttr(request, FLAG);
         SubmitRevokeDto revokeDto = getRevokeDto(request);
         //get user name

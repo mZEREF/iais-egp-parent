@@ -82,7 +82,7 @@
                                                                         <iais:row>
                                                                             <iais:field value="Current Status" required="false"/>
                                                                             <iais:value width="10">
-                                                                                <p><iais:code code="${approval.status}"/></p>
+                                                                                <p><iais:code code="${revokeDto.approvalStatus}"/></p>
                                                                             </iais:value>
                                                                         </iais:row>
                                                                     </div>
@@ -96,39 +96,20 @@
                                                                                                   name="reason"
                                                                                                   cols="70"
                                                                                                   rows="7"
-                                                                                                  maxlength="500"><c:forEach var="miscList" items="${applicationMiscList}" varStatus="status"><iais:code code="${miscList.reason}"/>:${miscList.reasonContent};</c:forEach></textarea>
-                                                                                        <span id="error_reason"
-                                                                                              name="iaisErrorMsg"
-                                                                                              class="error-msg"></span>
+                                                                                                  maxlength="500">${revokeDto.reasonContent}</textarea>
                                                                                     </div>
                                                                                 </div>
                                                                             </iais:value>
                                                                         </iais:row>
                                                                     </div>
-
                                                                     <div>
                                                                         <iais:row>
                                                                             <iais:field value="DO Remarks" required="false"/>
                                                                             <iais:value width="10">
-                                                                                <p>
-                                                                                    <c:forEach var="miscs" items="${applicationMiscList}" varStatus="status">
-                                                                                        <c:if test="${miscs.remarks eq null or miscs.remarks eq ''}"></c:if>
-                                                                                        <c:if test="${miscs.remarks != null and miscs.remarks != ''}">
-                                                                                            <c:choose>
-                                                                                                <c:when test="${status.last}">
-                                                                                                    ${miscs.remarks}
-                                                                                                </c:when>
-                                                                                                <c:otherwise>
-                                                                                                    ${miscs.remarks};
-                                                                                                </c:otherwise>
-                                                                                            </c:choose>
-                                                                                        </c:if>
-                                                                                    </c:forEach>
-                                                                                </p>
+                                                                                ${revokeDto.doRemarks}
                                                                             </iais:value>
                                                                         </iais:row>
                                                                     </div>
-
                                                                     <div>
                                                                         <iais:row>
                                                                             <iais:field value="AO Remarks" required="false" width="12"/>
@@ -139,10 +120,7 @@
                                                                                                   name="AORemarks"
                                                                                                   cols="70"
                                                                                                   rows="7"
-                                                                                                  maxlength="500"></textarea>
-                                                                                        <span id="error_AORemarks"
-                                                                                              name="iaisErrorMsg"
-                                                                                              class="error-msg"></span>
+                                                                                                  maxlength="500">${revokeDto.aoRemarks}</textarea>
                                                                                     </div>
                                                                                 </div>
                                                                             </iais:value>
@@ -152,13 +130,12 @@
                                                                         <iais:row>
                                                                             <iais:field value="Processing Decision" required="true"/>
                                                                             <iais:value width="10">
-                                                                                <iais:select name="decision"
-                                                                                             id="decision"
+                                                                                <iais:select name="aoDecision"
+                                                                                             id="aoDecision"
+                                                                                             value="${revokeDto.aoDecision}"
                                                                                              codeCategory="CATE_ID_BSB_PROCESSING_DECISION"
                                                                                              firstOption="Please Select"/>
-                                                                                <span id="error_decision"
-                                                                                      name="iaisErrorMsg"
-                                                                                      class="error-msg"></span>
+                                                                                <span data-err-ind="aoDecision" class="error-msg"></span>
                                                                             </iais:value>
                                                                         </iais:row>
                                                                     </div>

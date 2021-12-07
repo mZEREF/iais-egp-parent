@@ -28,21 +28,6 @@
                             <td align="right">Activity Type</td>
                             <td style="padding-left : 20px">
                                 <iais:code code="${revokeDto.activityType}"/>
-<%--                                <c:if test="${flag eq 'app'}">--%>
-<%--                                    <iais:code code="${approval.activeType}"></iais:code>--%>
-<%--                                </c:if>--%>
-<%--                                <c:if test="${flag eq 'fac'}">--%>
-<%--                                    <c:forEach var="activity" items="${approval.facilityActivities}" varStatus="status">--%>
-<%--                                        <c:choose>--%>
-<%--                                            <c:when test="${status.last}">--%>
-<%--                                                <iais:code code="${activity.activityType}"></iais:code>--%>
-<%--                                            </c:when>--%>
-<%--                                            <c:otherwise>--%>
-<%--                                                <iais:code code="${activity.activityType}"></iais:code>,--%>
-<%--                                            </c:otherwise>--%>
-<%--                                        </c:choose>--%>
-<%--                                    </c:forEach>--%>
-<%--                                </c:if>--%>
                             </td>
                         </tr>
                         <tr>

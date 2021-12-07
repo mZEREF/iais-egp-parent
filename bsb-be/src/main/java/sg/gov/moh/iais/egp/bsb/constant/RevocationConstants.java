@@ -18,8 +18,9 @@ public final class RevocationConstants {
     public static final String PARAM_APPROVAL_NO = "approvalNo";
     public static final String PARAM_APPROVAL_ID = "approvalId";
     public static final String PARAM_REASON = "reason";
-    public static final String PARAM_AOREMARKS = "AORemarks";
-    public static final String PARAM_DOREMARKS = "DORemarks";
+    public static final String PARAM_AO_REMARKS = "AORemarks";
+    public static final String PARAM_AO_DECISION = "aoDecision";
+    public static final String PARAM_DO_REMARKS = "DORemarks";
     public static final String PARAM_APPROVAL_STATUS = "approvalStatus";
     public static final String PARAM_REASON_TYPE_AO = "REASON01";
     public static final String PARAM_REASON_TYPE_DO = "REASON02";
@@ -49,8 +50,6 @@ public final class RevocationConstants {
     public static final String KEY_PAGE_NO = "pageJumpNoTextchangePage";
     public static final String AUDIT_DOC_DTO = "auditDocDto";
 
-    public static final String FACILITY = "facility";
-    public static final String APPROVAL = "approval";
     public static final String FLAG = "flag";
     public static final String BACK = "back";
     public static final String FROM = "from";

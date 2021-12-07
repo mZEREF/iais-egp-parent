@@ -34,12 +34,15 @@ public class SubmitRevokeDto implements Serializable {
     private String reason;
     private String reasonContent;
     private String remarks;
+    private String aoRemarks;
+    private String doRemarks;
     //
     private String doReason;
     private String aoDecision;
     //
     private String loginUser;
     private String module;
+    private String taskId;
 
     @JsonIgnore
     private ValidationResultDto validationResultDto;
