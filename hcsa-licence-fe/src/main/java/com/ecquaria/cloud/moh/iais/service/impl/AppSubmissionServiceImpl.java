@@ -3986,8 +3986,6 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
         session.removeAttribute("viewPrint");
 
         //clear Session
-        session.removeAttribute(NewApplicationDelegator.LIC_PREMISES_MAP);
-        session.removeAttribute(NewApplicationDelegator.APP_PREMISES_MAP);
         session.removeAttribute(NewApplicationDelegator.ALL_SVC_NAMES);
         session.removeAttribute(NewApplicationDelegator.APPSUBMISSIONDTO);
         session.removeAttribute(NewApplicationDelegator.HCSASERVICEDTO);
@@ -4033,6 +4031,8 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
         session.removeAttribute(NewApplicationDelegator.LICENSEE_MAP);
         session.removeAttribute(NewApplicationDelegator.RFC_APP_GRP_PREMISES_DTO_LIST);
         session.removeAttribute(NewApplicationDelegator.PREMISESTYPE);
+        // CR: Split RFC Logic
+        NewApplicationHelper.clearPremisesMap(request);
     }
 
     @Override

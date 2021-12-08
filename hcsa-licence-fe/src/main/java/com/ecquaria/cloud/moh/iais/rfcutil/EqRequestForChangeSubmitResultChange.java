@@ -443,6 +443,7 @@ public class EqRequestForChangeSubmitResultChange {
         }
         return false;
     }
+
     public static boolean eqHciCode(AppGrpPremisesDto appGrpPremisesDto,AppGrpPremisesDto oldAppGrpPremisesDto){
         String hciCode = appGrpPremisesDto.getHciCode();
         String oldHciCode = oldAppGrpPremisesDto.getHciCode();

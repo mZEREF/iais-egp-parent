@@ -210,9 +210,14 @@ public class NewApplicationHelper {
     public static AppSubmissionDto getOldAppSubmissionDto(boolean onlySession, HttpServletRequest request) {
         AppSubmissionDto oldAppSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(request,
                 NewApplicationDelegator.OLDAPPSUBMISSIONDTO);
-        if (!onlySession && oldAppSubmissionDto == null) {
+        AppSubmissionDto appSubmissionDto = getAppSubmissionDto(request);
+        if (oldAppSubmissionDto == null && appSubmissionDto != null) {
+            if (ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appSubmissionDto.getAppType())) {
+                oldAppSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(request, "oldRenewAppSubmissionDto");
+            }
+        }
+        if (!onlySession && oldAppSubmissionDto == null && appSubmissionDto != null) {
             log.info(StringUtil.changeForLog("OldAppSubmissionDto is empty from Session"));
-            AppSubmissionDto appSubmissionDto = getAppSubmissionDto(request);
             oldAppSubmissionDto = appSubmissionDto.getOldAppSubmissionDto();
             if (oldAppSubmissionDto != null) {
                 setOldAppSubmissionDto(oldAppSubmissionDto, request);
@@ -1099,7 +1104,35 @@ public class NewApplicationHelper {
         setSvcScopeInfo(appGrpPremisesDtos,appSvcRelatedInfoDto,map);
     }
 
-    public static AppGrpPremisesDto setWrkTime(AppGrpPremisesDto appGrpPremisesDto){
+    public static void setPremise(AppGrpPremisesDto appGrpPremisesDto, String premIndexNo, AppSubmissionDto oldAppSubmissionDto) {
+        String oldHciCode = oldAppSubmissionDto.getAppGrpPremisesDtoList().stream()
+                .filter(dto -> Objects.equals(premIndexNo, dto.getPremisesIndexNo()))
+                .map(dto -> Optional.ofNullable(dto.getOldHciCode()).orElse(dto.getHciCode()))
+                .findAny()
+                .orElse(null);
+        List<LicenceDto> licenceDtos = oldAppSubmissionDto.getAppGrpPremisesDtoList().stream()
+                .filter(dto -> Objects.equals(premIndexNo, dto.getPremisesIndexNo()))
+                .map(AppGrpPremisesDto::getLicenceDtos)
+                .findAny()
+                .orElse(null);
+        log.info(StringUtil.changeForLog("--- Old Hci Code: " + oldHciCode));
+        log.info(StringUtil.changeForLog("--- Maybe Affected Licence size: " + (licenceDtos == null ? 0 : licenceDtos.size())));
+        appGrpPremisesDto.setPremisesIndexNo(premIndexNo);
+        appGrpPremisesDto.setOldHciCode(oldHciCode);
+        appGrpPremisesDto.setLicenceDtos(licenceDtos);
+    }
+
+    public static AppGrpPremisesDto setOldHciCode(AppGrpPremisesDto appGrpPremisesDto) {
+        if (appGrpPremisesDto == null) {
+            return appGrpPremisesDto;
+        }
+        if (StringUtil.isEmpty(appGrpPremisesDto.getOldHciCode())) {
+            appGrpPremisesDto.setOldHciCode(appGrpPremisesDto.getHciCode());
+        }
+        return appGrpPremisesDto;
+    }
+
+    public static AppGrpPremisesDto setWrkTime(AppGrpPremisesDto appGrpPremisesDto) {
         if(appGrpPremisesDto == null){
             return appGrpPremisesDto;
         }
@@ -1137,7 +1170,7 @@ public class NewApplicationHelper {
         return appGrpPremisesDto;
     }
 
-
+    /*
     public static void setDisciplineAllocationDtoInfo(AppSvcRelatedInfoDto appSvcRelatedInfoDto){
         if(appSvcRelatedInfoDto == null){
             return;
@@ -1164,7 +1197,7 @@ public class NewApplicationHelper {
                 }
             }
         }
-    }
+    }*/
 
     /**
      *
@@ -2058,6 +2091,7 @@ public class NewApplicationHelper {
                 NewApplicationDelegator.APPSUBMISSIONDTO);
         String appType = appSubmissionDto != null ? appSubmissionDto.getAppType() : ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION;
         checkPremisesMap(request);
+        long start = System.currentTimeMillis();
         Map<String, AppGrpPremisesDto> licAppGrpPremisesDtoMap = (Map<String, AppGrpPremisesDto>) request.getSession()
                 .getAttribute(NewApplicationDelegator.LIC_PREMISES_MAP);
         Map<String, AppGrpPremisesDto> appPremisesMap = (Map<String, AppGrpPremisesDto>) request.getSession()
@@ -2082,6 +2116,7 @@ public class NewApplicationHelper {
         } finally {
             executorService.shutdown();
         }
+        log.info("##### Time A: " + (System.currentTimeMillis() - start));
     }
 
     private static FutureTask<String> createTask(String appType, String premiseType,
@@ -2097,14 +2132,42 @@ public class NewApplicationHelper {
         });
     }
 
+    public static void setPremSelect2(HttpServletRequest request) {
+        AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(request,
+                NewApplicationDelegator.APPSUBMISSIONDTO);
+        String appType = appSubmissionDto != null ? appSubmissionDto.getAppType() : ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION;
+        checkPremisesMap(request);
+        long start = System.currentTimeMillis();
+        Map<String, AppGrpPremisesDto> licAppGrpPremisesDtoMap = (Map<String, AppGrpPremisesDto>) request.getSession()
+                .getAttribute(NewApplicationDelegator.LIC_PREMISES_MAP);
+        Map<String, AppGrpPremisesDto> appPremisesMap = (Map<String, AppGrpPremisesDto>) request.getSession()
+                .getAttribute(NewApplicationDelegator.APP_PREMISES_MAP);
+        Map<String, String> target = IaisCommonUtils.genNewHashMap(4);
+        target.put(ApplicationConsts.PREMISES_TYPE_ON_SITE, "premisesSelect");
+        target.put(ApplicationConsts.PREMISES_TYPE_CONVEYANCE, "conveyancePremSel");
+        target.put(ApplicationConsts.PREMISES_TYPE_OFF_SITE, "offSitePremSel");
+        target.put(ApplicationConsts.PREMISES_TYPE_EAS_MTS_CONVEYANCE, "easMtsPremSel");
+        String addtional = " (Pending MOH Approval)";
+        target.forEach((premiseType, sessionKey) -> {
+            List<SelectOption> premisesSelect = getPremisesSel(appType);
+            setPremSelect(premisesSelect, premiseType, "", licAppGrpPremisesDtoMap);
+            setPremSelect(premisesSelect, premiseType, addtional, appPremisesMap);
+            ParamUtil.setSessionAttr(request, sessionKey, (Serializable) premisesSelect);
+            log.info("----------" + premiseType + "-------------");
+        });
+        log.info("##### Time B: " + (System.currentTimeMillis() - start));
+    }
+
     private static void setPremSelect(List<SelectOption> premisesSelect, String premiseType, String addtional,
             Map<String, AppGrpPremisesDto> premiseMap) {
         List<SelectOption> existingPrems = IaisCommonUtils.genNewArrayList();
         if (premiseMap != null && !premiseMap.isEmpty()) {
             for (Map.Entry<String, AppGrpPremisesDto> entry : premiseMap.entrySet()) {
                 AppGrpPremisesDto item = entry.getValue();
+                String premKey = entry.getKey();
                 if (Objects.equals(premiseType, item.getPremisesType())) {
-                    existingPrems.add(new SelectOption(entry.getKey(), item.getAddress() + addtional));
+                    existingPrems.add(new SelectOption(premKey, item.getAddress() + addtional));
+                    SelectOption selectOption = new SelectOption(premKey, item.getAddress() + addtional);
                 }
             }
         }
@@ -2573,22 +2636,6 @@ public class NewApplicationHelper {
 
     public static boolean newAndNotRfi(HttpServletRequest request,String appType){
         return !checkIsRfi(request) && ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType);
-    }
-
-    public static AppSubmissionDto getOldSubmissionDto(HttpServletRequest request,String appType){
-        boolean isRfi = NewApplicationHelper.checkIsRfi(request);
-        AppSubmissionDto appSubmissionDto  = null;
-        if(isRfi){
-            appSubmissionDto = getOldAppSubmissionDto(request);
-        }else if(ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appType)){
-            appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(request,"oldRenewAppSubmissionDto");
-        }else if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType) || ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType)){
-            appSubmissionDto = getOldAppSubmissionDto(request);;
-        }
-        if(appSubmissionDto == null){
-            appSubmissionDto = new AppSubmissionDto();
-        }
-        return appSubmissionDto;
     }
 
     public static List<String> genPremisesHciList(AppGrpPremisesDto premisesDto) {
@@ -4752,19 +4799,38 @@ public class NewApplicationHelper {
     public static void checkPremisesMap(HttpServletRequest request) {
         AppSubmissionService appSubmissionService = SpringHelper.getBean(AppSubmissionService.class);
         String licenseeId = getLicenseeId(request);
-        Map<String, AppGrpPremisesDto> licAppGrpPremisesDtoMap = (Map<String, AppGrpPremisesDto>)request.getSession()
+        Map<String, AppGrpPremisesDto> licAppGrpPremisesDtoMap = (Map<String, AppGrpPremisesDto>) request.getSession()
                 .getAttribute(NewApplicationDelegator.LIC_PREMISES_MAP);
         if (licAppGrpPremisesDtoMap == null || licAppGrpPremisesDtoMap.isEmpty()) {
-            request.getSession().setAttribute(NewApplicationDelegator.LIC_PREMISES_MAP,
-                    appSubmissionService.getLicencePremisesDtoMap(licenseeId));
-            appSubmissionService.getActivePendingPremisesMap(licenseeId);
+            licAppGrpPremisesDtoMap = appSubmissionService.getLicencePremisesDtoMap(licenseeId);
+            if (licAppGrpPremisesDtoMap == null) {
+                licAppGrpPremisesDtoMap = IaisCommonUtils.genNewHashMap();
+            }
+            request.getSession().setAttribute(NewApplicationDelegator.LIC_PREMISES_MAP, licAppGrpPremisesDtoMap);
         }
-        Map<String, AppGrpPremisesDto> appPremisesMap =(Map<String, AppGrpPremisesDto>)request.getSession()
+        Map<String, AppGrpPremisesDto> appPremisesMap = (Map<String, AppGrpPremisesDto>) request.getSession()
                 .getAttribute(NewApplicationDelegator.APP_PREMISES_MAP);
         if (appPremisesMap == null || appPremisesMap.isEmpty()) {
-            request.getSession().setAttribute(NewApplicationDelegator.APP_PREMISES_MAP,
-                    appSubmissionService.getActivePendingPremisesMap(licenseeId));
+            Map<String, AppGrpPremisesDto> newAppMap = IaisCommonUtils.genNewHashMap();
+            appPremisesMap = appSubmissionService.getActivePendingPremisesMap(licenseeId);
+            if (appPremisesMap != null) {
+                for (Map.Entry<String, AppGrpPremisesDto> entry : appPremisesMap.entrySet()) {
+                    if (!licAppGrpPremisesDtoMap.containsKey(entry.getKey())) {
+                        newAppMap.put(entry.getKey(), entry.getValue());
+                    }
+                }
+            }
+            request.getSession().setAttribute(NewApplicationDelegator.APP_PREMISES_MAP, newAppMap);
         }
+    }
+
+    public static void clearPremisesMap(HttpServletRequest request) {
+        request.getSession().removeAttribute(NewApplicationDelegator.LIC_PREMISES_MAP);
+        request.getSession().removeAttribute(NewApplicationDelegator.APP_PREMISES_MAP);
+        request.getSession().removeAttribute("premisesSelect");
+        request.getSession().removeAttribute("conveyancePremSel");
+        request.getSession().removeAttribute("offSitePremSel");
+        request.getSession().removeAttribute("easMtsPremSel");
     }
 
 }

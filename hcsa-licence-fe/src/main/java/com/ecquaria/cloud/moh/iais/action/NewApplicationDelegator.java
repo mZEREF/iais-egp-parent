@@ -644,6 +644,7 @@ public class NewApplicationDelegator {
 
         //premise select select options
         NewApplicationHelper.setPremSelect(bpc.request);
+        NewApplicationHelper.setPremSelect2(bpc.request);
         //addressType
         //NewApplicationHelper.setPremAddressSelect(bpc.request);
 
@@ -1208,7 +1209,10 @@ public class NewApplicationDelegator {
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
         List<AppGrpPrimaryDocDto> newAppGrpPrimaryDocDtoList = IaisCommonUtils.genNewArrayList();
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
-        AppSubmissionDto oldSubmissionDto = NewApplicationHelper.getOldSubmissionDto(bpc.request,appSubmissionDto.getAppType());
+        AppSubmissionDto oldSubmissionDto = NewApplicationHelper.getOldAppSubmissionDto(bpc.request);
+        if (oldSubmissionDto == null) {
+            oldSubmissionDto = new AppSubmissionDto();
+        }
         List<AppGrpPrimaryDocDto> oldPrimaryDocDtoList = oldSubmissionDto.getAppGrpPrimaryDocDtos();
         String action = ParamUtil.getRequestString(bpc.request, "crud_action_value");
         String appType = appSubmissionDto.getAppType();
@@ -3149,6 +3153,7 @@ public class NewApplicationDelegator {
                     NewApplicationHelper.setOldAppSubmissionDto(oldAppSubmissionDto, bpc.request);
                 }
             }
+            NewApplicationHelper.clearPremisesMap(bpc.request);
         }
         ParamUtil.setSessionAttr(bpc.request,APPSUBMISSIONDTO,appSubmissionDto);
         String tranSferFlag = appSubmissionDto.getTransferFlag();
@@ -3775,18 +3780,6 @@ public class NewApplicationDelegator {
                 log.info(StringUtil.changeForLog("New premise index"));
                 premIndexNo = UUID.randomUUID().toString();
             }
-            String finalPremINdexNo = premIndexNo;
-            String oldHciCode = appSubmissionDto.getAppGrpPremisesDtoList().stream()
-                    .filter(dto -> Objects.equals(finalPremINdexNo, dto.getPremisesIndexNo()))
-                    .map(dto -> Optional.ofNullable(dto.getOldHciCode()).orElse(dto.getHciCode()))
-                    .findAny()
-                    .orElse(null);
-            List<LicenceDto> licenceDtos = appSubmissionDto.getAppGrpPremisesDtoList().stream()
-                    .filter(dto -> Objects.equals(finalPremINdexNo, dto.getPremisesIndexNo()))
-                    .map(AppGrpPremisesDto::getLicenceDtos)
-                    .findAny()
-                    .orElse(null);
-            log.info(StringUtil.changeForLog("--- Old Hci Code: " + oldHciCode));
             String appType = appSubmissionDto.getAppType();
             boolean newApp = requestInformationConfig == null && ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType);
             if (newApp) {
@@ -3800,9 +3793,7 @@ public class NewApplicationDelegator {
 //                    appGrpPremisesDto = licAppGrpPremisesDtoMap.get(premisesSel);
                     if (appGrpPremisesDto != null) {
                         //get value for jsp page
-                        appGrpPremisesDto.setPremisesIndexNo(premIndexNo);
-                        appGrpPremisesDto.setOldHciCode(oldHciCode);
-                        appGrpPremisesDto.setLicenceDtos(licenceDtos);
+                        NewApplicationHelper.setPremise(appGrpPremisesDto, premIndexNo, appSubmissionDto);
                         appGrpPremisesDtoList.add(appGrpPremisesDto);
                     }
                     continue;
@@ -3816,23 +3807,19 @@ public class NewApplicationDelegator {
                             break;
                         }
                     }
-                    appGrpPremisesDto.setOldHciCode(oldHciCode);
-                    appGrpPremisesDto.setLicenceDtos(licenceDtos);
+                    NewApplicationHelper.setPremise(appGrpPremisesDto, premIndexNo, appSubmissionDto);
                     appGrpPremisesDtoList.add(appGrpPremisesDto);
                     continue;
                 }
                 if (AppConsts.YES.equals(chooseExistData[i])) {
                     appGrpPremisesDto = licAppGrpPremisesDtoMap.get(premisesSel);
-                    //get value for jsp page
-                    appGrpPremisesDto.setPremisesIndexNo(premIndexNo);
                     //appGrpPremisesDto.setRfiCanEdit(true);
                     if(AppConsts.TRUE.equals(rfiCanEdit[i])){
                         appGrpPremisesDto.setRfiCanEdit(true);
                     }else{
                         appGrpPremisesDto.setRfiCanEdit(false);
                     }
-                    appGrpPremisesDto.setOldHciCode(oldHciCode);
-                    appGrpPremisesDto.setLicenceDtos(licenceDtos);
+                    NewApplicationHelper.setPremise(appGrpPremisesDto, premIndexNo, appSubmissionDto);
                     appGrpPremisesDtoList.add(appGrpPremisesDto);
                     continue;
                 }
@@ -3852,10 +3839,7 @@ public class NewApplicationDelegator {
                     }
                 }
             }
-            appGrpPremisesDto.setOldHciCode(oldHciCode);
-            appGrpPremisesDto.setLicenceDtos(licenceDtos);
-            //get value for session , this is the subtype's checkbox
-            appGrpPremisesDto.setPremisesIndexNo(premIndexNo);
+            NewApplicationHelper.setPremise(appGrpPremisesDto, premIndexNo, appSubmissionDto);
             // set premise type
             appGrpPremisesDto.setPremisesType(premisesType[i]);
             //List<AppPremPhOpenPeriodDto> appPremPhOpenPeriods = IaisCommonUtils.genNewArrayList();
