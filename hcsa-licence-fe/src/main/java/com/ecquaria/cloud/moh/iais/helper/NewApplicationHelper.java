@@ -1094,16 +1094,20 @@ public class NewApplicationHelper {
     }
 
     public static void setPremise(AppGrpPremisesDto appGrpPremisesDto, String premIndexNo, AppSubmissionDto oldAppSubmissionDto) {
-        String oldHciCode = oldAppSubmissionDto.getAppGrpPremisesDtoList().stream()
-                .filter(dto -> Objects.equals(premIndexNo, dto.getPremisesIndexNo()))
-                .map(dto -> Optional.ofNullable(dto.getOldHciCode()).orElse(dto.getHciCode()))
-                .findAny()
-                .orElse(null);
-        List<LicenceDto> licenceDtos = oldAppSubmissionDto.getAppGrpPremisesDtoList().stream()
-                .filter(dto -> Objects.equals(premIndexNo, dto.getPremisesIndexNo()))
-                .map(AppGrpPremisesDto::getLicenceDtos)
-                .findAny()
-                .orElse(null);
+        String oldHciCode = null;
+        List<LicenceDto> licenceDtos = null;
+        if (oldAppSubmissionDto != null) {
+            oldHciCode = oldAppSubmissionDto.getAppGrpPremisesDtoList().stream()
+                    .filter(dto -> Objects.equals(premIndexNo, dto.getPremisesIndexNo()))
+                    .map(dto -> Optional.ofNullable(dto.getOldHciCode()).orElse(dto.getHciCode()))
+                    .findAny()
+                    .orElse(null);
+            licenceDtos = oldAppSubmissionDto.getAppGrpPremisesDtoList().stream()
+                    .filter(dto -> Objects.equals(premIndexNo, dto.getPremisesIndexNo()))
+                    .map(AppGrpPremisesDto::getLicenceDtos)
+                    .findAny()
+                    .orElse(null);
+        }
         log.info(StringUtil.changeForLog("--- Old Hci Code: " + oldHciCode));
         log.info(StringUtil.changeForLog("--- Maybe Affected Licence size: " + (licenceDtos == null ? 0 : licenceDtos.size())));
         appGrpPremisesDto.setPremisesIndexNo(premIndexNo);
@@ -4759,7 +4763,34 @@ public class NewApplicationHelper {
         Map<String, AppGrpPremisesDto> allData = IaisCommonUtils.genNewHashMap();
         allData.putAll(licAppGrpPremisesDtoMap);
         allData.putAll(newAppMap);
+        reSetCurrentPremises(allData, request);
         return allData;
+    }
+
+    private static void reSetCurrentPremises(Map<String, AppGrpPremisesDto> allData, HttpServletRequest request) {
+        AppSubmissionDto appSubmissionDto = getAppSubmissionDto(request);
+        if (appSubmissionDto == null || appSubmissionDto.getAppGrpPremisesDtoList() == null) {
+            return;
+        }
+        Map<String, AppGrpPremisesDto> licAppGrpPremisesDtoMap = (Map<String, AppGrpPremisesDto>) request.getSession()
+                .getAttribute(NewApplicationDelegator.LIC_PREMISES_MAP);
+        Map<String, AppGrpPremisesDto> appPremisesMap = (Map<String, AppGrpPremisesDto>) request.getSession()
+                .getAttribute(NewApplicationDelegator.APP_PREMISES_MAP);
+        for (AppGrpPremisesDto dto : appSubmissionDto.getAppGrpPremisesDtoList()) {
+            String premisesSelect = dto.getPremisesSelect();
+            if (StringUtil.isEmpty(premisesSelect)) {
+                premisesSelect = getPremisesKey(dto);
+                dto.setPremisesSelect(premisesSelect);
+            }
+            allData.put(premisesSelect, dto);
+            if (licAppGrpPremisesDtoMap.get(premisesSelect) != null) {
+                licAppGrpPremisesDtoMap.put(premisesSelect, dto);
+                request.getSession().setAttribute(NewApplicationDelegator.LIC_PREMISES_MAP, licAppGrpPremisesDtoMap);
+            } else {
+                appPremisesMap.put(premisesSelect, dto);
+                request.getSession().setAttribute(NewApplicationDelegator.APP_PREMISES_MAP, appPremisesMap);
+            }
+        }
     }
 
     public static void clearPremisesMap(HttpServletRequest request) {

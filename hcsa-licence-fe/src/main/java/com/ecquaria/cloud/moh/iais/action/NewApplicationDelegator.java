@@ -3219,6 +3219,7 @@ public class NewApplicationDelegator {
             maxFileIndex = 0;
         }
         appSubmissionDto.setMaxFileIndex(maxFileIndex);
+        NewApplicationHelper.reSetAdditionalFields(appSubmissionDto, true, false, appGroupNo);
         appSubmissionDto = appSubmissionService.submit(appSubmissionDto, bpc.process);
 
         ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
