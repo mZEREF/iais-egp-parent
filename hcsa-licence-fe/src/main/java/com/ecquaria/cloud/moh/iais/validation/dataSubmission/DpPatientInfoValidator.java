@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.validation.dataSubmission;
 
+import com.ecquaria.cloud.helper.SpringContextHelper;
 import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DpSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientDto;
@@ -8,14 +9,18 @@ import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.CommonValidator;
 import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidator;
+import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
+import com.ecquaria.cloud.moh.iais.service.datasubmission.PatientService;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 
 /**
  * DpPatientInfoValidator
@@ -36,6 +41,16 @@ public class DpPatientInfoValidator implements CustomizeValidator {
         if (patientDto == null) {
             patientDto = new PatientDto();
         }
+
+        LoginContext loginContext = DataSubmissionHelper.getLoginContext(request);
+        String orgId = Optional.ofNullable(loginContext).map(LoginContext::getOrgId).orElse("");
+        PatientService patientService = SpringContextHelper.getContext().getBean(PatientService.class);
+        PatientDto patient = patientService.getDpPatientDto(patientDto.getIdType(), patientDto.getIdNumber(),
+                patientDto.getNationality(), orgId);
+        if (patient != null && (StringUtil.isEmpty(patientDto.getId()) || !Objects.equals(patient.getId(), patientDto.getId()))) {
+            errorMap.put("idNumber", MessageUtil.getMessageDesc("DS_ERR007"));
+        }
+
         if(!StringUtil.isEmpty(patientDto.getIdType())){
             if (patientDto.getIdType().equals(DataSubmissionConsts.AR_ID_TYPE_PASSPORT_NO)){
                 if(StringUtil.isEmpty(patientDto.getNationality())){
