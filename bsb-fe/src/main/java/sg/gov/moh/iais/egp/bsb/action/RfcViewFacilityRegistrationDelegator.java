@@ -14,6 +14,7 @@ import sg.gov.moh.iais.egp.bsb.common.node.simple.SimpleNode;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
 import sg.gov.moh.iais.egp.bsb.dto.register.facility.BiologicalAgentToxinDto;
 import sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityRegisterDto;
+import sg.gov.moh.iais.egp.bsb.service.FacilityRegistrationService;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
@@ -24,12 +25,8 @@ import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.*;
 @Delegator(value = "rfcViewFacRegAppDelegator")
 @Slf4j
 public class RfcViewFacilityRegistrationDelegator {
-    private static final String KEY_ROOT_NODE_GROUP = "facRegRoot";
-    private static final String KEY_APP_ID = "appId";
-    private static final String KEY_EDIT_APP_ID = "editId";
-    private static final String KEY_MASKED_EDIT_APP_ID = "maskedEditId";
-    private static final String KEY_APPROVE_NO = "approveNo";
-    private static final String KEY_PROCESS_TYPE = "processType";
+    private static final String MODULE_NAME = "RFC Facility Registration";
+    private static final String FUNCTION_NAME = "RFC View Application";
 
     private final FacilityRegisterClient facRegClient;
 
@@ -40,7 +37,7 @@ public class RfcViewFacilityRegistrationDelegator {
 
     public void start(BaseProcessClass bpc) { // NOSONAR
         HttpServletRequest request = bpc.request;
-        AuditTrailHelper.auditFunction("RFC Facility Registration", "RFC View Application");
+        AuditTrailHelper.auditFunction(MODULE_NAME, FUNCTION_NAME);
         request.getSession().removeAttribute(KEY_APPROVE_NO);
     }
 
@@ -87,7 +84,7 @@ public class RfcViewFacilityRegistrationDelegator {
             ParamUtil.setRequestAttr(request, NODE_NAME_FAC_COMMITTEE, ((SimpleNode)facRegRoot.at(NODE_NAME_FAC_INFO + facRegRoot.getPathSeparator() + NODE_NAME_FAC_COMMITTEE)).getValue());
 
             NodeGroup batNodeGroup = (NodeGroup) facRegRoot.at(NODE_NAME_FAC_BAT_INFO);
-            List<BiologicalAgentToxinDto> batList = FacilityRegistrationDelegator.getBatInfoList(batNodeGroup);
+            List<BiologicalAgentToxinDto> batList = FacilityRegistrationService.getBatInfoList(batNodeGroup);
             ParamUtil.setRequestAttr(request, "batList", batList);
         } else {
             throw new IaisRuntimeException("Fail to retrieve app data");

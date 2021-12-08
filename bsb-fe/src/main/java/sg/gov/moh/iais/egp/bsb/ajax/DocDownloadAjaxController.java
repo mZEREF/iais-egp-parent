@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import sg.gov.moh.iais.egp.bsb.action.ApprovalAppDelegator;
 import sg.gov.moh.iais.egp.bsb.action.FacCertifierRegistrationDelegator;
-import sg.gov.moh.iais.egp.bsb.action.FacilityRegistrationDelegator;
 import sg.gov.moh.iais.egp.bsb.client.FileRepoClient;
 import sg.gov.moh.iais.egp.bsb.common.multipart.ByteArrayMultipartFile;
 import sg.gov.moh.iais.egp.bsb.common.node.NodeGroup;
@@ -159,7 +158,7 @@ public class DocDownloadAjaxController {
      * @param id key of the newDocMap in the PrimaryDocDto
      */
     private MultipartFile facRegGetNewFile(HttpServletRequest request, String id) {
-        NodeGroup facRegRoot = (NodeGroup) ParamUtil.getSessionAttr(request, FacilityRegistrationDelegator.KEY_ROOT_NODE_GROUP);
+        NodeGroup facRegRoot = (NodeGroup) ParamUtil.getSessionAttr(request, FacRegisterConstants.KEY_ROOT_NODE_GROUP);
         SimpleNode primaryDocNode = (SimpleNode) facRegRoot.at(FacRegisterConstants.NODE_NAME_PRIMARY_DOC);
         PrimaryDocDto primaryDocDto = (PrimaryDocDto) primaryDocNode.getValue();
         return primaryDocDto.getNewDocMap().get(id).getMultipartFile();
@@ -170,7 +169,7 @@ public class DocDownloadAjaxController {
      * @param id key of the savedDocMap in the PrimaryDocDto
      */
     private MultipartFile facRegGetSavedFile(HttpServletRequest request, String id) {
-        NodeGroup facRegRoot = (NodeGroup) ParamUtil.getSessionAttr(request, FacilityRegistrationDelegator.KEY_ROOT_NODE_GROUP);
+        NodeGroup facRegRoot = (NodeGroup) ParamUtil.getSessionAttr(request, FacRegisterConstants.KEY_ROOT_NODE_GROUP);
         SimpleNode primaryDocNode = (SimpleNode) facRegRoot.at(FacRegisterConstants.NODE_NAME_PRIMARY_DOC);
         PrimaryDocDto primaryDocDto = (PrimaryDocDto) primaryDocNode.getValue();
         DocRecordInfo info = primaryDocDto.getSavedDocMap().get(id);

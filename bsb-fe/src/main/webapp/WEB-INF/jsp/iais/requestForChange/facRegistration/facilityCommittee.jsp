@@ -173,7 +173,7 @@
                                                     </div>
                                                     <div class="form-group ">
                                                         <div class="col-sm-5 control-label">
-                                                            <label for="role--v--${status.index}">Nationality</label>
+                                                            <label for="role--v--${status.index}">Role</label>
                                                             <span class="mandatory otherQualificationSpan">*</span>
                                                         </div>
                                                         <div class="col-sm-6 col-md-7">
