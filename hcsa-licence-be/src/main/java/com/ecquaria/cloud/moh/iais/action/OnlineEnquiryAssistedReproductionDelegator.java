@@ -911,7 +911,7 @@ public class OnlineEnquiryAssistedReproductionDelegator {
                 }
             }
             patientInventoryDtoTotal.setCurrentThawedEmbryos(currentThawedEmbryos);
-            patientInventoryDtoTotal.setChangeFreshOocytes(currentFreshOocytes);
+            patientInventoryDtoTotal.setCurrentFreshOocytes(currentFreshOocytes);
             patientInventoryDtoTotal.setCurrentFrozenEmbryos(currentFrozenEmbryos);
             patientInventoryDtoTotal.setCurrentFreshEmbryos(currentFreshEmbryos);
             patientInventoryDtoTotal.setCurrentFrozenOocytes(currentFrozenOocytes);
