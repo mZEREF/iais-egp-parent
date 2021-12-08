@@ -213,4 +213,13 @@ public class MasterCodeConstants {
     public static final String APPROVAL_STATUS_REVOKED = "APPRSTA003";
     public static final String APPROVAL_STATUS_SUSPENDED = "APPRSTA004";
     public static final String APPROVAL_STATUS_EXPIRED = "APPRSTA005";
+
+    public static final String REPORTING_OF_INCIDENT_ADVERSE_INCIDENT = "REPORT001";
+    public static final String REPORTING_OF_INCIDENT_NEAR_MISS = "REPORT002";
+
+    public static final String INCIDENT_TYPE_BIO_SAFETY = "INDTYPE001";
+    public static final String INCIDENT_TYPE_BIO_SECURITY = "INDTYPE002";
+    public static final String INCIDENT_TYPE_GENERAL_SAFETY = "INDTYPE003";
+
+
 }

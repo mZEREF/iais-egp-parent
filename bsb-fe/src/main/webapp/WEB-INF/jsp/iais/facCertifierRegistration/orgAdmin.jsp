@@ -37,7 +37,6 @@
                                     <%@include file="subStepNavTab.jsp"%>
 
                                     <div class="form-horizontal">
-                                        <%--@elvariable id="facAdmin" type="sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityAdministratorDto"--%>
                                         <h3 class="col-12 pl-0" style="border-bottom: 1px solid black">Main Adminstrator</h3>
 
                                         <section id="mainAdmin">
@@ -47,7 +46,7 @@
                                                     <span class="mandatory otherQualificationSpan">*</span>
                                                 </div>
                                                 <div class="col-sm-6 col-md-7">
-                                                    <input type="text" autocomplete="off" name="adminNameM" id="adminNameM" value='<c:out value="${orgAdmin.mainAdmin.adminName}"/>'/>
+                                                    <input type="text" autocomplete="off" name="adminNameM" id="adminNameM" maxlength="132" value='<c:out value="${orgAdmin.mainAdmin.adminName}"/>'/>
                                                     <span data-err-ind="adminNameM" class="error-msg"></span>
                                                 </div>
                                             </div>
@@ -79,7 +78,7 @@
                                                     <span data-err-ind="idTypeM" class="error-msg"></span>
                                                 </div>
                                                 <div class="col-sm-3 col-md-4">
-                                                    <input type="text" autocomplete="off" name="idNoM" id="idNoM" value='<c:out value="${orgAdmin.mainAdmin.idNo}"/>'/>
+                                                    <input type="text" autocomplete="off" name="idNoM" id="idNoM" maxlength="10" value='<c:out value="${orgAdmin.mainAdmin.idNo}"/>'/>
                                                     <span data-err-ind="idNoM" class="error-msg"></span>
                                                 </div>
                                             </div>
@@ -89,7 +88,7 @@
                                                     <span class="mandatory otherQualificationSpan">*</span>
                                                 </div>
                                                 <div class="col-sm-6 col-md-7">
-                                                    <input type="text" autocomplete="off" name="designationM" id="designationM" value='<c:out value="${orgAdmin.mainAdmin.designation}"/>' />
+                                                    <input type="text" autocomplete="off" name="designationM" id="designationM" maxlength="66" value='<c:out value="${orgAdmin.mainAdmin.designation}"/>' />
                                                     <span data-err-ind="designationM" class="error-msg"></span>
                                                 </div>
                                             </div>
@@ -99,7 +98,7 @@
                                                     <span class="mandatory otherQualificationSpan">*</span>
                                                 </div>
                                                 <div class="col-sm-6 col-md-7">
-                                                    <input type="text" autocomplete="off" name="contactNoM" id="contactNoM" value='<c:out value="${orgAdmin.mainAdmin.contactNo}"/>' />
+                                                    <input type="text" autocomplete="off" name="contactNoM" id="contactNoM" maxlength="20" value='<c:out value="${orgAdmin.mainAdmin.contactNo}"/>' />
                                                     <span data-err-ind="contactNoM" class="error-msg"></span>
                                                 </div>
                                             </div>
@@ -109,7 +108,7 @@
                                                     <span class="mandatory otherQualificationSpan">*</span>
                                                 </div>
                                                 <div class="col-sm-6 col-md-7">
-                                                    <input type="text" autocomplete="off" name="emailM" id="emailM" value='<c:out value="${orgAdmin.mainAdmin.email}"/>' />
+                                                    <input type="text" autocomplete="off" name="emailM" id="emailM" maxlength="66" value='<c:out value="${orgAdmin.mainAdmin.email}"/>' />
                                                     <span data-err-ind="emailM" class="error-msg"></span>
                                                 </div>
                                             </div>
@@ -133,7 +132,7 @@
                                                     <span class="mandatory otherQualificationSpan">*</span>
                                                 </div>
                                                 <div class="col-sm-6 col-md-7">
-                                                    <input type="text" autocomplete="off" name="adminNameA" id="adminNameA" value='<c:out value="${orgAdmin.alternativeAdmin.adminName}"/>'/>
+                                                    <input type="text" autocomplete="off" name="adminNameA" id="adminNameA" maxlength="132" value='<c:out value="${orgAdmin.alternativeAdmin.adminName}"/>'/>
                                                     <span data-err-ind="adminNameA" class="error-msg"></span>
                                                 </div>
                                             </div>
@@ -165,7 +164,7 @@
                                                     <span data-err-ind="idTypeA" class="error-msg"></span>
                                                 </div>
                                                 <div class="col-sm-3 col-md-4">
-                                                    <input type="text" autocomplete="off" name="idNoA" id="idNoA" value='<c:out value="${orgAdmin.alternativeAdmin.idNo}"/>'/>
+                                                    <input type="text" autocomplete="off" name="idNoA" id="idNoA" maxlength="9" value='<c:out value="${orgAdmin.alternativeAdmin.idNo}"/>'/>
                                                     <span data-err-ind="idNoA" class="error-msg"></span>
                                                 </div>
                                             </div>
@@ -175,7 +174,7 @@
                                                     <span class="mandatory otherQualificationSpan">*</span>
                                                 </div>
                                                 <div class="col-sm-6 col-md-7">
-                                                    <input type="text" autocomplete="off" name="designationA" id="designationA" value='<c:out value="${orgAdmin.alternativeAdmin.designation}"/>'/>
+                                                    <input type="text" autocomplete="off" name="designationA" id="designationA" maxlength="66" value='<c:out value="${orgAdmin.alternativeAdmin.designation}"/>'/>
                                                     <span data-err-ind="designationA" class="error-msg"></span>
                                                 </div>
                                             </div>
@@ -185,7 +184,7 @@
                                                     <span class="mandatory otherQualificationSpan">*</span>
                                                 </div>
                                                 <div class="col-sm-6 col-md-7">
-                                                    <input type="text" autocomplete="off" name="contactNoA" id="contactNoA" value='<c:out value="${orgAdmin.alternativeAdmin.contactNo}"/>'/>
+                                                    <input type="text" autocomplete="off" name="contactNoA" id="contactNoA" maxlength="20" value='<c:out value="${orgAdmin.alternativeAdmin.contactNo}"/>'/>
                                                     <span data-err-ind="contactNoA" class="error-msg"></span>
                                                 </div>
                                             </div>
@@ -195,7 +194,7 @@
                                                     <span class="mandatory otherQualificationSpan">*</span>
                                                 </div>
                                                 <div class="col-sm-6 col-md-7">
-                                                    <input type="text" autocomplete="off" name="emailA" id="emailA" value='<c:out value="${orgAdmin.alternativeAdmin.email}"/>'/>
+                                                    <input type="text" autocomplete="off" name="emailA" id="emailA" maxlength="66" value='<c:out value="${orgAdmin.alternativeAdmin.email}"/>'/>
                                                     <span data-err-ind="emailA" class="error-msg"></span>
                                                 </div>
                                             </div>

@@ -84,7 +84,7 @@
                                                         <span data-err-ind="idType--v--${status.index}" class="error-msg"></span>
                                                     </div>
                                                     <div class="col-sm-3 col-md-4">
-                                                        <input type="text" autocomplete="off" name="idNo--v--${status.index}" id="idNo--v--${status.index}" value='<c:out value="${cer.idNo}"/>'/>
+                                                        <input type="text" autocomplete="off" name="idNo--v--${status.index}" id="idNo--v--${status.index}" maxlength="10" value='<c:out value="${cer.idNo}"/>'/>
                                                         <span data-err-ind="idNo--v--${status.index}" class="error-msg"></span>
                                                     </div>
                                                 </div>
@@ -138,7 +138,7 @@
                                                         <span class="mandatory otherQualificationSpan">*</span>
                                                     </div>
                                                     <div class="col-sm-6 col-md-7">
-                                                        <input type="text" autocomplete="off" name="telNo--v--${status.index}" id="telNo--v--${status.index}" value='<c:out value="${cer.telNo}"/>'/>
+                                                        <input type="text" autocomplete="off" name="telNo--v--${status.index}" id="telNo--v--${status.index}" maxlength="20" value='<c:out value="${cer.telNo}"/>'/>
                                                         <span data-err-ind="telNo--v--${status.index}" class="error-msg"></span>
                                                     </div>
                                                 </div>
@@ -149,7 +149,7 @@
                                                         <span class="mandatory otherQualificationSpan">*</span>
                                                     </div>
                                                     <div class="col-sm-6 col-md-7">
-                                                        <input type="text" autocomplete="off" name="jobDesignation--v--${status.index}" id="jobDesignation--v--${status.index}" value='<c:out value="${cer.jobDesignation}"/>'/>
+                                                        <input type="text" autocomplete="off" name="jobDesignation--v--${status.index}" id="jobDesignation--v--${status.index}" maxlength="66" value='<c:out value="${cer.jobDesignation}"/>'/>
                                                         <span data-err-ind="jobDesignation--v--${status.index}" class="error-msg"></span>
                                                     </div>
                                                 </div>
@@ -193,7 +193,7 @@
                                                         <span class="mandatory otherQualificationSpan">*</span>
                                                     </div>
                                                     <div class="col-sm-6 col-md-7">
-                                                        <textarea autocomplete="off" name="certBSL3Exp--v--${status.index}" id="certBSL3Exp--v--${status.index}" style="width: 100%">
+                                                        <textarea autocomplete="off" name="certBSL3Exp--v--${status.index}" id="certBSL3Exp--v--${status.index}" maxlength="1000" style="width: 100%">
                                                             <c:out value="${cer.certBSL3Exp}"/>
                                                         </textarea>
                                                         <span data-err-ind="certBSL3Exp--v--${status.index}" class="error-msg"></span>
@@ -206,7 +206,7 @@
                                                         <span class="mandatory otherQualificationSpan">*</span>
                                                     </div>
                                                     <div class="col-sm-6 col-md-7">
-                                                        <textarea autocomplete="off" name="commBSL34Exp--v--${status.index}" id="commBSL34Exp--v--${status.index}" style="width: 100%">
+                                                        <textarea autocomplete="off" name="commBSL34Exp--v--${status.index}" id="commBSL34Exp--v--${status.index}" maxlength="1000" style="width: 100%">
                                                             <c:out value="${cer.commBSL34Exp}"/>
                                                         </textarea>
                                                         <span data-err-ind="commBSL34Exp--v--${status.index}" class="error-msg"></span>
@@ -219,7 +219,7 @@
                                                         <span class="mandatory otherQualificationSpan">*</span>
                                                     </div>
                                                     <div class="col-sm-6 col-md-7">
-                                                        <textarea autocomplete="off" name="otherBSL34Exp--v--${status.index}" id="otherBSL34Exp--v--${status.index}" style="width: 100%">
+                                                        <textarea autocomplete="off" name="otherBSL34Exp--v--${status.index}" id="otherBSL34Exp--v--${status.index}" maxlength="1000" style="width: 100%">
                                                             <c:out value="${cer.otherBSL34Exp}"/>
                                                         </textarea>
                                                         <span data-err-ind="otherBSL34Exp--v--${status.index}" class="error-msg"></span>
@@ -232,7 +232,7 @@
                                                         <span class="mandatory otherQualificationSpan">*</span>
                                                     </div>
                                                     <div class="col-sm-6 col-md-7">
-                                                        <input type="text" autocomplete="off" name="eduBackground--v--${status.index}" id="eduBackground--v--${status.index}" value='<c:out value="${cer.eduBackground}"/>' />
+                                                        <input type="text" autocomplete="off" name="eduBackground--v--${status.index}" id="eduBackground--v--${status.index}" maxlength="500" value='<c:out value="${cer.eduBackground}"/>' />
                                                         <span data-err-ind="eduBackground--v--${status.index}" class="error-msg"></span>
                                                     </div>
                                                 </div>
@@ -243,7 +243,7 @@
                                                         <span class="mandatory otherQualificationSpan">*</span>
                                                     </div>
                                                     <div class="col-sm-6 col-md-7">
-                                                        <input type="text" autocomplete="off" name="proActivities--v--${status.index}" id="proActivities--v--${status.index}" value='<c:out value="${cer.proActivities}"/>'/>
+                                                        <input type="text" autocomplete="off" name="proActivities--v--${status.index}" id="proActivities--v--${status.index}" maxlength="500" value='<c:out value="${cer.proActivities}"/>'/>
                                                         <span data-err-ind="proActivities--v--${status.index}" class="error-msg"></span>
                                                     </div>
                                                 </div>
@@ -254,7 +254,7 @@
                                                         <span class="mandatory otherQualificationSpan">*</span>
                                                     </div>
                                                     <div class="col-sm-6 col-md-7">
-                                                        <input type="text" autocomplete="off" name="proRegAndCert--v--${status.index}" id="proRegAndCert--v--${status.index}" value='<c:out value="${cer.proRegAndCert}"/>'/>
+                                                        <input type="text" autocomplete="off" name="proRegAndCert--v--${status.index}" id="proRegAndCert--v--${status.index}" maxlength="500" value='<c:out value="${cer.proRegAndCert}"/>'/>
                                                         <span data-err-ind="proRegAndCert--v--${status.index}" class="error-msg"></span>
                                                     </div>
                                                 </div>
@@ -265,7 +265,7 @@
                                                         <span class="mandatory otherQualificationSpan">*</span>
                                                     </div>
                                                     <div class="col-sm-6 col-md-7">
-                                                        <input type="text" autocomplete="off" name="facRelatedPub--v--${status.index}" id="facRelatedPub--v--${status.index}" value='<c:out value="${cer.facRelatedPub}"/>'/>
+                                                        <input type="text" autocomplete="off" name="facRelatedPub--v--${status.index}" id="facRelatedPub--v--${status.index}" maxlength="500" value='<c:out value="${cer.facRelatedPub}"/>'/>
                                                         <span data-err-ind="jobDesignation--v--${status.index}" class="error-msg"></span>
                                                     </div>
                                                 </div>

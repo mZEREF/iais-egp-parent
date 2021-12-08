@@ -4,11 +4,14 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.util.StringUtils;
 import sg.gov.moh.iais.egp.bsb.common.node.simple.ValidatableNodeValue;
+import sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants;
 import sg.gov.moh.iais.egp.bsb.dto.ValidationResultDto;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -97,17 +100,50 @@ public class IncidentInfoDto extends ValidatableNodeValue {
         this.childTypes = new ArrayList<>(childTypes);
     }
 
+    private void clearChildTypes(){
+        this.childTypes.clear();
+    }
+    private void addChildTypes(String[] childTypeStrings) {
+        if (childTypeStrings != null && childTypeStrings.length > 0) {
+            this.childTypes.addAll(Arrays.asList(childTypeStrings));
+        }
+    }
+
+
+    public void replaceChildTypes(String[] childTypeStrings){
+        clearChildTypes();
+        addChildTypes(childTypeStrings);
+    }
+
     private static final String KEY_REFERENCE_NO = "referenceNo";
     private static final String KEY_INCIDENT_REPORTING = "incidentReporting";
     private static final String KEY_INCIDENT_TYPE = "incidentType";
-    private static final String KEY_INCIDENT_CHILD_TYPES = "childTypes";
+    private static final String KEY_INCIDENT_CHILD_SAFE_TYPES = "childSafeTypes";
+    private static final String KEY_INCIDENT_CHILD_SECUR_TYPES = "childSecurTypes";
+    private static final String KEY_INCIDENT_CHILD_GENER_TYPES = "childGenerTypes";
     private static final String KEY_TYPE_OTHER_DETAIL = "typeOtherDetail";
 
     public void reqObjMapping(HttpServletRequest request){
         this.referenceNo = ParamUtil.getString(request,KEY_REFERENCE_NO);
         this.incidentReporting = ParamUtil.getString(request,KEY_INCIDENT_REPORTING);
-        this.incidentType = ParamUtil.getString(request,KEY_INCIDENT_TYPE);
+        String incType = ParamUtil.getString(request,KEY_INCIDENT_TYPE);
+        this.incidentType = incType;
         this.typeOtherDetail = ParamUtil.getString(request,KEY_TYPE_OTHER_DETAIL);
-//        this.childTypes = new ArrayList<>(ParamUtil.getListStrings(request,KEY_INCIDENT_CHILD_TYPES));
+        String[]  childTypeStrings = null;
+        if(StringUtils.hasLength(incType)){
+            switch (incType){
+                case MasterCodeConstants.INCIDENT_TYPE_BIO_SAFETY:
+                    childTypeStrings = ParamUtil.getStrings(request,KEY_INCIDENT_CHILD_SAFE_TYPES);
+                    break;
+                case MasterCodeConstants.INCIDENT_TYPE_BIO_SECURITY:
+                    childTypeStrings = ParamUtil.getStrings(request,KEY_INCIDENT_CHILD_SECUR_TYPES);
+                    break;
+                case MasterCodeConstants.INCIDENT_TYPE_GENERAL_SAFETY:
+                    childTypeStrings = ParamUtil.getStrings(request,KEY_INCIDENT_CHILD_GENER_TYPES);
+                    break;
+                default:break;
+            }
+        }
+        replaceChildTypes(childTypeStrings);
     }
 }

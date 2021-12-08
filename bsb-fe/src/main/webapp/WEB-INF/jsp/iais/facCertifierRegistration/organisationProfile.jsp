@@ -38,7 +38,6 @@
 
                                     <div class="form-horizontal">
                                         <h3 class="col-12 pl-0" style="border-bottom: 1px solid black">Organisation Profile</h3>
-                                        <%--@elvariable id="facProfile" type="sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityProfileDto"--%>
 
                                         <div class="form-group ">
                                             <div class="col-sm-5 control-label">
@@ -46,7 +45,7 @@
                                                 <span class="mandatory otherQualificationSpan">*</span>
                                             </div>
                                             <div class="col-sm-6 col-md-7">
-                                                <input type="text" autocomplete="off" name="orgName" id="orgName" value='${orgProfile.orgName}'/>
+                                                <input type="text" autocomplete="off" name="orgName" id="orgName" value='${orgProfile.orgName}' maxlength="250"/>
                                                 <span data-err-ind="orgName" class="error-msg"></span>
                                             </div>
                                         </div>
@@ -74,14 +73,14 @@
                                                 <span class="mandatory otherQualificationSpan">*</span>
                                             </div>
                                             <div class="col-sm-2">
-                                                <input type="text" autocomplete="off" name="floor" id="floor" value='${orgProfile.floor}'/>
+                                                <input type="text" autocomplete="off" name="floor" id="floor" value='${orgProfile.floor}' maxlength="4"/>
                                                 <span data-err-ind="floor" class="error-msg"></span>
                                             </div>
                                             <div class="hidden-xs col-sm-1" style="text-align: center">
                                                 <p>-</p>
                                             </div>
                                             <div class="col-sm-3 col-md-4">
-                                                <input type="text" autocomplete="off" name="unitNo" id="unitNo" value='${orgProfile.unitNo}'/>
+                                                <input type="text" autocomplete="off" name="unitNo" id="unitNo" value='${orgProfile.unitNo}' maxlength="4"/>
                                                 <span data-err-ind="unitNo" class="error-msg"></span>
                                             </div>
                                         </div>
@@ -92,7 +91,7 @@
                                                 <span class="mandatory otherQualificationSpan">*</span>
                                             </div>
                                             <div class="col-sm-6 col-md-7">
-                                                <input type="text" autocomplete="off" name="building" id="building" value='${orgProfile.building}'/>
+                                                <input type="text" autocomplete="off" name="building" id="building" value='${orgProfile.building}' maxlength="10"/>
                                                 <span data-err-ind="building" class="error-msg"></span>
                                             </div>
                                         </div>
@@ -103,7 +102,7 @@
                                                 <span class="mandatory otherQualificationSpan">*</span>
                                             </div>
                                             <div class="col-sm-6 col-md-7">
-                                                <input type="text" autocomplete="off" name="streetName" id="streetName" value='${orgProfile.streetName}'/>
+                                                <input type="text" autocomplete="off" name="streetName" id="streetName" value='${orgProfile.streetName}' maxlength="32"/>
                                                 <span data-err-ind="streetName" class="error-msg"></span>
                                             </div>
                                         </div>
@@ -113,7 +112,7 @@
                                                 <label for="address1">Address 1</label>
                                             </div>
                                             <div class="col-sm-6 col-md-7">
-                                                <input type="text" autocomplete="off" name="address1" id="address1" value='${orgProfile.address1}'/>
+                                                <input type="text" autocomplete="off" name="address1" id="address1" value='${orgProfile.address1}' maxlength="35"/>
                                                 <span data-err-ind="address1" class="error-msg"></span>
                                             </div>
                                         </div>
@@ -123,7 +122,7 @@
                                                 <label for="address2">Address 2</label>
                                             </div>
                                             <div class="col-sm-6 col-md-7">
-                                                <input type="text" autocomplete="off" name="address2" id="address2" value='${orgProfile.address2}'/>
+                                                <input type="text" autocomplete="off" name="address2" id="address2" value='${orgProfile.address2}' maxlength="35"/>
                                                 <span data-err-ind="address2" class="error-msg"></span>
                                             </div>
                                         </div>
@@ -133,7 +132,7 @@
                                                 <label for="address3">Address 3</label>
                                             </div>
                                             <div class="col-sm-6 col-md-7">
-                                                <input type="text" autocomplete="off" name="address3" id="address3" value='${orgProfile.address3}'/>
+                                                <input type="text" autocomplete="off" name="address3" id="address3" value='${orgProfile.address3}' maxlength="35"/>
                                                 <span data-err-ind="address3" class="error-msg"></span>
                                             </div>
                                         </div>
@@ -144,7 +143,7 @@
                                                 <span class="mandatory otherQualificationSpan">*</span>
                                             </div>
                                             <div class="col-sm-6 col-md-7">
-                                                <input type="text" autocomplete="off" name="postalCode" id="postalCode" value='${orgProfile.postalCode}' oninput="value=value.replace(/[^\d]/g,'')"/>
+                                                <input type="number" autocomplete="off" name="postalCode" id="postalCode" maxlength="15" value='${orgProfile.postalCode}' oninput="value=value.replace(/[^\d]/g,'')"/>
                                                 <span data-err-ind="postalCode" class="error-msg"></span>
                                             </div>
                                         </div>
@@ -156,7 +155,7 @@
                                                 <span class="mandatory otherQualificationSpan">*</span>
                                             </div>
                                             <div class="col-sm-6 col-md-7">
-                                                <input type="text" autocomplete="off" name="city" id="city" value='${orgProfile.city}'/>
+                                                <input type="text" autocomplete="off" name="city" id="city" value='${orgProfile.city}' maxlength="30"/>
                                                 <span data-err-ind="city" class="error-msg"></span>
                                             </div>
                                             </div>
@@ -167,7 +166,7 @@
                                                     <span class="mandatory otherQualificationSpan">*</span>
                                                 </div>
                                                 <div class="col-sm-6 col-md-7">
-                                                    <input type="text" autocomplete="off" name="state" id="state" value='${orgProfile.state}'/>
+                                                    <input type="text" autocomplete="off" name="state" id="state" maxlength="66" value='${orgProfile.state}'/>
                                                     <span data-err-ind="state" class="error-msg"></span>
                                                 </div>
                                             </div>
@@ -194,7 +193,7 @@
                                                 <span class="mandatory otherQualificationSpan">*</span>
                                             </div>
                                             <div class="col-sm-6 col-md-7">
-                                                <input type="text" autocomplete="off" name="yearEstablished" id="yearEstablished" value='${orgProfile.yearEstablished}'/>
+                                                <input type="number" autocomplete="off" name="yearEstablished" id="yearEstablished" maxlength="4" value='${orgProfile.yearEstablished}'/>
                                                 <span data-err-ind="yearEstablished" class="error-msg"></span>
                                             </div>
                                         </div>
@@ -205,7 +204,7 @@
                                                 <span class="mandatory otherQualificationSpan">*</span>
                                             </div>
                                             <div class="col-sm-6 col-md-7">
-                                                <input type="text" autocomplete="off" name="email" id="email" value='${orgProfile.email}'/>
+                                                <input type="text" autocomplete="off" name="email" id="email" maxlength="66" value='${orgProfile.email}'/>
                                                 <span data-err-ind="email" class="error-msg"></span>
                                             </div>
                                         </div>
@@ -216,7 +215,7 @@
                                                 <span class="mandatory otherQualificationSpan">*</span>
                                             </div>
                                             <div class="col-sm-6 col-md-7">
-                                                <input type="text" autocomplete="off" name="contactNo" id="contactNo" value='${orgProfile.contactNo}'/>
+                                                <input type="text" autocomplete="off" name="contactNo" id="contactNo" maxlength="20" value='${orgProfile.contactNo}'/>
                                                 <span data-err-ind="contactNo" class="error-msg"></span>
                                             </div>
                                         </div>
@@ -227,7 +226,7 @@
                                                 <span class="mandatory otherQualificationSpan">*</span>
                                             </div>
                                             <div class="col-sm-6 col-md-7">
-                                                <input type="text" autocomplete="off" name="contactPerson" id="contactPerson" value='${orgProfile.contactPerson}'/>
+                                                <input type="text" autocomplete="off" name="contactPerson" id="contactPerson" maxlength="132" value='${orgProfile.contactPerson}'/>
                                                 <span data-err-ind="contactPerson" class="error-msg"></span>
                                             </div>
                                         </div>
