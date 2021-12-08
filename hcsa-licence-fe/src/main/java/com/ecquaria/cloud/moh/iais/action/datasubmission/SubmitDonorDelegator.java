@@ -41,7 +41,7 @@ public class SubmitDonorDelegator extends CommonDelegator {
         ArSuperDataSubmissionDto arSuperDataSubmissionDto = DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
         DonorSampleDto donorSampleDto = arSuperDataSubmissionDto.getDonorSampleDto();
         if(donorSampleDto == null){
-            bpc.request.setAttribute("ageCount",0);
+            bpc.request.setAttribute("ageCount",1);
         }else{
             bpc.request.setAttribute("ageCount",donorSampleDto.getAges().length);
         }

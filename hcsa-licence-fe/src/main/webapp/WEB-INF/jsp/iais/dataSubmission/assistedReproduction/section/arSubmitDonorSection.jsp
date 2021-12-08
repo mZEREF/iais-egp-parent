@@ -183,7 +183,9 @@
                                     </iais:value>
                                     <c:if test="${idxStatus.first!=true}">
                                         <div class="col-sm-2 col-md-1 col-xs-1 col-md-1">
-                                            <a class="deleteDonor"  onclick="deleteDonorAge('${idxStatus.index}')" style="text-decoration:none;" href="javascript:void(0)">X</a>
+                                            <h4 class="text-danger">
+                                                <em class="fa fa-times-circle del-size-36 removeBtn cursorPointer" class="deleteDonor"  onclick="deleteDonorAge('${idxStatus.index}')"></em>
+                                            </h4>
                                         </div>
                                     </c:if>
                                 </iais:row>
@@ -243,8 +245,9 @@
             "                                <span id=\"error_donorAge\" name=\"iaisErrorMsg\" class=\"error-msg\"></span>\n" +
             "                            </div>\n" +
             "                            <div class=\"col-sm-2 col-md-1 col-xs-1 col-md-1\">\n" +
-            "                                <a class=\"deleteDonor\"  onclick=\"deleteDonorAge('" +index +
-            "')\" style=\"text-decoration:none;\" href=\"javascript:void(0)\">X</a>\n" +
+            "                               <h4 class=\"text-danger\">"+
+            "<em class=\"fa fa-times-circle del-size-36 removeBtn cursorPointer\" class=\"deleteDonor\"  onclick=\"deleteDonorAge('" +index+ "')\"></em>"+
+            "</h4>" +
             "                            </div>\n" +
             "                            <div class=\"clear\"></div>\n" +
             "                        </div>";
