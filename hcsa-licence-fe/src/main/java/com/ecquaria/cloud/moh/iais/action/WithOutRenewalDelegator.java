@@ -1425,10 +1425,16 @@ public class WithOutRenewalDelegator {
                     if(goGolicenceReview(bpc.request,appSubmissionDto,oldAppSubmissionDtoAppGrpPremisesDtoList,rfc_err020)){
                         return;
                     }
-                    boolean flag =EqRequestForChangeSubmitResultChange.isChangeGrpPremises(appGrpPremisesDtoList,
+                    boolean changeHciName = EqRequestForChangeSubmitResultChange.isChangeHciName(appSubmissionDto.getAppGrpPremisesDtoList(),
+                            oldAppSubmissionDto.getAppGrpPremisesDtoList());
+                    boolean changeInLocation = !EqRequestForChangeSubmitResultChange.compareLocation(appSubmissionDto.getAppGrpPremisesDtoList(),
+                            oldAppSubmissionDto.getAppGrpPremisesDtoList());
+                    boolean eqAddFloorNo = EqRequestForChangeSubmitResultChange.isChangeFloorUnit(appSubmissionDto, oldAppSubmissionDto);
+                    boolean flag = EqRequestForChangeSubmitResultChange.isChangeGrpPremisesAutoFields(appGrpPremisesDtoList,
                             oldAppSubmissionDtoAppGrpPremisesDtoList);
+                    flag = flag && !changeHciName && !changeInLocation && !eqAddFloorNo;
                     log.info(StringUtil.changeForLog("flag is--"+flag));
-                    if(flag){
+                    if (flag) {
                         for (int i = 0; i < appGrpPremisesDtoList.size(); i++) {
                             List<LicenceDto> licenceDtos = (List<LicenceDto>) bpc.request.getSession().getAttribute("selectLicence" + i);
                             if (licenceDtos != null) {
@@ -1509,7 +1515,8 @@ public class WithOutRenewalDelegator {
         // create rfc data
         List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
         if(appGrpPremisesDtoList != null){
-            if (appEditSelectDto.isPremisesEdit()) {
+            if (appEditSelectDto.isChangePremiseAutoFields() && !appEditSelectDto.isChangeHciName()
+                    && !appEditSelectDto.isChangeInLocation() && !appEditSelectDto.isChangeAddFloorUnit()) {
                 for (int i = 0; i < appGrpPremisesDtoList.size(); i++) {
                     setRfcHciNameChanged(appGrpPremisesDtoList,oldAppSubmissionDto.getAppGrpPremisesDtoList(),i);
                     List<LicenceDto> licenceDtos = (List<LicenceDto>) request.getSession().getAttribute("selectLicence" + i);
