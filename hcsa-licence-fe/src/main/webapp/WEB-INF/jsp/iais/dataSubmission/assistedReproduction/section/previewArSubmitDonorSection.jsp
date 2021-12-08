@@ -69,7 +69,7 @@
                                 <iais:code code="${donorSampleDto.sampleFromHciCode}"/>
                             </iais:value>
                         </iais:row>
-                        <iais:row id ="sampleFromOthers" style="display:none">
+                        <iais:row id ="sampleFromOthers" style="${donorSampleDto.sampleFromHciCode =='AR_SC_001' ? '' : 'display: none;'}">
                             <label class="col-xs-5 col-md-4 control-label"></label>
                             <iais:value width="7" cssClass="col-md-7">
                                 <c:out value="${donorSampleDto.sampleFromOthers}"/>
@@ -116,3 +116,4 @@
     </div>
 </div>
 <%@include file="previewDonorSection.jsp"%>
+
