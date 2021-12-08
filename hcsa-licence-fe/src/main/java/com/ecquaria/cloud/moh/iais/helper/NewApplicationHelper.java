@@ -54,7 +54,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcPersonne
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSubtypeOrSubsumedDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.FeUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.prs.ProfessionalResponseDto;
-import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.utils.CopyUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
@@ -73,13 +72,11 @@ import com.ecquaria.cloud.moh.iais.dto.PmtReturnUrlDto;
 import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.RequestForChangeService;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceClient;
-import jdk.nashorn.internal.runtime.regexp.joni.constants.EncloseType;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import sop.util.DateUtil;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
@@ -98,14 +95,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ForkJoinPool;
-import java.util.concurrent.FutureTask;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -2087,57 +2076,11 @@ public class NewApplicationHelper {
     }
 
     public static void setPremSelect(HttpServletRequest request) {
+        long start = System.currentTimeMillis();
         AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(request,
                 NewApplicationDelegator.APPSUBMISSIONDTO);
         String appType = appSubmissionDto != null ? appSubmissionDto.getAppType() : ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION;
         checkPremisesMap(request);
-        long start = System.currentTimeMillis();
-        Map<String, AppGrpPremisesDto> licAppGrpPremisesDtoMap = (Map<String, AppGrpPremisesDto>) request.getSession()
-                .getAttribute(NewApplicationDelegator.LIC_PREMISES_MAP);
-        Map<String, AppGrpPremisesDto> appPremisesMap = (Map<String, AppGrpPremisesDto>) request.getSession()
-                .getAttribute(NewApplicationDelegator.APP_PREMISES_MAP);
-        FutureTask<String> onSitTask = createTask(appType, ApplicationConsts.PREMISES_TYPE_ON_SITE,
-                licAppGrpPremisesDtoMap, appPremisesMap, "premisesSelect", request);
-        FutureTask<String> conveyanceTask = createTask(appType, ApplicationConsts.PREMISES_TYPE_CONVEYANCE,
-                licAppGrpPremisesDtoMap, appPremisesMap, "conveyancePremSel", request);
-        FutureTask<String> offSiteTask = createTask(appType, ApplicationConsts.PREMISES_TYPE_OFF_SITE,
-                licAppGrpPremisesDtoMap, appPremisesMap, "offSitePremSel", request);
-        FutureTask<String> easMtsTask = createTask(appType, ApplicationConsts.PREMISES_TYPE_EAS_MTS_CONVEYANCE,
-                licAppGrpPremisesDtoMap, appPremisesMap, "easMtsPremSel", request);
-        ExecutorService executorService = Executors.newFixedThreadPool(4);
-        executorService.execute(onSitTask);
-        executorService.execute(conveyanceTask);
-        executorService.execute(offSiteTask);
-        executorService.execute(easMtsTask);
-        try {
-            executorService.awaitTermination(60000, TimeUnit.MILLISECONDS);
-        } catch (Exception e) {
-            log.warn(StringUtil.changeForLog(e.getMessage()), e);
-        } finally {
-            executorService.shutdown();
-        }
-        log.info("##### Time A: " + (System.currentTimeMillis() - start));
-    }
-
-    private static FutureTask<String> createTask(String appType, String premiseType,
-            Map<String, AppGrpPremisesDto> licAppGrpPremisesDtoMap,Map<String, AppGrpPremisesDto> appPremisesMap,
-            String sessionKey, HttpServletRequest request) {
-        return new FutureTask<>(() -> {
-            List<SelectOption> premisesSelect = getPremisesSel(appType);
-            setPremSelect(premisesSelect, premiseType, "", licAppGrpPremisesDtoMap);
-            setPremSelect(premisesSelect, premiseType, " (Pending MOH Approval)", appPremisesMap);
-            ParamUtil.setSessionAttr(request, sessionKey, (Serializable) premisesSelect);
-            log.info("----------" + premiseType + "-------------");
-            return premiseType;
-        });
-    }
-
-    public static void setPremSelect2(HttpServletRequest request) {
-        AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(request,
-                NewApplicationDelegator.APPSUBMISSIONDTO);
-        String appType = appSubmissionDto != null ? appSubmissionDto.getAppType() : ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION;
-        checkPremisesMap(request);
-        long start = System.currentTimeMillis();
         Map<String, AppGrpPremisesDto> licAppGrpPremisesDtoMap = (Map<String, AppGrpPremisesDto>) request.getSession()
                 .getAttribute(NewApplicationDelegator.LIC_PREMISES_MAP);
         Map<String, AppGrpPremisesDto> appPremisesMap = (Map<String, AppGrpPremisesDto>) request.getSession()
@@ -2153,7 +2096,6 @@ public class NewApplicationHelper {
             setPremSelect(premisesSelect, premiseType, "", licAppGrpPremisesDtoMap);
             setPremSelect(premisesSelect, premiseType, addtional, appPremisesMap);
             ParamUtil.setSessionAttr(request, sessionKey, (Serializable) premisesSelect);
-            log.info("----------" + premiseType + "-------------");
         });
         log.info("##### Time B: " + (System.currentTimeMillis() - start));
     }
@@ -2167,7 +2109,6 @@ public class NewApplicationHelper {
                 String premKey = entry.getKey();
                 if (Objects.equals(premiseType, item.getPremisesType())) {
                     existingPrems.add(new SelectOption(premKey, item.getAddress() + addtional));
-                    SelectOption selectOption = new SelectOption(premKey, item.getAddress() + addtional);
                 }
             }
         }
@@ -2178,15 +2119,6 @@ public class NewApplicationHelper {
 
     public static void doSortSelOption(List<SelectOption> selectOptions){
         Collections.sort(selectOptions, Comparator.comparing(SelectOption::getText));
-    }
-
-    public static void setPremAddressSelect(HttpServletRequest request){
-        List<SelectOption> addrTypeOpt = new ArrayList<>();
-        /*SelectOption addrTypeSp = new SelectOption("",NewApplicationDelegator.FIRESTOPTION);
-        addrTypeOpt.add(addrTypeSp);*/
-        addrTypeOpt.addAll(MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_ADDRESS_TYPE));
-        doSortSelOption(addrTypeOpt);
-        ParamUtil.setRequestAttr(request,"addressType",addrTypeOpt);
     }
 
     /**
@@ -4796,7 +4728,7 @@ public class NewApplicationHelper {
                 .anyMatch(dto -> !validateLicences(dto.getLicenceId(), request));
     }
 
-    public static void checkPremisesMap(HttpServletRequest request) {
+    public static Map<String, AppGrpPremisesDto> checkPremisesMap(HttpServletRequest request) {
         AppSubmissionService appSubmissionService = SpringHelper.getBean(AppSubmissionService.class);
         String licenseeId = getLicenseeId(request);
         Map<String, AppGrpPremisesDto> licAppGrpPremisesDtoMap = (Map<String, AppGrpPremisesDto>) request.getSession()
@@ -4808,10 +4740,10 @@ public class NewApplicationHelper {
             }
             request.getSession().setAttribute(NewApplicationDelegator.LIC_PREMISES_MAP, licAppGrpPremisesDtoMap);
         }
+        Map<String, AppGrpPremisesDto> newAppMap = IaisCommonUtils.genNewHashMap();
         Map<String, AppGrpPremisesDto> appPremisesMap = (Map<String, AppGrpPremisesDto>) request.getSession()
                 .getAttribute(NewApplicationDelegator.APP_PREMISES_MAP);
         if (appPremisesMap == null || appPremisesMap.isEmpty()) {
-            Map<String, AppGrpPremisesDto> newAppMap = IaisCommonUtils.genNewHashMap();
             appPremisesMap = appSubmissionService.getActivePendingPremisesMap(licenseeId);
             if (appPremisesMap != null) {
                 for (Map.Entry<String, AppGrpPremisesDto> entry : appPremisesMap.entrySet()) {
@@ -4821,7 +4753,13 @@ public class NewApplicationHelper {
                 }
             }
             request.getSession().setAttribute(NewApplicationDelegator.APP_PREMISES_MAP, newAppMap);
+        } else {
+            newAppMap = appPremisesMap;
         }
+        Map<String, AppGrpPremisesDto> allData = IaisCommonUtils.genNewHashMap();
+        allData.putAll(licAppGrpPremisesDtoMap);
+        allData.putAll(newAppMap);
+        return allData;
     }
 
     public static void clearPremisesMap(HttpServletRequest request) {
@@ -4831,6 +4769,11 @@ public class NewApplicationHelper {
         request.getSession().removeAttribute("conveyancePremSel");
         request.getSession().removeAttribute("offSitePremSel");
         request.getSession().removeAttribute("easMtsPremSel");
+    }
+
+    public static AppGrpPremisesDto getPremisesFromMap(String premSelectVal, HttpServletRequest request) {
+        Map<String, AppGrpPremisesDto> premisesDtoMap = checkPremisesMap(request);
+        return premisesDtoMap.get(premSelectVal);
     }
 
 }

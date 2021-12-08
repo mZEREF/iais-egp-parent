@@ -68,6 +68,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -2402,14 +2403,13 @@ public class HalpAssessmentGuideDelegator {
             }
 
             if(!IaisCommonUtils.isEmpty(baseDtos)){
-                baseDtos.sort((h1,h2)->h1.getServiceName().compareTo(h2.getServiceName()));
+                baseDtos.sort(Comparator.comparing(AppSvcRelatedInfoDto::getServiceName));
                 newAppSvcDto.addAll(baseDtos);
             }
             if(!IaisCommonUtils.isEmpty(specDtos)){
-                specDtos.sort((h1,h2)->h1.getServiceName().compareTo(h2.getServiceName()));
+                specDtos.sort(Comparator.comparing(AppSvcRelatedInfoDto::getServiceName));
                 newAppSvcDto.addAll(specDtos);
             }
-            appSvcRelatedInfoDtos = newAppSvcDto;
         }
         return newAppSvcDto;
     }

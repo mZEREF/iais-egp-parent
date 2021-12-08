@@ -663,15 +663,7 @@ public class NewApplicationAjaxController {
         if (StringUtil.isEmpty(premSelectVal) || StringUtil.isEmpty(premisesType) || StringUtil.isEmpty(premiseIndex)) {
             return null;
         }
-        NewApplicationHelper.checkPremisesMap(request);
-        Map<String, AppGrpPremisesDto> licAppGrpPremisesDtoMap = (Map<String, AppGrpPremisesDto>) ParamUtil.getSessionAttr(request, NewApplicationDelegator.LIC_PREMISES_MAP);
-        AppGrpPremisesDto appGrpPremisesDto = licAppGrpPremisesDtoMap.get(premSelectVal);
-        if (appGrpPremisesDto == null) {
-            Map<String, AppGrpPremisesDto> appPremisesMap = (Map<String, AppGrpPremisesDto>) request.getSession()
-                    .getAttribute(NewApplicationDelegator.APP_PREMISES_MAP);
-            appGrpPremisesDto = appPremisesMap.get(premSelectVal);
-        }
-        //appGrpPremisesDto = NewApplicationHelper.setWrkTime(appGrpPremisesDto);
+        AppGrpPremisesDto appGrpPremisesDto = NewApplicationHelper.getPremisesFromMap(premSelectVal, request);
         //set dayName
         if (appGrpPremisesDto != null) {
             List<AppPremPhOpenPeriodDto> appPremPhOpenPeriodDtos = appGrpPremisesDto.getAppPremPhOpenPeriodList();

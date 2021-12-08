@@ -1239,16 +1239,17 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
 
     @Override
     public Map<String, AppGrpPremisesDto> getLicencePremisesDtoMap(String licenseeId) {
-            List<AppGrpPremisesDto> appGrpPremisesDtos = licenceClient.getDistinctPremisesByLicenseeId(licenseeId, "").getEntity();
-            Map<String,AppGrpPremisesDto> appGrpPremisesDtoMap = IaisCommonUtils.genNewHashMap();
-            for(AppGrpPremisesDto appGrpPremisesDto:appGrpPremisesDtos){
-                if(!StringUtil.isEmpty(appGrpPremisesDto.getPremisesSelect())){
+        List<AppGrpPremisesDto> appGrpPremisesDtos = licenceClient.getDistinctPremisesByLicenseeId(licenseeId, "").getEntity();
+        if (appGrpPremisesDtos == null || appGrpPremisesDtos.isEmpty()) {
+            return IaisCommonUtils.genNewHashMap();
+        }
+        return appGrpPremisesDtos.parallelStream()
+                .map(appGrpPremisesDto -> {
                     NewApplicationHelper.setWrkTime(appGrpPremisesDto);
                     appGrpPremisesDto.setExistingData(AppConsts.YES);
-                    appGrpPremisesDtoMap.put(appGrpPremisesDto.getPremisesSelect(),appGrpPremisesDto);
-                }
-            }
-            return appGrpPremisesDtoMap;
+                    return appGrpPremisesDto;
+                })
+                .collect(Collectors.toMap(AppGrpPremisesDto::getPremisesSelect, Function.identity(), (v1, v2) -> v1));
     }
 
     @Override
@@ -1262,11 +1263,11 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
             return IaisCommonUtils.genNewHashMap();
         }
         return appGrpPremisesDtos.parallelStream()
-                .map(dto -> {
-                    NewApplicationHelper.setWrkTime(dto);
-                    return dto;
+                .map(appGrpPremisesDto -> {
+                    NewApplicationHelper.setWrkTime(appGrpPremisesDto);
+                    return appGrpPremisesDto;
                 })
-                .collect(Collectors.toMap(AppGrpPremisesDto::getPremisesSelect, Function.identity()));
+                .collect(Collectors.toMap(AppGrpPremisesDto::getPremisesSelect, Function.identity(), (v1, v2) -> v2));
     }
 
     @Override
