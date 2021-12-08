@@ -14,6 +14,7 @@
 
 <link href="<%=WEB_ROOT%>/css/bsb/bsb-common.css" rel="stylesheet"/>
 <script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-common.js"></script>
+<script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-common-facility-certifier-register.js"></script>
 <script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-facility-certifier-register.js"></script>
 
 <%@include file="/WEB-INF/jsp/iais/include/showErrorMsg.jsp"%>
@@ -193,7 +194,7 @@
                                                 <span class="mandatory otherQualificationSpan">*</span>
                                             </div>
                                             <div class="col-sm-6 col-md-7">
-                                                <input type="number" autocomplete="off" name="yearEstablished" id="yearEstablished" maxlength="4" value='${orgProfile.yearEstablished}'/>
+                                                <input type="number" autocomplete="off" name="yearEstablished" id="yearEstablished" oninput="if(value.length>4) value=value.slice(0,4)" value='${orgProfile.yearEstablished}'/>
                                                 <span data-err-ind="yearEstablished" class="error-msg"></span>
                                             </div>
                                         </div>
