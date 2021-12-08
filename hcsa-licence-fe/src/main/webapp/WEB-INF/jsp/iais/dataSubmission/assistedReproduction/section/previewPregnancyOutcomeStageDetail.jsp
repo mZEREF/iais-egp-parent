@@ -85,7 +85,7 @@
                     </iais:row>
                 </div>
                 <div id="wasSelFoeReduCarryOutDiv"
-                     <c:if test="${not (pregnancyOutcomeStageDto.pregnancyOutcome == 'OUTOPRE001' && pregnancyOutcomeStageDto.firstUltrasoundOrderShow != 'OSIOU001')}">style="display:none;"</c:if>>
+                     <c:if test="${not (pregnancyOutcomeStageDto.firstUltrasoundOrderShow != 'OSIOU001' and (not empty pregnancyOutcomeStageDto.firstUltrasoundOrderShow))}">style="display:none;"</c:if>>
                     <iais:row>
                         <iais:field width="6" value="Was Selective foetal Reduction Carried Out?" cssClass="col-md-6"/>
                         <iais:value width="6" cssClass="col-md-6" display="true">
@@ -143,13 +143,17 @@
 
                 <%@include file="previewPregnancyOutcomeStageBabySection.jsp" %>
 
-                <iais:row>
-                    <iais:field width="6" value="Total No. of Baby Admitted to NICU Care"
-                                cssClass="col-md-6"/>
-                    <iais:value width="6" cssClass="col-md-6" display="true">
-                        <c:out value="${pregnancyOutcomeStageDto.l2CareBabyNum + pregnancyOutcomeStageDto.l3CareBabyNum}"/>
-                    </iais:value>
-                </iais:row>
+                <div id="careBabyNumSection"
+                     <c:if test="${(pregnancyOutcomeStageDto.maleLiveBirthNum + pregnancyOutcomeStageDto.femaleLiveBirthNum) < 1}">style="display:none;"</c:if>>
+                    <iais:row>
+                        <iais:field width="6" value="Total No. of Baby Admitted to NICU Care"
+                                    cssClass="col-md-6"/>
+                        <iais:value width="6" cssClass="col-md-6" display="true">
+                            <c:out value="${pregnancyOutcomeStageDto.l2CareBabyNum + pregnancyOutcomeStageDto.l3CareBabyNum}"/>
+                        </iais:value>
+                    </iais:row>
+                </div>
+
                 <div id="careBabyNumSection"
                      <c:if test="${pregnancyOutcomeStageDto.l2CareBabyNum + pregnancyOutcomeStageDto.l3CareBabyNum < 1}">style="display:none;"</c:if>>
                     <iais:row>
