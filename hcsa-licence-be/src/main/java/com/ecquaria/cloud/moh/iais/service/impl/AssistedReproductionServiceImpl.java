@@ -58,6 +58,11 @@ public class AssistedReproductionServiceImpl implements AssistedReproductionServ
     }
 
     @Override
+    public PatientInfoDto patientInfoDtoBySubmissionId(String submissionId) {
+        return licenceClient.patientInfoDtoBySubmissionId(submissionId).getEntity();
+    }
+
+    @Override
     public ArSuperDataSubmissionDto getArSuperDataSubmissionDto(String submissionNo) {
         return licenceClient.getArSuperDataSubmissionDto(submissionNo).getEntity();
     }

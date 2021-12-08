@@ -306,7 +306,7 @@
                                                                 <c:out value="${submission.arCentre}"/>
                                                             </td>
                                                             <td>
-                                                                <a href="#" onclick="fullDetailsViewBySubId('${submission.submissionIdNo}')">${submission.submissionIdNo}
+                                                                <a href="#" onclick="fullDetailsViewBySubId('${submission.submissionId}')">${submission.submissionIdNo}
                                                                 </a>
                                                             </td>
                                                             <td>

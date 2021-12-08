@@ -28,6 +28,8 @@ public interface AssistedReproductionService{
 
     PatientInfoDto patientInfoDtoByPatientCode( String patientCode);
 
+    PatientInfoDto patientInfoDtoBySubmissionId( String submissionId);
+
     ArSuperDataSubmissionDto getArSuperDataSubmissionDto(String submissionNo);
 
     PatientInventoryDto patientInventoryByCode(String patientCode,  String hciCode);

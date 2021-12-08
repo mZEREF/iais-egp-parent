@@ -8,7 +8,6 @@ import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.SystemAdminBaseCo
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.AssistedReproductionAdvEnquiryResultsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.AssistedReproductionEnquiryFilterDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.AssistedReproductionEnquiryResultsDto;
@@ -869,17 +868,13 @@ public class OnlineEnquiryAssistedReproductionDelegator {
         String additional=ParamUtil.getRequestString(request, InboxConst.CRUD_ACTION_ADDITIONAL);
         String key=ParamUtil.getRequestString(request, InboxConst.CRUD_ACTION_VALUE);
         PatientInfoDto patientInfoDto=null;
-        ArSuperDataSubmissionDto arSuperDataSubmissionDto=null;
-        if(StringUtil.isNotEmpty(additional)){
+        if(StringUtil.isNotEmpty(additional)&&StringUtil.isNotEmpty(key)){
             if("patient".equals(additional)){
                 patientInfoDto=assistedReproductionService.patientInfoDtoByPatientCode(key);
-                arSuperDataSubmissionDto= assistedReproductionService.getArSuperDataSubmissionDto(patientInfoDto.getPatient().getSubmissionId());
 
             }
             if("submission".equals(additional)){
-                arSuperDataSubmissionDto= assistedReproductionService.getArSuperDataSubmissionDto(key);
-                patientInfoDto=assistedReproductionService.patientInfoDtoByPatientCode(arSuperDataSubmissionDto.getPatientInfoDto().getPatient().getPatientCode());
-
+                patientInfoDto= assistedReproductionService.patientInfoDtoBySubmissionId(key);
             }
         }
         if(patientInfoDto!=null){
@@ -921,9 +916,7 @@ public class OnlineEnquiryAssistedReproductionDelegator {
             ParamUtil.setSessionAttr(request,"patientInventoryDtos", (Serializable) patientInventoryDtos);
 
         }
-        if(arSuperDataSubmissionDto!=null){
-            ParamUtil.setSessionAttr(request,"arSuperDataSubmissionDto",arSuperDataSubmissionDto);
-        }
+
 
 
 
