@@ -13,6 +13,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.renewal.RenewalConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesOperationalUnitDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationSubDraftDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.AppAlignLicQueryDto;
@@ -67,6 +68,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -2367,17 +2369,16 @@ public class HalpAssessmentGuideDelegator {
     }
 
     private static String getPremisesHci(AppAlignLicQueryDto item){
-        String premisesHci = "";
-        if (ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(item.getPremisesType())) {
-            premisesHci = item.getHciName() + IaisCommonUtils.genPremisesKey(item.getPostalCode(), item.getBlkNo(), item.getFloorNo(), item.getUnitNo());
-        } else if (ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(item.getPremisesType())) {
-            premisesHci = item.getHciName() + item.getVehicleNo() + IaisCommonUtils.genPremisesKey(item.getPostalCode(), item.getBlkNo(), item.getFloorNo(), item.getUnitNo());
-        } else if (ApplicationConsts.PREMISES_TYPE_OFF_SITE.equals(item.getPremisesType())) {
-            premisesHci = item.getHciName() + IaisCommonUtils.genPremisesKey(item.getPostalCode(), item.getBlkNo(), item.getFloorNo(), item.getUnitNo());
-        } else if(ApplicationConsts.PREMISES_TYPE_EAS_MTS_CONVEYANCE.equals(item.getPremisesType())){
-            premisesHci = item.getHciName() + IaisCommonUtils.genPremisesKey(item.getPostalCode(), item.getBlkNo(), item.getFloorNo(), item.getUnitNo());
+        String additional;
+        if (ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(item.getPremisesType())) {
+            additional = item.getHciName() + item.getVehicleNo();
+        } else {
+            additional = item.getHciName();
         }
-        return premisesHci;
+        return MiscUtil.getPremisesKey(additional, item.getPostalCode(), item.getBlkNo(), item.getStreetName(),
+                item.getBuildingName(), item.getFloorNo(), item.getUnitNo(),
+                MiscUtil.transferEntityDtos(item.getPremisesOperationalUnitDtos(),
+                        AppPremisesOperationalUnitDto.class));
     }
 
     private static List<AppSvcRelatedInfoDto> sortAppSvcRelatDto(List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos){
@@ -2402,14 +2403,13 @@ public class HalpAssessmentGuideDelegator {
             }
 
             if(!IaisCommonUtils.isEmpty(baseDtos)){
-                baseDtos.sort((h1,h2)->h1.getServiceName().compareTo(h2.getServiceName()));
+                baseDtos.sort(Comparator.comparing(AppSvcRelatedInfoDto::getServiceName));
                 newAppSvcDto.addAll(baseDtos);
             }
             if(!IaisCommonUtils.isEmpty(specDtos)){
-                specDtos.sort((h1,h2)->h1.getServiceName().compareTo(h2.getServiceName()));
+                specDtos.sort(Comparator.comparing(AppSvcRelatedInfoDto::getServiceName));
                 newAppSvcDto.addAll(specDtos);
             }
-            appSvcRelatedInfoDtos = newAppSvcDto;
         }
         return newAppSvcDto;
     }

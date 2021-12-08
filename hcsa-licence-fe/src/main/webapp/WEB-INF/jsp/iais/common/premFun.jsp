@@ -7,7 +7,6 @@
             clearFields($premSelect.find('.premSelect'));
             if('ONSITE'==checkedType){
                 //reset indexNo for clear
-                // $premSelect.find('.premisesIndexNo').val('');
                 unDisabledPartPage($premSelect.find('.onSiteSelect'));
                 $premSelect.find('.onSiteSelect').removeClass('hidden');
                 $premSelect.find('.conveyanceSelect').addClass('hidden');
@@ -22,7 +21,6 @@
 
             }else if('CONVEYANCE' == checkedType){
                 //reset indexNo for clear
-                // $premSelect.find('.premisesIndexNo').val('');
                 unDisabledPartPage($premSelect.find('.conveyanceSelect'));
                 $premSelect.find('.conveyanceSelect').removeClass('hidden');
                 $premSelect.find('.onSiteSelect').addClass('hidden');
@@ -36,7 +34,6 @@
                 <!--change hidden length value -->
             }else if('OFFSITE' == checkedType){
                 //reset indexNo for clear
-                // $premSelect.find('.premisesIndexNo').val('');
                 unDisabledPartPage($premSelect.find('.offSiteSelect'));
                 $premSelect.find('.onSiteSelect').addClass('hidden');
                 $premSelect.find('.conveyanceSelect').addClass('hidden');
@@ -50,7 +47,6 @@
                 <!--change hidden length value -->
 
             }else if('EASMTS' == checkedType){
-                // $premSelect.find('.premisesIndexNo').val('');
                 unDisabledPartPage($premSelect.find('.easMtsSelect'));
                 $premSelect.find('.onSiteSelect').addClass('hidden');
                 $premSelect.find('.conveyanceSelect').addClass('hidden');
@@ -73,6 +69,7 @@
             var premSelectVal = $(this).val();
             var $premContent = $(this).closest('div.premContent');
             var thisId = $(this).attr('id');
+            var premisesIndexNo = $premContent.find(".premisesIndexNo").val();
             <!--remove disable -->
             unreadonlyPartPage($premContent);
             /*remove hidden*/
@@ -236,9 +233,10 @@
                     return;
                 }
                 var jsonData = {
-                    'premIndexNo':premSelectVal,
-                    'premisesType':premisesType,
-                    'premiseIndex':premiseIndex
+                    'premIndexNo': premisesIndexNo,
+                    'premSelectVal': premSelectVal,
+                    'premisesType': premisesType,
+                    'premiseIndex': premiseIndex
                 };
                 $.ajax({
                     'url':'${pageContext.request.contextPath}/lic-premises',

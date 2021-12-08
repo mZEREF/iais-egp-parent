@@ -790,6 +790,7 @@ public class HcsaChklItemDelegator {
                 // write service name
                 List<HcsaServiceDto> hcsaServiceDtos = hcsaConfigClient.getActiveServices().getEntity();
                 if (IaisCommonUtils.isNotEmpty(hcsaServiceDtos)) {
+                    Collections.sort(hcsaServiceDtos, Comparator.comparing(HcsaServiceDto::getSvcName));
                     List<String> values = IaisCommonUtils.genNewArrayList(hcsaServiceDtos.size());
                     Map<Integer, List<Integer>> excelConfigIndex = IaisCommonUtils.genNewLinkedHashMap(hcsaServiceDtos.size());
                     int i = 1;

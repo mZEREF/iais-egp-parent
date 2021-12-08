@@ -146,6 +146,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -1237,6 +1238,39 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
     }
 
     @Override
+    public Map<String, AppGrpPremisesDto> getLicencePremisesDtoMap(String licenseeId) {
+        List<AppGrpPremisesDto> appGrpPremisesDtos = licenceClient.getDistinctPremisesByLicenseeId(licenseeId, "").getEntity();
+        if (appGrpPremisesDtos == null || appGrpPremisesDtos.isEmpty()) {
+            return IaisCommonUtils.genNewHashMap();
+        }
+        return appGrpPremisesDtos.parallelStream()
+                .map(appGrpPremisesDto -> {
+                    NewApplicationHelper.setWrkTime(appGrpPremisesDto);
+                    appGrpPremisesDto.setExistingData(AppConsts.YES);
+                    return appGrpPremisesDto;
+                })
+                .collect(Collectors.toMap(AppGrpPremisesDto::getPremisesSelect, Function.identity(), (v1, v2) -> v1));
+    }
+
+    @Override
+    public Map<String, AppGrpPremisesDto> getActivePendingPremisesMap(String licenseeId) {
+        log.info(StringUtil.changeForLog("LicenseeId is " + licenseeId));
+        if (StringUtil.isEmpty(licenseeId)) {
+            return IaisCommonUtils.genNewHashMap(1);
+        }
+        List<AppGrpPremisesDto> appGrpPremisesDtos = applicationFeClient.getActivePendingPremises(licenseeId).getEntity();
+        if (appGrpPremisesDtos == null || appGrpPremisesDtos.isEmpty()) {
+            return IaisCommonUtils.genNewHashMap();
+        }
+        return appGrpPremisesDtos.parallelStream()
+                .map(appGrpPremisesDto -> {
+                    NewApplicationHelper.setWrkTime(appGrpPremisesDto);
+                    return appGrpPremisesDto;
+                })
+                .collect(Collectors.toMap(AppGrpPremisesDto::getPremisesSelect, Function.identity(), (v1, v2) -> v2));
+    }
+
+    @Override
     public List<ApplicationDto> listApplicationByGroupId(String groupId) {
         return applicationFeClient.listApplicationByGroupId(groupId).getEntity();
     }
@@ -1248,12 +1282,12 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
     }
 
     @Override
-    public void updateDrafts(List<String> licenceIds, String excludeDraftNo) {
-        log.info(StringUtil.changeForLog("Licence Ids: " + licenceIds + " - excludeDraftNo: " + excludeDraftNo));
-        if (IaisCommonUtils.isEmpty(licenceIds) || StringUtil.isEmpty(excludeDraftNo)) {
+    public void updateDrafts(String licenseeId, List<String> licenceIds, String excludeDraftNo) {
+        log.info(StringUtil.changeForLog("Licensee Id: " + licenseeId + "Licence Ids: " + licenceIds + " - excludeDraftNo: " + excludeDraftNo));
+        if (StringUtil.isEmpty(licenseeId) || IaisCommonUtils.isEmpty(licenceIds) || StringUtil.isEmpty(excludeDraftNo)) {
             return;
         }
-        CompletableFuture.runAsync(() ->applicationFeClient.updateDrafts(licenceIds, excludeDraftNo));
+        CompletableFuture.runAsync(() ->applicationFeClient.updateDrafts(licenseeId, licenceIds, excludeDraftNo));
     }
 
     @Override
@@ -3998,6 +4032,8 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
         session.removeAttribute(NewApplicationDelegator.LICENSEE_MAP);
         session.removeAttribute(NewApplicationDelegator.RFC_APP_GRP_PREMISES_DTO_LIST);
         session.removeAttribute(NewApplicationDelegator.PREMISESTYPE);
+        // CR: Split RFC Logic
+        NewApplicationHelper.clearPremisesMap(request);
     }
 
     @Override

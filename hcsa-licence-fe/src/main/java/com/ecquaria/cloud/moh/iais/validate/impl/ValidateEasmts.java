@@ -153,7 +153,6 @@ public class ValidateEasmts extends AbstractValidate implements ValidateFlow {
         }
     }
 
-
     @Override
     public void doValidateAdressType(String floorNo, String blkNo, String unitNo, Integer index, Map<String, String> map, List<String> errorName) {
         if(errorName==null||errorName.size()!=3){
@@ -182,31 +181,15 @@ public class ValidateEasmts extends AbstractValidate implements ValidateFlow {
     }
 
     @Override
-    public void doValidatePremises(Map<String, String> map,String type,Integer index,String licenseeId, AppGrpPremisesDto appGrpPremisesDto, boolean needAppendMsg ,boolean rfi, List<String> premisesHciList,List<String> oldPremiseHciList) {
+    public void doValidatePremises(Map<String, String> map,String type,Integer index,String licenseeId, AppGrpPremisesDto appGrpPremisesDto, boolean needAppendMsg ,boolean rfi) {
         String PostalCode = map.get("easMtsPostalCode" + index);
         String FloorNo = map.get("easMtsFloorNo" + index);
         String BlockNo = map.get("easMtsBlockNo" + index);
         String UnitNo = map.get("easMtsUnitNo" + index);
         String HciName = map.get("easMtsHciName" + index);
-        String currentHci = IaisCommonUtils.genPremisesKey(appGrpPremisesDto.getEasMtsPostalCode(), appGrpPremisesDto.getEasMtsBlockNo(), appGrpPremisesDto.getEasMtsFloorNo(), appGrpPremisesDto.getEasMtsUnitNo());
-        boolean clickEdit = appGrpPremisesDto.isClickEdit();
         boolean hciFlag=StringUtil.isEmpty(PostalCode)&&StringUtil.isEmpty(FloorNo)&&StringUtil.isEmpty(BlockNo)
                 &&StringUtil.isEmpty(UnitNo)&&StringUtil.isEmpty(HciName);
         log.info(StringUtil.changeForLog("hciFlag:-->easm" + hciFlag));
-        boolean newTypeFlag = ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(type);
-        if (newTypeFlag && hciFlag && !rfi) {
-            //new
-            if (!IaisCommonUtils.isEmpty(premisesHciList)) {
-                checkHciIsSame(appGrpPremisesDto,premisesHciList,map,"premisesHci" + index);
-            }
-        } else if (newTypeFlag && hciFlag && rfi && clickEdit) {
-            //new rfi
-            if (!IaisCommonUtils.isEmpty(premisesHciList)
-                    && !IaisCommonUtils.isEmpty(oldPremiseHciList)
-                    && !oldPremiseHciList.contains(currentHci)) {
-                checkHciIsSame(appGrpPremisesDto, premisesHciList, map, "premisesHci" + index);
-            }
-        }
         if (hciFlag) {
             CheckCoLocationDto checkCoLocationDto = new CheckCoLocationDto();
             checkCoLocationDto.setLicenseeId(licenseeId);
@@ -233,12 +216,4 @@ public class ValidateEasmts extends AbstractValidate implements ValidateFlow {
         super.checkOperaionUnit(operationalUnitDtos, errorMap, floorErrName, unitErrName, floorUnitList, floorUnitErrName, floorUnitNo, appGrpPremisesDto);
     }
 
-    protected void  checkHciIsSame(AppGrpPremisesDto appGrpPremisesDto,List<String> premisesHciList,Map<String, String> errorMap,String errName){
-        List<String> currHciList = NewApplicationHelper.genPremisesHciList(appGrpPremisesDto);
-        for(String hci:currHciList){
-            if(premisesHciList.contains(hci)){
-                errorMap.put(errName, "NEW_ERR0005");
-            }
-        }
-    }
 }

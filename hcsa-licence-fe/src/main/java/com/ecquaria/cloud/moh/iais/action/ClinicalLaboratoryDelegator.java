@@ -1703,7 +1703,7 @@ public class ClinicalLaboratoryDelegator {
             List<HcsaSvcDocConfigDto> svcDocConfigDtos = (List<HcsaSvcDocConfigDto>) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.SVC_DOC_CONFIG);
             Map<String, CommonsMultipartFile> commonsMultipartFileMap = IaisCommonUtils.genNewHashMap();
             //CommonsMultipartFile file = null;
-            AppSubmissionDto oldSubmissionDto = NewApplicationHelper.getOldSubmissionDto(bpc.request,appSubmissionDto.getAppType());
+            AppSubmissionDto oldSubmissionDto = NewApplicationHelper.getOldAppSubmissionDto(bpc.request);
             List<AppSvcRelatedInfoDto> oldAppSvcRelatedInfoDtos = null;
             String appGrpId = "";
             String appNo = "";
