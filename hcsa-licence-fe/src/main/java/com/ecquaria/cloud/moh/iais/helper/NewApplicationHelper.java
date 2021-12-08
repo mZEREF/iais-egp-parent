@@ -4783,6 +4783,9 @@ public class NewApplicationHelper {
         Map<String, AppGrpPremisesDto> appPremisesMap = (Map<String, AppGrpPremisesDto>) request.getSession()
                 .getAttribute(NewApplicationDelegator.APP_PREMISES_MAP);
         for (AppGrpPremisesDto dto : appSubmissionDto.getAppGrpPremisesDtoList()) {
+            if (!dto.isFilled()) {
+                continue;
+            }
             String premisesSelect = dto.getPremisesSelect();
             if (StringUtil.isEmpty(premisesSelect)) {
                 premisesSelect = getPremisesKey(dto);
