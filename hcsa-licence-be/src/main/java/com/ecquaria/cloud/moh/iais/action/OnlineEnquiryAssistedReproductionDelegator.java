@@ -334,7 +334,7 @@ public class OnlineEnquiryAssistedReproductionDelegator {
             if(arDto.getSubmissionType()!=null){
                 filter.put("submissionType",arDto.getSubmissionType());
                 if(arDto.getSubmissionType().equals(DataSubmissionConsts.AR_TYPE_SBT_CYCLE_STAGE)){
-                    if(sqf==2&&arDto.getCycleStage()!=null){
+                    if(sqf==1&&arDto.getCycleStage()!=null){
                         filter.put("cycleStage",arDto.getCycleStage());
                     }
                 }

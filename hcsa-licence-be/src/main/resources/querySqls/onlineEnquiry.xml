@@ -92,6 +92,7 @@
             <#if arCentre??> AND  charindex(:arCentre, lp.BUSINESS_NAME) >0</#if>
             <#if submissionId??> AND  charindex(:submissionId, dds.SUBMISSION_NO) >0</#if>
             <#if submissionType??> AND  charindex(:submissionType, dds.SUBMISSION_TYPE) >0</#if>
+            <#if cycleStage??> AND  charindex(:cycleStage, dds.CYCLE_STAGE) >0</#if>
             <#if submission_start_date??> AND dds.SUBMIT_DT >= convert(date,:submission_start_date)</#if>
             <#if submission_to_date??> AND dds.SUBMIT_DT <= convert(date,:submission_to_date)</#if>
          ]]>
