@@ -102,6 +102,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.FutureTask;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -2069,37 +2070,13 @@ public class NewApplicationHelper {
                 licAppGrpPremisesDtoMap, appPremisesMap, "offSitePremSel", request);
         FutureTask<String> easMtsTask = createTask(appType, ApplicationConsts.PREMISES_TYPE_EAS_MTS_CONVEYANCE,
                 licAppGrpPremisesDtoMap, appPremisesMap, "easMtsPremSel", request);
-
         ExecutorService executorService = Executors.newFixedThreadPool(4);
         executorService.execute(onSitTask);
         executorService.execute(conveyanceTask);
         executorService.execute(offSiteTask);
         executorService.execute(easMtsTask);
         try {
-            try {
-                log.info("----" + onSitTask.get(5000, TimeUnit.MILLISECONDS) + "-----");
-            } catch (Exception e) {
-                onSitTask.cancel(true);
-                throw new IaisRuntimeException(e.getMessage(), e);
-            }
-            try {
-                log.info("----" + conveyanceTask.get(5000, TimeUnit.MILLISECONDS) + "-----");
-            } catch (Exception e) {
-                conveyanceTask.cancel(true);
-                throw new IaisRuntimeException(e.getMessage(), e);
-            }
-            try {
-                log.info("----" + offSiteTask.get(5000, TimeUnit.MILLISECONDS) + "-----");
-            } catch (Exception e) {
-                offSiteTask.cancel(true);
-                throw new IaisRuntimeException(e.getMessage(), e);
-            }
-            try {
-                log.info("----" + easMtsTask.get(5000, TimeUnit.MILLISECONDS) + "-----");
-            } catch (Exception e) {
-                easMtsTask.cancel(true);
-                throw new IaisRuntimeException(e.getMessage(), e);
-            }
+            executorService.awaitTermination(60000, TimeUnit.MILLISECONDS);
         } catch (Exception e) {
             log.warn(StringUtil.changeForLog(e.getMessage()), e);
         } finally {
@@ -2115,6 +2092,7 @@ public class NewApplicationHelper {
             setPremSelect(premisesSelect, premiseType, "", licAppGrpPremisesDtoMap);
             setPremSelect(premisesSelect, premiseType, " (Pending MOH Approval)", appPremisesMap);
             ParamUtil.setSessionAttr(request, sessionKey, (Serializable) premisesSelect);
+            log.info("----------" + premiseType + "-------------");
             return premiseType;
         });
     }
