@@ -61,7 +61,7 @@
                         <iais:row>
                             <iais:field width="5" value="Reason for Abandonment (Others)" mandatory="true"/>
                             <iais:value width="7" cssClass="col-md-7">
-                                <iais:input type="text" name="otherAbandonReason" value="${endCycleStageDto.otherAbandonReason}" />
+                                <iais:input maxLength="20" type="text" name="otherAbandonReason" value="${endCycleStageDto.otherAbandonReason}" />
                                 <span class="error-msg" name="iaisErrorMsg" id="error_otherAbandonReason"></span>
                             </iais:value>
                         </iais:row>

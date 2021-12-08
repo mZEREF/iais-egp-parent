@@ -71,9 +71,7 @@ public class EndCycleDelegator extends CommonDelegator{
             }
             endCycleStageDto.setCycleAbandoned(cycleAbandonedb);
             endCycleStageDto.setAbandonReason(abandonReasonSelect);
-            if (otherAbandonReason != null && "ENDRA005".equals(abandonReasonSelect)) {
-                endCycleStageDto.setOtherAbandonReason(otherAbandonReason);
-            }
+            endCycleStageDto.setOtherAbandonReason(otherAbandonReason);
             arSuperDataSubmissionDto.setEndCycleStageDto(endCycleStageDto);
             ParamUtil.setSessionAttr(bpc.request, DataSubmissionConstant.AR_DATA_SUBMISSION, arSuperDataSubmissionDto);
             ValidationResult validationResult = WebValidationHelper.validateProperty(endCycleStageDto, "save");
