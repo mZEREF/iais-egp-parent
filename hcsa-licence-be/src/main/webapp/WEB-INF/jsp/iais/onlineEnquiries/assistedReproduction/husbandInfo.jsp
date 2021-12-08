@@ -1,8 +1,8 @@
 <div class="arQuickView">
     <div class="row">
-        <div class="col-md-12">
+        <b class="col-md-12" style="font-size:2.0rem">
             Current Identity
-        </div>
+        </b>
     </div>
 
     <div class="table-gp">
@@ -53,9 +53,9 @@
     </div>
     <br>
     <div class="row">
-        <div class="col-md-12">
+        <b class="col-md-12" style="font-size:2.0rem">
             Previous Identities
-        </div>
+        </b>
     </div>
     <hr>
     <div class="table-gp">

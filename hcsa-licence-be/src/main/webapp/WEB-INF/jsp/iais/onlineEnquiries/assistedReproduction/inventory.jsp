@@ -19,7 +19,6 @@
                        items="${patientInventoryDtos}"
                        varStatus="status">
                 <tr>
-
                     <td style="vertical-align:middle;">
                         <c:out value="${patientInventory.key}"/>
                     </td>
@@ -47,6 +46,33 @@
 
                 </tr>
             </c:forEach>
+            <tr>
+                <td style="vertical-align:middle;">
+                    <c:out value="${patientInventory.key}"/>
+                </td>
+                <td style="vertical-align:middle;">
+                    <c:out value="${patientInventory.value.currentFrozenOocytes}"/>
+                </td>
+                <td style="vertical-align:middle;">
+                    <c:out value="${patientInventory.value.currentThawedOocytes}"/>
+                </td>
+                <td style="vertical-align:middle;">
+                    <c:out value="${patientInventory.value.currentFreshOocytes}"/>
+                </td>
+                <td style="vertical-align:middle;">
+                    <c:out value="${patientInventory.value.currentFrozenEmbryos}"/>
+                </td>
+                <td style="vertical-align:middle;">
+                    <c:out value="${patientInventory.value.currentThawedEmbryos}"/>
+                </td>
+                <td style="vertical-align:middle;">
+                    <c:out value="${patientInventory.value.currentFreshEmbryos}"/>
+                </td>
+                <td style="vertical-align:middle;">
+                    <c:out value="${patientInventory.value.currentFrozenSperms}"/>
+                </td>
+
+            </tr>
             </tbody>
         </table>
     </div>

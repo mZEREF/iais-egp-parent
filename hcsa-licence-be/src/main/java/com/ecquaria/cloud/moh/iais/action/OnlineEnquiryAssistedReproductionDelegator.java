@@ -886,16 +886,38 @@ public class OnlineEnquiryAssistedReproductionDelegator {
             ParamUtil.setSessionAttr(request,"patientInfoDto",patientInfoDto);
 
             Map<String,PatientInventoryDto> patientInventoryDtos=IaisCommonUtils.genNewHashMap();
+            PatientInventoryDto patientInventoryDtoTotal=new PatientInventoryDto();
+             int currentFrozenOocytes=0;
+             int currentThawedOocytes=0;
+             int currentFreshOocytes=0;
+             int currentFrozenEmbryos=0;
+             int currentThawedEmbryos=0;
+             int currentFreshEmbryos=0;
+             int currentFrozenSperms=0;
             for (PremisesDto premisesDto:patientInfoDto.getPatient().getArCentres()
                  ) {
                 try {
                     PatientInventoryDto patientInventoryDto=assistedReproductionService.patientInventoryByCode(patientInfoDto.getPatient().getPatientCode(),premisesDto.getHciCode());
+                    currentFrozenOocytes+=patientInventoryDto.getCurrentFrozenOocytes();
+                    currentThawedOocytes+=patientInventoryDto.getCurrentThawedOocytes();
+                    currentFreshOocytes+=patientInventoryDto.getCurrentFreshOocytes();
+                    currentFrozenEmbryos+=patientInventoryDto.getCurrentFrozenEmbryos();
+                    currentThawedEmbryos+=patientInventoryDto.getCurrentThawedEmbryos();
+                    currentFreshEmbryos+=patientInventoryDto.getCurrentFreshEmbryos();
+                    currentFrozenSperms+=patientInventoryDto.getCurrentFrozenSperms();
                     patientInventoryDtos.put(premisesDto.getAddress(),patientInventoryDto);
                 }catch (Exception e){
                     log.error(e.getMessage(),e);
                 }
-
             }
+            patientInventoryDtoTotal.setCurrentThawedEmbryos(currentThawedEmbryos);
+            patientInventoryDtoTotal.setChangeFreshOocytes(currentFreshOocytes);
+            patientInventoryDtoTotal.setCurrentFrozenEmbryos(currentFrozenEmbryos);
+            patientInventoryDtoTotal.setCurrentFreshEmbryos(currentFreshEmbryos);
+            patientInventoryDtoTotal.setCurrentFrozenOocytes(currentFrozenOocytes);
+            patientInventoryDtoTotal.setCurrentThawedOocytes(currentThawedOocytes);
+            patientInventoryDtoTotal.setCurrentFrozenSperms(currentFrozenSperms);
+            patientInventoryDtos.put("Total",patientInventoryDtoTotal);
             ParamUtil.setSessionAttr(request,"patientInventoryDtos", (Serializable) patientInventoryDtos);
 
         }
