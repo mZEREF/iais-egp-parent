@@ -104,7 +104,12 @@
         var iframeId = $svcEle.find('input[name="iframeId"]').val();
         var appNo = $svcEle.find('input[name="appNo"]').val();
         $svcEle.find('input[name="svcCount"]').val(1);
-        var url ='${pageContext.request.contextPath}<%=RedirectUtil.appendCsrfGuardToken("/eservice/INTERNET/MohServiceRelatedInformation/1/PrepareView",request)%>&'+maskName+'='+maskId+'&maskName='+maskName+'&iframeId='+iframeId+'&appNo='+appNo;
+        var url ='${pageContext.request.contextPath}<%=RedirectUtil.appendCsrfGuardToken("/eservice/INTERNET/MohServiceRelatedInformation/1/PrepareView",request)%>';
+        if(url.indexOf('/PrepareView?') != -1){
+            url = url + '&'+maskName+'='+maskId+'&maskName='+maskName+'&iframeId='+iframeId+'&appNo='+appNo;
+        }else{
+            url = url + '?' +maskName+'='+maskId+'&maskName='+maskName+'&iframeId='+iframeId+'&appNo='+appNo;
+        }
         var iframeHtml = "<iframe id=\""+ iframeId+ "\"  class=\"svc-iframe\" title=\"\" src=\""+ url +"\"  width=\"100%\" frameborder =\"0\" ></iframe>"
         $svcEle.find('input[name="svcCount"]').after(iframeHtml);
 
