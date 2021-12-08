@@ -4778,6 +4778,9 @@ public class NewApplicationHelper {
         if (appSubmissionDto == null || appSubmissionDto.getAppGrpPremisesDtoList() == null) {
             return;
         }
+        if (appSubmissionDto.getAppGrpPremisesDtoList().stream().noneMatch(AppGrpPremisesDto::isFilled)) {
+            return;
+        }
         Map<String, AppGrpPremisesDto> licAppGrpPremisesDtoMap = (Map<String, AppGrpPremisesDto>) request.getSession()
                 .getAttribute(NewApplicationDelegator.LIC_PREMISES_MAP);
         Map<String, AppGrpPremisesDto> appPremisesMap = (Map<String, AppGrpPremisesDto>) request.getSession()
