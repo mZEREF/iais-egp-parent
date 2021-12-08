@@ -109,6 +109,7 @@ public class AORevocationDelegator {
         revokeDto.setProcessType(revokeDto.getProcessType());
         revokeDto.setAoDecision(aoDecision);
         revokeDto.setModule("aoRevoke");
+        setRevocationDoc(request,revokeDto);
         doValidation(revokeDto, request);
         ParamUtil.setSessionAttr(request, PARAM_REVOKE_DTO, revokeDto);
     }

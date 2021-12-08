@@ -59,4 +59,6 @@ public final class RevocationConstants {
     public static final String REVOCATION_FACILITY = "revocationFacility";
     public static final String REVOCATION_TASK_LIST = "revocationTaskList";
     public static final String PARAM_REVOKE_DTO = "revokeDto";
+
+    public static final String KEY_NON_OBJECT_ERROR = "please ensure your object has value";
 }

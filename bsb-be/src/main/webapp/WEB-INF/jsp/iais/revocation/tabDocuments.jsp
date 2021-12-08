@@ -1,5 +1,5 @@
 <%@ page import="com.ecquaria.cloud.moh.iais.common.utils.MaskUtil" %>
-
+<div id="fileUploadInputDiv" style="display: none"></div>
 <div class="alert alert-info" role="alert"><strong>
     <h4>Supporting Document</h4>
 </strong></div>
@@ -40,7 +40,6 @@
                     <th scope="col">Size</th>
                     <th scope="col">Submitted By</th>
                     <th scope="col">Date Submitted</th>
-                    <th scope="col">Action</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -48,14 +47,16 @@
                     <c:forEach var="docTypes" items="${docTypes}">
                         <c:forEach var="info" items="${savedFiles.get(docTypes)}">
                             <c:set var="tmpId" value="${MaskUtil.maskValue('file', info.repoId)}"/>
-                            <tr>
+                            <div id="${tmpId}FileDiv">
+                            <tr id="${tmpId}FileTr">
                                 <td>${info.filename}</td>
                                 <td>${info.docType}</td>
-                                <td><p><a href="javascript:void(0)" onclick="downloadFile('saved', '${tmpId}')">${info.filename}</a></p></td>
+                                <td><p><a href="javascript:void(0)" onclick="downloadRevokeFile('${tmpId}')">${info.filename}</a></p></td>
                                 <td>${String.format("%.1f", info.size/1024.0)}KB</td>
                                 <td>${info.submitBy}</td>
                                 <td><fmt:formatDate value='${info.submitDate}' pattern='dd/MM/yyyy'/></td>
                             </tr>
+                            </div>
                         </c:forEach>
                     </c:forEach>
                 </c:if>
@@ -70,9 +71,8 @@
                     <a class="back" href="/bsb-be/eservice/INTRANET/MohBsbTaskList"><em class="fa fa-angle-left"></em>Back</a>
                 </c:if>
                 <c:if test="${canUpload eq 'Y'}">
-                    <button type="button" style="float:right" class="btn btn-primary" data-toggle="modal" data-target="#uploadDoc">
-                        Upload Document
-                    </button>
+                    <a class="btn file-upload btn-secondary" data-upload-file="upload" href="javascript:void(0);">Upload</a>
+                    <span data-err-ind="upload" class="error-msg"></span>
                 </c:if>
             </iais:action>
         </div>

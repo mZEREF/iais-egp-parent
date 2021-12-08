@@ -161,7 +161,7 @@
                                                                                         <c:forEach var="docTypes" items="${docTypes}">
                                                                                             <c:forEach var="info" items="${savedFiles.get(docTypes)}">
                                                                                                 <c:set var="tmpId" value="${MaskUtil.maskValue('file', info.repoId)}"/>
-                                                                                                <p><a href="javascript:void(0)" onclick="downloadFile('saved', '${tmpId}')">${info.filename}</a> ${String.format("%.1f", info.size/1024.0)}KB</p>
+                                                                                                <p><a href="javascript:void(0)" onclick="downloadRevokeFile('${tmpId}')">${info.filename}</a>${String.format("%.1f", info.size/1024.0)}KB</p>
                                                                                             </c:forEach>
                                                                                         </c:forEach>
                                                                                     </c:if>

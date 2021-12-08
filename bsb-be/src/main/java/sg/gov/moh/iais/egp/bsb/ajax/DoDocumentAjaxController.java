@@ -84,7 +84,7 @@ public class DoDocumentAjaxController {
             fileRepoDto.setRelativePath(AppConsts.FALSE);
 
             //save file to file DB
-            String repoId = fileRepoClient.saveFiles(selectedFile, JsonUtil.parseToJson(fileRepoDto)).getEntity();
+            String repoId = fileRepoClient.saveFile(selectedFile, JsonUtil.parseToJson(fileRepoDto)).getEntity();
             doc.setFileRepoId(repoId);
             String id = docClient.saveFacilityDoc(doc).getEntity();
             doc.setId(id);

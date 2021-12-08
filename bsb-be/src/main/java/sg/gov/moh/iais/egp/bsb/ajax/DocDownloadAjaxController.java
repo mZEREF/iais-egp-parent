@@ -97,6 +97,11 @@ public class DocDownloadAjaxController {
         downloadFile(request, response, maskedRepoId, this::unmaskFileId, this::getSavedFile);
     }
 
+    @GetMapping("/revocation/repo/{id}")
+    public void downloadRevocationFile(@PathVariable("id") String maskedRepoId, HttpServletRequest request, HttpServletResponse response) {
+        downloadFile(request, response, maskedRepoId, this::unmaskFileId, this::getSavedFile);
+    }
+
     /**
      * Use the param 'file' to unmask the id
      * @return unmasked id

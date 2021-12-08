@@ -10,6 +10,7 @@
 <webui:setLayout name="iais-intranet"/>
 <script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-revocation.js"></script>
 <script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-common.js"></script>
+<script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-file.js"></script>
 <%@include file="/WEB-INF/jsp/iais/include/showErrorMsg.jsp" %>
 <div class="dashboard">
     <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
