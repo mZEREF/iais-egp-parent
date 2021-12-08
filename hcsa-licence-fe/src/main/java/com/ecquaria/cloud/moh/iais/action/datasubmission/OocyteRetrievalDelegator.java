@@ -57,17 +57,6 @@ public class OocyteRetrievalDelegator extends CommonDelegator {
             }
             DataSubmissionHelper.setCurrentArDataSubmission(arSuperDataSubmissionDto, bpc.request);
         }
-        ParamUtil.setRequestAttr(bpc.request, "totalRetrievedNum", oocyteRetrievalStageDto.getTotalNum());
-    }
-
-    @Override
-    public void prepareConfim(BaseProcessClass bpc) {
-        ArSuperDataSubmissionDto arSuperDataSubmissionDto = DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
-        OocyteRetrievalStageDto oocyteRetrievalStageDto = arSuperDataSubmissionDto.getOocyteRetrievalStageDto();
-        int totalNum = oocyteRetrievalStageDto.getTotalNum();
-        ParamUtil.setRequestAttr(bpc.request, "totalRetrievedNum", totalNum);
-        PatientInventoryDto patientInventoryDto = DataSubmissionHelper.getCurrentPatientInventory(bpc.request);
-        patientInventoryDto.setChangeFreshOocytes(totalNum);
     }
 
     @Override

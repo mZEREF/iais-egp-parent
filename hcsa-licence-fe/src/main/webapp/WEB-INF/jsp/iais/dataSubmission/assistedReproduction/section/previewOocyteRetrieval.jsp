@@ -48,7 +48,7 @@
                 <iais:row>
                     <iais:field width="6" value="No. Retrieved (Total)" cssClass="col-md-6"/>
                     <iais:value width="6" cssClass="col-md-6" display="true">
-                        <c:out value="${totalRetrievedNum}"/>
+                        <c:out value="${oocyteRetrievalStageDto.matureRetrievedNum + oocyteRetrievalStageDto.immatureRetrievedNum + oocyteRetrievalStageDto.otherRetrievedNum}"/>
                     </iais:value>
                 </iais:row>
                 <iais:row>

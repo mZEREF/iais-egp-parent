@@ -96,7 +96,7 @@
                 <iais:row>
                     <iais:field width="6" value="No. Retrieved (Total)" cssClass="col-md-6"/>
                     <iais:value width="6" cssClass="col-md-6">
-                        <p id="totalRetrievedNum">${totalRetrievedNum}</p>
+                        <p id="totalRetrievedNum">${oocyteRetrievalStageDto.matureRetrievedNum + oocyteRetrievalStageDto.immatureRetrievedNum + oocyteRetrievalStageDto.otherRetrievedNum}</p>
                     </iais:value>
                 </iais:row>
                 <iais:row>
