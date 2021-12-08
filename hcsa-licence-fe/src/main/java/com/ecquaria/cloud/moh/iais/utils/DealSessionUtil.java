@@ -293,11 +293,10 @@ public class DealSessionUtil {
                     appSubmissionDto.setAppDeclarationDocDtos(declarationFiles);
                 }
                 AppSubmissionDto oldAppSubmissionDto = (AppSubmissionDto) CopyUtil.copyMutableObject(appSubmissionDto);
-                ParamUtil.setSessionAttr(bpc.request, NewApplicationDelegator.OLDAPPSUBMISSIONDTO, oldAppSubmissionDto);
+                NewApplicationHelper.setOldAppSubmissionDto(oldAppSubmissionDto, bpc.request);
             } else if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())) {
-
                 AppSubmissionDto oldAppSubmissionDto = appSubmissionDto.getOldAppSubmissionDto();
-                ParamUtil.setSessionAttr(bpc.request, NewApplicationDelegator.OLDAPPSUBMISSIONDTO, oldAppSubmissionDto);
+                NewApplicationHelper.setOldAppSubmissionDto(oldAppSubmissionDto, bpc.request);
             }
         }
 
@@ -320,7 +319,7 @@ public class DealSessionUtil {
         ParamUtil.setSessionAttr(bpc.request, NewApplicationDelegator.SERVICEALLPSNCONFIGMAP, (Serializable) svcConfigInfo);
 
         //clear primary file session
-        AppSubmissionDto oldAppSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request,NewApplicationDelegator.OLDAPPSUBMISSIONDTO);
+        AppSubmissionDto oldAppSubmissionDto = NewApplicationHelper.getOldAppSubmissionDto(bpc.request);
         List<AppGrpPrimaryDocDto> oldAppGrpPrimaryDocDtos = IaisCommonUtils.genNewArrayList();
         if(oldAppSubmissionDto != null){
             oldAppGrpPrimaryDocDtos = oldAppSubmissionDto.getAppGrpPrimaryDocDtos();

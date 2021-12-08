@@ -4,10 +4,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.risk.RiskConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.HcsaRiskFeSupportDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.HcsaRiskFinanceMatrixDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.HcsaRiskLeadershipMatrixDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskAcceptiionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskLeaderShipShowDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskResultDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -37,9 +34,7 @@ public class HcsaRiskLeaderShipServiceImpl implements HcsaRiskLeaderShipService 
 
     @Override
     public RiskLeaderShipShowDto getLeaderShowDto() {
-        List<HcsaServiceDto> serviceDtoList = hcsaConfigClient.getActiveServices().getEntity();
-        RiskLeaderShipShowDto showDto  = hcsaConfigClient.getRiskLeaderShipShow(serviceDtoList).getEntity();
-        return showDto;
+        return  hcsaConfigClient.getRiskLeaderShipShow(hcsaRiskSupportBeService.getNameSortHcsaServiceDtos()).getEntity();
     }
     @Override
     public void getOneFinDto(HcsaRiskLeadershipMatrixDto lea, String prsource, String prthershold, String prleftmod, String prlefthigh, String prrightlow, String prrightmod, String insource, String inthershold, String inleftmod, String inlefthigh, String inrightlow, String inrightmod, String inStartDate, String inEndDate, String prStartDate, String prEndDate) {

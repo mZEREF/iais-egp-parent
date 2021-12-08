@@ -77,6 +77,9 @@ public interface RequestForChangeService {
 
     List<LicenceDto> getLicenceDtoByHciCode(String hciCode,String licenseeId);
 
+    List<LicenceDto> getLicenceDtoByHciCode(String licenseeId, AppGrpPremisesDto appGrpPremisesDto,
+            String... excludeNos);
+
     List<LicKeyPersonnelDto> getLicKeyPersonnelDtoByPerId(List<String> personIds);
 
     List<String> getPersonnelIdsByIdNo(String idNo);
