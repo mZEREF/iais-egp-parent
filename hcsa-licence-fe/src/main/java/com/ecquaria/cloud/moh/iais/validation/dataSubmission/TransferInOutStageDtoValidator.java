@@ -49,7 +49,7 @@ public class TransferInOutStageDtoValidator implements CustomizeValidator {
         if(!StringUtil.isEmpty(transferType) && transferType.equals("out")){
             String transOutToHciCode = transferInOutStageDto.getTransOutToHciCode();
             if(StringUtil.isEmpty(transOutToHciCode)){
-                errorMap.put("transInFromHciCode", "GENERAL_ERR0006");
+                errorMap.put("transOutToHciCode", "GENERAL_ERR0006");
             }
             if(!StringUtil.isEmpty(transOutToHciCode) && transOutToHciCode.equals(DataSubmissionConsts.TRANSFERRED_IN_FROM_OTHERS)){
                 if(StringUtil.isEmpty(transferInOutStageDto.getTransOutToOthers())){
