@@ -1,6 +1,6 @@
 <script type="text/javascript" src="<%=webroot1%>js/dataSubmission/transferInOutStageSection.js"></script>
 <div class="panel panel-default">
-    <div class="panel-heading">
+    <div class="panel-heading" style="padding-left: 95px;">
         <h4 class="panel-title">
             <strong>
                 Transfer In And Out
