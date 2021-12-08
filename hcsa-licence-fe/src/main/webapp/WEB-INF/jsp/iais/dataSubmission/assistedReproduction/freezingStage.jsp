@@ -49,7 +49,7 @@
                     <iais:field value="What was cryopreserved?" mandatory="true"/>
                     <iais:value width="3" cssClass="col-md-7">
                       <c:forEach items="${arFreeCryoOptions}" var="freeCryo" varStatus="index">
-                        <div class="form-check" col-xs-7 style="padding-left: 0px;">
+                        <div class="form-check col-md-6" style="padding-left: 0px;">
                           <input class="form-check-input"
                                  <c:if test="${arSuperDataSubmissionDto.arSubFreezingStageDto.cryopreservedType eq freeCryo.value}">checked="checked"</c:if>
                                  type="radio" name="freeCryoRadio" value="<c:out value="${freeCryo.value}"/>"
