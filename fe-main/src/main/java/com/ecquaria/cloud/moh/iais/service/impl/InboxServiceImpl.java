@@ -355,8 +355,22 @@ public class InboxServiceImpl implements InboxService {
         //Verify whether the new licence is generated
         LicenceDto entity = licenceInboxClient.getRootLicenceDtoByOrgId(licenceId).getEntity();
         if(entity != null){
-            String errorMsg = MessageUtil.getMessageDesc("INBOX_ACK013");
-            errorMap.put("errorMessage2",errorMsg);
+            boolean isRenewApp = false;
+            apps = appInboxClient.getAppByLicIdAndExcludeNew(entity.getId()).getEntity();
+            if(IaisCommonUtils.isNotEmpty(apps)){
+                for (ApplicationDto a : apps) {
+                    if(ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(a.getApplicationType())){
+                        isRenewApp = true;
+                        break;
+                    }
+                }
+            }
+            if(isRenewApp){
+                String errorMsg = MessageUtil.getMessageDesc("INBOX_ACK013");
+                errorMap.put("errorMessage2",errorMsg);
+            }else {
+                errorMap.put("errorMessage",licenceDto.getLicenceNo());
+            }
         }
         //check expiry date
         Date expiryDate = licenceDto.getExpiryDate();
