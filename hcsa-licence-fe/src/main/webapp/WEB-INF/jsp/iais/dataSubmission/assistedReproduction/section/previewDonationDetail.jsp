@@ -30,7 +30,7 @@
                 <iais:row>
                     <iais:field width="6" value="Reason for Donation" mandatory="false"/>
                     <iais:value width="6" display="true">
-                        <c:out value="${arSuperDataSubmissionDto.donationStageDto.donationReason}"/>
+                        <iais:code code="${arSuperDataSubmissionDto.donationStageDto.donationReason}"/>
                     </iais:value>
                 </iais:row>
                 <div id="otherDonationReasonDisplay" <c:if test="${arSuperDataSubmissionDto.donationStageDto.donationReason!='DONRES004'}">style="display: none"</c:if>>
