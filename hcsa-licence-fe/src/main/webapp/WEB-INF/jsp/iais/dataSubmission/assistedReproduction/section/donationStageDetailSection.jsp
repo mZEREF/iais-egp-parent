@@ -73,7 +73,7 @@
                     </div>
                 </iais:row>
                 <iais:row>
-                    <iais:field width="6" value="Which AR Centre was Gamete(s) / Embryo(s) Donated to?" id="donatedCentreField" mandatory="true"/>
+                    <iais:field width="6" value="Which AR Centre was Gamete(s)/Embryo(s) Donated to?" id="donatedCentreField" mandatory="true"/>
                     <iais:value width="6" cssClass="col-md-6">
                         <select name="donatedCentre" id="donatedCentre">
                             <c:forEach items="${curCenDonatedSelectOption}" var="selectOption">
