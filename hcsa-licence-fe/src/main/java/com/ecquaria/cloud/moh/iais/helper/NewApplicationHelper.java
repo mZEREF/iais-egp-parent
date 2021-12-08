@@ -4733,6 +4733,10 @@ public class NewApplicationHelper {
     }
 
     public static Map<String, AppGrpPremisesDto> checkPremisesMap(HttpServletRequest request) {
+        return checkPremisesMap(true, request);
+    }
+
+    public static Map<String, AppGrpPremisesDto> checkPremisesMap(boolean withCurrent, HttpServletRequest request) {
         AppSubmissionService appSubmissionService = SpringHelper.getBean(AppSubmissionService.class);
         String licenseeId = getLicenseeId(request);
         Map<String, AppGrpPremisesDto> licAppGrpPremisesDtoMap = (Map<String, AppGrpPremisesDto>) request.getSession()
@@ -4763,7 +4767,9 @@ public class NewApplicationHelper {
         Map<String, AppGrpPremisesDto> allData = IaisCommonUtils.genNewHashMap();
         allData.putAll(licAppGrpPremisesDtoMap);
         allData.putAll(newAppMap);
-        reSetCurrentPremises(allData, request);
+        if (withCurrent) {
+            reSetCurrentPremises(allData, request);
+        }
         return allData;
     }
 
@@ -4791,6 +4797,7 @@ public class NewApplicationHelper {
                 request.getSession().setAttribute(NewApplicationDelegator.APP_PREMISES_MAP, appPremisesMap);
             }
         }
+        setAppSubmissionDto(appSubmissionDto, request);
     }
 
     public static void clearPremisesMap(HttpServletRequest request) {
@@ -4803,7 +4810,7 @@ public class NewApplicationHelper {
     }
 
     public static AppGrpPremisesDto getPremisesFromMap(String premSelectVal, HttpServletRequest request) {
-        Map<String, AppGrpPremisesDto> premisesDtoMap = checkPremisesMap(request);
+        Map<String, AppGrpPremisesDto> premisesDtoMap = checkPremisesMap(false, request);
         return premisesDtoMap.get(premSelectVal);
     }
 
