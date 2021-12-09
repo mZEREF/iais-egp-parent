@@ -435,6 +435,10 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
 
     @Override
     public List<LicenceDto> getLicenceDtoByHciCode(String hciCode, String licenseeId) {
+        log.info(StringUtil.changeForLog("Hci code: " + hciCode + " - Licensee: " + licenseeId));
+        if (StringUtil.isEmpty(hciCode) || StringUtil.isEmpty(licenseeId)) {
+            return IaisCommonUtils.genNewArrayList(0);
+        }
         return licenceClient.getLicenceDtoByHciCode(hciCode, licenseeId).getEntity();
     }
 
@@ -450,7 +454,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
         }
         log.info(StringUtil.changeForLog("Hci code: " + hciCode + " - Licensee: " + licenseeId));
         List<LicenceDto> licenceDtos = getLicenceDtoByHciCode(hciCode, licenseeId);
-        if (licenceDtos == null) {
+        if (licenceDtos == null || licenceDtos.isEmpty()) {
             return IaisCommonUtils.genNewArrayList(0);
         }
         List<LicenceDto> licenceDtoList = licenceDtos.stream()
