@@ -2197,9 +2197,9 @@ public class NewApplicationHelper {
         if (rfiPremises == null) {
             return "";
         }
-        String additional = "";
+        String additional;
         if (ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(rfiPremises.getPremisesType())) {
-            additional = rfiPremises.getHciName() + "-" + rfiPremises.getVehicleNo();
+            additional = rfiPremises.getHciName() + ":" + rfiPremises.getVehicleNo();
         } else {
             additional = rfiPremises.getHciName();
         }
@@ -2212,9 +2212,9 @@ public class NewApplicationHelper {
         if (premisesListQueryDto == null) {
             return "";
         }
-        String additional = "";
+        String additional;
         if (ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(premisesListQueryDto.getPremisesType())) {
-            additional = premisesListQueryDto.getHciName() + "-" + premisesListQueryDto.getVehicleNo();
+            additional = premisesListQueryDto.getHciName() + ":" + premisesListQueryDto.getVehicleNo();
         } else {
             additional = premisesListQueryDto.getHciName();
         }
