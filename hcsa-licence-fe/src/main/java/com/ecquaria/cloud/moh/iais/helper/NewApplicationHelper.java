@@ -2197,11 +2197,9 @@ public class NewApplicationHelper {
         if (rfiPremises == null) {
             return "";
         }
-        String additional;
+        String additional = rfiPremises.getPremisesType() + ApplicationConsts.DELIMITER + rfiPremises.getHciName();
         if (ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(rfiPremises.getPremisesType())) {
-            additional = rfiPremises.getHciName() + ":" + rfiPremises.getVehicleNo();
-        } else {
-            additional = rfiPremises.getHciName();
+            additional += ApplicationConsts.DELIMITER + rfiPremises.getVehicleNo();
         }
         return MiscUtil.getPremisesKey(additional, rfiPremises.getPostalCode(), rfiPremises.getBlkNo(),
                 rfiPremises.getStreetName(), rfiPremises.getBuildingName(), rfiPremises.getFloorNo(), rfiPremises.getUnitNo(),
@@ -2212,11 +2210,9 @@ public class NewApplicationHelper {
         if (premisesListQueryDto == null) {
             return "";
         }
-        String additional;
+        String additional = premisesListQueryDto.getPremisesType() + ApplicationConsts.DELIMITER + premisesListQueryDto.getHciName();
         if (ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(premisesListQueryDto.getPremisesType())) {
-            additional = premisesListQueryDto.getHciName() + ":" + premisesListQueryDto.getVehicleNo();
-        } else {
-            additional = premisesListQueryDto.getHciName();
+            additional += ApplicationConsts.DELIMITER + premisesListQueryDto.getVehicleNo();
         }
         return MiscUtil.getPremisesKey(additional, premisesListQueryDto.getPostalCode(), premisesListQueryDto.getBlkNo(),
                 premisesListQueryDto.getStreetName(), premisesListQueryDto.getBuildingName(), premisesListQueryDto.getFloorNo(),

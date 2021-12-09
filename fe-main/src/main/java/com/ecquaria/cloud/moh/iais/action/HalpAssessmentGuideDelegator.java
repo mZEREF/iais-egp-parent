@@ -2369,11 +2369,9 @@ public class HalpAssessmentGuideDelegator {
     }
 
     private static String getPremisesHci(AppAlignLicQueryDto item){
-        String additional;
+        String additional = item.getPremisesType() + ApplicationConsts.DELIMITER + item.getHciName();
         if (ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(item.getPremisesType())) {
-            additional = item.getHciName() + ":" + item.getVehicleNo();
-        } else {
-            additional = item.getHciName();
+            additional += ApplicationConsts.DELIMITER + item.getVehicleNo();
         }
         return MiscUtil.getPremisesKey(additional, item.getPostalCode(), item.getBlkNo(), item.getStreetName(),
                 item.getBuildingName(), item.getFloorNo(), item.getUnitNo(),
