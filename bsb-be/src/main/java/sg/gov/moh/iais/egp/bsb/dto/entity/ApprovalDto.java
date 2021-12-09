@@ -30,4 +30,6 @@ public class ApprovalDto extends BaseEntityDto {
     private Date approvalExpiryDate;
 
     private String suspendedStatus;
+
+    private String renewable;
 }
