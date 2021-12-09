@@ -117,7 +117,7 @@ public class ApplicationViewServiceImp implements ApplicationViewService {
 
     @Override
     public List<HcsaSvcRoutingStageDto> getStage(String serviceId, String stageId) {
-     
+
         return   hcsaConfigClient.getStageName(serviceId,stageId).getEntity();
 
 
@@ -141,11 +141,11 @@ public class ApplicationViewServiceImp implements ApplicationViewService {
         String result = null;
         WorkingGroupDto workingGroupDto = organizationClient.getWrkGrpById(id).getEntity();
         if(workingGroupDto != null){
-        if(AppConsts.DOMAIN_TEMPORARY.equals(workingGroupDto.getGroupDomain())){
-            result = AppConsts.WORK_GROUP_BROADCAST;
-        }else{
-            result = workingGroupDto.getGroupName();
-        }
+            if(AppConsts.DOMAIN_TEMPORARY.equals(workingGroupDto.getGroupDomain())){
+                result = AppConsts.WORK_GROUP_BROADCAST;
+            }else{
+                result = workingGroupDto.getGroupName();
+            }
         }
         return result;
     }
@@ -550,15 +550,21 @@ public class ApplicationViewServiceImp implements ApplicationViewService {
                 appovedNum.get(0).setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
                 // set main appoved true
                 for(ApplicationDto applicationDto : appovedNum){
-                         if("0".equalsIgnoreCase(String.valueOf(applicationDto.getSecondaryFloorNoChange()))){
-                             applicationDto.setNeedNewLicNo(true);
-                             if(applicationDtoMain.getId().equalsIgnoreCase(applicationDto.getId())){
-                                 applicationDtoMain.setNeedNewLicNo(true);
-                             }
-                         }
+                    if("0".equalsIgnoreCase(String.valueOf(applicationDto.getSecondaryFloorNoChange()))){
+                        applicationDto.setNeedNewLicNo(true);
+                        if(applicationDtoMain.getId().equalsIgnoreCase(applicationDto.getId())){
+                            applicationDtoMain.setNeedNewLicNo(true);
+                        }
                     }
+                }
             }
         }
         log.info("-----------clearApprovedHclCodeByExistRejectApp end------");
+    }
+
+    @Override
+    public boolean noContainsFlagByStageList(List<SelectOption> nextStageList) {
+        //contains ApplicationConsts.PROCESSING_DECISION_PENDING_APPROVAL, No -> true
+        return nextStageList.stream().noneMatch(stage -> ApplicationConsts.PROCESSING_DECISION_PENDING_APPROVAL.equals(stage.getValue()));
     }
 }

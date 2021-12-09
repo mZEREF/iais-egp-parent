@@ -158,8 +158,8 @@
                                                                                 <iais:field value="Processing Decision" required="true"/>
                                                                                 <%String nextStage = request.getParameter("nextStage");%>
                                                                                 <iais:value width="10">
-                                                                                    <iais:select cssClass="nextStage" name="nextStage" id="nextStage"
-                                                                                                 options="nextStages"
+                                                                                    <iais:select cssClass="nextStage" name="nextStage" id="nextStage" firstOption="Please Select"
+                                                                                                 options="nextStages" needSort="true"
                                                                                                  value="<%=nextStage%>"></iais:select>
                                                                                 </iais:value>
                                                                             </iais:row>
