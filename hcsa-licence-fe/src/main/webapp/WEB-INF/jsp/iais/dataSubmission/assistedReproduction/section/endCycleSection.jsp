@@ -16,7 +16,6 @@
                     <span style="font-weight:normal"><c:out value="(${arSuperDataSubmissionDto.patientInfoDto.patient.idNumber})"/>
                     </span>
                 </h3>
-                <span id="error_endCyclePage" name="iaisErrorMsg" class="error-msg col-md-12" style="padding: 0px;"></span>
                 <iais:row>
                     <iais:field width="6" value="Is Current Cycle Abandoned?" mandatory="true"/>
                     <iais:value width="3" cssClass="col-md-3">

@@ -81,6 +81,9 @@
                         <fmt:formatDate value="${embryoTransferStageDto.secondTransferDate}" pattern="dd/MM/yyyy"/>
                     </iais:value>
                 </iais:row>
+                <span id="error_inventoryNoZero" name="iaisErrorMsg" class="error-msg col-md-12"
+                      style="padding: 0px;"></span>
+                <br><br>
                 <%@include file="../common/patientInventoryTable.jsp" %>
             </div>
         </div>

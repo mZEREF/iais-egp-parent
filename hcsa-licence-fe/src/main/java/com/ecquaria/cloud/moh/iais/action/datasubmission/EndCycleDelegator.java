@@ -1,19 +1,24 @@
 package com.ecquaria.cloud.moh.iais.action.datasubmission;
 
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.EndCycleStageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInventoryDto;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
+import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
+import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import lombok.extern.slf4j.Slf4j;
 import sop.webflow.rt.api.BaseProcessClass;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -83,6 +88,42 @@ public class EndCycleDelegator extends CommonDelegator{
                 return;
             }
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "confirm");
+        }
+    }
+
+    @Override
+    public void pageConfirmAction(BaseProcessClass bpc) {
+        super.pageConfirmAction(bpc);
+
+        String actionType = ParamUtil.getString(bpc.request, DataSubmissionConstant.CRUD_TYPE);
+        ArSuperDataSubmissionDto arSuperDataSubmission = DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
+        if (DataSubmissionConsts.DS_APP_TYPE_NEW.equals(arSuperDataSubmission.getAppType()) && ACTION_TYPE_SUBMISSION.equals(actionType)) {
+            String errorMapJson = (String) ParamUtil.getRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG);
+            Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
+            if (StringUtil.isNotEmpty(errorMapJson)) {
+                List<Map> mapList = JsonUtil.parseToList(errorMapJson, Map.class);
+                if (IaisCommonUtils.isNotEmpty(mapList)) {
+                    for (Map map : mapList) {
+                        errorMap.putAll(map);
+                    }
+                }
+            }
+
+            PatientInventoryDto patientInventoryDto = DataSubmissionHelper.getCurrentPatientInventory(bpc.request);
+            if (patientInventoryDto != null) {
+                if (patientInventoryDto.getCurrentFreshOocytes() > 0
+                        || patientInventoryDto.getCurrentThawedOocytes() > 0
+                        || patientInventoryDto.getCurrentFreshEmbryos() > 0
+                        || patientInventoryDto.getCurrentThawedEmbryos() > 0) {
+                    errorMap.put("inventoryNoZero", MessageUtil.getMessageDesc("DS_ERR017"));
+                }
+            }
+
+            if (!errorMap.isEmpty()) {
+                log.error("------inventory No Zero-----");
+                ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
+                ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, ACTION_TYPE_CONFIRM);
+            }
         }
     }
 }
