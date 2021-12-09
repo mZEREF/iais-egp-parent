@@ -5,6 +5,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientDto;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.service.client.ArFeClient;
 import com.ecquaria.cloud.moh.iais.service.client.DpFeClient;
+import com.ecquaria.cloud.moh.iais.service.client.GenerateIdClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceClient;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.PatientService;
 import lombok.extern.slf4j.Slf4j;
@@ -25,6 +26,9 @@ public class PatientServiceImpl implements PatientService {
     @Autowired
     private DpFeClient dpFeClient;
 
+    @Autowired
+    private GenerateIdClient generateIdClient;
+
     @Override
     public PatientDto getArPatientDto(String idType, String idNumber, String nationality, String orgId) {
         log.info(StringUtil.changeForLog("----- Param: " + orgId + " : " + idType
@@ -44,6 +48,14 @@ public class PatientServiceImpl implements PatientService {
             return null;
         }
         return dpFeClient.getDpPatientDto(idType, idNumber, nationality, orgId).getEntity();
+    }
+
+    @Override
+    public String getPatientCode(String patientCode) {
+        if (StringUtil.isNotEmpty(patientCode)) {
+            return patientCode;
+        }
+        return generateIdClient.getSeqId().getEntity();
     }
 
 }

@@ -37,9 +37,6 @@ public class PatientDelegator extends CommonDelegator {
     @Autowired
     private PatientService patientService;
 
-    @Autowired
-    private GenerateIdClient generateIdClient;
-
     @Override
     public void prepareSwitch(BaseProcessClass bpc) {
         ParamUtil.setRequestAttr(bpc.request, "smallTitle", "You are submitting for <strong>Patient Information</strong>");
@@ -84,10 +81,7 @@ public class PatientDelegator extends CommonDelegator {
         if (loginContext != null) {
             patient.setOrgId(loginContext.getOrgId());
         }
-        String patientCode = Optional.ofNullable(patientInfo.getPatient())
-                .map(dto -> dto.getPatientCode())
-                .orElseGet(() -> generateIdClient.getSeqId().getEntity());
-        patient.setPatientCode(patientCode);
+        patient.setPatientCode(patientService.getPatientCode(patient.getPatientCode()));
         patient.setPatientType(DataSubmissionConsts.DS_PATIENT_ART);
         patientInfo.setPatient(patient);
         // check previous
