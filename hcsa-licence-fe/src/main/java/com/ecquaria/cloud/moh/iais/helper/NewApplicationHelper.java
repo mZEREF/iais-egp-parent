@@ -4783,29 +4783,71 @@ public class NewApplicationHelper {
         if (appSubmissionDto.getAppGrpPremisesDtoList().stream().noneMatch(AppGrpPremisesDto::isFilled)) {
             return;
         }
+        String errorMsg = (String)request.getAttribute(IaisEGPConstant.ERRORMSG);
+        if (StringUtil.isNotEmpty(errorMsg) && !"[]".equals(errorMsg)) {
+            log.info(StringUtil.changeForLog("------ Has Error ------"));
+            return;
+        }
         Map<String, AppGrpPremisesDto> licAppGrpPremisesDtoMap = (Map<String, AppGrpPremisesDto>) request.getSession()
                 .getAttribute(NewApplicationDelegator.LIC_PREMISES_MAP);
         Map<String, AppGrpPremisesDto> appPremisesMap = (Map<String, AppGrpPremisesDto>) request.getSession()
                 .getAttribute(NewApplicationDelegator.APP_PREMISES_MAP);
-        for (AppGrpPremisesDto dto : appSubmissionDto.getAppGrpPremisesDtoList()) {
-            if (!dto.isFilled()) {
+        for (AppGrpPremisesDto premises : appSubmissionDto.getAppGrpPremisesDtoList()) {
+            if (!premises.isFilled()) {
                 continue;
             }
-            String premisesSelect = dto.getPremisesSelect();
-            if (StringUtil.isEmpty(premisesSelect)) {
-                premisesSelect = getPremisesKey(dto);
-                dto.setPremisesSelect(premisesSelect);
-            }
-            allData.put(premisesSelect, dto);
-            if (licAppGrpPremisesDtoMap.get(premisesSelect) != null) {
-                licAppGrpPremisesDtoMap.put(premisesSelect, dto);
-                request.getSession().setAttribute(NewApplicationDelegator.LIC_PREMISES_MAP, licAppGrpPremisesDtoMap);
+            String premisesSelect = getPremisesKey(premises);
+            premises.setPremisesSelect(premisesSelect);
+            AppGrpPremisesDto newDto = (AppGrpPremisesDto) CopyUtil.copyMutableObject(premises);
+            Map.Entry<String, AppGrpPremisesDto> entry = getPremisesFromMap(premises, allData, request);
+            if (entry == null) {
+                if (licAppGrpPremisesDtoMap.get(premisesSelect) == null && appPremisesMap.get(premisesSelect) == null) {
+                    appPremisesMap.put(premisesSelect, newDto);
+                    request.getSession().setAttribute(NewApplicationDelegator.APP_PREMISES_MAP, appPremisesMap);
+                }
             } else {
-                appPremisesMap.put(premisesSelect, dto);
-                request.getSession().setAttribute(NewApplicationDelegator.APP_PREMISES_MAP, appPremisesMap);
+                String oldPremSel = entry.getKey();
+                allData.remove(oldPremSel);
+                if (licAppGrpPremisesDtoMap.get(oldPremSel) != null) {
+                    licAppGrpPremisesDtoMap.remove(oldPremSel);
+                    licAppGrpPremisesDtoMap.put(premisesSelect, newDto);
+                    request.getSession().setAttribute(NewApplicationDelegator.LIC_PREMISES_MAP, licAppGrpPremisesDtoMap);
+                } else {
+                    appPremisesMap.remove(oldPremSel);
+                    appPremisesMap.put(premisesSelect, newDto);
+                    request.getSession().setAttribute(NewApplicationDelegator.APP_PREMISES_MAP, appPremisesMap);
+                }
             }
+            allData.put(premisesSelect, newDto);
         }
         setAppSubmissionDto(appSubmissionDto, request);
+    }
+
+    private static Map.Entry<String, AppGrpPremisesDto> getPremisesFromMap(AppGrpPremisesDto premises,
+            Map<String, AppGrpPremisesDto> map, HttpServletRequest request) {
+        Map.Entry<String, AppGrpPremisesDto> entry = map.entrySet().stream()
+                .filter(e -> Objects.equals(premises.getPremisesIndexNo(), e.getValue().getPremisesIndexNo()))
+                .findAny()
+                .orElse(null);
+        if (entry == null) {
+            AppSubmissionDto oldAppSubmissionDto = NewApplicationHelper.getOldAppSubmissionDto(request);
+            if (oldAppSubmissionDto != null) {
+                String hciCode = oldAppSubmissionDto.getAppGrpPremisesDtoList().stream()
+                        .filter(dto -> Objects.equals(premises.getPremisesIndexNo(), dto.getPremisesIndexNo()))
+                        .map(dto -> Optional.ofNullable(dto.getOldHciCode()).orElse(dto.getHciCode()))
+                        .filter(Objects::nonNull)
+                        .findAny()
+                        .orElse(null);
+                if (hciCode != null) {
+                    entry = map.entrySet().stream()
+                            .filter(e -> Objects.equals(hciCode, e.getValue().getHciCode())
+                                    || Objects.equals(hciCode, e.getValue().getOldHciCode()))
+                            .findAny()
+                            .orElse(null);
+                }
+            }
+        }
+        return entry;
     }
 
     public static void clearPremisesMap(HttpServletRequest request) {
