@@ -23,7 +23,7 @@
         <div name="defectTypeSectionName"
              <c:if test="${pregnancyOutcomeBabyDto.birthDefect != 'Yes'}">style="display:none;"</c:if>>
             <iais:row>
-                <iais:field width="6" value="Baby ${displayNum} Defect Type" mandatory="true" cssClass="col-md-6"/>
+                <iais:field width="6" value="Baby ${displayNum} Defect Type" cssClass="col-md-6"/>
                 <iais:value width="5" cssClass="col-md-6" style="padding:0px;">
                     <c:forEach var="pregnancyOutcomeBabyDefectDto"
                                items="${pregnancyOutcomeBabyDto.pregnancyOutcomeBabyDefectDtos}"
@@ -38,9 +38,9 @@
                 </iais:value>
             </iais:row>
             <div name="otherDefectTypeDivName"
-                 <c:if test="${!fn:contains(defectTypes,'other')}">style="display:none;"</c:if>>
+                 <c:if test="${!fn:contains(defectTypes,'POSBDT008')}">style="display:none;"</c:if>>
                 <iais:row>
-                    <iais:field width="6" value="Baby ${displayNum} Defect Type (Others)" mandatory="true"
+                    <iais:field width="6" value="Baby ${displayNum} Defect Type (Others)"
                                 cssClass="col-md-6"/>
                     <iais:value width="5" cssClass="col-md-6" display="true">
                         <c:out value="${otherDefectType}"/>

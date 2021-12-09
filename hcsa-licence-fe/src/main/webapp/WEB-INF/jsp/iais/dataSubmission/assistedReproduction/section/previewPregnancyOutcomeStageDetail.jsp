@@ -140,7 +140,24 @@
                         </iais:value>
                     </iais:row>
                 </div>
+                <%@include file="../common/patientInventoryTable.jsp" %>
+            </div>
+        </div>
+    </div>
+</div>
 
+<div class="panel panel-default babyDetailsPageDiv"
+     <c:if test="${(pregnancyOutcomeStageDto.maleLiveBirthNum + pregnancyOutcomeStageDto.femaleLiveBirthNum) < 1}">style="display:none;"</c:if>>
+    <div class="panel-heading">
+        <h4 class="panel-title">
+            <a href="#babyDetals" data-toggle="collapse">
+                Details of Babies
+            </a>
+        </h4>
+    </div>
+    <div class="panel-collapse collapse in" id="babyDetals">
+        <div class="panel-body">
+            <div class="panel-main-content form-horizontal">
                 <%@include file="previewPregnancyOutcomeStageBabySection.jsp" %>
 
                 <div id="careBabyNumSection"
@@ -191,7 +208,6 @@
                         </iais:value>
                     </iais:row>
                 </div>
-                <%@include file="../common/patientInventoryTable.jsp" %>
             </div>
         </div>
     </div>
