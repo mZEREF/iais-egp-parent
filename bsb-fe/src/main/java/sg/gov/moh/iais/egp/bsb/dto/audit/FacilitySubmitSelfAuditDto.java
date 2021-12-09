@@ -3,10 +3,13 @@ package sg.gov.moh.iais.egp.bsb.dto.audit;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import sg.gov.moh.iais.egp.bsb.dto.ValidationResultDto;
+import sg.gov.moh.iais.egp.bsb.dto.file.DocMeta;
 import sg.gov.moh.iais.egp.bsb.util.SpringReflectionUtils;
 
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 
 /**
  * @author Zhu Tangtang
@@ -14,10 +17,13 @@ import java.util.Date;
 @Data
 public class FacilitySubmitSelfAuditDto implements Serializable {
     //facility
+    private String facId;
+    private String certifierRegId;
     private String facName;
     private String facAddress;
     private String facClassification;
     private String activityType;
+    private String processType;
     //audit
     @JsonIgnore
     private Date lastAuditDate;
@@ -44,6 +50,21 @@ public class FacilitySubmitSelfAuditDto implements Serializable {
 
     //just use to determine which function it is
     private String module;
+    private Collection<PrimaryDocDto.DocRecordInfo> docRecordInfos;
+
+    @JsonIgnore
+    private PrimaryDocDto primaryDocDto;
+
+    private List<PrimaryDocDto.DocRecordInfo> savedInfos;
+
+    private List<DocMeta> docMetas;
+
+    @JsonIgnore
+    private List<PrimaryDocDto.NewDocInfo> newDocInfos;
+    @JsonIgnore
+    private String docType;
+    @JsonIgnore
+    private String repoIdNewString;
 
     @JsonIgnore
     private ValidationResultDto validationResultDto;

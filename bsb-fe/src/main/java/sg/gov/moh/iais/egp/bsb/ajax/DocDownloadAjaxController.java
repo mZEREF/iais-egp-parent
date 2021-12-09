@@ -137,6 +137,10 @@ public class DocDownloadAjaxController {
         downloadFile(request, response, maskedRepoId, this::unmaskFileId, this::approvalAppGetSavedFile);
     }
 
+    @GetMapping("/audit/repo/{id}")
+    public void downloadAuditSavedFile(@PathVariable("id") String maskedRepoId, HttpServletRequest request, HttpServletResponse response) {
+        downloadFile(request, response, maskedRepoId, this::unmaskFileId, this::approvalAppGetSavedFile);
+    }
 
 
     /**

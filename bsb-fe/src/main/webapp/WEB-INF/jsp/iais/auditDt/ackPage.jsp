@@ -5,27 +5,22 @@
     sop.webflow.rt.api.BaseProcessClass process =
             (sop.webflow.rt.api.BaseProcessClass) request.getAttribute("process");
 %>
-<webui:setLayout name="iais-intranet"/>
+<webui:setLayout name="iais-internet"/>
 <script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-audit.js"></script>
-<div>
-    <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
-        <div class="main-content">
-            <div class="row">
-                <div class="col-lg-12 col-xs-12">
-                    <div class="center-content">
-                        <div class="intranet-content">
-                            <div class="bg-title">
-                                <h2>You have successfully specified the audit date.</h2>
-                            </div>
-                        </div>
-                        <div align="left">
-                            <span>
-                                <a href="/bsb-fe/eservice/INTERNET/OngoingAuditList"><em class="fa fa-angle-left"></em> Back</a>
-                            </span>
-                        </div>
+<%@include file="dashboard.jsp" %>
+<form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12 col-xs-12">
+                <div class="internet-content">
+                    <div class="bg-title">
+                        <h2>You have successfully specified the audit date.</h2>
                     </div>
+                </div>
+                <div align="left">
+                    <span><a href="/bsb-fe/eservice/INTERNET/OngoingAuditList"><em class="fa fa-angle-left"></em> Back</a></span>
                 </div>
             </div>
         </div>
-    </form>
-</div>
+    </div>
+</form>
