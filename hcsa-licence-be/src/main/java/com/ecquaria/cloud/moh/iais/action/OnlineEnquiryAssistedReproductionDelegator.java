@@ -20,6 +20,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
 import com.ecquaria.cloud.moh.iais.helper.FilterParameter;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
@@ -768,58 +769,91 @@ public class OnlineEnquiryAssistedReproductionDelegator {
         List<SelectOption> arCentreSelectOption  = IaisCommonUtils.genNewArrayList();
         ParamUtil.setRequestAttr(bpc.request,"arCentreSelectOption",arCentreSelectOption);
         HttpServletRequest request = bpc.request;
-
-        AssistedReproductionEnquiryFilterDto arFilterDto= setAssistedReproductionEnquiryFilterDto(request);
+        String action = ParamUtil.getRequestString(request, IaisEGPConstant.CRUD_ACTION_TYPE);
+        SearchParam searchParamForPat = (SearchParam) ParamUtil.getSessionAttr(request, "patientParam");
+        SearchParam searchParamForSub = (SearchParam) ParamUtil.getSessionAttr(request, "submissionParam");
         String sortFieldName = ParamUtil.getString(request,"crud_action_value");
         String sortType = ParamUtil.getString(request,"crud_action_additional");
-        if(!StringUtil.isEmpty(sortFieldName)&&!StringUtil.isEmpty(sortType)){
-            if(patientSortFieldNames.contains(sortFieldName)){
-                patientParameter.setSortType(sortType);
-                patientParameter.setSortField(sortFieldName);
-            }
-        }
 
-        setQueryFilter(arFilterDto,patientParameter,0);
-        SearchParam patientParam = SearchResultHelper.getSearchParam(request, patientParameter,true);
+        if(!"backBase".equals(action)){
+            AssistedReproductionEnquiryFilterDto arFilterDto= setAssistedReproductionEnquiryFilterDto(request);
 
-        if(IaisCommonUtils.isNotEmpty(arFilterDto.getPatientIdTypeList())){
-            String patientIdTypeListStr = SqlHelper.constructInCondition("dpi.ID_TYPE", arFilterDto.getPatientIdTypeList().size());
-            patientParam.addParam("patient_id_types", patientIdTypeListStr);
-            for(int i = 0; i < arFilterDto.getPatientIdTypeList().size(); i++){
-                patientParam.addFilter("dpi.ID_TYPE" + i, arFilterDto.getPatientIdTypeList().get(i));
-            }
-        }
-        CrudHelper.doPaging(patientParam,bpc.request);
-
-        QueryHelp.setMainSql("onlineEnquiry","searchPatientByAssistedReproduction",patientParam);
-
-        SearchResult<AssistedReproductionEnquiryResultsDto> patientResult = assistedReproductionService.searchPatientByParam(patientParam);
-        ParamUtil.setRequestAttr(request,"patientResult",patientResult);
-        ParamUtil.setSessionAttr(request,"patientParam",patientParam);
-        if(!StringUtil.isEmpty(sortFieldName)&&!StringUtil.isEmpty(sortType)){
-            if(submissionSortFieldNames.contains(sortFieldName)){
-                submissionParameter.setSortType(sortType);
-                submissionParameter.setSortField(sortFieldName);
-            }
-        }
-        setQueryFilter(arFilterDto,submissionParameter,1);
-        SearchParam submissionParam = SearchResultHelper.getSearchParam(request, submissionParameter,true);
-        CrudHelper.doPaging(submissionParam,bpc.request);
-        QueryHelp.setMainSql("onlineEnquiry","searchSubmissionByAssistedReproduction",submissionParam);
-        SearchResult<AssistedReproductionEnquirySubResultsDto> submissionResult = assistedReproductionService.searchSubmissionByParam(submissionParam);
-        if(IaisCommonUtils.isNotEmpty(submissionResult.getRows())){
-            for (AssistedReproductionEnquirySubResultsDto subResultsDto:submissionResult.getRows()
-            ) {
-                switch (subResultsDto.getSubmissionType()){
-                    case "AR_TP001":subResultsDto.setSubmissionType("Patient Information");break;
-                    case "AR_TP002":subResultsDto.setSubmissionType("Cycle Stages");break;
-                    case "AR_TP003":subResultsDto.setSubmissionType("Donor Samples");break;
-                    default:subResultsDto.setSubmissionType(MasterCodeUtil.getCodeDesc(subResultsDto.getSubmissionType()));
+            if(!StringUtil.isEmpty(sortFieldName)&&!StringUtil.isEmpty(sortType)){
+                if(patientSortFieldNames.contains(sortFieldName)){
+                    patientParameter.setSortType(sortType);
+                    patientParameter.setSortField(sortFieldName);
                 }
             }
+
+            setQueryFilter(arFilterDto,patientParameter,0);
+            SearchParam patientParam = SearchResultHelper.getSearchParam(request, patientParameter,true);
+
+            if(IaisCommonUtils.isNotEmpty(arFilterDto.getPatientIdTypeList())){
+                String patientIdTypeListStr = SqlHelper.constructInCondition("dpi.ID_TYPE", arFilterDto.getPatientIdTypeList().size());
+                patientParam.addParam("patient_id_types", patientIdTypeListStr);
+                for(int i = 0; i < arFilterDto.getPatientIdTypeList().size(); i++){
+                    patientParam.addFilter("dpi.ID_TYPE" + i, arFilterDto.getPatientIdTypeList().get(i));
+                }
+            }
+            CrudHelper.doPaging(patientParam,bpc.request);
+
+            QueryHelp.setMainSql("onlineEnquiry","searchPatientByAssistedReproduction",patientParam);
+
+            SearchResult<AssistedReproductionEnquiryResultsDto> patientResult = assistedReproductionService.searchPatientByParam(patientParam);
+            ParamUtil.setRequestAttr(request,"patientResult",patientResult);
+            ParamUtil.setSessionAttr(request,"patientParam",patientParam);
+            if(!StringUtil.isEmpty(sortFieldName)&&!StringUtil.isEmpty(sortType)){
+                if(submissionSortFieldNames.contains(sortFieldName)){
+                    submissionParameter.setSortType(sortType);
+                    submissionParameter.setSortField(sortFieldName);
+                }
+            }
+            setQueryFilter(arFilterDto,submissionParameter,1);
+            SearchParam submissionParam = SearchResultHelper.getSearchParam(request, submissionParameter,true);
+            CrudHelper.doPaging(submissionParam,bpc.request);
+            QueryHelp.setMainSql("onlineEnquiry","searchSubmissionByAssistedReproduction",submissionParam);
+            SearchResult<AssistedReproductionEnquirySubResultsDto> submissionResult = assistedReproductionService.searchSubmissionByParam(submissionParam);
+            if(IaisCommonUtils.isNotEmpty(submissionResult.getRows())){
+                for (AssistedReproductionEnquirySubResultsDto subResultsDto:submissionResult.getRows()
+                ) {
+                    switch (subResultsDto.getSubmissionType()){
+                        case "AR_TP001":subResultsDto.setSubmissionType("Patient Information");break;
+                        case "AR_TP002":subResultsDto.setSubmissionType("Cycle Stages");break;
+                        case "AR_TP003":subResultsDto.setSubmissionType("Donor Samples");break;
+                        default:subResultsDto.setSubmissionType(MasterCodeUtil.getCodeDesc(subResultsDto.getSubmissionType()));
+                    }
+                }
+            }
+            ParamUtil.setSessionAttr(request,"submissionParam",submissionParam);
+            ParamUtil.setRequestAttr(request,"submissionResult",submissionResult);
+        }else {
+            if(searchParamForPat != null){
+                SearchResult<AssistedReproductionEnquiryResultsDto> patientResult = assistedReproductionService.searchPatientByParam(searchParamForPat);
+                ParamUtil.setRequestAttr(request,"patientResult",patientResult);
+                ParamUtil.setSessionAttr(request,"patientParam",searchParamForPat);
+            }
+            if(searchParamForSub != null){
+                SearchResult<AssistedReproductionEnquirySubResultsDto> submissionResult = assistedReproductionService.searchSubmissionByParam(searchParamForSub);
+                if(IaisCommonUtils.isNotEmpty(submissionResult.getRows())){
+                    for (AssistedReproductionEnquirySubResultsDto subResultsDto:submissionResult.getRows()
+                    ) {
+                        switch (subResultsDto.getSubmissionType()){
+                            case "AR_TP001":subResultsDto.setSubmissionType("Patient Information");break;
+                            case "AR_TP002":subResultsDto.setSubmissionType("Cycle Stages");break;
+                            case "AR_TP003":subResultsDto.setSubmissionType("Donor Samples");break;
+                            default:subResultsDto.setSubmissionType(MasterCodeUtil.getCodeDesc(subResultsDto.getSubmissionType()));
+                        }
+                    }
+                }
+                ParamUtil.setSessionAttr(request,"submissionParam",searchParamForSub);
+                ParamUtil.setRequestAttr(request,"submissionResult",submissionResult);
+            }
         }
-        ParamUtil.setSessionAttr(request,"submissionParam",submissionParam);
-        ParamUtil.setRequestAttr(request,"submissionResult",submissionResult);
+
+
+
+        ParamUtil.setSessionAttr(request,"arBase",1);
+        ParamUtil.setSessionAttr(request,"arAdv",0);
 
 
     }
@@ -845,24 +879,36 @@ public class OnlineEnquiryAssistedReproductionDelegator {
         ParamUtil.setRequestAttr(bpc.request,"sourceSemenOptions",sourceSemenOptions);
         List<SelectOption> arCentreSelectOption  = IaisCommonUtils.genNewArrayList();
         ParamUtil.setRequestAttr(bpc.request,"arCentreSelectOption",arCentreSelectOption);
+        String action = ParamUtil.getRequestString(request, IaisEGPConstant.CRUD_ACTION_TYPE);
+        SearchParam searchParam = (SearchParam) ParamUtil.getSessionAttr(request, "patientAdvParam");
 
-        AssistedReproductionEnquiryFilterDto arFilterDto= setAssistedReproductionEnquiryFilterDto(request);
+        if(!"backAdv".equals(action)||searchParam==null){
+            AssistedReproductionEnquiryFilterDto arFilterDto= setAssistedReproductionEnquiryFilterDto(request);
 
-        setQueryFilter(arFilterDto,patientAdvParameter,2);
-        String sortFieldName = ParamUtil.getString(request,"crud_action_value");
-        String sortType = ParamUtil.getString(request,"crud_action_additional");
-        if(!StringUtil.isEmpty(sortFieldName)&&!StringUtil.isEmpty(sortType)){
-            patientAdvParameter.setSortType(sortType);
-            patientAdvParameter.setSortField(sortFieldName);
+            setQueryFilter(arFilterDto,patientAdvParameter,2);
+            String sortFieldName = ParamUtil.getString(request,"crud_action_value");
+            String sortType = ParamUtil.getString(request,"crud_action_additional");
+            if(!StringUtil.isEmpty(sortFieldName)&&!StringUtil.isEmpty(sortType)){
+                patientAdvParameter.setSortType(sortType);
+                patientAdvParameter.setSortField(sortFieldName);
+            }
+
+            SearchParam patientParam = SearchResultHelper.getSearchParam(request, patientAdvParameter,true);
+            CrudHelper.doPaging(patientParam,bpc.request);
+
+            QueryHelp.setMainSql("onlineEnquiry","advancedSearchPatientByAssistedReproduction",patientParam);
+            SearchResult<AssistedReproductionAdvEnquiryResultsDto> patientResult = assistedReproductionService.searchPatientAdvByParam(patientParam);
+            ParamUtil.setRequestAttr(request,"patientAdvResult",patientResult);
+            ParamUtil.setSessionAttr(request,"patientAdvParam",patientParam);
+        }else {
+            SearchResult<AssistedReproductionAdvEnquiryResultsDto> patientResult = assistedReproductionService.searchPatientAdvByParam(searchParam);
+            ParamUtil.setRequestAttr(request,"patientAdvResult",patientResult);
+            ParamUtil.setSessionAttr(request,"patientAdvParam",searchParam);
         }
 
-        SearchParam patientParam = SearchResultHelper.getSearchParam(request, patientAdvParameter,true);
-        CrudHelper.doPaging(patientParam,bpc.request);
 
-        QueryHelp.setMainSql("onlineEnquiry","advancedSearchPatientByAssistedReproduction",patientParam);
-        SearchResult<AssistedReproductionAdvEnquiryResultsDto> patientResult = assistedReproductionService.searchPatientAdvByParam(patientParam);
-        ParamUtil.setRequestAttr(request,"patientAdvResult",patientResult);
-        ParamUtil.setSessionAttr(request,"patientAdvParam",patientParam);
+        ParamUtil.setSessionAttr(request,"arBase",0);
+        ParamUtil.setSessionAttr(request,"arAdv",1);
     }
     public void preViewFullDetails(BaseProcessClass bpc){
         HttpServletRequest request=bpc.request;
@@ -876,6 +922,9 @@ public class OnlineEnquiryAssistedReproductionDelegator {
             }
             if("submission".equals(additional)){
                 patientInfoDto= assistedReproductionService.patientInfoDtoBySubmissionId(key);
+                AssistedReproductionEnquiryFilterDto arFilterDto= (AssistedReproductionEnquiryFilterDto) ParamUtil.getSessionAttr(request,"assistedReproductionEnquiryFilterDto");
+                arFilterDto.setSearchBy("0");
+                ParamUtil.setSessionAttr(request,"assistedReproductionEnquiryFilterDto",arFilterDto);
             }
         }
         if(patientInfoDto!=null){
@@ -919,6 +968,11 @@ public class OnlineEnquiryAssistedReproductionDelegator {
             ArEnquiryCoFundingHistoryDto arCoFundingDto= assistedReproductionService.patientCoFundingHistoryByCode(patientInfoDto.getPatient().getPatientCode());
             ParamUtil.setSessionAttr(request,"arCoFundingDto", arCoFundingDto);
 
+        }else {
+            ParamUtil.setSessionAttr(request,"patientInfoDto",null);
+            ParamUtil.setSessionAttr(request,"patientInventoryDtos", null);
+            ParamUtil.setSessionAttr(request,"arCoFundingDto", null);
+
         }
 
 
@@ -926,9 +980,12 @@ public class OnlineEnquiryAssistedReproductionDelegator {
 
     }
     public void searchCycle(BaseProcessClass bpc){
+        ParamUtil.setRequestAttr(bpc.request, "preActive", "2");
+
 
     }
     public void perStep(BaseProcessClass bpc){
+
 
     }
 
@@ -937,6 +994,8 @@ public class OnlineEnquiryAssistedReproductionDelegator {
     }
 
     public void searchInventory(BaseProcessClass bpc){
+        ParamUtil.setRequestAttr(bpc.request, "preActive", "1");
+
 
     }
 

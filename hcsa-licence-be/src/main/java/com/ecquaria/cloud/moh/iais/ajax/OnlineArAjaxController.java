@@ -180,7 +180,15 @@ public class OnlineArAjaxController {
 
         if (!Objects.isNull(results)){
             List<AssistedReproductionEnquirySubResultsDto> queryList = results.getRows();
-            queryList.forEach(i -> i.setSubmissionType(MasterCodeUtil.getCodeDesc(i.getSubmissionType())));
+            for (AssistedReproductionEnquirySubResultsDto subResultsDto:results.getRows()
+            ) {
+                switch (subResultsDto.getSubmissionType()){
+                    case "AR_TP001":subResultsDto.setSubmissionType("Patient Information");break;
+                    case "AR_TP002":subResultsDto.setSubmissionType("Cycle Stages");break;
+                    case "AR_TP003":subResultsDto.setSubmissionType("Donor Samples");break;
+                    default:subResultsDto.setSubmissionType(MasterCodeUtil.getCodeDesc(subResultsDto.getSubmissionType()));
+                }
+            }
             queryList.forEach(i -> i.setSubmissionSubtype(MasterCodeUtil.getCodeDesc(i.getSubmissionSubtype())));
             queryList.forEach(i -> i.setSubmissionDateStr(Formatter.formatDateTime(i.getSubmissionDate(), SystemAdminBaseConstants.DATE_FORMAT)));
 
