@@ -755,6 +755,7 @@ public class NewApplicationAjaxController {
                 String hciCode = oldAppSubmissionDto.getAppGrpPremisesDtoList().stream()
                         .filter(dto -> Objects.equals(premIndexNo, dto.getPremisesIndexNo()))
                         .map(dto -> Optional.ofNullable(dto.getOldHciCode()).orElse(dto.getHciCode()))
+                        .filter(Objects::nonNull)
                         .findAny()
                         .orElse(null);
                 sameOne = appGrpPremisesDto.getHciCode() != null && Objects.equals(hciCode, appGrpPremisesDto.getHciCode());

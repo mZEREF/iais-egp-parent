@@ -280,6 +280,7 @@
                                 $(this).find('input.floorNo').val(opData.floorNo);
                                 $(this).find('input.unitNo').val(opData.unitNo);
                             });
+                            operationDel();
                             var length = $currForm.find('div.operationDiv').length;
                             console.log('Floor and Unit (premSelect): ' + length);
                             $premContent.find('.opLength').val(length);

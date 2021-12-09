@@ -62,6 +62,7 @@ public class RfiLoadingExc implements RfiLoadingCheck {
         appSubmissionDto.setAppSvcRelatedInfoDtoList(appSvcRelatedInfoDtoList);
     }
 
+    /*
     public void checkPremiseInfo(HttpServletRequest request, AppSubmissionDto appSubmissionDto, String appNo) {
         List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionService.getAppGrpPremisesDto(appNo);
         List<String> ids = IaisCommonUtils.genNewArrayList();
@@ -95,7 +96,7 @@ public class RfiLoadingExc implements RfiLoadingCheck {
         List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList = appSubmissionDto.getAppSvcRelatedInfoDtoList();
         for (AppSvcRelatedInfoDto appSvcRelatedInfoDto : appSvcRelatedInfoDtoList) {
             if (entity.getServiceId().equals(appSvcRelatedInfoDto.getServiceId())) {
-                /*  appSvcRelatedInfoDto.setAppSvcDocDtoLit(null);*/
+                *//*  appSvcRelatedInfoDto.setAppSvcDocDtoLit(null);*//*
                 appSvcRelatedInfoDtos.add(appSvcRelatedInfoDto);
                 List<AppSvcLaboratoryDisciplinesDto> appSvcLaboratoryDisciplinesDtoList = appSvcRelatedInfoDto.getAppSvcLaboratoryDisciplinesDtoList();
                 List<AppSvcLaboratoryDisciplinesDto> appSvcLaboratoryDisciplinesDtos = IaisCommonUtils.genNewArrayList();
@@ -110,4 +111,5 @@ public class RfiLoadingExc implements RfiLoadingCheck {
         }
         appSubmissionDto.setAppSvcRelatedInfoDtoList(appSvcRelatedInfoDtos);
     }
+    */
 }

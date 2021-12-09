@@ -520,7 +520,6 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
 
     @Override
     public Map<String, String> doValidatePremiss(AppSubmissionDto appSubmissionDto, AppSubmissionDto oldAppSubmissionDto, List<String> premisesHciList, String masterCodeDto, boolean rfi) {
-
         //do validate one premiss
         List<String> list = IaisCommonUtils.genNewArrayList();
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
@@ -1281,7 +1280,6 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                         checkHciIsSame(currentHcis, premisesHciList, errorMap, "premisesHci" + i);
                     }
                 } else if (rfi && clickEdit) {
-                    List<String> oldPremiseHciList = IaisCommonUtils.genNewArrayList();
                     boolean isChange = false;
                     boolean appTypeFlag = ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appSubmissionDto.getAppType());
                     if ((appTypeFlag && rfi) && (oldAppSubmissionDto != null)) {
@@ -1291,7 +1289,6 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                         } else {
                             oldAppGrpPremisesDto = oldAppSubmissionDto.getAppGrpPremisesDtoList().get(i);
                         }
-                        oldPremiseHciList = NewApplicationHelper.genPremisesHciList(oldAppGrpPremisesDto);
                         isChange = !Objects.equals(oldAppGrpPremisesDto.getHciName(), appGrpPremisesDto.getHciName())
                                 || !Objects.equals(oldAppGrpPremisesDto.getAddressWithoutFU(), appGrpPremisesDto.getAddressWithoutFU())
                                 || !EqRequestForChangeSubmitResultChange.isFloorUnitAllIn(appGrpPremisesDto, oldAppGrpPremisesDto);
@@ -1299,6 +1296,24 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                     if (!IaisCommonUtils.isEmpty(premisesHciList) && isChange) {
                         checkHciIsSame(currentHcis, premisesHciList, errorMap, "premisesHci" + i);
                     }
+                }
+            }
+            String premisesSelect = NewApplicationHelper.getPremisesKey(appGrpPremisesDto);
+            if (appGrpPremisesDtoList.stream().anyMatch(dto -> !Objects.equals(appGrpPremisesDto.getPremisesIndexNo(),
+                    dto.getPremisesIndexNo()) && Objects.equals(premisesSelect, NewApplicationHelper.getPremisesKey(dto)))) {
+                errorMap.put("premisesHci" + i, "NEW_ERR0012");
+            } else {
+                HttpServletRequest request = MiscUtil.getCurrentRequest();
+                AppGrpPremisesDto premises = null;
+                if (request != null) {
+                    premises = NewApplicationHelper.getPremisesFromMap(premisesSelect, request);
+                }
+                if (premises != null && ("newPremise".equals(appGrpPremisesDto.getPremisesSelect())
+                        || !Objects.equals(appGrpPremisesDto.getPremisesIndexNo(), premises.getPremisesIndexNo()))) {
+                    errorMap.put("premisesHci" + i,
+                            MessageUtil.replaceMessage("GENERAL_ERR0050", ApplicationConsts.TITLE_MODE_OF_SVCDLVY, "field"));
+                    appGrpPremisesDto.setPremisesSelect("newPremise");
+                    NewApplicationHelper.setAppSubmissionDto(appSubmissionDto, request);
                 }
             }
         }

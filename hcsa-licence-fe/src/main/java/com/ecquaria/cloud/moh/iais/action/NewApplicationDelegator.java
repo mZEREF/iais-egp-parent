@@ -1051,21 +1051,6 @@ public class NewApplicationDelegator {
         if (!"saveDraft".equals(crud_action_value)) {
             String keywords = MasterCodeUtil.getCodeDesc("MS001");
             boolean isNeedShowValidation = !"back".equals(crud_action_value);
-            /*
-            StringBuilder sB = new StringBuilder(10);
-            if (isNeedShowValidation) {
-                List<AppSvcRelatedInfoDto> dto = appSubmissionDto.getAppSvcRelatedInfoDtoList();
-                for (int i = 0; i < dto.size(); i++) {
-                    String serviceId = dto.get(i).getServiceId();
-                    List<HcsaServiceStepSchemeDto> hcsaServiceStepSchemeDtos = serviceConfigService.getHcsaServiceStepSchemesByServiceId(serviceId);
-                    ServiceStepDto serviceStepDto = new ServiceStepDto();
-                    serviceStepDto.setHcsaServiceStepSchemeDtos(hcsaServiceStepSchemeDtos);
-                    List<HcsaSvcPersonnelDto> currentSvcAllPsnConfig = serviceConfigService.getSvcAllPsnConfig(hcsaServiceStepSchemeDtos, serviceId);
-                    appSubmissionService.doCheckBox(bpc, sB, hcsaServiceStepSchemeDtos, currentSvcAllPsnConfig, dto.get(i),dto,appSubmissionDto.getAppGrpPremisesDtoList());
-                }
-                bpc.request.getSession().setAttribute("serviceConfig", sB.toString());
-            }
-             */
             List<HcsaServiceDto> hcsaServiceDtos = (List<HcsaServiceDto>) ParamUtil.getSessionAttr(bpc.request, AppServicesConsts.HCSASERVICEDTOLIST);
             List<String> premisesHciList = appSubmissionService.getHciFromPendAppAndLic(appSubmissionDto.getLicenseeId(), hcsaServiceDtos);
             ParamUtil.setSessionAttr(bpc.request, NewApplicationConstant.PREMISES_HCI_LIST, (Serializable) premisesHciList);
@@ -1094,7 +1079,7 @@ public class NewApplicationDelegator {
                     if (!StringUtil.isEmpty(hciNameUsed)) {
                         ParamUtil.setRequestAttr(bpc.request, "newAppPopUpMsg", hciNameUsed);
                     }
-                    ParamUtil.setRequestAttr(bpc.request, "errorMsg", WebValidationHelper.generateJsonStr(errorMap));
+                    ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
                     ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "premises");
                     bpc.request.setAttribute("errormapIs", "error");
                 }
@@ -3750,14 +3735,15 @@ public class NewApplicationDelegator {
                 List<AppGrpPremisesDto> appGrpPremisesDtos = appSubmissionDto.getAppGrpPremisesDtoList();
                 for (AppGrpPremisesDto premDto : appGrpPremisesDtos) {
                     if (premIndexNo.equals(premDto.getPremisesIndexNo())) {
-                        AppGrpPremisesDto dtoFromMap = NewApplicationHelper.getPremisesFromMap(premisesSel, request);;
+                        /*AppGrpPremisesDto dtoFromMap = NewApplicationHelper.getPremisesFromMap(premisesSel, request);;
                         String hciCode = dtoFromMap != null ? dtoFromMap.getHciCode() : "";
                         if (!StringUtil.isEmpty(hciCode)) {
                             appGrpPremisesDto.setHciCode(hciCode);
                         } else {
                             appGrpPremisesDto.setHciCode(premDto.getHciCode());
                         }
-                        appGrpPremisesDto.setLicenceDtos(premDto.getLicenceDtos());
+                        appGrpPremisesDto.setLicenceDtos(premDto.getLicenceDtos());*/
+                        NewApplicationHelper.setPremise(appGrpPremisesDto, premIndexNo, appSubmissionDto);
                         break;
                     }
                 }
