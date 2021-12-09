@@ -40,13 +40,13 @@
             <div class="row">
                 <div class="col-xs-12">
                     <div class="tab-gp steps-tab">
-                        <%@ include file="InnerNavTab.jsp" %>
+                        <%@ include file="../mainAppCommon/facRegistration/InnerNavTab.jsp" %>
                         <div class="tab-content">
                             <div class="tab-pane fade in active">
                                 <div id="batInfoPanel" role="tabpanel">
                                     <div class="multiservice">
                                         <div class="tab-gp side-tab clearfix">
-                                            <%@include file="sideNavTab.jsp"%>
+                                            <%@include file="../mainAppCommon/facRegistration/sideNavTab.jsp"%>
 
                                             <div class="tab-content">
                                                 <div role="tabpanel">
