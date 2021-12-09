@@ -1100,15 +1100,17 @@ public class NewApplicationHelper {
     public static void setPremise(AppGrpPremisesDto appGrpPremisesDto, String premIndexNo, AppSubmissionDto oldAppSubmissionDto) {
         String oldHciCode = null;
         List<LicenceDto> licenceDtos = null;
-        if (oldAppSubmissionDto != null) {
+        if (oldAppSubmissionDto != null && oldAppSubmissionDto.getAppGrpPremisesDtoList() != null) {
             oldHciCode = oldAppSubmissionDto.getAppGrpPremisesDtoList().stream()
                     .filter(dto -> Objects.equals(premIndexNo, dto.getPremisesIndexNo()))
                     .map(dto -> Optional.ofNullable(dto.getOldHciCode()).orElse(dto.getHciCode()))
+                    .filter(Objects::nonNull)
                     .findAny()
                     .orElse(null);
             licenceDtos = oldAppSubmissionDto.getAppGrpPremisesDtoList().stream()
                     .filter(dto -> Objects.equals(premIndexNo, dto.getPremisesIndexNo()))
                     .map(AppGrpPremisesDto::getLicenceDtos)
+                    .filter(Objects::nonNull)
                     .findAny()
                     .orElse(null);
         }

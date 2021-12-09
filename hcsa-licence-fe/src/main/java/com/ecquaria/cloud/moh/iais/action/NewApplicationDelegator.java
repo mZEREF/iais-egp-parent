@@ -3716,7 +3716,7 @@ public class NewApplicationDelegator {
                     }
                     if (appGrpPremisesDto != null) {
                         //get value for jsp page
-                        NewApplicationHelper.setPremise(appGrpPremisesDto, premIndexNo, appSubmissionDto);
+                        NewApplicationHelper.setPremise(appGrpPremisesDto, premIndexNo, null);
                         appGrpPremisesDtoList.add(appGrpPremisesDto);
                     }
                     continue;
