@@ -244,6 +244,10 @@ public class NewApplicationHelper {
         appSubmissionDto.setAutoRfc(isAutoRfc);
         appSubmissionDto.setIsNeedNewLicNo(isNeedNewLicNo ? AppConsts.YES : AppConsts.NO);
         appSubmissionDto.getAppGrpPremisesDtoList().forEach(appGrpPremisesDto -> {
+            if (StringUtil.isNotEmpty(appGrpPremisesDto.getHciCode())
+                    && StringUtil.isEmpty(appGrpPremisesDto.getOldHciCode())) {
+                appGrpPremisesDto.setOldHciCode(appGrpPremisesDto.getHciCode());
+            }
             appGrpPremisesDto.setHciCode(null);
             appGrpPremisesDto.setNeedNewLicNo(Boolean.valueOf(isNeedNewLicNo));
             appGrpPremisesDto.setSelfAssMtFlag(selfAssMtFlag);
