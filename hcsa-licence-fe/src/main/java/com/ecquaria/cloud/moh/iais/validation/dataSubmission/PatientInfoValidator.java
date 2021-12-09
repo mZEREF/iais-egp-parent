@@ -124,6 +124,10 @@ public class PatientInfoValidator implements CustomizeValidator {
         }
         //}
         if ("file".equals(profile)) {
+            if (StringUtil.isEmpty(patientInfo.getIsPreviousIdentification())) {
+                map.put("isPreviousIdentification", "GENERAL_ERR0006");
+            }
+
             if ("".equals(patient.getIdType())) {
                 map.put("idType", ERR_MSG_INVALID_DATA);
             }

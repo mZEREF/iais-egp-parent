@@ -109,7 +109,7 @@
             </c:otherwise>
         </c:choose>
         <div class="col-xs-12">
-            <c:if test="${AppSubmissionDto.appType=='APTY005'||AppSubmissionDto.appType=='APTY004'}">
+            <%--<c:if test="${AppSubmissionDto.appType=='APTY005'||AppSubmissionDto.appType=='APTY004'}">
                 <c:if test="${fn:length(appGrpPremisesDto.licenceDtos)>0}">
                     <div class="form-check col-sm-12" >
                         <table aria-describedby="" class="impactedLic">
@@ -131,7 +131,7 @@
                         </table>
                     </div>
                 </c:if>
-            </c:if>
+            </c:if>--%>
 
             <div class="form-horizontal">
                 <div class="form-group">

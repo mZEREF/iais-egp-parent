@@ -143,6 +143,7 @@ public class PatientUploadDelegate {
         log.info(StringUtil.changeForLog("---- Has Items: " + hasItems + " ----"));
         List<PatientInfoDto> patientInfoList = (List<PatientInfoDto>) bpc.request.getSession().getAttribute(PATIENT_INFO_LIST);
         if (patientInfoList == null || !hasItems) {
+            // upload file (first time / error)
             Entry<String, File> fileEntry = getFileEntry(bpc.request);
             PageShowFileDto pageShowFileDto = getPageShowFileDto(fileEntry);
             ParamUtil.setRequestAttr(bpc.request, "pageShowFileDto", pageShowFileDto);
@@ -176,6 +177,7 @@ public class PatientUploadDelegate {
             }
             crudype = "page";
         } else {
+            // To submission
             crudype = "submission";
         }
         if (errorMap != null && !errorMap.isEmpty()) {
@@ -193,6 +195,13 @@ public class PatientUploadDelegate {
         ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, crudype);
     }
 
+    /**
+     * Check duplication for all records in file
+     *
+     * @param patient
+     * @param patientDtos
+     * @return
+     */
     private boolean duplicate(PatientDto patient, List<PatientDto> patientDtos) {
         if (StringUtil.isEmpty(patient.getIdType()) || StringUtil.isEmpty(patient.getIdNumber()) || StringUtil.isEmpty(
                 patient.getNationality())) {
@@ -203,6 +212,14 @@ public class PatientUploadDelegate {
                 && Objects.equals(patient.getNationality(), dto.getNationality()));
     }
 
+    /**
+     * Transfer to patient info dto from patient info excel dto
+     * And map value to code for some fields (drowndrop)
+     *
+     * @param patientInfoExcelDtoList
+     * @param orgId
+     * @return
+     */
     private List<PatientInfoDto> getPatientInfoList(List<PatientInfoExcelDto> patientInfoExcelDtoList, String orgId) {
         if (patientInfoExcelDtoList == null) {
             return null;
@@ -221,6 +238,7 @@ public class PatientUploadDelegate {
             patient.setPreviousIdentification("YES".equals(patientInfoExcelDto.getIsPreviousIdentification()));
             patient.setOrgId(orgId);
             dto.setPatient(patient);
+            dto.setIsPreviousIdentification(patientInfoExcelDto.getIsPreviousIdentification());
             if (patient.isPreviousIdentification()) {
                 String preIdType = DataSubmissionHelper.getCode(patientInfoExcelDto.getPreIdType(), idTypes);
                 String preIdNumber = patientInfoExcelDto.getPreIdNumber();
@@ -241,7 +259,6 @@ public class PatientUploadDelegate {
             husbandDto.setIdNumber(patientInfoExcelDto.getIdNumberHbd());
             husbandDto.setNationality(DataSubmissionHelper.getCode(patientInfoExcelDto.getNationalityHbd(), nationalities));
             husbandDto.setBirthDate(IaisCommonUtils.handleDate(patientInfoExcelDto.getBirthDayHbd()));
-            husbandDto.setBirthDate(patientInfoExcelDto.getBirthDayHbd());
             husbandDto.setEthnicGroup(DataSubmissionHelper.getCode(patientInfoExcelDto.getEthnicGroupHbd(), groups));
             husbandDto.setEthnicGroupOther(patientInfoExcelDto.getEthnicGroupOtherHbd());
             dto.setHusband(husbandDto);
@@ -320,7 +337,7 @@ public class PatientUploadDelegate {
             return;
         }
         ArSuperDataSubmissionDto arSuperDto = DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
-        List<ArSuperDataSubmissionDto> arSuperList = patientInfoList.stream()
+        List<ArSuperDataSubmissionDto> arSuperList = patientInfoList.parallelStream()
                 .map(dto -> {
                     ArSuperDataSubmissionDto newDto = DataSubmissionHelper.reNew(arSuperDto);
                     newDto.setFe(true);
@@ -331,6 +348,8 @@ public class PatientUploadDelegate {
                     dataSubmissionDto.setSubmitDt(new Date());
                     dataSubmissionDto.setSubmissionNo(submissionNo);
                     newDto.setDataSubmissionDto(dataSubmissionDto);
+                    PatientDto patient = dto.getPatient();
+                    patient.setPatientCode(patientService.getPatientCode(patient.getPatientCode()));
                     newDto.setPatientInfoDto(dto);
                     return newDto;
                 })

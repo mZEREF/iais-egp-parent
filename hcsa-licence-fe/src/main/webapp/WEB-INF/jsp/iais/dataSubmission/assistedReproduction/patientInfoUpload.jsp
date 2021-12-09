@@ -56,6 +56,11 @@
                             (<span id="itemSize"><fmt:formatNumber value="${itemSize}" pattern="#,##0"/></span>
                             records uploaded)
                         </h3>
+                        <c:if test="${not empty errorMsg}">
+                        <div class="col-xs-12">
+                            <span id="error_uploadFileError" name="iaisErrorMsg" class="error-msg"></span>
+                        </div>
+                        </c:if>
                         <c:if test="${not empty fileItemErrorMsgs}">
                         <div class="col-xs-12 col-sm-12 margin-btm table-responsive itemErrorTableDiv">
                             <span class="error-msg">There are invalid record(s) in the file. Please rectify them and reupload the file</span>
@@ -98,7 +103,6 @@
                         <a class="btn btn-file-upload btn-secondary" onclick="clearFlagValueFEFile()">Upload</a>
                         <input type="hidden" id="hasItems" name="hasItems" value="${hasItems}" />
                     </div>
-                    <span id="error_uploadFileError" name="iaisErrorMsg" class="error-msg"></span>
                 </div>
                 <br/><br/>
                 <%@include file="common/arFooter.jsp" %>
