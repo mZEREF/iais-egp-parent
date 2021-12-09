@@ -44,6 +44,7 @@ import java.text.ParseException;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -63,17 +64,17 @@ public class OnlineEnquiryAssistedReproductionDelegator {
             .clz(AssistedReproductionEnquiryResultsDto.class)
             .searchAttr("patientParam")
             .resultAttr("patientResult")
-            .sortField("id").sortType(SearchParam.ASCENDING).pageNo(1).pageSize(pageSize).build();
+            .sortField("ID_NUMBER").sortType(SearchParam.DESCENDING).pageNo(1).pageSize(pageSize).build();
     FilterParameter patientAdvParameter = new FilterParameter.Builder()
             .clz(AssistedReproductionAdvEnquiryResultsDto.class)
             .searchAttr("patientAdvParam")
             .resultAttr("patientAdvResult")
-            .sortField("id").sortType(SearchParam.ASCENDING).pageNo(1).pageSize(pageSize).build();
+            .sortField("CREATED_DT").sortType(SearchParam.DESCENDING).pageNo(1).pageSize(pageSize).build();
     FilterParameter submissionParameter = new FilterParameter.Builder()
             .clz(AssistedReproductionEnquirySubResultsDto.class)
             .searchAttr("submissionParam")
             .resultAttr("submissionResult")
-            .sortField("id").sortType(SearchParam.ASCENDING).pageNo(1).pageSize(pageSize).build();
+            .sortField("SUBMIT_DT").sortType(SearchParam.DESCENDING).pageNo(1).pageSize(pageSize).build();
 
     private static final Set<String> patientSortFieldNames = ImmutableSet.of(
             "NAME", "ID_NUMBER","DATE_OF_BIRTH"
@@ -930,7 +931,7 @@ public class OnlineEnquiryAssistedReproductionDelegator {
         if(patientInfoDto!=null){
             ParamUtil.setSessionAttr(request,"patientInfoDto",patientInfoDto);
 
-            Map<String,PatientInventoryDto> patientInventoryDtos=IaisCommonUtils.genNewHashMap();
+            LinkedHashMap<String,PatientInventoryDto> patientInventoryDtos=new LinkedHashMap<>(patientInfoDto.getPatient().getArCentres().size()+1);
             PatientInventoryDto patientInventoryDtoTotal=new PatientInventoryDto();
              int currentFrozenOocytes=0;
              int currentThawedOocytes=0;

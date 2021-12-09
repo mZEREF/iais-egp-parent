@@ -30,7 +30,7 @@
     </sql>
     <sql key = "searchGiroDeduction" remarks="search ">
         <![CDATA[
-        SELECT * from (
+        SELECT distinct * from (
             select dbo.f_hcinameconcat(ag.ID) as HCI_NAME,
             a.ID,a.APP_GROUP_NO,a.AMOUNT,a.PMT_TYPE,a.PMT_STATUS,a.TXN_REF_NO,a.INVOICE_NO,a.ACCT_NO,a.PAY_DESC
             from application_group as ag
