@@ -41,7 +41,7 @@ public class FreezingStageDelegator extends CommonDelegator {
 
     @Override
     public void prepareSwitch(BaseProcessClass bpc) {
-        ParamUtil.setRequestAttr(bpc.request, "smallTitle", "You are submitting for <strong>Cycle Stages</strong>");
+        ParamUtil.setRequestAttr(bpc.request, "smallTitle", "You are submitting for <strong>Fertilisation Stage</strong>");
         List<SelectOption> freeCryoOptions = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.AR_FREE_CRYO_OPTIONS);
         ParamUtil.setSessionAttr(bpc.request, "arFreeCryoOptions", (Serializable) freeCryoOptions);
         String actionType = ParamUtil.getRequestString(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE);
