@@ -38,7 +38,8 @@
                     <c:set var="isRFC" value="${'APTY005' == AppSubmissionDto.appType}" />
                     <c:set var="subLicenseeDto" value="${AppSubmissionDto.subLicenseeDto}"/>
                     <c:set var="specialSubLic" value="${subLicenseeDto.licenseeType eq 'LICT002' || subLicenseeDto.licenseeType eq 'LICTSUB002'}" />
-                    <c:set var="showClaimFields" value="${isRFC && !isRfi && specialSubLic}" scope="request"/>
+
+<%--76053                    <c:set var="showClaimFields" value="${isRFC && !isRfi && specialSubLic}" scope="request"/>--%>
 
                     <div class="col-xs-12">
                         <div class="tab-gp steps-tab">
