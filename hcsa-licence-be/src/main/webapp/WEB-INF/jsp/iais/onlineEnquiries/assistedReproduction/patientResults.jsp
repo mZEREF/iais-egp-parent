@@ -218,7 +218,7 @@
                                                             </td>
 
                                                             <td >
-                                                                <button  href="#newappModal"  onclick="quickView('${patient.patientId}')" data-toggle="modal" data-target="#newappModal" type="button" class=" btn btn-default btn-sm">
+                                                                <button  href="#newappModal"  onclick="quickView('${patient.patientCode}')" data-toggle="modal" data-target="#newappModal" type="button" class=" btn btn-default btn-sm">
                                                                     Quick View
                                                                 </button>
                                                                 <br>
@@ -495,10 +495,10 @@
         $('#mainForm').submit();
     }
 
-    var quickView = function (submissionIdNo) {
+    var quickView = function (patientCode) {
 
         var jsonData={
-            'submissionIdNo': submissionIdNo
+            'patientCode': patientCode
         };
         $.ajax({
             'url':'${pageContext.request.contextPath}/ar-quick-view',

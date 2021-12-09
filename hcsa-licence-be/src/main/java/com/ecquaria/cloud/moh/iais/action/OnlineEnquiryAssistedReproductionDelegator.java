@@ -8,6 +8,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.SystemAdminBaseCo
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArEnquiryCoFundingHistoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.AssistedReproductionAdvEnquiryResultsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.AssistedReproductionEnquiryFilterDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.AssistedReproductionEnquiryResultsDto;
@@ -915,6 +916,9 @@ public class OnlineEnquiryAssistedReproductionDelegator {
             patientInventoryDtos.put("Total",patientInventoryDtoTotal);
             ParamUtil.setSessionAttr(request,"patientInventoryDtos", (Serializable) patientInventoryDtos);
 
+            ArEnquiryCoFundingHistoryDto arCoFundingDto= assistedReproductionService.patientCoFundingHistoryByCode(patientInfoDto.getPatient().getPatientCode());
+            ParamUtil.setSessionAttr(request,"arCoFundingDto", arCoFundingDto);
+
         }
 
 
@@ -941,26 +945,46 @@ public class OnlineEnquiryAssistedReproductionDelegator {
     public @ResponseBody
     String viewArQuick(HttpServletRequest request){
         log.debug(StringUtil.changeForLog("the genPublicHolidayHtml start ...."));
-        String submissionIdNo = ParamUtil.getString(request,"submissionIdNo");
+        String patientCode = ParamUtil.getString(request,"patientCode");
 
-        if(submissionIdNo==null){
+        if(patientCode==null){
             return "";
         }
         String sql = SqlMap.INSTANCE.getSql("onlineEnquiry", "ar-quick-view").getSqlStr();
 
+        PatientInfoDto patientInfoDto=assistedReproductionService.patientInfoDtoByPatientCode(patientCode);
+        int currentFrozenOocytes=0;
+        int currentFreshOocytes=0;
+        int currentFrozenEmbryos=0;
+        int currentFreshEmbryos=0;
+        int currentFrozenSperms=0;
+        for (PremisesDto premisesDto:patientInfoDto.getPatient().getArCentres()
+        ) {
+            try {
+                PatientInventoryDto patientInventoryDto=assistedReproductionService.patientInventoryByCode(patientInfoDto.getPatient().getPatientCode(),premisesDto.getHciCode());
+                currentFrozenOocytes+=patientInventoryDto.getCurrentFrozenOocytes();
+                currentFreshOocytes+=patientInventoryDto.getCurrentFreshOocytes();
+                currentFrozenEmbryos+=patientInventoryDto.getCurrentFrozenEmbryos();
+                currentFreshEmbryos+=patientInventoryDto.getCurrentFreshEmbryos();
+                currentFrozenSperms+=patientInventoryDto.getCurrentFrozenSperms();
+            }catch (Exception e){
+                log.error(e.getMessage(),e);
+            }
+        }
+        ArEnquiryCoFundingHistoryDto arCoFundingDto= assistedReproductionService.patientCoFundingHistoryByCode(patientCode);
 
-        sql=sql.replaceAll("IUICyclesNumber","1");
-        sql=sql.replaceAll("FreshCyclesNumber","1");
-        sql=sql.replaceAll("FrozenCyclesNumber","1");
-        sql=sql.replaceAll("PGTCyclesNumber","1");
+        sql=sql.replaceAll("IUICyclesNumber", String.valueOf(arCoFundingDto.getIuiCoFundedTotal()));
+        sql=sql.replaceAll("ARTFreshCyclesNumber",String.valueOf(arCoFundingDto.getArtFreshCoFundedTotal()));
+        sql=sql.replaceAll("ARTFrozenCyclesNumber",String.valueOf(arCoFundingDto.getArtFrozenCoFundedTotal()));
+        sql=sql.replaceAll("PGTCyclesNumber",String.valueOf(arCoFundingDto.getPgtCoFundedTotal()));
 
-        sql=sql.replaceAll("FreshOocytesNumber","1");
-        sql=sql.replaceAll("FrozenOocytesNumber","1");
-        sql=sql.replaceAll("FreshEmbryosNumber","1");
-        sql=sql.replaceAll("FrozenEmbryosNumber","1");
-        sql=sql.replaceAll("FrozenSpermsNumber","1");
+        sql=sql.replaceAll("FreshOocytesNumber",String.valueOf(currentFreshOocytes));
+        sql=sql.replaceAll("FrozenOocytesNumber",String.valueOf(currentFrozenOocytes));
+        sql=sql.replaceAll("FreshEmbryosNumber",String.valueOf(currentFreshEmbryos));
+        sql=sql.replaceAll("FrozenEmbryosNumber",String.valueOf(currentFrozenEmbryos));
+        sql=sql.replaceAll("FrozenSpermsNumber",String.valueOf(currentFrozenSperms));
 
-        sql=sql.replaceAll("patientId","1");
+        sql=sql.replaceAll("patientCode",patientCode);
 
         return sql;
     }

@@ -2,7 +2,7 @@ package com.ecquaria.cloud.moh.iais.service.impl;
 
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArEnquiryCoFundingHistoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.AssistedReproductionAdvEnquiryResultsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.AssistedReproductionEnquiryAjaxPatientResultsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.AssistedReproductionEnquiryResultsDto;
@@ -62,14 +62,15 @@ public class AssistedReproductionServiceImpl implements AssistedReproductionServ
         return licenceClient.patientInfoDtoBySubmissionId(submissionId).getEntity();
     }
 
-    @Override
-    public ArSuperDataSubmissionDto getArSuperDataSubmissionDto(String submissionNo) {
-        return licenceClient.getArSuperDataSubmissionDto(submissionNo).getEntity();
-    }
 
     @Override
     public PatientInventoryDto patientInventoryByCode(String patientCode, String hciCode) {
         return licenceClient.patientInventoryByCode(patientCode,hciCode).getEntity();
+    }
+
+    @Override
+    public ArEnquiryCoFundingHistoryDto patientCoFundingHistoryByCode(String patientCode) {
+        return licenceClient.patientCoFundingHistoryByCode(patientCode).getEntity();
     }
 
 

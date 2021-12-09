@@ -2,7 +2,7 @@ package com.ecquaria.cloud.moh.iais.service;
 
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArEnquiryCoFundingHistoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.AssistedReproductionAdvEnquiryResultsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.AssistedReproductionEnquiryAjaxPatientResultsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.AssistedReproductionEnquiryResultsDto;
@@ -30,9 +30,12 @@ public interface AssistedReproductionService{
 
     PatientInfoDto patientInfoDtoBySubmissionId( String submissionId);
 
-    ArSuperDataSubmissionDto getArSuperDataSubmissionDto(String submissionNo);
 
     PatientInventoryDto patientInventoryByCode(String patientCode,  String hciCode);
+
+
+    ArEnquiryCoFundingHistoryDto patientCoFundingHistoryByCode(String patientCode);
+
 
 
 }

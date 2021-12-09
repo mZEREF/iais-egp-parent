@@ -1,4 +1,4 @@
-<div class="arQuickView">
+<div class="col-md-12">
     <div class="row">Co-funding History</div>
     <hr>
     <div class="row">

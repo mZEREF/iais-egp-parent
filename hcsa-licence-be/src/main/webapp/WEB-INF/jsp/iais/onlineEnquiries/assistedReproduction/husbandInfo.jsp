@@ -1,4 +1,4 @@
-<div class="arQuickView">
+<div class=" col-md-12">
     <div class="row">
         <b class="col-md-12" style="font-size:2.0rem">
             Current Identity
