@@ -40,13 +40,13 @@
             <div class="row">
                 <div class="col-xs-12">
                     <div class="tab-gp steps-tab">
-                        <%@ include file="InnerNavTab.jsp" %>
+                        <%@ include file="../mainAppCommon/approvalapp/InnerNavTab.jsp" %>
                         <div class="tab-content">
                             <div class="tab-pane fade in active">
                                 <div id="approvalProfilePanel" role="tabpanel">
                                     <div class="multiservice">
                                         <div class="tab-gp side-tab clearfix">
-                                            <%@include file="sideNavTab.jsp"%>
+                                            <%@include file="../mainAppCommon/approvalapp/sideNavTab.jsp"%>
                                             <div class="tab-content">
                                                 <div role="tabpanel">
                                                     <div class="form-horizontal">

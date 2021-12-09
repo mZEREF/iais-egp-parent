@@ -13,13 +13,13 @@ import sg.gov.moh.iais.egp.bsb.common.node.simple.SimpleNode;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
 import sg.gov.moh.iais.egp.bsb.dto.approval.ApprovalAppDto;
 import sg.gov.moh.iais.egp.bsb.dto.approval.ApprovalProfileDto;
+import sg.gov.moh.iais.egp.bsb.service.ApprovalAppService;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
-import static sg.gov.moh.iais.egp.bsb.constant.ApprovalAppConstants.NODE_NAME_ACTIVITY;
-import static sg.gov.moh.iais.egp.bsb.constant.ApprovalAppConstants.NODE_NAME_APPROVAL_PROFILE;
+import static sg.gov.moh.iais.egp.bsb.constant.ApprovalAppConstants.*;
 
 /**
  * @author : LiRan
@@ -28,12 +28,8 @@ import static sg.gov.moh.iais.egp.bsb.constant.ApprovalAppConstants.NODE_NAME_AP
 @Delegator(value = "rfcViewApprovalPossessDelegator")
 @Slf4j
 public class RfcViewApprovalPossessDelegator {
-    private static final String KEY_ROOT_NODE_GROUP = "approvalAppRoot";
-    private static final String KEY_APP_ID = "appId";
-    private static final String KEY_EDIT_APP_ID = "editId";
-    private static final String KEY_MASKED_EDIT_APP_ID = "maskedEditId";
-    private static final String KEY_PROCESS_TYPE = "processType";
-    private static final String KEY_APPROVE_NO = "approveNo";
+    private static final String MODULE_NAME = "RFC Approval Application";
+    private static final String FUNCTION_NAME = "RFC View Application";
 
     private final ApprovalAppClient approvalAppClient;
 
@@ -44,7 +40,7 @@ public class RfcViewApprovalPossessDelegator {
 
     public void start(BaseProcessClass bpc) { // NOSONAR
         HttpServletRequest request = bpc.request;
-        AuditTrailHelper.auditFunction("RFC Approval New Application", "RFC View Application");
+        AuditTrailHelper.auditFunction(MODULE_NAME, FUNCTION_NAME);
         request.getSession().removeAttribute(KEY_APPROVE_NO);
     }
 
@@ -86,7 +82,7 @@ public class RfcViewApprovalPossessDelegator {
             ParamUtil.setRequestAttr(request, NODE_NAME_ACTIVITY, ((SimpleNode)approvalAppRoot.at(NODE_NAME_ACTIVITY)).getValue());
 
             NodeGroup batNodeGroup = (NodeGroup) approvalAppRoot.at(NODE_NAME_APPROVAL_PROFILE);
-            List<ApprovalProfileDto> approvalProfileList = ApprovalAppDelegator.getApprovalProfileList(batNodeGroup);
+            List<ApprovalProfileDto> approvalProfileList = ApprovalAppService.getApprovalProfileList(batNodeGroup);
             ParamUtil.setRequestAttr(request, "approvalProfileList", approvalProfileList);
         } else {
             throw new IaisRuntimeException("Fail to retrieve app data");

@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-import sg.gov.moh.iais.egp.bsb.action.ApprovalAppDelegator;
 import sg.gov.moh.iais.egp.bsb.action.FacCertifierRegistrationDelegator;
 import sg.gov.moh.iais.egp.bsb.client.FileRepoClient;
 import sg.gov.moh.iais.egp.bsb.common.multipart.ByteArrayMultipartFile;
@@ -185,7 +184,7 @@ public class DocDownloadAjaxController {
      * @param id key of the newDocMap in the PrimaryDocDto
      */
     private MultipartFile approvalAppGetNewFile(HttpServletRequest request, String id) {
-        NodeGroup approvalAppRoot = (NodeGroup) ParamUtil.getSessionAttr(request, ApprovalAppDelegator.KEY_ROOT_NODE_GROUP);
+        NodeGroup approvalAppRoot = (NodeGroup) ParamUtil.getSessionAttr(request, ApprovalAppConstants.KEY_ROOT_NODE_GROUP);
         SimpleNode primaryDocNode = (SimpleNode) approvalAppRoot.at(ApprovalAppConstants.NODE_NAME_PRIMARY_DOC);
         sg.gov.moh.iais.egp.bsb.dto.approval.PrimaryDocDto primaryDocDto = (sg.gov.moh.iais.egp.bsb.dto.approval.PrimaryDocDto) primaryDocNode.getValue();
         return primaryDocDto.getNewDocMap().get(id).getMultipartFile();
@@ -196,7 +195,7 @@ public class DocDownloadAjaxController {
      * @param id key of the savedDocMap in the PrimaryDocDto
      */
     private MultipartFile approvalAppGetSavedFile(HttpServletRequest request, String id) {
-        NodeGroup approvalAppRoot = (NodeGroup) ParamUtil.getSessionAttr(request, ApprovalAppDelegator.KEY_ROOT_NODE_GROUP);
+        NodeGroup approvalAppRoot = (NodeGroup) ParamUtil.getSessionAttr(request, ApprovalAppConstants.KEY_ROOT_NODE_GROUP);
         SimpleNode primaryDocNode = (SimpleNode) approvalAppRoot.at(ApprovalAppConstants.NODE_NAME_PRIMARY_DOC);
         sg.gov.moh.iais.egp.bsb.dto.approval.PrimaryDocDto primaryDocDto = (sg.gov.moh.iais.egp.bsb.dto.approval.PrimaryDocDto) primaryDocNode.getValue();
         DocRecordInfo info = primaryDocDto.getSavedDocMap().get(id);
