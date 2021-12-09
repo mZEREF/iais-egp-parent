@@ -27,4 +27,7 @@ public interface AutoRenewalClient {
 
     @GetMapping(value = "/updateApproval/expired", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<ApprovalDto>> updateExpiredApproval();
+
+    @PostMapping(value = "/updateApproval/renewable", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<Void> updateRenewableApproval(@RequestBody List<ApprovalDto> approvalDtoList);
 }
