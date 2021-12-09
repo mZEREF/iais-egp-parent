@@ -30,8 +30,6 @@ import sg.gov.moh.iais.egp.bsb.dto.file.FileRepoSyncDto;
 import sg.gov.moh.iais.egp.bsb.dto.file.NewDocInfo;
 import sg.gov.moh.iais.egp.bsb.dto.file.NewFileSyncDto;
 import sg.gov.moh.iais.egp.bsb.dto.register.facility.*;
-import sg.gov.moh.iais.egp.bsb.common.rfc.CompareTwoObject;
-import sg.gov.moh.iais.egp.bsb.dto.rfc.DiffContent;
 import sg.gov.moh.iais.egp.bsb.constant.RfcFlowType;
 import sg.gov.moh.iais.egp.bsb.service.FacilityRegistrationService;
 import sg.gov.moh.iais.egp.bsb.util.LogUtil;
@@ -515,7 +513,7 @@ public class RfcFacilityRegistrationDelegator {
                     //rfc compare to decision flowType
                     FacilityRegisterDto oldFacilityRegisterDto = (FacilityRegisterDto)ParamUtil.getSessionAttr(request, KEY_OLD_FACILITY_REGISTER_DTO);
                     DecisionFlowType flowType = new DecisionFlowTypeImpl();
-                    RfcFlowType rfcFlowType = flowType.facRegFlowType(compareTwoDto(oldFacilityRegisterDto,finalAllDataDto));
+                    RfcFlowType rfcFlowType = flowType.facRegFlowType(facilityRegistrationService.compareTwoDto(oldFacilityRegisterDto,finalAllDataDto));
                     ParamUtil.setRequestAttr(request, "rfcFlowType", rfcFlowType);
                     if (rfcFlowType == RfcFlowType.AMENDMENT || rfcFlowType == RfcFlowType.NOTIFICATION){
                         // save docs
@@ -593,20 +591,5 @@ public class RfcFacilityRegistrationDelegator {
 
     public void preAcknowledge(BaseProcessClass bpc) {
         //do nothing now
-    }
-
-    //rfc compare
-    private List<DiffContent> compareTwoDto(FacilityRegisterDto oldFacilityRegisterDto, FacilityRegisterDto newFacilityRegisterDto){
-        List<DiffContent> diffContentList = new ArrayList<>();
-        CompareTwoObject.diff(oldFacilityRegisterDto.getFacilitySelectionDto(), newFacilityRegisterDto.getFacilitySelectionDto(), diffContentList);
-        CompareTwoObject.diff(oldFacilityRegisterDto.getFacilityProfileDto(), newFacilityRegisterDto.getFacilityProfileDto(), diffContentList);
-        CompareTwoObject.diff(oldFacilityRegisterDto.getFacilityOperatorDto(), newFacilityRegisterDto.getFacilityOperatorDto(), diffContentList);
-        CompareTwoObject.diff(oldFacilityRegisterDto.getFacilityAuthoriserDto(), newFacilityRegisterDto.getFacilityAuthoriserDto(), diffContentList, FacilityAuthoriserDto.FacilityAuthorisedPersonnel.class);
-        CompareTwoObject.diff(oldFacilityRegisterDto.getFacilityAdministratorDto(), newFacilityRegisterDto.getFacilityAdministratorDto(), diffContentList, FacilityAdministratorDto.FacilityAdministratorInfo.class);
-        CompareTwoObject.diff(oldFacilityRegisterDto.getFacilityOfficerDto(), newFacilityRegisterDto.getFacilityOfficerDto(), diffContentList);
-        CompareTwoObject.diff(oldFacilityRegisterDto.getFacilityCommitteeDto(), newFacilityRegisterDto.getFacilityCommitteeDto(), diffContentList);
-        CompareTwoObject.diffMap(oldFacilityRegisterDto.getBiologicalAgentToxinMap(), newFacilityRegisterDto.getBiologicalAgentToxinMap(), diffContentList, BiologicalAgentToxinDto.BATInfo.class);
-        //docRecordInfos don't process
-        return diffContentList;
     }
 }

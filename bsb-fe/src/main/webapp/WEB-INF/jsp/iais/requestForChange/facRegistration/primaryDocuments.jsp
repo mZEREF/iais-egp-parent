@@ -40,7 +40,7 @@
             <div class="row">
                 <div class="col-xs-12">
                     <div class="tab-gp steps-tab">
-                        <%@ include file="InnerNavTab.jsp" %>
+                        <%@ include file="../../mainAppCommon/facRegistration/InnerNavTab.jsp" %>
                         <div class="tab-content">
                             <div class="tab-pane fade in active">
                                 <div id="PrimaryDocsPanel" role="tabpanel">

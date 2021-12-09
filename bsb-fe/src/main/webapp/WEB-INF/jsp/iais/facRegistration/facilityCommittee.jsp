@@ -41,11 +41,11 @@
             <div class="row">
                 <div class="col-xs-12">
                     <div class="tab-gp steps-tab">
-                        <%@ include file="InnerNavTab.jsp" %>
+                        <%@ include file="../mainAppCommon/facRegistration/InnerNavTab.jsp" %>
                         <div class="tab-content">
                             <div class="tab-pane fade in active">
                                 <div id="facInfoPanel" role="tabpanel">
-                                    <%@include file="subStepNavTab.jsp"%>
+                                    <%@include file="../mainAppCommon/facRegistration/subStepNavTab.jsp"%>
 
                                     <div class="form-horizontal">
                                         <h3 class="col-12 pl-0" style="border-bottom: 1px solid black">Biosafety Committee</h3>
