@@ -9,6 +9,7 @@ import com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant;
 import com.ecquaria.cloud.moh.iais.helper.ControllerHelper;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
 import com.ecquaria.cloud.moh.iais.service.client.GenerateIdClient;
+import com.ecquaria.cloud.moh.iais.service.datasubmission.PatientService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
@@ -27,8 +28,9 @@ import java.util.Optional;
 @Delegator("dpPatientInfoDelegator")
 @Slf4j
 public class DpPatientInfoDelegator extends DpCommonDelegator {
+
     @Autowired
-    private GenerateIdClient generateIdClient;
+    private PatientService patientService;
 
     @Override
     public void prepareSwitch(BaseProcessClass bpc) {
@@ -56,10 +58,7 @@ public class DpPatientInfoDelegator extends DpCommonDelegator {
         if(StringUtil.isEmpty(patientDto.getOrgId())){
             patientDto.setOrgId(dpSuperDataSubmissionDto.getOrgId());
         }
-        String patientCode = Optional.ofNullable(dpSuperDataSubmissionDto.getPatientDto())
-                .map(dto -> dto.getPatientCode())
-                .orElseGet(() -> generateIdClient.getSeqId().getEntity());
-        patientDto.setPatientCode(patientCode);
+        patientDto.setPatientCode(patientService.getPatientCode(patientDto.getPatientCode()));
         dpSuperDataSubmissionDto.setPatientDto(patientDto);
         ParamUtil.setSessionAttr(bpc.request, DataSubmissionConstant.DP_DATA_SUBMISSION, dpSuperDataSubmissionDto);
         validatePageData(request, patientDto,"DRP",ACTION_TYPE_CONFIRM);
