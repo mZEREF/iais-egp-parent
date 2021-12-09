@@ -224,6 +224,9 @@
                             <span data-err-ind="remarks" class="error-msg"></span>
                         </div>
                     </div>
+                    <div class = "form-group" id="others">
+                        <%@include file="../common/docOtherCondition.jsp" %>
+                    </div>
                 </div>
             </div>
         </div>

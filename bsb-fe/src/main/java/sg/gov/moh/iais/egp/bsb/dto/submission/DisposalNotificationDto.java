@@ -12,15 +12,13 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants;
 import sg.gov.moh.iais.egp.bsb.dto.ValidationResultDto;
 import sg.gov.moh.iais.egp.bsb.dto.file.DocMeta;
+import sg.gov.moh.iais.egp.bsb.dto.file.NewFileSyncDto;
 import sg.gov.moh.iais.egp.bsb.util.SpringReflectionUtils;
 import sop.servlet.webflow.HttpHandler;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -41,13 +39,6 @@ public class DisposalNotificationDto implements Serializable{
         private String destructDetails;
 
         @JsonIgnore
-        private PrimaryDocDto primaryDocDto;
-
-        private List<PrimaryDocDto.DocRecordInfo> savedInfos;
-
-        private List<DocMeta> docMetas;
-
-        @JsonIgnore
         private List<PrimaryDocDto.NewDocInfo> newDocInfos;
         @JsonIgnore
         private String docType;
@@ -55,21 +46,7 @@ public class DisposalNotificationDto implements Serializable{
         private String repoIdNewString;
 
         public DisposalNot() {
-            this.docMetas = new ArrayList<>();
-            this.savedInfos = new ArrayList<>();
             this.newDocInfos = new ArrayList<>();
-        }
-
-        public List<PrimaryDocDto.DocRecordInfo> getSavedInfos(){
-            return new ArrayList<>(this.savedInfos);
-        }
-
-        public void setSavedInfos(List<PrimaryDocDto.DocRecordInfo> docRecordInfos){
-            this.savedInfos = new ArrayList<>(docRecordInfos);
-        }
-
-        public void setDocMetas(List<DocMeta> docMetas){
-            this.docMetas = new ArrayList<>(docMetas);
         }
 
         public List<PrimaryDocDto.NewDocInfo> getNewInfos(){
@@ -80,10 +57,15 @@ public class DisposalNotificationDto implements Serializable{
             this.newDocInfos = new ArrayList<>(newDocInfos);
         }
     }
-    private List<DisposalNot> disposalNotList;
     private String facId;
     private String remarks;
     private String ensure;
+
+    private List<DisposalNot> disposalNotList;
+    private List<PrimaryDocDto.NewDocInfo> otherNewInfos;
+    private Map<String, PrimaryDocDto.NewDocInfo> allNewDocInfos;
+    private Map<String,PrimaryDocDto.DocRecordInfo> savedDocInfos;
+    private List<DocMeta> docMetaInfos;
 
     @JsonIgnore
     private ValidationResultDto validationResultDto;
@@ -91,6 +73,10 @@ public class DisposalNotificationDto implements Serializable{
     public DisposalNotificationDto() {
         disposalNotList = new ArrayList<>();
         disposalNotList.add(new DisposalNot());
+        docMetaInfos = new ArrayList<>();
+        otherNewInfos = new ArrayList<>();
+        allNewDocInfos = new LinkedHashMap<>();
+        savedDocInfos = new LinkedHashMap<>();
     }
 
     @Data
@@ -103,8 +89,6 @@ public class DisposalNotificationDto implements Serializable{
         private String meaUnit;
         private String destructMethod;
         private String destructDetails;
-        private List<PrimaryDocDto.DocRecordInfo> savedInfos;
-        private List<DocMeta> docMetas;
     }
 
     @Data
@@ -114,9 +98,8 @@ public class DisposalNotificationDto implements Serializable{
         private String facId;
         private String remarks;
         private String ensure;
-    }
-
-    public List<DisposalNot> getDisposalNotList() { return new ArrayList<>(disposalNotList);
+        private List<PrimaryDocDto.DocRecordInfo> docInfos;
+        private List<DocMeta> docMetas;
     }
 
     public String getFacId() {
@@ -143,6 +126,10 @@ public class DisposalNotificationDto implements Serializable{
         this.ensure = ensure;
     }
 
+    public List<DisposalNot> getDisposalNotList() {
+        return disposalNotList;
+    }
+
     public void clearDisposalLists(){
         this.disposalNotList.clear();
     }
@@ -151,10 +138,128 @@ public class DisposalNotificationDto implements Serializable{
         this.disposalNotList.add(disposalNot);
     }
 
-    public void setDisposalLists(List<DisposalNot> disposalNotList) {
-        this.disposalNotList = new ArrayList<>(disposalNotList);
+    public void setDisposalNotList(List<DisposalNot> disposalNotList) {
+        this.disposalNotList = disposalNotList;
     }
-    // validate
+
+    public List<PrimaryDocDto.NewDocInfo> getOtherNewInfos() {
+        return new ArrayList<>(this.otherNewInfos);
+    }
+
+    public void setOtherNewInfos(List<PrimaryDocDto.NewDocInfo> otherNewInfos) {
+        this.otherNewInfos = new ArrayList<>(otherNewInfos);
+    }
+
+    public Map<String, PrimaryDocDto.NewDocInfo> getAllNewDocInfos() {
+        return allNewDocInfos;
+    }
+
+    public void setAllNewDocInfos(Map<String, PrimaryDocDto.NewDocInfo> allNewDocInfos) {
+        this.allNewDocInfos = allNewDocInfos;
+    }
+
+    public List<DocMeta> getDocMetaInfos() {
+        return docMetaInfos;
+    }
+
+    public void setDocMetaInfos(List<DocMeta> docMetaInfos) {
+        this.docMetaInfos = docMetaInfos;
+    }
+
+    public void addDocMetaInfos(DocMeta docMeta){
+        this.docMetaInfos.add(docMeta);
+    }
+
+    public Map<String, PrimaryDocDto.DocRecordInfo> getSavedDocInfos() {
+        return savedDocInfos;
+    }
+
+    public void setSavedDocInfos(Map<String, PrimaryDocDto.DocRecordInfo> savedDocInfos) {
+        this.savedDocInfos = savedDocInfos;
+    }
+
+    /**
+     * This method is for downloading and contains all file information sorted by tmpId
+     *getAllNewDocInfo
+     * */
+    public void fillAllNewDocInfo(){
+        if(!CollectionUtils.isEmpty(this.disposalNotList)){
+            List<PrimaryDocDto.NewDocInfo> newDocInfos = disposalNotList.stream().flatMap(i->i.getNewDocInfos().stream()).collect(Collectors.toList());
+            newDocInfos.addAll(this.otherNewInfos);
+            this.allNewDocInfos = newDocInfos.stream().collect(Collectors.toMap(PrimaryDocDto.NewDocInfo::getTmpId, Function.identity()));
+        }
+    }
+
+    public void getDocMetaInfoFromNew(){
+        this.allNewDocInfos.values().forEach(i -> {
+            DocMeta docMeta = new DocMeta(i.getTmpId(), i.getDocType(), i.getFilename(), i.getSize(), "dataSub");
+            addDocMetaInfos(docMeta);
+        });
+    }
+
+    /**
+     * this method is used to disposal useful data by feign
+     * setDisposalNotNeedR
+     * @return DisposalNotNeedR
+     * */
+    public DisposalNotNeedR getDisposalNotNeedR(){
+        //get doc need validation
+        List<DisposalNotNeed> disposalNotNeeds = disposalNotList.stream().map(t->{
+            DisposalNotNeed disposalNotNeed = new DisposalNotNeed();
+            disposalNotNeed.setScheduleType(t.getScheduleType());
+            disposalNotNeed.setBat(t.getBat());
+            disposalNotNeed.setMeaUnit(t.getMeaUnit());
+            disposalNotNeed.setDisposedQty(t.getDisposedQty());
+            disposalNotNeed.setDestructDetails(t.getDestructDetails());
+            disposalNotNeed.setDestructMethod(t.getDestructMethod());
+            return disposalNotNeed; }).collect(Collectors.toList());
+        DisposalNotNeedR disposalNotNeedR = new DisposalNotNeedR();
+        disposalNotNeedR.setNeedList(disposalNotNeeds);
+        disposalNotNeedR.setEnsure(this.ensure);
+        disposalNotNeedR.setRemarks(this.remarks);
+        disposalNotNeedR.setFacId(this.facId);
+        disposalNotNeedR.setDocInfos(new ArrayList<>(savedDocInfos.values()));
+        disposalNotNeedR.setDocMetas(this.docMetaInfos);
+        return disposalNotNeedR;
+    }
+
+    /**
+     * This method will put new added files to the important data structure which is used to update the FacilityDoc.
+     * This file is called when new uploaded files are saved and we get the repo Ids.
+     * ATTENTION!!!
+     * This method is dangerous! The relationship between the ids and the files in this dto is fragile!
+     * We rely on the order is not changed! So we use a LinkedHashMap to save our data.
+     * <p>
+     * This method will generate id-bytes pairs at the same time, the result will be used to sync files to BE.
+     * @return a list of file data to be synchronized to BE
+     */
+    public List<NewFileSyncDto> newFileSaved(List<String> repoIds) {
+        Iterator<String> repoIdIt = repoIds.iterator();
+        Iterator<PrimaryDocDto.NewDocInfo> newDocIt = allNewDocInfos.values().iterator();
+
+        List<NewFileSyncDto> newFileSyncDtoList = new ArrayList<>(repoIds.size());
+        while (repoIdIt.hasNext() && newDocIt.hasNext()) {
+            String repoId = repoIdIt.next();
+            PrimaryDocDto.NewDocInfo newDocInfo = newDocIt.next();
+            PrimaryDocDto.DocRecordInfo docRecordInfo = new PrimaryDocDto.DocRecordInfo();
+            docRecordInfo.setDocType(newDocInfo.getDocType());
+            docRecordInfo.setFilename(newDocInfo.getFilename());
+            docRecordInfo.setSize(newDocInfo.getSize());
+            docRecordInfo.setRepoId(repoId);
+            docRecordInfo.setSubmitBy(newDocInfo.getSubmitBy());
+            docRecordInfo.setSubmitDate(newDocInfo.getSubmitDate());
+            savedDocInfos.put(repoId, docRecordInfo);
+
+            NewFileSyncDto newFileSyncDto = new NewFileSyncDto();
+            newFileSyncDto.setId(repoId);
+            newFileSyncDto.setData(newDocInfo.getMultipartFile().getBytes());
+            newFileSyncDtoList.add(newFileSyncDto);
+        }
+        return newFileSyncDtoList;
+    }
+
+
+    //------------------------------------------Validation---------------------------------------------
     public boolean doValidation() {
         DisposalNotNeedR needR = getDisposalNotNeedR();
         this.validationResultDto = (ValidationResultDto) SpringReflectionUtils.invokeBeanMethod("dataSubmissionFeignClient", "validateDisposalNot", new Object[]{needR});
@@ -178,47 +283,7 @@ public class DisposalNotificationDto implements Serializable{
      * @return Map<String,List<DocMeta>>
      * */
     public Map<String,List<DocMeta>> getAllDocMetaByDocType(){
-        List<DocMeta> docMetas = this.disposalNotList.stream().flatMap(i->i.getDocMetas().stream()).collect(Collectors.toList());
-        return sg.gov.moh.iais.egp.bsb.util.CollectionUtils.groupCollectionToMap(docMetas,DocMeta::getDocType);
-    }
-
-    /**
-     * This method is for downloading and contains all file information sorted by tmpId
-     *getAllNewDocInfo
-     * @return Map<String,PrimaryDocDto.NewDocInfo>
-     * */
-    public Map<String,PrimaryDocDto.NewDocInfo> getAllNewDocInfo(){
-        Map<String,PrimaryDocDto.NewDocInfo> newRecordMap = new HashMap<>();
-        if(!CollectionUtils.isEmpty(this.disposalNotList)){
-            List<PrimaryDocDto.NewDocInfo> newDocInfos = disposalNotList.stream().flatMap(i->i.getNewDocInfos().stream()).collect(Collectors.toList());
-            newRecordMap = newDocInfos.stream().collect(Collectors.toMap(PrimaryDocDto.NewDocInfo::getTmpId, Function.identity()));
-        }
-        return newRecordMap;
-    }
-
-    /**
-     * this method is used to consume useful data by feign
-     * setDisposalNotNeedR
-     * @return DisposalNotNeedR
-     * */
-    public DisposalNotNeedR getDisposalNotNeedR(){
-        List<DisposalNotNeed> disposalNotNeeds = disposalNotList.stream().map(t->{
-            DisposalNotNeed disposalNoyNeed = new DisposalNotNeed();
-            disposalNoyNeed.setScheduleType(t.getScheduleType());
-            disposalNoyNeed.setBat(t.getBat());
-            disposalNoyNeed.setMeaUnit(t.getMeaUnit());
-            disposalNoyNeed.setDisposedQty(t.getDisposedQty());
-            disposalNoyNeed.setDestructMethod(t.getDestructMethod());
-            disposalNoyNeed.setDestructDetails(t.getDestructDetails());
-            disposalNoyNeed.setDocMetas(t.getDocMetas());
-            disposalNoyNeed.setSavedInfos(t.getSavedInfos());
-            return disposalNoyNeed; }).collect(Collectors.toList());
-        DisposalNotNeedR disposalNoyNeedR = new DisposalNotNeedR();
-        disposalNoyNeedR.setNeedList(disposalNotNeeds);
-        disposalNoyNeedR.setEnsure(this.ensure);
-        disposalNoyNeedR.setRemarks(this.remarks);
-        disposalNoyNeedR.setFacId(this.facId);
-        return disposalNoyNeedR;
+        return sg.gov.moh.iais.egp.bsb.util.CollectionUtils.groupCollectionToMap(docMetaInfos,DocMeta::getDocType);
     }
 
     /**
@@ -242,7 +307,6 @@ public class DisposalNotificationDto implements Serializable{
 
             PrimaryDocDto primaryDocDto = new PrimaryDocDto();
             primaryDocDto.reqObjMapping(mulReq,request,getDocType(scheduleType),String.valueOf(idx));
-            disposalNot.setPrimaryDocDto(primaryDocDto);
             disposalNot.setDocType(getDocType(scheduleType));
             //joint repoId exist
             String newRepoId = String.join(",", primaryDocDto.getNewDocMap().keySet());
@@ -250,10 +314,15 @@ public class DisposalNotificationDto implements Serializable{
             //set newDocFiles
             disposalNot.setNewDocInfos(primaryDocDto.getNewDocTypeList());
             //set need Validation value
-            disposalNot.setDocMetas(primaryDocDto.doValidation());
-
             addDisposalLists(disposalNot);
         }
+        PrimaryDocDto primaryDocDto = new PrimaryDocDto();
+        primaryDocDto.reqOtherMapping(mulReq,request,"others");
+        this.setOtherNewInfos(primaryDocDto.getNewDocTypeList());
+        //get all new doc
+        fillAllNewDocInfo();
+        //get all
+        getDocMetaInfoFromNew();
         this.setRemarks(ParamUtil.getString(request,KEY_PREFIX_REMARKS));
         this.setFacId((String) ParamUtil.getSessionAttr(request,KEY_FAC_ID));
     }

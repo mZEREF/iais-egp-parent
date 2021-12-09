@@ -178,37 +178,52 @@
                                                                         <div class="clear"></div>
                                                                     </div>
                                                                     <div>
-                                                                        <div class="form-group">
-                                                                            <div class="col-10"><strong>Inventory: Biological Agents</strong></div>
-                                                                            <div class="clear"></div>
-                                                                        </div>
-                                                                        <c:forEach var="doc" items="${docMeta.get('ityBat')}">
-                                                                            <c:set var="tmpId" value="${MaskUtil.maskValue('file', doc.id)}"/>
+                                                                        <c:set var="bat" value="${docMeta.get('ityBat')}"/>
+                                                                        <c:if test="${bat ne null}">
                                                                             <div class="form-group">
-                                                                                <div class="col-10"><p><a href="javascript:void(0)" onclick="downloadFile('new', '${tmpId}')">${doc.filename}</a>(${String.format("%.1f", doc.size/1024.0)}KB)</p></div>
-                                                                                <div class="col-sm-7 col-md-5 col-xs-7"><p></p></div>
+                                                                                <label class="col-xs-5 col-md-4 control-label">Inventory: Biological Agents</label>
                                                                                 <div class="clear"></div>
                                                                             </div>
-                                                                        </c:forEach>
+                                                                            <c:forEach var="doc" items="${docMeta.get('ityBat')}">
+                                                                                <c:set var="tmpId" value="${MaskUtil.maskValue('file', doc.id)}"/>
+                                                                                <div class="form-group">
+                                                                                    <div class="col-10"><p><a href="javascript:void(0)" onclick="downloadFile('new', '${tmpId}')">${doc.filename}</a>(${String.format("%.1f", doc.size/1024.0)}KB)</p></div>
+                                                                                    <div class="col-sm-7 col-md-5 col-xs-7"><p></p></div>
+                                                                                    <div class="clear"></div>
+                                                                                </div>
+                                                                            </c:forEach>
+                                                                        </c:if>
 
-                                                                        <div class="form-group">
-                                                                            <div class="col-10"><strong>Inventory: Toxins</strong></div>
-                                                                            <div class="clear"></div>
-                                                                        </div>
-                                                                        <c:forEach var="doc" items="${docMeta.get('ityToxin')}">
-                                                                            <c:set var="tmpId" value="${MaskUtil.maskValue('file', doc.id)}"/>
+                                                                        <c:set var="toxins" value="${docMeta.get('ityToxin')}"/>
+                                                                        <c:if test="${toxins ne null}">
                                                                             <div class="form-group">
-                                                                                <div class="col-10"><p><a href="javascript:void(0)" onclick="downloadFile('new', '${tmpId}')">${doc.filename}</a>(${String.format("%.1f", doc.size/1024.0)}KB)</p></div>
-                                                                                <div class="col-sm-7 col-md-5 col-xs-7"><p></p></div>
+                                                                                <label class="col-xs-5 col-md-4 control-label">Inventory: Toxins</label>
                                                                                 <div class="clear"></div>
                                                                             </div>
-                                                                        </c:forEach>
+                                                                            <c:forEach var="doc" items="${toxins}">
+                                                                                <c:set var="tmpId" value="${MaskUtil.maskValue('file', doc.id)}"/>
+                                                                                <div class="form-group">
+                                                                                    <div class="col-10"><p><a href="javascript:void(0)" onclick="downloadFile('new', '${tmpId}')">${doc.filename}</a>(${String.format("%.1f", doc.size/1024.0)}KB)</p></div>
+                                                                                    <div class="col-sm-7 col-md-5 col-xs-7"><p></p></div>
+                                                                                    <div class="clear"></div>
+                                                                                </div>
+                                                                            </c:forEach>
+                                                                        </c:if>
 
-                                                                        <div class="form-group">
-                                                                            <label class="col-xs-5 col-md-4 control-label">Others</label>
-                                                                            <div class="col-sm-7 col-md-5 col-xs-7"><p></p></div>
-                                                                            <div class="clear"></div>
-                                                                        </div>
+                                                                        <c:set var="others" value="${docMeta.get('others')}"/>
+                                                                        <c:if test="${others ne null}">
+                                                                            <div class="form-group">
+                                                                                <label class="col-xs-5 col-md-4 control-label">Others</label>
+                                                                                <div class="clear"></div>
+                                                                            </div>
+                                                                            <c:forEach var = "other" items="${others}">
+                                                                                <c:set var="tmpId" value="${MaskUtil.maskValue('file', other.id)}"/>
+                                                                                <div class="form-group">
+                                                                                    <div class="col-sm-7 col-md-5 col-xs-7"><p><a href="javascript:void(0)" onclick="downloadFile('new', '${tmpId}')">${other.filename}</a>(${String.format("%.1f", other.size/1024.0)}KB)</p></div>
+                                                                                    <div class="clear"></div>
+                                                                                </div>
+                                                                            </c:forEach>
+                                                                        </c:if>
                                                                     </div>
                                                                 </div>
                                                             </div>

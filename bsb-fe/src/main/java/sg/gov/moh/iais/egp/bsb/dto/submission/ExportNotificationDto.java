@@ -12,15 +12,13 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants;
 import sg.gov.moh.iais.egp.bsb.dto.ValidationResultDto;
 import sg.gov.moh.iais.egp.bsb.dto.file.DocMeta;
+import sg.gov.moh.iais.egp.bsb.dto.file.NewFileSyncDto;
 import sg.gov.moh.iais.egp.bsb.util.SpringReflectionUtils;
 import sop.servlet.webflow.HttpHandler;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -41,13 +39,6 @@ public class ExportNotificationDto implements Serializable{
         private String meaUnit;
 
         @JsonIgnore
-        private PrimaryDocDto primaryDocDto;
-
-        private List<PrimaryDocDto.DocRecordInfo> savedInfos;
-
-        private List<DocMeta> docMetas;
-
-        @JsonIgnore
         private List<PrimaryDocDto.NewDocInfo> newDocInfos;
         @JsonIgnore
         private String docType;
@@ -55,20 +46,7 @@ public class ExportNotificationDto implements Serializable{
         private String repoIdNewString;
 
         public ExportNot() {
-            this.docMetas = new ArrayList<>();
-            this.savedInfos = new ArrayList<>();
             this.newDocInfos = new ArrayList<>();
-        }
-        public List<PrimaryDocDto.DocRecordInfo> getSavedInfos(){
-            return new ArrayList<>(this.savedInfos);
-        }
-
-        public void setSavedInfos(List<PrimaryDocDto.DocRecordInfo> docRecordInfos){
-            this.savedInfos = new ArrayList<>(docRecordInfos);
-        }
-
-        public void setDocMetas(List<DocMeta> docMetas){
-            this.docMetas = new ArrayList<>(docMetas);
         }
 
         public List<PrimaryDocDto.NewDocInfo> getNewInfos(){
@@ -80,7 +58,6 @@ public class ExportNotificationDto implements Serializable{
         }
     }
 
-    private List<ExportNot> exportNotList;
     private String facId;
     private String receivedFacility;
     private String receivedCountry;
@@ -90,12 +67,22 @@ public class ExportNotificationDto implements Serializable{
     private String remarks;
     private String ensure;
 
+    private List<ExportNot> exportNotList;
+    private List<PrimaryDocDto.NewDocInfo> otherNewInfos;
+    private Map<String, PrimaryDocDto.NewDocInfo> allNewDocInfos;
+    private Map<String,PrimaryDocDto.DocRecordInfo> savedDocInfos;
+    private List<DocMeta> docMetaInfos;
+
     @JsonIgnore
     private ValidationResultDto validationResultDto;
 
     public ExportNotificationDto() {
         exportNotList = new ArrayList<>();
         exportNotList.add(new ExportNot());
+        docMetaInfos = new ArrayList<>();
+        otherNewInfos = new ArrayList<>();
+        allNewDocInfos = new LinkedHashMap<>();
+        savedDocInfos = new LinkedHashMap<>();
     }
 
     @Data
@@ -107,8 +94,6 @@ public class ExportNotificationDto implements Serializable{
         private String transferType;
         private String transferQty;
         private String meaUnit;
-        private List<PrimaryDocDto.DocRecordInfo> savedInfos;
-        private List<DocMeta> docMetas;
     }
 
     @Data
@@ -123,9 +108,8 @@ public class ExportNotificationDto implements Serializable{
         private String flightNo;
         private String remarks;
         private String ensure;
-    }
-
-    public List<ExportNot> getExportNotList() { return new ArrayList<>(exportNotList);
+        private List<PrimaryDocDto.DocRecordInfo> docInfos;
+        private List<DocMeta> docMetas;
     }
 
     public String getFacId() {
@@ -134,14 +118,6 @@ public class ExportNotificationDto implements Serializable{
 
     public void setFacId(String facId) {
         this.facId = facId;
-    }
-
-    public String getRemarks() {
-        return remarks;
-    }
-
-    public void setRemarks(String remarks) {
-        this.remarks = remarks;
     }
 
     public String getReceivedFacility() {
@@ -184,12 +160,24 @@ public class ExportNotificationDto implements Serializable{
         this.flightNo = flightNo;
     }
 
+    public String getRemarks() {
+        return remarks;
+    }
+
+    public void setRemarks(String remarks) {
+        this.remarks = remarks;
+    }
+
     public String getEnsure() {
         return ensure;
     }
 
     public void setEnsure(String ensure) {
         this.ensure = ensure;
+    }
+
+    public List<ExportNot> getExportNotList() {
+        return exportNotList;
     }
 
     public void clearExportLists(){
@@ -200,11 +188,132 @@ public class ExportNotificationDto implements Serializable{
         this.exportNotList.add(exportNot);
     }
 
-    public void setExportLists(List<ExportNot> exportNotList) {
-        this.exportNotList = new ArrayList<>(exportNotList);
+    public void setExportNotList(List<ExportNot> exportNotList) {
+        this.exportNotList = exportNotList;
     }
 
-    // validate
+    public List<PrimaryDocDto.NewDocInfo> getOtherNewInfos() {
+        return new ArrayList<>(this.otherNewInfos);
+    }
+
+    public void setOtherNewInfos(List<PrimaryDocDto.NewDocInfo> otherNewInfos) {
+        this.otherNewInfos = new ArrayList<>(otherNewInfos);
+    }
+
+    public Map<String, PrimaryDocDto.NewDocInfo> getAllNewDocInfos() {
+        return allNewDocInfos;
+    }
+
+    public void setAllNewDocInfos(Map<String, PrimaryDocDto.NewDocInfo> allNewDocInfos) {
+        this.allNewDocInfos = allNewDocInfos;
+    }
+
+    public List<DocMeta> getDocMetaInfos() {
+        return docMetaInfos;
+    }
+
+    public void setDocMetaInfos(List<DocMeta> docMetaInfos) {
+        this.docMetaInfos = docMetaInfos;
+    }
+
+    public void addDocMetaInfos(DocMeta docMeta){
+        this.docMetaInfos.add(docMeta);
+    }
+
+    public Map<String, PrimaryDocDto.DocRecordInfo> getSavedDocInfos() {
+        return savedDocInfos;
+    }
+
+    public void setSavedDocInfos(Map<String, PrimaryDocDto.DocRecordInfo> savedDocInfos) {
+        this.savedDocInfos = savedDocInfos;
+    }
+
+    /**
+     * This method is for downloading and contains all file information sorted by tmpId
+     *getAllNewDocInfo
+     * */
+    public void fillAllNewDocInfo(){
+        if(!CollectionUtils.isEmpty(this.exportNotList)){
+            List<PrimaryDocDto.NewDocInfo> newDocInfos = exportNotList.stream().flatMap(i->i.getNewDocInfos().stream()).collect(Collectors.toList());
+            newDocInfos.addAll(this.otherNewInfos);
+            this.allNewDocInfos = newDocInfos.stream().collect(Collectors.toMap(PrimaryDocDto.NewDocInfo::getTmpId, Function.identity()));
+        }
+    }
+
+    public void getDocMetaInfoFromNew(){
+        this.allNewDocInfos.values().forEach(i -> {
+            DocMeta docMeta = new DocMeta(i.getTmpId(), i.getDocType(), i.getFilename(), i.getSize(), "dataSub");
+            addDocMetaInfos(docMeta);
+        });
+    }
+
+    /**
+     * this method is used to consume useful data by feign
+     * setExportNotNeedR
+     * @return ExportNotNeedR
+     * */
+    public ExportNotNeedR getExportNotNeedR(){
+        List<ExportNotNeed> exportNotNeeds = exportNotList.stream().map(t->{
+            ExportNotNeed exportNotNeed = new ExportNotNeed();
+            exportNotNeed.setScheduleType(t.getScheduleType());
+            exportNotNeed.setBat(t.getBat());
+            exportNotNeed.setTransferType(t.getTransferType());
+            exportNotNeed.setTransferQty(t.getTransferQty());
+            exportNotNeed.setMeaUnit(t.getMeaUnit());
+            return exportNotNeed; }).collect(Collectors.toList());
+        ExportNotNeedR exportNotNeedR = new ExportNotNeedR();
+        exportNotNeedR.setNeedList(exportNotNeeds);
+        exportNotNeedR.setReceivedFacility(this.receivedFacility);
+        exportNotNeedR.setReceivedCountry(this.receivedCountry);
+        exportNotNeedR.setExportDate(this.exportDate);
+        exportNotNeedR.setProvider(this.provider);
+        exportNotNeedR.setFlightNo(this.flightNo);
+        exportNotNeedR.setRemarks(this.remarks);
+        exportNotNeedR.setFacId(this.facId);
+        exportNotNeedR.setEnsure(this.ensure);
+        exportNotNeedR.setDocInfos(new ArrayList<>(savedDocInfos.values()));
+        exportNotNeedR.setDocMetas(this.docMetaInfos);
+        return exportNotNeedR;
+    }
+
+    /**
+     * This method will put new added files to the important data structure which is used to update the FacilityDoc.
+     * This file is called when new uploaded files are saved and we get the repo Ids.
+     * ATTENTION!!!
+     * This method is dangerous! The relationship between the ids and the files in this dto is fragile!
+     * We rely on the order is not changed! So we use a LinkedHashMap to save our data.
+     * <p>
+     * This method will generate id-bytes pairs at the same time, the result will be used to sync files to BE.
+     * @return a list of file data to be synchronized to BE
+     */
+    public List<NewFileSyncDto> newFileSaved(List<String> repoIds) {
+        Iterator<String> repoIdIt = repoIds.iterator();
+        Iterator<PrimaryDocDto.NewDocInfo> newDocIt = allNewDocInfos.values().iterator();
+
+        List<NewFileSyncDto> newFileSyncDtoList = new ArrayList<>(repoIds.size());
+        while (repoIdIt.hasNext() && newDocIt.hasNext()) {
+            String repoId = repoIdIt.next();
+            PrimaryDocDto.NewDocInfo newDocInfo = newDocIt.next();
+            PrimaryDocDto.DocRecordInfo docRecordInfo = new PrimaryDocDto.DocRecordInfo();
+            docRecordInfo.setDocType(newDocInfo.getDocType());
+            docRecordInfo.setFilename(newDocInfo.getFilename());
+            docRecordInfo.setSize(newDocInfo.getSize());
+            docRecordInfo.setRepoId(repoId);
+            docRecordInfo.setSubmitBy(newDocInfo.getSubmitBy());
+            docRecordInfo.setSubmitDate(newDocInfo.getSubmitDate());
+            savedDocInfos.put(repoId, docRecordInfo);
+
+            NewFileSyncDto newFileSyncDto = new NewFileSyncDto();
+            newFileSyncDto.setId(repoId);
+            newFileSyncDto.setData(newDocInfo.getMultipartFile().getBytes());
+            newFileSyncDtoList.add(newFileSyncDto);
+        }
+        return newFileSyncDtoList;
+    }
+
+
+    //------------------------------------------Validation---------------------------------------------
+
     public boolean doValidation() {
         ExportNotNeedR exportNotNeedR =getExportNotNeedR();
         this.validationResultDto = (ValidationResultDto) SpringReflectionUtils.invokeBeanMethod("dataSubmissionFeignClient", "validateExportNot", new Object[]{exportNotNeedR});
@@ -228,51 +337,7 @@ public class ExportNotificationDto implements Serializable{
      * @return Map<String,List<DocMeta>>
      * */
     public Map<String,List<DocMeta>> getAllDocMetaByDocType(){
-        List<DocMeta> docMetas = this.exportNotList.stream().flatMap(i->i.getDocMetas().stream()).collect(Collectors.toList());
-        return sg.gov.moh.iais.egp.bsb.util.CollectionUtils.groupCollectionToMap(docMetas,DocMeta::getDocType);
-    }
-
-    /**
-     * This method is for downloading and contains all file information sorted by tmpId
-     *getAllNewDocInfo
-     * @return Map<String,PrimaryDocDto.NewDocInfo>
-     * */
-    public Map<String,PrimaryDocDto.NewDocInfo> getAllNewDocInfo(){
-        Map<String,PrimaryDocDto.NewDocInfo> newRecordMap = new HashMap<>();
-        if(!CollectionUtils.isEmpty(this.exportNotList)){
-            List<PrimaryDocDto.NewDocInfo> newDocInfos = exportNotList.stream().flatMap(i->i.getNewDocInfos().stream()).collect(Collectors.toList());
-            newRecordMap = newDocInfos.stream().collect(Collectors.toMap(PrimaryDocDto.NewDocInfo::getTmpId, Function.identity()));
-        }
-        return newRecordMap;
-    }
-
-    /**
-     * this method is used to consume useful data by feign
-     * setExportNotNeedR
-     * @return ExportNotNeedR
-     * */
-    public ExportNotNeedR getExportNotNeedR(){
-        List<ExportNotNeed> exportNotNeeds = exportNotList.stream().map(t->{
-            ExportNotNeed exportNotNeed = new ExportNotNeed();
-            exportNotNeed.setScheduleType(t.getScheduleType());
-            exportNotNeed.setBat(t.getBat());
-            exportNotNeed.setTransferType(t.getTransferType());
-            exportNotNeed.setTransferQty(t.getTransferQty());
-            exportNotNeed.setMeaUnit(t.getMeaUnit());
-            exportNotNeed.setDocMetas(t.getDocMetas());
-            exportNotNeed.setSavedInfos(t.getSavedInfos());
-            return exportNotNeed; }).collect(Collectors.toList());
-        ExportNotNeedR exportNotNeedR = new ExportNotNeedR();
-        exportNotNeedR.setNeedList(exportNotNeeds);
-        exportNotNeedR.setReceivedFacility(this.receivedFacility);
-        exportNotNeedR.setReceivedCountry(this.receivedCountry);
-        exportNotNeedR.setExportDate(this.exportDate);
-        exportNotNeedR.setProvider(this.provider);
-        exportNotNeedR.setFlightNo(this.flightNo);
-        exportNotNeedR.setRemarks(this.remarks);
-        exportNotNeedR.setFacId(this.facId);
-        exportNotNeedR.setEnsure(this.ensure);
-        return exportNotNeedR;
+        return sg.gov.moh.iais.egp.bsb.util.CollectionUtils.groupCollectionToMap(docMetaInfos,DocMeta::getDocType);
     }
 
     /**
@@ -295,7 +360,6 @@ public class ExportNotificationDto implements Serializable{
 
             PrimaryDocDto primaryDocDto = new PrimaryDocDto();
             primaryDocDto.reqObjMapping(mulReq,request,getDocType(scheduleType),String.valueOf(idx));
-            exportNot.setPrimaryDocDto(primaryDocDto);
             exportNot.setDocType(getDocType(scheduleType));
             //joint repoId exist
             String newRepoId = String.join(",", primaryDocDto.getNewDocMap().keySet());
@@ -303,10 +367,15 @@ public class ExportNotificationDto implements Serializable{
             //set newDocFiles
             exportNot.setNewDocInfos(primaryDocDto.getNewDocTypeList());
             //set need Validation value
-            exportNot.setDocMetas(primaryDocDto.doValidation());
-
             addExportLists(exportNot);
         }
+        PrimaryDocDto primaryDocDto = new PrimaryDocDto();
+        primaryDocDto.reqOtherMapping(mulReq,request,"others");
+        this.setOtherNewInfos(primaryDocDto.getNewDocTypeList());
+        //get all new doc
+        fillAllNewDocInfo();
+        //get all
+        getDocMetaInfoFromNew();
         this.setReceivedFacility(ParamUtil.getString(request,KEY_PREFIX_RECEIVED_FACILITY));
         this.setReceivedCountry(ParamUtil.getString(request,KEY_PREFIX_RECEIVED_COUNTRY));
         this.setExportDate(ParamUtil.getString(request,KEY_PREFIX_EXPORT_DATE));

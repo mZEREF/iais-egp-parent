@@ -230,13 +230,13 @@ public class DocDownloadAjaxController {
         if(transferNotificationDto != null){
             return transferNotificationDto.getAllNewDocInfos().get(id).getMultipartFile();
         } else if(consumeNotificationDto != null){
-            return consumeNotificationDto.getAllNewDocInfo().get(id).getMultipartFile();
+            return consumeNotificationDto.getAllNewDocInfos().get(id).getMultipartFile();
         } else if(disposalNotificationDto != null){
-            return disposalNotificationDto.getAllNewDocInfo().get(id).getMultipartFile();
+            return disposalNotificationDto.getAllNewDocInfos().get(id).getMultipartFile();
         } else if(exportNotificationDto != null){
-            return exportNotificationDto.getAllNewDocInfo().get(id).getMultipartFile();
+            return exportNotificationDto.getAllNewDocInfos().get(id).getMultipartFile();
         } else if(receiptNotificationDto != null){
-            return receiptNotificationDto.getAllNewDocInfo().get(id).getMultipartFile();
+            return receiptNotificationDto.getAllNewDocInfos().get(id).getMultipartFile();
         } else{
             return null;
         }

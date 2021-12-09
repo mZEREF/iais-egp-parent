@@ -57,9 +57,12 @@ function addReloadFile() {
         spanEl.innerText = genFileInfo(this);
     } else {
         // add filename, size, delete and reload button
-        var tr = document.createElement("tr");
-        tr.setAttribute("id", id + "FileTr");
-        tr.innerText = genFileInfo(this);
+        // var tr = document.createElement("tr");
+        // tr.setAttribute("id", id + "FileTr");
+        var f = this.files;
+        var myDate = new Date();
+        var tr = "<tr id="+id+'FileTr'+">"+"<td width=\"20%\">" + f[0].name + "</td>" + "<td>"+"Self Audit"+"</td>" + "<td  width=\"20%\">" + f[0].name + "</td>" +
+                        "<td width=\"15%\">" + (f[0].size / 1024).toFixed(1) + "KB" + "</td>" + "<td width=\"20%\">" + 'xxx' + "</td>" + "<td width=\"25%\">" + myDate.toLocaleDateString() + "</td>"+"</tr>";
         doAddTr(tr);
 
         var name = this.getAttribute("name");
@@ -71,9 +74,9 @@ function addReloadFile() {
 
 function genFileInfo(fileInputEl) {
     var f = fileInputEl.files;
-    console.log(f[0].name);
+    var myDate = new Date();
     return "<td width=\"20%\"><p>" + f[0].name + "</p></td>" + "<td></td>" + "<td  width=\"20%\"><p>" + f[0].name + "</p></td>" +
-        "<td width=\"15%\"><p>" + (f[0].size / 1024).toFixed(1) + "KB" + "</p></td>" + "<td width=\"20%\"><p>" + xxx + "</p></td>" + "<td width=\"25%\"><p>" + new Date() + "</p></td>";
+        "<td width=\"15%\"><p>" + (f[0].size / 1024).toFixed(1) + "KB" + "</p></td>" + "<td width=\"20%\"><p>" + 'xxx' + "</p></td>" + "<td width=\"25%\"><p>" + myDate.toLocaleDateString() + "</p></td>";
 }
 
 function downloadRevokeFile(id) {

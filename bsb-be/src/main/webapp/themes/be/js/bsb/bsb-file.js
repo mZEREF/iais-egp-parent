@@ -65,27 +65,11 @@ function addReloadFile() {
         spanEl.innerText = genFileInfo(this);
     } else {
         // add filename, size, delete and reload button
-        var tr = document.createElement("tr");
-        tr.setAttribute("id", id + "FileTr");
-        tr.innerText = genFileInfo(this);
-
-        // var delBtn = document.createElement("button");
-        // delBtn.setAttribute("type", "button");
-        // delBtn.setAttribute("class", "btn btn-secondary btn-sm delFileBtn");
-        // delBtn.setAttribute("onclick", "deleteFile('" + id + "')");
-        // delBtn.innerText = "Delete";
-        //
-        // var reloadBtn = document.createElement("button");
-        // reloadBtn.setAttribute("type", "button");
-        // reloadBtn.setAttribute("class", "btn btn-secondary btn-sm reUploadFileBtn");
-        // reloadBtn.setAttribute("onclick", "reloadFile('" + id + "')");
-        // reloadBtn.innerText = "Reload";
-        //
-        // fileDiv = document.createElement("div");
-        // fileDiv.setAttribute("id", id + "FileTr");
-        // fileDiv.appendChild(tr);
-        // fileDiv.appendChild(delBtn);
-        // fileDiv.appendChild(reloadBtn);
+        var f = this.files;
+        var myDate = new Date();
+        var tr = "<tr id="+id+'FileTr'+">"+"<td width=\"20%\">" + f[0].name + "</td>" + "<td>"+"Self Audit"+"</td>" + "<td  width=\"20%\">" + f[0].name + "</td>" +
+            "<td width=\"15%\">" + (f[0].size / 1024).toFixed(1) + "KB" + "</td>" + "<td width=\"20%\">" + 'xxx' + "</td>" + "<td width=\"25%\">" + myDate.toLocaleDateString() + "</td>"+"</tr>";
+        doAddTr(tr);
 
         var name = this.getAttribute("name");
         var gpa = $("a[data-upload-file=" + name + "]");
@@ -104,4 +88,8 @@ function genFileInfo(fileInputEl) {
 function downloadRevokeFile(id) {
     var url = "/bsb-be/ajax/doc/download/revocation/repo/" + id;
     window.open(url);
+}
+
+function doAddTr(tr) {
+    $("#tbodyFileListId").append(tr);
 }

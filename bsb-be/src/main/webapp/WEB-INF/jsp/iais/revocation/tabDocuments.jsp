@@ -42,7 +42,7 @@
                     <th scope="col">Date Submitted</th>
                 </tr>
                 </thead>
-                <tbody>
+                <tbody id="tbodyFileListId">
                 <c:if test="${savedFiles ne null}">
                     <c:forEach var="docTypes" items="${docTypes}">
                         <c:forEach var="info" items="${savedFiles.get(docTypes)}">
