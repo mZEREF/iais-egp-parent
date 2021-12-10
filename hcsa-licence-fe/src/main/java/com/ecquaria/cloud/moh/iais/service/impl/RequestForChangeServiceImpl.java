@@ -519,8 +519,10 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
     }
 
     @Override
-    public Map<String, String> doValidatePremiss(AppSubmissionDto appSubmissionDto, AppSubmissionDto oldAppSubmissionDto, List<String> premisesHciList, String masterCodeDto, boolean rfi) {
+    public Map<String, String> doValidatePremiss(AppSubmissionDto appSubmissionDto, AppSubmissionDto oldAppSubmissionDto,
+            List<String> premisesHciList, boolean rfi, boolean checkOthers) {
         //do validate one premiss
+        String keywords = MasterCodeUtil.getCodeDesc("MS001");
         List<String> list = IaisCommonUtils.genNewArrayList();
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
         List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
@@ -1254,7 +1256,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                             }
                         }
                     }else if(ApplicationConsts.PREMISES_TYPE_EAS_MTS_CONVEYANCE.equals(premiseType)){
-                        validateEasmts.doValidatePremises(errorMap, appGrpPremisesDto, i, masterCodeDto, floorUnitList, floorUnitNo,
+                        validateEasmts.doValidatePremises(errorMap, appGrpPremisesDto, i, keywords, floorUnitList, floorUnitNo,
                                 licenseeId, appType, licenceId);
                         validateEasmts.doValidatePremises(errorMap,appSubmissionDto.getAppType(),
                                 i,licenseeId,appGrpPremisesDto,needAppendMsg,rfi);
@@ -1298,22 +1300,24 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                     }
                 }
             }
-            String premisesSelect = NewApplicationHelper.getPremisesKey(appGrpPremisesDto);
-            if (appGrpPremisesDtoList.stream().anyMatch(dto -> !Objects.equals(appGrpPremisesDto.getPremisesIndexNo(),
-                    dto.getPremisesIndexNo()) && Objects.equals(premisesSelect, NewApplicationHelper.getPremisesKey(dto)))) {
-                errorMap.put("premisesHci" + i, "NEW_ERR0012");
-            } else {
-                HttpServletRequest request = MiscUtil.getCurrentRequest();
-                AppGrpPremisesDto premises = null;
-                if (request != null) {
-                    premises = NewApplicationHelper.getPremisesFromMap(premisesSelect, request);
-                }
-                if (premises != null && ("newPremise".equals(appGrpPremisesDto.getPremisesSelect())
-                        || !Objects.equals(appGrpPremisesDto.getPremisesIndexNo(), premises.getPremisesIndexNo()))) {
-                    errorMap.put("premisesHci" + i,
-                            MessageUtil.replaceMessage("GENERAL_ERR0050", ApplicationConsts.TITLE_MODE_OF_SVCDLVY, "field"));
-                    appGrpPremisesDto.setPremisesSelect("newPremise");
-                    NewApplicationHelper.setAppSubmissionDto(appSubmissionDto, request);
+            if (checkOthers) {
+                String premisesSelect = NewApplicationHelper.getPremisesKey(appGrpPremisesDto);
+                if (appGrpPremisesDtoList.stream().anyMatch(dto -> !Objects.equals(appGrpPremisesDto.getPremisesIndexNo(),
+                        dto.getPremisesIndexNo()) && Objects.equals(premisesSelect, NewApplicationHelper.getPremisesKey(dto)))) {
+                    errorMap.put("premisesHci" + i, "NEW_ERR0012");
+                } else {
+                    HttpServletRequest request = MiscUtil.getCurrentRequest();
+                    AppGrpPremisesDto premises = null;
+                    if (request != null) {
+                        premises = NewApplicationHelper.getPremisesFromMap(premisesSelect, request);
+                    }
+                    if (premises != null && ("newPremise".equals(appGrpPremisesDto.getPremisesSelect())
+                            || !Objects.equals(appGrpPremisesDto.getPremisesSelect(), premisesSelect))) {
+                        errorMap.put("premisesHci" + i,
+                                MessageUtil.replaceMessage("GENERAL_ERR0050", ApplicationConsts.TITLE_MODE_OF_SVCDLVY, "field"));
+                        appGrpPremisesDto.setPremisesSelect("newPremise");
+                        NewApplicationHelper.setAppSubmissionDto(appSubmissionDto, request);
+                    }
                 }
             }
         }

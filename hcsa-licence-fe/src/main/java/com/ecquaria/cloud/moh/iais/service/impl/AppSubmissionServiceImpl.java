@@ -2549,7 +2549,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
         // premises
         String keyWord = MasterCodeUtil.getCodeDesc("MS001");
         Map<String, String> premissMap = requestForChangeService.doValidatePremiss(appSubmissionDto, oldAppSubmissionDto,
-                premisesHciList, keyWord, isRfi);
+                premisesHciList, isRfi, false);
         premissMap.remove("hciNameUsed");
         if (!premissMap.isEmpty()) {
             errorMap.putAll(premissMap);

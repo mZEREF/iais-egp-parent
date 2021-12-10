@@ -1049,7 +1049,7 @@ public class NewApplicationDelegator {
         String crud_action_value = ParamUtil.getString(bpc.request, IaisEGPConstant.CRUD_ACTION_VALUE);
         String crud_action_additional = ParamUtil.getString(bpc.request, "crud_action_additional");
         if (!"saveDraft".equals(crud_action_value)) {
-            String keywords = MasterCodeUtil.getCodeDesc("MS001");
+
             boolean isNeedShowValidation = !"back".equals(crud_action_value);
             List<HcsaServiceDto> hcsaServiceDtos = (List<HcsaServiceDto>) ParamUtil.getSessionAttr(bpc.request, AppServicesConsts.HCSASERVICEDTOLIST);
             List<String> premisesHciList = appSubmissionService.getHciFromPendAppAndLic(appSubmissionDto.getLicenseeId(), hcsaServiceDtos);
@@ -1058,7 +1058,7 @@ public class NewApplicationDelegator {
 
             String actionType = bpc.request.getParameter(IaisEGPConstant.CRUD_ACTION_TYPE);
             Map<String, String> errorMap = requestForChangeService.doValidatePremiss(appSubmissionDto, oldAppSubmissionDto,
-                    premisesHciList, keywords, isRfi);
+                    premisesHciList, isRfi, true);
             String crud_action_type_continue = bpc.request.getParameter("crud_action_type_continue");
             bpc.request.setAttribute("continueStep", actionType);
             bpc.request.setAttribute("crudActionTypeContinue", crud_action_additional);
