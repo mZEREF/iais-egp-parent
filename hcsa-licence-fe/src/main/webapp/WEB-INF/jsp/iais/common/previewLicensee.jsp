@@ -12,7 +12,7 @@
 </c:if>
 
 <div class="panel panel-default">
-    <div class="panel-heading ${headingSign}">
+    <div class="panel-heading ${ (doRenewViewYes eq '1'  && 'completed' eq headingSign ) ? '' :  headingSign}">
         <h4 class="panel-title">
             <a class="collapsed" style="text-decoration: none;" data-toggle="collapse"  href="#previewLicensee${empty documentIndex ? "" : documentIndex}">
                 Licensee Details

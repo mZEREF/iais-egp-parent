@@ -717,6 +717,8 @@ public class WithOutRenewalDelegator {
             if (replacePerson || updatePerson || eqGrpPremisesResult ||editDoc) {
                 ParamUtil.setRequestAttr(bpc.request, "changeRenew", "Y");
             }
+            //bug fix 76354
+            ParamUtil.setRequestAttr(bpc.request,"doRenewViewYes",AppConsts.YES);
         }
     }
 
