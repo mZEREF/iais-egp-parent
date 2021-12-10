@@ -40,11 +40,14 @@ public final class FeInboxHelper {
                 case RoleConsts.USER_ROLE_DS_AR :
                     types.add(DataSubmissionConsts.DS_AR);
                     break;
+                case RoleConsts.USER_ROLE_DS_DP :
+                    types.add(DataSubmissionConsts.DS_DRP);
                 default: break;
             }
         });
-        //todo
+        //todo delete
         types.add(DataSubmissionConsts.DS_AR);
+        types.add(DataSubmissionConsts.DS_DRP);
         return types;
     }
 

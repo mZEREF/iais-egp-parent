@@ -16,13 +16,13 @@
                 <div class="col-md-4">
                         <label class="col-xs-3 control-label" for="typeDataSubmission" style="text-align:left;margin-top: 1.5%">Type</label>
                         <div class="col-xs-8 col-md-8">
-                            <iais:select name="typeDataSubmission"  codeCategory="DATA_SUBMISSION_TYPE" value="${param.typeDataSubmission}" firstOption="All" cssClass="dataSubmissionType"/>
+                            <iais:select name="typeDataSubmission"  codeCategory="DATA_SUBMISSION_TYPE" value="${param.typeDataSubmission}" firstOption="All" cssClass="dataSubmissionType" needSort="true"/>
                         </div>
                 </div>
                 <div class="col-md-3">
                         <label class="col-xs-3 control-label" for="statusDataSubmission" style="text-align:left;margin-top: 1.5%">Status</label>
                         <div class="col-xs-8 col-md-8">
-                            <iais:select name="statusDataSubmission" id="statusDataSubmission" options="dsStatuses" value="${param.statusDataSubmission}" firstOption="All" cssClass="dataSubmissionStatus"/>
+                            <iais:select name="statusDataSubmission" id="statusDataSubmission" options="dsStatuses" value="${param.statusDataSubmission}" firstOption="All" cssClass="dataSubmissionStatus" needSort="true" />
                         </div>
                 </div>
             </div>

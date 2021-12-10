@@ -126,8 +126,8 @@ public final class DataSubmissionHelper {
         if (StringUtil.isEmpty(currCycle) || IaisCommonUtils.getDsCycleFinalStatus().contains(lastStatus)
                 && !DataSubmissionConsts.DS_CYCLE_NON.equals(latestCycle)) {//3.3.2.1
             result.add(DataSubmissionConsts.AR_CYCLE_AR);
-            result.add(DataSubmissionConsts.AR_CYCLE_IUI);
             result.add(DataSubmissionConsts.AR_CYCLE_EFO);
+            result.add(DataSubmissionConsts.AR_CYCLE_IUI);
         } else if (DataSubmissionConsts.DS_CYCLE_NON.equals(latestCycle)
                 || DataSubmissionConsts.AR_STAGE_END_CYCLE.equals(currStage)) {
             result.add(DataSubmissionConsts.AR_CYCLE_AR);
@@ -352,14 +352,18 @@ public final class DataSubmissionHelper {
 
     public static List<SelectOption> genOptions(List<String> options, String firstOption) {
         List<SelectOption> opts = IaisCommonUtils.genNewArrayList();
-        if (!StringUtil.isEmpty(firstOption)) {
-            opts.add(0, new SelectOption("", firstOption));
-        }
-        if (options == null || options.isEmpty()) {
+        if (IaisCommonUtils.isEmpty(options)) {
+            if (!StringUtil.isEmpty(firstOption)) {
+                opts.add(0, new SelectOption("", firstOption));
+            }
             return opts;
         }
         for (String opt : options) {
             opts.add(new SelectOption(opt, MasterCodeUtil.getCodeDesc(opt)));
+        }
+        opts.sort(SelectOption::compareTo);
+        if (!StringUtil.isEmpty(firstOption)) {
+            opts.add(0, new SelectOption("", firstOption));
         }
         return opts;
     }

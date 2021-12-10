@@ -952,6 +952,8 @@ public final class IaisEGPHelper extends EGPHelper {
     private  static  Map<String,String> getSvcRoleMap(){
         Map<String,String> stringStringMap = IaisCommonUtils.genNewHashMap(8);
         stringStringMap.put(AppServicesConsts.SERVICE_NAME_AR_CENTER,RoleConsts.USER_ROLE_DS_AR);
+        stringStringMap.put(AppServicesConsts.SERVICE_NAME_DP_CENTER_01,RoleConsts.USER_ROLE_DS_DP);
+        stringStringMap.put(AppServicesConsts.SERVICE_NAME_DP_CENTER_02,RoleConsts.USER_ROLE_DS_DP);
         return stringStringMap;
     }
     private  static  Map<String,SelectOption> getRoleRoleRoleNameMap(){
@@ -959,6 +961,7 @@ public final class IaisEGPHelper extends EGPHelper {
         stringStringMap.put(RoleConsts.USER_ROLE_DS_AR,new SelectOption(RoleConsts.USER_ROLE_DS_AR,RoleConsts.SHOW_USER_ROLE_DS_AR));
         stringStringMap.put(RoleConsts.USER_ROLE_ORG_USER,new SelectOption(RoleConsts.USER_ROLE_ORG_USER,RoleConsts.SHOW_USER_ROLE_ORG_USER));
         stringStringMap.put(RoleConsts.USER_ROLE_ORG_ADMIN,new SelectOption(RoleConsts.USER_ROLE_ORG_ADMIN,RoleConsts.SHOW_USER_ROLE_ORG_ADMIN));
+        stringStringMap.put(RoleConsts.USER_ROLE_DS_DP,new SelectOption(RoleConsts.USER_ROLE_DS_DP,RoleConsts.SHOW_USER_ROLE_DS_DP));
         return stringStringMap;
     }
     public static List<SelectOption> getRoleSelection(List<String> svcNames) {
@@ -970,7 +973,10 @@ public final class IaisEGPHelper extends EGPHelper {
         svcNames.stream().forEach( o-> {
             String value = SVC_ROLE_MAP.get(o);
             if(StringUtil.isNotEmpty(value)){
-                selectOptions.add(ROLE_ROLE_ROLE_NAME_MAP.get(value));
+                SelectOption selectOption = ROLE_ROLE_ROLE_NAME_MAP.get(value);
+                if(!selectOptions.contains(selectOption)){
+                    selectOptions.add(selectOption);
+                }
             }
         });
         selectOptions.sort(SelectOption::compareTo);
