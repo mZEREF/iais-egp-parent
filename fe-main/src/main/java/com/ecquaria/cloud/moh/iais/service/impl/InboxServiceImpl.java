@@ -360,7 +360,10 @@ public class InboxServiceImpl implements InboxService {
             if(IaisCommonUtils.isNotEmpty(apps)){
                 log.info(StringUtil.changeForLog("----------checkRenewalStatus json : " + JsonUtil.parseToJson(apps)));
                 for (ApplicationDto a : apps) {
-                    if(ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(a.getApplicationType())){
+                    if(ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(a.getApplicationType())
+                            && !ApplicationConsts.APPLICATION_STATUS_REJECTED.equalsIgnoreCase(a.getStatus())
+                            && !ApplicationConsts.APPLICATION_STATUS_ROLL_BACK.equals(a.getStatus())
+                            && !ApplicationConsts.APPLICATION_STATUS_DELETED.equals(a.getStatus())){
                         isRenewApp = true;
                         break;
                     }
