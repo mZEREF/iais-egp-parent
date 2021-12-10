@@ -563,7 +563,7 @@ public class MohHcsaBeDashboardAjax {
         String applicationString =  ParamUtil.getString(request, "applications");
         String[] applications = applicationString.split(",");
         int approveCheck = 1;
-        String noApprove = MessageUtil.getMessageDesc("GENERAL_ERR0050");
+        String noApprove = MessageUtil.getMessageDesc("GENERAL_ERR0044");
         for (String item:applications) {
             ApplicationDto applicationDto = inspectionTaskMainClient.getApplicationDtoByAppNo(item).getEntity();
             if(ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL01.equals(applicationDto.getStatus()) || ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02.equals(applicationDto.getStatus())){
