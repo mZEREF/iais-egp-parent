@@ -2692,6 +2692,8 @@ public class NewApplicationDelegator {
                     isAutoPremises = 0;
                 }*/
             }
+        } else if (appEditSelectDto.isPremisesEdit()) {
+            isAutoPremises = 0;
         }
         log.info(StringUtil.changeForLog("isAutoPremises: " + isAutoPremises));
 
