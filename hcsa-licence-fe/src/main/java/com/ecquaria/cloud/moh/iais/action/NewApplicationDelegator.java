@@ -3797,11 +3797,13 @@ public class NewApplicationDelegator {
             String oldHciCode = appSubmissionDto.getAppGrpPremisesDtoList().stream()
                     .filter(dto -> Objects.equals(finalPremINdexNo, dto.getPremisesIndexNo()))
                     .map(dto -> Optional.ofNullable(dto.getOldHciCode()).orElse(dto.getHciCode()))
+                    .filter(Objects::nonNull)
                     .findAny()
                     .orElse(null);
             List<LicenceDto> licenceDtos = appSubmissionDto.getAppGrpPremisesDtoList().stream()
                     .filter(dto -> Objects.equals(finalPremINdexNo, dto.getPremisesIndexNo()))
                     .map(AppGrpPremisesDto::getLicenceDtos)
+                    .filter(Objects::nonNull)
                     .findAny()
                     .orElse(null);
             log.info(StringUtil.changeForLog("--- Old Hci Code: " + oldHciCode));
