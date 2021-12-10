@@ -9,6 +9,8 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArEnquiryCoFundingHistoryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArEnquiryTransactionHistoryFilterDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArEnquiryTransactionHistoryResultDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.AssistedReproductionAdvEnquiryResultsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.AssistedReproductionEnquiryFilterDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.AssistedReproductionEnquiryResultsDto;
@@ -39,7 +41,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.Serializable;
 import java.text.ParseException;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -75,6 +76,11 @@ public class OnlineEnquiryAssistedReproductionDelegator {
             .searchAttr("submissionParam")
             .resultAttr("submissionResult")
             .sortField("SUBMIT_DT").sortType(SearchParam.DESCENDING).pageNo(1).pageSize(pageSize).build();
+    FilterParameter transactionParameter = new FilterParameter.Builder()
+            .clz(ArEnquiryTransactionHistoryResultDto.class)
+            .searchAttr("transactionParam")
+            .resultAttr("transactionResult")
+            .sortField("SUBMIT_DT").sortType(SearchParam.DESCENDING).pageNo(1).pageSize(pageSize).build();
 
     private static final Set<String> patientSortFieldNames = ImmutableSet.of(
             "NAME", "ID_NUMBER","DATE_OF_BIRTH"
@@ -103,6 +109,8 @@ public class OnlineEnquiryAssistedReproductionDelegator {
         patientParameter.setPageSize(pageSize);
         patientAdvParameter.setPageNo(1);
         patientAdvParameter.setPageSize(pageSize);
+        transactionParameter.setPageNo(1);
+        transactionParameter.setPageSize(pageSize);
 
     }
 
@@ -312,6 +320,25 @@ public class OnlineEnquiryAssistedReproductionDelegator {
         ParamUtil.setSessionAttr(request,"assistedReproductionEnquiryFilterDto",arFilterDto);
 
         return arFilterDto;
+    }
+
+
+    private ArEnquiryTransactionHistoryFilterDto setArEnquiryTransactionHistoryFilterDto(HttpServletRequest request) throws ParseException{
+        ArEnquiryTransactionHistoryFilterDto arFilterDto=new ArEnquiryTransactionHistoryFilterDto();
+        String arCentre=ParamUtil.getString(request,"arCentre");
+        arFilterDto.setArCentre(arCentre);
+        Date submissionDateFrom= Formatter.parseDate(ParamUtil.getString(request, "submissionDateFrom"));
+        arFilterDto.setSubmissionDateFrom(submissionDateFrom);
+        Date submissionDateTo= Formatter.parseDate(ParamUtil.getString(request, "submissionDateTo"));
+        arFilterDto.setSubmissionDateTo(submissionDateTo);
+        String cycleNumber=ParamUtil.getString(request,"cycleNumber");
+        arFilterDto.setCycleNumber(cycleNumber);
+        String includeTransfers=ParamUtil.getString(request,"includeTransfers");
+        arFilterDto.setIncludeTransfers(includeTransfers);
+        ParamUtil.setSessionAttr(request,"arTransactionHistoryFilterDto",arFilterDto);
+
+        return arFilterDto;
+
     }
 
     private void setQueryFilter(AssistedReproductionEnquiryFilterDto arDto,FilterParameter filterParameter,int sqf){
@@ -927,54 +954,55 @@ public class OnlineEnquiryAssistedReproductionDelegator {
                 arFilterDto.setSearchBy("0");
                 ParamUtil.setSessionAttr(request,"assistedReproductionEnquiryFilterDto",arFilterDto);
             }
-        }
-        if(patientInfoDto!=null){
-            ParamUtil.setSessionAttr(request,"patientInfoDto",patientInfoDto);
+            if(patientInfoDto!=null){
+                ParamUtil.setSessionAttr(request,"patientInfoDto",patientInfoDto);
 
-            LinkedHashMap<String,PatientInventoryDto> patientInventoryDtos=new LinkedHashMap<>(patientInfoDto.getPatient().getArCentres().size()+1);
-            PatientInventoryDto patientInventoryDtoTotal=new PatientInventoryDto();
-             int currentFrozenOocytes=0;
-             int currentThawedOocytes=0;
-             int currentFreshOocytes=0;
-             int currentFrozenEmbryos=0;
-             int currentThawedEmbryos=0;
-             int currentFreshEmbryos=0;
-             int currentFrozenSperms=0;
-            for (PremisesDto premisesDto:patientInfoDto.getPatient().getArCentres()
-                 ) {
-                try {
-                    PatientInventoryDto patientInventoryDto=assistedReproductionService.patientInventoryByCode(patientInfoDto.getPatient().getPatientCode(),premisesDto.getHciCode());
-                    currentFrozenOocytes+=patientInventoryDto.getCurrentFrozenOocytes();
-                    currentThawedOocytes+=patientInventoryDto.getCurrentThawedOocytes();
-                    currentFreshOocytes+=patientInventoryDto.getCurrentFreshOocytes();
-                    currentFrozenEmbryos+=patientInventoryDto.getCurrentFrozenEmbryos();
-                    currentThawedEmbryos+=patientInventoryDto.getCurrentThawedEmbryos();
-                    currentFreshEmbryos+=patientInventoryDto.getCurrentFreshEmbryos();
-                    currentFrozenSperms+=patientInventoryDto.getCurrentFrozenSperms();
-                    patientInventoryDtos.put(premisesDto.getAddress(),patientInventoryDto);
-                }catch (Exception e){
-                    log.error(e.getMessage(),e);
+                LinkedHashMap<String,PatientInventoryDto> patientInventoryDtos=new LinkedHashMap<>(patientInfoDto.getPatient().getArCentres().size()+1);
+                PatientInventoryDto patientInventoryDtoTotal=new PatientInventoryDto();
+                int currentFrozenOocytes=0;
+                int currentThawedOocytes=0;
+                int currentFreshOocytes=0;
+                int currentFrozenEmbryos=0;
+                int currentThawedEmbryos=0;
+                int currentFreshEmbryos=0;
+                int currentFrozenSperms=0;
+                for (PremisesDto premisesDto:patientInfoDto.getPatient().getArCentres()
+                ) {
+                    try {
+                        PatientInventoryDto patientInventoryDto=assistedReproductionService.patientInventoryByCode(patientInfoDto.getPatient().getPatientCode(),premisesDto.getHciCode());
+                        currentFrozenOocytes+=patientInventoryDto.getCurrentFrozenOocytes();
+                        currentThawedOocytes+=patientInventoryDto.getCurrentThawedOocytes();
+                        currentFreshOocytes+=patientInventoryDto.getCurrentFreshOocytes();
+                        currentFrozenEmbryos+=patientInventoryDto.getCurrentFrozenEmbryos();
+                        currentThawedEmbryos+=patientInventoryDto.getCurrentThawedEmbryos();
+                        currentFreshEmbryos+=patientInventoryDto.getCurrentFreshEmbryos();
+                        currentFrozenSperms+=patientInventoryDto.getCurrentFrozenSperms();
+                        patientInventoryDtos.put(premisesDto.getAddress(),patientInventoryDto);
+                    }catch (Exception e){
+                        log.error(e.getMessage(),e);
+                    }
                 }
+                patientInventoryDtoTotal.setCurrentThawedEmbryos(currentThawedEmbryos);
+                patientInventoryDtoTotal.setCurrentFreshOocytes(currentFreshOocytes);
+                patientInventoryDtoTotal.setCurrentFrozenEmbryos(currentFrozenEmbryos);
+                patientInventoryDtoTotal.setCurrentFreshEmbryos(currentFreshEmbryos);
+                patientInventoryDtoTotal.setCurrentFrozenOocytes(currentFrozenOocytes);
+                patientInventoryDtoTotal.setCurrentThawedOocytes(currentThawedOocytes);
+                patientInventoryDtoTotal.setCurrentFrozenSperms(currentFrozenSperms);
+                patientInventoryDtos.put("Total",patientInventoryDtoTotal);
+                ParamUtil.setSessionAttr(request,"patientInventoryDtos",  patientInventoryDtos);
+
+                ArEnquiryCoFundingHistoryDto arCoFundingDto= assistedReproductionService.patientCoFundingHistoryByCode(patientInfoDto.getPatient().getPatientCode());
+                ParamUtil.setSessionAttr(request,"arCoFundingDto", arCoFundingDto);
+
+            }else {
+                ParamUtil.setSessionAttr(request,"patientInfoDto",null);
+                ParamUtil.setSessionAttr(request,"patientInventoryDtos", null);
+                ParamUtil.setSessionAttr(request,"arCoFundingDto", null);
+
             }
-            patientInventoryDtoTotal.setCurrentThawedEmbryos(currentThawedEmbryos);
-            patientInventoryDtoTotal.setCurrentFreshOocytes(currentFreshOocytes);
-            patientInventoryDtoTotal.setCurrentFrozenEmbryos(currentFrozenEmbryos);
-            patientInventoryDtoTotal.setCurrentFreshEmbryos(currentFreshEmbryos);
-            patientInventoryDtoTotal.setCurrentFrozenOocytes(currentFrozenOocytes);
-            patientInventoryDtoTotal.setCurrentThawedOocytes(currentThawedOocytes);
-            patientInventoryDtoTotal.setCurrentFrozenSperms(currentFrozenSperms);
-            patientInventoryDtos.put("Total",patientInventoryDtoTotal);
-            ParamUtil.setSessionAttr(request,"patientInventoryDtos", (Serializable) patientInventoryDtos);
-
-            ArEnquiryCoFundingHistoryDto arCoFundingDto= assistedReproductionService.patientCoFundingHistoryByCode(patientInfoDto.getPatient().getPatientCode());
-            ParamUtil.setSessionAttr(request,"arCoFundingDto", arCoFundingDto);
-
-        }else {
-            ParamUtil.setSessionAttr(request,"patientInfoDto",null);
-            ParamUtil.setSessionAttr(request,"patientInventoryDtos", null);
-            ParamUtil.setSessionAttr(request,"arCoFundingDto", null);
-
         }
+
 
 
 
@@ -994,8 +1022,50 @@ public class OnlineEnquiryAssistedReproductionDelegator {
 
     }
 
-    public void searchInventory(BaseProcessClass bpc){
+    public void searchInventory(BaseProcessClass bpc) throws ParseException{
         ParamUtil.setRequestAttr(bpc.request, "preActive", "1");
+        HttpServletRequest request=bpc.request;
+        PatientInfoDto patientInfoDto= (PatientInfoDto) ParamUtil.getSessionAttr(request,"patientInfoDto");
+        ArEnquiryTransactionHistoryFilterDto arDto=setArEnquiryTransactionHistoryFilterDto(request);
+
+        Map<String,Object> filter=IaisCommonUtils.genNewHashMap();
+        filter.put("patientCode", patientInfoDto.getPatient().getPatientCode());
+
+        if(arDto.getArCentre()!=null) {
+            filter.put("arCentre", arDto.getArCentre());
+        }
+        if(arDto.getSubmissionDateFrom()!=null){
+            String submissionDateFrom = Formatter.formatDateTime(arDto.getSubmissionDateFrom(),
+                    SystemAdminBaseConstants.DATE_FORMAT);
+            filter.put("submission_start_date", submissionDateFrom);
+        }
+
+        if(arDto.getSubmissionDateTo()!=null){
+            String submissionDateTo = Formatter.formatDateTime(arDto.getSubmissionDateTo(),
+                    SystemAdminBaseConstants.DATE_FORMAT);
+            filter.put("submission_to_date", submissionDateTo);
+        }
+        if(arDto.getIncludeTransfers()!=null) {
+            filter.put("transfers", arDto.getIncludeTransfers());
+        }
+        if(arDto.getCycleNumber()!=null) {
+            filter.put("cycleNo", Integer.parseInt(arDto.getCycleNumber()));
+        }
+
+        String sortFieldName = ParamUtil.getString(request,"crud_action_value");
+        String sortType = ParamUtil.getString(request,"crud_action_additional");
+        if(!StringUtil.isEmpty(sortFieldName)&&!StringUtil.isEmpty(sortType)){
+            transactionParameter.setSortType(sortType);
+            transactionParameter.setSortField(sortFieldName);
+        }
+
+        SearchParam transactionParam = SearchResultHelper.getSearchParam(request, transactionParameter,true);
+        CrudHelper.doPaging(transactionParam,bpc.request);
+
+        QueryHelp.setMainSql("onlineEnquiry","searchTransactionHistoryByAssistedReproduction",transactionParam);
+        SearchResult<ArEnquiryTransactionHistoryResultDto> transactionResult = assistedReproductionService.searchTransactionHistoryByParam(transactionParam);
+        ParamUtil.setRequestAttr(request,"transactionResult",transactionResult);
+        ParamUtil.setRequestAttr(request,"transactionParam",transactionParam);
 
 
     }

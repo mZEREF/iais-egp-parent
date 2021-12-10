@@ -51,15 +51,15 @@ public class OnlineArAjaxController {
     public @ResponseBody
     Map<String, Object> patientDetailAjax(HttpServletRequest request, HttpServletResponse response) {
 
-        String patientId = request.getParameter("patientId");
+        String patientCode = request.getParameter("patientCode");
         Map<String, Object> map = IaisCommonUtils.genNewHashMap();
-        if(!StringUtil.isEmpty(patientId)){
+        if(!StringUtil.isEmpty(patientCode)){
             SearchParam searchParam = new SearchParam(AssistedReproductionEnquiryAjaxPatientResultsDto.class.getName());
             searchParam.setPageSize(Integer.MAX_VALUE);
             searchParam.setPageNo(0);
             searchParam.setSort("CREATED_DT", SearchParam.ASCENDING);
             //set filter
-            searchParam.addFilter("patientId", patientId, true);
+            searchParam.addFilter("patientCode", patientCode, true);
             //search
             QueryHelp.setMainSql("onlineEnquiry", "searchPatientAjaxByAssistedReproduction", searchParam);
             SearchResult<AssistedReproductionEnquiryAjaxPatientResultsDto> searchResult = assistedReproductionService.searchPatientAjaxByParam(searchParam);

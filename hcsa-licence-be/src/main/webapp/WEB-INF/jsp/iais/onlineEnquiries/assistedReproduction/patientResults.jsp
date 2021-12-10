@@ -198,7 +198,7 @@
                                                             <td style="vertical-align:middle;">
 
                                                                 <p style="width: 165px;"><c:out value="${patient.patientName}"/>
-                                                                    <a href="javascript:void(0);" class="accordion-toggle  collapsed" style="float: right" data-toggle="collapse" data-target="#dropdown${(status.index + 1) + (patientParam.pageNo - 1) * patientParam.pageSize}" onclick="getPatientByPatientId('${patient.patientId}','${(status.index + 1) + (patientParam.pageNo - 1) * patientParam.pageSize}')">
+                                                                    <a href="javascript:void(0);" class="accordion-toggle  collapsed" style="float: right" data-toggle="collapse" data-target="#dropdown${(status.index + 1) + (patientParam.pageNo - 1) * patientParam.pageSize}" onclick="getPatientByPatientCode('${patient.patientCode}','${(status.index + 1) + (patientParam.pageNo - 1) * patientParam.pageSize}')">
                                                                     </a>
                                                                 </p>
                                                             </td>
@@ -393,9 +393,9 @@
     })
 
 
-    var getPatientByPatientId = function (applicationGroupId, divid) {
+    var getPatientByPatientCode = function (patientCode, divid) {
         if (!isInArray(dividajaxlist,divid)) {
-            groupAjax(applicationGroupId, divid);
+            groupAjax(patientCode, divid);
         } else {
             var display = $('#advfilterson' + divid).css('display');
             if (display == 'none') {
@@ -413,11 +413,11 @@
         }
         return false;
     };
-    var groupAjax = function (applicationGroupId, divid) {
+    var groupAjax = function (patientCode, divid) {
         dividajaxlist.push(divid);
         $.post(
             '/hcsa-licence-web/hcsa/intranet/ar/patientDetail.do',
-            {patientId: applicationGroupId},
+            {patientCode: patientCode},
             function (data) {
                 let result = data.result;
                 if('Success' == result) {
@@ -447,7 +447,7 @@
                         html += '<td><p class="visible-xs visible-sm table-row-title">AR/IUI/EFO</p><p>' + res.rows[i].dsType + '<p></td>' +
                             '<td><p class="visible-xs visible-sm table-row-title">AR Treatment Cycle Type</p><p>' + res.rows[i].arTreatment + '<p></td>' +
                             '<td><p class="visible-xs visible-sm table-row-title">AR Centre</p><p>' + res.rows[i].arCentre + '<p></td>';
-                        html += '<td><p class="visible-xs visible-sm table-row-title">Cycle Start Date</p><p><a href="#" onclick="javascript:fullStagesView(' + "'" + res.rows[i].id + "'" + ');">' + res.rows[i].cycleStartDateStr + '</a></p></td>';
+                        html += '<td><p class="visible-xs visible-sm table-row-title">Cycle Start Date</p><p><a href="#" onclick="javascript:fullStagesView(' + "'" + res.rows[i].cycleId + "'" + ');">' + res.rows[i].cycleStartDateStr + '</a></p></td>';
 
                         html += '</p></td>' +
                             '<td><p class="visible-xs visible-sm table-row-title">Co-funding Claimed</p><p>' + res.rows[i].coFunding + '</p></td>' +

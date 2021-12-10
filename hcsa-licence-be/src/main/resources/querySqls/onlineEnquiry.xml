@@ -119,7 +119,7 @@
     <sql key = "searchPatientAjaxByAssistedReproduction" remarks="search patient ajax by Assisted Reproduction">
         <![CDATA[
            SELECT distinct ajax.* FROM (
-            SELECT dc.ID ,dpi.ID patient_id, 'AR' DS_TYPE ,dacs.TREATMENT_FRESH_NATURAL ,dacs.TREATMENT_FRESH_STIMULATED ,dacs.TREATMENT_FROZEN_EMBRYO ,dacs.TREATMENT_FROZEN_OOCYTE ,dc.HCI_CODE, lp.BUSINESS_NAME ,dacs.CREATED_DT ,dc.STATUS
+            SELECT dc.ID ,dpi.PATIENT_CODE patient_code, 'AR' DS_TYPE ,dacs.TREATMENT_FRESH_NATURAL ,dacs.TREATMENT_FRESH_STIMULATED ,dacs.TREATMENT_FROZEN_EMBRYO ,dacs.TREATMENT_FROZEN_OOCYTE ,dc.HCI_CODE, lp.BUSINESS_NAME ,dacs.CREATED_DT ,dc.STATUS
                 FROM ds_cycle dc
                 join ds_patient_information dpi on dpi.PATIENT_CODE =dc.PATIENT_CODE
                 join ds_data_submission dds on dds.CYCLE_ID = dc.ID
@@ -128,7 +128,7 @@
                 JOIN lic_premises lp on lp.PREMISES_ID =p.ID
 
                 UNION ALL
-                SELECT dc.ID,dpi.ID patient_id,'IUI' DS_TYPE ,null TREATMENT_FRESH_NATURAL ,null TREATMENT_FRESH_STIMULATED ,null TREATMENT_FROZEN_EMBRYO ,null TREATMENT_FROZEN_OOCYTE ,dc.HCI_CODE, lp.BUSINESS_NAME ,dics.CREATED_DT ,dc.STATUS
+                SELECT dc.ID,dpi.PATIENT_CODE patient_code,'IUI' DS_TYPE ,null TREATMENT_FRESH_NATURAL ,null TREATMENT_FRESH_STIMULATED ,null TREATMENT_FROZEN_EMBRYO ,null TREATMENT_FROZEN_OOCYTE ,dc.HCI_CODE, lp.BUSINESS_NAME ,dics.CREATED_DT ,dc.STATUS
                 FROM ds_cycle dc
                 join ds_patient_information dpi on dpi.PATIENT_CODE =dc.PATIENT_CODE
                 join ds_data_submission dds on dds.CYCLE_ID = dc.ID
@@ -136,7 +136,7 @@
                 join premises p on dc.HCI_CODE =p.HCI_CODE and  p.CREATED_DT =(select max(CREATED_DT) from premises where HCI_CODE =dc.HCI_CODE)
                 JOIN lic_premises lp on lp.PREMISES_ID =p.ID
                 UNION ALL
-                SELECT dc.ID,dpi.ID patient_id,'EFO' DS_TYPE ,null TREATMENT_FRESH_NATURAL ,null TREATMENT_FRESH_STIMULATED ,null TREATMENT_FROZEN_EMBRYO ,null TREATMENT_FROZEN_OOCYTE ,dc.HCI_CODE, lp.BUSINESS_NAME ,decs.CREATED_DT ,dc.STATUS
+                SELECT dc.ID,dpi.PATIENT_CODE patient_code,'EFO' DS_TYPE ,null TREATMENT_FRESH_NATURAL ,null TREATMENT_FRESH_STIMULATED ,null TREATMENT_FROZEN_EMBRYO ,null TREATMENT_FROZEN_OOCYTE ,dc.HCI_CODE, lp.BUSINESS_NAME ,decs.CREATED_DT ,dc.STATUS
                 FROM ds_cycle dc
                 join ds_patient_information dpi on dpi.PATIENT_CODE =dc.PATIENT_CODE
                 join ds_data_submission dds on dds.CYCLE_ID = dc.ID
@@ -145,7 +145,7 @@
                 JOIN lic_premises lp on lp.PREMISES_ID =p.ID
             ) ajax
             where 1=1
-            <#if patientId??> AND  :patientId = ajax.patient_id</#if>
+            <#if patientCode??> AND  :patientCode = ajax.patient_code</#if>
 
         ]]>
     </sql>
@@ -248,6 +248,26 @@
         ]]>
     </sql>
 
+    <sql key = "searchTransactionHistoryByAssistedReproduction" remarks="search Transaction History">
+        <![CDATA[
+            SELECT distinct dds.ID ,lp.BUSINESS_NAME ,dds.SUBMISSION_NO ,dds.SUBMIT_DT ,dds.CYCLE_STAGE ,dds.CYCLE_ID ,
+                ( select count(dds2.CYCLE_ID) From ds_data_submission dds2 where dds2.CYCLE_ID= dc.ID)  cycle_no
+                FROM ds_data_submission dds
+                join ds_cycle dc on dc.ID =dds.CYCLE_ID
+                join premises p on dc.HCI_CODE =p.HCI_CODE and  p.CREATED_DT =(select max(CREATED_DT) from premises where HCI_CODE =dc.HCI_CODE)
+                JOIN lic_premises lp on lp.PREMISES_ID =p.ID
+                left join ds_data_submission dds3 on dds3.CYCLE_ID= dc.ID
+
+                where 1=1
+            <#if arCentre??> AND  charindex(:arCentre, lp.BUSINESS_NAME) >0</#if>
+            <#if cycleNo??> AND  cycle_no = :cycleNo </#if>
+            <#if submission_start_date??> AND dds.SUBMIT_DT >= convert(date,:submission_start_date)</#if>
+            <#if submission_to_date??> AND dds.SUBMIT_DT <= convert(date,:submission_to_date)</#if>
+            <#if transfers??> AND  dds3.CYCLE_STAGE ='AR_STG016'</#if>
+            <#if patientCode??> AND  dc.PATIENT_CODE = :patientCode </#if>
+
+         ]]>
+    </sql>
 
     <sql key = "ar-quick-view" remarks="search patient by Assisted Reproduction quick view">
         <![CDATA[

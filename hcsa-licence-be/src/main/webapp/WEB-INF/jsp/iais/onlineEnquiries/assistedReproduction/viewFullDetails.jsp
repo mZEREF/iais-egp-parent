@@ -66,7 +66,9 @@
 
                                         </div>
                                     </div>
-                                    <a href="#" onclick="javascript:doBack('${arAdv}','${arBase}');" ><em class="fa fa-angle-left"> </em> Back</a>
+                                    <div class="row">
+                                        <a href="#" onclick="javascript:doBack('${arAdv}','${arBase}');" ><em class="fa fa-angle-left"> </em> Back</a>
+                                    </div>
                                 </div>
                             </iais:body>
                         </div>
