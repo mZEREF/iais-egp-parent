@@ -172,9 +172,16 @@
                                                                     <p class="visible-xs visible-sm table-row-title">Actions</p>
                                                                     <select id="appAction${status.index}" name="appAction${status.index}" data-action-select="">
                                                                         <option value="#" selected="selected">Select</option>
-                                                                        <option value="#">
-                                                                            Withdrawn
-                                                                        </option>
+                                                                        <c:if test="${item.scheduleList ne null}">
+                                                                            <c:forEach items="${item.scheduleList}" var="schedule">
+                                                                                <c:when test="${schedule ne 'SCHTYPE002' or schedule ne 'SCHTYPE003' or schedule ne 'SCHTYPE006'}">
+                                                                                    <option value="/bsb-fe/eservice/INTERNET/BsbWithDrawn?withdrawnAppId=<iais:mask name='id' value='${item.applicationId}'/>">Withdrawn</option>
+                                                                                </c:when>
+                                                                            </c:forEach>
+                                                                        </c:if>
+                                                                        <c:if test="${item.isAssign eq 'N'}">
+                                                                            <option value="/bsb-fe/eservice/INTERNET/BsbWithDrawn?withdrawnAppId=<iais:mask name='id' value='${item.applicationId}'/>">Withdrawn</option>
+                                                                        </c:if>
                                                                     </select>
                                                                 </c:if>
                                                             </td>

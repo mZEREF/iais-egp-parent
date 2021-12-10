@@ -4,6 +4,12 @@
     <div class="col-xs-12">
         <div id="PrimaryDocsPanel" role="tabpanel">
             <div class="document-content" style="margin: 0 auto;background-color: #F2F2F2;height: 150px">
+                <div class="document-info-list">
+                    <ul>
+                        <li><p>The maximum file size for each upload is 5MB</p></li>
+                        <li><p>Acceptable file formats are PDF, DOCX, CSV, XLSX</p></li>
+                    </ul>
+                </div>
                 <div class="document-upload-list">
                     <c:set var="newFiles" value="${transferNotDto.otherNewInfos}"/>
                     <h3>Others</h3>

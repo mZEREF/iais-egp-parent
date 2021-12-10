@@ -6,6 +6,8 @@
 <div id="u8522_text" class="text ">
     <p><span>These are documents uploaded by the applicant or an officer on behalf of the applicant. Listed
 												documents are those defined for this digital service only.</span></p>
+    <p>The maximum file size for each upload is 5MB</p>
+    <p>Acceptable file formats are JPG, JPEG, DOC, DOCX, PNG, PDF, XLS</p>
 </div>
 <div class="row">
     <div class="col-xs-12">
@@ -30,6 +32,8 @@
             </strong></div>
             <div class="text ">
                 <p><span>These are documents uploaded by an agency officer to support back office processing.</span></p>
+                <p>The maximum file size for each upload is 5MB</p>
+                <p>Acceptable file formats are JPG, JPEG, DOC, DOCX, PNG, PDF, XLS</p>
             </div>
             <table aria-describedby="" class="table">
                 <thead>

@@ -142,6 +142,11 @@ public class DocDownloadAjaxController {
         downloadFile(request, response, maskedRepoId, this::unmaskFileId, this::approvalAppGetSavedFile);
     }
 
+    @GetMapping("/withdrawn/repo/{id}")
+    public void downloadWithdrawnFile(@PathVariable("id") String maskedRepoId, HttpServletRequest request, HttpServletResponse response) {
+        downloadFile(request, response, maskedRepoId, this::unmaskFileId, this::approvalAppGetSavedFile);
+    }
+
 
     /**
      * Use the param 'file' to unmask the id

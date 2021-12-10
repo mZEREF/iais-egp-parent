@@ -177,6 +177,9 @@ public final class MasterCodeUtil {
     public static final String CATE_ID_BSB_DATA_SUBMISSION_STATUS                       = "E1F4A67B-E2A9-4882-A50A-B538E7CF2082";
     public static final String CATE_ID_BSB_DATA_SUBMISSION_TYPE                         = "13AEE5E1-239B-4D22-90AB-0BAD15821AC0";
 
+    //
+    public static final String CATE_ID_BSB_REASON_FOR_WITHDRAWN                         = "F81D1731-7768-43F7-A894-CE34E214F4B2";
+
     /**
      * @description: refresh the master codes into cache
      *

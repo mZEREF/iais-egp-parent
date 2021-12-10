@@ -11,6 +11,7 @@ import java.util.List;
 @Data
 public class DataSubmissionInfo {
     private String id;
+    private String applicationId;
     private String facilityId;
     private String facilityName;
     private String facilityAddress;
