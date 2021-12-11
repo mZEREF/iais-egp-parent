@@ -1,0 +1,26 @@
+FROM hub.ecquaria.com:8251/docker-mohiais-egp/tomcat:9.0.40.1-adoptopenjdk8u265-b01
+USER root
+RUN deluser --remove-home egpcloud
+RUN adduser -D -u 1000 iais
+RUN chown -R iais:iais /usr/local/tomcat
+
+ENV TZ=Asia/Singapore
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+
+COPY docker/setenv.sh /usr/local/tomcat/bin/setenv.sh
+COPY docker/server.xml /usr/local/tomcat/conf/server.xml
+RUN chmod +x /usr/local/tomcat/bin/setenv.sh
+
+COPY --chown=iais:iais target/bsb-fe /usr/local/tomcat/webapps/bsb-fe
+
+COPY --chown=iais:iais docker/run.sh /run.sh
+COPY --chown=iais:iais docker/admin.json /admin.json
+COPY --chown=iais:iais glowroot /glowroot
+
+
+RUN chmod a+x /run.sh
+
+USER iais
+
+CMD ["sh", "/run.sh"]
+
