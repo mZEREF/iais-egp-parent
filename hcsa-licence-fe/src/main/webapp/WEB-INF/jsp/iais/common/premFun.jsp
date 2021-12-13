@@ -280,10 +280,6 @@
                                 $(this).find('input.floorNo').val(opData.floorNo);
                                 $(this).find('input.unitNo').val(opData.unitNo);
                             });
-                            operationDel();
-                            var length = $currForm.find('div.operationDiv').length;
-                            console.log('Floor and Unit (premSelect): ' + length);
-                            $premContent.find('.opLength').val(length);
 
                             var allDayTime = "0";
                             //weekly
@@ -296,7 +292,7 @@
                                 //remove first field
                                 $weeklyCountent.find('div.weeklyDiv:eq(0) div:eq(0) div:eq(0)').remove();
                                 //remove first del btn
-                                $weeklyCountent.find('div.weeklyDiv .weeklyDel').remove();
+                                $weeklyCountent.find('div.weeklyDiv .weeklyDel:eq(0)').remove();
                                 //gen multi dropdown
                                 $weeklyCountent.find('select.Weekly').each(function () {
                                     $(this).multiSelect();
@@ -335,8 +331,6 @@
                                         }
                                         fillWeekly($thisDiv,premisesType,'Weekly',startHHVal,startMMVal,endHHVal,endMMVal,selectAllDay);
                                     }
-
-
                                 });
                             }
 
@@ -350,7 +344,7 @@
                             //remove first field
                             //$phCountent.find('div.form-group:eq(0)').remove();
                             //remove first del btn
-                            $phCountent.find('.pubHolidayDel').remove();
+                            $phCountent.find('.pubHolidayDel:eq(0)').remove();
                             //gen multi dropdown
                             $phCountent.find('select.PubHoliday').each(function () {
                                 $(this).multiSelect();
@@ -402,7 +396,7 @@
                                 //remove first field
 
                                 //remove first del btn
-                                $eventContent.find('.eventDel').remove();
+                                $eventContent.find('.eventDel:eq(0)').remove();
                                 //fill data
                                 $eventContent.find('div.eventDiv').each(function (k,v) {
                                     var $thisDiv = $(this);
@@ -453,6 +447,15 @@
                             } else {
                                 $premContent.find('input[name="chooseExistData"]').val('1');
                             }
+                            $premContent.find('input[name="opLength"]').val($currForm.find('div.operationDiv').length);
+                            $premContent.find('input[name="weeklyLength"]').val($currForm.find('div.weeklyDiv').length);
+                            $premContent.find('input[name="eventLength"]').val($currForm.find('div.eventDiv').length);
+                            $premContent.find('input[name="phLength"]').val($currForm.find('div.pubHolidayDiv').length);
+                            operationDel();
+                            removeWeekly();
+                            removePH();
+                            removePh();
+                            removeEvent();
                         }
                         dismissWaiting();
                     },
@@ -682,12 +685,15 @@
         }
         if (!isEmpty(premDivName)) {
             if (premContent.find('.' + premDivName + ' .weeklyDiv').length < ${weeklyCount}) {
+                premContent.find('.addWeekly').removeClass('hidden');
                 premContent.find('.addWeeklyDiv').removeClass('hidden');
             }
             if (premContent.find('.' + premDivName + ' .pubHolidayDiv').length < ${phCount}) {
+                premContent.find('.addPubHolDay').removeClass('hidden');
                 premContent.find('.addPhDiv').removeClass('hidden');
             }
             if (premContent.find('.' + premDivName + ' .eventDiv').length < ${eventCount}) {
+                premContent.find('.addEvent').removeClass('hidden');
                 premContent.find('.addEventDiv').removeClass('hidden');
             }
         }

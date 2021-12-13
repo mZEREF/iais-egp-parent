@@ -659,13 +659,13 @@ public class NewApplicationHelper {
         }
         return appSubmissionDto;
     }
-    //todo change
+
     public static Map<String,  String> doValidatePo(List<AppSvcPrincipalOfficersDto> poDto,Map<String,AppSvcPersonAndExtDto> licPersonMap, String svcCode, SubLicenseeDto subLicenseeDto) {
         Map<String, String> oneErrorMap = IaisCommonUtils.genNewHashMap();
         List<String> stringList=IaisCommonUtils.genNewArrayList();
         int poIndex=0;
         int dpoIndex=0;
-        if(IaisCommonUtils.isEmpty(poDto)){
+        if (IaisCommonUtils.isEmpty(poDto)) {
             return oneErrorMap;
         }
         String errSalutation = MessageUtil.replaceMessage("GENERAL_ERR0006","Salutation","field");
@@ -933,10 +933,7 @@ public class NewApplicationHelper {
                     stringList.add(stringBuilder.toString());
                 }
             }
-
-
         }
-        WebValidationHelper.saveAuditTrailForNoUseResult(oneErrorMap);
         return oneErrorMap;
     }
 
@@ -1446,11 +1443,8 @@ public class NewApplicationHelper {
                         stringList.add( stringBuilder1.toString());
                     }
                 }
-
             }
-
         }
-        WebValidationHelper.saveAuditTrailForNoUseResult(errMap);
         return errMap;
     }
 
