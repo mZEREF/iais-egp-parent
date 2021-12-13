@@ -114,7 +114,7 @@
                                         onclick="javascript:doClear();">Clear
                                 </button>
                                 <button type="button" class="btn btn-primary"
-                                        onclick="javascript:doSearch();">Search
+                                        onclick="javascript:searchInventory();">Search
                                 </button>
                             </iais:action>
                         </div>

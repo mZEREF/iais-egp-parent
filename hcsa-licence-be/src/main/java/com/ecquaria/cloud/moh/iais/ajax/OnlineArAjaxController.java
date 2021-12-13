@@ -8,6 +8,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.AssistedReprod
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.AssistedReproductionEnquiryAjaxPatientResultsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.AssistedReproductionEnquiryResultsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.AssistedReproductionEnquirySubResultsDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -117,6 +118,32 @@ public class OnlineArAjaxController {
                 map.put("result", "Fail");
             }
             map.put("ajaxResult", searchResult);
+        } else {
+            map.put("result", "Fail");
+        }
+        return map;
+    }
+
+
+    @RequestMapping(value = "cycleStageDetail.do", method = RequestMethod.POST)
+    public @ResponseBody
+    Map<String, Object> cycleStageDetailAjax(HttpServletRequest request, HttpServletResponse response) {
+
+        String cycleId = request.getParameter("cycleIder");
+        Map<String, Object> map = IaisCommonUtils.genNewHashMap();
+        if(!StringUtil.isEmpty(cycleId)){
+
+            List<DataSubmissionDto> cycleStageAjaxList=assistedReproductionService.allDataSubmissionByCycleId(cycleId);
+            for (DataSubmissionDto ajax:cycleStageAjaxList
+            ) {
+                ajax.setCycleStage(MasterCodeUtil.getCodeDesc(ajax.getCycleStage()));
+            }
+            if(cycleStageAjaxList.size()>0){
+                map.put("result", "Success");
+            }else {
+                map.put("result", "Fail");
+            }
+            map.put("ajaxResult", cycleStageAjaxList);
         } else {
             map.put("result", "Fail");
         }

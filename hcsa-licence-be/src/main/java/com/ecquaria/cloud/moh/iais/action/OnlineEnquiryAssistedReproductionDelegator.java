@@ -9,6 +9,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArEnquiryCoFundingHistoryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArEnquiryCycleStageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArEnquiryTransactionHistoryFilterDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArEnquiryTransactionHistoryResultDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.AssistedReproductionAdvEnquiryResultsDto;
@@ -82,6 +83,12 @@ public class OnlineEnquiryAssistedReproductionDelegator {
             .resultAttr("transactionResult")
             .sortField("SUBMIT_DT").sortType(SearchParam.DESCENDING).pageNo(1).pageSize(pageSize).build();
 
+    FilterParameter cycleStageParameter = new FilterParameter.Builder()
+            .clz(ArEnquiryCycleStageDto.class)
+            .searchAttr("cycleStageParam")
+            .resultAttr("cycleStageResult")
+            .sortField("CREATED_DT").sortType(SearchParam.DESCENDING).pageNo(1).pageSize(pageSize).build();
+
     private static final Set<String> patientSortFieldNames = ImmutableSet.of(
             "NAME", "ID_NUMBER","DATE_OF_BIRTH"
     );
@@ -111,6 +118,9 @@ public class OnlineEnquiryAssistedReproductionDelegator {
         patientAdvParameter.setPageSize(pageSize);
         transactionParameter.setPageNo(1);
         transactionParameter.setPageSize(pageSize);
+        cycleStageParameter.setPageNo(1);
+        cycleStageParameter.setPageSize(pageSize);
+        cycleStageParameter.setSortField("CREATED_DT");
 
     }
 
@@ -995,7 +1005,7 @@ public class OnlineEnquiryAssistedReproductionDelegator {
                 ArEnquiryCoFundingHistoryDto arCoFundingDto= assistedReproductionService.patientCoFundingHistoryByCode(patientInfoDto.getPatient().getPatientCode());
                 ParamUtil.setSessionAttr(request,"arCoFundingDto", arCoFundingDto);
 
-            }else {
+            }else if("patient".equals(additional)||"submission".equals(additional)){
                 ParamUtil.setSessionAttr(request,"patientInfoDto",null);
                 ParamUtil.setSessionAttr(request,"patientInventoryDtos", null);
                 ParamUtil.setSessionAttr(request,"arCoFundingDto", null);
@@ -1010,7 +1020,25 @@ public class OnlineEnquiryAssistedReproductionDelegator {
     }
     public void searchCycle(BaseProcessClass bpc){
         ParamUtil.setRequestAttr(bpc.request, "preActive", "2");
+        HttpServletRequest request=bpc.request;
+        PatientInfoDto patientInfoDto= (PatientInfoDto) ParamUtil.getSessionAttr(request,"patientInfoDto");
+        Map<String,Object> filter=IaisCommonUtils.genNewHashMap();
+        filter.put("patientCode", patientInfoDto.getPatient().getPatientCode());
+        cycleStageParameter.setFilters(filter);
+        String sortFieldName = ParamUtil.getString(request,"crud_action_value");
+        String sortType = ParamUtil.getString(request,"crud_action_additional");
+        if(!StringUtil.isEmpty(sortFieldName)&&!StringUtil.isEmpty(sortType)){
+            cycleStageParameter.setSortType(sortType);
+            cycleStageParameter.setSortField(sortFieldName);
+        }
 
+        SearchParam cycleStageParam = SearchResultHelper.getSearchParam(request, cycleStageParameter,true);
+        CrudHelper.doPaging(cycleStageParam,bpc.request);
+
+        QueryHelp.setMainSql("onlineEnquiry","searchCycleStageByPatientCode",cycleStageParam);
+        SearchResult<ArEnquiryCycleStageDto> cycleStageResult = assistedReproductionService.searchCycleStageByParam(cycleStageParam);
+        ParamUtil.setRequestAttr(request,"cycleStageResult",cycleStageResult);
+        ParamUtil.setRequestAttr(request,"cycleStageParam",cycleStageParam);
 
     }
     public void perStep(BaseProcessClass bpc){
@@ -1051,6 +1079,7 @@ public class OnlineEnquiryAssistedReproductionDelegator {
         if(arDto.getCycleNumber()!=null) {
             filter.put("cycleNo", Integer.parseInt(arDto.getCycleNumber()));
         }
+        transactionParameter.setFilters(filter);
 
         String sortFieldName = ParamUtil.getString(request,"crud_action_value");
         String sortType = ParamUtil.getString(request,"crud_action_additional");

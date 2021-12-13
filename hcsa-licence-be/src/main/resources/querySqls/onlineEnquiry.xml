@@ -269,6 +269,20 @@
          ]]>
     </sql>
 
+
+
+    <sql key = "searchCycleStageByPatientCode" remarks="search Cycle Stage">
+        <![CDATA[
+            SELECT distinct dc.ID,( select count(dds2.CYCLE_ID) From ds_data_submission dds2 where dds2.CYCLE_ID= dc.ID) cycle_no ,dc.CREATED_DT ,dc.CYCLE_TYPE, dds.CYCLE_STAGE ,dc.STATUS
+            from ds_cycle dc
+            join ds_data_submission dds on  dds.SUBMISSION_NO = (select MAX(dds1.SUBMISSION_NO) from ds_data_submission dds1 where dds1.CYCLE_ID =dc.ID )
+             where dc.CYCLE_TYPE in ('DSCL_008','DSCL_009','DSCL_010','DSCL_011')
+            <#if patientCode??> AND  dc.PATIENT_CODE = :patientCode </#if>
+
+         ]]>
+    </sql>
+
+
     <sql key = "ar-quick-view" remarks="search patient by Assisted Reproduction quick view">
         <![CDATA[
             <div class="arQuickView">
