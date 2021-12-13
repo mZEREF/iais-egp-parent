@@ -78,25 +78,22 @@ public class FeMainEmailHelper {
                         if (OrganizationConstants.LICENSEE_TYPE_SINGPASS.equals(lic.getLicenseeType())){
                             String licId = lic.getId();
                             String licenseeName = lic.getName();
-                            List<LicenceDto> licenceList = licenceClient.getLicenceDtosByLicenseeId(licId).getEntity();
-                            if (IaisCommonUtils.isNotEmpty(licenceList)){
+                            LicenceDto licence = licenceClient.getFirstLicenceDtosByLicenseeId(licId).getEntity();
+                            if (licence != null) {
                                 StringBuilder hciNameBuilder = new StringBuilder();
                                 StringBuilder hciAddressBuilder = new StringBuilder();
-                                for (LicenceDto licence : licenceList){
-                                    List<PremisesDto> licPremises = licenceClient.getPremisesDto(licence.getId()).getEntity();
-                                    if( IaisCommonUtils.isNotEmpty(licPremises)){
-                                        for(PremisesDto premises : licPremises){
-                                            if(StringUtil.isNotEmpty(premises.getHciName())){
-                                                String hciName = premises.getHciName();
-                                                String hciAddress = MiscUtil.getAddress(premises.getBlkNo(),premises.getStreetName(),
-                                                        premises.getBuildingName(),premises.getFloorNo(),premises.getUnitNo(),premises.getPostalCode(),premises.getPremisesOperationalUnitDtos());
-                                                hciNameBuilder.append(hciName).append(',');
-                                                hciAddressBuilder.append(hciAddress).append(',');
-                                            }
+                                List<PremisesDto> licPremises = licenceClient.getPremisesDto(licence.getId()).getEntity();
+                                if( IaisCommonUtils.isNotEmpty(licPremises)){
+                                    for(PremisesDto premises : licPremises){
+                                        if(StringUtil.isNotEmpty(premises.getHciName())){
+                                            String hciName = premises.getHciName();
+                                            String hciAddress = MiscUtil.getAddress(premises.getBlkNo(),premises.getStreetName(),
+                                                    premises.getBuildingName(),premises.getFloorNo(),premises.getUnitNo(),premises.getPostalCode(),premises.getPremisesOperationalUnitDtos());
+                                            hciNameBuilder.append(hciName).append(',');
+                                            hciAddressBuilder.append(hciAddress).append(',');
                                         }
                                     }
                                 }
-
                                 String uenNo = organ.getUenNo();
                                 String hciStr = hciNameBuilder.substring(0, hciNameBuilder.length() - 1);
                                 String addressStr = hciAddressBuilder.substring(0, hciAddressBuilder.length() - 1);

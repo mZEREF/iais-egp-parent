@@ -215,11 +215,15 @@
             $('input[type="radio"]').prop('disabled',false);
             submit('premises','saveDraft',$('#selectDraftNo').val());
         });
-
         <c:if test="${(!AppSubmissionDto.needEditController && readOnly) || AppSubmissionDto.needEditController}">
         readonlyPartPage($('div.premises-content'));
         $('div.premises-content').each(function () {
             handlePage($(this));
+        });
+        </c:if>
+        <c:if test="${AppSubmissionDto.appType == 'APTY002' && requestInformationConfig == null}">
+        $('div.premContent').each(function () {
+            doEditPremise($(this));
         });
         </c:if>
 

@@ -4638,15 +4638,7 @@ public class NewApplicationHelper {
      * @return
      */
     public static String handleFloorNo(String floorNo) {
-        String newFloorNo = floorNo;
-        if (!StringUtil.isEmpty(floorNo) && floorNo.length() == 1) {
-            Pattern pattern = compile("[0-9]*");
-            boolean noFlag = pattern.matcher(floorNo).matches();
-            if (noFlag) {
-                newFloorNo = "0" + floorNo;
-            }
-        }
-        return newFloorNo;
+        return MiscUtil.getFloorNo(floorNo);
     }
 
     public static boolean validateLicences(List<LicenceDto> licenceDtos, AppGrpPremisesDto appGrpPremisesDto,
@@ -4794,7 +4786,7 @@ public class NewApplicationHelper {
         if (appSubmissionDto == null || appSubmissionDto.getAppGrpPremisesDtoList() == null) {
             return;
         }
-        if (appSubmissionDto.getAppGrpPremisesDtoList().stream().noneMatch(AppGrpPremisesDto::isFilled)) {
+        if (!appSubmissionDto.getAppGrpPremisesDtoList().stream().allMatch(AppGrpPremisesDto::isFilled)) {
             return;
         }
         String errorMsg = (String)request.getAttribute(IaisEGPConstant.ERRORMSG);
@@ -4802,37 +4794,55 @@ public class NewApplicationHelper {
             log.info(StringUtil.changeForLog("------ Has Error ------"));
             return;
         }
+        if (!StringUtil.isEmpty(appSubmissionDto.getDraftNo())) {
+            RequestForChangeService requestForChangeService = SpringHelper.getBean(RequestForChangeService.class);
+            Map<String, String> errorMap = requestForChangeService.doValidatePremiss(appSubmissionDto, null, null, false, false);
+            if (errorMap != null && !errorMap.isEmpty()) {
+                log.info(StringUtil.changeForLog("------ Has Error ------"));
+                return;
+            }
+        }
         Map<String, AppGrpPremisesDto> licAppGrpPremisesDtoMap = (Map<String, AppGrpPremisesDto>) request.getSession()
                 .getAttribute(NewApplicationDelegator.LIC_PREMISES_MAP);
         Map<String, AppGrpPremisesDto> appPremisesMap = (Map<String, AppGrpPremisesDto>) request.getSession()
                 .getAttribute(NewApplicationDelegator.APP_PREMISES_MAP);
         for (AppGrpPremisesDto premises : appSubmissionDto.getAppGrpPremisesDtoList()) {
-            if (!premises.isFilled()) {
-                continue;
-            }
             String premisesSelect = getPremisesKey(premises);
-            premises.setPremisesSelect(premisesSelect);
             AppGrpPremisesDto newDto = (AppGrpPremisesDto) CopyUtil.copyMutableObject(premises);
+            // itself
             Map.Entry<String, AppGrpPremisesDto> entry = getPremisesFromMap(premises, allData, request);
-            if (entry == null) {
+            if (entry == null) {// not have
                 if (licAppGrpPremisesDtoMap.get(premisesSelect) == null && appPremisesMap.get(premisesSelect) == null) {
                     appPremisesMap.put(premisesSelect, newDto);
                     request.getSession().setAttribute(NewApplicationDelegator.APP_PREMISES_MAP, appPremisesMap);
-                }
-            } else {
-                String oldPremSel = entry.getKey();
-                allData.remove(oldPremSel);
-                if (licAppGrpPremisesDtoMap.get(oldPremSel) != null) {
-                    licAppGrpPremisesDtoMap.remove(oldPremSel);
-                    licAppGrpPremisesDtoMap.put(premisesSelect, newDto);
-                    request.getSession().setAttribute(NewApplicationDelegator.LIC_PREMISES_MAP, licAppGrpPremisesDtoMap);
+                    allData.put(premisesSelect, newDto);
+                    premises.setPremisesSelect(premisesSelect);
+                    premises.setExistingData(AppConsts.NO);
                 } else {
-                    appPremisesMap.remove(oldPremSel);
-                    appPremisesMap.put(premisesSelect, newDto);
-                    request.getSession().setAttribute(NewApplicationDelegator.APP_PREMISES_MAP, appPremisesMap);
+                    premises.setExistingData(AppConsts.YES);
+                }
+            } else {// have
+                String oldPremSel = entry.getKey();
+                if (Objects.equals(oldPremSel, premises.getPremisesSelect())) {// check itself
+                    allData.remove(oldPremSel);
+                    allData.put(premisesSelect, newDto);
+                    if (licAppGrpPremisesDtoMap.get(oldPremSel) != null) {
+                        licAppGrpPremisesDtoMap.remove(oldPremSel);
+                        licAppGrpPremisesDtoMap.put(premisesSelect, newDto);
+                        request.getSession().setAttribute(NewApplicationDelegator.LIC_PREMISES_MAP, licAppGrpPremisesDtoMap);
+                    } else {
+                        appPremisesMap.remove(oldPremSel);
+                        appPremisesMap.put(premisesSelect, newDto);
+                        request.getSession().setAttribute(NewApplicationDelegator.APP_PREMISES_MAP, appPremisesMap);
+                    }
+                    premises.setPremisesSelect(premisesSelect);
+                    premises.setExistingData(AppConsts.NO);
+                } else if (ApplicationConsts.NEW_PREMISES.equals(premises.getPremisesSelect())) {
+                    premises.setExistingData(AppConsts.NO);
+                } else {
+                    premises.setExistingData(AppConsts.YES);
                 }
             }
-            allData.put(premisesSelect, newDto);
         }
         setAppSubmissionDto(appSubmissionDto, request);
     }

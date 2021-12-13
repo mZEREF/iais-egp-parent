@@ -665,10 +665,6 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                                 //licenseeId = "9ED45E34-B4E9-E911-BE76-000C29C8FBE4";
                                 log.debug(StringUtil.changeForLog("can not found licenseeId"));
                             }
-                            List<PremisesDto> premisesDtos = licenceClient.getPremisesDtoByHciNameAndPremType(hciName,ApplicationConsts.PREMISES_TYPE_ON_SITE,licenseeId).getEntity();
-                            if(!IaisCommonUtils.isEmpty(premisesDtos)){
-                                errorMap.put("hciNameUsed", MessageUtil.getMessageDesc("NEW_ACK011"));
-                            }
                         }
                         String offTelNo = appGrpPremisesDto.getOffTelNo();
                         if (StringUtil.isEmpty(offTelNo)) {
@@ -798,18 +794,6 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                         String unitNoErr = errorMap.get("unitNo" + i);
                         hciFlag = StringUtil.isEmpty(hciNameErr) && StringUtil.isEmpty(postalCodeErr) && StringUtil.isEmpty(blkNoErr) && StringUtil.isEmpty(floorNoErr) && StringUtil.isEmpty(unitNoErr);
                         log.info(StringUtil.changeForLog("hciFlag:" + hciFlag));
-                        //0065116
-                        String isOtherLic = appGrpPremisesDto.getLocateWithOthers();
-                        //new
-                        if (hciFlag && AppConsts.YES.equals(isOtherLic)) {
-                            CheckCoLocationDto checkCoLocationDto = new CheckCoLocationDto();
-                            checkCoLocationDto.setLicenseeId(licenseeId);
-                            checkCoLocationDto.setAppGrpPremisesDto(appGrpPremisesDto);
-                            Boolean flag = licenceClient.getOtherLicseePremises(checkCoLocationDto).getEntity();
-                            if (flag) {
-                                needAppendMsg = true;
-                            }
-                        }
                     } else if (ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(premiseType)) {
 
                         //weekly
@@ -889,13 +873,6 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                                 errorMap.put("conveyanceHciName" + i, general_err0041);
                             }
                             checkHciName("conveyanceHciName" + i, convHciName, appType, licenceId, errorMap);
-
-                            List<PremisesDto> premisesDtos = licenceClient.getPremisesDtoByHciNameAndPremType(convHciName,
-                                    ApplicationConsts.PREMISES_TYPE_CONVEYANCE, licenseeId).getEntity();
-                            if (!IaisCommonUtils.isEmpty(premisesDtos)) {
-                                errorMap.put("hciNameUsed", MessageUtil.getMessageDesc("NEW_ACK011"));
-                            }
-
                         }
 
                         String buildingName = appGrpPremisesDto.getConveyanceBuildingName();
@@ -1027,16 +1004,6 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                         String hciNAmeErr = errorMap.get("conveyanceHciName" + i);
                         hciFlag = StringUtil.isEmpty(hciNAmeErr) && StringUtil.isEmpty(vehicleNo) && StringUtil.isEmpty(postalCodeErr) && StringUtil.isEmpty(blkNoErr) && StringUtil.isEmpty(floorNoErr) && StringUtil.isEmpty(unitNoErr);
                         log.info(StringUtil.changeForLog("hciFlag:" + hciFlag));
-                        //65116
-                        if (hciFlag) {
-                            CheckCoLocationDto checkCoLocationDto = new CheckCoLocationDto();
-                            checkCoLocationDto.setLicenseeId(licenseeId);
-                            checkCoLocationDto.setAppGrpPremisesDto(appGrpPremisesDto);
-                            Boolean flag = licenceClient.getOtherLicseePremises(checkCoLocationDto).getEntity();
-                            if (flag) {
-                                needAppendMsg = true;
-                            }
-                        }
                     } else if (ApplicationConsts.PREMISES_TYPE_OFF_SITE.equals(premiseType)) {
 
                         //weekly
@@ -1117,10 +1084,6 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                                 errorMap.put("offSiteHciName" + i, general_err0041);
                             }
                             checkHciName("offSiteHciName" + i, offSiteHciName, appType, licenceId, errorMap);
-                            List<PremisesDto> premisesDtos = licenceClient.getPremisesDtoByHciNameAndPremType(offSiteHciName,ApplicationConsts.PREMISES_TYPE_OFF_SITE,licenseeId).getEntity();
-                            if(!IaisCommonUtils.isEmpty(premisesDtos)){
-                                errorMap.put("hciNameUsed", MessageUtil.getMessageDesc("NEW_ACK011"));
-                            }
                         }
                         String buildingName = appGrpPremisesDto.getOffSiteBuildingName();
                         if(!StringUtil.isEmpty(buildingName) && buildingName.length() > 66){
@@ -1245,25 +1208,16 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                         String hciNAmeErr = errorMap.get("offSiteHciName" + i);
                         hciFlag = StringUtil.isEmpty(hciNAmeErr) && StringUtil.isEmpty(postalCodeErr) && StringUtil.isEmpty(blkNoErr) && StringUtil.isEmpty(floorNoErr) && StringUtil.isEmpty(unitNoErr);
                         log.info(StringUtil.changeForLog("hciFlag:" + hciFlag));
-                        //65116
-                        if (hciFlag) {
-                            CheckCoLocationDto checkCoLocationDto = new CheckCoLocationDto();
-                            checkCoLocationDto.setLicenseeId(licenseeId);
-                            checkCoLocationDto.setAppGrpPremisesDto(appGrpPremisesDto);
-                            Boolean flag = licenceClient.getOtherLicseePremises(checkCoLocationDto).getEntity();
-                            if (flag) {
-                                needAppendMsg = true;
-                            }
-                        }
                     }else if(ApplicationConsts.PREMISES_TYPE_EAS_MTS_CONVEYANCE.equals(premiseType)){
                         validateEasmts.doValidatePremises(errorMap, appGrpPremisesDto, i, keywords, floorUnitList, floorUnitNo,
                                 licenseeId, appType, licenceId);
-                        validateEasmts.doValidatePremises(errorMap,appSubmissionDto.getAppType(),
-                                i,licenseeId,appGrpPremisesDto,needAppendMsg,rfi);
+                        if (validateEasmts.doValidatePremises(errorMap,appSubmissionDto.getAppType(),
+                                i,licenseeId,appGrpPremisesDto,rfi)){
+                            needAppendMsg = true;
+                        }
                     }
                 } else {
                     //premiseSelect = organization hci code
-
                     if (ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(premiseType)) {
                         String conveyanceVehicleNo = appGrpPremisesDto.getConveyanceVehicleNo();
                         validateVehicleNo(errorMap, distinctVehicleNo, i, conveyanceVehicleNo);
@@ -1301,6 +1255,10 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                 }
             }
             if (checkOthers) {
+                List<PremisesDto> premisesDtos = getPremisesDtoByHciNameAndPremType(appGrpPremisesDto.getActualHciName(), appGrpPremisesDto.getPremisesType(), licenseeId);
+                if (!IaisCommonUtils.isEmpty(premisesDtos)) {
+                    errorMap.put("hciNameUsed", MessageUtil.getMessageDesc("NEW_ACK011"));
+                }
                 String premisesSelect = NewApplicationHelper.getPremisesKey(appGrpPremisesDto);
                 if (appGrpPremisesDtoList.stream().anyMatch(dto -> !Objects.equals(appGrpPremisesDto.getPremisesIndexNo(),
                         dto.getPremisesIndexNo()) && Objects.equals(premisesSelect, NewApplicationHelper.getPremisesKey(dto)))) {
@@ -1311,25 +1269,37 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                     if (request != null) {
                         premises = NewApplicationHelper.getPremisesFromMap(premisesSelect, request);
                     }
-                    if (premises != null && ("newPremise".equals(appGrpPremisesDto.getPremisesSelect())
+                    if (premises != null && (ApplicationConsts.NEW_PREMISES.equals(appGrpPremisesDto.getPremisesSelect())
                             || !Objects.equals(appGrpPremisesDto.getPremisesSelect(), premisesSelect))) {
                         errorMap.put("premisesHci" + i,
                                 MessageUtil.replaceMessage("GENERAL_ERR0050", ApplicationConsts.TITLE_MODE_OF_SVCDLVY, "field"));
-                        appGrpPremisesDto.setPremisesSelect("newPremise");
-                        NewApplicationHelper.setAppSubmissionDto(appSubmissionDto, request);
+//                        appGrpPremisesDto.setPremisesSelect("newPremise");
+//                        NewApplicationHelper.setAppSubmissionDto(appSubmissionDto, request);
+                    }
+                }
+                //65116
+                if (hciFlag) {
+                    CheckCoLocationDto checkCoLocationDto = new CheckCoLocationDto();
+                    checkCoLocationDto.setLicenseeId(licenseeId);
+                    checkCoLocationDto.setAppGrpPremisesDto(appGrpPremisesDto);
+                    Boolean flag = licenceClient.getOtherLicseePremises(checkCoLocationDto).getEntity();
+                    if (flag) {
+                        needAppendMsg = true;
                     }
                 }
             }
         }
-        //65116
-        String hciNameUsed = errorMap.get("hciNameUsed");
-        String errMsg = MessageUtil.getMessageDesc("NEW_ACK004");
-        if (needAppendMsg) {
-            if (StringUtil.isEmpty(hciNameUsed)) {
-                errorMap.put("hciNameUsed", errMsg);
-            } else {
-                String hciNameMsg = MessageUtil.getMessageDesc(hciNameUsed);
-                errorMap.put("hciNameUsed", hciNameMsg + "<br/>" + errMsg);
+        if (checkOthers) {
+            //65116
+            String hciNameUsed = errorMap.get("hciNameUsed");
+            String errMsg = MessageUtil.getMessageDesc("NEW_ACK004");
+            if (needAppendMsg) {
+                if (StringUtil.isEmpty(hciNameUsed)) {
+                    errorMap.put("hciNameUsed", errMsg);
+                } else {
+                    String hciNameMsg = MessageUtil.getMessageDesc(hciNameUsed);
+                    errorMap.put("hciNameUsed", hciNameMsg + "<br/>" + errMsg);
+                }
             }
         }
         log.info(StringUtil.changeForLog("the do doValidatePremiss end ...."));
@@ -1360,6 +1330,14 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                 errorMap.put(key, MessageUtil.replaceMessage("GENERAL_ERR0016", sb.toString(), "keywords"));
             }
         }
+    }
+
+    private List<PremisesDto> getPremisesDtoByHciNameAndPremType(String hciName, String premisesType, String licenseeId) {
+
+        if (StringUtil.isEmpty(licenseeId) || StringUtil.isEmpty(hciName) || StringUtil.isEmpty(premisesType)) {
+            return IaisCommonUtils.genNewArrayList(0);
+        }
+        return licenceClient.getPremisesDtoByHciNameAndPremType(hciName, premisesType, licenseeId).getEntity();
     }
 
     /*
