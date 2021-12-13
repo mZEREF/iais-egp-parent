@@ -307,6 +307,8 @@ public class ArDataSubmissionServiceImpl implements ArDataSubmissionService {
                 arSubFreezingStageDto.setCryopreservedNum(null);
                 log.info("Freezing invalid cryopreservedNum");
             }
+        }else {
+            arSubFreezingStageDto.setCryopreservedNum(null);
         }
         if (!StringUtil.isEmpty(cryopreservationDate)) {
             try {
@@ -316,6 +318,8 @@ public class ArDataSubmissionServiceImpl implements ArDataSubmissionService {
                 arSubFreezingStageDto.setCryopreservedDate(null);
                 log.info("Freezing invalid cryopreservationDate");
             }
+        }else {
+            arSubFreezingStageDto.setCryopreservedDate(null);
         }
         return arSubFreezingStageDto;
     }
