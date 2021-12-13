@@ -188,6 +188,9 @@
                 $(ele).find('select.assignSel').trigger('change');
             }
         });
+        if("${errormapIs}"=='error'){
+            $('.svcPsnEdit').trigger('click');
+        }
         initEnd = true;
     });
 
@@ -316,10 +319,8 @@
             let isPartEdit = $(v).find(".isPartEdit").val();
             if (index < '${keyAppointmentHolderConfigDto.mandatoryCount}') {
                 $(v).find('.removeKeyAppointmentHolderBtn').remove();
-            } else if ('1' == isPartEdit) {
-                $(v).find('.removeKeyAppointmentHolderBtn').show();
             } else {
-                $(v).find('.removeKeyAppointmentHolderBtn').hide();
+                $(v).find('.removeKeyAppointmentHolderBtn').show();
             }
         });
 

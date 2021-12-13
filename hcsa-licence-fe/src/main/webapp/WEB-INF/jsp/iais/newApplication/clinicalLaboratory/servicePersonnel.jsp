@@ -72,17 +72,6 @@
                   <c:if test="${'true' != isClickEdit}">
                     <c:set var="locking" value="true"/>
                     <c:set var="canEdit" value="${AppSubmissionDto.appEditSelectDto.serviceEdit}"/>
-                    <div id="edit-content">
-                      <c:choose>
-                        <c:when test="${canEdit && editControl}">
-                          <div class="text-right app-font-size-16">
-                            <a id="edit" class="svcPsnEdit" href="javascript:void(0);">
-                              <em class="fa fa-pencil-square-o"></em><span>&nbsp;</span>Edit
-                            </a>
-                          </div>
-                        </c:when>
-                      </c:choose>
-                    </div>
                   </c:if>
                 </c:if>
               </div>
@@ -119,6 +108,18 @@
                     </tr>
                     <tr height="1">
                       <td class="" >
+                        <div class="col-sm-12 text-right">
+                          <div class="edit-content">
+                            <c:if test="${'true' == canEdit}">
+                              <div class="text-right app-font-size-16">
+                                <a class="edit mapEdit" href="javascript:void(0);">
+                                  <em class="fa fa-pencil-square-o"></em><span>&nbsp;</span>Edit
+                                </a>
+                              </div>
+                            </c:if>
+                          </div>
+                        </div>
+                        <input type="hidden" name="isPartEdit" value="0"/>
                         <div id="control--runtime--2" class="control control-caption-horizontal svcPsnSel">
                           <div class=" form-group form-horizontal personnel-sel">
                             <div class="col-sm-5 control-label formtext ">
@@ -368,10 +369,10 @@
 
     if(${AppSubmissionDto.needEditController && !isClickEdit}){
       disabledPage();
-      if(${editControl}){
-        $('.addListBtn').addClass('hidden');
-      }
-      $('.text-danger').addClass('hidden');
+      <%--if(${editControl}){--%>
+      <%--  $('.addListBtn').addClass('hidden');--%>
+      <%--}--%>
+      <%--$('.text-danger').addClass('hidden');--%>
     }
 
     doEdit();
@@ -385,14 +386,22 @@
       }
     });
 
+    if("${errormapIs}"=='error'){
+      $('.edit').trigger('click');
+    }
+
     /* notLoadingSpl();*/
     init = 1;
   });
 
-  var absencePsnSel = function (val) {
+  var absencePsnSel = function (val,$Ele) {
     $('.svcPsnSel').addClass('hidden');
     var prsFlag = $('input[name="prsFlag"]').val();
-    $('.personnel-content').each(function (k,v) {
+    let $eles = $('.personnel-content');
+    if($Ele != ''){
+      $eles = $($Ele)
+    }
+    $eles.each(function (k,v) {
       if('Blood Banking' == val){
         $(this).find('div.personnel-sel').addClass('hidden');
         $(this).find('div.new-svc-personnel-form').removeClass('hidden');
@@ -565,33 +574,32 @@
     }
     </c:when>
     <c:when test="${'BLB' ==currentSvcCode}">
-    absencePsnSel('Blood Banking');
+    absencePsnSel('Blood Banking',$Ele);
     </c:when>
     <c:when test="${'TSB'== currentSvcCode}">
-    absencePsnSel('Tissue Banking p1');
+    absencePsnSel('Tissue Banking p1',$Ele);
     </c:when>
     <c:otherwise>
-    absencePsnSel('other service');
+    absencePsnSel('other service',$Ele);
     </c:otherwise>
     </c:choose>
   }
 
 
   var doEdit = function () {
-    $('#edit').click(function () {
-      unDisabledPage();
+    $('.edit').click(function () {
+      let $context = $(this).closest("td")
+      $(this).addClass('hidden');
+      unDisabledPartPage($context);
       $('#isEditHiddenVal').val('1');
-      $('#edit-content').addClass('hidden');
-      $('.addListBtn').removeClass('hidden');
-      $('.text-danger').removeClass('hidden');
-      $('input[name="prsLoading"]').each(function () {
+      $context.find('input[name="isPartEdit"]').val('1');
+      $(this).find('input[name="prsLoading"]').each(function () {
         var prsLoading = $(this).val();
         if(prsLoading  == 'true'){
           var $currContent = $(this).closest('.personnel-content');
           inputReadonly($currContent.find('input[name="name"]'));
         }
       });
-
     });
   }
   var spRemove = function(){

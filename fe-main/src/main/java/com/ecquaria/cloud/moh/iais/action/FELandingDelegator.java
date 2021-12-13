@@ -129,6 +129,19 @@ public class FELandingDelegator {
 	 */
 	public void initSso(BaseProcessClass bpc) throws InvalidKeySpecException, NoSuchAlgorithmException,
 			ParseException {
+		LoginContext lc = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
+		String sessionId = UserSessionUtil.getLoginSessionID(bpc.request.getSession());
+		UserSession us = ProcessCacheHelper.getUserSessionFromCache(sessionId);
+		if (us != null && lc != null && "Active".equals(us.getStatus())
+				&& AppConsts.DOMAIN_INTERNET.equalsIgnoreCase(lc.getUserDomain())){
+			StringBuilder url = new StringBuilder();
+			url.append("https://").append(bpc.request.getServerName())
+					.append("/main-web/eservice/INTERNET/MohInternetInbox");
+			IaisEGPHelper.sendRedirect(bpc.request, bpc.response, url.toString());
+
+			return;
+		}
+
 		log.info(StringUtil.changeForLog("-------Init SSO-------"));
 		HttpServletRequest request = bpc.request;
 		JwtVerify verifier = new JwtVerify();

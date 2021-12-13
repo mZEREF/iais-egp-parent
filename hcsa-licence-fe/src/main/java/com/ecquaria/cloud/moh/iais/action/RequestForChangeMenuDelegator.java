@@ -367,18 +367,11 @@ public class RequestForChangeMenuDelegator {
         }
         if (appGrpPremisesDto != null || rfi != null) {
             log.info(StringUtil.changeForLog("The preparePremises licenseeId is -->:" + licenseeId));
-            Map<String, AppGrpPremisesDto> licAppGrpPremisesDtoMap = null;
-            if (!StringUtil.isEmpty(licenseeId)) {
-                licAppGrpPremisesDtoMap = serviceConfigService.getAppGrpPremisesDtoByLoginId(licenseeId);
-            }
             //premise select
-            NewApplicationHelper.setPremSelect(bpc.request, licAppGrpPremisesDtoMap);
-            //addressType
-            //NewApplicationHelper.setPremAddressSelect(bpc.request);
-            ParamUtil.setSessionAttr(bpc.request, NewApplicationDelegator.LICAPPGRPPREMISESDTOMAP, (Serializable) licAppGrpPremisesDtoMap);
+            NewApplicationHelper.setPremSelect(bpc.request);
             if (rfi == null) {
                 //when rfc/renew check is select existing premises
-                String oldPremSel = IaisCommonUtils.genPremisesKey(premisesListQueryDto.getPostalCode(), premisesListQueryDto.getBlkNo(), premisesListQueryDto.getFloorNo(), premisesListQueryDto.getUnitNo());
+                String oldPremSel = NewApplicationHelper.getPremisesKey(premisesListQueryDto);
                 if (oldPremSel.equals(appGrpPremisesDto.getPremisesSelect()) || "-1".equals(appGrpPremisesDto.getPremisesSelect())) {
                     ParamUtil.setRequestAttr(bpc.request, "PageCanEdit", AppConsts.TRUE);
                 }
@@ -407,7 +400,7 @@ public class RequestForChangeMenuDelegator {
             appSubmissionDto.setAppGrpPremisesDtoList(reloadPremisesDtoList);
             appSubmissionDto.setAppType(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
         }
-        boolean isRfi = NewApplicationHelper.checkIsRfi(bpc.request);
+        /*boolean isRfi = NewApplicationHelper.checkIsRfi(bpc.request);
         if(isRfi&&appSubmissionDto!= null&&appSubmissionDto.getAppGrpPremisesDtoList()!=null){
             List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
             for(AppGrpPremisesDto v : appGrpPremisesDtoList){
@@ -427,7 +420,7 @@ public class RequestForChangeMenuDelegator {
             boolean eqHciCode = EqRequestForChangeSubmitResultChange.eqHciCode(appSubmissionDto.getAppGrpPremisesDtoList().get(0), oldAppSubmissionDto.getAppGrpPremisesDtoList().get(0));
             appSubmissionDto.getAppGrpPremisesDtoList().get(0).setExistingData(AppConsts.NO);
             bpc.request.setAttribute("eqHciCode",String.valueOf(eqHciCode));
-        }
+        }*/
         ParamUtil.setRequestAttr(bpc.request, RfcConst.RELOADPREMISES, reloadPremisesDtoList);
         ParamUtil.setSessionAttr(bpc.request, RfcConst.APPSUBMISSIONDTO, appSubmissionDto);
         ParamUtil.setSessionAttr(bpc.request, "oldAppSubmissionDto", oldAppSubmissionDto);
@@ -534,12 +527,9 @@ public class RequestForChangeMenuDelegator {
         ParamUtil.setSessionAttr(bpc.request, NewApplicationDelegator.APPSUBMISSIONDTO, appSubmissionDto);
         AppSubmissionDto oldAppSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, "oldAppSubmissionDto");
 
-        List<String> premisesHciList = (List<String>) ParamUtil.getSessionAttr(bpc.request, NewApplicationConstant.PREMISES_HCI_LIST);
-        String keyWord = MasterCodeUtil.getCodeDesc("MS001");
-
         boolean isRfi = NewApplicationHelper.checkIsRfi(bpc.request);
-
-        Map<String, String> errorMap = requestForChangeService.doValidatePremiss(appSubmissionDto, oldAppSubmissionDto, premisesHciList, keyWord, isRfi);
+        Map<String, String> errorMap = requestForChangeService.doValidatePremiss(appSubmissionDto, oldAppSubmissionDto, null,
+                isRfi, true);
         String crud_action_type_continue = bpc.request.getParameter("crud_action_type_continue");
         String crud_action_type_form_value = bpc.request.getParameter("crud_action_type_form_value");
         String crud_action_additional = bpc.request.getParameter("crud_action_additional");
