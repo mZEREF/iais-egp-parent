@@ -183,9 +183,9 @@
                     setAddress('easMts',data,$premContent);
                 }
                 //if Moving to new address need value from page 68859
-                $("input[name='isPartEdit']").val('1');
-                $("input[name='isEdit']").val('1');
-                $("input[name='chooseExistData']").val('0');
+                $premContent.find("input[name='isPartEdit']").val('1');
+                $premContent.find("input[name='isEdit']").val('1');
+                $premContent.find("input[name='chooseExistData']").val('0');
                 dismissWaiting();
             } else if("-1" == premSelectVal) {
                 $premContent.find('.new-premise-form-conv').addClass('hidden');
@@ -280,10 +280,6 @@
                                 $(this).find('input.floorNo').val(opData.floorNo);
                                 $(this).find('input.unitNo').val(opData.unitNo);
                             });
-                            operationDel();
-                            var length = $currForm.find('div.operationDiv').length;
-                            console.log('Floor and Unit (premSelect): ' + length);
-                            $premContent.find('.opLength').val(length);
 
                             var allDayTime = "0";
                             //weekly
@@ -296,7 +292,7 @@
                                 //remove first field
                                 $weeklyCountent.find('div.weeklyDiv:eq(0) div:eq(0) div:eq(0)').remove();
                                 //remove first del btn
-                                $weeklyCountent.find('div.weeklyDiv .weeklyDel').remove();
+                                $weeklyCountent.find('div.weeklyDiv .weeklyDel:eq(0)').remove();
                                 //gen multi dropdown
                                 $weeklyCountent.find('select.Weekly').each(function () {
                                     $(this).multiSelect();
@@ -335,8 +331,6 @@
                                         }
                                         fillWeekly($thisDiv,premisesType,'Weekly',startHHVal,startMMVal,endHHVal,endMMVal,selectAllDay);
                                     }
-
-
                                 });
                             }
 
@@ -350,7 +344,7 @@
                             //remove first field
                             //$phCountent.find('div.form-group:eq(0)').remove();
                             //remove first del btn
-                            $phCountent.find('.pubHolidayDel').remove();
+                            $phCountent.find('.pubHolidayDel:eq(0)').remove();
                             //gen multi dropdown
                             $phCountent.find('select.PubHoliday').each(function () {
                                 $(this).multiSelect();
@@ -402,7 +396,7 @@
                                 //remove first field
 
                                 //remove first del btn
-                                $eventContent.find('.eventDel').remove();
+                                $eventContent.find('.eventDel:eq(0)').remove();
                                 //fill data
                                 $eventContent.find('div.eventDiv').each(function (k,v) {
                                     var $thisDiv = $(this);
@@ -437,8 +431,6 @@
                             $premContent.find('.addWeekly').addClass('hidden');
                             $premContent.find('.addPubHolDay').addClass('hidden');
                             $premContent.find('.addEvent').addClass('hidden');
-                            //
-                            $premContent.find('input[name="chooseExistData"]').val('1');
                             //disable allday
                             $premContent.find('.allDay').prop('disabled',true);
                             $premContent.find('.date_picker').prop('disabled',true);
@@ -448,12 +440,22 @@
                             $premContent.find('span.multi-select-button').css('color','#999');
                             $premContent.find('.multi-select-container input[type="checkbox"]').prop('disabled',true);
                             if (eqHciCode=='true') {
-                                $("input[name='isPartEdit']").val('1');
-                                $("input[name='chooseExistData']").val('0');
-                                $('.premisesEdit').trigger('click');
+                                $premContent.find("input[name='isPartEdit']").val('1');
+                                $premContent.find('input[name="chooseExistData"]').val('0');
+                                //$('.premisesEdit').trigger('click');
+                                doEditPremise($premContent);
                             } else {
-                                $("input[name='chooseExistData']").val('1');
+                                $premContent.find('input[name="chooseExistData"]').val('1');
                             }
+                            $premContent.find('input[name="opLength"]').val($currForm.find('div.operationDiv').length);
+                            $premContent.find('input[name="weeklyLength"]').val($currForm.find('div.weeklyDiv').length);
+                            $premContent.find('input[name="eventLength"]').val($currForm.find('div.eventDiv').length);
+                            $premContent.find('input[name="phLength"]').val($currForm.find('div.pubHolidayDiv').length);
+                            operationDel();
+                            removeWeekly();
+                            //removePH();
+                            removePh();
+                            removeEvent();
                         }
                         dismissWaiting();
                     },
@@ -560,7 +562,7 @@
                 removePremises();
                 retrieveAddr();
                 $('.addPubHolDay').unbind('click');
-                removePH();
+                //removePH();
                 coLocation();
                 cl();
                 preperChange();
@@ -613,86 +615,93 @@
             <!--hidden edit btn -->
             premContent.find('.premises-summary-preview').addClass('hidden');
             $('#isEditHiddenVal').val('1');
-            premContent.find('input[name="isPartEdit"]').val('1');
-            var premType = premContent.find('input[name="premType"]').val();
-            var existingData = premContent.find("input[name='chooseExistData']").val();
-            console.log("Exist Data: " + existingData);
-            if ('1' == existingData) {
-                var $premSel = null;
-                if ("ONSITE" == premType) {
-                    $premSel = premContent.find('.onSiteSelect');
-                } else if ("CONVEYANCE" == premType) {
-                    $premSel = premContent.find('.conveyanceSelect');
-                } else if ('OFFSITE' == premType){
-                    $premSel = premContent.find('.offSiteSelect');
-                } else if ('EASMTS' == premType) {
-                    $premSel = premContent.find('.easMtsSelect');
-                }
-                if (!isEmpty($premSel) && $premSel.length > 0) {
-                    unDisabledPartPage($premSel);
-                    unreadonlyPartPage($premSel);
-                }
-                unDisabledPartPage($('#premisesType'));
-                unreadonlyPartPage($('#premisesType'));
-                return;
-            }
-            <!--unDisabled -->
-            unDisabledPartPage(premContent);
-            unreadonlyPartPage(premContent);
-            premContent.find('.retrieveAddr').removeClass('hidden');
-            <!--replace fire issued date -->
-            //var fireIssueDate = premContent.find('.fireIssuedDate').val();
-            //replaceFireIssueDateHtml(premContent,fireIssueDate);
-            <!--remove ph hidden-->
-            premContent.find('.addPubHolDay').removeClass('hidden');
-            // premContent.find('div.other-lic-content span.check-circle').removeClass('radio-disabled');
-            premContent.find('span.radio-disabled').removeClass('radio-disabled');
-            <!--remove placeHolder disabled style -->
-            premContent.find('.date_picker').removeClass('disabled-placeHolder');
-
-            premContent.find('.addOperational').removeClass('hidden');
-            premContent.find('.opDel').removeClass('hidden');
-            premContent.find('button.addPubHolDay').removeClass('hidden');
-            premContent.find('.removePhBtn').removeClass('hidden');
-
-            premContent.find('.weeklyDel').removeClass('hidden');
-            premContent.find('.pubHolidayDel').removeClass('hidden');
-            premContent.find('.eventDel').removeClass('hidden');
-
-            premContent.find('span.multi-select-button').css('border-color','');
-            premContent.find('span.multi-select-button').css('color','');
-            premContent.find('.multi-select-container input[type="checkbox"]').prop('disabled',false);
-
-            console.log(premContent.find('.weeklyDiv').length
-                + ' : ' + premContent.find('.pubHolidayDiv').length
-                + ' : ' + premContent.find('.eventDiv').length);
-            var premDivName = "";
-            if ("ONSITE" == premType) {
-                premDivName = 'new-premise-form-on-site';
-            } else if ("CONVEYANCE" == premType) {
-                premDivName = 'new-premise-form-conv';
-            } else if ('OFFSITE' == premType){
-                premDivName = 'new-premise-form-off-site';
-            } else if ('EASMTS' == premType) {
-                premDivName = 'new-premise-form-eas-mts';
-            }
-
-            if(premContent.find('.'+premDivName+' .weeklyDiv').length < ${weeklyCount}){
-                premContent.find('.addWeeklyDiv').removeClass('hidden');
-            }
-            if(premContent.find('.'+premDivName+' .pubHolidayDiv').length < ${phCount}){
-                premContent.find('.addPhDiv').removeClass('hidden');
-            }
-            if(premContent.find('.'+premDivName+' .eventDiv').length < ${eventCount}){
-                premContent.find('.addEventDiv').removeClass('hidden');
-            }
-
-            premContent.find('input.allDay:checked').each(function(){
-                var $allDayDiv = $(this).closest('div.all-day-div');
-                disabeleForAllDay($allDayDiv);
-            });
+            doEditPremise(premContent);
         });
     };
+
+    function doEditPremise(premContent) {
+        premContent.find('input[name="isPartEdit"]').val('1');
+        var premType = premContent.find('input[name="premType"]').val();
+        var existingData = premContent.find("input[name='chooseExistData']").val();
+        console.log("Exist Data: " + existingData);
+        if ('1' == existingData) {
+            var $premSel = null;
+            if ("ONSITE" == premType) {
+                $premSel = premContent.find('.onSiteSelect');
+            } else if ("CONVEYANCE" == premType) {
+                $premSel = premContent.find('.conveyanceSelect');
+            } else if ('OFFSITE' == premType){
+                $premSel = premContent.find('.offSiteSelect');
+            } else if ('EASMTS' == premType) {
+                $premSel = premContent.find('.easMtsSelect');
+            }
+            if (!isEmpty($premSel) && $premSel.length > 0) {
+                unDisabledPartPage($premSel);
+                unreadonlyPartPage($premSel);
+            }
+            unDisabledPartPage($('#premisesType'));
+            unreadonlyPartPage($('#premisesType'));
+            return;
+        }
+        <!--unDisabled -->
+        unDisabledPartPage(premContent);
+        unreadonlyPartPage(premContent);
+        premContent.find('.retrieveAddr').removeClass('hidden');
+        <!--replace fire issued date -->
+        //var fireIssueDate = premContent.find('.fireIssuedDate').val();
+        //replaceFireIssueDateHtml(premContent,fireIssueDate);
+        <!--remove ph hidden-->
+        premContent.find('.addPubHolDay').removeClass('hidden');
+        // premContent.find('div.other-lic-content span.check-circle').removeClass('radio-disabled');
+        premContent.find('span.radio-disabled').removeClass('radio-disabled');
+        <!--remove placeHolder disabled style -->
+        premContent.find('.date_picker').removeClass('disabled-placeHolder');
+
+        premContent.find('.addOperational').removeClass('hidden');
+        premContent.find('.opDel').removeClass('hidden');
+        premContent.find('button.addPubHolDay').removeClass('hidden');
+        premContent.find('.removePhBtn').removeClass('hidden');
+
+        premContent.find('.weeklyDel').removeClass('hidden');
+        premContent.find('.pubHolidayDel').removeClass('hidden');
+        premContent.find('.eventDel').removeClass('hidden');
+
+        premContent.find('span.multi-select-button').css('border-color','');
+        premContent.find('span.multi-select-button').css('color','');
+        premContent.find('.multi-select-container input[type="checkbox"]').prop('disabled',false);
+
+        console.log(premContent.find('.weeklyDiv').length
+            + ' : ' + premContent.find('.pubHolidayDiv').length
+            + ' : ' + premContent.find('.eventDiv').length);
+        var premDivName = "";
+        if ("ONSITE" == premType) {
+            premDivName = 'new-premise-form-on-site';
+        } else if ("CONVEYANCE" == premType) {
+            premDivName = 'new-premise-form-conv';
+        } else if ('OFFSITE' == premType){
+            premDivName = 'new-premise-form-off-site';
+        } else if ('EASMTS' == premType) {
+            premDivName = 'new-premise-form-eas-mts';
+        }
+        if (!isEmpty(premDivName)) {
+            if (premContent.find('.' + premDivName + ' .weeklyDiv').length < ${weeklyCount}) {
+                premContent.find('.addWeekly').removeClass('hidden');
+                premContent.find('.addWeeklyDiv').removeClass('hidden');
+            }
+            if (premContent.find('.' + premDivName + ' .pubHolidayDiv').length < ${phCount}) {
+                premContent.find('.addPubHolDay').removeClass('hidden');
+                premContent.find('.addPhDiv').removeClass('hidden');
+            }
+            if (premContent.find('.' + premDivName + ' .eventDiv').length < ${eventCount}) {
+                premContent.find('.addEvent').removeClass('hidden');
+                premContent.find('.addEventDiv').removeClass('hidden');
+            }
+        }
+        premContent.find('input.allDay:checked').each(function(){
+            var $allDayDiv = $(this).closest('div.all-day-div');
+            disabeleForAllDay($allDayDiv);
+        });
+    }
 
     var coLocation = function () {
         $('.co-location').unbind('click');

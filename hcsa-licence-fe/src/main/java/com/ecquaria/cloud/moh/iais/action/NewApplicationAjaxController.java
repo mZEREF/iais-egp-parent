@@ -736,13 +736,13 @@ public class NewApplicationAjaxController {
             appGrpPremisesDto.setPhHtml(phHtml.toString());
             //event
             List<AppPremEventPeriodDto> eventDtoList = appGrpPremisesDto.getEventDtoList();
-            if(!IaisCommonUtils.isEmpty(eventDtoList)){
+            if (!IaisCommonUtils.isEmpty(eventDtoList)) {
                 StringBuilder eventHtml = new StringBuilder();
-                String sql = SqlMap.INSTANCE.getSql("premises", "event").getSqlStr();
-                sql = sql.replace("${premIndex}","");
-                sql = sql.replace("${premType}",premPrefixName);
-                sql = sql.replace("${eventCount}","");
-                for(int i =0;i<eventDtoList.size();i++){
+                for (int i = 0; i < eventDtoList.size(); i++) {
+                    String sql = SqlMap.INSTANCE.getSql("premises", "event").getSqlStr();
+                    sql = sql.replace("${premIndex}", premiseIndex);
+                    sql = sql.replace("${premType}", premisesType);
+                    sql = sql.replace("${eventCount}", Integer.toString(i));
                     eventHtml.append(sql);
                 }
                 appGrpPremisesDto.setEventHtml(eventHtml.toString());
