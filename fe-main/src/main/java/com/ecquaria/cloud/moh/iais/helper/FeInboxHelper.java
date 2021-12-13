@@ -36,13 +36,13 @@ public final class FeInboxHelper {
         }
         List<String> types = IaisCommonUtils.genNewArrayList(5);
         roles.stream().forEach(role ->{
-            switch (role){
+            switch(role){
                 case RoleConsts.USER_ROLE_DS_AR :
                     types.add(DataSubmissionConsts.DS_AR);
                     break;
                 case RoleConsts.USER_ROLE_DS_DP :
                     types.add(DataSubmissionConsts.DS_DRP);
-                default: break;
+                    break;
             }
         });
         //todo delete
