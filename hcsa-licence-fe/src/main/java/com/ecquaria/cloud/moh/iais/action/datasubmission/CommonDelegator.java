@@ -110,6 +110,7 @@ public abstract class CommonDelegator {
      * @throws
      */
     public void doReturn(BaseProcessClass bpc) throws IOException {
+        log.info(StringUtil.changeForLog("The doReturn start ..."));
         returnStep(bpc);
         ArSuperDataSubmissionDto arSuperDataSubmission = DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
         String uri = InboxConst.URL_MAIN_WEB_MODULE + "MohInternetInbox";
@@ -129,6 +130,7 @@ public abstract class CommonDelegator {
         log.info(StringUtil.changeForLog("The url is -->:"+url));
         String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
         IaisEGPHelper.redirectUrl(bpc.response, tokenUrl);
+        log.info(StringUtil.changeForLog("The doReturn end ..."));
     }
 
     /**
