@@ -180,7 +180,7 @@
 
         addPubHolDayHtml();
 
-        removePH();
+        //removePH();
 
         addOperational();
 

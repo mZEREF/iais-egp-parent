@@ -453,7 +453,7 @@
                             $premContent.find('input[name="phLength"]').val($currForm.find('div.pubHolidayDiv').length);
                             operationDel();
                             removeWeekly();
-                            removePH();
+                            //removePH();
                             removePh();
                             removeEvent();
                         }
@@ -562,7 +562,7 @@
                 removePremises();
                 retrieveAddr();
                 $('.addPubHolDay').unbind('click');
-                removePH();
+                //removePH();
                 coLocation();
                 cl();
                 preperChange();
