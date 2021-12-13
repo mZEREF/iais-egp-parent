@@ -19,7 +19,7 @@
         </c:if>
     </c:when>
     <c:when test="${cycleType == 'DSCL_003'}">
-        <%@include file="../assistedReproduction/section/previewDonorSection.jsp" %>
+        <%@include file="../assistedReproduction/section/previewArSubmitDonorSection.jsp" %>
     </c:when>
     <c:when test="${cycleStage == 'AR_CL001'}">
         <%-- AR_CYCLE_AR--%>
