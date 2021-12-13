@@ -1,5 +1,12 @@
 <c:set var="oocyteRetrievalStageDto" value="${arSuperDataSubmissionDto.oocyteRetrievalStageDto}"/>
 <c:set var="headingSign" value="${isPrint?'':'completed'}"/>
+<%@ page import="com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto" %>
+<%@ page import="com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper" %>
+<%@ page import="com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.OocyteRetrievalStageDto" %>
+<%
+    ArSuperDataSubmissionDto arSuperDataSubmissionDto = DataSubmissionHelper.getCurrentArDataSubmission(request);
+    OocyteRetrievalStageDto oocyteRetrievalStageDto = arSuperDataSubmissionDto.getOocyteRetrievalStageDto();
+%>
 <div class="panel panel-default">
     <div class="panel-heading ${headingSign}">
         <h4 class="panel-title">
@@ -48,7 +55,7 @@
                 <iais:row>
                     <iais:field width="6" value="No. Retrieved (Total)" cssClass="col-md-6"/>
                     <iais:value width="6" cssClass="col-md-6" display="true">
-                        <c:out value="${oocyteRetrievalStageDto.matureRetrievedNum + oocyteRetrievalStageDto.immatureRetrievedNum + oocyteRetrievalStageDto.otherRetrievedNum}"/>
+                        <c:out value="<%=oocyteRetrievalStageDto.getTotalNum()%>"/>
                     </iais:value>
                 </iais:row>
                 <iais:row>
