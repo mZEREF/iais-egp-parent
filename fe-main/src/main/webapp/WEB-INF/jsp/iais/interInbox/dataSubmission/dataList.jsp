@@ -128,7 +128,9 @@
     </div>
     <input type="hidden" value="${empty needValidatorSize ? 0 : needValidatorSize}" id="needValidatorSize" name="needValidatorSize">
         <input type="hidden" value="${actionDsButtonShow}" id="actionDsButtonShow" name="actionDsButtonShow">
-    <iais:confirm msg="DS_ERR014" needCancel="false" popupOrder="actionDsButton"  yesBtnDesc="Yes"   yesBtnCls="btn btn-secondary"  callBack="cancelBallDsButton()" />
+        <input type="hidden" value="${deleteDraftOk}" id="deleteDraftOkShow" name="deleteDraftOkShow">
+        <iais:confirm msg="DS_ERR014" needCancel="false" popupOrder="actionDsButton"  yesBtnDesc="Yes"   yesBtnCls="btn btn-secondary"  callBack="cancelBallDsButton()" />
+        <iais:confirm msg="INBOX_ACK006" needCancel="false" popupOrder="deleteDraftOkButton"  yesBtnDesc="Yes"   yesBtnCls="btn btn-secondary"  callBack="deleteDraftOkCallBack()" />
         <iais:confirm msg="NEW_ACK002" needFungDuoJi="false" popupOrder="deleteDraftModal" callBack="delDraftCancelBtn()"  cancelFunc="delDraftYesBtn()" cancelBtnDesc="OK" yesBtnDesc="Cancel" cancelBtnCls="btn btn-primary" yesBtnCls="btn btn-secondary"  />
 </form>
 <script type="application/javascript">
@@ -136,6 +138,9 @@
     $(document).ready(function () {
         if($("#actionDsButtonShow").val() == 1){
             $("#actionDsButton").show();
+        }
+        if($("#deleteDraftOkShow").val() == 1){
+            $("#deleteDraftOkButton").show();
         }
     });
 
@@ -188,6 +193,9 @@
 
     function cancelBallDsButton(){
         $("#actionDsButton").hide();
+    }
+    function deleteDraftOkCallBack(){
+        $("#deleteDraftOkButton").hide();
     }
     function dssToMsgPage(){
         window.location = "${pageContext.request.contextPath.concat(RedirectUtil.appendCsrfGuardToken("/eservice/INTERNET/MohInternetInbox",request))}";

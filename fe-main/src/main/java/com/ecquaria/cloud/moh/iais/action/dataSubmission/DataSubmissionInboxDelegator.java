@@ -297,6 +297,10 @@ public class DataSubmissionInboxDelegator {
 	      if(showMessage(request,response,actionValue)){
 	      	ParamUtil.setSessionAttr(request,ACTION_DS_BUTTON_SHOW,AppConsts.YES);
 	      	ParamUtil.setRequestAttr(request,NEED_VALIDATOR_SIZE,ParamUtil.getString(request,NEED_VALIDATOR_SIZE));
+		  }else {
+	      	if(DELETE_DRAFT.equalsIgnoreCase(actionValue)){
+				ParamUtil.setRequestAttr(request,"deleteDraftOk",AppConsts.YES);
+			}
 		  }
 	 }
     private  boolean showMessage(HttpServletRequest request,HttpServletResponse response,String actionValue){

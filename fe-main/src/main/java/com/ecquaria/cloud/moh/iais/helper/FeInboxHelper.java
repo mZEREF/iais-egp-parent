@@ -43,6 +43,7 @@ public final class FeInboxHelper {
                 case RoleConsts.USER_ROLE_DS_DP :
                     types.add(DataSubmissionConsts.DS_DRP);
                     break;
+                default: break;
             }
         });
         //todo delete
