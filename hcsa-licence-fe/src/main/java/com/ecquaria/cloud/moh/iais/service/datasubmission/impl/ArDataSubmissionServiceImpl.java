@@ -35,12 +35,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @Description ArDataSubmissionServiceImpl
@@ -400,33 +395,6 @@ public class ArDataSubmissionServiceImpl implements ArDataSubmissionService {
     }
 
     @Override
-    public List<SelectOption> getSourceOfSemenOption() {
-        List<SelectOption> sourceOfSemenOption = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.SOURCE_OF_SEMEN);
-        if (!IaisCommonUtils.isEmpty(sourceOfSemenOption)) {
-            for (int i = 0; i < sourceOfSemenOption.size(); i++) {
-                SelectOption selectOption = sourceOfSemenOption.get(i);
-                if ("AR_SOS_004".equals(selectOption.getValue())) {
-                    sourceOfSemenOption.remove(i);
-                    break;
-                }
-            }
-        }
-        return sourceOfSemenOption;
-    }
-
-    @Override
-    public List<SelectOption> getChildNumOption() {
-        List<SelectOption> childNumOption = IaisCommonUtils.genNewArrayList();
-        for (int i = 0; i <= 10; i++) {
-            SelectOption selectOption = new SelectOption();
-            selectOption.setValue(i + "");
-            selectOption.setText(i + "");
-            childNumOption.add(selectOption);
-        }
-        return childNumOption;
-    }
-
-    @Override
     public ArSuperDataSubmissionDto setIuiCycleStageDtoDefaultVal(ArSuperDataSubmissionDto arSuperDataSubmission) {
         if (arSuperDataSubmission != null) {
             IuiCycleStageDto iuiCycleStageDto = arSuperDataSubmission.getIuiCycleStageDto();
@@ -462,18 +430,6 @@ public class ArDataSubmissionServiceImpl implements ArDataSubmissionService {
         return arSuperDataSubmission;
     }
 
-    @Override
-    public Integer stringTransferInteger(String numberStr) {
-        if (!StringUtil.isEmpty(numberStr)) {
-            try {
-                int number = Integer.parseInt(numberStr);
-                return number;
-            } catch (Exception e) {
-
-            }
-        }
-        return null;
-    }
 
     @Override
     public List<String> checkBoxIsDirtyData(String[] stringArr, List<SelectOption> selectOptionList) {

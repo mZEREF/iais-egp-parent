@@ -12,6 +12,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
+import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.ArDataSubmissionService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,9 +38,9 @@ public class IuiCycleStageDelegator extends DonorCommonDelegator {
     public void start(BaseProcessClass bpc) {
         //set SelectOption
         HttpServletRequest request = bpc.request;
-        ParamUtil.setSessionAttr(request, "sourceOfSemenOption", (Serializable) arDataSubmissionService.getSourceOfSemenOption());
-        ParamUtil.setSessionAttr(request, "curMarrChildNumOption", (Serializable)  arDataSubmissionService.getChildNumOption());
-        ParamUtil.setSessionAttr(request, "prevMarrChildNumOption", (Serializable) arDataSubmissionService.getChildNumOption());
+        ParamUtil.setSessionAttr(request, "sourceOfSemenOption", (Serializable) MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.SOURCE_OF_SEMEN));
+        ParamUtil.setSessionAttr(request, "curMarrChildNumOption", (Serializable) DataSubmissionHelper.getNumsSelections(10));
+        ParamUtil.setSessionAttr(request, "prevMarrChildNumOption", (Serializable)DataSubmissionHelper.getNumsSelections(10));
         ParamUtil.setSessionAttr(request, DONOR_SOURSE_DROP_DOWN,(Serializable) getSourseList(request));
         ParamUtil.setSessionAttr(request, DONOR_SAMPLE_DROP_DOWN,(Serializable) getSampleDropDown());
     }
@@ -101,11 +102,11 @@ public class IuiCycleStageDelegator extends DonorCommonDelegator {
             }
         }
         //get and set Integer Number
-        Integer curMarrChildNum = arDataSubmissionService.stringTransferInteger(curMarrChildNumStr);
-        Integer prevMarrChildNum = arDataSubmissionService.stringTransferInteger(prevMarrChildNumStr);
-        Integer iuiDeliverChildNum = arDataSubmissionService.stringTransferInteger(iuiDeliverChildNumStr);
-        Integer extractVialsOfSpermNum = arDataSubmissionService.stringTransferInteger(extractVialsOfSpermStr);
-        Integer usedVialsOfSpermNum = arDataSubmissionService.stringTransferInteger(usedVialsOfSpermStr);
+        Integer curMarrChildNum =  IaisCommonUtils.stringTransferInteger(curMarrChildNumStr);
+        Integer prevMarrChildNum = IaisCommonUtils.stringTransferInteger(prevMarrChildNumStr);
+        Integer iuiDeliverChildNum =  IaisCommonUtils.stringTransferInteger(iuiDeliverChildNumStr);
+        Integer extractVialsOfSpermNum =  IaisCommonUtils.stringTransferInteger(extractVialsOfSpermStr);
+        Integer usedVialsOfSpermNum =  IaisCommonUtils.stringTransferInteger(usedVialsOfSpermStr);
 
         iuiCycleStageDto.setCurMarrChildNum(curMarrChildNum);
         iuiCycleStageDto.setPrevMarrChildNum(prevMarrChildNum);

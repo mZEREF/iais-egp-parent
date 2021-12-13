@@ -92,39 +92,11 @@ public interface ArDataSubmissionService {
     /**
       * @author: shicheng
       * @Date 2021/11/15
-      * @Param: null
-      * @return: List<SelectOption>
-      * @Descripation: getSourceOfSemenOption
-      */
-    List<SelectOption> getSourceOfSemenOption();
-
-    /**
-     * @author: shicheng
-     * @Date 2021/11/15
-     * @Param: null
-     * @return: List<SelectOption>
-     * @Descripation: getChildNumOption
-     */
-    List<SelectOption> getChildNumOption();
-
-    /**
-      * @author: shicheng
-      * @Date 2021/11/15
       * @Param: arSuperDataSubmission
       * @return: ArSuperDataSubmissionDto
       * @Descripation: setIuiCycleStageDtoDefaultVal
       */
     ArSuperDataSubmissionDto setIuiCycleStageDtoDefaultVal(ArSuperDataSubmissionDto arSuperDataSubmission);
-
-    /**
-      * @author: shicheng
-      * @Date 2021/11/16
-      * @Param: numberStr
-      * @return: Integer
-      * @Descripation: stringTransferInteger
-      */
-    Integer stringTransferInteger(String numberStr);
-
     /**
       * @author: shicheng
       * @Date 2021/11/16
