@@ -8,6 +8,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfo
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
+import com.ecquaria.cloud.moh.iais.helper.NewApplicationHelper;
 import com.ecquaria.cloud.moh.iais.rfi.RfiLoadingCheck;
 import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationFeClient;
@@ -61,6 +62,7 @@ public class RfiLoadingExc implements RfiLoadingCheck {
         appSubmissionDto.setAppSvcRelatedInfoDtoList(appSvcRelatedInfoDtoList);
     }
 
+    /*
     public void checkPremiseInfo(HttpServletRequest request, AppSubmissionDto appSubmissionDto, String appNo) {
         List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionService.getAppGrpPremisesDto(appNo);
         List<String> ids = IaisCommonUtils.genNewArrayList();
@@ -78,9 +80,7 @@ public class RfiLoadingExc implements RfiLoadingCheck {
                 premisesIndexNo = appGrpPremisesDto.getPremisesIndexNo();
                 //70309
                 if ("newPremise".equals(appGrpPremisesDto.getPremisesSelect())) {
-                    String premisesKey = appGrpPremisesDto.getHciCode() + IaisCommonUtils.genPremisesKey(appGrpPremisesDto.getPostalCode(),
-                            appGrpPremisesDto.getBlkNo(), appGrpPremisesDto.getFloorNo(), appGrpPremisesDto.getUnitNo()) + appGrpPremisesDto.getPremisesType();
-                    appGrpPremisesDto.setPremisesSelect(premisesKey);
+                    appGrpPremisesDto.setPremisesSelect(NewApplicationHelper.getPremisesKey(appGrpPremisesDto));
                     List<AppGrpPremisesDto> applicationAppGrpPremisesDtoList = (List<AppGrpPremisesDto>) ParamUtil.getSessionAttr(request, NewApplicationDelegator.RFC_APP_GRP_PREMISES_DTO_LIST);
                     if (IaisCommonUtils.isEmpty(applicationAppGrpPremisesDtoList)){
                         applicationAppGrpPremisesDtoList = IaisCommonUtils.genNewArrayList();
@@ -96,7 +96,7 @@ public class RfiLoadingExc implements RfiLoadingCheck {
         List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList = appSubmissionDto.getAppSvcRelatedInfoDtoList();
         for (AppSvcRelatedInfoDto appSvcRelatedInfoDto : appSvcRelatedInfoDtoList) {
             if (entity.getServiceId().equals(appSvcRelatedInfoDto.getServiceId())) {
-                /*  appSvcRelatedInfoDto.setAppSvcDocDtoLit(null);*/
+                *//*  appSvcRelatedInfoDto.setAppSvcDocDtoLit(null);*//*
                 appSvcRelatedInfoDtos.add(appSvcRelatedInfoDto);
                 List<AppSvcLaboratoryDisciplinesDto> appSvcLaboratoryDisciplinesDtoList = appSvcRelatedInfoDto.getAppSvcLaboratoryDisciplinesDtoList();
                 List<AppSvcLaboratoryDisciplinesDto> appSvcLaboratoryDisciplinesDtos = IaisCommonUtils.genNewArrayList();
@@ -111,4 +111,5 @@ public class RfiLoadingExc implements RfiLoadingCheck {
         }
         appSubmissionDto.setAppSvcRelatedInfoDtoList(appSvcRelatedInfoDtos);
     }
+    */
 }

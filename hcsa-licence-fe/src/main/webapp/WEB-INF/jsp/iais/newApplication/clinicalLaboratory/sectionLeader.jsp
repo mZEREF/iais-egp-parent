@@ -73,6 +73,9 @@
         $('.removeBtn').closest('div').remove();
         </c:if>
         </c:if>
+        if("${errormapIs}"=='error'){
+            $('.edit').trigger('click');
+        }
     });
 
     function initSectionLeader() {
@@ -105,10 +108,8 @@
         $content.each(function (index,v) {
             if (index < '${sectionLeaderConfig.mandatoryCount}') {
                 $(v).find('.removeSectionLeaderDiv').remove();
-            } else if ('1' == isEdit) {
-                $(v).find('.removeSectionLeaderDiv').show();
             } else {
-                $(v).find('.removeSectionLeaderDiv').hide();
+                $(v).find('.removeSectionLeaderDiv').show();
             }
         });
         <c:if test="${!isRfi && (AppSubmissionDto.appType == 'APTY002' || canEdit)}" var="canShowAddBtn">

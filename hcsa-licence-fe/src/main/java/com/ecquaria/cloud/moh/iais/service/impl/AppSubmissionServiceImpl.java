@@ -146,6 +146,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -1237,6 +1238,39 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
     }
 
     @Override
+    public Map<String, AppGrpPremisesDto> getLicencePremisesDtoMap(String licenseeId) {
+        List<AppGrpPremisesDto> appGrpPremisesDtos = licenceClient.getDistinctPremisesByLicenseeId(licenseeId, "").getEntity();
+        if (appGrpPremisesDtos == null || appGrpPremisesDtos.isEmpty()) {
+            return IaisCommonUtils.genNewHashMap();
+        }
+        return appGrpPremisesDtos.parallelStream()
+                .map(appGrpPremisesDto -> {
+                    NewApplicationHelper.setWrkTime(appGrpPremisesDto);
+                    appGrpPremisesDto.setExistingData(AppConsts.YES);
+                    return appGrpPremisesDto;
+                })
+                .collect(Collectors.toMap(AppGrpPremisesDto::getPremisesSelect, Function.identity(), (v1, v2) -> v1));
+    }
+
+    @Override
+    public Map<String, AppGrpPremisesDto> getActivePendingPremisesMap(String licenseeId) {
+        log.info(StringUtil.changeForLog("LicenseeId is " + licenseeId));
+        if (StringUtil.isEmpty(licenseeId)) {
+            return IaisCommonUtils.genNewHashMap(1);
+        }
+        List<AppGrpPremisesDto> appGrpPremisesDtos = applicationFeClient.getActivePendingPremises(licenseeId).getEntity();
+        if (appGrpPremisesDtos == null || appGrpPremisesDtos.isEmpty()) {
+            return IaisCommonUtils.genNewHashMap();
+        }
+        return appGrpPremisesDtos.parallelStream()
+                .map(appGrpPremisesDto -> {
+                    NewApplicationHelper.setWrkTime(appGrpPremisesDto);
+                    return appGrpPremisesDto;
+                })
+                .collect(Collectors.toMap(AppGrpPremisesDto::getPremisesSelect, Function.identity(), (v1, v2) -> v2));
+    }
+
+    @Override
     public List<ApplicationDto> listApplicationByGroupId(String groupId) {
         return applicationFeClient.listApplicationByGroupId(groupId).getEntity();
     }
@@ -1248,12 +1282,12 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
     }
 
     @Override
-    public void updateDrafts(List<String> licenceIds, String excludeDraftNo) {
-        log.info(StringUtil.changeForLog("Licence Ids: " + licenceIds + " - excludeDraftNo: " + excludeDraftNo));
-        if (IaisCommonUtils.isEmpty(licenceIds) || StringUtil.isEmpty(excludeDraftNo)) {
+    public void updateDrafts(String licenseeId, List<String> licenceIds, String excludeDraftNo) {
+        log.info(StringUtil.changeForLog("Licensee Id: " + licenseeId + "Licence Ids: " + licenceIds + " - excludeDraftNo: " + excludeDraftNo));
+        if (StringUtil.isEmpty(licenseeId) || IaisCommonUtils.isEmpty(licenceIds) || StringUtil.isEmpty(excludeDraftNo)) {
             return;
         }
-        CompletableFuture.runAsync(() ->applicationFeClient.updateDrafts(licenceIds, excludeDraftNo));
+        CompletableFuture.runAsync(() ->applicationFeClient.updateDrafts(licenseeId, licenceIds, excludeDraftNo));
     }
 
     @Override
@@ -2515,7 +2549,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
         // premises
         String keyWord = MasterCodeUtil.getCodeDesc("MS001");
         Map<String, String> premissMap = requestForChangeService.doValidatePremiss(appSubmissionDto, oldAppSubmissionDto,
-                premisesHciList, keyWord, isRfi);
+                premisesHciList, isRfi, false);
         premissMap.remove("hciNameUsed");
         if (!premissMap.isEmpty()) {
             errorMap.putAll(premissMap);
@@ -2722,13 +2756,16 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                 addErrorStep(currentStep, stepName, errorMap.size() != prevSize, errorList);
             } else if (HcsaConsts.STEP_PRINCIPAL_OFFICERS.equals(currentStep)) {
                 List<AppSvcPrincipalOfficersDto> appSvcPrincipalOfficersDtoList = dto.getAppSvcPrincipalOfficersDtoList();
-                doPO(currentSvcAllPsnConfig, errorMap, appSvcPrincipalOfficersDtoList, subLicenseeDto);
+                Map<String, String> map = NewApplicationHelper.doValidatePo(appSvcPrincipalOfficersDtoList, licPersonMap,
+                        dto.getServiceCode(), subLicenseeDto);
+                if (!map.isEmpty()) {
+                    errorMap.putAll(map);
+                }
                 addErrorStep(currentStep, stepName, errorMap.size() != prevSize, errorList);
             } else if (HcsaConsts.STEP_KEY_APPOINTMENT_HOLDER.equals(currentStep)) {
                 List<AppSvcPrincipalOfficersDto> appSvcKeyAppointmentHolderList = dto.getAppSvcKeyAppointmentHolderDtoList();
                 Map<String, String> map = NewApplicationHelper.doValidateKeyAppointmentHolder(appSvcKeyAppointmentHolderList,
-                        licPersonMap,
-                        dto.getServiceCode());
+                        licPersonMap, dto.getServiceCode());
                 if (!map.isEmpty()) {
                     errorMap.putAll(map);
                 }
@@ -3431,198 +3468,6 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
         }
     }
 
-    private static void doPO(List<HcsaSvcPersonnelDto> hcsaSvcPersonnelDtos, Map oneErrorMap, List<AppSvcPrincipalOfficersDto> poDto,
-            SubLicenseeDto subLicenseeDto) {
-        if (poDto == null) {
-            log.info("podto is null");
-            return;
-        }
-        int poIndex = 0;
-        int dpoIndex = 0;
-        List<String> stringList = IaisCommonUtils.genNewArrayList();
-        for (int i = 0; i < poDto.size(); i++) {
-            String psnType = poDto.get(i).getPsnType();
-            if (ApplicationConsts.PERSONNEL_PSN_TYPE_PO.equals(psnType)) {
-
-                StringBuilder stringBuilder = new StringBuilder(10);
-
-                String assignSelect = poDto.get(i).getAssignSelect();
-                if ("-1".equals(assignSelect)) {
-                    oneErrorMap.put("assignSelect" + i, MessageUtil.replaceMessage("GENERAL_ERR0006","assignSelect","field"));
-                } else {
-                    //do by wenkang
-                    String mobileNo = poDto.get(i).getMobileNo();
-                    String officeTelNo = poDto.get(i).getOfficeTelNo();
-                    String emailAddr = poDto.get(i).getEmailAddr();
-                    String idNo = poDto.get(i).getIdNo();
-                    String name = poDto.get(i).getName();
-                    String salutation = poDto.get(i).getSalutation();
-                    String designation = poDto.get(i).getDesignation();
-                    String idType = poDto.get(i).getIdType();
-
-                    if ("-1".equals(idType)) {
-                        oneErrorMap.put("idType" + poIndex, MessageUtil.replaceMessage("GENERAL_ERR0006","idType","field"));
-                    }
-                    if (StringUtil.isEmpty(name)) {
-                        oneErrorMap.put("name" + poIndex, MessageUtil.replaceMessage("GENERAL_ERR0006","name","field"));
-                    } else if (name.length() > 66) {
-
-                    }
-                    if (StringUtil.isEmpty(salutation)) {
-                        oneErrorMap.put("salutation" + poIndex, MessageUtil.replaceMessage("GENERAL_ERR0006","salutation","field"));
-                    }
-                    if (StringUtil.isEmpty(designation)) {
-                        oneErrorMap.put("designation" + poIndex, MessageUtil.replaceMessage("GENERAL_ERR0006","designation","field"));
-                    }
-                    if (!StringUtil.isEmpty(idNo)) {
-                        if (OrganizationConstants.ID_TYPE_FIN.equals(idType)) {
-                            boolean b = SgNoValidator.validateFin(idNo);
-                            if (!b) {
-                                oneErrorMap.put("NRICFIN", "GENERAL_ERR0008");
-                            } else {
-                                stringBuilder.append(idType).append(idNo);
-
-                            }
-                        }
-                        if (OrganizationConstants.ID_TYPE_NRIC.equals(idType)) {
-                            boolean b1 = SgNoValidator.validateNric(idNo);
-                            if (!b1) {
-                                oneErrorMap.put("NRICFIN", "GENERAL_ERR0008");
-                            } else {
-                                stringBuilder.append(idType).append(idNo);
-
-                            }
-                        }
-                    } else {
-                        oneErrorMap.put("NRICFIN", MessageUtil.replaceMessage("GENERAL_ERR0006","NRICFIN","field"));
-                    }
-                    if (!StringUtil.isEmpty(mobileNo)) {
-
-                        if (!mobileNo.matches("^[8|9][0-9]{7}$")) {
-                            oneErrorMap.put("mobileNo" + poIndex, "GENERAL_ERR0007");
-                        }
-                    } else {
-                        oneErrorMap.put("mobileNo" + poIndex, MessageUtil.replaceMessage("GENERAL_ERR0006","mobileNo","field"));
-                    }
-                    if (!StringUtil.isEmpty(emailAddr)) {
-                        if (!ValidationUtils.isEmail(emailAddr)) {
-                            oneErrorMap.put("emailAddr" + poIndex, "GENERAL_ERR0014");
-                        } else if (emailAddr.length() > 320) {
-
-                        }
-                    } else {
-                        oneErrorMap.put("emailAddr" + poIndex, MessageUtil.replaceMessage("GENERAL_ERR0006","emailAddr","field"));
-                    }
-                    if (!StringUtil.isEmpty(officeTelNo)) {
-                        if (!officeTelNo.matches(IaisEGPConstant.OFFICE_TELNO_MATCH)) {
-                            oneErrorMap.put("officeTelNo" + poIndex, "GENERAL_ERR0015");
-                        }
-                    } else {
-                        oneErrorMap.put("officeTelNo" + poIndex, MessageUtil.replaceMessage("GENERAL_ERR0006","officeTelNo","field"));
-                    }
-                }
-                poIndex++;
-                String s = stringBuilder.toString();
-
-                if (stringList.contains(s)) {
-                    oneErrorMap.put("NRICFIN", "NEW_ERR0012");
-                } else {
-                    stringList.add(stringBuilder.toString());
-                }
-            }
-
-            if (ApplicationConsts.PERSONNEL_PSN_TYPE_DPO.equals(psnType)) {
-                StringBuilder stringBuilder = new StringBuilder(10);
-                String salutation = poDto.get(i).getSalutation();
-                String name = poDto.get(i).getName();
-                String idType = poDto.get(i).getIdType();
-                String mobileNo = poDto.get(i).getMobileNo();
-                String emailAddr = poDto.get(i).getEmailAddr();
-                String idNo = poDto.get(i).getIdNo();
-                String designation = poDto.get(i).getDesignation();
-                String officeTelNo = poDto.get(i).getOfficeTelNo();
-
-                if (StringUtil.isEmpty(designation) || "-1".equals(designation)) {
-                    oneErrorMap.put("deputyDesignation" + dpoIndex, MessageUtil.replaceMessage("GENERAL_ERR0006","deputyDesignation","field"));
-                }
-                if (StringUtil.isEmpty(salutation) || "-1".equals(salutation)) {
-                    oneErrorMap.put("deputySalutation" + dpoIndex, MessageUtil.replaceMessage("GENERAL_ERR0006","deputySalutation","field"));
-                }
-
-                if (StringUtil.isEmpty(idType) || "-1".equals(idType)) {
-                    oneErrorMap.put("deputyIdType" + dpoIndex, MessageUtil.replaceMessage("GENERAL_ERR0006","deputyIdType","field"));
-                }
-                if (StringUtil.isEmpty(name)) {
-                    oneErrorMap.put("deputyName" + dpoIndex, MessageUtil.replaceMessage("GENERAL_ERR0006","deputyName","field"));
-                } else if (name.length() > 66) {
-
-                }
-                if (StringUtil.isEmpty(officeTelNo)) {
-                    oneErrorMap.put("deputyofficeTelNo" + dpoIndex, MessageUtil.replaceMessage("GENERAL_ERR0006","deputyofficeTelNo","field"));
-                } else {
-                    if (!officeTelNo.matches(IaisEGPConstant.OFFICE_TELNO_MATCH)) {
-                        oneErrorMap.put("deputyofficeTelNo" + dpoIndex, "GENERAL_ERR0015");
-                    }
-                }
-                if (StringUtil.isEmpty(idNo)) {
-                    oneErrorMap.put("deputyIdNo" + dpoIndex, MessageUtil.replaceMessage("GENERAL_ERR0006","deputyIdNo","field"));
-                }
-                if ("FIN".equals(idType)) {
-                    boolean b = SgNoValidator.validateFin(idNo);
-                    if (!b) {
-                        oneErrorMap.put("deputyIdNo" + dpoIndex, "GENERAL_ERR0008");
-                    } else {
-                        stringBuilder.append(idType).append(idNo);
-                    }
-                }
-                if ("NRIC".equals(idType)) {
-                    boolean b1 = SgNoValidator.validateNric(idNo);
-                    if (!b1) {
-                        oneErrorMap.put("deputyIdNo" + dpoIndex, "GENERAL_ERR0008");
-                    } else {
-                        stringBuilder.append(idType).append(idNo);
-                    }
-                }
-
-                if (StringUtil.isEmpty(mobileNo)) {
-                    oneErrorMap.put("deputyMobileNo" + dpoIndex, MessageUtil.replaceMessage("GENERAL_ERR0006","deputyMobileNo","field"));
-                } else {
-                    if (!mobileNo.matches("^[8|9][0-9]{7}$")) {
-                        oneErrorMap.put("deputyMobileNo" + dpoIndex, "GENERAL_ERR0007");
-                    }
-                }
-                if (StringUtil.isEmpty(emailAddr)) {
-                    oneErrorMap.put("deputyEmailAddr" + dpoIndex, MessageUtil.replaceMessage("GENERAL_ERR0006","deputyEmailAddr","field"));
-                } else {
-                    if (!ValidationUtils.isEmail(emailAddr)) {
-                        oneErrorMap.put("deputyEmailAddr" + dpoIndex, "GENERAL_ERR0014");
-                    } else if (emailAddr.length() > 320) {
-
-                    }
-                }
-                if (subLicenseeDto != null){
-                    String subLicenseeIdType = subLicenseeDto.getIdType();
-                    String subLicenseeIdNumber = subLicenseeDto.getIdNumber();
-                    if (StringUtil.isNotEmpty(subLicenseeIdType) && StringUtil.isNotEmpty(subLicenseeIdNumber)) {
-                        if (subLicenseeIdType.equals(idType) && subLicenseeIdNumber.equals(idNo)) {
-                            oneErrorMap.put("conflictError" + dpoIndex, MessageUtil.getMessageDesc("NEW_ERR0034"));
-                        }
-                    }
-                }
-                dpoIndex++;
-
-                String s = stringBuilder.toString();
-
-                if (stringList.contains(s) && !StringUtil.isEmpty(s)) {
-                    oneErrorMap.put("NRICFIN", "NEW_ERR0012");
-                } else {
-                    stringList.add(stringBuilder.toString());
-                }
-            }
-        }
-
-    }
-
     private void doCommomDocument(HttpServletRequest request, Map<String, String> documentMap) {
         AppSubmissionDto appSubmissionDto = NewApplicationHelper.getAppSubmissionDto(request);
 
@@ -3998,6 +3843,8 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
         session.removeAttribute(NewApplicationDelegator.LICENSEE_MAP);
         session.removeAttribute(NewApplicationDelegator.RFC_APP_GRP_PREMISES_DTO_LIST);
         session.removeAttribute(NewApplicationDelegator.PREMISESTYPE);
+        // CR: Split RFC Logic
+        NewApplicationHelper.clearPremisesMap(request);
     }
 
     @Override

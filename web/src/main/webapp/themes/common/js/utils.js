@@ -573,10 +573,12 @@ function refreshIndex(targetSelector) {
         var $ele = $(v);
         var $selector = $ele.find(':input');
         if ($selector.length == 0) {
-            $ele.text(k + 1);
             return;
         }
         $selector.each(function () {
+            if ($(this).hasClass('not-refresh')) {
+                return;
+            }
             var type = this.type, tag = this.tagName.toLowerCase(), $input = $(this);
             var orgName = $input.attr('name');
             var orgId = $input.attr('id');

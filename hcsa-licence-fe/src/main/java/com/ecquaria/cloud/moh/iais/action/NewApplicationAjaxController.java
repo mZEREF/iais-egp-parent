@@ -69,6 +69,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
@@ -652,18 +653,17 @@ public class NewApplicationAjaxController {
 
 
     @RequestMapping(value = "/lic-premises", method = RequestMethod.GET)
-    public @ResponseBody
-    AppGrpPremisesDto getLicPremisesInfo(HttpServletRequest request) {
+    @ResponseBody
+    public AppGrpPremisesDto getLicPremisesInfo(HttpServletRequest request) {
         log.debug(StringUtil.changeForLog("the getLicPremisesInfo start ...."));
         String premIndexNo = ParamUtil.getString(request, "premIndexNo");
+        String premSelectVal = ParamUtil.getString(request, "premSelectVal");
         String premisesType = ParamUtil.getString(request,"premisesType");
         String premiseIndex = request.getParameter("premiseIndex");
-        if (StringUtil.isEmpty(premIndexNo) || StringUtil.isEmpty(premisesType) || StringUtil.isEmpty(premiseIndex)) {
+        if (StringUtil.isEmpty(premSelectVal) || StringUtil.isEmpty(premisesType) || StringUtil.isEmpty(premiseIndex)) {
             return null;
         }
-        Map<String, AppGrpPremisesDto> licAppGrpPremisesDtoMap = (Map<String, AppGrpPremisesDto>) ParamUtil.getSessionAttr(request, NewApplicationDelegator.LICAPPGRPPREMISESDTOMAP);
-        AppGrpPremisesDto appGrpPremisesDto = licAppGrpPremisesDtoMap.get(premIndexNo);
-        appGrpPremisesDto = NewApplicationHelper.setWrkTime(appGrpPremisesDto);
+        AppGrpPremisesDto appGrpPremisesDto = NewApplicationHelper.getPremisesFromMap(premSelectVal, request);
         //set dayName
         if (appGrpPremisesDto != null) {
             List<AppPremPhOpenPeriodDto> appPremPhOpenPeriodDtos = appGrpPremisesDto.getAppPremPhOpenPeriodList();
@@ -736,33 +736,36 @@ public class NewApplicationAjaxController {
             appGrpPremisesDto.setPhHtml(phHtml.toString());
             //event
             List<AppPremEventPeriodDto> eventDtoList = appGrpPremisesDto.getEventDtoList();
-            if(!IaisCommonUtils.isEmpty(eventDtoList)){
+            if (!IaisCommonUtils.isEmpty(eventDtoList)) {
                 StringBuilder eventHtml = new StringBuilder();
-                String sql = SqlMap.INSTANCE.getSql("premises", "event").getSqlStr();
-                sql = sql.replace("${premIndex}","");
-                sql = sql.replace("${premType}",premPrefixName);
-                sql = sql.replace("${eventCount}","");
-                for(int i =0;i<eventDtoList.size();i++){
+                for (int i = 0; i < eventDtoList.size(); i++) {
+                    String sql = SqlMap.INSTANCE.getSql("premises", "event").getSqlStr();
+                    sql = sql.replace("${premIndex}", premiseIndex);
+                    sql = sql.replace("${premType}", premisesType);
+                    sql = sql.replace("${eventCount}", Integer.toString(i));
                     eventHtml.append(sql);
                 }
                 appGrpPremisesDto.setEventHtml(eventHtml.toString());
             }
 
-        }
-
-        licAppGrpPremisesDtoMap.put(premIndexNo, appGrpPremisesDto);
-        ParamUtil.setSessionAttr(request, NewApplicationDelegator.LICAPPGRPPREMISESDTOMAP, (Serializable) licAppGrpPremisesDtoMap);
-        log.debug(StringUtil.changeForLog("the getLicPremisesInfo end ...."));
-        //for rfc new  renew choose other address ,if no this cannot choose other address from page
-        AppSubmissionDto oldAppSubmissionDto = (AppSubmissionDto) request.getSession().getAttribute("oldAppSubmissionDto");
-        if(oldAppSubmissionDto!=null){
-            List<AppGrpPremisesDto> appGrpPremisesDtoList = oldAppSubmissionDto.getAppGrpPremisesDtoList();
-            if(appGrpPremisesDtoList!=null&&!appGrpPremisesDtoList.isEmpty()){
-                boolean eqHciCode = EqRequestForChangeSubmitResultChange.eqHciCode(appGrpPremisesDto, appGrpPremisesDtoList.get(0));
-                appGrpPremisesDto.setEqHciCode(String.valueOf(eqHciCode));
+            //for rfc new  renew choose other address ,if no this cannot choose other address from page
+            boolean sameOne = premIndexNo != null && premIndexNo.equals(appGrpPremisesDto.getPremisesIndexNo());
+            AppSubmissionDto oldAppSubmissionDto = NewApplicationHelper.getOldAppSubmissionDto(request);
+            if (oldAppSubmissionDto != null && !sameOne) {
+                String hciCode = oldAppSubmissionDto.getAppGrpPremisesDtoList().stream()
+                        .filter(dto -> Objects.equals(premIndexNo, dto.getPremisesIndexNo()))
+                        .map(dto -> Optional.ofNullable(dto.getOldHciCode()).orElse(dto.getHciCode()))
+                        .filter(Objects::nonNull)
+                        .findAny()
+                        .orElse(null);
+                sameOne = appGrpPremisesDto.getHciCode() != null && Objects.equals(hciCode, appGrpPremisesDto.getHciCode());
             }
+            log.info(StringUtil.changeForLog("--- The current one: " + sameOne));
+            appGrpPremisesDto.setEqHciCode(String.valueOf(sameOne));
+        } else {
+            log.warn(StringUtil.changeForLog("The Session Map is null for this premise selected - " + premSelectVal));
         }
-
+        log.debug(StringUtil.changeForLog("the getLicPremisesInfo end ...."));
         return appGrpPremisesDto;
     }
 
