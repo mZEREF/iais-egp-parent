@@ -22,7 +22,6 @@ import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
-import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.service.client.ArFeClient;
 import com.ecquaria.cloud.moh.iais.service.client.ComFileRepoClient;
 import com.ecquaria.cloud.moh.iais.service.client.FeEicGatewayClient;
@@ -35,7 +34,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @Description ArDataSubmissionServiceImpl
@@ -374,13 +378,17 @@ public class ArDataSubmissionServiceImpl implements ArDataSubmissionService {
         if (patientInventoryDto != null && arSubFreezingStageDto != null) {
             String cryopreservedType = arSubFreezingStageDto.getCryopreservedType();
             if (DataSubmissionConsts.FREEZING_CRYOPRESERVED_FRESH_OOCYTE.equals(cryopreservedType)) {
-                patientInventoryDto.setChangeFreshOocytes(arSubFreezingStageDto.getCryopreservedNum());
+                patientInventoryDto.setChangeFreshOocytes(-1 * arSubFreezingStageDto.getCryopreservedNum());
+                patientInventoryDto.setChangeFrozenOocytes(arSubFreezingStageDto.getCryopreservedNum());
             } else if (DataSubmissionConsts.FREEZING_CRYOPRESERVED_FRESH_EMBRYO.equals(cryopreservedType)) {
-                patientInventoryDto.setChangeFreshEmbryos(arSubFreezingStageDto.getCryopreservedNum());
+                patientInventoryDto.setChangeFreshEmbryos(-1 * arSubFreezingStageDto.getCryopreservedNum());
+                patientInventoryDto.setChangeFrozenEmbryos(arSubFreezingStageDto.getCryopreservedNum());
             } else if (DataSubmissionConsts.FREEZING_CRYOPRESERVED_THAWED_OOCYTE.equals(cryopreservedType)) {
-                patientInventoryDto.setChangeThawedOocytes(arSubFreezingStageDto.getCryopreservedNum());
+                patientInventoryDto.setChangeThawedOocytes(-1 * arSubFreezingStageDto.getCryopreservedNum());
+                patientInventoryDto.setChangeFrozenOocytes(arSubFreezingStageDto.getCryopreservedNum());
             } else if (DataSubmissionConsts.FREEZING_CRYOPRESERVED_THAWED_EMBRYO.equals(cryopreservedType)) {
-                patientInventoryDto.setChangeThawedEmbryos(arSubFreezingStageDto.getCryopreservedNum());
+                patientInventoryDto.setChangeThawedEmbryos(-1 * arSubFreezingStageDto.getCryopreservedNum());
+                patientInventoryDto.setChangeFrozenEmbryos(arSubFreezingStageDto.getCryopreservedNum());
             }
         }
         return patientInventoryDto;
