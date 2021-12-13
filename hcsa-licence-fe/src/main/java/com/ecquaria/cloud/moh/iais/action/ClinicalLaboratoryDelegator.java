@@ -422,6 +422,7 @@ public class ClinicalLaboratoryDelegator {
             }
         }
         if (errorMap != null && !errorMap.isEmpty()) {
+            bpc.request.setAttribute("errormapIs", "error");
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE, HcsaConsts.STEP_SECTION_LEADER);
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_VALUE, AppServicesConsts.NAVTABS_SERVICEFORMS);
@@ -2328,6 +2329,7 @@ public class ClinicalLaboratoryDelegator {
             validateClincalDirector.doValidateClincalDirector(map,currSvcInfoDto.getAppSvcClinicalDirectorDtoList(), currSvcCode);
         }
         if (!map.isEmpty()) {
+            bpc.request.setAttribute("errormapIs", "error");
             ParamUtil.setRequestAttr(bpc.request, "errorMsg", WebValidationHelper.generateJsonStr(map));
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE,
                     HcsaLicenceFeConstant.CLINICAL_DIRECTOR);
@@ -3999,11 +4001,38 @@ public class ClinicalLaboratoryDelegator {
         String[] wrkExpYears = ParamUtil.getStrings(request, "wrkExpYear");
         String[] professionalRegnNos = ParamUtil.getStrings(request, "regnNo");
         String[] indexNos = ParamUtil.getStrings(request,"indexNo");
+        String[] isPartEdit = ParamUtil.getStrings(request,"isPartEdit");
+        String appType = getAppSubmissionDto(request).getAppType();
+        boolean isRfi = NewApplicationHelper.checkIsRfi(request);
+        boolean rfcOrRenew = ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType) || ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appType);
+        boolean needEdit = rfcOrRenew || isRfi;
+        String currentSvcId = (String) ParamUtil.getSessionAttr(request, NewApplicationDelegator.CURRENTSERVICEID);
+        AppSvcRelatedInfoDto appSvcRelatedInfoDto = getAppSvcRelatedInfo(request, currentSvcId);
         if (personnelSels != null && personnelSels.length > 0) {
-            for (int i = 0; i < personnelSels.length; i++) {
+            int length =  personnelSels.length;
+            for (int i = 0; i < length; i++) {
                 AppSvcPersonnelDto appSvcPersonnelDto = new AppSvcPersonnelDto();
                 String personnelSel = personnelSels[i];
                 appSvcPersonnelDto.setPersonnelType(personnelSel);
+                if (needEdit && personnelSel != null) {
+                    String indexNo = indexNos[i];
+                    if (!StringUtil.isEmpty(indexNo)) {
+                        //not click edit
+                        if (AppConsts.NO.equals(isPartEdit[i])) {
+                            appSvcPersonnelDto = getAppSvcPersonnelDtoByIndexNo(appSvcRelatedInfoDto, indexNo);
+                            appSvcPersonnelDtos.add(appSvcPersonnelDto);
+                            //change arr
+                            indexNos = removeArrIndex(indexNos, i);
+                            isPartEdit = removeArrIndex(isPartEdit, i);
+                            //dropdown cannot disabled
+                            designations = removeArrIndex(designations, i);
+                            //change arr index
+                            --i;
+                            --length;
+                            continue;
+                        }
+                    }
+                }
                 if (AppServicesConsts.SERVICE_CODE_NUCLEAR_MEDICINE_ASSAY.equals(svcCode) ||
                         AppServicesConsts.SERVICE_CODE_NUCLEAR_MEDICINE_IMAGING.equals(svcCode)) {
                     if (StringUtil.isEmpty(personnelSel) || !personnelTypeList.contains(personnelSel)) {
@@ -4439,6 +4468,20 @@ public class ClinicalLaboratoryDelegator {
             }
         }
         return new AppSvcPrincipalOfficersDto();
+    }
+
+    private AppSvcPersonnelDto getAppSvcPersonnelDtoByIndexNo(AppSvcRelatedInfoDto appSvcRelatedInfoDto, String indexNo){
+        if (appSvcRelatedInfoDto != null && !StringUtil.isEmpty(indexNo)) {
+            List<AppSvcPersonnelDto> appSvcPersonnelDtoList = appSvcRelatedInfoDto.getAppSvcPersonnelDtoList();
+            if (!IaisCommonUtils.isEmpty(appSvcPersonnelDtoList)) {
+                for (AppSvcPersonnelDto appSvcPersonnelDto : appSvcPersonnelDtoList) {
+                    if (indexNo.equals(appSvcPersonnelDto.getIndexNo())) {
+                        return appSvcPersonnelDto;
+                    }
+                }
+            }
+        }
+        return new AppSvcPersonnelDto();
     }
 
     private AppSvcPrincipalOfficersDto getPsnByIndexNo(AppSvcRelatedInfoDto appSvcRelatedInfoDto, String indexNo, String pageName){
