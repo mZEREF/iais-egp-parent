@@ -4823,7 +4823,8 @@ public class NewApplicationHelper {
                 }
             } else {// have
                 String oldPremSel = entry.getKey();
-                if (Objects.equals(oldPremSel, premises.getPremisesSelect())) {// check itself
+                if (Objects.equals(oldPremSel, premises.getPremisesSelect())
+                        || ApplicationConsts.NEW_PREMISES.equals(premises.getPremisesSelect())) {// check itself or add new
                     allData.remove(oldPremSel);
                     allData.put(premisesSelect, newDto);
                     if (licAppGrpPremisesDtoMap.get(oldPremSel) != null) {
@@ -4836,8 +4837,6 @@ public class NewApplicationHelper {
                         request.getSession().setAttribute(NewApplicationDelegator.APP_PREMISES_MAP, appPremisesMap);
                     }
                     premises.setPremisesSelect(premisesSelect);
-                    premises.setExistingData(AppConsts.NO);
-                } else if (ApplicationConsts.NEW_PREMISES.equals(premises.getPremisesSelect())) {
                     premises.setExistingData(AppConsts.NO);
                 } else {
                     premises.setExistingData(AppConsts.YES);
