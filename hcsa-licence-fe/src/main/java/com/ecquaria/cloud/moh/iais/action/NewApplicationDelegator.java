@@ -552,11 +552,11 @@ public class NewApplicationDelegator {
      * @throws
      */
     public void preparePremises(BaseProcessClass bpc) {
-        Object attribute1 = bpc.request.getAttribute(RfcConst.SWITCH);
+        // Object attribute1 = bpc.request.getAttribute(RfcConst.SWITCH);
         log.info(StringUtil.changeForLog("the do preparePremises start ...."));
         NewApplicationHelper.setTimeList(bpc.request);
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
-        boolean isRfi = NewApplicationHelper.checkIsRfi(bpc.request);
+        // boolean isRfi = NewApplicationHelper.checkIsRfi(bpc.request);
         //get svcCode to get svcId
         List<HcsaServiceDto> hcsaServiceDtoList = (List<HcsaServiceDto>) ParamUtil.getSessionAttr(bpc.request, AppServicesConsts.HCSASERVICEDTOLIST);
         List<HcsaServiceDto> rfiHcsaService = (List<HcsaServiceDto>) ParamUtil.getSessionAttr(bpc.request, "rfiHcsaService");
@@ -661,7 +661,7 @@ public class NewApplicationDelegator {
         ParamUtil.setRequestAttr(bpc.request,"isMultiPremService",NewApplicationHelper.isMultiPremService(hcsaServiceDtoList));
         log.info(StringUtil.changeForLog("the do preparePremises end ...."));
         //
-        if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())||
+        /*if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())||
                 ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appSubmissionDto.getAppType())){
             AppSubmissionDto oldAppSubmissionDto = NewApplicationHelper.getOldAppSubmissionDto(bpc.request);
             //now no group licence
@@ -689,7 +689,7 @@ public class NewApplicationDelegator {
                     }
                 }
             }
-        }
+        }*/
     }
 
     public void setSelectLicence(AppSubmissionDto appSubmissionDto,HttpServletRequest request) {
@@ -1009,7 +1009,12 @@ public class NewApplicationDelegator {
      */
     public void doPremises(BaseProcessClass bpc) {
         log.info(StringUtil.changeForLog("the do doPremises start ...."));
-
+        String crud_action_value = ParamUtil.getString(bpc.request, IaisEGPConstant.CRUD_ACTION_VALUE);
+        log.info(StringUtil.changeForLog("##### Action Value: " + crud_action_value));
+        if ("undo".equals(crud_action_value)) {
+            // Undo All Changes
+            return;
+        }
         //gen dto
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
 
@@ -1046,10 +1051,8 @@ public class NewApplicationDelegator {
             ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
 
         }
-        String crud_action_value = ParamUtil.getString(bpc.request, IaisEGPConstant.CRUD_ACTION_VALUE);
         String crud_action_additional = ParamUtil.getString(bpc.request, "crud_action_additional");
         if (!"saveDraft".equals(crud_action_value)) {
-
             boolean isNeedShowValidation = !"back".equals(crud_action_value);
             List<HcsaServiceDto> hcsaServiceDtos = (List<HcsaServiceDto>) ParamUtil.getSessionAttr(bpc.request, AppServicesConsts.HCSASERVICEDTOLIST);
             List<String> premisesHciList = appSubmissionService.getHciFromPendAppAndLic(appSubmissionDto.getLicenseeId(), hcsaServiceDtos);
@@ -1057,17 +1060,20 @@ public class NewApplicationDelegator {
             AppSubmissionDto oldAppSubmissionDto = NewApplicationHelper.getOldAppSubmissionDto(bpc.request);
 
             String actionType = bpc.request.getParameter(IaisEGPConstant.CRUD_ACTION_TYPE);
+
             Map<String, String> errorMap = requestForChangeService.doValidatePremiss(appSubmissionDto, oldAppSubmissionDto,
                     premisesHciList, isRfi, true);
+
             String crud_action_type_continue = bpc.request.getParameter("crud_action_type_continue");
             bpc.request.setAttribute("continueStep", actionType);
             bpc.request.setAttribute("crudActionTypeContinue", crud_action_additional);
             if ("continue".equals(crud_action_type_continue)) {
                 errorMap.remove("hciNameUsed");
             }
-            String string = errorMap.get("hciNameUsed");
-            if (string != null) {
-                bpc.request.setAttribute("hciNameUsed", "hciNameUsed");
+            String hciNameUsed = errorMap.get("hciNameUsed");
+            if (errorMap.size() == 1 && hciNameUsed != null) {
+                ParamUtil.setRequestAttr(bpc.request, "hciNameUsed", "hciNameUsed");
+                ParamUtil.setRequestAttr(bpc.request, "newAppPopUpMsg", hciNameUsed);
             }
             // check result
             HashMap<String, String> coMap = (HashMap<String, String>) bpc.request.getSession().getAttribute(NewApplicationConstant.CO_MAP);
@@ -1075,10 +1081,6 @@ public class NewApplicationDelegator {
                 if (isNeedShowValidation) {
                     //set audit
                     NewApplicationHelper.setAudiErrMap(isRfi,appSubmissionDto.getAppType(),errorMap,appSubmissionDto.getRfiAppNo(),appSubmissionDto.getLicenceNo());
-                    String hciNameUsed = errorMap.get("hciNameUsed");
-                    if (!StringUtil.isEmpty(hciNameUsed)) {
-                        ParamUtil.setRequestAttr(bpc.request, "newAppPopUpMsg", hciNameUsed);
-                    }
                     ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
                     ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "premises");
                     bpc.request.setAttribute("errormapIs", "error");
@@ -3694,7 +3696,8 @@ public class NewApplicationDelegator {
             String appType = appSubmissionDto.getAppType();
             boolean newApp = requestInformationConfig == null && ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType);
             if (newApp) {
-                if (!StringUtil.isEmpty(premisesSel) && !premisesSel.equals("-1") && !premisesSel.equals(ApplicationConsts.NEW_PREMISES)) {
+                if (!StringUtil.isEmpty(premisesSel) && !premisesSel.equals("-1")
+                        && !premisesSel.equals(ApplicationConsts.NEW_PREMISES) && AppConsts.YES.equals(chooseExistData[i])) {
                     AppGrpPremisesDto licPremise = NewApplicationHelper.getPremisesFromMap(premisesSel, request);
                     if (licPremise != null) {
                         appGrpPremisesDto = (AppGrpPremisesDto) CopyUtil.copyMutableObject(licPremise);

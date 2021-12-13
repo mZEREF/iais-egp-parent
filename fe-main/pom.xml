@@ -80,6 +80,16 @@
             <groupId>com.ecquaria.sz</groupId>
             <artifactId>ecq-sz-commons</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-core</artifactId>
+            <version>2.15.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-api</artifactId>
+            <version>2.15.0</version>
+        </dependency>
     </dependencies>
     <build>
         <finalName>main-web</finalName>
@@ -116,8 +126,8 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-war-plugin</artifactId>
                 <configuration>
-                    <packagingExcludes>WEB-INF/lib/core-renderer-R8.jar,WEB-INF/lib/bcmail-jdk14-1.64.jar,WEB-INF/lib/bcprov-jdk14-1.64.jar</packagingExcludes>
-                    <dependentWarExcludes>WEB-INF/lib/core-renderer-R8.jar,WEB-INF/lib/bcmail-jdk14-1.64.jar,WEB-INF/lib/bcprov-jdk14-1.64.jar</dependentWarExcludes>
+                    <packagingExcludes>WEB-INF/lib/core-renderer-R8.jar,WEB-INF/lib/bcmail-jdk14-1.64.jar,WEB-INF/lib/bcprov-jdk14-1.64.jar,WEB-INF/lib/log4j-core-2.13.3.jar,WEB-INF/lib/log4j-api-2.13.3.jar</packagingExcludes>
+                    <dependentWarExcludes>WEB-INF/lib/core-renderer-R8.jar,WEB-INF/lib/bcmail-jdk14-1.64.jar,WEB-INF/lib/bcprov-jdk14-1.64.jar,WEB-INF/lib/log4j-core-2.13.3.jar,WEB-INF/lib/log4j-api-2.13.3.jar</dependentWarExcludes>
                 </configuration>
             </plugin>
             <plugin>

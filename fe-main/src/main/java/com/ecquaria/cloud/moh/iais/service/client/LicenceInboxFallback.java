@@ -22,10 +22,12 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.SelfPremisesListQuery
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InboxDataSubmissionQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InboxLicenceQueryDto;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -33,6 +35,7 @@ import java.util.List;
  * @Program: iais-egp
  * @Create: 2019-11-29 13:20
  **/
+@Slf4j
 @Component
 public class LicenceInboxFallback implements LicenceInboxClient {
 
@@ -42,6 +45,7 @@ public class LicenceInboxFallback implements LicenceInboxClient {
         entity.setHeaders(headers);
         return entity;
     }
+
     @Override
     public FeignResponseEntity<SearchResult<InboxLicenceQueryDto>> searchResultFromLicence(SearchParam searchParam){
         FeignResponseEntity entity = new FeignResponseEntity<>();
@@ -240,6 +244,11 @@ public class LicenceInboxFallback implements LicenceInboxClient {
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
         return entity;
+    }
+
+    @Override
+    public FeignResponseEntity<LicenceDto> getFirstLicenceDtosByLicenseeId(String licenseeId) {
+        return getEntity();
     }
 
     @Override

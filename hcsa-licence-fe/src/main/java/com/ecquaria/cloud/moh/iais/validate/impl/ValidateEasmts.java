@@ -64,12 +64,6 @@ public class ValidateEasmts extends AbstractValidate implements ValidateFlow {
                         map.put("easMtsHciName" + index, MessageUtil.replaceMessage("GENERAL_ERR0016", sb.toString(), "keywords"));
                     }
                 }
-
-                List<PremisesDto> premisesDtos = licenceClient.getPremisesDtoByHciNameAndPremType(easMtsHciName,ApplicationConsts.PREMISES_TYPE_EAS_MTS_CONVEYANCE,licenseeId).getEntity();
-                if(!IaisCommonUtils.isEmpty(premisesDtos)){
-                    map.put("hciNameUsed", MessageUtil.getMessageDesc("NEW_ACK011"));
-                }
-
             }
         }
         String easMtsPostalCode = appGrpPremisesDto.getEasMtsPostalCode();
@@ -181,7 +175,8 @@ public class ValidateEasmts extends AbstractValidate implements ValidateFlow {
     }
 
     @Override
-    public void doValidatePremises(Map<String, String> map,String type,Integer index,String licenseeId, AppGrpPremisesDto appGrpPremisesDto, boolean needAppendMsg ,boolean rfi) {
+    public boolean doValidatePremises(Map<String, String> map,String type,Integer index,String licenseeId,
+            AppGrpPremisesDto appGrpPremisesDto,boolean rfi) {
         String PostalCode = map.get("easMtsPostalCode" + index);
         String FloorNo = map.get("easMtsFloorNo" + index);
         String BlockNo = map.get("easMtsBlockNo" + index);
@@ -190,25 +185,7 @@ public class ValidateEasmts extends AbstractValidate implements ValidateFlow {
         boolean hciFlag=StringUtil.isEmpty(PostalCode)&&StringUtil.isEmpty(FloorNo)&&StringUtil.isEmpty(BlockNo)
                 &&StringUtil.isEmpty(UnitNo)&&StringUtil.isEmpty(HciName);
         log.info(StringUtil.changeForLog("hciFlag:-->easm" + hciFlag));
-        if (hciFlag) {
-            CheckCoLocationDto checkCoLocationDto = new CheckCoLocationDto();
-            checkCoLocationDto.setLicenseeId(licenseeId);
-            checkCoLocationDto.setAppGrpPremisesDto(appGrpPremisesDto);
-            Boolean flag = licenceClient.getOtherLicseePremises(checkCoLocationDto).getEntity();
-            if (flag) {
-                needAppendMsg = true;
-            }
-        }
-        String hciNameUsed = map.get("hciNameUsed");
-        String errMsg = MessageUtil.getMessageDesc("NEW_ACK004");
-        if (needAppendMsg) {
-            if (StringUtil.isEmpty(hciNameUsed)) {
-                map.put("hciNameUsed", errMsg);
-            } else {
-                String hciNameMsg = MessageUtil.getMessageDesc(hciNameUsed);
-                map.put("hciNameUsed", hciNameMsg + "<br/>" + errMsg);
-            }
-        }
+        return hciFlag;
     }
 
     @Override
