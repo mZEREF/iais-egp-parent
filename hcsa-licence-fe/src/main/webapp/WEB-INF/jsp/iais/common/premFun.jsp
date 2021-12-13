@@ -680,17 +680,17 @@
         } else if ('EASMTS' == premType) {
             premDivName = 'new-premise-form-eas-mts';
         }
-
-        if(premContent.find('.'+premDivName+' .weeklyDiv').length < ${weeklyCount}){
-            premContent.find('.addWeeklyDiv').removeClass('hidden');
+        if (!isEmpty(premDivName)) {
+            if (premContent.find('.' + premDivName + ' .weeklyDiv').length < ${weeklyCount}) {
+                premContent.find('.addWeeklyDiv').removeClass('hidden');
+            }
+            if (premContent.find('.' + premDivName + ' .pubHolidayDiv').length < ${phCount}) {
+                premContent.find('.addPhDiv').removeClass('hidden');
+            }
+            if (premContent.find('.' + premDivName + ' .eventDiv').length < ${eventCount}) {
+                premContent.find('.addEventDiv').removeClass('hidden');
+            }
         }
-        if(premContent.find('.'+premDivName+' .pubHolidayDiv').length < ${phCount}){
-            premContent.find('.addPhDiv').removeClass('hidden');
-        }
-        if(premContent.find('.'+premDivName+' .eventDiv').length < ${eventCount}){
-            premContent.find('.addEventDiv').removeClass('hidden');
-        }
-
         premContent.find('input.allDay:checked').each(function(){
             var $allDayDiv = $(this).closest('div.all-day-div');
             disabeleForAllDay($allDayDiv);
