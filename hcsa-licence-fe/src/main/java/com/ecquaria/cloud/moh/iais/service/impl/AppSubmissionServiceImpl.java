@@ -145,6 +145,8 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -1236,6 +1238,39 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
     }
 
     @Override
+    public Map<String, AppGrpPremisesDto> getLicencePremisesDtoMap(String licenseeId) {
+        List<AppGrpPremisesDto> appGrpPremisesDtos = licenceClient.getDistinctPremisesByLicenseeId(licenseeId, "").getEntity();
+        if (appGrpPremisesDtos == null || appGrpPremisesDtos.isEmpty()) {
+            return IaisCommonUtils.genNewHashMap();
+        }
+        return appGrpPremisesDtos.parallelStream()
+                .map(appGrpPremisesDto -> {
+                    NewApplicationHelper.setWrkTime(appGrpPremisesDto);
+                    appGrpPremisesDto.setExistingData(AppConsts.YES);
+                    return appGrpPremisesDto;
+                })
+                .collect(Collectors.toMap(AppGrpPremisesDto::getPremisesSelect, Function.identity(), (v1, v2) -> v1));
+    }
+
+    @Override
+    public Map<String, AppGrpPremisesDto> getActivePendingPremisesMap(String licenseeId) {
+        log.info(StringUtil.changeForLog("LicenseeId is " + licenseeId));
+        if (StringUtil.isEmpty(licenseeId)) {
+            return IaisCommonUtils.genNewHashMap(1);
+        }
+        List<AppGrpPremisesDto> appGrpPremisesDtos = applicationFeClient.getActivePendingPremises(licenseeId).getEntity();
+        if (appGrpPremisesDtos == null || appGrpPremisesDtos.isEmpty()) {
+            return IaisCommonUtils.genNewHashMap();
+        }
+        return appGrpPremisesDtos.parallelStream()
+                .map(appGrpPremisesDto -> {
+                    NewApplicationHelper.setWrkTime(appGrpPremisesDto);
+                    return appGrpPremisesDto;
+                })
+                .collect(Collectors.toMap(AppGrpPremisesDto::getPremisesSelect, Function.identity(), (v1, v2) -> v2));
+    }
+
+    @Override
     public List<ApplicationDto> listApplicationByGroupId(String groupId) {
         return applicationFeClient.listApplicationByGroupId(groupId).getEntity();
     }
@@ -1244,6 +1279,15 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
     public AppSubmissionDto doSaveDraft(AppSubmissionDto appSubmissionDto) {
         appSubmissionDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         return applicationFeClient.saveDraft(appSubmissionDto).getEntity();
+    }
+
+    @Override
+    public void updateDrafts(String licenseeId, List<String> licenceIds, String excludeDraftNo) {
+        log.info(StringUtil.changeForLog("Licensee Id: " + licenseeId + "Licence Ids: " + licenceIds + " - excludeDraftNo: " + excludeDraftNo));
+        if (StringUtil.isEmpty(licenseeId) || IaisCommonUtils.isEmpty(licenceIds) || StringUtil.isEmpty(excludeDraftNo)) {
+            return;
+        }
+        CompletableFuture.runAsync(() ->applicationFeClient.updateDrafts(licenseeId, licenceIds, excludeDraftNo));
     }
 
     @Override
@@ -2433,9 +2477,8 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
     public Map<String, String> doPreviewAndSumbit(BaseProcessClass bpc) {
         Map<String, String> previewAndSubmitMap = IaisCommonUtils.genNewHashMap();
         //
-        AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
-        AppSubmissionDto oldAppSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request,
-                NewApplicationDelegator.OLDAPPSUBMISSIONDTO);
+        AppSubmissionDto appSubmissionDto = NewApplicationHelper.getAppSubmissionDto(bpc.request);
+        AppSubmissionDto oldAppSubmissionDto = NewApplicationHelper.getOldAppSubmissionDto(bpc.request);
         previewAndSubmitMap = doPreviewSubmitValidate(previewAndSubmitMap, appSubmissionDto, oldAppSubmissionDto, bpc);
         return previewAndSubmitMap;
     }
@@ -2506,7 +2549,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
         // premises
         String keyWord = MasterCodeUtil.getCodeDesc("MS001");
         Map<String, String> premissMap = requestForChangeService.doValidatePremiss(appSubmissionDto, oldAppSubmissionDto,
-                premisesHciList, keyWord, isRfi);
+                premisesHciList, isRfi, false);
         premissMap.remove("hciNameUsed");
         if (!premissMap.isEmpty()) {
             errorMap.putAll(premissMap);
@@ -2546,7 +2589,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
     public Map<String, List<HcsaSvcPersonnelDto>> getAllSvcAllPsnConfig(HttpServletRequest request) {
         Map<String, List<HcsaSvcPersonnelDto>> svcAllPsnConfig = (Map<String, List<HcsaSvcPersonnelDto>>) ParamUtil.getSessionAttr(request, NewApplicationDelegator.SERVICEALLPSNCONFIGMAP);
         if (svcAllPsnConfig == null) {
-            AppSubmissionDto appSubmissionDto = getAppSubmissionDto(request);
+            AppSubmissionDto appSubmissionDto = NewApplicationHelper.getAppSubmissionDto(request);
             List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = appSubmissionDto.getAppSvcRelatedInfoDtoList();
             List<String> svcIds = IaisCommonUtils.genNewArrayList();
             for (AppSvcRelatedInfoDto appSvcRelatedInfoDto : appSvcRelatedInfoDtos) {
@@ -2846,7 +2889,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
     @Override
     public List<AppGrpPrimaryDocDto> documentValid(HttpServletRequest request, Map<String, String> errorMap,boolean setIsPassValidate) {
         log.info(StringUtil.changeForLog("the do doValidatePremiss start ...."));
-        AppSubmissionDto appSubmissionDto = getAppSubmissionDto(request);
+        AppSubmissionDto appSubmissionDto = NewApplicationHelper.getAppSubmissionDto(request);
         return documentValid(appSubmissionDto, errorMap, setIsPassValidate);
     }
 
@@ -3615,7 +3658,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
     }
 
     private void doCommomDocument(HttpServletRequest request, Map<String, String> documentMap) {
-        AppSubmissionDto appSubmissionDto = getAppSubmissionDto(request);
+        AppSubmissionDto appSubmissionDto = NewApplicationHelper.getAppSubmissionDto(request);
 
         List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtoList = appSubmissionDto.getAppGrpPrimaryDocDtos();
         List<HcsaSvcDocConfigDto> commonHcsaSvcDocConfigList = (List<HcsaSvcDocConfigDto>) request.getSession().getAttribute(NewApplicationDelegator.COMMONHCSASVCDOCCONFIGDTO);
@@ -3788,15 +3831,6 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
             }
         }
 
-    }
-
-    private static AppSubmissionDto getAppSubmissionDto(HttpServletRequest request) {
-        AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(request, NewApplicationDelegator.APPSUBMISSIONDTO);
-        if (appSubmissionDto == null) {
-            log.info(StringUtil.changeForLog("appSubmissionDto is empty "));
-            appSubmissionDto = new AppSubmissionDto();
-        }
-        return appSubmissionDto;
     }
 
     private void turnId(List<HcsaSvcSubtypeOrSubsumedDto> hcsaSvcSubtypeOrSubsumedDtos, Map<String, HcsaSvcSubtypeOrSubsumedDto> allCheckListMap) {
@@ -3998,6 +4032,8 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
         session.removeAttribute(NewApplicationDelegator.LICENSEE_MAP);
         session.removeAttribute(NewApplicationDelegator.RFC_APP_GRP_PREMISES_DTO_LIST);
         session.removeAttribute(NewApplicationDelegator.PREMISESTYPE);
+        // CR: Split RFC Logic
+        NewApplicationHelper.clearPremisesMap(request);
     }
 
     @Override

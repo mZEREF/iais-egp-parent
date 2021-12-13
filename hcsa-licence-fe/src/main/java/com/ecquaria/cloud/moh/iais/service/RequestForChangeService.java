@@ -77,6 +77,9 @@ public interface RequestForChangeService {
 
     List<LicenceDto> getLicenceDtoByHciCode(String hciCode,String licenseeId);
 
+    List<LicenceDto> getLicenceDtoByHciCode(String licenseeId, AppGrpPremisesDto appGrpPremisesDto,
+            String... excludeNos);
+
     List<LicKeyPersonnelDto> getLicKeyPersonnelDtoByPerId(List<String> personIds);
 
     List<String> getPersonnelIdsByIdNo(String idNo);
@@ -93,9 +96,11 @@ public interface RequestForChangeService {
     List<String> getAdminEmail(String orgId);
 
     Boolean isOtherOperation(String licenceId);
-    // need delete
-     Map<String, String> doValidatePremiss(AppSubmissionDto appSubmissionDto, AppSubmissionDto oldAppSubmissionDto, List<String> premisesHciList, String  masterCodeDto ,boolean isRfi);
-     void svcDocToPresmise(AppSubmissionDto appSubmissionDto);
+
+    Map<String, String> doValidatePremiss(AppSubmissionDto appSubmissionDto, AppSubmissionDto oldAppSubmissionDto,
+            List<String> premisesHciList, boolean isRfi, boolean checkOthers);
+
+    void svcDocToPresmise(AppSubmissionDto appSubmissionDto);
     void premisesDocToSvcDoc( AppSubmissionDto appSubmissionDtoByLicenceId);
     void sendRfcSubmittedEmail(List<AppSubmissionDto> appSubmissionDtos, String pmtMethod) throws IOException, TemplateException;
     List<FeUserDto> getFeUserDtoByLicenseeId(String licenseeId);

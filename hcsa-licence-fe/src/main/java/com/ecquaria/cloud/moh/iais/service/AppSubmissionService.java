@@ -30,7 +30,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.MenuLicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.PreOrPostInspectionResultDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceStepSchemeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSubtypeOrSubsumedDto;
@@ -56,14 +55,26 @@ import java.util.Map;
  * @date 11/9/2019
  */
 public interface AppSubmissionService {
-     AppSubmissionDto submit(AppSubmissionDto appSubmissionDto, Process process);
-     AppSubmissionDto submitRequestInformation(AppSubmissionRequestInformationDto appSubmissionRequestInformationDto, Process process);
-     AppSubmissionDto submitRequestRfcRenewInformation(AppSubmissionRequestInformationDto appSubmissionRequestInformationDto, Process process);
-     AppSubmissionDto submitPremisesListRequestInformation(AppSubmissionRequestInformationDto appSubmissionRequestInformationDto, Process process);
+
+    AppSubmissionDto submit(AppSubmissionDto appSubmissionDto, Process process);
+
+    AppSubmissionDto submitRequestInformation(AppSubmissionRequestInformationDto appSubmissionRequestInformationDto, Process process);
+
+    AppSubmissionDto submitRequestRfcRenewInformation(AppSubmissionRequestInformationDto appSubmissionRequestInformationDto,
+            Process process);
+
+    AppSubmissionDto submitPremisesListRequestInformation(AppSubmissionRequestInformationDto appSubmissionRequestInformationDto,
+            Process process);
+
+    Map<String, AppGrpPremisesDto> getLicencePremisesDtoMap(String licenseeId);
+
+    Map<String, AppGrpPremisesDto> getActivePendingPremisesMap(String licenseeId);
 
     List<ApplicationDto> listApplicationByGroupId(String groupId);
 
-     AppSubmissionDto doSaveDraft(AppSubmissionDto appSubmissionDto);
+    AppSubmissionDto doSaveDraft(AppSubmissionDto appSubmissionDto);
+
+    void updateDrafts(String licenseeId, List<String> licenceIds, String draftNo);
 
      String getDraftNo(String appType);
      String getGroupNo(String appType);
@@ -128,7 +139,7 @@ public interface AppSubmissionService {
     void changeSvcScopeIdByConfigName(List<HcsaSvcSubtypeOrSubsumedDto> newConfigInfo,AppSubmissionDto appSubmissionDto) throws CloneNotSupportedException;
     HashMap<String,List<AppSvcDisciplineAllocationDto>> getDisciplineAllocationDtoList(AppSubmissionDto appSubmissionDto, String svcId) throws CloneNotSupportedException;
     void setPreviewDta(AppSubmissionDto appSubmissionDto,BaseProcessClass bpc) throws CloneNotSupportedException;
-     void sendEmailForGiroFailAndSMSAndMessage(ApplicationGroupDto applicationGroupDto);
+    void sendEmailForGiroFailAndSMSAndMessage(ApplicationGroupDto applicationGroupDto);
     List<LicAppCorrelationDto> getLicDtoByLicId(String licId);
     ApplicationDto getAppById(String appId);
     List<MenuLicenceDto> setPremAdditionalInfo(List<MenuLicenceDto> menuLicenceDtos);
@@ -166,4 +177,5 @@ public interface AppSubmissionService {
             AppSvcRelatedInfoDto currentSvcDto);
 
     void saveAutoRFCLinkAppGroupMisc(String notAutoGroupId,String autoGroupId);
+
 }

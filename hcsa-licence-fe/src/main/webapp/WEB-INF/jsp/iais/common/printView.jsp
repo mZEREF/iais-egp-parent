@@ -22,6 +22,9 @@
     }
 </style>
 <br/>
+
+<c:set var="isRfi" value="${not empty requestInformationConfig}"/>
+
 <%--<%@include file="../common/dashboard.jsp" %>--%>
 <form method="post" class="table-responsive" id="mainForm" action=<%=process.runtime.continueURL()%>>
     <iais:input type="hidden" name="viewPrint" value="${viewPrint}" />
@@ -31,6 +34,13 @@
                 <c:set var="printFlag" value="test"/>
                 <c:forEach begin="0" end="${viewSubmissons.size()-1}" step="1" varStatus="submisonStat">
                     <c:set var="AppSubmissionDto" value="${viewSubmissons[submisonStat.index]}"/>
+
+                    <c:set var="isRFC" value="${'APTY005' == AppSubmissionDto.appType}" />
+                    <c:set var="subLicenseeDto" value="${AppSubmissionDto.subLicenseeDto}"/>
+                    <c:set var="specialSubLic" value="${subLicenseeDto.licenseeType eq 'LICT002' || subLicenseeDto.licenseeType eq 'LICTSUB002'}" />
+                    <c:set var="isLicence" value="${not empty licenceView}"/>
+                    <c:set var="showClaimFields" value="${isRFC && !isRfi && specialSubLic && !isLicence}" scope="request"/>
+
                     <div class="col-xs-12">
                         <div class="tab-gp steps-tab">
                             <div class="tab-content">

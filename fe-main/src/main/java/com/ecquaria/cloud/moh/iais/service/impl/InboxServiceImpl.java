@@ -322,7 +322,7 @@ public class InboxServiceImpl implements InboxService {
 
     @Override
     public Map<String,String> checkRenewalStatus(String licenceId) {
-
+        log.info(StringUtil.changeForLog("----------checkRenewalStatus licenceId : " + licenceId));
         LicenceDto licenceDto = licenceInboxClient.getLicDtoById(licenceId).getEntity();
         Map<String,String> errorMap = IaisCommonUtils.genNewHashMap();
         String errorMsgEleven = MessageUtil.getMessageDesc("INBOX_ACK011");
@@ -355,8 +355,26 @@ public class InboxServiceImpl implements InboxService {
         //Verify whether the new licence is generated
         LicenceDto entity = licenceInboxClient.getRootLicenceDtoByOrgId(licenceId).getEntity();
         if(entity != null){
-            String errorMsg = MessageUtil.getMessageDesc("INBOX_ACK013");
-            errorMap.put("errorMessage2",errorMsg);
+            boolean isRenewApp = false;
+            apps = appInboxClient.getAppByLicIdAndExcludeNew(entity.getId()).getEntity();
+            if(IaisCommonUtils.isNotEmpty(apps)){
+                log.info(StringUtil.changeForLog("----------checkRenewalStatus json : " + JsonUtil.parseToJson(apps)));
+                for (ApplicationDto a : apps) {
+                    if(ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(a.getApplicationType())
+                            && !ApplicationConsts.APPLICATION_STATUS_REJECTED.equalsIgnoreCase(a.getStatus())
+                            && !ApplicationConsts.APPLICATION_STATUS_ROLL_BACK.equals(a.getStatus())
+                            && !ApplicationConsts.APPLICATION_STATUS_DELETED.equals(a.getStatus())){
+                        isRenewApp = true;
+                        break;
+                    }
+                }
+            }
+            if(isRenewApp){
+                String errorMsg = MessageUtil.getMessageDesc("INBOX_ACK013");
+                errorMap.put("errorMessage2",errorMsg);
+            }else {
+                errorMap.put("errorMessage",licenceDto.getLicenceNo());
+            }
         }
         //check expiry date
         Date expiryDate = licenceDto.getExpiryDate();
@@ -378,6 +396,7 @@ public class InboxServiceImpl implements InboxService {
 //        if(nowDate.before(expiryDate) && daysBetween > 180){
 //            errorMap.put("errorMessage",licenceDto.getLicenceNo());
 //        }
+        log.info(StringUtil.changeForLog(" ----------checkRenewalStatus errorMap :" + JsonUtil.parseToJson(errorMap)));
         return errorMap;
     }
 

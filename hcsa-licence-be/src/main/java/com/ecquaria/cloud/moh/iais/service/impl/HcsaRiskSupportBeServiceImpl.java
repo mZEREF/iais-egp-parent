@@ -19,6 +19,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.PreOrPostInspectionRes
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RecommendInspectionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskAcceptiionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskResultDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
@@ -37,11 +38,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * @Author: jiahao
@@ -416,6 +413,15 @@ public class HcsaRiskSupportBeServiceImpl implements HcsaRiskSupportBeService {
              return false;
          }
          return true;
+    }
+
+    @Override
+    public List<HcsaServiceDto> getNameSortHcsaServiceDtos() {
+        List<HcsaServiceDto> serviceDtoList = hcsaConfigClient.getActiveServices().getEntity();
+        if(IaisCommonUtils.isNotEmpty(serviceDtoList) && serviceDtoList.size() >1){
+            serviceDtoList.sort(Comparator.comparing(HcsaServiceDto::getSvcName));
+        }
+        return serviceDtoList;
     }
 }
 

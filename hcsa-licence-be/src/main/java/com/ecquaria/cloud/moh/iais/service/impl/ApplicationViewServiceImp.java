@@ -561,4 +561,10 @@ public class ApplicationViewServiceImp implements ApplicationViewService {
         }
         log.info("-----------clearApprovedHclCodeByExistRejectApp end------");
     }
+
+    @Override
+    public boolean noContainsFlagByStageList(List<SelectOption> nextStageList) {
+        //contains ApplicationConsts.PROCESSING_DECISION_PENDING_APPROVAL, No -> true
+        return nextStageList.stream().noneMatch(stage -> ApplicationConsts.PROCESSING_DECISION_PENDING_APPROVAL.equals(stage.getValue()));
+    }
 }

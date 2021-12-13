@@ -693,7 +693,7 @@ public class InterInboxDelegator {
             hcsaFeeBundleItemDtos.forEach((v)->{
                 List<HcsaFeeBundleItemDto> hcsaFeeBundleItemDtos1 = map.get(v.getBundleId());
                 if(hcsaFeeBundleItemDtos1==null){
-                    hcsaFeeBundleItemDtos1=new ArrayList<>();
+                    hcsaFeeBundleItemDtos1=IaisCommonUtils.genNewArrayList();
                     hcsaFeeBundleItemDtos1.add(v);
                     map.put(v.getBundleId(),hcsaFeeBundleItemDtos1);
                 }else {
@@ -755,10 +755,8 @@ public class InterInboxDelegator {
                 }
             }
             String bundle = bpc.request.getParameter("bundle");
-            if(result){
-                if("no".equals(bundle)){
-
-                }else if("yes".equals(bundle)){
+            if(result && !"no".equals(bundle)){
+               if("yes".equals(bundle)){
                     List<LicenceDto> bundleLicenceDtos = (List<LicenceDto> )bpc.request.getSession().getAttribute("bundleLicenceDtos");
                     if(bundleLicenceDtos!=null){
                         for (LicenceDto v : bundleLicenceDtos) {

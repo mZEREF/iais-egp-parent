@@ -4,7 +4,6 @@ import com.ecquaria.cloud.moh.iais.common.constant.risk.RiskConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.HcsaRiskFeSupportDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.HcsaRiskLegislativeMatrixDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskLegislativeShowDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -33,9 +32,7 @@ public class HcsaRiskLegislativeServiceImpl implements HcsaRiskLegislativeServic
     private HcsaRiskSupportBeService hcsaRiskSupportBeService;
     @Override
     public RiskLegislativeShowDto getLegShowDto() {
-        List<HcsaServiceDto> serviceDtoList =  hcsaConfigClient.getActiveServices().getEntity();
-        RiskLegislativeShowDto showDto = hcsaConfigClient.getLegislativeShow(serviceDtoList).getEntity();
-        return showDto;
+        return hcsaConfigClient.getLegislativeShow(hcsaRiskSupportBeService.getNameSortHcsaServiceDtos()).getEntity();
     }
 
     @Override

@@ -16,7 +16,7 @@
                         <iais:field value="Application No."/>
                         <div class="col-sm-7 col-md-4 col-xs-10">
 
-                            <input type="text" maxlength="20" style=" font-weight:normal;" name="application_no" value="${SearchParam.filters['appNo']}" />
+                            <input type="text" maxlength="20" style=" font-weight:normal;" class="application_no" name="application_no" value="${SearchParam.filters['appNo']}" />
 
                         </div>
                     </iais:row>
@@ -24,7 +24,7 @@
                         <iais:field value="Application Type"/>
                         <div class="col-sm-7 col-md-4 col-xs-10">
                             <div id="application_type">
-                                <iais:select name="application_type" options="appTypeOption" firstOption="Please Select" value="${SearchParam.filters['appType']}" ></iais:select>
+                                <iais:select name="application_type" cssClass="application_type" options="appTypeOption" firstOption="Please Select" value="${SearchParam.filters['appType']}" ></iais:select>
                             </div>
                         </div >
                     </iais:row>
@@ -32,7 +32,7 @@
                         <iais:field value="Application Status"/>
                         <div class="col-sm-7 col-md-4 col-xs-10">
                             <div id="application_status">
-                                <iais:select name="application_status" options="appStatusOption" firstOption="Please Select" value="${SearchParam.filters['appStatus']}" ></iais:select>
+                                <iais:select name="application_status" cssClass="application_status" options="appStatusOption" firstOption="Please Select" value="${SearchParam.filters['appStatus']}" ></iais:select>
                             </div>
                         </div >
                     </iais:row>
@@ -54,7 +54,7 @@
                         <iais:field value="Licence No."/>
                         <div class="col-sm-7 col-md-4 col-xs-10">
 
-                            <input type="text" maxlength="24" style=" font-weight:normal;" name="licence_no" value="${SearchParam.filters['licence_no']}" />
+                            <input type="text" maxlength="24" style=" font-weight:normal;" name="licence_no" class="licence_no" value="${SearchParam.filters['licence_no']}" />
 
                         </div >
                     </iais:row>
@@ -70,7 +70,7 @@
                         <iais:field value="Service Type"/>
                         <div class="col-sm-7 col-md-4 col-xs-10">
                             <div id="service_licence_type">
-                                <iais:select name="service_licence_type" options="licSvcTypeOption" firstOption="Please Select" value="${SearchParam.filters['svc_name']}" ></iais:select>
+                                <iais:select name="service_licence_type" cssClass="service_licence_type" options="licSvcTypeOption" firstOption="Please Select" value="${SearchParam.filters['svc_name']}" ></iais:select>
                             </div>
                         </div >
                     </iais:row>
@@ -78,7 +78,7 @@
                         <iais:field value="Service Sub-Type"/>
                         <div class="col-sm-7 col-md-4 col-xs-10">
                             <div id="service_sub_type">
-                                <iais:select name="service_sub_type" options="licSvcSubTypeOption" firstOption="Please Select" value="${SearchParam.filters['serviceSubTypeName']}" ></iais:select>
+                                <iais:select name="service_sub_type" cssClass="service_sub_type" options="licSvcSubTypeOption" firstOption="Please Select" value="${SearchParam.filters['serviceSubTypeName']}" ></iais:select>
                             </div>
                         </div >
                     </iais:row>
@@ -86,7 +86,7 @@
                         <iais:field value="Licence Status"/>
                         <div class="col-sm-7 col-md-4 col-xs-10">
                             <div id="licence_status">
-                                <iais:select name="licence_status" options="licStatusOption" firstOption="Please Select" value="${SearchParam.filters['licence_status']}" ></iais:select>
+                                <iais:select name="licence_status" cssClass="licence_status" options="licStatusOption" firstOption="Please Select" value="${SearchParam.filters['licence_status']}" ></iais:select>
                             </div>
                         </div >
                     </iais:row>
@@ -256,7 +256,7 @@
                         <iais:field value="Service Personnel Role"/>
                         <div class="col-sm-7 col-md-4 col-xs-10">
                             <div id="personnelRoleOption">
-                                <iais:select name="personnelRole" options="servicePersonnelRoleOption" firstOption="Please Select" value="${SearchParam.filters['personnelRole']}" ></iais:select>
+                                <iais:select name="personnelRole" cssClass="personnelRole" options="servicePersonnelRoleOption" firstOption="Please Select" value="${SearchParam.filters['personnelRole']}" ></iais:select>
                             </div>
                         </div >
                     </iais:row>
