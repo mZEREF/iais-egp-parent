@@ -23,7 +23,7 @@
                         <div class="intranet-content">
                             <iais:body >
                             <div class="col-xs-12">
-                                <ul class="progress-tracker nav nav-tabs">
+                                <ul class="progress-tracker nav ">
                                     <c:forEach items="${cycleStageList}" var="steplist" varStatus="status">
                                         <c:choose>
                                             <c:when test ="${steplist.submitDt <= submitDt}">

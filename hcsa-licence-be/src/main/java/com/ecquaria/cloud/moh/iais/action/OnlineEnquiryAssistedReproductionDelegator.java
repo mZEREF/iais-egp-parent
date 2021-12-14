@@ -954,6 +954,7 @@ public class OnlineEnquiryAssistedReproductionDelegator {
     }
     public void preViewFullDetails(BaseProcessClass bpc){
         HttpServletRequest request=bpc.request;
+        ParamUtil.setSessionAttr(request,"arViewFull",null);
         String additional=ParamUtil.getRequestString(request, InboxConst.CRUD_ACTION_ADDITIONAL);
         String key=ParamUtil.getRequestString(request, InboxConst.CRUD_ACTION_VALUE);
         PatientInfoDto patientInfoDto=null;
@@ -1025,6 +1026,7 @@ public class OnlineEnquiryAssistedReproductionDelegator {
     public void searchCycle(BaseProcessClass bpc){
         ParamUtil.setRequestAttr(bpc.request, "preActive", "2");
         HttpServletRequest request=bpc.request;
+        ParamUtil.setSessionAttr(request,"arViewFull",1);
         PatientInfoDto patientInfoDto= (PatientInfoDto) ParamUtil.getSessionAttr(request,"patientInfoDto");
         Map<String,Object> filter=IaisCommonUtils.genNewHashMap();
         filter.put("patientCode", patientInfoDto.getPatient().getPatientCode());
@@ -1051,6 +1053,11 @@ public class OnlineEnquiryAssistedReproductionDelegator {
     }
 
     public void perNext(BaseProcessClass bpc){
+        HttpServletRequest request=bpc.request;
+        String actionType = ParamUtil.getString(request,"crud_action_type");
+        if("backBase".equals(actionType)){
+            ParamUtil.setSessionAttr(request,"arViewFull",null);
+        }
 
     }
 
@@ -1093,6 +1100,7 @@ public class OnlineEnquiryAssistedReproductionDelegator {
     public void searchInventory(BaseProcessClass bpc) throws ParseException{
         ParamUtil.setRequestAttr(bpc.request, "preActive", "1");
         HttpServletRequest request=bpc.request;
+        ParamUtil.setSessionAttr(request,"arViewFull",1);
         PatientInfoDto patientInfoDto= (PatientInfoDto) ParamUtil.getSessionAttr(request,"patientInfoDto");
         ArEnquiryTransactionHistoryFilterDto arDto=setArEnquiryTransactionHistoryFilterDto(request);
 
