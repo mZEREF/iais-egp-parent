@@ -80,47 +80,42 @@
                                     <span data-err-ind="batQty--v--${status.index}" class="error-msg"></span>
                                 </div>
                             </div>
-
-                               <div class="form-group">
-                                   <%@include file="../common/batDocument.jsp" %>
-                               </div>
-
                             </div>
 
                             <div id="agentFifth--v--${status.index}" style="display: none">
-                           <%--Displayed for Fifth Schedule toxin--%>
-                            <div class="form-group">
-                                <div class="col-sm-5 control-label">
-                                    <label for="transferQty--v--${status.index}">Quantity to Transfer</label>
-                                    <span class="mandatory otherQualificationSpan">*</span>
+                                    <%--Displayed for Fifth Schedule toxin--%>
+                                <div class="form-group">
+                                    <div class="col-sm-5 control-label">
+                                        <label for="transferQty--v--${status.index}">Quantity to Transfer</label>
+                                        <span class="mandatory otherQualificationSpan">*</span>
+                                    </div>
+                                    <div class="col-sm-6 col-md-7">
+                                        <input type="number" name="transferQty--v--${status.index}" id="transferQty--v--${status.index}" value="${item.transferQty}"
+                                               maxlength="11"
+                                               oninput="this.value=this.value.replace(/\D*(\d*)(\.?)(\d{0,3})\d*/,'$1$2$3')">
+                                        <span data-err-ind="transferQty--v--${status.index}" class="error-msg"></span>
+                                    </div>
                                 </div>
-                                <div class="col-sm-6 col-md-7">
-                                    <input type="number" name="transferQty--v--${status.index}" id="transferQty--v--${status.index}" value="${item.transferQty}"
-                                           maxlength="11"
-                                           oninput="this.value=this.value.replace(/\D*(\d*)(\.?)(\d{0,3})\d*/,'$1$2$3')">
-                                    <span data-err-ind="transferQty--v--${status.index}" class="error-msg"></span>
+
+                                    <%--Displayed for Fifth Schedule toxin--%>
+                                <div class="form-group">
+                                    <div class="col-sm-5 control-label">
+                                        <label for="mstUnit--v--${status.index}">Unit of Measurement</label>
+                                        <span class="mandatory otherQualificationSpan">*</span>
+                                    </div>
+                                    <div class="col-sm-6 col-md-7">
+                                        <iais:select name="mstUnit--v--${status.index}" id="mstUnit--v--${status.index}"
+                                                     value="${item.mstUnit}"
+                                                     codeCategory="CATE_ID_BSB_DATA_SUBMISSION_UNIT_OF_MEASUREMENT"
+                                                     firstOption="Please Select"/>
+                                        <span data-err-ind="mstUnit--v--${status.index}" class="error-msg"></span>
+                                    </div>
                                 </div>
                             </div>
-
-                                <%--Displayed for Fifth Schedule toxin--%>
-                            <div class="form-group">
-                                <div class="col-sm-5 control-label">
-                                    <label for="mstUnit--v--${status.index}">Unit of Measurement</label>
-                                    <span class="mandatory otherQualificationSpan">*</span>
+                            <div id="batDocument--v--${status.index}" style="display: none">
+                                <div class="form-group" >
+                                    <%@include file="../common/batDocument.jsp" %>
                                 </div>
-                                <div class="col-sm-6 col-md-7">
-                                    <iais:select name="mstUnit--v--${status.index}" id="mstUnit--v--${status.index}"
-                                                 value="${item.mstUnit}"
-                                                 codeCategory="CATE_ID_BSB_DATA_SUBMISSION_UNIT_OF_MEASUREMENT"
-                                                 firstOption="Please Select"/>
-                                    <span data-err-ind="mstUnit--v--${status.index}" class="error-msg"></span>
-                                </div>
-                            </div>
-
-                               <div class="form-group">
-                                   <%@include file="../common/batDocument.jsp" %>
-                               </div>
-
                             </div>
                         </section>
                     </c:forEach>

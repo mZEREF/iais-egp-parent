@@ -67,9 +67,6 @@
                                         <span data-err-ind="transferType--v--${status.index}" class="error-msg"></span>
                                     </div>
                                 </div>
-                                <div class="form-group">
-                                    <%@include file="../common/batDocument.jsp" %>
-                                </div>
                             </div>
                             <div id="agentFifth--v--${status.index}" style="display: none">
                                 <div class="form-group">
@@ -100,7 +97,10 @@
                                         <span data-err-ind="meaUnit--v--${status.index}" class="error-msg"></span>
                                     </div>
                                 </div>
-                                <div class="form-group">
+                            </div>
+
+                            <div id="batDocument--v--${status.index}" style="display: none">
+                                <div class="form-group" >
                                     <%@include file="../common/batDocument.jsp" %>
                                 </div>
                             </div>

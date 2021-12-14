@@ -29,17 +29,22 @@ $(function () {
 
 function isHidden() {
     var meta = readSectionRepeatMetaData();
-    var idxInput = $("input[name=" + meta.idxInputName +"]");
-    var curIdxes = idxInput.val();
-    var idxArr = curIdxes.trim().split(/ +/);
-    for (var i of idxArr) {
-        var schedule = $("#scheduleType--v--"+i).val();
-        if (schedule !== 'SCHTYPE006' && schedule !== '') {
-            $("#agentFifth--v--" + i).hide();
-            $("#agentEpFifth--v--" + i).show();
-        } else if (schedule === "SCHTYPE006") {
-            $("#agentEpFifth--v--" + i).hide();
-            $("#agentFifth--v--" + i).show();
+    var prefix  =  meta.sectionIdPrefix;
+    if(prefix !== 'ackSection'){
+        var idxInput = $("input[name=" + meta.idxInputName +"]");
+        var curIdxes = idxInput.val();
+        var idxArr = curIdxes.trim().split(/ +/);
+        for (var i of idxArr) {
+            var schedule = $("#scheduleType--v--"+i).val();
+            if (schedule !== 'SCHTYPE006' && schedule !== '') {
+                $("#agentFifth--v--" + i).hide();
+                $("#agentEpFifth--v--" + i).show();
+                $("#batDocument--v--"+i).show();
+            } else if (schedule === "SCHTYPE006") {
+                $("#agentEpFifth--v--" + i).hide();
+                $("#agentFifth--v--" + i).show();
+                $("#batDocument--v--"+i).show();
+            }
         }
     }
 }
@@ -49,12 +54,15 @@ function isHidden2(i) {
     if (schedule !== 'SCHTYPE006' && schedule !== '') {
         $("#agentFifth--v--" + i).hide();
         $("#agentEpFifth--v--" + i).show();
+        $("#batDocument--v--"+i).show();
     } else if (schedule === "SCHTYPE006") {
         $("#agentEpFifth--v--" + i).hide();
         $("#agentFifth--v--" + i).show();
+        $("#batDocument--v--"+i).show();
     } else {
         $("#agentFifth--v--" + i).hide();
         $("#agentEpFifth--v--" + i).hide();
+        $("#batDocument--v--"+i).hide();
     }
 }
 

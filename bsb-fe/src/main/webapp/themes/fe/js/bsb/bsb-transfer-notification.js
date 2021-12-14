@@ -33,15 +33,18 @@ $(function (){
 function stChange(obj){
     var num = $(obj).attr("name").split("--v--")[1];
     var scheduleType = $("#scheduleType"+"--v--"+num).val();
-    if(scheduleType !== 'SCHTYPE006'){
+    if(scheduleType !== 'SCHTYPE006' && scheduleType !== ''){
         $("#agentFifth"+"--v--"+num).hide();
         $("#agentEpFifth"+"--v--"+num).show();
+        $("#batDocument--v--"+ num).show();
     } else if(scheduleType === "SCHTYPE006"){
         $("#agentEpFifth"+"--v--"+num).hide();
         $("#agentFifth"+"--v--"+num).show();
+        $("#batDocument--v--"+ num).show();
     } else{
-        $("#agentEpFifth" + meta.separator + num).hide();
-        $("#agentFifth" + meta.separator + num).hide();
+        $("#agentEpFifth--v--"+ num).hide();
+        $("#agentFifth--v--"+ num).hide();
+        $("#batDocument--v--"+ num).hide();
     }
     if (scheduleType === 'Please Select' || scheduleType === '') {
         var bat = $("#batCode"+"--v--"+num);

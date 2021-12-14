@@ -2,12 +2,14 @@ function schTypeChange(obj) {
     var meta = readSectionRepeatMetaData();
     var num = $(obj).attr("name").split(meta.separator)[1];
     var scheduleType = $("#scheduleType" + meta.separator + num).val();
-    if (scheduleType !== 'SCHTYPE006') {
+    if (scheduleType !== 'SCHTYPE006' && scheduleType !== '') {
         $("#agentFifth" + meta.separator + num).hide();
         $("#agentEpFifth" + meta.separator + num).show();
+        $("#batDocument" + meta.separator + num).show();
     } else if (scheduleType === "SCHTYPE006") {
         $("#agentEpFifth" + meta.separator + num).hide();
         $("#agentFifth" + meta.separator + num).show();
+        $("#batDocument" + meta.separator + num).show();
     } else {
         $("#agentEpFifth" + meta.separator + num).hide();
         $("#agentFifth" + meta.separator + num).hide();
