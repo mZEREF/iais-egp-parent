@@ -67,7 +67,7 @@
 
                                         </div>
                                     </div>
-                                    <div class="row">
+                                    <div class="row col-md-13">
                                         <a href="#" onclick="javascript:doBack('${arAdv}','${arBase}');" ><em class="fa fa-angle-left"> </em> Back</a>
                                     </div>
                                 </div>
@@ -84,10 +84,10 @@
 
     var dividajaxlist = [];
 
-    function doReportSearch(appPremCorrId){
+    function doStageSearch(cycleId){
         showWaiting();
-        $("[name='crud_action_value']").val(appPremCorrId);
-        $("[name='crud_action_type']").val('preStage');
+        $("[name='crud_action_value']").val(cycleId);
+        $("[name='crud_action_type']").val('perStage');
         $('#mainForm').submit();
     }
     function doBack(arAdv,arBase){
@@ -202,7 +202,7 @@
                             '<td><p class="visible-xs visible-sm table-row-title">Stage</p><p>' + res[i].cycleStage + '<p></td>';
 
                         html += '<td><p class="visible-xs visible-sm table-row-title">View Full Details</p><p>' +
-                            '<button type="button" onclick="fullDetailsView(' + "'" + res[i].cycleId + "'" + ')" class="btn btn-default btn-sm">'+
+                            '<button type="button" onclick="doStageSearch(' + "'" + res[i].cycleId + "'" + ')" class="btn btn-default btn-sm">'+
                         'View Full Details</button></p></td>'+
                             '</tr>';
                     }

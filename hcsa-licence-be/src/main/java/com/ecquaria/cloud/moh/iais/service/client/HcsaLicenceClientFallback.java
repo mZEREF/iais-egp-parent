@@ -698,5 +698,13 @@ public class HcsaLicenceClientFallback implements HcsaLicenceClient {
         return entity;
     }
 
+    @Override
+    public FeignResponseEntity<ArSuperDataSubmissionDto> getArSuperDataSubmissionDto(String submissionNo) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
 
 }

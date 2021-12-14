@@ -12,10 +12,12 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArEnquiryCoFun
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArEnquiryCycleStageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArEnquiryTransactionHistoryFilterDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArEnquiryTransactionHistoryResultDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.AssistedReproductionAdvEnquiryResultsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.AssistedReproductionEnquiryFilterDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.AssistedReproductionEnquiryResultsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.AssistedReproductionEnquirySubResultsDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInventoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
@@ -42,9 +44,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.Serializable;
 import java.text.ParseException;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -1047,6 +1051,38 @@ public class OnlineEnquiryAssistedReproductionDelegator {
     }
 
     public void perStageInfo(BaseProcessClass bpc){
+        HttpServletRequest request=bpc.request;
+        String cycleId = ParamUtil.getString(request,"crud_action_value");
+        String cycleStage = ParamUtil.getString(request,"crud_action_additional");
+
+        if(StringUtil.isNotEmpty(cycleId)){
+            List<DataSubmissionDto> cycleStageList=assistedReproductionService.allDataSubmissionByCycleId(cycleId);
+            cycleStageList.sort(Comparator.comparing(DataSubmissionDto::getSubmitDt));
+            ParamUtil.setSessionAttr(request,"cycleStageList", (Serializable) cycleStageList);
+        }
+        List<DataSubmissionDto> dataSubmissionDtoList= (List<DataSubmissionDto>) ParamUtil.getSessionAttr(request,"cycleStageList");
+        if(IaisCommonUtils.isNotEmpty(dataSubmissionDtoList)){
+            if(StringUtil.isNotEmpty(cycleStage)){
+                for (DataSubmissionDto dataSubmissionDto:dataSubmissionDtoList
+                ) {
+                    if(dataSubmissionDto.getCycleStage().equals(cycleStage)){
+                        ArSuperDataSubmissionDto arSuper = assistedReproductionService.getArSuperDataSubmissionDto(
+                                dataSubmissionDto.getSubmissionNo());
+                        ParamUtil.setRequestAttr(request,"arSuperDataSubmissionDto",arSuper);
+                        break;
+                    }
+                }
+            }else {
+                ArSuperDataSubmissionDto arSuper = assistedReproductionService.getArSuperDataSubmissionDto(
+                        dataSubmissionDtoList.get(0).getSubmissionNo());
+                ParamUtil.setRequestAttr(request,"arSuperDataSubmissionDto",arSuper);
+            }
+        }
+
+
+
+
+
 
     }
 
