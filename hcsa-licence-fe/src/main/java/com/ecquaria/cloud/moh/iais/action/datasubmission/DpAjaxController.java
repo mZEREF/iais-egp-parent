@@ -44,7 +44,7 @@ public class DpAjaxController {
         patient.setNationality(nationality);
         Map<String, Object> result = IaisCommonUtils.genNewHashMap(3);
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
-        ValidationResult vr = WebValidationHelper.validateProperty(patient, "DRP");
+        ValidationResult vr = WebValidationHelper.validateProperty(patient, "ART");
         if (vr != null && vr.isHasErrors()) {
             Map<String, String> params = IaisCommonUtils.genNewHashMap();
             params.put("idType", "idType");

@@ -118,7 +118,7 @@ public class HcsaFileAjaxController {
             return "";
         }
         // Save File to other nodes
-        saveFileToOtherNodes(selectedFile, toFile, tempFolder);
+        //saveFileToOtherNodes(selectedFile, toFile, tempFolder);
 
         ParamUtil.setSessionAttr(request,SEESION_FILES_MAP_AJAX+fileAppendId,(Serializable)map);
 

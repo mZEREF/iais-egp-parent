@@ -24,7 +24,7 @@
 <%@ include file="dpHeader.jsp" %>
 
 <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
-    <%@ include file="formHidden.jsp" %>
+    <%@ include file="../../common/formHidden.jsp" %>
     <div class="main-content">
         <div class="container center-content">
             <div style="margin-top:-30px;">
