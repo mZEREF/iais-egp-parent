@@ -70,7 +70,7 @@
     <JavaCode defClass="" executor="" methodName="prepareSwitch_OnStepProcess_0" name="prepareSwitch_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <InvokeStep defClass="" executor="" icon="" name="Step1" processname="MohDPPatientInfo" project="" version="-1" x="350" y="550">
+  <InvokeStep defClass="" executor="" icon="" name="Patient" processname="MohDPPatientInfo" project="" version="-1" x="350" y="550">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess/>
@@ -151,9 +151,10 @@
    <position>{(210,330)(370,330)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/PrepareSwitch" linkstyle="Rectangle" name="" sourceName="/Merges/Merge/Merge1" style="rectanular">
+
    <position>{(1170,330)(1171,167)(700,24)(231,22)(210,330)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/InvokeStep/Step1" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch1" style="rectanular">
+  <SynchronousLink destinationName="/Steps/InvokeStep/Patient" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch1" style="rectanular">
    <position>{(370,330)(370,570)}</position>
   </SynchronousLink>
  </Links>
@@ -166,7 +167,7 @@
    <SwitchCase component="/Steps/AutomaticStep/PrepareConfim" value="&quot;confirm&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/Draft" value="&quot;draft&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/Submission" value="&quot;submission&quot;"/>
-   <SwitchCase component="/Steps/InvokeStep/Step1" value="&quot;patient&quot;"/>
+   <SwitchCase component="/Steps/InvokeStep/Patient" value="&quot;patient&quot;"/>
   </Switch>
  </Switches>
  <Branches/>
