@@ -8,6 +8,7 @@ import org.springframework.util.StringUtils;
 import sg.gov.moh.iais.egp.bsb.common.node.simple.ValidatableNodeValue;
 import sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants;
 import sg.gov.moh.iais.egp.bsb.dto.ValidationResultDto;
+import sg.gov.moh.iais.egp.bsb.util.SpringReflectionUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
@@ -39,7 +40,8 @@ public class IncidentInfoDto extends ValidatableNodeValue {
 
     @Override
     public boolean doValidation() {
-        return true;
+        this.validationResultDto = (ValidationResultDto) SpringReflectionUtils.invokeBeanMethod("incidentFeignClient", "validateIncidentInfo", new Object[]{this});
+        return validationResultDto.isPass();
     }
 
     @Override

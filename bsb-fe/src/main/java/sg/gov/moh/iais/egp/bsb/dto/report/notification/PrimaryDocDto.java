@@ -68,7 +68,20 @@ public class PrimaryDocDto extends ValidatableNodeValue {
 
     @Override
     public boolean doValidation() {
-        return true;
+        List<DocMeta> metaDtoList = new ArrayList<>(this.savedDocMap.size() + this.newDocMap.size());
+        this.savedDocMap.values().forEach(i -> {
+            DocMeta docMeta = new DocMeta(i.getRepoId(), i.getDocType(), i.getFilename(), i.getSize(), "facReg");
+            metaDtoList.add(docMeta);
+        });
+        this.newDocMap.values().forEach(i -> {
+            DocMeta docMeta = new DocMeta(i.getTmpId(), i.getDocType(), i.getFilename(), i.getSize(), "facReg");
+            metaDtoList.add(docMeta);
+        });
+
+        Map<String, List<DocMeta>> metaDtoMap = CollectionUtils.groupCollectionToMap(metaDtoList, DocMeta::getDocType);
+        PrimaryDocDto.DocsMetaDto docsMetaDto = new PrimaryDocDto.DocsMetaDto(metaDtoMap);
+        this.validationResultDto = (ValidationResultDto) SpringReflectionUtils.invokeBeanMethod("incidentFeignClient", "validatePrimaryDoc", new Object[]{docsMetaDto});
+        return validationResultDto.isPass();
     }
 
     @Override

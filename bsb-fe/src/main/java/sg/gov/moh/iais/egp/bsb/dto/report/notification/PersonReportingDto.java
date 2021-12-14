@@ -1,11 +1,13 @@
 package sg.gov.moh.iais.egp.bsb.dto.report.notification;
 
+import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.extern.slf4j.Slf4j;
 import sg.gov.moh.iais.egp.bsb.common.node.simple.ValidatableNodeValue;
 import sg.gov.moh.iais.egp.bsb.dto.ValidationResultDto;
+import sg.gov.moh.iais.egp.bsb.util.SpringReflectionUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
@@ -29,6 +31,7 @@ public class PersonReportingDto extends ValidatableNodeValue {
     private String email;
     private String roleDesignation;
     private String facName;
+    private String facId;
     private String facType;
     private String activityType;
     private String incidentDate;
@@ -53,7 +56,8 @@ public class PersonReportingDto extends ValidatableNodeValue {
 
     @Override
     public boolean doValidation() {
-        return true;
+        this.validationResultDto = (ValidationResultDto) SpringReflectionUtils.invokeBeanMethod("incidentFeignClient", "validatePersonReporting", new Object[]{this});
+        return validationResultDto.isPass();
     }
 
     @Override
@@ -147,6 +151,14 @@ public class PersonReportingDto extends ValidatableNodeValue {
 
     public void setFacType(String facType) {
         this.facType = facType;
+    }
+
+    public String getFacId() {
+        return facId;
+    }
+
+    public void setFacId(String facId) {
+        this.facId = facId;
     }
 
     public String getActivityType() {
@@ -286,6 +298,7 @@ public class PersonReportingDto extends ValidatableNodeValue {
         this.email = ParamUtil.getString(request,KEY_REPORTING_PERSON_EMAIL);
         this.roleDesignation = ParamUtil.getString(request,KEY_REPORTING_PERSON_ROLE);
         this.facName = ParamUtil.getString(request,KEY_FACILITY_NAME);
+        this.facId = MaskUtil.unMaskValue("id",this.facName);
         this.facType = ParamUtil.getString(request,KEY_FACILITY_TYPE);
         this.activityType = ParamUtil.getString(request,KEY_ACTIVITY_TYPE);
         this.incidentDate = ParamUtil.getString(request,KEY_INCIDENT_DATE);

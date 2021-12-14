@@ -219,9 +219,7 @@
                                                                         <span class="mandatory otherQualificationSpan">*</span>
                                                                     </div>
                                                                     <div class="col-sm-6 col-md-7">
-                                                                        <textarea id="incidentDesc" rows="6" name="incidentDesc" maxlength="500">
-                                                                            <c:out value="${reportingPerson.incidentDesc}"/>
-                                                                        </textarea>
+                                                                        <textarea id="incidentDesc" name="incidentDesc" maxlength="500" style="width: 100%"><c:out value="${reportingPerson.incidentDesc}"/></textarea>
                                                                         <span data-err-ind="incidentDesc" class="error-msg"></span>
                                                                     </div>
                                                                 </div>

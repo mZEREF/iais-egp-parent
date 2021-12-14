@@ -12,9 +12,9 @@
 <%--                    </ul>--%>
 <%--                </div>--%>
                 <div class="document-upload-list--v--${status.index}">
-                    <c:set var="doc" value="${docSettings}"/>
+                    <c:set var="doc" value="${doSettings.get(item.docType)}"/>
                     <c:set var="newFiles" value="${item.newDocInfos}"/>
-                    <h3>${doc.get(item.docType)}<c:if test="${doc.mandatory}"> <span class="mandatory otherQualificationSpan">*</span></c:if></h3>
+                    <h3>${doc.typeDisplay}<c:if test="${doc.mandatory}"> <span class="mandatory otherQualificationSpan">*</span></c:if></h3>
                     <div class="file-upload-gp" style="margin-left: 40px">
                         <c:if test="${newFiles ne null}">
                             <c:forEach var="info" items="${newFiles}">

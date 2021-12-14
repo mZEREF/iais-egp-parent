@@ -36,7 +36,7 @@ public interface IncidentNotificationClient {
     ValidationResultDto validatePersonReporting(@RequestBody PersonReportingDto dto);
 
     @PostMapping(path = "/incident/validate/primaryDoc", consumes = MediaType.APPLICATION_JSON_VALUE, produces =MediaType.APPLICATION_JSON_VALUE)
-    ValidationResultDto validatePrimaryDoc(@RequestBody PrimaryDocDto dto);
+    ValidationResultDto validatePrimaryDoc(@RequestBody PrimaryDocDto.DocsMetaDto dto);
 
     @GetMapping(path = "/incident/query/{facId}", produces =MediaType.APPLICATION_JSON_VALUE)
     Map<String, List<BiologicalInfo>> queryFacilityActivityFacIdMap(@PathVariable("facId") String facId);

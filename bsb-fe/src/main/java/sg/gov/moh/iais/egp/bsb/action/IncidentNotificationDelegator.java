@@ -120,7 +120,7 @@ public class IncidentNotificationDelegator {
         incidentInfoDto.reqObjMapping(request);
         String actionType = ParamUtil.getString(request, KEY_ACTION_TYPE);
         if (KEY_ACTION_JUMP.equals(actionType)) {
-            jumpHandler(request, incidentNotRoot, NODE_NAME_INCIDENT_INFO, incidentNode);
+            jumpHandler(request, incidentNotRoot);
         } else {
             throw new IaisRuntimeException(ERR_MSG_INVALID_ACTION);
         }
@@ -151,7 +151,7 @@ public class IncidentNotificationDelegator {
         personReportingDto.reqObjMapping(request);
         String actionType = ParamUtil.getString(request, KEY_ACTION_TYPE);
         if (KEY_ACTION_JUMP.equals(actionType)) {
-            jumpHandler(request, incidentNotRoot, NODE_NAME_PERSON_REPORTING_INFO, reportingPersonNode);
+            jumpHandler(request, incidentNotRoot);
         } else {
             throw new IaisRuntimeException(ERR_MSG_INVALID_ACTION);
         }
@@ -180,7 +180,7 @@ public class IncidentNotificationDelegator {
         personInvolvedInfoDto.reqObjMapping(request);
         String actionType = ParamUtil.getString(request, KEY_ACTION_TYPE);
         if (KEY_ACTION_JUMP.equals(actionType)) {
-            jumpHandler(request, incidentNotRoot, NODE_NAME_PERSON_INVOLVED_INFO, involvedPersonNode);
+            jumpHandler(request, incidentNotRoot);
         } else {
             throw new IaisRuntimeException(ERR_MSG_INVALID_ACTION);
         }
@@ -215,7 +215,7 @@ public class IncidentNotificationDelegator {
 
         String actionType = ParamUtil.getString(request, KEY_ACTION_TYPE);
         if (KEY_ACTION_JUMP.equals(actionType)) {
-            jumpHandler(request, incidentNotRoot, NODE_NAME_DOCUMENTS, documentNode);
+            jumpHandler(request, incidentNotRoot);
         } else {
             throw new IaisRuntimeException(ERR_MSG_INVALID_ACTION);
         }
@@ -242,59 +242,54 @@ public class IncidentNotificationDelegator {
     public void handleSubmit(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
         NodeGroup incidentNotRoot = getIncidentNotRoot(request);
-        Node previewSubmitNode = incidentNotRoot.at(NODE_NAME_PREVIEW_SUBMIT);
         String actionType = ParamUtil.getString(request, KEY_ACTION_TYPE);
         String actionValue = ParamUtil.getString(request, KEY_ACTION_VALUE);
         if (KEY_ACTION_JUMP.equals(actionType)) {
             if (KEY_NAV_NEXT.equals(actionValue)) {
-                if (previewSubmitNode.doValidation()) {
-                    previewSubmitNode.passValidation();
-
-                    // save docs
-                    SimpleNode primaryDocNode = (SimpleNode) incidentNotRoot.at(NODE_NAME_DOCUMENTS);
-                    PrimaryDocDto primaryDocDto = (PrimaryDocDto) primaryDocNode.getValue();
-                    List<NewFileSyncDto> newFilesToSync = null;
-                    if (!primaryDocDto.getNewDocMap().isEmpty()) {
-                        MultipartFile[] files = primaryDocDto.getNewDocMap().values().stream().map(NewDocInfo::getMultipartFile).toArray(MultipartFile[]::new);
-                        List<String> repoIds = fileRepoClient.saveFiles(files).getEntity();
-                        newFilesToSync = primaryDocDto.newFileSaved(repoIds);
-                    }
-
-                    // save data
-                    IncidentNotificationDto incidentNotificationDto = IncidentNotificationDto.from(incidentNotRoot);
-                    AuditTrailDto auditTrailDto = (AuditTrailDto) ParamUtil.getSessionAttr(request, AuditTrailConsts.SESSION_ATTR_PARAM_NAME);
-                    incidentNotificationDto.setAuditTrailDto(auditTrailDto);
-                    ResponseDto<String> responseDto = incidentClient.saveNewIncidentNotification(incidentNotificationDto);
-                    if(log.isInfoEnabled()){
-                        log.info("save new facility response: {}", LogUtil.escapeCrlf(responseDto.toString()));
-                    }
-                    try {
-                        // sync files to BE file-repo (save new added files, delete useless files)
-                        if ((newFilesToSync != null && !newFilesToSync.isEmpty()) || !primaryDocDto.getToBeDeletedRepoIds().isEmpty()) {
-                            /* Ignore the failure of sync files currently.
-                             * We should add a mechanism to retry synchronization of files in the future */
-                            FileRepoSyncDto syncDto = new FileRepoSyncDto();
-                            syncDto.setNewFiles(newFilesToSync);
-                            syncDto.setToDeleteIds(new ArrayList<>(primaryDocDto.getToBeDeletedRepoIds()));
-                            bsbFileClient.saveFiles(syncDto);
-                        }
-
-                        // delete docs in FE file-repo
-                        /* Ignore the failure when try to delete FE files because this is not a big issue.
-                         * The not deleted file won't be retrieved, so it's just a waste of disk space */
-                        for (String id: primaryDocDto.getToBeDeletedRepoIds()) {
-                            FileRepoDto fileRepoDto = new FileRepoDto();
-                            fileRepoDto.setId(id);
-                            fileRepoClient.removeFileById(fileRepoDto);
-                        }
-                    } catch (Exception e) {
-                        log.error("Fail to sync files to BE", e);
-                    }
-
-                    ParamUtil.setRequestAttr(request, KEY_ACTION_TYPE, KEY_ACTION_SUBMIT);
+                // save docs
+                SimpleNode primaryDocNode = (SimpleNode) incidentNotRoot.at(NODE_NAME_DOCUMENTS);
+                PrimaryDocDto primaryDocDto = (PrimaryDocDto) primaryDocNode.getValue();
+                List<NewFileSyncDto> newFilesToSync = null;
+                if (!primaryDocDto.getNewDocMap().isEmpty()) {
+                    MultipartFile[] files = primaryDocDto.getNewDocMap().values().stream().map(NewDocInfo::getMultipartFile).toArray(MultipartFile[]::new);
+                    List<String> repoIds = fileRepoClient.saveFiles(files).getEntity();
+                    newFilesToSync = primaryDocDto.newFileSaved(repoIds);
                 }
+
+                // save data
+                IncidentNotificationDto incidentNotificationDto = IncidentNotificationDto.from(incidentNotRoot);
+                AuditTrailDto auditTrailDto = (AuditTrailDto) ParamUtil.getSessionAttr(request, AuditTrailConsts.SESSION_ATTR_PARAM_NAME);
+                incidentNotificationDto.setAuditTrailDto(auditTrailDto);
+                ResponseDto<String> responseDto = incidentClient.saveNewIncidentNotification(incidentNotificationDto);
+                if(log.isInfoEnabled()){
+                    log.info("save new facility response: {}", LogUtil.escapeCrlf(responseDto.toString()));
+                }
+                try {
+                    // sync files to BE file-repo (save new added files, delete useless files)
+                    if ((newFilesToSync != null && !newFilesToSync.isEmpty()) || !primaryDocDto.getToBeDeletedRepoIds().isEmpty()) {
+                        /* Ignore the failure of sync files currently.
+                         * We should add a mechanism to retry synchronization of files in the future */
+                        FileRepoSyncDto syncDto = new FileRepoSyncDto();
+                        syncDto.setNewFiles(newFilesToSync);
+                        syncDto.setToDeleteIds(new ArrayList<>(primaryDocDto.getToBeDeletedRepoIds()));
+                        bsbFileClient.saveFiles(syncDto);
+                    }
+
+                    // delete docs in FE file-repo
+                    /* Ignore the failure when try to delete FE files because this is not a big issue.
+                     * The not deleted file won't be retrieved, so it's just a waste of disk space */
+                    for (String id: primaryDocDto.getToBeDeletedRepoIds()) {
+                        FileRepoDto fileRepoDto = new FileRepoDto();
+                        fileRepoDto.setId(id);
+                        fileRepoClient.removeFileById(fileRepoDto);
+                    }
+                } catch (Exception e) {
+                    log.error("Fail to sync files to BE", e);
+                }
+
+                ParamUtil.setRequestAttr(request, KEY_ACTION_TYPE, KEY_ACTION_SUBMIT);
             } else {
-                jumpHandler(request, incidentNotRoot, NODE_NAME_PREVIEW_SUBMIT, previewSubmitNode);
+                jumpHandler(request, incidentNotRoot);
             }
         } else {
             throw new IaisRuntimeException(ERR_MSG_INVALID_ACTION);
@@ -312,27 +307,15 @@ public class IncidentNotificationDelegator {
      * will set a floag if we need to show the error messages.
      * @param facRegRoot root data structure of this flow
      */
-    public void jumpHandler(HttpServletRequest request, NodeGroup facRegRoot, String currentPath, Node currentNode) {
+    public void jumpHandler(HttpServletRequest request, NodeGroup facRegRoot) {
         String actionValue = ParamUtil.getString(request, KEY_ACTION_VALUE);
         Assert.hasText(actionValue, "Invalid action value");
-        boolean currentLetGo = true;  // if false, we have to stay current node
-        if (KEY_NAV_NEXT.equals(actionValue)) {  // if click next, we need to validate current node anyway
-            currentLetGo = currentNode.doValidation();
-            if (currentLetGo) {
-                Nodes.passValidation(facRegRoot, currentPath);
-            }
-        }
-        if (currentLetGo) {
-            String destNode = computeDestNodePath(facRegRoot, actionValue);
-            String checkedDestNode = Nodes.jump(facRegRoot, destNode);
-            if (!checkedDestNode.equals(destNode)) {
-                ParamUtil.setRequestAttr(request, KEY_SHOW_ERROR_SWITCH, Boolean.TRUE);
-            }
-            ParamUtil.setSessionAttr(request, KEY_JUMP_DEST_NODE, checkedDestNode);
-        } else {
+        String destNode = computeDestNodePath(facRegRoot, actionValue);
+        String checkedDestNode = Nodes.jump(facRegRoot, destNode);
+        if (!checkedDestNode.equals(destNode)) {
             ParamUtil.setRequestAttr(request, KEY_SHOW_ERROR_SWITCH, Boolean.TRUE);
-            ParamUtil.setSessionAttr(request, KEY_JUMP_DEST_NODE, currentPath);
         }
+        ParamUtil.setSessionAttr(request, KEY_JUMP_DEST_NODE, checkedDestNode);
     }
 
     /**
