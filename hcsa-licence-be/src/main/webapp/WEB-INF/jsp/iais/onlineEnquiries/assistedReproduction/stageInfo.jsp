@@ -49,10 +49,8 @@
                                     <div class="swiper-button-next"></div>
                                 </div>
 
-                                <div class="tab-content ">
+                                <div class="tab-content col-md-13">
                                     <div class="tab-pane active " id="tab${cycleStage}" role="tabpanel">
-
-
                                         <c:choose>
 
                                             <c:when test="${cycleStage == 'AR_CL001'}">
@@ -134,6 +132,9 @@
                                         </c:choose>
                                     </div>
                                 </div>
+                                <div class="row ">
+                                    <a href="#" onclick="javascript:doBack('${arViewFull}');" ><em class="fa fa-angle-left"> </em> Back</a>
+                                </div>
 
                             </div>
                             </iais:body>
@@ -145,6 +146,16 @@
     </form>
 </div>
 <script type="text/javascript">
+    function doBack(arViewFull){
+        showWaiting();
+        if(arViewFull==1){
+            $("[name='crud_action_type']").val('backView');
+        }else {
+            $("[name='crud_action_type']").val('backBase');
+        }
+        $('#mainForm').submit();
+    }
+
     $(document).ready(function() {
         $('#AR_CL001Tab').click(function(){
             showWaiting();

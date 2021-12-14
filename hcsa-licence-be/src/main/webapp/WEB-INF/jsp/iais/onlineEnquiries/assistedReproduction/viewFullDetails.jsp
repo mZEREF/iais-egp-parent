@@ -47,7 +47,7 @@
                                             <div class="swiper-button-next"></div>
                                         </div>
 
-                                        <div class="tab-content ">
+                                        <div class="tab-content col-md-13">
                                             <div class="tab-pane <c:if test="${empty preActive }">active</c:if> " id="tabPatientInfo" role="tabpanel">
                                                 <%@include file="patientInfo.jsp" %>
                                             </div>
@@ -66,10 +66,11 @@
                                             </div>
 
                                         </div>
+                                        <div class="row ">
+                                            <a href="#" onclick="javascript:doBack('${arAdv}','${arBase}');" ><em class="fa fa-angle-left"> </em> Back</a>
+                                        </div>
                                     </div>
-                                    <div class="row col-md-13">
-                                        <a href="#" onclick="javascript:doBack('${arAdv}','${arBase}');" ><em class="fa fa-angle-left"> </em> Back</a>
-                                    </div>
+
                                 </div>
                             </iais:body>
                         </div>

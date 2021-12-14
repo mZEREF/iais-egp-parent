@@ -72,6 +72,13 @@
     <JavaCode defClass="" executor="" methodName="perStageInfo_OnStepProcess_0" name="perStageInfo_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="perNext" x="480" y="590">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="perNext_OnStepProcess_0" name="perNext_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
  </Steps>
  <Pages>
   <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="patientResultsPage" stageIndicator="" x="550" y="100">
@@ -92,7 +99,7 @@
    <Description/>
    <probepoint type="none"/>
   </WebPage>
-  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="stageInfoPage" stageIndicator="" x="480" y="620">
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="stageInfoPage" stageIndicator="" x="410" y="700">
    <OnPageLoad/>
    <OnPageSubmit/>
    <Description/>
@@ -171,19 +178,25 @@
    <position>{(870,790)(570,790)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Pages/WebPage/stageInfoPage" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/perStageInfo" style="oblique">
-   <position>{(570,790)(500,640)}</position>
+   <position>{(570,790)(430,720)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/preViewFullDetails" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch3" style="oblique">
-   <position>{(645,590)(630,420)}</position>
+   <position>{(620,560)(630,420)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/perStageInfo" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch1" style="rectanular">
    <position>{(740,120)(570,790)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Switches/Switch/Switch3" linkstyle="Direct" name="" sourceName="/Pages/WebPage/stageInfoPage" style="oblique">
-   <position>{(500,640)(645,590)}</position>
+  <SynchronousLink destinationName="/Switches/Switch/Switch3" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/perNext" style="oblique">
+   <position>{(525,640)(620,560)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/perStageInfo" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch3" style="rectanular">
-   <position>{(645,590)(570,790)}</position>
+   <position>{(620,560)(570,790)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/baseSearch" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch3" style="rectanular">
+   <position>{(620,560)(270,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/perNext" linkstyle="Direct" name="" sourceName="/Pages/WebPage/stageInfoPage" style="oblique">
+   <position>{(430,720)(525,640)}</position>
   </SynchronousLink>
  </Links>
  <Conditions/>
@@ -209,10 +222,11 @@
    <SwitchCase component="/Steps/AutomaticStep/searchInventory" value="&quot;searchInv&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/perStageInfo" value="&quot;perStage&quot;"/>
   </Switch>
-  <Switch defClass="" defaultComponent="/Steps/AutomaticStep/preViewFullDetails" executor="" icon="" leftOperand="crud_action_type" name="Switch3" x="600" y="540">
+  <Switch defClass="" defaultComponent="/Steps/AutomaticStep/baseSearch" executor="" icon="" leftOperand="crud_action_type" name="Switch3" x="600" y="540">
    <Description/>
    <SwitchCase component="/Steps/AutomaticStep/perStageInfo" value="&quot;step&quot;"/>
-   <SwitchCase component="/Steps/AutomaticStep/preViewFullDetails" value="&quot;back&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/preViewFullDetails" value="&quot;backView&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/baseSearch" value="&quot;backBase&quot;"/>
   </Switch>
  </Switches>
  <Branches/>

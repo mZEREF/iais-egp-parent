@@ -119,30 +119,39 @@
     <sql key = "searchPatientAjaxByAssistedReproduction" remarks="search patient ajax by Assisted Reproduction">
         <![CDATA[
            SELECT distinct ajax.* FROM (
-            SELECT dc.ID ,dpi.PATIENT_CODE patient_code, 'AR' DS_TYPE ,dacs.TREATMENT_FRESH_NATURAL ,dacs.TREATMENT_FRESH_STIMULATED ,dacs.TREATMENT_FROZEN_EMBRYO ,dacs.TREATMENT_FROZEN_OOCYTE ,dc.HCI_CODE, lp.BUSINESS_NAME ,dacs.CREATED_DT ,dc.STATUS
+            SELECT dc.ID ,dpi.PATIENT_CODE patient_code, 'AR' DS_TYPE ,dacs.TREATMENT_FRESH_NATURAL ,dacs.TREATMENT_FRESH_STIMULATED ,dacs.TREATMENT_FROZEN_EMBRYO ,dacs.TREATMENT_FROZEN_OOCYTE ,dc.HCI_CODE, lp.BUSINESS_NAME ,dc.CREATED_DT ,dc.STATUS
                 FROM ds_cycle dc
                 join ds_patient_information dpi on dpi.PATIENT_CODE =dc.PATIENT_CODE
                 join ds_data_submission dds on dds.CYCLE_ID = dc.ID
-                join ds_ar_cycle_stage dacs on dacs.SUBMISSION_ID =dds.ID
+                left join ds_ar_cycle_stage dacs on dacs.SUBMISSION_ID =dds.ID
                 join premises p on dc.HCI_CODE =p.HCI_CODE and  p.CREATED_DT =(select max(CREATED_DT) from premises where HCI_CODE =dc.HCI_CODE)
                 JOIN lic_premises lp on lp.PREMISES_ID =p.ID
+                where dc.CYCLE_TYPE ='DSCL_008'
 
                 UNION ALL
-                SELECT dc.ID,dpi.PATIENT_CODE patient_code,'IUI' DS_TYPE ,null TREATMENT_FRESH_NATURAL ,null TREATMENT_FRESH_STIMULATED ,null TREATMENT_FROZEN_EMBRYO ,null TREATMENT_FROZEN_OOCYTE ,dc.HCI_CODE, lp.BUSINESS_NAME ,dics.CREATED_DT ,dc.STATUS
+                SELECT dc.ID,dpi.PATIENT_CODE patient_code,'IUI' DS_TYPE ,null TREATMENT_FRESH_NATURAL ,null TREATMENT_FRESH_STIMULATED ,null TREATMENT_FROZEN_EMBRYO ,null TREATMENT_FROZEN_OOCYTE ,dc.HCI_CODE, lp.BUSINESS_NAME ,dc.CREATED_DT ,dc.STATUS
                 FROM ds_cycle dc
                 join ds_patient_information dpi on dpi.PATIENT_CODE =dc.PATIENT_CODE
                 join ds_data_submission dds on dds.CYCLE_ID = dc.ID
-                join ds_iui_cycle_stage dics on dics.SUBMISSION_ID =dds.ID
                 join premises p on dc.HCI_CODE =p.HCI_CODE and  p.CREATED_DT =(select max(CREATED_DT) from premises where HCI_CODE =dc.HCI_CODE)
                 JOIN lic_premises lp on lp.PREMISES_ID =p.ID
+                where dc.CYCLE_TYPE ='DSCL_009'
                 UNION ALL
-                SELECT dc.ID,dpi.PATIENT_CODE patient_code,'EFO' DS_TYPE ,null TREATMENT_FRESH_NATURAL ,null TREATMENT_FRESH_STIMULATED ,null TREATMENT_FROZEN_EMBRYO ,null TREATMENT_FROZEN_OOCYTE ,dc.HCI_CODE, lp.BUSINESS_NAME ,decs.CREATED_DT ,dc.STATUS
+                SELECT dc.ID,dpi.PATIENT_CODE patient_code,'EFO' DS_TYPE ,null TREATMENT_FRESH_NATURAL ,null TREATMENT_FRESH_STIMULATED ,null TREATMENT_FROZEN_EMBRYO ,null TREATMENT_FROZEN_OOCYTE ,dc.HCI_CODE, lp.BUSINESS_NAME ,dc.CREATED_DT ,dc.STATUS
                 FROM ds_cycle dc
                 join ds_patient_information dpi on dpi.PATIENT_CODE =dc.PATIENT_CODE
                 join ds_data_submission dds on dds.CYCLE_ID = dc.ID
-                join ds_efo_cycle_stage decs  on decs.SUBMISSION_ID =dds.ID
                 join premises p on dc.HCI_CODE =p.HCI_CODE and  p.CREATED_DT =(select max(CREATED_DT) from premises where HCI_CODE =dc.HCI_CODE)
                 JOIN lic_premises lp on lp.PREMISES_ID =p.ID
+                where dc.CYCLE_TYPE ='DSCL_010'
+                UNION ALL
+                SELECT dc.ID,dpi.PATIENT_CODE patient_code,'-' DS_TYPE ,null TREATMENT_FRESH_NATURAL ,null TREATMENT_FRESH_STIMULATED ,null TREATMENT_FROZEN_EMBRYO ,null TREATMENT_FROZEN_OOCYTE ,dc.HCI_CODE, lp.BUSINESS_NAME ,dc.CREATED_DT ,dc.STATUS
+                FROM ds_cycle dc
+                join ds_patient_information dpi on dpi.PATIENT_CODE =dc.PATIENT_CODE
+                join ds_data_submission dds on dds.CYCLE_ID = dc.ID
+                join premises p on dc.HCI_CODE =p.HCI_CODE and  p.CREATED_DT =(select max(CREATED_DT) from premises where HCI_CODE =dc.HCI_CODE)
+                JOIN lic_premises lp on lp.PREMISES_ID =p.ID
+                where dc.CYCLE_TYPE ='DSCL_011'
             ) ajax
             where 1=1
             <#if patientCode??> AND  :patientCode = ajax.patient_code</#if>
@@ -154,7 +163,7 @@
         <![CDATA[
            SELECT distinct dpi.ID, dpi.NAME, dpi.ID_TYPE, dpi.ID_NUMBER, dpi.DATE_OF_BIRTH, dpi.NATIONALITY,dc.CREATED_DT ,lp.BUSINESS_NAME,dpi.PATIENT_CODE
                 FROM ds_patient_information dpi
-                join ds_cycle dc on dc.PATIENT_CODE =dpi.PATIENT_CODE
+                join ds_cycle dc on dc.PATIENT_CODE =dpi.PATIENT_CODE and dc.CYCLE_TYPE in ('DSCL_008','DSCL_009','DSCL_010','DSCL_011')
                 join premises p on dc.HCI_CODE =p.HCI_CODE and  p.CREATED_DT =(select max(CREATED_DT) from premises where HCI_CODE =dc.HCI_CODE)
                 JOIN lic_premises lp on lp.PREMISES_ID =p.ID
                 join ds_data_submission dds on dds.CYCLE_ID=dc.ID
