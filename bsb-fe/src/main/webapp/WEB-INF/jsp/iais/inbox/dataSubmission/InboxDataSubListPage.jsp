@@ -169,20 +169,14 @@
                                                             </td>
                                                             <td>
                                                                 <c:if test="${item.status ne 'DATASTA002'}">
-                                                                    <p class="visible-xs visible-sm table-row-title">Actions</p>
                                                                     <select id="appAction${status.index}" name="appAction${status.index}" data-action-select="">
                                                                         <option value="#" selected="selected">Select</option>
-                                                                        <c:if test="${item.scheduleList ne null}">
-                                                                            <c:forEach items="${item.scheduleList}" var="schedule">
-                                                                                <c:when test="${schedule ne 'SCHTYPE002' or schedule ne 'SCHTYPE003' or schedule ne 'SCHTYPE006'}">
-                                                                                    <option value="/bsb-fe/eservice/INTERNET/BsbWithDrawn?withdrawnAppId=<iais:mask name='id' value='${item.applicationId}'/>">Withdrawn</option>
-                                                                                </c:when>
-                                                                            </c:forEach>
-                                                                        </c:if>
-                                                                        <c:if test="${item.isAssign eq 'N'}">
+                                                                        <%--The application will be in a “non-approved” or “non-rejected” stage--%>
+                                                                        <c:if test="${item.applicationId ne null and (item.applicationStatus ne 'BSBAPST008' or item.applicationStatus ne 'BSBAPST009')}">
                                                                             <option value="/bsb-fe/eservice/INTERNET/BsbWithDrawn?withdrawnAppId=<iais:mask name='id' value='${item.applicationId}'/>">Withdrawn</option>
                                                                         </c:if>
                                                                     </select>
+                                                                    <p class="visible-xs visible-sm table-row-title">Actions</p>
                                                                 </c:if>
                                                             </td>
                                                         </tr>

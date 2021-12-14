@@ -173,6 +173,7 @@
                                                                         <c:when test="${app.processType eq 'PROTYPE005' and app.status eq 'BSBAPST001'}">
                                                                             <option value="/bsb-fe/eservice/INTERNET/MohFacilityCertifierRegistration?editId=<iais:mask name='editId' value='${app.id}'/>">Edit</option>
                                                                         </c:when>
+                                                                        <%--The application will be in a “non-approved” or “non-rejected” stage and may be one of the following: New / Renewal / Request for Change / Deregistration / Cancellation / Notification/ Data Submission.--%>
                                                                     </c:choose>
                                                                 </select>
                                                             </td>

@@ -24,7 +24,6 @@ public class InboxDataSubResultDto {
         private String facilityAddress;
         private Date submittedOn;
         private String applicationId;
-        private String isAssign;
-        private List<String> scheduleList;
+        private String applicationStatus;
     }
 }

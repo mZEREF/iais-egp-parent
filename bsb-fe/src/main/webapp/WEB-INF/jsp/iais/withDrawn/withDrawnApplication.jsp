@@ -14,6 +14,7 @@
 
 <script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-common.js"></script>
 <script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-withdrawn.js"></script>
+<script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-withdrawn-file.js"></script>
 <%@include file="/WEB-INF/jsp/iais/include/showErrorMsg.jsp" %>
 <%@include file="dashboard.jsp" %>
 <form method="post" id="mainForm" enctype="multipart/form-data" action=<%=process.runtime.continueURL()%>>

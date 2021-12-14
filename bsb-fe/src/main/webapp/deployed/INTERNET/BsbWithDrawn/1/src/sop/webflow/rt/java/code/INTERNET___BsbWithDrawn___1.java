@@ -33,7 +33,7 @@ public class INTERNET___BsbWithDrawn___1 extends BaseProcessClass {
 	}
 
 	public void submit_OnStepProcess_0() throws Exception {
-	// 		submit->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "submitWithdrawn", this);
 	}
 
 }
