@@ -7,11 +7,14 @@ import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoDto;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.utils.LogUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
+import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.Assert;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 import sg.gov.moh.iais.egp.bsb.client.BsbFileClient;
@@ -27,6 +30,7 @@ import sg.gov.moh.iais.egp.bsb.dto.file.DocRecordInfo;
 import sg.gov.moh.iais.egp.bsb.dto.file.FileRepoSyncDto;
 import sg.gov.moh.iais.egp.bsb.dto.file.NewDocInfo;
 import sg.gov.moh.iais.egp.bsb.dto.file.NewFileSyncDto;
+import sg.gov.moh.iais.egp.bsb.dto.report.FacilityInfo;
 import sg.gov.moh.iais.egp.bsb.dto.report.notification.*;
 import sg.gov.moh.iais.egp.bsb.entity.DocSetting;
 import sop.webflow.rt.api.BaseProcessClass;
@@ -47,7 +51,6 @@ import static sg.gov.moh.iais.egp.bsb.constant.IncidentNotificationConstants.*;
 @Slf4j
 @Delegator("incidentNotificationDelegator")
 public class IncidentNotificationDelegator {
-    private static final String ERR_MSG_BAT_NOT_NULL = "Biological Agent/Toxin node group must not be null!";
     private static final String ERR_MSG_NULL_GROUP = "Node group must not be null!";
     private static final String ERR_MSG_NULL_NAME = "Name must not be null!";
     private static final String ERR_MSG_INVALID_ACTION = "Invalid action";
@@ -55,6 +58,7 @@ public class IncidentNotificationDelegator {
     private static final String KEY_VALIDATION_ERRORS = "errorMsg";
     private static final String PARAM_SELECT_OCCURRENCE_HH_OPTIONS = "occurHHOps";
     private static final String PARAM_SELECT_OCCURRENCE_MM_OPTIONS = "occurMMOps";
+    private static final String PARAM_SELECT_FACILITY_NAME_OPTIONS = "facNameOps";
     private final FileRepoClient fileRepoClient;
     private final IncidentNotificationClient incidentClient;
     private final BsbFileClient bsbFileClient;
@@ -105,6 +109,7 @@ public class IncidentNotificationDelegator {
         }
         Nodes.needValidation(incidentNotRoot, NODE_NAME_INCIDENT_INFO);
         ParamUtil.setRequestAttr(request, NODE_NAME_INCIDENT_INFO, incidentInfoDto);
+        ParamUtil.setRequestAttr(request,"incidentReportOps",tempReportingOfIncidentOps());
     }
 
     public void handleIncidentInfo(BaseProcessClass bpc){
@@ -135,6 +140,7 @@ public class IncidentNotificationDelegator {
         ParamUtil.setRequestAttr(request, NODE_NAME_PERSON_REPORTING_INFO, personReportingDto);
         ParamUtil.setRequestAttr(request,PARAM_SELECT_OCCURRENCE_HH_OPTIONS,tempOccurrenceHHOps());
         ParamUtil.setRequestAttr(request,PARAM_SELECT_OCCURRENCE_MM_OPTIONS,tempOccurrenceMMOps());
+        ParamUtil.setRequestAttr(request,PARAM_SELECT_FACILITY_NAME_OPTIONS,tempFacNameOps());
     }
 
     public void handlePersonReportingInfo(BaseProcessClass bpc){
@@ -236,7 +242,7 @@ public class IncidentNotificationDelegator {
     public void handleSubmit(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
         NodeGroup incidentNotRoot = getIncidentNotRoot(request);
-        SimpleNode previewSubmitNode = (SimpleNode) incidentNotRoot.at(NODE_NAME_PREVIEW_SUBMIT);
+        Node previewSubmitNode = incidentNotRoot.at(NODE_NAME_PREVIEW_SUBMIT);
         String actionType = ParamUtil.getString(request, KEY_ACTION_TYPE);
         String actionValue = ParamUtil.getString(request, KEY_ACTION_VALUE);
         if (KEY_ACTION_JUMP.equals(actionType)) {
@@ -457,5 +463,36 @@ public class IncidentNotificationDelegator {
             occurrenceMMops.add(new SelectOption(val,val));
         }
         return occurrenceMMops;
+    }
+
+    /**
+     * temp deal option for dropdown list reportOfIncident
+     * this method would be delete in future
+     * */
+    public static List<SelectOption> tempReportingOfIncidentOps(){
+        List<SelectOption> reportIncidentOps = new ArrayList<>(3);
+        reportIncidentOps.add(new SelectOption("","Please Select"));
+        reportIncidentOps.add(new SelectOption("REPORT001","Adverse incident or accident (occurrence which resulted in personnel injury, property damage including loss of materials and/or release of hazardous materials outside of the containment facility)"));
+        reportIncidentOps.add(new SelectOption("REPORT002","Near miss (unplanned occurrence that did not result in personnel injury, property damage including loss of materials or release of hazardous materials outside of the containment facility but had the potential to do so)"));
+        return reportIncidentOps;
+    }
+
+    public List<SelectOption> tempFacNameOps(){
+        List<FacilityInfo> facilityInfos = incidentClient.queryDistinctFacilityName();
+        if(CollectionUtils.isEmpty(facilityInfos)){
+           return originalOps();
+        }
+        List<SelectOption> facNameOps = new ArrayList<>(facilityInfos.size());
+        for (FacilityInfo info : facilityInfos) {
+            facNameOps.add(new SelectOption(MaskUtil.maskValue("id",info.getFacId()),info.getFacName()));
+        }
+        return facNameOps;
+    }
+
+
+    public static List<SelectOption> originalOps(){
+        List<SelectOption> originalOps = new ArrayList<>(1);
+        originalOps.add(new SelectOption("","Please Select"));
+        return originalOps;
     }
 }

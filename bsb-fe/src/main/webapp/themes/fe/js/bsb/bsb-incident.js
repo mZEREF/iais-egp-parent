@@ -4,23 +4,32 @@ $(function (){
         $("input[value='INCTYPE001']").attr("checked", true);
         $("#safeTypes").show();
         $("#securTypes").hide();
+        $("#securTypes :checked").prop("checked",false);
         $("#generTypes").hide();
+        $("#generTypes :checked").prop("checked",false);
+        $("#otherDel").hide();
     });
 
     $("#securRadio").change(function (){
         $("input[type='checkbox']").removeAttr("checked");
         $("input[value='INCTYPE002']").attr("checked", true);
-        $("#safeTypes").hide();
         $("#securTypes").show();
+        $("#safeTypes").hide();
+        $("#safeTypes :checked").prop("checked",false);
         $("#generTypes").hide();
+        $("#generTypes :checked").prop("checked",false);
+        $("#otherDel").hide();
     });
 
     $("#generRadio").change(function (){
         $("input[type='checkbox']").removeAttr("checked");
         $("input[value='INCTYPE003']").attr("checked", true);
         $("#safeTypes").hide();
+        $("#safeTypes :checked").prop("checked",false);
         $("#securTypes").hide();
+        $("#securTypes :checked").prop("checked",false);
         $("#generTypes").show();
+        $("#otherDel").hide();
     });
 
     $("#next").click(function () {
@@ -48,6 +57,84 @@ $(function (){
     });
     $("#involvedN").change(function (){
         $("#involved").hide();
+    });
+
+    $("#others").change(function (){
+        if($("#others").prop('checked')){
+            $("#otherDel").show();
+        }else{
+            $("#otherDel").hide();
+        }
+    });
+
+    $("#others1").change(function (){
+        if($("#others1").prop('checked')){
+            $("#otherDel").show();
+        }else{
+            $("#otherDel").hide();
+        }
+    });
+
+    $("#others2").change(function (){
+        if($("#others2").prop('checked')){
+            $("#otherDel").show();
+        }else{
+            $("#otherDel").hide();
+        }
+    });
+
+    $("#facName").change(function (){
+        var facName = $("#facName").val();
+        if(facName === ""){
+            $("#activityType").html("<option value=\"\">Please select<\/option>");
+        }else{
+            $.post('/bsb-fe/incident/activity.do',
+                {facName: facName},
+                function (data) {
+                    var result = data.result;
+                    if (result === 'success') {
+                        var actResult = data.actResult;
+                        var bioResult = data.bioResult;
+                        var optionString = "";
+                        var optionLi = "";
+                        var optionString1 = "";
+                        var optionLi1 = "";
+                        var bat = $("#batName");
+                        $.map(actResult,function(key,value){
+                            optionString += "<option value=\"" + value + "\">" + key + "</option>";
+                            optionLi += "<li data-value=\"" + value + "\" class=\"option\">" + key + "</li>";
+                        })
+                        for (var i = 0; i < bioResult.length; i++) {
+                            optionString1 += "<option value=\"" + bioResult[i] + "\">" + bioResult[i] + "</option>";
+                            optionLi1 += "<label class=\"multi-select-menuitem\" for=\"batName_" +(i+1) + " \" role=\"menuitem\" " +"> "+
+                                "<input id=\"batName_"+ (i+1) +  "\" type = \"checkbox\" value=\""+bioResult[i]+"\""+"/>"
+                                + bioResult[i]
+                                + "</label>"
+                        }
+                        var activityType = $("#activityType");
+                        activityType.html("<option value=\"\">Please select<\/option>" + optionString);
+                        activityType.next().children("ul.list").html("<li data-value class=\"option selected focus\">Please Select<\/li>" + optionLi);
+                        // bat.html("<option value=\"\">Please select<\/option>" + optionString1);
+                        // bat.next().children(".multi-select-menu").children(".multi-select-menuitems").html("<label class=\"multi-select-menuitem\" for=\"batName_0\" role =\"menuitem\"> <input id=\"batName_0\" type=\"checkbox\" value=\"Please select\"> Please Select </label>"+optionLi1);
+
+                        bat.multiselect({
+                            isOpen:false,
+                            multiple : true,
+                            header : true,
+                            hide : [ "explode", 500 ],
+                            noneSelectedText : ['Please Select'],
+                            close : function() {
+                                var val = bat.val();
+                                $("#Warehouse").val(val);
+                            }
+                        });
+                        bat.multiselect('disable');
+                    } else {
+
+                    }
+                }
+            )
+        }
     })
 
     $("a[data-step-key]").click(jumpToStep);

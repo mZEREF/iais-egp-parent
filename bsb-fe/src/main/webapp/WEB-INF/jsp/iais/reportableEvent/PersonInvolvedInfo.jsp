@@ -26,7 +26,7 @@
     <input type="hidden" name="action_type" value="">
     <input type="hidden" name="action_value" value="">
     <input type="hidden" name="action_additional" value="">
-    <input type="hidden" name="sectionIdx" value="${TableDisplayUtil.indexes(involvedPerson.personInvolvedList.size())}">
+    <input type="hidden" name="sectionIdx" value="${TableDisplayUtil.indexes(involvedPerson.incidentPersons.size())}">
 
     <input type="hidden" id="section_repeat_section_idx_name" value="sectionIdx" readonly disabled>
     <input type="hidden" id="section_repeat_section_id_prefix" value="invPersonSection" readonly disabled>
@@ -48,9 +48,9 @@
                                             <div class="row">
                                                 <div class="col-xs-12 col-md-10" style="margin-top: 20px">
                                                     <div id="sectionGroup">
-                                                        <c:forEach var="item" items="${involvedPerson.personInvolvedList}" varStatus="status">
+                                                        <c:forEach var="item" items="${involvedPerson.incidentPersons}" varStatus="status">
                                                             <section id="invPersonSection--v--${status.index}">
-                                                                <c:if test="${involvedPerson.personInvolvedList.size() > 1}">
+                                                                <c:if test="${involvedPerson.incidentPersons.size() > 1}">
                                                                     <div class="form-group">
                                                                         <h3 class="col-xs-9 col-sm-10 col-md-11" style="border-bottom: 1px solid black">Person${status.index + 1}</h3>
                                                                         <c:if test="${status.index gt 0}">
@@ -213,12 +213,12 @@
                                                                     </div>
                                                                     <div class="col-sm-6 col-md-7">
                                                                         <div class="col-sm-5" style="margin-top: 8px">
-                                                                            <input type="radio" name="medicalFollowUp--v--${status.index}" id=medFollowUpY--v--${status.index}" value="Y" <c:if test="${item.medicalFollowUp eq 'Y'}">checked="checked"</c:if> />
-                                                                            <label for=medFollowUpY--v--${status.index}">Yes</label>
+                                                                            <input type="radio" name="medicalFollowup--v--${status.index}" id=medFollowupY--v--${status.index}" value="Y" <c:if test="${item.medicalFollowup eq 'Y'}">checked="checked"</c:if> />
+                                                                            <label for=medFollowupY--v--${status.index}">Yes</label>
                                                                         </div>
                                                                         <div class="col-sm-5" style="margin-top: 8px">
-                                                                            <input type="radio" name="medicalFollowUp--v--${status.index}" id="medFollowUpN--v--${status.index}" value="N" <c:if test="${item.medicalFollowUp eq 'Y'}">checked="checked"</c:if> />
-                                                                            <label for="medFollowUpN--v--${status.index}">No</label>
+                                                                            <input type="radio" name="medicalFollowup--v--${status.index}" id="medFollowupN--v--${status.index}" value="N" <c:if test="${item.medicalFollowup eq 'Y'}">checked="checked"</c:if> />
+                                                                            <label for="medFollowupN--v--${status.index}">No</label>
                                                                         </div>
                                                                     </div>
                                                                 </div>

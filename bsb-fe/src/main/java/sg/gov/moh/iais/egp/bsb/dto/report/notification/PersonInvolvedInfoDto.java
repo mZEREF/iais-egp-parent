@@ -38,17 +38,17 @@ public class PersonInvolvedInfoDto extends ValidatableNodeValue {
         private String practitionerName;
         private String hospitalName;
         private String medicalDesc;
-        private String medicalFollowUp;
+        private String medicalFollowup;
     }
 
-    private List<PersonInvolved> personInvolvedList;
+    private List<PersonInvolved> incidentPersons;
 
     @JsonIgnore
     private ValidationResultDto validationResultDto;
 
     public PersonInvolvedInfoDto() {
-        personInvolvedList = new ArrayList<>();
-        personInvolvedList.add(new PersonInvolved());
+        incidentPersons = new ArrayList<>();
+        incidentPersons.add(new PersonInvolved());
     }
 
     @Override
@@ -69,20 +69,20 @@ public class PersonInvolvedInfoDto extends ValidatableNodeValue {
         this.validationResultDto = null;
     }
 
-    public List<PersonInvolved> getPersonInvolvedList() {
-        return new ArrayList<>(personInvolvedList);
+    public List<PersonInvolved> getIncidentPersons() {
+        return new ArrayList<>(incidentPersons);
     }
 
-    public void setPersonInvolvedList(List<PersonInvolved> personInvolvedList) {
-        this.personInvolvedList = new ArrayList<>(personInvolvedList);
+    public void setIncidentPersons(List<PersonInvolved> personInvolvedList) {
+        this.incidentPersons = new ArrayList<>(personInvolvedList);
     }
 
-    public void clearPersonInvolvedList(){
-        personInvolvedList.clear();
+    public void clearIncidentPersons(){
+        incidentPersons.clear();
     }
 
-    public void addPersonInvolvedList(PersonInvolved personInvolved){
-        personInvolvedList.add(personInvolved);
+    public void addIncidentPersons(PersonInvolved personInvolved){
+        incidentPersons.add(personInvolved);
     }
 
 
@@ -99,10 +99,10 @@ public class PersonInvolvedInfoDto extends ValidatableNodeValue {
     private static final String KEY_MEDICAL_PRACTITIONER_NAME = "practitionerName";
     private static final String KEY_HOSPITAL_NAME = "hospitalName";
     private static final String KEY_MEDICAL_DESCRIPTION = "medicalDesc";
-    private static final String KEY_MEDICAL_FOLLOW_UP = "medicalFollowUp";
+    private static final String KEY_MEDICAL_FOLLOW_UP = "medicalFollowup";
     public void reqObjMapping(HttpServletRequest request){
         String idxes = ParamUtil.getString(request, KEY_SECTION_IDXES);
-        clearPersonInvolvedList();
+        clearIncidentPersons();
         String[] idxArr = idxes.trim().split(" +");
         for (String idx : idxArr) {
             PersonInvolved personInvolved = new PersonInvolved();
@@ -116,9 +116,9 @@ public class PersonInvolvedInfoDto extends ValidatableNodeValue {
             personInvolved.setMedicalPerson(ParamUtil.getString(request,KEY_PERSON_SENT_FOR_MEDICAL+SEPARATOR+idx));
             personInvolved.setPractitionerName(ParamUtil.getString(request,KEY_MEDICAL_PRACTITIONER_NAME+SEPARATOR+idx));
             personInvolved.setHospitalName(ParamUtil.getString(request,KEY_HOSPITAL_NAME+SEPARATOR+idx));
-            personInvolved.setMedicalPerson(ParamUtil.getString(request,KEY_MEDICAL_DESCRIPTION+SEPARATOR+idx));
-            personInvolved.setMedicalFollowUp(ParamUtil.getString(request,KEY_MEDICAL_FOLLOW_UP+SEPARATOR+idx));
-            addPersonInvolvedList(personInvolved);
+            personInvolved.setMedicalDesc(ParamUtil.getString(request,KEY_MEDICAL_DESCRIPTION+SEPARATOR+idx));
+            personInvolved.setMedicalFollowup(ParamUtil.getString(request,KEY_MEDICAL_FOLLOW_UP+SEPARATOR+idx));
+            addIncidentPersons(personInvolved);
         }
     }
 

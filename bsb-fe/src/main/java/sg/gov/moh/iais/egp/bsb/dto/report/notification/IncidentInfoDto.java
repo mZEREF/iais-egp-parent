@@ -33,6 +33,9 @@ public class IncidentInfoDto extends ValidatableNodeValue {
     @JsonIgnore
     private ValidationResultDto validationResultDto;
 
+    public IncidentInfoDto() {
+        this.childTypes = new ArrayList<>();
+    }
 
     @Override
     public boolean doValidation() {

@@ -67,7 +67,7 @@
                                                         <span class="mandatory otherQualificationSpan">*</span>
                                                     </div>
                                                     <div class="col-sm-6 col-md-7">
-                                                        <input type="text" autocomplete="off" name="memberName--v--${status.index}" id="memberName--v--${status.index}" value='<c:out value="${cer.memberName}"/>'/>
+                                                        <input type="text" autocomplete="off" name="memberName--v--${status.index}" id="memberName--v--${status.index}" value='<c:out value="${cer.memberName}"/>' maxlength="132"/>
                                                         <span data-err-ind="memberName--v--${status.index}" class="error-msg"></span>
                                                     </div>
                                                 </div>

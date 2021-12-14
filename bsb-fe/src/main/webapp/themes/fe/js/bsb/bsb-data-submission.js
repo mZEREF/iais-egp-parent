@@ -23,7 +23,6 @@ function schTypeChange(obj) {
                     var result = data.result;
                     if (result == 'success') {
                         var queryResult = data.queryResult;
-                        console.log(queryResult);
                         var optionString = "";
                         var optionString1 = "";
                         for (var i = 0; i < queryResult.length; i++) {

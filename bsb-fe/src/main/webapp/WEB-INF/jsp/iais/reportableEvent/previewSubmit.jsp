@@ -135,7 +135,7 @@
                                                                 <div class="col-sm-7 col-md-5 col-xs-7">
                                                                     <p><c:forEach var="item" items="${reportingPerson.batName}" varStatus="status">
                                                                         <c:choose>
-                                                                            <c:when test="${status.index+1 eq item.size()}">
+                                                                            <c:when test="${status.index+1 eq reportingPerson.batName.size()}">
                                                                                 <c:out value="${item}"/>
                                                                             </c:when>
                                                                             <c:otherwise>
@@ -194,7 +194,7 @@
                                                             </c:if>
 
 
-                                                            <c:forEach var="item" items="${involvedPerson.personInvolvedList}" varStatus="status">
+                                                            <c:forEach var="item" items="${involvedPerson.incidentPersons}" varStatus="status">
                                                             <div class="row">
                                                                 <h3>Person ${status.index+1}</h3>
                                                                 <div class="form-group">
@@ -204,7 +204,7 @@
                                                                 <div class="form-group">
                                                                     <label class="col-xs-5 col-md-4 control-label">Name (as per NRIC/FIN)</label>
                                                                     <div class="col-sm-7 col-md-5 col-xs-7">
-                                                                        <p>${involvedPerson.name}</p>
+                                                                        <p>${item.name}</p>
                                                                     </div>
                                                                     <div class="clear"></div>
                                                                 </div>
@@ -212,7 +212,7 @@
                                                                 <div class="form-group">
                                                                     <label class="col-xs-5 col-md-4 control-label">Tel No</label>
                                                                     <div class="col-sm-7 col-md-5 col-xs-7">
-                                                                        <p>${involvedPerson.telNo}</p>
+                                                                        <p>${item.telNo}</p>
                                                                     </div>
                                                                     <div class="clear"></div>
                                                                 </div>
@@ -220,7 +220,7 @@
                                                                 <div class="form-group">
                                                                     <label class="col-xs-5 col-md-4 control-label">Designation</label>
                                                                     <div class="col-sm-7 col-md-5 col-xs-7">
-                                                                        <p>${involvedPerson.designation}</p>
+                                                                        <p>${item.designation}</p>
                                                                     </div>
                                                                     <div class="clear"></div>
                                                                 </div>
@@ -229,8 +229,8 @@
                                                                     <label class="col-xs-5 col-md-4 control-label">Was the personnel injured</label>
                                                                     <div class="col-sm-7 col-md-5 col-xs-7">
                                                                         <p><c:choose>
-                                                                            <c:when test="${reportingPerson.personnelInjured eq 'Y'}"><c:out value="Yes"/></c:when>
-                                                                            <c:when test="${reportingPerson.personnelInjured eq 'N'}"><c:out value="No"/></c:when>
+                                                                            <c:when test="${item.personnelInjured eq 'Y'}"><c:out value="Yes"/></c:when>
+                                                                            <c:when test="${item.personnelInjured eq 'N'}"><c:out value="No"/></c:when>
                                                                         </c:choose></p>
                                                                     </div>
                                                                     <div class="clear"></div>
@@ -240,8 +240,8 @@
                                                                     <label class="col-xs-5 col-md-4 control-label">Personnel Involvement</label>
                                                                     <div class="col-sm-7 col-md-5 col-xs-7">
                                                                         <p><c:choose>
-                                                                            <c:when test="${reportingPerson.personnelInvolvement eq 'directly'}"><c:out value="Directly Involved"/></c:when>
-                                                                            <c:when test="${reportingPerson.personnelInvolvement eq 'indirectly'}"><c:out value="Indirectly Involved"/></c:when>
+                                                                            <c:when test="${item.personnelInvolvement eq 'directly'}"><c:out value="Directly Involved"/></c:when>
+                                                                            <c:when test="${item.personnelInvolvement eq 'indirectly'}"><c:out value="Indirectly Involved"/></c:when>
                                                                         </c:choose></p>
                                                                     </div>
                                                                     <div class="clear"></div>
@@ -250,7 +250,7 @@
                                                                 <div class="form-group">
                                                                     <label class="col-xs-5 col-md-4 control-label">Description of involvement e.g. type of injury, exposure to biological agent</label>
                                                                     <div class="col-sm-7 col-md-5 col-xs-7">
-                                                                        <p>${involvedPerson.involvementDesc}</p>
+                                                                        <p>${item.involvementDesc}</p>
                                                                     </div>
                                                                     <div class="clear"></div>
                                                                 </div>
@@ -263,7 +263,7 @@
                                                                 <div class="form-group">
                                                                     <label class="col-xs-5 col-md-4 control-label">Name of Medical Practitioner</label>
                                                                     <div class="col-sm-7 col-md-5 col-xs-7">
-                                                                        <p>${involvedPerson.practitionerName}</p>
+                                                                        <p>${item.practitionerName}</p>
                                                                     </div>
                                                                     <div class="clear"></div>
                                                                 </div>
@@ -271,7 +271,7 @@
                                                                 <div class="form-group">
                                                                     <label class="col-xs-5 col-md-4 control-label">Name of Hospital/Clinic where medical consultation was sought</label>
                                                                     <div class="col-sm-7 col-md-5 col-xs-7">
-                                                                        <p>${involvedPerson.hospitalName}</p>
+                                                                        <p>${item.hospitalName}</p>
                                                                     </div>
                                                                     <div class="clear"></div>
                                                                 </div>
@@ -279,7 +279,7 @@
                                                                 <div class="form-group">
                                                                     <label class="col-xs-5 col-md-4 control-label">Description</label>
                                                                     <div class="col-sm-7 col-md-5 col-xs-7">
-                                                                        <p>${involvedPerson.medicalDesc}</p>
+                                                                        <p>${item.medicalDesc}</p>
                                                                     </div>
                                                                     <div class="clear"></div>
                                                                 </div>
@@ -288,8 +288,8 @@
                                                                     <label class="col-xs-5 col-md-4 control-label">Is subsequent medical follow-up required/advised?</label>
                                                                     <div class="col-sm-7 col-md-5 col-xs-7">
                                                                         <p><c:choose>
-                                                                            <c:when test="${reportingPerson.medicalFollowUp eq 'Y'}"><c:out value="Yes"/></c:when>
-                                                                            <c:when test="${reportingPerson.medicalFollowUp eq 'N'}"><c:out value="No"/></c:when>
+                                                                            <c:when test="${item.medicalFollowup eq 'Y'}"><c:out value="Yes"/></c:when>
+                                                                            <c:when test="${item.medicalFollowup eq 'N'}"><c:out value="No"/></c:when>
                                                                         </c:choose></p>
                                                                     </div>
                                                                     <div class="clear"></div>
@@ -346,7 +346,7 @@
                                 <div class="col-xs-12 col-sm-6">
                                     <div class="button-group">
                                         <a class="btn btn-secondary" id="saveDraft" >Save as Draft</a>
-                                        <a class="btn btn-primary next" id="saveButton" >Save</a>
+                                        <a class="btn btn-primary next" id="next" >Save</a>
                                     </div>
                                 </div>
                             </div>

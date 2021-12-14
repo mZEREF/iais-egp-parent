@@ -9,6 +9,7 @@ import sg.gov.moh.iais.egp.bsb.dto.ValidationResultDto;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -46,6 +47,9 @@ public class PersonReportingDto extends ValidatableNodeValue {
     @JsonIgnore
     private ValidationResultDto validationResultDto;
 
+    public PersonReportingDto() {
+        batName = new ArrayList<>();
+    }
 
     @Override
     public boolean doValidation() {
@@ -260,7 +264,8 @@ public class PersonReportingDto extends ValidatableNodeValue {
     private static final String KEY_FACILITY_TYPE = "facType";
     private static final String KEY_ACTIVITY_TYPE = "activityType";
     private static final String KEY_INCIDENT_DATE = "incidentDate";
-    private static final String KEY_OCCURRENCE_TIME = "occurrenceTime";
+    private static final String KEY_OCCURRENCE_TIME_HH = "occurrenceTimeH";
+    private static final String KEY_OCCURRENCE_TIME_MM = "occurrenceTimeM";
     private static final String KEY_INCIDENT_LOCATION = "location";
     private static final String KEY_INCIDENT_BAT = "batName";
     private static final String KEY_INCIDENT_DESCRIPTION= "incidentDesc";
@@ -284,9 +289,14 @@ public class PersonReportingDto extends ValidatableNodeValue {
         this.facType = ParamUtil.getString(request,KEY_FACILITY_TYPE);
         this.activityType = ParamUtil.getString(request,KEY_ACTIVITY_TYPE);
         this.incidentDate = ParamUtil.getString(request,KEY_INCIDENT_DATE);
-        this.occurrenceTime = ParamUtil.getString(request,KEY_OCCURRENCE_TIME);
+        String occurrenceTimeH = ParamUtil.getString(request,KEY_OCCURRENCE_TIME_HH);
+        String occurrenceTimeM = ParamUtil.getString(request,KEY_OCCURRENCE_TIME_MM);
+        this.occurrenceTime = occurrenceTimeH+":"+occurrenceTimeM;
         this.location = ParamUtil.getString(request,KEY_INCIDENT_LOCATION);
-        this.batName = ParamUtil.getListStrings(request,KEY_INCIDENT_BAT);
+        String[] batNames = ParamUtil.getStrings(request,KEY_INCIDENT_BAT);
+        if(batNames != null && batNames.length>0){
+            this.batName = new ArrayList<>(Arrays.asList(ParamUtil.getStrings(request,KEY_INCIDENT_BAT)));
+        }
         this.incidentDesc = ParamUtil.getString(request,KEY_INCIDENT_DESCRIPTION);
         this.batReleasePossibility = ParamUtil.getString(request,KEY_BAT_RELEASE_POSSIBILITY);
         this.releaseExtent = ParamUtil.getString(request,KEY_RELEASE_EXTENT);
