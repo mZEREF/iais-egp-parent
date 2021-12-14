@@ -7,8 +7,6 @@ function deleteDonor(index){
     if($("#crud_action_value_donor_size").val()>1){
         $("#crud_action_value_ar_stage").val(index);
         submit("page");
-    }else {
-
     }
 }
 function addDonor(){
@@ -40,6 +38,7 @@ function showDonor(index){
     $("#otherSource"+index).val("");
     $("#donorSampleCode"+index).val("");
     $("#idNo"+index+"Row").show();
+    $("#relation"+index+"Row").show();
 }
 function hideDonor(index){
     $("#source"+index+"Row").show();
@@ -47,6 +46,7 @@ function hideDonor(index){
     $("#idNo"+index+"Row").hide();
     $("#idType"+index).val("");
     $("#idNumber"+index).val("");
+    $("#relation"+index+"Row").hide();
 }
 
 function showUsedDonorOocyteControlClass(flag){

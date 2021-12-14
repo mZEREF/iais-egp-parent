@@ -97,7 +97,7 @@ public abstract class DonorCommonDelegator extends CommonDelegator{
             }else {
                 Map<String, String> errorMap = IaisCommonUtils.genNewHashMap(1);
                 arDonorDtos.forEach( donorDto -> {
-                    if(donorSampleDto.getSampleKey().equalsIgnoreCase(donorDto.getDonorSampleKey())){
+                    if(donorSampleDto.getSampleKey().equalsIgnoreCase(donorDto.getDonorSampleKey()) && donorDto.getArDonorIndex() != valiateArDonor){
                             errorMap.put("validateDonor" +(arDonorDto.isDirectedDonation() ? "Yes" : "No") +arDonorDto.getArDonorIndex(), MessageUtil.replaceMessage("DS_ERR016","This donor ","field"));
                         setDonorDtoByDonorSampleDto(donorDto,donorSampleDto);
                     }
