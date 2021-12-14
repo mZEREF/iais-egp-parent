@@ -226,6 +226,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                         String s = FileUtil.genMd5FileChecksum(bytes);
                         s = s + AppServicesConsts.ZIP_NAME;
                         if( !s.equals(name)){
+                            log.info(StringUtil.changeForLog(s+" not equals "+name));
                             continue;
                         }
                     }catch (Exception e){
