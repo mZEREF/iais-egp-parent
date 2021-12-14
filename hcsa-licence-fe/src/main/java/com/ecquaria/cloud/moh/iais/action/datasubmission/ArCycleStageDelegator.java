@@ -37,7 +37,7 @@ public class ArCycleStageDelegator extends DonorCommonDelegator{
     private final static String  PRACTITIONER_DROP_DOWN          = "practitionerDropDown";
     private final static String  EMBRYOLOGIST_DROP_DOWN          = "embryologistDropDown";
     private final static String  DONOR_USED_TYPES                = "donorUsedTypes";
-
+    private final static String  UNDERGONE_OVERSEAS_DROP_DOWN    = "cyclesUndergoneOverseasDropDown";
     @Autowired
     private ArDataSubmissionService arDataSubmissionService;
     @Override
@@ -45,6 +45,7 @@ public class ArCycleStageDelegator extends DonorCommonDelegator{
         HttpServletRequest request = bpc.request;
         ParamUtil.setSessionAttr(request,CURRENT_AR_TREATMENT_SESSION,(Serializable) MasterCodeUtil.retrieveByCategory(MasterCodeUtil.CURRENT_AR_TREATMENT));
         ParamUtil.setSessionAttr(request, NO_CHILDREN_DROP_DOWN,(Serializable) DataSubmissionHelper.getNumsSelections(10));
+        ParamUtil.setSessionAttr(request, UNDERGONE_OVERSEAS_DROP_DOWN,(Serializable) DataSubmissionHelper.getNumsSelections(10));
         //21 : Unknown
         List<SelectOption> selectOptions =  DataSubmissionHelper.getNumsSelections(20);
         selectOptions.add(new SelectOption("21","Unknown"));

@@ -155,14 +155,14 @@
                 </iais:row>
 
                 <iais:row id="totalNumberARCOtherRow">
-                    <iais:field width="5" value="No. of Cycles undergone Overseas" mandatory="true"/>
-                    <iais:value width="7" cssClass="col-md-7">
-                        <iais:input maxLength="2" type="number" name="cyclesUndergoneOverseas" onInput="if(value.length>2)value=value.slice(0,2)" id="cyclesUndergoneOverseas" value="${arCycleStageDto.cyclesUndergoneOverseas}"
-                                    onchange="doEnhancedCounsellingMandatory('${enhancedCounsellingMandatory}')"/>
-                    </iais:value>
+                    <iais:field width="5" value="No. of AR Cycles undergone Overseas" mandatory="true"/>
+                        <iais:value width="7" cssClass="col-md-7">
+                            <iais:select name="cyclesUndergoneOverseas" options="cyclesUndergoneOverseasDropDown" firstOption="Please Select" value="${arCycleStageDto.cyclesUndergoneOverseas}"  onchange="doEnhancedCounsellingMandatory('${enhancedCounsellingMandatory}')"/>
+                        </iais:value>
                 </iais:row>
+
                 <iais:row>
-                    <iais:field width="5" value="No. of Cycles undergone Locally" mandatory="false"/>
+                    <iais:field width="5" value="No. of AR Cycles undergone Locally" mandatory="false"/>
                         <iais:value width="7" cssClass="col-md-7" display="true" >
                            <c:out value="${arCycleStageDto.numberOfCyclesUndergoneLocally}"/>
                         </iais:value>

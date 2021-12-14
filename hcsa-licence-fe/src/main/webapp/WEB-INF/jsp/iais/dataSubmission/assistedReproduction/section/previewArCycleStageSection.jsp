@@ -114,13 +114,13 @@
                 </iais:row>
 
                 <iais:row id="totalNumberARCOtherRow" style="${ arCycleStageDto.totalPreviouslyPreviously == 21 ? '' : 'display: none'}">
-                    <iais:field width="5" value="No. of Cycles undergone Overseas" />
+                    <iais:field width="5" value="No. of AR Cycles undergone Overseas" />
                     <iais:value width="7" cssClass="col-md-7" display="true">
                         <c:out value="${arCycleStageDto.cyclesUndergoneOverseas}"/>
                     </iais:value>
                 </iais:row>
                 <iais:row>
-                    <iais:field width="5" value="No. of Cycles undergone Locally" />
+                    <iais:field width="5" value="No. of AR Cycles undergone Locally" />
                         <iais:value width="7" cssClass="col-md-7" display="true">
                             <c:out value="${arCycleStageDto.numberOfCyclesUndergoneLocally}"/>
                         </iais:value>
