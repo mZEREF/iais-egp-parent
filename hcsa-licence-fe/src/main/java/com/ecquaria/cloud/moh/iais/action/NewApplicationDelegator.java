@@ -3725,29 +3725,24 @@ public class NewApplicationDelegator {
                     continue;
                 }
                 if (AppConsts.YES.equals(chooseExistData[i])) {
-                    appGrpPremisesDto = NewApplicationHelper.getPremisesFromMap(premisesSel, request);;
-                    //appGrpPremisesDto.setRfiCanEdit(true);
-                    if(AppConsts.TRUE.equals(rfiCanEdit[i])){
-                        appGrpPremisesDto.setRfiCanEdit(true);
-                    }else{
-                        appGrpPremisesDto.setRfiCanEdit(false);
+                    appGrpPremisesDto = NewApplicationHelper.getPremisesFromMap(premisesSel, request);
+                    if (appGrpPremisesDto != null) {
+                        if (AppConsts.TRUE.equals(rfiCanEdit[i])) {
+                            appGrpPremisesDto.setRfiCanEdit(true);
+                        } else {
+                            appGrpPremisesDto.setRfiCanEdit(false);
+                        }
+                        NewApplicationHelper.setPremise(appGrpPremisesDto, premIndexNo, appSubmissionDto);
+                        appGrpPremisesDtoList.add(appGrpPremisesDto);
+                        continue;
+                    } else {
+                        log.error(StringUtil.changeForLog("##### Error Data: " + premIndexNo));
                     }
-                    NewApplicationHelper.setPremise(appGrpPremisesDto, premIndexNo, appSubmissionDto);
-                    appGrpPremisesDtoList.add(appGrpPremisesDto);
-                    continue;
                 }
                 //set hciCode
                 List<AppGrpPremisesDto> appGrpPremisesDtos = appSubmissionDto.getAppGrpPremisesDtoList();
                 for (AppGrpPremisesDto premDto : appGrpPremisesDtos) {
                     if (premIndexNo.equals(premDto.getPremisesIndexNo())) {
-                        /*AppGrpPremisesDto dtoFromMap = NewApplicationHelper.getPremisesFromMap(premisesSel, request);;
-                        String hciCode = dtoFromMap != null ? dtoFromMap.getHciCode() : "";
-                        if (!StringUtil.isEmpty(hciCode)) {
-                            appGrpPremisesDto.setHciCode(hciCode);
-                        } else {
-                            appGrpPremisesDto.setHciCode(premDto.getHciCode());
-                        }
-                        appGrpPremisesDto.setLicenceDtos(premDto.getLicenceDtos());*/
                         NewApplicationHelper.setPremise(appGrpPremisesDto, premIndexNo, appSubmissionDto);
                         break;
                     }

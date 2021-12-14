@@ -2214,17 +2214,7 @@ public class NewApplicationHelper {
     }
 
     public static String getPremisesKey(PremisesDto premisesDto) {
-        if (premisesDto == null) {
-            return "";
-        }
-        String additional = premisesDto.getPremisesType() + ApplicationConsts.DELIMITER + premisesDto.getHciName();
-        if (ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(premisesDto.getPremisesType())) {
-            additional += ApplicationConsts.DELIMITER + premisesDto.getVehicleNo();
-        }
-        return MiscUtil.getPremisesKey(additional, premisesDto.getPostalCode(), premisesDto.getBlkNo(),
-                premisesDto.getStreetName(), premisesDto.getBuildingName(), premisesDto.getFloorNo(),
-                premisesDto.getUnitNo(), MiscUtil.transferEntityDtos(premisesDto.getPremisesOperationalUnitDtos(),
-                        AppPremisesOperationalUnitDto.class));
+        return MiscUtil.getPremisesKey(premisesDto);
     }
 
     public static List<String> genPremisesHciList(AppGrpPremisesDto premisesDto) {
@@ -4805,6 +4795,7 @@ public class NewApplicationHelper {
             AppGrpPremisesDto newDto = (AppGrpPremisesDto) CopyUtil.copyMutableObject(premises);
             // itself
             Map.Entry<String, AppGrpPremisesDto> entry = getPremisesFromMap(premises, allData, request);
+            log.info("The current premises is in Map: " + (entry != null));
             if (entry == null) {// not have
                 if (licAppGrpPremisesDtoMap.get(premisesSelect) == null && appPremisesMap.get(premisesSelect) == null) {
                     appPremisesMap.put(premisesSelect, newDto);
@@ -4877,6 +4868,7 @@ public class NewApplicationHelper {
     }
 
     public static AppGrpPremisesDto getPremisesFromMap(String premSelectVal, HttpServletRequest request) {
+        log.info(StringUtil.changeForLog("##### Prem select val: " + StringUtil.clarify(premSelectVal)));
         Map<String, AppGrpPremisesDto> premisesDtoMap = checkPremisesMap(false, request);
         return premisesDtoMap.get(premSelectVal);
     }
