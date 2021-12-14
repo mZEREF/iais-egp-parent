@@ -4712,9 +4712,6 @@ public class NewApplicationHelper {
             request.setAttribute("rfcInvalidLic", MessageUtil.getMessageDesc("RFC_ERR024"));
             return false;
         }
-        /*if (NewApplicationConstant.SECTION_SVCINFO.equals(type)) {
-            return true;
-        }*/
         RequestForChangeService requestForChangeService = SpringHelper.getBean(RequestForChangeService.class);
         return validateRelatedApps(licenceId, requestForChangeService, request);
     }
@@ -4754,23 +4751,24 @@ public class NewApplicationHelper {
             if (licAppGrpPremisesDtoMap == null) {
                 licAppGrpPremisesDtoMap = IaisCommonUtils.genNewHashMap();
             }
-
         }
         Map<String, AppGrpPremisesDto> newAppMap = IaisCommonUtils.genNewHashMap();
         Map<String, AppGrpPremisesDto> appPremisesMap = (Map<String, AppGrpPremisesDto>) request.getSession()
                 .getAttribute(NewApplicationDelegator.APP_PREMISES_MAP);
         if (appPremisesMap == null || appPremisesMap.isEmpty()) {
+            AppSubmissionDto appSubmissionDto = getAppSubmissionDto(request);
+            boolean isRfi = checkIsRfi(request);
             appPremisesMap = appSubmissionService.getActivePendingPremisesMap(licenseeId);
             if (appPremisesMap != null) {
                 for (Map.Entry<String, AppGrpPremisesDto> entry : appPremisesMap.entrySet()) {
                     String key = entry.getKey();
                     if (!licAppGrpPremisesDtoMap.containsKey(key)) {
                         newAppMap.put(key, entry.getValue());
-                    } else {
-                        AppGrpPremisesDto appGrpPremisesDto = licAppGrpPremisesDtoMap.get(key);
-                        appGrpPremisesDto.setRelatedServices(combineList(appGrpPremisesDto.getRelatedServices(),
-                                entry.getValue().getRelatedServices()));
-                        licAppGrpPremisesDtoMap.put(key, appGrpPremisesDto);
+                    } else if (isRfi && appSubmissionDto != null && appSubmissionDto.getAppGrpPremisesDtoList() != null
+                            && appSubmissionDto.getAppGrpPremisesDtoList().stream()
+                            .anyMatch(dto -> Objects.equals(entry.getValue().getPremisesIndexNo(), dto.getPremisesIndexNo()))) {
+                        newAppMap.put(key, entry.getValue());
+                        licAppGrpPremisesDtoMap.remove(key);
                     }
                 }
             }

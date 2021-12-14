@@ -750,6 +750,7 @@ public class NewApplicationAjaxController {
 
             //for rfc new  renew choose other address ,if no this cannot choose other address from page
             boolean sameOne = premIndexNo != null && premIndexNo.equals(appGrpPremisesDto.getPremisesIndexNo());
+            /*
             AppSubmissionDto oldAppSubmissionDto = NewApplicationHelper.getOldAppSubmissionDto(request);
             if (oldAppSubmissionDto != null && !sameOne) {
                 String hciCode = oldAppSubmissionDto.getAppGrpPremisesDtoList().stream()
@@ -760,6 +761,7 @@ public class NewApplicationAjaxController {
                         .orElse(null);
                 sameOne = appGrpPremisesDto.getHciCode() != null && Objects.equals(hciCode, appGrpPremisesDto.getHciCode());
             }
+            */
             log.info(StringUtil.changeForLog("--- The current one: " + sameOne));
             appGrpPremisesDto.setEqHciCode(String.valueOf(sameOne));
         } else {
