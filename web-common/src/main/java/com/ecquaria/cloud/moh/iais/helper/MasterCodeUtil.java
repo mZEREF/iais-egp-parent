@@ -212,6 +212,9 @@ public final class MasterCodeUtil {
     public static final String DP_MEDICATION                        ="8B29293A-DDF6-460A-AE10-731196AFBB47";
     public static final String DP_FREQUENCY                         ="2C288EBF-12D5-4D5F-9A1A-EAC6EEBDE127";
 
+
+    public static final  String DONOR_RELATION_TO_PATIENT           ="9C2B3AFF-55A8-445B-A759-0B806FEB3317";
+
     /**
      * @description: refresh the master codes into cache
      *

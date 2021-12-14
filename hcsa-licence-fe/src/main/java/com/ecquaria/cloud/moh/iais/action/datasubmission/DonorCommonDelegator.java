@@ -112,7 +112,7 @@ public abstract class DonorCommonDelegator extends CommonDelegator{
     }
 
     private void setDonorDtoByDonorSampleDto(DonorDto arDonorDto, DonorSampleDto donorSampleDto){
-        arDonorDto.setRelation(donorSampleDto.getDonorRelation());
+        arDonorDto.setDonorIdentityKnown(donorSampleDto.getDonorIdentityKnown());
         List<DonorSampleAgeDto> ages = donorSampleDto.getDonorSampleAgeDtos();
         arDonorDto.setDonorSampleAgeDtos(ages);
         arDonorDto.setDonorSampleKey(donorSampleDto.getSampleKey());
@@ -127,6 +127,7 @@ public abstract class DonorCommonDelegator extends CommonDelegator{
             arDonorDto.setDonorSampleCode(null);
             arDonorDto.setSource(null);
             arDonorDto.setOtherSource(null);
+            arDonorDto.setRelation(null);
             arDonorDto.setIdType(StringUtil.getNonNull(arDonorDto.getIdType()));
             arDonorDto.setIdNumber(StringUtil.getNonNull(arDonorDto.getIdNumber()));
         }else {
