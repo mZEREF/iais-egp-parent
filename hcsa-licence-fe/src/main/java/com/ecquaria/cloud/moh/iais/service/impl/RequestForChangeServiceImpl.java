@@ -1118,7 +1118,6 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                             boolean empty1 = StringUtil.isEmpty(appGrpPremisesDto.getOffSiteBlockNo());
                             boolean empty2 = StringUtil.isEmpty(appGrpPremisesDto.getOffSiteUnitNo());
                             if (ApplicationConsts.ADDRESS_TYPE_APT_BLK.equals(offSiteAddressType)) {
-
                                 if (empty) {
                                     addrTypeFlag = false;
                                     errorMap.put("offSiteFloorNo" + i, MessageUtil.replaceMessage("GENERAL_ERR0006", "Floor No.", "field"));
@@ -1189,13 +1188,6 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                                         }
                                         list.addAll(sbList);
                                     }
-
-                                 /*   if (list.contains(stringBuilder.toString())) {
-                                        errorMap.put("postalCode" + i, "NEW_ACK010");
-
-                                    } else {
-                                        list.add(stringBuilder.toString());
-                                    }*/
                                 }
                             }
                         } else {
@@ -1208,13 +1200,11 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                         String hciNAmeErr = errorMap.get("offSiteHciName" + i);
                         hciFlag = StringUtil.isEmpty(hciNAmeErr) && StringUtil.isEmpty(postalCodeErr) && StringUtil.isEmpty(blkNoErr) && StringUtil.isEmpty(floorNoErr) && StringUtil.isEmpty(unitNoErr);
                         log.info(StringUtil.changeForLog("hciFlag:" + hciFlag));
-                    }else if(ApplicationConsts.PREMISES_TYPE_EAS_MTS_CONVEYANCE.equals(premiseType)){
+                    } else if (ApplicationConsts.PREMISES_TYPE_EAS_MTS_CONVEYANCE.equals(premiseType)) {
                         validateEasmts.doValidatePremises(errorMap, appGrpPremisesDto, i, keywords, floorUnitList, floorUnitNo,
                                 licenseeId, appType, licenceId);
-                        if (validateEasmts.doValidatePremises(errorMap,appSubmissionDto.getAppType(),
-                                i,licenseeId,appGrpPremisesDto,rfi)){
-                            needAppendMsg = true;
-                        }
+                        hciFlag = validateEasmts.doValidatePremises(errorMap, appSubmissionDto.getAppType(),
+                                i, licenseeId, appGrpPremisesDto, rfi);
                     }
                 } else {
                     //premiseSelect = organization hci code
