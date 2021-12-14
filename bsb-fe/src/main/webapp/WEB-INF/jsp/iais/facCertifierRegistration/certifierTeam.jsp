@@ -194,9 +194,7 @@
                                                         <span class="mandatory otherQualificationSpan">*</span>
                                                     </div>
                                                     <div class="col-sm-6 col-md-7">
-                                                        <textarea autocomplete="off" name="certBSL3Exp--v--${status.index}" id="certBSL3Exp--v--${status.index}" maxlength="1000" style="width: 100%">
-                                                            <c:out value="${cer.certBSL3Exp}"/>
-                                                        </textarea>
+                                                        <textarea autocomplete="off" class="col-xs-12" name="certBSL3Exp--v--${status.index}" id="certBSL3Exp--v--${status.index}" maxlength="1000" style="width: 100%"><c:out value="${cer.certBSL3Exp}"/></textarea>
                                                         <span data-err-ind="certBSL3Exp--v--${status.index}" class="error-msg"></span>
                                                     </div>
                                                 </div>
@@ -207,9 +205,7 @@
                                                         <span class="mandatory otherQualificationSpan">*</span>
                                                     </div>
                                                     <div class="col-sm-6 col-md-7">
-                                                        <textarea autocomplete="off" name="commBSL34Exp--v--${status.index}" id="commBSL34Exp--v--${status.index}" maxlength="1000" style="width: 100%">
-                                                            <c:out value="${cer.commBSL34Exp}"/>
-                                                        </textarea>
+                                                        <textarea autocomplete="off" name="commBSL34Exp--v--${status.index}" id="commBSL34Exp--v--${status.index}" maxlength="1000" style="width: 100%"><c:out value="${cer.commBSL34Exp}"/></textarea>
                                                         <span data-err-ind="commBSL34Exp--v--${status.index}" class="error-msg"></span>
                                                     </div>
                                                 </div>
@@ -220,9 +216,7 @@
                                                         <span class="mandatory otherQualificationSpan">*</span>
                                                     </div>
                                                     <div class="col-sm-6 col-md-7">
-                                                        <textarea autocomplete="off" name="otherBSL34Exp--v--${status.index}" id="otherBSL34Exp--v--${status.index}" maxlength="1000" style="width: 100%">
-                                                            <c:out value="${cer.otherBSL34Exp}"/>
-                                                        </textarea>
+                                                        <textarea autocomplete="off" name="otherBSL34Exp--v--${status.index}" id="otherBSL34Exp--v--${status.index}" maxlength="1000" style="width: 100%"><c:out value="${cer.otherBSL34Exp}"/></textarea>
                                                         <span data-err-ind="otherBSL34Exp--v--${status.index}" class="error-msg"></span>
                                                     </div>
                                                 </div>
