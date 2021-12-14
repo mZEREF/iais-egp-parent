@@ -1050,6 +1050,10 @@ public class OnlineEnquiryAssistedReproductionDelegator {
 
     }
 
+    public void perNext(BaseProcessClass bpc){
+
+    }
+
     public void perStageInfo(BaseProcessClass bpc){
         HttpServletRequest request=bpc.request;
         String cycleId = ParamUtil.getString(request,"crud_action_value");
