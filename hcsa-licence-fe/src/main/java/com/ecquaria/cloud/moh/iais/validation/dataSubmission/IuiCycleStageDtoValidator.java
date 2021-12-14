@@ -63,7 +63,6 @@ public class IuiCycleStageDtoValidator implements CustomizeValidator {
                         }
                     }
                 }
-                //todo get Patient Inventory
                 int patientFrozen = 5;
                 if(usedVialsOfSpermNum != null && usedVialsOfSpermNum >= 0) {
                     if(extractVialsOfSpermNum != null) {
@@ -76,6 +75,10 @@ public class IuiCycleStageDtoValidator implements CustomizeValidator {
                             errMap.put("usedVialsOfSperm", MessageUtil.getMessageDesc("DS_ERR011",stringStringMap).trim());
                         }
                     }
+                }
+
+                if(!iuiCycleStageDto.validateOtherPremises(iuiCycleStageDto.getOtherPremises())){
+                    errMap.put("otherPremises", "GENERAL_ERR0006");
                 }
             }
             DonorValidator.validateDonors(iuiCycleStageDto.getDonorDtos(),errMap,iuiCycleStageDto.isFromDonorFlag());

@@ -15,11 +15,39 @@
                     <label><c:out value="${patientDto.name}"/>&nbsp</label><span style="font-weight:normal;">${empty patientDto.idNumber ? "" : "("}<c:out value="${patientDto.idNumber}"/>${empty patientDto.idNumber ? "" : ")"} </span>
                   </h3>
                   <iais:row>
-                    <iais:field  width="5" value="Premises where IUI is Performed" mandatory="false"/>
+                    <iais:field  width="5" value="Premises where IUI is Performed" mandatory="true"/>
+                    <iais:value width="3" cssClass="col-md-3" >
+                      <div class="form-check" style="padding-left: 0px;">
+                        <input class="form-check-input"
+                               type="radio"
+                               name="ownPremises"
+                               value="1"
+                               id="ownPremisesRadioYes"
+                               <c:if test="${iuiCycleStageDto.ownPremises}">checked</c:if>
+                               aria-invalid="false" onchange="showOtherPremises(1)">
+                        <label class="form-check-label"
+                               for="ownPremisesRadioYes"><span
+                                class="check-circle"></span>Own premises</label>
+                      </div>
+                    </iais:value>
+                    <iais:value width="4" cssClass="col-md-4" >
+                      <div class="form-check" style="padding-left: 0px;">
+                        <input class="form-check-input" type="radio"
+                               name="ownPremises"
+                               value="0"
+                               id="ownPremisesRadioNo"
+                               <c:if test="${!iuiCycleStageDto.ownPremises}">checked</c:if>
+                               aria-invalid="false" onchange="showOtherPremises(0)">
+                        <label class="form-check-label"
+                               for="ownPremisesRadioNo"><span
+                                class="check-circle"></span>Others</label>
+                      </div>
+                    </iais:value>
+                  </iais:row>
+                  <iais:row id="otherPremisesRow">
+                    <iais:field  width="5" value="IUI Treatment performed in Other Premises" mandatory="true"/>
                     <iais:value width="7" cssClass="col-md-7">
-                      <span >
-                        <c:out value="${arSuperDataSubmissionDto.premisesDto.premiseLabel}"/>
-                      </span>
+                      <iais:input maxLength="50" value="${iuiCycleStageDto.otherPremises}" name="otherPremises" />
                     </iais:value>
                   </iais:row>
                   <iais:row>

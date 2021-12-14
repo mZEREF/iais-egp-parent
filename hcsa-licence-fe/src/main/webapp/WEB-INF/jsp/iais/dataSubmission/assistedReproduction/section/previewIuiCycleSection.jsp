@@ -18,9 +18,17 @@
         <iais:row>
           <iais:field value="Premises where IUI is Performed" mandatory="false"/>
           <iais:value width="7" cssClass="col-md-7" display="true" >
-         <c:out value="${arSuperDataSubmissionDto.premisesDto.premiseLabel}"></c:out>
+         <c:out value="${iuiCycleStageDto.ownPremises ? 'Own premises' : 'Others'}"></c:out>
           </iais:value>
         </iais:row>
+        <c:if test="${!iuiCycleStageDto.ownPremises}">
+        <iais:row>
+          <iais:field value="IUI Treatment performed in Other Premises" mandatory="false"/>
+          <iais:value width="7" cssClass="col-md-7" display="true" >
+            <c:out value="${iuiCycleStageDto.otherPremises}"/>
+          </iais:value>
+        </iais:row>
+        </c:if>
         <iais:row>
           <iais:field value="Date Started" mandatory="false"/>
           <iais:value  width="7" cssClass="col-md-7" display="true" >

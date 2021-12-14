@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.action.datasubmission;
 
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
@@ -73,7 +74,7 @@ public class IuiCycleStageDelegator extends DonorCommonDelegator {
         }
         iuiCycleStageDto = getIuiCycleFormValue(iuiCycleStageDto,request);
         arSuperDataSubmission.setIuiCycleStageDto(iuiCycleStageDto);
-        DataSubmissionHelper.setCurrentArDataSubmission( arSuperDataSubmission,request);
+        DataSubmissionHelper.setCurrentArDataSubmission(arSuperDataSubmission,request);
         List<DonorDto> donorDtos = iuiCycleStageDto.getDonorDtos();
         validatePageDataHaveValidationProperty(request,iuiCycleStageDto,"common",donorDtos,getByArCycleStageDto(donorDtos), ACTION_TYPE_CONFIRM);
         actionArDonorDtos(request,donorDtos);
@@ -91,6 +92,8 @@ public class IuiCycleStageDelegator extends DonorCommonDelegator {
         String[] sourceOfSemenOpStrs = ParamUtil.getStrings(request, "sourceOfSemenOp");
         String extractVialsOfSpermStr = ParamUtil.getRequestString(request, "extractVialsOfSperm");
         String usedVialsOfSpermStr = ParamUtil.getRequestString(request, "usedVialsOfSperm");
+        String ownPremises = ParamUtil.getRequestString(request,"ownPremises");
+        String otherPremises = ParamUtil.getRequestString(request,"otherPremises");
         //set date
         if (!StringUtil.isEmpty(iuiCycleStartDateStr)) {
             try {
@@ -107,7 +110,8 @@ public class IuiCycleStageDelegator extends DonorCommonDelegator {
         Integer iuiDeliverChildNum =  IaisCommonUtils.stringTransferInteger(iuiDeliverChildNumStr);
         Integer extractVialsOfSpermNum =  IaisCommonUtils.stringTransferInteger(extractVialsOfSpermStr);
         Integer usedVialsOfSpermNum =  IaisCommonUtils.stringTransferInteger(usedVialsOfSpermStr);
-
+        iuiCycleStageDto.setOwnPremises(AppConsts.YES.equalsIgnoreCase(ownPremises));
+        iuiCycleStageDto.setOtherPremises(iuiCycleStageDto.isOwnPremises() ? null : otherPremises);
         iuiCycleStageDto.setCurMarrChildNum(curMarrChildNum);
         iuiCycleStageDto.setPrevMarrChildNum(prevMarrChildNum);
         iuiCycleStageDto.setIuiDeliverChildNum(iuiDeliverChildNum);
@@ -116,6 +120,7 @@ public class IuiCycleStageDelegator extends DonorCommonDelegator {
         //Verify SourceOfSemenOp the value is dirty data, and Set Dto
         List<SelectOption> sourceOfSemenOption = (List<SelectOption>)ParamUtil.getSessionAttr(request, "sourceOfSemenOption");
         List<String> sourceOfSemenList = arDataSubmissionService.checkBoxIsDirtyData(sourceOfSemenOpStrs, sourceOfSemenOption);
+
         iuiCycleStageDto = setSourceOfSemenAllValue(iuiCycleStageDto, sourceOfSemenList);
         setDonorDtos(request,iuiCycleStageDto.getDonorDtos(),false);
         return iuiCycleStageDto;
