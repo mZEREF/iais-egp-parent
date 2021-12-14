@@ -4333,7 +4333,12 @@ public class NewApplicationDelegator {
                 if (isRenewalOrRfc) {
                     // set the required information
                     String licenceId = appSubmissionDto.getLicenceId();
-                    appSubmissionDto.setLicenceNo(withOutRenewalService.getLicenceNumberByLicenceId(licenceId));
+                    LicenceDto licenceById = requestForChangeService.getLicenceById(licenceId);
+                    if (licenceById != null) {
+                        appSubmissionDto.setLicenceNo(licenceById.getLicenceNo());
+                    } else {
+                        log.warn(StringUtil.changeForLog("##### No Active Licence for this ID: " + licenceId));
+                    }
                 }
                 ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
                 //ParamUtil.setSessionAttr(bpc.request,OLDAPPSUBMISSIONDTO,oldAppSubmissionDto);

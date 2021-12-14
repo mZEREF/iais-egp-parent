@@ -4724,6 +4724,19 @@ public class NewApplicationHelper {
                 .anyMatch(dto -> !validateLicences(dto.getLicenceId(), request));
     }
 
+    public static <T> List<T> combineList(List<T>... srcList){
+        List<T> list = IaisCommonUtils.genNewArrayList();
+        if (srcList == null || srcList.length == 0) {
+            return list;
+        }
+        for (List<T> src : srcList) {
+            if (src != null && !src.isEmpty()) {
+                list.addAll(src);
+            }
+        }
+        return list;
+    }
+
     public static Map<String, AppGrpPremisesDto> checkPremisesMap(HttpServletRequest request) {
         return checkPremisesMap(true, request);
     }
@@ -4738,24 +4751,32 @@ public class NewApplicationHelper {
             if (licAppGrpPremisesDtoMap == null) {
                 licAppGrpPremisesDtoMap = IaisCommonUtils.genNewHashMap();
             }
-            request.getSession().setAttribute(NewApplicationDelegator.LIC_PREMISES_MAP, licAppGrpPremisesDtoMap);
         }
         Map<String, AppGrpPremisesDto> newAppMap = IaisCommonUtils.genNewHashMap();
         Map<String, AppGrpPremisesDto> appPremisesMap = (Map<String, AppGrpPremisesDto>) request.getSession()
                 .getAttribute(NewApplicationDelegator.APP_PREMISES_MAP);
         if (appPremisesMap == null || appPremisesMap.isEmpty()) {
+            AppSubmissionDto appSubmissionDto = getAppSubmissionDto(request);
+            boolean isRfi = checkIsRfi(request);
             appPremisesMap = appSubmissionService.getActivePendingPremisesMap(licenseeId);
             if (appPremisesMap != null) {
                 for (Map.Entry<String, AppGrpPremisesDto> entry : appPremisesMap.entrySet()) {
-                    if (!licAppGrpPremisesDtoMap.containsKey(entry.getKey())) {
-                        newAppMap.put(entry.getKey(), entry.getValue());
+                    String key = entry.getKey();
+                    if (!licAppGrpPremisesDtoMap.containsKey(key)) {
+                        newAppMap.put(key, entry.getValue());
+                    } else if (isRfi && appSubmissionDto != null && appSubmissionDto.getAppGrpPremisesDtoList() != null
+                            && appSubmissionDto.getAppGrpPremisesDtoList().stream()
+                            .anyMatch(dto -> Objects.equals(entry.getValue().getPremisesIndexNo(), dto.getPremisesIndexNo()))) {
+                        newAppMap.put(key, entry.getValue());
+                        licAppGrpPremisesDtoMap.remove(key);
                     }
                 }
             }
-            request.getSession().setAttribute(NewApplicationDelegator.APP_PREMISES_MAP, newAppMap);
         } else {
             newAppMap = appPremisesMap;
         }
+        request.getSession().setAttribute(NewApplicationDelegator.APP_PREMISES_MAP, newAppMap);
+        request.getSession().setAttribute(NewApplicationDelegator.LIC_PREMISES_MAP, licAppGrpPremisesDtoMap);
         Map<String, AppGrpPremisesDto> allData = IaisCommonUtils.genNewHashMap();
         allData.putAll(licAppGrpPremisesDtoMap);
         allData.putAll(newAppMap);
