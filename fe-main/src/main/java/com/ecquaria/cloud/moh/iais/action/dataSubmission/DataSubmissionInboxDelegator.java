@@ -9,6 +9,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InboxDataSubmissionQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterInboxUserDto;
+import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -22,6 +23,8 @@ import sop.webflow.rt.api.BaseProcessClass;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.Serializable;
+import java.text.ParseException;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -155,12 +158,20 @@ public class DataSubmissionInboxDelegator {
 		setLog("search",false);
 	}
 
-	private void setSearchParam(HttpServletRequest request){
+	private void setSearchParam(HttpServletRequest request)  {
 		SearchParam searchParam = HalpSearchResultHelper.gainSearchParam(request, InboxConst.DS_PARAM, InboxDataSubmissionQueryDto.class.getName(),"CREATED_DT",SearchParam.DESCENDING,false);
 		InboxDataSubmissionQueryDto inboxDataSubmissionQueryDto = ControllerHelper.get(request,InboxDataSubmissionQueryDto.class,"DataSubmission");
 		HalpAssessmentGuideDelegator.setParamByField(searchParam,"submissionNo",inboxDataSubmissionQueryDto.getSubmissionNo(),true);
 		HalpAssessmentGuideDelegator.setParamByField(searchParam,"status",inboxDataSubmissionQueryDto.getStatus(),true,InboxConst.SEARCH_ALL);
 		HalpAssessmentGuideDelegator.setParamByField(searchParam,"type",inboxDataSubmissionQueryDto.getType() ,true,InboxConst.SEARCH_ALL);
+		try {
+			Date lastDateStart = Formatter.parseDate(ParamUtil.getString(request, "lastDateStart"));
+			Date lastDateEnd = Formatter.parseDate(ParamUtil.getString(request, "lastDateEnd"));
+			searchParam.addFilter("lastDateStart",lastDateStart,true);
+			searchParam.addFilter("lastDateEnd",lastDateEnd,true);
+		}catch (ParseException parseException){
+			log.error(parseException.getMessage(),parseException);
+		}
 		ParamUtil.setSessionAttr(request, InboxConst.DS_PARAM,searchParam);
 	}
 

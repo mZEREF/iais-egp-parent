@@ -4,28 +4,54 @@
     <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
     <input type="hidden" name="crud_type_action_submission_no" id="crud_type_action_submission_no"/>
     <div class="tab-search">
-            <div class="row d-flex">
-                <div class="col-md-5">
-                        <label class="col-xs-5 control-label" for="submissionNoDataSubmission" style="text-align:left;margin-top: 1.5%">Search by submission ID</label>
-                        <div class="col-xs-7 col-md-7">
-                            <input id="submissionNoDataSubmission" name="submissionNoDataSubmission" type="text" maxlength="24"
-                                   value="${param.submissionNoDataSubmission}">
-                        </div>
-                    <br>
-                </div>
-                <div class="col-md-4">
-                        <label class="col-xs-3 control-label" for="typeDataSubmission" style="text-align:left;margin-top: 1.5%">Type</label>
-                        <div class="col-xs-8 col-md-8">
-                            <iais:select name="typeDataSubmission"  codeCategory="DATA_SUBMISSION_TYPE" value="${param.typeDataSubmission}" firstOption="All" cssClass="dataSubmissionType" needSort="true"/>
-                        </div>
-                </div>
-                <div class="col-md-3">
-                        <label class="col-xs-3 control-label" for="statusDataSubmission" style="text-align:left;margin-top: 1.5%">Status</label>
-                        <div class="col-xs-8 col-md-8">
-                            <iais:select name="statusDataSubmission" id="statusDataSubmission" options="dsStatuses" value="${param.statusDataSubmission}" firstOption="All" cssClass="dataSubmissionStatus" needSort="true" />
-                        </div>
-                </div>
+        <div class="row">
+            <div class="col-md-12">
+                <iais:value>
+                    <label class="col-xs-3 col-md-3" for="submissionNoDataSubmission" style="text-align:left;margin-top: 1.5%">Search by submission ID:</label>
+                    <div class="col-xs-9 col-md-9">
+                        <input id="submissionNoDataSubmission" name="submissionNoDataSubmission" type="text" maxlength="17"
+                               value="${param.submissionNoDataSubmission}">
+                    </div>
+                </iais:value>
             </div>
+        </div>
+        <div class="row" style="margin-bottom: 1.5%">
+            <div class="col-md-12">
+                <iais:value>
+                    <label class="col-xs-3 col-md-3" for="typeDataSubmission" style="text-align:left;margin-top: 1.5%">Type：</label>
+                    <div class="col-xs-9 col-md-9">
+                        <iais:select name="typeDataSubmission"  codeCategory="DATA_SUBMISSION_TYPE" value="${param.typeDataSubmission}" firstOption="All" cssClass="dataSubmissionType" needSort="true"/>
+                    </div>
+                </iais:value>
+            </div>
+        </div>
+
+        <div class="row" style="margin-bottom: 1.5%">
+            <div class="col-md-12">
+                <iais:value>
+                    <label class="col-xs-3 col-md-3" for="statusDataSubmission" style="text-align:left;margin-top: 1.5%">Status:</label>
+                    <div class="col-xs-9 col-md-9">
+                        <iais:select name="statusDataSubmission" id="statusDataSubmission" options="dsStatuses" value="${param.statusDataSubmission}" firstOption="All" cssClass="dataSubmissionStatus" needSort="true" />
+                    </div>
+                </iais:value>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <iais:value>
+                    <label class="col-xs-3 col-md-3 col-lg-3" style="text-align:left;margin-top: 1.5%">Last Updated:</label>
+                    <div class="col-xs-9 col-md-4 col-lg-4">
+                        <iais:datePicker id="lastDateStart" name="lastDateStart" value="${param.lastDateStart}"/>
+                    </div>
+                    <div class="col-xs-3 col-md-1 col-lg-1" style="margin-top: 1.5%">
+                        <label>To</label>
+                    </div>
+                    <div class="col-xs-9 col-md-4 col-lg-4">
+                        <iais:datePicker id="lastDateEnd" name="lastDateEnd" value="${param.lastDateEnd}"/>
+                    </div>
+                </iais:value>
+            </div>
+        </div>
             <div class="col-md-12">
                 <div class="text-right">
                     <button type="button" class="btn btn-secondary" onclick="doClearSearch()">Clear</button>
@@ -48,7 +74,7 @@
                         <iais:sortableHeader needSort="true" field="type" value="Type" style="width:12%;" isFE="true"/>
                         <iais:sortableHeader needSort="true" field="status" value="Status" style="width:10%;" isFE="true"/>
                         <iais:sortableHeader needSort="true" field="BUSINESS_NAME" value="Business Name" style="width:22%;" isFE="true"/>
-                        <iais:sortableHeader needSort="true" field="CREATED_DT"
+                        <iais:sortableHeader needSort="true" field="UPDATED_DT"
                                              value="Last Updated" style="width:13%;" isFE="true"/>
                         <iais:sortableHeader needSort="true" field="SUBMIT_DT"
                                              value="Submitted On" style="width:13%;" isFE="true"/>
@@ -130,7 +156,7 @@
         <input type="hidden" value="${actionDsButtonShow}" id="actionDsButtonShow" name="actionDsButtonShow">
         <input type="hidden" value="${deleteDraftOk}" id="deleteDraftOkShow" name="deleteDraftOkShow">
         <iais:confirm msg="DS_ERR014" needCancel="false" popupOrder="actionDsButton"  yesBtnDesc="Yes"   yesBtnCls="btn btn-secondary"  callBack="cancelBallDsButton()" />
-        <iais:confirm msg="INBOX_ACK006" needCancel="false" popupOrder="deleteDraftOkButton"  yesBtnDesc="Yes"   yesBtnCls="btn btn-secondary"  callBack="deleteDraftOkCallBack()" />
+        <iais:confirm msg="INBOX_ACK006" needCancel="false" popupOrder="deleteDraftOkButton"  yesBtnDesc="OK"   yesBtnCls="btn btn-primary"  callBack="deleteDraftOkCallBack()" />
         <iais:confirm msg="NEW_ACK002" needFungDuoJi="false" popupOrder="deleteDraftModal" callBack="delDraftCancelBtn()"  cancelFunc="delDraftYesBtn()" cancelBtnDesc="OK" yesBtnDesc="Cancel" cancelBtnCls="btn btn-primary" yesBtnCls="btn btn-secondary"  />
 </form>
 <script type="application/javascript">
@@ -149,6 +175,10 @@
         $("#typeDataSubmission option:first").prop("selected", 'selected').val("");
         $("#submissionNoDataSubmission").val("");
         $(".tab-search .current").text("All");
+        $("#submissionNoDataSubmission").val("");
+        $("#submissionNoDataSubmission").val("");
+        $("[name='lastDateStart']").val("");
+        $("[name='lastDateEnd']").val("");
     }
 
     function doSearch(){
