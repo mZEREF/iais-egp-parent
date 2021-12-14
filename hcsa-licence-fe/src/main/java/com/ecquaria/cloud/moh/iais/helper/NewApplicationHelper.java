@@ -4712,6 +4712,9 @@ public class NewApplicationHelper {
             request.setAttribute("rfcInvalidLic", MessageUtil.getMessageDesc("RFC_ERR024"));
             return false;
         }
+        /*if (NewApplicationConstant.SECTION_SVCINFO.equals(type)) {
+            return true;
+        }*/
         RequestForChangeService requestForChangeService = SpringHelper.getBean(RequestForChangeService.class);
         return validateRelatedApps(licenceId, requestForChangeService, request);
     }
@@ -4722,6 +4725,19 @@ public class NewApplicationHelper {
         }
         return !appSubmissionDtos.parallelStream()
                 .anyMatch(dto -> !validateLicences(dto.getLicenceId(), request));
+    }
+
+    public static <T> List<T> combineList(List<T>... srcList){
+        List<T> list = IaisCommonUtils.genNewArrayList();
+        if (srcList == null || srcList.length == 0) {
+            return list;
+        }
+        for (List<T> src : srcList) {
+            if (src != null && !src.isEmpty()) {
+                list.addAll(src);
+            }
+        }
+        return list;
     }
 
     public static Map<String, AppGrpPremisesDto> checkPremisesMap(HttpServletRequest request) {
@@ -4738,7 +4754,7 @@ public class NewApplicationHelper {
             if (licAppGrpPremisesDtoMap == null) {
                 licAppGrpPremisesDtoMap = IaisCommonUtils.genNewHashMap();
             }
-            request.getSession().setAttribute(NewApplicationDelegator.LIC_PREMISES_MAP, licAppGrpPremisesDtoMap);
+
         }
         Map<String, AppGrpPremisesDto> newAppMap = IaisCommonUtils.genNewHashMap();
         Map<String, AppGrpPremisesDto> appPremisesMap = (Map<String, AppGrpPremisesDto>) request.getSession()
@@ -4747,15 +4763,22 @@ public class NewApplicationHelper {
             appPremisesMap = appSubmissionService.getActivePendingPremisesMap(licenseeId);
             if (appPremisesMap != null) {
                 for (Map.Entry<String, AppGrpPremisesDto> entry : appPremisesMap.entrySet()) {
-                    if (!licAppGrpPremisesDtoMap.containsKey(entry.getKey())) {
-                        newAppMap.put(entry.getKey(), entry.getValue());
+                    String key = entry.getKey();
+                    if (!licAppGrpPremisesDtoMap.containsKey(key)) {
+                        newAppMap.put(key, entry.getValue());
+                    } else {
+                        AppGrpPremisesDto appGrpPremisesDto = licAppGrpPremisesDtoMap.get(key);
+                        appGrpPremisesDto.setRelatedServices(combineList(appGrpPremisesDto.getRelatedServices(),
+                                entry.getValue().getRelatedServices()));
+                        licAppGrpPremisesDtoMap.put(key, appGrpPremisesDto);
                     }
                 }
             }
-            request.getSession().setAttribute(NewApplicationDelegator.APP_PREMISES_MAP, newAppMap);
         } else {
             newAppMap = appPremisesMap;
         }
+        request.getSession().setAttribute(NewApplicationDelegator.APP_PREMISES_MAP, newAppMap);
+        request.getSession().setAttribute(NewApplicationDelegator.LIC_PREMISES_MAP, licAppGrpPremisesDtoMap);
         Map<String, AppGrpPremisesDto> allData = IaisCommonUtils.genNewHashMap();
         allData.putAll(licAppGrpPremisesDtoMap);
         allData.putAll(newAppMap);
