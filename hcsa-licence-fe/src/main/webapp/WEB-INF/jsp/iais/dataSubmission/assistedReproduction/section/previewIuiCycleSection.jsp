@@ -13,7 +13,7 @@
         <c:set var="iuiCycleStageDto" value="${arSuperDataSubmissionDto.iuiCycleStageDto}" />
         <c:set var="patientDto" value="${arSuperDataSubmissionDto.patientInfoDto.patient}" />
         <h3>
-          <p><label style="font-family:'Arial Negreta', 'Arial Normal', 'Arial';font-weight:700;"><c:out value="${patientDto.name}"/>&nbsp</label><label style="font-family:'Arial Normal', 'Arial';font-weight:400;">${empty patientDto.idNumber ? "" : "("}<c:out value="${patientDto.idNumber}"/>${empty patientDto.idNumber ? "" : ")"} </label></p>
+          <label><c:out value="${patientDto.name}"/></label><span style="font-weight:normal;">${empty patientDto.idNumber ? "" : "("}<c:out value="${patientDto.idNumber}"/>${empty patientDto.idNumber ? "" : ")"} </span>
         </h3>
         <iais:row>
           <iais:field value="Premises where IUI is Performed" mandatory="false"/>
