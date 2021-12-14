@@ -40,11 +40,12 @@ public class SubmitDonorDelegator extends CommonDelegator {
     public void preparePage(BaseProcessClass bpc) {
         ArSuperDataSubmissionDto arSuperDataSubmissionDto = DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
         DonorSampleDto donorSampleDto = arSuperDataSubmissionDto.getDonorSampleDto();
-        if(donorSampleDto == null){
-            bpc.request.setAttribute("ageCount",1);
-        }else{
-            bpc.request.setAttribute("ageCount",donorSampleDto.getAges().length);
+        int ageCount = 1;
+
+        if(donorSampleDto != null && donorSampleDto.getAges() != null){
+            ageCount = donorSampleDto.getAges().length;
         }
+        bpc.request.setAttribute("ageCount",ageCount);
     }
     @Override
     public void pageAction(BaseProcessClass bpc) {

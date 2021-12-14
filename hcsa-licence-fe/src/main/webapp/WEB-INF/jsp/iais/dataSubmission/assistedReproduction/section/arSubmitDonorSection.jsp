@@ -178,15 +178,15 @@
 
                     <c:choose>
                         <c:when test="${donorSampleDto.ages == null}">
-                        <c:when test="${donorSampleDto.donorSampleAgeDtos == null}">
-                            <iais:row  id = "donorAge0">
-                                <iais:field width="5" value="Donor's Age when Sample was Collected" mandatory="true"/>
-                                <iais:value width="7" cssClass="col-md-7">
-                                    <iais:input maxLength="2" type="text" name="ages" value="" />
-                                    <span id="error_ages0" name="iaisErrorMsg" class="error-msg"></span>
-                                </iais:value>
-                            </iais:row>
-                        </c:when>
+                            <c:if test="${donorSampleDto.donorSampleAgeDtos == null}">
+                                <iais:row  id = "donorAge0">
+                                    <iais:field width="5" value="Donor's Age when Sample was Collected" mandatory="true"/>
+                                    <iais:value width="7" cssClass="col-md-7">
+                                        <iais:input maxLength="2" type="text" name="ages" value="" />
+                                        <span id="error_ages0" name="iaisErrorMsg" class="error-msg"></span>
+                                    </iais:value>
+                                </iais:row>
+                            </c:if>
                         </c:when>
                         <c:otherwise>
                             <c:forEach items="${donorSampleDto.ages}" var="age"  begin="0" varStatus="idxStatus">
