@@ -13,6 +13,7 @@
 %>
 <webui:setLayout name="iais-internet"/>
 <script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-audit.js"></script>
+<script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-audit-file.js"></script>
 <%@include file="dashboard.jsp" %>
 <div class="dashboard">
     <form method="post" id="mainForm" action="<%=process.runtime.continueURL()%>">
@@ -38,6 +39,7 @@
                                                                     <a class="collapsed" data-toggle="collapse" href="#previewFacInfo">Facility Information</a>
                                                                 </h4>
                                                             </div>
+                                                            <%--@elvariable id="selfAudit" type="sg.gov.moh.iais.egp.bsb.dto.audit.FacilitySubmitSelfAuditDto"--%>
                                                             <div id="previewFacInfo" class="panel-collapse collapse">
                                                                 <div class="panel-body">
                                                                     <div class="panel-main-content form-horizontal min-row">
@@ -140,11 +142,17 @@
 
                                                                             <div class="form-group">
                                                                                 <div class="col-10"><strong>Others</strong>
+                                                                                    <c:if test="${selfAudit.newDocInfos ne null}">
+                                                                                        <c:forEach var="docInfo" items="${selfAudit.newDocInfos}">
+                                                                                            <p><a href="javascript:void(0)" onclick="downloadFile('new','${docInfo.tmpId}')">${docInfo.filename}</a>${String.format("%.1f", docInfo.size/1024.0)}KB</p>
+                                                                                        </c:forEach>
+                                                                                    </c:if>
+                                                                                    <br/>
                                                                                     <c:if test="${savedFiles ne null}">
                                                                                         <c:forEach var="docTypes" items="${docTypes}">
                                                                                             <c:forEach var="info" items="${savedFiles.get(docTypes)}">
                                                                                                 <c:set var="tmpId" value="${MaskUtil.maskValue('file', info.repoId)}"/>
-                                                                                                <p><a href="javascript:void(0)" onclick="downloadRevokeFile('${tmpId}')">${info.filename}</a>${String.format("%.1f", info.size/1024.0)}KB</p>
+                                                                                                <p><a href="javascript:void(0)" onclick="downloadFile('saved','${info.repoId}')">${info.filename}</a>${String.format("%.1f", info.size/1024.0)}KB</p>
                                                                                             </c:forEach>
                                                                                         </c:forEach>
                                                                                     </c:if>

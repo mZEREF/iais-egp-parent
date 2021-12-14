@@ -70,6 +70,8 @@ public class BsbTransferNotificationDelegator {
         ParamUtil.setSessionAttr(request,KEY_FACILITY_INFO, null);
         ParamUtil.setSessionAttr(request,KEY_TRANSFER_NOTIFICATION_DTO, null);
         ParamUtil.setSessionAttr(request,KEY_FAC_ID,null);
+        ParamUtil.setSessionAttr(request,KEY_SUBMISSION_TYPE,null);
+        ParamUtil.setSessionAttr(request,KEY_OTHER_DOC,null);
         AuditTrailHelper.auditFunction("Data Submission", "Data Submission");
     }
 
@@ -92,6 +94,7 @@ public class BsbTransferNotificationDelegator {
      * */
     public void prepareData(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
+        ParamUtil.setSessionAttr(request,KEY_SUBMISSION_TYPE,null);
         //prepare facility info
         String facId = (String) ParamUtil.getSessionAttr(request,KEY_FAC_ID);
         FacListDto facListDto = subCommon.getFacListDto(request);
@@ -117,6 +120,7 @@ public class BsbTransferNotificationDelegator {
         Map<String,DocSetting> settingMap = getDocSettingMap();
         ParamUtil.setRequestAttr(request,"doSettings",settingMap);
         ParamUtil.setRequestAttr(request,KEY_TRANSFER_NOTIFICATION_DTO,transferNotificationDto);
+        ParamUtil.setSessionAttr(request,KEY_SUBMISSION_TYPE,KEY_DATA_SUBMISSION_TYPE_TRANSFER);
     }
 
     public void saveAndPrepareConfirm(BaseProcessClass bpc){
@@ -129,6 +133,7 @@ public class BsbTransferNotificationDelegator {
          doValidation(notificationDto,request);
          //use to show file information
         ParamUtil.setRequestAttr(request,"doSettings",getDocSettingMap());
+        ParamUtil.setSessionAttr(request,KEY_OTHER_DOC,(Serializable) notificationDto.getOtherNewInfos());
         ParamUtil.setRequestAttr(request,"docMeta",notificationDto.getAllDocMetaByDocType());
         ParamUtil.setSessionAttr(request,KEY_TRANSFER_NOTIFICATION_DTO,notificationDto);
     }

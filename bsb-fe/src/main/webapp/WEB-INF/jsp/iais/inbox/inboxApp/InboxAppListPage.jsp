@@ -173,8 +173,11 @@
                                                                         <c:when test="${app.processType eq 'PROTYPE005' and app.status eq 'BSBAPST001'}">
                                                                             <option value="/bsb-fe/eservice/INTERNET/MohFacilityCertifierRegistration?editId=<iais:mask name='editId' value='${app.id}'/>">Edit</option>
                                                                         </c:when>
-                                                                        <%--The application will be in a “non-approved” or “non-rejected” stage and may be one of the following: New / Renewal / Request for Change / Deregistration / Cancellation / Notification/ Data Submission.--%>
                                                                     </c:choose>
+                                                                        <%--The application will be in a “non-approved” or “non-rejected” stage and may be one of the following: New / Renewal / Request for Change / Deregistration / Cancellation / Notification/ Data Submission.--%>
+                                                                    <c:if test="${(app.appType eq 'BSBAPTY001' or app.appType eq 'BSBAPTY002' or app.appType eq 'BSBAPTY003' or app.appType eq 'BSBAPTY004' or app.appType eq 'BSBAPTY005' or app.appType eq 'BSBAPTY010') and (app.status ne 'BSBAPST008' and app.status ne 'BSBAPST009')}">
+                                                                        <option value="/bsb-fe/eservice/INTERNET/BsbWithDrawn?withdrawnAppId=<iais:mask name='id' value='${app.id}'/>">Withdrawn</option>
+                                                                    </c:if>
                                                                 </select>
                                                             </td>
                                                         </tr>

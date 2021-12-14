@@ -6,14 +6,15 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ page import="static sg.gov.moh.iais.egp.bsb.constant.GlobalConstants.WEB_ROOT" %>
+<%@ page import="com.ecquaria.cloud.moh.iais.common.utils.MaskUtil" %>
 <%
     sop.webflow.rt.api.BaseProcessClass process =
             (sop.webflow.rt.api.BaseProcessClass) request.getAttribute("process");
 %>
 <webui:setLayout name="iais-internet"/>
 
-<script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-common.js"></script>
 <script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-withdrawn.js"></script>
+<script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-withdrawn-file.js"></script>
 <%@include file="dashboard.jsp" %>
 <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
     <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
@@ -68,7 +69,6 @@
                                         <div class="form-group">
                                             <div class="col-sm-5 control-label">
                                                 <label>Reason for Withdrawn</label>
-                                                <span class="mandatory otherQualificationSpan">*</span>
                                             </div>
                                             <div class="col-sm-6 col-md-7">
                                                 <iais:code code="${withdrawnDto.reason}"/>
@@ -78,7 +78,6 @@
                                         <div class="form-group">
                                             <div class="col-sm-5 control-label">
                                                 <label>Supporting Remarks</label>
-                                                <span class="mandatory otherQualificationSpan">*</span>
                                             </div>
                                             <div class="col-sm-6 col-md-7">
                                                 <c:out value="${withdrawnDto.remarks}"/>
@@ -88,10 +87,13 @@
                                         <div class="form-group">
                                             <div class="col-sm-5 control-label">
                                                 <label>File Upload for Withdrawal</label>
-                                                <span class="mandatory otherQualificationSpan">*</span>
                                             </div>
                                             <div class="col-sm-6 col-md-7">
-                                                <p><a href="#">xxx.docx</a>(xxxKB)</p>
+                                                <c:if test="${withdrawnDto.newDocInfos ne null}">
+                                                    <c:forEach var="docInfo" items="${withdrawnDto.newDocInfos}">
+                                                        <p><a href="javascript:void(0)" onclick="downloadFile('${MaskUtil.maskValue('file', docInfo.tmpId)}')">${docInfo.filename}</a>${String.format("%.1f", docInfo.size/1024.0)}KB</p>
+                                                    </c:forEach>
+                                                </c:if>
                                             </div>
                                         </div>
                                     </div>
@@ -112,7 +114,7 @@
             </div>
             <div class="form-group">
                 <div class="col-xs-12 col-md-6 text-right">
-                    <button class="btn btn-secondary save" id="cancelBtn">Save as Draft</button>
+                    <button class="btn btn-secondary save" id="cancelBtn">CANCEL</button>
                     <button class="btn btn-primary save" id="submitBtn">NEXT</button>
                 </div>
             </div>

@@ -82,7 +82,8 @@ function genFileInfo(fileInputEl) {
     return f[0].name + '(' + (f[0].size/1024).toFixed(1) + 'KB)';
 }
 
-function downloadFile(cond, id) {
+function downloadFile(id) {
+    console.log(id);
     var url = "/bsb-fe/ajax/doc/download/withdrawn/repo/" + id;
     window.open(url);
 }

@@ -1,4 +1,3 @@
-
 $(function () {
     $("#cancelBtn").click(function (){
         // showWaiting();
@@ -24,3 +23,12 @@ $(function () {
         $("#mainForm").submit();
     });
 })
+
+function isRemarksMandatory (){
+    var reasonOption = $("#reason").val();
+    if (reasonOption ==='WDREASN007'){
+        $("#remarksSpan").show();
+    }else{
+        $("#remarksSpan").hide();
+    }
+}

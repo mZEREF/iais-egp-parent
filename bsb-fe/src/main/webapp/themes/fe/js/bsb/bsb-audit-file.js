@@ -79,8 +79,13 @@ function genFileInfo(fileInputEl) {
         "<td width=\"15%\"><p>" + (f[0].size / 1024).toFixed(1) + "KB" + "</p></td>" + "<td width=\"20%\"><p>" + 'xxx' + "</p></td>" + "<td width=\"25%\"><p>" + myDate.toLocaleDateString() + "</p></td>";
 }
 
-function downloadRevokeFile(id) {
-    var url = "/bsb-fe/ajax/doc/download/audit/repo/" + id;
+function downloadFile(cond,id) {
+        var url;
+        if (cond === 'saved') {
+            url = "/bsb-fe/ajax/doc/download/audit/repo/" + id;
+        } else if (cond === 'new') {
+            url = "/bsb-fe/ajax/doc/download/audit/new/" + id;
+        }
     window.open(url);
 }
 

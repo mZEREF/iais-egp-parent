@@ -11,7 +11,7 @@
                     <c:set var="newFiles" value="${withdrawnDto.newDocInfos}"/>
                     <h3>File Upload for Withdrawal</h3>
                     <div class="file-upload-list" style="margin-left: 40px">
-                        <div class="document-upload-gp">
+                        <div class="file-upload-gp">
                         <c:if test="${newFiles ne null}">
                             <c:forEach var="info" items="${newFiles}">
                                 <c:set var="tmpId" value="${MaskUtil.maskValue('file', info.tmpId)}"/>
@@ -26,7 +26,7 @@
                                     </button>
 
                                     <button type="button" class="btn btn-secondary btn-sm"
-                                            onclick="downloadFile('new', '${tmpId}')">
+                                            onclick="downloadFile('${tmpId}')">
                                         Download
                                     </button>
                                     <span data-err-ind="${info.tmpId}" class="error-msg"></span>

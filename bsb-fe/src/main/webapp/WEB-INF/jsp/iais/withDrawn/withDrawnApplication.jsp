@@ -73,7 +73,7 @@
                                                 <span class="mandatory otherQualificationSpan">*</span>
                                             </div>
                                             <div class="col-sm-6 col-md-7">
-                                                <iais:select name="reason" id="reason" value="${withdrawnDto.reason}" codeCategory="CATE_ID_BSB_REASON_FOR_WITHDRAWN" firstOption="Please Select"/>
+                                                <iais:select name="reason" id="reason" value="${withdrawnDto.reason}" codeCategory="CATE_ID_BSB_REASON_FOR_WITHDRAWN" firstOption="Please Select" onchange="isRemarksMandatory()"/>
                                                 <span data-err-ind="reason" class="error-msg"></span>
                                             </div>
                                         </div>
@@ -81,7 +81,7 @@
                                         <div class="form-group">
                                             <div class="col-sm-5 control-label">
                                                 <label for="remarks">Supporting Remarks</label>
-                                                <span class="mandatory otherQualificationSpan">*</span>
+                                                <span id="remarksSpan" class="mandatory otherQualificationSpan" style="display: none">*</span>
                                             </div>
                                             <div class="col-sm-6 col-md-7">
                                                 <textarea name="remarks" id="remarks" maxlength="1000" cols="70" rows="7">${withdrawnDto.remarks}</textarea>

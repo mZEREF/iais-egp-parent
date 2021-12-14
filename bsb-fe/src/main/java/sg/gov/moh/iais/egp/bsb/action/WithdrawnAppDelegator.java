@@ -38,7 +38,7 @@ public class WithdrawnAppDelegator {
     private static final String ACTION_TYPE_NEXT = "doNext";
     private static final String ACTION_TYPE_PREPARE = "prepare";
     private static final String ACTION_TYPE = "action_type";
-    private static final String WITHDRAWN_APP_DTO = "withdrawnDto";
+    public static final String WITHDRAWN_APP_DTO = "withdrawnDto";
     private static final String PARAM_REASON = "reason";
     private static final String PARAM_REMARKS = "remarks";
 

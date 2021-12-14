@@ -58,6 +58,7 @@ public class DataSubmissionDelegator {
         ParamUtil.setSessionAttr(request,KEY_EXPORT_NOTIFICATION_DTO, null);
         ParamUtil.setSessionAttr(request,KEY_RECEIPT_NOTIFICATION_DTO, null);
         ParamUtil.setSessionAttr(request,KEY_SUBMISSION_TYPE,null);
+        ParamUtil.setSessionAttr(request,KEY_OTHER_DOC,null);
         ParamUtil.setSessionAttr(request,KEY_FAC_ID,null);
         if(log.isInfoEnabled()){
             log.info("In the future this module will be used to initialize some data");
@@ -139,6 +140,7 @@ public class DataSubmissionDelegator {
         //use to show file information
         ParamUtil.setRequestAttr(request,KEY_DO_SETTINGS,getDocSettingMap());
         ParamUtil.setRequestAttr(request,KEY_DOC_META,notificationDto.getAllDocMetaByDocType());
+        ParamUtil.setSessionAttr(request,KEY_OTHER_DOC,(Serializable) notificationDto.getOtherNewInfos());
         ParamUtil.setSessionAttr(request,KEY_CONSUME_NOTIFICATION_DTO, notificationDto);
     }
     /**
@@ -207,6 +209,7 @@ public class DataSubmissionDelegator {
         doDisposalValidation(notificationDto,request);
         //use to show file information
         ParamUtil.setRequestAttr(request,KEY_DO_SETTINGS,getDocSettingMap());
+        ParamUtil.setSessionAttr(request,KEY_OTHER_DOC,(Serializable) notificationDto.getOtherNewInfos());
         ParamUtil.setRequestAttr(request,KEY_DOC_META,notificationDto.getAllDocMetaByDocType());
         ParamUtil.setSessionAttr(request,KEY_DISPOSAL_NOTIFICATION_DTO, notificationDto);
     }
@@ -276,6 +279,7 @@ public class DataSubmissionDelegator {
         doExportValidation(notificationDto,request);
         //use to show file information
         ParamUtil.setRequestAttr(request,KEY_DO_SETTINGS,getDocSettingMap());
+        ParamUtil.setSessionAttr(request,KEY_OTHER_DOC,(Serializable) notificationDto.getOtherNewInfos());
         ParamUtil.setRequestAttr(request,KEY_DOC_META,notificationDto.getAllDocMetaByDocType());
         ParamUtil.setSessionAttr(request,KEY_EXPORT_NOTIFICATION_DTO, notificationDto);
     }
@@ -345,6 +349,7 @@ public class DataSubmissionDelegator {
         doReceiptValidation(notificationDto,request);
         //use to show file information
         ParamUtil.setRequestAttr(request,KEY_DO_SETTINGS,getDocSettingMap());
+        ParamUtil.setSessionAttr(request,KEY_OTHER_DOC,(Serializable) notificationDto.getOtherNewInfos());
         ParamUtil.setRequestAttr(request,KEY_DOC_META,notificationDto.getAllDocMetaByDocType());
         ParamUtil.setSessionAttr(request,KEY_RECEIPT_NOTIFICATION_DTO, notificationDto);
     }

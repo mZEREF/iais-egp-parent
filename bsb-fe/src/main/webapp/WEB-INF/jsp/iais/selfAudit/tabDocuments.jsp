@@ -6,8 +6,7 @@
 <div id="u8522_text" class="text ">
     <p><span>These are documents uploaded by the applicant or an officer on behalf of the applicant. Listed
 												documents are those defined for this digital service only.</span></p>
-<%--    <p>The maximum file size for each upload is 5MB</p>--%>
-<%--    <p>Acceptable file formats are PDF, DOCX, XLSX, CSV, JPEG, PNG</p>--%>
+    <p>The maximum file size for each upload is 5MB. Acceptable file formats are PDF, DOCX, XLSX, CSV, JPEG, PNG</p>
 </div>
 <div class="row">
     <div class="col-xs-12">
@@ -32,7 +31,7 @@
                                 <tr id="${tmpId}FileTr">
                                     <td>${info.filename}</td>
                                     <td>${info.docType}</td>
-                                    <td><p><a href="javascript:void(0)" onclick="downloadRevokeFile('${tmpId}')">${info.filename}</a></p></td>
+                                    <td><p><a href="javascript:void(0)" onclick="downloadFile('saved','${tmpId}')">${info.filename}</a></p></td>
                                     <td>${String.format("%.1f", info.size/1024.0)}KB</td>
                                     <td>${info.submitBy}</td>
                                     <td><fmt:formatDate value='${info.submitDate}' pattern='dd/MM/yyyy'/></td>

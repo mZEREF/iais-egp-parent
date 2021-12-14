@@ -172,7 +172,7 @@
                                                                     <select id="appAction${status.index}" name="appAction${status.index}" data-action-select="">
                                                                         <option value="#" selected="selected">Select</option>
                                                                         <%--The application will be in a “non-approved” or “non-rejected” stage--%>
-                                                                        <c:if test="${item.applicationId ne null and (item.applicationStatus ne 'BSBAPST008' or item.applicationStatus ne 'BSBAPST009')}">
+                                                                        <c:if test="${item.applicationId ne null and (item.applicationStatus ne 'BSBAPST008' and item.applicationStatus ne 'BSBAPST009')}">
                                                                             <option value="/bsb-fe/eservice/INTERNET/BsbWithDrawn?withdrawnAppId=<iais:mask name='id' value='${item.applicationId}'/>">Withdrawn</option>
                                                                         </c:if>
                                                                     </select>

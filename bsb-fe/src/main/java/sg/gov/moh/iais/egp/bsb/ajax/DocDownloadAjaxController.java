@@ -18,9 +18,11 @@ import sg.gov.moh.iais.egp.bsb.common.node.simple.SimpleNode;
 import sg.gov.moh.iais.egp.bsb.constant.ApprovalAppConstants;
 import sg.gov.moh.iais.egp.bsb.constant.FacCertifierRegisterConstants;
 import sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants;
+import sg.gov.moh.iais.egp.bsb.dto.audit.FacilitySubmitSelfAuditDto;
 import sg.gov.moh.iais.egp.bsb.dto.file.DocRecordInfo;
 import sg.gov.moh.iais.egp.bsb.dto.register.facility.PrimaryDocDto;
 import sg.gov.moh.iais.egp.bsb.dto.submission.*;
+import sg.gov.moh.iais.egp.bsb.dto.withdrawn.AppSubmitWithdrawnDto;
 import sg.gov.moh.iais.egp.bsb.util.LogUtil;
 
 import javax.servlet.http.HttpServletRequest;
@@ -32,6 +34,8 @@ import java.nio.charset.StandardCharsets;
 import java.util.function.BiFunction;
 import java.util.function.UnaryOperator;
 
+import static sg.gov.moh.iais.egp.bsb.action.WithdrawnAppDelegator.WITHDRAWN_APP_DTO;
+import static sg.gov.moh.iais.egp.bsb.constant.AuditConstants.SELF_AUDIT_DATA;
 import static sg.gov.moh.iais.egp.bsb.constant.DataSubmissionConstants.*;
 import static sg.gov.moh.iais.egp.bsb.constant.DataSubmissionConstants.KEY_RECEIPT_NOTIFICATION_DTO;
 
@@ -139,12 +143,17 @@ public class DocDownloadAjaxController {
 
     @GetMapping("/audit/repo/{id}")
     public void downloadAuditSavedFile(@PathVariable("id") String maskedRepoId, HttpServletRequest request, HttpServletResponse response) {
-        downloadFile(request, response, maskedRepoId, this::unmaskFileId, this::approvalAppGetSavedFile);
+        downloadFile(request, response, maskedRepoId, this::unmaskFileId, this::auditGetSavedFile);
+    }
+
+    @GetMapping("/audit/new/{id}")
+    public void downloadAuditNewFile(@PathVariable("id") String maskedRepoId, HttpServletRequest request, HttpServletResponse response) {
+        downloadFile(request, response, maskedRepoId, this::unmaskFileId, this::auditGetNewFile);
     }
 
     @GetMapping("/withdrawn/repo/{id}")
     public void downloadWithdrawnFile(@PathVariable("id") String maskedRepoId, HttpServletRequest request, HttpServletResponse response) {
-        downloadFile(request, response, maskedRepoId, this::unmaskFileId, this::approvalAppGetSavedFile);
+        downloadFile(request, response, maskedRepoId, this::unmaskFileId, this::withdrawnGetNewFile);
     }
 
 
@@ -265,6 +274,40 @@ public class DocDownloadAjaxController {
     public SimpleNode getSimpleNode(HttpServletRequest request,String nodeName,String rootName){
         NodeGroup facCertRegRoot = (NodeGroup) ParamUtil.getSessionAttr(request, rootName);
         return  (SimpleNode) facCertRegRoot.at(nodeName);
+    }
+
+    private MultipartFile withdrawnGetNewFile(HttpServletRequest request, String id) {
+        AppSubmitWithdrawnDto dto = (AppSubmitWithdrawnDto)ParamUtil.getSessionAttr(request, WITHDRAWN_APP_DTO);
+        MultipartFile multipartFile = null;
+        for (sg.gov.moh.iais.egp.bsb.dto.withdrawn.PrimaryDocDto.NewDocInfo newDocInfo : dto.getNewDocInfos()) {
+            if (newDocInfo.getTmpId().equals(id))
+                multipartFile = newDocInfo.getMultipartFile();
+        }
+        return multipartFile;
+    }
+
+    private MultipartFile auditGetNewFile(HttpServletRequest request, String id) {
+        FacilitySubmitSelfAuditDto dto = (FacilitySubmitSelfAuditDto)ParamUtil.getSessionAttr(request, SELF_AUDIT_DATA);
+        MultipartFile multipartFile = null;
+        for (sg.gov.moh.iais.egp.bsb.dto.audit.PrimaryDocDto.NewDocInfo newDocInfo : dto.getNewDocInfos()) {
+            if (newDocInfo.getTmpId().equals(id))
+                multipartFile = newDocInfo.getMultipartFile();
+        }
+        return multipartFile;
+    }
+
+    private MultipartFile auditGetSavedFile(HttpServletRequest request, String id) {
+        FacilitySubmitSelfAuditDto dto = (FacilitySubmitSelfAuditDto)ParamUtil.getSessionAttr(request, SELF_AUDIT_DATA);
+        sg.gov.moh.iais.egp.bsb.dto.audit.PrimaryDocDto.DocRecordInfo info = null;
+        for (sg.gov.moh.iais.egp.bsb.dto.audit.PrimaryDocDto.DocRecordInfo docRecordInfo : dto.getDocRecordInfos()) {
+            if (docRecordInfo.getRepoId().equals(id))
+                info = docRecordInfo;
+        }
+        if (info == null) {
+            throw new IllegalStateException(ERROR_MESSAGE_RECORD_INFO_NULL);
+        }
+        byte[] content = fileRepoClient.getFileFormDataBase(id).getEntity();
+        return new ByteArrayMultipartFile(null, info.getFilename(), null, content);
     }
 
 }
