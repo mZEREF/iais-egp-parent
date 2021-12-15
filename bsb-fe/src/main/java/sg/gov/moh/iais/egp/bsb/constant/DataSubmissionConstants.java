@@ -61,6 +61,7 @@ public final class DataSubmissionConstants {
     public static final String KEY_NON_OBJECT_ERROR = "please ensure your object has value";
     public static final String KEY_EMPTY_LIST_ERROR = "you have not key your consumeList";
     public static final String KEY_SUBMISSION_TYPE = "submissionType";
+    public static final String KEY_DOC_TYPE_OF_OTHER = "others";
 
     public static final String KEY_DATA_SUBMISSION_TYPE_CONSUME = "DATTYPE001";
     public static final String KEY_DATA_SUBMISSION_TYPE_DISPOSAL = "DATTYPE002";
