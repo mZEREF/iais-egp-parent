@@ -4,6 +4,7 @@
     <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
     <input type="hidden" name="crud_type_action_submission_no" id="crud_type_action_submission_no"/>
     <div class="tab-search">
+        <div id="clearBody">
         <div class="row">
             <div class="col-md-12">
                 <iais:value>
@@ -58,6 +59,7 @@
                     <button type="button" class="btn btn-primary" onclick="doSearch()">Search</button>
                 </div>
             </div>
+        </div>
         <br> <br>
         <iais:pagination param="dataSubmissionParam" result="dataSubmissionResult"/>
     </div>
@@ -174,7 +176,7 @@
         $("#statusDataSubmission option:first").prop("selected", 'selected').val("");
         $("#typeDataSubmission option:first").prop("selected", 'selected').val("");
         $("#submissionNoDataSubmission").val("");
-        $(".tab-search .current").text("All");
+        $("#clearBody .current").text("All");
         $("#submissionNoDataSubmission").val("");
         $("#submissionNoDataSubmission").val("");
         $("[name='lastDateStart']").val("");
