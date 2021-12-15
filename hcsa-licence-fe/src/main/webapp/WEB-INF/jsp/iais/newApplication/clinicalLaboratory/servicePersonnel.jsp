@@ -112,7 +112,7 @@
                           <div class="edit-content">
                             <c:if test="${'true' == canEdit}">
                               <div class="text-right app-font-size-16">
-                                <a class="edit mapEdit" href="javascript:void(0);">
+                                <a id="edit" class="svcPsnEdit" href="javascript:void(0);">
                                   <em class="fa fa-pencil-square-o"></em><span>&nbsp;</span>Edit
                                 </a>
                               </div>
@@ -387,7 +387,7 @@
     });
 
     if("${errormapIs}"=='error'){
-      $('.edit').trigger('click');
+      $('.svcPsnEdit').trigger('click');
     }
 
     /* notLoadingSpl();*/
@@ -587,7 +587,7 @@
 
 
   var doEdit = function () {
-    $('.edit').click(function () {
+    $('.svcPsnEdit').click(function () {
       let $context = $(this).closest("td")
       $(this).addClass('hidden');
       unDisabledPartPage($context);
