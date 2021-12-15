@@ -85,6 +85,9 @@
 
     var dividajaxlist = [];
 
+    var dividajaxNonlist = [];
+
+
     function doStageSearch(cycleId,stage){
         showWaiting();
         $("[name='crud_action_value']").val(cycleId);
@@ -162,6 +165,20 @@
             }
         }
     };
+
+    var getStageByNonCycleId = function (cycleId, divid) {
+        if (!isInArray(dividajaxNonlist,divid)) {
+            stageAjaxNon(cycleId, divid);
+        } else {
+            var display = $('#advfiltersonNon' + divid).css('display');
+            if (display == 'none') {
+                $('#advfiltersonNon' + divid).show();
+            } else {
+                $('#advfiltersonNon' + divid).hide();
+            }
+        }
+    };
+
     function isInArray(arr,value){
         for(var i = 0; i < arr.length; i++){
             if(value === arr[i]){
@@ -185,8 +202,6 @@
                         '<table class="table application-item" style="background-color: #F3F3F3;" >' +
                         '<thead>' +
                         '<tr>';
-
-
                     html += '<th width="25%">Submission ID</th>' +
                         '<th width="25%">Date</th>' +
                         '<th width="25%">Stage</th>' +
@@ -196,13 +211,10 @@
                         '<tbody>';
                     for (let i = 0; i < res.length; i++) {
                         var color = "black";
-
                         html += '<tr style = "color : ' + color + ';">';
-
                         html += '<td><p class="visible-xs visible-sm table-row-title">Submission ID</p><p>' + res[i].submissionNo + '<p></td>' +
                             '<td><p class="visible-xs visible-sm table-row-title">Date</p><p>' + res[i].submitDtStr + '<p></td>' +
                             '<td><p class="visible-xs visible-sm table-row-title">Stage</p><p>' + res[i].cycleStageStr + '<p></td>';
-
                         html += '<td><p class="visible-xs visible-sm table-row-title">View Full Details</p><p>' +
                             '<button type="button" onclick="doStageSearch(' + "'" + res[i].cycleId + "','"+ res[i].cycleStage + "'" + ')" class="btn btn-default btn-sm">'+
                         'View Full Details</button></p></td>'+
@@ -210,6 +222,46 @@
                     }
                     html += '</tbody></table></div></td></tr>';
                     $('#advfilter' + divid).after(html);
+                }
+            }
+        )
+    };
+
+    var stageAjaxNon = function (cycleIder, divid) {
+        dividajaxNonlist.push(divid);
+        $.post(
+            '/hcsa-licence-web/hcsa/intranet/ar/cycleStageDetail.do',
+            {cycleIder: cycleIder},
+            function (data) {
+                let result = data.result;
+                if('Success' == result) {
+                    let res = data.ajaxResult;
+                    let html = '<tr style="background-color: #F3F3F3;" class="p" id="advfiltersonNon' + divid + '">' +
+                        '<td colspan="7" class="hiddenRow">' +
+                        '<div class="accordian-body p-3 collapse in" id="dropdownNon' + divid + '" >' +
+                        '<table class="table application-item" style="background-color: #F3F3F3;" >' +
+                        '<thead>' +
+                        '<tr>';
+                    html += '<th width="25%">Submission ID</th>' +
+                        '<th width="25%">Date</th>' +
+                        '<th width="25%">Stage</th>' +
+                        '<th width="25%">View Full Details</th>' +
+                        '</tr>' +
+                        '</thead>' +
+                        '<tbody>';
+                    for (let i = 0; i < res.length; i++) {
+                        var color = "black";
+                        html += '<tr style = "color : ' + color + ';">';
+                        html += '<td><p class="visible-xs visible-sm table-row-title">Submission ID</p><p>' + res[i].submissionNo + '<p></td>' +
+                            '<td><p class="visible-xs visible-sm table-row-title">Date</p><p>' + res[i].submitDtStr + '<p></td>' +
+                            '<td><p class="visible-xs visible-sm table-row-title">Stage</p><p>' + res[i].cycleStageStr + '<p></td>';
+                        html += '<td><p class="visible-xs visible-sm table-row-title">View Full Details</p><p>' +
+                            '<button type="button" onclick="doStageSearch(' + "'" + res[i].cycleId + "','"+ res[i].cycleStage + "'" + ')" class="btn btn-default btn-sm">'+
+                            'View Full Details</button></p></td>'+
+                            '</tr>';
+                    }
+                    html += '</tbody></table></div></td></tr>';
+                    $('#advfilterNon' + divid).after(html);
                 }
             }
         )

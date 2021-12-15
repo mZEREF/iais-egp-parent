@@ -67,8 +67,8 @@ public class OnlineArAjaxController {
             List<AssistedReproductionEnquiryAjaxPatientResultsDto> arAjaxList=searchResult.getRows();
             for (AssistedReproductionEnquiryAjaxPatientResultsDto ajax:arAjaxList
                  ) {
-                String coFunding="";
-                String arTreatment="";
+                String coFunding="-";
+                String arTreatment="-";
 
                 if(ajax.getTreatmentFreshNatural()!=null&&ajax.getTreatmentFreshNatural()){
                     arTreatment=arTreatment+ MasterCodeUtil.getCodeDesc(DataSubmissionConsts.CURRENT_AR_TREATMENT_FRESH_CYCLE_NATURAL);
@@ -110,7 +110,11 @@ public class OnlineArAjaxController {
                 }
                 ajax.setArTreatment(arTreatment);
                 ajax.setCoFunding(coFunding);
-                ajax.setStatus(MasterCodeUtil.getCodeDesc(ajax.getStatus()));
+                switch (ajax.getStatus()){
+                    case DataSubmissionConsts.DS_STATUS_COMPLETED:ajax.setStatus("Completed");break;
+                    case DataSubmissionConsts.DS_STATUS_ACTIVE:ajax.setStatus("Submitted");break;
+                    default:ajax.setStatus("Ongoing");
+                }
             }
             if(searchResult.getRowCount()>0){
                 map.put("result", "Success");
