@@ -1,4 +1,4 @@
-package sg.gov.moh.iais.egp.bsb.dto.report.notification;
+package sg.gov.moh.iais.egp.bsb.dto.report;
 
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;

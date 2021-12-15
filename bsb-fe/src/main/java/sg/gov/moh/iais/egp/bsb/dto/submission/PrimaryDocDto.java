@@ -185,9 +185,6 @@ public class PrimaryDocDto implements Serializable {
     private static final String KEY_DELETED_NEW_FILES   = "deleteNewFiles";
 
     public void reqObjMapping(MultipartHttpServletRequest mulReq,HttpServletRequest request,String docType,String amt){
-        //delete new files
-        deleteNewFiles(mulReq);
-
         // read new uploaded files
         Iterator<String> inputNameIt = mulReq.getFileNames();
         Date currentDate = new Date();
@@ -225,7 +222,7 @@ public class PrimaryDocDto implements Serializable {
         }
     }
 
-    private void deleteNewFiles(MultipartHttpServletRequest mulReq){
+    public static void deleteNewFiles(MultipartHttpServletRequest mulReq,Map<String, PrimaryDocDto.NewDocInfo> allNewDocInfos){
         String deleteNewFilesString = ParamUtil.getString(mulReq, KEY_DELETED_NEW_FILES);
         if (log.isInfoEnabled()) {
             log.info("deleteNewFilesString: {}", LogUtil.escapeCrlf(deleteNewFilesString));
@@ -234,7 +231,7 @@ public class PrimaryDocDto implements Serializable {
             List<String> deleteFileTmpIds = Arrays.stream(deleteNewFilesString.split(","))
                     .map(f -> MaskUtil.unMaskValue(MASK_PARAM, f))
                     .collect(Collectors.toList());
-            deleteFileTmpIds.forEach(this.newDocMap::remove);
+            deleteFileTmpIds.forEach(allNewDocInfos::remove);
         }
     }
 

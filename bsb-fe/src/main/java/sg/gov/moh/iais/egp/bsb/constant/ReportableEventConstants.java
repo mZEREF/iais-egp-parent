@@ -4,17 +4,22 @@ package sg.gov.moh.iais.egp.bsb.constant;
  * @author YiMing
  * @version 2021/12/1 16:24
  **/
-public class IncidentNotificationConstants {
-    private IncidentNotificationConstants() {}
+public class ReportableEventConstants {
+    private ReportableEventConstants() {}
 
-    public static final String MODULE_NAME = "Notification of Incident";
-    public static final String KEY_ROOT_NODE_GROUP = "incidentNotRoot";
+    public static final String MODULE_NAME_NOTIFICATION_OF_INCIDENT = "Notification of Incident";
+    public static final String MODULE_NAME_INVESTIGATION_REPORT = "Investigation Report";
+    public static final String KEY_ROOT_NODE_GROUP_INCIDENT_NOT = "incidentNotRoot";
+    public static final String KEY_ROOT_NODE_GROUP_INVEST_REPORT = "investRepoRoot";
 
     public static final String NODE_NAME_INCIDENT_INFO         = "incidentInfo";
     public static final String NODE_NAME_PERSON_REPORTING_INFO = "reportingPerson";
     public static final String NODE_NAME_PERSON_INVOLVED_INFO  = "involvedPerson";
     public static final String NODE_NAME_DOCUMENTS             = "documents";
     public static final String NODE_NAME_PREVIEW_SUBMIT        = "previewSubmit";
+
+    public static final String NODE_NAME_INCIDENT_INVESTIGATION = "incidentInvest";
+    public static final String NODE_NAME_MEDICAL_INVESTIGATION = "medicalInvest";
 
 
     //usual key --------------------
@@ -31,5 +36,10 @@ public class IncidentNotificationConstants {
     public static final String KEY_NAV_BACK      = "back";
     public static final String KEY_NAV_SAVE_DRAFT = "draft";
 
+    public static final String ERR_MSG_NULL_GROUP = "Node group must not be null!";
+    public static final String ERR_MSG_NULL_NAME = "Name must not be null!";
+    public static final String ERR_MSG_INVALID_ACTION = "Invalid action";
+    public static final String KEY_SHOW_ERROR_SWITCH = "needShowValidationError";
+    public static final String KEY_VALIDATION_ERRORS = "errorMsg";
 
 }

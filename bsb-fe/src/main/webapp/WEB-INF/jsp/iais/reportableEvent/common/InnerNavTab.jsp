@@ -1,6 +1,6 @@
 <%@ page import="sg.gov.moh.iais.egp.bsb.common.node.NodeGroup" %>
 <%@ page import="sg.gov.moh.iais.egp.bsb.action.IncidentNotificationDelegator" %>
-<%@ page import="static sg.gov.moh.iais.egp.bsb.constant.IncidentNotificationConstants.*" %>
+<%@ page import="static sg.gov.moh.iais.egp.bsb.constant.ReportableEventConstants.*" %>
 <%
     NodeGroup incidentNotRoot = (NodeGroup) request.getSession().getAttribute("incidentNotRoot");
 %>

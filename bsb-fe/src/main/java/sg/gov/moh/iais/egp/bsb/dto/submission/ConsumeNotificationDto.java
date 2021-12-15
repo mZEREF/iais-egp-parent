@@ -290,6 +290,7 @@ public class ConsumeNotificationDto implements Serializable {
     public void reqObjectMapping(HttpServletRequest request){
         MultipartHttpServletRequest mulReq = (MultipartHttpServletRequest) request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
         String idxes = ParamUtil.getString(request, KEY_SECTION_IDXES);
+        PrimaryDocDto.deleteNewFiles(mulReq,this.allNewDocInfos);
         clearConsumptionNotList();
         String[] idxArr = idxes.trim().split(" +");
         for (String idx : idxArr) {

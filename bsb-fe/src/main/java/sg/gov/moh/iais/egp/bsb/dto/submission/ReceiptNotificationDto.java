@@ -398,6 +398,7 @@ public class ReceiptNotificationDto implements Serializable{
         MultipartHttpServletRequest mulReq = (MultipartHttpServletRequest) request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
         String idxes = ParamUtil.getString(request, KEY_SECTION_IDXES);
         String[] idxArr = idxes.trim().split(" +");
+        PrimaryDocDto.deleteNewFiles(mulReq,this.allNewDocInfos);
         for (String idx : idxArr) {
             ReceiptNot receiptNot = new ReceiptNot();
             String scheduleType = ParamUtil.getString(request, KEY_PREFIX_SCHEDULE_TYPE + SEPARATOR +idx);

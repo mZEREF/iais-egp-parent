@@ -11,6 +11,7 @@ import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
 import sg.gov.moh.iais.egp.bsb.dto.ValidationResultDto;
 import sg.gov.moh.iais.egp.bsb.dto.report.BiologicalInfo;
 import sg.gov.moh.iais.egp.bsb.dto.report.FacilityInfo;
+import sg.gov.moh.iais.egp.bsb.dto.report.PrimaryDocDto;
 import sg.gov.moh.iais.egp.bsb.dto.report.notification.*;
 
 import java.util.List;

@@ -10,7 +10,6 @@ import com.ecquaria.cloud.moh.iais.common.utils.LogUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
-import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.Assert;
@@ -31,6 +30,7 @@ import sg.gov.moh.iais.egp.bsb.dto.file.FileRepoSyncDto;
 import sg.gov.moh.iais.egp.bsb.dto.file.NewDocInfo;
 import sg.gov.moh.iais.egp.bsb.dto.file.NewFileSyncDto;
 import sg.gov.moh.iais.egp.bsb.dto.report.FacilityInfo;
+import sg.gov.moh.iais.egp.bsb.dto.report.PrimaryDocDto;
 import sg.gov.moh.iais.egp.bsb.dto.report.notification.*;
 import sg.gov.moh.iais.egp.bsb.entity.DocSetting;
 import sop.webflow.rt.api.BaseProcessClass;
@@ -42,7 +42,7 @@ import java.util.List;
 import java.util.Map;
 
 import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.NODE_NAME_PREVIEW_SUBMIT;
-import static sg.gov.moh.iais.egp.bsb.constant.IncidentNotificationConstants.*;
+import static sg.gov.moh.iais.egp.bsb.constant.ReportableEventConstants.*;
 
 /**
  * @author YiMing
@@ -51,11 +51,6 @@ import static sg.gov.moh.iais.egp.bsb.constant.IncidentNotificationConstants.*;
 @Slf4j
 @Delegator("incidentNotificationDelegator")
 public class IncidentNotificationDelegator {
-    private static final String ERR_MSG_NULL_GROUP = "Node group must not be null!";
-    private static final String ERR_MSG_NULL_NAME = "Name must not be null!";
-    private static final String ERR_MSG_INVALID_ACTION = "Invalid action";
-    private static final String KEY_SHOW_ERROR_SWITCH = "needShowValidationError";
-    private static final String KEY_VALIDATION_ERRORS = "errorMsg";
     private static final String PARAM_SELECT_OCCURRENCE_HH_OPTIONS = "occurHHOps";
     private static final String PARAM_SELECT_OCCURRENCE_MM_OPTIONS = "occurMMOps";
     private static final String PARAM_SELECT_FACILITY_NAME_OPTIONS = "facNameOps";
@@ -72,14 +67,14 @@ public class IncidentNotificationDelegator {
 
     public void start(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
-        request.getSession().removeAttribute(KEY_ROOT_NODE_GROUP);
+        request.getSession().removeAttribute(KEY_ROOT_NODE_GROUP_INCIDENT_NOT);
 
-        AuditTrailHelper.auditFunction(MODULE_NAME, MODULE_NAME);
+        AuditTrailHelper.auditFunction(MODULE_NAME_NOTIFICATION_OF_INCIDENT, MODULE_NAME_NOTIFICATION_OF_INCIDENT);
     }
 
     public void init(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
-        ParamUtil.setSessionAttr(request,KEY_ROOT_NODE_GROUP,getIncidentNotRoot(request));
+        ParamUtil.setSessionAttr(request,KEY_ROOT_NODE_GROUP_INCIDENT_NOT,getIncidentNotRoot(request));
     }
 
     public void jumpFilter(BaseProcessClass bpc){
@@ -124,7 +119,7 @@ public class IncidentNotificationDelegator {
         } else {
             throw new IaisRuntimeException(ERR_MSG_INVALID_ACTION);
         }
-        ParamUtil.setSessionAttr(request, KEY_ROOT_NODE_GROUP, incidentNotRoot);
+        ParamUtil.setSessionAttr(request, KEY_ROOT_NODE_GROUP_INCIDENT_NOT, incidentNotRoot);
     }
 
     public void prePersonReportingInfo(BaseProcessClass bpc){
@@ -155,7 +150,7 @@ public class IncidentNotificationDelegator {
         } else {
             throw new IaisRuntimeException(ERR_MSG_INVALID_ACTION);
         }
-        ParamUtil.setSessionAttr(request, KEY_ROOT_NODE_GROUP, incidentNotRoot);
+        ParamUtil.setSessionAttr(request, KEY_ROOT_NODE_GROUP_INCIDENT_NOT, incidentNotRoot);
     }
 
     public void preInvolvedPersonInfo(BaseProcessClass bpc){
@@ -184,7 +179,7 @@ public class IncidentNotificationDelegator {
         } else {
             throw new IaisRuntimeException(ERR_MSG_INVALID_ACTION);
         }
-        ParamUtil.setSessionAttr(request, KEY_ROOT_NODE_GROUP, incidentNotRoot);
+        ParamUtil.setSessionAttr(request, KEY_ROOT_NODE_GROUP_INCIDENT_NOT, incidentNotRoot);
     }
 
     public void preDocuments(BaseProcessClass bpc){
@@ -219,7 +214,7 @@ public class IncidentNotificationDelegator {
         } else {
             throw new IaisRuntimeException(ERR_MSG_INVALID_ACTION);
         }
-        ParamUtil.setSessionAttr(request, KEY_ROOT_NODE_GROUP, incidentNotRoot);
+        ParamUtil.setSessionAttr(request, KEY_ROOT_NODE_GROUP_INCIDENT_NOT, incidentNotRoot);
     }
 
     public void preSubmit(BaseProcessClass bpc){
@@ -294,7 +289,7 @@ public class IncidentNotificationDelegator {
         } else {
             throw new IaisRuntimeException(ERR_MSG_INVALID_ACTION);
         }
-        ParamUtil.setSessionAttr(request, KEY_ROOT_NODE_GROUP, incidentNotRoot);
+        ParamUtil.setSessionAttr(request, KEY_ROOT_NODE_GROUP_INCIDENT_NOT, incidentNotRoot);
     }
 
     public void preAcknowledge(BaseProcessClass bpc){
@@ -398,9 +393,9 @@ public class IncidentNotificationDelegator {
     }
 
     public NodeGroup getIncidentNotRoot (HttpServletRequest request){
-        NodeGroup root = (NodeGroup) ParamUtil.getSessionAttr(request, KEY_ROOT_NODE_GROUP);
+        NodeGroup root = (NodeGroup) ParamUtil.getSessionAttr(request, KEY_ROOT_NODE_GROUP_INCIDENT_NOT);
         if (root == null) {
-            root = newIncidentNotRoot(KEY_ROOT_NODE_GROUP);
+            root = newIncidentNotRoot(KEY_ROOT_NODE_GROUP_INCIDENT_NOT);
         }
         return root;
     }

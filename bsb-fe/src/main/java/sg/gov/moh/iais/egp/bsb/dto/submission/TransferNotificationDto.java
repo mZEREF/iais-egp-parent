@@ -367,6 +367,7 @@ public class TransferNotificationDto implements Serializable {
      * */
     public void reqObjectMapping(HttpServletRequest request){
         MultipartHttpServletRequest mulReq = (MultipartHttpServletRequest) request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
+        PrimaryDocDto.deleteNewFiles(mulReq,this.allNewDocInfos);
         String idxes = ParamUtil.getString(request, KEY_SECTION_IDXES);
         clearTransferNotList();
         String[] idxArr = idxes.trim().split(" +");

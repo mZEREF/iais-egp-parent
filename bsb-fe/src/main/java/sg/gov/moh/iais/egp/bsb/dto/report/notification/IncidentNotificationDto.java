@@ -7,11 +7,11 @@ import sg.gov.moh.iais.egp.bsb.common.node.Node;
 import sg.gov.moh.iais.egp.bsb.common.node.NodeGroup;
 import sg.gov.moh.iais.egp.bsb.common.node.simple.SimpleNode;
 import sg.gov.moh.iais.egp.bsb.dto.file.DocRecordInfo;
-import sg.gov.moh.iais.egp.bsb.util.CollectionUtils;
+import sg.gov.moh.iais.egp.bsb.dto.report.PrimaryDocDto;
 
 import java.util.Collection;
 
-import static sg.gov.moh.iais.egp.bsb.constant.IncidentNotificationConstants.*;
+import static sg.gov.moh.iais.egp.bsb.constant.ReportableEventConstants.*;
 
 /**
  * @author YiMing
