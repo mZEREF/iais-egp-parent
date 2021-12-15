@@ -136,7 +136,8 @@ public class OnlineArAjaxController {
             List<DataSubmissionDto> cycleStageAjaxList=assistedReproductionService.allDataSubmissionByCycleId(cycleId);
             for (DataSubmissionDto ajax:cycleStageAjaxList
             ) {
-                ajax.setCycleStage(MasterCodeUtil.getCodeDesc(ajax.getCycleStage()));
+                ajax.setCycleStageStr(MasterCodeUtil.getCodeDesc(ajax.getCycleStage()));
+                ajax.setSubmitDtStr(Formatter.formatDateTime(ajax.getSubmitDt(),Formatter.DATE));
             }
             if(cycleStageAjaxList.size()>0){
                 map.put("result", "Success");

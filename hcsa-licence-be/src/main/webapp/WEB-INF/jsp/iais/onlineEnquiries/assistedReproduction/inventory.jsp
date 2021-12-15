@@ -175,7 +175,7 @@
                                                         <c:out value="${transaction.arCentre}"/>
                                                     </td>
                                                     <td>
-                                                        <a href="#" onclick="doStageSearch('${transaction.cycleId}')">${transaction.submissionIdNo}
+                                                        <a href="#" onclick="doStageSearch('${transaction.cycleId}','${transaction.stage}')">${transaction.submissionIdNo}
                                                         </a>
                                                     </td>
                                                     <td>

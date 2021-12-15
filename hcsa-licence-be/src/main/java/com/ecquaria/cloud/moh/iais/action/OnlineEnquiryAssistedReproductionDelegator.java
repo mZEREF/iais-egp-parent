@@ -811,6 +811,7 @@ public class OnlineEnquiryAssistedReproductionDelegator {
         List<SelectOption> arCentreSelectOption  = IaisCommonUtils.genNewArrayList();
         ParamUtil.setRequestAttr(bpc.request,"arCentreSelectOption",arCentreSelectOption);
         HttpServletRequest request = bpc.request;
+        ParamUtil.setSessionAttr(request,"arViewFull",null);
         String action = ParamUtil.getRequestString(request, IaisEGPConstant.CRUD_ACTION_TYPE);
         SearchParam searchParamForPat = (SearchParam) ParamUtil.getSessionAttr(request, "patientParam");
         SearchParam searchParamForSub = (SearchParam) ParamUtil.getSessionAttr(request, "submissionParam");
@@ -954,7 +955,6 @@ public class OnlineEnquiryAssistedReproductionDelegator {
     }
     public void preViewFullDetails(BaseProcessClass bpc){
         HttpServletRequest request=bpc.request;
-        ParamUtil.setSessionAttr(request,"arViewFull",null);
         String additional=ParamUtil.getRequestString(request, InboxConst.CRUD_ACTION_ADDITIONAL);
         String key=ParamUtil.getRequestString(request, InboxConst.CRUD_ACTION_VALUE);
         PatientInfoDto patientInfoDto=null;
@@ -971,6 +971,7 @@ public class OnlineEnquiryAssistedReproductionDelegator {
             }
             if(patientInfoDto!=null){
                 ParamUtil.setSessionAttr(request,"patientInfoDto",patientInfoDto);
+                ParamUtil.setSessionAttr(request,"arViewFull",null);
 
                 LinkedHashMap<String,PatientInventoryDto> patientInventoryDtos=new LinkedHashMap<>(patientInfoDto.getPatient().getArCentres().size()+1);
                 PatientInventoryDto patientInventoryDtoTotal=new PatientInventoryDto();
@@ -1026,25 +1027,34 @@ public class OnlineEnquiryAssistedReproductionDelegator {
     public void searchCycle(BaseProcessClass bpc){
         ParamUtil.setRequestAttr(bpc.request, "preActive", "2");
         HttpServletRequest request=bpc.request;
-        ParamUtil.setSessionAttr(request,"arViewFull",1);
-        PatientInfoDto patientInfoDto= (PatientInfoDto) ParamUtil.getSessionAttr(request,"patientInfoDto");
-        Map<String,Object> filter=IaisCommonUtils.genNewHashMap();
-        filter.put("patientCode", patientInfoDto.getPatient().getPatientCode());
-        cycleStageParameter.setFilters(filter);
-        String sortFieldName = ParamUtil.getString(request,"crud_action_value");
-        String sortType = ParamUtil.getString(request,"crud_action_additional");
-        if(!StringUtil.isEmpty(sortFieldName)&&!StringUtil.isEmpty(sortType)){
-            cycleStageParameter.setSortType(sortType);
-            cycleStageParameter.setSortField(sortFieldName);
+        ParamUtil.setSessionAttr(request,"arViewFull",2);
+        String action = ParamUtil.getRequestString(request, IaisEGPConstant.CRUD_ACTION_TYPE);
+        if("searchCyc".equals(action)){
+            PatientInfoDto patientInfoDto= (PatientInfoDto) ParamUtil.getSessionAttr(request,"patientInfoDto");
+            Map<String,Object> filter=IaisCommonUtils.genNewHashMap();
+            filter.put("patientCode", patientInfoDto.getPatient().getPatientCode());
+            cycleStageParameter.setFilters(filter);
+            String sortFieldName = ParamUtil.getString(request,"crud_action_value");
+            String sortType = ParamUtil.getString(request,"crud_action_additional");
+            if(!StringUtil.isEmpty(sortFieldName)&&!StringUtil.isEmpty(sortType)){
+                cycleStageParameter.setSortType(sortType);
+                cycleStageParameter.setSortField(sortFieldName);
+            }
+
+            SearchParam cycleStageParam = SearchResultHelper.getSearchParam(request, cycleStageParameter,true);
+            CrudHelper.doPaging(cycleStageParam,bpc.request);
+
+            QueryHelp.setMainSql("onlineEnquiry","searchCycleStageByPatientCode",cycleStageParam);
+            SearchResult<ArEnquiryCycleStageDto> cycleStageResult = assistedReproductionService.searchCycleStageByParam(cycleStageParam);
+            ParamUtil.setRequestAttr(request,"cycleStageResult",cycleStageResult);
+            ParamUtil.setSessionAttr(request,"cycleStageParam",cycleStageParam);
+        }else {
+            SearchParam cycleStageParam = (SearchParam) ParamUtil.getSessionAttr(request,"cycleStageParam");
+            SearchResult<ArEnquiryCycleStageDto> cycleStageResult = assistedReproductionService.searchCycleStageByParam(cycleStageParam);
+            ParamUtil.setRequestAttr(request,"cycleStageResult",cycleStageResult);
+            ParamUtil.setSessionAttr(request,"cycleStageParam",cycleStageParam);
         }
 
-        SearchParam cycleStageParam = SearchResultHelper.getSearchParam(request, cycleStageParameter,true);
-        CrudHelper.doPaging(cycleStageParam,bpc.request);
-
-        QueryHelp.setMainSql("onlineEnquiry","searchCycleStageByPatientCode",cycleStageParam);
-        SearchResult<ArEnquiryCycleStageDto> cycleStageResult = assistedReproductionService.searchCycleStageByParam(cycleStageParam);
-        ParamUtil.setRequestAttr(request,"cycleStageResult",cycleStageResult);
-        ParamUtil.setRequestAttr(request,"cycleStageParam",cycleStageParam);
 
     }
     public void perStep(BaseProcessClass bpc){
@@ -1101,48 +1111,57 @@ public class OnlineEnquiryAssistedReproductionDelegator {
         ParamUtil.setRequestAttr(bpc.request, "preActive", "1");
         HttpServletRequest request=bpc.request;
         ParamUtil.setSessionAttr(request,"arViewFull",1);
-        PatientInfoDto patientInfoDto= (PatientInfoDto) ParamUtil.getSessionAttr(request,"patientInfoDto");
-        ArEnquiryTransactionHistoryFilterDto arDto=setArEnquiryTransactionHistoryFilterDto(request);
+        String action = ParamUtil.getRequestString(request, IaisEGPConstant.CRUD_ACTION_TYPE);
+        if("searchInv".equals(action)){
+            PatientInfoDto patientInfoDto= (PatientInfoDto) ParamUtil.getSessionAttr(request,"patientInfoDto");
+            ArEnquiryTransactionHistoryFilterDto arDto=setArEnquiryTransactionHistoryFilterDto(request);
 
-        Map<String,Object> filter=IaisCommonUtils.genNewHashMap();
-        filter.put("patientCode", patientInfoDto.getPatient().getPatientCode());
+            Map<String,Object> filter=IaisCommonUtils.genNewHashMap();
+            filter.put("patientCode", patientInfoDto.getPatient().getPatientCode());
 
-        if(arDto.getArCentre()!=null) {
-            filter.put("arCentre", arDto.getArCentre());
-        }
-        if(arDto.getSubmissionDateFrom()!=null){
-            String submissionDateFrom = Formatter.formatDateTime(arDto.getSubmissionDateFrom(),
-                    SystemAdminBaseConstants.DATE_FORMAT);
-            filter.put("submission_start_date", submissionDateFrom);
+            if(arDto.getArCentre()!=null) {
+                filter.put("arCentre", arDto.getArCentre());
+            }
+            if(arDto.getSubmissionDateFrom()!=null){
+                String submissionDateFrom = Formatter.formatDateTime(arDto.getSubmissionDateFrom(),
+                        SystemAdminBaseConstants.DATE_FORMAT);
+                filter.put("submission_start_date", submissionDateFrom);
+            }
+
+            if(arDto.getSubmissionDateTo()!=null){
+                String submissionDateTo = Formatter.formatDateTime(arDto.getSubmissionDateTo(),
+                        SystemAdminBaseConstants.DATE_FORMAT);
+                filter.put("submission_to_date", submissionDateTo);
+            }
+            if(arDto.getIncludeTransfers()!=null) {
+                filter.put("transfers", arDto.getIncludeTransfers());
+            }
+            if(arDto.getCycleNumber()!=null) {
+                filter.put("cycleNo", Integer.parseInt(arDto.getCycleNumber()));
+            }
+            transactionParameter.setFilters(filter);
+
+            String sortFieldName = ParamUtil.getString(request,"crud_action_value");
+            String sortType = ParamUtil.getString(request,"crud_action_additional");
+            if(!StringUtil.isEmpty(sortFieldName)&&!StringUtil.isEmpty(sortType)){
+                transactionParameter.setSortType(sortType);
+                transactionParameter.setSortField(sortFieldName);
+            }
+
+            SearchParam transactionParam = SearchResultHelper.getSearchParam(request, transactionParameter,true);
+            CrudHelper.doPaging(transactionParam,bpc.request);
+
+            QueryHelp.setMainSql("onlineEnquiry","searchTransactionHistoryByAssistedReproduction",transactionParam);
+            SearchResult<ArEnquiryTransactionHistoryResultDto> transactionResult = assistedReproductionService.searchTransactionHistoryByParam(transactionParam);
+            ParamUtil.setRequestAttr(request,"transactionResult",transactionResult);
+            ParamUtil.setSessionAttr(request,"transactionParam",transactionParam);
+        }else {
+            SearchParam transactionParam = (SearchParam) ParamUtil.getSessionAttr(request,"transactionParam");
+            SearchResult<ArEnquiryTransactionHistoryResultDto> transactionResult = assistedReproductionService.searchTransactionHistoryByParam(transactionParam);
+            ParamUtil.setRequestAttr(request,"transactionResult",transactionResult);
+            ParamUtil.setSessionAttr(request,"transactionParam",transactionParam);
         }
 
-        if(arDto.getSubmissionDateTo()!=null){
-            String submissionDateTo = Formatter.formatDateTime(arDto.getSubmissionDateTo(),
-                    SystemAdminBaseConstants.DATE_FORMAT);
-            filter.put("submission_to_date", submissionDateTo);
-        }
-        if(arDto.getIncludeTransfers()!=null) {
-            filter.put("transfers", arDto.getIncludeTransfers());
-        }
-        if(arDto.getCycleNumber()!=null) {
-            filter.put("cycleNo", Integer.parseInt(arDto.getCycleNumber()));
-        }
-        transactionParameter.setFilters(filter);
-
-        String sortFieldName = ParamUtil.getString(request,"crud_action_value");
-        String sortType = ParamUtil.getString(request,"crud_action_additional");
-        if(!StringUtil.isEmpty(sortFieldName)&&!StringUtil.isEmpty(sortType)){
-            transactionParameter.setSortType(sortType);
-            transactionParameter.setSortField(sortFieldName);
-        }
-
-        SearchParam transactionParam = SearchResultHelper.getSearchParam(request, transactionParameter,true);
-        CrudHelper.doPaging(transactionParam,bpc.request);
-
-        QueryHelp.setMainSql("onlineEnquiry","searchTransactionHistoryByAssistedReproduction",transactionParam);
-        SearchResult<ArEnquiryTransactionHistoryResultDto> transactionResult = assistedReproductionService.searchTransactionHistoryByParam(transactionParam);
-        ParamUtil.setRequestAttr(request,"transactionResult",transactionResult);
-        ParamUtil.setRequestAttr(request,"transactionParam",transactionParam);
 
 
     }

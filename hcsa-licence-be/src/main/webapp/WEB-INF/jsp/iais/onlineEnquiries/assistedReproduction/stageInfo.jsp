@@ -32,7 +32,7 @@
                                                 </li>
                                             </c:when>
                                             <c:otherwise>
-                                                <li id="${steplist.cycleStage}Tab" class="tracker-item disabled" data-service-step="${steplist.cycleStage}">
+                                                <li id="${steplist.cycleStage}Tab" class="tracker-item " data-service-step="${steplist.cycleStage}">
                                                     <a href="#tab${steplist.cycleStage}" aria-controls="tab${steplist.cycleStage}" role="tab" data-toggle="tab"><iais:code code="${steplist.cycleStage}"/></a>
                                                 </li>
                                             </c:otherwise>
@@ -49,7 +49,7 @@
                                     <div class="swiper-button-next"></div>
                                 </div>
 
-                                <div class="tab-content col-md-13">
+                                <div class="tab-content row">
                                     <div class="tab-pane active " id="tab${cycleStage}" role="tabpanel">
                                         <c:choose>
 
@@ -149,7 +149,9 @@
     function doBack(arViewFull){
         showWaiting();
         if(arViewFull==1){
-            $("[name='crud_action_type']").val('backView');
+            $("[name='crud_action_type']").val('backViewInv');
+        }else if(arViewFull==2){
+            $("[name='crud_action_type']").val('backViewCyc');
         }else {
             $("[name='crud_action_type']").val('backBase');
         }
