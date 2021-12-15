@@ -95,7 +95,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import static java.util.regex.Pattern.compile;
@@ -4651,7 +4650,6 @@ public class NewApplicationHelper {
             boolean allMatch = licenceDtos.parallelStream()
                     .allMatch(dto -> licenceDtoByHciCode.parallelStream()
                             .anyMatch(obj -> Objects.equals(obj.getId(), dto.getId())));
-            log.info(StringUtil.changeForLog("##### Time 1: " + (System.currentTimeMillis() - start) + " ###"));
             if (!allMatch) {
                 request.setAttribute("rfcInvalidLic", MessageUtil.getMessageDesc("RFC_ERR024"));
                 return false;
@@ -4670,7 +4668,6 @@ public class NewApplicationHelper {
                     }
                     return invalid;
                 });
-        log.info(StringUtil.changeForLog("##### Time 2: " + (System.currentTimeMillis() - start) + " ###"));
         if (errorMatch) {
             request.setAttribute("rfcPendingApplication", "errorRfcPendingApplication");
             return false;
@@ -4680,9 +4677,8 @@ public class NewApplicationHelper {
             return true;
         }
         Optional<LicenceDto> invalidAny = licenceDtos.parallelStream()
-                .filter(licence -> !validateRelatedApps(licence.getId(), requestForChangeService, request))
+                .filter(licence -> !validateRelatedApps(licence.getId(), requestForChangeService, null, request))
                 .findAny();
-        log.info(StringUtil.changeForLog("##### Time 3: " + (System.currentTimeMillis() - start) + " ###"));
         if (invalidAny.isPresent()) {
             String errorSvcMsg = MessageUtil.getMessageDesc("RFC_ERR020").replace("{ServiceName}", invalidAny.get().getSvcName());
             log.info(StringUtil.changeForLog("Config is changed - " + errorSvcMsg));
@@ -4701,7 +4697,10 @@ public class NewApplicationHelper {
      * @return
      */
     private static boolean validateRelatedApps(String licenceId, RequestForChangeService requestForChangeService,
-            HttpServletRequest request) {
+            String type, HttpServletRequest request) {
+        if (NewApplicationConstant.SECTION_SVCINFO.equals(type)/* || NewApplicationConstant.SECTION_LICENSEE.equals(type)*/) {
+            return true;
+        }
         List<ApplicationDto> appByLicIdAndExcludeNew = requestForChangeService.getAppByLicIdAndExcludeNew(licenceId);
         boolean invalid = IaisCommonUtils.isNotEmpty(appByLicIdAndExcludeNew)
                 || !requestForChangeService.isOtherOperation(licenceId);
@@ -4713,7 +4712,7 @@ public class NewApplicationHelper {
         return true;
     }
 
-    public static boolean validateLicences(String licenceId, HttpServletRequest request) {
+    public static boolean validateLicences(String licenceId, String type, HttpServletRequest request) {
         LicenceClient licenceClient = SpringHelper.getBean(LicenceClient.class);
         LicenceDto licenceDto = licenceClient.getLicBylicId(licenceId).getEntity();
         if (licenceDto == null) {
@@ -4721,22 +4720,19 @@ public class NewApplicationHelper {
             request.setAttribute("rfcInvalidLic", MessageUtil.getMessageDesc("RFC_ERR024"));
             return false;
         }
-        /*if (NewApplicationConstant.SECTION_SVCINFO.equals(type)) {
-            return true;
-        }*/
         RequestForChangeService requestForChangeService = SpringHelper.getBean(RequestForChangeService.class);
-        return validateRelatedApps(licenceId, requestForChangeService, request);
+        return validateRelatedApps(licenceId, requestForChangeService, type, request);
     }
 
-    public static boolean validateLicences(List<AppSubmissionDto> appSubmissionDtos, HttpServletRequest request) {
+    public static boolean validateLicences(List<AppSubmissionDto> appSubmissionDtos, String type, HttpServletRequest request) {
         if (appSubmissionDtos == null || appSubmissionDtos.isEmpty()) {
             return true;
         }
         return !appSubmissionDtos.parallelStream()
-                .anyMatch(dto -> !validateLicences(dto.getLicenceId(), request));
+                .anyMatch(dto -> !validateLicences(dto.getLicenceId(), type, request));
     }
 
-    public static <T> List<T> combineList(List<T>... srcList){
+    public static <T> List<T> combineList(List<T>... srcList) {
         List<T> list = IaisCommonUtils.genNewArrayList();
         if (srcList == null || srcList.length == 0) {
             return list;
