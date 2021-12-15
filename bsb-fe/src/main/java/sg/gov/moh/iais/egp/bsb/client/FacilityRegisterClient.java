@@ -59,4 +59,9 @@ public interface FacilityRegisterClient {
 
     @PostMapping(path = "/register/facility/rfc/amendment/saveFacility", consumes = MediaType.APPLICATION_JSON_VALUE, produces =MediaType.APPLICATION_JSON_VALUE)
     ResponseDto<String> saveAmendmentFacility(@RequestBody FacilityRegisterDto dto);
+
+    /*******************RENEWAL********************/
+    @GetMapping(path = "/register/facility/renewal/approval/{approvalId}", produces =MediaType.APPLICATION_JSON_VALUE)
+    ResponseDto<FacilityRegisterDto> getRenewalFacRegAppDataByApprovalId(@PathVariable("approvalId") String approvalId);
+
 }

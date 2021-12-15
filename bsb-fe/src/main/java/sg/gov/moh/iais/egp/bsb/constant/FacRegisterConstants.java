@@ -51,4 +51,13 @@ public class FacRegisterConstants {
     public static final String KEY_PROCESS_TYPE = "processType";
     //This oldFacilityRegisterDto is the original data, which is for comparison with each DTO modification before Submit(unchangeable)
     public static final String KEY_OLD_FACILITY_REGISTER_DTO = "oldFacilityRegisterDto";
+
+    //renewal special node name
+    public static final String KEY_RENEWAL_VIEW_APPROVAL_ROOT_NODE_GROUP = "viewApprovalRoot";
+    public static final String NODE_NAME_INSTRUCTION = "instruction";
+    public static final String NODE_NAME_REVIEW = "review";
+    //this is only use for display instruction info (put in session)
+    public static final String KEY_INSTRUCTION_INFO = "instructionInfo";
+    //renewal special action value 'reviewEdit'
+    public static final String KEY_ACTION_REVIEW_EDIT = "reviewEdit";
 }

@@ -195,10 +195,10 @@
                                                                     <option value="#" selected="selected">Select</option>
                                                                     <c:choose>
                                                                         <c:when test="${approval.status eq 'APPRSTA001' and approval.renewable eq 'Y'}">
-                                                                            <option value="/bsb-fe/eservice/INTERNET/MohRenewalFacilityRegistration?editId=<iais:mask name='editId' value='${app.id}'/>">Renewal</option>
+                                                                            <option value="/bsb-fe/eservice/INTERNET/MohRenewalFacilityRegistration?editId=<iais:mask name='editId' value='${approval.id}'/>">Renewal</option>
                                                                         </c:when>
                                                                         <c:when test="${approval.status eq 'APPRSTA004' and approval.renewable eq 'Y'}">
-                                                                            <option value="/bsb-fe/eservice/INTERNET/MohDelayRenewalFacilityRegistration?editId=<iais:mask name='editId' value='${app.id}'/>">Edit</option>
+                                                                            <option value="/bsb-fe/eservice/INTERNET/MohDelayRenewalFacilityRegistration?editId=<iais:mask name='editId' value='${approval.id}'/>">Delay Renewal</option>
                                                                         </c:when>
                                                                     </c:choose>
                                                                 </select>

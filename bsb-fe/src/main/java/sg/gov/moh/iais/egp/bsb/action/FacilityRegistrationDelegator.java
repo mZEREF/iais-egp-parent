@@ -4,13 +4,11 @@ package sg.gov.moh.iais.egp.bsb.action;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
-import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoDto;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
-import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
@@ -18,25 +16,14 @@ import org.springframework.web.multipart.MultipartFile;
 import sg.gov.moh.iais.egp.bsb.client.BsbFileClient;
 import sg.gov.moh.iais.egp.bsb.client.FacilityRegisterClient;
 import sg.gov.moh.iais.egp.bsb.client.FileRepoClient;
-import sg.gov.moh.iais.egp.bsb.common.node.Node;
 import sg.gov.moh.iais.egp.bsb.common.node.NodeGroup;
-import sg.gov.moh.iais.egp.bsb.common.node.Nodes;
 import sg.gov.moh.iais.egp.bsb.common.node.simple.SimpleNode;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
-import sg.gov.moh.iais.egp.bsb.dto.file.DocRecordInfo;
 import sg.gov.moh.iais.egp.bsb.dto.file.FileRepoSyncDto;
 import sg.gov.moh.iais.egp.bsb.dto.file.NewDocInfo;
 import sg.gov.moh.iais.egp.bsb.dto.file.NewFileSyncDto;
 import sg.gov.moh.iais.egp.bsb.dto.register.facility.BiologicalAgentToxinDto;
-import sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityAdministratorDto;
-import sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityAuthoriserDto;
-import sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityCommitteeDto;
-import sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityOfficerDto;
-import sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityOperatorDto;
-import sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityProfileDto;
 import sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityRegisterDto;
-import sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilitySelectionDto;
-import sg.gov.moh.iais.egp.bsb.dto.register.facility.OtherApplicationInfoDto;
 import sg.gov.moh.iais.egp.bsb.dto.register.facility.PreviewSubmitDto;
 import sg.gov.moh.iais.egp.bsb.dto.register.facility.PrimaryDocDto;
 import sg.gov.moh.iais.egp.bsb.service.FacilityRegistrationService;
@@ -46,7 +33,6 @@ import sop.webflow.rt.api.BaseProcessClass;
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.*;
 
@@ -109,401 +95,95 @@ public class FacilityRegistrationDelegator {
     }
 
     public void preCompInfo(BaseProcessClass bpc) {
-        // do nothing now, need to prepare company info in the future
+        facilityRegistrationService.preCompInfo(bpc);
     }
 
     public void handleCompInfo(BaseProcessClass bpc) {
-        HttpServletRequest request = bpc.request;
-        NodeGroup facRegRoot = facilityRegistrationService.getFacilityRegisterRoot(request);
-        Node compInfoNode = facRegRoot.getNode(NODE_NAME_COMPANY_INFO);
-        String actionType = ParamUtil.getString(request, KEY_ACTION_TYPE);
-        if (KEY_ACTION_JUMP.equals(actionType)) {
-            facilityRegistrationService.jumpHandler(request, facRegRoot, NODE_NAME_COMPANY_INFO, compInfoNode);
-        } else {
-            throw new IaisRuntimeException(ERR_MSG_INVALID_ACTION);
-        }
-        ParamUtil.setSessionAttr(request, KEY_ROOT_NODE_GROUP, facRegRoot);
+        facilityRegistrationService.handleCompInfo(bpc);
     }
 
     public void preServiceSelection(BaseProcessClass bpc) {
-        HttpServletRequest request = bpc.request;
-        NodeGroup facRegRoot = facilityRegistrationService.getFacilityRegisterRoot(request);
-        SimpleNode facSelectionNode = (SimpleNode) facRegRoot.getNode(NODE_NAME_FAC_SELECTION);
-        FacilitySelectionDto selectionDto = (FacilitySelectionDto) facSelectionNode.getValue();
-        Boolean needShowError = (Boolean) ParamUtil.getRequestAttr(request, KEY_SHOW_ERROR_SWITCH);
-        if (needShowError == Boolean.TRUE) {
-            ParamUtil.setRequestAttr(request, KEY_VALIDATION_ERRORS, selectionDto.retrieveValidationResult());
-        }
-        Nodes.needValidation(facRegRoot, NODE_NAME_FAC_SELECTION);
-        ParamUtil.setRequestAttr(request, NODE_NAME_FAC_SELECTION, selectionDto);
+        facilityRegistrationService.preServiceSelection(bpc);
     }
 
     public void handleServiceSelection(BaseProcessClass bpc) {
-        HttpServletRequest request = bpc.request;
-        NodeGroup facRegRoot = facilityRegistrationService.getFacilityRegisterRoot(request);
-        SimpleNode facSelectionNode = (SimpleNode) facRegRoot.getNode(NODE_NAME_FAC_SELECTION);
-        FacilitySelectionDto selectionDto = (FacilitySelectionDto) facSelectionNode.getValue();
-        selectionDto.reqObjMapping(request);
-
-        String actionType = ParamUtil.getString(request, KEY_ACTION_TYPE);
-        if (KEY_ACTION_JUMP.equals(actionType)) {
-            facilityRegistrationService.jumpHandler(request, facRegRoot, NODE_NAME_FAC_SELECTION, facSelectionNode);
-        } else {
-            throw new IaisRuntimeException(ERR_MSG_INVALID_ACTION);
-        }
-
-        if (facSelectionNode.isValidated()) {
-            NodeGroup batGroup = (NodeGroup) facRegRoot.getNode(NODE_NAME_FAC_BAT_INFO);
-            FacilityRegistrationService.changeBatNodeGroup(batGroup, selectionDto);
-        }
-        ParamUtil.setSessionAttr(request, KEY_ROOT_NODE_GROUP, facRegRoot);
+        facilityRegistrationService.handleServiceSelection(bpc);
     }
 
-
     public void preFacProfile(BaseProcessClass bpc) {
-        HttpServletRequest request = bpc.request;
-        NodeGroup facRegRoot = facilityRegistrationService.getFacilityRegisterRoot(request);
-        String currentNodePath = NODE_NAME_FAC_INFO + facRegRoot.getPathSeparator() + NODE_NAME_FAC_PROFILE;
-        SimpleNode facProfileNode = (SimpleNode) facRegRoot.at(currentNodePath);
-        FacilityProfileDto facProfileDto = (FacilityProfileDto) facProfileNode.getValue();
-        Boolean needShowError = (Boolean) ParamUtil.getRequestAttr(request, KEY_SHOW_ERROR_SWITCH);
-        if (needShowError == Boolean.TRUE) {
-            ParamUtil.setRequestAttr(request, KEY_VALIDATION_ERRORS, facProfileDto.retrieveValidationResult());
-        }
-        Nodes.needValidation(facRegRoot, currentNodePath);
-        ParamUtil.setRequestAttr(request, NODE_NAME_FAC_PROFILE, facProfileDto);
+        facilityRegistrationService.preFacProfile(bpc);
     }
 
     public void handleFacProfile(BaseProcessClass bpc) {
-        HttpServletRequest request = bpc.request;
-        NodeGroup facRegRoot = facilityRegistrationService.getFacilityRegisterRoot(request);
-        String currentNodePath = NODE_NAME_FAC_INFO + facRegRoot.getPathSeparator() + NODE_NAME_FAC_PROFILE;
-        SimpleNode facProfileNode = (SimpleNode) facRegRoot.at(currentNodePath);
-        FacilityProfileDto facProfileDto = (FacilityProfileDto) facProfileNode.getValue();
-        facProfileDto.reqObjMapping(request);
-        SimpleNode facAuthNode = (SimpleNode) facRegRoot.at(NODE_NAME_FAC_INFO + facRegRoot.getPathSeparator() + NODE_NAME_FAC_AUTH);
-        FacilityAuthoriserDto facAuthDto = (FacilityAuthoriserDto) facAuthNode.getValue();
-        facAuthDto.setIsProtectedPlace(facProfileDto.getIsFacilityProtected());
-
-        String actionType = ParamUtil.getString(request, KEY_ACTION_TYPE);
-        if (KEY_ACTION_JUMP.equals(actionType)) {
-            facilityRegistrationService.jumpHandler(request, facRegRoot, currentNodePath, facProfileNode);
-        } else {
-            throw new IaisRuntimeException(ERR_MSG_INVALID_ACTION);
-        }
-        ParamUtil.setSessionAttr(request, KEY_ROOT_NODE_GROUP, facRegRoot);
+        facilityRegistrationService.handleFacProfile(bpc);
     }
 
     public void preFacOperator(BaseProcessClass bpc) {
-        HttpServletRequest request = bpc.request;
-        NodeGroup facRegRoot = facilityRegistrationService.getFacilityRegisterRoot(request);
-        String currentNodePath = NODE_NAME_FAC_INFO + facRegRoot.getPathSeparator() + NODE_NAME_FAC_OPERATOR;
-        SimpleNode facOpNode = (SimpleNode) facRegRoot.at(currentNodePath);
-        FacilityOperatorDto facOpDto = (FacilityOperatorDto) facOpNode.getValue();
-        Boolean needShowError = (Boolean) ParamUtil.getRequestAttr(request, KEY_SHOW_ERROR_SWITCH);
-        if (needShowError == Boolean.TRUE) {
-            ParamUtil.setRequestAttr(request, KEY_VALIDATION_ERRORS, facOpDto.retrieveValidationResult());
-        }
-        Nodes.needValidation(facRegRoot, currentNodePath);
-        ParamUtil.setRequestAttr(request, NODE_NAME_FAC_OPERATOR, facOpDto);
-
-        ParamUtil.setRequestAttr(request, KEY_NATIONALITY_OPTIONS, FacilityRegistrationService.tmpNationalityOps());
+        facilityRegistrationService.preFacOperator(bpc);
     }
 
-
-
     public void handleFacOperator(BaseProcessClass bpc) {
-        HttpServletRequest request = bpc.request;
-        NodeGroup facRegRoot = facilityRegistrationService.getFacilityRegisterRoot(request);
-        String currentNodePath = NODE_NAME_FAC_INFO + facRegRoot.getPathSeparator() + NODE_NAME_FAC_OPERATOR;
-        SimpleNode facOpNode = (SimpleNode) facRegRoot.at(currentNodePath);
-        FacilityOperatorDto facOpDto = (FacilityOperatorDto) facOpNode.getValue();
-        facOpDto.reqObjMapping(request);
-
-        String actionType = ParamUtil.getString(request, KEY_ACTION_TYPE);
-        if (KEY_ACTION_JUMP.equals(actionType)) {
-            facilityRegistrationService.jumpHandler(request, facRegRoot, currentNodePath, facOpNode);
-        } else {
-            throw new IaisRuntimeException(ERR_MSG_INVALID_ACTION);
-        }
-        ParamUtil.setSessionAttr(request, KEY_ROOT_NODE_GROUP, facRegRoot);
+        facilityRegistrationService.handleFacOperator(bpc);
     }
 
     public void preFacInfoAuthoriser(BaseProcessClass bpc) {
-        HttpServletRequest request = bpc.request;
-        NodeGroup facRegRoot = facilityRegistrationService.getFacilityRegisterRoot(request);
-        String currentNodePath = NODE_NAME_FAC_INFO + facRegRoot.getPathSeparator() + NODE_NAME_FAC_AUTH;
-        SimpleNode facAuthNode = (SimpleNode) facRegRoot.at(currentNodePath);
-        FacilityAuthoriserDto facAuthDto = (FacilityAuthoriserDto) facAuthNode.getValue();
-        Boolean needShowError = (Boolean) ParamUtil.getRequestAttr(request, KEY_SHOW_ERROR_SWITCH);
-        if (needShowError == Boolean.TRUE) {
-            ParamUtil.setRequestAttr(request, KEY_VALIDATION_ERRORS, facAuthDto.retrieveValidationResult());
-        }
-        Nodes.needValidation(facRegRoot, currentNodePath);
-        ParamUtil.setRequestAttr(request, NODE_NAME_FAC_AUTH, facAuthDto);
-
-        ParamUtil.setRequestAttr(request, KEY_NATIONALITY_OPTIONS, FacilityRegistrationService.tmpNationalityOps());
+        facilityRegistrationService.preFacInfoAuthoriser(bpc);
     }
 
     public void handleFacInfoAuthoriser(BaseProcessClass bpc) {
-        HttpServletRequest request = bpc.request;
-        NodeGroup facRegRoot = facilityRegistrationService.getFacilityRegisterRoot(request);
-        String currentNodePath = NODE_NAME_FAC_INFO + facRegRoot.getPathSeparator() + NODE_NAME_FAC_AUTH;
-        SimpleNode facAuthNode = (SimpleNode) facRegRoot.at(currentNodePath);
-        FacilityAuthoriserDto facAuthDto = (FacilityAuthoriserDto) facAuthNode.getValue();
-        facAuthDto.reqObjMapping(request);
-
-        String actionType = ParamUtil.getString(request, KEY_ACTION_TYPE);
-        if (KEY_ACTION_JUMP.equals(actionType)) {
-            facilityRegistrationService.jumpHandler(request, facRegRoot, currentNodePath, facAuthNode);
-        } else {
-            throw new IaisRuntimeException(ERR_MSG_INVALID_ACTION);
-        }
-        ParamUtil.setSessionAttr(request, KEY_ROOT_NODE_GROUP, facRegRoot);
+        facilityRegistrationService.handleFacInfoAuthoriser(bpc);
     }
 
     public void preFacAdmin(BaseProcessClass bpc) {
-        HttpServletRequest request = bpc.request;
-        NodeGroup facRegRoot = facilityRegistrationService.getFacilityRegisterRoot(request);
-        String currentNodePath = NODE_NAME_FAC_INFO + facRegRoot.getPathSeparator() + NODE_NAME_FAC_ADMIN;
-        SimpleNode facAdminNode = (SimpleNode) facRegRoot.at(currentNodePath);
-        FacilityAdministratorDto facAdminDto = (FacilityAdministratorDto) facAdminNode.getValue();
-        Boolean needShowError = (Boolean) ParamUtil.getRequestAttr(request, KEY_SHOW_ERROR_SWITCH);
-        if (needShowError == Boolean.TRUE) {
-            ParamUtil.setRequestAttr(request, KEY_VALIDATION_ERRORS, facAdminDto.retrieveValidationResult());
-        }
-        Nodes.needValidation(facRegRoot, currentNodePath);
-        ParamUtil.setRequestAttr(request, NODE_NAME_FAC_ADMIN, facAdminDto);
-
-        ParamUtil.setRequestAttr(request, KEY_NATIONALITY_OPTIONS, FacilityRegistrationService.tmpNationalityOps());
+        facilityRegistrationService.preFacAdmin(bpc);
     }
 
     public void handleFacAdmin(BaseProcessClass bpc) {
-        HttpServletRequest request = bpc.request;
-        NodeGroup facRegRoot = facilityRegistrationService.getFacilityRegisterRoot(request);
-        String currentNodePath = NODE_NAME_FAC_INFO + facRegRoot.getPathSeparator() + NODE_NAME_FAC_ADMIN;
-        SimpleNode facAdminNode = (SimpleNode) facRegRoot.at(currentNodePath);
-        FacilityAdministratorDto facAdminDto = (FacilityAdministratorDto) facAdminNode.getValue();
-        facAdminDto.reqObjMapping(request);
-
-        String actionType = ParamUtil.getString(request, KEY_ACTION_TYPE);
-        if (KEY_ACTION_JUMP.equals(actionType)) {
-            facilityRegistrationService.jumpHandler(request, facRegRoot, currentNodePath, facAdminNode);
-        } else {
-            throw new IaisRuntimeException(ERR_MSG_INVALID_ACTION);
-        }
-        ParamUtil.setSessionAttr(request, KEY_ROOT_NODE_GROUP, facRegRoot);
+        facilityRegistrationService.handleFacAdmin(bpc);
     }
 
     public void preFacOfficer(BaseProcessClass bpc) {
-        HttpServletRequest request = bpc.request;
-        NodeGroup facRegRoot = facilityRegistrationService.getFacilityRegisterRoot(request);
-        String currentNodePath = NODE_NAME_FAC_INFO + facRegRoot.getPathSeparator() + NODE_NAME_FAC_OFFICER;
-        SimpleNode facOfficerNode = (SimpleNode) facRegRoot.at(currentNodePath);
-        FacilityOfficerDto facOfficerDto = (FacilityOfficerDto) facOfficerNode.getValue();
-        Boolean needShowError = (Boolean) ParamUtil.getRequestAttr(request, KEY_SHOW_ERROR_SWITCH);
-        if (needShowError == Boolean.TRUE) {
-            ParamUtil.setRequestAttr(request, KEY_VALIDATION_ERRORS, facOfficerDto.retrieveValidationResult());
-        }
-        Nodes.needValidation(facRegRoot, currentNodePath);
-        ParamUtil.setRequestAttr(request, NODE_NAME_FAC_OFFICER, facOfficerDto);
-
-        ParamUtil.setRequestAttr(request, KEY_NATIONALITY_OPTIONS, FacilityRegistrationService.tmpNationalityOps());
+        facilityRegistrationService.preFacOfficer(bpc);
     }
 
     public void handleFacOfficer(BaseProcessClass bpc) {
-        HttpServletRequest request = bpc.request;
-        NodeGroup facRegRoot = facilityRegistrationService.getFacilityRegisterRoot(request);
-        String currentNodePath = NODE_NAME_FAC_INFO + facRegRoot.getPathSeparator() + NODE_NAME_FAC_OFFICER;
-        SimpleNode facOfficerNode = (SimpleNode) facRegRoot.at(currentNodePath);
-        FacilityOfficerDto facOfficerDto = (FacilityOfficerDto) facOfficerNode.getValue();
-        facOfficerDto.reqObjMapping(request);
-
-        String actionType = ParamUtil.getString(request, KEY_ACTION_TYPE);
-        if (KEY_ACTION_JUMP.equals(actionType)) {
-            facilityRegistrationService.jumpHandler(request, facRegRoot, currentNodePath, facOfficerNode);
-        } else {
-            throw new IaisRuntimeException(ERR_MSG_INVALID_ACTION);
-        }
-        ParamUtil.setSessionAttr(request, KEY_ROOT_NODE_GROUP, facRegRoot);
+        facilityRegistrationService.handleFacOfficer(bpc);
     }
 
     public void preFacInfoCommittee(BaseProcessClass bpc) {
-        HttpServletRequest request = bpc.request;
-        NodeGroup facRegRoot = facilityRegistrationService.getFacilityRegisterRoot(request);
-        String currentNodePath = NODE_NAME_FAC_INFO + facRegRoot.getPathSeparator() + NODE_NAME_FAC_COMMITTEE;
-        SimpleNode facCommitteeNode = (SimpleNode) facRegRoot.at(currentNodePath);
-        FacilityCommitteeDto facCommitteeDto = (FacilityCommitteeDto) facCommitteeNode.getValue();
-        Boolean needShowError = (Boolean) ParamUtil.getRequestAttr(request, KEY_SHOW_ERROR_SWITCH);
-        if (needShowError == Boolean.TRUE) {
-            ParamUtil.setRequestAttr(request, KEY_VALIDATION_ERRORS, facCommitteeDto.retrieveValidationResult());
-        }
-        Nodes.needValidation(facRegRoot, currentNodePath);
-        ParamUtil.setRequestAttr(request, NODE_NAME_FAC_COMMITTEE, facCommitteeDto);
-
-        ParamUtil.setRequestAttr(request, KEY_NATIONALITY_OPTIONS, FacilityRegistrationService.tmpNationalityOps());
-        ParamUtil.setRequestAttr(request, "personnelRoleOps", FacilityRegistrationService.tmpPersonnelRoleOps());
+        facilityRegistrationService.preFacInfoCommittee(bpc);
     }
 
-
     public void handleFacInfoCommittee(BaseProcessClass bpc) {
-        HttpServletRequest request = bpc.request;
-        NodeGroup facRegRoot = facilityRegistrationService.getFacilityRegisterRoot(request);
-        String currentNodePath = NODE_NAME_FAC_INFO + facRegRoot.getPathSeparator() + NODE_NAME_FAC_COMMITTEE;
-        SimpleNode facCommitteeNode = (SimpleNode) facRegRoot.at(currentNodePath);
-        FacilityCommitteeDto facCommitteeDto = (FacilityCommitteeDto) facCommitteeNode.getValue();
-        facCommitteeDto.reqObjMapping(request);
-
-        String actionType = ParamUtil.getString(request, KEY_ACTION_TYPE);
-        if (KEY_ACTION_JUMP.equals(actionType)) {
-            facilityRegistrationService.jumpHandler(request, facRegRoot, currentNodePath, facCommitteeNode);
-        } else {
-            throw new IaisRuntimeException(ERR_MSG_INVALID_ACTION);
-        }
-        ParamUtil.setSessionAttr(request, KEY_ROOT_NODE_GROUP, facRegRoot);
+        facilityRegistrationService.handleFacInfoCommittee(bpc);
     }
 
     public void preBAToxin(BaseProcessClass bpc) {
-        HttpServletRequest request = bpc.request;
-        NodeGroup facRegRoot = facilityRegistrationService.getFacilityRegisterRoot(request);
-        String currentNodePath = (String) ParamUtil.getSessionAttr(request, KEY_JUMP_DEST_NODE);
-        SimpleNode batNode = (SimpleNode) facRegRoot.at(currentNodePath);
-        BiologicalAgentToxinDto batDto = (BiologicalAgentToxinDto) batNode.getValue();
-        Boolean needShowError = (Boolean) ParamUtil.getRequestAttr(request, KEY_SHOW_ERROR_SWITCH);
-        if (needShowError == Boolean.TRUE) {
-            ParamUtil.setRequestAttr(request, KEY_VALIDATION_ERRORS, batDto.retrieveValidationResult());
-        }
-        Nodes.needValidation(facRegRoot, currentNodePath);
-        ParamUtil.setRequestAttr(request, NODE_NAME_FAC_BAT_INFO, batDto);
-
-        NodeGroup batGroup = (NodeGroup) facRegRoot.at(NODE_NAME_FAC_BAT_INFO);
-        ParamUtil.setRequestAttr(request, "activeNodeKey", batGroup.getActiveNodeKey());
-        SimpleNode facSelectionNode = (SimpleNode) facRegRoot.getNode(NODE_NAME_FAC_SELECTION);
-        FacilitySelectionDto selectionDto = (FacilitySelectionDto) facSelectionNode.getValue();
-        ParamUtil.setRequestAttr(request, "activityTypes", selectionDto.getActivityTypes());
-
-        List<SelectOption> scheduleOps = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_BSB_SCHEDULE_TYPE);
-        ParamUtil.setRequestAttr(request, "ScheduleOps", scheduleOps);
-
-        List<SelectOption> batNameOps = new ArrayList<>(2);
-        batNameOps.add(new SelectOption("AEE1CC32-46F0-EB11-8B7D-000C293F0C99", "BRUCELLA CANIS"));
-        batNameOps.add(new SelectOption("A4A0E7C9-46F0-EB11-8B7D-000C293F0C99", "CHLAMUDIA PSTTACI"));
-        ParamUtil.setRequestAttr(request, "batNameOps", batNameOps);
+        facilityRegistrationService.preBAToxin(bpc);
     }
 
     public void handleBAToxin(BaseProcessClass bpc) {
-        HttpServletRequest request = bpc.request;
-        NodeGroup facRegRoot = facilityRegistrationService.getFacilityRegisterRoot(request);
-        String currentNodePath = (String) ParamUtil.getSessionAttr(request, KEY_JUMP_DEST_NODE);
-        SimpleNode batNode = (SimpleNode) facRegRoot.at(currentNodePath);
-        BiologicalAgentToxinDto batDto = (BiologicalAgentToxinDto) batNode.getValue();
-        batDto.reqObjMapping(request);
-
-        String actionType = ParamUtil.getString(request, KEY_ACTION_TYPE);
-        if (KEY_ACTION_JUMP.equals(actionType)) {
-            facilityRegistrationService.jumpHandler(request, facRegRoot, currentNodePath, batNode);
-        } else {
-            throw new IaisRuntimeException(ERR_MSG_INVALID_ACTION);
-        }
-        ParamUtil.setSessionAttr(request, KEY_ROOT_NODE_GROUP, facRegRoot);
+        facilityRegistrationService.handleBAToxin(bpc);
     }
 
     public void preOtherAppInfo(BaseProcessClass bpc) {
-        HttpServletRequest request = bpc.request;
-        NodeGroup facRegRoot = facilityRegistrationService.getFacilityRegisterRoot(request);
-        SimpleNode otherAppInfoNode = (SimpleNode) facRegRoot.at(NODE_NAME_OTHER_INFO);
-        OtherApplicationInfoDto otherAppInfoDto = (OtherApplicationInfoDto) otherAppInfoNode.getValue();
-        Boolean needShowError = (Boolean) ParamUtil.getRequestAttr(request, KEY_SHOW_ERROR_SWITCH);
-        if (needShowError == Boolean.TRUE) {
-            ParamUtil.setRequestAttr(request, KEY_VALIDATION_ERRORS, otherAppInfoDto.retrieveValidationResult());
-        }
-        Nodes.needValidation(facRegRoot, NODE_NAME_OTHER_INFO);
-        ParamUtil.setRequestAttr(request, NODE_NAME_OTHER_INFO, otherAppInfoDto);
+        facilityRegistrationService.preOtherAppInfo(bpc);
     }
 
     public void handleOtherAppInfo(BaseProcessClass bpc) {
-        HttpServletRequest request = bpc.request;
-        NodeGroup facRegRoot = facilityRegistrationService.getFacilityRegisterRoot(request);
-        SimpleNode otherAppInfoNode = (SimpleNode) facRegRoot.at(NODE_NAME_OTHER_INFO);
-        OtherApplicationInfoDto otherAppInfoDto = (OtherApplicationInfoDto) otherAppInfoNode.getValue();
-        otherAppInfoDto.reqObjMapping(request);
-
-        String actionType = ParamUtil.getString(request, KEY_ACTION_TYPE);
-        if (KEY_ACTION_JUMP.equals(actionType)) {
-            facilityRegistrationService.jumpHandler(request, facRegRoot, NODE_NAME_OTHER_INFO, otherAppInfoNode);
-        } else {
-            throw new IaisRuntimeException(ERR_MSG_INVALID_ACTION);
-        }
-        ParamUtil.setSessionAttr(request, KEY_ROOT_NODE_GROUP, facRegRoot);
+        facilityRegistrationService.handleOtherAppInfo(bpc);
     }
 
     public void prePrimaryDoc(BaseProcessClass bpc) {
-        HttpServletRequest request = bpc.request;
-        NodeGroup facRegRoot = facilityRegistrationService.getFacilityRegisterRoot(request);
-        SimpleNode primaryDocNode = (SimpleNode) facRegRoot.at(NODE_NAME_PRIMARY_DOC);
-        PrimaryDocDto primaryDocDto = (PrimaryDocDto) primaryDocNode.getValue();
-        Boolean needShowError = (Boolean) ParamUtil.getRequestAttr(request, KEY_SHOW_ERROR_SWITCH);
-        if (needShowError == Boolean.TRUE) {
-            ParamUtil.setRequestAttr(request, KEY_VALIDATION_ERRORS, primaryDocDto.retrieveValidationResult());
-        }
-        Nodes.needValidation(facRegRoot, NODE_NAME_PRIMARY_DOC);
-
-        ParamUtil.setRequestAttr(request, "docSettings", facilityRegistrationService.getFacRegDocSettings());
-
-        Map<String, List<DocRecordInfo>> savedFiles = primaryDocDto.getExistDocTypeMap();
-        Map<String, List<NewDocInfo>> newFiles = primaryDocDto.getNewDocTypeMap();
-        ParamUtil.setRequestAttr(request, "savedFiles", savedFiles);
-        ParamUtil.setRequestAttr(request, "newFiles", newFiles);
+        facilityRegistrationService.prePrimaryDoc(bpc);
     }
 
     public void handlePrimaryDoc(BaseProcessClass bpc) {
-        HttpServletRequest request = bpc.request;
-        NodeGroup facRegRoot = facilityRegistrationService.getFacilityRegisterRoot(request);
-        SimpleNode primaryDocNode = (SimpleNode) facRegRoot.at(NODE_NAME_PRIMARY_DOC);
-        PrimaryDocDto primaryDocDto = (PrimaryDocDto) primaryDocNode.getValue();
-        primaryDocDto.reqObjMapping(request);
-
-        String actionType = ParamUtil.getString(request, KEY_ACTION_TYPE);
-        if (KEY_ACTION_JUMP.equals(actionType)) {
-            facilityRegistrationService.jumpHandler(request, facRegRoot, NODE_NAME_PRIMARY_DOC, primaryDocNode);
-        } else {
-            throw new IaisRuntimeException(ERR_MSG_INVALID_ACTION);
-        }
-        ParamUtil.setSessionAttr(request, KEY_ROOT_NODE_GROUP, facRegRoot);
+        facilityRegistrationService.handlePrimaryDoc(bpc);
     }
 
     public void prePreviewSubmit(BaseProcessClass bpc) {
-        HttpServletRequest request = bpc.request;
-        NodeGroup facRegRoot = facilityRegistrationService.getFacilityRegisterRoot(request);
-        SimpleNode previewSubmitNode = (SimpleNode) facRegRoot.at(NODE_NAME_PREVIEW_SUBMIT);
-        PreviewSubmitDto previewSubmitDto = (PreviewSubmitDto) previewSubmitNode.getValue();
-        Boolean needShowError = (Boolean) ParamUtil.getRequestAttr(request, KEY_SHOW_ERROR_SWITCH);
-        if (needShowError == Boolean.TRUE) {
-            ParamUtil.setRequestAttr(request, KEY_VALIDATION_ERRORS, previewSubmitDto.retrieveValidationResult());
-        }
-        Nodes.needValidation(facRegRoot, NODE_NAME_PREVIEW_SUBMIT);
-        ParamUtil.setRequestAttr(request, NODE_NAME_PREVIEW_SUBMIT, previewSubmitDto);
-
-        ParamUtil.setRequestAttr(request, NODE_NAME_FAC_PROFILE, ((SimpleNode)facRegRoot.at(NODE_NAME_FAC_INFO + facRegRoot.getPathSeparator() + NODE_NAME_FAC_PROFILE)).getValue());
-        ParamUtil.setRequestAttr(request, NODE_NAME_FAC_OPERATOR, ((SimpleNode)facRegRoot.at(NODE_NAME_FAC_INFO + facRegRoot.getPathSeparator() + NODE_NAME_FAC_OPERATOR)).getValue());
-        ParamUtil.setRequestAttr(request, NODE_NAME_FAC_AUTH, ((SimpleNode)facRegRoot.at(NODE_NAME_FAC_INFO + facRegRoot.getPathSeparator() + NODE_NAME_FAC_AUTH)).getValue());
-        ParamUtil.setRequestAttr(request, NODE_NAME_FAC_ADMIN, ((SimpleNode)facRegRoot.at(NODE_NAME_FAC_INFO + facRegRoot.getPathSeparator() + NODE_NAME_FAC_ADMIN)).getValue());
-        ParamUtil.setRequestAttr(request, NODE_NAME_FAC_OFFICER, ((SimpleNode)facRegRoot.at(NODE_NAME_FAC_INFO + facRegRoot.getPathSeparator() + NODE_NAME_FAC_OFFICER)).getValue());
-        ParamUtil.setRequestAttr(request, NODE_NAME_FAC_COMMITTEE, ((SimpleNode)facRegRoot.at(NODE_NAME_FAC_INFO + facRegRoot.getPathSeparator() + NODE_NAME_FAC_COMMITTEE)).getValue());
-
-        NodeGroup batNodeGroup = (NodeGroup) facRegRoot.at(NODE_NAME_FAC_BAT_INFO);
-        List<BiologicalAgentToxinDto> batList = FacilityRegistrationService.getBatInfoList(batNodeGroup);
-        ParamUtil.setRequestAttr(request, "batList", batList);
-
-        ParamUtil.setRequestAttr(request, "docSettings", facilityRegistrationService.getFacRegDocSettings());
-        PrimaryDocDto primaryDocDto = (PrimaryDocDto) ((SimpleNode)facRegRoot.at(NODE_NAME_PRIMARY_DOC)).getValue();
-        Map<String, List<DocRecordInfo>> savedFiles = primaryDocDto.getExistDocTypeMap();
-        Map<String, List<NewDocInfo>> newFiles = primaryDocDto.getNewDocTypeMap();
-        ParamUtil.setRequestAttr(request, "savedFiles", savedFiles);
-        ParamUtil.setRequestAttr(request, "newFiles", newFiles);
-
-        List<SelectOption> approvedFacCertifierOps = new ArrayList<>(0);
-        ParamUtil.setRequestAttr(request, "approvedFacCertifierOps", approvedFacCertifierOps);
+        facilityRegistrationService.prePreviewSubmit(bpc);
     }
 
     public void handlePreviewSubmit(BaseProcessClass bpc) {
@@ -574,27 +254,17 @@ public class FacilityRegistrationDelegator {
         ParamUtil.setSessionAttr(request, KEY_ROOT_NODE_GROUP, facRegRoot);
     }
 
-
-
     /**
      * Do special route changes.
      * This method is used when we re-use some pages for different nodes,
      * then we need to resolve the nodes to the same destination.
      */
     public void jumpFilter(BaseProcessClass bpc) {
-        HttpServletRequest request = bpc.request;
-        String destNode = (String) ParamUtil.getSessionAttr(request, KEY_JUMP_DEST_NODE);
-        destNode = facilityRegistrationService.batNodeSpecialHandle(destNode);
-        ParamUtil.setRequestAttr(request, KEY_DEST_NODE_ROUTE, destNode);
+        facilityRegistrationService.jumpFilter(bpc);
     }
 
     public void actionFilter(BaseProcessClass bpc) {
-        HttpServletRequest request = bpc.request;
-        String actionType = (String) ParamUtil.getRequestAttr(request, KEY_ACTION_TYPE);
-        if (!StringUtils.hasLength(actionType)) {
-            actionType = ParamUtil.getString(request, KEY_ACTION_TYPE);
-        }
-        ParamUtil.setRequestAttr(request, KEY_INDEED_ACTION_TYPE, actionType);
+        facilityRegistrationService.actionFilter(bpc);
     }
 
     public void preAcknowledge(BaseProcessClass bpc) {
