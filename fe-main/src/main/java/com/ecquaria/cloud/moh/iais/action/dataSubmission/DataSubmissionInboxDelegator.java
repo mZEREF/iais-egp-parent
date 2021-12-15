@@ -46,6 +46,7 @@ public class DataSubmissionInboxDelegator {
 	private final static  String UNLOCK                 = "unlock";
 	private final static  String DS_TYPES               = "dsTypes";
 	private final static  String DS_STATUSES            = "dsStatuses";
+	private final static  String SORT_INIT              = "UPDATED_DT";
     @Autowired
 	private LicenceInboxClient licenceInboxClient;
     @Autowired
@@ -116,7 +117,7 @@ public class DataSubmissionInboxDelegator {
 		interInboxDelegator.setNumInfoToRequest(request,interInboxUserDto);
 		if(StringUtil.isEmpty(ParamUtil.getSessionAttr(request,ACTION_DS_BUTTON_SHOW))){
 			if(StringUtil.isNotEmpty(interInboxUserDto.getLicenseeId())){
-				SearchParam searchParam = HalpSearchResultHelper.gainSearchParam(request, InboxConst.DS_PARAM, InboxDataSubmissionQueryDto.class.getName(),"CREATED_DT",SearchParam.DESCENDING,false);
+				SearchParam searchParam = HalpSearchResultHelper.gainSearchParam(request, InboxConst.DS_PARAM, InboxDataSubmissionQueryDto.class.getName(),SORT_INIT,SearchParam.DESCENDING,false);
 				HalpAssessmentGuideDelegator.setParamByField(searchParam,"licenseeId",interInboxUserDto.getLicenseeId(),true);
 				HalpAssessmentGuideDelegator.setParamByField(searchParam,"dsType",(List<String>) ParamUtil.getSessionAttr(request,DS_TYPES));
 				QueryHelp.setMainSql( InboxConst.INBOX_QUERY, InboxConst.INBOX_DS_QUERY,searchParam);
@@ -159,7 +160,7 @@ public class DataSubmissionInboxDelegator {
 	}
 
 	private void setSearchParam(HttpServletRequest request)  {
-		SearchParam searchParam = HalpSearchResultHelper.gainSearchParam(request, InboxConst.DS_PARAM, InboxDataSubmissionQueryDto.class.getName(),"CREATED_DT",SearchParam.DESCENDING,false);
+		SearchParam searchParam = HalpSearchResultHelper.gainSearchParam(request, InboxConst.DS_PARAM, InboxDataSubmissionQueryDto.class.getName(),SORT_INIT,SearchParam.DESCENDING,false);
 		InboxDataSubmissionQueryDto inboxDataSubmissionQueryDto = ControllerHelper.get(request,InboxDataSubmissionQueryDto.class,"DataSubmission");
 		HalpAssessmentGuideDelegator.setParamByField(searchParam,"submissionNo",inboxDataSubmissionQueryDto.getSubmissionNo(),true);
 		HalpAssessmentGuideDelegator.setParamByField(searchParam,"status",inboxDataSubmissionQueryDto.getStatus(),true,InboxConst.SEARCH_ALL);
@@ -185,7 +186,7 @@ public class DataSubmissionInboxDelegator {
 	public void page(BaseProcessClass bpc){
 		setLog("page");
 		HttpServletRequest request = bpc.request;
-		SearchParam searchParam = HalpSearchResultHelper.gainSearchParam(request, InboxConst.DS_PARAM, InboxDataSubmissionQueryDto.class.getName(),"CREATED_DT",SearchParam.DESCENDING,false);
+		SearchParam searchParam = HalpSearchResultHelper.gainSearchParam(request, InboxConst.DS_PARAM, InboxDataSubmissionQueryDto.class.getName(),SORT_INIT,SearchParam.DESCENDING,false);
 		HalpSearchResultHelper.doPage(request,searchParam);
 		ParamUtil.setSessionAttr(request, InboxConst.DS_PARAM,searchParam);
 		setLog("page",false);
@@ -200,7 +201,7 @@ public class DataSubmissionInboxDelegator {
 	public void sort(BaseProcessClass bpc){
 		setLog("sort");
 		HttpServletRequest request = bpc.request;
-		SearchParam searchParam = HalpSearchResultHelper.gainSearchParam(request, InboxConst.DS_PARAM, InboxDataSubmissionQueryDto.class.getName(),"CREATED_DT",SearchParam.DESCENDING,false);
+		SearchParam searchParam = HalpSearchResultHelper.gainSearchParam(request, InboxConst.DS_PARAM, InboxDataSubmissionQueryDto.class.getName(),SORT_INIT,SearchParam.DESCENDING,false);
 		HalpSearchResultHelper.doSort(request,searchParam);
 		ParamUtil.setSessionAttr(request, InboxConst.DS_PARAM,searchParam);
 		setLog("sort",false);
