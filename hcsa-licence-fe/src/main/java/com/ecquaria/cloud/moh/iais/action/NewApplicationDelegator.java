@@ -2728,7 +2728,7 @@ public class NewApplicationDelegator {
                 bpc.request.setAttribute(NewApplicationConstant.SHOW_OTHER_ERROR, NewApplicationHelper.getErrorMsg(errorListMap));
                 return;
             }
-            isValid = NewApplicationHelper.validateLicences(licenseeAffectedList, bpc.request);
+            isValid = NewApplicationHelper.validateLicences(licenseeAffectedList, NewApplicationConstant.SECTION_LICENSEE, bpc.request);
             if (!isValid) {
                 return;
             }
@@ -2774,7 +2774,8 @@ public class NewApplicationDelegator {
                 bpc.request.setAttribute(NewApplicationConstant.SHOW_OTHER_ERROR, NewApplicationHelper.getErrorMsg(errorListMap));
                 return;
             }
-            isValid = NewApplicationHelper.validateLicences(personAppSubmissionList, bpc.request);
+            isValid = NewApplicationHelper.validateLicences(personAppSubmissionList, NewApplicationConstant.SECTION_SVCINFO,
+                    bpc.request);
             if (!isValid) {
                 return;
             }
@@ -3725,29 +3726,24 @@ public class NewApplicationDelegator {
                     continue;
                 }
                 if (AppConsts.YES.equals(chooseExistData[i])) {
-                    appGrpPremisesDto = NewApplicationHelper.getPremisesFromMap(premisesSel, request);;
-                    //appGrpPremisesDto.setRfiCanEdit(true);
-                    if(AppConsts.TRUE.equals(rfiCanEdit[i])){
-                        appGrpPremisesDto.setRfiCanEdit(true);
-                    }else{
-                        appGrpPremisesDto.setRfiCanEdit(false);
+                    appGrpPremisesDto = NewApplicationHelper.getPremisesFromMap(premisesSel, request);
+                    if (appGrpPremisesDto != null) {
+                        if (AppConsts.TRUE.equals(rfiCanEdit[i])) {
+                            appGrpPremisesDto.setRfiCanEdit(true);
+                        } else {
+                            appGrpPremisesDto.setRfiCanEdit(false);
+                        }
+                        NewApplicationHelper.setPremise(appGrpPremisesDto, premIndexNo, appSubmissionDto);
+                        appGrpPremisesDtoList.add(appGrpPremisesDto);
+                        continue;
+                    } else {
+                        log.error(StringUtil.changeForLog("##### Error Data: " + premIndexNo));
                     }
-                    NewApplicationHelper.setPremise(appGrpPremisesDto, premIndexNo, appSubmissionDto);
-                    appGrpPremisesDtoList.add(appGrpPremisesDto);
-                    continue;
                 }
                 //set hciCode
                 List<AppGrpPremisesDto> appGrpPremisesDtos = appSubmissionDto.getAppGrpPremisesDtoList();
                 for (AppGrpPremisesDto premDto : appGrpPremisesDtos) {
                     if (premIndexNo.equals(premDto.getPremisesIndexNo())) {
-                        /*AppGrpPremisesDto dtoFromMap = NewApplicationHelper.getPremisesFromMap(premisesSel, request);;
-                        String hciCode = dtoFromMap != null ? dtoFromMap.getHciCode() : "";
-                        if (!StringUtil.isEmpty(hciCode)) {
-                            appGrpPremisesDto.setHciCode(hciCode);
-                        } else {
-                            appGrpPremisesDto.setHciCode(premDto.getHciCode());
-                        }
-                        appGrpPremisesDto.setLicenceDtos(premDto.getLicenceDtos());*/
                         NewApplicationHelper.setPremise(appGrpPremisesDto, premIndexNo, appSubmissionDto);
                         break;
                     }
@@ -4338,7 +4334,12 @@ public class NewApplicationDelegator {
                 if (isRenewalOrRfc) {
                     // set the required information
                     String licenceId = appSubmissionDto.getLicenceId();
-                    appSubmissionDto.setLicenceNo(withOutRenewalService.getLicenceNumberByLicenceId(licenceId));
+                    LicenceDto licenceById = requestForChangeService.getLicenceById(licenceId);
+                    if (licenceById != null) {
+                        appSubmissionDto.setLicenceNo(licenceById.getLicenceNo());
+                    } else {
+                        log.warn(StringUtil.changeForLog("##### No Active Licence for this ID: " + licenceId));
+                    }
                 }
                 ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
                 //ParamUtil.setSessionAttr(bpc.request,OLDAPPSUBMISSIONDTO,oldAppSubmissionDto);
