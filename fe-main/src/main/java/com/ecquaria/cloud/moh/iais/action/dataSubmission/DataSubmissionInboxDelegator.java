@@ -25,6 +25,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.Serializable;
 import java.text.ParseException;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -165,8 +166,26 @@ public class DataSubmissionInboxDelegator {
 		HalpAssessmentGuideDelegator.setParamByField(searchParam,"submissionNo",inboxDataSubmissionQueryDto.getSubmissionNo(),true);
 		HalpAssessmentGuideDelegator.setParamByField(searchParam,"status",inboxDataSubmissionQueryDto.getStatus(),true,InboxConst.SEARCH_ALL);
 		HalpAssessmentGuideDelegator.setParamByField(searchParam,"type",inboxDataSubmissionQueryDto.getType() ,true,InboxConst.SEARCH_ALL);
+		setSearchParamDate(request,searchParam);
+	}
+
+	private void setSearchParamDate(HttpServletRequest request,SearchParam searchParam){
 		HalpAssessmentGuideDelegator.setParamForDate(request,searchParam,"lastDateStart","lastDateStart");
 		HalpAssessmentGuideDelegator.setParamForDate(request,searchParam,"lastDateEnd","lastDateEnd");
+		Map<String, Object>  stringObjectHashMap = searchParam.getParams();
+		if(IaisCommonUtils.isNotEmpty(stringObjectHashMap)){
+			Date dateStart = (Date) stringObjectHashMap.get("lastDateStart");
+			Date dateEnd = (Date) stringObjectHashMap.get("lastDateEnd");
+			try {
+				if(dateStart !=null && dateEnd != null &&  Formatter.compareDateByDay(dateStart,dateEnd) > 0){
+					ParamUtil.setRequestAttr(request,"lastDateerror-msg",MessageUtil.getMessageDesc("INBOX_ERR011"));
+					searchParam = null;
+				}
+			}catch (ParseException parseException){
+				log.error(parseException.getMessage(),parseException);
+				searchParam = null;
+			}
+		}
 		ParamUtil.setSessionAttr(request, InboxConst.DS_PARAM,searchParam);
 	}
 

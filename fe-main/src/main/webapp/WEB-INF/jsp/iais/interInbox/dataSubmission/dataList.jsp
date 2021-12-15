@@ -53,6 +53,14 @@
                 </iais:value>
             </div>
         </div>
+            <div class="row" style="margin-bottom: 30px;">
+                <div class="col-md-12">
+                    <span class="col-xs-3 col-md-3"></span>
+                    <div class="col-md-9">
+                        <span id="lastDateerror-msg" class="error-msg" style="width: 150%;font-size:1.5rem">${lastDateerror-msg}</span>
+                    </div>
+                </div>
+            </div>
             <div class="col-md-12">
                 <div class="text-right">
                     <button type="button" class="btn btn-secondary" onclick="doClearSearch()">Clear</button>
@@ -181,6 +189,7 @@
         $("#submissionNoDataSubmission").val("");
         $("[name='lastDateStart']").val("");
         $("[name='lastDateEnd']").val("");
+        $("#lastDateerror-msg").html('');
     }
 
     function doSearch(){

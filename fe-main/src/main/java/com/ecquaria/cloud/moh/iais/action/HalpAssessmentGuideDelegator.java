@@ -2578,7 +2578,10 @@ public class HalpAssessmentGuideDelegator {
 
     public static void setParamForDate(HttpServletRequest request,SearchParam searchParam,String key,String value){
         try {
-            Date lastDateStart = com.ecquaria.cloud.moh.iais.common.utils.Formatter.parseDate(ParamUtil.getString(request, value));
+            String dateString = ParamUtil.getDate(request, value);
+            log.info(StringUtil.changeForLog("---------"+ dateString));
+            Date lastDateStart = Formatter.parseDate(dateString);
+            log.info(StringUtil.changeForLog("---------"+ lastDateStart.toString()));
             if(lastDateStart!=null){
                 searchParam.addFilter(key,lastDateStart,true);
             }else {
