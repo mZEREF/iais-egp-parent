@@ -9,7 +9,7 @@ $(function () {
         showWaiting();
         $("input[name='action_type']").val("jump");
         $("input[name='action_value']").val("next");
-        unreadonlyPartPage();
+        sumbitRemoveDisable();
         $("#mainForm").submit();
     });
 
@@ -17,7 +17,7 @@ $(function () {
         showWaiting();
         $("input[name='action_type']").val("jump");
         $("input[name='action_value']").val("back");
-        unreadonlyPartPage();
+        sumbitRemoveDisable();
         $("#mainForm").submit();
     });
 
@@ -25,7 +25,7 @@ $(function () {
         showWaiting();
         $("input[name='action_type']").val("jump");
         $("input[name='action_value']").val($(this).attr("data-step-key"));
-        unreadonlyPartPage();
+        sumbitRemoveDisable();
         $("#mainForm").submit();
     });
 

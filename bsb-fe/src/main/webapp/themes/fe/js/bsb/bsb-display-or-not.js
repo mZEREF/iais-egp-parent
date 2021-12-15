@@ -20,13 +20,22 @@ function readonlyPartPage() {
 }
 
 function unreadonlyPartPage() {
+    $("input[type='radio'][class!='form-check-input']").removeAttr("disabled");
+    removeDisable();
+}
+
+function sumbitRemoveDisable(){
+    $("input[type='radio']").removeAttr("disabled");
+    removeDisable();
+}
+
+function removeDisable(){
     $("input[type='text']").css("color", "");
     $("input[type='text']").css("border-color", "");
     $("input[type='text']").removeAttr("disabled");
     $("input[type='number']").css("color", "");
     $("input[type='number']").css("border-color", "");
     $("input[type='number']").removeAttr("disabled");
-    $("input[type='radio'][class!='form-check-input']").removeAttr("disabled");
     $("input[type='checkbox']").removeAttr("disabled");
     $("textarea").removeAttr("disabled");
     $("textarea").css("color", "");
