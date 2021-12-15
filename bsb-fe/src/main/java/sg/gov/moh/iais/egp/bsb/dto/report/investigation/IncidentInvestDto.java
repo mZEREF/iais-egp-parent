@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import sg.gov.moh.iais.egp.bsb.common.node.simple.ValidatableNodeValue;
 import sg.gov.moh.iais.egp.bsb.dto.ValidationResultDto;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 /**
@@ -99,5 +100,15 @@ public class IncidentInvestDto extends ValidatableNodeValue {
 
     public void setImplementDate(String implementDate) {
         this.implementDate = implementDate;
+    }
+
+    private static final String KEY_BACKGROUND_INFORMATION = "backgroundInfo";
+    private static final String KEY_INCIDENT_DESCRIPTION = "incidentDesc";
+    private static final String KEY_INCIDENT_CAUSES = "incidentCauses";
+    private static final String KEY_OTHER_CAUSE = "otherCause";
+    private static final String KEY_EXPLAIN_CAUSE = "explainCause";
+    private static final String KEY_MEASURE= "measure";
+    private static final String KEY_IMPLEMENT_DATE = "implementDate";
+    public void reqObjMapping(HttpServletRequest request){
     }
 }

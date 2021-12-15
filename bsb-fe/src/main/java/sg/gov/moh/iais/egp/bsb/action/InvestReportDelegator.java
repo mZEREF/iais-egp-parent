@@ -15,6 +15,7 @@ import sg.gov.moh.iais.egp.bsb.dto.report.PrimaryDocDto;
 import sg.gov.moh.iais.egp.bsb.dto.report.investigation.IncidentInfoDto;
 import sg.gov.moh.iais.egp.bsb.dto.report.investigation.IncidentInvestDto;
 import sg.gov.moh.iais.egp.bsb.dto.report.investigation.MedicalInvestDto;
+import sg.gov.moh.iais.egp.bsb.dto.report.notification.PersonReportingDto;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
@@ -84,6 +85,35 @@ public class InvestReportDelegator {
             throw new IaisRuntimeException(ERR_MSG_INVALID_ACTION);
         }
         ParamUtil.setSessionAttr(request, KEY_ROOT_NODE_GROUP_INCIDENT_NOT, investRepoRoot);
+    }
+
+
+    public void preIncidentInvestigation(BaseProcessClass bpc){
+        HttpServletRequest request = bpc.request;
+        NodeGroup investRepoRoot = getInvestReportRoot(request);
+        SimpleNode incidentInvestNode = (SimpleNode) investRepoRoot.getNode(NODE_NAME_INCIDENT_INVESTIGATION);
+        IncidentInvestDto incidentInvestDto = (IncidentInvestDto) incidentInvestNode.getValue();
+        Boolean needShowError = (Boolean) ParamUtil.getRequestAttr(request, KEY_SHOW_ERROR_SWITCH);
+        if (needShowError == Boolean.TRUE) {
+            ParamUtil.setRequestAttr(request, KEY_VALIDATION_ERRORS, incidentInvestDto.retrieveValidationResult());
+        }
+        Nodes.needValidation(investRepoRoot, NODE_NAME_INCIDENT_INVESTIGATION);
+        ParamUtil.setRequestAttr(request, NODE_NAME_INCIDENT_INVESTIGATION, incidentInvestDto);
+    }
+
+    public void handleIncidentInvestigation(BaseProcessClass bpc){
+        HttpServletRequest request = bpc.request;
+        NodeGroup investRepoRoot = getInvestReportRoot(request);
+        SimpleNode incidentInvestNode = (SimpleNode) investRepoRoot.getNode(NODE_NAME_INCIDENT_INVESTIGATION);
+        IncidentInvestDto incidentInvestDto = (IncidentInvestDto) incidentInvestNode.getValue();
+//        personReportingDto.reqObjMapping(request);
+        String actionType = ParamUtil.getString(request, KEY_ACTION_TYPE);
+        if (KEY_ACTION_JUMP.equals(actionType)) {
+            jumpHandler(request, investRepoRoot);
+        } else {
+            throw new IaisRuntimeException(ERR_MSG_INVALID_ACTION);
+        }
+        ParamUtil.setSessionAttr(request, KEY_ROOT_NODE_GROUP_INVEST_REPORT, investRepoRoot);
     }
 
 

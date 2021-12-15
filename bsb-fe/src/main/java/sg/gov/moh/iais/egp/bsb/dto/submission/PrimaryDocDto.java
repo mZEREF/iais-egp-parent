@@ -184,9 +184,10 @@ public class PrimaryDocDto implements Serializable {
     private static final String SEPARATOR               = "--v--";
     private static final String KEY_DELETED_NEW_FILES   = "deleteNewFiles";
 
-    public void reqObjMapping(MultipartHttpServletRequest mulReq,HttpServletRequest request,String docType,String amt){
+    public static List<PrimaryDocDto.NewDocInfo> reqObjMapping(MultipartHttpServletRequest mulReq,HttpServletRequest request,String docType,String amt){
         // read new uploaded files
         Iterator<String> inputNameIt = mulReq.getFileNames();
+        List<PrimaryDocDto.NewDocInfo> list = new ArrayList<>();
         Date currentDate = new Date();
         LoginContext loginContext = (LoginContext) com.ecquaria.cloud.moh.iais.common.utils.ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
         while (inputNameIt.hasNext()) {
@@ -200,16 +201,18 @@ public class PrimaryDocDto implements Serializable {
                 if(StringUtils.hasLength(index) && index.equals(amt)){
                     //upload document toxins and bats
                     List<MultipartFile> files = mulReq.getFiles(inputName);
-                    filedNewFiles(files,inputName,docType,currentDate,loginContext);
+                    filedNewFiles(files,inputName,docType,currentDate,loginContext,list);
                 }
             }
         }
+        return list;
     }
 
-    public void reqOtherMapping(MultipartHttpServletRequest mulReq,HttpServletRequest request,String docType){
+    public static List<PrimaryDocDto.NewDocInfo> reqOtherMapping(MultipartHttpServletRequest mulReq,HttpServletRequest request,String docType){
 
         // read new uploaded files
         Iterator<String> inputNameIt = mulReq.getFileNames();
+        List<PrimaryDocDto.NewDocInfo> list = new ArrayList<>();
         Date currentDate = new Date();
         LoginContext loginContext = (LoginContext) com.ecquaria.cloud.moh.iais.common.utils.ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
         while (inputNameIt.hasNext()) {
@@ -217,9 +220,10 @@ public class PrimaryDocDto implements Serializable {
             if(StringUtils.hasLength(inputName) && docType.equals(inputName)){
                 //upload other document
                 List<MultipartFile> files = mulReq.getFiles(inputName);
-                filedNewFiles(files,inputName, DocConstants.DOC_TYPE_OTHERS,currentDate,loginContext);
+                filedNewFiles(files,inputName, DocConstants.DOC_TYPE_OTHERS,currentDate,loginContext,list);
             }
         }
+        return list;
     }
 
     public static void deleteNewFiles(MultipartHttpServletRequest mulReq,Map<String, PrimaryDocDto.NewDocInfo> allNewDocInfos){
@@ -235,7 +239,7 @@ public class PrimaryDocDto implements Serializable {
         }
     }
 
-    private void filedNewFiles(List<MultipartFile> files,String inputName,String docType,Date currentDate,LoginContext loginContext){
+    private static void filedNewFiles(List<MultipartFile> files,String inputName,String docType,Date currentDate,LoginContext loginContext,List<PrimaryDocDto.NewDocInfo> newDocInfos){
         for (MultipartFile f : files) {
             if (log.isInfoEnabled()) {
                 log.info("input name: {}; filename: {}", LogUtil.escapeCrlf(inputName), LogUtil.escapeCrlf(f.getOriginalFilename()));
@@ -244,12 +248,12 @@ public class PrimaryDocDto implements Serializable {
                 log.warn("File is empty, ignore it");
             } else {
                 String tmpId = inputName + f.getSize() + System.nanoTime();
-                this.newDocMap.put(tmpId, filedOneNewFiles(tmpId,f,docType,currentDate,loginContext));
+                newDocInfos.add(filedOneNewFiles(tmpId,f,docType,currentDate,loginContext));
             }
         }
     }
 
-    private NewDocInfo filedOneNewFiles(String tmpId,MultipartFile f,String docType,Date currentDate,LoginContext loginContext){
+    private static NewDocInfo filedOneNewFiles(String tmpId,MultipartFile f,String docType,Date currentDate,LoginContext loginContext){
         NewDocInfo newDocInfo = new NewDocInfo();
         newDocInfo.setTmpId(tmpId);
         newDocInfo.setDocType(docType);
