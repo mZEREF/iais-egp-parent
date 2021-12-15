@@ -10,7 +10,7 @@
                 <iais:value>
                     <label class="col-xs-3 col-md-3" for="submissionNoDataSubmission" style="text-align:left;margin-top: 1.5%">Search by submission ID:</label>
                     <div class="col-xs-9 col-md-9">
-                        <input id="submissionNoDataSubmission" name="submissionNoDataSubmission" type="text" maxlength="17"
+                        <input id="submissionNoDataSubmission" name="submissionNoDataSubmission" type="text" maxlength="19"
                                value="${param.submissionNoDataSubmission}">
                     </div>
                 </iais:value>
