@@ -76,28 +76,22 @@
                 <iais:row>
                     <iais:field width="6" value="No. Retrieved (Mature)" cssClass="col-md-6"/>
                     <iais:value width="6" cssClass="col-md-6">
-                        <input type="number" id="matureRetrievedNum" name="matureRetrievedNum"
-                               value="${oocyteRetrievalStageDto.matureRetrievedNum}"
-                               oninput="if(value.length>2)value=value.slice(0,2)">
-                        <span id="error_matureRetrievedNum" name="iaisErrorMsg" class="error-msg"></span>
+                        <iais:input maxLength="2" type="text" name="matureRetrievedNum" id="matureRetrievedNum"
+                                    value="${oocyteRetrievalStageDto.matureRetrievedNum}"/>
                     </iais:value>
                 </iais:row>
                 <iais:row>
                     <iais:field width="6" value="No. Retrieved (Immature)" cssClass="col-md-6"/>
                     <iais:value width="6" cssClass="col-md-6">
-                        <input type="number" id="immatureRetrievedNum" name="immatureRetrievedNum"
-                               value="${oocyteRetrievalStageDto.immatureRetrievedNum}"
-                               oninput="if(value.length>2)value=value.slice(0,2)">
-                        <span id="error_immatureRetrievedNum" name="iaisErrorMsg" class="error-msg"></span>
+                        <iais:input maxLength="2" type="text" name="immatureRetrievedNum" id="immatureRetrievedNum"
+                                    value="${oocyteRetrievalStageDto.immatureRetrievedNum}"/>
                     </iais:value>
                 </iais:row>
                 <iais:row>
                     <iais:field width="6" value="No. Retrieved (Others)" cssClass="col-md-6"/>
                     <iais:value width="6" cssClass="col-md-6">
-                        <input type="number" id="otherRetrievedNum" name="otherRetrievedNum"
-                               value="${oocyteRetrievalStageDto.otherRetrievedNum}"
-                               oninput="if(value.length>2)value=value.slice(0,2)">
-                        <span id="error_otherRetrievedNum" name="iaisErrorMsg" class="error-msg"></span>
+                        <iais:input maxLength="2" type="text" name="otherRetrievedNum" id="otherRetrievedNum"
+                                    value="${oocyteRetrievalStageDto.otherRetrievedNum}"/>
                     </iais:value>
                 </iais:row>
                 <iais:row>
