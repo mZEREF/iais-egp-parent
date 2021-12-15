@@ -80,6 +80,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.common.validation.SgNoValidator;
 import com.ecquaria.cloud.moh.iais.common.validation.ValidationUtils;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.constant.HcsaLicenceFeConstant;
@@ -1376,14 +1377,16 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                                 licenceFeeDto.setBundle(2);
                             }
                         }else{
-                            setEasMtsBundleInfo(licenceFeeDto, appGrpPremisesDtos.get(0), hcsaFeeBundleItemDtos, serviceCode, appSubmissionDto.getLicenseeId(), easVehicleCount,appSubmissionDto.getAppType());
+                            String hciCode = appGrpPremisesDtos.get(0).getHciCode();
+                            setEasMtsBundleInfo(licenceFeeDto, hciCode, hcsaFeeBundleItemDtos, serviceCode, appSubmissionDto.getLicenseeId(), easVehicleCount,appSubmissionDto.getAppType());
                         }
                     } else if(AppServicesConsts.SERVICE_CODE_MEDICAL_TRANSPORT_SERVICE.equals(serviceCode)){
                         if(hadEas && hadMts){
                             //new eas and mts
                             licenceFeeDto.setBundle(3);
                         }else{
-                            setEasMtsBundleInfo(licenceFeeDto, appGrpPremisesDtos.get(0), hcsaFeeBundleItemDtos, serviceCode, appSubmissionDto.getLicenseeId(), easVehicleCount,appSubmissionDto.getAppType());
+                            String hciCode = appGrpPremisesDtos.get(0).getHciCode();
+                            setEasMtsBundleInfo(licenceFeeDto, hciCode, hcsaFeeBundleItemDtos, serviceCode, appSubmissionDto.getLicenseeId(), mtsVehicleCount,appSubmissionDto.getAppType());
                         }
                     } else{
                         licenceFeeDto.setBundle(0);
@@ -1595,7 +1598,8 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                                     }
                                 }
                             }else{
-                                setEasMtsBundleInfo(licenceFeeDto, appGrpPremisesDtos.get(0), hcsaFeeBundleItemDtos, serviceCode, appSubmissionDto.getLicenseeId(), easVehicleCount,appSubmissionDto.getAppType());
+                                String hciCode = appGrpPremisesDtos.get(0).getHciCode();
+                                setEasMtsBundleInfo(licenceFeeDto, hciCode, hcsaFeeBundleItemDtos, serviceCode, appSubmissionDto.getLicenseeId(), easVehicleCount,appSubmissionDto.getAppType());
                             }
                         } else if(AppServicesConsts.SERVICE_CODE_MEDICAL_TRANSPORT_SERVICE.equals(serviceCode)){
                             if(mtsVehicleCount <= matchingTh){
@@ -1610,7 +1614,8 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                                     }
                                 }
                             }else{
-                                setEasMtsBundleInfo(licenceFeeDto, appGrpPremisesDtos.get(0), hcsaFeeBundleItemDtos, serviceCode, appSubmissionDto.getLicenseeId(), easVehicleCount,appSubmissionDto.getAppType());
+                                String hciCode = appGrpPremisesDtos.get(0).getHciCode();
+                                setEasMtsBundleInfo(licenceFeeDto, hciCode, hcsaFeeBundleItemDtos, serviceCode, appSubmissionDto.getLicenseeId(), mtsVehicleCount,appSubmissionDto.getAppType());
                             }
                         } else{
                             licenceFeeDto.setBundle(0);
@@ -1700,7 +1705,8 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                                     }
                                 }
                             }else{
-                                setEasMtsBundleInfo(licenceFeeDto, appGrpPremisesDtos.get(0), hcsaFeeBundleItemDtos, serviceCode, appSubmissionDto.getLicenseeId(), easVehicleCount,appSubmissionDto.getAppType());
+                                String hciCode = appGrpPremisesDtos.get(0).getHciCode();
+                                setEasMtsBundleInfo(licenceFeeDto, hciCode, hcsaFeeBundleItemDtos, serviceCode, appSubmissionDto.getLicenseeId(), easVehicleCount,appSubmissionDto.getAppType());
                             }
                         } else if(AppServicesConsts.SERVICE_CODE_MEDICAL_TRANSPORT_SERVICE.equals(serviceCode)){
                             if(mtsVehicleCount <= matchingTh ){
@@ -1715,7 +1721,8 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                                     }
                                 }
                             }else{
-                                setEasMtsBundleInfo(licenceFeeDto, appGrpPremisesDtos.get(0), hcsaFeeBundleItemDtos, serviceCode, appSubmissionDto.getLicenseeId(), easVehicleCount,appSubmissionDto.getAppType());
+                                String hciCode = appGrpPremisesDtos.get(0).getHciCode();
+                                setEasMtsBundleInfo(licenceFeeDto, hciCode, hcsaFeeBundleItemDtos, serviceCode, appSubmissionDto.getLicenseeId(), mtsVehicleCount,appSubmissionDto.getAppType());
                             }
                         } else{
                             licenceFeeDto.setBundle(0);
@@ -3737,33 +3744,22 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
         return result;
     }
 
-    private void setEasMtsBundleInfo(LicenceFeeDto licenceFeeDto, AppGrpPremisesDto appGrpPremisesDto, List<HcsaFeeBundleItemDto> hcsaFeeBundleItemDtos, String serviceCode, String licenseeId, int easMtsVehicleCount,String appType){
+    private void setEasMtsBundleInfo(LicenceFeeDto licenceFeeDto, String hciCode, List<HcsaFeeBundleItemDto> hcsaFeeBundleItemDtos, String serviceCode, String licenseeId, int easMtsVehicleCount,String appType){
         List<HcsaFeeBundleItemDto> bundleDtos = getBundleDtoBySvcCode(hcsaFeeBundleItemDtos,serviceCode);
         boolean hadBundleLicence = false;
-        boolean hadBundleSvc = false;
         int matchingTh =appConfigClient.getFeeMaxMatchingThByServiceCode(serviceCode).getEntity();
         if(!IaisCommonUtils.isEmpty(bundleDtos)){
             log.debug(StringUtil.changeForLog("get bundle licence ..."));
-            log.debug("hciCode is {}",appGrpPremisesDto.getHciCode());
+            log.debug("hciCode is {}",hciCode);
             log.debug("licenseeId is {}",licenseeId);
             List<String> bundleSvcNameList = IaisCommonUtils.genNewArrayList();
             for(HcsaFeeBundleItemDto hcsaFeeBundleItemDto:bundleDtos){
                 bundleSvcNameList.add(HcsaServiceCacheHelper.getServiceByCode(hcsaFeeBundleItemDto.getSvcCode()).getSvcName());
             }
-            hadBundleLicence = getBundleLicenceByHciCode(appGrpPremisesDto.getHciCode(), licenseeId, bundleSvcNameList);
-            if(IaisCommonUtils.isNotEmpty(appGrpPremisesDto.getRelatedServices())){
-                for (String relatedSvc:appGrpPremisesDto.getRelatedServices()
-                ) {
-                    if(bundleSvcNameList.contains(relatedSvc)){
-                        hadBundleSvc=true;
-                    }
-                }
-            }
-
+            hadBundleLicence = getBundleLicenceByHciCode(hciCode, licenseeId, bundleSvcNameList);
         }
         log.debug("hadBundleLicence is {}",hadBundleLicence);
-        log.debug("hadBundleSvc is {}",hadBundleSvc);
-        if((hadBundleLicence||hadBundleSvc)&&appType.equals(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION)){
+        if(hadBundleLicence&&appType.equals(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION)){
             //found bundle licence
             licenceFeeDto.setBundle(4);
         }else{
