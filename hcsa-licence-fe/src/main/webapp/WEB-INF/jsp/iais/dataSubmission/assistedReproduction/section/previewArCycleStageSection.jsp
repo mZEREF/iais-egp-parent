@@ -11,10 +11,7 @@
         <div class="panel-body">
             <div class="panel-main-content form-horizontal">
                 <c:set var="arCycleStageDto" value="${arSuperDataSubmissionDto.arCycleStageDto}" />
-                <c:set var="patientDto" value="${arSuperDataSubmissionDto.patientInfoDto.patient}" />
-                <h3>
-                    <label><c:out value="${patientDto.name}"/></label><span style="font-weight:normal;">${empty patientDto.idNumber ? "" : "("}<c:out value="${patientDto.idNumber}"/>${empty patientDto.idNumber ? "" : ")"} </span>
-                </h3>
+                <%@include file="patientCommon.jsp"%>
                 <%@include file="../common/arFlagOut.jsp" %>
                 <iais:row>
                     <iais:field width="5" value="Premises where AR is performed" />

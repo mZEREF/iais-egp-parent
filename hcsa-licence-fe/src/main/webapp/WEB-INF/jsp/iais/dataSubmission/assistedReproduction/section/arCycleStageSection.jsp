@@ -10,11 +10,8 @@
         <div class="panel-body">
             <div class="panel-main-content form-horizontal">
                 <c:set var="arCycleStageDto" value="${arSuperDataSubmissionDto.arCycleStageDto}" />
-                <c:set var="patientDto" value="${arSuperDataSubmissionDto.patientInfoDto.patient}" />
                 <c:set var="enhancedCounsellingMandatory" value="${(arCycleStageDto.cycleAgeYear > 45 || arCycleStageDto.cycleAgeYear ==45 && arCycleStageDto.cycleAgeMonth>0 ) ? 'true' : 'false'}" />
-                <h3>
-                    <label><c:out value="${patientDto.name}"/></label><span style="font-weight:normal;">${empty patientDto.idNumber ? "" : "("}<c:out value="${patientDto.idNumber}"/>${empty patientDto.idNumber ? "" : ")"} </span>
-                </h3>
+                <%@include file="patientCommon.jsp"%>
                 <iais:row>
                     <iais:field width="5" value="Premises where AR is performed" mandatory="true"/>
                     <iais:value width="7" cssClass="col-md-7" display="true">

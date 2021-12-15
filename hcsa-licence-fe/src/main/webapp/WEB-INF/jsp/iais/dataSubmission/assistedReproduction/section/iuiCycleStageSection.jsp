@@ -8,12 +8,9 @@
             </div>
             <div id="iuiStageDetails" class="panel-collapse collapse in">
               <c:set var="iuiCycleStageDto" value="${arSuperDataSubmissionDto.iuiCycleStageDto}"/>
-              <c:set var="patientDto" value="${arSuperDataSubmissionDto.patientInfoDto.patient}" />
               <div class="panel-body">
                 <div class="panel-main-content form-horizontal">
-                  <h3>
-                    <label><c:out value="${patientDto.name}"/>&nbsp</label><span style="font-weight:normal;">${empty patientDto.idNumber ? "" : "("}<c:out value="${patientDto.idNumber}"/>${empty patientDto.idNumber ? "" : ")"} </span>
-                  </h3>
+                  <%@include file="patientCommon.jsp"%>
                   <iais:row>
                     <iais:field  width="5" value="Premises where IUI is Performed" mandatory="true"/>
                     <iais:value width="3" cssClass="col-md-3" >
