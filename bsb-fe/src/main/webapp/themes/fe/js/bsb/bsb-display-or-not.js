@@ -26,7 +26,7 @@ function unreadonlyPartPage() {
     $("input[type='number']").css("color", "");
     $("input[type='number']").css("border-color", "");
     $("input[type='number']").removeAttr("disabled");
-    $("input[type='radio']").removeAttr("disabled");
+    $("input[type='radio'][class!='form-check-input']").removeAttr("disabled");
     $("input[type='checkbox']").removeAttr("disabled");
     $("textarea").removeAttr("disabled");
     $("textarea").css("color", "");
