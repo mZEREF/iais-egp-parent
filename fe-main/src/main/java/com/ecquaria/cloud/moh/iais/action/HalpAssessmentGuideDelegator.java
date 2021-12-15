@@ -33,6 +33,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InboxAppQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.FeUserDto;
 import com.ecquaria.cloud.moh.iais.common.utils.CopyUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
@@ -67,14 +68,8 @@ import sop.webflow.rt.api.BaseProcessClass;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.text.ParseException;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -2579,6 +2574,20 @@ public class HalpAssessmentGuideDelegator {
        }else {
            searchParam.removeFilter(key);
        }
+    }
+
+    public static void setParamForDate(HttpServletRequest request,SearchParam searchParam,String key,String value){
+        try {
+            Date lastDateStart = com.ecquaria.cloud.moh.iais.common.utils.Formatter.parseDate(ParamUtil.getString(request, value));
+            if(lastDateStart!=null){
+                searchParam.addFilter(key,lastDateStart,true);
+            }else {
+                searchParam.removeFilter(key);
+            }
+        }catch (ParseException parseException){
+            log.error(parseException.getMessage(),parseException);
+            searchParam.removeFilter(key);
+        }
     }
 
 }

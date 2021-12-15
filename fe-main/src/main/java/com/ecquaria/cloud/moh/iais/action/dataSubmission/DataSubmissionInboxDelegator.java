@@ -165,14 +165,8 @@ public class DataSubmissionInboxDelegator {
 		HalpAssessmentGuideDelegator.setParamByField(searchParam,"submissionNo",inboxDataSubmissionQueryDto.getSubmissionNo(),true);
 		HalpAssessmentGuideDelegator.setParamByField(searchParam,"status",inboxDataSubmissionQueryDto.getStatus(),true,InboxConst.SEARCH_ALL);
 		HalpAssessmentGuideDelegator.setParamByField(searchParam,"type",inboxDataSubmissionQueryDto.getType() ,true,InboxConst.SEARCH_ALL);
-		try {
-			Date lastDateStart = Formatter.parseDate(ParamUtil.getString(request, "lastDateStart"));
-			Date lastDateEnd = Formatter.parseDate(ParamUtil.getString(request, "lastDateEnd"));
-			searchParam.addFilter("lastDateStart",lastDateStart,true);
-			searchParam.addFilter("lastDateEnd",lastDateEnd,true);
-		}catch (ParseException parseException){
-			log.error(parseException.getMessage(),parseException);
-		}
+		HalpAssessmentGuideDelegator.setParamForDate(request,searchParam,"lastDateStart","lastDateStart");
+		HalpAssessmentGuideDelegator.setParamForDate(request,searchParam,"lastDateEnd","lastDateEnd");
 		ParamUtil.setSessionAttr(request, InboxConst.DS_PARAM,searchParam);
 	}
 
