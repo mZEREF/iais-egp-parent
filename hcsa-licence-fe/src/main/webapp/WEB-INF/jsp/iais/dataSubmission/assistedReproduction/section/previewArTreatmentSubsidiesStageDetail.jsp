@@ -16,6 +16,7 @@
                     <span style="font-weight:normal"><c:out value="(${arSuperDataSubmissionDto.patientInfoDto.patient.idNumber})"/>
                     </span>
                 </h3>
+                <%@include file="../common/arFlagOut.jsp" %>
                 <iais:row>
                     <iais:field width="6" value="Please indicate ART Co-funding" cssClass="col-md-6"/>
                     <iais:value width="6" cssClass="col-md-6" display="true">

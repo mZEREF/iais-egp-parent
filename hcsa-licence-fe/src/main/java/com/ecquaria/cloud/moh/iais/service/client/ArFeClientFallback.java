@@ -179,4 +179,29 @@ public class ArFeClientFallback implements ArFeClient {
     public FeignResponseEntity<Date> getCycleStartDate(String cycleId) {
         return getFeignResponseEntity();
     }
+
+    @Override
+    public FeignResponseEntity<Boolean> haveEmbryoTransferGreaterFiveDay(String cycleId) {
+        return null;
+    }
+
+    @Override
+    public FeignResponseEntity<Boolean> haveEnhancedCounselling(String patientCode, String hciCode) {
+        return getFeignResponseEntity();
+    }
+
+    @Override
+    public FeignResponseEntity<Integer> treatmentCycleCount(String patientCode) {
+        return getFeignResponseEntity();
+    }
+
+    @Override
+    public FeignResponseEntity<Integer> embryoTransferCount(String patientCode) {
+        return getFeignResponseEntity();
+    }
+
+    @Override
+    public FeignResponseEntity<Boolean> haveStimulationCycles(String patientCode) {
+        return getFeignResponseEntity();
+    }
 }

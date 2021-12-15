@@ -119,4 +119,10 @@ public interface ArDataSubmissionService {
     List<DonorDto> getAllDonorDtoByCycleId(String cycleId);
 
     Date getCycleStartDate(String cycleId);
+
+    boolean flagOutEnhancedCounselling(ArSuperDataSubmissionDto arSuperDataSubmissionDto);
+
+    boolean flagOutEmbryoTransferAgeAndCount(ArSuperDataSubmissionDto arSuperDataSubmissionDto);
+
+    boolean flagOutEmbryoTransferCountAndPatAge(ArSuperDataSubmissionDto arSuperDataSubmissionDto);
 }

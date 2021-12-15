@@ -15,6 +15,7 @@
                     <span style="font-weight:normal"><c:out value="(${arSuperDataSubmissionDto.patientInfoDto.patient.idNumber})"/>
                     </span>
                 </h3>
+                <%@include file="../common/arFlagOut.jsp" %>
                 <c:set var="endCycleStageDto" value="${arSuperDataSubmissionDto.endCycleStageDto}" />
                 <iais:row>
                     <iais:field width="6" value="Is Current Cycle Abandoned?"/>

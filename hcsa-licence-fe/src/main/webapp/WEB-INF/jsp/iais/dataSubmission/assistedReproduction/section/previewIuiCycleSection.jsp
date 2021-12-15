@@ -15,6 +15,7 @@
         <h3>
           <label><c:out value="${patientDto.name}"/></label><span style="font-weight:normal;">${empty patientDto.idNumber ? "" : "("}<c:out value="${patientDto.idNumber}"/>${empty patientDto.idNumber ? "" : ")"} </span>
         </h3>
+        <%@include file="../common/arFlagOut.jsp" %>
         <iais:row>
           <iais:field value="Premises where IUI is Performed" mandatory="false"/>
           <iais:value width="7" cssClass="col-md-7" display="true" >

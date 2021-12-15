@@ -11,6 +11,7 @@
         <div class="panel-body">
             <div class="panel-main-content form-horizontal">
                 <c:set var="outcomeStageDto" value="${arSuperDataSubmissionDto.outcomeStageDto}" />
+                <%@include file="../common/arFlagOut.jsp" %>
                 <iais:row>
                     <iais:field width="6" value="Is Clinical Pregnancy Detected?"/>
                     <iais:value width="6" display="true">

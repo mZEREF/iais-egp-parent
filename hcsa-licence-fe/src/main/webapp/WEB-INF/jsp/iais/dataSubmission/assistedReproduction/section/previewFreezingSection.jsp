@@ -24,7 +24,7 @@
                   value="(${arSuperDataSubmissionDto.patientInfoDto.patient.idNumber})"/>
           </span>
         </h3>
-
+        <%@include file="../common/arFlagOut.jsp" %>
         <iais:row>
           <iais:field width="6" value="What was cryopreserved?" cssClass="col-md-6"/>
           <iais:value width="6" cssClass="col-xs-5 col-md-6 control-label" display="true">

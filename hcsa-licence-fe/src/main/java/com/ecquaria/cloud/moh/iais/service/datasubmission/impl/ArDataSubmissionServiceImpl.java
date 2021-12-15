@@ -5,6 +5,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArCycleStageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSubFreezingStageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.CycleDto;
@@ -13,6 +14,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DataSubmission
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DonorDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DonorSampleAgeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DonorSampleDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.EmbryoTransferStageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.IuiCycleStageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInfoDto;
@@ -513,10 +515,118 @@ public class ArDataSubmissionServiceImpl implements ArDataSubmissionService {
 
     @Override
     public Date getCycleStartDate(String cycleId) {
-        if (StringUtil.isEmpty(cycleId)){
+        if (StringUtil.isEmpty(cycleId)) {
             log.info(StringUtil.changeForLog("------ No cycle Id -----"));
             return null;
         }
         return arFeClient.getCycleStartDate(cycleId).getEntity();
+    }
+
+    @Override
+    public boolean flagOutEnhancedCounselling(ArSuperDataSubmissionDto arSuperDataSubmissionDto) {
+        CycleDto cycleDto = arSuperDataSubmissionDto.getCycleDto();
+        String patientCode = cycleDto.getPatientCode();
+        if (haveEnhancedCounsellingIncludeCurrentStage(arSuperDataSubmissionDto)) {
+            int age = getPatientAge(arSuperDataSubmissionDto);
+            if (age > 45) {
+                return true;
+            }
+            return arFeClient.treatmentCycleCount(patientCode).getEntity() > 10;
+        }
+        return false;
+    }
+
+    @Override
+    public boolean flagOutEmbryoTransferAgeAndCount(ArSuperDataSubmissionDto arSuperDataSubmissionDto) {
+        return haveEmbryoTransferGreaterFiveDayIncludeCurrentStage(arSuperDataSubmissionDto)
+                && embryoTransferCountIncludeCurrentStage(arSuperDataSubmissionDto) >= 3;
+    }
+
+    @Override
+    public boolean flagOutEmbryoTransferCountAndPatAge(ArSuperDataSubmissionDto arSuperDataSubmissionDto) {
+        if (embryoTransferCountIncludeCurrentStage(arSuperDataSubmissionDto) >= 3) {
+            int age = getPatientAge(arSuperDataSubmissionDto);
+            if (age < 37) {
+                return true;
+            }
+            return !haveStimulationCyclesIncludeCurrentStage(arSuperDataSubmissionDto);
+        }
+        return false;
+    }
+
+    private boolean haveEnhancedCounsellingIncludeCurrentStage(ArSuperDataSubmissionDto arSuperDataSubmissionDto) {
+        if (arSuperDataSubmissionDto.getArCycleStageDto() != null) {
+            ArCycleStageDto arCycleStageDto = arSuperDataSubmissionDto.getArCycleStageDto();
+            if (arCycleStageDto.getEnhancedCounselling()) {
+                return true;
+            }
+        }
+        CycleDto cycleDto = arSuperDataSubmissionDto.getCycleDto();
+        String patientCode = cycleDto.getPatientCode();
+        return arFeClient.haveEnhancedCounselling(patientCode, cycleDto.getHciCode()).getEntity();
+    }
+
+    private boolean haveStimulationCyclesIncludeCurrentStage(ArSuperDataSubmissionDto arSuperDataSubmissionDto) {
+        if (arSuperDataSubmissionDto.getArCycleStageDto() != null) {
+            ArCycleStageDto arCycleStageDto = arSuperDataSubmissionDto.getArCycleStageDto();
+            if (arCycleStageDto.getCurrentArTreatmentValues().contains("AR_CAT_002")) {
+                return true;
+            }
+        }
+        CycleDto cycleDto = arSuperDataSubmissionDto.getCycleDto();
+        String patientCode = cycleDto.getPatientCode();
+        return arFeClient.haveStimulationCycles(patientCode).getEntity();
+    }
+
+    private boolean haveEmbryoTransferGreaterFiveDayIncludeCurrentStage(ArSuperDataSubmissionDto arSuperDataSubmissionDto) {
+        String cycleDtoId = arSuperDataSubmissionDto.getCycleDto().getId();
+        if (arSuperDataSubmissionDto.getEmbryoTransferStageDto() != null) {
+            EmbryoTransferStageDto embryoTransferStageDto = arSuperDataSubmissionDto.getEmbryoTransferStageDto();
+            if (embryoHasGreaterFourDay(embryoTransferStageDto)) {
+                return true;
+            }
+        }
+        if (StringUtil.isNotEmpty(cycleDtoId)) {
+            return arFeClient.haveEmbryoTransferGreaterFiveDay(cycleDtoId).getEntity();
+        }
+        return false;
+    }
+
+
+    private int getPatientAge(ArSuperDataSubmissionDto arSuperDataSubmissionDto) {
+        List<Integer> integers = Formatter.getYearsAndDays(arSuperDataSubmissionDto.getPatientInfoDto().getPatient().getBirthDate());
+        int age = 0;
+        if (IaisCommonUtils.isNotEmpty(integers)) {
+            age = integers.get(0);
+        }
+        return age;
+    }
+
+    private int embryoTransferCountIncludeCurrentStage(ArSuperDataSubmissionDto arSuperDataSubmissionDto) {
+        int result = 0;
+        String cycleDtoId = arSuperDataSubmissionDto.getCycleDto().getId();
+        if (arSuperDataSubmissionDto.getEmbryoTransferStageDto() != null) {
+            EmbryoTransferStageDto embryoTransferStageDto = arSuperDataSubmissionDto.getEmbryoTransferStageDto();
+            if (embryoTransferStageDto != null) {
+                result += embryoTransferStageDto.getTransferNum();
+            }
+        }
+        if (StringUtil.isNotEmpty(cycleDtoId)) {
+            Integer cycleEmbryoTransferCount = arFeClient.embryoTransferCount(cycleDtoId).getEntity();
+            result += cycleEmbryoTransferCount;
+        }
+        return result;
+    }
+
+    private boolean embryoHasGreaterFourDay(EmbryoTransferStageDto embryoTransferStageDto) {
+        if (embryoTransferStageDto == null) {
+            return false;
+        }
+        return greaterFourDay(embryoTransferStageDto.getFirstEmbryoAge()) || greaterFourDay(embryoTransferStageDto.getSecondEmbryoAge())
+                || greaterFourDay(embryoTransferStageDto.getThirdEmbryoAge());
+    }
+
+    private boolean greaterFourDay(String code) {
+        return "AOFET005".equals(code) || "AOFET006".equals(code);
     }
 }

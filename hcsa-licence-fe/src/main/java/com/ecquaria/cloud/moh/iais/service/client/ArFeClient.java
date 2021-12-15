@@ -148,4 +148,19 @@ public interface ArFeClient {
 
     @GetMapping(value = "/ar-common/cycle-start-date-by-cycle-id", produces = MediaType.APPLICATION_JSON_VALUE)
     public FeignResponseEntity<Date> getCycleStartDate(@RequestParam(name = "cycleId") String cycleId);
+
+    @GetMapping(value = "/ar-common/have-greater-five-day", produces = MediaType.APPLICATION_JSON_VALUE)
+    public FeignResponseEntity<Boolean> haveEmbryoTransferGreaterFiveDay(@RequestParam(name = "cycleId") String cycleId);
+
+    @GetMapping(value = "/ar-common/have-enhanced-counselling", produces = MediaType.APPLICATION_JSON_VALUE)
+    public FeignResponseEntity<Boolean> haveEnhancedCounselling(@RequestParam(name = "patientCode") String patientCode, @RequestParam(name = "hciCode") String hciCode);
+
+    @GetMapping(value = "/ar-common/treatment-cycle-count", produces = MediaType.APPLICATION_JSON_VALUE)
+    public FeignResponseEntity<Integer> treatmentCycleCount(@RequestParam(name = "patientCode") String patientCode);
+
+    @GetMapping(value = "/ar-common/embryo-cycle-count", produces = MediaType.APPLICATION_JSON_VALUE)
+    public FeignResponseEntity<Integer> embryoTransferCount(@RequestParam(name = "cycleId") String cycleId);
+
+    @GetMapping(value = "/ar-common/have-stimulation-cycles", produces = MediaType.APPLICATION_JSON_VALUE)
+    public FeignResponseEntity<Boolean> haveStimulationCycles(@RequestParam(name = "patientCode") String patientCode);
 }
