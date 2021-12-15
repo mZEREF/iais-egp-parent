@@ -233,7 +233,9 @@ public class TransferNotificationDto implements Serializable {
         if(!CollectionUtils.isEmpty(this.transferNotList)){
            List<PrimaryDocDto.NewDocInfo> newDocInfos = transferNotList.stream().flatMap(i->i.getNewDocInfos().stream()).collect(Collectors.toList());
            newDocInfos.addAll(this.otherNewInfos);
-           this.allNewDocInfos = newDocInfos.stream().collect(Collectors.toMap(PrimaryDocDto.NewDocInfo::getTmpId, Function.identity()));
+            for (PrimaryDocDto.NewDocInfo newDocInfo : newDocInfos) {
+                this.allNewDocInfos.put(newDocInfo.getTmpId(),newDocInfo);
+            }
         }
     }
 
