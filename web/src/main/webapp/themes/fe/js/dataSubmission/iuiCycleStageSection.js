@@ -1,6 +1,10 @@
 $(document).ready(function (){
     showDonorArea("sourceOfSemenOpAR_SOS_003",0);
-   if($('#ownPremisesRadioNo').is(':checked')) showOtherPremises(0);
+   if($('#ownPremisesRadioNo').is(':checked')) {
+       showOtherPremises(0);
+   }else {
+       showOtherPremises(1);
+   }
 });
 
 

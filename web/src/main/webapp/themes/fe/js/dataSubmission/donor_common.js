@@ -39,6 +39,8 @@ function showDonor(index){
     $("#donorSampleCode"+index).val("");
     $("#idNo"+index+"Row").show();
     $("#relation"+index+"Row").show();
+    $("#age"+index).val("");
+    $("#age"+index+"Row").hide();
 }
 function hideDonor(index){
     $("#source"+index+"Row").show();
@@ -46,6 +48,8 @@ function hideDonor(index){
     $("#idNo"+index+"Row").hide();
     $("#idType"+index).val("");
     $("#idNumber"+index).val("");
+    $("#age"+index).val("");
+    $("#age"+index+"Row").hide();
     $("#relation"+index+"Row").hide();
 }
 
@@ -66,7 +70,6 @@ function hideUsedDonorOocyteControlClass(flag){
 }
 
 function removeAges(index){
-    $("#relation"+index+"Row").hide();
     $("#age"+index+"Row").hide();
     $("#age"+index).val("");
     $("#resetDonor"+index).val("1");

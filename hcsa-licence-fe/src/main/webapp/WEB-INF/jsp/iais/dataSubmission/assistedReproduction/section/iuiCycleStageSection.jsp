@@ -47,7 +47,7 @@
                   <iais:row id="otherPremisesRow">
                     <iais:field  width="5" value="IUI Treatment performed in Other Premises" mandatory="true"/>
                     <iais:value width="7" cssClass="col-md-7">
-                      <iais:input maxLength="50" value="${iuiCycleStageDto.otherPremises}" name="otherPremises" />
+                      <iais:input type="text" maxLength="50" value="${iuiCycleStageDto.otherPremises}" name="otherPremises" />
                     </iais:value>
                   </iais:row>
                   <iais:row>
