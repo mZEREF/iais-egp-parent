@@ -3708,6 +3708,7 @@ public class NewApplicationDelegator {
                     }
                     if (appGrpPremisesDto != null) {
                         //get value for jsp page
+                        appGrpPremisesDto.setExistingData(chooseExistData[i]);
                         NewApplicationHelper.setPremise(appGrpPremisesDto, premIndexNo, null);
                         appGrpPremisesDtoList.add(appGrpPremisesDto);
                     }
@@ -3722,6 +3723,7 @@ public class NewApplicationDelegator {
                             break;
                         }
                     }
+                    appGrpPremisesDto.setExistingData(chooseExistData[i]);
                     NewApplicationHelper.setPremise(appGrpPremisesDto, premIndexNo, appSubmissionDto);
                     appGrpPremisesDtoList.add(appGrpPremisesDto);
                     continue;
@@ -3734,6 +3736,7 @@ public class NewApplicationDelegator {
                         } else {
                             appGrpPremisesDto.setRfiCanEdit(false);
                         }
+                        appGrpPremisesDto.setExistingData(chooseExistData[i]);
                         NewApplicationHelper.setPremise(appGrpPremisesDto, premIndexNo, appSubmissionDto);
                         appGrpPremisesDtoList.add(appGrpPremisesDto);
                         continue;
@@ -3742,14 +3745,15 @@ public class NewApplicationDelegator {
                     }
                 }
                 //set hciCode
-                List<AppGrpPremisesDto> appGrpPremisesDtos = appSubmissionDto.getAppGrpPremisesDtoList();
+                /*List<AppGrpPremisesDto> appGrpPremisesDtos = appSubmissionDto.getAppGrpPremisesDtoList();
                 for (AppGrpPremisesDto premDto : appGrpPremisesDtos) {
                     if (premIndexNo.equals(premDto.getPremisesIndexNo())) {
                         NewApplicationHelper.setPremise(appGrpPremisesDto, premIndexNo, appSubmissionDto);
                         break;
                     }
-                }
+                }*/
             }
+            appGrpPremisesDto.setExistingData(chooseExistData[i]);
             NewApplicationHelper.setPremise(appGrpPremisesDto, premIndexNo, appSubmissionDto);
             // set premise type
             appGrpPremisesDto.setPremisesType(premisesType[i]);

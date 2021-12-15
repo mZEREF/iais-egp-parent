@@ -1248,7 +1248,10 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                     appGrpPremisesDto.setExistingData(AppConsts.YES);
                     return appGrpPremisesDto;
                 })
-                .collect(Collectors.toMap(AppGrpPremisesDto::getPremisesSelect, Function.identity(), (v1, v2) -> v1));
+                .collect(Collectors.toMap(AppGrpPremisesDto::getPremisesSelect, Function.identity(), (v1, v2) -> {
+                    v1.setRelatedServices(NewApplicationHelper.combineList(v1.getRelatedServices(), v2.getRelatedServices()));
+                    return v1;
+                }));
     }
 
     @Override
@@ -1264,9 +1267,23 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
         return appGrpPremisesDtos.parallelStream()
                 .map(appGrpPremisesDto -> {
                     NewApplicationHelper.setWrkTime(appGrpPremisesDto);
+                    appGrpPremisesDto.setExistingData(AppConsts.YES);
+                    List<String> relatedServices = appGrpPremisesDto.getRelatedServices();
+                    if (relatedServices != null && !relatedServices.isEmpty()) {
+                        List<String> svcNames = relatedServices.stream()
+                                .map(svcId -> HcsaServiceCacheHelper.getServiceById(svcId))
+                                .filter(Objects::nonNull)
+                                .map(HcsaServiceDto::getSvcName)
+                                .filter(Objects::nonNull)
+                                .collect(Collectors.toList());
+                        appGrpPremisesDto.setRelatedServices(svcNames);
+                    }
                     return appGrpPremisesDto;
                 })
-                .collect(Collectors.toMap(AppGrpPremisesDto::getPremisesSelect, Function.identity(), (v1, v2) -> v2));
+                .collect(Collectors.toMap(AppGrpPremisesDto::getPremisesSelect, Function.identity(), (v1, v2) -> {
+                    v1.setRelatedServices(NewApplicationHelper.combineList(v1.getRelatedServices(), v2.getRelatedServices()));
+                    return v1;
+                }));
     }
 
     @Override
@@ -1383,7 +1400,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                             //new eas and mts
                             licenceFeeDto.setBundle(3);
                         }else{
-                            setEasMtsBundleInfo(licenceFeeDto, appGrpPremisesDtos.get(0), hcsaFeeBundleItemDtos, serviceCode, appSubmissionDto.getLicenseeId(), easVehicleCount,appSubmissionDto.getAppType());
+                            setEasMtsBundleInfo(licenceFeeDto, appGrpPremisesDtos.get(0), hcsaFeeBundleItemDtos, serviceCode, appSubmissionDto.getLicenseeId(), mtsVehicleCount,appSubmissionDto.getAppType());
                         }
                     } else{
                         licenceFeeDto.setBundle(0);
@@ -1610,7 +1627,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                                     }
                                 }
                             }else{
-                                setEasMtsBundleInfo(licenceFeeDto, appGrpPremisesDtos.get(0), hcsaFeeBundleItemDtos, serviceCode, appSubmissionDto.getLicenseeId(), easVehicleCount,appSubmissionDto.getAppType());
+                                setEasMtsBundleInfo(licenceFeeDto, appGrpPremisesDtos.get(0), hcsaFeeBundleItemDtos, serviceCode, appSubmissionDto.getLicenseeId(), mtsVehicleCount,appSubmissionDto.getAppType());
                             }
                         } else{
                             licenceFeeDto.setBundle(0);
@@ -1715,7 +1732,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                                     }
                                 }
                             }else{
-                                setEasMtsBundleInfo(licenceFeeDto, appGrpPremisesDtos.get(0), hcsaFeeBundleItemDtos, serviceCode, appSubmissionDto.getLicenseeId(), easVehicleCount,appSubmissionDto.getAppType());
+                                setEasMtsBundleInfo(licenceFeeDto, appGrpPremisesDtos.get(0), hcsaFeeBundleItemDtos, serviceCode, appSubmissionDto.getLicenseeId(), mtsVehicleCount,appSubmissionDto.getAppType());
                             }
                         } else{
                             licenceFeeDto.setBundle(0);
