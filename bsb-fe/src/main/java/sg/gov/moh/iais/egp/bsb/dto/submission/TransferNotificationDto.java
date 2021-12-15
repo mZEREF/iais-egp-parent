@@ -240,6 +240,7 @@ public class TransferNotificationDto implements Serializable {
     }
 
     public void getDocMetaInfoFromNew(){
+        this.docMetaInfos.clear();
         this.allNewDocInfos.values().forEach(i -> {
             DocMeta docMeta = new DocMeta(i.getTmpId(), i.getDocType(), i.getFilename(), i.getSize(), "dataSub");
             addDocMetaInfos(docMeta);

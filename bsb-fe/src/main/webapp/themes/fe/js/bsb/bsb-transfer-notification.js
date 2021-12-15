@@ -80,10 +80,9 @@ function stChange(obj){
     //empty all new saved  file
     list.find(".file-upload-gp").find("div").empty();
     var deleteList = $("#existFiles"+"--v--"+num).val();
-    var deleteSplit = deleteList.split(",");
     // add id into the delete list
     var deleteNewFiles = document.getElementById("deleteNewFiles");
-    deleteNewFiles.value = deleteList;
+    appendInputValue(deleteNewFiles,deleteList);
 
     var docH3 = list.find("h3");
     addHtml(docH3,scheduleType);
@@ -105,6 +104,14 @@ function addHtml(docH3,sType){
         }
     }
 
+}
+
+function appendInputValue(input, value) {
+    if (input.value) {
+        input.value = input.value + "," + value;
+    } else {
+        input.value = value;
+    }
 }
 
 
