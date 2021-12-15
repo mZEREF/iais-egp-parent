@@ -251,11 +251,13 @@ public class NewApplicationHelper {
             appGrpPremisesDto.setHciCode(null);
             appGrpPremisesDto.setNeedNewLicNo(Boolean.valueOf(isNeedNewLicNo));
             appGrpPremisesDto.setSelfAssMtFlag(selfAssMtFlag);
-            HttpServletRequest request = MiscUtil.getCurrentRequest();
-            if (request != null) {
-                AppGrpPremisesDto premisesFromMap = getPremisesFromMap(appGrpPremisesDto.getPremisesSelect(), request);
-                if (premisesFromMap != null) {
-                    appGrpPremisesDto.setRelatedServices(premisesFromMap.getRelatedServices());
+            if (StringUtil.isEmpty(appGrpPremisesDto.getRelatedServices())) {
+                HttpServletRequest request = MiscUtil.getCurrentRequest();
+                if (request != null) {
+                    AppGrpPremisesDto premisesFromMap = getPremisesFromMap(appGrpPremisesDto.getPremisesSelect(), request);
+                    if (premisesFromMap != null) {
+                        appGrpPremisesDto.setRelatedServices(premisesFromMap.getRelatedServices());
+                    }
                 }
             }
         });
