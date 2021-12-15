@@ -953,12 +953,13 @@ public class NewApplicationDelegator {
         if (appSubmissionDtos != null && !appSubmissionDtos.isEmpty()) {
             for (AppSubmissionDto appSubmissionDto1 : appSubmissionDtos) {
                 Double amount = appSubmissionDto1.getAmount();
-                total = total + amount;
+                if (amount != null) {
+                    total = total + amount;
+                }
                 String amountStr = Formatter.formatterMoney(appSubmissionDto1.getAmount());
                 appSubmissionDto1.setAmountStr(amountStr);
                 appSubmissionDto1.setServiceName(appSubmissionDto1.getAppSvcRelatedInfoDtoList().get(0).getServiceName());
             }
-
         }
         appSubmissionDto.setAmount(total);
         if (!StringUtil.isEmpty(appSubmissionDto.getAmount())) {
