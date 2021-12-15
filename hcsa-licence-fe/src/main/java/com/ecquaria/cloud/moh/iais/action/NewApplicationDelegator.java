@@ -2728,7 +2728,7 @@ public class NewApplicationDelegator {
                 bpc.request.setAttribute(NewApplicationConstant.SHOW_OTHER_ERROR, NewApplicationHelper.getErrorMsg(errorListMap));
                 return;
             }
-            isValid = NewApplicationHelper.validateLicences(licenseeAffectedList, bpc.request);
+            isValid = NewApplicationHelper.validateLicences(licenseeAffectedList, NewApplicationConstant.SECTION_LICENSEE, bpc.request);
             if (!isValid) {
                 return;
             }
@@ -2774,7 +2774,8 @@ public class NewApplicationDelegator {
                 bpc.request.setAttribute(NewApplicationConstant.SHOW_OTHER_ERROR, NewApplicationHelper.getErrorMsg(errorListMap));
                 return;
             }
-            isValid = NewApplicationHelper.validateLicences(personAppSubmissionList, bpc.request);
+            isValid = NewApplicationHelper.validateLicences(personAppSubmissionList, NewApplicationConstant.SECTION_SVCINFO,
+                    bpc.request);
             if (!isValid) {
                 return;
             }
