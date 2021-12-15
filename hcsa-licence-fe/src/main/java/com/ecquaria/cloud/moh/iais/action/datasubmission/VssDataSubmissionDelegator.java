@@ -108,6 +108,11 @@ public class VssDataSubmissionDelegator {
             pageStage = DataSubmissionConstant.PAGE_STAGE_PREVIEW;
         }
         ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.CURRENT_PAGE_STAGE, pageStage);
+        String currentCode = currentConfig.getCode();
+        log.info(StringUtil.changeForLog(" ----- PrepareStepData Step Code: " + currentCode + " ------ "));
+        if (currentCode.equals(DsConfigHelper.VSS_STEP_TREATMENT)) {
+            prepareTreatment(bpc.request);
+        }
     }
 
     /**
@@ -118,19 +123,18 @@ public class VssDataSubmissionDelegator {
     public void doStep(BaseProcessClass bpc) {
         log.info(" ----- DoStep ------ ");
         DsConfig currentConfig = DsConfigHelper.getCurrentConfig(DataSubmissionConsts.DS_VSS, bpc.request);
-        String crudType = ParamUtil.getString(bpc.request, DataSubmissionConstant.CRUD_TYPE);
-
-        if ("previous".equals(crudType)) {
-
+        String currentCode = currentConfig.getCode();
+        log.info(StringUtil.changeForLog(" ----- DoStep Step Code: " + currentCode + " ------ "));
+        if (currentCode.equals(DsConfigHelper.VSS_STEP_TREATMENT)) {
+            doTreatment(bpc.request);
         }
-        if ("return".equals(crudType)) {
-            ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.CRUD_ACTION_TYPE_VSS, crudType);
-        } else {
 
-        }
-        if (!Objects.equals(crudType, currentConfig.getCode())) {
-            crudType = null;
-        }
+    }
+
+    private void prepareTreatment(HttpServletRequest request) {
+    }
+
+    private void doTreatment(HttpServletRequest request) {
     }
 
     /**
