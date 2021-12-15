@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
+import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.SystemAdminBaseConstants;
@@ -26,6 +27,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
+import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
 import com.ecquaria.cloud.moh.iais.helper.FilterParameter;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
@@ -106,6 +108,8 @@ public class OnlineEnquiryAssistedReproductionDelegator {
     private AssistedReproductionService assistedReproductionService;
 
     public void start(BaseProcessClass bpc){
+        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_ONLINE_ENQUIRY,  AuditTrailConsts.FUNCTION_ONLINE_ENQUIRY);
+
         AssistedReproductionEnquiryFilterDto assistedReproductionEnquiryFilterDto=new AssistedReproductionEnquiryFilterDto();
         assistedReproductionEnquiryFilterDto.setSearchBy("1");
         ParamUtil.setSessionAttr(bpc.request,"assistedReproductionEnquiryFilterDto",assistedReproductionEnquiryFilterDto);
@@ -1227,18 +1231,18 @@ public class OnlineEnquiryAssistedReproductionDelegator {
         int currentFrozenEmbryos=0;
         int currentFreshEmbryos=0;
         int currentFrozenSperms=0;
-        for (PremisesDto premisesDto:patientInfoDto.getPatient().getArCentres()
-        ) {
-            try {
-                PatientInventoryDto patientInventoryDto=assistedReproductionService.patientInventoryByCode(patientInfoDto.getPatient().getPatientCode(),premisesDto.getHciCode());
-                currentFrozenOocytes+=patientInventoryDto.getCurrentFrozenOocytes();
-                currentFreshOocytes+=patientInventoryDto.getCurrentFreshOocytes();
-                currentFrozenEmbryos+=patientInventoryDto.getCurrentFrozenEmbryos();
-                currentFreshEmbryos+=patientInventoryDto.getCurrentFreshEmbryos();
-                currentFrozenSperms+=patientInventoryDto.getCurrentFrozenSperms();
-            }catch (Exception e){
-                log.error(e.getMessage(),e);
+        try {
+            for (PremisesDto premisesDto:patientInfoDto.getPatient().getArCentres()
+                ) {
+                    PatientInventoryDto patientInventoryDto=assistedReproductionService.patientInventoryByCode(patientInfoDto.getPatient().getPatientCode(),premisesDto.getHciCode());
+                    currentFrozenOocytes+=patientInventoryDto.getCurrentFrozenOocytes();
+                    currentFreshOocytes+=patientInventoryDto.getCurrentFreshOocytes();
+                    currentFrozenEmbryos+=patientInventoryDto.getCurrentFrozenEmbryos();
+                    currentFreshEmbryos+=patientInventoryDto.getCurrentFreshEmbryos();
+                    currentFrozenSperms+=patientInventoryDto.getCurrentFrozenSperms();
             }
+        }catch (Exception e){
+            log.error(e.getMessage(),e);
         }
         ArEnquiryCoFundingHistoryDto arCoFundingDto= assistedReproductionService.patientCoFundingHistoryByCode(patientCode);
 
