@@ -14,6 +14,7 @@ public class DataSubmissionConstant {
     public static String CRUD_ACTION_TYPE_AR                = "crud_action_type_ar";
     public static String CRUD_ACTION_TYPE_CT                = "crud_action_type_ct";
     public static String CRUD_ACTION_TYPE_DP                = "crud_action_type_dp";
+    public static String CRUD_ACTION_TYPE_VSS                = "crud_action_type_vss";
 
     public static String CRUD_TYPE_FROM_DRAFT               = "fromDraft";
     public static String CRUD_TYPE_RFC                      = "rfc";

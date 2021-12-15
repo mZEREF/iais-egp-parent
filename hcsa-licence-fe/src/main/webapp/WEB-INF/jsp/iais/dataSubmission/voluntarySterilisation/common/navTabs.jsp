@@ -59,9 +59,16 @@
             }
         }
         $('#nav-tabs-ul a').on('click', function() {
-            var currId = $(this).attr('id');
-            var canClick = $(this).data('config-click');
-            var configCode = $(this).data('config-code');
+            var $target = $(this);
+            var currId = $target.attr('id');
+            var canClick = $target.data('config-click');
+            if (isEmpty(canClick)) {
+                canClick = $target.attr('data-config-click');
+            }
+            var configCode = $target.data('config-code');
+            if (isEmpty(configCode)) {
+                configCode = $target.attr('data-config-code');
+            }
             console.info(currId);
             if (controlLi == currId) {
                 return;

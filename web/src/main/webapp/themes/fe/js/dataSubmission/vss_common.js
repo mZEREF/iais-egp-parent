@@ -1,5 +1,5 @@
 $(document).ready(function() {
-    if($('#saveDraftSuccess').val()=='success' && $('#saveDraft').length > 0){
+    if($('#saveDraftSuccess').val()=='success' && $('#saveDraft').length > 0) {
         $('#saveDraft').modal('show');
     }
     // draft modal
@@ -15,13 +15,7 @@ $(document).ready(function() {
     if ($('#backBtn').length > 0) {
         $('#backBtn').click(function () {
             showWaiting();
-            if ('preview' == currPage) {
-                submit('page');
-            } else if ('dp-submission' == currPage) {
-                submit('back');
-            } else {
-                submit('return');
-            }
+            submit('previous');
         });
     }
 
@@ -31,7 +25,7 @@ $(document).ready(function() {
         } else {
             $('#saveDraftBtn').click(function () {
                 showWaiting();
-                submit('draft');
+                submit(currPage, 'draft');
             });
         }
     }
@@ -39,18 +33,12 @@ $(document).ready(function() {
     if ($('#nextBtn').length > 0) {
         if ('preview' == currPage) {
             $('#nextBtn').html('Submit');
-        } else if ('stage' == currPage){
+        } else if ('stage' == currPage) {
             $('#nextBtn').html('Preview');
-        } else if ('dp-submission' == currPage){
-            $('#nextBtn').html('Proceed');
         }
         $('#nextBtn').click(function () {
             showWaiting();
-            if ('preview' == currPage) {
-                submit('submission');
-            } else {
-                submit('confirm');
-            }
+            submit('next');
         });
     }
 });
