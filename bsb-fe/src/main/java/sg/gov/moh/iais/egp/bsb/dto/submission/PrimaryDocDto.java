@@ -249,9 +249,8 @@ public class PrimaryDocDto implements Serializable {
         }
     }
 
-    private NewDocInfo filedOneNewFiles(String inputName,MultipartFile f,String docType,Date currentDate,LoginContext loginContext){
+    private NewDocInfo filedOneNewFiles(String tmpId,MultipartFile f,String docType,Date currentDate,LoginContext loginContext){
         NewDocInfo newDocInfo = new NewDocInfo();
-        String tmpId = inputName + f.getSize() + System.nanoTime();
         newDocInfo.setTmpId(tmpId);
         newDocInfo.setDocType(docType);
         newDocInfo.setFilename(f.getOriginalFilename());
