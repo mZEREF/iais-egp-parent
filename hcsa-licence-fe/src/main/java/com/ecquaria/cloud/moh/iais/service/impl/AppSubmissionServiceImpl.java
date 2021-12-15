@@ -1267,6 +1267,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
         return appGrpPremisesDtos.parallelStream()
                 .map(appGrpPremisesDto -> {
                     NewApplicationHelper.setWrkTime(appGrpPremisesDto);
+                    appGrpPremisesDto.setExistingData(AppConsts.YES);
                     List<String> relatedServices = appGrpPremisesDto.getRelatedServices();
                     if (relatedServices != null && !relatedServices.isEmpty()) {
                         List<String> svcNames = relatedServices.stream()

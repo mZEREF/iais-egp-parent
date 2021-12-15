@@ -4795,6 +4795,7 @@ public class NewApplicationHelper {
                 if (isRfi && appSubmissionDto != null && appSubmissionDto.getAppGrpPremisesDtoList() != null) {
                     for (AppGrpPremisesDto appGrpPremisesDto : appSubmissionDto.getAppGrpPremisesDtoList()) {
                         AppGrpPremisesDto dto = (AppGrpPremisesDto) CopyUtil.copyMutableObject(appGrpPremisesDto);
+                        dto.setExistingData(AppConsts.NO);
                         String key = dto.getPremisesSelect();
                         if (entrySet != null) {
                             List<String> relatedServices = entrySet.stream()
@@ -4810,9 +4811,9 @@ public class NewApplicationHelper {
                             newAppMap.put(key, dto);
                         } else {
                             AppGrpPremisesDto old = licAppGrpPremisesDtoMap.get(key);
-                            appGrpPremisesDto.setRelatedServices(combineList(old.getRelatedServices(),
+                            dto.setRelatedServices(combineList(old.getRelatedServices(),
                                     dto.getRelatedServices()));
-                            licAppGrpPremisesDtoMap.put(key, old);
+                            licAppGrpPremisesDtoMap.put(key, dto);
                         }
                     }
                 }
@@ -4868,15 +4869,15 @@ public class NewApplicationHelper {
                     request.getSession().setAttribute(NewApplicationDelegator.APP_PREMISES_MAP, appPremisesMap);
                     allData.put(premisesSelect, newDto);
                     premises.setPremisesSelect(premisesSelect);
-                    premises.setExistingData(AppConsts.NO);
+                    //premises.setExistingData(AppConsts.NO);
                 } else {
-                    premises.setExistingData(AppConsts.YES);
+                    //premises.setExistingData(AppConsts.YES);
                 }
             } else {// have
                 String oldPremSel = entry.getKey();
-                newDto.setRelatedServices(entry.getValue().getRelatedServices());
                 if (Objects.equals(oldPremSel, premises.getPremisesSelect())
                         || ApplicationConsts.NEW_PREMISES.equals(premises.getPremisesSelect())) {// check itself or add new
+                    newDto.setRelatedServices(entry.getValue().getRelatedServices());
                     allData.remove(oldPremSel);
                     allData.put(premisesSelect, newDto);
                     if (licAppGrpPremisesDtoMap.get(oldPremSel) != null) {
@@ -4905,7 +4906,7 @@ public class NewApplicationHelper {
                 .findAny()
                 .orElse(null);
         if (entry == null && request != null) {
-            AppSubmissionDto oldAppSubmissionDto = NewApplicationHelper.getOldAppSubmissionDto(request);
+            /*AppSubmissionDto oldAppSubmissionDto = NewApplicationHelper.getOldAppSubmissionDto(request);
             if (oldAppSubmissionDto != null) {
                 String hciCode = oldAppSubmissionDto.getAppGrpPremisesDtoList().stream()
                         .filter(dto -> Objects.equals(premises.getPremisesIndexNo(), dto.getPremisesIndexNo()))
@@ -4920,7 +4921,7 @@ public class NewApplicationHelper {
                             .findAny()
                             .orElse(null);
                 }
-            }
+            }*/
         }
         return entry;
     }
@@ -4937,7 +4938,7 @@ public class NewApplicationHelper {
     public static AppGrpPremisesDto getPremisesFromMap(String premSelectVal, HttpServletRequest request) {
         log.info(StringUtil.changeForLog("##### Prem select val: " + StringUtil.clarify(premSelectVal)));
         Map<String, AppGrpPremisesDto> premisesDtoMap = checkPremisesMap(false, request);
-        return premisesDtoMap.get(premSelectVal);
+        return (AppGrpPremisesDto) CopyUtil.copyMutableObject(premisesDtoMap.get(premSelectVal));
     }
 
 }
