@@ -18,7 +18,7 @@
                 <iais:row>
                     <iais:field width="6" value="Premises where egg freezing only cycle is performed" mandatory="false"/>
                     <iais:value width="6" display="true">
-                        <c:out value="${arSuperDataSubmissionDto.efoCycleStageDto.performed}"/>
+                        <c:out value="${arSuperDataSubmissionDto.premisesDto.premiseLabel}"/>
                     </iais:value>
                 </iais:row>
                 <iais:row>
