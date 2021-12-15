@@ -19,7 +19,6 @@ import sop.servlet.webflow.HttpHandler;
 import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
 import java.util.*;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static sg.gov.moh.iais.egp.bsb.constant.DataSubmissionConstants.*;
@@ -48,14 +47,15 @@ public class ConsumeNotificationDto implements Serializable {
             this.newDocInfos = new ArrayList<>();
         }
 
-        public List<PrimaryDocDto.NewDocInfo> getNewInfos(){
+        public List<PrimaryDocDto.NewDocInfo> getNewInfos() {
             return new ArrayList<>(this.newDocInfos);
         }
 
-        public void setNewInfos(List<PrimaryDocDto.NewDocInfo> newDocInfos){
+        public void setNewInfos(List<PrimaryDocDto.NewDocInfo> newDocInfos) {
             this.newDocInfos = new ArrayList<>(newDocInfos);
         }
     }
+
     private String facId;
     private String remarks;
     private String ensure;
@@ -63,7 +63,7 @@ public class ConsumeNotificationDto implements Serializable {
     private List<ConsumptionNot> consumptionNotList;
     private List<PrimaryDocDto.NewDocInfo> otherNewInfos;
     private Map<String, PrimaryDocDto.NewDocInfo> allNewDocInfos;
-    private Map<String,PrimaryDocDto.DocRecordInfo> savedDocInfos;
+    private Map<String, PrimaryDocDto.DocRecordInfo> savedDocInfos;
     private List<DocMeta> docMetaInfos;
 
     @JsonIgnore
@@ -81,7 +81,7 @@ public class ConsumeNotificationDto implements Serializable {
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class ConsumeNotNeed{
+    public static class ConsumeNotNeed {
         private String scheduleType;
         private String bat;
         private String consumeType;
@@ -91,7 +91,7 @@ public class ConsumeNotificationDto implements Serializable {
 
     @Data
     @NoArgsConstructor
-    public static class ConsumeNotNeedR{
+    public static class ConsumeNotNeedR {
         private List<ConsumeNotNeed> needList;
         private String facId;
         private String remarks;
@@ -128,11 +128,11 @@ public class ConsumeNotificationDto implements Serializable {
         return consumptionNotList;
     }
 
-    public void clearConsumptionNotList(){
+    public void clearConsumptionNotList() {
         this.consumptionNotList.clear();
     }
 
-    public void addConsumptionNotList(ConsumptionNot consumptionNot){
+    public void addConsumptionNotList(ConsumptionNot consumptionNot) {
         this.consumptionNotList.add(consumptionNot);
     }
 
@@ -165,7 +165,7 @@ public class ConsumeNotificationDto implements Serializable {
         this.docMetaInfos = docMetaInfos;
     }
 
-    public void addDocMetaInfos(DocMeta docMeta){
+    public void addDocMetaInfos(DocMeta docMeta) {
         this.docMetaInfos.add(docMeta);
     }
 
@@ -179,17 +179,20 @@ public class ConsumeNotificationDto implements Serializable {
 
     /**
      * This method is for downloading and contains all file information sorted by tmpId
-     *getAllNewDocInfo
-     * */
-    public void fillAllNewDocInfo(){
-        if(!CollectionUtils.isEmpty(this.consumptionNotList)){
-            List<PrimaryDocDto.NewDocInfo> newDocInfos = consumptionNotList.stream().flatMap(i->i.getNewDocInfos().stream()).collect(Collectors.toList());
+     * getAllNewDocInfo
+     */
+    public void fillAllNewDocInfo() {
+        if (!CollectionUtils.isEmpty(this.consumptionNotList)) {
+            List<PrimaryDocDto.NewDocInfo> newDocInfos = consumptionNotList.stream().flatMap(i -> i.getNewDocInfos().stream()).collect(Collectors.toList());
             newDocInfos.addAll(this.otherNewInfos);
-            this.allNewDocInfos = newDocInfos.stream().collect(Collectors.toMap(PrimaryDocDto.NewDocInfo::getTmpId, Function.identity()));
+            for (PrimaryDocDto.NewDocInfo newDocInfo : newDocInfos) {
+                this.allNewDocInfos.put(newDocInfo.getTmpId(), newDocInfo);
+            }
         }
     }
 
-    public void getDocMetaInfoFromNew(){
+    public void getDocMetaInfoFromNew() {
+        this.docMetaInfos.clear();
         this.allNewDocInfos.values().forEach(i -> {
             DocMeta docMeta = new DocMeta(i.getTmpId(), i.getDocType(), i.getFilename(), i.getSize(), "dataSub");
             addDocMetaInfos(docMeta);
@@ -199,18 +202,20 @@ public class ConsumeNotificationDto implements Serializable {
     /**
      * this method is used to Consume useful data by feign
      * setConsumeNotNeedR
+     *
      * @return ConsumeNotNeedR
-     * */
-    public ConsumeNotNeedR getConsumeNotNeedR(){
+     */
+    public ConsumeNotNeedR getConsumeNotNeedR() {
         //get doc need validation
-        List<ConsumeNotNeed> consumeNotNeeds = consumptionNotList.stream().map(t->{
+        List<ConsumeNotNeed> consumeNotNeeds = consumptionNotList.stream().map(t -> {
             ConsumeNotNeed consumeNotNeed = new ConsumeNotNeed();
             consumeNotNeed.setScheduleType(t.getScheduleType());
             consumeNotNeed.setConsumeType(t.getConsumeType());
             consumeNotNeed.setConsumedQty(t.getConsumedQty());
             consumeNotNeed.setBat(t.getBat());
             consumeNotNeed.setMeaUnit(t.getMeaUnit());
-            return consumeNotNeed; }).collect(Collectors.toList());
+            return consumeNotNeed;
+        }).collect(Collectors.toList());
         ConsumeNotNeedR consumeNotNeedR = new ConsumeNotNeedR();
         consumeNotNeedR.setNeedList(consumeNotNeeds);
         consumeNotNeedR.setEnsure(this.ensure);
@@ -229,6 +234,7 @@ public class ConsumeNotificationDto implements Serializable {
      * We rely on the order is not changed! So we use a LinkedHashMap to save our data.
      * <p>
      * This method will generate id-bytes pairs at the same time, the result will be used to sync files to BE.
+     *
      * @return a list of file data to be synchronized to BE
      */
     public List<NewFileSyncDto> newFileSaved(List<String> repoIds) {
@@ -277,33 +283,34 @@ public class ConsumeNotificationDto implements Serializable {
     /**
      * This method is for JSP shows and contains all file information sorted by type
      * getAllDocMetaByDocType
-     * @return Map<String,List<DocMeta>>
-     * */
-    public Map<String,List<DocMeta>> getAllDocMetaByDocType(){
-        return sg.gov.moh.iais.egp.bsb.util.CollectionUtils.groupCollectionToMap(docMetaInfos,DocMeta::getDocType);
+     *
+     * @return Map<String, List < DocMeta>>
+     */
+    public Map<String, List<DocMeta>> getAllDocMetaByDocType() {
+        return sg.gov.moh.iais.egp.bsb.util.CollectionUtils.groupCollectionToMap(docMetaInfos, DocMeta::getDocType);
     }
 
     /**
      * reqObjectMapping
      * get value from request
-     * */
-    public void reqObjectMapping(HttpServletRequest request){
+     */
+    public void reqObjectMapping(HttpServletRequest request) {
         MultipartHttpServletRequest mulReq = (MultipartHttpServletRequest) request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
         String idxes = ParamUtil.getString(request, KEY_SECTION_IDXES);
-        PrimaryDocDto.deleteNewFiles(mulReq,this.allNewDocInfos);
+        PrimaryDocDto.deleteNewFiles(mulReq, this.allNewDocInfos);
         clearConsumptionNotList();
         String[] idxArr = idxes.trim().split(" +");
         for (String idx : idxArr) {
             ConsumptionNot consumptionNot = new ConsumptionNot();
-            String scheduleType = ParamUtil.getString(request, KEY_PREFIX_SCHEDULE_TYPE + SEPARATOR +idx);
+            String scheduleType = ParamUtil.getString(request, KEY_PREFIX_SCHEDULE_TYPE + SEPARATOR + idx);
             consumptionNot.setScheduleType(scheduleType);
-            consumptionNot.setBat(ParamUtil.getString(request,KEY_PREFIX_BAT+SEPARATOR+idx));
-            consumptionNot.setConsumeType(ParamUtil.getString(request,KEY_PREFIX_CONSUME_TYPE+SEPARATOR+idx));
-            consumptionNot.setConsumedQty(ParamUtil.getString(request,KEY_PREFIX_CONSUME_QTY +SEPARATOR+idx));
-            consumptionNot.setMeaUnit(ParamUtil.getString(request,KEY_PREFIX_MEASUREMENT_UNIT+SEPARATOR+idx));
+            consumptionNot.setBat(ParamUtil.getString(request, KEY_PREFIX_BAT + SEPARATOR + idx));
+            consumptionNot.setConsumeType(ParamUtil.getString(request, KEY_PREFIX_CONSUME_TYPE + SEPARATOR + idx));
+            consumptionNot.setConsumedQty(ParamUtil.getString(request, KEY_PREFIX_CONSUME_QTY + SEPARATOR + idx));
+            consumptionNot.setMeaUnit(ParamUtil.getString(request, KEY_PREFIX_MEASUREMENT_UNIT + SEPARATOR + idx));
 
             PrimaryDocDto primaryDocDto = new PrimaryDocDto();
-            primaryDocDto.reqObjMapping(mulReq,request,getDocType(scheduleType),String.valueOf(idx));
+            primaryDocDto.reqObjMapping(mulReq, request, getDocType(scheduleType), String.valueOf(idx));
             consumptionNot.setDocType(getDocType(scheduleType));
             //joint repoId exist
             String newRepoId = String.join(",", primaryDocDto.getNewDocMap().keySet());
@@ -314,20 +321,20 @@ public class ConsumeNotificationDto implements Serializable {
             addConsumptionNotList(consumptionNot);
         }
         PrimaryDocDto primaryDocDto = new PrimaryDocDto();
-        primaryDocDto.reqOtherMapping(mulReq,request,"others");
+        primaryDocDto.reqOtherMapping(mulReq, request, "others");
         this.setOtherNewInfos(primaryDocDto.getNewDocTypeList());
         //get all new doc
         fillAllNewDocInfo();
         //get all
         getDocMetaInfoFromNew();
-        this.setRemarks(ParamUtil.getString(request,KEY_PREFIX_REMARKS));
-        this.setFacId((String) ParamUtil.getSessionAttr(request,KEY_FAC_ID));
+        this.setRemarks(ParamUtil.getString(request, KEY_PREFIX_REMARKS));
+        this.setFacId((String) ParamUtil.getSessionAttr(request, KEY_FAC_ID));
     }
 
-    public String getDocType(String scheduleType){
+    public String getDocType(String scheduleType) {
         String docType = "";
-        if(StringUtils.hasLength(scheduleType)){
-            switch (scheduleType){
+        if (StringUtils.hasLength(scheduleType)) {
+            switch (scheduleType) {
                 case MasterCodeConstants.FIRST_SCHEDULE_PART_I:
                 case MasterCodeConstants.FIRST_SCHEDULE_PART_II:
                 case MasterCodeConstants.SECOND_SCHEDULE:

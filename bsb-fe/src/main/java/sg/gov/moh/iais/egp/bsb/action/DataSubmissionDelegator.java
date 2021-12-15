@@ -140,7 +140,7 @@ public class DataSubmissionDelegator {
         //use to show file information
         ParamUtil.setRequestAttr(request,KEY_DO_SETTINGS,getDocSettingMap());
         ParamUtil.setRequestAttr(request,KEY_DOC_META,notificationDto.getAllDocMetaByDocType());
-        ParamUtil.setSessionAttr(request,KEY_OTHER_DOC,(Serializable) notificationDto.getOtherNewInfos());
+        ParamUtil.setSessionAttr(request, KEY_OTHER_DOC, (Serializable) notificationDto.getAllDocMetaByDocType().get(KEY_DOC_TYPE_OF_OTHER));
         ParamUtil.setSessionAttr(request,KEY_CONSUME_NOTIFICATION_DTO, notificationDto);
     }
     /**
@@ -205,11 +205,10 @@ public class DataSubmissionDelegator {
         HttpServletRequest request = bpc.request;
         DisposalNotificationDto notificationDto = getDisposalNotification(request);
         notificationDto.reqObjectMapping(request);
-        notificationDto.setEnsure("true");
         doDisposalValidation(notificationDto,request);
         //use to show file information
         ParamUtil.setRequestAttr(request,KEY_DO_SETTINGS,getDocSettingMap());
-        ParamUtil.setSessionAttr(request,KEY_OTHER_DOC,(Serializable) notificationDto.getOtherNewInfos());
+        ParamUtil.setSessionAttr(request, KEY_OTHER_DOC, (Serializable) notificationDto.getAllDocMetaByDocType().get(KEY_DOC_TYPE_OF_OTHER));
         ParamUtil.setRequestAttr(request,KEY_DOC_META,notificationDto.getAllDocMetaByDocType());
         ParamUtil.setSessionAttr(request,KEY_DISPOSAL_NOTIFICATION_DTO, notificationDto);
     }
@@ -275,11 +274,10 @@ public class DataSubmissionDelegator {
         HttpServletRequest request = bpc.request;
         ExportNotificationDto notificationDto = getExportNotification(request);
         notificationDto.reqObjectMapping(request);
-        notificationDto.setEnsure("true");
         doExportValidation(notificationDto,request);
         //use to show file information
         ParamUtil.setRequestAttr(request,KEY_DO_SETTINGS,getDocSettingMap());
-        ParamUtil.setSessionAttr(request,KEY_OTHER_DOC,(Serializable) notificationDto.getOtherNewInfos());
+        ParamUtil.setSessionAttr(request, KEY_OTHER_DOC, (Serializable) notificationDto.getAllDocMetaByDocType().get(KEY_DOC_TYPE_OF_OTHER));
         ParamUtil.setRequestAttr(request,KEY_DOC_META,notificationDto.getAllDocMetaByDocType());
         ParamUtil.setSessionAttr(request,KEY_EXPORT_NOTIFICATION_DTO, notificationDto);
     }
@@ -345,11 +343,10 @@ public class DataSubmissionDelegator {
         HttpServletRequest request = bpc.request;
         ReceiptNotificationDto notificationDto = getReceiptNotification(request);
         notificationDto.reqObjectMapping(request);
-        notificationDto.setEnsure("true");
         doReceiptValidation(notificationDto,request);
         //use to show file information
         ParamUtil.setRequestAttr(request,KEY_DO_SETTINGS,getDocSettingMap());
-        ParamUtil.setSessionAttr(request,KEY_OTHER_DOC,(Serializable) notificationDto.getOtherNewInfos());
+        ParamUtil.setSessionAttr(request, KEY_OTHER_DOC, (Serializable) notificationDto.getAllDocMetaByDocType().get(KEY_DOC_TYPE_OF_OTHER));
         ParamUtil.setRequestAttr(request,KEY_DOC_META,notificationDto.getAllDocMetaByDocType());
         ParamUtil.setSessionAttr(request,KEY_RECEIPT_NOTIFICATION_DTO, notificationDto);
     }
@@ -500,7 +497,7 @@ public class DataSubmissionDelegator {
         Map<String,DocSetting> settingMap = new HashMap<>();
         settingMap.put(KEY_DOC_TYPE_INVENTORY_BAT,new DocSetting(DocConstants.DOC_TYPE_INVENTORY_AGENT,"Inventory: Biological Agents",true));
         settingMap.put(KEY_DOC_TYPE_INVENTORY_TOXIN,new DocSetting(DocConstants.DOC_TYPE_INVENTORY_TOXIN,"Inventory: Toxins",true));
-        settingMap.put(KEY_DOC_TYPE_OTHERS,new DocSetting(DocConstants.DOC_TYPE_OTHERS,"others",true));
+        settingMap.put(KEY_DOC_TYPE_OTHERS,new DocSetting(DocConstants.DOC_TYPE_OTHERS,KEY_DOC_TYPE_OF_OTHER,true));
         return settingMap;
     }
 

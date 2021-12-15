@@ -45,10 +45,9 @@ function schTypeChange(obj) {
     //empty all new saved  file
     list.find(".file-upload-gp").find("div").empty();
     var deleteList = $("#existFiles"+"--v--"+num).val();
-    var deleteSplit = deleteList.split(",");
     // add id into the delete list
     var deleteNewFiles = document.getElementById("deleteNewFiles");
-    deleteNewFiles.value = deleteList;
+    appendInputValue(deleteNewFiles,deleteList);
 
     var docH3 = list.find("h3");
     addHtml(docH3,scheduleType);
@@ -69,7 +68,14 @@ function addHtml(docH3,sType){
             docH3.html("Inventory: Toxins <span class=\"mandatory otherQualificationSpan\">*</span>");
         }
     }
+}
 
+function appendInputValue(input, value) {
+    if (input.value) {
+        input.value = input.value + "," + value;
+    } else {
+        input.value = value;
+    }
 }
 
 $(function () {

@@ -19,16 +19,16 @@ import sop.servlet.webflow.HttpHandler;
 import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
 import java.util.*;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static sg.gov.moh.iais.egp.bsb.constant.DataSubmissionConstants.*;
+
 /**
  * @author Zhu Tangtang
  */
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class ReceiptNotificationDto implements Serializable{
+public class ReceiptNotificationDto implements Serializable {
     @Data
     public static class ReceiptNot implements Serializable {
         private String scheduleType;
@@ -47,11 +47,11 @@ public class ReceiptNotificationDto implements Serializable{
             this.newDocInfos = new ArrayList<>();
         }
 
-        public List<PrimaryDocDto.NewDocInfo> getNewInfos(){
+        public List<PrimaryDocDto.NewDocInfo> getNewInfos() {
             return new ArrayList<>(this.newDocInfos);
         }
 
-        public void setNewInfos(List<PrimaryDocDto.NewDocInfo> newDocInfos){
+        public void setNewInfos(List<PrimaryDocDto.NewDocInfo> newDocInfos) {
             this.newDocInfos = new ArrayList<>(newDocInfos);
         }
     }
@@ -73,7 +73,7 @@ public class ReceiptNotificationDto implements Serializable{
     private List<ReceiptNot> receiptNotList;
     private List<PrimaryDocDto.NewDocInfo> otherNewInfos;
     private Map<String, PrimaryDocDto.NewDocInfo> allNewDocInfos;
-    private Map<String,PrimaryDocDto.DocRecordInfo> savedDocInfos;
+    private Map<String, PrimaryDocDto.DocRecordInfo> savedDocInfos;
     private List<DocMeta> docMetaInfos;
 
     @JsonIgnore
@@ -91,7 +91,7 @@ public class ReceiptNotificationDto implements Serializable{
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class ReceiptNotNeed{
+    public static class ReceiptNotNeed {
         private String scheduleType;
         private String bat;
         private String receiveQty;
@@ -100,7 +100,7 @@ public class ReceiptNotificationDto implements Serializable{
 
     @Data
     @NoArgsConstructor
-    public static class ReceiptNotNeedR{
+    public static class ReceiptNotNeedR {
         private List<ReceiptNotNeed> needList;
         private String facId;
         private String modeProcurement;
@@ -227,11 +227,11 @@ public class ReceiptNotificationDto implements Serializable{
         return receiptNotList;
     }
 
-    public void clearReceiptLists(){
+    public void clearReceiptLists() {
         this.receiptNotList.clear();
     }
 
-    public void addReceiptLists(ReceiptNot receiptNot){
+    public void addReceiptLists(ReceiptNot receiptNot) {
         this.receiptNotList.add(receiptNot);
     }
 
@@ -263,7 +263,7 @@ public class ReceiptNotificationDto implements Serializable{
         this.docMetaInfos = docMetaInfos;
     }
 
-    public void addDocMetaInfos(DocMeta docMeta){
+    public void addDocMetaInfos(DocMeta docMeta) {
         this.docMetaInfos.add(docMeta);
     }
 
@@ -277,17 +277,20 @@ public class ReceiptNotificationDto implements Serializable{
 
     /**
      * This method is for downloading and contains all file information sorted by tmpId
-     *getAllNewDocInfo
-     * */
-    public void fillAllNewDocInfo(){
-        if(!CollectionUtils.isEmpty(this.receiptNotList)){
-            List<PrimaryDocDto.NewDocInfo> newDocInfos = receiptNotList.stream().flatMap(i->i.getNewDocInfos().stream()).collect(Collectors.toList());
+     * getAllNewDocInfo
+     */
+    public void fillAllNewDocInfo() {
+        if (!CollectionUtils.isEmpty(this.receiptNotList)) {
+            List<PrimaryDocDto.NewDocInfo> newDocInfos = receiptNotList.stream().flatMap(i -> i.getNewDocInfos().stream()).collect(Collectors.toList());
             newDocInfos.addAll(this.otherNewInfos);
-            this.allNewDocInfos = newDocInfos.stream().collect(Collectors.toMap(PrimaryDocDto.NewDocInfo::getTmpId, Function.identity()));
+            for (PrimaryDocDto.NewDocInfo newDocInfo : newDocInfos) {
+                this.allNewDocInfos.put(newDocInfo.getTmpId(), newDocInfo);
+            }
         }
     }
 
-    public void getDocMetaInfoFromNew(){
+    public void getDocMetaInfoFromNew() {
+        this.docMetaInfos.clear();
         this.allNewDocInfos.values().forEach(i -> {
             DocMeta docMeta = new DocMeta(i.getTmpId(), i.getDocType(), i.getFilename(), i.getSize(), "dataSub");
             addDocMetaInfos(docMeta);
@@ -297,16 +300,18 @@ public class ReceiptNotificationDto implements Serializable{
     /**
      * this method is used to consume useful data by feign
      * setReceiptNotNeedR
+     *
      * @return ReceiptNotNeedR
-     * */
-    public ReceiptNotNeedR getReceiptNotNeedR(){
-        List<ReceiptNotNeed> receiptNotNeeds = receiptNotList.stream().map(t->{
+     */
+    public ReceiptNotNeedR getReceiptNotNeedR() {
+        List<ReceiptNotNeed> receiptNotNeeds = receiptNotList.stream().map(t -> {
             ReceiptNotNeed receiptNotNeed = new ReceiptNotNeed();
             receiptNotNeed.setScheduleType(t.getScheduleType());
             receiptNotNeed.setBat(t.getBat());
             receiptNotNeed.setReceiveQty(t.getReceiveQty());
             receiptNotNeed.setMeaUnit(t.getMeaUnit());
-            return receiptNotNeed; }).collect(Collectors.toList());
+            return receiptNotNeed;
+        }).collect(Collectors.toList());
         ReceiptNotNeedR receiptNotNeedR = new ReceiptNotNeedR();
         receiptNotNeedR.setNeedList(receiptNotNeeds);
         receiptNotNeedR.setEnsure(this.ensure);
@@ -335,6 +340,7 @@ public class ReceiptNotificationDto implements Serializable{
      * We rely on the order is not changed! So we use a LinkedHashMap to save our data.
      * <p>
      * This method will generate id-bytes pairs at the same time, the result will be used to sync files to BE.
+     *
      * @return a list of file data to be synchronized to BE
      */
     public List<NewFileSyncDto> newFileSaved(List<String> repoIds) {
@@ -383,32 +389,33 @@ public class ReceiptNotificationDto implements Serializable{
     /**
      * This method is for JSP shows and contains all file information sorted by type
      * getAllDocMetaByDocType
-     * @return Map<String,List<DocMeta>>
-     * */
-    public Map<String,List<DocMeta>> getAllDocMetaByDocType(){
-        return sg.gov.moh.iais.egp.bsb.util.CollectionUtils.groupCollectionToMap(docMetaInfos,DocMeta::getDocType);
+     *
+     * @return Map<String, List < DocMeta>>
+     */
+    public Map<String, List<DocMeta>> getAllDocMetaByDocType() {
+        return sg.gov.moh.iais.egp.bsb.util.CollectionUtils.groupCollectionToMap(docMetaInfos, DocMeta::getDocType);
     }
 
     /**
      * reqObjectMapping
      * get value from request
-     * */
-    public void reqObjectMapping(HttpServletRequest request){
+     */
+    public void reqObjectMapping(HttpServletRequest request) {
         clearReceiptLists();
         MultipartHttpServletRequest mulReq = (MultipartHttpServletRequest) request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
         String idxes = ParamUtil.getString(request, KEY_SECTION_IDXES);
         String[] idxArr = idxes.trim().split(" +");
-        PrimaryDocDto.deleteNewFiles(mulReq,this.allNewDocInfos);
+        PrimaryDocDto.deleteNewFiles(mulReq, this.allNewDocInfos);
         for (String idx : idxArr) {
             ReceiptNot receiptNot = new ReceiptNot();
-            String scheduleType = ParamUtil.getString(request, KEY_PREFIX_SCHEDULE_TYPE + SEPARATOR +idx);
+            String scheduleType = ParamUtil.getString(request, KEY_PREFIX_SCHEDULE_TYPE + SEPARATOR + idx);
             receiptNot.setScheduleType(scheduleType);
-            receiptNot.setBat(ParamUtil.getString(request,KEY_PREFIX_BAT+SEPARATOR+idx));
-            receiptNot.setReceiveQty(ParamUtil.getString(request,KEY_PREFIX_RECEIVE_QTY+SEPARATOR+idx));
-            receiptNot.setMeaUnit(ParamUtil.getString(request,KEY_PREFIX_MEASUREMENT_UNIT+SEPARATOR+idx));
+            receiptNot.setBat(ParamUtil.getString(request, KEY_PREFIX_BAT + SEPARATOR + idx));
+            receiptNot.setReceiveQty(ParamUtil.getString(request, KEY_PREFIX_RECEIVE_QTY + SEPARATOR + idx));
+            receiptNot.setMeaUnit(ParamUtil.getString(request, KEY_PREFIX_MEASUREMENT_UNIT + SEPARATOR + idx));
 
             PrimaryDocDto primaryDocDto = new PrimaryDocDto();
-            primaryDocDto.reqObjMapping(mulReq,request,getDocType(scheduleType),String.valueOf(idx));
+            primaryDocDto.reqObjMapping(mulReq, request, getDocType(scheduleType), String.valueOf(idx));
             receiptNot.setDocType(getDocType(scheduleType));
             //joint repoId exist
             String newRepoId = String.join(",", primaryDocDto.getNewDocMap().keySet());
@@ -419,30 +426,30 @@ public class ReceiptNotificationDto implements Serializable{
             addReceiptLists(receiptNot);
         }
         PrimaryDocDto primaryDocDto = new PrimaryDocDto();
-        primaryDocDto.reqOtherMapping(mulReq,request,"others");
+        primaryDocDto.reqOtherMapping(mulReq, request, "others");
         this.setOtherNewInfos(primaryDocDto.getNewDocTypeList());
         //get all new doc
         fillAllNewDocInfo();
         //get all
         getDocMetaInfoFromNew();
-        this.setModeProcurement(ParamUtil.getString(request,KEY_PREFIX_MODE_PROCUREMENT));
-        this.setSourceFacilityName(ParamUtil.getString(request,KEY_PREFIX_SOURCE_FACILITY_NAME));
-        this.setSourceFacilityAddress(ParamUtil.getString(request,KEY_PREFIX_SOURCE_FACILITY_ADDRESS));
-        this.setSourceFacilityContactPerson(ParamUtil.getString(request,KEY_PREFIX_SOURCE_FACILITY_CONTACT_PERSON));
-        this.setContactPersonEmail(ParamUtil.getString(request,KEY_PREFIX_CONTACT_PERSON_EMAIL));
-        this.setContactPersonTel(ParamUtil.getString(request,KEY_PREFIX_CONTACT_PERSON_TEL));
-        this.setFlightNo(ParamUtil.getString(request,KEY_PREFIX_FLIGHT_NO));
-        this.setProvider(ParamUtil.getString(request,KEY_PREFIX_PROVIDER));
-        this.setActualArrivalDate(ParamUtil.getString(request,KEY_PREFIX_ACTUAL_ARRIVAL_DATE));
-        this.setActualArrivalTime(ParamUtil.getString(request,KEY_PREFIX_ACTUAL_ARRIVAL_TIME));
-        this.setRemarks(ParamUtil.getString(request,KEY_PREFIX_REMARKS));
-        this.setFacId((String) ParamUtil.getSessionAttr(request,KEY_FAC_ID));
+        this.setModeProcurement(ParamUtil.getString(request, KEY_PREFIX_MODE_PROCUREMENT));
+        this.setSourceFacilityName(ParamUtil.getString(request, KEY_PREFIX_SOURCE_FACILITY_NAME));
+        this.setSourceFacilityAddress(ParamUtil.getString(request, KEY_PREFIX_SOURCE_FACILITY_ADDRESS));
+        this.setSourceFacilityContactPerson(ParamUtil.getString(request, KEY_PREFIX_SOURCE_FACILITY_CONTACT_PERSON));
+        this.setContactPersonEmail(ParamUtil.getString(request, KEY_PREFIX_CONTACT_PERSON_EMAIL));
+        this.setContactPersonTel(ParamUtil.getString(request, KEY_PREFIX_CONTACT_PERSON_TEL));
+        this.setFlightNo(ParamUtil.getString(request, KEY_PREFIX_FLIGHT_NO));
+        this.setProvider(ParamUtil.getString(request, KEY_PREFIX_PROVIDER));
+        this.setActualArrivalDate(ParamUtil.getString(request, KEY_PREFIX_ACTUAL_ARRIVAL_DATE));
+        this.setActualArrivalTime(ParamUtil.getString(request, KEY_PREFIX_ACTUAL_ARRIVAL_TIME));
+        this.setRemarks(ParamUtil.getString(request, KEY_PREFIX_REMARKS));
+        this.setFacId((String) ParamUtil.getSessionAttr(request, KEY_FAC_ID));
     }
 
-    public String getDocType(String scheduleType){
+    public String getDocType(String scheduleType) {
         String docType = "";
-        if(StringUtils.hasLength(scheduleType)){
-            switch (scheduleType){
+        if (StringUtils.hasLength(scheduleType)) {
+            switch (scheduleType) {
                 case MasterCodeConstants.FIRST_SCHEDULE_PART_I:
                 case MasterCodeConstants.FIRST_SCHEDULE_PART_II:
                 case MasterCodeConstants.SECOND_SCHEDULE:

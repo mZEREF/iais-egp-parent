@@ -144,7 +144,7 @@
                             <iais:select name="receivedCountry"
                                          id="receivedCountry"
                                          value="${exportNotification.receivedCountry}"
-                                         codeCategory=""
+                                         codeCategory="CATE_ID_NATIONALITY"
                                          firstOption="Please Select"/>
                             <span data-err-ind="receivedCountry" class="error-msg"></span>
                         </div>
@@ -155,7 +155,7 @@
                             <span class="mandatory otherQualificationSpan">*</span>
                         </div>
                         <div class="col-sm-6 col-md-7">
-                            <iais:datePicker id="exportDate" name="exportDate" dateVal="${exportNotification.exportDate}"></iais:datePicker>
+                            <input type="text" autocomplete="off" name="exportDate" id="exportDate" data-date-start-date="01/01/1900"  placeholder="dd/mm/yyyy" maxlength="10" class="date_picker form-control" value="${exportNotification.exportDate}"/>
                             <span data-err-ind="exportDate--v--${status.index}" class="error-msg"></span>
                         </div>
                     </div>
@@ -183,7 +183,6 @@
                     <div class="form-group">
                         <div class="col-sm-5 control-label">
                             <label for="remarks">Remarks</label>
-                            <span class="mandatory otherQualificationSpan">*</span>
                         </div>
                         <div class="col-sm-6 col-md-7">
                             <textarea id="remarks" style="width: 100%;margin-bottom: 15px;"
