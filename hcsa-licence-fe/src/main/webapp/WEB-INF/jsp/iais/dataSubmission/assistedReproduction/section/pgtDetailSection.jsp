@@ -115,7 +115,7 @@
                     <iais:row>
                         <iais:field width="6" value="Other Types of Genetic Testing" mandatory="true"/>
                         <iais:value width="6" cssClass="col-md-6">
-                            <input type="text" maxlength="20"   name="otherPgt" value="${arSuperDataSubmissionDto.pgtStageDto.otherPgt}" >
+                            <input type="text" maxlength="100"   name="otherPgt" value="${arSuperDataSubmissionDto.pgtStageDto.otherPgt}" >
                             <span class="error-msg" name="iaisErrorMsg" id="error_otherPgt"></span>
                         </iais:value>
                     </iais:row>
@@ -274,7 +274,7 @@
                         <iais:row>
                             <iais:field width="6" value="What Abnormal Condition was Found for the PGT-A Test?" mandatory="true"/>
                             <iais:value width="6" cssClass="col-md-6">
-                                <input type="text" maxlength="20"   name="pgtACondition" value="${arSuperDataSubmissionDto.pgtStageDto.pgtACondition}" >
+                                <input type="text" maxlength="100"   name="pgtACondition" value="${arSuperDataSubmissionDto.pgtStageDto.pgtACondition}" >
                                 <span class="error-msg" name="iaisErrorMsg" id="error_PgtACondition"></span>
                             </iais:value>
                         </iais:row>

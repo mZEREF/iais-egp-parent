@@ -50,9 +50,9 @@ public class EfoDtoValidator implements CustomizeValidator {
             if (StringUtil.isEmpty(othersReason)) {
                 String errMsg = MessageUtil.replaceMessage("GENERAL_ERR0006","Others Reason", "field");
                 errorMap.put("othersReason", errMsg);
-            }else if(othersReason.length()>20){
+            }else if(othersReason.length()>100){
                 Map<String, String> repMap=IaisCommonUtils.genNewHashMap();
-                repMap.put("number","20");
+                repMap.put("number","100");
                 repMap.put("fieldNo","Others Reason");
                 String errMsg = MessageUtil.getMessageDesc("GENERAL_ERR0036",repMap);
                 errorMap.put("othersReason", errMsg);

@@ -95,7 +95,7 @@
                     <iais:row>
                         <iais:field width="6" value="Other Reason for Donation" mandatory="true"/>
                         <iais:value width="6" cssClass="col-md-6">
-                            <input type="text" maxlength="20"   name="otherDonationReason" value="${arSuperDataSubmissionDto.donationStageDto.otherDonationReason}" >
+                            <input type="text" maxlength="100"   name="otherDonationReason" value="${arSuperDataSubmissionDto.donationStageDto.otherDonationReason}" >
                             <span class="error-msg" name="iaisErrorMsg" id="error_otherDonationReason"></span>
                         </iais:value>
                     </iais:row>
@@ -206,7 +206,7 @@
                         <iais:row>
                             <iais:field width="6" value="Other Type of Research Donated for" />
                             <iais:value width="6" cssClass="col-md-6">
-                                <input type="text" maxlength="19"   name="donatedForResearchOtherType" value="${arSuperDataSubmissionDto.donationStageDto.donatedForResearchOtherType}" >
+                                <input type="text" maxlength="100"   name="donatedForResearchOtherType" value="${arSuperDataSubmissionDto.donationStageDto.donatedForResearchOtherType}" >
                                 <span class="error-msg" name="iaisErrorMsg" id="error_donatedForResearchOtherType"></span>
                             </iais:value>
                         </iais:row>

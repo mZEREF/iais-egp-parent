@@ -121,6 +121,31 @@ public class DonationStageDtoValidator implements CustomizeValidator {
         }else if(DataSubmissionConsts.DONATION_REASON_OTHERS.equals(donationStageDto.getDonationReason())){
             if(StringUtil.isEmpty(donationStageDto.getOtherDonationReason())){
                 errorMap.put("otherDonationReason", errMsgErr006);
+            }if(donationStageDto.getOtherDonationReason().length()>100){
+                Map<String, String> repMap=IaisCommonUtils.genNewHashMap();
+                repMap.put("number","100");
+                repMap.put("fieldNo","Field");
+                String errMsg = MessageUtil.getMessageDesc("GENERAL_ERR0036",repMap);
+                errorMap.put("otherDonationReason", errMsg);
+            }
+        }
+        if(StringUtil.isNotEmpty(donationStageDto.getDonatedForResearchOtherType())){
+            if(donationStageDto.getDonatedForResearchOtherType().length()>100){
+                Map<String, String> repMap=IaisCommonUtils.genNewHashMap();
+                repMap.put("number","100");
+                repMap.put("fieldNo","Field");
+                String errMsg = MessageUtil.getMessageDesc("GENERAL_ERR0036",repMap);
+                errorMap.put("donatedForResearchOtherType", errMsg);
+            }
+        }
+
+        if(StringUtil.isNotEmpty(donationStageDto.getDonatedRecipientNum())){
+            if(donationStageDto.getDonatedRecipientNum().length()>9){
+                Map<String, String> repMap=IaisCommonUtils.genNewHashMap();
+                repMap.put("number","9");
+                repMap.put("fieldNo","Field");
+                String errMsg = MessageUtil.getMessageDesc("GENERAL_ERR0036",repMap);
+                errorMap.put("donatedRecipientNum", errMsg);
             }
         }
 
