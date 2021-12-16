@@ -45,6 +45,7 @@ public class DonorSampleDtoValidator implements CustomizeValidator {
              donorSampleDtoFromDb =  arDataSubmissionService.getDonorSampleDto(
                      donorSampleDto.getIdType()
                     ,donorSampleDto.getIdNumber()
+                     ,donorSampleDto.getSampleType()
                     ,donorSampleDto.getDonorSampleCode()
                     ,donorSampleDto.getSampleFromHciCode()
                     ,donorSampleDto.getSampleFromOthers());
