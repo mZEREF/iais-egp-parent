@@ -33,10 +33,12 @@
                                         <%@ include file="section/treatmentDetails.jsp" %>
                                     </c:when>
                                     <c:when test="${currCode == 'VSST002'}">
+                                        <%@ include file="section/particularsConsentOrCourtOrder.jsp" %>
                                     </c:when>
                                     <c:when test="${currCode == 'VSST003'}">
+                                        <%@ include file="section/particularsSterilizationSection.jsp" %>
                                     </c:when>
-                                    <c:when test="${currCode == 'VSST004'}">
+                                    <c:when test="${currCode == 'VSST010'}">
                                     </c:when>
                                 </c:choose>
                                 <%@ include file="common/vssFooter.jsp" %>

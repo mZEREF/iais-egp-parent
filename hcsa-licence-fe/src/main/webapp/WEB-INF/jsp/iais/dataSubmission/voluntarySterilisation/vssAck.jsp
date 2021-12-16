@@ -21,10 +21,10 @@
 
 <%-- current page: ack --%>
 
-<%@ include file="arHeader.jsp" %>
+<%@ include file="common/vssHeader.jsp" %>
 
 <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
-    <%@ include file="../../common/formHidden.jsp" %>
+    <%@ include file="../common/formHidden.jsp" %>
     <div class="main-content">
         <div class="container center-content">
             <div style="margin-top:-30px;">
