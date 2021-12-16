@@ -77,7 +77,8 @@ public class ArDataSubmissionServiceImpl implements ArDataSubmissionService {
             return IaisCommonUtils.genNewHashMap();
         }
         List<String> svcNames = new ArrayList<>();
-        svcNames.add(DataSubmissionConsts.SVC_NAME_AR_CENTER);
+        //TODO
+        //svcNames.add(DataSubmissionConsts.SVC_NAME_AR_CENTER);
         List<PremisesDto> premisesDtos = licenceClient.getLatestPremisesByConds(licenseeId, svcNames, false).getEntity();
         Map<String, PremisesDto> premisesDtoMap = IaisCommonUtils.genNewHashMap();
         if (premisesDtos == null || premisesDtos.isEmpty()) {
