@@ -19,6 +19,9 @@
         <h3>Please key in the donor sample information below.</h3>
         <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
           <%@include file="section/arSubmitDonorSection.jsp" %>
+          <c:if test="${arSuperDataSubmissionDto.appType eq 'DSTY_005'}">
+            <%@include file="section/patientAmendment.jsp" %>
+          </c:if>
         </div>
         <%@include file="common/arFooter.jsp" %>
       </div>

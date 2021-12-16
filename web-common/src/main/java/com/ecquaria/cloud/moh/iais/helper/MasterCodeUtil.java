@@ -206,6 +206,7 @@ public final class MasterCodeUtil {
 
     //Reason for Patient Amendment
     public static final String DATA_SUBMISSION_PATIENT_AMENDMENT = "E92D33E5-6B47-EC11-BE6B-000C29FAAE4D";
+    public static final String DATA_SUBMISSION_DONOR_SMAPLE_AMENDMENT = "54C91975-375E-EC11-BE6B-000C29FAAE4D";
 
     //Dp Drug Prescribed or Dispensed
     public static final String DP_DRUG_PRESCRIBED_OR_DISPENSED      ="E3B7DD31-CA12-4B18-B434-0B30BAA60E55";
