@@ -110,9 +110,13 @@ $(function () {
 
     //InnerFooter.jsp & notification page
     $("#saveButton").click(function () {
-        showWaiting();
-        $("[name='action_type']").val("doSave");
-        $("#mainForm").submit();
+        if($("#declareT").is(':checked')){
+            showWaiting();
+            $("[name='action_type']").val("doSave");
+            $("#mainForm").submit();
+        }else {
+            $("#submitDeclareModal").modal('show');
+        }
     });
 
     // $("#saveDraft").click(function (){

@@ -184,7 +184,7 @@ public class PrimaryDocDto implements Serializable {
     private static final String SEPARATOR               = "--v--";
     private static final String KEY_DELETED_NEW_FILES   = "deleteNewFiles";
 
-    public static List<PrimaryDocDto.NewDocInfo> reqObjMapping(MultipartHttpServletRequest mulReq,HttpServletRequest request,String docType,String amt){
+    public static List<PrimaryDocDto.NewDocInfo> reqObjMapping(MultipartHttpServletRequest mulReq,HttpServletRequest request,String docType,String amt,Map<String, PrimaryDocDto.NewDocInfo> allNewDocInfos){
         // read new uploaded files
         Iterator<String> inputNameIt = mulReq.getFileNames();
         List<PrimaryDocDto.NewDocInfo> list = new ArrayList<>();
@@ -201,14 +201,15 @@ public class PrimaryDocDto implements Serializable {
                 if(StringUtils.hasLength(index) && index.equals(amt)){
                     //upload document toxins and bats
                     List<MultipartFile> files = mulReq.getFiles(inputName);
-                    filedNewFiles(files,inputName,docType,currentDate,loginContext,list);
+                    filedNewFiles(files,inputName,docType,currentDate,loginContext,list,allNewDocInfos);
+
                 }
             }
         }
         return list;
     }
 
-    public static List<PrimaryDocDto.NewDocInfo> reqOtherMapping(MultipartHttpServletRequest mulReq,HttpServletRequest request,String docType){
+    public static List<PrimaryDocDto.NewDocInfo> reqOtherMapping(MultipartHttpServletRequest mulReq,HttpServletRequest request,String docType,Map<String, PrimaryDocDto.NewDocInfo> allNewDocInfos){
 
         // read new uploaded files
         Iterator<String> inputNameIt = mulReq.getFileNames();
@@ -220,7 +221,7 @@ public class PrimaryDocDto implements Serializable {
             if(StringUtils.hasLength(inputName) && docType.equals(inputName)){
                 //upload other document
                 List<MultipartFile> files = mulReq.getFiles(inputName);
-                filedNewFiles(files,inputName, DocConstants.DOC_TYPE_OTHERS,currentDate,loginContext,list);
+                filedNewFiles(files,inputName, DocConstants.DOC_TYPE_OTHERS,currentDate,loginContext,list,allNewDocInfos);
             }
         }
         return list;
@@ -239,7 +240,7 @@ public class PrimaryDocDto implements Serializable {
         }
     }
 
-    private static void filedNewFiles(List<MultipartFile> files,String inputName,String docType,Date currentDate,LoginContext loginContext,List<PrimaryDocDto.NewDocInfo> newDocInfos){
+    private static void filedNewFiles(List<MultipartFile> files,String inputName,String docType,Date currentDate,LoginContext loginContext,List<PrimaryDocDto.NewDocInfo> newDocInfos,Map<String, PrimaryDocDto.NewDocInfo> allNewDocInfos){
         for (MultipartFile f : files) {
             if (log.isInfoEnabled()) {
                 log.info("input name: {}; filename: {}", LogUtil.escapeCrlf(inputName), LogUtil.escapeCrlf(f.getOriginalFilename()));
@@ -249,6 +250,7 @@ public class PrimaryDocDto implements Serializable {
             } else {
                 String tmpId = inputName + f.getSize() + System.nanoTime();
                 newDocInfos.add(filedOneNewFiles(tmpId,f,docType,currentDate,loginContext));
+                allNewDocInfos.put(tmpId,filedOneNewFiles(tmpId,f,docType,currentDate,loginContext));
             }
         }
     }

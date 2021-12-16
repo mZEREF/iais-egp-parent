@@ -120,6 +120,8 @@ public class BsbTransferNotificationDelegator {
         Map<String, DocSetting> settingMap = getDocSettingMap();
         ParamUtil.setRequestAttr(request, "doSettings", settingMap);
         ParamUtil.setRequestAttr(request, KEY_TRANSFER_NOTIFICATION_DTO, transferNotificationDto);
+        Map<Integer,List<PrimaryDocDto.NewDocInfo>> keyNewInfos = transferNotificationDto.getKeyNewInfos();
+        ParamUtil.setRequestAttr(request,"keyMap",keyNewInfos);
         ParamUtil.setSessionAttr(request, KEY_SUBMISSION_TYPE, KEY_DATA_SUBMISSION_TYPE_TRANSFER);
     }
 

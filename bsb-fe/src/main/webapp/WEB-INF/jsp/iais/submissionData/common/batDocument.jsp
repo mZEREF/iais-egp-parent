@@ -7,7 +7,7 @@
             <div class="document-content" style="margin: 0 auto;background-color: #F2F2F2;height: 150px">
                 <div class="document-upload-list--v--${status.index}">
                     <c:set var="doc" value="${doSettings.get(item.docType)}"/>
-                    <c:set var="newFiles" value="${item.newDocInfos}"/>
+                    <c:set var="newFiles" value="${keyMap.get(status.index)}"/>
                     <h3>${doc.typeDisplay}<c:if test="${doc.mandatory}"> <span class="mandatory otherQualificationSpan">*</span></c:if></h3>
                     <div class="file-upload-gp" style="margin-left: 40px">
                         <c:if test="${newFiles ne null}">
