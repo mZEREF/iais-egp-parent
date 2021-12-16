@@ -98,10 +98,28 @@
                         </iais:row>
                     </div>
                 </div>
+                <c:choose>
+                    <c:when test="${donorSampleDto.donorSampleAgeDtos != null}">
+                        <c:forEach items="${donorSampleDto.donorSampleAgeDtos}" var="donorSampleAgeDto"  begin="0" varStatus="idxStatus">
+                            <iais:row id = "donorAge0">
+                                <label class="col-xs-5 col-md-4 control-label">
+                                    <c:if test="${idxStatus.first==true}">
+                                        Donor's Age when Sample was Collected
+                                        <span class="mandatory">*</span>
+                                    </c:if>
+                                </label>
+                                <iais:value width="7" cssClass="col-md-7"  display="true">
+                                    <c:out value="${donorSampleAgeDto.age}"/>
+                                </iais:value>
+                            </iais:row>
+                        </c:forEach>
+                    </c:when>
+                </c:choose>
+
                <c:forEach items="${donorSampleDto.ages}" var="age"  begin="0" varStatus="index">
                 <iais:row>
                     <label class="col-xs-5 col-md-4 control-label">
-                        <c:if test="${index.first==true}">
+                        <c:if test="${index.first==true && donorSampleDto.donorSampleAgeDtos == null}">
                             Donor's Age when Sample was Collected
                             <span class="mandatory">*</span>
                         </c:if>

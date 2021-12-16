@@ -97,39 +97,45 @@ public class DonorSampleDtoValidator implements CustomizeValidator {
         }
         //validate the ages
         String[] ages = donorSampleDto.getAges();
-        for(int i =0 ;i<ages.length;i++){
-            String age = ages[i];
-            log.info(StringUtil.changeForLog("The age is -->:"+age));
-            //empty
-            if(StringUtil.isEmpty(age)){
-                map.put("ages"+i,"GENERAL_ERR0006");
-            //Number
-            }else if(!StringUtil.isNumber(age)){
-                map.put("ages"+i,"GENERAL_ERR0002");
-            //length
-            }else if(age.length()>2){
-                map.put("ages"+i,"GENERAL_ERR0041");
-            //donor sample
-            }else if(!donorSampleDto.isDirectedDonation()){
-                String sampleType = donorSampleDto.getSampleType();
-                log.info(StringUtil.changeForLog("The sampleType is -->:"+sampleType));
-                int ageInt = Integer.valueOf(age);
-                if(DataSubmissionConsts.DONOR_SAMPLE_TYPE_SPERM.equals(sampleType)){
-                    if(ageInt<21 || ageInt>40 ){
-                        map.put("ages"+i,"DS_ERR044");
-                    }
-                }else if(DataSubmissionConsts.DONOR_SAMPLE_TYPE_OOCYTE.equals(sampleType)
-                        ||DataSubmissionConsts.DONOR_SAMPLE_TYPE_EMBRYO.equals(sampleType)){
-                    if(ageInt<21 || ageInt>35 ){
-                        map.put("ages"+i,"DS_ERR045");
+        if(ages != null){
+            for(int i =0 ;i<ages.length;i++){
+                String age = ages[i];
+                log.info(StringUtil.changeForLog("The age is -->:"+age));
+                //empty
+                if(StringUtil.isEmpty(age)){
+                    map.put("ages"+i,"GENERAL_ERR0006");
+                    //Number
+                }else if(!StringUtil.isNumber(age)){
+                    map.put("ages"+i,"GENERAL_ERR0002");
+                    //length
+                }else if(age.length()>2){
+                    map.put("ages"+i,"GENERAL_ERR0041");
+                    //donor sample
+                }else if(!donorSampleDto.isDirectedDonation()){
+                    String sampleType = donorSampleDto.getSampleType();
+                    log.info(StringUtil.changeForLog("The sampleType is -->:"+sampleType));
+                    int ageInt = Integer.valueOf(age);
+                    if(DataSubmissionConsts.DONOR_SAMPLE_TYPE_SPERM.equals(sampleType)){
+                        if(ageInt<21 || ageInt>40 ){
+                            map.put("ages"+i,"DS_ERR044");
+                        }
+                    }else if(DataSubmissionConsts.DONOR_SAMPLE_TYPE_OOCYTE.equals(sampleType)
+                            ||DataSubmissionConsts.DONOR_SAMPLE_TYPE_EMBRYO.equals(sampleType)){
+                        if(ageInt<21 || ageInt>35 ){
+                            map.put("ages"+i,"DS_ERR045");
+                        }
                     }
                 }
+                //Repetition
+                if(IaisCommonUtils.isEmpty(map)&&isRepetition(age,ages,donorSampleDtoFromDb)){
+                    map.put("ages"+i,"DS_ERR046");
+                }
             }
-            //Repetition
-            if(IaisCommonUtils.isEmpty(map)&&isRepetition(age,ages,donorSampleDtoFromDb)){
-                map.put("ages"+i,"DS_ERR046");
-            }
+        }else{
+            map.put("ages0","DS_ERR044");
+            log.info(StringUtil.changeForLog("The Ages is null"));
         }
+
 
         log.info(StringUtil.changeForLog("The DonorSampleDtoValidator end ..."));
         return map;
