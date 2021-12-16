@@ -586,7 +586,7 @@ public final class DataSubmissionHelper {
     }
 
     public static String initAction(String dsType, String defaultAction, HttpServletRequest request) {
-        List<DsConfig> configs = DsConfigHelper.intVssConfig(request);
+        List<DsConfig> configs = DsConfigHelper.intDsConfig(dsType, request);
         return configs.stream()
                 .filter(config -> config.isActive())
                 .map(DsConfig::getCode)
@@ -597,11 +597,11 @@ public final class DataSubmissionHelper {
 
     public static String setPreviousAction(String dsType, HttpServletRequest request) {
         String actionType;
-        DsConfig currentConfig = DsConfigHelper.getCurrentConfig(DataSubmissionConsts.DS_VSS, request);
-        if (1 == currentConfig.getSeqNo()) {
+        DsConfig currentConfig = DsConfigHelper.getCurrentConfig(dsType, request);
+        if (currentConfig == null || 1 == currentConfig.getSeqNo()) {
             actionType = "return";
         } else {
-            DsConfig config = DsConfigHelper.setPreviousActiveConfig(DataSubmissionConsts.DS_VSS, request);
+            DsConfig config = DsConfigHelper.setPreviousActiveConfig(dsType, request);
             if (config == null) {
                 actionType = "return";
             } else {
@@ -613,11 +613,11 @@ public final class DataSubmissionHelper {
 
     public static String setCurrentAction(String dsType, HttpServletRequest request) {
         String actionType;
-        DsConfig currentConfig = DsConfigHelper.getCurrentConfig(DataSubmissionConsts.DS_VSS, request);
+        DsConfig currentConfig = DsConfigHelper.getCurrentConfig(dsType, request);
         if (1 == currentConfig.getSeqNo()) {
             actionType = "return";
         } else {
-            DsConfig config = DsConfigHelper.setPreviousActiveConfig(DataSubmissionConsts.DS_VSS, request);
+            DsConfig config = DsConfigHelper.setPreviousActiveConfig(dsType, request);
             if (config == null) {
                 actionType = "return";
             } else {

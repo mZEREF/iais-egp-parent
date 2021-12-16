@@ -57,6 +57,13 @@ public class VssDataSubmissionDelegator {
         String actionType = getActionType(bpc.request);
         log.info(StringUtil.changeForLog("Action Type: " + actionType));
         ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.CRUD_ACTION_TYPE_VSS, actionType);
+        ParamUtil.setRequestAttr(bpc.request, "title", DataSubmissionHelper.getMainTitle(DataSubmissionConsts.DS_APP_TYPE_NEW));
+        DsConfig config = DsConfigHelper.getCurrentConfig(DataSubmissionConsts.DS_VSS, bpc.request);
+        String smallTitle = "";
+        if (config != null) {
+            smallTitle = config.getText();
+        }
+        ParamUtil.setRequestAttr(bpc.request, "smallTitle", "You are submitting for <strong>" + smallTitle + "</strong>");
     }
 
     private String getActionType(HttpServletRequest request) {
