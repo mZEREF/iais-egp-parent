@@ -32,7 +32,7 @@
                 <tr>
                     <td style="vertical-align:middle;">
                         <c:forEach var="arCentre" items="${patientInfoDto.patient.arCentres}">
-                            <c:out value="${arCentre.getAddress()}"/><br>
+                            <c:out value="${arCentre.getPremiseLabel()}"/><br>
                         </c:forEach>
                     </td>
                     <td style="vertical-align:middle;">
@@ -99,7 +99,7 @@
 
                             <c:forEach var="arCentre" items="${patientInfoDto.previous.arCentres}">
                                 <p>
-                                    <c:out value="${arCentre.getAddress()}"/>
+                                    <c:out value="${arCentre.getPremiseLabel()}"/>
                                 </p>
 
                             </c:forEach>

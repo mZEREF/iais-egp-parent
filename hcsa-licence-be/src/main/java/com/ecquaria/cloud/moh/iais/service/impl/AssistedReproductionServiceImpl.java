@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.service.impl;
 
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
+import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArEnquiryCoFundingHistoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArEnquiryCycleStageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArEnquiryTransactionHistoryResultDto;
@@ -13,6 +14,8 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.AssistedReprod
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInventoryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.service.AssistedReproductionService;
 import com.ecquaria.cloud.moh.iais.service.client.AssistedReproductionClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
@@ -20,7 +23,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 /**
  * AssistedReproductionServiceImpl
@@ -97,5 +102,34 @@ public class AssistedReproductionServiceImpl implements AssistedReproductionServ
     @Override
     public ArSuperDataSubmissionDto getArSuperDataSubmissionDto(String submissionNo) {
         return licenceClient.getArSuperDataSubmissionDto(submissionNo).getEntity();
+    }
+
+    @Override
+    public List<SelectOption> genPremisesOptions(String patientCode) {
+        List<PremisesDto> premisesDtos=assistedReproductionClient.getAllArCenterPremisesDtoByPatientCode(patientCode).getEntity();
+        Map<String, PremisesDto> premisesMap = IaisCommonUtils.genNewHashMap();
+        if(IaisCommonUtils.isNotEmpty(premisesDtos)){
+            for (PremisesDto premisesDto : premisesDtos) {
+                if(premisesDto!=null){
+                    premisesMap.put(premisesDto.getHciCode(), premisesDto);
+                }
+            }
+        }
+
+        Map<String, String> map = IaisCommonUtils.genNewLinkedHashMap();
+        if (!premisesMap.isEmpty()) {
+            for (Map.Entry<String, PremisesDto> entry : premisesMap.entrySet()) {
+                map.put(entry.getKey(), entry.getValue().getPremiseLabel());
+            }
+        }
+        List<SelectOption> opts = IaisCommonUtils.genNewArrayList();
+        if (!map.isEmpty()) {
+            for (Map.Entry<String, String> entry : map.entrySet()) {
+                opts.add(new SelectOption(entry.getKey(), entry.getValue()));
+            }
+        }
+        Collections.sort(opts);
+
+        return opts;
     }
 }

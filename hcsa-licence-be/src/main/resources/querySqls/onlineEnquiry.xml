@@ -82,7 +82,12 @@
 
     <sql key = "searchSubmissionByAssistedReproduction" remarks="search submission by Assisted Reproduction">
         <![CDATA[
-            SELECT distinct dds.ID, dds.SUBMISSION_NO, dds.SUBMISSION_TYPE, dds.CYCLE_STAGE, dds.SUBMIT_DT ,CONCAT(case p.BLK_NO
+            SELECT distinct dds.ID, dds.SUBMISSION_NO, dds.SUBMISSION_TYPE, dds.CYCLE_STAGE, dds.SUBMIT_DT ,
+            CONCAT(case lp.BUSINESS_NAME
+                  when null then '-, '
+                  when '' then '-, '
+                  else lp.BUSINESS_NAME + ', ' end ,
+                  case p.BLK_NO
                   when null then null
                   when '' then null
                   else ''+p.BLK_NO end ,
@@ -118,7 +123,7 @@
                 FROM ds_data_submission dds
                 join ds_cycle dc on dc.ID =dds.CYCLE_ID
                 join premises p on dc.HCI_CODE =p.HCI_CODE and  p.CREATED_DT =(select max(CREATED_DT) from premises where HCI_CODE =dc.HCI_CODE)
-
+                JOIN lic_premises lp on lp.PREMISES_ID =p.ID
                 where 1=1
             <#if arCentre??> AND  charindex(:arCentre, p.HCI_CODE) >0</#if>
             <#if submissionId??> AND  charindex(:submissionId, dds.SUBMISSION_NO) >0</#if>
@@ -136,6 +141,7 @@
                 FROM ds_patient_information dpi
                 join ds_cycle dc on dc.PATIENT_CODE =dpi.PATIENT_CODE
                 join premises p on dc.HCI_CODE =p.HCI_CODE and  p.CREATED_DT =(select max(CREATED_DT) from premises where HCI_CODE =dc.HCI_CODE)
+                JOIN lic_premises lp on lp.PREMISES_ID =p.ID
                 where 1=1
             <#if arCentre??> AND  charindex(:arCentre, p.HCI_CODE) >0</#if>
             <#if patientName??> AND  charindex(:patientName, dpi.NAME) >0</#if>
@@ -149,7 +155,12 @@
     <sql key = "searchPatientAjaxByAssistedReproduction" remarks="search patient ajax by Assisted Reproduction">
         <![CDATA[
            SELECT distinct ajax.* FROM (
-            SELECT dc.ID ,dpi.PATIENT_CODE patient_code, 'AR' DS_TYPE ,dacs.TREATMENT_FRESH_NATURAL ,dacs.TREATMENT_FRESH_STIMULATED ,dacs.TREATMENT_FROZEN_EMBRYO ,dacs.TREATMENT_FROZEN_OOCYTE ,dc.HCI_CODE, CONCAT(case p.BLK_NO
+            SELECT dc.ID ,dpi.PATIENT_CODE patient_code, 'AR' DS_TYPE ,dacs.TREATMENT_FRESH_NATURAL ,dacs.TREATMENT_FRESH_STIMULATED ,dacs.TREATMENT_FROZEN_EMBRYO ,dacs.TREATMENT_FROZEN_OOCYTE ,dc.HCI_CODE,
+            CONCAT(case lp.BUSINESS_NAME
+                  when null then '-, '
+                  when '' then '-, '
+                  else lp.BUSINESS_NAME + ', ' end ,
+                  case p.BLK_NO
                   when null then null
                   when '' then null
                   else ''+p.BLK_NO end ,
@@ -187,10 +198,16 @@
                 join ds_data_submission dds on dds.CYCLE_ID = dc.ID
                 left join ds_ar_cycle_stage dacs on dacs.SUBMISSION_ID =dds.ID
                 join premises p on dc.HCI_CODE =p.HCI_CODE and  p.CREATED_DT =(select max(CREATED_DT) from premises where HCI_CODE =dc.HCI_CODE)
+                JOIN lic_premises lp on lp.PREMISES_ID =p.ID
                 where dc.CYCLE_TYPE ='DSCL_008'
 
                 UNION ALL
-                SELECT dc.ID,dpi.PATIENT_CODE patient_code,'IUI' DS_TYPE ,null TREATMENT_FRESH_NATURAL ,null TREATMENT_FRESH_STIMULATED ,null TREATMENT_FROZEN_EMBRYO ,null TREATMENT_FROZEN_OOCYTE ,dc.HCI_CODE, CONCAT(case p.BLK_NO
+                SELECT dc.ID,dpi.PATIENT_CODE patient_code,'IUI' DS_TYPE ,null TREATMENT_FRESH_NATURAL ,null TREATMENT_FRESH_STIMULATED ,null TREATMENT_FROZEN_EMBRYO ,null TREATMENT_FROZEN_OOCYTE ,dc.HCI_CODE,
+                CONCAT(case lp.BUSINESS_NAME
+                  when null then '-, '
+                  when '' then '-, '
+                  else lp.BUSINESS_NAME + ', ' end ,
+                  case p.BLK_NO
                   when null then null
                   when '' then null
                   else ''+p.BLK_NO end ,
@@ -227,9 +244,15 @@
                 join ds_patient_information dpi on dpi.PATIENT_CODE =dc.PATIENT_CODE
                 join ds_data_submission dds on dds.CYCLE_ID = dc.ID
                 join premises p on dc.HCI_CODE =p.HCI_CODE and  p.CREATED_DT =(select max(CREATED_DT) from premises where HCI_CODE =dc.HCI_CODE)
+                JOIN lic_premises lp on lp.PREMISES_ID =p.ID
                 where dc.CYCLE_TYPE ='DSCL_009'
                 UNION ALL
-                SELECT dc.ID,dpi.PATIENT_CODE patient_code,'EFO' DS_TYPE ,null TREATMENT_FRESH_NATURAL ,null TREATMENT_FRESH_STIMULATED ,null TREATMENT_FROZEN_EMBRYO ,null TREATMENT_FROZEN_OOCYTE ,dc.HCI_CODE, CONCAT(case p.BLK_NO
+                SELECT dc.ID,dpi.PATIENT_CODE patient_code,'EFO' DS_TYPE ,null TREATMENT_FRESH_NATURAL ,null TREATMENT_FRESH_STIMULATED ,null TREATMENT_FROZEN_EMBRYO ,null TREATMENT_FROZEN_OOCYTE ,dc.HCI_CODE,
+                CONCAT(case lp.BUSINESS_NAME
+                  when null then '-, '
+                  when '' then '-, '
+                  else lp.BUSINESS_NAME + ', ' end ,
+                  case p.BLK_NO
                   when null then null
                   when '' then null
                   else ''+p.BLK_NO end ,
@@ -266,9 +289,15 @@
                 join ds_patient_information dpi on dpi.PATIENT_CODE =dc.PATIENT_CODE
                 join ds_data_submission dds on dds.CYCLE_ID = dc.ID
                 join premises p on dc.HCI_CODE =p.HCI_CODE and  p.CREATED_DT =(select max(CREATED_DT) from premises where HCI_CODE =dc.HCI_CODE)
+                JOIN lic_premises lp on lp.PREMISES_ID =p.ID
                 where dc.CYCLE_TYPE ='DSCL_010'
                 UNION ALL
-                SELECT dc.ID,dpi.PATIENT_CODE patient_code,'-' DS_TYPE ,null TREATMENT_FRESH_NATURAL ,null TREATMENT_FRESH_STIMULATED ,null TREATMENT_FROZEN_EMBRYO ,null TREATMENT_FROZEN_OOCYTE ,dc.HCI_CODE, CONCAT(case p.BLK_NO
+                SELECT dc.ID,dpi.PATIENT_CODE patient_code,'-' DS_TYPE ,null TREATMENT_FRESH_NATURAL ,null TREATMENT_FRESH_STIMULATED ,null TREATMENT_FROZEN_EMBRYO ,null TREATMENT_FROZEN_OOCYTE ,dc.HCI_CODE,
+                CONCAT(case lp.BUSINESS_NAME
+                  when null then '-, '
+                  when '' then '-, '
+                  else lp.BUSINESS_NAME + ', ' end ,
+                  case p.BLK_NO
                   when null then null
                   when '' then null
                   else ''+p.BLK_NO end ,
@@ -305,6 +334,7 @@
                 join ds_patient_information dpi on dpi.PATIENT_CODE =dc.PATIENT_CODE
                 join ds_data_submission dds on dds.CYCLE_ID = dc.ID
                 join premises p on dc.HCI_CODE =p.HCI_CODE and  p.CREATED_DT =(select max(CREATED_DT) from premises where HCI_CODE =dc.HCI_CODE)
+                JOIN lic_premises lp on lp.PREMISES_ID =p.ID
                 where dc.CYCLE_TYPE ='DSCL_011'
             ) ajax
             where 1=1
@@ -315,7 +345,44 @@
 
     <sql key = "advancedSearchPatientByAssistedReproduction" remarks="Advanced Search patient by Assisted Reproduction">
         <![CDATA[
-           SELECT distinct dpi.ID, dpi.NAME, dpi.ID_TYPE, dpi.ID_NUMBER, dpi.DATE_OF_BIRTH, dpi.NATIONALITY,dc.CREATED_DT ,lp.BUSINESS_NAME,dpi.PATIENT_CODE
+           SELECT distinct dpi.ID, dpi.NAME, dpi.ID_TYPE, dpi.ID_NUMBER, dpi.DATE_OF_BIRTH, dpi.NATIONALITY,dc.CREATED_DT ,
+           CONCAT(case lp.BUSINESS_NAME
+                  when null then '-, '
+                  when '' then '-, '
+                  else lp.BUSINESS_NAME + ', ' end ,
+                  case p.BLK_NO
+                  when null then null
+                  when '' then null
+                  else ''+p.BLK_NO end ,
+               case p.STREET_NAME
+                  when null then null
+                  when '' then null
+                  else ' '+p.STREET_NAME end
+               , case p.BUILDING_NAME
+                  when null then null
+                  when '' then null
+                  else ' '+p.BUILDING_NAME end
+               , case p.FLOOR_NO
+                  when null then null
+                  when '' then null
+                  else ' # '+p.FLOOR_NO end
+               , case p.UNIT_NO
+                  when null then null
+                  when '' then null
+                  else '-'+p.UNIT_NO end
+               ,
+               SUBSTRING ((
+		        SELECT ', #' + pou.FLOOR_NO +'-'+pou.UNIT_NO
+				        FROM premises_operational_unit pou
+				        WHERE pou.PREMISES_ID =p.ID
+				        ORDER BY SEQ_NUM ASC
+				        FOR XML path('')
+		    ), 1, 1000)
+               ,case p.POSTAL_CODE
+                  when null then null
+                  when '' then null
+                  else ', '+p.POSTAL_CODE end
+              ) AS BUSINESS_NAME,dpi.PATIENT_CODE
                 FROM ds_patient_information dpi
                 join ds_cycle dc on dc.PATIENT_CODE =dpi.PATIENT_CODE and dc.CYCLE_TYPE in ('DSCL_008','DSCL_009','DSCL_010','DSCL_011')
                 join premises p on dc.HCI_CODE =p.HCI_CODE and  p.CREATED_DT =(select max(CREATED_DT) from premises where HCI_CODE =dc.HCI_CODE)
@@ -414,7 +481,11 @@
     <sql key = "searchTransactionHistoryByAssistedReproduction" remarks="search Transaction History">
         <![CDATA[
             SELECT distinct dds.ID ,
-            CONCAT(case p.BLK_NO
+            CONCAT(case lp.BUSINESS_NAME
+                  when null then '-, '
+                  when '' then '-, '
+                  else lp.BUSINESS_NAME + ', ' end ,
+                  case p.BLK_NO
                   when null then null
                   when '' then null
                   else ''+p.BLK_NO end ,
@@ -452,6 +523,7 @@
                 FROM ds_data_submission dds
                 join ds_cycle dc on dc.ID =dds.CYCLE_ID
                 join premises p on dc.HCI_CODE =p.HCI_CODE and  p.CREATED_DT =(select max(CREATED_DT) from premises where HCI_CODE =dc.HCI_CODE)
+                JOIN lic_premises lp on lp.PREMISES_ID =p.ID
                 left join ds_data_submission dds3 on dds3.CYCLE_ID= dc.ID
 
                 where 1=1

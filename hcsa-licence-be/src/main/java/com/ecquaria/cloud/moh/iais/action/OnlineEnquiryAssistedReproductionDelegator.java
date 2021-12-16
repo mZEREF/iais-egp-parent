@@ -812,7 +812,7 @@ public class OnlineEnquiryAssistedReproductionDelegator {
         submissionTypeOptions.add(new SelectOption("AR_TP002","Cycle Stages"));
         submissionTypeOptions.add(new SelectOption("AR_TP003","Donor Samples"));
         ParamUtil.setRequestAttr(bpc.request,"submissionTypeOptions",submissionTypeOptions);
-        List<SelectOption> arCentreSelectOption  = IaisCommonUtils.genNewArrayList();
+        List<SelectOption> arCentreSelectOption  = assistedReproductionService.genPremisesOptions("null");
         ParamUtil.setRequestAttr(bpc.request,"arCentreSelectOption",arCentreSelectOption);
         HttpServletRequest request = bpc.request;
         ParamUtil.setSessionAttr(request,"arViewFull",null);
@@ -924,7 +924,7 @@ public class OnlineEnquiryAssistedReproductionDelegator {
         sourceSemenOptions.add(new SelectOption("Donor","Donor"));
         sourceSemenOptions.add(new SelectOption("Husband","Husband"));
         ParamUtil.setRequestAttr(bpc.request,"sourceSemenOptions",sourceSemenOptions);
-        List<SelectOption> arCentreSelectOption  = IaisCommonUtils.genNewArrayList();
+        List<SelectOption> arCentreSelectOption  = assistedReproductionService.genPremisesOptions("null");
         ParamUtil.setRequestAttr(bpc.request,"arCentreSelectOption",arCentreSelectOption);
         String action = ParamUtil.getRequestString(request, IaisEGPConstant.CRUD_ACTION_TYPE);
         SearchParam searchParam = (SearchParam) ParamUtil.getSessionAttr(request, "patientAdvParam");
@@ -997,7 +997,7 @@ public class OnlineEnquiryAssistedReproductionDelegator {
                         currentThawedEmbryos+=patientInventoryDto.getCurrentThawedEmbryos();
                         currentFreshEmbryos+=patientInventoryDto.getCurrentFreshEmbryos();
                         currentFrozenSperms+=patientInventoryDto.getCurrentFrozenSperms();
-                        patientInventoryDtos.put(premisesDto.getAddress(),patientInventoryDto);
+                        patientInventoryDtos.put(premisesDto.getPremiseLabel(),patientInventoryDto);
                     }catch (Exception e){
                         log.error(e.getMessage(),e);
                     }
@@ -1032,10 +1032,14 @@ public class OnlineEnquiryAssistedReproductionDelegator {
     public void searchInventory(BaseProcessClass bpc) throws ParseException{
         ParamUtil.setRequestAttr(bpc.request, "preActive", "1");
         HttpServletRequest request=bpc.request;
+        PatientInfoDto patientInfoDto= (PatientInfoDto) ParamUtil.getSessionAttr(request,"patientInfoDto");
+        if(patientInfoDto!=null){
+            List<SelectOption> arCentreSelectOption  = assistedReproductionService.genPremisesOptions(patientInfoDto.getPatient().getPatientCode());
+            ParamUtil.setRequestAttr(bpc.request,"arCentreSelectOption",arCentreSelectOption);
+        }
         ParamUtil.setSessionAttr(request,"arViewFull",1);
         String action = ParamUtil.getRequestString(request, IaisEGPConstant.CRUD_ACTION_TYPE);
         if("searchInv".equals(action)){
-            PatientInfoDto patientInfoDto= (PatientInfoDto) ParamUtil.getSessionAttr(request,"patientInfoDto");
             if(patientInfoDto!=null){
                 ArEnquiryTransactionHistoryFilterDto arDto=setArEnquiryTransactionHistoryFilterDto(request);
 
