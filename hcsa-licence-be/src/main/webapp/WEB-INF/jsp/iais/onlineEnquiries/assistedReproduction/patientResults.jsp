@@ -107,7 +107,7 @@
                                     </iais:value>
                                     <iais:value width="4" cssClass="col-md-4">
                                         <div id="cycleStageDisplay" <c:if test="${assistedReproductionEnquiryFilterDto.submissionType!='AR_TP002'}">style="display: none"</c:if> >
-                                            <iais:select name="cycleStage" id="cycleStage" firstOption="Please Select" codeCategory="CATE_ID_DS_STAGE_TYPE"
+                                            <iais:select name="cycleStage" id="cycleStage" firstOption="Please Select" codeCategory="CATE_ID_DS_STAGE_TYPE" needSort="true"
                                                          value="${assistedReproductionEnquiryFilterDto.cycleStage}" cssClass="idTypeSel" />
                                         </div>
                                     </iais:value>
@@ -463,8 +463,17 @@
 
     function doClear() {
         $('input[type="text"]').val("");
-        $('input[type="radio"]').prop("checked", false);
         $('input[type="checkbox"]').prop("checked", false);
+        $("#arCentre option:first").prop("selected", 'selected');
+        $("#arCentre .current").text("Please Select");
+        $("#submissionType option:first").prop("selected", 'selected');
+        $("#submissionType .current").text("Please Select");
+        $("#cycleStage option:first").prop("selected", 'selected');
+        $("#cycleStage .current").text("Please Select");
+        $('input[name="submissionDateFrom"]').val("");
+        $('input[name="submissionDateTo"]').val("");
+        $(".multi-select-button").html("-- Select --");
+        $('#cycleStageDisplay').attr("style","display: none");
     }
 
     function doAdvancedSearch() {

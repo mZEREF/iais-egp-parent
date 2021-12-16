@@ -1323,8 +1323,38 @@
 
     function doClear() {
         $('input[type="text"]').val("");
+        $('input[type="number"]').val("");
         $('input[type="radio"]').prop("checked", false);
         $('input[type="checkbox"]').prop("checked", false);
+
+        $("#patientIdType option:first").prop("selected", 'selected');
+        $("#patientIdType .current").text("Please Select");
+        $("#husbandIdType option:first").prop("selected", 'selected');
+        $("#husbandIdType .current").text("Please Select");
+        $("#arCentre option:first").prop("selected", 'selected');
+        $("#arCentre .current").text("Please Select");
+        $("#cycleStagesStatus option:first").prop("selected", 'selected');
+        $("#cycleStagesStatus .current").text("Please Select");
+        $("#arOrIuiCycle option:first").prop("selected", 'selected');
+        $("#arOrIuiCycle .current").text("Please Select");
+        $("#sourceSemen option:first").prop("selected", 'selected');
+        $("#sourceSemen .current").text("Please Select");
+        $("#transferredInFrom option:first").prop("selected", 'selected');
+        $("#transferredInFrom .current").text("Please Select");
+        $("#transferOutTo option:first").prop("selected", 'selected');
+        $("#transferOutTo .current").text("Please Select");
+        $('input[name="submissionDateFrom"]').val("");
+        $('input[name="submissionDateTo"]').val("");
+        $('input[name="cycleStagesDateFrom"]').val("");
+        $('input[name="cycleStagesDateTo"]').val("");
+        $('input[name="deliveryDateFrom"]').val("");
+        $('input[name="deliveryDateTo]').val("");
+        $('input[name="disposalDateFrom"]').val("");
+        $('input[name="disposalDateTo"]').val("");
+        $('input[name="transferDateFrom"]').val("");
+        $('input[name="transferDateTo"]').val("");
+
+
     }
 
 

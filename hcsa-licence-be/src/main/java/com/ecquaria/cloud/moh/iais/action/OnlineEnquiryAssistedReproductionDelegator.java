@@ -373,19 +373,20 @@ public class OnlineEnquiryAssistedReproductionDelegator {
                 filter.put("patientIdNumber",arDto.getPatientIdNumber());
             }
         }
+        if(sqf==1&&arDto.getSubmissionType()!=null){
+            filter.put("submissionType",arDto.getSubmissionType());
+            if(arDto.getSubmissionType().equals(DataSubmissionConsts.AR_TYPE_SBT_CYCLE_STAGE)){
+                if(arDto.getCycleStage()!=null){
+                    filter.put("cycleStage",arDto.getCycleStage());
+                }
+            }
+        }
         if(sqf==1||sqf==2){
             if(arDto.getSubmissionId()!=null){
                 filter.put("submissionId",arDto.getSubmissionId());
             }
 
-            if(arDto.getSubmissionType()!=null){
-                filter.put("submissionType",arDto.getSubmissionType());
-                if(arDto.getSubmissionType().equals(DataSubmissionConsts.AR_TYPE_SBT_CYCLE_STAGE)){
-                    if(sqf==1&&arDto.getCycleStage()!=null){
-                        filter.put("cycleStage",arDto.getCycleStage());
-                    }
-                }
-            }
+
             if(arDto.getSubmissionDateFrom()!=null){
                 String submissionDateFrom = Formatter.formatDateTime(arDto.getSubmissionDateFrom(),
                         SystemAdminBaseConstants.DATE_FORMAT);
