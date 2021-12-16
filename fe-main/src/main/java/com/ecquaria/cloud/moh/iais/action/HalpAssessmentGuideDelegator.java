@@ -2561,7 +2561,7 @@ public class HalpAssessmentGuideDelegator {
     }
 
     public static void setParamByField(SearchParam searchParam,String key,List<String> values){
-       if(IaisCommonUtils.isEmpty(values)){
+       if(IaisCommonUtils.isNotEmpty(values)){
            StringBuilder sb = new StringBuilder("(");
            for (int i = 0; i < values.size(); i++) {
                sb.append(":").append(key)
