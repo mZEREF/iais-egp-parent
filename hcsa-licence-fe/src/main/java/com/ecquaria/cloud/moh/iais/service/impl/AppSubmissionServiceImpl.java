@@ -357,7 +357,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
         if(!IaisCommonUtils.isEmpty(appGrpPremisesDtos)){
             List<String> hciCodeList = IaisCommonUtils.genNewArrayList();
             for(AppGrpPremisesDto appGrpPremisesDto:appGrpPremisesDtos){
-                String hciCode = appGrpPremisesDto.getHciCode();
+                String hciCode = appGrpPremisesDto.getOldHciCode();
                 if(!StringUtil.isEmpty(hciCode)){
                     hciCodeList.add(hciCode);
                 }
@@ -1529,7 +1529,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
         for(AppSubmissionDto appSubmissionDto : appSubmissionDtoList){
              appSvcRelatedInfoDtosAll.addAll(appSubmissionDto.getAppSvcRelatedInfoDtoList()) ;
             List<AppGrpPremisesDto> appGrpPremisesDtos = appSubmissionDto.getAppGrpPremisesDtoList();
-            String hciCode = appGrpPremisesDtos.get(0).getHciCode();
+            String hciCode = appGrpPremisesDtos.get(0).getOldHciCode();
             for(AppSvcRelatedInfoDto appSvcRelatedInfoDto:appSubmissionDto.getAppSvcRelatedInfoDtoList()){
                 String serviceCode = appSvcRelatedInfoDto.getServiceCode();
                 if(AppServicesConsts.SERVICE_CODE_EMERGENCY_AMBULANCE_SERVICE.equals(serviceCode)){
@@ -1578,7 +1578,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                     if(ApplicationConsts.SERVICE_CONFIG_TYPE_BASE.equals(appSvcRelatedInfoDto.getServiceType())){
                         licenceFeeDto.setIncludeBase(true);
                     }
-                    licenceFeeDto.setHciCode(appGrpPremisesDtos.get(0).getHciCode());
+                    licenceFeeDto.setHciCode(appGrpPremisesDtos.get(0).getOldHciCode());
                     HcsaServiceDto baseServiceDto = HcsaServiceCacheHelper.getServiceById(appSvcRelatedInfoDto.getBaseServiceId());
                     licenceFeeDto.setBaseService(baseServiceDto.getSvcCode());
                     licenceFeeDto.setServiceCode(appSvcRelatedInfoDto.getServiceCode());
@@ -1654,7 +1654,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
             if(!onlySpecifiedSvc) {
                 for (AppSvcRelatedInfoDto appSvcRelatedInfoDto : appSvcRelatedInfoDtos) {
                     LicenceFeeDto licenceFeeDto = new LicenceFeeDto(); licenceFeeDto.setBundle(0);
-                    licenceFeeDto.setHciCode(appGrpPremisesDtos.get(0).getHciCode());
+                    licenceFeeDto.setHciCode(appGrpPremisesDtos.get(0).getOldHciCode());
                     HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceByCode(appSvcRelatedInfoDto.getServiceCode());
                     if (hcsaServiceDto == null) {
                         log.info(StringUtil.changeForLog("hcsaServiceDto is empty "));
@@ -1764,12 +1764,12 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                 boolean flag = true;
                 String premisesType = dto.getPremisesType();
                 if(premises.size() == 0){
-                    premises.add(dto.getHciCode());
+                    premises.add(dto.getOldHciCode());
                     premisessTypes.add(premisesType);
                     flag = false;
                 }else{
                     for(String premisesCode : premises){
-                        if(premisesCode.equals(dto.getHciCode())){
+                        if(premisesCode.equals(dto.getOldHciCode())){
                             flag = false;
                             break;
                         }
@@ -1777,7 +1777,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                 }
                 if(flag){
                     premisessTypes.add(premisesType);
-                    premises.add(dto.getHciCode());
+                    premises.add(dto.getOldHciCode());
                 }
             }
             List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = appSubmissionDto.getAppSvcRelatedInfoDtoList();
@@ -1795,7 +1795,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                     if(ApplicationConsts.SERVICE_CONFIG_TYPE_BASE.equals(appSvcRelatedInfoDto.getServiceType())){
                         licenceFeeDto.setIncludeBase(true);
                     }
-                    licenceFeeDto.setHciCode(appSubmissionDto.getAppGrpPremisesDtoList().get(0).getHciCode());
+                    licenceFeeDto.setHciCode(appSubmissionDto.getAppGrpPremisesDtoList().get(0).getOldHciCode());
                     HcsaServiceDto baseServiceDto = HcsaServiceCacheHelper.getServiceById(appSvcRelatedInfoDto.getBaseServiceId());
                     licenceFeeDto.setBaseService(baseServiceDto.getSvcCode());
                     licenceFeeDto.setServiceCode(appSvcRelatedInfoDto.getServiceCode());
@@ -1826,7 +1826,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
             if(!onlySpecifiedSvc) {
                 for (AppSvcRelatedInfoDto appSvcRelatedInfoDto : appSvcRelatedInfoDtos) {
                     LicenceFeeDto licenceFeeDto = new LicenceFeeDto(); licenceFeeDto.setBundle(0);
-                    licenceFeeDto.setHciCode(appSubmissionDto.getAppGrpPremisesDtoList().get(0).getHciCode());
+                    licenceFeeDto.setHciCode(appSubmissionDto.getAppGrpPremisesDtoList().get(0).getOldHciCode());
                     HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceByCode(appSvcRelatedInfoDto.getServiceCode());
                     if (hcsaServiceDto == null) {
                         log.info(StringUtil.changeForLog("hcsaServiceDto is empty "));
@@ -1891,7 +1891,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
             for(AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtoList){
                 boolean flag = true;
                 for(AppGrpPremisesDto temp : result){
-                    if(temp.getHciCode().equals(appGrpPremisesDto.getHciCode())){
+                    if(temp.getOldHciCode().equals(appGrpPremisesDto.getOldHciCode())){
                         flag = false;
                         break;
                     }
@@ -3761,13 +3761,13 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
         int matchingTh =appConfigClient.getFeeMaxMatchingThByServiceCode(serviceCode).getEntity();
         if(!IaisCommonUtils.isEmpty(bundleDtos)){
             log.debug(StringUtil.changeForLog("get bundle licence ..."));
-            log.debug("hciCode is {}",appGrpPremisesDto.getHciCode());
+            log.debug("hciCode is {}",appGrpPremisesDto.getOldHciCode());
             log.debug("licenseeId is {}",licenseeId);
             List<String> bundleSvcNameList = IaisCommonUtils.genNewArrayList();
             for(HcsaFeeBundleItemDto hcsaFeeBundleItemDto:bundleDtos){
                 bundleSvcNameList.add(HcsaServiceCacheHelper.getServiceByCode(hcsaFeeBundleItemDto.getSvcCode()).getSvcName());
             }
-            hadBundleLicence = getBundleLicenceByHciCode(appGrpPremisesDto.getHciCode(), licenseeId, bundleSvcNameList);
+            hadBundleLicence = getBundleLicenceByHciCode(appGrpPremisesDto.getOldHciCode(), licenseeId, bundleSvcNameList);
             if(IaisCommonUtils.isNotEmpty(appGrpPremisesDto.getRelatedServices())){
                 for (String relatedSvc:appGrpPremisesDto.getRelatedServices()
                 ) {
