@@ -9,7 +9,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InboxDataSubmissionQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterInboxUserDto;
-import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -23,9 +22,6 @@ import sop.webflow.rt.api.BaseProcessClass;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.Serializable;
-import java.text.ParseException;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -174,19 +170,14 @@ public class DataSubmissionInboxDelegator {
 		HalpAssessmentGuideDelegator.setParamForDate(request,searchParam,"lastDateEnd","lastDateEnd");
 		Map<String, Object>  stringObjectHashMap = searchParam.getParams();
 		if(IaisCommonUtils.isNotEmpty(stringObjectHashMap)){
-			Date dateStart = (Date) stringObjectHashMap.get("lastDateStart");
-			Date dateEnd = (Date) stringObjectHashMap.get("lastDateEnd");
-			try {
-				if(dateStart !=null && dateEnd != null &&  Formatter.compareDateByDay(dateStart,dateEnd) > 0){
+			String dateStart = (String) stringObjectHashMap.get("lastDateStart");
+			String dateEnd = (String) stringObjectHashMap.get("lastDateEnd");
+			if(dateStart !=null && dateEnd != null && dateStart.compareTo(dateEnd) > 0){
 					ParamUtil.setRequestAttr(request,"lastUpdateINBOX_ERR011",MessageUtil.getMessageDesc("INBOX_ERR011"));
 					searchParam = null;
 					log.info("------setSearchParamDate is no------------");
-				}else {
+			}else {
 					log.info("------setSearchParamDate is ok------------");
-				}
-			}catch (ParseException parseException){
-				log.error(parseException.getMessage(),parseException);
-				searchParam = null;
 			}
 		}
 		ParamUtil.setSessionAttr(request, InboxConst.DS_PARAM,searchParam);
