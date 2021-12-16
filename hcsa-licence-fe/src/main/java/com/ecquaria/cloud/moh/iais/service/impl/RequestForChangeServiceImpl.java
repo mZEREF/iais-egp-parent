@@ -1263,8 +1263,6 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                             || !Objects.equals(appGrpPremisesDto.getPremisesSelect(), premisesSelect))) {
                         errorMap.put("premisesHci" + i,
                                 MessageUtil.replaceMessage("GENERAL_ERR0050", ApplicationConsts.TITLE_MODE_OF_SVCDLVY, "field"));
-//                        appGrpPremisesDto.setPremisesSelect("newPremise");
-//                        NewApplicationHelper.setAppSubmissionDto(appSubmissionDto, request);
                     }
                 }
                 //65116

@@ -2174,7 +2174,7 @@ public class NewApplicationHelper {
         }
     }
 
-    public static void setPremEditStatus(List<AppGrpPremisesDto> appGrpPremisesDtos, List<AppGrpPremisesDto> oldAppGrpPremisesDtos){
+    /*public static void setPremEditStatus(List<AppGrpPremisesDto> appGrpPremisesDtos, List<AppGrpPremisesDto> oldAppGrpPremisesDtos){
         if(IaisCommonUtils.isEmpty(appGrpPremisesDtos) || IaisCommonUtils.isEmpty(oldAppGrpPremisesDtos)){
             return;
         }
@@ -2189,7 +2189,7 @@ public class NewApplicationHelper {
             }
         }
 
-    }
+    }*/
 
     public static String getPremisesKey(AppGrpPremisesDto appGrpPremisesDto) {
         return MiscUtil.getPremisesKey(appGrpPremisesDto);
@@ -4698,14 +4698,14 @@ public class NewApplicationHelper {
      */
     private static boolean validateRelatedApps(String licenceId, RequestForChangeService requestForChangeService,
             String type, HttpServletRequest request) {
-        if (NewApplicationConstant.SECTION_SVCINFO.equals(type)/* || NewApplicationConstant.SECTION_LICENSEE.equals(type)*/) {
+        /*if (NewApplicationConstant.SECTION_SVCINFO.equals(type)) {
             return true;
-        }
+        }*/
         List<ApplicationDto> appByLicIdAndExcludeNew = requestForChangeService.getAppByLicIdAndExcludeNew(licenceId);
         boolean invalid = IaisCommonUtils.isNotEmpty(appByLicIdAndExcludeNew)
                 || !requestForChangeService.isOtherOperation(licenceId);
         if (invalid) {
-            log.info(StringUtil.changeForLog("Invalid Licence - " + licenceId));
+            log.info(StringUtil.changeForLog("Invalid Licence - " + type + " : " + licenceId));
             request.setAttribute("rfcPendingApplication", "errorRfcPendingApplication");
             return false;
         }
@@ -4752,12 +4752,28 @@ public class NewApplicationHelper {
     public static Map<String, AppGrpPremisesDto> checkPremisesMap(boolean withCurrent, HttpServletRequest request) {
         AppSubmissionService appSubmissionService = SpringHelper.getBean(AppSubmissionService.class);
         String licenseeId = getLicenseeId(request);
+        AppSubmissionDto appSubmissionDto = getAppSubmissionDto(request);
+        List<Map.Entry<String, AppGrpPremisesDto>> entryList = null;
+        boolean isRfi = checkIsRfi(request);
+        boolean handleCurrent = isRfi && appSubmissionDto != null && appSubmissionDto.getAppGrpPremisesDtoList() != null;
         Map<String, AppGrpPremisesDto> licAppGrpPremisesDtoMap = (Map<String, AppGrpPremisesDto>) request.getSession()
                 .getAttribute(NewApplicationDelegator.LIC_PREMISES_MAP);
         if (licAppGrpPremisesDtoMap == null || licAppGrpPremisesDtoMap.isEmpty()) {
             licAppGrpPremisesDtoMap = appSubmissionService.getLicencePremisesDtoMap(licenseeId);
             if (licAppGrpPremisesDtoMap == null) {
                 licAppGrpPremisesDtoMap = IaisCommonUtils.genNewHashMap();
+            }
+            if (handleCurrent) {
+                entryList = licAppGrpPremisesDtoMap.entrySet().stream()
+                        .filter(entry -> appSubmissionDto.getAppGrpPremisesDtoList().stream()
+                                .anyMatch(dto -> Objects.equals(entry.getValue().getPremisesIndexNo(), dto.getPremisesIndexNo())
+                                        || Objects.equals(entry.getKey(), dto.getPremisesSelect())))
+                        .collect(Collectors.toList());
+                if (entryList != null) {
+                    for (Map.Entry<String, AppGrpPremisesDto> entry : entryList) {
+                        licAppGrpPremisesDtoMap.remove(entry.getKey());
+                    }
+                }
             }
         }
         Map<String, AppGrpPremisesDto> newAppMap = IaisCommonUtils.genNewHashMap();
@@ -4766,17 +4782,17 @@ public class NewApplicationHelper {
         if (appPremisesMap == null || appPremisesMap.isEmpty()) {
             appPremisesMap = appSubmissionService.getActivePendingPremisesMap(licenseeId);
             if (appPremisesMap != null) {
-                AppSubmissionDto appSubmissionDto = getAppSubmissionDto(request);
-                boolean isRfi = checkIsRfi(request);
-                Set<Map.Entry<String, AppGrpPremisesDto>> entrySet = null;
-                if (isRfi && appSubmissionDto != null && appSubmissionDto.getAppGrpPremisesDtoList() != null) {
-                    entrySet = appPremisesMap.entrySet().stream()
+                if (handleCurrent) {
+                    if (entryList == null) {
+                        entryList = IaisCommonUtils.genNewArrayList();
+                    }
+                    entryList.addAll(appPremisesMap.entrySet().stream()
                             .filter(entry -> appSubmissionDto.getAppGrpPremisesDtoList().stream()
                                     .anyMatch(dto -> Objects.equals(entry.getValue().getPremisesIndexNo(), dto.getPremisesIndexNo())
                                             || Objects.equals(entry.getKey(), dto.getPremisesSelect())))
-                            .collect(Collectors.toSet());
-                    if (entrySet != null) {
-                        for (Map.Entry<String, AppGrpPremisesDto> entry : entrySet) {
+                            .collect(Collectors.toList()));
+                    if (entryList != null) {
+                        for (Map.Entry<String, AppGrpPremisesDto> entry : entryList) {
                             appPremisesMap.remove(entry.getKey());
                         }
                     }
@@ -4797,14 +4813,14 @@ public class NewApplicationHelper {
                         AppGrpPremisesDto dto = (AppGrpPremisesDto) CopyUtil.copyMutableObject(appGrpPremisesDto);
                         dto.setExistingData(AppConsts.NO);
                         String key = dto.getPremisesSelect();
-                        if (entrySet != null) {
-                            List<String> relatedServices = entrySet.stream()
+                        if (entryList != null) {
+                            List<String> relatedServices = entryList.stream()
                                     .filter(entry -> Objects.equals(entry.getValue().getPremisesIndexNo(),
                                             dto.getPremisesIndexNo())
                                             || Objects.equals(entry.getKey(), dto.getPremisesSelect()))
                                     .map(entry -> entry.getValue().getRelatedServices())
                                     .filter(Objects::nonNull)
-                                    .collect(ArrayList::new, (u, t) -> u.addAll(t), (x, y) -> x.addAll(y));
+                                    .collect(ArrayList::new, ArrayList::addAll, ArrayList::addAll);
                             dto.setRelatedServices(relatedServices);
                         }
                         if (!licAppGrpPremisesDtoMap.containsKey(key)) {
@@ -4869,9 +4885,9 @@ public class NewApplicationHelper {
                     request.getSession().setAttribute(NewApplicationDelegator.APP_PREMISES_MAP, appPremisesMap);
                     allData.put(premisesSelect, newDto);
                     premises.setPremisesSelect(premisesSelect);
-                    //premises.setExistingData(AppConsts.NO);
+                    premises.setExistingData(AppConsts.NO);
                 } else {
-                    //premises.setExistingData(AppConsts.YES);
+                    premises.setExistingData(AppConsts.YES);
                 }
             } else {// have
                 String oldPremSel = entry.getKey();
