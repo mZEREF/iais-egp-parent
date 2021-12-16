@@ -314,7 +314,7 @@ public class DisposalNotificationDto implements Serializable {
             disposalNot.setDestructMethod(ParamUtil.getString(request, KEY_PREFIX_DESTRUCT_METHOD + SEPARATOR + idx));
             disposalNot.setDestructDetails(ParamUtil.getString(request, KEY_PREFIX_DESTRUCT_DETAILS + SEPARATOR + idx));
 
-            List<PrimaryDocDto.NewDocInfo> newDocInfoList = PrimaryDocDto.reqObjMapping(mulReq,request,getDocType(scheduleType),String.valueOf(idx));
+            List<PrimaryDocDto.NewDocInfo> newDocInfoList = PrimaryDocDto.reqObjMapping(mulReq,request,getDocType(scheduleType),String.valueOf(idx),this.allNewDocInfos);
             disposalNot.setDocType(getDocType(scheduleType));
             //set newDocFiles
             disposalNot.setNewDocInfos(newDocInfoList);
@@ -324,7 +324,7 @@ public class DisposalNotificationDto implements Serializable {
             //set need Validation value
             addDisposalLists(disposalNot);
         }
-        List<PrimaryDocDto.NewDocInfo> newOtherList = PrimaryDocDto.reqOtherMapping(mulReq,request,"others");
+        List<PrimaryDocDto.NewDocInfo> newOtherList = PrimaryDocDto.reqOtherMapping(mulReq,request,"others",this.allNewDocInfos);
         this.setOtherNewInfos(newOtherList);
         //get all new doc
         fillAllNewDocInfo();

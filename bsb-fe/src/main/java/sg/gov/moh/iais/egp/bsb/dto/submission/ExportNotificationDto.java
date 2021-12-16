@@ -365,7 +365,7 @@ public class ExportNotificationDto implements Serializable {
             exportNot.setTransferQty(ParamUtil.getString(request, KEY_PREFIX_TRANSFER_QTY + SEPARATOR + idx));
             exportNot.setMeaUnit(ParamUtil.getString(request, KEY_PREFIX_MEASUREMENT_UNIT + SEPARATOR + idx));
 
-            List<PrimaryDocDto.NewDocInfo> newDocInfoList = PrimaryDocDto.reqObjMapping(mulReq,request,getDocType(scheduleType),String.valueOf(idx));
+            List<PrimaryDocDto.NewDocInfo> newDocInfoList = PrimaryDocDto.reqObjMapping(mulReq,request,getDocType(scheduleType),String.valueOf(idx),this.allNewDocInfos);
             exportNot.setDocType(getDocType(scheduleType));
             //set newDocFiles
             exportNot.setNewDocInfos(newDocInfoList);
@@ -375,7 +375,7 @@ public class ExportNotificationDto implements Serializable {
             //set need Validation value
             addExportLists(exportNot);
         }
-        List<PrimaryDocDto.NewDocInfo> newOtherList = PrimaryDocDto.reqOtherMapping(mulReq,request,"others");
+        List<PrimaryDocDto.NewDocInfo> newOtherList = PrimaryDocDto.reqOtherMapping(mulReq,request,"others",this.allNewDocInfos);
         this.setOtherNewInfos(newOtherList);
         //get all new doc
         fillAllNewDocInfo();

@@ -309,7 +309,7 @@ public class ConsumeNotificationDto implements Serializable {
             consumptionNot.setConsumedQty(ParamUtil.getString(request, KEY_PREFIX_CONSUME_QTY + SEPARATOR + idx));
             consumptionNot.setMeaUnit(ParamUtil.getString(request, KEY_PREFIX_MEASUREMENT_UNIT + SEPARATOR + idx));
 
-            List<PrimaryDocDto.NewDocInfo> newDocInfoList = PrimaryDocDto.reqObjMapping(mulReq,request,getDocType(scheduleType),String.valueOf(idx));
+            List<PrimaryDocDto.NewDocInfo> newDocInfoList = PrimaryDocDto.reqObjMapping(mulReq,request,getDocType(scheduleType),String.valueOf(idx),this.allNewDocInfos);
             consumptionNot.setDocType(getDocType(scheduleType));
             //set newDocFiles
             consumptionNot.setNewDocInfos(newDocInfoList);
@@ -319,7 +319,7 @@ public class ConsumeNotificationDto implements Serializable {
             //set need Validation value
             addConsumptionNotList(consumptionNot);
         }
-        List<PrimaryDocDto.NewDocInfo> newOtherList = PrimaryDocDto.reqOtherMapping(mulReq,request,"others");
+        List<PrimaryDocDto.NewDocInfo> newOtherList = PrimaryDocDto.reqOtherMapping(mulReq,request,"others",this.allNewDocInfos);
         this.setOtherNewInfos(newOtherList);
         //get all new doc
         fillAllNewDocInfo();

@@ -414,7 +414,7 @@ public class ReceiptNotificationDto implements Serializable {
             receiptNot.setReceiveQty(ParamUtil.getString(request, KEY_PREFIX_RECEIVE_QTY + SEPARATOR + idx));
             receiptNot.setMeaUnit(ParamUtil.getString(request, KEY_PREFIX_MEASUREMENT_UNIT + SEPARATOR + idx));
 
-            List<PrimaryDocDto.NewDocInfo> newDocInfoList = PrimaryDocDto.reqObjMapping(mulReq,request,getDocType(scheduleType),String.valueOf(idx));
+            List<PrimaryDocDto.NewDocInfo> newDocInfoList = PrimaryDocDto.reqObjMapping(mulReq,request,getDocType(scheduleType),String.valueOf(idx),this.allNewDocInfos);
             receiptNot.setDocType(getDocType(scheduleType));
             //set newDocFiles
             receiptNot.setNewDocInfos(newDocInfoList);
@@ -424,7 +424,7 @@ public class ReceiptNotificationDto implements Serializable {
             //set need Validation value
             addReceiptLists(receiptNot);
         }
-        List<PrimaryDocDto.NewDocInfo> newOtherList = PrimaryDocDto.reqOtherMapping(mulReq,request,"others");
+        List<PrimaryDocDto.NewDocInfo> newOtherList = PrimaryDocDto.reqOtherMapping(mulReq,request,"others",this.allNewDocInfos);
         this.setOtherNewInfos(newOtherList);
         //get all new doc
         fillAllNewDocInfo();
