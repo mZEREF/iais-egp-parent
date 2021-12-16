@@ -14,29 +14,33 @@
 
 <c:if test="${empty title}">
     <div class="dashboard" id="comDashboard" style="padding: 30px 0 0;overflow:visible">
-        <div class="container" style="padding: 0 90px;">
-            <div class="row d-flex">
-                <%@ include file="/WEB-INF/jsp/iais/common/dashboardDropDown.jsp" %>
-            </div>
-            <div class="row">
-                <div class="col-xs-12"></div>
+        <div class="container">
+            <div class="navigation-gp">
+                <div class="row d-flex">
+                    <%@ include file="/WEB-INF/jsp/iais/common/dashboardDropDown.jsp" %>
+                </div>
+                <div class="row">
+                    <div class="col-xs-12"></div>
+                </div>
             </div>
         </div>
     </div>
 </c:if>
 <c:if test="${not empty title}">
     <div class="dashboard" id="comDashboard" style="background-image:url('<%=webroot1%>img/Masthead-banner.jpg')" >
-        <div class="container" style="padding: 0 90px;">
-            <div class="row d-flex">
-                <%@ include file="/WEB-INF/jsp/iais/common/dashboardDropDown.jsp" %>
-            </div>
-            <div class="row">
-                <div class="col-xs-12">
-                    <div class="dashboard-page-title">
-                        <h1>${title}</h1>
-                        <c:if test="${not empty smallTitle}">
-                            <p style="font-size: 25px;">${smallTitle}</p>
-                        </c:if>
+        <div class="container">
+            <div class="navigation-gp">
+                <div class="row d-flex">
+                    <%@ include file="/WEB-INF/jsp/iais/common/dashboardDropDown.jsp" %>
+                </div>
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div class="dashboard-page-title">
+                            <h1>${title}</h1>
+                            <c:if test="${not empty smallTitle}">
+                                <p style="font-size: 25px;">${smallTitle}</p>
+                            </c:if>
+                        </div>
                     </div>
                 </div>
             </div>
