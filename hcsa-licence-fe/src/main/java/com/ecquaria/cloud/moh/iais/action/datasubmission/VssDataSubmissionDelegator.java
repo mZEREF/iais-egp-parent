@@ -1,18 +1,24 @@
 package com.ecquaria.cloud.moh.iais.action.datasubmission;
 
+import com.ecquaria.cloud.RedirectUtil;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DpSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DsConfig;
 import com.ecquaria.cloud.moh.iais.common.helper.dataSubmission.DsConfigHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant;
+import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
+import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.VssDataSubmissionService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
 
@@ -38,6 +44,7 @@ public class VssDataSubmissionDelegator {
         log.info(" -----VssDataSubmissionDelegator Start ------ ");
         DsConfigHelper.clearVssSession(bpc.request);
         DsConfigHelper.intVssConfig(bpc.request);
+
     }
 
     /**
@@ -57,44 +64,17 @@ public class VssDataSubmissionDelegator {
         if (StringUtil.isEmpty(actionType)) {
             String crudType = ParamUtil.getString(request, DataSubmissionConstant.CRUD_TYPE);
             if (StringUtil.isEmpty(crudType)) {
-                List<DsConfig> configs = DsConfigHelper.intVssConfig(request);
-                actionType = configs.stream()
-                        .filter(config -> config.isActive())
-                        .map(DsConfig::getCode)
-                        .filter(Objects::nonNull)
-                        .findAny()
-                        .orElse(DsConfigHelper.VSS_STEP_TREATMENT);
+                actionType = DataSubmissionHelper.initAction(DataSubmissionConsts.DS_VSS, DsConfigHelper.VSS_STEP_TREATMENT, request);
             } else if ("return".equals(crudType)) {
                 actionType = "return";
             } else if ("previous".equals(crudType)) {
-                DsConfig currentConfig = DsConfigHelper.getCurrentConfig(DataSubmissionConsts.DS_VSS, request);
-                if (1 == currentConfig.getSeqNo()) {
-                    actionType = "return";
-                } else {
-                    DsConfig config = DsConfigHelper.setPreviousActiveConfig(DataSubmissionConsts.DS_VSS, request);
-                    if (config == null) {
-                        actionType = "return";
-                    } else {
-                        actionType = config.getCode();
-                    }
-                }
-            } else if ("page".equals(crudType)) {
-                DsConfig config = DsConfigHelper.setNextActiveConfig(DataSubmissionConsts.DS_VSS, request);
-                if (config == null) {
-                    actionType = "submission";
-                } else {
-                    actionType = config.getCode();
-                }
+                actionType = DataSubmissionHelper.setPreviousAction(DataSubmissionConsts.DS_VSS, request);
+            } else if ("page".equals(crudType) || "next".equals(crudType)) {
+                actionType = DataSubmissionHelper.setNextAction(DataSubmissionConsts.DS_VSS, request);
             } else if ("submission".equals(crudType)) {
                 actionType = crudType;
             } else {
-                List<DsConfig> configs = DsConfigHelper.getDsConfigs(DataSubmissionConsts.DS_VSS);
-                actionType = configs.stream()
-                        .filter(config -> Objects.equals(crudType, config.getCode()))
-                        .map(DsConfig::getCode)
-                        .filter(Objects::nonNull)
-                        .findAny()
-                        .orElse("return");
+                actionType = DataSubmissionHelper.initAction(DataSubmissionConsts.DS_VSS, "return", request);
             }
         }
         return actionType;
@@ -130,16 +110,25 @@ public class VssDataSubmissionDelegator {
         DsConfig currentConfig = DsConfigHelper.getCurrentConfig(DataSubmissionConsts.DS_VSS, bpc.request);
         String currentCode = currentConfig.getCode();
         log.info(StringUtil.changeForLog(" ----- DoStep Step Code: " + currentCode + " ------ "));
+        int status = 0;
         if (currentCode.equals(DsConfigHelper.VSS_STEP_TREATMENT)) {
-            doTreatment(bpc.request);
+            status = doTreatment(bpc.request);
         }
-
+        log.info(StringUtil.changeForLog(" ----- DoStep Status: " + status + " ------ "));
+        String actionType = null;
+        if (0 == status) {// current
+            actionType = DataSubmissionHelper.setCurrentAction(DataSubmissionConsts.DS_VSS, bpc.request);
+        } else if (1 == status) { // previous
+            actionType = DataSubmissionHelper.setPreviousAction(DataSubmissionConsts.DS_VSS, bpc.request);
+        }
+        ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.CRUD_ACTION_TYPE_VSS, actionType);
     }
 
     private void prepareTreatment(HttpServletRequest request) {
     }
 
-    private void doTreatment(HttpServletRequest request) {
+    private int doTreatment(HttpServletRequest request) {
+        return 0;
     }
 
     /**
@@ -149,7 +138,48 @@ public class VssDataSubmissionDelegator {
      */
     public void doSubmission(BaseProcessClass bpc) {
         log.info(" ----- DoSubmission ------ ");
+        /**
+         * DpSuperDataSubmissionDto dpSuperDataSubmissionDto = DataSubmissionHelper.getCurrentDpDataSubmission(bpc.request);
+         *         DataSubmissionDto dataSubmissionDto = dpSuperDataSubmissionDto.getDataSubmissionDto();
+         *         CycleDto cycle = dpSuperDataSubmissionDto.getCycleDto();
+         *         String cycleType = cycle.getCycleType();
+         *         if (StringUtil.isEmpty(dataSubmissionDto.getSubmissionNo())) {
+         *             String submissionNo = dpDataSubmissionService.getSubmissionNo(DataSubmissionConsts.DS_DRP);
+         *             dataSubmissionDto.setSubmissionNo(submissionNo);
+         *         }
+         *         if (StringUtil.isEmpty(dataSubmissionDto.getStatus())) {
+         *             dataSubmissionDto.setStatus(DataSubmissionConsts.DS_STATUS_COMPLETED);
+         *         }
+         *         String stage = dataSubmissionDto.getCycleStage();
+         *         String status = DataSubmissionConsts.DS_STATUS_ACTIVE;
+         *
+         *         cycle.setStatus(status);
+         *         log.info(StringUtil.changeForLog("-----Cycle Type: " + cycleType + " - Stage : " + stage
+         *                 + " - Status: " + status + " -----"));
+         *
+         *         LoginContext loginContext = DataSubmissionHelper.getLoginContext(bpc.request);
+         *         if (loginContext != null) {
+         *             dataSubmissionDto.setSubmitBy(loginContext.getUserId());
+         *             dataSubmissionDto.setSubmitDt(new Date());
+         *         }
+         *         dpSuperDataSubmissionDto = dpDataSubmissionService.saveDpSuperDataSubmissionDto(dpSuperDataSubmissionDto);
+         *         try {
+         *             dpSuperDataSubmissionDto = dpDataSubmissionService.saveDpSuperDataSubmissionDtoToBE(dpSuperDataSubmissionDto);
+         *         } catch (Exception e) {
+         *             log.error(StringUtil.changeForLog("The Eic saveDpSuperDataSubmissionDtoToBE failed ===>" + e.getMessage()), e);
+         *         }
+         *         if (!StringUtil.isEmpty(dpSuperDataSubmissionDto.getDraftId())) {
+         *             dpDataSubmissionService.updateDataSubmissionDraftStatus(dpSuperDataSubmissionDto.getDraftId(),
+         *                     DataSubmissionConsts.DS_STATUS_INACTIVE);
+         *         }
+         *         ParamUtil.setSessionAttr(bpc.request, DataSubmissionConstant.DP_DATA_SUBMISSION, dpSuperDataSubmissionDto);
+         *         ParamUtil.setRequestAttr(bpc.request, "emailAddress", DataSubmissionHelper.getLicenseeEmailAddrs(bpc.request));
+         *         ParamUtil.setRequestAttr(bpc.request, "submittedBy", DataSubmissionHelper.getLoginContext(bpc.request).getUserName());
+         *         ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.CURRENT_PAGE_STAGE, DataSubmissionConstant.PAGE_STAGE_ACK);
+         *         ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.PRINT_FLAG, DataSubmissionConstant.PRINT_FLAG_ACKDRP);
+         */
         ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.CURRENT_PAGE_STAGE, DataSubmissionConstant.PAGE_STAGE_ACK);
+
     }
 
     /**
@@ -169,6 +199,7 @@ public class VssDataSubmissionDelegator {
     public void doRfc(BaseProcessClass bpc) {
         log.info(" ----- DoRfc ------ ");
     }
+
     /**
      * Step: DoWithdraw
      *
@@ -177,6 +208,7 @@ public class VssDataSubmissionDelegator {
     public void doWithdraw(BaseProcessClass bpc) {
         log.info(" ----- DoWithdraw ------ ");
     }
+
     /**
      * Step: DoControl
      *
@@ -186,5 +218,24 @@ public class VssDataSubmissionDelegator {
         log.info(" ----- DoControl ------ ");
     }
 
+    /**
+     * Step: DoReturn
+     *
+     * @param bpc
+     */
+    public void doReturn(BaseProcessClass bpc) throws IOException {
+        log.info(" ----- DoReturn ------ ");
+        DpSuperDataSubmissionDto dpSuperDataSubmissionDto = DataSubmissionHelper.getCurrentDpDataSubmission(bpc.request);
+        String target = InboxConst.URL_MAIN_WEB_MODULE + "MohInternetInbox";
+        if (dpSuperDataSubmissionDto != null && DataSubmissionConsts.DS_APP_TYPE_NEW.equals(dpSuperDataSubmissionDto.getAppType())) {
+            target = InboxConst.URL_LICENCE_WEB_MODULE + "MohDataSubmission";
+        }
+        StringBuilder url = new StringBuilder();
+        url.append(InboxConst.URL_HTTPS)
+                .append(bpc.request.getServerName())
+                .append(target);
+        String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
+        IaisEGPHelper.redirectUrl(bpc.response, tokenUrl);
+    }
 
 }

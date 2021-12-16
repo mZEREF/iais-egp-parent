@@ -9,9 +9,11 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.CycleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.CycleStageSelectionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DpSuperDataSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DsConfig;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInventoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.mastercode.MasterCodeView;
+import com.ecquaria.cloud.moh.iais.common.helper.dataSubmission.DsConfigHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -29,6 +31,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * @Description Data Submission Helper
@@ -580,6 +583,59 @@ public final class DataSubmissionHelper {
             }
         }
         return map;
+    }
+
+    public static String initAction(String dsType, String defaultAction, HttpServletRequest request) {
+        List<DsConfig> configs = DsConfigHelper.intVssConfig(request);
+        return configs.stream()
+                .filter(config -> config.isActive())
+                .map(DsConfig::getCode)
+                .filter(Objects::nonNull)
+                .findAny()
+                .orElse(defaultAction);
+    }
+
+    public static String setPreviousAction(String dsType, HttpServletRequest request) {
+        String actionType;
+        DsConfig currentConfig = DsConfigHelper.getCurrentConfig(DataSubmissionConsts.DS_VSS, request);
+        if (1 == currentConfig.getSeqNo()) {
+            actionType = "return";
+        } else {
+            DsConfig config = DsConfigHelper.setPreviousActiveConfig(DataSubmissionConsts.DS_VSS, request);
+            if (config == null) {
+                actionType = "return";
+            } else {
+                actionType = config.getCode();
+            }
+        }
+        return actionType;
+    }
+
+    public static String setCurrentAction(String dsType, HttpServletRequest request) {
+        String actionType;
+        DsConfig currentConfig = DsConfigHelper.getCurrentConfig(DataSubmissionConsts.DS_VSS, request);
+        if (1 == currentConfig.getSeqNo()) {
+            actionType = "return";
+        } else {
+            DsConfig config = DsConfigHelper.setPreviousActiveConfig(DataSubmissionConsts.DS_VSS, request);
+            if (config == null) {
+                actionType = "return";
+            } else {
+                actionType = config.getCode();
+            }
+        }
+        return actionType;
+    }
+
+    public static String setNextAction(String dsType, HttpServletRequest request) {
+        String actionType;
+        DsConfig config = DsConfigHelper.setNextActiveConfig(dsType, request);
+        if (config == null) {
+            actionType = "submission";
+        } else {
+            actionType = config.getCode();
+        }
+        return actionType;
     }
 
 }
