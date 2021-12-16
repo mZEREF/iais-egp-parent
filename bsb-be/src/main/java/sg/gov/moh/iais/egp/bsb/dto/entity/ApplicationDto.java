@@ -38,4 +38,8 @@ public class ApplicationDto extends BaseEntityDto {
     private Date aoVerifiedDt;
 
     private Date hmVerifiedDt;
+
+    private String isAssigned;
+
+    private Date effectiveDate;
 }
