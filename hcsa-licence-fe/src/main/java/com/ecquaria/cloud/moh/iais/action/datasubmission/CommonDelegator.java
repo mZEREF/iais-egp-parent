@@ -84,11 +84,6 @@ public abstract class CommonDelegator {
         log.info(StringUtil.changeForLog("-----" + this.getClass().getSimpleName() + " Prepare Switch -----"));
         ArSuperDataSubmissionDto currentArDataSubmission = DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
         ParamUtil.setRequestAttr(bpc.request, "title", DataSubmissionHelper.getMainTitle(currentArDataSubmission));
-        String stage = Optional.ofNullable(currentArDataSubmission.getSelectionDto())
-                .map(CycleStageSelectionDto::getStage)
-                .orElse("Cycle Stages");
-        stage = MasterCodeUtil.getCodeDesc(stage);
-        ParamUtil.setRequestAttr(bpc.request, "smallTitle", "You are submitting for <strong>" + stage + "</strong>");
         String actionType = (String) ParamUtil.getRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE);
         log.info(StringUtil.changeForLog("----- Action Type: " + actionType + " -----"));
         if (StringUtil.isEmpty(actionType)) {
@@ -96,6 +91,9 @@ public abstract class CommonDelegator {
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, actionType);
         }
         prepareSwitch(bpc);
+        if(StringUtil.stringsContainKey(currentArDataSubmission.getSubmissionType(),DataSubmissionConsts.AR_TYPE_SBT_CYCLE_STAGE)){
+            ParamUtil.setRequestAttr(bpc.request, "smallTitle", "You are submitting for <strong>Assisted Reproduction</strong>");
+        }
     }
 
     /**

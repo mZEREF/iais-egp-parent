@@ -6,12 +6,10 @@ import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DonorDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DonorSampleAgeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DonorSampleDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationProperty;
-import com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.helper.*;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.ArDataSubmissionService;
@@ -32,15 +30,20 @@ public abstract class DonorCommonDelegator extends CommonDelegator{
 
     @Autowired
     private ArDataSubmissionService arDataSubmissionService;
+
     protected void actionArDonorDtos(HttpServletRequest request, List<DonorDto> arDonorDtos){
         int actionArDonor = ParamUtil.getInt(request,CRUD_ACTION_VALUE_AR_STAGE);
         //actionArDonor default =-3;
         if(actionArDonor == -1){
             //add
-            for (int i = 0; i < arDonorDtos.size(); i++) {
-                arDonorDtos.get(i).setArDonorIndex(i);
+            if(SystemParamUtil.getSystemParamConfig().getArAddDonorMaxSize() > arDonorDtos.size()){
+                for (int i = 0; i < arDonorDtos.size(); i++) {
+                    arDonorDtos.get(i).setArDonorIndex(i);
+                }
+                arDonorDtos.add(getInitArDonorDto(arDonorDtos.size()));
+            }else {
+                log.info("-------user illegal operation addArDonor-----------");
             }
-            arDonorDtos.add(getInitArDonorDto(arDonorDtos.size()));
         }else if(actionArDonor >-1 ){
             //delete
             deleteDonor(arDonorDtos,actionArDonor);
@@ -130,8 +133,6 @@ public abstract class DonorCommonDelegator extends CommonDelegator{
             arDonorDto.setIdType(StringUtil.getNonNull(arDonorDto.getIdType()));
             arDonorDto.setIdNumber(StringUtil.getNonNull(arDonorDto.getIdNumber()));
         }else {
-            arDonorDto.setPleaseIndicate(null);
-            arDonorDto.setPleaseIndicateValues(null);
             arDonorDto.setIdType(ParamUtil.getString(request,"idTypeSample"+arDonorDto.getArDonorIndex()));
             arDonorDto.setSource(StringUtil.getNonNull(arDonorDto.getSource()));
             arDonorDto.setOtherSource(StringUtil.getNonNull(arDonorDto.getOtherSource()));

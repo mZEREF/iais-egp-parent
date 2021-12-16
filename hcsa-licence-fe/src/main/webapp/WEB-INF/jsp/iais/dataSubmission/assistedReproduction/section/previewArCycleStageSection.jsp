@@ -107,7 +107,7 @@
                            data-original-title="">i</a>
                     </label>
                         <iais:value width="7" cssClass="col-md-7" display="true">
-                            <c:out value="${arCycleStageDto.totalPreviouslyPreviously}"/>
+                            <iais:optionText value="${arCycleStageDto.totalPreviouslyPreviously}" selectionOptions="numberArcPreviouslyDropDown"/>
                         </iais:value>
                 </iais:row>
 

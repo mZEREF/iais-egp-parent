@@ -52,11 +52,12 @@
                  <c:if test="${!donorDto.directedDonation}">
 
                      <iais:row cssClass="usedDonorOocyteControlClass" id="donorSampleCodeId${arDonorIndex}Row" >
-                         <iais:field width="5" value="Donor Sample Code" />
-                         <iais:value width="3" cssClass="col-md-3" display="true">
+                         <iais:field width="5" value="Donor Sample Code / ID" />
+                         <iais:value width="7" cssClass="col-md-3" display="true">
                              <iais:optionText value="${donorDto.idType}" selectionOptions="donorSampleDropDown"/>
                          </iais:value>
-                         <iais:value width="4" cssClass="col-md-4" display="true">
+                         <iais:field width="5" value="" />
+                         <iais:value width="7" cssClass="col-md-4" display="true">
                              <c:out value="${donorDto.donorSampleCode}" />
                          </iais:value>
                      </iais:row>

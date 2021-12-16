@@ -93,6 +93,7 @@ public final class DataSubmissionHelper {
         } else if (StringUtil.isEmpty(dataSubmissionDto.getStatus())) {
             dataSubmissionDto.setStatus(DataSubmissionConsts.DS_STATUS_COMPLETED);
         }
+        dataSubmissionDto.setDeclaration(null);
         newDto.setDataSubmissionDto(dataSubmissionDto);
         newDto.setCycleDto(DataSubmissionHelper.initCycleDto(newDto, true));
         return newDto;

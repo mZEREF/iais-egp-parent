@@ -558,9 +558,7 @@ public class ArDataSubmissionServiceImpl implements ArDataSubmissionService {
     private boolean haveEnhancedCounsellingIncludeCurrentStage(ArSuperDataSubmissionDto arSuperDataSubmissionDto) {
         if (arSuperDataSubmissionDto.getArCycleStageDto() != null) {
             ArCycleStageDto arCycleStageDto = arSuperDataSubmissionDto.getArCycleStageDto();
-            if (arCycleStageDto.getEnhancedCounselling()) {
-                return true;
-            }
+            return arCycleStageDto.getEnhancedCounselling() != null && arCycleStageDto.getEnhancedCounselling();
         }
         CycleDto cycleDto = arSuperDataSubmissionDto.getCycleDto();
         String patientCode = cycleDto.getPatientCode();
