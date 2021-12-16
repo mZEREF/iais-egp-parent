@@ -14,7 +14,7 @@
     </iais:row>
     <iais:row>
         <iais:field width="10" cssClass="col-md-5" value="Name (as per NRIC/Passport)"/>
-        <iais:value width="7" display="true">
+        <iais:value width="7">
             <c:out value="231242123" />
         </iais:value>
     </iais:row>

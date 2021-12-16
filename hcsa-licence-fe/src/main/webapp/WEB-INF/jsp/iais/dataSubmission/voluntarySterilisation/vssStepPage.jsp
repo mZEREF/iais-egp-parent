@@ -15,6 +15,8 @@
 
 <%@ include file="common/vssHeader.jsp" %>
 
+<c:set var="canEdit" value="${VSS_CURRENT_STEP.showEdit}" scope="request"/>
+
 <form method="post" id="mainForm" action="<%=process2.runtime.continueURL()%>">
     <input id="isEditHiddenVal" type="hidden" name="isEdit" value="0"/>
     <div class="main-content">
@@ -25,7 +27,18 @@
                         <%@ include file="common/navTabs.jsp" %>
                         <div class="tab-content">
                             <div class="tab-pane in active">
-                                <%@ include file="section/treatmentDetails.jsp" %>
+                                <c:set var="currCode" value="${VSS_CURRENT_STEP.code}" scope="request"/>
+                                <c:choose>
+                                    <c:when test="${currCode == 'VSST001'}">
+                                        <%@ include file="section/treatmentDetails.jsp" %>
+                                    </c:when>
+                                    <c:when test="${currCode == 'VSST002'}">
+                                    </c:when>
+                                    <c:when test="${currCode == 'VSST003'}">
+                                    </c:when>
+                                    <c:when test="${currCode == 'VSST004'}">
+                                    </c:when>
+                                </c:choose>
                                 <%@ include file="common/vssFooter.jsp" %>
                             </div>
                         </div>
