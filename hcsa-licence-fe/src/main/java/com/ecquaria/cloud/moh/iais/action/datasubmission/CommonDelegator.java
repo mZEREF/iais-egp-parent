@@ -121,8 +121,10 @@ public abstract class CommonDelegator {
             if (!DataSubmissionConsts.DS_APP_TYPE_NEW.equals(arSuperDataSubmission.getAppType())) {
                 uri = InboxConst.URL_MAIN_WEB_MODULE + "MohInternetInbox";
             }else {
-                if (DataSubmissionConsts.AR_TYPE_SBT_DONOR_SAMPLE.equals(arSuperDataSubmission.getSubmissionType())) {
+                if (StringUtil.stringsContainKey(arSuperDataSubmission.getSubmissionType(),DataSubmissionConsts.AR_TYPE_SBT_DONOR_SAMPLE,DataSubmissionConsts.AR_TYPE_SBT_PATIENT_INFO)) {
                     uri = InboxConst.URL_LICENCE_WEB_MODULE + "MohARDataSubmission";
+                }else {
+                    uri =  InboxConst.URL_LICENCE_WEB_MODULE+ "MohARCycleStagesManual";
                 }
             }
         }
