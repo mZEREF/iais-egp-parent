@@ -4764,8 +4764,6 @@ public class NewApplicationHelper {
         Map<String, AppGrpPremisesDto> appPremisesMap = (Map<String, AppGrpPremisesDto>) request.getSession()
                 .getAttribute(NewApplicationDelegator.APP_PREMISES_MAP);
         if (appPremisesMap == null || appPremisesMap.isEmpty()) {
-            AppSubmissionDto appSubmissionDto = getAppSubmissionDto(request);
-            boolean isRfi = checkIsRfi(request);
             appPremisesMap = appSubmissionService.getActivePendingPremisesMap(licenseeId);
             if (appPremisesMap != null) {
                 AppSubmissionDto appSubmissionDto = getAppSubmissionDto(request);
