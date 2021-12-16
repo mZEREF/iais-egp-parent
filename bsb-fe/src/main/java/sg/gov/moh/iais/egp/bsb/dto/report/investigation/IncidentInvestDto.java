@@ -1,5 +1,6 @@
 package sg.gov.moh.iais.egp.bsb.dto.report.investigation;
 
+import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.extern.slf4j.Slf4j;
@@ -7,6 +8,8 @@ import sg.gov.moh.iais.egp.bsb.common.node.simple.ValidatableNodeValue;
 import sg.gov.moh.iais.egp.bsb.dto.ValidationResultDto;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -110,5 +113,15 @@ public class IncidentInvestDto extends ValidatableNodeValue {
     private static final String KEY_MEASURE= "measure";
     private static final String KEY_IMPLEMENT_DATE = "implementDate";
     public void reqObjMapping(HttpServletRequest request){
+        this.backgroundInfo = ParamUtil.getString(request,KEY_BACKGROUND_INFORMATION);
+        this.incidentDesc = ParamUtil.getString(request,KEY_INCIDENT_DESCRIPTION);
+        String[] causes = ParamUtil.getStrings(request,KEY_INCIDENT_CAUSES);
+        if(causes != null && causes.length>0){
+            this.incidentCauses = new ArrayList<>(Arrays.asList(causes));
+        }
+        this.otherCause = ParamUtil.getString(request,KEY_OTHER_CAUSE);
+        this.explainCause = ParamUtil.getString(request,KEY_EXPLAIN_CAUSE);
+        this.measure = ParamUtil.getString(request,KEY_MEASURE);
+        this.implementDate = ParamUtil.getString(request,KEY_IMPLEMENT_DATE);
     }
 }

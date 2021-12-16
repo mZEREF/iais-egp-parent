@@ -1,10 +1,13 @@
 package sg.gov.moh.iais.egp.bsb.dto.report.investigation;
 
+import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.extern.slf4j.Slf4j;
 import sg.gov.moh.iais.egp.bsb.common.node.simple.ValidatableNodeValue;
 import sg.gov.moh.iais.egp.bsb.dto.ValidationResultDto;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * @author YiMing
@@ -143,5 +146,34 @@ public class MedicalInvestDto extends ValidatableNodeValue {
 
     public void setAddFpDuration(String addFpDuration) {
         this.addFpDuration = addFpDuration;
+    }
+
+    private static final String KEY_PERSONNEL_NAME = "personnelName";
+    private static final String KEY_MEDICAL_UPDATE = "medicalUpdate";
+    private static final String KEY_TEST_RESULT = "testResult";
+    private static final String KEY_MEDICAL_FOLLOW_UP = "medicalFollowup";
+    private static final String KEY_FOLLOW_UP_DURATION = "fpDuration";
+    private static final String KEY_IS_IDENTIFIED= "isIdentified";
+    private static final String KEY_ADDITIONAL_PERSONNEL_NAME = "addPersonnelName";
+    private static final String KEY_INVOLVEMENT_DESCRIPTION= "involvementDesc";
+    private static final String KEY_DESCRIPTION= "description";
+    private static final String KEY_ADDITIONAL_TEST_RESULT = "addTestResult";
+    private static final String KEY_ADDITIONAL_MEDICAL_FOLLOW_UP  = "addMedicalFollowup";
+    private static final String KEY_ADDITIONAL_FOLLOW_UP_DURATION  = "addFpDuration";
+
+    public void reqObjMapping(HttpServletRequest request){
+        this.personnelName = ParamUtil.getString(request,KEY_PERSONNEL_NAME);
+        this.medicalUpdate = ParamUtil.getString(request,KEY_MEDICAL_UPDATE);
+        this.testResult = ParamUtil.getString(request,KEY_TEST_RESULT);
+        this.medicalFollowup = ParamUtil.getString(request,KEY_MEDICAL_FOLLOW_UP);
+        this.fpDuration = ParamUtil.getString(request,KEY_FOLLOW_UP_DURATION);
+        this.isIdentified = ParamUtil.getString(request,KEY_IS_IDENTIFIED);
+        this.addPersonnelName = ParamUtil.getString(request,KEY_ADDITIONAL_PERSONNEL_NAME);
+        this.involvementDesc  = ParamUtil.getString(request,KEY_INVOLVEMENT_DESCRIPTION);
+        this.description = ParamUtil.getString(request,KEY_DESCRIPTION);
+        this.addTestResult = ParamUtil.getString(request,KEY_ADDITIONAL_TEST_RESULT);
+        this.addMedicalFollowup = ParamUtil.getString(request,KEY_ADDITIONAL_MEDICAL_FOLLOW_UP);
+        this.addFpDuration = ParamUtil.getString(request,KEY_ADDITIONAL_FOLLOW_UP_DURATION);
+
     }
 }

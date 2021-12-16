@@ -183,6 +183,16 @@ function changeH3(sectionIdPrefix, num, titlePrefix, separator) {
 
 function removeBtnEventHandler() {
     var idx = $(this).attr("data-current-idx");
+    var secIdx = $("#existIdx--v--"+idx).val();
+    var existId = $("#existFiles--v--"+idx).val();
+    var deleteNewFiles = document.getElementById("deleteNewFiles");
+    var deleteIdx = document.getElementById("deleteIdx");
+    if(existId !== ""){
+        appendInputValue(deleteNewFiles,existId);
+    }
+    if(secIdx !== ""){
+        appendInputValue(deleteIdx,secIdx);
+    }
     var meta = readSectionRepeatMetaData();
     if (meta) {
         removeSection(idx, meta.idxInputName, meta.sectionIdPrefix, meta.headerTitlePrefix, meta.sectionGroupId, meta.separator);
