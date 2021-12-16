@@ -2800,6 +2800,8 @@ public class NewApplicationDelegator {
                 if (!appEditSelectDto.isChangeBusinessName() && !appEditSelectDto.isChangeVehicle() && !appEditSelectDto.isChangePersonnel()) {
                     appEditSelectDto.setServiceEdit(false);
                 }
+            } else {
+                log.info(StringUtil.changeForLog("changeList: " + changeList));
             }
         }
         // re-set change edit select dto
@@ -3611,8 +3613,8 @@ public class NewApplicationDelegator {
             return appSubmissionDto.getAppGrpPremisesDtoList();
         }
 
+        boolean isRfi = NewApplicationHelper.checkIsRfi(request);
         List<AppGrpPremisesDto> appGrpPremisesDtoList = IaisCommonUtils.genNewArrayList();
-        Object requestInformationConfig = ParamUtil.getSessionAttr(request, REQUESTINFORMATIONCONFIG);
         List<HcsaServiceDto> hcsaServiceDtoList = (List<HcsaServiceDto>) ParamUtil.getSessionAttr(request, AppServicesConsts.HCSASERVICEDTOLIST);
         boolean isMultiPremService = NewApplicationHelper.isMultiPremService(hcsaServiceDtoList);
         int count = 0;
@@ -3696,7 +3698,7 @@ public class NewApplicationDelegator {
                 premIndexNo = UUID.randomUUID().toString();
             }
             String appType = appSubmissionDto.getAppType();
-            boolean newApp = requestInformationConfig == null && ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType);
+            boolean newApp = !isRfi && ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType);
             if (newApp) {
                 if (!StringUtil.isEmpty(premisesSel) && !premisesSel.equals("-1")
                         && !premisesSel.equals(ApplicationConsts.NEW_PREMISES) && AppConsts.YES.equals(chooseExistData[i])) {
@@ -3714,44 +3716,26 @@ public class NewApplicationDelegator {
                     }
                     continue;
                 }
-            } else if (!StringUtil.isEmpty(isParyEdit[i])) {
-                if (!AppConsts.YES.equals(isParyEdit[i])) {
-                    List<AppGrpPremisesDto> appGrpPremisesDtos = appSubmissionDto.getAppGrpPremisesDtoList();
-                    for (AppGrpPremisesDto prem : appGrpPremisesDtos) {
-                        if (premIndexNo.equals(prem.getPremisesIndexNo())) {
-                            appGrpPremisesDto = prem;
-                            break;
-                        }
+            } else if (AppConsts.YES.equals(chooseExistData[i])) {
+                appGrpPremisesDto = NewApplicationHelper.getPremisesFromMap(premisesSel, request);
+                if (appGrpPremisesDto != null) {
+                    if (AppConsts.TRUE.equals(rfiCanEdit[i])) {
+                        appGrpPremisesDto.setRfiCanEdit(true);
+                    } else {
+                        appGrpPremisesDto.setRfiCanEdit(false);
                     }
-                    appGrpPremisesDto.setExistingData(chooseExistData[i]);
-                    NewApplicationHelper.setPremise(appGrpPremisesDto, premIndexNo, appSubmissionDto);
-                    appGrpPremisesDtoList.add(appGrpPremisesDto);
-                    continue;
-                }
-                if (AppConsts.YES.equals(chooseExistData[i])) {
-                    appGrpPremisesDto = NewApplicationHelper.getPremisesFromMap(premisesSel, request);
-                    if (appGrpPremisesDto != null) {
-                        if (AppConsts.TRUE.equals(rfiCanEdit[i])) {
-                            appGrpPremisesDto.setRfiCanEdit(true);
-                        } else {
-                            appGrpPremisesDto.setRfiCanEdit(false);
-                        }
+                    if (!AppConsts.YES.equals(isParyEdit[i])) {
                         appGrpPremisesDto.setExistingData(chooseExistData[i]);
                         NewApplicationHelper.setPremise(appGrpPremisesDto, premIndexNo, appSubmissionDto);
                         appGrpPremisesDtoList.add(appGrpPremisesDto);
                         continue;
                     } else {
-                        log.error(StringUtil.changeForLog("##### Error Data: " + premIndexNo));
+                        log.info(StringUtil.changeForLog("Get data from page for " + StringUtil.clarify(premisesSel)));
                     }
+                } else {
+                    log.warn(StringUtil.changeForLog("##### warn Data: " + premIndexNo));
+                    appGrpPremisesDto = new AppGrpPremisesDto();
                 }
-                //set hciCode
-                /*List<AppGrpPremisesDto> appGrpPremisesDtos = appSubmissionDto.getAppGrpPremisesDtoList();
-                for (AppGrpPremisesDto premDto : appGrpPremisesDtos) {
-                    if (premIndexNo.equals(premDto.getPremisesIndexNo())) {
-                        NewApplicationHelper.setPremise(appGrpPremisesDto, premIndexNo, appSubmissionDto);
-                        break;
-                    }
-                }*/
             }
             appGrpPremisesDto.setExistingData(chooseExistData[i]);
             NewApplicationHelper.setPremise(appGrpPremisesDto, premIndexNo, appSubmissionDto);
@@ -4139,11 +4123,11 @@ public class NewApplicationDelegator {
             appGrpPremisesDto.setEventDtoList(eventList);
             appGrpPremisesDtoList.add(appGrpPremisesDto);
         }
-        if (ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appSubmissionDto.getAppType()) ||
+        /*if (ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appSubmissionDto.getAppType()) ||
                 ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())) {
             //set premises edit status
             NewApplicationHelper.setPremEditStatus(appGrpPremisesDtoList, getAppGrpPremisesDtos(appSubmissionDto.getOldAppSubmissionDto()));
-        }
+        }*/
         return appGrpPremisesDtoList;
     }
 
