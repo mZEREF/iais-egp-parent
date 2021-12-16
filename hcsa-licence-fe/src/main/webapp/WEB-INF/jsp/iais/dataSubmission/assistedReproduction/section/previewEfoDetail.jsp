@@ -43,7 +43,7 @@
                     </iais:value>
                 </iais:row>
                 <iais:row>
-                    <iais:field width="6" value="Reasons" mandatory="false"/>
+                    <iais:field width="6" value="Reason" mandatory="false"/>
                     <iais:value width="6" display="true">
                         <iais:code code="${arSuperDataSubmissionDto.efoCycleStageDto.reason}"/>
                     </iais:value>

@@ -67,8 +67,8 @@ public class OnlineArAjaxController {
             List<AssistedReproductionEnquiryAjaxPatientResultsDto> arAjaxList=searchResult.getRows();
             for (AssistedReproductionEnquiryAjaxPatientResultsDto ajax:arAjaxList
                  ) {
-                String coFunding="-";
-                String arTreatment="-";
+                String coFunding="";
+                String arTreatment="";
 
                 if(ajax.getTreatmentFreshNatural()!=null&&ajax.getTreatmentFreshNatural()){
                     arTreatment=arTreatment+ MasterCodeUtil.getCodeDesc(DataSubmissionConsts.CURRENT_AR_TREATMENT_FRESH_CYCLE_NATURAL);
@@ -107,6 +107,12 @@ public class OnlineArAjaxController {
                         coFunding=coFunding+',';
                     }
                     coFunding=coFunding+ajax.getPgtCoFunding();
+                }
+                if("".equals(arTreatment)){
+                    arTreatment="-";
+                }
+                if("".equals(coFunding)){
+                    coFunding="-";
                 }
                 ajax.setArTreatment(arTreatment);
                 ajax.setCoFunding(coFunding);

@@ -64,7 +64,7 @@
                     </iais:value>
                 </iais:row>
                 <iais:row>
-                    <iais:field width="6" value="Reasons" mandatory="true"/>
+                    <iais:field width="6" value="Reason" mandatory="true"/>
                     <iais:value width="6" cssClass="col-md-6">
                         <iais:select cssClass="reasonSelect"  name="reasonSelect" firstOption="Please Select" options="efoReasonSelectOption" value="${arSuperDataSubmissionDto.efoCycleStageDto.reason}"></iais:select>
                         <span class="error-msg" name="iaisErrorMsg" id="error_reason"></span>
