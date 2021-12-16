@@ -35,6 +35,9 @@ import static sg.gov.moh.iais.egp.bsb.constant.DataSubmissionConstants.*;
 @Delegator("dataSubmissionDelegator")
 public class DataSubmissionDelegator {
     private static final String DATA_SYNC_ERROR_MSG = "Fail to sync files to BE";
+    private static final String PARAM_KEY_MAP = "keyMap";
+
+
     private final DataSubmissionClient dataSubmissionClient;
     private final FileRepoClient fileRepoClient;
     private final BsbSubmissionCommon subCommon;
@@ -92,7 +95,6 @@ public class DataSubmissionDelegator {
         ParamUtil.setSessionAttr(request,KEY_FAC_ID,facId);
     }
 
-    //consume notification code
     /**
      * StartStep: prepareConsumeData
      * Prepare data for the callback and facility info
@@ -113,6 +115,8 @@ public class DataSubmissionDelegator {
         Map<String,DocSetting> settingMap = getDocSettingMap();
         ParamUtil.setRequestAttr(request,KEY_DO_SETTINGS,settingMap);
         ParamUtil.setSessionAttr(request,KEY_CONSUME_NOTIFICATION_DTO, notificationDto);
+        Map<Integer,List<PrimaryDocDto.NewDocInfo>> keyNewInfos = notificationDto.getKeyNewInfos();
+        ParamUtil.setRequestAttr(request,PARAM_KEY_MAP,keyNewInfos);
         ParamUtil.setSessionAttr(request,KEY_SUBMISSION_TYPE,KEY_DATA_SUBMISSION_TYPE_CONSUME);
     }
 
@@ -143,6 +147,7 @@ public class DataSubmissionDelegator {
         ParamUtil.setSessionAttr(request, KEY_OTHER_DOC, (Serializable) notificationDto.getAllDocMetaByDocType().get(KEY_DOC_TYPE_OF_OTHER));
         ParamUtil.setSessionAttr(request,KEY_CONSUME_NOTIFICATION_DTO, notificationDto);
     }
+
     /**
      * StartStep: saveConsumeNot
      * save consume notification
@@ -157,8 +162,6 @@ public class DataSubmissionDelegator {
             List<String> repoIds = fileRepoClient.saveFiles(files).getEntity();
             newFilesToSync = new ArrayList<>(dto.newFileSaved(repoIds));
         }
-        String ensure = ParamUtil.getString(request, KEY_PREFIX_ENSURE);
-        dto.setEnsure(ensure);
         ConsumeNotificationDto.ConsumeNotNeedR consumeNotNeedR = dto.getConsumeNotNeedR();
         dataSubmissionClient.saveConsumeNot(consumeNotNeedR);
         try {
@@ -175,7 +178,6 @@ public class DataSubmissionDelegator {
         }
     }
 
-    //disposal notification code
     /**
      * StartStep: prepareDisposalData
      */
@@ -192,11 +194,14 @@ public class DataSubmissionDelegator {
         if(Boolean.TRUE.equals(needShowError)){
             ParamUtil.setRequestAttr(request,ValidationConstants.KEY_VALIDATION_ERRORS,notificationDto.retrieveValidationResult());
         }
+        Map<Integer,List<PrimaryDocDto.NewDocInfo>> keyNewInfos = notificationDto.getKeyNewInfos();
+        ParamUtil.setRequestAttr(request,PARAM_KEY_MAP,keyNewInfos);
         Map<String,DocSetting> settingMap = getDocSettingMap();
         ParamUtil.setRequestAttr(request,KEY_DO_SETTINGS,settingMap);
         ParamUtil.setSessionAttr(request,KEY_DISPOSAL_NOTIFICATION_DTO, notificationDto);
         ParamUtil.setSessionAttr(request,KEY_SUBMISSION_TYPE,KEY_DATA_SUBMISSION_TYPE_DISPOSAL);
     }
+
     /**
      * StartStep: prepareConfirm
      * Put data into session for preview and save
@@ -212,6 +217,7 @@ public class DataSubmissionDelegator {
         ParamUtil.setRequestAttr(request,KEY_DOC_META,notificationDto.getAllDocMetaByDocType());
         ParamUtil.setSessionAttr(request,KEY_DISPOSAL_NOTIFICATION_DTO, notificationDto);
     }
+
     /**
      * StartStep: saveDisposalNot
      * save consume notification
@@ -226,8 +232,6 @@ public class DataSubmissionDelegator {
             List<String> repoIds = fileRepoClient.saveFiles(files).getEntity();
             newFilesToSync = new ArrayList<>(dto.newFileSaved(repoIds));
         }
-        String ensure = ParamUtil.getString(request, KEY_PREFIX_ENSURE);
-        dto.setEnsure(ensure);
         DisposalNotificationDto.DisposalNotNeedR disposalNotNeedR = dto.getDisposalNotNeedR();
         dataSubmissionClient.saveDisposalNot(disposalNotNeedR);
         try {
@@ -244,7 +248,6 @@ public class DataSubmissionDelegator {
         }
     }
 
-    //export notification code
     /**
      * StartStep: prepareExportData
      */
@@ -261,11 +264,14 @@ public class DataSubmissionDelegator {
         if(Boolean.TRUE.equals(needShowError)){
             ParamUtil.setRequestAttr(request,ValidationConstants.KEY_VALIDATION_ERRORS,notificationDto.retrieveValidationResult());
         }
+        Map<Integer,List<PrimaryDocDto.NewDocInfo>> keyNewInfos = notificationDto.getKeyNewInfos();
+        ParamUtil.setRequestAttr(request,PARAM_KEY_MAP,keyNewInfos);
         Map<String,DocSetting> settingMap = getDocSettingMap();
         ParamUtil.setRequestAttr(request,KEY_DO_SETTINGS,settingMap);
         ParamUtil.setSessionAttr(request,KEY_EXPORT_NOTIFICATION_DTO, notificationDto);
         ParamUtil.setSessionAttr(request,KEY_SUBMISSION_TYPE,KEY_DATA_SUBMISSION_TYPE_EXPORT);
     }
+
     /**
      * StartStep: prepareConfirm
      * Put data into session for preview and save
@@ -281,6 +287,7 @@ public class DataSubmissionDelegator {
         ParamUtil.setRequestAttr(request,KEY_DOC_META,notificationDto.getAllDocMetaByDocType());
         ParamUtil.setSessionAttr(request,KEY_EXPORT_NOTIFICATION_DTO, notificationDto);
     }
+
     /**
      * StartStep: saveExportNot
      * save consume notification
@@ -295,8 +302,6 @@ public class DataSubmissionDelegator {
             List<String> repoIds = fileRepoClient.saveFiles(files).getEntity();
             newFilesToSync = new ArrayList<>(dto.newFileSaved(repoIds));
         }
-        String ensure = ParamUtil.getString(request, KEY_PREFIX_ENSURE);
-        dto.setEnsure(ensure);
         ExportNotificationDto.ExportNotNeedR exportNotNeedR = dto.getExportNotNeedR();
         dataSubmissionClient.saveExportNot(exportNotNeedR);
         try {
@@ -313,7 +318,6 @@ public class DataSubmissionDelegator {
         }
     }
 
-    //receive notification code
     /**
      * StartStep: prepareReceiptData
      */
@@ -330,11 +334,14 @@ public class DataSubmissionDelegator {
         if(Boolean.TRUE.equals(needShowError)){
             ParamUtil.setRequestAttr(request,ValidationConstants.KEY_VALIDATION_ERRORS,notificationDto.retrieveValidationResult());
         }
+        Map<Integer,List<PrimaryDocDto.NewDocInfo>> keyNewInfos = notificationDto.getKeyNewInfos();
+        ParamUtil.setRequestAttr(request,PARAM_KEY_MAP,keyNewInfos);
         Map<String,DocSetting> settingMap = getDocSettingMap();
         ParamUtil.setRequestAttr(request,KEY_DO_SETTINGS,settingMap);
         ParamUtil.setSessionAttr(request,KEY_RECEIPT_NOTIFICATION_DTO, notificationDto);
         ParamUtil.setSessionAttr(request,KEY_SUBMISSION_TYPE,KEY_DATA_SUBMISSION_TYPE_RECEIPT);
     }
+
     /**
      * StartStep: prepareConfirm
      * Put data into session for preview and save
@@ -350,6 +357,7 @@ public class DataSubmissionDelegator {
         ParamUtil.setRequestAttr(request,KEY_DOC_META,notificationDto.getAllDocMetaByDocType());
         ParamUtil.setSessionAttr(request,KEY_RECEIPT_NOTIFICATION_DTO, notificationDto);
     }
+
     /**
      * StartStep: saveReceiptNot
      * save consume notification
@@ -364,8 +372,6 @@ public class DataSubmissionDelegator {
             List<String> repoIds = fileRepoClient.saveFiles(files).getEntity();
             newFilesToSync = new ArrayList<>(dto.newFileSaved(repoIds));
         }
-        String ensure = ParamUtil.getString(request, KEY_PREFIX_ENSURE);
-        dto.setEnsure(ensure);
         ReceiptNotificationDto.ReceiptNotNeedR receiptNotNeedR = dto.getReceiptNotNeedR();
         dataSubmissionClient.saveReceiptNot(receiptNotNeedR);
         try {

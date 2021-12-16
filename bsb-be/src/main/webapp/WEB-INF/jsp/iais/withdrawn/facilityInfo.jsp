@@ -1,14 +1,11 @@
 <div class="panel panel-default">
-    <div class="panel-heading"><strong>Submission Details</strong></div>
+    <div class="panel-heading">Submission Details</div>
     <div class="row">
         <div class="col-xs-12">
             <div class="table-gp">
                 <table aria-describedby="" class="table table-bordered" style="margin-bottom: 0">
                     <tbody>
                     <%--@elvariable id="processData" type="sg.gov.moh.iais.egp.bsb.dto.audit.OfficerProcessAuditDto"--%>
-                        <tr>
-                            <th scope="col">Submission Details</th>
-                        </tr>
                         <tr>
                             <td class="col-xs-6" align="right">Application Type</td>
                             <td style="padding-left : 20px">New Application</td>

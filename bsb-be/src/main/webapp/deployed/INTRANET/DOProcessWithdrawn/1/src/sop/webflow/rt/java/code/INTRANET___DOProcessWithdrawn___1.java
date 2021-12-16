@@ -14,21 +14,21 @@ import sop.webflow.rt.api.BaseProcessClass;
 import com.ecquaria.cloud.helper.EngineHelper;
 
 public class INTRANET___DOProcessWithdrawn___1 extends BaseProcessClass {
-//	private static final String DELEGATOR ="selfAuditDelegator";
+	private static final String DELEGATOR ="bsbWithDrawnAppDelegatorBE";
 	public void start_OnStepProcess_0() throws Exception {
-//		EngineHelper.delegate(DELEGATOR, "start", this);
+		EngineHelper.delegate(DELEGATOR, "start", this);
 	}
 
 	public void preData_OnStepProcess_0() throws Exception {
-	// 		preData->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "prepareData", this);
 	}
 
 	public void doValidate_OnStepProcess_0() throws Exception {
-	// 		doValidate->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "doValidate", this);
 	}
 
 	public void save_OnStepProcess_0() throws Exception {
-	// 		save->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "doSave", this);
 	}
 
 }

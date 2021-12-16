@@ -3,6 +3,7 @@ package sg.gov.moh.iais.egp.bsb.dto.submission;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import io.jsonwebtoken.lang.Assert;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -26,7 +27,6 @@ import static sg.gov.moh.iais.egp.bsb.constant.DataSubmissionConstants.*;
 /**
  * @author Zhu Tangtang
  */
-
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ExportNotificationDto implements Serializable {
     @Data
@@ -68,6 +68,7 @@ public class ExportNotificationDto implements Serializable {
 
     private List<ExportNot> exportNotList;
     private List<PrimaryDocDto.NewDocInfo> otherNewInfos;
+    private Map<Integer,List<PrimaryDocDto.NewDocInfo>> keyNewInfos;
     private Map<String, PrimaryDocDto.NewDocInfo> allNewDocInfos;
     private Map<String, PrimaryDocDto.DocRecordInfo> savedDocInfos;
     private List<DocMeta> docMetaInfos;
@@ -80,6 +81,7 @@ public class ExportNotificationDto implements Serializable {
         exportNotList.add(new ExportNot());
         docMetaInfos = new ArrayList<>();
         otherNewInfos = new ArrayList<>();
+        keyNewInfos = new LinkedHashMap<>();
         allNewDocInfos = new LinkedHashMap<>();
         savedDocInfos = new LinkedHashMap<>();
     }
@@ -205,6 +207,14 @@ public class ExportNotificationDto implements Serializable {
 
     public void setAllNewDocInfos(Map<String, PrimaryDocDto.NewDocInfo> allNewDocInfos) {
         this.allNewDocInfos = allNewDocInfos;
+    }
+
+    public Map<Integer, List<PrimaryDocDto.NewDocInfo>> getKeyNewInfos() {
+        return keyNewInfos;
+    }
+
+    public void setKeyNewInfos(Map<Integer, List<PrimaryDocDto.NewDocInfo>> keyNewInfos) {
+        this.keyNewInfos = keyNewInfos;
     }
 
     public List<DocMeta> getDocMetaInfos() {
@@ -347,15 +357,24 @@ public class ExportNotificationDto implements Serializable {
     }
 
     /**
+     * get a structure used to display new selected docs
+     * these docs have not been saved into DB, if user wants to download it, we send the data from current data structure
+     * @return a map, the key is the doc type, the value is the new doc info list
+     */
+    public Map<String, List<PrimaryDocDto.NewDocInfo>> getNewDocTypeMap() {
+        return sg.gov.moh.iais.egp.bsb.util.CollectionUtils.groupCollectionToMap(this.allNewDocInfos.values(), PrimaryDocDto.NewDocInfo::getDocType);
+    }
+
+    /**
      * reqObjectMapping
      * get value from request
      */
     public void reqObjectMapping(HttpServletRequest request) {
         MultipartHttpServletRequest mulReq = (MultipartHttpServletRequest) request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
         String idxes = ParamUtil.getString(request, KEY_SECTION_IDXES);
-        PrimaryDocDto.deleteNewFiles(mulReq, this.allNewDocInfos);
         clearExportLists();
         String[] idxArr = idxes.trim().split(" +");
+        int keyFlag = 0;
         for (String idx : idxArr) {
             ExportNot exportNot = new ExportNot();
             String scheduleType = ParamUtil.getString(request, KEY_PREFIX_SCHEDULE_TYPE + SEPARATOR + idx);
@@ -367,10 +386,22 @@ public class ExportNotificationDto implements Serializable {
 
             List<PrimaryDocDto.NewDocInfo> newDocInfoList = PrimaryDocDto.reqObjMapping(mulReq,request,getDocType(scheduleType),String.valueOf(idx),this.allNewDocInfos);
             exportNot.setDocType(getDocType(scheduleType));
-            //set newDocFiles
             exportNot.setNewDocInfos(newDocInfoList);
-            String newRepoId = newDocInfoList.stream().map(PrimaryDocDto.NewDocInfo::getTmpId).collect(Collectors.joining(","));
-            //joint repoId exist
+            // NewRepoId is a String used to concatenate all the ids in the current list
+            String newRepoId = "";
+            //keyMap is deal with problem document is not show in page
+            if(!CollectionUtils.isEmpty(newDocInfoList)){
+                this.keyNewInfos.put(keyFlag++,newDocInfoList);
+                newRepoId = newDocInfoList.stream().map(PrimaryDocDto.NewDocInfo::getTmpId).collect(Collectors.joining(","));
+            }else{
+                //Check whether the previous file data exists
+                List<PrimaryDocDto.NewDocInfo> oldDocInfo  = this.keyNewInfos.get(Integer.valueOf(idx));
+                if(!CollectionUtils.isEmpty(oldDocInfo)){
+                    //Populate the list with previous data if it exists
+                    exportNot.setNewDocInfos(oldDocInfo);
+                    newRepoId = oldDocInfo.stream().map(PrimaryDocDto.NewDocInfo::getTmpId).collect(Collectors.joining(","));
+                }
+            }
             exportNot.setRepoIdNewString(newRepoId);
             //set need Validation value
             addExportLists(exportNot);
@@ -378,7 +409,9 @@ public class ExportNotificationDto implements Serializable {
         List<PrimaryDocDto.NewDocInfo> newOtherList = PrimaryDocDto.reqOtherMapping(mulReq,request,"others",this.allNewDocInfos);
         this.setOtherNewInfos(newOtherList);
         //get all new doc
-        fillAllNewDocInfo();
+        PrimaryDocDto.deleteNewFiles(mulReq,this.allNewDocInfos);
+        //When a section is deleted, all files corresponding to it are deleted
+        removeTempIdByKeyMap(idxArr);
         //get all
         getDocMetaInfoFromNew();
         this.setReceivedFacility(ParamUtil.getString(request, KEY_PREFIX_RECEIVED_FACILITY));
@@ -409,5 +442,44 @@ public class ExportNotificationDto implements Serializable {
             }
         }
         return docType;
+    }
+
+    /**
+     * This method is used to assign the doc in the list and concatenate the id of the file to prepare for deletion.
+     * At the same time, if the module is deleted, the key of the corresponding module in the corresponding keyMap will be deleted in case the module has no file
+     * but still displays the bug when a new section is added next time. There are certain problems with this method. Future changes may be made ！！！！！
+     * removeTempIdByKeyMap
+     * @param idxArr - section no[1,3,4]->[1,2,3] del2,[1,3]
+     * */
+
+    public void removeTempIdByKeyMap(String[] idxArr){
+        Set<Integer> keySet = this.keyNewInfos.keySet();
+        if(CollectionUtils.isEmpty(keySet)){
+            return;
+        }
+        for (Integer key : keySet) {
+            //Determine which section no was deleted
+            if(!arrayContainsKey(idxArr,String.valueOf(key))){
+                //Retrieve the ids of the files in the deleted section and remove them from Map allNewDocInfo
+                List<String> tempId  = this.keyNewInfos.get(key).stream()
+                        .map(PrimaryDocDto.NewDocInfo::getTmpId)
+                        .collect(Collectors.toList());
+                tempId.forEach(this.allNewDocInfos::remove);
+                //keyMap delete the section no,to prevent add a new section number equal keyNewInfos key and show value in page
+                this.keyNewInfos.remove(key);
+            }
+        }
+    }
+
+    /**
+     * The array_value () method is used to determine whether a value is contained in an array
+     * arrayContainsKey
+     * @param idxArr - array contains section no
+     * @param key - value need to search from array idxArr
+     * */
+    public boolean arrayContainsKey(String[] idxArr,String key){
+        Assert.notNull(idxArr,"Array idxArr is null");
+        Assert.hasLength(key,"enter key is null");
+        return Arrays.asList(idxArr).contains(key);
     }
 }
