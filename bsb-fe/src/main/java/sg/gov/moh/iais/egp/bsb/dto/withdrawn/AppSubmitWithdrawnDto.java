@@ -24,6 +24,9 @@ public class AppSubmitWithdrawnDto implements Serializable {
     private String remarks;
 
     @JsonIgnore
+    private String from;
+
+    @JsonIgnore
     private PrimaryDocDto primaryDocDto;
 
     private List<PrimaryDocDto.DocRecordInfo> savedInfos;

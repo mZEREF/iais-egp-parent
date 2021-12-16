@@ -49,11 +49,11 @@ public class DisposalNotificationDto implements Serializable {
             this.newDocInfos = new ArrayList<>();
         }
 
-        public List<PrimaryDocDto.NewDocInfo> getNewInfos() {
+        public List<PrimaryDocDto.NewDocInfo> getNewDocInfos() {
             return new ArrayList<>(this.newDocInfos);
         }
 
-        public void setNewInfos(List<PrimaryDocDto.NewDocInfo> newDocInfos) {
+        public void setNewDocInfos(List<PrimaryDocDto.NewDocInfo> newDocInfos) {
             this.newDocInfos = new ArrayList<>(newDocInfos);
         }
     }
@@ -314,20 +314,18 @@ public class DisposalNotificationDto implements Serializable {
             disposalNot.setDestructMethod(ParamUtil.getString(request, KEY_PREFIX_DESTRUCT_METHOD + SEPARATOR + idx));
             disposalNot.setDestructDetails(ParamUtil.getString(request, KEY_PREFIX_DESTRUCT_DETAILS + SEPARATOR + idx));
 
-            PrimaryDocDto primaryDocDto = new PrimaryDocDto();
-            primaryDocDto.reqObjMapping(mulReq, request, getDocType(scheduleType), String.valueOf(idx));
+            List<PrimaryDocDto.NewDocInfo> newDocInfoList = PrimaryDocDto.reqObjMapping(mulReq,request,getDocType(scheduleType),String.valueOf(idx));
             disposalNot.setDocType(getDocType(scheduleType));
-            //joint repoId exist
-            String newRepoId = String.join(",", primaryDocDto.getNewDocMap().keySet());
-            disposalNot.setRepoIdNewString(newRepoId);
             //set newDocFiles
-            disposalNot.setNewDocInfos(primaryDocDto.getNewDocTypeList());
+            disposalNot.setNewDocInfos(newDocInfoList);
+            String newRepoId = newDocInfoList.stream().map(PrimaryDocDto.NewDocInfo::getTmpId).collect(Collectors.joining(","));
+            //joint repoId exist
+            disposalNot.setRepoIdNewString(newRepoId);
             //set need Validation value
             addDisposalLists(disposalNot);
         }
-        PrimaryDocDto primaryDocDto = new PrimaryDocDto();
-        primaryDocDto.reqOtherMapping(mulReq, request, "others");
-        this.setOtherNewInfos(primaryDocDto.getNewDocTypeList());
+        List<PrimaryDocDto.NewDocInfo> newOtherList = PrimaryDocDto.reqOtherMapping(mulReq,request,"others");
+        this.setOtherNewInfos(newOtherList);
         //get all new doc
         fillAllNewDocInfo();
         //get all

@@ -173,7 +173,7 @@
                                                                         <option value="#" selected="selected">Select</option>
                                                                         <%--The application will be in a “non-approved” or “non-rejected” stage--%>
                                                                         <c:if test="${item.applicationId ne null and (item.applicationStatus ne 'BSBAPST008' and item.applicationStatus ne 'BSBAPST009')}">
-                                                                            <option value="/bsb-fe/eservice/INTERNET/BsbWithDrawn?withdrawnAppId=<iais:mask name='id' value='${item.applicationId}'/>">Withdrawn</option>
+                                                                            <option value="/bsb-fe/eservice/INTERNET/BsbWithDrawn?withdrawnAppId=<iais:mask name='id' value='${item.applicationId}'/>&from=dataSubmission">Withdrawn</option>
                                                                         </c:if>
                                                                     </select>
                                                                     <p class="visible-xs visible-sm table-row-title">Actions</p>

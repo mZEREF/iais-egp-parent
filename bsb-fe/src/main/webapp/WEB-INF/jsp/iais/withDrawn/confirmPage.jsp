@@ -114,8 +114,8 @@
             </div>
             <div class="form-group">
                 <div class="col-xs-12 col-md-6 text-right">
-                    <button class="btn btn-secondary save" id="cancelBtn">CANCEL</button>
-                    <button class="btn btn-primary save" id="submitBtn">NEXT</button>
+                    <button class="btn btn-secondary save" id="cancelBtn">Cancel</button>
+                    <button class="btn btn-primary save" id="submitBtn">Submit</button>
                 </div>
             </div>
         </div>

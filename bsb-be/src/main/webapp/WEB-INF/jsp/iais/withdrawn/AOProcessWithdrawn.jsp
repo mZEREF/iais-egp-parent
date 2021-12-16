@@ -88,8 +88,24 @@
                                                                         <iais:row>
                                                                             <iais:field value="DO Remarks" width="15" required="false"/>
                                                                             <iais:value width="10">
-                                                                                <textarea id="doRemarks"
-                                                                                          name="doRemarks"
+                                                                                <p><c:out value=""/></p>
+                                                                            </iais:value>
+                                                                        </iais:row>
+                                                                    </div>
+                                                                    <div>
+                                                                        <iais:row>
+                                                                            <iais:field value="DO Decision" width="15" required="false"/>
+                                                                            <iais:value width="10">
+                                                                                <p><iais:code code=""/></p>
+                                                                            </iais:value>
+                                                                        </iais:row>
+                                                                    </div>
+                                                                    <div>
+                                                                        <iais:row>
+                                                                            <iais:field value="AO Remarks" width="15" required="false"/>
+                                                                            <iais:value width="10">
+                                                                                <textarea id="aoRemarks"
+                                                                                          name="aoRemarks"
                                                                                           cols="70"
                                                                                           rows="5"
                                                                                           maxlength="300"></textarea>
@@ -100,8 +116,8 @@
                                                                         <iais:row>
                                                                             <iais:field value="Processing Decision" required="true"/>
                                                                             <iais:value width="10">
-                                                                                <iais:select name="doDecision"
-                                                                                             id="doDecision"
+                                                                                <iais:select name="aoDecision"
+                                                                                             id="aoDecision"
                                                                                              codeCategory="CATE_ID_BSB_ALL_PROCESS_DECISION"
                                                                                              value=""
                                                                                              firstOption="Please Select"/>

@@ -47,11 +47,11 @@ public class ReceiptNotificationDto implements Serializable {
             this.newDocInfos = new ArrayList<>();
         }
 
-        public List<PrimaryDocDto.NewDocInfo> getNewInfos() {
+        public List<PrimaryDocDto.NewDocInfo> getNewDocInfos() {
             return new ArrayList<>(this.newDocInfos);
         }
 
-        public void setNewInfos(List<PrimaryDocDto.NewDocInfo> newDocInfos) {
+        public void setNewDocInfos(List<PrimaryDocDto.NewDocInfo> newDocInfos) {
             this.newDocInfos = new ArrayList<>(newDocInfos);
         }
     }
@@ -414,20 +414,18 @@ public class ReceiptNotificationDto implements Serializable {
             receiptNot.setReceiveQty(ParamUtil.getString(request, KEY_PREFIX_RECEIVE_QTY + SEPARATOR + idx));
             receiptNot.setMeaUnit(ParamUtil.getString(request, KEY_PREFIX_MEASUREMENT_UNIT + SEPARATOR + idx));
 
-            PrimaryDocDto primaryDocDto = new PrimaryDocDto();
-            primaryDocDto.reqObjMapping(mulReq, request, getDocType(scheduleType), String.valueOf(idx));
+            List<PrimaryDocDto.NewDocInfo> newDocInfoList = PrimaryDocDto.reqObjMapping(mulReq,request,getDocType(scheduleType),String.valueOf(idx));
             receiptNot.setDocType(getDocType(scheduleType));
-            //joint repoId exist
-            String newRepoId = String.join(",", primaryDocDto.getNewDocMap().keySet());
-            receiptNot.setRepoIdNewString(newRepoId);
             //set newDocFiles
-            receiptNot.setNewDocInfos(primaryDocDto.getNewDocTypeList());
+            receiptNot.setNewDocInfos(newDocInfoList);
+            String newRepoId = newDocInfoList.stream().map(PrimaryDocDto.NewDocInfo::getTmpId).collect(Collectors.joining(","));
+            //joint repoId exist
+            receiptNot.setRepoIdNewString(newRepoId);
             //set need Validation value
             addReceiptLists(receiptNot);
         }
-        PrimaryDocDto primaryDocDto = new PrimaryDocDto();
-        primaryDocDto.reqOtherMapping(mulReq, request, "others");
-        this.setOtherNewInfos(primaryDocDto.getNewDocTypeList());
+        List<PrimaryDocDto.NewDocInfo> newOtherList = PrimaryDocDto.reqOtherMapping(mulReq,request,"others");
+        this.setOtherNewInfos(newOtherList);
         //get all new doc
         fillAllNewDocInfo();
         //get all

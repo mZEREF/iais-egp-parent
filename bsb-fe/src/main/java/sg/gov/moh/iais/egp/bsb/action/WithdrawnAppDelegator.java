@@ -41,6 +41,8 @@ public class WithdrawnAppDelegator {
     public static final String WITHDRAWN_APP_DTO = "withdrawnDto";
     private static final String PARAM_REASON = "reason";
     private static final String PARAM_REMARKS = "remarks";
+    private static final String PARAM_BACK_URL = "backUrl";
+    private static final String PARAM_FROM = "from";
 
     private final WithdrawnClient withdrawnClient;
     private final FileRepoClient fileRepoClient;
@@ -56,12 +58,15 @@ public class WithdrawnAppDelegator {
         HttpServletRequest request = bpc.request;
         AuditTrailHelper.auditFunction(MODULE_NAME, MODULE_NAME);
         ParamUtil.setSessionAttr(request, WITHDRAWN_APP_DTO, null);
+        ParamUtil.setSessionAttr(request, PARAM_FROM, null);
+        ParamUtil.setSessionAttr(request, PARAM_BACK_URL, null);
     }
 
     public void prepareData(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         AppSubmitWithdrawnDto dto = getWithdrawnDto(request);
         if (StringUtils.isEmpty(dto.getAppId())) {
+            String from = request.getParameter(PARAM_FROM);
             String maskedApplicationId = request.getParameter("withdrawnAppId");
             String applicationId = MaskUtil.unMaskValue("id", maskedApplicationId);
             if (maskedApplicationId == null || applicationId == null || maskedApplicationId.equals(applicationId)) {
@@ -70,10 +75,18 @@ public class WithdrawnAppDelegator {
             ResponseDto<AppSubmitWithdrawnDto> responseDto = withdrawnClient.getWithdrawnDataByApplicationId(applicationId);
             if (responseDto.ok()) {
                 dto = responseDto.getEntity();
+                dto.setFrom(from);
             } else {
                 log.warn("get withdrawn API doesn't return ok, the response is {}", responseDto);
                 ParamUtil.setRequestAttr(request, WITHDRAWN_APP_DTO, new AppSubmitWithdrawnDto());
             }
+            //
+            ParamUtil.setSessionAttr(request, PARAM_FROM, from);
+        }
+        if (dto.getFrom().equals("application")){
+            ParamUtil.setSessionAttr(request, PARAM_BACK_URL, "/bsb-fe/eservice/INTERNET/MohBSBInboxApp");
+        }else if (dto.getFrom().equals("dataSubmission")){
+            ParamUtil.setSessionAttr(request, PARAM_BACK_URL, "/bsb-fe/eservice/INTERNET/DataSubInbox");
         }
         ParamUtil.setSessionAttr(request, WITHDRAWN_APP_DTO, dto);
     }

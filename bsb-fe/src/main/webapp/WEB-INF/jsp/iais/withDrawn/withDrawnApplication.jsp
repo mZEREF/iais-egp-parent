@@ -107,7 +107,7 @@
         <div class="container">
             <div class="col-xs-12 col-md-6 text-left">
                 <%--get href from delegator--%>
-                <a class="back" href="#"><em class="fa fa-angle-left"></em> Back</a>
+                <a class="back" href="${backUrl}"><em class="fa fa-angle-left"></em> Back</a>
             </div>
             <div class="form-group">
                 <div class="col-xs-12 col-md-6 text-right">

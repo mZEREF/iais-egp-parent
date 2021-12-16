@@ -22,7 +22,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.mastercode.MasterCodeView;
 import com.ecquaria.cloud.moh.iais.common.helper.RedisCacheHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
-import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.service.client.MasterCodeClient;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
@@ -167,6 +166,8 @@ public final class MasterCodeUtil {
     public static final String CATE_ID_BSB_DO_AUDIT_AO                  = "FF506BE2-43EF-EB32-2B7D-000C336F0C25";
     public static final String CATE_ID_BSB_AUDIT_TYPE                   = "FF506BE2-43E2-EB32-2B7D-000C336F0C25";
     public static final String CATE_ID_BSB_TYPE_OF_TRANSACTION          = "89BB7BD1-C2C5-4A67-B5B7-C804FDC227EF";
+
+    public static final String CATE_ID_BSB_ALL_PROCESS_DECISION         = "06D05197-D8B2-4F0B-93A4-7CFB54F1A834";
 
     /**
      * @description: refresh the master codes into cache
