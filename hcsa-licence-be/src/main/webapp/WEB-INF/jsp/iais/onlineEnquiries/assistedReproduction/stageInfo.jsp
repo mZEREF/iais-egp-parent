@@ -27,12 +27,12 @@
                                     <c:forEach items="${cycleStageList}" var="steplist" varStatus="status">
                                         <c:choose>
                                             <c:when test ="${steplist.submitDt <= submitDt}">
-                                                <li id="${steplist.cycleStage}Tab" class="tracker-item active" data-service-step="${steplist.cycleStage}">
+                                                <li onclick="nextTab('${steplist.submissionNo}')" class="tracker-item active" data-service-step="${steplist.cycleStage}">
                                                     <a href="#tab${steplist.cycleStage}" aria-controls="tab${steplist.cycleStage}" role="tab" data-toggle="tab"><iais:code code="${steplist.cycleStage}"/></a>
                                                 </li>
                                             </c:when>
                                             <c:otherwise>
-                                                <li id="${steplist.cycleStage}Tab" class="tracker-item " data-service-step="${steplist.cycleStage}">
+                                                <li onclick="nextTab('${steplist.submissionNo}')" class="tracker-item " data-service-step="${steplist.cycleStage}">
                                                     <a href="#tab${steplist.cycleStage}" aria-controls="tab${steplist.cycleStage}" role="tab" data-toggle="tab"><iais:code code="${steplist.cycleStage}"/></a>
                                                 </li>
                                             </c:otherwise>
@@ -50,7 +50,7 @@
                                 </div>
 
                                 <div class="tab-content row">
-                                    <div class="tab-pane active " id="tab${cycleStage}" role="tabpanel">
+                                    <div class="tab-pane active " role="tabpanel">
                                         <c:choose>
 
                                             <c:when test="${cycleStage == 'AR_CL001'}">
@@ -158,121 +158,11 @@
         $('#mainForm').submit();
     }
 
-    $(document).ready(function() {
-        $('#AR_CL001Tab').click(function(){
-            showWaiting();
-            $("[name='crud_action_additional']").val('AR_CL001');
-            $("[name='crud_action_type']").val('step');
-            $('#mainForm').submit();
-        });
-        $('#AR_CL002Tab').click(function(){
-            showWaiting();
-            $("[name='crud_action_additional']").val('AR_CL002');
-            $("[name='crud_action_type']").val('step');
-            $('#mainForm').submit();
-        });
-        $('#AR_CL003Tab').click(function(){
-            showWaiting();
-            $("[name='crud_action_additional']").val('AR_CL003');
-            $("[name='crud_action_type']").val('step');
-            $('#mainForm').submit();
-        });
-        $('#AR_STG001Tab').click(function(){
-            showWaiting();
-            $("[name='crud_action_additional']").val('AR_STG001');
-            $("[name='crud_action_type']").val('step');
-            $('#mainForm').submit();
-        });
-        $('#AR_STG002Tab').click(function(){
-            showWaiting();
-            $("[name='crud_action_additional']").val('AR_STG002');
-            $("[name='crud_action_type']").val('step');
-            $('#mainForm').submit();
-        });
-        $('#AR_STG003Tab').click(function(){
-            showWaiting();
-            $("[name='crud_action_additional']").val('AR_STG003');
-            $("[name='crud_action_type']").val('step');
-            $('#mainForm').submit();
-        });
-        $('#AR_STG004Tab').click(function(){
-            showWaiting();
-            $("[name='crud_action_additional']").val('AR_STG004');
-            $("[name='crud_action_type']").val('step');
-            $('#mainForm').submit();
-        });
-        $('#AR_STG005Tab').click(function(){
-            showWaiting();
-            $("[name='crud_action_additional']").val('AR_STG005');
-            $("[name='crud_action_type']").val('step');
-            $('#mainForm').submit();
-        });
-        $('#AR_STG006Tab').click(function(){
-            showWaiting();
-            $("[name='crud_action_additional']").val('AR_STG006');
-            $("[name='crud_action_type']").val('step');
-            $('#mainForm').submit();
-        });
-        $('#AR_STG007Tab').click(function(){
-            showWaiting();
-            $("[name='crud_action_additional']").val('AR_STG007');
-            $("[name='crud_action_type']").val('step');
-            $('#mainForm').submit();
-        });
-        $('#AR_STG008Tab').click(function(){
-            showWaiting();
-            $("[name='crud_action_additional']").val('AR_STG008');
-            $("[name='crud_action_type']").val('step');
-            $('#mainForm').submit();
-        });
-        $('#AR_STG009Tab').click(function(){
-            showWaiting();
-            $("[name='crud_action_additional']").val('AR_STG009');
-            $("[name='crud_action_type']").val('step');
-            $('#mainForm').submit();
-        });
-        $('#AR_STG010Tab').click(function(){
-            showWaiting();
-            $("[name='crud_action_additional']").val('AR_STG010');
-            $("[name='crud_action_type']").val('step');
-            $('#mainForm').submit();
-        });
-        $('#AR_STG011Tab').click(function(){
-            showWaiting();
-            $("[name='crud_action_additional']").val('AR_STG011');
-            $("[name='crud_action_type']").val('step');
-            $('#mainForm').submit();
-        });
-        $('#AR_STG012Tab').click(function(){
-            showWaiting();
-            $("[name='crud_action_additional']").val('AR_STG012');
-            $("[name='crud_action_type']").val('step');
-            $('#mainForm').submit();
-        });
-        $('#AR_STG013Tab').click(function(){
-            showWaiting();
-            $("[name='crud_action_additional']").val('AR_STG013');
-            $("[name='crud_action_type']").val('step');
-            $('#mainForm').submit();
-        });
-        $('#AR_STG014Tab').click(function(){
-            showWaiting();
-            $("[name='crud_action_additional']").val('AR_STG014');
-            $("[name='crud_action_type']").val('step');
-            $('#mainForm').submit();
-        });
-        $('#AR_STG015Tab').click(function(){
-            showWaiting();
-            $("[name='crud_action_additional']").val('AR_STG015');
-            $("[name='crud_action_type']").val('step');
-            $('#mainForm').submit();
-        });
-        $('#AR_STG016Tab').click(function(){
-            showWaiting();
-            $("[name='crud_action_additional']").val('AR_STG016');
-            $("[name='crud_action_type']").val('step');
-            $('#mainForm').submit();
-        });
+    function nextTab(subNo){
+        showWaiting();
+        $("[name='crud_action_additional']").val(subNo);
+        $("[name='crud_action_type']").val('step');
+        $('#mainForm').submit();
+    }
 
-    });
 </script>

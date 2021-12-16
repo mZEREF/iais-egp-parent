@@ -88,10 +88,10 @@
     var dividajaxNonlist = [];
 
 
-    function doStageSearch(cycleId,stage){
+    function doStageSearch(cycleId,submissionNo){
         showWaiting();
         $("[name='crud_action_value']").val(cycleId);
-        $("[name='crud_action_additional']").val(stage);
+        $("[name='crud_action_additional']").val(submissionNo);
         $("[name='crud_action_type']").val('perStage');
         $('#mainForm').submit();
     }
@@ -216,7 +216,7 @@
                             '<td><p class="visible-xs visible-sm table-row-title">Date</p><p>' + res[i].submitDtStr + '<p></td>' +
                             '<td><p class="visible-xs visible-sm table-row-title">Stage</p><p>' + res[i].cycleStageStr + '<p></td>';
                         html += '<td><p class="visible-xs visible-sm table-row-title">View Full Details</p><p>' +
-                            '<button type="button" onclick="doStageSearch(' + "'" + res[i].cycleId + "','"+ res[i].cycleStage + "'" + ')" class="btn btn-default btn-sm">'+
+                            '<button type="button" onclick="doStageSearch(' + "'" + res[i].cycleId + "','"+ res[i].submissionNo + "'" + ')" class="btn btn-default btn-sm">'+
                         'View Full Details</button></p></td>'+
                             '</tr>';
                     }
@@ -256,7 +256,7 @@
                             '<td><p class="visible-xs visible-sm table-row-title">Date</p><p>' + res[i].submitDtStr + '<p></td>' +
                             '<td><p class="visible-xs visible-sm table-row-title">Stage</p><p>' + res[i].cycleStageStr + '<p></td>';
                         html += '<td><p class="visible-xs visible-sm table-row-title">View Full Details</p><p>' +
-                            '<button type="button" onclick="doStageSearch(' + "'" + res[i].cycleId + "','"+ res[i].cycleStage + "'" + ')" class="btn btn-default btn-sm">'+
+                            '<button type="button" onclick="doStageSearch(' + "'" + res[i].cycleId + "','"+ res[i].submissionNo + "'" + ')" class="btn btn-default btn-sm">'+
                             'View Full Details</button></p></td>'+
                             '</tr>';
                     }

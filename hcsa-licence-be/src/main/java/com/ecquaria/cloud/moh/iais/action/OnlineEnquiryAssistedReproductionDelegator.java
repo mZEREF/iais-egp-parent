@@ -1172,7 +1172,7 @@ public class OnlineEnquiryAssistedReproductionDelegator {
     public void perStageInfo(BaseProcessClass bpc){
         HttpServletRequest request=bpc.request;
         String cycleId = ParamUtil.getString(request,"crud_action_value");
-        String cycleStage = ParamUtil.getString(request,"crud_action_additional");
+        String submissionNo = ParamUtil.getString(request,"crud_action_additional");
 
         if(StringUtil.isNotEmpty(cycleId)){
             List<DataSubmissionDto> cycleStageList=assistedReproductionService.allDataSubmissionByCycleId(cycleId);
@@ -1181,27 +1181,20 @@ public class OnlineEnquiryAssistedReproductionDelegator {
         }
         List<DataSubmissionDto> dataSubmissionDtoList= (List<DataSubmissionDto>) ParamUtil.getSessionAttr(request,"cycleStageList");
         if(IaisCommonUtils.isNotEmpty(dataSubmissionDtoList)){
-            if(StringUtil.isNotEmpty(cycleStage)){
+            ArSuperDataSubmissionDto arSuper = assistedReproductionService.getArSuperDataSubmissionDto(
+                    dataSubmissionDtoList.get(0).getSubmissionNo());
+            if(StringUtil.isNotEmpty(submissionNo)){
                 for (DataSubmissionDto dataSubmissionDto:dataSubmissionDtoList
                 ) {
-                    if(dataSubmissionDto.getCycleStage().equals(cycleStage)){
-                        ArSuperDataSubmissionDto arSuper = assistedReproductionService.getArSuperDataSubmissionDto(
+                    if(dataSubmissionDto.getSubmissionNo().equals(submissionNo)){
+                        arSuper = assistedReproductionService.getArSuperDataSubmissionDto(
                                 dataSubmissionDto.getSubmissionNo());
-                        ParamUtil.setRequestAttr(request,"arSuperDataSubmissionDto",arSuper);
                         break;
                     }
                 }
-            }else {
-                ArSuperDataSubmissionDto arSuper = assistedReproductionService.getArSuperDataSubmissionDto(
-                        dataSubmissionDtoList.get(0).getSubmissionNo());
-                ParamUtil.setRequestAttr(request,"arSuperDataSubmissionDto",arSuper);
             }
+            ParamUtil.setRequestAttr(request,"arSuperDataSubmissionDto",arSuper);
         }
-
-
-
-
-
 
     }
 
