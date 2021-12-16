@@ -266,4 +266,13 @@
             }
         )
     };
+
+    function doInvClear() {
+        $('input[type="number"]').val("");
+        $('input[type="checkbox"]').prop("checked", false);
+        $("#arCentre option:first").prop("selected", 'selected');
+        $("#arCentre .current").text("Please Select");
+        $('input[name="submissionDateFrom"]').val("");
+        $('input[name="submissionDateTo"]').val("");
+    }
 </script>

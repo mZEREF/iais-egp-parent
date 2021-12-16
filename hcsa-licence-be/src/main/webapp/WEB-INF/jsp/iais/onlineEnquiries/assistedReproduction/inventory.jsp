@@ -111,7 +111,7 @@
                         <div class="col-xs-12 col-md-12">
                             <iais:action style="text-align:right;">
                                 <button type="button" class="btn btn-secondary"
-                                        onclick="javascript:doClear();">Clear
+                                        onclick="javascript:doInvClear();">Clear
                                 </button>
                                 <button type="button" class="btn btn-primary"
                                         onclick="javascript:searchInventory();">Search

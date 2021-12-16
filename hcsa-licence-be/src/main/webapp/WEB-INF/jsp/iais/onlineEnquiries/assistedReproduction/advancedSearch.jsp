@@ -1200,6 +1200,8 @@
 
                             <div class="col-xs-12 col-md-12">
                                 <iais:action style="text-align:right;">
+                                    <a style=" float:left;padding-top: 1.1%;text-decoration:none;" href="#" onclick="javascript:doArBack()"><em class="fa fa-angle-left"> </em> Back</a>
+
                                     <button type="button" class="btn btn-secondary"
                                             onclick="javascript:doClear();">Clear
                                     </button>
@@ -1318,8 +1320,11 @@
 <%@include file="/WEB-INF/jsp/include/utils.jsp" %>
 <script type="text/javascript">
 
-
-
+    function doArBack() {
+        showWaiting();
+        $("[name='adv_action_type']").val('back');
+        $('#mainForm').submit();
+    }
 
     function doClear() {
         $('input[type="text"]').val("");

@@ -361,7 +361,7 @@ public class OnlineEnquiryAssistedReproductionDelegator {
 
     private void setQueryFilter(AssistedReproductionEnquiryFilterDto arDto,FilterParameter filterParameter,int sqf){
         Map<String,Object> filter=IaisCommonUtils.genNewHashMap();
-        if(arDto.getArCentre()!=null) {//todo xml sql
+        if(arDto.getArCentre()!=null) {
             filter.put("arCentre", arDto.getArCentre());
         }
         if(sqf==0||sqf==2){
@@ -740,10 +740,10 @@ public class OnlineEnquiryAssistedReproductionDelegator {
             if(arDto.getTransferredSperm()!=null&& "on".equals(arDto.getTransferredSperm())){
                 filter.put("transferredSperm",1);
             }
-            if(StringUtil.isNotEmpty(arDto.getTransferredInFrom())) {//todo xml sql
+            if(StringUtil.isNotEmpty(arDto.getTransferredInFrom())) {
                 filter.put("transferredInFrom", arDto.getTransferredInFrom());
             }
-            if(StringUtil.isNotEmpty(arDto.getTransferOutTo())) {//todo xml sql
+            if(StringUtil.isNotEmpty(arDto.getTransferOutTo())) {
                 filter.put("transferOutTo", arDto.getTransferOutTo());
             }
 
