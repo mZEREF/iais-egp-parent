@@ -2579,11 +2579,12 @@ public class HalpAssessmentGuideDelegator {
     public static void setParamForDate(HttpServletRequest request,SearchParam searchParam,String key,String value){
         try {
             String dateString = ParamUtil.getDate(request, value);
-            log.info(StringUtil.changeForLog("---------"+ dateString));
             Date lastDateStart = Formatter.parseDate(dateString);
-            log.info(StringUtil.changeForLog("---------"+ lastDateStart.toString()));
             if(lastDateStart!=null){
-                searchParam.addFilter(key,lastDateStart,true);
+                log.info(StringUtil.changeForLog("---------"+ lastDateStart));
+                dateString = Formatter.formatDateTime(lastDateStart,"yyyy-MM-dd HH:mm:ss");
+                log.info(StringUtil.changeForLog("----- dateString : " + dateString));
+                searchParam.addFilter(key,dateString,true);
             }else {
                 searchParam.removeFilter(key);
             }

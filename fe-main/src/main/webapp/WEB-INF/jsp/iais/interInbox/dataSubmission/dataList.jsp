@@ -57,7 +57,7 @@
                 <div class="col-md-12">
                     <span class="col-xs-3 col-md-3"></span>
                     <div class="col-md-9">
-                        <span id="lastDateerror-msg" class="error-msg" style="width: 150%;font-size:1.5rem">${lastDateerror-msg}</span>
+                        <span id="lastDateerror-msg" class="error-msg" style="width: 150%;font-size:1.5rem">${lastUpdateINBOX_ERR011}</span>
                     </div>
                 </div>
             </div>
@@ -229,7 +229,6 @@
         showWaiting();
         $("[name='crud_action_type']").val(action);
         document.getElementById('dataForm').submit();
-        submit()
     }
 
     function cancelBallDsButton(){

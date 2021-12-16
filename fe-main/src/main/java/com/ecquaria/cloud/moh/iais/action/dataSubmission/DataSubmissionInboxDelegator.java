@@ -121,7 +121,7 @@ public class DataSubmissionInboxDelegator {
 				SearchParam searchParam = HalpSearchResultHelper.gainSearchParam(request, InboxConst.DS_PARAM, InboxDataSubmissionQueryDto.class.getName(),SORT_INIT,SearchParam.DESCENDING,false);
 				HalpAssessmentGuideDelegator.setParamByField(searchParam,"licenseeId",interInboxUserDto.getLicenseeId(),true);
 				HalpAssessmentGuideDelegator.setParamByField(searchParam,"dsType",(List<String>) ParamUtil.getSessionAttr(request,DS_TYPES));
-				QueryHelp.setMainSql( InboxConst.INBOX_QUERY, InboxConst.INBOX_DS_QUERY,searchParam);
+				QueryHelp.setMainSql(InboxConst.INBOX_QUERY, InboxConst.INBOX_DS_QUERY,searchParam);
 				ParamUtil.setSessionAttr(request, InboxConst.DS_RESULT,licenceInboxClient.searchLicence(searchParam).getEntity());
 				ParamUtil.setSessionAttr(request, InboxConst.DS_PARAM,searchParam);
 			}else {
@@ -178,8 +178,11 @@ public class DataSubmissionInboxDelegator {
 			Date dateEnd = (Date) stringObjectHashMap.get("lastDateEnd");
 			try {
 				if(dateStart !=null && dateEnd != null &&  Formatter.compareDateByDay(dateStart,dateEnd) > 0){
-					ParamUtil.setRequestAttr(request,"lastDateerror-msg",MessageUtil.getMessageDesc("INBOX_ERR011"));
+					ParamUtil.setRequestAttr(request,"lastUpdateINBOX_ERR011",MessageUtil.getMessageDesc("INBOX_ERR011"));
 					searchParam = null;
+					log.info("------setSearchParamDate is no------------");
+				}else {
+					log.info("------setSearchParamDate is ok------------");
 				}
 			}catch (ParseException parseException){
 				log.error(parseException.getMessage(),parseException);
