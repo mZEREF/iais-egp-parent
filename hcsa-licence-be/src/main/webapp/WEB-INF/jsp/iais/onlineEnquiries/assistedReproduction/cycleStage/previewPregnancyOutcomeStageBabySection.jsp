@@ -8,7 +8,7 @@
 <%
     List<List<String>> defectTypesArray = IaisCommonUtils.genNewArrayList();
     List<String> otherDefectTypes = IaisCommonUtils.genNewArrayList();
-    ArSuperDataSubmissionDto arSuperDataSubmissionDto = (ArSuperDataSubmissionDto) ParamUtil.getSessionAttr(request,"arSuperDataSubmissionDto");
+    ArSuperDataSubmissionDto arSuperDataSubmissionDto = (ArSuperDataSubmissionDto) ParamUtil.getRequestAttr(request,"arSuperDataSubmissionDto");
     List<PregnancyOutcomeBabyDto> pregnancyOutcomeBabyDtos = arSuperDataSubmissionDto.getPregnancyOutcomeStageDto().getPregnancyOutcomeBabyDtos();
     if (IaisCommonUtils.isNotEmpty(pregnancyOutcomeBabyDtos)) {
         for (int i = 0; i < pregnancyOutcomeBabyDtos.size(); i++) {
