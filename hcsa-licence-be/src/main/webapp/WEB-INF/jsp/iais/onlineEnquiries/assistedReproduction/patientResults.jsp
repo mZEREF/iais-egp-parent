@@ -103,7 +103,7 @@
                                     </iais:value>
                                     <iais:value width="4" cssClass="col-md-4">
                                         <div id="cycleStageDisplay" <c:if test="${assistedReproductionEnquiryFilterDto.submissionType!='AR_TP002'}">style="display: none"</c:if> >
-                                            <iais:select name="cycleStage" id="cycleStage" firstOption="Please Select" codeCategory="CATE_ID_DS_STAGE_TYPE" needSort="true"
+                                            <iais:select name="cycleStage" id="cycleStage" firstOption="Please Select" options="stageTypeSelectOption" needSort="true"
                                                          value="${assistedReproductionEnquiryFilterDto.cycleStage}" cssClass="idTypeSel" />
                                         </div>
                                     </iais:value>

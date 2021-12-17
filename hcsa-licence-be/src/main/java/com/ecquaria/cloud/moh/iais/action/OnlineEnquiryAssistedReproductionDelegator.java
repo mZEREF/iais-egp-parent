@@ -817,6 +817,12 @@ public class OnlineEnquiryAssistedReproductionDelegator {
         ParamUtil.setRequestAttr(bpc.request,"submissionTypeOptions",submissionTypeOptions);
         List<SelectOption> arCentreSelectOption  = assistedReproductionService.genPremisesOptions("null");
         ParamUtil.setRequestAttr(bpc.request,"arCentreSelectOption",arCentreSelectOption);
+        List<SelectOption> stageTypeSelectOption= MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_DS_STAGE_TYPE);
+        stageTypeSelectOption.add(new SelectOption(DataSubmissionConsts.AR_CYCLE_AR,MasterCodeUtil.getCodeDesc(DataSubmissionConsts.AR_CYCLE_AR)));
+        stageTypeSelectOption.add(new SelectOption(DataSubmissionConsts.AR_CYCLE_IUI,MasterCodeUtil.getCodeDesc(DataSubmissionConsts.AR_CYCLE_IUI)));
+        stageTypeSelectOption.add(new SelectOption(DataSubmissionConsts.AR_CYCLE_EFO,MasterCodeUtil.getCodeDesc(DataSubmissionConsts.AR_CYCLE_EFO)));
+        ParamUtil.setRequestAttr(bpc.request,"stageTypeSelectOption",stageTypeSelectOption);
+
         HttpServletRequest request = bpc.request;
         ParamUtil.setSessionAttr(request,"arViewFull",null);
         String action = ParamUtil.getRequestString(request, IaisEGPConstant.CRUD_ACTION_TYPE);
