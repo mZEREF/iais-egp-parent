@@ -51,6 +51,7 @@ function hideDonor(index){
     $("#age"+index).val("");
     $("#age"+index+"Row").hide();
     $("#relation"+index+"Row").hide();
+    $("#relation"+index).val('');
 }
 
 function showUsedDonorOocyteControlClass(flag){

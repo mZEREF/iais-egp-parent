@@ -53,7 +53,7 @@ public class ArCycleStageDelegator extends DonorCommonDelegator{
         ParamUtil.setSessionAttr(request, PRACTITIONER_DROP_DOWN,(Serializable) getPractitioner());
         ParamUtil.setSessionAttr(request, EMBRYOLOGIST_DROP_DOWN,(Serializable) getEmbryologist());
         setDonorUserSession(request);
-        ParamUtil.setSessionAttr(request, "DSACK002Message",MessageUtil.getMessageDesc("DS_ACK002"));
+        ParamUtil.setSessionAttr(request, "DSACK002Message","<p>"+MessageUtil.getMessageDesc("DS_ACK002")+"</p>");
     }
 
     @Override

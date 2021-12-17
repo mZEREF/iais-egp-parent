@@ -143,7 +143,7 @@
                  </iais:row>
                  </c:if>
 
-                     <iais:row id="relation${arDonorIndex}Row" style="${(donorDto.directedDonation || donorDto.donorIdentityKnown eq DataSubmissionConsts.DONOR_IDENTITY_KNOWN) ? '' : 'display: none;'}">
+                     <iais:row id="relation${arDonorIndex}Row" style="${donorDto.directedDonation ? '' : 'display: none;'}">
                          <iais:field width="5" value="Donor relation to patient" mandatory="true" />
                          <iais:value width="3" cssClass="col-md-3" >
                              <div class="form-check" style="padding-left: 0px;">

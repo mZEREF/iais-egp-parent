@@ -52,7 +52,12 @@
           </iais:value>
         </iais:row>
         <iais:row>
-          <iais:field value="Total No. of Children Delivered under IUI" mandatory="false"/>
+          <label class="col-xs-4 col-md-4 control-label">No. of Children Delivered under IUI
+            <a class="btn-tooltip styleguide-tooltip" data-toggle="tooltip" data-html="true" href="javascript:void(0);"
+               title="${DSACK003Message}"
+               style="z-index: 10"
+               data-original-title="">i</a>
+          </label>
           <iais:value width="7" cssClass="col-md-7"  display="true">
            <c:out value="${iuiCycleStageDto.iuiDeliverChildNum}"/>
           </iais:value>

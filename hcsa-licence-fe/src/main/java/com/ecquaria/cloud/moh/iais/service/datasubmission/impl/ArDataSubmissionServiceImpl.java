@@ -415,16 +415,7 @@ public class ArDataSubmissionServiceImpl implements ArDataSubmissionService {
             IuiCycleStageDto iuiCycleStageDto = arSuperDataSubmission.getIuiCycleStageDto();
             if (iuiCycleStageDto == null) {
                 iuiCycleStageDto = new IuiCycleStageDto();
-
-                //set default children Number
-                Integer curMarrChildNum = iuiCycleStageDto.getCurMarrChildNum();
-                Integer prevMarrChildNum = iuiCycleStageDto.getPrevMarrChildNum();
-                if (curMarrChildNum == null) {
-                    iuiCycleStageDto.setCurMarrChildNum(0);
-                }
-                if (prevMarrChildNum == null) {
-                    iuiCycleStageDto.setPrevMarrChildNum(0);
-                }
+                iuiCycleStageDto.setOwnPremises(true);
                 //set patient age show
                 PatientInfoDto patientInfoDto = arSuperDataSubmission.getPatientInfoDto();
                 if (patientInfoDto != null) {

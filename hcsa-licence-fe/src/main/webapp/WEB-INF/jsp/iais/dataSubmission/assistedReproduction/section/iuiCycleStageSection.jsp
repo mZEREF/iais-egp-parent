@@ -73,10 +73,14 @@
                     </iais:value>
                   </iais:row>
                   <iais:row>
-                    <iais:field width="5" value="Total No. of Children Delivered under IUI" mandatory="true"/>
+                    <label class="col-xs-4 col-md-4 control-label">No. of Children Delivered under IUI <span class="mandatory">*</span>
+                      <a class="btn-tooltip styleguide-tooltip" data-toggle="tooltip" data-html="true" href="javascript:void(0);"
+                         title="${DSACK003Message}"
+                         style="z-index: 10"
+                         data-original-title="">i</a>
+                    </label>
                     <iais:value width="7" cssClass="col-md-7">
-                      <input type="number" oninput="if(value.length>2)value=value.slice(0,2)" style="margin-bottom: 0px;" name="iuiDeliverChildNum" maxlength="2" value="${iuiCycleStageDto.iuiDeliverChildNum}"/>
-                      <span class="error-msg" name="iaisErrorMsg" id="error_iuiDeliverChildNum"></span>
+                      <iais:select name="iuiDeliverChildNum" firstOption="Please Select" options="iuiDeliverChildNumOption" value="${iuiCycleStageDto.iuiDeliverChildNum}"></iais:select>
                     </iais:value>
                   </iais:row>
                   <iais:row>
@@ -100,14 +104,14 @@
                     </iais:value>
                   </iais:row>
                   <iais:row>
-                    <iais:field  width="5" value="How many vials of sperm were extracted" mandatory="true"/>
+                    <iais:field  width="5" value="How many vials of sperm were extracted?" mandatory="true"/>
                     <iais:value  width="7" cssClass="col-md-7" >
                       <input type="number" oninput="if(value.length>2)value=value.slice(0,2)"  maxlength="2" style="margin-bottom: 0px;" name="extractVialsOfSperm" value="${iuiCycleStageDto.extractVialsOfSperm}"/>
                       <span class="error-msg" name="iaisErrorMsg" id="error_extractVialsOfSperm"></span>
                     </iais:value>
                   </iais:row>
                   <iais:row>
-                    <iais:field width="5" value="How many vials of sperm were used in this cycle" mandatory="true"/>
+                    <iais:field width="5" value="How many vials of sperm were used in this cycle?" mandatory="true"/>
                     <iais:value width="7" cssClass="col-md-7">
                       <input type="number" oninput="if(value.length>2)value=value.slice(0,2)"  maxlength="2" style="margin-bottom: 0px;" name="usedVialsOfSperm" value="${iuiCycleStageDto.usedVialsOfSperm}"/>
                       <span class="error-msg" name="iaisErrorMsg" id="error_usedVialsOfSperm"></span>
