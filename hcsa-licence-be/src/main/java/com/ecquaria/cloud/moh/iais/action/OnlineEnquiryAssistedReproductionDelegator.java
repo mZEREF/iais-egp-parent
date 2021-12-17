@@ -524,11 +524,9 @@ public class OnlineEnquiryAssistedReproductionDelegator {
             if(arDto.getSourceSemen()!=null){
                 if("Donor".equals(arDto.getSourceSemen())){
                     filter.put("FROM_DONOR",1);
-                    filter.put("FROM_DONOR_TISSUE",1);
                 }
                 if("Husband".equals(arDto.getSourceSemen())){
                     filter.put("FROM_HUSBAND",1);
-                    filter.put("FROM_HUSBAND_TISSUE",1);
                 }
             }
             if(arDto.getGIFT()!=null&& "on".equals(arDto.getGIFT())){
