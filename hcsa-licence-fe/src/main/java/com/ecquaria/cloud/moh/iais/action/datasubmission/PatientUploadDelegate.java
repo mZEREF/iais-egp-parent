@@ -145,7 +145,6 @@ public class PatientUploadDelegate {
         log.info(StringUtil.changeForLog("---- Has Items: " + hasItems + " ----"));
         List<PatientInfoDto> patientInfoList = (List<PatientInfoDto>) bpc.request.getSession().getAttribute(PATIENT_INFO_LIST);
         if (patientInfoList == null || !hasItems) {
-            boolean hasError = false;
             // upload file (first time / error)
             Entry<String, File> fileEntry = getFileEntry(bpc.request);
             PageShowFileDto pageShowFileDto = getPageShowFileDto(fileEntry);
@@ -174,17 +173,10 @@ public class PatientUploadDelegate {
                     if (!errorMsgs.isEmpty()) {
                         Collections.sort(errorMsgs, Comparator.comparing(FileErrorMsg::getRow));
                         ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.FILE_ITEM_ERROR_MSGS, errorMsgs);
-                        errorMap.put("itemError", "itemError");
-                        hasError = true;
-                    }
+                        errorMap.put("itemError", "itemError");                    }
                 }
-            } else {
-                hasError = true;
             }
             crudype = "page";
-            if (!hasError) {
-                ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.CURRENT_PAGE_STAGE, DataSubmissionConstant.PAGE_STAGE_PREVIEW);
-            }
         } else {
             // To submission
             crudype = "submission";
@@ -202,6 +194,7 @@ public class PatientUploadDelegate {
         ParamUtil.setRequestAttr(bpc.request, "fileItemSize", fileItemSize);
         log.info(StringUtil.changeForLog("---- Action Type: " + crudype + " ----"));
         ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, crudype);
+        ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.CURRENT_PAGE_STAGE, DataSubmissionConstant.PAGE_STAGE_PREVIEW);
     }
 
     /**
