@@ -304,8 +304,7 @@ public class ArDataSubmissionServiceImpl implements ArDataSubmissionService {
             String cryopreservationDate) {
         if (!StringUtil.isEmpty(cryopreservedNum)) {
             try {
-                int cryopreservedNo = Integer.parseInt(cryopreservedNum);
-                arSubFreezingStageDto.setCryopreservedNum(cryopreservedNo);
+                arSubFreezingStageDto.setCryopreservedNum(cryopreservedNum);
             } catch (Exception e) {
                 arSubFreezingStageDto.setCryopreservedNum(null);
                 log.info("Freezing invalid cryopreservedNum");
@@ -384,18 +383,19 @@ public class ArDataSubmissionServiceImpl implements ArDataSubmissionService {
             ArSubFreezingStageDto arSubFreezingStageDto) {
         if (patientInventoryDto != null && arSubFreezingStageDto != null) {
             String cryopreservedType = arSubFreezingStageDto.getCryopreservedType();
+            int cryopreservedNum = Integer.parseInt(arSubFreezingStageDto.getCryopreservedNum());
             if (DataSubmissionConsts.FREEZING_CRYOPRESERVED_FRESH_OOCYTE.equals(cryopreservedType)) {
-                patientInventoryDto.setChangeFreshOocytes(-1 * arSubFreezingStageDto.getCryopreservedNum());
-                patientInventoryDto.setChangeFrozenOocytes(arSubFreezingStageDto.getCryopreservedNum());
+                patientInventoryDto.setChangeFreshOocytes(-1 * cryopreservedNum);
+                patientInventoryDto.setChangeFrozenOocytes(cryopreservedNum);
             } else if (DataSubmissionConsts.FREEZING_CRYOPRESERVED_FRESH_EMBRYO.equals(cryopreservedType)) {
-                patientInventoryDto.setChangeFreshEmbryos(-1 * arSubFreezingStageDto.getCryopreservedNum());
-                patientInventoryDto.setChangeFrozenEmbryos(arSubFreezingStageDto.getCryopreservedNum());
+                patientInventoryDto.setChangeFreshEmbryos(-1 * cryopreservedNum);
+                patientInventoryDto.setChangeFrozenEmbryos(cryopreservedNum);
             } else if (DataSubmissionConsts.FREEZING_CRYOPRESERVED_THAWED_OOCYTE.equals(cryopreservedType)) {
-                patientInventoryDto.setChangeThawedOocytes(-1 * arSubFreezingStageDto.getCryopreservedNum());
-                patientInventoryDto.setChangeFrozenOocytes(arSubFreezingStageDto.getCryopreservedNum());
+                patientInventoryDto.setChangeThawedOocytes(-1 * cryopreservedNum);
+                patientInventoryDto.setChangeFrozenOocytes(cryopreservedNum);
             } else if (DataSubmissionConsts.FREEZING_CRYOPRESERVED_THAWED_EMBRYO.equals(cryopreservedType)) {
-                patientInventoryDto.setChangeThawedEmbryos(-1 * arSubFreezingStageDto.getCryopreservedNum());
-                patientInventoryDto.setChangeFrozenEmbryos(arSubFreezingStageDto.getCryopreservedNum());
+                patientInventoryDto.setChangeThawedEmbryos(-1 * cryopreservedNum);
+                patientInventoryDto.setChangeFrozenEmbryos(cryopreservedNum);
             }
         }
         return patientInventoryDto;
