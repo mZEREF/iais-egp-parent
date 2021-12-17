@@ -215,7 +215,10 @@ public class DonationStageDelegator extends CommonDelegator{
                 value=so.getText();
             }
         }
-        ParamUtil.setRequestAttr(bpc.request, "donatedCentre", value);
+        donationStageDto.setDonatedCentreAddress(value);
+        arSuperDataSubmissionDto.setPatientInventoryDto(patientInventoryDto);
+        DataSubmissionHelper.setCurrentArDataSubmission(arSuperDataSubmissionDto,bpc.request);
+
     }
 
 }

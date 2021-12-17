@@ -260,7 +260,8 @@ public class PgtCycleStageDelegator extends CommonDelegator{
                 value=so.getText();
             }
         }
-        ParamUtil.setRequestAttr(bpc.request, "embryosBiospied", value);
+        arSuperDataSubmissionDto.getPgtStageDto().setEmbryosBiopsiedLocal(value);
+        DataSubmissionHelper.setCurrentArDataSubmission(arSuperDataSubmissionDto,bpc.request);
 
     }
 }

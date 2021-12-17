@@ -24,7 +24,7 @@
                 <iais:row>
                     <iais:field width="6" value="Which AR Centre was Gamete(s)/Embryo(s) Donated to?" id="donatedCentreField" mandatory="false"/>
                     <iais:value width="6" display="true">
-                        <c:out value="${donatedCentre}"/>
+                        <c:out value="${arSuperDataSubmissionDto.donationStageDto.donatedCentreAddress}"/>
                     </iais:value>
                 </iais:row>
                 <iais:row>

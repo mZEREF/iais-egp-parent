@@ -140,10 +140,6 @@ public class EfoCycleStageDelegator extends CommonDelegator{
 
     @Override
     public void prepareConfim(BaseProcessClass bpc) {
-        ArSuperDataSubmissionDto arSuperDataSubmissionDto= DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
-        PatientInventoryDto patientInventoryDto = new PatientInventoryDto();
-        if(arSuperDataSubmissionDto.getPatientInventoryDto()!=null){
-            patientInventoryDto=arSuperDataSubmissionDto.getPatientInventoryDto();
-        }
+
     }
 }

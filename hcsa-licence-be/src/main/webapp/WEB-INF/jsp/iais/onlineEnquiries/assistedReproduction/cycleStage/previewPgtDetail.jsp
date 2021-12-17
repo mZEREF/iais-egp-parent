@@ -142,7 +142,7 @@
                 <iais:row>
                     <iais:field width="6" value="Embryos were Biospied At"/>
                     <iais:value width="6" display="true">
-                        <c:out value="${embryosBiospied}"/>
+                        <c:out value="${arSuperDataSubmissionDto.pgtStageDto.embryosBiopsiedLocal}"/>
                     </iais:value>
                 </iais:row>
                 <div id="othersEmbryosBiopsyDisplay" <c:if test="${ arSuperDataSubmissionDto.pgtStageDto.isEmbryosBiopsiedLocal !='Others' }">style="display: none"</c:if> >

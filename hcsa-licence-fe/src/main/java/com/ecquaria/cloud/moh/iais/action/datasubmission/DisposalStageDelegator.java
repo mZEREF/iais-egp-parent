@@ -209,5 +209,7 @@ public class DisposalStageDelegator extends CommonDelegator{
                 break;
             default:
         }
+        arSuperDataSubmissionDto.setPatientInventoryDto(patientInventoryDto);
+        DataSubmissionHelper.setCurrentArDataSubmission(arSuperDataSubmissionDto,bpc.request);
     }
 }
