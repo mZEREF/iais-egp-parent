@@ -190,18 +190,8 @@
             disabeleForAllDay($allDayDiv);
         });
         init = 1;
-        /*if($('#eqHciNameChange').val()=='false'){
-            $("input[name='isPartEdit']").val('1');
-            $("input[name='chooseExistData']").val('1');
-            $('.premSelect').removeClass('disabled');
-            $('.premisesEdit').addClass('hidden');
-        }else  if($('#eqHciNameChange').val()=='true'){
-            $('.premisesEdit').removeClass('hidden');
-            $("input[name='isPartEdit']").val('0');
-            $("input[name='chooseExistData']").val('0');
-        }*/
         if($("#errorMapIs").val()=='error' ){
-            $('.premisesEdit').trigger('click');
+            doEditPremise($('.premisesEdit'), '1');
         }
     });
 

@@ -94,6 +94,8 @@ public class ServiceInfoChangeEffectPersonAbstract implements ServiceInfoChangeE
                 reSetPersonnels(oldSvcInfoDto, newDto, step, changeList.contains(ApplicationConsts.PERSONNEL_CLINICAL_DIRECTOR));
             } else if (HcsaConsts.STEP_KEY_APPOINTMENT_HOLDER.equals(step)) {
                 reSetPersonnels(oldSvcInfoDto, newDto, step, changeList.contains(ApplicationConsts.PERSONNEL_PSN_KAH));
+            } else if (HcsaConsts.MEDALERT_PERSON.equals(step)) {
+                reSetPersonnels(oldSvcInfoDto, newDto, step, changeList.contains(ApplicationConsts.PERSONNEL_PSN_TYPE_MAP));
             }
         }
         List<AppSvcRelatedInfoDto> result = IaisCommonUtils.genNewArrayList(1);
@@ -139,6 +141,10 @@ public class ServiceInfoChangeEffectPersonAbstract implements ServiceInfoChangeE
             psnList = (List<AppSvcPrincipalOfficersDto>) CopyUtil.copyMutableObjectList(
                     sourceReletedInfo.getAppSvcKeyAppointmentHolderDtoList());
             newList = targetReletedInfo.getAppSvcKeyAppointmentHolderDtoList();
+        } else if (HcsaConsts.STEP_MEDALERT_PERSON.equals(step)) {
+            psnList = (List<AppSvcPrincipalOfficersDto>) CopyUtil.copyMutableObjectList(
+                    sourceReletedInfo.getAppSvcMedAlertPersonList());
+            newList = targetReletedInfo.getAppSvcMedAlertPersonList();
         }
         if (isChanged && psnList != null && newList != null) {
             for (int i = 0, len = psnList.size(); i < len; i++) {
@@ -159,6 +165,8 @@ public class ServiceInfoChangeEffectPersonAbstract implements ServiceInfoChangeE
             targetReletedInfo.setAppSvcClinicalDirectorDtoList(psnList);
         } else if (HcsaConsts.STEP_KEY_APPOINTMENT_HOLDER.equals(step)) {
             targetReletedInfo.setAppSvcKeyAppointmentHolderDtoList(psnList);
+        } else if (HcsaConsts.STEP_MEDALERT_PERSON.equals(step)) {
+            targetReletedInfo.setAppSvcMedAlertPersonList(psnList);
         }
     }
 

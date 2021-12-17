@@ -3246,7 +3246,7 @@ public class ClinicalLaboratoryDelegator {
                     appSvcClinicalDirectorDto.setAssignSelect(assignSel);
                 } else {
                     appSvcClinicalDirectorDto.setAssignSelect(NewApplicationHelper.getAssignSelect(idType, idNo,
-                            IaisEGPConstant.ASSIGN_SELECT_ADD_NEW));
+                            "-1"));
                 }
                 AppPsnEditDto appPsnEditDto = appSvcClinicalDirectorDto.getPsnEditDto();
                 if (appPsnEditDto == null) {
@@ -4025,6 +4025,7 @@ public class ClinicalLaboratoryDelegator {
                             indexNos = removeArrIndex(indexNos, i);
                             isPartEdit = removeArrIndex(isPartEdit, i);
                             //dropdown cannot disabled
+                            personnelSels = removeArrIndex(personnelSels, i);
                             designations = removeArrIndex(designations, i);
                             //change arr index
                             --i;

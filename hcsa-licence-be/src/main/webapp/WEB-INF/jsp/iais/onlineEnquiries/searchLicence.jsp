@@ -30,13 +30,15 @@
         showWaiting();
 
         $('input[name="pageJumpNoTextchangePage"]').val(1);
-        SOP.Crud.cfxSubmit("mainForm", "search");
+        $("[name='crud_action_type']").val('search');
+        $('#mainForm').submit();
 
     }
 
     function doLicBack() {
         showWaiting();
-        SOP.Crud.cfxSubmit("mainForm", "back");
+        $("[name='crud_action_type']").val('back');
+        $('#mainForm').submit();
     }
 
     function doLicClear() {
