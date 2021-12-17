@@ -7,33 +7,33 @@ $(function () {
 
     $("#next").click(function () {
         showWaiting();
+        sumbitRemoveDisable();
         $("input[name='action_type']").val("jump");
         $("input[name='action_value']").val("next");
-        sumbitRemoveDisable();
         $("#mainForm").submit();
     });
 
     $("#saveDraft").click(function () {
         showWaiting();
+        sumbitRemoveDisable();
         $("input[name='action_type']").val("jump");
         $("input[name='action_value']").val("draft");
-        sumbitRemoveDisable();
         $("#mainForm").submit();
     });
 
     $("#back").click(function () {
         showWaiting();
+        sumbitRemoveDisable();
         $("input[name='action_type']").val("jump");
         $("input[name='action_value']").val("back");
-        sumbitRemoveDisable();
         $("#mainForm").submit();
     });
 
     $("a[data-step-key]").click(function () {
         showWaiting();
+        sumbitRemoveDisable();
         $("input[name='action_type']").val("jump");
         $("input[name='action_value']").val($(this).attr("data-step-key"));
-        sumbitRemoveDisable();
         $("#mainForm").submit();
     });
 

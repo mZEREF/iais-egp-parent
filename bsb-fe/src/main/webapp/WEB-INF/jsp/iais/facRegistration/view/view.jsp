@@ -121,7 +121,7 @@
                                                                         </div>
                                                                         <div class="form-group">
                                                                             <label class="col-xs-5 col-md-4 control-label">Employment Start Date</label>
-                                                                            <div class="col-sm-7 col-md-5 col-xs-7"><p>${facOperator.employmentStartDate}</p></div>
+                                                                            <div class="col-sm-7 col-md-5 col-xs-7"><p>${facOperator.employmentStartDt}</p></div>
                                                                             <div class="clear"></div>
                                                                         </div>
                                                                     </div>
@@ -171,7 +171,7 @@
                                                                             </div>
                                                                             <div class="form-group">
                                                                                 <label class="col-xs-5 col-md-4 control-label">Employment Start Date</label>
-                                                                                <div class="col-sm-7 col-md-5 col-xs-7"><p>${personnel.employmentStartDate}</p></div>
+                                                                                <div class="col-sm-7 col-md-5 col-xs-7"><p>${personnel.employmentStartDt}</p></div>
                                                                                 <div class="clear"></div>
                                                                             </div>
                                                                             <div class="form-group">
@@ -181,7 +181,7 @@
                                                                             </div>
                                                                             <div class="form-group">
                                                                                 <label class="col-xs-5 col-md-4 control-label">Security Clearance Date</label>
-                                                                                <div class="col-sm-7 col-md-5 col-xs-7"><p>${personnel.securityClearanceDate}</p></div>
+                                                                                <div class="col-sm-7 col-md-5 col-xs-7"><p>${personnel.securityClearanceDt}</p></div>
                                                                                 <div class="clear"></div>
                                                                             </div>
                                                                             <div class="form-group">
@@ -234,7 +234,7 @@
                                                                         </div>
                                                                         <div class="form-group">
                                                                             <label class="col-xs-5 col-md-4 control-label">Employment Start Date</label>
-                                                                            <div class="col-sm-7 col-md-5 col-xs-7"><p>${facAdmin.mainAdmin.employmentStartDate}</p></div>
+                                                                            <div class="col-sm-7 col-md-5 col-xs-7"><p>${facAdmin.mainAdmin.employmentStartDt}</p></div>
                                                                             <div class="clear"></div>
                                                                         </div>
                                                                     </div>
@@ -275,7 +275,7 @@
                                                                         </div>
                                                                         <div class="form-group">
                                                                             <label class="col-xs-5 col-md-4 control-label">Employment Start Date</label>
-                                                                            <div class="col-sm-7 col-md-5 col-xs-7"><p>${facAdmin.alternativeAdmin.employmentStartDate}</p></div>
+                                                                            <div class="col-sm-7 col-md-5 col-xs-7"><p>${facAdmin.alternativeAdmin.employmentStartDt}</p></div>
                                                                             <div class="clear"></div>
                                                                         </div>
                                                                     </div>
@@ -318,7 +318,7 @@
                                                                         </div>
                                                                         <div class="form-group">
                                                                             <label class="col-xs-5 col-md-4 control-label">Employment Start Date</label>
-                                                                            <div class="col-sm-7 col-md-5 col-xs-7"><p>${facOfficer.employmentStartDate}</p></div>
+                                                                            <div class="col-sm-7 col-md-5 col-xs-7"><p>${facOfficer.employmentStartDt}</p></div>
                                                                             <div class="clear"></div>
                                                                         </div>
                                                                     </div>
@@ -368,7 +368,7 @@
                                                                             </div>
                                                                             <div class="form-group">
                                                                                 <label class="col-xs-5 col-md-4 control-label">Employment Start Date</label>
-                                                                                <div class="col-sm-7 col-md-5 col-xs-7"><p>${personnel.employmentStartDate}</p></div>
+                                                                                <div class="col-sm-7 col-md-5 col-xs-7"><p>${personnel.employmentStartDt}</p></div>
                                                                                 <div class="clear"></div>
                                                                             </div>
                                                                             <div class="form-group">

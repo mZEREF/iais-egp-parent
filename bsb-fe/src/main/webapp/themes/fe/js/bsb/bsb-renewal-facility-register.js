@@ -7,32 +7,55 @@ $(function () {
 
     $("#next").click(function () {
         showWaiting();
+        sumbitRemoveDisable();
         $("input[name='action_type']").val("jump");
         $("input[name='action_value']").val("next");
-        sumbitRemoveDisable();
         $("#mainForm").submit();
     });
 
     $("#back").click(function () {
         showWaiting();
+        sumbitRemoveDisable();
         $("input[name='action_type']").val("jump");
         $("input[name='action_value']").val("back");
-        sumbitRemoveDisable();
         $("#mainForm").submit();
     });
 
-    $("a[data-step-key]").click(jumpToStep);
+    $("a[data-step-key]").click(function (){
+        showWaiting();
+        sumbitRemoveDisable();
+        $("input[name='action_type']").val("jump");
+        $("input[name='action_value']").val($(this).attr("data-step-key"));
+        $("#mainForm").submit();
+    });
+    $("li.tracker-item[data-step-key]").click(function (){
+        showWaiting();
+        sumbitRemoveDisable();
+        $("input[name='action_type']").val("jump");
+        $("input[name='action_value']").val($(this).attr("data-step-key"));
+        $("#mainForm").submit();
+    });
+
     $("a[review-edit-data-step-key]").click(function (){
         showWaiting();
+        sumbitRemoveDisable();
         $("input[name='action_type']").val("reviewEdit");
         $("input[name='action_value']").val($(this).attr("review-edit-data-step-key"));
         $("#mainForm").submit();
     });
-    $("li.tracker-item[data-step-key]").click(jumpToStep);
+
+    $("#previewButton").click(function (){
+        showWaiting();
+        sumbitRemoveDisable();
+        $("input[name='action_type']").val("review");
+        $("input[name='action_value']").val("next");
+        $("#mainForm").submit();
+    })
 
     $("#submit").click(function () {
         if ($("#declare").is(':checked')) {
             showWaiting();
+            sumbitRemoveDisable();
             $("input[name='action_type']").val("jump");
             $("input[name='action_value']").val("next");
             $("#mainForm").submit();

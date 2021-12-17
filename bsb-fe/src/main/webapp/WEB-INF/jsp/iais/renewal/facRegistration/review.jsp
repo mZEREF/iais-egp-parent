@@ -17,8 +17,8 @@
 
 <link href="<%=WEB_ROOT%>/css/bsb/bsb-common.css" rel="stylesheet"/>
 <script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-common.js"></script>
-<script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-common-facility-register.js"></script>
 <script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-display-or-not.js"></script>
+<script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-common-facility-register.js"></script>
 <script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-renewal-facility-register.js"></script>
 
 <%@include file="/WEB-INF/jsp/iais/include/showErrorMsg.jsp"%>
@@ -54,7 +54,6 @@
                                                         </div>
                                                         <div id="previewFacInfo" class="panel-collapse collapse">
                                                             <div class="panel-body">
-                                                                <div class="text-right app-font-size-16"><a href="#" review-edit-data-step-key="facInfo_facProfile"><em class="fa fa-pencil-square-o"></em>Edit</a></div>
                                                                 <div class="panel-main-content form-horizontal min-row">
                                                                     <div class="form-group">
                                                                         <div class="col-10 control-label"><strong>Facility Profile</strong></div>
@@ -78,7 +77,6 @@
                                                                         </div>
                                                                     </div>
                                                                 </div>
-                                                                <div class="text-right app-font-size-16"><a href="#" review-edit-data-step-key="facInfo_facOperator"><em class="fa fa-pencil-square-o"></em>Edit</a></div>
                                                                 <div class="panel-main-content form-horizontal min-row">
                                                                     <div class="form-group">
                                                                         <div class="col-10"><strong>Facility Operator</strong></div>
@@ -122,7 +120,7 @@
                                                                         </div>
                                                                         <div class="form-group">
                                                                             <label class="col-xs-5 col-md-4 control-label">Employment Start Date</label>
-                                                                            <div class="col-sm-6 col-md-4 col-xs-6"><p>${facOperator.employmentStartDate}</p></div>
+                                                                            <div class="col-sm-6 col-md-4 col-xs-6"><p>${facOperator.employmentStartDt}</p></div>
                                                                             <div class="clear"></div>
                                                                         </div>
                                                                     </div>
@@ -173,7 +171,7 @@
                                                                             </div>
                                                                             <div class="form-group">
                                                                                 <label class="col-xs-5 col-md-4 control-label">Employment Start Date</label>
-                                                                                <div class="col-sm-6 col-md-4 col-xs-6"><p>${personnel.employmentStartDate}</p></div>
+                                                                                <div class="col-sm-6 col-md-4 col-xs-6"><p>${personnel.employmentStartDt}</p></div>
                                                                                 <div class="clear"></div>
                                                                             </div>
                                                                             <div class="form-group">
@@ -183,7 +181,7 @@
                                                                             </div>
                                                                             <div class="form-group">
                                                                                 <label class="col-xs-5 col-md-4 control-label">Security Clearance Date</label>
-                                                                                <div class="col-sm-6 col-md-4 col-xs-6"><p>${personnel.securityClearanceDate}</p></div>
+                                                                                <div class="col-sm-6 col-md-4 col-xs-6"><p>${personnel.securityClearanceDt}</p></div>
                                                                                 <div class="clear"></div>
                                                                             </div>
                                                                             <div class="form-group">
@@ -237,7 +235,7 @@
                                                                         </div>
                                                                         <div class="form-group">
                                                                             <label class="col-xs-5 col-md-4 control-label">Employment Start Date</label>
-                                                                            <div class="col-sm-6 col-md-4 col-xs-6"><p>${facAdmin.mainAdmin.employmentStartDate}</p></div>
+                                                                            <div class="col-sm-6 col-md-4 col-xs-6"><p>${facAdmin.mainAdmin.employmentStartDt}</p></div>
                                                                             <div class="clear"></div>
                                                                         </div>
                                                                     </div>
@@ -278,7 +276,7 @@
                                                                         </div>
                                                                         <div class="form-group">
                                                                             <label class="col-xs-5 col-md-4 control-label">Employment Start Date</label>
-                                                                            <div class="col-sm-6 col-md-4 col-xs-6"><p>${facAdmin.alternativeAdmin.employmentStartDate}</p></div>
+                                                                            <div class="col-sm-6 col-md-4 col-xs-6"><p>${facAdmin.alternativeAdmin.employmentStartDt}</p></div>
                                                                             <div class="clear"></div>
                                                                         </div>
                                                                     </div>
@@ -322,7 +320,7 @@
                                                                         </div>
                                                                         <div class="form-group">
                                                                             <label class="col-xs-5 col-md-4 control-label">Employment Start Date</label>
-                                                                            <div class="col-sm-6 col-md-4 col-xs-6"><p>${facOfficer.employmentStartDate}</p></div>
+                                                                            <div class="col-sm-6 col-md-4 col-xs-6"><p>${facOfficer.employmentStartDt}</p></div>
                                                                             <div class="clear"></div>
                                                                         </div>
                                                                     </div>
@@ -373,7 +371,7 @@
                                                                             </div>
                                                                             <div class="form-group">
                                                                                 <label class="col-xs-5 col-md-4 control-label">Employment Start Date</label>
-                                                                                <div class="col-sm-6 col-md-4 col-xs-6"><p>${personnel.employmentStartDate}</p></div>
+                                                                                <div class="col-sm-6 col-md-4 col-xs-6"><p>${personnel.employmentStartDt}</p></div>
                                                                                 <div class="clear"></div>
                                                                             </div>
                                                                             <div class="form-group">
@@ -543,7 +541,7 @@
                                         <div class="col-xs-12 col-sm-6">
                                             <div class="button-group">
                                                 <a class="btn btn-secondary" href="javascript:void(0);">PRINT</a>
-                                                <a class="btn btn-primary" href="javascript:void(0);">SUBMIT</a>
+                                                <a class="btn btn-primary next" id="submit" >SUBMIT</a>
                                             </div>
                                         </div>
                                     </div>

@@ -14,8 +14,8 @@
 
 <link href="<%=WEB_ROOT%>/css/bsb/bsb-common.css" rel="stylesheet"/>
 <script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-common.js"></script>
-<script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-common-facility-register.js"></script>
 <script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-display-or-not.js"></script>
+<script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-common-facility-register.js"></script>
 <script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-renewal-facility-register.js"></script>
 
 <%@include file="/WEB-INF/jsp/iais/include/showErrorMsg.jsp"%>
@@ -40,91 +40,7 @@
 
                                     <div class="form-horizontal">
                                         <div class="text-right"><a id="edit" href="javascript:void(0)"><em class="fa fa-pencil-square-o"></em>Edit</a></div>
-                                        <%--@elvariable id="facOfficer" type="sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityOfficerDto"--%>
-                                        <h3 class="col-12 pl-0" style="border-bottom: 1px solid black">Facility Officer</h3>
-
-                                        <div class="form-group ">
-                                            <div class="col-sm-5 control-label">
-                                                <label for="officerName">Name</label>
-                                                <span class="mandatory otherQualificationSpan">*</span>
-                                            </div>
-                                            <div class="col-sm-6 col-md-7">
-                                                <input maxLength="132" type="text" autocomplete="off" name="officerName" id="officerName" value='<c:out value="${facOfficer.officerName}"/>'/>
-                                                <span data-err-ind="officerName" class="error-msg"></span>
-                                            </div>
-                                        </div>
-                                        <div class="form-group ">
-                                            <div class="col-sm-5 control-label">
-                                                <label for="nationality">Nationality</label>
-                                                <span class="mandatory otherQualificationSpan">*</span>
-                                            </div>
-                                            <div class="col-sm-6 col-md-7">
-                                                <select name="nationality" id="nationality">
-                                                    <c:forEach items="${nationalityOps}" var="na">
-                                                        <option value="${na.value}" <c:if test="${facOfficer.nationality eq na.value}">selected="selected"</c:if>>${na.text}</option>
-                                                    </c:forEach>
-                                                </select>
-                                                <span data-err-ind="nationality" class="error-msg"></span>
-                                            </div>
-                                        </div>
-                                        <div class="form-group ">
-                                            <div class="col-sm-5 control-label">
-                                                <label for="idNumber">NRIC/FIN</label>
-                                                <span class="mandatory otherQualificationSpan">*</span>
-                                            </div>
-                                            <div class="col-sm-3">
-                                                <select name="idType" id="idType">
-                                                    <option value="IDTYPE001" <c:if test="${facOfficer.idType eq 'IDTYPE001'}">selected="selected"</c:if>>NRIC</option>
-                                                    <option value="IDTYPE002" <c:if test="${facOfficer.idType eq 'IDTYPE002'}">selected="selected"</c:if>>FIN</option>
-                                                    <option value="IDTYPE003" <c:if test="${facOfficer.idType eq 'IDTYPE003'}">selected="selected"</c:if>>Passport</option>
-                                                </select>
-                                                <span data-err-ind="idType" class="error-msg"></span>
-                                            </div>
-                                            <div class="col-sm-3 col-md-4">
-                                                <input maxLength="9" type="text" autocomplete="off" name="idNumber" id="idNumber" value='<c:out value="${facOfficer.idNumber}"/>'/>
-                                                <span data-err-ind="idNumber" class="error-msg"></span>
-                                            </div>
-                                        </div>
-                                        <div class="form-group ">
-                                            <div class="col-sm-5 control-label">
-                                                <label for="designation">Designation</label>
-                                                <span class="mandatory otherQualificationSpan">*</span>
-                                            </div>
-                                            <div class="col-sm-6 col-md-7">
-                                                <input maxLength="66" type="text" autocomplete="off" name="designation" id="designation" value='<c:out value="${facOfficer.designation}"/>'/>
-                                                <span data-err-ind="designation" class="error-msg"></span>
-                                            </div>
-                                        </div>
-                                        <div class="form-group ">
-                                            <div class="col-sm-5 control-label">
-                                                <label for="contactNo">Contact No.</label>
-                                                <span class="mandatory otherQualificationSpan">*</span>
-                                            </div>
-                                            <div class="col-sm-6 col-md-7">
-                                                <input maxLength="20" type="text" autocomplete="off" name="contactNo" id="contactNo" value='<c:out value="${facOfficer.contactNo}"/>'/>
-                                                <span data-err-ind="contactNo" class="error-msg"></span>
-                                            </div>
-                                        </div>
-                                        <div class="form-group ">
-                                            <div class="col-sm-5 control-label">
-                                                <label for="email">Email</label>
-                                                <span class="mandatory otherQualificationSpan">*</span>
-                                            </div>
-                                            <div class="col-sm-6 col-md-7">
-                                                <input maxLength="66" type="text" autocomplete="off" name="email" id="email" value='<c:out value="${facOfficer.email}"/>'/>
-                                                <span data-err-ind="email" class="error-msg"></span>
-                                            </div>
-                                        </div>
-                                        <div class="form-group ">
-                                            <div class="col-sm-5 control-label">
-                                                <label for="employmentStartDate">Employment Start Date</label>
-                                                <span class="mandatory otherQualificationSpan">*</span>
-                                            </div>
-                                            <div class="col-sm-6 col-md-7">
-                                                <input type="text" autocomplete="off" name="employmentStartDate" id="employmentStartDate" data-date-start-date="01/01/1900" value="<c:out value="${facOfficer.employmentStartDate}"/>" placeholder="dd/mm/yyyy" maxlength="10" class="date_picker form-control"/>
-                                                <span data-err-ind="employmentStartDate" class="error-msg"></span>
-                                            </div>
-                                        </div>
+                                        <%@ include file="../../mainAppCommon/facRegistration/facilityOfficer.jsp" %>
                                     </div>
                                 </div>
 

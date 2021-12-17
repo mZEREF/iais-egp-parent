@@ -202,10 +202,14 @@ public class RenewalFacilityRegistrationDelegator {
         String actionValue = ParamUtil.getString(request, KEY_ACTION_VALUE);
 
         //there has three action button, 'nav tab jump', 'submit', 'back', 'reviewEdit'
-        //todo
         if (KEY_ACTION_REVIEW_EDIT.equals(actionType)){// 'reviewEdit'
+            String destNode = facilityRegistrationService.computeDestNodePath(facRegRoot, actionValue);
+            String checkedDestNode = Nodes.jump(facRegRoot, destNode);
+            if (!checkedDestNode.equals(destNode)) {
+                ParamUtil.setRequestAttr(request, KEY_SHOW_ERROR_SWITCH, Boolean.TRUE);
+            }
+            ParamUtil.setSessionAttr(request, KEY_JUMP_DEST_NODE, checkedDestNode);
             ParamUtil.setRequestAttr(request, KEY_ACTION_TYPE, KEY_ACTION_JUMP);
-            ParamUtil.setSessionAttr(request, KEY_JUMP_DEST_NODE, actionValue);
         } else if (KEY_ACTION_JUMP.equals(actionType)) {
             if (KEY_NAV_NEXT.equals(actionValue)) {// 'submit'
                 if (reviewNode.doValidation()) {
@@ -222,10 +226,10 @@ public class RenewalFacilityRegistrationDelegator {
                     }
 
                     // save data
-                    FacilityRegisterDto finalAllDataDto = FacilityRegisterDto.from(facRegRoot);
+                    FacilityRegisterDto finalAllDataDto = FacilityRegisterDto.fromRenewal(viewApprovalRoot, facRegRoot);
                     AuditTrailDto auditTrailDto = (AuditTrailDto) ParamUtil.getSessionAttr(request, AuditTrailConsts.SESSION_ATTR_PARAM_NAME);
                     finalAllDataDto.setAuditTrailDto(auditTrailDto);
-                    ResponseDto<String> responseDto = facRegClient.saveNewRegisteredFacility(finalAllDataDto);
+                    ResponseDto<String> responseDto = facRegClient.saveRenewalRegisteredFacility(finalAllDataDto);
                     log.info("save new facility response: {}", responseDto);
 
                     try {
@@ -263,6 +267,7 @@ public class RenewalFacilityRegistrationDelegator {
         } else {
             throw new IaisRuntimeException(ERR_MSG_INVALID_ACTION);
         }
+        ParamUtil.setSessionAttr(request, KEY_ROOT_NODE_GROUP, facRegRoot);
         ParamUtil.setSessionAttr(request, KEY_RENEWAL_VIEW_APPROVAL_ROOT_NODE_GROUP, viewApprovalRoot);
     }
 
@@ -271,43 +276,195 @@ public class RenewalFacilityRegistrationDelegator {
     }
 
     public void handleServiceSelection(BaseProcessClass bpc) {
-        facilityRegistrationService.handleServiceSelection(bpc);
+        HttpServletRequest request = bpc.request;
+        NodeGroup facRegRoot = facilityRegistrationService.getFacilityRegisterRoot(request);
+        SimpleNode facSelectionNode = (SimpleNode) facRegRoot.getNode(NODE_NAME_FAC_SELECTION);
+        FacilitySelectionDto selectionDto = (FacilitySelectionDto) facSelectionNode.getValue();
+        selectionDto.reqObjMapping(request);
+
+        String actionType = ParamUtil.getString(request, KEY_ACTION_TYPE);
+        if (NODE_NAME_REVIEW.equals(actionType)){
+            facilityRegistrationService.renewalJumpHandle(request, facRegRoot, NODE_NAME_FAC_SELECTION, facSelectionNode);
+        } else if (KEY_ACTION_JUMP.equals(actionType)) {
+            facilityRegistrationService.jumpHandler(request, facRegRoot, NODE_NAME_FAC_SELECTION, facSelectionNode);
+        } else {
+            throw new IaisRuntimeException(ERR_MSG_INVALID_ACTION);
+        }
+
+        if (facSelectionNode.isValidated()) {
+            NodeGroup batGroup = (NodeGroup) facRegRoot.getNode(NODE_NAME_FAC_BAT_INFO);
+            FacilityRegistrationService.changeBatNodeGroup(batGroup, selectionDto);
+        }
+        ParamUtil.setSessionAttr(request, KEY_ROOT_NODE_GROUP, facRegRoot);
     }
 
     public void handleFacProfile(BaseProcessClass bpc) {
-        facilityRegistrationService.handleFacProfile(bpc);
+        HttpServletRequest request = bpc.request;
+        NodeGroup facRegRoot = facilityRegistrationService.getFacilityRegisterRoot(request);
+        String currentNodePath = NODE_NAME_FAC_INFO + facRegRoot.getPathSeparator() + NODE_NAME_FAC_PROFILE;
+        SimpleNode facProfileNode = (SimpleNode) facRegRoot.at(currentNodePath);
+        FacilityProfileDto facProfileDto = (FacilityProfileDto) facProfileNode.getValue();
+        SimpleNode facAuthNode = (SimpleNode) facRegRoot.at(NODE_NAME_FAC_INFO + facRegRoot.getPathSeparator() + NODE_NAME_FAC_AUTH);
+        FacilityAuthoriserDto facAuthDto = (FacilityAuthoriserDto) facAuthNode.getValue();
+        facAuthDto.setIsProtectedPlace(facProfileDto.getIsFacilityProtected());
+
+        String actionType = ParamUtil.getString(request, KEY_ACTION_TYPE);
+        if (NODE_NAME_REVIEW.equals(actionType)){
+            facilityRegistrationService.renewalJumpHandle(request, facRegRoot, currentNodePath, facProfileNode);
+        } else if (KEY_ACTION_JUMP.equals(actionType)) {
+            facilityRegistrationService.jumpHandler(request, facRegRoot, currentNodePath, facProfileNode);
+        } else {
+            throw new IaisRuntimeException(ERR_MSG_INVALID_ACTION);
+        }
+        ParamUtil.setSessionAttr(request, KEY_ROOT_NODE_GROUP, facRegRoot);
     }
 
     public void handleFacOperator(BaseProcessClass bpc) {
-        facilityRegistrationService.handleFacOperator(bpc);
+        HttpServletRequest request = bpc.request;
+        NodeGroup facRegRoot = facilityRegistrationService.getFacilityRegisterRoot(request);
+        String currentNodePath = NODE_NAME_FAC_INFO + facRegRoot.getPathSeparator() + NODE_NAME_FAC_OPERATOR;
+        SimpleNode facOpNode = (SimpleNode) facRegRoot.at(currentNodePath);
+
+        String actionType = ParamUtil.getString(request, KEY_ACTION_TYPE);
+        if (NODE_NAME_REVIEW.equals(actionType)){
+            facilityRegistrationService.renewalJumpHandle(request, facRegRoot, currentNodePath, facOpNode);
+        } else if (KEY_ACTION_JUMP.equals(actionType)) {
+            facilityRegistrationService.jumpHandler(request, facRegRoot, currentNodePath, facOpNode);
+        } else {
+            throw new IaisRuntimeException(ERR_MSG_INVALID_ACTION);
+        }
+        ParamUtil.setSessionAttr(request, KEY_ROOT_NODE_GROUP, facRegRoot);
     }
 
     public void handleFacInfoAuthoriser(BaseProcessClass bpc) {
-        facilityRegistrationService.handleFacInfoAuthoriser(bpc);
+        HttpServletRequest request = bpc.request;
+        NodeGroup facRegRoot = facilityRegistrationService.getFacilityRegisterRoot(request);
+        String currentNodePath = NODE_NAME_FAC_INFO + facRegRoot.getPathSeparator() + NODE_NAME_FAC_AUTH;
+        SimpleNode facAuthNode = (SimpleNode) facRegRoot.at(currentNodePath);
+        FacilityAuthoriserDto facAuthDto = (FacilityAuthoriserDto) facAuthNode.getValue();
+        facAuthDto.reqObjMapping(request);
+
+        String actionType = ParamUtil.getString(request, KEY_ACTION_TYPE);
+        if (NODE_NAME_REVIEW.equals(actionType)){
+            facilityRegistrationService.renewalJumpHandle(request, facRegRoot, currentNodePath, facAuthNode);
+        } else if (KEY_ACTION_JUMP.equals(actionType)) {
+            facilityRegistrationService.jumpHandler(request, facRegRoot, currentNodePath, facAuthNode);
+        } else {
+            throw new IaisRuntimeException(ERR_MSG_INVALID_ACTION);
+        }
+        ParamUtil.setSessionAttr(request, KEY_ROOT_NODE_GROUP, facRegRoot);
     }
 
     public void handleFacAdmin(BaseProcessClass bpc) {
-        facilityRegistrationService.handleFacAdmin(bpc);
+        HttpServletRequest request = bpc.request;
+        NodeGroup facRegRoot = facilityRegistrationService.getFacilityRegisterRoot(request);
+        String currentNodePath = NODE_NAME_FAC_INFO + facRegRoot.getPathSeparator() + NODE_NAME_FAC_ADMIN;
+        SimpleNode facAdminNode = (SimpleNode) facRegRoot.at(currentNodePath);
+        FacilityAdministratorDto facAdminDto = (FacilityAdministratorDto) facAdminNode.getValue();
+        facAdminDto.reqObjMapping(request);
+
+        String actionType = ParamUtil.getString(request, KEY_ACTION_TYPE);
+        if (NODE_NAME_REVIEW.equals(actionType)){
+            facilityRegistrationService.renewalJumpHandle(request, facRegRoot, currentNodePath, facAdminNode);
+        } else if (KEY_ACTION_JUMP.equals(actionType)) {
+            facilityRegistrationService.jumpHandler(request, facRegRoot, currentNodePath, facAdminNode);
+        } else {
+            throw new IaisRuntimeException(ERR_MSG_INVALID_ACTION);
+        }
+        ParamUtil.setSessionAttr(request, KEY_ROOT_NODE_GROUP, facRegRoot);
     }
 
     public void handleFacOfficer(BaseProcessClass bpc) {
-        facilityRegistrationService.handleFacOfficer(bpc);
+        HttpServletRequest request = bpc.request;
+        NodeGroup facRegRoot = facilityRegistrationService.getFacilityRegisterRoot(request);
+        String currentNodePath = NODE_NAME_FAC_INFO + facRegRoot.getPathSeparator() + NODE_NAME_FAC_OFFICER;
+        SimpleNode facOfficerNode = (SimpleNode) facRegRoot.at(currentNodePath);
+        FacilityOfficerDto facOfficerDto = (FacilityOfficerDto) facOfficerNode.getValue();
+        facOfficerDto.reqObjMapping(request);
+
+        String actionType = ParamUtil.getString(request, KEY_ACTION_TYPE);
+        if (NODE_NAME_REVIEW.equals(actionType)){
+            facilityRegistrationService.renewalJumpHandle(request, facRegRoot, currentNodePath, facOfficerNode);
+        } else if (KEY_ACTION_JUMP.equals(actionType)) {
+            facilityRegistrationService.jumpHandler(request, facRegRoot, currentNodePath, facOfficerNode);
+        } else {
+            throw new IaisRuntimeException(ERR_MSG_INVALID_ACTION);
+        }
+        ParamUtil.setSessionAttr(request, KEY_ROOT_NODE_GROUP, facRegRoot);
     }
 
     public void handleFacInfoCommittee(BaseProcessClass bpc) {
-        facilityRegistrationService.handleFacInfoCommittee(bpc);
+        HttpServletRequest request = bpc.request;
+        NodeGroup facRegRoot = facilityRegistrationService.getFacilityRegisterRoot(request);
+        String currentNodePath = NODE_NAME_FAC_INFO + facRegRoot.getPathSeparator() + NODE_NAME_FAC_COMMITTEE;
+        SimpleNode facCommitteeNode = (SimpleNode) facRegRoot.at(currentNodePath);
+        FacilityCommitteeDto facCommitteeDto = (FacilityCommitteeDto) facCommitteeNode.getValue();
+        facCommitteeDto.reqObjMapping(request);
+
+        String actionType = ParamUtil.getString(request, KEY_ACTION_TYPE);
+        if (NODE_NAME_REVIEW.equals(actionType)){
+            facilityRegistrationService.renewalJumpHandle(request, facRegRoot, currentNodePath, facCommitteeNode);
+        } else if (KEY_ACTION_JUMP.equals(actionType)) {
+            facilityRegistrationService.jumpHandler(request, facRegRoot, currentNodePath, facCommitteeNode);
+        } else {
+            throw new IaisRuntimeException(ERR_MSG_INVALID_ACTION);
+        }
+        ParamUtil.setSessionAttr(request, KEY_ROOT_NODE_GROUP, facRegRoot);
     }
 
     public void handleBAToxin(BaseProcessClass bpc) {
-        facilityRegistrationService.handleBAToxin(bpc);
+        HttpServletRequest request = bpc.request;
+        NodeGroup facRegRoot = facilityRegistrationService.getFacilityRegisterRoot(request);
+        String currentNodePath = (String) ParamUtil.getSessionAttr(request, KEY_JUMP_DEST_NODE);
+        SimpleNode batNode = (SimpleNode) facRegRoot.at(currentNodePath);
+        BiologicalAgentToxinDto batDto = (BiologicalAgentToxinDto) batNode.getValue();
+        batDto.reqObjMapping(request);
+
+        String actionType = ParamUtil.getString(request, KEY_ACTION_TYPE);
+        if (NODE_NAME_REVIEW.equals(actionType)){
+            facilityRegistrationService.renewalJumpHandle(request, facRegRoot, currentNodePath, batNode);
+        } else if (KEY_ACTION_JUMP.equals(actionType)) {
+            facilityRegistrationService.jumpHandler(request, facRegRoot, currentNodePath, batNode);
+        } else {
+            throw new IaisRuntimeException(ERR_MSG_INVALID_ACTION);
+        }
+        ParamUtil.setSessionAttr(request, KEY_ROOT_NODE_GROUP, facRegRoot);
     }
 
     public void handleOtherAppInfo(BaseProcessClass bpc) {
-        facilityRegistrationService.handleOtherAppInfo(bpc);
+        HttpServletRequest request = bpc.request;
+        NodeGroup facRegRoot = facilityRegistrationService.getFacilityRegisterRoot(request);
+        SimpleNode otherAppInfoNode = (SimpleNode) facRegRoot.at(NODE_NAME_OTHER_INFO);
+        OtherApplicationInfoDto otherAppInfoDto = (OtherApplicationInfoDto) otherAppInfoNode.getValue();
+        otherAppInfoDto.reqObjMapping(request);
+
+        String actionType = ParamUtil.getString(request, KEY_ACTION_TYPE);
+        if (NODE_NAME_REVIEW.equals(actionType)){
+            facilityRegistrationService.renewalJumpHandle(request, facRegRoot, NODE_NAME_OTHER_INFO, otherAppInfoNode);
+        } else if (KEY_ACTION_JUMP.equals(actionType)) {
+            facilityRegistrationService.jumpHandler(request, facRegRoot, NODE_NAME_OTHER_INFO, otherAppInfoNode);
+        } else {
+            throw new IaisRuntimeException(ERR_MSG_INVALID_ACTION);
+        }
+        ParamUtil.setSessionAttr(request, KEY_ROOT_NODE_GROUP, facRegRoot);
     }
 
     public void handlePrimaryDoc(BaseProcessClass bpc) {
-        facilityRegistrationService.handlePrimaryDoc(bpc);
+        HttpServletRequest request = bpc.request;
+        NodeGroup facRegRoot = facilityRegistrationService.getFacilityRegisterRoot(request);
+        SimpleNode primaryDocNode = (SimpleNode) facRegRoot.at(NODE_NAME_PRIMARY_DOC);
+        PrimaryDocDto primaryDocDto = (PrimaryDocDto) primaryDocNode.getValue();
+        primaryDocDto.reqObjMapping(request);
+
+        String actionType = ParamUtil.getString(request, KEY_ACTION_TYPE);
+        if (NODE_NAME_REVIEW.equals(actionType)){
+            facilityRegistrationService.renewalJumpHandle(request, facRegRoot, NODE_NAME_PRIMARY_DOC, primaryDocNode);
+        } else if (KEY_ACTION_JUMP.equals(actionType)) {
+            facilityRegistrationService.jumpHandler(request, facRegRoot, NODE_NAME_PRIMARY_DOC, primaryDocNode);
+        } else {
+            throw new IaisRuntimeException(ERR_MSG_INVALID_ACTION);
+        }
+        ParamUtil.setSessionAttr(request, KEY_ROOT_NODE_GROUP, facRegRoot);
     }
 
     public void actionFilter(BaseProcessClass bpc) {

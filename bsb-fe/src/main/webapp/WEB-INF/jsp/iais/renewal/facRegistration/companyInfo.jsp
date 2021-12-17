@@ -11,8 +11,8 @@
 <webui:setLayout name="iais-internet"/>
 
 <link href="<%=WEB_ROOT%>/css/bsb/bsb-common.css" rel="stylesheet"/>
-<script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-common-facility-register.js"></script>
 <script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-display-or-not.js"></script>
+<script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-common-facility-register.js"></script>
 <script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-renewal-facility-register.js"></script>
 
 <%@include file="dashboard.jsp"%>
@@ -96,10 +96,7 @@
             </div>
             <br/>
             <div class="row">
-                <div class="col-xs-12 col-md-3">
-                    <a class="back" href="/bsb-fe/eservice/INTERNET/MohBSBInboxMsg"><em class="fa fa-angle-left"></em> Back</a>
-                </div>
-                <div class="col-xs-12 col-md-9">
+                <div class="col-xs-12 col-md-12">
                     <div class="text-right text-center-mobile">
                         <a class="btn btn-primary next" id="next" href="javascript:void(0);">START APPLICATION</a>
                     </div>
