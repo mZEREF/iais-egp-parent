@@ -157,7 +157,7 @@
                                 <iais:row>
                                     <iais:field width="4" value="Status"/>
                                     <iais:value width="6" cssClass="col-md-6"  >
-                                        <iais:select name="cycleStagesStatus" id="cycleStagesStatus" firstOption="Please Select" codeCategory="CATE_ID_DS_ID_TYPE"
+                                        <iais:select name="cycleStagesStatus" id="cycleStagesStatus" firstOption="Please Select" options="cycleStagesStatusOptions"
                                                      value="${assistedReproductionEnquiryFilterDto.cycleStagesStatus}" />
                                     </iais:value>
                                 </iais:row>
@@ -1196,10 +1196,11 @@
 
                             <div class="col-xs-12 col-md-12">
                                 <iais:action style="text-align:right;">
-                                    <a style=" float:left;padding-top: 1.1%;text-decoration:none;" href="#" onclick="javascript:doArBack()"><em class="fa fa-angle-left"> </em> Back</a>
-
                                     <button type="button" class="btn btn-secondary"
                                             onclick="javascript:doClear();">Clear
+                                    </button>
+                                    <button type="button" class="btn btn-secondary"
+                                            onclick="javascript:doArBack();">Basic Search
                                     </button>
                                     <button type="button" class="btn btn-primary"
                                             onclick="javascript:doSearch();">Search
@@ -1330,16 +1331,7 @@
 
         $("option:first").prop("selected", 'selected');
         $(".current").text("Please Select");
-        $('input[name="submissionDateFrom"]').val("");
-        $('input[name="submissionDateTo"]').val("");
-        $('input[name="cycleStagesDateFrom"]').val("");
-        $('input[name="cycleStagesDateTo"]').val("");
-        $('input[name="deliveryDateFrom"]').val("");
-        $('input[name="deliveryDateTo]').val("");
-        $('input[name="disposalDateFrom"]').val("");
-        $('input[name="disposalDateTo"]').val("");
-        $('input[name="transferDateFrom"]').val("");
-        $('input[name="transferDateTo"]').val("");
+        $('.date_picker').val("");
 
 
     }

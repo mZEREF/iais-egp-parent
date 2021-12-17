@@ -418,10 +418,11 @@
                 <#if embryologist??> AND  charindex(:embryologist, dacs.EMBRYOLOGIST) >0</#if>
                 <#if arPractitioner??> AND  charindex(:arPractitioner, dacs.PRACTITIONER) >0</#if>
 
-                <#if cycleStagesStatus??> AND  charindex(:cycleStagesStatus, dc.STATUS) >0</#if>
+                <#if cycleStagesStatus??> AND  :cycleStagesStatus = dc.STATUS </#if>
+                <#if Ongoing??> AND  dc.STATUS not in ('DS001','DS003','DS002')</#if>
                 <#if cycleStagesDateFrom??> AND dc.CREATED_DT >= convert(date,:cycleStagesDateFrom)</#if>
                 <#if cycleStagesDateTo??> AND dc.CREATED_DT <= convert(date,:cycleStagesDateTo)</#if>
-                <#if arOrIui??> AND  charindex(:arOrIui, dc.DS_TYPE) >0</#if>
+                <#if arOrIui??> AND :arOrIui = dc.DS_TYPE </#if>
                 <#if ivm??> AND  :ivm = dacs.IN_VITRO_MATURATION </#if>
                 <#if cart_fcn??> AND  :cart_fcn = dacs.TREATMENT_FRESH_NATURAL </#if>
                 <#if cart_fcs??> AND  :cart_fcs = dacs.TREATMENT_FRESH_STIMULATED </#if>

@@ -272,7 +272,6 @@
         $('input[type="checkbox"]').prop("checked", false);
         $("option:first").prop("selected", 'selected');
         $(".current").text("Please Select");
-        $('input[name="submissionDateFrom"]').val("");
-        $('input[name="submissionDateTo"]').val("");
+        $('.date_picker').val("");
     }
 </script>

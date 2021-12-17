@@ -126,11 +126,11 @@
                                     <button type="button" class="btn btn-secondary"
                                             onclick="javascript:doClear();">Clear
                                     </button>
-                                    <button type="button" class="btn btn-primary"
-                                            onclick="javascript:doSearch();">Search
+                                    <button type="button" class="btn btn-secondary"
+                                            onclick="javascript:doAdvancedSearch();">Advanced Search
                                     </button>
                                     <button type="button" class="btn btn-primary"
-                                            onclick="javascript:doAdvancedSearch();">Advanced Search
+                                            onclick="javascript:doSearch();">Search
                                     </button>
                                 </iais:action>
                             </div>
@@ -462,8 +462,7 @@
         $('input[type="checkbox"]').prop("checked", false);
         $("option:first").prop("selected", 'selected');
         $(".current").text("Please Select");
-        $('input[name="submissionDateFrom"]').val("");
-        $('input[name="submissionDateTo"]').val("");
+        $('.date_picker').val("");
         $(".multi-select-button").html("-- Select --");
         $('#cycleStageDisplay').attr("style","display: none");
     }
