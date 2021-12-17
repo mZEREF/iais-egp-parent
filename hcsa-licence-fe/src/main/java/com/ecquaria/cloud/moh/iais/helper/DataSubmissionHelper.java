@@ -200,8 +200,8 @@ public final class DataSubmissionHelper {
             } else if (DataSubmissionConsts.AR_STAGE_OOCYTE_RETRIEVAL.equals(currStage)
                     || DataSubmissionConsts.AR_STAGE_DONATION.equals(currStage)
                     || DataSubmissionConsts.AR_STAGE_DISPOSAL.equals(currStage)) {
-                result.add(DataSubmissionConsts.AR_STAGE_DONATION);
                 result.add(DataSubmissionConsts.AR_STAGE_DISPOSAL);
+                result.add(DataSubmissionConsts.AR_STAGE_DONATION);
                 result.add(DataSubmissionConsts.AR_STAGE_FREEZING);
             }
         }
