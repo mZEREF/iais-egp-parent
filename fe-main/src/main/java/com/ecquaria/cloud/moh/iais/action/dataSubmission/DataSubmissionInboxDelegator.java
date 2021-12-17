@@ -117,6 +117,7 @@ public class DataSubmissionInboxDelegator {
 				SearchParam searchParam = HalpSearchResultHelper.gainSearchParam(request, InboxConst.DS_PARAM, InboxDataSubmissionQueryDto.class.getName(),SORT_INIT,SearchParam.DESCENDING,false);
 				HalpAssessmentGuideDelegator.setParamByField(searchParam,"licenseeId",interInboxUserDto.getLicenseeId(),true);
 				HalpAssessmentGuideDelegator.setParamByField(searchParam,"dsType",(List<String>) ParamUtil.getSessionAttr(request,DS_TYPES));
+				HalpSearchResultHelper.setMasterCodeForSearchParam(searchParam,"type","typeDesc",MasterCodeUtil.DATA_SUBMISSION_TYPE);
 				QueryHelp.setMainSql(InboxConst.INBOX_QUERY, InboxConst.INBOX_DS_QUERY,searchParam);
 				ParamUtil.setSessionAttr(request, InboxConst.DS_RESULT,licenceInboxClient.searchLicence(searchParam).getEntity());
 				ParamUtil.setSessionAttr(request, InboxConst.DS_PARAM,searchParam);

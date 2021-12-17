@@ -1,10 +1,12 @@
 package com.ecquaria.cloud.moh.iais.helper;
 
 import com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst;
+import com.ecquaria.cloud.moh.iais.common.dto.MasterCodePair;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InboxAppQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InboxLicenceQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InboxQueryDto;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 
@@ -94,6 +96,13 @@ public class HalpSearchResultHelper {
         }
         if (!StringUtil.isEmpty(pageSize)) {
             searchParam.setPageSize(Integer.parseInt(pageSize));
+        }
+    }
+
+    public static void setMasterCodeForSearchParam(SearchParam searchParam,String key,String value, String cateId){
+        if (IaisCommonUtils.isEmpty(searchParam.getMcList())) {
+            searchParam.setMasterCode(new MasterCodePair(key, value,
+                    MasterCodeUtil.retrieveOptionsByCate(cateId)));
         }
     }
 }

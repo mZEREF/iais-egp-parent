@@ -81,7 +81,7 @@
                         <iais:sortableHeader needSort="false" field="" value=" " style="width:1%;"/>
                         <iais:sortableHeader needSort="true" field="SUBMISSION_NO"
                                              value="Submission ID" style="width:15%;" isFE="true"/>
-                        <iais:sortableHeader needSort="true" field="type" value="Type" style="width:12%;" isFE="true"/>
+                        <iais:sortableHeader needSort="true" field="typeDesc" value="Type" style="width:12%;" isFE="true"/>
                         <iais:sortableHeader needSort="true" field="status" value="Status" style="width:10%;" isFE="true"/>
                         <iais:sortableHeader needSort="true" field="BUSINESS_NAME" value="Business Name" style="width:22%;" isFE="true"/>
                         <iais:sortableHeader needSort="true" field="UPDATED_DT"
