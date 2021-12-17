@@ -110,37 +110,3 @@
     <%@ include file="../../appeal/FeFileCallAjax.jsp" %>
 </form>
 <script type="text/javascript" src="<%=webroot1%>js/dataSubmission/patientInfoUpload.js"></script>
-<%--
-<script type="text/javascript">
-    $(document).ready(function () {
-        $('#_needReUpload').val(0);
-        $('#_fileType').val("XLSX, CSV");
-
-        $('#saveDraftBtn').remove();
-        $('#backBtn').unbind('click');
-        $('#backBtn').click(function () {
-            showWaiting();
-            submit('back');
-        });
-    });
-
-    function cloneUploadFile() {
-        var fileId= '#uploadFile';
-        $(fileId).after( $( fileId).clone().val(""));
-        $(fileId).remove();
-        $('.itemErrorTableDiv').remove();
-        var $btns = $('#uploadFileShowId').find('button');
-        if ($btns.length >= 2) {
-            $btns.not(':last').trigger('click');
-        }
-        $('#hasItems').val('0');
-        $('#itemSize').html('0');
-        $('#nextBtn').html('Preview');
-    }
-
-    function deleteFileFeAjax(id,fileIndex) {
-        $('#hasItems').val('0');
-        $('#itemSize').html('0');
-        callAjaxDeleteFile(id,fileIndex);
-    }
-</script>--%>

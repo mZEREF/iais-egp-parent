@@ -43,8 +43,7 @@ public class VssDataSubmissionDelegator {
     public void doStart(BaseProcessClass bpc) {
         log.info(" -----VssDataSubmissionDelegator Start ------ ");
         DsConfigHelper.clearVssSession(bpc.request);
-        DsConfigHelper.intVssConfig(bpc.request);
-
+        DsConfigHelper.initVssConfig(bpc.request);
     }
 
     /**
@@ -70,7 +69,7 @@ public class VssDataSubmissionDelegator {
         String actionType = (String) ParamUtil.getRequestAttr(request, DataSubmissionConstant.CRUD_ACTION_TYPE_VSS);
         if (StringUtil.isEmpty(actionType)) {
             String crudType = ParamUtil.getString(request, DataSubmissionConstant.CRUD_TYPE);
-            if (StringUtil.isEmpty(crudType)) {
+            if (StringUtil.isEmpty(crudType) || "VS".equals(crudType)) {
                 actionType = DataSubmissionHelper.initAction(DataSubmissionConsts.DS_VSS, DsConfigHelper.VSS_STEP_TREATMENT, request);
             } else if ("return".equals(crudType)) {
                 actionType = "return";

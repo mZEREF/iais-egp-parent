@@ -592,7 +592,11 @@ public final class DataSubmissionHelper {
     }
 
     public static String initAction(String dsType, String defaultAction, HttpServletRequest request) {
-        List<DsConfig> configs = DsConfigHelper.intDsConfig(dsType, request);
+        DsConfig dsConfig = DsConfigHelper.getCurrentConfig(dsType, request);
+        if (dsConfig != null) {
+            return dsConfig.getCode();
+        }
+        List<DsConfig> configs = DsConfigHelper.initDsConfig(dsType, request);
         return configs.stream()
                 .filter(config -> config.isActive())
                 .map(DsConfig::getCode)

@@ -1,4 +1,4 @@
-<div class="form-horizontal licenseeContent">
+<div class="form-horizontal treatmentDetails">
     <iais:row>
         <iais:value width="6" cssClass="col-md-6">
             <%--<strong class="app-font-size-22 premHeader">title</strong>--%>

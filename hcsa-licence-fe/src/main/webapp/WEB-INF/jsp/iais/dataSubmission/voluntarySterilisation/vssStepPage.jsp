@@ -28,6 +28,7 @@
                         <div class="tab-content">
                             <div class="tab-pane in active">
                                 <c:set var="currCode" value="${VSS_CURRENT_STEP.code}" scope="request"/>
+                                ------------------${currCode}--------------
                                 <c:choose>
                                     <c:when test="${currCode == 'VSST001'}">
                                         <%@ include file="section/treatmentDetails.jsp" %>
