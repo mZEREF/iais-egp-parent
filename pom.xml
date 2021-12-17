@@ -128,7 +128,7 @@
             <dependency>
                 <groupId>com.ecquaria.sz</groupId>
                 <artifactId>ecq-sz-commons</artifactId>
-                <version>0.44</version>
+                <version>0.45</version>
             </dependency>
             <dependency>
                 <groupId>com.ncs.secureconnect</groupId>
@@ -186,7 +186,7 @@
             <dependency>
                 <groupId>com.ecquaria.kafka</groupId>
                 <artifactId>servicewrapper</artifactId>
-                <version>0.25</version>
+                <version>0.26</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.commons</groupId>
