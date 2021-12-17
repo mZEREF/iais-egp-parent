@@ -88,7 +88,7 @@
                             <c:if test="${not empty pageShowFileDto && !hasError}">
                             <div id="${pageShowFileDto.fileMapId}">
                                 <iais:downloadLink fileRepoIdName="fileRo0" fileRepoId="${pageShowFileDto.fileUploadUrl}" docName="${pageShowFileDto.fileName}"/>
-                                <button type="button" class="btn btn-secondary btn-sm" onclick="javascript:deleteFileFeAjax('selected${sec}File',${pageShowFileDto.index});">Delete</button>
+                                <button type="button" class="btn btn-secondary btn-sm" onclick="javascript:deleteFileFeAjax('uploadFile',${pageShowFileDto.index});">Delete</button>
                             </div>
                             </c:if>
                         </div>
