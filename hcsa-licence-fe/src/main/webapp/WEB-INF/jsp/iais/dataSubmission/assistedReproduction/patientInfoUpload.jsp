@@ -87,9 +87,7 @@
                         <div name="uploadFileShowId" id="uploadFileShowId">
                             <c:if test="${not empty pageShowFileDto && !hasError}">
                             <div id="${pageShowFileDto.fileMapId}">
-                                <span name="fileName" style="font-size: 14px;color: #2199E8;text-align: center">
-                                    <iais:downloadLink fileRepoIdName="fileRo0" fileRepoId="${pageShowFileDto.fileUploadUrl}" docName="${pageShowFileDto.fileName}"/>
-                                </span>
+                                <iais:downloadLink fileRepoIdName="fileRo0" fileRepoId="${pageShowFileDto.fileUploadUrl}" docName="${pageShowFileDto.fileName}"/>
                                 <button type="button" class="btn btn-secondary btn-sm" onclick="javascript:deleteFileFeAjax('selected${sec}File',${pageShowFileDto.index});">Delete</button>
                             </div>
                             </c:if>
@@ -118,6 +116,11 @@
         $('#_fileType').val("XLSX, CSV");
 
         $('#saveDraftBtn').remove();
+        $('#backBtn').unblind('click');
+        $('#backBtn').click(function () {
+            showWaiting();
+            submit('back');
+        });
     });
 
     function cloneUploadFile() {

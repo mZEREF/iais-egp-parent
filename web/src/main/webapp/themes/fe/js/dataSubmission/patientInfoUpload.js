@@ -3,6 +3,11 @@ $(document).ready(function () {
     $('#_fileType').val("XLSX, CSV");
 
     $('#saveDraftBtn').remove();
+    $('#backBtn').unblind('click');
+    $('#backBtn').click(function () {
+        showWaiting();
+        submit('back');
+    });
 });
 
 function cloneUploadFile() {
