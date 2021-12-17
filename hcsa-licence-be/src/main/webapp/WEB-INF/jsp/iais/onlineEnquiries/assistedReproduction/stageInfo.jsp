@@ -28,12 +28,12 @@
                                         <c:choose>
                                             <c:when test ="${steplist.submitDt <= submitDt}">
                                                 <li onclick="nextTab('${steplist.submissionNo}')" class="tracker-item active" data-service-step="${steplist.cycleStage}">
-                                                    <a href="#tab${steplist.cycleStage}" aria-controls="tab${steplist.cycleStage}" role="tab" data-toggle="tab"><iais:code code="${steplist.cycleStage}"/></a>
+                                                    <a href="#tab${steplist.cycleStage}" style="color: #000;" aria-controls="tab${steplist.cycleStage}" role="tab" data-toggle="tab"><iais:code code="${steplist.cycleStage}"/></a>
                                                 </li>
                                             </c:when>
                                             <c:otherwise>
                                                 <li onclick="nextTab('${steplist.submissionNo}')" class="tracker-item " data-service-step="${steplist.cycleStage}">
-                                                    <a href="#tab${steplist.cycleStage}" aria-controls="tab${steplist.cycleStage}" role="tab" data-toggle="tab"><iais:code code="${steplist.cycleStage}"/></a>
+                                                    <a href="#tab${steplist.cycleStage}" style="color: #000;" aria-controls="tab${steplist.cycleStage}" role="tab" data-toggle="tab"><iais:code code="${steplist.cycleStage}"/></a>
                                                 </li>
                                             </c:otherwise>
                                         </c:choose>
@@ -50,7 +50,7 @@
                                 </div>
 
                                 <div class="tab-content row">
-                                    <div class="tab-pane active " role="tabpanel">
+                                    <div class="tab-pane active col-lg-8 col-xs-8" style="left: 16%;" role="tabpanel">
                                         <c:choose>
 
                                             <c:when test="${cycleStage == 'AR_CL001'}">
