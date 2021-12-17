@@ -16,7 +16,6 @@
                     <span style="font-weight:normal"><c:out value="(${arSuperDataSubmissionDto.patientInfoDto.patient.idNumber})"/>
                     </span>
                 </h3>
-                <%@include file="../common/arFlagOut.jsp" %>
                 <iais:row>
                     <iais:field width="6" value="Thawing Oocyte(s) or Embryo(s)" cssClass="col-md-6"/>
                     <iais:value width="6" cssClass="col-md-6" style="padding:0px;" display="true">

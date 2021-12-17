@@ -15,7 +15,6 @@
                     <span style="font-weight:normal"><c:out value="(${arSuperDataSubmissionDto.patientInfoDto.patient.idNumber})"/>
                     </span>
                 </h3>
-                <%@include file="../common/arFlagOut.jsp" %>
                 <iais:row>
                     <iais:field width="6" value="What was disposed?" mandatory="false"/>
                     <iais:value width="6" display="true">

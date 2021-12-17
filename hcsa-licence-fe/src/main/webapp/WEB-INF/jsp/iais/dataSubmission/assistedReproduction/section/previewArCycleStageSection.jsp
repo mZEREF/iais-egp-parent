@@ -12,7 +12,6 @@
             <div class="panel-main-content form-horizontal">
                 <c:set var="arCycleStageDto" value="${arSuperDataSubmissionDto.arCycleStageDto}" />
                 <%@include file="patientCommon.jsp"%>
-                <%@include file="../common/arFlagOut.jsp" %>
                 <iais:row>
                     <iais:field width="5" value="Premises where AR is performed" />
                     <iais:value width="7" cssClass="col-md-7" display="true">

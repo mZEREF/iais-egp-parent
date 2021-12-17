@@ -12,7 +12,6 @@
       <div class="panel-main-content form-horizontal">
         <c:set var="iuiCycleStageDto" value="${arSuperDataSubmissionDto.iuiCycleStageDto}" />
         <%@include file="patientCommon.jsp"%>
-        <%@include file="../common/arFlagOut.jsp" %>
         <iais:row>
           <iais:field value="Premises where IUI is Performed" mandatory="false"/>
           <iais:value width="7" cssClass="col-md-7" display="true" >

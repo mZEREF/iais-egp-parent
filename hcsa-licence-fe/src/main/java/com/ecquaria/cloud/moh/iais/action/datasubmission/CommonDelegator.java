@@ -179,37 +179,7 @@ public abstract class CommonDelegator {
         log.info(StringUtil.changeForLog("-----" + this.getClass().getSimpleName() + " Prepare Confirm Page -----"));
         ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.CURRENT_PAGE_STAGE, DataSubmissionConstant.PAGE_STAGE_PREVIEW);
         ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.PRINT_FLAG, DataSubmissionConstant.PRINT_FLAG_ART);
-        ArSuperDataSubmissionDto arSuperDataSubmissionDto = DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
-        if (DataSubmissionConsts.AR_TYPE_SBT_CYCLE_STAGE.equals(arSuperDataSubmissionDto.getSubmissionType())) {
-            flagOut(bpc.request);
-        }
         prepareConfim(bpc);
-    }
-
-    private void flagOut(HttpServletRequest request) {
-        ArSuperDataSubmissionDto arSuperDataSubmissionDto = DataSubmissionHelper.getCurrentArDataSubmission((request));
-        Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
-        if (arDataSubmissionService.flagOutEnhancedCounselling(arSuperDataSubmissionDto)) {
-            errorMap.put("EnhancedCounsellingFlag", MessageUtil.getMessageDesc("DS_ERR042"));
-        }
-        if (arDataSubmissionService.flagOutEmbryoTransferAgeAndCount(arSuperDataSubmissionDto)) {
-            errorMap.put("EmbryoTransferAgeAndCountFlag", MessageUtil.getMessageDesc("DS_ERR047"));
-        }
-        if (arDataSubmissionService.flagOutEmbryoTransferCountAndPatAge(arSuperDataSubmissionDto)) {
-            errorMap.put("tEmbryoTransferCountAndPatAgeFlag", MessageUtil.getMessageDesc("DS_ERR049"));
-        }
-        if (!errorMap.isEmpty()) {
-            String errorMapJson = (String) ParamUtil.getRequestAttr(request, IaisEGPConstant.ERRORMSG);
-            if (StringUtil.isNotEmpty(errorMapJson)) {
-                List<Map> mapList = JsonUtil.parseToList(errorMapJson, Map.class);
-                if (IaisCommonUtils.isNotEmpty(mapList)) {
-                    for (Map map : mapList) {
-                        errorMap.putAll(map);
-                    }
-                }
-            }
-            ParamUtil.setRequestAttr(request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
-        }
     }
 
     /**

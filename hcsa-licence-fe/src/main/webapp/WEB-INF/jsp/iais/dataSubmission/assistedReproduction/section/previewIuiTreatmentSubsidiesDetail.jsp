@@ -15,7 +15,6 @@
                     <span style="font-weight:normal"><c:out value="(${arSuperDataSubmissionDto.patientInfoDto.patient.idNumber})"/>
                     </span>
                 </h3>
-                <%@include file="../common/arFlagOut.jsp" %>
                 <c:set var="iuiTreatmentSubsidiesDto" value="${arSuperDataSubmissionDto.iuiTreatmentSubsidiesDto}" />
                 <iais:row>
                     <iais:field width="5" value="Please indicate IUI Co-funding"/>

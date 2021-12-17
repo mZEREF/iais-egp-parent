@@ -16,7 +16,6 @@
                     <span style="font-weight:normal"><c:out value="(${arSuperDataSubmissionDto.patientInfoDto.patient.idNumber})"/>
                     </span>
                 </h3>
-                <%@include file="../common/arFlagOut.jsp" %>
                 <iais:row>
                     <iais:field width="5" value="Source of Semen"/>
                     <iais:value width="7" cssClass="col-md-7">
