@@ -2,7 +2,9 @@
 <sqls catalog="premises">
     <sql key="premisesHtml" cached="no" remarks="">
         <![CDATA[
-        <div class="row premContent underLine" id="mainPrem">
+    <div class="row premContent underLine" id="mainPrem">
+    <input type="hidden" name="chooseExistData" value="0"/>
+    <input type="hidden" name="isPartEdit" value="1"/>
     <input class="premValue" type="hidden" name="premValue" value="${premVal}"/>
     <input class="premisesIndexNo" type="hidden" name="premisesIndexNo" value=""/>
     <input class="phLength" type="hidden" name="phLength" value="1"/>
@@ -12,7 +14,7 @@
     <input class="weeklyLength" type="hidden" name="weeklyLength" value="1"/>
     <input class="phLength" type="hidden" name="phLength" value="1"/>
     <input class="eventLength" type="hidden" name="eventLength" value="1"/>
-     <input hidden class="premiseIndex" value="${premVal}">
+    <input hidden class="premiseIndex" value="${premVal}">
     <div class="col-xs-12">
         <div class="form-horizontal">
             <div class="form-group">
