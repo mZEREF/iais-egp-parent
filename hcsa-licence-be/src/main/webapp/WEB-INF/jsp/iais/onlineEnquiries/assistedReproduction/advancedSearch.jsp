@@ -1328,22 +1328,8 @@
         $('input[type="radio"]').prop("checked", false);
         $('input[type="checkbox"]').prop("checked", false);
 
-        $("#patientIdType option:first").prop("selected", 'selected');
-        $("#patientIdType .current").text("Please Select");
-        $("#husbandIdType option:first").prop("selected", 'selected');
-        $("#husbandIdType .current").text("Please Select");
-        $("#arCentre option:first").prop("selected", 'selected');
-        $("#arCentre .current").text("Please Select");
-        $("#cycleStagesStatus option:first").prop("selected", 'selected');
-        $("#cycleStagesStatus .current").text("Please Select");
-        $("#arOrIuiCycle option:first").prop("selected", 'selected');
-        $("#arOrIuiCycle .current").text("Please Select");
-        $("#sourceSemen option:first").prop("selected", 'selected');
-        $("#sourceSemen .current").text("Please Select");
-        $("#transferredInFrom option:first").prop("selected", 'selected');
-        $("#transferredInFrom .current").text("Please Select");
-        $("#transferOutTo option:first").prop("selected", 'selected');
-        $("#transferOutTo .current").text("Please Select");
+        $("option:first").prop("selected", 'selected');
+        $(".current").text("Please Select");
         $('input[name="submissionDateFrom"]').val("");
         $('input[name="submissionDateTo"]').val("");
         $('input[name="cycleStagesDateFrom"]').val("");

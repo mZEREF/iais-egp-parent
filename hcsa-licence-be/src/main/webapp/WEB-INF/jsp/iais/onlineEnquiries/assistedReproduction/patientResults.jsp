@@ -460,12 +460,8 @@
     function doClear() {
         $('input[type="text"]').val("");
         $('input[type="checkbox"]').prop("checked", false);
-        $("#arCentre option:first").prop("selected", 'selected');
-        $("#arCentre .current").text("Please Select");
-        $("#submissionType option:first").prop("selected", 'selected');
-        $("#submissionType .current").text("Please Select");
-        $("#cycleStage option:first").prop("selected", 'selected');
-        $("#cycleStage .current").text("Please Select");
+        $("option:first").prop("selected", 'selected');
+        $(".current").text("Please Select");
         $('input[name="submissionDateFrom"]').val("");
         $('input[name="submissionDateTo"]').val("");
         $(".multi-select-button").html("-- Select --");
