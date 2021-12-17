@@ -109,6 +109,19 @@ import com.ecquaria.cloud.moh.iais.utils.DealSessionUtil;
 import com.ecquaria.cloud.moh.iais.utils.SingeFileUtil;
 import com.ecquaria.cloud.moh.iais.validate.declarationsValidate.DeclarationsUtil;
 import com.ecquaria.sz.commons.util.MsgUtil;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.env.Environment;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
+import sop.servlet.webflow.HttpHandler;
+import sop.util.DateUtil;
+import sop.webflow.rt.api.BaseProcessClass;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
@@ -130,18 +143,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.env.Environment;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
-import sop.servlet.webflow.HttpHandler;
-import sop.util.DateUtil;
-import sop.webflow.rt.api.BaseProcessClass;
 
 /**
  * egator
@@ -2472,7 +2473,6 @@ public class NewApplicationDelegator {
         // validate the submission data
         Map<String, String> map = appSubmissionService.doPreviewAndSumbit(bpc);
         boolean isRfi = NewApplicationHelper.checkIsRfi(bpc.request);
-
         List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
         List<AppGrpPremisesDto> oldAppGrpPremisesDtoList = oldAppSubmissionDto.getAppGrpPremisesDtoList();
         if (map.isEmpty() && !isRfi) {
@@ -2509,8 +2509,11 @@ public class NewApplicationDelegator {
             bpc.request.setAttribute("rfcInvalidLic",MessageUtil.getMessageDesc("RFC_ERR023"));
             return;
         }
-        boolean isValid = NewApplicationHelper.validateLicences(Collections.singletonList(licenceById), appGrpPremisesDtoList.get(0),
-                bpc.request);
+        Set<String> premiseTypes = null;
+        if (appGrpPremisesDtoList != null) {
+            premiseTypes = appGrpPremisesDtoList.stream().map(AppGrpPremisesDto::getPremisesType).collect(Collectors.toSet());
+        }
+        boolean isValid = NewApplicationHelper.validateLicences(licenceId, premiseTypes, null, bpc.request);
         if (!isValid) {
             return;
         }
@@ -2697,6 +2700,32 @@ public class NewApplicationDelegator {
             }
         } else if (appEditSelectDto.isPremisesEdit()) {
             isAutoPremises = 0;
+            /*HcsaServiceDto serviceDto = HcsaServiceCacheHelper.getServiceByServiceName(appSubmissionDto.getServiceName());
+            boolean checkSpec = ApplicationConsts.SERVICE_CONFIG_TYPE_BASE.equals(serviceDto.getSvcType());
+            List<AppSubmissionDto> submissionDtos = requestForChangeService.getAlginAppSubmissionDtos(
+                    appSubmissionDto.getLicenceId(), checkSpec);
+            if (IaisCommonUtils.isNotEmpty(submissionDtos)) {
+                NewApplicationHelper.validateLicences(submissionDtos, )
+            }
+            String premisesIndexNo;
+            if (groupLic) {
+                premisesIndexNo = oldAppGrpPremisesDto.getPremisesIndexNo();
+            } else {
+                premisesIndexNo = appSubmissionDtoByLicenceId.getAppGrpPremisesDtoList().get(0).getPremisesIndexNo();
+            }
+            List<AppGrpPremisesDto> appGrpPremisesDtos = new ArrayList<>(1);
+            AppGrpPremisesDto copyMutableObject = (AppGrpPremisesDto) CopyUtil.copyMutableObject(appGrpPremisesDto);
+            appGrpPremisesDtos.add(copyMutableObject);
+            if (groupLic) {
+                appGrpPremisesDtos.get(0).setGroupLicenceFlag(licence.getId());
+            }
+            appSubmissionDtoByLicenceId.setAppGrpPremisesDtoList(appGrpPremisesDtos);
+            appSubmissionDtoByLicenceId.getAppGrpPremisesDtoList().get(0).setPremisesIndexNo(premisesIndexNo);
+            // check app edit select dto
+            if (StringUtil.isEmpty(draftNo)) {
+                appSubmissionService.setDraftNo(appSubmissionDtoByLicenceId);
+                draftNo = appSubmissionDtoByLicenceId.getDraftNo();
+            }*/
         }
         log.info(StringUtil.changeForLog("isAutoPremises: " + isAutoPremises));
 
@@ -2988,7 +3017,7 @@ public class NewApplicationDelegator {
                 continue;
             }
 
-            isValid = NewApplicationHelper.validateLicences(attribute, premisesDto, request);
+            isValid = NewApplicationHelper.validatePremiseAffected(attribute, premisesDto, request);
             if (isValid) {
                 isValid = requestForChangeService.checkAffectedAppSubmissions(attribute, premisesDto, oldPremisesDtoList.get(i),
                         amount, draftNo, appGroupNo, appEditSelectDto, appSubmissionDtos, request);
