@@ -25,5 +25,7 @@ function cloneUploadFile() {
 
 function deleteFileFeAjax(id,fileIndex) {
     $('#hasItems').val('0');
+    $('#itemSize').html('0');
+    $('#nextBtn').html('Preview');
     callAjaxDeleteFile(id,fileIndex);
 }
