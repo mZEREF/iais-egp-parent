@@ -70,7 +70,7 @@ public class PatientUploadDelegate {
 
     private static final String PATIENT_INFO_LIST = "PATIENT_INFO_LIST";
     private static final String FILE_APPEND = "uploadFile";
-    private static final int MAX_ITEM_COUNT = 1;//todo test 10000
+    private static final int MAX_ITEM_COUNT = 20;//todo test 10000
     private static final String SEESION_FILES_MAP_AJAX = HcsaFileAjaxController.SEESION_FILES_MAP_AJAX + FILE_APPEND;
 
     @Autowired

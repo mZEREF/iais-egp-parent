@@ -46,6 +46,11 @@ public class PatientInfoValidator implements CustomizeValidator {
         if (patient == null) {
             patient = new PatientDto();
         }
+        boolean isRfc = false;
+        if ("rfc".equals(profile)) {
+            isRfc = true;
+            profile = "save";
+        }
         ValidationResult result = WebValidationHelper.validateProperty(patient, profile);
         if (result != null) {
             map.putAll(result.retrieveAll());
@@ -55,7 +60,11 @@ public class PatientInfoValidator implements CustomizeValidator {
         PatientService patientService = SpringContextHelper.getContext().getBean(PatientService.class);
         PatientDto patientDto = patientService.getArPatientDto(patient.getIdType(), patient.getIdNumber(),
                 patient.getNationality(), orgId);
-        if (patientDto != null && (StringUtil.isEmpty(patient.getId()) || !Objects.equals(patientDto.getId(), patient.getId()))) {
+        if (patientDto != null && !isRfc) {
+            map.put("idNumber", MessageUtil.getMessageDesc("DS_ERR007"));
+        }
+        if (patientDto != null && isRfc && (StringUtil.isEmpty(patient.getId())
+                || !Objects.equals(patientDto.getId(), patient.getId()))) {
             map.put("idNumber", MessageUtil.getMessageDesc("DS_ERR007"));
         }
         String birthDate = patient.getBirthDate();
@@ -149,7 +158,6 @@ public class PatientInfoValidator implements CustomizeValidator {
         }
         return map;
     }
-
 
 
 }
