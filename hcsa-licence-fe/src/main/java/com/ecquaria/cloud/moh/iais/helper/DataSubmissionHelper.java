@@ -42,6 +42,7 @@ public final class DataSubmissionHelper {
 
     public static void clearSession(HttpServletRequest request) {
         HttpSession session = request.getSession();
+        session.removeAttribute(DataSubmissionConstant.AR_DATA_LIST);
         session.removeAttribute(DataSubmissionConstant.AR_DATA_SUBMISSION);
         session.removeAttribute(DataSubmissionConstant.AR_OLD_DATA_SUBMISSION);
         session.removeAttribute(DataSubmissionConstant.AR_PREMISES_MAP);
@@ -413,6 +414,10 @@ public final class DataSubmissionHelper {
             }
         }
         return genOptions(map);
+    }
+
+    public static int getFileRecordMaxNumbe() {
+        return SystemParamUtil.getSystemParamConfig().getArFileRecordMaxNumber();
     }
 
     public static List<SelectOption> getNumsSelections(int startNum, int endNum) {

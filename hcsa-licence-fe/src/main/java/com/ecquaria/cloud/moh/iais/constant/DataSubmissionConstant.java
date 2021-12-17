@@ -26,6 +26,11 @@ public class DataSubmissionConstant {
     public static String PAGE_STAGE_PREVIEW                 = "preview";
     public static String PAGE_STAGE_ACK                     = "ack";
 
+    public static String EMAIL_ADDRESS                      = "emailAddress";
+    public static String SUBMITTED_BY                       = "submittedBy";
+
+    public static String AR_DATA_LIST                       = "arSuperList";
+
     public static String AR_DATA_SUBMISSION                 = "arSuperDataSubmissionDto";
     public static String AR_OLD_DATA_SUBMISSION             = "arOldSuperDataSubmissionDto";
     public static String AR_PREMISES_MAP                    = "AR_PREMISES_MAP";

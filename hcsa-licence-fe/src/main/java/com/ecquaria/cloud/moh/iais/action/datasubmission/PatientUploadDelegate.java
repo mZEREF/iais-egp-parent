@@ -31,6 +31,7 @@ import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
 import com.ecquaria.cloud.moh.iais.helper.FileUtils;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
+import com.ecquaria.cloud.moh.iais.helper.SystemParamUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.helper.excel.IrregularExcelWriterUtil;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.ArDataSubmissionService;
@@ -47,6 +48,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.File;
+import java.io.Serializable;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -70,7 +72,6 @@ public class PatientUploadDelegate {
 
     private static final String PATIENT_INFO_LIST = "PATIENT_INFO_LIST";
     private static final String FILE_APPEND = "uploadFile";
-    private static final int MAX_ITEM_COUNT = 20;//todo test 10000
     private static final String SEESION_FILES_MAP_AJAX = HcsaFileAjaxController.SEESION_FILES_MAP_AJAX + FILE_APPEND;
 
     @Autowired
@@ -93,6 +94,7 @@ public class PatientUploadDelegate {
         HttpSession session = request.getSession();
         session.removeAttribute(SEESION_FILES_MAP_AJAX);
         session.removeAttribute(PATIENT_INFO_LIST);
+        session.removeAttribute(DataSubmissionConstant.AR_DATA_LIST);
     }
 
     /**
@@ -120,7 +122,7 @@ public class PatientUploadDelegate {
     public void preparePage(BaseProcessClass bpc) {
         log.info(StringUtil.changeForLog("----- PreparePage -----"));
         Map<String, String> maxCountMap = IaisCommonUtils.genNewHashMap(1);
-        maxCountMap.put("maxCount", Formatter.formatNumber(MAX_ITEM_COUNT, "#,##0"));
+        maxCountMap.put("maxCount", Formatter.formatNumber(DataSubmissionHelper.getFileRecordMaxNumbe(), "#,##0"));
         ParamUtil.setRequestAttr(bpc.request, "maxCountMap", maxCountMap);
     }
 
@@ -153,9 +155,9 @@ public class PatientUploadDelegate {
                 fileItemSize = patientInfoExcelDtoList.size();
                 if (fileItemSize == 0) {
                     errorMap.put("uploadFileError", "PRF_ERR006");
-                } else if (fileItemSize > MAX_ITEM_COUNT) {
+                } else if (fileItemSize > DataSubmissionHelper.getFileRecordMaxNumbe()) {
                     errorMap.put("uploadFileError", MessageUtil.replaceMessage("GENERAL_ERR0052",
-                            Formatter.formatNumber(MAX_ITEM_COUNT, "#,##0"), "maxCount"));
+                            Formatter.formatNumber(DataSubmissionHelper.getFileRecordMaxNumbe(), "#,##0"), "maxCount"));
                 } else {
                     String orgId = DataSubmissionHelper.getLoginContext(bpc.request).getOrgId();
                     patientInfoList = getPatientInfoList(patientInfoExcelDtoList, orgId);
@@ -360,6 +362,13 @@ public class PatientUploadDelegate {
         } catch (Exception e) {
             log.error(StringUtil.changeForLog("The Eic saveArSuperDataSubmissionDtoToBE failed ===>" + e.getMessage()), e);
         }
+        ParamUtil.setSessionAttr(bpc.request, DataSubmissionConstant.AR_DATA_LIST, (Serializable) arSuperList);
+        ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.EMAIL_ADDRESS,
+                DataSubmissionHelper.getLicenseeEmailAddrs(bpc.request));
+        ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.SUBMITTED_BY,
+                DataSubmissionHelper.getLoginContext(bpc.request).getUserName());
+        ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.CURRENT_PAGE_STAGE, DataSubmissionConstant.PAGE_STAGE_ACK);
+        ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.PRINT_FLAG, DataSubmissionConstant.PRINT_FLAG_ACKART);
     }
 
     /**

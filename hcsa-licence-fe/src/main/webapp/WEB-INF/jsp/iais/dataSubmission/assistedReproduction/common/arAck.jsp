@@ -51,11 +51,22 @@
                             </tr>
                             </thead>
                             <tbody>
-                            <tr>
-                                <td>${arSuperDataSubmissionDto.dataSubmissionDto.submissionNo}</td>
-                                <td>${submittedBy}</td>
-                                <td><fmt:formatDate value="${arSuperDataSubmissionDto.dataSubmissionDto.submitDt}" pattern="dd/MM/yyyy HH:mm"/></td>
-                            </tr>
+                            <c:if test="${not empty arSuperList}" var="hasArSuperList">
+                                <c:forEach var="arSuper" items="${arSuperList}">
+                                <tr>
+                                    <td>${arSuper.dataSubmissionDto.submissionNo}</td>
+                                    <td>${submittedBy}</td>
+                                    <td><fmt:formatDate value="${arSuper.dataSubmissionDto.submitDt}" pattern="dd/MM/yyyy HH:mm"/></td>
+                                </tr>
+                                </c:forEach>
+                            </c:if>
+                            <c:if test="${!hasArSuperList}">
+                                <tr>
+                                    <td>${arSuperDataSubmissionDto.dataSubmissionDto.submissionNo}</td>
+                                    <td>${submittedBy}</td>
+                                    <td><fmt:formatDate value="${arSuperDataSubmissionDto.dataSubmissionDto.submitDt}" pattern="dd/MM/yyyy HH:mm"/></td>
+                                </tr>
+                            </c:if>
                             </tbody>
                         </table>
                     </div>
