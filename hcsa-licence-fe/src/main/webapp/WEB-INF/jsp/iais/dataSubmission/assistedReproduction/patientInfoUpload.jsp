@@ -116,6 +116,8 @@
     $(document).ready(function () {
         $('#_needReUpload').val(0);
         $('#_fileType').val("XLSX, CSV");
+
+        $('#saveDraftBtn').remove();
     });
 
     function cloneUploadFile() {
@@ -129,6 +131,7 @@
         }
         $('#hasItems').val('0');
         $('#itemSize').html('0');
+        $('#nextBtn').html('Preview');
     }
 
     function deleteFileFeAjax(id,fileIndex) {

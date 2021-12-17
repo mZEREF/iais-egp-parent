@@ -181,6 +181,7 @@ public class PatientUploadDelegate {
         } else {
             // To submission
             crudype = "submission";
+            ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.CURRENT_PAGE_STAGE, DataSubmissionConstant.PAGE_STAGE_PREVIEW);
         }
         if (errorMap != null && !errorMap.isEmpty()) {
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
