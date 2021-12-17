@@ -106,16 +106,13 @@ public class IuiCycleStageDelegator extends DonorCommonDelegator {
         //get and set Integer Number
         Integer curMarrChildNum =  IaisCommonUtils.stringTransferInteger(curMarrChildNumStr);
         Integer prevMarrChildNum = IaisCommonUtils.stringTransferInteger(prevMarrChildNumStr);
-        Integer iuiDeliverChildNum =  IaisCommonUtils.stringTransferInteger(iuiDeliverChildNumStr);
-        Integer extractVialsOfSpermNum =  IaisCommonUtils.stringTransferInteger(extractVialsOfSpermStr);
-        Integer usedVialsOfSpermNum =  IaisCommonUtils.stringTransferInteger(usedVialsOfSpermStr);
         iuiCycleStageDto.setOwnPremises(AppConsts.YES.equalsIgnoreCase(ownPremises));
         iuiCycleStageDto.setOtherPremises(iuiCycleStageDto.isOwnPremises() ? null : otherPremises);
         iuiCycleStageDto.setCurMarrChildNum(curMarrChildNum);
         iuiCycleStageDto.setPrevMarrChildNum(prevMarrChildNum);
-        iuiCycleStageDto.setIuiDeliverChildNum(iuiDeliverChildNum);
-        iuiCycleStageDto.setExtractVialsOfSperm(extractVialsOfSpermNum);
-        iuiCycleStageDto.setUsedVialsOfSperm(usedVialsOfSpermNum);
+        iuiCycleStageDto.setIuiDeliverChildNum(iuiDeliverChildNumStr);
+        iuiCycleStageDto.setExtractVialsOfSperm(extractVialsOfSpermStr);
+        iuiCycleStageDto.setUsedVialsOfSperm(usedVialsOfSpermStr);
         //Verify SourceOfSemenOp the value is dirty data, and Set Dto
         List<SelectOption> sourceOfSemenOption = (List<SelectOption>)ParamUtil.getSessionAttr(request, "sourceOfSemenOption");
         List<String> sourceOfSemenList = arDataSubmissionService.checkBoxIsDirtyData(sourceOfSemenOpStrs, sourceOfSemenOption);

@@ -3,6 +3,7 @@ package com.ecquaria.cloud.moh.iais.validation.dataSubmission;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.IuiCycleStageDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
+import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidator;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
@@ -40,21 +41,20 @@ public class IuiCycleStageDtoValidator implements CustomizeValidator {
                 //number
                 Integer curMarrChildNum = iuiCycleStageDto.getCurMarrChildNum();
                 Integer prevMarrChildNum = iuiCycleStageDto.getPrevMarrChildNum();
-                Integer iuiDeliverChildNum = iuiCycleStageDto.getIuiDeliverChildNum();
-                Integer extractVialsOfSpermNum = iuiCycleStageDto.getExtractVialsOfSperm();
-                Integer usedVialsOfSpermNum = iuiCycleStageDto.getUsedVialsOfSperm();
-
+                String iuiDeliverChildNum = iuiCycleStageDto.getIuiDeliverChildNum();
+                String extractVialsOfSpermNum = iuiCycleStageDto.getExtractVialsOfSperm();
+                String usedVialsOfSpermNum = iuiCycleStageDto.getUsedVialsOfSperm();
                 errMap = validateNumberLength(errMap, curMarrChildNum, "No. of Children with Current Marriage", "curMarrChildNum", 2);
                 errMap = validateNumberLength(errMap, prevMarrChildNum, "No. of Children with Previous Marriage", "prevMarrChildNum", 2);
-                errMap = validateNumberLength(errMap, iuiDeliverChildNum, "Total No. of Children Delivered under IUI", "iuiDeliverChildNum", 2);
-                errMap = validateNumberLength(errMap, extractVialsOfSpermNum, "How many vials of sperm were extracted", "extractVialsOfSperm", 2);
-                errMap = validateNumberLength(errMap, usedVialsOfSpermNum, "How many vials of sperm were used in this cycle", "usedVialsOfSperm", 2);
+                Integer iuiDeliverChild =  validateStringIsNumberAndValidateMaxlength(errMap,iuiDeliverChildNum,"Total No. of Children Delivered under IUI", "iuiDeliverChildNum", 2);
+                Integer extractVialsOfSperm= validateStringIsNumberAndValidateMaxlength(errMap,extractVialsOfSpermNum, "How many vials of sperm were extracted", "extractVialsOfSperm", 2);
+                Integer usedVialsOfSperm =validateStringIsNumberAndValidateMaxlength(errMap,usedVialsOfSpermNum, "How many vials of sperm were used in this cycle", "usedVialsOfSperm", 2);
 
                 //Data association validation
                 if(iuiDeliverChildNum != null) {
                     if((curMarrChildNum != null && curMarrChildNum >= 0) && (prevMarrChildNum != null && prevMarrChildNum >= 0)) {
                         int allChildren = curMarrChildNum + prevMarrChildNum;
-                        if(0 <= iuiDeliverChildNum && iuiDeliverChildNum > allChildren) {
+                        if(iuiDeliverChild > allChildren) {
                             Map<String,String> stringStringMap = IaisCommonUtils.genNewHashMap(3);
                             stringStringMap.put("field1","");
                             stringStringMap.put("field2","No. of Children with Current Marriage");
@@ -63,19 +63,17 @@ public class IuiCycleStageDtoValidator implements CustomizeValidator {
                         }
                     }
                 }
+
                 int patientFrozen = 5;
-                if(usedVialsOfSpermNum != null && usedVialsOfSpermNum >= 0) {
-                    if(extractVialsOfSpermNum != null) {
-                        int allFrozen = patientFrozen + extractVialsOfSpermNum;
-                        if(usedVialsOfSpermNum > allFrozen) {
-                            Map<String,String> stringStringMap = IaisCommonUtils.genNewHashMap(3);
-                            stringStringMap.put("field1","");
-                            stringStringMap.put("field2","Cannot be greater than 'How many vials of sperm were extracted?");
-                            stringStringMap.put("field3","frozen sperm tagged to patient");
-                            errMap.put("usedVialsOfSperm", MessageUtil.getMessageDesc("DS_ERR011",stringStringMap).trim());
-                        }
-                    }
+                int allFrozen = patientFrozen + extractVialsOfSperm;
+                if(usedVialsOfSperm > allFrozen) {
+                    Map<String,String> stringStringMap = IaisCommonUtils.genNewHashMap(3);
+                    stringStringMap.put("field1","");
+                    stringStringMap.put("field2","Cannot be greater than 'How many vials of sperm were extracted?");
+                    stringStringMap.put("field3","frozen sperm tagged to patient");
+                    errMap.put("usedVialsOfSperm", MessageUtil.getMessageDesc("DS_ERR011",stringStringMap).trim());
                 }
+
 
                 if(!iuiCycleStageDto.validateOtherPremises(iuiCycleStageDto.getOtherPremises())){
                     errMap.put("otherPremises", "GENERAL_ERR0006");
@@ -98,4 +96,17 @@ public class IuiCycleStageDtoValidator implements CustomizeValidator {
         }
         return errMap;
     }
+
+    //if string is no number,return 0
+    private Integer validateStringIsNumberAndValidateMaxlength(Map<String, String> errMap,String numberString,String fieldName, String msgName, int length){
+        if(StringUtil.isNumber(numberString)){
+            Integer number = Integer.valueOf(numberString);
+            validateNumberLength(errMap,  number, fieldName, msgName, length);
+            return number;
+        }else {
+            errMap.put(fieldName,"GENERAL_ERR0002");
+            return 0;
+        }
+    }
+
 }
