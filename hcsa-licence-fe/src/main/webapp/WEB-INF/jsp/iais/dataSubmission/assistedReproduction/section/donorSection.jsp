@@ -1,4 +1,3 @@
-<%@ page import="com.ecquaria.cloud.moh.iais.helper.SystemParamUtil" %>
 <input type="hidden" name="crud_action_value_ar_stage" id="crud_action_value_ar_stage" value="-2"/>
 <input type="hidden" name="crud_action_value_valiate_donor" id="crud_action_value_valiate_donor" value="-1"/>
 <input type="hidden" name="crud_action_value_action_age" id="crud_action_value_action_age" value="-1"/>
@@ -184,7 +183,7 @@
                  <h3></h3>
              </div>
         </c:forEach>
-             <c:if test="${donorDtos.size()<SystemParamUtil.systemParamConfig.arAddDonorMaxSize}">
+             <c:if test="${donorDtos.size()< arAddDonorMaxSize}">
          <iais:row >
              <iais:value width="5" cssClass="col-md-3" display="true">
                  <a class="addDonor"   onclick="addDonor()"style="text-decoration:none;">+ Add Another Donor</a>

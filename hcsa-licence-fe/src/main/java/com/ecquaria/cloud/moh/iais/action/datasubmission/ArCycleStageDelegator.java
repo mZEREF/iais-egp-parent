@@ -36,7 +36,7 @@ public class ArCycleStageDelegator extends DonorCommonDelegator{
     private final static String  NUMBER_ARC_PREVIOUSLY_DROP_DOWN = "numberArcPreviouslyDropDown";
     private final static String  PRACTITIONER_DROP_DOWN          = "practitionerDropDown";
     private final static String  EMBRYOLOGIST_DROP_DOWN          = "embryologistDropDown";
-    private final static String  DONOR_USED_TYPES                = "donorUsedTypes";
+
     private final static String  UNDERGONE_OVERSEAS_DROP_DOWN    = "cyclesUndergoneOverseasDropDown";
     @Autowired
     private ArDataSubmissionService arDataSubmissionService;
@@ -52,9 +52,7 @@ public class ArCycleStageDelegator extends DonorCommonDelegator{
         ParamUtil.setSessionAttr(request, NUMBER_ARC_PREVIOUSLY_DROP_DOWN,(Serializable) selectOptions);
         ParamUtil.setSessionAttr(request, PRACTITIONER_DROP_DOWN,(Serializable) getPractitioner());
         ParamUtil.setSessionAttr(request, EMBRYOLOGIST_DROP_DOWN,(Serializable) getEmbryologist());
-        ParamUtil.setSessionAttr(request, DONOR_USED_TYPES,(Serializable) MasterCodeUtil.retrieveByCategory(MasterCodeUtil.AR_DONOR_USED_TYPE));
-        ParamUtil.setSessionAttr(request, DONOR_SOURSE_DROP_DOWN,(Serializable) getSourseList(request));
-        ParamUtil.setSessionAttr(request, DONOR_SAMPLE_DROP_DOWN,(Serializable) getSampleDropDown());
+        setDonorUserSession(request);
         ParamUtil.setSessionAttr(request, "DSACK002Message",MessageUtil.getMessageDesc("DS_ACK002"));
     }
 

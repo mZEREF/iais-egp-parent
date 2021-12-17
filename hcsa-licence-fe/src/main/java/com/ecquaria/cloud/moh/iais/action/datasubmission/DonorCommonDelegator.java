@@ -17,6 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
@@ -27,10 +28,17 @@ public abstract class DonorCommonDelegator extends CommonDelegator{
     private final static String  CRUD_ACTION_VALUE_VALIATE_DONOR = "crud_action_value_valiate_donor";
     protected final static String  DONOR_SAMPLE_DROP_DOWN          = "donorSampleDropDown";
     protected final static String  DONOR_SOURSE_DROP_DOWN          = "donorSourseDropDown";
-
+    private final static String  DONOR_USED_TYPES                = "donorUsedTypes";
+    private final static String ADD_DONOR_MAX_SIZE               ="arAddDonorMaxSize";
     @Autowired
     private ArDataSubmissionService arDataSubmissionService;
 
+    protected void setDonorUserSession(HttpServletRequest request){
+        ParamUtil.setSessionAttr(request, DONOR_USED_TYPES,(Serializable) MasterCodeUtil.retrieveByCategory(MasterCodeUtil.AR_DONOR_USED_TYPE));
+        ParamUtil.setSessionAttr(request, DONOR_SOURSE_DROP_DOWN,(Serializable) getSourseList(request));
+        ParamUtil.setSessionAttr(request, DONOR_SAMPLE_DROP_DOWN,(Serializable) getSampleDropDown());
+        ParamUtil.setSessionAttr(request, ADD_DONOR_MAX_SIZE,SystemParamUtil.getSystemParamConfig().getArAddDonorMaxSize());
+    }
     protected void actionArDonorDtos(HttpServletRequest request, List<DonorDto> arDonorDtos){
         int actionArDonor = ParamUtil.getInt(request,CRUD_ACTION_VALUE_AR_STAGE);
         //actionArDonor default =-3;
