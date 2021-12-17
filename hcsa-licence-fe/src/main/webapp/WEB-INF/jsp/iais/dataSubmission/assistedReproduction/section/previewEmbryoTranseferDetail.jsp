@@ -54,7 +54,7 @@
                     </iais:row>
                 </div>
                 <div id="section2nd"
-                     <c:if test="${embryoTransferStageDto.transferNum < 2}">style="display: none;"</c:if>>
+                     <c:if test="${embryoTransferStageDto.transferNum < 3}">style="display: none;"</c:if>>
                     <iais:row>
                         <iais:field width="6" value="Age of 3rd Embryo Transferred" cssClass="col-md-6"/>
                         <iais:value width="6" display="true" cssClass="col-md-6">
