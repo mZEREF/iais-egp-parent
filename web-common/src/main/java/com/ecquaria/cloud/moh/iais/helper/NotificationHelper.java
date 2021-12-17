@@ -701,7 +701,7 @@ public class NotificationHelper {
 			}
 			if (!IaisCommonUtils.isEmpty(userList)) {
 				for (OrgUserDto u : userList) {
-					if(AppConsts.COMMON_STATUS_ACTIVE.equals(u.getStatus())) {
+					if(AppConsts.COMMON_STATUS_ACTIVE.equals(u.getStatus())&&u.getAvailable()) {
 						if (!StringUtil.isEmpty(u.getEmail()) && (recipientUserId == null || u.getId().equals(recipientUserId))) {
 							mobile.add(u.getMobileNo());
 						}
@@ -779,7 +779,7 @@ public class NotificationHelper {
 		}
 		if (!IaisCommonUtils.isEmpty(userList)) {
 			for (OrgUserDto u : userList) {
-				if(AppConsts.COMMON_STATUS_ACTIVE.equals(u.getStatus())) {
+				if(AppConsts.COMMON_STATUS_ACTIVE.equals(u.getStatus())&&u.getAvailable()) {
 					if (!StringUtil.isEmpty(u.getEmail()) && (recipientUserId == null || u.getId().equals(recipientUserId))) {
 						mobile.add(u.getMobileNo());
 					}
@@ -1011,7 +1011,7 @@ public class NotificationHelper {
 
 		int index = officerNameMap.size();
 		for (OrgUserDto u : orgUserList) {
-			if(AppConsts.COMMON_STATUS_ACTIVE.equals(u.getStatus())) {
+			if(AppConsts.COMMON_STATUS_ACTIVE.equals(u.getStatus())&&u.getAvailable()) {
 				if (!StringUtil.isEmpty(u.getEmail()) && (recipientUserId == null || u.getId().equals(recipientUserId))) {
 					officerNameMap.put(String.valueOf(index), u.getDisplayName());
 					emailAddressMap.put(String.valueOf(index), u.getEmail());
@@ -1096,7 +1096,7 @@ public class NotificationHelper {
 			}
 			int index = officerNameMap.size();
 			for (OrgUserDto u : userList) {
-				if(AppConsts.COMMON_STATUS_ACTIVE.equals(u.getStatus())) {
+				if(AppConsts.COMMON_STATUS_ACTIVE.equals(u.getStatus())&&u.getAvailable()) {
 					if (!StringUtil.isEmpty(u.getEmail()) && (recipientUserId == null || u.getId().equals(recipientUserId))) {
 						officerNameMap.put(index + "", u.getDisplayName());
 						emailAddressMap.put(index + "", u.getEmail());
@@ -1148,7 +1148,7 @@ public class NotificationHelper {
 				}
 				int index = officerNameMap.size();
 				for (OrgUserDto u : userList) {
-					if(AppConsts.COMMON_STATUS_ACTIVE.equals(u.getStatus())) {
+					if(AppConsts.COMMON_STATUS_ACTIVE.equals(u.getStatus())&&u.getAvailable()) {
 						if (!StringUtil.isEmpty(u.getEmail()) && (recipientUserId == null || u.getId().equals(recipientUserId))) {
 							officerNameMap.put(index + "", u.getDisplayName());
 							emailAddressMap.put(index + "", u.getEmail());
