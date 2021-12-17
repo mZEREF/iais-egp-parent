@@ -116,7 +116,7 @@
         $('#_fileType').val("XLSX, CSV");
 
         $('#saveDraftBtn').remove();
-        $('#backBtn').unblind('click');
+        $('#backBtn').unbind('click');
         $('#backBtn').click(function () {
             showWaiting();
             submit('back');
