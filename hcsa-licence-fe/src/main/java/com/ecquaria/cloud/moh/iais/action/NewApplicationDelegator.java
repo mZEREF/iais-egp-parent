@@ -109,6 +109,19 @@ import com.ecquaria.cloud.moh.iais.utils.DealSessionUtil;
 import com.ecquaria.cloud.moh.iais.utils.SingeFileUtil;
 import com.ecquaria.cloud.moh.iais.validate.declarationsValidate.DeclarationsUtil;
 import com.ecquaria.sz.commons.util.MsgUtil;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.env.Environment;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
+import sop.servlet.webflow.HttpHandler;
+import sop.util.DateUtil;
+import sop.webflow.rt.api.BaseProcessClass;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
@@ -130,18 +143,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.env.Environment;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
-import sop.servlet.webflow.HttpHandler;
-import sop.util.DateUtil;
-import sop.webflow.rt.api.BaseProcessClass;
 
 /**
  * egator
@@ -953,12 +954,13 @@ public class NewApplicationDelegator {
         if (appSubmissionDtos != null && !appSubmissionDtos.isEmpty()) {
             for (AppSubmissionDto appSubmissionDto1 : appSubmissionDtos) {
                 Double amount = appSubmissionDto1.getAmount();
-                total = total + amount;
+                if (amount != null) {
+                    total = total + amount;
+                }
                 String amountStr = Formatter.formatterMoney(appSubmissionDto1.getAmount());
                 appSubmissionDto1.setAmountStr(amountStr);
                 appSubmissionDto1.setServiceName(appSubmissionDto1.getAppSvcRelatedInfoDtoList().get(0).getServiceName());
             }
-
         }
         appSubmissionDto.setAmount(total);
         if (!StringUtil.isEmpty(appSubmissionDto.getAmount())) {
@@ -2471,7 +2473,6 @@ public class NewApplicationDelegator {
         // validate the submission data
         Map<String, String> map = appSubmissionService.doPreviewAndSumbit(bpc);
         boolean isRfi = NewApplicationHelper.checkIsRfi(bpc.request);
-
         List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
         List<AppGrpPremisesDto> oldAppGrpPremisesDtoList = oldAppSubmissionDto.getAppGrpPremisesDtoList();
         if (map.isEmpty() && !isRfi) {
@@ -2508,8 +2509,11 @@ public class NewApplicationDelegator {
             bpc.request.setAttribute("rfcInvalidLic",MessageUtil.getMessageDesc("RFC_ERR023"));
             return;
         }
-        boolean isValid = NewApplicationHelper.validateLicences(Collections.singletonList(licenceById), appGrpPremisesDtoList.get(0),
-                bpc.request);
+        Set<String> premiseTypes = null;
+        if (appGrpPremisesDtoList != null) {
+            premiseTypes = appGrpPremisesDtoList.stream().map(AppGrpPremisesDto::getPremisesType).collect(Collectors.toSet());
+        }
+        boolean isValid = NewApplicationHelper.validateLicences(licenceId, premiseTypes, null, bpc.request);
         if (!isValid) {
             return;
         }
@@ -2696,6 +2700,32 @@ public class NewApplicationDelegator {
             }
         } else if (appEditSelectDto.isPremisesEdit()) {
             isAutoPremises = 0;
+            /*HcsaServiceDto serviceDto = HcsaServiceCacheHelper.getServiceByServiceName(appSubmissionDto.getServiceName());
+            boolean checkSpec = ApplicationConsts.SERVICE_CONFIG_TYPE_BASE.equals(serviceDto.getSvcType());
+            List<AppSubmissionDto> submissionDtos = requestForChangeService.getAlginAppSubmissionDtos(
+                    appSubmissionDto.getLicenceId(), checkSpec);
+            if (IaisCommonUtils.isNotEmpty(submissionDtos)) {
+                NewApplicationHelper.validateLicences(submissionDtos, )
+            }
+            String premisesIndexNo;
+            if (groupLic) {
+                premisesIndexNo = oldAppGrpPremisesDto.getPremisesIndexNo();
+            } else {
+                premisesIndexNo = appSubmissionDtoByLicenceId.getAppGrpPremisesDtoList().get(0).getPremisesIndexNo();
+            }
+            List<AppGrpPremisesDto> appGrpPremisesDtos = new ArrayList<>(1);
+            AppGrpPremisesDto copyMutableObject = (AppGrpPremisesDto) CopyUtil.copyMutableObject(appGrpPremisesDto);
+            appGrpPremisesDtos.add(copyMutableObject);
+            if (groupLic) {
+                appGrpPremisesDtos.get(0).setGroupLicenceFlag(licence.getId());
+            }
+            appSubmissionDtoByLicenceId.setAppGrpPremisesDtoList(appGrpPremisesDtos);
+            appSubmissionDtoByLicenceId.getAppGrpPremisesDtoList().get(0).setPremisesIndexNo(premisesIndexNo);
+            // check app edit select dto
+            if (StringUtil.isEmpty(draftNo)) {
+                appSubmissionService.setDraftNo(appSubmissionDtoByLicenceId);
+                draftNo = appSubmissionDtoByLicenceId.getDraftNo();
+            }*/
         }
         log.info(StringUtil.changeForLog("isAutoPremises: " + isAutoPremises));
 
@@ -2799,6 +2829,8 @@ public class NewApplicationDelegator {
                 if (!appEditSelectDto.isChangeBusinessName() && !appEditSelectDto.isChangeVehicle() && !appEditSelectDto.isChangePersonnel()) {
                     appEditSelectDto.setServiceEdit(false);
                 }
+            } else {
+                log.info(StringUtil.changeForLog("changeList: " + changeList));
             }
         }
         // re-set change edit select dto
@@ -2985,7 +3017,7 @@ public class NewApplicationDelegator {
                 continue;
             }
 
-            isValid = NewApplicationHelper.validateLicences(attribute, premisesDto, request);
+            isValid = NewApplicationHelper.validatePremiseAffected(attribute, premisesDto, request);
             if (isValid) {
                 isValid = requestForChangeService.checkAffectedAppSubmissions(attribute, premisesDto, oldPremisesDtoList.get(i),
                         amount, draftNo, appGroupNo, appEditSelectDto, appSubmissionDtos, request);
@@ -3610,8 +3642,8 @@ public class NewApplicationDelegator {
             return appSubmissionDto.getAppGrpPremisesDtoList();
         }
 
+        boolean isRfi = NewApplicationHelper.checkIsRfi(request);
         List<AppGrpPremisesDto> appGrpPremisesDtoList = IaisCommonUtils.genNewArrayList();
-        Object requestInformationConfig = ParamUtil.getSessionAttr(request, REQUESTINFORMATIONCONFIG);
         List<HcsaServiceDto> hcsaServiceDtoList = (List<HcsaServiceDto>) ParamUtil.getSessionAttr(request, AppServicesConsts.HCSASERVICEDTOLIST);
         boolean isMultiPremService = NewApplicationHelper.isMultiPremService(hcsaServiceDtoList);
         int count = 0;
@@ -3695,7 +3727,7 @@ public class NewApplicationDelegator {
                 premIndexNo = UUID.randomUUID().toString();
             }
             String appType = appSubmissionDto.getAppType();
-            boolean newApp = requestInformationConfig == null && ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType);
+            boolean newApp = !isRfi && ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType);
             if (newApp) {
                 if (!StringUtil.isEmpty(premisesSel) && !premisesSel.equals("-1")
                         && !premisesSel.equals(ApplicationConsts.NEW_PREMISES) && AppConsts.YES.equals(chooseExistData[i])) {
@@ -3707,48 +3739,34 @@ public class NewApplicationDelegator {
                     }
                     if (appGrpPremisesDto != null) {
                         //get value for jsp page
+                        appGrpPremisesDto.setExistingData(chooseExistData[i]);
                         NewApplicationHelper.setPremise(appGrpPremisesDto, premIndexNo, null);
                         appGrpPremisesDtoList.add(appGrpPremisesDto);
                     }
                     continue;
                 }
-            } else if (!StringUtil.isEmpty(isParyEdit[i])) {
-                if (!AppConsts.YES.equals(isParyEdit[i])) {
-                    List<AppGrpPremisesDto> appGrpPremisesDtos = appSubmissionDto.getAppGrpPremisesDtoList();
-                    for (AppGrpPremisesDto prem : appGrpPremisesDtos) {
-                        if (premIndexNo.equals(prem.getPremisesIndexNo())) {
-                            appGrpPremisesDto = prem;
-                            break;
-                        }
+            } else if (AppConsts.YES.equals(chooseExistData[i])) {
+                appGrpPremisesDto = NewApplicationHelper.getPremisesFromMap(premisesSel, request);
+                if (appGrpPremisesDto != null) {
+                    if (AppConsts.TRUE.equals(rfiCanEdit[i])) {
+                        appGrpPremisesDto.setRfiCanEdit(true);
+                    } else {
+                        appGrpPremisesDto.setRfiCanEdit(false);
                     }
-                    NewApplicationHelper.setPremise(appGrpPremisesDto, premIndexNo, appSubmissionDto);
-                    appGrpPremisesDtoList.add(appGrpPremisesDto);
-                    continue;
-                }
-                if (AppConsts.YES.equals(chooseExistData[i])) {
-                    appGrpPremisesDto = NewApplicationHelper.getPremisesFromMap(premisesSel, request);
-                    if (appGrpPremisesDto != null) {
-                        if (AppConsts.TRUE.equals(rfiCanEdit[i])) {
-                            appGrpPremisesDto.setRfiCanEdit(true);
-                        } else {
-                            appGrpPremisesDto.setRfiCanEdit(false);
-                        }
+                    if (!AppConsts.YES.equals(isParyEdit[i])) {
+                        appGrpPremisesDto.setExistingData(chooseExistData[i]);
                         NewApplicationHelper.setPremise(appGrpPremisesDto, premIndexNo, appSubmissionDto);
                         appGrpPremisesDtoList.add(appGrpPremisesDto);
                         continue;
                     } else {
-                        log.error(StringUtil.changeForLog("##### Error Data: " + premIndexNo));
+                        log.info(StringUtil.changeForLog("Get data from page for " + StringUtil.clarify(premisesSel)));
                     }
-                }
-                //set hciCode
-                List<AppGrpPremisesDto> appGrpPremisesDtos = appSubmissionDto.getAppGrpPremisesDtoList();
-                for (AppGrpPremisesDto premDto : appGrpPremisesDtos) {
-                    if (premIndexNo.equals(premDto.getPremisesIndexNo())) {
-                        NewApplicationHelper.setPremise(appGrpPremisesDto, premIndexNo, appSubmissionDto);
-                        break;
-                    }
+                } else {
+                    log.warn(StringUtil.changeForLog("##### warn Data: " + premIndexNo));
+                    appGrpPremisesDto = new AppGrpPremisesDto();
                 }
             }
+            appGrpPremisesDto.setExistingData(chooseExistData[i]);
             NewApplicationHelper.setPremise(appGrpPremisesDto, premIndexNo, appSubmissionDto);
             // set premise type
             appGrpPremisesDto.setPremisesType(premisesType[i]);
@@ -4134,11 +4152,11 @@ public class NewApplicationDelegator {
             appGrpPremisesDto.setEventDtoList(eventList);
             appGrpPremisesDtoList.add(appGrpPremisesDto);
         }
-        if (ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appSubmissionDto.getAppType()) ||
+        /*if (ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appSubmissionDto.getAppType()) ||
                 ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())) {
             //set premises edit status
             NewApplicationHelper.setPremEditStatus(appGrpPremisesDtoList, getAppGrpPremisesDtos(appSubmissionDto.getOldAppSubmissionDto()));
-        }
+        }*/
         return appGrpPremisesDtoList;
     }
 

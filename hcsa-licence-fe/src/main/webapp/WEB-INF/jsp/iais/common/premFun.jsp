@@ -83,6 +83,8 @@
             $premContent.find('.addPubHolDay').removeClass('hidden');
             $premContent.find('.addEvent').removeClass('hidden');
             //init opertation
+            $premContent.find('input[name="isPartEdit"]').val('');
+            $premContent.find("input[name='chooseExistData']").val('0');
             $premContent.find('div.operationDivGroup div.operationDiv').remove();
             $premContent.find('input[name="opLength"]').val(0);
             $premContent.find('input[name="retrieveflag"]').val(0);
@@ -182,10 +184,6 @@
                     fillForm('easMts',data,$premContent);
                     setAddress('easMts',data,$premContent);
                 }
-                //if Moving to new address need value from page 68859
-                $premContent.find("input[name='isPartEdit']").val('1');
-                $premContent.find("input[name='isEdit']").val('1');
-                $premContent.find("input[name='chooseExistData']").val('0');
                 dismissWaiting();
             } else if("-1" == premSelectVal) {
                 $premContent.find('.new-premise-form-conv').addClass('hidden');
@@ -252,8 +250,6 @@
                             fillForm(premisesType,data,$premContent);
                             setAddress(premisesType,data,$premContent);
                             var eqHciCode= data.eqHciCode;
-                            $("input[name='isEdit']").val('1');
-
                             //copy ph form
                             //copyPhForm(premisesType,data.appPremPhOpenPeriodList,$premContent);
                             <!--set ph -->
@@ -440,9 +436,7 @@
                             $premContent.find('span.multi-select-button').css('color','#999');
                             $premContent.find('.multi-select-container input[type="checkbox"]').prop('disabled',true);
                             if (eqHciCode=='true') {
-                                $premContent.find("input[name='isPartEdit']").val('1');
                                 $premContent.find('input[name="chooseExistData"]').val('0');
-                                //$('.premisesEdit').trigger('click');
                                 doEditPremise($premContent);
                             } else {
                                 $premContent.find('input[name="chooseExistData"]').val('1');
@@ -453,7 +447,6 @@
                             $premContent.find('input[name="phLength"]').val($currForm.find('div.pubHolidayDiv').length);
                             operationDel();
                             removeWeekly();
-                            //removePH();
                             removePh();
                             removeEvent();
                         }
@@ -619,12 +612,15 @@
         });
     };
 
-    function doEditPremise(premContent) {
-        premContent.find('input[name="isPartEdit"]').val('1');
+    function doEditPremise(premContent, isPartEdit) {
+        if (premContent == null) {
+            return;
+        }
+        premContent.find('input[name="isPartEdit"]').val('');
         var premType = premContent.find('input[name="premType"]').val();
         var existingData = premContent.find("input[name='chooseExistData']").val();
         console.log("Exist Data: " + existingData);
-        if ('1' == existingData) {
+        if ('1' == existingData && '1' != isPartEdit) {
             var $premSel = null;
             if ("ONSITE" == premType) {
                 $premSel = premContent.find('.onSiteSelect');
@@ -642,6 +638,10 @@
             unDisabledPartPage($('#premisesType'));
             unreadonlyPartPage($('#premisesType'));
             return;
+        }
+        if ('1' == isPartEdit) {
+            $('#isEditHiddenVal').val('1');
+            premContent.find('input[name="isPartEdit"]').val('1');
         }
         <!--unDisabled -->
         unDisabledPartPage(premContent);
