@@ -4,7 +4,7 @@
         <![CDATA[
     <div class="row premContent underLine" id="mainPrem">
     <input type="hidden" name="chooseExistData" value="0"/>
-    <input type="hidden" name="isPartEdit" value="1"/>
+    <input type="hidden" name="isPartEdit" value=""/>
     <input class="premValue" type="hidden" name="premValue" value="${premVal}"/>
     <input class="premisesIndexNo" type="hidden" name="premisesIndexNo" value=""/>
     <input class="phLength" type="hidden" name="phLength" value="1"/>
