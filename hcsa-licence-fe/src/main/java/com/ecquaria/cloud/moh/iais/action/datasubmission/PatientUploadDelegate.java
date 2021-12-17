@@ -59,6 +59,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * @Description PatientDelegator
@@ -338,8 +339,15 @@ public class PatientUploadDelegate {
             log.warn(StringUtil.changeForLog("----- No Data to be submitted -----"));
             return;
         }
+        boolean useParallel = patientInfoList.size() > 3;
         ArSuperDataSubmissionDto arSuperDto = DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
-        List<ArSuperDataSubmissionDto> arSuperList = patientInfoList.parallelStream()
+        Stream<PatientInfoDto> stream;
+        if (useParallel) {
+            stream = patientInfoList.parallelStream();
+        } else {
+            stream = patientInfoList.stream();
+        }
+        List<ArSuperDataSubmissionDto> arSuperList = stream
                 .map(dto -> {
                     ArSuperDataSubmissionDto newDto = DataSubmissionHelper.reNew(arSuperDto);
                     newDto.setFe(true);
@@ -353,10 +361,14 @@ public class PatientUploadDelegate {
                     PatientDto patient = dto.getPatient();
                     patient.setPatientCode(patientService.getPatientCode(patient.getPatientCode()));
                     patient.setPatientType(DataSubmissionConsts.DS_PATIENT_ART);
+                    dto.setPatient(patient);
                     newDto.setPatientInfoDto(dto);
                     return newDto;
                 })
                 .collect(Collectors.toList());
+        if (useParallel) {
+            Collections.sort(arSuperList, Comparator.comparing(dto -> dto.getDataSubmissionDto().getSubmissionNo()));
+        }
         arSuperList = arDataSubmissionService.saveArSuperDataSubmissionDtoList(arSuperList);
         try {
             arSuperList = arDataSubmissionService.saveArSuperDataSubmissionDtoListToBE(arSuperList);
