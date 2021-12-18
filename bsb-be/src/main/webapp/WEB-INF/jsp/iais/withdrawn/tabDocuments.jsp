@@ -1,4 +1,5 @@
 <%@ page import="com.ecquaria.cloud.moh.iais.common.utils.MaskUtil" %>
+<%@ page import="java.lang.String" %>
 <div id="fileUploadInputDiv" style="display: none"></div>
 <div class="alert alert-info" role="alert">
     <h4>Supporting Document</h4>
@@ -21,24 +22,23 @@
                     <th scope="col">Date Submitted</th>
                 </tr>
                 </thead>
+                <%--@elvariable id="withdrawnDto" type="sg.gov.moh.iais.egp.bsb.dto.withdrawn.AppSubmitWithdrawnDto"--%>
                 <tbody id="tbodyFileListId">
-                    <c:if test="${savedFiles ne null}">
-                        <c:forEach var="docTypes" items="${docTypes}">
-                            <c:forEach var="info" items="${savedFiles.get(docTypes)}">
-                                <c:set var="tmpId" value="${MaskUtil.maskValue('file', info.repoId)}"/>
-                                <div id="${tmpId}FileDiv">
-                                    <tr id="${tmpId}FileTr">
-                                        <td>${info.filename}</td>
-                                        <td>${info.docType}</td>
-                                        <td><p><a href="javascript:void(0)" onclick="downloadRevokeFile('${tmpId}')">${info.filename}</a></p></td>
-                                        <td>${String.format("%.1f", info.size/1024.0)}KB</td>
-                                        <td>${info.submitBy}</td>
-                                        <td><fmt:formatDate value='${info.submitDate}' pattern='dd/MM/yyyy'/></td>
-                                    </tr>
-                                </div>
-                            </c:forEach>
-                        </c:forEach>
-                    </c:if>
+                <c:if test="${withdrawnDto.docRecordInfos ne null}">
+                    <c:forEach var="info" items="${withdrawnDto.docRecordInfos}">
+                        <c:set var="tmpId" value="${MaskUtil.maskValue('file', info.repoId)}"/>
+                        <div id="${tmpId}FileDiv">
+                            <tr id="${tmpId}FileTr">
+                                <td>${info.filename}</td>
+                                <td>${info.docType}</td>
+                                <td><p><a href="javascript:void(0)" onclick="downloadWithdrawnFile('${tmpId}')">${info.filename}</a></p></td>
+                                <td>${String.format("%.1f", info.size/1024.0)}KB</td>
+                                <td>${info.submitBy}</td>
+                                <td><fmt:formatDate value='${info.submitDate}' pattern='dd/MM/yyyy'/></td>
+                            </tr>
+                        </div>
+                    </c:forEach>
+                </c:if>
                 </tbody>
             </table>
 
@@ -47,8 +47,8 @@
             </div>
             <div class="text ">
                 <p><span>These are documents uploaded by an agency officer to support back office processing.</span></p>
-<%--                <p>The maximum file size for each upload is 5MB</p>--%>
-<%--                <p>Acceptable file formats are JPG, JPEG, DOC, DOCX, PNG, PDF, XLS</p>--%>
+                <%--                <p>The maximum file size for each upload is 5MB</p>--%>
+                <%--                <p>Acceptable file formats are JPG, JPEG, DOC, DOCX, PNG, PDF, XLS</p>--%>
             </div>
             <table aria-describedby="" class="table">
                 <thead>

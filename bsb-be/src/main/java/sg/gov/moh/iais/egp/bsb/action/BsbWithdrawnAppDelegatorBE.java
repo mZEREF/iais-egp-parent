@@ -1,16 +1,21 @@
 package sg.gov.moh.iais.egp.bsb.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.util.StringUtils;
 import sg.gov.moh.iais.egp.bsb.client.WithdrawnClient;
 import sg.gov.moh.iais.egp.bsb.constant.ValidationConstants;
+import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
 import sg.gov.moh.iais.egp.bsb.dto.ValidationResultDto;
 import sg.gov.moh.iais.egp.bsb.dto.withdrawn.AppSubmitWithdrawnDto;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
+
+import static sg.gov.moh.iais.egp.bsb.constant.ProcessContants.*;
 
 /**
  * @author : tangtang
@@ -39,13 +44,66 @@ public class BsbWithdrawnAppDelegatorBE {
     public void prepareData(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         AppSubmitWithdrawnDto dto = getWithdrawnDto(request);
-
         ParamUtil.setSessionAttr(request, WITHDRAWN_APP_DTO, dto);
+        if (StringUtils.isEmpty(dto.getAppId())){
+            String maskedAppId = request.getParameter(KEY_APP_ID);
+            String maskedTaskId = request.getParameter(KEY_TASK_ID);
+            if (log.isInfoEnabled()) {
+                log.info("masked app ID: {}", org.apache.commons.lang.StringUtils.normalizeSpace(maskedAppId));
+                log.info("masked task ID: {}", org.apache.commons.lang.StringUtils.normalizeSpace(maskedTaskId));
+            }
+            String appId = MaskUtil.unMaskValue(KEY_ID, maskedAppId);
+            String taskId = MaskUtil.unMaskValue(KEY_ID, maskedTaskId);
+            if (appId != null && taskId != null){
+                ResponseDto<AppSubmitWithdrawnDto> responseDto = withdrawnClient.getWithdrawnDataByApplicationId(appId);
+                if (responseDto.ok()){
+                    dto = responseDto.getEntity();
+                    dto.setTaskId(taskId);
+                    ParamUtil.setSessionAttr(request, WITHDRAWN_APP_DTO, dto);
+                }else {
+                    log.warn("get withdrawn API doesn't return ok, the response is {}", responseDto);
+                    ParamUtil.setRequestAttr(request, WITHDRAWN_APP_DTO, new AppSubmitWithdrawnDto());
+                }
+            }
+        }
     }
 
     public void doValidate(BaseProcessClass bpc) {
+        //validate duty officer submitted data
         HttpServletRequest request = bpc.request;
         AppSubmitWithdrawnDto dto = getWithdrawnDto(request);
+        dto.reqObjMapping(request);
+        dto.setModule("doProcessWithdrawn");
+        validateData(dto,request);
+        ParamUtil.setSessionAttr(request, WITHDRAWN_APP_DTO, dto);
+    }
+
+    public void aoValidate(BaseProcessClass bpc) {
+        //validate approval officer submitted data
+        HttpServletRequest request = bpc.request;
+        AppSubmitWithdrawnDto dto = getWithdrawnDto(request);
+        dto.reqObjMapping(request);
+        dto.setModule("aoProcessWithdrawn");
+        validateData(dto,request);
+        ParamUtil.setSessionAttr(request, WITHDRAWN_APP_DTO, dto);
+    }
+
+    public void doSave(BaseProcessClass bpc) {
+        HttpServletRequest request = bpc.request;
+        AppSubmitWithdrawnDto dto = getWithdrawnDto(request);
+        withdrawnClient.processWithdrawnApp(dto);
+    }
+
+    private AppSubmitWithdrawnDto getWithdrawnDto(HttpServletRequest request) {
+        AppSubmitWithdrawnDto auditDto = (AppSubmitWithdrawnDto) ParamUtil.getSessionAttr(request, WITHDRAWN_APP_DTO);
+        return auditDto == null ? getDefaultWithdrawnDto() : auditDto;
+    }
+
+    private AppSubmitWithdrawnDto getDefaultWithdrawnDto() {
+        return new AppSubmitWithdrawnDto();
+    }
+
+    private void validateData(AppSubmitWithdrawnDto dto,HttpServletRequest request){
         //validation
         String actionType = "";
         ValidationResultDto validationResultDto = withdrawnClient.validateWithdrawnDto(dto);
@@ -56,20 +114,5 @@ public class BsbWithdrawnAppDelegatorBE {
             actionType = ACTION_TYPE_SAVE;
         }
         ParamUtil.setRequestAttr(request, ACTION_TYPE, actionType);
-    }
-
-    public void doSave(BaseProcessClass bpc) {
-        HttpServletRequest request = bpc.request;
-        AppSubmitWithdrawnDto dto = getWithdrawnDto(request);
-
-    }
-
-    private AppSubmitWithdrawnDto getWithdrawnDto(HttpServletRequest request) {
-        AppSubmitWithdrawnDto auditDto = (AppSubmitWithdrawnDto) ParamUtil.getSessionAttr(request, WITHDRAWN_APP_DTO);
-        return auditDto == null ? getDefaultWithdrawnDto() : auditDto;
-    }
-
-    private AppSubmitWithdrawnDto getDefaultWithdrawnDto() {
-        return new AppSubmitWithdrawnDto();
     }
 }

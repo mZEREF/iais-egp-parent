@@ -21,6 +21,7 @@ public class AppSubmitWithdrawnDto implements Serializable {
     private String currentStatus;
     private String reason;
     private String remarks;
+    private String loginUser;
 
     @JsonIgnore
     private String from;

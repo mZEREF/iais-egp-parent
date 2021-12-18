@@ -5,30 +5,30 @@
             <div class="table-gp">
                 <table aria-describedby="" class="table table-bordered" style="margin-bottom: 0">
                     <tbody>
-                    <%--@elvariable id="processData" type="sg.gov.moh.iais.egp.bsb.dto.audit.OfficerProcessAuditDto"--%>
+                    <%--@elvariable id="withdrawnDto" type="sg.gov.moh.iais.egp.bsb.dto.withdrawn.AppSubmitWithdrawnDto"--%>
                         <tr>
                             <td class="col-xs-6" align="right">Application Type</td>
-                            <td style="padding-left : 20px">New Application</td>
+                            <td style="padding-left : 20px"><iais:code code="${withdrawnDto.appType}"/></td>
                         </tr>
                         <tr>
                             <td align="right">Application No.</td>
-                            <td style="padding-left : 20px">L211224HCF001</td>
+                            <td style="padding-left : 20px"><c:out value="${withdrawnDto.appNo}"/></td>
                         </tr>
                         <tr>
                             <td align="right">Facility Classification</td>
-                            <td style="padding-left : 20px">Certified Facility (High Containment)</td>
+                            <td style="padding-left : 20px"><iais:code code="${withdrawnDto.facClassification}"/></td>
                         </tr>
                         <tr>
                             <td align="right">Process Type</td>
-                            <td style="padding-left : 20px">Approval to Possess</td>
+                            <td style="padding-left : 20px"><iais:code code="${withdrawnDto.processType}"/></td>
                         </tr>
                         <tr>
                             <td align="right">Submission Date</td>
-                            <td style="padding-left : 20px">24/12/2021 00:00</td>
+                            <td style="padding-left : 20px"><fmt:formatDate value="${withdrawnDto.createDate}" pattern="dd/MM/yyyy"/></td>
                         </tr>
                         <tr>
                             <td align="right">Current Status</td>
-                            <td style="padding-left : 20px">Pending Duty Officer</td>
+                            <td style="padding-left : 20px"><iais:code code="${withdrawnDto.currentStatus}"/></td>
                         </tr>
                     </tbody>
                 </table>

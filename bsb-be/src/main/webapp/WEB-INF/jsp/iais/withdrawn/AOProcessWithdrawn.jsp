@@ -9,14 +9,11 @@
 %>
 <webui:setLayout name="iais-intranet"/>
 <script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-common.js"></script>
+<script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-file.js"></script>
 <%@include file="/WEB-INF/jsp/iais/include/showErrorMsg.jsp" %>
 <div class="dashboard">
     <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
         <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
-        <input type="hidden" name="action_type" value="">
-        <input type="hidden" name="action_value" value="">
-        <input type="hidden" name="action_additional" value="">
-        <input type="hidden" name="moduleType" value="doProcessSelfAudit">
         <div class="main-content">
             <div class="row">
                 <div class="col-lg-12 col-xs-12">
@@ -74,13 +71,13 @@
                                                     <div class="row">
                                                         <div class="col-xs-12">
                                                             <div class="table-gp">
-                                                                    <%--@elvariable id="processData" type="sg.gov.moh.iais.egp.bsb.dto.audit.OfficerProcessAuditDto"--%>
+                                                                    <%--@elvariable id="withdrawnDto" type="sg.gov.moh.iais.egp.bsb.dto.withdrawn.AppSubmitWithdrawnDto"--%>
                                                                 <iais:section title="">
                                                                     <div>
                                                                         <iais:row>
                                                                             <iais:field value="Current Status" required="false"/>
                                                                             <iais:value width="10">
-                                                                                <p><iais:code code=""/></p>
+                                                                                <p><iais:code code="${withdrawnDto.currentStatus}"/></p>
                                                                             </iais:value>
                                                                         </iais:row>
                                                                     </div>
@@ -88,7 +85,7 @@
                                                                         <iais:row>
                                                                             <iais:field value="DO Remarks" width="15" required="false"/>
                                                                             <iais:value width="10">
-                                                                                <p><c:out value=""/></p>
+                                                                                <p><c:out value="${withdrawnDto.doRemarks}"/></p>
                                                                             </iais:value>
                                                                         </iais:row>
                                                                     </div>
@@ -96,7 +93,7 @@
                                                                         <iais:row>
                                                                             <iais:field value="DO Decision" width="15" required="false"/>
                                                                             <iais:value width="10">
-                                                                                <p><iais:code code=""/></p>
+                                                                                <p><iais:code code="${withdrawnDto.doDecision}"/></p>
                                                                             </iais:value>
                                                                         </iais:row>
                                                                     </div>
@@ -108,7 +105,7 @@
                                                                                           name="aoRemarks"
                                                                                           cols="70"
                                                                                           rows="5"
-                                                                                          maxlength="300"></textarea>
+                                                                                          maxlength="300">${withdrawnDto.aoRemarks}</textarea>
                                                                             </iais:value>
                                                                         </iais:row>
                                                                     </div>
@@ -119,9 +116,9 @@
                                                                                 <iais:select name="aoDecision"
                                                                                              id="aoDecision"
                                                                                              codeCategory="CATE_ID_BSB_ALL_PROCESS_DECISION"
-                                                                                             value=""
+                                                                                             value="${withdrawnDto.aoDecision}"
                                                                                              firstOption="Please Select"/>
-                                                                                <span data-err-ind="doDecision" class="error-msg"></span>
+                                                                                <span data-err-ind="aoDecision" class="error-msg"></span>
                                                                             </iais:value>
                                                                         </iais:row>
                                                                     </div>

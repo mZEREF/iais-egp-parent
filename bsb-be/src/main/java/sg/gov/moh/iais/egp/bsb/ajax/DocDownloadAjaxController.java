@@ -14,6 +14,7 @@ import sg.gov.moh.iais.egp.bsb.client.FileRepoClient;
 import sg.gov.moh.iais.egp.bsb.common.multipart.ByteArrayMultipartFile;
 import sg.gov.moh.iais.egp.bsb.dto.file.DocRecordInfo;
 import sg.gov.moh.iais.egp.bsb.dto.file.PrimaryDocDto;
+import sg.gov.moh.iais.egp.bsb.dto.withdrawn.AppSubmitWithdrawnDto;
 import sg.gov.moh.iais.egp.bsb.util.LogUtil;
 
 import javax.servlet.http.HttpServletRequest;
@@ -25,6 +26,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.function.BiFunction;
 import java.util.function.UnaryOperator;
 
+import static sg.gov.moh.iais.egp.bsb.action.BsbWithdrawnAppDelegatorBE.WITHDRAWN_APP_DTO;
 
 @RestController
 @RequestMapping(path = "/ajax/doc/download")
@@ -102,6 +104,11 @@ public class DocDownloadAjaxController {
         downloadFile(request, response, maskedRepoId, this::unmaskFileId, this::getSavedFile);
     }
 
+    @GetMapping("/withdrawn/repo/{id}")
+    public void downloadWithdrawnSavedFile(@PathVariable("id") String maskedRepoId, HttpServletRequest request, HttpServletResponse response) {
+        downloadFile(request, response, maskedRepoId, this::unmaskFileId, this::withdrawnGetSavedFile);
+    }
+
     /**
      * Use the param 'file' to unmask the id
      * @return unmasked id
@@ -118,6 +125,20 @@ public class DocDownloadAjaxController {
     private MultipartFile getSavedFile(HttpServletRequest request, String id) {
         PrimaryDocDto primaryDocDto = (PrimaryDocDto) ParamUtil.getSessionAttr(request, "primaryDocDto");
         DocRecordInfo info = primaryDocDto.getSavedDocMap().get(id);
+        if (info == null) {
+            throw new IllegalStateException(ERROR_MESSAGE_RECORD_INFO_NULL);
+        }
+        byte[] content = fileRepoClient.getFileFormDataBase(id).getEntity();
+        return new ByteArrayMultipartFile(null, info.getFilename(), null, content);
+    }
+
+    private MultipartFile withdrawnGetSavedFile(HttpServletRequest request, String id) {
+        AppSubmitWithdrawnDto dto = (AppSubmitWithdrawnDto)ParamUtil.getSessionAttr(request, WITHDRAWN_APP_DTO);
+        DocRecordInfo info = null;
+        for (DocRecordInfo docRecordInfo : dto.getDocRecordInfos()) {
+            if (docRecordInfo.getRepoId().equals(id))
+                info = docRecordInfo;
+        }
         if (info == null) {
             throw new IllegalStateException(ERROR_MESSAGE_RECORD_INFO_NULL);
         }

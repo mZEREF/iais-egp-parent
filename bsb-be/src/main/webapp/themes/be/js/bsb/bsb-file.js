@@ -93,3 +93,8 @@ function downloadRevokeFile(id) {
 function doAddTr(tr) {
     $("#tbodyFileListId").append(tr);
 }
+
+function downloadWithdrawnFile(id) {
+    var url = "/bsb-be/ajax/doc/download/withdrawn/repo/" + id;
+    window.open(url);
+}

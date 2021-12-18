@@ -10,14 +10,11 @@
 <webui:setLayout name="iais-intranet"/>
 <script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-common.js"></script>
 <script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-withdrawn.js"></script>
+<script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-file.js"></script>
 <%@include file="/WEB-INF/jsp/iais/include/showErrorMsg.jsp" %>
 <div class="dashboard">
     <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
         <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
-        <input type="hidden" name="action_type" value="">
-        <input type="hidden" name="action_value" value="">
-        <input type="hidden" name="action_additional" value="">
-        <input type="hidden" name="moduleType" value="doProcessSelfAudit">
         <div class="main-content">
             <div class="row">
                 <div class="col-lg-12 col-xs-12">
@@ -75,13 +72,13 @@
                                                     <div class="row">
                                                         <div class="col-xs-12">
                                                             <div class="table-gp">
-                                                                    <%--@elvariable id="processData" type="sg.gov.moh.iais.egp.bsb.dto.audit.OfficerProcessAuditDto"--%>
+                                                                    <%--@elvariable id="withdrawnDto" type="sg.gov.moh.iais.egp.bsb.dto.withdrawn.AppSubmitWithdrawnDto"--%>
                                                                 <iais:section title="">
                                                                     <div>
                                                                         <iais:row>
                                                                             <iais:field value="Current Status" required="false"/>
                                                                             <iais:value width="10">
-                                                                                <p><iais:code code=""/></p>
+                                                                                <p><iais:code code="${withdrawnDto.currentStatus}"/></p>
                                                                             </iais:value>
                                                                         </iais:row>
                                                                     </div>
@@ -93,7 +90,7 @@
                                                                                           name="doRemarks"
                                                                                           cols="70"
                                                                                           rows="5"
-                                                                                          maxlength="300"></textarea>
+                                                                                          maxlength="300">${withdrawnDto.doRemarks}</textarea>
                                                                             </iais:value>
                                                                         </iais:row>
                                                                     </div>
@@ -104,7 +101,7 @@
                                                                                 <iais:select name="doDecision"
                                                                                              id="doDecision"
                                                                                              codeCategory="CATE_ID_BSB_ALL_PROCESS_DECISION"
-                                                                                             value=""
+                                                                                             value="${withdrawnDto.doDecision}"
                                                                                              firstOption="Please Select"/>
                                                                                 <span data-err-ind="doDecision" class="error-msg"></span>
                                                                             </iais:value>

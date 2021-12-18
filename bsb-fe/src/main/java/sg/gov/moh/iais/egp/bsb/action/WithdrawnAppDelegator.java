@@ -1,9 +1,11 @@
 package sg.gov.moh.iais.egp.bsb.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
+import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.StringUtils;
@@ -99,6 +101,9 @@ public class WithdrawnAppDelegator {
         AppSubmitWithdrawnDto dto = getWithdrawnDto(request);
         dto.setReason(reason);
         dto.setRemarks(remarks);
+        //
+        LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
+        dto.setLoginUser(loginContext.getUserName());
         //fill doc
         PrimaryDocDto primaryDocDto = new PrimaryDocDto();
         primaryDocDto.reqObjMapping(mulReq, request, "withdrawn");
