@@ -78,6 +78,12 @@ public class BsbWithdrawnAppDelegatorBE {
         ParamUtil.setSessionAttr(request, WITHDRAWN_APP_DTO, dto);
     }
 
+    public void doSave(BaseProcessClass bpc) {
+        HttpServletRequest request = bpc.request;
+        AppSubmitWithdrawnDto dto = getWithdrawnDto(request);
+        withdrawnClient.doProcessWithdrawnApp(dto);
+    }
+
     public void aoValidate(BaseProcessClass bpc) {
         //validate approval officer submitted data
         HttpServletRequest request = bpc.request;
@@ -86,12 +92,6 @@ public class BsbWithdrawnAppDelegatorBE {
         dto.setModule("aoProcessWithdrawn");
         validateData(dto,request);
         ParamUtil.setSessionAttr(request, WITHDRAWN_APP_DTO, dto);
-    }
-
-    public void doSave(BaseProcessClass bpc) {
-        HttpServletRequest request = bpc.request;
-        AppSubmitWithdrawnDto dto = getWithdrawnDto(request);
-        withdrawnClient.processWithdrawnApp(dto);
     }
 
     private AppSubmitWithdrawnDto getWithdrawnDto(HttpServletRequest request) {

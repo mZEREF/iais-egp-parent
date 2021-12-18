@@ -280,8 +280,10 @@ public class DocDownloadAjaxController {
         AppSubmitWithdrawnDto dto = (AppSubmitWithdrawnDto)ParamUtil.getSessionAttr(request, WITHDRAWN_APP_DTO);
         MultipartFile multipartFile = null;
         for (sg.gov.moh.iais.egp.bsb.dto.withdrawn.PrimaryDocDto.NewDocInfo newDocInfo : dto.getNewDocInfos()) {
-            if (newDocInfo.getTmpId().equals(id))
+            if (newDocInfo.getTmpId().equals(id)) {
                 multipartFile = newDocInfo.getMultipartFile();
+                break;
+            }
         }
         return multipartFile;
     }
@@ -290,8 +292,10 @@ public class DocDownloadAjaxController {
         FacilitySubmitSelfAuditDto dto = (FacilitySubmitSelfAuditDto)ParamUtil.getSessionAttr(request, SELF_AUDIT_DATA);
         MultipartFile multipartFile = null;
         for (sg.gov.moh.iais.egp.bsb.dto.audit.PrimaryDocDto.NewDocInfo newDocInfo : dto.getNewDocInfos()) {
-            if (newDocInfo.getTmpId().equals(id))
+            if (newDocInfo.getTmpId().equals(id)) {
                 multipartFile = newDocInfo.getMultipartFile();
+                break;
+            }
         }
         return multipartFile;
     }
@@ -300,8 +304,10 @@ public class DocDownloadAjaxController {
         FacilitySubmitSelfAuditDto dto = (FacilitySubmitSelfAuditDto)ParamUtil.getSessionAttr(request, SELF_AUDIT_DATA);
         sg.gov.moh.iais.egp.bsb.dto.audit.PrimaryDocDto.DocRecordInfo info = null;
         for (sg.gov.moh.iais.egp.bsb.dto.audit.PrimaryDocDto.DocRecordInfo docRecordInfo : dto.getDocRecordInfos()) {
-            if (docRecordInfo.getRepoId().equals(id))
+            if (docRecordInfo.getRepoId().equals(id)) {
                 info = docRecordInfo;
+                break;
+            }
         }
         if (info == null) {
             throw new IllegalStateException(ERROR_MESSAGE_RECORD_INFO_NULL);

@@ -23,6 +23,6 @@ public interface WithdrawnClient {
     @GetMapping(path = "/bsbWithdrawnBE/application/{appId}", consumes = MediaType.APPLICATION_JSON_VALUE, produces =MediaType.APPLICATION_JSON_VALUE)
     ResponseDto<AppSubmitWithdrawnDto> getWithdrawnDataByApplicationId(@PathVariable("appId") String applicationId);
 
-    @PostMapping(value = "/bsbWithdrawnBE/processWithdrawnApp", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<Void> processWithdrawnApp(@RequestBody AppSubmitWithdrawnDto dto);
+    @PostMapping(value = "/bsbWithdrawnBE/doProcessWithdrawnApp", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<Void> doProcessWithdrawnApp(@RequestBody AppSubmitWithdrawnDto dto);
 }

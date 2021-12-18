@@ -136,8 +136,10 @@ public class DocDownloadAjaxController {
         AppSubmitWithdrawnDto dto = (AppSubmitWithdrawnDto)ParamUtil.getSessionAttr(request, WITHDRAWN_APP_DTO);
         DocRecordInfo info = null;
         for (DocRecordInfo docRecordInfo : dto.getDocRecordInfos()) {
-            if (docRecordInfo.getRepoId().equals(id))
+            if (docRecordInfo.getRepoId().equals(id)) {
                 info = docRecordInfo;
+                break;
+            }
         }
         if (info == null) {
             throw new IllegalStateException(ERROR_MESSAGE_RECORD_INFO_NULL);

@@ -49,7 +49,6 @@ public class AORevocationDelegator {
     public void prepareData(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         ParamUtil.setSessionAttr(request, BACK, null);
-        ParamUtil.setSessionAttr(request, AUDIT_DOC_DTO, null);
         ParamUtil.setSessionAttr(request, KEY_CAN_UPLOAD, "N");
 
         SubmitRevokeDto revokeDto = getRevokeDto(request);
@@ -104,9 +103,6 @@ public class AORevocationDelegator {
         revokeDto.setLoginUser(loginContext.getUserName());
         revokeDto.setRemarks(remarks);
         revokeDto.setAoRemarks(remarks);
-        revokeDto.setAppId(revokeDto.getAppId());
-        revokeDto.setApprovalId(revokeDto.getApprovalId());
-        revokeDto.setProcessType(revokeDto.getProcessType());
         revokeDto.setAoDecision(aoDecision);
         revokeDto.setModule("aoRevoke");
         setRevocationDoc(request,revokeDto);
