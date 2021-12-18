@@ -213,11 +213,11 @@
                                                                     </div>
                                                                     <div class="col-sm-6 col-md-7">
                                                                         <div class="col-sm-5" style="margin-top: 8px">
-                                                                            <input type="radio" name="medicalFollowup--v--${status.index}" id=medFollowupY--v--${status.index}" value="Y" <c:if test="${item.medicalFollowup eq 'Y'}">checked="checked"</c:if> />
-                                                                            <label for=medFollowupY--v--${status.index}">Yes</label>
+                                                                            <input type="radio" name="medicalFollowup--v--${status.index}" id="medFollowupY--v--${status.index}" value="Y" <c:if test="${item.medicalFollowup eq 'Y'}">checked="checked"</c:if> />
+                                                                            <label for="medFollowupY--v--${status.index}">Yes</label>
                                                                         </div>
                                                                         <div class="col-sm-5" style="margin-top: 8px">
-                                                                            <input type="radio" name="medicalFollowup--v--${status.index}" id="medFollowupN--v--${status.index}" value="N" <c:if test="${item.medicalFollowup eq 'Y'}">checked="checked"</c:if> />
+                                                                            <input type="radio" name="medicalFollowup--v--${status.index}" id="medFollowupN--v--${status.index}" value="N" <c:if test="${item.medicalFollowup eq 'N'}">checked="checked"</c:if> />
                                                                             <label for="medFollowupN--v--${status.index}">No</label>
                                                                         </div>
                                                                     </div>
