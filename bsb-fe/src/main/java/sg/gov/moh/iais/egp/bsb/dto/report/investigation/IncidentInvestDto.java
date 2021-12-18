@@ -3,14 +3,20 @@ package sg.gov.moh.iais.egp.bsb.dto.report.investigation;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.util.Assert;
 import sg.gov.moh.iais.egp.bsb.common.node.simple.ValidatableNodeValue;
+import sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants;
 import sg.gov.moh.iais.egp.bsb.dto.ValidationResultDto;
+import sg.gov.moh.iais.egp.bsb.util.CollectionUtils;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author YiMing
@@ -20,13 +26,23 @@ import java.util.List;
 @Slf4j
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class IncidentInvestDto extends ValidatableNodeValue {
+
+    @Data
+    @NoArgsConstructor
+    public static class IncidentCauseDto implements Serializable {
+        private String incidentCause;
+        private String explainCause;
+        private String otherCause;
+        private String measure;
+        private String implementDate;
+    }
     private String backgroundInfo;
     private String incidentDesc;
-    private List<String> incidentCauses;
-    private String otherCause;
-    private String explainCause;
-    private String measure;
-    private String implementDate;
+    private List<IncidentCauseDto> incidentCauses;
+
+    public IncidentInvestDto() {
+        incidentCauses = new ArrayList<>();
+    }
 
     @JsonIgnore
     private ValidationResultDto validationResultDto;
@@ -65,63 +81,43 @@ public class IncidentInvestDto extends ValidatableNodeValue {
         this.incidentDesc = incidentDesc;
     }
 
-    public List<String> getIncidentCauses() {
+    public List<IncidentCauseDto> getIncidentCauses() {
         return incidentCauses;
     }
 
-    public void setIncidentCauses(List<String> incidentCauses) {
+    public void setIncidentCauses(List<IncidentCauseDto> incidentCauses) {
         this.incidentCauses = incidentCauses;
     }
 
-    public String getOtherCause() {
-        return otherCause;
-    }
 
-    public void setOtherCause(String otherCause) {
-        this.otherCause = otherCause;
-    }
-
-    public String getExplainCause() {
-        return explainCause;
-    }
-
-    public void setExplainCause(String explainCause) {
-        this.explainCause = explainCause;
-    }
-
-    public String getMeasure() {
-        return measure;
-    }
-
-    public void setMeasure(String measure) {
-        this.measure = measure;
-    }
-
-    public String getImplementDate() {
-        return implementDate;
-    }
-
-    public void setImplementDate(String implementDate) {
-        this.implementDate = implementDate;
+    public Map<String,IncidentCauseDto> getIncidentCauseMap(){
+       return CollectionUtils.uniqueIndexMap(incidentCauses,IncidentCauseDto::getIncidentCause);
     }
 
     private static final String KEY_BACKGROUND_INFORMATION = "backgroundInfo";
     private static final String KEY_INCIDENT_DESCRIPTION = "incidentDesc";
     private static final String KEY_INCIDENT_CAUSES = "incidentCauses";
-    private static final String KEY_OTHER_CAUSE = "otherCause";
     private static final String KEY_EXPLAIN_CAUSE = "explainCause";
+    private static final String KEY_OTHER_CAUSE = "otherCause";
+    private static final String SEPARATOR = "--v--";
     private static final String KEY_MEASURE= "measure";
     private static final String KEY_IMPLEMENT_DATE = "implementDate";
     public void reqObjMapping(HttpServletRequest request){
         this.backgroundInfo = ParamUtil.getString(request,KEY_BACKGROUND_INFORMATION);
         this.incidentDesc = ParamUtil.getString(request,KEY_INCIDENT_DESCRIPTION);
         String[] causes = ParamUtil.getStrings(request,KEY_INCIDENT_CAUSES);
-        if(causes != null && causes.length>0){
-            this.incidentCauses = new ArrayList<>(Arrays.asList(causes));
+        Assert.notEmpty(causes,"incident cause is null or empty");
+        for (String cause : causes) {
+            IncidentCauseDto incidentCauseDto = new IncidentCauseDto();
+            incidentCauseDto.setIncidentCause(cause);
+            incidentCauseDto.setExplainCause(ParamUtil.getString(request,KEY_EXPLAIN_CAUSE+SEPARATOR+cause));
+            incidentCauseDto.setMeasure(ParamUtil.getString(request,KEY_MEASURE+SEPARATOR+cause));
+            incidentCauseDto.setImplementDate(ParamUtil.getString(request,KEY_IMPLEMENT_DATE+SEPARATOR+cause));
+            if(MasterCodeConstants.CAUSE_OF_INCIDENT_OTHERS.equals(cause)){
+                String otherCause = ParamUtil.getString(request,KEY_OTHER_CAUSE);
+                incidentCauseDto.setOtherCause(otherCause);
+            }
+            this.incidentCauses.add(incidentCauseDto);
         }
-        this.otherCause = ParamUtil.getString(request,KEY_OTHER_CAUSE);
-        this.explainCause = ParamUtil.getString(request,KEY_EXPLAIN_CAUSE);
-        this.measure = ParamUtil.getString(request,KEY_MEASURE);
-        this.implementDate = ParamUtil.getString(request,KEY_IMPLEMENT_DATE);
     }
 }

@@ -1,1 +1,1 @@
-<%@include file="/WEB-INF/jsp/iais/reportableEvent/PersonReportingInfo.jsp"%>
+<%@include file="/WEB-INF/jsp/iais/reportableEvent/incident/PersonReportingInfo.jsp"%>

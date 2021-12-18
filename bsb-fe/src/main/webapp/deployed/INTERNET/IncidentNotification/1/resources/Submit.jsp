@@ -1,2 +1,2 @@
-<%@include file="/WEB-INF/jsp/iais/reportableEvent/previewSubmit.jsp"%>
+<%@include file="/WEB-INF/jsp/iais/reportableEvent/incident/previewSubmit.jsp"%>
 

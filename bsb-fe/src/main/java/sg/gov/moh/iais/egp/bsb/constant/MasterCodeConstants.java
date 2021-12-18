@@ -221,5 +221,17 @@ public class MasterCodeConstants {
     public static final String INCIDENT_TYPE_BIO_SECURITY = "INDTYPE002";
     public static final String INCIDENT_TYPE_GENERAL_SAFETY = "INDTYPE003";
 
+    public static final String CAUSE_OF_INCIDENT_POLICY_AND_PROCEDURES = "INCAUSE001";
+    public static final String CAUSE_OF_INCIDENT_TRAINING = "INCAUSE002";
+    public static final String CAUSE_OF_INCIDENT_EQUIPMENT_FAILURE = "INCAUSE003";
+    public static final String CAUSE_OF_INCIDENT_ENGINEERING = "INCAUSE004";
+    public static final String CAUSE_OF_INCIDENT_PERSONAL_PROTECTIVE_EQUIPMENT = "INCAUSE005";
+    public static final String CAUSE_OF_INCIDENT_INADEQUATE_EQUIPMENT = "INCAUSE006";
+    public static final String CAUSE_OF_INCIDENT_ENVIRONMENT_FACTORS = "INCAUSE007";
+    public static final String CAUSE_OF_INCIDENT_HUMAN_BEHAVIOURAL_FACTORS = "INCAUSE008";
+    public static final String CAUSE_OF_INCIDENT_HUMAN_PERFORMANCE = "INCAUSE009";
+    public static final String CAUSE_OF_INCIDENT_OTHERS = "INCAUSE010";
+
+
 
 }

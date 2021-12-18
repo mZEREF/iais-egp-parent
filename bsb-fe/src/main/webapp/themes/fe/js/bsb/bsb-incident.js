@@ -83,6 +83,88 @@ $(function (){
         }
     });
 
+    $("#policyCause").change(function (){
+        if($("#policyCause").prop('checked')){
+            $("#policyExp").show();
+        } else{
+            $("#policyExp").hide();
+        }
+    });
+
+    $("#trainCause").change(function (){
+        if($("#trainCause").prop('checked')){
+            $("#trainExp").show();
+        } else{
+            $("#trainExp").hide();
+        }
+    });
+
+    $("#equipCause").change(function (){
+        if($("#equipCause").prop('checked')){
+            $("#equipExp").show();
+        } else{
+            $("#equipExp").hide();
+        }
+    });
+
+    $("#facilityCause").change(function (){
+        if($("#facilityCause").prop('checked')){
+            $("#facExp").show();
+        } else{
+            $("#facExp").hide();
+        }
+    });
+
+    $("#personalCause").change(function (){
+        if($("#personalCause").prop('checked')){
+            $("#perExp").show();
+        } else{
+            $("#perExp").hide();
+        }
+    });
+
+    $("#inadequateCause").change(function (){
+        if($("#inadequateCause").prop('checked')){
+            $("#inadequateExp").show();
+        } else{
+            $("#inadequateExp").hide();
+        }
+    });
+
+    $("#environmentCause").change(function (){
+        if($("#environmentCause").prop('checked')){
+            $("#environmentExp").show();
+        } else{
+            $("#environmentExp").hide();
+        }
+    });
+
+    $("#humanBeCause").change(function (){
+        if($("#humanBeCause").prop('checked')){
+            $("#humanBeExp").show();
+        } else{
+            $("#humanBeExp").hide();
+        }
+    });
+
+    $("#performCause").change(function (){
+        if($("#performCause").prop('checked')){
+            $("#performExp").show();
+        } else{
+            $("#performExp").hide();
+        }
+    });
+
+    $("#othersCause").change(function (){
+        if($("#othersCause").prop('checked')){
+            $("#otherSection").show();
+            $("#otherExp").show();
+        }else{
+            $("#otherSection").hide();
+            $("#otherExp").hide();
+        }
+    });
+
     $("#facName").change(function (){
         var facName = $("#facName").val();
         if(facName === ""){

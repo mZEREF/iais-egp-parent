@@ -58,6 +58,7 @@ public class IncidentInfoDto extends ValidatableNodeValue {
         this.otherInvest = otherInvest;
     }
 
+
     private static final String KEY_INVESTIGATION_LEADER = "investLeader";
     private static final String KEY_OTHER_INVESTIGATION = "otherInvest";
 

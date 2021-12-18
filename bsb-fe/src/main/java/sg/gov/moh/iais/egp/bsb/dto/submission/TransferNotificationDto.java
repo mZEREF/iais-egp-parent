@@ -460,9 +460,7 @@ public class TransferNotificationDto implements Serializable {
      * At the same time, if the module is deleted, the key of the corresponding module in the corresponding keyMap will be deleted in case the module has no file
      * but still displays the bug when a new section is added next time. There are certain problems with this method. Future changes may be made ！！！！！
      * removeTempIdByKeyMap
-     * @param idxArr - section no[1,3,4]->[1,2,3] del2,[1,3]
      * */
-    private static final String MASK_PARAM              = "file";
     public void removeTempIdByKeyMap(HttpServletRequest request){
         String deleteIdx = ParamUtil.getString(request,"deleteIdx");
         if(StringUtils.hasLength(deleteIdx)){

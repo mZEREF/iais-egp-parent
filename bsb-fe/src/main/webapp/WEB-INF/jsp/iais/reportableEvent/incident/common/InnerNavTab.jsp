@@ -27,7 +27,7 @@
         <a  data-step-key = "documents"
             aria-controls="tabDocuments"
             role="tab"
-            aria-selected="<%=IncidentNotificationDelegator.ifNodeSelectedForJsp(incidentNotRoot, NODE_NAME_DOCUMENTS)%>">Incident Investigation</a>
+            aria-selected="<%=IncidentNotificationDelegator.ifNodeSelectedForJsp(incidentNotRoot, NODE_NAME_DOCUMENTS)%>">Documents</a>
     </li>
 </ul>
 <div class="tab-nav-mobile visible-xs visible-sm">
@@ -46,7 +46,7 @@
         </div>
         <div class="swiper-slide"><a  aria-controls="tabDocuments"
                                      role="tab"
-                                     aria-selected="<%=IncidentNotificationDelegator.ifNodeSelectedForJsp(incidentNotRoot, NODE_NAME_DOCUMENTS)%>">Incident Investigation</a>
+                                     aria-selected="<%=IncidentNotificationDelegator.ifNodeSelectedForJsp(incidentNotRoot, NODE_NAME_DOCUMENTS)%>">Documents</a>
         </div>
     </div>
     <div class="swiper-button-prev"></div>
