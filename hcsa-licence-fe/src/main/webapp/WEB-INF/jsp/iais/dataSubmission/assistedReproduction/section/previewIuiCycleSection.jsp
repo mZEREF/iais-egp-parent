@@ -70,13 +70,13 @@
           </iais:value>
         </iais:row>
         <iais:row>
-          <iais:field value="How many vials of sperm were extracted" mandatory="false"/>
+          <iais:field value="How many vials of sperm were extracted?" mandatory="false"/>
           <iais:value width="7" cssClass="col-md-7"  display="true">
           <c:out value="${iuiCycleStageDto.extractVialsOfSperm}"/>
           </iais:value>
         </iais:row>
         <iais:row>
-          <iais:field value="How many vials of sperm were used in this cycle" mandatory="false"/>
+          <iais:field value="How many vials of sperm were used in this cycle?" mandatory="false"/>
           <iais:value width="7" cssClass="col-md-7"  display="true" >
           <c:out value="${iuiCycleStageDto.usedVialsOfSperm}"/>
           </iais:value>
