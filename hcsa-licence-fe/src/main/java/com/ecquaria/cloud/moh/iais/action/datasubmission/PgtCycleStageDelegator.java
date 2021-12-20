@@ -78,7 +78,7 @@ public class PgtCycleStageDelegator extends CommonDelegator{
 
     @Override
     public void prepareSwitch(BaseProcessClass bpc) {
-        ParamUtil.setRequestAttr(bpc.request, "smallTitle", "You are submitting for <strong>Cycle Stages</strong>");
+        ParamUtil.setRequestAttr(bpc.request, "smallTitle", "You are submitting for <strong>Preimplantation Genetic Testing</strong>");
 
         List<SelectOption> embryosBiopsiedLocalSelectOption  = DataSubmissionHelper.genPremisesOptions((Map<String, PremisesDto>) ParamUtil.getSessionAttr(bpc.request,DataSubmissionConstant.AR_PREMISES_MAP));
         ParamUtil.setRequestAttr(bpc.request,"embryosBiopsiedLocalSelectOption",embryosBiopsiedLocalSelectOption);

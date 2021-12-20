@@ -52,7 +52,7 @@ public class DonationStageDelegator extends CommonDelegator{
 
     @Override
     public void prepareSwitch(BaseProcessClass bpc) {
-        ParamUtil.setRequestAttr(bpc.request, "smallTitle", "You are submitting for <strong>Cycle Stages</strong>");
+        ParamUtil.setRequestAttr(bpc.request, "smallTitle", "You are submitting for <strong>Donation</strong>");
 
         List<SelectOption> donatedTypeSelectOption= MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_DONATED_TYPE);
         ParamUtil.setRequestAttr(bpc.request,"donatedTypeSelectOption",donatedTypeSelectOption);

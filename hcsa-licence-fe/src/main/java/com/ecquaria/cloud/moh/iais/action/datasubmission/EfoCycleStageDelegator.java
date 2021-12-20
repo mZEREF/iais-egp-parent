@@ -65,7 +65,7 @@ public class EfoCycleStageDelegator extends CommonDelegator{
     @Override
     public void prepareSwitch(BaseProcessClass bpc) {
         log.info(StringUtil.changeForLog("crud_action_type is ======>"+ParamUtil.getRequestString(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE)));
-        ParamUtil.setRequestAttr(bpc.request, "smallTitle", "You are submitting for <strong>Cycle Stages</strong>");
+        ParamUtil.setRequestAttr(bpc.request, "smallTitle", "You are submitting for <strong>Egg Freezing Only Cycle</strong>");
         List<SelectOption> efoReasonSelectOption= MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_EFO_REASON);
         ParamUtil.setRequestAttr(bpc.request,"efoReasonSelectOption",efoReasonSelectOption);
 

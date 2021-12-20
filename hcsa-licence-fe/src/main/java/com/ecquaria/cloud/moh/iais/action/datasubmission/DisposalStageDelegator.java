@@ -51,7 +51,7 @@ public class DisposalStageDelegator extends CommonDelegator{
     }
     @Override
     public void prepareSwitch(BaseProcessClass bpc) {
-        ParamUtil.setRequestAttr(bpc.request, "smallTitle", "You are submitting for <strong>Cycle Stages</strong>");
+        ParamUtil.setRequestAttr(bpc.request, "smallTitle", "You are submitting for <strong>Disposal</strong>");
 
         List<SelectOption> disposalTypeSelectOption= MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_DISPOSAL_TYPE);
         ParamUtil.setRequestAttr(bpc.request,"disposalTypeSelectOption",disposalTypeSelectOption);
