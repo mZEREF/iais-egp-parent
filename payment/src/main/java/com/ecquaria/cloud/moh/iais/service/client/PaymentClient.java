@@ -5,13 +5,14 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.PaymentRequestDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.SrcSystemConfDto;
 import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
+import java.util.List;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-
-import java.util.List;
+import org.springframework.web.bind.annotation.RequestParam;
 
 /**
  * @author weilu
@@ -33,17 +34,20 @@ public interface PaymentClient {
     @PostMapping(value = "/iais-payment/update-payment-resquset" ,consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<PaymentRequestDto> updatePaymentResquset(@RequestBody PaymentRequestDto paymentReqDto);
     @PostMapping(value = "/iais-payment/isTxnRefNo",consumes = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<List<String>> isTxnRef(@RequestBody List<String> txnRefNo);
+    FeignResponseEntity<List<String>> isTxnRef(@RequestBody List<String> txnRefNo, @RequestParam(name = "systemClientId") String systemClientId);
 
-    @PostMapping(value = "/iais-payment/payment-reqRefNo",consumes = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<PaymentDto> getPaymentDtoByReqRefNo(@RequestBody String reqRefNo);
+    @GetMapping(value = "/iais-payment/payment-reqRefNo/{sysClientId}/{reqRefNo}",consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<PaymentDto> getPaymentDtoByReqRefNo(@PathVariable("sysClientId") String sysClientId,
+                                                            @PathVariable("reqRefNo") String reqRefNo);
 
-    @PostMapping(value = "/iais-payment/payment-request-reqRefNo",consumes = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<PaymentRequestDto> getPaymentRequestDtoByReqRefNo(@RequestBody String reqRefNo);
+    @GetMapping(value = "/iais-payment/payment-request-reqRefNo/{sysClientId}/{reqRefNo}",consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<PaymentRequestDto> getPaymentRequestDtoByReqRefNo(@PathVariable("sysClientId") String sysClientId,
+                                                                          @PathVariable("reqRefNo") String reqRefNo);
 
-    @PostMapping(value = "/iais-payment/payment-request-reqRefNoLike",consumes = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<List<PaymentRequestDto>> getPaymentRequestDtoByReqRefNoLike(@RequestBody String reqRefNo);
+    @GetMapping(value = "/iais-payment/payment-request-reqRefNoLike/{sysClientId}/{reqRefNo}",consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<PaymentRequestDto>> getPaymentRequestDtoByReqRefNoLike(@PathVariable("sysClientId") String sysClientId,
+                                                                                    @PathVariable("reqRefNo") String reqRefNo);
 
-    @GetMapping(value = "/iais-payment/paying-payment-requests")
-    FeignResponseEntity<List<PaymentRequestDto>> getAllPayingPaymentRequestDto();
+    @GetMapping(value = "/iais-payment/paying-payment-requests/{sysClientId}")
+    FeignResponseEntity<List<PaymentRequestDto>> getAllPayingPaymentRequestDto(@PathVariable("sysClientId") String sysClientId);
 }

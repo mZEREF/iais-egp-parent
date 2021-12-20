@@ -4,6 +4,7 @@ import com.ecquaria.cloud.job.executor.biz.model.ReturnT;
 import com.ecquaria.cloud.job.executor.handler.IJobHandler;
 import com.ecquaria.cloud.job.executor.handler.annotation.JobHandler;
 import com.ecquaria.cloud.job.executor.log.JobLogger;
+import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.PaymentRequestDto;
@@ -44,7 +45,8 @@ public class ClientCheckNotResultPaymentHandler extends IJobHandler {
             for (ApplicationGroupDto appGrp :applicationGroupDtoList
             ) {
                 try {
-                    List<PaymentRequestDto> paymentRequestDtos= appGrpPaymentClient.getPaymentRequestDtoByReqRefNoLike(appGrp.getGroupNo()).getEntity();
+                    List<PaymentRequestDto> paymentRequestDtos= appGrpPaymentClient
+                            .getPaymentRequestDtoByReqRefNoLike(AppConsts.MOH_IAIS_SYSTEM_PAYMENT_CLIENT_KEY, appGrp.getGroupNo()).getEntity();
                     if(paymentRequestDtos!=null){
                         for (PaymentRequestDto paymentRequestDto:paymentRequestDtos
                         ) {

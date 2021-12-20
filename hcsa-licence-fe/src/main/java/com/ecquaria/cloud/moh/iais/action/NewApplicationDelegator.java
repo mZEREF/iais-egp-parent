@@ -1463,7 +1463,7 @@ public class NewApplicationDelegator {
             }
         } else {
             PaymentRequestDto paymentRequestDtoSuss=null;
-            List<PaymentRequestDto> paymentRequestDtos= appGrpPaymentClient.getPaymentRequestDtoByReqRefNoLike(appSubmissionDto.getAppGrpNo()).getEntity();
+            List<PaymentRequestDto> paymentRequestDtos= appGrpPaymentClient.getPaymentRequestDtoByReqRefNoLike(AppConsts.MOH_IAIS_SYSTEM_PAYMENT_CLIENT_KEY, appSubmissionDto.getAppGrpNo()).getEntity();
             if(paymentRequestDtos!=null){
                 for (PaymentRequestDto paymentRequestDto:paymentRequestDtos
                 ) {
@@ -1474,9 +1474,12 @@ public class NewApplicationDelegator {
                 }
             }
 
-            PaymentDto paymentDto= appGrpPaymentClient.getPaymentDtoByReqRefNo(appSubmissionDto.getAppGrpNo()).getEntity();
+            PaymentDto paymentDto= appGrpPaymentClient.getPaymentDtoByReqRefNo(
+                    AppConsts.MOH_IAIS_SYSTEM_PAYMENT_CLIENT_KEY, appSubmissionDto.getAppGrpNo()).getEntity();
             if(paymentRequestDtoSuss!=null){
-                PaymentDto paymentDtoSuss= appGrpPaymentClient.getPaymentDtoByReqRefNo(paymentRequestDtoSuss.getReqRefNo()).getEntity();
+                PaymentDto paymentDtoSuss= appGrpPaymentClient.getPaymentDtoByReqRefNo(
+                        AppConsts.MOH_IAIS_SYSTEM_PAYMENT_CLIENT_KEY, paymentRequestDtoSuss.getReqRefNo()
+                        ).getEntity();
                 if(paymentDtoSuss!=null){
                     paymentDto=paymentDtoSuss;
                 }
