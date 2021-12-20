@@ -536,14 +536,70 @@
          ]]>
     </sql>
 
-
-
     <sql key = "searchCycleStageByPatientCode" remarks="search Cycle Stage">
         <![CDATA[
             SELECT distinct dc.ID,( select count(dds2.CYCLE_ID) From ds_data_submission dds2 where dds2.CYCLE_ID= dc.ID) cycle_no ,dc.CREATED_DT ,dc.CYCLE_TYPE, dds.CYCLE_STAGE ,dc.STATUS
             from ds_cycle dc
             join ds_data_submission dds on  dds.SUBMISSION_NO = (select MAX(dds1.SUBMISSION_NO) from ds_data_submission dds1 where dds1.CYCLE_ID =dc.ID )
              where dc.CYCLE_TYPE in ('DSCL_008','DSCL_009','DSCL_010','DSCL_011')
+            <#if patientCode??> AND  dc.PATIENT_CODE = :patientCode </#if>
+
+         ]]>
+    </sql>
+
+    <sql key = "searchDonorSampleByAssistedReproduction" remarks="search Donor Sample">
+        <![CDATA[
+            SELECT distinct dds2.ID ,
+            CONCAT(case lp.BUSINESS_NAME
+                  when null then '-, '
+                  when '' then '-, '
+                  else lp.BUSINESS_NAME + ', ' end ,
+                  case p.BLK_NO
+                  when null then null
+                  when '' then null
+                  else ''+p.BLK_NO end ,
+               case p.STREET_NAME
+                  when null then null
+                  when '' then null
+                  else ' '+p.STREET_NAME end
+               , case p.BUILDING_NAME
+                  when null then null
+                  when '' then null
+                  else ' '+p.BUILDING_NAME end
+               , case p.FLOOR_NO
+                  when null then null
+                  when '' then null
+                  else ' # '+p.FLOOR_NO end
+               , case p.UNIT_NO
+                  when null then null
+                  when '' then null
+                  else '-'+p.UNIT_NO end
+               ,
+               SUBSTRING ((
+		        SELECT ', #' + pou.FLOOR_NO +'-'+pou.UNIT_NO
+				        FROM premises_operational_unit pou
+				        WHERE pou.PREMISES_ID =p.ID
+				        ORDER BY SEQ_NUM ASC
+				        FOR XML path('')
+		    ), 1, 1000)
+               ,case p.POSTAL_CODE
+                  when null then null
+                  when '' then null
+                  else ', '+p.POSTAL_CODE end
+              ) AS BUSINESS_NAME,
+           		dds2.DONOR_SAMPLE_CODE ,dds2.SAMPLE_TYPE ,dds2.SAMPLE_FROM_HCI_CODE ,dds2.DONOR_NAME ,( select count(ddsa.DONOR_SAMPLE_ID) From ds_donor_sample_age ddsa where ddsa.DONOR_SAMPLE_ID= dds2.ID)  age_no
+                FROM ds_data_submission dds
+                join ds_cycle dc on dc.ID =dds.CYCLE_ID
+                join premises p on dc.HCI_CODE =p.HCI_CODE and  p.CREATED_DT =(select max(CREATED_DT) from premises where HCI_CODE =dc.HCI_CODE)
+                JOIN lic_premises lp on lp.PREMISES_ID =p.ID
+				join ds_donor_sample dds2 on dds2.SUBMISSION_ID = dds.ID
+
+                where 1=1
+            <#if arCentre??> AND  charindex(:arCentre, p.HCI_CODE) >0</#if>
+            <#if cycleNo??> AND  cycle_no = :cycleNo </#if>
+            <#if submission_start_date??> AND dds.SUBMIT_DT >= convert(date,:submission_start_date)</#if>
+            <#if submission_to_date??> AND dds.SUBMIT_DT <= convert(date,:submission_to_date)</#if>
+            <#if transfers??> AND  dds3.CYCLE_STAGE ='AR_STG016'</#if>
             <#if patientCode??> AND  dc.PATIENT_CODE = :patientCode </#if>
 
          ]]>
