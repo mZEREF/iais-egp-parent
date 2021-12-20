@@ -4,6 +4,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmission
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.SystemAdminBaseConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArEnquiryDonorSampleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.AssistedReproductionAdvEnquiryResultsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.AssistedReproductionEnquiryAjaxPatientResultsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.AssistedReproductionEnquiryResultsDto;
@@ -285,7 +286,42 @@ public class OnlineArAjaxController {
         log.debug(StringUtil.changeForLog("fileHandler end ...."));
     }
 
+    @GetMapping(value = "DonorSample-SearchResults-Download")
+    public @ResponseBody
+    void fileDonorSampleHandler(HttpServletRequest request, HttpServletResponse response) {
+        log.debug(StringUtil.changeForLog("fileHandler start ...."));
+        File file = null;
 
+        SearchParam searchParam = (SearchParam) ParamUtil.getSessionAttr(request, "donorSampleParam");
+        searchParam.setPageNo(0);
+        searchParam.setPageSize(Integer.MAX_VALUE);
+
+        log.debug("indicates that a record has been selected ");
+
+        QueryHelp.setMainSql("onlineEnquiry", "searchDonorSampleByAssistedReproduction",searchParam);
+
+        SearchResult<ArEnquiryDonorSampleDto> results = assistedReproductionService.searchDonorSampleByParam(searchParam);
+
+        if (!Objects.isNull(results)){
+            List<ArEnquiryDonorSampleDto> queryList = results.getRows();
+
+            queryList.forEach(i -> i.setSampleType(MasterCodeUtil.getCodeDesc(i.getSampleType())));
+
+            try {
+                file = ExcelWriter.writerToExcel(queryList, ArEnquiryDonorSampleDto.class, "DonorSample_SearchResults_Download");
+            } catch (Exception e) {
+                log.error("=======>fileHandler error >>>>>", e);
+            }
+        }
+
+        try {
+            FileUtils.writeFileResponseContent(response, file);
+            FileUtils.deleteTempFile(file);
+        } catch (IOException e) {
+            log.debug(e.getMessage());
+        }
+        log.debug(StringUtil.changeForLog("fileHandler end ...."));
+    }
 
 
 }

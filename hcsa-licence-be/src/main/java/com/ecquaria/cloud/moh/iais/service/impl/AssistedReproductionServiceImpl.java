@@ -5,6 +5,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArEnquiryCoFundingHistoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArEnquiryCycleStageDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArEnquiryDonorSampleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArEnquiryTransactionHistoryResultDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.AssistedReproductionAdvEnquiryResultsDto;
@@ -71,6 +72,11 @@ public class AssistedReproductionServiceImpl implements AssistedReproductionServ
     @Override
     public SearchResult<ArEnquiryCycleStageDto> searchCycleStageByParam(SearchParam searchParam) {
         return assistedReproductionClient.searchCycleStageByParam(searchParam).getEntity();
+    }
+
+    @Override
+    public SearchResult<ArEnquiryDonorSampleDto> searchDonorSampleByParam(SearchParam searchParam) {
+        return assistedReproductionClient.searchDonorSampleByParam(searchParam).getEntity();
     }
 
     @Override

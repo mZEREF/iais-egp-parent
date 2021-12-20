@@ -37,26 +37,103 @@
                                 <iais:field width="4" value="AR Centre" />
                                 <iais:value width="4" cssClass="col-md-4">
                                     <iais:select name="arCentre" id="arCentre" firstOption="Please Select" options="arCentreSelectOption"
-                                                 value="${assistedReproductionEnquiryFilterDto.arCentre}"  />
+                                                 value="${arEnquiryDonorSampleFilterDto.arCentre}"  />
                                 </iais:value>
                             </iais:row>
                             <iais:row>
-                                <iais:field width="4" value="Patient Name"/>
+                                <iais:field width="4" value="Donor Sample Code"/>
                                 <iais:value width="4" cssClass="col-md-4" >
-                                    <input type="text" maxlength="66" id="patientName"  name="patientName" value="${assistedReproductionEnquiryFilterDto.patientName}" >
+                                    <input type="text" maxlength="66" id="donorSampleCode"  name="donorSampleCode" value="${arEnquiryDonorSampleFilterDto.donorSampleCode}" >
                                 </iais:value>
                             </iais:row>
                             <iais:row>
-                                <iais:field width="4" value="Patient ID Type"/>
-                                <div class="col-md-4 multi-select col-xs-4">
-                                    <iais:select name="patientIdTypeList"  multiValues="${assistedReproductionEnquiryFilterDto.patientIdTypeList}" codeCategory="CATE_ID_DS_ID_TYPE"  multiSelect="true"/>
-                                </div>
+                                <iais:field width="4" value="Sample Type"/>
+                                <iais:value width="4" cssClass="col-md-4">
+                                    <iais:select name="sampleType" id="sampleType" firstOption="Please Select" codeCategory="CATE_ID_DS_ID_TYPE"
+                                                 value="${arEnquiryDonorSampleFilterDto.sampleType}" />
+                                </iais:value>
                             </iais:row>
                             <iais:row>
-                                <iais:field width="4" value="Patient ID No."/>
+                                <iais:field width="4" value="Name of Bank / AR Centre where sample is from" />
+                                <iais:value width="4" cssClass="col-md-4">
+                                    <iais:select name="sampleHciCode" id="sampleHciCode" firstOption="Please Select" options="arCentreSelectOption"
+                                                 value="${arEnquiryDonorSampleFilterDto.sampleHciCode}"  />
+                                </iais:value>
+                            </iais:row>
+                            <iais:row>
+                                <iais:field width="4" value="Donor's ID Type"/>
+                                <iais:value width="4" cssClass="col-md-4">
+                                    <iais:select name="donorIdType" id="donorIdType" firstOption="Please Select" codeCategory="CATE_ID_DS_ID_TYPE"
+                                                 value="${arEnquiryDonorSampleFilterDto.donorIdType}" />
+                                </iais:value>
+                            </iais:row>
+                            <iais:row>
+                                <iais:field width="4" value="Donor's ID No."/>
                                 <iais:value width="4" cssClass="col-md-4"  >
-                                    <input type="text"  id="patientIdNumber"  name="patientIdNumber" value="${assistedReproductionEnquiryFilterDto.patientIdNumber}" >
+                                    <input type="text"  id="donorIdNumber"  name="donorIdNumber" value="${arEnquiryDonorSampleFilterDto.donorIdNumber}" >
                                 </iais:value>
+                            </iais:row>
+                            <iais:row>
+                                <iais:field width="4" value="No of Live Birth Events Recorded" />
+                                <div class="col-md-6">
+                                    <iais:value width="2" cssClass="col-md-2">
+                                        <div class="form-check">
+                                            <input class="form-check-input"
+                                                   type="checkbox"
+                                                   name="birthEventsTotal0" id="birthEventsTotal0"
+                                                   <c:if test="${ arEnquiryDonorSampleFilterDto.birthEventsTotal0 =='on'  }">checked</c:if>
+                                                   aria-invalid="false">
+                                            <label class="form-check-label"
+                                                   for="birthEventsTotal0"><span
+                                                    class="check-square"></span>0</label>
+                                        </div>
+                                    </iais:value>
+                                    <iais:value width="2" cssClass="col-md-2">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox"
+                                                   name="birthEventsTotal1" id="birthEventsTotal1"
+                                                   <c:if test="${arEnquiryDonorSampleFilterDto.birthEventsTotal1 == 'on' }">checked</c:if>
+                                                   aria-invalid="false">
+                                            <label class="form-check-label"
+                                                   for="birthEventsTotal1"><span
+                                                    class="check-square"></span>1</label>
+                                        </div>
+                                    </iais:value>
+                                    <iais:value width="2" cssClass="col-md-2">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox"
+                                                   name="birthEventsTotal2" id="birthEventsTotal2"
+                                                   <c:if test="${arEnquiryDonorSampleFilterDto.birthEventsTotal2 == 'on' }">checked</c:if>
+                                                   aria-invalid="false">
+                                            <label class="form-check-label"
+                                                   for="birthEventsTotal2"><span
+                                                    class="check-square"></span>2</label>
+                                        </div>
+                                    </iais:value>
+                                    <iais:value width="2" cssClass="col-md-2">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox"
+                                                   name="birthEventsTotal3" id="birthEventsTotal3"
+                                                   <c:if test="${arEnquiryDonorSampleFilterDto.birthEventsTotal3 == 'on' }">checked</c:if>
+                                                   aria-invalid="false">
+                                            <label class="form-check-label"
+                                                   for="birthEventsTotal3"><span
+                                                    class="check-square"></span>3</label>
+                                        </div>
+                                    </iais:value>
+                                    <iais:value width="2" cssClass="col-md-2">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox"
+                                                   name="birthEventsTotalMax" id="birthEventsTotalMax"
+                                                   <c:if test="${arEnquiryDonorSampleFilterDto.birthEventsTotalMax == 'on' }">checked</c:if>
+                                                   aria-invalid="false">
+                                            <label class="form-check-label"
+                                                   for="birthEventsTotalMax"><span
+                                                    class="check-square"></span>>3</label>
+                                        </div>
+                                    </iais:value>
+                                </div>
+
                             </iais:row>
 
 
@@ -79,7 +156,7 @@
                     <div class="col-xs-12">
                         <div class="components">
 
-                            <iais:pagination param="patientParam" result="patientResult"/>
+                            <iais:pagination param="donorSampleParam" result="donorSampleResult"/>
                             <div class="table-responsive">
                                 <div class="table-gp">
                                     <table aria-describedby="" class="table application-group" style="border-collapse:collapse;">
@@ -87,21 +164,23 @@
                                         <tr >
 
                                             <iais:sortableHeader needSort="true"
-                                                                 field="NAME"
+                                                                 field="AR Centre"
                                                                  value="Patient Name"/>
-                                            <iais:sortableHeader needSort="false"
-                                                                 field="ID_TYPE"
-                                                                 value="Patient ID Type"/>
                                             <iais:sortableHeader needSort="true"
-                                                                 field="ID_NUMBER"
-                                                                 value="Patient ID No"/>
-                                            <iais:sortableHeader needSort="true"
-                                                                 field="DATE_OF_BIRTH"
-                                                                 value="Patient Date of Birth"/>
+                                                                 field="DONOR_SAMPLE_CODE"
+                                                                 value="Donor Sample Code / ID No"/>
                                             <iais:sortableHeader needSort="false"
-                                                                 field="NATIONALITY"
-                                                                 value="Patient Nationality"/>
-
+                                                                 field="SAMPLE_TYPE"
+                                                                 value="Sample Type"/>
+                                            <iais:sortableHeader needSort="false"
+                                                                 field="SAMPLE_FROM_HCI_CODE"
+                                                                 value="Name of Bank / AR Centre where sample is collected"/>
+                                            <iais:sortableHeader needSort="true"
+                                                                 field="DONOR_NAME"
+                                                                 value="Donor’s Name"/>
+                                            <iais:sortableHeader needSort="true"
+                                                                 field="age_no"
+                                                                 value="No of Live Birth Events Recorded"/>
                                             <iais:sortableHeader needSort="false"
                                                                  field=""
                                                                  value="Action"/>
@@ -109,7 +188,7 @@
                                         </thead>
                                         <tbody class="form-horizontal">
                                         <c:choose>
-                                            <c:when test="${empty patientResult.rows}">
+                                            <c:when test="${empty donorSampleResult.rows}">
                                                 <tr>
                                                     <td colspan="15">
                                                         <iais:message key="GENERAL_ACK018"
@@ -118,39 +197,31 @@
                                                 </tr>
                                             </c:when>
                                             <c:otherwise>
-                                                <c:forEach var="patient"
-                                                           items="${patientResult.rows}"
+                                                <c:forEach var="donorSample"
+                                                           items="${donorSampleResult.rows}"
                                                            varStatus="status">
-                                                    <tr id="advfilter${(status.index + 1) + (patientParam.pageNo - 1) * patientParam.pageSize}">
+                                                    <tr >
 
                                                         <td style="vertical-align:middle;">
-
-                                                            <p style="width: 165px;"><c:out value="${patient.patientName}"/>
-                                                                <a href="javascript:void(0);" class="accordion-toggle  collapsed" style="float: right" data-toggle="collapse" data-target="#dropdown${(status.index + 1) + (patientParam.pageNo - 1) * patientParam.pageSize}" onclick="getPatientByPatientCode('${patient.patientCode}','${(status.index + 1) + (patientParam.pageNo - 1) * patientParam.pageSize}')">
-                                                                </a>
-                                                            </p>
+                                                            <c:out value="${donorSample.arCentre}"/>
                                                         </td>
                                                         <td style="vertical-align:middle;">
-                                                            <iais:code code="${patient.patientIdType}"/>
+                                                            <c:out value="${donorSample.donorSampleCode}"/>
                                                         </td>
                                                         <td style="vertical-align:middle;">
-                                                            <c:out value="${patient.patientIdNo}"/>
+                                                            <iais:code code="${donorSample.sampleType}"/>
                                                         </td>
                                                         <td style="vertical-align:middle;">
-                                                            <fmt:formatDate
-                                                                    value="${patient.patientDateBirth}"
-                                                                    pattern="${AppConsts.DEFAULT_DATE_FORMAT}"/>
+                                                            <c:out value="${donorSample.sampleHciCode}"/>
                                                         </td>
                                                         <td style="vertical-align:middle;">
-                                                            <iais:code code="${patient.patientNationality}"/>
+                                                            <c:out value="${donorSample.donorName}"/>
                                                         </td>
-
+                                                        <td style="vertical-align:middle;">
+                                                            <c:out value="${donorSample.ageNumber}"/>
+                                                        </td>
                                                         <td >
-                                                            <button  href="#newappModal"  onclick="quickView('${patient.patientCode}')" data-toggle="modal" data-target="#newappModal" type="button" class=" btn btn-default btn-sm">
-                                                                Quick View
-                                                            </button>
-                                                            <br>
-                                                            <button type="button" onclick="fullDetailsView('${patient.patientCode}')" class="btn btn-default btn-sm">
+                                                            <button type="button" onclick="fullDetailsView('${donorSample.donorSampleId}')" class="btn btn-default btn-sm">
                                                                 View Full Details
                                                             </button>
                                                         </td>
@@ -160,27 +231,13 @@
                                         </c:choose>
                                         </tbody>
                                     </table>
-                                    <div id="newappModal" class="modal fade" tabindex="-1" role="dialog" style="top:10px">
-                                        <div class="col-md-8"  role="document" style="float:right ">
-                                            <div class="modal-content">
-                                                <div class="row">
-                                                    <div class="col-md-1" >
-                                                        <button type="button" style="font-size: 2rem;font-weight: 700;line-height: 25;color: #000;text-shadow: 0 1px 0 #fff;opacity: .5;" data-dismiss="modal"><span aria-hidden="true"> < </span></button>
-                                                    </div>
-                                                    <div class="col-md-11 " >
-                                                        <div class="quickBodyDiv"></div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
                                 </div>
 
                             </div>
 
                             <iais:action style="text-align:right;">
                                 <a class="btn btn-secondary"
-                                   href="${pageContext.request.contextPath}/hcsa/intranet/ar/PatientInfo-SearchResults-DownloadS">Download</a>
+                                   href="${pageContext.request.contextPath}/hcsa/intranet/ar/DonorSample-SearchResults-DownloadS">Download</a>
                             </iais:action>
                         </div>
                     </div>
@@ -193,120 +250,7 @@
 </div>
 <%@include file="/WEB-INF/jsp/include/utils.jsp" %>
 <script type="text/javascript">
-    var dividajaxlist = [];
 
-    $(document).ready(function () {
-        quickView();
-
-        $('#searchByPatient').change(function () {
-            if($(this).is(':checked')){
-                $('#patientInformationFilter').attr("style","display: block");
-                $('#patientResultDisplay').attr("style","display: block");
-                $('#submissionFilter').attr("style","display: none");
-                $('#submissionResultDisplay').attr("style","display: none");
-            }else {
-                $('#patientInformationFilter').attr("style","display: none");
-                $('#patientResultDisplay').attr("style","display: none");
-                $('#submissionFilter').attr("style","display: block");
-                $('#submissionResultDisplay').attr("style","display: block");
-            }
-        });
-
-        $('#searchBySubmission').change(function () {
-            if($(this).is(':checked')){
-                $('#patientInformationFilter').attr("style","display: none");
-                $('#patientResultDisplay').attr("style","display: none");
-                $('#submissionFilter').attr("style","display: block");
-                $('#submissionResultDisplay').attr("style","display: block");
-            }else {
-                $('#patientInformationFilter').attr("style","display: block");
-                $('#patientResultDisplay').attr("style","display: block");
-                $('#submissionFilter').attr("style","display: none");
-                $('#submissionResultDisplay').attr("style","display: none");
-            }
-        });
-
-        $('#submissionType').change(function () {
-
-            var reason= $('#submissionType option:selected').val();
-
-            if("AR_TP002"==reason){
-                $('#cycleStageDisplay').attr("style","display: block");
-            }else {
-                $('#cycleStageDisplay').attr("style","display: none");
-            }
-
-        });
-    })
-
-
-    var getPatientByPatientCode = function (patientCode, divid) {
-        if (!isInArray(dividajaxlist,divid)) {
-            groupAjax(patientCode, divid);
-        } else {
-            var display = $('#advfilterson' + divid).css('display');
-            if (display == 'none') {
-                $('#advfilterson' + divid).show();
-            } else {
-                $('#advfilterson' + divid).hide();
-            }
-        }
-    };
-    function isInArray(arr,value){
-        for(var i = 0; i < arr.length; i++){
-            if(value === arr[i]){
-                return true;
-            }
-        }
-        return false;
-    };
-    var groupAjax = function (patientCode, divid) {
-        dividajaxlist.push(divid);
-        $.post(
-            '/hcsa-licence-web/hcsa/intranet/ar/patientDetail.do',
-            {patientCode: patientCode},
-            function (data) {
-                let result = data.result;
-                if('Success' == result) {
-                    let res = data.ajaxResult;
-                    let html = '<tr style="background-color: #F3F3F3;" class="p" id="advfilterson' + divid + '">' +
-                        '<td colspan="7" class="hiddenRow">' +
-                        '<div class="accordian-body p-3 collapse in" id="dropdown' + divid + '" >' +
-                        '<table class="table application-item" style="background-color: #F3F3F3;" >' +
-                        '<thead>' +
-                        '<tr>';
-
-
-                    html += '<th width="10%">AR/IUI/EFO</th>' +
-                        '<th width="20%">AR Treatment Cycle Type</th>' +
-                        '<th width="25%">AR Centre</th>' +
-                        '<th width="15%">Cycle Start Date</th>' +
-                        '<th width="20%">Co-funding Claimed</th>' +
-                        '<th width="15%">Status</th>'  +
-                        '</tr>' +
-                        '</thead>' +
-                        '<tbody>';
-                    for (let i = 0; i < res.rowCount; i++) {
-                        var color = "black";
-
-                        html += '<tr style = "color : ' + color + ';">';
-
-                        html += '<td style="vertical-align:middle;"><p class="visible-xs visible-sm table-row-title">AR/IUI/EFO</p><p>' + res.rows[i].dsType + '<p></td>' +
-                            '<td style="vertical-align:middle;"><p class="visible-xs visible-sm table-row-title">AR Treatment Cycle Type</p><p>' + res.rows[i].arTreatment + '<p></td>' +
-                            '<td style="vertical-align:middle;"><p class="visible-xs visible-sm table-row-title">AR Centre</p><p>' + res.rows[i].arCentre + '<p></td>';
-                        html += '<td style="vertical-align:middle;"><p class="visible-xs visible-sm table-row-title">Cycle Start Date</p><p><a href="#" onclick="javascript:fullStagesView(' + "'" + res.rows[i].cycleId + "'" + ');">' + res.rows[i].cycleStartDateStr + '</a></p></td>';
-
-                        html += '</p></td>' +
-                            '<td style="vertical-align:middle;"><p class="visible-xs visible-sm table-row-title">Co-funding Claimed</p><p>' + res.rows[i].coFunding + '</p></td>' +
-                            '<td style="vertical-align:middle;"><p class="visible-xs visible-sm table-row-title">Status</p><p>' + res.rows[i].status + '</p></td>' +
-                            '</tr>';
-                    }
-                    html += '</tbody></table></div></td></tr>';
-                    $('#advfilter' + divid).after(html);
-                }
-            }
-        )
-    };
 
     function doClear() {
         $('input[type="text"]').val("");
@@ -318,11 +262,6 @@
         $('#cycleStageDisplay').attr("style","display: none");
     }
 
-    function doAdvancedSearch() {
-        showWaiting();
-        $("[name='base_action_type']").val('advanced');
-        $('#mainForm').submit();
-    }
 
     function jumpToPagechangePage() {
         search();
@@ -335,63 +274,25 @@
 
     function search() {
         showWaiting();
-        $("[name='base_action_type']").val('search');
+        $("[name='crud_action_type']").val('search');
         $('#mainForm').submit();
     }
 
     function sortRecords(sortFieldName, sortType) {
         $("[name='crud_action_value']").val(sortFieldName);
         $("[name='crud_action_additional']").val(sortType);
-        $("[name='base_action_type']").val('search');
+        $("[name='crud_action_type']").val('search');
         $('#mainForm').submit();
     }
 
-    var quickView = function (patientCode) {
 
-        var jsonData={
-            'patientCode': patientCode
-        };
-        $.ajax({
-            'url':'${pageContext.request.contextPath}/ar-quick-view',
-            'dataType':'text',
-            'data':jsonData,
-            'type':'GET',
-            'success':function (data) {
-                if(data == null){
-                    return;
-                }
-                $('.quickBodyDiv').html(data);
-
-
-            },
-            'error':function () {
-            }
-        });
-    }
-
-    var fullDetailsView = function (patientCode) {
+    var fullDetailsView = function (donorSampleId) {
 
         showWaiting();
-        $("[name='crud_action_additional']").val('patient');
-        $("[name='crud_action_value']").val(patientCode);
-        $("[name='base_action_type']").val('viewFull');
+        $("[name='crud_action_value']").val(donorSampleId);
+        $("[name='crud_action_type']").val('viewInfo');
         $('#mainForm').submit();
     }
 
-    var fullDetailsViewBySubId = function (submissionId) {
 
-        showWaiting();
-        $("[name='crud_action_additional']").val('submission');
-        $("[name='crud_action_value']").val(submissionId);
-        $("[name='base_action_type']").val('viewFull');
-        $('#mainForm').submit();
-    }
-
-    var fullStagesView = function (submissionIdNo) {
-
-        showWaiting();
-        $("[name='crud_action_value']").val(submissionIdNo);
-        $("[name='base_action_type']").val('viewStage');
-        $('#mainForm').submit();
-    }
 </script>

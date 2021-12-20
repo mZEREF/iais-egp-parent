@@ -138,10 +138,7 @@
                     </div>
                     <br>
 
-                    <div id="u82" class="ax_default" data-label="Data Quick View" style="visibility: inherit;" data-left="591" data-top="586" data-width="569" data-height="810">
 
-
-                    </div>
 
                     <div id="patientResultDisplay" <c:if test="${ assistedReproductionEnquiryFilterDto.searchBy !='1' }">style="display: none"</c:if>>
                         <div class="col-xs-12">
