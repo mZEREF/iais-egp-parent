@@ -116,6 +116,7 @@ public abstract class DonorCommonDelegator extends CommonDelegator{
                 if(errorMap.isEmpty()){
                     setDonorDtoByDonorSampleDto(arDonorDto,donorSampleDto);
                 }else {
+                    clearDonorAges(arDonorDto);
                     ParamUtil.setRequestAttr(request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
                 }
             }
@@ -146,6 +147,7 @@ public abstract class DonorCommonDelegator extends CommonDelegator{
             arDonorDto.setSource(StringUtil.getNonNull(arDonorDto.getSource()));
             arDonorDto.setOtherSource(StringUtil.getNonNull(arDonorDto.getOtherSource()));
             arDonorDto.setDonorSampleCode(StringUtil.getNonNull(arDonorDto.getDonorSampleCode()));
+            arDonorDto.setRelation(null);
         }
 
         if(!AppConsts.NO.equalsIgnoreCase(arDonorDto.getResetDonor())){
@@ -160,6 +162,9 @@ public abstract class DonorCommonDelegator extends CommonDelegator{
         arDonorDto.setAge(null);
         arDonorDto.setDonorSampleAgeDtos(null);
         arDonorDto.setResetDonor(null);
+        arDonorDto.setRelation(null);
+        arDonorDto.setDonorIdentityKnown(null);
+        arDonorDto.setDonorSampleId(null);
     }
 
     protected void setEmptyDataForNullDrDonorDto(DonorDto arDonorDto){

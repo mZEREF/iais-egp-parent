@@ -143,7 +143,7 @@
                  </iais:row>
                  </c:if>
 
-                     <iais:row id="relation${arDonorIndex}Row" style="${donorDto.directedDonation ? '' : 'display: none;'}">
+                     <iais:row id="relation${arDonorIndex}Row" style="${donorDto.directedDonation && !empty donorDto.donorSampleKey ? '' : 'display: none;'}">
                          <iais:field width="5" value="Donor relation to patient" mandatory="true" />
                          <iais:value width="3" cssClass="col-md-3" >
                              <div class="form-check" style="padding-left: 0px;">
@@ -193,3 +193,20 @@
      </div>
      </div>
 </div>
+
+<script>
+    function showDonor(index){
+        $("#deleteDonor"+index).show();
+        $("#source"+index+"Row").hide();
+        $("#otherSource"+index+"Row").hide();
+        $("#donorSampleCode"+index+"Row").hide();
+        $("#source"+index).val("");
+        $("#otherSource"+index).val("");
+        $("#donorSampleCode"+index).val("");
+        $("#idNo"+index+"Row").show();
+        $("#relation"+index+"Row").hide();
+        $("#relation"+index).val('');
+        $("#age"+index).val("");
+        $("#age"+index+"Row").hide();
+    }
+</script>
