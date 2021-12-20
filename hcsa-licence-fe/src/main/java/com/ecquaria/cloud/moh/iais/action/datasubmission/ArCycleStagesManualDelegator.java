@@ -132,8 +132,8 @@ public class ArCycleStagesManualDelegator {
                     // To reNew super data submission
                     dataSubmissionDto.setCycleStage(null);
                 }
-                currentSuper.setCycleDto(DataSubmissionHelper.initCycleDto(selectionDto, currentSuper.getSvcName(),
-                        currentSuper.getHciCode()));
+                /*currentSuper.setCycleDto(DataSubmissionHelper.initCycleDto(selectionDto, currentSuper.getSvcName(),
+                        currentSuper.getHciCode()));*/
                 DataSubmissionHelper.setCurrentArDataSubmission(currentSuper, bpc.request);
             } else if (StringUtil.isIn(crudype, new String[]{DataSubmissionConstant.CRUD_TYPE_FROM_DRAFT,
                     DataSubmissionConstant.CRUD_TYPE_RFC})) {
@@ -254,6 +254,10 @@ public class ArCycleStagesManualDelegator {
     private CycleStageSelectionDto getSelectionDtoFromPage(HttpServletRequest request) {
         CycleStageSelectionDto selectionDto = ControllerHelper.get(request, CycleStageSelectionDto.class);
         selectionDto.setUndergoingCycle("1".equals(ParamUtil.getString(request, "undergoingCycle")));
+        CycleDto cycleDto = new CycleDto();
+        cycleDto.setId(ParamUtil.getString(request, "cycleId"));
+        cycleDto.setCycleType(ParamUtil.getString(request, "cycleType"));
+        selectionDto.setLastCycleDto(cycleDto);
         return selectionDto;
     }
 
