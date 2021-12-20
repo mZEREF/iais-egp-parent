@@ -179,6 +179,7 @@ public class ArDataSubmissionServiceImpl implements ArDataSubmissionService {
             log.warn(StringUtil.changeForLog("---No data to be saved---"));
             return arSuperList;
         }
+        arSuperList.forEach(dto -> dto.setFe(true));
         return arFeClient.saveArSuperDataSubmissionDtoList(arSuperList).getEntity();
     }
 

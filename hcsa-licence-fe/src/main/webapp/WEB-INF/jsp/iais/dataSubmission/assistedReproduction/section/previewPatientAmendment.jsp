@@ -16,7 +16,7 @@
                         <iais:code code="${dataSubmission.amendReason}" />
                     </iais:value>
                 </iais:row>
-                <div class="form-group" style="<c:if test="${dataSubmission.amendReason ne 'PTA_003'}">display:none</c:if>">
+                <div class="form-group" style="<c:if test="${dataSubmission.amendReason ne 'PTA_003' && dataSubmission.amendReason ne 'DSA_002'}">display:none</c:if>">
                     <iais:field width="5" value="Reason for Amendment (Others)"/>
                     <iais:value width="7" display="true">
                         <c:out value="${dataSubmission.amendReasonOther}" />
