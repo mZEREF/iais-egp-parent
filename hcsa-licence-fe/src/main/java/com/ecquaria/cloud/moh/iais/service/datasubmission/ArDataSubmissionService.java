@@ -125,4 +125,10 @@ public interface ArDataSubmissionService {
     boolean flagOutEmbryoTransferAgeAndCount(ArSuperDataSubmissionDto arSuperDataSubmissionDto);
 
     boolean flagOutEmbryoTransferCountAndPatAge(ArSuperDataSubmissionDto arSuperDataSubmissionDto);
+
+    boolean haveStimulationCycles(String patientCode);
+
+    int embryoTransferCount(String cycleDtoId);
+
+    boolean haveEmbryoTransferGreaterFiveDay(String cycleId);
 }

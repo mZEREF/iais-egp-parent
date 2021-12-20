@@ -6,8 +6,10 @@ import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmission
 import com.ecquaria.cloud.moh.iais.common.constant.intranetUser.IntranetUserConstant;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.CycleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.EmbryoTransferStageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInventoryDto;
+import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -19,7 +21,9 @@ import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
+import com.ecquaria.cloud.moh.iais.service.datasubmission.ArDataSubmissionService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import sop.util.DateUtil;
 import sop.webflow.rt.api.BaseProcessClass;
 
@@ -38,6 +42,9 @@ import java.util.Map;
 @Delegator("embryoTransferDelegator")
 @Slf4j
 public class EmbryoTransferDelegator extends CommonDelegator {
+    @Autowired
+    ArDataSubmissionService arDataSubmissionService;
+
     @Override
     public void prepareSwitch(BaseProcessClass bpc) {
         ParamUtil.setRequestAttr(bpc.request, "smallTitle", "You are submitting for <strong>Embryo Transferred Stage</strong>");
@@ -69,6 +76,46 @@ public class EmbryoTransferDelegator extends CommonDelegator {
 
         List<SelectOption> thirdEmbryoAgeSelectOption = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_AGE_OF_EMBRYO_TRANSFER);
         ParamUtil.setRequestAttr(bpc.request, "thirdEmbryoAgeSelectOption", thirdEmbryoAgeSelectOption);
+
+        setFlagCond(bpc.request);
+    }
+
+    private void setFlagCond(HttpServletRequest request) {
+        ArSuperDataSubmissionDto arSuperDataSubmissionDto = DataSubmissionHelper.getCurrentArDataSubmission(request);
+        if (arSuperDataSubmissionDto == null) {
+            return;
+        }
+
+        List<Integer> integers = Formatter.getYearsAndDays(arSuperDataSubmissionDto.getPatientInfoDto().getPatient().getBirthDate());
+        int age = 0;
+        if (IaisCommonUtils.isNotEmpty(integers)) {
+            age = integers.get(0);
+        }
+
+        boolean haveStimulationCycles = false;
+        boolean haveEmbryoTransferGreaterFiveDay = false;
+        int embryoTransferCount = 0;
+        CycleDto cycleDto = arSuperDataSubmissionDto.getCycleDto();
+        if (cycleDto != null) {
+            String patientCode = cycleDto.getPatientCode();
+            haveStimulationCycles = arDataSubmissionService.haveStimulationCycles(patientCode);
+            embryoTransferCount = arDataSubmissionService.embryoTransferCount(cycleDto.getId());
+            haveEmbryoTransferGreaterFiveDay = arDataSubmissionService.haveEmbryoTransferGreaterFiveDay(cycleDto.getId());
+        }
+
+        int totalEmbryos = 0;
+        PatientInventoryDto patientInventoryDto = arSuperDataSubmissionDto.getPatientInventoryDto();
+        if (patientInventoryDto != null) {
+            totalEmbryos += patientInventoryDto.getCurrentFreshEmbryos();
+            totalEmbryos += patientInventoryDto.getCurrentThawedEmbryos();
+            totalEmbryos += patientInventoryDto.getCurrentFrozenEmbryos();
+        }
+
+        ParamUtil.setRequestAttr(request, "age", age);
+        ParamUtil.setRequestAttr(request, "haveStimulationCycles", haveStimulationCycles);
+        ParamUtil.setRequestAttr(request, "embryoTransferCount", embryoTransferCount);
+        ParamUtil.setRequestAttr(request, "totalEmbryos", totalEmbryos);
+        ParamUtil.setRequestAttr(request, "haveEmbryoTransferGreaterFiveDay", haveEmbryoTransferGreaterFiveDay);
     }
 
     @Override
@@ -92,6 +139,13 @@ public class EmbryoTransferDelegator extends CommonDelegator {
             ParamUtil.setRequestAttr(request, IntranetUserConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
             ParamUtil.setRequestAttr(request, IntranetUserConstant.CRUD_ACTION_TYPE, "page");
         }
+    }
+
+    @Override
+    public void prepareConfim(BaseProcessClass bpc) {
+        ArSuperDataSubmissionDto arSuperDataSubmissionDto = DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
+        ParamUtil.setRequestAttr(bpc.request,"flagTwo",arDataSubmissionService.flagOutEmbryoTransferAgeAndCount(arSuperDataSubmissionDto));
+        ParamUtil.setRequestAttr(bpc.request,"flagThree",arDataSubmissionService.flagOutEmbryoTransferCountAndPatAge(arSuperDataSubmissionDto));
     }
 
     private void fromPageData(EmbryoTransferStageDto embryoTransferStageDto, HttpServletRequest request) {

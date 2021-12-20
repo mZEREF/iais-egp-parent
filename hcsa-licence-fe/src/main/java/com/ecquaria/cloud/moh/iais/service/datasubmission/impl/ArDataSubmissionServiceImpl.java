@@ -530,8 +530,19 @@ public class ArDataSubmissionServiceImpl implements ArDataSubmissionService {
 
     @Override
     public boolean flagOutEmbryoTransferAgeAndCount(ArSuperDataSubmissionDto arSuperDataSubmissionDto) {
+        int embryoTransferCount = 0;
+//        CycleDto cycleDto=arSuperDataSubmissionDto.getCycleDto();
+//        if (cycleDto != null){
+//            embryoTransferCount = embryoTransferCount(cycleDto.getId());
+//        }
+        PatientInventoryDto patientInventoryDto = arSuperDataSubmissionDto.getPatientInventoryDto();
+        if (patientInventoryDto != null) {
+            embryoTransferCount += patientInventoryDto.getCurrentFreshEmbryos();
+            embryoTransferCount += patientInventoryDto.getCurrentThawedEmbryos();
+            embryoTransferCount += patientInventoryDto.getCurrentFrozenEmbryos();
+        }
         return haveEmbryoTransferGreaterFiveDayIncludeCurrentStage(arSuperDataSubmissionDto)
-                && embryoTransferCountIncludeCurrentStage(arSuperDataSubmissionDto) >= 3;
+                && embryoTransferCount >= 3;
     }
 
     @Override
@@ -557,15 +568,30 @@ public class ArDataSubmissionServiceImpl implements ArDataSubmissionService {
     }
 
     private boolean haveStimulationCyclesIncludeCurrentStage(ArSuperDataSubmissionDto arSuperDataSubmissionDto) {
-        if (arSuperDataSubmissionDto.getArCycleStageDto() != null) {
-            ArCycleStageDto arCycleStageDto = arSuperDataSubmissionDto.getArCycleStageDto();
-            if (arCycleStageDto.getCurrentArTreatmentValues().contains("AR_CAT_002")) {
+        if (arSuperDataSubmissionDto == null) {
+            return false;
+        }
+        ArCycleStageDto arCycleStageDto = arSuperDataSubmissionDto.getArCycleStageDto();
+        if (arCycleStageDto != null) {
+            List<String> currentArTreatmentValues = arCycleStageDto.getCurrentArTreatmentValues();
+            if (currentArTreatmentValues != null && currentArTreatmentValues.contains("AR_CAT_002")) {
                 return true;
             }
         }
         CycleDto cycleDto = arSuperDataSubmissionDto.getCycleDto();
-        String patientCode = cycleDto.getPatientCode();
-        return arFeClient.haveStimulationCycles(patientCode).getEntity();
+        if (cycleDto != null) {
+            String patientCode = cycleDto.getPatientCode();
+            return haveStimulationCycles(patientCode);
+        }
+        return false;
+    }
+
+    @Override
+    public boolean haveStimulationCycles(String patientCode) {
+        if (StringUtil.isNotEmpty(patientCode)) {
+            return arFeClient.haveStimulationCycles(patientCode).getEntity();
+        }
+        return false;
     }
 
     private boolean haveEmbryoTransferGreaterFiveDayIncludeCurrentStage(ArSuperDataSubmissionDto arSuperDataSubmissionDto) {
@@ -576,12 +602,16 @@ public class ArDataSubmissionServiceImpl implements ArDataSubmissionService {
                 return true;
             }
         }
-        if (StringUtil.isNotEmpty(cycleDtoId)) {
-            return arFeClient.haveEmbryoTransferGreaterFiveDay(cycleDtoId).getEntity();
+        return haveEmbryoTransferGreaterFiveDay(cycleDtoId);
+    }
+
+    @Override
+    public boolean haveEmbryoTransferGreaterFiveDay(String cycleId) {
+        if (StringUtil.isNotEmpty(cycleId)) {
+            return arFeClient.haveEmbryoTransferGreaterFiveDay(cycleId).getEntity();
         }
         return false;
     }
-
 
     private int getPatientAge(ArSuperDataSubmissionDto arSuperDataSubmissionDto) {
         List<Integer> integers = Formatter.getYearsAndDays(arSuperDataSubmissionDto.getPatientInfoDto().getPatient().getBirthDate());
@@ -601,9 +631,18 @@ public class ArDataSubmissionServiceImpl implements ArDataSubmissionService {
                 result += embryoTransferStageDto.getTransferNum();
             }
         }
+        result += embryoTransferCount((cycleDtoId));
+        return result;
+    }
+
+    @Override
+    public int embryoTransferCount(String cycleDtoId) {
+        int result = 0;
         if (StringUtil.isNotEmpty(cycleDtoId)) {
             Integer cycleEmbryoTransferCount = arFeClient.embryoTransferCount(cycleDtoId).getEntity();
-            result += cycleEmbryoTransferCount;
+            if (cycleEmbryoTransferCount != null) {
+                result += cycleEmbryoTransferCount;
+            }
         }
         return result;
     }
