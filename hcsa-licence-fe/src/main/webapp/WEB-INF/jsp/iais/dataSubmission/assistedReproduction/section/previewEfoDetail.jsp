@@ -1,3 +1,5 @@
+<%@ page import="com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto" %>
+<%@ page import="com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils" %>
 <div class="panel panel-default">
     <div class="panel-heading completed ">
         <h4 class="panel-title">
@@ -29,8 +31,8 @@
                 <iais:row>
                     <iais:field width="6" value="Patient's Age as of This Treatment" mandatory="false"/>
                     <iais:value width="6" display="true">
-                        <%ArSuperDataSubmissionDto arSuperDataSubmissionDto = (ArSuperDataSubmissionDto) ParamUtil.getSessionAttr(request,"arSuperDataSubmissionDto");%>
-                        <%=IaisCommonUtils.getYearsAndMonths(arSuperDataSubmissionDto.getEfoCycleStageDto().getYearNum(), arSuperDataSubmissionDto.getEfoCycleStageDto().getMonthNum())%>%
+                        <%ArSuperDataSubmissionDto arSuperDataSubmissionDto = DataSubmissionHelper.getCurrentArDataSubmission(request);%>
+                        <%=IaisCommonUtils.getYearsAndMonths(arSuperDataSubmissionDto.getEfoCycleStageDto().getYearNum(), arSuperDataSubmissionDto.getEfoCycleStageDto().getMonthNum())%>
                     </iais:value>
                 </iais:row>
                 <iais:row>
