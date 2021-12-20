@@ -110,7 +110,7 @@ $(function () {
 
     //InnerFooter.jsp & notification page
     $("#saveButton").click(function () {
-        if($("#declareT").is(':checked')){
+        if($("#ensureT").is(':checked')){
             showWaiting();
             $("[name='action_type']").val("doSave");
             $("#mainForm").submit();
