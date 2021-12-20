@@ -19,7 +19,7 @@
                 <iais:row>
                     <iais:field width="6" value="Is Current Cycle Abandoned?" mandatory="true"/>
                     <iais:value width="3" cssClass="col-md-3">
-                        <div class="form-check">
+                        <div class="form-check" style="padding-left: 0px;">
                             <input class="form-check-input"
                                    type="radio"
                                    name="cycleAbandoned"
