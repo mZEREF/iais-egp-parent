@@ -1262,32 +1262,32 @@
                                                                varStatus="status">
                                                         <tr>
 
-                                                            <td>
+                                                            <td style="vertical-align:middle;">
                                                                 <c:out value="${patient.arCentre}"/>
                                                             </td>
-                                                            <td>
+                                                            <td style="vertical-align:middle;">
                                                                 <c:out value="${patient.patientName}"/>
                                                             </td>
-                                                            <td>
+                                                            <td style="vertical-align:middle;">
                                                                 <iais:code code="${patient.patientIdType}"/>
                                                             </td>
-                                                            <td>
+                                                            <td style="vertical-align:middle;">
                                                                 <c:out value="${patient.patientIdNo}"/>
                                                             </td>
-                                                            <td>
+                                                            <td style="vertical-align:middle;">
                                                                 <fmt:formatDate
                                                                         value="${patient.patientDateBirth}"
                                                                         pattern="${AppConsts.DEFAULT_DATE_FORMAT}"/>
                                                             </td>
-                                                            <td>
+                                                            <td style="vertical-align:middle;">
                                                                 <iais:code code="${patient.patientNationality}"/>
                                                             </td>
-                                                            <td>
+                                                            <td style="vertical-align:middle;">
                                                                 <fmt:formatDate
                                                                         value="${patient.cycleStartDate}"
                                                                         pattern="${AppConsts.DEFAULT_DATE_FORMAT}"/>
                                                             </td>
-                                                            <td>
+                                                            <td style="vertical-align:middle;">
                                                                 <button type="button" onclick="fullDetailsView('${patient.patientCode}')" class="btn btn-default btn-sm">
                                                                     View Full Details
                                                                 </button>

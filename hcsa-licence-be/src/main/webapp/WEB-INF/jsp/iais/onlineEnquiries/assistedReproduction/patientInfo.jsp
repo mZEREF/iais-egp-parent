@@ -32,7 +32,9 @@
                 <tr>
                     <td style="vertical-align:middle;">
                         <c:forEach var="arCentre" items="${patientInfoDto.patient.arCentres}">
-                            <c:out value="${arCentre.getPremiseLabel()}"/><br>
+                            <c:if test="${not empty arCentre}">
+                                <c:out value="${arCentre.getPremiseLabel()}"/><br>
+                            </c:if>
                         </c:forEach>
                     </td>
                     <td style="vertical-align:middle;">

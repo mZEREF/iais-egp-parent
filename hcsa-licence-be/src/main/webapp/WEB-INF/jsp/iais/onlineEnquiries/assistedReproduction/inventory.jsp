@@ -171,22 +171,22 @@
                                                        items="${transactionResult.rows}"
                                                        varStatus="status">
                                                 <tr>
-                                                    <td>
+                                                    <td style="vertical-align:middle;">
                                                         <c:out value="${transaction.arCentre}"/>
                                                     </td>
-                                                    <td>
+                                                    <td style="vertical-align:middle;">
                                                         <a href="#" onclick="doStageSearch('${transaction.cycleId}','${transaction.submissionIdNo}')">${transaction.submissionIdNo}
                                                         </a>
                                                     </td>
-                                                    <td>
+                                                    <td style="vertical-align:middle;">
                                                         <fmt:formatDate
                                                                 value="${transaction.submissionDate}"
                                                                 pattern="${AppConsts.DEFAULT_DATE_FORMAT}"/>
                                                     </td>
-                                                    <td>
+                                                    <td style="vertical-align:middle;">
                                                         <iais:code code="${transaction.stage}"/>
                                                     </td>
-                                                    <td>
+                                                    <td style="vertical-align:middle;">
                                                         <c:out value="${transaction.cycle}"/>
                                                     </td>
                                                     <td style="vertical-align:middle;">

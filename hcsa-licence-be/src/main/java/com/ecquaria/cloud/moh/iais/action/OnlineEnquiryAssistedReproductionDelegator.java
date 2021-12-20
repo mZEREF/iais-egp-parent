@@ -1002,7 +1002,7 @@ public class OnlineEnquiryAssistedReproductionDelegator {
                 int currentFrozenSperms=0;
                 for (PremisesDto premisesDto:patientInfoDto.getPatient().getArCentres()
                 ) {
-                    try {
+                    if(premisesDto!=null){
                         PatientInventoryDto patientInventoryDto=assistedReproductionService.patientInventoryByCode(patientInfoDto.getPatient().getPatientCode(),premisesDto.getHciCode());
                         currentFrozenOocytes+=patientInventoryDto.getCurrentFrozenOocytes();
                         currentThawedOocytes+=patientInventoryDto.getCurrentThawedOocytes();
@@ -1012,8 +1012,6 @@ public class OnlineEnquiryAssistedReproductionDelegator {
                         currentFreshEmbryos+=patientInventoryDto.getCurrentFreshEmbryos();
                         currentFrozenSperms+=patientInventoryDto.getCurrentFrozenSperms();
                         patientInventoryDtos.put(premisesDto.getPremiseLabel(),patientInventoryDto);
-                    }catch (Exception e){
-                        log.error(e.getMessage(),e);
                     }
                 }
                 patientInventoryDtoTotal.setCurrentThawedEmbryos(currentThawedEmbryos);

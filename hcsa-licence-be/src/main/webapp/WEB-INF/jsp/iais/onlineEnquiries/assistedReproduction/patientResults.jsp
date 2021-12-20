@@ -298,20 +298,20 @@
                                                                varStatus="status">
                                                         <tr>
 
-                                                            <td>
+                                                            <td style="vertical-align:middle;">
                                                                 <c:out value="${submission.arCentre}"/>
                                                             </td>
-                                                            <td>
+                                                            <td style="vertical-align:middle;">
                                                                 <a href="#" onclick="fullDetailsViewBySubId('${submission.submissionId}')">${submission.submissionIdNo}
                                                                 </a>
                                                             </td>
-                                                            <td>
+                                                            <td style="vertical-align:middle;">
                                                                 <c:out value="${submission.submissionType}"/>
                                                             </td>
-                                                            <td>
+                                                            <td style="vertical-align:middle;">
                                                                 <iais:code code="${submission.submissionSubtype}"/>
                                                             </td>
-                                                            <td>
+                                                            <td style="vertical-align:middle;">
                                                                 <fmt:formatDate
                                                                         value="${submission.submissionDate}"
                                                                         pattern="${AppConsts.DEFAULT_DATE_FORMAT}"/>
@@ -440,14 +440,14 @@
 
                         html += '<tr style = "color : ' + color + ';">';
 
-                        html += '<td><p class="visible-xs visible-sm table-row-title">AR/IUI/EFO</p><p>' + res.rows[i].dsType + '<p></td>' +
-                            '<td><p class="visible-xs visible-sm table-row-title">AR Treatment Cycle Type</p><p>' + res.rows[i].arTreatment + '<p></td>' +
-                            '<td><p class="visible-xs visible-sm table-row-title">AR Centre</p><p>' + res.rows[i].arCentre + '<p></td>';
-                        html += '<td><p class="visible-xs visible-sm table-row-title">Cycle Start Date</p><p><a href="#" onclick="javascript:fullStagesView(' + "'" + res.rows[i].cycleId + "'" + ');">' + res.rows[i].cycleStartDateStr + '</a></p></td>';
+                        html += '<td style="vertical-align:middle;"><p class="visible-xs visible-sm table-row-title">AR/IUI/EFO</p><p>' + res.rows[i].dsType + '<p></td>' +
+                            '<td style="vertical-align:middle;"><p class="visible-xs visible-sm table-row-title">AR Treatment Cycle Type</p><p>' + res.rows[i].arTreatment + '<p></td>' +
+                            '<td style="vertical-align:middle;"><p class="visible-xs visible-sm table-row-title">AR Centre</p><p>' + res.rows[i].arCentre + '<p></td>';
+                        html += '<td style="vertical-align:middle;"><p class="visible-xs visible-sm table-row-title">Cycle Start Date</p><p><a href="#" onclick="javascript:fullStagesView(' + "'" + res.rows[i].cycleId + "'" + ');">' + res.rows[i].cycleStartDateStr + '</a></p></td>';
 
                         html += '</p></td>' +
-                            '<td><p class="visible-xs visible-sm table-row-title">Co-funding Claimed</p><p>' + res.rows[i].coFunding + '</p></td>' +
-                            '<td><p class="visible-xs visible-sm table-row-title">Status</p><p>' + res.rows[i].status + '</p></td>' +
+                            '<td style="vertical-align:middle;"><p class="visible-xs visible-sm table-row-title">Co-funding Claimed</p><p>' + res.rows[i].coFunding + '</p></td>' +
+                            '<td style="vertical-align:middle;"><p class="visible-xs visible-sm table-row-title">Status</p><p>' + res.rows[i].status + '</p></td>' +
                             '</tr>';
                     }
                     html += '</tbody></table></div></td></tr>';
