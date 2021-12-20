@@ -29,30 +29,42 @@
             </tr>
             </thead>
             <tbody class="form-horizontal">
-                <tr>
-                    <td style="vertical-align:middle;">
-                        <c:forEach var="arCentre" items="${patientInfoDto.patient.arCentres}">
-                            <c:if test="${not empty arCentre}">
-                                <c:out value="${arCentre.getPremiseLabel()}"/><br>
-                            </c:if>
-                        </c:forEach>
-                    </td>
-                    <td style="vertical-align:middle;">
-                        <c:out value="${patientInfoDto.patient.name}"/>
-                    </td>
-                    <td style="vertical-align:middle;">
-                        <iais:code code="${patientInfoDto.patient.idType}"/>
-                    </td>
-                    <td style="vertical-align:middle;">
-                        <c:out value="${patientInfoDto.patient.idNumber}"/>
-                    </td>
-                    <td style="vertical-align:middle;">
-                        <c:out value="${patientInfoDto.patient.birthDate}"/>
-                    </td>
-                    <td style="vertical-align:middle;">
-                        <iais:code code="${patientInfoDto.patient.nationality}"/>
-                    </td>
-                </tr>
+                <c:choose>
+                    <c:when test="${empty patientInfoDto}">
+                        <tr>
+                            <td colspan="15">
+                                <iais:message key="GENERAL_ACK018"
+                                              escape="true"/>
+                            </td>
+                        </tr>
+                    </c:when>
+                    <c:otherwise>
+                        <tr>
+                            <td style="vertical-align:middle;">
+                                <c:forEach var="arCentre" items="${patientInfoDto.patient.arCentres}">
+                                    <c:if test="${not empty arCentre}">
+                                        <c:out value="${arCentre.getPremiseLabel()}"/><br>
+                                    </c:if>
+                                </c:forEach>
+                            </td>
+                            <td style="vertical-align:middle;">
+                                <c:out value="${patientInfoDto.patient.name}"/>
+                            </td>
+                            <td style="vertical-align:middle;">
+                                <iais:code code="${patientInfoDto.patient.idType}"/>
+                            </td>
+                            <td style="vertical-align:middle;">
+                                <c:out value="${patientInfoDto.patient.idNumber}"/>
+                            </td>
+                            <td style="vertical-align:middle;">
+                                <c:out value="${patientInfoDto.patient.birthDate}"/>
+                            </td>
+                            <td style="vertical-align:middle;">
+                                <iais:code code="${patientInfoDto.patient.nationality}"/>
+                            </td>
+                        </tr>
+                    </c:otherwise>
+                </c:choose>
             </tbody>
         </table>
     </div>

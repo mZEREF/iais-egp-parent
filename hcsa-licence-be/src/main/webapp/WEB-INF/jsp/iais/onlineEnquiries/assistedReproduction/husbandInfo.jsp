@@ -28,26 +28,38 @@
             </tr>
             </thead>
             <tbody class="form-horizontal">
-            <tr>
+            <c:choose>
+                <c:when test="${empty patientInfoDto}">
+                    <tr>
+                        <td colspan="15">
+                            <iais:message key="GENERAL_ACK018"
+                                          escape="true"/>
+                        </td>
+                    </tr>
+                </c:when>
+                <c:otherwise>
+                    <tr>
 
-                <td style="vertical-align:middle;">
+                        <td style="vertical-align:middle;">
 
-                    <p style="width: 165px;"><c:out value="${patientInfoDto.husband.name}"/>
-                    </p>
-                </td>
-                <td style="vertical-align:middle;">
-                    <iais:code code="${patientInfoDto.husband.idType}"/>
-                </td>
-                <td style="vertical-align:middle;">
-                    <c:out value="${patientInfoDto.husband.idNumber}"/>
-                </td>
-                <td style="vertical-align:middle;">
-                    <c:out value="${patientInfoDto.husband.birthDate}"/>
-                </td>
-                <td style="vertical-align:middle;">
-                    <iais:code code="${patientInfoDto.husband.nationality}"/>
-                </td>
-            </tr>
+                            <p style="width: 165px;"><c:out value="${patientInfoDto.husband.name}"/>
+                            </p>
+                        </td>
+                        <td style="vertical-align:middle;">
+                            <iais:code code="${patientInfoDto.husband.idType}"/>
+                        </td>
+                        <td style="vertical-align:middle;">
+                            <c:out value="${patientInfoDto.husband.idNumber}"/>
+                        </td>
+                        <td style="vertical-align:middle;">
+                            <c:out value="${patientInfoDto.husband.birthDate}"/>
+                        </td>
+                        <td style="vertical-align:middle;">
+                            <iais:code code="${patientInfoDto.husband.nationality}"/>
+                        </td>
+                    </tr>
+                </c:otherwise>
+            </c:choose>
             </tbody>
         </table>
     </div>

@@ -1052,8 +1052,9 @@ public class OnlineEnquiryAssistedReproductionDelegator {
         ParamUtil.setSessionAttr(request,"arViewFull",1);
         String action = ParamUtil.getRequestString(request, IaisEGPConstant.CRUD_ACTION_TYPE);
         if("searchInv".equals(action)){
+            ArEnquiryTransactionHistoryFilterDto arDto=setArEnquiryTransactionHistoryFilterDto(request);
+
             if(patientInfoDto!=null){
-                ArEnquiryTransactionHistoryFilterDto arDto=setArEnquiryTransactionHistoryFilterDto(request);
 
                 Map<String,Object> filter=IaisCommonUtils.genNewHashMap();
                 filter.put("patientCode", patientInfoDto.getPatient().getPatientCode());

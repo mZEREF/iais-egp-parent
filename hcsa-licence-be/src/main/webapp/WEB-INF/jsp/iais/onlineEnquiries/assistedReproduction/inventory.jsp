@@ -15,37 +15,49 @@
             </tr>
             </thead>
             <tbody class="form-horizontal">
-            <c:forEach var="patientInventory"
-                       items="${patientInventoryDtos}"
-                       varStatus="status">
-                <tr>
-                    <td style="vertical-align:middle;">
-                        <c:out value="${patientInventory.key}"/>
-                    </td>
-                    <td style="vertical-align:middle;">
-                        <c:out value="${patientInventory.value.currentFrozenOocytes}"/>
-                    </td>
-                    <td style="vertical-align:middle;">
-                        <c:out value="${patientInventory.value.currentThawedOocytes}"/>
-                    </td>
-                    <td style="vertical-align:middle;">
-                        <c:out value="${patientInventory.value.currentFreshOocytes}"/>
-                    </td>
-                    <td style="vertical-align:middle;">
-                        <c:out value="${patientInventory.value.currentFrozenEmbryos}"/>
-                    </td>
-                    <td style="vertical-align:middle;">
-                        <c:out value="${patientInventory.value.currentThawedEmbryos}"/>
-                    </td>
-                    <td style="vertical-align:middle;">
-                        <c:out value="${patientInventory.value.currentFreshEmbryos}"/>
-                    </td>
-                    <td style="vertical-align:middle;">
-                        <c:out value="${patientInventory.value.currentFrozenSperms}"/>
-                    </td>
+                <c:choose>
+                    <c:when test="${empty patientInventoryDtos}">
+                        <tr>
+                            <td colspan="15">
+                                <iais:message key="GENERAL_ACK018"
+                                              escape="true"/>
+                            </td>
+                        </tr>
+                    </c:when>
+                    <c:otherwise>
+                        <c:forEach var="patientInventory"
+                                   items="${patientInventoryDtos}"
+                                   varStatus="status">
+                            <tr>
+                                <td style="vertical-align:middle;">
+                                    <c:out value="${patientInventory.key}"/>
+                                </td>
+                                <td style="vertical-align:middle;">
+                                    <c:out value="${patientInventory.value.currentFrozenOocytes}"/>
+                                </td>
+                                <td style="vertical-align:middle;">
+                                    <c:out value="${patientInventory.value.currentThawedOocytes}"/>
+                                </td>
+                                <td style="vertical-align:middle;">
+                                    <c:out value="${patientInventory.value.currentFreshOocytes}"/>
+                                </td>
+                                <td style="vertical-align:middle;">
+                                    <c:out value="${patientInventory.value.currentFrozenEmbryos}"/>
+                                </td>
+                                <td style="vertical-align:middle;">
+                                    <c:out value="${patientInventory.value.currentThawedEmbryos}"/>
+                                </td>
+                                <td style="vertical-align:middle;">
+                                    <c:out value="${patientInventory.value.currentFreshEmbryos}"/>
+                                </td>
+                                <td style="vertical-align:middle;">
+                                    <c:out value="${patientInventory.value.currentFrozenSperms}"/>
+                                </td>
 
-                </tr>
-            </c:forEach>
+                            </tr>
+                        </c:forEach>
+                    </c:otherwise>
+                </c:choose>
             </tbody>
         </table>
     </div>
@@ -158,7 +170,7 @@
                                     </thead>
                                     <tbody class="form-horizontal">
                                     <c:choose>
-                                        <c:when test="${empty transactionResult.rows}">
+                                        <c:when test="${empty transactionResult or empty transactionResult.rows}">
                                             <tr>
                                                 <td colspan="15">
                                                     <iais:message key="GENERAL_ACK018"
