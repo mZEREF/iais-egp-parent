@@ -216,6 +216,10 @@ public final class MasterCodeUtil {
 
     public static final  String DONOR_RELATION_TO_PATIENT           ="9C2B3AFF-55A8-445B-A759-0B806FEB3317";
 
+    //Voluntary Sterilization Overview
+    public static final String VSS_RESIDENCE_STATUS                 ="FFE0EB7A-86AE-4B62-85B1-8493D6EEF9B3";
+    public static final String VSS_MARITAL_STATUS                   ="6B61A48F-BF8B-48AD-8FAD-20DBAD439ED1";
+    public static final String VSS_EDUCATION_LEVEL                  ="7A9A6EC2-96FE-4AF9-858F-6F6830B018D1";
     /**
      * @description: refresh the master codes into cache
      *
