@@ -1,5 +1,5 @@
 <c:set var="arTreatmentSubsidiesStageDto" value="${arSuperDataSubmissionDto.arTreatmentSubsidiesStageDto}"/>
-<c:set var="headingSign" value="${isPrint?'':'completed'}"/>
+<c:set var="headingSign" value="${isPrint or !isNewDataSubmission ?'':'completed'}"/>
 <div class="panel panel-default">
     <div class="panel-heading ${headingSign} ">
         <h4 class="panel-title">

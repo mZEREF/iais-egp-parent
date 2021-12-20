@@ -62,7 +62,7 @@
                     <iais:row>
                         <iais:field width="6" value="No. Live Birth (Total)" cssClass="col-md-6"/>
                         <iais:value width="6" cssClass="col-md-6">
-                            <span id="totalLiveBirthNum">${pregnancyOutcomeStageDto.maleLiveBirthNum + pregnancyOutcomeStageDto.femaleLiveBirthNum}</span>
+                            <span id="totalLiveBirthNum">${totalLiveBirthNum}</span>
                             <span id="error_totalLiveBirthNum" name="iaisErrorMsg" class="error-msg"></span>
                         </iais:value>
                     </iais:row>
@@ -93,45 +93,11 @@
                 <div id="wasSelFoeReduCarryOutDiv">
                     <iais:row>
                         <iais:field width="6" value="Was Selective foetal Reduction Carried Out?" cssClass="col-md-6"/>
-                        <div class="col-md-6">
-                            <div class="form-check col-12">
-                                <input class="form-check-input"
-                                       type="radio"
-                                       name="wasSelFoeReduCarryOut"
-                                       value="0"
-                                       id="wasSelFoeReduCarryOutYes"
-                                       <c:if test="${pregnancyOutcomeStageDto.wasSelFoeReduCarryOut == 0}">checked</c:if>
-                                       aria-invalid="false">
-                                <label class="form-check-label"
-                                       for="wasSelFoeReduCarryOutYes"><span
-                                        class="check-circle"></span>Yes</label>
-                            </div>
-                            <div class="form-check col-12">
-                                <input class="form-check-input"
-                                       type="radio"
-                                       name="wasSelFoeReduCarryOut"
-                                       value="1"
-                                       id="wasSelFoeReduCarryOutNo"
-                                       <c:if test="${pregnancyOutcomeStageDto.wasSelFoeReduCarryOut == 1}">checked</c:if>
-                                       aria-invalid="false">
-                                <label class="form-check-label"
-                                       for="wasSelFoeReduCarryOutNo"><span
-                                        class="check-circle"></span>No</label>
-                            </div>
-                            <div class="form-check col-12">
-                                <input class="form-check-input"
-                                       type="radio"
-                                       name="wasSelFoeReduCarryOut"
-                                       value="2"
-                                       id="wasSelFoeReduCarryOutUnknown"
-                                       <c:if test="${pregnancyOutcomeStageDto.wasSelFoeReduCarryOut == 2}">checked</c:if>
-                                       aria-invalid="false">
-                                <label class="form-check-label"
-                                       for="wasSelFoeReduCarryOutUnknown"><span
-                                        class="check-circle"></span>Unknown</label>
-                            </div>
-                            <span id="error_wasSelFoeReduCarryOut" name="iaisErrorMsg" class="error-msg"></span>
-                        </div>
+                        <iais:value width="6" cssClass="col-md-6">
+                            <iais:select name="wasSelFoeReduCarryOut" id="wasSelFoeReduCarryOut"
+                                         options="wasSelFoeReduCarryOutOptions"
+                                         value="${pregnancyOutcomeStageDto.wasSelFoeReduCarryOut}"/>
+                        </iais:value>
                     </iais:row>
                 </div>
                 <div id="deliverySection">

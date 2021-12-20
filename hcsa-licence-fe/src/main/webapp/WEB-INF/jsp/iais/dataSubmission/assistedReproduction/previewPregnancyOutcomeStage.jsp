@@ -25,6 +25,7 @@
                     </div>
                 </div>
                 <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                    <c:set var="isNewDataSubmission" value="true"/>
                     <%@include file="section/previewPregnancyOutcomeStageDetail.jsp" %>
                     <%@include file="common/arDeclaration.jsp" %>
                 </div>

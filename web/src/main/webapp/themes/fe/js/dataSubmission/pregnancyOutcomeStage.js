@@ -65,9 +65,9 @@ function firstUltrasoundOrderShowChangeFunction() {
         $wasSelFoeReduCarryOutDiv.show();
     } else {
         $wasSelFoeReduCarryOutDiv.hide();
-        let $wasSelFoeReduCarryOutNo = $('#wasSelFoeReduCarryOutNo');
-        $wasSelFoeReduCarryOutNo.attr('checked', true);
-        $wasSelFoeReduCarryOutNo.prop('checked', true);
+        let $wasSelFoeReduCarryOut = $('#wasSelFoeReduCarryOut');
+        $wasSelFoeReduCarryOut.val("1");
+        $wasSelFoeReduCarryOut.niceSelect("update");
     }
 }
 
