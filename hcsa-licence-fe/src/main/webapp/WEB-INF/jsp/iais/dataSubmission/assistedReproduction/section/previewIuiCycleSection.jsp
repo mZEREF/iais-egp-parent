@@ -11,6 +11,7 @@
     <div class="panel-body">
       <div class="panel-main-content form-horizontal">
         <c:set var="iuiCycleStageDto" value="${arSuperDataSubmissionDto.iuiCycleStageDto}" />
+        <c:set var="donorDtos" value="${iuiCycleStageDto.donorDtos}"/>
         <%@include file="patientCommon.jsp"%>
         <iais:row>
           <iais:field value="Premises where IUI is Performed" mandatory="false"/>
@@ -82,8 +83,11 @@
           </iais:value>
         </iais:row>
       </div>
+      <c:if test="${empty donorDtos}">
+        <%@include file="../common/patientInventoryTable.jsp" %>
+      </c:if>
     </div>
   </div>
 </div>
-<c:set var="donorDtos" value="${iuiCycleStageDto.donorDtos}"/>
+<c:set var="donorFrom" value="iui"/>
 <%@include file="previewDonorSection.jsp"%>

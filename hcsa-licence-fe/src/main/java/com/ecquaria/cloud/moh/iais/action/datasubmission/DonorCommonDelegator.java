@@ -127,6 +127,7 @@ public abstract class DonorCommonDelegator extends CommonDelegator{
         List<DonorSampleAgeDto> ages = donorSampleDto.getDonorSampleAgeDtos();
         arDonorDto.setDonorSampleAgeDtos(ages);
         arDonorDto.setDonorSampleKey(donorSampleDto.getSampleKey());
+        arDonorDto.setDonorSampleId(donorSampleDto.getId());
         if(IaisCommonUtils.isNotEmpty(ages)){
             arDonorDto.setResetDonor(AppConsts.NO);
             setAgeList(arDonorDto);

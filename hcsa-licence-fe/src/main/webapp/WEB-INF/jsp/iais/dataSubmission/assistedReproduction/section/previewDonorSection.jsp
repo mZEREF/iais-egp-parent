@@ -1,4 +1,4 @@
-<div class="panel panel-default" style="${arCycleStageDto.usedDonorOocyte ?  '' : 'display: none;'}">
+<div class="panel panel-default" style="${!empty donorDtos ?  '' : 'display: none;'}">
      <div class="panel-heading ${headingSign}">
          <h4  class="panel-title" >
         <a href="#donorDtoDetails" data-toggle="collapse"  >
@@ -103,6 +103,9 @@
                  <h3></h3>
              </div>
         </c:forEach>
+             <c:if test="${!empty donorDtos}">
+             <%@include file="../common/patientInventoryTable.jsp" %>
+             </c:if>
      </div>
      </div>
 </div>
