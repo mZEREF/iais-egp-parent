@@ -4,6 +4,7 @@ import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.CycleDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DonorSampleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -58,6 +59,15 @@ public class SubmitDonorDelegator extends CommonDelegator {
         donorSampleDto =  ControllerHelper.get(bpc.request,donorSampleDto);
         arSuperDataSubmissionDto.setDonorSampleDto(donorSampleDto);
         DataSubmissionHelper.setCurrentArDataSubmission(arSuperDataSubmissionDto,bpc.request);
+        //RFC
+        String amendReason = ParamUtil.getString(bpc.request, "amendReason");
+        String amendReasonOther = ParamUtil.getString(bpc.request, "amendReasonOther");
+        log.info(StringUtil.changeForLog("submitDonorDelegator The pageAction  amendReason is -->:"+amendReason));
+        log.info(StringUtil.changeForLog("submitDonorDelegator The pageAction  amendReasonOther is -->:"+amendReasonOther));
+        DataSubmissionDto dataSubmissionDto = arSuperDataSubmissionDto.getDataSubmissionDto();
+        dataSubmissionDto.setAmendReason(amendReason);
+        dataSubmissionDto.setAmendReasonOther(amendReasonOther);
+
         String actionType = ParamUtil.getString(bpc.request, DataSubmissionConstant.CRUD_TYPE);
         if (ACTION_TYPE_CONFIRM.equals(actionType)) {
             validatePageData(bpc.request, donorSampleDto, "save", ACTION_TYPE_CONFIRM);

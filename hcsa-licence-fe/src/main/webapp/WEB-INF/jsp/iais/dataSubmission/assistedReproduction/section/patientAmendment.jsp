@@ -12,12 +12,21 @@
                 <iais:row>
                     <iais:field width="5" value="Reason for Amendment" id="amendReasonLabel" mandatory="true"/>
                     <iais:value width="7" cssClass="col-md-7">
-                        <iais:select name="amendReason" firstOption="Please Select" codeCategory="DATA_SUBMISSION_PATIENT_AMENDMENT"
-                                     value="${dataSubmission.amendReason}" cssClass="amendReasonSel"
-                                     onchange="toggleOnSelect(this, 'PTA_003', 'amendReasonOtherDiv')"/>
+                        <c:choose>
+                            <c:when test="${dataSubmission.submissionType == 'AR_TP003'}">
+                                <iais:select name="amendReason" firstOption="Please Select" codeCategory="DATA_SUBMISSION_PATIENT_AMENDMENT"
+                                             value="${dataSubmission.amendReason}" cssClass="amendReasonSel"
+                                             onchange="toggleOnSelect(this, 'PTA_003', 'amendReasonOtherDiv')"/>
+                            </c:when>
+                            <c:otherwise>
+                                <iais:select name="amendReason" firstOption="Please Select" codeCategory="DATA_SUBMISSION_DONOR_SMAPLE_AMENDMENT"
+                                             value="${dataSubmission.amendReason}" cssClass="amendReasonSel"
+                                             onchange="toggleOnSelect(this, 'DSA_002', 'amendReasonOtherDiv')"/>
+                            </c:otherwise>
+                        </c:choose>
                     </iais:value>
                 </iais:row>
-                <div class="form-group" id="amendReasonOtherDiv" style="<c:if test="${dataSubmission.amendReason ne 'PTA_003'}">display:none</c:if>">
+                <div class="form-group" id="amendReasonOtherDiv" style="<c:if test="${dataSubmission.amendReason ne 'PTA_003' && dataSubmission.amendReason ne 'DSA_002'}">display:none</c:if>">
                     <iais:field width="5" value="Reason for Amendment (Others)" mandatory="true"/>
                     <iais:value width="7" cssClass="col-md-7">
                         <iais:input maxLength="50" type="text" name="amendReasonOther" id="amendReasonOther"
