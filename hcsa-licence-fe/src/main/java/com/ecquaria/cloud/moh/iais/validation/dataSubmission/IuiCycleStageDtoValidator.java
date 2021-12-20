@@ -70,7 +70,7 @@ public class IuiCycleStageDtoValidator implements CustomizeValidator {
                 if(usedVialsOfSperm > allFrozen) {
                     Map<String,String> stringStringMap = IaisCommonUtils.genNewHashMap(3);
                     stringStringMap.put("field1","");
-                    stringStringMap.put("field2","Cannot be greater than 'How many vials of sperm were extracted?");
+                    stringStringMap.put("field2","How many vials of sperm were extracted?");
                     stringStringMap.put("field3","frozen sperm tagged to patient");
                     errMap.put("usedVialsOfSperm", MessageUtil.getMessageDesc("DS_ERR011",stringStringMap).trim());
                 }
