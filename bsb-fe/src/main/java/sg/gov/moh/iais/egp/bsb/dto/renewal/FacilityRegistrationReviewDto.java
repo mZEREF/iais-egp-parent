@@ -14,7 +14,7 @@ import javax.servlet.http.HttpServletRequest;
  * @date : 2021/12/11
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class ReviewDto extends ValidatableNodeValue {
+public class FacilityRegistrationReviewDto extends ValidatableNodeValue {
     private String remarks;
     private String approvedFacCertifier;
     private String reason;

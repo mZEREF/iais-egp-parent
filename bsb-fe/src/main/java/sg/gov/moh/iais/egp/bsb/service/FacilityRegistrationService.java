@@ -722,6 +722,7 @@ public class FacilityRegistrationService {
     }
 
     /**
+     * only use to 'rfc' module
      * rfc compare
      */
     public List<DiffContent> compareTwoDto(FacilityRegisterDto oldFacilityRegisterDto, FacilityRegisterDto newFacilityRegisterDto){

@@ -11,6 +11,7 @@ import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
 import sg.gov.moh.iais.egp.bsb.dto.ValidationResultDto;
 
 import sg.gov.moh.iais.egp.bsb.dto.register.afc.*;
+import sg.gov.moh.iais.egp.bsb.dto.renewal.FacilityCertifierRegistrationReviewDto;
 
 
 @FeignClient(value = "bsb-fe-api", configuration = FeignClientsConfiguration.class, contextId = "cerReg")
@@ -37,10 +38,16 @@ public interface FacCertifierRegisterClient {
     ResponseDto<FacilityCertifierRegisterDto> getCertifierRegistrationAppData(@PathVariable("appId") String appId);
 
     /*******************RFC********************/
-
     @PostMapping(path = "/register/faCer/rfc/amendment/saveFaCer", consumes = MediaType.APPLICATION_JSON_VALUE, produces =MediaType.APPLICATION_JSON_VALUE)
     ResponseDto<String> saveAmendmentFacCertifier(@RequestBody FacilityCertifierRegisterDto dto);
 
     @GetMapping(path = "/register/faCer/rfc/approval/{approvalId}", produces =MediaType.APPLICATION_JSON_VALUE)
     ResponseDto<FacilityCertifierRegisterDto> getCertifierRegistrationAppDataByApprovalId(@PathVariable("approvalId") String approvalId);
+
+    /*******************RENEWAL********************/
+    @GetMapping(path = "/register/faCer/renewal/approval/{approvalId}", produces =MediaType.APPLICATION_JSON_VALUE)
+    ResponseDto<FacilityCertifierRegisterDto> getRenewalFacCertifierRegisterAppByApprovalId(@PathVariable("approvalId") String approvalId);
+
+    @PostMapping(path = "/register/faCer/renewal/validate/review", consumes = MediaType.APPLICATION_JSON_VALUE, produces =MediaType.APPLICATION_JSON_VALUE)
+    ValidationResultDto validateRenewalFacCerRegReview(@RequestBody FacilityCertifierRegistrationReviewDto dto);
 }

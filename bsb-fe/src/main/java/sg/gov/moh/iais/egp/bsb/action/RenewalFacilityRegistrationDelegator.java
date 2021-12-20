@@ -25,9 +25,8 @@ import sg.gov.moh.iais.egp.bsb.dto.file.FileRepoSyncDto;
 import sg.gov.moh.iais.egp.bsb.dto.file.NewDocInfo;
 import sg.gov.moh.iais.egp.bsb.dto.file.NewFileSyncDto;
 import sg.gov.moh.iais.egp.bsb.dto.register.facility.*;
-import sg.gov.moh.iais.egp.bsb.dto.renewal.ReviewDto;
+import sg.gov.moh.iais.egp.bsb.dto.renewal.FacilityRegistrationReviewDto;
 import sg.gov.moh.iais.egp.bsb.service.FacilityRegistrationService;
-import sg.gov.moh.iais.egp.bsb.util.LogUtil;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
@@ -73,7 +72,7 @@ public class RenewalFacilityRegistrationDelegator {
         String maskedAppId = request.getParameter(KEY_EDIT_APP_ID);
         if (StringUtils.hasLength(maskedAppId)) {
             if (log.isInfoEnabled()) {
-                log.info("masked app ID: {}", LogUtil.escapeCrlf(maskedAppId));
+                log.info("masked app ID: {}", org.apache.commons.lang.StringUtils.normalizeSpace(maskedAppId));
             }
             boolean failRetrieveEditData = true;
             String appId = MaskUtil.unMaskValue(KEY_EDIT_APP_ID, maskedAppId);
@@ -81,11 +80,12 @@ public class RenewalFacilityRegistrationDelegator {
                 ResponseDto<FacilityRegisterDto> resultDto = facRegClient.getRenewalFacRegAppDataByApprovalId(appId);
                 if (resultDto.ok()) {
                     failRetrieveEditData = false;
-                    NodeGroup viewApprovalRoot = resultDto.getEntity().toRenewalReviewRootGroup(KEY_RENEWAL_VIEW_APPROVAL_ROOT_NODE_GROUP);
-                    NodeGroup facRegRoot = resultDto.getEntity().toRenewalFacRegRootGroup(KEY_ROOT_NODE_GROUP);
+                    FacilityRegisterDto facilityRegisterDto = resultDto.getEntity();
+                    NodeGroup viewApprovalRoot = facilityRegisterDto.toRenewalReviewRootGroup(KEY_RENEWAL_VIEW_APPROVAL_ROOT_NODE_GROUP);
+                    NodeGroup facRegRoot = facilityRegisterDto.toRenewalFacRegRootGroup(KEY_ROOT_NODE_GROUP);
                     ParamUtil.setSessionAttr(request, KEY_RENEWAL_VIEW_APPROVAL_ROOT_NODE_GROUP, viewApprovalRoot);
                     ParamUtil.setSessionAttr(request, KEY_ROOT_NODE_GROUP, facRegRoot);
-                    ParamUtil.setSessionAttr(request, KEY_INSTRUCTION_INFO, resultDto.getEntity().getInstructionDto());
+                    ParamUtil.setSessionAttr(request, KEY_INSTRUCTION_INFO, facilityRegisterDto.getInstructionDto());
                 }
             }
             if (failRetrieveEditData) {
@@ -102,13 +102,13 @@ public class RenewalFacilityRegistrationDelegator {
         HttpServletRequest request = bpc.request;
         NodeGroup viewApprovalRoot = (NodeGroup) ParamUtil.getSessionAttr(request, KEY_RENEWAL_VIEW_APPROVAL_ROOT_NODE_GROUP);
         SimpleNode reviewNode = (SimpleNode) viewApprovalRoot.at(NODE_NAME_REVIEW);
-        ReviewDto reviewDto = (ReviewDto) reviewNode.getValue();
+        FacilityRegistrationReviewDto facilityRegistrationReviewDto = (FacilityRegistrationReviewDto) reviewNode.getValue();
         Boolean needShowError = (Boolean) ParamUtil.getRequestAttr(request, KEY_SHOW_ERROR_SWITCH);
         if (needShowError == Boolean.TRUE) {
-            ParamUtil.setRequestAttr(request, KEY_VALIDATION_ERRORS, reviewDto.retrieveValidationResult());
+            ParamUtil.setRequestAttr(request, KEY_VALIDATION_ERRORS, facilityRegistrationReviewDto.retrieveValidationResult());
         }
         Nodes.needValidation(viewApprovalRoot, NODE_NAME_REVIEW);
-        ParamUtil.setRequestAttr(request, NODE_NAME_REVIEW, reviewDto);
+        ParamUtil.setRequestAttr(request, NODE_NAME_REVIEW, facilityRegistrationReviewDto);
 
         NodeGroup facRegRoot = (NodeGroup) ParamUtil.getSessionAttr(request, KEY_ROOT_NODE_GROUP);
         ParamUtil.setRequestAttr(request, NODE_NAME_FAC_PROFILE, ((SimpleNode)facRegRoot.at(NODE_NAME_FAC_INFO + viewApprovalRoot.getPathSeparator() + NODE_NAME_FAC_PROFILE)).getValue());
@@ -195,8 +195,8 @@ public class RenewalFacilityRegistrationDelegator {
         NodeGroup viewApprovalRoot = (NodeGroup) ParamUtil.getSessionAttr(request, KEY_RENEWAL_VIEW_APPROVAL_ROOT_NODE_GROUP);
         NodeGroup facRegRoot = (NodeGroup) ParamUtil.getSessionAttr(request, KEY_ROOT_NODE_GROUP);
         SimpleNode reviewNode = (SimpleNode) viewApprovalRoot.at(NODE_NAME_REVIEW);
-        ReviewDto reviewDto = (ReviewDto) reviewNode.getValue();
-        reviewDto.reqObjMapping(request);
+        FacilityRegistrationReviewDto facilityRegistrationReviewDto = (FacilityRegistrationReviewDto) reviewNode.getValue();
+        facilityRegistrationReviewDto.reqObjMapping(request);
 
         String actionType = ParamUtil.getString(request, KEY_ACTION_TYPE);
         String actionValue = ParamUtil.getString(request, KEY_ACTION_VALUE);
@@ -230,7 +230,7 @@ public class RenewalFacilityRegistrationDelegator {
                     AuditTrailDto auditTrailDto = (AuditTrailDto) ParamUtil.getSessionAttr(request, AuditTrailConsts.SESSION_ATTR_PARAM_NAME);
                     finalAllDataDto.setAuditTrailDto(auditTrailDto);
                     ResponseDto<String> responseDto = facRegClient.saveRenewalRegisteredFacility(finalAllDataDto);
-                    log.info("save new facility response: {}", responseDto);
+                    log.info("save renewal facility response: {}", org.apache.commons.lang.StringUtils.normalizeSpace(responseDto.toString()));
 
                     try {
                         // sync files to BE file-repo (save new added files, delete useless files)

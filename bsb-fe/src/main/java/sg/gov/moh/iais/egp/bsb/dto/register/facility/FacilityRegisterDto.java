@@ -11,7 +11,7 @@ import sg.gov.moh.iais.egp.bsb.common.node.simple.SimpleNode;
 import sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants;
 import sg.gov.moh.iais.egp.bsb.dto.file.DocRecordInfo;
 import sg.gov.moh.iais.egp.bsb.dto.renewal.InstructionDto;
-import sg.gov.moh.iais.egp.bsb.dto.renewal.ReviewDto;
+import sg.gov.moh.iais.egp.bsb.dto.renewal.FacilityRegistrationReviewDto;
 import sg.gov.moh.iais.egp.bsb.util.CollectionUtils;
 
 import java.io.Serializable;
@@ -37,7 +37,7 @@ public class FacilityRegisterDto implements Serializable{
 
     //renewal special dto
     private InstructionDto instructionDto;
-    private ReviewDto reviewDto;
+    private FacilityRegistrationReviewDto facilityRegistrationReviewDto;
 
     /** Write the facRegRoot NodeGroup into a DTO, then send the DTO to save the data. */
     public static FacilityRegisterDto from(NodeGroup facRegRoot) {
@@ -119,7 +119,7 @@ public class FacilityRegisterDto implements Serializable{
 
     public NodeGroup toRenewalReviewRootGroup(String name){
         Node instructionNode = new Node(NODE_NAME_INSTRUCTION, new Node[0]);
-        SimpleNode reviewNode = new SimpleNode(reviewDto, NODE_NAME_REVIEW, new Node[]{instructionNode});
+        SimpleNode reviewNode = new SimpleNode(facilityRegistrationReviewDto, NODE_NAME_REVIEW, new Node[]{instructionNode});
         return new NodeGroup.Builder().name(name)
                 .addNode(instructionNode)
                 .addNode(reviewNode)
@@ -180,7 +180,7 @@ public class FacilityRegisterDto implements Serializable{
         PrimaryDocDto primaryDocDto = (PrimaryDocDto) ((SimpleNode) facRegRoot.at(NODE_NAME_PRIMARY_DOC)).getValue();
         dto.setDocRecordInfos(primaryDocDto.getSavedDocMap().values());
 
-        dto.setReviewDto((ReviewDto) ((SimpleNode) viewApprovalRoot.at(NODE_NAME_REVIEW)).getValue());
+        dto.setFacilityRegistrationReviewDto((FacilityRegistrationReviewDto) ((SimpleNode) viewApprovalRoot.at(NODE_NAME_REVIEW)).getValue());
 
         NodeGroup batGroup = (NodeGroup) facRegRoot.at(NODE_NAME_FAC_BAT_INFO);
         Map<String, BiologicalAgentToxinDto> batInfoMap = getBatInfoMap(batGroup);

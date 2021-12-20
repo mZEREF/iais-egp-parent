@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-import sg.gov.moh.iais.egp.bsb.action.FacCertifierRegistrationDelegator;
 import sg.gov.moh.iais.egp.bsb.client.FileRepoClient;
 import sg.gov.moh.iais.egp.bsb.common.multipart.ByteArrayMultipartFile;
 import sg.gov.moh.iais.egp.bsb.common.node.NodeGroup;
@@ -229,7 +228,7 @@ public class DocDownloadAjaxController {
      * @param id key of the newDocMap in the PrimaryDocDto
      */
     private MultipartFile facRegCertGetNewFile(HttpServletRequest request, String id) {
-        SimpleNode primaryDocNode = getSimpleNode(request,FacCertifierRegisterConstants.NODE_NAME_FAC_PRIMARY_DOCUMENT,FacCertifierRegistrationDelegator.KEY_ROOT_NODE_GROUP);
+        SimpleNode primaryDocNode = getSimpleNode(request, FacCertifierRegisterConstants.NODE_NAME_FAC_PRIMARY_DOCUMENT, FacCertifierRegisterConstants.KEY_ROOT_NODE_GROUP);
         sg.gov.moh.iais.egp.bsb.dto.register.afc.PrimaryDocDto primaryDocDto = (sg.gov.moh.iais.egp.bsb.dto.register.afc.PrimaryDocDto) primaryDocNode.getValue();
         return primaryDocDto.getNewDocMap().get(id).getMultipartFile();
     }
@@ -261,7 +260,7 @@ public class DocDownloadAjaxController {
      * @param id key of the savedDocMap in the PrimaryDocDto
      */
     private MultipartFile facRegCertGetSavedFile(HttpServletRequest request, String id) {
-        SimpleNode primaryDocNode = getSimpleNode(request,FacCertifierRegisterConstants.NODE_NAME_FAC_PRIMARY_DOCUMENT,FacCertifierRegistrationDelegator.KEY_ROOT_NODE_GROUP);
+        SimpleNode primaryDocNode = getSimpleNode(request, FacCertifierRegisterConstants.NODE_NAME_FAC_PRIMARY_DOCUMENT, FacCertifierRegisterConstants.KEY_ROOT_NODE_GROUP);
         PrimaryDocDto primaryDocDto = (PrimaryDocDto) primaryDocNode.getValue();
         DocRecordInfo info = primaryDocDto.getSavedDocMap().get(id);
         if (info == null) {

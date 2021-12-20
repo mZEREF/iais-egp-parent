@@ -27,7 +27,6 @@ import sg.gov.moh.iais.egp.bsb.dto.register.facility.FacilityRegisterDto;
 import sg.gov.moh.iais.egp.bsb.dto.register.facility.PreviewSubmitDto;
 import sg.gov.moh.iais.egp.bsb.dto.register.facility.PrimaryDocDto;
 import sg.gov.moh.iais.egp.bsb.service.FacilityRegistrationService;
-import sg.gov.moh.iais.egp.bsb.util.LogUtil;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
@@ -71,7 +70,7 @@ public class FacilityRegistrationDelegator {
         String maskedAppId = request.getParameter(KEY_EDIT_APP_ID);
         if (StringUtils.hasLength(maskedAppId)) {
             if (log.isInfoEnabled()) {
-                log.info("masked app ID: {}", LogUtil.escapeCrlf(maskedAppId));
+                log.info("masked app ID: {}", org.apache.commons.lang.StringUtils.normalizeSpace(maskedAppId));
             }
             newFacReg = false;
             boolean failRetrieveEditData = true;
@@ -215,7 +214,7 @@ public class FacilityRegistrationDelegator {
                     AuditTrailDto auditTrailDto = (AuditTrailDto) ParamUtil.getSessionAttr(request, AuditTrailConsts.SESSION_ATTR_PARAM_NAME);
                     finalAllDataDto.setAuditTrailDto(auditTrailDto);
                     ResponseDto<String> responseDto = facRegClient.saveNewRegisteredFacility(finalAllDataDto);
-                    log.info("save new facility response: {}", responseDto);
+                    log.info("save new facility response: {}", org.apache.commons.lang.StringUtils.normalizeSpace(responseDto.toString()));
 
                     try {
                         // sync files to BE file-repo (save new added files, delete useless files)
