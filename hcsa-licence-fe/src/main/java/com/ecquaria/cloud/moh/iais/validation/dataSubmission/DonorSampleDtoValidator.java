@@ -137,6 +137,19 @@ public class DonorSampleDtoValidator implements CustomizeValidator {
 //            log.info(StringUtil.changeForLog("The Ages is null"));
         }
 
+        //RFC
+        if(DataSubmissionConsts.DS_APP_TYPE_RFC .equals(donorSampleDto.getAppType())){
+            ValidationResult amendReasonResult = WebValidationHelper.validateProperty(donorSampleDto, "donorSampleRFC");
+            if (amendReasonResult != null) {
+                map.putAll(amendReasonResult.retrieveAll());
+            }
+            if(DataSubmissionConsts.DONOR_SAMPLE_AMEND_REASON_OTHERS.equals(donorSampleDto.getAmendReason())){
+                ValidationResult amendReasonOtherResult = WebValidationHelper.validateProperty(donorSampleDto, "donorSampleRFCOther");
+                if (amendReasonOtherResult != null) {
+                    map.putAll(amendReasonOtherResult.retrieveAll());
+                }
+            }
+        }
 
         log.info(StringUtil.changeForLog("The DonorSampleDtoValidator end ..."));
         return map;
