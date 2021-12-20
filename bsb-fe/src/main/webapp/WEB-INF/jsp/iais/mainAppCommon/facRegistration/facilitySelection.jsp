@@ -86,10 +86,10 @@
 <div id="rfTypes" <c:if test="${serviceSelection.facClassification ne 'FACCLA005'}">style="display: none"</c:if>>
     <div class="form-check">
         <input type="radio" class="form-check-input" name="rfActviTypes" id="rfhfste" <c:if test="${serviceSelection.facClassification eq 'FACCLA005' and serviceSelection.activityTypes.contains('ACTVITY008')}">checked="checked"</c:if> value="ACTVITY008"/>
-        <label for="rfhfste" class="form-check-label"><span class="check-square"></span>Handling of Fifth Schedule Toxin for Exempted Purposes</label>
+        <label for="rfhfste" class="form-check-label"><span class="check-circle"></span>Handling of Fifth Schedule Toxin for Exempted Purposes</label>
     </div>
     <div class="form-check">
         <input type="radio" class="form-check-input" name="rfActviTypes" id="rfhpvpim" <c:if test="${serviceSelection.facClassification eq 'FACCLA005' and serviceSelection.activityTypes.contains('ACTVITY010')}">checked="checked"</c:if> value="ACTVITY010"/>
-        <label for="rfhpvpim" class="form-check-label"><span class="check-square"></span>Handling of Poliovirus Potentially Infectious Materials</label>
+        <label for="rfhpvpim" class="form-check-label"><span class="check-circle"></span>Handling of Poliovirus Potentially Infectious Materials</label>
     </div>
 </div>
