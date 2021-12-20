@@ -12,7 +12,7 @@
                 <iais:row>
                     <iais:field width="5" value="Reason for Amendment" id="amendReasonLabel" mandatory="true"/>
                     <iais:value width="7" cssClass="col-md-7">
-                        <iais:select name="amendReason" firstOption="Please Select" codeCategory="${!donorSampleDto.directedDonation ? 'display: none;' : ''}DATA_SUBMISSION_PATIENT_AMENDMENT"
+                        <iais:select name="amendReason" firstOption="Please Select" codeCategory="DATA_SUBMISSION_PATIENT_AMENDMENT"
                                      value="${dataSubmission.amendReason}" cssClass="amendReasonSel"
                                      onchange="toggleOnSelect(this, 'PTA_003', 'amendReasonOtherDiv')"/>
                     </iais:value>

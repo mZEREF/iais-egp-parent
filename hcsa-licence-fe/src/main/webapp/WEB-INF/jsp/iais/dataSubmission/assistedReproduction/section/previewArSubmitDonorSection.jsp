@@ -66,7 +66,7 @@
                         <iais:row>
                             <iais:field width="5" value="Name of Bank / AR Centre where Sample is from" mandatory="true"/>
                             <iais:value width="7" cssClass="col-md-7" display="true">
-                                <iais:code code="${donorSampleDto.sampleFromHciCode}"/>
+                                <iais:optionText value="${donorSampleDto.sampleFromHciCode}" selectionOptions="SampleFromHciCode"/>
                             </iais:value>
                         </iais:row>
                         <iais:row id ="sampleFromOthers" style="${donorSampleDto.sampleFromHciCode =='AR_SC_001' ? '' : 'display: none;'}">
