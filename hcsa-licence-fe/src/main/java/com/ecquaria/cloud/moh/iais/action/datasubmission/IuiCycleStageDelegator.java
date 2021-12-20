@@ -40,6 +40,10 @@ public class IuiCycleStageDelegator extends DonorCommonDelegator {
     public void start(BaseProcessClass bpc) {
         //set SelectOption
         HttpServletRequest request = bpc.request;
+        init(request);
+    }
+
+    public void init(HttpServletRequest request){
         ParamUtil.setSessionAttr(request, "sourceOfSemenOption", (Serializable) MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.SOURCE_OF_SEMEN));
         ParamUtil.setSessionAttr(request, "curMarrChildNumOption", (Serializable) DataSubmissionHelper.getNumsSelections(10));
         ParamUtil.setSessionAttr(request, "prevMarrChildNumOption", (Serializable)DataSubmissionHelper.getNumsSelections(10));
@@ -47,6 +51,7 @@ public class IuiCycleStageDelegator extends DonorCommonDelegator {
         setDonorUserSession(request);
         ParamUtil.setSessionAttr(request, "DSACK003Message","<p>"+ MessageUtil.getMessageDesc("DS_ACK003")+"</p>");
     }
+
 
     @Override
     public void prepareSwitch(BaseProcessClass bpc) {
@@ -131,6 +136,7 @@ public class IuiCycleStageDelegator extends DonorCommonDelegator {
             iuiCycleStageDto.setFromDonorFlag(sourceOfSemenList.contains(DataSubmissionConsts.AR_SOURCE_OF_SEMEN_DONOR));
             iuiCycleStageDto.setFromHusbandFlag(sourceOfSemenList.contains(DataSubmissionConsts.AR_SOURCE_OF_SEMEN_HUSBAND));
             iuiCycleStageDto.setFromHusbandTissueFlag(sourceOfSemenList.contains(DataSubmissionConsts.AR_SOURCE_OF_H_SEMEN_TESTICULAR));
+            iuiCycleStageDto.setFromDonorTissueFlag(sourceOfSemenList.contains(DataSubmissionConsts.AR_SOURCE_OF_D_SEMEN_TESTICULAR));
         }
         return iuiCycleStageDto;
     }

@@ -417,20 +417,20 @@ public class ArDataSubmissionServiceImpl implements ArDataSubmissionService {
             if (iuiCycleStageDto == null) {
                 iuiCycleStageDto = new IuiCycleStageDto();
                 iuiCycleStageDto.setOwnPremises(true);
-                //set patient age show
-                PatientInfoDto patientInfoDto = arSuperDataSubmission.getPatientInfoDto();
-                if (patientInfoDto != null) {
-                    PatientDto patientDto = patientInfoDto.getPatient();
-                    if (patientDto != null) {
-                        List<Integer> integers = Formatter.getYearsAndDays(patientDto.getBirthDate());
-                        if (IaisCommonUtils.isNotEmpty(integers)) {
-                            int year = integers.get(0);
-                            int month = integers.get(integers.size() - 1);
-                            iuiCycleStageDto.setUserAgeShow(IaisCommonUtils.getYearsAndMonths(year, month));
-                        }
+              iuiCycleStageDto.setDonorDtos(IaisCommonUtils.genNewArrayList());
+            }
+            //set patient age show
+            PatientInfoDto patientInfoDto = arSuperDataSubmission.getPatientInfoDto();
+            if (patientInfoDto != null) {
+                PatientDto patientDto = patientInfoDto.getPatient();
+                if (patientDto != null) {
+                    List<Integer> integers = Formatter.getYearsAndDays(patientDto.getBirthDate());
+                    if (IaisCommonUtils.isNotEmpty(integers)) {
+                        int year = integers.get(0);
+                        int month = integers.get(integers.size() - 1);
+                        iuiCycleStageDto.setUserAgeShow(IaisCommonUtils.getYearsAndMonths(year, month));
                     }
                 }
-              iuiCycleStageDto.setDonorDtos(IaisCommonUtils.genNewArrayList());
             }
             arSuperDataSubmission.setIuiCycleStageDto(iuiCycleStageDto);
         }

@@ -16,6 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
 /**
@@ -34,6 +35,10 @@ public class MohDsActionDelegator {
     @Autowired
     private ArDataSubmissionService arDataSubmissionService;
 
+    @Autowired
+    private  ArCycleStageDelegator arCycleStageDelegator;
+    @Autowired
+    private  IuiCycleStageDelegator iuiCycleStageDelegator;
     /**
      * Step: Start
      *
@@ -70,6 +75,7 @@ public class MohDsActionDelegator {
         if (DataSubmissionConsts.DS_AR.equals(dsType)) {
             ArSuperDataSubmissionDto arSuper = arDataSubmissionService.getArSuperDataSubmissionDtoBySubmissionNo(
                     submissionNo);
+            initDataForView(arSuper,bpc.request);
             DataSubmissionHelper.setCurrentArDataSubmission(arSuper, bpc.request);
         } else {
             ParamUtil.setRequestAttr(bpc.request, "isValid", "N");
@@ -77,6 +83,18 @@ public class MohDsActionDelegator {
         ParamUtil.setRequestAttr(bpc.request, "dsType", dsType);
     }
 
+
+    public void initDataForView(ArSuperDataSubmissionDto arSuper,HttpServletRequest request) {
+        if(arSuper != null){
+            if(arSuper.getArCycleStageDto() != null){
+                arCycleStageDelegator.init(request);
+                arCycleStageDelegator.setCycleAgeByPatientInfoDtoAndHcicode(arSuper.getArCycleStageDto(),arSuper.getPatientInfoDto(),arSuper.getPremisesDto().getHciCode());
+            }else if(arSuper.getIuiCycleStageDto() != null){
+                iuiCycleStageDelegator.init(request);
+                arDataSubmissionService.setIuiCycleStageDtoDefaultVal(arSuper);
+            }
+        }
+    }
     /**
      * Step: PrepareRfc
      *

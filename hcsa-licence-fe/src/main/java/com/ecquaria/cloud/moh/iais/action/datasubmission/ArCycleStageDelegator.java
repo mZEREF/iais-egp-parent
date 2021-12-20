@@ -43,6 +43,10 @@ public class ArCycleStageDelegator extends DonorCommonDelegator{
     @Override
     public void start(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
+        init(request);
+    }
+
+    public void init(HttpServletRequest request){
         ParamUtil.setSessionAttr(request,CURRENT_AR_TREATMENT_SESSION,(Serializable) MasterCodeUtil.retrieveByCategory(MasterCodeUtil.CURRENT_AR_TREATMENT));
         ParamUtil.setSessionAttr(request, NO_CHILDREN_DROP_DOWN,(Serializable) DataSubmissionHelper.getNumsSelections(10));
         ParamUtil.setSessionAttr(request, UNDERGONE_OVERSEAS_DROP_DOWN,(Serializable) DataSubmissionHelper.getNumsSelections(10));
@@ -100,7 +104,7 @@ public class ArCycleStageDelegator extends DonorCommonDelegator{
         DataSubmissionHelper.setCurrentArDataSubmission(arSuperDataSubmissionDto,request);
     }
 
-    private void setCycleAgeByPatientInfoDtoAndHcicode(ArCycleStageDto arCycleStageDto, PatientInfoDto patientInfoDto,String hciCode){
+    public void setCycleAgeByPatientInfoDtoAndHcicode(ArCycleStageDto arCycleStageDto, PatientInfoDto patientInfoDto,String hciCode){
         if(patientInfoDto != null && patientInfoDto.getPatient() !=null){
             PatientDto patientDto = patientInfoDto.getPatient();
             List<Integer> integers = Formatter.getYearsAndDays(patientDto.getBirthDate());

@@ -92,7 +92,7 @@
                  </iais:row>
                  </c:if>
 
-                 <c:if test="${donorDto.directedDonation || donorDto.donorIdentityKnown eq DataSubmissionConsts.DONOR_IDENTITY_KNOWN}">
+                 <c:if test="${donorDto.directedDonation}">
                      <iais:row id="relation${arDonorIndex}Row">
                          <iais:field width="5" value="Donor relation to patient" />
                          <iais:value width="7" cssClass="col-md-7" display="true">
