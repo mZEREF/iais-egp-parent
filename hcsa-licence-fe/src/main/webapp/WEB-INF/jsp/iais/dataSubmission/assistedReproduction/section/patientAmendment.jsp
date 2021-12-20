@@ -14,14 +14,15 @@
                     <iais:value width="7" cssClass="col-md-7">
                         <c:choose>
                             <c:when test="${dataSubmission.submissionType == 'AR_TP003'}">
-                                <iais:select name="amendReason" firstOption="Please Select" codeCategory="DATA_SUBMISSION_PATIENT_AMENDMENT"
-                                             value="${dataSubmission.amendReason}" cssClass="amendReasonSel"
-                                             onchange="toggleOnSelect(this, 'PTA_003', 'amendReasonOtherDiv')"/>
-                            </c:when>
-                            <c:otherwise>
                                 <iais:select name="amendReason" firstOption="Please Select" codeCategory="DATA_SUBMISSION_DONOR_SMAPLE_AMENDMENT"
                                              value="${dataSubmission.amendReason}" cssClass="amendReasonSel"
                                              onchange="toggleOnSelect(this, 'DSA_002', 'amendReasonOtherDiv')"/>
+                            </c:when>
+                            <c:otherwise>
+                                <iais:select name="amendReason" firstOption="Please Select" codeCategory="DATA_SUBMISSION_PATIENT_AMENDMENT"
+                                             value="${dataSubmission.amendReason}" cssClass="amendReasonSel"
+                                             onchange="toggleOnSelect(this, 'PTA_003', 'amendReasonOtherDiv')"/>
+
                             </c:otherwise>
                         </c:choose>
                     </iais:value>

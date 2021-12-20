@@ -133,8 +133,8 @@ public class DonorSampleDtoValidator implements CustomizeValidator {
                 }
             }
         }else{
-            map.put("ages0","DS_ERR044");
-            log.info(StringUtil.changeForLog("The Ages is null"));
+//            map.put("oldAges","GENERAL_ERR0006");
+//            log.info(StringUtil.changeForLog("The Ages is null"));
         }
 
 

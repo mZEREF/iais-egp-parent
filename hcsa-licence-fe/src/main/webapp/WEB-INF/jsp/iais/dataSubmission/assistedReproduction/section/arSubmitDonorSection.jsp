@@ -169,7 +169,8 @@
                                         </c:if>
                                     </label>
                                     <iais:value width="7" cssClass="col-md-7">
-                                        <iais:input maxLength="2" type="text" name="" value="${donorSampleAgeDto.age}" />
+                                        <input type="text" name="oldAges" value="${donorSampleAgeDto.age}" maxlength="2" autocomplete="off" disabled =true>
+                                        <span id="error_oldAges" name="iaisErrorMsg" class="error-msg"></span>
                                     </iais:value>
                                 </iais:row>
                             </c:forEach>

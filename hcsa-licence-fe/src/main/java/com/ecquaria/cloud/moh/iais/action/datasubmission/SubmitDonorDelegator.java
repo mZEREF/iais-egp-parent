@@ -58,7 +58,7 @@ public class SubmitDonorDelegator extends CommonDelegator {
         }
         donorSampleDto =  ControllerHelper.get(bpc.request,donorSampleDto);
         arSuperDataSubmissionDto.setDonorSampleDto(donorSampleDto);
-        DataSubmissionHelper.setCurrentArDataSubmission(arSuperDataSubmissionDto,bpc.request);
+
         //RFC
         String amendReason = ParamUtil.getString(bpc.request, "amendReason");
         String amendReasonOther = ParamUtil.getString(bpc.request, "amendReasonOther");
@@ -67,6 +67,9 @@ public class SubmitDonorDelegator extends CommonDelegator {
         DataSubmissionDto dataSubmissionDto = arSuperDataSubmissionDto.getDataSubmissionDto();
         dataSubmissionDto.setAmendReason(amendReason);
         dataSubmissionDto.setAmendReasonOther(amendReasonOther);
+
+        DataSubmissionHelper.setCurrentArDataSubmission(arSuperDataSubmissionDto,bpc.request);
+
 
         String actionType = ParamUtil.getString(bpc.request, DataSubmissionConstant.CRUD_TYPE);
         if (ACTION_TYPE_CONFIRM.equals(actionType)) {
