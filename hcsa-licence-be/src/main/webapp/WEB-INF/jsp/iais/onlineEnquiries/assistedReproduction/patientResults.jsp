@@ -245,7 +245,7 @@
 
                                 <iais:action style="text-align:right;">
                                     <a class="btn btn-secondary"
-                                       href="${pageContext.request.contextPath}/hcsa/intranet/ar/PatientInfo-SearchResults-DownloadS">Download</a>
+                                       href="${pageContext.request.contextPath}/hcsa/enquiry/ar/PatientInfo-SearchResults-DownloadS">Download</a>
                                 </iais:action>
                             </div>
                         </div>
@@ -325,7 +325,7 @@
                                 </div>
                                 <iais:action style="text-align:right;">
                                     <a class="btn btn-secondary"
-                                       href="${pageContext.request.contextPath}/hcsa/intranet/ar/SubmissionID-SearchResults-Download">Download</a>
+                                       href="${pageContext.request.contextPath}/hcsa/enquiry/ar/SubmissionID-SearchResults-Download">Download</a>
                                 </iais:action>
                             </div>
                         </div>
@@ -409,7 +409,7 @@
     var groupAjax = function (patientCode, divid) {
         dividajaxlist.push(divid);
         $.post(
-            '/hcsa-licence-web/hcsa/intranet/ar/patientDetail.do',
+            '/hcsa-licence-web/hcsa/enquiry/ar/patientDetail.do',
             {patientCode: patientCode},
             function (data) {
                 let result = data.result;
