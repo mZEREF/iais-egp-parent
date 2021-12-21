@@ -93,6 +93,7 @@ public class PaymentBaiduriProxy extends PaymentProxy {
 			paymentRequestDto.setReqDt(new Date());
 			paymentRequestDto.setReqRefNo(reqNo);
 			paymentRequestDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+			paymentRequestDto.setSystemClientId(AppConsts.MOH_IAIS_SYSTEM_PAYMENT_CLIENT_KEY);
 			PaymentBaiduriProxyUtil.getPaymentClient().saveHcsaPaymentResquset(paymentRequestDto);
 		}
 
@@ -130,7 +131,8 @@ public class PaymentBaiduriProxy extends PaymentProxy {
 		String transNo = this.getPaymentData().getPaymentTrans().getTransNo();
 		String refNo = this.getPaymentData().getSvcRefNo();
 		double amount = this.getPaymentData().getAmount();
-		PaymentRequestDto paymentRequestDto= PaymentBaiduriProxyUtil.getPaymentClient().getPaymentRequestDtoByReqRefNo(refNo).getEntity();
+		PaymentRequestDto paymentRequestDto= PaymentBaiduriProxyUtil.getPaymentClient().
+				getPaymentRequestDtoByReqRefNo(AppConsts.MOH_IAIS_SYSTEM_PAYMENT_CLIENT_KEY, refNo).getEntity();
 
 		Map<String, String> fields = getResponseFieldsMap(bpc);
 
@@ -169,7 +171,8 @@ public class PaymentBaiduriProxy extends PaymentProxy {
 
 				paymentDto.setPmtStatus(status);
 				paymentDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-		PaymentBaiduriProxyUtil.getPaymentClient().saveHcsaPayment(paymentDto);
+				paymentDto.setSystemClientId(AppConsts.MOH_IAIS_SYSTEM_PAYMENT_CLIENT_KEY);
+				PaymentBaiduriProxyUtil.getPaymentClient().saveHcsaPayment(paymentDto);
 
 				// update the data's status and time;
 			}else{
@@ -216,7 +219,8 @@ public class PaymentBaiduriProxy extends PaymentProxy {
 			throw new PaymentException(e1);
 		}
 		String reqNo = fields.get("vpc_MerchTxnRef");
-		PaymentRequestDto paymentRequestDto= PaymentBaiduriProxyUtil.getPaymentClient().getPaymentRequestDtoByReqRefNo(reqNo).getEntity();
+		PaymentRequestDto paymentRequestDto= PaymentBaiduriProxyUtil.getPaymentClient()
+				.getPaymentRequestDtoByReqRefNo(AppConsts.MOH_IAIS_SYSTEM_PAYMENT_CLIENT_KEY, reqNo).getEntity();
 		String results="?result="+MaskUtil.maskValue("result","cancelled")+"&reqRefNo="+MaskUtil.maskValue("reqRefNo",reqNo)+"&txnDt="+MaskUtil.maskValue("txnDt",DateUtil.formatDate(new Date(), "dd/MM/yyyy"))+"&txnRefNo="+MaskUtil.maskValue("txnRefNo","");
 		String bigsUrl =AppConsts.REQUEST_TYPE_HTTPS + bpc.request.getServerName()+paymentRequestDto.getReturnUrl()+results;
 

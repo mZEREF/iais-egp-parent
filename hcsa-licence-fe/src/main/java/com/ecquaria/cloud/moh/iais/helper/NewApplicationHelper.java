@@ -66,9 +66,11 @@ import com.ecquaria.cloud.moh.iais.common.validation.SgNoValidator;
 import com.ecquaria.cloud.moh.iais.common.validation.ValidationUtils;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.constant.NewApplicationConstant;
+import com.ecquaria.cloud.moh.iais.constant.RfcConst;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.dto.PersonFieldDto;
 import com.ecquaria.cloud.moh.iais.dto.PmtReturnUrlDto;
+import com.ecquaria.cloud.moh.iais.rfcutil.EqRequestForChangeSubmitResultChange;
 import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.RequestForChangeService;
 import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
@@ -98,6 +100,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 /**
  * NewApplicationHelper
@@ -220,6 +223,12 @@ public class NewApplicationHelper {
         ParamUtil.setSessionAttr(request, NewApplicationDelegator.OLDAPPSUBMISSIONDTO, oldAppSubmissionDto);
     }
 
+    public static void reSetAdditionalFields(AppSubmissionDto appSubmissionDto, AppSubmissionDto oldAppSubmissionDto,
+            AppEditSelectDto appEditSelectDto) {
+        reSetAdditionalFields(appSubmissionDto, appEditSelectDto);
+        reSetAdditionalFields(appSubmissionDto, oldAppSubmissionDto);
+    }
+
     public static void reSetAdditionalFields(AppSubmissionDto appSubmissionDto, AppEditSelectDto appEditSelectDto) {
         reSetAdditionalFields(appSubmissionDto, appEditSelectDto, null);
     }
@@ -243,26 +252,64 @@ public class NewApplicationHelper {
         appSubmissionDto.setAutoRfc(isAutoRfc);
         appSubmissionDto.setIsNeedNewLicNo(isNeedNewLicNo ? AppConsts.YES : AppConsts.NO);
         appSubmissionDto.getAppGrpPremisesDtoList().forEach(appGrpPremisesDto -> {
-            if (StringUtil.isNotEmpty(appGrpPremisesDto.getHciCode())
-                    && StringUtil.isEmpty(appGrpPremisesDto.getOldHciCode())) {
-                appGrpPremisesDto.setOldHciCode(appGrpPremisesDto.getHciCode());
-            }
-            appGrpPremisesDto.setHciCode(null);
             appGrpPremisesDto.setNeedNewLicNo(Boolean.valueOf(isNeedNewLicNo));
             appGrpPremisesDto.setSelfAssMtFlag(selfAssMtFlag);
-            if (StringUtil.isEmpty(appGrpPremisesDto.getRelatedServices())) {
-                HttpServletRequest request = MiscUtil.getCurrentRequest();
-                if (request != null) {
-                    AppGrpPremisesDto premisesFromMap = getPremisesFromMap(appGrpPremisesDto.getPremisesSelect(), request);
-                    if (premisesFromMap != null) {
-                        appGrpPremisesDto.setRelatedServices(premisesFromMap.getRelatedServices());
-                    }
-                }
-            }
         });
         if (!StringUtil.isEmpty(appGrpNo)) {
             appSubmissionDto.setAppGrpNo(appGrpNo);
         }
+    }
+
+    public static void reSetAdditionalFields(AppSubmissionDto appSubmissionDto, AppSubmissionDto oldAppSubmissionDto) {
+        if (appSubmissionDto == null || oldAppSubmissionDto == null) {
+            return;
+        }
+        reSetAdditionalFields(appSubmissionDto.getAppGrpPremisesDtoList(), oldAppSubmissionDto.getAppGrpPremisesDtoList());
+    }
+
+    public static void reSetAdditionalFields(List<AppGrpPremisesDto> appGrpPremisesDtoList,
+            List<AppGrpPremisesDto> oldAppGrpPremisesDtoList) {
+        if (appGrpPremisesDtoList == null || oldAppGrpPremisesDtoList == null
+                || appGrpPremisesDtoList.isEmpty() || oldAppGrpPremisesDtoList.isEmpty()) {
+            return;
+        }
+        int oldSize = oldAppGrpPremisesDtoList.size();
+        int size = appGrpPremisesDtoList.size();
+        for (int i = 0; i < size; i++) {
+            AppGrpPremisesDto oldAppGrpPremisesDto;
+            if (i < oldSize) {
+                oldAppGrpPremisesDto = oldAppGrpPremisesDtoList.get(i);
+            } else {
+                oldAppGrpPremisesDto = oldAppGrpPremisesDtoList.get(0);
+            }
+            reSetAdditionalFields(appGrpPremisesDtoList.get(i), oldAppGrpPremisesDto);
+        }
+    }
+
+    public static void reSetAdditionalFields(AppGrpPremisesDto appGrpPremisesDto, AppGrpPremisesDto oldAppGrpPremisesDto) {
+        if (appGrpPremisesDto == null || oldAppGrpPremisesDto == null) {
+            return;
+        }
+        String premisesIndexNo = oldAppGrpPremisesDto.getPremisesIndexNo();
+        appGrpPremisesDto.setPremisesIndexNo(premisesIndexNo);
+        if (StringUtil.isEmpty(appGrpPremisesDto.getOldHciCode())) {
+            appGrpPremisesDto.setOldHciCode(oldAppGrpPremisesDto.getOldHciCode());
+        }
+        boolean clearHciCode = false;
+        if (AppConsts.NO.equals(appGrpPremisesDto.getExistingData())) {
+            clearHciCode = !Objects.equals(oldAppGrpPremisesDto.getPremisesSelect(),
+                    NewApplicationHelper.getPremisesKey(appGrpPremisesDto));
+            if (clearHciCode) {
+                appGrpPremisesDto.setHciCode(null);
+            }
+        }
+        boolean eqHciNameChange = EqRequestForChangeSubmitResultChange.eqHciNameChange(appGrpPremisesDto,
+                oldAppGrpPremisesDto);
+        if (eqHciNameChange) {
+            appGrpPremisesDto.setHciNameChanged(1);
+        }
+        log.info(StringUtil.changeForLog("##### reSetAdditionalFields : " + premisesIndexNo + " - ClearHciCode: "
+                + clearHciCode + " - HciNameChange: " + eqHciNameChange));
     }
 
     public static void reSetDataByAppEditSelectDto(AppSubmissionDto scourceDto, AppSubmissionDto targetDto) {
@@ -1152,12 +1199,12 @@ public class NewApplicationHelper {
                     .filter(Objects::nonNull)
                     .findAny()
                     .orElse(null);
+            //appGrpPremisesDto.setOldHciCode(oldHciCode);
+            appGrpPremisesDto.setLicenceDtos(licenceDtos);
         }
         log.info(StringUtil.changeForLog("--- Old Hci Code: " + oldHciCode));
         log.info(StringUtil.changeForLog("--- Maybe Affected Licence size: " + (licenceDtos == null ? 0 : licenceDtos.size())));
         appGrpPremisesDto.setPremisesIndexNo(premIndexNo);
-        appGrpPremisesDto.setOldHciCode(oldHciCode);
-        appGrpPremisesDto.setLicenceDtos(licenceDtos);
     }
 
     public static AppGrpPremisesDto setOldHciCode(AppGrpPremisesDto appGrpPremisesDto) {
@@ -4696,12 +4743,17 @@ public class NewApplicationHelper {
         if (errorListMap == null || errorListMap.isEmpty()) {
             return "";
         }
+        if (errorListMap.entrySet().stream().noneMatch(entry -> IaisCommonUtils.isNotEmpty(entry.getValue()))) {
+            return "";
+        }
         StringBuilder msg = new StringBuilder(errorListMap.size() * 64);
         msg.append("There are some affected malformed licences: ");
         for (Map.Entry<AppSubmissionDto, List<String>> entry : errorListMap.entrySet()) {
-            msg.append("<br/>&nbsp;&nbsp;").append(entry.getKey().getLicenceNo()).append(" - [");
-            handleTabHames(entry.getValue(), msg);
-            msg.append("], ");
+            if (IaisCommonUtils.isNotEmpty(entry.getValue())) {
+                msg.append("<br/>&nbsp;&nbsp;");
+                handleTabHames(entry.getKey(), entry.getValue(), msg);
+                msg.append(", ");
+            }
         }
         msg.deleteCharAt(msg.length() - 2);
         msg.deleteCharAt(msg.length() - 1);
@@ -4711,7 +4763,11 @@ public class NewApplicationHelper {
         return msg.toString();
     }
 
-    private static void handleTabHames(List<String> errorList, StringBuilder msg) {
+    private static StringBuilder handleTabHames(AppSubmissionDto appSubmissionDto, List<String> errorList, StringBuilder msg) {
+        if (msg == null) {
+            msg = new StringBuilder();
+        }
+        msg.append(appSubmissionDto.getLicenceNo()).append(" - [");
         if (errorList.contains(NewApplicationConstant.SECTION_LICENSEE)) {
             msg.append(NewApplicationConstant.TITLE_LICENSEE).append(", ");
         }
@@ -4731,6 +4787,8 @@ public class NewApplicationHelper {
         }
         msg.deleteCharAt(msg.length() - 2);
         msg.deleteCharAt(msg.length() - 1);
+        msg.append("]");
+        return msg;
     }
 
     private static String handleStepHames(List<String> errorList) {
@@ -4738,6 +4796,26 @@ public class NewApplicationHelper {
                 .filter(s -> s.contains(":"))
                 .map(s -> s.substring(s.indexOf(":") + 1))
                 .collect(Collectors.joining(", "));
+    }
+
+    public static void setErrorRequest(Map<String, String> errorMap, boolean withMain, HttpServletRequest request) {
+        if (errorMap == null || errorMap.isEmpty()) {
+            return;
+        }
+        log.info(StringUtil.changeForLog("##### Error: " + errorMap));
+        if (withMain) {
+            ParamUtil.setRequestAttr(request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
+        }
+        List<String> modalRelated = IaisCommonUtils.genNewArrayList();
+        modalRelated.add(RfcConst.SHOW_OTHER_ERROR);
+        modalRelated.add(RfcConst.SERVICE_CONFIG_CHANGE);
+        modalRelated.add(RfcConst.INVALID_LIC);
+        modalRelated.add(RfcConst.PENDING_APP);
+        errorMap.forEach((k, v) -> {
+            if (modalRelated.contains(k)) {
+                ParamUtil.setRequestAttr(request, k, v);
+            }
+        });
     }
 
     /**
@@ -4764,56 +4842,15 @@ public class NewApplicationHelper {
         return MiscUtil.getFloorNo(floorNo);
     }
 
-    public static boolean validatePremiseAffected(List<LicenceDto> licenceDtos, AppGrpPremisesDto appGrpPremisesDto,
-            HttpServletRequest request) {
-        if (licenceDtos == null || licenceDtos.isEmpty() || licenceDtos.get(0) == null) {
-            return true;
-        }
-        /**
-         * check all these licences whether are eligible or not
-         */
-        String licenseeId = licenceDtos.get(0).getLicenseeId();
-        RequestForChangeService requestForChangeService = SpringHelper.getBean(RequestForChangeService.class);
-        List<LicenceDto> licenceDtoByHciCode = requestForChangeService.getLicenceDtoByHciCode(licenseeId, appGrpPremisesDto);
-        if (appGrpPremisesDto != null && IaisCommonUtils.isEmpty(licenceDtoByHciCode)) {
-            request.setAttribute("rfcInvalidLic", MessageUtil.getMessageDesc("RFC_ERR024"));
-            return false;
-        }
-        if (licenceDtoByHciCode != null && !licenceDtoByHciCode.isEmpty()) {
-            boolean allMatch = licenceDtos.parallelStream()
-                    .allMatch(dto -> licenceDtoByHciCode.parallelStream()
-                            .anyMatch(obj -> Objects.equals(obj.getId(), dto.getId())));
-            if (!allMatch) {
-                request.setAttribute("rfcInvalidLic", MessageUtil.getMessageDesc("RFC_ERR024"));
-                return false;
-            }
-        }
-        String presmiseType = appGrpPremisesDto != null ? appGrpPremisesDto.getPremisesType() : null;
-        if (StringUtil.isEmpty(presmiseType)) {
-            return true;
-        }
-        /**
-         *  check whether there is another operation for the original licence
-         */
-        boolean errorMatch = licenceDtos.parallelStream()
-                .anyMatch(licence -> !validateLicences(licence.getId(), Collections.singleton(presmiseType),
-                        NewApplicationConstant.SECTION_PREMISES, request));
-        if (errorMatch) {
-            return false;
-        }
-        return true;
-    }
-
     /**
      * check whether there is another operation for the original licence
      *
      * @param licenceId
      * @param requestForChangeService
-     * @param request
      * @return
      */
     private static boolean validateRelatedApps(String licenceId, RequestForChangeService requestForChangeService,
-            String type, HttpServletRequest request) {
+            String type/*, HttpServletRequest request*/) {
         /*if (NewApplicationConstant.SECTION_SVCINFO.equals(type)) {
             return true;
         }*/
@@ -4822,26 +4859,31 @@ public class NewApplicationHelper {
                 || !requestForChangeService.isOtherOperation(licenceId);
         if (invalid) {
             log.info(StringUtil.changeForLog("Invalid Licence - " + type + " : " + licenceId));
-            request.setAttribute("rfcPendingApplication", "errorRfcPendingApplication");
-            return false;
+            //request.setAttribute("rfcPendingApplication", "errorRfcPendingApplication");
         }
-        return true;
+        return !invalid;
     }
 
-    public static boolean validateLicences(String licenceId, Set<String> premiseTypes, String type, HttpServletRequest request) {
-        RequestForChangeService requestForChangeService = SpringHelper.getBean(RequestForChangeService.class);
+    public static Map<String, String> validateLicences(String licenceId, Set<String> premiseTypes, String type) {
+        log.info(StringUtil.changeForLog("### ValidateLicences Licence Id - " + licenceId));
         LicenceClient licenceClient = SpringHelper.getBean(LicenceClient.class);
         LicenceDto licenceDto = licenceClient.getLicBylicId(licenceId).getEntity();
+        return validateLicences(licenceDto, premiseTypes, type);
+    }
+
+    public static Map<String, String> validateLicences(LicenceDto licenceDto, Set<String> premiseTypes, String type) {
+        Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
         if (licenceDto == null) {
-            log.warn(StringUtil.changeForLog("Invalid selected Licence - " + licenceId));
-            request.setAttribute("rfcInvalidLic", MessageUtil.getMessageDesc("RFC_ERR024"));
-            return false;
+            errorMap.put(RfcConst.INVALID_LIC, MessageUtil.getMessageDesc(StringUtil.isEmpty(type) ? "RFC_ERR023" :
+                    "RFC_ERR024"));
+            return errorMap;
         }
+        RequestForChangeService requestForChangeService = SpringHelper.getBean(RequestForChangeService.class);
         if (StringUtil.isEmpty(type) || NewApplicationConstant.SECTION_PREMISES.equals(type)) {
             boolean b = requestForChangeService.baseSpecLicenceRelation(licenceDto);
             if (!b) {
-                request.setAttribute("rfcPendingApplication", "errorRfcPendingApplication");
-                return false;
+                errorMap.put(RfcConst.PENDING_APP, RfcConst.PENDING_APP_VALUE);
+                return errorMap;
             }
             ServiceConfigService serviceConfigService = SpringHelper.getBean(ServiceConfigService.class);
             HcsaServiceDto activeHcsaServiceDtoByName = serviceConfigService.getActiveHcsaServiceDtoByName(licenceDto.getSvcName());
@@ -4851,24 +4893,29 @@ public class NewApplicationHelper {
                 for (String premiseType : premiseTypes) {
                     boolean configIsChange = requestForChangeService.serviceConfigIsChange(serviceIds, premiseType);
                     if (!configIsChange) {
-                        request.setAttribute("SERVICE_CONFIG_CHANGE",
+                        errorMap.put(RfcConst.SERVICE_CONFIG_CHANGE,
                                 MessageUtil.replaceMessage("RFC_ERR020", licenceDto.getSvcName(), "ServiceName"));
-                        return false;
+                        return errorMap;
                     }
                 }
             }
         }
-        return validateRelatedApps(licenceId, requestForChangeService, type, request);
+         if(!validateRelatedApps(licenceDto.getId(), requestForChangeService, type)){
+             errorMap.put(RfcConst.PENDING_APP, RfcConst.PENDING_APP_VALUE);
+         }
+         return errorMap;
     }
 
-    public static boolean validateLicences(List<AppSubmissionDto> appSubmissionDtos, String type, HttpServletRequest request) {
+    public static Map<String, String> validateLicences(List<AppSubmissionDto> appSubmissionDtos, String type, HttpServletRequest request) {
         if (appSubmissionDtos == null || appSubmissionDtos.isEmpty()) {
-            return true;
+            return IaisCommonUtils.genNewHashMap();
         }
-        return !appSubmissionDtos.parallelStream()
-                .anyMatch(dto -> !validateLicences(dto.getLicenceId(),
+        return StreamSupport.stream(appSubmissionDtos.spliterator(), appSubmissionDtos.size() >= RfcConst.DFT_MIN_PARALLEL_SIZE)
+                .map(dto -> validateLicences(dto.getLicenceId(),
                         dto.getAppGrpPremisesDtoList().stream().map(AppGrpPremisesDto::getPremisesType).collect(Collectors.toSet()),
-                        type, request));
+                        type))
+                .filter(Objects::nonNull)
+                .collect(IaisCommonUtils::genNewHashMap, Map::putAll, Map::putAll);
     }
 
     public static <K, V> Map<K, V> getMap(Map<K, V> srcMap) {

@@ -300,7 +300,7 @@ public class ServiceInfoChangeEffectPersonAbstract implements ServiceInfoChangeE
             appEditSelectDto.setPersonnelEditList(personnelEditList);
             appSubmissionDtoByLicenceId.setAppEditSelectDto(appEditSelectDto);
             appSubmissionDtoByLicenceId.setChangeSelectDto(appEditSelectDto);
-            appSubmissionDtoByLicenceId.setPartPremise(false);
+            /*appSubmissionDtoByLicenceId.setPartPremise(false);
             appSubmissionDtoByLicenceId.setGetAppInfoFromDto(true);
             RequestForChangeMenuDelegator.oldPremiseToNewPremise(appSubmissionDtoByLicenceId);
             appSubmissionDtoByLicenceId.setAppType(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
@@ -309,7 +309,7 @@ public class ServiceInfoChangeEffectPersonAbstract implements ServiceInfoChangeE
             appSubmissionDtoByLicenceId.setAutoRfc(true);
             appSubmissionDtoByLicenceId.setCreatAuditAppStatus(ApplicationConsts.APPLICATION_STATUS_NOT_PAYMENT);
             appSubmissionDtoByLicenceId.setCreateAuditPayStatus(ApplicationConsts.PAYMENT_STATUS_PENDING_PAYMENT);
-            NewApplicationHelper.reSetAdditionalFields(appSubmissionDtoByLicenceId, appEditSelectDto);
+            NewApplicationHelper.reSetAdditionalFields(appSubmissionDtoByLicenceId, appEditSelectDto);*/
             appSubmissionDtoList.add(appSubmissionDtoByLicenceId);
         }
 

@@ -923,7 +923,8 @@ public class NotificationHelper {
 		for (String role : roles) {
 			if (RECEIPT_ROLE_LICENSEE.equals(role)) {
 				OrgUserDto orgUserDto = taskOrganizationClient.getUserById(applicantId.getSubmitBy()).getEntity();
-				if(orgUserDto != null && !StringUtil.isEmpty(orgUserDto.getEmail())){
+				if(orgUserDto != null && !StringUtil.isEmpty(orgUserDto.getEmail())
+						&& AppConsts.COMMON_STATUS_ACTIVE.equals(orgUserDto.getStatus())){
 					set.add(orgUserDto.getEmail());
 				} else {
 					log.info("orgUserDto is null, no applicant or no email");

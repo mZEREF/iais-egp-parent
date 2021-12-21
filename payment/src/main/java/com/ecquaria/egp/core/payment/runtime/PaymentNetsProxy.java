@@ -179,6 +179,7 @@ public class PaymentNetsProxy extends PaymentProxy {
 			paymentRequestDto.setReqRefNo(reqNo);
 			paymentRequestDto.setMerchantTxnRef(merchantTxnRef);
 			paymentRequestDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+			paymentRequestDto.setSystemClientId(AppConsts.MOH_IAIS_SYSTEM_PAYMENT_CLIENT_KEY);
 			PaymentBaiduriProxyUtil.getPaymentClient().saveHcsaPaymentResquset(paymentRequestDto);
 
 		}
@@ -216,7 +217,8 @@ public class PaymentNetsProxy extends PaymentProxy {
 		double amount = this.getPaymentData().getAmount();
 		String payMethod = this.getPaymentData().getPaymentDescription();
 
-		PaymentRequestDto paymentRequestDto=PaymentBaiduriProxyUtil.getPaymentClient().getPaymentRequestDtoByReqRefNo(refNo).getEntity();
+		PaymentRequestDto paymentRequestDto=PaymentBaiduriProxyUtil.getPaymentClient()
+				.getPaymentRequestDtoByReqRefNo(AppConsts.MOH_IAIS_SYSTEM_PAYMENT_CLIENT_KEY, refNo).getEntity();
 
 		Map<String, String> fields = getResponseFieldsMap(bpc);
 
@@ -311,6 +313,7 @@ public class PaymentNetsProxy extends PaymentProxy {
 		paymentDto.setResponseMsg(txnRes);
 		paymentDto.setPmtStatus(status);
 		paymentDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+		paymentDto.setSystemClientId(AppConsts.MOH_IAIS_SYSTEM_PAYMENT_CLIENT_KEY);
 		PaymentBaiduriProxyUtil.getPaymentClient().saveHcsaPayment(paymentDto);
 
 		String appGrpNo=refNo;
@@ -376,16 +379,8 @@ public class PaymentNetsProxy extends PaymentProxy {
 			throw new PaymentException(e1);
 		}
 		String reqNo = fields.get("vpc_MerchTxnRef");
-		PaymentRequestDto paymentRequestDto=PaymentBaiduriProxyUtil.getPaymentClient().getPaymentRequestDtoByReqRefNo(reqNo).getEntity();
-		String results="?result="+MaskUtil.maskValue("result","cancelled")+"&reqRefNo="+MaskUtil.maskValue("reqRefNo",reqNo)+"&txnDt="+MaskUtil.maskValue("txnDt",DateUtil.formatDate(new Date(), "dd/MM/yyyy"))+"&txnRefNo="+MaskUtil.maskValue("txnRefNo","");
-		String bigsUrl =AppConsts.REQUEST_TYPE_HTTPS + bpc.request.getServerName()+paymentRequestDto.getSrcSystemConfDto().getReturnUrl()+results;
-
-		try {
-			RedirectUtil.redirect(bigsUrl, bpc.request, bpc.response);
-		} catch (IOException e) {
-			log.info(e.getMessage(),e);
-			log.info(e.getMessage(),e);
-		}
+		PaymentBaiduriProxyUtil.getPaymentClient()
+				.getPaymentRequestDtoByReqRefNo(AppConsts.MOH_IAIS_SYSTEM_PAYMENT_CLIENT_KEY, reqNo).getEntity();
 	}
 
 	@SuppressWarnings("rawtypes")

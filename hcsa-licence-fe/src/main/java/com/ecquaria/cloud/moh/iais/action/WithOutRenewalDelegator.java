@@ -754,6 +754,7 @@ public class WithOutRenewalDelegator {
 
         if(appSubmissionDtos.size() == 1){
             validateOtherSubDto(bpc.request,false,autoGrpNo,licenseeId,appSubmissionDtos.get(0),appEditSelectDto,autoAppSubmissionDtos,noAutoAppSubmissionDtos,oldAppSubmissionDto);
+            NewApplicationHelper.reSetAdditionalFields(appSubmissionDtos.get(0), oldAppSubmissionDto);
         }else if(appSubmissionDtos.size() > 1){
             needDec = false;
             moreAppSubmissionDtoAction(appSubmissionDtos);
@@ -1019,7 +1020,7 @@ public class WithOutRenewalDelegator {
             AppEditSelectDto changeSelectDto = new AppEditSelectDto();
             changeSelectDto.setLicenseeEdit(true);
             requestForChangeService.checkAffectedAppSubmissions(dto, null, 0.0, null, groupNo,
-                    changeSelectDto, null, null);
+                    changeSelectDto, null);
             dto.setAutoRfc(true);
         });
         return appSubmissionDtos;
@@ -1572,7 +1573,7 @@ public class WithOutRenewalDelegator {
         }
 
         if (!errorListMap.isEmpty()) {
-            ParamUtil.setRequestAttr(request,NewApplicationConstant.SHOW_OTHER_ERROR,NewApplicationHelper.getErrorMsg(errorListMap));
+            ParamUtil.setRequestAttr(request, RfcConst.SHOW_OTHER_ERROR,NewApplicationHelper.getErrorMsg(errorListMap));
             ParamUtil.setRequestAttr(request, PAGE_SWITCH, PAGE2);
         }
 
