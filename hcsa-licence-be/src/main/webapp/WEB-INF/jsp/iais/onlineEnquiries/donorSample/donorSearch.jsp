@@ -10,6 +10,10 @@
     sop.webflow.rt.api.BaseProcessClass process =
             (sop.webflow.rt.api.BaseProcessClass) request.getAttribute("process");
 %>
+<%
+    String webroot1=IaisEGPConstant.CSS_ROOT+IaisEGPConstant.COMMON_CSS_ROOT;
+%>
+<script type="text/javascript" src="<%=webroot1%>js/onlineEnquiries/donorSearch.js"></script>
 <webui:setLayout name="iais-intranet"/>
 <div class="main-content dashboard">
     <form id="mainForm"  method="post" action=<%=process.runtime.continueURL()%>>

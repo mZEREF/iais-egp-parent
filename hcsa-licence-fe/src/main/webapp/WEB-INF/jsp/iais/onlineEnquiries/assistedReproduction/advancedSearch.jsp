@@ -10,6 +10,10 @@
     sop.webflow.rt.api.BaseProcessClass process =
             (sop.webflow.rt.api.BaseProcessClass) request.getAttribute("process");
 %>
+<%
+    String webroot1=IaisEGPConstant.CSS_ROOT+IaisEGPConstant.COMMON_CSS_ROOT;
+%>
+<script type="text/javascript" src="<%=webroot1%>js/onlineEnquiries/arAdvancedSearch.js"></script>
 <webui:setLayout name="iais-internet"/>
 <%@include file="../../common/dashboard.jsp"%>
 <form id="mainForm"  method="post" action=<%=process.runtime.continueURL()%>>
@@ -1312,61 +1316,3 @@
     </div>
 </form>
 <%@include file="/WEB-INF/jsp/include/utils.jsp" %>
-<script type="text/javascript">
-
-    function doArBack() {
-        showWaiting();
-        $("[name='adv_action_type']").val('back');
-        $('#mainForm').submit();
-    }
-
-    function doClear() {
-        $('input[type="text"]').val("");
-        $('input[type="number"]').val("");
-        $('input[type="radio"]').prop("checked", false);
-        $('input[type="checkbox"]').prop("checked", false);
-
-        $("option:first").prop("selected", 'selected');
-        $(".current").text("Please Select");
-        $('.date_picker').val("");
-
-
-    }
-
-
-    function jumpToPagechangePage() {
-        search();
-    }
-
-    function doSearch() {
-        $('input[name="pageJumpNoTextchangePage"]').val(1);
-        search();
-    }
-
-    function search() {
-        showWaiting();
-        $("[name='adv_action_type']").val('search');
-        $('#mainForm').submit();
-    }
-
-    function sortRecords(sortFieldName, sortType) {
-        $("[name='crud_action_value']").val(sortFieldName);
-        $("[name='crud_action_additional']").val(sortType);
-        $("[name='adv_action_type']").val('search');
-        $('#mainForm').submit();
-    }
-
-
-    var fullDetailsView = function (patientCode) {
-
-        showWaiting();
-        $("[name='crud_action_additional']").val('patient');
-        $("[name='crud_action_value']").val(patientCode);
-        $("[name='adv_action_type']").val('viewFull');
-        $('#mainForm').submit();
-    }
-
-
-
-
-</script>

@@ -10,6 +10,10 @@
     sop.webflow.rt.api.BaseProcessClass process =
             (sop.webflow.rt.api.BaseProcessClass)request.getAttribute("process");
 %>
+<%
+    String webroot1=IaisEGPConstant.CSS_ROOT+IaisEGPConstant.COMMON_CSS_ROOT;
+%>
+<script type="text/javascript" src="<%=webroot1%>js/onlineEnquiries/arStageInfo.js"></script>
 <c:set var="cycleStage" value="${arSuperDataSubmissionDto.dataSubmissionDto.cycleStage}"/>
 <c:set var="submitDt" value="${arSuperDataSubmissionDto.dataSubmissionDto.submitDt}" />
 <webui:setLayout name="iais-intranet"/>
@@ -146,24 +150,4 @@
         </div>
     </form>
 </div>
-<script type="text/javascript">
-    function doBack(arViewFull){
-        showWaiting();
-        if(arViewFull==1){
-            $("[name='crud_action_type']").val('backViewInv');
-        }else if(arViewFull==2){
-            $("[name='crud_action_type']").val('backViewCyc');
-        }else {
-            $("[name='crud_action_type']").val('backBase');
-        }
-        $('#mainForm').submit();
-    }
 
-    function nextTab(subNo){
-        showWaiting();
-        $("[name='crud_action_additional']").val(subNo);
-        $("[name='crud_action_type']").val('step');
-        $('#mainForm').submit();
-    }
-
-</script>
