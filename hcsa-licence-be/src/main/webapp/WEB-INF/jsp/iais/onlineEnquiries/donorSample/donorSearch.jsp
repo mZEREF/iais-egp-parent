@@ -49,7 +49,7 @@
                             <iais:row>
                                 <iais:field width="4" value="Sample Type"/>
                                 <iais:value width="4" cssClass="col-md-4">
-                                    <iais:select name="sampleType" id="sampleType" firstOption="Please Select" codeCategory="CATE_ID_DS_ID_TYPE"
+                                    <iais:select name="sampleType" id="sampleType" firstOption="Please Select" codeCategory="AR_DONOR_SAMPLE_TYPE"
                                                  value="${arEnquiryDonorSampleFilterDto.sampleType}" />
                                 </iais:value>
                             </iais:row>
@@ -75,7 +75,7 @@
                             </iais:row>
                             <iais:row>
                                 <iais:field width="4" value="No of Live Birth Events Recorded" />
-                                <div class="col-md-6">
+                                <div class="col-md-4">
                                     <iais:value width="2" cssClass="col-md-2">
                                         <div class="form-check">
                                             <input class="form-check-input"
@@ -177,7 +177,7 @@
                                                                  value="Name of Bank / AR Centre where sample is collected"/>
                                             <iais:sortableHeader needSort="true"
                                                                  field="DONOR_NAME"
-                                                                 value="Donor’s Name"/>
+                                                                 value="Donor's Name"/>
                                             <iais:sortableHeader needSort="true"
                                                                  field="age_no"
                                                                  value="No of Live Birth Events Recorded"/>
@@ -221,7 +221,7 @@
                                                             <c:out value="${donorSample.ageNumber}"/>
                                                         </td>
                                                         <td >
-                                                            <button type="button" onclick="fullDetailsView('${donorSample.donorSampleId}')" class="btn btn-default btn-sm">
+                                                            <button type="button" onclick="fullDetailsView('${donorSample.submissionIdNo}')" class="btn btn-default btn-sm">
                                                                 View Full Details
                                                             </button>
                                                         </td>
@@ -286,10 +286,10 @@
     }
 
 
-    var fullDetailsView = function (donorSampleId) {
+    var fullDetailsView = function (submissionNo) {
 
         showWaiting();
-        $("[name='crud_action_value']").val(donorSampleId);
+        $("[name='crud_action_value']").val(submissionNo);
         $("[name='crud_action_type']").val('viewInfo');
         $('#mainForm').submit();
     }

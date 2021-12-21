@@ -623,7 +623,7 @@ public class OnlineEnquiryAssistedReproductionDelegator {
             if(arDto.getBirthEventsTotal3()!=null&& "on".equals(arDto.getBirthEventsTotal3())){
                 birthEventsTotalList.add(3);
             }
-            if(arDto.getBirthEventsTotalMax()!=null&& "on".equals(arDto.getEmbryosTransferredNumMax())){
+            if(arDto.getBirthEventsTotalMax()!=null&& "on".equals(arDto.getBirthEventsTotalMax())){
                 for (int i=4;i<30;i++){
                     birthEventsTotalList.add(i);
                 }
@@ -761,11 +761,11 @@ public class OnlineEnquiryAssistedReproductionDelegator {
                 filter.put("transferDateTo", transferDateTo);
             }
             if(arDto.getPGT()!=null){
-                if(arDto.getPGT().equals("1")){
+                if("1".equals(arDto.getPGT())){
                     filter.put("pgtNo", 1);
 
                 }
-                if(arDto.getPGT().equals("0")){
+                if("0".equals(arDto.getPGT())){
                     filter.put("pgtYes", 1);
 
                 }
@@ -794,11 +794,11 @@ public class OnlineEnquiryAssistedReproductionDelegator {
             }
 
             if(arDto.getPgtDisease()!=null){
-                if(arDto.getPgtDisease().equals("1")){
+                if("1".equals(arDto.getPgtDisease())){
                     filter.put("PGT_M_DSLD", 1);
 
                 }
-                if(arDto.getPgtDisease().equals("0")){
+                if("0".equals(arDto.getPgtDisease())){
                     filter.put("PGT_M_DSLD", 0);
 
                 }

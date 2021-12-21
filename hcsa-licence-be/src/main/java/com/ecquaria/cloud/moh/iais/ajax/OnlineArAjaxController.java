@@ -286,7 +286,7 @@ public class OnlineArAjaxController {
         log.debug(StringUtil.changeForLog("fileHandler end ...."));
     }
 
-    @GetMapping(value = "DonorSample-SearchResults-Download")
+    @GetMapping(value = "DonorSample-SearchResults-DownloadS")
     public @ResponseBody
     void fileDonorSampleHandler(HttpServletRequest request, HttpServletResponse response) {
         log.debug(StringUtil.changeForLog("fileHandler start ...."));

@@ -549,7 +549,7 @@
 
     <sql key = "searchDonorSampleByAssistedReproduction" remarks="search Donor Sample">
         <![CDATA[
-            SELECT distinct dds2.ID ,
+            SELECT distinct dds2.ID ,dds.SUBMISSION_NO,
             CONCAT(case lp.BUSINESS_NAME
                   when null then '-, '
                   when '' then '-, '
@@ -595,12 +595,14 @@
 				join ds_donor_sample dds2 on dds2.SUBMISSION_ID = dds.ID
 
                 where 1=1
-            <#if arCentre??> AND  charindex(:arCentre, p.HCI_CODE) >0</#if>
-            <#if cycleNo??> AND  cycle_no = :cycleNo </#if>
-            <#if submission_start_date??> AND dds.SUBMIT_DT >= convert(date,:submission_start_date)</#if>
-            <#if submission_to_date??> AND dds.SUBMIT_DT <= convert(date,:submission_to_date)</#if>
-            <#if transfers??> AND  dds3.CYCLE_STAGE ='AR_STG016'</#if>
-            <#if patientCode??> AND  dc.PATIENT_CODE = :patientCode </#if>
+            <#if arCentre??> AND  p.HCI_CODE = :arCentre </#if>
+            <#if donorSampleCode??> AND  charindex(:donorSampleCode, dds2.DONOR_SAMPLE_CODE) >0</#if>
+            <#if sampleType??> AND  charindex(:sampleType, dds2.SAMPLE_TYPE) >0</#if>
+            <#if sampleHciCode??> AND  charindex(:sampleHciCode, dds2.SAMPLE_FROM_HCI_CODE) >0</#if>
+            <#if donorIdType??> AND  charindex(:donorIdType, dds2.ID_TYPE) >0</#if>
+            <#if donorIdNumber??> AND  charindex(:donorIdNumber, dds2.ID_NUMBER) >0</#if>
+            <#if birthEventsTotalList??> AND (select count(ddsa.DONOR_SAMPLE_ID) From ds_donor_sample_age ddsa where ddsa.DONOR_SAMPLE_ID= dds2.ID) in( :birthEventsTotalList) </#if>
+
 
          ]]>
     </sql>
