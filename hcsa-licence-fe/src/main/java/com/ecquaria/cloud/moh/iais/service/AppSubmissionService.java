@@ -66,9 +66,9 @@ public interface AppSubmissionService {
     AppSubmissionDto submitPremisesListRequestInformation(AppSubmissionRequestInformationDto appSubmissionRequestInformationDto,
             Process process);
 
-    Map<String, AppGrpPremisesDto> getLicencePremisesDtoMap(String licenseeId);
+    List<AppGrpPremisesDto> getLicencePremisesDtoList(String licenseeId);
 
-    Map<String, AppGrpPremisesDto> getActivePendingPremisesMap(String licenseeId);
+    List<AppGrpPremisesDto> getActivePendingPremiseList(String licenseeId);
 
     List<ApplicationDto> listApplicationByGroupId(String groupId);
 

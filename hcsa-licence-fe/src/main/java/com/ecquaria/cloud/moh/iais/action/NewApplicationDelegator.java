@@ -1015,6 +1015,7 @@ public class NewApplicationDelegator {
         log.info(StringUtil.changeForLog("##### Action Value: " + crud_action_value));
         if ("undo".equals(crud_action_value)) {
             // Undo All Changes
+            NewApplicationHelper.clearPremisesMap(bpc.request);
             return;
         }
         //gen dto
@@ -2534,6 +2535,19 @@ public class NewApplicationDelegator {
         if(!appEditSelectDto.isChangeHciName()){
             appSubmissionDto.setAppDeclarationMessageDto(null);
             appSubmissionDto.setAppDeclarationDocDtos(null);
+        }
+        // reSet related services
+        if (appEditSelectDto.isPremisesEdit()) {
+            int size = appGrpPremisesDtoList.size();
+            for (int i = 0; i < size; i++) {
+                AppGrpPremisesDto appGrpPremisesDto = appGrpPremisesDtoList.get(i);
+                AppGrpPremisesDto oldAppGrpPremisesDto = oldAppGrpPremisesDtoList.get(i);
+                if (AppConsts.NO.equals(appGrpPremisesDto.getExistingData())
+                        && !Objects.equals(oldAppGrpPremisesDto.getPremisesSelect(),
+                        NewApplicationHelper.getPremisesKey(appGrpPremisesDto))) {
+                    appGrpPremisesDto.setRelatedServices(IaisCommonUtils.genNewArrayList());
+                }
+            }
         }
         AmendmentFeeDto amendmentFeeDto = getAmendmentFeeDto( appEditSelectDto.isChangeHciName(), appEditSelectDto.isChangeInLocation() || appEditSelectDto.isChangeAddFloorUnit(), appEditSelectDto.isChangeVehicle(),
                 NewApplicationHelper.isCharity(bpc.request), appEditSelectDto.isChangeBusinessName());
