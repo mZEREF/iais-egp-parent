@@ -48,7 +48,7 @@
                         </div>
 
                         <div class="tab-content row">
-                            <div class="tab-pane active col-lg-8 col-xs-8" style="left: 16%;" role="tabpanel">
+                            <div class="tab-pane active col-lg-10 col-xs-10 panel-group" style="left: 8%;" role="tabpanel">
                                 <c:choose>
 
                                     <c:when test="${cycleStage == 'AR_CL001'}">

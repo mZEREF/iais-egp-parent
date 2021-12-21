@@ -1245,7 +1245,7 @@ public class OnlineEnquiryAssistedReproductionDelegator {
                     }
                 }
             }
-            ParamUtil.setRequestAttr(request,"arSuperDataSubmissionDto",arSuper);
+            ParamUtil.setSessionAttr(request,"arSuperDataSubmissionDto",arSuper);
         }
 
     }
