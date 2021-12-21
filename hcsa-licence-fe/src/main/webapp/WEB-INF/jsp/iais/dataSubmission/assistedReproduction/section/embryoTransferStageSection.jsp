@@ -28,6 +28,8 @@
                     <iais:value width="6" cssClass="col-md-6">
                         <iais:select cssClass="transferNumSelect" name="transferNum" options="transferNumSelectOption"
                                      value="${embryoTransferStageDto.transferNum}"/>
+                        <span id="error_FreshEmbryosNum" name="iaisErrorMsg" class="error-msg col-md-12" style="padding-left: 0px"></span>
+                        <span id="error_thawedEmbryosNum" name="iaisErrorMsg" class="error-msg col-md-12" style="padding-left: 0px"></span>
                     </iais:value>
                 </iais:row>
                 <iais:row>

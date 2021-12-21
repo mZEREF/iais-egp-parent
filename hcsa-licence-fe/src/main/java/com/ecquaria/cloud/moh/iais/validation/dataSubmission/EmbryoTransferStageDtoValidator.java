@@ -1,9 +1,11 @@
 package com.ecquaria.cloud.moh.iais.validation.dataSubmission;
 
 import com.ecquaria.cloud.helper.SpringContextHelper;
+import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.CycleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.EmbryoTransferStageDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInventoryDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidator;
@@ -61,6 +63,31 @@ public class EmbryoTransferStageDtoValidator implements CustomizeValidator {
             if (embryoTransferStageDto.getSecondTransferDate() != null && embryoTransferStageDto.getSecondTransferDate().before(startDate)) {
                 errorMap.put("secondTransferDate", "Cannot be earlier than cycle start date");
             }
+        }
+
+        int freshEmbryoNum = 0;
+        int thawedEmbryoNum = 0;
+        if (DataSubmissionConsts.EMBRYO_TRANSFER_EMBRYO_TYPE_FRESH.equals(embryoTransferStageDto.getFirstEmbryoType())) {
+            freshEmbryoNum++;
+        } else if (DataSubmissionConsts.EMBRYO_TRANSFER_EMBRYO_TYPE_THAWED.equals(embryoTransferStageDto.getFirstEmbryoType())) {
+            thawedEmbryoNum++;
+        }
+        if (DataSubmissionConsts.EMBRYO_TRANSFER_EMBRYO_TYPE_FRESH.equals(embryoTransferStageDto.getSecondEmbryoType())) {
+            freshEmbryoNum++;
+        } else if (DataSubmissionConsts.EMBRYO_TRANSFER_EMBRYO_TYPE_THAWED.equals(embryoTransferStageDto.getSecondEmbryoType())) {
+            thawedEmbryoNum++;
+        }
+        if (DataSubmissionConsts.EMBRYO_TRANSFER_EMBRYO_TYPE_FRESH.equals(embryoTransferStageDto.getThirdEmbryoType())) {
+            freshEmbryoNum++;
+        } else if (DataSubmissionConsts.EMBRYO_TRANSFER_EMBRYO_TYPE_THAWED.equals(embryoTransferStageDto.getThirdEmbryoType())) {
+            thawedEmbryoNum++;
+        }
+        PatientInventoryDto patientInventoryDto = arSuperDataSubmissionDto.getPatientInventoryDto();
+        if (freshEmbryoNum > patientInventoryDto.getCurrentFreshEmbryos()){
+            errorMap.put("FreshEmbryosNum", "No. of Fresh Embryos cannot be greater than total number of fresh Embryos tagged patient");
+        }
+        if (thawedEmbryoNum > patientInventoryDto.getCurrentThawedEmbryos()){
+            errorMap.put("thawedEmbryosNum", "No. of Thawed Embryos cannot be greater than total number of thawed Embryos tagged patient");
         }
         return errorMap;
     }

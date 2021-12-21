@@ -144,8 +144,35 @@ public class EmbryoTransferDelegator extends CommonDelegator {
     @Override
     public void prepareConfim(BaseProcessClass bpc) {
         ArSuperDataSubmissionDto arSuperDataSubmissionDto = DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
-        ParamUtil.setRequestAttr(bpc.request,"flagTwo",arDataSubmissionService.flagOutEmbryoTransferAgeAndCount(arSuperDataSubmissionDto));
-        ParamUtil.setRequestAttr(bpc.request,"flagThree",arDataSubmissionService.flagOutEmbryoTransferCountAndPatAge(arSuperDataSubmissionDto));
+        ParamUtil.setRequestAttr(bpc.request, "flagTwo", arDataSubmissionService.flagOutEmbryoTransferAgeAndCount(arSuperDataSubmissionDto));
+        ParamUtil.setRequestAttr(bpc.request, "flagThree", arDataSubmissionService.flagOutEmbryoTransferCountAndPatAge(arSuperDataSubmissionDto));
+        setPatientInv(arSuperDataSubmissionDto);
+        DataSubmissionHelper.setCurrentArDataSubmission(arSuperDataSubmissionDto, bpc.request);
+    }
+
+    private void setPatientInv(ArSuperDataSubmissionDto arSuperDataSubmissionDto) {
+        EmbryoTransferStageDto transferStageDto = arSuperDataSubmissionDto.getEmbryoTransferStageDto();
+        PatientInventoryDto patientInventoryDto = arSuperDataSubmissionDto.getPatientInventoryDto();
+        int freshEmbryoNum = 0;
+        int thawedEmbryoNum = 0;
+        if (DataSubmissionConsts.EMBRYO_TRANSFER_EMBRYO_TYPE_FRESH.equals(transferStageDto.getFirstEmbryoType())) {
+            freshEmbryoNum--;
+        } else if (DataSubmissionConsts.EMBRYO_TRANSFER_EMBRYO_TYPE_THAWED.equals(transferStageDto.getFirstEmbryoType())) {
+            thawedEmbryoNum--;
+        }
+        if (DataSubmissionConsts.EMBRYO_TRANSFER_EMBRYO_TYPE_FRESH.equals(transferStageDto.getSecondEmbryoType())) {
+            freshEmbryoNum--;
+        } else if (DataSubmissionConsts.EMBRYO_TRANSFER_EMBRYO_TYPE_THAWED.equals(transferStageDto.getSecondEmbryoType())) {
+            thawedEmbryoNum--;
+        }
+        if (DataSubmissionConsts.EMBRYO_TRANSFER_EMBRYO_TYPE_FRESH.equals(transferStageDto.getThirdEmbryoType())) {
+            freshEmbryoNum--;
+        } else if (DataSubmissionConsts.EMBRYO_TRANSFER_EMBRYO_TYPE_THAWED.equals(transferStageDto.getThirdEmbryoType())) {
+            thawedEmbryoNum--;
+        }
+        patientInventoryDto.setChangeFreshEmbryos(freshEmbryoNum);
+        patientInventoryDto.setChangeThawedEmbryos(thawedEmbryoNum);
+        arSuperDataSubmissionDto.setPatientInventoryDto(patientInventoryDto);
     }
 
     private void fromPageData(EmbryoTransferStageDto embryoTransferStageDto, HttpServletRequest request) {
