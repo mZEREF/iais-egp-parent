@@ -15,23 +15,23 @@
     <iais:row>
         <iais:field width="5" value="Name Of Patient" mandatory="true"/>
         <iais:value width="7" cssClass="col-md-7">
-            <iais:input maxLength="66" type="text" name="" value="" />
+            <iais:input maxLength="66" type="text" name="patientName" value="" />
         </iais:value>
     </iais:row>
     <iais:row>
         <iais:field width="5" value="ID No." mandatory="true"/>
         <iais:value width="3" cssClass="col-md-3">
-            <iais:select name="" firstOption="Please Select" codeCategory="CATE_ID_DS_ID_TYPE"
+            <iais:select name="idType" firstOption="Please Select" codeCategory="CATE_ID_DS_ID_TYPE"
                          value="" />
         </iais:value>
         <iais:value width="4" cssClass="col-md-4">
-            <iais:input maxLength="20" type="text" name="" value="" />
+            <iais:input maxLength="20" type="text" name="idNumber" value="" />
         </iais:value>
     </iais:row>
     <iais:row>
         <iais:field width="5" value="Date of Birth" mandatory="true"/>
         <iais:value width="7" cssClass="col-md-7">
-            <iais:datePicker id="birthDate" name="" value=""/>
+            <iais:datePicker id="birthDate" name="birthData" value=""/>
         </iais:value>
     </iais:row>
     <iais:row>
@@ -68,14 +68,14 @@
     <iais:row>
         <iais:field width="5" value="Residence Status" mandatory="true"/>
         <iais:value width="7" cssClass="col-md-7">
-            <iais:select name="" codeCategory="" firstOption="Please Select"
+            <iais:select name="residenceStatus" codeCategory="VSS_RESIDENCE_STATUS" firstOption="Please Select"
                          value="" />
         </iais:value>
     </iais:row>
     <iais:row>
         <iais:field value="Other Residence Status"  width="5"/>
         <iais:value width="7" cssClass="col-md-7">
-            <iais:input type="text" name="" maxLength="200" value=""/>
+            <iais:input type="text" name="otherResidenceStatus" maxLength="200" value=""/>
         </iais:value>
     </iais:row>
     <iais:row>
@@ -88,41 +88,47 @@
     <iais:row>
         <iais:field value="Other Ethnic Group" width="5"/>
         <iais:value width="7" cssClass="col-md-7">
-            <iais:input maxLength="200" type="text" name="ethnicGroupOther" value=""/>
+            <iais:input maxLength="200" type="text" name="otherEthnicGroup" value=""/>
         </iais:value>
     </iais:row>
     <iais:row>
         <iais:field width="5" value="Marital Status" mandatory="true"/>
         <iais:value width="7" cssClass="col-md-7">
-            <iais:select name="" firstOption="Please Select" codeCategory=""
+            <iais:select name="maritalStatus" firstOption="Please Select" codeCategory="VSS_MARITAL_STATUS"
                          value=""/>
         </iais:value>
     </iais:row>
     <iais:row>
         <iais:field width="5" value="Education Leve" mandatory="true"/>
         <iais:value width="7" cssClass="col-md-7">
-            <iais:select name="" firstOption="Please Select" codeCategory=""
+            <iais:select name="educationLevel" firstOption="Please Select" codeCategory="VSS_EDUCATION_LEVEL"
                          value=""/>
         </iais:value>
     </iais:row>
     <iais:row>
         <iais:field width="5" value="Occupation" mandatory="true"/>
         <iais:value width="7" cssClass="col-md-7">
-            <iais:select name="" firstOption="Please Select" codeCategory=""
+            <iais:select name="occupation" firstOption="Please Select" codeCategory=""
                          value=""/>
         </iais:value>
     </iais:row>
     <iais:row>
         <iais:field width="5" value="Main Reason for Sterilization" mandatory="true"/>
         <iais:value width="7" cssClass="col-md-7">
-            <iais:select name="" firstOption="Please Select" codeCategory=""
+            <iais:select name="sterilizationReason" firstOption="Please Select" codeCategory=""
                          value=""/>
         </iais:value>
     </iais:row>
     <iais:row>
-        <iais:field width="5" value="No. of Living Children Date of Birth of Last Child" mandatory="true"/>
+        <iais:field value="No. of Living Children " width="5" mandatory="true"/>
         <iais:value width="7" cssClass="col-md-7">
-            <iais:datePicker id="" name="" value=""/>
+            <iais:input maxLength="2" type="text" name="livingChildrenNo" value=""/>
+        </iais:value>
+    </iais:row>
+    <iais:row>
+        <iais:field width="5" value="Date of Birth of Last Child"/>
+        <iais:value width="7" cssClass="col-md-7">
+            <iais:datePicker id="" name="lastChildBirthday" value=""/>
         </iais:value>
     </iais:row>
 </div>
