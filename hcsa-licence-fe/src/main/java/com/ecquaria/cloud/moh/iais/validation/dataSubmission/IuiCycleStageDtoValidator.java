@@ -45,8 +45,8 @@ public class IuiCycleStageDtoValidator implements CustomizeValidator {
                 String iuiDeliverChildNum = iuiCycleStageDto.getIuiDeliverChildNum();
                 String extractVialsOfSpermNum = iuiCycleStageDto.getExtractVialsOfSperm();
                 String usedVialsOfSpermNum = iuiCycleStageDto.getUsedVialsOfSperm();
-                errMap = validateNumberLength(errMap, curMarrChildNum, "No. of Children with Current Marriage", "curMarrChildNum", 2);
-                errMap = validateNumberLength(errMap, prevMarrChildNum, "No. of Children with Previous Marriage", "prevMarrChildNum", 2);
+                errMap = validateNumberLength(errMap, curMarrChildNum, "No. of Children from Current Marriage", "curMarrChildNum", 2);
+                errMap = validateNumberLength(errMap, prevMarrChildNum, "No. of Children from Previous Marriage", "prevMarrChildNum", 2);
                 Integer iuiDeliverChild =  validateStringIsNumberAndValidateMaxlength(errMap,iuiDeliverChildNum,"No. of Children Delivered under IUI", "iuiDeliverChildNum", 2,false);
                 Integer extractVialsOfSperm= validateStringIsNumberAndValidateMaxlength(errMap,extractVialsOfSpermNum, "How many vials of sperm were extracted", "extractVialsOfSperm", 2,true);
                 Integer usedVialsOfSperm =validateStringIsNumberAndValidateMaxlength(errMap,usedVialsOfSpermNum, "How many vials of sperm were used in this cycle", "usedVialsOfSperm", 2,true);
@@ -58,8 +58,8 @@ public class IuiCycleStageDtoValidator implements CustomizeValidator {
                         if(iuiDeliverChild > allChildren) {
                             Map<String,String> stringStringMap = IaisCommonUtils.genNewHashMap(3);
                             stringStringMap.put("field1","");
-                            stringStringMap.put("field2","No. of Children with Current Marriage");
-                            stringStringMap.put("field3","No. of Children with Previous Marriage");
+                            stringStringMap.put("field2","No. of Children from Current Marriage");
+                            stringStringMap.put("field3","No. of Children from Previous Marriage");
                             errMap.put("iuiDeliverChildNum", MessageUtil.getMessageDesc("DS_ERR011",stringStringMap).trim());
                         }
                     }

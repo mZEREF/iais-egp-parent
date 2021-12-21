@@ -34,13 +34,13 @@
           </iais:value>
         </iais:row>
         <iais:row>
-          <iais:field value="No. of Children with Current Marriage" mandatory="false"/>
+          <iais:field value="No. of Children from Current Marriage" mandatory="false"/>
           <iais:value width="7" cssClass="col-md-7"  display="true">
            <c:out value="${iuiCycleStageDto.curMarrChildNum}"/>
           </iais:value>
         </iais:row>
         <iais:row>
-          <iais:field value="No. of Children with Previous Marriage" mandatory="false"/>
+          <iais:field value="No. of Children from Previous Marriage" mandatory="false"/>
           <iais:value width="7" cssClass="col-md-7"  display="true">
          <c:out value="${iuiCycleStageDto.prevMarrChildNum}"/>
           </iais:value>
