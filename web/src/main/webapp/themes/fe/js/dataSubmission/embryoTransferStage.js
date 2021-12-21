@@ -72,7 +72,7 @@ $(document).ready(function () {
         let currentTransferNum = parseInt($(".transferNumSelect").val());
         currentTransferNum += parseInt($("#embryoTransferCount").val());
         let age = parseInt($("#age").val());
-        let haveStimulationCycles = $("#haveStimulationCycles").val();
+        let haveStimulationCycles = $("#haveStimulationCycles").val() == 'true';
         if (currentTransferNum >= 3) {
             if (age < 37 || (!haveStimulationCycles)) {
                 return true;
