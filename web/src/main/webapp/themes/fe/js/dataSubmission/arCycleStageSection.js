@@ -42,8 +42,8 @@ function doEnhancedCounsellingMandatory(key){
             }
         }
     }
+}
 
-    function enhancedCounsellingTipClose(){
-       $('#enhancedCounsellingTip').hide();
-    }
+function enhancedCounsellingTipClose(){
+    $('#enhancedCounsellingTip').hide();
 }

@@ -126,7 +126,17 @@
                 </iais:row>
 
                 <iais:row>
+                    <c:if test="${empty enhancedCounsellingTipShow}">
                     <iais:field width="5" value="Enhanced Counselling" />
+                    </c:if>
+                    <c:if test="${enhancedCounsellingTipShow == 1}">
+                    <label class="col-xs-4 col-md-4 control-label">Enhanced Counselling
+                        <a class="btn-tooltip styleguide-tooltip" data-toggle="tooltip" data-html="true" href="javascript:void(0);"
+                           title="${DS_ERR018Tip}"
+                           style="z-index: 10"
+                           data-original-title="">i</a>
+                    </label>
+                    </c:if>
                     <iais:value width="7" cssClass="col-md-7" display="true">
                         <c:out value="${arCycleStageDto.enhancedCounselling == null ? 'NA' : arCycleStageDto.enhancedCounselling ? 'Yes' : 'No'}"/>
                     </iais:value>

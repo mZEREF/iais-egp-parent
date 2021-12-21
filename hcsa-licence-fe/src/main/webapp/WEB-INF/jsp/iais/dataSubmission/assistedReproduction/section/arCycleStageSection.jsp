@@ -252,5 +252,5 @@
 <c:set var="donorFrom" value="ar"/>
 <c:set var="donorDtos" value="${arCycleStageDto.donorDtos}"/>
 <%@include file="donorSection.jsp"%>
-<input type="hidden" name="enhancedCounsellingTipShow" value="${enhancedCounsellingTipShow}">
-<iais:confirm msg="DS_ERR018" needCancel="false" popupOrder="enhancedCounsellingTip"  yesBtnDesc="Yes"   yesBtnCls="btn btn-primary"  callBack="enhancedCounsellingTipClose()" />
+<input type="hidden" name="enhancedCounsellingTipShow" value="${enhancedCounsellingTipShow}" id="enhancedCounsellingTipShow">
+<iais:confirm msg="DS_ERR018" needCancel="false" popupOrder="enhancedCounsellingTip"  yesBtnDesc="ok"   yesBtnCls="btn btn-primary"  callBack="enhancedCounsellingTipClose()" />

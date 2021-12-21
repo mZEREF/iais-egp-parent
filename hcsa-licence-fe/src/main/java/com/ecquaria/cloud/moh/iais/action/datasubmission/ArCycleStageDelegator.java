@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.action.datasubmission;
 
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.*;
@@ -38,6 +39,7 @@ public class ArCycleStageDelegator extends DonorCommonDelegator{
     private final static String  EMBRYOLOGIST_DROP_DOWN          = "embryologistDropDown";
 
     private final static String  UNDERGONE_OVERSEAS_DROP_DOWN    = "cyclesUndergoneOverseasDropDown";
+    private final static String  INIT_IN_ARCYCLE_STAGE           = "INIT_IN_ARCYCLE_STAGE";
     @Autowired
     private ArDataSubmissionService arDataSubmissionService;
     @Override
@@ -58,6 +60,7 @@ public class ArCycleStageDelegator extends DonorCommonDelegator{
         ParamUtil.setSessionAttr(request, EMBRYOLOGIST_DROP_DOWN,(Serializable) getEmbryologist());
         setDonorUserSession(request);
         ParamUtil.setSessionAttr(request, "DSACK002Message","<p>"+MessageUtil.getMessageDesc("DS_ACK002")+"</p>");
+        ParamUtil.setRequestAttr(request,INIT_IN_ARCYCLE_STAGE,AppConsts.YES);
     }
 
     @Override
@@ -101,7 +104,21 @@ public class ArCycleStageDelegator extends DonorCommonDelegator{
         }
         arCycleStageDto.setDonorDtos(arDonorDtos);
         setCycleAgeByPatientInfoDtoAndHcicode(arCycleStageDto,arSuperDataSubmissionDto.getPatientInfoDto(),arSuperDataSubmissionDto.getPremisesDto().getHciCode());
+        if(AppConsts.YES.equalsIgnoreCase(ParamUtil.getRequestString(request,INIT_IN_ARCYCLE_STAGE))){
+            setEnhancedCounsellingTipShow(request,arCycleStageDto);
+        }
         DataSubmissionHelper.setCurrentArDataSubmission(arSuperDataSubmissionDto,request);
+    }
+
+    public void setEnhancedCounsellingTipShow(HttpServletRequest request, ArCycleStageDto arCycleStageDto ){
+        if(arCycleStageDto.getCycleAgeYear() > 45 || arCycleStageDto.getCycleAgeYear() == 45 && arCycleStageDto.getCycleAgeMonth() > 0){
+            if(arCycleStageDto.getEnhancedCounselling() == null || !arCycleStageDto.getEnhancedCounselling()){
+                ParamUtil.setRequestAttr(request,"enhancedCounsellingTipShow", AppConsts.YES);
+                if(ACTION_TYPE_CONFIRM.equalsIgnoreCase(ParamUtil.getString(request, DataSubmissionConstant.CRUD_TYPE))){
+                ParamUtil.setRequestAttr(request, "DS_ERR018Tip","<p>"+MessageUtil.getMessageDesc("DS_ERR018")+"</p>");
+                }
+            }
+        }
     }
 
     public void setCycleAgeByPatientInfoDtoAndHcicode(ArCycleStageDto arCycleStageDto, PatientInfoDto patientInfoDto,String hciCode){
@@ -132,6 +149,9 @@ public class ArCycleStageDelegator extends DonorCommonDelegator{
         actionArDonorDtos(request,donorDtos);
         valiateDonorDtos(request,donorDtos);
         donorDtos.forEach(arDonorDto -> setEmptyDataForNullDrDonorDto(arDonorDto));
+        if(ACTION_TYPE_CONFIRM.equalsIgnoreCase(ParamUtil.getString(request, DataSubmissionConstant.CRUD_TYPE))){
+        setEnhancedCounsellingTipShow(request,arCycleStageDto);
+        }
         DataSubmissionHelper.setCurrentArDataSubmission(arSuperDataSubmissionDto,request);
     }
 
