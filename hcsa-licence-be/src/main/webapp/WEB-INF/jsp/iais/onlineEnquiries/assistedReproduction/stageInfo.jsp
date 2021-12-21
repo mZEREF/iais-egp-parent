@@ -23,6 +23,7 @@
                         <div class="intranet-content">
                             <iais:body >
                             <div class="col-xs-12">
+                                <div class="tab-gp dashboard-tab">
                                 <ul class="progress-tracker nav ">
                                     <c:forEach items="${cycleStageList}" var="steplist" varStatus="status">
                                         <c:choose>
@@ -135,7 +136,7 @@
                                 <div class="row ">
                                     <a href="#" onclick="javascript:doBack('${arViewFull}');" ><em class="fa fa-angle-left"> </em> Back</a>
                                 </div>
-
+                                </div>
                             </div>
                             </iais:body>
                         </div>
