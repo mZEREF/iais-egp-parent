@@ -24,6 +24,7 @@ import java.util.Map;
  *   @author zixian
  */
 public interface RequestForChangeService {
+
     List<PremisesListQueryDto> getPremisesList(String licenseeId);
 
     AppSubmissionDto getAppSubmissionDtoByLicenceId(String licenceId);
@@ -35,7 +36,7 @@ public interface RequestForChangeService {
     AppSubmissionDto submitChange(AppSubmissionDto appSubmissionDto);
 
     String getApplicationGroupNumber(String appType);
-    
+
     void upDateLicStatus(LicenceDto licenceDto);
 
     void saveLicence(LicenceDto licenceDto);
@@ -115,11 +116,15 @@ public interface RequestForChangeService {
     boolean baseSpecLicenceRelation(LicenceDto licenceDto);
     LicenceDto getLicenceDtoIncludeMigrated(String licenceId);
 
-    boolean checkAffectedAppSubmissions(List<LicenceDto> selectLicence, AppGrpPremisesDto appGrpPremisesDto,
-            AppGrpPremisesDto oldAppGrpPremisesDto, double amount, String draftNo, String appGroupNo,
-            AppEditSelectDto appEditSelectDto, List<AppSubmissionDto> appSubmissionDtos, HttpServletRequest request) throws Exception;
+    void reSetPremeses(AppSubmissionDto appSubmissionDto, AppGrpPremisesDto appGrpPremisesDto);
 
-    boolean checkAffectedAppSubmissions(AppSubmissionDto appSubmissionDto,LicenceDto licence, Double amount,
-            String draftNo, String appGroupNo, AppEditSelectDto appEditSelectDto,List<AppSubmissionDto> appSubmissionDtos,
-            HttpServletRequest request);
+    Map<String, String> checkAffectedAppSubmissions(List<LicenceDto> selectLicence, AppGrpPremisesDto appGrpPremisesDto,
+            double amount, String draftNo, String appGroupNo, AppEditSelectDto appEditSelectDto,
+            List<AppSubmissionDto> appSubmissionDtos) throws Exception;
+
+    Map<String, String> checkAffectedAppSubmissions(AppSubmissionDto appSubmissionDto, LicenceDto licence, Double amount,
+            String draftNo, String appGroupNo, AppEditSelectDto appEditSelectDto, List<AppSubmissionDto> appSubmissionDtos);
+
+    List<AppSubmissionDto> getAlginAppSubmissionDtos(String licenceId, boolean checkSpec);
+
 }

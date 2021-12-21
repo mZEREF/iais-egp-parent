@@ -59,4 +59,12 @@ public class RfcConst {
 
     public static final String PAYMENTPROCESS = "/hcsa-licence-web/eservice/INTERNET/MohNewApplication/PreparePayment?flag=transfer";
 
+    public static final int DFT_MIN_PARALLEL_SIZE                       = 3;
+
+    public static final String SHOW_OTHER_ERROR                         = "showOtherError";
+    public static final String SERVICE_CONFIG_CHANGE                    = "SERVICE_CONFIG_CHANGE";
+    public static final String INVALID_LIC                              = "rfcInvalidLic";
+    public static final String PENDING_APP                              = "rfcPendingApplication";
+
+    public static final String PENDING_APP_VALUE                        = "errorRfcPendingApplication";
 }
