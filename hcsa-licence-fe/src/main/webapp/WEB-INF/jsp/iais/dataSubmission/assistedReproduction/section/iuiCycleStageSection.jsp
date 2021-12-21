@@ -106,14 +106,14 @@
                   <iais:row>
                     <iais:field  width="5" value="How many vials of sperm were extracted?" mandatory="true"/>
                     <iais:value  width="7" cssClass="col-md-7" >
-                      <input type="number" oninput="if(value.length>2)value=value.slice(0,2)"  maxlength="2" style="margin-bottom: 0px;" name="extractVialsOfSperm" value="${iuiCycleStageDto.extractVialsOfSperm}"/>
+                      <input type="text" oninput="if(value.length>2)value=value.slice(0,2)"  maxlength="2" style="margin-bottom: 0px;" name="extractVialsOfSperm" value="${iuiCycleStageDto.extractVialsOfSperm}"/>
                       <span class="error-msg" name="iaisErrorMsg" id="error_extractVialsOfSperm"></span>
                     </iais:value>
                   </iais:row>
                   <iais:row>
                     <iais:field width="5" value="How many vials of sperm were used in this cycle?" mandatory="true"/>
                     <iais:value width="7" cssClass="col-md-7">
-                      <input type="number" oninput="if(value.length>2)value=value.slice(0,2)"  maxlength="2" style="margin-bottom: 0px;" name="usedVialsOfSperm" value="${iuiCycleStageDto.usedVialsOfSperm}"/>
+                      <input type="text" oninput="if(value.length>2)value=value.slice(0,2)"  maxlength="2" style="margin-bottom: 0px;" name="usedVialsOfSperm" value="${iuiCycleStageDto.usedVialsOfSperm}"/>
                       <span class="error-msg" name="iaisErrorMsg" id="error_usedVialsOfSperm"></span>
                     </iais:value>
                   </iais:row>
