@@ -28,7 +28,6 @@ public class INTRANET___AOProcessWithdrawn___1 extends BaseProcessClass {
 	}
 
 	public void save_OnStepProcess_0() throws Exception {
-		EngineHelper.delegate(DELEGATOR, "doSave", this);
+		EngineHelper.delegate(DELEGATOR, "aoSave", this);
 	}
-
 }

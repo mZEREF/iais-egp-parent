@@ -25,4 +25,7 @@ public interface WithdrawnClient {
 
     @PostMapping(value = "/bsbWithdrawnBE/doProcessWithdrawnApp", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<Void> doProcessWithdrawnApp(@RequestBody AppSubmitWithdrawnDto dto);
+
+    @PostMapping(value = "/bsbWithdrawnBE/aoProcessWithdrawnApp", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<Void> aoProcessWithdrawnApp(@RequestBody AppSubmitWithdrawnDto dto);
 }

@@ -94,6 +94,12 @@ public class BsbWithdrawnAppDelegatorBE {
         ParamUtil.setSessionAttr(request, WITHDRAWN_APP_DTO, dto);
     }
 
+    public void aoSave(BaseProcessClass bpc) {
+        HttpServletRequest request = bpc.request;
+        AppSubmitWithdrawnDto dto = getWithdrawnDto(request);
+        withdrawnClient.aoProcessWithdrawnApp(dto);
+    }
+
     private AppSubmitWithdrawnDto getWithdrawnDto(HttpServletRequest request) {
         AppSubmitWithdrawnDto auditDto = (AppSubmitWithdrawnDto) ParamUtil.getSessionAttr(request, WITHDRAWN_APP_DTO);
         return auditDto == null ? getDefaultWithdrawnDto() : auditDto;

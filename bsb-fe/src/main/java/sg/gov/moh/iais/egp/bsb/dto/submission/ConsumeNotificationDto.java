@@ -356,7 +356,7 @@ public class ConsumeNotificationDto implements Serializable {
         //get all new doc
         PrimaryDocDto.deleteNewFiles(mulReq,this.allNewDocInfos);
         //When a section is deleted, all files corresponding to it are deleted
-        removeTempIdByKeyMap(idxArr);
+        removeTempIdByKeyMap(request);
         //get all
         getDocMetaInfoFromNew();
         this.setRemarks(ParamUtil.getString(request, KEY_PREFIX_REMARKS));
@@ -389,26 +389,33 @@ public class ConsumeNotificationDto implements Serializable {
      * At the same time, if the module is deleted, the key of the corresponding module in the corresponding keyMap will be deleted in case the module has no file
      * but still displays the bug when a new section is added next time. There are certain problems with this method. Future changes may be made ！！！！！
      * removeTempIdByKeyMap
-     * @param idxArr - section no[1,3,4]->[1,2,3] del2,[1,3]
+     * section no[1,3,4]->[1,2,3] del2,[1,3]
      * */
 
-    public void removeTempIdByKeyMap(String[] idxArr){
-        Set<Integer> keySet = this.keyNewInfos.keySet();
-        if(CollectionUtils.isEmpty(keySet)){
-            return;
+    public void removeTempIdByKeyMap(HttpServletRequest request){
+        String deleteIdx = ParamUtil.getString(request,"deleteIdx");
+        if(StringUtils.hasLength(deleteIdx)){
+            List<Integer> deleteIds = Arrays.stream(deleteIdx.split(","))
+                    .map(Integer::valueOf)
+                    .collect(Collectors.toList());
+            deleteIds.forEach(this.keyNewInfos::remove);
         }
-        for (Integer key : keySet) {
-            //Determine which section no was deleted
-            if(!arrayContainsKey(idxArr,String.valueOf(key))){
-                //Retrieve the ids of the files in the deleted section and remove them from Map allNewDocInfo
-                List<String> tempId  = this.keyNewInfos.get(key).stream()
-                        .map(PrimaryDocDto.NewDocInfo::getTmpId)
-                        .collect(Collectors.toList());
-                tempId.forEach(this.allNewDocInfos::remove);
-                //keyMap delete the section no,to prevent add a new section number equal keyNewInfos key and show value in page
-                this.keyNewInfos.remove(key);
-            }
-        }
+//        Set<Integer> keySet = this.keyNewInfos.keySet();
+//        if(CollectionUtils.isEmpty(keySet)){
+//            return;
+//        }
+//        for (Integer key : keySet) {
+//            //Determine which section no was deleted
+//            if(!arrayContainsKey(idxArr,String.valueOf(key))){
+//                //Retrieve the ids of the files in the deleted section and remove them from Map allNewDocInfo
+//                List<String> tempId  = this.keyNewInfos.get(key).stream()
+//                        .map(PrimaryDocDto.NewDocInfo::getTmpId)
+//                        .collect(Collectors.toList());
+//                tempId.forEach(this.allNewDocInfos::remove);
+//                //keyMap delete the section no,to prevent add a new section number equal keyNewInfos key and show value in page
+//                this.keyNewInfos.remove(key);
+//            }
+//        }
     }
 
     /**
