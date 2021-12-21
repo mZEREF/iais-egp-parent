@@ -210,9 +210,9 @@ public class DataSubmissionInboxDelegator {
 		HttpServletRequest request = bpc.request;
 		SearchParam searchParam = HalpSearchResultHelper.gainSearchParam(request, InboxConst.DS_PARAM, InboxDataSubmissionQueryDto.class.getName(),SORT_INIT,SearchParam.DESCENDING,false);
 		HalpSearchResultHelper.doSort(request,searchParam);
-		if(searchParam.getSortMap().containsKey("typeDesc")){
+		if(searchParam.getSortMap().containsKey("typeDesc".toUpperCase())){
 			HalpSearchResultHelper.setMasterCodeForSearchParam(searchParam,"type","typeDesc",MasterCodeUtil.DATA_SUBMISSION_TYPE);
-		}else if(searchParam.getSortMap().containsKey("statusDesc")){
+		}else if(searchParam.getSortMap().containsKey("statusDesc".toUpperCase())){
 			HalpSearchResultHelper.setMasterCodeForSearchParam(searchParam,"status","statusDesc",MasterCodeUtil.DATA_SUBMISSION_STATUS);
 		}
 		ParamUtil.setSessionAttr(request, InboxConst.DS_PARAM,searchParam);

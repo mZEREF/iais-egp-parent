@@ -1,3 +1,5 @@
+<%@ page import="com.ecquaria.cloud.moh.iais.common.utils.StringUtil" %>
+<%@ page import="com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts" %>
 <c:set var="headingSign" value="completed"/>
 <div class="panel panel-default">
     <div class="panel-heading ${headingSign}">
@@ -54,7 +56,6 @@
                         </c:forEach>
                     </iais:value>
                 </iais:row>
-
                 <iais:row style="${StringUtil.stringContain(arCycleStageDto.otherIndication,DataSubmissionConsts.AR_OTHER_INDICATION_OTHERS) ? '' : 'display: none'}">
                     <iais:field width="5" value="Other Indication (Others)" />
                     <iais:value width="7" cssClass="col-md-7" display="true">

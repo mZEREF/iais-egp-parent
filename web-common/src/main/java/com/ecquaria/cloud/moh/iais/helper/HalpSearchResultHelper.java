@@ -100,9 +100,7 @@ public class HalpSearchResultHelper {
     }
 
     public static void setMasterCodeForSearchParam(SearchParam searchParam,String key,String value, String cateId){
-        if (IaisCommonUtils.isEmpty(searchParam.getMcList())) {
             searchParam.setMasterCode(new MasterCodePair(key, value,
                     MasterCodeUtil.retrieveOptionsByCate(cateId)));
-        }
     }
 }

@@ -56,12 +56,13 @@
                          <iais:value width="7" cssClass="col-md-3" display="true">
                              <iais:optionText value="${donorDto.idType}" selectionOptions="donorSampleDropDown"/>
                          </iais:value>
+                     </iais:row>
+                     <iais:row>
                          <iais:field width="5" value="" />
                          <iais:value width="7" cssClass="col-md-4" display="true">
                              <c:out value="${donorDto.donorSampleCode}" />
                          </iais:value>
                      </iais:row>
-
                  <iais:row  cssClass="usedDonorOocyteControlClass" id="source${arDonorIndex}Row" style="${donorDto.directedDonation ? 'display: none;' : ''}">
                      <iais:field width="5" value="Source (i.e. AR Centre or Bank Name)" />
                      <iais:value width="7" cssClass="col-md-7" display="true">
