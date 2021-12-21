@@ -105,7 +105,7 @@
                                                                             <iais:value width="10">
                                                                                 <div class="input-group">
                                                                                     <div class="ax_default text_area">
-                                                                                        <textarea name="remarks" cols="70" rows="7" maxlength="500"><c:out value="${mohProcessDto.remarks}"></c:out></textarea>
+                                                                                        <textarea name="remarks" cols="70" rows="7" maxlength="300"><c:out value="${mohProcessDto.remarks}"></c:out></textarea>
                                                                                         <span data-err-ind="remarks" class="error-msg"></span>
                                                                                     </div>
                                                                                 </div>
@@ -117,6 +117,7 @@
                                                                             <iais:field value="Reviewing Decision" required="true"/>
                                                                             <iais:value width="10">
                                                                                 <select name="processingDecision" id="processingDecision">
+                                                                                    <option value="">Please Select</option>
                                                                                     <option value="MOHPRO006" <c:if test="${mohProcessDto.processingDecision eq 'MOHPRO006'}">selected="selected"</c:if>>approve for inspection</option>
                                                                                     <option value="MOHPRO007" <c:if test="${mohProcessDto.processingDecision eq 'MOHPRO007'}">selected="selected"</c:if>>reject</option>
                                                                                     <option value="MOHPRO008" <c:if test="${mohProcessDto.processingDecision eq 'MOHPRO008'}">selected="selected"</c:if>>route back to duty officer</option>
