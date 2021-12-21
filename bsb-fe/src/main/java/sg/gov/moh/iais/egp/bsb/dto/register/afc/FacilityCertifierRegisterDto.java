@@ -106,4 +106,15 @@ public class FacilityCertifierRegisterDto implements Serializable {
                 .addNode(primaryDocNode)
                 .build();
     }
+
+    public static FacilityCertifierRegisterDto fromRenewal(NodeGroup viewApprovalRoot, NodeGroup facRegRoot){
+        FacilityCertifierRegisterDto dto = new FacilityCertifierRegisterDto();
+        dto.setProfileDto((OrganisationProfileDto) ((SimpleNode) facRegRoot.at( NODE_NAME_ORGANISATION_INFO+ facRegRoot.getPathSeparator() + NODE_NAME_ORG_PROFILE)).getValue());
+        dto.setCertifyingTeamDto((CertifyingTeamDto) ((SimpleNode) facRegRoot.at(NODE_NAME_ORGANISATION_INFO + facRegRoot.getPathSeparator() + NODE_NAME_ORG_CERTIFYING_TEAM)).getValue());
+        dto.setAdministratorDto((AdministratorDto) ((SimpleNode) facRegRoot.at(NODE_NAME_ORGANISATION_INFO + facRegRoot.getPathSeparator() + NODE_NAME_ORG_FAC_ADMINISTRATOR)).getValue());
+        PrimaryDocDto primaryDocDto = (PrimaryDocDto) ((SimpleNode) facRegRoot.at(NODE_NAME_FAC_PRIMARY_DOCUMENT)).getValue();
+        dto.setDocRecordInfos(primaryDocDto.getSavedDocMap().values());
+        dto.setFacilityCertifierRegistrationReviewDto((FacilityCertifierRegistrationReviewDto) ((SimpleNode) viewApprovalRoot.at(NODE_NAME_REVIEW)).getValue());
+        return dto;
+    }
 }

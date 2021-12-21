@@ -14,6 +14,7 @@ import sg.gov.moh.iais.egp.bsb.client.BsbFileClient;
 import sg.gov.moh.iais.egp.bsb.client.FileRepoClient;
 import sg.gov.moh.iais.egp.bsb.common.node.NodeGroup;
 import sg.gov.moh.iais.egp.bsb.common.node.simple.SimpleNode;
+import sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants;
 import sg.gov.moh.iais.egp.bsb.dto.file.FileRepoSyncDto;
 import sg.gov.moh.iais.egp.bsb.dto.file.NewDocInfo;
 import sg.gov.moh.iais.egp.bsb.dto.file.NewFileSyncDto;
@@ -150,9 +151,9 @@ public class FacCertifierRegistrationDelegator {
                     FacilityCertifierRegisterDto finalAllDataDto = FacilityCertifierRegisterDto.from(facRegRoot);
                     AuditTrailDto auditTrailDto = (AuditTrailDto) ParamUtil.getSessionAttr(request, AuditTrailConsts.SESSION_ATTR_PARAM_NAME);
                     finalAllDataDto.setAuditTrailDto(auditTrailDto);
-                    finalAllDataDto.setAppStatus("BSBAPST001");
+                    finalAllDataDto.setAppStatus(MasterCodeConstants.APP_STATUS_PEND_DO);
                     String response = facilityCertifierRegistrationService.saveNewRegisteredFacCertifier(finalAllDataDto);
-                    log.info("save new facility response: {}", org.apache.commons.lang.StringUtils.normalizeSpace(response));
+                    log.info("save new facilityCertifierRegister response: {}", org.apache.commons.lang.StringUtils.normalizeSpace(response));
 
                     try {
                         // sync files to BE file-repo (save new added files, delete useless files)

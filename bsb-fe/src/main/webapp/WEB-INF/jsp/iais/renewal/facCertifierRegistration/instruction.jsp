@@ -14,10 +14,10 @@
 <link href="<%=WEB_ROOT%>/css/bsb/bsb-common.css" rel="stylesheet"/>
 <script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-common.js"></script>
 <script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-display-or-not.js"></script>
-<script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-common-facility-register.js"></script>
-<script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-renewal-facility-register.js"></script>
+<script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-common-facility-certifier-register.js"></script>
+<script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-renewal-facility-certifier-register.js"></script>
 
-<%--<%@include file="dashboard.jsp"%>--%>
+<%@include file="dashboard.jsp"%>
 
 <form method="post" id="mainForm" action="<%=process.runtime.continueURL()%>">
     <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
@@ -29,10 +29,10 @@
             <div class="row">
                 <div class="col-xs-12">
                     <div class="tab-gp steps-tab">
-                        <%--<%@ include file="renewalInnerNavTab.jsp" %>--%>
+                        <%@ include file="renewalInnerNavTab.jsp" %>
                         <div class="tab-content">
                             <div class="col-xs-12 col-sm-11 col-md-10 col-lg-8">
-                                <p>Your approval no. to renewal are listed below. Please proceed to review your facility details.</p>
+                                <p>Your approval no. to renewal are listed below. Please proceed to review your facility certifier registration details.</p>
                                 <br/>
                                 <div class="table-responsive">
                                     <table aria-describedby="" class="table">
@@ -60,7 +60,7 @@
                             <div class="application-tab-footer" style="margin-top: 200px">
                                 <div class="row">
                                     <div class="col-xs-12 col-sm-6 ">
-                                        <a class="back" href="/bsb-fe/eservice/INTERNET/MohBsbInboxApprovalFacAdmin"><em class="fa fa-angle-left"></em> Back</a>
+                                        <a class="back" href="/bsb-fe/eservice/INTERNET/MohBsbInboxApprovaAfc"><em class="fa fa-angle-left"></em> Back</a>
                                     </div>
                                     <div class="col-xs-12 col-sm-6">
                                         <div class="button-group">

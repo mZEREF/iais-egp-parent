@@ -271,6 +271,29 @@ public class FacilityCertifierRegistrationService {
     }
 
     /**
+     * Renewal Module, when actionType is review, special jump handle
+     */
+    public void renewalJumpHandle(HttpServletRequest request, NodeGroup facCerRegRoot, String currentPath, Node currentNode){
+        String actionValue = ParamUtil.getString(request, KEY_ACTION_VALUE);
+        Assert.hasText(actionValue, "Invalid action value");
+        boolean currentLetGo = true;  // if false, we have to stay current node
+        if (KEY_NAV_NEXT.equals(actionValue)) {  // if click next, we need to validate current node anyway
+            currentLetGo = currentNode.doValidation();
+            if (currentLetGo) {
+                Nodes.passValidation(facCerRegRoot, currentPath);
+            }
+        }
+        if (currentLetGo) {
+            ParamUtil.setSessionAttr(request, KEY_JUMP_DEST_NODE, NODE_NAME_REVIEW);
+            ParamUtil.setRequestAttr(request, KEY_ACTION_TYPE, KEY_ACTION_JUMP);
+        } else {
+            ParamUtil.setRequestAttr(request, KEY_ACTION_TYPE, KEY_ACTION_JUMP);
+            ParamUtil.setRequestAttr(request, KEY_SHOW_ERROR_SWITCH, Boolean.TRUE);
+            ParamUtil.setSessionAttr(request, KEY_JUMP_DEST_NODE, currentPath);
+        }
+    }
+
+    /**
      * common actions when we do 'saveDraft'
      * decide the routing logic
      * will set a dest node in the request attribute;
@@ -441,7 +464,7 @@ public class FacilityCertifierRegistrationService {
 
 
     /* Will be removed in future, will get this from config mechanism */
-    private List<DocSetting> getFacRegDocSettings () {
+    public List<DocSetting> getFacRegDocSettings () {
         List<DocSetting> docSettings = new ArrayList<>();
         docSettings.add(new DocSetting(DocConstants.DOC_TYPE_COMPANY_INFORMATION, "Company Information", true));
         docSettings.add(new DocSetting(DocConstants.DOC_TYPE_SOP_FOR_CERTIFICATION, "SOP for Certification", true));
@@ -491,5 +514,19 @@ public class FacilityCertifierRegistrationService {
      */
     public String saveAmendmentFacCertifier(FacilityCertifierRegisterDto dto){
         return facCertifierRegisterClient.saveAmendmentFacCertifier(dto).getEntity();
+    }
+
+    /**
+     * Renewal, get facilityCertifierRegisterDto by approvalId
+     */
+    public FacilityCertifierRegisterDto getRenewalFacCertifierRegisterAppByApprovalId(String approvalId){
+        return facCertifierRegisterClient.getRenewalFacCertifierRegisterAppByApprovalId(approvalId).getEntity();
+    }
+
+    /**
+     * renewal application, save facilityCertifierRegisterDto
+     */
+    public String saveRenewalRegisteredFacCertifier(FacilityCertifierRegisterDto dto){
+        return facCertifierRegisterClient.saveRenewalRegisteredFacCertifier(dto).getEntity();
     }
 }

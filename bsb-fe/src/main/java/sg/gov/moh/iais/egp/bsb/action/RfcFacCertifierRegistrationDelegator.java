@@ -18,6 +18,7 @@ import sg.gov.moh.iais.egp.bsb.common.node.NodeGroup;
 import sg.gov.moh.iais.egp.bsb.common.node.simple.SimpleNode;
 import sg.gov.moh.iais.egp.bsb.common.rfc.DecisionFlowType;
 import sg.gov.moh.iais.egp.bsb.common.rfc.DecisionFlowTypeImpl;
+import sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants;
 import sg.gov.moh.iais.egp.bsb.constant.RfcFlowType;
 import sg.gov.moh.iais.egp.bsb.dto.file.FileRepoSyncDto;
 import sg.gov.moh.iais.egp.bsb.dto.file.NewDocInfo;
@@ -163,7 +164,7 @@ public class RfcFacCertifierRegistrationDelegator {
                         // save data
                         AuditTrailDto auditTrailDto = (AuditTrailDto) ParamUtil.getSessionAttr(request, AuditTrailConsts.SESSION_ATTR_PARAM_NAME);
                         finalAllDataDto.setAuditTrailDto(auditTrailDto);
-                        finalAllDataDto.setAppStatus("BSBAPST001");
+                        finalAllDataDto.setAppStatus(MasterCodeConstants.APP_STATUS_PEND_DO);
                         String response = facilityCertifierRegistrationService.saveAmendmentFacCertifier(finalAllDataDto);
                         log.info("save rfc facility certifier registration response: {}", org.apache.commons.lang.StringUtils.normalizeSpace(response));
 

@@ -61,6 +61,7 @@ $(function () {
             $("#mainForm").submit();
         } else {
             $("#submitDeclareModal").modal('show');
+            $(".btn.btn-secondary").removeAttr("disabled");
         }
     });
 

@@ -1,190 +1,192 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Application defaultStart="/Steps/StartStep/Start" dtdVersion="6.0" executable="true" majorVersion="1" minorVersion="0" name="MohRenewalFacilityCertifierRegistration" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" transaction="enable">
- <WebServices/>
+ <WebServices />
  <Steps>
   <StartStep defClass="" executor="" icon="" name="Start" x="36" y="24">
-   <Description/>
-   <probepoint type="none"/>
+   <Description />
+   <probepoint type="none" />
    <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="start_OnStepProcess_0" name="start_OnStepProcess_0"/>
+    <JavaCode defClass="" executor="" methodName="start_OnStepProcess_0" name="start_OnStepProcess_0" />
    </OnStepProcess>
   </StartStep>
   <AutomaticStep defClass="" executor="" icon="" name="init" x="120" y="24">
-   <Description/>
-   <probepoint type="none"/>
+   <Description />
+   <probepoint type="none" />
    <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="init_OnStepProcess_0" name="init_OnStepProcess_0"/>
+    <JavaCode defClass="" executor="" methodName="init_OnStepProcess_0" name="init_OnStepProcess_0" />
    </OnStepProcess>
   </AutomaticStep>
   <AutomaticStep defClass="" executor="" icon="" name="PreInstruction" x="201" y="30">
-   <Description/>
-   <probepoint type="none"/>
+   <Description />
+   <probepoint type="none" />
    <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="preInstruction_OnStepProcess_0" name="preInstruction_OnStepProcess_0"/>
+    <JavaCode defClass="" executor="" methodName="preInstruction_OnStepProcess_0" name="preInstruction_OnStepProcess_0" />
    </OnStepProcess>
   </AutomaticStep>
   <AutomaticStep defClass="" executor="" icon="" name="PreReview" x="202" y="122">
-   <Description/>
-   <probepoint type="none"/>
+   <Description />
+   <probepoint type="none" />
    <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="preReview_OnStepProcess_0" name="preReview_OnStepProcess_0"/>
+    <JavaCode defClass="" executor="" methodName="preReview_OnStepProcess_0" name="preReview_OnStepProcess_0" />
    </OnStepProcess>
   </AutomaticStep>
   <AutomaticStep defClass="" executor="" icon="" name="PreCompInfo" x="205" y="211">
-   <Description/>
-   <probepoint type="none"/>
+   <Description />
+   <probepoint type="none" />
    <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="preCompInfo_OnStepProcess_0" name="preCompInfo_OnStepProcess_0"/>
+    <JavaCode defClass="" executor="" methodName="preCompInfo_OnStepProcess_0" name="preCompInfo_OnStepProcess_0" />
    </OnStepProcess>
   </AutomaticStep>
   <AutomaticStep defClass="" executor="" icon="" name="PreAdministrator" x="201" y="312">
-   <Description/>
-   <probepoint type="none"/>
+   <Description />
+   <probepoint type="none" />
    <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="preAdministrator_OnStepProcess_0" name="preAdministrator_OnStepProcess_0"/>
+    <JavaCode defClass="" executor="" methodName="preAdministrator_OnStepProcess_0" name="preAdministrator_OnStepProcess_0" />
    </OnStepProcess>
   </AutomaticStep>
   <AutomaticStep defClass="" executor="" icon="" name="PreCertifyingTeam" x="202" y="411">
-   <Description/>
-   <probepoint type="none"/>
+   <Description />
+   <probepoint type="none" />
    <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="preCertifyingTeam_OnStepProcess_0" name="preCertifyingTeam_OnStepProcess_0"/>
+    <JavaCode defClass="" executor="" methodName="preCertifyingTeam_OnStepProcess_0" name="preCertifyingTeam_OnStepProcess_0" />
    </OnStepProcess>
   </AutomaticStep>
   <AutomaticStep defClass="" executor="" icon="" name="PreOrganisationInfo" x="210" y="503">
-   <Description/>
-   <probepoint type="none"/>
+   <Description />
+   <probepoint type="none" />
    <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="preOrganisationInfo_OnStepProcess_0" name="preOrganisationInfo_OnStepProcess_0"/>
+    <JavaCode defClass="" executor="" methodName="preOrganisationInfo_OnStepProcess_0" name="preOrganisationInfo_OnStepProcess_0" />
    </OnStepProcess>
   </AutomaticStep>
   <AutomaticStep defClass="" executor="" icon="" name="PrepareDocuments" x="185" y="586">
-   <Description/>
-   <probepoint type="none"/>
+   <Description />
+   <probepoint type="none" />
    <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="prepareDocuments_OnStepProcess_0" name="prepareDocuments_OnStepProcess_0"/>
+    <JavaCode defClass="" executor="" methodName="prepareDocuments_OnStepProcess_0" name="prepareDocuments_OnStepProcess_0" />
    </OnStepProcess>
   </AutomaticStep>
   <AutomaticStep defClass="" executor="" icon="" name="doCompInfo" x="389" y="215">
-   <Description/>
-   <probepoint type="none"/>
+   <Description />
+   <probepoint type="none" />
    <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="doCompInfo_OnStepProcess_0" name="doCompInfo_OnStepProcess_0"/>
+    <JavaCode defClass="" executor="" methodName="doCompInfo_OnStepProcess_0" name="doCompInfo_OnStepProcess_0" />
    </OnStepProcess>
   </AutomaticStep>
   <AutomaticStep defClass="" executor="" icon="" name="doAdministrator" x="394" y="302">
-   <Description/>
-   <probepoint type="none"/>
+   <Description />
+   <probepoint type="none" />
    <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="doAdministrator_OnStepProcess_0" name="doAdministrator_OnStepProcess_0"/>
+    <JavaCode defClass="" executor="" methodName="doAdministrator_OnStepProcess_0" name="doAdministrator_OnStepProcess_0" />
    </OnStepProcess>
   </AutomaticStep>
   <AutomaticStep defClass="" executor="" icon="" name="doCertifyingTeam" x="385" y="404">
-   <Description/>
-   <probepoint type="none"/>
+   <Description />
+   <probepoint type="none" />
    <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="doCertifyingTeam_OnStepProcess_0" name="doCertifyingTeam_OnStepProcess_0"/>
+    <JavaCode defClass="" executor="" methodName="doCertifyingTeam_OnStepProcess_0" name="doCertifyingTeam_OnStepProcess_0" />
    </OnStepProcess>
   </AutomaticStep>
   <AutomaticStep defClass="" executor="" icon="" name="doOriganisationProfile" x="384" y="498">
-   <Description/>
-   <probepoint type="none"/>
+   <Description />
+   <probepoint type="none" />
    <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="doOriganisationProfile_OnStepProcess_0" name="doOriganisationProfile_OnStepProcess_0"/>
+    <JavaCode defClass="" executor="" methodName="doOriganisationProfile_OnStepProcess_0" name="doOriganisationProfile_OnStepProcess_0" />
    </OnStepProcess>
   </AutomaticStep>
   <AutomaticStep defClass="" executor="" icon="" name="doDocument" x="374" y="584">
-   <Description/>
-   <probepoint type="none"/>
+   <Description />
+   <probepoint type="none" />
    <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="doDocument_OnStepProcess_0" name="doDocument_OnStepProcess_0"/>
+    <JavaCode defClass="" executor="" methodName="doDocument_OnStepProcess_0" name="doDocument_OnStepProcess_0" />
    </OnStepProcess>
   </AutomaticStep>
   <AutomaticStep defClass="" executor="" icon="" name="Prepare" x="72" y="660">
-   <Description/>
-   <probepoint type="none"/>
+   <Description />
+   <probepoint type="none" />
    <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="prepare_OnStepProcess_0" name="prepare_OnStepProcess_0"/>
+    <JavaCode defClass="" executor="" methodName="prepare_OnStepProcess_0" name="prepare_OnStepProcess_0" />
    </OnStepProcess>
   </AutomaticStep>
   <AutomaticStep defClass="" executor="" icon="" name="ControlSwitch" x="480" y="348">
-   <Description/>
-   <probepoint type="none"/>
-   <OnStepProcess/>
+   <Description />
+   <probepoint type="none" />
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="controlSwitch_OnStepProcess_0" name="controlSwitch_OnStepProcess_0" />
+   </OnStepProcess>
   </AutomaticStep>
   <AutomaticStep defClass="" executor="" icon="" name="PreAcknowledge" x="648" y="348">
-   <Description/>
-   <probepoint type="none"/>
+   <Description />
+   <probepoint type="none" />
    <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="preAcknowledge_OnStepProcess_0" name="preAcknowledge_OnStepProcess_0"/>
+    <JavaCode defClass="" executor="" methodName="preAcknowledge_OnStepProcess_0" name="preAcknowledge_OnStepProcess_0" />
    </OnStepProcess>
   </AutomaticStep>
   <AutomaticStep defClass="" executor="" icon="" name="doInstruction" x="420" y="24">
-   <Description/>
-   <probepoint type="none"/>
+   <Description />
+   <probepoint type="none" />
    <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="doInstruction_OnStepProcess_0" name="doInstruction_OnStepProcess_0"/>
+    <JavaCode defClass="" executor="" methodName="doInstruction_OnStepProcess_0" name="doInstruction_OnStepProcess_0" />
    </OnStepProcess>
   </AutomaticStep>
   <AutomaticStep defClass="" executor="" icon="" name="doReview" x="408" y="120">
-   <Description/>
-   <probepoint type="none"/>
+   <Description />
+   <probepoint type="none" />
    <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="doReview_OnStepProcess_0" name="doReview_OnStepProcess_0"/>
+    <JavaCode defClass="" executor="" methodName="doReview_OnStepProcess_0" name="doReview_OnStepProcess_0" />
    </OnStepProcess>
   </AutomaticStep>
  </Steps>
  <Pages>
   <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="InstructionPage" stageIndicator="" x="289" y="32">
-   <OnPageLoad/>
-   <OnPageSubmit/>
-   <Description/>
-   <probepoint type="none"/>
+   <OnPageLoad />
+   <OnPageSubmit />
+   <Description />
+   <probepoint type="none" />
   </WebPage>
   <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="ReviewPage" stageIndicator="" x="297" y="121">
-   <OnPageLoad/>
-   <OnPageSubmit/>
-   <Description/>
-   <probepoint type="none"/>
+   <OnPageLoad />
+   <OnPageSubmit />
+   <Description />
+   <probepoint type="none" />
   </WebPage>
   <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="StartFacilityCertifier" stageIndicator="" x="298" y="219">
-   <OnPageLoad/>
-   <OnPageSubmit/>
-   <Description/>
-   <probepoint type="none"/>
+   <OnPageLoad />
+   <OnPageSubmit />
+   <Description />
+   <probepoint type="none" />
   </WebPage>
   <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="Administrator" stageIndicator="" x="289" y="305">
-   <OnPageLoad/>
-   <OnPageSubmit/>
-   <Description/>
-   <probepoint type="none"/>
+   <OnPageLoad />
+   <OnPageSubmit />
+   <Description />
+   <probepoint type="none" />
   </WebPage>
   <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="CertifyingTeam" stageIndicator="" x="292" y="409">
-   <OnPageLoad/>
-   <OnPageSubmit/>
-   <Description/>
-   <probepoint type="none"/>
+   <OnPageLoad />
+   <OnPageSubmit />
+   <Description />
+   <probepoint type="none" />
   </WebPage>
   <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="OrganisationProfile" stageIndicator="" x="296" y="502">
-   <OnPageLoad/>
-   <OnPageSubmit/>
-   <Description/>
-   <probepoint type="none"/>
+   <OnPageLoad />
+   <OnPageSubmit />
+   <Description />
+   <probepoint type="none" />
   </WebPage>
   <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="PrimaryDocuments" stageIndicator="" x="263" y="589">
-   <OnPageLoad/>
-   <OnPageSubmit/>
-   <Description/>
-   <probepoint type="none"/>
+   <OnPageLoad />
+   <OnPageSubmit />
+   <Description />
+   <probepoint type="none" />
   </WebPage>
   <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="AcknowleagePage" stageIndicator="" x="720" y="348">
-   <OnPageLoad/>
-   <OnPageSubmit/>
-   <Description/>
-   <probepoint type="none"/>
+   <OnPageLoad />
+   <OnPageSubmit />
+   <Description />
+   <probepoint type="none" />
   </WebPage>
  </Pages>
- <Forms/>
+ <Forms />
  <Links>
   <SynchronousLink destinationName="/Steps/AutomaticStep/init" linkstyle="Direct" name="" sourceName="/Steps/StartStep/Start" style="oblique">
    <position>{(56,44)(140,44)}</position>
@@ -295,31 +297,32 @@
    <position>{(428,140)(500,368)}</position>
   </SynchronousLink>
  </Links>
- <Conditions/>
+ <Conditions />
  <Switches>
   <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="nodeRoute" name="Switch1" x="60" y="356">
-   <Description/>
-   <SwitchCase component="/Steps/AutomaticStep/PreInstruction" value="&quot;instruction&quot;"/>
-   <SwitchCase component="/Steps/AutomaticStep/PreReview" value="&quot;review&quot;"/>
-   <SwitchCase component="/Steps/AutomaticStep/PreCompInfo" value="&quot;compInfo&quot;"/>
-   <SwitchCase component="/Steps/AutomaticStep/PreAdministrator" value="&quot;orgInfo_orgAdmin&quot;"/>
-   <SwitchCase component="/Steps/AutomaticStep/PreCertifyingTeam" value="&quot;orgInfo_orgCerTeam&quot;"/>
-   <SwitchCase component="/Steps/AutomaticStep/PreOrganisationInfo" value="&quot;orgInfo_orgProfile&quot;"/>
-   <SwitchCase component="/Steps/AutomaticStep/PrepareDocuments" value="&quot;primaryDoc&quot;"/>
+   <Description />
+   <SwitchCase component="/Steps/AutomaticStep/PreInstruction" value="&quot;instruction&quot;" />
+   <SwitchCase component="/Steps/AutomaticStep/PreReview" value="&quot;review&quot;" />
+   <SwitchCase component="/Steps/AutomaticStep/PreCompInfo" value="&quot;compInfo&quot;" />
+   <SwitchCase component="/Steps/AutomaticStep/PreAdministrator" value="&quot;orgInfo_orgAdmin&quot;" />
+   <SwitchCase component="/Steps/AutomaticStep/PreCertifyingTeam" value="&quot;orgInfo_orgCerTeam&quot;" />
+   <SwitchCase component="/Steps/AutomaticStep/PreOrganisationInfo" value="&quot;orgInfo_orgProfile&quot;" />
+   <SwitchCase component="/Steps/AutomaticStep/PrepareDocuments" value="&quot;primaryDoc&quot;" />
   </Switch>
   <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="indeed_action_type" name="Switch2" x="576" y="348">
-   <Description/>
-   <SwitchCase component="/Steps/AutomaticStep/PreAcknowledge" value="&quot;submit&quot;"/>
-   <SwitchCase component="/Merges/Merge/Merge1" value="&quot;jump&quot;"/>
+   <Description />
+   <SwitchCase component="/Steps/AutomaticStep/PreAcknowledge" value="&quot;submit&quot;" />
+   <SwitchCase component="/Merges/Merge/Merge1" value="&quot;jump&quot;" />
   </Switch>
  </Switches>
- <Branches/>
+ <Branches />
  <Merges>
   <Merge defClass="" executor="" icon="" name="Merge1" type="Or" x="501" y="657">
-   <Description/>
+   <Description />
   </Merge>
  </Merges>
- <StudioLabels/>
- <StageIndicator/>
- <AuthenticationRequire agent="false" authentication="false" citizen="false" counterStaff="false" workingGroup=""/>
+ <StudioLabels />
+ <StageIndicator />
+ <AuthenticationRequire agent="false" authentication="false" citizen="false" counterStaff="false" workingGroup="" />
 </Application>
+

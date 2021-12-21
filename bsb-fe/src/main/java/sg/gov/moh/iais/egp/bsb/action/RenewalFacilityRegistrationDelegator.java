@@ -261,7 +261,7 @@ public class RenewalFacilityRegistrationDelegator {
                     ParamUtil.setSessionAttr(request, KEY_JUMP_DEST_NODE, NODE_NAME_REVIEW);
                 }
             }else {
-                facilityRegistrationService.jumpHandler(request, viewApprovalRoot, NODE_NAME_PREVIEW_SUBMIT, reviewNode);
+                facilityRegistrationService.jumpHandler(request, viewApprovalRoot, NODE_NAME_REVIEW, reviewNode);
             }
 
         } else {

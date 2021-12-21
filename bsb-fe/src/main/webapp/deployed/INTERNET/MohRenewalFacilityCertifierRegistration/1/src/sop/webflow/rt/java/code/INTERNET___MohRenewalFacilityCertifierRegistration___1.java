@@ -111,5 +111,4 @@ public class INTERNET___MohRenewalFacilityCertifierRegistration___1 extends Base
 	// 		ControlSwitch->OnStepProcess
 		EngineHelper.delegate(DELEGATOR, "controlSwitch", this);
 	}
-
 }
