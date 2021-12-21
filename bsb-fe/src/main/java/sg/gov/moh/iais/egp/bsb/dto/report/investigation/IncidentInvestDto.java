@@ -6,7 +6,6 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.util.Assert;
 import sg.gov.moh.iais.egp.bsb.common.node.simple.ValidatableNodeValue;
 import sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants;
 import sg.gov.moh.iais.egp.bsb.dto.ValidationResultDto;
@@ -14,9 +13,8 @@ import sg.gov.moh.iais.egp.bsb.util.CollectionUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author YiMing
@@ -91,7 +89,17 @@ public class IncidentInvestDto extends ValidatableNodeValue {
 
 
     public Map<String,IncidentCauseDto> getIncidentCauseMap(){
-       return CollectionUtils.uniqueIndexMap(incidentCauses,IncidentCauseDto::getIncidentCause);
+        if(org.springframework.util.CollectionUtils.isEmpty(this.incidentCauses)){
+            return new LinkedHashMap<>();
+        }
+        return CollectionUtils.uniqueIndexMap(incidentCauses,IncidentCauseDto::getIncidentCause);
+    }
+
+    public Set<String> getCauseSet(){
+        if(org.springframework.util.CollectionUtils.isEmpty(this.incidentCauses)){
+            return new HashSet<>();
+        }
+        return incidentCauses.stream().map(IncidentCauseDto::getIncidentCause).collect(Collectors.toSet());
     }
 
     private static final String KEY_BACKGROUND_INFORMATION = "backgroundInfo";
@@ -106,18 +114,19 @@ public class IncidentInvestDto extends ValidatableNodeValue {
         this.backgroundInfo = ParamUtil.getString(request,KEY_BACKGROUND_INFORMATION);
         this.incidentDesc = ParamUtil.getString(request,KEY_INCIDENT_DESCRIPTION);
         String[] causes = ParamUtil.getStrings(request,KEY_INCIDENT_CAUSES);
-        Assert.notEmpty(causes,"incident cause is null or empty");
-        for (String cause : causes) {
-            IncidentCauseDto incidentCauseDto = new IncidentCauseDto();
-            incidentCauseDto.setIncidentCause(cause);
-            incidentCauseDto.setExplainCause(ParamUtil.getString(request,KEY_EXPLAIN_CAUSE+SEPARATOR+cause));
-            incidentCauseDto.setMeasure(ParamUtil.getString(request,KEY_MEASURE+SEPARATOR+cause));
-            incidentCauseDto.setImplementDate(ParamUtil.getString(request,KEY_IMPLEMENT_DATE+SEPARATOR+cause));
-            if(MasterCodeConstants.CAUSE_OF_INCIDENT_OTHERS.equals(cause)){
-                String otherCause = ParamUtil.getString(request,KEY_OTHER_CAUSE);
-                incidentCauseDto.setOtherCause(otherCause);
+        if(causes != null && causes.length > 0){
+            for (String cause : causes) {
+                IncidentCauseDto incidentCauseDto = new IncidentCauseDto();
+                incidentCauseDto.setIncidentCause(cause);
+                incidentCauseDto.setExplainCause(ParamUtil.getString(request,KEY_EXPLAIN_CAUSE+SEPARATOR+cause));
+                incidentCauseDto.setMeasure(ParamUtil.getString(request,KEY_MEASURE+SEPARATOR+cause));
+                incidentCauseDto.setImplementDate(ParamUtil.getString(request,KEY_IMPLEMENT_DATE+SEPARATOR+cause));
+                if(MasterCodeConstants.CAUSE_OF_INCIDENT_OTHERS.equals(cause)){
+                    String otherCause = ParamUtil.getString(request,KEY_OTHER_CAUSE);
+                    incidentCauseDto.setOtherCause(otherCause);
+                }
+                this.incidentCauses.add(incidentCauseDto);
             }
-            this.incidentCauses.add(incidentCauseDto);
         }
     }
 }

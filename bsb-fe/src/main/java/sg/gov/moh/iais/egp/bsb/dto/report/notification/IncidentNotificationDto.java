@@ -8,6 +8,7 @@ import sg.gov.moh.iais.egp.bsb.common.node.NodeGroup;
 import sg.gov.moh.iais.egp.bsb.common.node.simple.SimpleNode;
 import sg.gov.moh.iais.egp.bsb.dto.file.DocRecordInfo;
 import sg.gov.moh.iais.egp.bsb.dto.report.PrimaryDocDto;
+import sg.gov.moh.iais.egp.bsb.util.CollectionUtils;
 
 import java.util.Collection;
 
@@ -37,12 +38,14 @@ public class IncidentNotificationDto {
         return dto;
     }
 
-    public NodeGroup toFacilityCertRegister(String name){
+    public NodeGroup toIncidentNotificationDto(String name){
         //generate new NodeGroup
-        SimpleNode incidentNode = new SimpleNode(new IncidentInfoDto(), NODE_NAME_INCIDENT_INFO, new Node[0]);
-        SimpleNode reportingPersonNode = new SimpleNode(new PersonReportingDto(), NODE_NAME_PERSON_REPORTING_INFO, new Node[0]);
-        SimpleNode involvedPersonNode = new SimpleNode(new PersonInvolvedInfoDto(), NODE_NAME_PERSON_INVOLVED_INFO, new Node[0]);
-        SimpleNode documentNode = new SimpleNode(new PrimaryDocDto(), NODE_NAME_DOCUMENTS, new Node[0]);
+        SimpleNode incidentNode = new SimpleNode(incidentInfoDto, NODE_NAME_INCIDENT_INFO, new Node[0]);
+        SimpleNode reportingPersonNode = new SimpleNode(reportingDto, NODE_NAME_PERSON_REPORTING_INFO, new Node[0]);
+        SimpleNode involvedPersonNode = new SimpleNode(involvedInfoDto, NODE_NAME_PERSON_INVOLVED_INFO, new Node[0]);
+        PrimaryDocDto primaryDocDto = new PrimaryDocDto();
+        primaryDocDto.setSavedDocMap(CollectionUtils.uniqueIndexMap(docRecordInfos, DocRecordInfo::getRepoId));
+        SimpleNode documentNode = new SimpleNode(primaryDocDto, NODE_NAME_DOCUMENTS, new Node[0]);
         Node previewSubmitNode = new Node(NODE_NAME_PREVIEW_SUBMIT, new Node[]{incidentNode,reportingPersonNode,involvedPersonNode,documentNode});
 
         return new NodeGroup.Builder().name(name)

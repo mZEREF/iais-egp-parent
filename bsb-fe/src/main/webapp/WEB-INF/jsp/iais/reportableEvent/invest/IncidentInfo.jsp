@@ -45,7 +45,8 @@
                                                                         <label for="referenceNo">Incident Reference No.</label>
                                                                     </div>
                                                                     <div class="col-sm-6 col-md-7">
-                                                                        <label id="referenceNo">REF12312313</label>
+                                                                        <label id="referenceNo">
+                                                                            <a href="/bsb-fe/eservice/INTERNET/IncidentNotification?editRefId=${maskedEditId}">${incidentDto.referenceNo}</a></label>
                                                                     </div>
                                                                 </div>
                                                                 <div class="form-group ">
@@ -53,7 +54,7 @@
                                                                         <label for="incidentType">Type of Incident</label>
                                                                     </div>
                                                                     <div class="col-sm-6 col-md-7">
-                                                                        <label id="incidentType">test</label>
+                                                                        <label id="incidentType">${incidentDto.incidentType}</label>
                                                                     </div>
                                                                 </div>
                                                                 <div class="col-xs-12 col-md-10" style="margin: 20px 0"><h3>Incident Information</h3></div>
@@ -62,7 +63,7 @@
                                                                         <label for="facName">Facility Name</label>
                                                                     </div>
                                                                     <div class="col-sm-6 col-md-7">
-                                                                        <label id="facName">test</label>
+                                                                        <label id="facName">${incidentDto.facName}</label>
                                                                     </div>
                                                                 </div>
                                                                 <div class="form-group ">
@@ -70,7 +71,7 @@
                                                                         <label for="facTypes">Facility Type(s)</label>
                                                                     </div>
                                                                     <div class="col-sm-6 col-md-7">
-                                                                        <label id="facTypes">test</label>
+                                                                        <label id="facTypes">${incidentDto.facType}</label>
                                                                     </div>
                                                                 </div>
                                                                 <div class="form-group ">
@@ -78,7 +79,7 @@
                                                                         <label for="incidentDate">Date of Incident</label>
                                                                     </div>
                                                                     <div class="col-sm-6 col-md-7">
-                                                                        <label id="incidentDate">test</label>
+                                                                        <label id="incidentDate">${incidentDto.incidentDate}</label>
                                                                     </div>
                                                                 </div>
                                                                 <div class="form-group ">
@@ -86,7 +87,7 @@
                                                                         <label for="location">Location</label>
                                                                     </div>
                                                                     <div class="col-sm-6 col-md-7">
-                                                                        <label id="location">test</label>
+                                                                        <label id="location">${incidentDto.location}</label>
                                                                     </div>
                                                                 </div>
                                                                 <div class="form-group ">
@@ -94,7 +95,7 @@
                                                                         <label for="batName">Name of Agent or Toxin Involved</label>
                                                                     </div>
                                                                     <div class="col-sm-6 col-md-7">
-                                                                        <label id="batName">test</label>
+                                                                        <label id="batName">${incidentDto.batNames}</label>
                                                                     </div>
                                                                 </div>
                                                                 <div class="col-xs-12 col-md-10" style="margin: 20px 0"><h3>Investigation Team</h3></div>

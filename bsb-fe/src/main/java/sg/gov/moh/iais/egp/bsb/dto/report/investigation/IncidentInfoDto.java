@@ -17,6 +17,8 @@ import javax.servlet.http.HttpServletRequest;
 @Slf4j
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class IncidentInfoDto extends ValidatableNodeValue {
+    private String entityId;
+    private String incidentId;
     private String investLeader;
     private String otherInvest;
 
@@ -58,6 +60,21 @@ public class IncidentInfoDto extends ValidatableNodeValue {
         this.otherInvest = otherInvest;
     }
 
+    public String getEntityId() {
+        return entityId;
+    }
+
+    public void setEntityId(String entityId) {
+        this.entityId = entityId;
+    }
+
+    public String getIncidentId() {
+        return incidentId;
+    }
+
+    public void setIncidentId(String incidentId) {
+        this.incidentId = incidentId;
+    }
 
     private static final String KEY_INVESTIGATION_LEADER = "investLeader";
     private static final String KEY_OTHER_INVESTIGATION = "otherInvest";

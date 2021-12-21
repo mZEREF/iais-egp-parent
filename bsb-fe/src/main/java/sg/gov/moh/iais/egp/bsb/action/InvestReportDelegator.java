@@ -1,25 +1,35 @@
 package sg.gov.moh.iais.egp.bsb.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
+import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
+import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
+import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoDto;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
+import com.ecquaria.cloud.moh.iais.common.utils.LogUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.Assert;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
 import sg.gov.moh.iais.egp.bsb.client.BsbFileClient;
 import sg.gov.moh.iais.egp.bsb.client.FileRepoClient;
+import sg.gov.moh.iais.egp.bsb.client.InvestReportClient;
 import sg.gov.moh.iais.egp.bsb.common.node.Node;
 import sg.gov.moh.iais.egp.bsb.common.node.NodeGroup;
 import sg.gov.moh.iais.egp.bsb.common.node.Nodes;
 import sg.gov.moh.iais.egp.bsb.common.node.simple.SimpleNode;
 import sg.gov.moh.iais.egp.bsb.constant.DocConstants;
+import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
 import sg.gov.moh.iais.egp.bsb.dto.file.DocRecordInfo;
+import sg.gov.moh.iais.egp.bsb.dto.file.FileRepoSyncDto;
 import sg.gov.moh.iais.egp.bsb.dto.file.NewDocInfo;
+import sg.gov.moh.iais.egp.bsb.dto.file.NewFileSyncDto;
 import sg.gov.moh.iais.egp.bsb.dto.report.PrimaryDocDto;
-import sg.gov.moh.iais.egp.bsb.dto.report.investigation.IncidentInfoDto;
-import sg.gov.moh.iais.egp.bsb.dto.report.investigation.IncidentInvestDto;
-import sg.gov.moh.iais.egp.bsb.dto.report.investigation.MedicalInvestDto;
+import sg.gov.moh.iais.egp.bsb.dto.report.investigation.*;
 import sg.gov.moh.iais.egp.bsb.entity.DocSetting;
 import sop.webflow.rt.api.BaseProcessClass;
 
@@ -41,10 +51,15 @@ import static sg.gov.moh.iais.egp.bsb.constant.ReportableEventConstants.*;
 public class InvestReportDelegator {
     private final FileRepoClient fileRepoClient;
     private final BsbFileClient bsbFileClient;
+    private final InvestReportClient investReportClient;
+    private static final String PARAM_REFERENCE_NO = "refNo";
+    private static final String PARAM_INCIDENT_DTO = "incidentDto";
+    private static final String KEY_EDIT_REF_ID = "editId";
 
-    public InvestReportDelegator(FileRepoClient fileRepoClient, BsbFileClient bsbFileClient) {
+    public InvestReportDelegator(FileRepoClient fileRepoClient, BsbFileClient bsbFileClient, InvestReportClient investReportClient) {
         this.fileRepoClient = fileRepoClient;
         this.bsbFileClient = bsbFileClient;
+        this.investReportClient = investReportClient;
     }
 
     public void start(BaseProcessClass bpc){
@@ -75,11 +90,38 @@ public class InvestReportDelegator {
         ParamUtil.setRequestAttr(request, KEY_INDEED_ACTION_TYPE, actionType);
     }
 
+    public void preReferNoSelection(BaseProcessClass bpc){
+        HttpServletRequest request = bpc.request;
+        ParamUtil.setRequestAttr(request,"referNoOps",tempReferenceNoOps());
+    }
+
+    public void handleReferNoSelection(BaseProcessClass bpc){
+        HttpServletRequest request = bpc.request;
+        NodeGroup investRepoRoot = getInvestReportRoot(request);
+        String actionType = ParamUtil.getString(request, KEY_ACTION_TYPE);
+        if (KEY_ACTION_JUMP.equals(actionType)) {
+            jumpHandler(request, investRepoRoot);
+        } else {
+            throw new IaisRuntimeException(ERR_MSG_INVALID_ACTION);
+        }
+        String maskReferenceNo = ParamUtil.getString(request,PARAM_REFERENCE_NO);
+        String referenceNo = MaskUtil.unMaskValue(PARAM_REFERENCE_NO,maskReferenceNo);
+        IncidentDto incidentDto = investReportClient.queryIncidentByRefNo(referenceNo);
+        ParamUtil.setSessionAttr(request,PARAM_INCIDENT_DTO,incidentDto);
+        ParamUtil.setSessionAttr(request, KEY_ROOT_NODE_GROUP_INVEST_REPORT, investRepoRoot);
+    }
+
     public void preIncidentInfo(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
         NodeGroup investRepoRoot = getInvestReportRoot(request);
         SimpleNode incidentNode = (SimpleNode) investRepoRoot.getNode(NODE_NAME_INCIDENT_INFO);
         IncidentInfoDto incidentInfoDto = (IncidentInfoDto) incidentNode.getValue();
+        IncidentDto incidentDto = (IncidentDto) ParamUtil.getSessionAttr(request,PARAM_INCIDENT_DTO);
+        //get incident id and set dto
+        incidentInfoDto.setIncidentId(incidentDto.getId());
+        String test = MaskUtil.maskValue(KEY_EDIT_REF_ID,incidentDto.getId());
+        log.info("test value is {}", LogUtil.escapeCrlf(test));
+        ParamUtil.setRequestAttr(request,"maskedEditId",MaskUtil.maskValue(KEY_EDIT_REF_ID,incidentDto.getId()));
         Boolean needShowError = (Boolean) ParamUtil.getRequestAttr(request, KEY_SHOW_ERROR_SWITCH);
         if (needShowError == Boolean.TRUE) {
             ParamUtil.setRequestAttr(request, KEY_VALIDATION_ERRORS, incidentInfoDto.retrieveValidationResult());
@@ -100,7 +142,7 @@ public class InvestReportDelegator {
         } else {
             throw new IaisRuntimeException(ERR_MSG_INVALID_ACTION);
         }
-        ParamUtil.setSessionAttr(request, KEY_ROOT_NODE_GROUP_INCIDENT_NOT, investRepoRoot);
+        ParamUtil.setSessionAttr(request,KEY_ROOT_NODE_GROUP_INVEST_REPORT, investRepoRoot);
     }
 
 
@@ -114,6 +156,8 @@ public class InvestReportDelegator {
             ParamUtil.setRequestAttr(request, KEY_VALIDATION_ERRORS, incidentInvestDto.retrieveValidationResult());
         }
         Nodes.needValidation(investRepoRoot, NODE_NAME_INCIDENT_INVESTIGATION);
+        ParamUtil.setRequestAttr(request,"causeSet",incidentInvestDto.getCauseSet());
+        ParamUtil.setRequestAttr(request,"causeMap",incidentInvestDto.getIncidentCauseMap());
         ParamUtil.setRequestAttr(request, NODE_NAME_INCIDENT_INVESTIGATION, incidentInvestDto);
     }
 
@@ -214,60 +258,60 @@ public class InvestReportDelegator {
 
     public void handlePreviewSubmit(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
-//        NodeGroup investRepoRoot = getInvestReportRoot(request);
-//        String actionType = ParamUtil.getString(request, KEY_ACTION_TYPE);
-//        String actionValue = ParamUtil.getString(request, KEY_ACTION_VALUE);
-//        if (KEY_ACTION_JUMP.equals(actionType)) {
-//            if (KEY_NAV_NEXT.equals(actionValue)) {
-//                // save docs
-//                SimpleNode primaryDocNode = (SimpleNode) investRepoRoot.at(NODE_NAME_DOCUMENTS);
-//                PrimaryDocDto primaryDocDto = (PrimaryDocDto) primaryDocNode.getValue();
-//                List<NewFileSyncDto> newFilesToSync = null;
-//                if (!primaryDocDto.getNewDocMap().isEmpty()) {
-//                    MultipartFile[] files = primaryDocDto.getNewDocMap().values().stream().map(NewDocInfo::getMultipartFile).toArray(MultipartFile[]::new);
-//                    List<String> repoIds = fileRepoClient.saveFiles(files).getEntity();
-//                    newFilesToSync = primaryDocDto.newFileSaved(repoIds);
-//                }
-//
-//                // save data
-//                IncidentNotificationDto incidentNotificationDto = IncidentNotificationDto.from(incidentNotRoot);
-//                AuditTrailDto auditTrailDto = (AuditTrailDto) ParamUtil.getSessionAttr(request, AuditTrailConsts.SESSION_ATTR_PARAM_NAME);
-//                incidentNotificationDto.setAuditTrailDto(auditTrailDto);
-//                ResponseDto<String> responseDto = incidentClient.saveNewIncidentNotification(incidentNotificationDto);
-//                if(log.isInfoEnabled()){
-//                    log.info("save new facility response: {}", LogUtil.escapeCrlf(responseDto.toString()));
-//                }
-//                try {
-//                    // sync files to BE file-repo (save new added files, delete useless files)
-//                    if ((newFilesToSync != null && !newFilesToSync.isEmpty()) || !primaryDocDto.getToBeDeletedRepoIds().isEmpty()) {
-//                        /* Ignore the failure of sync files currently.
-//                         * We should add a mechanism to retry synchronization of files in the future */
-//                        FileRepoSyncDto syncDto = new FileRepoSyncDto();
-//                        syncDto.setNewFiles(newFilesToSync);
-//                        syncDto.setToDeleteIds(new ArrayList<>(primaryDocDto.getToBeDeletedRepoIds()));
-//                        bsbFileClient.saveFiles(syncDto);
-//                    }
-//
-//                    // delete docs in FE file-repo
-//                    /* Ignore the failure when try to delete FE files because this is not a big issue.
-//                     * The not deleted file won't be retrieved, so it's just a waste of disk space */
-//                    for (String id: primaryDocDto.getToBeDeletedRepoIds()) {
-//                        FileRepoDto fileRepoDto = new FileRepoDto();
-//                        fileRepoDto.setId(id);
-//                        fileRepoClient.removeFileById(fileRepoDto);
-//                    }
-//                } catch (Exception e) {
-//                    log.error("Fail to sync files to BE", e);
-//                }
-//
-//                ParamUtil.setRequestAttr(request, KEY_ACTION_TYPE, KEY_ACTION_SUBMIT);
-//            } else {
-//                jumpHandler(request, incidentNotRoot);
-//            }
-//        } else {
-//            throw new IaisRuntimeException(ERR_MSG_INVALID_ACTION);
-//        }
-//        ParamUtil.setSessionAttr(request, KEY_ROOT_NODE_GROUP_INCIDENT_NOT, incidentNotRoot);
+        NodeGroup investRepoRoot = getInvestReportRoot(request);
+        String actionType = ParamUtil.getString(request, KEY_ACTION_TYPE);
+        String actionValue = ParamUtil.getString(request, KEY_ACTION_VALUE);
+        if (KEY_ACTION_JUMP.equals(actionType)) {
+            if (KEY_NAV_NEXT.equals(actionValue)) {
+                // save docs
+                SimpleNode primaryDocNode = (SimpleNode) investRepoRoot.at(NODE_NAME_DOCUMENTS);
+                PrimaryDocDto primaryDocDto = (PrimaryDocDto) primaryDocNode.getValue();
+                List<NewFileSyncDto> newFilesToSync = null;
+                if (!primaryDocDto.getNewDocMap().isEmpty()) {
+                    MultipartFile[] files = primaryDocDto.getNewDocMap().values().stream().map(NewDocInfo::getMultipartFile).toArray(MultipartFile[]::new);
+                    List<String> repoIds = fileRepoClient.saveFiles(files).getEntity();
+                    newFilesToSync = primaryDocDto.newFileSaved(repoIds);
+                }
+
+                // save data
+                InvestReportDto investReportDto = InvestReportDto.from(investRepoRoot);
+                AuditTrailDto auditTrailDto = (AuditTrailDto) ParamUtil.getSessionAttr(request, AuditTrailConsts.SESSION_ATTR_PARAM_NAME);
+                investReportDto.setAuditTrailDto(auditTrailDto);
+                ResponseDto<String> responseDto = investReportClient.saveNewIncidentInvest(investReportDto);
+                if(log.isInfoEnabled()){
+                    log.info("save new facility response: {}", LogUtil.escapeCrlf(responseDto.toString()));
+                }
+                try {
+                    // sync files to BE file-repo (save new added files, delete useless files)
+                    if ((newFilesToSync != null && !newFilesToSync.isEmpty()) || !primaryDocDto.getToBeDeletedRepoIds().isEmpty()) {
+                        /* Ignore the failure of sync files currently.
+                         * We should add a mechanism to retry synchronization of files in the future */
+                        FileRepoSyncDto syncDto = new FileRepoSyncDto();
+                        syncDto.setNewFiles(newFilesToSync);
+                        syncDto.setToDeleteIds(new ArrayList<>(primaryDocDto.getToBeDeletedRepoIds()));
+                        bsbFileClient.saveFiles(syncDto);
+                    }
+
+                    // delete docs in FE file-repo
+                    /* Ignore the failure when try to delete FE files because this is not a big issue.
+                     * The not deleted file won't be retrieved, so it's just a waste of disk space */
+                    for (String id: primaryDocDto.getToBeDeletedRepoIds()) {
+                        FileRepoDto fileRepoDto = new FileRepoDto();
+                        fileRepoDto.setId(id);
+                        fileRepoClient.removeFileById(fileRepoDto);
+                    }
+                } catch (Exception e) {
+                    log.error("Fail to sync files to BE", e);
+                }
+
+                ParamUtil.setRequestAttr(request, KEY_ACTION_TYPE, KEY_ACTION_SUBMIT);
+            } else {
+                jumpHandler(request, investRepoRoot);
+            }
+        } else {
+            throw new IaisRuntimeException(ERR_MSG_INVALID_ACTION);
+        }
+        ParamUtil.setSessionAttr(request, KEY_ROOT_NODE_GROUP_INVEST_REPORT, investRepoRoot);
     }
 
     public void preAcknowledge(BaseProcessClass bpc){
@@ -276,9 +320,7 @@ public class InvestReportDelegator {
 
     /* Will be removed in future, will get this from config mechanism */
     private List<DocSetting> getInvestReportDocSettings () {
-        List<DocSetting> docSettings = new ArrayList<>(3);
-        docSettings.add(new DocSetting(DocConstants.DOC_INCIDENT_REPORT, "Incident Report", false));
-        docSettings.add(new DocSetting(DocConstants.DOC_INCIDENT_ACTION_REPORT, "Incident Action Report", false));
+        List<DocSetting> docSettings = new ArrayList<>(1);
         docSettings.add(new DocSetting(DocConstants.DOC_TYPE_OTHERS, "Others", false));
         return docSettings;
     }
@@ -388,6 +430,7 @@ public class InvestReportDelegator {
     }
 
     public static NodeGroup newInvestReportRoot(String name) {
+        Node referNoSelectionNode = new Node(NODE_NAME_REFERENCE_NO_SELECTION,new Node[0]);
         SimpleNode incidentNode = new SimpleNode(new IncidentInfoDto(), NODE_NAME_INCIDENT_INFO, new Node[0]);
         SimpleNode incidentInvestNode = new SimpleNode(new IncidentInvestDto(), NODE_NAME_INCIDENT_INVESTIGATION,new Node[0]);
         SimpleNode medicalInvestNode = new SimpleNode(new MedicalInvestDto(), NODE_NAME_MEDICAL_INVESTIGATION, new Node[0]);
@@ -395,11 +438,31 @@ public class InvestReportDelegator {
         Node previewSubmitNode = new Node(NODE_NAME_PREVIEW_SUBMIT, new Node[]{incidentNode,incidentInvestNode,medicalInvestNode,documentNode});
 
         return new NodeGroup.Builder().name(name)
+                .addNode(referNoSelectionNode)
                 .addNode(incidentNode)
                 .addNode(incidentInvestNode)
                 .addNode(medicalInvestNode)
                 .addNode(documentNode)
                 .addNode(previewSubmitNode)
                 .build();
+    }
+
+    public List<SelectOption> tempReferenceNoOps(){
+        List<String> referNoList  = investReportClient.queryAllRefNo();
+        if(CollectionUtils.isEmpty(referNoList)){
+            return originalOps();
+        }
+        List<SelectOption> referNoOps = new ArrayList<>(referNoList.size()+1);
+        referNoOps.add(new SelectOption("","Please Select"));
+        for (String refNo : referNoList) {
+            referNoOps.add(new SelectOption(MaskUtil.maskValue(PARAM_REFERENCE_NO,refNo),refNo));
+        }
+        return referNoOps;
+    }
+
+    public static List<SelectOption> originalOps(){
+        List<SelectOption> originalOps = new ArrayList<>(1);
+        originalOps.add(new SelectOption("","Please Select"));
+        return originalOps;
     }
 }

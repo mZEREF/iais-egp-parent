@@ -20,6 +20,7 @@ public class ReportableEventConstants {
 
     public static final String NODE_NAME_INCIDENT_INVESTIGATION = "incidentInvest";
     public static final String NODE_NAME_MEDICAL_INVESTIGATION = "medicalInvest";
+    public static final String NODE_NAME_REFERENCE_NO_SELECTION = "referNoSelect";
 
 
     //usual key --------------------

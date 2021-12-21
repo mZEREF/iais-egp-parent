@@ -41,7 +41,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import static sg.gov.moh.iais.egp.bsb.constant.FacRegisterConstants.NODE_NAME_PREVIEW_SUBMIT;
 import static sg.gov.moh.iais.egp.bsb.constant.ReportableEventConstants.*;
 
 /**
@@ -54,6 +53,8 @@ public class IncidentNotificationDelegator {
     private static final String PARAM_SELECT_OCCURRENCE_HH_OPTIONS = "occurHHOps";
     private static final String PARAM_SELECT_OCCURRENCE_MM_OPTIONS = "occurMMOps";
     private static final String PARAM_SELECT_FACILITY_NAME_OPTIONS = "facNameOps";
+    private static final String EDIT_REFERENCE_ID = "editRefId";
+    private static final String KEY_EDIT_REF_ID = "editId";
     private final FileRepoClient fileRepoClient;
     private final IncidentNotificationClient incidentClient;
     private final BsbFileClient bsbFileClient;
@@ -74,7 +75,33 @@ public class IncidentNotificationDelegator {
 
     public void init(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
-        ParamUtil.setSessionAttr(request,KEY_ROOT_NODE_GROUP_INCIDENT_NOT,getIncidentNotRoot(request));
+        boolean newIncidentNot = true;
+
+        // check if we are doing editing
+        String maskedRefId = request.getParameter(EDIT_REFERENCE_ID);
+        if (StringUtils.hasLength(maskedRefId)) {
+            if (log.isInfoEnabled()) {
+                log.info("masked reference no: {}", LogUtil.escapeCrlf(maskedRefId));
+            }
+            newIncidentNot = false;
+            boolean failRetrieveEditData = true;
+            String refId = MaskUtil.unMaskValue(KEY_EDIT_REF_ID, maskedRefId);
+            if (refId != null && !maskedRefId.equals(refId)) {
+                ResponseDto<IncidentNotificationDto> resultDto = incidentClient.retrieveIncidentNotByReferenceId(refId);
+                if (resultDto.ok()) {
+                    failRetrieveEditData = false;
+                    NodeGroup facRegRoot = resultDto.getEntity().toIncidentNotificationDto(KEY_ROOT_NODE_GROUP_INCIDENT_NOT);
+                    ParamUtil.setSessionAttr(request, KEY_ROOT_NODE_GROUP_INCIDENT_NOT, facRegRoot);
+                }
+            }
+            if (failRetrieveEditData) {
+                throw new IaisRuntimeException("Fail to retrieve app data");
+            }
+        }
+
+        if (newIncidentNot) {
+            ParamUtil.setSessionAttr(request, KEY_ROOT_NODE_GROUP_INCIDENT_NOT,getIncidentNotRoot(request));
+        }
     }
 
     public void jumpFilter(BaseProcessClass bpc){

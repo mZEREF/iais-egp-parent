@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author YiMing
@@ -30,6 +31,7 @@ public class IncidentInfoDto extends ValidatableNodeValue {
     private String incidentType;
     private String typeOtherDetail;
     private List<String> childTypes;
+    private Map<String,String> typesMap;
 
     @JsonIgnore
     private ValidationResultDto validationResultDto;
@@ -99,6 +101,14 @@ public class IncidentInfoDto extends ValidatableNodeValue {
 
     public List<String> getChildTypes() {
         return new ArrayList<>(childTypes);
+    }
+
+    public Map<String, String> getTypesMap() {
+        return typesMap;
+    }
+
+    public void setTypesMap(Map<String, String> typesMap) {
+        this.typesMap = typesMap;
     }
 
     public void setChildTypes(List<String> childTypes) {

@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author YiMing
@@ -38,6 +39,7 @@ public class PersonReportingDto extends ValidatableNodeValue {
     private String occurrenceTime;
     private String location;
     private List<String> batName;
+    private Map<String,String> batNameMap;
     private String incidentDesc;
     private String batReleasePossibility;
     private String releaseExtent;
@@ -198,7 +200,9 @@ public class PersonReportingDto extends ValidatableNodeValue {
     }
 
     public void setBatName(List<String> batName) {
-        this.batName = new ArrayList<>(batName);
+        if(batName != null && !batName.isEmpty()){
+            this.batName = new ArrayList<>(batName);
+        }
     }
 
     public String getIncidentDesc() {
@@ -263,6 +267,14 @@ public class PersonReportingDto extends ValidatableNodeValue {
 
     public void setImmCorrectiveAction(String immCorrectiveAction) {
         this.immCorrectiveAction = immCorrectiveAction;
+    }
+
+    public Map<String, String> getBatNameMap() {
+        return batNameMap;
+    }
+
+    public void setBatNameMap(Map<String, String> batNameMap) {
+        this.batNameMap = batNameMap;
     }
 
     private static final String KEY_REPORTING_PERSON_NAME = "name";

@@ -44,4 +44,7 @@ public interface IncidentNotificationClient {
 
     @GetMapping(path = "/incident/query/fac", produces =MediaType.APPLICATION_JSON_VALUE)
     List<FacilityInfo> queryDistinctFacilityName();
+
+    @GetMapping(path="/incident/query/not/{refId}", produces =MediaType.APPLICATION_JSON_VALUE)
+    ResponseDto<IncidentNotificationDto> retrieveIncidentNotByReferenceId(@PathVariable("refId") String refId);
 }

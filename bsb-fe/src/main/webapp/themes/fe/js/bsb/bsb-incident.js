@@ -37,6 +37,7 @@ $(function (){
         $("input[name='action_type']").val("jump");
         $("input[name='action_value']").val("next");
         $("#mainForm").submit();
+
     });
 
     $("#back").click(function () {

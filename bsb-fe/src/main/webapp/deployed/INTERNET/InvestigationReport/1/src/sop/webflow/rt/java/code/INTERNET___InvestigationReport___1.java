@@ -28,6 +28,16 @@ public class INTERNET___InvestigationReport___1 extends BaseProcessClass {
 		EngineHelper.delegate(DELEGATOR, "init", this);
 	}
 
+	public void preReferNoSelection_OnStepProcess_0() throws Exception {
+		// 		PreReferNoSelection->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "preReferNoSelection", this);
+	}
+
+	public void handleReferNoSelection_OnStepProcess_0() throws Exception {
+		// 		HandleReferNoSelection->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "handleReferNoSelection", this);
+	}
+
 	public void preIncidentInfo_OnStepProcess_0() throws Exception {
 	// 		PreIncidentInfo->OnStepProcess
 		EngineHelper.delegate(DELEGATOR, "preIncidentInfo", this);

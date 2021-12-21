@@ -11,7 +11,7 @@
             <div class="col-xs-12">
                 <div class="dashboard-page-title">
                     <h1>New Report Submission</h1>
-                    <p style="font-size: 22px">You are submitting for<strong>Investigation Report</strong></p>
+                    <p style="font-size: 22px">You are submitting for<strong> Investigation Report</strong></p>
                 </div>
             </div>
         </div>

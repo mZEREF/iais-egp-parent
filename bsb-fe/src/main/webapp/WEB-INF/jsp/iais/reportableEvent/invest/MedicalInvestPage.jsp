@@ -70,11 +70,17 @@
                                                                 </div>
                                                                 <div class="form-group">
                                                                     <div class="col-sm-5 control-label">
-                                                                        <label for="medicalFollowup">Is further medical follow-up advised/expected</label>
+                                                                        <label>Is further medical follow-up advised/expected</label>
                                                                     </div>
                                                                     <div class="col-sm-6 col-md-7">
-                                                                        <input type="text" autocomplete="off" name="medicalFollowup" id="medicalFollowup" value='<c:out value="${medicalInvest.medicalFollowup}"/>'/>
-                                                                        <span data-err-ind="medicalFollowup" class="error-msg"></span>
+                                                                        <div class="col-sm-5" style="margin-top: 8px">
+                                                                            <input type="radio" name="medicalFollowup" id="medicalFollowupY" value="Y" <c:if test="${medicalInvest.medicalFollowup eq 'Y'}">checked="checked"</c:if> />
+                                                                            <label for="medicalFollowupY">Yes</label>
+                                                                        </div>
+                                                                        <div class="col-sm-5" style="margin-top: 8px">
+                                                                            <input type="radio" name="medicalFollowup" id="medicalFollowupN" value="N" <c:if test="${medicalInvest.medicalFollowup eq 'N'}">checked="checked"</c:if> />
+                                                                            <label for="medicalFollowupN">No</label>
+                                                                        </div>
                                                                     </div>
                                                                 </div>
                                                                 <div class="form-group">
