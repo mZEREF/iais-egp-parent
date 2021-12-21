@@ -32,7 +32,7 @@
                 </iais:row>
                 <iais:row>
                     <label class="col-xs-6 col-md-6 control-label">Age of 1st Embryo Transferred
-                        <c:if test="${flagTwo}">
+                        <c:if test="${flagTwo && (embryoTransferStageDto.firstEmbryoAge == 'AOFET005' || embryoTransferStageDto.firstEmbryoAge == 'AOFET006')}">
                             <a class="btn-tooltip styleguide-tooltip flag2" href="javascript:void(0);"
                                data-toggle="tooltip"
                                data-html="true"
@@ -54,7 +54,7 @@
                      <c:if test="${embryoTransferStageDto.transferNum < 2}">style="display: none;"</c:if>>
                     <iais:row>
                         <label class="col-xs-6 col-md-6 control-label">Age of 2nd Embryo Transferred
-                            <c:if test="${flagTwo}">
+                            <c:if test="${flagTwo && (embryoTransferStageDto.secondEmbryoAge == 'AOFET005' || embryoTransferStageDto.secondEmbryoAge == 'AOFET006')}">
                                 <a class="btn-tooltip styleguide-tooltip flag2" href="javascript:void(0);"
                                    data-toggle="tooltip"
                                    data-html="true"
@@ -77,7 +77,7 @@
                      <c:if test="${embryoTransferStageDto.transferNum < 3}">style="display: none;"</c:if>>
                     <iais:row>
                         <label class="col-xs-6 col-md-6 control-label">Age of 3rd Embryo Transferred
-                            <c:if test="${flagTwo}">
+                            <c:if test="${flagTwo && (embryoTransferStageDto.thirdEmbryoAge == 'AOFET005' || embryoTransferStageDto.thirdEmbryoAge == 'AOFET006')}">
                                 <a class="btn-tooltip styleguide-tooltip flag2" href="javascript:void(0);"
                                    data-toggle="tooltip"
                                    data-html="true"
