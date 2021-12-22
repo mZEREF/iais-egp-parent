@@ -27,7 +27,7 @@
                 <div class="text-left">
                     <span>
                         <%--get href from delegator--%>
-                        <a href="#"><em class="fa fa-angle-left"></em> Back</a>
+                        <a href="${backUrl}"><em class="fa fa-angle-left"></em> Back</a>
                     </span>
                 </div>
             </div>

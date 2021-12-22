@@ -63,7 +63,8 @@ public class ConsumeNotificationDto implements Serializable {
 
     private List<ConsumptionNot> consumptionNotList;
     private List<PrimaryDocDto.NewDocInfo> otherNewInfos;
-    private Map<Integer,List<PrimaryDocDto.NewDocInfo>> keyNewInfos;
+    private Map<Integer,List<PrimaryDocDto.NewDocInfo>> oldKeyNewInfos;
+    private Map<Integer,List<PrimaryDocDto.NewDocInfo>> newKeyNewInfos;
     private Map<String, PrimaryDocDto.NewDocInfo> allNewDocInfos;
     private Map<String, PrimaryDocDto.DocRecordInfo> savedDocInfos;
     private List<DocMeta> docMetaInfos;
@@ -76,7 +77,8 @@ public class ConsumeNotificationDto implements Serializable {
         consumptionNotList.add(new ConsumptionNot());
         docMetaInfos = new ArrayList<>();
         otherNewInfos = new ArrayList<>();
-        keyNewInfos = new LinkedHashMap<>();
+        oldKeyNewInfos = new LinkedHashMap<>();
+        newKeyNewInfos = new LinkedHashMap<>();
         allNewDocInfos = new LinkedHashMap<>();
         savedDocInfos = new LinkedHashMap<>();
     }
@@ -160,12 +162,20 @@ public class ConsumeNotificationDto implements Serializable {
         this.allNewDocInfos = allNewDocInfos;
     }
 
-    public Map<Integer, List<PrimaryDocDto.NewDocInfo>> getKeyNewInfos() {
-        return keyNewInfos;
+    public Map<Integer, List<PrimaryDocDto.NewDocInfo>> getOldKeyNewInfos() {
+        return oldKeyNewInfos;
     }
 
-    public void setKeyNewInfos(Map<Integer, List<PrimaryDocDto.NewDocInfo>> keyNewInfos) {
-        this.keyNewInfos = keyNewInfos;
+    public void setOldKeyNewInfos(Map<Integer, List<PrimaryDocDto.NewDocInfo>> oldKeyNewInfos) {
+        this.oldKeyNewInfos = oldKeyNewInfos;
+    }
+
+    public Map<Integer, List<PrimaryDocDto.NewDocInfo>> getNewKeyNewInfos() {
+        return newKeyNewInfos;
+    }
+
+    public void setNewKeyNewInfos(Map<Integer, List<PrimaryDocDto.NewDocInfo>> newKeyNewInfos) {
+        this.newKeyNewInfos = newKeyNewInfos;
     }
 
     public List<DocMeta> getDocMetaInfos() {
@@ -317,6 +327,8 @@ public class ConsumeNotificationDto implements Serializable {
     public void reqObjectMapping(HttpServletRequest request) {
         MultipartHttpServletRequest mulReq = (MultipartHttpServletRequest) request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
         String idxes = ParamUtil.getString(request, KEY_SECTION_IDXES);
+        //When a section is deleted, all files corresponding to it are deleted
+        removeTempIdByKeyMap(request);
         clearConsumptionNotList();
         String[] idxArr = idxes.trim().split(" +");
         int keyFlag = 0;
@@ -336,11 +348,12 @@ public class ConsumeNotificationDto implements Serializable {
             String newRepoId = "";
             //keyMap is deal with problem document is not show in page
             if(!CollectionUtils.isEmpty(newDocInfoList)){
-                this.keyNewInfos.put(keyFlag++,newDocInfoList);
+                this.newKeyNewInfos.put(keyFlag++,newDocInfoList);
                 newRepoId = newDocInfoList.stream().map(PrimaryDocDto.NewDocInfo::getTmpId).collect(Collectors.joining(","));
             }else{
+                keyFlag++;
                 //Check whether the previous file data exists
-                List<PrimaryDocDto.NewDocInfo> oldDocInfo  = this.keyNewInfos.get(Integer.valueOf(idx));
+                List<PrimaryDocDto.NewDocInfo> oldDocInfo  = this.oldKeyNewInfos.get(Integer.valueOf(idx));
                 if(!CollectionUtils.isEmpty(oldDocInfo)){
                     //Populate the list with previous data if it exists
                     consumptionNot.setNewDocInfos(oldDocInfo);
@@ -355,8 +368,6 @@ public class ConsumeNotificationDto implements Serializable {
         this.setOtherNewInfos(newOtherList);
         //get all new doc
         PrimaryDocDto.deleteNewFiles(mulReq,this.allNewDocInfos);
-        //When a section is deleted, all files corresponding to it are deleted
-        removeTempIdByKeyMap(request);
         //get all
         getDocMetaInfoFromNew();
         this.setRemarks(ParamUtil.getString(request, KEY_PREFIX_REMARKS));
@@ -393,29 +404,32 @@ public class ConsumeNotificationDto implements Serializable {
      * */
 
     public void removeTempIdByKeyMap(HttpServletRequest request){
+        //When changes occur, the value of the new map is assigned to the value of the old map
+        if(CollectionUtils.isEmpty(this.newKeyNewInfos)){
+            return;
+        }
+        this.oldKeyNewInfos.clear();
+        for (Map.Entry<Integer, List<PrimaryDocDto.NewDocInfo>> entry : this.newKeyNewInfos.entrySet()) {
+            this.oldKeyNewInfos.put(entry.getKey(),entry.getValue());
+        }
         String deleteIdx = ParamUtil.getString(request,"deleteIdx");
         if(StringUtils.hasLength(deleteIdx)){
             List<Integer> deleteIds = Arrays.stream(deleteIdx.split(","))
                     .map(Integer::valueOf)
                     .collect(Collectors.toList());
-            deleteIds.forEach(this.keyNewInfos::remove);
+            deleteIds.forEach(this.oldKeyNewInfos::remove);
         }
-//        Set<Integer> keySet = this.keyNewInfos.keySet();
-//        if(CollectionUtils.isEmpty(keySet)){
-//            return;
-//        }
-//        for (Integer key : keySet) {
-//            //Determine which section no was deleted
-//            if(!arrayContainsKey(idxArr,String.valueOf(key))){
-//                //Retrieve the ids of the files in the deleted section and remove them from Map allNewDocInfo
-//                List<String> tempId  = this.keyNewInfos.get(key).stream()
-//                        .map(PrimaryDocDto.NewDocInfo::getTmpId)
-//                        .collect(Collectors.toList());
-//                tempId.forEach(this.allNewDocInfos::remove);
-//                //keyMap delete the section no,to prevent add a new section number equal keyNewInfos key and show value in page
-//                this.keyNewInfos.remove(key);
-//            }
-//        }
+
+        //Reassign the map of the new data
+        this.newKeyNewInfos.clear();
+        int newKeyFlag = 0;
+        //Retrieve oldKeyMap keys and sort them in order
+        List<Integer> keyList = new ArrayList<>(this.oldKeyNewInfos.keySet());
+        Collections.sort(keyList);
+        Assert.notEmpty(keyList,"key list is empty");
+        for (Integer intKey : keyList) {
+            this.newKeyNewInfos.put(newKeyFlag++,this.oldKeyNewInfos.get(intKey));
+        }
     }
 
     /**

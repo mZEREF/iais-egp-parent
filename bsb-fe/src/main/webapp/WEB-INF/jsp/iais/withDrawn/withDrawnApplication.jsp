@@ -22,6 +22,7 @@
     <input type="hidden" name="action_type" value="doNext">
     <input type="hidden" name="action_value" value="">
     <input type="hidden" name="action_additional" value="">
+    <input type="hidden" id="deleteNewFiles" name="deleteNewFiles" value="">
     <%--<div class="main-content">--%>
     <div class="container">
         <div class="row">

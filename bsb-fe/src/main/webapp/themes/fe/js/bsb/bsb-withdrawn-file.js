@@ -28,7 +28,23 @@ function deleteNewFile(id) {
 
 function reloadNewFile(id) {
     deleteNewFile(id);
-    $("a[data-upload-file=" + id + "]")[0].click();
+    $("a[data-upload-file=upload]").click();
+}
+
+function reloadFile(id) {
+    // trigger click on the input file
+    var inputEl = document.getElementById(id);
+    inputEl.click();
+}
+
+function deleteFile(id) {
+    // delete input
+    var inputEl = document.getElementById(id);
+    inputEl.parentNode.removeChild(inputEl);
+
+    // delete delete button, reload button
+    var fileDiv = document.getElementById(id + "FileDiv");
+    fileDiv.parentNode.removeChild(fileDiv);
 }
 
 function appendInputValue(input, value) {

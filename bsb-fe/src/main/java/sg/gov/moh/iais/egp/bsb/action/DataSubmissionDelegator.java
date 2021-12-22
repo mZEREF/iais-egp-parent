@@ -115,7 +115,7 @@ public class DataSubmissionDelegator {
         Map<String,DocSetting> settingMap = getDocSettingMap();
         ParamUtil.setRequestAttr(request,KEY_DO_SETTINGS,settingMap);
         ParamUtil.setSessionAttr(request,KEY_CONSUME_NOTIFICATION_DTO, notificationDto);
-        Map<Integer,List<PrimaryDocDto.NewDocInfo>> keyNewInfos = notificationDto.getKeyNewInfos();
+        Map<Integer,List<PrimaryDocDto.NewDocInfo>> keyNewInfos = notificationDto.getNewKeyNewInfos();
         ParamUtil.setRequestAttr(request,PARAM_KEY_MAP,keyNewInfos);
         ParamUtil.setSessionAttr(request,KEY_SUBMISSION_TYPE,KEY_DATA_SUBMISSION_TYPE_CONSUME);
     }
@@ -194,7 +194,7 @@ public class DataSubmissionDelegator {
         if(Boolean.TRUE.equals(needShowError)){
             ParamUtil.setRequestAttr(request,ValidationConstants.KEY_VALIDATION_ERRORS,notificationDto.retrieveValidationResult());
         }
-        Map<Integer,List<PrimaryDocDto.NewDocInfo>> keyNewInfos = notificationDto.getKeyNewInfos();
+        Map<Integer,List<PrimaryDocDto.NewDocInfo>> keyNewInfos = notificationDto.getNewKeyNewInfos();
         ParamUtil.setRequestAttr(request,PARAM_KEY_MAP,keyNewInfos);
         Map<String,DocSetting> settingMap = getDocSettingMap();
         ParamUtil.setRequestAttr(request,KEY_DO_SETTINGS,settingMap);
@@ -264,7 +264,7 @@ public class DataSubmissionDelegator {
         if(Boolean.TRUE.equals(needShowError)){
             ParamUtil.setRequestAttr(request,ValidationConstants.KEY_VALIDATION_ERRORS,notificationDto.retrieveValidationResult());
         }
-        Map<Integer,List<PrimaryDocDto.NewDocInfo>> keyNewInfos = notificationDto.getKeyNewInfos();
+        Map<Integer,List<PrimaryDocDto.NewDocInfo>> keyNewInfos = notificationDto.getNewKeyNewInfos();
         ParamUtil.setRequestAttr(request,PARAM_KEY_MAP,keyNewInfos);
         Map<String,DocSetting> settingMap = getDocSettingMap();
         ParamUtil.setRequestAttr(request,KEY_DO_SETTINGS,settingMap);
@@ -334,7 +334,7 @@ public class DataSubmissionDelegator {
         if(Boolean.TRUE.equals(needShowError)){
             ParamUtil.setRequestAttr(request,ValidationConstants.KEY_VALIDATION_ERRORS,notificationDto.retrieveValidationResult());
         }
-        Map<Integer,List<PrimaryDocDto.NewDocInfo>> keyNewInfos = notificationDto.getKeyNewInfos();
+        Map<Integer,List<PrimaryDocDto.NewDocInfo>> keyNewInfos = notificationDto.getNewKeyNewInfos();
         ParamUtil.setRequestAttr(request,PARAM_KEY_MAP,keyNewInfos);
         Map<String,DocSetting> settingMap = getDocSettingMap();
         ParamUtil.setRequestAttr(request,KEY_DO_SETTINGS,settingMap);
