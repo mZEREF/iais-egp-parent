@@ -225,6 +225,9 @@
     .table > thead > tr > th, .table > tbody > tr > th, .table > tfoot > tr > th, .table > thead > tr > td, .table > tbody > tr > td, .table > tfoot > tr > td {
       line-height: 1.42857143;
     }
+    h3{
+      line-height:0.3;
+    }
   </style>
 </head>
 <body>
@@ -242,7 +245,7 @@
             </div>
             <div class="lic-number">
               <p>LICENCE NO.</p>
-              <h2>${licenceNo}</h2>
+              <h2 style = "line-height:0.3">${licenceNo}</h2>
             </div>
             <div class="lic-info">
               <p>NAME OF LICENSEE</p>
@@ -312,7 +315,7 @@
             </div>
             <div class="lic-number">
               <p>Licence No.</p>
-              <h2>${licenceNo}</h2>
+              <h2 style = "line-height:0.3">${licenceNo}</h2>
             </div>
             <div class="lic-approved-info">
               <div class="table-responsive">
