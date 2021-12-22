@@ -140,8 +140,6 @@ public final class DataSubmissionHelper {
             result.add(DataSubmissionConsts.AR_CYCLE_AR);
             result.add(DataSubmissionConsts.AR_CYCLE_EFO);
             result.add(DataSubmissionConsts.AR_CYCLE_IUI);
-            result.add(DataSubmissionConsts.AR_STAGE_END_CYCLE);
-            result.add(DataSubmissionConsts.AR_STAGE_TRANSFER_IN_AND_OUT);
         } else if (DataSubmissionConsts.DS_CYCLE_NON.equals(latestCycle)
                 || DataSubmissionConsts.AR_STAGE_END_CYCLE.equals(currStage)) {
             result.add(DataSubmissionConsts.AR_CYCLE_AR);
