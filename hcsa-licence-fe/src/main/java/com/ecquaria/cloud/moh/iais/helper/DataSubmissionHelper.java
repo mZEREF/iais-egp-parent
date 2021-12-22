@@ -4,13 +4,7 @@ import com.ecquaria.cloud.moh.iais.common.annotation.ExcelProperty;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.CycleDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.CycleStageSelectionDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DataSubmissionDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DpSuperDataSubmissionDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DsConfig;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInventoryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.*;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.mastercode.MasterCodeView;
 import com.ecquaria.cloud.moh.iais.common.helper.dataSubmission.DsConfigHelper;
@@ -27,11 +21,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.io.File;
 import java.lang.reflect.Field;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * @Description Data Submission Helper
@@ -133,6 +123,8 @@ public final class DataSubmissionHelper {
             result.add(DataSubmissionConsts.AR_CYCLE_AR);
             result.add(DataSubmissionConsts.AR_CYCLE_EFO);
             result.add(DataSubmissionConsts.AR_CYCLE_IUI);
+            result.add(DataSubmissionConsts.AR_STAGE_END_CYCLE);
+            result.add(DataSubmissionConsts.AR_STAGE_TRANSFER_IN_AND_OUT);
         } else if (DataSubmissionConsts.DS_CYCLE_NON.equals(latestCycle)
                 || DataSubmissionConsts.AR_STAGE_END_CYCLE.equals(currStage)) {
             result.add(DataSubmissionConsts.AR_CYCLE_AR);
@@ -324,8 +316,8 @@ public final class DataSubmissionHelper {
         String cycleStage = null;
         if (DataSubmissionConsts.DP_TYPE_SBT_PATIENT_INFO.equals(dpSuperDataSubmissionDto.getSubmissionType())) {
             cycleStage = DataSubmissionConsts.DS_CYCLE_STAGE_PATIENT;
-        } else if (DataSubmissionConsts.AR_TYPE_SBT_DONOR_SAMPLE.equals(dpSuperDataSubmissionDto.getSubmissionType())) {
-            cycleStage = DataSubmissionConsts.DS_CYCLE_STAGE_DONOR_SAMPLE;
+        } else if (DataSubmissionConsts.DP_TYPE_SBT_DRUG_PRESCRIBED.equals(dpSuperDataSubmissionDto.getSubmissionType())) {
+            cycleStage = DataSubmissionConsts.DS_CYCLE_STAGE_PRESCRIBED_DISPENSED;
         }
         dataSubmission.setCycleStage(cycleStage);
         dataSubmission.setStatus(DataSubmissionConsts.DS_STATUS_ACTIVE);
