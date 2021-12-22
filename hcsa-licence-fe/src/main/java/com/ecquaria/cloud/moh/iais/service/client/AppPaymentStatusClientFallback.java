@@ -16,7 +16,7 @@ public class AppPaymentStatusClientFallback implements AppPaymentStatusClient {
 
 
     @Override
-    public FeignResponseEntity<List<PaymentDto>> getPaymentDtosByReqRefNos() {
+    public FeignResponseEntity<List<PaymentDto>> getPaymentDtosByReqRefNos(String sysClientId) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);

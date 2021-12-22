@@ -145,8 +145,8 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
-import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 /**
  * AppSubmisionServiceImpl
@@ -1237,34 +1237,31 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
     }
 
     @Override
-    public Map<String, AppGrpPremisesDto> getLicencePremisesDtoMap(String licenseeId) {
+    public List<AppGrpPremisesDto> getLicencePremisesDtoList(String licenseeId) {
         List<AppGrpPremisesDto> appGrpPremisesDtos = licenceClient.getDistinctPremisesByLicenseeId(licenseeId, "").getEntity();
         if (appGrpPremisesDtos == null || appGrpPremisesDtos.isEmpty()) {
-            return IaisCommonUtils.genNewHashMap();
+            return IaisCommonUtils.genNewArrayList();
         }
-        return appGrpPremisesDtos.parallelStream()
+        return StreamSupport.stream(appGrpPremisesDtos.spliterator(), appGrpPremisesDtos.size() > 4)
                 .map(appGrpPremisesDto -> {
                     NewApplicationHelper.setWrkTime(appGrpPremisesDto);
                     appGrpPremisesDto.setExistingData(AppConsts.YES);
                     return appGrpPremisesDto;
                 })
-                .collect(Collectors.toMap(AppGrpPremisesDto::getPremisesSelect, Function.identity(), (v1, v2) -> {
-                    v1.setRelatedServices(NewApplicationHelper.combineList(v1.getRelatedServices(), v2.getRelatedServices()));
-                    return v1;
-                }));
+                .collect(Collectors.toList());
     }
 
     @Override
-    public Map<String, AppGrpPremisesDto> getActivePendingPremisesMap(String licenseeId) {
+    public List<AppGrpPremisesDto> getActivePendingPremiseList(String licenseeId) {
         log.info(StringUtil.changeForLog("LicenseeId is " + licenseeId));
         if (StringUtil.isEmpty(licenseeId)) {
-            return IaisCommonUtils.genNewHashMap(1);
+            return IaisCommonUtils.genNewArrayList(1);
         }
         List<AppGrpPremisesDto> appGrpPremisesDtos = applicationFeClient.getActivePendingPremises(licenseeId).getEntity();
         if (appGrpPremisesDtos == null || appGrpPremisesDtos.isEmpty()) {
-            return IaisCommonUtils.genNewHashMap();
+            return IaisCommonUtils.genNewArrayList();
         }
-        return appGrpPremisesDtos.parallelStream()
+        return StreamSupport.stream(appGrpPremisesDtos.spliterator(), appGrpPremisesDtos.size() > 4)
                 .map(appGrpPremisesDto -> {
                     NewApplicationHelper.setWrkTime(appGrpPremisesDto);
                     appGrpPremisesDto.setExistingData(AppConsts.YES);
@@ -1280,10 +1277,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                     }
                     return appGrpPremisesDto;
                 })
-                .collect(Collectors.toMap(AppGrpPremisesDto::getPremisesSelect, Function.identity(), (v1, v2) -> {
-                    v1.setRelatedServices(NewApplicationHelper.combineList(v1.getRelatedServices(), v2.getRelatedServices()));
-                    return v1;
-                }));
+                .collect(Collectors.toList());
     }
 
     @Override

@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.RedirectUtil;
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.PaymentRequestDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -42,7 +43,8 @@ public class PaymentDelegator {
         HttpServletRequest request=bpc.request;
 
         String reqNo= ParamUtil.getRequestString(request,"reqNo");
-        PaymentRequestDto paymentRequestDto=paymentClient.getPaymentRequestDtoByReqRefNo(reqNo).getEntity();
+        PaymentRequestDto paymentRequestDto=paymentClient.getPaymentRequestDtoByReqRefNo(
+                AppConsts.MOH_IAIS_SYSTEM_PAYMENT_CLIENT_KEY, reqNo).getEntity();
         String url=  ConfigUtil.getString( "rvl.baiduri.return.url");
         StringBuilder bud = new StringBuilder();
         String header =  ParamUtil.getRequestString(request,"hmac");

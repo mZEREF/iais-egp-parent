@@ -97,6 +97,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.*;
+import java.util.stream.StreamSupport;
 
 
 /**
@@ -754,6 +755,7 @@ public class WithOutRenewalDelegator {
 
         if(appSubmissionDtos.size() == 1){
             validateOtherSubDto(bpc.request,false,autoGrpNo,licenseeId,appSubmissionDtos.get(0),appEditSelectDto,autoAppSubmissionDtos,noAutoAppSubmissionDtos,oldAppSubmissionDto);
+            NewApplicationHelper.reSetAdditionalFields(appSubmissionDtos.get(0), oldAppSubmissionDto);
         }else if(appSubmissionDtos.size() > 1){
             needDec = false;
             moreAppSubmissionDtoAction(appSubmissionDtos);
@@ -1019,7 +1021,7 @@ public class WithOutRenewalDelegator {
             AppEditSelectDto changeSelectDto = new AppEditSelectDto();
             changeSelectDto.setLicenseeEdit(true);
             requestForChangeService.checkAffectedAppSubmissions(dto, null, 0.0, null, groupNo,
-                    changeSelectDto, null, null);
+                    changeSelectDto, null);
             dto.setAutoRfc(true);
         });
         return appSubmissionDtos;
@@ -1534,6 +1536,16 @@ public class WithOutRenewalDelegator {
                         }
                     }
                 }
+            }else if(appEditSelectDto.isPremisesEdit()) {
+                List<AppSubmissionDto> submissionDtos = requestForChangeService.getAlginAppSubmissionDtos(
+                        appSubmissionDto.getLicenceId(), true);
+                if (IaisCommonUtils.isNotEmpty(submissionDtos)) {
+                    boolean parallel = submissionDtos.size() >= RfcConst.DFT_MIN_PARALLEL_SIZE;
+                    StreamSupport.stream(submissionDtos.spliterator(), parallel)
+                            .forEach(dto -> requestForChangeService.checkAffectedAppSubmissions(dto, null,100.0d , appSubmissionDto.getDraftNo(),  appSubmissionDto.getAppGrpNo(),
+                                    appEditSelectDto, null));
+                    noAutoAppSubmissionDtos.addAll(submissionDtos);
+                }
             }
 
             log.info(StringUtil.changeForLog("---- premisesEdit autoAppSubmissionDtos size :" + autoAppSubmissionDtos.size()));
@@ -1572,7 +1584,7 @@ public class WithOutRenewalDelegator {
         }
 
         if (!errorListMap.isEmpty()) {
-            ParamUtil.setRequestAttr(request,NewApplicationConstant.SHOW_OTHER_ERROR,NewApplicationHelper.getErrorMsg(errorListMap));
+            ParamUtil.setRequestAttr(request, RfcConst.SHOW_OTHER_ERROR,NewApplicationHelper.getErrorMsg(errorListMap));
             ParamUtil.setRequestAttr(request, PAGE_SWITCH, PAGE2);
         }
 

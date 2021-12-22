@@ -41,5 +41,4 @@ public class NewApplicationConstant {
     public static final String SECTION_SVCINFO                          = "information";
     public static final String SECTION_PREVIEW                          = "previewli";
 
-    public static final String SHOW_OTHER_ERROR                         = "showOtherError";
 }
