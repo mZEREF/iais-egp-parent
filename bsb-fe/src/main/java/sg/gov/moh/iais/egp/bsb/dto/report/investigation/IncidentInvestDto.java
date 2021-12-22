@@ -10,6 +10,7 @@ import sg.gov.moh.iais.egp.bsb.common.node.simple.ValidatableNodeValue;
 import sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants;
 import sg.gov.moh.iais.egp.bsb.dto.ValidationResultDto;
 import sg.gov.moh.iais.egp.bsb.util.CollectionUtils;
+import sg.gov.moh.iais.egp.bsb.util.SpringReflectionUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
@@ -47,7 +48,8 @@ public class IncidentInvestDto extends ValidatableNodeValue {
 
     @Override
     public boolean doValidation() {
-        return true;
+        this.validationResultDto = (ValidationResultDto) SpringReflectionUtils.invokeBeanMethod("investRepFeignClient", "validateIncidentInvestDto", new Object[]{this});
+        return validationResultDto.isPass();
     }
 
     @Override
@@ -114,6 +116,7 @@ public class IncidentInvestDto extends ValidatableNodeValue {
         this.backgroundInfo = ParamUtil.getString(request,KEY_BACKGROUND_INFORMATION);
         this.incidentDesc = ParamUtil.getString(request,KEY_INCIDENT_DESCRIPTION);
         String[] causes = ParamUtil.getStrings(request,KEY_INCIDENT_CAUSES);
+        this.incidentCauses.clear();
         if(causes != null && causes.length > 0){
             for (String cause : causes) {
                 IncidentCauseDto incidentCauseDto = new IncidentCauseDto();

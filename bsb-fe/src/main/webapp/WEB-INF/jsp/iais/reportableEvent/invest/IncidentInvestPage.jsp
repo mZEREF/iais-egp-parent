@@ -67,7 +67,7 @@
                                                                         <input type="text" name="incidentDesc"
                                                                                id="incidentDesc" maxlength="500"
                                                                                value="${incidentInvest.incidentDesc}">
-                                                                        <span data-err-ind="orgName"
+                                                                        <span data-err-ind="incidentDesc"
                                                                               class="error-msg"></span>
                                                                     </div>
                                                                 </div>
@@ -763,6 +763,16 @@
                                                                         </div>
                                                                     </div>
                                                                 </div>
+
+                                                                <div style="margin-bottom: 15px">
+                                                                    <div class="row">
+                                                                        <div class="col-sm-5 control-label"></div>
+                                                                        <div class="col-sm-6 col-md-7">
+                                                                            <span data-err-ind="incidentCause" class="error-msg"></span>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+
                                                             </div>
                                                         </div>
                                                     </div>

@@ -147,12 +147,12 @@
                                                                 </div>
                                                                 <div class="form-group">
                                                                     <div class="col-sm-5 control-label">
-                                                                        <label for="incidentDate">Date of Incident</label>
+                                                                        <label for="incidentEntityDate">Date of Incident</label>
                                                                         <span class="mandatory otherQualificationSpan">*</span>
                                                                     </div>
                                                                     <div class="col-sm-6 col-md-7">
-                                                                        <input type="text" autocomplete="off" name="incidentDate" id="incidentDate" data-date-start-date="01/01/1900"  placeholder="dd/mm/yyyy" maxlength="10" value="${reportingPerson.incidentDate}" class="date_picker form-control" />
-                                                                        <span data-err-ind="incidentDate" class="error-msg"></span><span data-err-ind="officeTelNo" class="error-msg"></span>
+                                                                        <input type="text" autocomplete="off" name="incidentEntityDate" id="incidentEntityDate" data-date-start-date="01/01/1900"  placeholder="dd/mm/yyyy" maxlength="10" value="${reportingPerson.incidentEntityDate}" class="date_picker form-control" />
+                                                                        <span data-err-ind="incidentEntityDate" class="error-msg"></span><span data-err-ind="officeTelNo" class="error-msg"></span>
                                                                     </div>
                                                                 </div>
                                                                 <div class="form-group">

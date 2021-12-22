@@ -35,7 +35,7 @@ public class PersonReportingDto extends ValidatableNodeValue {
     private String facId;
     private String facType;
     private String activityType;
-    private String incidentDate;
+    private String incidentEntityDate;
     private String occurrenceTime;
     private String location;
     private List<String> batName;
@@ -171,12 +171,12 @@ public class PersonReportingDto extends ValidatableNodeValue {
         this.activityType = activityType;
     }
 
-    public String getIncidentDate() {
-        return incidentDate;
+    public String getIncidentEntityDate() {
+        return incidentEntityDate;
     }
 
-    public void setIncidentDate(String incidentDate) {
-        this.incidentDate = incidentDate;
+    public void setIncidentEntityDate(String incidentEntityDate) {
+        this.incidentEntityDate = incidentEntityDate;
     }
 
     public String getOccurrenceTime() {
@@ -287,7 +287,7 @@ public class PersonReportingDto extends ValidatableNodeValue {
     private static final String KEY_FACILITY_NAME = "facName";
     private static final String KEY_FACILITY_TYPE = "facType";
     private static final String KEY_ACTIVITY_TYPE = "activityType";
-    private static final String KEY_INCIDENT_DATE = "incidentDate";
+    private static final String KEY_INCIDENT_DATE = "incidentEntityDate";
     private static final String KEY_OCCURRENCE_TIME_HH = "occurrenceTimeH";
     private static final String KEY_OCCURRENCE_TIME_MM = "occurrenceTimeM";
     private static final String KEY_INCIDENT_LOCATION = "location";
@@ -313,7 +313,7 @@ public class PersonReportingDto extends ValidatableNodeValue {
         this.facId = MaskUtil.unMaskValue("id",this.facName);
         this.facType = ParamUtil.getString(request,KEY_FACILITY_TYPE);
         this.activityType = ParamUtil.getString(request,KEY_ACTIVITY_TYPE);
-        this.incidentDate = ParamUtil.getString(request,KEY_INCIDENT_DATE);
+        this.incidentEntityDate = ParamUtil.getString(request,KEY_INCIDENT_DATE);
         String occurrenceTimeH = ParamUtil.getString(request,KEY_OCCURRENCE_TIME_HH);
         String occurrenceTimeM = ParamUtil.getString(request,KEY_OCCURRENCE_TIME_MM);
         this.occurrenceTime = occurrenceTimeH+":"+occurrenceTimeM;

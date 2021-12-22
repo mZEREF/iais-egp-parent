@@ -8,8 +8,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
-import sg.gov.moh.iais.egp.bsb.dto.report.investigation.IncidentDto;
-import sg.gov.moh.iais.egp.bsb.dto.report.investigation.InvestReportDto;
+import sg.gov.moh.iais.egp.bsb.dto.ValidationResultDto;
+import sg.gov.moh.iais.egp.bsb.dto.report.PrimaryDocDto;
+import sg.gov.moh.iais.egp.bsb.dto.report.investigation.*;
 
 import java.util.List;
 
@@ -28,4 +29,19 @@ public interface InvestReportClient {
 
     @PostMapping(path = "/invest/save/incidentInvest", consumes = MediaType.APPLICATION_JSON_VALUE, produces =MediaType.APPLICATION_JSON_VALUE)
     ResponseDto<String> saveNewIncidentInvest(@RequestBody InvestReportDto dto);
+
+    @PostMapping(path = "/invest/validate/referNo/select", consumes = MediaType.APPLICATION_JSON_VALUE, produces =MediaType.APPLICATION_JSON_VALUE)
+    ValidationResultDto validateReferNoSelectionDto(@RequestBody ReferNoSelectionDto dto);
+
+    @PostMapping(path = "/invest/validate/incidentInfo", consumes = MediaType.APPLICATION_JSON_VALUE, produces =MediaType.APPLICATION_JSON_VALUE)
+    ValidationResultDto validateIncidentInfo(@RequestBody IncidentInfoDto dto);
+
+    @PostMapping(path = "/invest/validate/incident/invest", consumes = MediaType.APPLICATION_JSON_VALUE, produces =MediaType.APPLICATION_JSON_VALUE)
+    ValidationResultDto validateIncidentInvestDto(@RequestBody IncidentInvestDto dto);
+
+    @PostMapping(path = "/invest/validate/medical/invest", consumes = MediaType.APPLICATION_JSON_VALUE, produces =MediaType.APPLICATION_JSON_VALUE)
+    ValidationResultDto validateMedicalInvestDto(@RequestBody MedicalInvestDto dto);
+
+    @PostMapping(path = "/invest/validate/primaryDoc", consumes = MediaType.APPLICATION_JSON_VALUE, produces =MediaType.APPLICATION_JSON_VALUE)
+    ValidationResultDto validatePrimaryDoc(@RequestBody PrimaryDocDto.DocsMetaDto dto);
 }
