@@ -10,7 +10,7 @@
     </div>
     <div id="pftDetailsPreview" class="panel-collapse collapse in">
         <div class="panel-body">
-            <div class="panel-main-content form-horizontal">
+            <iais:row class="panel-main-content form-horizontal">
                 <h3>
                     <label ><c:out value="${arSuperDataSubmissionDto.patientInfoDto.patient.name}"/></label>
                     <span style="font-weight:normal"><c:out value="(${arSuperDataSubmissionDto.patientInfoDto.patient.idNumber})"/>
@@ -130,15 +130,17 @@
                     </iais:value>
                 </iais:row>
                 <div <c:if test="${ count<6 }">style="display: none"</c:if>>
-                    <iais:field width="6" value="Is there an Appeal?"/>
-                    <iais:value width="6" display="true">
-                        <c:if test="${ arSuperDataSubmissionDto.pgtStageDto.isThereAppeal ==1 }">
-                            Yes
-                        </c:if>
-                        <c:if test="${ arSuperDataSubmissionDto.pgtStageDto.isThereAppeal ==0 }">
-                            No
-                        </c:if>
-                    </iais:value>
+                    <iais:row >
+                        <iais:field width="6" value="Is there an Appeal?"/>
+                        <iais:value width="6" display="true">
+                            <c:if test="${ arSuperDataSubmissionDto.pgtStageDto.isThereAppeal ==1 }">
+                                Yes
+                            </c:if>
+                            <c:if test="${ arSuperDataSubmissionDto.pgtStageDto.isThereAppeal ==0 }">
+                                No
+                            </c:if>
+                        </iais:value>
+                    </iais:row>
                 </div>
                 <iais:row>
                     <iais:field width="6" value="Embryos were Biospied At"/>

@@ -129,15 +129,17 @@
                     </iais:value>
                 </iais:row>
                 <div <c:if test="${ count<6 }">style="display: none"</c:if>>
-                    <iais:field width="6" value="Is there an Appeal?"/>
-                    <iais:value width="6" display="true">
-                        <c:if test="${ arSuperDataSubmissionDto.pgtStageDto.isThereAppeal ==1 }">
-                            Yes
-                        </c:if>
-                        <c:if test="${ arSuperDataSubmissionDto.pgtStageDto.isThereAppeal ==0 }">
-                            No
-                        </c:if>
-                    </iais:value>
+                    <iais:row >
+                        <iais:field width="6" value="Is there an Appeal?"/>
+                        <iais:value width="6" display="true">
+                            <c:if test="${ arSuperDataSubmissionDto.pgtStageDto.isThereAppeal ==1 }">
+                                Yes
+                            </c:if>
+                            <c:if test="${ arSuperDataSubmissionDto.pgtStageDto.isThereAppeal ==0 }">
+                                No
+                            </c:if>
+                        </iais:value>
+                    </iais:row>
                 </div>
                 <iais:row>
                     <iais:field width="6" value="Embryos were Biospied At"/>
