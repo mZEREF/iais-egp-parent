@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.batchjob;
 
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.PaymentRequestDto;
@@ -43,7 +44,8 @@ public class ClientCheckNotResultPaymentJob {
         for (ApplicationGroupDto appGrp :applicationGroupDtoList
                 ) {
             try {
-                List<PaymentRequestDto> paymentRequestDtos= appGrpPaymentClient.getPaymentRequestDtoByReqRefNoLike(appGrp.getGroupNo()).getEntity();
+                List<PaymentRequestDto> paymentRequestDtos= appGrpPaymentClient
+                        .getPaymentRequestDtoByReqRefNoLike(AppConsts.MOH_IAIS_SYSTEM_PAYMENT_CLIENT_KEY, appGrp.getGroupNo()).getEntity();
                 if(paymentRequestDtos!=null){
                     for (PaymentRequestDto paymentRequestDto:paymentRequestDtos
                     ) {

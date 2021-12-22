@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.batchjob;
 
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.PaymentRequestDto;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -38,7 +39,8 @@ public class PaymentCheckNotResultFromBankJob {
 
     public void endStep(BaseProcessClass bpc)  {
         log.debug(StringUtil.changeForLog("the do action start ...."));
-        List<PaymentRequestDto> paymentRequestDtos=paymentClient.getAllPayingPaymentRequestDto().getEntity();
+        List<PaymentRequestDto> paymentRequestDtos=paymentClient
+                .getAllPayingPaymentRequestDto(AppConsts.MOH_IAIS_SYSTEM_PAYMENT_CLIENT_KEY).getEntity();
         for (PaymentRequestDto payReq:paymentRequestDtos
              ) {
             try {
@@ -51,12 +53,14 @@ public class PaymentCheckNotResultFromBankJob {
                     paymentService.retrievePayNowPayment(payReq);
                 }else {
                     payReq.setStatus(PaymentTransactionEntity.TRANS_STATUS_FAILED);
+                    payReq.setSystemClientId(AppConsts.MOH_IAIS_SYSTEM_PAYMENT_CLIENT_KEY);
                     paymentClient.updatePaymentResquset(payReq);
                 }
             }catch (Exception e){
                 log.info(e.getMessage(),e);
                 payReq.setStatus(PaymentTransactionEntity.TRANS_STATUS_FAILED);
                 try {
+                    payReq.setSystemClientId(AppConsts.MOH_IAIS_SYSTEM_PAYMENT_CLIENT_KEY);
                     paymentClient.updatePaymentResquset(payReq);
                 }catch (Exception e1){
                     log.info(e.getMessage(),e1);

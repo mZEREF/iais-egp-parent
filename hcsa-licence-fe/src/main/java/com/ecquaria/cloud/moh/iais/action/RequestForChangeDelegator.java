@@ -788,7 +788,7 @@ public class RequestForChangeDelegator {
                          AppEditSelectDto appEditSelectDto = new AppEditSelectDto();
                         appEditSelectDto.setNeedNewLicNo(true);
                         requestForChangeService.checkAffectedAppSubmissions(appSubmissionDto, null, amount, draftNo, grpNo,
-                                appEditSelectDto, null,null);
+                                appEditSelectDto, null);
                         appSubmissionDto.setGetAppInfoFromDto(false);
                         AppSubmissionDto tranferSub = requestForChangeService.submitChange(appSubmissionDto);
                         ParamUtil.setSessionAttr(bpc.request, "app-rfc-tranfer", tranferSub);
@@ -932,7 +932,6 @@ public class RequestForChangeDelegator {
     private void init(BaseProcessClass bpc, String licenceId) throws Exception {
         HcsaServiceCacheHelper.flushServiceMapping();
         ParamUtil.setSessionAttr(bpc.request, RfcConst.LICENCEID, licenceId);
-
         //load data
         if(!StringUtil.isEmpty(licenceId)){
             AppSubmissionDto appSubmissionDto = appSubmissionService.getAppSubmissionDtoByLicenceId(licenceId);
@@ -948,14 +947,17 @@ public class RequestForChangeDelegator {
                 String appType = ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE;
                 AuditTrailHelper.setAuditLicNo(appSubmissionDto.getLicenceNo());
                 appSubmissionDto.setAppType(appType);
-                String svcName = appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0).getServiceName();
-                HcsaServiceDto hcsaServiceDto = serviceConfigService.getActiveHcsaServiceDtoByName(svcName);
-                for(AppGrpPremisesDto appGrpPremisesDto:appSubmissionDto.getAppGrpPremisesDtoList()){
+                // set premises
+                for (AppGrpPremisesDto appGrpPremisesDto : appSubmissionDto.getAppGrpPremisesDtoList()) {
                     NewApplicationHelper.setWrkTime(appGrpPremisesDto);
+                    appGrpPremisesDto.setOldHciCode(appGrpPremisesDto.getHciCode());
+                    appGrpPremisesDto.setExistingData(AppConsts.NO);
                 }
                 //set svcInfo
                 NewApplicationHelper.setSubmissionDtoSvcData(bpc.request,appSubmissionDto);
                 //set laboratory disciplines info
+                String svcName = appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0).getServiceName();
+                HcsaServiceDto hcsaServiceDto = serviceConfigService.getActiveHcsaServiceDtoByName(svcName);
                 if(hcsaServiceDto != null){
                     String currSvcId = hcsaServiceDto.getId();
                     log.debug(StringUtil.changeForLog("current svc id:"+ currSvcId));

@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
+import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
@@ -108,7 +109,8 @@ public class StripeServiceImpl implements StripeService {
         Session session=retrieveEicSession(paymentRequestDto.getQueryCode());
         PaymentIntent paymentIntent=retrieveEicPaymentIntent(session.getPaymentIntent());
 
-        PaymentDto paymentDto=paymentClient.getPaymentDtoByReqRefNo(paymentRequestDto.getReqRefNo()).getEntity();
+        PaymentDto paymentDto=paymentClient.getPaymentDtoByReqRefNo(AppConsts.MOH_IAIS_SYSTEM_PAYMENT_CLIENT_KEY,
+                paymentRequestDto.getReqRefNo()).getEntity();
         String appGrpNo;
         try{
             appGrpNo=paymentRequestDto.getReqRefNo().substring(0,paymentRequestDto.getReqRefNo().indexOf('_'));
@@ -152,7 +154,9 @@ public class StripeServiceImpl implements StripeService {
         if(applicationGroupDto.getPmtStatus().equals(ApplicationConsts.PAYMENT_STATUS_PAY_SUCCESS)){
             paymentAppGrpClient.doPaymentUpDate(applicationGroupDto);
         }
+        paymentDto.setSystemClientId(AppConsts.MOH_IAIS_SYSTEM_PAYMENT_CLIENT_KEY);
         paymentClient.saveHcsaPayment(paymentDto);
+        paymentRequestDto.setSystemClientId(AppConsts.MOH_IAIS_SYSTEM_PAYMENT_CLIENT_KEY);
         paymentClient.updatePaymentResquset(paymentRequestDto);
 
     }

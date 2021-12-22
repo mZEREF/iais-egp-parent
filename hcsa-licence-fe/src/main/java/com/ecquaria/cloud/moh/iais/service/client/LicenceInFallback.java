@@ -23,15 +23,27 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PersonnelTypeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PersonnelsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesListQueryDto;
+import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 
+import java.util.Arrays;
 import java.util.List;
 
 
+@Slf4j
 @Component
 public class LicenceInFallback implements LicenceClient {
+
+    private <T> FeignResponseEntity<T> getFeignResponseEntity(Object... objs) {
+        log.warn(StringUtil.changeForLog("Params: " + Arrays.toString(objs)));
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
 
     @Override
     public FeignResponseEntity<AppSubmissionDto> getAppSubmissionDto(String licenceId) {
@@ -490,6 +502,11 @@ public class LicenceInFallback implements LicenceClient {
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
         return entity;
+    }
+
+    @Override
+    public FeignResponseEntity<List<AppSubmissionDto>> getAlginAppSubmissionDtos(String licenceId, Boolean checkSpec) {
+        return getFeignResponseEntity(licenceId, checkSpec);
     }
 
 }
