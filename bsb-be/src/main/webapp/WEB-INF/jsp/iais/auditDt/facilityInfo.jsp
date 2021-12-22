@@ -7,7 +7,7 @@
                     <tbody>
                     <%--@elvariable id="processData" type="sg.gov.moh.iais.egp.bsb.dto.audit.OfficerProcessAuditDto"--%>
                         <tr>
-                            <th scope="col"></th>
+                            <th scope="col" style="display: none"></th>
                         </tr>
                         <tr>
                             <td class="col-xs-6" align="right">Facility Name</td>

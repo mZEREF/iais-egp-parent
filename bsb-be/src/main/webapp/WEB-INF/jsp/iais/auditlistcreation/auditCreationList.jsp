@@ -102,7 +102,7 @@
                             <table aria-describedby="" class="table application-group" style="border-collapse:collapse;">
                                 <thead>
                                 <tr>
-                                    <th scope="col"></th>
+                                    <th scope="col" style="display: none"></th>
                                 </tr>
                                 <tr>
                                     <iais:sortableHeader needSort="false" field="" value=" " isFE="false"/>

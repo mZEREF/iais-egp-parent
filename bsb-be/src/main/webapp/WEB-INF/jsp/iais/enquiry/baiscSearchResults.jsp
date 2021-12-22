@@ -12,7 +12,7 @@
                                     <table class="table" aria-describedby="">
                                         <thead>
                                         <tr>
-                                            <th scope="col"></th>
+                                            <th scope="col" style="display: none"></th>
                                         </tr>
                                         <tr align="center">
                                             <iais:sortableHeader needSort="false" field=""
@@ -107,7 +107,7 @@
                                     <table class="table" aria-describedby="">
                                         <thead>
                                         <tr>
-                                            <th scope="col"></th>
+                                            <th scope="col" style="display: none"></th>
                                         </tr>
                                         <tr align="center">
                                             <iais:sortableHeader needSort="false" field=""
@@ -198,7 +198,7 @@
                                     <table class="table" aria-describedby="">
                                         <thead>
                                         <tr>
-                                            <th scope="col"></th>
+                                            <th scope="col" style="display: none"></th>
                                         </tr>
                                         <tr align="center">
                                             <iais:sortableHeader needSort="false" field=""
@@ -254,7 +254,7 @@
                                     <table class="table" aria-describedby="">
                                         <thead>
                                         <tr>
-                                            <th scope="col"></th>
+                                            <th scope="col" style="display: none"></th>
                                         </tr>
                                         <tr align="center">
                                             <iais:sortableHeader needSort="false" field=""

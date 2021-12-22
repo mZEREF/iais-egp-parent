@@ -13,7 +13,7 @@
                         <table aria-describedby="" class="table">
                             <thead>
                             <tr>
-                                <th scope="col"></th>
+                                <th scope="col" style="display: none"></th>
                             </tr>
                             <tr align="center">
                                 <iais:sortableHeader needSort="false" field=""
@@ -118,7 +118,7 @@
                         <table aria-describedby="" class="table">
                             <thead>
                             <tr>
-                                <th scope="col"></th>
+                                <th scope="col" style="display: none"></th>
                             </tr>
                             <tr align="center">
                                 <iais:sortableHeader needSort="false" field=""
@@ -209,7 +209,7 @@
                         <table aria-describedby="" class="table">
                             <thead>
                             <tr>
-                                <th scope="col"></th>
+                                <th scope="col" style="display: none"></th>
                             </tr>
                             <tr align="center">
                                 <iais:sortableHeader needSort="false" field=""
@@ -301,7 +301,7 @@
                         <table aria-describedby="" class="table">
                             <thead>
                             <tr>
-                                <th scope="col"></th>
+                                <th scope="col" style="display: none"></th>
                             </tr>
                             <tr align="center">
                                 <iais:sortableHeader needSort="false" field=""

@@ -51,7 +51,7 @@
                                                                 <table aria-describedby="" class="table table-bordered">
                                                                     <tbody>
                                                                     <tr>
-                                                                        <th scope="col"></th>
+                                                                        <th scope="col" style="display: none"></th>
                                                                     </tr>
                                                                     <tr>
                                                                         <td class="col-xs-6" align="right">S/N</td>
@@ -207,7 +207,7 @@
                                                                         <table aria-describedby="" class="table">
                                                                             <thead>
                                                                             <tr>
-                                                                                <th scope="col"></th>
+                                                                                <th scope="col" style="display: none"></th>
                                                                             </tr>
                                                                             <tr align="center">
                                                                                 <iais:sortableHeader needSort="false"

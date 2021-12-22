@@ -6,7 +6,7 @@
                 <table aria-describedby="" class="table table-bordered" style="margin-bottom: 0">
                     <tbody>
                         <tr>
-                            <th scope="col"></th>
+                            <th scope="col" style="display: none"></th>
                         </tr>
                         <tr>
                             <td align="right">Active Approval No. to be revoked</td>
