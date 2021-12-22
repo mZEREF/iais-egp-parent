@@ -82,7 +82,7 @@
    <OnStepProcess/>
    <OnStepComplete/>
   </InvokeStep>
-  <InvokeStep defClass="" executor="" icon="" name="TP" processname="" project="" version="" x="1140" y="410">
+  <InvokeStep defClass="" executor="" icon="" name="TP" processname="MohTOPDataSubmission" project="" version="-1" x="1140" y="410">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess/>

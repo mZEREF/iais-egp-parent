@@ -61,7 +61,9 @@
   <AutomaticStep defClass="" executor="" icon="" name="DoDraft" x="760" y="520">
    <Description/>
    <probepoint type="none"/>
-   <OnStepProcess/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="doDraft_OnStepProcess_0" name="doDraft_OnStepProcess_0"/>
+   </OnStepProcess>
   </AutomaticStep>
   <AutomaticStep defClass="" executor="" icon="" name="DoControl" x="760" y="280">
    <Description/>
@@ -78,7 +80,7 @@
    <Description/>
    <probepoint type="none"/>
   </WebPage>
-  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="AckPage" stageIndicator="" x="640" y="280">
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="AckPage" stageIndicator="" x="630" y="280">
    <OnPageLoad/>
    <OnPageSubmit/>
    <Description/>
@@ -106,7 +108,7 @@
    <position>{(390,180)(510,300)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Pages/WebPage/AckPage" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/DoSubmission" style="rectanular">
-   <position>{(510,300)(660,300)}</position>
+   <position>{(510,300)(650,300)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/DoRfc" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
    <position>{(390,180)(520,430)}</position>
@@ -130,7 +132,7 @@
    <position>{(900,300)(898,117)(266,59)(250,180)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/DoControl" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/AckPage" style="rectanular">
-   <position>{(660,300)(780,300)}</position>
+   <position>{(650,300)(780,300)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/DoControl" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/DoRfc" style="oblique">
    <position>{(520,430)(780,300)}</position>

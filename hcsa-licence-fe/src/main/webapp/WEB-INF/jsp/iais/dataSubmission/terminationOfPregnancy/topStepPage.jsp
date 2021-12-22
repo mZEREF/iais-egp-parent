@@ -13,9 +13,9 @@
 %>
 <webui:setLayout name="iais-internet"/>
 
-<%@ include file="common/vssHeader.jsp" %>
+<%@ include file="common/topHeader.jsp" %>
 
-<c:set var="canEdit" value="${VSS_CURRENT_STEP.showEdit}" scope="request"/>
+<c:set var="canEdit" value="${TOP_CURRENT_STEP.showEdit}" scope="request"/>
 
 <form method="post" id="mainForm" action="<%=process2.runtime.continueURL()%>">
     <input id="isEditHiddenVal" type="hidden" name="isEdit" value="0"/>
@@ -27,21 +27,24 @@
                         <%@ include file="common/navTabs.jsp" %>
                         <div class="tab-content">
                             <div class="tab-pane in active">
-                                <c:set var="currCode" value="${VSS_CURRENT_STEP.code}" scope="request"/>
+                                <c:set var="currCode" value="${TOP_CURRENT_STEP.code}" scope="request"/>
+                                ------------------${currCode}--------------
                                 <c:choose>
-                                    <c:when test="${currCode == 'VSST001'}">
-                                        <%@ include file="section/treatmentDetails.jsp" %>
+                                    <c:when test="${currCode == 'TOPT001'}">
+                                        <%--<%@ include file="section/patientDetails.jsp" %>--%>
                                     </c:when>
-                                    <c:when test="${currCode == 'VSST002'}">
-                                        <%@ include file="section/particularsConsentOrCourtOrder.jsp" %>
+                                    <c:when test="${currCode == 'TOPT002'}">
                                     </c:when>
-                                    <c:when test="${currCode == 'VSST003'}">
-                                        <%@ include file="section/particularsSterilizationSection.jsp" %>
+                                    <c:when test="${currCode == 'TOPT003'}">
                                     </c:when>
-                                    <c:when test="${currCode == 'VSST010'}">
+                                    <c:when test="${currCode == 'TOPT004'}">
+                                    </c:when>
+                                    <c:when test="${currCode == 'TOPT005'}">
+                                    </c:when>
+                                    <c:when test="${currCode == 'TOPT010'}">
                                     </c:when>
                                 </c:choose>
-                                <%@ include file="common/vssFooter.jsp" %>
+                                <%@ include file="common/topFooter.jsp" %>
                             </div>
                         </div>
                     </div>
