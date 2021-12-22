@@ -41,6 +41,10 @@ public final class DataSubmissionHelper {
         session.removeAttribute(DataSubmissionConstant.DP_OLD_DATA_SUBMISSION);
         session.removeAttribute(DataSubmissionConstant.DP_PREMISES_MAP);
         session.removeAttribute(DataSubmissionConstant.DP_PREMISES);
+        session.removeAttribute(DataSubmissionConstant.VSS_DATA_SUBMISSION);
+        session.removeAttribute(DataSubmissionConstant.VSS_OLD_DATA_SUBMISSION);
+        session.removeAttribute(DataSubmissionConstant.VSS_PREMISES_MAP);
+        session.removeAttribute(DataSubmissionConstant.VSS_PREMISES);
     }
 
     public static LoginContext getLoginContext(HttpServletRequest request) {
@@ -101,6 +105,19 @@ public final class DataSubmissionHelper {
 
     public static void setCurrentDpDataSubmission(DpSuperDataSubmissionDto dpSuperDataSubmissionDto, HttpServletRequest request) {
         ParamUtil.setSessionAttr(request, DataSubmissionConstant.DP_DATA_SUBMISSION, dpSuperDataSubmissionDto);
+    }
+
+    public static VssSuperDataSubmissionDto getCurrentVssDataSubmission(HttpServletRequest request) {
+        VssSuperDataSubmissionDto vssSuperDataSubmissionDto = (VssSuperDataSubmissionDto) ParamUtil.getSessionAttr(request,
+                DataSubmissionConstant.VSS_DATA_SUBMISSION);
+        if (vssSuperDataSubmissionDto == null) {
+            log.info("------------------------------------VSS_SUPER_DATA_SUBMISSION_DTO is null-----------------");
+        }
+        return vssSuperDataSubmissionDto;
+    }
+
+    public static void setCurrentVssDataSubmission(VssSuperDataSubmissionDto vssSuperDataSubmissionDto, HttpServletRequest request) {
+        ParamUtil.setSessionAttr(request, DataSubmissionConstant.VSS_DATA_SUBMISSION, vssSuperDataSubmissionDto);
     }
 
     public static List<String> getNextStageForAR(CycleStageSelectionDto selectionDto) {
@@ -322,6 +339,40 @@ public final class DataSubmissionHelper {
         dataSubmission.setCycleStage(cycleStage);
         dataSubmission.setStatus(DataSubmissionConsts.DS_STATUS_ACTIVE);
         dataSubmission.setAppType(dpSuperDataSubmissionDto.getAppType());
+        return dataSubmission;
+    }
+    public static CycleDto initCycleDto(VssSuperDataSubmissionDto vssSuperDataSubmissionDto, boolean reNew) {
+        CycleDto cycleDto = vssSuperDataSubmissionDto.getCycleDto();
+        if (cycleDto == null || reNew) {
+            cycleDto = new CycleDto();
+        }
+        cycleDto.setHciCode(vssSuperDataSubmissionDto.getHciCode());
+        cycleDto.setDsType(DataSubmissionConsts.DS_VSS);
+        String cycleType = cycleDto.getCycleType();
+        if (DataSubmissionConsts.VSS_TYPE_SBT_VSS.equals(vssSuperDataSubmissionDto.getSubmissionType())) {
+            cycleType = DataSubmissionConsts.DS_CYCLE_VSS;
+        }
+        if (StringUtil.isEmpty(cycleDto.getStatus())) {
+            cycleDto.setStatus(DataSubmissionConsts.DS_STATUS_ACTIVE);
+        }
+        cycleDto.setCycleType(cycleType);
+        return cycleDto;
+    }
+
+    public static DataSubmissionDto initDataSubmission(VssSuperDataSubmissionDto vssSuperDataSubmissionDto, boolean reNew) {
+        DataSubmissionDto dataSubmission = vssSuperDataSubmissionDto.getDataSubmissionDto();
+        if (dataSubmission == null || reNew) {
+            dataSubmission = new DataSubmissionDto();
+            vssSuperDataSubmissionDto.setDataSubmissionDto(dataSubmission);
+        }
+        dataSubmission.setSubmissionType(vssSuperDataSubmissionDto.getSubmissionType());
+        String cycleStage = null;
+        if (DataSubmissionConsts.VSS_TYPE_SBT_VSS.equals(vssSuperDataSubmissionDto.getSubmissionType())) {
+            cycleStage = DataSubmissionConsts.DS_CYCLE_STAGE_VSS;
+        }
+        dataSubmission.setCycleStage(cycleStage);
+        dataSubmission.setStatus(DataSubmissionConsts.DS_STATUS_ACTIVE);
+        dataSubmission.setAppType(vssSuperDataSubmissionDto.getAppType());
         return dataSubmission;
     }
 

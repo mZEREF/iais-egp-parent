@@ -41,6 +41,11 @@ public class DataSubmissionConstant {
     public static String DP_PREMISES_MAP                    = "DP_PREMISES_MAP";
     public static String DP_PREMISES                        = "DP_PREMISES";
 
+    public static String VSS_DATA_SUBMISSION                 = "vssSuperDataSubmissionDto";
+    public static String VSS_OLD_DATA_SUBMISSION             = "vssOldSuperDataSubmissionDto";
+    public static String VSS_PREMISES_MAP                    = "VSS_PREMISES_MAP";
+    public static String VSS_PREMISES                        = "VSS_PREMISES";
+
     public static String DS_TITLE_NEW                       = "New Data Submission";
     public static String DS_TITLE_RFC                       = "Amendment";
 
@@ -49,8 +54,11 @@ public class DataSubmissionConstant {
     public static String PRINT_FLAG_PTDRP                   = "PTDRP";
     public static String PRINT_FLAG_ART                     = "ART";
     public static String PRINT_FLAG_DRP                     = "DRP";
+    public static String PRINT_FLAG_VSS                     = "VSS";
     public static String PRINT_FLAG_ACKART                  = "ACKART";
     public static String PRINT_FLAG_ACKDRP                  = "ACKDRP";
+    public static String PRINT_FLAG_ACKVSS                  = "ACKVSS";
+
 
     public static String FILE_ITEM_ERROR_MSGS               = "fileItemErrorMsgs";
 }
