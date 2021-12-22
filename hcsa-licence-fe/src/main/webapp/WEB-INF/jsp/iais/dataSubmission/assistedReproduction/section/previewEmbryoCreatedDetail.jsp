@@ -1,8 +1,9 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<c:set var="headingSign" value="${isPrint or !isNewDataSubmission ?'':'completed'}"/>
 <div class="panel panel-default">
-    <div class="panel-heading completed ">
+    <div class="panel-heading ${headingSign}">
         <h4 class="panel-title">
-            <a class="collapsed" data-toggle="collapse" href="#">
+            <a href="#embryoCreatedDetails" data-toggle="collapse">
                 Embryo Created
             </a>
         </h4>
