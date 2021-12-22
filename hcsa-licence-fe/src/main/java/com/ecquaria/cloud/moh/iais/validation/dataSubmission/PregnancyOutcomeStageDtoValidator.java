@@ -98,7 +98,7 @@ public class PregnancyOutcomeStageDtoValidator implements CustomizeValidator {
             errorMap.put("l2CareBabyDays", MessageUtil.getMessageDesc("GENERAL_ERR0002"));
         }
         if (isNotEmptyAndNotNum(pregnancyOutcomeStageDto.getL3CareBabyDays())) {
-            errorMap.put("l2CareBabyDays", MessageUtil.getMessageDesc("GENERAL_ERR0002"));
+            errorMap.put("l3CareBabyDays", MessageUtil.getMessageDesc("GENERAL_ERR0002"));
         }
         ArSuperDataSubmissionDto arSuperDataSubmissionDto = DataSubmissionHelper.getCurrentArDataSubmission(request);
         CycleDto cycle = arSuperDataSubmissionDto.getCycleDto();
