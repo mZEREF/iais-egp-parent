@@ -103,13 +103,11 @@ public class VssDataSubmissionDelegator {
         ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.CURRENT_PAGE_STAGE, pageStage);
         String currentCode = currentConfig.getCode();
         log.info(StringUtil.changeForLog(" ----- PrepareStepData Step Code: " + currentCode + " ------ "));
-        if (currentCode.equals(DsConfigHelper.VSS_STEP_TREATMENT)) {
+        if (DsConfigHelper.VSS_STEP_TREATMENT.equals(currentCode)) {
             prepareTreatment(bpc.request);
-        }
-        if (currentCode.equals(DsConfigHelper.VSS_STEP_CONSENT_PARTICULARS)) {
+        } else if (DsConfigHelper.VSS_STEP_CONSENT_PARTICULARS.equals(currentCode)) {
             prepareConsentParticulars(bpc.request);
-        }
-        if (currentCode.equals(DsConfigHelper.VSS_STEP_TFSSP_PARTICULARS)) {
+        } else if (DsConfigHelper.VSS_STEP_TFSSP_PARTICULARS.equals(currentCode)) {
             prepareTfsspParticulars(bpc.request);
         }
     }
@@ -125,13 +123,11 @@ public class VssDataSubmissionDelegator {
         String currentCode = currentConfig.getCode();
         log.info(StringUtil.changeForLog(" ----- DoStep Step Code: " + currentCode + " ------ "));
         int status = 0;
-        if (currentCode.equals(DsConfigHelper.VSS_STEP_TREATMENT)) {
+        if (DsConfigHelper.VSS_STEP_TREATMENT.equals(currentCode)) {
             status = doTreatment(bpc.request);
-        }
-        if (currentCode.equals(DsConfigHelper.VSS_STEP_CONSENT_PARTICULARS)) {
+        } else if (DsConfigHelper.VSS_STEP_CONSENT_PARTICULARS.equals(currentCode)) {
             status = doConsentParticulars(bpc.request);
-        }
-        if (currentCode.equals(DsConfigHelper.VSS_STEP_TFSSP_PARTICULARS)) {
+        } else if (DsConfigHelper.VSS_STEP_TFSSP_PARTICULARS.equals(currentCode)) {
             status = doTfsspParticulars(bpc.request);
         }
         log.info(StringUtil.changeForLog(" ----- DoStep Status: " + status + " ------ "));
@@ -172,47 +168,41 @@ public class VssDataSubmissionDelegator {
      */
     public void doSubmission(BaseProcessClass bpc) {
         log.info(" ----- DoSubmission ------ ");
+        VssSuperDataSubmissionDto vssSuperDataSubmissionDto = DataSubmissionHelper.getCurrentVssDataSubmission(bpc.request);
+        vssSuperDataSubmissionDto.setDataSubmissionDto(DataSubmissionHelper.initDataSubmission(vssSuperDataSubmissionDto,
+                false));
+        vssSuperDataSubmissionDto.setCycleDto(DataSubmissionHelper.initCycleDto(vssSuperDataSubmissionDto, false));
+        DataSubmissionHelper.setCurrentVssDataSubmission(vssSuperDataSubmissionDto,bpc.request);
+        DataSubmissionDto dataSubmissionDto = vssSuperDataSubmissionDto.getDataSubmissionDto();
+        if (StringUtil.isEmpty(dataSubmissionDto.getSubmissionNo())) {
+            String submissionNo = vssDataSubmissionService.getSubmissionNo(DataSubmissionConsts.DS_VSS);
+            dataSubmissionDto.setSubmissionNo(submissionNo);
+        }
+        if (StringUtil.isEmpty(dataSubmissionDto.getStatus())) {
+            dataSubmissionDto.setStatus(DataSubmissionConsts.DS_STATUS_COMPLETED);
+        }
 
-          VssSuperDataSubmissionDto vssSuperDataSubmissionDto = DataSubmissionHelper.getCurrentVssDataSubmission(bpc.request);
-                 DataSubmissionDto dataSubmissionDto = vssSuperDataSubmissionDto.getDataSubmissionDto();
-                 CycleDto cycle = vssSuperDataSubmissionDto.getCycleDto();
-                 String cycleType = cycle.getCycleType();
-              if (StringUtil.isEmpty(dataSubmissionDto.getSubmissionNo())) {
-                      String submissionNo = vssDataSubmissionService.getSubmissionNo(DataSubmissionConsts.DS_VSS);
-                      dataSubmissionDto.setSubmissionNo(submissionNo);
-                  }
-                  if (StringUtil.isEmpty(dataSubmissionDto.getStatus())) {
-                      dataSubmissionDto.setStatus(DataSubmissionConsts.DS_STATUS_COMPLETED);
-                }
-                  String stage = dataSubmissionDto.getCycleStage();
-                  String status = DataSubmissionConsts.DS_STATUS_ACTIVE;
-
-                  cycle.setStatus(status);
-                 log.info(StringUtil.changeForLog("-----Cycle Type: " + cycleType + " - Stage : " + stage
-                          + " - Status: " + status + " -----"));
-
-                  LoginContext loginContext = DataSubmissionHelper.getLoginContext(bpc.request);
-                  if (loginContext != null) {
-                      dataSubmissionDto.setSubmitBy(loginContext.getUserId());
-                      dataSubmissionDto.setSubmitDt(new Date());
-                 }
-                vssSuperDataSubmissionDto = vssDataSubmissionService.saveVssSuperDataSubmissionDto(vssSuperDataSubmissionDto);
-                  try {
-                      vssSuperDataSubmissionDto = vssDataSubmissionService.saveVssSuperDataSubmissionDtoToBE(vssSuperDataSubmissionDto);
-                  } catch (Exception e) {
-                      log.error(StringUtil.changeForLog("The Eic saveVssSuperDataSubmissionDtoToBE failed ===>" + e.getMessage()), e);
-                  }
-                  if (!StringUtil.isEmpty(vssSuperDataSubmissionDto.getDraftId())) {
-                      vssDataSubmissionService.updateDataSubmissionDraftStatus(vssSuperDataSubmissionDto.getDraftId(),
-                              DataSubmissionConsts.DS_STATUS_INACTIVE);
-                  }
-                  ParamUtil.setSessionAttr(bpc.request, DataSubmissionConstant.VSS_DATA_SUBMISSION, vssSuperDataSubmissionDto);
-                  ParamUtil.setRequestAttr(bpc.request, "emailAddress", DataSubmissionHelper.getLicenseeEmailAddrs(bpc.request));
-                  ParamUtil.setRequestAttr(bpc.request, "submittedBy", DataSubmissionHelper.getLoginContext(bpc.request).getUserName());
-                  ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.CURRENT_PAGE_STAGE, DataSubmissionConstant.PAGE_STAGE_ACK);
-                  ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.PRINT_FLAG, DataSubmissionConstant.PRINT_FLAG_ACKVSS);
-                 ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.CURRENT_PAGE_STAGE, DataSubmissionConstant.PAGE_STAGE_ACK);
-
+        LoginContext loginContext = DataSubmissionHelper.getLoginContext(bpc.request);
+        if (loginContext != null) {
+            dataSubmissionDto.setSubmitBy(loginContext.getUserId());
+            dataSubmissionDto.setSubmitDt(new Date());
+        }
+        vssSuperDataSubmissionDto = vssDataSubmissionService.saveVssSuperDataSubmissionDto(vssSuperDataSubmissionDto);
+        try {
+            /* vssSuperDataSubmissionDto = vssDataSubmissionService.saveVssSuperDataSubmissionDtoToBE(vssSuperDataSubmissionDto);*/
+        } catch (Exception e) {
+            log.error(StringUtil.changeForLog("The Eic saveVssSuperDataSubmissionDtoToBE failed ===>" + e.getMessage()), e);
+        }
+        if (!StringUtil.isEmpty(vssSuperDataSubmissionDto.getDraftId())) {
+            vssDataSubmissionService.updateDataSubmissionDraftStatus(vssSuperDataSubmissionDto.getDraftId(),
+                    DataSubmissionConsts.DS_STATUS_INACTIVE);
+        }
+        ParamUtil.setSessionAttr(bpc.request, DataSubmissionConstant.VSS_DATA_SUBMISSION, vssSuperDataSubmissionDto);
+        ParamUtil.setRequestAttr(bpc.request, "emailAddress", DataSubmissionHelper.getLicenseeEmailAddrs(bpc.request));
+        ParamUtil.setRequestAttr(bpc.request, "submittedBy", DataSubmissionHelper.getLoginContext(bpc.request).getUserName());
+        ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.CURRENT_PAGE_STAGE, DataSubmissionConstant.PAGE_STAGE_ACK);
+        ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.PRINT_FLAG, DataSubmissionConstant.PRINT_FLAG_ACKVSS);
+        ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.CURRENT_PAGE_STAGE, DataSubmissionConstant.PAGE_STAGE_ACK);
     }
 
     /**
