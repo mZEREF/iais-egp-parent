@@ -271,11 +271,11 @@
                     </td>
                     <td>
                       <p class="visible-xs visible-sm table-row-title"></p>
-                      <p><u style ="font-weight:bold;">${businessName}</u></p>
+                      <p style ="font-weight:bold;">${businessName}</p>
                     </td>
                     <td>
                       <p class="visible-xs visible-sm table-row-title"></p>
-                      <p><u style ="font-weight:bold;"> ${address}</u></p>
+                      <p style ="font-weight:bold;"> ${address}</p>
                     </td>
                     <td>
                       <p class="visible-xs visible-sm table-row-title"></p>
