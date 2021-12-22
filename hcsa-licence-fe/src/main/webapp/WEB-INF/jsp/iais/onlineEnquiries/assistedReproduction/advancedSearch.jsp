@@ -11,9 +11,9 @@
             (sop.webflow.rt.api.BaseProcessClass) request.getAttribute("process");
 %>
 <%
-    String webroot1=IaisEGPConstant.CSS_ROOT+IaisEGPConstant.COMMON_CSS_ROOT;
+    String webroot2=IaisEGPConstant.CSS_ROOT+IaisEGPConstant.COMMON_CSS_ROOT;
 %>
-<script type="text/javascript" src="<%=webroot1%>js/onlineEnquiries/arAdvancedSearch.js"></script>
+<script type="text/javascript" src="<%=webroot2%>js/onlineEnquiries/arAdvancedSearch.js"></script>
 <webui:setLayout name="iais-internet"/>
 <%@include file="../../common/dashboard.jsp"%>
 <form id="mainForm"  method="post" action=<%=process.runtime.continueURL()%>>
