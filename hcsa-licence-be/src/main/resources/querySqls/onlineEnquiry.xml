@@ -587,6 +587,7 @@
                   when '' then null
                   else ', '+p.POSTAL_CODE end
               ) AS BUSINESS_NAME,
+           		 dds2.DONOR_SAMPLE_CODE ,dds2.SAMPLE_TYPE ,
            		CONCAT(case dds2lp.BUSINESS_NAME
                   when null then '-, '
                   when '' then '-, '
@@ -623,8 +624,7 @@
                   when null then null
                   when '' then null
                   else ', '+dds2p.POSTAL_CODE end
-              ) AS DONOR_SAMPLE_CODE ,dds2.SAMPLE_TYPE ,
-           		dds2.SAMPLE_FROM_HCI_CODE ,
+              ) AS SAMPLE_FROM_HCI_CODE ,
            		dds2.DONOR_NAME ,( select count(ddsa.DONOR_SAMPLE_ID) From ds_donor_sample_age ddsa where ddsa.DONOR_SAMPLE_ID= dds2.ID)  age_no
                 FROM ds_data_submission dds
                 join ds_cycle dc on dc.ID =dds.CYCLE_ID

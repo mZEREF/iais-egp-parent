@@ -168,8 +168,8 @@
                                         <tr >
 
                                             <iais:sortableHeader needSort="true"
-                                                                 field="AR Centre"
-                                                                 value="Patient Name"/>
+                                                                 field="BUSINESS_NAME"
+                                                                 value="AR Centre"/>
                                             <iais:sortableHeader needSort="true"
                                                                  field="DONOR_SAMPLE_CODE"
                                                                  value="Donor Sample Code / ID No"/>
