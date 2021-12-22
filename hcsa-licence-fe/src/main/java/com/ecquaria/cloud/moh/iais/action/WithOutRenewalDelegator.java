@@ -97,6 +97,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.*;
+import java.util.stream.StreamSupport;
 
 
 /**
@@ -1539,6 +1540,10 @@ public class WithOutRenewalDelegator {
                 List<AppSubmissionDto> submissionDtos = requestForChangeService.getAlginAppSubmissionDtos(
                         appSubmissionDto.getLicenceId(), true);
                 if (IaisCommonUtils.isNotEmpty(submissionDtos)) {
+                    boolean parallel = submissionDtos.size() >= RfcConst.DFT_MIN_PARALLEL_SIZE;
+                    StreamSupport.stream(submissionDtos.spliterator(), parallel)
+                            .forEach(dto -> requestForChangeService.checkAffectedAppSubmissions(dto, null,100.0d , appSubmissionDto.getDraftNo(),  appSubmissionDto.getAppGrpNo(),
+                                    appEditSelectDto, null));
                     noAutoAppSubmissionDtos.addAll(submissionDtos);
                 }
             }
