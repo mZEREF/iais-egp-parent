@@ -1,7 +1,7 @@
 <div class="panel panel-default">
     <div class="panel-heading completed ">
         <h4 class="panel-title">
-            <a class="collapsed" data-toggle="collapse" href="#">
+            <a class="collapsed" data-toggle="collapse" href="#efoDetails">
                 Egg Freezing Only Cycle
             </a>
         </h4>
