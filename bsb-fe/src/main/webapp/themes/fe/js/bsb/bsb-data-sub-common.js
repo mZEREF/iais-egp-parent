@@ -145,10 +145,9 @@ function deleteNewFile(id) {
     appendInputValue(deleteSavedInput, id);
 }
 
-function reloadNewFile(id) {
+function reloadNewFile(id,index) {
     deleteNewFile(id);
-    var ids = id.split("--v--");
-    var text = ids[0]+"--v--"+ids[1].charAt(0);
+    var text = "upload--v--"+index;
     $("a[data-upload-file=" + text + "]")[0].click();
 }
 

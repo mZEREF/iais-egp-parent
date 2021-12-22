@@ -21,7 +21,7 @@
                                     </button>
                                     <button
                                             type="button" class="btn btn-secondary btn-sm"
-                                            onclick="reloadNewFile('${tmpId}')">Reload
+                                            onclick="reloadNewFile('${tmpId}','${status.index}')">Reload
                                     </button>
 
                                     <button type="button" class="btn btn-secondary btn-sm"
