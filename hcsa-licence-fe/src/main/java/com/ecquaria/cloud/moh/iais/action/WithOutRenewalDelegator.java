@@ -1535,6 +1535,12 @@ public class WithOutRenewalDelegator {
                         }
                     }
                 }
+            }else if(appEditSelectDto.isPremisesEdit()) {
+                List<AppSubmissionDto> submissionDtos = requestForChangeService.getAlginAppSubmissionDtos(
+                        appSubmissionDto.getLicenceId(), true);
+                if (IaisCommonUtils.isNotEmpty(submissionDtos)) {
+                    noAutoAppSubmissionDtos.addAll(submissionDtos);
+                }
             }
 
             log.info(StringUtil.changeForLog("---- premisesEdit autoAppSubmissionDtos size :" + autoAppSubmissionDtos.size()));
