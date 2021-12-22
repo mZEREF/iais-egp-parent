@@ -42,11 +42,12 @@ public class DonorSampleDtoValidator implements CustomizeValidator {
         String sampleKey = donorSampleDto.getSampleKey();
         log.info(StringUtil.changeForLog("The DonorSampleDtoValidator sampleKey is -->:"+sampleKey));
         if(StringUtil.isEmpty(sampleKey)){
+            String donorSampleCodeType = StringUtil.isEmpty(donorSampleDto.getIdType()) ? donorSampleDto.getIdType() : StringUtil.isIn(donorSampleDto.getIdType(),new String[]{DataSubmissionConsts.AR_ID_TYPE_PINK_IC,DataSubmissionConsts.AR_ID_TYPE_BLUE_IC,DataSubmissionConsts.AR_ID_TYPE_FIN_NO,DataSubmissionConsts.AR_ID_TYPE_PASSPORT_NO}) ? donorSampleDto.getIdType() : DataSubmissionConsts.AR_ID_TYPE_CODE;
              donorSampleDtoFromDb =  arDataSubmissionService.getDonorSampleDto(
                      donorSampleDto.getIdType()
                     ,donorSampleDto.getIdNumber()
-                     ,donorSampleDto.getSampleType()
-                    ,donorSampleDto.getDonorSampleCode()
+                     ,donorSampleCodeType
+                    ,DataSubmissionConsts.AR_ID_TYPE_CODE.equalsIgnoreCase(donorSampleCodeType) ? donorSampleDto.getDonorSampleCode() : donorSampleDto.getIdNumber()
                     ,donorSampleDto.getSampleFromHciCode()
                     ,donorSampleDto.getSampleFromOthers());
 
