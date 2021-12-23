@@ -16,34 +16,38 @@ import java.io.Serializable;
 @ExcelSheetProperty(sheetName = "Approval Information")
 public class ApprovalInfoDto implements Serializable {
 
+    private String id;
+
+    private String apprNo;
+
     @ExcelProperty(cellIndex = 1, cellName = "Application Type")
-    private String approvalType;
+    private String type;
 
     @ExcelProperty(cellIndex = 2, cellName = "Application status")
-    private String approvalStatus;
+    private String status;
 
     @ExcelProperty(cellIndex = 3, cellName = "Facility Classification")
-    private String facilityClassification;
+    private String facClassification;
 
     @ExcelProperty(cellIndex = 4, cellName = "Facility Type")
-    private String facilityType;
+    private String facType;
 
     @ExcelProperty(cellIndex = 5, cellName = "Facility Name")
-    private String facilityName;
+    private String facName;
 
     @ExcelProperty(cellIndex = 6, cellName = "Facility Address")
-    private String facilityAddress;
+    private String facAddress;
 
     @ExcelProperty(cellIndex = 7, cellName = "Facility Status")
-    private String facilityStatus;
+    private String facStatus;
 
     @ExcelProperty(cellIndex = 8, cellName = "Biological Agent")
-    private String agent;
+    private String bat;
 
     @ExcelProperty(cellIndex = 9, cellName = "Nature Of The Sample")
-    private String natureOfTheSample;
+    private String sampleName;
 
     @ExcelProperty(cellIndex = 20, cellName = "Risk Level")
-    private String riskLevelOfTheBiologicalAgent;
+    private String riskLevel;
     private String physicalPossessionOfBA;
 }

@@ -452,9 +452,9 @@ public class BiosafetyEnquiryDelegator {
                     break;
                 }
                 case CHOOSE_MARK_APPROVAL: {
-                    List<ApprovalResultDto.ApprovalInfo> bioSafetyDto = (List<ApprovalResultDto.ApprovalInfo>) ParamUtil.getSessionAttr(request, PARAM_BIO_SAFETY_ENQUIRY);
+                    List<ApprovalInfoDto> bioSafetyDto = (List<ApprovalInfoDto>) ParamUtil.getSessionAttr(request, PARAM_BIO_SAFETY_ENQUIRY);
                     try {
-                        file = ExcelWriter.writerToExcel(filedApprovalInfo(bioSafetyDto), ApplicationInfoDto.class, "Application Information_Search_Template");
+                        file = ExcelWriter.writerToExcel(filedApprovalInfo(bioSafetyDto), ApprovalInfoDto.class, "Approval Information_Search_Template");
                     } catch (Exception e) {
                         log.error("=======>approval fileHandler  error >>>>>", e);
                     }
@@ -463,7 +463,7 @@ public class BiosafetyEnquiryDelegator {
                 case CHOOSE_MARK_APPROVED_CERTIFIER_FACILITY: {
                     List<FacilityCertifierReg> bioSafetyDto = (List<FacilityCertifierReg>) ParamUtil.getSessionAttr(request, PARAM_BIO_SAFETY_ENQUIRY);
                     try {
-                        file = ExcelWriter.writerToExcel(filedFacilityCertifierInfo(bioSafetyDto), ApplicationInfoDto.class, "Application Information_Search_Template");
+                        file = ExcelWriter.writerToExcel(filedFacilityCertifierInfo(bioSafetyDto), ApprovedFacilityCertifierInfoDto.class, "Approved Facility Certifier Information_Search_Template");
                     } catch (Exception e) {
                         log.error("=======>facility certifier fileHandler  error >>>>>", e);
                     }
@@ -472,7 +472,7 @@ public class BiosafetyEnquiryDelegator {
                 case CHOOSE_MARK_FACILITY: {
                     List<FacilityActivity> bioSafetyDto = (List<FacilityActivity>) ParamUtil.getSessionAttr(request, PARAM_BIO_SAFETY_ENQUIRY);
                     try {
-                        file = ExcelWriter.writerToExcel(filedFacilityInfo(bioSafetyDto), ApplicationInfoDto.class, "Application Information_Search_Template");
+                        file = ExcelWriter.writerToExcel(filedFacilityInfo(bioSafetyDto), FacilityInfoDto.class, "Facility Information_Search_Template");
                     } catch (Exception e) {
                         log.error("=======>facility fileHandler  error >>>>>", e);
                     }
@@ -508,28 +508,18 @@ public class BiosafetyEnquiryDelegator {
         return bsbApp;
     }
 
-    public List<ApprovalInfoDto> filedApprovalInfo(List<ApprovalResultDto.ApprovalInfo> bsbAppr){
+    public List<ApprovalInfoDto> filedApprovalInfo(List<ApprovalInfoDto> bsbAppr){
         if(CollectionUtils.isEmpty(bsbAppr)){
             log.info("empty list approvalInfo");
             return Collections.emptyList();
         }
-        List<ApprovalInfoDto> infos = new ArrayList<>(bsbAppr.size());
-        for (ApprovalResultDto.ApprovalInfo info : bsbAppr) {
-            ApprovalInfoDto dto = new ApprovalInfoDto();
-            dto.setFacilityAddress(info.getFacAddress());
-            dto.setAgent(info.getBat());
-            dto.setApprovalStatus(info.getStatus());
-            dto.setApprovalType(info.getType());
-            dto.setFacilityName(info.getFacName());
-            dto.setFacilityClassification(info.getFacClassification());
-            dto.setNatureOfTheSample(info.getSampleName());
-            dto.setRiskLevelOfTheBiologicalAgent(info.getRiskLevel());
-            dto.setFacilityStatus(info.getFacStatus());
-            dto.setApprovalStatus(info.getStatus());
-            infos.add(dto);
+        for (ApprovalInfoDto dto : bsbAppr) {
+            dto.setType(MasterCodeUtil.getCodeDesc(dto.getType()));
+            dto.setFacStatus(MasterCodeUtil.getCodeDesc(dto.getFacStatus()));
+            dto.setStatus(MasterCodeUtil.getCodeDesc(dto.getStatus()));
         }
 
-        return infos;
+        return bsbAppr;
     }
 
     public List<ApprovedFacilityCertifierInfoDto> filedFacilityCertifierInfo(List<FacilityCertifierReg> regs){
