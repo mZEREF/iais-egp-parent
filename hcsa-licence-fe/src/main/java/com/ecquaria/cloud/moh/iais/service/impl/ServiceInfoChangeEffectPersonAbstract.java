@@ -8,6 +8,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcBusinessDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDisciplineAllocationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcLaboratoryDisciplinesDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPrincipalOfficersDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcVehicleDto;
@@ -74,6 +75,9 @@ public class ServiceInfoChangeEffectPersonAbstract implements ServiceInfoChangeE
             } else if (HcsaConsts.STEP_VEHICLES.equals(step)) {
                 newDto.setAppSvcVehicleDtoList(
                         (List<AppSvcVehicleDto>) CopyUtil.copyMutableObjectList(oldSvcInfoDto.getAppSvcVehicleDtoList()));
+            } else if (HcsaConsts.STEP_SECTION_LEADER.equals(step)) {
+                newDto.setAppSvcSectionLeaderList(
+                        (List<AppSvcPersonnelDto>) CopyUtil.copyMutableObjectList(oldSvcInfoDto.getAppSvcSectionLeaderList()));
             } else if (HcsaConsts.STEP_LABORATORY_DISCIPLINES.equals(step)) {
                 newDto.setAppSvcLaboratoryDisciplinesDtoList(
                         (List<AppSvcLaboratoryDisciplinesDto>) CopyUtil.copyMutableObjectList(

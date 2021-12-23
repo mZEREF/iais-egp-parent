@@ -99,6 +99,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -4930,7 +4931,11 @@ public class NewApplicationHelper {
         boolean invalid = IaisCommonUtils.isNotEmpty(appByLicIdAndExcludeNew)
                 || !requestForChangeService.isOtherOperation(licenceId);
         if (invalid) {
-            log.info(StringUtil.changeForLog("Invalid Licence - " + type + " : " + licenceId));
+            log.info(StringUtil.changeForLog("##### Invalid Licence - " + type + " : " + licenceId));
+            if (appByLicIdAndExcludeNew != null && !appByLicIdAndExcludeNew.isEmpty()) {
+                CompletableFuture.runAsync(() -> appByLicIdAndExcludeNew.forEach(dto ->
+                        log.warn(StringUtil.changeForLog("##### The error for Pending App: " + dto.getApplicationNo()))));
+            }
             //request.setAttribute("rfcPendingApplication", "errorRfcPendingApplication");
         }
         return !invalid;
@@ -4954,6 +4959,7 @@ public class NewApplicationHelper {
         if (StringUtil.isEmpty(type) || NewApplicationConstant.SECTION_PREMISES.equals(type)) {
             boolean b = requestForChangeService.baseSpecLicenceRelation(licenceDto);
             if (!b) {
+                log.warn(StringUtil.changeForLog("#####The error for baseSpecLicenceRelation: " + licenceDto.getLicenceNo()));
                 errorMap.put(RfcConst.PENDING_APP, RfcConst.PENDING_APP_VALUE);
                 return errorMap;
             }
@@ -4965,6 +4971,7 @@ public class NewApplicationHelper {
                 for (String premiseType : premiseTypes) {
                     boolean configIsChange = requestForChangeService.serviceConfigIsChange(serviceIds, premiseType);
                     if (!configIsChange) {
+                        log.warn(StringUtil.changeForLog("#####The error for serviceConfigIsChange: " + licenceDto.getLicenceNo()));
                         errorMap.put(RfcConst.SERVICE_CONFIG_CHANGE,
                                 MessageUtil.replaceMessage("RFC_ERR020", licenceDto.getSvcName(), "ServiceName"));
                         return errorMap;

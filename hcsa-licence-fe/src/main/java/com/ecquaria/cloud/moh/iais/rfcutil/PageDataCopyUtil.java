@@ -18,6 +18,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcVehicleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.OperationHoursReloadDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.constant.RfcConst;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -25,6 +26,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 public class PageDataCopyUtil {
 
@@ -277,29 +279,29 @@ public class PageDataCopyUtil {
         return list;
     }
 
-    public static List<AppSvcPersonnelDto> copySvcPersonnel (List<AppSvcPersonnelDto> appSvcPersonnelDtoList) {
+    public static List<AppSvcPersonnelDto> copySvcPersonnels(List<AppSvcPersonnelDto> appSvcPersonnelDtoList) {
         if (appSvcPersonnelDtoList == null || appSvcPersonnelDtoList.isEmpty()) {
             return appSvcPersonnelDtoList;
         }
-        List<AppSvcPersonnelDto> result = IaisCommonUtils.genNewArrayList(appSvcPersonnelDtoList.size());
-        for (AppSvcPersonnelDto svcPersonnelDto : appSvcPersonnelDtoList) {
-            AppSvcPersonnelDto dto = new AppSvcPersonnelDto();
-            dto.setSalutation(StringUtil.getNonNull(svcPersonnelDto.getSalutation()));
-            dto.setPersonnelType(svcPersonnelDto.getPersonnelType());
-            if (StringUtil.isEmpty(dto.getPersonnelType())) {
-                dto.setPersonnelType(ApplicationConsts.PERSONNEL_PSN_TYPE_SVC_PERSONNEL);
-            }
-            dto.setName(svcPersonnelDto.getName());
-            dto.setDesignation(svcPersonnelDto.getDesignation());
-            dto.setOtherDesignation(svcPersonnelDto.getOtherDesignation());
-            dto.setProfRegNo(svcPersonnelDto.getProfRegNo());
-            dto.setWrkExpYear(StringUtil.getNonNull(svcPersonnelDto.getWrkExpYear()));
-            dto.setQualification(StringUtil.getNonNull(svcPersonnelDto.getQualification()));
-            result.add(dto);
-        }
-        return result.stream()
-                .sorted(Comparator.comparing(AppSvcPersonnelDto::getName)
-                        .thenComparing(AppSvcPersonnelDto::getSalutation)
+        return StreamSupport.stream(appSvcPersonnelDtoList.spliterator(),
+                appSvcPersonnelDtoList.size() > RfcConst.DFT_MIN_PARALLEL_SIZE)
+                .map(svcPersonnelDto -> {
+                    AppSvcPersonnelDto dto = new AppSvcPersonnelDto();
+                    dto.setSalutation(StringUtil.getNonNull(svcPersonnelDto.getSalutation()));
+                    dto.setPersonnelType(svcPersonnelDto.getPersonnelType());
+                    if (StringUtil.isEmpty(dto.getPersonnelType())) {
+                        dto.setPersonnelType(ApplicationConsts.PERSONNEL_PSN_TYPE_SVC_PERSONNEL);
+                    }
+                    dto.setName(svcPersonnelDto.getName());
+                    dto.setDesignation(svcPersonnelDto.getDesignation());
+                    dto.setOtherDesignation(svcPersonnelDto.getOtherDesignation());
+                    dto.setProfRegNo(svcPersonnelDto.getProfRegNo());
+                    dto.setWrkExpYear(StringUtil.getNonNull(svcPersonnelDto.getWrkExpYear()));
+                    dto.setQualification(StringUtil.getNonNull(svcPersonnelDto.getQualification()));
+                    return dto;
+                })
+                .sorted(Comparator.comparing(AppSvcPersonnelDto::getSalutation)
+                        .thenComparing(AppSvcPersonnelDto::getName)
                         .thenComparing(AppSvcPersonnelDto::getPersonnelType)
                         .thenComparing(AppSvcPersonnelDto::getQualification)
                         .thenComparing(AppSvcPersonnelDto::getWrkExpYear))
@@ -522,8 +524,7 @@ public class PageDataCopyUtil {
             o.setEmailAddr(v.getEmailAddr());
             list.add(o);
         });
-        list.sort((s1,s2)->(s1.getIdNo().compareTo(s2.getIdNo())));
+        list.sort(Comparator.comparing(AppSvcPrincipalOfficersDto::getIdNo));
         return list;
     }
-
 }
