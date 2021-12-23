@@ -104,7 +104,7 @@
                 <iais:row>
                     <label class="col-xs-4 col-md-4 control-label">Total No. of AR cycles previously undergone by patient
                         <a class="btn-tooltip styleguide-tooltip" data-toggle="tooltip" data-html="true" href="javascript:void(0);"
-                           title="${DSACK002Message}"
+                           title="${MessageUtil.getMessageDesc("DS_ACK002")}"
                            style="z-index: 10"
                            data-original-title="">i</a>
                     </label>

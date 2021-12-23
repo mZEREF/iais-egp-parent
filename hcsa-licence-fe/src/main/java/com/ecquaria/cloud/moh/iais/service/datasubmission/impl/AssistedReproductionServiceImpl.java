@@ -15,9 +15,11 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.AssistedReprod
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInventoryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PgtStageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.service.client.AssistedReproductionClient;
+import com.ecquaria.cloud.moh.iais.service.client.DpFeClient;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.AssistedReproductionService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,7 +42,8 @@ public class AssistedReproductionServiceImpl implements AssistedReproductionServ
     @Autowired
     private AssistedReproductionClient assistedReproductionClient;
 
-
+    @Autowired
+    private DpFeClient dpFeClient;
 
     @Override
     public SearchResult<AssistedReproductionEnquiryResultsDto> searchPatientByParam(SearchParam searchParam) {
@@ -135,5 +138,10 @@ public class AssistedReproductionServiceImpl implements AssistedReproductionServ
         Collections.sort(opts);
 
         return opts;
+    }
+
+    @Override
+    public List<PgtStageDto> listPgtStageByPatientCode(String patientCode) {
+        return dpFeClient.listPgtStageByPatientCode(patientCode).getEntity();
     }
 }

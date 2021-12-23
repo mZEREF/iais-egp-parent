@@ -21,6 +21,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.AssistedReprod
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInventoryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PgtStageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
@@ -1244,6 +1245,19 @@ public class OnlineEnquiryAssistedReproductionDelegator {
                         break;
                     }
                 }
+            }
+            if(arSuper.getDataSubmissionDto().getCycleStage().equals(DataSubmissionConsts.AR_STAGE_PRE_IMPLANTAION_GENETIC_TESTING)){
+                List<PgtStageDto> oldPgtList=assistedReproductionService.listPgtStageByPatientCode(arSuper.getPatientInfoDto().getPatient().getPatientCode());
+                int count =0;
+                if(oldPgtList!=null){
+                    for (PgtStageDto pgt:oldPgtList
+                    ) {
+                        if(pgt.getIsPgtMEbt()+pgt.getIsPgtMCom()+pgt.getIsPgtMRare()+pgt.getIsPgtSr()>0){
+                            count++;
+                        }
+                    }
+                }
+                ParamUtil.setRequestAttr(bpc.request, "count",count);
             }
             ParamUtil.setRequestAttr(request,"arSuperDataSubmissionDto",arSuper);
         }

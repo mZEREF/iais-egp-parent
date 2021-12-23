@@ -5,6 +5,10 @@
 <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>
 <%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
+<%@ page import="com.ecquaria.cloud.moh.iais.helper.MessageUtil" %>
+<%@ page import="com.ecquaria.cloud.moh.iais.common.utils.StringUtil" %>
+<%@ page import="com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts" %>
+
 <%
     //handle to the Engine APIs
     sop.webflow.rt.api.BaseProcessClass process =
@@ -55,7 +59,7 @@
                                 </div>
 
                                 <div class="tab-content row">
-                                    <div class="tab-pane active col-lg-8 col-xs-8 panel-group" style="left: 16%;" role="tabpanel">
+                                    <div class="tab-pane active col-lg-8 col-xs-8 panel-group" style="left: 15%;" role="tabpanel">
                                         <c:choose>
 
                                             <c:when test="${cycleStage == 'AR_CL001'}">
