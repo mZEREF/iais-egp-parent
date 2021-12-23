@@ -43,7 +43,7 @@ import java.util.Objects;
  */
 @Slf4j
 @Controller
-@RequestMapping("/hcsa/intranet/ar")
+@RequestMapping("/hcsa/enquiry/ar")
 public class OnlineArAjaxController {
     @Autowired
     private AssistedReproductionService assistedReproductionService;
