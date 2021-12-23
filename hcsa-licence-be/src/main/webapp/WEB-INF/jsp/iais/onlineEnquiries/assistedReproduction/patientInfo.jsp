@@ -58,6 +58,9 @@
                             </td>
                             <td style="vertical-align:middle;">
                                 <c:out value="${patientInfoDto.patient.birthDate}"/>
+                                <c:if test="${patientInfoDto.patient.getAgeYear()<14 or patientInfoDto.patient.getAgeYear() >74}">
+                                    <button  href="#errAge"  data-toggle="modal" data-target="#errAge" type="button" style="padding: 3px 10px;border-radius: 30px;background: #f22727;color: #FFF;">?</button>
+                                </c:if>
                             </td>
                             <td style="vertical-align:middle;">
                                 <iais:code code="${patientInfoDto.patient.nationality}"/>
@@ -67,6 +70,24 @@
                 </c:choose>
             </tbody>
         </table>
+        <div id="errAge" class="modal fade" tabindex="-1" role="dialog" >
+            <div class="modal-dialog modal-dialog-centered"  role="document" >
+                <div class="row">
+                    <div class="modal-dialog modal-dialog-centered" role="document">
+                        <div class="modal-content">
+                            <div class="modal-body">
+                                <div class="row">
+                                    <div class="col-md-12"><span style="font-size: 2rem">Patient's age does not fall within the range of 14 to 75.</span></div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary btn-md" data-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
     <br>
     <div class="row">
@@ -129,6 +150,9 @@
                         </td>
                         <td style="vertical-align:middle;">
                             <c:out value="${patientInfoDto.previous.birthDate}"/>
+                            <c:if test="${patientInfoDto.previous.getAgeYear()<14 or patientInfoDto.previous.getAgeYear()>75}">
+                                <button  href="#errAge"  data-toggle="modal" data-target="#errAge" type="button" style="padding: 3px 10px;border-radius: 30px;background: #f22727;color: #FFF;">?</button>
+                            </c:if>
                         </td>
                         <td style="vertical-align:middle;">
                             <iais:code code="${patientInfoDto.previous.nationality}"/>
