@@ -7,10 +7,10 @@ $(document).ready(function (){
         hideUsedDonorOocyteControlClass(0);
     }
     if($('#enhancedCounsellingTipShow').val() == 1){
-        $('#enhancedCounsellingTip').show();
+        $('#enhancedCounsellingTip').modal('show');
     }
     if($("#DSERR019TipShow").val() == 1){
-        $('#DSERR019Tip').show();
+        $('#DSERR019Tip').modal('show');
     }
     mutualExclusionCheckBox('#currentArTreatmentCheckAR_CAT_001','#currentArTreatmentCheckAR_CAT_002');
     mutualExclusionCheckBox('#currentArTreatmentCheckAR_CAT_002','#currentArTreatmentCheckAR_CAT_001');
@@ -48,5 +48,14 @@ function doEnhancedCounsellingMandatory(key){
 }
 
 function enhancedCounsellingTipClose(){
-    $('#enhancedCounsellingTip').hide();
+    $('#enhancedCounsellingTip').modal('hide');
 }
+
+
+function showEnhancedCounsellingTipNo(){
+    if($("#enhancedCounsellingRadioNo").is(':checked')){
+        $('#enhancedCounsellingTip').modal('show');
+    }
+}
+
+

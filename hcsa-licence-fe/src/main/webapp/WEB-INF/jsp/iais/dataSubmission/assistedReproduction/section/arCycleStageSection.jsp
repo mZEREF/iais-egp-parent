@@ -189,7 +189,7 @@
                                    value="0"
                                    id="enhancedCounsellingRadioNo"
                                    <c:if test="${arCycleStageDto.enhancedCounselling != null && !arCycleStageDto.enhancedCounselling}">checked</c:if>
-                                   aria-invalid="false"  >
+                                   aria-invalid="false" <c:if test="${enhancedCounsellingNoShow == 1}"> onchange="showEnhancedCounsellingTipNo()" </c:if>>
                             <label class="form-check-label"
                                    for="enhancedCounsellingRadioNo"><span
                                     class="check-circle"></span>No</label>
@@ -253,4 +253,4 @@
 <c:set var="donorDtos" value="${arCycleStageDto.donorDtos}"/>
 <%@include file="donorSection.jsp"%>
 <input type="hidden" name="enhancedCounsellingTipShow" value="${enhancedCounsellingTipShow}" id="enhancedCounsellingTipShow">
-<iais:confirm msg="DS_ERR018" needCancel="false" popupOrder="enhancedCounsellingTip"  yesBtnDesc="ok"   yesBtnCls="btn btn-primary"  callBack="enhancedCounsellingTipClose()" />
+<iais:confirm msg="DS_ERR018" needCancel="false" popupOrder="enhancedCounsellingTip"  yesBtnDesc="ok"  needFungDuoJi="false" yesBtnCls="btn btn-primary"  callBack="enhancedCounsellingTipClose()" />

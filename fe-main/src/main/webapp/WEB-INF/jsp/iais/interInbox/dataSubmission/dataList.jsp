@@ -173,10 +173,10 @@
 
     $(document).ready(function () {
         if($("#actionDsButtonShow").val() == 1){
-            $("#actionDsButton").show();
+            $("#actionDsButton").modal('show');
         }
         if($("#deleteDraftOkShow").val() == 1){
-            $("#deleteDraftOkButton").show();
+            $("#deleteDraftOkButton").modal('show');
         }
     });
 
@@ -232,10 +232,10 @@
     }
 
     function cancelBallDsButton(){
-        $("#actionDsButton").hide();
+        $("#actionDsButton").modal('hide');
     }
     function deleteDraftOkCallBack(){
-        $("#deleteDraftOkButton").hide();
+        $("#deleteDraftOkButton").modal('hide');
     }
     function dssToMsgPage(){
         window.location = "${pageContext.request.contextPath.concat(RedirectUtil.appendCsrfGuardToken("/eservice/INTERNET/MohInternetInbox",request))}";
@@ -249,7 +249,7 @@
 
 
     $('#ds-deleteDraft').click(function (){
-        $("#deleteDraftModal").show();
+        $("#deleteDraftModal").modal('show');
     });
     $('#ds-amend').click(function (){
         doSubmitForDataSubmission('rfc');
@@ -263,7 +263,7 @@
 
 
     function delDraftCancelBtn(){
-        $("#deleteDraftModal").hide();
+        $("#deleteDraftModal").modal('hide');
     }
     function  delDraftYesBtn(){
         doSubmitForDataSubmission('deleteDraft');

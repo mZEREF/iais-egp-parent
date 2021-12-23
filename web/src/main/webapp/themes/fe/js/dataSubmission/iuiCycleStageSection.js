@@ -6,7 +6,7 @@ $(document).ready(function (){
        showOtherPremises(1);
    }
     if($("#DSERR019TipShow").val() == 1){
-        $('#DSERR019Tip').show();
+        $('#DSERR019Tip').modal('show');
     }
 });
 

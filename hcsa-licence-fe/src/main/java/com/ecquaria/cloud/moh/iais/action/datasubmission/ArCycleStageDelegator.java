@@ -40,6 +40,7 @@ public class ArCycleStageDelegator extends DonorCommonDelegator{
 
     private final static String  UNDERGONE_OVERSEAS_DROP_DOWN    = "cyclesUndergoneOverseasDropDown";
     private final static String  INIT_IN_ARCYCLE_STAGE           = "INIT_IN_ARCYCLE_STAGE";
+    private final static String  ENHANCEDCOUNSELLING_NO_SHOW       ="enhancedCounsellingNoShow";
     @Autowired
     private ArDataSubmissionService arDataSubmissionService;
     @Override
@@ -61,6 +62,7 @@ public class ArCycleStageDelegator extends DonorCommonDelegator{
         setDonorUserSession(request);
         ParamUtil.setSessionAttr(request, "DSACK002Message","<p>"+MessageUtil.getMessageDesc("DS_ACK002")+"</p>");
         ParamUtil.setRequestAttr(request,INIT_IN_ARCYCLE_STAGE,AppConsts.YES);
+        ParamUtil.clearSession(request,ENHANCEDCOUNSELLING_NO_SHOW);
     }
 
     @Override
@@ -116,6 +118,9 @@ public class ArCycleStageDelegator extends DonorCommonDelegator{
                 ParamUtil.setRequestAttr(request,"enhancedCounsellingTipShow", AppConsts.YES);
                 if(ACTION_TYPE_CONFIRM.equalsIgnoreCase(ParamUtil.getString(request, DataSubmissionConstant.CRUD_TYPE))){
                 ParamUtil.setRequestAttr(request, "DS_ERR018Tip","<p>"+MessageUtil.getMessageDesc("DS_ERR018")+"</p>");
+                }
+                if(AppConsts.YES.equalsIgnoreCase(ParamUtil.getRequestString(request,INIT_IN_ARCYCLE_STAGE))){
+                    ParamUtil.setSessionAttr(request,ENHANCEDCOUNSELLING_NO_SHOW,AppConsts.YES);
                 }
             }
         }
