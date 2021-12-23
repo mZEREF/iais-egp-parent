@@ -7,6 +7,9 @@
                     <tbody>
                     <%--@elvariable id="withdrawnDto" type="sg.gov.moh.iais.egp.bsb.dto.withdrawn.AppSubmitWithdrawnDto"--%>
                         <tr>
+                            <th scope="col" style="display: none"></th>
+                        </tr>
+                        <tr>
                             <td class="col-xs-6" align="right">Application Type</td>
                             <td style="padding-left : 20px"><iais:code code="${withdrawnDto.appType}"/></td>
                         </tr>

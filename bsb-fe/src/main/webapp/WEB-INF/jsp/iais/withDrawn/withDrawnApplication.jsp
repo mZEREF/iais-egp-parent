@@ -112,7 +112,7 @@
             </div>
             <div class="form-group">
                 <div class="col-xs-12 col-md-6 text-right">
-                    <button class="btn btn-secondary save" id="cancelBtn">CANCEL</button>
+                    <a href="${backUrl}" type="button" class="btn btn-secondary save">CANCEL</a>
                     <button class="btn btn-primary save" id="nextBtn">NEXT</button>
                 </div>
             </div>
