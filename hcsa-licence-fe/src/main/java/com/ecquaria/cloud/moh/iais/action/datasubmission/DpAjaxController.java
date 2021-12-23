@@ -1,20 +1,20 @@
 package com.ecquaria.cloud.moh.iais.action.datasubmission;
 
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientDto;
+import com.ecquaria.cloud.moh.iais.common.dto.prs.ProfessionalResponseDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
+import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.PatientService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
@@ -32,11 +32,14 @@ public class DpAjaxController {
     @Autowired
     private PatientService patientService;
 
+    @Autowired
+    private AppSubmissionService appSubmissionService;
+
     @PostMapping(value = "/retrieve-identification")
     public @ResponseBody
     Map<String, Object> retrieveIdentification(HttpServletRequest request) {
         String idType = ParamUtil.getString(request, "idType");
-        String idNo = ParamUtil.getString(request, "idNumber");
+        String idNo = ParamUtil.getString(request, "idNo");
         String nationality = ParamUtil.getString(request, "nationality");
         PatientDto patient = new PatientDto();
         patient.setIdType(idType);
@@ -58,8 +61,31 @@ public class DpAjaxController {
             LoginContext loginContext = DataSubmissionHelper.getLoginContext(request);
             String orgId = Optional.ofNullable(loginContext).map(LoginContext::getOrgId).orElse("");
             PatientDto db = patientService.getDpPatientDto(idType, idNo, nationality, orgId);
-            result.put("patient", db);
+            if (db != null) {
+                patient = db;
+            }
+            result.put("selection", patient);
         }
         return result;
+    }
+
+   /* @GetMapping(value = "/prg-input-info")
+    public Map<String, Object> getPrgNoInfo(HttpServletRequest request) {
+        log.debug(StringUtil.changeForLog("the prgNo start ...."));
+        String professionRegoNo = ParamUtil.getString(request, "prgNo");
+        ProfessionalResponseDto professionalResponseDto = appSubmissionService.retrievePrsInfo(professionRegoNo);
+        Map<String, Object> result = IaisCommonUtils.genNewHashMap(3);
+        result.put("prgNo", professionalResponseDto);
+        result.put("ERR0042", MessageUtil.getMessageDesc("GENERAL_ERR0042"));
+        result.put("ERR0048", MessageUtil.getMessageDesc("GENERAL_ERR0048"));
+        result.put("ERR0054", MessageUtil.getMessageDesc("GENERAL_ERR0054"));
+        return result;
+    }*/
+   @GetMapping(value = "/prg-input-info")
+    public @ResponseBody
+   ProfessionalResponseDto getPrgNoInfo(HttpServletRequest request) {
+        log.debug(StringUtil.changeForLog("the prgNo start ...."));
+        String professionRegoNo = ParamUtil.getString(request, "prgNo");
+        return appSubmissionService.retrievePrsInfo(professionRegoNo);
     }
 }

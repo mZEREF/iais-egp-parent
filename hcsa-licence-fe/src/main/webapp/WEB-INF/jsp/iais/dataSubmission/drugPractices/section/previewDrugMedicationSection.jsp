@@ -1,4 +1,4 @@
-<c:set var="drugPrescribedDispensedDto" value="${DpSuperDataSubmissionDto.drugPrescribedDispensedDto}" />
+<c:set var="drugPrescribedDispensedDto" value="${dpSuperDataSubmissionDto.drugPrescribedDispensedDto}" />
 <c:set var="drugMedication" value="${drugPrescribedDispensedDto.drugMedication}" />
 <div class="panel panel-default">
     <div class="panel-heading ${headingSign}">
@@ -8,43 +8,51 @@
             </a>
         </h4>
     </div>
-
     <div id="donorDtoDetails" class="panel-collapse collapse in">
         <div class="panel-body">
-            <c:forEach items="${drugPrescribedDispensedDto}" var="">
-                <div class="panel-main-content form-horizontal">
+            <div class="panel-main-content form-horizontal">
+                <c:forEach items="${drugPrescribedDispensedDto.drugMedicationDtos}" var="drugMedicationDto" varStatus="idxStatus">
+                    <c:set var="index" value="${idxStatus.index}" />
+                    <iais:row>
+                        <div class="col-sm-6 control-label formtext col-md-8">
+                            <div class="cgo-header">
+                                <strong>Medication <label class="assign-psn-item">${index+1}</label></strong>
+                            </div>
+                        </div>
+                    </iais:row>
                     <iais:row>
                         <iais:field width="5" value="Batch No."/>
                         <iais:value width="7" display="true">
-                            <c:out value="${drugMedication.batchNo}" />
+                            <c:out value="${drugMedicationDto.batchNo}" />
                         </iais:value>
                     </iais:row>
                     <iais:row>
                         <iais:field width="5" value="Strength (pg)"/>
                         <iais:value width="7" display="true">
-                            <c:out value="${drugMedication.strength}" />
+                            <c:out value="${drugMedicationDto.strength}" />
                         </iais:value>
                     </iais:row>
                     <iais:row>
                         <iais:field width="5" value="Quantity"/>
                         <iais:value width="7" display="true">
-                            <c:out value="${drugMedication.quantity}" />
+                            <c:out value="${drugMedicationDto.quantity}" />
                         </iais:value>
                     </iais:row>
                     <iais:row>
                         <iais:field width="5" value="Frequency" mandatory="false"/>
                         <iais:value width="7" cssClass="col-md-7"  display="true">
-                            <iais:code code="${drugMedication.frequency}"/>
+                            <iais:code code="${drugMedicationDto.frequency}"/>
                         </iais:value>
                     </iais:row>
-                    <iais:row>
-                        <iais:field width="5" value="Remarks"/>
-                        <iais:value width="7" display="true">
-                            <c:out value="${drugSubmission.remarks}" />
-                        </iais:value>
-                    </iais:row>
-                </div>
-            </c:forEach>
+                </c:forEach>
+                <c:set var="drugSubmission" value="${drugPrescribedDispensedDto.drugSubmission}" />
+                <iais:row>
+                    <iais:field width="5" value="Remarks"/>
+                    <iais:value width="7" display="true">
+                        <c:out value="${drugSubmission.remarks}" />
+                    </iais:value>
+                </iais:row>
+            </div>
         </div>
     </div>
 </div>

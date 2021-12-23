@@ -6,14 +6,12 @@ import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DpSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
+import com.ecquaria.cloud.moh.iais.common.dto.prs.ProfessionalResponseDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
-import com.ecquaria.cloud.moh.iais.service.client.FeEicGatewayClient;
-import com.ecquaria.cloud.moh.iais.service.client.LicEicClient;
-import com.ecquaria.cloud.moh.iais.service.client.LicenceClient;
-import com.ecquaria.cloud.moh.iais.service.client.SystemAdminClient;
-import com.ecquaria.cloud.moh.iais.service.client.DpFeClient;
+import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
+import com.ecquaria.cloud.moh.iais.service.client.*;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.DpDataSubmissionService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,6 +43,10 @@ public class DpDataSubmissionServiceImpl implements DpDataSubmissionService {
 
     @Autowired
     private LicEicClient licEicClient;
+
+    @Autowired
+    private AppSubmissionService appSubmissionService;
+
 
     @Override
     public Map<String, PremisesDto> getDpCenterPremises(String licenseeId) {
@@ -145,6 +147,11 @@ public class DpDataSubmissionServiceImpl implements DpDataSubmissionService {
             return;
         }
         dpFeClient.deleteDpSuperDataSubmissionDtoDraftByConds(orgId, submissionType, hciCode);
+    }
+
+    @Override
+    public ProfessionalResponseDto retrievePrsInfo(String regNo) {
+        return appSubmissionService.retrievePrsInfo(regNo);
     }
 
 
