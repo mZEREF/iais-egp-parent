@@ -845,7 +845,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
     }
 
     @Override
-    public Map<String, String> validateSectionLeaders(List<AppSvcPersonnelDto> appSvcSectionLeaderList) {
+    public Map<String, String> validateSectionLeaders(List<AppSvcPersonnelDto> appSvcSectionLeaderList, String svcCode) {
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
         if (appSvcSectionLeaderList == null || appSvcSectionLeaderList.isEmpty()) {
             return errorMap;
@@ -853,6 +853,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
         HttpServletRequest request = MiscUtil.getCurrentRequest();
         if (request != null) {
             request.setAttribute(ClinicalLaboratoryDelegator.SECTION_LEADER_LIST, appSvcSectionLeaderList);
+            request.setAttribute(NewApplicationConstant.CURRENT_SVC_CODE, svcCode);
         }
         for (int i = 0, len = appSvcSectionLeaderList.size(); i < len; i++) {
             ValidationResult result = WebValidationHelper.validateProperty(appSvcSectionLeaderList.get(i),
@@ -2633,7 +2634,16 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                 dto.setServiceId(serviceId);
                 dto.setServiceCode(serviceDto.getSvcCode());
             }
+        } else if (!StringUtil.isEmpty(serviceId) && StringUtil.isEmpty(dto.getServiceCode())) {
+            HcsaServiceDto serviceDto = HcsaServiceCacheHelper.getServiceById(serviceId);
+            if (serviceDto != null) {
+                serviceId = serviceDto.getId();
+                dto.setServiceId(serviceId);
+                dto.setServiceCode(serviceDto.getSvcCode());
+                dto.setServiceName(serviceDto.getSvcName());
+            }
         }
+
         int uploadFileLimit = systemParamConfig.getUploadFileLimit();
         String sysFileType = systemParamConfig.getUploadFileType();
         List<HcsaServiceStepSchemeDto> hcsaServiceStepSchemeDtos = serviceConfigService.getHcsaServiceStepSchemesByServiceId(
@@ -2732,7 +2742,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                 addErrorStep(currentStep, stepName, errorMap.size() != prevSize, errorList);
             } else if (HcsaConsts.STEP_SECTION_LEADER.equals(currentStep)) {
                 // Section Leader
-                Map<String, String> map = validateSectionLeaders(dto.getAppSvcSectionLeaderList());
+                Map<String, String> map = validateSectionLeaders(dto.getAppSvcSectionLeaderList(), dto.getServiceCode());
                 if (!map.isEmpty()) {
                     errorMap.putAll(map);
                 }

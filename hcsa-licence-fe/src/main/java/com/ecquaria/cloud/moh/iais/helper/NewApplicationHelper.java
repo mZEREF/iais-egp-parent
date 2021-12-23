@@ -98,6 +98,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -312,10 +313,110 @@ public class NewApplicationHelper {
                 + clearHciCode + " - HciNameChange: " + eqHciNameChange));
     }
 
-    public static void reSetDataByAppEditSelectDto(AppSubmissionDto scourceDto, AppSubmissionDto targetDto) {
+    public static void addToNonAuto(List<AppSubmissionDto> sourceList, List<AppSubmissionDto> notAutoSaveList) {
+        if (sourceList == null) {
+            return;
+        }
+        List<AppSubmissionDto> newAuto = IaisCommonUtils.genNewArrayList();
+        sourceList.stream().forEach(dto -> {
+            String licenceId = Optional.ofNullable(dto.getLicenceId()).orElse("");
+            Optional<AppSubmissionDto> optional = notAutoSaveList.stream()
+                    .filter(source -> licenceId.equals(source.getLicenceId()))
+                    .findAny();
+            if (optional.isPresent()) {
+                reSetNonAutoDataByAppEditSelectDto(dto, optional.get());
+            } else {
+                newAuto.add(dto);
+            }
+        });
+        notAutoSaveList.addAll(newAuto);
+    }
+
+    public static void addToAuto(List<AppSubmissionDto> sourceList, List<AppSubmissionDto> autoSaveList) {
+        if (sourceList == null) {
+            return;
+        }
+        List<AppSubmissionDto> newAuto = IaisCommonUtils.genNewArrayList();
+        sourceList.stream().forEach(dto -> {
+            String licenceId = Optional.ofNullable(dto.getLicenceId()).orElse("");
+            Optional<AppSubmissionDto> optional = autoSaveList.stream()
+                    .filter(source -> licenceId.equals(source.getLicenceId()))
+                    .findAny();
+            if (optional.isPresent()) {
+                reSetAutoDataByAppEditSelectDto(optional.get(), dto);
+            } else {
+                newAuto.add(dto);
+            }
+        });
+        autoSaveList.addAll(newAuto);
+    }
+
+    public static void addToAuto(List<AppSubmissionDto> sourceList, List<AppSubmissionDto> autoSaveList,
+            List<AppSubmissionDto> notAutoSaveAppsubmission) {
+        if (sourceList == null) {
+            return;
+        }
+        List<AppSubmissionDto> notInNonAuto = IaisCommonUtils.genNewArrayList();
+        sourceList.stream().forEach(dto -> {
+            String licenceId = Optional.ofNullable(dto.getLicenceId()).orElse("");
+            Optional<AppSubmissionDto> optional = notAutoSaveAppsubmission.stream()
+                    .filter(source -> licenceId.equals(source.getLicenceId()))
+                    .findAny();
+            if (optional.isPresent()) {
+                reSetAutoDataByAppEditSelectDto(optional.get(), dto);
+            } else {
+                notInNonAuto.add(dto);
+            }
+        });
+        List<AppSubmissionDto> notInAuto = IaisCommonUtils.genNewArrayList();
+        notInNonAuto.stream().forEach(dto -> {
+            String licenceId = Optional.ofNullable(dto.getLicenceId()).orElse("");
+            Optional<AppSubmissionDto> optional = autoSaveList.stream()
+                    .filter(source -> licenceId.equals(source.getLicenceId()))
+                    .findAny();
+            if (optional.isPresent()) {
+                reSetAutoDataByAppEditSelectDto(optional.get(), dto);
+            } else {
+                notInAuto.add(dto);
+            }
+        });
+        autoSaveList.addAll(notInAuto);
+    }
+
+    public static void reSetNonAutoDataByAppEditSelectDto(AppSubmissionDto targetDto, AppSubmissionDto scourceDto) {
         if (scourceDto == null || targetDto == null) {
             return;
         }
+        log.info(StringUtil.changeForLog("##### Reset Data: " + targetDto.getLicenceId() + " : " + targetDto.getLicenceNo()));
+        AppEditSelectDto source = scourceDto.getChangeSelectDto();
+        AppEditSelectDto target = targetDto.getChangeSelectDto();
+        if (source == null || target == null) {
+            return;
+        }
+        if (source.isLicenseeEdit()) {
+            target.setLicenseeEdit(true);
+        }
+        if (source.isPremisesEdit()) {
+            target.setPremisesEdit(true);
+            reSetPremeses(targetDto, scourceDto.getAppGrpPremisesDtoList());
+        }
+        if (source.isDocEdit()) {
+            target.setDocEdit(true);
+        }
+        if (source.isServiceEdit()) {
+            target.setServiceEdit(true);
+            List<AppSvcRelatedInfoDto> sourceSvcInfoList = scourceDto.getAppSvcRelatedInfoDtoList();
+            List<AppSvcRelatedInfoDto> targetSvcInfoList = targetDto.getAppSvcRelatedInfoDtoList();
+            handleAppSvcRelatedInfoDtos(targetSvcInfoList, sourceSvcInfoList,
+                    Optional.ofNullable(scourceDto.getAppEditSelectDto()).map(AppEditSelectDto::getPersonnelEditList).orElse(null));
+        }
+    }
+
+    public static void reSetAutoDataByAppEditSelectDto(AppSubmissionDto targetDto, AppSubmissionDto scourceDto) {
+        if (scourceDto == null || targetDto == null) {
+            return;
+        }
+        log.info(StringUtil.changeForLog("##### Reset Data: " + targetDto.getLicenceId() + " : " + targetDto.getLicenceNo()));
         AppEditSelectDto source = scourceDto.getChangeSelectDto();
         AppEditSelectDto target = targetDto.getChangeSelectDto();
         if (source == null || target == null) {
@@ -327,6 +428,7 @@ public class NewApplicationHelper {
         }
         if (source.isPremisesEdit()) {
             target.setPremisesEdit(true);
+            reSetPremeses(targetDto, scourceDto.getAppGrpPremisesDtoList());
         }
         if (source.isDocEdit()) {
             target.setDocEdit(true);
@@ -335,47 +437,53 @@ public class NewApplicationHelper {
             target.setServiceEdit(true);
             List<AppSvcRelatedInfoDto> sourceSvcInfoList = scourceDto.getAppSvcRelatedInfoDtoList();
             List<AppSvcRelatedInfoDto> targetSvcInfoList = targetDto.getAppSvcRelatedInfoDtoList();
-            handleAppSvcRelatedInfoDtos(sourceSvcInfoList, targetSvcInfoList, source.getPersonnelEditList());
+            handleAppSvcRelatedInfoDtos(targetSvcInfoList, sourceSvcInfoList, source.getPersonnelEditList());
         }
     }
 
-    private static void handleAppSvcRelatedInfoDtos(List<AppSvcRelatedInfoDto> sourceSvcInfoList,
-            List<AppSvcRelatedInfoDto> targetSvcInfoList, List<String> personnelEditList) {
+    private static void handleAppSvcRelatedInfoDtos(List<AppSvcRelatedInfoDto> targetSvcInfoList,
+            List<AppSvcRelatedInfoDto> sourceSvcInfoList, List<String> personnelEditList) {
         if (sourceSvcInfoList == null || sourceSvcInfoList.isEmpty() || targetSvcInfoList == null || targetSvcInfoList.isEmpty()
                 || personnelEditList == null || personnelEditList.isEmpty()) {
             return;
         }
         AppSvcRelatedInfoDto sourceSvcInfo = sourceSvcInfoList.get(0);
         AppSvcRelatedInfoDto targetSvcInfo = targetSvcInfoList.get(0);
-        if (personnelEditList.contains(ApplicationConsts.PERSONNEL_PSN_TYPE_CGO)) {
+        if (personnelEditList.contains(ApplicationConsts.PERSONNEL_PSN_TYPE_CGO)
+                || personnelEditList.contains(HcsaConsts.STEP_CLINICAL_GOVERNANCE_OFFICERS)) {
             List<AppSvcPrincipalOfficersDto> deList = IaisCommonUtils.genNewArrayList(sourceSvcInfo.getAppSvcCgoDtoList().size());
             CopyUtil.copyMutableObjectList(sourceSvcInfo.getAppSvcCgoDtoList(), deList);
             targetSvcInfo.setAppSvcCgoDtoList(deList);
         }
-        if (personnelEditList.contains(ApplicationConsts.PERSONNEL_PSN_TYPE_MAP)) {
+        if (personnelEditList.contains(ApplicationConsts.PERSONNEL_PSN_TYPE_MAP)
+                || personnelEditList.contains(HcsaConsts.STEP_MEDALERT_PERSON)) {
             List<AppSvcPrincipalOfficersDto> deList = IaisCommonUtils.genNewArrayList(
                     sourceSvcInfo.getAppSvcMedAlertPersonList().size());
             CopyUtil.copyMutableObjectList(sourceSvcInfo.getAppSvcMedAlertPersonList(), deList);
             targetSvcInfo.setAppSvcMedAlertPersonList(deList);
         }
-        if (personnelEditList.contains(ApplicationConsts.PERSONNEL_PSN_TYPE_PO)) {
+        if (personnelEditList.contains(ApplicationConsts.PERSONNEL_PSN_TYPE_PO)
+                || personnelEditList.contains(HcsaConsts.STEP_PRINCIPAL_OFFICERS)) {
             List<AppSvcPrincipalOfficersDto> deList = IaisCommonUtils.genNewArrayList(
                     sourceSvcInfo.getAppSvcPrincipalOfficersDtoList().size());
             CopyUtil.copyMutableObjectList(sourceSvcInfo.getAppSvcPrincipalOfficersDtoList(), deList);
             targetSvcInfo.setAppSvcPrincipalOfficersDtoList(deList);
         }
-        if (personnelEditList.contains(ApplicationConsts.PERSONNEL_CLINICAL_DIRECTOR)) {
+        if (personnelEditList.contains(ApplicationConsts.PERSONNEL_CLINICAL_DIRECTOR)
+                || personnelEditList.contains(HcsaConsts.STEP_CLINICAL_DIRECTOR)) {
             List<AppSvcPrincipalOfficersDto> deList = IaisCommonUtils.genNewArrayList(
                     sourceSvcInfo.getAppSvcClinicalDirectorDtoList().size());
             CopyUtil.copyMutableObjectList(sourceSvcInfo.getAppSvcClinicalDirectorDtoList(), deList);
             targetSvcInfo.setAppSvcClinicalDirectorDtoList(deList);
         }
-        if (personnelEditList.contains(ApplicationConsts.PERSONNEL_PSN_KAH)) {
+        if (personnelEditList.contains(ApplicationConsts.PERSONNEL_PSN_KAH)
+                || personnelEditList.contains(HcsaConsts.STEP_KEY_APPOINTMENT_HOLDER)) {
             List<AppSvcPrincipalOfficersDto> deList = IaisCommonUtils.genNewArrayList(
                     sourceSvcInfo.getAppSvcKeyAppointmentHolderDtoList().size());
             CopyUtil.copyMutableObjectList(sourceSvcInfo.getAppSvcKeyAppointmentHolderDtoList(), deList);
             targetSvcInfo.setAppSvcKeyAppointmentHolderDtoList(deList);
         }
+
         targetSvcInfo.setAppSvcDocDtoLit(sourceSvcInfo.getAppSvcDocDtoLit());
     }
 
@@ -1181,6 +1289,18 @@ public class NewApplicationHelper {
             return;
         }
         setSvcScopeInfo(appGrpPremisesDtos, appSvcRelatedInfoDto, map);
+    }
+
+    public static void reSetPremeses(AppSubmissionDto appSubmissionDto, AppGrpPremisesDto appGrpPremisesDto) {
+        List<AppGrpPremisesDto> appGrpPremisesDtos = new ArrayList<>(1);
+        appGrpPremisesDtos.add(appGrpPremisesDto);
+        reSetPremeses(appSubmissionDto, appGrpPremisesDtos);
+    }
+
+    public static void reSetPremeses(AppSubmissionDto appSubmissionDto, List<AppGrpPremisesDto> appGrpPremisesDtos) {
+        List<AppGrpPremisesDto> copyMutableObjects = (List<AppGrpPremisesDto>) CopyUtil.copyMutableObjectList(appGrpPremisesDtos);
+        reSetAdditionalFields(copyMutableObjects, appSubmissionDto.getAppGrpPremisesDtoList());
+        appSubmissionDto.setAppGrpPremisesDtoList(copyMutableObjects);
     }
 
     public static void setPremise(AppGrpPremisesDto appGrpPremisesDto, String premIndexNo, AppSubmissionDto oldAppSubmissionDto) {
@@ -4546,57 +4666,6 @@ public class NewApplicationHelper {
         return appIds;
     }
 
-    public static void addToAuto(List<AppSubmissionDto> sourceList, List<AppSubmissionDto> autoSaveList) {
-        if (sourceList == null) {
-            return;
-        }
-        List<AppSubmissionDto> newAuto = IaisCommonUtils.genNewArrayList();
-        sourceList.stream().forEach(dto -> {
-            String licenceId = Optional.ofNullable(dto.getLicenceId()).orElseGet(() -> "");
-            Optional<AppSubmissionDto> optional = autoSaveList.stream()
-                    .filter(source -> licenceId.equals(source.getLicenceId()))
-                    .findAny();
-            if (optional.isPresent()) {
-                NewApplicationHelper.reSetDataByAppEditSelectDto(dto, optional.get());
-            } else {
-                newAuto.add(dto);
-            }
-        });
-        autoSaveList.addAll(newAuto);
-    }
-
-    public static void addToAuto(List<AppSubmissionDto> sourceList, List<AppSubmissionDto> autoSaveList,
-            List<AppSubmissionDto> notAutoSaveAppsubmission) {
-        if (sourceList == null) {
-            return;
-        }
-        List<AppSubmissionDto> notInNonAuto = IaisCommonUtils.genNewArrayList();
-        sourceList.stream().forEach(dto -> {
-            String licenceId = Optional.ofNullable(dto.getLicenceId()).orElseGet(() -> "");
-            Optional<AppSubmissionDto> optional = notAutoSaveAppsubmission.stream()
-                    .filter(source -> licenceId.equals(source.getLicenceId()))
-                    .findAny();
-            if (optional.isPresent()) {
-                NewApplicationHelper.reSetDataByAppEditSelectDto(dto, optional.get());
-            } else {
-                notInNonAuto.add(dto);
-            }
-        });
-        List<AppSubmissionDto> notInAuto = IaisCommonUtils.genNewArrayList();
-        notInNonAuto.stream().forEach(dto -> {
-            String licenceId = Optional.ofNullable(dto.getLicenceId()).orElseGet(() -> "");
-            Optional<AppSubmissionDto> optional = autoSaveList.stream()
-                    .filter(source -> licenceId.equals(source.getLicenceId()))
-                    .findAny();
-            if (optional.isPresent()) {
-                NewApplicationHelper.reSetDataByAppEditSelectDto(dto, optional.get());
-            } else {
-                notInAuto.add(dto);
-            }
-        });
-        autoSaveList.addAll(notInAuto);
-    }
-
     public static Map<Integer, String> checkBlacklist(String name) {
         return checkBlacklist(name, null);
     }
@@ -4858,7 +4927,11 @@ public class NewApplicationHelper {
         boolean invalid = IaisCommonUtils.isNotEmpty(appByLicIdAndExcludeNew)
                 || !requestForChangeService.isOtherOperation(licenceId);
         if (invalid) {
-            log.info(StringUtil.changeForLog("Invalid Licence - " + type + " : " + licenceId));
+            log.info(StringUtil.changeForLog("##### Invalid Licence - " + type + " : " + licenceId));
+            if (appByLicIdAndExcludeNew != null && !appByLicIdAndExcludeNew.isEmpty()) {
+                CompletableFuture.runAsync(() -> appByLicIdAndExcludeNew.forEach(dto ->
+                        log.warn(StringUtil.changeForLog("##### The error for Pending App: " + dto.getApplicationNo()))));
+            }
             //request.setAttribute("rfcPendingApplication", "errorRfcPendingApplication");
         }
         return !invalid;
@@ -4882,6 +4955,7 @@ public class NewApplicationHelper {
         if (StringUtil.isEmpty(type) || NewApplicationConstant.SECTION_PREMISES.equals(type)) {
             boolean b = requestForChangeService.baseSpecLicenceRelation(licenceDto);
             if (!b) {
+                log.warn(StringUtil.changeForLog("#####The error for baseSpecLicenceRelation: " + licenceDto.getLicenceNo()));
                 errorMap.put(RfcConst.PENDING_APP, RfcConst.PENDING_APP_VALUE);
                 return errorMap;
             }
@@ -4893,6 +4967,7 @@ public class NewApplicationHelper {
                 for (String premiseType : premiseTypes) {
                     boolean configIsChange = requestForChangeService.serviceConfigIsChange(serviceIds, premiseType);
                     if (!configIsChange) {
+                        log.warn(StringUtil.changeForLog("#####The error for serviceConfigIsChange: " + licenceDto.getLicenceNo()));
                         errorMap.put(RfcConst.SERVICE_CONFIG_CHANGE,
                                 MessageUtil.replaceMessage("RFC_ERR020", licenceDto.getSvcName(), "ServiceName"));
                         return errorMap;

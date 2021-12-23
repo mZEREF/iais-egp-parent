@@ -43,6 +43,7 @@ import com.ecquaria.cloud.moh.iais.constant.NewApplicationConstant;
 import com.ecquaria.cloud.moh.iais.constant.RfcConst;
 import com.ecquaria.cloud.moh.iais.dto.ServiceStepDto;
 import com.ecquaria.cloud.moh.iais.helper.FileUtils;
+import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
@@ -410,7 +411,15 @@ public class ClinicalLaboratoryDelegator {
         String action = ParamUtil.getRequestString(bpc.request, "nextStep");
         Map<String, String> errorMap = null;
         if ("next".equals(action)) {
-            errorMap = appSubmissionService.validateSectionLeaders(currSvcInfoDto.getAppSvcSectionLeaderList());
+            if (StringUtil.isEmpty(currSvcInfoDto.getServiceCode())) {
+                HcsaServiceDto serviceDto = HcsaServiceCacheHelper.getServiceById(currSvcId);
+                if (serviceDto != null) {
+                    currSvcInfoDto.setServiceId(currSvcId);
+                    currSvcInfoDto.setServiceCode(serviceDto.getSvcCode());
+                    currSvcInfoDto.setServiceName(serviceDto.getSvcName());
+                }
+            }
+            errorMap = appSubmissionService.validateSectionLeaders(currSvcInfoDto.getAppSvcSectionLeaderList(), currSvcInfoDto.getServiceCode());
             if (!isRfi) {
                 List<HcsaSvcPersonnelDto> psnConfig = serviceConfigService.getGOSelectInfo(currSvcId,
                         ApplicationConsts.PERSONNEL_PSN_SVC_SECTION_LEADER);
