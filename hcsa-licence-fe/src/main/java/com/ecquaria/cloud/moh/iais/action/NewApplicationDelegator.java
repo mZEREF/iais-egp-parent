@@ -2768,7 +2768,7 @@ public class NewApplicationDelegator {
                     notAutoSaveAppsubmission.size() > RfcConst.DFT_MIN_PARALLEL_SIZE)
                     .forEach(targetDto -> {
                         Optional<AppSubmissionDto> optional = autoSaveAppsubmission.stream()
-                                .filter(source -> licenceId.equals(source.getLicenceId()))
+                                .filter(source -> Objects.equals(targetDto.getLicenceId(), source.getLicenceId()))
                                 .findAny();
                         if (optional.isPresent()) {
                             NewApplicationHelper.reSetNonAutoDataByAppEditSelectDto(targetDto, optional.get());
