@@ -40,6 +40,7 @@
                                         <%@ include file="section/particularsSterilizationSection.jsp" %>
                                     </c:when>
                                     <c:when test="${currCode == 'VSST010'}">
+
                                     </c:when>
                                 </c:choose>
                                 <%@ include file="common/vssFooter.jsp" %>

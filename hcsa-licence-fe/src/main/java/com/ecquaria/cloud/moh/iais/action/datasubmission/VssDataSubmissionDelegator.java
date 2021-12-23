@@ -6,11 +6,14 @@ import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmission
 import com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.*;
 import com.ecquaria.cloud.moh.iais.common.helper.dataSubmission.DsConfigHelper;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationProperty;
 import com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
+import com.ecquaria.cloud.moh.iais.helper.ControllerHelper;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.VssDataSubmissionService;
@@ -22,6 +25,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -141,24 +145,54 @@ public class VssDataSubmissionDelegator {
     }
 
     private void prepareTreatment(HttpServletRequest request) {
+        VssSuperDataSubmissionDto vssSuperDataSubmissionDto = DataSubmissionHelper.getCurrentVssDataSubmission(request);
+        ParamUtil.setSessionAttr(request, DataSubmissionConstant.VSS_DATA_SUBMISSION, vssSuperDataSubmissionDto);
     }
 
     private int doTreatment(HttpServletRequest request) {
-        return 0;
+        VssSuperDataSubmissionDto vssSuperDataSubmissionDto = DataSubmissionHelper.getCurrentVssDataSubmission(request);
+        vssSuperDataSubmissionDto = vssSuperDataSubmissionDto  == null ? new VssSuperDataSubmissionDto() : vssSuperDataSubmissionDto;
+        VssTreatmentDto vssTreatmentDto = vssSuperDataSubmissionDto.getVssTreatmentDto() == null ? new VssTreatmentDto() : vssSuperDataSubmissionDto.getVssTreatmentDto();
+        TreatmentDto treatmentDto = vssTreatmentDto.getTreatmentDto() == null ? new TreatmentDto() : vssTreatmentDto.getTreatmentDto();
+        ControllerHelper.get(request,treatmentDto);
+        vssTreatmentDto.setTreatmentDto(treatmentDto);
+        vssSuperDataSubmissionDto.setVssTreatmentDto(vssTreatmentDto);
+        ParamUtil.setSessionAttr(request, DataSubmissionConstant.VSS_DATA_SUBMISSION, vssSuperDataSubmissionDto);
+        return 2;
     }
 
     private void prepareConsentParticulars(HttpServletRequest request) {
+        VssSuperDataSubmissionDto vssSuperDataSubmissionDto = DataSubmissionHelper.getCurrentVssDataSubmission(request);
+        ParamUtil.setSessionAttr(request, DataSubmissionConstant.VSS_DATA_SUBMISSION, vssSuperDataSubmissionDto);
     }
 
     private int doConsentParticulars(HttpServletRequest request) {
-        return 0;
+        VssSuperDataSubmissionDto vssSuperDataSubmissionDto = DataSubmissionHelper.getCurrentVssDataSubmission(request);
+        vssSuperDataSubmissionDto = vssSuperDataSubmissionDto  == null ? new VssSuperDataSubmissionDto() : vssSuperDataSubmissionDto;
+        VssTreatmentDto vssTreatmentDto = vssSuperDataSubmissionDto.getVssTreatmentDto() == null ? new VssTreatmentDto() : vssSuperDataSubmissionDto.getVssTreatmentDto();
+        GuardianAppliedPartDto guardianAppliedPartDto = vssTreatmentDto.getGuardianAppliedPartDto() == null ? new GuardianAppliedPartDto() : vssTreatmentDto.getGuardianAppliedPartDto();
+        ControllerHelper.get(request,guardianAppliedPartDto);
+        vssTreatmentDto.setGuardianAppliedPartDto(guardianAppliedPartDto);
+        vssSuperDataSubmissionDto.setVssTreatmentDto(vssTreatmentDto);
+        ParamUtil.setSessionAttr(request, DataSubmissionConstant.VSS_DATA_SUBMISSION, vssSuperDataSubmissionDto);
+        return 3;
     }
 
     private void prepareTfsspParticulars(HttpServletRequest request) {
+        VssSuperDataSubmissionDto vssSuperDataSubmissionDto = DataSubmissionHelper.getCurrentVssDataSubmission(request);
+        ParamUtil.setSessionAttr(request, DataSubmissionConstant.VSS_DATA_SUBMISSION, vssSuperDataSubmissionDto);
     }
 
     private int doTfsspParticulars(HttpServletRequest request) {
-        return 0;
+        VssSuperDataSubmissionDto vssSuperDataSubmissionDto = DataSubmissionHelper.getCurrentVssDataSubmission(request);
+        vssSuperDataSubmissionDto = vssSuperDataSubmissionDto  == null ? new VssSuperDataSubmissionDto() : vssSuperDataSubmissionDto;
+        VssTreatmentDto vssTreatmentDto = vssSuperDataSubmissionDto.getVssTreatmentDto() == null ? new VssTreatmentDto() : vssSuperDataSubmissionDto.getVssTreatmentDto();
+        SexualSterilizationDto sexualSterilizationDto = vssTreatmentDto.getSexualSterilizationDto() == null ? new SexualSterilizationDto() : vssTreatmentDto.getSexualSterilizationDto();
+        ControllerHelper.get(request,sexualSterilizationDto);
+        vssTreatmentDto.setSexualSterilizationDto(sexualSterilizationDto);
+        vssSuperDataSubmissionDto.setVssTreatmentDto(vssTreatmentDto);
+        ParamUtil.setSessionAttr(request, DataSubmissionConstant.VSS_DATA_SUBMISSION, vssSuperDataSubmissionDto);
+        return 4;
     }
 
     /**
@@ -272,5 +306,4 @@ public class VssDataSubmissionDelegator {
         String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
         IaisEGPHelper.redirectUrl(bpc.response, tokenUrl);
     }
-
 }
