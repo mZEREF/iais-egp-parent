@@ -67,7 +67,6 @@ public class ServiceInfoChangeEffectPersonAbstract implements ServiceInfoChangeE
         if (changeList == null) {
             changeList = IaisCommonUtils.genNewArrayList();
         }
-        log.info(StringUtil.changeForLog("stepList: " + stepList + " - changeList: " + changeList));
         AppSvcRelatedInfoDto newDto = (AppSvcRelatedInfoDto) CopyUtil.copyMutableObject(currSvcInfoDto);
         for (String step : stepList) {
             if (HcsaConsts.STEP_BUSINESS_NAME.equals(step)) {
@@ -484,12 +483,12 @@ public class ServiceInfoChangeEffectPersonAbstract implements ServiceInfoChangeE
             for (AppSvcPrincipalOfficersDto v : appSvcClinicalDirectorDtos) {
                 for (AppSvcPrincipalOfficersDto v1 : oldAppSvcClinicalDirectorDtos) {
                     if (v.getIdNo().equals(v1.getIdNo())) {
-                        boolean b = Objects.equals(v.getProfessionBoard(), v1.getProfessionBoard())
-                                && Objects.equals(v.getProfRegNo(), v1.getProfRegNo())
-                                && Objects.equals(v.getSalutation(), v1.getSalutation())
+                        boolean b = Objects.equals(v.getSalutation(), v1.getSalutation())
                                 && Objects.equals(v.getName(), v1.getName())
                                 && Objects.equals(v.getIdType(), v1.getIdType())
                                 && Objects.equals(v.getDesignation(), v1.getDesignation())
+                                /*&& Objects.equals(v.getProfRegNo(), v1.getProfRegNo())
+                                && Objects.equals(v.getProfessionBoard(), v1.getProfessionBoard())
                                 && Objects.equals(v.getSpeciality(), v1.getSpeciality())
                                 && Objects.equals(v.getSpecialtyGetDate(), v1.getSpecialtyGetDate())
                                 && Objects.equals(v.getTypeOfCurrRegi(), v1.getTypeOfCurrRegi())
@@ -498,7 +497,7 @@ public class ServiceInfoChangeEffectPersonAbstract implements ServiceInfoChangeE
                                 && Objects.equals(v.getTypeOfRegister(), v1.getTypeOfRegister())
                                 && Objects.equals(v.getRelevantExperience(), v1.getRelevantExperience())
                                 && Objects.equals(v.getHoldCerByEMS(), v1.getHoldCerByEMS())
-                                && Objects.equals(v.getAclsExpiryDate(), v1.getAclsExpiryDate())
+                                && Objects.equals(v.getAclsExpiryDate(), v1.getAclsExpiryDate())*/
                                 && Objects.equals(v.getMobileNo(), v1.getMobileNo())
                                 && Objects.equals(v.getEmailAddr(), v1.getEmailAddr());
                         if (!b) {
