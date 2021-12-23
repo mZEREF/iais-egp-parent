@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.validation;
 
 import com.ecquaria.cloud.moh.iais.action.ClinicalLaboratoryDelegator;
+import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
@@ -10,6 +11,8 @@ import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidator;
 import com.ecquaria.cloud.moh.iais.constant.NewApplicationConstant;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
+import com.ecquaria.cloud.moh.iais.helper.SystemParamHelper;
+import com.ecquaria.cloud.moh.iais.helper.SystemParamUtil;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
@@ -52,13 +55,33 @@ public class AppSvcPersonnelValidator implements CustomizeValidator {
         if (ApplicationConsts.PERSONNEL_PSN_SVC_SECTION_LEADER.equals(profile) && StringUtil.isDigit(svcPersonnel.getWrkExpYear())) {
             int workExpYear = Integer.parseInt(svcPersonnel.getWrkExpYear());
             String svcCode = (String) request.getAttribute(NewApplicationConstant.CURRENT_SVC_CODE);
-            if (AppServicesConsts.SERVICE_CODE_CLINICAL_LABORATORY.equals(svcCode) && workExpYear < 5) {
-                //errorMap.put("wrkExpYear", MessageUtil.getMessageDesc("NEW_ERR0012"));
-            } else if (AppServicesConsts.SERVICE_CODE_RADIOLOGICAL_SERVICES.equals(svcCode) && workExpYear < 3) {
-                //errorMap.put("wrkExpYear", MessageUtil.getMessageDesc("NEW_ERR0012"));
+            SystemParamConfig systemParamConfig = SystemParamUtil.getSystemParamConfig();
+            if (AppServicesConsts.SERVICE_CODE_CLINICAL_LABORATORY.equals(svcCode)) {
+                int minWrkExprerience = systemParamConfig.getClbSlMinWrkExprerience();
+                if (workExpYear < minWrkExprerience) {
+                    errorMap.put("wrkExpYear", MessageUtil.replaceMessage("GENERAL_ERR0055",
+                            Integer.toString(minWrkExprerience), "x"));
+                }
+            } else if (AppServicesConsts.SERVICE_CODE_RADIOLOGICAL_SERVICES.equals(svcCode)) {
+                int minWrkExprerience = systemParamConfig.getRdsSlMinWrkExprerience();
+                if (workExpYear < minWrkExprerience) {
+                    errorMap.put("wrkExpYear", MessageUtil.replaceMessage("GENERAL_ERR0055",
+                            Integer.toString(minWrkExprerience), "x"));
+                }
+            } else if (AppServicesConsts.SERVICE_CODE_NUCLEAR_MEDICINE_ASSAY.equals(svcCode)) {
+                int minWrkExprerience = systemParamConfig.getNmaSlMinWrkExprerience();
+                if (workExpYear < minWrkExprerience) {
+                    errorMap.put("wrkExpYear", MessageUtil.replaceMessage("GENERAL_ERR0055",
+                            Integer.toString(minWrkExprerience), "x"));
+                }
+            } else if (AppServicesConsts.SERVICE_CODE_NUCLEAR_MEDICINE_IMAGING.equals(svcCode)) {
+                int minWrkExprerience = systemParamConfig.getNmiSlMinWrkExprerience();
+                if (workExpYear < minWrkExprerience) {
+                    errorMap.put("wrkExpYear", MessageUtil.replaceMessage("GENERAL_ERR0055",
+                            Integer.toString(minWrkExprerience), "x"));
+                }
             }
         }
-
         return errorMap;
     }
 
