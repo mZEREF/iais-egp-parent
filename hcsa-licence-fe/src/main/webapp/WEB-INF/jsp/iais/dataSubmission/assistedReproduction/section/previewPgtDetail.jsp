@@ -3,14 +3,14 @@
 <div class="panel panel-default">
     <div class="panel-heading ${headingSign}">
         <h4 class="panel-title">
-            <a href="#pftDetailsPreview" data-toggle="collapse">
+            <a href="#pgtDetailsPreview" data-toggle="collapse">
                 Preimplantation Genetic Testing
             </a>
         </h4>
     </div>
-    <div id="pftDetailsPreview" class="panel-collapse collapse in">
+    <div id="pgtDetailsPreview" class="panel-collapse collapse in">
         <div class="panel-body">
-            <iais:row class="panel-main-content form-horizontal">
+            <div class="panel-main-content form-horizontal">
                 <h3>
                     <label ><c:out value="${arSuperDataSubmissionDto.patientInfoDto.patient.name}"/></label>
                     <span style="font-weight:normal"><c:out value="(${arSuperDataSubmissionDto.patientInfoDto.patient.idNumber})"/>
