@@ -2608,7 +2608,6 @@ public class NewApplicationDelegator {
             autoAppSubmissionDto = (AppSubmissionDto) CopyUtil.copyMutableObject(appSubmissionDto);
             autoAppSubmissionDto.setAmount(0.0);
             autoChangeSelectDto = new AppEditSelectDto();
-            autoAppSubmissionDto.setChangeSelectDto(autoChangeSelectDto);
         }
 
         // check the premises step is auto or not
@@ -2672,6 +2671,17 @@ public class NewApplicationDelegator {
                     }
                     NewApplicationHelper.addToNonAuto(submissionDtos, notAutoSaveAppsubmission);
                 }
+            }
+            // for spliting
+            if (changeSelectDto.isAutoRfc() && !isAutoRfc) {
+                if (autoAppSubmissionDto == null) {
+                    autoAppSubmissionDto = (AppSubmissionDto) CopyUtil.copyMutableObject(appSubmissionDto);
+                    autoAppSubmissionDto.setAmount(0.0);
+                    autoChangeSelectDto = new AppEditSelectDto();
+                }
+                autoChangeSelectDto.setPremisesEdit(true);
+                appEditSelectDto.setPremisesEdit(false);
+                appEditSelectDto.setPremisesListEdit(false);
             }
         }
         log.info(StringUtil.changeForLog("isAutoPremises: " + isAutoPremises));
@@ -2737,7 +2747,6 @@ public class NewApplicationDelegator {
                 autoAppSubmissionDto = (AppSubmissionDto) CopyUtil.copyMutableObject(appSubmissionDto);
                 autoAppSubmissionDto.setAmount(0.0);
                 autoChangeSelectDto = new AppEditSelectDto();
-                autoAppSubmissionDto.setChangeSelectDto(autoChangeSelectDto);
             }
             if (autoAppSubmissionDto != null) {
                 autoChangeSelectDto.setServiceEdit(true);
