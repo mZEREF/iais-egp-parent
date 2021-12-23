@@ -56,18 +56,17 @@ public class IuiTreatmentSubsidiesDelegator extends CommonDelegator {
 
     @Override
     public void prepareSwitch(BaseProcessClass bpc) {
-
+        log.info(StringUtil.changeForLog("crud_action_type is ======>"+ParamUtil.getRequestString(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE)));
+        ParamUtil.setRequestAttr(bpc.request, "smallTitle", "You are submitting for <strong>Cycle Stages</strong>");
     }
 
     public void preparePage(BaseProcessClass bpc) {
-        log.info(StringUtil.changeForLog("crud_action_type is ======>"+ParamUtil.getRequestString(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE)));
-        ParamUtil.setRequestAttr(bpc.request, "smallTitle", "You are submitting for <strong>Cycle Stages</strong>");
+        ArSuperDataSubmissionDto arSuperDataSubmissionDto= DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
+        ParamUtil.setSessionAttr(bpc.request, DataSubmissionConstant.AR_DATA_SUBMISSION, arSuperDataSubmissionDto);
     }
 
     @Override
     public void prepareConfim(BaseProcessClass bpc) {
-        log.info(StringUtil.changeForLog("crud_action_type is ======>"+ParamUtil.getRequestString(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE)));
-        ParamUtil.setRequestAttr(bpc.request, "smallTitle", "You are submitting for <strong>Cycle Stages</strong>");
         int count = ParamUtil.getInt(bpc.request,"count");
         boolean isDisplayAppeal = (count>=3);
         ParamUtil.setRequestAttr(bpc.request, "isDisplayAppeal",isDisplayAppeal);
@@ -83,8 +82,6 @@ public class IuiTreatmentSubsidiesDelegator extends CommonDelegator {
         if(iuiTreatmentSubsidiesDto == null) {
             iuiTreatmentSubsidiesDto = new IuiTreatmentSubsidiesDto();
         }
-        String actionType = ParamUtil.getRequestString(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE);
-        if (CommonDelegator.ACTION_TYPE_CONFIRM.equals(actionType)) {
             String pleaseIndicateIui = ParamUtil.getString(bpc.request, "pleaseIndicateIui");
             String thereAppeal=ParamUtil.getRequestString(bpc.request,"thereAppeal");
             iuiTreatmentSubsidiesDto.setArtCoFunding(pleaseIndicateIui);
@@ -100,7 +97,5 @@ public class IuiTreatmentSubsidiesDelegator extends CommonDelegator {
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "page");
                 return;
             }
-            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "confirm");
-        }
     }
 }

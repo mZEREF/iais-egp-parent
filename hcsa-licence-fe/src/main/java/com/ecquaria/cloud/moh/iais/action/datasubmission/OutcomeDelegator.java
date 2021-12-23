@@ -26,29 +26,20 @@ import java.util.Map;
 @Delegator("outcomeDelegator")
 @Slf4j
 public class OutcomeDelegator extends CommonDelegator{
-
-    @Override
-    public void start(BaseProcessClass bpc) {
-
-    }
-
     @Override
     public void prepareSwitch(BaseProcessClass bpc) {
-
+        log.info(StringUtil.changeForLog("crud_action_type is ======>"+ParamUtil.getRequestString(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE)));
+        ParamUtil.setRequestAttr(bpc.request, "smallTitle", "You are submitting for <strong>Cycle Stages</strong>");
     }
 
     @Override
     public void preparePage(BaseProcessClass bpc) {
-        log.info(StringUtil.changeForLog("crud_action_type is ======>"+ParamUtil.getRequestString(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE)));
-        ParamUtil.setRequestAttr(bpc.request, "smallTitle", "You are submitting for <strong>Cycle Stages</strong>");
         ArSuperDataSubmissionDto arSuperDataSubmissionDto= DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
         ParamUtil.setSessionAttr(bpc.request, DataSubmissionConstant.AR_DATA_SUBMISSION, arSuperDataSubmissionDto);
     }
 
     @Override
     public void prepareConfim(BaseProcessClass bpc) {
-        log.info(StringUtil.changeForLog("crud_action_type is ======>"+ParamUtil.getRequestString(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE)));
-        ParamUtil.setRequestAttr(bpc.request, "smallTitle", "You are submitting for <strong>Cycle Stages</strong>");
         PatientInventoryDto patientInventoryDto = DataSubmissionHelper.getCurrentPatientInventory(bpc.request);
     }
 
@@ -59,9 +50,6 @@ public class OutcomeDelegator extends CommonDelegator{
         arSuperDataSubmissionDto = arSuperDataSubmissionDto == null ? new ArSuperDataSubmissionDto() : arSuperDataSubmissionDto;
         OutcomeStageDto outcomeStageDto =
                 arSuperDataSubmissionDto.getOutcomeStageDto() == null ? new OutcomeStageDto() : arSuperDataSubmissionDto.getOutcomeStageDto();
-
-        String actionType = ParamUtil.getRequestString(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE);
-        if (CommonDelegator.ACTION_TYPE_CONFIRM.equals(actionType)) {
             String pregnancyDetected = ParamUtil.getString(bpc.request, "pregnancyDetected");
             Boolean pregnancyDetectedb = null;
             if ("true".equals(pregnancyDetected)){
@@ -83,7 +71,5 @@ public class OutcomeDelegator extends CommonDelegator{
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "page");
                 return;
             }
-            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "confirm");
-        }
     }
 }
