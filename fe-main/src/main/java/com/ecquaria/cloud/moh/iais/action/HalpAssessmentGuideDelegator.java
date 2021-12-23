@@ -2587,6 +2587,7 @@ public class HalpAssessmentGuideDelegator {
                 searchParam.addFilter(key,dateString,true);
             }else {
                 searchParam.removeFilter(key);
+                searchParam.removeParam(key);
             }
         }catch (ParseException parseException){
             log.error(parseException.getMessage(),parseException);
