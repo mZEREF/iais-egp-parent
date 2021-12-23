@@ -251,7 +251,7 @@ public abstract class DonorCommonDelegator extends CommonDelegator{
             StringBuilder stringBuilder = new StringBuilder();
             for (DonorDto donorDto : arDonorDtos) {
                 if (StringUtil.isEmpty(donorDto.getDonorSampleKey())) {
-                    stringBuilder.append(" donor ").append(donorDto.getArDonorIndex()).append(",");
+                    stringBuilder.append(" Donor ").append(donorDto.getArDonorIndex()+1).append(",");
                 }
             }
             if(StringUtil.isEmpty(stringBuilder.toString())){
