@@ -10,6 +10,11 @@
     <div id="efoDetails" class="panel-collapse collapse in">
         <div class="panel-body">
             <div class="panel-main-content form-horizontal">
+                <h3>
+                    <label ><c:out value="${arSuperDataSubmissionDto.patientInfoDto.patient.name}"/></label>
+                    <span style="font-weight:normal"><c:out value="(${arSuperDataSubmissionDto.patientInfoDto.patient.idNumber})"/>
+                    </span>
+                </h3>
                 <c:set var="outcomeStageDto" value="${arSuperDataSubmissionDto.outcomeStageDto}" />
                 <iais:row>
                     <iais:field width="6" value="Is Clinical Pregnancy Detected?"/>
