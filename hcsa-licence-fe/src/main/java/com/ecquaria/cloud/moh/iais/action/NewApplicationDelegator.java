@@ -2608,7 +2608,6 @@ public class NewApplicationDelegator {
             autoAppSubmissionDto = (AppSubmissionDto) CopyUtil.copyMutableObject(appSubmissionDto);
             autoAppSubmissionDto.setAmount(0.0);
             autoChangeSelectDto = new AppEditSelectDto();
-            autoAppSubmissionDto.setChangeSelectDto(autoChangeSelectDto);
         }
 
         // check the premises step is auto or not
@@ -2649,11 +2648,11 @@ public class NewApplicationDelegator {
                 }
                 // add the premises affected list to the group
                 if (changeSelectDto.isAutoRfc()) {
-                    autoSaveAppsubmission.addAll(appSubmissionDtos);
+                    NewApplicationHelper.addToAuto(appSubmissionDtos, autoSaveAppsubmission);
                     // re-set change edit select dto
                     isAutoPremises = 1;
                 } else {
-                    notAutoSaveAppsubmission.addAll(appSubmissionDtos);
+                    NewApplicationHelper.addToNonAuto(appSubmissionDtos, notAutoSaveAppsubmission);
                     // split out the auto parts
                     isAutoPremises = 0;
                 }
@@ -2665,13 +2664,24 @@ public class NewApplicationDelegator {
                         appSubmissionDto.getLicenceId(), checkSpec);
                 if (IaisCommonUtils.isNotEmpty(submissionDtos)) {
                     StreamSupport.stream(submissionDtos.spliterator(), submissionDtos.size() > RfcConst.DFT_MIN_PARALLEL_SIZE)
-                            .forEach(dto -> requestForChangeService.reSetPremeses(dto, appGrpPremisesDtoList.get(0)));
+                            .forEach(dto -> NewApplicationHelper.reSetPremeses(dto, appGrpPremisesDtoList));
                     boolean isValid = checkAffectedAppSubmissions(submissionDtos, amount, draftNo, groupNo, changeSelectDto, bpc.request);
                     if (!isValid) {
                         return;
                     }
-                    notAutoSaveAppsubmission.addAll(submissionDtos);
+                    NewApplicationHelper.addToNonAuto(submissionDtos, notAutoSaveAppsubmission);
                 }
+            }
+            // for spliting
+            if (changeSelectDto.isAutoRfc() && !isAutoRfc) {
+                if (autoAppSubmissionDto == null) {
+                    autoAppSubmissionDto = (AppSubmissionDto) CopyUtil.copyMutableObject(appSubmissionDto);
+                    autoAppSubmissionDto.setAmount(0.0);
+                    autoChangeSelectDto = new AppEditSelectDto();
+                }
+                autoChangeSelectDto.setPremisesEdit(true);
+                appEditSelectDto.setPremisesEdit(false);
+                appEditSelectDto.setPremisesListEdit(false);
             }
         }
         log.info(StringUtil.changeForLog("isAutoPremises: " + isAutoPremises));
@@ -2737,7 +2747,6 @@ public class NewApplicationDelegator {
                 autoAppSubmissionDto = (AppSubmissionDto) CopyUtil.copyMutableObject(appSubmissionDto);
                 autoAppSubmissionDto.setAmount(0.0);
                 autoChangeSelectDto = new AppEditSelectDto();
-                autoAppSubmissionDto.setChangeSelectDto(autoChangeSelectDto);
             }
             if (autoAppSubmissionDto != null) {
                 autoChangeSelectDto.setServiceEdit(true);
@@ -2752,6 +2761,21 @@ public class NewApplicationDelegator {
                 log.info(StringUtil.changeForLog("changeList: " + changeList));
             }
         }
+
+        // synchronize data
+        if (!autoSaveAppsubmission.isEmpty() && !notAutoSaveAppsubmission.isEmpty()) {
+            StreamSupport.stream(notAutoSaveAppsubmission.spliterator(),
+                    notAutoSaveAppsubmission.size() > RfcConst.DFT_MIN_PARALLEL_SIZE)
+                    .forEach(targetDto -> {
+                        Optional<AppSubmissionDto> optional = autoSaveAppsubmission.stream()
+                                .filter(source -> licenceId.equals(source.getLicenceId()))
+                                .findAny();
+                        if (optional.isPresent()) {
+                            NewApplicationHelper.reSetNonAutoDataByAppEditSelectDto(targetDto, optional.get());
+                        }
+                    });
+        }
+
         // re-set autoAppSubmissionDto
         if (autoAppSubmissionDto != null) {
             if (0 == isAutoPremises) {

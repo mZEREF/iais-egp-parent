@@ -2353,16 +2353,6 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
     }
 
     @Override
-    public void reSetPremeses(AppSubmissionDto appSubmissionDto, AppGrpPremisesDto appGrpPremisesDto) {
-        AppGrpPremisesDto copyMutableObject = (AppGrpPremisesDto) CopyUtil.copyMutableObject(appGrpPremisesDto);
-        AppGrpPremisesDto oldPremises = appSubmissionDto.getAppGrpPremisesDtoList().get(0);
-        NewApplicationHelper.reSetAdditionalFields(copyMutableObject, oldPremises);
-        List<AppGrpPremisesDto> appGrpPremisesDtos = new ArrayList<>(1);
-        appGrpPremisesDtos.add(copyMutableObject);
-        appSubmissionDto.setAppGrpPremisesDtoList(appGrpPremisesDtos);
-    }
-
-    @Override
     public Map<String, String> checkAffectedAppSubmissions(List<LicenceDto> selectLicences, AppGrpPremisesDto appGrpPremisesDto,
             double amount,  String draftNo, String appGroupNo, AppEditSelectDto appEditSelectDto,
             List<AppSubmissionDto> appSubmissionDtos) throws Exception {
@@ -2411,7 +2401,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                 .map(licence -> {
                     AppSubmissionDto appSubmissionDtoByLicenceId = getAppSubmissionDtoByLicenceId(licence.getId());
                     // Premises
-                    reSetPremeses(appSubmissionDtoByLicenceId, appGrpPremisesDto);
+                    NewApplicationHelper.reSetPremeses(appSubmissionDtoByLicenceId, appGrpPremisesDto);
                     // check mains
                     checkAffectedAppSubmissions(appSubmissionDtoByLicenceId, licence, amount, draft, appGroupNo,
                             appEditSelectDto, null);

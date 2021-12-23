@@ -174,14 +174,17 @@
         $("select[name='easMtsAddrType']").trigger('change');
         premSelect();
         <c:if test="${PageCanEdit}">
-          var $PremEle = $('#mainPrem');
+          /*var $PremEle = $('#mainPrem');
           unreadonlyPartPage($PremEle);
-          $PremEle.find('div.other-lic-content .check-circle').removeClass('radio-disabled');
+          $PremEle.find('div.other-lic-content .check-circle').removeClass('radio-disabled');*/
         </c:if>
+        readonlyPartPage($('div.premises-content'));
+        $('div.premises-content').each(function () {
+          handlePage($(this));
+        });
         <!-- init end-->
         //68744
         $('.premSelect').addClass('disabled');
-
 
         var mainContent =$('.main-content');
         mainContent.find('input.allDay:checked').each(function (k) {
