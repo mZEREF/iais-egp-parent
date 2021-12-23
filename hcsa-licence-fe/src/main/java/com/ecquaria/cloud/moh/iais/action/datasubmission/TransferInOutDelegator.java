@@ -46,17 +46,17 @@ public class TransferInOutDelegator extends CommonDelegator {
         for (String transferred : transferredList){
             if(transferred.equals(DataSubmissionConsts.WHAT_WAS_TRANSFERRED_OOCYTES)){
                 if(transferInOutStageDto.getOocyteNum() !=null){
-                    patientInventoryDto.setChangeFrozenOocytes(transferInOutStageDto.getOocyteNum());
+                    patientInventoryDto.setChangeFrozenOocytes(-1*transferInOutStageDto.getOocyteNum());
                 }
             }
             if(transferred.equals(DataSubmissionConsts.WHAT_WAS_TRANSFERRED_EMBRYOS)){
                 if(transferInOutStageDto.getEmbryoNum() !=null){
-                    patientInventoryDto.setChangeFrozenEmbryos(transferInOutStageDto.getEmbryoNum());
+                    patientInventoryDto.setChangeFrozenEmbryos(-1*transferInOutStageDto.getEmbryoNum());
                 }
             }
             if(transferred.equals(DataSubmissionConsts.WHAT_WAS_TRANSFERRED_SPERM)){
                 if(transferInOutStageDto.getSpermVialsNum() !=null){
-                    patientInventoryDto.setChangeFrozenSperms(transferInOutStageDto.getSpermVialsNum());
+                    patientInventoryDto.setChangeFrozenSperms(-1*transferInOutStageDto.getSpermVialsNum());
                 }
             }
         }
