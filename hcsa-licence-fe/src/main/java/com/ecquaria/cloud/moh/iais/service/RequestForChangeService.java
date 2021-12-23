@@ -116,8 +116,6 @@ public interface RequestForChangeService {
     boolean baseSpecLicenceRelation(LicenceDto licenceDto);
     LicenceDto getLicenceDtoIncludeMigrated(String licenceId);
 
-    void reSetPremeses(AppSubmissionDto appSubmissionDto, AppGrpPremisesDto appGrpPremisesDto);
-
     Map<String, String> checkAffectedAppSubmissions(List<LicenceDto> selectLicence, AppGrpPremisesDto appGrpPremisesDto,
             double amount, String draftNo, String appGroupNo, AppEditSelectDto appEditSelectDto,
             List<AppSubmissionDto> appSubmissionDtos) throws Exception;
