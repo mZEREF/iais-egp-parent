@@ -135,7 +135,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -2750,6 +2749,8 @@ public class NewApplicationDelegator {
             */
             // re-set current auto dto
             List<String> changeList = appSubmissionDto.getChangeSelectDto().getPersonnelEditList();
+            List<String> stepList = appSubmissionDto.getAppEditSelectDto().getPersonnelEditList();
+            log.info(StringUtil.changeForLog("StepList: " + stepList + " - ChangeList: " + changeList));
             if (!isAutoRfc && autoAppSubmissionDto == null && !IaisCommonUtils.isEmpty(changeList)) {
                 autoAppSubmissionDto = (AppSubmissionDto) CopyUtil.copyMutableObject(appSubmissionDto);
                 autoAppSubmissionDto.setAmount(0.0);
@@ -2759,13 +2760,11 @@ public class NewApplicationDelegator {
                 autoChangeSelectDto.setServiceEdit(true);
                 autoAppSubmissionDto.setAppSvcRelatedInfoDtoList(
                         serviceInfoChangeEffectPersonForRFC.generateDtosForAutoFields(autoAppSubmissionDto, oldAppSubmissionDto,
-                                changeList, appSubmissionDto.getAppEditSelectDto().getPersonnelEditList()));
+                                changeList, stepList));
                 // re-set change edit select dto
                 if (!appEditSelectDto.isChangeBusinessName() && !appEditSelectDto.isChangeVehicle() && !appEditSelectDto.isChangePersonnel()) {
                     appEditSelectDto.setServiceEdit(false);
                 }
-            } else {
-                log.info(StringUtil.changeForLog("changeList: " + changeList));
             }
         }
 
