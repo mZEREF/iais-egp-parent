@@ -151,6 +151,7 @@ public class ArCycleStageDelegator extends DonorCommonDelegator{
         donorDtos.forEach(arDonorDto -> setEmptyDataForNullDrDonorDto(arDonorDto));
         if(ACTION_TYPE_CONFIRM.equalsIgnoreCase(ParamUtil.getString(request, DataSubmissionConstant.CRUD_TYPE))){
         setEnhancedCounsellingTipShow(request,arCycleStageDto);
+        checkDonorsVerifyPass(donorDtos,request);
         }
         DataSubmissionHelper.setCurrentArDataSubmission(arSuperDataSubmissionDto,request);
     }

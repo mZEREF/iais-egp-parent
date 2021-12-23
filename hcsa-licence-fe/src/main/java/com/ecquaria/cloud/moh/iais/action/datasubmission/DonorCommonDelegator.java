@@ -10,6 +10,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationProperty;
+import com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.helper.*;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.ArDataSubmissionService;
@@ -243,4 +244,25 @@ public abstract class DonorCommonDelegator extends CommonDelegator{
         );
         return selectOptions;
     }
+
+
+    protected String checkDonorsVerifyPass(List<DonorDto> arDonorDtos,HttpServletRequest request){
+        if(ACTION_TYPE_CONFIRM.equalsIgnoreCase(ParamUtil.getString(request, DataSubmissionConstant.CRUD_TYPE)) && IaisCommonUtils.isNotEmpty(arDonorDtos)){
+            StringBuilder stringBuilder = new StringBuilder();
+            for (DonorDto donorDto : arDonorDtos) {
+                if (StringUtil.isEmpty(donorDto.getDonorSampleKey())) {
+                    stringBuilder.append(" donor ").append(donorDto.getArDonorIndex()).append(",");
+                }
+            }
+            if(StringUtil.isEmpty(stringBuilder.toString())){
+                return AppConsts.YES;
+            }else {
+                String message = stringBuilder.toString();
+                 ParamUtil.setRequestAttr(request,"DS_ERR019Message",MessageUtil.replaceMessage("DS_ERR019",message.substring(0,message.length()-1),"field"));
+                return AppConsts.NO;
+            }
+        }
+        return AppConsts.YES;
+    }
+
 }

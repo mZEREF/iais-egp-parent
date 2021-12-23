@@ -193,20 +193,6 @@
      </div>
      </div>
 </div>
+<input type="hidden" name="DSERR019TipShow" value="${empty DS_ERR019Message ? '' : 1}" id="DSERR019TipShow">
+<iais:confirm msg="${DS_ERR019Message}" needCancel="false" popupOrder="DSERR019Tip"  yesBtnDesc="ok"   yesBtnCls="btn btn-primary"  callBack="DSERR019MessageTipClose()" />
 
-<script>
-    function showDonor(index){
-        $("#deleteDonor"+index).show();
-        $("#source"+index+"Row").hide();
-        $("#otherSource"+index+"Row").hide();
-        $("#donorSampleCode"+index+"Row").hide();
-        $("#source"+index).val("");
-        $("#otherSource"+index).val("");
-        $("#donorSampleCode"+index).val("");
-        $("#idNo"+index+"Row").show();
-        $("#relation"+index+"Row").hide();
-        $("#relation"+index).val('');
-        $("#age"+index).val("");
-        $("#age"+index+"Row").hide();
-    }
-</script>

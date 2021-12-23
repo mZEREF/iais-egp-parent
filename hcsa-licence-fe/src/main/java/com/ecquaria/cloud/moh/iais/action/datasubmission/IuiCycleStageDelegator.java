@@ -87,6 +87,7 @@ public class IuiCycleStageDelegator extends DonorCommonDelegator {
         actionArDonorDtos(request,donorDtos);
         valiateDonorDtos(request,donorDtos);
         donorDtos.forEach(arDonorDto -> setEmptyDataForNullDrDonorDto(arDonorDto));
+        checkDonorsVerifyPass(donorDtos,request);
         DataSubmissionHelper.setCurrentArDataSubmission(arSuperDataSubmission,request);
     }
 

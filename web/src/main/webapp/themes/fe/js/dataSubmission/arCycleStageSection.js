@@ -9,6 +9,9 @@ $(document).ready(function (){
     if($('#enhancedCounsellingTipShow').val() == 1){
         $('#enhancedCounsellingTip').show();
     }
+    if($("#DSERR019TipShow").val() == 1){
+        $('#DSERR019Tip').show();
+    }
     mutualExclusionCheckBox('#currentArTreatmentCheckAR_CAT_001','#currentArTreatmentCheckAR_CAT_002');
     mutualExclusionCheckBox('#currentArTreatmentCheckAR_CAT_002','#currentArTreatmentCheckAR_CAT_001');
 });

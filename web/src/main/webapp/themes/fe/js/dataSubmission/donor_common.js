@@ -81,3 +81,6 @@ function sourceChange(own,value,row,index){
     removeAges(index);
 }
 
+function DSERR019MessageTipClose(){
+    $('#DSERR019Tip').hide();
+}

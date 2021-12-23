@@ -5,6 +5,9 @@ $(document).ready(function (){
    }else {
        showOtherPremises(1);
    }
+    if($("#DSERR019TipShow").val() == 1){
+        $('#DSERR019Tip').show();
+    }
 });
 
 
