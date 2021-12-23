@@ -2641,11 +2641,13 @@ public class NewApplicationDelegator {
             if (appEditSelectDto.isChangePremiseAutoFields() && !appEditSelectDto.isChangeHciName()
                     && !appEditSelectDto.isChangeInLocation() && !appEditSelectDto.isChangeAddFloorUnit()) {
                 List<AppSubmissionDto> appSubmissionDtos = IaisCommonUtils.genNewArrayList();
+                /*
                 boolean isValid = checkAffectedAppSubmissions(appGrpPremisesDtoList, amount, draftNo, groupNo, changeSelectDto,
                         appSubmissionDtos, bpc.request);
                 if (!isValid) {
                     return;
                 }
+                */
                 // add the premises affected list to the group
                 if (changeSelectDto.isAutoRfc()) {
                     NewApplicationHelper.addToAuto(appSubmissionDtos, autoSaveAppsubmission);
@@ -2658,6 +2660,7 @@ public class NewApplicationDelegator {
                 }
             } else {
                 isAutoPremises = 0;
+               /*
                 HcsaServiceDto serviceDto = HcsaServiceCacheHelper.getServiceByServiceName(appSubmissionDto.getServiceName());
                 boolean checkSpec = ApplicationConsts.SERVICE_CONFIG_TYPE_BASE.equals(serviceDto.getSvcType());
                 List<AppSubmissionDto> submissionDtos = requestForChangeService.getAlginAppSubmissionDtos(
@@ -2671,6 +2674,7 @@ public class NewApplicationDelegator {
                     }
                     NewApplicationHelper.addToNonAuto(submissionDtos, notAutoSaveAppsubmission);
                 }
+                */
             }
             // for spliting
             if (changeSelectDto.isAutoRfc() && !isAutoRfc) {
@@ -2691,6 +2695,7 @@ public class NewApplicationDelegator {
         if (appEditSelectDto.isLicenseeEdit()) {
             autoGroupNo = getRfcGroupNo(autoGroupNo);
             String groupNo = autoGroupNo;
+            /*
             SubLicenseeDto oldSublicenseeDto = oldAppSubmissionDto.getSubLicenseeDto();
             List<AppSubmissionDto> licenseeAffectedList = licenceClient.getAppSubmissionDtosBySubLicensee(oldSublicenseeDto).getEntity();
             if (licenseeAffectedList == null) {
@@ -2713,6 +2718,7 @@ public class NewApplicationDelegator {
                 return;
             }
             NewApplicationHelper.addToAuto(licenseeAffectedList, autoSaveAppsubmission);
+            */
             // re-set change edit select dto
             if (autoAppSubmissionDto != null) {
                 autoChangeSelectDto.setLicenseeEdit(true);
@@ -2733,14 +2739,15 @@ public class NewApplicationDelegator {
         // check app submissions affected by personnel (service info)
         if (appEditSelectDto.isServiceEdit()) {
             autoGroupNo = getRfcGroupNo(autoGroupNo);
-            LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
-            String licenseeId = loginContext.getLicenseeId();
+            /*
+            String licenseeId = NewApplicationHelper.getLicenseeId(bpc.request);
             List<AppSubmissionDto> personAppSubmissionList = serviceInfoChangeEffectPersonForRFC.personContact(licenseeId, appSubmissionDto, oldAppSubmissionDto);
             boolean isValid = checkAffectedAppSubmissions(personAppSubmissionList, 0.0D, draftNo, autoGroupNo, null, bpc.request);
             if (!isValid) {
                 return;
             }
             NewApplicationHelper.addToAuto(personAppSubmissionList, autoSaveAppsubmission);
+            */
             // re-set current auto dto
             List<String> changeList = appSubmissionDto.getChangeSelectDto().getPersonnelEditList();
             if (!isAutoRfc && autoAppSubmissionDto == null && !IaisCommonUtils.isEmpty(changeList)) {
