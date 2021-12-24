@@ -119,19 +119,7 @@
                                 </iais:value>
                                 <span id="error_donorSampleCodeRowDonorLive" name="iaisErrorMsg" class="error-msg"></span>
                             </iais:row>
-                            <iais:row>
-                            <iais:field width="5" value="Name of Bank / AR Centre where Sample is from" mandatory="true"/>
-                            <iais:value width="7" cssClass="col-md-7">
-                                <iais:select name="sampleFromHciCode" id ="sampleFromHciCode"  options="SampleFromHciCode"   value="${donorSampleDto.sampleFromHciCode}"
-                                             cssClass="sampleFromOthers"/>
-                            </iais:value>
-                            </iais:row>
-                            <iais:row id ="sampleFromOthers" style="display:none">
-                                <label class="col-xs-5 col-md-4 control-label"></label>
-                                <iais:value width="7" cssClass="col-md-7">
-                                    <iais:input maxLength="100" type="text" name="sampleFromOthers"  value="${donorSampleDto.sampleFromOthers}" />
-                                </iais:value>
-                            </iais:row>
+
                         </div>
 
                         <div id ="donorDetail" style="${donorSampleDto.donorIdentityKnown == 'DIK001'? '' : 'display: none;'}">
@@ -156,6 +144,19 @@
                                 </iais:value>
                             </iais:row>
                         </div>
+                        <iais:row>
+                            <iais:field width="5" value="Name of Bank / AR Centre where Sample is from" mandatory="true"/>
+                            <iais:value width="7" cssClass="col-md-7">
+                                <iais:select name="sampleFromHciCode" id ="sampleFromHciCode"  options="SampleFromHciCode"   value="${donorSampleDto.sampleFromHciCode}"
+                                             cssClass="sampleFromOthers"/>
+                            </iais:value>
+                        </iais:row>
+                        <iais:row id ="sampleFromOthers" style="display:none">
+                            <label class="col-xs-5 col-md-4 control-label"></label>
+                            <iais:value width="7" cssClass="col-md-7">
+                                <iais:input maxLength="100" type="text" name="sampleFromOthers"  value="${donorSampleDto.sampleFromOthers}" />
+                            </iais:value>
+                        </iais:row>
                     </div>
 
                     <c:choose>
