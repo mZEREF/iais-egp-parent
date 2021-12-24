@@ -3,7 +3,7 @@
     <div class="panel-heading ${headingSign}">
       <h4 class="panel-title" >
         <a href="#viewIuiCycleStage" data-toggle="collapse" >
-          Intrauterine Insemination Cycle
+          Assisted Reproduction Submission
         </a>
       </h4>
     </div>
@@ -14,39 +14,39 @@
         <c:set var="donorDtos" value="${iuiCycleStageDto.donorDtos}"/>
         <%@include file="patientCommon.jsp"%>
         <iais:row>
-          <iais:field value="Premises where IUI is Performed" mandatory="false"/>
+          <iais:field width="5" value="Premises where IUI is Performed" mandatory="false"/>
           <iais:value width="7" cssClass="col-md-7" display="true" >
          <c:out value="${iuiCycleStageDto.ownPremises ? 'Own premises' : 'Others'}"></c:out>
           </iais:value>
         </iais:row>
         <c:if test="${!iuiCycleStageDto.ownPremises}">
         <iais:row>
-          <iais:field value="IUI Treatment performed in Other Premises" mandatory="false"/>
+          <iais:field width="5" value="IUI Treatment performed in Other Premises" mandatory="false"/>
           <iais:value width="7" cssClass="col-md-7" display="true" >
             <c:out value="${iuiCycleStageDto.otherPremises}"/>
           </iais:value>
         </iais:row>
         </c:if>
         <iais:row>
-          <iais:field value="Date Started" mandatory="false"/>
+          <iais:field width="5" value="Date Started" mandatory="false"/>
           <iais:value  width="7" cssClass="col-md-7" display="true" >
           <fmt:formatDate value='${arSuperDataSubmissionDto.iuiCycleStageDto.startDate}' pattern='dd/MM/yyyy' />
           </iais:value>
         </iais:row>
         <iais:row>
-          <iais:field value="Patient's Age as of This Treatment" />
+          <iais:field width="5" value="Patient's Age as of This Treatment" />
           <iais:value  width="7" cssClass="col-md-7" display="true">
            <c:out value="${iuiCycleStageDto.userAgeShow}"></c:out>
           </iais:value>
         </iais:row>
         <iais:row>
-          <iais:field value="No. of Children from Current Marriage" mandatory="false"/>
+          <iais:field width="5" value="No. of Children from Current Marriage" mandatory="false"/>
           <iais:value width="7" cssClass="col-md-7"  display="true">
            <c:out value="${iuiCycleStageDto.curMarrChildNum}"/>
           </iais:value>
         </iais:row>
         <iais:row>
-          <iais:field value="No. of Children from Previous Marriage" mandatory="false"/>
+          <iais:field width="5" value="No. of Children from Previous Marriage" mandatory="false"/>
           <iais:value width="7" cssClass="col-md-7"  display="true">
          <c:out value="${iuiCycleStageDto.prevMarrChildNum}"/>
           </iais:value>
@@ -63,7 +63,7 @@
           </iais:value>
         </iais:row>
         <iais:row>
-          <iais:field value="Source of Semen" mandatory="false"/>
+          <iais:field  width="5" value="Source of Semen" mandatory="false"/>
           <iais:value width="7" cssClass="col-md-7"  display="true">
             <c:forEach items="${iuiCycleStageDto.semenSources}" var="semenSources" varStatus="status">
               <c:if test="${status.index != 0}"><br></c:if> <iais:code code="${semenSources}"/>
@@ -71,13 +71,13 @@
           </iais:value>
         </iais:row>
         <iais:row>
-          <iais:field value="How many vials of sperm were extracted?" mandatory="false"/>
+          <iais:field  width="5" value="How many vials of sperm were extracted?" mandatory="false"/>
           <iais:value width="7" cssClass="col-md-7"  display="true">
           <c:out value="${iuiCycleStageDto.extractVialsOfSperm}"/>
           </iais:value>
         </iais:row>
         <iais:row>
-          <iais:field value="How many vials of sperm were used in this cycle?" mandatory="false"/>
+          <iais:field  width="5" value="How many vials of sperm were used in this cycle?" mandatory="false"/>
           <iais:value width="7" cssClass="col-md-7"  display="true" >
           <c:out value="${iuiCycleStageDto.usedVialsOfSperm}"/>
           </iais:value>

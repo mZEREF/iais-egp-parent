@@ -28,7 +28,7 @@
   <div class="main-content">
     <div class="container center-content">
       <div class="col-xs-12">
-        <h3>Preview and Submit</h3>
+        <%@include file="common/viewTitle.jsp" %>
         <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
           <%@include file="section/previewIuiCycleSection.jsp" %>
           <%@include file="common/arDeclaration.jsp" %>
