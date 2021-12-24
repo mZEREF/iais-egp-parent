@@ -6,6 +6,8 @@ import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.CycleStageSelectionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.utils.CopyUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -37,9 +39,10 @@ public class MohDsActionDelegator {
     private ArDataSubmissionService arDataSubmissionService;
 
     @Autowired
-    private  ArCycleStageDelegator arCycleStageDelegator;
+    private ArCycleStageDelegator arCycleStageDelegator;
     @Autowired
-    private  IuiCycleStageDelegator iuiCycleStageDelegator;
+    private IuiCycleStageDelegator iuiCycleStageDelegator;
+
     /**
      * Step: Start
      *
@@ -76,7 +79,7 @@ public class MohDsActionDelegator {
         if (DataSubmissionConsts.DS_AR.equals(dsType)) {
             ArSuperDataSubmissionDto arSuper = arDataSubmissionService.getArSuperDataSubmissionDtoBySubmissionNo(
                     submissionNo);
-            initDataForView(arSuper,bpc.request);
+            initDataForView(arSuper, bpc.request);
             DataSubmissionHelper.setCurrentArDataSubmission(arSuper, bpc.request);
         } else {
             ParamUtil.setRequestAttr(bpc.request, "isValid", "N");
@@ -85,18 +88,20 @@ public class MohDsActionDelegator {
     }
 
 
-    public void initDataForView(ArSuperDataSubmissionDto arSuper,HttpServletRequest request) {
-        if(arSuper != null){
-            if(arSuper.getArCycleStageDto() != null){
+    public void initDataForView(ArSuperDataSubmissionDto arSuper, HttpServletRequest request) {
+        if (arSuper != null) {
+            if (arSuper.getArCycleStageDto() != null) {
                 arCycleStageDelegator.init(request);
-                arCycleStageDelegator.setCycleAgeByPatientInfoDtoAndHcicode(arSuper.getArCycleStageDto(),arSuper.getPatientInfoDto(),arSuper.getPremisesDto().getHciCode());
-            }else if(arSuper.getIuiCycleStageDto() != null){
+                arCycleStageDelegator.setCycleAgeByPatientInfoDtoAndHcicode(arSuper.getArCycleStageDto(), arSuper.getPatientInfoDto(),
+                        arSuper.getPremisesDto().getHciCode());
+            } else if (arSuper.getIuiCycleStageDto() != null) {
                 iuiCycleStageDelegator.init(request);
                 arDataSubmissionService.setIuiCycleStageDtoDefaultVal(arSuper);
             }
             ParamUtil.setRequestAttr(request, "preViewAr", AppConsts.YES);
         }
     }
+
     /**
      * Step: PrepareRfc
      *
@@ -109,33 +114,47 @@ public class MohDsActionDelegator {
         if (StringUtil.isEmpty(dsType) || StringUtil.isEmpty(submissionNo)) {
             uri = DEFAULT_URI;
         } else if (DataSubmissionConsts.DS_AR.equals(dsType)) {
-            ArSuperDataSubmissionDto arSuper = arDataSubmissionService.getArSuperDataSubmissionDtoBySubmissionNo(
-                    submissionNo);
-            if (arSuper == null) {
-                uri = DEFAULT_URI;
-            } else {
-                ParamUtil.setSessionAttr(bpc.request, DataSubmissionConstant.AR_OLD_DATA_SUBMISSION,
-                        CopyUtil.copyMutableObject(arSuper));
-                arSuper.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-                arSuper.setAppType(DataSubmissionConsts.DS_APP_TYPE_RFC);
-                if (arSuper.getDataSubmissionDto() != null) {
-                    arSuper.getDataSubmissionDto().setAppType(DataSubmissionConsts.DS_APP_TYPE_RFC);
-                }
-                if (DataSubmissionConsts.AR_TYPE_SBT_PATIENT_INFO.equals(arSuper.getSubmissionType())) {
-                    uri = InboxConst.URL_LICENCE_WEB_MODULE + "MohARPatientInformationManual";
-                } else if (DataSubmissionConsts.AR_TYPE_SBT_DONOR_SAMPLE.equals(arSuper.getSubmissionType())) {
-                    uri = InboxConst.URL_LICENCE_WEB_MODULE + "MohARSubmitDonor";
-                } else if (arSuper.getDataSubmissionDto() == null
-                        || StringUtil.isEmpty(arSuper.getDataSubmissionDto().getCycleStage())) {
-                    uri = DEFAULT_URI;
-                } else {
-                    uri = InboxConst.URL_LICENCE_WEB_MODULE + "MohARCycleStagesManual/PrepareStage?crud_type="
-                            + DataSubmissionConstant.CRUD_TYPE_RFC;
-                }
-            }
-            DataSubmissionHelper.setCurrentArDataSubmission(arSuper, bpc.request);
+            uri = prepareArRfc(submissionNo, bpc.request);
         }
         ParamUtil.setRequestAttr(bpc.request, "uri", uri);
+    }
+
+    private String prepareArRfc(String submissionNo, HttpServletRequest request) {
+        ArSuperDataSubmissionDto arSuper = arDataSubmissionService.getArSuperDataSubmissionDtoBySubmissionNo(
+                submissionNo);
+        String uri;
+        if (arSuper == null) {
+            uri = DEFAULT_URI;
+        } else {
+            ParamUtil.setSessionAttr(request, DataSubmissionConstant.AR_OLD_DATA_SUBMISSION,
+                    CopyUtil.copyMutableObject(arSuper));
+            arSuper.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+            arSuper.setAppType(DataSubmissionConsts.DS_APP_TYPE_RFC);
+            if (arSuper.getDataSubmissionDto() != null) {
+                DataSubmissionDto dataSubmissionDto = arSuper.getDataSubmissionDto();
+                dataSubmissionDto.setAppType(DataSubmissionConsts.DS_APP_TYPE_RFC);
+                if (arSuper.getSelectionDto() != null) {
+                    CycleStageSelectionDto selectionDto = arSuper.getSelectionDto();
+                    if (StringUtil.isEmpty(selectionDto.getStage()) || StringUtil.isEmpty(selectionDto.getCycle())) {
+                        selectionDto.setStage(dataSubmissionDto.getCycleStage());
+                        selectionDto.setCycle(arSuper.getCycleDto().getCycleType());
+                    }
+                }
+            }
+            if (DataSubmissionConsts.AR_TYPE_SBT_PATIENT_INFO.equals(arSuper.getSubmissionType())) {
+                uri = InboxConst.URL_LICENCE_WEB_MODULE + "MohARPatientInformationManual";
+            } else if (DataSubmissionConsts.AR_TYPE_SBT_DONOR_SAMPLE.equals(arSuper.getSubmissionType())) {
+                uri = InboxConst.URL_LICENCE_WEB_MODULE + "MohARSubmitDonor";
+            } else if (arSuper.getDataSubmissionDto() == null
+                    || StringUtil.isEmpty(arSuper.getDataSubmissionDto().getCycleStage())) {
+                uri = DEFAULT_URI;
+            } else {
+                uri = InboxConst.URL_LICENCE_WEB_MODULE + "MohARCycleStagesManual/PrepareStage?crud_type="
+                        + DataSubmissionConstant.CRUD_TYPE_RFC;
+            }
+        }
+        DataSubmissionHelper.setCurrentArDataSubmission(arSuper, request);
+        return uri;
     }
 
     /**
