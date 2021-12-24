@@ -78,6 +78,7 @@
                     <input type="hidden" name="lastStage" id="lastStageHidden" value="${selectionDto.lastStage}">
                     <input type="hidden" name="latestCycle" id="latestCycleHidden" value="${selectionDto.latestCycle}">
                     <input type="hidden" name="latestStage" id="latestStageHidden" value="${selectionDto.latestStage}">
+                    <input type="hidden" name="additionalStage" id="additionalStageHidden" value="${selectionDto.additionalStage}">
                     <input type="hidden" name="lastStatus" id="lastStatusHidden" value="${selectionDto.lastStatus}">
                     <input type="hidden" name="cycleId" id="cycleIdHidden" value="${selectionDto.lastCycleDto.id}">
                 </div>
