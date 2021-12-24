@@ -62,10 +62,8 @@ function validatePatientCallback(data){
     $('#latestCycleHidden').val(data.selection.latestCycle);
     $('#lastStatusHidden').val(data.selection.lastStatus);
     if (!isEmpty(data.selection.lastCycleDto)) {
-        $('#lastStatusHidden').val(data.selection.lastCycleDto.cycleType);
         $('#cycleIdHidden').val(data.selection.lastCycleDto.id);
     } else {
-        $('#lastStatusHidden').val('');
         $('#cycleIdHidden').val('');
     }
 }

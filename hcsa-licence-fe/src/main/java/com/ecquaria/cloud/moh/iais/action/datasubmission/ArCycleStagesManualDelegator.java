@@ -159,6 +159,7 @@ public class ArCycleStagesManualDelegator {
                     orgId, DataSubmissionConsts.AR_TYPE_SBT_PATIENT_INFO, null);
             if (dataSubmissionDraft != null) {
                 currentArDataSubmission.setDraftId(dataSubmissionDraft.getDraftId());
+                currentArDataSubmission.setDraftNo(dataSubmissionDraft.getDraftNo());
                 currentArDataSubmission.setSubmissionType(DataSubmissionConsts.AR_TYPE_SBT_PATIENT_INFO);
                 stage = "current";
                 ParamUtil.setRequestAttr(request, "hasDraft", true);
@@ -194,6 +195,7 @@ public class ArCycleStagesManualDelegator {
                     orgId, hciCode);
             if (dataSubmissionDraft != null) {
                 currentArDataSubmission.setDraftId(dataSubmissionDraft.getDraftId());
+                currentArDataSubmission.setDraftNo(dataSubmissionDraft.getDraftNo());
                 DataSubmissionHelper.setCurrentArDataSubmission(currentArDataSubmission, request);
                 stage = "current";
                 ParamUtil.setRequestAttr(request, "hasDraft", true);
@@ -256,7 +258,7 @@ public class ArCycleStagesManualDelegator {
         selectionDto.setUndergoingCycle("1".equals(ParamUtil.getString(request, "undergoingCycle")));
         CycleDto cycleDto = new CycleDto();
         cycleDto.setId(ParamUtil.getString(request, "cycleId"));
-        cycleDto.setCycleType(ParamUtil.getString(request, "cycleType"));
+        cycleDto.setCycleType(ParamUtil.getString(request, "lastCycle"));
         selectionDto.setLastCycleDto(cycleDto);
         return selectionDto;
     }
