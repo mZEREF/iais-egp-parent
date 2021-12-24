@@ -15,7 +15,7 @@
         <%@include file="../assistedReproduction/section/previewPatientDetail.jsp" %>
         <%@include file="../assistedReproduction/section/previewHusbandDetail.jsp" %>
         <c:if test="${arSuperDataSubmissionDto.appType eq 'DSTY_005'}">
-            <%@include file="../assistedReproduction/section/patientAmendment.jsp" %>
+            <%@include file="../assistedReproduction/common/dsAmendment.jsp" %>
         </c:if>
     </c:when>
     <c:when test="${cycleType == 'DSCL_003'}">

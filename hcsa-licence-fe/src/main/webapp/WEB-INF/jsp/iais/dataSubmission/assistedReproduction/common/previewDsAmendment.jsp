@@ -1,3 +1,4 @@
+<c:if test="${arSuperDataSubmissionDto.appType eq 'DSTY_005'}">
 <c:set var="dataSubmission" value="${arSuperDataSubmissionDto.dataSubmissionDto}" />
 <div class="panel panel-default">
     <div class="panel-heading">
@@ -16,13 +17,16 @@
                         <iais:code code="${dataSubmission.amendReason}" />
                     </iais:value>
                 </iais:row>
-                <div class="form-group" style="<c:if test="${dataSubmission.amendReason ne 'PTA_003' && dataSubmission.amendReason ne 'DSA_002'}">display:none</c:if>">
+                <c:if test="${!empty dataSubmission.amendReasonOther}">
+                <iais:row>
                     <iais:field width="5" value="Reason for Amendment (Others)"/>
                     <iais:value width="7" display="true">
                         <c:out value="${dataSubmission.amendReasonOther}" />
                     </iais:value>
-                </div>
+                </iais:row>
+                </c:if>
             </div>
         </div>
     </div>
 </div>
+</c:if>

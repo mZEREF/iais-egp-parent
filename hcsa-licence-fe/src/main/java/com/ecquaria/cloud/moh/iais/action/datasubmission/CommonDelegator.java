@@ -324,6 +324,7 @@ public abstract class CommonDelegator {
         ParamUtil.setRequestAttr(bpc.request, "currentStage", ACTION_TYPE_PAGE);
         String actionType = ParamUtil.getString(bpc.request, DataSubmissionConstant.CRUD_TYPE);
         ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, actionType);
+        getRfcCommon(bpc.request);
         pageAction(bpc);
     }
 
@@ -409,6 +410,7 @@ public abstract class CommonDelegator {
                 }
             }
         }
+        verifyRfcCommon(request,errorMap);
         if (!errorMap.isEmpty()) {
             log.info(StringUtil.changeForLog("----- Error Massage: " + errorMap + " -----"));
             WebValidationHelper.saveAuditTrailForNoUseResult(errorMap);
@@ -419,6 +421,40 @@ public abstract class CommonDelegator {
             ParamUtil.setRequestAttr(request, IaisEGPConstant.CRUD_ACTION_TYPE, passCrudActionType);
         }
         return true;
+    }
+
+    protected void verifyRfcCommon(HttpServletRequest request,Map<String,String> errorMap){
+      if(isRfc(request)){
+          ArSuperDataSubmissionDto arSuperDataSubmissionDto = DataSubmissionHelper.getCurrentArDataSubmission(request);
+          DataSubmissionDto dataSubmissionDto = arSuperDataSubmissionDto.getDataSubmissionDto();
+          if(StringUtil.isEmpty(dataSubmissionDto.getAmendReason())){
+              errorMap.put("amendReason","GENERAL_ERR0006");
+          }else if(isOthers(dataSubmissionDto.getAmendReason()) && StringUtil.isEmpty(dataSubmissionDto.getAmendReasonOther())){
+              errorMap.put("amendReasonOther","GENERAL_ERR0006");
+          }
+      }
+    }
+
+    protected void getRfcCommon(HttpServletRequest request){
+        if(isRfc(request)){
+            ArSuperDataSubmissionDto arSuperDataSubmissionDto = DataSubmissionHelper.getCurrentArDataSubmission(request);
+            DataSubmissionDto dataSubmissionDto = arSuperDataSubmissionDto.getDataSubmissionDto();
+            dataSubmissionDto.setAmendReason(ParamUtil.getString(request,"amendReason"));
+            if(isOthers(dataSubmissionDto.getAmendReason())){
+                dataSubmissionDto.setAmendReasonOther(ParamUtil.getString(request,"amendReasonOther"));
+            }else {
+                dataSubmissionDto.setAmendReasonOther(null);
+            }
+        }
+    }
+
+    protected boolean isOthers(String others){
+        return StringUtil.isIn(others,new String[]{DataSubmissionConsts.CYCLE_STAGE_AMEND_REASON_OTHERS,DataSubmissionConsts.DONOR_SAMPLE_AMEND_REASON_OTHERS,DataSubmissionConsts.PATIENT_AMENDMENT_OTHER});
+    }
+
+    protected boolean isRfc(HttpServletRequest request){
+        ArSuperDataSubmissionDto arSuperDataSubmissionDto = DataSubmissionHelper.getCurrentArDataSubmission(request);
+        return arSuperDataSubmissionDto != null && arSuperDataSubmissionDto.getDataSubmissionDto() != null && DataSubmissionConsts.DS_APP_TYPE_RFC.equalsIgnoreCase(arSuperDataSubmissionDto.getDataSubmissionDto().getAppType());
     }
 
     public final boolean validatePageData(HttpServletRequest request, Object obj, String property, String... actionType) {

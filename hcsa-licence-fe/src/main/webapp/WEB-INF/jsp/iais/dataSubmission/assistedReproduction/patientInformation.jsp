@@ -31,7 +31,7 @@
                     <%@include file="section/patientDetailSection.jsp" %>
                     <%@include file="section/husbandDetailSection.jsp" %>
                     <c:if test="${arSuperDataSubmissionDto.appType eq 'DSTY_005'}">
-                        <%@include file="section/patientAmendment.jsp" %>
+                        <%@include file="common/dsAmendment.jsp" %>
                     </c:if>
                 </div>
                 <%@include file="common/arFooter.jsp" %>
