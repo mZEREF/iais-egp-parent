@@ -220,6 +220,29 @@ public final class MasterCodeUtil {
     public static final String VSS_RESIDENCE_STATUS                 ="FFE0EB7A-86AE-4B62-85B1-8493D6EEF9B3";
     public static final String VSS_MARITAL_STATUS                   ="6B61A48F-BF8B-48AD-8FAD-20DBAD439ED1";
     public static final String VSS_EDUCATION_LEVEL                  ="7A9A6EC2-96FE-4AF9-858F-6F6830B018D1";
+    public static final String VSS_STERILIZATION_REASON             ="A2725934-1C1D-489F-87FA-04192B2BB357";
+
+
+    //Termination of Pregnancy
+    //Patient Information
+    public static final String TOP_RESIDENCE_STATUS                      ="61EBD041-A0A5-42E6-9E8D-58506EC47008";
+    public static final String TOP_MARITAL_STATUS                        ="2E43DE70-7859-4573-8BE6-5E79D5FF662E";
+    public static final String TOP_ACTIVITY_STATUS                       ="D085416D-2B29-424C-A6BE-98B9821CC763";
+    public static final String TOP_OCCUPATION                            ="D6652541-CC9F-4BB1-AE31-702A11788BD3";
+    //Family Planning/Pregnancy
+    public static final String TOP_CONTRACEPTIVE_HISTORY                 ="4D2AED4E-65BB-4218-8E14-878EC1723615";
+    public static final String TOP_CONTRACEPTIVE_METHODS                 ="DDD11C62-E4BA-418C-A433-51E0EC20E94C";
+    public static final String TOP_GENDER_OF_PREGNANT_CHILDREN           ="B1E7EFE9-9E58-4D06-A0FF-952DAFC9C278";
+    public static final String TOP_REASONS_TERMINATION_PREGNANCY         ="F48ADDE4-D209-4D96-9978-BB44F368DD00";
+    public static final String TOP_SUB_CAUSES_TERMINATION_PREGNANCY      ="4972915B-0088-4A9E-BFC9-4BBCBFBD2FFC";
+    //Pre-Termination Of Pregnancy Counselling
+    public static final String TOP_CONSULTATION_RESULTS                  ="10BB38F8-5FBE-445F-B3DB-0C1BAA25472D";
+    //Termination Of Pregnancy
+    public static final String TOP_TYPE_TERMINATION_PREGNANCY            ="7589A046-2D14-49C0-8AC7-FA141E53058C";
+    public static final String TOP_TYPE_OF_DRUG                          ="94B44592-5DD6-4998-8498-2EA284148113";
+
+
+
     /**
      * @description: refresh the master codes into cache
      *
