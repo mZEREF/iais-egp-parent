@@ -124,7 +124,7 @@ public class TopDataSubmissionDelegator {
         String actionType = null;
         if (0 == status) {// current
             actionType = DataSubmissionHelper.setCurrentAction(DataSubmissionConsts.DS_VSS, bpc.request);
-        } else if (1 == status) { // previous
+        } else if (-1 == status) { // previous
             actionType = DataSubmissionHelper.setPreviousAction(DataSubmissionConsts.DS_VSS, bpc.request);
         }
         ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.CRUD_ACTION_TYPE_VSS, actionType);
