@@ -40,7 +40,7 @@
     <iais:row>
         <iais:field width="5" value="Gender" mandatory="true"/>
         <iais:value width="7" cssClass="col-md-7">
-            <iais:select name="gender" firstOption="Please Select" codeCategory="CATE_ID_DS_ID_TYPE"
+            <iais:select name="gender" firstOption="Please Select" codeCategory="TOP_GENDER_OF_PREGNANT_CHILDREN"
                          value="${treatmentDto.gender}" />
         </iais:value>
     </iais:row>
@@ -94,7 +94,7 @@
     <iais:row>
         <iais:field width="5" value="Main Reason for Sterilization" mandatory="true"/>
         <iais:value width="7" cssClass="col-md-7">
-            <iais:select name="sterilizationReason" firstOption="Please Select" codeCategory=""
+            <iais:select name="sterilizationReason" firstOption="Please Select" codeCategory="VSS_STERILIZATION_REASON"
                          value="${treatmentDto.sterilizationReason}"/>
         </iais:value>
     </iais:row>
