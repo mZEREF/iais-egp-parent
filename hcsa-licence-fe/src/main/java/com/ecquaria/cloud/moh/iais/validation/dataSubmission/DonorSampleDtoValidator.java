@@ -65,6 +65,8 @@ public class DonorSampleDtoValidator implements CustomizeValidator {
         if(StringUtil.isEmpty(sampleKey)){
             log.info(StringUtil.changeForLog("Generated a ned samplekey"));
             donorSampleDto.setSampleKey(generateIdClient.getSeqId().getEntity());
+        }else{
+            donorSampleDto.setSampleKey(sampleKey);
         }
         //countLive
         if(countLive(donorSampleDtoFromDb) >3){
