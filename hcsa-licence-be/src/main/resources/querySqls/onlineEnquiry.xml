@@ -625,7 +625,7 @@
                   when '' then null
                   else ', '+dds2p.POSTAL_CODE end
               ) AS SAMPLE_FROM_HCI_CODE ,
-           		dds2.DONOR_NAME ,( select count(ddsa.DONOR_SAMPLE_ID) From ds_donor_sample_age ddsa where ddsa.DONOR_SAMPLE_ID= dds2.ID)  age_no
+           		dds2.DONOR_NAME ,( select count(ddsa.DONOR_SAMPLE_ID) From ds_donor_sample_age ddsa where ddsa.SAMPLE_KEY= dds2.SAMPLE_KEY)  age_no
                 FROM ds_data_submission dds
                 join ds_cycle dc on dc.ID =dds.CYCLE_ID
                 join premises p on dc.HCI_CODE =p.HCI_CODE and  p.CREATED_DT =(select max(CREATED_DT) from premises where HCI_CODE =dc.HCI_CODE)
@@ -641,7 +641,7 @@
             <#if sampleHciCode??> AND dc.SAMPLE_FROM_HCI_CODE = :sampleHciCode </#if>
             <#if donorIdType??> AND  charindex(:donorIdType, dds2.ID_TYPE) >0</#if>
             <#if donorIdNumber??> AND  charindex(:donorIdNumber, dds2.ID_NUMBER) >0</#if>
-            <#if birthEventsTotalList??> AND (select count(ddsa.DONOR_SAMPLE_ID) From ds_donor_sample_age ddsa where ddsa.DONOR_SAMPLE_ID= dds2.ID) in( :birthEventsTotalList) </#if>
+            <#if birthEventsTotalList??> AND (select count(ddsa.DONOR_SAMPLE_ID) From ds_donor_sample_age ddsa where ddsa.SAMPLE_KEY= dds2.SAMPLE_KEY) in( :birthEventsTotalList) </#if>
 
 
          ]]>
