@@ -169,9 +169,27 @@ public class ServiceInfoChangeEffectPersonAbstract implements ServiceInfoChangeE
         }
     }
 
+
+
     @Override
     public List<AppSubmissionDto> personContact(String licenseeId, AppSubmissionDto appSubmissionDto,
             AppSubmissionDto oldAppSubmissionDto) throws Exception {
+        return personContact(licenseeId, appSubmissionDto, oldAppSubmissionDto, 2);
+    }
+
+    /**
+     * Check personnel affected data
+     *
+     * @param licenseeId
+     * @param appSubmissionDto
+     * @param oldAppSubmissionDto
+     * @param check 0: only check changed; 1: check changed and retrieve affected data; 2: check changed, retrieve affected data and
+     *             reset them.
+     * @return
+     */
+    @Override
+    public List<AppSubmissionDto> personContact(String licenseeId, AppSubmissionDto appSubmissionDto,
+            AppSubmissionDto oldAppSubmissionDto, int check) throws Exception {
         List<AppSubmissionDto> appSubmissionDtoList = IaisCommonUtils.genNewArrayList();
         AppSvcRelatedInfoDto oldAppSvcRelatedInfoDto = oldAppSubmissionDto.getAppSvcRelatedInfoDtoList().get(0);
         AppSvcRelatedInfoDto appSvcRelatedInfoDto = appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0);
@@ -245,7 +263,9 @@ public class ServiceInfoChangeEffectPersonAbstract implements ServiceInfoChangeE
         }
         changeList.addAll(currEditList);
         appSubmissionDto.getChangeSelectDto().setPersonnelEditList(changeList);
-
+        if (check == 0) {
+            return IaisCommonUtils.genNewArrayList();
+        }
         list.addAll(set);
         List<LicKeyPersonnelDto> licKeyPersonnelDtos = IaisCommonUtils.genNewArrayList();
         for (String string : list) {
@@ -299,19 +319,20 @@ public class ServiceInfoChangeEffectPersonAbstract implements ServiceInfoChangeE
             appEditSelectDto.setPersonnelEditList(personnelEditList);
             appSubmissionDtoByLicenceId.setAppEditSelectDto(appEditSelectDto);
             appSubmissionDtoByLicenceId.setChangeSelectDto(appEditSelectDto);
-            /*appSubmissionDtoByLicenceId.setPartPremise(false);
-            appSubmissionDtoByLicenceId.setGetAppInfoFromDto(true);
-            RequestForChangeMenuDelegator.oldPremiseToNewPremise(appSubmissionDtoByLicenceId);
-            appSubmissionDtoByLicenceId.setAppType(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
-            appSubmissionService.transform(appSubmissionDtoByLicenceId, appSubmissionDto.getLicenseeId());
-            requestForChangeService.premisesDocToSvcDoc(appSubmissionDtoByLicenceId);
-            appSubmissionDtoByLicenceId.setAutoRfc(true);
-            appSubmissionDtoByLicenceId.setCreatAuditAppStatus(ApplicationConsts.APPLICATION_STATUS_NOT_PAYMENT);
-            appSubmissionDtoByLicenceId.setCreateAuditPayStatus(ApplicationConsts.PAYMENT_STATUS_PENDING_PAYMENT);
-            NewApplicationHelper.reSetAdditionalFields(appSubmissionDtoByLicenceId, appEditSelectDto);*/
+            if (check == 2) {
+                appSubmissionDtoByLicenceId.setPartPremise(false);
+                appSubmissionDtoByLicenceId.setGetAppInfoFromDto(true);
+                RequestForChangeMenuDelegator.oldPremiseToNewPremise(appSubmissionDtoByLicenceId);
+                appSubmissionDtoByLicenceId.setAppType(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
+                appSubmissionService.transform(appSubmissionDtoByLicenceId, appSubmissionDto.getLicenseeId());
+                requestForChangeService.premisesDocToSvcDoc(appSubmissionDtoByLicenceId);
+                appSubmissionDtoByLicenceId.setAutoRfc(true);
+                appSubmissionDtoByLicenceId.setCreatAuditAppStatus(ApplicationConsts.APPLICATION_STATUS_NOT_PAYMENT);
+                appSubmissionDtoByLicenceId.setCreateAuditPayStatus(ApplicationConsts.PAYMENT_STATUS_PENDING_PAYMENT);
+                NewApplicationHelper.reSetAdditionalFields(appSubmissionDtoByLicenceId, appEditSelectDto);
+            }
             appSubmissionDtoList.add(appSubmissionDtoByLicenceId);
         }
-
         return appSubmissionDtoList;
     }
 
