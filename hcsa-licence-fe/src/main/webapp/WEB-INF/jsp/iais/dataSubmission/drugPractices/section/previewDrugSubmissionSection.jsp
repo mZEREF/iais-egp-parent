@@ -2,7 +2,7 @@
     <div class="panel-heading ${headingSign}">
         <h4 class="panel-title">
             <a class="" data-toggle="collapse" href="#patientDetails">
-                Patient Details
+                Submission Details
             </a>
         </h4>
     </div>
