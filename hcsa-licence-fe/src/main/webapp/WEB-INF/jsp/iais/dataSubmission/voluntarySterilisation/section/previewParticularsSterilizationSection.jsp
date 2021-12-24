@@ -12,7 +12,7 @@
         <div class="panel-body">
             <div class="panel-main-content form-horizontal ">
                 <iais:row>
-                    <iais:field width="5" value="Doctor Professional Registration No." mandatory="true"/>
+                    <iais:field width="5" value="Doctor Professional Registration No." />
                     <iais:value width="7" cssClass="col-md-7">
                         <c:out value="${sexualSterilizationDto.doctorReignNo}"/>
                     </iais:value>
@@ -24,31 +24,31 @@
                     </iais:value>
                 </iais:row>
                 <iais:row>
-                    <iais:field width="5" value="Hospital/Clinic where the sterilization was performed" mandatory="true"/>
+                    <iais:field width="5" value="Hospital/Clinic where the sterilization was performed" />
                     <iais:value width="7" cssClass="col-md-7">
                         <c:out value="${sexualSterilizationDto.doctorName}"/>
                     </iais:value>
                 </iais:row>
                 <iais:row>
-                    <iais:field width="5" value="Method of Sterilization" mandatory="true"/>
+                    <iais:field width="5" value="Method of Sterilization" />
                     <iais:value width="7" cssClass="col-md-7">
                         <c:out value="${sexualSterilizationDto.sterilizationMethod}"/>
                     </iais:value>
                 </iais:row>
                 <iais:row>
-                    <iais:field width="5" value="Date of Operation " mandatory="true"/>
+                    <iais:field width="5" value="Date of Operation" />
                     <iais:value width="7" cssClass="col-md-7">
                         <c:out value="${sexualSterilizationDto.operationDate}"/>
                     </iais:value>
                 </iais:row>
                 <iais:row>
-                    <iais:field width="5" value="Reviewed by Hospital Ethics Committee (HEC) (state name of hospital)" mandatory="true"/>
+                    <iais:field width="5" value="Reviewed by Hospital Ethics Committee (HEC) (state name of hospital)"/>
                     <iais:value width="7" cssClass="col-md-7">
                         <c:out value="${sexualSterilizationDto.reviewedByHec}"/>
                     </iais:value>
                 </iais:row>
                 <iais:row>
-                    <iais:field width="5" value="Date of HEC Review" mandatory="true"/>
+                    <iais:field width="5" value="Date of HEC Review" />
                     <iais:value width="7" cssClass="col-md-7">
                         <c:out value="${sexualSterilizationDto.hecReviewDate}"/>
                     </iais:value>

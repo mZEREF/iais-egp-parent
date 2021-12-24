@@ -4,7 +4,7 @@
     <div class="panel-heading ${headingSign}">
         <h4 class="panel-title">
             <a class="" data-toggle="collapse" href="#patientDetails">
-                Particulars of Person Who Applied for Court Order
+                Particulars of Treatment for Sexual Sterilization Performed
             </a>
         </h4>
     </div>
