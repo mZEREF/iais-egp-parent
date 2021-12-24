@@ -1,7 +1,7 @@
 var dividajaxlist = [];
 
 $(document).ready(function () {
-    quickView();
+
 
     $('#searchByPatient').change(function () {
         if($(this).is(':checked')){
