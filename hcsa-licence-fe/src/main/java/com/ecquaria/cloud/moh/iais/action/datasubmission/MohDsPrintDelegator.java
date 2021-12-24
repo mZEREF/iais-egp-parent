@@ -40,7 +40,7 @@ public class MohDsPrintDelegator {
                     DataSubmissionHelper.getLicenseeEmailAddrs(bpc.request));
             ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.SUBMITTED_BY,
                     DataSubmissionHelper.getLoginContext(bpc.request).getUserName());
-        }else if(DataSubmissionConstant.PRINT_FLAG_ART.equals(printflag)){
+        } else if (DataSubmissionConstant.PRINT_FLAG_ART.equals(printflag)) {
             ParamUtil.setRequestAttr(bpc.request, "preViewAr", AppConsts.YES);
         }
         ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.PRINT_FLAG, printflag);

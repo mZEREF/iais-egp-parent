@@ -60,6 +60,7 @@ function validatePatientCallback(data){
     $('#lastCycleHidden').val(data.selection.lastCycle);
     $('#lastStageHidden').val(data.selection.lastStage);
     $('#latestCycleHidden').val(data.selection.latestCycle);
+    $('#latestStageHidden').val(data.selection.latestStage);
     $('#lastStatusHidden').val(data.selection.lastStatus);
     if (!isEmpty(data.selection.lastCycleDto)) {
         $('#cycleIdHidden').val(data.selection.lastCycleDto.id);
