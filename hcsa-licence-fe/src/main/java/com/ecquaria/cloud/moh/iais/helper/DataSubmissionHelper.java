@@ -392,17 +392,12 @@ public final class DataSubmissionHelper {
     }
 
     public static String genOptionHtmls(List<String> options, String firstOption) {
-        StringBuilder opts = new StringBuilder();
-        if (!StringUtil.isEmpty(firstOption)) {
-            opts.append("<option value=\"\">").append(StringUtil.escapeHtml(firstOption)).append("</option>");
+        StringBuilder data = new StringBuilder();
+        List<SelectOption> opts = genOptions(options, firstOption);
+        for (SelectOption opt : opts) {
+            data.append("<option value=\"").append(opt.getValue()).append("\">").append(opt.getText()).append("</option>");
         }
-        if (options == null || options.isEmpty()) {
-            return opts.toString();
-        }
-        for (String opt : options) {
-            opts.append("<option value=\"").append(opt).append("\">").append(MasterCodeUtil.getCodeDesc(opt)).append("</option>");
-        }
-        return opts.toString();
+        return data.toString();
     }
 
     public static List<SelectOption> genOptions(List<String> options) {
