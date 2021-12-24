@@ -2659,7 +2659,6 @@ public class NewApplicationDelegator {
                 }
             } else {
                 isAutoPremises = 0;
-               /*
                 HcsaServiceDto serviceDto = HcsaServiceCacheHelper.getServiceByServiceName(appSubmissionDto.getServiceName());
                 boolean checkSpec = ApplicationConsts.SERVICE_CONFIG_TYPE_BASE.equals(serviceDto.getSvcType());
                 List<AppSubmissionDto> submissionDtos = requestForChangeService.getAlginAppSubmissionDtos(
@@ -2673,7 +2672,6 @@ public class NewApplicationDelegator {
                     }
                     NewApplicationHelper.addToNonAuto(submissionDtos, notAutoSaveAppsubmission);
                 }
-                */
             }
             // for spliting
             if (changeSelectDto.isAutoRfc() && !isAutoRfc) {
@@ -2738,15 +2736,16 @@ public class NewApplicationDelegator {
         // check app submissions affected by personnel (service info)
         if (appEditSelectDto.isServiceEdit()) {
             autoGroupNo = getRfcGroupNo(autoGroupNo);
-            /*
+
             String licenseeId = NewApplicationHelper.getLicenseeId(bpc.request);
-            List<AppSubmissionDto> personAppSubmissionList = serviceInfoChangeEffectPersonForRFC.personContact(licenseeId, appSubmissionDto, oldAppSubmissionDto);
+            List<AppSubmissionDto> personAppSubmissionList = serviceInfoChangeEffectPersonForRFC.personContact(licenseeId,
+                    appSubmissionDto, oldAppSubmissionDto, 0);
             boolean isValid = checkAffectedAppSubmissions(personAppSubmissionList, 0.0D, draftNo, autoGroupNo, null, bpc.request);
             if (!isValid) {
                 return;
             }
             NewApplicationHelper.addToAuto(personAppSubmissionList, autoSaveAppsubmission);
-            */
+
             // re-set current auto dto
             List<String> changeList = appSubmissionDto.getChangeSelectDto().getPersonnelEditList();
             List<String> stepList = appSubmissionDto.getAppEditSelectDto().getPersonnelEditList();
@@ -2953,7 +2952,7 @@ public class NewApplicationDelegator {
 
     private boolean checkAffectedAppSubmissions(List<AppSubmissionDto> appSubmissionDtos, double amount, String draftNo,
             String appGroupNo, AppEditSelectDto appEditSelectDto, HttpServletRequest request) {
-        if (appSubmissionDtos == null) {
+        if (appSubmissionDtos == null || appSubmissionDtos.isEmpty()) {
             return true;
         }
         log.info(StringUtil.changeForLog("##### Affected Size: " + appSubmissionDtos.size()));
