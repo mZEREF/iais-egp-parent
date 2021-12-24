@@ -229,7 +229,7 @@
                                             </c:choose>
                                             </tbody>
                                         </table>
-                                        <div id="newappModal" class="modal fade" tabindex="-1" role="dialog" style="top:10px">
+                                        <div id="newappModal" class="modal fade" tabindex="-1" role="dialog" style="top:100px">
                                             <div class="col-md-8"  role="document" style="float:right ">
                                                 <div class="modal-content">
                                                     <div class="row">
