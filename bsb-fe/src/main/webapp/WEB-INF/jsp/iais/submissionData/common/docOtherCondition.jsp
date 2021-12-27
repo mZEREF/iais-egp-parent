@@ -3,7 +3,7 @@
 <div class = "row">
     <div class="col-xs-12">
         <div id="PrimaryDocsPanel" role="tabpanel">
-            <div class="document-content" style="margin: 0 auto;background-color: #F2F2F2;height: 150px">
+            <div class="document-content" style="margin: 0 auto;background-color: #F2F2F2;height: 100%">
                 <div class="document-upload-list">
                     <c:set var="newFiles" value="${otherDocs}"/>
                     <h3>Others</h3>

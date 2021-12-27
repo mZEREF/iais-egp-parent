@@ -3,7 +3,7 @@
 <div class = "row">
     <div class="col-xs-12">
         <div id="PrimaryDocsPanel" role="tabpanel">
-            <div class="document-content" style="margin: 0 auto;background-color: #F2F2F2;height: 200px">
+            <div class="document-content" style="margin: 0 auto;background-color: #F2F2F2;height: 100%">
                 <div class="document-upload-gp">
                     <p>The maximum file size for each upload is 5MB.
                         Acceptable file formats are PDF, word, JPG, Excel, PNG, JPEG</p>
