@@ -2637,23 +2637,23 @@ public class NewApplicationDelegator {
             if (feeDto != null && feeDto.getTotal() != null) {
                 otherAmount = feeDto.getTotal();
             }*/
-            List<AppSubmissionDto> appSubmissionDtos = IaisCommonUtils.genNewArrayList();
+            List<AppSubmissionDto> appSubmissionDtos;
             if (rfcSplitFlag) {
                 HcsaServiceDto serviceDto = HcsaServiceCacheHelper.getServiceByServiceName(appSubmissionDto.getServiceName());
                 boolean checkSpec = ApplicationConsts.SERVICE_CONFIG_TYPE_BASE.equals(serviceDto.getSvcType());
-                List<AppSubmissionDto> submissionDtos = requestForChangeService.getAlginAppSubmissionDtos(
+                appSubmissionDtos = requestForChangeService.getAlginAppSubmissionDtos(
                         appSubmissionDto.getLicenceId(), checkSpec);
-                if (IaisCommonUtils.isNotEmpty(submissionDtos)) {
-                    StreamSupport.stream(submissionDtos.spliterator(), submissionDtos.size() >= RfcConst.DFT_MIN_PARALLEL_SIZE)
+                if (IaisCommonUtils.isNotEmpty(appSubmissionDtos)) {
+                    StreamSupport.stream(appSubmissionDtos.spliterator(), appSubmissionDtos.size() >= RfcConst.DFT_MIN_PARALLEL_SIZE)
                             .forEach(dto -> NewApplicationHelper.reSetPremeses(dto, appGrpPremisesDtoList));
-                    boolean isValid = checkAffectedAppSubmissions(submissionDtos, amount, draftNo, groupNo, changeSelectDto,
+                    boolean isValid = checkAffectedAppSubmissions(appSubmissionDtos, amount, draftNo, groupNo, changeSelectDto,
                             bpc.request);
                     if (!isValid) {
                         return;
                     }
-                    NewApplicationHelper.addToNonAuto(submissionDtos, notAutoSaveAppsubmission);
                 }
             } else {
+                appSubmissionDtos = IaisCommonUtils.genNewArrayList();
                 boolean isValid = checkAffectedAppSubmissions(appGrpPremisesDtoList, amount, draftNo, groupNo, changeSelectDto,
                         appSubmissionDtos, bpc.request);
                 if (!isValid) {
