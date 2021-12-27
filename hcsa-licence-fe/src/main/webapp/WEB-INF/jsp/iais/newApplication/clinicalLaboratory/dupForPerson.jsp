@@ -23,6 +23,10 @@
         <!--CD -->
         <c:set var="psnList" value="${clinicalDirectorDtoList}"/>
     </c:when>
+    <c:when test="${'64' == config.dupForPerson}">
+        <!--SL -->
+        <c:set var="psnList" value="${sectionLeaderList}"/>
+    </c:when>
 </c:choose>
 
 <c:choose>

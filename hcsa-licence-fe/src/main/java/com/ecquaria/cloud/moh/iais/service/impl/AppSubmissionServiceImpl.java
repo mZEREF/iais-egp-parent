@@ -1247,6 +1247,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                 .map(appGrpPremisesDto -> {
                     NewApplicationHelper.setWrkTime(appGrpPremisesDto);
                     appGrpPremisesDto.setExistingData(AppConsts.YES);
+                    appGrpPremisesDto.setFromDB(true);
                     return appGrpPremisesDto;
                 })
                 .collect(Collectors.toList());
@@ -1266,7 +1267,8 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                 .map(appGrpPremisesDto -> {
                     NewApplicationHelper.setWrkTime(appGrpPremisesDto);
                     appGrpPremisesDto.setExistingData(AppConsts.YES);
-                    List<String> relatedServices = appGrpPremisesDto.getRelatedServices();
+                    appGrpPremisesDto.setFromDB(true);
+                    /*List<String> relatedServices = appGrpPremisesDto.getRelatedServices();
                     if (relatedServices != null && !relatedServices.isEmpty()) {
                         List<String> svcNames = relatedServices.stream()
                                 .map(svcId -> HcsaServiceCacheHelper.getServiceById(svcId))
@@ -1275,7 +1277,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                                 .filter(Objects::nonNull)
                                 .collect(Collectors.toList());
                         appGrpPremisesDto.setRelatedServices(svcNames);
-                    }
+                    }*/
                     return appGrpPremisesDto;
                 })
                 .collect(Collectors.toList());

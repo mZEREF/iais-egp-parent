@@ -98,12 +98,12 @@ public class MessageUtil {
     }
 
     //only replace first or only one curly brace
-    public static String replaceMessage(String codeKey,String replaceString,String replacePart){
+    public static String replaceMessage(String codeKey,String replaceString,String replacePart) {
         String msg = MessageUtil.getMessageDesc(codeKey);
-        if(StringUtil.isEmpty(msg)) {
+        if (StringUtil.isEmpty(msg)) {
             return codeKey;
-        } else if(msg.contains("{") && msg.contains("}")){
-            return msg.replace(replacePart,replaceString).replace("{","").replace("}","");
+        } else if (msg.contains("{" + replacePart + "}")) {
+            return msg.replace("{" + replacePart + "}", replaceString);
         } else {
             return msg;
         }
