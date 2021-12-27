@@ -4,7 +4,14 @@ import com.ecquaria.cloud.moh.iais.common.annotation.ExcelProperty;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.*;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.CycleDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.CycleStageSelectionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DataSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DpSuperDataSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DsConfig;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInventoryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.VssSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.mastercode.MasterCodeView;
 import com.ecquaria.cloud.moh.iais.common.helper.dataSubmission.DsConfigHelper;
@@ -133,13 +140,16 @@ public final class DataSubmissionHelper {
         String lastCycle = selectionDto.getLastCycle();
         String lastStage = selectionDto.getLastStage();
         String lastStatus = selectionDto.getLastStatus();
+        String latestCycle = selectionDto.getLatestCycle();
+        String latestStage = selectionDto.getLatestStage();
         String additionalStage = selectionDto.getAdditionalStage();
-        return DataSubmissionHelper.getNextStageForAR(lastCycle, lastStage, additionalStage, lastStatus);
+        return DataSubmissionHelper.getNextStageForAR(latestCycle, latestStage, lastCycle, lastStage, additionalStage, lastStatus);
     }
 
-    private static List<String> getNextStageForAR(String lastCycle, String lastStage,
+    private static List<String> getNextStageForAR(String latestCycle, String latestStage, String lastCycle, String lastStage,
             String additionalStage, String lastStatus) {
-        log.info(StringUtil.changeForLog("----- The current cycle stage is " + lastCycle + "(Last) : " + lastStage
+        log.info(StringUtil.changeForLog("----- The latest cycle stage is " + latestCycle + " : " + latestStage));
+        log.info(StringUtil.changeForLog("----- The current cycle stage is " + lastCycle + " : " + lastStage
                 + " : " + additionalStage + " : " + lastStatus + " -----"));
         List<String> result = IaisCommonUtils.genNewArrayList();
         if (StringUtil.isEmpty(lastCycle)) {
