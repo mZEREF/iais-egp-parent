@@ -4,12 +4,16 @@ import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmission
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.SystemAdminBaseConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArEnquiryCoFundingHistoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArEnquiryDonorSampleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.AssistedReproductionAdvEnquiryResultsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.AssistedReproductionEnquiryAjaxPatientResultsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.AssistedReproductionEnquiryResultsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.AssistedReproductionEnquirySubResultsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DataSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInfoDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInventoryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -19,6 +23,7 @@ import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.helper.excel.ExcelWriter;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.AssistedReproductionService;
+import com.ecquaria.cloud.moh.iais.sql.SqlMap;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -48,6 +53,53 @@ public class OnlineArAjaxController {
     @Autowired
     private AssistedReproductionService assistedReproductionService;
 
+    @GetMapping(value = "ar-quick-view")
+    public @ResponseBody
+    String viewArQuick(HttpServletRequest request){
+        log.debug(StringUtil.changeForLog("the genPublicHolidayHtml start ...."));
+        String patientCode = ParamUtil.getString(request,"patientCode");
+
+        if(patientCode==null){
+            return "";
+        }
+        String sql = SqlMap.INSTANCE.getSql("onlineEnquiry", "ar-quick-view").getSqlStr();
+
+        PatientInfoDto patientInfoDto=assistedReproductionService.patientInfoDtoByPatientCode(patientCode);
+        int currentFrozenOocytes=0;
+        int currentFreshOocytes=0;
+        int currentFrozenEmbryos=0;
+        int currentFreshEmbryos=0;
+        int currentFrozenSperms=0;
+        try {
+            for (PremisesDto premisesDto:patientInfoDto.getPatient().getArCentres()
+            ) {
+                PatientInventoryDto patientInventoryDto=assistedReproductionService.patientInventoryByCode(patientInfoDto.getPatient().getPatientCode(),premisesDto.getHciCode());
+                currentFrozenOocytes+=patientInventoryDto.getCurrentFrozenOocytes();
+                currentFreshOocytes+=patientInventoryDto.getCurrentFreshOocytes();
+                currentFrozenEmbryos+=patientInventoryDto.getCurrentFrozenEmbryos();
+                currentFreshEmbryos+=patientInventoryDto.getCurrentFreshEmbryos();
+                currentFrozenSperms+=patientInventoryDto.getCurrentFrozenSperms();
+            }
+        }catch (Exception e){
+            log.error(e.getMessage(),e);
+        }
+        ArEnquiryCoFundingHistoryDto arCoFundingDto= assistedReproductionService.patientCoFundingHistoryByCode(patientCode);
+
+        sql=sql.replaceAll("IUICyclesNumber", String.valueOf(arCoFundingDto.getIuiCoFundedTotal()));
+        sql=sql.replaceAll("ARTFreshCyclesNumber",String.valueOf(arCoFundingDto.getArtFreshCoFundedTotal()));
+        sql=sql.replaceAll("ARTFrozenCyclesNumber",String.valueOf(arCoFundingDto.getArtFrozenCoFundedTotal()));
+        sql=sql.replaceAll("PGTCyclesNumber",String.valueOf(arCoFundingDto.getPgtCoFundedTotal()));
+
+        sql=sql.replaceAll("FreshOocytesNumber",String.valueOf(currentFreshOocytes));
+        sql=sql.replaceAll("FrozenOocytesNumber",String.valueOf(currentFrozenOocytes));
+        sql=sql.replaceAll("FreshEmbryosNumber",String.valueOf(currentFreshEmbryos));
+        sql=sql.replaceAll("FrozenEmbryosNumber",String.valueOf(currentFrozenEmbryos));
+        sql=sql.replaceAll("FrozenSpermsNumber",String.valueOf(currentFrozenSperms));
+
+        sql=sql.replaceAll("patientCode",patientCode);
+
+        return sql;
+    }
 
     @RequestMapping(value = "patientDetail.do", method = RequestMethod.POST)
     public @ResponseBody

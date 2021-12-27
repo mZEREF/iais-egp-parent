@@ -157,7 +157,7 @@ var quickView = function (patientCode) {
         'patientCode': patientCode
     };
     $.ajax({
-        'url':'${pageContext.request.contextPath}/ar-quick-view',
+        'url':'/hcsa-licence-web/hcsa/enquiry/ar/ar-quick-view',
         'dataType':'text',
         'data':jsonData,
         'type':'GET',
