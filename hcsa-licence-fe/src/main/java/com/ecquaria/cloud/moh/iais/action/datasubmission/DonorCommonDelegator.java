@@ -98,7 +98,7 @@ public abstract class DonorCommonDelegator extends CommonDelegator{
             DonorDto arDonorDto = arDonorDtos.get(valiateArDonor);
             DonorSampleDto donorSampleDto = arDataSubmissionService.getDonorSampleDto(arDonorDto.getIdType(),arDonorDto.getIdNumber(),arDonorDto.getIdType(),
                     arDonorDto.getDonorSampleCode(),arDonorDto.getSource(),arDonorDto.getOtherSource());
-            if(donorSampleDto == null){
+            if(donorSampleDto == null && IaisCommonUtils.isEmpty(donorSampleDto.getDonorSampleAgeDtos())){
                 Map<String, String> errorMap = IaisCommonUtils.genNewHashMap(2);
                 errorMap.put("field1","The corresponding donor");
                 errorMap.put("field2","the AR centre");
