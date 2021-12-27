@@ -12,6 +12,7 @@
 
 <%@ include file="common/arHeader.jsp" %>
 
+<c:set var="headingSign" value="completed"/>
 <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
   <div class="main-content">
     <div class="container center-content">

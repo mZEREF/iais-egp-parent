@@ -1,4 +1,3 @@
-<c:set var="headingSign" value="${isPrint?'':'completed'}"/>
 <c:set var="embryoTransferredOutcomeStageDto" value="${arSuperDataSubmissionDto.embryoTransferredOutcomeStageDto}"/>
 <div class="panel panel-default">
     <div class="panel-heading ${headingSign}">

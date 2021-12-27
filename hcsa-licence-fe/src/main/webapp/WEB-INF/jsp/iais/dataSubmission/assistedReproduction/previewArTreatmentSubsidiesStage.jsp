@@ -10,6 +10,7 @@
 
 <%@ include file="common/arHeader.jsp" %>
 
+<c:set var="headingSign" value="completed"/>
 <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
     <div class="main-content">
         <div class="container center-content">
@@ -25,7 +26,6 @@
                     </div>
                 </div>
                 <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
-                    <c:set var="isNewDataSubmission" value="true"/>
                     <%@include file="section/previewArTreatmentSubsidiesStageDetail.jsp" %>
                     <%@include file="common/arDeclaration.jsp" %>
                 </div>

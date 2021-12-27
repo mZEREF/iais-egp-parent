@@ -22,6 +22,7 @@
 
 <%@ include file="common/arHeader.jsp" %>
 
+<c:set var="headingSign" value="completed"/>
 <script type="text/javascript" src="<%=webroot1%>js/dataSubmission/patientInformation.js"></script>
 
 <form method="post" id="mainForm" action=<%=continueURL%>>
@@ -39,7 +40,6 @@
           </div>
         </div>
         <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
-          <c:set var="isNewDataSubmission" value="true"/>
           <%@include file="section/previewFreezingSection.jsp" %>
           <%@include file="common/arDeclaration.jsp" %>
         </div>

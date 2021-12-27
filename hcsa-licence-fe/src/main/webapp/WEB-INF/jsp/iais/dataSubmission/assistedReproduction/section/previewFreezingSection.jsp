@@ -5,7 +5,6 @@
   Time: 9:44
   To change this template use File | Settings | File Templates.
 --%>
-<c:set var="headingSign" value="${isPrint or !isNewDataSubmission ?'':'completed'}"/>
 <div class="panel panel-default">
   <div class="panel-heading ${headingSign}">
     <h4 class="panel-title">

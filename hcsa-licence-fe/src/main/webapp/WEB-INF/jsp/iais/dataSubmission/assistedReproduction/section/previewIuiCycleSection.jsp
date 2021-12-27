@@ -1,4 +1,4 @@
-<c:set var="headingSign" value="completed"/>
+<c:set var="headingSign" value="${currentPageStage eq 'preview' ?'completed':''}"/>
 <div class="panel panel-default">
     <div class="panel-heading ${headingSign}">
       <h4 class="panel-title" >

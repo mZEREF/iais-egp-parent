@@ -7,7 +7,6 @@
 <c:set var="cycleType" value="${arSuperDataSubmissionDto.cycleDto.cycleType}"/>
 <c:set var="cycleStage" value="${arSuperDataSubmissionDto.dataSubmissionDto.cycleStage}"/>
 <c:set var="declaration" value="${arSuperDataSubmissionDto.dataSubmissionDto.declaration}" />
-<c:set var="isPrint" value="true"/>
 
 <c:choose>
     <c:when test="${cycleType == 'DSCL_001'}">

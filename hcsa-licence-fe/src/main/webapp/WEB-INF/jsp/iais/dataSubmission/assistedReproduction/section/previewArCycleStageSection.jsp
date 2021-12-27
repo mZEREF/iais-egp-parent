@@ -1,6 +1,5 @@
 <%@ page import="com.ecquaria.cloud.moh.iais.common.utils.StringUtil" %>
 <%@ page import="com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts" %>
-<c:set var="headingSign" value="completed"/>
 <div class="panel panel-default">
     <div class="panel-heading ${headingSign}">
         <h4 class="panel-title" >

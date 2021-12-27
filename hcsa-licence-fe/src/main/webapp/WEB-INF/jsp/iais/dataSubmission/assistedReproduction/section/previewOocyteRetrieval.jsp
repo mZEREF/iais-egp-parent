@@ -1,5 +1,4 @@
 <c:set var="oocyteRetrievalStageDto" value="${arSuperDataSubmissionDto.oocyteRetrievalStageDto}"/>
-<c:set var="headingSign" value="${isPrint or !isNewDataSubmission ?'':'completed'}"/>
 <%@ page import="com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto" %>
 <%@ page import="com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper" %>
 <%@ page import="com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.OocyteRetrievalStageDto" %>

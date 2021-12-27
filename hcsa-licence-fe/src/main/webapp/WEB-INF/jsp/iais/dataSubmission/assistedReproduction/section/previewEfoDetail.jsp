@@ -1,6 +1,5 @@
 <%@ page import="com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto" %>
 <%@ page import="com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils" %>
-<c:set var="headingSign" value="${isPrint or !isNewDataSubmission ?'':'completed'}"/>
 <div class="panel panel-default">
     <div class="panel-heading ${headingSign}">
         <h4 class="panel-title">
