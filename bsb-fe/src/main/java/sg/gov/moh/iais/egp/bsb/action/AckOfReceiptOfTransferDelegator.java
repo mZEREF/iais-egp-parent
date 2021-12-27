@@ -177,7 +177,8 @@ public class AckOfReceiptOfTransferDelegator {
         List<FacListDto.FacList> facLists = facListDto.getFacLists();
         //Removes the newly created object where is null
         facLists.remove(0);
-        List<SelectOption> selectModel = new ArrayList<>(facLists.size());
+        List<SelectOption> selectModel = new ArrayList<>(facLists.size()+1);
+        selectModel.add(new SelectOption("Please Select",""));
         for (FacListDto.FacList fac : facLists) {
             selectModel.add(new SelectOption(fac.getFacId(), fac.getFacName()));
         }

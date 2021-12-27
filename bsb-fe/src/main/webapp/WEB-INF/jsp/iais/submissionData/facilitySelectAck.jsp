@@ -14,8 +14,8 @@
     String webroot1 = IaisEGPConstant.CSS_ROOT + IaisEGPConstant.FE_CSS_ROOT;
 %>
 <webui:setLayout name="iais-internet"/>
-<script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-data-submission.js"></script>
 <script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-data-sub-ack.js"></script>
+
 <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
     <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
     <input type="hidden" name="action_type" value="">
@@ -37,6 +37,7 @@
                                     <option value="${MaskUtil.maskValue('id',selectList.value)}">${selectList.text}</option>
                                 </c:forEach>
                             </select>
+                            <span id="facSelectError" class="error-msg"></span>
                         </div>
                     </div>
 
@@ -49,6 +50,7 @@
                             <select name="dataSubNo" id="dataSubNo">
                                 <option value="Please Select">Please Select</option>
                             </select>
+                            <span id="dataSubNoError" class="error-msg"></span>
                         </div>
                     </div>
                 </div>
