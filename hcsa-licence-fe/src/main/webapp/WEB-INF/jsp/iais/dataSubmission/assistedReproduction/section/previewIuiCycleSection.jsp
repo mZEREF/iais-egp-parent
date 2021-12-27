@@ -3,7 +3,7 @@
     <div class="panel-heading ${headingSign}">
       <h4 class="panel-title" >
         <a href="#viewIuiCycleStage" data-toggle="collapse" >
-          Assisted Reproduction Submission
+          Intrauterine Insemination Cycle
         </a>
       </h4>
     </div>
