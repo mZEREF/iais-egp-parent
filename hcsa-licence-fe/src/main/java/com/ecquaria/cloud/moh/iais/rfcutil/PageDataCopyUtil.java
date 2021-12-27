@@ -284,7 +284,7 @@ public class PageDataCopyUtil {
             return appSvcPersonnelDtoList;
         }
         return StreamSupport.stream(appSvcPersonnelDtoList.spliterator(),
-                appSvcPersonnelDtoList.size() > RfcConst.DFT_MIN_PARALLEL_SIZE)
+                appSvcPersonnelDtoList.size() >= RfcConst.DFT_MIN_PARALLEL_SIZE)
                 .map(svcPersonnelDto -> {
                     AppSvcPersonnelDto dto = new AppSvcPersonnelDto();
                     dto.setSalutation(StringUtil.getNonNull(svcPersonnelDto.getSalutation()));

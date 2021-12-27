@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.RedirectUtil;
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.helper.ConfigHelper;
 import com.ecquaria.cloud.moh.iais.api.config.GatewayConfig;
 import com.ecquaria.cloud.moh.iais.api.config.GatewayConstants;
 import com.ecquaria.cloud.moh.iais.api.config.GatewayStripeConfig;
@@ -135,6 +136,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -2609,6 +2611,8 @@ public class NewApplicationDelegator {
             autoChangeSelectDto = new AppEditSelectDto();
         }
 
+        boolean rfcSplitFlag = ConfigHelper.getBoolean("halp.rfc.split.flag", false);
+        log.info(StringUtil.changeForLog("##### halp rfc split flag: " + rfcSplitFlag));
         // check the premises step is auto or not
         int isAutoPremises = -1;
         // check app submissions affected by premises+
@@ -2633,45 +2637,38 @@ public class NewApplicationDelegator {
             if (feeDto != null && feeDto.getTotal() != null) {
                 otherAmount = feeDto.getTotal();
             }*/
-            /**
-             * According to CR - Split RFC Logic:
-             * If user only change premise auto-fields, this application will affect other related licences via the same hci code.
-             */
-            if (appEditSelectDto.isChangePremiseAutoFields() && !appEditSelectDto.isChangeHciName()
-                    && !appEditSelectDto.isChangeInLocation() && !appEditSelectDto.isChangeAddFloorUnit()) {
-                List<AppSubmissionDto> appSubmissionDtos = IaisCommonUtils.genNewArrayList();
-                /*
-                boolean isValid = checkAffectedAppSubmissions(appGrpPremisesDtoList, amount, draftNo, groupNo, changeSelectDto,
-                        appSubmissionDtos, bpc.request);
-                if (!isValid) {
-                    return;
-                }
-                */
-                // add the premises affected list to the group
-                if (changeSelectDto.isAutoRfc()) {
-                    NewApplicationHelper.addToAuto(appSubmissionDtos, autoSaveAppsubmission);
-                    // re-set change edit select dto
-                    isAutoPremises = 1;
-                } else {
-                    NewApplicationHelper.addToNonAuto(appSubmissionDtos, notAutoSaveAppsubmission);
-                    // split out the auto parts
-                    isAutoPremises = 0;
-                }
-            } else {
-                isAutoPremises = 0;
+            List<AppSubmissionDto> appSubmissionDtos = IaisCommonUtils.genNewArrayList();
+            if (rfcSplitFlag) {
                 HcsaServiceDto serviceDto = HcsaServiceCacheHelper.getServiceByServiceName(appSubmissionDto.getServiceName());
                 boolean checkSpec = ApplicationConsts.SERVICE_CONFIG_TYPE_BASE.equals(serviceDto.getSvcType());
                 List<AppSubmissionDto> submissionDtos = requestForChangeService.getAlginAppSubmissionDtos(
                         appSubmissionDto.getLicenceId(), checkSpec);
                 if (IaisCommonUtils.isNotEmpty(submissionDtos)) {
-                    StreamSupport.stream(submissionDtos.spliterator(), submissionDtos.size() > RfcConst.DFT_MIN_PARALLEL_SIZE)
+                    StreamSupport.stream(submissionDtos.spliterator(), submissionDtos.size() >= RfcConst.DFT_MIN_PARALLEL_SIZE)
                             .forEach(dto -> NewApplicationHelper.reSetPremeses(dto, appGrpPremisesDtoList));
-                    boolean isValid = checkAffectedAppSubmissions(submissionDtos, amount, draftNo, groupNo, changeSelectDto, bpc.request);
+                    boolean isValid = checkAffectedAppSubmissions(submissionDtos, amount, draftNo, groupNo, changeSelectDto,
+                            bpc.request);
                     if (!isValid) {
                         return;
                     }
                     NewApplicationHelper.addToNonAuto(submissionDtos, notAutoSaveAppsubmission);
                 }
+            } else {
+                boolean isValid = checkAffectedAppSubmissions(appGrpPremisesDtoList, amount, draftNo, groupNo, changeSelectDto,
+                        appSubmissionDtos, bpc.request);
+                if (!isValid) {
+                    return;
+                }
+            }
+            // add the premises affected list to the group
+            if (changeSelectDto.isAutoRfc()) {
+                NewApplicationHelper.addToAuto(appSubmissionDtos, autoSaveAppsubmission);
+                // re-set change edit select dto
+                isAutoPremises = 1;
+            } else {
+                NewApplicationHelper.addToNonAuto(appSubmissionDtos, notAutoSaveAppsubmission);
+                // split out the auto parts
+                isAutoPremises = 0;
             }
             // for spliting
             if (changeSelectDto.isAutoRfc() && !isAutoRfc) {
@@ -2690,38 +2687,43 @@ public class NewApplicationDelegator {
         boolean addClaimed = false;
         // check app submissions affected by sub licensee
         if (appEditSelectDto.isLicenseeEdit()) {
-            autoGroupNo = getRfcGroupNo(autoGroupNo);
-            String groupNo = autoGroupNo;
-            /*
-            SubLicenseeDto oldSublicenseeDto = oldAppSubmissionDto.getSubLicenseeDto();
-            List<AppSubmissionDto> licenseeAffectedList = licenceClient.getAppSubmissionDtosBySubLicensee(oldSublicenseeDto).getEntity();
-            if (licenseeAffectedList == null) {
-                licenseeAffectedList = IaisCommonUtils.genNewArrayList(0);
-            }
-            // remove the current app submission
-            for (Iterator<AppSubmissionDto> it = licenseeAffectedList.iterator(); it.hasNext();) {
-                AppSubmissionDto dto = it.next();
-                if (licenceId.equals(dto.getLicenceId())) {
-                    it.remove();
-                    break;
+            if (!rfcSplitFlag) {
+                autoGroupNo = getRfcGroupNo(autoGroupNo);
+                String groupNo = autoGroupNo;
+                SubLicenseeDto oldSublicenseeDto = oldAppSubmissionDto.getSubLicenseeDto();
+                List<AppSubmissionDto> licenseeAffectedList = licenceClient.getAppSubmissionDtosBySubLicensee(
+                        oldSublicenseeDto).getEntity();
+                if (licenseeAffectedList == null) {
+                    licenseeAffectedList = IaisCommonUtils.genNewArrayList(0);
                 }
+                // remove the current app submission
+                for (Iterator<AppSubmissionDto> it = licenseeAffectedList.iterator(); it.hasNext(); ) {
+                    AppSubmissionDto dto = it.next();
+                    if (licenceId.equals(dto.getLicenceId())) {
+                        it.remove();
+                        break;
+                    }
+                }
+                AppEditSelectDto changeSelectDto = new AppEditSelectDto();
+                changeSelectDto.setLicenseeEdit(true);
+                StreamSupport.stream(licenseeAffectedList.spliterator(),
+                        licenseeAffectedList.size() >= RfcConst.DFT_MIN_PARALLEL_SIZE)
+                        .forEach(dto -> dto.setSubLicenseeDto(
+                                MiscUtil.transferEntityDto(appSubmissionDto.getSubLicenseeDto(), SubLicenseeDto.class)));
+                boolean isValid = checkAffectedAppSubmissions(licenseeAffectedList, 0.0D, draftNo, groupNo, changeSelectDto,
+                        bpc.request);
+                if (!isValid) {
+                    return;
+                }
+                NewApplicationHelper.addToAuto(licenseeAffectedList, autoSaveAppsubmission);
             }
-            AppEditSelectDto changeSelectDto = new AppEditSelectDto();
-            changeSelectDto.setLicenseeEdit(true);
-            StreamSupport.stream(licenseeAffectedList.spliterator(), licenseeAffectedList.size() > RfcConst.DFT_MIN_PARALLEL_SIZE)
-                    .forEach(dto -> dto.setSubLicenseeDto(MiscUtil.transferEntityDto(appSubmissionDto.getSubLicenseeDto(), SubLicenseeDto.class)));
-            boolean isValid = checkAffectedAppSubmissions(licenseeAffectedList, 0.0D, draftNo, groupNo, changeSelectDto, bpc.request);
-            if (!isValid) {
-                return;
-            }
-            NewApplicationHelper.addToAuto(licenseeAffectedList, autoSaveAppsubmission);
-            */
+
             // re-set change edit select dto
             if (autoAppSubmissionDto != null) {
                 autoChangeSelectDto.setLicenseeEdit(true);
                 appEditSelectDto.setLicenseeEdit(false);
             }
-        } else {
+        } else if (rfcSplitFlag) {
             SubLicenseeDto subLicenseeDto = appSubmissionDto.getSubLicenseeDto();
             addClaimed = StringUtil.isNotEmpty(subLicenseeDto.getClaimUenNo())
                     || StringUtil.isNotEmpty(subLicenseeDto.getClaimCompanyName());
@@ -2739,7 +2741,7 @@ public class NewApplicationDelegator {
 
             String licenseeId = NewApplicationHelper.getLicenseeId(bpc.request);
             List<AppSubmissionDto> personAppSubmissionList = serviceInfoChangeEffectPersonForRFC.personContact(licenseeId,
-                    appSubmissionDto, oldAppSubmissionDto, 0);
+                    appSubmissionDto, oldAppSubmissionDto, rfcSplitFlag ? 0 : 1);
             boolean isValid = checkAffectedAppSubmissions(personAppSubmissionList, 0.0D, draftNo, autoGroupNo, null, bpc.request);
             if (!isValid) {
                 return;
@@ -2770,7 +2772,7 @@ public class NewApplicationDelegator {
         // synchronize data
         if (!autoSaveAppsubmission.isEmpty() && !notAutoSaveAppsubmission.isEmpty()) {
             StreamSupport.stream(notAutoSaveAppsubmission.spliterator(),
-                    notAutoSaveAppsubmission.size() > RfcConst.DFT_MIN_PARALLEL_SIZE)
+                    notAutoSaveAppsubmission.size() >= RfcConst.DFT_MIN_PARALLEL_SIZE)
                     .forEach(targetDto -> {
                         Optional<AppSubmissionDto> optional = autoSaveAppsubmission.stream()
                                 .filter(source -> Objects.equals(targetDto.getLicenceId(), source.getLicenceId()))
@@ -2956,7 +2958,7 @@ public class NewApplicationDelegator {
             return true;
         }
         log.info(StringUtil.changeForLog("##### Affected Size: " + appSubmissionDtos.size()));
-        boolean parallel = appSubmissionDtos.size() >= RfcConst.DFT_MIN_PARALLEL_SIZE;
+        boolean parallel = true;//appSubmissionDtos.size() >= RfcConst.DFT_MIN_PARALLEL_SIZE;
         Map<AppSubmissionDto, List<String>> errorListMap = StreamSupport.stream(appSubmissionDtos.spliterator(), parallel)
                 .collect(Collectors.toMap(Function.identity(), dto -> appSubmissionService.doPreviewSubmitValidate(null, dto, false)));
         String errorMsg = NewApplicationHelper.getErrorMsg(errorListMap);
