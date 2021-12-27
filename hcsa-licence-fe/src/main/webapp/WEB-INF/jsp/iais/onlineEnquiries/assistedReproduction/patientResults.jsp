@@ -11,9 +11,19 @@
             (sop.webflow.rt.api.BaseProcessClass) request.getAttribute("process");
 %>
 <%
-    String webroot2=IaisEGPConstant.CSS_ROOT+IaisEGPConstant.COMMON_CSS_ROOT;
+    String webrootCom=IaisEGPConstant.CSS_ROOT+IaisEGPConstant.COMMON_CSS_ROOT;
 %>
-<script type="text/javascript" src="<%=webroot2%>js/onlineEnquiries/arPatientResults.js"></script>
+<style>
+    .table-info-display {
+        margin: 20px 15px 25px 12px;
+        background: #efefef;
+        padding: 8px;
+        border-radius: 8px;
+        -moz-border-radius: 8px;
+        -webkit-border-radius: 8px;
+    }
+</style>
+<script type="text/javascript" src="<%=webrootCom%>js/onlineEnquiries/arPatientResults.js"></script>
 <webui:setLayout name="iais-internet"/>
 <%@include file="../../common/dashboard.jsp"%>
 <form id="mainForm"  method="post" action=<%=process.runtime.continueURL()%>>
@@ -137,6 +147,11 @@
                             <div class="table-responsive">
                                 <div class="table-gp">
                                     <table aria-describedby="" class="table application-group" style="border-collapse:collapse;">
+                                        <style>
+                                            thead > tr > th > p {
+                                                line-height: 33px;
+                                            }
+                                        </style>
                                         <thead>
                                         <tr >
 
@@ -172,6 +187,11 @@
                                                 </tr>
                                             </c:when>
                                             <c:otherwise>
+                                                <style>
+                                                    .form-horizontal p {
+                                                        line-height: 23px;
+                                                    }
+                                                </style>
                                                 <c:forEach var="patient"
                                                            items="${patientResult.rows}"
                                                            varStatus="status">

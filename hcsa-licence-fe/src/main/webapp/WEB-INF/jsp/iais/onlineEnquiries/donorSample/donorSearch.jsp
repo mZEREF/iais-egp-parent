@@ -11,9 +11,22 @@
             (sop.webflow.rt.api.BaseProcessClass) request.getAttribute("process");
 %>
 <%
-    String webroot2=IaisEGPConstant.CSS_ROOT+IaisEGPConstant.COMMON_CSS_ROOT;
+    String webrootCom=IaisEGPConstant.CSS_ROOT+IaisEGPConstant.COMMON_CSS_ROOT;
 %>
-<script type="text/javascript" src="<%=webroot2%>js/onlineEnquiries/donorSearch.js"></script>
+<style>
+    .table-info-display {
+        margin: 20px 15px 25px 12px;
+        background: #efefef;
+        padding: 8px;
+        border-radius: 8px;
+        -moz-border-radius: 8px;
+        -webkit-border-radius: 8px;
+    }
+    thead > tr > th > p {
+        line-height: 33px;
+    }
+</style>
+<script type="text/javascript" src="<%=webrootCom%>js/onlineEnquiries/donorSearch.js"></script>
 <webui:setLayout name="iais-internet"/>
 <%@include file="../../common/dashboard.jsp"%>
 <form id="mainForm"  method="post" action=<%=process.runtime.continueURL()%>>

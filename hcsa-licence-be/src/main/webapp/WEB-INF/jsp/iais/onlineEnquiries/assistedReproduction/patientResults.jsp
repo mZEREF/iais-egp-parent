@@ -11,9 +11,9 @@
             (sop.webflow.rt.api.BaseProcessClass) request.getAttribute("process");
 %>
 <%
-    String webroot1=IaisEGPConstant.CSS_ROOT+IaisEGPConstant.COMMON_CSS_ROOT;
+    String webrootCom=IaisEGPConstant.CSS_ROOT+IaisEGPConstant.COMMON_CSS_ROOT;
 %>
-<script type="text/javascript" src="<%=webroot1%>js/onlineEnquiries/arPatientResults.js"></script>
+<script type="text/javascript" src="<%=webrootCom%>js/onlineEnquiries/arPatientResults.js"></script>
 <webui:setLayout name="iais-intranet"/>
 <div class="main-content dashboard">
     <form id="mainForm"  method="post" action=<%=process.runtime.continueURL()%>>
@@ -187,6 +187,11 @@
                                                     </tr>
                                                 </c:when>
                                                 <c:otherwise>
+                                                    <style>
+                                                        .form-horizontal p {
+                                                            line-height: 23px;
+                                                        }
+                                                    </style>
                                                     <c:forEach var="patient"
                                                                items="${patientResult.rows}"
                                                                varStatus="status">

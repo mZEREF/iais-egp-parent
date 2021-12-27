@@ -1,3 +1,8 @@
+<style>
+    thead > tr > th > p {
+        line-height: 33px;
+    }
+</style>
 <div class="col-md-12">
 
     <div class="table-gp">
@@ -158,13 +163,27 @@
                                         <iais:sortableHeader needSort="false"
                                                              field="cycle_no"
                                                              value="Cycle"/>
-                                        <th scope="col">Frozen Oocytes</th>
-                                        <th scope="col">Thawed Oocytes</th>
-                                        <th scope="col">Fresh Oocytes</th>
-                                        <th scope="col">Frozen Embryos</th>
-                                        <th scope="col">Thawed Embryos</th>
-                                        <th scope="col">Fresh Embryos</th>
-                                        <th scope="col">Frozen Sperms</th>
+                                        <iais:sortableHeader needSort="false"
+                                                             field="Frozen Oocytes"
+                                                             value="Frozen Oocytes"/>
+                                        <iais:sortableHeader needSort="false"
+                                                             field="Thawed Oocytes"
+                                                             value="Thawed Oocytes"/>
+                                        <iais:sortableHeader needSort="false"
+                                                             field="Fresh Oocytes"
+                                                             value="Fresh Oocytes"/>
+                                        <iais:sortableHeader needSort="false"
+                                                             field="Frozen Embryos"
+                                                             value="Frozen Embryos"/>
+                                        <iais:sortableHeader needSort="false"
+                                                             field="Thawed Embryos"
+                                                             value="Thawed Embryos"/>
+                                        <iais:sortableHeader needSort="false"
+                                                             field="Fresh Embryos"
+                                                             value="Fresh Embryos"/>
+                                        <iais:sortableHeader needSort="false"
+                                                             field="Frozen Sperms"
+                                                             value="Frozen Sperms"/>
 
                                     </tr>
                                     </thead>

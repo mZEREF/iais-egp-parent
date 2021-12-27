@@ -11,9 +11,9 @@
             (sop.webflow.rt.api.BaseProcessClass)request.getAttribute("process");
 %>
 <%
-    String webroot2=IaisEGPConstant.CSS_ROOT+IaisEGPConstant.COMMON_CSS_ROOT;
+    String webrootCom=IaisEGPConstant.CSS_ROOT+IaisEGPConstant.COMMON_CSS_ROOT;
 %>
-<script type="text/javascript" src="<%=webroot2%>js/onlineEnquiries/arStageInfo.js"></script>
+<script type="text/javascript" src="<%=webrootCom%>js/onlineEnquiries/arStageInfo.js"></script>
 <c:set var="cycleStage" value="${arSuperDataSubmissionDto.dataSubmissionDto.cycleStage}"/>
 <c:set var="submitDt" value="${arSuperDataSubmissionDto.dataSubmissionDto.submitDt}" />
 <webui:setLayout name="iais-internet"/>

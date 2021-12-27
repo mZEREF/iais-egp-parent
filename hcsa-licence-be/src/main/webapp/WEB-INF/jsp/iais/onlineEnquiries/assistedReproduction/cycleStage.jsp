@@ -1,3 +1,11 @@
+<style>
+    .form-horizontal p {
+        line-height: 23px;
+    }
+    thead > tr > th > p {
+        line-height: 33px;
+    }
+</style>
 <div class="col-md-12">
     <div class="col-xs-12">
         <div class="components">
