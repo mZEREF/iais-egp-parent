@@ -204,4 +204,9 @@ public class ArFeClientFallback implements ArFeClient {
     public FeignResponseEntity<Boolean> haveStimulationCycles(String patientCode) {
         return getFeignResponseEntity();
     }
+
+    @Override
+    public FeignResponseEntity<List<CycleDto>> getOverDayNotCompletedCycleDto(Integer day) {
+        return getFeignResponseEntity();
+    }
 }

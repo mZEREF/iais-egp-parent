@@ -3,6 +3,7 @@ package com.ecquaria.cloud.moh.iais.service.datasubmission.impl;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArCycleStageDto;
@@ -19,18 +20,29 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.IuiCycleStageD
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInventoryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
+import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.dto.EmailParam;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
+import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
+import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
+import com.ecquaria.cloud.moh.iais.service.CessationFeService;
+import com.ecquaria.cloud.moh.iais.service.RequestForChangeService;
 import com.ecquaria.cloud.moh.iais.service.client.ArFeClient;
 import com.ecquaria.cloud.moh.iais.service.client.ComFileRepoClient;
 import com.ecquaria.cloud.moh.iais.service.client.FeEicGatewayClient;
+import com.ecquaria.cloud.moh.iais.service.client.FeMessageClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicEicClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceClient;
+import com.ecquaria.cloud.moh.iais.service.client.LicenceFeMsgTemplateClient;
 import com.ecquaria.cloud.moh.iais.service.client.SystemAdminClient;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.ArDataSubmissionService;
+import com.ecquaria.sz.commons.util.MsgUtil;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -50,6 +62,21 @@ import java.util.Map;
 @Service
 @Slf4j
 public class ArDataSubmissionServiceImpl implements ArDataSubmissionService {
+
+    @Autowired
+    LicenceFeMsgTemplateClient licenceFeMsgTemplateClient;
+
+    @Autowired
+    NotificationHelper notificationHelper;
+
+    @Autowired
+    CessationFeService cessationFeService;
+
+    @Autowired
+    RequestForChangeService requestForChangeService;
+
+    @Autowired
+    FeMessageClient feMessageClient;
 
     @Autowired
     private LicenceClient licenceClient;
@@ -658,5 +685,120 @@ public class ArDataSubmissionServiceImpl implements ArDataSubmissionService {
 
     private boolean greaterFourDay(String code) {
         return "AOFET005".equals(code) || "AOFET006".equals(code);
+    }
+
+    @Override
+    public void sendIncompleteCycleNotificationPeriod() {
+        int firstDays = Integer.parseInt(MasterCodeUtil.getCodeDesc("DSARICN001"));
+        int perDays = Integer.parseInt(MasterCodeUtil.getCodeDesc("DSARICN002"));
+
+        List<CycleDto> overDayCycleDtos = arFeClient.getOverDayNotCompletedCycleDto(firstDays).getEntity();
+        List<String> overDayLicenseeId = getLicenseeList(overDayCycleDtos);
+
+        MsgTemplateDto msgTemplateDto = licenceFeMsgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_AR_INCOMPLETE_CYCLE_MSG).getEntity();
+        String msgSubject = msgTemplateDto.getTemplateName();
+
+        MsgTemplateDto perMsgTemplateDto = licenceFeMsgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_AR_INCOMPLETE_CYCLE_PER_MSG).getEntity();
+        String perMsgSubject = perMsgTemplateDto.getTemplateName();
+
+
+        List<Date> firstDates = feMessageClient.getLastSubjectDate(overDayLicenseeId, msgSubject).getEntity();
+        List<Date> perDates = feMessageClient.getLastSubjectDate(overDayLicenseeId, perMsgSubject).getEntity();
+
+        if (IaisCommonUtils.isEmpty(firstDates)) {
+            return;
+        }
+        for (int i = 0; i < overDayCycleDtos.size(); i++) {
+            if (firstDates.get(i) == null) {
+                log.info("need send first {}", overDayCycleDtos.get(i).getId());
+//                sendFirstNotification(overDayLicenseeId.get(i));
+            } else {
+                Date lastSeedDate = null;
+                if (perDates.get(i) == null) {
+                    lastSeedDate = firstDates.get(i);
+                } else {
+                    lastSeedDate = perDates.get(i);
+                }
+                Date needSendDate = new Date(lastSeedDate.getTime() + 1000 * 60 * 60 * 24L * perDays);
+                Date today = new Date();
+                if (needSendDate.before(today)) {
+                    log.info("need send per {}", overDayCycleDtos.get(i).getId());
+//                    sendPerNotification(overDayLicenseeId.get(i));
+                }
+            }
+        }
+    }
+
+    private List<String> getLicenseeList(List<CycleDto> overDayCycleDtos) {
+        List<String> overDayLicenseeId = IaisCommonUtils.genNewArrayList();
+        for (CycleDto overDayCycleDto : overDayCycleDtos) {
+            String licenseeId = getLicenseeId(overDayCycleDto);
+            overDayLicenseeId.add(licenseeId);
+        }
+        return overDayLicenseeId;
+    }
+
+    public String getLicenseeId(CycleDto cycleDto) {
+        String result = null;
+        if (cycleDto != null) {
+            String hciCode = cycleDto.getHciCode();
+            PremisesDto premisesDto = cessationFeService.getPremiseByHciCodeName(hciCode);
+            if (premisesDto != null) {
+                String organizationId = premisesDto.getOrganizationId();
+                LicenseeDto licenseeDto = requestForChangeService.getLicenseeByOrgId(organizationId);
+                if (licenseeDto != null) {
+                    result = licenseeDto.getId();
+                }
+            }
+        }
+        return result;
+    }
+
+    @SneakyThrows
+    private void sendFirstNotification(String licenseeId) {
+        Map<String, Object> msgContentMap = IaisCommonUtils.genNewHashMap();
+        MsgTemplateDto msgTemplateDto = licenceFeMsgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_AR_INCOMPLETE_CYCLE_MSG).getEntity();
+        Map<String, Object> msgSubjectMap = IaisCommonUtils.genNewHashMap();
+        String msgSubject = MsgUtil.getTemplateMessageByContent(msgTemplateDto.getTemplateName(), msgSubjectMap);
+        EmailParam msgParam = new EmailParam();
+        msgParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_AR_INCOMPLETE_CYCLE_MSG);
+        msgParam.setTemplateContent(msgContentMap);
+        msgParam.setSubject(msgSubject);
+        msgParam.setQueryCode(licenseeId);
+        msgParam.setReqRefNum(licenseeId);
+        msgParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
+        msgParam.setRefId(licenseeId);
+        notificationHelper.sendNotification(msgParam);
+
+        Map<String, Object> emailMap = IaisCommonUtils.genNewHashMap();
+        MsgTemplateDto emailTemplateDto = licenceFeMsgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_AR_INCOMPLETE_CYCLE_EMAIL).getEntity();
+        Map<String, Object> subjectMap = IaisCommonUtils.genNewHashMap();
+        String emailSubject = MsgUtil.getTemplateMessageByContent(emailTemplateDto.getTemplateName(), subjectMap);
+        EmailParam eamilParam = new EmailParam();
+        eamilParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_AR_INCOMPLETE_CYCLE_EMAIL);
+        eamilParam.setTemplateContent(emailMap);
+        eamilParam.setSubject(emailSubject);
+        eamilParam.setQueryCode(licenseeId);
+        eamilParam.setReqRefNum(licenseeId);
+        eamilParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_LICENSEE_ID);
+        eamilParam.setRefId(licenseeId);
+        notificationHelper.sendNotification(eamilParam);
+    }
+
+    @SneakyThrows
+    private void sendPerNotification(String licenseeId) {
+        Map<String, Object> msgContentMap = IaisCommonUtils.genNewHashMap();
+        MsgTemplateDto msgTemplateDto = licenceFeMsgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_AR_INCOMPLETE_CYCLE_PER_MSG).getEntity();
+        Map<String, Object> msgSubjectMap = IaisCommonUtils.genNewHashMap();
+        String msgSubject = MsgUtil.getTemplateMessageByContent(msgTemplateDto.getTemplateName(), msgSubjectMap);
+        EmailParam msgParam = new EmailParam();
+        msgParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_AR_INCOMPLETE_CYCLE_PER_MSG);
+        msgParam.setTemplateContent(msgContentMap);
+        msgParam.setSubject(msgSubject);
+        msgParam.setQueryCode(licenseeId);
+        msgParam.setReqRefNum(licenseeId);
+        msgParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
+        msgParam.setRefId(licenseeId);
+        notificationHelper.sendNotification(msgParam);
     }
 }

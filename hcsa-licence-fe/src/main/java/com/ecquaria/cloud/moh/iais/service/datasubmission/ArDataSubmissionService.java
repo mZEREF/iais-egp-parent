@@ -131,4 +131,6 @@ public interface ArDataSubmissionService {
     int embryoTransferCount(String cycleDtoId);
 
     boolean haveEmbryoTransferGreaterFiveDay(String cycleId);
+
+    void sendIncompleteCycleNotificationPeriod();
 }
