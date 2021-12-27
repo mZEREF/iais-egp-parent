@@ -9,22 +9,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 import sg.gov.moh.iais.egp.bsb.client.ProcessClient;
-import sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
 import sg.gov.moh.iais.egp.bsb.dto.ValidationResultDto;
-import sg.gov.moh.iais.egp.bsb.dto.file.DocRecordInfo;
-import sg.gov.moh.iais.egp.bsb.dto.file.PrimaryDocDto;
 import sg.gov.moh.iais.egp.bsb.dto.process.MohProcessDto;
 import sg.gov.moh.iais.egp.bsb.dto.process.SubmitDetailsDto;
-import sg.gov.moh.iais.egp.bsb.dto.process.approval.ApprovalProfileDto;
-import sg.gov.moh.iais.egp.bsb.dto.process.facility.BiologicalAgentToxinDto;
-import sg.gov.moh.iais.egp.bsb.util.CollectionUtils;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
-
-import java.io.Serializable;
-import java.util.*;
 
 import static sg.gov.moh.iais.egp.bsb.constant.ProcessContants.*;
 
@@ -49,12 +40,11 @@ public class MohDOScreeningDelegator {
         HttpServletRequest request = bpc.request;
         request.getSession().removeAttribute(KEY_SUBMIT_DETAILS_DTO);
         request.getSession().removeAttribute(KEY_MOH_PROCESS_DTO);
-        request.getSession().removeAttribute(KEY_BAT_LIST);
         request.getSession().removeAttribute(KEY_APPROVAL_PROFILE_LIST);
         request.getSession().removeAttribute(LAST_DO_APPLICATION_MISC);
         request.getSession().removeAttribute(LAST_AO_APPLICATION_MISC);
         request.getSession().removeAttribute(LAST_HM_APPLICATION_MISC);
-        request.getSession().removeAttribute("primaryDocDto");
+        request.getSession().removeAttribute(MohBeAppViewDelegator.KEY_APPLICATION_DTO);
         AuditTrailHelper.auditFunction(MODULE_NAME, FUNCTION_NAME);
     }
 
@@ -76,40 +66,21 @@ public class MohDOScreeningDelegator {
                     failLoadSubmitDetailsData = false;
                     SubmitDetailsDto submitDetailsDto = submitDetailsDtoResponseDto.getEntity();
                     ParamUtil.setSessionAttr(request, KEY_SUBMIT_DETAILS_DTO, submitDetailsDto);
-                    setBatList(request, submitDetailsDto);
 
                     MohProcessDto mohProcessDto = new MohProcessDto();
                     mohProcessDto.setProcessFlow(PROCESS_FLOW);
-                    mohProcessDto.setProcessType(submitDetailsDto.getProcessType());
+                    mohProcessDto.setProcessType(submitDetailsDto.getApplicationDto().getProcessType());
                     mohProcessDto.setAppId(appId);
                     mohProcessDto.setTaskId(taskId);
                     ParamUtil.setSessionAttr(request, KEY_MOH_PROCESS_DTO, mohProcessDto);
 
-                    //prepare doc
-                    setApplicantDoc(request,submitDetailsDto);
+                    ParamUtil.setSessionAttr(request, MohBeAppViewDelegator.KEY_APPLICATION_DTO, submitDetailsDto.getApplicationDto());
                 }
             }
             if (failLoadSubmitDetailsData) {
                 throw new IaisRuntimeException(ERR_MSG_FAIL_LOAD_SUBMIT_DETAILS);
             }
         }
-    }
-
-    public static void setApplicantDoc(HttpServletRequest request, SubmitDetailsDto submitDetailsDto){
-        PrimaryDocDto primaryDocDto = new PrimaryDocDto();
-        String processType = submitDetailsDto.getProcessType();
-        if (processType.equals(MasterCodeConstants.PROCESS_TYPE_FAC_REG)) {
-            primaryDocDto.setSavedDocMap(CollectionUtils.uniqueIndexMap(submitDetailsDto.getFacilityRegisterDto().getDocRecordInfos(), DocRecordInfo::getRepoId));
-        } else if (processType.equals(MasterCodeConstants.PROCESS_TYPE_APPROVE_POSSESS) || processType.equals(MasterCodeConstants.PROCESS_TYPE_APPROVE_LSP) || processType.equals(MasterCodeConstants.PROCESS_TYPE_SP_APPROVE_HANDLE)) {
-            primaryDocDto.setSavedDocMap(CollectionUtils.uniqueIndexMap(submitDetailsDto.getApprovalAppDto().getDocRecordInfos(), DocRecordInfo::getRepoId));
-        } else if (processType.equals(MasterCodeConstants.PROCESS_TYPE_FAC_CERTIFIER_REG)){
-            primaryDocDto.setSavedDocMap(CollectionUtils.uniqueIndexMap(submitDetailsDto.getFacilityCertifierRegisterDto().getDocRecordInfos(), DocRecordInfo::getRepoId));
-        }
-        Map<String, List<DocRecordInfo>> saveFiles = primaryDocDto.getExistDocTypeMap();
-        Set<String> docTypes = saveFiles.keySet();
-        ParamUtil.setRequestAttr(request, "docTypes", docTypes);
-        ParamUtil.setRequestAttr(request, "savedFiles", saveFiles);
-        ParamUtil.setSessionAttr(request, "primaryDocDto", primaryDocDto);
     }
 
     public void prepareSwitch(BaseProcessClass bpc){
@@ -136,16 +107,5 @@ public class MohDOScreeningDelegator {
         HttpServletRequest request = bpc.request;
         MohProcessDto mohProcessDto = (MohProcessDto) ParamUtil.getSessionAttr(request, KEY_MOH_PROCESS_DTO);
         processClient.saveMohProcess(mohProcessDto);
-    }
-
-    public static void setBatList(HttpServletRequest request, SubmitDetailsDto submitDetailsDto) {
-        String processType = submitDetailsDto.getProcessType();
-        if (processType.equals(MasterCodeConstants.PROCESS_TYPE_FAC_REG)) {
-            List<BiologicalAgentToxinDto> batList = new ArrayList<>(submitDetailsDto.getFacilityRegisterDto().getBiologicalAgentToxinMap().values());
-            ParamUtil.setSessionAttr(request, KEY_BAT_LIST, (Serializable) batList);
-        } else if (processType.equals(MasterCodeConstants.PROCESS_TYPE_APPROVE_POSSESS) || processType.equals(MasterCodeConstants.PROCESS_TYPE_APPROVE_LSP) || processType.equals(MasterCodeConstants.PROCESS_TYPE_SP_APPROVE_HANDLE)) {
-            List<ApprovalProfileDto> approvalProfileList = new ArrayList<>(submitDetailsDto.getApprovalAppDto().getApprovalProfileMap().values());
-            ParamUtil.setSessionAttr(request, KEY_APPROVAL_PROFILE_LIST, (Serializable) approvalProfileList);
-        }
     }
 }

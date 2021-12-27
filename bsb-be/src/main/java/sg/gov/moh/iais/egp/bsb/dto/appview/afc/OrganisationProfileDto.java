@@ -1,8 +1,9 @@
-package sg.gov.moh.iais.egp.bsb.dto.process.afc;
+package sg.gov.moh.iais.egp.bsb.dto.appview.afc;
 
 import lombok.Data;
 
 import java.io.Serializable;
+
 
 @Data
 public class OrganisationProfileDto implements Serializable {

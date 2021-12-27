@@ -1,15 +1,17 @@
-package sg.gov.moh.iais.egp.bsb.dto.process.facility;
+package sg.gov.moh.iais.egp.bsb.dto.appview.facility;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 
+
 @Data
-public class FacilityAdminDto implements Serializable{
+public class FacilityAdminDto {
     @Data
     @NoArgsConstructor
     public static class FacilityAdministratorInfo implements Serializable {
+        private String adminEntityId;
         private String adminName;
         private String nationality;
         private String idType;
@@ -17,7 +19,7 @@ public class FacilityAdminDto implements Serializable{
         private String designation;
         private String contactNo;
         private String email;
-        private String employmentStartDate;
+        private String employmentStartDt;
     }
 
     private FacilityAdministratorInfo mainAdmin;

@@ -11,15 +11,15 @@
                     </tr>
                     <tr>
                         <td class="col-xs-6" align="right">Application No.</td>
-                        <td class="col-xs-6" style="padding-left : 20px">${submitDetailsDto.applicationNo}</td>
+                        <td class="col-xs-6" style="padding-left : 20px">${submitDetailsDto.applicationDto.applicationNo}</td>
                     </tr>
                     <tr>
                         <td align="right">Application Type</td>
-                        <td style="padding-left : 20px"><iais:code code="${submitDetailsDto.applicationType}"></iais:code></td>
+                        <td style="padding-left : 20px"><iais:code code="${submitDetailsDto.applicationDto.appType}"></iais:code></td>
                     </tr>
                     <tr>
                         <td align="right">Process Type</td>
-                        <td style="padding-left : 20px"><iais:code code="${submitDetailsDto.processType}"></iais:code></td>
+                        <td style="padding-left : 20px"><iais:code code="${submitDetailsDto.applicationDto.processType}"></iais:code></td>
                     </tr>
                     <tr>
                         <td align="right">Activity Type</td>
@@ -31,11 +31,11 @@
                     </tr>
                     <tr>
                         <td align="right">Submission Date</td>
-                        <td style="padding-left : 20px"><c:out value="${submitDetailsDto.submissionDate}"/></td>
+                        <td style="padding-left : 20px"><fmt:formatDate value="${submitDetailsDto.applicationDto.applicationDt}" pattern="dd/MM/yyyy"/></td>
                     </tr>
                     <tr>
                         <td align="right">Application Status</td>
-                        <td style="padding-left : 20px"><iais:code code="${submitDetailsDto.applicationStatus}"></iais:code></td>
+                        <td style="padding-left : 20px"><iais:code code="${submitDetailsDto.applicationDto.status}"></iais:code></td>
                     </tr>
                     <tr>
                         <td align="right">Facility/Approval Expiry Date</td>
@@ -84,6 +84,13 @@
         </div>
     </div>
 </div>
+<div align="center">
+    <a href="javascript:void(0);" onclick="javascript:doOpenApp()">
+        <button type="button" class="btn btn-primary">
+            View Application
+        </button>
+    </a>
+</div>
 <div>&nbsp</div>
 <div class="panel panel-default">
     <div class="panel-heading"><strong>List of Agent / Toxin</strong></div>
@@ -118,25 +125,11 @@
         </div>
     </div>
 </div>
-<div>&nbsp</div>
-<div align="center">
-<a href="javascript:void(0);">
-    <button id="viewAppBtn" type="button" class="btn btn-primary">
-        View Application
-    </button>
-</a>
-</div>
-<div id="viewAppDiv">
-    <c:if test="${submitDetailsDto.processType eq 'PROTYPE001'}">
-        <%@include file="/WEB-INF/jsp/iais/process/view/viewFacReg.jsp" %>
-    </c:if>
-    <c:if test="${submitDetailsDto.processType eq 'PROTYPE002' or submitDetailsDto.processType eq 'PROTYPE003' or submitDetailsDto.processType eq 'PROTYPE004'}">
-        <%@include file="/WEB-INF/jsp/iais/process/view/viewApprovalApp.jsp" %>
-    </c:if>
-    <c:if test="${submitDetailsDto.processType eq 'PROTYPE005'}">
-        <%@include file="/WEB-INF/jsp/iais/process/view/viewFacRegCer.jsp" %>
-    </c:if>
-</div>
 <div align="left">
     <a style="float:left;padding-top: 1.1%;" class="back" id="back" href="/bsb-be/eservicecontinue/INTRANET/MohBsbTaskList"><em class="fa fa-angle-left"></em> Back</a>
 </div>
+<script type="text/javascript">
+    function doOpenApp() {
+        window.open ("/bsb-be/eservice/INTRANET/MohBeAppViewDetails");
+    }
+</script>

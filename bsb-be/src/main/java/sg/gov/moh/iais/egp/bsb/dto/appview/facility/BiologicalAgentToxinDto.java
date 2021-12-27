@@ -1,4 +1,4 @@
-package sg.gov.moh.iais.egp.bsb.dto.process.facility;
+package sg.gov.moh.iais.egp.bsb.dto.appview.facility;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
+
 
 @Data
 public class BiologicalAgentToxinDto implements Serializable{

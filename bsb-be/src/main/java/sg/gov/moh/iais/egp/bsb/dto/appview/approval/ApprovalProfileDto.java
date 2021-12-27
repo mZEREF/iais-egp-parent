@@ -1,15 +1,13 @@
-package sg.gov.moh.iais.egp.bsb.dto.process.approval;
+package sg.gov.moh.iais.egp.bsb.dto.appview.approval;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
 import java.io.Serializable;
 import java.util.List;
 
 @Data
-@Slf4j
-public class ApprovalProfileDto implements Serializable{
+public class ApprovalProfileDto implements Serializable {
     @Data
     @NoArgsConstructor
     public static class BATInfo implements Serializable {

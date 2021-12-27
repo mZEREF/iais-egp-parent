@@ -1,4 +1,4 @@
-package sg.gov.moh.iais.egp.bsb.dto.process.afc;
+package sg.gov.moh.iais.egp.bsb.dto.appview.afc;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -6,11 +6,13 @@ import lombok.NoArgsConstructor;
 import java.io.Serializable;
 import java.util.List;
 
+
 @Data
-public class CertifyingTeamDto implements Serializable{
+public class CertifyingTeamDto implements Serializable {
     @Data
     @NoArgsConstructor
     public static class CertifierTeamMember implements Serializable {
+        private String memberEntityId;
         private String memberName;
         private String idType;
         private String idNo;
@@ -30,5 +32,5 @@ public class CertifyingTeamDto implements Serializable{
         private String facRelatedPub;
     }
 
-    private  List<CertifierTeamMember> certifierTeamMemberList;
+    private List<CertifierTeamMember> certifierTeamMemberList;
 }

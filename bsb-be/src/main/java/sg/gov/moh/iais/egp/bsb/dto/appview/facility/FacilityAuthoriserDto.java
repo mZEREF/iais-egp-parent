@@ -1,4 +1,4 @@
-package sg.gov.moh.iais.egp.bsb.dto.process.facility;
+package sg.gov.moh.iais.egp.bsb.dto.appview.facility;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -8,10 +8,11 @@ import java.util.List;
 
 
 @Data
-public class FacilityAuthoriserDto implements Serializable{
+public class FacilityAuthoriserDto {
     @Data
     @NoArgsConstructor
     public static class FacilityAuthorisedPersonnel implements Serializable {
+        private String authEntityId;
         private String name;
         private String nationality;
         private String idType;
@@ -19,10 +20,10 @@ public class FacilityAuthoriserDto implements Serializable{
         private String designation;
         private String contactNo;
         private String email;
-        private String employmentStartDate;
+        private String employmentStartDt;
         private String employmentPeriod;
         private String workArea;
-        private String securityClearanceDate;
+        private String securityClearanceDt;
         private String isProtectedPlace;
     }
 

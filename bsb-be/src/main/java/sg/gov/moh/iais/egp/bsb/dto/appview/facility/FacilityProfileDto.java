@@ -1,4 +1,4 @@
-package sg.gov.moh.iais.egp.bsb.dto.process.facility;
+package sg.gov.moh.iais.egp.bsb.dto.appview.facility;
 
 import lombok.Data;
 
@@ -6,6 +6,7 @@ import java.io.Serializable;
 
 @Data
 public class FacilityProfileDto implements Serializable {
+    private String facilityEntityId;
     private String facName;
     private String block;
     private String streetName;

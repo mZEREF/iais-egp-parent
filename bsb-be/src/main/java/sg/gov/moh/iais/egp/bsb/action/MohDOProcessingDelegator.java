@@ -40,12 +40,11 @@ public class MohDOProcessingDelegator {
         HttpServletRequest request = bpc.request;
         request.getSession().removeAttribute(KEY_SUBMIT_DETAILS_DTO);
         request.getSession().removeAttribute(KEY_MOH_PROCESS_DTO);
-        request.getSession().removeAttribute(KEY_BAT_LIST);
         request.getSession().removeAttribute(KEY_APPROVAL_PROFILE_LIST);
         request.getSession().removeAttribute(LAST_DO_APPLICATION_MISC);
         request.getSession().removeAttribute(LAST_AO_APPLICATION_MISC);
         request.getSession().removeAttribute(LAST_HM_APPLICATION_MISC);
-        request.getSession().removeAttribute("primaryDocDto");
+        request.getSession().removeAttribute(MohBeAppViewDelegator.KEY_APPLICATION_DTO);
         AuditTrailHelper.auditFunction(MODULE_NAME, FUNCTION_NAME);
     }
 
@@ -67,19 +66,17 @@ public class MohDOProcessingDelegator {
                     failLoadSubmitDetailsData = false;
                     SubmitDetailsDto submitDetailsDto = submitDetailsDtoResponseDto.getEntity();
                     ParamUtil.setSessionAttr(request, KEY_SUBMIT_DETAILS_DTO, submitDetailsDto);
-                    MohDOScreeningDelegator.setBatList(request, submitDetailsDto);
 
                     ParamUtil.setSessionAttr(request, LAST_AO_APPLICATION_MISC, submitDetailsDto.getApplicationMiscDtoMap().get("AO"));
 
                     MohProcessDto mohProcessDto = new MohProcessDto();
                     mohProcessDto.setProcessFlow(PROCESS_FLOW);
-                    mohProcessDto.setProcessType(submitDetailsDto.getProcessType());
+                    mohProcessDto.setProcessType(submitDetailsDto.getApplicationDto().getProcessType());
                     mohProcessDto.setAppId(appId);
                     mohProcessDto.setTaskId(taskId);
                     ParamUtil.setSessionAttr(request, KEY_MOH_PROCESS_DTO, mohProcessDto);
 
-                    //prepare doc
-                    MohDOScreeningDelegator.setApplicantDoc(request,submitDetailsDto);
+                    ParamUtil.setSessionAttr(request, MohBeAppViewDelegator.KEY_APPLICATION_DTO, submitDetailsDto.getApplicationDto());
                 }
             }
             if (failLoadSubmitDetailsData) {
