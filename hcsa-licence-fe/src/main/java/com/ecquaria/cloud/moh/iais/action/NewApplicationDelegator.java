@@ -4338,6 +4338,7 @@ public class NewApplicationDelegator {
                 String rfiPremHci = NewApplicationHelper.getPremisesKey(rfiPremises);
                 if (!IaisCommonUtils.isEmpty(appGrpPremisesDtos)) {
                     for (AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtos) {
+                        appGrpPremisesDto.setFromDB(true);
                         appGrpPremisesDto.setExistingData(AppConsts.NO);
                         String premHci = NewApplicationHelper.getPremisesKey(appGrpPremisesDto);
                         if(rfiPremHci.equals(premHci)){

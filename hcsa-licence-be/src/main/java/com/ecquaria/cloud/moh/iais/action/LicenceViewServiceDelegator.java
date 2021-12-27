@@ -3,7 +3,6 @@ package com.ecquaria.cloud.moh.iais.action;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
-import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.organization.OrganizationConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewHciNameDto;
@@ -56,6 +55,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.PageShowFileDto;
+import com.ecquaria.cloud.moh.iais.helper.ApplicationHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
@@ -1804,62 +1804,14 @@ public class LicenceViewServiceDelegator {
         return result;
     }
 
-    private String dealWithSvcDoc( AppSvcDocDto appSvcDocDto, Integer num) {
-        log.info(StringUtil.changeForLog("The dealWithSvcDoc start ..."));
-        String result = null;
+    private String dealWithSvcDoc(AppSvcDocDto appSvcDocDto, Integer num) {
         String svcDocId = appSvcDocDto.getSvcDocId();
-        String upFileName = appSvcDocDto.getUpFileName();
         HcsaSvcDocConfigDto entity = hcsaConfigClient.getHcsaSvcDocConfigDtoById(svcDocId).getEntity();
-        String dupForPrem = entity.getDupForPrem();
-        if (upFileName == null) {
-            appSvcDocDto.setUpFileName(entity.getDocTitle());
+        String upFileName = appSvcDocDto.getUpFileName();
+        if (upFileName != null && entity != null) {
+            entity.setDocTitle(upFileName);
         }
-        String dupForPerson = entity.getDupForPerson();
-        log.info(StringUtil.changeForLog("The dealWithSvcDoc svcDocId -->:" + svcDocId));
-        log.info(StringUtil.changeForLog("The dealWithSvcDoc dupForPrem -->:" + dupForPrem));
-        log.info(StringUtil.changeForLog("The dealWithSvcDoc dupForPerson -->:" + dupForPerson));
-        if (dupForPerson == null && "0".equals(dupForPrem)) {
-            result = appSvcDocDto.getUpFileName();
-        } else if (dupForPerson != null && "0".equals(dupForPrem)) {
-            if (ApplicationConsts.DUP_FOR_PERSON_CGO.equals(dupForPerson)) {
-                result = HcsaConsts.CLINICAL_GOVERNANCE_OFFICER + " " + num + ": " + appSvcDocDto.getUpFileName();
-            } else if (ApplicationConsts.DUP_FOR_PERSON_PO.equals(dupForPerson)) {
-                result = HcsaConsts.PRINCIPAL_OFFICER + " " + num + ": " + appSvcDocDto.getUpFileName();
-            } else if (ApplicationConsts.DUP_FOR_PERSON_DPO.equals(dupForPerson)) {
-                result = HcsaConsts.NOMINEE + " " + num + ": " + appSvcDocDto.getUpFileName();
-            } else if (ApplicationConsts.DUP_FOR_PERSON_MAP.equals(dupForPerson)) {
-                result = HcsaConsts.MEDALERT_PERSON + " " + num + ": " + appSvcDocDto.getUpFileName();
-            } else if (ApplicationConsts.DUP_FOR_PERSON_SVCPSN.equals(dupForPerson)) {
-                result = HcsaConsts.SERVICE_PERSONNEL + " " + num + ": " + appSvcDocDto.getUpFileName();
-            } else if (ApplicationConsts.DUP_FOR_PERSON_CD.equals(dupForPerson)) {
-                result = HcsaConsts.CLINICAL_DIRECTOR_BE + " " + num + ": " + appSvcDocDto.getUpFileName();
-            }
-        } else if (dupForPerson != null && "1".equals(dupForPrem)) {
-            if (ApplicationConsts.DUP_FOR_PERSON_CGO.equals(dupForPerson)) {
-                result = ApplicationConsts.TITLE_MODE_OF_SVCDLVY + " 1: " + HcsaConsts.CLINICAL_GOVERNANCE_OFFICER + " "
-                        + num + ": " + appSvcDocDto.getUpFileName();
-            } else if (ApplicationConsts.DUP_FOR_PERSON_PO.equals(dupForPerson)) {
-                result = ApplicationConsts.TITLE_MODE_OF_SVCDLVY + " 1: " + HcsaConsts.PRINCIPAL_OFFICER + " "
-                        + num + ":" + " " + appSvcDocDto.getUpFileName();
-            } else if (ApplicationConsts.DUP_FOR_PERSON_DPO.equals(dupForPerson)) {
-                result = ApplicationConsts.TITLE_MODE_OF_SVCDLVY + " 1: " + HcsaConsts.NOMINEE + " "
-                        + num + ": " + appSvcDocDto.getUpFileName();
-            } else if (ApplicationConsts.DUP_FOR_PERSON_MAP.equals(dupForPerson)) {
-                result = ApplicationConsts.TITLE_MODE_OF_SVCDLVY + " 1: " + HcsaConsts.MEDALERT_PERSON + " "
-                        + num + ": " + appSvcDocDto.getUpFileName();
-            } else if (ApplicationConsts.DUP_FOR_PERSON_SVCPSN.equals(dupForPerson)) {
-                result = ApplicationConsts.TITLE_MODE_OF_SVCDLVY + " 1: " + HcsaConsts.SERVICE_PERSONNEL + " "
-                        + num + ": " + appSvcDocDto.getUpFileName();
-            } else if (ApplicationConsts.DUP_FOR_PERSON_CD.equals(dupForPerson)) {
-                result = ApplicationConsts.TITLE_MODE_OF_SVCDLVY + " 1: " + HcsaConsts.CLINICAL_DIRECTOR_BE + " "
-                        + num + ": " + appSvcDocDto.getUpFileName();
-            }
-
-        } else if (dupForPerson == null && "1".equals(dupForPrem)) {
-            result = ApplicationConsts.TITLE_MODE_OF_SVCDLVY + "  1: " + appSvcDocDto.getUpFileName();
-        }
-        log.info(StringUtil.changeForLog("The dealWithSvcDoc end..."));
-        return result;
+        return ApplicationHelper.getDocDisplayTitle(entity, num);
     }
 
     private void docDealWith(Map<String, List<AppSvcDocDto>> multipleSvcDoc,AppSvcDocDto v,String key){
