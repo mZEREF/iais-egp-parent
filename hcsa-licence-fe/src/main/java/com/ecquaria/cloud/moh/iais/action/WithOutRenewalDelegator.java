@@ -756,7 +756,9 @@ public class WithOutRenewalDelegator {
         if(appSubmissionDtos.size() == 1){
             //todo need to restore
             //validateOtherSubDto(bpc.request,false,autoGrpNo,licenseeId,appSubmissionDtos.get(0),appEditSelectDto,autoAppSubmissionDtos,noAutoAppSubmissionDtos,oldAppSubmissionDto);
-            //NewApplicationHelper.reSetAdditionalFields(appSubmissionDtos.get(0), oldAppSubmissionDto);
+            //todo delete
+            setBaseEffServiceSub(appSubmissionDtos.get(0),appEditSelectDto,noAutoAppSubmissionDtos);
+            NewApplicationHelper.reSetAdditionalFields(appSubmissionDtos.get(0), oldAppSubmissionDto);
         }else if(appSubmissionDtos.size() > 1){
             needDec = false;
             moreAppSubmissionDtoAction(appSubmissionDtos);
@@ -892,7 +894,24 @@ public class WithOutRenewalDelegator {
             appSubmissionService.updateDrafts(licenseeId,licenceIds,appSubmissionDtos.get(0).getDraftNo());
         }
     }
+    private  void setBaseEffServiceSub(AppSubmissionDto appSubmissionDto, AppEditSelectDto appEditSelectDto,List<AppSubmissionDto> noAutoAppSubmissionDtos){
+        List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
+        if(appGrpPremisesDtoList != null){
+          if(!(appEditSelectDto.isChangePremiseAutoFields() && !appEditSelectDto.isChangeHciName()
+                  && !appEditSelectDto.isChangeInLocation() && !appEditSelectDto.isChangeAddFloorUnit()) && appEditSelectDto.isPremisesEdit()) {
+                List<AppSubmissionDto> submissionDtos = requestForChangeService.getAlginAppSubmissionDtos(
+                        appSubmissionDto.getLicenceId(), true);
+                if (IaisCommonUtils.isNotEmpty(submissionDtos)) {
+                    boolean parallel = submissionDtos.size() >= RfcConst.DFT_MIN_PARALLEL_SIZE;
+                    StreamSupport.stream(submissionDtos.spliterator(), parallel)
+                            .forEach(dto -> requestForChangeService.checkAffectedAppSubmissions(dto, null,100.0d , appSubmissionDto.getDraftNo(),  appSubmissionDto.getAppGrpNo(),
+                                    appEditSelectDto, null));
+                    noAutoAppSubmissionDtos.addAll(submissionDtos);
+                }
+            }
 
+        }
+    }
     private void setMustRenewData( List<AppSubmissionDto> appSubmissionDtos,String licenseeId,AppEditSelectDto appEditSelectDto){
         for (AppSubmissionDto appSubmissionDto : appSubmissionDtos) {
             if(StringUtil.isEmpty(appSubmissionDto.getAppGrpNo())){
