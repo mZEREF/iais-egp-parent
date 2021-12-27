@@ -33,13 +33,7 @@
 
                         <hr>
 
-                        <iais:row>
-                            <iais:field width="4" value="AR Centre" />
-                            <iais:value width="4" cssClass="col-md-4">
-                                <iais:select name="arCentre" id="arCentre" firstOption="Please Select" options="arCentreSelectOption"
-                                             value="${arEnquiryDonorSampleFilterDto.arCentre}"  />
-                            </iais:value>
-                        </iais:row>
+
                         <iais:row>
                             <iais:field width="4" value="Donor Sample Code"/>
                             <iais:value width="4" cssClass="col-md-4" >

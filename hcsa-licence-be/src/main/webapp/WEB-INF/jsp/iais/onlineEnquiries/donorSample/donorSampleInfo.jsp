@@ -147,22 +147,27 @@
                                                                 padding-left: 8px;
                                                                 padding-right: 10px;
                                                             }
+                                                            .form-horizontal p {
+                                                                line-height: 23px;
+                                                            }
                                                         </style>
                                                         <tr>
                                                             <td style="vertical-align:middle;">
-                                                                <c:out value="${donorSampleAge.age}"/>
-                                                                <c:if test="${(donorSampleAge.age>40 or donorSampleAge.age<21) && (donorInfoDataSubmissionDto.donorSampleDto.sampleType == 'DST003')}">
-                                                                    <a class="donor-tooltip styleguide-tooltip flag2" href="javascript:void(0);"
-                                                                       data-toggle="tooltip"
-                                                                       data-html="true"
-                                                                       title="&lt;p&gt;<iais:message key="DS_ERR044"/>&lt;/p&gt;">!</a>
-                                                                </c:if>
-                                                                <c:if test="${(donorSampleAge.age>35 or donorSampleAge.age<21) && (donorInfoDataSubmissionDto.donorSampleDto.sampleType == 'DST001' || donorInfoDataSubmissionDto.donorSampleDto.sampleType == 'DST002')}">
-                                                                    <a class="donor-tooltip styleguide-tooltip flag2" href="javascript:void(0);"
-                                                                       data-toggle="tooltip"
-                                                                       data-html="true"
-                                                                       title="&lt;p&gt;<iais:message key="DS_ERR045"/>&lt;/p&gt;">!</a>
-                                                                </c:if>
+                                                                <p style="width: 65px;">
+                                                                    <c:out value="${donorSampleAge.age}"/>
+                                                                    <c:if test="${(donorSampleAge.age>40 or donorSampleAge.age<21) && (donorInfoDataSubmissionDto.donorSampleDto.sampleType == 'DST003')}">
+                                                                        <a class="donor-tooltip styleguide-tooltip flag2" style="float: right" href="javascript:void(0);"
+                                                                           data-toggle="tooltip"
+                                                                           data-html="true"
+                                                                           title="&lt;p&gt;<iais:message key="DS_ERR044"/>&lt;/p&gt;">!</a>
+                                                                    </c:if>
+                                                                    <c:if test="${(donorSampleAge.age>35 or donorSampleAge.age<21) && (donorInfoDataSubmissionDto.donorSampleDto.sampleType == 'DST001' || donorInfoDataSubmissionDto.donorSampleDto.sampleType == 'DST002')}">
+                                                                        <a class="donor-tooltip styleguide-tooltip flag2" style="float: right" href="javascript:void(0);"
+                                                                           data-toggle="tooltip"
+                                                                           data-html="true"
+                                                                           title="&lt;p&gt;<iais:message key="DS_ERR045"/>&lt;/p&gt;">!</a>
+                                                                    </c:if>
+                                                                </p>
                                                             </td>
                                                             <td style="vertical-align:middle;">
                                                                 <iais:code code="${donorSampleAge.status}"/>

@@ -555,7 +555,7 @@
 				left join premises dds2p on dds2.SAMPLE_FROM_HCI_CODE =dds2p.HCI_CODE and  dds2p.CREATED_DT =(select max(CREATED_DT) from premises where HCI_CODE =dds2.SAMPLE_FROM_HCI_CODE)
                 left JOIN lic_premises dds2lp on dds2lp.PREMISES_ID =dds2p.ID
 
-                where 1=1
+                where dc.CYCLE_TYPE ='DSCL_003'
             <#if arCentre??> AND  dc.HCI_CODE = :arCentre </#if>
             <#if donorSampleCode??> AND  charindex(:donorSampleCode, dds2.DONOR_SAMPLE_CODE) >0</#if>
             <#if sampleType??> AND  charindex(:sampleType, dds2.SAMPLE_TYPE) >0</#if>
