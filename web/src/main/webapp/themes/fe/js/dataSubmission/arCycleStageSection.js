@@ -60,8 +60,10 @@ function showEnhancedCounsellingTipNo(){
 
 function toggleOnSelectNoSelect(sel, value, area){
     var valueK = $(sel).val();
-    if(valueK != '' && valueK != value){
+    if(valueK != null && valueK != '' && valueK != value){
         toggleOnSelect(sel,valueK,area);
+    }else {
+        toggleOnSelect(sel,'-1',area);
     }
 }
 
