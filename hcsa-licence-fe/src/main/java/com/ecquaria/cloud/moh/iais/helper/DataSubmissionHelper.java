@@ -683,15 +683,10 @@ public final class DataSubmissionHelper {
     public static String setCurrentAction(String dsType, HttpServletRequest request) {
         String actionType;
         DsConfig currentConfig = DsConfigHelper.getCurrentConfig(dsType, request);
-        if (1 == currentConfig.getSeqNo()) {
-            actionType = "return";
+        if (currentConfig != null) {
+            actionType = currentConfig.getCode();
         } else {
-            DsConfig config = DsConfigHelper.setPreviousActiveConfig(dsType, request);
-            if (config == null) {
-                actionType = "return";
-            } else {
-                actionType = config.getCode();
-            }
+            actionType = "return";
         }
         return actionType;
     }
