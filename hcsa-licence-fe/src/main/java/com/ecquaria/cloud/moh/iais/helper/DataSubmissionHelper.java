@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.helper;
 
+import com.ecquaria.cloud.helper.SpringContextHelper;
 import com.ecquaria.cloud.moh.iais.common.annotation.ExcelProperty;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmissionConsts;
@@ -22,11 +23,13 @@ import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant;
 import com.ecquaria.cloud.moh.iais.dto.FileErrorMsg;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
+import com.ecquaria.cloud.moh.iais.service.datasubmission.ArDataSubmissionService;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.io.File;
+import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.util.Collections;
 import java.util.Iterator;
@@ -81,6 +84,7 @@ public final class DataSubmissionHelper {
     }
 
     public static void setCurrentArDataSubmission(ArSuperDataSubmissionDto arSuperDataSubmissionDto, HttpServletRequest request) {
+        DataSubmissionHelper.setArPremisesMap(request);
         ParamUtil.setSessionAttr(request, DataSubmissionConstant.AR_DATA_SUBMISSION, arSuperDataSubmissionDto);
     }
 
@@ -702,4 +706,14 @@ public final class DataSubmissionHelper {
         return actionType;
     }
 
+    public static Map<String, PremisesDto> setArPremisesMap(HttpServletRequest request){
+        Map<String, PremisesDto> premisesMap = ( Map<String, PremisesDto>) ParamUtil.getSessionAttr(request,DataSubmissionConstant.AR_PREMISES_MAP);
+        if(IaisCommonUtils.isEmpty(premisesMap)){
+            LoginContext loginContext = DataSubmissionHelper.getLoginContext(request);
+            String licenseeId =  loginContext != null ? loginContext.getLicenseeId() : null;
+            premisesMap = SpringContextHelper.getContext().getBean( ArDataSubmissionService.class).getArCenterPremises(licenseeId);
+            ParamUtil.setSessionAttr(request,DataSubmissionConstant.AR_PREMISES_MAP, (Serializable) premisesMap);
+        }
+        return premisesMap;
+    }
 }

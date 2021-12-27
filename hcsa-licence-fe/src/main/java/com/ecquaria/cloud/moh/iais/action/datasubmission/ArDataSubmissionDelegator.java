@@ -68,14 +68,8 @@ public class ArDataSubmissionDelegator {
         ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.CURRENT_PAGE_STAGE, "ar-submission");
         Map<String, PremisesDto> premisesMap =
                 (Map<String, PremisesDto>) bpc.request.getSession().getAttribute(DataSubmissionConstant.AR_PREMISES_MAP);
-        if (premisesMap == null || premisesMap.isEmpty()) {
-            LoginContext loginContext = DataSubmissionHelper.getLoginContext(bpc.request);
-            String licenseeId = null;
-            if (loginContext != null) {
-                licenseeId = loginContext.getLicenseeId();
-            }
-            premisesMap = arDataSubmissionService.getArCenterPremises(licenseeId);
-            bpc.request.getSession().setAttribute(DataSubmissionConstant.AR_PREMISES_MAP, premisesMap);
+        if (IaisCommonUtils.isEmpty(premisesMap)) {
+            premisesMap = DataSubmissionHelper.setArPremisesMap(bpc.request);
         }
         if (premisesMap.isEmpty()) {
             Map<String, String> map = IaisCommonUtils.genNewHashMap(2);
