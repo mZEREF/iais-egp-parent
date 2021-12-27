@@ -1,6 +1,6 @@
 $(document).ready(function (){
     toggleOnSelect("#mainIndication",'AR_MI_013', 'mainIndicationOtherRow');
-    toggleOnSelect("#totalPreviouslyPreviously",'21', 'totalNumberARCOtherRow');
+    toggleOnSelectNoSelect("#totalPreviouslyPreviously",'21', 'totalNumberARCOtherRow');
     if($("#usedDonorOocyteRadioYes").is(':checked')){
         showUsedDonorOocyteControlClass(0);
     }else {
@@ -55,6 +55,13 @@ function enhancedCounsellingTipClose(){
 function showEnhancedCounsellingTipNo(){
     if($("#enhancedCounsellingRadioNo").is(':checked')){
         $('#enhancedCounsellingTip').modal('show');
+    }
+}
+
+function toggleOnSelectNoSelect(sel, value, area){
+    var valueK = $(sel).val();
+    if(valueK != '' && valueK != value){
+        toggleOnSelect(sel,valueK,area);
     }
 }
 

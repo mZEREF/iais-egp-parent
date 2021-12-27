@@ -147,7 +147,7 @@
                            data-original-title="">i</a>
                     </label>
                         <iais:value width="7" cssClass="col-md-7">
-                            <iais:select name="totalPreviouslyPreviously" options="numberArcPreviouslyDropDown" firstOption="Please Select" value="${arCycleStageDto.totalPreviouslyPreviously}"  onchange ="toggleOnSelect(this, '21', 'totalNumberARCOtherRow')"/>
+                            <iais:select name="totalPreviouslyPreviously" options="numberArcPreviouslyDropDown" firstOption="Please Select" value="${arCycleStageDto.totalPreviouslyPreviously}"  onchange ="toggleOnSelectNoSelect(this, '21', 'totalNumberARCOtherRow')"/>
                         </iais:value>
                 </iais:row>
 

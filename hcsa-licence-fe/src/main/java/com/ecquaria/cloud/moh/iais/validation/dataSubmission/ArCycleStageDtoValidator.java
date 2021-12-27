@@ -32,7 +32,7 @@ public class ArCycleStageDtoValidator implements CustomizeValidator {
         ArSuperDataSubmissionDto arSuperDataSubmissionDto = DataSubmissionHelper.getCurrentArDataSubmission(request);
         ArCycleStageDto arCycleStageDto = arSuperDataSubmissionDto.getArCycleStageDto();
 
-        if(arCycleStageDto.getTotalPreviouslyPreviously() != null && arCycleStageDto.getTotalPreviouslyPreviously() == 21 && StringUtil.isEmpty(arCycleStageDto.getCyclesUndergoneOverseas())){
+        if(arCycleStageDto.getTotalPreviouslyPreviously() != null && arCycleStageDto.getTotalPreviouslyPreviously() != 21 && StringUtil.isEmpty(arCycleStageDto.getCyclesUndergoneOverseas())){
             errorMap.put("cyclesUndergoneOverseas" ,"GENERAL_ERR0006");
         }
 
