@@ -246,8 +246,8 @@ public class PageDataCopyUtil {
         }
         return appPremEventPeriodDtoList;
     }
-    public static List<AppPremisesOperationalUnitDto> copyAppPremisesOperationalUnitDto(List<AppPremisesOperationalUnitDto> appPremisesOperationalUnitDtos){
 
+    public static List<AppPremisesOperationalUnitDto> copyAppPremisesOperationalUnitDto(List<AppPremisesOperationalUnitDto> appPremisesOperationalUnitDtos){
         List<AppPremisesOperationalUnitDto> list= IaisCommonUtils.genNewArrayList();
         for(AppPremisesOperationalUnitDto appPremisesOperationalUnitDto : appPremisesOperationalUnitDtos){
             AppPremisesOperationalUnitDto operationalUnitDto=new AppPremisesOperationalUnitDto();
@@ -257,8 +257,8 @@ public class PageDataCopyUtil {
         }
         return list;
     }
-    public static List<AppGrpPrimaryDocDto> copyGrpPrimaryDoc(List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtos){
 
+    public static List<AppGrpPrimaryDocDto> copyGrpPrimaryDoc(List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtos){
         if(appGrpPrimaryDocDtos==null){
             return new ArrayList<>();
         }
