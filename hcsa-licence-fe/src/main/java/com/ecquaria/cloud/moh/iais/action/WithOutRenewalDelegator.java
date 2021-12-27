@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.RedirectUtil;
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.helper.ConfigHelper;
 import com.ecquaria.cloud.moh.iais.api.config.GatewayConstants;
 import com.ecquaria.cloud.moh.iais.api.services.GatewayAPI;
 import com.ecquaria.cloud.moh.iais.api.services.GatewayNetsAPI;
@@ -754,10 +755,11 @@ public class WithOutRenewalDelegator {
         String autoGrpNo = appSubmissionService.getGroupNo(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
 
         if(appSubmissionDtos.size() == 1){
-            //todo need to restore
-            //validateOtherSubDto(bpc.request,false,autoGrpNo,licenseeId,appSubmissionDtos.get(0),appEditSelectDto,autoAppSubmissionDtos,noAutoAppSubmissionDtos,oldAppSubmissionDto);
-            //todo delete
-            setBaseEffServiceSub(appSubmissionDtos.get(0),appEditSelectDto,noAutoAppSubmissionDtos);
+            if(ConfigHelper.getBoolean("halp.rfc.split.flag",false)){
+                setBaseEffServiceSub(appSubmissionDtos.get(0),appEditSelectDto,noAutoAppSubmissionDtos);
+            }else {
+                validateOtherSubDto(bpc.request,false,autoGrpNo,licenseeId,appSubmissionDtos.get(0),appEditSelectDto,autoAppSubmissionDtos,noAutoAppSubmissionDtos,oldAppSubmissionDto);
+            }
             NewApplicationHelper.reSetAdditionalFields(appSubmissionDtos.get(0), oldAppSubmissionDto);
         }else if(appSubmissionDtos.size() > 1){
             needDec = false;
@@ -899,17 +901,21 @@ public class WithOutRenewalDelegator {
         if(appGrpPremisesDtoList != null){
           if(!(appEditSelectDto.isChangePremiseAutoFields() && !appEditSelectDto.isChangeHciName()
                   && !appEditSelectDto.isChangeInLocation() && !appEditSelectDto.isChangeAddFloorUnit()) && appEditSelectDto.isPremisesEdit()) {
-                List<AppSubmissionDto> submissionDtos = requestForChangeService.getAlginAppSubmissionDtos(
-                        appSubmissionDto.getLicenceId(), true);
-                if (IaisCommonUtils.isNotEmpty(submissionDtos)) {
-                    boolean parallel = submissionDtos.size() >= RfcConst.DFT_MIN_PARALLEL_SIZE;
-                    StreamSupport.stream(submissionDtos.spliterator(), parallel)
-                            .forEach(dto -> requestForChangeService.checkAffectedAppSubmissions(dto, null,100.0d , appSubmissionDto.getDraftNo(),  appSubmissionDto.getAppGrpNo(),
-                                    appEditSelectDto, null));
-                    noAutoAppSubmissionDtos.addAll(submissionDtos);
-                }
+              setBaseEffServiceSubInNoAutoAppSubmissionDtos(appSubmissionDto,appEditSelectDto,noAutoAppSubmissionDtos);
             }
 
+        }
+    }
+
+    private void setBaseEffServiceSubInNoAutoAppSubmissionDtos(AppSubmissionDto appSubmissionDto, AppEditSelectDto appEditSelectDto,List<AppSubmissionDto> noAutoAppSubmissionDtos){
+        List<AppSubmissionDto> submissionDtos = requestForChangeService.getAlginAppSubmissionDtos(
+                appSubmissionDto.getLicenceId(), true);
+        if (IaisCommonUtils.isNotEmpty(submissionDtos)) {
+            boolean parallel = submissionDtos.size() >= RfcConst.DFT_MIN_PARALLEL_SIZE;
+            StreamSupport.stream(submissionDtos.spliterator(), parallel)
+                    .forEach(dto -> requestForChangeService.checkAffectedAppSubmissions(dto, null,100.0d , appSubmissionDto.getDraftNo(),  appSubmissionDto.getAppGrpNo(),
+                            appEditSelectDto, null));
+            noAutoAppSubmissionDtos.addAll(submissionDtos);
         }
     }
     private void setMustRenewData( List<AppSubmissionDto> appSubmissionDtos,String licenseeId,AppEditSelectDto appEditSelectDto){
@@ -1557,15 +1563,7 @@ public class WithOutRenewalDelegator {
                     }
                 }
             }else if(appEditSelectDto.isPremisesEdit()) {
-                List<AppSubmissionDto> submissionDtos = requestForChangeService.getAlginAppSubmissionDtos(
-                        appSubmissionDto.getLicenceId(), true);
-                if (IaisCommonUtils.isNotEmpty(submissionDtos)) {
-                    boolean parallel = submissionDtos.size() >= RfcConst.DFT_MIN_PARALLEL_SIZE;
-                    StreamSupport.stream(submissionDtos.spliterator(), parallel)
-                            .forEach(dto -> requestForChangeService.checkAffectedAppSubmissions(dto, null,100.0d , appSubmissionDto.getDraftNo(),  appSubmissionDto.getAppGrpNo(),
-                                    appEditSelectDto, null));
-                    noAutoAppSubmissionDtos.addAll(submissionDtos);
-                }
+                setBaseEffServiceSubInNoAutoAppSubmissionDtos(appSubmissionDto,appEditSelectDto,noAutoAppSubmissionDtos);
             }
 
             log.info(StringUtil.changeForLog("---- premisesEdit autoAppSubmissionDtos size :" + autoAppSubmissionDtos.size()));
