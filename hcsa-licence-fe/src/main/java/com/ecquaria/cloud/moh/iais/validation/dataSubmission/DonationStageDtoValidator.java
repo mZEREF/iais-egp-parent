@@ -121,7 +121,7 @@ public class DonationStageDtoValidator implements CustomizeValidator {
         }else if(DataSubmissionConsts.DONATION_REASON_OTHERS.equals(donationStageDto.getDonationReason())){
             if(StringUtil.isEmpty(donationStageDto.getOtherDonationReason())){
                 errorMap.put("otherDonationReason", errMsgErr006);
-            }if(donationStageDto.getOtherDonationReason().length()>100){
+            }else if(donationStageDto.getOtherDonationReason().length()>100){
                 Map<String, String> repMap=IaisCommonUtils.genNewHashMap();
                 repMap.put("number","100");
                 repMap.put("fieldNo","Field");
