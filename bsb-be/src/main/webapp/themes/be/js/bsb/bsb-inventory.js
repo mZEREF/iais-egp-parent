@@ -61,9 +61,10 @@ function doSearch() {
         $("#mainForm").submit();
     }
 }
-function doHisInfo() {
+function doHisInfo(keyVal) {
     showWaiting();
     $("[name='action_type']").val("adjust");
+    $("#historyKey").val(keyVal);
     $("#mainForm").submit();
 }
 

@@ -54,15 +54,19 @@
                                 </div>
                             </iais:row>
                             <iais:row>
-                                <iais:field value="Date of Transaction From"/>
+                                <div class="col-sm-5 col-md-4 control-label">
+                                    <label for="transactionDateTo">Date of Transaction From</label>
+                                </div>
                                 <div class="col-sm-7 col-md-4 col-xs-10">
-                                    <iais:datePicker name = "transactionDateFrom" dateVal="${inventoryParam.transactionDtFrom}"></iais:datePicker>
+                                    <input type="text" autocomplete="off" name="transactionDateFrom" id="transactionDateFrom" data-date-start-date="01/01/1900"  placeholder="dd/mm/yyyy" maxlength="10" value="${inventoryParam.transactionDtFrom}" class="date_picker form-control" />
                                 </div >
                             </iais:row>
                             <iais:row>
-                                <iais:field value="Date of Transaction To"/>
+                               <div class="col-sm-5 col-md-4 control-label">
+                                   <label for="transactionDateTo">Date of Transaction To</label>
+                               </div>
                                 <div class="col-sm-7 col-md-4 col-xs-10">
-                                    <iais:datePicker name = "transactionDateTo" dateVal="${inventoryParam.transactionDtTo}"></iais:datePicker>
+                                    <input type="text" autocomplete="off" name="transactionDateTo" id="transactionDateTo" data-date-start-date="01/01/1900"  placeholder="dd/mm/yyyy" maxlength="10" value="${inventoryParam.transactionDtTo}" class="date_picker form-control" />
                                 </div >
                             </iais:row>
                             <iais:row>
@@ -97,13 +101,13 @@
                                 <iais:row>
                                     <iais:field value="Sending Facility "/>
                                     <div class="col-sm-7 col-md-4 col-xs-10">
-                                        <iais:select name="sendFacility" options="sendingFacility" value="${inventoryParam.sendFacility}" firstOption="Please Select"></iais:select>
+                                        <iais:select name="sendFacility" options="facilityNameOps" value="${inventoryParam.sendFacility}" firstOption="Please Select"></iais:select>
                                     </div>
                                 </iais:row>
                                 <iais:row>
                                     <iais:field value="Receiving Facility"/>
                                     <div class="col-sm-7 col-md-4 col-xs-10">
-                                        <iais:select name="recFacility" options="receivingFacility" value="${inventoryParam.recFacility}" firstOption="Please Select"></iais:select>
+                                        <iais:select name="recFacility" options="facilityNameOps" value="${inventoryParam.recFacility}" firstOption="Please Select"></iais:select>
                                     </div>
                                 </iais:row>
                                 <iais:row>

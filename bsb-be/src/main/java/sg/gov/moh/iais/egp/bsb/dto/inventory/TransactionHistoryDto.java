@@ -4,29 +4,28 @@ import lombok.Data;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.Date;
 
 /**
  *@author YiMing
  * @version 2021/10/15 14:16
  **/
+
 @Data
 public class TransactionHistoryDto implements Serializable {
-    private static final long serialVersionUID = 1L;
 
-    private String biologicalAgent;
+    private String bat;
 
-    private String typeOfTransfer;
+    private String transferType;
 
-    private BigDecimal quantityTransferred;
+    private BigDecimal transferredQTY;
 
-    private String sendingFacility;
+    private String sendFacility;
 
-    private String receivingFacility;
+    private String recFacility;
 
-    private Date dateOfTransfer;
+    private String transferDate;
 
-    private Date expectedArrivalTimeAtReceivingFacility;
+    private String exceptedArrivalDate;
 
-    private String nameOfCourierOfServiceProvider;
+    private String providerName;
 }

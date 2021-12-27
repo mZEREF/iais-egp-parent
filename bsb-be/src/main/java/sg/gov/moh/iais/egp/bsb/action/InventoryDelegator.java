@@ -2,22 +2,22 @@ package sg.gov.moh.iais.egp.bsb.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
+import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
+import io.jsonwebtoken.lang.Assert;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 import sg.gov.moh.iais.egp.bsb.client.InventoryClient;
-import sg.gov.moh.iais.egp.bsb.dto.inventory.InventoryAgentResultDto;
-import sg.gov.moh.iais.egp.bsb.dto.inventory.InventoryDtResultDto;
-import sg.gov.moh.iais.egp.bsb.dto.inventory.InventoryDto;
+import sg.gov.moh.iais.egp.bsb.dto.inventory.*;
 import sg.gov.moh.iais.egp.bsb.entity.DataSubmissionBat;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
 import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * AUTHOR: YiMing
@@ -28,10 +28,12 @@ import java.util.List;
 public class InventoryDelegator {
     private static final String KEY_ENQUIRY_SEARCH_DTO = "inventoryDto";
     private static final String PARAM_INVENTORY_RESULT = "inventoryResult";
+    private static final String PARAM_INVENTORY_RESULT_MAP = "inventoryMap";
     private static final String PARAM_INVENTORY_PARAM = "inventoryParam";
-    private static final String PARAM_BIO_ID_MAP = "bioIdMap";
     private static final String PARAM_SEARCH_CHK = "searchChk";
     private static final String PARAM_COUNT  = "count";
+    private static final String PARAM_KEY  = "key";
+    private static final String PARAM_HISTORY_KEY = "historyKey";
     private static final String KEY_PAGE_INFO = "pageInfo";
     private static final String KEY_ACTION_VALUE = "action_value";
     private static final String KEY_ACTION_ADDT = "action_additional";
@@ -129,17 +131,18 @@ public class InventoryDelegator {
 
      if("agent".equals(count)){
          InventoryAgentResultDto dto =  inventoryClient.findInventoryByAgentInfo(inventoryDto).getEntity();
-         List<DataSubmissionBat> dataSubmissionBats = dto.getBsbAgent();
+         List<BatResultDto> dataSubmissionBats = dto.getBsbAgent();
+         ParamUtil.setSessionAttr(request,PARAM_INVENTORY_RESULT_MAP,new HashMap<>(dto.retrieveMap()));
          ParamUtil.setRequestAttr(request,PARAM_INVENTORY_RESULT,dataSubmissionBats);
          ParamUtil.setRequestAttr(request,PARAM_INVENTORY_PARAM,inventoryDto);
-         ParamUtil.setRequestAttr(request,PARAM_BIO_ID_MAP,dto.getBioIdMap());
          ParamUtil.setRequestAttr(request, KEY_PAGE_INFO, dto.getPageInfo());
      }else if("date".equals(count)){
          InventoryDtResultDto dto = inventoryClient.findInventoryByDt(inventoryDto).getEntity();
-         List<DataSubmissionBat> dataSubmissionBats = dto.getBsbDt();
+         dto.retrieveMap();
+         List<DateResultDto> dataSubmissionBats = dto.getBsbDt();
+         ParamUtil.setSessionAttr(request,PARAM_INVENTORY_RESULT_MAP,new HashMap<>(dto.retrieveMap()));
          ParamUtil.setRequestAttr(request,PARAM_INVENTORY_RESULT,dataSubmissionBats);
          ParamUtil.setRequestAttr(request,PARAM_INVENTORY_PARAM,inventoryDto);
-         ParamUtil.setRequestAttr(request,PARAM_BIO_ID_MAP,dto.getBioIdMap());
          ParamUtil.setRequestAttr(request, KEY_PAGE_INFO, dto.getPageInfo());
      }
 
@@ -149,9 +152,22 @@ public class InventoryDelegator {
      * AutoStep: preHistoryData
      */
     public void preHistoryData(BaseProcessClass bpc) {
+        HttpServletRequest request = bpc.request;
         String count = ParamUtil.getString(bpc.request, "searchChk");
         ParamUtil.setSessionAttr(bpc.request, "count", count);
         preSelectOption(bpc.request);
+        String maskedHistoryKey = ParamUtil.getString(request,PARAM_HISTORY_KEY);
+        Assert.hasLength(maskedHistoryKey);
+        String historyKey = MaskUtil.unMaskValue(PARAM_KEY,maskedHistoryKey);
+        if(StringUtils.hasLength(historyKey) && !historyKey.equals(maskedHistoryKey)){
+            if("agent".equals(count)){
+                Map<String,BatResultDto>  dtoMap = (Map<String, BatResultDto>) ParamUtil.getSessionAttr(request,PARAM_INVENTORY_RESULT_MAP);
+                ParamUtil.setRequestAttr(request,"historyDto",dtoMap.get(historyKey).getTransactionHistoryDto());
+            }else if("date".equals(count)){
+                Map<String,DateResultDto>  dtoMap = (Map<String, DateResultDto>) ParamUtil.getSessionAttr(request,PARAM_INVENTORY_RESULT_MAP);
+                ParamUtil.setRequestAttr(request,"historyDto",dtoMap.get(historyKey).getTransactionHistoryDto());
+            }
+        }
     }
 
     /**
@@ -175,9 +191,22 @@ public class InventoryDelegator {
      * AutoStep: preBasicList
      */
     public void preBasicList(BaseProcessClass bpc) {
-        String count = ParamUtil.getString(bpc.request, "searchChk");
-        ParamUtil.setSessionAttr(bpc.request, "count", count);
-        preSelectOption(bpc.request);
+        HttpServletRequest request =  bpc.request;
+        String count = ParamUtil.getString(request ,"searchChk");
+        ParamUtil.setSessionAttr(request, "count", count);
+        preSelectOption(request);
+        String maskedHistoryKey = ParamUtil.getString(request,PARAM_HISTORY_KEY);
+        Assert.hasLength(maskedHistoryKey);
+        String historyKey = MaskUtil.unMaskValue(PARAM_KEY,maskedHistoryKey);
+        if(StringUtils.hasLength(historyKey) && !historyKey.equals(maskedHistoryKey)){
+            if("agent".equals(count)){
+                Map<String,BatResultDto>  dtoMap = (Map<String, BatResultDto>) ParamUtil.getSessionAttr(request,PARAM_INVENTORY_RESULT_MAP);
+                ParamUtil.setRequestAttr(request,"historyDto",dtoMap.get(historyKey).getTransactionHistoryDto());
+            }else if("date".equals(count)){
+                Map<String,DateResultDto>  dtoMap = (Map<String, DateResultDto>) ParamUtil.getSessionAttr(request,PARAM_INVENTORY_RESULT_MAP);
+                ParamUtil.setRequestAttr(request,"historyDto",dtoMap.get(historyKey).getTransactionHistoryDto());
+            }
+        }
     }
 
     /**
@@ -199,11 +228,23 @@ public class InventoryDelegator {
         ParamUtil.setRequestAttr(request, name, selectModel);
     }
 
+    public void selectDtOption(HttpServletRequest request, String name,List<FacilityDto> facilityDtoList){
+        List<SelectOption> selectModel = new ArrayList<>(facilityDtoList.size());
+        if(!CollectionUtils.isEmpty(facilityDtoList)){
+            for (FacilityDto dto : facilityDtoList) {
+                selectModel.add(new SelectOption(dto.getFacId(),dto.getFacName()));
+            }
+        }
+        ParamUtil.setRequestAttr(request,name,selectModel);
+    }
+
     public void preSelectOption(HttpServletRequest request) {
-        List<String> facNames = inventoryClient.queryDistinctFN().getEntity();
-        selectOption(request, KEY_FACILITY_NAME, facNames);
+        List<FacilityDto> facilityInfo = inventoryClient.queryAllFacilityInfo();
+        List<String> facName = facilityInfo.stream().map(FacilityDto::getFacName).collect(Collectors.toList());
+        selectOption(request, KEY_FACILITY_NAME, facName);
         List<String> bioNames = inventoryClient.queryDistinctFA().getEntity();
         selectOption(request, KEY_BIOLOGICAL_NAME, bioNames);
+        selectDtOption(request,"facilityNameOps",facilityInfo);
     }
 
     private InventoryDto getSearchDto(HttpServletRequest request) {
