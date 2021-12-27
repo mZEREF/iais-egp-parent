@@ -82,5 +82,5 @@ function sourceChange(own,value,row,index){
 }
 
 function DSERR019MessageTipClose(){
-    $('#DSERR019Tip').hide();
+    $('#DSERR019Tip').modal('hide');
 }

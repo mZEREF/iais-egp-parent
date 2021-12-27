@@ -1,5 +1,6 @@
 <c:if test="${arSuperDataSubmissionDto.appType eq 'DSTY_005'}">
-<div class="panel panel-default">
+    <c:set var="dataSubmission" value="${arSuperDataSubmissionDto.dataSubmissionDto}" />
+ <div class="panel panel-default">
     <div class="panel-heading">
         <h4 class="panel-title">
             <strong>
