@@ -221,7 +221,7 @@ public class FeUserManagement {
             active = "active".equals(active) ? AppConsts.COMMON_STATUS_ACTIVE : AppConsts.COMMON_STATUS_IACTIVE;
             userAttr = Optional.ofNullable(userAttr).orElseGet(() -> new FeUserDto());
             String prevIdNumber = userAttr.getIdentityNo();
-            if (!StringUtil.isEmpty(userAttr.getUenNo()) || "Create".equals(title)) {
+            if (!userAttr.isSolo() || "Create".equals(title)) {
                 userAttr.setIdType(idType);
                 userAttr.setIdentityNo(idNo);
                 userAttr.setIdNumber(idNo);
