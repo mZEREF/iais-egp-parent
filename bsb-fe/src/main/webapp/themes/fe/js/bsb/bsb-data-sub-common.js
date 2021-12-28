@@ -186,10 +186,10 @@ function removeBtnEventHandler() {
     var existId = $("#existFiles--v--"+idx).val();
     var deleteNewFiles = document.getElementById("deleteNewFiles");
     var deleteIdx = document.getElementById("deleteIdx");
-    if(existId !== ""){
+    if(existId !== "" && deleteNewFiles !== null){
         appendInputValue(deleteNewFiles,existId);
     }
-    if(secIdx !== ""){
+    if(secIdx !== "" && deleteIdx !== null){
         appendInputValue(deleteIdx,secIdx);
     }
     var meta = readSectionRepeatMetaData();

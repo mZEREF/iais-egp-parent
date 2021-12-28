@@ -100,6 +100,7 @@ public class BsbReportInventoryDelegator {
         if(Boolean.TRUE.equals(needShowError)){
             ParamUtil.setRequestAttr(request,ValidationConstants.KEY_VALIDATION_ERRORS,inventoryDto.retrieveValidationResult());
         }
+        ParamUtil.setSessionAttr(request,KEY_SUBMISSION_TYPE,KEY_DATA_SUBMISSION_TYPE_BAT_INVENTORY);
     }
 
     public void preSwitch(BaseProcessClass bpc){

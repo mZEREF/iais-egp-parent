@@ -52,7 +52,7 @@ public class PrimaryDocDto implements Serializable {
     @Data
     @NoArgsConstructor
     public static class NewDocInfo implements Serializable {
-        private String index;
+        private Integer index;
         private String tmpId;
         private String docType;
         private String filename;
