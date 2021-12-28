@@ -22,6 +22,10 @@
         -moz-border-radius: 8px;
         -webkit-border-radius: 8px;
     }
+    .table-count {
+        float: left;
+        margin-top: 5px;
+    }
 </style>
 <script type="text/javascript" src="<%=webrootCom%>js/onlineEnquiries/arPatientResults.js"></script>
 <webui:setLayout name="iais-internet"/>

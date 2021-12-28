@@ -25,6 +25,10 @@
     thead > tr > th > p {
         line-height: 33px;
     }
+    .table-count {
+        float: left;
+        margin-top: 5px;
+    }
 </style>
 <script type="text/javascript" src="<%=webrootCom%>js/onlineEnquiries/donorSearch.js"></script>
 <webui:setLayout name="iais-internet"/>

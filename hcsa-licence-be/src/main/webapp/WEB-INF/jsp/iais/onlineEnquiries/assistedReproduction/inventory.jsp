@@ -1,8 +1,3 @@
-<style>
-    thead > tr > th > p {
-        line-height: 33px;
-    }
-</style>
 <div class="col-md-12">
 
     <div class="table-gp">

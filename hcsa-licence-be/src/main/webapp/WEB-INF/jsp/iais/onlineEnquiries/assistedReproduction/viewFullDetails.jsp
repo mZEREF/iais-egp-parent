@@ -14,6 +14,14 @@
     String webrootCom=IaisEGPConstant.CSS_ROOT+IaisEGPConstant.COMMON_CSS_ROOT;
 %>
 <script type="text/javascript" src="<%=webrootCom%>js/onlineEnquiries/arViewFullDetails.js"></script>
+<style>
+    .form-horizontal p {
+        line-height: 23px;
+    }
+    thead > tr > th > p {
+        line-height: 33px;
+    }
+</style>
 <webui:setLayout name="iais-intranet"/>
 <div class="dashboard" >
     <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
@@ -70,7 +78,7 @@
                                             </div>
 
                                         </div>
-                                        <div class="row ">
+                                        <div class="tab-content row">
                                             <a href="#" onclick="javascript:doBack('${arAdv}','${arBase}');" ><em class="fa fa-angle-left"> </em> Back</a>
                                         </div>
                                     </div>

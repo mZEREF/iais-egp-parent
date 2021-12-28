@@ -141,7 +141,7 @@
                                         </c:choose>
                                     </div>
                                 </div>
-                                <div class="row ">
+                                <div class="tab-content row">
                                     <a href="#" onclick="javascript:doBack('${arViewFull}');" ><em class="fa fa-angle-left"> </em> Back</a>
                                 </div>
                                 </div>

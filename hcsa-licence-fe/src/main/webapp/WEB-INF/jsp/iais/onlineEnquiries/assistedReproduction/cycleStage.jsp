@@ -1,19 +1,3 @@
-<style>
-    .form-horizontal p {
-        line-height: 23px;
-    }
-    thead > tr > th > p {
-        line-height: 33px;
-    }
-    .table-info-display {
-        margin: 20px 15px 25px 12px;
-        background: #efefef;
-        padding: 8px;
-        border-radius: 8px;
-        -moz-border-radius: 8px;
-        -webkit-border-radius: 8px;
-    }
-</style>
 <div class="col-md-12">
     <div class="col-xs-12">
         <div class="components">

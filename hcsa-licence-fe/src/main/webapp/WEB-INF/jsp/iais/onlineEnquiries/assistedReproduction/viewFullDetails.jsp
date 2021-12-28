@@ -16,6 +16,26 @@
 <script type="text/javascript" src="<%=webrootCom%>js/onlineEnquiries/arViewFullDetails.js"></script>
 <webui:setLayout name="iais-internet"/>
 <%@include file="../../common/dashboard.jsp"%>
+<style>
+    .form-horizontal p {
+        line-height: 23px;
+    }
+    thead > tr > th > p {
+        line-height: 33px;
+    }
+    .table-info-display {
+        margin: 20px 15px 25px 12px;
+        background: #efefef;
+        padding: 8px;
+        border-radius: 8px;
+        -moz-border-radius: 8px;
+        -webkit-border-radius: 8px;
+    }
+    .table-count {
+        float: left;
+        margin-top: 5px;
+    }
+</style>
 <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
     <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
     <input type="hidden" name="preActiveHidden" id="preActiveHidden" value="${preActive}"/>
@@ -68,7 +88,7 @@
                                 </div>
 
                             </div>
-                            <div class="row ">
+                            <div class="tab-content row">
                                 <a href="#" onclick="javascript:doBack('${arAdv}','${arBase}');" ><em class="fa fa-angle-left"> </em> Back</a>
                             </div>
                         </div>
