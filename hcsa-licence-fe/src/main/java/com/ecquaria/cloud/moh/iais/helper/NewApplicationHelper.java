@@ -5040,6 +5040,15 @@ public class NewApplicationHelper {
         return srcMap;
     }
 
+    public static <T> void addToList(T t, List<T> tarList) {
+        if (t == null || tarList == null) {
+            return;
+        }
+        if (!tarList.contains(t)) {
+            tarList.add(t);
+        }
+    }
+
     public static <T> List<T> getList(List<T> srcList) {
         if (srcList == null) {
             srcList = IaisCommonUtils.genNewArrayList();
