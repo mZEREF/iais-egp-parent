@@ -6,16 +6,17 @@ import com.ecquaria.cloud.moh.iais.common.constant.dataSubmission.DataSubmission
 import com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.*;
 import com.ecquaria.cloud.moh.iais.common.helper.dataSubmission.DsConfigHelper;
+import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.common.validation.CommonValidator;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationProperty;
+import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
-import com.ecquaria.cloud.moh.iais.helper.ControllerHelper;
-import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
-import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
+import com.ecquaria.cloud.moh.iais.helper.*;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.VssDataSubmissionService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +24,7 @@ import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -113,7 +115,9 @@ public class VssDataSubmissionDelegator {
             prepareConsentParticulars(bpc.request);
         } else if (DsConfigHelper.VSS_STEP_TFSSP_PARTICULARS.equals(currentCode)) {
             prepareTfsspParticulars(bpc.request);
-        }
+        } /*else if(DsConfigHelper.VSS_STEP_PREVIEW.equals(currentCode)){
+            preparePreview(bpc.request);
+        }*/
     }
 
     /**
@@ -133,7 +137,9 @@ public class VssDataSubmissionDelegator {
             status = doConsentParticulars(bpc.request);
         } else if (DsConfigHelper.VSS_STEP_TFSSP_PARTICULARS.equals(currentCode)) {
             status = doTfsspParticulars(bpc.request);
-        }
+        } /*else if(DsConfigHelper.VSS_STEP_PREVIEW.equals(currentCode)){
+            doPreview(bpc.request);
+        }*/
         log.info(StringUtil.changeForLog(" ----- DoStep Status: " + status + " ------ "));
         String actionType = null;
         if (0 == status) {// current
@@ -155,10 +161,28 @@ public class VssDataSubmissionDelegator {
         VssTreatmentDto vssTreatmentDto = vssSuperDataSubmissionDto.getVssTreatmentDto() == null ? new VssTreatmentDto() : vssSuperDataSubmissionDto.getVssTreatmentDto();
         TreatmentDto treatmentDto = vssTreatmentDto.getTreatmentDto() == null ? new TreatmentDto() : vssTreatmentDto.getTreatmentDto();
         ControllerHelper.get(request,treatmentDto);
+        try {
+           int age= -Formatter.compareDateByDay(treatmentDto.getBirthData());
+            treatmentDto.setAge(age/365);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
         vssTreatmentDto.setTreatmentDto(treatmentDto);
         vssSuperDataSubmissionDto.setVssTreatmentDto(vssTreatmentDto);
         ParamUtil.setSessionAttr(request, DataSubmissionConstant.VSS_DATA_SUBMISSION, vssSuperDataSubmissionDto);
-        return 2;
+        Map<String,String> errMap = IaisCommonUtils.genNewHashMap();
+        String actionType = ParamUtil.getString(request, DataSubmissionConstant.CRUD_TYPE);
+        if("next".equals(actionType)){
+            ValidationResult result = WebValidationHelper.validateProperty(treatmentDto,"VSS");
+            if(result !=null){
+                errMap.putAll(result.retrieveAll());
+            }
+        }
+        if(!errMap.isEmpty()){
+            ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG,WebValidationHelper.generateJsonStr(errMap));
+            return 0;
+        }
+        return 1;
     }
 
     private void prepareConsentParticulars(HttpServletRequest request) {
@@ -172,10 +196,37 @@ public class VssDataSubmissionDelegator {
         VssTreatmentDto vssTreatmentDto = vssSuperDataSubmissionDto.getVssTreatmentDto() == null ? new VssTreatmentDto() : vssSuperDataSubmissionDto.getVssTreatmentDto();
         GuardianAppliedPartDto guardianAppliedPartDto = vssTreatmentDto.getGuardianAppliedPartDto() == null ? new GuardianAppliedPartDto() : vssTreatmentDto.getGuardianAppliedPartDto();
         ControllerHelper.get(request,guardianAppliedPartDto);
+        String appliedPartBirthday = ParamUtil.getString(request,"appliedPartBirthday");
+        String guardianBirthday = ParamUtil.getString(request,"guardianBirthday");
+        String courtOrderIssueDate = ParamUtil.getString(request,"courtOrderIssueDate");
+        try {
+            Date aDate = Formatter.parseDate(appliedPartBirthday);
+            Date gDate = Formatter.parseDate(guardianBirthday);
+            Date cDate = Formatter.parseDate(courtOrderIssueDate);
+            guardianAppliedPartDto.setAppliedPartBirthday(aDate);
+            guardianAppliedPartDto.setGuardianBirthday(gDate);
+            guardianAppliedPartDto.setCourtOrderIssueDate(cDate);
+        } catch (Exception e) {
+           e.printStackTrace();
+        }
         vssTreatmentDto.setGuardianAppliedPartDto(guardianAppliedPartDto);
         vssSuperDataSubmissionDto.setVssTreatmentDto(vssTreatmentDto);
+
         ParamUtil.setSessionAttr(request, DataSubmissionConstant.VSS_DATA_SUBMISSION, vssSuperDataSubmissionDto);
-        return 3;
+
+        Map<String,String> errMap = IaisCommonUtils.genNewHashMap();
+        String actionType = ParamUtil.getString(request, DataSubmissionConstant.CRUD_TYPE);
+        if("next".equals(actionType)){
+            ValidationResult result = WebValidationHelper.validateProperty(guardianAppliedPartDto,"VSS");
+            if(result !=null){
+                errMap.putAll(result.retrieveAll());
+            }
+        }
+        if(!errMap.isEmpty()){
+            ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG,WebValidationHelper.generateJsonStr(errMap));
+            return 0;
+        }
+        return 2;
     }
 
     private void prepareTfsspParticulars(HttpServletRequest request) {
@@ -189,12 +240,43 @@ public class VssDataSubmissionDelegator {
         VssTreatmentDto vssTreatmentDto = vssSuperDataSubmissionDto.getVssTreatmentDto() == null ? new VssTreatmentDto() : vssSuperDataSubmissionDto.getVssTreatmentDto();
         SexualSterilizationDto sexualSterilizationDto = vssTreatmentDto.getSexualSterilizationDto() == null ? new SexualSterilizationDto() : vssTreatmentDto.getSexualSterilizationDto();
         ControllerHelper.get(request,sexualSterilizationDto);
+        String operationDate = ParamUtil.getString(request,"operationDate");
+        String hecReviewDate = ParamUtil.getString(request,"hecReviewDate");
+        try {
+            Date oDate = Formatter.parseDate(operationDate);
+            Date hDate = Formatter.parseDate(hecReviewDate);
+            sexualSterilizationDto.setOperationDate(oDate);
+            sexualSterilizationDto.setHecReviewDate(hDate);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         vssTreatmentDto.setSexualSterilizationDto(sexualSterilizationDto);
         vssSuperDataSubmissionDto.setVssTreatmentDto(vssTreatmentDto);
+
         ParamUtil.setSessionAttr(request, DataSubmissionConstant.VSS_DATA_SUBMISSION, vssSuperDataSubmissionDto);
-        return 4;
+
+        Map<String,String> errMap = IaisCommonUtils.genNewHashMap();
+        String actionType = ParamUtil.getString(request, DataSubmissionConstant.CRUD_TYPE);
+        if("next".equals(actionType)){
+            ValidationResult result = WebValidationHelper.validateProperty(sexualSterilizationDto,"VSS");
+            if(result !=null){
+                errMap.putAll(result.retrieveAll());
+            }
+        }
+        if(!errMap.isEmpty()){
+            ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG,WebValidationHelper.generateJsonStr(errMap));
+            return 0;
+        }
+        return 3;
+    }
+    private void preparePreview(HttpServletRequest request) {
+
     }
 
+    private void doPreview(HttpServletRequest request) {
+
+    }
     /**
      * Step: DoSubmission
      *

@@ -42,7 +42,7 @@
     <iais:row>
         <iais:field width="5" value="Date of Operation " mandatory="true"/>
         <iais:value width="7" cssClass="col-md-7">
-            <iais:datePicker id="" name="operationDate" value="${sexualSterilizationDto.operationDate}"/>
+            <iais:datePicker id="" name="operationDate" dateVal="${sexualSterilizationDto.operationDate}"/>
         </iais:value>
     </iais:row>
     <iais:row>
@@ -54,7 +54,7 @@
                        name="reviewedByHec"
                        value="true"
                        id="genderMale"
-                       <c:if test="${sexualSterilizationDto.reviewedByHec}">checked</c:if>
+                       <c:if test="${!sexualSterilizationDto.reviewedByHec}">checked</c:if>
                        aria-invalid="false">
                 <label class="form-check-label"
                        for="genderMale"><span
@@ -68,7 +68,7 @@
                        name="reviewedByHec"
                        value="false"
                        id="genderFemale"
-                       <c:if test="${!sexualSterilizationDto.reviewedByHec}">checked</c:if>
+                       <c:if test="${sexualSterilizationDto.reviewedByHec}">checked</c:if>
                        aria-invalid="false">
                 <label class="form-check-label"
                        for="genderFemale"><span
@@ -79,7 +79,7 @@
     <iais:row>
         <iais:field width="5" value="Date of HEC Review" mandatory="true"/>
         <iais:value width="7" cssClass="col-md-7">
-            <iais:datePicker id="" name="hecReviewDate" value="${sexualSterilizationDto.hecReviewDate}"/>
+            <iais:datePicker id="" name="hecReviewDate" dateVal="${sexualSterilizationDto.hecReviewDate}"/>
         </iais:value>
     </iais:row>
 </div>

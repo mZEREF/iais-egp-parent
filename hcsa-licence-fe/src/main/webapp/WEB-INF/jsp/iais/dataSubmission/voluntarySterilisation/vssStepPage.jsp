@@ -41,8 +41,8 @@
                                     </c:when>
                                     <c:when test="${currCode == 'VSST010'}">
                                         <%@ include file="section/previewTreatmentDetails.jsp" %>
-                                        <%@ include file="section/previewParticularsSterilizationSection.jsp" %>
                                         <%@ include file="section/previewParticularsConsentOrCourtOrder.jsp" %>
+                                        <%@ include file="section/previewParticularsSterilizationSection.jsp" %>
                                     </c:when>
                                 </c:choose>
                                 <%@ include file="common/vssFooter.jsp" %>

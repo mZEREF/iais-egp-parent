@@ -23,7 +23,7 @@ public class GuardianAppliedPartValidator implements CustomizeValidator {
         TreatmentDto treatmentDto = vssTreatmentDto.getTreatmentDto();
         GuardianAppliedPartDto guardianAppliedPartDto = vssTreatmentDto.getGuardianAppliedPartDto();
 
-        if(treatmentDto.getAge()<21 && treatmentDto.getMaritalStatus() != DataSubmissionConsts.MARITAL_STATUS_MARRIED){
+        if(treatmentDto.getAge()<21 && !treatmentDto.getMaritalStatus().equals(DataSubmissionConsts.MARITAL_STATUS_MARRIED)){
             if(StringUtil.isEmpty(guardianAppliedPartDto.getGuardianName())){
                 errMap.put("guardianName", "GENERAL_ERR0006");
             }
@@ -40,7 +40,7 @@ public class GuardianAppliedPartValidator implements CustomizeValidator {
                 errMap.put("guardianRelationship", "GENERAL_ERR0006");
             }
         }
-        if(treatmentDto.getSterilizationReason() ==DataSubmissionConsts.MAIN_REASON_FOR_STERILIZATION_MENTAL_ILLNESS){
+        if(treatmentDto.getSterilizationReason().equals(DataSubmissionConsts.MAIN_REASON_FOR_STERILIZATION_MENTAL_ILLNESS)){
             if(StringUtil.isEmpty(guardianAppliedPartDto.getAppliedPartName())){
                 errMap.put("appliedPartName", "GENERAL_ERR0006");
             }

@@ -87,8 +87,9 @@
     <iais:row>
         <iais:field width="5" value="Occupation" mandatory="true"/>
         <iais:value width="7" cssClass="col-md-7">
-            <iais:select name="occupation" firstOption="Please Select" codeCategory=""
-                         value="${treatmentDto.occupation}"/>
+           <%-- <iais:select name="occupation" firstOption="Please Select" codeCategory=""
+                         value="${treatmentDto.occupation}"/>--%>
+            <iais:input type="text" name="occupation" value="${treatmentDto.occupation}"/>
         </iais:value>
     </iais:row>
     <iais:row>

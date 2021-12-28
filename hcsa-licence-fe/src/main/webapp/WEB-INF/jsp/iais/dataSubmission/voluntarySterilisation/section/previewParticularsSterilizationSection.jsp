@@ -38,7 +38,7 @@
                 <iais:row>
                     <iais:field width="5" value="Date of Operation" />
                     <iais:value width="7" cssClass="col-md-7">
-                        <c:out value="${sexualSterilizationDto.operationDate}"/>
+                        <fmt:formatDate value='${sexualSterilizationDto.operationDate}' pattern='dd/MM/yyyy' />
                     </iais:value>
                 </iais:row>
                 <iais:row>
@@ -50,7 +50,7 @@
                 <iais:row>
                     <iais:field width="5" value="Date of HEC Review" />
                     <iais:value width="7" cssClass="col-md-7">
-                        <c:out value="${sexualSterilizationDto.hecReviewDate}"/>
+                        <fmt:formatDate value='${sexualSterilizationDto.hecReviewDate}' pattern='dd/MM/yyyy' />
                     </iais:value>
                 </iais:row>
             </div>

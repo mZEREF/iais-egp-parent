@@ -23,12 +23,10 @@ public class SexualSterilizationValidator implements CustomizeValidator {
             sexualSterilizationDto= new SexualSterilizationDto();
         }
         if(sexualSterilizationDto.isReviewedByHec() == true){
-
+            if(sexualSterilizationDto.getHecReviewDate() == null){
+                erMap.put("hecReviewDate", "GENERAL_ERR0006");
+            }
         }
-
-
-
-
 
         return erMap;
     }
