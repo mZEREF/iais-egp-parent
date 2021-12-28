@@ -63,6 +63,8 @@ public class DonationStageDtoValidator implements CustomizeValidator {
                 if(donationStageDto.getDonResForTreatNum()>maxSamplesNum){
                     errorMap.put("donResForTreatNum", "Cannot be greater than number of samples under patient");
                 }
+            }else {
+                errorMap.put("donResForTreatNum", errMsgErr006);
             }
             if(donationStageDto.getDonResForCurCenNotTreatNum()!=null){
                 if(donationStageDto.getDonResForCurCenNotTreatNum()>99||donationStageDto.getDonResForCurCenNotTreatNum()<0){
@@ -76,10 +78,12 @@ public class DonationStageDtoValidator implements CustomizeValidator {
                 if(donationStageDto.getDonResForCurCenNotTreatNum()>maxSamplesNum){
                     errorMap.put("donResForCurCenNotTreatNum", "Cannot be greater than number of samples under patient");
                 }
+            }else {
+                errorMap.put("donResForCurCenNotTreatNum", errMsgErr006);
             }
 
             if(donationStageDto.getDonatedForResearchHescr()+donationStageDto.getDonatedForResearchRrar()+donationStageDto.getDonatedForResearchOther()==0){
-                errorMap.put("curCenResType", errMsgErr006);
+                errorMap.put("donatedForResearchBox", errMsgErr006);
             }
 
         }
