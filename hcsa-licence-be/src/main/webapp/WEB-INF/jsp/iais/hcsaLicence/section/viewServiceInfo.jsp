@@ -575,13 +575,17 @@
               <td>
                 <div class="">
                   <span class="newVal " attr="${disciplineAllocation.chkLstName}${disciplineAllocation.check}">
+                    <c:if test="${disciplineAllocation.check}">
                       <c:out value="${disciplineAllocation.chkLstName}"/>
+                    </c:if>
                   </span>
                   <br>
                   <span class="oldVal "
                     attr="${reloadOld[oldReloadMapValue][stat.index].chkLstName}${reloadOld[oldReloadMapValue][stat.index].check}"
                     style="display: none">
-                    <c:out value="${reloadOld[oldReloadMapValue][stat.index].chkLstName}"/>
+                    <c:if test="${reloadOld[oldReloadMapValue][stat.index].check}">
+                      <c:out value="${reloadOld[oldReloadMapValue][stat.index].chkLstName}"/>
+                    </c:if>
                   </span>
                 </div>
               </td>

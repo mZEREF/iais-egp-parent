@@ -388,9 +388,12 @@ public class NewApplicationHelper {
         if (scourceDto == null || targetDto == null) {
             return;
         }
-        log.info(StringUtil.changeForLog("##### Reset Data: " + targetDto.getLicenceId() + " : " + targetDto.getLicenceNo()));
+        log.info(StringUtil.changeForLog("##### Reset Data: " + targetDto.getLicenceNo() + " : " + targetDto.getAppGrpNo()
+                + " : " + targetDto.getLicenceId() + " : " + scourceDto.getAppGrpNo()));
         AppEditSelectDto source = scourceDto.getChangeSelectDto();
         AppEditSelectDto target = targetDto.getChangeSelectDto();
+        log.info(StringUtil.changeForLog("Source App Edit Select Dto: " + JsonUtil.parseToJson(source)));
+        log.info(StringUtil.changeForLog("Target App Edit Select Dto: " + JsonUtil.parseToJson(target)));
         if (source == null || target == null) {
             return;
         }
@@ -417,8 +420,7 @@ public class NewApplicationHelper {
         if (scourceDto == null || targetDto == null) {
             return;
         }
-        log.info(StringUtil.changeForLog("##### Reset Data: " + targetDto.getLicenceNo() + " : " + targetDto.getAppGrpNo()
-                + " : " + targetDto.getLicenceId() + " : " + scourceDto.getAppGrpNo()));
+        log.info(StringUtil.changeForLog("##### Reset Data: " + targetDto.getLicenceId() + " : " + targetDto.getLicenceNo()));
         AppEditSelectDto source = scourceDto.getChangeSelectDto();
         AppEditSelectDto target = targetDto.getChangeSelectDto();
         log.info(StringUtil.changeForLog("Source App Edit Select Dto: " + JsonUtil.parseToJson(source)));
@@ -5038,6 +5040,15 @@ public class NewApplicationHelper {
             srcMap = IaisCommonUtils.genNewHashMap();
         }
         return srcMap;
+    }
+
+    public static <T> void addToList(T t, List<T> tarList) {
+        if (t == null || tarList == null) {
+            return;
+        }
+        if (!tarList.contains(t)) {
+            tarList.add(t);
+        }
     }
 
     public static <T> List<T> getList(List<T> srcList) {

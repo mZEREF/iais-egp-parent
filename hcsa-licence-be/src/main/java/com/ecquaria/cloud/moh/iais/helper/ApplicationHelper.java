@@ -2,10 +2,15 @@ package com.ecquaria.cloud.moh.iais.helper;
 
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDocDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcChckListDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfigDto;
+import com.ecquaria.cloud.moh.iais.common.utils.CopyUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import lombok.extern.slf4j.Slf4j;
+
+import java.util.List;
+import java.util.Objects;
 
 /**
  * @Description ApplicationHelper
@@ -13,6 +18,16 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 public final class ApplicationHelper {
+
+    public static final String PLEASEINDICATE = "Please indicate";
+    public static final String SERVICE_SCOPE_LAB_OTHERS = "Others";
+
+    public static <T> List<T> getList(List<T> sourceList) {
+        if (sourceList == null) {
+            return IaisCommonUtils.genNewArrayList(0);
+        }
+        return sourceList;
+    }
 
     public static String getDocDisplayTitle(HcsaSvcDocConfigDto entity, Integer num) {
         if (entity == null) {
@@ -77,6 +92,33 @@ public final class ApplicationHelper {
                 break;
         }
         return psnName;
+    }
+
+    public static List<AppSvcChckListDto> handlerPleaseIndicateLab(List<AppSvcChckListDto> appSvcChckListDtos) {
+        List<AppSvcChckListDto> newAppSvcChckListDtos = IaisCommonUtils.genNewArrayList();
+        if (!IaisCommonUtils.isEmpty(appSvcChckListDtos)) {
+            AppSvcChckListDto targetDto = appSvcChckListDtos.stream()
+                    .filter(dto -> Objects.equals(PLEASEINDICATE, dto.getChkName()))
+                    .findAny()
+                    .orElse(null);
+            if (targetDto != null) {
+                for (AppSvcChckListDto appSvcChckListDto : appSvcChckListDtos) {
+                    AppSvcChckListDto newAppSvcChckListDto = (AppSvcChckListDto) CopyUtil.copyMutableObject(appSvcChckListDto);
+                    String chkName = newAppSvcChckListDto.getChkName();
+                    if (PLEASEINDICATE.equals(chkName)) {
+                        continue;
+                    }
+                    if (SERVICE_SCOPE_LAB_OTHERS.equals(chkName)) {
+                        chkName = chkName + " (" + targetDto.getOtherScopeName() + ")";
+                        newAppSvcChckListDto.setChkName(chkName);
+                    }
+                    newAppSvcChckListDtos.add(newAppSvcChckListDto);
+                }
+            } else {
+                newAppSvcChckListDtos = appSvcChckListDtos;
+            }
+        }
+        return newAppSvcChckListDtos;
     }
 
 }

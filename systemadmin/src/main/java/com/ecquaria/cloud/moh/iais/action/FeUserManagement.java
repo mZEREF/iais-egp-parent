@@ -182,6 +182,9 @@ public class FeUserManagement {
         FeUserDto feUserDto;
         if (!StringUtil.isEmpty(userId)) {
             feUserDto = organizationClient.getUserAccount(userId).getEntity();
+            if (feUserDto.getUserId().indexOf('_') < 0) {
+                feUserDto.setSolo(true);
+            }
             ParamUtil.setSessionAttr(bpc.request, "inter_user_attr", feUserDto);
         } else {
             feUserDto = (FeUserDto) ParamUtil.getSessionAttr(bpc.request, "inter_user_attr");
@@ -218,7 +221,7 @@ public class FeUserManagement {
             active = "active".equals(active) ? AppConsts.COMMON_STATUS_ACTIVE : AppConsts.COMMON_STATUS_IACTIVE;
             userAttr = Optional.ofNullable(userAttr).orElseGet(() -> new FeUserDto());
             String prevIdNumber = userAttr.getIdentityNo();
-            if (!StringUtil.isEmpty(userAttr.getUenNo()) || "Create".equals(title)) {
+            if (!userAttr.isSolo() || "Create".equals(title)) {
                 userAttr.setIdType(idType);
                 userAttr.setIdentityNo(idNo);
                 userAttr.setIdNumber(idNo);
@@ -293,7 +296,7 @@ public class FeUserManagement {
                 }
             }
             // set user id
-            if (userAttr.isCorpPass()) {
+            if (userAttr.isCorpPass() && !userAttr.isSolo()) {
                 userAttr.setUserId(userAttr.getUenNo() + "_" + idNo);
                 userDto.setUserId(userAttr.getUenNo() + "_" + idNo);
             } else {

@@ -744,6 +744,8 @@ public class EqRequestForChangeSubmitResultChange {
         }
         if (changeSectionLeader) {
             stepList.add(HcsaConsts.STEP_SECTION_LEADER);
+            stepList.add(HcsaConsts.STEP_DOCUMENTS);
+            NewApplicationHelper.addToList(HcsaConsts.STEP_DISCIPLINE_ALLOCATION, stepList);
         }
         showDto.setPersonnelEditList(stepList);
         appSubmissionDto.setAppEditSelectDto(showDto);
@@ -815,9 +817,7 @@ public class EqRequestForChangeSubmitResultChange {
         }
         if (!newDpoIdNos.equals(olddDpoIdNos)) {
             isAuto = false;
-            if (!personnelEditList.contains(HcsaConsts.STEP_PRINCIPAL_OFFICERS)) {
-                personnelEditList.add(HcsaConsts.STEP_PRINCIPAL_OFFICERS);
-            }
+            NewApplicationHelper.addToList(HcsaConsts.STEP_PRINCIPAL_OFFICERS, personnelEditList);
             personnelEditList.add(ApplicationConsts.PERSONNEL_PSN_TYPE_DPO);
         }
         // CGO
@@ -834,6 +834,7 @@ public class EqRequestForChangeSubmitResultChange {
         if (!newIdNos.equals(oldIdNos)) {
             isAuto = false;
             personnelEditList.add(HcsaConsts.STEP_CLINICAL_GOVERNANCE_OFFICERS);
+            NewApplicationHelper.addToList(HcsaConsts.STEP_DISCIPLINE_ALLOCATION, personnelEditList);
         }
         // CD
         List<AppSvcPrincipalOfficersDto> newAppSvcCdDto = getList(appSvcRelatedInfoDtoList.getAppSvcClinicalDirectorDtoList());
@@ -883,20 +884,20 @@ public class EqRequestForChangeSubmitResultChange {
                         if (!oldCheckListIds.contains(checBox.getChkLstConfId())) {
                             isAuto = false;
                             personnelEditList.add(HcsaConsts.STEP_LABORATORY_DISCIPLINES);
-                            personnelEditList.add(HcsaConsts.STEP_DISCIPLINE_ALLOCATION);
+                            NewApplicationHelper.addToList(HcsaConsts.STEP_DISCIPLINE_ALLOCATION, personnelEditList);
                             break;
                         }
                     }
                 } else if (!IaisCommonUtils.isEmpty(newCheckList) || !IaisCommonUtils.isEmpty(oldCheckList)) {
                     isAuto = false;
                     personnelEditList.add(HcsaConsts.STEP_LABORATORY_DISCIPLINES);
-                    personnelEditList.add(HcsaConsts.STEP_DISCIPLINE_ALLOCATION);
+                    NewApplicationHelper.addToList(HcsaConsts.STEP_DISCIPLINE_ALLOCATION, personnelEditList);
                 }
             }
         } else if (!IaisCommonUtils.isEmpty(newDisciplinesDto) || !IaisCommonUtils.isEmpty(oldDisciplinesDto)) {
             isAuto = false;
             personnelEditList.add(HcsaConsts.STEP_LABORATORY_DISCIPLINES);
-            personnelEditList.add(HcsaConsts.STEP_DISCIPLINE_ALLOCATION);
+            NewApplicationHelper.addToList(HcsaConsts.STEP_DISCIPLINE_ALLOCATION, personnelEditList);
         }
         // KAH
         List<AppSvcPrincipalOfficersDto> kahList = getList(appSvcRelatedInfoDtoList.getAppSvcKeyAppointmentHolderDtoList());

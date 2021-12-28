@@ -2681,17 +2681,6 @@ public class NewApplicationDelegator {
                 appEditSelectDto.setPremisesEdit(false);
                 appEditSelectDto.setPremisesListEdit(false);
             }
-            // for spliting
-            if (changeSelectDto.isAutoRfc() && !isAutoRfc) {
-                if (autoAppSubmissionDto == null) {
-                    autoAppSubmissionDto = (AppSubmissionDto) CopyUtil.copyMutableObject(appSubmissionDto);
-                    autoAppSubmissionDto.setAmount(0.0);
-                    autoChangeSelectDto = new AppEditSelectDto();
-                }
-                autoChangeSelectDto.setPremisesEdit(true);
-                appEditSelectDto.setPremisesEdit(false);
-                appEditSelectDto.setPremisesListEdit(false);
-            }
         }
         log.info(StringUtil.changeForLog("isAutoPremises: " + isAutoPremises));
 
@@ -2775,7 +2764,8 @@ public class NewApplicationDelegator {
                         serviceInfoChangeEffectPersonForRFC.generateDtosForAutoFields(autoAppSubmissionDto, oldAppSubmissionDto,
                                 changeList, stepList));
                 // re-set change edit select dto
-                if (!appEditSelectDto.isChangeBusinessName() && !appEditSelectDto.isChangeVehicle() && !appEditSelectDto.isChangePersonnel()) {
+                if (!appEditSelectDto.isChangeBusinessName() && !appEditSelectDto.isChangeVehicle()
+                        && !appEditSelectDto.isChangePersonnel() && !appEditSelectDto.isChangeSectionLeader()) {
                     appEditSelectDto.setServiceEdit(false);
                 }
             }

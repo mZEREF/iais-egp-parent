@@ -52,6 +52,7 @@ public class ServiceInfoChangeEffectPersonAbstract implements ServiceInfoChangeE
      *                            Refer to the method - EqRequestForChangeSubmitResultChange.eqServiceChange and personContact
      * @param stepList:           The steps which is changed, it will contains not-auto fields and maybe it contains auto fields.
      *                            Refer to the method - EqRequestForChangeSubmitResultChange.compareNotChangePersonnel
+     *                            && EqRequestForChangeSubmitResultChange.rfcChangeModuleEvaluationDto
      * @return The svc related info with the auto fields changed
      */
     public List<AppSvcRelatedInfoDto> generateDtosForAutoFields(AppSubmissionDto appSubmissionDto,
@@ -78,6 +79,9 @@ public class ServiceInfoChangeEffectPersonAbstract implements ServiceInfoChangeE
             } else if (HcsaConsts.STEP_SECTION_LEADER.equals(step)) {
                 newDto.setAppSvcSectionLeaderList(
                         (List<AppSvcPersonnelDto>) CopyUtil.copyMutableObjectList(oldSvcInfoDto.getAppSvcSectionLeaderList()));
+            } else if (HcsaConsts.STEP_DOCUMENTS.equals(step)) {
+                /*List<AppSvcDocDto> oldASvcDocDtoLit = oldSvcInfoDto.getAppSvcDocDtoLit();
+                List<AppSvcDocDto> appSvcDocDtoLit = newDto.getAppSvcDocDtoLit();*/
             } else if (HcsaConsts.STEP_LABORATORY_DISCIPLINES.equals(step)) {
                 newDto.setAppSvcLaboratoryDisciplinesDtoList(
                         (List<AppSvcLaboratoryDisciplinesDto>) CopyUtil.copyMutableObjectList(
