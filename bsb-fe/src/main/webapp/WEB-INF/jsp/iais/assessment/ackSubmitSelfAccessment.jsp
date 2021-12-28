@@ -1,3 +1,4 @@
+<%@ page import="static sg.gov.moh.iais.egp.bsb.constant.GlobalConstants.WEB_ROOT" %>
 <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui"%>
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>
 <%
@@ -5,6 +6,8 @@
             (sop.webflow.rt.api.BaseProcessClass) request.getAttribute("process");
 %>
 <webui:setLayout name="iais-internet"/>
+
+<script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-assessment.js"></script>
 
 <%@include file="dashboard.jsp"%>
 
@@ -17,7 +20,7 @@
             <p><c:out value="${ackMsg}"/></p>
 
             <div class="text-right text-center-mobile">
-                <a class="btn btn-primary next" href="/bsb-fe/eservice/INTERNET/MohBSBInboxMsg">Done</a>
+                <a id="back" class="btn btn-primary" href="javascript:void(0)">Done</a>
             </div>
         </div>
     </form>

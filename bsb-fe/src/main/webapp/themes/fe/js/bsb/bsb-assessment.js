@@ -10,7 +10,8 @@ $(function () {
     });
 
     $("button[data-custom-ind=printSelfAssessment]").click(function () {
-        // to be implemented in future
+        var appId = $(this).attr('value');
+        showPopupWindow('/bsb-fe/eservice/INTERNET/MohBsbSubmitSelfAssessment/1/BindAction?loadPopupPrint=Y&action_type=print&action_value=Print&action_additional=' + appId);
     });
 
 

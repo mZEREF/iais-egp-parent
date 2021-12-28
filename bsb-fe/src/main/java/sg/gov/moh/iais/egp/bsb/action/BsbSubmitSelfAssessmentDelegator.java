@@ -45,8 +45,6 @@ import static sg.gov.moh.iais.egp.bsb.constant.module.SelfAssessmentConstants.*;
 @Slf4j
 @Delegator("bsbSubmitSelfAssessment")
 public class BsbSubmitSelfAssessmentDelegator {
-
-
     private final AssessmentClient assessmentClient;
 
     @Autowired
@@ -112,17 +110,25 @@ public class BsbSubmitSelfAssessmentDelegator {
     @SuppressWarnings("unchecked")
     public void bindAction(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
-        /* put the action into session, we use the saved 'View' action to determine not to save the data from request */
         String action = request.getParameter(KEY_ACTION_VALUE);
-        List<String> allowActions = (List<String>) ParamUtil.getSessionAttr(request, KEY_ACTIONS);
-        if (!allowActions.contains(action)) {
-            throw new IaisRuntimeException("Invalid action:" + LogUtil.escapeCrlf(action));
+        /* We don't check allow actions for Print, because 'Print' will open a new window.
+         * The old session attributes are lost (unavailable) in the new session.
+         * It's unnecessary to check the print actually, if no assessment available, the page
+         * answer will be empty. */
+        if (!ACTION_PRINT.equals(action)) {
+            List<String> allowActions = (List<String>) ParamUtil.getSessionAttr(request, KEY_ACTIONS);
+            if (!allowActions.contains(action)) {
+                throw new IaisRuntimeException("Invalid action:" + LogUtil.escapeCrlf(action));
+            }
         }
+
         String maskedAppId = request.getParameter(KEY_ACTION_ADDITIONAL);
         String appId = MaskUtil.unMaskValue(MASK_PARAM, maskedAppId);
         if (appId == null || appId.equals(maskedAppId)) {
             throw new IllegalArgumentException("Invalid masked app ID:" + LogUtil.escapeCrlf(maskedAppId));
         }
+
+        /* put the action into session, we use the saved 'View' action to determine not to save the data from request */
         ParamUtil.setSessionAttr(request, KEY_CURRENT_ACTION, action);
         ParamUtil.setRequestAttr(request, KEY_APP_ID, appId);
 
@@ -134,12 +140,20 @@ public class BsbSubmitSelfAssessmentDelegator {
     }
 
 
-    /**For edit situation (RFI), we need to load the existing data first at here.
+    /**For edit(RFI), view and print situation, we need to load the existing data first at here.
      * We put the self-assessment data in session, so this method will be called once only.
      * Later steps route back to the self-assessment page, it will not retrieve existing data again, instead, it
      * retrieves data from session. */
     public void loadExistingData(BaseProcessClass bpc) {
-        // to be implemented in RFI module
+        HttpServletRequest request = bpc.request;
+        String action = (String) ParamUtil.getSessionAttr(request, KEY_CURRENT_ACTION);
+        if (ACTION_PRINT.equals(action) || ACTION_VIEW.equals(action) || ACTION_EDIT.equals(action)) {
+            String appId = (String) ParamUtil.getRequestAttr(request, KEY_APP_ID);
+            SelfAssessmtChklDto answerRecordDto = assessmentClient.getSavedSelfAssessment(appId);
+            if (answerRecordDto != null) {
+                ParamUtil.setSessionAttr(request, KEY_SELF_ASSESSMENT_CHK_LST, answerRecordDto);
+            }
+        }
     }
 
     public void prepareForSelfAssessment(BaseProcessClass bpc) throws JsonProcessingException {
@@ -239,6 +253,16 @@ public class BsbSubmitSelfAssessmentDelegator {
         Map<String, String> answerMap = (Map<String, String>) ParamUtil.getSessionAttr(request, KEY_SELF_ASSESSMENT_ANSWER_MAP);
         answerMap.clear();
         ParamUtil.setSessionAttr(request, KEY_SELF_ASSESSMENT_ANSWER_MAP, (HashMap<String, String>) answerMap);
+    }
+
+    public void print(BaseProcessClass bpc) throws JsonProcessingException {
+        HttpServletRequest request = bpc.request;
+        // load data
+        loadExistingData(bpc);
+        prepareForSelfAssessment(bpc);
+
+        // this value will override session value temporary at the print page
+        ParamUtil.setRequestAttr(request, KEY_EDITABLE, Boolean.TRUE);
     }
 
 

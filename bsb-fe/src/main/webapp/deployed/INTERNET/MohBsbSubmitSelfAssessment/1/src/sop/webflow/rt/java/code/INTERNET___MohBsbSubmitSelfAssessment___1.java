@@ -50,4 +50,7 @@ public class INTERNET___MohBsbSubmitSelfAssessment___1 extends BaseProcessClass 
 		EngineHelper.delegate(DELEGATOR, "save", this);
 	}
 
+	public void print_OnStepProcess_0() throws Exception {
+		EngineHelper.delegate(DELEGATOR, "print", this);
+	}
 }

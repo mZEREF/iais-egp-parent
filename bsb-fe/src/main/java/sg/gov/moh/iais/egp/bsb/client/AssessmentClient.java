@@ -15,13 +15,16 @@ public interface AssessmentClient {
     @GetMapping(path = "/assessment/pre/{appId}", produces = MediaType.APPLICATION_JSON_VALUE)
     ResponseDto<PreAssessmentDto> getAssessmentState(@PathVariable("appId") String appId);
 
+    @GetMapping(path = "/assessment", produces = MediaType.APPLICATION_JSON_VALUE)
+    SelfAssessmtChklDto getSavedSelfAssessment(@RequestParam("appId") String appId);
+
+    @PostMapping(value = "/assessment", consumes = MediaType.APPLICATION_JSON_VALUE)
+    void submitSelfAssessment(@RequestBody SelfAssessmtChklDto selfAssessmtChklDto);
+
     @GetMapping(value = "/assessment/config", produces = MediaType.APPLICATION_JSON_VALUE)
     ChecklistConfigDto getMaxVersionChecklistConfig(@RequestParam("appId") String appId,
                                                     @RequestParam("type") String type);
 
     @GetMapping(value = "/assessment/config/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     ChecklistConfigDto getChecklistConfigById(@PathVariable("id") String id);
-
-    @PostMapping(value = "/assessment", consumes = MediaType.APPLICATION_JSON_VALUE)
-    void submitSelfAssessment(@RequestBody SelfAssessmtChklDto selfAssessmtChklDto);
 }
