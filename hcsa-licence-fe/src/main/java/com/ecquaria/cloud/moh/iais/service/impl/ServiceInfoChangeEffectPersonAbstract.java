@@ -79,6 +79,9 @@ public class ServiceInfoChangeEffectPersonAbstract implements ServiceInfoChangeE
             } else if (HcsaConsts.STEP_SECTION_LEADER.equals(step)) {
                 newDto.setAppSvcSectionLeaderList(
                         (List<AppSvcPersonnelDto>) CopyUtil.copyMutableObjectList(oldSvcInfoDto.getAppSvcSectionLeaderList()));
+            } else if (HcsaConsts.STEP_DOCUMENTS.equals(step)) {
+                /*List<AppSvcDocDto> oldASvcDocDtoLit = oldSvcInfoDto.getAppSvcDocDtoLit();
+                List<AppSvcDocDto> appSvcDocDtoLit = newDto.getAppSvcDocDtoLit();*/
             } else if (HcsaConsts.STEP_LABORATORY_DISCIPLINES.equals(step)) {
                 newDto.setAppSvcLaboratoryDisciplinesDtoList(
                         (List<AppSvcLaboratoryDisciplinesDto>) CopyUtil.copyMutableObjectList(

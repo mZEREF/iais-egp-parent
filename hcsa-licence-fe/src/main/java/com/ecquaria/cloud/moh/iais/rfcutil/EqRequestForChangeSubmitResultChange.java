@@ -744,6 +744,7 @@ public class EqRequestForChangeSubmitResultChange {
         }
         if (changeSectionLeader) {
             stepList.add(HcsaConsts.STEP_SECTION_LEADER);
+            stepList.add(HcsaConsts.STEP_DOCUMENTS);
             NewApplicationHelper.addToList(HcsaConsts.STEP_DISCIPLINE_ALLOCATION, stepList);
         }
         showDto.setPersonnelEditList(stepList);
