@@ -5021,7 +5021,7 @@ public class NewApplicationHelper {
          return errorMap;
     }
 
-    public static Map<String, String> validateLicences(List<AppSubmissionDto> appSubmissionDtos, String type, HttpServletRequest request) {
+    public static Map<String, String> validateLicences(List<AppSubmissionDto> appSubmissionDtos, String type) {
         if (appSubmissionDtos == null || appSubmissionDtos.isEmpty()) {
             return IaisCommonUtils.genNewHashMap();
         }

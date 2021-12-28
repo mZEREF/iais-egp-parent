@@ -79,4 +79,9 @@ public final class ApplicationHelper {
         return psnName;
     }
 
+    /**
+     * List<HcsaSvcSubtypeOrSubsumedDto> svcScopeDtoList = serviceConfigService.loadLaboratoryDisciplines(svcId);
+     *         Map<String, HcsaSvcSubtypeOrSubsumedDto> svcScopeAlignMap = IaisCommonUtils.genNewHashMap();
+     *         NewApplicationHelper.recursingSvcScope(svcScopeDtoList,svcScopeAlignMap);
+     */
 }
