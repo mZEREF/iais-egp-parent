@@ -25,7 +25,7 @@
         <div class="row">
             <div class="col-xs-12">
                 <iais:body >
-                    <div class="col-xs-10" style="left: 8%;">
+                    <div class="tab-gp col-xs-10" style="left: 8%;">
                         <div class="tab-content row">
                             <hr>
                             <div class="row">

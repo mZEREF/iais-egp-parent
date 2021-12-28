@@ -182,7 +182,7 @@
                                             <iais:sortableHeader needSort="false"
                                                                  field="SAMPLE_TYPE"
                                                                  value="Sample Type"/>
-                                            <iais:sortableHeader needSort="false"
+                                            <iais:sortableHeader needSort="true"
                                                                  field="SAMPLE_FROM_HCI_CODE"
                                                                  value="Name of Bank / AR Centre where sample is collected"/>
                                             <iais:sortableHeader needSort="true"
