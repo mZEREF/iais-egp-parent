@@ -223,10 +223,12 @@ public class EmbryoTransferDelegator extends CommonDelegator {
 
             PatientInventoryDto patientInventoryDto = DataSubmissionHelper.getCurrentPatientInventory(bpc.request);
             if (patientInventoryDto != null) {
+                int currentFreshEmbryos = patientInventoryDto.getCurrentFreshEmbryos() + patientInventoryDto.getChangeFreshEmbryos();
+                int currentThawedEmbryos = patientInventoryDto.getCurrentThawedEmbryos() + patientInventoryDto.getChangeThawedEmbryos();
                 if (patientInventoryDto.getCurrentFreshOocytes() > 0
                         || patientInventoryDto.getCurrentThawedOocytes() > 0
-                        || patientInventoryDto.getCurrentFreshEmbryos() > 0
-                        || patientInventoryDto.getCurrentThawedEmbryos() > 0) {
+                        || currentFreshEmbryos > 0
+                        || currentThawedEmbryos > 0) {
                     errorMap.put("inventoryNoZero", MessageUtil.getMessageDesc("DS_ERR017"));
                 }
             }
