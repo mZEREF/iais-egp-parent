@@ -908,13 +908,14 @@ public class WithOutRenewalDelegator {
     }
 
     private void setBaseEffServiceSubInNoAutoAppSubmissionDtos(AppSubmissionDto appSubmissionDto, AppEditSelectDto appEditSelectDto,List<AppSubmissionDto> noAutoAppSubmissionDtos){
-        List<AppSubmissionDto> submissionDtos = requestForChangeService.getAlginAppSubmissionDtos(
-                appSubmissionDto.getLicenceId(), true);
+        HcsaServiceDto serviceDto = HcsaServiceCacheHelper.getServiceByServiceName(appSubmissionDto.getServiceName());
+        boolean checkSpec = ApplicationConsts.SERVICE_CONFIG_TYPE_BASE.equals(serviceDto.getSvcType());
+        List<AppSubmissionDto> submissionDtos = requestForChangeService.getAlginAppSubmissionDtos(appSubmissionDto.getLicenceId(), checkSpec);
         if (IaisCommonUtils.isNotEmpty(submissionDtos)) {
             boolean parallel = submissionDtos.size() >= RfcConst.DFT_MIN_PARALLEL_SIZE;
             StreamSupport.stream(submissionDtos.spliterator(), parallel)
-                    .forEach(dto -> requestForChangeService.checkAffectedAppSubmissions(dto, null,100.0d , appSubmissionDto.getDraftNo(),  appSubmissionDto.getAppGrpNo(),
-                            appEditSelectDto, null));
+                    .forEach(dto -> {NewApplicationHelper.reSetPremeses(dto, appSubmissionDto.getAppGrpPremisesDtoList());
+                    requestForChangeService.checkAffectedAppSubmissions(dto, null,100.0d , appSubmissionDto.getDraftNo(),  appSubmissionDto.getAppGrpNo(), appEditSelectDto, null);});
             noAutoAppSubmissionDtos.addAll(submissionDtos);
         }
     }
