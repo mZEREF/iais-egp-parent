@@ -31,7 +31,7 @@ public interface DpFeClient {
 
     @GetMapping(value = "/data-submission/draft-dp-data-submission/{draftNo}", consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<DpSuperDataSubmissionDto> getDpSuperDataSubmissionDtoDraftByDraftNo(@PathVariable("draftNo") String draftNo);
+    FeignResponseEntity<DpSuperDataSubmissionDto> getDpSuperDataSubmissionDtoByDraftNo(@PathVariable("draftNo") String draftNo);
 
     @PostMapping(value = "/data-submission/draft/status", consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<Void> updateDataSubmissionDraftStatus(@RequestParam("draftId") String draftId,
@@ -45,7 +45,7 @@ public interface DpFeClient {
     FeignResponseEntity<List<PgtStageDto>> listPgtStageByPatientCode(@PathVariable("patientCode") String patientCode) ;
 
     @DeleteMapping(value = "/data-submission/draft-dp-data-submission/special", consumes = MediaType.APPLICATION_JSON_VALUE)
-    void deleteDpSuperDataSubmissionDtoDraftByConds(@RequestParam(name = "orgId") String orgId,
+    FeignResponseEntity<Void> deleteDpSuperDataSubmissionDtoDraftByConds(@RequestParam(name = "orgId") String orgId,
             @RequestParam(name = "submissionType") String submissionType,
             @RequestParam(name = "hciCode") String hciCode);
 
@@ -59,4 +59,5 @@ public interface DpFeClient {
     FeignResponseEntity<PatientDto> getDpPatientDto(@RequestParam(name = "idType") String idType,
                                                   @RequestParam(name = "idNumber") String idNumber, @RequestParam(name = "nationality") String nationality,
                                                   @RequestParam(name = "orgId") String orgId);
+
 }

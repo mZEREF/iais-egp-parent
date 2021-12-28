@@ -38,7 +38,7 @@ public interface ArDataSubmissionService {
 
     ArSuperDataSubmissionDto getArSuperDataSubmissionDtoDraftById(String id);
 
-    ArSuperDataSubmissionDto getArSuperDataSubmissionDtoDraftByDraftNo(String draftNo);
+    ArSuperDataSubmissionDto getArSuperDataSubmissionDtoByDraftNo(String draftNo);
 
     ArSuperDataSubmissionDto getArSuperDataSubmissionDtoDraftByConds(String idType, String idNumber, String nationality, String orgId,
             String hciCode);

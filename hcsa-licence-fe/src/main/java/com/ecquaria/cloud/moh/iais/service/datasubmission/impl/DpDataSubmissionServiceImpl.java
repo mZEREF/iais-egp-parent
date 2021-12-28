@@ -142,7 +142,7 @@ public class DpDataSubmissionServiceImpl implements DpDataSubmissionService {
 
     @Override
     public void deleteDpSuperDataSubmissionDtoDraftByConds(String orgId, String submissionType, String hciCode) {
-        log.info(StringUtil.changeForLog("----- Param: " + orgId + " : " + submissionType + " : " + hciCode + " -----"));
+        log.info(StringUtil.changeForLog("-----Draft Param: " + orgId + " : " + submissionType + " : " + hciCode + " -----"));
         if (StringUtil.isEmpty(orgId) || StringUtil.isEmpty(submissionType) || StringUtil.isEmpty(hciCode)) {
             return;
         }
@@ -152,6 +152,24 @@ public class DpDataSubmissionServiceImpl implements DpDataSubmissionService {
     @Override
     public ProfessionalResponseDto retrievePrsInfo(String regNo) {
         return appSubmissionService.retrievePrsInfo(regNo);
+    }
+
+    @Override
+    public DpSuperDataSubmissionDto getDpSuperDataSubmissionDto(String submissionNo) {
+        log.info(StringUtil.changeForLog("----- Param - Sumission No.: " + submissionNo));
+        if (StringUtil.isEmpty(submissionNo) ) {
+            return null;
+        }
+        return dpFeClient.getDpSuperDataSubmissionDto(submissionNo).getEntity();
+    }
+
+    @Override
+    public DpSuperDataSubmissionDto getDpSuperDataSubmissionDtoByDraftNo(String draftNo) {
+        log.info(StringUtil.changeForLog("----- Param - Draft No.: " + draftNo));
+        if (StringUtil.isEmpty(draftNo) ) {
+            return null;
+        }
+        return dpFeClient.getDpSuperDataSubmissionDtoByDraftNo(draftNo).getEntity();
     }
 
 

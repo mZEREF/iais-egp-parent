@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.service.client;
 
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.ArSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.DpSuperDataSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PgtStageDto;
@@ -15,7 +16,7 @@ import java.util.List;
  * @Auther chenlei on 11/18/2021.
  */
 @Slf4j
-public class DpFeClientFallback implements DpFeClient{
+public class DpFeClientFallback implements DpFeClient {
 
     private FeignResponseEntity getFeignResponseEntity(Object... params) {
         log.warn("--------Params: " + Arrays.toString(params) + "-----------");
@@ -35,11 +36,6 @@ public class DpFeClientFallback implements DpFeClient{
     public FeignResponseEntity<DpSuperDataSubmissionDto> doUpdateDataSubmissionDraft(
             DpSuperDataSubmissionDto dpSuperDataSubmissionDto) {
         return getFeignResponseEntity(dpSuperDataSubmissionDto);
-    }
-
-    @Override
-    public FeignResponseEntity<DpSuperDataSubmissionDto> getDpSuperDataSubmissionDtoDraftByDraftNo(String draftNo) {
-        return getFeignResponseEntity(draftNo);
     }
 
     @Override
@@ -63,6 +59,11 @@ public class DpFeClientFallback implements DpFeClient{
     }
 
     @Override
+    public FeignResponseEntity<DpSuperDataSubmissionDto> getDpSuperDataSubmissionDtoByDraftNo(String draftNo) {
+        return getFeignResponseEntity(draftNo);
+    }
+
+    @Override
     public FeignResponseEntity<DpSuperDataSubmissionDto> getDpSuperDataSubmissionDtoDraftByConds(String orgId, String type,
             String svcName, String hciCode) {
         return getFeignResponseEntity(orgId, type, svcName, hciCode);
@@ -74,7 +75,8 @@ public class DpFeClientFallback implements DpFeClient{
     }
 
     @Override
-    public void deleteDpSuperDataSubmissionDtoDraftByConds(String orgId, String type, String hciCode) {
+    public FeignResponseEntity<Void> deleteDpSuperDataSubmissionDtoDraftByConds(String orgId, String type, String hciCode) {
+        return getFeignResponseEntity(orgId, type, hciCode);
     }
 
 }

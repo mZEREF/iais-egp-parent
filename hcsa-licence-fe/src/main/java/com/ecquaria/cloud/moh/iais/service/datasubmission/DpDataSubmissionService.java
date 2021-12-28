@@ -33,4 +33,8 @@ public interface DpDataSubmissionService {
 
     ProfessionalResponseDto retrievePrsInfo(String doctorReignNo);
 
+    DpSuperDataSubmissionDto getDpSuperDataSubmissionDto(String submissionNo);
+
+    DpSuperDataSubmissionDto getDpSuperDataSubmissionDtoByDraftNo(String draftNo);
+
 }

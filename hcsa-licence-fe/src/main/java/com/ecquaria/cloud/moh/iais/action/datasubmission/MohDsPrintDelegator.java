@@ -48,8 +48,8 @@ public class MohDsPrintDelegator {
     }
 
     @RequestMapping(value = "/ds/init-print", method = RequestMethod.POST)
-    public @ResponseBody
-    String initPrint(HttpServletRequest request) {
+    @ResponseBody
+    public String initPrint(HttpServletRequest request) {
         log.info(StringUtil.changeForLog("--- Print init data ---"));
         String printflag = ParamUtil.getString(request, DataSubmissionConstant.PRINT_FLAG);
         log.info(StringUtil.changeForLog("--- Print flag: " + printflag + " ---"));

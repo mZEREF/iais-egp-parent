@@ -161,12 +161,12 @@ public class ArDataSubmissionServiceImpl implements ArDataSubmissionService {
     }
 
     @Override
-    public ArSuperDataSubmissionDto getArSuperDataSubmissionDtoDraftByDraftNo(String draftNo) {
+    public ArSuperDataSubmissionDto getArSuperDataSubmissionDtoByDraftNo(String draftNo) {
         log.info(StringUtil.changeForLog("----- Draft No: " + draftNo + " -----"));
         if (StringUtil.isEmpty(draftNo)) {
             return null;
         }
-        return arFeClient.getArSuperDataSubmissionDtoDraftByDraftNo(draftNo).getEntity();
+        return arFeClient.getArSuperDataSubmissionDtoByDraftNo(draftNo).getEntity();
     }
 
     @Override

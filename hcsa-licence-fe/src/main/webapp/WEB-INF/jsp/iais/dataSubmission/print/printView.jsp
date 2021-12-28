@@ -52,6 +52,9 @@
             <c:when test="${printflag == 'ACKART'}">
                 <%@include file="/WEB-INF/jsp/iais/dataSubmission/print/printAckAR.jsp" %>
             </c:when>
+            <c:when test="${printflag == 'ACKDRP'}">
+                <%@include file="/WEB-INF/jsp/iais/dataSubmission/print/printAckDP.jsp" %>
+            </c:when>
             <c:otherwise>
             <div class="col-xs-12">
                 <div class="row">
@@ -66,6 +69,9 @@
                     </c:when>
                     <c:when test="${printflag == 'ART'}">
                         <jsp:include page="/WEB-INF/jsp/iais/dataSubmission/print/printAR.jsp" />
+                    </c:when>
+                    <c:when test="${printflag == 'DRP'}">
+                        <jsp:include page="/WEB-INF/jsp/iais/dataSubmission/print/printDP.jsp" />
                     </c:when>
                     </c:choose>
 
