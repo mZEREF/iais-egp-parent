@@ -2,12 +2,12 @@
 <div class="panel panel-default">
     <div class="panel-heading ${headingSign}">
         <h4 class="panel-title">
-            <a href="#pgtDetailsPreview" data-toggle="collapse">
+            <a class="collapsed" href="#pgtDetailsPreview" data-toggle="collapse">
                 Preimplantation Genetic Testing
             </a>
         </h4>
     </div>
-    <div id="pgtDetailsPreview" class="panel-collapse collapse in">
+    <div id="pgtDetailsPreview" class="panel-collapse collapse">
         <div class="panel-body">
             <div class="panel-main-content form-horizontal">
                 <h3>

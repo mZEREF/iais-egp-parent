@@ -3,12 +3,12 @@
 <div class="panel panel-default">
     <div class="panel-heading ${headingSign}">
         <h4 class="panel-title" >
-            <a href="#viewArCycleStage" data-toggle="collapse" >
+            <a class="collapsed" href="#viewArCycleStage" data-toggle="collapse" >
                 Assisted Reproduction Submission
             </a>
         </h4>
     </div>
-    <div id="viewArCycleStage" class="panel-collapse collapse in">
+    <div id="viewArCycleStage" class="panel-collapse collapse">
         <div class="panel-body">
             <div class="panel-main-content form-horizontal">
                 <c:set var="arCycleStageDto" value="${arSuperDataSubmissionDto.arCycleStageDto}" />

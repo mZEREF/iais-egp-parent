@@ -1,12 +1,12 @@
 <div class="panel panel-default">
     <div class="panel-heading ${headingSign}">
         <h4 class="panel-title" >
-            <a href="#viewArDonorSampleDetails" data-toggle="collapse" >
+            <a class="collapsed" href="#viewArDonorSampleDetails" data-toggle="collapse" >
                 Donor Sample
             </a>
         </h4>
     </div>
-    <div id="viewArDonorSampleDetails" class="panel-collapse collapse in">
+    <div id="viewArDonorSampleDetails" class="panel-collapse collapse">
         <div class="panel-body">
             <c:set var="donorSampleDto" value="${arSuperDataSubmissionDto.donorSampleDto}"/>
             <div class="panel-main-content form-horizontal">

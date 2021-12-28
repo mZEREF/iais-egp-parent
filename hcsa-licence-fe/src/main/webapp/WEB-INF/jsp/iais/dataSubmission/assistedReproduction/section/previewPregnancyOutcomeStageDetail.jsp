@@ -3,12 +3,12 @@
 <div class="panel panel-default">
     <div class="panel-heading ${headingSign}">
         <h4 class="panel-title">
-            <a href="#cycleDetails" data-toggle="collapse">
+            <a class="collapsed" href="#cycleDetails" data-toggle="collapse">
                 Outcome of Pregnancy
             </a>
         </h4>
     </div>
-    <div id="cycleDetails" class="panel-collapse collapse in">
+    <div id="cycleDetails" class="panel-collapse collapse">
         <div class="panel-body">
             <div class="panel-main-content form-horizontal "><%--min-row--%>
                 <h3>
@@ -149,12 +149,12 @@
      <c:if test="${(pregnancyOutcomeStageDto.maleLiveBirthNum + pregnancyOutcomeStageDto.femaleLiveBirthNum) < 1}">style="display:none;"</c:if>>
     <div class="panel-heading">
         <h4 class="panel-title">
-            <a href="#babyDetals" data-toggle="collapse">
+            <a class="collapsed" href="#babyDetals" data-toggle="collapse">
                 Details of Babies
             </a>
         </h4>
     </div>
-    <div class="panel-collapse collapse in" id="babyDetals">
+    <div class="panel-collapse collapse" id="babyDetals">
         <div class="panel-body">
             <div class="panel-main-content form-horizontal">
                 <%@include file="previewPregnancyOutcomeStageBabySection.jsp" %>

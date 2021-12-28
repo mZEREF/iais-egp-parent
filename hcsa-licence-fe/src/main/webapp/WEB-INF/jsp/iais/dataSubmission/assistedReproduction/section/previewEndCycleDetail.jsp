@@ -2,12 +2,12 @@
 <div class="panel panel-default">
     <div class="panel-heading ${headingSign}">
         <h4 class="panel-title">
-            <a class="" data-toggle="collapse" href="#patientDetails">
+            <a class="collapsed" data-toggle="collapse" href="#efoDetails">
                 End Cycle
             </a>
         </h4>
     </div>
-    <div id="efoDetails" class="panel-collapse collapse in">
+    <div id="efoDetails" class="panel-collapse collapse">
         <div class="panel-body">
             <div class="panel-main-content form-horizontal">
                 <h3>

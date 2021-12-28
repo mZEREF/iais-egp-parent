@@ -1,12 +1,12 @@
 <div class="panel panel-default">
     <div class="panel-heading ${headingSign}">
         <h4 class="panel-title">
-            <a class="" data-toggle="collapse" href="#patientDetails">
+            <a class="collapsed" data-toggle="collapse" href="#patientDetails">
                 Transfer In And Out
             </a>
         </h4>
     </div>
-    <div id="patientDetails" class="panel-collapse collapse in">
+    <div id="patientDetails" class="panel-collapse collapse">
         <div class="panel-body">
             <div class="panel-main-content form-horizontal ">
                 <c:set var="transferInOutStageDto" value="${arSuperDataSubmissionDto.transferInOutStageDto}" />

@@ -3,12 +3,12 @@
 <div class="panel panel-default">
     <div class="panel-heading">
         <h4 class="panel-title">
-            <a class="" data-toggle="collapse" href="#patientAmentment">
+            <a class="collapsed" data-toggle="collapse" href="#patientAmentment">
                 Amendment
             </a>
         </h4>
     </div>
-    <div id="patientAmentment" class="panel-collapse collapse in">
+    <div id="patientAmentment" class="panel-collapse collapse">
         <div class="panel-body">
             <div class="panel-main-content form-horizontal">
                 <iais:row>

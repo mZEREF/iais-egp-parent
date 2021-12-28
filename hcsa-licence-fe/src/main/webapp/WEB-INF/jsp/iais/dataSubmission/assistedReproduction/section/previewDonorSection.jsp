@@ -1,13 +1,13 @@
 <div class="panel panel-default" style="${!empty donorDtos ?  '' : 'display: none;'}">
      <div class="panel-heading ${headingSign}">
          <h4  class="panel-title" >
-        <a href="#donorDtoDetails" data-toggle="collapse"  >
+        <a class="collapsed" href="#donorDtoDetails" data-toggle="collapse"  >
             Details of Donor(s)
           </a>
        </h4>
     </div>
 
-     <div id="donorDtoDetails" class="panel-collapse collapse in">
+     <div id="donorDtoDetails" class="panel-collapse collapse">
          <div class="panel-body">
          <c:forEach items="${donorDtos}" var="donorDto">
              <c:set var="arDonorIndex" value="${donorDto.arDonorIndex}"/>

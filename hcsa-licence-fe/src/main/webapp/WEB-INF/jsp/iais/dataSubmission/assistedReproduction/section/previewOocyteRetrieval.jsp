@@ -9,12 +9,12 @@
 <div class="panel panel-default">
     <div class="panel-heading ${headingSign}">
         <h4 class="panel-title">
-            <a href="#cycleDetails" data-toggle="collapse" >
+            <a class="collapsed" href="#cycleDetails" data-toggle="collapse" >
                 Oocyte Retrieval
             </a>
         </h4>
     </div>
-    <div id="cycleDetails" class="panel-collapse collapse in">
+    <div id="cycleDetails" class="panel-collapse collapse">
         <div class="panel-body">
             <div class="panel-main-content form-horizontal ">
                 <h3>
