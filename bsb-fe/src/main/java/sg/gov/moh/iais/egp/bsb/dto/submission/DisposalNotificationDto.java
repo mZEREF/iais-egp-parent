@@ -1,5 +1,6 @@
 package sg.gov.moh.iais.egp.bsb.dto.submission;
 
+import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -353,7 +354,7 @@ public class DisposalNotificationDto implements Serializable {
             //keyMap is deal with problem document is not show in page
             if(!CollectionUtils.isEmpty(newDocInfoList)){
                 this.newKeyNewInfos.put(keyFlag++,newDocInfoList);
-                newRepoId = newDocInfoList.stream().map(PrimaryDocDto.NewDocInfo::getTmpId).collect(Collectors.joining(","));
+                newRepoId = newDocInfoList.stream().map(PrimaryDocDto.NewDocInfo::getTmpId).map(i-> MaskUtil.maskValue("file",i)).collect(Collectors.joining(","));
             }else{
                 keyFlag++;
                 //Check whether the previous file data exists
@@ -361,7 +362,7 @@ public class DisposalNotificationDto implements Serializable {
                 if(!CollectionUtils.isEmpty(oldDocInfo)){
                     //Populate the list with previous data if it exists
                     disposalNot.setNewDocInfos(oldDocInfo);
-                    newRepoId = oldDocInfo.stream().map(PrimaryDocDto.NewDocInfo::getTmpId).collect(Collectors.joining(","));
+                    newRepoId = oldDocInfo.stream().map(PrimaryDocDto.NewDocInfo::getTmpId).map(i-> MaskUtil.maskValue("file",i)).collect(Collectors.joining(","));
                 }
             }
             disposalNot.setRepoIdNewString(newRepoId);

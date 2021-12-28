@@ -147,7 +147,7 @@
                             <textarea id="sourceFacilityContactPerson"
                                       style="width: 100%;margin-bottom: 15px;" rows="6"
                                       name="sourceFacilityContactPerson"
-                                      maxlength="300">${receiveNotification.sourceFacilityContactPerson}</textarea>
+                                      maxlength="250">${receiveNotification.sourceFacilityContactPerson}</textarea>
                             <span data-err-ind="sourceFacilityContactPerson" class="error-msg"></span>
                         </div>
                     </div>
