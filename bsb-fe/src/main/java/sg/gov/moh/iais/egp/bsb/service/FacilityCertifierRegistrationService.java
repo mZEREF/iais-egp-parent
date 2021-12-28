@@ -465,7 +465,7 @@ public class FacilityCertifierRegistrationService {
 
     /* Will be removed in future, will get this from config mechanism */
     public List<DocSetting> getFacRegDocSettings () {
-        List<DocSetting> docSettings = new ArrayList<>();
+        List<DocSetting> docSettings = new ArrayList<>(5);
         docSettings.add(new DocSetting(DocConstants.DOC_TYPE_COMPANY_INFORMATION, "Company Information", true));
         docSettings.add(new DocSetting(DocConstants.DOC_TYPE_SOP_FOR_CERTIFICATION, "SOP for Certification", true));
         docSettings.add(new DocSetting(DocConstants.DOC_TYPE_OTHERS, "Others", false));

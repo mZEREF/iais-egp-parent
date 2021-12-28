@@ -43,3 +43,6 @@ function validate(){
     //     $('#uploadButton').click();
     // }
 }
+function doOpenApp() {
+    window.open ("/bsb-be/eservice/INTRANET/MohBeAppViewDetails");
+}

@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import sg.gov.moh.iais.egp.bsb.client.AppViewClient;
+import sg.gov.moh.iais.egp.bsb.constant.DocConstants;
 import sg.gov.moh.iais.egp.bsb.constant.ResponseConstants;
 import sg.gov.moh.iais.egp.bsb.dto.ResponseDto;
 import sg.gov.moh.iais.egp.bsb.dto.appview.afc.FacilityCertifierRegisterDto;
@@ -18,6 +19,7 @@ import sg.gov.moh.iais.egp.bsb.dto.appview.facility.FacilityRegisterDto;
 import sg.gov.moh.iais.egp.bsb.dto.entity.ApplicationDto;
 import sg.gov.moh.iais.egp.bsb.dto.file.DocRecordInfo;
 import sg.gov.moh.iais.egp.bsb.dto.file.PrimaryDocDto;
+import sg.gov.moh.iais.egp.bsb.entity.DocSetting;
 import sg.gov.moh.iais.egp.bsb.util.CollectionUtils;
 import sop.webflow.rt.api.BaseProcessClass;
 
@@ -26,7 +28,6 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import static sg.gov.moh.iais.egp.bsb.constant.MasterCodeConstants.*;
 
@@ -52,9 +53,14 @@ public class MohBeAppViewDelegator {
 
     private static final String KEY_APPROVAL_PROFILE_LIST                    = "approvalProfileList";
 
-    public static final String NODE_NAME_ORG_PROFILE                         = "orgProfile";
-    public static final String NODE_NAME_ORG_CERTIFYING_TEAM                 = "orgCerTeam";
-    public static final String NODE_NAME_ORG_FAC_ADMINISTRATOR               = "orgAdmin";
+    private static final String NODE_NAME_ORG_PROFILE                        = "orgProfile";
+    private static final String NODE_NAME_ORG_CERTIFYING_TEAM                = "orgCerTeam";
+    private static final String NODE_NAME_ORG_FAC_ADMINISTRATOR              = "orgAdmin";
+
+    private static final String KEY_DOC_SETTINGS                             = "docSettings";
+    private static final String KEY_SAVED_FILES                              = "savedFiles";
+    private static final String KEY_PRIMARY_DOC_DTO                          = "primaryDocDto";
+
 
     private final AppViewClient appViewClient;
 
@@ -64,6 +70,8 @@ public class MohBeAppViewDelegator {
     }
 
     public void start(BaseProcessClass bpc) {
+        HttpServletRequest request = bpc.request;
+        request.getSession().removeAttribute(KEY_PRIMARY_DOC_DTO);
         AuditTrailHelper.auditFunction(MODULE_NAME, FUNCTION_NAME);
     }
 
@@ -107,13 +115,12 @@ public class MohBeAppViewDelegator {
             List<BiologicalAgentToxinDto> batList = new ArrayList<>(facilityRegisterDto.getBiologicalAgentToxinMap().values());
             ParamUtil.setRequestAttr(request, KEY_BAT_LIST, batList);
 
+            ParamUtil.setRequestAttr(request, KEY_DOC_SETTINGS, getFacRegDocSettings());
             PrimaryDocDto primaryDocDto = new PrimaryDocDto();
             primaryDocDto.setSavedDocMap(CollectionUtils.uniqueIndexMap(facilityRegisterDto.getDocRecordInfos(), DocRecordInfo::getRepoId));
             Map<String, List<DocRecordInfo>> saveFiles = primaryDocDto.getExistDocTypeMap();
-            Set<String> docTypes = saveFiles.keySet();
-            ParamUtil.setRequestAttr(request, "docTypes", docTypes);
-            ParamUtil.setRequestAttr(request, "savedFiles", saveFiles);
-            ParamUtil.setRequestAttr(request, "primaryDocDto", primaryDocDto);
+            ParamUtil.setRequestAttr(request, KEY_SAVED_FILES, saveFiles);
+            ParamUtil.setSessionAttr(request, KEY_PRIMARY_DOC_DTO, primaryDocDto);
         } else {
             throw new IaisRuntimeException(ResponseConstants.ERR_MSG_FAIL_RETRIEVAL);
         }
@@ -125,6 +132,13 @@ public class MohBeAppViewDelegator {
             ApprovalAppDto approvalAppDto = resultDto.getEntity();
             List<ApprovalProfileDto> approvalProfileDtoList = new ArrayList<>(approvalAppDto.getApprovalProfileMap().values());
             ParamUtil.setRequestAttr(request, KEY_APPROVAL_PROFILE_LIST, approvalProfileDtoList);
+
+            ParamUtil.setRequestAttr(request, KEY_DOC_SETTINGS, getApprovalAppDocSettings());
+            PrimaryDocDto primaryDocDto = new PrimaryDocDto();
+            primaryDocDto.setSavedDocMap(CollectionUtils.uniqueIndexMap(approvalAppDto.getDocRecordInfos(), DocRecordInfo::getRepoId));
+            Map<String, List<DocRecordInfo>> saveFiles = primaryDocDto.getExistDocTypeMap();
+            ParamUtil.setRequestAttr(request, KEY_SAVED_FILES, saveFiles);
+            ParamUtil.setSessionAttr(request, KEY_PRIMARY_DOC_DTO, primaryDocDto);
         } else {
             throw new IaisRuntimeException(ResponseConstants.ERR_MSG_FAIL_RETRIEVAL);
         }
@@ -137,8 +151,52 @@ public class MohBeAppViewDelegator {
             ParamUtil.setRequestAttr(request, NODE_NAME_ORG_PROFILE, facilityCertifierRegisterDto.getProfileDto());
             ParamUtil.setRequestAttr(request, NODE_NAME_ORG_CERTIFYING_TEAM, facilityCertifierRegisterDto.getCertifyingTeamDto());
             ParamUtil.setRequestAttr(request, NODE_NAME_ORG_FAC_ADMINISTRATOR, facilityCertifierRegisterDto.getAdministratorDto());
+
+            ParamUtil.setRequestAttr(request, KEY_DOC_SETTINGS, getFacCerRegDocSettings());
+            PrimaryDocDto primaryDocDto = new PrimaryDocDto();
+            primaryDocDto.setSavedDocMap(CollectionUtils.uniqueIndexMap(facilityCertifierRegisterDto.getDocRecordInfos(), DocRecordInfo::getRepoId));
+            Map<String, List<DocRecordInfo>> saveFiles = primaryDocDto.getExistDocTypeMap();
+            ParamUtil.setRequestAttr(request, KEY_SAVED_FILES, saveFiles);
+            ParamUtil.setSessionAttr(request, KEY_PRIMARY_DOC_DTO, primaryDocDto);
         } else {
             throw new IaisRuntimeException(ResponseConstants.ERR_MSG_FAIL_RETRIEVAL);
         }
+    }
+
+    /* Will be removed in future, will get this from config mechanism */
+    private List<DocSetting> getFacRegDocSettings () {
+        List<DocSetting> docSettings = new ArrayList<>(9);
+        docSettings.add(new DocSetting(DocConstants.DOC_TYPE_BIO_SAFETY_COORDINATOR_CERTIFICATES, "BioSafety Coordinator Certificates", true));
+        docSettings.add(new DocSetting(DocConstants.DOC_TYPE_INVENTORY_FILE, "Inventory File", false));
+        docSettings.add(new DocSetting(DocConstants.DOC_TYPE_GMAC_ENDORSEMENT, "GMAC Endorsement", false));
+        docSettings.add(new DocSetting(DocConstants.DOC_TYPE_RISK_ASSESS_PLAN, "Risk Assessment Plan", false));
+        docSettings.add(new DocSetting(DocConstants.DOC_TYPE_STANDARD_OPERATING_PROCEDURE, "Standard Operating Procedure", false));
+        docSettings.add(new DocSetting(DocConstants.DOC_TYPE_EMERGENCY_RESPONSE_PLAN, "Emergency Response Plan", false));
+        docSettings.add(new DocSetting(DocConstants.DOC_TYPE_BIO_SAFETY_COM, "Approval/Endorsement : Biosafety Com", false));
+        docSettings.add(new DocSetting(DocConstants.DOC_TYPE_FACILITY_PLAN_LAYOUT, "Facility Plan/Layout", false));
+        docSettings.add(new DocSetting(DocConstants.DOC_TYPE_OTHERS, "Others", false));
+        return docSettings;
+    }
+
+    /* Will be removed in future, will get this from config mechanism */
+    private List<DocSetting> getApprovalAppDocSettings () {
+        List<DocSetting> docSettings = new ArrayList<>(5);
+        docSettings.add(new DocSetting(DocConstants.DOC_TYPE_BIO_SAFETY_COM, "Approval/Endorsement: Biosafety Committee", true));
+        docSettings.add(new DocSetting(DocConstants.DOC_TYPE_RISK_ASSESSMENT, "Risk Assessment", false));
+        docSettings.add(new DocSetting(DocConstants.DOC_TYPE_STANDARD_OPERATING_PROCEDURE, "Standard Operating Procedure (SOP)", false));
+        docSettings.add(new DocSetting(DocConstants.DOC_TYPE_GMAC_ENDORSEMENT, "GMAC Endorsement", false));
+        docSettings.add(new DocSetting(DocConstants.DOC_TYPE_OTHERS, "Others", false));
+        return docSettings;
+    }
+
+    /* Will be removed in future, will get this from config mechanism */
+    private List<DocSetting> getFacCerRegDocSettings () {
+        List<DocSetting> docSettings = new ArrayList<>(5);
+        docSettings.add(new DocSetting(DocConstants.DOC_TYPE_COMPANY_INFORMATION, "Company Information", true));
+        docSettings.add(new DocSetting(DocConstants.DOC_TYPE_SOP_FOR_CERTIFICATION, "SOP for Certification", true));
+        docSettings.add(new DocSetting(DocConstants.DOC_TYPE_OTHERS, "Others", false));
+        docSettings.add(new DocSetting(DocConstants.DOC_TYPE_TESTIMONIALS, "Testimonials", true));
+        docSettings.add(new DocSetting(DocConstants.DOC_TYPE_CURRICULUM_VITAE, "Curriculum Vitae", true));
+        return docSettings;
     }
 }

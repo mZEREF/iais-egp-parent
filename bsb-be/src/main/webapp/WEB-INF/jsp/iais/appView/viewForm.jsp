@@ -1,12 +1,16 @@
 <%@ page import="sg.gov.moh.iais.egp.bsb.util.TableDisplayUtil"%>
+<%@ page import="com.ecquaria.cloud.moh.iais.common.utils.MaskUtil" %>
 <%@ taglib prefix="webui" uri="http://www.ecquaria.com/webui" %>
 <%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ page import="static sg.gov.moh.iais.egp.bsb.constant.GlobalConstants.WEB_ROOT" %>
 <%
     sop.webflow.rt.api.BaseProcessClass process =
             (sop.webflow.rt.api.BaseProcessClass) request.getAttribute("process");
 %>
 <webui:setLayout name="iais-internet"/>
+
+<script type="text/javascript" src="<%=WEB_ROOT%>/js/bsb/bsb-file.js"></script>
 <form method="post" id="mainForm" action="<%=process.runtime.continueURL()%>">
     <div class="main-content">
         <div class="container">

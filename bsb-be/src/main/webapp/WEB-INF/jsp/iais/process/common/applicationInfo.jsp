@@ -10,35 +10,35 @@
                         <th scope="col" style="display: none"></th>
                     </tr>
                     <tr>
-                        <td class="col-xs-6" align="right">Application No.</td>
+                        <td class="col-xs-6" style="text-align: right">Application No.</td>
                         <td class="col-xs-6" style="padding-left : 20px">${submitDetailsDto.applicationDto.applicationNo}</td>
                     </tr>
                     <tr>
-                        <td align="right">Application Type</td>
+                        <td style="text-align: right">Application Type</td>
                         <td style="padding-left : 20px"><iais:code code="${submitDetailsDto.applicationDto.appType}"></iais:code></td>
                     </tr>
                     <tr>
-                        <td align="right">Process Type</td>
+                        <td style="text-align: right">Process Type</td>
                         <td style="padding-left : 20px"><iais:code code="${submitDetailsDto.applicationDto.processType}"></iais:code></td>
                     </tr>
                     <tr>
-                        <td align="right">Activity Type</td>
+                        <td style="text-align: right">Activity Type</td>
                         <td style="padding-left : 20px"><iais:code code="${submitDetailsDto.activityType}"></iais:code></td>
                     </tr>
                     <tr>
-                        <td align="right">Facility Name/Address</td>
+                        <td style="text-align: right">Facility Name/Address</td>
                         <td style="padding-left : 20px">${submitDetailsDto.facilityName}/${TableDisplayUtil.getOneLineAddress(submitDetailsDto.blkNo, submitDetailsDto.streetName, submitDetailsDto.floorNo, submitDetailsDto.unitNo, submitDetailsDto.postalCode)}</td>
                     </tr>
                     <tr>
-                        <td align="right">Submission Date</td>
+                        <td style="text-align: right">Submission Date</td>
                         <td style="padding-left : 20px"><fmt:formatDate value="${submitDetailsDto.applicationDto.applicationDt}" pattern="dd/MM/yyyy"/></td>
                     </tr>
                     <tr>
-                        <td align="right">Application Status</td>
+                        <td style="text-align: right">Application Status</td>
                         <td style="padding-left : 20px"><iais:code code="${submitDetailsDto.applicationDto.status}"></iais:code></td>
                     </tr>
                     <tr>
-                        <td align="right">Facility/Approval Expiry Date</td>
+                        <td style="text-align: right">Facility/Approval Expiry Date</td>
                         <td style="padding-left : 20px"><c:out value="${submitDetailsDto.facilityOrApprovalExpiryDate}"/></td>
                     </tr>
                     </tbody>
@@ -59,23 +59,23 @@
                         <th scope="col" style="display: none"></th>
                     </tr>
                     <tr>
-                        <td class="col-xs-6" align="right">Facility/Organisation Name</td>
+                        <td class="col-xs-6" style="text-align: right">Facility/Organisation Name</td>
                         <td class="col-xs-6" style="padding-left : 20px">${submitDetailsDto.facilityOrOrganisationName}</td>
                     </tr>
                     <tr>
-                        <td align="right">Facility/Organisation Address</td>
+                        <td style="text-align: right">Facility/Organisation Address</td>
                         <td style="padding-left : 20px">${submitDetailsDto.facilityOrOrganisationAddress}</td>
                     </tr>
                     <tr>
-                        <td align="right">Facility/Organisation Admin</td>
+                        <td style="text-align: right">Facility/Organisation Admin</td>
                         <td style="padding-left : 20px">${submitDetailsDto.facilityOrOrganisationAdmin}</td>
                     </tr>
                     <tr>
-                        <td align="right">Telephone</td>
+                        <td style="text-align: right">Telephone</td>
                         <td style="padding-left : 20px">${submitDetailsDto.telephone}</td>
                     </tr>
                     <tr>
-                        <td align="right">Email</td>
+                        <td style="text-align: right">Email</td>
                         <td style="padding-left : 20px">${submitDetailsDto.email}</td>
                     </tr>
                     </tbody>
@@ -84,7 +84,7 @@
         </div>
     </div>
 </div>
-<div align="center">
+<div style="text-align: center">
     <a href="javascript:void(0);" onclick="javascript:doOpenApp()">
         <button type="button" class="btn btn-primary">
             View Application
@@ -100,7 +100,7 @@
                 <table aria-describedby="" class="table table-bordered" style="margin-bottom: 0">
                     <thead>
                     <tr>
-                        <th scope="col" style="text-align:center;width:5%" align="center">S/N</th>
+                        <th scope="col" style="text-align:center;width:5%">S/N</th>
                         <th scope="col" style="text-align:center;">Schedule</th>
                         <th scope="col" style="text-align:center;">Biological Agent / Toxin</th>
                     </tr>
@@ -125,11 +125,6 @@
         </div>
     </div>
 </div>
-<div align="left">
+<div style="text-align: left">
     <a style="float:left;padding-top: 1.1%;" class="back" id="back" href="/bsb-be/eservicecontinue/INTRANET/MohBsbTaskList"><em class="fa fa-angle-left"></em> Back</a>
 </div>
-<script type="text/javascript">
-    function doOpenApp() {
-        window.open ("/bsb-be/eservice/INTRANET/MohBeAppViewDetails");
-    }
-</script>
