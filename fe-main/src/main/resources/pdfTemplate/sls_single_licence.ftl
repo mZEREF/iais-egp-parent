@@ -15,7 +15,7 @@
     }
     body {
       font-family:"Open Sans", sans-serif;
-      font-size: 14pt;
+      font-size: 16pt;
       font-weight: 400;
       line-height: 1.5;
       color: #212529;
@@ -53,23 +53,22 @@
     .col-xs-1, .col-sm-1, .col-md-1, .col-lg-1, .col-xs-2, .col-sm-2, .col-md-2, .col-lg-2, .col-xs-3, .col-sm-3, .col-md-3, .col-lg-3, .col-xs-4, .col-sm-4, .col-md-4, .col-lg-4, .col-xs-5, .col-sm-5, .col-md-5, .col-lg-5, .col-xs-6, .col-sm-6, .col-md-6, .col-lg-6, .col-xs-7, .col-sm-7, .col-md-7, .col-lg-7, .col-xs-8, .col-sm-8, .col-md-8, .col-lg-8, .col-xs-9, .col-sm-9, .col-md-9, .col-lg-9, .col-xs-10, .col-sm-10, .col-md-10, .col-lg-10, .col-xs-11, .col-sm-11, .col-md-11, .col-lg-11, .col-xs-12, .col-sm-12, .col-md-12, .col-lg-12 {
       position: relative;
       min-height: 1px;
-      /*padding-right: 15px;*/
-      /*padding-left: 15px;*/
+      padding-right: 15px;
+      padding-left: 15px;
     }
     .col-xs-12 {
       width: 100%;
     }
-    .col-md-6 {
-      -ms-flex: 0 0 50%;
-      flex: 0 0 50%;
-      max-width: 50%;
+    .col-md-4 {
+      -ms-flex: 0 0 31%;
+      flex: 0 0 31%;
+      max-width: 31%;
     }
     .col-xs-1, .col-xs-2, .col-xs-3, .col-xs-4, .col-xs-5, .col-xs-6, .col-xs-7, .col-xs-8, .col-xs-9, .col-xs-10, .col-xs-11, .col-xs-12 {
       float: left;
     }
     .center-content {
-      /* padding: 10px 90px; */
-      /*padding: 0px 0px;*/
+      /*padding: 10px 90px;*/
     }
     .licence_box  {
       background-image: url("http://localhost:8080/main-web/img/license-mainbg.png");
@@ -84,7 +83,7 @@
       position: relative;
     }
     .lic-headerbox {
-      height: 230px;
+      height: 245px;
     }
     .lic-title {
       text-align: center;
@@ -106,19 +105,24 @@
       margin-top: 10px;
     }
     .lic-number p {
-      font-size: 14pt;
+      font-size: 16pt;
+      margin-bottom: 0;
+      margin-top: 25px;
     }
     .lic-number h2 {
-      font-size: 18pt;
+      font-size: 16pt;
       font-weight: 700;
       text-transform:uppercase;
       border:none;
+      margin-top: 0;
+      margin-bottom: 30px;
     }
     .lic-info {
       margin-top: 15px;
     }
     .lic-info p {
       font-size: 14pt;
+      margin-bottom: 0px;
     }
     .lic-info h3 {
       font-size: 16pt;
@@ -127,6 +131,7 @@
       margin-bottom: 10px;
       padding-bottom: 0px;
       border:none;
+      margin-top: 0px;
     }
     .licence_box span {
       font-style: italic;
@@ -140,13 +145,17 @@
       margin-top: 20px;
     }
     .lic-approved-info p {
-      margin-top: 10px;
+      /*margin-top: 10px;*/
+      margin: 0px;
+      font-weight: 700;
+      text-transform: uppercase;
     }
     .lic-dateinfo {
       margin-top: 20px;
     }
     .lic-dateinfo p {
-      font-size: 14pt;
+      font-size: 16pt;
+      margin-bottom: 0;
     }
     .lic-dateinfo h3 {
       font-size: 16pt;
@@ -155,15 +164,19 @@
       margin-bottom: 10px;
       padding-bottom: 0px;
       border:none;
+      margin-top: 0;
     }
     .lic-signature-info {
       margin-top: 25px;
     }
     .lic-signature-info p {
-      font-size: 14pt;
+      font-size: 16pt;
       font-weight: 700;
       text-transform: uppercase;
       margin-bottom: 0px;
+    }
+    .lic-signature-info span {
+      font-size: 14pt;
     }
     .vehicle-number {
       display: inline-block;
@@ -172,6 +185,8 @@
     }
     ul.v-numberlist li {
       list-style: none outside none;
+      text-transform: uppercase;
+      font-weight: 700;
     }
     ul.v-numberlist li::before {
       content: none;
@@ -182,15 +197,15 @@
       padding: 5px;
       position: absolute;
       /*bottom: 45px;*/
-      bottom: 130px;
+      bottom: 150px;
       width: 100%;
-      text-align: center;
-      margin-left: 70px;
+      text-align: justified;
+      margin-left: 86px;
 
     }
     .lic-footer p {
-      font-size: 11pt;
-
+      font-size: 12pt;
+      text-align: justified;
     }
     .table-responsive {
       display: block;
@@ -209,6 +224,8 @@
     .table > thead > tr > th {
       vertical-align: bottom;
       border-bottom: 2px solid #ddd;
+      font-weight: normal;
+      text-decoration: underline;
     }
     .table > thead > tr > th, .table > tbody > tr > th, .table > tfoot > tr > th, .table > thead > tr > td, .table > tbody > tr > td, .table > tfoot > tr > td {
       padding: 8px;
@@ -222,11 +239,11 @@
     p {
       margin: 0 0 10px;
     }
-    p.note {
-      font-size: 10pt;
-    }
     .table > thead > tr > th, .table > tbody > tr > th, .table > tfoot > tr > th, .table > thead > tr > td, .table > tbody > tr > td, .table > tfoot > tr > td {
       line-height: 1.42857143;
+    }
+    .v-numberlist {
+      padding-left: 0;
     }
   </style>
 </head>
@@ -251,40 +268,37 @@
               <p>NAME OF LICENSEE</p>
               <h3>${licenseeName}</h3>
               <br></br>
-              <p>SPECIAL LICENSABLE HEALTHCARE SERVICE</p>
+              <p>LICENSABLE HEALTHCARE SERVICE</p>
               <h3>${serviceName}</h3>
               <span>${hivTesting}</span>
-              <p class="note"><strong>Note:</strong>
+              <p class="note">Note:<br></br>
                 The licensee stated above is permitted to provide the special licensable healthcare service to which this licence relates, on the condition that the licensee must at all times also be granted a licence to provide ${baseServiceName}, being a licensable healthcare service prescribed as underlying to that special licensable healthcare service.
               </p>
+              <br></br>
             </div>
             <div class="lic-approved-info">
               <div class="table-responsive">
                 <table class="table">
                   <thead>
                   <tr>
-                    <td></td>
-                    <td><u>BUSINESS NAME</u></td>
-                    <td><u>LICENSED PREMISES <br></br>(ADDRESS)</u></td>
-                    <td><u>LICENSED CONVEYANCES <br></br>(VEHICLE NO.)</u></td>
+                    <th></th>
+                    <th>BUSINESS NAME</th>
+                    <th>LICENSED PREMISES <br></br>(ADDRESS)</th>
+                    <th>LICENSED CONVEYANCES <br></br>(VEHICLE NO.)</th>
                   </tr>
                   </thead>
                   <tbody>
                   <tr>
                     <td>
-                      <p></p>
                       <p>1</p>
                     </td>
                     <td>
-                      <p class="visible-xs visible-sm table-row-title"></p>
-                      <p><u style ="font-weight:bold;">${businessName}</u></p>
+                      <p>${businessName}</p>
                     </td>
                     <td>
-                      <p class="visible-xs visible-sm table-row-title"></p>
-                      <p><u style ="font-weight:bold;"> ${address}</u></p>
+                      <p> ${address}</p>
                     </td>
                     <td>
-                      <p class="visible-xs visible-sm table-row-title"></p>
                     ${vehicleNo}
                     </td>
                   </tr>
@@ -295,13 +309,13 @@
             <div class="lic-dateinfo">
               <table width = "100%" >
                 <tr align = "left">
-                  <td width = "50%">
+                  <td width = "29%">
                     <div class="col-xs-12 col-md-6" style="padding-left: 0px">
                       <p>LICENCE START DATE</p>
                       <h3>${startDate}</h3>
                     </div>
                   </td>
-                  <td width = "50%" align = "left">
+                  <td width = "71%" align = "left">
                     <div class="col-xs-12 col-md-6">
                       <p>LICENCE END DATE</p>
                       <h3>${endDate}</h3>
@@ -316,8 +330,9 @@
               <span>This is a computer -generated document. No Signature is required</span>
             </div>
             <div class="lic-footer" >
-              <p style = "text-align: left;">This licence is issued under the Healthcare Services Act 2020 and is subject to its provisions, as well as any regulations, rules, code of practices and directions issued under it, and any conditions imposed by the Director of Medical Services. The licence is valid from the licence start date until the licence end date, unless revoked, suspended, ceased or surrendered.</p>
-              <p style = "text-align: center;">Ministry of Health | Page 1 of 1</p>
+              <p >This licence is issued under the Healthcare Services Act 2020 and is subject to its provisions, as well as any regulations, rules, code of practices and directions issued under it, and any conditions imposed by the Director of Medical Services. The licence is valid from the licence start date until the licence end date, unless revoked, suspended, ceased or surrendered.</p>
+              <p><br></br></p>
+              <p style = "font-size: 14pt;text-align: center;">Ministry of Health | Page 1 of 1</p>
             </div>
           </div>
         </div>
