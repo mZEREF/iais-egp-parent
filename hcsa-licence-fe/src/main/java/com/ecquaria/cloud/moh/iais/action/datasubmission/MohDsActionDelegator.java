@@ -107,7 +107,6 @@ public class MohDsActionDelegator {
                 iuiCycleStageDelegator.init(request);
                 arDataSubmissionService.setIuiCycleStageDtoDefaultVal(arSuper);
             }
-            ParamUtil.setRequestAttr(request, "preViewAr", AppConsts.YES);
         }
     }
 

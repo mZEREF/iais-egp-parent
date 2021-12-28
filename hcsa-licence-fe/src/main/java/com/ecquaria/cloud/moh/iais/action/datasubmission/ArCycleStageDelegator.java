@@ -115,12 +115,12 @@ public class ArCycleStageDelegator extends DonorCommonDelegator{
     public void setEnhancedCounsellingTipShow(HttpServletRequest request, ArCycleStageDto arCycleStageDto ){
         if(arCycleStageDto.getCycleAgeYear() > 45 || arCycleStageDto.getCycleAgeYear() == 45 && arCycleStageDto.getCycleAgeMonth() > 0){
             if(arCycleStageDto.getEnhancedCounselling() == null || !arCycleStageDto.getEnhancedCounselling()){
-                ParamUtil.setRequestAttr(request,"enhancedCounsellingTipShow", AppConsts.YES);
                 if(ACTION_TYPE_CONFIRM.equalsIgnoreCase(ParamUtil.getString(request, DataSubmissionConstant.CRUD_TYPE))){
                 ParamUtil.setRequestAttr(request, "DS_ERR018Tip","<p>"+MessageUtil.getMessageDesc("DS_ERR018")+"</p>");
                 }
                 if(AppConsts.YES.equalsIgnoreCase(ParamUtil.getRequestString(request,INIT_IN_ARCYCLE_STAGE))){
                     ParamUtil.setSessionAttr(request,ENHANCEDCOUNSELLING_NO_SHOW,AppConsts.YES);
+                    ParamUtil.setRequestAttr(request,"enhancedCounsellingTipShow", AppConsts.YES);
                 }
             }
         }

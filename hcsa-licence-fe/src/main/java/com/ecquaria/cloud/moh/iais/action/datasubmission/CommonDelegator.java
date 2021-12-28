@@ -482,7 +482,7 @@ public abstract class CommonDelegator {
 
     //TODO from ar center
     protected final List<SelectOption> getSourseList(HttpServletRequest request){
-        List<SelectOption> selectOptions  = DataSubmissionHelper.genPremisesOptions((Map<String, PremisesDto>) ParamUtil.getSessionAttr(request, DataSubmissionConstant.AR_PREMISES_MAP));
+        List<SelectOption> selectOptions  = DataSubmissionHelper.genPremisesOptions(DataSubmissionHelper.setArPremisesMap(request));
         selectOptions.add(new SelectOption(DataSubmissionConsts.AR_SOURCE_OTHER,DONOR_SOURSE_OTHERS));
         return selectOptions;
     }

@@ -94,15 +94,6 @@
                  </c:if>
 
 
-                 <c:if test="${preViewAr eq '1' && empty donorDto.ageList}">
-                     <iais:row cssClass="usedDonorOocyteControlClass yesUsedDonorOocyteControl">
-                         <iais:field width="5" value="Donor's Age at Donation" />
-                         <iais:value width="7" cssClass="col-md-7" display="true">
-                             <c:out value="${donorDto.age}" />
-                         </iais:value>
-                     </iais:row>
-                 </c:if>
-
                  <c:if test="${donorDto.directedDonation}">
                      <iais:row id="relation${arDonorIndex}Row">
                          <iais:field width="5" value="Donor relation to patient" />
