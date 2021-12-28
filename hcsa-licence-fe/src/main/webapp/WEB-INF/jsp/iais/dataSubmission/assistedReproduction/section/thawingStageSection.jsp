@@ -50,7 +50,7 @@
                         <iais:field width="6" value="No. of Oocytes Thawed" mandatory="true" cssClass="col-md-6"/>
                         <iais:value width="6" cssClass="col-md-6">
                             <iais:input maxLength="2" type="text" name="thawedOocytesNum" id="thawedOocytesNum"
-                                        value="${thawingStageDto.thawedOocytesNum>=0?thawingStageDto.thawedOocytesNum:''}"/>
+                                        value="${thawingStageDto.thawedOocytesNum}"/>
                         </iais:value>
                     </iais:row>
                     <iais:row>
@@ -59,7 +59,7 @@
                         <iais:value width="6" cssClass="col-md-6">
                             <iais:input maxLength="2" type="text" name="thawedOocytesSurvivedMatureNum"
                                         id="thawedOocytesSurvivedMatureNum"
-                                        value="${thawingStageDto.thawedOocytesSurvivedMatureNum>=0?thawingStageDto.thawedOocytesSurvivedMatureNum:''}"/>
+                                        value="${thawingStageDto.thawedOocytesSurvivedMatureNum}"/>
                         </iais:value>
                     </iais:row>
                     <iais:row>
@@ -68,7 +68,7 @@
                         <iais:value width="6" cssClass="col-md-6">
                             <iais:input maxLength="2" type="text" name="thawedOocytesSurvivedImmatureNum"
                                         id="thawedOocytesSurvivedImmatureNum"
-                                        value="${thawingStageDto.thawedOocytesSurvivedImmatureNum>=0?thawingStageDto.thawedOocytesSurvivedImmatureNum:''}"/>
+                                        value="${thawingStageDto.thawedOocytesSurvivedImmatureNum}"/>
                         </iais:value>
                     </iais:row>
                     <iais:row>
@@ -77,7 +77,7 @@
                         <iais:value width="6" cssClass="col-md-6">
                             <iais:input maxLength="2" type="text" name="thawedOocytesSurvivedOtherNum"
                                         id="thawedOocytesSurvivedOtherNum"
-                                        value="${thawingStageDto.thawedOocytesSurvivedOtherNum>=0?thawingStageDto.thawedOocytesSurvivedOtherNum:''}"/>
+                                        value="${thawingStageDto.thawedOocytesSurvivedOtherNum}"/>
                         </iais:value>
                     </iais:row>
                 </div>
@@ -86,7 +86,7 @@
                         <iais:field width="6" value="No. of Embryos Thawed" mandatory="true" cssClass="col-md-6"/>
                         <iais:value width="6" cssClass="col-md-6">
                             <iais:input maxLength="2" type="text" name="thawedEmbryosNum" id="thawedEmbryosNum"
-                                        value="${thawingStageDto.thawedEmbryosNum>=0?thawingStageDto.thawedEmbryosNum:''}"/>
+                                        value="${thawingStageDto.thawedEmbryosNum}"/>
                         </iais:value>
                     </iais:row>
                     <iais:row>
@@ -95,7 +95,7 @@
                         <iais:value width="6" cssClass="col-md-6">
                             <iais:input maxLength="2" type="text" name="thawedEmbryosSurvivedNum"
                                         id="thawedEmbryosSurvivedNum"
-                                        value="${thawingStageDto.thawedEmbryosSurvivedNum>=0?thawingStageDto.thawedEmbryosSurvivedNum:''}"/>
+                                        value="${thawingStageDto.thawedEmbryosSurvivedNum}"/>
                         </iais:value>
                     </iais:row>
                 </div>
