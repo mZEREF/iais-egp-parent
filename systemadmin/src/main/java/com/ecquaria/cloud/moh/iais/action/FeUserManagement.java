@@ -183,7 +183,7 @@ public class FeUserManagement {
         if (!StringUtil.isEmpty(userId)) {
             feUserDto = organizationClient.getUserAccount(userId).getEntity();
             if (feUserDto.getUserId().indexOf('_') < 0) {
-                feUserDto.setUenNo(null);
+                feUserDto.setSolo(true);
             }
             ParamUtil.setSessionAttr(bpc.request, "inter_user_attr", feUserDto);
         } else {
@@ -296,7 +296,7 @@ public class FeUserManagement {
                 }
             }
             // set user id
-            if (userAttr.isCorpPass()) {
+            if (userAttr.isCorpPass() && !userAttr.isSolo()) {
                 userAttr.setUserId(userAttr.getUenNo() + "_" + idNo);
                 userDto.setUserId(userAttr.getUenNo() + "_" + idNo);
             } else {
