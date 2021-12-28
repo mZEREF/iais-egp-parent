@@ -182,6 +182,9 @@ public class FeUserManagement {
         FeUserDto feUserDto;
         if (!StringUtil.isEmpty(userId)) {
             feUserDto = organizationClient.getUserAccount(userId).getEntity();
+            if (feUserDto.getUserId().indexOf('_') < 0) {
+                feUserDto.setUenNo(null);
+            }
             ParamUtil.setSessionAttr(bpc.request, "inter_user_attr", feUserDto);
         } else {
             feUserDto = (FeUserDto) ParamUtil.getSessionAttr(bpc.request, "inter_user_attr");
