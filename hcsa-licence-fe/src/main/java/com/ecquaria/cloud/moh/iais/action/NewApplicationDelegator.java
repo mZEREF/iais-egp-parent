@@ -2764,7 +2764,8 @@ public class NewApplicationDelegator {
                         serviceInfoChangeEffectPersonForRFC.generateDtosForAutoFields(autoAppSubmissionDto, oldAppSubmissionDto,
                                 changeList, stepList));
                 // re-set change edit select dto
-                if (!appEditSelectDto.isChangeBusinessName() && !appEditSelectDto.isChangeVehicle() && !appEditSelectDto.isChangePersonnel()) {
+                if (!appEditSelectDto.isChangeBusinessName() && !appEditSelectDto.isChangeVehicle()
+                        && !appEditSelectDto.isChangePersonnel() && !appEditSelectDto.isChangeSectionLeader()) {
                     appEditSelectDto.setServiceEdit(false);
                 }
             }
