@@ -20,8 +20,8 @@
     .form-horizontal p {
         line-height: 23px;
     }
-    thead > tr > th > p {
-        line-height: 33px;
+    thead > tr > th > span {
+        line-height: 0px;
     }
     .table-info-display {
         margin: 20px 15px 25px 12px;

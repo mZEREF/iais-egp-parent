@@ -18,8 +18,8 @@
     .form-horizontal p {
         line-height: 23px;
     }
-    thead > tr > th > p {
-        line-height: 33px;
+    thead > tr > th > span {
+        line-height: 0px;
     }
 </style>
 <webui:setLayout name="iais-intranet"/>

@@ -15,8 +15,8 @@
 %>
 <style>
 
-    thead > tr > th > p {
-        line-height: 33px;
+    thead > tr > th > span {
+        line-height: 0px;
     }
 </style>
 <script type="text/javascript" src="<%=webrootCom%>js/onlineEnquiries/donorSearch.js"></script>

@@ -22,8 +22,8 @@
         -moz-border-radius: 8px;
         -webkit-border-radius: 8px;
     }
-    thead > tr > th > p {
-        line-height: 33px;
+    thead > tr > th > span {
+        line-height: 0px;
     }
     .table-count {
         float: left;
