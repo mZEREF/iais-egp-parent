@@ -1936,6 +1936,9 @@ public class LicenceViewServiceDelegator {
                 AppSvcDisciplineAllocationDto appSvcDisciplineAllocationDto1 = (AppSvcDisciplineAllocationDto) CopyUtil.copyMutableObject(
                         appSvcDisciplineAllocationDto);
                 appSvcDisciplineAllocationDto1.setCheck(false);
+                appSvcDisciplineAllocationDto1.setIdNo(null);
+                appSvcDisciplineAllocationDto1.setCgoSelName(null);
+                appSvcDisciplineAllocationDto1.setSlIndex(null);
                 appSvcDisciplineAllocationDto1.setSectionLeaderName(null);
                 appSvcDisciplineAllocationDto1.setPremiseVal(premiseVal);
                 copyOldAppSvcDisciplineAllocationDtoList.add(appSvcDisciplineAllocationDto1);
