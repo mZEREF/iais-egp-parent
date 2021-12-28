@@ -105,12 +105,12 @@
       margin-top: 10px;
     }
     .lic-number p {
-      font-size: 14pt;
+      font-size: 16pt;
       margin-bottom: 0;
       margin-top: 25px;
     }
     .lic-number h2 {
-      font-size: 18pt;
+      font-size: 16pt;
       font-weight: 700;
       text-transform:uppercase;
       border:none;
