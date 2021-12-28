@@ -34,12 +34,8 @@ import com.ecquaria.cloud.moh.iais.common.dto.inbox.InboxMsgMaskDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InboxQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterInboxUserDto;
 import com.ecquaria.cloud.moh.iais.common.jwt.JwtEncoder;
+import com.ecquaria.cloud.moh.iais.common.utils.*;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
-import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
-import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
-import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
-import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
-import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.AccessUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
@@ -827,7 +823,7 @@ public class InterInboxDelegator {
                 }
             }
             //check is base service
-            if(!result){
+            if(result){
                 result = checkIsBaseRenew(licIdValue);
                 if(!result){
                     ParamUtil.setRequestAttr(bpc.request,"licIsRenewed",false);
@@ -872,14 +868,35 @@ public class InterInboxDelegator {
                     return false;
                 }else {
                     boolean isHaveBase = false;
+                    List<String> baseLicIds = IaisCommonUtils.genNewArrayList( entity.size());
                     for (LicBaseSpecifiedCorrelationDto licBaseSpecifiedCorrelationDto : entity){
                         if(!isHaveBase && licIds.contains(licBaseSpecifiedCorrelationDto.getBaseLicId())){
                             isHaveBase = true;
                         }
+                        if( !baseLicIds.contains(licBaseSpecifiedCorrelationDto.getBaseLicId())){
+                            baseLicIds.add(licBaseSpecifiedCorrelationDto.getBaseLicId());
+                        }
                     }
                     if(!isHaveBase){
+                        for (String baseId : baseLicIds){
+                            LicenceDto licenceDto1 = licenceInboxClient.getRootLicenceDtoByOrgId(baseId).getEntity();
+                            List<ApplicationDto> apps = appInboxClient.getAppByLicIdAndExcludeNew(licenceDto1.getId()).getEntity();
+                            if(IaisCommonUtils.isNotEmpty(apps)){
+                                for (ApplicationDto a : apps) {
+                                    if(ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(a.getApplicationType())
+                                            && !ApplicationConsts.APPLICATION_STATUS_REJECTED.equalsIgnoreCase(a.getStatus())
+                                            && !ApplicationConsts.APPLICATION_STATUS_ROLL_BACK.equals(a.getStatus())
+                                            && !ApplicationConsts.APPLICATION_STATUS_DELETED.equals(a.getStatus())){
+                                        isHaveBase = true;
+                                        break;
+                                    }
+                                }
+                            }
+                        }
                         log.info(StringUtil.changeForLog("-------------------- spec lic id ：" + licId + " have no base id  in select lics------------------"));
-                        return false;
+                        if(!isHaveBase){
+                            return false;
+                        }
                     }
                 }
             }
