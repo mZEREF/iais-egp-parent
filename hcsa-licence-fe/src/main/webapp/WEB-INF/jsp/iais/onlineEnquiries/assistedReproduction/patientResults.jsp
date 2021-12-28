@@ -243,7 +243,7 @@
                                             <div class="modal-content">
                                                 <div class="row">
                                                     <div class="col-md-1" >
-                                                        <button type="button" style="font-size: 2rem;font-weight: 700;line-height: 25;color: #000;text-shadow: 0 1px 0 #fff;opacity: .5;" data-dismiss="modal"><span aria-hidden="true"> < </span></button>
+                                                        <button type="button" style="font-size: 2rem;font-weight: 700;line-height: 25;color: #000;text-shadow: 0 1px 0 #fff;opacity: .5;" data-dismiss="modal"><span aria-hidden="true"> > </span></button>
                                                     </div>
                                                     <div class="col-md-11 " >
                                                         <div class="quickBodyDiv"></div>

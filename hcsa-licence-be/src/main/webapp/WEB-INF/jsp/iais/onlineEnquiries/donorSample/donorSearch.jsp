@@ -230,7 +230,7 @@
                                                         <td style="vertical-align:middle;">
                                                             <c:out value="${donorSample.ageNumber}"/>
                                                         </td>
-                                                        <td >
+                                                        <td style="vertical-align:middle;">
                                                             <button type="button" onclick="fullDetailsView('${donorSample.submissionIdNo}')" class="btn btn-default btn-sm">
                                                                 View Full Details
                                                             </button>
