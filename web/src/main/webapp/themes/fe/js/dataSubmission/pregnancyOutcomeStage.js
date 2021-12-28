@@ -24,10 +24,10 @@ function bindAllEvent() {
     $("#deliveryDateUnknown").change(deliveryDateCheckboxChangeFunction);
     let $maleLiveBirthNum = $('#maleLiveBirthNum');
     $maleLiveBirthNum.change(changeTotalLiveBirthNum);
-    $maleLiveBirthNum.change(changeBabySection);
+    $maleLiveBirthNum.change(changeBabySectionFunction);
     let $femaleLiveBirthNum = $('#femaleLiveBirthNum');
     $femaleLiveBirthNum.change(changeTotalLiveBirthNum);
-    $femaleLiveBirthNum.change(changeBabySection);
+    $femaleLiveBirthNum.change(changeBabySectionFunction);
     $('.birthDefect').change(birthDefectChangeFunction);
     $('.defectType').change(defectTypeChangeFunction);
 }
@@ -146,6 +146,7 @@ function babyDetailsUnknownChangeFunction() {
     let $pregnancyOutcomeStageBabySection = $('.pregnancyOutcomeStageBabySection');
     if ($('input[name="babyDetailsUnknown"]:checked').val() != 'true') {
         $pregnancyOutcomeStageBabySection.show();
+        changeBabySection();
     } else {
         $pregnancyOutcomeStageBabySection.hide();
 
@@ -245,6 +246,23 @@ function changeTotalLiveBirthNum() {
     $('#totalLiveBirthNum').html(total);
 }
 
+function changeBabySectionFunction() {
+    if ($('input[name="babyDetailsUnknown"]:checked').val() != 'true') {
+        changeBabySection()
+    }
+    //75742
+    let babySize = parseInt($('#totalLiveBirthNum').html());
+    let $babyDetailsPageDiv = $('.babyDetailsPageDiv');
+    if (babySize > 0) {
+        $babyDetailsPageDiv.show();
+    } else {
+        $babyDetailsPageDiv.hide();
+        let $NICUCareBabyNum = $('#NICUCareBabyNum');
+        $NICUCareBabyNum.val(0)
+        $NICUCareBabyNum.trigger('change');
+    }
+}
+
 function changeBabySection() {
     let currentBabySize = $('div[name="defectTypeSectionName"]').length;
     let babySize = parseInt($('#totalLiveBirthNum').html());
@@ -256,17 +274,6 @@ function changeBabySection() {
         } else {
             $('#pregnancyOutcomeStageBabySection' + (babySize - 1)).nextAll('.pregnancyOutcomeStageBabySection').remove()
         }
-    }
-
-    //75742
-    let $babyDetailsPageDiv = $('.babyDetailsPageDiv');
-    if (babySize > 0) {
-        $babyDetailsPageDiv.show();
-    } else {
-        $babyDetailsPageDiv.hide();
-        let $NICUCareBabyNum = $('#NICUCareBabyNum');
-        $NICUCareBabyNum.val(0)
-        $NICUCareBabyNum.trigger('change');
     }
 }
 
