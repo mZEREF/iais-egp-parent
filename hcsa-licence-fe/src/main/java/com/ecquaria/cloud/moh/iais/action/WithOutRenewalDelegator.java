@@ -756,7 +756,7 @@ public class WithOutRenewalDelegator {
 
         if(appSubmissionDtos.size() == 1){
             if(ConfigHelper.getBoolean("halp.rfc.split.flag",false)){
-                setBaseEffServiceSub(appSubmissionDtos.get(0),appEditSelectDto,noAutoAppSubmissionDtos);
+                setBaseEffServiceSub(appSubmissionDtos.get(0),appEditSelectDto,noAutoAppSubmissionDtos,autoAppSubmissionDtos);
             }else {
                 validateOtherSubDto(bpc.request,false,autoGrpNo,licenseeId,appSubmissionDtos.get(0),appEditSelectDto,autoAppSubmissionDtos,noAutoAppSubmissionDtos,oldAppSubmissionDto);
             }
@@ -896,26 +896,29 @@ public class WithOutRenewalDelegator {
             appSubmissionService.updateDrafts(licenseeId,licenceIds,appSubmissionDtos.get(0).getDraftNo());
         }
     }
-    private  void setBaseEffServiceSub(AppSubmissionDto appSubmissionDto, AppEditSelectDto appEditSelectDto,List<AppSubmissionDto> noAutoAppSubmissionDtos){
+    private  void setBaseEffServiceSub(AppSubmissionDto appSubmissionDto, AppEditSelectDto appEditSelectDto,List<AppSubmissionDto> noAutoAppSubmissionDtos,List<AppSubmissionDto> autoAppSubmissionDtos){
         List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
         if(appGrpPremisesDtoList != null){
-          if(!(appEditSelectDto.isChangePremiseAutoFields() && !appEditSelectDto.isChangeHciName()
-                  && !appEditSelectDto.isChangeInLocation() && !appEditSelectDto.isChangeAddFloorUnit()) && appEditSelectDto.isPremisesEdit()) {
-              setBaseEffServiceSubInNoAutoAppSubmissionDtos(appSubmissionDto,appEditSelectDto,noAutoAppSubmissionDtos);
-            }
-
+          if(appEditSelectDto.isPremisesEdit()) {
+              setBaseEffServiceSubInNoAutoAppSubmissionDtos(appSubmissionDto,appEditSelectDto,noAutoAppSubmissionDtos,autoAppSubmissionDtos);
+          }
         }
     }
 
-    private void setBaseEffServiceSubInNoAutoAppSubmissionDtos(AppSubmissionDto appSubmissionDto, AppEditSelectDto appEditSelectDto,List<AppSubmissionDto> noAutoAppSubmissionDtos){
-        List<AppSubmissionDto> submissionDtos = requestForChangeService.getAlginAppSubmissionDtos(
-                appSubmissionDto.getLicenceId(), true);
+    private void setBaseEffServiceSubInNoAutoAppSubmissionDtos(AppSubmissionDto appSubmissionDto, AppEditSelectDto appEditSelectDto,List<AppSubmissionDto> noAutoAppSubmissionDtos,List<AppSubmissionDto> autoAppSubmissionDtos){
+        HcsaServiceDto serviceDto = HcsaServiceCacheHelper.getServiceByServiceName(appSubmissionDto.getServiceName());
+        boolean checkSpec = ApplicationConsts.SERVICE_CONFIG_TYPE_BASE.equals(serviceDto.getSvcType());
+        List<AppSubmissionDto> submissionDtos = requestForChangeService.getAlginAppSubmissionDtos(appSubmissionDto.getLicenceId(), checkSpec);
         if (IaisCommonUtils.isNotEmpty(submissionDtos)) {
             boolean parallel = submissionDtos.size() >= RfcConst.DFT_MIN_PARALLEL_SIZE;
             StreamSupport.stream(submissionDtos.spliterator(), parallel)
-                    .forEach(dto -> requestForChangeService.checkAffectedAppSubmissions(dto, null,100.0d , appSubmissionDto.getDraftNo(),  appSubmissionDto.getAppGrpNo(),
-                            appEditSelectDto, null));
-            noAutoAppSubmissionDtos.addAll(submissionDtos);
+                    .forEach(dto -> {NewApplicationHelper.reSetPremeses(dto, appSubmissionDto.getAppGrpPremisesDtoList());
+                    requestForChangeService.checkAffectedAppSubmissions(dto, null,100.0d , appSubmissionDto.getDraftNo(),  appSubmissionDto.getAppGrpNo(), appEditSelectDto, null);});
+            if (appEditSelectDto.isAutoRfc()) {
+                NewApplicationHelper.addToAuto(submissionDtos,autoAppSubmissionDtos);
+            } else {
+                NewApplicationHelper.addToNonAuto(submissionDtos,noAutoAppSubmissionDtos);
+            }
         }
     }
     private void setMustRenewData( List<AppSubmissionDto> appSubmissionDtos,String licenseeId,AppEditSelectDto appEditSelectDto){
@@ -1545,8 +1548,7 @@ public class WithOutRenewalDelegator {
         // create rfc data
         List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
         if(appGrpPremisesDtoList != null){
-            if (appEditSelectDto.isChangePremiseAutoFields() && !appEditSelectDto.isChangeHciName()
-                    && !appEditSelectDto.isChangeInLocation() && !appEditSelectDto.isChangeAddFloorUnit()) {
+            if (appEditSelectDto.isPremisesEdit()) {
                 for (int i = 0; i < appGrpPremisesDtoList.size(); i++) {
                     setRfcHciNameChanged(appGrpPremisesDtoList,oldAppSubmissionDto.getAppGrpPremisesDtoList(),i);
                     List<LicenceDto> licenceDtos = (List<LicenceDto>) request.getSession().getAttribute("selectLicence" + i);
@@ -1562,10 +1564,7 @@ public class WithOutRenewalDelegator {
                         }
                     }
                 }
-            }else if(appEditSelectDto.isPremisesEdit()) {
-                setBaseEffServiceSubInNoAutoAppSubmissionDtos(appSubmissionDto,appEditSelectDto,noAutoAppSubmissionDtos);
             }
-
             log.info(StringUtil.changeForLog("---- premisesEdit autoAppSubmissionDtos size :" + autoAppSubmissionDtos.size()));
 
             if(appEditSelectDto.isLicenseeEdit()){
