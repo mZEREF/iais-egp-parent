@@ -104,6 +104,8 @@ public class DonationStageDelegator extends CommonDelegator{
             donationStageDto.setDonatedForResearch(1);
             Integer donResForTreatNum =  null;
             try {
+                String donResForTreatNumString=ParamUtil.getString(request, "donResForTreatNum");
+                donationStageDto.setDonResForTreatNumStr(donResForTreatNumString);
                 donResForTreatNum =  ParamUtil.getInt(request, "donResForTreatNum");
                 donationStageDto.setDonResForTreatNum(donResForTreatNum);
                 totalNum+=donResForTreatNum;
@@ -112,6 +114,8 @@ public class DonationStageDelegator extends CommonDelegator{
             }
             Integer donResForCurCenNotTreatNum =  null;
             try {
+                String donResForCurCenNotTreatNumString=ParamUtil.getString(request, "donResForCurCenNotTreatNum");
+                donationStageDto.setDonResForCurCenNotTreatNumStr(donResForCurCenNotTreatNumString);
                 donResForCurCenNotTreatNum =  ParamUtil.getInt(request, "donResForCurCenNotTreatNum");
                 donationStageDto.setDonResForCurCenNotTreatNum(donResForCurCenNotTreatNum);
                 totalNum+=donResForCurCenNotTreatNum;
@@ -144,6 +148,8 @@ public class DonationStageDelegator extends CommonDelegator{
             donationStageDto.setDonatedForTraining(1);
             Integer trainingNum = null;
             try {
+                String trainingNumString=ParamUtil.getString(request, "trainingNum");
+                donationStageDto.setTrainingNumStr(trainingNumString);
                 trainingNum = ParamUtil.getInt(request, "trainingNum");
                 donationStageDto.setTrainingNum(trainingNum);
                 totalNum+=trainingNum;
@@ -152,6 +158,8 @@ public class DonationStageDelegator extends CommonDelegator{
             }
             Integer treatNum = null;
             try {
+                String treatNumString=ParamUtil.getString(request, "treatNum");
+                donationStageDto.setTreatNumStr(treatNumString);
                 treatNum =  ParamUtil.getInt(request, "treatNum");
                 donationStageDto.setTreatNum(treatNum);
                 totalNum+=treatNum;

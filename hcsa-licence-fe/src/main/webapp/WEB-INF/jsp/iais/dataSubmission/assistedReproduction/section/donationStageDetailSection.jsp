@@ -151,14 +151,14 @@
                     <iais:row>
                         <iais:field width="6" value="No. Donated for Research (Usable for Treatment)" mandatory="true"/>
                         <iais:value width="6" cssClass="col-md-6">
-                            <input type="number" oninput="if(value.length>2)value=value.slice(0,2)" style="margin-bottom: 0px;"  id="donResForTreatNum" name="donResForTreatNum" value="${arSuperDataSubmissionDto.donationStageDto.donResForTreatNum}" >
+                            <iais:input maxLength="2" type="text"  id="donResForTreatNum" name="donResForTreatNum" value="${arSuperDataSubmissionDto.donationStageDto.donResForTreatNumStr}" />
                             <span class="error-msg" name="iaisErrorMsg" id="error_donResForTreatNum"></span>
                         </iais:value>
                     </iais:row>
                     <iais:row>
                         <iais:field width="6" value="No. Donated to current AR centre for Research (Not Usable for Treatment)" mandatory="true"/>
                         <iais:value width="6" cssClass="col-md-6">
-                            <input type="number" oninput="if(value.length>2)value=value.slice(0,2)" style="margin-bottom: 0px;"   name="donResForCurCenNotTreatNum" id="donResForCurCenNotTreatNum" value="${arSuperDataSubmissionDto.donationStageDto.donResForCurCenNotTreatNum}" >
+                            <iais:input maxLength="2" type="text"   name="donResForCurCenNotTreatNum" id="donResForCurCenNotTreatNum" value="${arSuperDataSubmissionDto.donationStageDto.donResForCurCenNotTreatNumStr}" />
                             <span class="error-msg" name="iaisErrorMsg" id="error_donResForCurCenNotTreatNum"></span>
                         </iais:value>
                     </iais:row>
@@ -217,7 +217,7 @@
                     <iais:row>
                         <iais:field width="6" value="No. Used for Training" mandatory="false"/>
                         <iais:value width="6" cssClass="col-md-6">
-                            <input type="number" oninput="if(value.length>2)value=value.slice(0,2)" style="margin-bottom: 0px;"  id="trainingNum" name="trainingNum" value="${arSuperDataSubmissionDto.donationStageDto.trainingNum}" >
+                            <iais:input maxLength="2" type="text"  id="trainingNum" name="trainingNum" value="${arSuperDataSubmissionDto.donationStageDto.trainingNumStr}" />
                             <span class="error-msg" name="iaisErrorMsg" id="error_trainingNum"></span>
                         </iais:value>
                     </iais:row>
@@ -225,7 +225,7 @@
                     <iais:row>
                         <iais:field width="6" value="No. Donated For Treatment" mandatory="true"/>
                         <iais:value width="6" cssClass="col-md-6">
-                            <input type="number" oninput="if(value.length>2)value=value.slice(0,2)" style="margin-bottom: 0px;"  id="treatNum" name="treatNum" value="${arSuperDataSubmissionDto.donationStageDto.treatNum}" >
+                            <iais:input maxLength="2" type="text"  id="treatNum" name="treatNum" value="${arSuperDataSubmissionDto.donationStageDto.treatNumStr}" />
                             <span class="error-msg" name="iaisErrorMsg" id="error_treatNum"></span>
                         </iais:value>
                     </iais:row>
