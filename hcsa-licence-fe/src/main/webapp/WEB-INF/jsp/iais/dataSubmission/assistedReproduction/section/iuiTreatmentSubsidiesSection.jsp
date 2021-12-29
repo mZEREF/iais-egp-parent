@@ -75,11 +75,11 @@
         </div>
     </div>
 </div>
-<input type="hidden" name="count" value="${count}">
+<input type="hidden" name="iuiCount" value="${iuiCount}">
 <script>
     $(document).ready(function () {
-        var count = $("input:hidden[name='count']").val();
-            if (count >=3) {
+        var iuiCount = $("input:hidden[name='iuiCount']").val();
+            if (iuiCount >=3) {
                 $('#thereAppealRow').show();
             } else {
                 $('#thereAppealRow').hide();

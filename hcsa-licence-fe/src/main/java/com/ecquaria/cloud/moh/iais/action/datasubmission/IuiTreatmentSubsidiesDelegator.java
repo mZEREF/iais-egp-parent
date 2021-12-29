@@ -50,8 +50,9 @@ public class IuiTreatmentSubsidiesDelegator extends CommonDelegator {
         ParamUtil.setSessionAttr(bpc.request, DataSubmissionConstant.AR_DATA_SUBMISSION, arSuperDataSubmissionDto);
         CycleDto cycleDto = arSuperDataSubmissionDto.getCycleDto();
         List<IuiTreatmentSubsidiesDto> oldIuiTreatmentSubsidiesDtos = arFeClient.getIuiTreatmentSubsidiesDtosByPhc(cycleDto.getPatientCode(), cycleDto.getHciCode(), cycleDto.getCycleType()).getEntity();
-        int count=oldIuiTreatmentSubsidiesDtos.size();
-        ParamUtil.setRequestAttr(bpc.request, "count", count);
+        int iuiCount=oldIuiTreatmentSubsidiesDtos.size();
+        ParamUtil.setRequestAttr(bpc.request, "iuiCount", iuiCount);
+
     }
 
     @Override
@@ -63,15 +64,6 @@ public class IuiTreatmentSubsidiesDelegator extends CommonDelegator {
     public void preparePage(BaseProcessClass bpc) {
         ArSuperDataSubmissionDto arSuperDataSubmissionDto= DataSubmissionHelper.getCurrentArDataSubmission(bpc.request);
         ParamUtil.setSessionAttr(bpc.request, DataSubmissionConstant.AR_DATA_SUBMISSION, arSuperDataSubmissionDto);
-    }
-
-    @Override
-    public void prepareConfim(BaseProcessClass bpc) {
-        int count = ParamUtil.getInt(bpc.request,"count");
-        boolean isDisplayAppeal = (count>=3);
-        ParamUtil.setRequestAttr(bpc.request, "isDisplayAppeal",isDisplayAppeal);
-
-
     }
 
     @Override
