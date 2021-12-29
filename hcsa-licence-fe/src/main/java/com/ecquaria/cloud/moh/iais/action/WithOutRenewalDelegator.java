@@ -1068,15 +1068,12 @@ public class WithOutRenewalDelegator {
     private void setRfcPremisesSubmissionDto(AppSubmissionDto appSubmissionDtoByLicenceId,String licenseeId, List<AppGrpPremisesDto> appGrpPremisesDtoList, AppSubmissionDto appSubmissionDto,int i,AppEditSelectDto rfcAppEditSelectDto) throws Exception {
         initRfcSubmissionDto(appSubmissionDtoByLicenceId,licenseeId);
         String premisesIndexNo = appSubmissionDtoByLicenceId.getAppGrpPremisesDtoList().get(0).getPremisesIndexNo();
-        boolean flag = EqRequestForChangeSubmitResultChange.isChangeGrpPremises(Arrays.asList(appSubmissionDtoByLicenceId.getAppGrpPremisesDtoList().get(0)),Arrays.asList(appSubmissionDto.getAppGrpPremisesDtoList().get(i)));
-        int hciNameChange = EqRequestForChangeSubmitResultChange.eqHciNameChange(appSubmissionDtoByLicenceId.getAppGrpPremisesDtoList().get(0), appSubmissionDto.getAppGrpPremisesDtoList().get(i)) ?
-                0 : appSubmissionDtoByLicenceId.getAppGrpPremisesDtoList().get(0).getHciNameChanged();
-        setPremisesEditAndReSetAppGrpPremisesDto(appSubmissionDtoByLicenceId,appGrpPremisesDtoList.get(i),flag,rfcAppEditSelectDto.isPremisesEdit());
+        setPremisesEditAndReSetAppGrpPremisesDto(appSubmissionDtoByLicenceId,appGrpPremisesDtoList.get(i),rfcAppEditSelectDto.isAutoRfc(),rfcAppEditSelectDto.isPremisesEdit());
         appSubmissionDtoByLicenceId.getAppGrpPremisesDtoList().get(0).setPremisesIndexNo(premisesIndexNo);
-        appSubmissionDtoByLicenceId.getAppGrpPremisesDtoList().get(0).setHciNameChanged(hciNameChange);
-        appSubmissionDtoByLicenceId.setIsNeedNewLicNo( !flag ? AppConsts.YES : AppConsts.NO );
+        appSubmissionDtoByLicenceId.getAppGrpPremisesDtoList().get(0).setHciNameChanged(rfcAppEditSelectDto.isChangeHciName() ? 1 : 0);
+        appSubmissionDtoByLicenceId.setIsNeedNewLicNo(rfcAppEditSelectDto.isNeedNewLicNo() ? AppConsts.YES : AppConsts.NO );
         setPreInspectionAndRequirement(appSubmissionDtoByLicenceId);
-        appSubmissionDtoByLicenceId.setAutoRfc(flag);
+        appSubmissionDtoByLicenceId.setAutoRfc(rfcAppEditSelectDto.isAutoRfc());
         appSubmissionDtoByLicenceId.setAppEditSelectDto(rfcAppEditSelectDto);
         appSubmissionDtoByLicenceId.setChangeSelectDto(rfcAppEditSelectDto);
         appSubmissionDto.setCreatAuditAppStatus(ApplicationConsts.APPLICATION_STATUS_NOT_PAYMENT);
@@ -1113,7 +1110,7 @@ public class WithOutRenewalDelegator {
         List<AppGrpPremisesDto> appGrpPremisesDtos = appSubmissionDtoByLicenceId.getAppGrpPremisesDtoList();
 
         if (flag) {
-            if (!IaisCommonUtils.isEmpty(appGrpPremisesDtos)) {
+            if (IaisCommonUtils.isNotEmpty(appGrpPremisesDtos)) {
                 for (AppGrpPremisesDto appGrpPremisesDto1 : appGrpPremisesDtos) {
                     appGrpPremisesDto1.setNeedNewLicNo(Boolean.FALSE);
                     appGrpPremisesDto1.setSelfAssMtFlag(4);
@@ -1445,7 +1442,7 @@ public class WithOutRenewalDelegator {
 
             //check renew own
             Map<String, String> map = NewApplicationHelper.validateLicences(appSubmissionDtos,null);
-            if(!IaisCommonUtils.isNotEmpty(map)){
+            if(IaisCommonUtils.isNotEmpty(map)){
                 ParamUtil.setRequestAttr(bpc.request, PAGE_SWITCH, PAGE2);
                 NewApplicationHelper.setErrorRequest(map, false, bpc.request);
                 return;
@@ -1511,13 +1508,19 @@ public class WithOutRenewalDelegator {
         List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
         if(appGrpPremisesDtoList != null){
             if (appEditSelectDto.isPremisesEdit()) {
+                AppEditSelectDto changeSelectDto = new AppEditSelectDto();
+                changeSelectDto.setPremisesEdit(true);
+                changeSelectDto.setPremisesListEdit(true);
+                changeSelectDto.setChangeHciName(appEditSelectDto.isChangeHciName());
+                changeSelectDto.setChangeInLocation(appEditSelectDto.isChangeInLocation());
+                changeSelectDto.setChangeAddFloorUnit(appEditSelectDto.isChangeAddFloorUnit());
                 for (int i = 0; i < appGrpPremisesDtoList.size(); i++) {
                     setRfcHciNameChanged(appGrpPremisesDtoList,oldAppSubmissionDto.getAppGrpPremisesDtoList(),i);
                     List<LicenceDto> licenceDtos = (List<LicenceDto>) request.getSession().getAttribute("selectLicence" + i);
                     if (licenceDtos != null) {
                         for (LicenceDto licenceDto : licenceDtos) {
                             AppSubmissionDto appSubmissionDtoByLicenceId = requestForChangeService.getAppSubmissionDtoByLicenceId(licenceDto.getId());
-                            setRfcPremisesSubmissionDto(appSubmissionDtoByLicenceId,licenseeId,appGrpPremisesDtoList,appSubmissionDto,i,MiscUtil.transferEntityDto(appEditSelectDto,AppEditSelectDto.class));
+                            setRfcPremisesSubmissionDto(appSubmissionDtoByLicenceId,licenseeId,appGrpPremisesDtoList,appSubmissionDto,i,MiscUtil.transferEntityDto(changeSelectDto,AppEditSelectDto.class));
                             if (appSubmissionDtoByLicenceId.isAutoRfc()) {
                                 autoAppSubmissionDtos.add(appSubmissionDtoByLicenceId);
                             } else {
