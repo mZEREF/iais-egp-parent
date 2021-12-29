@@ -791,17 +791,29 @@ public class WithOutRenewalDelegator {
         String submissionId = generateIdClient.getSeqId().getEntity();
         Long l = System.currentTimeMillis();
         List<AppSubmissionDto> appSubmissionDtos1 = IaisCommonUtils.genNewArrayList();
-        //do app submit
-        String appGrpNo = appSubmissionDtos.get(0).getAppGrpNo();
         appSubmissionDtos1.addAll(appSubmissionDtos);
+        //do app submit
+        AppSubmissionDto appSubmissionDtoNew = appSubmissionDtos.get(0);
+        String appGrpNo = appSubmissionDtoNew.getAppGrpNo();
+        boolean needSetOtherEff = needDec && noAutoAppSubmissionDtos.size() >1;
+        Date effectiveDate = needSetOtherEff ? MiscUtil.addDays(oldAppSubmissionDto.getLicExpiryDate(),1) : null;
+        String effectiveDateStr = needSetOtherEff ? Formatter.formatDate(effectiveDate) : null;
+        if(needSetOtherEff){
+            appSubmissionDtoNew.setEffectiveDate(effectiveDate);
+            appSubmissionDtoNew.setEffectiveDateStr(effectiveDateStr);
+        }
         for(AppSubmissionDto appSubmissionDto : noAutoAppSubmissionDtos){
             appSubmissionDto.setAppGrpNo(appGrpNo);
+            if(needSetOtherEff){
+                appSubmissionDto.setEffectiveDate(effectiveDate);
+                appSubmissionDto.setEffectiveDateStr(effectiveDateStr);
+            }
             setRfcSubInfo(appSubmissionDtos.get(0),appSubmissionDto,null,needDec);
         }
 
-        int i=0;
+        int index =0;
         for( AppFeeDetailsDto detailsDto : appFeeDetailsDto){
-            detailsDto.setApplicationNo(10 > ++i ? (appGrpNo+"-0"+i) : (appGrpNo+"-"+i));
+            detailsDto.setApplicationNo(10 > ++index ? (appGrpNo+"-0"+index) : (appGrpNo+"-"+index));
             appSubmissionService.saveAppFeeDetails(detailsDto);
         }
 
