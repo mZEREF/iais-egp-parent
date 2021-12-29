@@ -114,7 +114,7 @@ public class InterInboxDelegator {
         IaisEGPHelper.clearSessionAttr(bpc.request,FilterParameter.class);
         initInboxDto(bpc);
         AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_INTERNAL_INBOX, AuditTrailConsts.FUNCTION_INBOX);
-        ParamUtil.setSessionAttr(bpc.request,LIC_PRINT_FLAG,IaisEGPHelper.isActiveMigrated() ? AppConsts.NO : AppConsts.YES);
+        ParamUtil.setSessionAttr(bpc.request,LIC_PRINT_FLAG,ConfigHelper.getString("inbox.lic.print.flag","1"));
     }
 
     public void initToPage(BaseProcessClass bpc){
