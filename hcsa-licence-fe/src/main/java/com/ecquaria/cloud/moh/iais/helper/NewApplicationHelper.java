@@ -4583,7 +4583,6 @@ public class NewApplicationHelper {
                 String displayTitle = getDocDisplayTitle(dupForPrem, dupForPerson, configTitle, psnCount++);
                 setSvcDocDisplayTitle(appSvcDocDtoList, displayTitle);
                 reloadMap.put(reloadKey + psnIndex, appSvcDocDtoList);
-                psnCount++;
             }
         }
 

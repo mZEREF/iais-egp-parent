@@ -120,4 +120,4 @@
     </div>
     <%@ include file="/WEB-INF/jsp/include/validation.jsp" %>
 </form>
-
+<input type="hidden" name="errorMapIs" id="errorMapIs" value="${errormapIs}">

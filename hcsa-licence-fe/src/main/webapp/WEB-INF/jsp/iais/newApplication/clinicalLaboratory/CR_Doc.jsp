@@ -87,7 +87,6 @@
     </c:choose>
 </c:forEach>
 
-<input type="text" style="display: none" name="errorMapIs" id="errorMapIs" value="${errormapIs}">
 <%@ include file="../../appeal/FeFileCallAjax.jsp" %>
 <script>
     $(document).ready(function () {
