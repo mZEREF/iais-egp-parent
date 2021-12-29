@@ -181,5 +181,5 @@
         </div>
     </div>
 </div>
-<iais:confirm msg="DS_ERR042" callBack="$('#flagOutDiv').modal('hide');" popupOrder="flagOutDiv" yesBtnDesc="Close"
+<iais:confirm msg="DS_ERR047" callBack="$('#flagOutDiv').modal('hide');" popupOrder="flagOutDiv" yesBtnDesc="Close"
               yesBtnCls="btn btn-secondary" needCancel="false" needFungDuoJi="false"/>
