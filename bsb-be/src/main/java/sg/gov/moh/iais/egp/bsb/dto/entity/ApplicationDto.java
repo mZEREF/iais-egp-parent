@@ -1,6 +1,5 @@
 package sg.gov.moh.iais.egp.bsb.dto.entity;
 
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.googlecode.jmapper.annotations.JGlobalMap;
 import lombok.Data;
