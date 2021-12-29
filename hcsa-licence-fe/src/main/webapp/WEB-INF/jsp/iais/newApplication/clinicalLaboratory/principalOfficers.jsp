@@ -619,7 +619,6 @@
         </div>
     </div>
 </div>
-<input type="text" style="display: none" name="errorMapIs" id="errorMapIs" value="${errormapIs}">
 <input type="hidden" name="pageCon" value="prinOffice" >
 <script>
     var init;
