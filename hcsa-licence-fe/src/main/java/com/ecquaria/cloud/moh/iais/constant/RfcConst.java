@@ -1,5 +1,7 @@
 package com.ecquaria.cloud.moh.iais.constant;
 
+import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+
 /****
  *
  *   @date 12/27/2019
@@ -59,7 +61,7 @@ public class RfcConst {
 
     public static final String PAYMENTPROCESS = "/hcsa-licence-web/eservice/INTERNET/MohNewApplication/PreparePayment?flag=transfer";
 
-    public static final int DFT_MIN_PARALLEL_SIZE                       = 3;
+    public static final int DFT_MIN_PARALLEL_SIZE                       = AppConsts.DFT_MIN_PARALLEL_SIZE;
 
     public static final String SHOW_OTHER_ERROR                         = "showOtherError";
     public static final String SERVICE_CONFIG_CHANGE                    = "SERVICE_CONFIG_CHANGE";

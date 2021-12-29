@@ -25,8 +25,8 @@ public class NewApplicationConstant {
     public static final String ACK_STATUS_ERROR = "error";
     public static final String PREMISES_HCI_LIST= "premisesHciList";
 
-    public static final String ACK_TITLE = "title";
-    public static final String ACK_SMALL_TITLE = "smallTitle";
+    public static final String ACK_TITLE                                = "title";
+    public static final String ACK_SMALL_TITLE                          = "smallTitle";
 
     public static final String TITLE_LICENSEE                           = "Licensee Details";
     public static final String TITLE_MODE_OF_SVCDLVY                    = ApplicationConsts.TITLE_MODE_OF_SVCDLVY;
@@ -40,5 +40,7 @@ public class NewApplicationConstant {
     public static final String SECTION_DOCUMENT                         = "document";
     public static final String SECTION_SVCINFO                          = "information";
     public static final String SECTION_PREVIEW                          = "previewli";
+
+    public static final String CURRENT_SVC_CODE                         = "CURRENT_SVC_CODE";
 
 }

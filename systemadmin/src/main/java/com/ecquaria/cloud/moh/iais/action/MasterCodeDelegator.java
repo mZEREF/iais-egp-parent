@@ -242,7 +242,7 @@ public class MasterCodeDelegator {
                         errorMap.put("effectiveTo", errMsg);
                     }
                 }
-                if (!masterCodeDto.getEffectiveFrom().before(masterCodeDto.getEffectiveTo())) {
+                if (masterCodeDto.getEffectiveFrom().after(masterCodeDto.getEffectiveTo())) {
                     validationResult.setHasErrors(true);
                     String errMsg = MessageUtil.getMessageDesc("EMM_ERR004");
                     errorMap.put("effectiveTo", errMsg);
@@ -269,7 +269,7 @@ public class MasterCodeDelegator {
         if(!isEffect){
             masterCodeDto.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
         }
-        String codeCategory = masterCodeDto.getCodeCategory();
+        String codeCategory = masterCodeService.findCodeCategoryByDescription(masterCodeDto.getCodeCategory());
         masterCodeDto.setCodeCategory(codeCategory);
         MasterCodeDto msDto = masterCodeService.saveMasterCode(masterCodeDto);
         //eic
@@ -332,7 +332,7 @@ public class MasterCodeDelegator {
             searchParam.removeFilter(SystemAdminBaseConstants.MASTER_CODE_FILTER_VALUE);
         }
         if (codeEffFrom != null && codeEffTo != null) {
-            if (codeEffFrom.compareTo(codeEffTo) <= 0) {
+            if (codeEffFrom.compareTo(codeEffTo) < 0) {
                 if (!StringUtil.isEmpty(codeStartDate)) {
                     searchParam.addFilter(SystemAdminBaseConstants.MASTER_CODE_EFFECTIVE_FROM, codeStartDate,true);
                 } else {
@@ -543,7 +543,7 @@ public class MasterCodeDelegator {
                 }
                 Optional<MasterCodeToExcelDto> cartOptional = Optional.empty();
                 if(!StringUtil.isEmpty(masterCodeToExcelDto.getCodeCategory())){
-                    String  codeCategory =  masterCodeToExcelDto.getCodeCategory();
+                    String codeCategory = masterCodeService.findCodeCategoryByDescription(masterCodeToExcelDto.getCodeCategory());
                     if (StringUtil.isEmpty(codeCategory)){
                         String errMsg = MessageUtil.getMessageDesc("MCUPERR001");
                         errItems.add(errMsg);
@@ -848,7 +848,7 @@ public class MasterCodeDelegator {
                 }
             }
             if (masterCodeDto.getEffectiveFrom() != null && masterCodeDto.getEffectiveTo() != null) {
-                if (!masterCodeDto.getEffectiveFrom().before(masterCodeDto.getEffectiveTo())) {
+                if (masterCodeDto.getEffectiveFrom().after(masterCodeDto.getEffectiveTo())) {
                     String errMsg = MessageUtil.getMessageDesc("EMM_ERR004");
                     errorMap.put("effectiveTo", errMsg);
                 }
@@ -992,7 +992,7 @@ public class MasterCodeDelegator {
                 }
             }
             if (masterCodeDto.getEffectiveFrom() != null && masterCodeDto.getEffectiveTo() != null) {
-                if (!masterCodeDto.getEffectiveFrom().before(masterCodeDto.getEffectiveTo())) {
+                if (masterCodeDto.getEffectiveFrom().after(masterCodeDto.getEffectiveTo())) {
                     String errMsg = MessageUtil.getMessageDesc("EMM_ERR004");
                     errorMap.put("effectiveTo", errMsg);
                 }

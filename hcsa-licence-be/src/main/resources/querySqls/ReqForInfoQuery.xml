@@ -87,6 +87,8 @@
                 oev.STREET_NAME,oev.lic_STREET_NAME,
                 oev.BUILDING_NAME,oev.lic_BUILDING_NAME,
                 oev.POSTAL_CODE,oev.lic_postal_code,
+                oev.EMAIL,oev.LIC_EMAIL,
+                oev.PREM_TYPE,oev.LIC_PREM_TYPE,
                 oev.APP_LICENSEE_ID as APP_LICENSEE_ID,
                 oev.LIC_APP_ID as LIC_APP_ID,
                 oev.LICENCE_ID as LICENCE_ID,

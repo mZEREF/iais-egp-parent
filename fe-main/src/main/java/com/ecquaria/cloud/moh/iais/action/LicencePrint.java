@@ -60,25 +60,26 @@ public class LicencePrint {
                 log.info(StringUtil.changeForLog("The VehicleNo1 is -->:"+VehicleNo1));
                 log.info(StringUtil.changeForLog("The VehicleNo2 is -->:"+VehicleNo2));
                 Map<String, String> map = IaisCommonUtils.genNewHashMap();
-                map.put("licenceNo",licenceViewDto.getLicenceNo());
-                map.put("licenseeName",licenceViewDto.getLicenseeName());
-                map.put("serviceName",licenceViewDto.getServiceName());
+                map.put("licenceNo",StringUtil.viewNonNullHtml(licenceViewDto.getLicenceNo()));
+                map.put("licenseeName",StringUtil.viewNonNullHtml(licenceViewDto.getLicenseeName()));
+                map.put("serviceName",StringUtil.viewNonNullHtml(licenceViewDto.getServiceName()));
                 if(StringUtil.isEmpty(licenceViewDto.getHivTesting())){
                     map.put("hivTesting","<br/>");
                 }else{
-                    map.put("hivTesting",licenceViewDto.getHivTesting());
+                    map.put("hivTesting",StringUtil.viewNonNullHtml(licenceViewDto.getHivTesting()));
                 }
                 if(StringUtil.isNotEmpty(licenceViewDto.getBaseServiceName())){
-                    map.put("baseServiceName",licenceViewDto.getBaseServiceName());
+                    map.put("baseServiceName",StringUtil.viewNonNullHtml(licenceViewDto.getBaseServiceName()));
                 }
                 //map.put("hciName",licenceViewDto.getHciName());
-                map.put("businessName",StringUtil.isEmpty(licenceViewDto.getBusinessName())?AppConsts.EMPTY_STR_NA:licenceViewDto.getBusinessName());
-                map.put("address",licenceViewDto.getAddress());
+                map.put("businessName",StringUtil.isEmpty(licenceViewDto.getBusinessName())?AppConsts.EMPTY_STR_NA
+                        :StringUtil.viewNonNullHtml(licenceViewDto.getBusinessName()));
+                map.put("address",StringUtil.viewNonNullHtml(licenceViewDto.getAddress()));
                 if(StringUtil.isNotEmpty(VehicleNo2)){
-                    map.put("vehicleNo",StringUtil.isEmpty(VehicleNo1)?AppConsts.EMPTY_STR_NA:VehicleNo1);
+                    map.put("vehicleNo",StringUtil.isEmpty(VehicleNo1)?AppConsts.EMPTY_STR_NA:StringUtil.viewNonNullHtml(VehicleNo1));
                     map.put("vehicleNo2",VehicleNo2);
                 }else{
-                    map.put("vehicleNo",licenceViewDto.getVehicleNo());
+                    map.put("vehicleNo",StringUtil.viewNonNullHtml(licenceViewDto.getVehicleNo()));
                 }
 
                 map.put("startDate",licenceViewDto.getStartDate());
