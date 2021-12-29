@@ -7,6 +7,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.PatientInvento
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.dataSubmission.TransferInOutStageDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant;
 import com.ecquaria.cloud.moh.iais.helper.ControllerHelper;
 import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
@@ -75,10 +76,16 @@ public class TransferInOutDelegator extends CommonDelegator {
     public void pageAction(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         ArSuperDataSubmissionDto arSuperDataSubmissionDto = DataSubmissionHelper.getCurrentArDataSubmission(request);
-        String[] transferredList = ParamUtil.getStrings(request,"transferredList");
         arSuperDataSubmissionDto = arSuperDataSubmissionDto  == null ? new ArSuperDataSubmissionDto() : arSuperDataSubmissionDto;
         TransferInOutStageDto transferInOutStageDto = arSuperDataSubmissionDto.getTransferInOutStageDto() == null ? new TransferInOutStageDto() : arSuperDataSubmissionDto.getTransferInOutStageDto();
+        String[] transferredList = ParamUtil.getStrings(request,"transferredList");
+        String oocyteNo =  ParamUtil.getString(request,"oocyteNum");
+        String embryoNo =  ParamUtil.getString(request,"embryoNum");
+        String spermVialsNo =  ParamUtil.getString(request,"spermVialsNum");
         ControllerHelper.get(request,transferInOutStageDto);
+        transferInOutStageDto.setOocyteNo(oocyteNo);
+        transferInOutStageDto.setEmbryoNo(embryoNo);
+        transferInOutStageDto.setSpermVialsNo(spermVialsNo);
         String fromDonor = ParamUtil.getString(request,"fromDonor");
         transferInOutStageDto.setFromDonor("true".equalsIgnoreCase(fromDonor));
         if( !IaisCommonUtils.isEmpty(transferredList)){

@@ -77,21 +77,21 @@
                         <iais:row id="transferred0">
                             <iais:field width="5" value="No. of Oocyte(s) Transferred" mandatory="true"/>
                             <iais:value width="7" cssClass="col-md-7">
-                                <iais:input maxLength="2" type="text" name="oocyteNum" value="${transferInOutStageDto.oocyteNum}" />
+                                <iais:input maxLength="2" type="text" name="oocyteNum"  value="${transferInOutStageDto.oocyteNo}" />
                                 <span class="error-msg" name="iaisErrorMsg" id="error_oocyteNum"></span>
                             </iais:value>
                         </iais:row>
                     <iais:row id="transferred1">
                         <iais:field width="5" value="No. of Embryo(s) Transferred" mandatory="true"/>
                         <iais:value width="7" cssClass="col-md-7">
-                            <iais:input maxLength="2" type="text" name="embryoNum" value="${transferInOutStageDto.embryoNum}" />
+                            <iais:input maxLength="2" type="text" name="embryoNum" value="${transferInOutStageDto.embryoNo}" />
                             <span class="error-msg" name="iaisErrorMsg" id="error_embryoNum"></span>
                         </iais:value>
                     </iais:row>
                     <iais:row id="transferred2">
                         <iais:field width="5" value="Vials of Sperm Transferred" mandatory="true"/>
                         <iais:value width="7" cssClass="col-md-7">
-                            <iais:input maxLength="2" type="text" name="spermVialsNum" value="${transferInOutStageDto.spermVialsNum}" />
+                            <iais:input maxLength="2" type="text" name="spermVialsNum" value="${transferInOutStageDto.spermVialsNo}" />
                             <span class="error-msg" name="iaisErrorMsg" id="error_spermVialsNum"></span>
                         </iais:value>
                     </iais:row>
