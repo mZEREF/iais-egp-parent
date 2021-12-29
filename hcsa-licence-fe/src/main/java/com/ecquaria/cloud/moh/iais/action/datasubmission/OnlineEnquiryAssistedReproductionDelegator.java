@@ -38,12 +38,9 @@ import com.ecquaria.cloud.moh.iais.helper.SearchResultHelper;
 import com.ecquaria.cloud.moh.iais.helper.SqlHelper;
 import com.ecquaria.cloud.moh.iais.helper.SystemParamUtil;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.AssistedReproductionService;
-import com.ecquaria.cloud.moh.iais.sql.SqlMap;
 import com.google.common.collect.ImmutableSet;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
@@ -452,11 +449,7 @@ public class OnlineEnquiryAssistedReproductionDelegator {
             }
 
             if(arDto.getCycleStagesStatus()!=null){
-                if(!"Ongoing".equals(arDto.getCycleStagesStatus())){
-                    filter.put("cycleStagesStatus",arDto.getCycleStagesStatus());
-                }else {
-                    filter.put("Ongoing",arDto.getCycleStagesStatus());
-                }
+                filter.put("cycleStagesStatus",arDto.getCycleStagesStatus());
             }
             if(arDto.getCycleStagesDateFrom()!=null){
                 String cycleStagesDateFrom = Formatter.formatDateTime(arDto.getCycleStagesDateFrom(),
@@ -932,10 +925,7 @@ public class OnlineEnquiryAssistedReproductionDelegator {
         aRorIUICycleOptions.add(new SelectOption(DataSubmissionConsts.DS_CYCLE_AR,"AR"));
         aRorIUICycleOptions.add(new SelectOption(DataSubmissionConsts.DS_CYCLE_IUI,"IUI"));
         ParamUtil.setRequestAttr(bpc.request,"aRorIUICycleOptions",aRorIUICycleOptions);
-        List<SelectOption> cycleStagesStatusOptions= IaisCommonUtils.genNewArrayList();
-        cycleStagesStatusOptions.add(new SelectOption(DataSubmissionConsts.DS_STATUS_ACTIVE,"Submitted"));
-        cycleStagesStatusOptions.add(new SelectOption(DataSubmissionConsts.DS_STATUS_COMPLETED,"Completed"));
-        cycleStagesStatusOptions.add(new SelectOption("Ongoing","Ongoing"));
+        List<SelectOption> cycleStagesStatusOptions= MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.DATA_SUBMISSION_STATUS);
         ParamUtil.setRequestAttr(bpc.request,"cycleStagesStatusOptions",cycleStagesStatusOptions);
         List<SelectOption> sourceSemenOptions= IaisCommonUtils.genNewArrayList();
         sourceSemenOptions.add(new SelectOption("Donor","Donor"));

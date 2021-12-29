@@ -169,11 +169,7 @@ public class OnlineArAjaxController {
                 }
                 ajax.setArTreatment(arTreatment);
                 ajax.setCoFunding(coFunding);
-                switch (ajax.getStatus()){
-                    case DataSubmissionConsts.DS_STATUS_COMPLETED:ajax.setStatus("Completed");break;
-                    case DataSubmissionConsts.DS_STATUS_ACTIVE:ajax.setStatus("Submitted");break;
-                    default:ajax.setStatus("Ongoing");
-                }
+                ajax.setStatus(MasterCodeUtil.getCodeDesc(ajax.getStatus()));
             }
             if(searchResult.getRowCount()>0){
                 map.put("result", "Success");

@@ -419,7 +419,7 @@
                 <#if arPractitioner??> AND  charindex(:arPractitioner, dacs.PRACTITIONER) >0</#if>
 
                 <#if cycleStagesStatus??> AND  :cycleStagesStatus = dc.STATUS </#if>
-                <#if Ongoing??> AND  dc.STATUS not in ('DS001','DS003','DS002')</#if>
+
                 <#if cycleStagesDateFrom??> AND dc.CREATED_DT >= convert(date,:cycleStagesDateFrom)</#if>
                 <#if cycleStagesDateTo??> AND dc.CREATED_DT <= convert(date,:cycleStagesDateTo)</#if>
                 <#if arOrIui??> AND :arOrIui = dc.DS_TYPE </#if>
