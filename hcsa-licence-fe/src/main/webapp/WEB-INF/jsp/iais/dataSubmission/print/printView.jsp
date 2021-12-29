@@ -43,6 +43,9 @@
             width: 30%;
         }
     }
+    .panel-group .panel.panel-default > .panel-heading h4 a {
+        text-decoration: none;
+    }
 </style>
 
 <form method="post" id="mainForm" action=<%=continueURL%>>

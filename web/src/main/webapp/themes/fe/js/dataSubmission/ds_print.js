@@ -1,5 +1,7 @@
 $(document).ready(function () {
     $(':input').prop('disabled', true);
+    // firefox show collapse,must before "collapse('show')"
+    $('#accordion').find('.collapse').addClass('in');
     $('#accordion').find('.collapse').collapse('show');
     // textarea
     $('textarea').each(function(index, ele){

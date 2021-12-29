@@ -100,8 +100,3 @@
 <c:if test="${arSuperDataSubmissionDto.appType ne 'DSTY_005'}">
     <%@include file="../assistedReproduction/common/arDeclaration.jsp" %>
 </c:if>
-<style>
-    .panel-group .panel.panel-default > .panel-heading h4 a {
-        text-decoration: none;
-    }
-</style>
