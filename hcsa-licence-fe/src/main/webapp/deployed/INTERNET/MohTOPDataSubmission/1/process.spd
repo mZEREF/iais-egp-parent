@@ -160,7 +160,7 @@
   <Switch defClass="" defaultComponent="/Merges/Merge/Merge1" executor="" icon="" leftOperand="crud_action_value" name="Switch2" x="780" y="320">
    <Description/>
    <SwitchCase component="/Merges/Merge/Merge1" value=""/>
-   <SwitchCase component="/Steps/AutomaticStep/DoDraft" value="draft"/>
+   <SwitchCase component="/Steps/AutomaticStep/DoDraft" value="&quot;draft&quot;"/>
   </Switch>
  </Switches>
  <Branches/>
