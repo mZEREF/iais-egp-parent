@@ -845,7 +845,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
     }
 
     @Override
-    public Map<String, String> validateSectionLeaders(List<AppSvcPersonnelDto> appSvcSectionLeaderList) {
+    public Map<String, String> validateSectionLeaders(List<AppSvcPersonnelDto> appSvcSectionLeaderList, String svcCode) {
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
         if (appSvcSectionLeaderList == null || appSvcSectionLeaderList.isEmpty()) {
             return errorMap;
@@ -853,6 +853,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
         HttpServletRequest request = MiscUtil.getCurrentRequest();
         if (request != null) {
             request.setAttribute(ClinicalLaboratoryDelegator.SECTION_LEADER_LIST, appSvcSectionLeaderList);
+            request.setAttribute(NewApplicationConstant.CURRENT_SVC_CODE, svcCode);
         }
         for (int i = 0, len = appSvcSectionLeaderList.size(); i < len; i++) {
             ValidationResult result = WebValidationHelper.validateProperty(appSvcSectionLeaderList.get(i),
@@ -872,9 +873,10 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
         if (daList == null || daList.isEmpty()) {
             return;
         }
+        int size = daList.size();
         Map<String, String> cgoMap = new HashMap<>();
         Map<String, String> slMap = new HashMap<>();
-        for (int i = 0; i < daList.size(); i++) {
+        for (int i = 0; i < size; i++) {
             String idNo = daList.get(i).getIdNo();
             if (StringUtil.isEmpty(idNo)) {
                 map.put("disciplineAllocation" + i,
@@ -891,68 +893,39 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
         }
         if (map.isEmpty()) {
             String error = MessageUtil.getMessageDesc("NEW_ERR0011");
-            List<AppSvcPrincipalOfficersDto> appSvcCgoList = (List<AppSvcPrincipalOfficersDto>) CopyUtil.copyMutableObjectList(
-                    currentSvcDto.getAppSvcCgoDtoList());
-            List<AppSvcPrincipalOfficersDto> appSvcCgoDtos = IaisCommonUtils.genNewArrayList();
+            List<AppSvcPrincipalOfficersDto> appSvcCgoList = currentSvcDto.getAppSvcCgoDtoList();
             if (appSvcCgoList != null) {
-                if (daList.size() < appSvcCgoList.size()) {
-                    return;
-                }
-                if (appSvcCgoList.size() <= daList.size()) {
-                    cgoMap.forEach((k, v) -> {
-                        for (AppSvcPrincipalOfficersDto appSvcCgoDto : appSvcCgoList) {
-                            String idNo = appSvcCgoDto.getIdNo();
-                            if (k.equals(idNo)) {
-                                appSvcCgoDtos.add(appSvcCgoDto);
-                            }
-                        }
-                    });
-                }
-                appSvcCgoList.removeAll(appSvcCgoDtos);
-                StringBuilder stringBuilder = new StringBuilder();
-                for (AppSvcPrincipalOfficersDto appSvcCgoDto : appSvcCgoList) {
-                    stringBuilder.append(appSvcCgoDto.getName()).append(',');
-                }
-                if (!StringUtil.isEmpty(stringBuilder.toString())) {
-                    String string = stringBuilder.toString();
-                    String substring = string.substring(0, string.lastIndexOf(','));
-
-                    if (substring.contains(",")) {
+                int mapSize = cgoMap.size();
+                int objSize = appSvcCgoList.size();
+                if (size > objSize && objSize != mapSize || size <= objSize && size != mapSize) {
+                    String result = currentSvcDto.getAppSvcCgoDtoList().stream()
+                            .filter(appSvcCgoDto -> !cgoMap.containsKey(appSvcCgoDto.getIdNo()))
+                            .map(AppSvcPrincipalOfficersDto::getName)
+                            .filter(Objects::nonNull)
+                            .reduce((x, y) -> x + ", " + y)
+                            .orElse("");
+                    if (result.contains(",")) {
                         error = error.replaceFirst("is", "are");
                     }
-                    String replace = error.replace("{CGO Name}", substring);
+                    String replace = error.replace("{CGO Name}", result);
                     map.put("CGO", replace);
                 }
             }
-            List<AppSvcPersonnelDto> sectionLeaderDtoList = (List<AppSvcPersonnelDto>) CopyUtil.copyMutableObjectList(
-                    currentSvcDto.getAppSvcSectionLeaderList());
-            List<AppSvcPersonnelDto> sectionLeaderDtos = IaisCommonUtils.genNewArrayList();
+            List<AppSvcPersonnelDto> sectionLeaderDtoList = currentSvcDto.getAppSvcSectionLeaderList();
             if (sectionLeaderDtoList != null) {
-                if (daList.size() < sectionLeaderDtoList.size()) {
-                    return;
-                }
-                if (daList.size() >= sectionLeaderDtoList.size()) {
-                    slMap.forEach((k, v) -> {
-                        for (AppSvcPersonnelDto sectionLeaderDto : sectionLeaderDtoList) {
-                            String indexNo = sectionLeaderDto.getIndexNo();
-                            if (k.equals(indexNo)) {
-                                sectionLeaderDtos.add(sectionLeaderDto);
-                            }
-                        }
-                    });
-                }
-                sectionLeaderDtoList.removeAll(sectionLeaderDtos);
-                StringBuilder stringBuilder = new StringBuilder();
-                for (AppSvcPersonnelDto sectionLeaderDto : sectionLeaderDtoList) {
-                    stringBuilder.append(sectionLeaderDto.getName()).append(',');
-                }
-                if (!StringUtil.isEmpty(stringBuilder.toString())) {
-                    String string = stringBuilder.toString();
-                    String substring = string.substring(0, string.lastIndexOf(','));
-                    if (substring.contains(",")) {
+                int mapSize = slMap.size();
+                int objSize = sectionLeaderDtoList.size();
+                if (size > objSize && objSize != mapSize || size <= objSize && size != mapSize) {
+                    String result = sectionLeaderDtoList.stream()
+                            .filter(sectionLeaderDto -> !slMap.containsKey(sectionLeaderDto.getIndexNo()))
+                            .map(AppSvcPersonnelDto::getName)
+                            .filter(Objects::nonNull)
+                            .reduce((x, y) -> x + ", " + y)
+                            .orElse("");
+                    if (result.contains(",")) {
                         error = error.replaceFirst("is", "are");
                     }
-                    String replace = error.replace("{CGO Name}", substring);
+                    String replace = error.replace("{CGO Name}", result);
                     map.put("SL", replace);
                 }
             }
@@ -1246,6 +1219,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                 .map(appGrpPremisesDto -> {
                     NewApplicationHelper.setWrkTime(appGrpPremisesDto);
                     appGrpPremisesDto.setExistingData(AppConsts.YES);
+                    appGrpPremisesDto.setFromDB(true);
                     return appGrpPremisesDto;
                 })
                 .collect(Collectors.toList());
@@ -1265,7 +1239,8 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                 .map(appGrpPremisesDto -> {
                     NewApplicationHelper.setWrkTime(appGrpPremisesDto);
                     appGrpPremisesDto.setExistingData(AppConsts.YES);
-                    List<String> relatedServices = appGrpPremisesDto.getRelatedServices();
+                    appGrpPremisesDto.setFromDB(true);
+                    /*List<String> relatedServices = appGrpPremisesDto.getRelatedServices();
                     if (relatedServices != null && !relatedServices.isEmpty()) {
                         List<String> svcNames = relatedServices.stream()
                                 .map(svcId -> HcsaServiceCacheHelper.getServiceById(svcId))
@@ -1274,7 +1249,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                                 .filter(Objects::nonNull)
                                 .collect(Collectors.toList());
                         appGrpPremisesDto.setRelatedServices(svcNames);
-                    }
+                    }*/
                     return appGrpPremisesDto;
                 })
                 .collect(Collectors.toList());
@@ -2633,7 +2608,16 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                 dto.setServiceId(serviceId);
                 dto.setServiceCode(serviceDto.getSvcCode());
             }
+        } else if (!StringUtil.isEmpty(serviceId) && StringUtil.isEmpty(dto.getServiceCode())) {
+            HcsaServiceDto serviceDto = HcsaServiceCacheHelper.getServiceById(serviceId);
+            if (serviceDto != null) {
+                serviceId = serviceDto.getId();
+                dto.setServiceId(serviceId);
+                dto.setServiceCode(serviceDto.getSvcCode());
+                dto.setServiceName(serviceDto.getSvcName());
+            }
         }
+
         int uploadFileLimit = systemParamConfig.getUploadFileLimit();
         String sysFileType = systemParamConfig.getUploadFileType();
         List<HcsaServiceStepSchemeDto> hcsaServiceStepSchemeDtos = serviceConfigService.getHcsaServiceStepSchemesByServiceId(
@@ -2732,7 +2716,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                 addErrorStep(currentStep, stepName, errorMap.size() != prevSize, errorList);
             } else if (HcsaConsts.STEP_SECTION_LEADER.equals(currentStep)) {
                 // Section Leader
-                Map<String, String> map = validateSectionLeaders(dto.getAppSvcSectionLeaderList());
+                Map<String, String> map = validateSectionLeaders(dto.getAppSvcSectionLeaderList(), dto.getServiceCode());
                 if (!map.isEmpty()) {
                     errorMap.putAll(map);
                 }

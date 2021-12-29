@@ -57,6 +57,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.prs.ProfessionalResponseDto;
 import com.ecquaria.cloud.moh.iais.common.utils.CopyUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
+import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ReflectionUtil;
@@ -98,6 +99,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -313,7 +315,7 @@ public class NewApplicationHelper {
     }
 
     public static void addToNonAuto(List<AppSubmissionDto> sourceList, List<AppSubmissionDto> notAutoSaveList) {
-        if (sourceList == null) {
+        if (sourceList == null || sourceList.isEmpty()) {
             return;
         }
         List<AppSubmissionDto> newAuto = IaisCommonUtils.genNewArrayList();
@@ -332,7 +334,7 @@ public class NewApplicationHelper {
     }
 
     public static void addToAuto(List<AppSubmissionDto> sourceList, List<AppSubmissionDto> autoSaveList) {
-        if (sourceList == null) {
+        if (sourceList == null || sourceList.isEmpty()) {
             return;
         }
         List<AppSubmissionDto> newAuto = IaisCommonUtils.genNewArrayList();
@@ -352,7 +354,7 @@ public class NewApplicationHelper {
 
     public static void addToAuto(List<AppSubmissionDto> sourceList, List<AppSubmissionDto> autoSaveList,
             List<AppSubmissionDto> notAutoSaveAppsubmission) {
-        if (sourceList == null) {
+        if (sourceList == null || sourceList.isEmpty()) {
             return;
         }
         List<AppSubmissionDto> notInNonAuto = IaisCommonUtils.genNewArrayList();
@@ -386,9 +388,12 @@ public class NewApplicationHelper {
         if (scourceDto == null || targetDto == null) {
             return;
         }
-        log.info(StringUtil.changeForLog("##### Reset Data: " + targetDto.getLicenceId() + " : " + targetDto.getLicenceNo()));
+        log.info(StringUtil.changeForLog("##### Reset Data: " + targetDto.getLicenceNo() + " : " + targetDto.getAppGrpNo()
+                + " : " + targetDto.getLicenceId() + " : " + scourceDto.getAppGrpNo()));
         AppEditSelectDto source = scourceDto.getChangeSelectDto();
         AppEditSelectDto target = targetDto.getChangeSelectDto();
+        log.info(StringUtil.changeForLog("Source App Edit Select Dto: " + JsonUtil.parseToJson(source)));
+        log.info(StringUtil.changeForLog("Target App Edit Select Dto: " + JsonUtil.parseToJson(target)));
         if (source == null || target == null) {
             return;
         }
@@ -418,6 +423,8 @@ public class NewApplicationHelper {
         log.info(StringUtil.changeForLog("##### Reset Data: " + targetDto.getLicenceId() + " : " + targetDto.getLicenceNo()));
         AppEditSelectDto source = scourceDto.getChangeSelectDto();
         AppEditSelectDto target = targetDto.getChangeSelectDto();
+        log.info(StringUtil.changeForLog("Source App Edit Select Dto: " + JsonUtil.parseToJson(source)));
+        log.info(StringUtil.changeForLog("Target App Edit Select Dto: " + JsonUtil.parseToJson(target)));
         if (source == null || target == null) {
             return;
         }
@@ -3382,6 +3389,16 @@ public class NewApplicationHelper {
                     psnDtoList = appSvcRelatedInfoDto.getAppSvcClinicalDirectorDtoList();
                 }
                 break;
+            case ApplicationConsts.DUP_FOR_PERSON_SL:
+                List<AppSvcPersonnelDto> appSvcSectionLeaderList = appSvcRelatedInfoDto.getAppSvcSectionLeaderList();
+                if (!IaisCommonUtils.isEmpty(appSvcSectionLeaderList)) {
+                    for (AppSvcPersonnelDto spDto : appSvcSectionLeaderList) {
+                        AppSvcPrincipalOfficersDto psnDto = new AppSvcPrincipalOfficersDto();
+                        psnDto.setIndexNo(spDto.getIndexNo());
+                        psnDtoList.add(psnDto);
+                    }
+                }
+                break;
             default:
                 break;
         }
@@ -3522,6 +3539,7 @@ public class NewApplicationHelper {
             ParamUtil.setRequestAttr(request, "AppSvcMedAlertPsn", appSvcRelatedInfoDto.getAppSvcMedAlertPersonList());
             ParamUtil.setRequestAttr(request, "AppSvcPersonnelDtoList", appSvcRelatedInfoDto.getAppSvcPersonnelDtoList());
             ParamUtil.setRequestAttr(request, "clinicalDirectorDtoList", appSvcRelatedInfoDto.getAppSvcClinicalDirectorDtoList());
+            ParamUtil.setRequestAttr(request, "sectionLeaderList", appSvcRelatedInfoDto.getAppSvcSectionLeaderList());
         }
     }
 
@@ -3592,6 +3610,9 @@ public class NewApplicationHelper {
                     break;
                 case ApplicationConsts.DUP_FOR_PERSON_CD:
                     psnType = ApplicationConsts.PERSONNEL_CLINICAL_DIRECTOR;
+                    break;
+                case ApplicationConsts.DUP_FOR_PERSON_SL:
+                    psnType = ApplicationConsts.PERSONNEL_PSN_SVC_SECTION_LEADER;
                     break;
                 default:
                     break;
@@ -4484,6 +4505,31 @@ public class NewApplicationHelper {
         }
     }
 
+    public static String getDocDisplayTitle(String dupForPrem, String dupForPerson, String docTitle, Integer num) {
+        log.info(StringUtil.changeForLog("The dupForPrem -->: " + dupForPrem));
+        log.info(StringUtil.changeForLog("The dupForPerson -->: " + dupForPerson));
+        log.info(StringUtil.changeForLog("The docTitle -->: " + docTitle));
+        String result = null;
+        if (dupForPerson == null && "0".equals(dupForPrem)) {
+            result = docTitle;
+        } else if (dupForPerson == null && "1".equals(dupForPrem)) {
+            result = ApplicationConsts.TITLE_MODE_OF_SVCDLVY + "  1: " + docTitle;
+        } else if (dupForPerson != null) {
+            StringBuilder title = new StringBuilder();
+            if ("1".equals(dupForPrem)) {
+                title.append(ApplicationConsts.TITLE_MODE_OF_SVCDLVY).append(" 1: ");
+            }
+            title.append(getDupForPersonName(dupForPerson));
+            if (num != null) {
+                title.append(" ").append(num);
+            }
+            title.append(": ").append(docTitle);
+            result = title.toString();
+        }
+        log.info(StringUtil.changeForLog("The Result -->: " + result));
+        return result;
+    }
+
     private static String getDupForPersonName(String dupForPerson) {
         String psnName = "";
         switch (dupForPerson) {
@@ -4505,6 +4551,9 @@ public class NewApplicationHelper {
             case ApplicationConsts.DUP_FOR_PERSON_CD:
                 psnName = HcsaConsts.CLINICAL_DIRECTOR;
                 break;
+            case ApplicationConsts.DUP_FOR_PERSON_SL:
+                psnName = HcsaConsts.SECTION_LEADER;
+                break;
             default:
                 break;
         }
@@ -4514,37 +4563,30 @@ public class NewApplicationHelper {
     private static void setSvcDocDisplayTitle(String dupForPrem, int premCount, String premIndex, String dupForPerson,
             String configId, String configTitle, List<AppSvcDocDto> appSvcDocDtos,
             AppSvcRelatedInfoDto appSvcRelatedInfoDto, Map<String, List<AppSvcDocDto>> reloadMap) {
-        String titleTemplate = "${prem}${psn}" + configTitle;
         String reloadKey;
         if ("1".equals(dupForPrem)) {
-            titleTemplate = titleTemplate.replace("${prem}", NewApplicationConstant.TITLE_MODE_OF_SVCDLVY + " " + premCount + ": ");
             reloadKey = premIndex + configId;
         } else {
-            titleTemplate = titleTemplate.replace("${prem}", "");
             reloadKey = configId;
         }
-
         if (StringUtil.isEmpty(dupForPerson)) {
             List<AppSvcDocDto> appSvcDocDtoList = getAppSvcDocDtoByConfigId(appSvcDocDtos, configId, premIndex, "");
-            titleTemplate = titleTemplate.replace("${psn}", "");
-            setSvcDocDisplayTitle(appSvcDocDtoList, titleTemplate);
+            String displayTitle = getDocDisplayTitle(dupForPrem, dupForPerson, configTitle, premCount);
+            setSvcDocDisplayTitle(appSvcDocDtoList, displayTitle);
             reloadMap.put(reloadKey, appSvcDocDtoList);
         } else {
-            String psnName = getDupForPersonName(dupForPerson);
             List<AppSvcPrincipalOfficersDto> psnList = getPsnByDupForPerson(appSvcRelatedInfoDto, dupForPerson);
             int psnCount = 1;
             for (AppSvcPrincipalOfficersDto psn : psnList) {
                 String psnIndex = psn.getIndexNo();
-                String displayTitle = titleTemplate.replace("${psn}", psnName + " " + psnCount + ": ");
                 List<AppSvcDocDto> appSvcDocDtoList = getAppSvcDocDtoByConfigId(appSvcDocDtos, configId, premIndex, psnIndex);
+                String displayTitle = getDocDisplayTitle(dupForPrem, dupForPerson, configTitle, psnCount++);
                 setSvcDocDisplayTitle(appSvcDocDtoList, displayTitle);
                 reloadMap.put(reloadKey + psnIndex, appSvcDocDtoList);
-                psnCount++;
             }
         }
 
     }
-
 
     private static int getManDatoryCountByPsnType(List<HcsaSvcPersonnelDto> hcsaSvcPersonnelDtos, String psnType) {
         int mandatoryCount = 0;
@@ -4926,7 +4968,11 @@ public class NewApplicationHelper {
         boolean invalid = IaisCommonUtils.isNotEmpty(appByLicIdAndExcludeNew)
                 || !requestForChangeService.isOtherOperation(licenceId);
         if (invalid) {
-            log.info(StringUtil.changeForLog("Invalid Licence - " + type + " : " + licenceId));
+            log.info(StringUtil.changeForLog("##### Invalid Licence - " + type + " : " + licenceId));
+            if (appByLicIdAndExcludeNew != null && !appByLicIdAndExcludeNew.isEmpty()) {
+                CompletableFuture.runAsync(() -> appByLicIdAndExcludeNew.forEach(dto ->
+                        log.warn(StringUtil.changeForLog("##### The error for Pending App: " + dto.getApplicationNo()))));
+            }
             //request.setAttribute("rfcPendingApplication", "errorRfcPendingApplication");
         }
         return !invalid;
@@ -4950,6 +4996,7 @@ public class NewApplicationHelper {
         if (StringUtil.isEmpty(type) || NewApplicationConstant.SECTION_PREMISES.equals(type)) {
             boolean b = requestForChangeService.baseSpecLicenceRelation(licenceDto);
             if (!b) {
+                log.warn(StringUtil.changeForLog("#####The error for baseSpecLicenceRelation: " + licenceDto.getLicenceNo()));
                 errorMap.put(RfcConst.PENDING_APP, RfcConst.PENDING_APP_VALUE);
                 return errorMap;
             }
@@ -4961,6 +5008,7 @@ public class NewApplicationHelper {
                 for (String premiseType : premiseTypes) {
                     boolean configIsChange = requestForChangeService.serviceConfigIsChange(serviceIds, premiseType);
                     if (!configIsChange) {
+                        log.warn(StringUtil.changeForLog("#####The error for serviceConfigIsChange: " + licenceDto.getLicenceNo()));
                         errorMap.put(RfcConst.SERVICE_CONFIG_CHANGE,
                                 MessageUtil.replaceMessage("RFC_ERR020", licenceDto.getSvcName(), "ServiceName"));
                         return errorMap;
@@ -4974,7 +5022,7 @@ public class NewApplicationHelper {
          return errorMap;
     }
 
-    public static Map<String, String> validateLicences(List<AppSubmissionDto> appSubmissionDtos, String type, HttpServletRequest request) {
+    public static Map<String, String> validateLicences(List<AppSubmissionDto> appSubmissionDtos, String type) {
         if (appSubmissionDtos == null || appSubmissionDtos.isEmpty()) {
             return IaisCommonUtils.genNewHashMap();
         }
@@ -4991,6 +5039,15 @@ public class NewApplicationHelper {
             srcMap = IaisCommonUtils.genNewHashMap();
         }
         return srcMap;
+    }
+
+    public static <T> void addToList(T t, List<T> tarList) {
+        if (t == null || tarList == null) {
+            return;
+        }
+        if (!tarList.contains(t)) {
+            tarList.add(t);
+        }
     }
 
     public static <T> List<T> getList(List<T> srcList) {
@@ -5070,7 +5127,7 @@ public class NewApplicationHelper {
                             appGrpPremisesDto, check);
                     boolean isSamePremiseKey = key == null || Objects.equals(key, appGrpPremisesDto.getPremisesSelect());
                     log.info(StringUtil.changeForLog("isSamePremiseKey: " + isSamePremiseKey));
-                    if (!isSamePremiseKey && !isRfi) {
+                    if (!isSamePremiseKey) {
                         initCurrentPremises(licAppGrpPremisesDtoMap, newAppMap, licenceList, appList,
                                 appGrpPremisesDto, 1);
                     }
@@ -5117,7 +5174,11 @@ public class NewApplicationHelper {
         boolean isLicence = false;
         if (check == 3) {
             premiseEntry = (AppGrpPremisesDto) CopyUtil.copyMutableObject(srcDto);
-            premiseEntry.setExistingData(AppConsts.NO);
+            if (StringUtil.isEmpty(premiseEntry.getExistingData())) {
+                premiseEntry.setExistingData(AppConsts.NO);
+            } else if (AppConsts.YES.equals(premiseEntry.getExistingData())) {
+                premiseEntry.setFromDB(true);
+            }
         } else {
             if (!licenceList.isEmpty()) {
                 premiseEntry = licenceList.stream()
@@ -5186,7 +5247,8 @@ public class NewApplicationHelper {
         } else if (2 == check) {
             return Objects.equals(srcDto.getPremisesIndexNo(), tarDto.getPremisesIndexNo());
         } else if (3 == check) {
-            return Objects.equals(srcDto.getPremisesSelect(), tarDto.getPremisesSelect());
+            return Objects.equals(srcDto.getPremisesSelect(), tarDto.getPremisesSelect())
+                    || Objects.equals(srcDto.getPremisesIndexNo(), tarDto.getPremisesIndexNo());
         } else {
             return false;
         }
@@ -5220,10 +5282,12 @@ public class NewApplicationHelper {
         for (AppGrpPremisesDto premises : appSubmissionDto.getAppGrpPremisesDtoList()) {
             String premisesSelect = getPremisesKey(premises);
             AppGrpPremisesDto newDto = (AppGrpPremisesDto) CopyUtil.copyMutableObject(premises);
+            newDto.setRelatedServices(null);// new premise
+            newDto.setFromDB(false);
             // itself
-            Map.Entry<String, AppGrpPremisesDto> entry = getPremisesFromMap(premises, allData, request);
-            log.info("The current premises is in Map: " + (entry != null));
-            if (entry == null) {// not have
+            List<Map.Entry<String, AppGrpPremisesDto>> entryList = getPremisesFromMap(premises, allData);
+            log.info("The same premise index no size in Map: " + (entryList.size()));
+            if (entryList.isEmpty()) {// not have
                 if (licAppGrpPremisesDtoMap.get(premisesSelect) == null && appPremisesMap.get(premisesSelect) == null) {
                     appPremisesMap.put(premisesSelect, newDto);
                     request.getSession().setAttribute(NewApplicationDelegator.APP_PREMISES_MAP, appPremisesMap);
@@ -5234,6 +5298,7 @@ public class NewApplicationHelper {
                     premises.setExistingData(AppConsts.YES);
                 }
             } else {// have
+                Map.Entry<String, AppGrpPremisesDto> entry = entryList.get(0);
                 String oldPremSel = entry.getKey();
                 if (Objects.equals(oldPremSel, premises.getPremisesSelect())
                         || ApplicationConsts.NEW_PREMISES.equals(premises.getPremisesSelect())) {// check itself or add new
@@ -5254,36 +5319,60 @@ public class NewApplicationHelper {
                 } else {
                     premises.setExistingData(AppConsts.YES);
                 }
+                /*
+                // retain the original one
+                boolean needReset = false;
+                Map.Entry<String, AppGrpPremisesDto> entry = entryList.stream()
+                        .filter(e -> !e.getValue().isFromDB())
+                        .findAny()
+                        .orElse(null);// not from DB
+                String oldPremSel = entry != null ? entry.getKey() : "-1";
+                if (entry != null) {// has added updated or NEW_PREMISES
+                    allData.remove(oldPremSel);
+                    if (licAppGrpPremisesDtoMap.get(oldPremSel) != null) {
+                        licAppGrpPremisesDtoMap.remove(oldPremSel);
+                        request.getSession().setAttribute(NewApplicationDelegator.LIC_PREMISES_MAP, licAppGrpPremisesDtoMap);
+                    } else {
+                        appPremisesMap.remove(oldPremSel);
+                    }
+                    needReset = true;
+                } else if (ApplicationConsts.NEW_PREMISES.equals(premises.getPremisesSelect())) {
+                    needReset = true;
+                } else {
+                    entry = entryList.stream()
+                            .filter(e -> e.getValue().isFromDB())
+                            .findAny()
+                            .orElse(null);// not from DB
+                    oldPremSel = entry != null ? entry.getKey() : "-1";
+                    if (Objects.equals(oldPremSel, premises.getPremisesSelect())
+                            && !Objects.equals(oldPremSel, premisesSelect)) {
+                        needReset = true;
+                    }
+                }
+                if (needReset) {
+                    allData.put(premisesSelect, newDto);
+                    appPremisesMap.put(premisesSelect, newDto);
+                    request.getSession().setAttribute(NewApplicationDelegator.APP_PREMISES_MAP, appPremisesMap);
+                    premises.setPremisesSelect(premisesSelect);
+                    premises.setExistingData(AppConsts.NO);
+                }*/
             }
         }
         setAppSubmissionDto(appSubmissionDto, request);
     }
 
-    private static Map.Entry<String, AppGrpPremisesDto> getPremisesFromMap(AppGrpPremisesDto premises,
-            Map<String, AppGrpPremisesDto> map, HttpServletRequest request) {
-        Map.Entry<String, AppGrpPremisesDto> entry = map.entrySet().stream()
+    /**
+     * maybe 2 records: one is modified, one is from DB
+     *
+     * @param premises
+     * @param map
+     * @return
+     */
+    private static List<Map.Entry<String, AppGrpPremisesDto>> getPremisesFromMap(AppGrpPremisesDto premises,
+            Map<String, AppGrpPremisesDto> map) {
+        return getList(map.entrySet().stream()
                 .filter(e -> Objects.equals(premises.getPremisesIndexNo(), e.getValue().getPremisesIndexNo()))
-                .findAny()
-                .orElse(null);
-        if (entry == null && request != null) {
-            /*AppSubmissionDto oldAppSubmissionDto = NewApplicationHelper.getOldAppSubmissionDto(request);
-            if (oldAppSubmissionDto != null) {
-                String hciCode = oldAppSubmissionDto.getAppGrpPremisesDtoList().stream()
-                        .filter(dto -> Objects.equals(premises.getPremisesIndexNo(), dto.getPremisesIndexNo()))
-                        .map(dto -> Optional.ofNullable(dto.getOldHciCode()).orElse(dto.getHciCode()))
-                        .filter(Objects::nonNull)
-                        .findAny()
-                        .orElse(null);
-                if (hciCode != null) {
-                    entry = map.entrySet().stream()
-                            .filter(e -> Objects.equals(hciCode, e.getValue().getHciCode())
-                                    || Objects.equals(hciCode, e.getValue().getOldHciCode()))
-                            .findAny()
-                            .orElse(null);
-                }
-            }*/
-        }
-        return entry;
+                .collect(Collectors.toList()));
     }
 
     public static void clearPremisesMap(HttpServletRequest request) {

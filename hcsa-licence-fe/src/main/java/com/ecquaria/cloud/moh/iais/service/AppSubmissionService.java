@@ -171,7 +171,7 @@ public interface AppSubmissionService {
 
     List<AppSvcVehicleDto> getActiveVehicles(List<String> appIds);
 
-    Map<String, String> validateSectionLeaders(List<AppSvcPersonnelDto> appSvcSectionLeaderList);
+    Map<String, String> validateSectionLeaders(List<AppSvcPersonnelDto> appSvcSectionLeaderList, String svcCode);
 
     void doValidateDisciplineAllocation(Map<String, String> map, List<AppSvcDisciplineAllocationDto> daList,
             AppSvcRelatedInfoDto currentSvcDto);

@@ -176,7 +176,7 @@
 </div>
 <script type="text/javascript">
     $(document).ready(function(){
-        <c:if test="${'Create' != feusertitle && empty inter_user_attr.uenNo}">
+        <c:if test="${'Create' != feusertitle && inter_user_attr.solo}">
         disableContent('.solo');
         </c:if>
     });
