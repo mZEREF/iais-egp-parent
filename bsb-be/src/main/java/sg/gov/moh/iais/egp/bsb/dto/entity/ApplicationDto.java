@@ -1,5 +1,6 @@
 package sg.gov.moh.iais.egp.bsb.dto.entity;
 
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.googlecode.jmapper.annotations.JGlobalMap;
 import lombok.Data;
@@ -42,4 +43,22 @@ public class ApplicationDto extends BaseEntityDto {
     private String isAssigned;
 
     private Date effectiveDate;
+
+    private ApprovalDto approval;
+
+    private String stageId;
+
+    private String forMainActivity;
+
+    private ApplicationGroupDto appGroup;
+
+    private String toBeSuspendReinstateAppId;
+
+    private String suspensionType;
+
+    private Date suspensionStartDt;
+
+    private Date suspensionEndDt;
+
+    private String additionalComments;
 }
