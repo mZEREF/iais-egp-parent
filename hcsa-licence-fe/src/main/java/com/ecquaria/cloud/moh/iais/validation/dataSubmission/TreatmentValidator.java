@@ -32,11 +32,18 @@ public class TreatmentValidator implements CustomizeValidator {
                 errorMap.put("otherEthnicGroup", "GENERAL_ERR0006");
             }
         }
-        Integer livingChildrenNo = treatmentDto.getLivingChildrenNo();
-        if(livingChildrenNo !=null && livingChildrenNo>=1){
-            if(StringUtil.isEmpty(treatmentDto.getLastChildBirthday())){
-                errorMap.put("lastChildBirthday", "GENERAL_ERR0006");
+        String livingChildrenNo = treatmentDto.getLivingChildrenNo();
+
+        if(StringUtil.isNotEmpty(livingChildrenNo) && StringUtil.isNumber(livingChildrenNo)){
+            if(Integer.valueOf(livingChildrenNo) >=1){
+                if(StringUtil.isEmpty(treatmentDto.getLastChildBirthday())){
+                    errorMap.put("lastChildBirthday", "GENERAL_ERR0006");
+                }
             }
+
+        }
+        if(!StringUtil.isEmpty(livingChildrenNo) && !StringUtil.isNumber(livingChildrenNo)){
+            errorMap.put("livingChildrenNo", "GENERAL_ERR0002");
         }
         return errorMap;
     }
