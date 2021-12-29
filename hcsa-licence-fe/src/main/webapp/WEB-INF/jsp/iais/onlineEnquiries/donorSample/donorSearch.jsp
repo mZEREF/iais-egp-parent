@@ -61,21 +61,21 @@
                             <iais:field width="4" value="Sample Type"/>
                             <iais:value width="4" cssClass="col-md-4">
                                 <iais:select name="sampleType" id="sampleType" firstOption="Please Select" codeCategory="AR_DONOR_SAMPLE_TYPE"
-                                             value="${arEnquiryDonorSampleFilterDto.sampleType}" />
+                                             cssClass="clearSel"    value="${arEnquiryDonorSampleFilterDto.sampleType}" />
                             </iais:value>
                         </iais:row>
                         <iais:row>
                             <iais:field width="4" value="Name of Bank / AR Centre where sample is from" />
                             <iais:value width="4" cssClass="col-md-4">
                                 <iais:select name="sampleHciCode" id="sampleHciCode" firstOption="Please Select" options="arCentreSelectOption"
-                                             value="${arEnquiryDonorSampleFilterDto.sampleHciCode}"  />
+                                             cssClass="clearSel"  value="${arEnquiryDonorSampleFilterDto.sampleHciCode}"  />
                             </iais:value>
                         </iais:row>
                         <iais:row>
                             <iais:field width="4" value="Donor's ID Type"/>
                             <iais:value width="4" cssClass="col-md-4">
                                 <iais:select name="donorIdType" id="donorIdType" firstOption="Please Select" codeCategory="CATE_ID_DS_ID_TYPE"
-                                             value="${arEnquiryDonorSampleFilterDto.donorIdType}" />
+                                             cssClass="clearSel"   value="${arEnquiryDonorSampleFilterDto.donorIdType}" />
                             </iais:value>
                         </iais:row>
                         <iais:row>

@@ -66,7 +66,7 @@
                             <iais:row>
                                 <iais:field width="4" value="AR Centre" />
                                 <iais:value width="4" cssClass="col-md-4">
-                                    <iais:select name="arCentre" id="arCentre" firstOption="Please Select" options="arCentreSelectOption"
+                                    <iais:select name="arCentre" id="arCentre" firstOption="Please Select" options="arCentreSelectOption" cssClass="clearSel"
                                                  value="${assistedReproductionEnquiryFilterDto.arCentre}"  />
                                 </iais:value>
                             </iais:row>
@@ -103,12 +103,12 @@
                                     <iais:field width="4" value="Submission Type"/>
                                     <iais:value width="4" cssClass="col-md-4">
                                         <iais:select name="submissionType" id="submissionType" firstOption="Please Select" options="submissionTypeOptions"
-                                                     value="${assistedReproductionEnquiryFilterDto.submissionType}" cssClass="idTypeSel" />
+                                                     value="${assistedReproductionEnquiryFilterDto.submissionType}" cssClass="clearSel" />
                                     </iais:value>
                                     <iais:value width="4" cssClass="col-md-4">
                                         <div id="cycleStageDisplay" <c:if test="${assistedReproductionEnquiryFilterDto.submissionType!='AR_TP002'}">style="display: none"</c:if> >
                                             <iais:select name="cycleStage" id="cycleStage" firstOption="Please Select" options="stageTypeSelectOption" needSort="true"
-                                                         value="${assistedReproductionEnquiryFilterDto.cycleStage}" cssClass="idTypeSel" />
+                                                         value="${assistedReproductionEnquiryFilterDto.cycleStage}" cssClass="clearSel" />
                                         </div>
                                     </iais:value>
                                 </iais:row>

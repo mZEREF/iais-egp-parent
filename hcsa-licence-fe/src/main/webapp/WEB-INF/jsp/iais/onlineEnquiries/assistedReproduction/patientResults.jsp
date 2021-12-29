@@ -107,12 +107,12 @@
                                 <iais:field width="4" value="Submission Type"/>
                                 <iais:value width="4" cssClass="col-md-4">
                                     <iais:select name="submissionType" id="submissionType" firstOption="Please Select" options="submissionTypeOptions"
-                                                 value="${assistedReproductionEnquiryFilterDto.submissionType}" cssClass="idTypeSel" />
+                                                 cssClass="clearSel"   value="${assistedReproductionEnquiryFilterDto.submissionType}" />
                                 </iais:value>
                                 <iais:value width="4" cssClass="col-md-4">
                                     <div id="cycleStageDisplay" <c:if test="${assistedReproductionEnquiryFilterDto.submissionType!='AR_TP002'}">style="display: none"</c:if> >
                                         <iais:select name="cycleStage" id="cycleStage" firstOption="Please Select" options="stageTypeSelectOption" needSort="true"
-                                                     value="${assistedReproductionEnquiryFilterDto.cycleStage}" cssClass="idTypeSel" />
+                                                     cssClass="clearSel"   value="${assistedReproductionEnquiryFilterDto.cycleStage}" />
                                     </div>
                                 </iais:value>
                             </iais:row>

@@ -55,7 +55,7 @@
                                     <iais:field width="4" value="Patient ID Type"/>
                                     <iais:value width="6" cssClass="col-md-6"  >
                                         <iais:select name="patientIdType" id="patientIdType" firstOption="Please Select" codeCategory="CATE_ID_DS_ID_TYPE"
-                                                     value="${assistedReproductionEnquiryFilterDto.patientIdType}" />
+                                                     cssClass="clearSel"  value="${assistedReproductionEnquiryFilterDto.patientIdType}" />
                                     </iais:value>
                                 </iais:row>
                                 <iais:row>
@@ -115,7 +115,7 @@
                                     <iais:field width="4" value="Husband ID Type"/>
                                     <iais:value width="6" cssClass="col-md-6"  >
                                         <iais:select name="husbandIdType" id="husbandIdType" firstOption="Please Select" codeCategory="CATE_ID_DS_ID_TYPE"
-                                                     value="${assistedReproductionEnquiryFilterDto.husbandIdType}" />
+                                                     cssClass="clearSel" value="${assistedReproductionEnquiryFilterDto.husbandIdType}" />
                                     </iais:value>
                                 </iais:row>
                                 <iais:row>
@@ -134,7 +134,7 @@
                                 <iais:row>
                                     <iais:field width="4" value="AR Centre" />
                                     <iais:value width="6" cssClass="col-md-6">
-                                        <iais:select name="arCentre" id="arCentre" firstOption="Please Select" options="arCentreSelectOption"
+                                        <iais:select name="arCentre" id="arCentre" firstOption="Please Select" options="arCentreSelectOption" cssClass="clearSel"
                                                      value="${assistedReproductionEnquiryFilterDto.arCentre}"  />
                                     </iais:value>
                                 </iais:row>
@@ -162,7 +162,7 @@
                                     <iais:field width="4" value="Status"/>
                                     <iais:value width="6" cssClass="col-md-6"  >
                                         <iais:select name="cycleStagesStatus" id="cycleStagesStatus" firstOption="Please Select" options="cycleStagesStatusOptions"
-                                                     value="${assistedReproductionEnquiryFilterDto.cycleStagesStatus}" />
+                                                     cssClass="clearSel"  value="${assistedReproductionEnquiryFilterDto.cycleStagesStatus}" />
                                     </iais:value>
                                 </iais:row>
                                 <iais:row>
@@ -178,7 +178,7 @@
                                     <iais:field width="4" value="AR / IUI Cycle"/>
                                     <iais:value width="6" cssClass="col-md-6"  >
                                         <iais:select name="arOrIuiCycle" id="arOrIuiCycle" firstOption="Please Select" options="aRorIUICycleOptions"
-                                                     value="${assistedReproductionEnquiryFilterDto.arOrIuiCycle}" />
+                                                     cssClass="clearSel"  value="${assistedReproductionEnquiryFilterDto.arOrIuiCycle}" />
                                     </iais:value>
                                 </iais:row>
                                 <iais:row>
@@ -397,7 +397,7 @@
                                     <iais:field width="4" value="Source of Semen"/>
                                     <iais:value width="6" cssClass="col-md-6"  >
                                         <iais:select name="sourceSemen" id="sourceSemen" firstOption="Please Select" options="sourceSemenOptions"
-                                                     value="${assistedReproductionEnquiryFilterDto.sourceSemen}" />
+                                                     cssClass="clearSel"  value="${assistedReproductionEnquiryFilterDto.sourceSemen}" />
                                     </iais:value>
                                 </iais:row>
                                 <iais:row>
@@ -1019,7 +1019,7 @@
                                     <iais:field width="4" value="Transferred In From"/>
                                     <iais:value width="6" cssClass="col-md-6"  >
                                         <iais:select name="transferredInFrom" id="transferredInFrom" firstOption="Please Select" options="arCentreSelectOption"
-                                                     value="${assistedReproductionEnquiryFilterDto.transferredInFrom}"  />
+                                                     cssClass="clearSel"  value="${assistedReproductionEnquiryFilterDto.transferredInFrom}"  />
                                     </iais:value>
                                 </iais:row>
 
@@ -1027,7 +1027,7 @@
                                     <iais:field width="4" value="Transfer Out To"/>
                                     <iais:value width="6" cssClass="col-md-6"  >
                                         <iais:select name="transferOutTo" id="transferOutTo" firstOption="Please Select" options="arCentreSelectOption"
-                                                     value="${assistedReproductionEnquiryFilterDto.transferOutTo}" />
+                                                     cssClass="clearSel"  value="${assistedReproductionEnquiryFilterDto.transferOutTo}" />
                                     </iais:value>
                                 </iais:row>
 

@@ -11,7 +11,7 @@ function doClear() {
     $('input[type="checkbox"]').prop("checked", false);
 
     $("option:first").prop("selected", 'selected');
-    $(".current").text("Please Select");
+    $(".clearSel").text("Please Select");
     $('.date_picker').val("");
 
 
