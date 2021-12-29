@@ -316,7 +316,6 @@ public class LicenceViewServiceDelegator {
                 }
             }
         }
-
         try {
             contrastNewAndOld(appSubmissionDto,bpc.request);
         }catch (Exception e){
@@ -1218,6 +1217,17 @@ public class LicenceViewServiceDelegator {
                 sortSvcDoc(multipleSvcDoc);
                 multipleSvcDoc = translateForShow(multipleSvcDoc, appSvcRelatedInfoDto.getServiceId());
                 appSvcRelatedInfoDto.setMultipleSvcDoc(multipleSvcDoc);
+                // set check name
+                List<AppSvcLaboratoryDisciplinesDto> disciplinesDtoList = appSvcRelatedInfoDto.getAppSvcLaboratoryDisciplinesDtoList();
+                if (disciplinesDtoList != null && !disciplinesDtoList.isEmpty()) {
+                    disciplinesDtoList.forEach(disciplinesDto -> {
+                        List<AppSvcChckListDto> appSvcChckListDtoList = disciplinesDto.getAppSvcChckListDtoList();
+                        if (appSvcChckListDtoList != null && !appSvcChckListDtoList.isEmpty()) {
+                            disciplinesDto.setAppSvcChckListDtoList(
+                                    hcsaConfigClient.getAppSvcChckListDto(appSvcChckListDtoList).getEntity());
+                        }
+                    });
+                }
             }
             Map<String, List<AppGrpPrimaryDocDto>> multipleGrpPrimaryDoc = appSubmissionDto.getMultipleGrpPrimaryDoc();
             sortPremiseDoc(multipleGrpPrimaryDoc);
