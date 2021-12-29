@@ -100,9 +100,15 @@ public abstract class DonorCommonDelegator extends CommonDelegator{
                     arDonorDto.getDonorSampleCode(),arDonorDto.getSource(),arDonorDto.getOtherSource());
             if(donorSampleDto == null || IaisCommonUtils.isEmpty(donorSampleDto.getDonorSampleAgeDtos())){
                 Map<String, String> errorMap = IaisCommonUtils.genNewHashMap(2);
-                errorMap.put("field1","The corresponding donor");
-                errorMap.put("field2","the AR centre");
-                String dsErr =  MessageUtil.getMessageDesc("DS_ERR012",errorMap).trim();
+                String dsErr;
+                if(donorSampleDto == null){
+                    errorMap.put("field1","The corresponding donor");
+                    errorMap.put("field2","the AR centre");
+                    dsErr =  MessageUtil.getMessageDesc("DS_ERR012",errorMap).trim();
+                }else {
+                    errorMap.put("field","The donor's age(s)");
+                    dsErr = MessageUtil.getMessageDesc("DS_ERR020",errorMap).trim();
+                }
                 errorMap.clear();
                 errorMap.put("validateDonor" +(arDonorDto.isDirectedDonation() ? "Yes" : "No") +arDonorDto.getArDonorIndex(),dsErr);
                 ParamUtil.setRequestAttr(request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
@@ -110,7 +116,7 @@ public abstract class DonorCommonDelegator extends CommonDelegator{
                 Map<String, String> errorMap = IaisCommonUtils.genNewHashMap(1);
                 arDonorDtos.forEach( donorDto -> {
                     if(donorSampleDto.getSampleKey().equalsIgnoreCase(donorDto.getDonorSampleKey()) && donorDto.getArDonorIndex() != valiateArDonor){
-                            errorMap.put("validateDonor" +(arDonorDto.isDirectedDonation() ? "Yes" : "No") +arDonorDto.getArDonorIndex(), MessageUtil.replaceMessage("DS_ERR016","This donor ","field"));
+                            errorMap.put("validateDonor" +(arDonorDto.isDirectedDonation() ? "Yes" : "No") +arDonorDto.getArDonorIndex(), MessageUtil.replaceMessage("DS_ERR016","This donor","field"));
                         setDonorDtoByDonorSampleDto(donorDto,donorSampleDto);
                     }
                 });
