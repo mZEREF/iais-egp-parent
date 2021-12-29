@@ -26,7 +26,9 @@ import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.NewApplicationHelper;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 public class EqRequestForChangeSubmitResultChange {
@@ -744,8 +746,11 @@ public class EqRequestForChangeSubmitResultChange {
         }
         if (changeSectionLeader) {
             stepList.add(HcsaConsts.STEP_SECTION_LEADER);
-            stepList.add(HcsaConsts.STEP_DOCUMENTS);
-            NewApplicationHelper.addToList(HcsaConsts.STEP_DISCIPLINE_ALLOCATION, stepList);
+            //stepList.add(HcsaConsts.STEP_DOCUMENTS);
+        }
+        if (!stepList.contains(HcsaConsts.STEP_DISCIPLINE_ALLOCATION)
+                && isChangeNotAutoDataForAllocation(appSvcRelatedInfoDtos, oldAppSvcRelatedInfoDtos)) {
+            stepList.add(HcsaConsts.STEP_DISCIPLINE_ALLOCATION);
         }
         showDto.setPersonnelEditList(stepList);
         appSubmissionDto.setAppEditSelectDto(showDto);
@@ -834,7 +839,6 @@ public class EqRequestForChangeSubmitResultChange {
         if (!newIdNos.equals(oldIdNos)) {
             isAuto = false;
             personnelEditList.add(HcsaConsts.STEP_CLINICAL_GOVERNANCE_OFFICERS);
-            NewApplicationHelper.addToList(HcsaConsts.STEP_DISCIPLINE_ALLOCATION, personnelEditList);
         }
         // CD
         List<AppSvcPrincipalOfficersDto> newAppSvcCdDto = getList(appSvcRelatedInfoDtoList.getAppSvcClinicalDirectorDtoList());
@@ -984,5 +988,40 @@ public class EqRequestForChangeSubmitResultChange {
         List<AppSvcPersonnelDto> o1 = PageDataCopyUtil.copySvcPersonnels(servicePersonnelList);
         List<AppSvcPersonnelDto> o2 = PageDataCopyUtil.copySvcPersonnels(oldServicePersonnelListList);
         return !o1.equals(o2);
+    }
+
+    private static boolean isChangeNotAutoDataForAllocation(List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos,
+            List<AppSvcRelatedInfoDto> oldAppSvcRelatedInfoDtos) {
+        if (appSvcRelatedInfoDtos == null && oldAppSvcRelatedInfoDtos == null) {
+            return false;
+        } else if (appSvcRelatedInfoDtos == null ^ oldAppSvcRelatedInfoDtos == null) {
+            return true;
+        }
+        int size = appSvcRelatedInfoDtos.size();
+        if (size != oldAppSvcRelatedInfoDtos.size()) {
+            return true;
+        }
+        for (int i = 0; i < size; i++) {
+            List<AppSvcDisciplineAllocationDto> allocationDtoList = appSvcRelatedInfoDtos
+                    .get(i).getAppSvcDisciplineAllocationDtoList();
+            List<AppSvcDisciplineAllocationDto> oldAllocationDtoList = oldAppSvcRelatedInfoDtos
+                    .get(i).getAppSvcDisciplineAllocationDtoList();
+            Map<String, String> cgoMap = new HashMap<>();
+            Map<String, String> slMap = new HashMap<>();
+            if (oldAllocationDtoList != null) {
+                oldAllocationDtoList.forEach(dto -> {
+                    cgoMap.put(dto.getIdNo(), dto.getIdNo());
+                    slMap.put(dto.getSlIndex(), dto.getSectionLeaderName());
+                });
+            }
+            if (allocationDtoList != null) {
+                boolean changed = allocationDtoList.stream().anyMatch(dto -> cgoMap.get(dto.getIdNo()) == null
+                        || slMap.get(dto.getSlIndex()) == null);
+                if (changed) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 }
