@@ -186,6 +186,10 @@ public class DisposalStageDtoValidator implements CustomizeValidator {
                 }
 
             }
+        }else {
+            if(disposalStageDto.getDisposedType().equals(DataSubmissionConsts.DISPOSAL_TYPE_FROZEN_SPERM)){
+                errorMap.put("otherDiscardedNum", errMsgErr006);
+            }
         }
 
         return errorMap;
