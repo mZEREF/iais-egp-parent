@@ -88,7 +88,8 @@ public class VssDataSubmissionDelegator {
             } else if ("submission".equals(crudType)) {
                 actionType = crudType;
             } else {
-                actionType = DataSubmissionHelper.initAction(DataSubmissionConsts.DS_VSS, "return", request);
+             actionType = DataSubmissionHelper.initAction(DataSubmissionConsts.DS_VSS, "return", request);
+                /*DsConfigHelper.setActiveConfig(crudType, request);*/
             }
         }
         return actionType;
@@ -106,6 +107,7 @@ public class VssDataSubmissionDelegator {
         if (DsConfigHelper.VSS_STEP_PREVIEW.equals(currentConfig.getCode())) {
             pageStage = DataSubmissionConstant.PAGE_STAGE_PREVIEW;
         }
+
         ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.CURRENT_PAGE_STAGE, pageStage);
         String currentCode = currentConfig.getCode();
         log.info(StringUtil.changeForLog(" ----- PrepareStepData Step Code: " + currentCode + " ------ "));
@@ -115,7 +117,7 @@ public class VssDataSubmissionDelegator {
             prepareConsentParticulars(bpc.request);
         } else if (DsConfigHelper.VSS_STEP_TFSSP_PARTICULARS.equals(currentCode)) {
             prepareTfsspParticulars(bpc.request);
-        } /*else if(DsConfigHelper.VSS_STEP_PREVIEW.equals(currentCode)){
+        }/* else if(DsConfigHelper.VSS_STEP_PREVIEW.equals(currentCode)){
             preparePreview(bpc.request);
         }*/
     }

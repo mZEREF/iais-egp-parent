@@ -72,8 +72,7 @@
             console.info(currId);
             if (controlLi == currId) {
                 return;
-            } else if ('true' == canClick) {
-                showWaiting();
+            } else if (canClick) {
                 submit(configCode);
             }
         });
