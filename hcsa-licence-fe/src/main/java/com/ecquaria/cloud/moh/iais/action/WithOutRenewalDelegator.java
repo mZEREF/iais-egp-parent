@@ -926,7 +926,7 @@ public class WithOutRenewalDelegator {
             boolean parallel = submissionDtos.size() >= RfcConst.DFT_MIN_PARALLEL_SIZE;
             StreamSupport.stream(submissionDtos.spliterator(), parallel)
                     .forEach(dto -> {NewApplicationHelper.reSetPremeses(dto, appSubmissionDto.getAppGrpPremisesDtoList());
-                    requestForChangeService.checkAffectedAppSubmissions(dto, null,100.0d , appSubmissionDto.getDraftNo(),  appSubmissionDto.getAppGrpNo(), appEditSelectDto, null);});
+                    requestForChangeService.checkAffectedAppSubmissions(dto, null,0.0d , appSubmissionDto.getDraftNo(),  appSubmissionDto.getAppGrpNo(), appEditSelectDto, null);});
             if (appEditSelectDto.isAutoRfc()) {
                 NewApplicationHelper.addToAuto(submissionDtos,autoAppSubmissionDtos);
             } else {
