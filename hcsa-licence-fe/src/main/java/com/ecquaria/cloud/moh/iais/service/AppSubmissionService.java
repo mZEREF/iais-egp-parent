@@ -174,7 +174,7 @@ public interface AppSubmissionService {
     Map<String, String> validateSectionLeaders(List<AppSvcPersonnelDto> appSvcSectionLeaderList, String svcCode);
 
     void doValidateDisciplineAllocation(Map<String, String> map, List<AppSvcDisciplineAllocationDto> daList,
-            AppSvcRelatedInfoDto currentSvcDto);
+            AppSvcRelatedInfoDto currentSvcDto, Map<String, HcsaSvcSubtypeOrSubsumedDto> svcScopeAlignMap);
 
     void saveAutoRFCLinkAppGroupMisc(String notAutoGroupId,String autoGroupId);
 

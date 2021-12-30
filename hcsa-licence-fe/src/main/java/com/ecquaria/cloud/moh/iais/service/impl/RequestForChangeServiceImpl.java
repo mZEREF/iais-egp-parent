@@ -2454,8 +2454,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
         if (amount != null) {
             total = amount.doubleValue();
         }
-        if (licence.getStatus().equals(ApplicationConsts.LICENCE_STATUS_APPROVED) && licence.getMigrated() == 1
-                && IaisEGPHelper.isActiveMigrated()) {
+        if (licence.getMigrated() == 1 && IaisEGPHelper.isActiveMigrated()) {
             total = 0.0;
         }
         appSubmissionDto.setAmount(total);

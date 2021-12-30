@@ -795,7 +795,7 @@ public class WithOutRenewalDelegator {
         //do app submit
         AppSubmissionDto appSubmissionDtoNew = appSubmissionDtos.get(0);
         String appGrpNo = appSubmissionDtoNew.getAppGrpNo();
-        boolean needSetOtherEff = needDec && noAutoAppSubmissionDtos.size() >1;
+        boolean needSetOtherEff = needDec && IaisCommonUtils.isNotEmpty(noAutoAppSubmissionDtos);
         Date effectiveDate = needSetOtherEff ? MiscUtil.addDays(oldAppSubmissionDto.getLicExpiryDate(),1) : null;
         String effectiveDateStr = needSetOtherEff ? Formatter.formatDate(effectiveDate) : null;
         if(needSetOtherEff){
@@ -804,11 +804,7 @@ public class WithOutRenewalDelegator {
         }
         for(AppSubmissionDto appSubmissionDto : noAutoAppSubmissionDtos){
             appSubmissionDto.setAppGrpNo(appGrpNo);
-            if(needSetOtherEff){
-                appSubmissionDto.setEffectiveDate(effectiveDate);
-                appSubmissionDto.setEffectiveDateStr(effectiveDateStr);
-            }
-            setRfcSubInfo(appSubmissionDtos.get(0),appSubmissionDto,null,needDec);
+            setRfcSubInfo(appSubmissionDtoNew,appSubmissionDto,null,needDec);
         }
 
         int index =0;
@@ -926,7 +922,7 @@ public class WithOutRenewalDelegator {
             boolean parallel = submissionDtos.size() >= RfcConst.DFT_MIN_PARALLEL_SIZE;
             StreamSupport.stream(submissionDtos.spliterator(), parallel)
                     .forEach(dto -> {NewApplicationHelper.reSetPremeses(dto, appSubmissionDto.getAppGrpPremisesDtoList());
-                    requestForChangeService.checkAffectedAppSubmissions(dto, null,100.0d , appSubmissionDto.getDraftNo(),  appSubmissionDto.getAppGrpNo(), appEditSelectDto, null);});
+                    requestForChangeService.checkAffectedAppSubmissions(dto, null,0.0d , appSubmissionDto.getDraftNo(),  appSubmissionDto.getAppGrpNo(), appEditSelectDto, null);});
             if (appEditSelectDto.isAutoRfc()) {
                 NewApplicationHelper.addToAuto(submissionDtos,autoAppSubmissionDtos);
             } else {
