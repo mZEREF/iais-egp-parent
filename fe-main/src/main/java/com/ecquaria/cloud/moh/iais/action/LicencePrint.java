@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicSvcVehicleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceViewDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -35,7 +36,6 @@ public class LicencePrint {
     private InboxService inboxService;
 
 
-
     public void action(BaseProcessClass bpc) throws IOException {
         log.info("=======>>>>>startStep>>>>>>>>>>>>>>>>download");
         List<String> ids = (List<String>) ParamUtil.getSessionAttr(bpc.request, "lic-print-Ids");
@@ -46,20 +46,13 @@ public class LicencePrint {
             int fileNum = 1;
             for (String licId:ids) {
                 LicenceViewDto licenceViewDto = inboxService.getLicenceViewDtoByLicenceId(licId);
+                //licenceViewDto.setLicSvcVehicleDtos(getTestData());
                 File templateDir = ResourceUtils.getFile("classpath:pdfTemplate");
                 log.info("=======templateDir.getPath()-->:{}", templateDir.getPath());
                 PDFGenerator pdfGenerator = new PDFGenerator(templateDir);
                 String fileName = "LICENCE" + fileNum ;
                 File pdfFile = new File(fileName+".pdf");
-                Map<String,String> VehicleNo = licenceViewDto.getVehicleNoMap();
-                String VehicleNo1 = VehicleNo.get("VehicleNo1");
-                String VehicleNo2 = VehicleNo.get("VehicleNo2");
-//                String str = "<li>VehicleNo1</li><li>VehicleNo2</li><li>VehicleNo3</li><li>VehicleNo4</li><li>VehicleNo5</li><li>VehicleNo6</li><li>VehicleNo7</li><li>VehicleNo8</li><li>VehicleNo9</li><li>VehicleNo10</li>";
-//                VehicleNo1 = str;
-//                VehicleNo2 = str;
-                log.info(StringUtil.changeForLog("The VehicleNo1 is -->:"+VehicleNo1));
-                log.info(StringUtil.changeForLog("The VehicleNo2 is -->:"+VehicleNo2));
-                Map<String, String> map = IaisCommonUtils.genNewHashMap();
+                Map<String, Object> map = IaisCommonUtils.genNewHashMap();
                 map.put("licenceNo",StringUtil.viewNonNullHtml(licenceViewDto.getLicenceNo()));
                 map.put("licenseeName",StringUtil.viewNonNullHtml(licenceViewDto.getLicenseeName()));
                 map.put("serviceName",StringUtil.viewNonNullHtml(licenceViewDto.getServiceName()));
@@ -75,26 +68,38 @@ public class LicencePrint {
                 map.put("businessName",StringUtil.isEmpty(licenceViewDto.getBusinessName())?AppConsts.EMPTY_STR_NA
                         :StringUtil.viewNonNullHtml(licenceViewDto.getBusinessName()));
                 map.put("address",StringUtil.viewNonNullHtml(licenceViewDto.getAddress()));
-                if(StringUtil.isNotEmpty(VehicleNo2)){
-                    map.put("vehicleNo",StringUtil.isEmpty(VehicleNo1)?AppConsts.EMPTY_STR_NA:VehicleNo1);
-                    map.put("vehicleNo2",VehicleNo2);
+                List<String> vehicleNoList = licenceViewDto.getVehicleNoList();
+                List<String> eachPageList = IaisCommonUtils.genNewArrayList();
+                for(int i = 0;i<vehicleNoList.size();i++){
+                    if(i == 0){
+                        map.put("vehicleNo",vehicleNoList.get(i));
+                    }else if (i>0 && i < vehicleNoList.size() -1){
+                        eachPageList.add(vehicleNoList.get(i));
+                    }else {
+                        map.put("vehicleNo2",vehicleNoList.get(i));
+                    }
+                }
+                if(IaisCommonUtils.isNotEmpty(eachPageList)){
+                    map.put("lists",eachPageList);
+                }
+                if(vehicleNoList.size()!=1){
+                    map.put("total",vehicleNoList.size());
                 }else{
                     map.put("vehicleNo",licenceViewDto.getVehicleNo());
                 }
-
                 map.put("startDate",licenceViewDto.getStartDate());
                 map.put("endDate",licenceViewDto.getEndDate());
                 OutputStream outputStream = java.nio.file.Files.newOutputStream(Paths.get(fileName+".pdf"));
                 try {
                     String ftlName = null;
                     if(StringUtil.isNotEmpty(licenceViewDto.getBaseServiceName())){
-                       if(StringUtil.isEmpty(VehicleNo2)){
+                       if(vehicleNoList.size()==1){
                            ftlName = "sls_single_licence.ftl";
                        }else{
                            ftlName = "sls_multiple_licence.ftl";
                        }
                     }else{
-                        if(StringUtil.isEmpty(VehicleNo2)){
+                        if(vehicleNoList.size()==1){
                             ftlName = "single_licence.ftl";
                         }else{
                             ftlName = "multiple_licence.ftl";
@@ -144,5 +149,15 @@ public class LicencePrint {
                 bos.close();
             }
         }
+    }
+    private  List<LicSvcVehicleDto> getTestData(){
+        List<LicSvcVehicleDto> licSvcVehicleDtos = IaisCommonUtils.genNewArrayList();
+        for(int i = 0 ;i<31;i++){
+            LicSvcVehicleDto licSvcVehicleDto1 = new LicSvcVehicleDto();
+            licSvcVehicleDto1.setVehicleNum("vehicleNo"+i);
+            licSvcVehicleDtos.add(licSvcVehicleDto1);
+        }
+
+        return  licSvcVehicleDtos;
     }
 }

@@ -47,7 +47,7 @@ public class PDFGenerator {
 	}
 
 
-	public void generate(OutputStream os, String ftlName, Map<String, String> params) throws IOException, TemplateException,DocumentException {
+	public void generate(OutputStream os, String ftlName, Map<String, Object> params) throws IOException, TemplateException,DocumentException {
 		if (StringUtils.isEmpty(ftlName) || IaisCommonUtils.isEmpty(params)){
 			log.debug("params is empty !!!");
 			return;
