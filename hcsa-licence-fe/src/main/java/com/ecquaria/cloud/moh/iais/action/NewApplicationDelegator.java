@@ -2547,8 +2547,7 @@ public class NewApplicationDelegator {
         FeeDto feeDto = appSubmissionService.getGroupAmendAmount(getAmendmentFeeDto(appEditSelectDto, isCharity));
         double amount = feeDto.getTotal();
         double currentAmount = amount;
-        if (licenceById.getStatus().equals(
-                ApplicationConsts.LICENCE_STATUS_APPROVED) && licenceById.getMigrated() == 1 && IaisEGPHelper.isActiveMigrated()) {
+        if (licenceById.getMigrated() == 1 && IaisEGPHelper.isActiveMigrated()) {
             currentAmount = 0.0;
         }
         log.info(StringUtil.changeForLog("the current amount is -->:" + currentAmount));
@@ -2641,8 +2640,7 @@ public class NewApplicationDelegator {
             if (rfcSplitFlag) {
                 HcsaServiceDto serviceDto = HcsaServiceCacheHelper.getServiceByServiceName(appSubmissionDto.getServiceName());
                 boolean checkSpec = ApplicationConsts.SERVICE_CONFIG_TYPE_BASE.equals(serviceDto.getSvcType());
-                appSubmissionDtos = requestForChangeService.getAlginAppSubmissionDtos(
-                        appSubmissionDto.getLicenceId(), checkSpec);
+                appSubmissionDtos = requestForChangeService.getAlginAppSubmissionDtos(appSubmissionDto.getLicenceId(), checkSpec);
                 if (IaisCommonUtils.isNotEmpty(appSubmissionDtos)) {
                     StreamSupport.stream(appSubmissionDtos.spliterator(), appSubmissionDtos.size() >= RfcConst.DFT_MIN_PARALLEL_SIZE)
                             .forEach(dto -> NewApplicationHelper.reSetPremeses(dto, appGrpPremisesDtoList));

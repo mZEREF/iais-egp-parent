@@ -69,11 +69,11 @@ public class AppSvcPersonnelValidator implements CustomizeValidator {
                             Integer.toString(minWrkExprerience), "x"));
                 }
             } else if (AppServicesConsts.SERVICE_CODE_NUCLEAR_MEDICINE_ASSAY.equals(svcCode)) {
-                int minWrkExprerience = systemParamConfig.getNmaSlMinWrkExprerience();
+                /*int minWrkExprerience = systemParamConfig.getNmaSlMinWrkExprerience();
                 if (workExpYear < minWrkExprerience) {
                     errorMap.put("wrkExpYear", MessageUtil.replaceMessage("GENERAL_ERR0055",
                             Integer.toString(minWrkExprerience), "x"));
-                }
+                }*/
             } else if (AppServicesConsts.SERVICE_CODE_NUCLEAR_MEDICINE_IMAGING.equals(svcCode)) {
                 int minWrkExprerience = systemParamConfig.getNmiSlMinWrkExprerience();
                 if (workExpYear < minWrkExprerience) {
