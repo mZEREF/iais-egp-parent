@@ -3,6 +3,7 @@
     <div class="row">
         <div class="col-xs-12">
             <div class="table-gp">
+                <c:set var="app" value="${processDto.applicationInfoDto}"/>
                 <table aria-describedby="" class="table table-bordered" style="margin-bottom: 0">
                     <tbody>
                     <tr>
@@ -10,19 +11,19 @@
                     </tr>
                     <tr>
                         <td style="text-align: center">Application Type</td>
-                        <td style="text-align: center">Reportable Events</td>
+                        <td style="text-align: center"><c:out value="${app.appType}"/></td>
                     </tr>
                     <tr>
                         <td style="text-align: center">Reference No.</td>
-                        <td style="text-align: center">DS-210929-VDP-001</td>
+                        <td style="text-align: center"><c:out value="${app.referenceNo}"/></td>
                     </tr>
                     <tr>
                         <td style="text-align: center">Submission Date</td>
-                        <td style="text-align: center">2021-07-07 00:00</td>
+                        <td style="text-align: center"><c:out value="${app.submissionDate}"/></td>
                     </tr>
                     <tr>
                         <td style="text-align: center">Current Status</td>
-                        <td style="text-align: center">Pending Acknowledgement</td>
+                        <td style="text-align: center"><c:out value="${app.status}"/></td>
                     </tr>
                     </tbody>
                 </table>
@@ -37,6 +38,7 @@
         </button>
     </a>
 </div>
+<c:set var="profile" value="${app.facilityProfileDto}"/>
 <div class="panel panel-default">
     <div class="panel-heading"><strong>Facility Profile</strong></div>
     <div class="panel-collapse in collapse">
@@ -45,21 +47,21 @@
                 <div class="form-group">
                     <label class="col-xs-5 col-md-4 control-label">Facility Name</label>
                     <div class="col-sm-7 col-md-5 col-xs-7">
-                        <p>DSO Research Facility</p>
+                        <p><c:out value="${profile.facName}"/></p>
                     </div>
                     <div class="clear"></div>
                 </div>
                 <div class="form-group">
                     <label class="col-xs-5 col-md-4 control-label">Facility Address</label>
                     <div class="col-sm-7 col-md-5 col-xs-7">
-                        <p>16 Science Park Dr, Singapore 118225</p>
+                        <p><c:out value="${profile.facAddress}"/></p>
                     </div>
                     <div class="clear"></div>
                 </div>
                 <div class="form-group">
                     <label class="col-xs-5 col-md-4 control-label">Is the facility a Protected Place?</label>
                     <div class="col-sm-7 col-md-5 col-xs-7">
-                        <p>No</p>
+                        <p><c:out value="${profile.isProtected}"/></p>
                     </div>
                     <div class="clear"></div>
                 </div>

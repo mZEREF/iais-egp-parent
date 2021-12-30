@@ -11,19 +11,29 @@
  */
 package sop.webflow.rt.java.code;
 import sop.webflow.rt.api.BaseProcessClass;
+import com.ecquaria.cloud.helper.EngineHelper;
 
-public class INTRANET___DoScreeningIncidentNotification___1 extends BaseProcessClass {
+public class INTRANET___DOScreeningIncidentNotification___1 extends BaseProcessClass {
+	private static final String DELEGATOR ="incidentMOHProcessDelegator";
+
+	public void start_OnStepProcess_0() throws Exception {
+		// 		Start->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "start", this);
+	}
 
 	public void preScreeningData_OnStepProcess_0() throws Exception {
 	// 		PreScreeningData->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "preScreeningData", this);
 	}
 
 	public void handleScreening_OnStepProcess_0() throws Exception {
 	// 		HandleScreening->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "handleScreening", this);
 	}
 
 	public void doProcessing_OnStepProcess_0() throws Exception {
 	// 		DoProcessing->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "doDOProcessing", this);
 	}
 
 }

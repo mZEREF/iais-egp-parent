@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Application defaultStart="/Steps/StartStep/Start" dtdVersion="6.0" executable="true" majorVersion="0" minorVersion="0" name="DoScreeningIncidentNotification" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" transaction="enable">
+<Application defaultStart="/Steps/StartStep/Start" dtdVersion="6.0" executable="true" majorVersion="0" minorVersion="0" name="DOScreeningIncidentNotification" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" transaction="enable">
  <WebServices />
  <Steps>
   <StartStep defClass="" executor="" icon="" name="Start" x="60" y="160">
@@ -14,14 +14,7 @@
     <JavaCode defClass="" executor="" methodName="preScreeningData_OnStepProcess_0" name="preScreeningData_OnStepProcess_0" />
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="HandleScreening" x="380" y="160">
-   <Description />
-   <probepoint type="none" />
-   <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="handleScreening_OnStepProcess_0" name="handleScreening_OnStepProcess_0" />
-   </OnStepProcess>
-  </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="DoProcessing" x="620" y="160">
+  <AutomaticStep defClass="" executor="" icon="" name="DoProcessing" x="500" y="160">
    <Description />
    <probepoint type="none" />
    <OnStepProcess>
@@ -51,25 +44,32 @@
   <SynchronousLink destinationName="/Pages/WebPage/incidentNotScreeningPage" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/PreScreeningData" style="rectanular">
    <position>{(140,180)(250,180)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/HandleScreening" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/incidentNotScreeningPage" style="rectanular">
-   <position>{(250,180)(400,180)}</position>
-  </SynchronousLink>
-  <SynchronousLink destinationName="/Switches/Switch/Switch1" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/HandleScreening" style="rectanular">
-   <position>{(400,180)(540,180)}</position>
-  </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/DoProcessing" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch1" style="rectanular">
-   <position>{(540,180)(640,180)}</position>
-  </SynchronousLink>
-  <SynchronousLink destinationName="/Pages/WebPage/PocessingSuccess" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/DoProcessing" style="rectanular">
-   <position>{(640,180)(760,180)}</position>
+   <position>{(420,180)(520,180)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/PreScreeningData" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch1" style="rectanular">
-   <position>{(540,180)(171,89)(140,180)}</position>
+   <position>{(420,180)(171,89)(140,180)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Switches/Switch/Switch1" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/incidentNotScreeningPage" style="rectanular">
+   <position>{(250,180)(420,180)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Conditions/Condition/Cond1" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/DoProcessing" style="rectanular">
+   <position>{(520,180)(670,180)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/PocessingSuccess" linkstyle="Rectangle" name="" sourceName="/Conditions/Condition/Cond1" style="rectanular">
+   <position>{(670,180)(760,180)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PreScreeningData" linkstyle="Rectangle" name="" sourceName="/Conditions/Condition/Cond1" style="rectanular">
+   <position>{(670,180)(170,303)(140,180)}</position>
   </SynchronousLink>
  </Links>
- <Conditions />
+ <Conditions>
+  <Condition componentIfFalse="" componentIfTrue="/Pages/WebPage/PocessingSuccess" defClass="" executor="" icon="" leftOperand="isValid" name="Cond1" operator="=" rightOperand="&quot;Y&quot;" x="650" y="160">
+   <Description />
+  </Condition>
+ </Conditions>
  <Switches>
-  <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="action_type" name="Switch1" x="520" y="160">
+  <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="action_type" name="Switch1" x="400" y="160">
    <Description />
    <SwitchCase component="/Steps/AutomaticStep/DoProcessing" value="&quot;submit&quot;" />
    <SwitchCase component="/Steps/AutomaticStep/PreScreeningData" value="&quot;doBack&quot;" />
