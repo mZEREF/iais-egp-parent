@@ -602,12 +602,7 @@ public class ClinicalLaboratoryDelegator {
     public void prepareDisciplineAllocation(BaseProcessClass bpc) throws Exception {
         log.debug(StringUtil.changeForLog("the do prepareDisciplineAllocation start ...."));
         String currentSvcId = (String) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.CURRENTSERVICEID);
-        List<HcsaSvcSubtypeOrSubsumedDto> svcScopeDtoList = (List<HcsaSvcSubtypeOrSubsumedDto>) ParamUtil.getSessionAttr(bpc.request, "HcsaSvcSubtypeOrSubsumedDto");
-        Map<String, HcsaSvcSubtypeOrSubsumedDto> svcScopeAlignMap = IaisCommonUtils.genNewHashMap();
-        if(svcScopeDtoList == null){
-            svcScopeDtoList = serviceConfigService.loadLaboratoryDisciplines(currentSvcId);
-        }
-        NewApplicationHelper.recursingSvcScope(svcScopeDtoList,svcScopeAlignMap);
+        Map<String, HcsaSvcSubtypeOrSubsumedDto> svcScopeAlignMap = NewApplicationHelper.getScopeAlignMap(currentSvcId, bpc.request);
         AppSvcRelatedInfoDto appSvcRelatedInfoDto = getAppSvcRelatedInfo(bpc.request, currentSvcId);
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
         List<AppSvcLaboratoryDisciplinesDto> appSvcLaboratoryDisciplinesDtoList = appSvcRelatedInfoDto.getAppSvcLaboratoryDisciplinesDtoList();
@@ -1386,14 +1381,10 @@ public class ClinicalLaboratoryDelegator {
 
         String currentSvcId = (String) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.CURRENTSERVICEID);
         AppSvcRelatedInfoDto currentSvcRelatedDto = getAppSvcRelatedInfo(bpc.request, currentSvcId);
+        Map<String, HcsaSvcSubtypeOrSubsumedDto> svcScopeAlignMap = null;
         if (isGetDataFromPage || svcScopeEdit || cgoChange) {
             List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
-            List<HcsaSvcSubtypeOrSubsumedDto> svcScopeDtoList = (List<HcsaSvcSubtypeOrSubsumedDto>) ParamUtil.getSessionAttr(bpc.request, "HcsaSvcSubtypeOrSubsumedDto");
-            if(svcScopeDtoList == null){
-                svcScopeDtoList = serviceConfigService.loadLaboratoryDisciplines(currentSvcId);
-            }
-            Map<String, HcsaSvcSubtypeOrSubsumedDto> svcScopeAlignMap = IaisCommonUtils.genNewHashMap();
-            NewApplicationHelper.recursingSvcScope(svcScopeDtoList,svcScopeAlignMap);
+            svcScopeAlignMap = NewApplicationHelper.getScopeAlignMap(currentSvcId, bpc.request);
             List<AppSvcDisciplineAllocationDto> daList = IaisCommonUtils.genNewArrayList();
             List<AppSvcLaboratoryDisciplinesDto> appSvcLaboratoryDisciplinesDtoList = currentSvcRelatedDto.getAppSvcLaboratoryDisciplinesDtoList();
             if (appSvcLaboratoryDisciplinesDtoList != null) {
@@ -1453,7 +1444,7 @@ public class ClinicalLaboratoryDelegator {
         String crud_action_additional = ParamUtil.getRequestString(bpc.request, "nextStep");
         if ("next".equals(crud_action_additional)) {
             appSubmissionService.doValidateDisciplineAllocation(errorMap, currentSvcRelatedDto.getAppSvcDisciplineAllocationDtoList(),
-                    currentSvcRelatedDto);
+                    currentSvcRelatedDto, svcScopeAlignMap);
             if (appSubmissionDto.isNeedEditController()) {
                 Set<String> clickEditPages = appSubmissionDto.getClickEditPage() == null ? IaisCommonUtils.genNewHashSet() : appSubmissionDto.getClickEditPage();
                 //clickEditPages.add(NewApplicationDelegator.APPLICATION_SVC_PAGE_NAME_DISCIPLINE_ALLOCATION);
