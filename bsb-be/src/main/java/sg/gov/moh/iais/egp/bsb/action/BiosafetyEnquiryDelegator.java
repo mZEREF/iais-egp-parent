@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import sg.gov.moh.iais.egp.bsb.client.BiosafetyEnquiryClient;
 import sg.gov.moh.iais.egp.bsb.constant.BioSafetyEnquiryConstants;
-import sg.gov.moh.iais.egp.bsb.constant.module.ProcessContants;
 import sg.gov.moh.iais.egp.bsb.dto.enquiry.*;
 import sg.gov.moh.iais.egp.bsb.entity.*;
 import sg.gov.moh.iais.egp.bsb.util.TableDisplayUtil;
@@ -63,11 +62,10 @@ public class BiosafetyEnquiryDelegator {
         this.biosafetyEnquiryClient = biosafetyEnquiryClient;
     }
 
-    public void start(BaseProcessClass bpc) throws IllegalAccessException {
+    public void start(BaseProcessClass bpc) {
         AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_ONLINE_ENQUIRY, FUNCTION_BIOSATETY_ENQUIRY);
         HttpServletRequest request = bpc.request;
         ParamUtil.setSessionAttr(request,KEY_ENQUIRY_SEARCH_DTO,null);
-        IaisEGPHelper.clearSessionAttr(request, ProcessContants.class);
     }
 
 
