@@ -238,6 +238,7 @@ public class PatientUploadDelegate {
             patient.setIdType(DataSubmissionHelper.getCode(patientInfoExcelDto.getIdType(), idTypes));
             patient.setNationality(DataSubmissionHelper.getCode(patientInfoExcelDto.getNationality(), nationalities));
             patient.setEthnicGroup(DataSubmissionHelper.getCode(patientInfoExcelDto.getEthnicGroup(), groups));
+            // for oval validation
             patient.setEthnicGroupOther(StringUtil.getNonNull(patient.getEthnicGroupOther()));
             patient.setPreviousIdentification("YES".equals(patientInfoExcelDto.getIsPreviousIdentification()));
             patient.setOrgId(orgId);
@@ -264,6 +265,7 @@ public class PatientUploadDelegate {
             husbandDto.setNationality(DataSubmissionHelper.getCode(patientInfoExcelDto.getNationalityHbd(), nationalities));
             husbandDto.setBirthDate(IaisCommonUtils.handleDate(patientInfoExcelDto.getBirthDateHbd()));
             husbandDto.setEthnicGroup(DataSubmissionHelper.getCode(patientInfoExcelDto.getEthnicGroupHbd(), groups));
+            // for oval validation
             husbandDto.setEthnicGroupOther(StringUtil.getNonNull(patientInfoExcelDto.getEthnicGroupOtherHbd()));
             dto.setHusband(husbandDto);
             result.add(dto);

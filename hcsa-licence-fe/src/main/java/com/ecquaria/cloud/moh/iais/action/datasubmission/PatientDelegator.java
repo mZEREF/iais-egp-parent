@@ -81,6 +81,8 @@ public class PatientDelegator extends CommonDelegator {
         if (loginContext != null) {
             patient.setOrgId(loginContext.getOrgId());
         }
+        // for oval validation
+        patient.setEthnicGroupOther(StringUtil.getNonNull(patient.getEthnicGroupOther()));
         patient.setPatientCode(patientService.getPatientCode(patient.getPatientCode()));
         patient.setPatientType(DataSubmissionConsts.DS_PATIENT_ART);
         patientInfo.setPatient(patient);
@@ -103,9 +105,7 @@ public class PatientDelegator extends CommonDelegator {
             husband.setName(husband.getName().toUpperCase(AppConsts.DFT_LOCALE));
         }
         // for oval validation
-        if (StringUtil.isEmpty(husband.getEthnicGroup())) {
-            husband.setEthnicGroup("");
-        }
+        husband.setEthnicGroupOther(StringUtil.getNonNull(husband.getEthnicGroupOther()));
         patientInfo.setHusband(husband);
         String amendReason = ParamUtil.getString(request, "amendReason");
         String amendReasonOther = ParamUtil.getString(request, "amendReasonOther");
