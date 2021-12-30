@@ -15,7 +15,7 @@ import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
 
-import static sg.gov.moh.iais.egp.bsb.constant.ProcessContants.*;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.*;
 
 /**
  * @author : tangtang
@@ -52,8 +52,8 @@ public class BsbWithdrawnAppDelegatorBE {
                 log.info("masked app ID: {}", org.apache.commons.lang.StringUtils.normalizeSpace(maskedAppId));
                 log.info("masked task ID: {}", org.apache.commons.lang.StringUtils.normalizeSpace(maskedTaskId));
             }
-            String appId = MaskUtil.unMaskValue(KEY_ID, maskedAppId);
-            String taskId = MaskUtil.unMaskValue(KEY_ID, maskedTaskId);
+            String appId = MaskUtil.unMaskValue(MASK_PARAM_ID, maskedAppId);
+            String taskId = MaskUtil.unMaskValue(MASK_PARAM_ID, maskedTaskId);
             if (appId != null && taskId != null){
                 ResponseDto<AppSubmitWithdrawnDto> responseDto = withdrawnClient.getWithdrawnDataByApplicationId(appId);
                 if (responseDto.ok()){
@@ -111,7 +111,7 @@ public class BsbWithdrawnAppDelegatorBE {
 
     private void validateData(AppSubmitWithdrawnDto dto,HttpServletRequest request){
         //validation
-        String actionType = "";
+        String actionType;
         ValidationResultDto validationResultDto = withdrawnClient.validateWithdrawnDto(dto);
         if (!validationResultDto.isPass()){
             ParamUtil.setRequestAttr(request, ValidationConstants.KEY_VALIDATION_ERRORS, validationResultDto.toErrorMsg());

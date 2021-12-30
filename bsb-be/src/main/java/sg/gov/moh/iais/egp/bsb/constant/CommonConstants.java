@@ -8,7 +8,6 @@ package sg.gov.moh.iais.egp.bsb.constant;
 public class CommonConstants {
     private CommonConstants() {}
 
-    public static final String KEY_ACTION_VALUE = "action_value";
     public static final String KEY_ACTION_ADDT = "action_additional";
     public static final String KEY_PAGE_SIZE = "pageJumpNoPageSize";
     public static final String KEY_PAGE_NO = "pageJumpNoTextchangePage";

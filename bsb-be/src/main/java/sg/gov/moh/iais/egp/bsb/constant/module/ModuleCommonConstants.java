@@ -6,6 +6,7 @@ public class ModuleCommonConstants {
     public static final String KEY_ACTION_TYPE                      = "action_type";
     public static final String KEY_ACTION_VALUE                     = "action_value";
     public static final String KEY_ACTION_ADDITIONAL                = "action_additional";
+    public static final String KEY_CRUD_ACTION_TYPE                 = "crud_action_type";
 
     public static final String KEY_NAV_NEXT                         = "next";
     public static final String KEY_NAV_BACK                         = "back";
@@ -22,4 +23,8 @@ public class ModuleCommonConstants {
 
     // mask param used by task list
     public static final String MASK_PARAM_ID                        = "id";
+    public static final String KEY_APP_ID                           = "appId";
+    public static final String KEY_TASK_ID                          = "taskId";
+
+    public static final String KEY_VALIDATION_ERRORS                = "errorMsg";
 }

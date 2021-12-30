@@ -12,14 +12,13 @@ import com.ecquaria.cloud.moh.iais.helper.*;
 import com.ecquaria.cloud.moh.iais.helper.excel.ExcelWriter;
 import com.google.common.collect.Maps;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import sg.gov.moh.iais.egp.bsb.client.BiosafetyEnquiryClient;
 import sg.gov.moh.iais.egp.bsb.constant.BioSafetyEnquiryConstants;
-import sg.gov.moh.iais.egp.bsb.constant.ProcessContants;
+import sg.gov.moh.iais.egp.bsb.constant.module.ProcessContants;
 import sg.gov.moh.iais.egp.bsb.dto.enquiry.*;
 import sg.gov.moh.iais.egp.bsb.entity.*;
 import sg.gov.moh.iais.egp.bsb.util.TableDisplayUtil;
@@ -37,6 +36,7 @@ import java.util.stream.Collectors;
 
 import static sg.gov.moh.iais.egp.bsb.constant.BioSafetyEnquiryConstants.*;
 import static sg.gov.moh.iais.egp.bsb.constant.CommonConstants.*;
+import static sg.gov.moh.iais.egp.bsb.constant.module.ModuleCommonConstants.*;
 
 
 /**
@@ -57,9 +57,11 @@ public class BiosafetyEnquiryDelegator {
     private static final String PARAM_BIOLOGICAL_NAME = "bioName";
     private static final String PARAM_BIO_SAFETY_ENQUIRY = "bioSafetyDto";
 
-    @Autowired
-    private BiosafetyEnquiryClient biosafetyEnquiryClient;
+    private final BiosafetyEnquiryClient biosafetyEnquiryClient;
 
+    public BiosafetyEnquiryDelegator(BiosafetyEnquiryClient biosafetyEnquiryClient) {
+        this.biosafetyEnquiryClient = biosafetyEnquiryClient;
+    }
 
     public void start(BaseProcessClass bpc) throws IllegalAccessException {
         AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_ONLINE_ENQUIRY, FUNCTION_BIOSATETY_ENQUIRY);
@@ -424,7 +426,7 @@ public class BiosafetyEnquiryDelegator {
         ValidationResult vResult = WebValidationHelper.validateProperty(object, type);
         if (vResult != null && vResult.isHasErrors()) {
             Map<String, String> errorMap = vResult.retrieveAll();
-            ParamUtil.setRequestAttr(request, ProcessContants.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
+            ParamUtil.setRequestAttr(request, KEY_VALIDATION_ERRORS, WebValidationHelper.generateJsonStr(errorMap));
             return Boolean.FALSE;
         } else {
             return Boolean.TRUE;
