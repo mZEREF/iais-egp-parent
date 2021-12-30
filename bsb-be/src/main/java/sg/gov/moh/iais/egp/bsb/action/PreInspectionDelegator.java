@@ -50,14 +50,14 @@ public class PreInspectionDelegator {
         if (!StringUtils.hasLength(appId) || appId.equals(maskedAppId)) {
             throw new IaisRuntimeException("Invalid maskedAppId:" + LogUtil.escapeCrlf(maskedAppId));
         }
-        String maskedTaskId = request.getParameter(KEY_APP_ID);
+        String maskedTaskId = request.getParameter(KEY_TASK_ID);
         String taskId = MaskUtil.unMaskValue(MASK_PARAM_ID, maskedTaskId);
         if (!StringUtils.hasLength(taskId) || taskId.equals(maskedTaskId)) {
             throw new IaisRuntimeException("Invalid maskedTaskId:" + LogUtil.escapeCrlf(maskedTaskId));
         }
 
         ParamUtil.setSessionAttr(request, KEY_APP_ID, appId);
-        ParamUtil.setSessionAttr(request, KEY_TASK_ID, appId);
+        ParamUtil.setSessionAttr(request, KEY_TASK_ID, taskId);
 
         AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_INSPECTION, AuditTrailConsts.FUNCTION_PRE_INSPECTION);
     }

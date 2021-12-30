@@ -112,7 +112,7 @@
                                                                 </div>
                                                             </div>
                                                             <div style="text-align: right">
-                                                                <button name="submit" id="submit" type="button" class="btn btn-primary">Submit</button>
+                                                                <button name="submitBtn" id="submitBtn" type="button" class="btn btn-primary">Submit</button>
                                                             </div>
                                                         </div>
                                                     </div>

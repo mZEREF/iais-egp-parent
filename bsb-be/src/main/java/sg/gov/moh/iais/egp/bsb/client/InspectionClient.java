@@ -33,7 +33,7 @@ public interface InspectionClient {
     @PostMapping(value = "/inspection/pre/validate", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     ValidationResultDto validatePreInsSubmission(@RequestBody PreInsProcessDto dto);
 
-    @PostMapping(value = "/pre/ready", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/inspection/pre/ready", consumes = MediaType.APPLICATION_JSON_VALUE)
     void changeInspectionStatusToReady(@RequestParam("appId") String appId,
                                        @RequestParam("taskId") String taskId,
                                        @RequestBody PreInsProcessDto processDto);

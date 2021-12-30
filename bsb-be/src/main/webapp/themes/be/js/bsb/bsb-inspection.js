@@ -1,19 +1,19 @@
 $(function () {
     $("#back").click(function () {
         showWaiting();
-        $("[name='action_type']").val('back');
+        $("input[name='action_type']").val('back');
         $("#mainForm").submit();
     });
 
     $("#viewSelfAssessmt").click(function () {
         showWaiting();
-        $("[name='action_type']").val('viewSelfAssessment');
+        $("input[name='action_type']").val('viewSelfAssessment');
         $("#mainForm").submit();
     });
 
-    $("#submit").click(function () {
+    $("#submitBtn").click(function () {
         showWaiting();
-        $("[name='action_type']").val('submit');
+        $("input[name='action_type']").val('submit');
         $("#mainForm").submit();
     });
 })
