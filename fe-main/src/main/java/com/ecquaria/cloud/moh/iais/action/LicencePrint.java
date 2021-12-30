@@ -66,7 +66,7 @@ public class LicencePrint {
                 if(StringUtil.isEmpty(licenceViewDto.getHivTesting())){
                     map.put("hivTesting","<br/>");
                 }else{
-                    map.put("hivTesting",StringUtil.viewNonNullHtml(licenceViewDto.getHivTesting()));
+                    map.put("hivTesting",licenceViewDto.getHivTesting());
                 }
                 if(StringUtil.isNotEmpty(licenceViewDto.getBaseServiceName())){
                     map.put("baseServiceName",StringUtil.viewNonNullHtml(licenceViewDto.getBaseServiceName()));
@@ -76,10 +76,10 @@ public class LicencePrint {
                         :StringUtil.viewNonNullHtml(licenceViewDto.getBusinessName()));
                 map.put("address",StringUtil.viewNonNullHtml(licenceViewDto.getAddress()));
                 if(StringUtil.isNotEmpty(VehicleNo2)){
-                    map.put("vehicleNo",StringUtil.isEmpty(VehicleNo1)?AppConsts.EMPTY_STR_NA:StringUtil.viewNonNullHtml(VehicleNo1));
+                    map.put("vehicleNo",StringUtil.isEmpty(VehicleNo1)?AppConsts.EMPTY_STR_NA:VehicleNo1);
                     map.put("vehicleNo2",VehicleNo2);
                 }else{
-                    map.put("vehicleNo",StringUtil.viewNonNullHtml(licenceViewDto.getVehicleNo()));
+                    map.put("vehicleNo",licenceViewDto.getVehicleNo());
                 }
 
                 map.put("startDate",licenceViewDto.getStartDate());
