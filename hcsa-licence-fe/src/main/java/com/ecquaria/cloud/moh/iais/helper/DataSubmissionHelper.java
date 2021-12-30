@@ -155,12 +155,19 @@ public final class DataSubmissionHelper {
         log.info(StringUtil.changeForLog("----- The latest cycle stage is " + latestCycle + " : " + latestStage));
         log.info(StringUtil.changeForLog("----- The current cycle stage is " + lastCycle + " : " + lastStage
                 + " : " + additionalStage + " : " + lastStatus + " -----"));
+        // 3.3.3.2 (4) If the predecessor stage is AR Treatment Co-funding or Transfer In & Out,
+        // available stages for selection will be based on the stage prior to it
+        // disposal, donation
+        if (DataSubmissionConsts.DS_CYCLE_AR.equals(lastCycle) && isSpecialStage(lastStage)) {
+            lastStage = additionalStage;
+        }
         List<String> result = IaisCommonUtils.genNewArrayList();
         if (StringUtil.isEmpty(lastCycle)) {
             result.add(DataSubmissionConsts.AR_CYCLE_AR);
             result.add(DataSubmissionConsts.AR_CYCLE_EFO);
             result.add(DataSubmissionConsts.AR_CYCLE_IUI);
-        } else if (DataSubmissionConsts.AR_STAGE_END_CYCLE.equals(lastStage)
+        } else if (StringUtil.isEmpty(lastStage)
+                || DataSubmissionConsts.AR_STAGE_END_CYCLE.equals(lastStage)
                 || IaisCommonUtils.getDsCycleFinalStatus().contains(lastStatus)) {
             result.add(DataSubmissionConsts.AR_CYCLE_AR);
             result.add(DataSubmissionConsts.AR_CYCLE_IUI);
@@ -169,13 +176,7 @@ public final class DataSubmissionHelper {
             result.add(DataSubmissionConsts.AR_STAGE_DONATION);
             result.add(DataSubmissionConsts.AR_STAGE_TRANSFER_IN_AND_OUT);
         } else if (DataSubmissionConsts.DS_CYCLE_AR.equals(lastCycle)) {
-            // 3.3.3.2 (4) If the predecessor stage is AR Treatment Co-funding or Transfer In & Out,
-            // available stages for selection will be based on the stage prior to it
-            if (StringUtil.isIn(lastStage, new String[]{DataSubmissionConsts.AR_STAGE_AR_TREATMENT_SUBSIDIES,
-                    DataSubmissionConsts.AR_STAGE_TRANSFER_IN_AND_OUT})) {
-                lastStage = additionalStage;
-            }
-            if (DataSubmissionConsts.AR_CYCLE_AR.equals(lastStage) || StringUtil.isEmpty(lastStage)) {
+            if (DataSubmissionConsts.AR_CYCLE_AR.equals(lastStage)) {
                 result.add(DataSubmissionConsts.AR_STAGE_OOCYTE_RETRIEVAL);
                 result.add(DataSubmissionConsts.AR_STAGE_THAWING);
             } else if (DataSubmissionConsts.AR_STAGE_OOCYTE_RETRIEVAL.equals(lastStage)) {
@@ -242,19 +243,25 @@ public final class DataSubmissionHelper {
         return result;
     }
 
+    private static boolean isSpecialStage(String cycleStage) {
+        return StringUtil.isIn(cycleStage, new String[]{DataSubmissionConsts.AR_STAGE_AR_TREATMENT_SUBSIDIES,
+                DataSubmissionConsts.AR_STAGE_DISPOSAL, DataSubmissionConsts.AR_STAGE_DONATION,
+                DataSubmissionConsts.AR_STAGE_TRANSFER_IN_AND_OUT});
+    }
+
     public static CycleDto initCycleDto(CycleStageSelectionDto selectionDto, String serviceName, String hciCode) {
         String stage = selectionDto.getStage();
         String cycle;
         String cycleId = null;
         CycleDto cycleDto = null;
-        if (StringUtil.isIn(stage, new String[]{DataSubmissionConsts.AR_STAGE_TRANSFER_IN_AND_OUT,
-                DataSubmissionConsts.AR_STAGE_DONATION,
-                DataSubmissionConsts.AR_STAGE_DISPOSAL})) {
-            cycle = DataSubmissionConsts.DS_CYCLE_NON;
-        } else if (selectionDto.isUndergoingCycle()) {
+        if (selectionDto.isUndergoingCycle()) {
             cycleDto = selectionDto.getLastCycleDto();
             cycle = cycleDto.getCycleType();
             cycleId = cycleDto.getId();
+        } else if (StringUtil.isIn(stage, new String[]{DataSubmissionConsts.AR_STAGE_TRANSFER_IN_AND_OUT,
+                DataSubmissionConsts.AR_STAGE_DONATION,
+                DataSubmissionConsts.AR_STAGE_DISPOSAL})) {
+            cycle = DataSubmissionConsts.DS_CYCLE_NON;
         } else if (DataSubmissionConsts.AR_CYCLE_AR.equals(stage)) {
             cycle = DataSubmissionConsts.DS_CYCLE_AR;
         } else if (DataSubmissionConsts.AR_CYCLE_IUI.equals(stage)) {
