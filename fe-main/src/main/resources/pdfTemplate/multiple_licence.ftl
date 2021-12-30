@@ -310,13 +310,75 @@
             <div class="lic-footer">
               <p >This licence is issued under the Healthcare Services Act 2020 and is subject to its provisions, as well as any regulations, rules, code of practices and directions issued under it, and any conditions imposed by the Director of Medical Services. The licence is valid from the licence start date until the licence end date, unless revoked, suspended, ceased or surrendered.</p>
               <p><br></br></p>
-              <p style = "font-size: 14pt;text-align: center;">Ministry of Health | Page 1 of 2</p>
+              <p style = "font-size: 14pt;text-align: center;">Ministry of Health | Page 1 of ${total}</p>
             </div>
           </div>
         </div>
       </div>
     </div>
+<#if lists??>
+  <#list lists as s>
+                           <div class="row">
+                             <div class="col-xs-12">
+                               <div class="instruction-content center-content">
+                                 <div class="licence_box">
+                                   <div class="lic-headerbox"></div>
+                                   <div class="lic-title">
+                                     <h2><br></br></h2>
+                                     <h2>LICENCE</h2>
+                                     <h2>UNDER THE HEALTHCARE SERVICES ACT (HCSA)</h2>
+                                   </div>
+                                   <div class="lic-number">
+                                     <p>LICENCE NO.</p>
+                                     <h2>${licenceNo}</h2>
+                                   </div>
+                                   <br></br>
+                                   <div class="lic-approved-info">
+                                     <div class="table-responsive">
+                                       <table class="table">
+                                         <thead>
+                                         <tr>
+                                           <th></th>
+                                           <th>BUSINESS NAME</th>
+                                           <th>LICENSED PREMISES <br></br>(ADDRESS)</th>
+                                           <th>LICENSED CONVEYANCES <br></br>(VEHICLE NO.)</th>
+                                         </tr>
+                                         </thead>
+                                         <tbody>
+                                         <tr>
+                                           <td>
+                                             <p>1</p>
+                                           </td>
+                                           <td>
+                                             <p>${businessName}</p>
+                                           </td>
+                                           <td>
+                                             <p> ${address}</p>
+                                           </td>
+                                           <td>
+                                             <p>
+                                             <ul class="v-numberlist">
+                                             ${s!''}
+                                             </ul>
+                                             </p>
+                                           </td>
+                                         </tr>
+                                         </tbody>
+                                       </table>
+                                     </div>
+                                   </div>
 
+                                   <div class="lic-footer" >
+                                     <p >This licence is issued under the Healthcare Services Act 2020 and is subject to its provisions, as well as any regulations, rules, code of practices and directions issued under it, and any conditions imposed by the Director of Medical Services. The licence is valid from the licence start date until the licence end date, unless revoked, suspended, ceased or surrendered.</p>
+                                     <p><br></br></p>
+                                     <p style = "font-size: 14pt;text-align: center;">Ministry of Health | Page ${s_index + 2} of ${total}</p>
+                                   </div>
+                                 </div>
+                               </div>
+                             </div>
+                           </div>
+  </#list>
+</#if>
     <div class="row">
       <div class="col-xs-12">
         <div class="instruction-content center-content">
@@ -392,7 +454,7 @@
             <div class="lic-footer" >
               <p >This licence is issued under the Healthcare Services Act 2020 and is subject to its provisions, as well as any regulations, rules, code of practices and directions issued under it, and any conditions imposed by the Director of Medical Services. The licence is valid from the licence start date until the licence end date, unless revoked, suspended, ceased or surrendered.</p>
               <p><br></br></p>
-              <p style = "font-size: 14pt;text-align: center;">Ministry of Health | Page 2 of 2</p>
+              <p style = "font-size: 14pt;text-align: center;">Ministry of Health | Page ${total} of ${total}</p>
             </div>
           </div>
         </div>
