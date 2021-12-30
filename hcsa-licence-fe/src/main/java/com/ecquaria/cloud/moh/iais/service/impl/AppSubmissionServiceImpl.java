@@ -869,7 +869,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
 
     @Override
     public void doValidateDisciplineAllocation(Map<String, String> map, List<AppSvcDisciplineAllocationDto> daList,
-            AppSvcRelatedInfoDto currentSvcDto) {
+            AppSvcRelatedInfoDto currentSvcDto, Map<String, HcsaSvcSubtypeOrSubsumedDto> svcScopeAlignMap) {
         if (daList == null || daList.isEmpty()) {
             return;
         }
@@ -892,6 +892,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
             }
         }
         if (map.isEmpty()) {
+            size = NewApplicationHelper.getAlocationAutualSize(daList, currentSvcDto.getServiceId(), svcScopeAlignMap);
             String error = MessageUtil.getMessageDesc("NEW_ERR0011");
             List<AppSvcPrincipalOfficersDto> appSvcCgoList = currentSvcDto.getAppSvcCgoDtoList();
             if (appSvcCgoList != null) {
@@ -2723,7 +2724,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                 addErrorStep(currentStep, stepName, errorMap.size() != prevSize, errorList);
             } else if (HcsaConsts.STEP_DISCIPLINE_ALLOCATION.equals(currentStep)) {
                 List<AppSvcDisciplineAllocationDto> appSvcDisciplineAllocationDtoList = dto.getAppSvcDisciplineAllocationDtoList();
-                doValidateDisciplineAllocation(errorMap, appSvcDisciplineAllocationDtoList, dto);
+                doValidateDisciplineAllocation(errorMap, appSvcDisciplineAllocationDtoList, dto, null);
                 addErrorStep(currentStep, stepName, errorMap.size() != prevSize, errorList);
             } else if (HcsaConsts.STEP_CHARGES.equals(currentStep)) {
                 validateCharges.doValidateCharges(errorMap, dto.getAppSvcChargesPageDto());
@@ -3083,10 +3084,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
             log.info(StringUtil.changeForLog("can not found the match appSvcRelatedInfoDto ..."));
             return null;
         }
-        List<HcsaSvcSubtypeOrSubsumedDto> svcScopeDtoList = serviceConfigService.loadLaboratoryDisciplines(svcId);
-        Map<String, HcsaSvcSubtypeOrSubsumedDto> svcScopeAlignMap = IaisCommonUtils.genNewHashMap();
-        NewApplicationHelper.recursingSvcScope(svcScopeDtoList,svcScopeAlignMap);
-
+        Map<String, HcsaSvcSubtypeOrSubsumedDto> svcScopeAlignMap = NewApplicationHelper.getScopeAlignMap(svcId);
         List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
         HashMap<String,List<AppSvcDisciplineAllocationDto>> reloadDisciplineAllocationMap = IaisCommonUtils.genNewHashMap();
         for(AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtoList){

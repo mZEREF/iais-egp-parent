@@ -3212,6 +3212,48 @@ public class NewApplicationHelper {
         return result;
     }
 
+    public static int getAlocationAutualSize(List<AppSvcDisciplineAllocationDto> daList, String svcId,
+            Map<String, HcsaSvcSubtypeOrSubsumedDto> svcScopeAlignMap) {
+        if (daList == null || daList.isEmpty()) {
+            return 0;
+        }
+        if (svcScopeAlignMap == null) {
+            svcScopeAlignMap = getScopeAlignMap(svcId);
+        }
+        if (svcScopeAlignMap == null) {
+            return daList.size();
+        }
+        Map<String, HcsaSvcSubtypeOrSubsumedDto> map = svcScopeAlignMap;
+        long count = daList.stream()
+                .map(dto -> map.get(dto.getChkLstConfId()))
+                .filter(Objects::nonNull)
+                .filter(dto -> StringUtil.isIn(dto.getName(), new String[]{NewApplicationConstant.PLEASEINDICATE,
+                        NewApplicationConstant.SERVICE_SCOPE_LAB_OTHERS}))
+                .count();
+        return count > 1 ? daList.size() - 1 : daList.size();
+    }
+
+    public static Map<String, HcsaSvcSubtypeOrSubsumedDto> getScopeAlignMap(String svcId) {
+        return getScopeAlignMap(svcId, null);
+    }
+
+    public static Map<String, HcsaSvcSubtypeOrSubsumedDto> getScopeAlignMap(String svcId, HttpServletRequest request) {
+        List<HcsaSvcSubtypeOrSubsumedDto> svcScopeDtoList = null;
+        if (request != null) {
+            svcScopeDtoList = (List<HcsaSvcSubtypeOrSubsumedDto>) ParamUtil.getSessionAttr(request, "HcsaSvcSubtypeOrSubsumedDto");
+        }
+        if (svcScopeDtoList == null) {
+            ServiceConfigService serviceConfigService = SpringHelper.getBean(ServiceConfigService.class);
+            svcScopeDtoList = serviceConfigService.loadLaboratoryDisciplines(svcId);
+        }
+        Map<String, HcsaSvcSubtypeOrSubsumedDto> svcScopeAlignMap = IaisCommonUtils.genNewHashMap();
+        if (svcScopeDtoList == null || svcScopeDtoList.isEmpty()) {
+            return svcScopeAlignMap;
+        }
+        recursingSvcScope(svcScopeDtoList, svcScopeAlignMap);
+        return svcScopeAlignMap;
+    }
+
     //key is config id
     public static void recursingSvcScope(List<HcsaSvcSubtypeOrSubsumedDto> hcsaSvcSubtypeOrSubsumedDtos,
             Map<String, HcsaSvcSubtypeOrSubsumedDto> allCheckListMap) {
