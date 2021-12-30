@@ -125,10 +125,10 @@
                 </iais:row>
 
                 <iais:row>
-                    <c:if test="${empty enhancedCounsellingTipShow}">
+                    <c:if test="${empty DS_ERR018Tip}">
                     <iais:field width="5" value="Enhanced Counselling" />
                     </c:if>
-                    <c:if test="${enhancedCounsellingTipShow == 1}">
+                    <c:if test="${!empty DS_ERR018Tip}">
                     <label class="col-xs-4 col-md-4 control-label">Enhanced Counselling
                         <a class="btn-tooltip styleguide-tooltip" data-toggle="tooltip" data-html="true" href="javascript:void(0);"
                            title="${DS_ERR018Tip}"
