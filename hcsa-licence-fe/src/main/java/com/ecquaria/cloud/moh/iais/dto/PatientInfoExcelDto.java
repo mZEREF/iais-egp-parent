@@ -57,7 +57,7 @@ public class PatientInfoExcelDto implements Serializable {
     private String idNumberHbd;
 
     @ExcelProperty(cellIndex = 14, cellName = "HUSBAND_DOB", readOnly = true)
-    private String birthDayHbd;
+    private String birthDateHbd;
 
     @ExcelProperty(cellIndex = 15, cellName = "HUSBAND_NATIONALITY", readOnly = true)
     private String nationalityHbd;

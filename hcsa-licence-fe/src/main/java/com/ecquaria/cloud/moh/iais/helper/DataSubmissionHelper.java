@@ -21,6 +21,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant;
+import com.ecquaria.cloud.moh.iais.dto.ExcelPropertyDto;
 import com.ecquaria.cloud.moh.iais.dto.FileErrorMsg;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.ArDataSubmissionService;
@@ -610,12 +611,12 @@ public final class DataSubmissionHelper {
         return validateExcelList(objList, profile, 2, null);
     }*/
 
-    public static <T> List<FileErrorMsg> validateExcelList(List<T> objList, String profile, Map<String, String> fieldCellMap) {
+    public static <T> List<FileErrorMsg> validateExcelList(List<T> objList, String profile, Map<String, ExcelPropertyDto> fieldCellMap) {
         return validateExcelList(objList, profile, 2, fieldCellMap);
     }
 
     public static <T> List<FileErrorMsg> validateExcelList(List<T> objList, String profile, int startRow,
-            Map<String, String> fieldCellMap) {
+            Map<String, ExcelPropertyDto> fieldCellMap) {
         if (objList == null || objList.isEmpty()) {
             return IaisCommonUtils.genNewArrayList(0);
         }
@@ -627,27 +628,28 @@ public final class DataSubmissionHelper {
         for (T t : objList) {
             ValidationResult validationResult = WebValidationHelper.validateProperty(t, profile);
             if (validationResult.isHasErrors()) {
-                result.addAll(getExcelErrorMsgs(row, validationResult.retrieveAll(), fieldCellMap));
+                result.addAll(getExcelErrorMsgs(row++, validationResult.retrieveAll(), fieldCellMap));
             }
         }
         return result;
     }
 
-    public static List<FileErrorMsg> getExcelErrorMsgs(int row, Map<String, String> errorMap, Map<String, String> fieldCellMap) {
+    public static List<FileErrorMsg> getExcelErrorMsgs(int row, Map<String, String> errorMap, Map<String, ExcelPropertyDto> fieldCellMap) {
         List<FileErrorMsg> errorMsgs = IaisCommonUtils.genNewArrayList(errorMap.size());
+
         errorMap.forEach((k, v) -> errorMsgs.add(new FileErrorMsg(row, getFieldCell(k, fieldCellMap), v)));
         return errorMsgs;
     }
 
-    private static String getFieldCell(String k, Map<String, String> fieldCellMap) {
+    private static ExcelPropertyDto getFieldCell(String k, Map<String, ExcelPropertyDto> fieldCellMap) {
         if (fieldCellMap == null || fieldCellMap.isEmpty()) {
-            return k;
+            return null;
         }
-        return fieldCellMap.getOrDefault(k, k);
+        return fieldCellMap.getOrDefault(k, new ExcelPropertyDto());
     }
 
-    public static Map<String, String> getFieldCellMap(Class<?> clazz) {
-        Map<String, String> map = IaisCommonUtils.genNewHashMap();
+    public static Map<String, ExcelPropertyDto> getFieldCellMap(Class<?> clazz) {
+        Map<String, ExcelPropertyDto> map = IaisCommonUtils.genNewHashMap();
         if (clazz == null) {
             return map;
         }
@@ -655,7 +657,7 @@ public final class DataSubmissionHelper {
         for (Field field : fields) {
             if (field.isAnnotationPresent(ExcelProperty.class)) {
                 ExcelProperty excelProperty = field.getAnnotation(ExcelProperty.class);
-                map.put(field.getName(), excelProperty.cellName());
+                map.put(field.getName(), new ExcelPropertyDto(excelProperty.cellIndex(), excelProperty.cellName(), field.getName()));
             }
         }
         return map;

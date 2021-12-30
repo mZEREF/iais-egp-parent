@@ -24,6 +24,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.DataSubmissionConstant;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
+import com.ecquaria.cloud.moh.iais.dto.ExcelPropertyDto;
 import com.ecquaria.cloud.moh.iais.dto.FileErrorMsg;
 import com.ecquaria.cloud.moh.iais.dto.PageShowFileDto;
 import com.ecquaria.cloud.moh.iais.dto.PatientInfoExcelDto;
@@ -31,7 +32,6 @@ import com.ecquaria.cloud.moh.iais.helper.DataSubmissionHelper;
 import com.ecquaria.cloud.moh.iais.helper.FileUtils;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
-import com.ecquaria.cloud.moh.iais.helper.SystemParamUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.helper.excel.IrregularExcelWriterUtil;
 import com.ecquaria.cloud.moh.iais.service.datasubmission.ArDataSubmissionService;
@@ -54,7 +54,6 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
@@ -162,7 +161,7 @@ public class PatientUploadDelegate {
                 } else {
                     String orgId = DataSubmissionHelper.getLoginContext(bpc.request).getOrgId();
                     patientInfoList = getPatientInfoList(patientInfoExcelDtoList, orgId);
-                    Map<String, String> fieldCellMap = DataSubmissionHelper.getFieldCellMap(PatientInfoExcelDto.class);
+                    Map<String, ExcelPropertyDto> fieldCellMap = DataSubmissionHelper.getFieldCellMap(PatientInfoExcelDto.class);
                     List<FileErrorMsg> errorMsgs = DataSubmissionHelper.validateExcelList(patientInfoList, "file", fieldCellMap);
                     List<PatientDto> patientDtos = patientInfoList.stream().map(PatientInfoDto::getPatient).collect(
                             Collectors.toList());
@@ -172,7 +171,7 @@ public class PatientUploadDelegate {
                         }
                     }
                     if (!errorMsgs.isEmpty()) {
-                        Collections.sort(errorMsgs, Comparator.comparing(FileErrorMsg::getRow));
+                        Collections.sort(errorMsgs, Comparator.comparing(FileErrorMsg::getRow).thenComparing(FileErrorMsg::getCol));
                         ParamUtil.setRequestAttr(bpc.request, DataSubmissionConstant.FILE_ITEM_ERROR_MSGS, errorMsgs);
                         errorMap.put("itemError", "itemError");                    }
                 }
@@ -182,16 +181,17 @@ public class PatientUploadDelegate {
             // To submission
             crudype = "submission";
         }
+        log.info(StringUtil.changeForLog("---- File Item Size: " + fileItemSize + " ----"));
         if (errorMap != null && !errorMap.isEmpty()) {
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
             clearSession(bpc.request);
+            fileItemSize = 0;
         } else {
             if (patientInfoList != null) {
                 fileItemSize = patientInfoList.size();
             }
             bpc.request.getSession().setAttribute(PATIENT_INFO_LIST, patientInfoList);
         }
-        log.info(StringUtil.changeForLog("---- File Item Size: " + fileItemSize + " ----"));
         ParamUtil.setRequestAttr(bpc.request, "fileItemSize", fileItemSize);
         log.info(StringUtil.changeForLog("---- Action Type: " + crudype + " ----"));
         ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, crudype);
@@ -238,6 +238,7 @@ public class PatientUploadDelegate {
             patient.setIdType(DataSubmissionHelper.getCode(patientInfoExcelDto.getIdType(), idTypes));
             patient.setNationality(DataSubmissionHelper.getCode(patientInfoExcelDto.getNationality(), nationalities));
             patient.setEthnicGroup(DataSubmissionHelper.getCode(patientInfoExcelDto.getEthnicGroup(), groups));
+            patient.setEthnicGroupOther(StringUtil.getNonNull(patient.getEthnicGroupOther()));
             patient.setPreviousIdentification("YES".equals(patientInfoExcelDto.getIsPreviousIdentification()));
             patient.setOrgId(orgId);
             dto.setPatient(patient);
@@ -261,9 +262,9 @@ public class PatientUploadDelegate {
             husbandDto.setIdType(DataSubmissionHelper.getCode(patientInfoExcelDto.getIdTypeHbd(), idTypes));
             husbandDto.setIdNumber(patientInfoExcelDto.getIdNumberHbd());
             husbandDto.setNationality(DataSubmissionHelper.getCode(patientInfoExcelDto.getNationalityHbd(), nationalities));
-            husbandDto.setBirthDate(IaisCommonUtils.handleDate(patientInfoExcelDto.getBirthDayHbd()));
+            husbandDto.setBirthDate(IaisCommonUtils.handleDate(patientInfoExcelDto.getBirthDateHbd()));
             husbandDto.setEthnicGroup(DataSubmissionHelper.getCode(patientInfoExcelDto.getEthnicGroupHbd(), groups));
-            husbandDto.setEthnicGroupOther(patientInfoExcelDto.getEthnicGroupOtherHbd());
+            husbandDto.setEthnicGroupOther(StringUtil.getNonNull(patientInfoExcelDto.getEthnicGroupOtherHbd()));
             dto.setHusband(husbandDto);
             result.add(dto);
         }

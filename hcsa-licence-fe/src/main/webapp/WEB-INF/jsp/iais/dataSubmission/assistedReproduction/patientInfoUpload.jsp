@@ -76,7 +76,7 @@
                                 <c:forEach var="item" items="${fileItemErrorMsgs}">
                                 <tr>
                                     <td>${item.row}</td>
-                                    <td>${item.fieldName}</td>
+                                    <td>${item.cellName} (${item.colHeader})</td>
                                     <td>${item.message}</td>
                                 </tr>
                                 </c:forEach>

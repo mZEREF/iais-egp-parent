@@ -102,7 +102,8 @@ public class PatientInfoValidator implements CustomizeValidator {
                     map.put("preNationality", ERR_MSG_INVALID_DATA);
                 }
             }
-            if (!StringUtil.isEmpty(previous.getIdNumber()) && previous.getIdNumber().equals(patient.getIdNumber())
+            if (!map.containsKey("preIdNumber") && !StringUtil.isEmpty(previous.getIdNumber())
+                    && previous.getIdNumber().equals(patient.getIdNumber())
                     && Objects.equals(previous.getIdType(), patient.getIdType())
                     && Objects.equals(previous.getNationality(), patient.getNationality())) {
                 map.put("preIdNumber", ERR_MSG_INVALID_DATA);
@@ -116,7 +117,8 @@ public class PatientInfoValidator implements CustomizeValidator {
         if (result != null) {
             map.putAll(result.retrieveAll("", "Hbd"));
         }
-        if (!StringUtil.isEmpty(husband.getIdNumber()) && husband.getIdNumber().equals(patient.getIdNumber())
+        if (!map.containsKey("idNumberHbd") && !StringUtil.isEmpty(husband.getIdNumber())
+                && husband.getIdNumber().equals(patient.getIdNumber())
                 && Objects.equals(husband.getIdType(), patient.getIdType())
                 && Objects.equals(husband.getNationality(), patient.getNationality())) {
             map.put("idNumberHbd", ERR_MSG_INVALID_DATA);
