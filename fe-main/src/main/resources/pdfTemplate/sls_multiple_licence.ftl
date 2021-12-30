@@ -299,11 +299,7 @@
                       <p> ${address}</p>
                     </td>
                     <td>
-                      <p>
-                      <ul class="v-numberlist">
-                      ${vehicleNo}
-                      </ul>
-                      </p>
+                    ${vehicleNo}
                     </td>
                   </tr>
                   </tbody>
@@ -360,11 +356,7 @@
                                              <p> ${address}</p>
                                            </td>
                                            <td>
-                                             <p>
-                                             <ul class="v-numberlist">
-                                               ${s!''}
-                                             </ul>
-                                             </p>
+                                             ${s!''}
                                            </td>
                                          </tr>
                                          </tbody>
@@ -421,11 +413,7 @@
                       <p> ${address}</p>
                     </td>
                     <td>
-                      <p>
-                      <ul class="v-numberlist">
-                      ${vehicleNo2}
-                      </ul>
-                      </p>
+                    ${vehicleNo2}
                     </td>
                   </tr>
                   </tbody>
