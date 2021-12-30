@@ -193,7 +193,8 @@ public class ArCycleStagesManualDelegator {
             ArSuperDataSubmissionDto dataSubmissionDraft = arDataSubmissionService.getArSuperDataSubmissionDtoDraftByConds(
                     selectionDto.getPatientIdType(), selectionDto.getPatientIdNumber(), selectionDto.getPatientNationality(),
                     orgId, hciCode);
-            if (dataSubmissionDraft != null) {
+            if (dataSubmissionDraft != null && !Objects.equals(currentArDataSubmission.getDraftNo(),
+                    dataSubmissionDraft.getDraftNo())) {
                 currentArDataSubmission.setDraftId(dataSubmissionDraft.getDraftId());
                 currentArDataSubmission.setDraftNo(dataSubmissionDraft.getDraftNo());
                 DataSubmissionHelper.setCurrentArDataSubmission(currentArDataSubmission, request);
